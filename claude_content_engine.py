@@ -16,8 +16,9 @@ FEEDBACK_PATH = WORKSPACE_ROOT / "feedback_log.txt"
 TOPIC = "How Rome Fed 1 Million People: The Ultimate Supply Chain"
 LONG_FORM_PATH = WORKSPACE_ROOT / "projects/rome-supply-chain/scripts/long_form_script.md"
 TRAILERS_PATH = WORKSPACE_ROOT / "projects/rome-supply-chain/shorts/trailers.md"
-SONNET_MODEL = "claude-3-5-sonnet-20241022"
-HAIKU_MODEL = "claude-3-5-haiku-20241022"
+# Claude 3.5 IDs are no longer served on current API tiers; use Sonnet/Haiku 4.x successors.
+SONNET_MODEL = "claude-sonnet-4-20250514"
+HAIKU_MODEL = "claude-haiku-4-5-20251001"
 
 SYSTEM_INSTRUCTIONS = """You are the Pirisi-bits Content Production Engine: an elite YouTube documentarian,
 scriptwriter, and post-production planner for a highly successful faceless history channel.
@@ -142,9 +143,10 @@ def generate_long_form_script(client: Anthropic, production_prompt: str) -> str:
     runner = client.beta.messages.tool_runner(
         model=SONNET_MODEL,
         max_tokens=16000,
+        max_iterations=8,
         system=cached_system_blocks(),
         tools=[write_file],
-        tool_choice={"type": "any"},
+        tool_choice={"type": "tool", "name": "write_file"},
         messages=[{"role": "user", "content": user_message}],
     )
     final_message = runner.until_done()
@@ -176,9 +178,10 @@ def generate_trailers(client: Anthropic, long_form_script: str) -> str:
     runner = client.beta.messages.tool_runner(
         model=HAIKU_MODEL,
         max_tokens=8192,
+        max_iterations=6,
         system=cached_system_blocks(),
         tools=[write_file],
-        tool_choice={"type": "any"},
+        tool_choice={"type": "tool", "name": "write_file"},
         messages=[{"role": "user", "content": user_message}],
     )
     final_message = runner.until_done()
@@ -199,11 +202,11 @@ def main() -> int:
 
     print(f"Topic: {TOPIC}")
     production_prompt = load_production_prompt()
-    print("Generating long-form script with Claude 3.5 Sonnet...")
+    print(f"Generating long-form script with {SONNET_MODEL}...")
     long_form_script = generate_long_form_script(client, production_prompt)
     print(f"Saved long-form script to {LONG_FORM_PATH}")
 
-    print("Generating short-form trailers with Claude 3.5 Haiku...")
+    print(f"Generating short-form trailers with {HAIKU_MODEL}...")
     trailers = generate_trailers(client, long_form_script)
     print(f"Saved trailers to {TRAILERS_PATH}")
     print(f"Done. Long-form: {len(long_form_script)} chars, trailers: {len(trailers)} chars")
