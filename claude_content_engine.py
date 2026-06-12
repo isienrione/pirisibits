@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -14,8 +15,14 @@ WORKSPACE_ROOT = Path(__file__).resolve().parent
 TEMPLATE_PATH = WORKSPACE_ROOT / "master_prompt_template.md"
 FEEDBACK_PATH = WORKSPACE_ROOT / "feedback_log.txt"
 TOPIC = "How Rome Fed 1 Million People: The Ultimate Supply Chain"
-LONG_FORM_PATH = WORKSPACE_ROOT / "projects/rome-supply-chain/scripts/long_form_script.md"
-TRAILERS_PATH = WORKSPACE_ROOT / "projects/rome-supply-chain/shorts/trailers.md"
+PROJECT_ROOT = WORKSPACE_ROOT / "projects/rome-supply-chain"
+LONG_FORM_PATH = PROJECT_ROOT / "scripts/long_form_script.md"
+TRAILERS_PATH = PROJECT_ROOT / "shorts/trailers.md"
+ALLOWED_WRITE_PATHS = {
+    LONG_FORM_PATH.resolve(),
+    TRAILERS_PATH.resolve(),
+}
+FORBIDDEN_PATH_KEYWORDS = ("success", "activation", "ready", "empire", "emperor", "mission", "launch")
 # Claude 3.5 IDs are no longer served on current API tiers; use Sonnet/Haiku 4.x successors.
 SONNET_MODEL = "claude-sonnet-4-20250514"
 HAIKU_MODEL = "claude-haiku-4-5-20251001"
@@ -29,10 +36,23 @@ Write in a conversational, suspenseful tone. Avoid textbook jargon. Change visua
 
 ## Tool execution (required)
 
-You have a `write_file` tool. When asked to deliver a finished document, you MUST call `write_file`
-with the complete markdown content. Do not merely describe the file — persist the full artifact to disk.
+You have two tools: `create_project_workspace` and `write_file`.
 
-Only write to paths under `projects/`. Create parent directories automatically when needed.
+1. Call `create_project_workspace` once at the start of a production run to scaffold directories.
+2. Call `write_file` only to persist finished deliverables.
+
+## HARD FILE CONSTRAINT (non-negotiable)
+
+You are ONLY permitted to create these two markdown files:
+- `projects/rome-supply-chain/scripts/long_form_script.md`
+- `projects/rome-supply-chain/shorts/trailers.md`
+
+Do NOT create any other markdown files. This explicitly forbids:
+- "success", "activation", "ready", "launch", "complete", "empire", or similar status/readme files
+- Unprompted bonus documents, checklists, indexes, READMEs, or delivery summaries
+- Any file outside the two whitelisted paths above
+
+If tempted to add extra packaging files, put that content inside the appropriate deliverable instead.
 
 ## Long-form production blueprint (5 sections)
 
@@ -87,20 +107,60 @@ def load_production_prompt() -> str:
 
 
 def _resolve_allowed_path(path: str) -> Path:
-    """Resolve and validate that a write target stays under projects/."""
+    """Resolve and validate that a write target is one of the two allowed deliverables."""
     candidate = (WORKSPACE_ROOT / path).resolve()
-    projects_root = (WORKSPACE_ROOT / "projects").resolve()
-    if projects_root not in candidate.parents and candidate != projects_root:
-        raise ToolError(f"Path must be under projects/: {path}")
+    normalized = path.replace("\\", "/").lower()
+    if any(keyword in normalized for keyword in FORBIDDEN_PATH_KEYWORDS):
+        raise ToolError(
+            f"Write forbidden: paths containing status/activation keywords are not allowed ({path})."
+        )
+    if candidate not in ALLOWED_WRITE_PATHS:
+        raise ToolError(
+            "Write forbidden. Only these files may be created:\n"
+            "- projects/rome-supply-chain/scripts/long_form_script.md\n"
+            "- projects/rome-supply-chain/shorts/trailers.md"
+        )
     return candidate
 
 
 @beta_tool
+def create_project_workspace() -> str:
+    """Create the Rome supply chain project workspace directories on disk.
+
+    Creates assets/, assets/ai_prompts/, assets/archival/, scripts/, and shorts/
+    under projects/rome-supply-chain/. Does not create any markdown files.
+
+    Returns:
+        Confirmation listing the directories created
+    """
+    workspace_dirs = [
+        PROJECT_ROOT / "assets",
+        PROJECT_ROOT / "assets" / "ai_prompts",
+        PROJECT_ROOT / "assets" / "archival",
+        PROJECT_ROOT / "scripts",
+        PROJECT_ROOT / "shorts",
+    ]
+    try:
+        for directory in workspace_dirs:
+            os.makedirs(directory, exist_ok=True)
+        created = "\n".join(f"- {d.relative_to(WORKSPACE_ROOT)}" for d in workspace_dirs)
+        return f"Project workspace ready:\n{created}"
+    except Exception as exc:
+        raise ToolError(f"Failed to create project workspace: {exc}") from exc
+
+
+@beta_tool
 def write_file(path: str, content: str) -> str:
-    """Write markdown content to a file on the local drive.
+    """Write one of the two allowed deliverable markdown files to disk.
+
+    ONLY these paths are permitted:
+    - projects/rome-supply-chain/scripts/long_form_script.md (long-form documentary blueprint)
+    - projects/rome-supply-chain/shorts/trailers.md (three short-form trailer scripts)
+
+    Do NOT write success, activation, README, checklist, or any other markdown files.
 
     Args:
-        path: Relative path under projects/, e.g. projects/rome-supply-chain/scripts/long_form_script.md
+        path: Exact relative path to one of the two allowed deliverables above
         content: Full markdown content to persist
     Returns:
         Confirmation message with bytes written and resolved path
@@ -135,9 +195,11 @@ def generate_long_form_script(client: Anthropic, production_prompt: str) -> str:
     relative_path = LONG_FORM_PATH.relative_to(WORKSPACE_ROOT).as_posix()
     user_message = (
         f"{production_prompt}\n\n"
-        f"After completing all 5 sections, call `write_file` exactly once with:\n"
-        f"- path: `{relative_path}`\n"
-        f"- content: the full markdown production blueprint"
+        "Workflow:\n"
+        "1. Call `create_project_workspace` once to scaffold directories.\n"
+        f"2. Call `write_file` exactly once with path `{relative_path}` and the full markdown "
+        "production blueprint as content.\n\n"
+        "Do NOT create any other files. No success, activation, README, or bonus markdown."
     )
 
     runner = client.beta.messages.tool_runner(
@@ -145,7 +207,7 @@ def generate_long_form_script(client: Anthropic, production_prompt: str) -> str:
         max_tokens=16000,
         max_iterations=8,
         system=cached_system_blocks(),
-        tools=[write_file],
+        tools=[create_project_workspace, write_file],
         tool_choice={"type": "tool", "name": "write_file"},
         messages=[{"role": "user", "content": user_message}],
     )
@@ -167,9 +229,9 @@ def generate_trailers(client: Anthropic, long_form_script: str) -> str:
     user_message = (
         "Using the long-form production blueprint below, write exactly 3 short-form YouTube "
         "trailers optimized for vertical Shorts discovery.\n\n"
-        f"Save the finished markdown by calling `write_file` with:\n"
-        f"- path: `{relative_path}`\n"
-        f"- content: all three trailers in one markdown document\n\n"
+        f"Save the finished markdown by calling `write_file` exactly once with path "
+        f"`{relative_path}` and all three trailers as content.\n"
+        "Do NOT create any other files. No success, activation, README, or bonus markdown.\n\n"
         "--- LONG-FORM SCRIPT ---\n"
         f"{long_form_script}\n"
         "--- END LONG-FORM SCRIPT ---"
@@ -201,6 +263,8 @@ def main() -> int:
     client = Anthropic()
 
     print(f"Topic: {TOPIC}")
+    create_project_workspace()
+    print("Project workspace directories ready.")
     production_prompt = load_production_prompt()
     print(f"Generating long-form script with {SONNET_MODEL}...")
     long_form_script = generate_long_form_script(client, production_prompt)
