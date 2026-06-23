@@ -37,21 +37,22 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     }
   };
 
-  const startImmersive = async () => {
+  const startImmersive = () => {
+    console.log('DEBUG: Button clicked, URL is:', waypoint.arrival_immersive_url);
+
+    if (!waypoint.arrival_immersive_url) {
+      console.error('CRITICAL: Waypoint audio URL is missing from database!');
+      return;
+    }
+
     if (!waypoint.modern_image_url || !waypoint.ancient_image_url) {
       alert('Image URLs missing for this waypoint. Run git pull to get the latest code.');
       return;
     }
 
-    try {
-      await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
-        transit: waypoint.transit_narrative_url,
-        arrival: waypoint.arrival_immersive_url,
-        ambient: waypoint.ambient_url,
-      });
-    } catch (err) {
-      console.error('Failed to start immersive audio:', err);
-    }
+    audioOrchestrator.transitionTo('ARRIVAL', {
+      arrival: waypoint.arrival_immersive_url,
+    });
 
     setShowSlider(true);
     console.log('Slider revealed and cinematic audio playing!');
