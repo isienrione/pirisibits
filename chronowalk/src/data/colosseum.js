@@ -26,11 +26,11 @@ export const COLOSSEUM_WAYPOINT = {
   lng: COLOSSEUM.lng,
   modern_image_url:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
-  // Historic painted view (previous Wikimedia reconstruction URL returned 404 on mobile)
+  // Alma-Tadema (1896): ancient Colosseum in use — stronger perspective than flat engravings
   ancient_image_url:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/A_view_of_the_Colosseum.png/1280px-A_view_of_the_Colosseum.png',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Alma-Tadema%2C_Lawrence_-_The_Colosseum_-_1896.png/1280px-Alma-Tadema%2C_Lawrence_-_The_Colosseum_-_1896.png',
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
-  depth_map_url: '/waypoints/colosseum/depth-map.png',
+  depth_map_url: '/waypoints/colosseum/depth-map.png', // optional: boosts parallax when hosted
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_immersive_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_alert_url: COLOSSEUM_ARRIVAL_ALERT,
