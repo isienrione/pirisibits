@@ -39,15 +39,50 @@ class AudioOrchestrator {
     this.visibilityListenerAttached = false;
     this.wantsArrivalPlayback = false;
     this.playbackInterrupted = false;
+    this.suppressPauseDetection = false;
 
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    this.handleArrivalPause = this.handleArrivalPause.bind(this);
+    this.handleArrivalPlay = this.handleArrivalPlay.bind(this);
+
+    this.arrivalPlayer.addEventListener('pause', this.handleArrivalPause);
+    this.arrivalPlayer.addEventListener('play', this.handleArrivalPlay);
+  }
+
+  handleArrivalPause() {
+    if (this.suppressPauseDetection) return;
+    if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.wantsArrivalPlayback) return;
+    this.setPlaybackInterrupted(true);
+  }
+
+  handleArrivalPlay() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      this.setPlaybackInterrupted(false);
+    }
+  }
+
+  syncPlaybackState() {
+    const needsResume =
+      this.currentMode === AUDIO_MODES.ARRIVAL &&
+      this.wantsArrivalPlayback &&
+      this.arrivalPlayer.paused;
+
+    this.playbackInterrupted = needsResume;
+    this.emitPlaybackState();
+    return needsResume;
   }
 
   emitPlaybackState() {
+    const needsResumeAudio =
+      this.currentMode === AUDIO_MODES.ARRIVAL &&
+      this.wantsArrivalPlayback &&
+      this.arrivalPlayer.paused;
+
     this.windowRef.dispatchEvent(
       new CustomEvent(AUDIO_PLAYBACK_STATE_EVENT, {
         detail: {
           interrupted: this.playbackInterrupted,
+          needsResumeAudio,
           currentMode: this.currentMode,
           wantsArrivalPlayback: this.wantsArrivalPlayback,
         },
@@ -102,11 +137,10 @@ class AudioOrchestrator {
 
     try {
       await this.arrivalPlayer.play();
-      this.setPlaybackInterrupted(false);
     } catch (error) {
       console.warn('AudioOrchestrator: could not resume after returning to foreground.', error);
-      this.setPlaybackInterrupted(true);
     } finally {
+      this.syncPlaybackState();
       this.playingBeforeHidden = false;
     }
   }
@@ -309,13 +343,16 @@ class AudioOrchestrator {
     this.visualSyncFired = false;
     this.playingBeforeHidden = false;
     this.wantsArrivalPlayback = false;
-    this.setPlaybackInterrupted(false);
+    this.suppressPauseDetection = true;
 
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
       player.currentTime = 0;
       player.volume = 1;
     });
+
+    this.suppressPauseDetection = false;
+    this.setPlaybackInterrupted(false);
 
     this.currentMode = AUDIO_MODES.AMBIENT;
   }

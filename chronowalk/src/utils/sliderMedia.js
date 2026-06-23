@@ -29,6 +29,23 @@ export const resolveSliderPosterAtSec = (waypointValue) => {
 /** @deprecated Use resolveSliderPosterAtSec */
 export const resolveSliderFreezeAtSec = resolveSliderPosterAtSec;
 
+/** Extra time on the last animation frame before poster stills. Override with ?holdMs= */
+export const resolveSliderPostAnimationHoldMs = (waypointValue) => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('holdMs');
+    if (param != null && param !== '') {
+      const parsed = Number(param);
+      if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+    }
+  }
+
+  if (typeof waypointValue === 'number' && Number.isFinite(waypointValue) && waypointValue >= 0) {
+    return waypointValue;
+  }
+
+  return 10000;
+};
+
 export const getModernPosterUrl = (waypoint) => waypoint?.modern_poster_url || null;
 
 export const getAncientPosterUrl = (waypoint) => waypoint?.ancient_poster_url || null;

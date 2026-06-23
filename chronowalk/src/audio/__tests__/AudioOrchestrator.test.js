@@ -125,11 +125,22 @@ describe('AudioOrchestrator', () => {
     const { orchestrator } = createOrchestrator();
     orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
     orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = true;
     orchestrator.arrivalPlayer.play.mockRejectedValueOnce(new Error('NotAllowedError'));
 
     await orchestrator.onPageVisible();
 
+    expect(orchestrator.syncPlaybackState()).toBe(true);
     expect(orchestrator.getState().playbackInterrupted).toBe(true);
+  });
+
+  it('detects paused arrival audio after another app steals the session', () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = true;
+
+    expect(orchestrator.syncPlaybackState()).toBe(true);
   });
 
   it('supports manual resume for arrival audio', async () => {

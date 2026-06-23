@@ -30,7 +30,7 @@ vi.mock('../../audio/AudioOrchestrator', () => ({
 }));
 
 vi.mock('../../hooks/useAudioPlaybackState', () => ({
-  useAudioPlaybackState: () => ({ playbackInterrupted: false }),
+  useAudioPlaybackState: () => ({ needsResumeAudio: false, playbackInterrupted: false }),
 }));
 
 vi.mock('../../hooks/useDeviceTilt', () => ({

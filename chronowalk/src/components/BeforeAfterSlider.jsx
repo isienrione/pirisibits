@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { resolveSliderPosterAtSec } from '../utils/sliderMedia';
+import { resolveSliderPosterAtSec, resolveSliderPostAnimationHoldMs } from '../utils/sliderMedia';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const MAX_SHIFT_PX = 24;
 const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
 const MEDIA_ASPECT = 16 / 9;
-const MAX_FRAME_HEIGHT_RATIO = 0.65;
+const MAX_FRAME_HEIGHT_RATIO = 0.78;
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
 
@@ -24,11 +24,6 @@ const baseMediaStyle = {
 const coverMediaStyle = {
   ...baseMediaStyle,
   objectFit: 'cover',
-};
-
-const containMediaStyle = {
-  ...baseMediaStyle,
-  objectFit: 'contain',
 };
 
 const usePosterProbe = (src) => {
@@ -191,6 +186,7 @@ const BeforeAfterSlider = ({
   depthMap,
   tiltEnabled = false,
   posterAtSec,
+  postAnimationHoldMs,
   modernPosterUrl,
   ancientPosterUrl,
 }) => {
@@ -199,6 +195,7 @@ const BeforeAfterSlider = ({
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
   const compareReadyRef = useRef(false);
+  const holdTimerRef = useRef(null);
   const modernEndedRef = useRef(false);
   const ancientEndedRef = useRef(false);
   const ancientMedia = useMediaProbe(historicImg);
@@ -207,9 +204,11 @@ const BeforeAfterSlider = ({
   const modernPosterReady = usePosterProbe(modernPosterUrl);
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
+  const [animationHoldActive, setAnimationHoldActive] = useState(false);
   const modernIsVideo = isVideoUrl(modernImg);
   const ancientIsVideo = isVideoUrl(historicImg);
   const resolvedPosterAt = resolveSliderPosterAtSec(posterAtSec);
+  const resolvedHoldMs = resolveSliderPostAnimationHoldMs(postAnimationHoldMs);
   const usingVideo = modernIsVideo || ancientIsVideo;
 
   const postersAvailable =
@@ -220,7 +219,7 @@ const BeforeAfterSlider = ({
 
   const showPosters = compareReady && postersAvailable;
   const playbackMediaStyle = coverMediaStyle;
-  const compareMediaStyle = containMediaStyle;
+  const posterMediaStyle = coverMediaStyle;
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
@@ -231,7 +230,21 @@ const BeforeAfterSlider = ({
     modernEndedRef.current = false;
     ancientEndedRef.current = false;
     setCompareReady(false);
-  }, [modernImg, historicImg, resolvedPosterAt]);
+    setAnimationHoldActive(false);
+    if (holdTimerRef.current) {
+      window.clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+  }, [modernImg, historicImg, resolvedPosterAt, resolvedHoldMs]);
+
+  useEffect(
+    () => () => {
+      if (holdTimerRef.current) {
+        window.clearTimeout(holdTimerRef.current);
+      }
+    },
+    []
+  );
 
   const seekVideoToPosterFrame = useCallback(
     (video) => {
@@ -271,10 +284,17 @@ const BeforeAfterSlider = ({
       const ancientDone = !ancientIsVideo || ancientEndedRef.current;
 
       if (modernDone && ancientDone) {
-        enterCompareMode();
+        if (holdTimerRef.current) return;
+
+        setAnimationHoldActive(true);
+        holdTimerRef.current = window.setTimeout(() => {
+          holdTimerRef.current = null;
+          setAnimationHoldActive(false);
+          enterCompareMode();
+        }, resolvedHoldMs);
       }
     },
-    [ancientIsVideo, enterCompareMode, modernIsVideo]
+    [ancientIsVideo, enterCompareMode, modernIsVideo, resolvedHoldMs]
   );
 
   const replayVideos = useCallback(() => {
@@ -282,6 +302,11 @@ const BeforeAfterSlider = ({
     modernEndedRef.current = false;
     ancientEndedRef.current = false;
     setCompareReady(false);
+    setAnimationHoldActive(false);
+    if (holdTimerRef.current) {
+      window.clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
 
     const modern = modernVideoRef.current;
     const ancient = ancientVideoRef.current;
@@ -330,12 +355,14 @@ const BeforeAfterSlider = ({
   const renderModernItem = () => {
     if (showPosters) {
       return (
-        <ReactCompareSliderImage
-          src={modernPosterUrl}
-          alt="Modern Colosseum"
-          style={compareMediaStyle}
-          referrerPolicy="no-referrer"
-        />
+        <SliderItemShell>
+          <ReactCompareSliderImage
+            src={modernPosterUrl}
+            alt="Modern Colosseum"
+            style={posterMediaStyle}
+            referrerPolicy="no-referrer"
+          />
+        </SliderItemShell>
       );
     }
 
@@ -350,7 +377,7 @@ const BeforeAfterSlider = ({
             autoPlay
             preload="auto"
             aria-label="Modern Colosseum"
-            style={compareReady ? compareMediaStyle : playbackMediaStyle}
+            style={playbackMediaStyle}
             onEnded={() => markEnded('modern')}
           />
         </SliderItemShell>
@@ -361,7 +388,7 @@ const BeforeAfterSlider = ({
       <ReactCompareSliderImage
         src={modernImg}
         alt="Modern Colosseum"
-        style={compareMediaStyle}
+        style={posterMediaStyle}
         referrerPolicy="no-referrer"
       />
     );
@@ -376,12 +403,14 @@ const BeforeAfterSlider = ({
 
     if (showPosters) {
       return (
-        <ReactCompareSliderImage
-          src={ancientPosterUrl}
-          alt="Ancient Colosseum reconstruction"
-          style={compareMediaStyle}
-          referrerPolicy="no-referrer"
-        />
+        <SliderItemShell>
+          <ReactCompareSliderImage
+            src={ancientPosterUrl}
+            alt="Ancient Colosseum reconstruction"
+            style={posterMediaStyle}
+            referrerPolicy="no-referrer"
+          />
+        </SliderItemShell>
       );
     }
 
@@ -401,7 +430,7 @@ const BeforeAfterSlider = ({
             autoPlay
             preload="auto"
             aria-label="Ancient Colosseum reconstruction"
-            style={compareReady ? compareMediaStyle : playbackMediaStyle}
+            style={playbackMediaStyle}
             onEnded={() => markEnded('ancient')}
           />
         </SliderItemShell>
@@ -412,7 +441,7 @@ const BeforeAfterSlider = ({
       <ReactCompareSliderImage
         src={historicImg}
         alt="Ancient Colosseum reconstruction"
-        style={compareMediaStyle}
+        style={posterMediaStyle}
         referrerPolicy="no-referrer"
       />
     );
@@ -453,6 +482,8 @@ const BeforeAfterSlider = ({
               </button>
             ) : null}
           </>
+        ) : animationHoldActive ? (
+          'Animation complete — take in the view before the full compare unlocks.'
         ) : usingVideo ? (
           'Animation playing — it will switch to the full facade for comparing when finished.'
         ) : tiltEnabled && isActive ? (

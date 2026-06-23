@@ -1,17 +1,42 @@
-import { useEffect, useState } from 'react';
-import { AUDIO_PLAYBACK_STATE_EVENT } from '../audio/AudioOrchestrator';
+import { useCallback, useEffect, useState } from 'react';
+import { audioOrchestrator, AUDIO_PLAYBACK_STATE_EVENT } from '../audio/AudioOrchestrator';
 
 export const useAudioPlaybackState = () => {
-  const [playbackInterrupted, setPlaybackInterrupted] = useState(false);
+  const [needsResumeAudio, setNeedsResumeAudio] = useState(false);
+
+  const syncFromOrchestrator = useCallback(() => {
+    if (typeof audioOrchestrator.syncPlaybackState === 'function') {
+      audioOrchestrator.syncPlaybackState();
+      return;
+    }
+
+    const state = audioOrchestrator.getState();
+    setNeedsResumeAudio(Boolean(state.playbackInterrupted));
+  }, []);
 
   useEffect(() => {
     const onPlaybackState = (event) => {
-      setPlaybackInterrupted(Boolean(event.detail?.interrupted));
+      setNeedsResumeAudio(Boolean(event.detail?.needsResumeAudio ?? event.detail?.interrupted));
+    };
+
+    const onReturnToApp = () => {
+      syncFromOrchestrator();
     };
 
     window.addEventListener(AUDIO_PLAYBACK_STATE_EVENT, onPlaybackState);
-    return () => window.removeEventListener(AUDIO_PLAYBACK_STATE_EVENT, onPlaybackState);
-  }, []);
+    document.addEventListener('visibilitychange', onReturnToApp);
+    window.addEventListener('focus', onReturnToApp);
+    window.addEventListener('pageshow', onReturnToApp);
 
-  return { playbackInterrupted };
+    syncFromOrchestrator();
+
+    return () => {
+      window.removeEventListener(AUDIO_PLAYBACK_STATE_EVENT, onPlaybackState);
+      document.removeEventListener('visibilitychange', onReturnToApp);
+      window.removeEventListener('focus', onReturnToApp);
+      window.removeEventListener('pageshow', onReturnToApp);
+    };
+  }, [syncFromOrchestrator]);
+
+  return { needsResumeAudio, playbackInterrupted: needsResumeAudio };
 };

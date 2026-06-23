@@ -18,7 +18,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
-  const { playbackInterrupted } = useAudioPlaybackState();
+  const { needsResumeAudio } = useAudioPlaybackState();
 
   useEffect(() => {
     setShowSlider(false);
@@ -142,11 +142,11 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           </div>
 
           <div className="mb-5 flex flex-wrap justify-center gap-2">
-            {playbackInterrupted ? (
+            {needsResumeAudio ? (
               <button
                 type="button"
                 onClick={handleResumeAudio}
-                className="inline-flex items-center gap-2 rounded-full border border-amber-400/60 bg-amber-500/20 px-4 py-2 text-xs font-semibold text-amber-100 transition hover:bg-amber-500/30"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-amber-300 bg-amber-500 px-5 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-amber-900/30 transition hover:bg-amber-400"
               >
                 <span aria-hidden="true">▶</span>
                 Resume audio
@@ -170,6 +170,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
                 posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
+                postAnimationHoldMs={waypoint.slider_poster_hold_ms}
                 modernPosterUrl={getModernPosterUrl(waypoint)}
                 ancientPosterUrl={getAncientPosterUrl(waypoint)}
               />
@@ -192,22 +193,22 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                     'Stand facing the landmark facade, then begin the immersive view for the best reveal.'}
                 </p>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
-                onClick={handlePlayAudio}
-                className="flex-1 rounded-xl bg-amber-500 py-3.5 text-sm font-bold text-gray-900 shadow-lg shadow-amber-900/30 transition hover:bg-amber-400"
-              >
-                Play Audio Guide
-              </button>
-              <button
-                type="button"
-                onClick={startImmersive}
-                className="flex-1 rounded-xl border border-amber-400/60 bg-transparent py-3.5 text-sm font-bold text-amber-100 transition hover:border-amber-300 hover:bg-amber-400/10"
-              >
-                Begin Immersive View
-              </button>
-            </div>
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={startImmersive}
+                  className="w-full rounded-xl bg-amber-500 py-4 text-base font-bold text-gray-900 shadow-lg shadow-amber-900/30 transition hover:bg-amber-400"
+                >
+                  Begin Immersive View
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="w-full rounded-xl border border-stone-600 bg-stone-800/50 py-3 text-sm font-medium text-stone-300 transition hover:border-amber-400/40 hover:text-amber-100"
+                >
+                  Play audio guide only
+                </button>
+              </div>
             </>
           )}
         </div>
