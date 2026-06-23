@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
+import { composeLayerTransform } from '../utils/calibrationStorage';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -86,30 +87,42 @@ const useCompareFrameSize = () => {
   return { frameRef, frameHeight };
 };
 
-const SliderItemShell = ({ children, parallaxTransform }) => (
-  <div
-    style={{
-      position: 'relative',
-      width: '100%',
-      height: '100%',
-      overflow: 'hidden',
-      backgroundColor: '#0c0a09',
-    }}
-  >
+const SliderItemShell = ({
+  children,
+  calibration,
+  parallaxTransform,
+  ghostOpacity,
+  animateParallax = true,
+}) => {
+  const layerTransform = composeLayerTransform(calibration, parallaxTransform);
+  const shouldAnimate = animateParallax && Boolean(parallaxTransform) && ghostOpacity == null;
+
+  return (
     <div
       style={{
+        position: 'relative',
         width: '100%',
         height: '100%',
-        transform: parallaxTransform,
-        transition: parallaxTransform ? 'transform 0.1s ease-out' : undefined,
-        transformStyle: 'preserve-3d',
-        willChange: parallaxTransform ? 'transform' : undefined,
+        overflow: 'hidden',
+        backgroundColor: '#0c0a09',
       }}
     >
-      {children}
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          transform: layerTransform,
+          transition: shouldAnimate ? 'transform 0.1s ease-out' : undefined,
+          transformStyle: 'preserve-3d',
+          willChange: layerTransform ? 'transform' : undefined,
+          opacity: ghostOpacity ?? 1,
+        }}
+      >
+        {children}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
@@ -189,6 +202,8 @@ const BeforeAfterSlider = ({
   postAnimationLoopMs,
   modernPosterUrl,
   ancientPosterUrl,
+  calibration,
+  alignmentMode = false,
 }) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const { frameRef, frameHeight } = useCompareFrameSize();
@@ -380,9 +395,109 @@ const BeforeAfterSlider = ({
   const rotateX = clamp(-y * 0.4 * depthBoost, -5, 5);
 
   const parallaxTransform =
-    tiltEnabled && !compareReady
+    tiltEnabled && !compareReady && !alignmentMode
       ? `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(${offsetX}px, ${offsetY}px, 0)`
       : undefined;
+
+  const ancientGhostOpacity = alignmentMode ? 0.5 : undefined;
+
+  useEffect(() => {
+    if (!alignmentMode) return undefined;
+
+    const modern = modernVideoRef.current;
+    const ancient = ancientVideoRef.current;
+
+    modern?.pause();
+    ancient?.pause();
+    seekVideoToPosterFrame(modern);
+    seekVideoToPosterFrame(ancient);
+
+    return undefined;
+  }, [alignmentMode, seekVideoToPosterFrame]);
+
+  const renderAlignmentModernLayer = () => {
+    const posterSrc = modernPosterUrl || modernImg;
+    if (!posterSrc) return null;
+
+    if (modernIsVideo && !modernPosterUrl) {
+      return (
+        <video
+          src={modernImg}
+          muted
+          playsInline
+          preload="auto"
+          aria-label="Modern Colosseum"
+          style={posterMediaStyle}
+        />
+      );
+    }
+
+    if (isVideoUrl(posterSrc)) {
+      return (
+        <video
+          src={posterSrc}
+          muted
+          playsInline
+          preload="auto"
+          aria-label="Modern Colosseum"
+          style={posterMediaStyle}
+        />
+      );
+    }
+
+    return (
+      <ReactCompareSliderImage
+        src={posterSrc}
+        alt="Modern Colosseum"
+        style={posterMediaStyle}
+        referrerPolicy="no-referrer"
+      />
+    );
+  };
+
+  const renderAlignmentAncientLayer = () => {
+    const posterSrc = ancientPosterUrl || historicImg;
+    if (!posterSrc || ancientMedia.failed) {
+      return (
+        <AncientPlaceholder message="Ancient reconstruction could not load — check your connection and retry." />
+      );
+    }
+
+    if (ancientIsVideo && !ancientPosterUrl) {
+      return (
+        <video
+          src={historicImg}
+          muted
+          playsInline
+          preload="auto"
+          aria-label="Ancient Colosseum reconstruction"
+          style={posterMediaStyle}
+        />
+      );
+    }
+
+    if (isVideoUrl(posterSrc)) {
+      return (
+        <video
+          src={posterSrc}
+          muted
+          playsInline
+          preload="auto"
+          aria-label="Ancient Colosseum reconstruction"
+          style={posterMediaStyle}
+        />
+      );
+    }
+
+    return (
+      <ReactCompareSliderImage
+        src={posterSrc}
+        alt="Ancient Colosseum reconstruction"
+        style={posterMediaStyle}
+        referrerPolicy="no-referrer"
+      />
+    );
+  };
 
   const renderModernItem = () => {
     if (showPosters) {
@@ -435,7 +550,7 @@ const BeforeAfterSlider = ({
 
     if (showPosters) {
       return (
-        <SliderItemShell>
+        <SliderItemShell calibration={calibration} ghostOpacity={ancientGhostOpacity}>
           <ReactCompareSliderImage
             src={ancientPosterUrl}
             alt="Ancient Colosseum reconstruction"
@@ -448,7 +563,12 @@ const BeforeAfterSlider = ({
 
     if (ancientIsVideo) {
       return (
-        <SliderItemShell parallaxTransform={parallaxTransform}>
+        <SliderItemShell
+          calibration={calibration}
+          parallaxTransform={parallaxTransform}
+          ghostOpacity={ancientGhostOpacity}
+          animateParallax={!alignmentMode}
+        >
           {ancientMedia.loading ? (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-stone-950/70 text-xs text-amber-200">
               Loading ancient Rome…
@@ -470,12 +590,14 @@ const BeforeAfterSlider = ({
     }
 
     return (
-      <ReactCompareSliderImage
-        src={historicImg}
-        alt="Ancient Colosseum reconstruction"
-        style={posterMediaStyle}
-        referrerPolicy="no-referrer"
-      />
+      <SliderItemShell calibration={calibration} ghostOpacity={ancientGhostOpacity}>
+        <ReactCompareSliderImage
+          src={historicImg}
+          alt="Ancient Colosseum reconstruction"
+          style={posterMediaStyle}
+          referrerPolicy="no-referrer"
+        />
+      </SliderItemShell>
     );
   };
 
@@ -487,17 +609,35 @@ const BeforeAfterSlider = ({
         style={{ height: frameHeight > 0 ? `${frameHeight}px` : undefined }}
       >
         {frameHeight > 0 ? (
-          <ReactCompareSlider
-            style={{ width: '100%', height: '100%' }}
-            itemOne={renderModernItem()}
-            itemTwo={renderAncientItem()}
-          />
+          alignmentMode ? (
+            <div className="relative h-full w-full overflow-hidden bg-stone-950">
+              <SliderItemShell>{renderAlignmentModernLayer()}</SliderItemShell>
+              <div className="pointer-events-none absolute inset-0">
+                <SliderItemShell
+                  calibration={calibration}
+                  parallaxTransform={parallaxTransform}
+                  ghostOpacity={0.5}
+                  animateParallax={false}
+                >
+                  {renderAlignmentAncientLayer()}
+                </SliderItemShell>
+              </div>
+            </div>
+          ) : (
+            <ReactCompareSlider
+              style={{ width: '100%', height: '100%' }}
+              itemOne={renderModernItem()}
+              itemTwo={renderAncientItem()}
+            />
+          )
         ) : (
           <div className="aspect-video w-full bg-stone-950" />
         )}
       </div>
       <p className="bg-stone-900 px-3 py-2 text-center text-xs leading-relaxed text-stone-400">
-        {!ancientLayerActive ? (
+        {alignmentMode ? (
+          'Ghost overlay active — adjust the ancient layer until it snaps to the real-world facade.'
+        ) : !ancientLayerActive ? (
           'Add the matched ancient video to complete the portal.'
         ) : ancientMedia.loading ? (
           'Modern view is playing — ancient reconstruction is loading…'

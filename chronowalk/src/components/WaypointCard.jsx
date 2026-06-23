@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
+import CalibrationOverlay from './CalibrationOverlay';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
+import {
+  loadCalibration,
+  resetCalibration,
+  saveCalibration,
+} from '../utils/calibrationStorage';
 import {
   getAncientPosterUrl,
   getAncientSliderUrl,
@@ -15,6 +21,8 @@ import {
 const WaypointCard = ({ waypoint, state, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
+  const [alignmentMode, setAlignmentMode] = useState(false);
+  const [calibration, setCalibration] = useState(() => loadCalibration(waypoint?.id));
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
@@ -23,6 +31,8 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   useEffect(() => {
     setShowSlider(false);
     setTiltEnabled(false);
+    setAlignmentMode(false);
+    setCalibration(loadCalibration(waypoint?.id));
     setEntered(false);
     syncGenerationRef.current = 0;
   }, [waypoint?.id]);
@@ -117,6 +127,20 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     );
   };
 
+  const handleLockAlignment = () => {
+    if (!waypoint?.id) return;
+
+    saveCalibration(waypoint.id, calibration);
+    setAlignmentMode(false);
+  };
+
+  const handleResetAlignment = () => {
+    if (!waypoint?.id) return;
+
+    const defaults = resetCalibration(waypoint.id);
+    setCalibration(defaults);
+  };
+
   const showAudioToggle = Boolean(waypoint.arrival_immersive_url);
   const audioToggleLabel = isArrivalAudioPlaying ? 'Pause audio' : 'Play audio';
   const audioToggleIcon = isArrivalAudioPlaying ? '❚❚' : '▶';
@@ -161,7 +185,24 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 }
                 modernPosterUrl={getModernPosterUrl(waypoint)}
                 ancientPosterUrl={getAncientPosterUrl(waypoint)}
+                calibration={calibration}
+                alignmentMode={alignmentMode}
               />
+              <button
+                type="button"
+                onClick={() => setAlignmentMode((current) => !current)}
+                className="mt-4 w-full rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-amber-400/20"
+              >
+                {alignmentMode ? 'Exit alignment mode' : 'Align ghost overlay'}
+              </button>
+              {alignmentMode ? (
+                <CalibrationOverlay
+                  calibration={calibration}
+                  onChange={setCalibration}
+                  onLock={handleLockAlignment}
+                  onReset={handleResetAlignment}
+                />
+              ) : null}
               <button
                 type="button"
                 onClick={() => setShowSlider(false)}
