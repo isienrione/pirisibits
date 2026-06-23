@@ -9,8 +9,8 @@ export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 // Debug uses Colosseum coords so ARRIVAL state triggers; marker is nudged on map for visibility
 export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
-// Place your file at: chronowalk/public/waypoints/colosseum/audio-sample.mp3
-const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/audio-sample.mp3'
+// Place your file at: chronowalk/public/waypoints/colosseum/Audio_sample.mp3
+const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
