@@ -31,8 +31,8 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
  *    - public/waypoints/colosseum/ancient-reconstruction.mp4
  *    - public/waypoints/colosseum/ancient-reconstruction.jpg
  *
- * 3. OPTIONAL poster stills at the freeze frame (sharpest compare):
- *    - modern-poster.jpg / ancient-poster.jpg (export from video at slider_freeze_at_sec)
+ * 3. Poster stills shown after the animation ends (hero facade frame):
+ *    - modern-poster.jpg / ancient-poster.jpg (export from video at slider_poster_at_sec)
  *
  * 4. OPTIONAL depth map from the ancient image → depth-map.png
  *
@@ -48,8 +48,8 @@ const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-reconstruction.jpg
 const COLOSSEUM_ANCIENT_VIDEO = '/waypoints/colosseum/ancient-reconstruction.mp4'
 const COLOSSEUM_ANCIENT_POSTER = '/waypoints/colosseum/ancient-poster.jpg'
 
-// Seconds into both clips to freeze (full facade, no lampposts). Tune live: ?freezeAt=3
-export const COLOSSEUM_SLIDER_FREEZE_AT_SEC = 3
+// Hero frame for poster stills (videos play to the end first). Tune live: ?posterAt=3
+export const COLOSSEUM_SLIDER_POSTER_AT_SEC = 3
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
@@ -65,7 +65,8 @@ export const COLOSSEUM_WAYPOINT = {
   ancient_image_url: COLOSSEUM_ANCIENT_IMAGE,
   ancient_video_url: COLOSSEUM_ANCIENT_VIDEO,
   ancient_poster_url: COLOSSEUM_ANCIENT_POSTER,
-  slider_freeze_at_sec: COLOSSEUM_SLIDER_FREEZE_AT_SEC,
+  slider_poster_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
+  slider_freeze_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
   depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,

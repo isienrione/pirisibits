@@ -6,13 +6,16 @@ export const getAncientSliderUrl = (waypoint) =>
 
 export const hasModernSliderMedia = (waypoint) => Boolean(getModernSliderUrl(waypoint));
 
-/** Seconds into the clip where both videos freeze (full Colosseum framing). Override with ?freezeAt= */
-export const resolveSliderFreezeAtSec = (waypointValue) => {
+/** Hero frame used for poster stills after the animation finishes. Override with ?posterAt= or ?freezeAt= */
+export const resolveSliderPosterAtSec = (waypointValue) => {
   if (typeof window !== 'undefined') {
-    const param = new URLSearchParams(window.location.search).get('freezeAt');
-    if (param != null && param !== '') {
-      const parsed = Number(param);
-      if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+    const params = new URLSearchParams(window.location.search);
+    for (const key of ['posterAt', 'freezeAt']) {
+      const param = params.get(key);
+      if (param != null && param !== '') {
+        const parsed = Number(param);
+        if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+      }
     }
   }
 
@@ -22,6 +25,9 @@ export const resolveSliderFreezeAtSec = (waypointValue) => {
 
   return null;
 };
+
+/** @deprecated Use resolveSliderPosterAtSec */
+export const resolveSliderFreezeAtSec = resolveSliderPosterAtSec;
 
 export const getModernPosterUrl = (waypoint) => waypoint?.modern_poster_url || null;
 

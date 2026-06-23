@@ -146,7 +146,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 historicImg={getAncientSliderUrl(waypoint)}
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
-                freezeAtSec={waypoint.slider_freeze_at_sec}
+                posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
                 modernPosterUrl={getModernPosterUrl(waypoint)}
                 ancientPosterUrl={getAncientPosterUrl(waypoint)}
               />
