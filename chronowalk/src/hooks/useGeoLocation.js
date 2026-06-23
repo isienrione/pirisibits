@@ -3,6 +3,7 @@ import { getDistance } from '../utils/distance';
 import { COLOSSEUM, DEBUG_USER_POS } from '../data/colosseum';
 import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
 import { fetchWaypointById } from '../services/waypointService';
+import { env } from '../config/env';
 
 export const JOURNEY_STATE = {
   TRANSIT: 'TRANSIT',
@@ -31,13 +32,12 @@ const toAudioMode = (journeyState) => {
   return AUDIO_MODES.AMBIENT;
 };
 
-import { env } from '../config/env';
-
 export const useGeoLocation = ({
   debugMode = env.debugGeo,
   target = COLOSSEUM,
   waypointId = 'colosseum',
   geofenceThresholdM = 30,
+  audioEnabled = false,
 } = {}) => {
   const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
   const [journey, setJourney] = useState(() =>
@@ -67,15 +67,23 @@ export const useGeoLocation = ({
           arrival_immersive_url: waypoint.arrival_immersive_url,
         };
         audioReadyRef.current = true;
-        audioOrchestrator.transitionTo(AUDIO_MODES.AMBIENT, audioFilesRef.current);
       })
       .catch((err) => console.error('Failed to load waypoint audio:', err));
 
     return () => {
       cancelled = true;
       audioOrchestrator.stop();
+      lastAudioStateRef.current = null;
     };
   }, [waypointId]);
+
+  useEffect(() => {
+    if (!audioEnabled || !audioReadyRef.current) return;
+
+    const mode = toAudioMode(state);
+    lastAudioStateRef.current = mode;
+    audioOrchestrator.transitionTo(mode, audioFilesRef.current);
+  }, [audioEnabled]);
 
   useEffect(() => {
     if (debugMode) {
@@ -115,12 +123,12 @@ export const useGeoLocation = ({
   }, [debugMode, target, geofenceThresholdM]);
 
   useEffect(() => {
-    if (!state || !audioReadyRef.current) return;
+    if (!state || !audioReadyRef.current || !audioEnabled) return;
     if (state === lastAudioStateRef.current) return;
 
     lastAudioStateRef.current = state;
     audioOrchestrator.transitionTo(toAudioMode(state), audioFilesRef.current);
-  }, [state]);
+  }, [state, audioEnabled]);
 
   useEffect(() => {
     if (!journey.status) return;
