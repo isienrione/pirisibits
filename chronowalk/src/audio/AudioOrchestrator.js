@@ -4,6 +4,21 @@ const AUDIO_MODES = {
   ARRIVAL: 'ARRIVAL',
 };
 
+const normalizeAudioUrls = (audioUrls = {}) => ({
+  ambient:
+    audioUrls.ambient ||
+    audioUrls.ambient_url ||
+    null,
+  transit:
+    audioUrls.transit ||
+    audioUrls.transit_narrative_url ||
+    null,
+  arrival:
+    audioUrls.arrival ||
+    audioUrls.arrival_immersive_url ||
+    null,
+});
+
 class AudioOrchestrator {
   constructor() {
     this.ambientPlayer = new Audio();
@@ -15,6 +30,7 @@ class AudioOrchestrator {
     this.currentMode = AUDIO_MODES.AMBIENT;
     this.fadeDurationMs = 2000;
     this.fadeFrame = null;
+    this.audioUrls = normalizeAudioUrls();
   }
 
   getPlayerForMode(mode) {
@@ -23,39 +39,65 @@ class AudioOrchestrator {
     return this.ambientPlayer;
   }
 
-  applyAudioSources(audioFiles = {}) {
-    if (audioFiles.ambient_url) {
-      this.ambientPlayer.src = audioFiles.ambient_url;
+  applyAudioSources(audioUrls = {}) {
+    this.audioUrls = normalizeAudioUrls(audioUrls);
+
+    if (this.audioUrls.ambient) {
+      this.ambientPlayer.src = this.audioUrls.ambient;
       this.ambientPlayer.load();
     }
-    if (audioFiles.transit_narrative_url) {
-      this.transitPlayer.src = audioFiles.transit_narrative_url;
+    if (this.audioUrls.transit) {
+      this.transitPlayer.src = this.audioUrls.transit;
       this.transitPlayer.load();
     }
-    if (audioFiles.arrival_immersive_url) {
-      this.arrivalPlayer.src = audioFiles.arrival_immersive_url;
+    if (this.audioUrls.arrival) {
+      this.arrivalPlayer.src = this.audioUrls.arrival;
       this.arrivalPlayer.load();
     }
   }
 
   // Orchestrates the cross-fade between states
-  transitionTo(mode, audioFiles) {
+  transitionTo(mode, audioUrls) {
     if (!Object.values(AUDIO_MODES).includes(mode)) {
       console.warn(`AudioOrchestrator: unknown mode "${mode}"`);
       return;
     }
 
-    if (this.currentMode === mode) return;
-
-    if (audioFiles) {
-      this.applyAudioSources(audioFiles);
+    if (audioUrls) {
+      this.applyAudioSources(audioUrls);
     }
+
+    if (this.currentMode === mode) return;
 
     const fromPlayer = this.getPlayerForMode(this.currentMode);
     const toPlayer = this.getPlayerForMode(mode);
-    const targetUrl = this.getUrlForMode(mode, audioFiles);
 
-    if (!toPlayer.src && !targetUrl) {
+    if (mode === AUDIO_MODES.ARRIVAL) {
+      this.transitPlayer.pause();
+      if (this.audioUrls.arrival) {
+        this.arrivalPlayer.src = this.audioUrls.arrival;
+      }
+    } else if (mode === AUDIO_MODES.TRANSIT) {
+      this.arrivalPlayer.pause();
+      if (this.audioUrls.transit) {
+        this.transitPlayer.src = this.audioUrls.transit;
+      }
+    } else {
+      this.transitPlayer.pause();
+      this.arrivalPlayer.pause();
+      if (this.audioUrls.ambient) {
+        this.ambientPlayer.src = this.audioUrls.ambient;
+      }
+    }
+
+    const targetUrl =
+      mode === AUDIO_MODES.ARRIVAL
+        ? this.audioUrls.arrival
+        : mode === AUDIO_MODES.TRANSIT
+          ? this.audioUrls.transit
+          : this.audioUrls.ambient;
+
+    if (!targetUrl && !toPlayer.src) {
       console.warn(`AudioOrchestrator: no audio URL for mode "${mode}"`);
       this.currentMode = mode;
       console.log(`Transitioning to: ${mode}`);
@@ -65,12 +107,6 @@ class AudioOrchestrator {
     this.currentMode = mode;
     this.crossFade(fromPlayer, toPlayer);
     console.log(`Transitioning to: ${mode}`);
-  }
-
-  getUrlForMode(mode, audioFiles = {}) {
-    if (mode === AUDIO_MODES.TRANSIT) return audioFiles.transit_narrative_url;
-    if (mode === AUDIO_MODES.ARRIVAL) return audioFiles.arrival_immersive_url;
-    return audioFiles.ambient_url;
   }
 
   crossFade(fromPlayer, toPlayer) {
