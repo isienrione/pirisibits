@@ -1,12 +1,19 @@
 import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { useGeoLocation } from '../hooks/useGeoLocation'
+import { getDistance } from '../utils/distance'
 
 const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN
+const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
+const debugGeo = import.meta.env.VITE_DEBUG_GEO === 'true'
 
 const TourMap = () => {
   const mapContainer = useRef(null)
   const map = useRef(null)
+  const userMarker = useRef(null)
+  const hasArrived = useRef(false)
+  const userPos = useGeoLocation(debugGeo)
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return
@@ -16,19 +23,44 @@ const TourMap = () => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [12.4922, 41.8902],
+      center: [COLOSSEUM.lng, COLOSSEUM.lat],
       zoom: 15,
     })
 
     new mapboxgl.Marker({ color: '#FFD700' })
-      .setLngLat([12.4922, 41.8902])
+      .setLngLat([COLOSSEUM.lng, COLOSSEUM.lat])
       .addTo(map.current)
 
     return () => {
+      userMarker.current = null
       map.current?.remove()
       map.current = null
     }
   }, [])
+
+  useEffect(() => {
+    if (!userPos.lat || !userPos.lng || !map.current) return
+
+    if (userMarker.current) {
+      userMarker.current.setLngLat([userPos.lng, userPos.lat])
+    } else {
+      userMarker.current = new mapboxgl.Marker({ color: '#0000FF' })
+        .setLngLat([userPos.lng, userPos.lat])
+        .addTo(map.current)
+    }
+
+    const dist = getDistance(
+      userPos.lat,
+      userPos.lng,
+      COLOSSEUM.lat,
+      COLOSSEUM.lng
+    )
+
+    if (dist < 30 && !hasArrived.current) {
+      hasArrived.current = true
+      alert("You've arrived at the Colosseum!")
+    }
+  }, [userPos])
 
   if (!mapboxToken) {
     return (

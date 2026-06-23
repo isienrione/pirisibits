@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
 
-export const useGeoLocation = () => {
-  const [position, setPosition] = useState({ lat: null, lng: null });
+const COLOSSEUM = { lat: 41.8902, lng: 12.4922 };
+
+export const useGeoLocation = (debugMode = false) => {
+  const [position, setPosition] = useState(
+    debugMode ? COLOSSEUM : { lat: null, lng: null }
+  );
 
   useEffect(() => {
+    if (debugMode) {
+      setPosition(COLOSSEUM);
+      return;
+    }
+
     if (!navigator.geolocation) return;
 
     const watcher = navigator.geolocation.watchPosition(
@@ -18,7 +27,7 @@ export const useGeoLocation = () => {
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, []);
+  }, [debugMode]);
 
   return position;
 };
