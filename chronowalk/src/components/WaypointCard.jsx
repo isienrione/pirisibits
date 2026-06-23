@@ -74,6 +74,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           <BeforeAfterSlider
             modernImg={waypoint.modern_image_url}
             historicImg={waypoint.ancient_image_url}
+            depthMap={waypoint.depth_map_url}
           />
           <button
             type="button"
