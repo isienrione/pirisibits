@@ -9,11 +9,13 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
+  const syncGenerationRef = useRef(0);
 
   useEffect(() => {
     setShowSlider(false);
     setTiltEnabled(false);
     setEntered(false);
+    syncGenerationRef.current = 0;
   }, [waypoint?.id]);
 
   useEffect(() => {
@@ -23,7 +25,12 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   }, [waypoint]);
 
   useEffect(() => {
-    const onAudioSync = () => setShowSlider(true);
+    const onAudioSync = (event) => {
+      const generation = event.detail?.generation;
+      if (generation != null && generation < syncGenerationRef.current) return;
+      if (generation != null) syncGenerationRef.current = generation;
+      setShowSlider(true);
+    };
     window.addEventListener(AUDIO_SYNC_EVENT, onAudioSync);
     return () => window.removeEventListener(AUDIO_SYNC_EVENT, onAudioSync);
   }, []);

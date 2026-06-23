@@ -6,6 +6,9 @@ const AUDIO_MODES = {
 
 export const AUDIO_SYNC_EVENT = 'AUDIO_SYNC_TRIGGER';
 
+const AUDIO_BUFFER_TIMEOUT_MS = 12000;
+const VISUAL_SYNC_DELAY_MS = 250;
+
 const normalizeAudioUrls = (audioUrls = {}) => ({
   ambient:
     audioUrls.ambient ||
@@ -21,6 +24,41 @@ const normalizeAudioUrls = (audioUrls = {}) => ({
     null,
 });
 
+const waitForCanPlayThrough = (player, timeoutMs = AUDIO_BUFFER_TIMEOUT_MS) =>
+  new Promise((resolve) => {
+    if (player.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      resolve();
+      return;
+    }
+
+    let settled = false;
+
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      player.removeEventListener('canplaythrough', onReady);
+      player.removeEventListener('error', onError);
+      clearTimeout(timer);
+      resolve();
+    };
+
+    const onReady = () => finish();
+
+    const onError = () => {
+      console.warn('AudioOrchestrator: arrival track failed to buffer.');
+      finish();
+    };
+
+    const timer = setTimeout(() => {
+      console.warn('AudioOrchestrator: buffer timeout, syncing with best effort.');
+      finish();
+    }, timeoutMs);
+
+    player.addEventListener('canplaythrough', onReady);
+    player.addEventListener('error', onError);
+    player.load();
+  });
+
 class AudioOrchestrator {
   constructor() {
     this.ambientPlayer = new Audio();
@@ -33,10 +71,30 @@ class AudioOrchestrator {
     this.alertPlayer.loop = false;
     this.currentMode = AUDIO_MODES.AMBIENT;
     this.audioUrls = normalizeAudioUrls();
+    this.syncTriggerTimer = null;
+    this.syncGeneration = 0;
   }
 
   applyAudioSources(audioUrls = {}) {
     this.audioUrls = normalizeAudioUrls(audioUrls);
+  }
+
+  clearPendingSync() {
+    if (this.syncTriggerTimer) {
+      clearTimeout(this.syncTriggerTimer);
+      this.syncTriggerTimer = null;
+    }
+  }
+
+  scheduleVisualSync(generation) {
+    this.clearPendingSync();
+    this.syncTriggerTimer = setTimeout(() => {
+      if (generation !== this.syncGeneration) return;
+      this.syncTriggerTimer = null;
+      window.dispatchEvent(
+        new CustomEvent(AUDIO_SYNC_EVENT, { detail: { generation } })
+      );
+    }, VISUAL_SYNC_DELAY_MS);
   }
 
   async fadeVolume(player, to, duration = 500) {
@@ -72,24 +130,28 @@ class AudioOrchestrator {
   }
 
   async transitionToArrival({ syncVisual = false } = {}) {
-    this.ambientPlayer.pause();
+    this.clearPendingSync();
+    const generation = ++this.syncGeneration;
 
-    // 1. Start fading out transit
+    this.ambientPlayer.pause();
     this.fadeVolume(this.transitPlayer, 0, 500);
 
-    // 2. Schedule the visual trigger at 250ms
-    if (syncVisual) {
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent(AUDIO_SYNC_EVENT));
-      }, 250);
-    }
-
-    // 3. Start arrival player
     try {
       this.arrivalPlayer.volume = 0;
       this.arrivalPlayer.src = this.audioUrls.arrival;
+
+      await waitForCanPlayThrough(this.arrivalPlayer);
+      if (generation !== this.syncGeneration) return;
+
       await this.arrivalPlayer.play();
+      if (generation !== this.syncGeneration) return;
+
       this.fadeVolume(this.arrivalPlayer, 1, 500);
+
+      if (syncVisual) {
+        this.scheduleVisualSync(generation);
+      }
+
       console.log('Transitioning to: ARRIVAL');
     } catch (error) {
       console.warn('Audio playback blocked. User needs to interact first.', error);
@@ -126,6 +188,8 @@ class AudioOrchestrator {
         return;
       }
 
+      this.clearPendingSync();
+
       if (mode === AUDIO_MODES.TRANSIT) {
         this.arrivalPlayer.pause();
         this.ambientPlayer.pause();
@@ -147,6 +211,9 @@ class AudioOrchestrator {
   }
 
   stop() {
+    this.clearPendingSync();
+    this.syncGeneration += 1;
+
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
       player.currentTime = 0;
