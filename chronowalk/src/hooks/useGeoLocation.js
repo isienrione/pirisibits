@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-
-const COLOSSEUM = { lat: 41.8902, lng: 12.4922 };
+import { DEBUG_USER_POS } from '../data/colosseum';
 
 export const useGeoLocation = (debugMode = false) => {
   const [position, setPosition] = useState(
-    debugMode ? COLOSSEUM : { lat: null, lng: null }
+    debugMode ? DEBUG_USER_POS : { lat: null, lng: null }
   );
 
   useEffect(() => {
     if (debugMode) {
-      setPosition(COLOSSEUM);
+      setPosition(DEBUG_USER_POS);
       return;
     }
 

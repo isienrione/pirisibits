@@ -3,16 +3,31 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useGeoLocation } from '../hooks/useGeoLocation'
 import { getDistance } from '../utils/distance'
+import { createCirclePolygon } from '../utils/circleGeoJSON'
+import {
+  COLOSSEUM,
+  COLOSSEUM_ARRIVAL_RADIUS_M,
+} from '../data/colosseum'
 
 const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN
-const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 const debugGeo = String(import.meta.env.VITE_DEBUG_GEO ?? '').trim() === 'true'
+
+const createColosseumMarkerElement = () => {
+  const el = document.createElement('div')
+  el.className = 'flex flex-col items-center'
+  el.innerHTML = `
+    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-yellow-400 shadow-lg"></div>
+    <span class="mt-1 rounded bg-black/70 px-2 py-0.5 text-xs font-semibold text-yellow-300">Colosseum</span>
+  `
+  return el
+}
 
 const createUserMarkerElement = () => {
   const el = document.createElement('div')
-  el.className =
-    'flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-blue-500 text-xs font-bold text-white shadow-lg'
-  el.textContent = 'You'
+  el.className = 'flex flex-col items-center'
+  el.innerHTML = `
+    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-blue-500 text-xs font-bold text-white shadow-lg">You</div>
+  `
   return el
 }
 
@@ -36,11 +51,39 @@ const TourMap = () => {
       zoom: 15,
     })
 
-    new mapboxgl.Marker({ color: '#FFD700' })
+    new mapboxgl.Marker({ element: createColosseumMarkerElement(), anchor: 'bottom' })
       .setLngLat([COLOSSEUM.lng, COLOSSEUM.lat])
       .addTo(map.current)
 
-    map.current.on('load', () => setMapLoaded(true))
+    map.current.on('load', () => {
+      map.current.addSource('colosseum-zone', {
+        type: 'geojson',
+        data: createCirclePolygon(COLOSSEUM, COLOSSEUM_ARRIVAL_RADIUS_M),
+      })
+
+      map.current.addLayer({
+        id: 'colosseum-zone-fill',
+        type: 'fill',
+        source: 'colosseum-zone',
+        paint: {
+          'fill-color': '#FFD700',
+          'fill-opacity': 0.15,
+        },
+      })
+
+      map.current.addLayer({
+        id: 'colosseum-zone-outline',
+        type: 'line',
+        source: 'colosseum-zone',
+        paint: {
+          'line-color': '#FFD700',
+          'line-width': 2,
+          'line-opacity': 0.6,
+        },
+      })
+
+      setMapLoaded(true)
+    })
 
     return () => {
       setMapLoaded(false)
@@ -53,15 +96,14 @@ const TourMap = () => {
   useEffect(() => {
     if (!userPos.lat || !userPos.lng || !map.current || !mapLoaded) return
 
-    // Nudge marker slightly in debug so it doesn't hide under the gold pin
-    const markerLng = debugGeo ? COLOSSEUM.lng + 0.0002 : userPos.lng
-    const markerLat = debugGeo ? COLOSSEUM.lat + 0.0001 : userPos.lat
-
     if (userMarker.current) {
-      userMarker.current.setLngLat([markerLng, markerLat])
+      userMarker.current.setLngLat([userPos.lng, userPos.lat])
     } else {
-      userMarker.current = new mapboxgl.Marker({ element: createUserMarkerElement() })
-        .setLngLat([markerLng, markerLat])
+      userMarker.current = new mapboxgl.Marker({
+        element: createUserMarkerElement(),
+        anchor: 'bottom',
+      })
+        .setLngLat([userPos.lng, userPos.lat])
         .addTo(map.current)
     }
 
@@ -72,7 +114,7 @@ const TourMap = () => {
       COLOSSEUM.lng
     )
 
-    if (dist < 30 && !hasArrived.current) {
+    if (dist < COLOSSEUM_ARRIVAL_RADIUS_M && !hasArrived.current) {
       hasArrived.current = true
       alert("You've arrived at the Colosseum!")
     }
@@ -96,18 +138,16 @@ const TourMap = () => {
       <div className="absolute left-3 top-3 space-y-2">
         {debugGeo ? (
           <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: teleported to Rome
+            Debug GPS: near Colosseum (inside {COLOSSEUM_ARRIVAL_RADIUS_M}m zone)
           </div>
         ) : (
           <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
             Debug GPS: off (blue pin uses real location)
           </div>
         )}
-        {import.meta.env.DEV && (
-          <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
-            VITE_DEBUG_GEO = {String(import.meta.env.VITE_DEBUG_GEO ?? 'not set')}
-          </div>
-        )}
+        <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
+          Arrival zone: {COLOSSEUM_ARRIVAL_RADIUS_M}m radius
+        </div>
       </div>
     </div>
   )
