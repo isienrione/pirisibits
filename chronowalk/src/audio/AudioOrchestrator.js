@@ -26,9 +26,11 @@ class AudioOrchestrator {
     this.ambientPlayer = new Audio();
     this.transitPlayer = new Audio();
     this.arrivalPlayer = new Audio();
+    this.alertPlayer = new Audio();
     this.ambientPlayer.loop = true;
     this.transitPlayer.loop = true;
     this.arrivalPlayer.loop = true;
+    this.alertPlayer.loop = false;
     this.currentMode = AUDIO_MODES.AMBIENT;
     this.audioUrls = normalizeAudioUrls();
   }
@@ -49,6 +51,24 @@ class AudioOrchestrator {
     }
 
     player.volume = to;
+  }
+
+  async playArrivalAlert(alertUrl) {
+    if (!alertUrl) {
+      console.warn('AudioOrchestrator: missing arrival alert URL.');
+      return;
+    }
+
+    try {
+      this.alertPlayer.pause();
+      this.alertPlayer.currentTime = 0;
+      this.alertPlayer.volume = 0.85;
+      this.alertPlayer.src = alertUrl;
+      await this.alertPlayer.play();
+      console.log('Played GPS arrival alert');
+    } catch (error) {
+      console.warn('Arrival alert playback blocked.', error);
+    }
   }
 
   async transitionToArrival({ syncVisual = false } = {}) {
@@ -127,7 +147,7 @@ class AudioOrchestrator {
   }
 
   stop() {
-    [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer].forEach((player) => {
+    [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
       player.currentTime = 0;
       player.volume = 1;

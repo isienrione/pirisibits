@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
@@ -15,6 +15,7 @@ function App() {
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [waypointData, setWaypointData] = useState(null)
+  const prevJourneyStateRef = useRef(null)
 
   const handleArrival = useCallback((waypoint) => {
     setDiscoveredWaypoint(waypoint)
@@ -40,9 +41,17 @@ function App() {
 
   useEffect(() => {
     if (!hasInteracted || !waypointData) return
-    if (state !== JOURNEY_STATE.ARRIVAL) return
+
+    const justArrived =
+      state === JOURNEY_STATE.ARRIVAL &&
+      prevJourneyStateRef.current !== JOURNEY_STATE.ARRIVAL
+
+    prevJourneyStateRef.current = state
+
+    if (!justArrived) return
 
     handleArrival(waypointData)
+    audioOrchestrator.playArrivalAlert(waypointData.arrival_alert_url)
   }, [hasInteracted, waypointData, state, handleArrival])
 
   if (!hasInteracted) {

@@ -39,6 +39,7 @@ const normalizeWaypoint = (waypoint) => ({
   ambient_url: resolveAssetUrl(waypoint.ambient_url),
   transit_narrative_url: resolveAssetUrl(waypoint.transit_narrative_url),
   arrival_immersive_url: resolveAssetUrl(waypoint.arrival_immersive_url),
+  arrival_alert_url: resolveAssetUrl(waypoint.arrival_alert_url),
 })
 
 /** Audio URLs for AudioOrchestrator (Supabase / CDN resolved). */

@@ -11,6 +11,8 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
 // Place your file at: chronowalk/public/waypoints/colosseum/Audio_sample.mp3
 const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
+// Short GPS arrival chime — place at public/waypoints/colosseum/geocache-arrival-alert.wav
+const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav'
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
@@ -25,4 +27,5 @@ export const COLOSSEUM_WAYPOINT = {
   depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_immersive_url: COLOSSEUM_SAMPLE_AUDIO,
+  arrival_alert_url: COLOSSEUM_ARRIVAL_ALERT,
 }
