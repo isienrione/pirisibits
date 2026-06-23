@@ -1,5 +1,13 @@
 export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 
+// Visitor camera POV for the before/after slider (facade approach — near Google Street View)
+export const COLOSSEUM_VIEWPOINT = {
+  lat: 41.891275,
+  lng: 12.491202,
+  heading: 153.2,
+  pitch: 18.1,
+}
+
 // Delay before the waypoint card slides up (after map + arrival chime)
 export const CARD_REVEAL_DELAY_MS = 1400
 
@@ -12,10 +20,27 @@ export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 // Debug uses Colosseum coords so ARRIVAL state triggers; marker is nudged on map for visibility
 export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
-// Place your file at: chronowalk/public/waypoints/colosseum/Audio_sample.mp3
+/*
+ * SLIDER IMAGE PIPELINE (matched viewpoint — same camera angle for both layers)
+ *
+ * 1. MODERN — standing where the tourist stands:
+ *    - Google Arts & Culture street view (Colosseum outdoor, ~COLOSSEUM_VIEWPOINT)
+ *    - Or Italy Guides panorama: italyguides.it colosseum pano
+ *    - Export/save as: public/waypoints/colosseum/modern-exterior.jpg
+ *
+ * 2. ANCIENT — AI or 3D render of the SAME angle (see Rome Reborn / YouTube refs):
+ *    - Prompt Midjourney etc. using modern-exterior.jpg as reference
+ *    - Save as: public/waypoints/colosseum/ancient-reconstruction.jpg
+ *
+ * 3. OPTIONAL depth map from the ancient image → depth-map.png
+ *
+ * Do not hotlink Street View / panorama sites — export JPGs into public/ above.
+ */
+
 const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
-// Short GPS arrival chime — place at public/waypoints/colosseum/geocache-arrival-alert.wav
 const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav'
+const COLOSSEUM_MODERN_IMAGE = '/waypoints/colosseum/modern-exterior.jpg'
+const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-reconstruction.jpg'
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
@@ -24,13 +49,11 @@ export const COLOSSEUM_WAYPOINT = {
   arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
   lat: COLOSSEUM.lat,
   lng: COLOSSEUM.lng,
-  modern_image_url:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
-  // Alma-Tadema (1896): ancient Colosseum in use — stronger perspective than flat engravings
-  ancient_image_url:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Alma-Tadema%2C_Lawrence_-_The_Colosseum_-_1896.png/1280px-Alma-Tadema%2C_Lawrence_-_The_Colosseum_-_1896.png',
+  viewpoint: COLOSSEUM_VIEWPOINT,
+  modern_image_url: COLOSSEUM_MODERN_IMAGE,
+  ancient_image_url: COLOSSEUM_ANCIENT_IMAGE,
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
-  depth_map_url: '/waypoints/colosseum/depth-map.png', // optional: boosts parallax when hosted
+  depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_immersive_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_alert_url: COLOSSEUM_ARRIVAL_ALERT,
