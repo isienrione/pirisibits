@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 export const requestDeviceTiltPermission = async () => {
   if (typeof window === 'undefined') return false;
@@ -19,12 +21,24 @@ export const requestDeviceTiltPermission = async () => {
   return 'DeviceOrientationEvent' in window;
 };
 
+/**
+ * Returns tilt as degrees relative to the first reading after `enabled` turns on.
+ * Small deltas only — suitable for subtle parallax, not full-device rotation.
+ */
 export const useDeviceTilt = (enabled = true) => {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [isActive, setIsActive] = useState(false);
+  const baselineRef = useRef(null);
+
+  const recalibrate = useCallback(() => {
+    baselineRef.current = null;
+    setTilt({ x: 0, y: 0 });
+  }, []);
 
   useEffect(() => {
     if (!enabled) {
+      baselineRef.current = null;
+      setTilt({ x: 0, y: 0 });
       setIsActive(false);
       return undefined;
     }
@@ -32,10 +46,17 @@ export const useDeviceTilt = (enabled = true) => {
     const handleOrientation = (event) => {
       if (event.gamma == null && event.beta == null) return;
 
-      setTilt({
-        x: event.gamma ?? 0,
-        y: (event.beta ?? 0) - 45,
-      });
+      const gamma = event.gamma ?? 0;
+      const beta = event.beta ?? 0;
+
+      if (!baselineRef.current) {
+        baselineRef.current = { gamma, beta };
+      }
+
+      const deltaX = clamp(gamma - baselineRef.current.gamma, -10, 10);
+      const deltaY = clamp(beta - baselineRef.current.beta, -10, 10);
+
+      setTilt({ x: deltaX, y: deltaY });
       setIsActive(true);
     };
 
@@ -43,5 +64,5 @@ export const useDeviceTilt = (enabled = true) => {
     return () => window.removeEventListener('deviceorientation', handleOrientation);
   }, [enabled]);
 
-  return { x: tilt.x, y: tilt.y, isActive };
+  return { x: tilt.x, y: tilt.y, isActive, recalibrate };
 };
