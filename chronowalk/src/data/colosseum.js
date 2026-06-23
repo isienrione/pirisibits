@@ -9,10 +9,8 @@ export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 // Debug uses Colosseum coords so ARRIVAL state triggers; marker is nudged on map for visibility
 export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
-// Audio: drop MP3s in chronowalk/public/waypoints/colosseum/
-// Vite serves them at /waypoints/colosseum/<filename>.mp3 (no CDN required locally or on Netlify)
-// Until you have separate tracks, one sample file can stand in for all three modes.
-const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/arrival-immersive.mp3'
+// Place your file at: chronowalk/public/waypoints/colosseum/audio-sample.mp3
+const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/audio-sample.mp3'
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
