@@ -116,7 +116,7 @@ const TourMap = ({ onWaypointArrival }) => {
         .addTo(map.current)
     }
 
-    if (journey.status === JOURNEY_STATE.ARRIVAL && !hasArrived.current) {
+    if (journey.state === JOURNEY_STATE.ARRIVAL && !hasArrived.current) {
       hasArrived.current = true
       fetchWaypointById('colosseum')
         .then((waypoint) => onWaypointArrival?.(waypoint))
@@ -152,10 +152,10 @@ const TourMap = ({ onWaypointArrival }) => {
         {journey.status && (
           <div
             className={`rounded px-3 py-1 text-sm font-semibold text-white shadow ${
-              journey.status === JOURNEY_STATE.ARRIVAL ? 'bg-green-600' : 'bg-gray-600'
+              journey.state === JOURNEY_STATE.ARRIVAL ? 'bg-green-600' : 'bg-gray-600'
             }`}
           >
-            Journey: {journey.status}
+            Journey: {journey.state}
             {journey.distance != null && ` (${Math.round(journey.distance)}m)`}
           </div>
         )}

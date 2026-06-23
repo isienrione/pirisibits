@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
+import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
 
 const WaypointCard = ({ waypoint, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -23,6 +24,14 @@ const WaypointCard = ({ waypoint, onClose }) => {
       return;
     }
     setShowSlider(true);
+  };
+
+  const handlePlayAudio = () => {
+    audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
+      ambient_url: waypoint.ambient_url,
+      transit_narrative_url: waypoint.transit_narrative_url,
+      arrival_immersive_url: waypoint.arrival_immersive_url,
+    });
   };
 
   return (
@@ -53,7 +62,11 @@ const WaypointCard = ({ waypoint, onClose }) => {
       )}
       
       <div className="flex gap-4">
-        <button type="button" className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold">
+        <button
+          type="button"
+          onClick={handlePlayAudio}
+          className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold"
+        >
           Play Audio Guide
         </button>
         {!showSlider && (
