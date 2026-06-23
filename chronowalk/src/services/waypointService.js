@@ -3,6 +3,13 @@ import { supabase } from '../lib/supabase'
 import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
 
 /**
+ * TODO (Supabase): When ready for production content, populate the `waypoints`
+ * table in Supabase with id, title, image URLs, and audio URLs
+ * (transit_narrative_url, arrival_immersive_url, ambient_url).
+ * Then set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.
+ */
+
+/**
  * Local seed data — fallback when Supabase is not configured.
  */
 const LOCAL_WAYPOINTS = {

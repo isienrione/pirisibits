@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
-import { getWaypointAudioUrls } from '../services/waypointService';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 
 const WaypointCard = ({ waypoint, state, onClose }) => {
@@ -20,16 +19,24 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
 
   if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
-  const handleOpenSlider = () => {
+  const startImmersive = async () => {
     if (!waypoint.modern_image_url || !waypoint.ancient_image_url) {
       alert('Image URLs missing for this waypoint. Run git pull to get the latest code.');
       return;
     }
-    setShowSlider(true);
-  };
 
-  const handlePlayAudio = () => {
-    audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, getWaypointAudioUrls(waypoint));
+    try {
+      await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
+        transit: waypoint.transit_narrative_url,
+        arrival: waypoint.arrival_immersive_url,
+        ambient: waypoint.ambient_url,
+      });
+    } catch (err) {
+      console.error('Failed to start immersive audio:', err);
+    }
+
+    setShowSlider(true);
+    console.log('Slider revealed and cinematic audio playing!');
   };
 
   return (
@@ -59,24 +66,15 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
         </div>
       )}
 
-      <div className="flex gap-4">
+      {!showSlider && (
         <button
           type="button"
-          onClick={handlePlayAudio}
-          className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold"
+          onClick={startImmersive}
+          className="mt-2 w-full rounded-lg bg-blue-600 py-4 font-bold text-white"
         >
-          Play Audio Guide
+          Begin Immersive View
         </button>
-        {!showSlider && (
-          <button
-            type="button"
-            onClick={handleOpenSlider}
-            className="flex-1 border border-blue-600 text-blue-600 py-3 rounded-lg font-semibold"
-          >
-            Begin Immersive View
-          </button>
-        )}
-      </div>
+      )}
     </div>
   );
 };
