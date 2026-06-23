@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
+import { getWaypointAudioUrls } from '../services/waypointService';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 
 const WaypointCard = ({ waypoint, state, onClose }) => {
@@ -28,11 +29,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   };
 
   const handlePlayAudio = () => {
-    audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
-      ambient_url: waypoint.ambient_url,
-      transit_narrative_url: waypoint.transit_narrative_url,
-      arrival_immersive_url: waypoint.arrival_immersive_url,
-    });
+    audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, getWaypointAudioUrls(waypoint));
   };
 
   return (

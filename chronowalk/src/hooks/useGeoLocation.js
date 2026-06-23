@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getDistance } from '../utils/distance';
 import { COLOSSEUM, DEBUG_USER_POS } from '../data/colosseum';
-import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
-import { fetchWaypointById } from '../services/waypointService';
 import { env } from '../config/env';
 
 export const JOURNEY_STATE = {
@@ -26,18 +24,10 @@ const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
   return { lat, lng, distance, status };
 };
 
-const toAudioMode = (journeyState) => {
-  if (journeyState === JOURNEY_STATE.ARRIVAL) return AUDIO_MODES.ARRIVAL;
-  if (journeyState === JOURNEY_STATE.TRANSIT) return AUDIO_MODES.TRANSIT;
-  return AUDIO_MODES.AMBIENT;
-};
-
 export const useGeoLocation = ({
   debugMode = env.debugGeo,
   target = COLOSSEUM,
-  waypointId = 'colosseum',
   geofenceThresholdM = 30,
-  audioEnabled = false,
 } = {}) => {
   const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
   const [journey, setJourney] = useState(() =>
@@ -50,40 +40,6 @@ export const useGeoLocation = ({
         )
       : emptyJourney
   );
-  const audioFilesRef = useRef(null);
-  const audioReadyRef = useRef(false);
-  const lastAudioStateRef = useRef(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchWaypointById(waypointId)
-      .then((waypoint) => {
-        if (cancelled) return;
-
-        audioFilesRef.current = {
-          ambient_url: waypoint.ambient_url,
-          transit_narrative_url: waypoint.transit_narrative_url,
-          arrival_immersive_url: waypoint.arrival_immersive_url,
-        };
-        audioReadyRef.current = true;
-      })
-      .catch((err) => console.error('Failed to load waypoint audio:', err));
-
-    return () => {
-      cancelled = true;
-      audioOrchestrator.stop();
-      lastAudioStateRef.current = null;
-    };
-  }, [waypointId]);
-
-  useEffect(() => {
-    if (!audioEnabled || !audioReadyRef.current) return;
-
-    const mode = toAudioMode(state);
-    lastAudioStateRef.current = mode;
-    audioOrchestrator.transitionTo(mode, audioFilesRef.current);
-  }, [audioEnabled]);
 
   useEffect(() => {
     if (debugMode) {
@@ -121,14 +77,6 @@ export const useGeoLocation = ({
 
     return () => navigator.geolocation.clearWatch(watcher);
   }, [debugMode, target, geofenceThresholdM]);
-
-  useEffect(() => {
-    if (!state || !audioReadyRef.current || !audioEnabled) return;
-    if (state === lastAudioStateRef.current) return;
-
-    lastAudioStateRef.current = state;
-    audioOrchestrator.transitionTo(toAudioMode(state), audioFilesRef.current);
-  }, [state, audioEnabled]);
 
   useEffect(() => {
     if (!journey.status) return;

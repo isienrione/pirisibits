@@ -1,9 +1,9 @@
 import { env } from '../config/env'
+import { supabase } from '../lib/supabase'
 import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
 
 /**
- * Local seed data — used until a database/API is connected.
- * Swap fetchWaypointById() to call your API and remove this map.
+ * Local seed data — fallback when Supabase is not configured.
  */
 const LOCAL_WAYPOINTS = {
   colosseum: COLOSSEUM_WAYPOINT,
@@ -13,11 +13,6 @@ const LOCAL_WAYPOINTS = {
  * Resolves asset paths to full URLs.
  * - Absolute URLs (http/https) pass through unchanged.
  * - Relative paths are prefixed with VITE_CDN_BASE_URL (e.g. Cloudflare CDN).
- *
- * Example:
- *   VITE_CDN_BASE_URL=https://cdn.example.com
- *   path: /waypoints/colosseum/modern.jpg
- *   → https://cdn.example.com/waypoints/colosseum/modern.jpg
  */
 export const resolveAssetUrl = (url) => {
   if (!url) return null
@@ -39,22 +34,36 @@ const normalizeWaypoint = (waypoint) => ({
   arrival_immersive_url: resolveAssetUrl(waypoint.arrival_immersive_url),
 })
 
+/** Audio URLs for AudioOrchestrator (Supabase / CDN resolved). */
+export const getWaypointAudioUrls = (waypoint) => ({
+  ambient: waypoint.ambient_url,
+  transit: waypoint.transit_narrative_url,
+  arrival: waypoint.arrival_immersive_url,
+})
+
+const fetchWaypointFromSupabase = async (id) => {
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('waypoints')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Supabase waypoint fetch failed: ${error.message}`)
+  }
+
+  return data
+}
+
 /**
- * Fetches a waypoint by ID.
- *
- * TODO: Replace local seed lookup with database/API fetch:
- *
- *   const response = await fetch(`${env.apiBaseUrl}/waypoints/${id}`)
- *   if (!response.ok) throw new Error(`Failed to load waypoint: ${id}`)
- *   const waypoint = await response.json()
- *   return normalizeWaypoint(waypoint)
+ * Fetches a waypoint by ID from Supabase, falling back to local seed data.
  */
 export const fetchWaypointById = async (id) => {
-  if (env.apiBaseUrl) {
-    // Placeholder for future API integration — uncomment when backend is ready:
-    // const response = await fetch(`${env.apiBaseUrl.replace(/\/$/, '')}/waypoints/${id}`)
-    // if (!response.ok) throw new Error(`Failed to load waypoint: ${id}`)
-    // return normalizeWaypoint(await response.json())
+  const remoteWaypoint = await fetchWaypointFromSupabase(id)
+  if (remoteWaypoint) {
+    return normalizeWaypoint(remoteWaypoint)
   }
 
   const waypoint = LOCAL_WAYPOINTS[id]

@@ -9,6 +9,9 @@ export const env = {
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '',
   /** Future: Cloudflare R2 / CDN base for images, audio, depth maps */
   cdnBaseUrl: import.meta.env.VITE_CDN_BASE_URL || '',
+  /** Supabase project URL and anon key for waypoint data */
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL || '',
+  supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
 }
 
 export const isMapboxConfigured = () => Boolean(env.mapboxToken)

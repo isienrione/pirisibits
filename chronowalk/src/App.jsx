@@ -1,33 +1,71 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
-import { fetchWaypointById } from './services/waypointService'
+import { fetchWaypointById, getWaypointAudioUrls } from './services/waypointService'
 import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
+import { audioOrchestrator, AUDIO_MODES } from './audio/AudioOrchestrator'
 
 function App() {
   const [hasInteracted, setHasInteracted] = useState(false)
   const { position, state, distance } = useGeoLocation({
     geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
-    audioEnabled: hasInteracted,
   })
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
-  const hasLoadedWaypoint = useRef(false)
+  const waypointDataRef = useRef(null)
+  const lastAudioStateRef = useRef(null)
+
+  const handleArrival = useCallback(async (waypoint) => {
+    const audioUrls = getWaypointAudioUrls(waypoint)
+    await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, audioUrls)
+    setDiscoveredWaypoint(waypoint)
+    setActiveWaypoint(waypoint)
+  }, [])
 
   useEffect(() => {
-    if (!hasInteracted || state !== JOURNEY_STATE.ARRIVAL || hasLoadedWaypoint.current) {
+    if (!hasInteracted) return
+
+    let cancelled = false
+
+    fetchWaypointById('colosseum')
+      .then((waypoint) => {
+        if (cancelled) return
+        waypointDataRef.current = waypoint
+        lastAudioStateRef.current = AUDIO_MODES.AMBIENT
+        return audioOrchestrator.transitionTo(
+          AUDIO_MODES.AMBIENT,
+          getWaypointAudioUrls(waypoint)
+        )
+      })
+      .catch((err) => console.error('Failed to load waypoint data:', err))
+
+    return () => {
+      cancelled = true
+      audioOrchestrator.stop()
+      lastAudioStateRef.current = null
+    }
+  }, [hasInteracted])
+
+  useEffect(() => {
+    if (!hasInteracted || !waypointDataRef.current) return
+
+    if (state === JOURNEY_STATE.ARRIVAL) {
+      if (lastAudioStateRef.current === AUDIO_MODES.ARRIVAL) return
+      lastAudioStateRef.current = AUDIO_MODES.ARRIVAL
+      handleArrival(waypointDataRef.current)
       return
     }
 
-    hasLoadedWaypoint.current = true
-    fetchWaypointById('colosseum')
-      .then((waypoint) => {
-        setDiscoveredWaypoint(waypoint)
-        setActiveWaypoint(waypoint)
-      })
-      .catch((err) => console.error('Failed to load waypoint:', err))
-  }, [hasInteracted, state])
+    if (state === JOURNEY_STATE.TRANSIT) {
+      if (lastAudioStateRef.current === AUDIO_MODES.TRANSIT) return
+      lastAudioStateRef.current = AUDIO_MODES.TRANSIT
+      audioOrchestrator.transitionTo(
+        AUDIO_MODES.TRANSIT,
+        getWaypointAudioUrls(waypointDataRef.current)
+      )
+    }
+  }, [hasInteracted, state, handleArrival])
 
   if (!hasInteracted) {
     return (
