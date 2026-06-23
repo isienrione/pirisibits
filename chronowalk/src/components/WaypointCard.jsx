@@ -1,17 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 
 const WaypointCard = ({ waypoint, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     setShowSlider(false);
   }, [waypoint?.id]);
 
+  useEffect(() => {
+    if (showSlider) {
+      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [showSlider]);
+
   if (!waypoint) return null;
 
+  const handleOpenSlider = () => {
+    if (!waypoint.modern_image_url || !waypoint.ancient_image_url) {
+      alert('Image URLs missing for this waypoint. Run git pull to get the latest code.');
+      return;
+    }
+    setShowSlider(true);
+  };
+
   return (
-    <div className="absolute bottom-0 left-0 z-50 h-[60vh] w-full overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl transition-transform duration-500">
+    <div className="absolute bottom-0 left-0 z-50 h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl transition-transform duration-500">
       <button
         type="button"
         onClick={onClose}
