@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { useGeoLocation } from '../hooks/useGeoLocation'
-import { getDistance } from '../utils/distance'
+import { useGeoLocation, JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
   COLOSSEUM,
   COLOSSEUM_ARRIVAL_RADIUS_M,
   COLOSSEUM_WAYPOINT,
+  GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from '../data/colosseum'
 
 const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN
@@ -38,7 +38,11 @@ const TourMap = ({ onWaypointArrival }) => {
   const userMarker = useRef(null)
   const hasArrived = useRef(false)
   const [mapLoaded, setMapLoaded] = useState(false)
-  const userPos = useGeoLocation(debugGeo)
+  const journey = useGeoLocation({
+    debugMode: debugGeo,
+    target: COLOSSEUM,
+    geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
+  })
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return
@@ -95,31 +99,27 @@ const TourMap = ({ onWaypointArrival }) => {
   }, [])
 
   useEffect(() => {
-    if (!userPos.lat || !userPos.lng || !map.current || !mapLoaded) return
+    if (!journey.lat || !journey.lng || !map.current || !mapLoaded) return
+
+    const markerLng = debugGeo ? COLOSSEUM.lng + 0.0002 : journey.lng
+    const markerLat = debugGeo ? COLOSSEUM.lat + 0.0001 : journey.lat
 
     if (userMarker.current) {
-      userMarker.current.setLngLat([userPos.lng, userPos.lat])
+      userMarker.current.setLngLat([markerLng, markerLat])
     } else {
       userMarker.current = new mapboxgl.Marker({
         element: createUserMarkerElement(),
         anchor: 'bottom',
       })
-        .setLngLat([userPos.lng, userPos.lat])
+        .setLngLat([markerLng, markerLat])
         .addTo(map.current)
     }
 
-    const dist = getDistance(
-      userPos.lat,
-      userPos.lng,
-      COLOSSEUM.lat,
-      COLOSSEUM.lng
-    )
-
-    if (dist < COLOSSEUM_ARRIVAL_RADIUS_M && !hasArrived.current) {
+    if (journey.status === JOURNEY_STATE.ARRIVAL && !hasArrived.current) {
       hasArrived.current = true
       onWaypointArrival?.(COLOSSEUM_WAYPOINT)
     }
-  }, [userPos, mapLoaded, onWaypointArrival])
+  }, [journey, mapLoaded, onWaypointArrival, debugGeo])
 
   if (!mapboxToken) {
     return (
@@ -139,15 +139,25 @@ const TourMap = ({ onWaypointArrival }) => {
       <div className="absolute left-3 top-3 space-y-2">
         {debugGeo ? (
           <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: near Colosseum (inside {COLOSSEUM_ARRIVAL_RADIUS_M}m zone)
+            Debug GPS: teleported to Rome
           </div>
         ) : (
           <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: off (blue pin uses real location)
+            Debug GPS: off (using real location)
+          </div>
+        )}
+        {journey.status && (
+          <div
+            className={`rounded px-3 py-1 text-sm font-semibold text-white shadow ${
+              journey.status === JOURNEY_STATE.ARRIVAL ? 'bg-green-600' : 'bg-gray-600'
+            }`}
+          >
+            Journey: {journey.status}
+            {journey.distance != null && ` (${Math.round(journey.distance)}m)`}
           </div>
         )}
         <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
-          Arrival zone: {COLOSSEUM_ARRIVAL_RADIUS_M}m radius
+          Arrival geofence: {GEOFENCE_ARRIVAL_THRESHOLD_M}m
         </div>
       </div>
     </div>

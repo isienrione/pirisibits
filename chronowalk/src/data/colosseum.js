@@ -1,10 +1,13 @@
 export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 
-// Covers the Colosseum footprint plus surrounding plaza and approach paths
+// Narrative state: TRANSIT vs ARRIVAL
+export const GEOFENCE_ARRIVAL_THRESHOLD_M = 30
+
+// Visual zone on the map (broader approach area)
 export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 
-// Debug position ~120m from center, still inside the arrival zone
-export const DEBUG_USER_POS = { lat: 41.8894, lng: 12.4933 }
+// Debug uses Colosseum coords so ARRIVAL state triggers; marker is nudged on map for visibility
+export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
