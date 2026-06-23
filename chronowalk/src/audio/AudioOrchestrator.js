@@ -1,3 +1,12 @@
+import {
+  ARRIVAL_ALERT_VOLUME,
+  ARRIVAL_VOLUME,
+  FADE_DURATION_MS,
+  normalizeAudioUrls,
+  VISUAL_SYNC_DELAY_MS,
+  waitForCanPlayThrough,
+} from './audioMedia';
+
 const AUDIO_MODES = {
   AMBIENT: 'AMBIENT',
   TRANSIT: 'TRANSIT',
@@ -6,73 +15,73 @@ const AUDIO_MODES = {
 
 export const AUDIO_SYNC_EVENT = 'AUDIO_SYNC_TRIGGER';
 
-const AUDIO_BUFFER_TIMEOUT_MS = 12000;
-const VISUAL_SYNC_DELAY_MS = 250;
-
-const normalizeAudioUrls = (audioUrls = {}) => ({
-  ambient:
-    audioUrls.ambient ||
-    audioUrls.ambient_url ||
-    null,
-  transit:
-    audioUrls.transit ||
-    audioUrls.transit_narrative_url ||
-    null,
-  arrival:
-    audioUrls.arrival ||
-    audioUrls.arrival_immersive_url ||
-    null,
-});
-
-const waitForCanPlayThrough = (player, timeoutMs = AUDIO_BUFFER_TIMEOUT_MS) =>
-  new Promise((resolve) => {
-    if (player.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-      resolve();
-      return;
-    }
-
-    let settled = false;
-
-    const finish = () => {
-      if (settled) return;
-      settled = true;
-      player.removeEventListener('canplaythrough', onReady);
-      player.removeEventListener('error', onError);
-      clearTimeout(timer);
-      resolve();
-    };
-
-    const onReady = () => finish();
-
-    const onError = () => {
-      console.warn('AudioOrchestrator: arrival track failed to buffer.');
-      finish();
-    };
-
-    const timer = setTimeout(() => {
-      console.warn('AudioOrchestrator: buffer timeout, syncing with best effort.');
-      finish();
-    }, timeoutMs);
-
-    player.addEventListener('canplaythrough', onReady);
-    player.addEventListener('error', onError);
-    player.load();
-  });
-
 class AudioOrchestrator {
-  constructor() {
-    this.ambientPlayer = new Audio();
-    this.transitPlayer = new Audio();
-    this.arrivalPlayer = new Audio();
-    this.alertPlayer = new Audio();
+  constructor({ createAudio = () => new Audio(), windowRef = window } = {}) {
+    this.windowRef = windowRef;
+    this.ambientPlayer = createAudio();
+    this.transitPlayer = createAudio();
+    this.arrivalPlayer = createAudio();
+    this.alertPlayer = createAudio();
     this.ambientPlayer.loop = true;
     this.transitPlayer.loop = true;
     this.arrivalPlayer.loop = true;
     this.alertPlayer.loop = false;
+    this.arrivalPlayer.preload = 'auto';
+
     this.currentMode = AUDIO_MODES.AMBIENT;
     this.audioUrls = normalizeAudioUrls();
     this.syncTriggerTimer = null;
     this.syncGeneration = 0;
+    this.visualSyncFired = false;
+    this.playingBeforeHidden = false;
+    this.prefetchedArrivalUrl = null;
+    this.visibilityListenerAttached = false;
+
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+  }
+
+  attachVisibilityListener() {
+    if (this.visibilityListenerAttached || typeof document === 'undefined') return;
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    this.visibilityListenerAttached = true;
+  }
+
+  detachVisibilityListener() {
+    if (!this.visibilityListenerAttached || typeof document === 'undefined') return;
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.visibilityListenerAttached = false;
+  }
+
+  handleVisibilityChange() {
+    if (typeof document === 'undefined') return;
+
+    if (document.hidden) {
+      this.onPageHidden();
+      return;
+    }
+
+    void this.onPageVisible();
+  }
+
+  onPageHidden() {
+    this.playingBeforeHidden =
+      this.currentMode === AUDIO_MODES.ARRIVAL && !this.arrivalPlayer.paused;
+  }
+
+  async onPageVisible() {
+    if (!this.playingBeforeHidden) return;
+    if (this.currentMode !== AUDIO_MODES.ARRIVAL) {
+      this.playingBeforeHidden = false;
+      return;
+    }
+
+    try {
+      await this.arrivalPlayer.play();
+    } catch (error) {
+      console.warn('AudioOrchestrator: could not resume after returning to foreground.', error);
+    } finally {
+      this.playingBeforeHidden = false;
+    }
   }
 
   applyAudioSources(audioUrls = {}) {
@@ -87,17 +96,22 @@ class AudioOrchestrator {
   }
 
   scheduleVisualSync(generation) {
+    if (this.visualSyncFired) return;
+
     this.clearPendingSync();
     this.syncTriggerTimer = setTimeout(() => {
       if (generation !== this.syncGeneration) return;
+      if (this.visualSyncFired) return;
+
       this.syncTriggerTimer = null;
-      window.dispatchEvent(
+      this.visualSyncFired = true;
+      this.windowRef.dispatchEvent(
         new CustomEvent(AUDIO_SYNC_EVENT, { detail: { generation } })
       );
     }, VISUAL_SYNC_DELAY_MS);
   }
 
-  async fadeVolume(player, to, duration = 500) {
+  async fadeVolume(player, to, duration = FADE_DURATION_MS) {
     const steps = 10;
     const stepDuration = duration / steps;
     const startVolume = player.volume;
@@ -120,25 +134,45 @@ class AudioOrchestrator {
     try {
       this.alertPlayer.pause();
       this.alertPlayer.currentTime = 0;
-      this.alertPlayer.volume = 0.85;
+      this.alertPlayer.volume = ARRIVAL_ALERT_VOLUME;
       this.alertPlayer.src = alertUrl;
       await this.alertPlayer.play();
-      console.log('Played GPS arrival alert');
     } catch (error) {
       console.warn('Arrival alert playback blocked.', error);
     }
   }
 
+  prefetchArrival(arrivalUrl = this.audioUrls.arrival) {
+    if (!arrivalUrl) return;
+
+    if (this.prefetchedArrivalUrl === arrivalUrl && this.arrivalPlayer.src === arrivalUrl) {
+      return;
+    }
+
+    this.prefetchedArrivalUrl = arrivalUrl;
+    this.arrivalPlayer.preload = 'auto';
+    this.arrivalPlayer.src = arrivalUrl;
+    this.arrivalPlayer.load();
+  }
+
   async transitionToArrival({ syncVisual = false } = {}) {
     this.clearPendingSync();
+
+    if (syncVisual) {
+      this.visualSyncFired = false;
+    }
+
     const generation = ++this.syncGeneration;
 
     this.ambientPlayer.pause();
-    this.fadeVolume(this.transitPlayer, 0, 500);
+    void this.fadeVolume(this.transitPlayer, 0, FADE_DURATION_MS);
 
     try {
       this.arrivalPlayer.volume = 0;
-      this.arrivalPlayer.src = this.audioUrls.arrival;
+
+      if (this.arrivalPlayer.src !== this.audioUrls.arrival) {
+        this.arrivalPlayer.src = this.audioUrls.arrival;
+      }
 
       await waitForCanPlayThrough(this.arrivalPlayer);
       if (generation !== this.syncGeneration) return;
@@ -146,13 +180,12 @@ class AudioOrchestrator {
       await this.arrivalPlayer.play();
       if (generation !== this.syncGeneration) return;
 
-      this.fadeVolume(this.arrivalPlayer, 1, 500);
+      await this.fadeVolume(this.arrivalPlayer, ARRIVAL_VOLUME, FADE_DURATION_MS);
+      if (generation !== this.syncGeneration) return;
 
       if (syncVisual) {
         this.scheduleVisualSync(generation);
       }
-
-      console.log('Transitioning to: ARRIVAL');
     } catch (error) {
       console.warn('Audio playback blocked. User needs to interact first.', error);
     }
@@ -189,6 +222,7 @@ class AudioOrchestrator {
       }
 
       this.clearPendingSync();
+      this.visualSyncFired = false;
 
       if (mode === AUDIO_MODES.TRANSIT) {
         this.arrivalPlayer.pause();
@@ -203,8 +237,6 @@ class AudioOrchestrator {
         this.ambientPlayer.src = this.audioUrls.ambient;
         await this.ambientPlayer.play();
       }
-
-      console.log(`Transitioning to: ${mode}`);
     } catch (error) {
       console.warn('Audio playback blocked. User needs to interact first.', error);
     }
@@ -213,15 +245,29 @@ class AudioOrchestrator {
   stop() {
     this.clearPendingSync();
     this.syncGeneration += 1;
+    this.visualSyncFired = false;
+    this.playingBeforeHidden = false;
 
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
       player.currentTime = 0;
       player.volume = 1;
     });
+
     this.currentMode = AUDIO_MODES.AMBIENT;
+  }
+
+  getState() {
+    return {
+      currentMode: this.currentMode,
+      visualSyncFired: this.visualSyncFired,
+      syncGeneration: this.syncGeneration,
+      prefetchedArrivalUrl: this.prefetchedArrivalUrl,
+    };
   }
 }
 
 export const audioOrchestrator = new AudioOrchestrator();
+audioOrchestrator.attachVisibilityListener();
+
 export { AudioOrchestrator, AUDIO_MODES };

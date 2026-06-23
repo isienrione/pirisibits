@@ -17,6 +17,9 @@ export const GEOFENCE_ARRIVAL_THRESHOLD_M = 30
 // Visual zone on the map (broader approach area)
 export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 
+// Start buffering arrival audio when within this distance (still in TRANSIT)
+export const ARRIVAL_AUDIO_PREFETCH_RADIUS_M = 200
+
 // Debug uses Colosseum coords so ARRIVAL state triggers; marker is nudged on map for visibility
 export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
@@ -57,6 +60,8 @@ export const COLOSSEUM_WAYPOINT = {
   title: 'The Colosseum',
   arrival_headline: "You've reached the Colosseum!",
   arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
+  immersive_orientation_hint:
+    'Stand facing the Colosseum facade, then tap Begin Immersive View for the best before/after reveal.',
   lat: COLOSSEUM.lat,
   lng: COLOSSEUM.lng,
   viewpoint: COLOSSEUM_VIEWPOINT,

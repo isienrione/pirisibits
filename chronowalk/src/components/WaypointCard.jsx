@@ -159,7 +159,17 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <>
+              <div className="mb-4 rounded-xl border border-amber-400/25 bg-amber-400/5 px-4 py-3 text-center">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">
+                  Before you begin
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-stone-300">
+                  {waypoint.immersive_orientation_hint ||
+                    'Stand facing the landmark facade, then begin the immersive view for the best reveal.'}
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={handlePlayAudio}
@@ -175,6 +185,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 Begin Immersive View
               </button>
             </div>
+            </>
           )}
         </div>
       </div>

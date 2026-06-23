@@ -2,8 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
+import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
+import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
 import { fetchWaypointById } from './services/waypointService'
-import { CARD_REVEAL_DELAY_MS, GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
+import {
+  ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
+  CARD_REVEAL_DELAY_MS,
+  GEOFENCE_ARRIVAL_THRESHOLD_M,
+} from './data/colosseum'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 
@@ -17,6 +23,14 @@ function App() {
   const [waypointData, setWaypointData] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
   const prevJourneyStateRef = useRef(null)
+
+  useAudioPageVisibility(hasInteracted)
+  useArrivalAudioPrefetch({
+    enabled: hasInteracted && Boolean(waypointData),
+    distance,
+    arrivalUrl: waypointData?.arrival_immersive_url,
+    prefetchRadiusM: ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
+  })
 
   const revealWaypointCard = useCallback((waypoint) => {
     setDiscoveredWaypoint(waypoint)
