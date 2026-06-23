@@ -9,7 +9,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
         type="button"
         onClick={onClose}
         className="mx-auto mb-6 block h-4 w-12 rounded-full bg-gray-300"
-        aria-label="Close waypoint card"
+        aria-label="Minimize waypoint card"
       />
       <h2 className="text-2xl font-bold mb-2">{waypoint.title}</h2>
       <p className="text-gray-600 mb-6">Discover the ancient secrets of this site...</p>
