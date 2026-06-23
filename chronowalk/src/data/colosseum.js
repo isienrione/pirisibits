@@ -52,8 +52,8 @@ const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-reconstruction.jpg
 const COLOSSEUM_ANCIENT_VIDEO = '/waypoints/colosseum/ancient-reconstruction.mp4'
 const COLOSSEUM_ANCIENT_POSTER = '/waypoints/colosseum/ancient-poster.jpg'
 
-// Hold on the final animation frame before switching to poster stills (~10s extra)
-export const COLOSSEUM_SLIDER_POST_ANIMATION_HOLD_MS = 10000
+// Extra loop time after the first animation playthrough (~10s at normal speed)
+export const COLOSSEUM_SLIDER_POST_ANIMATION_LOOP_MS = 10000
 
 // Hero frame for poster stills (videos play to the end first). Tune live: ?posterAt=3
 export const COLOSSEUM_SLIDER_POSTER_AT_SEC = 3
@@ -75,7 +75,7 @@ export const COLOSSEUM_WAYPOINT = {
   ancient_video_url: COLOSSEUM_ANCIENT_VIDEO,
   ancient_poster_url: COLOSSEUM_ANCIENT_POSTER,
   slider_poster_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
-  slider_poster_hold_ms: COLOSSEUM_SLIDER_POST_ANIMATION_HOLD_MS,
+  slider_post_animation_loop_ms: COLOSSEUM_SLIDER_POST_ANIMATION_LOOP_MS,
   slider_freeze_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
   depth_map_url: '/waypoints/colosseum/depth-map.png',

@@ -73,6 +73,11 @@ class AudioOrchestrator {
   }
 
   emitPlaybackState() {
+    const isArrivalAudioPlaying =
+      this.currentMode === AUDIO_MODES.ARRIVAL &&
+      this.wantsArrivalPlayback &&
+      !this.arrivalPlayer.paused;
+
     const needsResumeAudio =
       this.currentMode === AUDIO_MODES.ARRIVAL &&
       this.wantsArrivalPlayback &&
@@ -83,6 +88,9 @@ class AudioOrchestrator {
         detail: {
           interrupted: this.playbackInterrupted,
           needsResumeAudio,
+          isArrivalAudioPlaying,
+          hasArrivalAudioSession:
+            this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback,
           currentMode: this.currentMode,
           wantsArrivalPlayback: this.wantsArrivalPlayback,
         },
@@ -124,25 +132,8 @@ class AudioOrchestrator {
   }
 
   async onPageVisible() {
-    if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.wantsArrivalPlayback) {
-      this.playingBeforeHidden = false;
-      return;
-    }
-
-    if (!this.arrivalPlayer.paused) {
-      this.setPlaybackInterrupted(false);
-      this.playingBeforeHidden = false;
-      return;
-    }
-
-    try {
-      await this.arrivalPlayer.play();
-    } catch (error) {
-      console.warn('AudioOrchestrator: could not resume after returning to foreground.', error);
-    } finally {
-      this.syncPlaybackState();
-      this.playingBeforeHidden = false;
-    }
+    this.syncPlaybackState();
+    this.playingBeforeHidden = false;
   }
 
   applyAudioSources(audioUrls = {}) {
@@ -315,6 +306,18 @@ class AudioOrchestrator {
     }
   }
 
+  pauseArrival() {
+    if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.wantsArrivalPlayback) {
+      return false;
+    }
+
+    this.suppressPauseDetection = true;
+    this.arrivalPlayer.pause();
+    this.suppressPauseDetection = false;
+    this.syncPlaybackState();
+    return true;
+  }
+
   async resumeArrival() {
     if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.audioUrls.arrival) {
       return false;
@@ -335,6 +338,18 @@ class AudioOrchestrator {
       this.setPlaybackInterrupted(true);
       return false;
     }
+  }
+
+  async toggleArrivalPlayback() {
+    if (
+      this.currentMode === AUDIO_MODES.ARRIVAL &&
+      this.wantsArrivalPlayback &&
+      !this.arrivalPlayer.paused
+    ) {
+      return this.pauseArrival();
+    }
+
+    return this.resumeArrival();
   }
 
   stop() {

@@ -105,7 +105,7 @@ describe('AudioOrchestrator', () => {
     expect(orchestrator.getState().prefetchedArrivalUrl).toBe('/audio/arrival.mp3');
   });
 
-  it('resumes arrival audio after returning from the background', async () => {
+  it('syncs playback state after returning from the background without auto-resuming', async () => {
     const { orchestrator } = createOrchestrator();
     orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
     orchestrator.wantsArrivalPlayback = true;
@@ -116,9 +116,9 @@ describe('AudioOrchestrator', () => {
 
     await orchestrator.onPageVisible();
 
-    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
+    expect(orchestrator.arrivalPlayer.play).not.toHaveBeenCalled();
     expect(orchestrator.playingBeforeHidden).toBe(false);
-    expect(orchestrator.getState().playbackInterrupted).toBe(false);
+    expect(orchestrator.syncPlaybackState()).toBe(true);
   });
 
   it('marks playback interrupted when resume fails after another app used audio', async () => {
@@ -146,6 +146,7 @@ describe('AudioOrchestrator', () => {
   it('supports manual resume for arrival audio', async () => {
     const { orchestrator } = createOrchestrator();
     orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
     orchestrator.audioUrls = { arrival: '/audio/arrival.mp3' };
     orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
     orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
@@ -155,6 +156,39 @@ describe('AudioOrchestrator', () => {
     expect(resumed).toBe(true);
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
     expect(orchestrator.getState().playbackInterrupted).toBe(false);
+  });
+
+  it('pauses arrival audio while keeping the session active', () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = false;
+
+    const paused = orchestrator.pauseArrival();
+
+    expect(paused).toBe(true);
+    expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
+    expect(orchestrator.wantsArrivalPlayback).toBe(true);
+    expect(orchestrator.syncPlaybackState()).toBe(true);
+  });
+
+  it('toggles arrival playback between pause and resume', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.audioUrls = { arrival: '/audio/arrival.mp3' };
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
+    orchestrator.arrivalPlayer.paused = false;
+
+    const paused = await orchestrator.toggleArrivalPlayback();
+    expect(paused).toBe(true);
+    expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
+
+    orchestrator.arrivalPlayer.paused = true;
+    const resumed = await orchestrator.toggleArrivalPlayback();
+    expect(resumed).toBe(true);
+    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
   });
 
   it('does not resume or re-sync when arrival audio was not playing before hide', async () => {

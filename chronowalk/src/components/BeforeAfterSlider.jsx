@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { resolveSliderPosterAtSec, resolveSliderPostAnimationHoldMs } from '../utils/sliderMedia';
+import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -186,7 +186,7 @@ const BeforeAfterSlider = ({
   depthMap,
   tiltEnabled = false,
   posterAtSec,
-  postAnimationHoldMs,
+  postAnimationLoopMs,
   modernPosterUrl,
   ancientPosterUrl,
 }) => {
@@ -195,7 +195,8 @@ const BeforeAfterSlider = ({
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
   const compareReadyRef = useRef(false);
-  const holdTimerRef = useRef(null);
+  const loopTimerRef = useRef(null);
+  const loopPhaseRef = useRef(false);
   const modernEndedRef = useRef(false);
   const ancientEndedRef = useRef(false);
   const ancientMedia = useMediaProbe(historicImg);
@@ -204,11 +205,11 @@ const BeforeAfterSlider = ({
   const modernPosterReady = usePosterProbe(modernPosterUrl);
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
-  const [animationHoldActive, setAnimationHoldActive] = useState(false);
+  const [animationLoopActive, setAnimationLoopActive] = useState(false);
   const modernIsVideo = isVideoUrl(modernImg);
   const ancientIsVideo = isVideoUrl(historicImg);
   const resolvedPosterAt = resolveSliderPosterAtSec(posterAtSec);
-  const resolvedHoldMs = resolveSliderPostAnimationHoldMs(postAnimationHoldMs);
+  const resolvedLoopMs = resolveSliderPostAnimationLoopMs(postAnimationLoopMs);
   const usingVideo = modernIsVideo || ancientIsVideo;
 
   const postersAvailable =
@@ -230,17 +231,18 @@ const BeforeAfterSlider = ({
     modernEndedRef.current = false;
     ancientEndedRef.current = false;
     setCompareReady(false);
-    setAnimationHoldActive(false);
-    if (holdTimerRef.current) {
-      window.clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
+    setAnimationLoopActive(false);
+    loopPhaseRef.current = false;
+    if (loopTimerRef.current) {
+      window.clearTimeout(loopTimerRef.current);
+      loopTimerRef.current = null;
     }
-  }, [modernImg, historicImg, resolvedPosterAt, resolvedHoldMs]);
+  }, [modernImg, historicImg, resolvedPosterAt, resolvedLoopMs]);
 
   useEffect(
     () => () => {
-      if (holdTimerRef.current) {
-        window.clearTimeout(holdTimerRef.current);
+      if (loopTimerRef.current) {
+        window.clearTimeout(loopTimerRef.current);
       }
     },
     []
@@ -273,9 +275,43 @@ const BeforeAfterSlider = ({
     setCompareReady(true);
   }, [postersAvailable, seekVideoToPosterFrame]);
 
+  const startLoopPhase = useCallback(() => {
+    if (loopTimerRef.current || loopPhaseRef.current) return;
+
+    loopPhaseRef.current = true;
+    setAnimationLoopActive(true);
+    modernEndedRef.current = false;
+    ancientEndedRef.current = false;
+
+    const modern = modernVideoRef.current;
+    const ancient = ancientVideoRef.current;
+
+    if (modern) {
+      modern.loop = true;
+      modern.currentTime = 0;
+      void modern.play();
+    }
+    if (ancient) {
+      ancient.loop = true;
+      ancient.currentTime = 0;
+      void ancient.play();
+    }
+
+    loopTimerRef.current = window.setTimeout(() => {
+      loopTimerRef.current = null;
+      loopPhaseRef.current = false;
+      setAnimationLoopActive(false);
+
+      if (modern) modern.loop = false;
+      if (ancient) ancient.loop = false;
+
+      enterCompareMode();
+    }, resolvedLoopMs);
+  }, [enterCompareMode, resolvedLoopMs]);
+
   const markEnded = useCallback(
     (side) => {
-      if (compareReadyRef.current) return;
+      if (compareReadyRef.current || loopPhaseRef.current) return;
 
       if (side === 'modern') modernEndedRef.current = true;
       if (side === 'ancient') ancientEndedRef.current = true;
@@ -284,38 +320,34 @@ const BeforeAfterSlider = ({
       const ancientDone = !ancientIsVideo || ancientEndedRef.current;
 
       if (modernDone && ancientDone) {
-        if (holdTimerRef.current) return;
-
-        setAnimationHoldActive(true);
-        holdTimerRef.current = window.setTimeout(() => {
-          holdTimerRef.current = null;
-          setAnimationHoldActive(false);
-          enterCompareMode();
-        }, resolvedHoldMs);
+        startLoopPhase();
       }
     },
-    [ancientIsVideo, enterCompareMode, modernIsVideo, resolvedHoldMs]
+    [ancientIsVideo, modernIsVideo, startLoopPhase]
   );
 
   const replayVideos = useCallback(() => {
     compareReadyRef.current = false;
     modernEndedRef.current = false;
     ancientEndedRef.current = false;
+    loopPhaseRef.current = false;
     setCompareReady(false);
-    setAnimationHoldActive(false);
-    if (holdTimerRef.current) {
-      window.clearTimeout(holdTimerRef.current);
-      holdTimerRef.current = null;
+    setAnimationLoopActive(false);
+    if (loopTimerRef.current) {
+      window.clearTimeout(loopTimerRef.current);
+      loopTimerRef.current = null;
     }
 
     const modern = modernVideoRef.current;
     const ancient = ancientVideoRef.current;
 
     if (modern) {
+      modern.loop = false;
       modern.currentTime = 0;
       void modern.play();
     }
     if (ancient) {
+      ancient.loop = false;
       ancient.currentTime = 0;
       void ancient.play();
     }
@@ -482,8 +514,8 @@ const BeforeAfterSlider = ({
               </button>
             ) : null}
           </>
-        ) : animationHoldActive ? (
-          'Animation complete — take in the view before the full compare unlocks.'
+        ) : animationLoopActive ? (
+          'Animation looping — it will switch to the full facade for comparing soon.'
         ) : usingVideo ? (
           'Animation playing — it will switch to the full facade for comparing when finished.'
         ) : tiltEnabled && isActive ? (

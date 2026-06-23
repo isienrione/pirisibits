@@ -20,6 +20,7 @@ const COPY_KEYS = [
   'arrival_subtitle',
   'slider_poster_at_sec',
   'slider_poster_hold_ms',
+  'slider_post_animation_loop_ms',
   'slider_freeze_at_sec',
 ]
 

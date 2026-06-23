@@ -3,6 +3,14 @@ import { audioOrchestrator, AUDIO_PLAYBACK_STATE_EVENT } from '../audio/AudioOrc
 
 export const useAudioPlaybackState = () => {
   const [needsResumeAudio, setNeedsResumeAudio] = useState(false);
+  const [isArrivalAudioPlaying, setIsArrivalAudioPlaying] = useState(false);
+  const [hasArrivalAudioSession, setHasArrivalAudioSession] = useState(false);
+
+  const applyDetail = useCallback((detail = {}) => {
+    setNeedsResumeAudio(Boolean(detail.needsResumeAudio ?? detail.interrupted));
+    setIsArrivalAudioPlaying(Boolean(detail.isArrivalAudioPlaying));
+    setHasArrivalAudioSession(Boolean(detail.hasArrivalAudioSession));
+  }, []);
 
   const syncFromOrchestrator = useCallback(() => {
     if (typeof audioOrchestrator.syncPlaybackState === 'function') {
@@ -12,11 +20,15 @@ export const useAudioPlaybackState = () => {
 
     const state = audioOrchestrator.getState();
     setNeedsResumeAudio(Boolean(state.playbackInterrupted));
+    setHasArrivalAudioSession(Boolean(state.wantsArrivalPlayback));
+    setIsArrivalAudioPlaying(
+      Boolean(state.wantsArrivalPlayback && !audioOrchestrator.arrivalPlayer?.paused)
+    );
   }, []);
 
   useEffect(() => {
     const onPlaybackState = (event) => {
-      setNeedsResumeAudio(Boolean(event.detail?.needsResumeAudio ?? event.detail?.interrupted));
+      applyDetail(event.detail);
     };
 
     const onReturnToApp = () => {
@@ -36,7 +48,12 @@ export const useAudioPlaybackState = () => {
       window.removeEventListener('focus', onReturnToApp);
       window.removeEventListener('pageshow', onReturnToApp);
     };
-  }, [syncFromOrchestrator]);
+  }, [applyDetail, syncFromOrchestrator]);
 
-  return { needsResumeAudio, playbackInterrupted: needsResumeAudio };
+  return {
+    needsResumeAudio,
+    playbackInterrupted: needsResumeAudio,
+    isArrivalAudioPlaying,
+    hasArrivalAudioSession,
+  };
 };

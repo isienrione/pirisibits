@@ -18,7 +18,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
-  const { needsResumeAudio } = useAudioPlaybackState();
+  const { isArrivalAudioPlaying, hasArrivalAudioSession } = useAudioPlaybackState();
 
   useEffect(() => {
     setShowSlider(false);
@@ -56,15 +56,18 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const subtitle =
     waypoint.arrival_subtitle || 'Prepare to step back in time and explore this landmark.';
 
-  const handleStopAudio = () => {
-    audioOrchestrator.stop();
-  };
-
-  const handleResumeAudio = async () => {
-    const resumed = await audioOrchestrator.resumeArrival();
-    if (!resumed) {
-      await handlePlayAudio();
+  const handleToggleAudio = async () => {
+    if (isArrivalAudioPlaying) {
+      audioOrchestrator.pauseArrival();
+      return;
     }
+
+    if (hasArrivalAudioSession) {
+      const resumed = await audioOrchestrator.resumeArrival();
+      if (resumed) return;
+    }
+
+    await handlePlayAudio();
   };
 
   const handlePlayAudio = async () => {
@@ -114,6 +117,10 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     );
   };
 
+  const showAudioToggle = Boolean(waypoint.arrival_immersive_url);
+  const audioToggleLabel = isArrivalAudioPlaying ? 'Pause audio' : 'Play audio';
+  const audioToggleIcon = isArrivalAudioPlaying ? '❚❚' : '▶';
+
   return (
     <div
       className={`absolute bottom-0 left-0 z-50 w-full transform transition-transform duration-500 ease-out ${
@@ -141,27 +148,6 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
             <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
           </div>
 
-          <div className="mb-5 flex flex-wrap justify-center gap-2">
-            {needsResumeAudio ? (
-              <button
-                type="button"
-                onClick={handleResumeAudio}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-amber-300 bg-amber-500 px-5 py-3 text-sm font-bold text-gray-900 shadow-lg shadow-amber-900/30 transition hover:bg-amber-400"
-              >
-                <span aria-hidden="true">▶</span>
-                Resume audio
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={handleStopAudio}
-              className="inline-flex items-center gap-2 rounded-full border border-stone-600 bg-stone-800/80 px-4 py-2 text-xs font-medium text-stone-200 transition hover:border-amber-500/50 hover:text-amber-100"
-            >
-              <span aria-hidden="true">■</span>
-              Stop audio
-            </button>
-          </div>
-
           {showSlider ? (
             <div ref={sliderRef} className="mb-4">
               <BeforeAfterSlider
@@ -170,7 +156,9 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
                 posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
-                postAnimationHoldMs={waypoint.slider_poster_hold_ms}
+                postAnimationLoopMs={
+                  waypoint.slider_post_animation_loop_ms ?? waypoint.slider_poster_hold_ms
+                }
                 modernPosterUrl={getModernPosterUrl(waypoint)}
                 ancientPosterUrl={getAncientPosterUrl(waypoint)}
               />
@@ -211,6 +199,17 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
               </div>
             </>
           )}
+
+          {showAudioToggle ? (
+            <button
+              type="button"
+              onClick={handleToggleAudio}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-stone-600 bg-stone-800/80 px-4 py-3 text-sm font-medium text-stone-200 transition hover:border-amber-500/50 hover:text-amber-100"
+            >
+              <span aria-hidden="true">{audioToggleIcon}</span>
+              {audioToggleLabel}
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

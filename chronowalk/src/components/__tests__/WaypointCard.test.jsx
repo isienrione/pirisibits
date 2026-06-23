@@ -8,9 +8,9 @@ vi.mock('../BeforeAfterSlider', () => ({
   default: () => <div data-testid="before-after-slider">Slider</div>,
 }));
 
-const { transitionTo, stop, resumeArrival } = vi.hoisted(() => ({
+const { transitionTo, pauseArrival, resumeArrival } = vi.hoisted(() => ({
   transitionTo: vi.fn(),
-  stop: vi.fn(),
+  pauseArrival: vi.fn(),
   resumeArrival: vi.fn(),
 }));
 
@@ -24,13 +24,18 @@ vi.mock('../../audio/AudioOrchestrator', () => ({
   AUDIO_PLAYBACK_STATE_EVENT: 'AUDIO_PLAYBACK_STATE',
   audioOrchestrator: {
     transitionTo,
-    stop,
+    pauseArrival,
     resumeArrival,
   },
 }));
 
 vi.mock('../../hooks/useAudioPlaybackState', () => ({
-  useAudioPlaybackState: () => ({ needsResumeAudio: false, playbackInterrupted: false }),
+  useAudioPlaybackState: () => ({
+    needsResumeAudio: false,
+    playbackInterrupted: false,
+    isArrivalAudioPlaying: false,
+    hasArrivalAudioSession: false,
+  }),
 }));
 
 vi.mock('../../hooks/useDeviceTilt', () => ({
@@ -53,7 +58,8 @@ const waypoint = {
 describe('WaypointCard', () => {
   beforeEach(() => {
     transitionTo.mockReset();
-    stop.mockReset();
+    pauseArrival.mockReset();
+    resumeArrival.mockReset();
   });
 
   it('shows orientation guidance before immersive mode begins', () => {
@@ -100,5 +106,17 @@ describe('WaypointCard', () => {
       }),
       { syncVisual: true }
     );
+  });
+
+  it('shows a play/pause audio toggle below the main action buttons', () => {
+    render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
+
+    const playButton = screen.getByRole('button', { name: 'Play audio' });
+    expect(playButton).toBeInTheDocument();
+
+    const immersiveButton = screen.getByRole('button', { name: 'Begin Immersive View' });
+    expect(
+      immersiveButton.compareDocumentPosition(playButton) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 });

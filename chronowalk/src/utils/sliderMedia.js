@@ -29,13 +29,16 @@ export const resolveSliderPosterAtSec = (waypointValue) => {
 /** @deprecated Use resolveSliderPosterAtSec */
 export const resolveSliderFreezeAtSec = resolveSliderPosterAtSec;
 
-/** Extra time on the last animation frame before poster stills. Override with ?holdMs= */
-export const resolveSliderPostAnimationHoldMs = (waypointValue) => {
+/** Extra loop time after the first animation playthrough before poster stills. Override with ?loopMs= */
+export const resolveSliderPostAnimationLoopMs = (waypointValue) => {
   if (typeof window !== 'undefined') {
-    const param = new URLSearchParams(window.location.search).get('holdMs');
-    if (param != null && param !== '') {
-      const parsed = Number(param);
-      if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+    const params = new URLSearchParams(window.location.search);
+    for (const key of ['loopMs', 'holdMs']) {
+      const param = params.get(key);
+      if (param != null && param !== '') {
+        const parsed = Number(param);
+        if (Number.isFinite(parsed) && parsed >= 0) return parsed;
+      }
     }
   }
 
@@ -45,6 +48,9 @@ export const resolveSliderPostAnimationHoldMs = (waypointValue) => {
 
   return 10000;
 };
+
+/** @deprecated Use resolveSliderPostAnimationLoopMs */
+export const resolveSliderPostAnimationHoldMs = resolveSliderPostAnimationLoopMs;
 
 export const getModernPosterUrl = (waypoint) => waypoint?.modern_poster_url || null;
 
