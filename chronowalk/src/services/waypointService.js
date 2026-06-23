@@ -34,7 +34,9 @@ export const resolveAssetUrl = (url) => {
 const normalizeWaypoint = (waypoint) => ({
   ...waypoint,
   modern_image_url: resolveAssetUrl(waypoint.modern_image_url),
+  modern_video_url: resolveAssetUrl(waypoint.modern_video_url),
   ancient_image_url: resolveAssetUrl(waypoint.ancient_image_url),
+  ancient_video_url: resolveAssetUrl(waypoint.ancient_video_url),
   depth_map_url: resolveAssetUrl(waypoint.depth_map_url),
   ambient_url: resolveAssetUrl(waypoint.ambient_url),
   transit_narrative_url: resolveAssetUrl(waypoint.transit_narrative_url),

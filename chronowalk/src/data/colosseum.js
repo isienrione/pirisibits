@@ -23,14 +23,13 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 /*
  * SLIDER IMAGE PIPELINE (matched viewpoint — same camera angle for both layers)
  *
- * 1. MODERN — standing where the tourist stands:
- *    - Google Arts & Culture street view (Colosseum outdoor, ~COLOSSEUM_VIEWPOINT)
- *    - Or Italy Guides panorama: italyguides.it colosseum pano
- *    - Export/save as: public/waypoints/colosseum/modern-exterior.jpg
+ * 1. MODERN — video preferred, still as fallback:
+ *    - public/waypoints/colosseum/moderncolosseum.mp4
+ *    - public/waypoints/colosseum/modern-exterior.jpg
  *
- * 2. ANCIENT — AI or 3D render of the SAME angle (see Rome Reborn / YouTube refs):
- *    - Prompt Midjourney etc. using modern-exterior.jpg as reference
- *    - Save as: public/waypoints/colosseum/ancient-reconstruction.jpg
+ * 2. ANCIENT — matched video or still, same camera as modern:
+ *    - public/waypoints/colosseum/ancient-reconstruction.mp4
+ *    - public/waypoints/colosseum/ancient-reconstruction.jpg
  *
  * 3. OPTIONAL depth map from the ancient image → depth-map.png
  *
@@ -40,7 +39,9 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
 const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav'
 const COLOSSEUM_MODERN_IMAGE = '/waypoints/colosseum/modern-exterior.jpg'
+const COLOSSEUM_MODERN_VIDEO = '/waypoints/colosseum/moderncolosseum.mp4'
 const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-reconstruction.jpg'
+const COLOSSEUM_ANCIENT_VIDEO = '/waypoints/colosseum/ancient-reconstruction.mp4'
 
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
@@ -51,7 +52,9 @@ export const COLOSSEUM_WAYPOINT = {
   lng: COLOSSEUM.lng,
   viewpoint: COLOSSEUM_VIEWPOINT,
   modern_image_url: COLOSSEUM_MODERN_IMAGE,
+  modern_video_url: COLOSSEUM_MODERN_VIDEO,
   ancient_image_url: COLOSSEUM_ANCIENT_IMAGE,
+  ancient_video_url: COLOSSEUM_ANCIENT_VIDEO,
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
   depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,

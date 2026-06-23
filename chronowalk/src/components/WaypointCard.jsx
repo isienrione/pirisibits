@@ -3,6 +3,7 @@ import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
+import { getAncientSliderUrl, getModernSliderUrl, hasModernSliderMedia } from '../utils/sliderMedia';
 
 const WaypointCard = ({ waypoint, state, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -75,8 +76,8 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
       return;
     }
 
-    if (!waypoint.modern_image_url || !waypoint.ancient_image_url) {
-      alert('Image URLs missing for this waypoint.');
+    if (!hasModernSliderMedia(waypoint)) {
+      alert('Modern view media is missing for this waypoint.');
       return;
     }
 
@@ -135,8 +136,8 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           {showSlider ? (
             <div ref={sliderRef} className="mb-4">
               <BeforeAfterSlider
-                modernImg={waypoint.modern_image_url}
-                historicImg={waypoint.ancient_image_url}
+                modernImg={getModernSliderUrl(waypoint)}
+                historicImg={getAncientSliderUrl(waypoint)}
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
               />
