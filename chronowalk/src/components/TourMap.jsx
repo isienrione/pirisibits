@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useGeoLocation } from '../hooks/useGeoLocation'
@@ -13,6 +13,7 @@ const TourMap = () => {
   const map = useRef(null)
   const userMarker = useRef(null)
   const hasArrived = useRef(false)
+  const [mapLoaded, setMapLoaded] = useState(false)
   const userPos = useGeoLocation(debugGeo)
 
   useEffect(() => {
@@ -31,7 +32,10 @@ const TourMap = () => {
       .setLngLat([COLOSSEUM.lng, COLOSSEUM.lat])
       .addTo(map.current)
 
+    map.current.on('load', () => setMapLoaded(true))
+
     return () => {
+      setMapLoaded(false)
       userMarker.current = null
       map.current?.remove()
       map.current = null
@@ -39,7 +43,7 @@ const TourMap = () => {
   }, [])
 
   useEffect(() => {
-    if (!userPos.lat || !userPos.lng || !map.current) return
+    if (!userPos.lat || !userPos.lng || !map.current || !mapLoaded) return
 
     if (userMarker.current) {
       userMarker.current.setLngLat([userPos.lng, userPos.lat])
@@ -60,7 +64,7 @@ const TourMap = () => {
       hasArrived.current = true
       alert("You've arrived at the Colosseum!")
     }
-  }, [userPos])
+  }, [userPos, mapLoaded])
 
   if (!mapboxToken) {
     return (
@@ -74,7 +78,16 @@ const TourMap = () => {
     )
   }
 
-  return <div ref={mapContainer} className="h-screen w-full" />
+  return (
+    <div className="relative h-screen w-full">
+      <div ref={mapContainer} className="h-full w-full" />
+      {debugGeo && (
+        <div className="absolute left-3 top-3 rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
+          Debug GPS: teleported to Rome
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default TourMap
