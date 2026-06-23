@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import { resolveSliderFreezeAtSec } from '../utils/sliderMedia';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -16,6 +17,34 @@ const mediaFitStyle = {
   display: 'block',
 };
 
+const usePosterProbe = (src) => {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    if (!src) {
+      setReady(false);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const image = new Image();
+    image.onload = () => {
+      if (!cancelled) setReady(true);
+    };
+    image.onerror = () => {
+      if (!cancelled) setReady(false);
+    };
+    image.referrerPolicy = 'no-referrer';
+    image.src = src;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  return ready;
+};
+
 const CompareMedia = ({
   src,
   alt,
@@ -24,8 +53,13 @@ const CompareMedia = ({
   onReady,
   onError,
   onEnded,
+  hidden = false,
 }) => {
-  const style = { ...mediaFitStyle, ...parallaxStyle };
+  const style = {
+    ...mediaFitStyle,
+    ...parallaxStyle,
+    visibility: hidden ? 'hidden' : 'visible',
+  };
 
   if (isVideoUrl(src)) {
     return (
@@ -70,13 +104,18 @@ const CompareMedia = ({
   );
 };
 
+const FrozenPoster = ({ src, alt, parallaxStyle }) => (
+  <img
+    src={src}
+    alt={alt}
+    referrerPolicy="no-referrer"
+    style={{ ...mediaFitStyle, ...parallaxStyle }}
+  />
+);
+
 const AncientPlaceholder = () => (
   <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-stone-800 to-stone-900 p-5 text-center">
     <p className="text-sm font-semibold text-amber-300">Ancient reconstruction — coming next</p>
-    <p className="mt-2 max-w-xs text-xs leading-relaxed text-stone-400">
-      Export a matched Midjourney video or still from the{' '}
-      <strong className="text-stone-300">same camera angle</strong> as the modern take.
-    </p>
     <p className="mt-3 font-mono text-[10px] text-amber-200/80">ancient-reconstruction.mp4</p>
   </div>
 );
@@ -128,39 +167,82 @@ const useMediaProbe = (src) => {
   return ready;
 };
 
-const freezeVideoOnLastFrame = (video) => {
-  if (!video || !Number.isFinite(video.duration)) return;
-  video.pause();
-  video.currentTime = Math.max(video.duration - 0.04, 0);
-};
-
-const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = false }) => {
+const BeforeAfterSlider = ({
+  modernImg,
+  historicImg,
+  depthMap,
+  tiltEnabled = false,
+  freezeAtSec,
+  modernPosterUrl,
+  ancientPosterUrl,
+}) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
+  const frozenRef = useRef(false);
   const ancientReady = useMediaProbe(historicImg);
+  const modernPosterReady = usePosterProbe(modernPosterUrl);
+  const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [videosFrozen, setVideosFrozen] = useState(false);
   const modernIsVideo = isVideoUrl(modernImg);
   const ancientIsVideo = isVideoUrl(historicImg);
+  const resolvedFreezeAt = resolveSliderFreezeAtSec(freezeAtSec);
+
+  const useModernPoster = videosFrozen && modernPosterUrl && modernPosterReady;
+  const useAncientPoster = videosFrozen && ancientPosterUrl && ancientPosterReady;
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
   }, [tiltEnabled, historicImg, recalibrate]);
 
   useEffect(() => {
+    frozenRef.current = false;
     setVideosFrozen(false);
-  }, [modernImg, historicImg]);
+  }, [modernImg, historicImg, resolvedFreezeAt]);
 
-  const freezeBothVideos = useCallback(() => {
-    freezeVideoOnLastFrame(modernVideoRef.current);
-    freezeVideoOnLastFrame(ancientVideoRef.current);
+  const freezeAtTimestamp = useCallback((seconds) => {
+    if (frozenRef.current) return;
+
+    const modern = modernVideoRef.current;
+    const ancient = ancientVideoRef.current;
+    const target = Math.max(seconds, 0);
+
+    if (modern) {
+      modern.pause();
+      if (Number.isFinite(modern.duration)) {
+        modern.currentTime = Math.min(target, Math.max(modern.duration - 0.04, 0));
+      } else {
+        modern.currentTime = target;
+      }
+    }
+
+    if (ancient) {
+      ancient.pause();
+      if (Number.isFinite(ancient.duration)) {
+        ancient.currentTime = Math.min(target, Math.max(ancient.duration - 0.04, 0));
+      } else {
+        ancient.currentTime = target;
+      }
+    }
+
+    frozenRef.current = true;
     setVideosFrozen(true);
   }, []);
+
+  const freezeBothVideosAtEnd = useCallback(() => {
+    const modern = modernVideoRef.current;
+    const fallback =
+      modern && Number.isFinite(modern.duration)
+        ? Math.max(modern.duration - 0.04, 0)
+        : 0;
+    freezeAtTimestamp(resolvedFreezeAt ?? fallback);
+  }, [freezeAtTimestamp, resolvedFreezeAt]);
 
   const replayVideos = useCallback(() => {
     const modern = modernVideoRef.current;
     const ancient = ancientVideoRef.current;
 
+    frozenRef.current = false;
     setVideosFrozen(false);
 
     if (modern) {
@@ -174,22 +256,38 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
   }, []);
 
   useEffect(() => {
-    if (!modernIsVideo || !ancientIsVideo || !ancientReady || videosFrozen) return undefined;
+    if (!modernIsVideo || !ancientReady || videosFrozen) return undefined;
 
     const modernVideo = modernVideoRef.current;
     const ancientVideo = ancientVideoRef.current;
-    if (!modernVideo || !ancientVideo) return undefined;
+    if (!modernVideo) return undefined;
 
-    const syncAncientToModern = () => {
-      if (videosFrozen) return;
-      if (Math.abs(ancientVideo.currentTime - modernVideo.currentTime) > 0.2) {
-        ancientVideo.currentTime = modernVideo.currentTime;
+    const onTimeUpdate = () => {
+      if (frozenRef.current) return;
+
+      if (ancientVideo && ancientIsVideo) {
+        if (Math.abs(ancientVideo.currentTime - modernVideo.currentTime) > 0.2) {
+          ancientVideo.currentTime = modernVideo.currentTime;
+        }
+      }
+
+      if (resolvedFreezeAt != null && modernVideo.currentTime >= resolvedFreezeAt) {
+        freezeAtTimestamp(resolvedFreezeAt);
       }
     };
 
-    modernVideo.addEventListener('timeupdate', syncAncientToModern);
-    return () => modernVideo.removeEventListener('timeupdate', syncAncientToModern);
-  }, [modernIsVideo, ancientIsVideo, ancientReady, videosFrozen, modernImg, historicImg]);
+    modernVideo.addEventListener('timeupdate', onTimeUpdate);
+    return () => modernVideo.removeEventListener('timeupdate', onTimeUpdate);
+  }, [
+    modernIsVideo,
+    ancientIsVideo,
+    ancientReady,
+    videosFrozen,
+    modernImg,
+    historicImg,
+    resolvedFreezeAt,
+    freezeAtTimestamp,
+  ]);
 
   const depthBoost = depthMap ? 1.1 : 1;
   const offsetX = clamp(x * 1.8 * depthBoost, -MAX_SHIFT_PX, MAX_SHIFT_PX);
@@ -203,13 +301,21 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
       : undefined;
 
   const modernLayer = (
-    <div className="flex h-full w-full items-center justify-center bg-stone-950">
-      <CompareMedia
-        src={modernImg}
-        alt="Modern Colosseum"
-        videoRef={modernVideoRef}
-        onEnded={modernIsVideo ? freezeBothVideos : undefined}
-      />
+    <div className="relative flex h-full w-full items-center justify-center bg-stone-950">
+      {useModernPoster ? (
+        <FrozenPoster src={modernPosterUrl} alt="Modern Colosseum" />
+      ) : null}
+      {modernIsVideo ? (
+        <CompareMedia
+          src={modernImg}
+          alt="Modern Colosseum"
+          videoRef={modernVideoRef}
+          onEnded={resolvedFreezeAt == null ? freezeBothVideosAtEnd : undefined}
+          hidden={useModernPoster}
+        />
+      ) : (
+        <CompareMedia src={modernImg} alt="Modern Colosseum" />
+      )}
     </div>
   );
 
@@ -220,12 +326,12 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
     >
       <div
         className={
-          parallaxTransform
+          parallaxTransform && !useAncientPoster
             ? 'absolute flex h-[112%] w-[112%] items-center justify-center'
             : 'flex h-full w-full items-center justify-center'
         }
         style={
-          parallaxTransform
+          parallaxTransform && !useAncientPoster
             ? {
                 left: '-6%',
                 top: '-6%',
@@ -237,13 +343,31 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
             : undefined
         }
       >
-        <CompareMedia
-          src={historicImg}
-          alt="Ancient Colosseum reconstruction"
-          parallaxStyle={parallaxTransform ? mediaFitStyle : undefined}
-          videoRef={ancientVideoRef}
-          onEnded={ancientIsVideo && !modernIsVideo ? freezeBothVideos : undefined}
-        />
+        {useAncientPoster ? (
+          <FrozenPoster
+            src={ancientPosterUrl}
+            alt="Ancient Colosseum reconstruction"
+            parallaxStyle={undefined}
+          />
+        ) : null}
+        {ancientIsVideo ? (
+          <CompareMedia
+            src={historicImg}
+            alt="Ancient Colosseum reconstruction"
+            parallaxStyle={parallaxTransform && !useAncientPoster ? mediaFitStyle : undefined}
+            videoRef={ancientVideoRef}
+            onEnded={
+              resolvedFreezeAt == null && !modernIsVideo ? freezeBothVideosAtEnd : undefined
+            }
+            hidden={useAncientPoster}
+          />
+        ) : (
+          <CompareMedia
+            src={historicImg}
+            alt="Ancient Colosseum reconstruction"
+            parallaxStyle={parallaxTransform ? mediaFitStyle : undefined}
+          />
+        )}
       </div>
     </div>
   ) : (
@@ -262,7 +386,7 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
           'Modern view is playing — add the matched ancient video to complete the portal.'
         ) : videosFrozen ? (
           <>
-            Frozen on the final frame — drag to compare eras.
+            Frozen on the hero frame — drag to compare eras.
             {usingVideo ? (
               <button
                 type="button"
@@ -273,19 +397,10 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
               </button>
             ) : null}
           </>
-        ) : usingVideo && tiltEnabled && isActive ? (
-          <>
-            Videos play once, then freeze. Tilt gently on the ancient side.
-            <button
-              type="button"
-              onClick={recalibrate}
-              className="ml-1 text-amber-400 underline underline-offset-2"
-            >
-              Reset center
-            </button>
-          </>
         ) : usingVideo ? (
-          'Videos play once — drag the handle to compare, then they freeze on the last frame.'
+          resolvedFreezeAt != null
+            ? `Playing to ${resolvedFreezeAt}s — then freezes on the full Colosseum view.`
+            : 'Videos play once — drag the handle to compare, then they freeze.'
         ) : tiltEnabled && isActive ? (
           <>
             Same viewpoint, two eras — tilt gently for depth.

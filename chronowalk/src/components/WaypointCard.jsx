@@ -3,7 +3,13 @@ import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
-import { getAncientSliderUrl, getModernSliderUrl, hasModernSliderMedia } from '../utils/sliderMedia';
+import {
+  getAncientPosterUrl,
+  getAncientSliderUrl,
+  getModernPosterUrl,
+  getModernSliderUrl,
+  hasModernSliderMedia,
+} from '../utils/sliderMedia';
 
 const WaypointCard = ({ waypoint, state, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -140,6 +146,9 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 historicImg={getAncientSliderUrl(waypoint)}
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
+                freezeAtSec={waypoint.slider_freeze_at_sec}
+                modernPosterUrl={getModernPosterUrl(waypoint)}
+                ancientPosterUrl={getAncientPosterUrl(waypoint)}
               />
               <button
                 type="button"
