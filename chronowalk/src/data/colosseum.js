@@ -1,4 +1,5 @@
-export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
+// Delay before the waypoint card slides up (after map + arrival chime)
+export const CARD_REVEAL_DELAY_MS = 1400
 
 // Narrative state: TRANSIT vs ARRIVAL
 export const GEOFENCE_ARRIVAL_THRESHOLD_M = 30
@@ -17,6 +18,8 @@ const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
   title: 'The Colosseum',
+  arrival_headline: "You've reached the Colosseum!",
+  arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
   lat: COLOSSEUM.lat,
   lng: COLOSSEUM.lng,
   modern_image_url:

@@ -3,7 +3,7 @@ import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
 import { fetchWaypointById } from './services/waypointService'
-import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
+import { CARD_REVEAL_DELAY_MS, GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 
@@ -15,11 +15,19 @@ function App() {
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [waypointData, setWaypointData] = useState(null)
+  const [cardDismissed, setCardDismissed] = useState(false)
   const prevJourneyStateRef = useRef(null)
 
-  const handleArrival = useCallback((waypoint) => {
+  const revealWaypointCard = useCallback((waypoint) => {
     setDiscoveredWaypoint(waypoint)
-    setActiveWaypoint(waypoint)
+    setCardDismissed(false)
+    audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
+
+    const revealTimer = window.setTimeout(() => {
+      setActiveWaypoint(waypoint)
+    }, CARD_REVEAL_DELAY_MS)
+
+    return () => window.clearTimeout(revealTimer)
   }, [])
 
   useEffect(() => {
@@ -48,11 +56,10 @@ function App() {
 
     prevJourneyStateRef.current = state
 
-    if (!justArrived) return
+    if (!justArrived) return undefined
 
-    handleArrival(waypointData)
-    audioOrchestrator.playArrivalAlert(waypointData.arrival_alert_url)
-  }, [hasInteracted, waypointData, state, handleArrival])
+    return revealWaypointCard(waypointData)
+  }, [hasInteracted, waypointData, state, revealWaypointCard])
 
   if (!hasInteracted) {
     return (
@@ -77,15 +84,19 @@ function App() {
       <WaypointCard
         waypoint={activeWaypoint}
         state={state}
-        onClose={() => setActiveWaypoint(null)}
+        onClose={() => {
+          setActiveWaypoint(null)
+          setCardDismissed(true)
+        }}
       />
       {state === JOURNEY_STATE.ARRIVAL &&
+        cardDismissed &&
         discoveredWaypoint &&
         !activeWaypoint && (
           <button
             type="button"
             onClick={() => setActiveWaypoint(discoveredWaypoint)}
-            className="absolute bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-blue-700"
+            className="absolute bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-gray-900 shadow-lg transition hover:bg-amber-400"
           >
             Reopen {discoveredWaypoint.title}
           </button>
