@@ -16,14 +16,17 @@ function App() {
   const [waypointData, setWaypointData] = useState(null)
 
   const handleArrival = useCallback(async (waypoint) => {
+    const audioUrls = {
+      transit: waypoint.transit_narrative_url,
+      arrival: waypoint.arrival_immersive_url,
+      ambient: waypoint.ambient_url,
+    }
+
     setDiscoveredWaypoint(waypoint)
     setActiveWaypoint(waypoint)
 
     try {
-      await audioOrchestrator.transitionTo(
-        AUDIO_MODES.ARRIVAL,
-        getWaypointAudioUrls(waypoint)
-      )
+      await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, audioUrls)
     } catch (err) {
       console.error('Failed to play arrival audio:', err)
     }
