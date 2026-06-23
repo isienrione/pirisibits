@@ -4,6 +4,8 @@ const AUDIO_MODES = {
   ARRIVAL: 'ARRIVAL',
 };
 
+export const AUDIO_SYNC_EVENT = 'AUDIO_SYNC_TRIGGER';
+
 const normalizeAudioUrls = (audioUrls = {}) => ({
   ambient:
     audioUrls.ambient ||
@@ -35,7 +37,46 @@ class AudioOrchestrator {
     this.audioUrls = normalizeAudioUrls(audioUrls);
   }
 
-  async transitionTo(mode, audioUrls) {
+  async fadeVolume(player, to, duration = 500) {
+    const steps = 10;
+    const stepDuration = duration / steps;
+    const startVolume = player.volume;
+    const delta = (to - startVolume) / steps;
+
+    for (let i = 0; i < steps; i++) {
+      player.volume = Math.min(Math.max(player.volume + delta, 0), 1);
+      await new Promise((resolve) => setTimeout(resolve, stepDuration));
+    }
+
+    player.volume = to;
+  }
+
+  async transitionToArrival({ syncVisual = false } = {}) {
+    this.ambientPlayer.pause();
+
+    // 1. Start fading out transit
+    this.fadeVolume(this.transitPlayer, 0, 500);
+
+    // 2. Schedule the visual trigger at 250ms
+    if (syncVisual) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent(AUDIO_SYNC_EVENT));
+      }, 250);
+    }
+
+    // 3. Start arrival player
+    try {
+      this.arrivalPlayer.volume = 0;
+      this.arrivalPlayer.src = this.audioUrls.arrival;
+      await this.arrivalPlayer.play();
+      this.fadeVolume(this.arrivalPlayer, 1, 500);
+      console.log('Transitioning to: ARRIVAL');
+    } catch (error) {
+      console.warn('Audio playback blocked. User needs to interact first.', error);
+    }
+  }
+
+  async transitionTo(mode, audioUrls, options = {}) {
     if (audioUrls) {
       this.applyAudioSources(audioUrls);
     }
@@ -55,24 +96,26 @@ class AudioOrchestrator {
       return;
     }
 
-    if (this.currentMode === mode) return;
+    if (this.currentMode === mode && !options.syncVisual) return;
 
     this.currentMode = mode;
 
     try {
       if (mode === AUDIO_MODES.ARRIVAL) {
-        this.transitPlayer.pause();
-        this.ambientPlayer.pause();
-        this.arrivalPlayer.src = this.audioUrls.arrival;
-        await this.arrivalPlayer.play();
-      } else if (mode === AUDIO_MODES.TRANSIT) {
+        await this.transitionToArrival(options);
+        return;
+      }
+
+      if (mode === AUDIO_MODES.TRANSIT) {
         this.arrivalPlayer.pause();
         this.ambientPlayer.pause();
+        this.transitPlayer.volume = 1;
         this.transitPlayer.src = this.audioUrls.transit;
         await this.transitPlayer.play();
       } else {
         this.transitPlayer.pause();
         this.arrivalPlayer.pause();
+        this.ambientPlayer.volume = 1;
         this.ambientPlayer.src = this.audioUrls.ambient;
         await this.ambientPlayer.play();
       }
@@ -87,6 +130,7 @@ class AudioOrchestrator {
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer].forEach((player) => {
       player.pause();
       player.currentTime = 0;
+      player.volume = 1;
     });
     this.currentMode = AUDIO_MODES.AMBIENT;
   }

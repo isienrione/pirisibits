@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
-import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
+import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 
@@ -13,6 +13,12 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     setShowSlider(false);
     setTiltEnabled(false);
   }, [waypoint?.id]);
+
+  useEffect(() => {
+    const onAudioSync = () => setShowSlider(true);
+    window.addEventListener(AUDIO_SYNC_EVENT, onAudioSync);
+    return () => window.removeEventListener(AUDIO_SYNC_EVENT, onAudioSync);
+  }, []);
 
   useEffect(() => {
     if (showSlider) {
@@ -56,12 +62,17 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     const tiltGranted = await requestDeviceTiltPermission();
     setTiltEnabled(tiltGranted);
 
-    audioOrchestrator.transitionTo('ARRIVAL', {
-      arrival: waypoint.arrival_immersive_url,
-    });
+    audioOrchestrator.transitionTo(
+      AUDIO_MODES.ARRIVAL,
+      {
+        transit: waypoint.transit_narrative_url,
+        arrival: waypoint.arrival_immersive_url,
+        ambient: waypoint.ambient_url,
+      },
+      { syncVisual: true }
+    );
 
-    setShowSlider(true);
-    console.log('Slider revealed. Tilt permission:', tiltGranted ? 'granted' : 'unavailable');
+    console.log('Immersive transition started. Slider syncs at 250ms.');
   };
 
   return (
