@@ -34,6 +34,7 @@ const normalizeWaypoint = (waypoint) => ({
   modern_image_url: resolveAssetUrl(waypoint.modern_image_url),
   ancient_image_url: resolveAssetUrl(waypoint.ancient_image_url),
   depth_map_url: resolveAssetUrl(waypoint.depth_map_url),
+  ambient_url: resolveAssetUrl(waypoint.ambient_url),
   transit_narrative_url: resolveAssetUrl(waypoint.transit_narrative_url),
   arrival_immersive_url: resolveAssetUrl(waypoint.arrival_immersive_url),
 })

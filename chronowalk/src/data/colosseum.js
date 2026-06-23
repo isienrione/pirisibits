@@ -19,6 +19,7 @@ export const COLOSSEUM_WAYPOINT = {
   ancient_image_url:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg/1280px-Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg',
   // Relative paths below resolve via VITE_CDN_BASE_URL in waypointService.js
+  ambient_url: '/waypoints/colosseum/ambient.mp3',
   depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: '/waypoints/colosseum/transit-narrative.mp3',
   arrival_immersive_url: '/waypoints/colosseum/arrival-immersive.mp3',
