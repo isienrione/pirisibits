@@ -10,13 +10,13 @@ const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
 
-/** Fill the compare viewport so both layers align at the same scale. */
+/** Show the full frame; container aspect matches 16:9 poster/video assets. */
 const MEDIA_FILL_STYLE = {
   position: 'absolute',
   inset: 0,
   width: '100%',
   height: '100%',
-  objectFit: 'cover',
+  objectFit: 'contain',
   objectPosition: 'center center',
   display: 'block',
 };
@@ -340,7 +340,7 @@ const BeforeAfterSlider = ({
 
   return (
     <div className="w-full overflow-hidden rounded-xl border-4 border-white shadow-lg">
-      <div className="relative h-[min(58vh,38rem)] w-full min-h-[16rem] sm:h-[min(62vh,42rem)]">
+      <div className="relative w-full aspect-video">
         <ReactCompareSlider
           className="h-full w-full"
           itemOne={modernLayer}
