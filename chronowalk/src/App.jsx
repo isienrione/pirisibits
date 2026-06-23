@@ -5,6 +5,7 @@ import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
 import { fetchWaypointById, getWaypointAudioUrls } from './services/waypointService'
 import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
 import { audioOrchestrator, AUDIO_MODES } from './audio/AudioOrchestrator'
+import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 
 function App() {
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -76,7 +77,10 @@ function App() {
       <div className="flex h-screen items-center justify-center bg-gray-900">
         <button
           type="button"
-          onClick={() => setHasInteracted(true)}
+          onClick={async () => {
+            await requestDeviceTiltPermission()
+            setHasInteracted(true)
+          }}
           className="rounded-full bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-transform hover:scale-105"
         >
           Start Immersive Tour

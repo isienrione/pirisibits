@@ -2,19 +2,21 @@ import React from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 
-const BeforeAfterSlider = ({ modernImg, historicImg, depthMap }) => {
-  const { x, y } = useDeviceTilt();
+const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = false }) => {
+  const { x, y } = useDeviceTilt(tiltEnabled);
 
-  // Parallax shift calculation:
-  // The depthMap could eventually be used as a multiplier for intensity
-  const intensity = depthMap ? 0.3 : 0.2;
+  const intensity = depthMap ? 2.5 : 2;
   const parallaxStyle = {
     transform: `translate(${(x ?? 0) * intensity}px, ${(y ?? 0) * intensity}px)`,
     transition: 'transform 0.05s ease-out',
+    width: '108%',
+    height: '108%',
+    marginLeft: '-4%',
+    marginTop: '-4%',
   };
 
   return (
-    <div className="w-full h-80 overflow-hidden rounded-xl border-4 border-white shadow-lg">
+    <div className="h-80 w-full overflow-hidden rounded-xl border-4 border-white shadow-lg">
       <ReactCompareSlider
         itemOne={<ReactCompareSliderImage src={modernImg} alt="Modern" />}
         itemTwo={
