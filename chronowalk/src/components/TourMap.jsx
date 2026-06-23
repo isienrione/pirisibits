@@ -7,6 +7,7 @@ import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
   COLOSSEUM,
   COLOSSEUM_ARRIVAL_RADIUS_M,
+  COLOSSEUM_WAYPOINT,
 } from '../data/colosseum'
 
 const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN
@@ -31,7 +32,7 @@ const createUserMarkerElement = () => {
   return el
 }
 
-const TourMap = () => {
+const TourMap = ({ onWaypointArrival }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
@@ -116,9 +117,9 @@ const TourMap = () => {
 
     if (dist < COLOSSEUM_ARRIVAL_RADIUS_M && !hasArrived.current) {
       hasArrived.current = true
-      alert("You've arrived at the Colosseum!")
+      onWaypointArrival?.(COLOSSEUM_WAYPOINT)
     }
-  }, [userPos, mapLoaded])
+  }, [userPos, mapLoaded, onWaypointArrival])
 
   if (!mapboxToken) {
     return (

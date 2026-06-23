@@ -4,8 +4,13 @@ const WaypointCard = ({ waypoint, onClose }) => {
   if (!waypoint) return null;
 
   return (
-    <div className="absolute bottom-0 left-0 w-full h-[60vh] bg-white rounded-t-3xl shadow-2xl p-6 transition-transform duration-500 z-50">
-      <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6" />
+    <div className="absolute bottom-0 left-0 z-50 h-[60vh] w-full rounded-t-3xl bg-white p-6 shadow-2xl transition-transform duration-500">
+      <button
+        type="button"
+        onClick={onClose}
+        className="mx-auto mb-6 block h-4 w-12 rounded-full bg-gray-300"
+        aria-label="Close waypoint card"
+      />
       <h2 className="text-2xl font-bold mb-2">{waypoint.title}</h2>
       <p className="text-gray-600 mb-6">Discover the ancient secrets of this site...</p>
       

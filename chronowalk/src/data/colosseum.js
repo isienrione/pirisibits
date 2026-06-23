@@ -5,3 +5,10 @@ export const COLOSSEUM_ARRIVAL_RADIUS_M = 150
 
 // Debug position ~120m from center, still inside the arrival zone
 export const DEBUG_USER_POS = { lat: 41.8894, lng: 12.4933 }
+
+export const COLOSSEUM_WAYPOINT = {
+  id: 'colosseum',
+  title: 'The Colosseum',
+  lat: COLOSSEUM.lat,
+  lng: COLOSSEUM.lng,
+}
