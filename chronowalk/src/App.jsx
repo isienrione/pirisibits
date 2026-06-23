@@ -4,8 +4,10 @@ import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
 import { fetchWaypointById } from './services/waypointService'
 import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
+import { audioOrchestrator, AUDIO_MODES } from './audio/AudioOrchestrator'
 
 function App() {
+  const [hasInteracted, setHasInteracted] = useState(false)
   const { position, state, distance } = useGeoLocation({
     geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
   })
@@ -24,6 +26,35 @@ function App() {
       })
       .catch((err) => console.error('Failed to load waypoint:', err))
   }, [state])
+
+  const handleStartTour = async () => {
+    setHasInteracted(true)
+
+    try {
+      const waypoint = await fetchWaypointById('colosseum')
+      await audioOrchestrator.transitionTo(AUDIO_MODES.AMBIENT, {
+        ambient_url: waypoint.ambient_url,
+        transit_narrative_url: waypoint.transit_narrative_url,
+        arrival_immersive_url: waypoint.arrival_immersive_url,
+      })
+    } catch (err) {
+      console.error('Failed to start tour audio:', err)
+    }
+  }
+
+  if (!hasInteracted) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-900">
+        <button
+          type="button"
+          onClick={handleStartTour}
+          className="rounded-full bg-blue-600 p-6 text-lg font-semibold text-white shadow-lg transition hover:bg-blue-700"
+        >
+          Start Immersive Tour
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="relative h-screen w-full">
