@@ -33,6 +33,7 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
  *
  * 3. Poster stills shown after the animation ends (hero facade frame):
  *    - modern-poster.jpg / ancient-poster.jpg (export from video at slider_poster_at_sec)
+ *    - ancient poster: pad square frame to 16:9 so full height is preserved
  *
  * 4. OPTIONAL depth map from the ancient image → depth-map.png
  *

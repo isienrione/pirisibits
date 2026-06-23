@@ -7,18 +7,28 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 const MAX_SHIFT_PX = 24;
 const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
+const MEDIA_ASPECT = 16 / 9;
+const MAX_FRAME_HEIGHT_RATIO = 0.65;
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
 
-/** Show the full frame; container aspect matches 16:9 poster/video assets. */
-const MEDIA_FILL_STYLE = {
-  position: 'absolute',
-  inset: 0,
+const baseMediaStyle = {
+  display: 'block',
   width: '100%',
   height: '100%',
-  objectFit: 'contain',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
   objectPosition: 'center center',
-  display: 'block',
+};
+
+const coverMediaStyle = {
+  ...baseMediaStyle,
+  objectFit: 'cover',
+};
+
+const containMediaStyle = {
+  ...baseMediaStyle,
+  objectFit: 'contain',
 };
 
 const usePosterProbe = (src) => {
@@ -49,63 +59,62 @@ const usePosterProbe = (src) => {
   return ready;
 };
 
-const CompareLayer = ({ children, parallaxTransform }) => (
-  <div className="relative h-full w-full overflow-hidden bg-stone-950">
+/** Size the frame to true 16:9 from card width, capped by viewport height. */
+const useCompareFrameSize = () => {
+  const frameRef = useRef(null);
+  const [frameHeight, setFrameHeight] = useState(0);
+
+  useEffect(() => {
+    const element = frameRef.current;
+    if (!element) return undefined;
+
+    const update = () => {
+      const width = element.clientWidth;
+      if (!width) return;
+
+      const idealHeight = width / MEDIA_ASPECT;
+      const maxHeight = window.innerHeight * MAX_FRAME_HEIGHT_RATIO;
+      setFrameHeight(Math.min(idealHeight, maxHeight));
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    window.addEventListener('resize', update);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
+  return { frameRef, frameHeight };
+};
+
+const SliderItemShell = ({ children, parallaxTransform }) => (
+  <div
+    style={{
+      position: 'relative',
+      width: '100%',
+      height: '100%',
+      overflow: 'hidden',
+      backgroundColor: '#0c0a09',
+    }}
+  >
     <div
-      className="absolute inset-0"
-      style={
-        parallaxTransform
-          ? {
-              transform: parallaxTransform,
-              transition: 'transform 0.1s ease-out',
-              transformStyle: 'preserve-3d',
-              willChange: 'transform',
-            }
-          : undefined
-      }
+      style={{
+        width: '100%',
+        height: '100%',
+        transform: parallaxTransform,
+        transition: parallaxTransform ? 'transform 0.1s ease-out' : undefined,
+        transformStyle: 'preserve-3d',
+        willChange: parallaxTransform ? 'transform' : undefined,
+      }}
     >
       {children}
     </div>
   </div>
 );
-
-const CompareVideo = ({ src, alt, videoRef, onReady, onError, onEnded }) => (
-  <video
-    ref={videoRef}
-    src={src}
-    muted
-    playsInline
-    autoPlay
-    preload="auto"
-    aria-label={alt}
-    style={MEDIA_FILL_STYLE}
-    onLoadedData={onReady}
-    onError={onError}
-    onEnded={onEnded}
-  />
-);
-
-const CompareStill = ({ src, alt, useSliderImage = false }) => {
-  if (useSliderImage) {
-    return (
-      <ReactCompareSliderImage
-        src={src}
-        alt={alt}
-        style={MEDIA_FILL_STYLE}
-        referrerPolicy="no-referrer"
-      />
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt={alt}
-      referrerPolicy="no-referrer"
-      style={MEDIA_FILL_STYLE}
-    />
-  );
-};
 
 const AncientPlaceholder = () => (
   <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-stone-800 to-stone-900 p-5 text-center">
@@ -171,6 +180,7 @@ const BeforeAfterSlider = ({
   ancientPosterUrl,
 }) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
+  const { frameRef, frameHeight } = useCompareFrameSize();
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
   const compareReadyRef = useRef(false);
@@ -190,6 +200,10 @@ const BeforeAfterSlider = ({
     ancientPosterUrl &&
     modernPosterReady &&
     ancientPosterReady;
+
+  const showPosters = compareReady && postersAvailable;
+  const playbackMediaStyle = coverMediaStyle;
+  const compareMediaStyle = containMediaStyle;
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
@@ -296,56 +310,104 @@ const BeforeAfterSlider = ({
       ? `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(${offsetX}px, ${offsetY}px, 0)`
       : undefined;
 
-  const showPosters = compareReady && postersAvailable;
-
-  const modernLayer = (
-    <CompareLayer parallaxTransform={parallaxTransform}>
-      {showPosters ? (
-        <CompareStill src={modernPosterUrl} alt="Modern Colosseum" useSliderImage />
-      ) : modernIsVideo ? (
-        <CompareVideo
-          src={modernImg}
+  const renderModernItem = () => {
+    if (showPosters) {
+      return (
+        <ReactCompareSliderImage
+          src={modernPosterUrl}
           alt="Modern Colosseum"
-          videoRef={modernVideoRef}
-          onEnded={() => markEnded('modern')}
+          style={compareMediaStyle}
+          referrerPolicy="no-referrer"
         />
-      ) : (
-        <CompareStill src={modernImg} alt="Modern Colosseum" useSliderImage />
-      )}
-    </CompareLayer>
-  );
+      );
+    }
 
-  const ancientLayer = ancientReady ? (
-    <CompareLayer parallaxTransform={parallaxTransform}>
-      {showPosters ? (
-        <CompareStill
+    if (modernIsVideo) {
+      return (
+        <SliderItemShell parallaxTransform={parallaxTransform}>
+          <video
+            ref={modernVideoRef}
+            src={modernImg}
+            muted
+            playsInline
+            autoPlay
+            preload="auto"
+            aria-label="Modern Colosseum"
+            style={compareReady ? compareMediaStyle : playbackMediaStyle}
+            onEnded={() => markEnded('modern')}
+          />
+        </SliderItemShell>
+      );
+    }
+
+    return (
+      <ReactCompareSliderImage
+        src={modernImg}
+        alt="Modern Colosseum"
+        style={compareMediaStyle}
+        referrerPolicy="no-referrer"
+      />
+    );
+  };
+
+  const renderAncientItem = () => {
+    if (!ancientReady) return <AncientPlaceholder />;
+
+    if (showPosters) {
+      return (
+        <ReactCompareSliderImage
           src={ancientPosterUrl}
           alt="Ancient Colosseum reconstruction"
-          useSliderImage
+          style={compareMediaStyle}
+          referrerPolicy="no-referrer"
         />
-      ) : ancientIsVideo ? (
-        <CompareVideo
-          src={historicImg}
-          alt="Ancient Colosseum reconstruction"
-          videoRef={ancientVideoRef}
-          onEnded={() => markEnded('ancient')}
-        />
-      ) : (
-        <CompareStill src={historicImg} alt="Ancient Colosseum reconstruction" useSliderImage />
-      )}
-    </CompareLayer>
-  ) : (
-    <AncientPlaceholder />
-  );
+      );
+    }
+
+    if (ancientIsVideo) {
+      return (
+        <SliderItemShell parallaxTransform={parallaxTransform}>
+          <video
+            ref={ancientVideoRef}
+            src={historicImg}
+            muted
+            playsInline
+            autoPlay
+            preload="auto"
+            aria-label="Ancient Colosseum reconstruction"
+            style={compareReady ? compareMediaStyle : playbackMediaStyle}
+            onEnded={() => markEnded('ancient')}
+          />
+        </SliderItemShell>
+      );
+    }
+
+    return (
+      <ReactCompareSliderImage
+        src={historicImg}
+        alt="Ancient Colosseum reconstruction"
+        style={compareMediaStyle}
+        referrerPolicy="no-referrer"
+      />
+    );
+  };
 
   return (
     <div className="w-full overflow-hidden rounded-xl border-4 border-white shadow-lg">
-      <div className="relative w-full aspect-video">
-        <ReactCompareSlider
-          className="h-full w-full"
-          itemOne={modernLayer}
-          itemTwo={ancientLayer}
-        />
+      <div
+        ref={frameRef}
+        className="relative w-full"
+        style={{ height: frameHeight > 0 ? `${frameHeight}px` : undefined }}
+      >
+        {frameHeight > 0 ? (
+          <ReactCompareSlider
+            style={{ width: '100%', height: '100%' }}
+            itemOne={renderModernItem()}
+            itemTwo={renderAncientItem()}
+          />
+        ) : (
+          <div className="aspect-video w-full bg-stone-950" />
+        )}
       </div>
       <p className="bg-stone-900 px-3 py-2 text-center text-xs leading-relaxed text-stone-400">
         {!ancientReady ? (
