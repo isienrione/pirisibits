@@ -1,3 +1,5 @@
+export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
+
 // Delay before the waypoint card slides up (after map + arrival chime)
 export const CARD_REVEAL_DELAY_MS = 1400
 
