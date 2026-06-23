@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
-import { fetchWaypointById, getWaypointAudioUrls } from './services/waypointService'
+import { fetchWaypointById } from './services/waypointService'
 import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
-import { audioOrchestrator, AUDIO_MODES } from './audio/AudioOrchestrator'
+import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 
 function App() {
@@ -16,21 +16,9 @@ function App() {
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [waypointData, setWaypointData] = useState(null)
 
-  const handleArrival = useCallback(async (waypoint) => {
-    const audioUrls = {
-      transit: waypoint.transit_narrative_url,
-      arrival: waypoint.arrival_immersive_url,
-      ambient: waypoint.ambient_url,
-    }
-
+  const handleArrival = useCallback((waypoint) => {
     setDiscoveredWaypoint(waypoint)
     setActiveWaypoint(waypoint)
-
-    try {
-      await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, audioUrls)
-    } catch (err) {
-      console.error('Failed to play arrival audio:', err)
-    }
   }, [])
 
   useEffect(() => {
@@ -52,24 +40,9 @@ function App() {
 
   useEffect(() => {
     if (!hasInteracted || !waypointData) return
+    if (state !== JOURNEY_STATE.ARRIVAL) return
 
-    if (state === JOURNEY_STATE.ARRIVAL) {
-      handleArrival(waypointData)
-      return
-    }
-
-    if (state === JOURNEY_STATE.TRANSIT) {
-      audioOrchestrator.transitionTo(
-        AUDIO_MODES.TRANSIT,
-        getWaypointAudioUrls(waypointData)
-      )
-      return
-    }
-
-    audioOrchestrator.transitionTo(
-      AUDIO_MODES.AMBIENT,
-      getWaypointAudioUrls(waypointData)
-    )
+    handleArrival(waypointData)
   }, [hasInteracted, waypointData, state, handleArrival])
 
   if (!hasInteracted) {
