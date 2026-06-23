@@ -9,12 +9,14 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const MAX_SHIFT_PX = 24;
 const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
 const MEDIA_ASPECT = 16 / 9;
-const MAX_FRAME_HEIGHT_RATIO = 0.78;
+const DEFAULT_MAX_FRAME_HEIGHT_RATIO = 0.48;
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
 
 const baseMediaStyle = {
   display: 'block',
+  position: 'absolute',
+  inset: 0,
   width: '100%',
   height: '100%',
   maxWidth: '100%',
@@ -25,6 +27,11 @@ const baseMediaStyle = {
 const coverMediaStyle = {
   ...baseMediaStyle,
   objectFit: 'cover',
+};
+
+const containMediaStyle = {
+  ...baseMediaStyle,
+  objectFit: 'contain',
 };
 
 const usePosterProbe = (src) => {
@@ -55,8 +62,8 @@ const usePosterProbe = (src) => {
   return ready;
 };
 
-/** Size the frame to true 16:9 from card width, capped by viewport height. */
-const useCompareFrameSize = () => {
+/** Size the frame to true 16:9 from card width, capped for the waypoint card viewport. */
+const useCompareFrameSize = (maxFrameHeightRatio = DEFAULT_MAX_FRAME_HEIGHT_RATIO) => {
   const frameRef = useRef(null);
   const [frameHeight, setFrameHeight] = useState(0);
 
@@ -69,7 +76,7 @@ const useCompareFrameSize = () => {
       if (!width) return;
 
       const idealHeight = width / MEDIA_ASPECT;
-      const maxHeight = window.innerHeight * MAX_FRAME_HEIGHT_RATIO;
+      const maxHeight = window.innerHeight * maxFrameHeightRatio;
       setFrameHeight(Math.min(idealHeight, maxHeight));
     };
 
@@ -82,7 +89,7 @@ const useCompareFrameSize = () => {
       observer.disconnect();
       window.removeEventListener('resize', update);
     };
-  }, []);
+  }, [maxFrameHeightRatio]);
 
   return { frameRef, frameHeight };
 };
@@ -109,10 +116,11 @@ const SliderItemShell = ({
     >
       <div
         style={{
-          width: '100%',
-          height: '100%',
+          position: 'absolute',
+          inset: 0,
           transform: layerTransform,
           transition: shouldAnimate ? 'transform 0.1s ease-out' : undefined,
+          transformOrigin: 'center center',
           transformStyle: 'preserve-3d',
           willChange: layerTransform ? 'transform' : undefined,
           opacity: ghostOpacity ?? 1,
@@ -204,9 +212,12 @@ const BeforeAfterSlider = ({
   ancientPosterUrl,
   calibration,
   alignmentMode = false,
+  maxFrameHeightRatio,
 }) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
-  const { frameRef, frameHeight } = useCompareFrameSize();
+  const resolvedMaxFrameHeightRatio =
+    maxFrameHeightRatio ?? (alignmentMode ? 0.34 : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
+  const { frameRef, frameHeight } = useCompareFrameSize(resolvedMaxFrameHeightRatio);
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
   const compareReadyRef = useRef(false);
@@ -415,87 +426,64 @@ const BeforeAfterSlider = ({
     return undefined;
   }, [alignmentMode, seekVideoToPosterFrame]);
 
-  const renderAlignmentModernLayer = () => {
-    const posterSrc = modernPosterUrl || modernImg;
-    if (!posterSrc) return null;
+  const renderAlignmentMedia = (src, label, isAncient = false) => {
+    if (!src) return null;
 
-    if (modernIsVideo && !modernPosterUrl) {
-      return (
-        <video
-          src={modernImg}
-          muted
-          playsInline
-          preload="auto"
-          aria-label="Modern Colosseum"
-          style={posterMediaStyle}
-        />
-      );
-    }
+    const style = containMediaStyle;
+    const ancientTransform = isAncient
+      ? composeLayerTransform(calibration, parallaxTransform)
+      : undefined;
 
-    if (isVideoUrl(posterSrc)) {
-      return (
-        <video
-          src={posterSrc}
-          muted
-          playsInline
-          preload="auto"
-          aria-label="Modern Colosseum"
-          style={posterMediaStyle}
-        />
-      );
+    const media = isVideoUrl(src) ? (
+      <video
+        src={src}
+        muted
+        playsInline
+        preload="auto"
+        aria-label={label}
+        style={style}
+      />
+    ) : (
+      <img src={src} alt={label} style={style} referrerPolicy="no-referrer" />
+    );
+
+    if (!isAncient) {
+      return <div className="absolute inset-0 bg-stone-950">{media}</div>;
     }
 
     return (
-      <ReactCompareSliderImage
-        src={posterSrc}
-        alt="Modern Colosseum"
-        style={posterMediaStyle}
-        referrerPolicy="no-referrer"
-      />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          opacity: 0.5,
+          transform: ancientTransform,
+          transformOrigin: 'center center',
+        }}
+      >
+        {media}
+      </div>
     );
   };
 
-  const renderAlignmentAncientLayer = () => {
-    const posterSrc = ancientPosterUrl || historicImg;
-    if (!posterSrc || ancientMedia.failed) {
-      return (
-        <AncientPlaceholder message="Ancient reconstruction could not load — check your connection and retry." />
-      );
-    }
+  const renderAlignmentView = () => {
+    const modernSrc = modernPosterUrl || modernImg;
+    const ancientSrc = ancientPosterUrl || historicImg;
 
-    if (ancientIsVideo && !ancientPosterUrl) {
+    if (!modernSrc) {
       return (
-        <video
-          src={historicImg}
-          muted
-          playsInline
-          preload="auto"
-          aria-label="Ancient Colosseum reconstruction"
-          style={posterMediaStyle}
-        />
-      );
-    }
-
-    if (isVideoUrl(posterSrc)) {
-      return (
-        <video
-          src={posterSrc}
-          muted
-          playsInline
-          preload="auto"
-          aria-label="Ancient Colosseum reconstruction"
-          style={posterMediaStyle}
-        />
+        <div className="flex h-full items-center justify-center bg-stone-950 px-4 text-center text-sm text-amber-200">
+          Modern reference image is missing for alignment.
+        </div>
       );
     }
 
     return (
-      <ReactCompareSliderImage
-        src={posterSrc}
-        alt="Ancient Colosseum reconstruction"
-        style={posterMediaStyle}
-        referrerPolicy="no-referrer"
-      />
+      <>
+        {renderAlignmentMedia(modernSrc, 'Modern Colosseum')}
+        {ancientSrc && !ancientMedia.failed
+          ? renderAlignmentMedia(ancientSrc, 'Ancient Colosseum reconstruction', true)
+          : null}
+      </>
     );
   };
 
@@ -611,17 +599,7 @@ const BeforeAfterSlider = ({
         {frameHeight > 0 ? (
           alignmentMode ? (
             <div className="relative h-full w-full overflow-hidden bg-stone-950">
-              <SliderItemShell>{renderAlignmentModernLayer()}</SliderItemShell>
-              <div className="pointer-events-none absolute inset-0">
-                <SliderItemShell
-                  calibration={calibration}
-                  parallaxTransform={parallaxTransform}
-                  ghostOpacity={0.5}
-                  animateParallax={false}
-                >
-                  {renderAlignmentAncientLayer()}
-                </SliderItemShell>
-              </div>
+              {renderAlignmentView()}
             </div>
           ) : (
             <ReactCompareSlider

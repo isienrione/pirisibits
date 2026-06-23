@@ -1,10 +1,10 @@
 import React from 'react';
 import { DEFAULT_CALIBRATION } from '../utils/calibrationStorage';
 
-const OFFSET_MIN = -80;
-const OFFSET_MAX = 80;
-const ROTATE_MIN = -15;
-const ROTATE_MAX = 15;
+const OFFSET_MIN = -120;
+const OFFSET_MAX = 120;
+const ROTATE_MIN = -20;
+const ROTATE_MAX = 20;
 
 const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
   const values = calibration ?? DEFAULT_CALIBRATION;

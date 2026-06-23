@@ -60,6 +60,16 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     }
   }, [showSlider]);
 
+  useEffect(() => {
+    if (!alignmentMode) return undefined;
+
+    const timer = window.setTimeout(() => {
+      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [alignmentMode]);
+
   if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
   const headline = waypoint.arrival_headline || `You've reached ${waypoint.title}!`;
@@ -151,8 +161,8 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
         entered ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
-      <div className="mx-auto max-h-[78vh] overflow-hidden rounded-t-[2rem] border border-amber-200/30 bg-gradient-to-b from-gray-900 via-gray-900 to-stone-900 shadow-[0_-12px_40px_rgba(0,0,0,0.45)]">
-        <div className="flex items-center justify-between px-5 pt-4">
+      <div className="mx-auto flex max-h-[min(88dvh,88vh)] flex-col rounded-t-[2rem] border border-amber-200/30 bg-gradient-to-b from-gray-900 via-gray-900 to-stone-900 shadow-[0_-12px_40px_rgba(0,0,0,0.45)]">
+        <div className="flex shrink-0 items-center justify-between px-5 pt-4">
           <button
             type="button"
             onClick={onClose}
@@ -161,16 +171,27 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           />
         </div>
 
-        <div className="overflow-y-auto px-6 pb-8 pt-2">
-          <div className="mb-6 text-center">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
-              Waypoint discovered
-            </p>
-            <h2 className="font-serif text-3xl font-bold leading-tight text-amber-50">
-              {headline}
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
-          </div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-2">
+          {!alignmentMode ? (
+            <div className="mb-6 text-center">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
+                Waypoint discovered
+              </p>
+              <h2 className="font-serif text-3xl font-bold leading-tight text-amber-50">
+                {headline}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
+            </div>
+          ) : (
+            <div className="mb-4 text-center">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
+                Ghost alignment
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-stone-300">
+                Line up the semi-transparent ancient layer over the modern facade.
+              </p>
+            </div>
+          )}
 
           {showSlider ? (
             <div ref={sliderRef} className="mb-4">
@@ -188,13 +209,6 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 calibration={calibration}
                 alignmentMode={alignmentMode}
               />
-              <button
-                type="button"
-                onClick={() => setAlignmentMode((current) => !current)}
-                className="mt-4 w-full rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-amber-400/20"
-              >
-                {alignmentMode ? 'Exit alignment mode' : 'Align ghost overlay'}
-              </button>
               {alignmentMode ? (
                 <CalibrationOverlay
                   calibration={calibration}
@@ -205,11 +219,20 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
               ) : null}
               <button
                 type="button"
-                onClick={() => setShowSlider(false)}
-                className="mt-4 w-full text-sm font-medium text-amber-300 hover:text-amber-200"
+                onClick={() => setAlignmentMode((current) => !current)}
+                className="mt-4 w-full rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-amber-400/20"
               >
-                Hide visual slider
+                {alignmentMode ? 'Exit alignment mode' : 'Align ghost overlay'}
               </button>
+              {!alignmentMode ? (
+                <button
+                  type="button"
+                  onClick={() => setShowSlider(false)}
+                  className="mt-4 w-full text-sm font-medium text-amber-300 hover:text-amber-200"
+                >
+                  Hide visual slider
+                </button>
+              ) : null}
             </div>
           ) : (
             <>
@@ -241,7 +264,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
             </>
           )}
 
-          {showAudioToggle ? (
+          {showAudioToggle && !alignmentMode ? (
             <button
               type="button"
               onClick={handleToggleAudio}
