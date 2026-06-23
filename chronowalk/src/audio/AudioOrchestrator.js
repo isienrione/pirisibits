@@ -40,6 +40,21 @@ class AudioOrchestrator {
       this.applyAudioSources(audioUrls);
     }
 
+    const targetUrl =
+      mode === AUDIO_MODES.ARRIVAL
+        ? this.audioUrls.arrival
+        : mode === AUDIO_MODES.TRANSIT
+          ? this.audioUrls.transit
+          : this.audioUrls.ambient;
+
+    if (!targetUrl) {
+      console.warn(
+        `AudioOrchestrator: missing audio URL for mode "${mode}". ` +
+          'Check Supabase waypoints table or local seed data.'
+      );
+      return;
+    }
+
     if (this.currentMode === mode) return;
 
     this.currentMode = mode;

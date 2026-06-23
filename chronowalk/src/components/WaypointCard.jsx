@@ -20,6 +20,12 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
   const handlePlayAudio = async () => {
+    if (!waypoint.arrival_immersive_url) {
+      console.warn('waypoint.arrival_immersive_url is missing — check Supabase or local seed data.');
+      alert('Arrival audio URL is not set for this waypoint yet.');
+      return;
+    }
+
     try {
       await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
         transit: waypoint.transit_narrative_url,
