@@ -140,11 +140,6 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
               />
-              <p className="mt-3 text-center text-xs text-stone-400">
-                {tiltEnabled
-                  ? 'Tilt your phone to shift the ancient view'
-                  : 'Drag the slider to compare past and present'}
-              </p>
               <button
                 type="button"
                 onClick={() => setShowSlider(false)}

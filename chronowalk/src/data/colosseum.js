@@ -26,8 +26,9 @@ export const COLOSSEUM_WAYPOINT = {
   lng: COLOSSEUM.lng,
   modern_image_url:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
+  // Historic painted view (previous Wikimedia reconstruction URL returned 404 on mobile)
   ancient_image_url:
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg/1280px-Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg',
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/A_view_of_the_Colosseum.png/1280px-A_view_of_the_Colosseum.png',
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
   depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
