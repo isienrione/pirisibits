@@ -6,12 +6,13 @@ import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
   COLOSSEUM,
   COLOSSEUM_ARRIVAL_RADIUS_M,
-  COLOSSEUM_WAYPOINT,
   GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from '../data/colosseum'
+import { env, isMapboxConfigured } from '../config/env'
+import { fetchWaypointById } from '../services/waypointService'
 
-const mapboxToken = import.meta.env.VITE_MAPBOX_TOKEN
-const debugGeo = String(import.meta.env.VITE_DEBUG_GEO ?? '').trim() === 'true'
+const mapboxToken = env.mapboxToken
+const debugGeo = env.debugGeo
 
 const createColosseumMarkerElement = () => {
   const el = document.createElement('div')
@@ -117,11 +118,13 @@ const TourMap = ({ onWaypointArrival }) => {
 
     if (journey.status === JOURNEY_STATE.ARRIVAL && !hasArrived.current) {
       hasArrived.current = true
-      onWaypointArrival?.(COLOSSEUM_WAYPOINT)
+      fetchWaypointById('colosseum')
+        .then((waypoint) => onWaypointArrival?.(waypoint))
+        .catch((err) => console.error('Failed to load waypoint:', err))
     }
   }, [journey, mapLoaded, onWaypointArrival, debugGeo])
 
-  if (!mapboxToken) {
+  if (!isMapboxConfigured()) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-6 text-center text-white">
         <p>

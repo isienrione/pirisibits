@@ -18,7 +18,8 @@ export const COLOSSEUM_WAYPOINT = {
     'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
   ancient_image_url:
     'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg/1280px-Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg',
-  depth_map_url: null,
-  transit_narrative_url: null,
-  arrival_immersive_url: null,
+  // Relative paths below resolve via VITE_CDN_BASE_URL in waypointService.js
+  depth_map_url: '/waypoints/colosseum/depth-map.png',
+  transit_narrative_url: '/waypoints/colosseum/transit-narrative.mp3',
+  arrival_immersive_url: '/waypoints/colosseum/arrival-immersive.mp3',
 }
