@@ -33,7 +33,7 @@ const createUserMarkerElement = () => {
   return el
 }
 
-const TourMap = ({ onWaypointArrival }) => {
+const TourMap = ({ onWaypointArrival, onJourneyStateChange }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
@@ -100,7 +100,10 @@ const TourMap = ({ onWaypointArrival }) => {
   }, [])
 
   useEffect(() => {
-    if (!journey.lat || !journey.lng || !map.current || !mapLoaded) return
+    onJourneyStateChange?.(journey.state)
+  }, [journey.state, onJourneyStateChange])
+
+  useEffect(() => {
 
     const markerLng = debugGeo ? COLOSSEUM.lng + 0.0002 : journey.lng
     const markerLat = debugGeo ? COLOSSEUM.lat + 0.0001 : journey.lat

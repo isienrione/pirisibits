@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES } from '../audio/AudioOrchestrator';
+import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 
-const WaypointCard = ({ waypoint, onClose }) => {
+const WaypointCard = ({ waypoint, state, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
   const sliderRef = useRef(null);
 
@@ -16,7 +17,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
     }
   }, [showSlider]);
 
-  if (!waypoint) return null;
+  if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
   const handleOpenSlider = () => {
     if (!waypoint.modern_image_url || !waypoint.ancient_image_url) {
@@ -35,7 +36,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
   };
 
   return (
-    <div className="absolute bottom-0 left-0 z-50 h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl transition-transform duration-500">
+    <div className="absolute bottom-0 left-0 z-50 h-[70vh] w-full overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl transition-all duration-500 ease-in-out">
       <button
         type="button"
         onClick={onClose}
@@ -43,7 +44,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
         aria-label="Minimize waypoint card"
       />
       <h2 className="text-2xl font-bold mb-2">{waypoint.title}</h2>
-      <p className="text-gray-600 mb-6">Discover the ancient secrets of this site...</p>
+      <p className="text-gray-600 mb-6">You&apos;ve arrived! Prepare to step back in time.</p>
 
       {showSlider && (
         <div ref={sliderRef} className="mb-4">
@@ -60,7 +61,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
           </button>
         </div>
       )}
-      
+
       <div className="flex gap-4">
         <button
           type="button"
@@ -75,7 +76,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
             onClick={handleOpenSlider}
             className="flex-1 border border-blue-600 text-blue-600 py-3 rounded-lg font-semibold"
           >
-            Open Visual Slider
+            Begin Immersive View
           </button>
         )}
       </div>
