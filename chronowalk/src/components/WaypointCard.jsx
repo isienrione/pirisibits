@@ -37,7 +37,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
       <p className="text-gray-600 mb-6">Discover the ancient secrets of this site...</p>
 
       {showSlider && (
-        <div className="mb-4">
+        <div ref={sliderRef} className="mb-4">
           <BeforeAfterSlider
             modernImg={waypoint.modern_image_url}
             historicImg={waypoint.ancient_image_url}
@@ -59,7 +59,7 @@ const WaypointCard = ({ waypoint, onClose }) => {
         {!showSlider && (
           <button
             type="button"
-            onClick={() => setShowSlider(true)}
+            onClick={handleOpenSlider}
             className="flex-1 border border-blue-600 text-blue-600 py-3 rounded-lg font-semibold"
           >
             Open Visual Slider
