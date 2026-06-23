@@ -11,4 +11,8 @@ export const COLOSSEUM_WAYPOINT = {
   title: 'The Colosseum',
   lat: COLOSSEUM.lat,
   lng: COLOSSEUM.lng,
+  modern_image_url:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Colosseo_2020.jpg/1280px-Colosseo_2020.jpg',
+  ancient_image_url:
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg/1280px-Colosseum_Reconstruction_by_Carl_Friedrich_Fehling%2C_1830.jpg',
 }
