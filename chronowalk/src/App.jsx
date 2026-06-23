@@ -103,18 +103,19 @@ function App() {
           setCardDismissed(true)
         }}
       />
-      {state === JOURNEY_STATE.ARRIVAL &&
-        cardDismissed &&
-        discoveredWaypoint &&
-        !activeWaypoint && (
-          <button
-            type="button"
-            onClick={() => setActiveWaypoint(discoveredWaypoint)}
-            className="absolute bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-gray-900 shadow-lg transition hover:bg-amber-400"
-          >
-            Reopen {discoveredWaypoint.title}
-          </button>
-        )}
+      {state === JOURNEY_STATE.ARRIVAL && cardDismissed && discoveredWaypoint && !activeWaypoint && (
+        <button
+          type="button"
+          onClick={() => {
+            setCardDismissed(false)
+            setActiveWaypoint(discoveredWaypoint)
+          }}
+          className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 rounded-full bg-amber-500 px-6 py-3.5 text-sm font-bold text-gray-900 shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition hover:bg-amber-400"
+          style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
+        >
+          Reopen {discoveredWaypoint.title}
+        </button>
+      )}
     </div>
   )
 }

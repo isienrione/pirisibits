@@ -31,7 +31,9 @@ describe('AudioOrchestrator', () => {
 
     windowRef = {
       dispatchEvent: vi.fn((event) => {
-        dispatchedEvents.push(event);
+        if (event.type === AUDIO_SYNC_EVENT) {
+          dispatchedEvents.push(event);
+        }
       }),
     };
   });
@@ -106,6 +108,7 @@ describe('AudioOrchestrator', () => {
   it('resumes arrival audio after returning from the background', async () => {
     const { orchestrator } = createOrchestrator();
     orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
     orchestrator.arrivalPlayer.paused = false;
 
     orchestrator.onPageHidden();
@@ -115,6 +118,32 @@ describe('AudioOrchestrator', () => {
 
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
     expect(orchestrator.playingBeforeHidden).toBe(false);
+    expect(orchestrator.getState().playbackInterrupted).toBe(false);
+  });
+
+  it('marks playback interrupted when resume fails after another app used audio', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.play.mockRejectedValueOnce(new Error('NotAllowedError'));
+
+    await orchestrator.onPageVisible();
+
+    expect(orchestrator.getState().playbackInterrupted).toBe(true);
+  });
+
+  it('supports manual resume for arrival audio', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.audioUrls = { arrival: '/audio/arrival.mp3' };
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
+
+    const resumed = await orchestrator.resumeArrival();
+
+    expect(resumed).toBe(true);
+    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
+    expect(orchestrator.getState().playbackInterrupted).toBe(false);
   });
 
   it('does not resume or re-sync when arrival audio was not playing before hide', async () => {

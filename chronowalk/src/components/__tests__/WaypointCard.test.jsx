@@ -8,9 +8,10 @@ vi.mock('../BeforeAfterSlider', () => ({
   default: () => <div data-testid="before-after-slider">Slider</div>,
 }));
 
-const { transitionTo, stop } = vi.hoisted(() => ({
+const { transitionTo, stop, resumeArrival } = vi.hoisted(() => ({
   transitionTo: vi.fn(),
   stop: vi.fn(),
+  resumeArrival: vi.fn(),
 }));
 
 vi.mock('../../audio/AudioOrchestrator', () => ({
@@ -20,10 +21,16 @@ vi.mock('../../audio/AudioOrchestrator', () => ({
     ARRIVAL: 'ARRIVAL',
   },
   AUDIO_SYNC_EVENT: 'AUDIO_SYNC_TRIGGER',
+  AUDIO_PLAYBACK_STATE_EVENT: 'AUDIO_PLAYBACK_STATE',
   audioOrchestrator: {
     transitionTo,
     stop,
+    resumeArrival,
   },
+}));
+
+vi.mock('../../hooks/useAudioPlaybackState', () => ({
+  useAudioPlaybackState: () => ({ playbackInterrupted: false }),
 }));
 
 vi.mock('../../hooks/useDeviceTilt', () => ({

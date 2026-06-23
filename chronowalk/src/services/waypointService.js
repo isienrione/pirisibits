@@ -1,6 +1,6 @@
 import { env } from '../config/env'
 import { supabase } from '../lib/supabase'
-import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
+import { getLocalWaypoint, mergeWaypointWithLocalDefaults } from './waypointMerge'
 
 /**
  * TODO (Supabase): When ready for production content, populate the `waypoints`
@@ -12,9 +12,7 @@ import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
 /**
  * Local seed data — fallback when Supabase is not configured.
  */
-const LOCAL_WAYPOINTS = {
-  colosseum: COLOSSEUM_WAYPOINT,
-}
+const getLocalWaypointById = (id) => getLocalWaypoint(id)
 
 /**
  * Resolves asset paths to full URLs.
@@ -73,15 +71,16 @@ const fetchWaypointFromSupabase = async (id) => {
  * Fetches a waypoint by ID from Supabase, falling back to local seed data.
  */
 export const fetchWaypointById = async (id) => {
+  const localWaypoint = getLocalWaypointById(id)
   const remoteWaypoint = await fetchWaypointFromSupabase(id)
+
   if (remoteWaypoint) {
-    return normalizeWaypoint(remoteWaypoint)
+    return normalizeWaypoint(mergeWaypointWithLocalDefaults(remoteWaypoint, localWaypoint))
   }
 
-  const waypoint = LOCAL_WAYPOINTS[id]
-  if (!waypoint) {
+  if (!localWaypoint) {
     throw new Error(`Waypoint not found: ${id}`)
   }
 
-  return normalizeWaypoint(waypoint)
+  return normalizeWaypoint(localWaypoint)
 }

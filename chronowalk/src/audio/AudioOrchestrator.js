@@ -14,6 +14,7 @@ const AUDIO_MODES = {
 };
 
 export const AUDIO_SYNC_EVENT = 'AUDIO_SYNC_TRIGGER';
+export const AUDIO_PLAYBACK_STATE_EVENT = 'AUDIO_PLAYBACK_STATE';
 
 class AudioOrchestrator {
   constructor({ createAudio = () => new Audio(), windowRef = window } = {}) {
@@ -36,8 +37,27 @@ class AudioOrchestrator {
     this.playingBeforeHidden = false;
     this.prefetchedArrivalUrl = null;
     this.visibilityListenerAttached = false;
+    this.wantsArrivalPlayback = false;
+    this.playbackInterrupted = false;
 
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+  }
+
+  emitPlaybackState() {
+    this.windowRef.dispatchEvent(
+      new CustomEvent(AUDIO_PLAYBACK_STATE_EVENT, {
+        detail: {
+          interrupted: this.playbackInterrupted,
+          currentMode: this.currentMode,
+          wantsArrivalPlayback: this.wantsArrivalPlayback,
+        },
+      })
+    );
+  }
+
+  setPlaybackInterrupted(interrupted) {
+    this.playbackInterrupted = interrupted;
+    this.emitPlaybackState();
   }
 
   attachVisibilityListener() {
@@ -65,20 +85,27 @@ class AudioOrchestrator {
 
   onPageHidden() {
     this.playingBeforeHidden =
-      this.currentMode === AUDIO_MODES.ARRIVAL && !this.arrivalPlayer.paused;
+      this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback;
   }
 
   async onPageVisible() {
-    if (!this.playingBeforeHidden) return;
-    if (this.currentMode !== AUDIO_MODES.ARRIVAL) {
+    if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.wantsArrivalPlayback) {
+      this.playingBeforeHidden = false;
+      return;
+    }
+
+    if (!this.arrivalPlayer.paused) {
+      this.setPlaybackInterrupted(false);
       this.playingBeforeHidden = false;
       return;
     }
 
     try {
       await this.arrivalPlayer.play();
+      this.setPlaybackInterrupted(false);
     } catch (error) {
       console.warn('AudioOrchestrator: could not resume after returning to foreground.', error);
+      this.setPlaybackInterrupted(true);
     } finally {
       this.playingBeforeHidden = false;
     }
@@ -180,6 +207,9 @@ class AudioOrchestrator {
       await this.arrivalPlayer.play();
       if (generation !== this.syncGeneration) return;
 
+      this.wantsArrivalPlayback = true;
+      this.setPlaybackInterrupted(false);
+
       await this.fadeVolume(this.arrivalPlayer, ARRIVAL_VOLUME, FADE_DURATION_MS);
       if (generation !== this.syncGeneration) return;
 
@@ -211,7 +241,16 @@ class AudioOrchestrator {
       return;
     }
 
-    if (this.currentMode === mode && !options.syncVisual) return;
+    if (this.currentMode === mode && !options.syncVisual && !options.force) {
+      const player =
+        mode === AUDIO_MODES.ARRIVAL
+          ? this.arrivalPlayer
+          : mode === AUDIO_MODES.TRANSIT
+            ? this.transitPlayer
+            : this.ambientPlayer;
+
+      if (!player.paused) return;
+    }
 
     this.currentMode = mode;
 
@@ -242,11 +281,35 @@ class AudioOrchestrator {
     }
   }
 
+  async resumeArrival() {
+    if (this.currentMode !== AUDIO_MODES.ARRIVAL || !this.audioUrls.arrival) {
+      return false;
+    }
+
+    try {
+      if (!this.arrivalPlayer.src) {
+        this.arrivalPlayer.src = this.audioUrls.arrival;
+      }
+
+      await waitForCanPlayThrough(this.arrivalPlayer);
+      await this.arrivalPlayer.play();
+      this.wantsArrivalPlayback = true;
+      this.setPlaybackInterrupted(false);
+      return true;
+    } catch (error) {
+      console.warn('AudioOrchestrator: manual resume blocked.', error);
+      this.setPlaybackInterrupted(true);
+      return false;
+    }
+  }
+
   stop() {
     this.clearPendingSync();
     this.syncGeneration += 1;
     this.visualSyncFired = false;
     this.playingBeforeHidden = false;
+    this.wantsArrivalPlayback = false;
+    this.setPlaybackInterrupted(false);
 
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
@@ -263,6 +326,8 @@ class AudioOrchestrator {
       visualSyncFired: this.visualSyncFired,
       syncGeneration: this.syncGeneration,
       prefetchedArrivalUrl: this.prefetchedArrivalUrl,
+      playbackInterrupted: this.playbackInterrupted,
+      wantsArrivalPlayback: this.wantsArrivalPlayback,
     };
   }
 }

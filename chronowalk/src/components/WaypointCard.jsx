@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
+import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 import {
@@ -17,6 +18,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
+  const { playbackInterrupted } = useAudioPlaybackState();
 
   useEffect(() => {
     setShowSlider(false);
@@ -58,6 +60,13 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     audioOrchestrator.stop();
   };
 
+  const handleResumeAudio = async () => {
+    const resumed = await audioOrchestrator.resumeArrival();
+    if (!resumed) {
+      await handlePlayAudio();
+    }
+  };
+
   const handlePlayAudio = async () => {
     if (!waypoint.arrival_immersive_url) {
       console.warn('waypoint.arrival_immersive_url is missing — check Supabase or local seed data.');
@@ -66,11 +75,15 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     }
 
     try {
-      await audioOrchestrator.transitionTo(AUDIO_MODES.ARRIVAL, {
-        transit: waypoint.transit_narrative_url,
-        arrival: waypoint.arrival_immersive_url,
-        ambient: waypoint.ambient_url,
-      });
+      await audioOrchestrator.transitionTo(
+        AUDIO_MODES.ARRIVAL,
+        {
+          transit: waypoint.transit_narrative_url,
+          arrival: waypoint.arrival_immersive_url,
+          ambient: waypoint.ambient_url,
+        },
+        { force: true }
+      );
     } catch (err) {
       console.error('Failed to play audio guide:', err);
     }
@@ -128,7 +141,17 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
             <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
           </div>
 
-          <div className="mb-5 flex justify-center">
+          <div className="mb-5 flex flex-wrap justify-center gap-2">
+            {playbackInterrupted ? (
+              <button
+                type="button"
+                onClick={handleResumeAudio}
+                className="inline-flex items-center gap-2 rounded-full border border-amber-400/60 bg-amber-500/20 px-4 py-2 text-xs font-semibold text-amber-100 transition hover:bg-amber-500/30"
+              >
+                <span aria-hidden="true">▶</span>
+                Resume audio
+              </button>
+            ) : null}
             <button
               type="button"
               onClick={handleStopAudio}

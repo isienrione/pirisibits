@@ -116,49 +116,60 @@ const SliderItemShell = ({ children, parallaxTransform }) => (
   </div>
 );
 
-const AncientPlaceholder = () => (
+const MEDIA_PROBE_TIMEOUT_MS = 12000;
+
+const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
   <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-stone-800 to-stone-900 p-5 text-center">
-    <p className="text-sm font-semibold text-amber-300">Ancient reconstruction — coming next</p>
+    <p className="text-sm font-semibold text-amber-300">{message}</p>
     <p className="mt-3 font-mono text-[10px] text-amber-200/80">ancient-reconstruction.mp4</p>
   </div>
 );
 
 const useMediaProbe = (src) => {
-  const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState(src ? 'loading' : 'idle');
 
   useEffect(() => {
     if (!src) {
-      setReady(false);
+      setStatus('idle');
       return undefined;
     }
 
     let cancelled = false;
+    setStatus('loading');
+
+    const markReady = () => {
+      if (!cancelled) setStatus('ready');
+    };
+
+    const markError = () => {
+      if (!cancelled) setStatus('error');
+    };
 
     if (isVideoUrl(src)) {
       const video = document.createElement('video');
-      video.preload = 'metadata';
+      video.preload = 'auto';
       video.muted = true;
-      video.onloadeddata = () => {
-        if (!cancelled) setReady(true);
-      };
-      video.onerror = () => {
-        if (!cancelled) setReady(false);
-      };
+      video.playsInline = true;
+      video.onloadedmetadata = markReady;
+      video.onloadeddata = markReady;
+      video.oncanplay = markReady;
+      video.onerror = markError;
       video.src = src;
+      video.load();
+
+      const timer = window.setTimeout(markReady, MEDIA_PROBE_TIMEOUT_MS);
+
       return () => {
         cancelled = true;
+        window.clearTimeout(timer);
         video.removeAttribute('src');
         video.load();
       };
     }
 
     const image = new Image();
-    image.onload = () => {
-      if (!cancelled) setReady(true);
-    };
-    image.onerror = () => {
-      if (!cancelled) setReady(false);
-    };
+    image.onload = markReady;
+    image.onerror = markError;
     image.referrerPolicy = 'no-referrer';
     image.src = src;
 
@@ -167,7 +178,11 @@ const useMediaProbe = (src) => {
     };
   }, [src]);
 
-  return ready;
+  return {
+    ready: status === 'ready' || (Boolean(src) && isVideoUrl(src) && status === 'loading'),
+    loading: status === 'loading',
+    failed: status === 'error',
+  };
 };
 
 const BeforeAfterSlider = ({
@@ -186,7 +201,9 @@ const BeforeAfterSlider = ({
   const compareReadyRef = useRef(false);
   const modernEndedRef = useRef(false);
   const ancientEndedRef = useRef(false);
-  const ancientReady = useMediaProbe(historicImg);
+  const ancientMedia = useMediaProbe(historicImg);
+  const ancientReady = ancientMedia.ready;
+  const ancientLayerActive = Boolean(historicImg) && !ancientMedia.failed;
   const modernPosterReady = usePosterProbe(modernPosterUrl);
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
@@ -351,7 +368,11 @@ const BeforeAfterSlider = ({
   };
 
   const renderAncientItem = () => {
-    if (!ancientReady) return <AncientPlaceholder />;
+    if (!historicImg || ancientMedia.failed) {
+      return (
+        <AncientPlaceholder message="Ancient reconstruction could not load — check your connection and retry." />
+      );
+    }
 
     if (showPosters) {
       return (
@@ -367,6 +388,11 @@ const BeforeAfterSlider = ({
     if (ancientIsVideo) {
       return (
         <SliderItemShell parallaxTransform={parallaxTransform}>
+          {ancientMedia.loading ? (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-stone-950/70 text-xs text-amber-200">
+              Loading ancient Rome…
+            </div>
+          ) : null}
           <video
             ref={ancientVideoRef}
             src={historicImg}
@@ -410,8 +436,10 @@ const BeforeAfterSlider = ({
         )}
       </div>
       <p className="bg-stone-900 px-3 py-2 text-center text-xs leading-relaxed text-stone-400">
-        {!ancientReady ? (
-          'Modern view is playing — add the matched ancient video to complete the portal.'
+        {!ancientLayerActive ? (
+          'Add the matched ancient video to complete the portal.'
+        ) : ancientMedia.loading ? (
+          'Modern view is playing — ancient reconstruction is loading…'
         ) : compareReady ? (
           <>
             Full facade — drag to compare eras.
