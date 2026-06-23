@@ -8,10 +8,9 @@ import {
   COLOSSEUM_ARRIVAL_RADIUS_M,
   GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from '../data/colosseum'
-import { env, isMapboxConfigured } from '../config/env'
+import { env, isDebugGeo, isMapboxConfigured } from '../config/env'
 
 const mapboxToken = env.mapboxToken
-const debugGeo = env.debugGeo
 
 const createColosseumMarkerElement = () => {
   const el = document.createElement('div')
@@ -37,6 +36,7 @@ const TourMap = ({ userPos, state, distance }) => {
   const map = useRef(null)
   const userMarker = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
+  const debugGeo = isDebugGeo()
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return

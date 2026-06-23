@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDistance } from '../utils/distance';
 import { COLOSSEUM, DEBUG_USER_POS } from '../data/colosseum';
-import { env } from '../config/env';
+import { isDebugGeo } from '../config/env';
 
 export const JOURNEY_STATE = {
   TRANSIT: 'TRANSIT',
@@ -25,7 +25,7 @@ const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
 };
 
 export const useGeoLocation = ({
-  debugMode = env.debugGeo,
+  debugMode = isDebugGeo(),
   target = COLOSSEUM,
   geofenceThresholdM = 30,
 } = {}) => {
