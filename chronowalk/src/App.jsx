@@ -1,32 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
-import { JOURNEY_STATE } from './hooks/useGeoLocation'
+import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
+import { fetchWaypointById } from './services/waypointService'
+import { GEOFENCE_ARRIVAL_THRESHOLD_M } from './data/colosseum'
 
 function App() {
-  const [journeyState, setJourneyState] = useState(null)
+  const { position, state, distance } = useGeoLocation({
+    geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
+  })
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
+  const hasLoadedWaypoint = useRef(false)
 
-  const handleWaypointArrival = (waypoint) => {
-    setDiscoveredWaypoint(waypoint)
-    setActiveWaypoint(waypoint)
-  }
+  useEffect(() => {
+    if (state !== JOURNEY_STATE.ARRIVAL || hasLoadedWaypoint.current) return
+
+    hasLoadedWaypoint.current = true
+    fetchWaypointById('colosseum')
+      .then((waypoint) => {
+        setDiscoveredWaypoint(waypoint)
+        setActiveWaypoint(waypoint)
+      })
+      .catch((err) => console.error('Failed to load waypoint:', err))
+  }, [state])
 
   return (
     <div className="relative h-screen w-full">
-      <TourMap
-        onWaypointArrival={handleWaypointArrival}
-        onJourneyStateChange={setJourneyState}
+      <TourMap userPos={position} state={state} distance={distance} />
+      <WaypointCard
+        waypoint={activeWaypoint}
+        state={state}
+        onClose={() => setActiveWaypoint(null)}
       />
-      {activeWaypoint && (
-        <WaypointCard
-          waypoint={activeWaypoint}
-          state={journeyState}
-          onClose={() => setActiveWaypoint(null)}
-        />
-      )}
-      {journeyState === JOURNEY_STATE.ARRIVAL &&
+      {state === JOURNEY_STATE.ARRIVAL &&
         discoveredWaypoint &&
         !activeWaypoint && (
           <button

@@ -31,8 +31,10 @@ const toAudioMode = (journeyState) => {
   return AUDIO_MODES.AMBIENT;
 };
 
+import { env } from '../config/env';
+
 export const useGeoLocation = ({
-  debugMode = false,
+  debugMode = env.debugGeo,
   target = COLOSSEUM,
   waypointId = 'colosseum',
   geofenceThresholdM = 30,
@@ -125,5 +127,9 @@ export const useGeoLocation = ({
     setState(journey.status);
   }, [journey.status]);
 
-  return { ...journey, state };
+  return {
+    position: { lat: journey.lat, lng: journey.lng },
+    state,
+    distance: journey.distance,
+  };
 };
