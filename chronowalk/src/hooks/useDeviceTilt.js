@@ -53,8 +53,8 @@ export const useDeviceTilt = (enabled = true) => {
         baselineRef.current = { gamma, beta };
       }
 
-      const deltaX = clamp(gamma - baselineRef.current.gamma, -10, 10);
-      const deltaY = clamp(beta - baselineRef.current.beta, -10, 10);
+      const deltaX = clamp(gamma - baselineRef.current.gamma, -16, 16);
+      const deltaY = clamp(beta - baselineRef.current.beta, -16, 16);
 
       setTilt({ x: deltaX, y: deltaY });
       setIsActive(true);

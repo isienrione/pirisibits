@@ -4,7 +4,7 @@ import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slide
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
-const MAX_SHIFT_PX = 12;
+const MAX_SHIFT_PX = 26;
 
 const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = false }) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
@@ -13,7 +13,7 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
     if (tiltEnabled) recalibrate();
   }, [tiltEnabled, historicImg, recalibrate]);
 
-  const pxPerDegree = depthMap ? 1.15 : 0.95;
+  const pxPerDegree = depthMap ? 2 : 1.75;
   const offsetX = clamp(x * pxPerDegree, -MAX_SHIFT_PX, MAX_SHIFT_PX);
   const offsetY = clamp(y * pxPerDegree, -MAX_SHIFT_PX, MAX_SHIFT_PX);
 
@@ -32,7 +32,7 @@ const BeforeAfterSlider = ({ modernImg, historicImg, depthMap, tiltEnabled = fal
           itemTwo={
             <div className="relative h-full w-full overflow-hidden bg-stone-900">
               <div
-                className="absolute h-[118%] w-[118%] -left-[9%] -top-[9%]"
+                className="absolute h-[128%] w-[128%] -left-[14%] -top-[14%]"
                 style={{
                   transform: `translate3d(${offsetX}px, ${offsetY}px, 0)`,
                   transition: 'transform 0.08s ease-out',
