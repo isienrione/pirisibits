@@ -56,8 +56,7 @@ class AudioOrchestrator {
     }
   }
 
-  // Orchestrates the cross-fade between states
-  transitionTo(mode, audioUrls) {
+  async transitionTo(mode, audioUrls) {
     if (!Object.values(AUDIO_MODES).includes(mode)) {
       console.warn(`AudioOrchestrator: unknown mode "${mode}"`);
       return;
@@ -71,24 +70,6 @@ class AudioOrchestrator {
 
     const fromPlayer = this.getPlayerForMode(this.currentMode);
     const toPlayer = this.getPlayerForMode(mode);
-
-    if (mode === AUDIO_MODES.ARRIVAL) {
-      this.transitPlayer.pause();
-      if (this.audioUrls.arrival) {
-        this.arrivalPlayer.src = this.audioUrls.arrival;
-      }
-    } else if (mode === AUDIO_MODES.TRANSIT) {
-      this.arrivalPlayer.pause();
-      if (this.audioUrls.transit) {
-        this.transitPlayer.src = this.audioUrls.transit;
-      }
-    } else {
-      this.transitPlayer.pause();
-      this.arrivalPlayer.pause();
-      if (this.audioUrls.ambient) {
-        this.ambientPlayer.src = this.audioUrls.ambient;
-      }
-    }
 
     const targetUrl =
       mode === AUDIO_MODES.ARRIVAL
@@ -105,40 +86,68 @@ class AudioOrchestrator {
     }
 
     this.currentMode = mode;
-    this.crossFade(fromPlayer, toPlayer);
-    console.log(`Transitioning to: ${mode}`);
+
+    try {
+      if (mode === AUDIO_MODES.ARRIVAL) {
+        this.transitPlayer.pause();
+        if (this.audioUrls.arrival) {
+          this.arrivalPlayer.src = this.audioUrls.arrival;
+        }
+        await this.crossFade(fromPlayer, this.arrivalPlayer);
+      } else if (mode === AUDIO_MODES.TRANSIT) {
+        this.arrivalPlayer.pause();
+        if (this.audioUrls.transit) {
+          this.transitPlayer.src = this.audioUrls.transit;
+        }
+        await this.crossFade(fromPlayer, this.transitPlayer);
+      } else {
+        this.transitPlayer.pause();
+        this.arrivalPlayer.pause();
+        if (this.audioUrls.ambient) {
+          this.ambientPlayer.src = this.audioUrls.ambient;
+        }
+        await this.crossFade(fromPlayer, this.ambientPlayer);
+      }
+
+      console.log(`Transitioning to: ${mode}`);
+    } catch (error) {
+      console.warn('Audio playback blocked. User needs to interact first.', error);
+    }
   }
 
-  crossFade(fromPlayer, toPlayer) {
+  async crossFade(fromPlayer, toPlayer) {
     this.cancelFade();
 
     toPlayer.volume = 0;
-    toPlayer.play().catch((err) => console.error('Audio playback failed:', err));
+    await toPlayer.play();
 
     const start = performance.now();
     const fromStartVolume = fromPlayer.paused ? 0 : fromPlayer.volume;
 
-    const step = (now) => {
-      const progress = Math.min((now - start) / this.fadeDurationMs, 1);
+    return new Promise((resolve) => {
+      const step = (now) => {
+        const progress = Math.min((now - start) / this.fadeDurationMs, 1);
 
-      if (!fromPlayer.paused) {
-        fromPlayer.volume = fromStartVolume * (1 - progress);
-      }
-      toPlayer.volume = progress;
+        if (!fromPlayer.paused) {
+          fromPlayer.volume = fromStartVolume * (1 - progress);
+        }
+        toPlayer.volume = progress;
 
-      if (progress < 1) {
-        this.fadeFrame = requestAnimationFrame(step);
-        return;
-      }
+        if (progress < 1) {
+          this.fadeFrame = requestAnimationFrame(step);
+          return;
+        }
 
-      fromPlayer.pause();
-      fromPlayer.currentTime = 0;
-      fromPlayer.volume = 0;
-      toPlayer.volume = 1;
-      this.fadeFrame = null;
-    };
+        fromPlayer.pause();
+        fromPlayer.currentTime = 0;
+        fromPlayer.volume = 0;
+        toPlayer.volume = 1;
+        this.fadeFrame = null;
+        resolve();
+      };
 
-    this.fadeFrame = requestAnimationFrame(step);
+      this.fadeFrame = requestAnimationFrame(step);
+    });
   }
 
   cancelFade() {
