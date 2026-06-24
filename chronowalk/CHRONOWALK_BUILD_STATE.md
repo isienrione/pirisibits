@@ -17,6 +17,8 @@ ChronoWalk is a location-aware, mobile-first PWA for an immersive walking tour o
 - Optional device-tilt parallax during animation
 - Supabase-ready data layer with local seed fallback
 
+**Adding new waypoints:** see [WAYPOINT_ASSET_PIPELINE.md](./WAYPOINT_ASSET_PIPELINE.md) for the agent playbook (viewpoint selection, asset export, seed schema).
+
 The experience guides a visitor from **approach (TRANSIT)** to **arrival (ARRIVAL)**, then offers orientation, synced immersive audio, and a visual reveal.
 
 ---
