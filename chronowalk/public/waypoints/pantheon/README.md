@@ -5,9 +5,9 @@
 
 ## Ready
 
-- [x] `modern-exterior.jpg` — closer frontal reference, cropped to **1280×720 (16:9)** to match Colosseum
-  - Source: [Wikimedia — Rome Pantheon front](https://commons.wikimedia.org/wiki/File:Rome_Pantheon_front.jpg) (Robert Dragan, CC BY 2.5)
-  - Replace with your own on-site or Street View export when available
+- [x] `modern-exterior.jpg` — mid-piazza frontal reference, cropped to **1280×720 (16:9)** to match Colosseum
+  - Source: [Wikimedia — Rome Pantheon front](https://commons.wikimedia.org/wiki/File:Rome_Pantheon_front.jpg) (Roberta Dragan, CC BY 2.5)
+  - Crop shows full portico + plaza context (not the fountain fisheye, not a macro pediment crop)
 
 ## Generate via Asset Studio
 

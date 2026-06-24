@@ -5,7 +5,7 @@ export const PANTHEON = { lat: 41.89885, lng: 12.47687 }
  * Re-scouted to match Colosseum-style framing (monument fills the frame).
  *
  * Previous pass used the Maps place pin / fountain fisheye (offset ~0 m, pitch 10.5°).
- * modern-exterior.jpg now cropped from a closer frontal reference (see public README).
+ * modern-exterior.jpg cropped from a mid-piazza frontal reference (see public README).
  */
 export const PANTHEON_VIEWPOINT = {
   lat: 41.89862,
