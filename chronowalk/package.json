@@ -11,6 +11,8 @@
     "test": "vitest run",
     "process-pantheon": "bash scripts/process-pantheon-assets.sh",
     "verify-pantheon": "bash scripts/verify-pantheon-assets.sh",
+    "process-waypoint": "bash scripts/process-waypoint-assets.sh",
+    "verify-waypoint": "bash scripts/verify-waypoint-assets.sh",
     "test:watch": "vitest"
   },
   "dependencies": {

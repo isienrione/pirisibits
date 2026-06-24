@@ -1,5 +1,6 @@
 import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
 import { PANTHEON_WAYPOINT } from '../data/pantheon'
+import { PIAZZA_NAVONA_WAYPOINT } from '../data/piazza-navona'
 
 const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -59,5 +60,6 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
 export const getLocalWaypoint = (id) => {
   if (id === 'colosseum') return COLOSSEUM_WAYPOINT
   if (id === 'pantheon') return PANTHEON_WAYPOINT
+  if (id === 'piazza-navona') return PIAZZA_NAVONA_WAYPOINT
   return null
 }

@@ -10,6 +10,12 @@ import {
   PANTHEON_DEBUG_USER_POS,
   PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './pantheon'
+import {
+  PIAZZA_NAVONA,
+  PIAZZA_NAVONA_ARRIVAL_RADIUS_M,
+  PIAZZA_NAVONA_DEBUG_USER_POS,
+  PIAZZA_NAVONA_GEOFENCE_ARRIVAL_THRESHOLD_M,
+} from './piazza-navona'
 
 /** Map / geofence settings per waypoint — extend when adding new stops. */
 export const WAYPOINT_GEO = {
@@ -29,6 +35,15 @@ export const WAYPOINT_GEO = {
     debugPosition: PANTHEON_DEBUG_USER_POS,
     geofenceThresholdM: PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
     arrivalRadiusM: PANTHEON_ARRIVAL_RADIUS_M,
+    mapZoom: 17,
+  },
+  'piazza-navona': {
+    id: 'piazza-navona',
+    title: 'Piazza Navona',
+    landmark: PIAZZA_NAVONA,
+    debugPosition: PIAZZA_NAVONA_DEBUG_USER_POS,
+    geofenceThresholdM: PIAZZA_NAVONA_GEOFENCE_ARRIVAL_THRESHOLD_M,
+    arrivalRadiusM: PIAZZA_NAVONA_ARRIVAL_RADIUS_M,
     mapZoom: 17,
   },
 }

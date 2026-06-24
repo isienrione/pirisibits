@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { COLOSSEUM_WAYPOINT } from '../../data/colosseum';
 import { PANTHEON_WAYPOINT } from '../../data/pantheon';
+import { PIAZZA_NAVONA_WAYPOINT } from '../../data/piazza-navona';
 import { getLocalWaypoint, mergeWaypointWithLocalDefaults } from '../waypointMerge';
 
 describe('mergeWaypointWithLocalDefaults', () => {
@@ -44,5 +45,14 @@ describe('mergeWaypointWithLocalDefaults', () => {
     expect(merged.lat).toBe(PANTHEON_WAYPOINT.lat);
     expect(merged.viewpoint.pitch).toBe(18);
     expect(merged.framingProfile).toBe('compact_piazza');
+  });
+
+  it('resolves piazza-navona from local seed registry', () => {
+    const navona = getLocalWaypoint('piazza-navona');
+
+    expect(navona?.id).toBe('piazza-navona');
+    expect(navona?.viewpoint?.pitch).toBe(18);
+    expect(navona?.framingProfile).toBe('compact_piazza');
+    expect(navona?.modern_image_url).toContain('/waypoints/piazza-navona/');
   });
 });

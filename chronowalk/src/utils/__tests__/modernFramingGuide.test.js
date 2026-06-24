@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { COLOSSEUM_WAYPOINT } from '../../data/colosseum';
 import { PANTHEON_WAYPOINT } from '../../data/pantheon';
+import { PIAZZA_NAVONA_WAYPOINT } from '../../data/piazza-navona';
 import {
   assessModernFraming,
   COLOSSEUM_FRAMING_REFERENCE,
@@ -36,6 +37,13 @@ describe('modernFramingGuide', () => {
 
   it('passes Colosseum framing assessment', () => {
     const assessment = assessModernFraming(COLOSSEUM_WAYPOINT);
+    expect(assessment.passes).toBe(true);
+  });
+
+  it('passes Piazza Navona compact-piazza framing', () => {
+    const assessment = assessModernFraming(PIAZZA_NAVONA_WAYPOINT);
+    expect(assessment.offsetM).toBeGreaterThan(12);
+    expect(assessment.pitch).toBe(18);
     expect(assessment.passes).toBe(true);
   });
 });

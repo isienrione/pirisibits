@@ -1,5 +1,8 @@
 # ChronoWalk — Waypoint Asset Pipeline (Agent Playbook)
 
+> **Start here for the full repeatable workflow:** [WAYPOINT_PLAYBOOK.md](./WAYPOINT_PLAYBOOK.md)  
+> This doc focuses on framing rules, asset quality, and failure modes.
+
 Agent-oriented checklist for adding a new waypoint with a matched **modern ↔ ancient** “Magic Portal” slider.  
 Reference implementation: **Colosseum** (`src/data/colosseum.js`).
 
@@ -73,7 +76,8 @@ Asset Studio shows automated framing assessment via `assessModernFraming()` (`sr
 - [ ] Create `public/waypoints/<id>/` directory.
 - [ ] Create `src/data/<id>.js` seed file (copy structure from `colosseum.js`).
 - [ ] Register in `getLocalWaypoint()` inside `src/services/waypointMerge.js`.
-- [ ] Wire fetch in `App.jsx` when multi-waypoint tours exist (Colosseum MVP uses `fetchWaypointById('colosseum')` only).
+- [ ] Add map/geofence entry in `src/data/waypointGeo.js`.
+- [ ] Insert `id` in `src/data/rome-core-tour.js` `stopIds` (walking order).
 
 ### Phase 1 — Find the stand-here spot (modern POV)
 
