@@ -3,21 +3,16 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
-import {
-  COLOSSEUM,
-  COLOSSEUM_ARRIVAL_RADIUS_M,
-  GEOFENCE_ARRIVAL_THRESHOLD_M,
-} from '../data/colosseum'
 import { env, isDebugGeo, isMapboxConfigured } from '../config/env'
 
 const mapboxToken = env.mapboxToken
 
-const createColosseumMarkerElement = () => {
+const createLandmarkMarkerElement = (title) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
   el.innerHTML = `
     <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-yellow-400 shadow-lg"></div>
-    <span class="mt-1 rounded bg-black/70 px-2 py-0.5 text-xs font-semibold text-yellow-300">Colosseum</span>
+    <span class="mt-1 rounded bg-black/70 px-2 py-0.5 text-xs font-semibold text-yellow-300">${title}</span>
   `
   return el
 }
@@ -31,39 +26,54 @@ const createUserMarkerElement = () => {
   return el
 }
 
-const TourMap = ({ userPos, state, distance }) => {
+const TourMap = ({
+  landmark,
+  landmarkTitle,
+  arrivalRadiusM,
+  geofenceThresholdM,
+  mapZoom = 15,
+  userPos,
+  state,
+  distance,
+}) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
+  const landmarkMarker = useRef(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const debugGeo = isDebugGeo()
 
   useEffect(() => {
-    if (!mapboxToken || !mapContainer.current || map.current) return
+    if (!mapboxToken || !mapContainer.current || map.current || !landmark?.lat || !landmark?.lng) {
+      return undefined
+    }
 
     mapboxgl.accessToken = mapboxToken
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [COLOSSEUM.lng, COLOSSEUM.lat],
-      zoom: 15,
+      center: [landmark.lng, landmark.lat],
+      zoom: mapZoom,
     })
 
-    new mapboxgl.Marker({ element: createColosseumMarkerElement(), anchor: 'bottom' })
-      .setLngLat([COLOSSEUM.lng, COLOSSEUM.lat])
+    landmarkMarker.current = new mapboxgl.Marker({
+      element: createLandmarkMarkerElement(landmarkTitle),
+      anchor: 'bottom',
+    })
+      .setLngLat([landmark.lng, landmark.lat])
       .addTo(map.current)
 
     map.current.on('load', () => {
-      map.current.addSource('colosseum-zone', {
+      map.current.addSource('waypoint-zone', {
         type: 'geojson',
-        data: createCirclePolygon(COLOSSEUM, COLOSSEUM_ARRIVAL_RADIUS_M),
+        data: createCirclePolygon(landmark, arrivalRadiusM),
       })
 
       map.current.addLayer({
-        id: 'colosseum-zone-fill',
+        id: 'waypoint-zone-fill',
         type: 'fill',
-        source: 'colosseum-zone',
+        source: 'waypoint-zone',
         paint: {
           'fill-color': '#FFD700',
           'fill-opacity': 0.15,
@@ -71,9 +81,9 @@ const TourMap = ({ userPos, state, distance }) => {
       })
 
       map.current.addLayer({
-        id: 'colosseum-zone-outline',
+        id: 'waypoint-zone-outline',
         type: 'line',
-        source: 'colosseum-zone',
+        source: 'waypoint-zone',
         paint: {
           'line-color': '#FFD700',
           'line-width': 2,
@@ -87,16 +97,17 @@ const TourMap = ({ userPos, state, distance }) => {
     return () => {
       setMapLoaded(false)
       userMarker.current = null
+      landmarkMarker.current = null
       map.current?.remove()
       map.current = null
     }
-  }, [])
+  }, [landmark?.lat, landmark?.lng, landmarkTitle, arrivalRadiusM, mapZoom])
 
   useEffect(() => {
-    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
+    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded || !landmark?.lat) return
 
-    const markerLng = debugGeo ? COLOSSEUM.lng + 0.0002 : userPos.lng
-    const markerLat = debugGeo ? COLOSSEUM.lat + 0.0001 : userPos.lat
+    const markerLng = debugGeo ? landmark.lng + 0.0002 : userPos.lng
+    const markerLat = debugGeo ? landmark.lat + 0.0001 : userPos.lat
 
     if (userMarker.current) {
       userMarker.current.setLngLat([markerLng, markerLat])
@@ -108,7 +119,7 @@ const TourMap = ({ userPos, state, distance }) => {
         .setLngLat([markerLng, markerLat])
         .addTo(map.current)
     }
-  }, [userPos, mapLoaded])
+  }, [userPos, mapLoaded, debugGeo, landmark?.lat, landmark?.lng])
 
   if (!isMapboxConfigured()) {
     return (
@@ -128,7 +139,7 @@ const TourMap = ({ userPos, state, distance }) => {
       <div className="absolute left-3 top-3 space-y-2">
         {debugGeo ? (
           <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: teleported to Rome
+            Debug GPS: teleported to {landmarkTitle}
           </div>
         ) : (
           <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
@@ -146,7 +157,7 @@ const TourMap = ({ userPos, state, distance }) => {
           </div>
         )}
         <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
-          Arrival geofence: {GEOFENCE_ARRIVAL_THRESHOLD_M}m
+          Arrival geofence: {geofenceThresholdM}m
         </div>
       </div>
     </div>

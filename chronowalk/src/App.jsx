@@ -10,11 +10,13 @@ import {
   ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
   CARD_REVEAL_DELAY_MS,
   COLOSSEUM,
+  COLOSSEUM_ARRIVAL_RADIUS_M,
   DEBUG_USER_POS,
   GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './data/colosseum'
 import {
   PANTHEON,
+  PANTHEON_ARRIVAL_RADIUS_M,
   PANTHEON_DEBUG_USER_POS,
   PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './data/pantheon'
@@ -25,13 +27,19 @@ import { getTourWaypointId, isAssetStudio } from './config/env'
 const TOUR_GEO = {
   colosseum: {
     target: COLOSSEUM,
+    title: 'Colosseum',
     debugPosition: DEBUG_USER_POS,
     geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
+    arrivalRadiusM: COLOSSEUM_ARRIVAL_RADIUS_M,
+    mapZoom: 15,
   },
   pantheon: {
     target: PANTHEON,
+    title: 'Pantheon',
     debugPosition: PANTHEON_DEBUG_USER_POS,
     geofenceThresholdM: PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
+    arrivalRadiusM: PANTHEON_ARRIVAL_RADIUS_M,
+    mapZoom: 17,
   },
 }
 
@@ -126,7 +134,16 @@ function App() {
 
   return (
     <div className="relative h-screen w-full">
-      <TourMap userPos={position} state={state} distance={distance} />
+      <TourMap
+        landmark={tourGeo.target}
+        landmarkTitle={tourGeo.title}
+        arrivalRadiusM={tourGeo.arrivalRadiusM}
+        geofenceThresholdM={tourGeo.geofenceThresholdM}
+        mapZoom={tourGeo.mapZoom}
+        userPos={position}
+        state={state}
+        distance={distance}
+      />
       <WaypointCard
         waypoint={activeWaypoint}
         state={state}
