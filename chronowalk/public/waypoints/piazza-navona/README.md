@@ -7,7 +7,7 @@
 
 **Tour test:** `?debugGeo=true` (full 3-stop tour) or `?debugGeo=true&debugStop=piazza-navona`  
 **Single-stop debug:** `?singleWaypoint=piazza-navona&debugGeo=true`  
-**Asset Studio:** `?assetStudio=true&waypoint=piazza-navona`
+**Asset Studio (prompts):** http://localhost:5173/?assetStudio=true&waypoint=piazza-navona  
 
 ## Deliverables
 

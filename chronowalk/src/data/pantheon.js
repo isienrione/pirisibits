@@ -1,5 +1,7 @@
 export const PANTHEON = { lat: 41.89885, lng: 12.47687 }
 
+/** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=pantheon */
+
 /**
  * Mid-piazza POV facing the portico — closer than the fountain-wide Street View shot.
  * Re-scouted to match Colosseum-style framing (monument fills the frame).

@@ -9,6 +9,7 @@ import {
   COLOSSEUM_FRAMING_REFERENCE,
   MODERN_FRAMING_CHECKLIST,
 } from '../utils/modernFramingGuide';
+import { buildAssetStudioUrl, listAssetStudioEntries } from '../utils/assetStudioUrls';
 
 const PromptBlock = ({ title, body, tool }) => {
   const [copied, setCopied] = useState(false);
@@ -79,6 +80,12 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
 
   const framing = useMemo(() => (waypoint ? assessModernFraming(waypoint) : null), [waypoint]);
 
+  const studioEntries = useMemo(() => listAssetStudioEntries(), []);
+  const studioPageUrl = useMemo(() => {
+    if (typeof window === 'undefined') return buildAssetStudioUrl(waypointId, 'http://localhost:5173');
+    return buildAssetStudioUrl(waypointId, window.location.origin);
+  }, [waypointId]);
+
   const modernReferencePath = waypoint ? getModernReferenceUrl(waypoint) : null;
 
   if (loading) {
@@ -109,6 +116,31 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference
             image and viewpoint metadata — same pipeline used for the Colosseum portal.
           </p>
+
+          <div className="mt-5 rounded-xl border border-stone-700 bg-stone-900/60 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">
+              Bookmark this page
+            </p>
+            <p className="mt-2 break-all font-mono text-xs text-stone-300">{studioPageUrl}</p>
+            <p className="mt-3 text-xs text-stone-500">
+              All stops:{' '}
+              {studioEntries.map((entry, index) => (
+                <span key={entry.id}>
+                  {index > 0 ? ' · ' : null}
+                  {entry.id === waypointId ? (
+                    <span className="text-amber-200">{entry.title}</span>
+                  ) : (
+                    <a
+                      href={entry.search}
+                      className="text-amber-400 underline decoration-amber-400/40 hover:text-amber-200"
+                    >
+                      {entry.title}
+                    </a>
+                  )}
+                </span>
+              ))}
+            </p>
+          </div>
         </header>
 
         {framing ? (
@@ -299,7 +331,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
         </section>
 
         <p className="mt-8 text-center text-xs text-stone-500">
-          Studio URL: ?assetStudio=true&amp;waypoint={promptPack.waypointId}
+          Studio URL: {studioPageUrl}
         </p>
       </div>
     </div>

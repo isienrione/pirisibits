@@ -4,6 +4,7 @@
 Use this doc yourself, hand it to Cursor/Claude agents, or paste the [Gemini handoff block](#gemini-handoff-where-we-are-now) into a Gemini session to continue production.
 
 **Related docs**
+- **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — bookmarkable prompt links per waypoint
 - [WAYPOINT_ASSET_PIPELINE.md](./WAYPOINT_ASSET_PIPELINE.md) — framing rules, asset quality bar, failure modes
 - [CHRONOWALK_BUILD_STATE.md](./CHRONOWALK_BUILD_STATE.md) — overall build state, deploy, env vars
 
@@ -16,6 +17,9 @@ Use this doc yourself, hand it to Cursor/Claude agents, or paste the [Gemini han
 | Colosseum | `colosseum` | 1 | ✅ Production | Reference implementation; `moderncolosseum.mp4` naming |
 | Pantheon | `pantheon` | 2 | ✅ Production | Re-scouted mid-piazza POV; `npm run process-pantheon` |
 | Piazza Navona | `piazza-navona` | 3 | 🟡 Scaffold | Code + placeholder media; needs real AI assets |
+
+**Asset Studio (AI prompts):** see **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — one link per stop, e.g.  
+http://localhost:5173/?assetStudio=true&waypoint=piazza-navona
 
 **Tour:** `rome-core` — `Colosseum → Pantheon → Piazza Navona`  
 **Branch / PR:** `cursor/chronowalk-setup-a224` · [PR #4](https://github.com/isienrione/pirisibits/pull/4)
@@ -112,13 +116,22 @@ cp src/data/pantheon.js src/data/$ID.js   # edit thoroughly
 npm test
 ```
 
+**Create your Asset Studio link** (prompts auto-generate from the seed file):
+
+```
+http://localhost:5173/?assetStudio=true&waypoint=<id>
+```
+
+Add the link to [ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md) and `public/waypoints/<id>/README.md`.
+
 **`framingProfile`**
 - `large_approach` — Colosseum-style (offset 40–120 m)
 - `compact_piazza` — Pantheon / Navona-style (offset 18–45 m)
 
 ### Phase 1 — Scout viewpoint (human + Street View)
 
-1. Open Asset Studio: `?assetStudio=true&waypoint=<id>`
+1. Open Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=<id>  
+   (all links: [ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md))
 2. Walk Street View **along the tourist approach** — not the Maps pin / plaza center
 3. Target pitch **14–22°**, monument **60–75% of frame height**
 4. Record `viewpoint` + `immersive_orientation_hint` + Street View URL in seed comments

@@ -1,5 +1,7 @@
 export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 
+/** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=colosseum */
+
 // Visitor camera POV for the before/after slider (facade approach — near Google Street View)
 export const COLOSSEUM_VIEWPOINT = {
   lat: 41.891275,

@@ -42,5 +42,5 @@ fi
 
 echo ""
 echo "$WAYPOINT_ID assets ready."
+echo "Asset Studio (prompts): http://localhost:5173/?assetStudio=true&waypoint=$WAYPOINT_ID"
 echo "Test tour: ?debugGeo=true&debugStop=$WAYPOINT_ID"
-echo "Asset Studio: ?assetStudio=true&waypoint=$WAYPOINT_ID"

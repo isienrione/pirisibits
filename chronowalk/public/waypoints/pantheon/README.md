@@ -3,7 +3,7 @@
 **Viewpoint:** Mid-piazza facing the portico (`41.89862, 12.47687`, pitch 18°).  
 **Tour test:** `?debugGeo=true` (full tour) or `?debugGeo=true&debugStop=pantheon` (start at Pantheon, full route visible)  
 **Single-stop debug:** `?singleWaypoint=pantheon&debugGeo=true`  
-**Asset Studio:** `?assetStudio=true&waypoint=pantheon`
+**Asset Studio (prompts):** http://localhost:5173/?assetStudio=true&waypoint=pantheon  
 
 ## Deliverables
 

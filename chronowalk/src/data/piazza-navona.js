@@ -1,5 +1,7 @@
 export const PIAZZA_NAVONA = { lat: 41.89918, lng: 12.47306 }
 
+/** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=piazza-navona */
+
 /**
  * South edge of the oval piazza, facing north toward Bernini's central fountain.
  * Ancient layer: Stadium of Domitian (Circus Agonalis) — same camera, era swap only.
