@@ -7,6 +7,7 @@
 - **[TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)** — all tour / single-stop / Asset Studio / raw media URLs
 - **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — prompt-generator bookmarks per stop
 - **[docs/GEMINI_PROMPTS_EXPANSION.md](./docs/GEMINI_PROMPTS_EXPANSION.md)** — 4 prompts × 14 new waypoints (Forum, Capitoline, Campo, etc.)
+- **[docs/AUDIO_PRODUCTION_PLAYBOOK.md](./docs/AUDIO_PRODUCTION_PLAYBOOK.md)** — agentic audio scripts, fact ledger, VO specs
 - [WAYPOINT_ASSET_PIPELINE.md](./WAYPOINT_ASSET_PIPELINE.md) — framing rules, quality bar, failures
 - [CHRONOWALK_BUILD_STATE.md](./CHRONOWALK_BUILD_STATE.md) — deploy, env vars
 
