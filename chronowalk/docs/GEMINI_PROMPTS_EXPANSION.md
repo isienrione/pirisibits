@@ -3,48 +3,97 @@
 **15 new waypoints** (Forum cluster, Capitoline, Campo de' Fiori, **Largo Argentina**, Trajan's Market, Castel Sant'Angelo, Circus Maximus, Appian Way).  
 **Excludes** stops already in production: `colosseum`, `pantheon`, `piazza-navona`.
 
-> **Correction (June 2026):** An earlier draft wrongly put the **Theatre of Pompey** ancient layer on `campo-de-fiori`. The theatre cavea, Curia (Caesar’s assassination), and Area Sacra ruins are at **Largo di Torre Argentina** — use waypoint `largo-argentina`. Campo de' Fiori gets its own honest ancient layer (open campo / market field). See [CAMPO_LARGO_CORRECTION.md](./CAMPO_LARGO_CORRECTION.md) if you already spent Gemini credits on the old prompts.
+> **Campo vs Pompey:** Theatre of Pompey / Caesar’s Curia = **`largo-argentina`**, not Campo de' Fiori. See [CAMPO_LARGO_CORRECTION.md](./CAMPO_LARGO_CORRECTION.md).
 
-**Branch:** `cursor/chronowalk-setup-a224` · See also [WAYPOINT_PLAYBOOK.md](../WAYPOINT_PLAYBOOK.md) · [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md)
+**Branch:** `cursor/chronowalk-setup-a224` · [WAYPOINT_PLAYBOOK.md](../WAYPOINT_PLAYBOOK.md) · [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md)
 
 ---
 
-## Gemini 4-slot workflow (quota-friendly)
+## Gemini workflow — read before any prompt
 
-Use **one Gemini session per waypoint** (~3–4 generations). Order matters:
+Gemini often **skips the ancient still** and jumps straight to video on “Prompt 3”. Prevent that with **mode labels**, **forbidden words**, and **fresh chats**.
 
-| Slot | Output file | Input | Notes |
-|------|-------------|-------|-------|
-| **1** | `modern-exterior.jpg` | Text only (Street View POV style) | Scout coords below; refine until framing passes Asset Studio band |
-| **2** | `incoming/modern-source.mp4` | **Image:** slot 1 still | img2vid, locked camera, ~5 s |
-| **3** | `ancient-reconstruction.jpg` (optional) | **Image:** slot 1 still | Same FOV — only era changes |
-| **4** | `incoming/ancient-source.mp4` | **Image:** slot 3 (or slot 1) + motion match slot 2 | Locked camera, same duration |
+### Session rules
 
-Then:
+| Step | Gemini chat | Attach | Gemini tool mode | Save as |
+|------|-------------|--------|------------------|---------|
+| **1** | Chat A | nothing (text only) | **Create image** | `modern-exterior.jpg` |
+| **2** | Chat A (same) | Prompt 1 still | **Animate image / Create video** | `incoming/modern-source.mp4` |
+| **3** | **Chat B (NEW)** | Prompt 1 still | **Create image** only | `ancient-reconstruction.jpg` |
+| **4** | **Chat C (NEW)** | Prompt 3 still (+ optional Prompt 2 video) | **Animate image / Create video** | `incoming/ancient-source.mp4` |
+
+**Why new chats:** After you generate video in Chat A, Gemini biases the next reply toward motion. **Always open a fresh chat for Prompt 3 (ancient still).** Open another fresh chat for Prompt 4 if Prompt 3 still returns video.
+
+### If Prompt 3 returns video anyway
+
+1. Stop — do not use that file as the still.
+2. New chat → paste **only** the Prompt 3 block → attach modern still.
+3. First line of your message: `IMAGE ONLY. Still photograph. No video. No motion.`
+4. If Gemini has a **“Create image”** vs **“Create video”** toggle, pick **image** before sending.
+
+### After generation
 
 ```bash
 npm run process-waypoint -- <id>    # literal mapping (NOT Pantheon swap)
 npm run verify-waypoint -- <id>
 ```
 
-**Do not** generate ancient from GPS text alone — always use the **modern still as visual reference**.
+Ancient must use **modern still as reference** — never GPS text alone.
 
 ---
 
-## Shared camera lock (append to every prompt)
+## Reusable blocks (auto-included in prompts below)
+
+**CAMERA LOCK** (all steps):
 
 ```
-CAMERA LOCK: Tripod-locked ground-level camera — no pan, tilt, zoom, or dolly during clip.
-16:9 landscape. Monument or vista fills ~60–75% of frame height (Colosseum close-approach standard — not a distant postcard).
-Center-weighted composition; full facade or primary ruin mass visible.
-Photorealistic, natural Mediterranean daylight. No text, watermarks, UI, or borders.
+Tripod-locked ground-level camera. 16:9 landscape. Monument fills ~60–75% of frame height.
+Center-weighted; full facade or ruin mass visible. Photorealistic Mediterranean daylight.
+No text, watermarks, UI, or borders.
+```
+
+**P1 — STILL header** (modern):
+
+```
+TASK: MODERN STILL — IMAGE ONLY
+OUTPUT: One 16:9 photograph (JPEG/PNG). Not a video. Not a GIF. No motion blur. No animation.
+```
+
+**P2 — VIDEO header** (modern):
+
+```
+TASK: MODERN VIDEO — VIDEO ONLY
+ATTACH: [upload modern still from Prompt 1]
+OUTPUT: One 5-second 16:9 MP4. Use attached image as exact first frame; locked camera.
+FORBIDDEN: pan, tilt, zoom, dolly, architecture warp, morphing.
+Motion: only subtle clouds, pedestrians, light shimmer.
+```
+
+**P3 — STILL header** (ancient) — **paste in a NEW Gemini chat**:
+
+```
+TASK: ANCIENT STILL — IMAGE ONLY
+ATTACH: [upload modern still from Prompt 1]
+OUTPUT: One 16:9 photograph (JPEG/PNG). Frozen frame. Not a video. Not a GIF.
+Match attached photo exactly: same POV, horizon, crop — ONLY the historical era changes.
+FORBIDDEN: any movement, video, animation, moving crowds, fluttering fabric, smoke trails, camera move.
+```
+
+**P4 — VIDEO header** (ancient) — **new chat recommended**:
+
+```
+TASK: ANCIENT VIDEO — VIDEO ONLY
+ATTACH: [upload ancient STILL from Prompt 3] required. [upload modern video from Prompt 2] optional for motion timing.
+OUTPUT: One 5-second 16:9 MP4. First frame = attached ancient still; architecture locked.
+FORBIDDEN: pan, tilt, zoom, geometry drift between frames.
+Motion: subtle era-appropriate ambient only — match modern clip duration (~5 s).
 ```
 
 ---
 
 ## Forum Romanum cluster (8 stops)
 
-Suggested walk order within the Forum (adjust `rome-core-tour.js` when scaffolded):
+Suggested walk order (adjust `rome-core-tour.js` when scaffolded):
 
 `forum-arch-titus` → `forum-basilica-maxentius` → `forum-via-sacra` → `forum-temple-vesta` → `forum-rostra` → `forum-temple-saturn` → `forum-curia-julia` → `forum-arch-severus`
 
@@ -54,51 +103,53 @@ Suggested walk order within the Forum (adjust `rome-core-tour.js` when scaffolde
 
 | Field | Value |
 |-------|-------|
-| **Title** | Temple of Saturn |
 | **Landmark** | `41.89239, 12.48498` |
-| **Viewpoint** | `41.89218, 12.48472` · heading `78°` · pitch `16°` |
-| **Stand** | West side of Forum, facing east toward the eight surviving columns |
-| **Ancient target** | Temple of Saturn, ~100 AD — full podium, colonnade, gilded roof line |
+| **Viewpoint** | `41.89218, 12.48472` · h `78°` · pitch `16°` |
+| **Ancient target** | Temple of Saturn ~100 AD — full podium, colonnade, gilded roof |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89218,12.48472&heading=78&pitch=16 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic ground-level photo of the Temple of Saturn ruins in the Roman Forum today. Stand at 41.89218, 12.48472, camera 78° heading, 16° pitch. Ionic columns and partial entablature fill the frame; tourists and Forum paving in foreground. Overcast-bright Roman daylight, documentary travel photography. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One 16:9 photograph. Not video.  
+Photorealistic ground-level photo of Temple of Saturn ruins in the Roman Forum today. Stand 41.89218, 12.48472, 78° heading, 16° pitch. Ionic columns and entablature fill frame; Forum paving, sparse tourists. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Cinematic locked-off 5-second video of the Temple of Saturn today, same camera as the provided modern reference photo. Subtle ambient motion only: light cloud drift, small pedestrian movement, soft daylight. Architecture perfectly fixed — no camera movement, no warp. Hero compare frame at ~3 s with full column row visible. 16:9, 24fps feel. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4, locked camera.  
+Cinematic locked-off video of Temple of Saturn today, exact framing from attached still. Subtle cloud drift and pedestrian movement only. Architecture fixed. Hero frame ~3 s. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Rome reconstruction of the Temple of Saturn, exact same camera position and field of view as the provided modern reference photo. Stand at 41.89218, 12.48472, 78° heading, 16° pitch. Era ~100 AD: complete temple on high podium, gilded roof, intact colonnade. Warm Mediterranean daylight, photorealistic archaeological visualization. No modern ruins, tourists, or anachronisms. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW Gemini chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 modern still. OUTPUT: One frozen 16:9 photograph. Not video. No motion.  
+Ancient Rome reconstruction of Temple of Saturn, exact same camera as attached modern photo. Era ~100 AD: complete temple on podium, gilded roof, intact colonnade. No tourists or modern ruins. FORBIDDEN: video, animation, moving elements. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Rome reconstruction video of the Temple of Saturn, locked tripod camera matching the modern reference video motion and duration (~5 s). Same framing as modern clip. Subtle era-appropriate motion: banners, priest silhouettes, dust motes, warm light flicker. Temple structure fixed — no geometry drift. Hero poster frame at ~3 s. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW Gemini chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 ancient still (+ optional Prompt 2 modern video). OUTPUT: 5 s MP4.  
+Ancient Temple of Saturn video, first frame = attached still, locked tripod. Subtle banners, static priest silhouettes, dust motes — structure fixed. ~5 s. CAMERA LOCK.
 
 ---
 
-### 2. `forum-curia-julia` — Curia Julia (Senate House)
+### 2. `forum-curia-julia` — Curia Julia
 
 | Field | Value |
 |-------|-------|
-| **Title** | Curia Julia |
 | **Landmark** | `41.89223, 12.48528` |
-| **Viewpoint** | `41.89205, 12.48505` · heading `55°` · pitch `18°` |
-| **Stand** | Forum floor southwest of the brick facade |
-| **Ancient target** | Curia Julia senate house, ~200 AD — marble-clad facade, bronze doors |
+| **Viewpoint** | `41.89205, 12.48505` · h `55°` · pitch `18°` |
+| **Ancient target** | Senate house ~200 AD — marble facade, bronze doors |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89205,12.48505&heading=55&pitch=18 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic ground-level photo of the Curia Julia brick facade in the Roman Forum today. Stand at 41.89205, 12.48505, camera 55° heading, 18° pitch. Large rectangular senate building fills frame; bronze door replica visible. Forum stone paving, sparse tourists. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One 16:9 photograph. Not video.  
+Curia Julia brick facade in Roman Forum today. Stand 41.89205, 12.48505, 55°, 18°. Rectangular senate building fills frame; bronze door replica, Forum paving. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked-off 5-second video of Curia Julia today using provided modern still as exact framing. Subtle sky and pedestrian motion only. Architecture fixed. Hero frame ~3 s. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked 5 s video of Curia Julia, attached still as first frame. Subtle sky and pedestrians only. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Rome reconstruction of Curia Julia senate house, same camera as modern reference. Era ~200 AD: marble-faced facade, bronze doors, steps, intact roofline. No modern brick weathering or tourists. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph only. Not video.  
+Curia Julia ~200 AD: marble-faced facade, bronze doors, steps, intact roofline. Same POV as attachment. No modern brick or tourists. FORBIDDEN: motion, video. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Curia Julia video, motion-matched to modern reference clip, ~5 s, locked camera. Senators as distant silhouettes, torch smoke, warm interior glow through doors. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient Curia, locked camera, motion-matched to modern clip. Distant senator silhouettes, faint torch glow through doors. CAMERA LOCK.
 
 ---
 
@@ -106,77 +157,80 @@ Ancient Curia Julia video, motion-matched to modern reference clip, ~5 s, locked
 
 | Field | Value |
 |-------|-------|
-| **Title** | Arch of Septimius Severus |
 | **Landmark** | `41.89301, 12.48442` |
-| **Viewpoint** | `41.89275, 12.48455` · heading `340°` · pitch `17°` |
-| **Stand** | Forum side, facing northwest toward the triple arch |
-| **Ancient target** | Triumphal arch, ~203 AD — gilded bronze reliefs, intact attic inscription |
+| **Viewpoint** | `41.89275, 12.48455` · h `340°` · pitch `17°` |
+| **Ancient target** | Triumphal arch ~203 AD — reliefs, gilded attic statuary |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89275,12.48455&heading=340&pitch=17 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Arch of Septimius Severus in the Roman Forum today. Stand at 41.89275, 12.48455, 340° heading, 17° pitch. Three archways and weathered marble fill the frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Arch of Septimius Severus in Forum today. Stand 41.89275, 12.48455, 340°, 17°. Triple archways and weathered marble fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked camera video of the Arch of Septimius Severus, modern reference framing. Subtle cloud drift and pedestrian motion. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of arch, attached framing. Cloud drift, light pedestrian motion. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Rome triumphal arch reconstruction, same POV as modern reference. ~203 AD: crisp marble reliefs, gilded bronze statuary on attic, no erosion. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Arch ~203 AD: crisp marble reliefs, gilded bronze on attic, no erosion. Same POV as attachment. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient arch video, motion-synced to modern clip, locked tripod, ~5 s. Subtle parade banners, dust, warm sun glint on gilding. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient arch video, locked tripod, subtle parade banners and dust, sun glint on gilding. CAMERA LOCK.
 
 ---
 
-### 4. `forum-via-sacra` — Via Sacra (Sacred Way)
+### 4. `forum-via-sacra` — Via Sacra
 
 | Field | Value |
 |-------|-------|
-| **Title** | Via Sacra |
 | **Landmark** | `41.89255, 12.48535` |
-| **Viewpoint** | `41.89240, 12.48510` · heading `45°` · pitch `12°` |
-| **Stand** | On the Sacred Way paving, looking northeast along the processional route |
-| **Ancient target** | Paved Via Sacra, ~120 AD — colonnades, temples lining the street |
+| **Viewpoint** | `41.89240, 12.48510` · h `45°` · pitch `12°` |
+| **Ancient target** | Sacred Way ~120 AD — colonnades, temples along route |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89240,12.48510&heading=45&pitch=12 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic ground-level photo along the Via Sacra in the Roman Forum today. Stand at 41.89240, 12.48510, 45° heading, 12° pitch. Cobblestone processional way receding into frame with ruins and columns on both sides. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Via Sacra in Roman Forum today. Stand 41.89240, 12.48510, 45°, 12°. Cobblestone way receding with ruins and columns on both sides. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video along Via Sacra today, matching modern still. Gentle pedestrian movement, light shimmer — no camera move. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video along Via Sacra, attached framing. Gentle pedestrian movement only. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Via Sacra reconstruction, same camera as modern reference. ~120 AD: intact paving, lined colonnades, temples and shops, no modern ruins. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Via Sacra ~120 AD: intact paving, colonnades, temples — same POV as attachment. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Via Sacra processional street video, motion-matched to modern, ~5 s. Distant toga-clad crowds, banners, dust in sunbeams. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient processional street, locked camera, distant static crowd silhouettes, light dust in sunbeams. CAMERA LOCK.
 
 ---
 
-### 5. `forum-rostra` — Rostra (Speakers' Platform)
+### 5. `forum-rostra` — Rostra
 
 | Field | Value |
 |-------|-------|
-| **Title** | The Rostra |
 | **Landmark** | `41.89282, 12.48518` |
-| **Viewpoint** | `41.89265, 12.48495` · heading `30°` · pitch `15°` |
-| **Stand** | Forum floor facing the Rostra platform and nearby columns |
-| **Ancient target** | Rostra with ship-prow decorations, ~50 BC–100 AD |
+| **Viewpoint** | `41.89265, 12.48495` · h `30°` · pitch `15°` |
+| **Ancient target** | Rostra with ship-prow decorations ~50 BC–100 AD |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89265,12.48495&heading=30&pitch=15 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Rostra platform remains in the Roman Forum today. Stand at 41.89265, 12.48495, 30° heading, 15° pitch. Low marble platform and surrounding columns fill frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Rostra platform remains in Forum today. Stand 41.89265, 12.48495, 30°, 15°. Low marble platform and columns fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked video of Rostra ruins, modern reference framing. Subtle ambient motion only. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of Rostra ruins, attached framing. Subtle ambient motion only. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Rostra reconstruction with bronze ship rams mounted on the platform, same POV as modern photo. Orators' platform intact, Forum open behind. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Ancient Rostra with bronze ship rams on platform, orators' steps intact, Forum open behind — same POV. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Rostra video, motion-matched, locked camera. Crowd silhouettes, speaker gesturing, flags fluttering. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient Rostra, locked camera, subtle flag flutter, static crowd silhouettes. CAMERA LOCK.
 
 ---
 
@@ -184,25 +238,26 @@ Ancient Rostra video, motion-matched, locked camera. Crowd silhouettes, speaker 
 
 | Field | Value |
 |-------|-------|
-| **Title** | Basilica of Maxentius |
 | **Landmark** | `41.89195, 12.48825` |
-| **Viewpoint** | `41.89175, 12.48800` · heading `65°` · pitch `20°` |
-| **Stand** | Via Sacra approach, facing the massive surviving vault bay |
-| **Ancient target** | Complete basilica, ~312 AD — coffered vaults, colossal scale |
+| **Viewpoint** | `41.89175, 12.48800` · h `65°` · pitch `20°` |
+| **Ancient target** | Complete basilica ~312 AD — coffered vaults |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89175,12.48800&heading=65&pitch=20 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Basilica of Maxentius vault ruins today. Stand at 41.89175, 12.48800, 65° heading, 20° pitch. Monolithic brick arch and coffered ceiling dominate frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Basilica of Maxentius vault ruins today. Stand 41.89175, 12.48800, 65°, 20°. Brick arch and coffered ceiling dominate frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video of Basilica of Maxentius ruins, reference framing. Subtle sky motion through vault opening. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of basilica ruins, attached framing. Subtle sky through vault. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Basilica of Maxentius fully roofed, same camera as modern reference. Massive nave vaults, marble floor, clerestory light. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Basilica fully roofed ~312 AD: nave vaults, marble floor, clerestory light — same POV. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient basilica interior/nave video, motion-matched, locked camera. Dust in light shafts, distant figures. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient nave interior, locked camera, dust in light shafts, distant static figures. CAMERA LOCK.
 
 ---
 
@@ -210,25 +265,26 @@ Ancient basilica interior/nave video, motion-matched, locked camera. Dust in lig
 
 | Field | Value |
 |-------|-------|
-| **Title** | Arch of Titus |
 | **Landmark** | `41.89068, 12.48858` |
-| **Viewpoint** | `41.89050, 12.48835` · heading `25°` · pitch `18°` |
-| **Stand** | Via Sacra east approach, facing the single great arch |
-| **Ancient target** | Arch of Titus, ~81 AD — relief panels, gilded chariot group on attic |
+| **Viewpoint** | `41.89050, 12.48835` · h `25°` · pitch `18°` |
+| **Ancient target** | Arch of Titus ~81 AD — reliefs, gilded quadriga on attic |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89050,12.48835&heading=25&pitch=18 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Arch of Titus on the Via Sacra today. Stand at 41.89050, 12.48835, 25° heading, 18° pitch. Single triumphal arch fills frame against sky. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Arch of Titus on Via Sacra today. Stand 41.89050, 12.48835, 25°, 18°. Single arch fills frame against sky. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked video, Arch of Titus, modern still framing. Subtle pedestrian and cloud motion. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video, attached framing. Subtle pedestrian and cloud motion. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Arch of Titus reconstruction, same POV. Crisp relief panels depicting triumph, gilded quadriga on attic, no weathering. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Arch ~81 AD: crisp triumph reliefs, gilded quadriga on attic — same POV. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Arch of Titus video, motion-synced to modern, locked tripod. Sun glint on gilding, light parade dust. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient arch, locked tripod, sun glint on gilding, light dust. CAMERA LOCK.
 
 ---
 
@@ -236,55 +292,57 @@ Ancient Arch of Titus video, motion-synced to modern, locked tripod. Sun glint o
 
 | Field | Value |
 |-------|-------|
-| **Title** | Temple of Vesta |
 | **Landmark** | `41.89178, 12.48725` |
-| **Viewpoint** | `41.89160, 12.48705` · heading `50°` · pitch `16°` |
-| **Stand** | Forum edge near House of the Vestals, facing the round temple |
-| **Ancient target** | Circular Temple of Vesta with sacred fire, ~100 AD |
+| **Viewpoint** | `41.89160, 12.48705` · h `50°` · pitch `16°` |
+| **Ancient target** | Circular temple with sacred fire ~100 AD |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89160,12.48705&heading=50&pitch=16 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Temple of Vesta circular ruin in the Roman Forum today. Stand at 41.89160, 12.48705, 50° heading, 16° pitch. Curved marble podium and partial columns fill frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Temple of Vesta circular ruin in Forum today. Stand 41.89160, 12.48705, 50°, 16°. Curved podium and columns fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video of Temple of Vesta ruins, reference framing. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of Vesta ruins, attached framing. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient circular Temple of Vesta with conical roof and sacred flame visible, same camera as modern reference. Vestal precinct intact. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Circular Temple of Vesta with conical roof and visible sacred flame — same POV, Vestal precinct intact. FORBIDDEN: video, motion, flickering flame animation. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Temple of Vesta video, motion-matched, locked camera. Flame flicker, veiled priestess silhouettes. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient Vesta temple, locked camera, subtle flame flicker only, veiled priestess silhouettes static. CAMERA LOCK.
 
 ---
 
-## Standalone stops (6)
+## Standalone stops (7)
 
 ---
 
-### 9. `capitoline-hill` — Capitoline Hill (Tabularium view)
+### 9. `capitoline-hill` — Capitoline Hill
 
 | Field | Value |
 |-------|-------|
-| **Title** | Capitoline Hill |
 | **Landmark** | `41.89324, 12.48275` |
-| **Viewpoint** | `41.89305, 12.48250` · heading `120°` · pitch `14°` |
-| **Stand** | Piazza del Campidoglio edge, overlooking Forum rooftops |
-| **Ancient target** | Capitoline temples and Forum vista, ~100 AD |
+| **Viewpoint** | `41.89305, 12.48250` · h `120°` · pitch `14°` |
+| **Ancient target** | Capitoline temples + Forum vista ~100 AD |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89305,12.48250&heading=120&pitch=14 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo from Capitoline Hill overlooking the Roman Forum today. Stand at 41.89305, 12.48250, 120° heading, 14° pitch. Forum ruins and Colosseum in distance, Michelangelo piazza parapet in foreground. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+View from Capitoline Hill over Roman Forum today. Stand 41.89305, 12.48250, 120°, 14°. Forum ruins, distant Colosseum, Michelangelo parapet in foreground. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked vista video from Capitoline Hill, modern reference framing. Subtle cloud drift over Forum. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked vista video, attached framing. Cloud drift over Forum. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Capitoline vista reconstruction, same POV as modern photo. Intact temples on hill, gleaming Forum below, no modern buildings. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Capitoline vista ~100 AD: intact temples on hill, gleaming Forum below — same POV, no modern buildings. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Capitoline overlook video, motion-matched, locked camera. Smoke from sacrifices, banners on temples. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient overlook, locked camera, subtle smoke from sacrifices, static banners. CAMERA LOCK.
 
 ---
 
@@ -292,25 +350,26 @@ Ancient Capitoline overlook video, motion-matched, locked camera. Smoke from sac
 
 | Field | Value |
 |-------|-------|
-| **Title** | Campo de' Fiori |
 | **Landmark** | `41.89559, 12.47223` |
-| **Viewpoint** | `41.89535, 12.47215` · heading `5°` · pitch `16°` |
-| **Stand** | South edge of the square, facing north toward Giordano Bruno statue and market stalls |
-| **Ancient target** | **Open campo / public field, ~1400–1500 AD** — pre-baroque palaces, dusty market square, no Bruno statue yet (executions and markets on an open field). *Not* the Theatre of Pompey — that is 200 m east at `largo-argentina`. |
+| **Viewpoint** | `41.89535, 12.47215` · h `5°` · pitch `16°` |
+| **Ancient target** | **Medieval open campo ~1400–1500 AD** — market field, no Bruno statue. **Not** Theatre of Pompey (see `largo-argentina`). |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89535,12.47215&heading=5&pitch=16 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Campo de' Fiori square in Rome today with market stalls and cobblestones. Stand at 41.89535, 12.47215, 5° heading, 16° pitch. Piazza fills frame; Giordano Bruno statue and cafe awnings visible. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Campo de' Fiori today with market stalls and cobblestones. Stand 41.89535, 12.47215, 5°, 16°. Bruno statue and cafe awnings visible. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video of Campo de' Fiori today, market atmosphere, reference framing. Subtle stall awning flutter and pedestrian motion. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of Campo market, attached framing. Awning flutter, pedestrian motion. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Late medieval open campo reconstruction, same camera as modern reference. ~1400s: open dusty field with wooden market stalls and low brick buildings at the edges — no baroque palaces, no Bruno statue, no modern cafes. Honest to this square as a **field and market**, not a Roman theatre. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Late medieval open campo ~1400s: dusty field, wooden market stalls, low brick edges — **no Roman theatre**, no Bruno statue, no baroque palaces. Same camera as attachment. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Medieval campo market video, motion-matched, locked camera. Vendors, carts, cloth awnings, chickens, smoke from braziers — same square shape, earlier era. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Medieval market scene, locked camera, subtle cart and awning motion, smoke from braziers — same square layout. CAMERA LOCK.
 
 ---
 
@@ -318,25 +377,26 @@ Medieval campo market video, motion-matched, locked camera. Vendors, carts, clot
 
 | Field | Value |
 |-------|-------|
-| **Title** | Largo di Torre Argentina |
 | **Landmark** | `41.89528, 12.47694` |
-| **Viewpoint** | `41.89555, 12.47665` · heading `250°` · pitch `14°` |
-| **Stand** | Street level at the railing, facing the sunken Area Sacra temples |
-| **Ancient target** | **Theatre of Pompey complex, ~55 BC** — cavea tiers, portico columns, Curia of Pompey (Senate met here; Caesar assassinated 44 BC). This is the correct Pompey waypoint. |
+| **Viewpoint** | `41.89555, 12.47665` · h `250°` · pitch `14°` |
+| **Ancient target** | **Theatre of Pompey ~55 BC** — cavea, portico, Curia (Caesar assassinated 44 BC) |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89555,12.47665&heading=250&pitch=14 |
-| **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Largo di Torre Argentina today — sunken archaeological area with Republican temples, cats on ruins, Rome traffic at street level. Stand at 41.89555, 12.47665, 250° heading, 14° pitch. Excavation fills frame below street grade. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Largo di Torre Argentina today — sunken Area Sacra temples, cats on ruins, street at grade. Stand 41.89555, 12.47665, 250°, 14°. Excavation fills frame below sidewalk. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video of Largo Argentina ruins today, reference framing. Subtle cat movement, light cloud drift. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of Argentina ruins, attached framing. Subtle cat movement, cloud drift. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Theatre of Pompey reconstruction, same camera as modern reference. ~55 BC: marble theatre tiers, portico columns, garden statues, bustling Republican Rome — Curia and cavea visible in excavation depth. No sunken medieval street level. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Theatre of Pompey ~55 BC: marble cavea tiers, portico columns, Curia — same POV as attachment, Republican Rome. No modern street level. FORBIDDEN: video, motion, animated crowds. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Theatre of Pompey video, motion-matched, locked camera. Toga crowds, theatre banners, senators near portico — same POV as modern ruins. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient Pompey theatre complex, locked camera, subtle toga crowd silhouettes, theatre banners — structure fixed. CAMERA LOCK.
 
 ---
 
@@ -344,25 +404,26 @@ Ancient Theatre of Pompey video, motion-matched, locked camera. Toga crowds, the
 
 | Field | Value |
 |-------|-------|
-| **Title** | Trajan's Market |
 | **Landmark** | `41.89562, 12.48578` |
-| **Viewpoint** | `41.89545, 12.48555` · heading `200°` · pitch `18°` |
-| **Stand** | Via Biberatica level, facing brick arcades |
-| **Ancient target** | Trajan's Market complex, ~110 AD — multi-story brick arcades, shops open |
+| **Viewpoint** | `41.89545, 12.48555` · h `200°` · pitch `18°` |
+| **Ancient target** | Market complex ~110 AD — brick arcades, open shops |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89545,12.48555&heading=200&pitch=18 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Trajan's Market brick arcades today. Stand at 41.89545, 12.48555, 200° heading, 18° pitch. Curving multi-level Roman brick facade fills frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Trajan's Market brick arcades today. Stand 41.89545, 12.48555, 200°, 18°. Multi-level curved facade fills frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked video of Trajan's Market, modern reference framing. Subtle ambient motion. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of market ruins, attached framing. Subtle ambient motion. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Trajan's Market reconstruction, same POV. Intact arcades, shop fronts, awnings, busy commercial levels. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Trajan's Market ~110 AD: intact arcades, shop fronts, awnings — same POV. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient market video, motion-matched, locked camera. Merchants, awnings flutter, warm interior glow. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient market, locked camera, subtle awnings and merchant movement. CAMERA LOCK.
 
 ---
 
@@ -370,25 +431,26 @@ Ancient market video, motion-matched, locked camera. Merchants, awnings flutter,
 
 | Field | Value |
 |-------|-------|
-| **Title** | Castel Sant'Angelo |
 | **Landmark** | `41.90306, 12.46627` |
-| **Viewpoint** | `41.90255, 12.46610` · heading `15°` · pitch `18°` |
-| **Stand** | Ponte Sant'Angelo south end, facing the mausoleum-castle |
-| **Ancient target** | Hadrian's Mausoleum, ~138 AD — cylindrical drum, bronze quadriga on summit |
+| **Viewpoint** | `41.90255, 12.46610` · h `15°` · pitch `18°` |
+| **Ancient target** | Hadrian's Mausoleum ~138 AD — marble drum, bronze quadriga |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.90255,12.46610&heading=15&pitch=18 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Castel Sant'Angelo from Ponte Sant'Angelo today. Stand at 41.90255, 12.46610, 15° heading, 18° pitch. Round castle mass and bridge statues fill frame; Tiber below. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Castel Sant'Angelo from Ponte Sant'Angelo today. Stand 41.90255, 12.46610, 15°, 18°. Round castle and bridge statues fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video of Castel Sant'Angelo from bridge, reference framing. River shimmer, light cloud drift. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video from bridge, attached framing. River shimmer, cloud drift. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Hadrian's Mausoleum reconstruction, same camera as modern reference. Smooth marble-clad drum, bronze quadriga on top, no medieval battlements. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Hadrian's Mausoleum ~138 AD: smooth marble drum, bronze quadriga on summit — no medieval battlements. Same POV. FORBIDDEN: video, motion. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient mausoleum video, motion-matched, locked camera. Bronze statue glint, Tiber reflections. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient mausoleum, locked camera, bronze glint, Tiber reflections. CAMERA LOCK.
 
 ---
 
@@ -396,67 +458,75 @@ Ancient mausoleum video, motion-matched, locked camera. Bronze statue glint, Tib
 
 | Field | Value |
 |-------|-------|
-| **Title** | Circus Maximus |
 | **Landmark** | `41.88594, 12.48570` |
-| **Viewpoint** | `41.88570, 12.48545` · heading `85°` · pitch `12°` |
-| **Stand** | Northwest rim, looking southeast along the long circus bowl |
-| **Ancient target** | Circus Maximus chariot stadium, ~100 AD — spina, metae, seating tiers full |
+| **Viewpoint** | `41.88570, 12.48545` · h `85°` · pitch `12°` |
+| **Ancient target** | Chariot circus ~100 AD — spina, seating tiers full |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.88570,12.48545&heading=85&pitch=12 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Circus Maximus grassy bowl today. Stand at 41.88570, 12.48545, 85° heading, 12° pitch. Long oval depression and Palatine Hill backdrop fill frame. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Circus Maximus grassy bowl today. Stand 41.88570, 12.48545, 85°, 12°. Long oval and Palatine backdrop fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-5-second locked video of Circus Maximus today, reference framing. Grass ripple, distant traffic haze. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video of circus bowl, attached framing. Grass ripple, haze. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Circus Maximus reconstruction, same POV. Packed seating tiers, spina with obelisk, starting gates — no modern grass field. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Circus Maximus ~100 AD: packed seating tiers, spina with obelisk, starting gates — no modern grass field. Same POV. FORBIDDEN: video, motion, chariots. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient chariot circus video, motion-matched, locked camera. Distant chariots as motion blur, crowd roar implied by banner flutter. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient circus, locked camera, distant chariot blur, banner flutter. CAMERA LOCK.
 
 ---
 
-### 15. `appian-way` — Appian Way (Via Appia Antica)
+### 15. `appian-way` — Appian Way
 
 | Field | Value |
 |-------|-------|
-| **Title** | Appian Way |
 | **Landmark** | `41.85670, 12.51205` |
-| **Viewpoint** | `41.85655, 12.51185` · heading `250°` · pitch `10°` |
-| **Stand** | On the ancient basalt road near Porta San Sebastiano, looking along the tree-lined via |
-| **Ancient target** | Via Appia Antica, ~100 AD — original basalt paving, tombs and cypress |
+| **Viewpoint** | `41.85655, 12.51185` · h `250°` · pitch `10°` |
+| **Ancient target** | Via Appia Antica ~100 AD — basalt paving, tombs, cypress |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.85655,12.51185&heading=250&pitch=10 |
-| **framingProfile** | `large_approach` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of the Appian Way ancient basalt road today with cypress trees and tombs. Stand at 41.85655, 12.51185, 250° heading, 10° pitch. Road receding into frame, Roman countryside. CAMERA LOCK.
+TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
+Appian Way basalt road today with cypress and tombs. Stand 41.85655, 12.51185, 250°, 10°. Road receding into countryside. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
-Locked 5-second video along Appian Way today, reference framing. Leaf flutter, soft daylight. CAMERA LOCK.
+TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
+Locked video along Appian Way, attached framing. Leaf flutter, daylight. CAMERA LOCK.
 
-**Prompt 3 — Ancient still**  
-Ancient Via Appia reconstruction, same camera as modern reference. Perfect basalt blocks, lined tombs and milestones, no asphalt or modern fences. CAMERA LOCK.
+**Prompt 3 — Ancient still** *(NEW chat)*  
+TASK: ANCIENT STILL — IMAGE ONLY. ATTACH: Prompt 1 still. OUTPUT: Frozen photograph. Not video.  
+Via Appia ~100 AD: perfect basalt blocks, lined tombs and milestones — same POV, no modern asphalt. FORBIDDEN: video, motion, wagons. CAMERA LOCK.
 
-**Prompt 4 — Ancient video**  
-Ancient Appian Way video, motion-matched, locked camera. Distant wagon dust, cypress sway. CAMERA LOCK.
+**Prompt 4 — Ancient video** *(NEW chat)*  
+TASK: ANCIENT VIDEO — VIDEO ONLY. ATTACH: Prompt 3 still. OUTPUT: 5 s MP4.  
+Ancient Appian Way, locked camera, distant wagon dust, cypress sway. CAMERA LOCK.
 
 ---
 
-## After generation — engineering checklist
+## Per-waypoint checklist (print)
 
-For each new `id`:
+```
+[ ] P1 modern still     → modern-exterior.jpg          (Chat A, image mode)
+[ ] P2 modern video     → incoming/modern-source.mp4   (Chat A, attach P1)
+[ ] P3 ancient still    → ancient-reconstruction.jpg   (Chat B NEW, image mode, attach P1)
+[ ] P4 ancient video    → incoming/ancient-source.mp4  (Chat C NEW, attach P3)
+[ ] npm run process-waypoint -- <id>
+[ ] npm run verify-waypoint -- <id>
+```
 
-1. Scaffold `src/data/<id>.js` (copy `piazza-navona.js` template)
-2. Register in `waypointMerge.js`, `waypointGeo.js`, `rome-core-tour.js` `stopIds`
-3. Drop files in `public/waypoints/<id>/incoming/`
-4. `npm run process-waypoint -- <id>` → must print **Mapping: literal**
-5. `npm run verify-waypoint -- <id>`
-6. Add rows to [ASSET_STUDIO_LINKS.md](../ASSET_STUDIO_LINKS.md) and [TOUR_TEST_LINKS.md](../TOUR_TEST_LINKS.md)
-7. Test: `http://localhost:5173/?singleWaypoint=<id>&debugGeo=true`
+---
 
-**Re-scout:** Coordinates above are starting points. Open each Street View link, adjust `viewpoint.{lat,lng,heading,pitch}` in the seed until Asset Studio framing check passes before locking prompts.
+## Engineering checklist
+
+1. Scaffold `src/data/<id>.js`
+2. Register in `waypointMerge.js`, `waypointGeo.js`, `rome-core-tour.js`
+3. `public/waypoints/<id>/incoming/` → process + verify
+4. Test: `?singleWaypoint=<id>&debugGeo=true`
 
 ---
 

@@ -41,6 +41,8 @@ If ancient doesn't match any useful POV, treat those credits as sunk cost. Re-ru
 - **Campo de' Fiori:** `GEMINI_PROMPTS_EXPANSION.md` → §10 `campo-de-fiori`
 - **Theatre of Pompey:** `GEMINI_PROMPTS_EXPANSION.md` → §11 `largo-argentina`
 
+**Gemini tip:** Always run **Prompt 3 (ancient still)** in a **new chat** with **Create image** mode — see workflow section at top of `GEMINI_PROMPTS_EXPANSION.md`. Otherwise Gemini jumps straight to video.
+
 ---
 
 ## Audio scripts too
