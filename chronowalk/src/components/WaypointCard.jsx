@@ -17,6 +17,7 @@ import {
   getModernSliderUrl,
   hasModernSliderMedia,
 } from '../utils/sliderMedia';
+import { isDebugMedia } from '../config/env';
 
 const WaypointCard = ({ waypoint, state, onClose }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -154,6 +155,9 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
   const showAudioToggle = Boolean(waypoint.arrival_immersive_url);
   const audioToggleLabel = isArrivalAudioPlaying ? 'Pause audio' : 'Play audio';
   const audioToggleIcon = isArrivalAudioPlaying ? '❚❚' : '▶';
+  const debugMedia = isDebugMedia();
+  const modernSliderUrl = getModernSliderUrl(waypoint);
+  const ancientSliderUrl = getAncientSliderUrl(waypoint);
 
   return (
     <div
@@ -196,9 +200,9 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           {showSlider ? (
             <div ref={sliderRef} className="mb-4">
               <BeforeAfterSlider
-                key={waypoint.id}
-                modernImg={getModernSliderUrl(waypoint)}
-                historicImg={getAncientSliderUrl(waypoint)}
+                key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
+                modernImg={modernSliderUrl}
+                historicImg={ancientSliderUrl}
                 depthMap={waypoint.depth_map_url}
                 tiltEnabled={tiltEnabled}
                 posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
@@ -274,6 +278,17 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
               <span aria-hidden="true">{audioToggleIcon}</span>
               {audioToggleLabel}
             </button>
+          ) : null}
+
+          {debugMedia ? (
+            <div className="mt-4 rounded-lg border border-stone-700 bg-stone-950/80 p-3 text-left font-mono text-[10px] leading-relaxed text-stone-400">
+              <p className="font-semibold text-amber-300">debugMedia</p>
+              <p>modern: {modernSliderUrl}</p>
+              <p>ancient: {ancientSliderUrl}</p>
+              <p className="mt-2 text-stone-500">
+                Open modern URL in a new tab — if it shows Pantheon, the file on disk or CDN is wrong.
+              </p>
+            </div>
           ) : null}
         </div>
       </div>

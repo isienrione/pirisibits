@@ -426,9 +426,30 @@ Bad row in Supabase `waypoints` table. Local seed still works if Supabase env va
 
 Clear saved progress: open with `?resetTour=true&debugGeo=true`
 
-### Still stuck?
+### Slider still shows another stop's pictures
 
-Paste the **full error message** (terminal or browser console) when asking for help.
+1. **Confirm files on disk** (you're already in `chronowalk/` — don't `cd chronowalk` again):
+   ```bash
+   ls -lh public/waypoints/piazza-navona/modern-exterior.jpg public/waypoints/piazza-navona/modern.mp4
+   npm run verify-piazza-navona
+   ```
+   Fix any `⚠ identical to pantheon` warnings.
+
+2. **Open the raw file in the browser** (bypasses the app):
+   ```
+   http://localhost:5173/waypoints/piazza-navona/modern.mp4
+   ```
+   If this shows Pantheon, the MP4 on disk is still wrong — re-run `npm run process-piazza-navona` with your Navona Runway files in `incoming/`.
+
+3. **Cache bust** — after `git pull`, restart dev server and test with:
+   ```
+   ?debugGeo=true&debugStop=piazza-navona&debugMedia=true
+   ```
+   The card footer lists exact URLs loaded. Bump `media_cache_version` in `src/data/piazza-navona.js` if you replace media again.
+
+4. **CDN / Supabase** — if `.env` has `VITE_CDN_BASE_URL` or Supabase keys, the app may load remote assets instead of your local `public/` folder. Unset them for local asset iteration, or upload Navona files to the CDN.
+
+5. **Netlify** — local file changes don't appear on the deployed site until you `git add`, `commit`, and `push` the `public/waypoints/piazza-navona/` files.
 
 ---
 

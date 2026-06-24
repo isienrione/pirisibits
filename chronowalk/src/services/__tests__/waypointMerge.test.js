@@ -15,7 +15,7 @@ describe('mergeWaypointWithLocalDefaults', () => {
     const merged = mergeWaypointWithLocalDefaults(remote, COLOSSEUM_WAYPOINT);
 
     expect(merged.title).toBe('Remote title');
-    expect(merged.arrival_immersive_url).toBe('/remote/arrival.mp3');
+    expect(merged.arrival_immersive_url).toBe(COLOSSEUM_WAYPOINT.arrival_immersive_url);
     expect(merged.ancient_video_url).toBe(COLOSSEUM_WAYPOINT.ancient_video_url);
     expect(merged.modern_video_url).toBe(COLOSSEUM_WAYPOINT.modern_video_url);
     expect(merged.immersive_orientation_hint).toBe(COLOSSEUM_WAYPOINT.immersive_orientation_hint);

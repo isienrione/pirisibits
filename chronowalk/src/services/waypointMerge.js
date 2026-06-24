@@ -44,8 +44,11 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
 
   const merged = { ...local, ...remote }
 
+  // Git seed paths are authoritative for slider/audio assets during local iteration.
   for (const key of MEDIA_URL_KEYS) {
     if (isForeignWaypointMediaUrl(merged[key], local.id)) {
+      merged[key] = local[key]
+    } else if (local[key]) {
       merged[key] = local[key]
     } else if (!merged[key]) {
       merged[key] = local[key]

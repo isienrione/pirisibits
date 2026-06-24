@@ -61,6 +61,13 @@ export const getDebugStopId = () => {
   return new URLSearchParams(window.location.search).get('debugStop') || null
 }
 
+/** Log resolved slider media URLs on the waypoint card (?debugMedia=true) */
+export const isDebugMedia = () => {
+  if (typeof window === 'undefined') return false
+  const param = new URLSearchParams(window.location.search).get('debugMedia')
+  return parseBooleanEnv(param)
+}
+
 /** @deprecated Use getSingleWaypointId or getTourId */
 export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 

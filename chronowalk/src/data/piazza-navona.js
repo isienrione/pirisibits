@@ -37,6 +37,8 @@ const PIAZZA_NAVONA_ANCIENT_POSTER = '/waypoints/piazza-navona/ancient-poster.jp
 export const PIAZZA_NAVONA_WAYPOINT = {
   id: 'piazza-navona',
   title: 'Piazza Navona',
+  /** Bump after replacing slider media so browsers reload cached MP4/JPG paths */
+  media_cache_version: 2,
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Piazza Navona!",
   arrival_subtitle:
