@@ -356,11 +356,13 @@ Implementation: `src/components/WaypointAssetStudio.jsx`, `src/utils/waypointAss
 
 ## Next engineering steps (multi-waypoint)
 
-Not required for asset production, but needed for a full tour:
+- [x] Tour routing in `App.jsx` (`rome-core` tour, ordered `stopIds`).
+- [x] `fetchWaypointById` for each stop on tour load.
+- [x] Map markers + walking route per leg (Mapbox Directions).
+- [x] Transit narration between stops (`AudioOrchestrator` `TRANSIT` mode).
+- [ ] Per-leg custom `transit_narrative_url` on tour leg objects (optional; currently uses destination stop seed).
+- [ ] Turn-by-turn step list UI (route line only for now).
 
-- [ ] Tour routing in `App.jsx` (sequence of waypoint IDs).
-- [ ] `fetchWaypointById` for each stop on approach.
-- [ ] Map markers per waypoint.
-- [ ] Transit narration auto-play between stops (orchestrator already supports `TRANSIT` mode).
+To insert a stop between Colosseum and Pantheon, add its id to `stopIds` in `src/data/rome-core-tour.js` and register geo in `src/data/waypointGeo.js`.
 
-Asset pipeline above is **independent** of tour routing — ship assets per waypoint first, wire navigation second.
+**URLs:** default tour `?tour=rome-core&debugGeo=true` · single-stop debug `?waypoint=pantheon&debugGeo=true`

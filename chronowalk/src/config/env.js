@@ -28,8 +28,27 @@ export const getAssetStudioWaypointId = () => {
   return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
 }
 
-/** Active tour waypoint (?waypoint=pantheon for multi-site testing). */
-export const getTourWaypointId = () => getAssetStudioWaypointId()
+/** Tour id from URL (?tour=rome-core). Default tour when not in single-waypoint debug. */
+export const getTourId = () => {
+  if (typeof window === 'undefined') return 'rome-core'
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('waypoint') && !params.get('tour')) return null
+  return params.get('tour') || 'rome-core'
+}
+
+/**
+ * Single-waypoint debug (?waypoint=pantheon without ?tour=).
+ * Returns null when the full tour should run.
+ */
+export const getSingleWaypointId = () => {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('tour')) return null
+  return params.get('waypoint') || null
+}
+
+/** @deprecated Use getSingleWaypointId or getTourId */
+export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 
 /**
  * Centralized environment configuration.
