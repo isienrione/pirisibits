@@ -112,16 +112,24 @@ Copy from Downloads, e.g.:
   cp "/Users/isidora/Downloads/now_from_that_image_make_a_mi (1).mp4" \\
      "$INCOMING/modern-source.mp4"
 
+The script maps by content (not Runway filename):
+  ancient-source / *Ancient*Pantheon*  →  modern.mp4  (today's piazza)
+  modern-source / now_from_that*       →  ancient-reconstruction.mp4
+
 Then run: npm run process-pantheon
 EOF
   exit 1
 fi
 
-echo "Ancient source: $ANCIENT_SRC"
-echo "Modern source:  $MODERN_SRC"
+echo "Ancient-tagged source: $ANCIENT_SRC"
+echo "Modern-tagged source:  $MODERN_SRC"
 
-cp "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
-cp "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
+# Runway/Midjourney filenames are misleading for Pantheon:
+#   *Ancient*Pantheon*  → animated modern piazza (today)
+#   now_from_that*      → ancient reconstruction animation
+# Map by content, not by download filename.
+cp "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
+cp "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
 
 # Still fallback — first frame of ancient clip (pre-motion)
 ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \

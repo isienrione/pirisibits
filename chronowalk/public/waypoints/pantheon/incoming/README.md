@@ -3,27 +3,28 @@
 Drop your Runway/Midjourney exports here, then run from `chronowalk/`:
 
 ```bash
-# macOS — one-time if ffmpeg is missing
-brew install ffmpeg
-
+brew install ffmpeg   # one-time if needed
 npm run process-pantheon
 ```
 
-## Expected files
+## Expected files (incoming names)
 
-| Source (your Downloads) | Save as |
-|-------------------------|---------|
+| Your Downloads file | Save as incoming |
+|---------------------|------------------|
 | `isienrione_Ancient_Rome_reconstruction_of_The_Pantheon_exact__….mp4` | `ancient-source.mp4` |
 | `now_from_that_image_make_a_mi (1).mp4` | `modern-source.mp4` |
 
 Original filenames also work if they contain `Ancient` / `Pantheon` or `now_from_that`.
 
-## Outputs (written to parent folder)
+## Important — content mapping (not filename)
 
-- `ancient-reconstruction.mp4` — ancient slider video
-- `ancient-reconstruction.jpg` — still extracted from frame 0
-- `ancient-poster.jpg` — hero frame at 3 s (padded to 16:9 if square)
-- `modern.mp4` — modern slider video
-- `modern-poster.jpg` — hero frame at 3 s
+Runway labels are backwards for this site. The processor **swaps** them:
+
+| Incoming pattern | Output | Era |
+|------------------|--------|-----|
+| `ancient-source` / `*Ancient*Pantheon*` | `modern.mp4` + `modern-poster.jpg` | Today (piazza) |
+| `modern-source` / `now_from_that*` | `ancient-reconstruction.mp4` + `.jpg` + `ancient-poster.jpg` | Ancient Rome |
+
+If layers look swapped after processing, re-run `npm run process-pantheon` on the latest branch.
 
 `incoming/` sources are not committed; final deliverables in `../` are.

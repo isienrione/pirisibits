@@ -20,9 +20,11 @@ Verify locally: `npm run verify-pantheon`
 ## Regenerate from Runway sources
 
 ```bash
-# Drop sources in incoming/, then:
-brew install ffmpeg   # one-time
+# Drop sources in incoming/ (see incoming/README.md for swap note), then:
 npm run process-pantheon
 ```
+
+**Note:** Runway filenames are misleading — `*Ancient*Pantheon*` is the **modern** piazza clip; `now_from_that*` is the **ancient** animation. The script maps by content.
+
 
 Seed file: `src/data/pantheon.js` — URLs already point at the paths above.
