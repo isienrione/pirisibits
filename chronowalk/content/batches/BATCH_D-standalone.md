@@ -40,7 +40,7 @@ Write ChronoWalk audio for **7 waypoints**. Use global rules from BATCH_A-live-t
 
 - **id:** castel-sant-angelo
 - **title:** Castel Sant'Angelo
-- **viewpoint:** 41.90255, 12.46610 · heading 15° · pitch 18°
+- **viewpoint:** 41.9025034, 12.4664057 · heading 15° · pitch 18°
 - **ancient layer:** Hadrian's Mausoleum ~138 AD
 - **transit:** along the Tiber / Ponte Sant'Angelo
 

@@ -498,13 +498,14 @@ Ancient market, locked camera, subtle awnings and merchant movement. CAMERA LOCK
 | Field | Value |
 |-------|-------|
 | **Landmark** | `41.90306, 12.46627` |
-| **Viewpoint** | `41.90255, 12.46610` · h `15°` · pitch `18°` |
+| **Viewpoint** | `41.9025034, 12.4664057` · h `15°` · pitch `18°` |
+| **Stand** | Ponte Sant'Angelo — clearer frontal view of the castle drum |
 | **Ancient target** | Hadrian's Mausoleum ~138 AD — marble drum, bronze quadriga |
-| **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.90255,12.46610&heading=15&pitch=18 |
+| **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.9025034,12.4664057&heading=15&pitch=18 |
 
 **Prompt 1 — Modern still**  
 TASK: MODERN STILL — IMAGE ONLY. OUTPUT: One photograph. Not video.  
-Castel Sant'Angelo from Ponte Sant'Angelo today. Stand 41.90255, 12.46610, 15°, 18°. Round castle and bridge statues fill frame. CAMERA LOCK.
+Castel Sant'Angelo from Ponte Sant'Angelo today. Stand 41.9025034, 12.4664057, 15°, 18°. Round castle and bridge statues fill frame. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
 TASK: MODERN VIDEO — VIDEO ONLY. ATTACH: Prompt 1 still. OUTPUT: 5 s MP4.  
