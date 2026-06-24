@@ -1,21 +1,47 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AUDIO_MODES, audioOrchestrator } from '../audio/AudioOrchestrator'
 import { ARRIVAL_AUDIO_PREFETCH_RADIUS_M } from '../data/colosseum'
-import { isDebugGeo } from '../config/env'
+import { getDebugStopId, isDebugGeo, shouldResetTour } from '../config/env'
 import { useGeoLocation, JOURNEY_STATE } from './useGeoLocation'
 import { fetchTourById } from '../services/tourService'
 import { getTourLeg, getTourLegs } from '../services/tourRegistry'
 import { getWaypointGeo } from '../data/waypointGeo'
-import { loadTourProgress, saveTourProgress } from '../utils/tourProgressStorage'
+import {
+  loadTourProgress,
+  resetTourProgress,
+  saveTourProgress,
+} from '../utils/tourProgressStorage'
+
+const buildInitialProgress = (tour) => {
+  if (!tour?.id) {
+    return { targetStopIndex: 0, arrivedStopIds: [], transitLegActive: false }
+  }
+
+  if (shouldResetTour()) {
+    return resetTourProgress(tour.id)
+  }
+
+  const debugStopId = getDebugStopId()
+  if (debugStopId) {
+    const stopIndex = tour.stopIds.indexOf(debugStopId)
+    if (stopIndex >= 0) {
+      return {
+        targetStopIndex: stopIndex,
+        arrivedStopIds: tour.stopIds.slice(0, stopIndex),
+        transitLegActive: false,
+      }
+    }
+  }
+
+  return loadTourProgress(tour.id)
+}
 
 /**
  * Tour session: ordered stops, legs, geofence target, transit audio, progress persistence.
  */
 export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   const debugMode = isDebugGeo()
-  const [progress, setProgress] = useState(() =>
-    tour ? loadTourProgress(tour.id) : { targetStopIndex: 0, arrivedStopIds: [], transitLegActive: false }
-  )
+  const [progress, setProgress] = useState(() => buildInitialProgress(tour))
   const [waypointsById, setWaypointsById] = useState({})
   const [loading, setLoading] = useState(false)
   const [debugOverridePosition, setDebugOverridePosition] = useState(null)

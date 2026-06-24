@@ -32,4 +32,4 @@ if (( missing > 0 )); then
 fi
 
 echo ""
-echo "Pantheon assets ready. Test: ?waypoint=pantheon&debugGeo=true"
+echo "Pantheon assets ready. Test tour: ?debugGeo=true&debugStop=pantheon"

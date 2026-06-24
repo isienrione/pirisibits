@@ -28,23 +28,37 @@ export const getAssetStudioWaypointId = () => {
   return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
 }
 
-/** Tour id from URL (?tour=rome-core). Default tour when not in single-waypoint debug. */
+/** Tour id from URL (?tour=rome-core). Full tour is the default. */
 export const getTourId = () => {
   if (typeof window === 'undefined') return 'rome-core'
   const params = new URLSearchParams(window.location.search)
-  if (params.get('waypoint') && !params.get('tour')) return null
   return params.get('tour') || 'rome-core'
 }
 
 /**
- * Single-waypoint debug (?waypoint=pantheon without ?tour=).
- * Returns null when the full tour should run.
+ * Single-waypoint debug (?singleWaypoint=pantheon).
+ * `?waypoint=` is reserved for Asset Studio only — it does not affect tour mode.
  */
 export const getSingleWaypointId = () => {
   if (typeof window === 'undefined') return null
   const params = new URLSearchParams(window.location.search)
-  if (params.get('tour')) return null
-  return params.get('waypoint') || null
+  return params.get('singleWaypoint') || null
+}
+
+/** Clear saved tour progress when ?resetTour=true */
+export const shouldResetTour = () => {
+  if (typeof window === 'undefined') return false
+  const param = new URLSearchParams(window.location.search).get('resetTour')
+  return parseBooleanEnv(param)
+}
+
+/**
+ * Start the tour focused on a specific stop while keeping the full route visible.
+ * Example: ?debugGeo=true&debugStop=pantheon
+ */
+export const getDebugStopId = () => {
+  if (typeof window === 'undefined') return null
+  return new URLSearchParams(window.location.search).get('debugStop') || null
 }
 
 /** @deprecated Use getSingleWaypointId or getTourId */

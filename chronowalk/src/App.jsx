@@ -9,6 +9,7 @@ import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
+import { getWaypointGeo } from './data/waypointGeo'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
@@ -25,6 +26,10 @@ function App() {
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
   const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
+  const tourStopLabels = useMemo(
+    () => tour.stopIds.map((id) => getWaypointGeo(id)?.title ?? id).join(' → '),
+    [tour.stopIds]
+  )
 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [activeWaypoint, setActiveWaypoint] = useState(null)
@@ -105,11 +110,25 @@ function App() {
   if (!hasInteracted) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-900 px-6 text-center">
-        <p className="max-w-sm text-sm text-stone-400">
-          {singleWaypointId
-            ? `Debug stop: ${singleWaypointId}`
-            : `${tour.title} — ${tour.stopIds.length} stops`}
-        </p>
+        {singleWaypointId ? (
+          <>
+            <p className="text-lg font-semibold text-stone-200">
+              Debug: {getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId}
+            </p>
+            <p className="max-w-sm text-sm text-stone-400">
+              Single-stop test mode. Add <span className="text-stone-300">?debugGeo=true</span> to
+              fake GPS at this landmark.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-xl font-semibold text-stone-100">{tour.title}</p>
+            <p className="text-base text-amber-300/90">{tour.subtitle ?? tourStopLabels}</p>
+            <p className="max-w-sm text-sm text-stone-400">
+              {tour.stopIds.length} stops · {tourStopLabels}
+            </p>
+          </>
+        )}
         <button
           type="button"
           onClick={async () => {

@@ -365,4 +365,4 @@ Implementation: `src/components/WaypointAssetStudio.jsx`, `src/utils/waypointAss
 
 To insert a stop between Colosseum and Pantheon, add its id to `stopIds` in `src/data/rome-core-tour.js` and register geo in `src/data/waypointGeo.js`.
 
-**URLs:** default tour `?tour=rome-core&debugGeo=true` · single-stop debug `?waypoint=pantheon&debugGeo=true`
+**URLs:** default tour `?debugGeo=true` · reset progress `?resetTour=true&debugGeo=true` · debug at Pantheon `?debugStop=pantheon&debugGeo=true` · single-stop debug `?singleWaypoint=pantheon&debugGeo=true`
