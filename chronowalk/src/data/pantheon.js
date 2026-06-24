@@ -56,7 +56,6 @@ export const PANTHEON_WAYPOINT = {
   slider_post_animation_loop_ms: PANTHEON_SLIDER_POST_ANIMATION_LOOP_MS,
   slider_freeze_at_sec: PANTHEON_SLIDER_POSTER_AT_SEC,
   ambient_url: PANTHEON_SAMPLE_AUDIO,
-  depth_map_url: '/waypoints/pantheon/depth-map.png',
   transit_narrative_url: PANTHEON_SAMPLE_AUDIO,
   arrival_immersive_url: PANTHEON_SAMPLE_AUDIO,
   arrival_alert_url: PANTHEON_ARRIVAL_ALERT,

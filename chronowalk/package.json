@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "process-pantheon": "bash scripts/process-pantheon-assets.sh",
+    "verify-pantheon": "bash scripts/verify-pantheon-assets.sh",
     "test:watch": "vitest"
   },
   "dependencies": {
