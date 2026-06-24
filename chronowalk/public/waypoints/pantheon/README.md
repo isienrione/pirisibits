@@ -5,9 +5,21 @@
 
 ## Ready
 
-- [x] `modern-exterior.jpg` — mid-piazza frontal reference, cropped to **1280×720 (16:9)** to match Colosseum
-  - Source: [Wikimedia — Rome Pantheon front](https://commons.wikimedia.org/wiki/File:Rome_Pantheon_front.jpg) (Roberta Dragan, CC BY 2.5)
-  - Crop shows full portico + plaza context (not the fountain fisheye, not a macro pediment crop)
+- [x] `modern-exterior.jpg` — mid-piazza frontal reference (1280×720)
+- [ ] Run `npm run process-pantheon` after dropping source MP4s in `incoming/` (see below)
+
+## Source videos → processed deliverables
+
+Copy your Runway exports into `incoming/`, then from `chronowalk/`:
+
+```bash
+npm run process-pantheon
+```
+
+| Incoming | Output |
+|----------|--------|
+| `ancient-source.mp4` | `ancient-reconstruction.mp4` + `.jpg` (frame 0) + `ancient-poster.jpg` (@ 3 s) |
+| `modern-source.mp4` | `modern.mp4` + `modern-poster.jpg` (@ 3 s) |
 
 ## Generate via Asset Studio
 
@@ -17,13 +29,10 @@
 
 Framing profile: `compact_piazza` (ideal offset 18–45 m from landmark center, not Colosseum’s 145 m).
 
-## Still needed
+## Still needed (after `npm run process-pantheon`)
 
-- [ ] `modern.mp4` — Runway/Pika (~5 s, locked camera)
-- [ ] `modern-poster.jpg` — export at ~3 s
-- [ ] `ancient-reconstruction.jpg` — Midjourney (modern photo as reference)
-- [ ] `ancient-reconstruction.mp4` — Runway motion-sync
-- [ ] `ancient-poster.jpg` — pad to 16:9 if needed
+- [ ] `modern.mp4` + `modern-poster.jpg`
+- [ ] `ancient-reconstruction.mp4` + `.jpg` + `ancient-poster.jpg`
 - [ ] `depth-map.png` — optional
 
 ## Why the first image looked too far

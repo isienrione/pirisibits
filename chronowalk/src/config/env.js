@@ -28,6 +28,9 @@ export const getAssetStudioWaypointId = () => {
   return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
 }
 
+/** Active tour waypoint (?waypoint=pantheon for multi-site testing). */
+export const getTourWaypointId = () => getAssetStudioWaypointId()
+
 /**
  * Centralized environment configuration.
  * Set these in chronowalk/.env locally and in Netlify → Site settings → Environment variables.

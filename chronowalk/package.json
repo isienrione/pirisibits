@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "process-pantheon": "bash scripts/process-pantheon-assets.sh",
     "test:watch": "vitest"
   },
   "dependencies": {

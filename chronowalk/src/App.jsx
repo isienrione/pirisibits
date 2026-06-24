@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
 import WaypointAssetStudio from './components/WaypointAssetStudio'
@@ -9,18 +9,42 @@ import { fetchWaypointById } from './services/waypointService'
 import {
   ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
   CARD_REVEAL_DELAY_MS,
+  COLOSSEUM,
+  DEBUG_USER_POS,
   GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './data/colosseum'
+import {
+  PANTHEON,
+  PANTHEON_DEBUG_USER_POS,
+  PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
+} from './data/pantheon'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
-import { getAssetStudioWaypointId, isAssetStudio } from './config/env'
+import { getTourWaypointId, isAssetStudio } from './config/env'
+
+const TOUR_GEO = {
+  colosseum: {
+    target: COLOSSEUM,
+    debugPosition: DEBUG_USER_POS,
+    geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
+  },
+  pantheon: {
+    target: PANTHEON,
+    debugPosition: PANTHEON_DEBUG_USER_POS,
+    geofenceThresholdM: PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
+  },
+}
 
 function App() {
   const assetStudio = isAssetStudio()
-  const assetStudioWaypointId = getAssetStudioWaypointId()
+  const tourWaypointId = useMemo(() => getTourWaypointId(), [])
+  const tourGeo = TOUR_GEO[tourWaypointId] ?? TOUR_GEO.colosseum
+  const assetStudioWaypointId = tourWaypointId
   const [hasInteracted, setHasInteracted] = useState(false)
   const { position, state, distance } = useGeoLocation({
-    geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
+    target: tourGeo.target,
+    debugPosition: tourGeo.debugPosition,
+    geofenceThresholdM: tourGeo.geofenceThresholdM,
   })
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
@@ -53,7 +77,7 @@ function App() {
 
     let cancelled = false
 
-    fetchWaypointById('colosseum')
+    fetchWaypointById(tourWaypointId)
       .then((waypoint) => {
         if (!cancelled) setWaypointData(waypoint)
       })
@@ -63,7 +87,7 @@ function App() {
       cancelled = true
       audioOrchestrator.stop()
     }
-  }, [hasInteracted])
+  }, [hasInteracted, tourWaypointId])
 
   useEffect(() => {
     if (!hasInteracted || !waypointData) return

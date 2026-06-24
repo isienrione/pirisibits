@@ -13,6 +13,10 @@ dist
 dist-ssr
 *.local
 
+# Raw AI exports dropped for local processing (final deliverables in parent dir are committed)
+public/waypoints/*/incoming/*.mp4
+public/waypoints/*/incoming/*.mov
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDistance } from '../utils/distance';
-import { COLOSSEUM, DEBUG_USER_POS } from '../data/colosseum';
+import { COLOSSEUM } from '../data/colosseum';
 import { isDebugGeo } from '../config/env';
 
 export const JOURNEY_STATE = {
@@ -27,14 +27,17 @@ const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
 export const useGeoLocation = ({
   debugMode = isDebugGeo(),
   target = COLOSSEUM,
+  debugPosition = null,
   geofenceThresholdM = 30,
 } = {}) => {
+  const debugPos = debugPosition ?? { lat: target.lat, lng: target.lng };
+
   const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
   const [journey, setJourney] = useState(() =>
     debugMode
       ? resolveJourneyState(
-          DEBUG_USER_POS.lat,
-          DEBUG_USER_POS.lng,
+          debugPos.lat,
+          debugPos.lng,
           target,
           geofenceThresholdM
         )
@@ -45,8 +48,8 @@ export const useGeoLocation = ({
     if (debugMode) {
       setJourney(
         resolveJourneyState(
-          DEBUG_USER_POS.lat,
-          DEBUG_USER_POS.lng,
+          debugPos.lat,
+          debugPos.lng,
           target,
           geofenceThresholdM
         )
@@ -76,7 +79,7 @@ export const useGeoLocation = ({
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, target, geofenceThresholdM]);
+  }, [debugMode, debugPos.lat, debugPos.lng, target, geofenceThresholdM]);
 
   useEffect(() => {
     if (!journey.status) return;

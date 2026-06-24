@@ -23,6 +23,8 @@ export const PANTHEON_STREET_VIEW_URL =
 
 export const PANTHEON_SLIDER_POST_ANIMATION_LOOP_MS = 10000
 export const PANTHEON_SLIDER_POSTER_AT_SEC = 3
+export const PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M = 30
+export const PANTHEON_DEBUG_USER_POS = { lat: PANTHEON.lat, lng: PANTHEON.lng }
 
 const PANTHEON_SAMPLE_AUDIO = '/waypoints/pantheon/Audio_sample.mp3'
 const PANTHEON_ARRIVAL_ALERT = '/waypoints/pantheon/geocache-arrival-alert.wav'
