@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import TourMap from './components/TourMap'
 import WaypointCard from './components/WaypointCard'
+import WaypointAssetStudio from './components/WaypointAssetStudio'
 import { useGeoLocation, JOURNEY_STATE } from './hooks/useGeoLocation'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
@@ -12,8 +13,11 @@ import {
 } from './data/colosseum'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
+import { getAssetStudioWaypointId, isAssetStudio } from './config/env'
 
 function App() {
+  const assetStudio = isAssetStudio()
+  const assetStudioWaypointId = getAssetStudioWaypointId()
   const [hasInteracted, setHasInteracted] = useState(false)
   const { position, state, distance } = useGeoLocation({
     geofenceThresholdM: GEOFENCE_ARRIVAL_THRESHOLD_M,
@@ -74,6 +78,10 @@ function App() {
 
     return revealWaypointCard(waypointData)
   }, [hasInteracted, waypointData, state, revealWaypointCard])
+
+  if (assetStudio) {
+    return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
+  }
 
   if (!hasInteracted) {
     return (

@@ -13,6 +13,21 @@ export const isDebugGeo = () => {
   return parseBooleanEnv(import.meta.env.VITE_DEBUG_GEO)
 }
 
+/** Creator studio for AI asset prompts (?assetStudio=true). */
+export const isAssetStudio = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('assetStudio')
+    if (param !== null) return parseBooleanEnv(param)
+  }
+
+  return parseBooleanEnv(import.meta.env.VITE_ASSET_STUDIO)
+}
+
+export const getAssetStudioWaypointId = () => {
+  if (typeof window === 'undefined') return 'colosseum'
+  return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
+}
+
 /**
  * Centralized environment configuration.
  * Set these in chronowalk/.env locally and in Netlify → Site settings → Environment variables.

@@ -284,6 +284,31 @@ Do not hotlink external imagery. Match colosseum.js schema.
 
 ---
 
+## Asset Studio (in-app prompt generator)
+
+Open the creator UI to pull the modern reference image and generate copy-paste prompts:
+
+```
+https://your-site.netlify.app/?assetStudio=true&waypoint=colosseum
+```
+
+Local dev:
+
+```
+http://localhost:5173/?assetStudio=true&waypoint=colosseum
+```
+
+The studio reads `modern_image_url` (or poster/video fallback) plus `viewpoint` metadata and outputs:
+
+- **Runway / Pika** — modern animated video prompt
+- **Midjourney** — ancient still prompt (use modern photo as image reference)
+- **Runway / motion-sync** — ancient animated video prompt
+- **DaVinci Resolve** — sync brief + deliverable paths
+
+Implementation: `src/components/WaypointAssetStudio.jsx`, `src/utils/waypointAssetPrompts.js`
+
+---
+
 ## Next engineering steps (multi-waypoint)
 
 Not required for asset production, but needed for a full tour:
