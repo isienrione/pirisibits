@@ -1,7 +1,9 @@
 # ChronoWalk — Gemini prompts for Rome tour expansion
 
-**14 new waypoints** (Forum cluster, Capitoline, Campo de' Fiori, Trajan's Market, Castel Sant'Angelo, Circus Maximus, Appian Way).  
+**15 new waypoints** (Forum cluster, Capitoline, Campo de' Fiori, **Largo Argentina**, Trajan's Market, Castel Sant'Angelo, Circus Maximus, Appian Way).  
 **Excludes** stops already in production: `colosseum`, `pantheon`, `piazza-navona`.
+
+> **Correction (June 2026):** An earlier draft wrongly put the **Theatre of Pompey** ancient layer on `campo-de-fiori`. The theatre cavea, Curia (Caesar’s assassination), and Area Sacra ruins are at **Largo di Torre Argentina** — use waypoint `largo-argentina`. Campo de' Fiori gets its own honest ancient layer (open campo / market field). See [CAMPO_LARGO_CORRECTION.md](./CAMPO_LARGO_CORRECTION.md) if you already spent Gemini credits on the old prompts.
 
 **Branch:** `cursor/chronowalk-setup-a224` · See also [WAYPOINT_PLAYBOOK.md](../WAYPOINT_PLAYBOOK.md) · [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md)
 
@@ -294,25 +296,51 @@ Ancient Capitoline overlook video, motion-matched, locked camera. Smoke from sac
 | **Landmark** | `41.89559, 12.47223` |
 | **Viewpoint** | `41.89535, 12.47215` · heading `5°` · pitch `16°` |
 | **Stand** | South edge of the square, facing north toward Giordano Bruno statue and market stalls |
-| **Ancient target** | Theatre of Pompey precinct / open field, ~50 BC — stone theatre curve behind |
+| **Ancient target** | **Open campo / public field, ~1400–1500 AD** — pre-baroque palaces, dusty market square, no Bruno statue yet (executions and markets on an open field). *Not* the Theatre of Pompey — that is 200 m east at `largo-argentina`. |
 | **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89535,12.47215&heading=5&pitch=16 |
 | **framingProfile** | `compact_piazza` |
 
 **Prompt 1 — Modern still**  
-Photorealistic photo of Campo de' Fiori square in Rome today with market stalls and cobblestones. Stand at 41.89535, 12.47215, 5° heading, 16° pitch. Piazza fills frame; statue and cafe awnings visible. CAMERA LOCK.
+Photorealistic photo of Campo de' Fiori square in Rome today with market stalls and cobblestones. Stand at 41.89535, 12.47215, 5° heading, 16° pitch. Piazza fills frame; Giordano Bruno statue and cafe awnings visible. CAMERA LOCK.
 
 **Prompt 2 — Modern video**  
 Locked 5-second video of Campo de' Fiori today, market atmosphere, reference framing. Subtle stall awning flutter and pedestrian motion. CAMERA LOCK.
 
 **Prompt 3 — Ancient still**  
-Ancient Theatre of Pompey area reconstruction, same camera as modern reference. Stone theatre curve behind open field, no medieval buildings or market stalls. CAMERA LOCK.
+Late medieval open campo reconstruction, same camera as modern reference. ~1400s: open dusty field with wooden market stalls and low brick buildings at the edges — no baroque palaces, no Bruno statue, no modern cafes. Honest to this square as a **field and market**, not a Roman theatre. CAMERA LOCK.
 
 **Prompt 4 — Ancient video**  
-Ancient Campo/Theatre of Pompey video, motion-matched, locked camera. Toga crowds, theatre banners. CAMERA LOCK.
+Medieval campo market video, motion-matched, locked camera. Vendors, carts, cloth awnings, chickens, smoke from braziers — same square shape, earlier era. CAMERA LOCK.
 
 ---
 
-### 11. `trajan-market` — Trajan's Market
+### 11. `largo-argentina` — Largo di Torre Argentina (Theatre of Pompey)
+
+| Field | Value |
+|-------|-------|
+| **Title** | Largo di Torre Argentina |
+| **Landmark** | `41.89528, 12.47694` |
+| **Viewpoint** | `41.89555, 12.47665` · heading `250°` · pitch `14°` |
+| **Stand** | Street level at the railing, facing the sunken Area Sacra temples |
+| **Ancient target** | **Theatre of Pompey complex, ~55 BC** — cavea tiers, portico columns, Curia of Pompey (Senate met here; Caesar assassinated 44 BC). This is the correct Pompey waypoint. |
+| **Street View** | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89555,12.47665&heading=250&pitch=14 |
+| **framingProfile** | `compact_piazza` |
+
+**Prompt 1 — Modern still**  
+Photorealistic photo of Largo di Torre Argentina today — sunken archaeological area with Republican temples, cats on ruins, Rome traffic at street level. Stand at 41.89555, 12.47665, 250° heading, 14° pitch. Excavation fills frame below street grade. CAMERA LOCK.
+
+**Prompt 2 — Modern video**  
+Locked 5-second video of Largo Argentina ruins today, reference framing. Subtle cat movement, light cloud drift. CAMERA LOCK.
+
+**Prompt 3 — Ancient still**  
+Ancient Theatre of Pompey reconstruction, same camera as modern reference. ~55 BC: marble theatre tiers, portico columns, garden statues, bustling Republican Rome — Curia and cavea visible in excavation depth. No sunken medieval street level. CAMERA LOCK.
+
+**Prompt 4 — Ancient video**  
+Ancient Theatre of Pompey video, motion-matched, locked camera. Toga crowds, theatre banners, senators near portico — same POV as modern ruins. CAMERA LOCK.
+
+---
+
+### 12. `trajan-market` — Trajan's Market
 
 | Field | Value |
 |-------|-------|
@@ -338,7 +366,7 @@ Ancient market video, motion-matched, locked camera. Merchants, awnings flutter,
 
 ---
 
-### 12. `castel-sant-angelo` — Castel Sant'Angelo
+### 13. `castel-sant-angelo` — Castel Sant'Angelo
 
 | Field | Value |
 |-------|-------|
@@ -364,7 +392,7 @@ Ancient mausoleum video, motion-matched, locked camera. Bronze statue glint, Tib
 
 ---
 
-### 13. `circus-maximus` — Circus Maximus
+### 14. `circus-maximus` — Circus Maximus
 
 | Field | Value |
 |-------|-------|
@@ -390,7 +418,7 @@ Ancient chariot circus video, motion-matched, locked camera. Distant chariots as
 
 ---
 
-### 14. `appian-way` — Appian Way (Via Appia Antica)
+### 15. `appian-way` — Appian Way (Via Appia Antica)
 
 | Field | Value |
 |-------|-------|
@@ -446,6 +474,7 @@ For each new `id`:
 | `forum-temple-vesta` | Temple of Vesta |
 | `capitoline-hill` | Capitoline Hill |
 | `campo-de-fiori` | Campo de' Fiori |
+| `largo-argentina` | Largo di Torre Argentina (Theatre of Pompey) |
 | `trajan-market` | Trajan's Market |
 | `castel-sant-angelo` | Castel Sant'Angelo |
 | `circus-maximus` | Circus Maximus |

@@ -14,7 +14,7 @@
 
 ## 3-day sprint plan (primary workflow)
 
-**Goal:** Replace every `Audio_sample.mp3` placeholder with real **`arrival.mp3`** + **`transit.mp3`** for all Rome stops (3 live + 14 expansion = **17 waypoints**, **16 transit legs**). Skip ambient. One shared `geocache-arrival-alert.wav`.
+**Goal:** Replace every `Audio_sample.mp3` placeholder with real **`arrival.mp3`** + **`transit.mp3`** for all Rome stops (3 live + 15 expansion = **18 waypoints**, **17 transit legs**). Skip ambient. One shared `geocache-arrival-alert.wav`.
 
 **Strategy:** One TTS voice, template-driven scripts, parallel AI batches, **lite fact-check** now → **full polish pass** when visuals are done.
 
@@ -44,7 +44,7 @@ Run **4 AI sessions in parallel** (one per batch). Each session: research → sc
 | A | colosseum, pantheon, piazza-navona | Session 1 — live tour, highest care |
 | B | forum-arch-titus, forum-basilica-maxentius, forum-via-sacra, forum-temple-vesta | Session 2 |
 | C | forum-temple-saturn, forum-curia-julia, forum-arch-severus, forum-rostra | Session 3 |
-| D | capitoline-hill, campo-de-fiori, trajan-market, castel-sant-angelo, circus-maximus, appian-way | Session 4 |
+| D | capitoline-hill, campo-de-fiori, largo-argentina, trajan-market, castel-sant-angelo, circus-maximus, appian-way | Session 4 |
 
 **Per stop (~20 min with AI):**
 

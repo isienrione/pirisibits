@@ -1,6 +1,6 @@
 # Batch D — Standalone Rome (paste into Gemini or Claude)
 
-Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-tour.md.
+Write ChronoWalk audio for **7 waypoints**. Use global rules from BATCH_A-live-tour.md.
 
 ---
 
@@ -17,10 +17,18 @@ Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-t
 - **id:** campo-de-fiori
 - **title:** Campo de' Fiori
 - **viewpoint:** 41.89535, 12.47215 · heading 5° · pitch 16°
-- **ancient layer:** Theatre of Pompey precinct ~50 BC
+- **ancient layer:** Medieval open campo / market field ~1400s — **NOT Theatre of Pompey** (that's largo-argentina)
 - **transit:** walk from Pantheon / centro toward the square
 
-## Stop 3 — trajan-market
+## Stop 3 — largo-argentina
+
+- **id:** largo-argentina
+- **title:** Largo di Torre Argentina
+- **viewpoint:** 41.89555, 12.47665 · heading 250° · pitch 14°
+- **ancient layer:** Theatre of Pompey ~55 BC — Curia, cavea, Caesar assassination site
+- **transit:** short walk from Campo or Pantheon direction toward sunken ruins
+
+## Stop 4 — trajan-market
 
 - **id:** trajan-market
 - **title:** Trajan's Market
@@ -28,7 +36,7 @@ Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-t
 - **ancient layer:** Market complex ~110 AD — brick arcades, shops
 - **transit:** approach along Via dei Fori Imperiali area
 
-## Stop 4 — castel-sant-angelo
+## Stop 5 — castel-sant-angelo
 
 - **id:** castel-sant-angelo
 - **title:** Castel Sant'Angelo
@@ -36,7 +44,7 @@ Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-t
 - **ancient layer:** Hadrian's Mausoleum ~138 AD
 - **transit:** along the Tiber / Ponte Sant'Angelo
 
-## Stop 5 — circus-maximus
+## Stop 6 — circus-maximus
 
 - **id:** circus-maximus
 - **title:** Circus Maximus
@@ -44,7 +52,7 @@ Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-t
 - **ancient layer:** Chariot circus ~100 AD — full seating, spina
 - **transit:** approach to the long bowl from Aventine side
 
-## Stop 6 — appian-way
+## Stop 7 — appian-way
 
 - **id:** appian-way
 - **title:** Appian Way
@@ -54,4 +62,4 @@ Write ChronoWalk audio for **6 waypoints**. Use global rules from BATCH_A-live-t
 
 ---
 
-Output: arrival + transit per stop (12 sections) + claims each.
+Output: arrival + transit per stop (14 sections) + claims each.
