@@ -1,11 +1,11 @@
-# Waypoint assets
+# Waypoint assets index
 
-Each stop has a folder here plus an **Asset Studio** link where AI prompts are generated from the seed file.
+| Stop | Folder | Asset Studio | Single-stop test |
+|------|--------|--------------|------------------|
+| Colosseum | `colosseum/` | http://localhost:5173/?assetStudio=true&waypoint=colosseum | http://localhost:5173/?singleWaypoint=colosseum&debugGeo=true |
+| Pantheon | `pantheon/` | http://localhost:5173/?assetStudio=true&waypoint=pantheon | http://localhost:5173/?singleWaypoint=pantheon&debugGeo=true |
+| Piazza Navona | `piazza-navona/` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
 
-| Stop | Folder | Asset Studio (local dev) |
-|------|--------|--------------------------|
-| Colosseum | `colosseum/` | http://localhost:5173/?assetStudio=true&waypoint=colosseum |
-| Pantheon | `pantheon/` | http://localhost:5173/?assetStudio=true&waypoint=pantheon |
-| Piazza Navona | `piazza-navona/` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
+**Full tour (cumulative map):** http://localhost:5173/?resetTour=true&debugGeo=true
 
-Full reference: [ASSET_STUDIO_LINKS.md](../../ASSET_STUDIO_LINKS.md)
+Master docs: [WAYPOINT_PLAYBOOK.md](../../WAYPOINT_PLAYBOOK.md) · [TOUR_TEST_LINKS.md](../../TOUR_TEST_LINKS.md)

@@ -1,492 +1,437 @@
 # ChronoWalk — Waypoint Playbook
 
-**Repeatable workflow for adding tour stops with matched modern ↔ ancient slider assets.**  
-Use this doc yourself, hand it to Cursor/Claude agents, or paste the [Gemini handoff block](#gemini-handoff-where-we-are-now) into a Gemini session to continue production.
+**Checkpoint handoff doc** — repeatable workflow, corrected pitfalls, and links for agents + Gemini.  
+**Last updated:** June 2026 · branch `cursor/chronowalk-setup-a224` · [PR #4](https://github.com/isienrione/pirisibits/pull/4)
 
-**Related docs**
-- **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — bookmarkable prompt links per waypoint
-- [WAYPOINT_ASSET_PIPELINE.md](./WAYPOINT_ASSET_PIPELINE.md) — framing rules, asset quality bar, failure modes
-- [CHRONOWALK_BUILD_STATE.md](./CHRONOWALK_BUILD_STATE.md) — overall build state, deploy, env vars
-
----
-
-## Where we are now (June 2026)
-
-| Stop | `id` | Tour order | Assets | Notes |
-|------|------|------------|--------|-------|
-| Colosseum | `colosseum` | 1 | ✅ Production | Reference implementation; `moderncolosseum.mp4` naming |
-| Pantheon | `pantheon` | 2 | ✅ Production | Re-scouted mid-piazza POV; `npm run process-pantheon` |
-| Piazza Navona | `piazza-navona` | 3 | 🟡 Scaffold | Code + placeholder media; needs real AI assets |
-
-**Asset Studio (AI prompts):** see **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — one link per stop, e.g.  
-http://localhost:5173/?assetStudio=true&waypoint=piazza-navona
-
-**Tour:** `rome-core` — `Colosseum → Pantheon → Piazza Navona`  
-**Branch / PR:** `cursor/chronowalk-setup-a224` · [PR #4](https://github.com/isienrione/pirisibits/pull/4)
-
-Multi-stop tour is fully wired: map markers, walking routes (Mapbox), transit audio, progress persistence, HUD “Walk to next stop” (after card dismiss).
+**Quick links**
+- **[TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)** — all tour / single-stop / Asset Studio / raw media URLs
+- **[ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md)** — prompt-generator bookmarks per stop
+- [WAYPOINT_ASSET_PIPELINE.md](./WAYPOINT_ASSET_PIPELINE.md) — framing rules, quality bar, failures
+- [CHRONOWALK_BUILD_STATE.md](./CHRONOWALK_BUILD_STATE.md) — deploy, env vars
 
 ---
 
-## Video processing rules (read before every new waypoint)
+## Checkpoint — where we are now
 
-### Default: name your files to match the era
+### Tour: `rome-core` (3 stops, 2 walking legs)
 
-Drop into `public/waypoints/<id>/incoming/`:
+```
+Colosseum  ──walk──►  Pantheon  ──walk──►  Piazza Navona
+```
 
-| Incoming filename | Becomes | Must show |
-|-------------------|---------|-----------|
-| `modern-source.mp4` | `modern.mp4` | **Today** (modern Rome) |
-| `ancient-source.mp4` | `ancient-reconstruction.mp4` | **Ancient** era reconstruction |
+| # | Stop | `id` | Assets | Map / slider |
+|---|------|------|--------|----------------|
+| 1 | Colosseum | `colosseum` | ✅ Production | Reference site; `moderncolosseum.mp4` |
+| 2 | Pantheon | `pantheon` | ✅ Production | Mid-piazza POV; `npm run process-pantheon` (swap) |
+| 3 | Piazza Navona | `piazza-navona` | 🟡 **In production** | Code ✅ · Runway videos processed · still/audio may need polish |
 
-Then run:
+### What’s built (engineering)
+
+- Multi-stop **cumulative map** — all markers, zones, Mapbox walking routes
+- **Tour HUD** — “Walk to {next}” after dismissing waypoint card
+- **Transit audio** between stops; progress in `localStorage`
+- **Asset Studio** — per-stop AI prompts from seed + viewpoint
+- **URL modes** — full tour, jump to stop, single-stop, reset progress
+- **Media safety** — local seed paths win; foreign Supabase URLs rejected; cache-bust on slider; verify warns on duplicate files
+
+### Lessons learned (don’t repeat)
+
+| Mistake | Fix |
+|---------|-----|
+| `?waypoint=pantheon` for tour test | Use `?singleWaypoint=` or `?debugStop=` — `waypoint=` is Asset Studio only |
+| Pantheon swap script used for Navona | Default `process-waypoint` is **literal**; only Pantheon uses `SWAP_RUNWAY=1` |
+| Copied pantheon JPG/MP4 into navona folder | Slider shows wrong landmark — verify warns `identical to pantheon` |
+| Supabase row with pantheon media paths | `waypointMerge.js` ignores URLs for other stops’ folders |
+| Browser cached old MP4 at same path | `media_cache_version` in seed + `?cwv=` on slider URLs |
+| `resetTour=true` + `debugStop=` on old build | `debugStop` now wins — pull latest |
+| Pasting `# comment` lines in terminal | zsh: `command not found: #` — paste commands only |
+
+---
+
+## Video processing rules (every new waypoint)
+
+### Default — literal filenames
+
+| `incoming/` file | Output | Content |
+|------------------|--------|---------|
+| `modern-source.mp4` | `modern.mp4` | Today |
+| `ancient-source.mp4` | `ancient-reconstruction.mp4` | Ancient era |
 
 ```bash
 npm run process-waypoint -- <id>
+# Must print: Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)
 ```
 
-You should see: `Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)`
+Shortcuts: `npm run process-piazza-navona` · `npm run verify-piazza-navona`
 
-### Exception: Pantheon only
+### Pantheon only — Runway mislabels
 
-Runway mislabeled Pantheon downloads. **Only Pantheon** uses swap mapping — built into `npm run process-pantheon` (`SWAP_RUNWAY=1`).  
-**Do not** use `process-pantheon` for other stops.
+```bash
+npm run process-pantheon   # sets SWAP_RUNWAY=1 internally
+```
 
-### Never copy media from another stop
+### After process
 
-Scaffolding may copy placeholder files so verify passes. **The slider will show the wrong landmark** until you replace:
-
-1. `modern-exterior.jpg` — Street View export (Asset Studio → Open Street View)
-2. `incoming/modern-source.mp4` + `incoming/ancient-source.mp4` — your Runway clips
-3. Re-run `npm run process-waypoint -- <id>`
-
-`npm run verify-waypoint -- <id>` warns if files are byte-identical to colosseum/ or pantheon/.
-
-### Supabase copy-paste trap
-
-If a Supabase row for `<id>` still has `/waypoints/pantheon/...` URLs, the app now ignores those and uses local seed paths — but the **files on disk** must still be Navona-specific.
+1. Export `modern-exterior.jpg` manually (Asset Studio → **Open Street View at viewpoint**)
+2. `npm run verify-waypoint -- <id>` — fix any `⚠ identical to …` warnings
+3. Bump `media_cache_version` in `src/data/<id>.js` if replacing media again
 
 ---
 
-## Architecture (what talks to what)
+## All test & tour URLs (local dev)
+
+**Base:** `http://localhost:5173/` · full tables in **[TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)**
+
+### Cumulative tour (full map — 3 stops)
+
+| Goal | URL |
+|------|-----|
+| Fresh start at Colosseum | http://localhost:5173/?resetTour=true&debugGeo=true |
+| Resume saved progress | http://localhost:5173/?debugGeo=true |
+
+### Jump to stop (full map, arrive at that stop)
+
+| Stop | URL |
+|------|-----|
+| Colosseum | http://localhost:5173/?debugGeo=true&debugStop=colosseum |
+| Pantheon | http://localhost:5173/?debugGeo=true&debugStop=pantheon |
+| Piazza Navona | http://localhost:5173/?debugGeo=true&debugStop=piazza-navona |
+
+### Single-stop only (fastest slider test)
+
+| Stop | URL |
+|------|-----|
+| Colosseum | http://localhost:5173/?singleWaypoint=colosseum&debugGeo=true |
+| Pantheon | http://localhost:5173/?singleWaypoint=pantheon&debugGeo=true |
+| **Piazza Navona** | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
+| Navona + media debug | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true |
+
+### Asset Studio (prompts)
+
+| Stop | URL |
+|------|-----|
+| Colosseum | http://localhost:5173/?assetStudio=true&waypoint=colosseum |
+| Pantheon | http://localhost:5173/?assetStudio=true&waypoint=pantheon |
+| Piazza Navona | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
+
+### Raw file check (no app)
+
+```
+http://localhost:5173/waypoints/piazza-navona/modern.mp4
+http://localhost:5173/waypoints/piazza-navona/modern-exterior.jpg
+```
+
+---
+
+## Architecture
 
 ```mermaid
 flowchart TB
   subgraph urls [URL params]
-    U1["?debugGeo=true"]
-    U2["?assetStudio=true&waypoint=id"]
-    U3["?singleWaypoint=id"]
-    U4["?debugStop=id"]
-    U5["?resetTour=true"]
+    U1["debugGeo"]
+    U2["assetStudio + waypoint"]
+    U3["singleWaypoint"]
+    U4["debugStop"]
+    U5["resetTour"]
+    U6["debugMedia"]
   end
 
-  subgraph data [Git seed — source of truth]
+  subgraph data [Git seed]
     D1["src/data/id.js"]
-    D2["src/data/waypointGeo.js"]
-    D3["src/data/rome-core-tour.js"]
-    D4["public/waypoints/id/*"]
+    D2["waypointGeo.js"]
+    D3["rome-core-tour.js stopIds"]
+    D4["public/waypoints/id/"]
   end
 
-  subgraph runtime [Runtime]
-    R1["App.jsx"]
-    R2["useTourSession.js"]
-    R3["TourMap.jsx"]
-    R4["WaypointCard.jsx"]
-    R5["TourHud.jsx"]
-    R6["WaypointAssetStudio.jsx"]
+  subgraph runtime [App]
+    R1["useTourSession"]
+    R2["TourMap — all stops + routes"]
+    R3["WaypointCard + slider"]
+    R4["TourHud — walk to next"]
+    R5["WaypointAssetStudio"]
   end
 
-  subgraph services [Services]
-    S1["waypointMerge.js"]
-    S2["waypointService.js"]
-    S3["tourRegistry.js"]
-  end
-
-  D3 --> R2
-  D1 --> S1
-  D2 --> R2
-  D4 --> R4
-  S1 --> S2
-  S2 --> R2
-  U1 --> R2
-  U2 --> R6
-  R2 --> R3
-  R2 --> R4
-  R2 --> R5
+  D3 --> R1
+  D1 --> R1
+  D4 --> R3
+  U1 --> R1
+  U3 --> R1
+  U4 --> R1
+  U2 --> R5
+  R1 --> R2
+  R1 --> R3
+  R1 --> R4
 ```
 
-**Two coordinate systems (never merge them)**
+**Two coordinate systems**
 
 | Field | Used for |
 |-------|----------|
-| `lat`, `lng` on waypoint | Map pin, geofence center |
-| `viewpoint.{lat,lng,heading,pitch}` | Slider camera POV — where visitor stands |
-
-Geofence fires at landmark center. Slider plays pre-baked assets shot from viewpoint.
+| `lat`, `lng` | Map pin, geofence center |
+| `viewpoint.{lat,lng,heading,pitch}` | Slider camera POV |
 
 ---
 
-## Code touchpoints (every new waypoint)
+## Code touchpoints (new waypoint)
 
-| Step | File(s) | Action |
-|------|---------|--------|
-| 0 | `public/waypoints/<id>/` | Create asset folder + `incoming/` |
-| 1 | `src/data/<id>.js` | Seed: coords, copy, media URLs, `framingProfile` |
-| 2 | `src/services/waypointMerge.js` | Register in `getLocalWaypoint()` |
-| 3 | `src/data/waypointGeo.js` | Map zone, geofence, debug GPS, `mapZoom` |
-| 4 | `src/data/rome-core-tour.js` | Insert `id` in `stopIds` (order = walk order) |
-| 5 | `package.json` | Optional: `process-<id>`, `verify-<id>` aliases |
-| 6 | Tests | See [Test checklist](#test-checklist) |
+| Step | File | Action |
+|------|------|--------|
+| 0 | `public/waypoints/<id>/` | Folder + `incoming/` |
+| 1 | `src/data/<id>.js` | Seed + `media_cache_version` |
+| 2 | `src/services/waypointMerge.js` | `getLocalWaypoint()` |
+| 3 | `src/data/waypointGeo.js` | Map/geofence/debug GPS |
+| 4 | `src/data/rome-core-tour.js` | Insert in `stopIds` |
+| 5 | `TOUR_TEST_LINKS.md` + `ASSET_STUDIO_LINKS.md` | Add test + studio URLs |
+| 6 | `package.json` | Optional `process-<id>` / `verify-<id>` aliases |
 
-**No `App.jsx` changes needed** — tour loads all `stopIds` automatically via `useTourSession`.
+No `App.jsx` changes — `useTourSession` loads all `stopIds` automatically.
 
 ---
 
 ## Agent workflow (phases 0–7)
 
-### Phase 0 — Scaffold (agent / Cursor)
+### Phase 0 — Scaffold
 
 ```bash
-cd chronowalk
-ID=piazza-navona   # example
+# You are usually already in chronowalk/
+git pull origin cursor/chronowalk-setup-a224
+npm install
 
+ID=piazza-navona
 mkdir -p public/waypoints/$ID/incoming
-cp src/data/pantheon.js src/data/$ID.js   # edit thoroughly
-# Register in waypointMerge.js, waypointGeo.js, rome-core-tour.js
+cp scripts/templates/incoming-README.md public/waypoints/$ID/incoming/README.md
+# Copy + edit src/data/pantheon.js → src/data/$ID.js
+# Register: waypointMerge.js, waypointGeo.js, rome-core-tour.js stopIds
 npm test
 ```
 
-**Create your Asset Studio link** (prompts auto-generate from the seed file):
+Asset Studio link (prompts auto-generate):
 
 ```
 http://localhost:5173/?assetStudio=true&waypoint=<id>
 ```
 
-Add the link to [ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md) and `public/waypoints/<id>/README.md`.
+### Phase 1 — Scout viewpoint
 
-**`framingProfile`**
-- `large_approach` — Colosseum-style (offset 40–120 m)
-- `compact_piazza` — Pantheon / Navona-style (offset 18–45 m)
+Asset Studio → **Open Street View at viewpoint** → framing check passes → record coords in seed.
 
-### Phase 1 — Scout viewpoint (human + Street View)
+### Phase 2–3 — Modern + ancient media
 
-1. Open Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=<id>  
-   (all links: [ASSET_STUDIO_LINKS.md](./ASSET_STUDIO_LINKS.md))
-2. Walk Street View **along the tourist approach** — not the Maps pin / plaza center
-3. Target pitch **14–22°**, monument **60–75% of frame height**
-4. Record `viewpoint` + `immersive_orientation_hint` + Street View URL in seed comments
-5. Confirm `assessModernFraming()` passes (shown in Asset Studio)
-
-**Gemini prompt (Phase 1)**
-
-```
-I'm adding waypoint "<id>" to ChronoWalk. Landmark: <name>, Rome.
-Using Google Street View, find a ground-level tourist stand-here spot facing the hero facade.
-Constraints: viewpoint 18–45m from landmark center (compact piazza), pitch 16–18°,
-16:9 framing, facade fills 60–75% of frame. Return lat, lng, heading, pitch,
-and a one-sentence immersive_orientation_hint.
-```
-
-### Phase 2 — Modern layer
-
-| File | Role |
-|------|------|
-| `modern-exterior.jpg` | Still fallback (export from Street View at viewpoint) |
-| `modern.mp4` | ~5 s slider video, locked camera |
-| `modern-poster.jpg` | Hero frame @ `slider_poster_at_sec` (default 3 s) |
-
-**Gemini / Runway prompt:** copy from Asset Studio → “Modern animated video”.
-
-### Phase 3 — Ancient layer (same POV)
-
-| File | Role |
-|------|------|
-| `ancient-reconstruction.mp4` | Era swap animation, same framing |
-| `ancient-reconstruction.jpg` | Frame 0 fallback |
-| `ancient-poster.jpg` | Pad square sources to 16:9 |
-
-**Gemini / Midjourney prompt:** Asset Studio → “Ancient still” (use modern photo as reference).
-
-**Runway filename trap (Pantheon only):** Pantheon uses `SWAP_RUNWAY=1` because Runway mislabeled clips. **All other waypoints:** `ancient-source` → ancient, `modern-source` → modern (literal).
+Copy prompts from Asset Studio. Export `modern-exterior.jpg` from Street View.
 
 ### Phase 4 — Audio
 
-| Field | File (placeholder OK for MVP) |
-|-------|-------------------------------|
-| `arrival_immersive_url` | **Required** — main narration MP3 |
-| `transit_narrative_url` | Plays while walking to this stop |
-| `ambient_url` | Tour / stop ambient |
-| `arrival_alert_url` | Short WAV on geofence entry |
-
-Copy `Audio_sample.mp3` + `geocache-arrival-alert.wav` from another stop until real audio is recorded.
+Placeholder OK: `Audio_sample.mp3` + `geocache-arrival-alert.wav`
 
 ### Phase 5 — Process & verify
 
 ```bash
 npm run process-waypoint -- <id>
 npm run verify-waypoint -- <id>
-```
-
-Confirm output says **literal mapping** (not swap). Fix any `⚠ identical to pantheon` warnings before testing.
-
-```bash
 npm test && npm run build
 ```
 
-### Phase 6 — Device test URLs
+### Phase 6 — Test
 
-| Goal | URL |
-|------|-----|
-| Full tour | `?resetTour=true&debugGeo=true` |
-| Jump to stop | `?debugGeo=true&debugStop=<id>` |
-| Single-stop only | `?singleWaypoint=<id>&debugGeo=true` |
-| Asset Studio | `?assetStudio=true&waypoint=<id>` |
-| Tune poster frame live | add `&posterAt=3&loopMs=10000` |
+See [TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md). For Navona slider only:
 
-**Important:** `?waypoint=` is **Asset Studio only**. It does **not** set single-stop mode.
+http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true
 
 ### Phase 7 — Supabase (optional)
 
-Table `waypoints` — columns match seed schema. Local git seed wins for `viewpoint`, `lat`, `lng`, `framingProfile`. URLs pointing at **another** waypoint's folder are ignored (`waypointMerge.js`).
+Local git seed wins for POV + media paths. Foreign `/waypoints/other-id/` URLs in Supabase are ignored.
 
 ---
 
-## File layout
-
-```
-public/waypoints/<id>/
-  modern-exterior.jpg
-  modern.mp4
-  modern-poster.jpg
-  ancient-reconstruction.mp4
-  ancient-reconstruction.jpg
-  ancient-poster.jpg
-  geocache-arrival-alert.wav
-  Audio_sample.mp3              # placeholder
-  depth-map.png                 # optional (Colosseum only today)
-  incoming/                     # raw Runway exports (*.mp4 gitignored)
-    README.md
-  README.md
-```
-
----
-
-## Seed file schema (`src/data/<id>.js`)
+## Seed file schema
 
 ```javascript
-export const SITE = { lat, lng }                    // landmark center
-export const SITE_VIEWPOINT = { lat, lng, heading, pitch }
 export const SITE_WAYPOINT = {
-  id, title, framingProfile?,                        // 'compact_piazza' | 'large_approach'
-  arrival_headline, arrival_subtitle,
-  immersive_orientation_hint,
-  lat, lng, viewpoint,
-  modern_image_url, modern_video_url, modern_poster_url,
-  ancient_image_url, ancient_video_url, ancient_poster_url,
+  id: 'piazza-navona',
+  title: 'Piazza Navona',
+  media_cache_version: 2,        // bump when replacing slider media
+  framingProfile: 'compact_piazza', // or 'large_approach'
+  arrival_headline, arrival_subtitle, immersive_orientation_hint,
+  lat, lng, viewpoint: { lat, lng, heading, pitch },
+  modern_image_url: '/waypoints/<id>/modern-exterior.jpg',
+  modern_video_url: '/waypoints/<id>/modern.mp4',
+  modern_poster_url: '/waypoints/<id>/modern-poster.jpg',
+  ancient_image_url: '/waypoints/<id>/ancient-reconstruction.jpg',
+  ancient_video_url: '/waypoints/<id>/ancient-reconstruction.mp4',
+  ancient_poster_url: '/waypoints/<id>/ancient-poster.jpg',
   slider_poster_at_sec: 3,
   slider_post_animation_loop_ms: 10000,
-  slider_freeze_at_sec: 3,
   ambient_url, transit_narrative_url,
-  arrival_immersive_url,                            // required at runtime
+  arrival_immersive_url,        // required
   arrival_alert_url,
-  depth_map_url?,                                   // optional
 }
 ```
 
 ---
 
-## Tour flow (visitor experience)
-
-1. **Start screen** — tour title + stop list → “Start Immersive Tour”
-2. **Transit** — ambient audio, map shows all stops + route to current target
-3. **Arrival** — geofence ≤ 30 m → chime → waypoint card slides up
-4. **Explore** — immersive slider, audio, ghost alignment
-5. **Dismiss card** — swipe down / minimize handle
-6. **Continue** — TourHud shows “Walk to {next}” → transit narration → next geofence
-
-Progress saved in `localStorage` key `chronowalk:tour-progress:rome-core`.
-
----
-
-## Test checklist
-
-```bash
-cd chronowalk && npm test
-```
-
-| Test file | Add for new waypoint |
-|-----------|---------------------|
-| `src/services/__tests__/waypointMerge.test.js` | `getLocalWaypoint('<id>')` smoke |
-| `src/utils/__tests__/modernFramingGuide.test.js` | `assessModernFraming()` passes |
-| `src/services/__tests__/tourRegistry.test.js` | Update `stopIds` / leg count if asserting |
-| `src/config/__tests__/env.test.js` | Optional URL param example |
-
----
-
-## Scripts reference
-
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | Local dev server |
-| `npm run process-waypoint -- <id>` | ffmpeg: incoming → deliverables |
-| `npm run verify-waypoint -- <id>` | Check required files exist |
-| `npm run process-pantheon` | Alias for `pantheon` |
-| `npm run verify-pantheon` | Alias for `pantheon` |
-| `npm test` | Vitest |
-| `npm run build` | Production build |
-
----
-
-## Piazza Navona — worked example (scaffolded)
+## Piazza Navona reference
 
 | Item | Value |
 |------|-------|
 | `id` | `piazza-navona` |
-| Ancient site | Stadium of Domitian (Circus Agonalis) |
-| Landmark center | `41.89918, 12.47306` |
-| Viewpoint | `41.89878, 12.47302` — south edge, facing north |
-| Heading / pitch | `2°` / `18°` |
-| `framingProfile` | `compact_piazza` |
-| Asset Studio | `?assetStudio=true&waypoint=piazza-navona` |
+| Ancient site | Stadium of Domitian |
+| Landmark | `41.89918, 12.47306` |
+| Viewpoint | `41.89878, 12.47302` · heading `2°` · pitch `18°` |
+| Street View | https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89878,12.47302&heading=2&pitch=18 |
 | Seed | `src/data/piazza-navona.js` |
-
-**Next production steps for Navona**
-1. Export real `modern-exterior.jpg` from Street View at viewpoint
-2. Run Asset Studio prompts → Runway / Midjourney
-3. `npm run process-waypoint -- piazza-navona`
-4. Replace placeholder audio with recorded narration
-5. Verify on phone: `?debugGeo=true&debugStop=piazza-navona`
+| Process | `npm run process-piazza-navona` (literal, not swap) |
+| Verify | `npm run verify-piazza-navona` |
 
 ---
 
-## Troubleshooting (common errors)
+## Scripts
 
-**You don't need to re-scaffold Piazza Navona in code** — it's already on branch `cursor/chronowalk-setup-a224`. Pull first:
-
-```bash
-git pull origin cursor/chronowalk-setup-a224
-cd chronowalk && npm install
-```
-
-### `Usage: npm run process-waypoint -- <waypoint-id>`
-
-You forgot the waypoint id. Use either form:
-
-```bash
-npm run process-waypoint -- piazza-navona
-# or the shortcut:
-npm run process-piazza-navona
-```
-
-### `Missing source videos in .../incoming`
-
-`process-waypoint` only runs **after** you drop Runway exports in `public/waypoints/piazza-navona/incoming/`.  
-Placeholder tour media is already in the parent folder — you can test the app **without** running process.
-
-```bash
-# Check placeholders (should all pass):
-npm run verify-piazza-navona
-```
-
-### `✗ missing: modern-exterior.jpg` (or other files)
-
-Assets weren't pulled or were deleted. Either:
-
-```bash
-git checkout origin/cursor/chronowalk-setup-a224 -- public/waypoints/piazza-navona/
-npm run verify-piazza-navona
-```
-
-Or copy from Pantheon temporarily:
-
-```bash
-cp public/waypoints/pantheon/{modern-exterior.jpg,modern.mp4,modern-poster.jpg,ancient-reconstruction.*,ancient-poster.jpg,geocache-arrival-alert.wav,Audio_sample.mp3} public/waypoints/piazza-navona/
-```
-
-### `ffmpeg is required`
-
-Install on Mac: `brew install ffmpeg`, then re-run process.
-
-### `Waypoint not found: piazza-navona` (browser / Asset Studio)
-
-Old build or missing seed registration. Confirm these exist:
-
-- `src/data/piazza-navona.js`
-- entry in `src/services/waypointMerge.js` → `getLocalWaypoint`
-- entry in `src/data/waypointGeo.js`
-- `'piazza-navona'` in `src/data/rome-core-tour.js` `stopIds`
-
-Restart dev server: `npm run dev`
-
-### `Supabase waypoint fetch failed: ...`
-
-Bad row in Supabase `waypoints` table. Local seed still works if Supabase env vars are unset; if set, fix or delete the broken remote row for `piazza-navona`.
-
-### Tour shows 2 stops, not 3
-
-Clear saved progress: open with `?resetTour=true&debugGeo=true`
-
-### Slider still shows another stop's pictures
-
-1. **Confirm files on disk** (you're already in `chronowalk/` — don't `cd chronowalk` again):
-   ```bash
-   ls -lh public/waypoints/piazza-navona/modern-exterior.jpg public/waypoints/piazza-navona/modern.mp4
-   npm run verify-piazza-navona
-   ```
-   Fix any `⚠ identical to pantheon` warnings.
-
-2. **Open the raw file in the browser** (bypasses the app):
-   ```
-   http://localhost:5173/waypoints/piazza-navona/modern.mp4
-   ```
-   If this shows Pantheon, the MP4 on disk is still wrong — re-run `npm run process-piazza-navona` with your Navona Runway files in `incoming/`.
-
-3. **Cache bust** — after `git pull`, restart dev server and test with:
-   ```
-   ?debugGeo=true&debugStop=piazza-navona&debugMedia=true
-   ```
-   The card footer lists exact URLs loaded. Bump `media_cache_version` in `src/data/piazza-navona.js` if you replace media again.
-
-4. **CDN / Supabase** — if `.env` has `VITE_CDN_BASE_URL` or Supabase keys, the app may load remote assets instead of your local `public/` folder. Unset them for local asset iteration, or upload Navona files to the CDN.
-
-5. **Netlify** — local file changes don't appear on the deployed site until you `git add`, `commit`, and `push` the `public/waypoints/piazza-navona/` files.
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Local server :5173 |
+| `npm run process-waypoint -- <id>` | Process Runway exports (literal) |
+| `npm run verify-waypoint -- <id>` | Check files + duplicate warnings |
+| `npm run process-piazza-navona` | Shorthand for Navona |
+| `npm run verify-piazza-navona` | Shorthand for Navona |
+| `npm run process-pantheon` | Pantheon only (`SWAP_RUNWAY=1`) |
+| `npm test` | 57 tests |
 
 ---
 
-## Gemini handoff: where we are now
+## Tour visitor flow
 
-Paste this block into Gemini to continue asset production:
+1. Start screen → **Heart of Ancient Rome** · 3 stops
+2. Map shows **all stops** + route to current target
+3. Arrive → waypoint card → immersive slider
+4. Dismiss card → **Walk to {next}** (TourHud)
+5. Transit audio → next geofence
+
+Progress: `localStorage` key `chronowalk:tour-progress:rome-core`
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| `Missing script: process-waypoint` | `git pull` — you're on old branch |
+| `zsh: command not found: #` | Don't paste comment lines from docs |
+| `cd: no such file: chronowalk` | Already inside `chronowalk/` |
+| Slider shows wrong stop | Open raw MP4 URL; run verify; bump `media_cache_version` |
+| Tour starts at Colosseum not Navona | Use `singleWaypoint=piazza-navona` or `debugStop=piazza-navona` |
+| Netlify shows old media | `git push` the `public/waypoints/` files |
+| CDN in `.env` | Unset `VITE_CDN_BASE_URL` for local iteration |
+
+---
+
+## Gemini handoff — paste this block
 
 ```
-Project: ChronoWalk — location-aware Rome walking tour PWA (React + Vite + Mapbox).
-Repo: isienrione/pirisibits, folder chronowalk/, branch cursor/chronowalk-setup-a224.
+PROJECT: ChronoWalk — location-aware Rome walking tour PWA
+STACK: React 19, Vite, Mapbox GL, Tailwind, Vitest
+REPO: github.com/isienrione/pirisibits
+FOLDER: chronowalk/
+BRANCH: cursor/chronowalk-setup-a224
+PR: #4
 
-CURRENT TOUR (rome-core): colosseum → pantheon → piazza-navona (3 stops).
-Multi-stop map, walking routes, transit audio, and progress persistence are DONE.
+=== CHECKPOINT (June 2026) ===
 
-WAYPOINT PIPELINE (read WAYPOINT_PLAYBOOK.md in repo):
-- Git seed src/data/<id>.js is source of truth for camera POV
-- public/waypoints/<id>/ holds slider media (no runtime Street View hotlinks)
-- Asset Studio: ?assetStudio=true&waypoint=<id> generates AI prompts
-- Framing: viewpoint offset from landmark center, pitch 14–22°, compact_piazza = 18–45m
+TOUR id: rome-core
+STOPS (in order): colosseum → pantheon → piazza-navona (3 stops, 2 walking legs)
+SUBTITLE: Colosseum → Pantheon → Piazza Navona
 
-COMPLETED STOPS:
-- colosseum: production assets, large_approach framing
-- pantheon: production assets, compact_piazza, re-scouted mid-piazza POV
+ENGINEERING DONE:
+- Cumulative map: all markers, geofence zones, Mapbox walking routes between stops
+- Tour HUD: "Walk to {next}" appears AFTER visitor dismisses waypoint card
+- Transit audio, localStorage progress, multi-stop waypoint loading
+- Asset Studio per stop: ?assetStudio=true&waypoint=<id>
+- URL modes corrected (see below)
 
-IN PROGRESS:
-- piazza-navona: code scaffolded, placeholder media copied from pantheon
-  Viewpoint: 41.89878, 12.47302, heading 2°, pitch 18° (south piazza facing north)
-  Ancient layer: Stadium of Domitian under today's baroque piazza
+STOP STATUS:
+1. colosseum — PRODUCTION. large_approach. Video: moderncolosseum.mp4
+2. pantheon — PRODUCTION. compact_piazza, mid-piazza POV rescout. process-pantheon uses SWAP_RUNWAY=1 (Runway mislabeled filenames)
+3. piazza-navona — IN PRODUCTION. Code complete. Viewpoint: 41.89878, 12.47302, h2°, pitch 18°. Ancient: Stadium of Domitian. User has processed Runway videos with literal mapping. May still need: final modern-exterior.jpg polish, real narration audio, Netlify push of media files.
 
-YOUR TASK: Produce real Navona assets following the Colosseum/Pantheon quality bar.
-1. Export modern-exterior.jpg from Street View at the viewpoint above
-2. Generate modern.mp4 (Runway) — locked camera, 16:9, ~5s
-3. Generate ancient-reconstruction.mp4 — same POV, Domitian's stadium era
-4. Run: npm run process-waypoint -- piazza-navona
-5. Test: ?debugGeo=true&debugStop=piazza-navona
+KEY DOCS IN REPO:
+- WAYPOINT_PLAYBOOK.md (this checkpoint)
+- TOUR_TEST_LINKS.md (all test URLs)
+- ASSET_STUDIO_LINKS.md (prompt links)
+- WAYPOINT_ASSET_PIPELINE.md (framing quality bar)
 
-Do NOT use ?waypoint= for tour testing — use ?debugStop= or ?singleWaypoint=.
+=== VIDEO PROCESSING (CORRECTED) ===
+
+DEFAULT (all waypoints EXCEPT Pantheon):
+  incoming/modern-source.mp4  → modern.mp4 (today)
+  incoming/ancient-source.mp4 → ancient-reconstruction.mp4 (ancient)
+  Command: npm run process-waypoint -- <id>
+  Must see: "Mapping: literal"
+
+PANTHEON ONLY:
+  npm run process-pantheon  (SWAP_RUNWAY=1 — Runway filenames were backwards)
+
+NEVER copy JPG/MP4 from another stop's folder. verify-waypoint warns if byte-identical.
+
+modern-exterior.jpg: manual Street View export (Asset Studio → Open Street View at viewpoint)
+
+After replacing media: bump media_cache_version in src/data/<id>.js
+
+=== URL PARAMETERS (CORRECTED) ===
+
+?debugGeo=true              — fake GPS (required on desktop)
+?resetTour=true             — clear saved progress, start Colosseum
+?debugStop=<id>             — full tour MAP, arrive at that stop
+?singleWaypoint=<id>        — ONE stop only (fastest slider test)
+?assetStudio=true&waypoint=<id> — AI prompts (waypoint= is NOT tour mode)
+?debugMedia=true            — show slider URLs on card
+
+DO NOT use ?waypoint= for tour testing.
+
+=== TEST LINKS (localhost:5173) ===
+
+Full tour fresh:        /?resetTour=true&debugGeo=true
+Full tour resume:       /?debugGeo=true
+Jump to Colosseum:      /?debugGeo=true&debugStop=colosseum
+Jump to Pantheon:       /?debugGeo=true&debugStop=pantheon
+Jump to Piazza Navona:  /?debugGeo=true&debugStop=piazza-navona
+
+Single-stop Colosseum:  /?singleWaypoint=colosseum&debugGeo=true
+Single-stop Pantheon:   /?singleWaypoint=pantheon&debugGeo=true
+Single-stop Navona:     /?singleWaypoint=piazza-navona&debugGeo=true
+Navona + media debug:   /?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true
+
+Asset Studio Navona:    /?assetStudio=true&waypoint=piazza-navona
+Raw Navona video:       /waypoints/piazza-navona/modern.mp4
+
+=== CODE TOUCHPOINTS (new waypoint) ===
+
+1. src/data/<id>.js
+2. src/services/waypointMerge.js → getLocalWaypoint()
+3. src/data/waypointGeo.js
+4. src/data/rome-core-tour.js → stopIds (insert in walk order)
+5. public/waypoints/<id>/ + incoming/
+6. Add rows to TOUR_TEST_LINKS.md + ASSET_STUDIO_LINKS.md
+7. npm run process-waypoint -- <id> && npm run verify-waypoint -- <id>
+
+No App.jsx changes needed.
+
+=== NEXT TASKS FOR NAVONA ===
+
+1. Confirm raw MP4 in browser shows Navona (not Pantheon)
+2. npm run verify-piazza-navona — no "identical to pantheon" warnings
+3. Test: ?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true
+4. Record arrival/transit audio; replace Audio_sample.mp3
+5. git add public/waypoints/piazza-navona/ && push for Netlify
+6. Future: add waypoint #4 using same pipeline (literal process, not pantheon swap)
+
+=== GEMINI ASSET TASK TEMPLATE ===
+
+When generating Runway/Midjourney assets for piazza-navona:
+- Stand at 41.89878, 12.47302, heading 2°, pitch 18° (south piazza, facing north)
+- Modern: today's baroque Piazza Navona with fountains
+- Ancient: Stadium of Domitian (Circus Agonalis), same camera lock
+- 16:9, ~5s, no camera movement
+- Save as incoming/modern-source.mp4 and incoming/ancient-source.mp4
+- Then: npm run process-piazza-navona
 ```
 
 ---
@@ -494,8 +439,9 @@ Do NOT use ?waypoint= for tour testing — use ?debugStop= or ?singleWaypoint=.
 ## Agent one-liner (new Cursor session)
 
 ```
-Add waypoint "<id>" to ChronoWalk following WAYPOINT_PLAYBOOK.md:
-scaffold code, scout viewpoint via Asset Studio, produce assets,
-register in tour stopIds, verify with npm run verify-waypoint -- <id> and ?debugGeo=true.
-Match colosseum.js schema. Do not hotlink external imagery.
+Continue ChronoWalk on branch cursor/chronowalk-setup-a224.
+Read WAYPOINT_PLAYBOOK.md + TOUR_TEST_LINKS.md.
+Tour: colosseum → pantheon → piazza-navona.
+Add waypoint "<id>" using literal process-waypoint mapping (not Pantheon swap).
+Register in stopIds, verify assets, add test URLs to TOUR_TEST_LINKS.md.
 ```

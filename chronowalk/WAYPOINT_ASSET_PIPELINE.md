@@ -1,6 +1,7 @@
 # ChronoWalk — Waypoint Asset Pipeline (Agent Playbook)
 
 > **Start here for the full repeatable workflow:** [WAYPOINT_PLAYBOOK.md](./WAYPOINT_PLAYBOOK.md)  
+> **All tour / test URLs:** [TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)  
 > This doc focuses on framing rules, asset quality, and failure modes.
 
 Agent-oriented checklist for adding a new waypoint with a matched **modern ↔ ancient** “Magic Portal” slider.  

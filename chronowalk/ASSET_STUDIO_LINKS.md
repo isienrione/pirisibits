@@ -1,72 +1,54 @@
 # Asset Studio — prompt links per waypoint
 
-**Asset Studio** is the in-app prompt generator. Open a link below while `npm run dev` is running (or on your deployed site). Each page shows copy-paste prompts for Runway, Midjourney, DaVinci, framing checks, and deliverable file paths.
+**AI prompt generator** — Runway, Midjourney, DaVinci copy-paste prompts from each stop’s seed file.
 
-**URL pattern:** `?assetStudio=true&waypoint=<id>`
+**Also see:** [TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md) for full tour map, single-stop, and raw media URLs.
 
-Replace `localhost:5173` with your Netlify URL when testing on phone without a local server.
+Run `npm run dev` first. Replace `localhost:5173` with your Netlify host on device.
 
 ---
 
-## All waypoints (bookmark these)
+## Asset Studio links
 
-| Stop | `id` | Local dev (prompts ready) |
-|------|------|---------------------------|
+| Stop | `id` | Open prompts |
+|------|------|--------------|
 | Colosseum | `colosseum` | http://localhost:5173/?assetStudio=true&waypoint=colosseum |
 | Pantheon | `pantheon` | http://localhost:5173/?assetStudio=true&waypoint=pantheon |
 | Piazza Navona | `piazza-navona` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
 
-### Test Piazza Navona only (fastest — not Colosseum)
+`?waypoint=` works **only with** `?assetStudio=true` — not for tour mode.
+
+---
+
+## Quick test links (after assets ready)
 
 | Goal | URL |
 |------|-----|
-| **Arrive at Navona immediately** | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
-| Same + show media URLs | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true |
-| Raw video file (no app) | http://localhost:5173/waypoints/piazza-navona/modern.mp4 |
-| Full tour, jump to Navona | http://localhost:5173/?debugGeo=true&debugStop=piazza-navona |
+| **Navona slider only** | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
+| Navona + media URLs | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true |
+| Full tour map → Navona | http://localhost:5173/?debugGeo=true&debugStop=piazza-navona |
+| Full tour from Colosseum | http://localhost:5173/?resetTour=true&debugGeo=true |
 
-Do **not** combine `resetTour=true` with `debugStop=` unless you pulled latest — older builds reset to Colosseum first.
-
-### Deployed (swap in your Netlify host)
-
-```
-https://YOUR-SITE.netlify.app/?assetStudio=true&waypoint=colosseum
-https://YOUR-SITE.netlify.app/?assetStudio=true&waypoint=pantheon
-https://YOUR-SITE.netlify.app/?assetStudio=true&waypoint=piazza-navona
-```
+Full tables: [TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)
 
 ---
 
-## What you get on each page
+## On each Asset Studio page
 
-- Framing pass/fail (viewpoint offset + pitch)
-- Street View deep link from seed `viewpoint`
-- Modern reference image preview
-- **Copy buttons:** modern video · ancient still · ancient video · DaVinci brief
-- Deliverable path checklist (`public/waypoints/<id>/...`)
+- Framing pass/fail
+- **Open Street View at viewpoint** (for `modern-exterior.jpg` export)
+- Modern reference preview
+- Copy: modern video · ancient still · ancient video · DaVinci brief
+- Deliverable path checklist
 
 ---
 
-## When adding a new waypoint
+## New waypoint
 
-1. Scaffold code (`src/data/<id>.js`, register in merge/geo/tour) — see [WAYPOINT_PLAYBOOK.md](./WAYPOINT_PLAYBOOK.md)
-2. **Add a row to the table above** with `?assetStudio=true&waypoint=<id>`
-3. Add the same line to `public/waypoints/<id>/README.md`
-4. Open the link → prompts are generated automatically from the seed file
-
-No separate “create link” step in code — the link is always:
+1. Scaffold `src/data/<id>.js` — see [WAYPOINT_PLAYBOOK.md](./WAYPOINT_PLAYBOOK.md)
+2. Add a row to the table above
+3. Add test URLs to [TOUR_TEST_LINKS.md](./TOUR_TEST_LINKS.md)
 
 ```
 http://localhost:5173/?assetStudio=true&waypoint=<your-new-id>
 ```
-
----
-
-## Quick start
-
-```bash
-cd chronowalk
-npm run dev
-```
-
-Then open: http://localhost:5173/?assetStudio=true&waypoint=piazza-navona

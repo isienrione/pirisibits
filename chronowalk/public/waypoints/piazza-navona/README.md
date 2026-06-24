@@ -32,4 +32,4 @@ Verify locally: `npm run verify-waypoint -- piazza-navona`
 
 Seed file: `src/data/piazza-navona.js`
 
-See [WAYPOINT_PLAYBOOK.md](../../WAYPOINT_PLAYBOOK.md) for the full repeatable workflow.
+See [WAYPOINT_PLAYBOOK.md](../../WAYPOINT_PLAYBOOK.md) and [TOUR_TEST_LINKS.md](../../TOUR_TEST_LINKS.md).
