@@ -16,6 +16,17 @@ Replace `localhost:5173` with your Netlify URL when testing on phone without a l
 | Pantheon | `pantheon` | http://localhost:5173/?assetStudio=true&waypoint=pantheon |
 | Piazza Navona | `piazza-navona` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
 
+### Test Piazza Navona only (fastest — not Colosseum)
+
+| Goal | URL |
+|------|-----|
+| **Arrive at Navona immediately** | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
+| Same + show media URLs | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true&debugMedia=true |
+| Raw video file (no app) | http://localhost:5173/waypoints/piazza-navona/modern.mp4 |
+| Full tour, jump to Navona | http://localhost:5173/?debugGeo=true&debugStop=piazza-navona |
+
+Do **not** combine `resetTour=true` with `debugStop=` unless you pulled latest — older builds reset to Colosseum first.
+
 ### Deployed (swap in your Netlify host)
 
 ```

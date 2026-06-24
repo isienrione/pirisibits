@@ -17,20 +17,21 @@ const buildInitialProgress = (tour) => {
     return { targetStopIndex: 0, arrivedStopIds: [], transitLegActive: false }
   }
 
-  if (shouldResetTour()) {
-    return resetTourProgress(tour.id)
-  }
-
   const debugStopId = getDebugStopId()
   if (debugStopId) {
     const stopIndex = tour.stopIds.indexOf(debugStopId)
     if (stopIndex >= 0) {
+      if (shouldResetTour()) resetTourProgress(tour.id)
       return {
         targetStopIndex: stopIndex,
         arrivedStopIds: tour.stopIds.slice(0, stopIndex),
         transitLegActive: false,
       }
     }
+  }
+
+  if (shouldResetTour()) {
+    return resetTourProgress(tour.id)
   }
 
   return loadTourProgress(tour.id)
