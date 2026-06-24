@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Process AI deliverables into public/waypoints/<id>/
 # Usage: npm run process-waypoint -- <waypoint-id>
-# Drop source files in public/waypoints/<id>/incoming/ first.
+# Optional: SWAP_RUNWAY=1 when Runway filenames disagree with content (Pantheon quirk)
 set -euo pipefail
 
 WAYPOINT_ID="${1:-}"
@@ -15,6 +15,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WAYPOINT_DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
 INCOMING="$WAYPOINT_DIR/incoming"
 POSTER_SEC="${POSTER_SEC:-3}"
+SWAP_RUNWAY="${SWAP_RUNWAY:-0}"
 
 mkdir -p "$INCOMING"
 
@@ -110,26 +111,34 @@ if [[ -z "$ANCIENT_SRC" || -z "$MODERN_SRC" ]]; then
   cat >&2 <<EOF
 Missing source videos in $INCOMING
 
-Expected (any one name per row):
-  Ancient-tagged: ancient-source.mp4  OR  *Ancient*.mp4
-  Modern-tagged:  modern-source.mp4   OR  now_from_that*.mp4
+Expected (one file per row):
+  Ancient era: ancient-source.mp4  OR  *Ancient*.mp4
+  Modern era:  modern-source.mp4   OR  now_from_that*.mp4
 
-Runway filenames are often misleading — the script maps by content pattern:
-  ancient-source / *Ancient*  →  modern.mp4        (today's site)
-  modern-source / now_from_that*  →  ancient-reconstruction.mp4
+Default mapping (name = content):
+  ancient-source  →  ancient-reconstruction.mp4
+  modern-source   →  modern.mp4
 
-Copy sources into incoming/, then run:
-  npm run process-waypoint -- $WAYPOINT_ID
+Pantheon-only Runway mislabels? Use: SWAP_RUNWAY=1 npm run process-pantheon
+
+Then run: npm run process-waypoint -- $WAYPOINT_ID
 EOF
   exit 1
 fi
 
 echo "Waypoint: $WAYPOINT_ID"
-echo "Ancient-tagged source: $ANCIENT_SRC"
-echo "Modern-tagged source:  $MODERN_SRC"
+echo "Ancient-era source: $ANCIENT_SRC"
+echo "Modern-era source:  $MODERN_SRC"
 
-cp "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
-cp "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+if [[ "$SWAP_RUNWAY" == "1" ]]; then
+  echo "Mapping: SWAP_RUNWAY=1 (ancient-tagged file → modern.mp4, modern-tagged → ancient)"
+  cp "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
+  cp "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+else
+  echo "Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)"
+  cp "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
+  cp "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+fi
 
 ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \
   -vf "scale=1280:-2:flags=lanczos" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
@@ -148,6 +157,13 @@ for asset in "$WAYPOINT_DIR"/*.mp4 "$WAYPOINT_DIR"/*.jpg; do
   ls -lh "$asset" | awk '{print "  " $9, "(" $5 ")"}'
 done
 
+if [[ ! -f "$WAYPOINT_DIR/modern-exterior.jpg" ]]; then
+  echo ""
+  echo "Still required: modern-exterior.jpg (Street View export at viewpoint)"
+fi
+
 echo ""
-echo "Still required manually: modern-exterior.jpg (Street View export at viewpoint)"
 echo "Verify: npm run verify-waypoint -- $WAYPOINT_ID"
+if [[ "$SWAP_RUNWAY" != "1" ]]; then
+  echo "If modern/ancient look swapped in the app, re-run with SWAP_RUNWAY=1"
+fi

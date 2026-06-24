@@ -3,16 +3,22 @@
 Drop Runway / Pika source files here, then run:
 
 ```bash
-npm run process-waypoint -- piazza-navona
+npm run process-piazza-navona
 ```
 
-## Filename mapping (Runway labels are often backwards)
+## Filename mapping (literal — name matches content)
 
 | Drop in `incoming/` | Output | Era |
 |---------------------|--------|-----|
-| `ancient-source.mp4` / `*Ancient*.mp4` | `modern.mp4` + `modern-poster.jpg` | Today (baroque piazza) |
-| `modern-source.mp4` / `now_from_that*.mp4` | `ancient-reconstruction.mp4` + posters | Stadium of Domitian |
+| `ancient-source.mp4` | `ancient-reconstruction.mp4` + posters | Stadium of Domitian |
+| `modern-source.mp4` | `modern.mp4` + `modern-poster.jpg` | Today (baroque piazza) |
+
+If layers still look swapped after processing, your Runway downloads may use Pantheon-style misleading names — re-run with:
+
+```bash
+SWAP_RUNWAY=1 npm run process-piazza-navona
+```
 
 `*.mp4` and `*.mov` in this folder are gitignored.
 
-You must still export `modern-exterior.jpg` manually from Street View at the viewpoint in `src/data/piazza-navona.js`.
+Export `modern-exterior.jpg` from Street View (Asset Studio → **Open Street View at viewpoint**).

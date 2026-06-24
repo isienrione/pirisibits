@@ -167,7 +167,7 @@ and a one-sentence immersive_orientation_hint.
 
 **Gemini / Midjourney prompt:** Asset Studio → “Ancient still” (use modern photo as reference).
 
-**Runway filename trap (Pantheon lesson):** downloaded names may say “Ancient” for the *modern* clip. `process-waypoint-assets.sh` maps by content pattern, not filename.
+**Runway filename trap (Pantheon only):** Pantheon uses `SWAP_RUNWAY=1` because Runway mislabeled clips. **All other waypoints:** `ancient-source` → ancient, `modern-source` → modern (literal).
 
 ### Phase 4 — Audio
 

@@ -18,7 +18,7 @@ Original filenames also work if they contain `Ancient` / `Pantheon` or `now_from
 
 ## Important — content mapping (not filename)
 
-Runway labels are backwards for this site. The processor **swaps** them:
+Runway labels are backwards for this site. `npm run process-pantheon` sets **SWAP_RUNWAY=1** automatically:
 
 | Incoming pattern | Output | Era |
 |------------------|--------|-----|
