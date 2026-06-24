@@ -2,9 +2,157 @@
 
 **Agentic workflow** for historically rigorous, engaging narration — tuned to how the app actually plays audio today.
 
+**Sprint mode:** **3 days** to first-ship all Rome audio (scripts + MP3s). Polish, fact-deepening, and human re-records happen **after** every waypoint has slider media.
+
 **Related:** [WAYPOINT_PLAYBOOK.md](../WAYPOINT_PLAYBOOK.md) · [GEMINI_PROMPTS_EXPANSION.md](./GEMINI_PROMPTS_EXPANSION.md) · [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md)
 
 **Branch:** `cursor/chronowalk-setup-a224`
+
+---
+
+## 3-day sprint plan (primary workflow)
+
+**Goal:** Replace every `Audio_sample.mp3` placeholder with real **`arrival.mp3`** + **`transit.mp3`** for all Rome stops (3 live + 14 expansion = **17 waypoints**, **16 transit legs**). Skip ambient. One shared `geocache-arrival-alert.wav`.
+
+**Strategy:** One TTS voice, template-driven scripts, parallel AI batches, **lite fact-check** now → **full polish pass** when visuals are done.
+
+| Day | Focus | Output |
+|-----|-------|--------|
+| **Day 1** | Pipeline + batch scripts | TTS voice locked · master prompt template · **all 17 `arrival.script.md`** · **16 `transit.script.md`** · wire live tour seeds (3 stops) |
+| **Day 2** | Audio generation | **All `arrival.mp3`** · batch loudness normalize · smoke-test 3 live stops in app |
+| **Day 3** | Transits + integration | **All `transit.mp3`** · update every `src/data/<id>.js` · full tour walk-through · `v1-polish` backlog file |
+
+### What ships in 3 days vs later
+
+| Ship now (3 days) | Polish later (post–all-waypoints) |
+|-------------------|-----------------------------------|
+| `arrival.mp3` + `transit.mp3` per stop | Human re-record hero stops (Colosseum, Pantheon) |
+| One ElevenLabs / OpenAI voice (locked settings) | Per-stop ambient beds |
+| Inline mini-fact notes per script (3–5 sourced claims) | Full `facts.yaml` + `factcheck.md` per stop |
+| App smoke test per stop (`?singleWaypoint=`) | 3-listener outdoor engagement test |
+| Reuse existing arrival alert WAV | Custom alert per landmark |
+| 60–90 s arrivals, 45–75 s Forum transits | Lengthen pantheon transit when you have walk time |
+
+### Day 1 — Scripts (parallel batches)
+
+Run **4 AI sessions in parallel** (one per batch). Each session: research → script → self fact-check in **one pass** — no separate outline agent.
+
+| Batch | Stops | Parallel session |
+|-------|-------|------------------|
+| A | colosseum, pantheon, piazza-navona | Session 1 — live tour, highest care |
+| B | forum-arch-titus, forum-basilica-maxentius, forum-via-sacra, forum-temple-vesta | Session 2 |
+| C | forum-temple-saturn, forum-curia-julia, forum-arch-severus, forum-rostra | Session 3 |
+| D | capitoline-hill, campo-de-fiori, trajan-market, castel-sant-angelo, circus-maximus, appian-way | Session 4 |
+
+**Per stop (~20 min with AI):**
+
+1. Paste [sprint script prompt](#sprint-script-prompt-copy-paste) + waypoint block from [GEMINI_PROMPTS_EXPANSION.md](./GEMINI_PROMPTS_EXPANSION.md)
+2. Save `content/<id>/arrival.script.md` (~120–150 words, **60–75 s**)
+3. Save `content/<id>/transit.script.md` (~80–120 words, **45–60 s**) — skip transit for `colosseum` (tour start)
+4. Bottom of file: `claims:` bullet list with source (one line each) — enough for sprint, expand later
+
+**Day 1 end checklist**
+
+- [ ] 17 arrival scripts
+- [ ] 16 transit scripts (all except colosseum approach)
+- [ ] TTS voice ID + speed locked in a note (`content/VOICE_SETTINGS.md`)
+- [ ] `src/data/colosseum.js` … `piazza-navona.js` point at `/waypoints/<id>/arrival.mp3` (not `Audio_sample.mp3`)
+
+### Day 2 — Arrival audio
+
+**Batch TTS** (ElevenLabs recommended: one voice, stability ~0.65, similarity ~0.75, speed 1.0–1.05 for outdoor clarity).
+
+```bash
+# Per stop after TTS export
+npm run normalize-audio -- colosseum arrival
+npm run normalize-audio -- pantheon transit
+# Expects public/waypoints/<id>/arrival-raw.wav (or .mp3) → writes arrival.mp3
+```
+
+**Target:** 17 `public/waypoints/<id>/arrival.mp3` by end of day.
+
+**Smoke test (15 min):**
+
+```
+http://localhost:5173/?singleWaypoint=colosseum&debugGeo=true
+http://localhost:5173/?singleWaypoint=pantheon&debugGeo=true
+http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true
+```
+
+Tap **Begin Immersive View** — slider should reveal on first “look at…” line.
+
+### Day 3 — Transit audio + wire + tour test
+
+1. Batch TTS all `transit.script.md` → `public/waypoints/<id>/transit.mp3`
+2. Update seeds for expansion stops as they get scaffolded (or pre-wire paths even if slider pending)
+3. Full tour: `?resetTour=true&debugGeo=true` — walk Colosseum → Pantheon → Navona with transit playing
+4. Create `content/POLISH_BACKLOG.md` — list weak scripts, unsourced claims, pronunciation fixes
+
+**If behind on Day 3:** ship Tier A only (3 live stops complete), generate remaining arrivals without transits — transits are lower priority than arrival immersion.
+
+---
+
+## Sprint script prompt (copy-paste)
+
+Give this to Gemini / Claude per waypoint:
+
+```
+You write ChronoWalk audio for a Rome walking tour PWA.
+
+WAYPOINT:
+- id: <id>
+- title: <title>
+- viewpoint: <lat>, <lng>, heading <h>°, pitch <p>°
+- ancient layer: <ancient target>
+- previous stop: <fromId or "tour start">
+- next stop: <toId or "tour end">
+
+RULES:
+- Second person, present tense, conversational (Rick Steves energy, original words only)
+- arrival: 120-150 words, hook in first sentence with a visual command matching the slider POV
+- Include one line: "Drag the slider" or "Slide between then and now" (~40% through arrival)
+- transit (if not tour start): 80-120 words, "As you walk toward <next title>...", one hidden-Rome detail on the route
+- No exact gladiator/animal kill counts; no "Rome fell because..."
+- End claims section with 3-5 bullets: fact + source (short)
+
+OUTPUT:
+## arrival.script.md
+(narration only)
+
+## transit.script.md
+(narration only, or "N/A tour start")
+
+## claims
+- ...
+```
+
+---
+
+## Sprint mode: simplified pipeline
+
+**Skip for 3 days:** separate outline agent, read-aloud agent, full `facts.yaml`, engagement beta, ambient, custom SFX mixes.
+
+**Keep:** destination-stop transit convention, slider sync beat, −16 LUFS, one voice.
+
+```mermaid
+flowchart LR
+  A[Batch prompt × 4 parallel] --> B[17 arrivals + 16 transits]
+  B --> C[TTS batch Day 2-3]
+  C --> D[ffmpeg loudnorm]
+  D --> E[Wire seeds + smoke test]
+  E --> F[POLISH_BACKLOG.md]
+```
+
+### Lite fact-check (5 min per stop, not 45)
+
+During script generation, require the `claims` footer. Before TTS, skim only:
+
+- [ ] No copied sentences from commercial guides
+- [ ] Visual hook matches slider POV from seed
+- [ ] No claims from the [avoid list](#fixes-to-apply-to-the-draft-example-scripts)
+- [ ] Transit says “toward {this stop’s title}” on the **destination** id file
+
+Full ledger + outdoor listener tests → **polish pass** when all waypoint videos are in.
 
 ---
 
@@ -24,7 +172,7 @@ Your proposal is **directionally excellent**: two-track scripting (stop vs walk)
 
 | Proposal element | Issue | ChronoWalk adjustment |
 |------------------|-------|------------------------|
-| 22-week timeline | Serial agency scale | **Rolling batch:** 3 stops at a time; agents parallelize research + draft |
+| 22-week timeline | Serial agency scale | **3-day sprint** — TTS batch, parallel script sessions, polish later |
 | Colosseum exterior + interior as separate waypoints | App = **one geofence + one slider per `id`** | Split only if you add a second seed (`colosseum-interior`) with its own coords |
 | Phase 4 Visual Recreation Engine | Duplicates Gemini slider pipeline | **Drop** — visual layer is `modern.mp4` / `ancient-reconstruction.mp4` |
 | Gamification (quizzes, badges, Easter eggs) | Not in audio orchestrator | **Defer to v2** — ship narration first |
@@ -60,9 +208,19 @@ Author transit copy as: *“As you walk toward the Pantheon…”* and store it 
 
 ---
 
-## Duration budgeting (efficiency without dumbing down)
+## Duration budgeting (sprint vs polish)
 
-**Rule:** Transit script length ≤ **80% of Mapbox walking time** for that leg (leave margin for pauses, photos, crossings).
+### Sprint (3 days) — shorter, still engaging
+
+| Type | Target | Words (~130 wpm) |
+|------|--------|------------------|
+| Arrival | **60–75 s** | 120–150 |
+| Transit (long leg) | **90–120 s** | 150–200 |
+| Transit (Forum hop) | **45–60 s** | 80–100 |
+
+One hook, one visual anchor, one wow fact, slider cue — **no sixth act**.
+
+### Polish pass (later) — expand when visuals ready
 
 | Leg (example) | Walk ~min | Transit target | Waypoint arrival target |
 |---------------|-----------|----------------|-------------------------|
@@ -70,19 +228,13 @@ Author transit copy as: *“As you walk toward the Pantheon…”* and store it 
 | Pantheon → Piazza Navona | ~8–12 | 1:00–1:30 | 1:30–2:00 |
 | Forum cluster hop | ~3–6 | 0:45–1:15 | 1:15–1:45 |
 
-**Word caps** at ~125–130 wpm (clear outdoor delivery):
-
-- 60 s → **~125 words**
-- 90 s → **~190 words**
-- 120 s → **~250 words**
-
-Waypoint scripts: **1:30–2:00** sweet spot (dense but not lecture). Transit: **shorter, movement-forward**.
+**Rule (polish):** Transit length ≤ **80% of Mapbox walking time** for that leg.
 
 ---
 
-## The lean agentic pipeline
+## The lean agentic pipeline (polish pass)
 
-Six agents, one **Fact Ledger** per stop. No agent records audio until Fact Ledger is signed off.
+Use this **after** the 3-day sprint when all waypoint sliders exist. Six agents, one **Fact Ledger** per stop.
 
 ```mermaid
 flowchart LR
@@ -94,6 +246,9 @@ flowchart LR
   F --> G[Voice Production]
   G --> H[Master + seed wiring]
 ```
+
+<details>
+<summary>Full agent specs (expand after sprint)</summary>
 
 ### Agent 1 — Research
 
@@ -220,6 +375,8 @@ Checklist:
 
 See [Production specs](#production-specs) below. Output files into `public/waypoints/<id>/`.
 
+</details>
+
 ---
 
 ## Script templates (copy-paste)
@@ -261,21 +418,27 @@ See [Production specs](#production-specs) below. Output files into `public/waypo
 
 ---
 
-## Voice strategy: quality vs speed
+## Voice strategy: 3-day sprint vs polish
+
+### Sprint (all 3 days) — TTS only
+
+| Setting | Value |
+|---------|-------|
+| Tool | ElevenLabs or OpenAI TTS |
+| Voices | **One** narrator for all 17 stops |
+| Human VO | **None** in sprint — add Colosseum/Pantheon re-record in polish pass |
+| Italian names | Quick pass: Vespasian, Agrippa, Septimius — fix in `POLISH_BACKLOG.md` |
+| Speed | 1.0–1.05× (clarity over drama) |
+
+Lock settings in `content/VOICE_SETTINGS.md` on Day 1 so Day 2–3 batches match.
+
+### Polish pass (later)
 
 | Tier | Use | Tool |
 |------|-----|------|
-| **Hero stops** (Colosseum, Pantheon, Forum flagship) | Human VO or premium cloned narrator | Studio or ElevenLabs Professional Voice Clone |
-| **Batch stops** (Forum cluster) | One consistent TTS voice, human polish pass | ElevenLabs / PlayHT with locked settings |
-| **Patches** | TTS sentence replace | Same voice ID + same chain |
-
-**Recommendation for ChronoWalk MVP**
-
-1. Record **one** brand narrator for Colosseum + Pantheon + Navona (sets tone).
-2. Use **same voice** via TTS for Forum expansion with human review — listeners prefer one guide voice over a cast of strangers.
-3. Skip “character voices” for emperors until v2 — breaks outdoor clarity.
-
-**Italian pronunciation pass:** native speaker reviews proper nouns (Vespasian, Septimius, Agrippa) once per script batch.
+| **Hero stops** (Colosseum, Pantheon) | Human VO or voice clone | Studio or ElevenLabs PVC |
+| **Batch stops** | Re-export TTS with longer scripts | Same voice ID |
+| **Patches** | TTS sentence replace | Locked voice ID |
 
 ---
 
@@ -325,17 +488,27 @@ For 8 Forum stops, don’t write 8 isolated operas:
 
 ---
 
-## QA before ship
+## QA
+
+### Sprint (3 days) — smoke test only
 
 | Gate | Method | Pass |
 |------|--------|------|
-| Historical | Fact ledger 100% mapped | No orphan claims |
+| Files exist | `ls public/waypoints/<id>/arrival.mp3` | 17 arrivals |
+| Loudness | ffmpeg loudnorm batch | −16 LUFS ±1 |
+| App sync | `?singleWaypoint=<id>&debugGeo=true` | Audio plays; slider reveals |
+| Transit | Full tour `?resetTour=true&debugGeo=true` | Transit plays on “Walk to next” |
+| Claims footer | Each script has 3+ sourced bullets | No empty scripts |
+
+### Polish pass (later)
+
+| Gate | Method | Pass |
+|------|--------|------|
+| Historical | Full fact ledger 100% mapped | No orphan claims |
 | Legal | Original prose + PD sources | No copied guide paragraphs |
 | Engagement | 3 listeners, phone speaker, outdoors | ≥ 2/3 finish without skip |
-| Clarity | Play at 85 dB ambient noise simulation | All proper nouns intelligible |
-| App sync | `?singleWaypoint=<id>&debugGeo=true` | Slider reveals on `[SLIDER_REVEAL]` beat |
-| Transit | Walk leg with narration | Ends before or as geofence triggers |
-| Bundle | `du -sh public/waypoints/` | Watch total download size |
+| Clarity | 85 dB ambient noise simulation | Proper nouns intelligible |
+| Bundle | `du -sh public/waypoints/` | Acceptable download size |
 
 ---
 
@@ -349,49 +522,65 @@ For 8 Forum stops, don’t write 8 isolated operas:
 
 ---
 
-## Suggested production order
+## Production order
 
-| Wave | Stops | Why |
-|------|-------|-----|
-| **1** | colosseum, pantheon, piazza-navona | Tour already live — replace placeholders |
-| **2** | forum-arch-titus → forum cluster | Dense zone, shared research |
-| **3** | capitoline-hill, campo-de-fiori, trajan-market | Standalone walks |
-| **4** | castel-sant-angelo, circus-maximus, appian-way | Longer legs, longer transit |
+### 3-day sprint (do this now)
+
+| Order | Stops | Why |
+|-------|-------|-----|
+| **Day 1 AM** | colosseum, pantheon, piazza-navona scripts | Live tour — test pipeline |
+| **Day 1 PM** | Forum batch B + C (8 scripts) | Shared tone, parallel AI |
+| **Day 1 eve** | Batch D (6 scripts) | Remaining expansion |
+| **Day 2** | All arrivals → MP3 | Highest user impact |
+| **Day 3** | All transits → MP3 + seed wiring | Tour flow complete |
+
+### Polish pass (after all waypoint videos ready)
+
+| Wave | Stops | Action |
+|------|-------|--------|
+| **1** | colosseum, pantheon, piazza-navona | Lengthen scripts + optional human VO |
+| **2** | Forum cluster | Full `facts.yaml`, thread refinement |
+| **3** | Standalone stops | Long-leg transits (Castel, Appian) |
 
 ---
 
-## Repo layout (proposed)
+## Repo layout
 
 ```
 chronowalk/
   content/
-  colosseum/
-    facts.yaml
-    outline.md
-    arrival.script.md
-    transit.script.md      # optional: approach-to-colosseum if first stop
-    factcheck.md
-  pantheon/
-    facts.yaml
-    arrival.script.md
-    transit.script.md      # colosseum → pantheon walk
-  ...
+    VOICE_SETTINGS.md          # Day 1 — locked TTS params
+    POLISH_BACKLOG.md          # Day 3 — items to fix after visuals done
+    facts-forum-common.yaml    # optional shared research
+    <id>/
+      arrival.script.md
+      transit.script.md        # omit for colosseum
   public/waypoints/<id>/
     arrival.mp3
     transit.mp3
+    geocache-arrival-alert.wav # reuse one file across stops in sprint
 ```
 
 Wire paths in `src/data/<id>.js` — same pattern as [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md#phase-5--audio-assets).
 
 ---
 
-## Agent one-liner (audio pass)
+## Agent one-liner (3-day sprint)
 
 ```
-Read chronowalk/docs/AUDIO_PRODUCTION_PLAYBOOK.md.
-For waypoint <id>: create content/<id>/facts.yaml, arrival.script.md, transit.script.md (transit = approach to this stop).
-Fact-check against ledger. Master to public/waypoints/<id>/arrival.mp3 and transit.mp3.
-Update seed URLs. Test ?singleWaypoint=<id>&debugGeo=true — slider sync on first visual cue.
+3-DAY SPRINT — read chronowalk/docs/AUDIO_PRODUCTION_PLAYBOOK.md § 3-day sprint.
+Day 1: parallel batches A–D → content/<id>/arrival.script.md + transit.script.md (claims footer).
+Day 2: TTS → public/waypoints/<id>/arrival.mp3, ffmpeg loudnorm -16 LUFS.
+Day 3: transit MP3s, wire src/data/<id>.js, smoke-test tour, write content/POLISH_BACKLOG.md.
+Skip ambient, skip full facts.yaml until polish pass.
+```
+
+## Agent one-liner (polish pass)
+
+```
+Read chronowalk/docs/AUDIO_PRODUCTION_PLAYBOOK.md + content/POLISH_BACKLOG.md.
+Expand facts.yaml, lengthen scripts, optional human VO for hero stops.
+Re-master MP3s. Full QA table.
 ```
 
 ---
@@ -410,14 +599,15 @@ Update seed URLs. Test ?singleWaypoint=<id>&debugGeo=true — slider sync on fir
 
 ## Summary
 
-Your workflow is **80% of a world-class pipeline**. The highest-leverage improvements for ChronoWalk:
+**3-day sprint:** parallel script batches → one TTS voice → batch MP3 → wire seeds → smoke test. **Polish later** when every waypoint has slider video.
 
-1. **Align to four audio slots** and destination-stop transit convention.
-2. **Duration from walk time**, not fixed 3-minute stops.
-3. **Fact Ledger YAML** before any prose — agents scale; quality gates stay.
-4. **One narrator brand**, TTS for volume, human for hero stops.
-5. **Cut visual/gamification phases** — already covered or v2.
-6. **Pre-mix SFX** — don’t rely on inline tags in the app.
-7. **Script to slider sync** — first visual command early for `AUDIO_SYNC_TRIGGER`.
+Highest-leverage rules (unchanged):
 
-Ship **arrival** scripts first (highest engagement), then **transit**, then **ambient**.
+1. **Align to four audio slots** — transit on **destination** stop.
+2. **Sprint = shorter scripts** (60–75 s arrival); expand in polish pass.
+3. **Claims footer** on every script now; full ledger later.
+4. **One TTS voice** for 3 days; human hero stops later.
+5. **Slider sync** — visual command in first 5–8 s.
+6. **Skip ambient / gamification / SFX layers** until v2.
+
+Ship **arrival** MP3s Day 2, **transit** MP3s Day 3. Everything else waits for the post-visual polish pass.
