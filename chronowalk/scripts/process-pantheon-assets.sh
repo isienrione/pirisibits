@@ -37,14 +37,24 @@ find_source() {
 }
 
 require_ffmpeg() {
-  command -v ffmpeg >/dev/null 2>&1 || {
-    echo "ffmpeg is required. Install ffmpeg and retry." >&2
-    exit 1
-  }
-  command -v ffprobe >/dev/null 2>&1 || {
-    echo "ffprobe is required. Install ffmpeg and retry." >&2
-    exit 1
-  }
+  if command -v ffmpeg >/dev/null 2>&1 && command -v ffprobe >/dev/null 2>&1; then
+    return 0
+  fi
+
+  cat >&2 <<'EOF'
+ffmpeg is required (includes ffprobe).
+
+Install on macOS (Homebrew):
+  brew install ffmpeg
+
+Then verify:
+  ffmpeg -version
+  ffprobe -version
+
+Re-run:
+  npm run process-pantheon
+EOF
+  exit 1
 }
 
 video_dims() {

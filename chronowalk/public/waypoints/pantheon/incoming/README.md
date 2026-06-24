@@ -3,6 +3,9 @@
 Drop your Runway/Midjourney exports here, then run from `chronowalk/`:
 
 ```bash
+# macOS — one-time if ffmpeg is missing
+brew install ffmpeg
+
 npm run process-pantheon
 ```
 
