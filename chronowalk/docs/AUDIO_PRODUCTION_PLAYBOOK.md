@@ -4,6 +4,8 @@
 
 **Sprint mode:** **3 days** to first-ship all Rome audio (scripts + MP3s). Polish, fact-deepening, and human re-records happen **after** every waypoint has slider media.
 
+**Start here:** [AUDIO_SPRINT_ACTIVATION.md](./AUDIO_SPRINT_ACTIVATION.md) — step-by-step activation (no in-app button; manual pipeline).
+
 **Related:** [WAYPOINT_PLAYBOOK.md](../WAYPOINT_PLAYBOOK.md) · [GEMINI_PROMPTS_EXPANSION.md](./GEMINI_PROMPTS_EXPANSION.md) · [WAYPOINT_ASSET_PIPELINE.md](../WAYPOINT_ASSET_PIPELINE.md)
 
 **Branch:** `cursor/chronowalk-setup-a224`
