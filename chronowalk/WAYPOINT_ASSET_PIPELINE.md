@@ -33,6 +33,38 @@ The app geofences on **landmark center** coords. The slider uses **pre-baked ass
 
 ---
 
+## Colosseum framing standard (replicate for every waypoint)
+
+The Colosseum `modern-exterior.jpg` works because it feels **close and immersive**, not like a wide postcard. Codify this for all new sites:
+
+| What worked (Colosseum) | Pantheon mistake (first pass) |
+|-------------------------|-------------------------------|
+| Viewpoint **~127 m** from landmark center, on approach path | Viewpoint **same as** landmark pin (piazza center) → building looks small |
+| **Pitch 18.1°** — facade fills the frame | **Pitch 10.5°** — more horizon, less monument |
+| Mid-approach stand (tourist walk-up) | Fountain / square center (iconic but too far) |
+| Hero frame at **3 s** tuned for full facade | Same rule applies once POV is fixed |
+
+### Framing checklist (before exporting `modern-exterior.jpg`)
+
+1. **Do not** use the Google Maps place pin or square center as the camera — walk Street View **toward** the facade until the building dominates the frame.
+2. **Separate coords:** `viewpoint.lat/lng` ≠ `waypoint.lat/lng` (aim for **25–120 m** from center along the approach axis; Colosseum ≈ **127 m**).
+3. **Pitch 14–22°** so pediment/roofline sits in the upper third (Colosseum: **18.1°**).
+4. **Facade fill:** monument should occupy roughly **60–75% of frame height** in the reference still.
+5. **16:9 export** centered on the facade; avoid ultra-wide plaza shots.
+6. **Clutter pass:** no lampposts, buses, or scaffolding bisecting the hero facade.
+7. **Validate in Asset Studio** — framing warnings appear for waypoints that fail offset/pitch heuristics.
+
+### Pantheon fix (re-scout)
+
+1. Open Street View at the fountain, then **walk north toward the portico steps** (~20–40 m).
+2. Raise pitch to **~16–18°** (match Colosseum band).
+3. Re-export `modern-exterior.jpg`, update `PANTHEON_VIEWPOINT` coords + pitch in `pantheon.js`.
+4. Regenerate all AI assets from the new reference.
+
+Asset Studio shows automated framing assessment via `assessModernFraming()` (`src/utils/modernFramingGuide.js`).
+
+---
+
 ## Agent workflow (per waypoint)
 
 ### Phase 0 — Scaffold

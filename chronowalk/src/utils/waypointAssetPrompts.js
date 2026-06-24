@@ -67,6 +67,7 @@ const sharedCameraRules = (waypoint) => {
     ctx.orientationHint ? `Visitor orientation: ${ctx.orientationHint}` : null,
     'Tripod-locked camera — no pan, tilt, zoom, or dolly during clip.',
     '16:9 landscape, full landmark facade visible, center-weighted composition.',
+    'Facade should fill ~60–75% of frame height (Colosseum close-approach standard — not a distant plaza postcard).',
     'No text, watermarks, UI, or borders in frame.',
   ]
     .filter(Boolean)

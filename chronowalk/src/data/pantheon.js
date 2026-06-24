@@ -1,9 +1,9 @@
 export const PANTHEON = { lat: 41.8986108, lng: 12.4768729 }
 
 /**
- * Camera POV from Piazza della Rotonda fountain, facing the Pantheon portico.
- * Source: Google Street View (Mar 2024 pano)
- * https://www.google.com/maps/place/Pantheon/@41.8986108,12.4768729,3a,90y,3.07h,100.52t/...
+ * Camera POV for the slider — MUST be closer to the portico than the piazza center.
+ * TODO: re-scout Street View ~20–40 m north of the fountain, pitch ~16–18° (Colosseum standard).
+ * Current coords match the place pin / wide piazza shot — building reads too small in frame.
  */
 export const PANTHEON_VIEWPOINT = {
   lat: 41.8986108,

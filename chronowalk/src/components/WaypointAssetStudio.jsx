@@ -4,6 +4,11 @@ import {
   buildWaypointAssetPromptPack,
   getModernReferenceUrl,
 } from '../utils/waypointAssetPrompts';
+import {
+  assessModernFraming,
+  COLOSSEUM_FRAMING_REFERENCE,
+  MODERN_FRAMING_CHECKLIST,
+} from '../utils/modernFramingGuide';
 
 const PromptBlock = ({ title, body, tool }) => {
   const [copied, setCopied] = useState(false);
@@ -72,6 +77,8 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
     return buildWaypointAssetPromptPack(waypoint, origin);
   }, [waypoint]);
 
+  const framing = useMemo(() => (waypoint ? assessModernFraming(waypoint) : null), [waypoint]);
+
   const modernReferencePath = waypoint ? getModernReferenceUrl(waypoint) : null;
 
   if (loading) {
@@ -103,6 +110,51 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             image and viewpoint metadata — same pipeline used for the Colosseum portal.
           </p>
         </header>
+
+        {framing ? (
+          <section
+            className={`mb-8 rounded-xl border p-4 ${
+              framing.passes
+                ? 'border-emerald-500/30 bg-emerald-950/20'
+                : 'border-amber-500/40 bg-amber-950/20'
+            }`}
+          >
+            <h2 className="text-sm font-semibold text-amber-100">
+              Framing check (Colosseum standard)
+            </h2>
+            <p className="mt-2 text-xs text-stone-400">
+              Colosseum reference: viewpoint ~{framing.colosseumReferenceOffsetM} m from center, pitch{' '}
+              {framing.colosseumReferencePitch}°. This waypoint: offset{' '}
+              {framing.offsetM != null ? `~${Math.round(framing.offsetM)} m` : 'unknown'}, pitch{' '}
+              {framing.pitch ?? 'unknown'}°.
+            </p>
+            {framing.warnings.length ? (
+              <ul className="mt-3 space-y-2 text-sm text-amber-200">
+                {framing.warnings.map((warning) => (
+                  <li key={warning}>• {warning}</li>
+                ))}
+              </ul>
+            ) : null}
+            {framing.tips.length ? (
+              <ul className="mt-3 space-y-1 text-xs text-emerald-200/90">
+                {framing.tips.map((tip) => (
+                  <li key={tip}>✓ {tip}</li>
+                ))}
+              </ul>
+            ) : null}
+            <details className="mt-4 text-xs text-stone-400">
+              <summary className="cursor-pointer text-amber-300">Framing checklist for all waypoints</summary>
+              <ol className="mt-2 list-decimal space-y-1 pl-5">
+                {MODERN_FRAMING_CHECKLIST.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ol>
+              <p className="mt-3 text-stone-500">
+                Reference: {COLOSSEUM_FRAMING_REFERENCE.notes.join(' ')}
+              </p>
+            </details>
+          </section>
+        ) : null}
 
         <section className="mb-8 grid gap-4 rounded-xl border border-stone-700 bg-stone-900/60 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <div>
