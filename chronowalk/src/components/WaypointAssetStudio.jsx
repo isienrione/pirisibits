@@ -124,7 +124,8 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             </h2>
             <p className="mt-2 text-xs text-stone-400">
               Colosseum reference: viewpoint ~{framing.colosseumReferenceOffsetM} m from center, pitch{' '}
-              {framing.colosseumReferencePitch}°. This waypoint: offset{' '}
+              {framing.colosseumReferencePitch}° (large approach). This waypoint (
+              {framing.framingProfile.replace('_', ' ')}): offset{' '}
               {framing.offsetM != null ? `~${Math.round(framing.offsetM)} m` : 'unknown'}, pitch{' '}
               {framing.pitch ?? 'unknown'}°.
             </p>
@@ -220,11 +221,15 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
         />
 
         <section className="mb-6 rounded-xl border border-amber-400/25 bg-amber-400/5 p-4 text-sm text-stone-300">
-          <h2 className="font-semibold text-amber-100">Recommended order (Pantheon)</h2>
+          <h2 className="font-semibold text-amber-100">Recommended order ({promptPack.title})</h2>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-stone-400">
             <li>
-              <strong className="text-stone-200">Skip modern still</strong> — you already have{' '}
-              <code className="text-amber-200">modern-exterior.jpg</code> from Street View.
+              <strong className="text-stone-200">
+                {modernReferencePath ? 'Skip modern still' : 'Capture modern still'}
+              </strong>
+              {modernReferencePath
+                ? ' — modern-exterior.jpg is already in the waypoint folder (re-export from Street View only if framing check fails).'
+                : ' — export modern-exterior.jpg from Street View at the viewpoint above.'}
             </li>
             <li>
               <strong className="text-stone-200">Runway / Pika</strong> — paste{' '}

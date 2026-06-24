@@ -1,19 +1,25 @@
-export const PANTHEON = { lat: 41.8986108, lng: 12.4768729 }
+export const PANTHEON = { lat: 41.89885, lng: 12.47687 }
 
 /**
- * Camera POV for the slider — MUST be closer to the portico than the piazza center.
- * TODO: re-scout Street View ~20–40 m north of the fountain, pitch ~16–18° (Colosseum standard).
- * Current coords match the place pin / wide piazza shot — building reads too small in frame.
+ * Mid-piazza POV facing the portico — closer than the fountain-wide Street View shot.
+ * Re-scouted to match Colosseum-style framing (monument fills the frame).
+ *
+ * Previous pass used the Maps place pin / fountain fisheye (offset ~0 m, pitch 10.5°).
+ * modern-exterior.jpg now cropped from a closer frontal reference (see public README).
  */
 export const PANTHEON_VIEWPOINT = {
-  lat: 41.8986108,
-  lng: 12.4768729,
-  heading: 3.07,
-  pitch: 10.52,
+  lat: 41.89862,
+  lng: 12.47687,
+  heading: 3,
+  pitch: 18,
 }
 
-export const PANTHEON_STREET_VIEW_URL =
+/** Original wide fountain Street View (kept for re-scout reference). */
+export const PANTHEON_STREET_VIEW_URL_FOUNTAIN =
   'https://www.google.com/maps/place/Pantheon/@41.8986108,12.4768729,3a,90y,3.07h,100.52t/data=!3m8!1e1!3m6!1sCIHM0ogKEICAgIDV6br5bg!2e10!3e11!6shttps:%2F%2Flh3.googleusercontent.com%2Fgpms-cs-s%2FABJJf51LKVR044lHUoLIGS2UMllK-HoX8kFBA0b1VF3-VWV8UitNWedQufvTx-CsnunH3hbmK2wZdTT5a3OFV_-AatIP5r9GueSQEHQQp5kJdKqdL-XJxbYbxDjVMxJEUpYcKd8hWVk%3Dw900-h600-k-no-pi-10.519274044590489-ya3.069271703843299-ro0-fo100!7i5952!8i2976!4m9!3m8!1s0x132f604f678640a9:0xcad165fa2036ce2c!8m2!3d41.8986108!4d12.4768729!10e5!14m1!1BCgIgARICCAI!16zL20vMDF4emR6'
+
+export const PANTHEON_STREET_VIEW_URL =
+  'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=41.89862,12.47687&heading=3&pitch=18'
 
 export const PANTHEON_SLIDER_POST_ANIMATION_LOOP_MS = 10000
 export const PANTHEON_SLIDER_POSTER_AT_SEC = 3
@@ -30,10 +36,11 @@ const PANTHEON_ANCIENT_POSTER = '/waypoints/pantheon/ancient-poster.jpg'
 export const PANTHEON_WAYPOINT = {
   id: 'pantheon',
   title: 'The Pantheon',
+  framingProfile: 'compact_piazza',
   arrival_headline: "You've reached the Pantheon!",
   arrival_subtitle: 'The temple of all gods awaits — step into imperial Rome.',
   immersive_orientation_hint:
-    'Stand by the fountain in Piazza della Rotonda, facing the portico, then begin the immersive view.',
+    'Stand in Piazza della Rotonda facing the portico — partway between the fountain and the steps — then begin the immersive view.',
   lat: PANTHEON.lat,
   lng: PANTHEON.lng,
   viewpoint: PANTHEON_VIEWPOINT,

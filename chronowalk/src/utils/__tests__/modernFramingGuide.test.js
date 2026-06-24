@@ -16,10 +16,22 @@ describe('modernFramingGuide', () => {
   });
 
   it('flags Pantheon when viewpoint equals landmark center (too far framing risk)', () => {
-    const assessment = assessModernFraming(PANTHEON_WAYPOINT);
+    const assessment = assessModernFraming({
+      ...PANTHEON_WAYPOINT,
+      lat: 41.8986108,
+      lng: 12.4768729,
+      viewpoint: { lat: 41.8986108, lng: 12.4768729, heading: 3.07, pitch: 10.52 },
+    });
     expect(assessment.offsetM).toBeLessThan(5);
     expect(assessment.warnings.length).toBeGreaterThan(0);
     expect(assessment.passes).toBe(false);
+  });
+
+  it('passes Pantheon after close-approach viewpoint rescout', () => {
+    const assessment = assessModernFraming(PANTHEON_WAYPOINT);
+    expect(assessment.offsetM).toBeGreaterThan(12);
+    expect(assessment.pitch).toBe(18);
+    expect(assessment.passes).toBe(true);
   });
 
   it('passes Colosseum framing assessment', () => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { COLOSSEUM_WAYPOINT } from '../../data/colosseum';
+import { PANTHEON_WAYPOINT } from '../../data/pantheon';
 import { getLocalWaypoint, mergeWaypointWithLocalDefaults } from '../waypointMerge';
 
 describe('mergeWaypointWithLocalDefaults', () => {
@@ -23,7 +24,25 @@ describe('mergeWaypointWithLocalDefaults', () => {
     const pantheon = getLocalWaypoint('pantheon');
 
     expect(pantheon?.id).toBe('pantheon');
-    expect(pantheon?.viewpoint?.heading).toBe(3.07);
+    expect(pantheon?.viewpoint?.heading).toBe(3);
+    expect(pantheon?.viewpoint?.pitch).toBe(18);
     expect(pantheon?.modern_image_url).toContain('/waypoints/pantheon/');
+  });
+
+  it('prefers local camera POV over stale Supabase viewpoint rows', () => {
+    const remote = {
+      id: 'pantheon',
+      title: 'Remote Pantheon',
+      lat: 41.8986108,
+      lng: 12.4768729,
+      viewpoint: { lat: 41.8986108, lng: 12.4768729, heading: 3.07, pitch: 10.52 },
+    };
+
+    const merged = mergeWaypointWithLocalDefaults(remote, PANTHEON_WAYPOINT);
+
+    expect(merged.title).toBe('Remote Pantheon');
+    expect(merged.lat).toBe(PANTHEON_WAYPOINT.lat);
+    expect(merged.viewpoint.pitch).toBe(18);
+    expect(merged.framingProfile).toBe('compact_piazza');
   });
 });

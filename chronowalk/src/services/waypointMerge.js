@@ -28,6 +28,8 @@ const COPY_KEYS = [
 /**
  * Supabase rows may omit large media fields during MVP. Keep local seed assets as fallback.
  */
+const LOCAL_POV_KEYS = ['lat', 'lng', 'framingProfile']
+
 export const mergeWaypointWithLocalDefaults = (remote, local) => {
   if (!remote) return { ...local }
   if (!local) return { ...remote }
@@ -40,6 +42,15 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
 
   for (const key of COPY_KEYS) {
     if (!merged[key]) merged[key] = local[key]
+  }
+
+  // Git seed is authoritative for camera POV — Supabase rows may lag during asset iteration.
+  for (const key of LOCAL_POV_KEYS) {
+    if (local[key] != null) merged[key] = local[key]
+  }
+
+  if (local.viewpoint) {
+    merged.viewpoint = { ...remote.viewpoint, ...local.viewpoint }
   }
 
   return merged

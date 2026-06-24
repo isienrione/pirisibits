@@ -29,14 +29,24 @@ COLOSSEUM_FRAMING_REFERENCE.viewpointOffsetM = Math.round(
 );
 
 export const FRAMING_TARGETS = {
-  /** Viewpoint should usually be tens of metres from landmark center, on the approach axis. */
-  minViewpointOffsetM: 25,
-  idealViewpointOffsetM: [40, 120],
-  maxViewpointOffsetM: 180,
-  /** Up-tilt toward facade; Colosseum uses 18.1°. */
+  large_approach: {
+    minViewpointOffsetM: 25,
+    idealViewpointOffsetM: [40, 120],
+    maxViewpointOffsetM: 180,
+  },
+  compact_piazza: {
+    minViewpointOffsetM: 12,
+    idealViewpointOffsetM: [18, 45],
+    maxViewpointOffsetM: 70,
+  },
   idealPitch: [14, 22],
   minPitch: 12,
 };
+
+export const getFramingTargets = (waypoint) =>
+  waypoint?.framingProfile === 'compact_piazza'
+    ? FRAMING_TARGETS.compact_piazza
+    : FRAMING_TARGETS.large_approach;
 
 export const MODERN_FRAMING_CHECKLIST = [
   'Stand on the approach path facing the facade — not the geographic center of the square.',
@@ -60,16 +70,19 @@ export const assessModernFraming = (waypoint) => {
   const tips = [];
   const offsetM = getViewpointOffsetM(waypoint);
   const pitch = waypoint?.viewpoint?.pitch;
+  const targets = getFramingTargets(waypoint);
+  const profileLabel =
+    waypoint?.framingProfile === 'compact_piazza' ? 'compact piazza' : 'large approach';
 
-  if (offsetM != null && offsetM < FRAMING_TARGETS.minViewpointOffsetM) {
+  if (offsetM != null && offsetM < targets.minViewpointOffsetM) {
     warnings.push(
-      `Viewpoint is only ~${offsetM} m from landmark center. Colosseum uses ~${COLOSSEUM_FRAMING_REFERENCE.viewpointOffsetM} m — the building may look too small/far. Walk Street View closer to the facade along the approach.`
+      `Viewpoint is only ~${offsetM} m from landmark center (${profileLabel} sites need ≥${targets.minViewpointOffsetM} m). The building may look too small — walk Street View closer to the facade along the approach.`
     );
   }
 
-  if (offsetM != null && offsetM > FRAMING_TARGETS.maxViewpointOffsetM) {
+  if (offsetM != null && offsetM > targets.maxViewpointOffsetM) {
     warnings.push(
-      `Viewpoint is ~${offsetM} m from landmark center — may feel too distant. Move closer on the approach path.`
+      `Viewpoint is ~${offsetM} m from landmark center — may feel too distant for a ${profileLabel} site. Move closer on the approach path.`
     );
   }
 
@@ -79,19 +92,30 @@ export const assessModernFraming = (waypoint) => {
     );
   }
 
-  if (pitch != null && pitch >= FRAMING_TARGETS.idealPitch[0] && pitch <= FRAMING_TARGETS.idealPitch[1]) {
-    tips.push(`Pitch ${pitch}° is in the Colosseum-style range (${FRAMING_TARGETS.idealPitch[0]}–${FRAMING_TARGETS.idealPitch[1]}°).`);
+  if (
+    pitch != null &&
+    pitch >= FRAMING_TARGETS.idealPitch[0] &&
+    pitch <= FRAMING_TARGETS.idealPitch[1]
+  ) {
+    tips.push(
+      `Pitch ${pitch}° is in the Colosseum-style range (${FRAMING_TARGETS.idealPitch[0]}–${FRAMING_TARGETS.idealPitch[1]}°).`
+    );
   }
 
-  if (offsetM != null && offsetM >= FRAMING_TARGETS.idealViewpointOffsetM[0] && offsetM <= FRAMING_TARGETS.idealViewpointOffsetM[1]) {
+  if (
+    offsetM != null &&
+    offsetM >= targets.idealViewpointOffsetM[0] &&
+    offsetM <= targets.idealViewpointOffsetM[1]
+  ) {
     tips.push(
-      `Viewpoint offset ~${offsetM} m matches the Colosseum approach distance band (${FRAMING_TARGETS.idealViewpointOffsetM[0]}–${FRAMING_TARGETS.idealViewpointOffsetM[1]} m).`
+      `Viewpoint offset ~${offsetM} m fits the ${profileLabel} band (${targets.idealViewpointOffsetM[0]}–${targets.idealViewpointOffsetM[1]} m). Colosseum uses ~${COLOSSEUM_FRAMING_REFERENCE.viewpointOffsetM} m as a large-site reference.`
     );
   }
 
   return {
     offsetM,
     pitch,
+    framingProfile: waypoint?.framingProfile ?? 'large_approach',
     colosseumReferenceOffsetM: COLOSSEUM_FRAMING_REFERENCE.viewpointOffsetM,
     colosseumReferencePitch: COLOSSEUM_FRAMING_REFERENCE.pitch,
     warnings,
