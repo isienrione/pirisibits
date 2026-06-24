@@ -7,6 +7,7 @@ const TourHud = ({
   nextWaypoint,
   transitLegActive,
   state,
+  waypointExploreActive,
   onContinueTour,
 }) => {
   if (!tour || !nextWaypoint) return null
@@ -19,13 +20,14 @@ const TourHud = ({
     targetStopId &&
     progress.arrivedStopIds.includes(targetStopId) &&
     nextWaypoint &&
-    !transitLegActive
+    !transitLegActive &&
+    !waypointExploreActive
 
   if (!showContinue && !transitLegActive) return null
 
   return (
     <div
-      className="pointer-events-none fixed left-1/2 z-[180] w-[min(92vw,24rem)] -translate-x-1/2"
+      className="pointer-events-none fixed left-1/2 z-40 w-[min(92vw,24rem)] -translate-x-1/2"
       style={{ bottom: 'max(6.5rem, calc(env(safe-area-inset-bottom) + 5rem))' }}
     >
       <div className="pointer-events-auto rounded-2xl border border-amber-400/30 bg-stone-950/90 p-4 shadow-xl backdrop-blur-sm">

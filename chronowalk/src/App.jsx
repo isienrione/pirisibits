@@ -165,6 +165,7 @@ function App() {
         nextWaypoint={session.nextWaypoint}
         transitLegActive={session.progress.transitLegActive}
         state={session.state}
+        waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
         onContinueTour={handleContinueTour}
       />
 
