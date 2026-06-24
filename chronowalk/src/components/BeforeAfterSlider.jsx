@@ -9,7 +9,8 @@ const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const MAX_SHIFT_PX = 24;
 const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
 const MEDIA_ASPECT = 16 / 9;
-const DEFAULT_MAX_FRAME_HEIGHT_RATIO = 0.48;
+const DEFAULT_MAX_FRAME_HEIGHT_RATIO = 0.58;
+const ALIGNMENT_MAX_FRAME_HEIGHT_RATIO = 0.5;
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
 
@@ -22,11 +23,6 @@ const baseMediaStyle = {
   maxWidth: '100%',
   boxSizing: 'border-box',
   objectPosition: 'center center',
-};
-
-const coverMediaStyle = {
-  ...baseMediaStyle,
-  objectFit: 'cover',
 };
 
 const containMediaStyle = {
@@ -216,7 +212,7 @@ const BeforeAfterSlider = ({
 }) => {
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const resolvedMaxFrameHeightRatio =
-    maxFrameHeightRatio ?? (alignmentMode ? 0.34 : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
+    maxFrameHeightRatio ?? (alignmentMode ? ALIGNMENT_MAX_FRAME_HEIGHT_RATIO : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
   const { frameRef, frameHeight } = useCompareFrameSize(resolvedMaxFrameHeightRatio);
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
@@ -245,8 +241,8 @@ const BeforeAfterSlider = ({
     ancientPosterReady;
 
   const showPosters = compareReady && postersAvailable;
-  const playbackMediaStyle = coverMediaStyle;
-  const posterMediaStyle = coverMediaStyle;
+  const playbackMediaStyle = containMediaStyle;
+  const posterMediaStyle = containMediaStyle;
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
