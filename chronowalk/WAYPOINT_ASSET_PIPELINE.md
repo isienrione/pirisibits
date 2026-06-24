@@ -270,6 +270,19 @@ npm run build
 
 ---
 
+### Pantheon (scaffolded)
+
+| Item | Value |
+|------|-------|
+| Landmark center | `41.8986108, 12.4768729` |
+| Viewpoint (fountain) | `41.8986108, 12.4768729` |
+| Heading / pitch | `3.07°` / `10.52°` (from Street View `3.07h, 100.52t`) |
+| Modern still | `public/waypoints/pantheon/modern-exterior.jpg` (exported) |
+| Asset Studio | `?assetStudio=true&waypoint=pantheon` |
+| Seed | `src/data/pantheon.js` |
+
+---
+
 ## Agent prompt snippet (paste into new session)
 
 ```
