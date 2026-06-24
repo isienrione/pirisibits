@@ -162,10 +162,36 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
         </section>
 
         <PromptBlock
-          title="Shared camera rules"
-          body={promptPack.sharedCameraRules}
-          tool="All tools"
+          title="Shared camera rules (reference — do not paste alone)"
+          body={`${promptPack.sharedCameraRules}\n\nUse the tool-specific prompts below. Prepend this block only if a tool's prompt field is short and you need extra camera constraints.`}
+          tool="Context for you · optional prefix"
         />
+
+        <section className="mb-6 rounded-xl border border-amber-400/25 bg-amber-400/5 p-4 text-sm text-stone-300">
+          <h2 className="font-semibold text-amber-100">Recommended order (Pantheon)</h2>
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-stone-400">
+            <li>
+              <strong className="text-stone-200">Skip modern still</strong> — you already have{' '}
+              <code className="text-amber-200">modern-exterior.jpg</code> from Street View.
+            </li>
+            <li>
+              <strong className="text-stone-200">Runway / Pika</strong> — paste{' '}
+              <em>Modern animated video</em>, upload <code className="text-amber-200">modern-exterior.jpg</code> → save{' '}
+              <code className="text-amber-200">modern.mp4</code>
+            </li>
+            <li>
+              <strong className="text-stone-200">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
+              photo as image reference → save <code className="text-amber-200">ancient-reconstruction.jpg</code>
+            </li>
+            <li>
+              <strong className="text-stone-200">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
+              ancient still + motion-sync from modern clip → save <code className="text-amber-200">ancient-reconstruction.mp4</code>
+            </li>
+            <li>
+              <strong className="text-stone-200">DaVinci / export</strong> — use brief to pull poster frames at ~3s
+            </li>
+          </ol>
+        </section>
 
         <div className="mt-6 space-y-4">
           <PromptBlock
