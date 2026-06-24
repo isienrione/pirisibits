@@ -40,6 +40,30 @@ if (( missing > 0 )); then
   exit 1
 fi
 
+warnings=0
+for other_dir in "$ROOT/public/waypoints"/*; do
+  [[ -d "$other_dir" ]] || continue
+  other_id="$(basename "$other_dir")"
+  [[ "$other_id" == "$WAYPOINT_ID" ]] && continue
+  [[ "$other_id" == "incoming" ]] && continue
+
+  for file in modern-exterior.jpg modern.mp4 ancient-reconstruction.mp4; do
+    [[ -f "$DIR/$file" && -f "$other_dir/$file" ]] || continue
+    if cmp -s "$DIR/$file" "$other_dir/$file"; then
+      echo "⚠ $file is identical to $other_id — replace with $WAYPOINT_ID-specific media"
+      warnings=$((warnings + 1))
+    fi
+  done
+done
+
+if (( warnings > 0 )); then
+  echo ""
+  echo "$warnings duplicate file(s) detected. The slider will show the wrong landmark until you:"
+  echo "  1. Export modern-exterior.jpg from Street View (Asset Studio link below)"
+  echo "  2. Re-run: npm run process-waypoint -- $WAYPOINT_ID  (with your Runway MP4s in incoming/)"
+  echo "Do NOT copy image/video files from pantheon/ or colosseum/."
+fi
+
 echo ""
 echo "$WAYPOINT_ID assets ready."
 echo "Asset Studio (prompts): http://localhost:5173/?assetStudio=true&waypoint=$WAYPOINT_ID"

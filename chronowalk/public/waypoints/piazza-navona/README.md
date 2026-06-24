@@ -1,6 +1,6 @@
 # Piazza Navona waypoint assets
 
-**Status:** 🟡 Scaffold — placeholder media copied from Pantheon until Navona-specific AI assets are produced.
+**Status:** Replace placeholder media — verify warns if files match pantheon/colosseum bytes.
 
 **Ancient site:** Stadium of Domitian (Circus Agonalis) under today's baroque piazza.  
 **Viewpoint:** South edge of the oval, facing north (`41.89878, 12.47302`, pitch 18°).
@@ -24,11 +24,11 @@ Verify locally: `npm run verify-waypoint -- piazza-navona`
 
 ## Production steps
 
-1. Export `modern-exterior.jpg` from Street View at viewpoint in `src/data/piazza-navona.js`
-2. Open Asset Studio → copy Runway / Midjourney prompts
-3. Drop Runway sources in `incoming/` (see `incoming/README.md`)
-4. `npm run process-waypoint -- piazza-navona`
-5. Replace `Audio_sample.mp3` with recorded narration when ready
+1. Export `modern-exterior.jpg` from Street View (Asset Studio → **Open Street View at viewpoint**)
+2. Put `modern-source.mp4` + `ancient-source.mp4` in `incoming/` (today = modern, ancient = Domitian)
+3. `npm run process-piazza-navona` — must print **literal mapping**
+4. `npm run verify-piazza-navona` — fix any `⚠ identical to pantheon` warnings
+5. Hard-refresh browser or restart `npm run dev` before testing slider
 
 Seed file: `src/data/piazza-navona.js`
 

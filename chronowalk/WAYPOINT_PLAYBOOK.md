@@ -28,6 +28,46 @@ Multi-stop tour is fully wired: map markers, walking routes (Mapbox), transit au
 
 ---
 
+## Video processing rules (read before every new waypoint)
+
+### Default: name your files to match the era
+
+Drop into `public/waypoints/<id>/incoming/`:
+
+| Incoming filename | Becomes | Must show |
+|-------------------|---------|-----------|
+| `modern-source.mp4` | `modern.mp4` | **Today** (modern Rome) |
+| `ancient-source.mp4` | `ancient-reconstruction.mp4` | **Ancient** era reconstruction |
+
+Then run:
+
+```bash
+npm run process-waypoint -- <id>
+```
+
+You should see: `Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)`
+
+### Exception: Pantheon only
+
+Runway mislabeled Pantheon downloads. **Only Pantheon** uses swap mapping — built into `npm run process-pantheon` (`SWAP_RUNWAY=1`).  
+**Do not** use `process-pantheon` for other stops.
+
+### Never copy media from another stop
+
+Scaffolding may copy placeholder files so verify passes. **The slider will show the wrong landmark** until you replace:
+
+1. `modern-exterior.jpg` — Street View export (Asset Studio → Open Street View)
+2. `incoming/modern-source.mp4` + `incoming/ancient-source.mp4` — your Runway clips
+3. Re-run `npm run process-waypoint -- <id>`
+
+`npm run verify-waypoint -- <id>` warns if files are byte-identical to colosseum/ or pantheon/.
+
+### Supabase copy-paste trap
+
+If a Supabase row for `<id>` still has `/waypoints/pantheon/...` URLs, the app now ignores those and uses local seed paths — but the **files on disk** must still be Navona-specific.
+
+---
+
 ## Architecture (what talks to what)
 
 ```mermaid
@@ -183,9 +223,13 @@ Copy `Audio_sample.mp3` + `geocache-arrival-alert.wav` from another stop until r
 ### Phase 5 — Process & verify
 
 ```bash
-# Drop Runway exports in public/waypoints/<id>/incoming/
-npm run process-waypoint -- <id>    # or npm run process-pantheon
+npm run process-waypoint -- <id>
 npm run verify-waypoint -- <id>
+```
+
+Confirm output says **literal mapping** (not swap). Fix any `⚠ identical to pantheon` warnings before testing.
+
+```bash
 npm test && npm run build
 ```
 
@@ -203,7 +247,7 @@ npm test && npm run build
 
 ### Phase 7 — Supabase (optional)
 
-Table `waypoints` — columns match seed schema. Local git seed wins for `viewpoint`, `lat`, `lng`, `framingProfile`. Empty remote media fields fall back to local URLs (`waypointMerge.js`).
+Table `waypoints` — columns match seed schema. Local git seed wins for `viewpoint`, `lat`, `lng`, `framingProfile`. URLs pointing at **another** waypoint's folder are ignored (`waypointMerge.js`).
 
 ---
 

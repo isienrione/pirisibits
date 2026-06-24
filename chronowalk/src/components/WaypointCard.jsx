@@ -196,6 +196,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
           {showSlider ? (
             <div ref={sliderRef} className="mb-4">
               <BeforeAfterSlider
+                key={waypoint.id}
                 modernImg={getModernSliderUrl(waypoint)}
                 historicImg={getAncientSliderUrl(waypoint)}
                 depthMap={waypoint.depth_map_url}

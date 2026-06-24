@@ -28,8 +28,15 @@ const COPY_KEYS = [
 
 /**
  * Supabase rows may omit large media fields during MVP. Keep local seed assets as fallback.
+ * Reject remote URLs that point at a different waypoint's folder (common copy-paste mistake).
  */
 const LOCAL_POV_KEYS = ['lat', 'lng', 'framingProfile']
+
+export const isForeignWaypointMediaUrl = (url, waypointId) => {
+  if (!url || !waypointId) return false
+  const match = String(url).match(/\/waypoints\/([^/]+)\//)
+  return Boolean(match && match[1] !== waypointId)
+}
 
 export const mergeWaypointWithLocalDefaults = (remote, local) => {
   if (!remote) return { ...local }
@@ -38,7 +45,11 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
   const merged = { ...local, ...remote }
 
   for (const key of MEDIA_URL_KEYS) {
-    if (!merged[key]) merged[key] = local[key]
+    if (isForeignWaypointMediaUrl(merged[key], local.id)) {
+      merged[key] = local[key]
+    } else if (!merged[key]) {
+      merged[key] = local[key]
+    }
   }
 
   for (const key of COPY_KEYS) {

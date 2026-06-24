@@ -55,4 +55,20 @@ describe('mergeWaypointWithLocalDefaults', () => {
     expect(navona?.framingProfile).toBe('compact_piazza');
     expect(navona?.modern_image_url).toContain('/waypoints/piazza-navona/');
   });
+
+  it('rejects Supabase media URLs that point at a different waypoint folder', () => {
+    const remote = {
+      id: 'piazza-navona',
+      title: 'Piazza Navona',
+      modern_image_url: '/waypoints/pantheon/modern-exterior.jpg',
+      modern_video_url: '/waypoints/pantheon/modern.mp4',
+      ancient_video_url: '/waypoints/pantheon/ancient-reconstruction.mp4',
+    };
+
+    const merged = mergeWaypointWithLocalDefaults(remote, PIAZZA_NAVONA_WAYPOINT);
+
+    expect(merged.modern_image_url).toBe(PIAZZA_NAVONA_WAYPOINT.modern_image_url);
+    expect(merged.modern_video_url).toBe(PIAZZA_NAVONA_WAYPOINT.modern_video_url);
+    expect(merged.ancient_video_url).toBe(PIAZZA_NAVONA_WAYPOINT.ancient_video_url);
+  });
 });

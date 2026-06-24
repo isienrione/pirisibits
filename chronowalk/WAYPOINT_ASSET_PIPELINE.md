@@ -129,7 +129,17 @@ Ancient media must look like the **same camera** as modern — only the era chan
 
 **Sync rule:** When both videos play, ancient `currentTime` tracks modern within 0.2 s (handled in `BeforeAfterSlider.jsx`).
 
-### Phase 4 — Optional depth map
+### Process Runway exports (`npm run process-waypoint`)
+
+| Incoming (`incoming/`) | Output | Era |
+|------------------------|--------|-----|
+| `modern-source.mp4` | `modern.mp4` | Today |
+| `ancient-source.mp4` | `ancient-reconstruction.mp4` | Ancient |
+
+**Pantheon only:** `npm run process-pantheon` sets `SWAP_RUNWAY=1` (Runway mislabeled those downloads).  
+**Never copy** media files from another waypoint folder — see [WAYPOINT_PLAYBOOK.md](./WAYPOINT_PLAYBOOK.md#video-processing-rules-read-before-every-new-waypoint).
+
+---
 
 - [ ] `depth-map.png` derived from ancient reconstruction.
 - [ ] Set `depth_map_url` on waypoint — boosts device-tilt parallax 1.1×.
