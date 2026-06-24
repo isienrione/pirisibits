@@ -302,6 +302,79 @@ cd chronowalk && npm test
 
 ---
 
+## Troubleshooting (common errors)
+
+**You don't need to re-scaffold Piazza Navona in code** — it's already on branch `cursor/chronowalk-setup-a224`. Pull first:
+
+```bash
+git pull origin cursor/chronowalk-setup-a224
+cd chronowalk && npm install
+```
+
+### `Usage: npm run process-waypoint -- <waypoint-id>`
+
+You forgot the waypoint id. Use either form:
+
+```bash
+npm run process-waypoint -- piazza-navona
+# or the shortcut:
+npm run process-piazza-navona
+```
+
+### `Missing source videos in .../incoming`
+
+`process-waypoint` only runs **after** you drop Runway exports in `public/waypoints/piazza-navona/incoming/`.  
+Placeholder tour media is already in the parent folder — you can test the app **without** running process.
+
+```bash
+# Check placeholders (should all pass):
+npm run verify-piazza-navona
+```
+
+### `✗ missing: modern-exterior.jpg` (or other files)
+
+Assets weren't pulled or were deleted. Either:
+
+```bash
+git checkout origin/cursor/chronowalk-setup-a224 -- public/waypoints/piazza-navona/
+npm run verify-piazza-navona
+```
+
+Or copy from Pantheon temporarily:
+
+```bash
+cp public/waypoints/pantheon/{modern-exterior.jpg,modern.mp4,modern-poster.jpg,ancient-reconstruction.*,ancient-poster.jpg,geocache-arrival-alert.wav,Audio_sample.mp3} public/waypoints/piazza-navona/
+```
+
+### `ffmpeg is required`
+
+Install on Mac: `brew install ffmpeg`, then re-run process.
+
+### `Waypoint not found: piazza-navona` (browser / Asset Studio)
+
+Old build or missing seed registration. Confirm these exist:
+
+- `src/data/piazza-navona.js`
+- entry in `src/services/waypointMerge.js` → `getLocalWaypoint`
+- entry in `src/data/waypointGeo.js`
+- `'piazza-navona'` in `src/data/rome-core-tour.js` `stopIds`
+
+Restart dev server: `npm run dev`
+
+### `Supabase waypoint fetch failed: ...`
+
+Bad row in Supabase `waypoints` table. Local seed still works if Supabase env vars are unset; if set, fix or delete the broken remote row for `piazza-navona`.
+
+### Tour shows 2 stops, not 3
+
+Clear saved progress: open with `?resetTour=true&debugGeo=true`
+
+### Still stuck?
+
+Paste the **full error message** (terminal or browser console) when asking for help.
+
+---
+
 ## Gemini handoff: where we are now
 
 Paste this block into Gemini to continue asset production:
