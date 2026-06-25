@@ -17,6 +17,8 @@
     "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
     "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",
     "fix-expansion-folders": "bash scripts/fix-expansion-folders.sh",
+    "diagnose-expansion-waypoints": "bash scripts/diagnose-expansion-waypoints.sh",
+    "place-expansion-mp4": "bash scripts/place-expansion-mp4.sh",
     "normalize-audio": "bash scripts/normalize-audio.sh",
     "test:watch": "vitest"
   },
