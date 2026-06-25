@@ -101,6 +101,8 @@ npm run process-expansion-waypoints
 Stops: `capitoline-hill`, `largo-argentina`, `campo-de-fiori`, `castel-sant-angelo`.  
 One stop: `npm run process-waypoint -- castel-sant-angelo`
 
+**Wrong folder names?** See [FIX_EXPANSION_MEDIA.md](./docs/FIX_EXPANSION_MEDIA.md) — run `npm run fix-expansion-folders` from `chronowalk/` (not `scripts/`).
+
 ---
 
 ## URL parameter reference

@@ -16,6 +16,7 @@
     "process-piazza-navona": "bash scripts/process-waypoint-assets.sh piazza-navona",
     "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
     "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",
+    "fix-expansion-folders": "bash scripts/fix-expansion-folders.sh",
     "normalize-audio": "bash scripts/normalize-audio.sh",
     "test:watch": "vitest"
   },
