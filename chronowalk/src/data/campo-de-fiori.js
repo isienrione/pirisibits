@@ -31,7 +31,7 @@ const CAMPO_DE_FIORI_ANCIENT_POSTER = '/waypoints/campo-de-fiori/ancient-poster.
 export const CAMPO_DE_FIORI_WAYPOINT = {
   id: 'campo-de-fiori',
   title: "Campo de' Fiori",
-  media_cache_version: 2,
+  media_cache_version: 3,
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Campo de' Fiori!",
   arrival_subtitle:

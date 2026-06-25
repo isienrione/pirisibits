@@ -31,7 +31,7 @@ const LARGO_ARGENTINA_ANCIENT_POSTER = '/waypoints/largo-argentina/ancient-poste
 export const LARGO_ARGENTINA_WAYPOINT = {
   id: 'largo-argentina',
   title: 'Largo di Torre Argentina',
-  media_cache_version: 2,
+  media_cache_version: 3,
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Largo Argentina!",
   arrival_subtitle:

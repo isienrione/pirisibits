@@ -82,6 +82,9 @@ EOF
   exit 1
 }
 
+# Slider frame background — pad tall/square Gemini exports to 16:9 without cropping sky/facade
+PAD_COLOR="0x0c0a09"
+
 video_dims() {
   ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$1"
 }
@@ -90,13 +93,35 @@ is_16x9_video() {
   local w="$1"
   local h="$2"
   # ~2% tolerance around 16:9
-  (( h > 0 && w * 100 / h >= 17 && w * 100 / h <= 18 ))
+  (( h > 0 && w * 9 * 100 >= h * 16 * 98 && w * 9 * 100 <= h * 16 * 102 ))
+}
+
+# Tall/square sources: fit full height, pad sides. Wide sources: crop sides only.
+build_16x9_vf() {
+  local src_w="$1"
+  local src_h="$2"
+  local out_w="$3"
+  local out_h="$4"
+
+  if is_16x9_video "$src_w" "$src_h"; then
+    printf 'scale=%s:%s' "$out_w" "$out_h"
+    return 0
+  fi
+
+  if (( src_w * 9 < src_h * 16 )); then
+    printf 'scale=-2:%s:flags=lanczos,pad=%s:%s:(ow-iw)/2:(oh-ih)/2:color=%s' \
+      "$out_h" "$out_w" "$out_h" "$PAD_COLOR"
+    return 0
+  fi
+
+  printf 'scale=%s:%s:force_original_aspect_ratio=increase,crop=%s:%s' \
+    "$out_w" "$out_h" "$out_w" "$out_h"
 }
 
 encode_video_16x9() {
   local input="$1"
   local output="$2"
-  local src_w src_h
+  local src_w src_h vf
   local out_w=1280
   local out_h=720
 
@@ -108,9 +133,15 @@ encode_video_16x9() {
     return 0
   fi
 
-  echo "  $(basename "$output"): crop ${src_w}x${src_h} → ${out_w}x${out_h}"
+  vf="$(build_16x9_vf "$src_w" "$src_h" "$out_w" "$out_h")"
+  if [[ "$vf" == *pad=* ]]; then
+    echo "  $(basename "$output"): fit-height ${src_w}x${src_h} → ${out_w}x${out_h} (preserve vertical, pad sides)"
+  else
+    echo "  $(basename "$output"): crop ${src_w}x${src_h} → ${out_w}x${out_h}"
+  fi
+
   ffmpeg -y -hide_banner -loglevel error -i "$input" \
-    -vf "scale=${out_w}:${out_h}:force_original_aspect_ratio=increase,crop=${out_w}:${out_h}" \
+    -vf "$vf" \
     -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -an -movflags +faststart \
     "$output"
 }
@@ -132,9 +163,13 @@ extract_poster() {
   local output="$2"
   local poster_w="$3"
   local poster_h="$4"
+  local src_w src_h vf
+
+  IFS=, read -r src_w src_h < <(video_dims "$video")
+  vf="$(build_16x9_vf "$src_w" "$src_h" "$poster_w" "$poster_h")"
 
   ffmpeg -y -hide_banner -loglevel error -ss "$POSTER_SEC" -i "$video" -frames:v 1 -update 1 \
-    -vf "scale=${poster_w}:${poster_h}:force_original_aspect_ratio=increase,crop=${poster_w}:${poster_h}" \
+    -vf "$vf" \
     -q:v 2 "$output"
 }
 
@@ -177,7 +212,7 @@ else
 fi
 
 ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \
-  -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
+  -vf "scale=1280:720" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
 
 IFS=' ' read -r POSTER_W POSTER_H <<< "$(poster_dims_from_video "$WAYPOINT_DIR/modern.mp4")"
 echo "Poster size: ${POSTER_W}x${POSTER_H} at ${POSTER_SEC}s"

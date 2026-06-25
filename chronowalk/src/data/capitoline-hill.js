@@ -34,7 +34,7 @@ const CAPITOLINE_HILL_ANCIENT_POSTER = '/waypoints/capitoline-hill/ancient-poste
 export const CAPITOLINE_HILL_WAYPOINT = {
   id: 'capitoline-hill',
   title: 'Capitoline Hill',
-  media_cache_version: 2,
+  media_cache_version: 3,
   framingProfile: 'large_approach',
   arrival_headline: "You've reached the Capitoline Hill!",
   arrival_subtitle:
