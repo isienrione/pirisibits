@@ -131,16 +131,36 @@ If a stop still skips, run `npm run diagnose-expansion-waypoints` again.
 
 ## 7. Commit (from `chronowalk/` only)
 
+**Mac gotcha:** if `git status` shows `Capitoline-Hill/`, `Campo-de-fiori/`, etc. as **untracked**, `git add public/waypoints/capitoline-hill` may stage **nothing**. Git is case-sensitive even when macOS is not.
+
+### Easy way (recommended)
+
 ```bash
 cd ~/pirisibits/chronowalk
+npm run git-add-expansion-media
+git commit -m "Add processed slider media for expansion stops"
+git push
+```
 
-git add public/waypoints/capitoline-hill \
-        public/waypoints/largo-argentina \
-        public/waypoints/campo-de-fiori \
-        public/waypoints/castel-sant-angelo
+### Manual way (use the paths git actually shows)
 
+```bash
+git add -f public/waypoints/Capitoline-Hill \
+        public/waypoints/Campo-de-fiori \
+        public/waypoints/Castel-Sant-Angelo \
+        public/waypoints/Largo_argentina
 git status
 git commit -m "Add processed slider media for expansion stops"
+git push
+```
+
+### Piazza Navona (separate commit — optional)
+
+If you re-processed Navona and want those changes too:
+
+```bash
+git add public/waypoints/piazza-navona
+git commit -m "Update Piazza Navona slider media"
 git push
 ```
 
