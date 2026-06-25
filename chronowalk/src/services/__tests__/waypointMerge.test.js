@@ -28,6 +28,8 @@ describe('mergeWaypointWithLocalDefaults', () => {
     expect(pantheon?.viewpoint?.heading).toBe(3);
     expect(pantheon?.viewpoint?.pitch).toBe(18);
     expect(pantheon?.modern_image_url).toContain('/waypoints/pantheon/');
+    expect(pantheon?.arrival_transcript).toContain('portico columns');
+    expect(pantheon?.transit_transcript).toContain('Capitoline');
   });
 
   it('prefers local camera POV over stale Supabase viewpoint rows', () => {

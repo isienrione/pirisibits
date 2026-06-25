@@ -61,6 +61,7 @@ const TourMap = ({
   state,
   distance,
   tourTitle,
+  virtualVisitActive = false,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -257,8 +258,9 @@ const TourMap = ({
     if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
 
     const anchor = activeTarget?.landmark
-    const markerLng = debugGeo && anchor ? anchor.lng + 0.0002 : userPos.lng
-    const markerLat = debugGeo && anchor ? anchor.lat + 0.0001 : userPos.lat
+    const simulateAtLandmark = debugGeo || virtualVisitActive
+    const markerLng = simulateAtLandmark && anchor ? anchor.lng + 0.0002 : userPos.lng
+    const markerLat = simulateAtLandmark && anchor ? anchor.lat + 0.0001 : userPos.lat
 
     if (userMarker.current) {
       userMarker.current.setLngLat([markerLng, markerLat])
@@ -270,7 +272,7 @@ const TourMap = ({
         .setLngLat([markerLng, markerLat])
         .addTo(map.current)
     }
-  }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
+  }, [userPos, mapLoaded, debugGeo, virtualVisitActive, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
 
   if (!isMapboxConfigured()) {
     return (
@@ -288,19 +290,28 @@ const TourMap = ({
   return (
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
-      <div className="absolute left-3 top-3 space-y-2">
+      <div className="absolute left-3 top-3 space-y-2" style={{ paddingTop: '2.75rem' }}>
         {tourTitle ? (
           <div className="rounded bg-black/85 px-3 py-1 text-xs font-semibold text-amber-200 shadow">
             {tourTitle}
+          </div>
+        ) : null}
+        {tour ? (
+          <div className="rounded bg-stone-800 px-3 py-1 text-xs text-stone-200 shadow">
+            Route: pedestrian walking only
           </div>
         ) : null}
         {debugGeo ? (
           <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
             Debug GPS: at {activeTitle}
           </div>
+        ) : virtualVisitActive ? (
+          <div className="rounded bg-blue-700 px-3 py-1 text-sm text-white shadow">
+            Virtual visit: at {activeTitle}
+          </div>
         ) : (
           <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: off (using real location)
+            Live GPS (walking routes)
           </div>
         )}
         {transitLegActive && activeLeg ? (

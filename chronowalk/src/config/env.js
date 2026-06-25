@@ -68,6 +68,42 @@ export const isDebugMedia = () => {
   return parseBooleanEnv(param)
 }
 
+const MENU_SIDE_KEY = 'chronowalk:menu-side'
+const SHOW_SCRIPT_KEY = 'chronowalk:show-script'
+
+/** Show arrival/transit narration text in UI (?showScript=true or menu toggle) */
+export const isShowScript = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('showScript')
+    if (param !== null) return parseBooleanEnv(param)
+    const stored = window.localStorage.getItem(SHOW_SCRIPT_KEY)
+    if (stored !== null) return stored === 'true'
+  }
+  return parseBooleanEnv(import.meta.env.VITE_SHOW_SCRIPT)
+}
+
+export const setShowScriptPreference = (value) => {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(SHOW_SCRIPT_KEY, value ? 'true' : 'false')
+}
+
+/** Home menu drawer side: left | right (?menuSide=right) */
+export const getMenuSide = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('menuSide')
+    if (param === 'left' || param === 'right') return param
+    const stored = window.localStorage.getItem(MENU_SIDE_KEY)
+    if (stored === 'left' || stored === 'right') return stored
+  }
+  return 'left'
+}
+
+export const setMenuSidePreference = (side) => {
+  if (typeof window === 'undefined') return
+  if (side !== 'left' && side !== 'right') return
+  window.localStorage.setItem(MENU_SIDE_KEY, side)
+}
+
 /** @deprecated Use getSingleWaypointId or getTourId */
 export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 

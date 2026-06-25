@@ -17,9 +17,10 @@ import {
   getModernSliderUrl,
   hasModernSliderMedia,
 } from '../utils/sliderMedia';
+import AudioScriptPanel from './AudioScriptPanel';
 import { isDebugMedia } from '../config/env';
 
-const WaypointCard = ({ waypoint, state, onClose }) => {
+const WaypointCard = ({ waypoint, state, onClose, showScript = false }) => {
   const [showSlider, setShowSlider] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [alignmentMode, setAlignmentMode] = useState(false);
@@ -185,6 +186,14 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
                 {headline}
               </h2>
               <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
+              {showScript && waypoint.arrival_transcript ? (
+                <div className="mt-4 text-left">
+                  <AudioScriptPanel
+                    label="Arrival script (expected audio)"
+                    script={waypoint.arrival_transcript}
+                  />
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="mb-4 text-center">

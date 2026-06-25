@@ -15,10 +15,15 @@ import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 import {
   getAssetStudioWaypointId,
+  getMenuSide,
   getSingleWaypointId,
   getTourId,
   isAssetStudio,
+  isShowScript,
+  setMenuSidePreference,
+  setShowScriptPreference,
 } from './config/env'
+import HomeMenu from './components/HomeMenu'
 
 function App() {
   const assetStudio = isAssetStudio()
@@ -35,7 +40,11 @@ function App() {
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuSide, setMenuSide] = useState(() => getMenuSide())
+  const [showScript, setShowScript] = useState(() => isShowScript())
   const prevJourneyStateRef = useRef(null)
+  const prevTargetStopRef = useRef(null)
   const tourStartedRef = useRef(false)
 
   const session = useTourSession({
@@ -79,9 +88,12 @@ function App() {
   useEffect(() => {
     if (!hasInteracted || !session.currentWaypoint) return
 
+    const targetChanged = prevTargetStopRef.current !== session.targetStopId
+    prevTargetStopRef.current = session.targetStopId
+
     const justArrived =
       session.state === JOURNEY_STATE.ARRIVAL &&
-      prevJourneyStateRef.current !== JOURNEY_STATE.ARRIVAL
+      (prevJourneyStateRef.current !== JOURNEY_STATE.ARRIVAL || targetChanged)
 
     prevJourneyStateRef.current = session.state
 
@@ -92,6 +104,7 @@ function App() {
   }, [
     hasInteracted,
     session.currentWaypoint,
+    session.targetStopId,
     session.state,
     session.markArrived,
     revealWaypointCard,
@@ -102,6 +115,27 @@ function App() {
     setCardDismissed(true)
     await session.beginTransitToNextStop()
   }
+
+  const handleJumpToStop = (stopId) => {
+    setActiveWaypoint(null)
+    setCardDismissed(false)
+    session.jumpToStop(stopId)
+  }
+
+  const handleToggleShowScript = (value) => {
+    setShowScript(value)
+    setShowScriptPreference(value)
+  }
+
+  const handleToggleMenuSide = (side) => {
+    setMenuSide(side)
+    setMenuSidePreference(side)
+  }
+
+  const menuToggleClass =
+    menuSide === 'right'
+      ? 'right-3 md:right-4'
+      : 'left-3 md:left-4'
 
   if (assetStudio) {
     return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
@@ -145,6 +179,29 @@ function App() {
 
   return (
     <div className="relative h-screen w-full">
+      <button
+        type="button"
+        onClick={() => setMenuOpen(true)}
+        className={`pointer-events-auto fixed top-3 z-[160] rounded-full border border-amber-400/40 bg-stone-950/90 px-4 py-2 text-sm font-semibold text-amber-100 shadow-lg backdrop-blur-sm hover:bg-stone-900 ${menuToggleClass}`}
+        style={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
+        aria-label="Open menu"
+      >
+        Menu
+      </button>
+
+      <HomeMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        side={menuSide}
+        tour={singleWaypointId ? null : tour}
+        stops={session.mapStops}
+        onJumpToStop={handleJumpToStop}
+        showScript={showScript}
+        onToggleShowScript={handleToggleShowScript}
+        onToggleMenuSide={handleToggleMenuSide}
+        isSingleStopMode={Boolean(singleWaypointId)}
+      />
+
       <TourMap
         tour={singleWaypointId ? null : tour}
         stops={session.mapStops}
@@ -156,6 +213,7 @@ function App() {
         state={session.state}
         distance={session.distance}
         tourTitle={singleWaypointId ? null : tour.title}
+        virtualVisitActive={session.virtualVisitActive}
       />
 
       <TourHud
@@ -163,15 +221,18 @@ function App() {
         progress={session.progress}
         targetStopId={session.targetStopId}
         nextWaypoint={session.nextWaypoint}
+        currentWaypoint={session.currentWaypoint}
         transitLegActive={session.progress.transitLegActive}
         state={session.state}
         waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
         onContinueTour={handleContinueTour}
+        showScript={showScript}
       />
 
       <WaypointCard
         waypoint={activeWaypoint}
         state={session.state}
+        showScript={showScript}
         onClose={() => {
           setActiveWaypoint(null)
           setCardDismissed(true)
