@@ -17,12 +17,28 @@ INCOMING="$WAYPOINT_DIR/incoming"
 POSTER_SEC="${POSTER_SEC:-3}"
 SWAP_RUNWAY="${SWAP_RUNWAY:-0}"
 
+# shellcheck source=lib/waypoint-incoming.sh
+source "$ROOT/scripts/lib/waypoint-incoming.sh"
+incoming_sync_canonical_names "$ROOT/public/waypoints" "$WAYPOINT_ID" 2>/dev/null || true
+
 mkdir -p "$INCOMING"
 
 find_source() {
   local kind="$1"
-  local found=""
+  local pair modern ancient
 
+  if pair="$(incoming_find_pair_for_waypoint "$ROOT/public/waypoints" "$WAYPOINT_ID")"; then
+    modern="${pair%%|*}"
+    ancient="${pair#*|}"
+    if [[ "$kind" == "ancient" ]]; then
+      printf '%s' "$ancient"
+    else
+      printf '%s' "$modern"
+    fi
+    return 0
+  fi
+
+  local found=""
   if [[ "$kind" == "ancient" ]]; then
     for pattern in ancient-source.mp4 '*Ancient*.mp4' '*ancient*.mp4'; do
       for candidate in "$INCOMING"/$pattern; do

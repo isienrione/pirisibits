@@ -8,7 +8,8 @@ If `git add public/waypoints/...` fails or `process-expansion-waypoints` skips e
 |---------|--------|
 | `zsh: command not found: #` | Do not paste comment lines (`# ...`) into the terminal — they are documentation only |
 | `cp: ... are identical (not copied)` then script stops | Old script; `git pull` again for the Mac-safe version |
-| All 4 stops **SKIP — no modern-source.mp4** | You have **JPG stills** but not the **MP4 videos** in `incoming/` yet |
+| All 4 stops **SKIP** | Old scripts only matched filenames containing `modern` / `ancient`. **Any 2 MP4s in `incoming/` now work** (pull latest) |
+| MP4s in `Largo_argentina/incoming/` | Underscore folder ≠ `largo-argentina` on disk — latest scripts merge alias folders automatically |
 | `git commit` adds nothing | Nothing was processed — only wrong-case folder names or loose files in `public/` |
 | Untracked `Campo-de-fiori/`, `Capitoline-Hill/` | Wrong casing; app only reads lowercase `campo-de-fiori`, etc. |
 
@@ -61,7 +62,19 @@ This scans aliases like `Campo-de-fiori`, `Largo_argentina`, `Capitoline-Hill` a
 
 ---
 
-## 5. Place MP4s (required)
+**If you already have 2 MP4s per stop in `incoming/`**, you do not need to rename them manually. After `git pull`, run:
+
+```bash
+npm run diagnose-expansion-waypoints   # shows files + how they'll be paired
+npm run fix-expansion-folders          # merges alias folders (e.g. Largo_argentina)
+npm run process-expansion-waypoints
+```
+
+Filenames like `modern-source.mp4` / `ancient-source.mp4` are ideal. Gemini export names also work — if neither file has keywords, the script pairs by alphabetical order and prints which is modern vs ancient.
+
+---
+
+## 5. Place MP4s (only if diagnose shows missing videos)
 
 Each expansion stop needs **both** videos in `incoming/`:
 

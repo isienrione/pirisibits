@@ -4,6 +4,8 @@
 set -u
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib/waypoint-incoming.sh
+source "$ROOT/scripts/lib/waypoint-incoming.sh"
 WP="$ROOT/public/waypoints"
 
 safe_cp() {
@@ -119,7 +121,9 @@ organize_waypoint() {
     echo "   → renamed modern-poster.pg.jpg"
   fi
 
-  # Status
+  # Status — sync any MP4 pair (any filename) into canonical incoming/ names
+  incoming_sync_canonical_names "$WP" "$id" || true
+
   [[ -f "$dest/modern-exterior.jpg" ]] && echo "  ✓ modern-exterior.jpg" || echo "  ✗ need modern-exterior.jpg at root"
   if [[ -f "$dest/incoming/modern-source.mp4" ]]; then
     echo "  ✓ incoming/modern-source.mp4"
