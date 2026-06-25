@@ -4,6 +4,7 @@ import { PIAZZA_NAVONA_WAYPOINT } from '../data/piazza-navona'
 import { CAPITOLINE_HILL_WAYPOINT } from '../data/capitoline-hill'
 import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
 import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
+import { CASTEL_SANT_ANGELO_WAYPOINT } from '../data/castel-sant-angelo'
 
 const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -81,5 +82,6 @@ export const getLocalWaypoint = (id) => {
   if (id === 'capitoline-hill') return CAPITOLINE_HILL_WAYPOINT
   if (id === 'campo-de-fiori') return CAMPO_DE_FIORI_WAYPOINT
   if (id === 'largo-argentina') return LARGO_ARGENTINA_WAYPOINT
+  if (id === 'castel-sant-angelo') return CASTEL_SANT_ANGELO_WAYPOINT
   return null
 }

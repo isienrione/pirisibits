@@ -15,7 +15,7 @@ Replace `localhost:5173` with `https://YOUR-SITE.netlify.app` on device.
 | **Resume saved progress** | http://localhost:5173/?debugGeo=true |
 | **Fresh tour + media debug** | http://localhost:5173/?resetTour=true&debugGeo=true&debugMedia=true |
 
-Tour order: **Colosseum → Capitoline Hill → Pantheon → Largo Argentina → Campo de' Fiori → Piazza Navona** (`rome-core`).  
+Tour order: **Colosseum → Capitoline Hill → Pantheon → Largo Argentina → Campo de' Fiori → Piazza Navona → Castel Sant'Angelo** (`rome-core`).  
 Map shows all stop markers, geofence zones, and Mapbox walking legs between consecutive stops.
 
 ---
@@ -32,6 +32,7 @@ Use when you want the **cumulative map** but arrive at a specific stop (prior st
 | Largo Argentina | `largo-argentina` | http://localhost:5173/?debugGeo=true&debugStop=largo-argentina |
 | Campo de' Fiori | `campo-de-fiori` | http://localhost:5173/?debugGeo=true&debugStop=campo-de-fiori |
 | Piazza Navona | `piazza-navona` | http://localhost:5173/?debugGeo=true&debugStop=piazza-navona |
+| Castel Sant'Angelo | `castel-sant-angelo` | http://localhost:5173/?debugGeo=true&debugStop=castel-sant-angelo |
 
 With media URL debug footer on the card: add `&debugMedia=true`.
 
@@ -48,7 +49,8 @@ One marker, no tour HUD. **Best for testing a stop’s slider after processing a
 | Pantheon | http://localhost:5173/?singleWaypoint=pantheon&debugGeo=true |
 | Largo Argentina | http://localhost:5173/?singleWaypoint=largo-argentina&debugGeo=true |
 | Campo de' Fiori | http://localhost:5173/?singleWaypoint=campo-de-fiori&debugGeo=true |
-| **Piazza Navona** | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
+| Piazza Navona | http://localhost:5173/?singleWaypoint=piazza-navona&debugGeo=true |
+| Castel Sant'Angelo | http://localhost:5173/?singleWaypoint=castel-sant-angelo&debugGeo=true |
 
 Add `&debugMedia=true` to see exact `modern` / `ancient` URLs on the card.
 
@@ -64,6 +66,7 @@ Add `&debugMedia=true` to see exact `modern` / `ancient` URLs on the card.
 | Largo Argentina | http://localhost:5173/?assetStudio=true&waypoint=largo-argentina |
 | Campo de' Fiori | http://localhost:5173/?assetStudio=true&waypoint=campo-de-fiori |
 | Piazza Navona | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
+| Castel Sant'Angelo | http://localhost:5173/?assetStudio=true&waypoint=castel-sant-angelo |
 
 Each page: framing check, Street View link, copy-paste Runway/Midjourney/DaVinci prompts, deliverable paths.
 
@@ -83,6 +86,20 @@ Confirm files on disk before blaming the slider:
 | Largo Argentina | http://localhost:5173/waypoints/largo-argentina/modern.mp4 | http://localhost:5173/waypoints/largo-argentina/modern-exterior.jpg |
 | Campo de' Fiori | http://localhost:5173/waypoints/campo-de-fiori/modern.mp4 | http://localhost:5173/waypoints/campo-de-fiori/modern-exterior.jpg |
 | Piazza Navona | http://localhost:5173/waypoints/piazza-navona/modern.mp4 | http://localhost:5173/waypoints/piazza-navona/modern-exterior.jpg |
+| Castel Sant'Angelo | http://localhost:5173/waypoints/castel-sant-angelo/modern.mp4 | http://localhost:5173/waypoints/castel-sant-angelo/modern-exterior.jpg |
+
+---
+
+## Process expansion stops (MP4s in `incoming/`)
+
+Put **`modern-exterior.jpg`** in each waypoint **root**. Put **`modern-source.mp4`** and **`ancient-source.mp4`** in **`incoming/`**, then:
+
+```bash
+npm run process-expansion-waypoints
+```
+
+Stops: `capitoline-hill`, `largo-argentina`, `campo-de-fiori`, `castel-sant-angelo`.  
+One stop: `npm run process-waypoint -- castel-sant-angelo`
 
 ---
 

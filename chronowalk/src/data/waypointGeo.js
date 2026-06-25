@@ -34,6 +34,12 @@ import {
   LARGO_ARGENTINA_DEBUG_USER_POS,
   LARGO_ARGENTINA_GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './largo-argentina'
+import {
+  CASTEL_SANT_ANGELO,
+  CASTEL_SANT_ANGELO_ARRIVAL_RADIUS_M,
+  CASTEL_SANT_ANGELO_DEBUG_USER_POS,
+  CASTEL_SANT_ANGELO_GEOFENCE_ARRIVAL_THRESHOLD_M,
+} from './castel-sant-angelo'
 
 /** Map / geofence settings per waypoint — extend when adding new stops. */
 export const WAYPOINT_GEO = {
@@ -90,6 +96,15 @@ export const WAYPOINT_GEO = {
     geofenceThresholdM: CAMPO_DE_FIORI_GEOFENCE_ARRIVAL_THRESHOLD_M,
     arrivalRadiusM: CAMPO_DE_FIORI_ARRIVAL_RADIUS_M,
     mapZoom: 17,
+  },
+  'castel-sant-angelo': {
+    id: 'castel-sant-angelo',
+    title: "Castel Sant'Angelo",
+    landmark: CASTEL_SANT_ANGELO,
+    debugPosition: CASTEL_SANT_ANGELO_DEBUG_USER_POS,
+    geofenceThresholdM: CASTEL_SANT_ANGELO_GEOFENCE_ARRIVAL_THRESHOLD_M,
+    arrivalRadiusM: CASTEL_SANT_ANGELO_ARRIVAL_RADIUS_M,
+    mapZoom: 16,
   },
 }
 

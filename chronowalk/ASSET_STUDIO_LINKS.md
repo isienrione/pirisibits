@@ -18,6 +18,7 @@ Run `npm run dev` first. Replace `localhost:5173` with your Netlify host on devi
 | Largo Argentina | `largo-argentina` | http://localhost:5173/?assetStudio=true&waypoint=largo-argentina |
 | Campo de' Fiori | `campo-de-fiori` | http://localhost:5173/?assetStudio=true&waypoint=campo-de-fiori |
 | Piazza Navona | `piazza-navona` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
+| Castel Sant'Angelo | `castel-sant-angelo` | http://localhost:5173/?assetStudio=true&waypoint=castel-sant-angelo |
 
 `?waypoint=` works **only with** `?assetStudio=true` — not for tour mode.
 

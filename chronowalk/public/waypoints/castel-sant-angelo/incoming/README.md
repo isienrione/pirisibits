@@ -1,7 +1,7 @@
-# Incoming — raw AI exports for largo-argentina
+# Incoming — raw AI exports for castel-sant-angelo
 
 ```bash
-npm run process-waypoint -- largo-argentina
+npm run process-waypoint -- castel-sant-angelo
 # Or batch all expansion stops:
 npm run process-expansion-waypoints
 ```
@@ -9,7 +9,7 @@ npm run process-expansion-waypoints
 ## Folder layout
 
 ```
-public/waypoints/largo-argentina/
+public/waypoints/castel-sant-angelo/
   modern-exterior.jpg              ← waypoint ROOT (Gemini Prompt 1 still)
   ancient-reconstruction.jpg       ← optional at ROOT (Prompt 3; else extracted from video)
   incoming/

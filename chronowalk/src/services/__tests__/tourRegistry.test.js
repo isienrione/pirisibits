@@ -12,14 +12,15 @@ describe('tourRegistry', () => {
       'largo-argentina',
       'campo-de-fiori',
       'piazza-navona',
+      'castel-sant-angelo',
     ])
   })
 
   it('derives legs between consecutive stops', () => {
     const legs = getTourLegs(ROME_CORE_TOUR)
-    expect(legs).toHaveLength(5)
+    expect(legs).toHaveLength(6)
     expect(legs[0]).toMatchObject({ fromId: 'colosseum', toId: 'capitoline-hill', index: 0 })
-    expect(legs[4]).toMatchObject({ fromId: 'campo-de-fiori', toId: 'piazza-navona', index: 4 })
+    expect(legs[5]).toMatchObject({ fromId: 'piazza-navona', toId: 'castel-sant-angelo', index: 5 })
   })
 
   it('supports inserting a stop between colosseum and pantheon', () => {
