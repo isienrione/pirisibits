@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { ROME_CORE_TOUR } from '../../data/rome-core-tour'
 import { listAssetStudioEntries, buildAssetStudioUrl } from '../assetStudioUrls'
 
 describe('assetStudioUrls', () => {
@@ -9,7 +10,7 @@ describe('assetStudioUrls', () => {
 
   it('lists all tour stops with studio links', () => {
     const entries = listAssetStudioEntries()
-    expect(entries.map((e) => e.id)).toEqual(['colosseum', 'pantheon', 'piazza-navona'])
-    expect(entries[2].localDevUrl).toContain('piazza-navona')
+    expect(entries.map((e) => e.id)).toEqual(ROME_CORE_TOUR.stopIds)
+    expect(entries.find((e) => e.id === 'piazza-navona')?.localDevUrl).toContain('piazza-navona')
   })
 })

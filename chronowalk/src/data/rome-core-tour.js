@@ -8,9 +8,16 @@
 export const ROME_CORE_TOUR = {
   id: 'rome-core',
   title: 'Heart of Ancient Rome',
-  subtitle: 'Colosseum → Pantheon → Piazza Navona',
+  subtitle: 'Colosseum → Capitoline → Pantheon → Argentina → Campo → Navona',
   /** Ordered waypoint ids — insert new stops anywhere in this list. */
-  stopIds: ['colosseum', 'pantheon', 'piazza-navona'],
+  stopIds: [
+    'colosseum',
+    'capitoline-hill',
+    'pantheon',
+    'largo-argentina',
+    'campo-de-fiori',
+    'piazza-navona',
+  ],
   /** Default map zoom when fitting the full tour */
   mapZoom: 14,
 }

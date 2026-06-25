@@ -1,6 +1,9 @@
 import { COLOSSEUM_WAYPOINT } from '../data/colosseum'
 import { PANTHEON_WAYPOINT } from '../data/pantheon'
 import { PIAZZA_NAVONA_WAYPOINT } from '../data/piazza-navona'
+import { CAPITOLINE_HILL_WAYPOINT } from '../data/capitoline-hill'
+import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
+import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
 
 const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -75,5 +78,8 @@ export const getLocalWaypoint = (id) => {
   if (id === 'colosseum') return COLOSSEUM_WAYPOINT
   if (id === 'pantheon') return PANTHEON_WAYPOINT
   if (id === 'piazza-navona') return PIAZZA_NAVONA_WAYPOINT
+  if (id === 'capitoline-hill') return CAPITOLINE_HILL_WAYPOINT
+  if (id === 'campo-de-fiori') return CAMPO_DE_FIORI_WAYPOINT
+  if (id === 'largo-argentina') return LARGO_ARGENTINA_WAYPOINT
   return null
 }

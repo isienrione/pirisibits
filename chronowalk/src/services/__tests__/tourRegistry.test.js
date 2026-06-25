@@ -5,14 +5,21 @@ import { getTourBounds, getTourById, getTourLegs } from '../tourRegistry'
 describe('tourRegistry', () => {
   it('loads rome-core tour', () => {
     const tour = getTourById('rome-core')
-    expect(tour?.stopIds).toEqual(['colosseum', 'pantheon', 'piazza-navona'])
+    expect(tour?.stopIds).toEqual([
+      'colosseum',
+      'capitoline-hill',
+      'pantheon',
+      'largo-argentina',
+      'campo-de-fiori',
+      'piazza-navona',
+    ])
   })
 
   it('derives legs between consecutive stops', () => {
     const legs = getTourLegs(ROME_CORE_TOUR)
-    expect(legs).toHaveLength(2)
-    expect(legs[0]).toMatchObject({ fromId: 'colosseum', toId: 'pantheon', index: 0 })
-    expect(legs[1]).toMatchObject({ fromId: 'pantheon', toId: 'piazza-navona', index: 1 })
+    expect(legs).toHaveLength(5)
+    expect(legs[0]).toMatchObject({ fromId: 'colosseum', toId: 'capitoline-hill', index: 0 })
+    expect(legs[4]).toMatchObject({ fromId: 'campo-de-fiori', toId: 'piazza-navona', index: 4 })
   })
 
   it('supports inserting a stop between colosseum and pantheon', () => {

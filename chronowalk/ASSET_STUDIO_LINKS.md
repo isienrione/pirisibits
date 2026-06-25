@@ -13,7 +13,10 @@ Run `npm run dev` first. Replace `localhost:5173` with your Netlify host on devi
 | Stop | `id` | Open prompts |
 |------|------|--------------|
 | Colosseum | `colosseum` | http://localhost:5173/?assetStudio=true&waypoint=colosseum |
+| Capitoline Hill | `capitoline-hill` | http://localhost:5173/?assetStudio=true&waypoint=capitoline-hill |
 | Pantheon | `pantheon` | http://localhost:5173/?assetStudio=true&waypoint=pantheon |
+| Largo Argentina | `largo-argentina` | http://localhost:5173/?assetStudio=true&waypoint=largo-argentina |
+| Campo de' Fiori | `campo-de-fiori` | http://localhost:5173/?assetStudio=true&waypoint=campo-de-fiori |
 | Piazza Navona | `piazza-navona` | http://localhost:5173/?assetStudio=true&waypoint=piazza-navona |
 
 `?waypoint=` works **only with** `?assetStudio=true` — not for tour mode.
