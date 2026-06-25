@@ -17,6 +17,13 @@ dist-ssr
 public/waypoints/*/incoming/*.mp4
 public/waypoints/*/incoming/*.mov
 
+# Loose exports users drop in public/ during Gemini workflow (not tour deliverables)
+/public/*.mp4
+/public/*.mov
+/public/ElevenLabs*.mp3
+/public/waypoints/**/Gemini_Generated_Image*.png
+/public/waypoints/**/modern-poster.pg.jpg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

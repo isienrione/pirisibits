@@ -20,6 +20,7 @@
     "diagnose-expansion-waypoints": "bash scripts/diagnose-expansion-waypoints.sh",
     "place-expansion-mp4": "bash scripts/place-expansion-mp4.sh",
     "git-add-expansion-media": "bash scripts/git-add-expansion-media.sh",
+    "cleanup-expansion-folders": "bash scripts/cleanup-expansion-folders.sh",
     "normalize-audio": "bash scripts/normalize-audio.sh",
     "test:watch": "vitest"
   },

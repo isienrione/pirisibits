@@ -146,7 +146,23 @@ git push
 
 If `git push` stops partway through uploading (large MP4s), **run `git push` again** — it resumes.
 
-**Ignore** untracked junk (`public/*.mp4` loose exports, `.DS_Store`, ElevenLabs MP3) — those are not errors.
+### After a successful push — clean up local noise
+
+Remaining `git status` lines are usually **not errors**:
+
+| Status | What to do |
+|--------|------------|
+| `?? public/waypoints/Largo_argentina/` | Duplicate folder on disk — run `npm run cleanup-expansion-folders` |
+| `?? public/*.mp4`, Gemini PNGs | Ignored by `.gitignore` — safe to ignore or delete |
+| `modified: piazza-navona/...` | Optional separate commit (see below) |
+| `../.DS_Store` | Ignore (macOS metadata) |
+
+```bash
+npm run cleanup-expansion-folders
+git status
+```
+
+A **clean** expansion-media state looks like: branch up to date with origin, no staged changes, only optional piazza-navona or mapillary scripts if you want those.
 
 **Piazza Navona** changes showing as `modified:` are separate — commit only if you want them:
 
