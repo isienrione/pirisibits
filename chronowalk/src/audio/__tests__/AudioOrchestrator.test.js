@@ -1,0 +1,222 @@
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { AudioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../AudioOrchestrator';
+import { VISUAL_SYNC_DELAY_MS, FADE_DURATION_MS } from '../audioMedia';
+
+const createMockAudio = () => ({
+  loop: false,
+  paused: true,
+  volume: 1,
+  currentTime: 0,
+  readyState: HTMLMediaElement.HAVE_ENOUGH_DATA,
+  src: '',
+  preload: 'auto',
+  play: vi.fn(async function play() {
+    this.paused = false;
+  }),
+  pause: vi.fn(function pause() {
+    this.paused = true;
+  }),
+  load: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+});
+
+describe('AudioOrchestrator', () => {
+  let dispatchedEvents;
+  let windowRef;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    dispatchedEvents = [];
+
+    windowRef = {
+      dispatchEvent: vi.fn((event) => {
+        if (event.type === AUDIO_SYNC_EVENT) {
+          dispatchedEvents.push(event);
+        }
+      }),
+    };
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  const createOrchestrator = () => {
+    const players = [createMockAudio(), createMockAudio(), createMockAudio(), createMockAudio()];
+    let index = 0;
+
+    const orchestrator = new AudioOrchestrator({
+      createAudio: () => players[index++],
+      windowRef,
+    });
+
+    return { orchestrator, players };
+  };
+
+  it('buffers arrival audio before playing and firing the visual sync event', async () => {
+    const { orchestrator } = createOrchestrator();
+
+    const transitionPromise = orchestrator.transitionTo(
+      AUDIO_MODES.ARRIVAL,
+      { arrival: '/audio/arrival.mp3' },
+      { syncVisual: true }
+    );
+
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    await transitionPromise;
+
+    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
+    expect(dispatchedEvents).toHaveLength(0);
+
+    await vi.advanceTimersByTimeAsync(VISUAL_SYNC_DELAY_MS);
+
+    expect(dispatchedEvents).toHaveLength(1);
+    expect(dispatchedEvents[0].type).toBe(AUDIO_SYNC_EVENT);
+    expect(orchestrator.getState().visualSyncFired).toBe(true);
+  });
+
+  it('does not fire the visual sync event twice for the same immersive session', async () => {
+    const { orchestrator } = createOrchestrator();
+
+    const transitionPromise = orchestrator.transitionTo(
+      AUDIO_MODES.ARRIVAL,
+      { arrival: '/audio/arrival.mp3' },
+      { syncVisual: true }
+    );
+
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    await transitionPromise;
+    await vi.advanceTimersByTimeAsync(VISUAL_SYNC_DELAY_MS);
+
+    orchestrator.scheduleVisualSync(orchestrator.getState().syncGeneration);
+    await vi.advanceTimersByTimeAsync(VISUAL_SYNC_DELAY_MS);
+
+    expect(dispatchedEvents).toHaveLength(1);
+  });
+
+  it('prefetches the arrival track for approach buffering', () => {
+    const { orchestrator } = createOrchestrator();
+
+    orchestrator.prefetchArrival('/audio/arrival.mp3');
+
+    expect(orchestrator.arrivalPlayer.src).toBe('/audio/arrival.mp3');
+    expect(orchestrator.arrivalPlayer.load).toHaveBeenCalled();
+    expect(orchestrator.getState().prefetchedArrivalUrl).toBe('/audio/arrival.mp3');
+  });
+
+  it('syncs playback state after returning from the background without auto-resuming', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = false;
+
+    orchestrator.onPageHidden();
+    orchestrator.arrivalPlayer.paused = true;
+
+    await orchestrator.onPageVisible();
+
+    expect(orchestrator.arrivalPlayer.play).not.toHaveBeenCalled();
+    expect(orchestrator.playingBeforeHidden).toBe(false);
+    expect(orchestrator.syncPlaybackState()).toBe(true);
+  });
+
+  it('marks playback interrupted when resume fails after another app used audio', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = true;
+    orchestrator.arrivalPlayer.play.mockRejectedValueOnce(new Error('NotAllowedError'));
+
+    await orchestrator.onPageVisible();
+
+    expect(orchestrator.syncPlaybackState()).toBe(true);
+    expect(orchestrator.getState().playbackInterrupted).toBe(true);
+  });
+
+  it('detects paused arrival audio after another app steals the session', () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = true;
+
+    expect(orchestrator.syncPlaybackState()).toBe(true);
+  });
+
+  it('supports manual resume for arrival audio', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.audioUrls = { arrival: '/audio/arrival.mp3' };
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
+
+    const resumed = await orchestrator.resumeArrival();
+
+    expect(resumed).toBe(true);
+    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
+    expect(orchestrator.getState().playbackInterrupted).toBe(false);
+  });
+
+  it('pauses arrival audio while keeping the session active', () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.paused = false;
+
+    const paused = orchestrator.pauseArrival();
+
+    expect(paused).toBe(true);
+    expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
+    expect(orchestrator.wantsArrivalPlayback).toBe(true);
+    expect(orchestrator.syncPlaybackState()).toBe(true);
+  });
+
+  it('toggles arrival playback between pause and resume', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.audioUrls = { arrival: '/audio/arrival.mp3' };
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
+    orchestrator.arrivalPlayer.paused = false;
+
+    const paused = await orchestrator.toggleArrivalPlayback();
+    expect(paused).toBe(true);
+    expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
+
+    orchestrator.arrivalPlayer.paused = true;
+    const resumed = await orchestrator.toggleArrivalPlayback();
+    expect(resumed).toBe(true);
+    expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
+  });
+
+  it('does not resume or re-sync when arrival audio was not playing before hide', async () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.arrivalPlayer.paused = true;
+
+    orchestrator.onPageHidden();
+    await orchestrator.onPageVisible();
+
+    expect(orchestrator.arrivalPlayer.play).not.toHaveBeenCalled();
+  });
+
+  it('cancels stale visual sync work when stop is called', async () => {
+    const { orchestrator } = createOrchestrator();
+
+    const transitionPromise = orchestrator.transitionTo(
+      AUDIO_MODES.ARRIVAL,
+      { arrival: '/audio/arrival.mp3' },
+      { syncVisual: true }
+    );
+
+    orchestrator.stop();
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    await transitionPromise;
+    await vi.advanceTimersByTimeAsync(VISUAL_SYNC_DELAY_MS);
+
+    expect(dispatchedEvents).toHaveLength(0);
+    expect(orchestrator.getState().visualSyncFired).toBe(false);
+  });
+});

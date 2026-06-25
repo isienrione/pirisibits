@@ -1,0 +1,52 @@
+{
+  "name": "chronowalk",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "process-pantheon": "bash scripts/process-pantheon-assets.sh",
+    "verify-pantheon": "bash scripts/verify-pantheon-assets.sh",
+    "process-waypoint": "bash scripts/process-waypoint-assets.sh",
+    "verify-waypoint": "bash scripts/verify-waypoint-assets.sh",
+    "process-piazza-navona": "bash scripts/process-waypoint-assets.sh piazza-navona",
+    "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
+    "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",
+    "fix-expansion-folders": "bash scripts/fix-expansion-folders.sh",
+    "diagnose-expansion-waypoints": "bash scripts/diagnose-expansion-waypoints.sh",
+    "place-expansion-mp4": "bash scripts/place-expansion-mp4.sh",
+    "git-add-expansion-media": "bash scripts/git-add-expansion-media.sh",
+    "cleanup-expansion-folders": "bash scripts/cleanup-expansion-folders.sh",
+    "normalize-audio": "bash scripts/normalize-audio.sh",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "mapbox-gl": "^3.25.0",
+    "react": "^19.2.6",
+    "react-compare-slider": "^4.0.0",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^3.4.19",
+    "vite": "^8.0.12",
+    "vitest": "^4.1.9"
+  }
+}
