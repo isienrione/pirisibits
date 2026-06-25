@@ -57,9 +57,9 @@ incoming_collect_dirs() {
 }
 
 incoming_list_mp4s() {
-  local dir
+  local dir="$1"
   shopt -s nullglob
-  for f in "$1"/*.mp4 "$1"/*.mov "$1"/*.MP4 "$1"/*.MOV; do
+  for f in "$dir"/*.mp4 "$dir"/*.mov "$dir"/*.MP4 "$dir"/*.MOV; do
     [[ -f "$f" ]] || continue
     printf '%s\0' "$f"
   done
@@ -98,7 +98,6 @@ incoming_find_pair() {
     return 0
   fi
 
-  # One classified + one unknown → assign the unknown to the missing role
   if ((${#unknown[@]} == 1)); then
     if [[ -n "$modern" && -z "$ancient" ]]; then
       ancient="${unknown[0]}"
@@ -112,7 +111,6 @@ incoming_find_pair() {
     return 0
   fi
 
-  # Exactly two MP4s with no keywords — common Gemini export names
   if ((${#unknown[@]} == 2)); then
     local sorted=()
     mapfile -d '' -t sorted < <(printf '%s\0' "${unknown[@]}" | sort -z)
@@ -170,4 +168,26 @@ incoming_sync_canonical_names() {
   fi
 
   return 0
+}
+
+# Sync processed slider deliverables from alias folders → canonical lowercase id/.
+incoming_sync_deliverables() {
+  local wp="$1"
+  local id="$2"
+  local aliases dest asset dir
+
+  aliases="$(incoming_aliases_for "$id")"
+  dest="$wp/$id"
+  mkdir -p "$dest"
+
+  for asset in modern.mp4 ancient-reconstruction.mp4 modern-exterior.jpg ancient-reconstruction.jpg modern-poster.jpg ancient-poster.jpg; do
+    for alias in $aliases $id; do
+      dir="$wp/$alias"
+      [[ -f "$dir/$asset" ]] || continue
+      if [[ ! -f "$dest/$asset" ]] || ! cmp -s "$dir/$asset" "$dest/$asset" 2>/dev/null; then
+        cp -f "$dir/$asset" "$dest/$asset"
+      fi
+      break
+    done
+  done
 }

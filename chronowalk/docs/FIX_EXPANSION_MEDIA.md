@@ -137,8 +137,22 @@ If a stop still skips, run `npm run diagnose-expansion-waypoints` again.
 
 ```bash
 cd ~/pirisibits/chronowalk
+git pull origin cursor/chronowalk-setup-a224
 npm run git-add-expansion-media
+git status
 git commit -m "Add processed slider media for expansion stops"
+git push
+```
+
+If `git push` stops partway through uploading (large MP4s), **run `git push` again** — it resumes.
+
+**Ignore** untracked junk (`public/*.mp4` loose exports, `.DS_Store`, ElevenLabs MP3) — those are not errors.
+
+**Piazza Navona** changes showing as `modified:` are separate — commit only if you want them:
+
+```bash
+git add public/waypoints/piazza-navona
+git commit -m "Update Piazza Navona slider media"
 git push
 ```
 
