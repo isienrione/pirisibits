@@ -23,6 +23,7 @@ required=(
 )
 
 missing=0
+warnings=0
 for file in "${required[@]}"; do
   if [[ -f "$DIR/$file" ]]; then
     echo "✓ $file"
@@ -40,7 +41,21 @@ if (( missing > 0 )); then
   exit 1
 fi
 
-warnings=0
+if command -v ffprobe >/dev/null 2>&1; then
+  for video in modern.mp4 ancient-reconstruction.mp4; do
+    [[ -f "$DIR/$video" ]] || continue
+    dims="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$DIR/$video" 2>/dev/null || true)"
+    [[ -n "$dims" ]] || continue
+    IFS=, read -r vw vh <<< "$dims"
+    if (( vh > 0 && (vw * 9 * 100 < vh * 16 * 98 || vw * 9 * 100 > vh * 16 * 102) )); then
+      echo "⚠ $video is ${vw}x${vh} (not 16:9) — re-run: npm run process-waypoint -- $WAYPOINT_ID"
+      warnings=$((warnings + 1))
+    else
+      echo "✓ $video aspect ${vw}x${vh}"
+    fi
+  done
+fi
+
 for other_dir in "$ROOT/public/waypoints"/*; do
   [[ -d "$other_dir" ]] || continue
   other_id="$(basename "$other_dir")"

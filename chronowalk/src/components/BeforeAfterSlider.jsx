@@ -25,9 +25,9 @@ const baseMediaStyle = {
   objectPosition: 'center center',
 };
 
-const containMediaStyle = {
+const coverMediaStyle = {
   ...baseMediaStyle,
-  objectFit: 'contain',
+  objectFit: 'cover',
 };
 
 const usePosterProbe = (src) => {
@@ -241,8 +241,8 @@ const BeforeAfterSlider = ({
     ancientPosterReady;
 
   const showPosters = compareReady && postersAvailable;
-  const playbackMediaStyle = containMediaStyle;
-  const posterMediaStyle = containMediaStyle;
+  const playbackMediaStyle = coverMediaStyle;
+  const posterMediaStyle = coverMediaStyle;
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
@@ -425,7 +425,7 @@ const BeforeAfterSlider = ({
   const renderAlignmentMedia = (src, label, isAncient = false) => {
     if (!src) return null;
 
-    const style = containMediaStyle;
+    const style = coverMediaStyle;
     const ancientTransform = isAncient
       ? composeLayerTransform(calibration, parallaxTransform)
       : undefined;

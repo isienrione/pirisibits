@@ -86,6 +86,35 @@ video_dims() {
   ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$1"
 }
 
+is_16x9_video() {
+  local w="$1"
+  local h="$2"
+  # ~2% tolerance around 16:9
+  (( h > 0 && w * 100 / h >= 17 && w * 100 / h <= 18 ))
+}
+
+encode_video_16x9() {
+  local input="$1"
+  local output="$2"
+  local src_w src_h
+  local out_w=1280
+  local out_h=720
+
+  IFS=, read -r src_w src_h < <(video_dims "$input")
+
+  if is_16x9_video "$src_w" "$src_h"; then
+    cp -f "$input" "$output"
+    echo "  $(basename "$output"): already 16:9 (${src_w}x${src_h})"
+    return 0
+  fi
+
+  echo "  $(basename "$output"): crop ${src_w}x${src_h} → ${out_w}x${out_h}"
+  ffmpeg -y -hide_banner -loglevel error -i "$input" \
+    -vf "scale=${out_w}:${out_h}:force_original_aspect_ratio=increase,crop=${out_w}:${out_h}" \
+    -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -an -movflags +faststart \
+    "$output"
+}
+
 poster_dims_from_video() {
   local video="$1"
   local width height
@@ -103,19 +132,10 @@ extract_poster() {
   local output="$2"
   local poster_w="$3"
   local poster_h="$4"
-  local src_w src_h
 
-  IFS=, read -r src_w src_h < <(video_dims "$video")
-
-  if (( src_w == src_h )); then
-    ffmpeg -y -hide_banner -loglevel error -ss "$POSTER_SEC" -i "$video" -frames:v 1 -update 1 \
-      -vf "scale=-2:${poster_h}:flags=lanczos,pad=${poster_w}:${poster_h}:(ow-iw)/2:(oh-ih)/2:black" \
-      -q:v 2 "$output"
-  else
-    ffmpeg -y -hide_banner -loglevel error -ss "$POSTER_SEC" -i "$video" -frames:v 1 -update 1 \
-      -vf "scale=${poster_w}:${poster_h}:force_original_aspect_ratio=increase,crop=${poster_w}:${poster_h}" \
-      -q:v 2 "$output"
-  fi
+  ffmpeg -y -hide_banner -loglevel error -ss "$POSTER_SEC" -i "$video" -frames:v 1 -update 1 \
+    -vf "scale=${poster_w}:${poster_h}:force_original_aspect_ratio=increase,crop=${poster_w}:${poster_h}" \
+    -q:v 2 "$output"
 }
 
 require_ffmpeg
@@ -148,16 +168,16 @@ echo "Modern-era source:  $MODERN_SRC"
 
 if [[ "$SWAP_RUNWAY" == "1" ]]; then
   echo "Mapping: SWAP_RUNWAY=1 (ancient-tagged file → modern.mp4, modern-tagged → ancient)"
-  cp "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
-  cp "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
+  encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
 else
   echo "Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)"
-  cp "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
-  cp "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
+  encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
 fi
 
 ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \
-  -vf "scale=1280:-2:flags=lanczos" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
+  -vf "scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
 
 IFS=' ' read -r POSTER_W POSTER_H <<< "$(poster_dims_from_video "$WAYPOINT_DIR/modern.mp4")"
 echo "Poster size: ${POSTER_W}x${POSTER_H} at ${POSTER_SEC}s"

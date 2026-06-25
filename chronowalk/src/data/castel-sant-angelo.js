@@ -34,7 +34,7 @@ const CASTEL_SANT_ANGELO_ANCIENT_POSTER = '/waypoints/castel-sant-angelo/ancient
 export const CASTEL_SANT_ANGELO_WAYPOINT = {
   id: 'castel-sant-angelo',
   title: "Castel Sant'Angelo",
-  media_cache_version: 1,
+  media_cache_version: 2,
   framingProfile: 'large_approach',
   arrival_headline: "You've reached Castel Sant'Angelo!",
   arrival_subtitle:
