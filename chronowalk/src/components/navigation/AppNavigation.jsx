@@ -1,5 +1,5 @@
 import { NAV_ITEMS } from './navConfig'
-import { cn, focusRing } from '../ui'
+import { cn, focusRing, metaLabel } from '../ui'
 
 function NavButton({ item, active, onSelect, layout }) {
   const { Icon, label, id } = item
@@ -29,9 +29,7 @@ function NavButton({ item, active, onSelect, layout }) {
       <span className="relative">
         <Icon />
       </span>
-      <span className="relative text-[0.65rem] font-semibold uppercase tracking-[0.12em]">
-        {label}
-      </span>
+      <span className={cn('relative', metaLabel)}>{label}</span>
     </button>
   )
 }

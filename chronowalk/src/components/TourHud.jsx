@@ -2,7 +2,7 @@ import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernPosterUrl } from '../utils/sliderMedia'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard } from './ui'
+import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -27,9 +27,7 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) 
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
-            Progress
-          </p>
+          <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
           <p className="font-display text-xl font-semibold tabular-nums text-deep-slate">
             <span className="text-gold">{currentStop}</span>
             <span className="text-soft-slate/60"> / </span>
@@ -74,10 +72,10 @@ function MapHudRouteCard({
 }) {
   const statusClass =
     statusTone === 'arrived'
-      ? 'bg-olive/15 text-olive'
+      ? statusArrived
       : statusTone === 'walking'
-        ? 'bg-gold/15 text-gold'
-        : 'bg-sand/80 text-soft-slate'
+        ? statusWalking
+        : statusNeutral
 
   return (
     <GlassPanel className="pointer-events-auto p-4 shadow-glass-lg">
@@ -85,7 +83,7 @@ function MapHudRouteCard({
         <RouteThumbnail posterUrl={posterUrl} title={subline} />
 
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-soft-slate">{headline}</p>
+          <p className={cn('text-eyebrow uppercase text-soft-slate')}>{headline}</p>
           <p className="mt-1 font-display text-lg font-semibold leading-tight text-deep-slate">
             {subline}
           </p>
@@ -94,19 +92,13 @@ function MapHudRouteCard({
             {walkMinutes ? <span>~{walkMinutes} min walk</span> : null}
           </div>
           {statusLabel ? (
-            <p
-              className={cn(
-                'mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-                statusClass
-              )}
-            >
-              {statusLabel}
-            </p>
+            <p className={cn(statusPill, 'mt-2', statusClass)}>{statusLabel}</p>
           ) : null}
         </div>
 
         {showDirections && onDirections ? (
           <Button
+            variant="secondary"
             size="sm"
             className="shrink-0 self-center px-4"
             onClick={onDirections}

@@ -1,11 +1,21 @@
 import { getModernPosterUrl } from '../../utils/sliderMedia'
-import { GlassPanel, PageShell, SectionHeader, cn, focusRing } from '../ui'
+import {
+  GlassPanel,
+  PageShell,
+  SectionHeader,
+  cn,
+  focusRing,
+  statusArrived,
+  statusCurrent,
+  statusLocked,
+  statusPill,
+} from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 const STATUS_META = {
-  completed: { label: 'Visited', className: 'bg-olive/15 text-olive' },
-  current: { label: 'Current', className: 'bg-gold/20 text-gold' },
-  upcoming: { label: 'Locked', className: 'bg-sand text-soft-slate' },
+  completed: { label: 'Visited', className: statusArrived },
+  current: { label: 'Current', className: statusCurrent },
+  upcoming: { label: 'Locked', className: statusLocked },
 }
 
 function LockIcon() {
@@ -68,7 +78,14 @@ function StopCard({ stop, index, waypoint, onSelect }) {
                 <LockIcon />
               </div>
             ) : null}
-            <span className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-warm-white/92 text-xs font-bold text-deep-slate shadow-sm">
+            <span
+              className={cn(
+                'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
+                isCurrent
+                  ? 'bg-gold/90 text-warm-white ring-2 ring-gold/30'
+                  : 'bg-warm-white/92 text-deep-slate'
+              )}
+            >
               {index + 1}
             </span>
           </div>
@@ -80,7 +97,8 @@ function StopCard({ stop, index, waypoint, onSelect }) {
               </h3>
               <span
                 className={cn(
-                  'inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide',
+                  statusPill,
+                  'shrink-0 gap-1 px-2 py-0.5 text-[0.65rem] uppercase tracking-wide',
                   status.className
                 )}
               >

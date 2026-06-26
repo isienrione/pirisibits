@@ -1,13 +1,11 @@
-import { Button, GlassPanel } from './ui'
+import { Button, GlassPanel, cn, ctaInCard, metaLabel } from './ui'
 import { formatElapsedDuration, formatWalkedDistance } from '../utils/tourStats'
 
 function StatColumn({ label, value }) {
   return (
     <div className="flex-1 text-center">
       <p className="font-display text-2xl font-semibold tabular-nums text-deep-slate">{value}</p>
-      <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-soft-slate">
-        {label}
-      </p>
+      <p className={cn(metaLabel, 'mt-1 text-soft-slate')}>{label}</p>
     </div>
   )
 }
@@ -51,10 +49,10 @@ function TourCompleteView({
         </div>
 
         <div className="mt-5 flex flex-col gap-3">
-          <Button fullWidth onClick={onViewSummary}>
+          <Button size="lg" fullWidth onClick={onViewSummary}>
             View summary
           </Button>
-          <Button variant="secondary" fullWidth className="rounded-2xl" onClick={onDismiss}>
+          <Button variant="secondary" fullWidth className={ctaInCard} onClick={onDismiss}>
             Return to map
           </Button>
         </div>
