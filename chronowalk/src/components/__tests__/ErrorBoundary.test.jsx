@@ -7,7 +7,23 @@ function BrokenChild() {
 }
 
 describe('ErrorBoundary', () => {
-  it('renders a recovery UI when a child throws', () => {
+  it('renders preset recovery UI when a child throws', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    render(
+      <ErrorBoundary preset="mapUnavailable">
+        <BrokenChild />
+      </ErrorBoundary>
+    )
+
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByText(/map could not load/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+
+    consoleError.mockRestore()
+  })
+
+  it('renders custom recovery UI when a child throws', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     render(

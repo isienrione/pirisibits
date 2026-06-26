@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Button, GlassPanel, cn, ctaInCard } from './ui'
+import { EmptyState } from './ui'
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -17,6 +17,10 @@ export class ErrorBoundary extends Component {
 
   handleRetry = () => {
     this.setState({ hasError: false, error: null })
+    if (this.props.preset === 'studioUnavailable') {
+      window.location.reload()
+      return
+    }
     this.props.onRetry?.()
   }
 
@@ -25,27 +29,34 @@ export class ErrorBoundary extends Component {
       return this.props.children
     }
 
-    const title = this.props.title ?? 'Something went wrong'
-    const message =
-      this.props.message ??
-      'This part of the tour could not load. You can try again or continue with the rest of the app.'
+    const shellClass = this.props.fullScreen
+      ? 'flex h-full min-h-[12rem] w-full items-center justify-center bg-gradient-to-b from-sand/30 via-warm-white to-limestone/20 p-6'
+      : 'w-full p-4'
+
+    if (this.props.preset) {
+      return (
+        <div className={shellClass} role="alert">
+          <EmptyState
+            preset={this.props.preset}
+            onAction={this.handleRetry}
+            className="mx-auto max-w-md"
+          />
+        </div>
+      )
+    }
 
     return (
-      <div
-        className={
-          this.props.fullScreen
-            ? 'flex h-full min-h-[12rem] w-full items-center justify-center bg-warm-white p-6'
-            : 'w-full p-4'
-        }
-        role="alert"
-      >
-        <GlassPanel className="max-w-md p-6 text-center">
-          <p className="font-display text-xl font-semibold text-deep-slate">{title}</p>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">{message}</p>
-          <Button className={cn(ctaInCard, 'mt-5')} fullWidth onClick={this.handleRetry}>
-            Try again
-          </Button>
-        </GlassPanel>
+      <div className={shellClass} role="alert">
+        <EmptyState
+          title={this.props.title ?? 'Something went wrong'}
+          body={
+            this.props.message ??
+            'This part of the tour could not load. You can try again or continue with the rest of the app.'
+          }
+          actionLabel="Try again"
+          onAction={this.handleRetry}
+          className="mx-auto max-w-md"
+        />
       </div>
     )
   }

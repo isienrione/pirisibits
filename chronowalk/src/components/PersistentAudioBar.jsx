@@ -1,17 +1,19 @@
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
-import { Button, GlassPanel, MediaPlayerControls, cn } from './ui'
+import { AudioLoadingIndicator, Button, FadeImage, GlassPanel, MediaPlayerControls, cn, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
 
 function PersistentAudioBar({
   title,
   subtitle,
   posterUrl,
+  placeholderUrl,
   cardOpen,
   onReopenCard,
   onTogglePlayback,
   onStop,
 }) {
-  const { isTourNarrationActive, isTourNarrationPlaying, currentMode } = useAudioPlaybackState()
+  const { isTourNarrationActive, isTourNarrationPlaying, isAudioBuffering, currentMode } =
+    useAudioPlaybackState()
 
   if (!isTourNarrationActive) return null
 
@@ -28,17 +30,24 @@ function PersistentAudioBar({
         <div className="flex items-center gap-3 px-3 py-2.5">
           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gold/35 bg-deep-slate">
             {posterUrl ? (
-              <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+              <FadeImage
+                src={posterUrl}
+                placeholderSrc={placeholderUrl}
+                className="h-full w-full"
+                imgClassName="h-full w-full object-cover"
+                skeletonClassName="rounded-full"
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-sm text-gold">♪</div>
             )}
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-gold">
+            <p className={typeEyebrowGold}>
               {modeLabel}
             </p>
-            <p className="truncate text-sm font-semibold leading-tight">{title ?? 'Landmark story'}</p>
+            <p className={cn('truncate', typeSectionTitleSm, 'text-warm-white')}>{title ?? 'Landmark story'}</p>
+            {isAudioBuffering ? <AudioLoadingIndicator className="mt-1" label="Buffering…" /> : null}
           </div>
 
           <div className="flex shrink-0 items-center gap-2">

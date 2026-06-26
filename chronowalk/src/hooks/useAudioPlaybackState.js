@@ -8,6 +8,7 @@ export const useAudioPlaybackState = () => {
   const [currentMode, setCurrentMode] = useState(AUDIO_MODES.AMBIENT);
   const [isTourNarrationPlaying, setIsTourNarrationPlaying] = useState(false);
   const [isTourNarrationActive, setIsTourNarrationActive] = useState(false);
+  const [isAudioBuffering, setIsAudioBuffering] = useState(false);
 
   const applyDetail = useCallback((detail = {}) => {
     setNeedsResumeAudio(Boolean(detail.needsResumeAudio ?? detail.interrupted));
@@ -16,6 +17,7 @@ export const useAudioPlaybackState = () => {
     setCurrentMode(detail.currentMode ?? AUDIO_MODES.AMBIENT);
     setIsTourNarrationPlaying(Boolean(detail.isTourNarrationPlaying));
     setIsTourNarrationActive(Boolean(detail.isTourNarrationActive));
+    setIsAudioBuffering(Boolean(detail.isAudioBuffering));
   }, []);
 
   const syncFromOrchestrator = useCallback(() => {
@@ -33,6 +35,7 @@ export const useAudioPlaybackState = () => {
     setCurrentMode(state.currentMode ?? AUDIO_MODES.AMBIENT);
     setIsTourNarrationPlaying(Boolean(audioOrchestrator.isTourNarrationPlaying?.()));
     setIsTourNarrationActive(Boolean(audioOrchestrator.isTourNarrationActive?.()));
+    setIsAudioBuffering(Boolean(audioOrchestrator.audioBuffering));
   }, []);
 
   useEffect(() => {
@@ -67,5 +70,6 @@ export const useAudioPlaybackState = () => {
     currentMode,
     isTourNarrationPlaying,
     isTourNarrationActive,
+    isAudioBuffering,
   };
 };

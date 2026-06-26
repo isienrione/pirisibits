@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
+import { motionSheetRise, motionSheetTransition } from './motion'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useOpenHaptic } from '../../hooks/useHapticTriggers'
 import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
@@ -65,12 +66,9 @@ export function BottomSheet({
           ? open
             ? 'translate-y-0'
             : 'translate-y-full'
-          : cinematic && open
-            ? 'animate-sheet-rise'
-            : cn(
-                'transform motion-safe-transition',
-                open ? 'translate-y-0' : 'translate-y-full'
-              ),
+          : open
+            ? motionSheetRise
+            : cn(motionSheetTransition, 'translate-y-full'),
         className
       )}
     >
