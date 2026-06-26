@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchWaypointById } from '../services/waypointService';
 import {
   buildWaypointAssetPromptPack,
@@ -10,6 +10,7 @@ import {
   MODERN_FRAMING_CHECKLIST,
 } from '../utils/modernFramingGuide';
 import { buildAssetStudioUrl, listAssetStudioEntries } from '../utils/assetStudioUrls';
+import { Button, GlassPanel, SectionHeader } from './ui';
 
 const PromptBlock = ({ title, body, tool }) => {
   const [copied, setCopied] = useState(false);
@@ -25,24 +26,20 @@ const PromptBlock = ({ title, body, tool }) => {
   };
 
   return (
-    <section className="rounded-xl border border-stone-700 bg-stone-950/70 p-4">
+    <GlassPanel as="section" className="p-4">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-amber-200">{title}</h3>
-          {tool ? <p className="mt-1 text-xs uppercase tracking-wide text-stone-500">{tool}</p> : null}
+          <h3 className="text-sm font-semibold text-deep-slate">{title}</h3>
+          {tool ? <p className="mt-1 text-xs uppercase tracking-wide text-soft-slate">{tool}</p> : null}
         </div>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="shrink-0 rounded-full border border-amber-400/40 px-3 py-1.5 text-xs font-medium text-amber-100 transition hover:bg-amber-400/10"
-        >
+        <Button variant="ghost" size="sm" onClick={handleCopy}>
           {copied ? 'Copied' : 'Copy'}
-        </button>
+        </Button>
       </div>
-      <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-stone-300">
+      <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-soft-slate">
         {body}
       </pre>
-    </section>
+    </GlassPanel>
   );
 };
 
@@ -90,7 +87,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-stone-950 text-stone-300">
+      <div className="flex min-h-screen items-center justify-center bg-warm-white text-soft-slate">
         Loading waypoint asset studio…
       </div>
     );
@@ -98,41 +95,37 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
 
   if (error || !waypoint || !promptPack) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-stone-950 px-6 text-center text-red-300">
+      <div className="flex min-h-screen items-center justify-center bg-warm-white px-6 text-center text-terracotta">
         {error || 'Waypoint not found.'}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
-      <div className="mx-auto max-w-3xl px-4 py-8 pb-[max(2rem,env(safe-area-inset-bottom))]">
+    <div className="min-h-screen bg-gradient-to-b from-warm-white via-sand/20 to-limestone/20 text-deep-slate">
+      <div className="mx-auto max-w-3xl px-4 py-8 pb-safe pt-safe">
         <header className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
-            Asset production studio
-          </p>
-          <h1 className="mt-2 font-serif text-3xl font-bold text-amber-50">{promptPack.title}</h1>
-          <p className="mt-3 text-sm leading-relaxed text-stone-400">
-            Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference
-            image and viewpoint metadata — same pipeline used for the Colosseum portal.
-          </p>
+          <SectionHeader
+            align="left"
+            eyebrow="Asset production studio"
+            title={promptPack.title}
+            subtitle="Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference image and viewpoint metadata — same pipeline used for the Colosseum portal."
+          />
 
-          <div className="mt-5 rounded-xl border border-stone-700 bg-stone-900/60 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">
-              Bookmark this page
-            </p>
-            <p className="mt-2 break-all font-mono text-xs text-stone-300">{studioPageUrl}</p>
-            <p className="mt-3 text-xs text-stone-500">
+          <GlassPanel className="mt-5 p-4">
+            <p className="text-eyebrow uppercase text-terracotta">Bookmark this page</p>
+            <p className="mt-2 break-all font-mono text-xs text-soft-slate">{studioPageUrl}</p>
+            <p className="mt-3 text-xs text-soft-slate">
               All stops:{' '}
               {studioEntries.map((entry, index) => (
                 <span key={entry.id}>
                   {index > 0 ? ' · ' : null}
                   {entry.id === waypointId ? (
-                    <span className="text-amber-200">{entry.title}</span>
+                    <span className="font-medium text-deep-slate">{entry.title}</span>
                   ) : (
                     <a
                       href={entry.search}
-                      className="text-amber-400 underline decoration-amber-400/40 hover:text-amber-200"
+                      className="text-terracotta underline decoration-terracotta/40 hover:text-terracotta/80"
                     >
                       {entry.title}
                     </a>
@@ -140,21 +133,22 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 </span>
               ))}
             </p>
-          </div>
+          </GlassPanel>
         </header>
 
         {framing ? (
-          <section
-            className={`mb-8 rounded-xl border p-4 ${
+          <GlassPanel
+            as="section"
+            className={`mb-8 p-4 ${
               framing.passes
-                ? 'border-emerald-500/30 bg-emerald-950/20'
-                : 'border-amber-500/40 bg-amber-950/20'
+                ? 'border-olive/40 bg-olive/5'
+                : 'border-gold/40 bg-gold/5'
             }`}
           >
-            <h2 className="text-sm font-semibold text-amber-100">
+            <h2 className="text-sm font-semibold text-deep-slate">
               Framing check (Colosseum standard)
             </h2>
-            <p className="mt-2 text-xs text-stone-400">
+            <p className="mt-2 text-xs text-soft-slate">
               Colosseum reference: viewpoint ~{framing.colosseumReferenceOffsetM} m from center, pitch{' '}
               {framing.colosseumReferencePitch}° (large approach). This waypoint (
               {framing.framingProfile.replace('_', ' ')}): offset{' '}
@@ -162,47 +156,47 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               {framing.pitch ?? 'unknown'}°.
             </p>
             {framing.warnings.length ? (
-              <ul className="mt-3 space-y-2 text-sm text-amber-200">
+              <ul className="mt-3 space-y-2 text-sm text-gold">
                 {framing.warnings.map((warning) => (
                   <li key={warning}>• {warning}</li>
                 ))}
               </ul>
             ) : null}
             {framing.tips.length ? (
-              <ul className="mt-3 space-y-1 text-xs text-emerald-200/90">
+              <ul className="mt-3 space-y-1 text-xs text-olive">
                 {framing.tips.map((tip) => (
                   <li key={tip}>✓ {tip}</li>
                 ))}
               </ul>
             ) : null}
-            <details className="mt-4 text-xs text-stone-400">
-              <summary className="cursor-pointer text-amber-300">Framing checklist for all waypoints</summary>
+            <details className="mt-4 text-xs text-soft-slate">
+              <summary className="cursor-pointer text-terracotta">Framing checklist for all waypoints</summary>
               <ol className="mt-2 list-decimal space-y-1 pl-5">
                 {MODERN_FRAMING_CHECKLIST.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ol>
-              <p className="mt-3 text-stone-500">
+              <p className="mt-3 text-soft-slate/70">
                 Reference: {COLOSSEUM_FRAMING_REFERENCE.notes.join(' ')}
               </p>
             </details>
-          </section>
+          </GlassPanel>
         ) : null}
 
-        <section className="mb-8 grid gap-4 rounded-xl border border-stone-700 bg-stone-900/60 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <GlassPanel as="section" className="mb-8 grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-300">
+            <p className="mb-2 text-eyebrow uppercase text-terracotta">
               Modern reference (source still)
             </p>
             {modernReferencePath ? (
               <img
                 src={modernReferencePath}
                 alt={`Modern reference for ${promptPack.title}`}
-                className="aspect-video w-full rounded-lg border border-stone-700 object-cover"
+                className="aspect-video w-full rounded-lg border border-limestone object-cover"
                 referrerPolicy="no-referrer"
               />
             ) : (
-              <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-stone-600 text-sm text-stone-500">
+              <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-limestone text-sm text-soft-slate">
                 Add modern_image_url to the waypoint seed
               </div>
             )}
@@ -211,16 +205,16 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 href={promptPack.modernReferenceUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 inline-block text-xs text-amber-300 underline underline-offset-2"
+                className="mt-2 inline-block text-xs text-terracotta underline underline-offset-2"
               >
                 Open reference URL
               </a>
             ) : null}
           </div>
 
-          <div className="text-sm text-stone-300">
-            <p className="font-semibold text-amber-100">Viewpoint metadata</p>
-            <ul className="mt-3 space-y-2 font-mono text-xs leading-relaxed text-stone-400">
+          <div className="text-sm text-soft-slate">
+            <p className="font-semibold text-deep-slate">Viewpoint metadata</p>
+            <ul className="mt-3 space-y-2 font-mono text-xs leading-relaxed text-soft-slate">
               <li>id: {promptPack.waypointId}</li>
               <li>
                 stand: {promptPack.viewpoint.standLat}, {promptPack.viewpoint.standLng}
@@ -238,13 +232,13 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 href={promptPack.streetViewUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex rounded-full border border-amber-400/40 px-4 py-2 text-xs font-medium text-amber-100 transition hover:bg-amber-400/10"
+                className="mt-4 inline-flex items-center justify-center rounded-full border border-terracotta/35 bg-terracotta/8 px-3 py-1.5 text-xs font-semibold text-terracotta transition hover:bg-terracotta/15"
               >
                 Open Street View at viewpoint
               </a>
             ) : null}
           </div>
-        </section>
+        </GlassPanel>
 
         <PromptBlock
           title="Shared camera rules (reference — do not paste alone)"
@@ -252,11 +246,11 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
           tool="Context for you · optional prefix"
         />
 
-        <section className="mb-6 rounded-xl border border-amber-400/25 bg-amber-400/5 p-4 text-sm text-stone-300">
-          <h2 className="font-semibold text-amber-100">Recommended order ({promptPack.title})</h2>
-          <ol className="mt-3 list-decimal space-y-2 pl-5 text-stone-400">
+        <GlassPanel as="section" className="mb-6 border-terracotta/20 bg-sand/40 p-4 text-sm text-soft-slate">
+          <h2 className="font-semibold text-deep-slate">Recommended order ({promptPack.title})</h2>
+          <ol className="mt-3 list-decimal space-y-2 pl-5">
             <li>
-              <strong className="text-stone-200">
+              <strong className="text-deep-slate">
                 {modernReferencePath ? 'Skip modern still' : 'Capture modern still'}
               </strong>
               {modernReferencePath
@@ -264,23 +258,23 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 : ' — export modern-exterior.jpg from Street View at the viewpoint above.'}
             </li>
             <li>
-              <strong className="text-stone-200">Runway / Pika</strong> — paste{' '}
-              <em>Modern animated video</em>, upload <code className="text-amber-200">modern-exterior.jpg</code> → save{' '}
-              <code className="text-amber-200">modern.mp4</code>
+              <strong className="text-deep-slate">Runway / Pika</strong> — paste{' '}
+              <em>Modern animated video</em>, upload <code className="text-terracotta">modern-exterior.jpg</code> → save{' '}
+              <code className="text-terracotta">modern.mp4</code>
             </li>
             <li>
-              <strong className="text-stone-200">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
-              photo as image reference → save <code className="text-amber-200">ancient-reconstruction.jpg</code>
+              <strong className="text-deep-slate">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
+              photo as image reference → save <code className="text-terracotta">ancient-reconstruction.jpg</code>
             </li>
             <li>
-              <strong className="text-stone-200">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
-              ancient still + motion-sync from modern clip → save <code className="text-amber-200">ancient-reconstruction.mp4</code>
+              <strong className="text-deep-slate">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
+              ancient still + motion-sync from modern clip → save <code className="text-terracotta">ancient-reconstruction.mp4</code>
             </li>
             <li>
-              <strong className="text-stone-200">DaVinci / export</strong> — use brief to pull poster frames at ~3s
+              <strong className="text-deep-slate">DaVinci / export</strong> — use brief to pull poster frames at ~3s
             </li>
           </ol>
-        </section>
+        </GlassPanel>
 
         <div className="mt-6 space-y-4">
           <PromptBlock
@@ -305,13 +299,13 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
           />
         </div>
 
-        <section className="mt-8 rounded-xl border border-stone-700 bg-stone-900/50 p-4">
-          <h2 className="text-sm font-semibold text-amber-200">Workflow checklist</h2>
-          <div className="mt-4 space-y-4 text-sm text-stone-300">
+        <GlassPanel as="section" className="mt-8 p-4">
+          <h2 className="text-sm font-semibold text-deep-slate">Workflow checklist</h2>
+          <div className="mt-4 space-y-4 text-sm text-soft-slate">
             {Object.values(promptPack.tooling).map((block) => (
               <div key={block.title}>
-                <p className="font-medium text-amber-100">{block.title}</p>
-                <ol className="mt-2 list-decimal space-y-1 pl-5 text-stone-400">
+                <p className="font-medium text-deep-slate">{block.title}</p>
+                <ol className="mt-2 list-decimal space-y-1 pl-5">
                   {block.steps.map((step) => (
                     <li key={step}>{step}</li>
                   ))}
@@ -319,18 +313,18 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               </div>
             ))}
           </div>
-        </section>
+        </GlassPanel>
 
-        <section className="mt-6 rounded-xl border border-stone-700 bg-stone-900/50 p-4">
-          <h2 className="text-sm font-semibold text-amber-200">Deliverable paths</h2>
-          <ul className="mt-3 space-y-1 font-mono text-xs text-stone-400">
+        <GlassPanel as="section" className="mt-6 p-4">
+          <h2 className="text-sm font-semibold text-deep-slate">Deliverable paths</h2>
+          <ul className="mt-3 space-y-1 font-mono text-xs text-soft-slate">
             {promptPack.fileManifest.map((path) => (
               <li key={path}>{path}</li>
             ))}
           </ul>
-        </section>
+        </GlassPanel>
 
-        <p className="mt-8 text-center text-xs text-stone-500">
+        <p className="mt-8 text-center text-xs text-soft-slate">
           Studio URL: {studioPageUrl}
         </p>
       </div>

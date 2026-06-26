@@ -1,6 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-warm-white: #fffdf8;
+    --color-sand: #f4e7d0;
+    --color-limestone: #e7d7bd;
+    --color-deep-slate: #17212b;
+    --color-soft-slate: #51606f;
+    --color-sky-blue: #7cb7d8;
+    --color-terracotta: #c8643c;
+    --color-gold: #d9a441;
+    --color-olive: #7a8b5a;
+
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'Fraunces', Georgia, serif;
+
+    --shadow-glass: 0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06);
+    --shadow-sheet: 0 -12px 40px rgba(23, 33, 43, 0.14);
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-warm-white font-sans text-deep-slate antialiased;
+  }
+
+  input[type='range'] {
+    accent-color: var(--color-terracotta);
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .pt-safe {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+
+  .bottom-safe-offset {
+    bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));
+  }
+}
 
 /* react-compare-slider: items must fill the measured 16:9 frame */
 [data-rcs='root'] {

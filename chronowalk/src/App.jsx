@@ -3,6 +3,7 @@ import TourMap from './components/TourMap'
 import TourHud from './components/TourHud'
 import WaypointCard from './components/WaypointCard'
 import WaypointAssetStudio from './components/WaypointAssetStudio'
+import { Button } from './components/ui'
 import { JOURNEY_STATE } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
@@ -109,36 +110,36 @@ function App() {
 
   if (!hasInteracted) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-900 px-6 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gradient-to-b from-warm-white via-sand/40 to-limestone/30 px-6 pb-safe pt-safe text-center">
         {singleWaypointId ? (
           <>
-            <p className="text-lg font-semibold text-stone-200">
+            <p className="text-lg font-semibold text-deep-slate">
               Debug: {getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId}
             </p>
-            <p className="max-w-sm text-sm text-stone-400">
-              Single-stop test mode. Add <span className="text-stone-300">?debugGeo=true</span> to
+            <p className="max-w-sm text-sm text-soft-slate">
+              Single-stop test mode. Add <span className="font-medium text-deep-slate">?debugGeo=true</span> to
               fake GPS at this landmark.
             </p>
           </>
         ) : (
           <>
-            <p className="text-xl font-semibold text-stone-100">{tour.title}</p>
-            <p className="text-base text-amber-300/90">{tour.subtitle ?? tourStopLabels}</p>
-            <p className="max-w-sm text-sm text-stone-400">
+            <p className="font-display text-2xl font-semibold text-deep-slate">{tour.title}</p>
+            <p className="text-base text-terracotta">{tour.subtitle ?? tourStopLabels}</p>
+            <p className="max-w-sm text-sm text-soft-slate">
               {tour.stopIds.length} stops · {tourStopLabels}
             </p>
           </>
         )}
-        <button
-          type="button"
+        <Button
+          size="lg"
+          className="rounded-full px-10 shadow-cta transition-transform hover:scale-[1.02]"
           onClick={async () => {
             await requestDeviceTiltPermission()
             setHasInteracted(true)
           }}
-          className="rounded-full bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-transform hover:scale-105"
         >
           Start Immersive Tour
-        </button>
+        </Button>
       </div>
     )
   }
@@ -182,17 +183,17 @@ function App() {
         cardDismissed &&
         discoveredWaypoint &&
         !activeWaypoint && (
-          <button
-            type="button"
+          <Button
+            size="pill"
+            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg"
+            style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
             onClick={() => {
               setCardDismissed(false)
               setActiveWaypoint(discoveredWaypoint)
             }}
-            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 rounded-full bg-amber-500 px-6 py-3.5 text-sm font-bold text-gray-900 shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition hover:bg-amber-400"
-            style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
           >
             Reopen {discoveredWaypoint.title}
-          </button>
+          </Button>
         )}
     </div>
   )

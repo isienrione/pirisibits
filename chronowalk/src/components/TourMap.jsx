@@ -9,20 +9,28 @@ import { env, isDebugGeo, isMapboxConfigured } from '../config/env'
 
 const mapboxToken = env.mapboxToken
 
+const MAP_COLORS = {
+  completed: '#7A8B5A',
+  current: '#D9A441',
+  pending: '#51606F',
+  tourRoute: '#7CB7D8',
+  activeLeg: '#D9A441',
+}
+
 const createLandmarkMarkerElement = (title, status) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
 
   const dotClass =
     status === 'completed'
-      ? 'bg-emerald-400'
+      ? 'bg-olive'
       : status === 'current'
-        ? 'bg-yellow-400 ring-2 ring-amber-200'
-        : 'bg-stone-400 opacity-80'
+        ? 'bg-gold ring-2 ring-sand'
+        : 'bg-soft-slate opacity-80'
 
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white ${dotClass} shadow-lg"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-black/70 px-2 py-0.5 text-center text-xs font-semibold text-yellow-300">${title}</span>
+    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-lg"></div>
+    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-deep-slate/80 px-2 py-0.5 text-center text-xs font-semibold text-gold">${title}</span>
   `
   return el
 }
@@ -31,7 +39,7 @@ const createUserMarkerElement = () => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
   el.innerHTML = `
-    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-blue-500 text-xs font-bold text-white shadow-lg">You</div>
+    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warm-white shadow-lg">You</div>
   `
   return el
 }
@@ -101,10 +109,10 @@ const TourMap = ({
             'match',
             ['get', 'status'],
             'completed',
-            '#34d399',
+            MAP_COLORS.completed,
             'current',
-            '#FFD700',
-            '#9ca3af',
+            MAP_COLORS.current,
+            MAP_COLORS.pending,
           ],
           'fill-opacity': 0.14,
         },
@@ -119,10 +127,10 @@ const TourMap = ({
             'match',
             ['get', 'status'],
             'completed',
-            '#34d399',
+            MAP_COLORS.completed,
             'current',
-            '#FFD700',
-            '#9ca3af',
+            MAP_COLORS.current,
+            MAP_COLORS.pending,
           ],
           'line-width': 2,
           'line-opacity': 0.65,
@@ -139,7 +147,7 @@ const TourMap = ({
         type: 'line',
         source: 'tour-route',
         paint: {
-          'line-color': '#a78bfa',
+          'line-color': MAP_COLORS.tourRoute,
           'line-width': 4,
           'line-opacity': 0.45,
         },
@@ -155,7 +163,7 @@ const TourMap = ({
         type: 'line',
         source: 'active-leg-route',
         paint: {
-          'line-color': '#fbbf24',
+          'line-color': MAP_COLORS.activeLeg,
           'line-width': 5,
           'line-opacity': 0.9,
         },
@@ -274,10 +282,10 @@ const TourMap = ({
 
   if (!isMapboxConfigured()) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-6 text-center text-white">
+      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
         <p>
-          Missing <code className="rounded bg-gray-800 px-2 py-1">VITE_MAPBOX_TOKEN</code>.
-          Add it to <code className="rounded bg-gray-800 px-1">chronowalk/.env</code>.
+          Missing <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code>.
+          Add it to <code className="rounded bg-sand px-1">chronowalk/.env</code>.
         </p>
       </div>
     )
@@ -290,21 +298,21 @@ const TourMap = ({
       <div ref={mapContainer} className="h-full w-full" />
       <div className="absolute left-3 top-3 space-y-2">
         {tourTitle ? (
-          <div className="rounded bg-black/85 px-3 py-1 text-xs font-semibold text-amber-200 shadow">
+          <div className="rounded bg-deep-slate/85 px-3 py-1 text-xs font-semibold text-gold shadow">
             {tourTitle}
           </div>
         ) : null}
         {debugGeo ? (
-          <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
+          <div className="rounded bg-sky-blue px-3 py-1 text-sm text-warm-white shadow">
             Debug GPS: at {activeTitle}
           </div>
         ) : (
-          <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
+          <div className="rounded bg-terracotta px-3 py-1 text-sm text-warm-white shadow">
             Debug GPS: off (using real location)
           </div>
         )}
         {transitLegActive && activeLeg ? (
-          <div className="rounded bg-violet-700 px-3 py-1 text-sm text-white shadow">
+          <div className="rounded bg-deep-slate/80 px-3 py-1 text-sm text-warm-white shadow">
             Walking:{' '}
             {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
             {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
@@ -312,15 +320,15 @@ const TourMap = ({
         ) : null}
         {state && (
           <div
-            className={`rounded px-3 py-1 text-sm font-semibold text-white shadow ${
-              state === JOURNEY_STATE.ARRIVAL ? 'bg-green-600' : 'bg-gray-600'
+            className={`rounded px-3 py-1 text-sm font-semibold text-warm-white shadow ${
+              state === JOURNEY_STATE.ARRIVAL ? 'bg-olive' : 'bg-soft-slate'
             }`}
           >
             Journey: {state}
             {distance != null && ` (${Math.round(distance)}m)`}
           </div>
         )}
-        <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
+        <div className="rounded bg-deep-slate/80 px-3 py-1 text-xs text-sand shadow">
           Arrival geofence: {geofenceThresholdM}m
         </div>
       </div>

@@ -107,7 +107,7 @@ const SliderItemShell = ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#0c0a09',
+        backgroundColor: '#17212B',
       }}
     >
       <div
@@ -131,9 +131,9 @@ const SliderItemShell = ({
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
 const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
-  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-stone-800 to-stone-900 p-5 text-center">
-    <p className="text-sm font-semibold text-amber-300">{message}</p>
-    <p className="mt-3 font-mono text-[10px] text-amber-200/80">ancient-reconstruction.mp4</p>
+  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-deep-slate to-deep-slate/90 p-5 text-center">
+    <p className="text-sm font-semibold text-gold">{message}</p>
+    <p className="mt-3 font-mono text-[10px] text-sand/80">ancient-reconstruction.mp4</p>
   </div>
 );
 
@@ -444,7 +444,7 @@ const BeforeAfterSlider = ({
     );
 
     if (!isAncient) {
-      return <div className="absolute inset-0 bg-stone-950">{media}</div>;
+      return <div className="absolute inset-0 bg-deep-slate">{media}</div>;
     }
 
     return (
@@ -467,7 +467,7 @@ const BeforeAfterSlider = ({
 
     if (!modernSrc) {
       return (
-        <div className="flex h-full items-center justify-center bg-stone-950 px-4 text-center text-sm text-amber-200">
+        <div className="flex h-full items-center justify-center bg-deep-slate px-4 text-center text-sm text-sand">
           Modern reference image is missing for alignment.
         </div>
       );
@@ -554,7 +554,7 @@ const BeforeAfterSlider = ({
           animateParallax={!alignmentMode}
         >
           {ancientMedia.loading ? (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-stone-950/70 text-xs text-amber-200">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-deep-slate/70 text-xs text-sand">
               Loading ancient Rome…
             </div>
           ) : null}
@@ -586,7 +586,7 @@ const BeforeAfterSlider = ({
   };
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border-4 border-white shadow-lg">
+    <div className="w-full overflow-hidden rounded-panel border-4 border-warm-white shadow-glass">
       <div
         ref={frameRef}
         className="relative w-full"
@@ -594,7 +594,7 @@ const BeforeAfterSlider = ({
       >
         {frameHeight > 0 ? (
           alignmentMode ? (
-            <div className="relative h-full w-full overflow-hidden bg-stone-950">
+            <div className="relative h-full w-full overflow-hidden bg-deep-slate">
               {renderAlignmentView()}
             </div>
           ) : (
@@ -605,10 +605,10 @@ const BeforeAfterSlider = ({
             />
           )
         ) : (
-          <div className="aspect-video w-full bg-stone-950" />
+          <div className="aspect-video w-full bg-deep-slate" />
         )}
       </div>
-      <p className="bg-stone-900 px-3 py-2 text-center text-xs leading-relaxed text-stone-400">
+      <p className="bg-sand/60 px-3 py-2 text-center text-xs leading-relaxed text-soft-slate">
         {alignmentMode ? (
           'Ghost overlay active — adjust the ancient layer until it snaps to the real-world facade.'
         ) : !ancientLayerActive ? (
@@ -622,7 +622,7 @@ const BeforeAfterSlider = ({
               <button
                 type="button"
                 onClick={replayVideos}
-                className="ml-1 text-amber-400 underline underline-offset-2"
+                className="ml-1 text-terracotta underline underline-offset-2"
               >
                 Replay
               </button>
