@@ -1,18 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import TourHero from './components/TourHero'
-import TourMap from './components/TourMap'
 import TourHud from './components/TourHud'
-import WaypointCard from './components/WaypointCard'
 import ArrivalMoment from './components/ArrivalMoment'
 import LiveAnnouncer from './components/LiveAnnouncer'
 import LocationNotice from './components/LocationNotice'
-import WaypointAssetStudio from './components/WaypointAssetStudio'
+import ErrorBoundary from './components/ErrorBoundary'
 import AppNavigation from './components/navigation/AppNavigation'
 import { NAV_TABS } from './components/navigation/navConfig'
 import TourOverviewView from './components/views/TourOverviewView'
 import StopsView from './components/views/StopsView'
 import SettingsView from './components/views/SettingsView'
-import { Button } from './components/ui'
+import { Button, LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
@@ -36,12 +34,17 @@ import {
   isAssetStudio,
 } from './config/env'
 
+const TourMap = lazy(() => import('./components/TourMap'))
+const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
+const WaypointCard = lazy(() => import('./components/WaypointCard'))
+
 function App() {
   const assetStudio = isAssetStudio()
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
   const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
+  const [mapRetryKey, setMapRetryKey] = useState(0)
 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [activeTab, setActiveTab] = useState(NAV_TABS.MAP)
@@ -138,6 +141,8 @@ function App() {
 
   const handleStartTour = async () => {
     await requestDeviceTiltPermission()
+    void import('./components/TourMap')
+    void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
   }
@@ -158,6 +163,10 @@ function App() {
     writeDebugMapPreference(enabled)
   }
 
+  const handleMapRetry = useCallback(() => {
+    setMapRetryKey((current) => current + 1)
+  }, [])
+
   const locationStatus = useMemo(() => {
     if (isDebugGeo()) return LOCATION_STATUS.GRANTED
     return session.locationStatus
@@ -169,7 +178,17 @@ function App() {
     locationStatus !== LOCATION_STATUS.GRANTED
 
   if (assetStudio) {
-    return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
+    return (
+      <ErrorBoundary
+        fullScreen
+        title="Asset studio unavailable"
+        message="The creator studio could not load. Check the console and reload the page."
+      >
+        <Suspense fallback={<LoadingPanel label="Loading asset studio…" fullScreen />}>
+          <WaypointAssetStudio waypointId={assetStudioWaypointId} />
+        </Suspense>
+      </ErrorBoundary>
+    )
   }
 
   if (!hasInteracted) {
@@ -201,19 +220,37 @@ function App() {
         className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
         aria-hidden={!mapTabActive}
       >
-        <TourMap
-          tour={singleWaypointId ? null : tour}
-          stops={session.mapStops}
-          activeTargetId={session.targetStopId}
-          activeLeg={session.activeLeg}
-          transitLegActive={session.progress.transitLegActive}
-          geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
-          userPos={session.position}
-          state={session.state}
-          distance={session.distance}
-          arrivalPulseActive={discoveryVisible}
-          debugMapEnabled={debugMapEnabled}
-        />
+        <ErrorBoundary
+          key={mapRetryKey}
+          fullScreen
+          title="Map unavailable"
+          message="The walking map failed to load. Check your connection and Mapbox token, then try again."
+          onRetry={handleMapRetry}
+        >
+          <Suspense
+            fallback={
+              <LoadingPanel
+                label="Loading map…"
+                hint="Fetching Mapbox and tour route layers"
+                fullScreen
+              />
+            }
+          >
+            <TourMap
+              tour={singleWaypointId ? null : tour}
+              stops={session.mapStops}
+              activeTargetId={session.targetStopId}
+              activeLeg={session.activeLeg}
+              transitLegActive={session.progress.transitLegActive}
+              geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
+              userPos={session.position}
+              state={session.state}
+              distance={session.distance}
+              arrivalPulseActive={discoveryVisible}
+              debugMapEnabled={debugMapEnabled}
+            />
+          </Suspense>
+        </ErrorBoundary>
 
         <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
 
@@ -281,19 +318,26 @@ function App() {
         />
       ) : null}
 
-      <WaypointCard
-        waypoint={activeWaypoint}
-        state={session.state}
-        isFreshArrival={
-          Boolean(activeWaypoint) &&
-          Boolean(discoveredWaypoint) &&
-          activeWaypoint.id === discoveredWaypoint.id
-        }
-        onClose={() => {
-          setActiveWaypoint(null)
-          setCardDismissed(true)
-        }}
-      />
+      <ErrorBoundary
+        title="Landmark card unavailable"
+        message="The arrival card could not load. Try reopening the stop from the map."
+      >
+        <Suspense fallback={null}>
+          <WaypointCard
+            waypoint={activeWaypoint}
+            state={session.state}
+            isFreshArrival={
+              Boolean(activeWaypoint) &&
+              Boolean(discoveredWaypoint) &&
+              activeWaypoint.id === discoveredWaypoint.id
+            }
+            onClose={() => {
+              setActiveWaypoint(null)
+              setCardDismissed(true)
+            }}
+          />
+        </Suspense>
+      </ErrorBoundary>
 
       {session.state === JOURNEY_STATE.ARRIVAL &&
         cardDismissed &&

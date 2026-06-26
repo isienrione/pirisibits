@@ -7,6 +7,7 @@ import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalki
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
+import { Button, LoadingPanel } from './ui'
 
 const mapboxToken = env.mapboxToken
 
@@ -144,6 +145,7 @@ const TourMap = ({
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [mapError, setMapError] = useState(null)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
@@ -153,16 +155,29 @@ const TourMap = ({
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
 
+    setMapError(null)
+
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
 
     mapboxgl.accessToken = mapboxToken
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [center.lng, center.lat],
-      zoom: tour?.mapZoom ?? 14,
+    try {
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [center.lng, center.lat],
+        zoom: tour?.mapZoom ?? 14,
+      })
+    } catch (error) {
+      console.error('Mapbox initialization failed:', error)
+      setMapError('Could not initialize the map. Verify your Mapbox token and try again.')
+      return undefined
+    }
+
+    map.current.on('error', (event) => {
+      console.error('Mapbox runtime error:', event?.error ?? event)
+      setMapError('Map tiles failed to load. Check your connection or Mapbox token.')
     })
 
     map.current.on('load', () => {
@@ -255,6 +270,7 @@ const TourMap = ({
 
     return () => {
       setMapLoaded(false)
+      setMapError(null)
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
@@ -378,10 +394,28 @@ const TourMap = ({
   if (!isMapboxConfigured()) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <p>
-          Missing <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code>.
-          Add it to <code className="rounded bg-sand px-1">chronowalk/.env</code>.
-        </p>
+        <div className="max-w-md">
+          <p className="font-display text-xl font-semibold">Mapbox token required</p>
+          <p className="mt-2 text-sm text-soft-slate">
+            Add <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code> to{' '}
+            <code className="rounded bg-sand px-1">chronowalk/.env</code> and restart the dev
+            server.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (mapError) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
+        <div className="max-w-md rounded-3xl border border-limestone/70 bg-warm-white p-6 shadow-glass">
+          <p className="font-display text-xl font-semibold">Map unavailable</p>
+          <p className="mt-2 text-sm text-soft-slate">{mapError}</p>
+          <Button className="mt-5 rounded-2xl" onClick={() => window.location.reload()}>
+            Reload app
+          </Button>
+        </div>
       </div>
     )
   }
@@ -391,6 +425,16 @@ const TourMap = ({
   return (
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
+      {!mapLoaded ? (
+        <div className="absolute inset-0 z-10">
+          <LoadingPanel
+            label="Preparing your map…"
+            hint="Drawing landmarks, routes, and walking paths"
+            fullScreen
+            className="bg-warm-white/90 backdrop-blur-sm"
+          />
+        </div>
+      ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
       {showDebugOverlay ? (
         <MapDebugOverlay

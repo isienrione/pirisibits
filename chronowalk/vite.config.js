@@ -8,6 +8,24 @@ export default defineConfig({
     host: true,
     port: 5173,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/mapbox-gl')) {
+            return 'mapbox'
+          }
+          if (id.includes('node_modules/react-compare-slider')) {
+            return 'compare-slider'
+          }
+          if (id.includes('node_modules/@supabase')) {
+            return 'supabase'
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 700,
+  },
   test: {
     environment: 'jsdom',
     globals: true,

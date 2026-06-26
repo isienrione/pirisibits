@@ -1,7 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import BeforeAfterSlider from './BeforeAfterSlider';
+import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
-import { BottomSheet, Button, cn } from './ui';
+import ErrorBoundary from './ErrorBoundary';
+import { BottomSheet, Button, LoadingPanel, cn } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -20,6 +20,8 @@ import {
   hasModernSliderMedia,
 } from '../utils/sliderMedia';
 import { isDebugMedia } from '../config/env';
+
+const BeforeAfterSlider = lazy(() => import('./BeforeAfterSlider'));
 
 const useMediaHeroState = (url) => {
   const [status, setStatus] = useState(url ? 'loading' : 'empty');
@@ -413,22 +415,37 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       {showSlider ? (
         <div ref={sliderRef} className="mb-5">
           <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
-            <BeforeAfterSlider
-              key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
-              modernImg={modernSliderUrl}
-              historicImg={ancientSliderUrl}
-              depthMap={waypoint.depth_map_url}
-              tiltEnabled={tiltEnabled}
-              posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
-              postAnimationLoopMs={
-                waypoint.slider_post_animation_loop_ms ?? waypoint.slider_poster_hold_ms
-              }
-              modernPosterUrl={getModernPosterUrl(waypoint)}
-              ancientPosterUrl={getAncientPosterUrl(waypoint)}
-              calibration={calibration}
-              alignmentMode={alignmentMode}
-              maxFrameHeightRatio={0.62}
-            />
+            <ErrorBoundary
+              title="Comparison view unavailable"
+              message="The then-and-now slider could not load. You can still listen to the audio story below."
+            >
+              <Suspense
+                fallback={
+                  <LoadingPanel
+                    label="Loading comparison…"
+                    hint="Preparing matched modern and ancient views"
+                    className="min-h-[14rem] rounded-b-3xl"
+                  />
+                }
+              >
+                <BeforeAfterSlider
+                  key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
+                  modernImg={modernSliderUrl}
+                  historicImg={ancientSliderUrl}
+                  depthMap={waypoint.depth_map_url}
+                  tiltEnabled={tiltEnabled}
+                  posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
+                  postAnimationLoopMs={
+                    waypoint.slider_post_animation_loop_ms ?? waypoint.slider_poster_hold_ms
+                  }
+                  modernPosterUrl={getModernPosterUrl(waypoint)}
+                  ancientPosterUrl={getAncientPosterUrl(waypoint)}
+                  calibration={calibration}
+                  alignmentMode={alignmentMode}
+                  maxFrameHeightRatio={0.62}
+                />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         </div>
       ) : (
