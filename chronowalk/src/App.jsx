@@ -1,18 +1,32 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import TourMap from './components/TourMap'
+import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
+import TourHero from './components/TourHero'
 import TourHud from './components/TourHud'
-import WaypointCard from './components/WaypointCard'
-import WaypointAssetStudio from './components/WaypointAssetStudio'
-import { JOURNEY_STATE } from './hooks/useGeoLocation'
+import ArrivalMoment from './components/ArrivalMoment'
+import LiveAnnouncer from './components/LiveAnnouncer'
+import LocationNotice from './components/LocationNotice'
+import ErrorBoundary from './components/ErrorBoundary'
+import AppNavigation from './components/navigation/AppNavigation'
+import { NAV_TABS } from './components/navigation/navConfig'
+import TourOverviewView from './components/views/TourOverviewView'
+import StopsView from './components/views/StopsView'
+import SettingsView from './components/views/SettingsView'
+import { Button, LoadingPanel } from './components/ui'
+import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
-import { getWaypointGeo } from './data/waypointGeo'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
+import {
+  readAudioEnabled,
+  readDebugMapPreference,
+  writeAudioEnabled,
+  writeDebugMapPreference,
+} from './utils/appPreferences'
+import { isDebugGeo } from './config/env'
 import {
   getAssetStudioWaypointId,
   getSingleWaypointId,
@@ -20,21 +34,26 @@ import {
   isAssetStudio,
 } from './config/env'
 
+const TourMap = lazy(() => import('./components/TourMap'))
+const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
+const WaypointCard = lazy(() => import('./components/WaypointCard'))
+
 function App() {
   const assetStudio = isAssetStudio()
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
   const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
-  const tourStopLabels = useMemo(
-    () => tour.stopIds.map((id) => getWaypointGeo(id)?.title ?? id).join(' → '),
-    [tour.stopIds]
-  )
+  const [mapRetryKey, setMapRetryKey] = useState(0)
 
   const [hasInteracted, setHasInteracted] = useState(false)
+  const [activeTab, setActiveTab] = useState(NAV_TABS.MAP)
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
+  const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
+  const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
+  const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
 
@@ -46,27 +65,44 @@ function App() {
 
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
-    enabled: hasInteracted && Boolean(session.currentWaypoint),
+    enabled: hasInteracted && Boolean(session.currentWaypoint) && audioEnabled,
     distance: session.distance,
     arrivalUrl: session.currentWaypoint?.arrival_immersive_url,
     prefetchRadiusM: session.prefetchRadiusM,
   })
 
-  const revealWaypointCard = useCallback((waypoint) => {
-    setDiscoveredWaypoint(waypoint)
-    setCardDismissed(false)
-    audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
+  const revealWaypointCard = useCallback(
+    (waypoint) => {
+      setDiscoveredWaypoint(waypoint)
+      setCardDismissed(false)
+      setActiveTab(NAV_TABS.MAP)
+      setLiveAnnouncement(
+        `Waypoint discovered: ${waypoint.title}. Your story is unlocking.`
+      )
 
-    const revealTimer = window.setTimeout(() => {
-      setActiveWaypoint(waypoint)
-    }, CARD_REVEAL_DELAY_MS)
+      if (audioEnabled) {
+        audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
+      }
 
-    return () => window.clearTimeout(revealTimer)
-  }, [])
+      const revealTimer = window.setTimeout(() => {
+        setActiveWaypoint(waypoint)
+        setLiveAnnouncement(
+          `${waypoint.title} unlocked. Audio story and historical reveal are ready.`
+        )
+      }, CARD_REVEAL_DELAY_MS)
+
+      return () => window.clearTimeout(revealTimer)
+    },
+    [audioEnabled]
+  )
 
   useEffect(() => {
     if (!hasInteracted || tourStartedRef.current) return
     if (session.loading) return
+    if (!audioEnabled) {
+      tourStartedRef.current = true
+      return
+    }
 
     tourStartedRef.current = true
     void session.startTourAmbient()
@@ -74,7 +110,7 @@ function App() {
     return () => {
       audioOrchestrator.stop()
     }
-  }, [hasInteracted, session.loading, session.startTourAmbient])
+  }, [hasInteracted, session.loading, session.startTourAmbient, audioEnabled])
 
   useEffect(() => {
     if (!hasInteracted || !session.currentWaypoint) return
@@ -103,97 +139,225 @@ function App() {
     await session.beginTransitToNextStop()
   }
 
+  const handleStartTour = async () => {
+    await requestDeviceTiltPermission()
+    void import('./components/TourMap')
+    void import('./components/WaypointCard')
+    setHasInteracted(true)
+    setActiveTab(NAV_TABS.MAP)
+  }
+
+  const handleAudioEnabledChange = (enabled) => {
+    setAudioEnabled(enabled)
+    writeAudioEnabled(enabled)
+    if (!enabled) {
+      audioOrchestrator.stop()
+    } else if (hasInteracted && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      void session.startTourAmbient()
+    }
+  }
+
+  const handleDebugMapEnabledChange = (enabled) => {
+    setDebugMapEnabled(enabled)
+    writeDebugMapPreference(enabled)
+  }
+
+  const handleMapRetry = useCallback(() => {
+    setMapRetryKey((current) => current + 1)
+  }, [])
+
+  const locationStatus = useMemo(() => {
+    if (isDebugGeo()) return LOCATION_STATUS.GRANTED
+    return session.locationStatus
+  }, [session.locationStatus])
+
+  const showLocationNotice =
+    hasInteracted &&
+    !isDebugGeo() &&
+    locationStatus !== LOCATION_STATUS.GRANTED
+
   if (assetStudio) {
-    return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
+    return (
+      <ErrorBoundary
+        fullScreen
+        title="Asset studio unavailable"
+        message="The creator studio could not load. Check the console and reload the page."
+      >
+        <Suspense fallback={<LoadingPanel label="Loading asset studio…" fullScreen />}>
+          <WaypointAssetStudio waypointId={assetStudioWaypointId} />
+        </Suspense>
+      </ErrorBoundary>
+    )
   }
 
   if (!hasInteracted) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-900 px-6 text-center">
-        {singleWaypointId ? (
-          <>
-            <p className="text-lg font-semibold text-stone-200">
-              Debug: {getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId}
-            </p>
-            <p className="max-w-sm text-sm text-stone-400">
-              Single-stop test mode. Add <span className="text-stone-300">?debugGeo=true</span> to
-              fake GPS at this landmark.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="text-xl font-semibold text-stone-100">{tour.title}</p>
-            <p className="text-base text-amber-300/90">{tour.subtitle ?? tourStopLabels}</p>
-            <p className="max-w-sm text-sm text-stone-400">
-              {tour.stopIds.length} stops · {tourStopLabels}
-            </p>
-          </>
-        )}
-        <button
-          type="button"
-          onClick={async () => {
-            await requestDeviceTiltPermission()
-            setHasInteracted(true)
-          }}
-          className="rounded-full bg-blue-600 px-8 py-4 text-xl font-bold text-white shadow-lg transition-transform hover:scale-105"
-        >
-          Start Immersive Tour
-        </button>
-      </div>
+      <TourHero
+        tour={tour}
+        singleWaypointId={singleWaypointId}
+        onStartTour={handleStartTour}
+      />
     )
   }
 
+  const discoveryVisible =
+    Boolean(discoveredWaypoint) && !activeWaypoint && !cardDismissed
+  const mapTabActive = activeTab === NAV_TABS.MAP
+
   return (
-    <div className="relative h-screen w-full">
-      <TourMap
-        tour={singleWaypointId ? null : tour}
-        stops={session.mapStops}
-        activeTargetId={session.targetStopId}
-        activeLeg={session.activeLeg}
-        transitLegActive={session.progress.transitLegActive}
-        geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
-        userPos={session.position}
-        state={session.state}
-        distance={session.distance}
-        tourTitle={singleWaypointId ? null : tour.title}
-      />
+    <div className="relative h-screen w-full bg-warm-white lg:pl-[5.5rem]">
+      <a
+        href="#main-tour-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[500] focus:rounded-xl focus:bg-warm-white focus:px-4 focus:py-2 focus:shadow-glass-lg"
+      >
+        Skip to tour content
+      </a>
+      <LiveAnnouncer message={liveAnnouncement} />
 
-      <TourHud
-        tour={singleWaypointId ? null : tour}
-        progress={session.progress}
-        targetStopId={session.targetStopId}
-        nextWaypoint={session.nextWaypoint}
-        transitLegActive={session.progress.transitLegActive}
-        state={session.state}
-        waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
-        onContinueTour={handleContinueTour}
-      />
+      <div
+        id="main-tour-content"
+        className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
+        aria-hidden={!mapTabActive}
+      >
+        <ErrorBoundary
+          key={mapRetryKey}
+          fullScreen
+          title="Map unavailable"
+          message="The walking map failed to load. Check your connection and Mapbox token, then try again."
+          onRetry={handleMapRetry}
+        >
+          <Suspense
+            fallback={
+              <LoadingPanel
+                label="Loading map…"
+                hint="Fetching Mapbox and tour route layers"
+                fullScreen
+              />
+            }
+          >
+            <TourMap
+              tour={singleWaypointId ? null : tour}
+              stops={session.mapStops}
+              activeTargetId={session.targetStopId}
+              activeLeg={session.activeLeg}
+              transitLegActive={session.progress.transitLegActive}
+              geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
+              userPos={session.position}
+              state={session.state}
+              distance={session.distance}
+              arrivalPulseActive={discoveryVisible}
+              debugMapEnabled={debugMapEnabled}
+            />
+          </Suspense>
+        </ErrorBoundary>
 
-      <WaypointCard
-        waypoint={activeWaypoint}
-        state={session.state}
-        onClose={() => {
-          setActiveWaypoint(null)
-          setCardDismissed(true)
-        }}
-      />
+        <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
+
+        <TourHud
+          tour={singleWaypointId ? null : tour}
+          currentStopId={session.targetStopId ?? singleWaypointId}
+          progress={session.progress}
+          targetStopId={session.targetStopId}
+          nextWaypoint={session.nextWaypoint}
+          transitLegActive={session.progress.transitLegActive}
+          state={session.state}
+          distance={session.distance}
+          locationStatus={locationStatus}
+          onRetryLocation={session.retryLocation}
+          waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
+          onContinueTour={handleContinueTour}
+          hasBottomNav
+        />
+
+        {showLocationNotice && mapTabActive ? (
+          <div className="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top)+5.5rem)] z-[42] px-4">
+            <div className="pointer-events-auto mx-auto max-w-md">
+              <LocationNotice
+                status={locationStatus}
+                onRetry={session.retryLocation}
+                compact={locationStatus === LOCATION_STATUS.WAITING}
+              />
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      {activeTab === NAV_TABS.TOUR ? (
+        <TourOverviewView
+          tour={singleWaypointId ? null : tour}
+          progress={session.progress}
+          targetStopId={session.targetStopId}
+          nextWaypoint={session.nextWaypoint}
+          state={session.state}
+          distance={session.distance}
+          transitLegActive={session.progress.transitLegActive}
+          onNavigate={setActiveTab}
+        />
+      ) : null}
+
+      {activeTab === NAV_TABS.STOPS ? (
+        <StopsView
+          tour={singleWaypointId ? null : tour}
+          mapStops={session.mapStops}
+          waypointsById={session.waypointsById}
+          onNavigate={setActiveTab}
+        />
+      ) : null}
+
+      {activeTab === NAV_TABS.SETTINGS ? (
+        <SettingsView
+          locationStatus={locationStatus}
+          journeyState={session.state}
+          distance={session.distance}
+          audioEnabled={audioEnabled}
+          onAudioEnabledChange={handleAudioEnabledChange}
+          debugMapEnabled={debugMapEnabled}
+          onDebugMapEnabledChange={handleDebugMapEnabledChange}
+          onRetryLocation={session.retryLocation}
+        />
+      ) : null}
+
+      <ErrorBoundary
+        title="Landmark card unavailable"
+        message="The arrival card could not load. Try reopening the stop from the map."
+      >
+        <Suspense fallback={null}>
+          <WaypointCard
+            waypoint={activeWaypoint}
+            state={session.state}
+            isFreshArrival={
+              Boolean(activeWaypoint) &&
+              Boolean(discoveredWaypoint) &&
+              activeWaypoint.id === discoveredWaypoint.id
+            }
+            onClose={() => {
+              setActiveWaypoint(null)
+              setCardDismissed(true)
+            }}
+          />
+        </Suspense>
+      </ErrorBoundary>
 
       {session.state === JOURNEY_STATE.ARRIVAL &&
         cardDismissed &&
         discoveredWaypoint &&
-        !activeWaypoint && (
-          <button
-            type="button"
+        !activeWaypoint &&
+        mapTabActive && (
+          <Button
+            size="pill"
+            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg lg:left-[calc(50%+2.75rem)]"
+            style={{ bottom: 'max(14rem, calc(env(safe-area-inset-bottom) + 12rem))' }}
             onClick={() => {
               setCardDismissed(false)
               setActiveWaypoint(discoveredWaypoint)
             }}
-            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 rounded-full bg-amber-500 px-6 py-3.5 text-sm font-bold text-gray-900 shadow-[0_8px_30px_rgba(0,0,0,0.45)] transition hover:bg-amber-400"
-            style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
           >
             Reopen {discoveredWaypoint.title}
-          </button>
+          </Button>
         )}
+
+      <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
     </div>
   )
 }

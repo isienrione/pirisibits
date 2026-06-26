@@ -3,6 +3,7 @@ import {
   getDebugStopId,
   getSingleWaypointId,
   getTourId,
+  isDebugMap,
   shouldResetTour,
 } from '../env'
 
@@ -37,5 +38,21 @@ describe('env URL params', () => {
     setSearch('/?resetTour=true&debugStop=pantheon')
     expect(shouldResetTour()).toBe(true)
     expect(getDebugStopId()).toBe('pantheon')
+  })
+
+  it('enables map debug overlays via debugMap or debug params', () => {
+    setSearch('/?debugMap=true')
+    expect(isDebugMap()).toBe(true)
+
+    setSearch('/?debug=true')
+    expect(isDebugMap()).toBe(true)
+
+    setSearch('/')
+    expect(isDebugMap()).toBe(false)
+  })
+
+  it('enables map debug overlays while debugGeo is active', () => {
+    setSearch('/?debugGeo=true')
+    expect(isDebugMap()).toBe(true)
   })
 })

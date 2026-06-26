@@ -3,18 +3,13 @@
   "name": "ChronoWalk: Immersive Rome",
   "icons": [
     {
-      "src": "/logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#000000"
+  "theme_color": "#FFFDF8",
+  "background_color": "#FFFDF8"
 }

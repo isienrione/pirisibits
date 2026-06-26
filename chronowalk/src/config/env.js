@@ -68,6 +68,24 @@ export const isDebugMedia = () => {
   return parseBooleanEnv(param)
 }
 
+/**
+ * Map debug overlays (GPS state, geofence, journey labels).
+ * Enabled via ?debugMap=true, ?debug=true, VITE_DEBUG_MAP, or while ?debugGeo=true.
+ */
+export const isDebugMap = () => {
+  if (isDebugGeo()) return true
+
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search)
+    const debugMap = params.get('debugMap')
+    if (debugMap !== null) return parseBooleanEnv(debugMap)
+    const debug = params.get('debug')
+    if (debug !== null) return parseBooleanEnv(debug)
+  }
+
+  return parseBooleanEnv(import.meta.env.VITE_DEBUG_MAP)
+}
+
 /** @deprecated Use getSingleWaypointId or getTourId */
 export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 

@@ -1,21 +1,122 @@
-import { JOURNEY_STATE } from '../hooks/useGeoLocation'
+import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
+import { getWaypointGeo } from '../data/waypointGeo'
+import { Button, GlassPanel, cn, ctaInCard } from './ui'
+
+function formatDistance(distance) {
+  if (distance == null || Number.isNaN(distance)) return null
+  const meters = Math.round(distance)
+  if (meters < 1000) return `${meters} m`
+  return `${(meters / 1000).toFixed(1)} km`
+}
+
+function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) {
+  const completed = Math.max(0, currentStop - 1)
+
+  return (
+    <GlassPanel className="pointer-events-auto px-4 py-3.5 shadow-glass-lg">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
+          <p className="mt-1 truncate font-display text-lg font-semibold leading-tight text-deep-slate">
+            {currentStopTitle}
+          </p>
+          <p className="mt-1 text-xs text-soft-slate">
+            {completed} of {totalStops} stops visited
+          </p>
+        </div>
+        <div className="shrink-0 text-right">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+            Progress
+          </p>
+          <p className="font-display text-xl font-semibold tabular-nums text-deep-slate">
+            <span className="text-gold">{currentStop}</span>
+            <span className="text-soft-slate/60"> / </span>
+            <span>{totalStops}</span>
+          </p>
+        </div>
+      </div>
+    </GlassPanel>
+  )
+}
+
+function MapHudRouteCard({
+  headline,
+  subline,
+  statusLabel,
+  statusTone = 'default',
+  distanceLabel,
+  action,
+}) {
+  const statusClass =
+    statusTone === 'arrived'
+      ? 'bg-olive/15 text-olive'
+      : statusTone === 'walking'
+        ? 'bg-gold/15 text-gold'
+        : 'bg-sand/80 text-soft-slate'
+
+  return (
+    <GlassPanel className="pointer-events-auto p-4 shadow-glass-lg">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <p className="text-eyebrow uppercase text-soft-slate">{headline}</p>
+          <p className="mt-1 font-display text-xl font-semibold leading-tight text-deep-slate">
+            {subline}
+          </p>
+          {statusLabel ? (
+            <p
+              className={cn(
+                'mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                statusClass
+              )}
+            >
+              {statusLabel}
+            </p>
+          ) : null}
+        </div>
+        {distanceLabel ? (
+          <div className="shrink-0 rounded-2xl border border-limestone/70 bg-sand/50 px-3 py-2 text-center">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-soft-slate">
+              Distance
+            </p>
+            <p className="mt-0.5 text-sm font-bold tabular-nums text-deep-slate">{distanceLabel}</p>
+          </div>
+        ) : null}
+      </div>
+
+      {action ? <div className="mt-4">{action}</div> : null}
+    </GlassPanel>
+  )
+}
 
 const TourHud = ({
   tour,
+  currentStopId,
   progress,
   targetStopId,
   nextWaypoint,
   transitLegActive,
   state,
+  distance,
+  locationStatus,
   waypointExploreActive,
   onContinueTour,
+  hasBottomNav = false,
 }) => {
-  if (!tour || !nextWaypoint) return null
+  const isTourMode = Boolean(tour?.stopIds?.length)
+  const currentStopTitle =
+    getWaypointGeo(currentStopId ?? targetStopId)?.title ?? 'Current stop'
 
-  const currentIndex = progress.targetStopIndex
-  const totalStops = tour.stopIds.length
+  if (!isTourMode && !currentStopId) return null
+
+  const totalStops = tour?.stopIds?.length ?? 1
+  const currentStopNumber = isTourMode
+    ? Math.min(progress.targetStopIndex + 1, totalStops)
+    : 1
+  const tourTitle = tour?.title ?? 'ChronoWalk'
+
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const showContinue =
+    isTourMode &&
     atStop &&
     targetStopId &&
     progress.arrivedStopIds.includes(targetStopId) &&
@@ -23,40 +124,83 @@ const TourHud = ({
     !transitLegActive &&
     !waypointExploreActive
 
-  if (!showContinue && !transitLegActive) return null
+  const distanceLabel = formatDistance(distance)
+  const hideRouteCard = waypointExploreActive
+
+  let routeHeadline = 'Next destination'
+  let routeSubline = nextWaypoint?.title ?? currentStopTitle
+  let statusLabel = null
+  let statusTone = 'default'
+
+  if (transitLegActive) {
+    routeHeadline = 'Walking to'
+    routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
+    statusLabel = 'Follow the gold path'
+    statusTone = 'walking'
+  } else if (atStop) {
+    routeHeadline = 'You have arrived'
+    routeSubline = currentStopTitle
+    statusLabel = 'Explore the landmark to continue'
+    statusTone = 'arrived'
+  } else {
+    routeHeadline = 'Heading to'
+    routeSubline = currentStopTitle
+    if (locationStatus === LOCATION_STATUS.DENIED) {
+      statusLabel = 'Location access needed'
+    } else if (locationStatus === LOCATION_STATUS.UNAVAILABLE) {
+      statusLabel = 'GPS unavailable'
+    } else if (locationStatus === LOCATION_STATUS.WAITING) {
+      statusLabel = 'Locating you…'
+    } else {
+      statusLabel = distanceLabel ? 'Walking' : 'Locating you…'
+    }
+    statusTone = 'walking'
+  }
 
   return (
-    <div
-      className="pointer-events-none fixed left-1/2 z-40 w-[min(92vw,24rem)] -translate-x-1/2"
-      style={{ bottom: 'max(6.5rem, calc(env(safe-area-inset-bottom) + 5rem))' }}
-    >
-      <div className="pointer-events-auto rounded-2xl border border-amber-400/30 bg-stone-950/90 p-4 shadow-xl backdrop-blur-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-400">
-          {tour.title}
-        </p>
-        <p className="mt-1 text-sm text-stone-300">
-          Stop {Math.min(currentIndex + 1, totalStops)} of {totalStops}
-          {transitLegActive ? ' · en route' : ' · arrived'}
-        </p>
-
-        {showContinue ? (
-          <button
-            type="button"
-            onClick={onContinueTour}
-            className="mt-3 w-full rounded-xl bg-amber-500 py-3 text-sm font-bold text-gray-900 transition hover:bg-amber-400"
-          >
-            Walk to {nextWaypoint.title}
-          </button>
-        ) : null}
-
-        {transitLegActive ? (
-          <p className="mt-2 text-xs leading-relaxed text-stone-400">
-            Follow the gold route — transit narration is playing. Arrival unlocks when you reach{' '}
-            {nextWaypoint?.title ?? 'the next stop'}.
-          </p>
-        ) : null}
+    <>
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-40 px-4 pt-safe"
+        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
+      >
+        <div className="mx-auto w-full max-w-md">
+          <MapHudTopBar
+            tourTitle={tourTitle}
+            currentStopTitle={currentStopTitle}
+            currentStop={currentStopNumber}
+            totalStops={totalStops}
+          />
+        </div>
       </div>
-    </div>
+
+      {!hideRouteCard ? (
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-safe lg:pb-safe"
+          style={{ paddingBottom: hasBottomNav ? 'max(5.5rem, env(safe-area-inset-bottom))' : undefined }}
+        >
+          <div className="mx-auto w-full max-w-md">
+            <MapHudRouteCard
+              headline={routeHeadline}
+              subline={routeSubline}
+              statusLabel={statusLabel}
+              statusTone={statusTone}
+              distanceLabel={!atStop ? distanceLabel : null}
+              action={
+                showContinue ? (
+                  <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
+                    Walk to {nextWaypoint.title}
+                  </Button>
+                ) : transitLegActive ? (
+                  <p className="text-xs leading-relaxed text-soft-slate">
+                    Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
+                  </p>
+                ) : null
+              }
+            />
+          </div>
+        </div>
+      ) : null}
+    </>
   )
 }
 

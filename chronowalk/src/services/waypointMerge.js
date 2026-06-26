@@ -24,6 +24,7 @@ const COPY_KEYS = [
   'immersive_orientation_hint',
   'arrival_headline',
   'arrival_subtitle',
+  'arrival_transcript',
   'slider_poster_at_sec',
   'slider_poster_hold_ms',
   'slider_post_animation_loop_ms',

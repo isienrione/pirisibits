@@ -5,9 +5,19 @@ import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
-import { env, isDebugGeo, isMapboxConfigured } from '../config/env'
+import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
+import { useReducedMotion } from '../hooks/useReducedMotion'
+import { Button, LoadingPanel } from './ui'
 
 const mapboxToken = env.mapboxToken
+
+const MAP_COLORS = {
+  completed: '#7A8B5A',
+  current: '#D9A441',
+  pending: '#51606F',
+  tourRoute: '#7CB7D8',
+  activeLeg: '#D9A441',
+}
 
 const createLandmarkMarkerElement = (title, status) => {
   const el = document.createElement('div')
@@ -15,14 +25,14 @@ const createLandmarkMarkerElement = (title, status) => {
 
   const dotClass =
     status === 'completed'
-      ? 'bg-emerald-400'
+      ? 'bg-olive'
       : status === 'current'
-        ? 'bg-yellow-400 ring-2 ring-amber-200'
-        : 'bg-stone-400 opacity-80'
+        ? 'bg-gold ring-2 ring-sand'
+        : 'bg-soft-slate opacity-80'
 
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white ${dotClass} shadow-lg"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-black/70 px-2 py-0.5 text-center text-xs font-semibold text-yellow-300">${title}</span>
+    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-lg"></div>
+    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-deep-slate/80 px-2 py-0.5 text-center text-xs font-semibold text-gold">${title}</span>
   `
   return el
 }
@@ -31,7 +41,7 @@ const createUserMarkerElement = () => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
   el.innerHTML = `
-    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-white bg-blue-500 text-xs font-bold text-white shadow-lg">You</div>
+    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warm-white shadow-lg">You</div>
   `
   return el
 }
@@ -50,6 +60,73 @@ const stopsToFeatureCollection = (stops) => ({
     .filter(Boolean),
 })
 
+function MapArrivalPulse({ point, active }) {
+  const reducedMotion = useReducedMotion()
+
+  if (!active || !point) return null
+
+  return (
+    <div
+      className="pointer-events-none absolute z-20"
+      style={{ left: point.x, top: point.y }}
+      aria-hidden="true"
+    >
+      <div
+        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
+          reducedMotion ? '' : 'animate-arrival-map-pulse'
+        }`}
+      />
+      <div
+        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
+          reducedMotion ? '' : 'animate-arrival-map-pulse'
+        }`}
+        style={{ animationDelay: '0.35s' }}
+      />
+    </div>
+  )
+}
+
+function MapDebugOverlay({
+  debugGeo,
+  activeTitle,
+  transitLegActive,
+  activeLeg,
+  stops,
+  state,
+  distance,
+  geofenceThresholdM,
+}) {
+  return (
+    <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,20rem)] space-y-2">
+      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-gold shadow">
+        Debug map
+      </div>
+      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warm-white shadow">
+        GPS: {debugGeo ? `simulated at ${activeTitle}` : 'live device location'}
+      </div>
+      {transitLegActive && activeLeg ? (
+        <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+          Leg: {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
+          {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
+        </div>
+      ) : null}
+      {state ? (
+        <div
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warm-white shadow ${
+            state === JOURNEY_STATE.ARRIVAL ? 'bg-olive/95' : 'bg-soft-slate/95'
+          }`}
+        >
+          Journey: {state}
+          {distance != null ? ` (${Math.round(distance)} m)` : ''}
+        </div>
+      ) : null}
+      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+        Arrival geofence: {geofenceThresholdM} m
+      </div>
+    </div>
+  )
+}
+
 const TourMap = ({
   tour,
   stops = [],
@@ -60,30 +137,47 @@ const TourMap = ({
   userPos,
   state,
   distance,
-  tourTitle,
+  arrivalPulseActive = false,
+  debugMapEnabled = false,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [mapError, setMapError] = useState(null)
+  const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
+  const showDebugOverlay = debugMapEnabled || isDebugMap()
 
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
 
+    setMapError(null)
+
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
 
     mapboxgl.accessToken = mapboxToken
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
-      center: [center.lng, center.lat],
-      zoom: tour?.mapZoom ?? 14,
+    try {
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [center.lng, center.lat],
+        zoom: tour?.mapZoom ?? 14,
+      })
+    } catch (error) {
+      console.error('Mapbox initialization failed:', error)
+      setMapError('Could not initialize the map. Verify your Mapbox token and try again.')
+      return undefined
+    }
+
+    map.current.on('error', (event) => {
+      console.error('Mapbox runtime error:', event?.error ?? event)
+      setMapError('Map tiles failed to load. Check your connection or Mapbox token.')
     })
 
     map.current.on('load', () => {
@@ -101,10 +195,10 @@ const TourMap = ({
             'match',
             ['get', 'status'],
             'completed',
-            '#34d399',
+            MAP_COLORS.completed,
             'current',
-            '#FFD700',
-            '#9ca3af',
+            MAP_COLORS.current,
+            MAP_COLORS.pending,
           ],
           'fill-opacity': 0.14,
         },
@@ -119,10 +213,10 @@ const TourMap = ({
             'match',
             ['get', 'status'],
             'completed',
-            '#34d399',
+            MAP_COLORS.completed,
             'current',
-            '#FFD700',
-            '#9ca3af',
+            MAP_COLORS.current,
+            MAP_COLORS.pending,
           ],
           'line-width': 2,
           'line-opacity': 0.65,
@@ -139,7 +233,7 @@ const TourMap = ({
         type: 'line',
         source: 'tour-route',
         paint: {
-          'line-color': '#a78bfa',
+          'line-color': MAP_COLORS.tourRoute,
           'line-width': 4,
           'line-opacity': 0.45,
         },
@@ -155,7 +249,7 @@ const TourMap = ({
         type: 'line',
         source: 'active-leg-route',
         paint: {
-          'line-color': '#fbbf24',
+          'line-color': MAP_COLORS.activeLeg,
           'line-width': 5,
           'line-opacity': 0.9,
         },
@@ -176,6 +270,7 @@ const TourMap = ({
 
     return () => {
       setMapLoaded(false)
+      setMapError(null)
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
@@ -272,13 +367,55 @@ const TourMap = ({
     }
   }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
 
+  useEffect(() => {
+    const landmark = activeTarget?.landmark
+    if (!arrivalPulseActive || !landmark || !map.current || !mapLoaded) {
+      setPulsePoint(null)
+      return undefined
+    }
+
+    const updatePulse = () => {
+      const projected = map.current.project([landmark.lng, landmark.lat])
+      setPulsePoint({ x: projected.x, y: projected.y })
+    }
+
+    updatePulse()
+    map.current.on('move', updatePulse)
+    map.current.on('zoom', updatePulse)
+    map.current.on('resize', updatePulse)
+
+    return () => {
+      map.current?.off('move', updatePulse)
+      map.current?.off('zoom', updatePulse)
+      map.current?.off('resize', updatePulse)
+    }
+  }, [arrivalPulseActive, activeTarget?.landmark, mapLoaded])
+
   if (!isMapboxConfigured()) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-gray-900 p-6 text-center text-white">
-        <p>
-          Missing <code className="rounded bg-gray-800 px-2 py-1">VITE_MAPBOX_TOKEN</code>.
-          Add it to <code className="rounded bg-gray-800 px-1">chronowalk/.env</code>.
-        </p>
+      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
+        <div className="max-w-md">
+          <p className="font-display text-xl font-semibold">Mapbox token required</p>
+          <p className="mt-2 text-sm text-soft-slate">
+            Add <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code> to{' '}
+            <code className="rounded bg-sand px-1">chronowalk/.env</code> and restart the dev
+            server.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (mapError) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
+        <div className="max-w-md rounded-3xl border border-limestone/70 bg-warm-white p-6 shadow-glass">
+          <p className="font-display text-xl font-semibold">Map unavailable</p>
+          <p className="mt-2 text-sm text-soft-slate">{mapError}</p>
+          <Button className="mt-5 rounded-2xl" onClick={() => window.location.reload()}>
+            Reload app
+          </Button>
+        </div>
       </div>
     )
   }
@@ -288,42 +425,29 @@ const TourMap = ({
   return (
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
-      <div className="absolute left-3 top-3 space-y-2">
-        {tourTitle ? (
-          <div className="rounded bg-black/85 px-3 py-1 text-xs font-semibold text-amber-200 shadow">
-            {tourTitle}
-          </div>
-        ) : null}
-        {debugGeo ? (
-          <div className="rounded bg-blue-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: at {activeTitle}
-          </div>
-        ) : (
-          <div className="rounded bg-amber-600 px-3 py-1 text-sm text-white shadow">
-            Debug GPS: off (using real location)
-          </div>
-        )}
-        {transitLegActive && activeLeg ? (
-          <div className="rounded bg-violet-700 px-3 py-1 text-sm text-white shadow">
-            Walking:{' '}
-            {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
-            {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
-          </div>
-        ) : null}
-        {state && (
-          <div
-            className={`rounded px-3 py-1 text-sm font-semibold text-white shadow ${
-              state === JOURNEY_STATE.ARRIVAL ? 'bg-green-600' : 'bg-gray-600'
-            }`}
-          >
-            Journey: {state}
-            {distance != null && ` (${Math.round(distance)}m)`}
-          </div>
-        )}
-        <div className="rounded bg-black/80 px-3 py-1 text-xs text-white shadow">
-          Arrival geofence: {geofenceThresholdM}m
+      {!mapLoaded ? (
+        <div className="absolute inset-0 z-10">
+          <LoadingPanel
+            label="Preparing your map…"
+            hint="Drawing landmarks, routes, and walking paths"
+            fullScreen
+            className="bg-warm-white/90 backdrop-blur-sm"
+          />
         </div>
-      </div>
+      ) : null}
+      <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
+      {showDebugOverlay ? (
+        <MapDebugOverlay
+          debugGeo={debugGeo}
+          activeTitle={activeTitle}
+          transitLegActive={transitLegActive}
+          activeLeg={activeLeg}
+          stops={stops}
+          state={state}
+          distance={distance}
+          geofenceThresholdM={geofenceThresholdM}
+        />
+      ) : null}
     </div>
   )
 }

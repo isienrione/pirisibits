@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-import BeforeAfterSlider from './BeforeAfterSlider';
+import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
+import ErrorBoundary from './ErrorBoundary';
+import { BottomSheet, Button, LoadingPanel, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 import {
@@ -19,20 +21,178 @@ import {
 } from '../utils/sliderMedia';
 import { isDebugMedia } from '../config/env';
 
-const WaypointCard = ({ waypoint, state, onClose }) => {
+const BeforeAfterSlider = lazy(() => import('./BeforeAfterSlider'));
+
+const useMediaHeroState = (url) => {
+  const [status, setStatus] = useState(url ? 'loading' : 'empty');
+
+  useEffect(() => {
+    if (!url) {
+      setStatus('empty');
+      return undefined;
+    }
+
+    let cancelled = false;
+    setStatus('loading');
+
+    const image = new Image();
+    image.onload = () => {
+      if (!cancelled) setStatus('ready');
+    };
+    image.onerror = () => {
+      if (!cancelled) setStatus('error');
+    };
+    image.referrerPolicy = 'no-referrer';
+    image.src = url;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [url]);
+
+  return status;
+};
+
+function WaypointMediaHero({ previewUrl, status, landmarkTitle, reducedMotion }) {
+  return (
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
+      {status === 'ready' && previewUrl ? (
+        <>
+          <img
+            src={previewUrl}
+            alt=""
+            className="h-full w-full object-cover object-center"
+            referrerPolicy="no-referrer"
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
+            aria-hidden="true"
+          />
+        </>
+      ) : (
+        <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+          {status === 'loading' ? (
+            <>
+              <div
+                className={cn(
+                  'mb-4 h-10 w-10 rounded-full bg-gold/30',
+                  !reducedMotion && 'animate-pulse'
+                )}
+                aria-hidden="true"
+              />
+              <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
+            </>
+          ) : status === 'error' ? (
+            <>
+              <p className="font-display text-lg font-semibold text-deep-slate">
+                Preview unavailable
+              </p>
+              <p className="mt-2 max-w-xs text-sm text-soft-slate">
+                We couldn&apos;t load the modern view for {landmarkTitle}. You can still start the
+                audio story below.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-display text-lg font-semibold text-deep-slate">View coming soon</p>
+              <p className="mt-2 max-w-xs text-sm text-soft-slate">
+                The visual reconstruction for {landmarkTitle} is being prepared. The audio story is
+                ready when you are.
+              </p>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AudioTranscriptSection({ waypoint }) {
+  const transcript =
+    waypoint?.arrival_transcript ||
+    waypoint?.arrival_subtitle ||
+    'Full captions and transcript will appear here as audio stories are published for this landmark.';
+
+  return (
+    <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
+      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+        Captions &amp; transcript
+      </summary>
+      <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
+      {!waypoint?.arrival_transcript ? (
+        <p className="mt-2 text-xs text-soft-slate/80">
+          Placeholder — timed captions will sync with narration in a future update.
+        </p>
+      ) : null}
+    </details>
+  );
+}
+
+function WaypointCardBody({
+  titleId,
+  eyebrow,
+  title,
+  hook,
+  orientationHint,
+  titleHighlight = false,
+  reducedMotion = false,
+  children,
+  className,
+}) {
+  return (
+    <div className={cn('px-6', className)}>
+      <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
+      <h2
+        id={titleId}
+        className={cn(
+          'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
+          titleHighlight && !reducedMotion && 'animate-arrival-title'
+        )}
+      >
+        {title}
+      </h2>
+      {hook ? (
+        <p className="mt-3 text-base leading-relaxed text-soft-slate">{hook}</p>
+      ) : null}
+      {orientationHint ? (
+        <p className="mt-4 rounded-2xl border border-limestone/70 bg-sand/50 px-4 py-3 text-sm leading-relaxed text-soft-slate">
+          {orientationHint}
+        </p>
+      ) : null}
+      {children}
+    </div>
+  );
+}
+
+const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
+  const titleId = useId();
+  const reducedMotion = useReducedMotion();
   const [showSlider, setShowSlider] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [alignmentMode, setAlignmentMode] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [mediaError, setMediaError] = useState(null);
   const [calibration, setCalibration] = useState(() => loadCalibration(waypoint?.id));
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
-  const { isArrivalAudioPlaying, hasArrivalAudioSession } = useAudioPlaybackState();
+  const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio } =
+    useAudioPlaybackState();
+
+  const modernSliderUrl = waypoint ? getModernSliderUrl(waypoint) : null;
+  const ancientSliderUrl = waypoint ? getAncientSliderUrl(waypoint) : null;
+  const heroPreviewUrl =
+    (waypoint && (getModernPosterUrl(waypoint) || getModernSliderUrl(waypoint))) ?? null;
+  const heroStatus = useMediaHeroState(heroPreviewUrl);
+  const hasModernMedia = waypoint ? hasModernSliderMedia(waypoint) : false;
+  const debugMedia = isDebugMedia();
 
   useEffect(() => {
     setShowSlider(false);
     setTiltEnabled(false);
     setAlignmentMode(false);
+    setAdvancedOpen(false);
+    setMediaError(null);
     setCalibration(loadCalibration(waypoint?.id));
     setEntered(false);
     syncGenerationRef.current = 0;
@@ -57,44 +217,42 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
 
   useEffect(() => {
     if (showSlider) {
-      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      sliderRef.current?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'nearest',
+      });
     }
-  }, [showSlider]);
+  }, [showSlider, reducedMotion]);
 
   useEffect(() => {
     if (!alignmentMode) return undefined;
 
     const timer = window.setTimeout(() => {
-      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      sliderRef.current?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
     }, 120);
 
     return () => window.clearTimeout(timer);
-  }, [alignmentMode]);
+  }, [alignmentMode, reducedMotion]);
 
   if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
-  const headline = waypoint.arrival_headline || `You've reached ${waypoint.title}!`;
-  const subtitle =
-    waypoint.arrival_subtitle || 'Prepare to step back in time and explore this landmark.';
-
-  const handleToggleAudio = async () => {
-    if (isArrivalAudioPlaying) {
-      audioOrchestrator.pauseArrival();
-      return;
-    }
-
-    if (hasArrivalAudioSession) {
-      const resumed = await audioOrchestrator.resumeArrival();
-      if (resumed) return;
-    }
-
-    await handlePlayAudio();
-  };
+  const landmarkTitle = waypoint.title;
+  const narrativeHook =
+    waypoint.arrival_subtitle || 'A new chapter of the city opens beneath your feet.';
+  const orientationHint =
+    !showSlider && !alignmentMode
+      ? waypoint.immersive_orientation_hint ||
+        'Stand facing the landmark facade for the most immersive reveal.'
+      : null;
 
   const handlePlayAudio = async () => {
+    setMediaError(null);
+
     if (!waypoint.arrival_immersive_url) {
-      console.warn('waypoint.arrival_immersive_url is missing — check Supabase or local seed data.');
-      alert('Arrival audio URL is not set for this waypoint yet.');
+      setMediaError('Arrival audio is not available for this landmark yet.');
       return;
     }
 
@@ -110,17 +268,20 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
       );
     } catch (err) {
       console.error('Failed to play audio guide:', err);
+      setMediaError('Could not start audio. Tap again or check your connection.');
     }
   };
 
   const startImmersive = async () => {
+    setMediaError(null);
+
     if (!waypoint.arrival_immersive_url) {
-      console.error('CRITICAL: Waypoint audio URL is missing from database!');
+      setMediaError('Arrival audio is not available for this landmark yet.');
       return;
     }
 
     if (!hasModernSliderMedia(waypoint)) {
-      alert('Modern view media is missing for this waypoint.');
+      setMediaError('Modern view media is missing for this waypoint.');
       return;
     }
 
@@ -140,159 +301,230 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
 
   const handleLockAlignment = () => {
     if (!waypoint?.id) return;
-
     saveCalibration(waypoint.id, calibration);
     setAlignmentMode(false);
   };
 
   const handleResetAlignment = () => {
     if (!waypoint?.id) return;
-
     const defaults = resetCalibration(waypoint.id);
     setCalibration(defaults);
   };
 
-  const showAudioToggle = Boolean(waypoint.arrival_immersive_url);
-  const audioToggleLabel = isArrivalAudioPlaying ? 'Pause audio' : 'Play audio';
-  const audioToggleIcon = isArrivalAudioPlaying ? '❚❚' : '▶';
-  const debugMedia = isDebugMedia();
-  const modernSliderUrl = getModernSliderUrl(waypoint);
-  const ancientSliderUrl = getAncientSliderUrl(waypoint);
+  const audioButtonLabel = isArrivalAudioPlaying
+    ? 'Pause audio story'
+    : needsResumeAudio || hasArrivalAudioSession
+      ? 'Resume audio story'
+      : 'Start audio story';
+
+  const handleAudioAction = async () => {
+    if (isArrivalAudioPlaying) {
+      audioOrchestrator.pauseArrival();
+      return;
+    }
+    if (needsResumeAudio || hasArrivalAudioSession) {
+      const resumed = await audioOrchestrator.resumeArrival();
+      if (resumed) return;
+    }
+    await handlePlayAudio();
+  };
+
+  const showAudioControl = Boolean(waypoint.arrival_immersive_url) && !alignmentMode;
+
+  const eyebrow = alignmentMode
+    ? 'Fine-tuning view'
+    : showSlider
+      ? 'Then & now'
+      : isFreshArrival
+        ? 'Waypoint discovered'
+        : "You've arrived";
+
+  const advancedSection = (
+    <details
+      className="mt-6 border-t border-limestone/60 pt-4"
+      open={advancedOpen}
+      onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
+    >
+      <summary className="cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate">
+        Advanced
+      </summary>
+      <div className="mt-4 space-y-3">
+        {showSlider ? (
+          <>
+            <Button
+              variant="ghost"
+              fullWidth
+              className="rounded-2xl"
+              onClick={() => {
+                setAlignmentMode((current) => !current);
+                if (!advancedOpen) setAdvancedOpen(true);
+              }}
+            >
+              {alignmentMode ? 'Exit ghost alignment' : 'Align ghost overlay'}
+            </Button>
+            {alignmentMode ? (
+              <CalibrationOverlay
+                calibration={calibration}
+                onChange={setCalibration}
+                onLock={handleLockAlignment}
+                onReset={handleResetAlignment}
+              />
+            ) : null}
+            {!alignmentMode ? (
+              <Button
+                variant="text"
+                fullWidth
+                onClick={() => setShowSlider(false)}
+              >
+                Hide comparison
+              </Button>
+            ) : null}
+          </>
+        ) : hasModernMedia ? (
+          <Button
+            variant="ghost"
+            fullWidth
+            className="rounded-2xl"
+            onClick={() => setShowSlider(true)}
+          >
+            Open comparison preview
+          </Button>
+        ) : null}
+
+        {debugMedia ? (
+          <div className="rounded-2xl border border-limestone bg-deep-slate/5 p-3 text-left font-mono text-[10px] leading-relaxed text-soft-slate">
+            <p className="font-semibold text-terracotta">Media diagnostics</p>
+            <p>modern: {modernSliderUrl}</p>
+            <p>ancient: {ancientSliderUrl}</p>
+          </div>
+        ) : null}
+      </div>
+    </details>
+  );
 
   return (
-    <div
-      className={`absolute bottom-0 left-0 z-50 w-full transform transition-transform duration-500 ease-out ${
-        entered ? 'translate-y-0' : 'translate-y-full'
-      }`}
+    <BottomSheet
+      open={entered}
+      flush
+      cinematic
+      onHandleClick={onClose}
+      onEscape={onClose}
+      handleLabel="Minimize landmark card"
+      ariaLabelledBy={titleId}
     >
-      <div className="mx-auto flex max-h-[min(88dvh,88vh)] flex-col rounded-t-[2rem] border border-amber-200/30 bg-gradient-to-b from-gray-900 via-gray-900 to-stone-900 shadow-[0_-12px_40px_rgba(0,0,0,0.45)]">
-        <div className="flex shrink-0 items-center justify-between px-5 pt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="mx-auto h-1.5 w-14 rounded-full bg-amber-300/40"
-            aria-label="Minimize waypoint card"
-          />
-        </div>
-
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-2">
-          {!alignmentMode ? (
-            <div className="mb-6 text-center">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-400">
-                Waypoint discovered
-              </p>
-              <h2 className="font-serif text-3xl font-bold leading-tight text-amber-50">
-                {headline}
-              </h2>
-              <p className="mt-3 text-sm leading-relaxed text-stone-300">{subtitle}</p>
-            </div>
-          ) : (
-            <div className="mb-4 text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
-                Ghost alignment
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-stone-300">
-                Line up the semi-transparent ancient layer over the modern facade.
-              </p>
-            </div>
-          )}
-
-          {showSlider ? (
-            <div ref={sliderRef} className="mb-4">
-              <BeforeAfterSlider
-                key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
-                modernImg={modernSliderUrl}
-                historicImg={ancientSliderUrl}
-                depthMap={waypoint.depth_map_url}
-                tiltEnabled={tiltEnabled}
-                posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
-                postAnimationLoopMs={
-                  waypoint.slider_post_animation_loop_ms ?? waypoint.slider_poster_hold_ms
-                }
-                modernPosterUrl={getModernPosterUrl(waypoint)}
-                ancientPosterUrl={getAncientPosterUrl(waypoint)}
-                calibration={calibration}
-                alignmentMode={alignmentMode}
-              />
-              {alignmentMode ? (
-                <CalibrationOverlay
-                  calibration={calibration}
-                  onChange={setCalibration}
-                  onLock={handleLockAlignment}
-                  onReset={handleResetAlignment}
-                />
-              ) : null}
-              <button
-                type="button"
-                onClick={() => setAlignmentMode((current) => !current)}
-                className="mt-4 w-full rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-100 transition hover:bg-amber-400/20"
-              >
-                {alignmentMode ? 'Exit alignment mode' : 'Align ghost overlay'}
-              </button>
-              {!alignmentMode ? (
-                <button
-                  type="button"
-                  onClick={() => setShowSlider(false)}
-                  className="mt-4 w-full text-sm font-medium text-amber-300 hover:text-amber-200"
-                >
-                  Hide visual slider
-                </button>
-              ) : null}
-            </div>
-          ) : (
-            <>
-              <div className="mb-4 rounded-xl border border-amber-400/25 bg-amber-400/5 px-4 py-3 text-center">
-                <p className="text-xs font-semibold uppercase tracking-wide text-amber-300">
-                  Before you begin
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-stone-300">
-                  {waypoint.immersive_orientation_hint ||
-                    'Stand facing the landmark facade, then begin the immersive view for the best reveal.'}
-                </p>
-              </div>
-              <div className="flex flex-col gap-3">
-                <button
-                  type="button"
-                  onClick={startImmersive}
-                  className="w-full rounded-xl bg-amber-500 py-4 text-base font-bold text-gray-900 shadow-lg shadow-amber-900/30 transition hover:bg-amber-400"
-                >
-                  Begin Immersive View
-                </button>
-                <button
-                  type="button"
-                  onClick={handlePlayAudio}
-                  className="w-full rounded-xl border border-stone-600 bg-stone-800/50 py-3 text-sm font-medium text-stone-300 transition hover:border-amber-400/40 hover:text-amber-100"
-                >
-                  Play audio guide only
-                </button>
-              </div>
-            </>
-          )}
-
-          {showAudioToggle && !alignmentMode ? (
-            <button
-              type="button"
-              onClick={handleToggleAudio}
-              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-stone-600 bg-stone-800/80 px-4 py-3 text-sm font-medium text-stone-200 transition hover:border-amber-500/50 hover:text-amber-100"
+      {showSlider ? (
+        <div ref={sliderRef} className="mb-5">
+          <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
+            <ErrorBoundary
+              title="Comparison view unavailable"
+              message="The then-and-now slider could not load. You can still listen to the audio story below."
             >
-              <span aria-hidden="true">{audioToggleIcon}</span>
-              {audioToggleLabel}
-            </button>
-          ) : null}
-
-          {debugMedia ? (
-            <div className="mt-4 rounded-lg border border-stone-700 bg-stone-950/80 p-3 text-left font-mono text-[10px] leading-relaxed text-stone-400">
-              <p className="font-semibold text-amber-300">debugMedia</p>
-              <p>modern: {modernSliderUrl}</p>
-              <p>ancient: {ancientSliderUrl}</p>
-              <p className="mt-2 text-stone-500">
-                Open modern URL in a new tab — if it shows Pantheon, the file on disk or CDN is wrong.
-              </p>
-            </div>
-          ) : null}
+              <Suspense
+                fallback={
+                  <LoadingPanel
+                    label="Loading comparison…"
+                    hint="Preparing matched modern and ancient views"
+                    className="min-h-[14rem] rounded-b-3xl"
+                  />
+                }
+              >
+                <BeforeAfterSlider
+                  key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
+                  modernImg={modernSliderUrl}
+                  historicImg={ancientSliderUrl}
+                  depthMap={waypoint.depth_map_url}
+                  tiltEnabled={tiltEnabled}
+                  posterAtSec={waypoint.slider_poster_at_sec ?? waypoint.slider_freeze_at_sec}
+                  postAnimationLoopMs={
+                    waypoint.slider_post_animation_loop_ms ?? waypoint.slider_poster_hold_ms
+                  }
+                  modernPosterUrl={getModernPosterUrl(waypoint)}
+                  ancientPosterUrl={getAncientPosterUrl(waypoint)}
+                  calibration={calibration}
+                  alignmentMode={alignmentMode}
+                  maxFrameHeightRatio={0.62}
+                />
+              </Suspense>
+            </ErrorBoundary>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <WaypointMediaHero
+          previewUrl={heroPreviewUrl}
+          status={heroStatus}
+          landmarkTitle={landmarkTitle}
+          reducedMotion={reducedMotion}
+        />
+      )}
+
+      <WaypointCardBody
+        titleId={titleId}
+        eyebrow={eyebrow}
+        title={landmarkTitle}
+        hook={!alignmentMode ? narrativeHook : 'Line up the ancient layer over the modern facade.'}
+        orientationHint={orientationHint}
+        titleHighlight={isFreshArrival && !showSlider && !alignmentMode}
+        reducedMotion={reducedMotion}
+        className="pb-6"
+      >
+        {mediaError ? (
+          <p className="mt-4 rounded-2xl border border-terracotta/30 bg-terracotta/10 px-4 py-3 text-sm text-deep-slate" role="alert">
+            {mediaError}
+          </p>
+        ) : null}
+
+        {!showSlider && !alignmentMode ? (
+          <div className="mt-6 flex flex-col gap-3">
+            <Button size="lg" fullWidth onClick={startImmersive}>
+              Reveal ancient view
+            </Button>
+            {hasModernMedia ? (
+              <Button
+                variant="secondary"
+                fullWidth
+                className={ctaInCard}
+                onClick={() => setShowSlider(true)}
+              >
+                Compare then &amp; now
+              </Button>
+            ) : null}
+          </div>
+        ) : showSlider && !alignmentMode ? (
+          <div className="mt-5">
+            <p className="text-sm text-soft-slate">
+              Drag across the facade to travel between eras. Audio continues as you explore.
+            </p>
+          </div>
+        ) : null}
+
+        {showAudioControl ? (
+          <div className="mt-4">
+            <Button
+              variant="secondary"
+              fullWidth
+              className={ctaInCard}
+              onClick={handleAudioAction}
+            >
+              {audioButtonLabel}
+            </Button>
+            {needsResumeAudio ? (
+              <p className="mt-2 text-xs text-soft-slate">
+                Audio was interrupted — tap resume to continue the story.
+              </p>
+            ) : null}
+            <AudioTranscriptSection waypoint={waypoint} />
+          </div>
+        ) : null}
+
+        <div className="mt-4 flex flex-col gap-2">
+          <Button variant="text" fullWidth onClick={onClose}>
+            Continue walking
+          </Button>
+        </div>
+
+        {advancedSection}
+      </WaypointCardBody>
+    </BottomSheet>
   );
 };
 

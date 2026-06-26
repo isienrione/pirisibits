@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getDistance } from '../utils/distance';
 import { COLOSSEUM } from '../data/colosseum';
 import { isDebugGeo } from '../config/env';
@@ -8,7 +8,28 @@ export const JOURNEY_STATE = {
   ARRIVAL: 'ARRIVAL',
 };
 
+export const LOCATION_STATUS = {
+  WAITING: 'waiting',
+  GRANTED: 'granted',
+  DENIED: 'denied',
+  UNAVAILABLE: 'unavailable',
+};
+
 const emptyJourney = { lat: null, lng: null, distance: null, status: null };
+
+const mapGeoError = (err) => {
+  if (!err) return LOCATION_STATUS.UNAVAILABLE;
+  switch (err.code) {
+    case 1:
+      return LOCATION_STATUS.DENIED;
+    case 2:
+      return LOCATION_STATUS.UNAVAILABLE;
+    case 3:
+      return LOCATION_STATUS.WAITING;
+    default:
+      return LOCATION_STATUS.UNAVAILABLE;
+  }
+};
 
 const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
   if (lat == null || lng == null || !target) {
@@ -33,6 +54,10 @@ export const useGeoLocation = ({
   const debugPos = debugPosition ?? { lat: target.lat, lng: target.lng };
 
   const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
+  const [locationStatus, setLocationStatus] = useState(() =>
+    debugMode ? LOCATION_STATUS.GRANTED : LOCATION_STATUS.WAITING
+  );
+  const [watchKey, setWatchKey] = useState(0);
   const [journey, setJourney] = useState(() =>
     debugMode
       ? resolveJourneyState(
@@ -44,8 +69,14 @@ export const useGeoLocation = ({
       : emptyJourney
   );
 
+  const retryLocation = useCallback(() => {
+    setLocationStatus(LOCATION_STATUS.WAITING);
+    setWatchKey((current) => current + 1);
+  }, []);
+
   useEffect(() => {
     if (debugMode) {
+      setLocationStatus(LOCATION_STATUS.GRANTED);
       setJourney(
         resolveJourneyState(
           debugPos.lat,
@@ -57,13 +88,17 @@ export const useGeoLocation = ({
       return;
     }
 
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setLocationStatus(LOCATION_STATUS.UNAVAILABLE);
+      return;
+    }
 
     const watcher = navigator.geolocation.watchPosition(
       (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
 
+        setLocationStatus(LOCATION_STATUS.GRANTED);
         setJourney(resolveJourneyState(lat, lng, target, geofenceThresholdM));
 
         const dist = getDistance(lat, lng, target.lat, target.lng);
@@ -74,12 +109,15 @@ export const useGeoLocation = ({
 
         setState(newState);
       },
-      (err) => console.error(err),
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      (err) => {
+        console.error(err);
+        setLocationStatus(mapGeoError(err));
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, debugPos.lat, debugPos.lng, target, geofenceThresholdM]);
+  }, [debugMode, debugPos.lat, debugPos.lng, target, geofenceThresholdM, watchKey]);
 
   useEffect(() => {
     if (!journey.status) return;
@@ -90,5 +128,7 @@ export const useGeoLocation = ({
     position: { lat: journey.lat, lng: journey.lng },
     state,
     distance: journey.distance,
+    locationStatus,
+    retryLocation,
   };
 };
