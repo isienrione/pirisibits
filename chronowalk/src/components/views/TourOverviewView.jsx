@@ -1,12 +1,15 @@
 import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { getWaypointGeo } from '../../data/waypointGeo'
 import { estimateWalkMinutes } from '../../utils/tourStats'
+import TourStopCard from '../TourStopCard'
 import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 function TourOverviewView({
   tour,
   progress,
+  mapStops,
+  waypointsById,
   targetStopId,
   nextWaypoint,
   state,
@@ -16,6 +19,7 @@ function TourOverviewView({
   firstStopTitle,
   onNavigate,
   onGetDirections,
+  onOpenStop,
 }) {
   if (!tour) {
     return (
@@ -38,6 +42,14 @@ function TourOverviewView({
           : 'En route'
 
   const startTitle = firstStopTitle ?? getWaypointGeo(tour.stopIds[0])?.title ?? 'Colosseum'
+
+  const stops = mapStops?.length
+    ? mapStops
+    : tour.stopIds.map((id, index) => ({
+        id,
+        title: getWaypointGeo(id)?.title ?? id,
+        status: index === 0 ? 'current' : 'upcoming',
+      }))
 
   return (
     <PageShell>
@@ -112,7 +124,32 @@ function TourOverviewView({
         </Button>
       </GlassPanel>
 
-      <GlassPanel className="mt-4 p-5">
+      <div className="mt-6">
+        <SectionHeader
+          align="left"
+          eyebrow="Complete tour"
+          title="All landmarks"
+          subtitle="Revisit stops you've seen or preview any landmark on the route"
+          className="mb-4"
+        />
+        <div className="space-y-4">
+          {stops.map((stop, index) => (
+            <TourStopCard
+              key={stop.id}
+              stop={stop}
+              index={index}
+              waypoint={waypointsById?.[stop.id]}
+              compact
+              onOpen={(stopId) => {
+                onOpenStop?.(stopId)
+                onNavigate(NAV_TABS.MAP)
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <GlassPanel className="mt-6 p-5">
         <p className="text-eyebrow uppercase text-terracotta">Included</p>
         <ul className="mt-3 space-y-2 text-sm text-soft-slate">
           <li>GPS-guided walking between landmarks</li>

@@ -12,8 +12,10 @@ import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
 import { getModernCoverUrl } from './utils/sliderMedia'
 import { getTourDirectionsOrigin } from './utils/tourDirections'
+import { isAtWaypoint } from './utils/waypointProximity'
 import { getWaypointGeo } from './data/waypointGeo'
 import { LoadingPanel } from './components/ui'
+import { ConfirmDialog } from './components/ui/ConfirmDialog'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
@@ -68,6 +70,9 @@ function App() {
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
+  const [waypointAccessMode, setWaypointAccessMode] = useState('arrival')
+  const [stopOpenPrompt, setStopOpenPrompt] = useState(null)
+  const [freshDiscoveryId, setFreshDiscoveryId] = useState(null)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
@@ -99,6 +104,8 @@ function App() {
 
   const revealWaypointCard = useCallback(
     (waypoint) => {
+      setWaypointAccessMode('arrival')
+      setFreshDiscoveryId(waypoint.id)
       setDiscoveredWaypoint(waypoint)
       setCardDismissed(false)
       setActiveTab(NAV_TABS.MAP)
@@ -158,6 +165,66 @@ function App() {
     session.markArrived,
     revealWaypointCard,
   ])
+
+  const openWaypointCard = useCallback(
+    (stopId, accessMode = 'arrival') => {
+      const waypoint = session.waypointsById[stopId]
+      if (!waypoint) return
+
+      const geo = getWaypointGeo(stopId)
+      setWaypointAccessMode(accessMode)
+      setDiscoveredWaypoint(waypoint)
+      setActiveWaypoint(waypoint)
+      setCardDismissed(false)
+      setActiveTab(NAV_TABS.MAP)
+
+      if (geo?.landmark) {
+        setMapFocusTarget({
+          lat: geo.landmark.lat,
+          lng: geo.landmark.lng,
+          key: Date.now(),
+        })
+      }
+
+      setLiveAnnouncement(
+        accessMode === 'remote'
+          ? `Opened ${waypoint.title} for remote preview.`
+          : `Opened ${waypoint.title}.`
+      )
+    },
+    [session.waypointsById]
+  )
+
+  const handleOpenStop = useCallback(
+    (stopId) => {
+      const geo = getWaypointGeo(stopId)
+      const title = geo?.title ?? stopId
+
+      if (!session.waypointsById[stopId]) return
+
+      if (isAtWaypoint(session.position, stopId)) {
+        openWaypointCard(stopId, 'arrival')
+        return
+      }
+
+      const visited = session.progress.arrivedStopIds.includes(stopId)
+      setStopOpenPrompt({
+        stopId,
+        title,
+        message: visited
+          ? `You're not at ${title} yet. Are you sure you want to reopen this landmark and reveal its story remotely?`
+          : `You're not at ${title} yet. Are you sure you want to open this stop before arriving on foot?`,
+        confirmLabel: visited ? 'Reopen anyway' : 'Open anyway',
+      })
+    },
+    [openWaypointCard, session.position, session.progress.arrivedStopIds, session.waypointsById]
+  )
+
+  const handleConfirmStopOpen = useCallback(() => {
+    if (!stopOpenPrompt?.stopId) return
+    openWaypointCard(stopOpenPrompt.stopId, 'remote')
+    setStopOpenPrompt(null)
+  }, [openWaypointCard, stopOpenPrompt])
 
   const handleContinueTour = async () => {
     setActiveWaypoint(null)
@@ -266,10 +333,8 @@ function App() {
 
   const handleReopenWaypoint = useCallback(() => {
     if (!discoveredWaypoint) return
-    setCardDismissed(false)
-    setActiveWaypoint(discoveredWaypoint)
-    setActiveTab(NAV_TABS.MAP)
-  }, [discoveredWaypoint])
+    handleOpenStop(discoveredWaypoint.id)
+  }, [discoveredWaypoint, handleOpenStop])
 
   if (assetStudio) {
     return (
@@ -392,6 +457,8 @@ function App() {
           <TourOverviewView
             tour={singleWaypointId ? null : tour}
             progress={session.progress}
+            mapStops={session.mapStops}
+            waypointsById={session.waypointsById}
             targetStopId={session.targetStopId}
             nextWaypoint={session.nextWaypoint}
             state={session.state}
@@ -400,6 +467,7 @@ function App() {
             isAwaitingFirstStop={session.isAwaitingFirstStop}
             firstStopTitle={session.firstStopTitle}
             onNavigate={setActiveTab}
+            onOpenStop={handleOpenStop}
             onGetDirections={() => {
               if (!tour?.stopIds?.[0]) return
               const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
@@ -415,7 +483,8 @@ function App() {
             tour={singleWaypointId ? null : tour}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
-            onNavigate={setActiveTab}
+            onOpenStop={handleOpenStop}
+            onNavigate={() => setActiveTab(NAV_TABS.MAP)}
           />
         </Suspense>
       ) : null}
@@ -456,14 +525,12 @@ function App() {
           <WaypointCard
             waypoint={activeWaypoint}
             state={session.state}
-            isFreshArrival={
-              Boolean(activeWaypoint) &&
-              Boolean(discoveredWaypoint) &&
-              activeWaypoint.id === discoveredWaypoint.id
-            }
+            accessMode={waypointAccessMode}
+            isFreshArrival={activeWaypoint?.id === freshDiscoveryId && waypointAccessMode === 'arrival'}
             onClose={() => {
               setActiveWaypoint(null)
               setCardDismissed(true)
+              setWaypointAccessMode('arrival')
             }}
           />
         </Suspense>
@@ -502,6 +569,15 @@ function App() {
           onDismiss={() => setCompletionDismissed(true)}
         />
       ) : null}
+
+      <ConfirmDialog
+        open={Boolean(stopOpenPrompt)}
+        title={`Open ${stopOpenPrompt?.title ?? 'landmark'}?`}
+        message={stopOpenPrompt?.message ?? ''}
+        confirmLabel={stopOpenPrompt?.confirmLabel ?? 'Open anyway'}
+        onConfirm={handleConfirmStopOpen}
+        onCancel={() => setStopOpenPrompt(null)}
+      />
     </div>
   )
 }

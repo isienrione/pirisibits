@@ -160,7 +160,7 @@ function WaypointCardBody({
   );
 }
 
-const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
+const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, accessMode = 'arrival' }) => {
   const titleId = useId();
   const reducedMotion = useReducedMotion();
   const [showSlider, setShowSlider] = useState(false);
@@ -233,7 +233,8 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     return () => window.clearTimeout(timer);
   }, [alignmentMode, reducedMotion]);
 
-  if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
+  if (!waypoint) return null;
+  if (accessMode !== 'remote' && state !== JOURNEY_STATE.ARRIVAL) return null;
 
   const landmarkTitle = waypoint.title;
   const narrativeHook =
@@ -344,9 +345,11 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     ? 'Fine-tuning view'
     : showSlider
       ? 'Then & now'
-      : isFreshArrival
-        ? 'Waypoint discovered'
-        : "You've arrived";
+      : accessMode === 'remote'
+        ? 'Remote preview'
+        : isFreshArrival
+          ? 'Waypoint discovered'
+          : "You've arrived";
 
   const advancedSection = (
     <details
@@ -480,6 +483,13 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
         {mediaError ? (
           <p className="mt-4 rounded-2xl border border-terracotta/30 bg-terracotta/10 px-4 py-3 text-sm text-deep-slate" role="alert">
             {mediaError}
+          </p>
+        ) : null}
+
+        {accessMode === 'remote' ? (
+          <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
+            You are viewing this landmark remotely. Visit on foot for the full GPS-guided arrival
+            experience.
           </p>
         ) : null}
 

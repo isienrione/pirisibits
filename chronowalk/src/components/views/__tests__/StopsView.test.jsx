@@ -30,21 +30,25 @@ describe('StopsView', () => {
     expect(screen.getByText('Pantheon')).toBeInTheDocument()
     expect(screen.getByText('Visited')).toBeInTheDocument()
     expect(screen.getByText('Current')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /revisit/i })).toBeInTheDocument()
   })
 
-  it('navigates to the map when a stop is selected', () => {
+  it('requests opening a stop and navigates to the map', () => {
+    const onOpenStop = vi.fn()
     const onNavigate = vi.fn()
     render(
       <StopsView
         tour={tour}
         mapStops={mapStops}
         waypointsById={{}}
+        onOpenStop={onOpenStop}
         onNavigate={onNavigate}
       />
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /pantheon/i }))
+    fireEvent.click(screen.getByRole('button', { name: /revisit/i }))
 
-    expect(onNavigate).toHaveBeenCalledWith(NAV_TABS.MAP)
+    expect(onOpenStop).toHaveBeenCalledWith('colosseum')
+    expect(onNavigate).toHaveBeenCalled()
   })
 })
