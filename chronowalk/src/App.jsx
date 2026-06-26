@@ -355,11 +355,7 @@ function App() {
 
   if (assetStudio) {
     return (
-      <ErrorBoundary
-        fullScreen
-        title="Asset studio unavailable"
-        message="The creator studio could not load. Check the console and reload the page."
-      >
+      <ErrorBoundary fullScreen preset="studioUnavailable">
         <Suspense fallback={<MapSkeletonOverlay label="Loading asset studio…" className="h-screen" />}>
           <WaypointAssetStudio waypointId={assetStudioWaypointId} />
         </Suspense>
@@ -407,13 +403,7 @@ function App() {
         className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
         aria-hidden={!mapTabActive}
       >
-        <ErrorBoundary
-          key={mapRetryKey}
-          fullScreen
-          title="Map unavailable"
-          message="The walking map failed to load. Check your connection and Mapbox token, then try again."
-          onRetry={handleMapRetry}
-        >
+        <ErrorBoundary key={mapRetryKey} fullScreen preset="mapUnavailable" onRetry={handleMapRetry}>
           <Suspense
             fallback={
               <MapSkeletonOverlay
@@ -545,10 +535,7 @@ function App() {
         </Suspense>
       ) : null}
 
-      <ErrorBoundary
-        title="Landmark card unavailable"
-        message="The arrival card could not load. Try reopening the stop from the map."
-      >
+      <ErrorBoundary preset="landmarkUnavailable">
         <Suspense
           fallback={
             activeWaypoint ? (

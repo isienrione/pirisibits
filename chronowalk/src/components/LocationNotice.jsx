@@ -1,4 +1,4 @@
-import { Button, EmptyState, cn } from './ui'
+import { EmptyState, cn } from './ui'
 import { LOCATION_STATUS } from '../hooks/useGeoLocation'
 
 const PRESET_BY_STATUS = {

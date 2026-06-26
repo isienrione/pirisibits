@@ -401,10 +401,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       {showSlider ? (
         <div ref={sliderRef} className="mb-5 touch-none" onTouchMove={(event) => event.stopPropagation()}>
           <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
-            <ErrorBoundary
-              title="Comparison view unavailable"
-              message="The then-and-now slider could not load. You can still listen to the audio story below."
-            >
+            <ErrorBoundary preset="mediaUnavailable">
               <Suspense
                 fallback={<SkeletonWaypointCard className="min-h-[14rem] rounded-b-3xl" />}
               >

@@ -201,14 +201,10 @@ function SliderLoadingSkeleton() {
   );
 }
 
-function MediaFailFallback({ title = 'Media unavailable' }) {
+function MediaFailFallback() {
   return (
     <div className="flex h-full min-h-[12rem] items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6">
-      <EmptyState
-        preset="mediaUnavailable"
-        title={title}
-        className="border-0 bg-transparent shadow-none"
-      />
+      <EmptyState preset="mediaUnavailable" className="border-0 bg-transparent shadow-none" />
     </div>
   );
 }
@@ -743,7 +739,7 @@ const BeforeAfterSlider = ({
             {renderAlignmentView()}
           </div>
         ) : modernLayerFailed ? (
-          <MediaFailFallback title="Modern view unavailable" />
+          <MediaFailFallback />
         ) : (
           <>
             <SliderEraLabels />

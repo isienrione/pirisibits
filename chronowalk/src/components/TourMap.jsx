@@ -151,7 +151,7 @@ const TourMap = ({
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [mapError, setMapError] = useState(null)
+  const [mapError, setMapError] = useState(false)
   const [routeLoading, setRouteLoading] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
@@ -162,7 +162,7 @@ const TourMap = ({
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
 
-    setMapError(null)
+    setMapError(false)
 
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
@@ -178,13 +178,13 @@ const TourMap = ({
       })
     } catch (error) {
       console.error('Mapbox initialization failed:', error)
-      setMapError('Could not initialize the map. Verify your Mapbox token and try again.')
+      setMapError(true)
       return undefined
     }
 
     map.current.on('error', (event) => {
       console.error('Mapbox runtime error:', event?.error ?? event)
-      setMapError('Map tiles failed to load. Check your connection or Mapbox token.')
+      setMapError(true)
     })
 
     map.current.on('load', () => {
@@ -278,7 +278,7 @@ const TourMap = ({
 
     return () => {
       setMapLoaded(false)
-      setMapError(null)
+      setMapError(false)
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
@@ -418,15 +418,12 @@ const TourMap = ({
 
   if (!isMapboxConfigured()) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md">
-          <p className="font-display text-xl font-semibold">Mapbox token required</p>
-          <p className="mt-2 text-sm text-soft-slate">
-            Add <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code> to{' '}
-            <code className="rounded bg-sand px-1">chronowalk/.env</code> and restart the dev
-            server.
-          </p>
-        </div>
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-b from-sand/40 via-warm-white to-limestone/30 p-6">
+        <EmptyState
+          preset="mapUnavailable"
+          body="The walking map is not ready in this build yet. Check back soon or contact the tour team."
+          className="max-w-md"
+        />
       </div>
     )
   }
@@ -435,8 +432,7 @@ const TourMap = ({
     return (
       <div className="flex h-screen w-full items-center justify-center bg-gradient-to-b from-sand/40 via-warm-white to-limestone/30 p-6">
         <EmptyState
-          preset="routeUnavailable"
-          body="We could not load the map right now. Check your connection and try again."
+          preset="mapUnavailable"
           actionLabel="Reload app"
           onAction={() => window.location.reload()}
           className="max-w-md"
