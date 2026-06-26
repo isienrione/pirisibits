@@ -1,4 +1,5 @@
 import { cn } from './cn'
+import { metaLabel, statusNeutral } from './styles'
 
 export function ProgressPill({
   current,
@@ -12,12 +13,12 @@ export function ProgressPill({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <div className="flex items-center justify-between gap-3 text-xs">
-        <span className="font-semibold uppercase tracking-[0.16em] text-soft-slate">
+      <div className="flex items-center justify-between gap-3">
+        <span className={cn(metaLabel, 'text-soft-slate')}>
           {label ?? `Stop ${safeCurrent} of ${total}`}
         </span>
         {status ? (
-          <span className="rounded-full bg-sand/80 px-2 py-0.5 text-[0.65rem] font-medium text-soft-slate">
+          <span className={cn('rounded-full px-2 py-0.5', metaLabel, statusNeutral)}>
             {status}
           </span>
         ) : null}

@@ -15,9 +15,11 @@ const MAP_COLORS = {
   completed: '#7A8B5A',
   current: '#D9A441',
   pending: '#51606F',
-  tourRoute: '#7CB7D8',
-  activeLeg: '#D9A441',
+  tourRoute: '#C8643C',
+  activeLeg: '#C8643C',
 }
+
+const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
 
 const createLandmarkMarkerElement = (title, status) => {
   const el = document.createElement('div')
@@ -31,8 +33,8 @@ const createLandmarkMarkerElement = (title, status) => {
         : 'bg-soft-slate opacity-80'
 
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-lg"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-deep-slate/80 px-2 py-0.5 text-center text-xs font-semibold text-gold">${title}</span>
+    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
+    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-warm-white/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-deep-slate shadow-sm">${title}</span>
   `
   return el
 }
@@ -139,6 +141,7 @@ const TourMap = ({
   distance,
   arrivalPulseActive = false,
   debugMapEnabled = false,
+  focusTarget = null,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -165,7 +168,7 @@ const TourMap = ({
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/dark-v11',
+        style: MAP_STYLE,
         center: [center.lng, center.lat],
         zoom: tour?.mapZoom ?? 14,
       })
@@ -235,7 +238,8 @@ const TourMap = ({
         paint: {
           'line-color': MAP_COLORS.tourRoute,
           'line-width': 4,
-          'line-opacity': 0.45,
+          'line-opacity': 0.55,
+          'line-dasharray': [1.2, 1.4],
         },
       })
 
@@ -251,7 +255,7 @@ const TourMap = ({
         paint: {
           'line-color': MAP_COLORS.activeLeg,
           'line-width': 5,
-          'line-opacity': 0.9,
+          'line-opacity': 0.95,
         },
       })
 
@@ -390,6 +394,17 @@ const TourMap = ({
       map.current?.off('resize', updatePulse)
     }
   }, [arrivalPulseActive, activeTarget?.landmark, mapLoaded])
+
+  useEffect(() => {
+    if (!focusTarget?.lng || !focusTarget?.lat || !map.current || !mapLoaded) return
+
+    map.current.flyTo({
+      center: [focusTarget.lng, focusTarget.lat],
+      zoom: Math.max(map.current.getZoom(), 15.5),
+      duration: 900,
+      essential: true,
+    })
+  }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
   if (!isMapboxConfigured()) {
     return (

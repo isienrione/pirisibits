@@ -6,10 +6,9 @@ import LiveAnnouncer from './components/LiveAnnouncer'
 import LocationNotice from './components/LocationNotice'
 import ErrorBoundary from './components/ErrorBoundary'
 import AppNavigation from './components/navigation/AppNavigation'
+import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
-import TourOverviewView from './components/views/TourOverviewView'
-import StopsView from './components/views/StopsView'
-import SettingsView from './components/views/SettingsView'
+import { estimateWalkedDistanceMeters } from './utils/tourStats'
 import { Button, LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
@@ -37,6 +36,13 @@ import {
 const TourMap = lazy(() => import('./components/TourMap'))
 const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
 const WaypointCard = lazy(() => import('./components/WaypointCard'))
+const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
+const StopsView = lazy(() => import('./components/views/StopsView'))
+const SettingsView = lazy(() => import('./components/views/SettingsView'))
+
+function TabLoadingFallback() {
+  return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
+}
 
 function App() {
   const assetStudio = isAssetStudio()
@@ -45,6 +51,9 @@ function App() {
   const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
   const [mapRetryKey, setMapRetryKey] = useState(0)
+  const [mapFocusTarget, setMapFocusTarget] = useState(null)
+  const [completionDismissed, setCompletionDismissed] = useState(false)
+  const tourStartedAtRef = useRef(null)
 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [activeTab, setActiveTab] = useState(NAV_TABS.MAP)
@@ -141,11 +150,24 @@ function App() {
 
   const handleStartTour = async () => {
     await requestDeviceTiltPermission()
+    tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
   }
+
+  const handleDirections = useCallback((landmark) => {
+    if (!landmark?.lat || !landmark?.lng) return
+    setActiveTab(NAV_TABS.MAP)
+    setMapFocusTarget({
+      lat: landmark.lat,
+      lng: landmark.lng,
+      key: Date.now(),
+    })
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${landmark.lat},${landmark.lng}&travelmode=walking`
+    window.open(mapsUrl, '_blank', 'noopener,noreferrer')
+  }, [])
 
   const handleAudioEnabledChange = (enabled) => {
     setAudioEnabled(enabled)
@@ -176,6 +198,17 @@ function App() {
     hasInteracted &&
     !isDebugGeo() &&
     locationStatus !== LOCATION_STATUS.GRANTED
+
+  const showTourComplete =
+    session.isTourComplete &&
+    !completionDismissed &&
+    !activeWaypoint &&
+    cardDismissed
+
+  const walkedMeters = useMemo(
+    () => estimateWalkedDistanceMeters(tour, session.progress.arrivedStopIds),
+    [tour, session.progress.arrivedStopIds]
+  )
 
   if (assetStudio) {
     return (
@@ -248,6 +281,7 @@ function App() {
               distance={session.distance}
               arrivalPulseActive={discoveryVisible}
               debugMapEnabled={debugMapEnabled}
+              focusTarget={mapFocusTarget}
             />
           </Suspense>
         </ErrorBoundary>
@@ -260,13 +294,14 @@ function App() {
           progress={session.progress}
           targetStopId={session.targetStopId}
           nextWaypoint={session.nextWaypoint}
+          currentWaypoint={session.currentWaypoint}
           transitLegActive={session.progress.transitLegActive}
           state={session.state}
           distance={session.distance}
           locationStatus={locationStatus}
-          onRetryLocation={session.retryLocation}
           waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
           onContinueTour={handleContinueTour}
+          onDirections={handleDirections}
           hasBottomNav
         />
 
@@ -284,38 +319,44 @@ function App() {
       </div>
 
       {activeTab === NAV_TABS.TOUR ? (
-        <TourOverviewView
-          tour={singleWaypointId ? null : tour}
-          progress={session.progress}
-          targetStopId={session.targetStopId}
-          nextWaypoint={session.nextWaypoint}
-          state={session.state}
-          distance={session.distance}
-          transitLegActive={session.progress.transitLegActive}
-          onNavigate={setActiveTab}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <TourOverviewView
+            tour={singleWaypointId ? null : tour}
+            progress={session.progress}
+            targetStopId={session.targetStopId}
+            nextWaypoint={session.nextWaypoint}
+            state={session.state}
+            distance={session.distance}
+            transitLegActive={session.progress.transitLegActive}
+            onNavigate={setActiveTab}
+          />
+        </Suspense>
       ) : null}
 
       {activeTab === NAV_TABS.STOPS ? (
-        <StopsView
-          tour={singleWaypointId ? null : tour}
-          mapStops={session.mapStops}
-          waypointsById={session.waypointsById}
-          onNavigate={setActiveTab}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <StopsView
+            tour={singleWaypointId ? null : tour}
+            mapStops={session.mapStops}
+            waypointsById={session.waypointsById}
+            onNavigate={setActiveTab}
+          />
+        </Suspense>
       ) : null}
 
       {activeTab === NAV_TABS.SETTINGS ? (
-        <SettingsView
-          locationStatus={locationStatus}
-          journeyState={session.state}
-          distance={session.distance}
-          audioEnabled={audioEnabled}
-          onAudioEnabledChange={handleAudioEnabledChange}
-          debugMapEnabled={debugMapEnabled}
-          onDebugMapEnabledChange={handleDebugMapEnabledChange}
-          onRetryLocation={session.retryLocation}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <SettingsView
+            locationStatus={locationStatus}
+            journeyState={session.state}
+            distance={session.distance}
+            audioEnabled={audioEnabled}
+            onAudioEnabledChange={handleAudioEnabledChange}
+            debugMapEnabled={debugMapEnabled}
+            onDebugMapEnabledChange={handleDebugMapEnabledChange}
+            onRetryLocation={session.retryLocation}
+          />
+        </Suspense>
       ) : null}
 
       <ErrorBoundary
@@ -356,6 +397,20 @@ function App() {
             Reopen {discoveredWaypoint.title}
           </Button>
         )}
+
+      {showTourComplete ? (
+        <TourCompleteView
+          tour={singleWaypointId ? null : tour}
+          visitedCount={session.progress.arrivedStopIds.length}
+          walkedMeters={walkedMeters}
+          startedAtMs={tourStartedAtRef.current}
+          onViewSummary={() => {
+            setCompletionDismissed(true)
+            setActiveTab(NAV_TABS.TOUR)
+          }}
+          onDismiss={() => setCompletionDismissed(true)}
+        />
+      ) : null}
 
       <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
     </div>

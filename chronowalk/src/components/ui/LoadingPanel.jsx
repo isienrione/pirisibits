@@ -1,5 +1,5 @@
 import { cn } from './cn'
-import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { LoadingSpinner } from './LoadingSpinner'
 
 export function LoadingPanel({
   label = 'Loading…',
@@ -7,8 +7,6 @@ export function LoadingPanel({
   fullScreen = false,
   className,
 }) {
-  const reducedMotion = useReducedMotion()
-
   return (
     <div
       className={cn(
@@ -20,13 +18,7 @@ export function LoadingPanel({
       aria-live="polite"
       aria-busy="true"
     >
-      <div
-        className={cn(
-          'h-10 w-10 rounded-full border-2 border-gold/25 border-t-gold',
-          !reducedMotion && 'animate-spin'
-        )}
-        aria-hidden="true"
-      />
+      <LoadingSpinner />
       <p className="mt-4 text-sm font-semibold">{label}</p>
       {hint ? <p className="mt-1 max-w-xs text-center text-xs text-soft-slate">{hint}</p> : null}
     </div>

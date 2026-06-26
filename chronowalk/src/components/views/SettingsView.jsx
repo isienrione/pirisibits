@@ -1,7 +1,7 @@
 import { isDebugGeo, isDebugMap } from '../../config/env'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { JOURNEY_STATE, LOCATION_STATUS } from '../../hooks/useGeoLocation'
-import { GlassPanel, PageShell, SectionHeader, cn, focusRing } from '../ui'
+import { GlassPanel, PageShell, SectionHeader, cn, focusRing, statusCurrent, statusNeutral } from '../ui'
 import LocationNotice from '../LocationNotice'
 
 function SettingRow({ title, description, children }) {
@@ -96,7 +96,7 @@ function SettingsView({
               : 'Required for arrival detection and walking guidance.'
           }
         >
-          <span className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-deep-slate">
+          <span className={cn('rounded-full px-3 py-1 text-xs font-semibold', statusNeutral)}>
             {locationLabel}
           </span>
         </SettingRow>
@@ -123,7 +123,7 @@ function SettingsView({
           <span
             className={cn(
               'rounded-full px-3 py-1 text-xs font-semibold',
-              reducedMotion ? 'bg-gold/15 text-gold' : 'bg-sand text-soft-slate'
+              reducedMotion ? statusCurrent : statusNeutral
             )}
           >
             {reducedMotion ? 'On' : 'Off'}

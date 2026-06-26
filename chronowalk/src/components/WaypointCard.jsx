@@ -1,7 +1,8 @@
 import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
+import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, cn, ctaInCard } from './ui';
+import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -53,7 +54,7 @@ const useMediaHeroState = (url) => {
   return status;
 };
 
-function WaypointMediaHero({ previewUrl, status, landmarkTitle, reducedMotion }) {
+function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
       {status === 'ready' && previewUrl ? (
@@ -73,13 +74,7 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle, reducedMotion })
         <div className="flex h-full flex-col items-center justify-center px-8 text-center">
           {status === 'loading' ? (
             <>
-              <div
-                className={cn(
-                  'mb-4 h-10 w-10 rounded-full bg-gold/30',
-                  !reducedMotion && 'animate-pulse'
-                )}
-                aria-hidden="true"
-              />
+              <LoadingSpinner className="mb-4" />
               <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
             </>
           ) : status === 'error' ? (
@@ -311,12 +306,6 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     setCalibration(defaults);
   };
 
-  const audioButtonLabel = isArrivalAudioPlaying
-    ? 'Pause audio story'
-    : needsResumeAudio || hasArrivalAudioSession
-      ? 'Resume audio story'
-      : 'Start audio story';
-
   const handleAudioAction = async () => {
     if (isArrivalAudioPlaying) {
       audioOrchestrator.pauseArrival();
@@ -430,6 +419,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
               >
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
+                  embedded
                   modernImg={modernSliderUrl}
                   historicImg={ancientSliderUrl}
                   depthMap={waypoint.depth_map_url}
@@ -453,7 +443,6 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
           previewUrl={heroPreviewUrl}
           status={heroStatus}
           landmarkTitle={landmarkTitle}
-          reducedMotion={reducedMotion}
         />
       )}
 
@@ -498,18 +487,17 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
         ) : null}
 
         {showAudioControl ? (
-          <div className="mt-4">
-            <Button
-              variant="secondary"
-              fullWidth
-              className={ctaInCard}
-              onClick={handleAudioAction}
-            >
-              {audioButtonLabel}
-            </Button>
+          <div className="mt-4 space-y-3">
+            <AudioPlayerPanel
+              title={landmarkTitle}
+              subtitle={waypoint.arrival_subtitle}
+              isPlaying={isArrivalAudioPlaying}
+              posterUrl={heroPreviewUrl}
+              onToggle={handleAudioAction}
+            />
             {needsResumeAudio ? (
-              <p className="mt-2 text-xs text-soft-slate">
-                Audio was interrupted — tap resume to continue the story.
+              <p className="text-xs text-soft-slate">
+                Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
             <AudioTranscriptSection waypoint={waypoint} />

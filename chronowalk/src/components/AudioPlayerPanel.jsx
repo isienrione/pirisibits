@@ -1,0 +1,60 @@
+import { Button, cn } from './ui'
+
+function AudioPlayerPanel({
+  title,
+  subtitle,
+  isPlaying,
+  onToggle,
+  posterUrl,
+  className,
+}) {
+  return (
+    <div
+      className={cn(
+        'overflow-hidden rounded-3xl border border-limestone/40 bg-gradient-to-b from-deep-slate to-deep-slate/95 p-4 text-warm-white shadow-glass-lg',
+        className
+      )}
+    >
+      <div className="flex items-center gap-4">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-gold/40 bg-deep-slate shadow-inner">
+          {posterUrl ? (
+            <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gold/15 text-gold">
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 3a9 9 0 1 0 9 9"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                />
+                <path d="M12 7v6l4 2" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+              </svg>
+            </div>
+          )}
+          <span
+            className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-gold/30 ring-offset-2 ring-offset-deep-slate"
+            aria-hidden="true"
+          />
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-eyebrow uppercase text-gold">Audio story</p>
+          <p className="truncate font-display text-lg font-semibold leading-tight">{title}</p>
+          {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-sand/80">{subtitle}</p> : null}
+        </div>
+
+        <Button
+          size="sm"
+          className="shrink-0 px-4"
+          onClick={onToggle}
+          aria-label={isPlaying ? 'Pause audio story' : 'Play audio story'}
+        >
+          {isPlaying ? 'Pause' : 'Play'}
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export default AudioPlayerPanel

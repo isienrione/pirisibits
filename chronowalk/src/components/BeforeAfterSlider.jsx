@@ -4,6 +4,7 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import { focusRing } from './ui/focusRing';
 import { cn } from './ui/cn';
+import { metaLabel } from './ui/styles';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 
@@ -163,10 +164,10 @@ function CompareSliderHandle() {
 function SliderEraLabels() {
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-between p-3">
-      <span className="rounded-full border border-limestone/60 bg-warm-white/92 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-deep-slate shadow-sm backdrop-blur-sm">
+      <span className={cn('rounded-full border border-limestone/60 bg-warm-white/92 px-3 py-1 text-deep-slate shadow-sm backdrop-blur-sm', metaLabel)}>
         Today
       </span>
-      <span className="rounded-full border border-terracotta/30 bg-terracotta/90 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-warm-white shadow-sm">
+      <span className={cn('rounded-full border border-terracotta/30 bg-terracotta/90 px-3 py-1 text-warm-white shadow-sm', metaLabel)}>
         Ancient Rome
       </span>
     </div>
@@ -273,6 +274,7 @@ const BeforeAfterSlider = ({
   calibration,
   alignmentMode = false,
   maxFrameHeightRatio,
+  embedded = false,
 }) => {
   const [immersive, setImmersive] = useState(false);
   const reducedMotion = useReducedMotion();
@@ -776,7 +778,9 @@ const BeforeAfterSlider = ({
       className={
         immersive
           ? 'flex h-full min-h-0 flex-1 flex-col'
-          : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
+          : embedded
+            ? 'w-full overflow-hidden'
+            : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
       }
     >
       {immersive ? (
@@ -792,13 +796,18 @@ const BeforeAfterSlider = ({
           >
             Close
           </button>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate">
+          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
             Immersive compare
           </p>
           <span className="w-14" aria-hidden="true" />
         </div>
       ) : (
-        <div className="flex justify-end bg-sand/40 px-3 py-2">
+        <div
+          className={cn(
+            'flex justify-end border-b border-limestone/50 px-3 py-2',
+            embedded ? 'bg-warm-white/95' : 'bg-sand/40'
+          )}
+        >
           <button
             type="button"
             onClick={() => setImmersive(true)}
@@ -815,7 +824,7 @@ const BeforeAfterSlider = ({
 
       <div className={immersive ? 'min-h-0 flex-1' : ''}>{renderSliderFrame()}</div>
 
-      <p className="bg-warm-white/90 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
+      <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
         {renderCaption()}
       </p>
     </div>

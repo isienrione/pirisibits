@@ -40,7 +40,7 @@ function LocationNotice({ status, onRetry, className, compact = false }) {
         <Button
           variant="secondary"
           size="sm"
-          className="mt-3 rounded-xl"
+          className="mt-3"
           onClick={onRetry}
         >
           {copy.action}

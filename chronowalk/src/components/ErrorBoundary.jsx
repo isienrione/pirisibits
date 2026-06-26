@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component {
         <GlassPanel className="max-w-md p-6 text-center">
           <p className="font-display text-xl font-semibold text-deep-slate">{title}</p>
           <p className="mt-2 text-sm leading-relaxed text-soft-slate">{message}</p>
-          <Button className={cn(ctaInCard, 'mt-5')} onClick={this.handleRetry}>
+          <Button className={cn(ctaInCard, 'mt-5')} fullWidth onClick={this.handleRetry}>
             Try again
           </Button>
         </GlassPanel>
