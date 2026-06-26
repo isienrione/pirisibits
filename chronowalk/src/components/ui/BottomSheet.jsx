@@ -1,4 +1,5 @@
 import { cn } from './cn'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 export function BottomSheet({
   open = false,
@@ -7,13 +8,25 @@ export function BottomSheet({
   className,
   contentClassName,
   flush = false,
+  cinematic = false,
   children,
 }) {
+  const reducedMotion = useReducedMotion()
+
   return (
     <div
       className={cn(
-        'absolute bottom-0 left-0 z-50 w-full transform transition-transform duration-500 ease-out',
-        open ? 'translate-y-0' : 'translate-y-full',
+        'absolute bottom-0 left-0 z-50 w-full',
+        reducedMotion
+          ? open
+            ? 'translate-y-0'
+            : 'translate-y-full'
+          : cinematic && open
+            ? 'animate-sheet-rise'
+            : cn(
+                'transform motion-safe-transition',
+                open ? 'translate-y-0' : 'translate-y-full'
+              ),
         className
       )}
     >

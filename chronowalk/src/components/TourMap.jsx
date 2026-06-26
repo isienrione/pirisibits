@@ -6,6 +6,7 @@ import { createCirclePolygon } from '../utils/circleGeoJSON'
 import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
+import { useReducedMotion } from '../hooks/useReducedMotion'
 
 const mapboxToken = env.mapboxToken
 
@@ -58,6 +59,32 @@ const stopsToFeatureCollection = (stops) => ({
     .filter(Boolean),
 })
 
+function MapArrivalPulse({ point, active }) {
+  const reducedMotion = useReducedMotion()
+
+  if (!active || !point) return null
+
+  return (
+    <div
+      className="pointer-events-none absolute z-20"
+      style={{ left: point.x, top: point.y }}
+      aria-hidden="true"
+    >
+      <div
+        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
+          reducedMotion ? '' : 'animate-arrival-map-pulse'
+        }`}
+      />
+      <div
+        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
+          reducedMotion ? '' : 'animate-arrival-map-pulse'
+        }`}
+        style={{ animationDelay: '0.35s' }}
+      />
+    </div>
+  )
+}
+
 function MapDebugOverlay({
   debugGeo,
   activeTitle,
@@ -109,12 +136,14 @@ const TourMap = ({
   userPos,
   state,
   distance,
+  arrivalPulseActive = false,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = isDebugMap()
 
@@ -321,6 +350,30 @@ const TourMap = ({
     }
   }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
 
+  useEffect(() => {
+    const landmark = activeTarget?.landmark
+    if (!arrivalPulseActive || !landmark || !map.current || !mapLoaded) {
+      setPulsePoint(null)
+      return undefined
+    }
+
+    const updatePulse = () => {
+      const projected = map.current.project([landmark.lng, landmark.lat])
+      setPulsePoint({ x: projected.x, y: projected.y })
+    }
+
+    updatePulse()
+    map.current.on('move', updatePulse)
+    map.current.on('zoom', updatePulse)
+    map.current.on('resize', updatePulse)
+
+    return () => {
+      map.current?.off('move', updatePulse)
+      map.current?.off('zoom', updatePulse)
+      map.current?.off('resize', updatePulse)
+    }
+  }, [arrivalPulseActive, activeTarget?.landmark, mapLoaded])
+
   if (!isMapboxConfigured()) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
@@ -337,6 +390,7 @@ const TourMap = ({
   return (
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
+      <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}

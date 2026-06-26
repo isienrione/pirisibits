@@ -106,13 +106,19 @@ function WaypointCardBody({
   title,
   hook,
   orientationHint,
+  titleHighlight = false,
   children,
   className,
 }) {
   return (
     <div className={cn('px-6', className)}>
-      <p className="text-eyebrow uppercase text-terracotta">{eyebrow}</p>
-      <h2 className="mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate">
+      <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
+      <h2
+        className={cn(
+          'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
+          titleHighlight && 'animate-arrival-title'
+        )}
+      >
         {title}
       </h2>
       {hook ? (
@@ -128,7 +134,7 @@ function WaypointCardBody({
   );
 }
 
-const WaypointCard = ({ waypoint, state, onClose }) => {
+const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
   const [showSlider, setShowSlider] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [alignmentMode, setAlignmentMode] = useState(false);
@@ -284,7 +290,9 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     ? 'Fine-tuning view'
     : showSlider
       ? 'Then & now'
-      : "You've arrived";
+      : isFreshArrival
+        ? 'Waypoint discovered'
+        : "You've arrived";
 
   const advancedSection = (
     <details
@@ -353,6 +361,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
     <BottomSheet
       open={entered}
       flush
+      cinematic
       onHandleClick={onClose}
       handleLabel="Minimize landmark card"
     >
@@ -390,6 +399,7 @@ const WaypointCard = ({ waypoint, state, onClose }) => {
         title={landmarkTitle}
         hook={!alignmentMode ? narrativeHook : 'Line up the ancient layer over the modern facade.'}
         orientationHint={orientationHint}
+        titleHighlight={isFreshArrival && !showSlider && !alignmentMode}
         className="pb-6"
       >
         {!showSlider && !alignmentMode ? (

@@ -3,6 +3,7 @@ import TourHero from './components/TourHero'
 import TourMap from './components/TourMap'
 import TourHud from './components/TourHud'
 import WaypointCard from './components/WaypointCard'
+import ArrivalMoment from './components/ArrivalMoment'
 import WaypointAssetStudio from './components/WaypointAssetStudio'
 import { Button } from './components/ui'
 import { JOURNEY_STATE } from './hooks/useGeoLocation'
@@ -119,6 +120,9 @@ function App() {
     )
   }
 
+  const discoveryVisible =
+    Boolean(discoveredWaypoint) && !activeWaypoint && !cardDismissed
+
   return (
     <div className="relative h-screen w-full">
       <TourMap
@@ -131,7 +135,10 @@ function App() {
         userPos={session.position}
         state={session.state}
         distance={session.distance}
+        arrivalPulseActive={discoveryVisible}
       />
+
+      <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
 
       <TourHud
         tour={singleWaypointId ? null : tour}
@@ -149,6 +156,11 @@ function App() {
       <WaypointCard
         waypoint={activeWaypoint}
         state={session.state}
+        isFreshArrival={
+          Boolean(activeWaypoint) &&
+          Boolean(discoveredWaypoint) &&
+          activeWaypoint.id === discoveredWaypoint.id
+        }
         onClose={() => {
           setActiveWaypoint(null)
           setCardDismissed(true)

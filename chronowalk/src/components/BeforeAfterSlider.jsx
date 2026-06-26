@@ -131,11 +131,67 @@ const SliderItemShell = ({
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
 const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
-  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-deep-slate to-deep-slate/90 p-5 text-center">
-    <p className="text-sm font-semibold text-gold">{message}</p>
-    <p className="mt-3 font-mono text-[10px] text-sand/80">ancient-reconstruction.mp4</p>
+  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-deep-slate to-deep-slate/90 p-6 text-center">
+    <p className="font-display text-base font-semibold text-gold">{message}</p>
+    <p className="mt-3 max-w-xs text-sm text-sand/80">
+      The portal will open once the matched ancient view is available.
+    </p>
   </div>
 );
+
+function CompareSliderHandle() {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
+      <div
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-warm-white bg-gold shadow-glass"
+        aria-hidden="true"
+      >
+        <div className="flex items-center gap-1">
+          <span className="h-4 w-0.5 rounded-full bg-warm-white/90" />
+          <span className="h-4 w-0.5 rounded-full bg-warm-white/90" />
+        </div>
+      </div>
+      <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
+    </div>
+  );
+}
+
+function SliderEraLabels() {
+  return (
+    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-between p-3">
+      <span className="rounded-full border border-limestone/60 bg-warm-white/92 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-deep-slate shadow-sm backdrop-blur-sm">
+        Today
+      </span>
+      <span className="rounded-full border border-terracotta/30 bg-terracotta/90 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-warm-white shadow-sm">
+        Ancient Rome
+      </span>
+    </div>
+  );
+}
+
+function SliderLoadingSkeleton() {
+  return (
+    <div className="absolute inset-0 z-20 overflow-hidden bg-gradient-to-br from-sand via-limestone/50 to-warm-white">
+      <div className="absolute inset-0 animate-pulse bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]" />
+      <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+        <p className="text-sm font-medium text-deep-slate">Preparing the time portal…</p>
+        <p className="mt-2 text-xs text-soft-slate">Loading matched views</p>
+      </div>
+    </div>
+  );
+}
+
+function MediaFailFallback({ title = 'Media unavailable' }) {
+  return (
+    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6 text-center">
+      <p className="font-display text-lg font-semibold text-deep-slate">{title}</p>
+      <p className="mt-2 max-w-xs text-sm text-soft-slate">
+        Check your connection and try again, or continue with the audio story.
+      </p>
+    </div>
+  );
+}
 
 const useMediaProbe = (src) => {
   const [status, setStatus] = useState(src ? 'loading' : 'idle');
@@ -210,9 +266,12 @@ const BeforeAfterSlider = ({
   alignmentMode = false,
   maxFrameHeightRatio,
 }) => {
+  const [immersive, setImmersive] = useState(false);
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
+  const immersiveHeightRatio = immersive ? 0.78 : maxFrameHeightRatio;
   const resolvedMaxFrameHeightRatio =
-    maxFrameHeightRatio ?? (alignmentMode ? ALIGNMENT_MAX_FRAME_HEIGHT_RATIO : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
+    immersiveHeightRatio ??
+    (alignmentMode ? ALIGNMENT_MAX_FRAME_HEIGHT_RATIO : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
   const { frameRef, frameHeight } = useCompareFrameSize(resolvedMaxFrameHeightRatio);
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
@@ -222,8 +281,11 @@ const BeforeAfterSlider = ({
   const modernEndedRef = useRef(false);
   const ancientEndedRef = useRef(false);
   const ancientMedia = useMediaProbe(historicImg);
+  const modernMedia = useMediaProbe(modernImg);
   const ancientReady = ancientMedia.ready;
+  const modernReady = modernMedia.ready;
   const ancientLayerActive = Boolean(historicImg) && !ancientMedia.failed;
+  const modernLayerFailed = Boolean(modernImg) && modernMedia.failed;
   const modernPosterReady = usePosterProbe(modernPosterUrl);
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
@@ -585,70 +647,164 @@ const BeforeAfterSlider = ({
     );
   };
 
-  return (
-    <div className="w-full overflow-hidden rounded-panel border-4 border-warm-white shadow-glass">
-      <div
-        ref={frameRef}
-        className="relative w-full"
-        style={{ height: frameHeight > 0 ? `${frameHeight}px` : undefined }}
-      >
-        {frameHeight > 0 ? (
-          alignmentMode ? (
-            <div className="relative h-full w-full overflow-hidden bg-deep-slate">
-              {renderAlignmentView()}
-            </div>
-          ) : (
+  useEffect(() => {
+    if (!immersive) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setImmersive(false);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [immersive]);
+
+  const isMediaLoading =
+    (Boolean(modernImg) && modernMedia.loading && !modernReady) ||
+    (Boolean(historicImg) && ancientMedia.loading && !ancientReady);
+
+  const renderSliderFrame = () => (
+    <div
+      ref={frameRef}
+      className="compare-slider-frame relative w-full"
+      style={{ height: frameHeight > 0 ? `${frameHeight}px` : undefined }}
+    >
+      {frameHeight > 0 ? (
+        alignmentMode ? (
+          <div className="relative h-full w-full overflow-hidden bg-deep-slate">
+            {renderAlignmentView()}
+          </div>
+        ) : modernLayerFailed ? (
+          <MediaFailFallback title="Modern view unavailable" />
+        ) : (
+          <>
+            <SliderEraLabels />
+            {isMediaLoading ? <SliderLoadingSkeleton /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%' }}
               itemOne={renderModernItem()}
               itemTwo={renderAncientItem()}
+              handle={<CompareSliderHandle />}
+              onlyHandleDraggable
+              changePositionOnHover={false}
             />
-          )
-        ) : (
-          <div className="aspect-video w-full bg-deep-slate" />
-        )}
-      </div>
-      <p className="bg-sand/60 px-3 py-2 text-center text-xs leading-relaxed text-soft-slate">
-        {alignmentMode ? (
-          'Ghost overlay active — adjust the ancient layer until it snaps to the real-world facade.'
-        ) : !ancientLayerActive ? (
-          'Add the matched ancient video to complete the portal.'
-        ) : ancientMedia.loading ? (
-          'Modern view is playing — ancient reconstruction is loading…'
-        ) : compareReady ? (
-          <>
-            Full facade — drag to compare eras.
-            {usingVideo ? (
-              <button
-                type="button"
-                onClick={replayVideos}
-                className="ml-1 text-terracotta underline underline-offset-2"
-              >
-                Replay
-              </button>
-            ) : null}
           </>
-        ) : animationLoopActive ? (
-          'Animation looping — it will switch to the full facade for comparing soon.'
-        ) : usingVideo ? (
-          'Animation playing — it will switch to the full facade for comparing when finished.'
-        ) : tiltEnabled && isActive ? (
-          <>
-            Same viewpoint, two eras — tilt gently for depth.
+        )
+      ) : (
+        <div className="aspect-video w-full bg-gradient-to-br from-sand to-limestone/50">
+          <SliderLoadingSkeleton />
+        </div>
+      )}
+    </div>
+  );
+
+  const renderCaption = () => {
+    if (alignmentMode) {
+      return 'Adjust the ancient layer until it aligns with the facade.';
+    }
+    if (!ancientLayerActive) {
+      return 'Ancient reconstruction is being prepared for this landmark.';
+    }
+    if (isMediaLoading) {
+      return 'Loading both eras of Rome…';
+    }
+    if (compareReady) {
+      return (
+        <>
+          Drag to reveal the past.
+          {usingVideo ? (
             <button
               type="button"
-              onClick={recalibrate}
-              className="ml-1 text-amber-400 underline underline-offset-2"
+              onClick={replayVideos}
+              className="ml-1.5 text-terracotta underline underline-offset-2"
             >
-              Reset center
+              Replay
             </button>
-          </>
-        ) : (
-          'Drag to compare the same view across time.'
-        )}
+          ) : null}
+        </>
+      );
+    }
+    if (animationLoopActive) {
+      return 'A brief animation — then you can drag between eras.';
+    }
+    if (usingVideo) {
+      return 'Watch the facade come alive — comparison opens when ready.';
+    }
+    if (tiltEnabled && isActive) {
+      return (
+        <>
+          Tilt gently for depth between eras.
+          <button
+            type="button"
+            onClick={recalibrate}
+            className="ml-1.5 text-terracotta underline underline-offset-2"
+          >
+            Reset center
+          </button>
+        </>
+      );
+    }
+    return 'Drag to reveal the past.';
+  };
+
+  const sliderShell = (
+    <div
+      className={
+        immersive
+          ? 'flex h-full min-h-0 flex-1 flex-col'
+          : 'w-full overflow-hidden rounded-panel border-4 border-warm-white shadow-glass'
+      }
+    >
+      {immersive ? (
+        <div className="flex shrink-0 items-center justify-between border-b border-limestone/50 bg-warm-white/95 px-4 py-3">
+          <button
+            type="button"
+            onClick={() => setImmersive(false)}
+            className="rounded-full border border-limestone bg-sand/60 px-3 py-1.5 text-xs font-semibold text-deep-slate"
+          >
+            Close
+          </button>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate">
+            Immersive compare
+          </p>
+          <span className="w-14" aria-hidden="true" />
+        </div>
+      ) : (
+        <div className="flex justify-end bg-sand/40 px-3 py-2">
+          <button
+            type="button"
+            onClick={() => setImmersive(true)}
+            className="rounded-full border border-limestone/70 bg-warm-white/90 px-3 py-1 text-xs font-semibold text-deep-slate shadow-sm"
+          >
+            Full screen
+          </button>
+        </div>
+      )}
+
+      <div className={immersive ? 'min-h-0 flex-1' : ''}>{renderSliderFrame()}</div>
+
+      <p className="bg-sand/60 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate">
+        {renderCaption()}
       </p>
     </div>
   );
+
+  if (immersive) {
+    return (
+      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate/95 pt-safe pb-safe backdrop-blur-sm">
+        <div className="mx-auto flex h-full w-full max-w-5xl flex-col px-2 sm:px-4">
+          {sliderShell}
+        </div>
+      </div>
+    );
+  }
+
+  return sliderShell;
 };
 
 export default BeforeAfterSlider;
