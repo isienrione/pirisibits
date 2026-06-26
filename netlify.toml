@@ -1,4 +1,4 @@
 [build]
   base = "chronowalk"
-  command = "npm run build"
+  command = "VITE_BUILD_ID=\"${COMMIT_REF:-$GITHUB_SHA}\" npm run build"
   publish = "dist"

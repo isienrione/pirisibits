@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
-import tourHeroPhoto from '../assets/tour-hero.jpg'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { Button, GlassPanel, cn } from './ui'
 
 const APP_NAME = 'ChronoWalk'
+const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
 
 const VALUE_PROPOSITION =
   'Walk through Rome with place-aware audio, guided stories, and visual reconstructions of the ancient city.'
