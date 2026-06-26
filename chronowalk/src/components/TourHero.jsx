@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import tourHeroPhoto from '../assets/tour-hero.jpg'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { Button, GlassPanel, cn } from './ui'
@@ -13,13 +14,6 @@ const TOUR_STATS = [
   { id: 'audio', label: 'Audio stories', accent: 'text-terracotta' },
   { id: 'reveals', label: 'Historical reveals', accent: 'text-sky-blue' },
 ]
-
-const tourHeroPhotos = import.meta.glob('../assets/tour-hero.{jpg,jpeg,webp,png}', {
-  eager: true,
-  import: 'default',
-})
-
-const bundledTourHeroPhoto = Object.values(tourHeroPhotos)[0] ?? null
 
 function StatPill({ label, accent }) {
   return (
@@ -55,7 +49,7 @@ function PreviewStopsList({ stops }) {
 
 function TourHero({ tour, singleWaypointId, onStartTour }) {
   const [previewOpen, setPreviewOpen] = useState(false)
-  const [heroSrc, setHeroSrc] = useState(bundledTourHeroPhoto ?? tourHeroFallback)
+  const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
 
   const stops = useMemo(
     () =>
@@ -100,26 +94,26 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
-      <div className="absolute inset-x-0 top-0 h-[min(62vh,34rem)] sm:h-[min(68vh,40rem)]">
+      <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
         <img
           src={heroSrc}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-[center_22%]"
           onError={handleHeroError}
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-warm-white/20 via-warm-white/45 to-warm-white"
+          className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/35 to-warm-white"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-deep-slate/45 via-deep-slate/10 to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-deep-slate/50 via-deep-slate/5 to-transparent"
           aria-hidden="true"
         />
       </div>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
-        <div className="h-[min(38vh,18rem)] shrink-0 sm:h-[min(42vh,22rem)]" aria-hidden="true" />
+        <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
 
         <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
           <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
