@@ -304,6 +304,11 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     setShowSlider(true);
   };
 
+  const exitCompareView = () => {
+    setShowSlider(false);
+    setAlignmentMode(false);
+  };
+
   const openAudioOnly = async () => {
     setShowSlider(false);
     await handlePlayAudio();
@@ -448,6 +453,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
                   calibration={calibration}
                   alignmentMode={alignmentMode}
                   maxFrameHeightRatio={0.62}
+                  onRequestExit={exitCompareView}
                 />
               </Suspense>
             </ErrorBoundary>

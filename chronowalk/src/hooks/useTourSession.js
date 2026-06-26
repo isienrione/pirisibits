@@ -69,19 +69,33 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     return tour.stopIds[progress.targetStopIndex + 1] ?? null
   }, [isSingleStopMode, tour, progress.targetStopIndex])
 
-  const debugPosition = debugOverridePosition ?? targetGeo?.debugPosition ?? null
+  const hasArrivedAtTarget =
+    Boolean(targetStopId) && progress.arrivedStopIds.includes(targetStopId)
+
+  const debugPosition = useMemo(() => {
+    if (debugOverridePosition) return debugOverridePosition
+    if (progress.transitLegActive) return null
+    if (hasArrivedAtTarget && targetGeo?.debugPosition) return targetGeo.debugPosition
+    return null
+  }, [
+    debugOverridePosition,
+    progress.transitLegActive,
+    hasArrivedAtTarget,
+    targetGeo?.debugPosition,
+  ])
+
+  const simulateAtTarget =
+    debugMode && hasArrivedAtTarget && !progress.transitLegActive && !debugOverridePosition
 
   const { position, state, distance, locationStatus, retryLocation } = useGeoLocation({
     target: targetGeo?.landmark,
     debugPosition,
+    simulateAtTarget,
     geofenceThresholdM: targetGeo?.geofenceThresholdM ?? 30,
   })
 
   const currentWaypoint = targetStopId ? waypointsById[targetStopId] : null
   const nextWaypoint = nextStopId ? waypointsById[nextStopId] : null
-
-  const hasArrivedAtTarget =
-    Boolean(targetStopId) && progress.arrivedStopIds.includes(targetStopId)
 
   const mapStops = useMemo(() => {
     if (!tour) {
@@ -162,13 +176,18 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
       arrivedStopIds: [...new Set([...current.arrivedStopIds, targetStopId])],
       transitLegActive: false,
     }))
-  }, [targetStopId])
+
+    if (debugMode && targetGeo?.debugPosition) {
+      setDebugOverridePosition(targetGeo.debugPosition)
+    }
+  }, [targetStopId, debugMode, targetGeo?.debugPosition])
 
   const beginTransitToNextStop = useCallback(async () => {
     if (isSingleStopMode || !tour || !nextStopId || !nextWaypoint) return false
 
+    const departingStopId = targetStopId
+    const departingGeo = getWaypointGeo(departingStopId)
     const nextIndex = progress.targetStopIndex + 1
-    const nextGeo = getWaypointGeo(nextStopId)
 
     setProgress((current) => ({
       ...current,
@@ -176,8 +195,12 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
       transitLegActive: true,
     }))
 
-    if (debugMode && nextGeo?.debugPosition) {
-      setDebugOverridePosition(nextGeo.debugPosition)
+    if (debugMode) {
+      const origin =
+        departingGeo?.debugPosition ?? departingGeo?.landmark ?? null
+      if (origin?.lat != null && origin?.lng != null) {
+        setDebugOverridePosition({ lat: origin.lat, lng: origin.lng })
+      }
     }
 
     await audioOrchestrator.transitionTo(AUDIO_MODES.TRANSIT, {
@@ -187,7 +210,15 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     })
 
     return true
-  }, [isSingleStopMode, tour, nextStopId, nextWaypoint, progress.targetStopIndex, debugMode])
+  }, [
+    isSingleStopMode,
+    tour,
+    nextStopId,
+    nextWaypoint,
+    targetStopId,
+    progress.targetStopIndex,
+    debugMode,
+  ])
 
   const startTourAmbient = useCallback(async () => {
     const firstWaypoint = isSingleStopMode

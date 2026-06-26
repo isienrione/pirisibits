@@ -11,6 +11,7 @@ import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
 import { getModernCoverUrl } from './utils/sliderMedia'
+import { getTourDirectionsOrigin } from './utils/tourDirections'
 import { getWaypointGeo } from './data/waypointGeo'
 import { LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
@@ -58,6 +59,7 @@ function App() {
   const [mapRetryKey, setMapRetryKey] = useState(0)
   const [mapFocusTarget, setMapFocusTarget] = useState(null)
   const [directionsDestination, setDirectionsDestination] = useState(null)
+  const [directionsOrigin, setDirectionsOrigin] = useState(null)
   const [completionDismissed, setCompletionDismissed] = useState(false)
   const tourStartedAtRef = useRef(null)
 
@@ -172,7 +174,7 @@ function App() {
     setActiveTab(NAV_TABS.TOUR)
   }
 
-  const openDirections = useCallback((landmark, title) => {
+  const openDirections = useCallback((landmark, title, origin = null) => {
     if (!landmark?.lat || !landmark?.lng) return
 
     setDirectionsDestination({
@@ -180,6 +182,15 @@ function App() {
       lng: landmark.lng,
       title: title ?? 'Destination',
     })
+    setDirectionsOrigin(
+      origin?.lat != null && origin?.lng != null
+        ? {
+            lat: origin.lat,
+            lng: origin.lng,
+            title: origin.title ?? null,
+          }
+        : null
+    )
     setMapFocusTarget({
       lat: landmark.lat,
       lng: landmark.lng,
@@ -189,8 +200,8 @@ function App() {
   }, [])
 
   const handleDirections = useCallback(
-    (landmark, title) => {
-      openDirections(landmark, title)
+    (landmark, title, origin = null) => {
+      openDirections(landmark, title, origin)
     },
     [openDirections]
   )
@@ -413,6 +424,7 @@ function App() {
         <Suspense fallback={<TabLoadingFallback />}>
           <DirectionsView
             destination={directionsDestination}
+            origin={directionsOrigin}
             userPosition={session.position}
             locationStatus={locationStatus}
             onBack={() => setActiveTab(NAV_TABS.MAP)}

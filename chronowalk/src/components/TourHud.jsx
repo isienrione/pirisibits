@@ -1,6 +1,7 @@
 import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
+import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
 import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
@@ -229,7 +230,11 @@ const TourHud = ({
         : getWaypointGeo(targetStopId)?.landmark ??
           getWaypointGeo(currentStopId)?.landmark ??
           null
-    onDirections?.(landmark, awaitingFirstStop ? firstStopTitle : routeSubline)
+    const origin =
+      tour && progress.arrivedStopIds.length > 0
+        ? getTourDirectionsOrigin(tour, progress)
+        : null
+    onDirections?.(landmark, awaitingFirstStop ? firstStopTitle : routeSubline, origin)
   }
 
   const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined

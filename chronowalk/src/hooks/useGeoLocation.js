@@ -49,9 +49,12 @@ export const useGeoLocation = ({
   debugMode = isDebugGeo(),
   target = COLOSSEUM,
   debugPosition = null,
+  simulateAtTarget = false,
   geofenceThresholdM = 30,
 } = {}) => {
-  const debugPos = debugPosition ?? { lat: target.lat, lng: target.lng };
+  const debugPos =
+    debugPosition ??
+    (simulateAtTarget && target ? { lat: target.lat, lng: target.lng } : null);
 
   const [state, setState] = useState(JOURNEY_STATE.TRANSIT);
   const [locationStatus, setLocationStatus] = useState(() =>
@@ -59,7 +62,7 @@ export const useGeoLocation = ({
   );
   const [watchKey, setWatchKey] = useState(0);
   const [journey, setJourney] = useState(() =>
-    debugMode
+    debugMode && debugPos
       ? resolveJourneyState(
           debugPos.lat,
           debugPos.lng,
@@ -77,14 +80,16 @@ export const useGeoLocation = ({
   useEffect(() => {
     if (debugMode) {
       setLocationStatus(LOCATION_STATUS.GRANTED);
-      setJourney(
-        resolveJourneyState(
-          debugPos.lat,
-          debugPos.lng,
-          target,
-          geofenceThresholdM
-        )
-      );
+      if (debugPos?.lat != null && debugPos?.lng != null) {
+        setJourney(
+          resolveJourneyState(
+            debugPos.lat,
+            debugPos.lng,
+            target,
+            geofenceThresholdM
+          )
+        );
+      }
       return;
     }
 
@@ -117,7 +122,7 @@ export const useGeoLocation = ({
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, debugPos.lat, debugPos.lng, target, geofenceThresholdM, watchKey]);
+  }, [debugMode, debugPos?.lat, debugPos?.lng, target, geofenceThresholdM, watchKey]);
 
   useEffect(() => {
     if (!journey.status) return;

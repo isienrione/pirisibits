@@ -16,6 +16,7 @@ function formatStepDistance(meters) {
 
 function DirectionsView({
   destination,
+  origin,
   userPosition,
   locationStatus,
   onBack,
@@ -24,6 +25,10 @@ function DirectionsView({
   const [loading, setLoading] = useState(true)
   const [directions, setDirections] = useState(null)
   const [error, setError] = useState(null)
+
+  const routingOrigin =
+    origin?.lat != null && origin?.lng != null ? origin : userPosition
+  const originTitle = origin?.title ?? null
 
   useEffect(() => {
     let cancelled = false
@@ -41,7 +46,7 @@ function DirectionsView({
         return
       }
 
-      if (userPosition?.lat == null || userPosition?.lng == null) {
+      if (routingOrigin?.lat == null || routingOrigin?.lng == null) {
         setError(
           'Enable location access so ChronoWalk can build directions from where you are standing.'
         )
@@ -49,7 +54,7 @@ function DirectionsView({
         return
       }
 
-      if (isSameLocation(userPosition, destination)) {
+      if (isSameLocation(routingOrigin, destination)) {
         setError('You are already at this landmark. Head back to the map to explore the stop.')
         setLoading(false)
         return
@@ -58,7 +63,7 @@ function DirectionsView({
       setLoading(true)
       setError(null)
 
-      const result = await fetchWalkingDirections(userPosition, destination, env.mapboxToken)
+      const result = await fetchWalkingDirections(routingOrigin, destination, env.mapboxToken)
 
       if (cancelled) return
 
@@ -77,15 +82,17 @@ function DirectionsView({
     return () => {
       cancelled = true
     }
-  }, [destination, userPosition?.lat, userPosition?.lng])
+  }, [destination, routingOrigin?.lat, routingOrigin?.lng])
 
   const title = destination?.title ?? 'Destination'
-  const mapsUrl = buildGoogleMapsDirectionsUrl(userPosition, destination)
-  const originLabel = isDebugGeo()
-    ? 'From your simulated position'
-    : locationStatus === 'granted'
-      ? 'From your current location'
-      : 'From your last known location'
+  const mapsUrl = buildGoogleMapsDirectionsUrl(routingOrigin, destination)
+  const originLabel = originTitle
+    ? `From ${originTitle}`
+    : isDebugGeo()
+      ? 'From your simulated position'
+      : locationStatus === 'granted'
+        ? 'From your current location'
+        : 'From your last known location'
 
   return (
     <PageShell>

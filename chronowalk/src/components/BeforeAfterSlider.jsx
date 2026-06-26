@@ -62,8 +62,8 @@ const usePosterProbe = (src) => {
   return ready;
 };
 
-/** Size the frame to true 16:9 from card width, capped for the waypoint card viewport. */
-const useCompareFrameSize = (maxFrameHeightRatio = DEFAULT_MAX_FRAME_HEIGHT_RATIO) => {
+/** Size the compare frame from card width (16:9) or fill the immersive parent. */
+const useCompareFrameSize = (maxFrameHeightRatio = DEFAULT_MAX_FRAME_HEIGHT_RATIO, fillParent = false) => {
   const frameRef = useRef(null);
   const [frameHeight, setFrameHeight] = useState(0);
 
@@ -72,6 +72,15 @@ const useCompareFrameSize = (maxFrameHeightRatio = DEFAULT_MAX_FRAME_HEIGHT_RATI
     if (!element) return undefined;
 
     const update = () => {
+      if (fillParent) {
+        const parent = element.parentElement;
+        const parentHeight = parent?.clientHeight ?? 0;
+        if (parentHeight > 0) {
+          setFrameHeight(parentHeight);
+          return;
+        }
+      }
+
       const width = element.clientWidth;
       if (!width) return;
 
@@ -83,13 +92,16 @@ const useCompareFrameSize = (maxFrameHeightRatio = DEFAULT_MAX_FRAME_HEIGHT_RATI
     update();
     const observer = new ResizeObserver(update);
     observer.observe(element);
+    if (fillParent && element.parentElement) {
+      observer.observe(element.parentElement);
+    }
     window.addEventListener('resize', update);
 
     return () => {
       observer.disconnect();
       window.removeEventListener('resize', update);
     };
-  }, [maxFrameHeightRatio]);
+  }, [maxFrameHeightRatio, fillParent]);
 
   return { frameRef, frameHeight };
 };
@@ -274,15 +286,16 @@ const BeforeAfterSlider = ({
   alignmentMode = false,
   maxFrameHeightRatio,
   embedded = false,
+  onRequestExit = null,
 }) => {
   const [immersive, setImmersive] = useState(false);
   const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
-  const immersiveHeightRatio = immersive ? 0.78 : maxFrameHeightRatio;
+  const immersiveHeightRatio = immersive ? 0.92 : maxFrameHeightRatio;
   const resolvedMaxFrameHeightRatio =
     immersiveHeightRatio ??
     (alignmentMode ? ALIGNMENT_MAX_FRAME_HEIGHT_RATIO : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
-  const { frameRef, frameHeight } = useCompareFrameSize(resolvedMaxFrameHeightRatio);
+  const { frameRef, frameHeight } = useCompareFrameSize(resolvedMaxFrameHeightRatio, immersive);
   const modernVideoRef = useRef(null);
   const ancientVideoRef = useRef(null);
   const compareReadyRef = useRef(false);
@@ -775,6 +788,13 @@ const BeforeAfterSlider = ({
     return 'Drag to reveal the past.';
   };
 
+  const closeImmersive = () => setImmersive(false);
+
+  const exitCompareView = () => {
+    closeImmersive();
+    onRequestExit?.();
+  };
+
   const sliderShell = (
     <div
       className={
@@ -786,30 +806,55 @@ const BeforeAfterSlider = ({
       }
     >
       {immersive ? (
-        <div className="flex shrink-0 items-center justify-between border-b border-limestone/50 bg-warm-white/95 px-4 py-3">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-limestone/50 bg-warm-white/95 px-3 py-3 sm:px-4">
           <button
             type="button"
-            onClick={() => setImmersive(false)}
-            aria-label="Close immersive compare view"
+            onClick={exitCompareView}
+            aria-label="Back to landmark card"
             className={cn(
-              'min-h-11 rounded-full border border-limestone bg-sand/60 px-4 py-2.5 text-xs font-semibold text-deep-slate',
+              'min-h-11 rounded-full border border-limestone bg-sand/60 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
+              focusRing
+            )}
+          >
+            Back
+          </button>
+          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
+            Immersive compare
+          </p>
+          <button
+            type="button"
+            onClick={closeImmersive}
+            aria-label="Close full screen compare view"
+            className={cn(
+              'min-h-11 rounded-full border border-limestone bg-warm-white/90 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
               focusRing
             )}
           >
             Close
           </button>
-          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
-            Immersive compare
-          </p>
-          <span className="w-14" aria-hidden="true" />
         </div>
       ) : (
         <div
           className={cn(
-            'flex justify-end border-b border-limestone/50 px-3 py-2',
+            'flex items-center justify-between gap-2 border-b border-limestone/50 px-3 py-2',
             embedded ? 'bg-warm-white/95' : 'bg-sand/40'
           )}
         >
+          {embedded && onRequestExit ? (
+            <button
+              type="button"
+              onClick={exitCompareView}
+              aria-label="Back to landmark card"
+              className={cn(
+                'min-h-11 rounded-full border border-limestone/70 bg-warm-white/90 px-3 py-2.5 text-xs font-semibold text-deep-slate shadow-sm',
+                focusRing
+              )}
+            >
+              Back to landmark
+            </button>
+          ) : (
+            <span className="w-2" aria-hidden="true" />
+          )}
           <button
             type="button"
             onClick={() => setImmersive(true)}
@@ -824,7 +869,7 @@ const BeforeAfterSlider = ({
         </div>
       )}
 
-      <div className={immersive ? 'min-h-0 flex-1' : ''}>{renderSliderFrame()}</div>
+      <div className={immersive ? 'flex min-h-0 flex-1 flex-col' : ''}>{renderSliderFrame()}</div>
 
       <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
         {renderCaption()}
@@ -834,8 +879,8 @@ const BeforeAfterSlider = ({
 
   if (immersive) {
     return (
-      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate/95 pt-safe pb-safe backdrop-blur-sm">
-        <div className="mx-auto flex h-full w-full max-w-5xl flex-col px-2 sm:px-4">
+      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
+        <div className="flex h-full w-full min-h-0 flex-col">
           {sliderShell}
         </div>
       </div>
