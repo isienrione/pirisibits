@@ -1,6 +1,8 @@
 /**
  * Fetch a walking route GeoJSON line between two landmarks via Mapbox Directions.
  */
+import { normalizeWalkingSteps } from '../utils/walkingDirections'
+
 export const fetchWalkingRoute = async (from, to, accessToken) => {
   const result = await fetchWalkingDirections(from, to, accessToken)
   return result?.geometry ?? null
@@ -15,7 +17,8 @@ export const fetchWalkingDirections = async (from, to, accessToken) => {
   const coordinates = `${from.lng},${from.lat};${to.lng},${to.lat}`
   const url =
     `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}` +
-    `?geometries=geojson&overview=full&steps=true&language=en&access_token=${encodeURIComponent(accessToken)}`
+    `?geometries=geojson&overview=full&steps=true&language=en&voice_units=metric` +
+    `&access_token=${encodeURIComponent(accessToken)}`
 
   try {
     const response = await fetch(url)
@@ -26,17 +29,21 @@ export const fetchWalkingDirections = async (from, to, accessToken) => {
     if (!route) return null
 
     const leg = route.legs?.[0]
+
     return {
       geometry: route.geometry ?? null,
       distanceM: leg?.distance ?? route.distance ?? 0,
       durationSec: leg?.duration ?? route.duration ?? 0,
-      steps:
+      steps: normalizeWalkingSteps(
         leg?.steps?.map((step) => ({
           instruction: step.maneuver?.instruction ?? 'Continue',
           distanceM: step.distance ?? 0,
           durationSec: step.duration ?? 0,
           type: step.maneuver?.type ?? 'continue',
-        })) ?? [],
+        })) ?? []
+      ),
+      origin: { lat: from.lat, lng: from.lng },
+      destination: { lat: to.lat, lng: to.lng },
     }
   } catch (error) {
     console.warn('fetchWalkingDirections: Mapbox Directions failed.', error)

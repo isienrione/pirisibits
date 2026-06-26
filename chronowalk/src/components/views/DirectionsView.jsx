@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
+import { isDebugGeo } from '../../config/env'
 import { env } from '../../config/env'
 import { fetchWalkingDirections } from '../../services/fetchWalkingRoute'
 import { estimateWalkMinutes } from '../../utils/tourStats'
+import {
+  buildGoogleMapsDirectionsUrl,
+  isSameLocation,
+} from '../../utils/walkingDirections'
 import { Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
 
 function formatStepDistance(meters) {
@@ -9,7 +14,13 @@ function formatStepDistance(meters) {
   return `${(meters / 1000).toFixed(1)} km`
 }
 
-function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps }) {
+function DirectionsView({
+  destination,
+  userPosition,
+  locationStatus,
+  onBack,
+  onOpenExternalMaps,
+}) {
   const [loading, setLoading] = useState(true)
   const [directions, setDirections] = useState(null)
   const [error, setError] = useState(null)
@@ -30,15 +41,24 @@ function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps 
         return
       }
 
+      if (userPosition?.lat == null || userPosition?.lng == null) {
+        setError(
+          'Enable location access so ChronoWalk can build directions from where you are standing.'
+        )
+        setLoading(false)
+        return
+      }
+
+      if (isSameLocation(userPosition, destination)) {
+        setError('You are already at this landmark. Head back to the map to explore the stop.')
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
 
-      const from =
-        userPosition?.lat != null && userPosition?.lng != null
-          ? userPosition
-          : destination
-
-      const result = await fetchWalkingDirections(from, destination, env.mapboxToken)
+      const result = await fetchWalkingDirections(userPosition, destination, env.mapboxToken)
 
       if (cancelled) return
 
@@ -60,10 +80,12 @@ function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps 
   }, [destination, userPosition?.lat, userPosition?.lng])
 
   const title = destination?.title ?? 'Destination'
-  const mapsUrl =
-    destination?.lat && destination?.lng
-      ? `https://www.google.com/maps/dir/?api=1&destination=${destination.lat},${destination.lng}&travelmode=walking`
-      : null
+  const mapsUrl = buildGoogleMapsDirectionsUrl(userPosition, destination)
+  const originLabel = isDebugGeo()
+    ? 'From your simulated position'
+    : locationStatus === 'granted'
+      ? 'From your current location'
+      : 'From your last known location'
 
   return (
     <PageShell>
@@ -88,7 +110,10 @@ function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps 
       ) : (
         <>
           <GlassPanel className="mt-6 p-5">
-            <div className="flex items-center justify-between gap-3 text-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta">
+              {originLabel}
+            </p>
+            <div className="mt-3 flex items-center justify-between gap-3 text-sm">
               <span className="font-semibold text-deep-slate">
                 {formatStepDistance(directions.distanceM)}
               </span>
@@ -119,7 +144,7 @@ function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps 
             </ol>
           </GlassPanel>
 
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 flex flex-col gap-3 pb-4">
             <Button fullWidth className={ctaInCard} onClick={onBack}>
               Back to map
             </Button>

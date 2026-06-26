@@ -1,5 +1,6 @@
 const AUDIO_ENABLED_KEY = 'chronowalk-audio-enabled'
 const DEBUG_MAP_KEY = 'chronowalk-debug-map'
+const PLAYER_ICONS_KEY = 'chronowalk-player-icons'
 
 const readBool = (key, fallback = false) => {
   if (typeof window === 'undefined') return fallback
@@ -31,3 +32,7 @@ export const writeAudioEnabled = (enabled) => writeBool(AUDIO_ENABLED_KEY, enabl
 export const readDebugMapPreference = () => readBool(DEBUG_MAP_KEY, false)
 
 export const writeDebugMapPreference = (enabled) => writeBool(DEBUG_MAP_KEY, enabled)
+
+export const readPlayerIconsPref = () => readBool(PLAYER_ICONS_KEY, false)
+
+export const writePlayerIconsPref = (enabled) => writeBool(PLAYER_ICONS_KEY, enabled)

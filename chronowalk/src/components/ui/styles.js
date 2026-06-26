@@ -1,6 +1,6 @@
 /** Shared layout and surface tokens for luxury-travel UI cohesion. */
 export const pageShell =
-  'h-full overflow-y-auto bg-gradient-to-b from-warm-white via-sand/15 to-limestone/10 pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-8'
+  'h-full overflow-y-auto bg-gradient-to-b from-warm-white via-sand/15 to-limestone/10 pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
 
 export const pageContainer = 'mx-auto max-w-2xl px-6 pb-safe pt-safe lg:pt-10'
 

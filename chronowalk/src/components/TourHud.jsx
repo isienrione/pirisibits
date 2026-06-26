@@ -148,7 +148,6 @@ const TourHud = ({
   onContinueTour,
   onDirections,
   hasBottomNav = false,
-  hasAudioBar = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
   const currentStopTitle =
@@ -233,11 +232,7 @@ const TourHud = ({
     onDirections?.(landmark, awaitingFirstStop ? firstStopTitle : routeSubline)
   }
 
-  const bottomOffset = hasBottomNav
-    ? hasAudioBar
-      ? 'max(9.5rem, calc(env(safe-area-inset-bottom) + 8.75rem))'
-      : 'max(5.5rem, env(safe-area-inset-bottom))'
-    : undefined
+  const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined
 
   const routeAction = showContinue ? (
     <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>

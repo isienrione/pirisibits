@@ -28,6 +28,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    --audio-bar-inset: 0px;
+    --bottom-stack-inset: 5.5rem;
   }
 
   body {
