@@ -1,5 +1,5 @@
 import { NAV_ITEMS } from './navConfig'
-import { cn, focusRing, metaLabel } from '../ui'
+import { cn, focusRing, metaLabel, motionTap } from '../ui'
 import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
 
 function NavButton({ item, active, onSelect, layout }) {
@@ -17,10 +17,11 @@ function NavButton({ item, active, onSelect, layout }) {
       aria-label={label}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'relative flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl transition-colors',
+        'relative flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl transition-colors duration-150 ease-motion-out',
+        motionTap,
         focusRing,
         layout === 'side' ? 'h-16 w-full px-2' : 'min-w-0 flex-1 px-2 py-2.5',
-        active ? 'font-semibold text-gold' : 'font-medium text-soft-slate hover:text-deep-slate'
+        active ? 'font-medium text-gold' : 'font-medium text-soft-slate hover:text-deep-slate'
       )}
     >
       {active ? (

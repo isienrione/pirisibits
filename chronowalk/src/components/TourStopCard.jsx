@@ -1,13 +1,20 @@
-import { getModernCoverUrl } from '../utils/sliderMedia'
+import { getModernCoverUrl, getModernPosterUrl } from '../utils/sliderMedia'
 import {
   Button,
+  FadeImage,
   GlassPanel,
   cn,
   focusRing,
+  motionCardRise,
   statusArrived,
   statusCurrent,
   statusLocked,
   statusPill,
+  LockIcon,
+  typeBodySm,
+  typeBodySmMuted,
+  typeCaption,
+  typeSectionTitleSm,
 } from './ui'
 
 const STATUS_META = {
@@ -16,18 +23,8 @@ const STATUS_META = {
   upcoming: { label: 'Ahead', className: statusLocked },
 }
 
-function LockIcon() {
-  return (
-    <svg className="h-4 w-4 text-soft-slate" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.75" />
-      <path
-        d="M8 11V8a4 4 0 0 1 8 0v3"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
+function LockIconWrapper() {
+  return <LockIcon size="sm" className="text-soft-slate" />
 }
 
 export function TourStopCard({
@@ -49,7 +46,8 @@ export function TourStopCard({
   return (
     <GlassPanel
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
+        motionCardRise,
+        'overflow-hidden transition-colors duration-250 ease-motion-out hover:border-gold/40 hover:shadow-glass-lg',
         isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
       )}
     >
@@ -62,25 +60,25 @@ export function TourStopCard({
           )}
         >
           {posterUrl ? (
-            <img
+            <FadeImage
               src={posterUrl}
-              alt=""
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
+              placeholderSrc={waypoint ? getModernPosterUrl(waypoint) : undefined}
+              className="h-full w-full"
+              imgClassName="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
-              Preview soon
+            <div className="flex h-full min-h-[7rem] items-center justify-center bg-gradient-to-br from-sand to-limestone/50 px-2 text-center">
+              <p className={typeCaption}>Preview soon</p>
             </div>
           )}
           {isUpcoming ? (
             <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
-              <LockIcon />
+              <LockIconWrapper />
             </div>
           ) : null}
           <span
             className={cn(
-              'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
+              'absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full text-caption font-medium shadow-sm',
               isCurrent
                 ? 'bg-gold/90 text-warm-white ring-2 ring-gold/30'
                 : 'bg-warm-white/92 text-deep-slate'
@@ -90,27 +88,27 @@ export function TourStopCard({
           </span>
         </div>
 
-        <div className={cn('min-w-0 flex-1', compact ? 'p-4' : 'px-4 py-4 pr-5')}>
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-lg font-semibold leading-tight text-deep-slate">
+        <div className={cn('min-w-0 flex-1', compact ? 'p-5' : 'px-5 py-5 pr-6')}>
+          <div className="flex items-start justify-between gap-3">
+            <h3 className={typeSectionTitleSm}>
               {stop.title}
             </h3>
             <span
               className={cn(
                 statusPill,
-                'shrink-0 gap-1 px-2 py-0.5 text-[0.65rem] uppercase tracking-wide',
+                'shrink-0 gap-1 px-2.5 py-1 uppercase tracking-wide',
                 status.className
               )}
             >
-              {isUpcoming ? <LockIcon /> : null}
+              {isUpcoming ? <LockIconWrapper /> : null}
               {status.label}
             </span>
           </div>
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-soft-slate">{subtitle}</p>
+          <p className={cn(typeBodySmMuted, 'mt-3 line-clamp-2')}>{subtitle}</p>
           <Button
             variant={isVisited || isCurrent ? 'primary' : 'secondary'}
             size="sm"
-            className={cn('mt-4', focusRing)}
+            className={cn('mt-5', focusRing)}
             onClick={() => onOpen?.(stop.id)}
           >
             {isVisited ? 'Revisit' : actionLabel}

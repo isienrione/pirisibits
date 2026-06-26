@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import { EmptyState, Skeleton, ChevronsHorizontalIcon, cn } from './ui';
 import { focusRing } from './ui/focusRing';
-import { cn } from './ui/cn';
 import { metaLabel } from './ui/styles';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
@@ -167,9 +167,7 @@ function CompareSliderHandle() {
         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-warm-white bg-gold shadow-glass"
         aria-hidden="true"
       >
-        <svg className="h-5 w-5 text-warm-white" viewBox="0 0 24 24" fill="none">
-          <path d="M8 8 4 12l4 4M16 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronsHorizontalIcon size="md" className="text-warm-white" />
       </div>
       <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
     </div>
@@ -189,16 +187,11 @@ function SliderEraLabels() {
   );
 }
 
-function SliderLoadingSkeleton({ reducedMotion = false }) {
+function SliderLoadingSkeleton() {
   return (
     <div className="absolute inset-0 z-20 overflow-hidden bg-gradient-to-br from-sand via-limestone/50 to-warm-white">
-      <div
-        className={cn(
-          'absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]',
-          !reducedMotion && 'animate-pulse'
-        )}
-      />
-      <div className="flex h-full flex-col items-center justify-center px-6 text-center">
+      <Skeleton className="absolute inset-0 rounded-none" />
+      <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
         <p className="text-sm font-medium text-deep-slate">Preparing the time portal…</p>
         <p className="mt-2 text-xs text-soft-slate">Loading matched views</p>
       </div>
@@ -206,13 +199,10 @@ function SliderLoadingSkeleton({ reducedMotion = false }) {
   );
 }
 
-function MediaFailFallback({ title = 'Media unavailable' }) {
+function MediaFailFallback() {
   return (
-    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6 text-center">
-      <p className="font-display text-lg font-semibold text-deep-slate">{title}</p>
-      <p className="mt-2 max-w-xs text-sm text-soft-slate">
-        Check your connection and try again, or continue with the audio story.
-      </p>
+    <div className="flex h-full min-h-[12rem] items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6">
+      <EmptyState preset="mediaUnavailable" className="border-0 bg-transparent shadow-none" />
     </div>
   );
 }
@@ -747,11 +737,11 @@ const BeforeAfterSlider = ({
             {renderAlignmentView()}
           </div>
         ) : modernLayerFailed ? (
-          <MediaFailFallback title="Modern view unavailable" />
+          <MediaFailFallback />
         ) : (
           <>
             <SliderEraLabels />
-            {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
+            {isMediaLoading ? <SliderLoadingSkeleton /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%', touchAction: 'none' }}
               itemOne={renderModernItem()}
@@ -765,7 +755,7 @@ const BeforeAfterSlider = ({
         )
       ) : (
         <div className="aspect-video w-full bg-gradient-to-br from-sand to-limestone/50">
-          <SliderLoadingSkeleton reducedMotion={reducedMotion} />
+          <SliderLoadingSkeleton />
         </div>
       )}
     </div>

@@ -40,6 +40,7 @@ class AudioOrchestrator {
     this.wantsArrivalPlayback = false;
     this.playbackInterrupted = false;
     this.suppressPauseDetection = false;
+    this.audioBuffering = false;
 
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleArrivalPause = this.handleArrivalPause.bind(this);
@@ -98,6 +99,7 @@ class AudioOrchestrator {
           wantsArrivalPlayback: this.wantsArrivalPlayback,
           isTourNarrationPlaying,
           isTourNarrationActive,
+          isAudioBuffering: this.audioBuffering,
         },
       })
     );
@@ -139,6 +141,11 @@ class AudioOrchestrator {
     }
 
     return false;
+  }
+
+  setAudioBuffering(buffering) {
+    this.audioBuffering = buffering;
+    this.emitPlaybackState();
   }
 
   setPlaybackInterrupted(interrupted) {
@@ -263,6 +270,7 @@ class AudioOrchestrator {
     void this.fadeVolume(this.transitPlayer, 0, FADE_DURATION_MS);
 
     try {
+      this.setAudioBuffering(true);
       this.arrivalPlayer.volume = 0;
 
       if (this.arrivalPlayer.src !== this.audioUrls.arrival) {
@@ -270,11 +278,18 @@ class AudioOrchestrator {
       }
 
       await waitForCanPlayThrough(this.arrivalPlayer);
-      if (generation !== this.syncGeneration) return;
+      if (generation !== this.syncGeneration) {
+        this.setAudioBuffering(false);
+        return;
+      }
 
       await this.arrivalPlayer.play();
-      if (generation !== this.syncGeneration) return;
+      if (generation !== this.syncGeneration) {
+        this.setAudioBuffering(false);
+        return;
+      }
 
+      this.setAudioBuffering(false);
       this.wantsArrivalPlayback = true;
       this.setPlaybackInterrupted(false);
 
@@ -285,6 +300,7 @@ class AudioOrchestrator {
         this.scheduleVisualSync(generation);
       }
     } catch (error) {
+      this.setAudioBuffering(false);
       console.warn('Audio playback blocked. User needs to interact first.', error);
     }
   }

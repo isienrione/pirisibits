@@ -1,4 +1,10 @@
 import { cn } from './cn'
+import {
+  blockSpacing,
+  typeBodySmMuted,
+  typeEyebrow,
+  typeSectionTitle,
+} from './typography'
 
 export function SectionHeader({
   eyebrow,
@@ -13,14 +19,12 @@ export function SectionHeader({
 
   return (
     <header className={cn(alignClass, className)}>
-      {eyebrow ? (
-        <p className="text-eyebrow uppercase text-terracotta">{eyebrow}</p>
-      ) : null}
+      {eyebrow ? <p className={typeEyebrow}>{eyebrow}</p> : null}
       {title ? (
         <h2
           className={cn(
-            'font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
-            eyebrow && 'mt-2',
+            typeSectionTitle,
+            eyebrow && 'mt-3',
             titleClassName
           )}
         >
@@ -28,7 +32,7 @@ export function SectionHeader({
         </h2>
       ) : null}
       {subtitle ? (
-        <p className="mt-3 text-sm leading-relaxed text-soft-slate">{subtitle}</p>
+        <p className={cn(typeBodySmMuted, blockSpacing)}>{subtitle}</p>
       ) : null}
     </header>
   )
