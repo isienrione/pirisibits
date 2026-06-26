@@ -99,7 +99,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           src={heroSrc}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-cover object-[center_22%]"
+          className="h-full w-full object-cover object-[center_38%]"
           onError={handleHeroError}
         />
         <div
