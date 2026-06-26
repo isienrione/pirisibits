@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useOpenHaptic } from '../../hooks/useHapticTriggers'
+import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
 
 export function BottomSheet({
   open = false,
@@ -18,6 +20,12 @@ export function BottomSheet({
 }) {
   const reducedMotion = useReducedMotion()
   const sheetRef = useRef(null)
+  useOpenHaptic(open)
+
+  const handleClose = () => {
+    triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+    onHandleClick?.()
+  }
 
   useEffect(() => {
     if (!open) return undefined
@@ -25,7 +33,7 @@ export function BottomSheet({
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onEscape?.() ?? onHandleClick?.()
+        onEscape?.() ?? handleClose()
       }
     }
 
@@ -75,7 +83,7 @@ export function BottomSheet({
         <div className="flex shrink-0 items-center justify-center px-5 pt-2">
           <button
             type="button"
-            onClick={onHandleClick}
+            onClick={handleClose}
             className={cn(
               'flex min-h-11 min-w-[4.5rem] items-center justify-center rounded-full px-4 py-3',
               focusRing

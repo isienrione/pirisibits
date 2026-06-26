@@ -1,13 +1,19 @@
 import { NAV_ITEMS } from './navConfig'
 import { cn, focusRing, metaLabel } from '../ui'
+import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
 
 function NavButton({ item, active, onSelect, layout }) {
   const { Icon, label, id } = item
 
+  const handleSelect = () => {
+    if (!active) triggerHaptic(HAPTIC_KIND.SELECTION)
+    onSelect(id)
+  }
+
   return (
     <button
       type="button"
-      onClick={() => onSelect(id)}
+      onClick={handleSelect}
       aria-label={label}
       aria-current={active ? 'page' : undefined}
       className={cn(

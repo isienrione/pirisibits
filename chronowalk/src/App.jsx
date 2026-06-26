@@ -21,6 +21,8 @@ import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
 import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
+import { useCelebrationHaptic, useLocationHaptics } from './hooks/useHapticTriggers'
+import { HAPTIC_KIND, triggerHaptic } from './utils/haptics'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
@@ -119,6 +121,7 @@ function App() {
 
       const revealTimer = window.setTimeout(() => {
         setActiveWaypoint(waypoint)
+        triggerHaptic(HAPTIC_KIND.ARRIVAL_UNLOCK)
         setLiveAnnouncement(
           `${waypoint.title} unlocked. Audio story and historical reveal are ready.`
         )
@@ -156,6 +159,7 @@ function App() {
 
     if (!justArrived) return undefined
 
+    triggerHaptic(HAPTIC_KIND.ARRIVAL_PULSE)
     session.markArrived()
     return revealWaypointCard(session.currentWaypoint)
   }, [
@@ -191,6 +195,7 @@ function App() {
           ? `Opened ${waypoint.title} for remote preview.`
           : `Opened ${waypoint.title}.`
       )
+      triggerHaptic(HAPTIC_KIND.SELECTION)
     },
     [session.waypointsById]
   )
@@ -222,6 +227,7 @@ function App() {
 
   const handleConfirmStopOpen = useCallback(() => {
     if (!stopOpenPrompt?.stopId) return
+    triggerHaptic(HAPTIC_KIND.SELECTION)
     openWaypointCard(stopOpenPrompt.stopId, 'remote')
     setStopOpenPrompt(null)
   }, [openWaypointCard, stopOpenPrompt])
@@ -303,6 +309,8 @@ function App() {
     return session.locationStatus
   }, [session.locationStatus])
 
+  useLocationHaptics(locationStatus)
+
   const showLocationNotice =
     hasInteracted &&
     !isDebugGeo() &&
@@ -314,6 +322,8 @@ function App() {
     !activeWaypoint &&
     cardDismissed
 
+  useCelebrationHaptic(showTourComplete)
+
   const walkedMeters = useMemo(
     () => estimateWalkedDistanceMeters(tour, session.progress.arrivedStopIds),
     [tour, session.progress.arrivedStopIds]
@@ -323,8 +333,12 @@ function App() {
   const audioPosterUrl = audioWaypoint ? getModernCoverUrl(audioWaypoint) : null
   const cardIsOpen = Boolean(activeWaypoint)
 
-  const handleToggleTourAudio = useCallback(() => {
-    void audioOrchestrator.toggleTourNarration()
+  const handleToggleTourAudio = useCallback(async () => {
+    const wasPlaying = audioOrchestrator.isTourNarrationPlaying()
+    await audioOrchestrator.toggleTourNarration()
+    if (!wasPlaying && audioOrchestrator.isTourNarrationPlaying()) {
+      triggerHaptic(HAPTIC_KIND.SUCCESS)
+    }
   }, [])
 
   const handleStopTourAudio = useCallback(() => {

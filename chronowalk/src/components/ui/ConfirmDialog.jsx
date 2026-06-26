@@ -3,6 +3,7 @@ import { Button } from './Button'
 import { GlassPanel } from './GlassPanel'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
+import { useOpenHaptic } from '../../hooks/useHapticTriggers'
 
 export function ConfirmDialog({
   open,
@@ -15,6 +16,7 @@ export function ConfirmDialog({
 }) {
   const titleId = useId()
   const descriptionId = useId()
+  useOpenHaptic(open)
 
   useEffect(() => {
     if (!open) return undefined

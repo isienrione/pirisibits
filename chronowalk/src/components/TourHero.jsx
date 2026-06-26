@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
+import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { Button, GlassPanel, cn } from './ui'
 
 const APP_NAME = 'ChronoWalk'
@@ -148,7 +149,12 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
               fullWidth
               className="sm:flex-1"
               aria-expanded={previewOpen}
-              onClick={() => setPreviewOpen((open) => !open)}
+              onClick={() =>
+                setPreviewOpen((open) => {
+                  if (!open) triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+                  return !open
+                })
+              }
             >
               {previewOpen ? 'Hide stops' : 'Preview stops'}
             </Button>

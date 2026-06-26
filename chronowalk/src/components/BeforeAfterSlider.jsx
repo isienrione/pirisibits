@@ -7,6 +7,10 @@ import { cn } from './ui/cn';
 import { metaLabel } from './ui/styles';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
+import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
+
+const SLIDER_SNAP_POSITIONS = [0, 50, 100];
+const SLIDER_SNAP_TOLERANCE = 4;
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -301,6 +305,9 @@ const BeforeAfterSlider = ({
   const compareReadyRef = useRef(false);
   const loopTimerRef = useRef(null);
   const loopPhaseRef = useRef(false);
+  const sliderPositionRef = useRef(50);
+  const isDraggingSliderRef = useRef(false);
+  const lastSnapRef = useRef(null);
   const modernEndedRef = useRef(false);
   const ancientEndedRef = useRef(false);
   const ancientMedia = useMediaProbe(historicImg);
@@ -318,6 +325,38 @@ const BeforeAfterSlider = ({
   const resolvedPosterAt = resolveSliderPosterAtSec(posterAtSec);
   const resolvedLoopMs = resolveSliderPostAnimationLoopMs(postAnimationLoopMs);
   const usingVideo = modernIsVideo || ancientIsVideo;
+
+  const handleSliderPositionChange = useCallback((position) => {
+    sliderPositionRef.current = position;
+    isDraggingSliderRef.current = true;
+  }, []);
+
+  const handleSliderRelease = useCallback(() => {
+    if (!isDraggingSliderRef.current) return;
+    isDraggingSliderRef.current = false;
+
+    const position = sliderPositionRef.current;
+    const snapped = SLIDER_SNAP_POSITIONS.find(
+      (point) => Math.abs(position - point) <= SLIDER_SNAP_TOLERANCE
+    );
+
+    if (snapped != null && snapped !== lastSnapRef.current) {
+      lastSnapRef.current = snapped;
+      triggerHaptic(HAPTIC_KIND.SELECTION);
+    }
+  }, []);
+
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return undefined;
+
+    frame.addEventListener('pointerup', handleSliderRelease);
+    frame.addEventListener('pointercancel', handleSliderRelease);
+    return () => {
+      frame.removeEventListener('pointerup', handleSliderRelease);
+      frame.removeEventListener('pointercancel', handleSliderRelease);
+    };
+  }, [handleSliderRelease, frameHeight]);
 
   const postersAvailable =
     modernPosterUrl &&
@@ -720,6 +759,7 @@ const BeforeAfterSlider = ({
               handle={<CompareSliderHandle />}
               onlyHandleDraggable={false}
               changePositionOnHover={false}
+              onPositionChange={handleSliderPositionChange}
             />
           </>
         )

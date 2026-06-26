@@ -6,6 +6,8 @@ import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard } from
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useOpenHaptic } from '../hooks/useHapticTriggers';
+import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 import {
@@ -200,6 +202,8 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     return () => cancelAnimationFrame(frame);
   }, [waypoint]);
 
+  useOpenHaptic(showSlider);
+
   useEffect(() => {
     const onAudioSync = (event) => {
       const generation = event.detail?.generation;
@@ -263,6 +267,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         },
         { force: true }
       );
+      triggerHaptic(HAPTIC_KIND.SUCCESS);
     } catch (err) {
       console.error('Failed to play audio guide:', err);
       setMediaError('Could not start audio. Tap again or check your connection.');
@@ -355,7 +360,11 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     <details
       className="mt-6 border-t border-limestone/60 pt-4"
       open={advancedOpen}
-      onToggle={(event) => setAdvancedOpen(event.currentTarget.open)}
+      onToggle={(event) => {
+        const nextOpen = event.currentTarget.open;
+        setAdvancedOpen(nextOpen);
+        if (nextOpen) triggerHaptic(HAPTIC_KIND.SOFT_TAP);
+      }}
     >
       <summary className="cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate">
         Advanced
