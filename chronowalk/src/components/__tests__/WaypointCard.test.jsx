@@ -121,5 +121,12 @@ describe('WaypointCard', () => {
 
     expect(screen.getByRole('button', { name: 'Compare then & now' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Continue walking' })).toBeInTheDocument();
+    expect(screen.getByText(/captions & transcript/i)).toBeInTheDocument();
+  });
+
+  it('exposes dialog semantics for the landmark sheet', () => {
+    render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
+
+    expect(screen.getByRole('dialog', { name: /the colosseum/i })).toBeInTheDocument();
   });
 });

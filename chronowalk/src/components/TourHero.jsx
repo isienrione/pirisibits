@@ -109,11 +109,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           onError={handleHeroError}
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/20 to-warm-white"
+          className="absolute inset-0 bg-gradient-to-b from-warm-white/20 via-warm-white/45 to-warm-white"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-deep-slate/25 via-transparent to-transparent"
+          className="absolute inset-0 bg-gradient-to-t from-deep-slate/45 via-deep-slate/10 to-transparent"
           aria-hidden="true"
         />
       </div>

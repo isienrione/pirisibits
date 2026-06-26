@@ -14,6 +14,7 @@ describe('SettingsView', () => {
         onAudioEnabledChange={vi.fn()}
         debugMapEnabled={false}
         onDebugMapEnabledChange={vi.fn()}
+        onRetryLocation={vi.fn()}
       />
     )
 
@@ -36,11 +37,30 @@ describe('SettingsView', () => {
         onAudioEnabledChange={onAudioEnabledChange}
         debugMapEnabled={false}
         onDebugMapEnabledChange={vi.fn()}
+        onRetryLocation={vi.fn()}
       />
     )
 
     fireEvent.click(screen.getByRole('switch', { name: /toggle audio stories/i }))
 
     expect(onAudioEnabledChange).toHaveBeenCalledWith(false)
+  })
+
+  it('shows location recovery guidance when permission is denied', () => {
+    render(
+      <SettingsView
+        locationStatus="denied"
+        journeyState={JOURNEY_STATE.TRANSIT}
+        distance={null}
+        audioEnabled
+        onAudioEnabledChange={vi.fn()}
+        debugMapEnabled={false}
+        onDebugMapEnabledChange={vi.fn()}
+        onRetryLocation={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText(/location access is off/i)).toBeInTheDocument()
+    expect(screen.getByText('Permission denied')).toBeInTheDocument()
   })
 })

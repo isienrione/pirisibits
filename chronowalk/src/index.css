@@ -137,6 +137,10 @@
     .animate-sheet-rise {
       animation: none;
     }
+
+    .animate-pulse {
+      animation: none;
+    }
   }
 }
 

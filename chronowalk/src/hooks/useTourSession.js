@@ -71,7 +71,7 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
 
   const debugPosition = debugOverridePosition ?? targetGeo?.debugPosition ?? null
 
-  const { position, state, distance } = useGeoLocation({
+  const { position, state, distance, locationStatus, retryLocation } = useGeoLocation({
     target: targetGeo?.landmark,
     debugPosition,
     geofenceThresholdM: targetGeo?.geofenceThresholdM ?? 30,
@@ -219,6 +219,8 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     position,
     state,
     distance,
+    locationStatus,
+    retryLocation,
     hasArrivedAtTarget,
     markArrived,
     beginTransitToNextStop,

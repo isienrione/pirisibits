@@ -1,4 +1,4 @@
-import { JOURNEY_STATE } from '../hooks/useGeoLocation'
+import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { Button, GlassPanel, cn } from './ui'
 
@@ -100,6 +100,7 @@ const TourHud = ({
   transitLegActive,
   state,
   distance,
+  locationStatus,
   waypointExploreActive,
   onContinueTour,
   hasBottomNav = false,
@@ -147,7 +148,15 @@ const TourHud = ({
   } else {
     routeHeadline = 'Heading to'
     routeSubline = currentStopTitle
-    statusLabel = distanceLabel ? 'Walking' : 'Locating you…'
+    if (locationStatus === LOCATION_STATUS.DENIED) {
+      statusLabel = 'Location access needed'
+    } else if (locationStatus === LOCATION_STATUS.UNAVAILABLE) {
+      statusLabel = 'GPS unavailable'
+    } else if (locationStatus === LOCATION_STATUS.WAITING) {
+      statusLabel = 'Locating you…'
+    } else {
+      statusLabel = distanceLabel ? 'Walking' : 'Locating you…'
+    }
     statusTone = 'walking'
   }
 

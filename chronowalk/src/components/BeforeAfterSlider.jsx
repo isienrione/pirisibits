@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import { focusRing } from './ui/focusRing';
+import { cn } from './ui/cn';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 
@@ -170,10 +173,15 @@ function SliderEraLabels() {
   );
 }
 
-function SliderLoadingSkeleton() {
+function SliderLoadingSkeleton({ reducedMotion = false }) {
   return (
     <div className="absolute inset-0 z-20 overflow-hidden bg-gradient-to-br from-sand via-limestone/50 to-warm-white">
-      <div className="absolute inset-0 animate-pulse bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]" />
+      <div
+        className={cn(
+          'absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]',
+          !reducedMotion && 'animate-pulse'
+        )}
+      />
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
         <p className="text-sm font-medium text-deep-slate">Preparing the time portal…</p>
         <p className="mt-2 text-xs text-soft-slate">Loading matched views</p>
@@ -267,6 +275,7 @@ const BeforeAfterSlider = ({
   maxFrameHeightRatio,
 }) => {
   const [immersive, setImmersive] = useState(false);
+  const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const immersiveHeightRatio = immersive ? 0.78 : maxFrameHeightRatio;
   const resolvedMaxFrameHeightRatio =
@@ -673,6 +682,8 @@ const BeforeAfterSlider = ({
       ref={frameRef}
       className="compare-slider-frame relative w-full"
       style={{ height: frameHeight > 0 ? `${frameHeight}px` : undefined }}
+      role="group"
+      aria-label="Compare today and ancient Rome views"
     >
       {frameHeight > 0 ? (
         alignmentMode ? (
@@ -684,7 +695,7 @@ const BeforeAfterSlider = ({
         ) : (
           <>
             <SliderEraLabels />
-            {isMediaLoading ? <SliderLoadingSkeleton /> : null}
+            {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%' }}
               itemOne={renderModernItem()}
@@ -697,7 +708,7 @@ const BeforeAfterSlider = ({
         )
       ) : (
         <div className="aspect-video w-full bg-gradient-to-br from-sand to-limestone/50">
-          <SliderLoadingSkeleton />
+          <SliderLoadingSkeleton reducedMotion={reducedMotion} />
         </div>
       )}
     </div>
@@ -721,7 +732,11 @@ const BeforeAfterSlider = ({
             <button
               type="button"
               onClick={replayVideos}
-              className="ml-1.5 text-terracotta underline underline-offset-2"
+              aria-label="Replay comparison videos"
+              className={cn(
+                'ml-1.5 min-h-11 rounded-lg px-2 text-terracotta underline underline-offset-2',
+                focusRing
+              )}
             >
               Replay
             </button>
@@ -742,7 +757,11 @@ const BeforeAfterSlider = ({
           <button
             type="button"
             onClick={recalibrate}
-            className="ml-1.5 text-terracotta underline underline-offset-2"
+            aria-label="Reset tilt center"
+            className={cn(
+              'ml-1.5 min-h-11 rounded-lg px-2 text-terracotta underline underline-offset-2',
+              focusRing
+            )}
           >
             Reset center
           </button>
@@ -765,7 +784,11 @@ const BeforeAfterSlider = ({
           <button
             type="button"
             onClick={() => setImmersive(false)}
-            className="rounded-full border border-limestone bg-sand/60 px-3 py-1.5 text-xs font-semibold text-deep-slate"
+            aria-label="Close immersive compare view"
+            className={cn(
+              'min-h-11 rounded-full border border-limestone bg-sand/60 px-4 py-2.5 text-xs font-semibold text-deep-slate',
+              focusRing
+            )}
           >
             Close
           </button>
@@ -779,7 +802,11 @@ const BeforeAfterSlider = ({
           <button
             type="button"
             onClick={() => setImmersive(true)}
-            className="rounded-full border border-limestone/70 bg-warm-white/90 px-3 py-1 text-xs font-semibold text-deep-slate shadow-sm"
+            aria-label="Open full screen compare view"
+            className={cn(
+              'min-h-11 rounded-full border border-limestone/70 bg-warm-white/90 px-4 py-2.5 text-xs font-semibold text-deep-slate shadow-sm',
+              focusRing
+            )}
           >
             Full screen
           </button>

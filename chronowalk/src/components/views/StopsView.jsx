@@ -1,5 +1,5 @@
 import { getModernPosterUrl } from '../../utils/sliderMedia'
-import { GlassPanel, cn } from '../ui'
+import { GlassPanel, cn, focusRing } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 const STATUS_META = {
@@ -18,7 +18,8 @@ function StopCard({ stop, index, waypoint, onSelect }) {
     <button
       type="button"
       onClick={() => onSelect?.(stop.id)}
-      className="w-full text-left"
+      aria-label={`View ${stop.title} on map`}
+      className={cn('w-full rounded-3xl text-left', focusRing)}
     >
       <GlassPanel className="overflow-hidden rounded-3xl transition hover:border-gold/40 hover:shadow-glass-lg">
         <div className="flex gap-0 sm:gap-4">

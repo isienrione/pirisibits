@@ -4,6 +4,8 @@ import TourMap from './components/TourMap'
 import TourHud from './components/TourHud'
 import WaypointCard from './components/WaypointCard'
 import ArrivalMoment from './components/ArrivalMoment'
+import LiveAnnouncer from './components/LiveAnnouncer'
+import LocationNotice from './components/LocationNotice'
 import WaypointAssetStudio from './components/WaypointAssetStudio'
 import AppNavigation from './components/navigation/AppNavigation'
 import { NAV_TABS } from './components/navigation/navConfig'
@@ -11,7 +13,7 @@ import TourOverviewView from './components/views/TourOverviewView'
 import StopsView from './components/views/StopsView'
 import SettingsView from './components/views/SettingsView'
 import { Button } from './components/ui'
-import { JOURNEY_STATE } from './hooks/useGeoLocation'
+import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
@@ -48,6 +50,7 @@ function App() {
   const [cardDismissed, setCardDismissed] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
+  const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
 
@@ -70,6 +73,9 @@ function App() {
       setDiscoveredWaypoint(waypoint)
       setCardDismissed(false)
       setActiveTab(NAV_TABS.MAP)
+      setLiveAnnouncement(
+        `Waypoint discovered: ${waypoint.title}. Your story is unlocking.`
+      )
 
       if (audioEnabled) {
         audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
@@ -77,6 +83,9 @@ function App() {
 
       const revealTimer = window.setTimeout(() => {
         setActiveWaypoint(waypoint)
+        setLiveAnnouncement(
+          `${waypoint.title} unlocked. Audio story and historical reveal are ready.`
+        )
       }, CARD_REVEAL_DELAY_MS)
 
       return () => window.clearTimeout(revealTimer)
@@ -150,10 +159,14 @@ function App() {
   }
 
   const locationStatus = useMemo(() => {
-    if (isDebugGeo()) return 'granted'
-    if (session.position?.lat != null && session.position?.lng != null) return 'granted'
-    return 'waiting'
-  }, [session.position?.lat, session.position?.lng])
+    if (isDebugGeo()) return LOCATION_STATUS.GRANTED
+    return session.locationStatus
+  }, [session.locationStatus])
+
+  const showLocationNotice =
+    hasInteracted &&
+    !isDebugGeo() &&
+    locationStatus !== LOCATION_STATUS.GRANTED
 
   if (assetStudio) {
     return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
@@ -175,7 +188,19 @@ function App() {
 
   return (
     <div className="relative h-screen w-full bg-warm-white lg:pl-[5.5rem]">
-      <div className={mapTabActive ? 'relative h-full w-full' : 'hidden'} aria-hidden={!mapTabActive}>
+      <a
+        href="#main-tour-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[500] focus:rounded-xl focus:bg-warm-white focus:px-4 focus:py-2 focus:shadow-glass-lg"
+      >
+        Skip to tour content
+      </a>
+      <LiveAnnouncer message={liveAnnouncement} />
+
+      <div
+        id="main-tour-content"
+        className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
+        aria-hidden={!mapTabActive}
+      >
         <TourMap
           tour={singleWaypointId ? null : tour}
           stops={session.mapStops}
@@ -201,10 +226,24 @@ function App() {
           transitLegActive={session.progress.transitLegActive}
           state={session.state}
           distance={session.distance}
+          locationStatus={locationStatus}
+          onRetryLocation={session.retryLocation}
           waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
           onContinueTour={handleContinueTour}
           hasBottomNav
         />
+
+        {showLocationNotice && mapTabActive ? (
+          <div className="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top)+5.5rem)] z-[42] px-4">
+            <div className="pointer-events-auto mx-auto max-w-md">
+              <LocationNotice
+                status={locationStatus}
+                onRetry={session.retryLocation}
+                compact={locationStatus === LOCATION_STATUS.WAITING}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {activeTab === NAV_TABS.TOUR ? (
@@ -238,6 +277,7 @@ function App() {
           onAudioEnabledChange={handleAudioEnabledChange}
           debugMapEnabled={debugMapEnabled}
           onDebugMapEnabledChange={handleDebugMapEnabledChange}
+          onRetryLocation={session.retryLocation}
         />
       ) : null}
 

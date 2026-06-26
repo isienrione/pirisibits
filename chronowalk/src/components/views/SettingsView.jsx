@@ -1,7 +1,8 @@
 import { isDebugGeo, isDebugMap } from '../../config/env'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
-import { GlassPanel, cn } from '../ui'
+import { JOURNEY_STATE, LOCATION_STATUS } from '../../hooks/useGeoLocation'
+import { GlassPanel, cn, focusRing } from '../ui'
+import LocationNotice from '../LocationNotice'
 
 function SettingRow({ title, description, children }) {
   return (
@@ -28,7 +29,8 @@ function Toggle({ checked, onChange, label, disabled = false }) {
         if (!disabled) onChange(!checked)
       }}
       className={cn(
-        'relative h-7 w-12 rounded-full transition-colors',
+        'relative inline-flex h-11 min-w-[3.25rem] items-center rounded-full transition-colors',
+        focusRing,
         checked ? 'bg-terracotta' : 'bg-limestone',
         disabled && 'cursor-not-allowed opacity-70'
       )}
@@ -51,6 +53,7 @@ function SettingsView({
   onAudioEnabledChange,
   debugMapEnabled,
   onDebugMapEnabledChange,
+  onRetryLocation,
 }) {
   const reducedMotion = useReducedMotion()
   const urlDebugActive = isDebugMap() || isDebugGeo()
@@ -78,6 +81,16 @@ function SettingsView({
         </p>
 
         <GlassPanel className="mt-6 rounded-3xl px-5">
+          {(locationStatus === LOCATION_STATUS.DENIED ||
+            locationStatus === LOCATION_STATUS.UNAVAILABLE) && (
+            <div className="border-b border-limestone/50 pb-4">
+              <LocationNotice
+                status={locationStatus}
+                onRetry={onRetryLocation}
+              />
+            </div>
+          )}
+
           <SettingRow
             title="Location"
             description={

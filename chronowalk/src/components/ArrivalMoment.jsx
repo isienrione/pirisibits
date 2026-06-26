@@ -9,8 +9,7 @@ const ArrivalMoment = ({ waypoint, visible }) => {
   return (
     <div
       className="pointer-events-none absolute inset-0 z-30 overflow-hidden"
-      aria-live="polite"
-      aria-atomic="true"
+      aria-hidden="true"
     >
       <div
         className={cn(

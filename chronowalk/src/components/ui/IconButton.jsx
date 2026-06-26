@@ -1,4 +1,5 @@
 import { cn } from './cn'
+import { focusRing } from './focusRing'
 
 const variantStyles = {
   default:
@@ -8,8 +9,8 @@ const variantStyles = {
 }
 
 const sizeStyles = {
-  sm: 'h-8 w-8',
-  md: 'h-10 w-10',
+  sm: 'h-10 w-10',
+  md: 'h-11 w-11',
   lg: 'h-12 w-12',
 }
 
@@ -28,7 +29,7 @@ export function IconButton({
       aria-label={label}
       className={cn(
         'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50 focus-visible:ring-offset-2',
+        focusRing,
         variantStyles[variant],
         sizeStyles[size],
         className

@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import CalibrationOverlay from './CalibrationOverlay';
 import { BottomSheet, Button, cn } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 import {
@@ -50,7 +51,7 @@ const useMediaHeroState = (url) => {
   return status;
 };
 
-function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
+function WaypointMediaHero({ previewUrl, status, landmarkTitle, reducedMotion }) {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
       {status === 'ready' && previewUrl ? (
@@ -62,7 +63,7 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
             referrerPolicy="no-referrer"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-deep-slate/50 via-deep-slate/10 to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
             aria-hidden="true"
           />
         </>
@@ -71,7 +72,10 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
           {status === 'loading' ? (
             <>
               <div
-                className="mb-4 h-10 w-10 animate-pulse rounded-full bg-gold/30"
+                className={cn(
+                  'mb-4 h-10 w-10 rounded-full bg-gold/30',
+                  !reducedMotion && 'animate-pulse'
+                )}
                 aria-hidden="true"
               />
               <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
@@ -101,12 +105,35 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
   );
 }
 
+function AudioTranscriptSection({ waypoint }) {
+  const transcript =
+    waypoint?.arrival_transcript ||
+    waypoint?.arrival_subtitle ||
+    'Full captions and transcript will appear here as audio stories are published for this landmark.';
+
+  return (
+    <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
+      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+        Captions &amp; transcript
+      </summary>
+      <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
+      {!waypoint?.arrival_transcript ? (
+        <p className="mt-2 text-xs text-soft-slate/80">
+          Placeholder — timed captions will sync with narration in a future update.
+        </p>
+      ) : null}
+    </details>
+  );
+}
+
 function WaypointCardBody({
+  titleId,
   eyebrow,
   title,
   hook,
   orientationHint,
   titleHighlight = false,
+  reducedMotion = false,
   children,
   className,
 }) {
@@ -114,9 +141,10 @@ function WaypointCardBody({
     <div className={cn('px-6', className)}>
       <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
       <h2
+        id={titleId}
         className={cn(
           'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
-          titleHighlight && 'animate-arrival-title'
+          titleHighlight && !reducedMotion && 'animate-arrival-title'
         )}
       >
         {title}
@@ -135,15 +163,19 @@ function WaypointCardBody({
 }
 
 const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
+  const titleId = useId();
+  const reducedMotion = useReducedMotion();
   const [showSlider, setShowSlider] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [alignmentMode, setAlignmentMode] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [mediaError, setMediaError] = useState(null);
   const [calibration, setCalibration] = useState(() => loadCalibration(waypoint?.id));
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
-  const { isArrivalAudioPlaying, hasArrivalAudioSession } = useAudioPlaybackState();
+  const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio } =
+    useAudioPlaybackState();
 
   const modernSliderUrl = waypoint ? getModernSliderUrl(waypoint) : null;
   const ancientSliderUrl = waypoint ? getAncientSliderUrl(waypoint) : null;
@@ -158,6 +190,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     setTiltEnabled(false);
     setAlignmentMode(false);
     setAdvancedOpen(false);
+    setMediaError(null);
     setCalibration(loadCalibration(waypoint?.id));
     setEntered(false);
     syncGenerationRef.current = 0;
@@ -182,19 +215,25 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
 
   useEffect(() => {
     if (showSlider) {
-      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      sliderRef.current?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'nearest',
+      });
     }
-  }, [showSlider]);
+  }, [showSlider, reducedMotion]);
 
   useEffect(() => {
     if (!alignmentMode) return undefined;
 
     const timer = window.setTimeout(() => {
-      sliderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      sliderRef.current?.scrollIntoView({
+        behavior: reducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
     }, 120);
 
     return () => window.clearTimeout(timer);
-  }, [alignmentMode]);
+  }, [alignmentMode, reducedMotion]);
 
   if (state !== JOURNEY_STATE.ARRIVAL || !waypoint) return null;
 
@@ -208,9 +247,10 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       : null;
 
   const handlePlayAudio = async () => {
+    setMediaError(null);
+
     if (!waypoint.arrival_immersive_url) {
-      console.warn('waypoint.arrival_immersive_url is missing — check Supabase or local seed data.');
-      alert('Arrival audio URL is not set for this waypoint yet.');
+      setMediaError('Arrival audio is not available for this landmark yet.');
       return;
     }
 
@@ -226,17 +266,20 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       );
     } catch (err) {
       console.error('Failed to play audio guide:', err);
+      setMediaError('Could not start audio. Tap again or check your connection.');
     }
   };
 
   const startImmersive = async () => {
+    setMediaError(null);
+
     if (!waypoint.arrival_immersive_url) {
-      console.error('CRITICAL: Waypoint audio URL is missing from database!');
+      setMediaError('Arrival audio is not available for this landmark yet.');
       return;
     }
 
     if (!hasModernSliderMedia(waypoint)) {
-      alert('Modern view media is missing for this waypoint.');
+      setMediaError('Modern view media is missing for this waypoint.');
       return;
     }
 
@@ -268,7 +311,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
 
   const audioButtonLabel = isArrivalAudioPlaying
     ? 'Pause audio story'
-    : hasArrivalAudioSession
+    : needsResumeAudio || hasArrivalAudioSession
       ? 'Resume audio story'
       : 'Start audio story';
 
@@ -277,7 +320,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       audioOrchestrator.pauseArrival();
       return;
     }
-    if (hasArrivalAudioSession) {
+    if (needsResumeAudio || hasArrivalAudioSession) {
       const resumed = await audioOrchestrator.resumeArrival();
       if (resumed) return;
     }
@@ -363,7 +406,9 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       flush
       cinematic
       onHandleClick={onClose}
+      onEscape={onClose}
       handleLabel="Minimize landmark card"
+      ariaLabelledBy={titleId}
     >
       {showSlider ? (
         <div ref={sliderRef} className="mb-5">
@@ -391,17 +436,26 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
           previewUrl={heroPreviewUrl}
           status={heroStatus}
           landmarkTitle={landmarkTitle}
+          reducedMotion={reducedMotion}
         />
       )}
 
       <WaypointCardBody
+        titleId={titleId}
         eyebrow={eyebrow}
         title={landmarkTitle}
         hook={!alignmentMode ? narrativeHook : 'Line up the ancient layer over the modern facade.'}
         orientationHint={orientationHint}
         titleHighlight={isFreshArrival && !showSlider && !alignmentMode}
+        reducedMotion={reducedMotion}
         className="pb-6"
       >
+        {mediaError ? (
+          <p className="mt-4 rounded-2xl border border-terracotta/30 bg-terracotta/10 px-4 py-3 text-sm text-deep-slate" role="alert">
+            {mediaError}
+          </p>
+        ) : null}
+
         {!showSlider && !alignmentMode ? (
           <div className="mt-6 flex flex-col gap-3">
             <Button size="lg" fullWidth className="rounded-2xl" onClick={startImmersive}>
@@ -436,6 +490,12 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
             >
               {audioButtonLabel}
             </Button>
+            {needsResumeAudio ? (
+              <p className="mt-2 text-xs text-soft-slate">
+                Audio was interrupted — tap resume to continue the story.
+              </p>
+            ) : null}
+            <AudioTranscriptSection waypoint={waypoint} />
           </div>
         ) : null}
 
