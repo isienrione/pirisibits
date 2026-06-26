@@ -28,7 +28,7 @@ const ArrivalMoment = ({ waypoint, visible }) => {
     >
       <div
         className={cn(
-          'absolute inset-0 bg-deep-slate/45',
+          'absolute inset-0 bg-deep-slate/55',
           !reducedMotion && 'animate-arrival-vignette'
         )}
         aria-hidden="true"

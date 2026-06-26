@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
+import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
 import { BottomSheet, Button, LoadingPanel, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
@@ -311,12 +312,6 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     setCalibration(defaults);
   };
 
-  const audioButtonLabel = isArrivalAudioPlaying
-    ? 'Pause audio story'
-    : needsResumeAudio || hasArrivalAudioSession
-      ? 'Resume audio story'
-      : 'Start audio story';
-
   const handleAudioAction = async () => {
     if (isArrivalAudioPlaying) {
       audioOrchestrator.pauseArrival();
@@ -498,18 +493,17 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
         ) : null}
 
         {showAudioControl ? (
-          <div className="mt-4">
-            <Button
-              variant="secondary"
-              fullWidth
-              className={ctaInCard}
-              onClick={handleAudioAction}
-            >
-              {audioButtonLabel}
-            </Button>
+          <div className="mt-4 space-y-3">
+            <AudioPlayerPanel
+              title={landmarkTitle}
+              subtitle={waypoint.arrival_subtitle}
+              isPlaying={isArrivalAudioPlaying}
+              posterUrl={heroPreviewUrl}
+              onToggle={handleAudioAction}
+            />
             {needsResumeAudio ? (
-              <p className="mt-2 text-xs text-soft-slate">
-                Audio was interrupted — tap resume to continue the story.
+              <p className="text-xs text-soft-slate">
+                Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
             <AudioTranscriptSection waypoint={waypoint} />

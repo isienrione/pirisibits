@@ -5,7 +5,21 @@ import { NAV_TABS } from '../navigation/navConfig'
 const STATUS_META = {
   completed: { label: 'Visited', className: 'bg-olive/15 text-olive' },
   current: { label: 'Current', className: 'bg-gold/20 text-gold' },
-  upcoming: { label: 'Ahead', className: 'bg-sand text-soft-slate' },
+  upcoming: { label: 'Locked', className: 'bg-sand text-soft-slate' },
+}
+
+function LockIcon() {
+  return (
+    <svg className="h-4 w-4 text-soft-slate" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.75" />
+      <path
+        d="M8 11V8a4 4 0 0 1 8 0v3"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
 }
 
 function StopCard({ stop, index, waypoint, onSelect }) {
@@ -49,6 +63,11 @@ function StopCard({ stop, index, waypoint, onSelect }) {
                 Preview soon
               </div>
             )}
+            {isUpcoming ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-warm-white/35">
+                <LockIcon />
+              </div>
+            ) : null}
             <span className="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-warm-white/92 text-xs font-bold text-deep-slate shadow-sm">
               {index + 1}
             </span>
@@ -61,10 +80,11 @@ function StopCard({ stop, index, waypoint, onSelect }) {
               </h3>
               <span
                 className={cn(
-                  'shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide',
+                  'inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide',
                   status.className
                 )}
               >
+                {isUpcoming ? <LockIcon /> : null}
                 {status.label}
               </span>
             </div>

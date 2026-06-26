@@ -1,5 +1,7 @@
 import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
+import { getModernPosterUrl } from '../utils/sliderMedia'
+import { estimateWalkMinutes } from '../utils/tourStats'
 import { Button, GlassPanel, cn, ctaInCard } from './ui'
 
 function formatDistance(distance) {
@@ -39,12 +41,35 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) 
   )
 }
 
+function RouteThumbnail({ posterUrl, title }) {
+  return (
+    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-limestone/70 bg-sand shadow-sm">
+      {posterUrl ? (
+        <img
+          src={posterUrl}
+          alt=""
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">
+          {title?.slice(0, 2) ?? '—'}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function MapHudRouteCard({
   headline,
   subline,
   statusLabel,
   statusTone = 'default',
   distanceLabel,
+  walkMinutes,
+  posterUrl,
+  showDirections,
+  onDirections,
   action,
 }) {
   const statusClass =
@@ -56,16 +81,22 @@ function MapHudRouteCard({
 
   return (
     <GlassPanel className="pointer-events-auto p-4 shadow-glass-lg">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start gap-3">
+        <RouteThumbnail posterUrl={posterUrl} title={subline} />
+
         <div className="min-w-0 flex-1">
           <p className="text-eyebrow uppercase text-soft-slate">{headline}</p>
-          <p className="mt-1 font-display text-xl font-semibold leading-tight text-deep-slate">
+          <p className="mt-1 font-display text-lg font-semibold leading-tight text-deep-slate">
             {subline}
           </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-soft-slate">
+            {distanceLabel ? <span className="font-semibold text-deep-slate">{distanceLabel}</span> : null}
+            {walkMinutes ? <span>~{walkMinutes} min walk</span> : null}
+          </div>
           {statusLabel ? (
             <p
               className={cn(
-                'mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                'mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
                 statusClass
               )}
             >
@@ -73,13 +104,16 @@ function MapHudRouteCard({
             </p>
           ) : null}
         </div>
-        {distanceLabel ? (
-          <div className="shrink-0 rounded-2xl border border-limestone/70 bg-sand/50 px-3 py-2 text-center">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-soft-slate">
-              Distance
-            </p>
-            <p className="mt-0.5 text-sm font-bold tabular-nums text-deep-slate">{distanceLabel}</p>
-          </div>
+
+        {showDirections && onDirections ? (
+          <Button
+            size="sm"
+            className="shrink-0 self-center px-4"
+            onClick={onDirections}
+            aria-label={`Directions to ${subline}`}
+          >
+            Directions
+          </Button>
         ) : null}
       </div>
 
@@ -94,12 +128,14 @@ const TourHud = ({
   progress,
   targetStopId,
   nextWaypoint,
+  currentWaypoint,
   transitLegActive,
   state,
   distance,
   locationStatus,
   waypointExploreActive,
   onContinueTour,
+  onDirections,
   hasBottomNav = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
@@ -125,18 +161,24 @@ const TourHud = ({
     !waypointExploreActive
 
   const distanceLabel = formatDistance(distance)
+  const walkMinutes = estimateWalkMinutes(distance)
   const hideRouteCard = waypointExploreActive
 
-  let routeHeadline = 'Next destination'
+  const routeWaypoint = transitLegActive || !atStop ? currentWaypoint : nextWaypoint
+  const posterUrl = routeWaypoint ? getModernPosterUrl(routeWaypoint) : null
+
+  let routeHeadline = 'Next stop'
   let routeSubline = nextWaypoint?.title ?? currentStopTitle
   let statusLabel = null
   let statusTone = 'default'
+  let showDirections = false
 
   if (transitLegActive) {
     routeHeadline = 'Walking to'
     routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
-    statusLabel = 'Follow the gold path'
+    statusLabel = 'Follow the terracotta path'
     statusTone = 'walking'
+    showDirections = true
   } else if (atStop) {
     routeHeadline = 'You have arrived'
     routeSubline = currentStopTitle
@@ -145,6 +187,7 @@ const TourHud = ({
   } else {
     routeHeadline = 'Heading to'
     routeSubline = currentStopTitle
+    showDirections = true
     if (locationStatus === LOCATION_STATUS.DENIED) {
       statusLabel = 'Location access needed'
     } else if (locationStatus === LOCATION_STATUS.UNAVAILABLE) {
@@ -155,6 +198,14 @@ const TourHud = ({
       statusLabel = distanceLabel ? 'Walking' : 'Locating you…'
     }
     statusTone = 'walking'
+  }
+
+  const handleDirections = () => {
+    const landmark =
+      getWaypointGeo(targetStopId)?.landmark ??
+      getWaypointGeo(currentStopId)?.landmark ??
+      null
+    onDirections?.(landmark)
   }
 
   return (
@@ -185,6 +236,10 @@ const TourHud = ({
               statusLabel={statusLabel}
               statusTone={statusTone}
               distanceLabel={!atStop ? distanceLabel : null}
+              walkMinutes={!atStop ? walkMinutes : null}
+              posterUrl={posterUrl}
+              showDirections={showDirections}
+              onDirections={handleDirections}
               action={
                 showContinue ? (
                   <Button fullWidth className={ctaInCard} onClick={onContinueTour}>

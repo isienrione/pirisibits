@@ -111,10 +111,10 @@ describe('WaypointCard', () => {
   it('shows audio and immersive actions in a premium layout', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
-    const audioButton = screen.getByRole('button', { name: 'Start audio story' });
-    expect(audioButton).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /play audio story/i })).toBeInTheDocument();
 
     const revealButton = screen.getByRole('button', { name: 'Reveal ancient view' });
+    const audioButton = screen.getByRole('button', { name: /play audio story/i });
     expect(
       revealButton.compareDocumentPosition(audioButton) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();

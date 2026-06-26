@@ -203,6 +203,11 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     })
   }, [isSingleStopMode, singleWaypointId, tour, waypointsById])
 
+  const isTourComplete = useMemo(() => {
+    if (isSingleStopMode || !tour?.stopIds?.length) return false
+    return tour.stopIds.every((id) => progress.arrivedStopIds.includes(id))
+  }, [isSingleStopMode, tour?.stopIds, progress.arrivedStopIds])
+
   return {
     loading,
     isSingleStopMode,
@@ -227,5 +232,6 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     startTourAmbient,
     prefetchRadiusM: ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
     tourLegs: tour ? getTourLegs(tour) : [],
+    isTourComplete,
   }
 }
