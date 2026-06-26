@@ -5,7 +5,7 @@ import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
-import { env, isDebugGeo, isMapboxConfigured } from '../config/env'
+import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 
 const mapboxToken = env.mapboxToken
 
@@ -58,6 +58,47 @@ const stopsToFeatureCollection = (stops) => ({
     .filter(Boolean),
 })
 
+function MapDebugOverlay({
+  debugGeo,
+  activeTitle,
+  transitLegActive,
+  activeLeg,
+  stops,
+  state,
+  distance,
+  geofenceThresholdM,
+}) {
+  return (
+    <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,20rem)] space-y-2">
+      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-gold shadow">
+        Debug map
+      </div>
+      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warm-white shadow">
+        GPS: {debugGeo ? `simulated at ${activeTitle}` : 'live device location'}
+      </div>
+      {transitLegActive && activeLeg ? (
+        <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+          Leg: {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
+          {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
+        </div>
+      ) : null}
+      {state ? (
+        <div
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warm-white shadow ${
+            state === JOURNEY_STATE.ARRIVAL ? 'bg-olive/95' : 'bg-soft-slate/95'
+          }`}
+        >
+          Journey: {state}
+          {distance != null ? ` (${Math.round(distance)} m)` : ''}
+        </div>
+      ) : null}
+      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+        Arrival geofence: {geofenceThresholdM} m
+      </div>
+    </div>
+  )
+}
+
 const TourMap = ({
   tour,
   stops = [],
@@ -68,7 +109,6 @@ const TourMap = ({
   userPos,
   state,
   distance,
-  tourTitle,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -76,6 +116,7 @@ const TourMap = ({
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
   const debugGeo = isDebugGeo()
+  const showDebugOverlay = isDebugMap()
 
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
@@ -296,42 +337,18 @@ const TourMap = ({
   return (
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
-      <div className="absolute left-3 top-3 space-y-2">
-        {tourTitle ? (
-          <div className="rounded bg-deep-slate/85 px-3 py-1 text-xs font-semibold text-gold shadow">
-            {tourTitle}
-          </div>
-        ) : null}
-        {debugGeo ? (
-          <div className="rounded bg-sky-blue px-3 py-1 text-sm text-warm-white shadow">
-            Debug GPS: at {activeTitle}
-          </div>
-        ) : (
-          <div className="rounded bg-terracotta px-3 py-1 text-sm text-warm-white shadow">
-            Debug GPS: off (using real location)
-          </div>
-        )}
-        {transitLegActive && activeLeg ? (
-          <div className="rounded bg-deep-slate/80 px-3 py-1 text-sm text-warm-white shadow">
-            Walking:{' '}
-            {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
-            {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
-          </div>
-        ) : null}
-        {state && (
-          <div
-            className={`rounded px-3 py-1 text-sm font-semibold text-warm-white shadow ${
-              state === JOURNEY_STATE.ARRIVAL ? 'bg-olive' : 'bg-soft-slate'
-            }`}
-          >
-            Journey: {state}
-            {distance != null && ` (${Math.round(distance)}m)`}
-          </div>
-        )}
-        <div className="rounded bg-deep-slate/80 px-3 py-1 text-xs text-sand shadow">
-          Arrival geofence: {geofenceThresholdM}m
-        </div>
-      </div>
+      {showDebugOverlay ? (
+        <MapDebugOverlay
+          debugGeo={debugGeo}
+          activeTitle={activeTitle}
+          transitLegActive={transitLegActive}
+          activeLeg={activeLeg}
+          stops={stops}
+          state={state}
+          distance={distance}
+          geofenceThresholdM={geofenceThresholdM}
+        />
+      ) : null}
     </div>
   )
 }

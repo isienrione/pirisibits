@@ -131,16 +131,17 @@ function App() {
         userPos={session.position}
         state={session.state}
         distance={session.distance}
-        tourTitle={singleWaypointId ? null : tour.title}
       />
 
       <TourHud
         tour={singleWaypointId ? null : tour}
+        currentStopId={session.targetStopId ?? singleWaypointId}
         progress={session.progress}
         targetStopId={session.targetStopId}
         nextWaypoint={session.nextWaypoint}
         transitLegActive={session.progress.transitLegActive}
         state={session.state}
+        distance={session.distance}
         waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
         onContinueTour={handleContinueTour}
       />
@@ -161,7 +162,7 @@ function App() {
           <Button
             size="pill"
             className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg"
-            style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
+            style={{ bottom: 'max(11rem, calc(env(safe-area-inset-bottom) + 10rem))' }}
             onClick={() => {
               setCardDismissed(false)
               setActiveWaypoint(discoveredWaypoint)
