@@ -6,6 +6,7 @@ export function BottomSheet({
   handleLabel = 'Minimize',
   className,
   contentClassName,
+  flush = false,
   children,
 }) {
   return (
@@ -18,7 +19,7 @@ export function BottomSheet({
     >
       <div
         className={cn(
-          'mx-auto flex max-h-[min(88dvh,88vh)] flex-col rounded-t-sheet border border-limestone/60',
+          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-sheet border border-limestone/60',
           'bg-gradient-to-b from-warm-white via-warm-white to-sand/90 shadow-sheet-up'
         )}
       >
@@ -33,7 +34,8 @@ export function BottomSheet({
 
         <div
           className={cn(
-            'min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-safe pt-2',
+            'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-safe',
+            flush ? 'pt-0' : 'px-6 pt-2',
             contentClassName
           )}
         >

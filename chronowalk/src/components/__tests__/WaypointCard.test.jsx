@@ -65,7 +65,7 @@ describe('WaypointCard', () => {
   it('shows orientation guidance before immersive mode begins', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
-    expect(screen.getByText('Before you begin')).toBeInTheDocument();
+    expect(screen.getByText("You've arrived")).toBeInTheDocument();
     expect(screen.getByText(waypoint.immersive_orientation_hint)).toBeInTheDocument();
     expect(screen.queryByTestId('before-after-slider')).not.toBeInTheDocument();
   });
@@ -78,7 +78,7 @@ describe('WaypointCard', () => {
     });
 
     expect(screen.getByTestId('before-after-slider')).toBeInTheDocument();
-    expect(screen.queryByText('Before you begin')).not.toBeInTheDocument();
+    expect(screen.getByText('Then & now')).toBeInTheDocument();
   });
 
   it('ignores stale sync events from an older generation', async () => {
@@ -96,7 +96,7 @@ describe('WaypointCard', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Begin Immersive View' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Reveal ancient view' }));
     });
 
     expect(transitionTo).toHaveBeenCalledWith(
@@ -108,15 +108,18 @@ describe('WaypointCard', () => {
     );
   });
 
-  it('shows a play/pause audio toggle below the main action buttons', () => {
+  it('shows audio and immersive actions in a premium layout', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
-    const playButton = screen.getByRole('button', { name: 'Play audio' });
-    expect(playButton).toBeInTheDocument();
+    const audioButton = screen.getByRole('button', { name: 'Start audio story' });
+    expect(audioButton).toBeInTheDocument();
 
-    const immersiveButton = screen.getByRole('button', { name: 'Begin Immersive View' });
+    const revealButton = screen.getByRole('button', { name: 'Reveal ancient view' });
     expect(
-      immersiveButton.compareDocumentPosition(playButton) & Node.DOCUMENT_POSITION_FOLLOWING
+      revealButton.compareDocumentPosition(audioButton) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+
+    expect(screen.getByRole('button', { name: 'Compare then & now' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Continue walking' })).toBeInTheDocument();
   });
 });
