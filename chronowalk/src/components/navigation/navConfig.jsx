@@ -2,6 +2,7 @@ export const NAV_TABS = {
   TOUR: 'tour',
   MAP: 'map',
   STOPS: 'stops',
+  DIRECTIONS: 'directions',
   SETTINGS: 'settings',
 }
 

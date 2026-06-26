@@ -145,19 +145,28 @@
 }
 
 /* react-compare-slider: premium handle + touch */
+.compare-slider-frame {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.compare-slider-frame [data-rcs='root'] {
+  touch-action: none;
+}
+
 [data-rcs='handle-root'] {
-  width: 44px;
-  z-index: 20;
+  width: 56px;
+  z-index: 30;
+  touch-action: none;
 }
 
 [data-rcs='handle'] {
   width: 100%;
   height: 100%;
   backdrop-filter: none;
-}
-
-.compare-slider-frame [data-rcs='root'] {
-  touch-action: pan-y;
+  touch-action: none;
+  cursor: ew-resize;
 }
 [data-rcs='root'] {
   height: 100%;

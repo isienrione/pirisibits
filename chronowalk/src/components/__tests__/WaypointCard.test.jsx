@@ -96,7 +96,7 @@ describe('WaypointCard', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Reveal ancient view' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Step through time' }));
     });
 
     expect(transitionTo).toHaveBeenCalledWith(
@@ -111,15 +111,9 @@ describe('WaypointCard', () => {
   it('shows audio and immersive actions in a premium layout', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
-    expect(screen.getByRole('button', { name: /play audio story/i })).toBeInTheDocument();
-
-    const revealButton = screen.getByRole('button', { name: 'Reveal ancient view' });
-    const audioButton = screen.getByRole('button', { name: /play audio story/i });
-    expect(
-      revealButton.compareDocumentPosition(audioButton) & Node.DOCUMENT_POSITION_FOLLOWING
-    ).toBeTruthy();
-
-    expect(screen.getByRole('button', { name: 'Compare then & now' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Step through time' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Image only' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Audio only' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Continue walking' })).toBeInTheDocument();
     expect(screen.getByText(/captions & transcript/i)).toBeInTheDocument();
   });

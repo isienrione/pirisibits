@@ -83,6 +83,9 @@ class AudioOrchestrator {
       this.wantsArrivalPlayback &&
       this.arrivalPlayer.paused;
 
+    const isTourNarrationPlaying = this.isTourNarrationPlaying();
+    const isTourNarrationActive = this.isTourNarrationActive();
+
     this.windowRef.dispatchEvent(
       new CustomEvent(AUDIO_PLAYBACK_STATE_EVENT, {
         detail: {
@@ -93,9 +96,49 @@ class AudioOrchestrator {
             this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback,
           currentMode: this.currentMode,
           wantsArrivalPlayback: this.wantsArrivalPlayback,
+          isTourNarrationPlaying,
+          isTourNarrationActive,
         },
       })
     );
+  }
+
+  isTourNarrationPlaying() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      return !this.arrivalPlayer.paused;
+    }
+    if (this.currentMode === AUDIO_MODES.TRANSIT) {
+      return !this.transitPlayer.paused;
+    }
+    return false;
+  }
+
+  isTourNarrationActive() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      return true;
+    }
+    if (this.currentMode === AUDIO_MODES.TRANSIT && this.transitPlayer.src) {
+      return true;
+    }
+    return false;
+  }
+
+  toggleTourNarration() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      return this.toggleArrivalPlayback();
+    }
+
+    if (this.currentMode === AUDIO_MODES.TRANSIT) {
+      if (this.transitPlayer.paused) {
+        void this.transitPlayer.play();
+      } else {
+        this.transitPlayer.pause();
+      }
+      this.emitPlaybackState();
+      return true;
+    }
+
+    return false;
   }
 
   setPlaybackInterrupted(interrupted) {
@@ -294,12 +337,14 @@ class AudioOrchestrator {
         this.transitPlayer.volume = 1;
         this.transitPlayer.src = this.audioUrls.transit;
         await this.transitPlayer.play();
+        this.emitPlaybackState();
       } else {
         this.transitPlayer.pause();
         this.arrivalPlayer.pause();
         this.ambientPlayer.volume = 1;
         this.ambientPlayer.src = this.audioUrls.ambient;
         await this.ambientPlayer.play();
+        this.emitPlaybackState();
       }
     } catch (error) {
       console.warn('Audio playback blocked. User needs to interact first.', error);

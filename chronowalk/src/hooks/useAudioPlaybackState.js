@@ -1,15 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-import { audioOrchestrator, AUDIO_PLAYBACK_STATE_EVENT } from '../audio/AudioOrchestrator';
+import { audioOrchestrator, AUDIO_MODES, AUDIO_PLAYBACK_STATE_EVENT } from '../audio/AudioOrchestrator';
 
 export const useAudioPlaybackState = () => {
   const [needsResumeAudio, setNeedsResumeAudio] = useState(false);
   const [isArrivalAudioPlaying, setIsArrivalAudioPlaying] = useState(false);
   const [hasArrivalAudioSession, setHasArrivalAudioSession] = useState(false);
+  const [currentMode, setCurrentMode] = useState(AUDIO_MODES.AMBIENT);
+  const [isTourNarrationPlaying, setIsTourNarrationPlaying] = useState(false);
+  const [isTourNarrationActive, setIsTourNarrationActive] = useState(false);
 
   const applyDetail = useCallback((detail = {}) => {
     setNeedsResumeAudio(Boolean(detail.needsResumeAudio ?? detail.interrupted));
     setIsArrivalAudioPlaying(Boolean(detail.isArrivalAudioPlaying));
     setHasArrivalAudioSession(Boolean(detail.hasArrivalAudioSession));
+    setCurrentMode(detail.currentMode ?? AUDIO_MODES.AMBIENT);
+    setIsTourNarrationPlaying(Boolean(detail.isTourNarrationPlaying));
+    setIsTourNarrationActive(Boolean(detail.isTourNarrationActive));
   }, []);
 
   const syncFromOrchestrator = useCallback(() => {
@@ -24,6 +30,9 @@ export const useAudioPlaybackState = () => {
     setIsArrivalAudioPlaying(
       Boolean(state.wantsArrivalPlayback && !audioOrchestrator.arrivalPlayer?.paused)
     );
+    setCurrentMode(state.currentMode ?? AUDIO_MODES.AMBIENT);
+    setIsTourNarrationPlaying(Boolean(audioOrchestrator.isTourNarrationPlaying?.()));
+    setIsTourNarrationActive(Boolean(audioOrchestrator.isTourNarrationActive?.()));
   }, []);
 
   useEffect(() => {
@@ -55,5 +64,8 @@ export const useAudioPlaybackState = () => {
     playbackInterrupted: needsResumeAudio,
     isArrivalAudioPlaying,
     hasArrivalAudioSession,
+    currentMode,
+    isTourNarrationPlaying,
+    isTourNarrationActive,
   };
 };

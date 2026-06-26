@@ -1,5 +1,6 @@
 import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { getWaypointGeo } from '../../data/waypointGeo'
+import { estimateWalkMinutes } from '../../utils/tourStats'
 import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
@@ -11,7 +12,10 @@ function TourOverviewView({
   state,
   distance,
   transitLegActive,
+  isAwaitingFirstStop,
+  firstStopTitle,
   onNavigate,
+  onGetDirections,
 }) {
   if (!tour) {
     return (
@@ -25,11 +29,15 @@ function TourOverviewView({
   const currentStop = Math.min(progress.targetStopIndex + 1, totalStops)
   const currentTitle = getWaypointGeo(targetStopId)?.title ?? 'Current stop'
   const statusLabel =
-    state === JOURNEY_STATE.ARRIVAL
-      ? 'At stop'
-      : transitLegActive
-        ? 'Walking'
-        : 'En route'
+    isAwaitingFirstStop
+      ? 'Get to start'
+      : state === JOURNEY_STATE.ARRIVAL
+        ? 'At stop'
+        : transitLegActive
+          ? 'Walking'
+          : 'En route'
+
+  const startTitle = firstStopTitle ?? getWaypointGeo(tour.stopIds[0])?.title ?? 'Colosseum'
 
   return (
     <PageShell>
@@ -39,6 +47,40 @@ function TourOverviewView({
         title={tour.title}
         subtitle={tour.subtitle}
       />
+
+      {isAwaitingFirstStop ? (
+        <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
+          <p className="text-eyebrow uppercase text-gold">Before you begin</p>
+          <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
+            Start at the {startTitle}
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+            Your tour does not begin until you reach the first landmark. Walk to the {startTitle},
+            then your first audio story and historical reveal will unlock automatically.
+          </p>
+          {distance != null ? (
+            <p className="mt-3 text-sm text-deep-slate">
+              <span className="font-semibold">{Math.round(distance)} m away</span>
+              {estimateWalkMinutes(distance) ? (
+                <span className="text-soft-slate"> · ~{estimateWalkMinutes(distance)} min walk</span>
+              ) : null}
+            </p>
+          ) : null}
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <Button fullWidth className={ctaInCard} onClick={() => onGetDirections?.()}>
+              Get walking directions
+            </Button>
+            <Button
+              variant="secondary"
+              fullWidth
+              className={ctaInCard}
+              onClick={() => onNavigate(NAV_TABS.MAP)}
+            >
+              Open map
+            </Button>
+          </div>
+        </GlassPanel>
+      ) : null}
 
       <GlassPanel className="mt-6 p-5">
         <ProgressPill

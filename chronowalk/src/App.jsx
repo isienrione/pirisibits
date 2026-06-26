@@ -5,15 +5,19 @@ import ArrivalMoment from './components/ArrivalMoment'
 import LiveAnnouncer from './components/LiveAnnouncer'
 import LocationNotice from './components/LocationNotice'
 import ErrorBoundary from './components/ErrorBoundary'
+import PersistentAudioBar from './components/PersistentAudioBar'
 import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
-import { Button, LoadingPanel } from './components/ui'
+import { getModernPosterUrl } from './utils/sliderMedia'
+import { getWaypointGeo } from './data/waypointGeo'
+import { LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
+import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
@@ -39,6 +43,7 @@ const WaypointCard = lazy(() => import('./components/WaypointCard'))
 const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
 const StopsView = lazy(() => import('./components/views/StopsView'))
 const SettingsView = lazy(() => import('./components/views/SettingsView'))
+const DirectionsView = lazy(() => import('./components/views/DirectionsView'))
 
 function TabLoadingFallback() {
   return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
@@ -52,6 +57,7 @@ function App() {
   const assetStudioWaypointId = getAssetStudioWaypointId()
   const [mapRetryKey, setMapRetryKey] = useState(0)
   const [mapFocusTarget, setMapFocusTarget] = useState(null)
+  const [directionsDestination, setDirectionsDestination] = useState(null)
   const [completionDismissed, setCompletionDismissed] = useState(false)
   const tourStartedAtRef = useRef(null)
 
@@ -71,6 +77,8 @@ function App() {
     singleWaypointId,
     hasInteracted,
   })
+
+  const { isTourNarrationActive } = useAudioPlaybackState()
 
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
@@ -154,19 +162,35 @@ function App() {
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     setHasInteracted(true)
-    setActiveTab(NAV_TABS.MAP)
+    setActiveTab(NAV_TABS.TOUR)
   }
 
-  const handleDirections = useCallback((landmark) => {
+  const openDirections = useCallback((landmark, title) => {
     if (!landmark?.lat || !landmark?.lng) return
-    setActiveTab(NAV_TABS.MAP)
+
+    setDirectionsDestination({
+      lat: landmark.lat,
+      lng: landmark.lng,
+      title: title ?? 'Destination',
+    })
     setMapFocusTarget({
       lat: landmark.lat,
       lng: landmark.lng,
       key: Date.now(),
     })
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${landmark.lat},${landmark.lng}&travelmode=walking`
-    window.open(mapsUrl, '_blank', 'noopener,noreferrer')
+    setActiveTab(NAV_TABS.DIRECTIONS)
+  }, [])
+
+  const handleDirections = useCallback(
+    (landmark, title) => {
+      openDirections(landmark, title)
+    },
+    [openDirections]
+  )
+
+  const handleOpenExternalMaps = useCallback((url) => {
+    if (!url) return
+    window.open(url, '_blank', 'noopener,noreferrer')
   }, [])
 
   const handleAudioEnabledChange = (enabled) => {
@@ -209,6 +233,25 @@ function App() {
     () => estimateWalkedDistanceMeters(tour, session.progress.arrivedStopIds),
     [tour, session.progress.arrivedStopIds]
   )
+
+  const audioWaypoint = activeWaypoint ?? discoveredWaypoint ?? session.currentWaypoint
+  const audioPosterUrl = audioWaypoint ? getModernPosterUrl(audioWaypoint) : null
+  const cardIsOpen = Boolean(activeWaypoint)
+
+  const handleToggleTourAudio = useCallback(() => {
+    void audioOrchestrator.toggleTourNarration()
+  }, [])
+
+  const handleStopTourAudio = useCallback(() => {
+    audioOrchestrator.stop()
+  }, [])
+
+  const handleReopenWaypoint = useCallback(() => {
+    if (!discoveredWaypoint) return
+    setCardDismissed(false)
+    setActiveWaypoint(discoveredWaypoint)
+    setActiveTab(NAV_TABS.MAP)
+  }, [discoveredWaypoint])
 
   if (assetStudio) {
     return (
@@ -300,9 +343,18 @@ function App() {
           distance={session.distance}
           locationStatus={locationStatus}
           waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
+          awaitingFirstStop={session.isAwaitingFirstStop}
+          firstStopTitle={session.firstStopTitle}
+          dismissedWaypointTitle={
+            cardDismissed && discoveredWaypoint && !activeWaypoint
+              ? discoveredWaypoint.title
+              : null
+          }
+          onReopenWaypoint={handleReopenWaypoint}
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
           hasBottomNav
+          hasAudioBar={isTourNarrationActive}
         />
 
         {showLocationNotice && mapTabActive ? (
@@ -328,7 +380,14 @@ function App() {
             state={session.state}
             distance={session.distance}
             transitLegActive={session.progress.transitLegActive}
+            isAwaitingFirstStop={session.isAwaitingFirstStop}
+            firstStopTitle={session.firstStopTitle}
             onNavigate={setActiveTab}
+            onGetDirections={() => {
+              if (!tour?.stopIds?.[0]) return
+              const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
+              openDirections(landmark, session.firstStopTitle)
+            }}
           />
         </Suspense>
       ) : null}
@@ -340,6 +399,17 @@ function App() {
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
             onNavigate={setActiveTab}
+          />
+        </Suspense>
+      ) : null}
+
+      {activeTab === NAV_TABS.DIRECTIONS && directionsDestination ? (
+        <Suspense fallback={<TabLoadingFallback />}>
+          <DirectionsView
+            destination={directionsDestination}
+            userPosition={session.position}
+            onBack={() => setActiveTab(NAV_TABS.MAP)}
+            onOpenExternalMaps={handleOpenExternalMaps}
           />
         </Suspense>
       ) : null}
@@ -380,23 +450,19 @@ function App() {
         </Suspense>
       </ErrorBoundary>
 
-      {session.state === JOURNEY_STATE.ARRIVAL &&
-        cardDismissed &&
-        discoveredWaypoint &&
-        !activeWaypoint &&
-        mapTabActive && (
-          <Button
-            size="pill"
-            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg lg:left-[calc(50%+2.75rem)]"
-            style={{ bottom: 'max(14rem, calc(env(safe-area-inset-bottom) + 12rem))' }}
-            onClick={() => {
-              setCardDismissed(false)
-              setActiveWaypoint(discoveredWaypoint)
-            }}
-          >
-            Reopen {discoveredWaypoint.title}
-          </Button>
-        )}
+      <PersistentAudioBar
+        title={audioWaypoint?.title}
+        subtitle={audioWaypoint?.arrival_subtitle}
+        posterUrl={audioPosterUrl}
+        cardOpen={cardIsOpen}
+        onReopenCard={
+          cardDismissed && discoveredWaypoint && !activeWaypoint ? handleReopenWaypoint : null
+        }
+        onTogglePlayback={handleToggleTourAudio}
+        onStop={handleStopTourAudio}
+      />
+
+      <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
 
       {showTourComplete ? (
         <TourCompleteView
@@ -411,8 +477,6 @@ function App() {
           onDismiss={() => setCompletionDismissed(true)}
         />
       ) : null}
-
-      <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
     </div>
   )
 }

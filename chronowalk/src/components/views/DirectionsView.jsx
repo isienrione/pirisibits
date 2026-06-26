@@ -1,0 +1,146 @@
+import { useEffect, useState } from 'react'
+import { env } from '../../config/env'
+import { fetchWalkingDirections } from '../../services/fetchWalkingRoute'
+import { estimateWalkMinutes } from '../../utils/tourStats'
+import { Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
+
+function formatStepDistance(meters) {
+  if (meters < 1000) return `${Math.round(meters)} m`
+  return `${(meters / 1000).toFixed(1)} km`
+}
+
+function DirectionsView({ destination, userPosition, onBack, onOpenExternalMaps }) {
+  const [loading, setLoading] = useState(true)
+  const [directions, setDirections] = useState(null)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const load = async () => {
+      if (!destination?.lat || !destination?.lng) {
+        setError('Destination is not available.')
+        setLoading(false)
+        return
+      }
+
+      if (!env.mapboxToken) {
+        setError('Mapbox token is required for walking directions.')
+        setLoading(false)
+        return
+      }
+
+      setLoading(true)
+      setError(null)
+
+      const from =
+        userPosition?.lat != null && userPosition?.lng != null
+          ? userPosition
+          : destination
+
+      const result = await fetchWalkingDirections(from, destination, env.mapboxToken)
+
+      if (cancelled) return
+
+      if (!result?.steps?.length) {
+        setError('Could not load walking directions. Try again or open Google Maps.')
+        setDirections(null)
+      } else {
+        setDirections(result)
+      }
+
+      setLoading(false)
+    }
+
+    void load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [destination, userPosition?.lat, userPosition?.lng])
+
+  const title = destination?.title ?? 'Destination'
+  const mapsUrl =
+    destination?.lat && destination?.lng
+      ? `https://www.google.com/maps/dir/?api=1&destination=${destination.lat},${destination.lng}&travelmode=walking`
+      : null
+
+  return (
+    <PageShell>
+      <SectionHeader
+        align="left"
+        eyebrow="Walking guide"
+        title={title}
+        subtitle="Follow these steps in ChronoWalk. Keep the app open so your tour stays in sync."
+      />
+
+      {loading ? (
+        <LoadingPanel label="Loading walking directions…" className="mt-6 min-h-[40vh]" />
+      ) : error ? (
+        <GlassPanel className="mt-6 p-5 text-center">
+          <p className="text-sm text-soft-slate">{error}</p>
+          {mapsUrl ? (
+            <Button className={cn(ctaInCard, 'mt-4')} fullWidth onClick={() => onOpenExternalMaps?.(mapsUrl)}>
+              Open in Google Maps
+            </Button>
+          ) : null}
+        </GlassPanel>
+      ) : (
+        <>
+          <GlassPanel className="mt-6 p-5">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="font-semibold text-deep-slate">
+                {formatStepDistance(directions.distanceM)}
+              </span>
+              <span className="text-soft-slate">
+                ~{estimateWalkMinutes(directions.distanceM)} min walk
+              </span>
+            </div>
+
+            <ol className="mt-4 space-y-3">
+              {directions.steps.map((step, index) => (
+                <li
+                  key={`${step.instruction}-${index}`}
+                  className="flex gap-3 rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-3"
+                >
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm leading-relaxed text-deep-slate">{step.instruction}</p>
+                    {step.distanceM > 0 ? (
+                      <p className="mt-1 text-xs text-soft-slate">
+                        {formatStepDistance(step.distanceM)}
+                      </p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </GlassPanel>
+
+          <div className="mt-4 flex flex-col gap-3">
+            <Button fullWidth className={ctaInCard} onClick={onBack}>
+              Back to map
+            </Button>
+            {mapsUrl ? (
+              <Button
+                variant="secondary"
+                fullWidth
+                className={ctaInCard}
+                onClick={() => onOpenExternalMaps?.(mapsUrl)}
+              >
+                Open in Google Maps
+              </Button>
+            ) : null}
+            <p className="text-center text-xs leading-relaxed text-soft-slate">
+              Use Google Maps only if these directions fail or you need to leave the app.
+            </p>
+          </div>
+        </>
+      )}
+    </PageShell>
+  )
+}
+
+export default DirectionsView

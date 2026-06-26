@@ -267,7 +267,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
     }
   };
 
-  const startImmersive = async () => {
+  const startTimePortal = async () => {
     setMediaError(null);
 
     if (!waypoint.arrival_immersive_url) {
@@ -292,6 +292,20 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       },
       { syncVisual: true }
     );
+  };
+
+  const openImageOnly = () => {
+    setMediaError(null);
+    if (!hasModernSliderMedia(waypoint)) {
+      setMediaError('Comparison media is not available for this landmark yet.');
+      return;
+    }
+    setShowSlider(true);
+  };
+
+  const openAudioOnly = async () => {
+    setShowSlider(false);
+    await handlePlayAudio();
   };
 
   const handleLockAlignment = () => {
@@ -374,9 +388,9 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
             variant="ghost"
             fullWidth
             className="rounded-2xl"
-            onClick={() => setShowSlider(true)}
+            onClick={openImageOnly}
           >
-            Open comparison preview
+            Open comparison
           </Button>
         ) : null}
 
@@ -402,7 +416,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
       ariaLabelledBy={titleId}
     >
       {showSlider ? (
-        <div ref={sliderRef} className="mb-5">
+        <div ref={sliderRef} className="mb-5 touch-none" onTouchMove={(event) => event.stopPropagation()}>
           <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
             <ErrorBoundary
               title="Comparison view unavailable"
@@ -463,20 +477,29 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
         ) : null}
 
         {!showSlider && !alignmentMode ? (
-          <div className="mt-6 flex flex-col gap-3">
-            <Button size="lg" fullWidth onClick={startImmersive}>
-              Reveal ancient view
-            </Button>
+          <div className="mt-6 space-y-3">
             {hasModernMedia ? (
-              <Button
-                variant="secondary"
-                fullWidth
-                className={ctaInCard}
-                onClick={() => setShowSlider(true)}
-              >
-                Compare then &amp; now
+              <Button size="lg" fullWidth onClick={startTimePortal}>
+                Step through time
               </Button>
             ) : null}
+            <div className="grid grid-cols-2 gap-3">
+              {hasModernMedia ? (
+                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openImageOnly}>
+                  Image only
+                </Button>
+              ) : null}
+              {waypoint.arrival_immersive_url ? (
+                <Button
+                  variant="secondary"
+                  fullWidth
+                  className={ctaInCard}
+                  onClick={openAudioOnly}
+                >
+                  Audio only
+                </Button>
+              ) : null}
+            </div>
           </div>
         ) : showSlider && !alignmentMode ? (
           <div className="mt-5">

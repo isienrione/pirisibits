@@ -11,24 +11,31 @@ function formatDistance(distance) {
   return `${(meters / 1000).toFixed(1)} km`
 }
 
-function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) {
+function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, compact = false }) {
   const completed = Math.max(0, currentStop - 1)
 
   return (
-    <GlassPanel className="pointer-events-auto px-4 py-3.5 shadow-glass-lg">
+    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
-          <p className="mt-1 truncate font-display text-lg font-semibold leading-tight text-deep-slate">
+          <p
+            className={cn(
+              'mt-0.5 truncate font-display font-semibold leading-tight text-deep-slate',
+              compact ? 'text-base' : 'text-lg'
+            )}
+          >
             {currentStopTitle}
           </p>
-          <p className="mt-1 text-xs text-soft-slate">
-            {completed} of {totalStops} stops visited
-          </p>
+          {!compact ? (
+            <p className="mt-1 text-xs text-soft-slate">
+              {completed} of {totalStops} stops visited
+            </p>
+          ) : null}
         </div>
         <div className="shrink-0 text-right">
           <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
-          <p className="font-display text-xl font-semibold tabular-nums text-deep-slate">
+          <p className={cn('font-display font-semibold tabular-nums text-deep-slate', compact ? 'text-lg' : 'text-xl')}>
             <span className="text-gold">{currentStop}</span>
             <span className="text-soft-slate/60"> / </span>
             <span>{totalStops}</span>
@@ -39,9 +46,11 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) 
   )
 }
 
-function RouteThumbnail({ posterUrl, title }) {
+function RouteThumbnail({ posterUrl, title, compact = false }) {
+  const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
+
   return (
-    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-limestone/70 bg-sand shadow-sm">
+    <div className={cn('shrink-0 overflow-hidden border border-limestone/70 bg-sand shadow-sm', sizeClass)}>
       {posterUrl ? (
         <img
           src={posterUrl}
@@ -69,6 +78,7 @@ function MapHudRouteCard({
   showDirections,
   onDirections,
   action,
+  compact = false,
 }) {
   const statusClass =
     statusTone === 'arrived'
@@ -78,21 +88,26 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className="pointer-events-auto p-4 shadow-glass-lg">
+    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
-        <RouteThumbnail posterUrl={posterUrl} title={subline} />
+        <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 
         <div className="min-w-0 flex-1">
           <p className={cn('text-eyebrow uppercase text-soft-slate')}>{headline}</p>
-          <p className="mt-1 font-display text-lg font-semibold leading-tight text-deep-slate">
+          <p
+            className={cn(
+              'mt-0.5 font-display font-semibold leading-tight text-deep-slate',
+              compact ? 'text-base' : 'text-lg'
+            )}
+          >
             {subline}
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-soft-slate">
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-soft-slate">
             {distanceLabel ? <span className="font-semibold text-deep-slate">{distanceLabel}</span> : null}
             {walkMinutes ? <span>~{walkMinutes} min walk</span> : null}
           </div>
           {statusLabel ? (
-            <p className={cn(statusPill, 'mt-2', statusClass)}>{statusLabel}</p>
+            <p className={cn(statusPill, 'mt-1.5', statusClass)}>{statusLabel}</p>
           ) : null}
         </div>
 
@@ -100,7 +115,7 @@ function MapHudRouteCard({
           <Button
             variant="secondary"
             size="sm"
-            className="shrink-0 self-center px-4"
+            className="shrink-0 self-center px-3"
             onClick={onDirections}
             aria-label={`Directions to ${subline}`}
           >
@@ -109,7 +124,7 @@ function MapHudRouteCard({
         ) : null}
       </div>
 
-      {action ? <div className="mt-4">{action}</div> : null}
+      {action ? <div className={compact ? 'mt-3' : 'mt-4'}>{action}</div> : null}
     </GlassPanel>
   )
 }
@@ -126,9 +141,14 @@ const TourHud = ({
   distance,
   locationStatus,
   waypointExploreActive,
+  awaitingFirstStop = false,
+  firstStopTitle,
+  dismissedWaypointTitle,
+  onReopenWaypoint,
   onContinueTour,
   onDirections,
   hasBottomNav = false,
+  hasAudioBar = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
   const currentStopTitle =
@@ -155,6 +175,7 @@ const TourHud = ({
   const distanceLabel = formatDistance(distance)
   const walkMinutes = estimateWalkMinutes(distance)
   const hideRouteCard = waypointExploreActive
+  const compactHud = Boolean(dismissedWaypointTitle) && atStop
 
   const routeWaypoint = transitLegActive || !atStop ? currentWaypoint : nextWaypoint
   const posterUrl = routeWaypoint ? getModernPosterUrl(routeWaypoint) : null
@@ -165,7 +186,15 @@ const TourHud = ({
   let statusTone = 'default'
   let showDirections = false
 
-  if (transitLegActive) {
+  if (awaitingFirstStop) {
+    routeHeadline = 'Tour begins at'
+    routeSubline = firstStopTitle ?? 'Colosseum'
+    statusLabel = distanceLabel
+      ? `Walk ${distanceLabel} to start your journey`
+      : 'Head to the starting landmark to begin'
+    statusTone = 'walking'
+    showDirections = true
+  } else if (transitLegActive) {
     routeHeadline = 'Walking to'
     routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
     statusLabel = 'Follow the terracotta path'
@@ -174,7 +203,9 @@ const TourHud = ({
   } else if (atStop) {
     routeHeadline = 'You have arrived'
     routeSubline = currentStopTitle
-    statusLabel = 'Explore the landmark to continue'
+    statusLabel = dismissedWaypointTitle
+      ? 'Story minimized — reopen when ready'
+      : 'Explore the landmark to continue'
     statusTone = 'arrived'
   } else {
     routeHeadline = 'Heading to'
@@ -194,11 +225,49 @@ const TourHud = ({
 
   const handleDirections = () => {
     const landmark =
-      getWaypointGeo(targetStopId)?.landmark ??
-      getWaypointGeo(currentStopId)?.landmark ??
-      null
-    onDirections?.(landmark)
+      awaitingFirstStop && tour?.stopIds?.[0]
+        ? getWaypointGeo(tour.stopIds[0])?.landmark
+        : getWaypointGeo(targetStopId)?.landmark ??
+          getWaypointGeo(currentStopId)?.landmark ??
+          null
+    onDirections?.(landmark, awaitingFirstStop ? firstStopTitle : routeSubline)
   }
+
+  const bottomOffset = hasBottomNav
+    ? hasAudioBar
+      ? 'max(9.5rem, calc(env(safe-area-inset-bottom) + 8.75rem))'
+      : 'max(5.5rem, env(safe-area-inset-bottom))'
+    : undefined
+
+  const routeAction = showContinue ? (
+    <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>
+      {dismissedWaypointTitle && onReopenWaypoint ? (
+        <Button
+          variant="secondary"
+          fullWidth
+          className={ctaInCard}
+          onClick={onReopenWaypoint}
+        >
+          Reopen {dismissedWaypointTitle}
+        </Button>
+      ) : null}
+      <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
+        Walk to {nextWaypoint.title}
+      </Button>
+    </div>
+  ) : dismissedWaypointTitle && onReopenWaypoint && atStop ? (
+    <Button fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
+      Reopen {dismissedWaypointTitle}
+    </Button>
+  ) : transitLegActive ? (
+    <p className="text-xs leading-relaxed text-soft-slate">
+      Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
+    </p>
+  ) : awaitingFirstStop ? (
+    <Button fullWidth className={ctaInCard} onClick={handleDirections}>
+      Get walking directions
+    </Button>
+  ) : null
 
   return (
     <>
@@ -209,9 +278,10 @@ const TourHud = ({
         <div className="mx-auto w-full max-w-md">
           <MapHudTopBar
             tourTitle={tourTitle}
-            currentStopTitle={currentStopTitle}
+            currentStopTitle={awaitingFirstStop ? (firstStopTitle ?? 'Starting point') : currentStopTitle}
             currentStop={currentStopNumber}
             totalStops={totalStops}
+            compact={compactHud}
           />
         </div>
       </div>
@@ -219,7 +289,7 @@ const TourHud = ({
       {!hideRouteCard ? (
         <div
           className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-safe lg:pb-safe"
-          style={{ paddingBottom: hasBottomNav ? 'max(5.5rem, env(safe-area-inset-bottom))' : undefined }}
+          style={{ paddingBottom: bottomOffset }}
         >
           <div className="mx-auto w-full max-w-md">
             <MapHudRouteCard
@@ -227,22 +297,13 @@ const TourHud = ({
               subline={routeSubline}
               statusLabel={statusLabel}
               statusTone={statusTone}
-              distanceLabel={!atStop ? distanceLabel : null}
-              walkMinutes={!atStop ? walkMinutes : null}
+              distanceLabel={!atStop || awaitingFirstStop ? distanceLabel : null}
+              walkMinutes={!atStop || awaitingFirstStop ? walkMinutes : null}
               posterUrl={posterUrl}
-              showDirections={showDirections}
+              showDirections={showDirections && !awaitingFirstStop}
               onDirections={handleDirections}
-              action={
-                showContinue ? (
-                  <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
-                    Walk to {nextWaypoint.title}
-                  </Button>
-                ) : transitLegActive ? (
-                  <p className="text-xs leading-relaxed text-soft-slate">
-                    Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
-                  </p>
-                ) : null
-              }
+              compact={compactHud}
+              action={routeAction}
             />
           </div>
         </div>

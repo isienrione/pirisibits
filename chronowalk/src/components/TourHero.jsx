@@ -162,8 +162,8 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           ) : null}
 
           <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
-            Location is used only to guide you between stops. Stories and reconstructions unlock when
-            you arrive at each landmark.
+            Your tour begins at the Colosseum — walk there to unlock your first story. Location is
+            used only to guide you between stops.
           </p>
         </GlassPanel>
 

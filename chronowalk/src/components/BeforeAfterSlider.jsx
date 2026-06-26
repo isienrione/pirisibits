@@ -148,13 +148,12 @@ function CompareSliderHandle() {
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
       <div
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-warm-white bg-gold shadow-glass"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-warm-white bg-gold shadow-glass"
         aria-hidden="true"
       >
-        <div className="flex items-center gap-1">
-          <span className="h-4 w-0.5 rounded-full bg-warm-white/90" />
-          <span className="h-4 w-0.5 rounded-full bg-warm-white/90" />
-        </div>
+        <svg className="h-5 w-5 text-warm-white" viewBox="0 0 24 24" fill="none">
+          <path d="M8 8 4 12l4 4M16 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
       <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
     </div>
@@ -508,6 +507,7 @@ const BeforeAfterSlider = ({
         src={src}
         muted
         playsInline
+        controls={false}
         preload="auto"
         aria-label={label}
         style={style}
@@ -578,6 +578,7 @@ const BeforeAfterSlider = ({
             src={modernImg}
             muted
             playsInline
+            controls={false}
             autoPlay
             preload="auto"
             aria-label="Modern Colosseum"
@@ -636,6 +637,7 @@ const BeforeAfterSlider = ({
             src={historicImg}
             muted
             playsInline
+            controls={false}
             autoPlay
             preload="auto"
             aria-label="Ancient Colosseum reconstruction"
@@ -699,11 +701,11 @@ const BeforeAfterSlider = ({
             <SliderEraLabels />
             {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
-              style={{ width: '100%', height: '100%' }}
+              style={{ width: '100%', height: '100%', touchAction: 'none' }}
               itemOne={renderModernItem()}
               itemTwo={renderAncientItem()}
               handle={<CompareSliderHandle />}
-              onlyHandleDraggable
+              onlyHandleDraggable={false}
               changePositionOnHover={false}
             />
           </>
