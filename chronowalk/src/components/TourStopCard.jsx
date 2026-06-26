@@ -1,6 +1,7 @@
-import { getModernCoverUrl } from '../utils/sliderMedia'
+import { getModernCoverUrl, getModernPosterUrl } from '../utils/sliderMedia'
 import {
   Button,
+  FadeImage,
   GlassPanel,
   cn,
   focusRing,
@@ -64,15 +65,15 @@ export function TourStopCard({
           )}
         >
           {posterUrl ? (
-            <img
+            <FadeImage
               src={posterUrl}
-              alt=""
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
+              placeholderSrc={waypoint ? getModernPosterUrl(waypoint) : undefined}
+              className="h-full w-full"
+              imgClassName="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
-              Preview soon
+            <div className="flex h-full min-h-[7rem] items-center justify-center bg-gradient-to-br from-sand to-limestone/50 px-2 text-center">
+              <p className="text-xs text-soft-slate">Preview soon</p>
             </div>
           )}
           {isUpcoming ? (

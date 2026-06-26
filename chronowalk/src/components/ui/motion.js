@@ -16,5 +16,6 @@ export const motionUnlockGlow = 'motion-unlock-glow'
 export const motionUnlockVignette = 'motion-unlock-vignette'
 export const motionMapPulse = 'motion-map-pulse'
 export const motionShimmer = 'motion-shimmer'
+export const motionImageFade = 'motion-image-fade'
 export const motionTap =
   'motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-motion-out motion-safe:active:scale-[0.98] motion-reduce:active:scale-100'

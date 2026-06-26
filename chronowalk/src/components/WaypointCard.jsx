@@ -2,7 +2,8 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard, motionUnlockGlow } from './ui';
+import { BottomSheet, Button, EmptyState, FadeImage, SkeletonWaypointCard, cn, ctaInCard, motionUnlockGlow } from './ui';
+import { useImageLoadState } from '../hooks/useImageLoadState';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -27,82 +28,45 @@ import { isDebugMedia } from '../config/env';
 
 const BeforeAfterSlider = lazy(() => import('./BeforeAfterSlider'));
 
-const useMediaHeroState = (url) => {
-  const [status, setStatus] = useState(url ? 'loading' : 'empty');
+function WaypointMediaHero({ previewUrl, placeholderSrc, status, landmarkTitle }) {
+  if (!previewUrl || status === 'idle') {
+    return (
+      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/10]">
+        <EmptyState
+          preset="mediaComingSoon"
+          body={`The visual reconstruction for ${landmarkTitle} is being prepared. The audio story is ready when you are.`}
+          className="flex h-full min-h-[12rem] items-center justify-center border-0 bg-gradient-to-br from-sand via-limestone/40 to-warm-white shadow-none"
+        />
+      </div>
+    )
+  }
 
-  useEffect(() => {
-    if (!url) {
-      setStatus('empty');
-      return undefined;
-    }
+  if (status === 'error') {
+    return (
+      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[16/10]">
+        <EmptyState
+          preset="mediaUnavailable"
+          body={`We couldn't load the modern view for ${landmarkTitle}. You can still start the audio story below.`}
+          className="flex h-full min-h-[12rem] items-center justify-center border-0 bg-gradient-to-br from-sand via-limestone/40 to-warm-white shadow-none"
+        />
+      </div>
+    )
+  }
 
-    let cancelled = false;
-    setStatus('loading');
-
-    const image = new Image();
-    image.onload = () => {
-      if (!cancelled) setStatus('ready');
-    };
-    image.onerror = () => {
-      if (!cancelled) setStatus('error');
-    };
-    image.referrerPolicy = 'no-referrer';
-    image.src = url;
-
-    return () => {
-      cancelled = true;
-    };
-  }, [url]);
-
-  return status;
-};
-
-function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
-      {status === 'ready' && previewUrl ? (
-        <>
-          <img
-            src={previewUrl}
-            alt=""
-            className="h-full w-full object-cover object-center"
-            referrerPolicy="no-referrer"
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
-            aria-hidden="true"
-          />
-        </>
-      ) : (
-        <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-          {status === 'loading' ? (
-            <>
-              <LoadingSpinner className="mb-4" />
-              <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
-            </>
-          ) : status === 'error' ? (
-            <>
-              <p className="font-display text-lg font-semibold text-deep-slate">
-                Preview unavailable
-              </p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
-                We couldn&apos;t load the modern view for {landmarkTitle}. You can still start the
-                audio story below.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-display text-lg font-semibold text-deep-slate">View coming soon</p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
-                The visual reconstruction for {landmarkTitle} is being prepared. The audio story is
-                ready when you are.
-              </p>
-            </>
-          )}
-        </div>
-      )}
+      <FadeImage
+        src={previewUrl}
+        placeholderSrc={placeholderSrc}
+        className="h-full w-full"
+        imgClassName="h-full w-full object-cover object-center"
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
+        aria-hidden="true"
+      />
     </div>
-  );
+  )
 }
 
 function AudioTranscriptSection({ waypoint }) {
@@ -174,14 +138,15 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
   const [entered, setEntered] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
-  const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio } =
+  const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio, isAudioBuffering } =
     useAudioPlaybackState();
 
   const modernSliderUrl = waypoint ? getModernSliderUrl(waypoint) : null;
   const ancientSliderUrl = waypoint ? getAncientSliderUrl(waypoint) : null;
   const heroPreviewUrl =
     (waypoint && (getModernCoverUrl(waypoint) || getModernSliderUrl(waypoint))) ?? null;
-  const heroStatus = useMediaHeroState(heroPreviewUrl);
+  const heroPosterUrl = waypoint ? getModernPosterUrl(waypoint) : null;
+  const heroStatus = useImageLoadState(heroPreviewUrl);
   const hasModernMedia = waypoint ? hasModernSliderMedia(waypoint) : false;
   const debugMedia = isDebugMedia();
 
@@ -253,7 +218,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     setMediaError(null);
 
     if (!waypoint.arrival_immersive_url) {
-      setMediaError('Arrival audio is not available for this landmark yet.');
+      setMediaError('noAudio');
       return;
     }
 
@@ -270,7 +235,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       triggerHaptic(HAPTIC_KIND.SUCCESS);
     } catch (err) {
       console.error('Failed to play audio guide:', err);
-      setMediaError('Could not start audio. Tap again or check your connection.');
+      setMediaError('noInternet');
     }
   };
 
@@ -278,12 +243,12 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     setMediaError(null);
 
     if (!waypoint.arrival_immersive_url) {
-      setMediaError('Arrival audio is not available for this landmark yet.');
+      setMediaError('noAudio');
       return;
     }
 
     if (!hasModernSliderMedia(waypoint)) {
-      setMediaError('Modern view media is missing for this waypoint.');
+      setMediaError('mediaUnavailable');
       return;
     }
 
@@ -304,7 +269,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
   const openImageOnly = () => {
     setMediaError(null);
     if (!hasModernSliderMedia(waypoint)) {
-      setMediaError('Comparison media is not available for this landmark yet.');
+      setMediaError('mediaUnavailable');
       return;
     }
     setShowSlider(true);
@@ -441,13 +406,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
               message="The then-and-now slider could not load. You can still listen to the audio story below."
             >
               <Suspense
-                fallback={
-                  <LoadingPanel
-                    label="Loading comparison…"
-                    hint="Preparing matched modern and ancient views"
-                    className="min-h-[14rem] rounded-b-3xl"
-                  />
-                }
+                fallback={<SkeletonWaypointCard className="min-h-[14rem] rounded-b-3xl" />}
               >
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
@@ -474,6 +433,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       ) : (
         <WaypointMediaHero
           previewUrl={heroPreviewUrl}
+          placeholderSrc={heroPosterUrl}
           status={heroStatus}
           landmarkTitle={landmarkTitle}
         />
@@ -490,9 +450,13 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         className="pb-6"
       >
         {mediaError ? (
-          <p className="mt-4 rounded-2xl border border-terracotta/30 bg-terracotta/10 px-4 py-3 text-sm text-deep-slate" role="alert">
-            {mediaError}
-          </p>
+          <EmptyState
+            preset={mediaError}
+            compact
+            onAction={() => setMediaError(null)}
+            actionLabel="Got it"
+            className="mt-4 border-terracotta/25 bg-terracotta/8 text-left shadow-none"
+          />
         ) : null}
 
         {accessMode === 'remote' ? (
@@ -541,7 +505,9 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
               title={landmarkTitle}
               subtitle={waypoint.arrival_subtitle}
               isPlaying={isArrivalAudioPlaying}
+              isLoading={isAudioBuffering}
               posterUrl={heroPreviewUrl}
+              placeholderUrl={heroPosterUrl}
               onToggle={handleAudioAction}
               onStop={() => audioOrchestrator.stop()}
             />

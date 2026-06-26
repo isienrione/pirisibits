@@ -10,11 +10,12 @@ import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
-import { getModernCoverUrl } from './utils/sliderMedia'
+import { getModernCoverUrl, getModernPosterUrl } from './utils/sliderMedia'
 import { getTourDirectionsOrigin } from './utils/tourDirections'
 import { isAtWaypoint } from './utils/waypointProximity'
 import { getWaypointGeo } from './data/waypointGeo'
-import { LoadingPanel } from './components/ui'
+import { EmptyState, MapSkeletonOverlay, RouteLoadingShimmer, SkeletonWaypointCard } from './components/ui'
+import { useOnlineStatus } from './hooks/useOnlineStatus'
 import { ConfirmDialog } from './components/ui/ConfirmDialog'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
@@ -51,7 +52,7 @@ const SettingsView = lazy(() => import('./components/views/SettingsView'))
 const DirectionsView = lazy(() => import('./components/views/DirectionsView'))
 
 function TabLoadingFallback() {
-  return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
+  return <RouteLoadingShimmer className="mx-4 min-h-[50vh]" label="Loading view…" />
 }
 
 function App() {
@@ -87,6 +88,7 @@ function App() {
     hasInteracted,
   })
 
+  const online = useOnlineStatus()
   const { isTourNarrationActive } = useAudioPlaybackState()
 
   useEffect(() => {
@@ -331,6 +333,7 @@ function App() {
 
   const audioWaypoint = activeWaypoint ?? discoveredWaypoint ?? session.currentWaypoint
   const audioPosterUrl = audioWaypoint ? getModernCoverUrl(audioWaypoint) : null
+  const audioPosterPlaceholder = audioWaypoint ? getModernPosterUrl(audioWaypoint) : null
   const cardIsOpen = Boolean(activeWaypoint)
 
   const handleToggleTourAudio = useCallback(async () => {
@@ -357,7 +360,7 @@ function App() {
         title="Asset studio unavailable"
         message="The creator studio could not load. Check the console and reload the page."
       >
-        <Suspense fallback={<LoadingPanel label="Loading asset studio…" fullScreen />}>
+        <Suspense fallback={<MapSkeletonOverlay label="Loading asset studio…" className="h-screen" />}>
           <WaypointAssetStudio waypointId={assetStudioWaypointId} />
         </Suspense>
       </ErrorBoundary>
@@ -388,6 +391,17 @@ function App() {
       </a>
       <LiveAnnouncer message={liveAnnouncement} />
 
+      {!online ? (
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] px-4 pt-safe">
+          <EmptyState
+            preset="noInternet"
+            compact
+            onAction={() => window.location.reload()}
+            className="pointer-events-auto mx-auto max-w-lg"
+          />
+        </div>
+      ) : null}
+
       <div
         id="main-tour-content"
         className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
@@ -402,10 +416,9 @@ function App() {
         >
           <Suspense
             fallback={
-              <LoadingPanel
+              <MapSkeletonOverlay
                 label="Loading map…"
                 hint="Fetching Mapbox and tour route layers"
-                fullScreen
               />
             }
           >
@@ -512,6 +525,7 @@ function App() {
             locationStatus={locationStatus}
             onBack={() => setActiveTab(NAV_TABS.MAP)}
             onOpenExternalMaps={handleOpenExternalMaps}
+            onRetryLocation={session.retryLocation}
           />
         </Suspense>
       ) : null}
@@ -535,7 +549,15 @@ function App() {
         title="Landmark card unavailable"
         message="The arrival card could not load. Try reopening the stop from the map."
       >
-        <Suspense fallback={null}>
+        <Suspense
+          fallback={
+            activeWaypoint ? (
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-50">
+                <SkeletonWaypointCard className="rounded-t-sheet shadow-sheet-up" />
+              </div>
+            ) : null
+          }
+        >
           <WaypointCard
             waypoint={activeWaypoint}
             state={session.state}
@@ -559,6 +581,7 @@ function App() {
               title={audioWaypoint?.title}
               subtitle={audioWaypoint?.arrival_subtitle}
               posterUrl={audioPosterUrl}
+              placeholderUrl={audioPosterPlaceholder}
               cardOpen={cardIsOpen}
               onReopenCard={
                 cardDismissed && discoveredWaypoint && !activeWaypoint ? handleReopenWaypoint : null

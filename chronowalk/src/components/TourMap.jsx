@@ -8,7 +8,7 @@ import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { motionMapPulse } from './ui/motion'
-import { Button, LoadingPanel, cn } from './ui'
+import { Button, EmptyState, MapSkeletonOverlay, RouteLoadingShimmer, cn } from './ui'
 
 const mapboxToken = env.mapboxToken
 
@@ -152,6 +152,7 @@ const TourMap = ({
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
   const [mapError, setMapError] = useState(null)
+  const [routeLoading, setRouteLoading] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
@@ -317,17 +318,21 @@ const TourMap = ({
     const loadRoutes = async () => {
       if (!tour?.stopIds?.length || tour.stopIds.length < 2) return
 
+      setRouteLoading(true)
+
       const landmarks = tour.stopIds
         .map((id) => stops.find((stop) => stop.id === id)?.landmark)
         .filter(Boolean)
 
       const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
-      if (cancelled || !fullRoute) return
+      if (cancelled) return
 
-      map.current.getSource('tour-route')?.setData({
-        type: 'FeatureCollection',
-        features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
-      })
+      if (fullRoute) {
+        map.current.getSource('tour-route')?.setData({
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
+        })
+      }
 
       if (activeLeg && transitLegActive) {
         const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
@@ -346,6 +351,8 @@ const TourMap = ({
           features: [],
         })
       }
+
+      if (!cancelled) setRouteLoading(false)
     }
 
     loadRoutes()
@@ -426,14 +433,14 @@ const TourMap = ({
 
   if (mapError) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md rounded-3xl border border-limestone/70 bg-warm-white p-6 shadow-glass">
-          <p className="font-display text-xl font-semibold">Map unavailable</p>
-          <p className="mt-2 text-sm text-soft-slate">{mapError}</p>
-          <Button className="mt-5 rounded-2xl" onClick={() => window.location.reload()}>
-            Reload app
-          </Button>
-        </div>
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-b from-sand/40 via-warm-white to-limestone/30 p-6">
+        <EmptyState
+          preset="routeUnavailable"
+          body="We could not load the map right now. Check your connection and try again."
+          actionLabel="Reload app"
+          onAction={() => window.location.reload()}
+          className="max-w-md"
+        />
       </div>
     )
   }
@@ -444,13 +451,14 @@ const TourMap = ({
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
       {!mapLoaded ? (
-        <div className="absolute inset-0 z-10">
-          <LoadingPanel
-            label="Preparing your map…"
-            hint="Drawing landmarks, routes, and walking paths"
-            fullScreen
-            className="bg-warm-white/90 backdrop-blur-sm"
-          />
+        <MapSkeletonOverlay
+          label="Preparing your map…"
+          hint="Drawing landmarks, routes, and walking paths"
+        />
+      ) : null}
+      {mapLoaded && routeLoading ? (
+        <div className="pointer-events-none absolute inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+6.5rem)] z-20 mx-auto max-w-md">
+          <RouteLoadingShimmer label="Drawing your walking route…" />
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />

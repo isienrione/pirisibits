@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel, motionRouteSlide, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { Button, FadeImage, GlassPanel, cn, ctaInCard, metaLabel, motionRouteSlide, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -53,11 +53,11 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
   return (
     <div className={cn('shrink-0 overflow-hidden border border-limestone/70 bg-sand shadow-sm', sizeClass)}>
       {posterUrl ? (
-        <img
+        <FadeImage
           src={posterUrl}
-          alt=""
-          className="h-full w-full object-cover"
-          referrerPolicy="no-referrer"
+          className="h-full w-full"
+          imgClassName="h-full w-full object-cover"
+          skeletonClassName={compact ? 'rounded-xl' : 'rounded-2xl'}
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">

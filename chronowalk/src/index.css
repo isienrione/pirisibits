@@ -178,6 +178,19 @@
     animation: motion-shimmer var(--motion-duration-slow) var(--motion-ease-out) both;
   }
 
+  @keyframes motion-image-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .motion-image-fade {
+    animation: motion-image-fade var(--motion-duration-base) var(--motion-ease-out) both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .motion-card-rise,
     .motion-sheet-rise,
@@ -187,6 +200,7 @@
     .motion-unlock-vignette,
     .motion-map-pulse,
     .motion-shimmer,
+    .motion-image-fade,
     .animate-pulse {
       animation: none;
     }

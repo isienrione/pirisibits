@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
+import { useImageLoadState } from '../hooks/useImageLoadState'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, cn, motionCardRise, motionHeroZoom } from './ui'
+import { Button, FadeImage, GlassPanel, cn, motionCardRise } from './ui'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -51,6 +52,7 @@ function PreviewStopsList({ stops }) {
 function TourHero({ tour, singleWaypointId, onStartTour }) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
+  const heroStatus = useImageLoadState(heroSrc)
 
   const stops = useMemo(
     () =>
@@ -62,11 +64,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     [tour.stopIds]
   )
 
-  const handleHeroError = () => {
-    if (heroSrc !== tourHeroFallback) {
+  useEffect(() => {
+    if (heroStatus === 'error' && heroSrc !== tourHeroFallback) {
       setHeroSrc(tourHeroFallback)
     }
-  }
+  }, [heroStatus, heroSrc])
 
   if (singleWaypointId) {
     const title = getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId
@@ -95,13 +97,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
-      <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
-        <img
+      <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:h-[min(76vh,44rem)]">
+        <FadeImage
           src={heroSrc}
-          alt=""
-          aria-hidden="true"
-          className={cn('h-full w-full object-cover object-[center_38%]', motionHeroZoom)}
-          onError={handleHeroError}
+          className="h-full w-full"
+          imgClassName="h-full w-full object-cover object-[center_38%]"
         />
         <div
           className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/35 to-warm-white"
