@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import TourHero from './components/TourHero'
 import TourMap from './components/TourMap'
 import TourHud from './components/TourHud'
 import WaypointCard from './components/WaypointCard'
@@ -10,7 +11,6 @@ import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
-import { getWaypointGeo } from './data/waypointGeo'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
@@ -27,10 +27,6 @@ function App() {
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
   const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
-  const tourStopLabels = useMemo(
-    () => tour.stopIds.map((id) => getWaypointGeo(id)?.title ?? id).join(' → '),
-    [tour.stopIds]
-  )
 
   const [hasInteracted, setHasInteracted] = useState(false)
   const [activeWaypoint, setActiveWaypoint] = useState(null)
@@ -104,43 +100,22 @@ function App() {
     await session.beginTransitToNextStop()
   }
 
+  const handleStartTour = async () => {
+    await requestDeviceTiltPermission()
+    setHasInteracted(true)
+  }
+
   if (assetStudio) {
     return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
   }
 
   if (!hasInteracted) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-gradient-to-b from-warm-white via-sand/40 to-limestone/30 px-6 pb-safe pt-safe text-center">
-        {singleWaypointId ? (
-          <>
-            <p className="text-lg font-semibold text-deep-slate">
-              Debug: {getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId}
-            </p>
-            <p className="max-w-sm text-sm text-soft-slate">
-              Single-stop test mode. Add <span className="font-medium text-deep-slate">?debugGeo=true</span> to
-              fake GPS at this landmark.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="font-display text-2xl font-semibold text-deep-slate">{tour.title}</p>
-            <p className="text-base text-terracotta">{tour.subtitle ?? tourStopLabels}</p>
-            <p className="max-w-sm text-sm text-soft-slate">
-              {tour.stopIds.length} stops · {tourStopLabels}
-            </p>
-          </>
-        )}
-        <Button
-          size="lg"
-          className="rounded-full px-10 shadow-cta transition-transform hover:scale-[1.02]"
-          onClick={async () => {
-            await requestDeviceTiltPermission()
-            setHasInteracted(true)
-          }}
-        >
-          Start Immersive Tour
-        </Button>
-      </div>
+      <TourHero
+        tour={tour}
+        singleWaypointId={singleWaypointId}
+        onStartTour={handleStartTour}
+      />
     )
   }
 
