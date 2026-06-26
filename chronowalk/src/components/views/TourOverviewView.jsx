@@ -2,7 +2,7 @@ import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { getWaypointGeo } from '../../data/waypointGeo'
 import { estimateWalkMinutes } from '../../utils/tourStats'
 import TourStopCard from '../TourStopCard'
-import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
+import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn, motionCardRise } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 function TourOverviewView({
@@ -61,7 +61,7 @@ function TourOverviewView({
       />
 
       {isAwaitingFirstStop ? (
-        <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
+        <GlassPanel className={cn('mt-6 border-gold/30 bg-gold/[0.05] p-5', motionCardRise)}>
           <p className="text-eyebrow uppercase text-gold">Before you begin</p>
           <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
             Start at the {startTitle}
@@ -94,7 +94,7 @@ function TourOverviewView({
         </GlassPanel>
       ) : null}
 
-      <GlassPanel className="mt-6 p-5">
+      <GlassPanel className={cn('mt-6 p-5', motionCardRise)}>
         <ProgressPill
           current={currentStop}
           total={totalStops}
@@ -149,7 +149,7 @@ function TourOverviewView({
         </div>
       </div>
 
-      <GlassPanel className="mt-6 p-5">
+      <GlassPanel className={cn('mt-6 p-5', motionCardRise)}>
         <p className="text-eyebrow uppercase text-terracotta">Included</p>
         <ul className="mt-3 space-y-2 text-sm text-soft-slate">
           <li>GPS-guided walking between landmarks</li>

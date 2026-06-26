@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { focusRing } from './focusRing'
+import { motionTap } from './motion'
 
 const variantStyles = {
   default:
@@ -28,7 +29,8 @@ export function IconButton({
       type={type}
       aria-label={label}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200',
+        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-150 ease-motion-out',
+        motionTap,
         focusRing,
         variantStyles[variant],
         sizeStyles[size],

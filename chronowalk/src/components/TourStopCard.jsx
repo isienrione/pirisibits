@@ -1,9 +1,11 @@
-import { getModernCoverUrl } from '../utils/sliderMedia'
+import { getModernCoverUrl, getModernPosterUrl } from '../utils/sliderMedia'
 import {
   Button,
+  FadeImage,
   GlassPanel,
   cn,
   focusRing,
+  motionCardRise,
   statusArrived,
   statusCurrent,
   statusLocked,
@@ -49,7 +51,8 @@ export function TourStopCard({
   return (
     <GlassPanel
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
+        motionCardRise,
+        'overflow-hidden transition-colors duration-250 ease-motion-out hover:border-gold/40 hover:shadow-glass-lg',
         isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
       )}
     >
@@ -62,15 +65,15 @@ export function TourStopCard({
           )}
         >
           {posterUrl ? (
-            <img
+            <FadeImage
               src={posterUrl}
-              alt=""
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
+              placeholderSrc={waypoint ? getModernPosterUrl(waypoint) : undefined}
+              className="h-full w-full"
+              imgClassName="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
-              Preview soon
+            <div className="flex h-full min-h-[7rem] items-center justify-center bg-gradient-to-br from-sand to-limestone/50 px-2 text-center">
+              <p className="text-xs text-soft-slate">Preview soon</p>
             </div>
           )}
           {isUpcoming ? (

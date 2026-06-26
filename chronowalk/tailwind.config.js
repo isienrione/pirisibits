@@ -42,14 +42,13 @@ export default {
       backdropBlur: {
         glass: '16px',
       },
-      animation: {
-        'sheet-enter': 'sheet-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+      transitionTimingFunction: {
+        'motion-out': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
-      keyframes: {
-        'sheet-enter': {
-          from: { transform: 'translateY(100%)' },
-          to: { transform: 'translateY(0)' },
-        },
+      transitionDuration: {
+        150: '150ms',
+        250: '250ms',
+        350: '350ms',
       },
     },
   },

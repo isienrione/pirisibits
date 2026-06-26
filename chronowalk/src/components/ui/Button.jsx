@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { focusRing } from './focusRing'
+import { motionTap } from './motion'
 
 const variantStyles = {
   primary:
@@ -31,7 +32,8 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 transition-colors duration-200',
+        'inline-flex items-center justify-center gap-2 transition-colors duration-150 ease-motion-out',
+        motionTap,
         focusRing,
         'disabled:pointer-events-none disabled:opacity-50',
         variantStyles[variant],

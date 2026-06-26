@@ -7,7 +7,8 @@ import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalki
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { Button, LoadingPanel } from './ui'
+import { motionMapPulse } from './ui/motion'
+import { Button, EmptyState, MapSkeletonOverlay, RouteLoadingShimmer, cn } from './ui'
 
 const mapboxToken = env.mapboxToken
 
@@ -74,15 +75,17 @@ function MapArrivalPulse({ point, active }) {
       aria-hidden="true"
     >
       <div
-        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
-          reducedMotion ? '' : 'animate-arrival-map-pulse'
-        }`}
+        className={cn(
+          'absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10',
+          !reducedMotion && motionMapPulse
+        )}
       />
       <div
-        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
-          reducedMotion ? '' : 'animate-arrival-map-pulse'
-        }`}
-        style={{ animationDelay: '0.35s' }}
+        className={cn(
+          'absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25',
+          !reducedMotion && motionMapPulse
+        )}
+        style={{ animationDelay: '120ms' }}
       />
     </div>
   )
@@ -148,7 +151,8 @@ const TourMap = ({
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [mapError, setMapError] = useState(null)
+  const [mapError, setMapError] = useState(false)
+  const [routeLoading, setRouteLoading] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
@@ -158,7 +162,7 @@ const TourMap = ({
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
 
-    setMapError(null)
+    setMapError(false)
 
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
@@ -174,13 +178,13 @@ const TourMap = ({
       })
     } catch (error) {
       console.error('Mapbox initialization failed:', error)
-      setMapError('Could not initialize the map. Verify your Mapbox token and try again.')
+      setMapError(true)
       return undefined
     }
 
     map.current.on('error', (event) => {
       console.error('Mapbox runtime error:', event?.error ?? event)
-      setMapError('Map tiles failed to load. Check your connection or Mapbox token.')
+      setMapError(true)
     })
 
     map.current.on('load', () => {
@@ -274,7 +278,7 @@ const TourMap = ({
 
     return () => {
       setMapLoaded(false)
-      setMapError(null)
+      setMapError(false)
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
@@ -314,17 +318,21 @@ const TourMap = ({
     const loadRoutes = async () => {
       if (!tour?.stopIds?.length || tour.stopIds.length < 2) return
 
+      setRouteLoading(true)
+
       const landmarks = tour.stopIds
         .map((id) => stops.find((stop) => stop.id === id)?.landmark)
         .filter(Boolean)
 
       const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
-      if (cancelled || !fullRoute) return
+      if (cancelled) return
 
-      map.current.getSource('tour-route')?.setData({
-        type: 'FeatureCollection',
-        features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
-      })
+      if (fullRoute) {
+        map.current.getSource('tour-route')?.setData({
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
+        })
+      }
 
       if (activeLeg && transitLegActive) {
         const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
@@ -343,6 +351,8 @@ const TourMap = ({
           features: [],
         })
       }
+
+      if (!cancelled) setRouteLoading(false)
     }
 
     loadRoutes()
@@ -408,29 +418,25 @@ const TourMap = ({
 
   if (!isMapboxConfigured()) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md">
-          <p className="font-display text-xl font-semibold">Mapbox token required</p>
-          <p className="mt-2 text-sm text-soft-slate">
-            Add <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code> to{' '}
-            <code className="rounded bg-sand px-1">chronowalk/.env</code> and restart the dev
-            server.
-          </p>
-        </div>
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-b from-sand/40 via-warm-white to-limestone/30 p-6">
+        <EmptyState
+          preset="mapUnavailable"
+          body="The walking map is not ready in this build yet. Check back soon or contact the tour team."
+          className="max-w-md"
+        />
       </div>
     )
   }
 
   if (mapError) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md rounded-3xl border border-limestone/70 bg-warm-white p-6 shadow-glass">
-          <p className="font-display text-xl font-semibold">Map unavailable</p>
-          <p className="mt-2 text-sm text-soft-slate">{mapError}</p>
-          <Button className="mt-5 rounded-2xl" onClick={() => window.location.reload()}>
-            Reload app
-          </Button>
-        </div>
+      <div className="flex h-screen w-full items-center justify-center bg-gradient-to-b from-sand/40 via-warm-white to-limestone/30 p-6">
+        <EmptyState
+          preset="mapUnavailable"
+          actionLabel="Reload app"
+          onAction={() => window.location.reload()}
+          className="max-w-md"
+        />
       </div>
     )
   }
@@ -441,13 +447,14 @@ const TourMap = ({
     <div className="relative h-screen w-full">
       <div ref={mapContainer} className="h-full w-full" />
       {!mapLoaded ? (
-        <div className="absolute inset-0 z-10">
-          <LoadingPanel
-            label="Preparing your map…"
-            hint="Drawing landmarks, routes, and walking paths"
-            fullScreen
-            className="bg-warm-white/90 backdrop-blur-sm"
-          />
+        <MapSkeletonOverlay
+          label="Preparing your map…"
+          hint="Drawing landmarks, routes, and walking paths"
+        />
+      ) : null}
+      {mapLoaded && routeLoading ? (
+        <div className="pointer-events-none absolute inset-x-4 bottom-[calc(env(safe-area-inset-bottom)+6.5rem)] z-20 mx-auto max-w-md">
+          <RouteLoadingShimmer label="Drawing your walking route…" />
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />

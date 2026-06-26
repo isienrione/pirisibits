@@ -1,13 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { isDebugGeo } from '../../config/env'
 import { env } from '../../config/env'
 import { fetchWalkingDirections } from '../../services/fetchWalkingRoute'
 import { estimateWalkMinutes } from '../../utils/tourStats'
+import { useOnlineStatus } from '../../hooks/useOnlineStatus'
 import {
   buildGoogleMapsDirectionsUrl,
   isSameLocation,
 } from '../../utils/walkingDirections'
-import { Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
+import {
+  Button,
+  EmptyState,
+  GlassPanel,
+  PageShell,
+  RouteLoadingShimmer,
+  SectionHeader,
+  cn,
+  ctaInCard,
+} from '../ui'
 
 function formatStepDistance(meters) {
   if (meters < 1000) return `${Math.round(meters)} m`
@@ -21,68 +31,73 @@ function DirectionsView({
   locationStatus,
   onBack,
   onOpenExternalMaps,
+  onRetryLocation,
 }) {
+  const online = useOnlineStatus()
   const [loading, setLoading] = useState(true)
   const [directions, setDirections] = useState(null)
-  const [error, setError] = useState(null)
+  const [errorPreset, setErrorPreset] = useState(null)
+  const [reloadKey, setReloadKey] = useState(0)
 
   const routingOrigin =
     origin?.lat != null && origin?.lng != null ? origin : userPosition
   const originTitle = origin?.title ?? null
 
-  useEffect(() => {
-    let cancelled = false
-
-    const load = async () => {
-      if (!destination?.lat || !destination?.lng) {
-        setError('Destination is not available.')
-        setLoading(false)
-        return
-      }
-
-      if (!env.mapboxToken) {
-        setError('Mapbox token is required for walking directions.')
-        setLoading(false)
-        return
-      }
-
-      if (routingOrigin?.lat == null || routingOrigin?.lng == null) {
-        setError(
-          'Enable location access so ChronoWalk can build directions from where you are standing.'
-        )
-        setLoading(false)
-        return
-      }
-
-      if (isSameLocation(routingOrigin, destination)) {
-        setError('You are already at this landmark. Head back to the map to explore the stop.')
-        setLoading(false)
-        return
-      }
-
-      setLoading(true)
-      setError(null)
-
-      const result = await fetchWalkingDirections(routingOrigin, destination, env.mapboxToken)
-
-      if (cancelled) return
-
-      if (!result?.steps?.length) {
-        setError('Could not load walking directions. Try again or open Google Maps.')
-        setDirections(null)
-      } else {
-        setDirections(result)
-      }
-
+  const loadDirections = useCallback(async (cancelledRef) => {
+    if (!destination?.lat || !destination?.lng) {
+      setErrorPreset('routeUnavailable')
       setLoading(false)
+      return
     }
 
-    void load()
+    if (!online) {
+      setErrorPreset('noInternet')
+      setLoading(false)
+      return
+    }
 
+    if (!env.mapboxToken) {
+      setErrorPreset('routeUnavailable')
+      setLoading(false)
+      return
+    }
+
+    if (routingOrigin?.lat == null || routingOrigin?.lng == null) {
+      setErrorPreset('directionsNeedLocation')
+      setLoading(false)
+      return
+    }
+
+    if (isSameLocation(routingOrigin, destination)) {
+      setErrorPreset('directionsAtDestination')
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setErrorPreset(null)
+
+    const result = await fetchWalkingDirections(routingOrigin, destination, env.mapboxToken)
+
+    if (cancelledRef.current) return
+
+    if (!result?.steps?.length) {
+      setErrorPreset('directionsUnavailable')
+      setDirections(null)
+    } else {
+      setDirections(result)
+    }
+
+    setLoading(false)
+  }, [destination, online, routingOrigin?.lat, routingOrigin?.lng])
+
+  useEffect(() => {
+    const cancelledRef = { current: false }
+    void loadDirections(cancelledRef)
     return () => {
-      cancelled = true
+      cancelledRef.current = true
     }
-  }, [destination, routingOrigin?.lat, routingOrigin?.lng])
+  }, [loadDirections, reloadKey])
 
   const title = destination?.title ?? 'Destination'
   const mapsUrl = buildGoogleMapsDirectionsUrl(routingOrigin, destination)
@@ -94,6 +109,22 @@ function DirectionsView({
         ? 'From your current location'
         : 'From your last known location'
 
+  const handleRetry = () => {
+    if (errorPreset === 'directionsNeedLocation') {
+      onRetryLocation?.()
+      return
+    }
+    setReloadKey((key) => key + 1)
+  }
+
+  const handlePrimaryAction = () => {
+    if (errorPreset === 'directionsAtDestination') {
+      onBack?.()
+      return
+    }
+    handleRetry()
+  }
+
   return (
     <PageShell>
       <SectionHeader
@@ -104,16 +135,15 @@ function DirectionsView({
       />
 
       {loading ? (
-        <LoadingPanel label="Loading walking directions…" className="mt-6 min-h-[40vh]" />
-      ) : error ? (
-        <GlassPanel className="mt-6 p-5 text-center">
-          <p className="text-sm text-soft-slate">{error}</p>
-          {mapsUrl ? (
-            <Button className={cn(ctaInCard, 'mt-4')} fullWidth onClick={() => onOpenExternalMaps?.(mapsUrl)}>
-              Open in Google Maps
-            </Button>
-          ) : null}
-        </GlassPanel>
+        <RouteLoadingShimmer className="mt-6 min-h-[40vh]" label="Loading walking directions…" />
+      ) : errorPreset ? (
+        <EmptyState
+          preset={errorPreset}
+          onAction={handlePrimaryAction}
+          className="mt-6"
+          secondaryActionLabel={mapsUrl ? 'Open in Google Maps' : null}
+          onSecondaryAction={mapsUrl ? () => onOpenExternalMaps?.(mapsUrl) : undefined}
+        />
       ) : (
         <>
           <GlassPanel className="mt-6 p-5">
