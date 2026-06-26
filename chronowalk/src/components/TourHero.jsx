@@ -79,7 +79,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     return (
       <div className="relative min-h-screen bg-gradient-to-b from-warm-white via-sand/50 to-limestone/30">
         <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-end px-4 pb-safe pt-safe sm:px-6">
-          <GlassPanel className="rounded-[1.75rem] p-6 shadow-glass-lg sm:p-8">
+          <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8">
             <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
             <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
               Debug: {title}
@@ -89,8 +89,8 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
               <span className="font-medium text-deep-slate">?debugGeo=true</span> to fake GPS at this
               landmark.
             </p>
-            <Button size="lg" fullWidth className="mt-6 rounded-full" onClick={onStartTour}>
-              Start tour
+            <Button size="lg" fullWidth className="mt-6" onClick={onStartTour}>
+              Start Tour
             </Button>
           </GlassPanel>
         </div>
@@ -121,7 +121,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(38vh,18rem)] shrink-0 sm:h-[min(42vh,22rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-[1.75rem] p-6 shadow-glass-lg sm:p-8 lg:p-10">
+        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
           <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
 
           <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl lg:text-[2.75rem]">
@@ -145,14 +145,14 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" fullWidth className="rounded-full sm:flex-1" onClick={onStartTour}>
-              Start tour
+            <Button size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
+              Start Tour
             </Button>
             <Button
               variant="secondary"
               size="lg"
               fullWidth
-              className="rounded-full sm:flex-1"
+              className="sm:flex-1"
               aria-expanded={previewOpen}
               onClick={() => setPreviewOpen((open) => !open)}
             >
@@ -162,7 +162,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
 
           {previewOpen ? (
             <div className="mt-2 border-t border-limestone/50 pt-4">
-              <p className="text-eyebrow uppercase text-soft-slate">Your route</p>
+              <p className="text-eyebrow uppercase text-terracotta">Your route</p>
               <PreviewStopsList stops={stops} />
             </div>
           ) : null}

@@ -1,6 +1,6 @@
 import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
-import { Button, GlassPanel, cn } from './ui'
+import { Button, GlassPanel, cn, ctaInCard } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -10,26 +10,26 @@ function formatDistance(distance) {
 }
 
 function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops }) {
+  const completed = Math.max(0, currentStop - 1)
+
   return (
-    <GlassPanel
-      className={cn(
-        'pointer-events-auto rounded-3xl px-4 py-3 shadow-glass-lg',
-        'border-limestone/70 bg-warm-white/92'
-      )}
-    >
+    <GlassPanel className="pointer-events-auto px-4 py-3.5 shadow-glass-lg">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
           <p className="mt-1 truncate font-display text-lg font-semibold leading-tight text-deep-slate">
             {currentStopTitle}
           </p>
+          <p className="mt-1 text-xs text-soft-slate">
+            {completed} of {totalStops} stops visited
+          </p>
         </div>
         <div className="shrink-0 text-right">
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
-            Stop
+            Progress
           </p>
           <p className="font-display text-xl font-semibold tabular-nums text-deep-slate">
-            <span className="text-terracotta">{currentStop}</span>
+            <span className="text-gold">{currentStop}</span>
             <span className="text-soft-slate/60"> / </span>
             <span>{totalStops}</span>
           </p>
@@ -55,36 +55,33 @@ function MapHudRouteCard({
         : 'bg-sand/80 text-soft-slate'
 
   return (
-    <GlassPanel
-      className={cn(
-        'pointer-events-auto rounded-3xl p-4 shadow-glass-lg',
-        'border-limestone/70 bg-warm-white/92'
-      )}
-    >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+    <GlassPanel className="pointer-events-auto p-4 shadow-glass-lg">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
           <p className="text-eyebrow uppercase text-soft-slate">{headline}</p>
           <p className="mt-1 font-display text-xl font-semibold leading-tight text-deep-slate">
             {subline}
           </p>
+          {statusLabel ? (
+            <p
+              className={cn(
+                'mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                statusClass
+              )}
+            >
+              {statusLabel}
+            </p>
+          ) : null}
         </div>
         {distanceLabel ? (
-          <p className="shrink-0 text-right text-sm font-semibold tabular-nums text-deep-slate">
-            {distanceLabel}
-          </p>
+          <div className="shrink-0 rounded-2xl border border-limestone/70 bg-sand/50 px-3 py-2 text-center">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-soft-slate">
+              Distance
+            </p>
+            <p className="mt-0.5 text-sm font-bold tabular-nums text-deep-slate">{distanceLabel}</p>
+          </div>
         ) : null}
       </div>
-
-      {statusLabel ? (
-        <p
-          className={cn(
-            'mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold',
-            statusClass
-          )}
-        >
-          {statusLabel}
-        </p>
-      ) : null}
 
       {action ? <div className="mt-4">{action}</div> : null}
     </GlassPanel>
@@ -138,7 +135,7 @@ const TourHud = ({
   if (transitLegActive) {
     routeHeadline = 'Walking to'
     routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
-    statusLabel = 'En route — follow the gold path'
+    statusLabel = 'Follow the gold path'
     statusTone = 'walking'
   } else if (atStop) {
     routeHeadline = 'You have arrived'
@@ -181,10 +178,7 @@ const TourHud = ({
           className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-safe lg:pb-safe"
           style={{ paddingBottom: hasBottomNav ? 'max(5.5rem, env(safe-area-inset-bottom))' : undefined }}
         >
-          <div
-            className="mx-auto w-full max-w-md"
-            style={{ marginBottom: hasBottomNav ? '0' : undefined }}
-          >
+          <div className="mx-auto w-full max-w-md">
             <MapHudRouteCard
               headline={routeHeadline}
               subline={routeSubline}
@@ -193,13 +187,12 @@ const TourHud = ({
               distanceLabel={!atStop ? distanceLabel : null}
               action={
                 showContinue ? (
-                  <Button fullWidth className="rounded-2xl" onClick={onContinueTour}>
+                  <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
                     Walk to {nextWaypoint.title}
                   </Button>
                 ) : transitLegActive ? (
                   <p className="text-xs leading-relaxed text-soft-slate">
-                    Transit narration is playing. Arrival unlocks when you reach{' '}
-                    {routeSubline}.
+                    Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
                   </p>
                 ) : null
               }

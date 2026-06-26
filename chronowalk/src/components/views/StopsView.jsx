@@ -1,5 +1,5 @@
 import { getModernPosterUrl } from '../../utils/sliderMedia'
-import { GlassPanel, cn, focusRing } from '../ui'
+import { GlassPanel, PageShell, SectionHeader, cn, focusRing } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 const STATUS_META = {
@@ -13,6 +13,8 @@ function StopCard({ stop, index, waypoint, onSelect }) {
   const posterUrl = waypoint ? getModernPosterUrl(waypoint) : null
   const subtitle =
     waypoint?.arrival_subtitle ?? 'Audio story and historical reveal on arrival.'
+  const isCurrent = stop.status === 'current'
+  const isUpcoming = stop.status === 'upcoming'
 
   return (
     <button
@@ -21,9 +23,20 @@ function StopCard({ stop, index, waypoint, onSelect }) {
       aria-label={`View ${stop.title} on map`}
       className={cn('w-full rounded-3xl text-left', focusRing)}
     >
-      <GlassPanel className="overflow-hidden rounded-3xl transition hover:border-gold/40 hover:shadow-glass-lg">
+      <GlassPanel
+        className={cn(
+          'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
+          isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg',
+          isUpcoming && 'opacity-90'
+        )}
+      >
         <div className="flex gap-0 sm:gap-4">
-          <div className="relative w-28 shrink-0 overflow-hidden bg-gradient-to-br from-sand to-limestone/50 sm:w-32">
+          <div
+            className={cn(
+              'relative w-28 shrink-0 overflow-hidden bg-gradient-to-br from-sand to-limestone/50 sm:w-32',
+              isUpcoming && 'grayscale-[0.35]'
+            )}
+          >
             {posterUrl ? (
               <img
                 src={posterUrl}
@@ -73,32 +86,29 @@ function StopsView({ tour, mapStops, waypointsById, onSelectStop, onNavigate }) 
       }))
 
   return (
-    <div className="h-full overflow-y-auto bg-gradient-to-b from-warm-white via-sand/15 to-limestone/10 pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-8">
-      <div className="mx-auto max-w-2xl px-6 pb-safe pt-safe lg:pt-10">
-        <p className="text-eyebrow uppercase text-terracotta">Route</p>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-deep-slate">
-          {tour?.title ?? 'Tour stops'}
-        </h1>
-        <p className="mt-2 text-sm text-soft-slate">
-          {stops.length} landmarks · tap a stop to open the map
-        </p>
+    <PageShell>
+      <SectionHeader
+        align="left"
+        eyebrow="Route"
+        title={tour?.title ?? 'Tour stops'}
+        subtitle={`${stops.length} landmarks · tap a stop to open the map`}
+      />
 
-        <div className="mt-6 space-y-4">
-          {stops.map((stop, index) => (
-            <StopCard
-              key={stop.id}
-              stop={stop}
-              index={index}
-              waypoint={waypointsById?.[stop.id]}
-              onSelect={(stopId) => {
-                onSelectStop?.(stopId)
-                onNavigate?.(NAV_TABS.MAP)
-              }}
-            />
-          ))}
-        </div>
+      <div className="mt-6 space-y-4">
+        {stops.map((stop, index) => (
+          <StopCard
+            key={stop.id}
+            stop={stop}
+            index={index}
+            waypoint={waypointsById?.[stop.id]}
+            onSelect={(stopId) => {
+              onSelectStop?.(stopId)
+              onNavigate?.(NAV_TABS.MAP)
+            }}
+          />
+        ))}
       </div>
-    </div>
+    </PageShell>
   )
 }
 

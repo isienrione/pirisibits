@@ -776,7 +776,7 @@ const BeforeAfterSlider = ({
       className={
         immersive
           ? 'flex h-full min-h-0 flex-1 flex-col'
-          : 'w-full overflow-hidden rounded-panel border-4 border-warm-white shadow-glass'
+          : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
       }
     >
       {immersive ? (
@@ -815,7 +815,7 @@ const BeforeAfterSlider = ({
 
       <div className={immersive ? 'min-h-0 flex-1' : ''}>{renderSliderFrame()}</div>
 
-      <p className="bg-sand/60 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate">
+      <p className="bg-warm-white/90 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
         {renderCaption()}
       </p>
     </div>

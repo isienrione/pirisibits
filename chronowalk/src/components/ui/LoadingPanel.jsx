@@ -22,8 +22,8 @@ export function LoadingPanel({
     >
       <div
         className={cn(
-          'h-10 w-10 rounded-full bg-gold/30',
-          !reducedMotion && 'animate-pulse'
+          'h-10 w-10 rounded-full border-2 border-gold/25 border-t-gold',
+          !reducedMotion && 'animate-spin'
         )}
         aria-hidden="true"
       />

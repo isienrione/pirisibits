@@ -61,6 +61,7 @@ describe('TourHud', () => {
       />
     )
 
+    expect(screen.getByText(/follow the gold path/i)).toBeInTheDocument()
     expect(screen.getByText(/transit narration is playing/i)).toBeInTheDocument()
     expect(screen.getByText('240 m')).toBeInTheDocument()
   })

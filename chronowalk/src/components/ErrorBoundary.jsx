@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Button, GlassPanel } from './ui'
+import { Button, GlassPanel, cn, ctaInCard } from './ui'
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -39,10 +39,10 @@ export class ErrorBoundary extends Component {
         }
         role="alert"
       >
-        <GlassPanel className="max-w-md rounded-3xl p-6 text-center">
+        <GlassPanel className="max-w-md p-6 text-center">
           <p className="font-display text-xl font-semibold text-deep-slate">{title}</p>
           <p className="mt-2 text-sm leading-relaxed text-soft-slate">{message}</p>
-          <Button className="mt-5 rounded-2xl" onClick={this.handleRetry}>
+          <Button className={cn(ctaInCard, 'mt-5')} onClick={this.handleRetry}>
             Try again
           </Button>
         </GlassPanel>

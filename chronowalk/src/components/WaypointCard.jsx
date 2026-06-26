@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, cn } from './ui';
+import { BottomSheet, Button, LoadingPanel, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -475,14 +475,14 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
 
         {!showSlider && !alignmentMode ? (
           <div className="mt-6 flex flex-col gap-3">
-            <Button size="lg" fullWidth className="rounded-2xl" onClick={startImmersive}>
+            <Button size="lg" fullWidth onClick={startImmersive}>
               Reveal ancient view
             </Button>
             {hasModernMedia ? (
               <Button
                 variant="secondary"
                 fullWidth
-                className="rounded-2xl"
+                className={ctaInCard}
                 onClick={() => setShowSlider(true)}
               >
                 Compare then &amp; now
@@ -500,9 +500,9 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
         {showAudioControl ? (
           <div className="mt-4">
             <Button
-              variant={showSlider ? 'primary' : 'secondary'}
+              variant="secondary"
               fullWidth
-              className="rounded-2xl"
+              className={ctaInCard}
               onClick={handleAudioAction}
             >
               {audioButtonLabel}

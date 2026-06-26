@@ -1,7 +1,7 @@
 import { isDebugGeo, isDebugMap } from '../../config/env'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { JOURNEY_STATE, LOCATION_STATUS } from '../../hooks/useGeoLocation'
-import { GlassPanel, cn, focusRing } from '../ui'
+import { GlassPanel, PageShell, SectionHeader, cn, focusRing } from '../ui'
 import LocationNotice from '../LocationNotice'
 
 function SettingRow({ title, description, children }) {
@@ -9,7 +9,7 @@ function SettingRow({ title, description, children }) {
     <div className="flex items-start justify-between gap-4 border-b border-limestone/50 py-4 last:border-b-0">
       <div className="min-w-0">
         <p className="text-sm font-semibold text-deep-slate">{title}</p>
-        {description ? <p className="mt-1 text-sm text-soft-slate">{description}</p> : null}
+        {description ? <p className="mt-1 text-sm leading-relaxed text-soft-slate">{description}</p> : null}
       </div>
       <div className="shrink-0">{children}</div>
     </div>
@@ -72,85 +72,81 @@ function SettingsView({
           : 'Waiting for GPS'
 
   return (
-    <div className="h-full overflow-y-auto bg-gradient-to-b from-warm-white via-sand/15 to-limestone/10 pb-[calc(5.5rem+env(safe-area-inset-bottom))] lg:pb-8">
-      <div className="mx-auto max-w-2xl px-6 pb-safe pt-safe lg:pt-10">
-        <p className="text-eyebrow uppercase text-terracotta">Preferences</p>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-deep-slate">Settings</h1>
-        <p className="mt-2 text-sm text-soft-slate">
-          Tune how ChronoWalk guides you through Rome.
-        </p>
+    <PageShell>
+      <SectionHeader
+        align="left"
+        eyebrow="Preferences"
+        title="Settings"
+        subtitle="Tune how ChronoWalk guides you through Rome."
+      />
 
-        <GlassPanel className="mt-6 rounded-3xl px-5">
-          {(locationStatus === LOCATION_STATUS.DENIED ||
-            locationStatus === LOCATION_STATUS.UNAVAILABLE) && (
-            <div className="border-b border-limestone/50 pb-4">
-              <LocationNotice
-                status={locationStatus}
-                onRetry={onRetryLocation}
-              />
-            </div>
-          )}
+      <GlassPanel className="mt-6 px-5">
+        {(locationStatus === LOCATION_STATUS.DENIED ||
+          locationStatus === LOCATION_STATUS.UNAVAILABLE) && (
+          <div className="border-b border-limestone/50 pb-4 pt-1">
+            <LocationNotice status={locationStatus} onRetry={onRetryLocation} />
+          </div>
+        )}
 
-          <SettingRow
-            title="Location"
-            description={
-              isDebugGeo()
-                ? 'Debug GPS is simulating your position for testing.'
-                : 'Required for arrival detection and walking guidance.'
-            }
+        <SettingRow
+          title="Location"
+          description={
+            isDebugGeo()
+              ? 'Debug GPS is simulating your position for testing.'
+              : 'Required for arrival detection and walking guidance.'
+          }
+        >
+          <span className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-deep-slate">
+            {locationLabel}
+          </span>
+        </SettingRow>
+
+        <SettingRow
+          title="Audio stories"
+          description="Ambient tour audio, arrival chimes, and immersive narration."
+        >
+          <Toggle
+            checked={audioEnabled}
+            onChange={onAudioEnabledChange}
+            label="Toggle audio stories"
+          />
+        </SettingRow>
+
+        <SettingRow
+          title="Reduced motion"
+          description={
+            reducedMotion
+              ? 'Your device prefers reduced motion — animations are softened.'
+              : 'Full motion is enabled for arrivals and transitions.'
+          }
+        >
+          <span
+            className={cn(
+              'rounded-full px-3 py-1 text-xs font-semibold',
+              reducedMotion ? 'bg-gold/15 text-gold' : 'bg-sand text-soft-slate'
+            )}
           >
-            <span className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-deep-slate">
-              {locationLabel}
-            </span>
-          </SettingRow>
+            {reducedMotion ? 'On' : 'Off'}
+          </span>
+        </SettingRow>
 
-          <SettingRow
-            title="Audio stories"
-            description="Ambient tour audio, arrival chimes, and immersive narration."
-          >
-            <Toggle
-              checked={audioEnabled}
-              onChange={onAudioEnabledChange}
-              label="Toggle audio stories"
-            />
-          </SettingRow>
-
-          <SettingRow
-            title="Reduced motion"
-            description={
-              reducedMotion
-                ? 'Your device prefers reduced motion — animations are softened.'
-                : 'Full motion is enabled for arrivals and transitions.'
-            }
-          >
-            <span
-              className={cn(
-                'rounded-full px-3 py-1 text-xs font-semibold',
-                reducedMotion ? 'bg-gold/15 text-gold' : 'bg-sand text-soft-slate'
-              )}
-            >
-              {reducedMotion ? 'On' : 'Off'}
-            </span>
-          </SettingRow>
-
-          <SettingRow
-            title="Debug map overlays"
-            description={
-              urlDebugActive
-                ? 'Active via URL (?debugMap=true or ?debugGeo=true). Clear the query param to disable.'
-                : 'Show GPS, geofence, and journey labels on the map.'
-            }
-          >
-            <Toggle
-              checked={debugMapEnabled || urlDebugActive}
-              onChange={onDebugMapEnabledChange}
-              label="Toggle debug map overlays"
-              disabled={urlDebugActive}
-            />
-          </SettingRow>
-        </GlassPanel>
-      </div>
-    </div>
+        <SettingRow
+          title="Debug map overlays"
+          description={
+            urlDebugActive
+              ? 'Active via URL (?debugMap=true or ?debugGeo=true). Clear the query param to disable.'
+              : 'Show GPS, geofence, and journey labels on the map.'
+          }
+        >
+          <Toggle
+            checked={debugMapEnabled || urlDebugActive}
+            onChange={onDebugMapEnabledChange}
+            label="Toggle debug map overlays"
+            disabled={urlDebugActive}
+          />
+        </SettingRow>
+      </GlassPanel>
+    </PageShell>
   )
 }
 
