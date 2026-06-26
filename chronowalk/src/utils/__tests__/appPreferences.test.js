@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import {
   readAudioEnabled,
   readDebugMapPreference,
+  readPlayerIconsPref,
   writeAudioEnabled,
   writeDebugMapPreference,
+  writePlayerIconsPref,
 } from '../appPreferences'
 
 describe('appPreferences', () => {
@@ -31,5 +33,11 @@ describe('appPreferences', () => {
     expect(readDebugMapPreference()).toBe(true)
     writeDebugMapPreference(false)
     expect(readDebugMapPreference()).toBe(false)
+  })
+
+  it('persists player icon preference', () => {
+    expect(readPlayerIconsPref()).toBe(false)
+    writePlayerIconsPref(true)
+    expect(readPlayerIconsPref()).toBe(true)
   })
 })

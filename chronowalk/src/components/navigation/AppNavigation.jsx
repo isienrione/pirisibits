@@ -34,25 +34,28 @@ function NavButton({ item, active, onSelect, layout }) {
   )
 }
 
-export function AppNavigation({ activeTab, onChange }) {
+export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
   return (
     <>
-      <nav
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] px-4 pb-safe pt-2 lg:hidden"
-        aria-label="Main navigation"
-      >
-        <div className="pointer-events-auto mx-auto flex max-w-md items-stretch rounded-[1.75rem] border border-limestone/70 bg-warm-white/96 p-1.5 shadow-glass-lg backdrop-blur-glass">
-          {NAV_ITEMS.map((item) => (
-            <NavButton
-              key={item.id}
-              item={item}
-              active={activeTab === item.id}
-              onSelect={onChange}
-              layout="bottom"
-            />
-          ))}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] px-4 pb-safe pt-2 lg:hidden">
+        <div className="pointer-events-auto mx-auto flex w-full max-w-md flex-col gap-2">
+          {audioSlot}
+          <nav
+            className="flex items-stretch rounded-[1.75rem] border border-limestone/70 bg-warm-white/96 p-1.5 shadow-glass-lg backdrop-blur-glass"
+            aria-label="Main navigation"
+          >
+            {NAV_ITEMS.map((item) => (
+              <NavButton
+                key={item.id}
+                item={item}
+                active={activeTab === item.id}
+                onSelect={onChange}
+                layout="bottom"
+              />
+            ))}
+          </nav>
         </div>
-      </nav>
+      </div>
 
       <nav
         className="pointer-events-none fixed inset-y-0 left-0 z-[45] hidden w-[5.5rem] border-r border-limestone/60 bg-warm-white/95 px-2 py-6 shadow-glass backdrop-blur-glass lg:flex lg:flex-col lg:items-stretch"

@@ -517,6 +517,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
               isPlaying={isArrivalAudioPlaying}
               posterUrl={heroPreviewUrl}
               onToggle={handleAudioAction}
+              onStop={() => audioOrchestrator.stop()}
             />
             {needsResumeAudio ? (
               <p className="text-xs text-soft-slate">
