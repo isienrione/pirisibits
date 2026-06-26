@@ -1,10 +1,11 @@
-import { Button, cn } from './ui'
+import { MediaPlayerControls, cn } from './ui'
 
 function AudioPlayerPanel({
   title,
   subtitle,
   isPlaying,
   onToggle,
+  onStop,
   posterUrl,
   className,
 }) {
@@ -44,14 +45,12 @@ function AudioPlayerPanel({
           {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-sand/80">{subtitle}</p> : null}
         </div>
 
-        <Button
-          size="sm"
-          className="shrink-0 px-4"
-          onClick={onToggle}
-          aria-label={isPlaying ? 'Pause audio story' : 'Play audio story'}
-        >
-          {isPlaying ? 'Pause' : 'Play'}
-        </Button>
+        <MediaPlayerControls
+          isPlaying={isPlaying}
+          onToggle={onToggle}
+          onStop={onStop}
+          theme="dark"
+        />
       </div>
     </div>
   )

@@ -80,6 +80,13 @@ function App() {
 
   const { isTourNarrationActive } = useAudioPlaybackState()
 
+  useEffect(() => {
+    const audioInset = isTourNarrationActive ? '3.75rem' : '0px'
+    const stackInset = isTourNarrationActive ? '9.25rem' : '5.5rem'
+    document.documentElement.style.setProperty('--audio-bar-inset', audioInset)
+    document.documentElement.style.setProperty('--bottom-stack-inset', stackInset)
+  }, [isTourNarrationActive])
+
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
     enabled: hasInteracted && Boolean(session.currentWaypoint) && audioEnabled,
@@ -354,7 +361,6 @@ function App() {
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
           hasBottomNav
-          hasAudioBar={isTourNarrationActive}
         />
 
         {showLocationNotice && mapTabActive ? (
@@ -408,6 +414,7 @@ function App() {
           <DirectionsView
             destination={directionsDestination}
             userPosition={session.position}
+            locationStatus={locationStatus}
             onBack={() => setActiveTab(NAV_TABS.MAP)}
             onOpenExternalMaps={handleOpenExternalMaps}
           />
@@ -450,19 +457,25 @@ function App() {
         </Suspense>
       </ErrorBoundary>
 
-      <PersistentAudioBar
-        title={audioWaypoint?.title}
-        subtitle={audioWaypoint?.arrival_subtitle}
-        posterUrl={audioPosterUrl}
-        cardOpen={cardIsOpen}
-        onReopenCard={
-          cardDismissed && discoveredWaypoint && !activeWaypoint ? handleReopenWaypoint : null
+      <AppNavigation
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        audioSlot={
+          isTourNarrationActive ? (
+            <PersistentAudioBar
+              title={audioWaypoint?.title}
+              subtitle={audioWaypoint?.arrival_subtitle}
+              posterUrl={audioPosterUrl}
+              cardOpen={cardIsOpen}
+              onReopenCard={
+                cardDismissed && discoveredWaypoint && !activeWaypoint ? handleReopenWaypoint : null
+              }
+              onTogglePlayback={handleToggleTourAudio}
+              onStop={handleStopTourAudio}
+            />
+          ) : null
         }
-        onTogglePlayback={handleToggleTourAudio}
-        onStop={handleStopTourAudio}
       />
-
-      <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
 
       {showTourComplete ? (
         <TourCompleteView
