@@ -20,7 +20,7 @@ describe('SettingsView', () => {
 
     expect(screen.getByRole('heading', { name: /settings/i })).toBeInTheDocument()
     expect(screen.getByText('Location')).toBeInTheDocument()
-    expect(screen.getByText('180 m to stop')).toBeInTheDocument()
+    expect(screen.getByText('180 m away')).toBeInTheDocument()
     expect(screen.getByText('Audio stories')).toBeInTheDocument()
     expect(screen.getByText('Reduced motion')).toBeInTheDocument()
     expect(screen.getByText('Debug map overlays')).toBeInTheDocument()
