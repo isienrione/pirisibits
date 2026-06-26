@@ -1,7 +1,7 @@
 import { Button } from './Button'
 import { GlassPanel } from './GlassPanel'
 import { cn } from './cn'
-import { EMPTY_STATE_ICONS } from './emptyStateIcons'
+import { EMPTY_STATE_ICONS } from './icons/index.jsx'
 import { EMPTY_STATE_PRESETS } from './emptyStatePresets'
 import {
   typeBodySmMuted,

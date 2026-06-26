@@ -1,4 +1,4 @@
-import { MediaPlayerControls, AudioLoadingIndicator, FadeImage, cn, typeBodySmMuted, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
+import { MediaPlayerControls, AudioLoadingIndicator, FadeImage, AudioIcon, cn, typeBodySmMuted, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
 
 function AudioPlayerPanel({
   title,
@@ -30,15 +30,7 @@ function AudioPlayerPanel({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gold/15 text-gold">
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 3a9 9 0 1 0 9 9"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                />
-                <path d="M12 7v6l4 2" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-              </svg>
+              <AudioIcon size="lg" />
             </div>
           )}
           <span

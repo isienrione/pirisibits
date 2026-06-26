@@ -12,6 +12,7 @@ import {
   Button,
   EmptyState,
   GlassPanel,
+  NavigationIcon,
   PageShell,
   RouteLoadingShimmer,
   SectionHeader,
@@ -137,6 +138,13 @@ function DirectionsView({
         title={title}
         subtitle="Follow these steps in ChronoWalk. Keep the app open so your tour stays in sync."
       />
+
+      <div className="mt-6 flex items-center gap-3 text-soft-slate">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sand/70 text-terracotta">
+          <NavigationIcon size="sm" />
+        </span>
+        <p className={typeCaption}>Turn-by-turn walking guidance</p>
+      </div>
 
       {loading ? (
         <RouteLoadingShimmer className="mt-6 min-h-[40vh]" label="Loading walking directions…" />

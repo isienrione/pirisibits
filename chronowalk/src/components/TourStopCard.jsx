@@ -10,6 +10,7 @@ import {
   statusCurrent,
   statusLocked,
   statusPill,
+  LockIcon,
   typeBodySm,
   typeBodySmMuted,
   typeCaption,
@@ -22,18 +23,8 @@ const STATUS_META = {
   upcoming: { label: 'Ahead', className: statusLocked },
 }
 
-function LockIcon() {
-  return (
-    <svg className="h-4 w-4 text-soft-slate" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.75" />
-      <path
-        d="M8 11V8a4 4 0 0 1 8 0v3"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
+function LockIconWrapper() {
+  return <LockIcon size="sm" className="text-soft-slate" />
 }
 
 export function TourStopCard({
@@ -82,7 +73,7 @@ export function TourStopCard({
           )}
           {isUpcoming ? (
             <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
-              <LockIcon />
+              <LockIconWrapper />
             </div>
           ) : null}
           <span
@@ -109,7 +100,7 @@ export function TourStopCard({
                 status.className
               )}
             >
-              {isUpcoming ? <LockIcon /> : null}
+              {isUpcoming ? <LockIconWrapper /> : null}
               {status.label}
             </span>
           </div>

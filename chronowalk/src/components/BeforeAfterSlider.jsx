@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
-import { EmptyState, Skeleton, cn } from './ui';
+import { EmptyState, Skeleton, ChevronsHorizontalIcon, cn } from './ui';
 import { focusRing } from './ui/focusRing';
 import { metaLabel } from './ui/styles';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
@@ -167,9 +167,7 @@ function CompareSliderHandle() {
         className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-warm-white bg-gold shadow-glass"
         aria-hidden="true"
       >
-        <svg className="h-5 w-5 text-warm-white" viewBox="0 0 24 24" fill="none">
-          <path d="M8 8 4 12l4 4M16 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronsHorizontalIcon size="md" className="text-warm-white" />
       </div>
       <div className="h-full w-px bg-gradient-to-b from-transparent via-gold/80 to-transparent" />
     </div>

@@ -1,6 +1,6 @@
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
-import { AudioLoadingIndicator, Button, FadeImage, GlassPanel, MediaPlayerControls, cn, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
+import { AudioLoadingIndicator, Button, FadeImage, GlassPanel, MediaPlayerControls, AudioIcon, cn, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
 
 function PersistentAudioBar({
   title,
@@ -38,7 +38,9 @@ function PersistentAudioBar({
                 skeletonClassName="rounded-full"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-sm text-gold">♪</div>
+              <div className="flex h-full w-full items-center justify-center text-gold">
+                <AudioIcon size="sm" />
+              </div>
             )}
           </div>
 

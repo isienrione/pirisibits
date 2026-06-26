@@ -1,19 +1,8 @@
-import { GlassPanel, cn, motionCardRise, motionUnlockVignette, typeBodySmMuted, typeEyebrowGold, typeSectionTitleMd } from './ui'
+import { GlassPanel, cn, motionCardRise, motionUnlockVignette, typeBodySmMuted, typeEyebrowGold, typeSectionTitleMd, ArrivalIcon } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
 function DiscoveryIcon() {
-  return (
-    <svg className="mx-auto h-12 w-12 text-gold" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
-      <path
-        d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M12 12 20 7.5M12 12v9M12 12 4 7.5" stroke="currentColor" strokeWidth="1.75" />
-    </svg>
-  )
+  return <ArrivalIcon size="2xl" className="mx-auto text-gold" />
 }
 
 const ArrivalMoment = ({ waypoint, visible }) => {
