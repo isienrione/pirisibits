@@ -7,19 +7,19 @@ A mobile-first walking tour of Rome that combines GPS guidance, place-aware audi
 ChronoWalk guides you on foot between historic sites. When you arrive at a stop, the app:
 
 1. Detects your position with GPS geofencing
-2. Plays an arrival moment (audio + optional visual pulse on the map)
-3. Opens a landmark card with audio stories and an immersive compare slider
+2. Plays an arrival moment (audio + gold map pulse)
+3. Opens a landmark card with immersive audio, then-and-now slider, and walking guidance
 
 **Main tabs** (after starting the tour):
 
 | Tab | Purpose |
 |-----|---------|
-| **Tour** | Journey progress, current/next stop, quick link to the map |
-| **Map** | Mapbox walking map with route, geofences, and HUD |
-| **Stops** | Premium list of all landmarks on the route |
-| **Settings** | Location status, audio toggle, reduced motion, debug map |
+| **Tour** | Journey progress, current/next stop, link to map |
+| **Map** | Light Mapbox map with terracotta route, geofences, and HUD |
+| **Stops** | Premium stop list with visited / current / locked states |
+| **Settings** | Location, audio, reduced motion, debug map |
 
-**URL modes** (for development):
+**URL modes** (development):
 
 | Query param | Effect |
 |-------------|--------|
@@ -33,10 +33,10 @@ ChronoWalk guides you on foot between historic sites. When you arrive at a stop,
 
 ChronoWalk uses a **luxury travel** visual language:
 
-- **Warm white** surfaces, **deep slate** text, **gold** accents, **terracotta** primary actions
+- **Warm white** surfaces, **deep slate** text, **gold** progress accents, **terracotta** primary actions
 - **Fraunces** display type + **DM Sans** UI type
 - Glass panels, floating bottom navigation (mobile), left icon rail (desktop)
-- Cinematic arrival moments and bottom-sheet landmark cards
+- Cinematic arrival moments, dark audio player, bottom-sheet landmark cards
 - Respects `prefers-reduced-motion` for animations
 
 ## Local setup
@@ -64,6 +64,12 @@ npm run preview
 
 ```bash
 npm test
+```
+
+**Lint:**
+
+```bash
+npm run lint
 ```
 
 ## Environment variables
@@ -95,19 +101,28 @@ On Netlify (or similar), set the same `VITE_*` variables in the site environment
 
 4. Restart `npm run dev`
 
-The map uses the `mapbox://styles/mapbox/dark-v11` style. Walking routes are fetched via the Mapbox Directions API when you transit between stops.
+The map uses the **light** Mapbox style (`light-v11`) with dashed terracotta tour routes and solid terracotta active walking legs. Walking paths are fetched via the Mapbox Directions API when you transit between stops.
 
-If the token is missing, the app shows a clear setup message instead of a blank screen.
+If the token is missing or invalid, the app shows a clear setup or recovery message instead of a blank screen.
 
-## Architecture notes
+## Production architecture
 
-Heavy modules are **lazy-loaded** to keep the initial bundle small:
+Heavy modules are **lazy-loaded** so the initial bundle stays small (~75 KB gzip for core JS):
 
-- **Mapbox map** (`TourMap`) — loaded after tour start
-- **Waypoint asset studio** — only when `?assetStudio=true`
-- **Compare slider** (`BeforeAfterSlider`) — loaded when a landmark reveal opens
+| Chunk | Loaded when |
+|-------|-------------|
+| `index` | App shell, hero, navigation, HUD |
+| `mapbox` | After tour start (Map tab) |
+| `WaypointCard` | Prefetched on Start Tour |
+| `BeforeAfterSlider` | Landmark reveal opens |
+| `WaypointAssetStudio` | `?assetStudio=true` only |
+| `supabase` | Remote waypoint fetch (if configured) |
 
-`ErrorBoundary` components wrap map, slider, and landmark card surfaces with retry-friendly fallbacks.
+**Error boundaries** wrap the map, landmark card, compare slider, and asset studio with retry UI.
+
+**Loading states** use accessible `LoadingPanel` spinners for map init, chunk fetch, and slider media.
+
+Vite `manualChunks` splits Mapbox, compare-slider, and Supabase into separate files. Mapbox remains the largest chunk (~492 KB gzip) and only loads when the map is needed.
 
 ## Known limitations
 
@@ -115,9 +130,10 @@ Heavy modules are **lazy-loaded** to keep the initial bundle small:
 - **Mobile Safari audio** — Browsers may pause audio when the tab is backgrounded; the app surfaces a resume hint when playback is interrupted.
 - **Media weight** — Full-quality video/image pairs per landmark are large; some stops use placeholders until assets are published. Optional `VITE_CDN_BASE_URL` offloads media.
 - **Supabase optional** — Local seed data works without Supabase; remote rows merge with local defaults for missing media fields.
-- **Single-threaded map** — The map stays mounted (but hidden) when switching tabs so GPS tracking continues; this trades memory for consistent geofencing.
-- **PWA icons** — Manifest references `favicon.svg`; dedicated PNG app icons are not yet bundled.
+- **Map memory** — The map stays mounted (hidden off-tab) so GPS and geofencing continue when switching tabs.
+- **PWA icons** — Manifest uses `favicon.svg`; dedicated PNG app icons are not bundled.
 - **Captions** — Transcript UI is a placeholder; timed captions will sync with narration in a future release.
+- **Tour stats** — Completion distance is a straight-line estimate across visited legs, not logged pedometer data.
 
 ## Further reading
 

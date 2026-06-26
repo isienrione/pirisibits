@@ -9,9 +9,6 @@ import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
-import TourOverviewView from './components/views/TourOverviewView'
-import StopsView from './components/views/StopsView'
-import SettingsView from './components/views/SettingsView'
 import { Button, LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
@@ -39,6 +36,13 @@ import {
 const TourMap = lazy(() => import('./components/TourMap'))
 const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
 const WaypointCard = lazy(() => import('./components/WaypointCard'))
+const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
+const StopsView = lazy(() => import('./components/views/StopsView'))
+const SettingsView = lazy(() => import('./components/views/SettingsView'))
+
+function TabLoadingFallback() {
+  return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
+}
 
 function App() {
   const assetStudio = isAssetStudio()
@@ -315,38 +319,44 @@ function App() {
       </div>
 
       {activeTab === NAV_TABS.TOUR ? (
-        <TourOverviewView
-          tour={singleWaypointId ? null : tour}
-          progress={session.progress}
-          targetStopId={session.targetStopId}
-          nextWaypoint={session.nextWaypoint}
-          state={session.state}
-          distance={session.distance}
-          transitLegActive={session.progress.transitLegActive}
-          onNavigate={setActiveTab}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <TourOverviewView
+            tour={singleWaypointId ? null : tour}
+            progress={session.progress}
+            targetStopId={session.targetStopId}
+            nextWaypoint={session.nextWaypoint}
+            state={session.state}
+            distance={session.distance}
+            transitLegActive={session.progress.transitLegActive}
+            onNavigate={setActiveTab}
+          />
+        </Suspense>
       ) : null}
 
       {activeTab === NAV_TABS.STOPS ? (
-        <StopsView
-          tour={singleWaypointId ? null : tour}
-          mapStops={session.mapStops}
-          waypointsById={session.waypointsById}
-          onNavigate={setActiveTab}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <StopsView
+            tour={singleWaypointId ? null : tour}
+            mapStops={session.mapStops}
+            waypointsById={session.waypointsById}
+            onNavigate={setActiveTab}
+          />
+        </Suspense>
       ) : null}
 
       {activeTab === NAV_TABS.SETTINGS ? (
-        <SettingsView
-          locationStatus={locationStatus}
-          journeyState={session.state}
-          distance={session.distance}
-          audioEnabled={audioEnabled}
-          onAudioEnabledChange={handleAudioEnabledChange}
-          debugMapEnabled={debugMapEnabled}
-          onDebugMapEnabledChange={handleDebugMapEnabledChange}
-          onRetryLocation={session.retryLocation}
-        />
+        <Suspense fallback={<TabLoadingFallback />}>
+          <SettingsView
+            locationStatus={locationStatus}
+            journeyState={session.state}
+            distance={session.distance}
+            audioEnabled={audioEnabled}
+            onAudioEnabledChange={handleAudioEnabledChange}
+            debugMapEnabled={debugMapEnabled}
+            onDebugMapEnabledChange={handleDebugMapEnabledChange}
+            onRetryLocation={session.retryLocation}
+          />
+        </Suspense>
       ) : null}
 
       <ErrorBoundary
