@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, EmptyState, FadeImage, SkeletonWaypointCard, cn, ctaInCard, motionUnlockGlow } from './ui';
+import { BottomSheet, Button, EmptyState, FadeImage, SkeletonWaypointCard, cn, ctaInCard, motionUnlockGlow, typeBody, typeBodySm, typeBodySmMuted, typeCaption, typeEyebrowGold, typeHeroSm } from './ui';
 import { useImageLoadState } from '../hooks/useImageLoadState';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
@@ -77,12 +77,12 @@ function AudioTranscriptSection({ waypoint }) {
 
   return (
     <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
-      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+      <summary className={cn('cursor-pointer', typeBodySm, 'font-medium')}>
         Captions &amp; transcript
       </summary>
       <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
       {!waypoint?.arrival_transcript ? (
-        <p className="mt-2 text-xs text-soft-slate/80">
+        <p className={cn(typeCaption, 'mt-3')}>
           Placeholder — timed captions will sync with narration in a future update.
         </p>
       ) : null}
@@ -103,21 +103,22 @@ function WaypointCardBody({
 }) {
   return (
     <div className={cn('px-6', className)}>
-      <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
+      <p className={typeEyebrowGold}>{eyebrow}</p>
       <h2
         id={titleId}
         className={cn(
-          'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
+          typeHeroSm,
+          'mt-4',
           titleHighlight && !reducedMotion && motionUnlockGlow
         )}
       >
         {title}
       </h2>
       {hook ? (
-        <p className="mt-3 text-base leading-relaxed text-soft-slate">{hook}</p>
+        <p className={cn(typeBody, 'mt-5 text-soft-slate')}>{hook}</p>
       ) : null}
       {orientationHint ? (
-        <p className="mt-4 rounded-2xl border border-limestone/70 bg-sand/50 px-4 py-3 text-sm leading-relaxed text-soft-slate">
+        <p className={cn(typeBodySmMuted, 'mt-5 rounded-2xl border border-limestone/70 bg-sand/50 px-4 py-4')}>
           {orientationHint}
         </p>
       ) : null}

@@ -3,6 +3,13 @@ import { GlassPanel } from './GlassPanel'
 import { cn } from './cn'
 import { EMPTY_STATE_ICONS } from './emptyStateIcons'
 import { EMPTY_STATE_PRESETS } from './emptyStatePresets'
+import {
+  typeBodySmMuted,
+  typeCaption,
+  typeEyebrowGold,
+  typeSectionTitle,
+  typeSectionTitleMd,
+} from './typography'
 
 export function EmptyState({
   icon: IconProp,
@@ -32,11 +39,11 @@ export function EmptyState({
         role="status"
         className={cn(
           'rounded-2xl border-limestone/70 bg-warm-white/95 shadow-glass',
-          'px-4 py-3 text-left',
+          'px-5 py-4 text-left',
           className
         )}
       >
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-4">
           {Icon ? (
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/25 bg-gold/10 text-gold">
               <Icon className="h-4 w-4" />
@@ -44,14 +51,14 @@ export function EmptyState({
           ) : null}
           <div className="min-w-0 flex-1">
             {resolvedTitle ? (
-              <p className="text-sm font-semibold text-deep-slate">{resolvedTitle}</p>
+              <p className="text-body-sm font-medium text-deep-slate">{resolvedTitle}</p>
             ) : null}
             {resolvedBody ? (
-              <p className="mt-1 text-xs leading-relaxed text-soft-slate">{resolvedBody}</p>
+              <p className={cn(typeCaption, 'mt-2 leading-relaxed')}>{resolvedBody}</p>
             ) : null}
             {children}
             {resolvedAction && onAction ? (
-              <Button variant="secondary" size="sm" className="mt-3" onClick={onAction}>
+              <Button variant="secondary" size="sm" className="mt-4" onClick={onAction}>
                 {resolvedAction}
               </Button>
             ) : null}
@@ -66,25 +73,24 @@ export function EmptyState({
       role="status"
       className={cn(
         'rounded-3xl border-limestone/70 bg-warm-white/95 text-center shadow-glass',
-        'px-6 py-6',
+        'px-8 py-8',
         className
       )}
     >
       {Icon ? (
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-gold/30 bg-gold/10 text-gold">
           <Icon className="h-7 w-7" />
         </div>
       ) : null}
 
       {resolvedEyebrow ? (
-        <p className="text-eyebrow uppercase text-gold">{resolvedEyebrow}</p>
+        <p className={typeEyebrowGold}>{resolvedEyebrow}</p>
       ) : null}
 
       {resolvedTitle ? (
         <p
           className={cn(
-            'font-semibold text-deep-slate',
-            resolvedEyebrow ? 'mt-2 font-display text-2xl leading-tight' : 'text-base'
+            resolvedEyebrow ? cn(typeSectionTitle, 'mt-3') : typeSectionTitleMd
           )}
         >
           {resolvedTitle}
@@ -92,7 +98,7 @@ export function EmptyState({
       ) : null}
 
       {resolvedBody ? (
-        <p className="mt-2 text-sm leading-relaxed text-soft-slate">{resolvedBody}</p>
+        <p className={cn(typeBodySmMuted, 'mt-4')}>{resolvedBody}</p>
       ) : null}
 
       {children}
@@ -101,7 +107,7 @@ export function EmptyState({
         <Button
           variant={preset === 'tourCompleted' ? 'primary' : 'secondary'}
           size={preset === 'tourCompleted' ? 'lg' : 'md'}
-          className={cn('mt-5 w-full')}
+          className={cn('mt-6 w-full')}
           onClick={onAction}
         >
           {resolvedAction}
@@ -109,7 +115,7 @@ export function EmptyState({
       ) : null}
 
       {resolvedSecondary && onSecondaryAction ? (
-        <Button variant="secondary" size="md" className="mt-2 w-full" onClick={onSecondaryAction}>
+        <Button variant="secondary" size="md" className="mt-3 w-full" onClick={onSecondaryAction}>
           {resolvedSecondary}
         </Button>
       ) : null}

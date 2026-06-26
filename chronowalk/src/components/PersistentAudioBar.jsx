@@ -1,6 +1,6 @@
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
-import { AudioLoadingIndicator, Button, FadeImage, GlassPanel, MediaPlayerControls, cn } from './ui'
+import { AudioLoadingIndicator, Button, FadeImage, GlassPanel, MediaPlayerControls, cn, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
 
 function PersistentAudioBar({
   title,
@@ -43,10 +43,10 @@ function PersistentAudioBar({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-gold">
+            <p className={typeEyebrowGold}>
               {modeLabel}
             </p>
-            <p className="truncate text-sm font-semibold leading-tight">{title ?? 'Landmark story'}</p>
+            <p className={cn('truncate', typeSectionTitleSm, 'text-warm-white')}>{title ?? 'Landmark story'}</p>
             {isAudioBuffering ? <AudioLoadingIndicator className="mt-1" label="Buffering…" /> : null}
           </div>
 

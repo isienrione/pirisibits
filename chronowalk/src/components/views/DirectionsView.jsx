@@ -17,6 +17,10 @@ import {
   SectionHeader,
   cn,
   ctaInCard,
+  typeBodySm,
+  typeCaption,
+  typeEyebrow,
+  typeSectionTitleSm,
 } from '../ui'
 
 function formatStepDistance(meters) {
@@ -146,12 +150,10 @@ function DirectionsView({
         />
       ) : (
         <>
-          <GlassPanel className="mt-6 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta">
-              {originLabel}
-            </p>
-            <div className="mt-3 flex items-center justify-between gap-3 text-sm">
-              <span className="font-semibold text-deep-slate">
+          <GlassPanel className="mt-8 p-6">
+            <p className={typeEyebrow}>{originLabel}</p>
+            <div className={cn('mt-4 flex items-center justify-between gap-3', typeBodySm)}>
+              <span className="font-medium text-deep-slate">
                 {formatStepDistance(directions.distanceM)}
               </span>
               <span className="text-soft-slate">
@@ -159,19 +161,19 @@ function DirectionsView({
               </span>
             </div>
 
-            <ol className="mt-4 space-y-3">
+            <ol className="mt-6 space-y-4">
               {directions.steps.map((step, index) => (
                 <li
                   key={`${step.instruction}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-3"
+                  className="flex gap-4 rounded-2xl border border-limestone/60 bg-warm-white/80 px-4 py-4"
                 >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold/15 text-caption font-medium text-gold">
                     {index + 1}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm leading-relaxed text-deep-slate">{step.instruction}</p>
+                    <p className={typeBodySm}>{step.instruction}</p>
                     {step.distanceM > 0 ? (
-                      <p className="mt-1 text-xs text-soft-slate">
+                      <p className={cn(typeCaption, 'mt-2')}>
                         {formatStepDistance(step.distanceM)}
                       </p>
                     ) : null}
@@ -195,7 +197,7 @@ function DirectionsView({
                 Open in Google Maps
               </Button>
             ) : null}
-            <p className="text-center text-xs leading-relaxed text-soft-slate">
+            <p className={cn(typeCaption, 'text-center leading-relaxed')}>
               Use Google Maps only if these directions fail or you need to leave the app.
             </p>
           </div>

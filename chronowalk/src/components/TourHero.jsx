@@ -3,7 +3,7 @@ import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { useImageLoadState } from '../hooks/useImageLoadState'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, FadeImage, GlassPanel, cn, motionCardRise } from './ui'
+import { Button, FadeImage, GlassPanel, cn, motionCardRise, typeBody, typeBodySm, typeBodySmMuted, typeCaption, typeEyebrow, typeHero, typeHeroSm, typeSectionTitleSm } from './ui'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -21,8 +21,9 @@ function StatPill({ label, accent }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-limestone/80 bg-warm-white/75 px-3 py-1.5',
-        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate shadow-sm backdrop-blur-sm'
+        'inline-flex items-center rounded-full border border-limestone/80 bg-warm-white/75 px-3.5 py-2',
+        typeCaption,
+        'font-medium uppercase tracking-[0.1em] text-deep-slate shadow-sm backdrop-blur-sm'
       )}
     >
       <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full bg-current', accent)} aria-hidden="true" />
@@ -33,16 +34,16 @@ function StatPill({ label, accent }) {
 
 function PreviewStopsList({ stops }) {
   return (
-    <ol className="mt-4 space-y-2">
+    <ol className="mt-5 space-y-3">
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-4 py-3"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand text-xs font-bold text-deep-slate">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sand text-caption font-medium text-deep-slate">
             {index + 1}
           </span>
-          <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
+          <span className={typeBodySm}>{stop.title}</span>
         </li>
       ))}
     </ol>
@@ -76,17 +77,17 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     return (
       <div className="relative min-h-screen bg-gradient-to-b from-warm-white via-sand/50 to-limestone/30">
         <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-end px-4 pb-safe pt-safe sm:px-6">
-          <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8">
-            <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
-            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
+          <GlassPanel className="rounded-3xl p-8 shadow-glass-lg sm:p-10">
+            <p className={typeEyebrow}>{APP_NAME}</p>
+            <h1 className={cn(typeHeroSm, 'mt-4')}>
               Debug: {title}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+            <p className={cn(typeBodySmMuted, 'mt-5')}>
               Single-stop test mode. Add{' '}
               <span className="font-medium text-deep-slate">?debugGeo=true</span> to fake GPS at this
               landmark.
             </p>
-            <Button size="lg" fullWidth className="mt-6" onClick={onStartTour}>
+            <Button size="lg" fullWidth className="mt-8" onClick={onStartTour}>
               Start Tour
             </Button>
           </GlassPanel>
@@ -116,30 +117,30 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
 
-        <GlassPanel className={cn('rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10', motionCardRise)}>
-          <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
+        <GlassPanel className={cn('rounded-3xl p-8 shadow-glass-lg sm:p-10 lg:p-12', motionCardRise)}>
+          <p className={typeEyebrow}>{APP_NAME}</p>
 
-          <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl lg:text-[2.75rem]">
+          <h1 className={cn(typeHero, 'mt-4')}>
             {tour.title}
           </h1>
 
-          <p className="mt-4 text-base leading-relaxed text-soft-slate sm:text-[1.05rem]">
+          <p className={cn(typeBody, 'mt-6 text-soft-slate')}>
             {VALUE_PROPOSITION}
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-2.5">
             {TOUR_STATS.map((stat) => (
               <StatPill key={stat.id} label={stat.label} accent={stat.accent} />
             ))}
           </div>
 
-          <p className="mt-4 text-sm text-soft-slate">
-            <span className="font-semibold text-deep-slate">{stops.length} stops</span>
+          <p className={cn(typeBodySmMuted, 'mt-6')}>
+            <span className="font-medium text-deep-slate">{stops.length} stops</span>
             <span className="text-limestone"> · </span>
-            <span className="text-soft-slate">{tour.subtitle}</span>
+            <span>{tour.subtitle}</span>
           </p>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
               Start Tour
             </Button>
@@ -161,13 +162,13 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </div>
 
           {previewOpen ? (
-            <div className="mt-2 border-t border-limestone/50 pt-4">
-              <p className="text-eyebrow uppercase text-terracotta">Your route</p>
+            <div className="mt-8 border-t border-limestone/50 pt-6">
+              <p className={typeEyebrow}>Your route</p>
               <PreviewStopsList stops={stops} />
             </div>
           ) : null}
 
-          <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
+          <p className={cn(typeCaption, 'mt-8 text-center leading-relaxed')}>
             Your tour begins at the Colosseum — walk there to unlock your first story. Location is
             used only to guide you between stops.
           </p>

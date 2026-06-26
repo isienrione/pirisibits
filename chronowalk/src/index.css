@@ -38,7 +38,7 @@
   }
 
   body {
-    @apply bg-warm-white font-sans text-deep-slate antialiased;
+    @apply bg-warm-white font-sans text-body leading-relaxed text-deep-slate antialiased;
   }
 
   input[type='range'] {

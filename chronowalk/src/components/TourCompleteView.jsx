@@ -1,10 +1,10 @@
-import { EmptyState, cn, metaLabel } from './ui'
+import { EmptyState, cn, metaLabel, typeSectionTitleSm } from './ui'
 import { formatElapsedDuration, formatWalkedDistance } from '../utils/tourStats'
 
 function StatColumn({ label, value }) {
   return (
     <div className="flex-1 text-center">
-      <p className="font-display text-2xl font-semibold tabular-nums text-deep-slate">{value}</p>
+      <p className={cn(typeSectionTitleSm, 'tabular-nums')}>{value}</p>
       <p className={cn(metaLabel, 'mt-1 text-soft-slate')}>{label}</p>
     </div>
   )

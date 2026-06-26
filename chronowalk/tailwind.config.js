@@ -23,7 +23,15 @@ export default {
         serif: ['Fraunces', 'Georgia', 'serif'],
       },
       fontSize: {
-        'eyebrow': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        eyebrow: ['0.75rem', { lineHeight: '1.125rem', letterSpacing: '0.12em', fontWeight: '500' }],
+        caption: ['0.8125rem', { lineHeight: '1.25rem' }],
+        'body-sm': ['0.9375rem', { lineHeight: '1.5rem' }],
+        body: ['1rem', { lineHeight: '1.625rem' }],
+        'section-sm': ['1.375rem', { lineHeight: '1.75rem' }],
+        section: ['1.75rem', { lineHeight: '2.125rem' }],
+        'section-lg': ['2rem', { lineHeight: '2.375rem' }],
+        hero: ['clamp(2rem,4vw+1rem,2.75rem)', { lineHeight: '1.08' }],
+        'hero-lg': ['clamp(2.25rem,5vw+1rem,3.25rem)', { lineHeight: '1.06' }],
       },
       borderRadius: {
         sheet: '2rem',

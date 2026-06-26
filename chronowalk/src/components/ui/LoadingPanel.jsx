@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { LoadingSpinner } from './LoadingSpinner'
+import { typeBodySm, typeCaption } from './typography'
 
 export function LoadingPanel({
   label = 'Loading…',
@@ -19,8 +20,8 @@ export function LoadingPanel({
       aria-busy="true"
     >
       <LoadingSpinner />
-      <p className="mt-4 text-sm font-semibold">{label}</p>
-      {hint ? <p className="mt-1 max-w-xs text-center text-xs text-soft-slate">{hint}</p> : null}
+      <p className={cn(typeBodySm, 'mt-5 font-medium')}>{label}</p>
+      {hint ? <p className={cn(typeCaption, 'mt-2 max-w-xs text-center')}>{hint}</p> : null}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { MediaPlayerControls, AudioLoadingIndicator, FadeImage, cn } from './ui'
+import { MediaPlayerControls, AudioLoadingIndicator, FadeImage, cn, typeBodySmMuted, typeCaption, typeEyebrowGold, typeSectionTitleSm } from './ui'
 
 function AudioPlayerPanel({
   title,
@@ -48,12 +48,12 @@ function AudioPlayerPanel({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-gold">Audio story</p>
-          <p className="truncate font-display text-lg font-semibold leading-tight">{title}</p>
+          <p className={typeEyebrowGold}>Audio story</p>
+          <p className={cn('truncate', typeSectionTitleSm)}>{title}</p>
           {isLoading ? (
             <AudioLoadingIndicator className="mt-2" />
           ) : subtitle ? (
-            <p className="mt-1 line-clamp-2 text-xs text-sand/80">{subtitle}</p>
+            <p className={cn(typeCaption, 'mt-2 line-clamp-2 text-sand/85')}>{subtitle}</p>
           ) : null}
         </div>
 

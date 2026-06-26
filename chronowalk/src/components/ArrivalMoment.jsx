@@ -1,4 +1,4 @@
-import { GlassPanel, cn, motionCardRise, motionUnlockVignette } from './ui'
+import { GlassPanel, cn, motionCardRise, motionUnlockVignette, typeBodySmMuted, typeEyebrowGold, typeSectionTitleMd } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
 function DiscoveryIcon() {
@@ -44,16 +44,16 @@ const ArrivalMoment = ({ waypoint, visible }) => {
       <div className="flex h-full items-end justify-center px-6 pb-[min(30vh,13rem)]">
         <GlassPanel
           className={cn(
-            'max-w-sm rounded-3xl border-gold/35 bg-warm-white/96 px-6 py-6 text-center shadow-glass-lg',
+            'max-w-sm rounded-3xl border-gold/35 bg-warm-white/96 px-8 py-8 text-center shadow-glass-lg',
             !reducedMotion && motionCardRise
           )}
         >
           <DiscoveryIcon />
-          <p className="mt-4 text-eyebrow uppercase text-gold">Waypoint discovered</p>
-          <p className="mt-2 font-display text-2xl font-semibold leading-tight text-deep-slate">
+          <p className={cn(typeEyebrowGold, 'mt-5')}>Waypoint discovered</p>
+          <p className={cn(typeSectionTitleMd, 'mt-3')}>
             {waypoint.title}
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+          <p className={cn(typeBodySmMuted, 'mt-4')}>
             Your story is ready below
           </p>
         </GlassPanel>
