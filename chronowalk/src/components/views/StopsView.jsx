@@ -1,4 +1,4 @@
-import { getModernPosterUrl } from '../../utils/sliderMedia'
+import { getModernCoverUrl } from '../../utils/sliderMedia'
 import {
   GlassPanel,
   PageShell,
@@ -34,7 +34,7 @@ function LockIcon() {
 
 function StopCard({ stop, index, waypoint, onSelect }) {
   const status = STATUS_META[stop.status] ?? STATUS_META.upcoming
-  const posterUrl = waypoint ? getModernPosterUrl(waypoint) : null
+  const posterUrl = waypoint ? getModernCoverUrl(waypoint) : null
   const subtitle =
     waypoint?.arrival_subtitle ?? 'Audio story and historical reveal on arrival.'
   const isCurrent = stop.status === 'current'

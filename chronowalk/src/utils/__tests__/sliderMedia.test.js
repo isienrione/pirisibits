@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   bustMediaUrl,
   getAncientSliderUrl,
+  getModernCoverUrl,
   getModernPosterUrl,
   getModernSliderUrl,
 } from '../sliderMedia'
@@ -11,6 +12,7 @@ const navona = {
   media_cache_version: 2,
   modern_video_url: '/waypoints/piazza-navona/modern.mp4',
   ancient_video_url: '/waypoints/piazza-navona/ancient-reconstruction.mp4',
+  modern_image_url: '/waypoints/piazza-navona/modern-exterior.jpg',
   modern_poster_url: '/waypoints/piazza-navona/modern-poster.jpg',
 }
 
@@ -25,5 +27,6 @@ describe('sliderMedia', () => {
     expect(getModernSliderUrl(navona)).toContain('piazza-navona-2')
     expect(getAncientSliderUrl(navona)).toContain('ancient-reconstruction.mp4')
     expect(getModernPosterUrl(navona)).toContain('modern-poster.jpg')
+    expect(getModernCoverUrl(navona)).toContain('modern-exterior.jpg')
   })
 })

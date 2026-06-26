@@ -71,4 +71,8 @@ export const resolveSliderPostAnimationHoldMs = resolveSliderPostAnimationLoopMs
 
 export const getModernPosterUrl = (waypoint) => bustMediaUrl(waypoint?.modern_poster_url, waypoint)
 
+/** Cover art for stops list, HUD, audio bar, and card hero — prefers modern-exterior stills. */
+export const getModernCoverUrl = (waypoint) =>
+  bustMediaUrl(waypoint?.modern_image_url || waypoint?.modern_poster_url, waypoint)
+
 export const getAncientPosterUrl = (waypoint) => bustMediaUrl(waypoint?.ancient_poster_url, waypoint)

@@ -16,6 +16,7 @@ import {
 import {
   getAncientPosterUrl,
   getAncientSliderUrl,
+  getModernCoverUrl,
   getModernPosterUrl,
   getModernSliderUrl,
   hasModernSliderMedia,
@@ -177,7 +178,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false }) => {
   const modernSliderUrl = waypoint ? getModernSliderUrl(waypoint) : null;
   const ancientSliderUrl = waypoint ? getAncientSliderUrl(waypoint) : null;
   const heroPreviewUrl =
-    (waypoint && (getModernPosterUrl(waypoint) || getModernSliderUrl(waypoint))) ?? null;
+    (waypoint && (getModernCoverUrl(waypoint) || getModernSliderUrl(waypoint))) ?? null;
   const heroStatus = useMediaHeroState(heroPreviewUrl);
   const hasModernMedia = waypoint ? hasModernSliderMedia(waypoint) : false;
   const debugMedia = isDebugMedia();

@@ -10,7 +10,7 @@ import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
-import { getModernPosterUrl } from './utils/sliderMedia'
+import { getModernCoverUrl } from './utils/sliderMedia'
 import { getWaypointGeo } from './data/waypointGeo'
 import { LoadingPanel } from './components/ui'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
@@ -242,7 +242,7 @@ function App() {
   )
 
   const audioWaypoint = activeWaypoint ?? discoveredWaypoint ?? session.currentWaypoint
-  const audioPosterUrl = audioWaypoint ? getModernPosterUrl(audioWaypoint) : null
+  const audioPosterUrl = audioWaypoint ? getModernCoverUrl(audioWaypoint) : null
   const cardIsOpen = Boolean(activeWaypoint)
 
   const handleToggleTourAudio = useCallback(() => {

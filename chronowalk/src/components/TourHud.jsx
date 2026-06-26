@@ -1,6 +1,6 @@
 import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
-import { getModernPosterUrl } from '../utils/sliderMedia'
+import { getModernCoverUrl } from '../utils/sliderMedia'
 import { estimateWalkMinutes } from '../utils/tourStats'
 import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
@@ -177,7 +177,7 @@ const TourHud = ({
   const compactHud = Boolean(dismissedWaypointTitle) && atStop
 
   const routeWaypoint = transitLegActive || !atStop ? currentWaypoint : nextWaypoint
-  const posterUrl = routeWaypoint ? getModernPosterUrl(routeWaypoint) : null
+  const posterUrl = routeWaypoint ? getModernCoverUrl(routeWaypoint) : null
 
   let routeHeadline = 'Next stop'
   let routeSubline = nextWaypoint?.title ?? currentStopTitle
