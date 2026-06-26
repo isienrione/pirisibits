@@ -102,6 +102,7 @@ const TourHud = ({
   distance,
   waypointExploreActive,
   onContinueTour,
+  hasBottomNav = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
   const currentStopTitle =
@@ -168,10 +169,13 @@ const TourHud = ({
 
       {!hideRouteCard ? (
         <div
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-safe"
-          style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-4 pb-safe lg:pb-safe"
+          style={{ paddingBottom: hasBottomNav ? 'max(5.5rem, env(safe-area-inset-bottom))' : undefined }}
         >
-          <div className="mx-auto w-full max-w-md">
+          <div
+            className="mx-auto w-full max-w-md"
+            style={{ marginBottom: hasBottomNav ? '0' : undefined }}
+          >
             <MapHudRouteCard
               headline={routeHeadline}
               subline={routeSubline}

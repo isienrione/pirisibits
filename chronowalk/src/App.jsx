@@ -5,6 +5,11 @@ import TourHud from './components/TourHud'
 import WaypointCard from './components/WaypointCard'
 import ArrivalMoment from './components/ArrivalMoment'
 import WaypointAssetStudio from './components/WaypointAssetStudio'
+import AppNavigation from './components/navigation/AppNavigation'
+import { NAV_TABS } from './components/navigation/navConfig'
+import TourOverviewView from './components/views/TourOverviewView'
+import StopsView from './components/views/StopsView'
+import SettingsView from './components/views/SettingsView'
 import { Button } from './components/ui'
 import { JOURNEY_STATE } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
@@ -15,6 +20,13 @@ import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
+import {
+  readAudioEnabled,
+  readDebugMapPreference,
+  writeAudioEnabled,
+  writeDebugMapPreference,
+} from './utils/appPreferences'
+import { isDebugGeo } from './config/env'
 import {
   getAssetStudioWaypointId,
   getSingleWaypointId,
@@ -30,9 +42,12 @@ function App() {
   const assetStudioWaypointId = getAssetStudioWaypointId()
 
   const [hasInteracted, setHasInteracted] = useState(false)
+  const [activeTab, setActiveTab] = useState(NAV_TABS.MAP)
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
+  const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
+  const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
 
@@ -44,27 +59,38 @@ function App() {
 
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
-    enabled: hasInteracted && Boolean(session.currentWaypoint),
+    enabled: hasInteracted && Boolean(session.currentWaypoint) && audioEnabled,
     distance: session.distance,
     arrivalUrl: session.currentWaypoint?.arrival_immersive_url,
     prefetchRadiusM: session.prefetchRadiusM,
   })
 
-  const revealWaypointCard = useCallback((waypoint) => {
-    setDiscoveredWaypoint(waypoint)
-    setCardDismissed(false)
-    audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
+  const revealWaypointCard = useCallback(
+    (waypoint) => {
+      setDiscoveredWaypoint(waypoint)
+      setCardDismissed(false)
+      setActiveTab(NAV_TABS.MAP)
 
-    const revealTimer = window.setTimeout(() => {
-      setActiveWaypoint(waypoint)
-    }, CARD_REVEAL_DELAY_MS)
+      if (audioEnabled) {
+        audioOrchestrator.playArrivalAlert(waypoint.arrival_alert_url)
+      }
 
-    return () => window.clearTimeout(revealTimer)
-  }, [])
+      const revealTimer = window.setTimeout(() => {
+        setActiveWaypoint(waypoint)
+      }, CARD_REVEAL_DELAY_MS)
+
+      return () => window.clearTimeout(revealTimer)
+    },
+    [audioEnabled]
+  )
 
   useEffect(() => {
     if (!hasInteracted || tourStartedRef.current) return
     if (session.loading) return
+    if (!audioEnabled) {
+      tourStartedRef.current = true
+      return
+    }
 
     tourStartedRef.current = true
     void session.startTourAmbient()
@@ -72,7 +98,7 @@ function App() {
     return () => {
       audioOrchestrator.stop()
     }
-  }, [hasInteracted, session.loading, session.startTourAmbient])
+  }, [hasInteracted, session.loading, session.startTourAmbient, audioEnabled])
 
   useEffect(() => {
     if (!hasInteracted || !session.currentWaypoint) return
@@ -104,7 +130,30 @@ function App() {
   const handleStartTour = async () => {
     await requestDeviceTiltPermission()
     setHasInteracted(true)
+    setActiveTab(NAV_TABS.MAP)
   }
+
+  const handleAudioEnabledChange = (enabled) => {
+    setAudioEnabled(enabled)
+    writeAudioEnabled(enabled)
+    if (!enabled) {
+      audioOrchestrator.stop()
+    } else if (hasInteracted && !tourStartedRef.current) {
+      tourStartedRef.current = true
+      void session.startTourAmbient()
+    }
+  }
+
+  const handleDebugMapEnabledChange = (enabled) => {
+    setDebugMapEnabled(enabled)
+    writeDebugMapPreference(enabled)
+  }
+
+  const locationStatus = useMemo(() => {
+    if (isDebugGeo()) return 'granted'
+    if (session.position?.lat != null && session.position?.lng != null) return 'granted'
+    return 'waiting'
+  }, [session.position?.lat, session.position?.lng])
 
   if (assetStudio) {
     return <WaypointAssetStudio waypointId={assetStudioWaypointId} />
@@ -122,36 +171,75 @@ function App() {
 
   const discoveryVisible =
     Boolean(discoveredWaypoint) && !activeWaypoint && !cardDismissed
+  const mapTabActive = activeTab === NAV_TABS.MAP
 
   return (
-    <div className="relative h-screen w-full">
-      <TourMap
-        tour={singleWaypointId ? null : tour}
-        stops={session.mapStops}
-        activeTargetId={session.targetStopId}
-        activeLeg={session.activeLeg}
-        transitLegActive={session.progress.transitLegActive}
-        geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
-        userPos={session.position}
-        state={session.state}
-        distance={session.distance}
-        arrivalPulseActive={discoveryVisible}
-      />
+    <div className="relative h-screen w-full bg-warm-white lg:pl-[5.5rem]">
+      <div className={mapTabActive ? 'relative h-full w-full' : 'hidden'} aria-hidden={!mapTabActive}>
+        <TourMap
+          tour={singleWaypointId ? null : tour}
+          stops={session.mapStops}
+          activeTargetId={session.targetStopId}
+          activeLeg={session.activeLeg}
+          transitLegActive={session.progress.transitLegActive}
+          geofenceThresholdM={session.targetGeo?.geofenceThresholdM ?? 30}
+          userPos={session.position}
+          state={session.state}
+          distance={session.distance}
+          arrivalPulseActive={discoveryVisible}
+          debugMapEnabled={debugMapEnabled}
+        />
 
-      <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
+        <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
 
-      <TourHud
-        tour={singleWaypointId ? null : tour}
-        currentStopId={session.targetStopId ?? singleWaypointId}
-        progress={session.progress}
-        targetStopId={session.targetStopId}
-        nextWaypoint={session.nextWaypoint}
-        transitLegActive={session.progress.transitLegActive}
-        state={session.state}
-        distance={session.distance}
-        waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
-        onContinueTour={handleContinueTour}
-      />
+        <TourHud
+          tour={singleWaypointId ? null : tour}
+          currentStopId={session.targetStopId ?? singleWaypointId}
+          progress={session.progress}
+          targetStopId={session.targetStopId}
+          nextWaypoint={session.nextWaypoint}
+          transitLegActive={session.progress.transitLegActive}
+          state={session.state}
+          distance={session.distance}
+          waypointExploreActive={Boolean(discoveredWaypoint) && !cardDismissed}
+          onContinueTour={handleContinueTour}
+          hasBottomNav
+        />
+      </div>
+
+      {activeTab === NAV_TABS.TOUR ? (
+        <TourOverviewView
+          tour={singleWaypointId ? null : tour}
+          progress={session.progress}
+          targetStopId={session.targetStopId}
+          nextWaypoint={session.nextWaypoint}
+          state={session.state}
+          distance={session.distance}
+          transitLegActive={session.progress.transitLegActive}
+          onNavigate={setActiveTab}
+        />
+      ) : null}
+
+      {activeTab === NAV_TABS.STOPS ? (
+        <StopsView
+          tour={singleWaypointId ? null : tour}
+          mapStops={session.mapStops}
+          waypointsById={session.waypointsById}
+          onNavigate={setActiveTab}
+        />
+      ) : null}
+
+      {activeTab === NAV_TABS.SETTINGS ? (
+        <SettingsView
+          locationStatus={locationStatus}
+          journeyState={session.state}
+          distance={session.distance}
+          audioEnabled={audioEnabled}
+          onAudioEnabledChange={handleAudioEnabledChange}
+          debugMapEnabled={debugMapEnabled}
+          onDebugMapEnabledChange={handleDebugMapEnabledChange}
+        />
+      ) : null}
 
       <WaypointCard
         waypoint={activeWaypoint}
@@ -170,11 +258,12 @@ function App() {
       {session.state === JOURNEY_STATE.ARRIVAL &&
         cardDismissed &&
         discoveredWaypoint &&
-        !activeWaypoint && (
+        !activeWaypoint &&
+        mapTabActive && (
           <Button
             size="pill"
-            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg"
-            style={{ bottom: 'max(11rem, calc(env(safe-area-inset-bottom) + 10rem))' }}
+            className="pointer-events-auto fixed left-1/2 z-[200] -translate-x-1/2 shadow-glass-lg lg:left-[calc(50%+2.75rem)]"
+            style={{ bottom: 'max(14rem, calc(env(safe-area-inset-bottom) + 12rem))' }}
             onClick={() => {
               setCardDismissed(false)
               setActiveWaypoint(discoveredWaypoint)
@@ -183,6 +272,8 @@ function App() {
             Reopen {discoveredWaypoint.title}
           </Button>
         )}
+
+      <AppNavigation activeTab={activeTab} onChange={setActiveTab} />
     </div>
   )
 }

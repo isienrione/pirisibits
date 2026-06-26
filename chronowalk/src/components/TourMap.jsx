@@ -137,6 +137,7 @@ const TourMap = ({
   state,
   distance,
   arrivalPulseActive = false,
+  debugMapEnabled = false,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -145,7 +146,7 @@ const TourMap = ({
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
-  const showDebugOverlay = isDebugMap()
+  const showDebugOverlay = debugMapEnabled || isDebugMap()
 
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
