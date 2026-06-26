@@ -4,6 +4,7 @@ import {
   GlassPanel,
   cn,
   focusRing,
+  motionCardRise,
   statusArrived,
   statusCurrent,
   statusLocked,
@@ -49,7 +50,8 @@ export function TourStopCard({
   return (
     <GlassPanel
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
+        motionCardRise,
+        'overflow-hidden transition-colors duration-250 ease-motion-out hover:border-gold/40 hover:shadow-glass-lg',
         isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
       )}
     >

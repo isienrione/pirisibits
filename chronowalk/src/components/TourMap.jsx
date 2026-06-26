@@ -7,7 +7,8 @@ import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalki
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { Button, LoadingPanel } from './ui'
+import { motionMapPulse } from './ui/motion'
+import { Button, LoadingPanel, cn } from './ui'
 
 const mapboxToken = env.mapboxToken
 
@@ -74,15 +75,17 @@ function MapArrivalPulse({ point, active }) {
       aria-hidden="true"
     >
       <div
-        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
-          reducedMotion ? '' : 'animate-arrival-map-pulse'
-        }`}
+        className={cn(
+          'absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10',
+          !reducedMotion && motionMapPulse
+        )}
       />
       <div
-        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
-          reducedMotion ? '' : 'animate-arrival-map-pulse'
-        }`}
-        style={{ animationDelay: '0.35s' }}
+        className={cn(
+          'absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25',
+          !reducedMotion && motionMapPulse
+        )}
+        style={{ animationDelay: '120ms' }}
       />
     </div>
   )

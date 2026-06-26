@@ -195,7 +195,7 @@ function SliderLoadingSkeleton({ reducedMotion = false }) {
       <div
         className={cn(
           'absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]',
-          !reducedMotion && 'animate-pulse'
+          !reducedMotion && 'motion-shimmer'
         )}
       />
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">

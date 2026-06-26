@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, cn } from './ui'
+import { Button, GlassPanel, cn, motionCardRise, motionHeroZoom } from './ui'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -100,7 +100,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           src={heroSrc}
           alt=""
           aria-hidden="true"
-          className="h-full w-full object-cover object-[center_38%]"
+          className={cn('h-full w-full object-cover object-[center_38%]', motionHeroZoom)}
           onError={handleHeroError}
         />
         <div
@@ -116,7 +116,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
+        <GlassPanel className={cn('rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10', motionCardRise)}>
           <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
 
           <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl lg:text-[2.75rem]">

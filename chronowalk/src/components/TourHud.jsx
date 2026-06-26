@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { Button, GlassPanel, cn, ctaInCard, metaLabel, motionRouteSlide, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -89,7 +89,7 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'p-3' : 'p-4')}>
+    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', motionRouteSlide, compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
         <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 

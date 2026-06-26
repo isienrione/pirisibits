@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard, motionUnlockGlow } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -144,7 +144,7 @@ function WaypointCardBody({
         id={titleId}
         className={cn(
           'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
-          titleHighlight && !reducedMotion && 'animate-arrival-title'
+          titleHighlight && !reducedMotion && motionUnlockGlow
         )}
       >
         {title}
