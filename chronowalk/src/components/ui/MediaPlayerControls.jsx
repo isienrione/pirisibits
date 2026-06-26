@@ -3,6 +3,7 @@ import { readPlayerIconsPref, writePlayerIconsPref } from '../../utils/appPrefer
 import { Button } from './Button'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
+import { motionTap } from './motion'
 
 function PlayIcon({ className }) {
   return (
@@ -30,7 +31,7 @@ function StopIcon({ className }) {
 }
 
 const controlBase =
-  'inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors'
+  'inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-150 ease-motion-out'
 
 const themes = {
   dark: {
@@ -81,7 +82,7 @@ export function MediaPlayerControls({
         type="button"
         onClick={handleToggle}
         aria-label={isPlaying ? 'Pause audio' : 'Play audio'}
-        className={cn(controlBase, palette.primary, focusRing)}
+        className={cn(controlBase, motionTap, palette.primary, focusRing)}
       >
         {isPlaying ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="ml-0.5 h-[18px] w-[18px]" />}
       </button>
@@ -90,7 +91,7 @@ export function MediaPlayerControls({
           type="button"
           onClick={onStop}
           aria-label="Stop audio"
-          className={cn(controlBase, palette.secondary, focusRing)}
+          className={cn(controlBase, motionTap, palette.secondary, focusRing)}
         >
           <StopIcon className="h-3.5 w-3.5" />
         </button>

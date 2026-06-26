@@ -21,6 +21,11 @@
 
     --shadow-glass: 0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06);
     --shadow-sheet: 0 -12px 40px rgba(23, 33, 43, 0.14);
+
+    --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --motion-duration-fast: 150ms;
+    --motion-duration-base: 250ms;
+    --motion-duration-slow: 350ms;
   }
 
   html {
@@ -54,55 +59,24 @@
     bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));
   }
 
-  .motion-safe-transition {
-    @apply motion-reduce:transition-none motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)];
+  .motion-sheet-transition {
+    @apply motion-reduce:transition-none motion-safe:transition-transform motion-safe:duration-350 motion-safe:ease-motion-out;
   }
 }
 
 @layer utilities {
-  @keyframes arrival-vignette {
-    0%,
-    100% {
-      opacity: 0.35;
-    }
-    50% {
-      opacity: 0.85;
-    }
-  }
-
-  @keyframes arrival-discover {
-    0% {
+  @keyframes motion-card-rise {
+    from {
       opacity: 0;
-      transform: translateY(12px) scale(0.98);
+      transform: translateY(10px);
     }
-    100% {
+    to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
   }
 
-  @keyframes arrival-map-pulse {
-    0% {
-      transform: translate(-50%, -50%) scale(0.35);
-      opacity: 0.7;
-    }
-    100% {
-      transform: translate(-50%, -50%) scale(2.4);
-      opacity: 0;
-    }
-  }
-
-  @keyframes arrival-title-glow {
-    0%,
-    100% {
-      text-shadow: 0 0 0 transparent;
-    }
-    50% {
-      text-shadow: 0 0 24px rgba(217, 164, 65, 0.35);
-    }
-  }
-
-  @keyframes sheet-rise {
+  @keyframes motion-sheet-rise {
     from {
       transform: translateY(100%);
     }
@@ -111,35 +85,108 @@
     }
   }
 
-  .animate-arrival-vignette {
-    animation: arrival-vignette 2.4s ease-in-out infinite;
+  @keyframes motion-hero-zoom {
+    from {
+      transform: scale(1.04);
+    }
+    to {
+      transform: scale(1);
+    }
   }
 
-  .animate-arrival-discover {
-    animation: arrival-discover 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  @keyframes motion-route-slide {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .animate-arrival-map-pulse {
-    animation: arrival-map-pulse 1.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  @keyframes motion-unlock-glow {
+    0% {
+      text-shadow: 0 0 0 rgba(217, 164, 65, 0);
+    }
+    45% {
+      text-shadow: 0 0 18px rgba(217, 164, 65, 0.32);
+    }
+    100% {
+      text-shadow: 0 0 6px rgba(217, 164, 65, 0.1);
+    }
   }
 
-  .animate-arrival-title {
-    animation: arrival-title-glow 2s ease-in-out 2;
+  @keyframes motion-unlock-vignette {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  .animate-sheet-rise {
-    animation: sheet-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  @keyframes motion-map-pulse {
+    from {
+      transform: translate(-50%, -50%) scale(0.45);
+      opacity: 0.55;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1.75);
+      opacity: 0;
+    }
+  }
+
+  @keyframes motion-shimmer {
+    from {
+      opacity: 0.4;
+    }
+    to {
+      opacity: 0.7;
+    }
+  }
+
+  .motion-card-rise {
+    animation: motion-card-rise var(--motion-duration-base) var(--motion-ease-out) both;
+  }
+
+  .motion-sheet-rise {
+    animation: motion-sheet-rise var(--motion-duration-slow) var(--motion-ease-out) forwards;
+  }
+
+  .motion-hero-zoom {
+    animation: motion-hero-zoom var(--motion-duration-slow) var(--motion-ease-out) both;
+  }
+
+  .motion-route-slide {
+    animation: motion-route-slide var(--motion-duration-base) var(--motion-ease-out) both;
+  }
+
+  .motion-unlock-glow {
+    animation: motion-unlock-glow var(--motion-duration-slow) var(--motion-ease-out) forwards;
+  }
+
+  .motion-unlock-vignette {
+    animation: motion-unlock-vignette var(--motion-duration-slow) var(--motion-ease-out) forwards;
+  }
+
+  .motion-map-pulse {
+    animation: motion-map-pulse var(--motion-duration-slow) var(--motion-ease-out) forwards;
+  }
+
+  .motion-shimmer {
+    animation: motion-shimmer var(--motion-duration-slow) var(--motion-ease-out) both;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .animate-arrival-vignette,
-    .animate-arrival-discover,
-    .animate-arrival-map-pulse,
-    .animate-arrival-title,
-    .animate-sheet-rise {
-      animation: none;
-    }
-
+    .motion-card-rise,
+    .motion-sheet-rise,
+    .motion-hero-zoom,
+    .motion-route-slide,
+    .motion-unlock-glow,
+    .motion-unlock-vignette,
+    .motion-map-pulse,
+    .motion-shimmer,
     .animate-pulse {
       animation: none;
     }

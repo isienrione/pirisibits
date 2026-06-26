@@ -1,4 +1,4 @@
-import { GlassPanel, cn } from './ui'
+import { GlassPanel, cn, motionCardRise, motionUnlockVignette } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
 function DiscoveryIcon() {
@@ -29,14 +29,14 @@ const ArrivalMoment = ({ waypoint, visible }) => {
       <div
         className={cn(
           'absolute inset-0 bg-deep-slate/55',
-          !reducedMotion && 'animate-arrival-vignette'
+          !reducedMotion && motionUnlockVignette
         )}
         aria-hidden="true"
       />
       <div
         className={cn(
           'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(217,164,65,0.28),transparent_58%)]',
-          !reducedMotion && 'animate-arrival-vignette'
+          !reducedMotion && motionUnlockVignette
         )}
         aria-hidden="true"
       />
@@ -45,7 +45,7 @@ const ArrivalMoment = ({ waypoint, visible }) => {
         <GlassPanel
           className={cn(
             'max-w-sm rounded-3xl border-gold/35 bg-warm-white/96 px-6 py-6 text-center shadow-glass-lg',
-            !reducedMotion && 'animate-arrival-discover'
+            !reducedMotion && motionCardRise
           )}
         >
           <DiscoveryIcon />
