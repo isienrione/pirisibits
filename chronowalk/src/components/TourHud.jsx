@@ -1,14 +1,17 @@
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
+import AudioScriptPanel from './AudioScriptPanel'
 
 const TourHud = ({
   tour,
   progress,
   targetStopId,
   nextWaypoint,
+  currentWaypoint,
   transitLegActive,
   state,
   waypointExploreActive,
   onContinueTour,
+  showScript = false,
 }) => {
   if (!tour || !nextWaypoint) return null
 
@@ -50,10 +53,21 @@ const TourHud = ({
         ) : null}
 
         {transitLegActive ? (
-          <p className="mt-2 text-xs leading-relaxed text-stone-400">
-            Follow the gold route — transit narration is playing. Arrival unlocks when you reach{' '}
-            {nextWaypoint?.title ?? 'the next stop'}.
-          </p>
+          <>
+            <p className="mt-2 text-xs leading-relaxed text-stone-400">
+              Pedestrian walking route (gold line) — transit narration is playing. Arrival unlocks
+              when you reach {nextWaypoint?.title ?? 'the next stop'}.
+            </p>
+            {showScript && currentWaypoint?.transit_transcript ? (
+              <div className="mt-3">
+                <AudioScriptPanel
+                  label="Transit script (expected audio)"
+                  script={currentWaypoint.transit_transcript}
+                  defaultOpen
+                />
+              </div>
+            ) : null}
+          </>
         ) : null}
       </div>
     </div>

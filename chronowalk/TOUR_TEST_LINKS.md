@@ -116,6 +116,8 @@ One stop: `npm run process-waypoint -- castel-sant-angelo`
 | `assetStudio=true` | Open prompt generator UI |
 | `waypoint=<id>` | **With assetStudio only** — which stop’s prompts |
 | `debugMedia=true` | Show resolved slider URLs on waypoint card |
+| `showScript=true` | Show arrival/transit narration text in UI |
+| `menuSide=left` or `menuSide=right` | Home menu drawer side |
 | `posterAt=3` | Tune hero poster frame (seconds) |
 | `loopMs=10000` | Tune post-animation loop (ms) |
 

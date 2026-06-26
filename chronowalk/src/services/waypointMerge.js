@@ -5,6 +5,7 @@ import { CAPITOLINE_HILL_WAYPOINT } from '../data/capitoline-hill'
 import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
 import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
 import { CASTEL_SANT_ANGELO_WAYPOINT } from '../data/castel-sant-angelo'
+import { getAudioScriptsForWaypoint } from '../data/audioScripts'
 
 const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -24,6 +25,8 @@ const COPY_KEYS = [
   'immersive_orientation_hint',
   'arrival_headline',
   'arrival_subtitle',
+  'arrival_transcript',
+  'transit_transcript',
   'slider_poster_at_sec',
   'slider_poster_hold_ms',
   'slider_post_animation_loop_ms',
@@ -76,12 +79,17 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
 }
 
 export const getLocalWaypoint = (id) => {
-  if (id === 'colosseum') return COLOSSEUM_WAYPOINT
-  if (id === 'pantheon') return PANTHEON_WAYPOINT
-  if (id === 'piazza-navona') return PIAZZA_NAVONA_WAYPOINT
-  if (id === 'capitoline-hill') return CAPITOLINE_HILL_WAYPOINT
-  if (id === 'campo-de-fiori') return CAMPO_DE_FIORI_WAYPOINT
-  if (id === 'largo-argentina') return LARGO_ARGENTINA_WAYPOINT
-  if (id === 'castel-sant-angelo') return CASTEL_SANT_ANGELO_WAYPOINT
-  return null
+  let waypoint = null
+  if (id === 'colosseum') waypoint = COLOSSEUM_WAYPOINT
+  else if (id === 'pantheon') waypoint = PANTHEON_WAYPOINT
+  else if (id === 'piazza-navona') waypoint = PIAZZA_NAVONA_WAYPOINT
+  else if (id === 'capitoline-hill') waypoint = CAPITOLINE_HILL_WAYPOINT
+  else if (id === 'campo-de-fiori') waypoint = CAMPO_DE_FIORI_WAYPOINT
+  else if (id === 'largo-argentina') waypoint = LARGO_ARGENTINA_WAYPOINT
+  else if (id === 'castel-sant-angelo') waypoint = CASTEL_SANT_ANGELO_WAYPOINT
+
+  if (!waypoint) return null
+
+  const scripts = getAudioScriptsForWaypoint(id)
+  return { ...waypoint, ...scripts }
 }

@@ -46,6 +46,6 @@ describe('TourHud', () => {
       />
     )
 
-    expect(screen.getByText(/transit narration is playing/i)).toBeInTheDocument()
+    expect(screen.getByText(/pedestrian walking route/i)).toBeInTheDocument()
   })
 })

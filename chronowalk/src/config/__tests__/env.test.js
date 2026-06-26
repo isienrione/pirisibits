@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   getDebugStopId,
+  getMenuSide,
   getSingleWaypointId,
   getTourId,
+  isShowScript,
   shouldResetTour,
 } from '../env'
 
@@ -37,5 +39,11 @@ describe('env URL params', () => {
     setSearch('/?resetTour=true&debugStop=pantheon')
     expect(shouldResetTour()).toBe(true)
     expect(getDebugStopId()).toBe('pantheon')
+  })
+
+  it('reads showScript and menuSide params', () => {
+    setSearch('/?showScript=true&menuSide=right')
+    expect(isShowScript()).toBe(true)
+    expect(getMenuSide()).toBe('right')
   })
 })

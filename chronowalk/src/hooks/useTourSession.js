@@ -46,8 +46,12 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   const [waypointsById, setWaypointsById] = useState({})
   const [loading, setLoading] = useState(false)
   const [debugOverridePosition, setDebugOverridePosition] = useState(null)
+  const [virtualVisitActive, setVirtualVisitActive] = useState(
+    () => debugMode || Boolean(getDebugStopId())
+  )
 
   const isSingleStopMode = Boolean(singleWaypointId)
+  const useSimulatedPosition = debugMode || virtualVisitActive
 
   const targetStopId = useMemo(() => {
     if (isSingleStopMode) return singleWaypointId
@@ -72,6 +76,7 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   const debugPosition = debugOverridePosition ?? targetGeo?.debugPosition ?? null
 
   const { position, state, distance } = useGeoLocation({
+    debugMode: useSimulatedPosition,
     target: targetGeo?.landmark,
     debugPosition,
     geofenceThresholdM: targetGeo?.geofenceThresholdM ?? 30,
@@ -178,6 +183,8 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
 
     if (debugMode && nextGeo?.debugPosition) {
       setDebugOverridePosition(nextGeo.debugPosition)
+    } else if (virtualVisitActive && nextGeo?.debugPosition) {
+      setDebugOverridePosition(nextGeo.debugPosition)
     }
 
     await audioOrchestrator.transitionTo(AUDIO_MODES.TRANSIT, {
@@ -187,7 +194,41 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     })
 
     return true
-  }, [isSingleStopMode, tour, nextStopId, nextWaypoint, progress.targetStopIndex, debugMode])
+  }, [isSingleStopMode, tour, nextStopId, nextWaypoint, progress.targetStopIndex, debugMode, virtualVisitActive])
+
+  const jumpToStop = useCallback(
+    (stopId) => {
+      if (!stopId) return false
+
+      if (isSingleStopMode) {
+        const params = new URLSearchParams(window.location.search)
+        params.set('singleWaypoint', stopId)
+        params.delete('debugStop')
+        window.location.search = params.toString()
+        return true
+      }
+
+      if (!tour) return false
+
+      const stopIndex = tour.stopIds.indexOf(stopId)
+      if (stopIndex < 0) return false
+
+      const geo = getWaypointGeo(stopId)
+      setVirtualVisitActive(true)
+      setDebugOverridePosition(
+        geo?.debugPosition ?? (geo?.landmark ? { lat: geo.landmark.lat, lng: geo.landmark.lng } : null)
+      )
+
+      setProgress({
+        targetStopIndex: stopIndex,
+        arrivedStopIds: tour.stopIds.slice(0, stopIndex),
+        transitLegActive: false,
+      })
+
+      return true
+    },
+    [isSingleStopMode, tour]
+  )
 
   const startTourAmbient = useCallback(async () => {
     const firstWaypoint = isSingleStopMode
@@ -222,7 +263,9 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     hasArrivedAtTarget,
     markArrived,
     beginTransitToNextStop,
+    jumpToStop,
     startTourAmbient,
+    virtualVisitActive,
     prefetchRadiusM: ARRIVAL_AUDIO_PREFETCH_RADIUS_M,
     tourLegs: tour ? getTourLegs(tour) : [],
   }
