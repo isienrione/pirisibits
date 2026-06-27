@@ -40,3 +40,21 @@ export function estimateWalkMinutes(distanceMeters) {
   if (distanceMeters == null || Number.isNaN(distanceMeters)) return null
   return Math.max(1, Math.ceil(distanceMeters / 80))
 }
+
+/** Journey progress derived from arrived stop ids — no gamification metrics. */
+export function getJourneyProgress(tour, arrivedStopIds = []) {
+  const total = tour?.stopIds?.length ?? 0
+  const visited = tour?.stopIds
+    ? tour.stopIds.filter((id) => arrivedStopIds.includes(id)).length
+    : arrivedStopIds.length
+  const remaining = Math.max(0, total - visited)
+  const completionPercent = total > 0 ? Math.round((visited / total) * 100) : 0
+
+  return {
+    total,
+    visited,
+    remaining,
+    completionPercent,
+  }
+}
+

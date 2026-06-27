@@ -46,6 +46,7 @@ const TourMap = lazy(() => import('./components/TourMap'))
 const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
 const WaypointCard = lazy(() => import('./components/WaypointCard'))
 const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
+const JourneySummaryView = lazy(() => import('./components/views/JourneySummaryView'))
 const StopsView = lazy(() => import('./components/views/StopsView'))
 const SettingsView = lazy(() => import('./components/views/SettingsView'))
 const DirectionsView = lazy(() => import('./components/views/DirectionsView'))
@@ -65,6 +66,7 @@ function App() {
   const [directionsDestination, setDirectionsDestination] = useState(null)
   const [directionsOrigin, setDirectionsOrigin] = useState(null)
   const [completionDismissed, setCompletionDismissed] = useState(false)
+  const [showJourneySummary, setShowJourneySummary] = useState(false)
   const tourStartedAtRef = useRef(null)
 
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -262,6 +264,7 @@ function App() {
   const handleStartTour = async () => {
     await requestDeviceTiltPermission()
     tourStartedAtRef.current = Date.now()
+    setShowJourneySummary(false)
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     setHasInteracted(true)
@@ -489,26 +492,38 @@ function App() {
 
       {activeTab === NAV_TABS.TOUR ? (
         <Suspense fallback={<TabLoadingFallback />}>
-          <TourOverviewView
-            tour={singleWaypointId ? null : tour}
-            progress={session.progress}
-            mapStops={session.mapStops}
-            waypointsById={session.waypointsById}
-            targetStopId={session.targetStopId}
-            nextWaypoint={session.nextWaypoint}
-            state={session.state}
-            distance={session.distance}
-            transitLegActive={session.progress.transitLegActive}
-            isAwaitingFirstStop={session.isAwaitingFirstStop}
-            firstStopTitle={session.firstStopTitle}
-            onNavigate={setActiveTab}
-            onOpenStop={handleOpenStop}
-            onGetDirections={() => {
-              if (!tour?.stopIds?.[0]) return
-              const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
-              openDirections(landmark, session.firstStopTitle)
-            }}
-          />
+          {showJourneySummary && session.isTourComplete ? (
+            <JourneySummaryView
+              tour={singleWaypointId ? null : tour}
+              progress={session.progress}
+              mapStops={session.mapStops}
+              waypointsById={session.waypointsById}
+              walkedMeters={walkedMeters}
+              onNavigate={setActiveTab}
+              onOpenStop={handleOpenStop}
+            />
+          ) : (
+            <TourOverviewView
+              tour={singleWaypointId ? null : tour}
+              progress={session.progress}
+              mapStops={session.mapStops}
+              waypointsById={session.waypointsById}
+              targetStopId={session.targetStopId}
+              nextWaypoint={session.nextWaypoint}
+              state={session.state}
+              distance={session.distance}
+              transitLegActive={session.progress.transitLegActive}
+              isAwaitingFirstStop={session.isAwaitingFirstStop}
+              firstStopTitle={session.firstStopTitle}
+              onNavigate={setActiveTab}
+              onOpenStop={handleOpenStop}
+              onGetDirections={() => {
+                if (!tour?.stopIds?.[0]) return
+                const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
+                openDirections(landmark, session.firstStopTitle)
+              }}
+            />
+          )}
         </Suspense>
       ) : null}
 
@@ -516,6 +531,7 @@ function App() {
         <Suspense fallback={<TabLoadingFallback />}>
           <StopsView
             tour={singleWaypointId ? null : tour}
+            progress={session.progress}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
@@ -597,9 +613,11 @@ function App() {
           tour={singleWaypointId ? null : tour}
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
-          startedAtMs={tourStartedAtRef.current}
+          startedAtMs={session.progress.startedAtMs ?? tourStartedAtRef.current}
+          mapStops={session.mapStops}
           onViewSummary={() => {
             setCompletionDismissed(true)
+            setShowJourneySummary(true)
             setActiveTab(NAV_TABS.TOUR)
           }}
           onDismiss={() => setCompletionDismissed(true)}

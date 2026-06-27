@@ -31,8 +31,8 @@ describe('TourHud', () => {
 
     expect(screen.getByText('Heart of Ancient Rome')).toBeInTheDocument()
     expect(screen.getAllByText('Colosseum').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('2')).toBeInTheDocument()
+    expect(screen.getByText('50%')).toBeInTheDocument()
+    expect(screen.getByText(/1 visited/i)).toBeInTheDocument()
   })
 
   it('hides continue button while the waypoint card is open', () => {
