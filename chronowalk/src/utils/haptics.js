@@ -1,4 +1,4 @@
-/** @typedef {'softTap' | 'selection' | 'success' | 'warning' | 'arrivalPulse' | 'arrivalUnlock'} HapticKind */
+/** @typedef {'softTap' | 'selection' | 'success' | 'warning' | 'arrivalPulse' | 'arrivalUnlock' | 'audioPlay'} HapticKind */
 
 export const HAPTIC_KIND = {
   SOFT_TAP: 'softTap',
@@ -7,6 +7,7 @@ export const HAPTIC_KIND = {
   WARNING: 'warning',
   ARRIVAL_PULSE: 'arrivalPulse',
   ARRIVAL_UNLOCK: 'arrivalUnlock',
+  AUDIO_PLAY: 'audioPlay',
 }
 
 /** Millisecond vibration patterns for browsers without native haptics. */
@@ -17,6 +18,7 @@ const VIBRATION_PATTERNS = {
   warning: [28, 72, 28],
   arrivalPulse: [10],
   arrivalUnlock: [12, 36, 16, 52, 20],
+  audioPlay: [10, 24, 10],
 }
 
 /** Minimum gap between identical haptics to avoid buzzing. */
@@ -27,6 +29,7 @@ const COOLDOWN_MS = {
   warning: 800,
   arrivalPulse: 2500,
   arrivalUnlock: 1200,
+  audioPlay: 180,
 }
 
 const lastTriggeredAt = new Map()
@@ -79,6 +82,9 @@ async function runCapacitorHaptic(kind) {
         await haptics.notification?.({ type: 'SUCCESS' })
         await haptics.impact?.({ style: 'HEAVY' })
         return true
+      case HAPTIC_KIND.AUDIO_PLAY:
+        await haptics.impact?.({ style: 'LIGHT' })
+        return true
       default:
         return false
     }
@@ -98,6 +104,10 @@ function runCordovaHaptic(kind) {
     }
     if (kind === HAPTIC_KIND.SUCCESS || kind === HAPTIC_KIND.ARRIVAL_UNLOCK) {
       taptic.notification({ type: 'success' })
+      return true
+    }
+    if (kind === HAPTIC_KIND.AUDIO_PLAY && taptic.impact) {
+      taptic.impact({ style: 'light' })
       return true
     }
     if (kind === HAPTIC_KIND.SELECTION && taptic.selection) {

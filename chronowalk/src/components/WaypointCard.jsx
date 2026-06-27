@@ -267,7 +267,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         },
         { force: true }
       );
-      triggerHaptic(HAPTIC_KIND.SUCCESS);
+      triggerHaptic(HAPTIC_KIND.AUDIO_PLAY);
     } catch (err) {
       console.error('Failed to play audio guide:', err);
       setMediaError('Could not start audio. Tap again or check your connection.');
@@ -335,11 +335,15 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
   const handleAudioAction = async () => {
     if (isArrivalAudioPlaying) {
       audioOrchestrator.pauseArrival();
+      triggerHaptic(HAPTIC_KIND.SOFT_TAP);
       return;
     }
     if (needsResumeAudio || hasArrivalAudioSession) {
       const resumed = await audioOrchestrator.resumeArrival();
-      if (resumed) return;
+      if (resumed) {
+        triggerHaptic(HAPTIC_KIND.AUDIO_PLAY);
+        return;
+      }
     }
     await handlePlayAudio();
   };
