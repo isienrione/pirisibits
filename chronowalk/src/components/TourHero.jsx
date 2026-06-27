@@ -103,6 +103,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
         gradient="strong"
         zoom
         fadeIn
+        parallax
         objectPosition="center 38%"
         onError={handleHeroError}
         className="w-full"
@@ -123,7 +124,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       </MediaHero>
 
       <div className="relative mx-auto w-full max-w-2xl px-4 pb-safe sm:px-6 lg:max-w-3xl">
-        <GlassPanel className="-mt-6 rounded-3xl border-warm-white/40 bg-warm-white/88 p-6 shadow-glass-lg backdrop-blur-glass sm:p-8 lg:p-9">
+        <GlassPanel className="-mt-6 rounded-3xl border-warm-white/40 bg-warm-white/88 p-6 shadow-glass-lg backdrop-blur-glass motion-safe:transition-[box-shadow,transform] motion-safe:duration-300 sm:p-8 lg:p-9">
           <div className="flex flex-wrap gap-2">
             {TOUR_STATS.map((stat) => (
               <StatPill key={stat.id} label={stat.label} accent={stat.accent} />

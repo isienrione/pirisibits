@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useScrollParallax } from '../../hooks/useScrollParallax'
 import { cn } from './cn'
 
 const GRADIENT_CLASS = {
@@ -38,6 +39,7 @@ export function MediaHero({
   gradient = 'bottom',
   zoom = false,
   fadeIn = false,
+  parallax = false,
   className,
   imageClassName,
   objectPosition = 'center',
@@ -48,6 +50,7 @@ export function MediaHero({
 }) {
   const reducedMotion = useReducedMotion()
   const [loaded, setLoaded] = useState(!src)
+  const parallaxRef = useScrollParallax({ enabled: parallax && Boolean(src), strength: 0.18 })
 
   const handleLoad = (event) => {
     setLoaded(true)
@@ -64,21 +67,26 @@ export function MediaHero({
       )}
     >
       {src ? (
-        <img
-          src={src}
-          alt={alt}
-          referrerPolicy={referrerPolicy}
-          onLoad={handleLoad}
-          onError={onError}
-          className={cn(
-            'absolute inset-0 h-full w-full object-cover',
-            zoom && !reducedMotion && 'animate-hero-ken-burns',
-            fadeIn && 'transition-opacity duration-[900ms] ease-out',
-            fadeIn && (loaded ? 'opacity-100' : 'opacity-0'),
-            imageClassName
-          )}
-          style={{ objectPosition }}
-        />
+        <div
+          ref={parallax ? parallaxRef : undefined}
+          className="absolute inset-0 -top-[4%] h-[108%] will-change-transform"
+        >
+          <img
+            src={src}
+            alt={alt}
+            referrerPolicy={referrerPolicy}
+            onLoad={handleLoad}
+            onError={onError}
+            className={cn(
+              'h-full w-full object-cover',
+              zoom && !reducedMotion && 'animate-hero-ken-burns',
+              fadeIn && 'transition-opacity duration-[900ms] ease-out',
+              fadeIn && (loaded ? 'opacity-100' : 'opacity-0'),
+              imageClassName
+            )}
+            style={{ objectPosition }}
+          />
+        </div>
       ) : null}
 
       {GRADIENT_CLASS[gradient] ? (

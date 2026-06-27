@@ -31,6 +31,20 @@ function LockIcon() {
   )
 }
 
+function CheckIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 6.2 4.8 8.5 9.5 3.8"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export function TourStopCard({
   stop,
   index,
@@ -50,8 +64,9 @@ export function TourStopCard({
   return (
     <GlassPanel
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
-        isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
+        'overflow-hidden motion-safe:transition-[box-shadow,border-color,transform] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-glass-lg',
+        isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg ring-1 ring-gold/20',
+        isVisited && 'border-olive/25'
       )}
     >
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
@@ -87,9 +102,20 @@ export function TourStopCard({
             </div>
           )}
           {isUpcoming ? (
-            <div className="absolute inset-0 z-[3] flex items-center justify-center bg-warm-white/25 backdrop-blur-[1px]">
+            <div className="absolute inset-0 z-[3] flex items-center justify-center bg-warm-white/25 backdrop-blur-[1px] motion-safe:transition-opacity motion-safe:duration-300">
               <LockIcon />
             </div>
+          ) : null}
+          {isVisited ? (
+            <span className="absolute right-3 top-3 z-[3] flex h-7 w-7 items-center justify-center rounded-full bg-olive text-warm-white shadow-glass animate-check-pop">
+              <CheckIcon className="h-3.5 w-3.5" />
+            </span>
+          ) : null}
+          {isCurrent ? (
+            <span
+              className="pointer-events-none absolute inset-0 z-[2] m-2 rounded-2xl ring-2 ring-gold/25 animate-arrival-unlock-glow"
+              aria-hidden="true"
+            />
           ) : null}
           <span
             className={cn(

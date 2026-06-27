@@ -30,10 +30,11 @@ export default {
         panel: '1.25rem',
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06)',
-        'glass-lg': '0 12px 40px rgba(23, 33, 43, 0.16), 0 4px 12px rgba(23, 33, 43, 0.08)',
-        'sheet-up': '0 -12px 40px rgba(23, 33, 43, 0.14)',
-        cta: '0 8px 24px rgba(200, 100, 60, 0.28)',
+        glass: '0 10px 36px rgba(23, 33, 43, 0.11), 0 2px 10px rgba(23, 33, 43, 0.05)',
+        'glass-lg': '0 16px 48px rgba(23, 33, 43, 0.14), 0 4px 14px rgba(23, 33, 43, 0.07)',
+        'sheet-up': '0 -14px 44px rgba(23, 33, 43, 0.13)',
+        cta: '0 10px 28px rgba(200, 100, 60, 0.26), 0 2px 8px rgba(200, 100, 60, 0.12)',
+        glow: '0 0 32px rgba(217, 164, 65, 0.22)',
       },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',

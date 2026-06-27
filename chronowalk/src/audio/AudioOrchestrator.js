@@ -5,6 +5,7 @@ import {
   normalizeAudioUrls,
   VISUAL_SYNC_DELAY_MS,
   waitForCanPlayThrough,
+  STOP_FADE_DURATION_MS,
 } from './audioMedia';
 import { readPlaybackRate, writePlaybackRate, PLAYBACK_RATES } from '../utils/appPreferences';
 
@@ -285,13 +286,14 @@ class AudioOrchestrator {
   }
 
   async fadeVolume(player, to, duration = FADE_DURATION_MS) {
-    const steps = 10;
+    const steps = 20;
     const stepDuration = duration / steps;
     const startVolume = player.volume;
-    const delta = (to - startVolume) / steps;
 
-    for (let i = 0; i < steps; i++) {
-      player.volume = Math.min(Math.max(player.volume + delta, 0), 1);
+    for (let step = 1; step <= steps; step += 1) {
+      const progress = step / steps;
+      const eased = 1 - (1 - progress) ** 3;
+      player.volume = Math.min(Math.max(startVolume + (to - startVolume) * eased, 0), 1);
       await new Promise((resolve) => setTimeout(resolve, stepDuration));
     }
 
@@ -411,17 +413,19 @@ class AudioOrchestrator {
 
       if (mode === AUDIO_MODES.TRANSIT) {
         this.arrivalPlayer.pause();
-        this.ambientPlayer.pause();
-        this.transitPlayer.volume = 1;
+        void this.fadeVolume(this.ambientPlayer, 0, FADE_DURATION_MS);
+        this.transitPlayer.volume = 0;
         this.transitPlayer.src = this.audioUrls.transit;
         await this.transitPlayer.play();
+        await this.fadeVolume(this.transitPlayer, 1, FADE_DURATION_MS);
         this.emitPlaybackState();
       } else {
-        this.transitPlayer.pause();
+        void this.fadeVolume(this.transitPlayer, 0, FADE_DURATION_MS);
         this.arrivalPlayer.pause();
-        this.ambientPlayer.volume = 1;
+        this.ambientPlayer.volume = 0;
         this.ambientPlayer.src = this.audioUrls.ambient;
         await this.ambientPlayer.play();
+        await this.fadeVolume(this.ambientPlayer, 1, FADE_DURATION_MS);
         this.emitPlaybackState();
       }
     } catch (error) {
@@ -452,9 +456,11 @@ class AudioOrchestrator {
       }
 
       await waitForCanPlayThrough(this.arrivalPlayer);
+      this.arrivalPlayer.volume = 0;
       await this.arrivalPlayer.play();
       this.wantsArrivalPlayback = true;
       this.setPlaybackInterrupted(false);
+      await this.fadeVolume(this.arrivalPlayer, ARRIVAL_VOLUME, FADE_DURATION_MS);
       return true;
     } catch (error) {
       console.warn('AudioOrchestrator: manual resume blocked.', error);
@@ -476,12 +482,25 @@ class AudioOrchestrator {
   }
 
   stop() {
+    void this.stopWithFade();
+  }
+
+  async stopWithFade() {
     this.clearPendingSync();
     this.syncGeneration += 1;
     this.visualSyncFired = false;
     this.playingBeforeHidden = false;
     this.wantsArrivalPlayback = false;
     this.suppressPauseDetection = true;
+
+    const players = [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer];
+    const activePlayers = players.filter((player) => !player.paused && player.volume > 0.01);
+
+    if (activePlayers.length) {
+      await Promise.all(
+        activePlayers.map((player) => this.fadeVolume(player, 0, STOP_FADE_DURATION_MS))
+      );
+    }
 
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();

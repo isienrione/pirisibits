@@ -1,8 +1,22 @@
 import { cn } from '../ui'
 
+function CheckIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 6.2 4.8 8.5 9.5 3.8"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 const STATUS_STYLES = {
   completed: {
-    dot: 'border-olive bg-olive',
+    dot: 'border-olive bg-olive text-warm-white',
     line: 'bg-olive/50',
     title: 'text-deep-slate',
     caption: 'Visited',
@@ -32,18 +46,25 @@ export function JourneyTimeline({ stops = [], className, compact = false }) {
       {stops.map((stop, index) => {
         const palette = STATUS_STYLES[stop.status] ?? STATUS_STYLES.upcoming
         const isLast = index === stops.length - 1
+        const isCompleted = stop.status === 'completed'
 
         return (
-          <li key={stop.id} className="relative flex gap-3 sm:gap-4">
+          <li
+            key={stop.id}
+            className="relative flex gap-3 sm:gap-4"
+          >
             <div className="flex flex-col items-center">
               <span
                 className={cn(
-                  'relative z-[1] mt-1 flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border-2',
+                  'relative z-[1] mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2',
                   palette.dot,
-                  stop.status === 'current' && 'animate-journey-current-pulse'
+                  stop.status === 'current' && 'animate-journey-current-pulse',
+                  isCompleted && 'animate-check-pop'
                 )}
                 aria-hidden="true"
-              />
+              >
+                {isCompleted ? <CheckIcon className="h-3 w-3" /> : null}
+              </span>
               {!isLast ? (
                 <span
                   className={cn('my-1 w-0.5 flex-1 min-h-[2.5rem] rounded-full', palette.line)}

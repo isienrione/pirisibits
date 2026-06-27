@@ -19,8 +19,9 @@
     --font-sans: 'DM Sans', system-ui, sans-serif;
     --font-display: 'Fraunces', Georgia, serif;
 
-    --shadow-glass: 0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06);
-    --shadow-sheet: 0 -12px 40px rgba(23, 33, 43, 0.14);
+    --shadow-glass: 0 10px 36px rgba(23, 33, 43, 0.11), 0 2px 10px rgba(23, 33, 43, 0.05);
+    --shadow-sheet: 0 -14px 44px rgba(23, 33, 43, 0.13);
+    --ease-handcrafted: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html {
@@ -236,6 +237,69 @@
     animation: journey-current-pulse 2s ease-in-out infinite;
   }
 
+  @keyframes arrival-exit {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes arrival-warm-glow {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: scale(1.04);
+    }
+  }
+
+  @keyframes arrival-unlock-glow {
+    0%,
+    100% {
+      opacity: 0.35;
+      box-shadow: 0 0 0 0 rgba(217, 164, 65, 0.2);
+    }
+    50% {
+      opacity: 0.75;
+      box-shadow: 0 0 28px 6px rgba(217, 164, 65, 0.22);
+    }
+  }
+
+  @keyframes check-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.72);
+    }
+    70% {
+      transform: scale(1.06);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-arrival-exit {
+    animation: arrival-exit 0.52s var(--ease-handcrafted) forwards;
+  }
+
+  .animate-arrival-warm-glow {
+    animation: arrival-warm-glow 2.6s ease-in-out infinite;
+  }
+
+  .animate-arrival-unlock-glow {
+    animation: arrival-unlock-glow 2.2s ease-in-out infinite;
+  }
+
+  .animate-check-pop {
+    animation: check-pop 0.55s var(--ease-handcrafted) forwards;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-arrival-vignette,
     .animate-arrival-discover,
@@ -254,7 +318,11 @@
     }
 
     .animate-journey-complete,
-    .animate-journey-current-pulse {
+    .animate-journey-current-pulse,
+    .animate-arrival-exit,
+    .animate-arrival-warm-glow,
+    .animate-arrival-unlock-glow,
+    .animate-check-pop {
       animation: none;
     }
 

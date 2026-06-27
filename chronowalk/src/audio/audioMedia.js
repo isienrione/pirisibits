@@ -2,7 +2,8 @@ export const AUDIO_BUFFER_TIMEOUT_MS = 12000;
 export const VISUAL_SYNC_DELAY_MS = 250;
 export const ARRIVAL_VOLUME = 1;
 export const ARRIVAL_ALERT_VOLUME = 0.9;
-export const FADE_DURATION_MS = 500;
+export const FADE_DURATION_MS = 650;
+export const STOP_FADE_DURATION_MS = 420;
 
 export const normalizeAudioUrls = (audioUrls = {}) => ({
   ambient: audioUrls.ambient || audioUrls.ambient_url || null,

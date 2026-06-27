@@ -4,7 +4,7 @@ export function GlassPanel({ as: Component = 'div', className, children, ...prop
   return (
     <Component
       className={cn(
-        'rounded-3xl border border-limestone/70 bg-warm-white/92 shadow-glass backdrop-blur-glass',
+        'rounded-3xl border border-limestone/70 bg-warm-white/92 shadow-glass backdrop-blur-glass motion-safe:transition-[box-shadow,border-color,transform] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)]',
         className
       )}
       {...props}

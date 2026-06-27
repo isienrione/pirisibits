@@ -151,7 +151,9 @@ describe('AudioOrchestrator', () => {
     orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
     orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
 
-    const resumed = await orchestrator.resumeArrival();
+    const resumedPromise = orchestrator.resumeArrival();
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    const resumed = await resumedPromise;
 
     expect(resumed).toBe(true);
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
@@ -186,7 +188,9 @@ describe('AudioOrchestrator', () => {
     expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
 
     orchestrator.arrivalPlayer.paused = true;
-    const resumed = await orchestrator.toggleArrivalPlayback();
+    const resumedPromise = orchestrator.toggleArrivalPlayback();
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    const resumed = await resumedPromise;
     expect(resumed).toBe(true);
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
   });
