@@ -268,7 +268,7 @@ function App() {
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     setHasInteracted(true)
-    setActiveTab(NAV_TABS.TOUR)
+    setActiveTab(NAV_TABS.MAP)
   }
 
   const openDirections = useCallback((landmark, title, origin = null) => {
@@ -293,7 +293,11 @@ function App() {
       lng: landmark.lng,
       key: Date.now(),
     })
-    setActiveTab(NAV_TABS.DIRECTIONS)
+  }, [])
+
+  const handleCloseDirections = useCallback(() => {
+    setDirectionsDestination(null)
+    setDirectionsOrigin(null)
   }, [])
 
   const handleDirections = useCallback(
@@ -516,7 +520,6 @@ function App() {
               isAwaitingFirstStop={session.isAwaitingFirstStop}
               firstStopTitle={session.firstStopTitle}
               onNavigate={setActiveTab}
-              onOpenStop={handleOpenStop}
               onGetDirections={() => {
                 if (!tour?.stopIds?.[0]) return
                 const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
@@ -540,17 +543,19 @@ function App() {
         </Suspense>
       ) : null}
 
-      {activeTab === NAV_TABS.DIRECTIONS && directionsDestination ? (
-        <Suspense fallback={<TabLoadingFallback />}>
-          <DirectionsView
-            destination={directionsDestination}
-            origin={directionsOrigin}
-            userPosition={session.position}
-            locationStatus={locationStatus}
-            onBack={() => setActiveTab(NAV_TABS.MAP)}
-            onOpenExternalMaps={handleOpenExternalMaps}
-          />
-        </Suspense>
+      {directionsDestination ? (
+        <div className="fixed inset-0 z-[55] bg-warm-white">
+          <Suspense fallback={<TabLoadingFallback />}>
+            <DirectionsView
+              destination={directionsDestination}
+              origin={directionsOrigin}
+              userPosition={session.position}
+              locationStatus={locationStatus}
+              onBack={handleCloseDirections}
+              onOpenExternalMaps={handleOpenExternalMaps}
+            />
+          </Suspense>
+        </div>
       ) : null}
 
       {activeTab === NAV_TABS.SETTINGS ? (

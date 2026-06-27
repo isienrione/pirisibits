@@ -1,7 +1,6 @@
 import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { getWaypointGeo } from '../../data/waypointGeo'
 import { estimateWalkMinutes } from '../../utils/tourStats'
-import TourStopCard from '../TourStopCard'
 import { JourneyProgressPanel } from '../journey/JourneyProgressPanel'
 import { JourneyTimeline } from '../journey/JourneyTimeline'
 import { Button, GlassPanel, PageShell, SectionHeader, ctaInCard, cn } from '../ui'
@@ -11,7 +10,6 @@ function TourOverviewView({
   tour,
   progress,
   mapStops,
-  waypointsById,
   targetStopId,
   nextWaypoint,
   state,
@@ -21,7 +19,6 @@ function TourOverviewView({
   firstStopTitle,
   onNavigate,
   onGetDirections,
-  onOpenStop,
 }) {
   if (!tour) {
     return (
@@ -31,7 +28,6 @@ function TourOverviewView({
     )
   }
 
-  const totalStops = tour.stopIds.length
   const currentTitle = getWaypointGeo(targetStopId)?.title ?? 'Current stop'
   const statusLabel =
     isAwaitingFirstStop
@@ -62,7 +58,7 @@ function TourOverviewView({
       />
 
       {isAwaitingFirstStop ? (
-        <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
+        <GlassPanel variant="callout" className="mt-6 p-5 sm:p-6">
           <p className="text-eyebrow uppercase text-gold">Before you begin</p>
           <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
             Start at the {startTitle}
@@ -95,7 +91,7 @@ function TourOverviewView({
         </GlassPanel>
       ) : null}
 
-      <GlassPanel className="mt-6 p-5">
+      <GlassPanel className="mt-6 p-5 sm:p-6">
         <JourneyProgressPanel tour={tour} arrivedStopIds={progress.arrivedStopIds} />
 
         <div className="mt-5 space-y-3 text-sm text-soft-slate">
@@ -135,31 +131,24 @@ function TourOverviewView({
           <JourneyTimeline stops={stops} />
         </GlassPanel>
 
-        <SectionHeader
-          align="left"
-          eyebrow="Landmarks"
-          title="All stops"
-          subtitle="Revisit places you've seen or preview any landmark on the route"
-          className="mb-4"
-        />
-        <div className="space-y-4">
-          {stops.map((stop, index) => (
-            <TourStopCard
-              key={stop.id}
-              stop={stop}
-              index={index}
-              waypoint={waypointsById?.[stop.id]}
-              compact
-              onOpen={(stopId) => {
-                onOpenStop?.(stopId)
-                onNavigate(NAV_TABS.MAP)
-              }}
-            />
-          ))}
-        </div>
+        <GlassPanel className="p-5 sm:p-6">
+          <p className="text-eyebrow uppercase text-terracotta">All landmarks</p>
+          <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+            Browse every stop on the route, revisit places you&apos;ve seen, or preview landmarks
+            ahead.
+          </p>
+          <Button
+            variant="secondary"
+            fullWidth
+            className={cn(ctaInCard, 'mt-4')}
+            onClick={() => onNavigate(NAV_TABS.STOPS)}
+          >
+            View all stops
+          </Button>
+        </GlassPanel>
       </div>
 
-      <GlassPanel className="mt-6 p-5">
+      <GlassPanel className="mt-6 p-5 sm:p-6">
         <p className="text-eyebrow uppercase text-terracotta">Included</p>
         <ul className="mt-3 space-y-2 text-sm text-soft-slate">
           <li>GPS-guided walking between landmarks</li>

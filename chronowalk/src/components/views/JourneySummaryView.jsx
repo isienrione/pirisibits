@@ -3,19 +3,8 @@ import { formatElapsedDuration, formatWalkedDistance, getJourneyProgress } from 
 import TourStopCard from '../TourStopCard'
 import { JourneyProgressPanel } from '../journey/JourneyProgressPanel'
 import { JourneyTimeline } from '../journey/JourneyTimeline'
-import { Button, GlassPanel, PageShell, SectionHeader, ctaInCard } from '../ui'
+import { Button, GlassPanel, MemoryStat, PageShell, SectionHeader, ctaInCard } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
-
-function MemoryStat({ label, value }) {
-  return (
-    <div className="rounded-2xl border border-limestone/60 bg-warm-white/70 px-4 py-3 text-center">
-      <p className="font-display text-xl font-semibold tabular-nums text-deep-slate">{value}</p>
-      <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
-        {label}
-      </p>
-    </div>
-  )
-}
 
 function JourneySummaryView({
   tour,
@@ -48,6 +37,7 @@ function JourneySummaryView({
       <SectionHeader
         align="left"
         eyebrow="Your journey"
+        eyebrowTone="gold"
         title="Rome, remembered"
         subtitle="A quiet record of the path you walked and the places that opened along the way."
       />
@@ -56,10 +46,10 @@ function JourneySummaryView({
         <JourneyProgressPanel tour={tour} arrivedStopIds={progress.arrivedStopIds} />
 
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <MemoryStat label="Distance walked" value={formatWalkedDistance(walkedMeters)} />
-          <MemoryStat label="Time exploring" value={formatElapsedDuration(startedAtMs)} />
+          <MemoryStat variant="card" label="Distance walked" value={formatWalkedDistance(walkedMeters)} />
+          <MemoryStat variant="card" label="Time exploring" value={formatElapsedDuration(startedAtMs)} />
           <div className="col-span-2 sm:col-span-1">
-            <MemoryStat label="Landmarks reached" value={`${visited}/${total}`} />
+            <MemoryStat variant="card" label="Landmarks reached" value={`${visited}/${total}`} />
           </div>
         </div>
       </GlassPanel>
@@ -114,7 +104,7 @@ function JourneySummaryView({
             ? 'This route is complete. The city will be here when you return.'
             : 'Your journey continues with every step.'}
         </p>
-        <Button fullWidth className={ctaInCard + ' mt-5'} onClick={() => onNavigate(NAV_TABS.MAP)}>
+        <Button fullWidth className={`${ctaInCard} mt-5`} onClick={() => onNavigate(NAV_TABS.MAP)}>
           Return to map
         </Button>
       </GlassPanel>

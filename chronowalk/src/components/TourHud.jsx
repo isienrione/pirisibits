@@ -25,7 +25,7 @@ function MapHudTopBar({
   const { visited, remaining, completionPercent, total } = getJourneyProgress(tour, arrivedStopIds)
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
+    <GlassPanel variant="elevated" className={cn('pointer-events-auto', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
@@ -109,7 +109,7 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'p-3' : 'p-4')}>
+    <GlassPanel variant="elevated" className={cn('pointer-events-auto', compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
         <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 
@@ -287,10 +287,7 @@ const TourHud = ({
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-40 px-4 pt-safe"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
-      >
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-40 px-4 pt-safe">
         <div className="mx-auto w-full max-w-md">
           <MapHudTopBar
             tourTitle={tourTitle}
@@ -316,7 +313,7 @@ const TourHud = ({
               distanceLabel={!atStop || awaitingFirstStop ? distanceLabel : null}
               walkMinutes={!atStop || awaitingFirstStop ? walkMinutes : null}
               posterUrl={posterUrl}
-              showDirections={showDirections && !awaitingFirstStop}
+              showDirections={showDirections}
               onDirections={handleDirections}
               compact={compactHud}
               action={routeAction}

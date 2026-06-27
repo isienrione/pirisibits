@@ -22,6 +22,16 @@
     --shadow-glass: 0 10px 36px rgba(23, 33, 43, 0.11), 0 2px 10px rgba(23, 33, 43, 0.05);
     --shadow-sheet: 0 -14px 44px rgba(23, 33, 43, 0.13);
     --ease-handcrafted: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Z-index scale */
+    --z-map: 0;
+    --z-hud: 40;
+    --z-notice: 42;
+    --z-nav: 45;
+    --z-sheet: 50;
+    --z-directions: 55;
+    --z-complete: 60;
+    --z-skip-link: 500;
   }
 
   html {
@@ -129,7 +139,7 @@
   }
 
   .animate-sheet-rise {
-    animation: sheet-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: sheet-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   @keyframes hero-ken-burns {

@@ -23,7 +23,15 @@ export default {
         serif: ['Fraunces', 'Georgia', 'serif'],
       },
       fontSize: {
-        'eyebrow': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        eyebrow: ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        'display-md': ['1.5rem', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'display-lg': ['1.875rem', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'display-hero': ['2rem', { lineHeight: '1.08', letterSpacing: '-0.02em', fontWeight: '600' }],
+      },
+      transitionDuration: {
+        fast: '200ms',
+        base: '300ms',
+        slow: '500ms',
       },
       borderRadius: {
         sheet: '2rem',

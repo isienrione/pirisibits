@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, MediaHero, cn } from './ui'
+import { Button, GlassPanel, MediaHero, cn, metaLabel } from './ui'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -21,7 +21,8 @@ function StatPill({ label, accent }) {
     <span
       className={cn(
         'inline-flex items-center rounded-full border border-limestone/50 bg-warm-white/80 px-3 py-1.5',
-        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate backdrop-blur-sm'
+        metaLabel,
+        'text-deep-slate backdrop-blur-sm'
       )}
     >
       <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full bg-current', accent)} aria-hidden="true" />
@@ -108,7 +109,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
         onError={handleHeroError}
         className="w-full"
       >
-        <div className="absolute inset-x-0 bottom-0 flex min-h-full flex-col justify-end px-5 pb-6 pt-28 sm:px-8 sm:pb-8">
+        <div className="absolute inset-x-0 bottom-0 flex min-h-full flex-col justify-end px-6 pb-6 pt-28 sm:pb-8">
           <div className="animate-fade-in-soft">
             <p className="text-eyebrow uppercase text-gold/95">{APP_NAME}</p>
 
@@ -123,8 +124,8 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
         </div>
       </MediaHero>
 
-      <div className="relative mx-auto w-full max-w-2xl px-4 pb-safe sm:px-6 lg:max-w-3xl">
-        <GlassPanel className="-mt-6 rounded-3xl border-warm-white/40 bg-warm-white/88 p-6 shadow-glass-lg backdrop-blur-glass motion-safe:transition-[box-shadow,transform] motion-safe:duration-300 sm:p-8 lg:p-9">
+      <div className="relative mx-auto w-full max-w-2xl px-6 pb-safe lg:max-w-3xl">
+        <GlassPanel variant="elevated" className="-mt-6 border-warm-white/40 bg-warm-white/88 p-6 sm:p-8 lg:p-9">
           <div className="flex flex-wrap gap-2">
             {TOUR_STATS.map((stat) => (
               <StatPill key={stat.id} label={stat.label} accent={stat.accent} />
@@ -165,7 +166,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
             </div>
           ) : null}
 
-          <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
+          <p className="mt-6 text-center text-xs leading-relaxed text-soft-slate/90">
             Your tour begins at the Colosseum — walk there to unlock your first story. Location is
             used only to guide you between stops.
           </p>

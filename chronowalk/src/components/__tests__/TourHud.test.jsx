@@ -65,4 +65,20 @@ describe('TourHud', () => {
     expect(screen.getByText(/transit narration is playing/i)).toBeInTheDocument()
     expect(screen.getByText('240 m')).toBeInTheDocument()
   })
+
+  it('shows directions button while awaiting first stop', () => {
+    render(
+      <TourHud
+        {...baseProps}
+        awaitingFirstStop
+        firstStopTitle="Colosseum"
+        state={JOURNEY_STATE.TRANSIT}
+        progress={{ targetStopIndex: 0, arrivedStopIds: [], transitLegActive: false }}
+        onDirections={vi.fn()}
+        waypointExploreActive={false}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /directions to colosseum/i })).toBeInTheDocument()
+  })
 })

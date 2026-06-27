@@ -1,31 +1,41 @@
 import { cn } from './cn'
+import { displayLg, displayMd } from './styles'
+
+const eyebrowTones = {
+  terracotta: 'text-terracotta',
+  gold: 'text-gold',
+  slate: 'text-soft-slate',
+}
 
 export function SectionHeader({
   eyebrow,
+  eyebrowTone = 'terracotta',
   title,
   subtitle,
   align = 'center',
+  as: TitleTag = 'h2',
+  size = 'lg',
   className,
   titleClassName,
 }) {
   const alignClass =
     align === 'left' ? 'text-left' : align === 'right' ? 'text-right' : 'text-center'
 
+  const titleSize = size === 'md' ? displayMd : displayLg
+
   return (
     <header className={cn(alignClass, className)}>
       {eyebrow ? (
-        <p className="text-eyebrow uppercase text-terracotta">{eyebrow}</p>
+        <p className={cn('text-eyebrow uppercase', eyebrowTones[eyebrowTone] ?? eyebrowTones.terracotta)}>
+          {eyebrow}
+        </p>
       ) : null}
       {title ? (
-        <h2
-          className={cn(
-            'font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
-            eyebrow && 'mt-2',
-            titleClassName
-          )}
+        <TitleTag
+          className={cn(titleSize, eyebrow && 'mt-2', titleClassName)}
         >
           {title}
-        </h2>
+        </TitleTag>
       ) : null}
       {subtitle ? (
         <p className="mt-3 text-sm leading-relaxed text-soft-slate">{subtitle}</p>

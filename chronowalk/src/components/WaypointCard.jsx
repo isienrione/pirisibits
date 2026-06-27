@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, LoadingSpinner, MediaHero, cn, ctaInCard } from './ui';
+import { BottomSheet, Button, LoadingPanel, LoadingSpinner, MediaHero, cn, ctaInCard, focusRing } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -113,7 +113,7 @@ function AudioTranscriptSection({ waypoint }) {
 
   return (
     <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
-      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+      <summary className={cn('cursor-pointer text-sm font-semibold text-deep-slate', focusRing)}>
         Captions &amp; transcript
       </summary>
       <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
@@ -370,7 +370,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         if (nextOpen) triggerHaptic(HAPTIC_KIND.SOFT_TAP);
       }}
     >
-      <summary className="cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate">
+      <summary className={cn('cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate', focusRing)}>
         Advanced
       </summary>
       <div className="mt-4 space-y-3">

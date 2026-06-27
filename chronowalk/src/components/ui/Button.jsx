@@ -12,7 +12,7 @@ const variantStyles = {
 }
 
 const sizeStyles = {
-  sm: 'min-h-10 px-4 py-2 text-xs font-semibold rounded-full',
+  sm: 'min-h-11 px-4 py-2 text-xs font-semibold rounded-full',
   md: 'min-h-11 px-5 py-3 text-sm font-semibold rounded-2xl',
   lg: 'min-h-[3.25rem] px-6 py-3.5 text-base font-bold rounded-full',
   pill: 'min-h-11 px-6 py-3.5 text-sm font-bold rounded-full',

@@ -1,15 +1,6 @@
 import { ProgressRing } from './journey/ProgressRing'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel } from './ui'
+import { Button, GlassPanel, MemoryStat, ctaInCard } from './ui'
 import { formatElapsedDuration, formatWalkedDistance } from '../utils/tourStats'
-
-function MemoryStat({ label, value }) {
-  return (
-    <div className="flex-1 text-center">
-      <p className="font-display text-2xl font-semibold tabular-nums text-deep-slate">{value}</p>
-      <p className={cn(metaLabel, 'mt-1 text-soft-slate')}>{label}</p>
-    </div>
-  )
-}
 
 function TourCompleteView({
   tour,
@@ -29,7 +20,7 @@ function TourCompleteView({
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center bg-deep-slate/50 px-4 backdrop-blur-sm">
-      <GlassPanel className="pointer-events-auto max-w-md animate-journey-complete rounded-3xl p-6 text-center shadow-glass-lg">
+      <GlassPanel variant="elevated" className="pointer-events-auto max-w-md animate-journey-complete p-6 text-center">
         <div className="mx-auto flex justify-center">
           <ProgressRing
             value={completionPercent}
