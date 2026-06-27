@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, cn } from './ui'
+import { Button, GlassPanel, MediaHero, cn } from './ui'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -20,8 +20,8 @@ function StatPill({ label, accent }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-limestone/80 bg-warm-white/75 px-3 py-1.5',
-        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate shadow-sm backdrop-blur-sm'
+        'inline-flex items-center rounded-full border border-limestone/50 bg-warm-white/80 px-3 py-1.5',
+        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate backdrop-blur-sm'
       )}
     >
       <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full bg-current', accent)} aria-hidden="true" />
@@ -36,7 +36,7 @@ function PreviewStopsList({ stops }) {
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-limestone/50 bg-warm-white/60 px-3 py-2.5 backdrop-blur-sm"
         >
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand text-xs font-bold text-deep-slate">
             {index + 1}
@@ -95,39 +95,36 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
-      <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
-        <img
-          src={heroSrc}
-          alt=""
-          aria-hidden="true"
-          className="h-full w-full object-cover object-[center_38%]"
-          onError={handleHeroError}
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/35 to-warm-white"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-deep-slate/50 via-deep-slate/5 to-transparent"
-          aria-hidden="true"
-        />
-      </div>
+      <MediaHero
+        src={heroSrc}
+        alt=""
+        aspect="screen"
+        rounded="frame"
+        gradient="strong"
+        zoom
+        fadeIn
+        objectPosition="center 38%"
+        onError={handleHeroError}
+        className="w-full"
+      >
+        <div className="absolute inset-x-0 bottom-0 flex min-h-full flex-col justify-end px-5 pb-6 pt-28 sm:px-8 sm:pb-8">
+          <div className="animate-fade-in-soft">
+            <p className="text-eyebrow uppercase text-gold/95">{APP_NAME}</p>
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
-        <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
+            <h1 className="mt-3 max-w-xl font-display text-[2rem] font-semibold leading-[1.08] tracking-tight text-warm-white sm:text-4xl lg:text-[2.75rem]">
+              {tour.title}
+            </h1>
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
-          <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-warm-white/88 sm:text-[1.05rem]">
+              {VALUE_PROPOSITION}
+            </p>
+          </div>
+        </div>
+      </MediaHero>
 
-          <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl lg:text-[2.75rem]">
-            {tour.title}
-          </h1>
-
-          <p className="mt-4 text-base leading-relaxed text-soft-slate sm:text-[1.05rem]">
-            {VALUE_PROPOSITION}
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2">
+      <div className="relative mx-auto w-full max-w-2xl px-4 pb-safe sm:px-6 lg:max-w-3xl">
+        <GlassPanel className="-mt-6 rounded-3xl border-warm-white/40 bg-warm-white/88 p-6 shadow-glass-lg backdrop-blur-glass sm:p-8 lg:p-9">
+          <div className="flex flex-wrap gap-2">
             {TOUR_STATS.map((stat) => (
               <StatPill key={stat.id} label={stat.label} accent={stat.accent} />
             ))}
@@ -161,7 +158,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </div>
 
           {previewOpen ? (
-            <div className="mt-2 border-t border-limestone/50 pt-4">
+            <div className="mt-2 animate-fade-in-soft border-t border-limestone/50 pt-4">
               <p className="text-eyebrow uppercase text-terracotta">Your route</p>
               <PreviewStopsList stops={stops} />
             </div>
