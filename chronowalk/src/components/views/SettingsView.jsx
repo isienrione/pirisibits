@@ -11,6 +11,8 @@ import {
 } from '../ui'
 import LocationNotice from '../LocationNotice'
 import OfflineDownloadPanel from '../offline/OfflineDownloadPanel'
+import PwaInstallPanel from '../PwaInstallPanel'
+import { usePwaInstall } from '../../hooks/usePwaInstall'
 
 function SettingsGroup({ title, children, className }) {
   return (
@@ -55,6 +57,7 @@ function SettingsView({
 }) {
   const reducedMotion = useReducedMotion()
   const urlDebugActive = isDebugMap() || isDebugGeo()
+  const pwaInstall = usePwaInstall()
 
   const locationVariant =
     locationStatus === LOCATION_STATUS.GRANTED
@@ -121,6 +124,19 @@ function SettingsView({
         <p className="mb-3 text-eyebrow uppercase text-terracotta">Offline</p>
         {tour ? <OfflineDownloadPanel tour={tour} /> : null}
       </section>
+
+      {pwaInstall.showInstallOption || pwaInstall.installed ? (
+        <section className="mt-6">
+          <p className="mb-3 text-eyebrow uppercase text-terracotta">Home screen</p>
+          <PwaInstallPanel
+            installed={pwaInstall.installed}
+            canPromptInstall={pwaInstall.canPromptInstall}
+            showIosInstructions={pwaInstall.showIosInstructions}
+            showInstallOption={pwaInstall.showInstallOption}
+            onInstall={() => void pwaInstall.promptInstall()}
+          />
+        </section>
+      ) : null}
 
       <SettingsGroup title="Accessibility">
         <SettingRow

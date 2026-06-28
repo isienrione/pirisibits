@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
+import { usePwaInstall } from '../hooks/usePwaInstall'
 import { Button, GlassPanel } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
+import PwaInstallPanel from './PwaInstallPanel'
 import TourCatalog, {
   getDefaultSelectableTourId,
   resolveActiveTour,
@@ -26,6 +28,7 @@ function TourLanding({
     () => initialTourId ?? getDefaultSelectableTourId(ownedTourIds, ownsAllTours)
   )
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
+  const pwaInstall = usePwaInstall()
 
   useEffect(() => {
     if (initialTourId && (ownsAllTours || ownedTourIds.includes(initialTourId))) {
@@ -140,6 +143,21 @@ function TourLanding({
             </p>
           )}
         </GlassPanel>
+
+        {pwaInstall.showInstallOption || pwaInstall.installed ? (
+          <PwaInstallPanel
+            className="mt-4 shadow-glass-lg"
+            compact
+            installed={pwaInstall.installed}
+            canPromptInstall={pwaInstall.canPromptInstall}
+            showIosInstructions={pwaInstall.showIosInstructions}
+            showInstallOption={pwaInstall.showInstallOption}
+            onInstall={() => {
+              triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+              void pwaInstall.promptInstall()
+            }}
+          />
+        ) : null}
 
         <div className="h-6 shrink-0 sm:h-8" aria-hidden="true" />
       </div>
