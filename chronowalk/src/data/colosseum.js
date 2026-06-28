@@ -62,7 +62,7 @@ export const COLOSSEUM_SLIDER_POSTER_AT_SEC = 3
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
   title: 'The Colosseum',
-  media_cache_version: 7,
+  media_cache_version: 8,
   arrival_headline: "You've reached the Colosseum!",
   arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
   immersive_orientation_hint:
