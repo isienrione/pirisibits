@@ -6,7 +6,7 @@ import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
 import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
 import { CASTEL_SANT_ANGELO_WAYPOINT } from '../data/castel-sant-angelo'
 
-const MEDIA_URL_KEYS = [
+export const MEDIA_URL_KEYS = [
   'modern_image_url',
   'modern_video_url',
   'modern_poster_url',
