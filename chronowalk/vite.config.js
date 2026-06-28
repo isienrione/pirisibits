@@ -23,7 +23,16 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'offline.html', 'tour-hero.jpg'],
+      includeAssets: [
+        'favicon.svg',
+        'offline.html',
+        'tour-hero.jpg',
+        'pwa/icon-192.png',
+        'pwa/icon-512.png',
+        'pwa/icon-maskable-512.png',
+        'pwa/screenshot-mobile.jpg',
+        'pwa/screenshot-wide.jpg',
+      ],
       manifest: {
         name: 'ChronoWalk',
         short_name: 'ChronoWalk',
@@ -37,16 +46,38 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
+            src: 'pwa/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
             purpose: 'any',
           },
           {
-            src: 'favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
+            src: 'pwa/icon-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'pwa/icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
             purpose: 'maskable',
+          },
+        ],
+        screenshots: [
+          {
+            src: 'pwa/screenshot-mobile.jpg',
+            sizes: '540x720',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'GPS-guided walking tour with place-aware audio on mobile',
+          },
+          {
+            src: 'pwa/screenshot-wide.jpg',
+            sizes: '1280x720',
+            type: 'image/jpeg',
+            form_factor: 'wide',
+            label: 'ChronoWalk immersive Rome tour on desktop',
           },
         ],
       },
