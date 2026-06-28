@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
+import TourLanding from './components/TourLanding'
 import TourHero from './components/TourHero'
 import TourHud from './components/TourHud'
 import ArrivalMoment from './components/ArrivalMoment'
@@ -27,6 +28,7 @@ import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
 import { useCelebrationHaptic, useLocationHaptics } from './hooks/useHapticTriggers'
 import { HAPTIC_KIND, triggerHaptic } from './utils/haptics'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
+import { useTourEntitlements } from './hooks/useTourEntitlements'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
@@ -61,7 +63,14 @@ function App() {
   const assetStudio = isAssetStudio()
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
-  const tour = useMemo(() => (tourId ? getTourById(tourId) : null) ?? ROME_CORE_TOUR, [tourId])
+  const entitlements = useTourEntitlements()
+  const [activeTour, setActiveTour] = useState(null)
+  const tour = useMemo(() => {
+    if (activeTour) return activeTour
+    if (singleWaypointId) return ROME_CORE_TOUR
+    if (tourId) return getTourById(tourId) ?? null
+    return null
+  }, [activeTour, singleWaypointId, tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
   const [mapRetryKey, setMapRetryKey] = useState(0)
   const [mapFocusTarget, setMapFocusTarget] = useState(null)
@@ -242,7 +251,10 @@ function App() {
     await session.beginTransitToNextStop()
   }
 
-  const handleStartTour = async () => {
+  const handleStartTour = async (selectedTour) => {
+    if (selectedTour) {
+      setActiveTour(selectedTour)
+    }
     await requestDeviceTiltPermission()
     tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
@@ -369,11 +381,33 @@ function App() {
   }
 
   if (!hasInteracted) {
+    if (singleWaypointId) {
+      return (
+        <TourHero
+          tour={ROME_CORE_TOUR}
+          singleWaypointId={singleWaypointId}
+          onStartTour={() => handleStartTour(ROME_CORE_TOUR)}
+        />
+      )
+    }
+
     return (
-      <TourHero
-        tour={tour}
-        singleWaypointId={singleWaypointId}
+      <TourLanding
+        initialTourId={tourId}
+        ownedTourIds={entitlements.ownedTourIds}
+        ownsAllTours={entitlements.ownsAllTours}
+        onPurchaseProduct={entitlements.purchaseProduct}
         onStartTour={handleStartTour}
+      />
+    )
+  }
+
+  if (!tour) {
+    return (
+      <LoadingPanel
+        label="Tour unavailable"
+        hint="Select a purchased tour from the home screen."
+        fullScreen
       />
     )
   }

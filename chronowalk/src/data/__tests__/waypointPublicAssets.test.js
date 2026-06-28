@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getLocalWaypoint, MEDIA_URL_KEYS } from '../../services/waypointMerge'
-import { ROME_CORE_TOUR } from '../rome-core-tour'
+import { listTours } from '../../services/tourRegistry'
 
 const publicRoot = join(process.cwd(), 'public')
 
@@ -11,8 +11,10 @@ function resolvePublicPath(url) {
   return join(publicRoot, String(url).replace(/^\//, ''))
 }
 
+const allStopIds = [...new Set(listTours().flatMap((tour) => tour.stopIds))]
+
 describe('waypoint public assets', () => {
-  for (const stopId of ROME_CORE_TOUR.stopIds) {
+  for (const stopId of allStopIds) {
     it(`${stopId} seed media paths exist under public/waypoints`, () => {
       const waypoint = getLocalWaypoint(stopId)
       expect(waypoint).toBeTruthy()

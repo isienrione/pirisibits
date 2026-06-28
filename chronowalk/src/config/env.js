@@ -28,11 +28,11 @@ export const getAssetStudioWaypointId = () => {
   return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
 }
 
-/** Tour id from URL (?tour=rome-core). Full tour is the default. */
+/** Tour id from URL (?tour=rome-forum-cluster). Omit for catalog landing. */
 export const getTourId = () => {
-  if (typeof window === 'undefined') return 'rome-core'
+  if (typeof window === 'undefined') return null
   const params = new URLSearchParams(window.location.search)
-  return params.get('tour') || 'rome-core'
+  return params.get('tour') || null
 }
 
 /**
@@ -49,6 +49,13 @@ export const getSingleWaypointId = () => {
 export const shouldResetTour = () => {
   if (typeof window === 'undefined') return false
   const param = new URLSearchParams(window.location.search).get('resetTour')
+  return parseBooleanEnv(param)
+}
+
+/** Unlock every tour without purchase (QA / demos). */
+export const isUnlockAllTours = () => {
+  if (typeof window === 'undefined') return false
+  const param = new URLSearchParams(window.location.search).get('unlockAll')
   return parseBooleanEnv(param)
 }
 

@@ -1,13 +1,19 @@
+import { ROME_CITY_TOUR } from '../data/rome-city-tour'
 import { ROME_CORE_TOUR } from '../data/rome-core-tour'
+import { ROME_FORUM_CLUSTER_TOUR } from '../data/rome-forum-cluster-tour'
 import { getWaypointGeo } from '../data/waypointGeo'
 
 const TOURS = {
   [ROME_CORE_TOUR.id]: ROME_CORE_TOUR,
+  [ROME_FORUM_CLUSTER_TOUR.id]: ROME_FORUM_CLUSTER_TOUR,
+  [ROME_CITY_TOUR.id]: ROME_CITY_TOUR,
 }
 
 export const getTourById = (tourId) => TOURS[tourId] ?? null
 
 export const listTourIds = () => Object.keys(TOURS)
+
+export const listTours = () => Object.values(TOURS)
 
 /** Implicit legs between consecutive stopIds. */
 export const getTourLegs = (tour) => {

@@ -16,22 +16,27 @@ describe('env URL params', () => {
     setSearch('')
   })
 
-  it('defaults to rome-core tour', () => {
+  it('defaults to no tour until selected on the landing screen', () => {
     setSearch('/')
-    expect(getTourId()).toBe('rome-core')
+    expect(getTourId()).toBeNull()
     expect(getSingleWaypointId()).toBeNull()
   })
 
   it('does not treat ?waypoint= as single-stop mode', () => {
     setSearch('/?waypoint=pantheon&debugGeo=true')
-    expect(getTourId()).toBe('rome-core')
+    expect(getTourId()).toBeNull()
     expect(getSingleWaypointId()).toBeNull()
   })
 
   it('uses singleWaypoint for single-stop debug', () => {
     setSearch('/?singleWaypoint=pantheon&debugGeo=true')
     expect(getSingleWaypointId()).toBe('pantheon')
-    expect(getTourId()).toBe('rome-core')
+    expect(getTourId()).toBeNull()
+  })
+
+  it('reads explicit tour id from URL', () => {
+    setSearch('/?tour=rome-city')
+    expect(getTourId()).toBe('rome-city')
   })
 
   it('reads resetTour and debugStop params', () => {
