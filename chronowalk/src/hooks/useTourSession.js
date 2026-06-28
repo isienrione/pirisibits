@@ -164,6 +164,15 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   }, [hasInteracted, isSingleStopMode, singleWaypointId, tour])
 
   useEffect(() => {
+    if (!hasInteracted || !tour?.id || isSingleStopMode) return
+
+    setProgress((current) => {
+      if (current.startedAtMs) return current
+      return { ...current, startedAtMs: Date.now() }
+    })
+  }, [hasInteracted, tour?.id, isSingleStopMode])
+
+  useEffect(() => {
     if (!tour?.id || isSingleStopMode) return
     saveTourProgress(tour.id, progress)
   }, [tour?.id, isSingleStopMode, progress])
@@ -171,16 +180,25 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   const markArrived = useCallback(() => {
     if (!targetStopId) return
 
-    setProgress((current) => ({
-      ...current,
-      arrivedStopIds: [...new Set([...current.arrivedStopIds, targetStopId])],
-      transitLegActive: false,
-    }))
+    setProgress((current) => {
+      const arrivedStopIds = [...new Set([...current.arrivedStopIds, targetStopId])]
+      const allComplete =
+        tour?.stopIds?.length > 0 &&
+        tour.stopIds.every((id) => arrivedStopIds.includes(id))
+
+      return {
+        ...current,
+        arrivedStopIds,
+        transitLegActive: false,
+        startedAtMs: current.startedAtMs ?? Date.now(),
+        completedAtMs: allComplete ? Date.now() : current.completedAtMs,
+      }
+    })
 
     if (debugMode && targetGeo?.debugPosition) {
       setDebugOverridePosition(targetGeo.debugPosition)
     }
-  }, [targetStopId, debugMode, targetGeo?.debugPosition])
+  }, [targetStopId, debugMode, targetGeo?.debugPosition, tour?.stopIds])
 
   const beginTransitToNextStop = useCallback(async () => {
     if (isSingleStopMode || !tour || !nextStopId || !nextWaypoint) return false

@@ -23,8 +23,9 @@ describe('TourCompleteView', () => {
     )
 
     expect(screen.getByText(/journey complete/i)).toBeInTheDocument()
-    expect(screen.getByText('2/2')).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /view summary/i }))
+    expect(screen.getByText('100%')).toBeInTheDocument()
+    expect(screen.getByText('2')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /view journey summary/i }))
     expect(onViewSummary).toHaveBeenCalledTimes(1)
   })
 })

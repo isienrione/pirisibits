@@ -151,7 +151,9 @@ describe('AudioOrchestrator', () => {
     orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
     orchestrator.arrivalPlayer.readyState = HTMLMediaElement.HAVE_ENOUGH_DATA;
 
-    const resumed = await orchestrator.resumeArrival();
+    const resumedPromise = orchestrator.resumeArrival();
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    const resumed = await resumedPromise;
 
     expect(resumed).toBe(true);
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
@@ -186,7 +188,9 @@ describe('AudioOrchestrator', () => {
     expect(orchestrator.arrivalPlayer.pause).toHaveBeenCalled();
 
     orchestrator.arrivalPlayer.paused = true;
-    const resumed = await orchestrator.toggleArrivalPlayback();
+    const resumedPromise = orchestrator.toggleArrivalPlayback();
+    await vi.advanceTimersByTimeAsync(FADE_DURATION_MS);
+    const resumed = await resumedPromise;
     expect(resumed).toBe(true);
     expect(orchestrator.arrivalPlayer.play).toHaveBeenCalled();
   });
@@ -218,5 +222,22 @@ describe('AudioOrchestrator', () => {
 
     expect(dispatchedEvents).toHaveLength(0);
     expect(orchestrator.getState().visualSyncFired).toBe(false);
+  });
+
+  it('seeks within the active narration player and cycles playback rate', async () => {
+    const { orchestrator } = createOrchestrator();
+
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.duration = 120;
+    orchestrator.arrivalPlayer.currentTime = 0;
+
+    expect(orchestrator.seekTo(42)).toBe(true);
+    expect(orchestrator.arrivalPlayer.currentTime).toBe(42);
+
+    expect(orchestrator.setPlaybackRate(1.25)).toBe(1.25);
+    expect(orchestrator.arrivalPlayer.playbackRate).toBe(1.25);
+    expect(orchestrator.cyclePlaybackRate()).toBe(1.5);
   });
 });

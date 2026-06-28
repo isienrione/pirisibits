@@ -43,11 +43,11 @@ function NavButton({ item, active, onSelect, layout }) {
 export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
   return (
     <>
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] px-4 pb-safe pt-2 lg:hidden">
-        <div className="pointer-events-auto mx-auto flex w-full max-w-md flex-col gap-2">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-[45] px-4 pb-safe pt-2">
+        <div className="pointer-events-auto mx-auto flex w-full max-w-md flex-col gap-2 lg:max-w-xl lg:pl-[5.5rem]">
           {audioSlot}
           <nav
-            className="flex items-stretch rounded-[1.75rem] border border-limestone/70 bg-warm-white/96 p-1.5 shadow-glass-lg backdrop-blur-glass"
+            className="flex items-stretch rounded-[1.75rem] border border-limestone/70 bg-warm-white/96 p-1.5 shadow-glass-lg backdrop-blur-glass lg:hidden"
             aria-label="Main navigation"
           >
             {NAV_ITEMS.map((item) => (

@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { GlassPanel } from './GlassPanel'
+export { MediaHero } from './MediaHero'
 export { IconButton } from './IconButton'
 export { ProgressPill } from './ProgressPill'
 export { BottomSheet } from './BottomSheet'

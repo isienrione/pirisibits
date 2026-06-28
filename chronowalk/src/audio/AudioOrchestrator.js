@@ -5,7 +5,9 @@ import {
   normalizeAudioUrls,
   VISUAL_SYNC_DELAY_MS,
   waitForCanPlayThrough,
+  STOP_FADE_DURATION_MS,
 } from './audioMedia';
+import { readPlaybackRate, writePlaybackRate, PLAYBACK_RATES } from '../utils/appPreferences';
 
 const AUDIO_MODES = {
   AMBIENT: 'AMBIENT',
@@ -40,13 +42,86 @@ class AudioOrchestrator {
     this.wantsArrivalPlayback = false;
     this.playbackInterrupted = false;
     this.suppressPauseDetection = false;
+    this.playbackRate = readPlaybackRate();
 
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleArrivalPause = this.handleArrivalPause.bind(this);
     this.handleArrivalPlay = this.handleArrivalPlay.bind(this);
+    this.handleProgressUpdate = this.handleProgressUpdate.bind(this);
 
     this.arrivalPlayer.addEventListener('pause', this.handleArrivalPause);
     this.arrivalPlayer.addEventListener('play', this.handleArrivalPlay);
+    this.arrivalPlayer.addEventListener('timeupdate', this.handleProgressUpdate);
+    this.arrivalPlayer.addEventListener('loadedmetadata', this.handleProgressUpdate);
+    this.arrivalPlayer.addEventListener('durationchange', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('timeupdate', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('loadedmetadata', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('durationchange', this.handleProgressUpdate);
+
+    this.applyPlaybackRate();
+  }
+
+  handleProgressUpdate() {
+    this.emitPlaybackState();
+  }
+
+  getActiveNarrationPlayer() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      return this.arrivalPlayer;
+    }
+    if (this.currentMode === AUDIO_MODES.TRANSIT && this.transitPlayer.src) {
+      return this.transitPlayer;
+    }
+    return null;
+  }
+
+  getProgress() {
+    const player = this.getActiveNarrationPlayer();
+    if (!player) {
+      return { currentTime: 0, duration: 0, playbackRate: this.playbackRate };
+    }
+
+    const duration = Number.isFinite(player.duration) ? player.duration : 0;
+    return {
+      currentTime: player.currentTime || 0,
+      duration,
+      playbackRate: this.playbackRate,
+    };
+  }
+
+  applyPlaybackRate() {
+    this.arrivalPlayer.playbackRate = this.playbackRate;
+    this.transitPlayer.playbackRate = this.playbackRate;
+  }
+
+  seekTo(seconds) {
+    const player = this.getActiveNarrationPlayer();
+    if (!player || !Number.isFinite(seconds)) return false;
+
+    const duration = Number.isFinite(player.duration) ? player.duration : null;
+    const clamped =
+      duration && duration > 0
+        ? Math.min(Math.max(seconds, 0), duration)
+        : Math.max(seconds, 0);
+
+    player.currentTime = clamped;
+    this.emitPlaybackState();
+    return true;
+  }
+
+  setPlaybackRate(rate) {
+    if (!PLAYBACK_RATES.includes(rate)) return this.playbackRate;
+    this.playbackRate = rate;
+    writePlaybackRate(rate);
+    this.applyPlaybackRate();
+    this.emitPlaybackState();
+    return rate;
+  }
+
+  cyclePlaybackRate() {
+    const currentIndex = PLAYBACK_RATES.indexOf(this.playbackRate);
+    const nextRate = PLAYBACK_RATES[(currentIndex + 1) % PLAYBACK_RATES.length];
+    return this.setPlaybackRate(nextRate);
   }
 
   handleArrivalPause() {
@@ -85,6 +160,7 @@ class AudioOrchestrator {
 
     const isTourNarrationPlaying = this.isTourNarrationPlaying();
     const isTourNarrationActive = this.isTourNarrationActive();
+    const progress = this.getProgress();
 
     this.windowRef.dispatchEvent(
       new CustomEvent(AUDIO_PLAYBACK_STATE_EVENT, {
@@ -98,6 +174,9 @@ class AudioOrchestrator {
           wantsArrivalPlayback: this.wantsArrivalPlayback,
           isTourNarrationPlaying,
           isTourNarrationActive,
+          currentTime: progress.currentTime,
+          duration: progress.duration,
+          playbackRate: progress.playbackRate,
         },
       })
     );
@@ -207,13 +286,14 @@ class AudioOrchestrator {
   }
 
   async fadeVolume(player, to, duration = FADE_DURATION_MS) {
-    const steps = 10;
+    const steps = 20;
     const stepDuration = duration / steps;
     const startVolume = player.volume;
-    const delta = (to - startVolume) / steps;
 
-    for (let i = 0; i < steps; i++) {
-      player.volume = Math.min(Math.max(player.volume + delta, 0), 1);
+    for (let step = 1; step <= steps; step += 1) {
+      const progress = step / steps;
+      const eased = 1 - (1 - progress) ** 3;
+      player.volume = Math.min(Math.max(startVolume + (to - startVolume) * eased, 0), 1);
       await new Promise((resolve) => setTimeout(resolve, stepDuration));
     }
 
@@ -333,17 +413,19 @@ class AudioOrchestrator {
 
       if (mode === AUDIO_MODES.TRANSIT) {
         this.arrivalPlayer.pause();
-        this.ambientPlayer.pause();
-        this.transitPlayer.volume = 1;
+        void this.fadeVolume(this.ambientPlayer, 0, FADE_DURATION_MS);
+        this.transitPlayer.volume = 0;
         this.transitPlayer.src = this.audioUrls.transit;
         await this.transitPlayer.play();
+        await this.fadeVolume(this.transitPlayer, 1, FADE_DURATION_MS);
         this.emitPlaybackState();
       } else {
-        this.transitPlayer.pause();
+        void this.fadeVolume(this.transitPlayer, 0, FADE_DURATION_MS);
         this.arrivalPlayer.pause();
-        this.ambientPlayer.volume = 1;
+        this.ambientPlayer.volume = 0;
         this.ambientPlayer.src = this.audioUrls.ambient;
         await this.ambientPlayer.play();
+        await this.fadeVolume(this.ambientPlayer, 1, FADE_DURATION_MS);
         this.emitPlaybackState();
       }
     } catch (error) {
@@ -374,9 +456,11 @@ class AudioOrchestrator {
       }
 
       await waitForCanPlayThrough(this.arrivalPlayer);
+      this.arrivalPlayer.volume = 0;
       await this.arrivalPlayer.play();
       this.wantsArrivalPlayback = true;
       this.setPlaybackInterrupted(false);
+      await this.fadeVolume(this.arrivalPlayer, ARRIVAL_VOLUME, FADE_DURATION_MS);
       return true;
     } catch (error) {
       console.warn('AudioOrchestrator: manual resume blocked.', error);
@@ -398,12 +482,25 @@ class AudioOrchestrator {
   }
 
   stop() {
+    void this.stopWithFade();
+  }
+
+  async stopWithFade() {
     this.clearPendingSync();
     this.syncGeneration += 1;
     this.visualSyncFired = false;
     this.playingBeforeHidden = false;
     this.wantsArrivalPlayback = false;
     this.suppressPauseDetection = true;
+
+    const players = [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer];
+    const activePlayers = players.filter((player) => !player.paused && player.volume > 0.01);
+
+    if (activePlayers.length) {
+      await Promise.all(
+        activePlayers.map((player) => this.fadeVolume(player, 0, STOP_FADE_DURATION_MS))
+      );
+    }
 
     [this.ambientPlayer, this.transitPlayer, this.arrivalPlayer, this.alertPlayer].forEach((player) => {
       player.pause();
@@ -418,6 +515,7 @@ class AudioOrchestrator {
   }
 
   getState() {
+    const progress = this.getProgress();
     return {
       currentMode: this.currentMode,
       visualSyncFired: this.visualSyncFired,
@@ -425,6 +523,9 @@ class AudioOrchestrator {
       prefetchedArrivalUrl: this.prefetchedArrivalUrl,
       playbackInterrupted: this.playbackInterrupted,
       wantsArrivalPlayback: this.wantsArrivalPlayback,
+      currentTime: progress.currentTime,
+      duration: progress.duration,
+      playbackRate: progress.playbackRate,
     };
   }
 }
