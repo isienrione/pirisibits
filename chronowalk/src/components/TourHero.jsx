@@ -3,6 +3,7 @@ import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { Button, GlassPanel, cn } from './ui'
+import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -166,6 +167,10 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
               <PreviewStopsList stops={stops} />
             </div>
           ) : null}
+
+          <div className="mt-6">
+            <OfflineDownloadPanel tour={tour} compact />
+          </div>
 
           <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
             Your tour begins at the Colosseum — walk there to unlock your first story. Location is

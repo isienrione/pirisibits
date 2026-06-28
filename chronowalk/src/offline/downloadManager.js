@@ -41,7 +41,7 @@ async function fetchAssetResponse(sourceUrl) {
 }
 
 export function getActiveDownloadProgress(tourId) {
-  return activeDownloads.get(tourId) ?? null
+  return activeDownloads.get(tourId)?.progress ?? null
 }
 
 export async function downloadTourAssets(tourId, options = {}) {
@@ -61,9 +61,17 @@ export async function downloadTourAssets(tourId, options = {}) {
 
   const downloadPromise = (async () => {
     let manifest = null
+    let latestProgress = null
+
+    const reportProgress = (payload) => {
+      latestProgress = payload
+      const active = activeDownloads.get(tourId)
+      if (active) active.progress = payload
+      onProgress?.(payload)
+    }
 
     try {
-      onProgress?.(
+      reportProgress(
         createProgressPayload(tourId, 'preparing', 0, tour.stopIds.length, { label: 'Preparing tour' })
       )
 
@@ -72,7 +80,7 @@ export async function downloadTourAssets(tourId, options = {}) {
         if (abortSignal.aborted) throw new DOMException('Download aborted', 'AbortError')
         const stopId = tour.stopIds[index]
         waypoints.push(await fetchWaypointById(stopId))
-        onProgress?.(
+        reportProgress(
           createProgressPayload(tourId, 'metadata', index + 1, tour.stopIds.length, {
             label: `Loaded ${stopId}`,
           })
@@ -109,7 +117,7 @@ export async function downloadTourAssets(tourId, options = {}) {
         }
 
         completedAssets += 1
-        onProgress?.(
+        reportProgress(
           createProgressPayload(tourId, 'assets', completedAssets, assets.length, {
             label: asset.stopId,
             currentAsset: asset.field,
@@ -144,7 +152,7 @@ export async function downloadTourAssets(tourId, options = {}) {
         error: null,
       })
 
-      onProgress?.(
+      reportProgress(
         createProgressPayload(tourId, 'complete', assets.length, assets.length, {
           label: 'Download complete',
         })
@@ -181,6 +189,7 @@ export async function downloadTourAssets(tourId, options = {}) {
   activeDownloads.set(tourId, {
     promise: downloadPromise,
     abort: () => controller.abort(),
+    progress: null,
   })
 
   return downloadPromise

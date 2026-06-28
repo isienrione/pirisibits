@@ -520,6 +520,7 @@ function App() {
       {activeTab === NAV_TABS.SETTINGS ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <SettingsView
+            tour={singleWaypointId ? null : tour}
             locationStatus={locationStatus}
             journeyState={session.state}
             distance={session.distance}

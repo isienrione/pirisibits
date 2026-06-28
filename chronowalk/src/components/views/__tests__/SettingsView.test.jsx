@@ -2,11 +2,35 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import SettingsView from '../SettingsView'
 import { JOURNEY_STATE } from '../../../hooks/useGeoLocation'
+import { ROME_CORE_TOUR } from '../../../data/rome-core-tour'
+
+vi.mock('../../offline/OfflineDownloadPanel', () => ({
+  default: ({ tour }) => (tour ? <div>Offline download panel for {tour.title}</div> : null),
+}))
 
 describe('SettingsView', () => {
+  it('renders offline download controls when a tour is available', () => {
+    render(
+      <SettingsView
+        tour={ROME_CORE_TOUR}
+        locationStatus="granted"
+        journeyState={JOURNEY_STATE.TRANSIT}
+        distance={180}
+        audioEnabled
+        onAudioEnabledChange={vi.fn()}
+        debugMapEnabled={false}
+        onDebugMapEnabledChange={vi.fn()}
+        onRetryLocation={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText(/offline download panel for heart of ancient rome/i)).toBeInTheDocument()
+  })
+
   it('renders location, audio, reduced motion, and debug settings', () => {
     render(
       <SettingsView
+        tour={ROME_CORE_TOUR}
         locationStatus="granted"
         journeyState={JOURNEY_STATE.TRANSIT}
         distance={180}
@@ -30,6 +54,7 @@ describe('SettingsView', () => {
     const onAudioEnabledChange = vi.fn()
     render(
       <SettingsView
+        tour={ROME_CORE_TOUR}
         locationStatus="waiting"
         journeyState={JOURNEY_STATE.TRANSIT}
         distance={null}

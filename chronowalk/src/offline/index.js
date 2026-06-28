@@ -18,6 +18,14 @@ export {
 } from './offlineRecords'
 
 export {
+  estimateAssetBytes,
+  estimateManifestBytes,
+  estimateTourDownloadSize,
+  estimateTourDownloadSizeById,
+  formatDownloadSize,
+} from './estimateDownloadSize'
+
+export {
   STORES,
   AUDIO_ASSET_FIELDS,
   IMAGE_ASSET_FIELDS,

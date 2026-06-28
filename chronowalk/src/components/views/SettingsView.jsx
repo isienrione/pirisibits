@@ -10,6 +10,7 @@ import {
   cn,
 } from '../ui'
 import LocationNotice from '../LocationNotice'
+import OfflineDownloadPanel from '../offline/OfflineDownloadPanel'
 
 function SettingsGroup({ title, children, className }) {
   return (
@@ -42,6 +43,7 @@ function SettingRow({ title, description, children, last = false }) {
 }
 
 function SettingsView({
+  tour,
   locationStatus,
   journeyState,
   distance,
@@ -114,6 +116,11 @@ function SettingsView({
           />
         </SettingRow>
       </SettingsGroup>
+
+      <section className="mt-6">
+        <p className="mb-3 text-eyebrow uppercase text-terracotta">Offline</p>
+        {tour ? <OfflineDownloadPanel tour={tour} /> : null}
+      </section>
 
       <SettingsGroup title="Accessibility">
         <SettingRow
