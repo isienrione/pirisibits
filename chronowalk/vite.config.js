@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import { execSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 function resolveBuildId() {
   if (process.env.VITE_BUILD_ID) return process.env.VITE_BUILD_ID
@@ -13,9 +15,97 @@ function resolveBuildId() {
   }
 }
 
+const pwaRegisterMock = fileURLToPath(new URL('./src/test/mocks/pwa-register.js', import.meta.url))
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'prompt',
+      includeAssets: ['favicon.svg', 'offline.html', 'tour-hero.jpg'],
+      manifest: {
+        name: 'ChronoWalk',
+        short_name: 'ChronoWalk',
+        description:
+          'GPS-guided walking tours of Rome with place-aware audio and historical reveals.',
+        theme_color: '#FFFDF8',
+        background_color: '#FFFDF8',
+        display: 'standalone',
+        orientation: 'portrait',
+        scope: '/',
+        start_url: '/',
+        icons: [
+          {
+            src: 'favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
+            src: 'favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        cleanupOutdatedCaches: true,
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],
+        globIgnores: ['**/waypoints/**'],
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/offline\.html$/],
+        runtimeCaching: [
+          {
+            urlPattern: ({ sameOrigin, url }) =>
+              sameOrigin &&
+              /\.(?:png|jpg|jpeg|svg|gif|webp|mp3|mp4|woff2?)$/i.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'chronowalk-static-assets',
+              expiration: {
+                maxEntries: 120,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'chronowalk-google-fonts-stylesheets',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'chronowalk-google-fonts-webfonts',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/api\.mapbox\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+        ],
+      },
+      devOptions: {
+        enabled: false,
+      },
+    }),
+  ],
   define: {
     __APP_BUILD_ID__: JSON.stringify(resolveBuildId()),
   },
@@ -45,5 +135,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.js',
+    alias: {
+      'virtual:pwa-register': pwaRegisterMock,
+    },
   },
 })

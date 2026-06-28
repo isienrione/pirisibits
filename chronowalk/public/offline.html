@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#FFFDF8" />
+    <title>ChronoWalk — Offline</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --warm-white: #fffdf8;
+        --sand: #f4e7d0;
+        --deep-slate: #17212b;
+        --soft-slate: #51606f;
+        --terracotta: #c8643c;
+        --gold: #d9a441;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem max(1.5rem, env(safe-area-inset-bottom));
+        font-family: 'DM Sans', system-ui, sans-serif;
+        background: linear-gradient(180deg, var(--warm-white) 0%, rgba(244, 231, 208, 0.35) 100%);
+        color: var(--deep-slate);
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      main {
+        width: min(28rem, 100%);
+        border: 1px solid rgba(231, 215, 189, 0.8);
+        border-radius: 1.5rem;
+        background: rgba(255, 253, 248, 0.94);
+        box-shadow: 0 10px 36px rgba(23, 33, 43, 0.11);
+        padding: 2rem 1.75rem;
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin: 0;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--terracotta);
+      }
+
+      h1 {
+        margin: 0.75rem 0 0;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1.75rem;
+        line-height: 1.2;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 1rem 0 0;
+        color: var(--soft-slate);
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      button {
+        margin-top: 1.5rem;
+        width: 100%;
+        min-height: 2.75rem;
+        border: 0;
+        border-radius: 999px;
+        background: var(--terracotta);
+        color: var(--warm-white);
+        font: inherit;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:focus-visible {
+        outline: 2px solid rgba(217, 164, 65, 0.6);
+        outline-offset: 2px;
+      }
+
+      .status {
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        color: var(--gold);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">ChronoWalk</p>
+      <h1>You are offline</h1>
+      <p>
+        The connection dropped, but your tour shell is still available. Reconnect to load map tiles,
+        fresh directions, and any media you have not opened yet.
+      </p>
+      <button type="button" id="retry">Try again</button>
+      <p class="status" id="status" hidden>Back online — reopening ChronoWalk…</p>
+    </main>
+    <script>
+      const retryButton = document.getElementById('retry')
+      const status = document.getElementById('status')
+
+      retryButton.addEventListener('click', () => {
+        window.location.replace('/')
+      })
+
+      window.addEventListener('online', () => {
+        status.hidden = false
+        window.setTimeout(() => window.location.replace('/'), 600)
+      })
+    </script>
+  </body>
+</html>

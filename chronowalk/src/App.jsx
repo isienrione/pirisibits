@@ -16,6 +16,7 @@ import { isAtWaypoint } from './utils/waypointProximity'
 import { getWaypointGeo } from './data/waypointGeo'
 import { LoadingPanel } from './components/ui'
 import { ConfirmDialog } from './components/ui/ConfirmDialog'
+import PwaUpdatePrompt from './components/PwaUpdatePrompt'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
@@ -592,6 +593,8 @@ function App() {
         onConfirm={handleConfirmStopOpen}
         onCancel={() => setStopOpenPrompt(null)}
       />
+
+      <PwaUpdatePrompt />
     </div>
   )
 }
