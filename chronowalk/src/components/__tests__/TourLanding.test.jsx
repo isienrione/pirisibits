@@ -42,6 +42,20 @@ describe('TourLanding', () => {
     expect(screen.getByRole('button', { name: /buy \$15/i })).toBeInTheDocument()
   })
 
+  it('shows add to home screen install panel', () => {
+    render(
+      <TourLanding
+        ownedTourIds={[]}
+        ownsAllTours={false}
+        onPurchaseProduct={vi.fn()}
+        onStartTour={vi.fn()}
+        onTryFreePreview={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText(/add chronowalk to your home screen/i)).toBeInTheDocument()
+  })
+
   it('starts selected tour when owned', () => {
     const onStartTour = vi.fn()
     render(
