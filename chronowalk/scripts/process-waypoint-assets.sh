@@ -20,6 +20,9 @@ POSTER_SEC="${POSTER_SEC:-3}"
 SWAP_RUNWAY="${SWAP_RUNWAY:-0}"
 
 incoming_sync_canonical_names "$ROOT/public/waypoints" "$WAYPOINT_ID" 2>/dev/null || true
+if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
+  incoming_migrate_legacy_colosseum "$ROOT/public/waypoints"
+fi
 
 mkdir -p "$INCOMING"
 
@@ -39,24 +42,28 @@ find_source() {
   fi
 
   local found=""
-  if [[ "$kind" == "ancient" ]]; then
-    for pattern in ancient-source.mp4 '*Ancient*.mp4' '*ancient*.mp4'; do
-      for candidate in "$INCOMING"/$pattern; do
-        [[ -f "$candidate" ]] || continue
-        found="$candidate"
-        break 2
+  local search_dir=""
+  for search_dir in "$INCOMING" "$ROOT/public/waypoints/$WAYPOINT_ID/incoming"; do
+    [[ -d "$search_dir" ]] || continue
+    if [[ "$kind" == "ancient" ]]; then
+      for pattern in ancient-source.mp4 '*Ancient*.mp4' '*ancient*.mp4'; do
+        for candidate in "$search_dir"/$pattern; do
+          [[ -f "$candidate" ]] || continue
+          found="$candidate"
+          break 3
+        done
       done
-    done
-  else
-    for pattern in modern-source.mp4 'now_from_that*.mp4' '*modern*.mp4'; do
-      for candidate in "$INCOMING"/$pattern; do
-        [[ -f "$candidate" ]] || continue
-        [[ "$candidate" == *ancient* || "$candidate" == *Ancient* ]] && continue
-        found="$candidate"
-        break 2
+    else
+      for pattern in modern-source.mp4 'now_from_that*.mp4' '*modern*.mp4'; do
+        for candidate in "$search_dir"/$pattern; do
+          [[ -f "$candidate" ]] || continue
+          [[ "$candidate" == *ancient* || "$candidate" == *Ancient* ]] && continue
+          found="$candidate"
+          break 3
+        done
       done
-    done
-  fi
+    fi
+  done
 
   printf '%s' "$found"
 }
@@ -178,13 +185,33 @@ require_ffmpeg
 ANCIENT_SRC="$(find_source ancient)"
 MODERN_SRC="$(find_source modern)"
 
+if [[ -z "$MODERN_SRC" && -f "$WAYPOINT_DIR/modern.mp4" ]]; then
+  MODERN_SRC="$WAYPOINT_DIR/modern.mp4"
+  echo "Using existing deliverable: $WAYPOINT_DIR/modern.mp4"
+fi
+if [[ -z "$ANCIENT_SRC" && -f "$WAYPOINT_DIR/ancient-reconstruction.mp4" ]]; then
+  ANCIENT_SRC="$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  echo "Using existing deliverable: $WAYPOINT_DIR/ancient-reconstruction.mp4"
+fi
+
 if [[ -z "$ANCIENT_SRC" || -z "$MODERN_SRC" ]]; then
+  LEGACY_INCOMING="$ROOT/public/waypoints/$WAYPOINT_ID/incoming"
   cat >&2 <<EOF
-Missing source videos in $INCOMING
+Missing source videos for $WAYPOINT_ID.
+
+Looked in:
+  - $INCOMING
+  - $LEGACY_INCOMING
+
+Drop files here (Colosseum uses exterior/incoming):
+  $( [[ "$WAYPOINT_ID" == "colosseum" ]] && echo "  public/waypoints/colosseum/exterior/incoming/" )
 
 Expected (one file per row):
   Ancient era: ancient-source.mp4  OR  *Ancient*.mp4
   Modern era:  modern-source.mp4   OR  now_from_that*.mp4
+
+To update only the ancient clip, keep modern-source.mp4 out of incoming —
+the script will reuse the existing modern.mp4 in $WAYPOINT_DIR.
 
 Default mapping (name = content):
   ancient-source  →  ancient-reconstruction.mp4
@@ -203,12 +230,28 @@ echo "Modern-era source:  $MODERN_SRC"
 
 if [[ "$SWAP_RUNWAY" == "1" ]]; then
   echo "Mapping: SWAP_RUNWAY=1 (ancient-tagged file → modern.mp4, modern-tagged → ancient)"
-  encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
-  encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  if [[ "$ANCIENT_SRC" != "$WAYPOINT_DIR/modern.mp4" ]]; then
+    encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
+  else
+    echo "  modern.mp4: unchanged (already the deliverable)"
+  fi
+  if [[ "$MODERN_SRC" != "$WAYPOINT_DIR/ancient-reconstruction.mp4" ]]; then
+    encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  else
+    echo "  ancient-reconstruction.mp4: unchanged (already the deliverable)"
+  fi
 else
   echo "Mapping: literal (ancient → ancient-reconstruction.mp4, modern → modern.mp4)"
-  encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
-  encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  if [[ "$MODERN_SRC" != "$WAYPOINT_DIR/modern.mp4" ]]; then
+    encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
+  else
+    echo "  modern.mp4: unchanged (already the deliverable)"
+  fi
+  if [[ "$ANCIENT_SRC" != "$WAYPOINT_DIR/ancient-reconstruction.mp4" ]]; then
+    encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/ancient-reconstruction.mp4"
+  else
+    echo "  ancient-reconstruction.mp4: unchanged (already the deliverable)"
+  fi
 fi
 
 ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \

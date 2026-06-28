@@ -29,9 +29,10 @@ waypoint_incoming_dirs_for() {
   aliases="$(incoming_aliases_for "$id")"
 
   for alias in $id $aliases; do
-    local base
-    base="$(waypoint_deliverable_dir "$wp" "$alias")"
-    for dir in "$base/incoming" "$wp/$alias/incoming"; do
+    local base deliverable
+    base="$wp/$alias"
+    deliverable="$(waypoint_deliverable_dir "$wp" "$alias")"
+    for dir in "$deliverable/incoming" "$base/incoming"; do
       [[ -d "$dir" ]] || continue
       local real
       real="$(cd "$dir" && pwd -P)"
@@ -42,6 +43,34 @@ waypoint_incoming_dirs_for() {
       printf '%s\0' "$dir"
     done
   done
+}
+
+# Colosseum: migrate legacy root incoming/ → exterior/incoming/ when present.
+incoming_migrate_legacy_colosseum() {
+  local wp="$1"
+  local legacy="$wp/colosseum/incoming"
+  local target
+  target="$(waypoint_deliverable_dir "$wp" colosseum)/incoming"
+
+  [[ -d "$legacy" ]] || return 0
+  mkdir -p "$target"
+
+  shopt -s nullglob
+  local moved=0
+  for file in "$legacy"/*; do
+    [[ -e "$file" ]] || continue
+    [[ "$(basename "$file")" == README.md ]] && continue
+    local dest="$target/$(basename "$file")"
+    if [[ ! -e "$dest" ]]; then
+      cp -f "$file" "$dest"
+      echo "   → migrated $(basename "$file") from colosseum/incoming to exterior/incoming"
+      moved=1
+    fi
+  done
+
+  if [[ "$moved" == 1 ]]; then
+    echo "   (legacy folder kept: $legacy)"
+  fi
 }
 
 incoming_classify_mp4() {
