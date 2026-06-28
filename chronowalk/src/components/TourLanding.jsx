@@ -3,6 +3,7 @@ import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { Button, GlassPanel } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
+import TourIntroScreen from './TourIntroScreen'
 import TourCatalog, {
   getDefaultSelectableTourId,
   resolveActiveTour,
@@ -11,9 +12,6 @@ import TourCatalog, {
 const APP_NAME = 'ChronoWalk'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
 
-const VALUE_PROPOSITION =
-  'Walk through Rome with place-aware audio, guided stories, and visual reconstructions of the ancient city.'
-
 function TourLanding({
   singleWaypointId,
   initialTourId,
@@ -21,11 +19,20 @@ function TourLanding({
   ownsAllTours,
   onPurchaseProduct,
   onStartTour,
+  onTryFreePreview,
 }) {
+  const hasOwnedTours = ownsAllTours || ownedTourIds.length > 0
+  const [screen, setScreen] = useState(() => (hasOwnedTours ? 'catalog' : 'intro'))
   const [selectedTourId, setSelectedTourId] = useState(
     () => initialTourId ?? getDefaultSelectableTourId(ownedTourIds, ownsAllTours)
   )
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
+
+  useEffect(() => {
+    if (hasOwnedTours) {
+      setScreen('catalog')
+    }
+  }, [hasOwnedTours])
 
   useEffect(() => {
     if (initialTourId && (ownsAllTours || ownedTourIds.includes(initialTourId))) {
@@ -37,8 +44,6 @@ function TourLanding({
     () => resolveActiveTour(selectedTourId, ownedTourIds, ownsAllTours),
     [selectedTourId, ownedTourIds, ownsAllTours]
   )
-
-  const canStart = Boolean(activeTour)
 
   const handlePurchase = (productId) => {
     const result = onPurchaseProduct(productId)
@@ -58,6 +63,18 @@ function TourLanding({
 
   if (singleWaypointId) {
     return null
+  }
+
+  if (screen === 'intro') {
+    return (
+      <TourIntroScreen
+        onTryFreePreview={onTryFreePreview}
+        onViewTours={() => {
+          triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+          setScreen('catalog')
+        }}
+      />
+    )
   }
 
   return (
@@ -84,11 +101,28 @@ function TourLanding({
         <div className="h-[min(34vh,14rem)] shrink-0 sm:h-[min(38vh,16rem)]" aria-hidden="true" />
 
         <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
+          {!hasOwnedTours ? (
+            <button
+              type="button"
+              className="mb-4 text-sm font-semibold text-terracotta underline-offset-2 hover:underline"
+              onClick={() => {
+                triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+                setScreen('intro')
+              }}
+            >
+              ← About ChronoWalk
+            </button>
+          ) : null}
+
           <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
           <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl">
-            Rome walking tours
+            {hasOwnedTours ? 'Your Rome walking tours' : 'Choose your tour'}
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-soft-slate">{VALUE_PROPOSITION}</p>
+          <p className="mt-4 text-base leading-relaxed text-soft-slate">
+            {hasOwnedTours
+              ? 'Pick up where you left off or switch between your purchased routes.'
+              : 'Self-guided audio walks at your own pace — buy one route or unlock both with the bundle.'}
+          </p>
 
           <div className="mt-8">
             <TourCatalog
@@ -135,8 +169,8 @@ function TourLanding({
             </div>
           ) : (
             <p className="mt-8 rounded-2xl border border-limestone/70 bg-sand/40 px-4 py-3 text-sm text-soft-slate">
-              Purchase a tour above to begin. Own both routes with the Complete Rome bundle and
-              switch between them anytime from this screen.
+              Purchase a tour above to begin. The Complete Rome bundle unlocks both routes — walk
+              them in an afternoon each or spread across different days.
             </p>
           )}
         </GlassPanel>

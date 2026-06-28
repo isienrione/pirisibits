@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatUsd, getTourIdsForProduct, TOUR_PRODUCTS } from '../tourProducts'
+import { formatUsd, getTourIdsForProduct, TOUR_PRODUCT_LIST, TOUR_PRODUCTS } from '../tourProducts'
 
 describe('tourProducts', () => {
   it('names the two purchasable tours correctly', () => {
@@ -21,6 +21,12 @@ describe('tourProducts', () => {
       'heart-of-ancient-rome',
       'roman-forum',
     ])
+  })
+
+  it('lists the bundle before individual tours', () => {
+    expect(TOUR_PRODUCT_LIST[0].id).toBe('rome-complete')
+    expect(TOUR_PRODUCT_LIST[1].id).toBe('roman-forum')
+    expect(TOUR_PRODUCT_LIST[2].id).toBe('heart-of-ancient-rome')
   })
 
   it('formats whole-dollar prices', () => {

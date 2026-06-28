@@ -28,6 +28,7 @@ import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
 import { useCelebrationHaptic, useLocationHaptics } from './hooks/useHapticTriggers'
 import { HAPTIC_KIND, triggerHaptic } from './utils/haptics'
 import { CARD_REVEAL_DELAY_MS } from './data/colosseum'
+import { FREE_PREVIEW_STOP_ID } from './data/freePreview'
 import { useTourEntitlements } from './hooks/useTourEntitlements'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
@@ -63,14 +64,16 @@ function App() {
   const assetStudio = isAssetStudio()
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
+  const [freePreviewStopId, setFreePreviewStopId] = useState(null)
+  const isolatedWaypointId = singleWaypointId || freePreviewStopId
   const entitlements = useTourEntitlements()
   const [activeTour, setActiveTour] = useState(null)
   const tour = useMemo(() => {
     if (activeTour) return activeTour
-    if (singleWaypointId) return ROME_CORE_TOUR
+    if (isolatedWaypointId) return ROME_CORE_TOUR
     if (tourId) return getTourById(tourId) ?? null
     return null
-  }, [activeTour, singleWaypointId, tourId])
+  }, [activeTour, isolatedWaypointId, tourId])
   const assetStudioWaypointId = getAssetStudioWaypointId()
   const [mapRetryKey, setMapRetryKey] = useState(0)
   const [mapFocusTarget, setMapFocusTarget] = useState(null)
@@ -92,11 +95,12 @@ function App() {
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
+  const freePreviewOpenedRef = useRef(false)
   const { isOffline } = useNetworkStatus()
 
   const session = useTourSession({
-    tour: singleWaypointId ? null : tour,
-    singleWaypointId,
+    tour: isolatedWaypointId ? null : tour,
+    singleWaypointId: isolatedWaypointId,
     hasInteracted,
   })
 
@@ -204,14 +208,32 @@ function App() {
       }
 
       setLiveAnnouncement(
-        accessMode === 'remote'
-          ? `Opened ${waypoint.title} for remote preview.`
-          : `Opened ${waypoint.title}.`
+        accessMode === 'freeSample'
+          ? `Free preview: ${waypoint.title}. Reconstruction and intro audio are ready.`
+          : accessMode === 'remote'
+            ? `Opened ${waypoint.title} for remote preview.`
+            : `Opened ${waypoint.title}.`
       )
       triggerHaptic(HAPTIC_KIND.SELECTION)
     },
     [session.waypointsById]
   )
+
+  useEffect(() => {
+    if (!freePreviewStopId || session.loading) return undefined
+    const waypoint = session.waypointsById[freePreviewStopId]
+    if (!waypoint || freePreviewOpenedRef.current) return undefined
+
+    freePreviewOpenedRef.current = true
+    openWaypointCard(freePreviewStopId, 'freeSample')
+    return undefined
+  }, [freePreviewStopId, session.loading, session.waypointsById, openWaypointCard])
+
+  useEffect(() => {
+    if (!freePreviewStopId) {
+      freePreviewOpenedRef.current = false
+    }
+  }, [freePreviewStopId])
 
   const handleOpenStop = useCallback(
     (stopId) => {
@@ -255,6 +277,7 @@ function App() {
     if (selectedTour) {
       setActiveTour(selectedTour)
     }
+    setFreePreviewStopId(null)
     await requestDeviceTiltPermission()
     tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
@@ -262,6 +285,27 @@ function App() {
     setHasInteracted(true)
     setActiveTab(NAV_TABS.TOUR)
   }
+
+  const handleExitFreePreview = useCallback(() => {
+    setFreePreviewStopId(null)
+    setHasInteracted(false)
+    setActiveWaypoint(null)
+    setDiscoveredWaypoint(null)
+    setCardDismissed(false)
+    setWaypointAccessMode('arrival')
+    setFreshDiscoveryId(null)
+    freePreviewOpenedRef.current = false
+    audioOrchestrator.stop()
+  }, [])
+
+  const handleStartFreePreview = useCallback(async () => {
+    setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
+    await requestDeviceTiltPermission()
+    void import('./components/TourMap')
+    void import('./components/WaypointCard')
+    setHasInteracted(true)
+    setActiveTab(NAV_TABS.MAP)
+  }, [])
 
   const openDirections = useCallback((landmark, title, origin = null) => {
     if (!landmark?.lat || !landmark?.lng) return
@@ -398,6 +442,7 @@ function App() {
         ownsAllTours={entitlements.ownsAllTours}
         onPurchaseProduct={entitlements.purchaseProduct}
         onStartTour={handleStartTour}
+        onTryFreePreview={handleStartFreePreview}
       />
     )
   }
@@ -448,7 +493,7 @@ function App() {
             }
           >
             <TourMap
-              tour={singleWaypointId ? null : tour}
+              tour={isolatedWaypointId ? null : tour}
               stops={session.mapStops}
               activeTargetId={session.targetStopId}
               activeLeg={session.activeLeg}
@@ -469,8 +514,8 @@ function App() {
         <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
 
         <TourHud
-          tour={singleWaypointId ? null : tour}
-          currentStopId={session.targetStopId ?? singleWaypointId}
+          tour={isolatedWaypointId ? null : tour}
+          currentStopId={session.targetStopId ?? isolatedWaypointId}
           progress={session.progress}
           targetStopId={session.targetStopId}
           nextWaypoint={session.nextWaypoint}
@@ -515,7 +560,7 @@ function App() {
       {activeTab === NAV_TABS.TOUR ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <TourOverviewView
-            tour={singleWaypointId ? null : tour}
+            tour={isolatedWaypointId ? null : tour}
             progress={session.progress}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
@@ -540,7 +585,7 @@ function App() {
       {activeTab === NAV_TABS.STOPS ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <StopsView
-            tour={singleWaypointId ? null : tour}
+            tour={isolatedWaypointId ? null : tour}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
@@ -565,7 +610,7 @@ function App() {
       {activeTab === NAV_TABS.SETTINGS ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <SettingsView
-            tour={singleWaypointId ? null : tour}
+            tour={isolatedWaypointId ? null : tour}
             locationStatus={locationStatus}
             journeyState={session.state}
             distance={session.distance}
@@ -588,6 +633,8 @@ function App() {
             state={session.state}
             accessMode={waypointAccessMode}
             isFreshArrival={activeWaypoint?.id === freshDiscoveryId && waypointAccessMode === 'arrival'}
+            autoStartExperience={waypointAccessMode === 'freeSample'}
+            onViewTours={freePreviewStopId ? handleExitFreePreview : undefined}
             onClose={() => {
               setActiveWaypoint(null)
               setCardDismissed(true)
@@ -619,7 +666,7 @@ function App() {
 
       {showTourComplete ? (
         <TourCompleteView
-          tour={singleWaypointId ? null : tour}
+          tour={isolatedWaypointId ? null : tour}
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}

@@ -189,7 +189,15 @@ function WaypointCardBody({
   );
 }
 
-const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, accessMode = 'arrival' }) => {
+const WaypointCard = ({
+  waypoint,
+  state,
+  onClose,
+  isFreshArrival = false,
+  accessMode = 'arrival',
+  autoStartExperience = false,
+  onViewTours,
+}) => {
   const titleId = useId();
   const reducedMotion = useReducedMotion();
   const [showImmersiveView, setShowImmersiveView] = useState(false);
@@ -266,8 +274,36 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     return () => window.clearTimeout(timer);
   }, [alignmentMode, reducedMotion]);
 
+  useEffect(() => {
+    if (!waypoint || accessMode !== 'freeSample' || !autoStartExperience) return undefined
+
+    let cancelled = false
+    const timer = window.setTimeout(async () => {
+      if (cancelled || !waypoint.arrival_immersive_url || !hasModernSliderMedia(waypoint)) return
+
+      try {
+        await audioOrchestrator.transitionTo(
+          AUDIO_MODES.ARRIVAL,
+          {
+            transit: waypoint.transit_narrative_url,
+            arrival: waypoint.arrival_immersive_url,
+            ambient: waypoint.ambient_url,
+          },
+          { syncVisual: true }
+        )
+      } catch (err) {
+        console.error('Failed to auto-start free preview:', err)
+      }
+    }, 500)
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [waypoint, accessMode, autoStartExperience])
+
   if (!waypoint) return null;
-  if (accessMode !== 'remote' && state !== JOURNEY_STATE.ARRIVAL) return null;
+  if (accessMode !== 'remote' && accessMode !== 'freeSample' && state !== JOURNEY_STATE.ARRIVAL) return null;
 
   const landmarkTitle = waypoint.title;
   const narrativeHook =
@@ -392,11 +428,13 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       ? usesModernVideo
         ? 'Immersive view'
         : 'Then & now'
-      : accessMode === 'remote'
-        ? 'Remote preview'
-        : isFreshArrival
-          ? 'Waypoint discovered'
-          : "You've arrived";
+      : accessMode === 'freeSample'
+        ? 'Free preview'
+        : accessMode === 'remote'
+          ? 'Remote preview'
+          : isFreshArrival
+            ? 'Waypoint discovered'
+            : "You've arrived";
 
   const advancedSection =
     usesComparisonSlider ? (
@@ -548,7 +586,19 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
           </p>
         ) : null}
 
-        {accessMode === 'remote' ? (
+        {accessMode === 'freeSample' ? (
+          <div className="mt-4 space-y-3">
+            <p className="rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
+              This is your free taste of ChronoWalk — the Colosseum reconstruction and opening audio
+              story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
+            </p>
+            {onViewTours ? (
+              <Button size="lg" fullWidth onClick={onViewTours}>
+                View tours &amp; pricing
+              </Button>
+            ) : null}
+          </div>
+        ) : accessMode === 'remote' ? (
           <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
             You are viewing this landmark remotely. Visit on foot for the full GPS-guided arrival
             experience.

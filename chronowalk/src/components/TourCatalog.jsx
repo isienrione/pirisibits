@@ -158,11 +158,12 @@ function TourCatalog({
       <div>
         <p className="text-eyebrow uppercase text-terracotta">Choose your walk</p>
         <h2 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
-          Roman Forum or Heart of Ancient Rome
+          Self-guided audio tours at your pace
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-          Each tour is a self-contained GPS-guided walk. Buy one for {formatUsd(10)}, or unlock both
-          for {formatUsd(15)}.
+          Detailed, entertaining walks you can finish in a few hours or spread across different days.
+          ChronoWalk stays with you as an expert companion — context, stories, and reconstructions at
+          every stop. Start with the Complete Rome bundle, or buy a single route for {formatUsd(10)}.
         </p>
       </div>
 

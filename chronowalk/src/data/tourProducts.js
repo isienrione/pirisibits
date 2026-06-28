@@ -42,9 +42,9 @@ export const TOUR_PRODUCTS = {
 }
 
 export const TOUR_PRODUCT_LIST = [
+  TOUR_PRODUCTS['rome-complete'],
   TOUR_PRODUCTS['roman-forum'],
   TOUR_PRODUCTS['heart-of-ancient-rome'],
-  TOUR_PRODUCTS['rome-complete'],
 ]
 
 export const getTourProduct = (productId) => TOUR_PRODUCTS[productId] ?? null
