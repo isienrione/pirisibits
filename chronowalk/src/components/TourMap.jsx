@@ -1,13 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
-import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalkingRoute'
+import {
+  fetchTourWalkingRoute,
+  fetchWalkingDirections,
+} from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-import { Button, LoadingPanel } from './ui'
+import {
+  cacheLegDirections,
+  cacheLegRoute,
+  cacheTourRoute,
+} from '../utils/routeGeometryCache'
+import OfflineRouteMap from './map/OfflineRouteMap'
+import { LoadingPanel } from './ui'
 
 const mapboxToken = env.mapboxToken
 
@@ -20,19 +29,6 @@ const MAP_COLORS = {
 }
 
 const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
-
-const OFFLINE_MAP_STYLE = {
-  version: 8,
-  name: 'ChronoWalk Offline',
-  sources: {},
-  layers: [
-    {
-      id: 'background',
-      type: 'background',
-      paint: { 'background-color': '#F7F3EC' },
-    },
-  ],
-}
 
 function setupMapLayers(map, { stops, tour, bounds }) {
   if (!map.getSource('waypoint-zones')) {
@@ -123,17 +119,6 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       { padding: 56, maxZoom: 15, duration: 0 }
     )
   }
-}
-
-function OfflineMapNotice() {
-  return (
-    <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,18rem)]">
-      <div className="rounded-2xl border border-limestone/70 bg-warm-white/92 px-3 py-2 text-xs leading-relaxed text-soft-slate shadow-sm backdrop-blur-sm">
-        Offline map view — landmarks and GPS guidance remain active. Detailed street tiles need
-        internet.
-      </div>
-    </div>
-  )
 }
 
 const createLandmarkMarkerElement = (title, status) => {
@@ -244,9 +229,9 @@ function MapDebugOverlay({
   )
 }
 
-const TourMap = ({
+function TourMapboxView({
   tour,
-  stops = [],
+  stops,
   activeTargetId,
   activeLeg,
   transitLegActive,
@@ -254,53 +239,23 @@ const TourMap = ({
   userPos,
   state,
   distance,
-  arrivalPulseActive = false,
-  debugMapEnabled = false,
-  focusTarget = null,
-  isOffline = false,
-}) => {
+  arrivalPulseActive,
+  debugMapEnabled,
+  focusTarget,
+  onMapFailure,
+}) {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
-  const offlineMapModeRef = useRef(isOffline)
   const [mapLoaded, setMapLoaded] = useState(false)
-  const [mapError, setMapError] = useState(null)
-  const [offlineMapMode, setOfflineMapMode] = useState(isOffline)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
-  const useOfflineStyle = offlineMapMode || isOffline
-
-  useEffect(() => {
-    offlineMapModeRef.current = useOfflineStyle
-  }, [useOfflineStyle])
-
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
-  const stopsRef = useRef(stops)
-  stopsRef.current = stops
-
-  const activateOfflineMap = useCallback(() => {
-    if (!map.current || offlineMapModeRef.current) return
-
-    offlineMapModeRef.current = true
-    setOfflineMapMode(true)
-
-    const bounds = tour ? getTourBounds(tour) : null
-    map.current.once('style.load', () => {
-      setupMapLayers(map.current, { stops: stopsRef.current, tour, bounds })
-      setMapLoaded(true)
-    })
-    map.current.setStyle(OFFLINE_MAP_STYLE)
-  }, [tour])
-
-  const activateOfflineMapRef = useRef(activateOfflineMap)
-  activateOfflineMapRef.current = activateOfflineMap
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
-
-    setMapError(null)
 
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
@@ -310,21 +265,19 @@ const TourMap = ({
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: useOfflineStyle ? OFFLINE_MAP_STYLE : MAP_STYLE,
+        style: MAP_STYLE,
         center: [center.lng, center.lat],
         zoom: tour?.mapZoom ?? 14,
       })
     } catch (error) {
       console.error('Mapbox initialization failed:', error)
-      setMapError('Could not initialize the map. Verify your Mapbox token and try again.')
+      onMapFailure?.()
       return undefined
     }
 
     map.current.on('error', (event) => {
       console.warn('Mapbox runtime error:', event?.error ?? event)
-      if (!offlineMapModeRef.current) {
-        activateOfflineMapRef.current()
-      }
+      onMapFailure?.()
     })
 
     map.current.on('load', () => {
@@ -334,22 +287,13 @@ const TourMap = ({
 
     return () => {
       setMapLoaded(false)
-      setMapError(null)
-      setOfflineMapMode(isOffline)
-      offlineMapModeRef.current = isOffline
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
       map.current?.remove()
       map.current = null
     }
-  }, [tour?.id, isOffline])
-
-  useEffect(() => {
-    if (isOffline && map.current && !offlineMapModeRef.current) {
-      activateOfflineMapRef.current()
-    }
-  }, [isOffline])
+  }, [tour?.id, onMapFailure])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -375,7 +319,7 @@ const TourMap = ({
   }, [stops, mapLoaded])
 
   useEffect(() => {
-    if (!map.current || !mapLoaded || !mapboxToken || useOfflineStyle) return undefined
+    if (!map.current || !mapLoaded || !mapboxToken) return undefined
 
     let cancelled = false
 
@@ -389,6 +333,8 @@ const TourMap = ({
       const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
       if (cancelled || !fullRoute) return
 
+      cacheTourRoute(tour.id, fullRoute)
+
       map.current.getSource('tour-route')?.setData({
         type: 'FeatureCollection',
         features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
@@ -397,13 +343,19 @@ const TourMap = ({
       if (activeLeg && transitLegActive) {
         const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
         const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
-        const legRoute = from && to ? await fetchWalkingRoute(from, to, mapboxToken) : null
 
-        if (!cancelled && legRoute) {
-          map.current.getSource('active-leg-route')?.setData({
-            type: 'FeatureCollection',
-            features: [{ type: 'Feature', geometry: legRoute, properties: {} }],
-          })
+        if (from && to) {
+          const directions = await fetchWalkingDirections(from, to, mapboxToken)
+
+          if (!cancelled && directions?.geometry) {
+            cacheLegRoute(tour.id, activeLeg.fromId, activeLeg.toId, directions.geometry)
+            cacheLegDirections(tour.id, activeLeg.fromId, activeLeg.toId, directions.steps)
+
+            map.current.getSource('active-leg-route')?.setData({
+              type: 'FeatureCollection',
+              features: [{ type: 'Feature', geometry: directions.geometry, properties: {} }],
+            })
+          }
         }
       } else {
         map.current.getSource('active-leg-route')?.setData({
@@ -418,7 +370,7 @@ const TourMap = ({
     return () => {
       cancelled = true
     }
-  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, useOfflineStyle])
+  }, [tour, stops, activeLeg, transitLegActive, mapLoaded])
 
   useEffect(() => {
     if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
@@ -474,35 +426,6 @@ const TourMap = ({
     })
   }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
-  if (!isMapboxConfigured()) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md">
-          <p className="font-display text-xl font-semibold">Mapbox token required</p>
-          <p className="mt-2 text-sm text-soft-slate">
-            Add <code className="rounded bg-sand px-2 py-1">VITE_MAPBOX_TOKEN</code> to{' '}
-            <code className="rounded bg-sand px-1">chronowalk/.env</code> and restart the dev
-            server.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  if (mapError) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-warm-white p-6 text-center text-deep-slate">
-        <div className="max-w-md rounded-3xl border border-limestone/70 bg-warm-white p-6 shadow-glass">
-          <p className="font-display text-xl font-semibold">Map unavailable</p>
-          <p className="mt-2 text-sm text-soft-slate">{mapError}</p>
-          <Button className="mt-5 rounded-2xl" onClick={() => window.location.reload()}>
-            Reload app
-          </Button>
-        </div>
-      </div>
-    )
-  }
-
   const activeTitle = activeTarget?.title ?? 'waypoint'
 
   return (
@@ -519,7 +442,6 @@ const TourMap = ({
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
-      {useOfflineStyle ? <OfflineMapNotice /> : null}
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}
@@ -533,6 +455,63 @@ const TourMap = ({
         />
       ) : null}
     </div>
+  )
+}
+
+const TourMap = ({
+  tour,
+  stops = [],
+  activeTargetId,
+  activeLeg,
+  transitLegActive,
+  geofenceThresholdM,
+  userPos,
+  state,
+  distance,
+  arrivalPulseActive = false,
+  debugMapEnabled = false,
+  focusTarget = null,
+  isOffline = false,
+  awaitingFirstStop = false,
+}) => {
+  const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
+
+  useEffect(() => {
+    if (isOffline) setOfflineMapMode(true)
+  }, [isOffline])
+
+  if (offlineMapMode) {
+    return (
+      <OfflineRouteMap
+        tour={tour}
+        stops={stops}
+        activeTargetId={activeTargetId}
+        activeLeg={activeLeg}
+        transitLegActive={transitLegActive}
+        userPos={userPos}
+        state={state}
+        distance={distance}
+        awaitingFirstStop={awaitingFirstStop}
+      />
+    )
+  }
+
+  return (
+    <TourMapboxView
+      tour={tour}
+      stops={stops}
+      activeTargetId={activeTargetId}
+      activeLeg={activeLeg}
+      transitLegActive={transitLegActive}
+      geofenceThresholdM={geofenceThresholdM}
+      userPos={userPos}
+      state={state}
+      distance={distance}
+      arrivalPulseActive={arrivalPulseActive}
+      debugMapEnabled={debugMapEnabled}
+      focusTarget={focusTarget}
+      onMapFailure={() => setOfflineMapMode(true)}
+    />
   )
 }
 

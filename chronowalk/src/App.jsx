@@ -427,6 +427,7 @@ function App() {
               debugMapEnabled={debugMapEnabled}
               focusTarget={mapFocusTarget}
               isOffline={isOffline}
+              awaitingFirstStop={session.isAwaitingFirstStop}
             />
           </Suspense>
         </ErrorBoundary>
