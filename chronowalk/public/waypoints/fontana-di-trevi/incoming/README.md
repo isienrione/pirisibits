@@ -12,10 +12,25 @@ This stop uses **modern video only** (no ancient reconstruction slider).
 | `geocache-arrival-alert.wav` | Arrival chime |
 | `Audio_sample.mp3` | Placeholder narration until final mix |
 
-Drop source exports here, then run:
+Drop **one** modern source file here (no ancient clip for this stop):
+
+| File | Maps to |
+|------|---------|
+| `modern-source.mp4` | `../modern.mp4` |
+
+Also accepted: `now_from_that*.mp4`, `*modern*.mp4`
+
+Then run:
 
 ```bash
 npm run process-waypoint -- fontana-di-trevi
+```
+
+**Quick path** (already-encoded video, skip ffmpeg):
+
+```bash
+cp public/waypoints/fontana-di-trevi/local-backup/modern.mp4 public/waypoints/fontana-di-trevi/
+cp public/waypoints/fontana-di-trevi/local-backup/modern-exterior.jpg public/waypoints/fontana-di-trevi/
 ```
 
 Seed: `src/data/fontana-di-trevi.js`

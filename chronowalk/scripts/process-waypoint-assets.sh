@@ -30,6 +30,13 @@ find_source() {
   local kind="$1"
   local pair modern ancient
 
+  if waypoint_is_modern_video_only "$WAYPOINT_ID" && [[ "$kind" == "modern" ]]; then
+    if modern="$(incoming_find_modern_for_waypoint "$ROOT/public/waypoints" "$WAYPOINT_ID")"; then
+      printf '%s' "$modern"
+      return 0
+    fi
+  fi
+
   if pair="$(incoming_find_pair_for_waypoint "$ROOT/public/waypoints" "$WAYPOINT_ID")"; then
     modern="${pair%%|*}"
     ancient="${pair#*|}"
@@ -184,6 +191,10 @@ require_ffmpeg
 
 ANCIENT_SRC="$(find_source ancient)"
 MODERN_SRC="$(find_source modern)"
+MODERN_ONLY=0
+if waypoint_is_modern_video_only "$WAYPOINT_ID"; then
+  MODERN_ONLY=1
+fi
 
 if [[ -z "$MODERN_SRC" && -f "$WAYPOINT_DIR/modern.mp4" ]]; then
   MODERN_SRC="$WAYPOINT_DIR/modern.mp4"
@@ -194,7 +205,28 @@ if [[ -z "$ANCIENT_SRC" && -f "$WAYPOINT_DIR/ancient-reconstruction.mp4" ]]; the
   echo "Using existing deliverable: $WAYPOINT_DIR/ancient-reconstruction.mp4"
 fi
 
-if [[ -z "$ANCIENT_SRC" || -z "$MODERN_SRC" ]]; then
+if [[ "$MODERN_ONLY" == "1" ]]; then
+  if [[ -z "$MODERN_SRC" ]]; then
+    cat >&2 <<EOF
+Missing modern source video for $WAYPOINT_ID (modern-video-only stop — no ancient clip needed).
+
+Looked in:
+  - $INCOMING
+
+Drop one file here:
+  public/waypoints/$WAYPOINT_ID/incoming/modern-source.mp4
+
+Also accepted names: now_from_that*.mp4, *modern*.mp4 (not ancient/reconstruction)
+
+Or copy finished deliverables directly (skip ffmpeg):
+  cp public/waypoints/$WAYPOINT_ID/local-backup/modern.mp4 public/waypoints/$WAYPOINT_ID/
+  cp public/waypoints/$WAYPOINT_ID/local-backup/modern-exterior.jpg public/waypoints/$WAYPOINT_ID/
+
+Then run: npm run process-waypoint -- $WAYPOINT_ID
+EOF
+    exit 1
+  fi
+elif [[ -z "$ANCIENT_SRC" || -z "$MODERN_SRC" ]]; then
   LEGACY_INCOMING="$ROOT/public/waypoints/$WAYPOINT_ID/incoming"
   cat >&2 <<EOF
 Missing source videos for $WAYPOINT_ID.
@@ -225,10 +257,26 @@ EOF
 fi
 
 echo "Waypoint: $WAYPOINT_ID"
-echo "Ancient-era source: $ANCIENT_SRC"
+if [[ "$MODERN_ONLY" == "1" ]]; then
+  echo "Mode: modern video only (no ancient reconstruction)"
+fi
+if [[ -n "$ANCIENT_SRC" ]]; then
+  echo "Ancient-era source: $ANCIENT_SRC"
+fi
 echo "Modern-era source:  $MODERN_SRC"
 
-if [[ "$SWAP_RUNWAY" == "1" ]]; then
+if [[ "$MODERN_ONLY" == "1" ]]; then
+  echo "Mapping: modern → modern.mp4"
+  if [[ "$MODERN_SRC" != "$WAYPOINT_DIR/modern.mp4" ]]; then
+    encode_video_16x9 "$MODERN_SRC" "$WAYPOINT_DIR/modern.mp4"
+  else
+    echo "  modern.mp4: unchanged (already the deliverable)"
+  fi
+
+  IFS=' ' read -r POSTER_W POSTER_H <<< "$(poster_dims_from_video "$WAYPOINT_DIR/modern.mp4")"
+  echo "Poster size: ${POSTER_W}x${POSTER_H} at ${POSTER_SEC}s"
+  extract_poster "$WAYPOINT_DIR/modern.mp4" "$WAYPOINT_DIR/modern-poster.jpg" "$POSTER_W" "$POSTER_H"
+elif [[ "$SWAP_RUNWAY" == "1" ]]; then
   echo "Mapping: SWAP_RUNWAY=1 (ancient-tagged file → modern.mp4, modern-tagged → ancient)"
   if [[ "$ANCIENT_SRC" != "$WAYPOINT_DIR/modern.mp4" ]]; then
     encode_video_16x9 "$ANCIENT_SRC" "$WAYPOINT_DIR/modern.mp4"
@@ -254,14 +302,16 @@ else
   fi
 fi
 
-ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \
-  -vf "scale=1280:720" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
+if [[ "$MODERN_ONLY" != "1" ]]; then
+  ffmpeg -y -hide_banner -loglevel error -ss 0 -i "$WAYPOINT_DIR/ancient-reconstruction.mp4" -frames:v 1 -update 1 \
+    -vf "scale=1280:720" -q:v 2 "$WAYPOINT_DIR/ancient-reconstruction.jpg"
 
-IFS=' ' read -r POSTER_W POSTER_H <<< "$(poster_dims_from_video "$WAYPOINT_DIR/modern.mp4")"
-echo "Poster size: ${POSTER_W}x${POSTER_H} at ${POSTER_SEC}s"
+  IFS=' ' read -r POSTER_W POSTER_H <<< "$(poster_dims_from_video "$WAYPOINT_DIR/modern.mp4")"
+  echo "Poster size: ${POSTER_W}x${POSTER_H} at ${POSTER_SEC}s"
 
-extract_poster "$WAYPOINT_DIR/modern.mp4" "$WAYPOINT_DIR/modern-poster.jpg" "$POSTER_W" "$POSTER_H"
-extract_poster "$WAYPOINT_DIR/ancient-reconstruction.mp4" "$WAYPOINT_DIR/ancient-poster.jpg" "$POSTER_W" "$POSTER_H"
+  extract_poster "$WAYPOINT_DIR/modern.mp4" "$WAYPOINT_DIR/modern-poster.jpg" "$POSTER_W" "$POSTER_H"
+  extract_poster "$WAYPOINT_DIR/ancient-reconstruction.mp4" "$WAYPOINT_DIR/ancient-poster.jpg" "$POSTER_W" "$POSTER_H"
+fi
 
 echo ""
 echo "Done. Deliverables in $WAYPOINT_DIR:"
@@ -278,6 +328,6 @@ fi
 
 echo ""
 echo "Verify: npm run verify-waypoint -- $WAYPOINT_ID"
-if [[ "$SWAP_RUNWAY" != "1" ]]; then
+if [[ "$MODERN_ONLY" != "1" && "$SWAP_RUNWAY" != "1" ]]; then
   echo "If modern/ancient look swapped in the app, re-run with SWAP_RUNWAY=1"
 fi
