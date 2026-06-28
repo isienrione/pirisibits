@@ -12,15 +12,26 @@ fi
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
 
-required=(
-  modern-exterior.jpg
-  modern.mp4
-  modern-poster.jpg
-  ancient-reconstruction.mp4
-  ancient-reconstruction.jpg
-  ancient-poster.jpg
-  geocache-arrival-alert.wav
-)
+if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
+  required=(
+    modern-exterior.jpg
+    moderncolosseum.mp4
+    modern-poster.jpg
+    ancient-reconstruction.mp4
+    ancient-poster.jpg
+    geocache-arrival-alert.wav
+  )
+else
+  required=(
+    modern-exterior.jpg
+    modern.mp4
+    modern-poster.jpg
+    ancient-reconstruction.mp4
+    ancient-reconstruction.jpg
+    ancient-poster.jpg
+    geocache-arrival-alert.wav
+  )
+fi
 
 missing=0
 warnings=0
@@ -42,7 +53,13 @@ if (( missing > 0 )); then
 fi
 
 if command -v ffprobe >/dev/null 2>&1; then
-  for video in modern.mp4 ancient-reconstruction.mp4; do
+  if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
+    video_files=(moderncolosseum.mp4 ancient-reconstruction.mp4)
+  else
+    video_files=(modern.mp4 ancient-reconstruction.mp4)
+  fi
+
+  for video in "${video_files[@]}"; do
     [[ -f "$DIR/$video" ]] || continue
     dims="$(ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 "$DIR/$video" 2>/dev/null || true)"
     [[ -n "$dims" ]] || continue

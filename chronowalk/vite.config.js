@@ -96,7 +96,7 @@ export default defineConfig({
             options: {
               cacheName: 'chronowalk-static-assets',
               expiration: {
-                maxEntries: 120,
+                maxEntries: 200,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {

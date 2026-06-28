@@ -12,8 +12,7 @@
 | `moderncolosseum.mp4` | Modern slider video |
 | `modern-poster.jpg` | Compare-mode hero frame (@ 3 s) |
 | `ancient-reconstruction.mp4` | Ancient slider video |
-| `ancient-reconstruction.jpg` | Ancient still fallback |
-| `ancient-poster.jpg` | Compare + ghost alignment |
+| `ancient-poster.jpg` | Ancient still fallback + compare alignment |
 | `depth-map.png` | Optional parallax boost |
 
 Seed file: `src/data/colosseum.js`

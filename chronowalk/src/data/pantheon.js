@@ -41,6 +41,7 @@ const PANTHEON_ANCIENT_POSTER = '/waypoints/pantheon/ancient-poster.jpg'
 export const PANTHEON_WAYPOINT = {
   id: 'pantheon',
   title: 'The Pantheon',
+  media_cache_version: 3,
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached the Pantheon!",
   arrival_subtitle: 'The temple of all gods awaits — step into imperial Rome.',

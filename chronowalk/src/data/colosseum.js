@@ -34,13 +34,13 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
  *
  * 2. ANCIENT — matched video or still, same camera as modern:
  *    - public/waypoints/colosseum/ancient-reconstruction.mp4
- *    - public/waypoints/colosseum/ancient-reconstruction.jpg
+ *    - public/waypoints/colosseum/ancient-poster.jpg (still fallback)
  *
  * 3. Poster stills shown after the animation ends (hero facade frame):
  *    - modern-poster.jpg / ancient-poster.jpg (export from video at slider_poster_at_sec)
  *    - ancient poster: pad square frame to 16:9 so full height is preserved
  *
- * 4. OPTIONAL depth map from the ancient image → depth-map.png
+ * 4. OPTIONAL depth map from the ancient image → depth-map.png (not yet exported)
  *
  * Do not hotlink Street View / panorama sites — export JPGs into public/ above.
  */
@@ -50,7 +50,7 @@ const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav
 const COLOSSEUM_MODERN_IMAGE = '/waypoints/colosseum/modern-exterior.jpg'
 const COLOSSEUM_MODERN_VIDEO = '/waypoints/colosseum/moderncolosseum.mp4'
 const COLOSSEUM_MODERN_POSTER = '/waypoints/colosseum/modern-poster.jpg'
-const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-reconstruction.jpg'
+const COLOSSEUM_ANCIENT_IMAGE = '/waypoints/colosseum/ancient-poster.jpg'
 const COLOSSEUM_ANCIENT_VIDEO = '/waypoints/colosseum/ancient-reconstruction.mp4'
 const COLOSSEUM_ANCIENT_POSTER = '/waypoints/colosseum/ancient-poster.jpg'
 
@@ -63,6 +63,7 @@ export const COLOSSEUM_SLIDER_POSTER_AT_SEC = 3
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
   title: 'The Colosseum',
+  media_cache_version: 4,
   arrival_headline: "You've reached the Colosseum!",
   arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
   immersive_orientation_hint:
@@ -80,7 +81,6 @@ export const COLOSSEUM_WAYPOINT = {
   slider_post_animation_loop_ms: COLOSSEUM_SLIDER_POST_ANIMATION_LOOP_MS,
   slider_freeze_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
   ambient_url: COLOSSEUM_SAMPLE_AUDIO,
-  depth_map_url: '/waypoints/colosseum/depth-map.png',
   transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_immersive_url: COLOSSEUM_SAMPLE_AUDIO,
   arrival_alert_url: COLOSSEUM_ARRIVAL_ALERT,
