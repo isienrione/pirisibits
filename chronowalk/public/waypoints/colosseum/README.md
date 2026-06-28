@@ -9,6 +9,7 @@
 | Subfolder | Role |
 |-----------|------|
 | `exterior/` | Tour stop — standard slider deliverables (modern + ancient) |
+| `exterior/incoming/` | Drop `ancient-source.mp4` / `modern-source.mp4`, then `npm run process-waypoint -- colosseum` |
 | `interior/` | Future interior experience (not wired to tour yet) |
 | Root | Shared `Audio_sample.mp3` + `geocache-arrival-alert.wav` |
 

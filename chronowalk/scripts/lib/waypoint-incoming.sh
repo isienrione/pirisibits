@@ -9,6 +9,41 @@ WAYPOINT_INCOMING_ALIASES=(
   "largo-argentina|Largo_argentina Largo-Argentina largo-argentina Largo_Argentina"
 )
 
+# Slider deliverables live in a subfolder for some waypoints (e.g. colosseum/exterior/).
+waypoint_deliverable_dir() {
+  local wp="$1"
+  local id="$2"
+
+  if [[ "$id" == "colosseum" ]]; then
+    printf '%s/%s/exterior' "$wp" "$id"
+    return 0
+  fi
+
+  printf '%s/%s' "$wp" "$id"
+}
+
+waypoint_incoming_dirs_for() {
+  local wp="$1"
+  local id="$2"
+  local aliases seen=""
+  aliases="$(incoming_aliases_for "$id")"
+
+  for alias in $id $aliases; do
+    local base
+    base="$(waypoint_deliverable_dir "$wp" "$alias")"
+    for dir in "$base/incoming" "$wp/$alias/incoming"; do
+      [[ -d "$dir" ]] || continue
+      local real
+      real="$(cd "$dir" && pwd -P)"
+      if [[ "$seen" == *"|$real|"* ]]; then
+        continue
+      fi
+      seen="${seen}|$real|"
+      printf '%s\0' "$dir"
+    done
+  done
+}
+
 incoming_classify_mp4() {
   local name
   name="$(basename "$1" | tr '[:upper:]' '[:lower:]')"
@@ -38,22 +73,7 @@ incoming_aliases_for() {
 }
 
 incoming_collect_dirs() {
-  local wp="$1"
-  local id="$2"
-  local aliases seen=""
-  aliases="$(incoming_aliases_for "$id")"
-
-  for alias in $id $aliases; do
-    local dir="$wp/$alias/incoming"
-    [[ -d "$dir" ]] || continue
-    local real
-    real="$(cd "$dir" && pwd -P)"
-    if [[ "$seen" == *"|$real|"* ]]; then
-      continue
-    fi
-    seen="${seen}|$real|"
-    printf '%s\0' "$dir"
-  done
+  waypoint_incoming_dirs_for "$1" "$2"
 }
 
 incoming_list_mp4s() {
@@ -129,9 +149,10 @@ incoming_find_pair() {
 incoming_find_pair_for_waypoint() {
   local wp="$1"
   local id="$2"
-  local dir pair modern ancient
+  local dir pair modern ancient deliverable
 
-  mkdir -p "$wp/$id/incoming"
+  deliverable="$(waypoint_deliverable_dir "$wp" "$id")"
+  mkdir -p "$deliverable/incoming"
 
   while IFS= read -r -d '' dir; do
     if pair="$(incoming_find_pair "$dir")"; then
@@ -148,7 +169,10 @@ incoming_find_pair_for_waypoint() {
 incoming_sync_canonical_names() {
   local wp="$1"
   local id="$2"
-  local pair modern ancient canon="$wp/$id/incoming"
+  local pair modern ancient deliverable canon
+
+  deliverable="$(waypoint_deliverable_dir "$wp" "$id")"
+  canon="$deliverable/incoming"
 
   if ! pair="$(incoming_find_pair_for_waypoint "$wp" "$id")"; then
     return 1
@@ -177,7 +201,7 @@ incoming_sync_deliverables() {
   local aliases dest asset dir
 
   aliases="$(incoming_aliases_for "$id")"
-  dest="$wp/$id"
+  dest="$(waypoint_deliverable_dir "$wp" "$id")"
   mkdir -p "$dest"
 
   for asset in modern.mp4 ancient-reconstruction.mp4 modern-exterior.jpg ancient-reconstruction.jpg modern-poster.jpg ancient-poster.jpg; do

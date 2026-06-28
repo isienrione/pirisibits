@@ -12,13 +12,13 @@ if [[ -z "$WAYPOINT_ID" ]]; then
 fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WAYPOINT_DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
+# shellcheck source=lib/waypoint-incoming.sh
+source "$ROOT/scripts/lib/waypoint-incoming.sh"
+WAYPOINT_DIR="$(waypoint_deliverable_dir "$ROOT/public/waypoints" "$WAYPOINT_ID")"
 INCOMING="$WAYPOINT_DIR/incoming"
 POSTER_SEC="${POSTER_SEC:-3}"
 SWAP_RUNWAY="${SWAP_RUNWAY:-0}"
 
-# shellcheck source=lib/waypoint-incoming.sh
-source "$ROOT/scripts/lib/waypoint-incoming.sh"
 incoming_sync_canonical_names "$ROOT/public/waypoints" "$WAYPOINT_ID" 2>/dev/null || true
 
 mkdir -p "$INCOMING"
