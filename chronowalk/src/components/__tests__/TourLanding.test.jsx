@@ -2,6 +2,16 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import TourLanding from '../TourLanding'
 
+vi.mock('../../hooks/usePwaInstall', () => ({
+  usePwaInstall: () => ({
+    installed: false,
+    canPromptInstall: false,
+    showIosInstructions: false,
+    showInstallOption: false,
+    promptInstall: vi.fn(),
+  }),
+}))
+
 describe('TourLanding', () => {
   it('shows purchasable tour options before any purchase', () => {
     render(

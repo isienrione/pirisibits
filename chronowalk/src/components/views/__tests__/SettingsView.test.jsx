@@ -8,6 +8,16 @@ vi.mock('../../offline/OfflineDownloadPanel', () => ({
   default: ({ tour }) => (tour ? <div>Offline download panel for {tour.title}</div> : null),
 }))
 
+vi.mock('../../../hooks/usePwaInstall', () => ({
+  usePwaInstall: () => ({
+    installed: false,
+    canPromptInstall: true,
+    showIosInstructions: false,
+    showInstallOption: true,
+    promptInstall: vi.fn(),
+  }),
+}))
+
 describe('SettingsView', () => {
   it('renders offline download controls when a tour is available', () => {
     render(
@@ -48,6 +58,7 @@ describe('SettingsView', () => {
     expect(screen.getByText('Audio stories')).toBeInTheDocument()
     expect(screen.getByText('Reduced motion')).toBeInTheDocument()
     expect(screen.getByText('Debug map overlays')).toBeInTheDocument()
+    expect(screen.getByText(/add chronowalk to your home screen/i)).toBeInTheDocument()
   })
 
   it('toggles audio preference', () => {
