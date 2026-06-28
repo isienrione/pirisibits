@@ -1,6 +1,7 @@
 import { getTourById } from '../services/tourRegistry'
 import {
   createBlobObjectUrl,
+  getOfflineWaypointRecord,
   readTourPackageRecord,
   TOUR_PACKAGE_STATUS,
 } from './offlineStorage'
@@ -74,12 +75,15 @@ export async function verifyTourPackage(tourId) {
 }
 
 export async function getOfflineWaypoint(tourId, stopId) {
-  const record = await readTourPackageRecord(tourId)
-  if (!record?.manifest || record.status !== TOUR_PACKAGE_STATUS.COMPLETE) {
-    return null
-  }
+  const record = await getOfflineWaypointRecord(tourId, stopId)
+  if (!record) return null
 
-  return record.manifest.waypoints.find((waypoint) => waypoint.id === stopId) ?? null
+  return {
+    id: record.stopId,
+    title: record.title,
+    ...record.metadata,
+    geo: record.geo,
+  }
 }
 
 /** Resolve a waypoint media field to an offline blob URL when the tour package is verified. */

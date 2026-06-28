@@ -1,13 +1,16 @@
 import { fetchWaypointById } from '../services/waypointService'
 import { getTourById } from '../services/tourRegistry'
 import { buildTourCacheManifest, listRequiredCacheKeys } from './cacheManifest'
+import { buildOfflineTourRecords } from './offlineRecords'
 import {
   deleteCachedAssets,
   deleteTourPackageRecord,
   hasCachedAsset,
+  persistOfflineTourRecords,
   putCachedAsset,
   readTourPackageRecord,
   TOUR_PACKAGE_STATUS,
+  updateOfflineTourStatus,
   writeTourPackageRecord,
 } from './offlineStorage'
 
@@ -77,8 +80,14 @@ export async function downloadTourAssets(tourId, options = {}) {
       }
 
       manifest = buildTourCacheManifest({ tour, waypoints })
+      const offlineRecords = buildOfflineTourRecords({
+        tour,
+        waypoints,
+        manifest,
+        status: TOUR_PACKAGE_STATUS.DOWNLOADING,
+      })
 
-      await writeTourPackageRecord({
+      await persistOfflineTourRecords(offlineRecords, {
         tourId,
         status: TOUR_PACKAGE_STATUS.DOWNLOADING,
         manifest,
@@ -117,7 +126,16 @@ export async function downloadTourAssets(tourId, options = {}) {
       }
 
       const completedAt = Date.now()
-      await writeTourPackageRecord({
+      const completedRecords = buildOfflineTourRecords({
+        tour,
+        waypoints,
+        manifest,
+        status: TOUR_PACKAGE_STATUS.COMPLETE,
+        downloadedAt: completedAt,
+        verifiedAt: completedAt,
+      })
+
+      await persistOfflineTourRecords(completedRecords, {
         tourId,
         status: TOUR_PACKAGE_STATUS.COMPLETE,
         manifest,
@@ -139,6 +157,13 @@ export async function downloadTourAssets(tourId, options = {}) {
         verification,
       }
     } catch (error) {
+      if (manifest) {
+        await updateOfflineTourStatus(tourId, {
+          status: TOUR_PACKAGE_STATUS.FAILED,
+          error: error?.message ?? 'Tour download failed',
+        })
+      }
+
       await writeTourPackageRecord({
         tourId,
         status: TOUR_PACKAGE_STATUS.FAILED,

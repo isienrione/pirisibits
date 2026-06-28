@@ -9,6 +9,16 @@ const defaultProgress = () => ({
   transitLegActive: false,
 })
 
+function mirrorProgressToIndexedDb(tourId, progress) {
+  if (typeof window === 'undefined' || !tourId || !progress) return
+
+  void import('../offline/offlineRepository')
+    .then(({ saveOfflineUserProgress }) => saveOfflineUserProgress(tourId, progress))
+    .catch((error) => {
+      console.warn('tourProgressStorage: IndexedDB mirror failed.', error)
+    })
+}
+
 export const loadTourProgress = (tourId) => {
   if (typeof window === 'undefined' || !tourId) return defaultProgress()
 
@@ -32,6 +42,7 @@ export const saveTourProgress = (tourId, progress) => {
 
   try {
     window.localStorage.setItem(storageKey(tourId), JSON.stringify(progress))
+    mirrorProgressToIndexedDb(tourId, progress)
   } catch (error) {
     console.warn('tourProgressStorage: failed to save progress.', error)
   }
@@ -42,6 +53,7 @@ export const resetTourProgress = (tourId) => {
 
   try {
     window.localStorage.removeItem(storageKey(tourId))
+    mirrorProgressToIndexedDb(tourId, defaultProgress())
   } catch {
     // ignore
   }

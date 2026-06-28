@@ -23,6 +23,7 @@ vi.mock('../offlineStorage.js', async (importOriginal) => {
     ...actual,
     readTourPackageRecord: vi.fn(),
     createBlobObjectUrl: vi.fn(async () => 'blob:offline-audio'),
+    getOfflineWaypointRecord: vi.fn(),
     listTourPackageRecords: vi.fn(async () => []),
   }
 })
@@ -43,7 +44,7 @@ import {
   resolveOfflineMediaUrl,
   verifyTourPackage,
 } from '../tourPackage'
-import { readTourPackageRecord } from '../offlineStorage'
+import { readTourPackageRecord, getOfflineWaypointRecord } from '../offlineStorage'
 import { verifyDownloadedTourAssets } from '../downloadManager'
 
 describe('tourPackage', () => {
@@ -79,10 +80,11 @@ describe('tourPackage', () => {
   })
 
   it('returns offline waypoint metadata from IndexedDB', async () => {
-    vi.mocked(readTourPackageRecord).mockResolvedValue({
-      tourId: 'rome-core',
-      status: TOUR_PACKAGE_STATUS.COMPLETE,
-      manifest,
+    vi.mocked(getOfflineWaypointRecord).mockResolvedValue({
+      stopId: 'colosseum',
+      title: 'Colosseum',
+      metadata: { arrival_transcript: 'Sample transcript' },
+      geo: null,
     })
 
     const waypoint = await getOfflineWaypoint('rome-core', 'colosseum')

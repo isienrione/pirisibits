@@ -11,21 +11,61 @@ export {
 } from './cacheManifest'
 
 export {
-  OFFLINE_ASSET_CACHE,
+  buildCompletedWaypointRecords,
+  buildOfflineTourRecords,
+  buildUserProgressRecord,
+  progressFromUserRecord,
+} from './offlineRecords'
+
+export {
+  STORES,
+  AUDIO_ASSET_FIELDS,
+  IMAGE_ASSET_FIELDS,
   OFFLINE_DB_NAME,
+  OFFLINE_DB_VERSION,
+} from './idbSchema'
+
+export {
+  getOfflineStorageFallbackReason,
+  getOfflineStorageMode,
+  getOfflineStore,
+  isIndexedDbAvailable,
+  isUsingMemoryFallback,
+  resetOfflineStoreForTests,
+} from './idbClient'
+
+export {
+  OFFLINE_ASSET_CACHE,
   OFFLINE_TOUR_STORE,
   TOUR_PACKAGE_STATUS,
   createBlobObjectUrl,
   deleteCachedAssets,
+  deleteOfflineTourData,
   deleteTourPackageRecord,
   getCachedAssetResponse,
+  getOfflineAudioAssets,
+  getOfflineCompletedWaypointIds,
+  getOfflineImageAssets,
+  getOfflineMediaCue,
+  getOfflineTour,
+  getOfflineTranscript,
+  getOfflineTransits,
+  getOfflineWaypointRecord,
+  getOfflineWaypoints,
   hasCachedAsset,
   isOfflineStorageSupported,
+  listOfflineTours,
   listTourPackageRecords,
+  loadOfflineUserProgress,
+  markOfflineWaypointCompleted,
   openAssetCache,
   openOfflineDatabase,
+  persistOfflineTourRecords,
   putCachedAsset,
   readTourPackageRecord,
+  saveOfflineUserProgress,
+  syncOfflineCompletedWaypoints,
+  updateOfflineTourStatus,
   writeTourPackageRecord,
 } from './offlineStorage'
 

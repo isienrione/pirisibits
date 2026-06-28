@@ -1,5 +1,38 @@
-export const OFFLINE_DB_NAME = 'chronowalk-offline'
-export const OFFLINE_DB_VERSION = 1
+export {
+  deleteOfflineTourData,
+  deleteTourPackageRecord,
+  getOfflineAudioAssets,
+  getOfflineCompletedWaypointIds,
+  getOfflineImageAssets,
+  getOfflineMediaCue,
+  getOfflineTour,
+  getOfflineTranscript,
+  getOfflineTransits,
+  getOfflineWaypointRecord,
+  getOfflineWaypoints,
+  listOfflineTours,
+  listTourPackageRecords,
+  loadOfflineUserProgress,
+  markOfflineWaypointCompleted,
+  persistOfflineTourRecords,
+  readTourPackageRecord,
+  saveOfflineUserProgress,
+  syncOfflineCompletedWaypoints,
+  updateOfflineTourStatus,
+  writeTourPackageRecord,
+} from './offlineRepository'
+
+export {
+  getOfflineStorageFallbackReason,
+  getOfflineStorageMode,
+  getOfflineStore,
+  isIndexedDbAvailable,
+  isUsingMemoryFallback,
+  resetOfflineStoreForTests,
+} from './idbClient'
+
+export { STORES, OFFLINE_DB_NAME, OFFLINE_DB_VERSION } from './idbSchema'
+
 export const OFFLINE_TOUR_STORE = 'tour-packages'
 export const OFFLINE_ASSET_CACHE = 'chronowalk-tour-packages-v1'
 
@@ -9,77 +42,17 @@ export const TOUR_PACKAGE_STATUS = {
   FAILED: 'failed',
 }
 
-function requestToPromise(request) {
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error ?? new Error('IndexedDB request failed'))
-  })
-}
-
-function waitForTransaction(transaction) {
-  return new Promise((resolve, reject) => {
-    transaction.oncomplete = () => resolve()
-    transaction.onerror = () => reject(transaction.error ?? new Error('IndexedDB transaction failed'))
-    transaction.onabort = () => reject(transaction.error ?? new Error('IndexedDB transaction aborted'))
-  })
-}
-
 export function isOfflineStorageSupported() {
-  return typeof indexedDB !== 'undefined' && typeof caches !== 'undefined'
+  return typeof caches !== 'undefined'
 }
 
 export async function openOfflineDatabase() {
-  if (!isOfflineStorageSupported()) {
-    throw new Error('Offline storage is not supported in this environment.')
-  }
-
-  const request = indexedDB.open(OFFLINE_DB_NAME, OFFLINE_DB_VERSION)
-
-  request.onupgradeneeded = () => {
-    const db = request.result
-    if (!db.objectStoreNames.contains(OFFLINE_TOUR_STORE)) {
-      db.createObjectStore(OFFLINE_TOUR_STORE, { keyPath: 'tourId' })
-    }
-  }
-
-  return requestToPromise(request)
-}
-
-export async function readTourPackageRecord(tourId) {
-  const db = await openOfflineDatabase()
-  const transaction = db.transaction(OFFLINE_TOUR_STORE, 'readonly')
-  const record = await requestToPromise(transaction.objectStore(OFFLINE_TOUR_STORE).get(tourId))
-  db.close()
-  return record ?? null
-}
-
-export async function writeTourPackageRecord(record) {
-  const db = await openOfflineDatabase()
-  const transaction = db.transaction(OFFLINE_TOUR_STORE, 'readwrite')
-  transaction.objectStore(OFFLINE_TOUR_STORE).put(record)
-  await waitForTransaction(transaction)
-  db.close()
-  return record
-}
-
-export async function deleteTourPackageRecord(tourId) {
-  const db = await openOfflineDatabase()
-  const transaction = db.transaction(OFFLINE_TOUR_STORE, 'readwrite')
-  transaction.objectStore(OFFLINE_TOUR_STORE).delete(tourId)
-  await waitForTransaction(transaction)
-  db.close()
-}
-
-export async function listTourPackageRecords() {
-  const db = await openOfflineDatabase()
-  const transaction = db.transaction(OFFLINE_TOUR_STORE, 'readonly')
-  const records = await requestToPromise(transaction.objectStore(OFFLINE_TOUR_STORE).getAll())
-  db.close()
-  return records
+  const { getOfflineStore } = await import('./idbClient')
+  return getOfflineStore()
 }
 
 export async function openAssetCache() {
-  if (!isOfflineStorageSupported()) {
+  if (typeof caches === 'undefined') {
     throw new Error('Cache storage is not supported in this environment.')
   }
   return caches.open(OFFLINE_ASSET_CACHE)

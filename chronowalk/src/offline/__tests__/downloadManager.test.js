@@ -50,6 +50,10 @@ vi.mock('../offlineStorage.js', () => ({
     storage.records.set(record.tourId, record)
     return record
   }),
+  persistOfflineTourRecords: vi.fn(async (_records, packageRecord) => {
+    if (packageRecord) storage.records.set(packageRecord.tourId, packageRecord)
+  }),
+  updateOfflineTourStatus: vi.fn(async () => null),
   deleteTourPackageRecord: vi.fn(async (tourId) => {
     storage.records.delete(tourId)
   }),
