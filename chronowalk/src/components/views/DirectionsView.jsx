@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { LOCATION_STATUS } from '../../hooks/useGeoLocation'
 import { isDebugGeo } from '../../config/env'
 import { env } from '../../config/env'
 import { fetchWalkingDirections } from '../../services/fetchWalkingRoute'
@@ -90,7 +91,7 @@ function DirectionsView({
     ? `From ${originTitle}`
     : isDebugGeo()
       ? 'From your simulated position'
-      : locationStatus === 'granted'
+      : locationStatus === LOCATION_STATUS.GRANTED
         ? 'From your current location'
         : 'From your last known location'
 
@@ -117,7 +118,7 @@ function DirectionsView({
       ) : (
         <>
           <GlassPanel className="mt-6 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta">
+            <p className="text-eyebrow uppercase text-terracotta">
               {originLabel}
             </p>
             <div className="mt-3 flex items-center justify-between gap-3 text-sm">

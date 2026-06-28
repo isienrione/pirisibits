@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import { BottomSheet, Button, LoadingPanel, LoadingSpinner, MediaHero, cn, ctaInCard, focusRing } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -58,49 +58,49 @@ const useMediaHeroState = (url) => {
 };
 
 function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
+  if (status === 'ready' && previewUrl) {
+    return (
+      <MediaHero
+        src={previewUrl}
+        alt=""
+        aspect="16/10"
+        rounded="bottom"
+        gradient="strong"
+        zoom
+        fadeIn
+        className="w-full sm:aspect-[16/9]"
+      />
+    );
+  }
+
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
-      {status === 'ready' && previewUrl ? (
-        <>
-          <img
-            src={previewUrl}
-            alt=""
-            className="h-full w-full object-cover object-center"
-            referrerPolicy="no-referrer"
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
-            aria-hidden="true"
-          />
-        </>
-      ) : (
-        <div className="flex h-full flex-col items-center justify-center px-8 text-center">
-          {status === 'loading' ? (
-            <>
-              <LoadingSpinner className="mb-4" />
-              <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
-            </>
-          ) : status === 'error' ? (
-            <>
-              <p className="font-display text-lg font-semibold text-deep-slate">
-                Preview unavailable
-              </p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
-                We couldn&apos;t load the modern view for {landmarkTitle}. You can still start the
-                audio story below.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-display text-lg font-semibold text-deep-slate">View coming soon</p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
-                The visual reconstruction for {landmarkTitle} is being prepared. The audio story is
-                ready when you are.
-              </p>
-            </>
-          )}
-        </div>
-      )}
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-b-3xl bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
+      <div className="flex h-full flex-col items-center justify-center px-8 text-center">
+        {status === 'loading' ? (
+          <>
+            <LoadingSpinner className="mb-4" />
+            <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
+          </>
+        ) : status === 'error' ? (
+          <>
+            <p className="font-display text-lg font-semibold text-deep-slate">
+              Preview unavailable
+            </p>
+            <p className="mt-2 max-w-xs text-sm text-soft-slate">
+              We couldn&apos;t load the modern view for {landmarkTitle}. You can still start the
+              audio story below.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-display text-lg font-semibold text-deep-slate">View coming soon</p>
+            <p className="mt-2 max-w-xs text-sm text-soft-slate">
+              The visual reconstruction for {landmarkTitle} is being prepared. The audio story is
+              ready when you are.
+            </p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -113,7 +113,7 @@ function AudioTranscriptSection({ waypoint }) {
 
   return (
     <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
-      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+      <summary className={cn('cursor-pointer text-sm font-semibold text-deep-slate', focusRing)}>
         Captions &amp; transcript
       </summary>
       <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
@@ -267,7 +267,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         },
         { force: true }
       );
-      triggerHaptic(HAPTIC_KIND.SUCCESS);
+      triggerHaptic(HAPTIC_KIND.AUDIO_PLAY);
     } catch (err) {
       console.error('Failed to play audio guide:', err);
       setMediaError('Could not start audio. Tap again or check your connection.');
@@ -335,11 +335,15 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
   const handleAudioAction = async () => {
     if (isArrivalAudioPlaying) {
       audioOrchestrator.pauseArrival();
+      triggerHaptic(HAPTIC_KIND.SOFT_TAP);
       return;
     }
     if (needsResumeAudio || hasArrivalAudioSession) {
       const resumed = await audioOrchestrator.resumeArrival();
-      if (resumed) return;
+      if (resumed) {
+        triggerHaptic(HAPTIC_KIND.AUDIO_PLAY);
+        return;
+      }
     }
     await handlePlayAudio();
   };
@@ -366,7 +370,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         if (nextOpen) triggerHaptic(HAPTIC_KIND.SOFT_TAP);
       }}
     >
-      <summary className="cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate">
+      <summary className={cn('cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate', focusRing)}>
         Advanced
       </summary>
       <div className="mt-4 space-y-3">

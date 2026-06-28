@@ -47,6 +47,7 @@ const TourMap = lazy(() => import('./components/TourMap'))
 const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
 const WaypointCard = lazy(() => import('./components/WaypointCard'))
 const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
+const JourneySummaryView = lazy(() => import('./components/views/JourneySummaryView'))
 const StopsView = lazy(() => import('./components/views/StopsView'))
 const SettingsView = lazy(() => import('./components/views/SettingsView'))
 const DirectionsView = lazy(() => import('./components/views/DirectionsView'))
@@ -66,6 +67,7 @@ function App() {
   const [directionsDestination, setDirectionsDestination] = useState(null)
   const [directionsOrigin, setDirectionsOrigin] = useState(null)
   const [completionDismissed, setCompletionDismissed] = useState(false)
+  const [showJourneySummary, setShowJourneySummary] = useState(false)
   const tourStartedAtRef = useRef(null)
 
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -78,6 +80,7 @@ function App() {
   const [freshDiscoveryId, setFreshDiscoveryId] = useState(null)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
+  const [audioPlayerLayout, setAudioPlayerLayout] = useState('mini')
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
@@ -91,11 +94,31 @@ function App() {
   const { isTourNarrationActive } = useAudioPlaybackState()
 
   useEffect(() => {
-    const audioInset = isTourNarrationActive ? '3.75rem' : '0px'
-    const stackInset = isTourNarrationActive ? '9.25rem' : '5.5rem'
+    if (!isTourNarrationActive) {
+      setAudioPlayerLayout('mini')
+    }
+  }, [isTourNarrationActive])
+
+  useEffect(() => {
+    const audioInset =
+      !isTourNarrationActive
+        ? '0px'
+        : audioPlayerLayout === 'expanded'
+          ? '15.5rem'
+          : audioPlayerLayout === 'collapsed'
+            ? '8.5rem'
+            : '3.75rem'
+    const stackInset =
+      !isTourNarrationActive
+        ? '5.5rem'
+        : audioPlayerLayout === 'expanded'
+          ? '21.25rem'
+          : audioPlayerLayout === 'collapsed'
+            ? '14.25rem'
+            : '9.25rem'
     document.documentElement.style.setProperty('--audio-bar-inset', audioInset)
     document.documentElement.style.setProperty('--bottom-stack-inset', stackInset)
-  }, [isTourNarrationActive])
+  }, [isTourNarrationActive, audioPlayerLayout])
 
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
@@ -242,10 +265,11 @@ function App() {
   const handleStartTour = async () => {
     await requestDeviceTiltPermission()
     tourStartedAtRef.current = Date.now()
+    setShowJourneySummary(false)
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     setHasInteracted(true)
-    setActiveTab(NAV_TABS.TOUR)
+    setActiveTab(NAV_TABS.MAP)
   }
 
   const openDirections = useCallback((landmark, title, origin = null) => {
@@ -270,7 +294,11 @@ function App() {
       lng: landmark.lng,
       key: Date.now(),
     })
-    setActiveTab(NAV_TABS.DIRECTIONS)
+  }, [])
+
+  const handleCloseDirections = useCallback(() => {
+    setDirectionsDestination(null)
+    setDirectionsOrigin(null)
   }, [])
 
   const handleDirections = useCallback(
@@ -338,7 +366,7 @@ function App() {
     const wasPlaying = audioOrchestrator.isTourNarrationPlaying()
     await audioOrchestrator.toggleTourNarration()
     if (!wasPlaying && audioOrchestrator.isTourNarrationPlaying()) {
-      triggerHaptic(HAPTIC_KIND.SUCCESS)
+      triggerHaptic(HAPTIC_KIND.AUDIO_PLAY)
     }
   }, [])
 
@@ -469,26 +497,37 @@ function App() {
 
       {activeTab === NAV_TABS.TOUR ? (
         <Suspense fallback={<TabLoadingFallback />}>
-          <TourOverviewView
-            tour={singleWaypointId ? null : tour}
-            progress={session.progress}
-            mapStops={session.mapStops}
-            waypointsById={session.waypointsById}
-            targetStopId={session.targetStopId}
-            nextWaypoint={session.nextWaypoint}
-            state={session.state}
-            distance={session.distance}
-            transitLegActive={session.progress.transitLegActive}
-            isAwaitingFirstStop={session.isAwaitingFirstStop}
-            firstStopTitle={session.firstStopTitle}
-            onNavigate={setActiveTab}
-            onOpenStop={handleOpenStop}
-            onGetDirections={() => {
-              if (!tour?.stopIds?.[0]) return
-              const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
-              openDirections(landmark, session.firstStopTitle)
-            }}
-          />
+          {showJourneySummary && session.isTourComplete ? (
+            <JourneySummaryView
+              tour={singleWaypointId ? null : tour}
+              progress={session.progress}
+              mapStops={session.mapStops}
+              waypointsById={session.waypointsById}
+              walkedMeters={walkedMeters}
+              onNavigate={setActiveTab}
+              onOpenStop={handleOpenStop}
+            />
+          ) : (
+            <TourOverviewView
+              tour={singleWaypointId ? null : tour}
+              progress={session.progress}
+              mapStops={session.mapStops}
+              waypointsById={session.waypointsById}
+              targetStopId={session.targetStopId}
+              nextWaypoint={session.nextWaypoint}
+              state={session.state}
+              distance={session.distance}
+              transitLegActive={session.progress.transitLegActive}
+              isAwaitingFirstStop={session.isAwaitingFirstStop}
+              firstStopTitle={session.firstStopTitle}
+              onNavigate={setActiveTab}
+              onGetDirections={() => {
+                if (!tour?.stopIds?.[0]) return
+                const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
+                openDirections(landmark, session.firstStopTitle)
+              }}
+            />
+          )}
         </Suspense>
       ) : null}
 
@@ -496,6 +535,7 @@ function App() {
         <Suspense fallback={<TabLoadingFallback />}>
           <StopsView
             tour={singleWaypointId ? null : tour}
+            progress={session.progress}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
@@ -504,17 +544,19 @@ function App() {
         </Suspense>
       ) : null}
 
-      {activeTab === NAV_TABS.DIRECTIONS && directionsDestination ? (
-        <Suspense fallback={<TabLoadingFallback />}>
-          <DirectionsView
-            destination={directionsDestination}
-            origin={directionsOrigin}
-            userPosition={session.position}
-            locationStatus={locationStatus}
-            onBack={() => setActiveTab(NAV_TABS.MAP)}
-            onOpenExternalMaps={handleOpenExternalMaps}
-          />
-        </Suspense>
+      {directionsDestination ? (
+        <div className="fixed inset-0 z-[55] bg-warm-white">
+          <Suspense fallback={<TabLoadingFallback />}>
+            <DirectionsView
+              destination={directionsDestination}
+              origin={directionsOrigin}
+              userPosition={session.position}
+              locationStatus={locationStatus}
+              onBack={handleCloseDirections}
+              onOpenExternalMaps={handleOpenExternalMaps}
+            />
+          </Suspense>
+        </div>
       ) : null}
 
       {activeTab === NAV_TABS.SETTINGS ? (
@@ -566,6 +608,7 @@ function App() {
               }
               onTogglePlayback={handleToggleTourAudio}
               onStop={handleStopTourAudio}
+              onLayoutChange={setAudioPlayerLayout}
             />
           ) : null
         }
@@ -576,9 +619,11 @@ function App() {
           tour={singleWaypointId ? null : tour}
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
-          startedAtMs={tourStartedAtRef.current}
+          startedAtMs={session.progress.startedAtMs ?? tourStartedAtRef.current}
+          mapStops={session.mapStops}
           onViewSummary={() => {
             setCompletionDismissed(true)
+            setShowJourneySummary(true)
             setActiveTab(NAV_TABS.TOUR)
           }}
           onDismiss={() => setCompletionDismissed(true)}

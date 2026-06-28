@@ -2,6 +2,7 @@ import { getModernCoverUrl } from '../utils/sliderMedia'
 import {
   Button,
   GlassPanel,
+  MediaHero,
   cn,
   focusRing,
   statusArrived,
@@ -30,6 +31,20 @@ function LockIcon() {
   )
 }
 
+function CheckIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 6.2 4.8 8.5 9.5 3.8"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export function TourStopCard({
   stop,
   index,
@@ -49,38 +64,62 @@ export function TourStopCard({
   return (
     <GlassPanel
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
-        isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
+        'overflow-hidden motion-safe:transition-[box-shadow,border-color,transform] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-glass-lg',
+        isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg ring-1 ring-gold/20',
+        isVisited && 'border-olive/25'
       )}
     >
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden bg-gradient-to-br from-sand to-limestone/50',
-            compact ? 'h-36 w-full' : 'w-28 sm:w-32',
-            !compact && 'min-h-[7rem]'
+            'group relative shrink-0 overflow-hidden',
+            compact ? 'h-40 w-full' : 'w-32 sm:w-36',
+            !compact && 'min-h-[7.5rem]'
           )}
         >
           {posterUrl ? (
-            <img
+            <MediaHero
               src={posterUrl}
               alt=""
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
+              aspect={compact ? '16/10' : '3/4'}
+              rounded={compact ? 'none' : '2xl'}
+              gradient="subtle"
+              zoom
+              fadeIn
+              className={cn(
+                'h-full w-full transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.02]',
+                compact ? 'rounded-none' : 'm-2'
+              )}
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
+            <div
+              className={cn(
+                'flex h-full min-h-[7.5rem] items-center justify-center bg-gradient-to-br from-sand to-limestone/50 px-2 text-center text-xs text-soft-slate',
+                compact ? 'h-40' : 'm-2 rounded-2xl'
+              )}
+            >
               Preview soon
             </div>
           )}
           {isUpcoming ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
+            <div className="absolute inset-0 z-[3] flex items-center justify-center bg-warm-white/25 backdrop-blur-[1px] motion-safe:transition-opacity motion-safe:duration-300">
               <LockIcon />
             </div>
           ) : null}
+          {isVisited ? (
+            <span className="absolute right-3 top-3 z-[3] flex h-7 w-7 items-center justify-center rounded-full bg-olive text-warm-white shadow-glass animate-check-pop">
+              <CheckIcon className="h-3.5 w-3.5" />
+            </span>
+          ) : null}
+          {isCurrent ? (
+            <span
+              className="pointer-events-none absolute inset-0 z-[2] m-2 rounded-2xl ring-2 ring-gold/25 animate-arrival-unlock-glow"
+              aria-hidden="true"
+            />
+          ) : null}
           <span
             className={cn(
-              'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
+              'absolute left-3 top-3 z-[3] flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
               isCurrent
                 ? 'bg-gold/90 text-warm-white ring-2 ring-gold/30'
                 : 'bg-warm-white/92 text-deep-slate'

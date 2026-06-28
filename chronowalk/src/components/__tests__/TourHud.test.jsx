@@ -31,8 +31,8 @@ describe('TourHud', () => {
 
     expect(screen.getByText('Heart of Ancient Rome')).toBeInTheDocument()
     expect(screen.getAllByText('Colosseum').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('2')).toBeInTheDocument()
+    expect(screen.getByText('50%')).toBeInTheDocument()
+    expect(screen.getByText(/1 visited/i)).toBeInTheDocument()
   })
 
   it('hides continue button while the waypoint card is open', () => {
@@ -64,5 +64,21 @@ describe('TourHud', () => {
     expect(screen.getByText(/follow the terracotta path/i)).toBeInTheDocument()
     expect(screen.getByText(/transit narration is playing/i)).toBeInTheDocument()
     expect(screen.getByText('240 m')).toBeInTheDocument()
+  })
+
+  it('shows directions button while awaiting first stop', () => {
+    render(
+      <TourHud
+        {...baseProps}
+        awaitingFirstStop
+        firstStopTitle="Colosseum"
+        state={JOURNEY_STATE.TRANSIT}
+        progress={{ targetStopIndex: 0, arrivedStopIds: [], transitLegActive: false }}
+        onDirections={vi.fn()}
+        waypointExploreActive={false}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /directions to colosseum/i })).toBeInTheDocument()
   })
 })

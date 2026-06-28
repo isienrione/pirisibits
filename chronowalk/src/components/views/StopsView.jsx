@@ -1,7 +1,8 @@
 import TourStopCard from '../TourStopCard'
-import { PageShell, SectionHeader } from '../ui'
+import { JourneyProgressPanel } from '../journey/JourneyProgressPanel'
+import { GlassPanel, PageShell, SectionHeader } from '../ui'
 
-function StopsView({ tour, mapStops, waypointsById, onOpenStop, onNavigate }) {
+function StopsView({ tour, progress, mapStops, waypointsById, onOpenStop, onNavigate }) {
   const stops = mapStops?.length
     ? mapStops
     : (tour?.stopIds ?? []).map((id, index) => ({
@@ -16,8 +17,14 @@ function StopsView({ tour, mapStops, waypointsById, onOpenStop, onNavigate }) {
         align="left"
         eyebrow="Route"
         title={tour?.title ?? 'Tour stops'}
-        subtitle={`${stops.length} landmarks · revisit visited stops or preview any landmark`}
+        subtitle={`${stops.length} landmarks along your walking route`}
       />
+
+      {tour && progress ? (
+        <GlassPanel className="mt-6 p-5">
+          <JourneyProgressPanel tour={tour} arrivedStopIds={progress.arrivedStopIds} compact />
+        </GlassPanel>
+      ) : null}
 
       <div className="mt-6 space-y-4">
         {stops.map((stop, index) => (

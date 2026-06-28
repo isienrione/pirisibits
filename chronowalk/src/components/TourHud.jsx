@@ -3,7 +3,9 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { Button, GlassPanel, MediaHero, cn, ctaInCard, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { getJourneyProgress } from '../utils/tourStats'
+import { ProgressRing } from './journey/ProgressRing'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -12,13 +14,20 @@ function formatDistance(distance) {
   return `${(meters / 1000).toFixed(1)} km`
 }
 
-function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, compact = false }) {
-  const completed = Math.max(0, currentStop - 1)
+function MapHudTopBar({
+  tourTitle,
+  currentStopTitle,
+  progress,
+  tour,
+  compact = false,
+}) {
+  const arrivedStopIds = progress?.arrivedStopIds ?? []
+  const { visited, remaining, completionPercent, total } = getJourneyProgress(tour, arrivedStopIds)
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+    <GlassPanel variant="elevated" className={cn('pointer-events-auto', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
           <p
             className={cn(
@@ -30,41 +39,52 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, co
           </p>
           {!compact ? (
             <p className="mt-1 text-xs text-soft-slate">
-              {completed} of {totalStops} stops visited
+              {visited} visited · {remaining} remaining
+              {total ? <span className="text-limestone"> · </span> : null}
+              {total ? <span>{completionPercent}% of route</span> : null}
             </p>
           ) : null}
         </div>
-        <div className="shrink-0 text-right">
-          <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
-          <p className={cn('font-display font-semibold tabular-nums text-deep-slate', compact ? 'text-lg' : 'text-xl')}>
-            <span className="text-gold">{currentStop}</span>
-            <span className="text-soft-slate/60"> / </span>
-            <span>{totalStops}</span>
-          </p>
-        </div>
+
+        <ProgressRing
+          value={completionPercent}
+          size={compact ? 50 : 58}
+          strokeWidth={5}
+          showPercent
+          className="shrink-0"
+        />
       </div>
     </GlassPanel>
   )
 }
 
 function RouteThumbnail({ posterUrl, title, compact = false }) {
-  const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
+  const sizeClass = compact ? 'h-12 w-12' : 'h-16 w-16'
+
+  if (!posterUrl) {
+    return (
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-limestone/70 bg-sand px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate shadow-sm',
+          sizeClass
+        )}
+      >
+        {title?.slice(0, 2) ?? '—'}
+      </div>
+    )
+  }
 
   return (
-    <div className={cn('shrink-0 overflow-hidden border border-limestone/70 bg-sand shadow-sm', sizeClass)}>
-      {posterUrl ? (
-        <img
-          src={posterUrl}
-          alt=""
-          className="h-full w-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">
-          {title?.slice(0, 2) ?? '—'}
-        </div>
-      )}
-    </div>
+    <MediaHero
+      src={posterUrl}
+      alt=""
+      aspect="auto"
+      rounded={compact ? 'lg' : 'xl'}
+      gradient="subtle"
+      zoom
+      fadeIn
+      className={cn('shrink-0 border border-limestone/70 shadow-sm', sizeClass)}
+    />
   )
 }
 
@@ -89,7 +109,7 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'p-3' : 'p-4')}>
+    <GlassPanel variant="elevated" className={cn('pointer-events-auto', compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
         <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 
@@ -156,10 +176,6 @@ const TourHud = ({
 
   if (!isTourMode && !currentStopId) return null
 
-  const totalStops = tour?.stopIds?.length ?? 1
-  const currentStopNumber = isTourMode
-    ? Math.min(progress.targetStopIndex + 1, totalStops)
-    : 1
   const tourTitle = tour?.title ?? 'ChronoWalk'
 
   const atStop = state === JOURNEY_STATE.ARRIVAL
@@ -271,16 +287,13 @@ const TourHud = ({
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-40 px-4 pt-safe"
-        style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
-      >
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-40 px-4 pt-safe">
         <div className="mx-auto w-full max-w-md">
           <MapHudTopBar
             tourTitle={tourTitle}
             currentStopTitle={awaitingFirstStop ? (firstStopTitle ?? 'Starting point') : currentStopTitle}
-            currentStop={currentStopNumber}
-            totalStops={totalStops}
+            progress={progress}
+            tour={tour}
             compact={compactHud}
           />
         </div>
@@ -300,7 +313,7 @@ const TourHud = ({
               distanceLabel={!atStop || awaitingFirstStop ? distanceLabel : null}
               walkMinutes={!atStop || awaitingFirstStop ? walkMinutes : null}
               posterUrl={posterUrl}
-              showDirections={showDirections && !awaitingFirstStop}
+              showDirections={showDirections}
               onDirections={handleDirections}
               compact={compactHud}
               action={routeAction}

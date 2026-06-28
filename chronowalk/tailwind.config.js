@@ -23,17 +23,26 @@ export default {
         serif: ['Fraunces', 'Georgia', 'serif'],
       },
       fontSize: {
-        'eyebrow': ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        eyebrow: ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        'display-md': ['1.5rem', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'display-lg': ['1.875rem', { lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '600' }],
+        'display-hero': ['2rem', { lineHeight: '1.08', letterSpacing: '-0.02em', fontWeight: '600' }],
+      },
+      transitionDuration: {
+        fast: '200ms',
+        base: '300ms',
+        slow: '500ms',
       },
       borderRadius: {
         sheet: '2rem',
         panel: '1.25rem',
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06)',
-        'glass-lg': '0 12px 40px rgba(23, 33, 43, 0.16), 0 4px 12px rgba(23, 33, 43, 0.08)',
-        'sheet-up': '0 -12px 40px rgba(23, 33, 43, 0.14)',
-        cta: '0 8px 24px rgba(200, 100, 60, 0.28)',
+        glass: '0 10px 36px rgba(23, 33, 43, 0.11), 0 2px 10px rgba(23, 33, 43, 0.05)',
+        'glass-lg': '0 16px 48px rgba(23, 33, 43, 0.14), 0 4px 14px rgba(23, 33, 43, 0.07)',
+        'sheet-up': '0 -14px 44px rgba(23, 33, 43, 0.13)',
+        cta: '0 10px 28px rgba(200, 100, 60, 0.26), 0 2px 8px rgba(200, 100, 60, 0.12)',
+        glow: '0 0 32px rgba(217, 164, 65, 0.22)',
       },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',

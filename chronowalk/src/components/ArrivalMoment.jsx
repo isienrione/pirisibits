@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { GlassPanel, cn } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 
@@ -18,25 +19,48 @@ function DiscoveryIcon() {
 
 const ArrivalMoment = ({ waypoint, visible }) => {
   const reducedMotion = useReducedMotion()
+  const [mounted, setMounted] = useState(visible)
+  const [exiting, setExiting] = useState(false)
 
-  if (!visible || !waypoint) return null
+  useEffect(() => {
+    if (visible) {
+      setMounted(true)
+      setExiting(false)
+      return undefined
+    }
+
+    if (!mounted) return undefined
+
+    setExiting(true)
+    const timer = window.setTimeout(() => {
+      setMounted(false)
+      setExiting(false)
+    }, reducedMotion ? 0 : 520)
+
+    return () => window.clearTimeout(timer)
+  }, [visible, mounted, reducedMotion])
+
+  if (!mounted || !waypoint) return null
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-30 overflow-hidden"
+      className={cn(
+        'pointer-events-none absolute inset-0 z-30 overflow-hidden',
+        !reducedMotion && exiting && 'animate-arrival-exit'
+      )}
       aria-hidden="true"
     >
       <div
         className={cn(
           'absolute inset-0 bg-deep-slate/55',
-          !reducedMotion && 'animate-arrival-vignette'
+          !reducedMotion && !exiting && 'animate-arrival-vignette'
         )}
         aria-hidden="true"
       />
       <div
         className={cn(
-          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(217,164,65,0.28),transparent_58%)]',
-          !reducedMotion && 'animate-arrival-vignette'
+          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(217,164,65,0.34),transparent_58%)]',
+          !reducedMotion && !exiting && 'animate-arrival-warm-glow'
         )}
         aria-hidden="true"
       />
@@ -44,11 +68,20 @@ const ArrivalMoment = ({ waypoint, visible }) => {
       <div className="flex h-full items-end justify-center px-6 pb-[min(30vh,13rem)]">
         <GlassPanel
           className={cn(
-            'max-w-sm rounded-3xl border-gold/35 bg-warm-white/96 px-6 py-6 text-center shadow-glass-lg',
-            !reducedMotion && 'animate-arrival-discover'
+            'max-w-sm rounded-3xl border-gold/40 bg-warm-white/96 px-6 py-6 text-center shadow-glass-lg',
+            !reducedMotion && !exiting && 'animate-arrival-discover'
           )}
         >
-          <DiscoveryIcon />
+          <div className="relative mx-auto flex h-16 w-16 items-center justify-center">
+            <span
+              className={cn(
+                'absolute inset-0 rounded-full bg-gold/20',
+                !reducedMotion && !exiting && 'animate-arrival-unlock-glow'
+              )}
+              aria-hidden="true"
+            />
+            <DiscoveryIcon />
+          </div>
           <p className="mt-4 text-eyebrow uppercase text-gold">Waypoint discovered</p>
           <p className="mt-2 font-display text-2xl font-semibold leading-tight text-deep-slate">
             {waypoint.title}

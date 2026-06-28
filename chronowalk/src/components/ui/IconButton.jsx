@@ -28,7 +28,7 @@ export function IconButton({
       type={type}
       aria-label={label}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200',
+        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-glass motion-reduce:transition-none motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-95',
         focusRing,
         variantStyles[variant],
         sizeStyles[size],

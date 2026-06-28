@@ -5,6 +5,15 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useOpenHaptic } from '../../hooks/useHapticTriggers'
 import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
 
+function getFocusableElements(container) {
+  if (!container) return []
+  return Array.from(
+    container.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  )
+}
+
 export function BottomSheet({
   open = false,
   onHandleClick,
@@ -20,6 +29,7 @@ export function BottomSheet({
 }) {
   const reducedMotion = useReducedMotion()
   const sheetRef = useRef(null)
+  const previousFocusRef = useRef(null)
   useOpenHaptic(open)
 
   const handleClose = () => {
@@ -34,6 +44,23 @@ export function BottomSheet({
       if (event.key === 'Escape') {
         event.preventDefault()
         onEscape?.() ?? handleClose()
+        return
+      }
+
+      if (event.key !== 'Tab' || !sheetRef.current) return
+
+      const focusable = getFocusableElements(sheetRef.current)
+      if (!focusable.length) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
       }
     }
 
@@ -44,12 +71,16 @@ export function BottomSheet({
   useEffect(() => {
     if (!open || !sheetRef.current) return undefined
 
-    const focusable = sheetRef.current.querySelector(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-    focusable?.focus({ preventScroll: true })
+    previousFocusRef.current = document.activeElement
 
-    return undefined
+    const focusable = getFocusableElements(sheetRef.current)
+    focusable[0]?.focus({ preventScroll: true })
+
+    return () => {
+      if (previousFocusRef.current instanceof HTMLElement) {
+        previousFocusRef.current.focus({ preventScroll: true })
+      }
+    }
   }, [open])
 
   return (

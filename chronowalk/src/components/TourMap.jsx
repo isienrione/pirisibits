@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
+import { bearingBetween } from '../utils/mapBearing'
 import { fetchTourWalkingRoute, fetchWalkingRoute } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
@@ -73,6 +74,11 @@ function MapArrivalPulse({ point, active }) {
       style={{ left: point.x, top: point.y }}
       aria-hidden="true"
     >
+      <div
+        className={`absolute h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/55 blur-[1px] ${
+          reducedMotion ? '' : 'animate-arrival-warm-glow'
+        }`}
+      />
       <div
         className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
           reducedMotion ? '' : 'animate-arrival-map-pulse'
@@ -152,6 +158,7 @@ const TourMap = ({
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
+  const reducedMotion = useReducedMotion()
 
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
@@ -370,6 +377,38 @@ const TourMap = ({
         .addTo(map.current)
     }
   }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
+
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !userPos?.lat || !userPos?.lng) return
+
+    if (transitLegActive && activeTarget?.landmark) {
+      map.current.easeTo({
+        center: [userPos.lng, userPos.lat],
+        pitch: reducedMotion ? 0 : 36,
+        bearing: bearingBetween(userPos, activeTarget.landmark),
+        duration: reducedMotion ? 0 : 1400,
+        essential: true,
+      })
+      return
+    }
+
+    if (!focusTarget?.lat) {
+      map.current.easeTo({
+        pitch: 0,
+        bearing: 0,
+        duration: reducedMotion ? 0 : 1000,
+        essential: true,
+      })
+    }
+  }, [
+    userPos?.lat,
+    userPos?.lng,
+    transitLegActive,
+    activeTarget?.landmark,
+    mapLoaded,
+    reducedMotion,
+    focusTarget?.lat,
+  ])
 
   useEffect(() => {
     const landmark = activeTarget?.landmark
