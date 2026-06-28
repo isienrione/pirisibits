@@ -131,12 +131,95 @@
     animation: sheet-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
+  @keyframes hero-ken-burns {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes fade-in-soft {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes media-crossfade {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .animate-hero-ken-burns {
+    animation: hero-ken-burns 22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    will-change: transform;
+  }
+
+  .animate-fade-in-soft {
+    animation: fade-in-soft 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .animate-media-crossfade {
+    animation: media-crossfade 0.7s ease-out forwards;
+  }
+
+  @keyframes audio-play-pulse {
+    0%,
+    100% {
+      box-shadow: 0 8px 24px rgba(200, 100, 60, 0.28);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow: 0 10px 32px rgba(217, 164, 65, 0.42);
+      transform: scale(1.03);
+    }
+  }
+
+  @keyframes audio-wave-bar {
+    0%,
+    100% {
+      transform: scaleY(0.72);
+      opacity: 0.72;
+    }
+    50% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-audio-play-pulse {
+    animation: audio-play-pulse 1.8s ease-in-out infinite;
+  }
+
+  .animate-audio-wave-bar {
+    animation: audio-wave-bar 1.2s ease-in-out infinite;
+    transform-origin: bottom;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-arrival-vignette,
     .animate-arrival-discover,
     .animate-arrival-map-pulse,
     .animate-arrival-title,
-    .animate-sheet-rise {
+    .animate-sheet-rise,
+    .animate-hero-ken-burns,
+    .animate-fade-in-soft,
+    .animate-media-crossfade {
+      animation: none;
+    }
+
+    .animate-audio-play-pulse,
+    .animate-audio-wave-bar {
       animation: none;
     }
 

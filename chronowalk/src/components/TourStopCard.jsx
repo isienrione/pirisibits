@@ -2,6 +2,7 @@ import { getModernCoverUrl } from '../utils/sliderMedia'
 import {
   Button,
   GlassPanel,
+  MediaHero,
   cn,
   focusRing,
   statusArrived,
@@ -56,31 +57,43 @@ export function TourStopCard({
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden bg-gradient-to-br from-sand to-limestone/50',
-            compact ? 'h-36 w-full' : 'w-28 sm:w-32',
-            !compact && 'min-h-[7rem]'
+            'group relative shrink-0 overflow-hidden',
+            compact ? 'h-40 w-full' : 'w-32 sm:w-36',
+            !compact && 'min-h-[7.5rem]'
           )}
         >
           {posterUrl ? (
-            <img
+            <MediaHero
               src={posterUrl}
               alt=""
-              className="h-full w-full object-cover"
-              referrerPolicy="no-referrer"
+              aspect={compact ? '16/10' : '3/4'}
+              rounded={compact ? 'none' : '2xl'}
+              gradient="subtle"
+              zoom
+              fadeIn
+              className={cn(
+                'h-full w-full transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.02]',
+                compact ? 'rounded-none' : 'm-2'
+              )}
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
+            <div
+              className={cn(
+                'flex h-full min-h-[7.5rem] items-center justify-center bg-gradient-to-br from-sand to-limestone/50 px-2 text-center text-xs text-soft-slate',
+                compact ? 'h-40' : 'm-2 rounded-2xl'
+              )}
+            >
               Preview soon
             </div>
           )}
           {isUpcoming ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
+            <div className="absolute inset-0 z-[3] flex items-center justify-center bg-warm-white/25 backdrop-blur-[1px]">
               <LockIcon />
             </div>
           ) : null}
           <span
             className={cn(
-              'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
+              'absolute left-3 top-3 z-[3] flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
               isCurrent
                 ? 'bg-gold/90 text-warm-white ring-2 ring-gold/30'
                 : 'bg-warm-white/92 text-deep-slate'

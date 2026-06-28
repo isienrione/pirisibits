@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
-import { Button, GlassPanel, MediaPlayerControls, cn } from './ui'
+import { AudioPlayer } from './audio/AudioPlayer'
+import { GlassPanel } from './ui'
 
 function PersistentAudioBar({
   title,
@@ -10,8 +12,24 @@ function PersistentAudioBar({
   onReopenCard,
   onTogglePlayback,
   onStop,
+  onLayoutChange,
 }) {
-  const { isTourNarrationActive, isTourNarrationPlaying, currentMode } = useAudioPlaybackState()
+  const {
+    isTourNarrationActive,
+    isTourNarrationPlaying,
+    currentMode,
+    currentTime,
+    duration,
+    playbackRate,
+    seekTo,
+    cyclePlaybackRate,
+  } = useAudioPlaybackState()
+  const [layout, setLayout] = useState('mini')
+
+  const handleLayoutChange = (nextLayout) => {
+    setLayout(nextLayout)
+    onLayoutChange?.(nextLayout)
+  }
 
   if (!isTourNarrationActive) return null
 
@@ -22,44 +40,58 @@ function PersistentAudioBar({
         ? 'Audio story'
         : 'Tour audio'
 
+  if (layout === 'expanded') {
+    return (
+      <div className="pointer-events-auto w-full animate-fade-in-soft">
+        <AudioPlayer
+          layout="expanded"
+          title={title ?? 'Landmark story'}
+          subtitle={subtitle}
+          modeLabel={modeLabel}
+          posterUrl={posterUrl}
+          isPlaying={isTourNarrationPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          playbackRate={playbackRate}
+          onToggle={onTogglePlayback}
+          onStop={() => {
+            handleLayoutChange('mini')
+            onStop?.()
+          }}
+          onSeek={seekTo}
+          onCyclePlaybackRate={cyclePlaybackRate}
+          onLayoutChange={handleLayoutChange}
+          onReopenCard={onReopenCard}
+          cardOpen={cardOpen}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="pointer-events-auto w-full">
       <GlassPanel className="overflow-hidden rounded-2xl border-deep-slate/10 bg-deep-slate/96 text-warm-white shadow-glass-lg backdrop-blur-glass">
-        <div className="flex items-center gap-3 px-3 py-2.5">
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gold/35 bg-deep-slate">
-            {posterUrl ? (
-              <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-sm text-gold">♪</div>
-            )}
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-gold">
-              {modeLabel}
-            </p>
-            <p className="truncate text-sm font-semibold leading-tight">{title ?? 'Landmark story'}</p>
-          </div>
-
-          <div className="flex shrink-0 items-center gap-2">
-            <MediaPlayerControls
-              isPlaying={isTourNarrationPlaying}
-              onToggle={onTogglePlayback}
-              onStop={onStop}
-              theme="dark"
-            />
-            {!cardOpen && onReopenCard ? (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="border-warm-white/20 bg-warm-white/10 px-3 text-warm-white hover:bg-warm-white/15"
-                onClick={onReopenCard}
-              >
-                Open
-              </Button>
-            ) : null}
-          </div>
-        </div>
+        <AudioPlayer
+          layout={layout}
+          title={title ?? 'Landmark story'}
+          subtitle={subtitle}
+          modeLabel={modeLabel}
+          posterUrl={posterUrl}
+          isPlaying={isTourNarrationPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          playbackRate={playbackRate}
+          onToggle={onTogglePlayback}
+          onStop={() => {
+            handleLayoutChange('mini')
+            onStop?.()
+          }}
+          onSeek={seekTo}
+          onCyclePlaybackRate={cyclePlaybackRate}
+          onLayoutChange={handleLayoutChange}
+          onReopenCard={onReopenCard}
+          cardOpen={cardOpen}
+        />
       </GlassPanel>
     </div>
   )

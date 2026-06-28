@@ -78,6 +78,7 @@ function App() {
   const [freshDiscoveryId, setFreshDiscoveryId] = useState(null)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
+  const [audioPlayerLayout, setAudioPlayerLayout] = useState('mini')
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
@@ -91,11 +92,31 @@ function App() {
   const { isTourNarrationActive } = useAudioPlaybackState()
 
   useEffect(() => {
-    const audioInset = isTourNarrationActive ? '3.75rem' : '0px'
-    const stackInset = isTourNarrationActive ? '9.25rem' : '5.5rem'
+    if (!isTourNarrationActive) {
+      setAudioPlayerLayout('mini')
+    }
+  }, [isTourNarrationActive])
+
+  useEffect(() => {
+    const audioInset =
+      !isTourNarrationActive
+        ? '0px'
+        : audioPlayerLayout === 'expanded'
+          ? '15.5rem'
+          : audioPlayerLayout === 'collapsed'
+            ? '8.5rem'
+            : '3.75rem'
+    const stackInset =
+      !isTourNarrationActive
+        ? '5.5rem'
+        : audioPlayerLayout === 'expanded'
+          ? '21.25rem'
+          : audioPlayerLayout === 'collapsed'
+            ? '14.25rem'
+            : '9.25rem'
     document.documentElement.style.setProperty('--audio-bar-inset', audioInset)
     document.documentElement.style.setProperty('--bottom-stack-inset', stackInset)
-  }, [isTourNarrationActive])
+  }, [isTourNarrationActive, audioPlayerLayout])
 
   useAudioPageVisibility(hasInteracted)
   useArrivalAudioPrefetch({
@@ -338,7 +359,7 @@ function App() {
     const wasPlaying = audioOrchestrator.isTourNarrationPlaying()
     await audioOrchestrator.toggleTourNarration()
     if (!wasPlaying && audioOrchestrator.isTourNarrationPlaying()) {
-      triggerHaptic(HAPTIC_KIND.SUCCESS)
+      triggerHaptic(HAPTIC_KIND.AUDIO_PLAY)
     }
   }, [])
 
@@ -566,6 +587,7 @@ function App() {
               }
               onTogglePlayback={handleToggleTourAudio}
               onStop={handleStopTourAudio}
+              onLayoutChange={setAudioPlayerLayout}
             />
           ) : null
         }
