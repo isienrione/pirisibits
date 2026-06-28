@@ -24,6 +24,16 @@ export const getAncientSliderUrl = (waypoint) =>
 
 export const hasModernSliderMedia = (waypoint) => Boolean(getModernSliderUrl(waypoint))
 
+export const hasAncientSliderMedia = (waypoint) => Boolean(getAncientSliderUrl(waypoint))
+
+/** Stops with only a modern animated video — no before/after comparison layer. */
+export const isModernVideoImmersive = (waypoint) =>
+  waypoint?.immersive_mode === 'modern_video' ||
+  (hasModernSliderMedia(waypoint) && !hasAncientSliderMedia(waypoint))
+
+export const hasComparisonSliderMedia = (waypoint) =>
+  hasModernSliderMedia(waypoint) && hasAncientSliderMedia(waypoint) && !isModernVideoImmersive(waypoint)
+
 /** Hero frame used for poster stills after the animation finishes. Override with ?posterAt= or ?freezeAt= */
 export const resolveSliderPosterAtSec = (waypointValue) => {
   if (typeof window !== 'undefined') {

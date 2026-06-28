@@ -4,6 +4,14 @@ const DEFAULT_POSTER_SEC = 3;
 const DEFAULT_LOOP_MS = 10000;
 const DEFAULT_VIDEO_DURATION_SEC = 5;
 
+const getWaypointMediaRoot = (waypoint) => {
+  const id = waypoint?.id ?? 'waypoint';
+  if (id === 'colosseum') return `public/waypoints/${id}/exterior`;
+  return `public/waypoints/${id}`;
+};
+
+const isModernVideoOnlyWaypoint = (waypoint) => waypoint?.immersive_mode === 'modern_video';
+
 export const resolveAbsoluteAssetUrl = (url, origin) => {
   if (!url) return null;
   if (/^https?:\/\//i.test(url)) return url;
@@ -74,7 +82,7 @@ const sharedCameraRules = (waypoint) => {
     .join(' ');
 };
 
-/** Prompt to animate the exported modern still into moderncolosseum.mp4-style clip. */
+/** Prompt to animate the exported modern still into the modern slider clip. */
 export const buildModernAnimatedVideoPrompt = (waypoint) => {
   const ctx = buildViewpointContext(waypoint);
 
@@ -123,13 +131,15 @@ export const buildAncientAnimatedVideoPrompt = (waypoint) => {
 export const buildDaVinciResolveBrief = (waypoint) => {
   const ctx = buildViewpointContext(waypoint);
   const id = ctx.id;
+  const mediaRoot = getWaypointMediaRoot(waypoint);
+  const modernOnly = isModernVideoOnlyWaypoint(waypoint);
 
   return [
     `# ChronoWalk export brief — ${ctx.title} (${id})`,
     '',
     '## Timeline',
     `- Modern clip: ${DEFAULT_VIDEO_DURATION_SEC}s @ 16:9`,
-    `- Ancient clip: same duration, frame-matched`,
+    modernOnly ? '- No ancient layer (modern video immersive stop)' : `- Ancient clip: same duration, frame-matched`,
     `- Poster stills: export at ${ctx.posterSec}s from each timeline`,
     `- App loop hold after first play: ${ctx.loopMs}ms`,
     '',
@@ -139,13 +149,17 @@ export const buildDaVinciResolveBrief = (waypoint) => {
     '- Ancient poster: pad to 16:9 if source is square (preserve full height)',
     '',
     '## Deliverables',
-    `public/waypoints/${id}/modern-exterior.jpg`,
-    `public/waypoints/${id}/moderncolosseum.mp4 (or modern.mp4)`,
-    `public/waypoints/${id}/modern-poster.jpg`,
-    `public/waypoints/${id}/ancient-reconstruction.jpg`,
-    `public/waypoints/${id}/ancient-reconstruction.mp4`,
-    `public/waypoints/${id}/ancient-poster.jpg`,
-    `public/waypoints/${id}/depth-map.png (optional)`,
+    `${mediaRoot}/modern-exterior.jpg`,
+    `${mediaRoot}/modern.mp4`,
+    `${mediaRoot}/modern-poster.jpg`,
+    ...(modernOnly
+      ? []
+      : [
+          `${mediaRoot}/ancient-reconstruction.jpg`,
+          `${mediaRoot}/ancient-reconstruction.mp4`,
+          `${mediaRoot}/ancient-poster.jpg`,
+          `${mediaRoot}/depth-map.png (optional)`,
+        ]),
     '',
     '## Viewpoint metadata (embed in seed)',
     `lat/lng center: ${ctx.landmarkLat}, ${ctx.landmarkLng}`,
@@ -156,36 +170,49 @@ export const buildDaVinciResolveBrief = (waypoint) => {
 export const buildToolingNotes = (waypoint, modernReferenceUrl) => {
   const ctx = buildViewpointContext(waypoint);
   const id = ctx.id;
+  const mediaRoot = getWaypointMediaRoot(waypoint);
+  const modernOnly = isModernVideoOnlyWaypoint(waypoint);
 
   return {
-    midjourney: {
+    midjourney: modernOnly
+      ? null
+      : {
       title: 'Midjourney — ancient still',
       steps: [
         'Export modern ground-level photo from Street View (or shoot on site).',
         `Upload modern reference: ${modernReferenceUrl ?? 'modern-exterior.jpg'}`,
         'Use /describe on the modern photo, then blend with the ancient still prompt below.',
         'Prefer image prompt weight on the modern photo for angle lock.',
-        `Save as public/waypoints/${id}/ancient-reconstruction.jpg`,
+        `Save as ${mediaRoot}/ancient-reconstruction.jpg`,
         `Export poster frame → ancient-poster.jpg (pad to 16:9)`,
       ],
     },
     runway: {
-      title: 'Runway / Pika — modern + ancient video',
+      title: modernOnly ? 'Runway / Pika — modern video' : 'Runway / Pika — modern + ancient video',
       steps: [
         `Image-to-video: modern still → ${DEFAULT_VIDEO_DURATION_SEC}s clip (locked camera).`,
         'Use motion brush only on sky/crowds — lock architecture mask.',
-        `Image-to-video: ancient still → same duration, copy motion amount from modern clip.`,
-        'Alternatively: motion-sync from modern video with ancient first frame.',
-        `Save moderncolosseum.mp4 + ancient-reconstruction.mp4`,
+        ...(modernOnly
+          ? [`Save ${mediaRoot}/modern.mp4`]
+          : [
+              `Image-to-video: ancient still → same duration, copy motion amount from modern clip.`,
+              'Alternatively: motion-sync from modern video with ancient first frame.',
+              `Save ${mediaRoot}/modern.mp4 + ancient-reconstruction.mp4`,
+            ]),
       ],
     },
     davinci: {
       title: 'DaVinci Resolve — sync & posters',
-      steps: [
-        'Stack modern and ancient clips; align using facade corners.',
-        `Mark ${ctx.posterSec}s as hero frame on both timelines.`,
-        'Export poster JPGs and verify 16:9 cover in app (?posterAt= tune on phone).',
-      ],
+      steps: modernOnly
+        ? [
+            `Mark ${ctx.posterSec}s as hero frame on the modern timeline.`,
+            'Export modern-poster.jpg and verify 16:9 cover in app.',
+          ]
+        : [
+            'Stack modern and ancient clips; align using facade corners.',
+            `Mark ${ctx.posterSec}s as hero frame on both timelines.`,
+            'Export poster JPGs and verify 16:9 cover in app (?posterAt= tune on phone).',
+          ],
     },
   };
 };
@@ -193,6 +220,8 @@ export const buildToolingNotes = (waypoint, modernReferenceUrl) => {
 export const buildWaypointAssetPromptPack = (waypoint, origin) => {
   const modernReferenceUrl = resolveAbsoluteAssetUrl(getModernReferenceUrl(waypoint), origin);
   const ctx = buildViewpointContext(waypoint);
+  const mediaRoot = getWaypointMediaRoot(waypoint);
+  const modernOnly = isModernVideoOnlyWaypoint(waypoint);
 
   return {
     waypointId: ctx.id,
@@ -209,12 +238,16 @@ export const buildWaypointAssetPromptPack = (waypoint, origin) => {
     },
     tooling: buildToolingNotes(waypoint, modernReferenceUrl),
     fileManifest: [
-      `public/waypoints/${ctx.id}/modern-exterior.jpg`,
-      `public/waypoints/${ctx.id}/moderncolosseum.mp4`,
-      `public/waypoints/${ctx.id}/modern-poster.jpg`,
-      `public/waypoints/${ctx.id}/ancient-reconstruction.jpg`,
-      `public/waypoints/${ctx.id}/ancient-reconstruction.mp4`,
-      `public/waypoints/${ctx.id}/ancient-poster.jpg`,
+      `${mediaRoot}/modern-exterior.jpg`,
+      `${mediaRoot}/modern.mp4`,
+      `${mediaRoot}/modern-poster.jpg`,
+      ...(modernOnly
+        ? []
+        : [
+            `${mediaRoot}/ancient-reconstruction.jpg`,
+            `${mediaRoot}/ancient-reconstruction.mp4`,
+            `${mediaRoot}/ancient-poster.jpg`,
+          ]),
     ],
   };
 };

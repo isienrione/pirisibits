@@ -21,7 +21,9 @@ import {
   getModernCoverUrl,
   getModernPosterUrl,
   getModernSliderUrl,
+  hasComparisonSliderMedia,
   hasModernSliderMedia,
+  isModernVideoImmersive,
 } from '../utils/sliderMedia';
 import { isDebugMedia } from '../config/env';
 
@@ -126,6 +128,31 @@ function AudioTranscriptSection({ waypoint }) {
   );
 }
 
+function ModernImmersiveVideo({ videoUrl, posterUrl, landmarkTitle, onRequestExit }) {
+  return (
+    <div className="relative mb-5 overflow-hidden rounded-b-3xl bg-black shadow-glass-lg">
+      <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
+        <video
+          key={videoUrl}
+          src={videoUrl}
+          poster={posterUrl ?? undefined}
+          className="h-full w-full object-cover object-center"
+          controls
+          playsInline
+          autoPlay
+          loop
+          aria-label={`Immersive video of ${landmarkTitle}`}
+        />
+      </div>
+      <div className="border-t border-white/10 bg-deep-slate/90 px-4 py-3">
+        <Button variant="text" fullWidth onClick={onRequestExit}>
+          Hide video
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function WaypointCardBody({
   titleId,
   eyebrow,
@@ -165,7 +192,7 @@ function WaypointCardBody({
 const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, accessMode = 'arrival' }) => {
   const titleId = useId();
   const reducedMotion = useReducedMotion();
-  const [showSlider, setShowSlider] = useState(false);
+  const [showImmersiveView, setShowImmersiveView] = useState(false);
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const [alignmentMode, setAlignmentMode] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -183,10 +210,12 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     (waypoint && (getModernCoverUrl(waypoint) || getModernSliderUrl(waypoint))) ?? null;
   const heroStatus = useMediaHeroState(heroPreviewUrl);
   const hasModernMedia = waypoint ? hasModernSliderMedia(waypoint) : false;
+  const usesComparisonSlider = waypoint ? hasComparisonSliderMedia(waypoint) : false;
+  const usesModernVideo = waypoint ? isModernVideoImmersive(waypoint) : false;
   const debugMedia = isDebugMedia();
 
   useEffect(() => {
-    setShowSlider(false);
+    setShowImmersiveView(false);
     setTiltEnabled(false);
     setAlignmentMode(false);
     setAdvancedOpen(false);
@@ -202,27 +231,27 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
     return () => cancelAnimationFrame(frame);
   }, [waypoint]);
 
-  useOpenHaptic(showSlider);
+  useOpenHaptic(showImmersiveView);
 
   useEffect(() => {
     const onAudioSync = (event) => {
       const generation = event.detail?.generation;
       if (generation != null && generation < syncGenerationRef.current) return;
       if (generation != null) syncGenerationRef.current = generation;
-      setShowSlider(true);
+      setShowImmersiveView(true);
     };
     window.addEventListener(AUDIO_SYNC_EVENT, onAudioSync);
     return () => window.removeEventListener(AUDIO_SYNC_EVENT, onAudioSync);
   }, []);
 
   useEffect(() => {
-    if (showSlider) {
+    if (showImmersiveView) {
       sliderRef.current?.scrollIntoView({
         behavior: reducedMotion ? 'auto' : 'smooth',
         block: 'nearest',
       });
     }
-  }, [showSlider, reducedMotion]);
+  }, [showImmersiveView, reducedMotion]);
 
   useEffect(() => {
     if (!alignmentMode) return undefined;
@@ -244,7 +273,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
   const narrativeHook =
     waypoint.arrival_subtitle || 'A new chapter of the city opens beneath your feet.';
   const orientationHint =
-    !showSlider && !alignmentMode
+    !showImmersiveView && !alignmentMode
       ? waypoint.immersive_orientation_hint ||
         'Stand facing the landmark facade for the most immersive reveal.'
       : null;
@@ -287,8 +316,10 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       return;
     }
 
-    const tiltGranted = await requestDeviceTiltPermission();
-    setTiltEnabled(tiltGranted);
+    if (usesComparisonSlider) {
+      const tiltGranted = await requestDeviceTiltPermission();
+      setTiltEnabled(tiltGranted);
+    }
 
     audioOrchestrator.transitionTo(
       AUDIO_MODES.ARRIVAL,
@@ -307,16 +338,25 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       setMediaError('Comparison media is not available for this landmark yet.');
       return;
     }
-    setShowSlider(true);
+    setShowImmersiveView(true);
+  };
+
+  const openVideoOnly = () => {
+    setMediaError(null);
+    if (!usesModernVideo || !modernSliderUrl) {
+      setMediaError('Immersive video is not available for this landmark yet.');
+      return;
+    }
+    setShowImmersiveView(true);
   };
 
   const exitCompareView = () => {
-    setShowSlider(false);
+    setShowImmersiveView(false);
     setAlignmentMode(false);
   };
 
   const openAudioOnly = async () => {
-    setShowSlider(false);
+    setShowImmersiveView(false);
     await handlePlayAudio();
   };
 
@@ -348,15 +388,18 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
 
   const eyebrow = alignmentMode
     ? 'Fine-tuning view'
-    : showSlider
-      ? 'Then & now'
+    : showImmersiveView
+      ? usesModernVideo
+        ? 'Immersive view'
+        : 'Then & now'
       : accessMode === 'remote'
         ? 'Remote preview'
         : isFreshArrival
           ? 'Waypoint discovered'
           : "You've arrived";
 
-  const advancedSection = (
+  const advancedSection =
+    usesComparisonSlider ? (
     <details
       className="mt-6 border-t border-limestone/60 pt-4"
       open={advancedOpen}
@@ -370,7 +413,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         Advanced
       </summary>
       <div className="mt-4 space-y-3">
-        {showSlider ? (
+        {showImmersiveView ? (
           <>
             <Button
               variant="ghost"
@@ -395,7 +438,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
               <Button
                 variant="text"
                 fullWidth
-                onClick={() => setShowSlider(false)}
+                onClick={() => setShowImmersiveView(false)}
               >
                 Hide comparison
               </Button>
@@ -417,11 +460,12 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
             <p className="font-semibold text-terracotta">Media diagnostics</p>
             <p>modern: {modernSliderUrl}</p>
             <p>ancient: {ancientSliderUrl}</p>
+            <p>mode: {usesModernVideo ? 'modern_video' : 'comparison'}</p>
           </div>
         ) : null}
       </div>
     </details>
-  );
+  ) : null;
 
   return (
     <BottomSheet
@@ -433,7 +477,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
       handleLabel="Minimize landmark card"
       ariaLabelledBy={titleId}
     >
-      {showSlider ? (
+      {showImmersiveView && usesComparisonSlider ? (
         <div ref={sliderRef} className="mb-5 touch-none" onTouchMove={(event) => event.stopPropagation()}>
           <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
             <ErrorBoundary
@@ -471,6 +515,15 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
             </ErrorBoundary>
           </div>
         </div>
+      ) : showImmersiveView && usesModernVideo ? (
+        <div ref={sliderRef}>
+          <ModernImmersiveVideo
+            videoUrl={modernSliderUrl}
+            posterUrl={getModernPosterUrl(waypoint) || heroPreviewUrl}
+            landmarkTitle={landmarkTitle}
+            onRequestExit={exitCompareView}
+          />
+        </div>
       ) : (
         <WaypointMediaHero
           previewUrl={heroPreviewUrl}
@@ -485,7 +538,7 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
         title={landmarkTitle}
         hook={!alignmentMode ? narrativeHook : 'Line up the ancient layer over the modern facade.'}
         orientationHint={orientationHint}
-        titleHighlight={isFreshArrival && !showSlider && !alignmentMode}
+        titleHighlight={isFreshArrival && !showImmersiveView && !alignmentMode}
         reducedMotion={reducedMotion}
         className="pb-6"
       >
@@ -502,17 +555,22 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
           </p>
         ) : null}
 
-        {!showSlider && !alignmentMode ? (
+        {!showImmersiveView && !alignmentMode ? (
           <div className="mt-6 space-y-3">
             {hasModernMedia ? (
               <Button size="lg" fullWidth onClick={startTimePortal}>
-                Step through time
+                {usesModernVideo ? 'Begin immersive view' : 'Step through time'}
               </Button>
             ) : null}
-            <div className="grid grid-cols-2 gap-3">
-              {hasModernMedia ? (
+            <div className={usesModernVideo ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'}>
+              {hasModernMedia && usesComparisonSlider ? (
                 <Button variant="secondary" fullWidth className={ctaInCard} onClick={openImageOnly}>
                   Image only
+                </Button>
+              ) : null}
+              {hasModernMedia && usesModernVideo ? (
+                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openVideoOnly}>
+                  Video only
                 </Button>
               ) : null}
               {waypoint.arrival_immersive_url ? (
@@ -527,10 +585,16 @@ const WaypointCard = ({ waypoint, state, onClose, isFreshArrival = false, access
               ) : null}
             </div>
           </div>
-        ) : showSlider && !alignmentMode ? (
+        ) : showImmersiveView && usesComparisonSlider && !alignmentMode ? (
           <div className="mt-5">
             <p className="text-sm text-soft-slate">
               Drag across the facade to travel between eras. Audio continues as you explore.
+            </p>
+          </div>
+        ) : showImmersiveView && usesModernVideo && !alignmentMode ? (
+          <div className="mt-5">
+            <p className="text-sm text-soft-slate">
+              Watch the modern scene come alive. Audio continues as you explore.
             </p>
           </div>
         ) : null}

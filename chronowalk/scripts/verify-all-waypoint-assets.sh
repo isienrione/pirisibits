@@ -9,6 +9,7 @@ STOP_IDS=(
   colosseum
   capitoline-hill
   pantheon
+  fontana-di-trevi
   largo-argentina
   campo-de-fiori
   piazza-navona

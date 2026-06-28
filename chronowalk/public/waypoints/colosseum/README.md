@@ -1,19 +1,27 @@
 # Colosseum waypoint assets
 
-**Viewpoint:** Facade approach (`41.891275, 12.491202`, pitch 18.1°).  
+**Viewpoint (exterior):** Facade approach (`41.891275, 12.491202`, pitch 18.1°).  
 **Asset Studio (prompts):** http://localhost:5173/?assetStudio=true&waypoint=colosseum  
 **Tour test:** `?debugGeo=true` or `?debugStop=colosseum&debugGeo=true`
 
-## Deliverables
+## Layout
+
+| Subfolder | Role |
+|-----------|------|
+| `exterior/` | Tour stop — standard slider deliverables (modern + ancient) |
+| `interior/` | Future interior experience (not wired to tour yet) |
+| Root | Shared `Audio_sample.mp3` + `geocache-arrival-alert.wav` |
+
+## Exterior deliverables
 
 | File | Role |
 |------|------|
-| `modern-exterior.jpg` | Modern still fallback |
-| `moderncolosseum.mp4` | Modern slider video |
-| `modern-poster.jpg` | Compare-mode hero frame (@ 3 s) |
-| `ancient-reconstruction.mp4` | Ancient slider video |
-| `ancient-poster.jpg` | Ancient still fallback + compare alignment |
-| `depth-map.png` | Optional parallax boost |
+| `exterior/modern-exterior.jpg` | Modern still fallback |
+| `exterior/modern.mp4` | Modern slider video |
+| `exterior/modern-poster.jpg` | Compare-mode hero frame (@ 3 s) |
+| `exterior/ancient-reconstruction.mp4` | Ancient slider video |
+| `exterior/ancient-reconstruction.jpg` | Ancient still fallback |
+| `exterior/ancient-poster.jpg` | Compare alignment still |
 
 Seed file: `src/data/colosseum.js`
 

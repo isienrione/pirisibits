@@ -18,7 +18,7 @@ const sampleWaypoint = {
     pitch: 18.1,
   },
   immersive_orientation_hint: 'Stand facing the Colosseum facade.',
-  modern_image_url: '/waypoints/colosseum/modern-exterior.jpg',
+  modern_image_url: '/waypoints/colosseum/exterior/modern-exterior.jpg',
   slider_poster_at_sec: 3,
 };
 
@@ -47,9 +47,9 @@ describe('waypointAssetPrompts', () => {
   it('returns a full prompt pack with modern reference URL', () => {
     const pack = buildWaypointAssetPromptPack(sampleWaypoint, 'https://chronowalk.test');
     expect(pack.modernReferenceUrl).toBe(
-      'https://chronowalk.test/waypoints/colosseum/modern-exterior.jpg'
+      'https://chronowalk.test/waypoints/colosseum/exterior/modern-exterior.jpg'
     );
     expect(pack.prompts.ancientAnimatedVideo).toContain('Ancient Rome');
-    expect(pack.fileManifest).toContain('public/waypoints/colosseum/moderncolosseum.mp4');
+    expect(pack.fileManifest).toContain('public/waypoints/colosseum/exterior/modern.mp4');
   });
 });

@@ -5,6 +5,9 @@ import {
   getModernCoverUrl,
   getModernPosterUrl,
   getModernSliderUrl,
+  hasAncientSliderMedia,
+  hasComparisonSliderMedia,
+  isModernVideoImmersive,
 } from '../sliderMedia'
 
 const navona = {
@@ -32,5 +35,19 @@ describe('sliderMedia', () => {
     expect(getAncientSliderUrl(navona)).toContain('ancient-reconstruction.mp4')
     expect(getModernPosterUrl(navona)).toContain('modern-poster.jpg')
     expect(getModernCoverUrl(navona)).toContain('modern-exterior.jpg')
+  })
+
+  it('detects modern-video-only immersive stops', () => {
+    const trevi = {
+      id: 'fontana-di-trevi',
+      immersive_mode: 'modern_video',
+      modern_video_url: '/waypoints/fontana-di-trevi/modern.mp4',
+      modern_image_url: '/waypoints/fontana-di-trevi/modern-exterior.jpg',
+    }
+
+    expect(isModernVideoImmersive(trevi)).toBe(true)
+    expect(hasAncientSliderMedia(trevi)).toBe(false)
+    expect(hasComparisonSliderMedia(trevi)).toBe(false)
+    expect(hasComparisonSliderMedia(navona)).toBe(true)
   })
 })

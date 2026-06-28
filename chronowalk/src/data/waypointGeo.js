@@ -40,6 +40,12 @@ import {
   CASTEL_SANT_ANGELO_DEBUG_USER_POS,
   CASTEL_SANT_ANGELO_GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './castel-sant-angelo'
+import {
+  FONTANA_DI_TREVI,
+  FONTANA_DI_TREVI_ARRIVAL_RADIUS_M,
+  FONTANA_DI_TREVI_DEBUG_USER_POS,
+  FONTANA_DI_TREVI_GEOFENCE_ARRIVAL_THRESHOLD_M,
+} from './fontana-di-trevi'
 
 /** Map / geofence settings per waypoint — extend when adding new stops. */
 export const WAYPOINT_GEO = {
@@ -60,6 +66,15 @@ export const WAYPOINT_GEO = {
     geofenceThresholdM: PANTHEON_GEOFENCE_ARRIVAL_THRESHOLD_M,
     arrivalRadiusM: PANTHEON_ARRIVAL_RADIUS_M,
     mapZoom: 17,
+  },
+  'fontana-di-trevi': {
+    id: 'fontana-di-trevi',
+    title: 'Fontana di Trevi',
+    landmark: FONTANA_DI_TREVI,
+    debugPosition: FONTANA_DI_TREVI_DEBUG_USER_POS,
+    geofenceThresholdM: FONTANA_DI_TREVI_GEOFENCE_ARRIVAL_THRESHOLD_M,
+    arrivalRadiusM: FONTANA_DI_TREVI_ARRIVAL_RADIUS_M,
+    mapZoom: 18,
   },
   'piazza-navona': {
     id: 'piazza-navona',

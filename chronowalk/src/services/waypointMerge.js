@@ -5,6 +5,7 @@ import { CAPITOLINE_HILL_WAYPOINT } from '../data/capitoline-hill'
 import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
 import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
 import { CASTEL_SANT_ANGELO_WAYPOINT } from '../data/castel-sant-angelo'
+import { FONTANA_DI_TREVI_WAYPOINT } from '../data/fontana-di-trevi'
 
 export const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -21,6 +22,7 @@ export const MEDIA_URL_KEYS = [
 ]
 
 const COPY_KEYS = [
+  'immersive_mode',
   'immersive_orientation_hint',
   'arrival_headline',
   'arrival_subtitle',
@@ -84,5 +86,6 @@ export const getLocalWaypoint = (id) => {
   if (id === 'campo-de-fiori') return CAMPO_DE_FIORI_WAYPOINT
   if (id === 'largo-argentina') return LARGO_ARGENTINA_WAYPOINT
   if (id === 'castel-sant-angelo') return CASTEL_SANT_ANGELO_WAYPOINT
+  if (id === 'fontana-di-trevi') return FONTANA_DI_TREVI_WAYPOINT
   return null
 }

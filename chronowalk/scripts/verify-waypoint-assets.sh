@@ -10,18 +10,9 @@ if [[ -z "$WAYPOINT_ID" ]]; then
 fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
 
 if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
-  required=(
-    modern-exterior.jpg
-    moderncolosseum.mp4
-    modern-poster.jpg
-    ancient-reconstruction.mp4
-    ancient-poster.jpg
-    geocache-arrival-alert.wav
-  )
-else
+  DIR="$ROOT/public/waypoints/colosseum/exterior"
   required=(
     modern-exterior.jpg
     modern.mp4
@@ -31,11 +22,43 @@ else
     ancient-poster.jpg
     geocache-arrival-alert.wav
   )
+  alert_path="$ROOT/public/waypoints/colosseum/geocache-arrival-alert.wav"
+elif [[ "$WAYPOINT_ID" == "fontana-di-trevi" ]]; then
+  DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
+  required=(
+    modern-exterior.jpg
+    modern.mp4
+    modern-poster.jpg
+    geocache-arrival-alert.wav
+  )
+  alert_path="$DIR/geocache-arrival-alert.wav"
+else
+  DIR="$ROOT/public/waypoints/$WAYPOINT_ID"
+  required=(
+    modern-exterior.jpg
+    modern.mp4
+    modern-poster.jpg
+    ancient-reconstruction.mp4
+    ancient-reconstruction.jpg
+    ancient-poster.jpg
+    geocache-arrival-alert.wav
+  )
+  alert_path="$DIR/geocache-arrival-alert.wav"
 fi
 
 missing=0
 warnings=0
 for file in "${required[@]}"; do
+  if [[ "$file" == "geocache-arrival-alert.wav" && "$WAYPOINT_ID" == "colosseum" ]]; then
+  if [[ -f "$alert_path" ]]; then
+    echo "✓ geocache-arrival-alert.wav (colosseum root)"
+  else
+    echo "✗ missing: geocache-arrival-alert.wav (expected at colosseum root)"
+    missing=$((missing + 1))
+  fi
+    continue
+  fi
+
   if [[ -f "$DIR/$file" ]]; then
     echo "✓ $file"
   else
@@ -53,10 +76,9 @@ if (( missing > 0 )); then
 fi
 
 if command -v ffprobe >/dev/null 2>&1; then
-  if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
-    video_files=(moderncolosseum.mp4 ancient-reconstruction.mp4)
-  else
-    video_files=(modern.mp4 ancient-reconstruction.mp4)
+  video_files=(modern.mp4)
+  if [[ "$WAYPOINT_ID" != "fontana-di-trevi" ]]; then
+    video_files+=(ancient-reconstruction.mp4)
   fi
 
   for video in "${video_files[@]}"; do
@@ -79,9 +101,14 @@ for other_dir in "$ROOT/public/waypoints"/*; do
   [[ "$other_id" == "$WAYPOINT_ID" ]] && continue
   [[ "$other_id" == "incoming" ]] && continue
 
+  other_media_dir="$other_dir"
+  if [[ "$other_id" == "colosseum" ]]; then
+    other_media_dir="$other_dir/exterior"
+  fi
+
   for file in modern-exterior.jpg modern.mp4 ancient-reconstruction.mp4; do
-    [[ -f "$DIR/$file" && -f "$other_dir/$file" ]] || continue
-    if cmp -s "$DIR/$file" "$other_dir/$file"; then
+    [[ -f "$DIR/$file" && -f "$other_media_dir/$file" ]] || continue
+    if cmp -s "$DIR/$file" "$other_media_dir/$file"; then
       echo "⚠ $file is identical to $other_id — replace with $WAYPOINT_ID-specific media"
       warnings=$((warnings + 1))
     fi

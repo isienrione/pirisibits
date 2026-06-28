@@ -81,6 +81,26 @@ describe('WaypointCard', () => {
     expect(screen.getByText('Then & now')).toBeInTheDocument();
   });
 
+  it('reveals modern video after sync for modern-video-only stops', async () => {
+    const treviWaypoint = {
+      ...waypoint,
+      id: 'fontana-di-trevi',
+      title: 'Fontana di Trevi',
+      immersive_mode: 'modern_video',
+      ancient_video_url: undefined,
+    };
+
+    render(<WaypointCard waypoint={treviWaypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
+
+    await act(async () => {
+      fireEvent(window, new CustomEvent(AUDIO_SYNC_EVENT, { detail: { generation: 1 } }));
+    });
+
+    expect(screen.queryByTestId('before-after-slider')).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/immersive video of fontana di trevi/i)).toBeInTheDocument();
+    expect(screen.getByText('Immersive view')).toBeInTheDocument();
+  });
+
   it('ignores stale sync events from an older generation', async () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
