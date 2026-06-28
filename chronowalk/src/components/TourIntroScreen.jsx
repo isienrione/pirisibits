@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
-import { TOUR_PREVIEW_HIGHLIGHTS, FREE_PREVIEW_ANCIENT_POSTER } from '../data/freePreview'
+import { FREE_PREVIEW_ANCIENT_POSTER } from '../data/freePreview'
+import { HEART_OF_ANCIENT_ROME_TOUR } from '../data/heart-of-ancient-rome-tour'
+import { ROMAN_FORUM_TOUR } from '../data/roman-forum-tour'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { Button, GlassPanel } from './ui'
@@ -26,32 +28,27 @@ const PILLARS = [
   },
 ]
 
-function PreviewHighlightsList({ expanded }) {
+function TourRouteStopList({ stopIds }) {
   const stops = useMemo(
     () =>
-      TOUR_PREVIEW_HIGHLIGHTS.map((item) => ({
-        ...item,
-        title: getWaypointGeo(item.id)?.title ?? item.id,
+      stopIds.map((id) => ({
+        id,
+        title: getWaypointGeo(id)?.title ?? id,
       })),
-    []
+    [stopIds]
   )
 
-  const visible = expanded ? stops : stops.slice(0, 4)
-
   return (
-    <ol className="mt-4 space-y-2">
-      {visible.map((stop, index) => (
+    <ol className="mt-3 space-y-2">
+      {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-start gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
         >
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand text-xs font-bold text-deep-slate">
             {index + 1}
           </span>
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-deep-slate">{stop.title}</p>
-            <p className="text-xs text-soft-slate">{stop.tour}</p>
-          </div>
+          <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
         </li>
       ))}
     </ol>
@@ -60,13 +57,16 @@ function PreviewHighlightsList({ expanded }) {
 
 function TourIntroScreen({ onTryFreePreview, onViewTours }) {
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
-  const [previewExpanded, setPreviewExpanded] = useState(false)
 
   const handleHeroError = () => {
     if (heroSrc !== tourHeroFallback) {
       setHeroSrc(tourHeroFallback)
     }
   }
+
+  const forumStopCount = ROMAN_FORUM_TOUR.stopIds.length
+  const cityLoopStopCount = HEART_OF_ANCIENT_ROME_TOUR.stopIds.length
+  const totalStops = forumStopCount + cityLoopStopCount
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
@@ -117,27 +117,40 @@ function TourIntroScreen({ onTryFreePreview, onViewTours }) {
           <section className="mt-8 border-t border-limestone/60 pt-6" aria-label="Tour preview">
             <p className="text-eyebrow uppercase text-terracotta">What you will walk</p>
             <h2 className="mt-2 font-display text-xl font-semibold text-deep-slate">
-              Two routes, twenty landmarks
+              Two routes, {totalStops} landmarks
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-              The Roman Forum cluster and a city-wide loop through the Colosseum, centro storico,
-              fountains, piazzas, and the Tiber.
+              The Roman Forum tour covers every stop inside the Forum cluster. The Heart of Ancient
+              Rome loop takes you through the Colosseum, Capitoline Hill, and the rest of the city.
             </p>
 
-            <PreviewHighlightsList expanded={previewExpanded} />
+            <div className="mt-6 space-y-6">
+              <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
+                <p className="text-eyebrow uppercase text-terracotta">Roman Forum</p>
+                <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
+                  Forum cluster · {forumStopCount} stops
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+                  Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra,
+                  Temple of Saturn, Curia Julia, and Arch of Septimius Severus — the full Forum
+                  cluster walk.
+                </p>
+                <TourRouteStopList stopIds={ROMAN_FORUM_TOUR.stopIds} />
+              </div>
 
-            {TOUR_PREVIEW_HIGHLIGHTS.length > 4 ? (
-              <button
-                type="button"
-                className="mt-3 text-sm font-semibold text-terracotta underline-offset-2 hover:underline"
-                onClick={() => {
-                  triggerHaptic(HAPTIC_KIND.SOFT_TAP)
-                  setPreviewExpanded((open) => !open)
-                }}
-              >
-                {previewExpanded ? 'Show fewer highlights' : `Show all ${TOUR_PREVIEW_HIGHLIGHTS.length} highlights`}
-              </button>
-            ) : null}
+              <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
+                <p className="text-eyebrow uppercase text-terracotta">Heart of Ancient Rome</p>
+                <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
+                  City loop · {cityLoopStopCount} stops
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+                  The grand walking loop — Colosseum and Capitoline Hill through centro storico to
+                  Castel Sant&apos;Angelo, Circus Maximus, and the Appian Way. Everything outside the
+                  Forum cluster.
+                </p>
+                <TourRouteStopList stopIds={HEART_OF_ANCIENT_ROME_TOUR.stopIds} />
+              </div>
+            </div>
           </section>
 
           <section
@@ -162,8 +175,8 @@ function TourIntroScreen({ onTryFreePreview, onViewTours }) {
                   Taste the Colosseum for free
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-                  Experience the exterior reconstruction and hear the opening audio story — no purchase
-                  required. See why travelers love walking with ChronoWalk.
+                  Experience the exterior reconstruction and hear the opening audio story from the city
+                  loop — no purchase required.
                 </p>
                 <Button
                   size="lg"

@@ -13,7 +13,12 @@ describe('TourIntroScreen', () => {
     ).toBeInTheDocument()
     expect(screen.getByText(/^Your pace$/i)).toBeInTheDocument()
     expect(screen.getByText(/^Expert companion$/i)).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /two routes, twenty landmarks/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /two routes, 20 landmarks/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /forum cluster · 8 stops/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /city loop · 12 stops/i })).toBeInTheDocument()
+    expect(screen.getByText('Basilica of Maxentius')).toBeInTheDocument()
+    expect(screen.getByText('Curia Julia')).toBeInTheDocument()
+    expect(screen.getByText('Capitoline Hill')).toBeInTheDocument()
   })
 
   it('starts the free preview and opens the catalog', () => {

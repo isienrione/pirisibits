@@ -7,9 +7,9 @@ export const TOUR_PRODUCTS = {
     id: 'roman-forum',
     tourId: ROMAN_FORUM_TOUR.id,
     title: 'Roman Forum',
-    tagline: 'Eight ruins, one sacred valley',
+    tagline: 'Every stop in the Forum cluster',
     description:
-      'Walk the Forum floor from the Arch of Titus to Septimius Severus with matched before/after reveals at every stop.',
+      'Walk the Forum floor — Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of Saturn, Curia Julia, and Arch of Septimius Severus. All eight forum-cluster landmarks with matched before/after reveals.',
     priceUsd: 10,
     priceCents: 1000,
     stopIds: ROMAN_FORUM_TOUR.stopIds,
@@ -19,9 +19,9 @@ export const TOUR_PRODUCTS = {
     id: 'heart-of-ancient-rome',
     tourId: HEART_OF_ANCIENT_ROME_TOUR.id,
     title: 'Heart of Ancient Rome',
-    tagline: 'Colosseum, piazzas, fountains & the Tiber',
+    tagline: 'Colosseum, Capitoline & the city loop',
     description:
-      'The grand city loop — Colosseum and Palatine through centro storico to Castel Sant\'Angelo, Circus Maximus, and the Appian Way.',
+      'The grand city loop — Colosseum, Palatine Hill, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, Circus Maximus, and the Appian Way.',
     priceUsd: 10,
     priceCents: 1000,
     stopIds: HEART_OF_ANCIENT_ROME_TOUR.stopIds,
@@ -30,9 +30,9 @@ export const TOUR_PRODUCTS = {
   'rome-complete': {
     id: 'rome-complete',
     title: 'Complete Rome',
-    tagline: 'Roman Forum + Heart of Ancient Rome',
+    tagline: 'Forum cluster + city loop',
     description:
-      'Unlock both ChronoWalk Rome experiences — the Forum cluster and the city-wide Heart of Ancient Rome tour.',
+      'Unlock both ChronoWalk Rome routes — all eight Forum cluster stops plus the full city loop from the Colosseum to the Appian Way.',
     priceUsd: 15,
     priceCents: 1500,
     savingsUsd: 5,

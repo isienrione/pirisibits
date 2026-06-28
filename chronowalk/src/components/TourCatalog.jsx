@@ -162,8 +162,9 @@ function TourCatalog({
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-soft-slate">
           Detailed, entertaining walks you can finish in a few hours or spread across different days.
-          ChronoWalk stays with you as an expert companion — context, stories, and reconstructions at
-          every stop. Start with the Complete Rome bundle, or buy a single route for {formatUsd(10)}.
+          The Roman Forum tour covers every forum-cluster landmark; the city loop includes the
+          Colosseum, Capitoline Hill, and the rest of ancient Rome. Start with the Complete Rome
+          bundle, or buy a single route for {formatUsd(10)}.
         </p>
       </div>
 
