@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
@@ -20,6 +20,121 @@ const MAP_COLORS = {
 }
 
 const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
+
+const OFFLINE_MAP_STYLE = {
+  version: 8,
+  name: 'ChronoWalk Offline',
+  sources: {},
+  layers: [
+    {
+      id: 'background',
+      type: 'background',
+      paint: { 'background-color': '#F7F3EC' },
+    },
+  ],
+}
+
+function setupMapLayers(map, { stops, tour, bounds }) {
+  if (!map.getSource('waypoint-zones')) {
+    map.addSource('waypoint-zones', {
+      type: 'geojson',
+      data: stopsToFeatureCollection(stops),
+    })
+
+    map.addLayer({
+      id: 'waypoint-zones-fill',
+      type: 'fill',
+      source: 'waypoint-zones',
+      paint: {
+        'fill-color': [
+          'match',
+          ['get', 'status'],
+          'completed',
+          MAP_COLORS.completed,
+          'current',
+          MAP_COLORS.current,
+          MAP_COLORS.pending,
+        ],
+        'fill-opacity': 0.14,
+      },
+    })
+
+    map.addLayer({
+      id: 'waypoint-zones-outline',
+      type: 'line',
+      source: 'waypoint-zones',
+      paint: {
+        'line-color': [
+          'match',
+          ['get', 'status'],
+          'completed',
+          MAP_COLORS.completed,
+          'current',
+          MAP_COLORS.current,
+          MAP_COLORS.pending,
+        ],
+        'line-width': 2,
+        'line-opacity': 0.65,
+      },
+    })
+
+    map.addSource('tour-route', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    })
+
+    map.addLayer({
+      id: 'tour-route-line',
+      type: 'line',
+      source: 'tour-route',
+      paint: {
+        'line-color': MAP_COLORS.tourRoute,
+        'line-width': 4,
+        'line-opacity': 0.55,
+        'line-dasharray': [1.2, 1.4],
+      },
+    })
+
+    map.addSource('active-leg-route', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    })
+
+    map.addLayer({
+      id: 'active-leg-route-line',
+      type: 'line',
+      source: 'active-leg-route',
+      paint: {
+        'line-color': MAP_COLORS.activeLeg,
+        'line-width': 5,
+        'line-opacity': 0.95,
+      },
+    })
+  } else {
+    map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(stops))
+  }
+
+  if (bounds && tour?.stopIds?.length > 1) {
+    map.fitBounds(
+      [
+        [bounds.minLng - 0.005, bounds.minLat - 0.004],
+        [bounds.maxLng + 0.005, bounds.maxLat + 0.004],
+      ],
+      { padding: 56, maxZoom: 15, duration: 0 }
+    )
+  }
+}
+
+function OfflineMapNotice() {
+  return (
+    <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,18rem)]">
+      <div className="rounded-2xl border border-limestone/70 bg-warm-white/92 px-3 py-2 text-xs leading-relaxed text-soft-slate shadow-sm backdrop-blur-sm">
+        Offline map view — landmarks and GPS guidance remain active. Detailed street tiles need
+        internet.
+      </div>
+    </div>
+  )
+}
 
 const createLandmarkMarkerElement = (title, status) => {
   const el = document.createElement('div')
@@ -142,18 +257,45 @@ const TourMap = ({
   arrivalPulseActive = false,
   debugMapEnabled = false,
   focusTarget = null,
+  isOffline = false,
 }) => {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
+  const offlineMapModeRef = useRef(isOffline)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [mapError, setMapError] = useState(null)
+  const [offlineMapMode, setOfflineMapMode] = useState(isOffline)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay = debugMapEnabled || isDebugMap()
+  const useOfflineStyle = offlineMapMode || isOffline
+
+  useEffect(() => {
+    offlineMapModeRef.current = useOfflineStyle
+  }, [useOfflineStyle])
 
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
+  const stopsRef = useRef(stops)
+  stopsRef.current = stops
+
+  const activateOfflineMap = useCallback(() => {
+    if (!map.current || offlineMapModeRef.current) return
+
+    offlineMapModeRef.current = true
+    setOfflineMapMode(true)
+
+    const bounds = tour ? getTourBounds(tour) : null
+    map.current.once('style.load', () => {
+      setupMapLayers(map.current, { stops: stopsRef.current, tour, bounds })
+      setMapLoaded(true)
+    })
+    map.current.setStyle(OFFLINE_MAP_STYLE)
+  }, [tour])
+
+  const activateOfflineMapRef = useRef(activateOfflineMap)
+  activateOfflineMapRef.current = activateOfflineMap
 
   useEffect(() => {
     if (!mapboxToken || !mapContainer.current || map.current) return undefined
@@ -168,7 +310,7 @@ const TourMap = ({
     try {
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: MAP_STYLE,
+        style: useOfflineStyle ? OFFLINE_MAP_STYLE : MAP_STYLE,
         center: [center.lng, center.lat],
         zoom: tour?.mapZoom ?? 14,
       })
@@ -179,109 +321,35 @@ const TourMap = ({
     }
 
     map.current.on('error', (event) => {
-      console.error('Mapbox runtime error:', event?.error ?? event)
-      setMapError('Map tiles failed to load. Check your connection or Mapbox token.')
+      console.warn('Mapbox runtime error:', event?.error ?? event)
+      if (!offlineMapModeRef.current) {
+        activateOfflineMapRef.current()
+      }
     })
 
     map.current.on('load', () => {
-      map.current.addSource('waypoint-zones', {
-        type: 'geojson',
-        data: stopsToFeatureCollection(stops),
-      })
-
-      map.current.addLayer({
-        id: 'waypoint-zones-fill',
-        type: 'fill',
-        source: 'waypoint-zones',
-        paint: {
-          'fill-color': [
-            'match',
-            ['get', 'status'],
-            'completed',
-            MAP_COLORS.completed,
-            'current',
-            MAP_COLORS.current,
-            MAP_COLORS.pending,
-          ],
-          'fill-opacity': 0.14,
-        },
-      })
-
-      map.current.addLayer({
-        id: 'waypoint-zones-outline',
-        type: 'line',
-        source: 'waypoint-zones',
-        paint: {
-          'line-color': [
-            'match',
-            ['get', 'status'],
-            'completed',
-            MAP_COLORS.completed,
-            'current',
-            MAP_COLORS.current,
-            MAP_COLORS.pending,
-          ],
-          'line-width': 2,
-          'line-opacity': 0.65,
-        },
-      })
-
-      map.current.addSource('tour-route', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-      })
-
-      map.current.addLayer({
-        id: 'tour-route-line',
-        type: 'line',
-        source: 'tour-route',
-        paint: {
-          'line-color': MAP_COLORS.tourRoute,
-          'line-width': 4,
-          'line-opacity': 0.55,
-          'line-dasharray': [1.2, 1.4],
-        },
-      })
-
-      map.current.addSource('active-leg-route', {
-        type: 'geojson',
-        data: { type: 'FeatureCollection', features: [] },
-      })
-
-      map.current.addLayer({
-        id: 'active-leg-route-line',
-        type: 'line',
-        source: 'active-leg-route',
-        paint: {
-          'line-color': MAP_COLORS.activeLeg,
-          'line-width': 5,
-          'line-opacity': 0.95,
-        },
-      })
-
-      if (bounds && tour?.stopIds?.length > 1) {
-        map.current.fitBounds(
-          [
-            [bounds.minLng - 0.005, bounds.minLat - 0.004],
-            [bounds.maxLng + 0.005, bounds.maxLat + 0.004],
-          ],
-          { padding: 56, maxZoom: 15, duration: 0 }
-        )
-      }
-
+      setupMapLayers(map.current, { stops, tour, bounds })
       setMapLoaded(true)
     })
 
     return () => {
       setMapLoaded(false)
       setMapError(null)
+      setOfflineMapMode(isOffline)
+      offlineMapModeRef.current = isOffline
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
       landmarkMarkers.current = []
       map.current?.remove()
       map.current = null
     }
-  }, [tour?.id])
+  }, [tour?.id, isOffline])
+
+  useEffect(() => {
+    if (isOffline && map.current && !offlineMapModeRef.current) {
+      activateOfflineMapRef.current()
+    }
+  }, [isOffline])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -307,7 +375,7 @@ const TourMap = ({
   }, [stops, mapLoaded])
 
   useEffect(() => {
-    if (!map.current || !mapLoaded || !mapboxToken) return undefined
+    if (!map.current || !mapLoaded || !mapboxToken || useOfflineStyle) return undefined
 
     let cancelled = false
 
@@ -350,7 +418,7 @@ const TourMap = ({
     return () => {
       cancelled = true
     }
-  }, [tour, stops, activeLeg, transitLegActive, mapLoaded])
+  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, useOfflineStyle])
 
   useEffect(() => {
     if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
@@ -451,6 +519,7 @@ const TourMap = ({
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
+      {useOfflineStyle ? <OfflineMapNotice /> : null}
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}

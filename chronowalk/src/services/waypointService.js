@@ -53,6 +53,7 @@ export const getWaypointAudioUrls = (waypoint) => ({
 
 const fetchWaypointFromSupabase = async (id) => {
   if (!supabase) return null
+  if (typeof navigator !== 'undefined' && !navigator.onLine) return null
 
   const { data, error } = await supabase
     .from('waypoints')
@@ -84,3 +85,5 @@ export const fetchWaypointById = async (id) => {
 
   return normalizeWaypoint(localWaypoint)
 }
+
+export { normalizeWaypoint }

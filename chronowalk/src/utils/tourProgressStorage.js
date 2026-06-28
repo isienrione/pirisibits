@@ -37,6 +37,35 @@ export const loadTourProgress = (tourId) => {
   }
 }
 
+export const loadTourProgressAsync = async (tourId) => {
+  const localProgress = loadTourProgress(tourId)
+  const hasStoredProgress =
+    localProgress.targetStopIndex > 0 ||
+    localProgress.transitLegActive ||
+    localProgress.arrivedStopIds.length > 0
+
+  if (hasStoredProgress) return localProgress
+
+  try {
+    const { loadOfflineUserProgress } = await import('../offline/offlineRepository')
+    const offlineProgress = await loadOfflineUserProgress(tourId)
+
+    if (!offlineProgress) return localProgress
+
+    return {
+      ...defaultProgress(),
+      targetStopIndex: offlineProgress.targetStopIndex ?? 0,
+      transitLegActive: Boolean(offlineProgress.transitLegActive),
+      arrivedStopIds: Array.isArray(offlineProgress.arrivedStopIds)
+        ? offlineProgress.arrivedStopIds
+        : [],
+    }
+  } catch (error) {
+    console.warn('tourProgressStorage: IndexedDB fallback failed.', error)
+    return localProgress
+  }
+}
+
 export const saveTourProgress = (tourId, progress) => {
   if (typeof window === 'undefined' || !tourId || !progress) return
 

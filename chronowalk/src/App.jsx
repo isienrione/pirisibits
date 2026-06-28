@@ -17,6 +17,8 @@ import { getWaypointGeo } from './data/waypointGeo'
 import { LoadingPanel } from './components/ui'
 import { ConfirmDialog } from './components/ui/ConfirmDialog'
 import PwaUpdatePrompt from './components/PwaUpdatePrompt'
+import OfflineBadge from './components/OfflineBadge'
+import { useNetworkStatus } from './hooks/useNetworkStatus'
 import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
@@ -81,6 +83,7 @@ function App() {
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
   const prevJourneyStateRef = useRef(null)
   const tourStartedRef = useRef(false)
+  const { isOffline } = useNetworkStatus()
 
   const session = useTourSession({
     tour: singleWaypointId ? null : tour,
@@ -423,6 +426,7 @@ function App() {
               arrivalPulseActive={discoveryVisible}
               debugMapEnabled={debugMapEnabled}
               focusTarget={mapFocusTarget}
+              isOffline={isOffline}
             />
           </Suspense>
         </ErrorBoundary>
@@ -463,6 +467,12 @@ function App() {
                 compact={locationStatus === LOCATION_STATUS.WAITING}
               />
             </div>
+          </div>
+        ) : null}
+
+        {isOffline ? (
+          <div className="pointer-events-none fixed right-4 top-[calc(env(safe-area-inset-top)+0.85rem)] z-[43]">
+            <OfflineBadge />
           </div>
         ) : null}
       </div>

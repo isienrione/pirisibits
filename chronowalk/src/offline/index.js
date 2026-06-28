@@ -26,6 +26,12 @@ export {
 } from './estimateDownloadSize'
 
 export {
+  fetchWaypointForTour,
+  fetchTourWaypoints,
+  hydrateWaypointMedia,
+} from './offlineWaypointLoader'
+
+export {
   STORES,
   AUDIO_ASSET_FIELDS,
   IMAGE_ASSET_FIELDS,

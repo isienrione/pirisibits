@@ -23,6 +23,10 @@ describe('sliderMedia', () => {
     )
   })
 
+  it('leaves blob URLs unchanged for offline playback', () => {
+    expect(bustMediaUrl('blob:offline-audio', navona)).toBe('blob:offline-audio')
+  })
+
   it('resolves busted slider and poster URLs', () => {
     expect(getModernSliderUrl(navona)).toContain('piazza-navona-2')
     expect(getAncientSliderUrl(navona)).toContain('ancient-reconstruction.mp4')

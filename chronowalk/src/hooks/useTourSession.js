@@ -3,11 +3,12 @@ import { AUDIO_MODES, audioOrchestrator } from '../audio/AudioOrchestrator'
 import { ARRIVAL_AUDIO_PREFETCH_RADIUS_M } from '../data/colosseum'
 import { getDebugStopId, isDebugGeo, shouldResetTour } from '../config/env'
 import { useGeoLocation, JOURNEY_STATE } from './useGeoLocation'
-import { fetchTourById } from '../services/tourService'
+import { fetchTourWaypoints } from '../offline/offlineWaypointLoader'
 import { getTourLeg, getTourLegs } from '../services/tourRegistry'
 import { getWaypointGeo } from '../data/waypointGeo'
 import {
   loadTourProgress,
+  loadTourProgressAsync,
   resetTourProgress,
   saveTourProgress,
 } from '../utils/tourProgressStorage'
@@ -133,6 +134,21 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   }, [tour, targetGeo, targetStopId, progress.arrivedStopIds, state])
 
   useEffect(() => {
+    if (!tour?.id || isSingleStopMode) return undefined
+
+    let cancelled = false
+
+    loadTourProgressAsync(tour.id).then((storedProgress) => {
+      if (cancelled || shouldResetTour() || getDebugStopId()) return
+      setProgress(storedProgress)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [tour?.id, isSingleStopMode])
+
+  useEffect(() => {
     if (!hasInteracted) return undefined
 
     const ids = isSingleStopMode
@@ -144,19 +160,27 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     let cancelled = false
     setLoading(true)
 
-    Promise.all(ids.map((id) => fetchTourById(id)))
-      .then((results) => {
+    const loadWaypoints = async () => {
+      try {
+        const results = isSingleStopMode
+          ? await fetchTourWaypoints(null, ids)
+          : await fetchTourWaypoints(tour.id, ids)
+
         if (cancelled) return
+
         const map = {}
         results.forEach((waypoint) => {
           if (waypoint?.id) map[waypoint.id] = waypoint
         })
         setWaypointsById(map)
-      })
-      .catch((error) => console.error('useTourSession: failed to load waypoints.', error))
-      .finally(() => {
+      } catch (error) {
+        console.error('useTourSession: failed to load waypoints.', error)
+      } finally {
         if (!cancelled) setLoading(false)
-      })
+      }
+    }
+
+    void loadWaypoints()
 
     return () => {
       cancelled = true

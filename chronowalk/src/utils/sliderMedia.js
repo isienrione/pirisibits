@@ -1,6 +1,7 @@
 /** Bust browser cache when replacing files at the same public/ path. Bump in seed after re-export. */
 export const bustMediaUrl = (url, waypoint) => {
   if (!url) return null
+  if (url.startsWith('blob:')) return url
 
   const version = waypoint?.media_cache_version ?? 1
   const token = waypoint?.id ? `${waypoint.id}-${version}` : String(version)
