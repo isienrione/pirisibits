@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { Button, GlassPanel, MediaHero, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -48,23 +48,32 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, co
 }
 
 function RouteThumbnail({ posterUrl, title, compact = false }) {
-  const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
+  const sizeClass = compact ? 'h-12 w-12' : 'h-16 w-16'
+
+  if (!posterUrl) {
+    return (
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-limestone/70 bg-sand px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate shadow-sm',
+          sizeClass
+        )}
+      >
+        {title?.slice(0, 2) ?? '—'}
+      </div>
+    )
+  }
 
   return (
-    <div className={cn('shrink-0 overflow-hidden border border-limestone/70 bg-sand shadow-sm', sizeClass)}>
-      {posterUrl ? (
-        <img
-          src={posterUrl}
-          alt=""
-          className="h-full w-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">
-          {title?.slice(0, 2) ?? '—'}
-        </div>
-      )}
-    </div>
+    <MediaHero
+      src={posterUrl}
+      alt=""
+      aspect="auto"
+      rounded={compact ? 'lg' : 'xl'}
+      gradient="subtle"
+      zoom
+      fadeIn
+      className={cn('shrink-0 border border-limestone/70 shadow-sm', sizeClass)}
+    />
   )
 }
 
