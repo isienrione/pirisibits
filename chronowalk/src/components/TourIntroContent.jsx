@@ -137,13 +137,13 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
             />
           </div>
           <div className="flex flex-col justify-center px-5 py-5 sm:px-6">
-            <p className="text-eyebrow uppercase text-terracotta">Try before you buy</p>
+            <p className="text-eyebrow uppercase text-terracotta">Try for free</p>
             <h2 className="mt-2 font-display text-lg font-semibold text-deep-slate">
-              Taste the Colosseum for free
+              Explore the full Rome tour on the map
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-              Experience the exterior reconstruction and hear the opening audio story from the city
-              loop — no purchase required.
+              See every landmark on the bundled route — Forum cluster and city loop — with the
+              Colosseum unlocked. Tap any locked stop to preview what you&apos;re missing.
             </p>
             <Button
               size="lg"
@@ -154,7 +154,7 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
                 onTryFreePreview()
               }}
             >
-              Try a bit for free
+              Try for free
             </Button>
           </div>
         </div>

@@ -120,7 +120,7 @@ function TourLanding({
           <div
             ref={catalogRef}
             id="tour-catalog"
-            className={hasOwnedTours ? 'mt-8' : 'mt-10 border-t border-limestone/60 pt-8'}
+            className={hasOwnedTours ? 'mt-8' : 'mt-12 border-t border-limestone/60 pt-10'}
           >
             <TourCatalog
               selectedTourId={selectedTourId}

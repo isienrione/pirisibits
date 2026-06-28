@@ -57,12 +57,14 @@ function TourProductCard({
       )}
     >
       {product.badge ? (
-        <span className="absolute right-4 top-4 rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold">
+        <span className="inline-flex w-fit rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold">
           {product.badge}
         </span>
       ) : null}
 
-      <p className="text-eyebrow uppercase text-terracotta">{product.tagline}</p>
+      <p className={cn('text-eyebrow uppercase text-terracotta', product.badge ? 'mt-3' : '')}>
+        {product.tagline}
+      </p>
       <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">{product.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-soft-slate">{product.description}</p>
 
@@ -188,10 +190,7 @@ function TourCatalog({
       </div>
 
       {bundleProduct ? (
-        <div className="space-y-3">
-          <p className="text-eyebrow uppercase text-terracotta">Best value</p>
-          {renderProductCard(bundleProduct)}
-        </div>
+        <div className="space-y-4">{renderProductCard(bundleProduct)}</div>
       ) : null}
 
       {singleProducts.length ? (

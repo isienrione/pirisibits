@@ -145,9 +145,11 @@ const TourHud = ({
   awaitingFirstStop = false,
   firstStopTitle,
   dismissedWaypointTitle,
+  isFreePreview = false,
   onReopenWaypoint,
   onContinueTour,
   onDirections,
+  onUnlockTour,
   hasBottomNav = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
@@ -160,10 +162,11 @@ const TourHud = ({
   const currentStopNumber = isTourMode
     ? Math.min(progress.targetStopIndex + 1, totalStops)
     : 1
-  const tourTitle = tour?.title ?? 'ChronoWalk'
+  const tourTitle = isFreePreview ? 'Free preview' : tour?.title ?? 'ChronoWalk'
 
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const showContinue =
+    !isFreePreview &&
     isTourMode &&
     atStop &&
     targetStopId &&
@@ -186,7 +189,12 @@ const TourHud = ({
   let statusTone = 'default'
   let showDirections = false
 
-  if (awaitingFirstStop) {
+  if (isFreePreview) {
+    routeHeadline = 'Complete Rome tour'
+    routeSubline = `${totalStops} landmarks on the map`
+    statusLabel = 'Colosseum unlocked — tap locked stops to preview the full tour'
+    statusTone = 'default'
+  } else if (awaitingFirstStop) {
     routeHeadline = 'Tour begins at'
     routeSubline = firstStopTitle ?? 'Colosseum'
     statusLabel = distanceLabel
@@ -239,7 +247,11 @@ const TourHud = ({
 
   const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined
 
-  const routeAction = showContinue ? (
+  const routeAction = isFreePreview ? (
+    <Button fullWidth className={ctaInCard} onClick={onUnlockTour}>
+      View tours &amp; pricing
+    </Button>
+  ) : showContinue ? (
     <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>
       {dismissedWaypointTitle && onReopenWaypoint ? (
         <Button

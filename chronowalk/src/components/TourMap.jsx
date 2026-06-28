@@ -49,6 +49,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.completed,
           'current',
           MAP_COLORS.current,
+          'locked',
+          MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
         'fill-opacity': 0.14,
@@ -67,6 +69,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.completed,
           'current',
           MAP_COLORS.current,
+          'locked',
+          MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
         'line-width': 2,
@@ -130,7 +134,9 @@ const createLandmarkMarkerElement = (title, status) => {
       ? 'bg-olive'
       : status === 'current'
         ? 'bg-gold ring-2 ring-sand'
-        : 'bg-soft-slate opacity-80'
+        : status === 'locked'
+          ? 'bg-soft-slate opacity-60'
+          : 'bg-soft-slate opacity-80'
 
   el.innerHTML = `
     <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>

@@ -14,6 +14,7 @@ const STATUS_META = {
   completed: { label: 'Visited', className: statusArrived },
   current: { label: 'Current', className: statusCurrent },
   upcoming: { label: 'Ahead', className: statusLocked },
+  locked: { label: 'Locked', className: statusLocked },
 }
 
 function LockIcon() {
@@ -36,14 +37,18 @@ export function TourStopCard({
   waypoint,
   onOpen,
   actionLabel = 'Open',
+  lockedActionLabel = 'Unlock tour',
   compact = false,
 }) {
   const status = STATUS_META[stop.status] ?? STATUS_META.upcoming
   const posterUrl = waypoint ? getModernCoverUrl(waypoint) : null
   const subtitle =
-    waypoint?.arrival_subtitle ?? 'Audio story and historical reveal on arrival.'
+    stop.status === 'locked'
+      ? 'Purchase the full tour to unlock this landmark, audio story, and reconstruction.'
+      : waypoint?.arrival_subtitle ?? 'Audio story and historical reveal on arrival.'
   const isCurrent = stop.status === 'current'
   const isUpcoming = stop.status === 'upcoming'
+  const isLocked = stop.status === 'locked'
   const isVisited = stop.status === 'completed'
 
   return (
@@ -73,7 +78,7 @@ export function TourStopCard({
               Preview soon
             </div>
           )}
-          {isUpcoming ? (
+          {isUpcoming || isLocked ? (
             <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
               <LockIcon />
             </div>
@@ -102,7 +107,7 @@ export function TourStopCard({
                 status.className
               )}
             >
-              {isUpcoming ? <LockIcon /> : null}
+              {isUpcoming || isLocked ? <LockIcon /> : null}
               {status.label}
             </span>
           </div>
@@ -113,7 +118,7 @@ export function TourStopCard({
             className={cn('mt-4', focusRing)}
             onClick={() => onOpen?.(stop.id)}
           >
-            {isVisited ? 'Revisit' : actionLabel}
+            {isLocked ? lockedActionLabel : isVisited ? 'Revisit' : actionLabel}
           </Button>
         </div>
       </div>

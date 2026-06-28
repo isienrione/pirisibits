@@ -65,15 +65,17 @@ function App() {
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])
   const [freePreviewStopId, setFreePreviewStopId] = useState(null)
-  const isolatedWaypointId = singleWaypointId || freePreviewStopId
+  const isFreePreview = Boolean(freePreviewStopId) && !singleWaypointId
+  const isolatedWaypointId = singleWaypointId
   const entitlements = useTourEntitlements()
   const [activeTour, setActiveTour] = useState(null)
   const tour = useMemo(() => {
     if (activeTour) return activeTour
-    if (isolatedWaypointId) return ROME_CORE_TOUR
+    if (isFreePreview || isolatedWaypointId) return ROME_CORE_TOUR
     if (tourId) return getTourById(tourId) ?? null
     return null
-  }, [activeTour, isolatedWaypointId, tourId])
+  }, [activeTour, isFreePreview, isolatedWaypointId, tourId])
+  const mapTour = isolatedWaypointId ? null : tour
   const assetStudioWaypointId = getAssetStudioWaypointId()
   const [mapRetryKey, setMapRetryKey] = useState(0)
   const [mapFocusTarget, setMapFocusTarget] = useState(null)
@@ -99,8 +101,9 @@ function App() {
   const { isOffline } = useNetworkStatus()
 
   const session = useTourSession({
-    tour: isolatedWaypointId ? null : tour,
+    tour: mapTour,
     singleWaypointId: isolatedWaypointId,
+    previewUnlockedStopIds: isFreePreview ? [FREE_PREVIEW_STOP_ID] : [],
     hasInteracted,
   })
 
@@ -152,6 +155,10 @@ function App() {
   useEffect(() => {
     if (!hasInteracted || tourStartedRef.current) return
     if (session.loading) return
+    if (isFreePreview) {
+      tourStartedRef.current = true
+      return undefined
+    }
     if (!audioEnabled) {
       tourStartedRef.current = true
       return
@@ -163,10 +170,10 @@ function App() {
     return () => {
       audioOrchestrator.stop()
     }
-  }, [hasInteracted, session.loading, session.startTourAmbient, audioEnabled])
+  }, [hasInteracted, isFreePreview, session.loading, session.startTourAmbient, audioEnabled])
 
   useEffect(() => {
-    if (!hasInteracted || !session.currentWaypoint) return
+    if (!hasInteracted || !session.currentWaypoint || isFreePreview) return
 
     const justArrived =
       session.state === JOURNEY_STATE.ARRIVAL &&
@@ -181,6 +188,7 @@ function App() {
     return revealWaypointCard(session.currentWaypoint)
   }, [
     hasInteracted,
+    isFreePreview,
     session.currentWaypoint,
     session.state,
     session.markArrived,
@@ -235,10 +243,38 @@ function App() {
     }
   }, [freePreviewStopId])
 
+  const handleExitFreePreview = useCallback(() => {
+    setFreePreviewStopId(null)
+    setHasInteracted(false)
+    setActiveWaypoint(null)
+    setDiscoveredWaypoint(null)
+    setCardDismissed(false)
+    setWaypointAccessMode('arrival')
+    setFreshDiscoveryId(null)
+    freePreviewOpenedRef.current = false
+    audioOrchestrator.stop()
+  }, [])
+
   const handleOpenStop = useCallback(
     (stopId) => {
       const geo = getWaypointGeo(stopId)
       const title = geo?.title ?? stopId
+
+      if (isFreePreview) {
+        if (stopId === FREE_PREVIEW_STOP_ID) {
+          openWaypointCard(stopId, 'freeSample')
+          return
+        }
+
+        setStopOpenPrompt({
+          stopId,
+          title,
+          message: `${title} is part of the full Rome tour. Purchase to unlock every landmark, audio story, and reconstruction.`,
+          confirmLabel: 'View tours & pricing',
+          previewLocked: true,
+        })
+        return
+      }
 
       if (!session.waypointsById[stopId]) return
 
@@ -257,15 +293,20 @@ function App() {
         confirmLabel: visited ? 'Reopen anyway' : 'Open anyway',
       })
     },
-    [openWaypointCard, session.position, session.progress.arrivedStopIds, session.waypointsById]
+    [isFreePreview, openWaypointCard, session.position, session.progress.arrivedStopIds, session.waypointsById]
   )
 
   const handleConfirmStopOpen = useCallback(() => {
+    if (stopOpenPrompt?.previewLocked) {
+      handleExitFreePreview()
+      setStopOpenPrompt(null)
+      return
+    }
     if (!stopOpenPrompt?.stopId) return
     triggerHaptic(HAPTIC_KIND.SELECTION)
     openWaypointCard(stopOpenPrompt.stopId, 'remote')
     setStopOpenPrompt(null)
-  }, [openWaypointCard, stopOpenPrompt])
+  }, [handleExitFreePreview, openWaypointCard, stopOpenPrompt])
 
   const handleContinueTour = async () => {
     setActiveWaypoint(null)
@@ -285,18 +326,6 @@ function App() {
     setHasInteracted(true)
     setActiveTab(NAV_TABS.TOUR)
   }
-
-  const handleExitFreePreview = useCallback(() => {
-    setFreePreviewStopId(null)
-    setHasInteracted(false)
-    setActiveWaypoint(null)
-    setDiscoveredWaypoint(null)
-    setCardDismissed(false)
-    setWaypointAccessMode('arrival')
-    setFreshDiscoveryId(null)
-    freePreviewOpenedRef.current = false
-    audioOrchestrator.stop()
-  }, [])
 
   const handleStartFreePreview = useCallback(async () => {
     setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
@@ -493,7 +522,7 @@ function App() {
             }
           >
             <TourMap
-              tour={isolatedWaypointId ? null : tour}
+              tour={mapTour}
               stops={session.mapStops}
               activeTargetId={session.targetStopId}
               activeLeg={session.activeLeg}
@@ -514,8 +543,10 @@ function App() {
         <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
 
         <TourHud
-          tour={isolatedWaypointId ? null : tour}
+          tour={mapTour}
           currentStopId={session.targetStopId ?? isolatedWaypointId}
+          isFreePreview={isFreePreview}
+          onUnlockTour={handleExitFreePreview}
           progress={session.progress}
           targetStopId={session.targetStopId}
           nextWaypoint={session.nextWaypoint}
@@ -560,7 +591,9 @@ function App() {
       {activeTab === NAV_TABS.TOUR ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <TourOverviewView
-            tour={isolatedWaypointId ? null : tour}
+            tour={mapTour}
+            isFreePreview={isFreePreview}
+            onUnlockTour={handleExitFreePreview}
             progress={session.progress}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
@@ -585,7 +618,9 @@ function App() {
       {activeTab === NAV_TABS.STOPS ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <StopsView
-            tour={isolatedWaypointId ? null : tour}
+            tour={mapTour}
+            isFreePreview={isFreePreview}
+            onUnlockTour={handleExitFreePreview}
             mapStops={session.mapStops}
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
@@ -610,7 +645,7 @@ function App() {
       {activeTab === NAV_TABS.SETTINGS ? (
         <Suspense fallback={<TabLoadingFallback />}>
           <SettingsView
-            tour={isolatedWaypointId ? null : tour}
+            tour={mapTour}
             locationStatus={locationStatus}
             journeyState={session.state}
             distance={session.distance}
@@ -666,7 +701,7 @@ function App() {
 
       {showTourComplete ? (
         <TourCompleteView
-          tour={isolatedWaypointId ? null : tour}
+          tour={mapTour}
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}

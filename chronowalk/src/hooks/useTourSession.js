@@ -41,7 +41,12 @@ const buildInitialProgress = (tour) => {
 /**
  * Tour session: ordered stops, legs, geofence target, transit audio, progress persistence.
  */
-export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
+export const useTourSession = ({
+  tour,
+  singleWaypointId,
+  previewUnlockedStopIds = [],
+  hasInteracted,
+}) => {
   const debugMode = isDebugGeo()
   const [progress, setProgress] = useState(() => buildInitialProgress(tour))
   const [waypointsById, setWaypointsById] = useState({})
@@ -49,11 +54,34 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   const [debugOverridePosition, setDebugOverridePosition] = useState(null)
 
   const isSingleStopMode = Boolean(singleWaypointId)
+  const isPreviewMode =
+    !isSingleStopMode && Boolean(tour?.stopIds?.length) && previewUnlockedStopIds.length > 0
+
+  const previewTargetStopId = isPreviewMode ? previewUnlockedStopIds[0] : null
+
+  const effectiveProgress = useMemo(() => {
+    if (!isPreviewMode || !tour?.stopIds?.length || !previewTargetStopId) return progress
+
+    const previewIndex = tour.stopIds.indexOf(previewTargetStopId)
+    return {
+      targetStopIndex: previewIndex >= 0 ? previewIndex : 0,
+      arrivedStopIds: [],
+      transitLegActive: false,
+    }
+  }, [isPreviewMode, tour?.stopIds, previewTargetStopId, progress])
 
   const targetStopId = useMemo(() => {
     if (isSingleStopMode) return singleWaypointId
-    return tour?.stopIds?.[progress.targetStopIndex] ?? null
-  }, [isSingleStopMode, singleWaypointId, tour, progress.targetStopIndex])
+    if (isPreviewMode) return previewTargetStopId
+    return tour?.stopIds?.[effectiveProgress.targetStopIndex] ?? null
+  }, [
+    isSingleStopMode,
+    singleWaypointId,
+    isPreviewMode,
+    previewTargetStopId,
+    tour,
+    effectiveProgress.targetStopIndex,
+  ])
 
   const targetGeo = useMemo(
     () => (targetStopId ? getWaypointGeo(targetStopId) : null),
@@ -61,32 +89,37 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   )
 
   const activeLeg = useMemo(() => {
-    if (isSingleStopMode || !tour || progress.targetStopIndex === 0) return null
-    return getTourLeg(tour, progress.targetStopIndex - 1)
-  }, [isSingleStopMode, tour, progress.targetStopIndex])
+    if (isSingleStopMode || isPreviewMode || !tour || effectiveProgress.targetStopIndex === 0) {
+      return null
+    }
+    return getTourLeg(tour, effectiveProgress.targetStopIndex - 1)
+  }, [isSingleStopMode, isPreviewMode, tour, effectiveProgress.targetStopIndex])
 
   const nextStopId = useMemo(() => {
-    if (isSingleStopMode || !tour) return null
-    return tour.stopIds[progress.targetStopIndex + 1] ?? null
-  }, [isSingleStopMode, tour, progress.targetStopIndex])
+    if (isSingleStopMode || isPreviewMode || !tour) return null
+    return tour.stopIds[effectiveProgress.targetStopIndex + 1] ?? null
+  }, [isSingleStopMode, isPreviewMode, tour, effectiveProgress.targetStopIndex])
 
   const hasArrivedAtTarget =
-    Boolean(targetStopId) && progress.arrivedStopIds.includes(targetStopId)
+    Boolean(targetStopId) && effectiveProgress.arrivedStopIds.includes(targetStopId)
 
   const debugPosition = useMemo(() => {
     if (debugOverridePosition) return debugOverridePosition
-    if (progress.transitLegActive) return null
+    if (effectiveProgress.transitLegActive) return null
     if (hasArrivedAtTarget && targetGeo?.debugPosition) return targetGeo.debugPosition
     return null
   }, [
     debugOverridePosition,
-    progress.transitLegActive,
+    effectiveProgress.transitLegActive,
     hasArrivedAtTarget,
     targetGeo?.debugPosition,
   ])
 
   const simulateAtTarget =
-    debugMode && hasArrivedAtTarget && !progress.transitLegActive && !debugOverridePosition
+    debugMode &&
+    hasArrivedAtTarget &&
+    !effectiveProgress.transitLegActive &&
+    !debugOverridePosition
 
   const { position, state, distance, locationStatus, retryLocation } = useGeoLocation({
     target: targetGeo?.landmark,
@@ -112,13 +145,32 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
       ]
     }
 
+    if (isPreviewMode) {
+      const unlocked = new Set(previewUnlockedStopIds)
+      return tour.stopIds
+        .map((stopId, index) => {
+          const geo = getWaypointGeo(stopId)
+          if (!geo) return null
+
+          return {
+            id: stopId,
+            title: geo.title,
+            landmark: geo.landmark,
+            arrivalRadiusM: geo.arrivalRadiusM,
+            index,
+            status: unlocked.has(stopId) ? 'current' : 'locked',
+          }
+        })
+        .filter(Boolean)
+    }
+
     return tour.stopIds
       .map((stopId, index) => {
         const geo = getWaypointGeo(stopId)
         if (!geo) return null
 
         let status = 'upcoming'
-        if (progress.arrivedStopIds.includes(stopId)) status = 'completed'
+        if (effectiveProgress.arrivedStopIds.includes(stopId)) status = 'completed'
         else if (stopId === targetStopId) status = 'current'
 
         return {
@@ -131,10 +183,18 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
         }
       })
       .filter(Boolean)
-  }, [tour, targetGeo, targetStopId, progress.arrivedStopIds, state])
+  }, [
+    tour,
+    targetGeo,
+    targetStopId,
+    effectiveProgress.arrivedStopIds,
+    state,
+    isPreviewMode,
+    previewUnlockedStopIds,
+  ])
 
   useEffect(() => {
-    if (!tour?.id || isSingleStopMode) return undefined
+    if (!tour?.id || isSingleStopMode || isPreviewMode) return undefined
 
     let cancelled = false
 
@@ -146,14 +206,16 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     return () => {
       cancelled = true
     }
-  }, [tour?.id, isSingleStopMode])
+  }, [tour?.id, isSingleStopMode, isPreviewMode])
 
   useEffect(() => {
     if (!hasInteracted) return undefined
 
     const ids = isSingleStopMode
       ? [singleWaypointId]
-      : tour?.stopIds ?? []
+      : isPreviewMode
+        ? previewUnlockedStopIds
+        : tour?.stopIds ?? []
 
     if (!ids.length) return undefined
 
@@ -185,15 +247,15 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     return () => {
       cancelled = true
     }
-  }, [hasInteracted, isSingleStopMode, singleWaypointId, tour])
+  }, [hasInteracted, isSingleStopMode, isPreviewMode, previewUnlockedStopIds, singleWaypointId, tour])
 
   useEffect(() => {
-    if (!tour?.id || isSingleStopMode) return
+    if (!tour?.id || isSingleStopMode || isPreviewMode) return
     saveTourProgress(tour.id, progress)
-  }, [tour?.id, isSingleStopMode, progress])
+  }, [tour?.id, isSingleStopMode, isPreviewMode, progress])
 
   const markArrived = useCallback(() => {
-    if (!targetStopId) return
+    if (!targetStopId || isPreviewMode) return
 
     setProgress((current) => ({
       ...current,
@@ -204,14 +266,14 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     if (debugMode && targetGeo?.debugPosition) {
       setDebugOverridePosition(targetGeo.debugPosition)
     }
-  }, [targetStopId, debugMode, targetGeo?.debugPosition])
+  }, [targetStopId, debugMode, targetGeo?.debugPosition, isPreviewMode])
 
   const beginTransitToNextStop = useCallback(async () => {
-    if (isSingleStopMode || !tour || !nextStopId || !nextWaypoint) return false
+    if (isSingleStopMode || isPreviewMode || !tour || !nextStopId || !nextWaypoint) return false
 
     const departingStopId = targetStopId
     const departingGeo = getWaypointGeo(departingStopId)
-    const nextIndex = progress.targetStopIndex + 1
+    const nextIndex = effectiveProgress.targetStopIndex + 1
 
     setProgress((current) => ({
       ...current,
@@ -240,11 +302,14 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
     nextStopId,
     nextWaypoint,
     targetStopId,
-    progress.targetStopIndex,
+    effectiveProgress.targetStopIndex,
     debugMode,
+    isPreviewMode,
   ])
 
   const startTourAmbient = useCallback(async () => {
+    if (isPreviewMode) return
+
     const firstWaypoint = isSingleStopMode
       ? waypointsById[singleWaypointId]
       : waypointsById[tour?.stopIds?.[0]]
@@ -256,17 +321,25 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
       transit: firstWaypoint.transit_narrative_url,
       arrival: firstWaypoint.arrival_immersive_url,
     })
-  }, [isSingleStopMode, singleWaypointId, tour, waypointsById])
+  }, [isPreviewMode, isSingleStopMode, singleWaypointId, tour, waypointsById])
 
   const isTourComplete = useMemo(() => {
-    if (isSingleStopMode || !tour?.stopIds?.length) return false
-    return tour.stopIds.every((id) => progress.arrivedStopIds.includes(id))
-  }, [isSingleStopMode, tour?.stopIds, progress.arrivedStopIds])
+    if (isSingleStopMode || isPreviewMode || !tour?.stopIds?.length) return false
+    return tour.stopIds.every((id) => effectiveProgress.arrivedStopIds.includes(id))
+  }, [isSingleStopMode, isPreviewMode, tour?.stopIds, effectiveProgress.arrivedStopIds])
 
   const isAwaitingFirstStop = useMemo(() => {
-    if (isSingleStopMode || !tour?.stopIds?.length) return false
-    return progress.arrivedStopIds.length === 0 && state !== JOURNEY_STATE.ARRIVAL
-  }, [isSingleStopMode, tour?.stopIds?.length, progress.arrivedStopIds.length, state])
+    if (isSingleStopMode || isPreviewMode || !tour?.stopIds?.length) return false
+    return (
+      effectiveProgress.arrivedStopIds.length === 0 && state !== JOURNEY_STATE.ARRIVAL
+    )
+  }, [
+    isSingleStopMode,
+    isPreviewMode,
+    tour?.stopIds?.length,
+    effectiveProgress.arrivedStopIds.length,
+    state,
+  ])
 
   const firstStopTitle = useMemo(() => {
     if (!tour?.stopIds?.[0]) return null
@@ -276,8 +349,9 @@ export const useTourSession = ({ tour, singleWaypointId, hasInteracted }) => {
   return {
     loading,
     isSingleStopMode,
+    isPreviewMode,
     tour,
-    progress,
+    progress: effectiveProgress,
     targetStopId,
     targetGeo,
     activeLeg,

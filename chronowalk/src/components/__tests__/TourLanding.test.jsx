@@ -19,7 +19,7 @@ describe('TourLanding', () => {
         name: /detailed, entertaining self-guided audio tour of rome/i,
       })
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /try a bit for free/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /try for free/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /complete rome/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /^roman forum$/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: /^heart of ancient rome$/i })).toBeInTheDocument()
