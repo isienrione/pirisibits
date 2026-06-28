@@ -587,17 +587,10 @@ const WaypointCard = ({
         ) : null}
 
         {accessMode === 'freeSample' ? (
-          <div className="mt-4 space-y-3">
-            <p className="rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
-              This is your free taste of ChronoWalk — the Colosseum reconstruction and opening audio
-              story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
-            </p>
-            {onViewTours ? (
-              <Button size="lg" fullWidth onClick={onViewTours}>
-                View tours &amp; pricing
-              </Button>
-            ) : null}
-          </div>
+          <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
+            This is your free taste of ChronoWalk — the Colosseum reconstruction and opening audio
+            story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
+          </p>
         ) : accessMode === 'remote' ? (
           <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
             You are viewing this landmark remotely. Visit on foot for the full GPS-guided arrival
@@ -665,6 +658,27 @@ const WaypointCard = ({
               </p>
             ) : null}
             <AudioTranscriptSection waypoint={waypoint} />
+          </div>
+        ) : null}
+
+        {accessMode === 'freeSample' && onViewTours ? (
+          <div
+            className="mt-6 border-t border-dashed border-deep-slate/20 pt-5"
+            role="region"
+            aria-label="Unlock full tours"
+          >
+            <p className="text-center text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate">
+              This is a free preview
+            </p>
+            <Button
+              size="lg"
+              fullWidth
+              variant="secondary"
+              className="mt-3 border-deep-slate/25 bg-deep-slate text-warm-white shadow-none hover:border-deep-slate/25 hover:bg-deep-slate/90"
+              onClick={onViewTours}
+            >
+              View tours &amp; pricing
+            </Button>
           </div>
         ) : null}
 
