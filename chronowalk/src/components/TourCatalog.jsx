@@ -144,6 +144,9 @@ function TourCatalog({
     return tourIds.length > 0 && tourIds.every((tourId) => isTourUnlocked(tourId))
   }
 
+  const bundleProduct = TOUR_PRODUCT_LIST.find((product) => product.includesProductIds?.length)
+  const singleProducts = TOUR_PRODUCT_LIST.filter((product) => !product.includesProductIds?.length)
+
   const handleSelectProduct = (product) => {
     if (product.includesProductIds?.length) {
       const firstChild = getTourProduct(product.includesProductIds[0])
@@ -151,6 +154,23 @@ function TourCatalog({
       return
     }
     if (product.tourId) onSelectTour(product.tourId)
+  }
+
+  const renderProductCard = (product) => {
+    const tourIds = getTourIdsForProduct(product.id)
+    const selected = tourIds.includes(selectedTourId)
+    const unlocked = isProductUnlocked(product.id)
+
+    return (
+      <TourProductCard
+        key={product.id}
+        product={product}
+        selected={selected}
+        unlocked={unlocked}
+        onSelect={handleSelectProduct}
+        onPurchase={onPurchaseProduct}
+      />
+    )
   }
 
   return (
@@ -163,29 +183,28 @@ function TourCatalog({
         <p className="mt-2 text-sm leading-relaxed text-soft-slate">
           Detailed, entertaining walks you can finish in a few hours or spread across different days.
           The Roman Forum tour covers every forum-cluster landmark; the city loop includes the
-          Colosseum, Capitoline Hill, and the rest of ancient Rome. Start with the Complete Rome
-          bundle, or buy a single route for {formatUsd(10)}.
+          Colosseum, Capitoline Hill, and the rest of ancient Rome.
         </p>
       </div>
 
-      <div className="space-y-4">
-        {TOUR_PRODUCT_LIST.map((product) => {
-          const tourIds = getTourIdsForProduct(product.id)
-          const selected = tourIds.includes(selectedTourId)
-          const unlocked = isProductUnlocked(product.id)
+      {bundleProduct ? (
+        <div className="space-y-3">
+          <p className="text-eyebrow uppercase text-terracotta">Best value</p>
+          {renderProductCard(bundleProduct)}
+        </div>
+      ) : null}
 
-          return (
-            <TourProductCard
-              key={product.id}
-              product={product}
-              selected={selected}
-              unlocked={unlocked}
-              onSelect={handleSelectProduct}
-              onPurchase={onPurchaseProduct}
-            />
-          )
-        })}
-      </div>
+      {singleProducts.length ? (
+        <div className="space-y-4 border-t border-limestone/60 pt-6">
+          <div>
+            <p className="text-eyebrow uppercase text-terracotta">Single tours</p>
+            <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">
+              One route at a time · {formatUsd(10)} each
+            </h3>
+          </div>
+          <div className="space-y-4">{singleProducts.map(renderProductCard)}</div>
+        </div>
+      ) : null}
     </section>
   )
 }

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import TourLanding from '../TourLanding'
 
 describe('TourLanding', () => {
-  it('shows the intro screen before purchases', () => {
+  it('shows intro content and purchase options on one page', () => {
     render(
       <TourLanding
         ownedTourIds={[]}
@@ -20,9 +20,12 @@ describe('TourLanding', () => {
       })
     ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try a bit for free/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /complete rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^roman forum$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: /^heart of ancient rome$/i })).toBeInTheDocument()
   })
 
-  it('shows the bundle first on the catalog screen', () => {
+  it('lists the bundle before single tour options', () => {
     render(
       <TourLanding
         ownedTourIds={[]}
@@ -33,12 +36,8 @@ describe('TourLanding', () => {
       />
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /see tours & pricing/i }))
-
-    const headings = screen.getAllByRole('heading', { level: 3 })
-    expect(headings[0]).toHaveTextContent(/complete rome/i)
-    expect(screen.getByRole('heading', { name: /^roman forum$/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 3, name: /^heart of ancient rome$/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: /^complete rome$/i })).toBeInTheDocument()
+    expect(screen.getByText(/^Single tours$/i)).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /buy \$10/i })).toHaveLength(2)
     expect(screen.getByRole('button', { name: /buy \$15/i })).toBeInTheDocument()
   })

@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { Button, GlassPanel } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
-import TourIntroScreen from './TourIntroScreen'
+import TourIntroContent from './TourIntroContent'
 import TourCatalog, {
   getDefaultSelectableTourId,
   resolveActiveTour,
@@ -22,17 +22,11 @@ function TourLanding({
   onTryFreePreview,
 }) {
   const hasOwnedTours = ownsAllTours || ownedTourIds.length > 0
-  const [screen, setScreen] = useState(() => (hasOwnedTours ? 'catalog' : 'intro'))
+  const catalogRef = useRef(null)
   const [selectedTourId, setSelectedTourId] = useState(
     () => initialTourId ?? getDefaultSelectableTourId(ownedTourIds, ownsAllTours)
   )
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
-
-  useEffect(() => {
-    if (hasOwnedTours) {
-      setScreen('catalog')
-    }
-  }, [hasOwnedTours])
 
   useEffect(() => {
     if (initialTourId && (ownsAllTours || ownedTourIds.includes(initialTourId))) {
@@ -61,25 +55,23 @@ function TourLanding({
     }
   }
 
+  const scrollToCatalog = () => {
+    catalogRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   if (singleWaypointId) {
     return null
   }
 
-  if (screen === 'intro') {
-    return (
-      <TourIntroScreen
-        onTryFreePreview={onTryFreePreview}
-        onViewTours={() => {
-          triggerHaptic(HAPTIC_KIND.SOFT_TAP)
-          setScreen('catalog')
-        }}
-      />
-    )
-  }
-
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
-      <div className="absolute inset-x-0 top-0 h-[min(52vh,34rem)] sm:h-[min(56vh,36rem)]">
+      <div
+        className={
+          hasOwnedTours
+            ? 'absolute inset-x-0 top-0 h-[min(52vh,34rem)] sm:h-[min(56vh,36rem)]'
+            : 'absolute inset-x-0 top-0 h-[min(58vh,36rem)] sm:h-[min(62vh,38rem)]'
+        }
+      >
         <img
           src={heroSrc}
           alt=""
@@ -98,33 +90,38 @@ function TourLanding({
       </div>
 
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
-        <div className="h-[min(34vh,14rem)] shrink-0 sm:h-[min(38vh,16rem)]" aria-hidden="true" />
+        <div
+          className={
+            hasOwnedTours
+              ? 'h-[min(34vh,14rem)] shrink-0 sm:h-[min(38vh,16rem)]'
+              : 'h-[min(30vh,12rem)] shrink-0 sm:h-[min(34vh,14rem)]'
+          }
+          aria-hidden="true"
+        />
 
         <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
           {!hasOwnedTours ? (
-            <button
-              type="button"
-              className="mb-4 text-sm font-semibold text-terracotta underline-offset-2 hover:underline"
-              onClick={() => {
-                triggerHaptic(HAPTIC_KIND.SOFT_TAP)
-                setScreen('intro')
-              }}
-            >
-              ← About ChronoWalk
-            </button>
-          ) : null}
+            <TourIntroContent
+              onTryFreePreview={onTryFreePreview}
+              onViewTours={scrollToCatalog}
+            />
+          ) : (
+            <>
+              <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
+              <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl">
+                Your Rome walking tours
+              </h1>
+              <p className="mt-4 text-base leading-relaxed text-soft-slate">
+                Pick up where you left off or switch between your purchased routes.
+              </p>
+            </>
+          )}
 
-          <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
-          <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl">
-            {hasOwnedTours ? 'Your Rome walking tours' : 'Choose your tour'}
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-soft-slate">
-            {hasOwnedTours
-              ? 'Pick up where you left off or switch between your purchased routes.'
-              : 'Self-guided audio walks at your own pace — buy one route or unlock both with the bundle.'}
-          </p>
-
-          <div className="mt-8">
+          <div
+            ref={catalogRef}
+            id="tour-catalog"
+            className={hasOwnedTours ? 'mt-8' : 'mt-10 border-t border-limestone/60 pt-8'}
+          >
             <TourCatalog
               selectedTourId={selectedTourId}
               ownedTourIds={ownedTourIds}
@@ -167,12 +164,12 @@ function TourLanding({
                 you between landmarks.
               </p>
             </div>
-          ) : (
+          ) : !hasOwnedTours ? (
             <p className="mt-8 rounded-2xl border border-limestone/70 bg-sand/40 px-4 py-3 text-sm text-soft-slate">
               Purchase a tour above to begin. The Complete Rome bundle unlocks both routes — walk
               them in an afternoon each or spread across different days.
             </p>
-          )}
+          ) : null}
         </GlassPanel>
 
         <div className="h-6 shrink-0 sm:h-8" aria-hidden="true" />

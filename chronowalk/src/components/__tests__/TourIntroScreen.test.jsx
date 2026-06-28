@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import TourIntroScreen from '../TourIntroScreen'
+import { TourIntroContent } from '../TourIntroContent'
 
-describe('TourIntroScreen', () => {
+describe('TourIntroContent', () => {
   it('introduces the self-guided audio tour experience', () => {
-    render(<TourIntroScreen onTryFreePreview={vi.fn()} onViewTours={vi.fn()} />)
+    render(<TourIntroContent onTryFreePreview={vi.fn()} onViewTours={vi.fn()} />)
 
     expect(
       screen.getByRole('heading', {
@@ -25,7 +25,7 @@ describe('TourIntroScreen', () => {
     const onTryFreePreview = vi.fn()
     const onViewTours = vi.fn()
 
-    render(<TourIntroScreen onTryFreePreview={onTryFreePreview} onViewTours={onViewTours} />)
+    render(<TourIntroContent onTryFreePreview={onTryFreePreview} onViewTours={onViewTours} />)
 
     fireEvent.click(screen.getByRole('button', { name: /try a bit for free/i }))
     expect(onTryFreePreview).toHaveBeenCalledTimes(1)
