@@ -1,12 +1,12 @@
-import { ROME_CITY_TOUR } from '../data/rome-city-tour'
+import { HEART_OF_ANCIENT_ROME_TOUR } from '../data/heart-of-ancient-rome-tour'
 import { ROME_CORE_TOUR } from '../data/rome-core-tour'
-import { ROME_FORUM_CLUSTER_TOUR } from '../data/rome-forum-cluster-tour'
+import { ROMAN_FORUM_TOUR } from '../data/roman-forum-tour'
 import { getWaypointGeo } from '../data/waypointGeo'
 
 const TOURS = {
   [ROME_CORE_TOUR.id]: ROME_CORE_TOUR,
-  [ROME_FORUM_CLUSTER_TOUR.id]: ROME_FORUM_CLUSTER_TOUR,
-  [ROME_CITY_TOUR.id]: ROME_CITY_TOUR,
+  [ROMAN_FORUM_TOUR.id]: ROMAN_FORUM_TOUR,
+  [HEART_OF_ANCIENT_ROME_TOUR.id]: HEART_OF_ANCIENT_ROME_TOUR,
 }
 
 export const getTourById = (tourId) => TOURS[tourId] ?? null

@@ -4,6 +4,20 @@ import { isUnlockAllTours } from '../config/env'
 const ENTITLEMENTS_KEY = 'chronowalk-owned-tours'
 const PURCHASES_KEY = 'chronowalk-purchases'
 
+const TOUR_ID_ALIASES = {
+  'rome-forum-cluster': 'roman-forum',
+  'rome-city': 'heart-of-ancient-rome',
+}
+
+const PRODUCT_ID_ALIASES = {
+  'rome-forum-cluster': 'roman-forum',
+  'rome-city': 'heart-of-ancient-rome',
+}
+
+const normalizeTourId = (tourId) => TOUR_ID_ALIASES[tourId] ?? tourId
+
+const normalizeProductId = (productId) => PRODUCT_ID_ALIASES[productId] ?? productId
+
 const readJson = (key, fallback) => {
   if (typeof window === 'undefined') return fallback
   try {
@@ -29,12 +43,14 @@ export const readOwnedTourIds = () => {
     return null
   }
   const stored = readJson(ENTITLEMENTS_KEY, [])
-  return Array.isArray(stored) ? stored.filter(Boolean) : []
+  if (!Array.isArray(stored)) return []
+  return [...new Set(stored.filter(Boolean).map(normalizeTourId))]
 }
 
 export const readPurchasedProductIds = () => {
   const stored = readJson(PURCHASES_KEY, [])
-  return Array.isArray(stored) ? stored.filter(Boolean) : []
+  if (!Array.isArray(stored)) return []
+  return [...new Set(stored.filter(Boolean).map(normalizeProductId))]
 }
 
 const persistOwnedTourIds = (tourIds) => {
@@ -56,9 +72,9 @@ export const ownsAnyTour = (ownedTourIds = readOwnedTourIds()) => {
   return ownedTourIds.length > 0
 }
 
-/** Mock purchase — records product and unlocks associated tour ids. */
 export const purchaseTourProduct = (productId) => {
-  const tourIds = getTourIdsForProduct(productId)
+  const normalizedProductId = normalizeProductId(productId)
+  const tourIds = getTourIdsForProduct(normalizedProductId)
   if (!tourIds.length) return { ok: false, reason: 'unknown_product' }
 
   const owned = new Set(readOwnedTourIds() ?? [])
@@ -67,12 +83,12 @@ export const purchaseTourProduct = (productId) => {
   }
 
   const purchases = new Set(readPurchasedProductIds())
-  purchases.add(productId)
+  purchases.add(normalizedProductId)
 
   persistOwnedTourIds([...owned])
   persistPurchasedProductIds([...purchases])
 
-  return { ok: true, tourIds: [...owned], productId }
+  return { ok: true, tourIds: [...owned], productId: normalizedProductId }
 }
 
 export const clearTourEntitlements = () => {

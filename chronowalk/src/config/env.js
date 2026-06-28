@@ -28,7 +28,7 @@ export const getAssetStudioWaypointId = () => {
   return new URLSearchParams(window.location.search).get('waypoint') || 'colosseum'
 }
 
-/** Tour id from URL (?tour=rome-forum-cluster). Omit for catalog landing. */
+/** Tour id from URL (?tour=roman-forum). Omit for catalog landing. */
 export const getTourId = () => {
   if (typeof window === 'undefined') return null
   const params = new URLSearchParams(window.location.search)

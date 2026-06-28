@@ -158,7 +158,7 @@ function TourCatalog({
       <div>
         <p className="text-eyebrow uppercase text-terracotta">Choose your walk</p>
         <h2 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
-          Two routes — or both together
+          Roman Forum or Heart of Ancient Rome
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-soft-slate">
           Each tour is a self-contained GPS-guided walk. Buy one for {formatUsd(10)}, or unlock both
@@ -189,9 +189,9 @@ function TourCatalog({
 }
 
 export function getDefaultSelectableTourId(ownedTourIds, ownsAllTours) {
-  if (ownsAllTours) return 'rome-forum-cluster'
-  if (ownedTourIds.includes('rome-forum-cluster')) return 'rome-forum-cluster'
-  if (ownedTourIds.includes('rome-city')) return 'rome-city'
+  if (ownsAllTours) return 'roman-forum'
+  if (ownedTourIds.includes('roman-forum')) return 'roman-forum'
+  if (ownedTourIds.includes('heart-of-ancient-rome')) return 'heart-of-ancient-rome'
   return null
 }
 

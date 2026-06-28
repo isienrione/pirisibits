@@ -24,17 +24,25 @@ describe('tourEntitlements', () => {
   })
 
   it('unlocks forum cluster tour after single purchase', () => {
-    const result = purchaseTourProduct('rome-forum-cluster')
+    const result = purchaseTourProduct('roman-forum')
     expect(result.ok).toBe(true)
-    expect(readOwnedTourIds()).toEqual(['rome-forum-cluster'])
-    expect(ownsTour('rome-forum-cluster')).toBe(true)
-    expect(ownsTour('rome-city')).toBe(false)
+    expect(readOwnedTourIds()).toEqual(['roman-forum'])
+    expect(ownsTour('roman-forum')).toBe(true)
+    expect(ownsTour('heart-of-ancient-rome')).toBe(false)
+  })
+
+  it('migrates legacy tour ids from earlier builds', () => {
+    window.localStorage.setItem(
+      'chronowalk-owned-tours',
+      JSON.stringify(['rome-forum-cluster', 'rome-city'])
+    )
+    expect(readOwnedTourIds().sort()).toEqual(['heart-of-ancient-rome', 'roman-forum'])
   })
 
   it('unlocks both tours after bundle purchase', () => {
     purchaseTourProduct('rome-complete')
-    expect(readOwnedTourIds().sort()).toEqual(['rome-city', 'rome-forum-cluster'])
-    expect(ownsTour('rome-forum-cluster')).toBe(true)
-    expect(ownsTour('rome-city')).toBe(true)
+    expect(readOwnedTourIds().sort()).toEqual(['heart-of-ancient-rome', 'roman-forum'])
+    expect(ownsTour('roman-forum')).toBe(true)
+    expect(ownsTour('heart-of-ancient-rome')).toBe(true)
   })
 })

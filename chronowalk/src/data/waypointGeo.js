@@ -46,6 +46,35 @@ import {
   FONTANA_DI_TREVI_DEBUG_USER_POS,
   FONTANA_DI_TREVI_GEOFENCE_ARRIVAL_THRESHOLD_M,
 } from './fontana-di-trevi'
+import { FORUM_WAYPOINTS_BY_ID } from './forumWaypoints'
+import { EXPANSION_WAYPOINTS_BY_ID } from './expansionWaypoints'
+
+const buildScaffoldGeo = (waypoint, { arrivalRadiusM = 100, mapZoom = 17 } = {}) => ({
+  id: waypoint.id,
+  title: waypoint.title,
+  landmark: { lat: waypoint.lat, lng: waypoint.lng },
+  debugPosition: { lat: waypoint.lat, lng: waypoint.lng },
+  geofenceThresholdM: 30,
+  arrivalRadiusM,
+  mapZoom,
+})
+
+const FORUM_GEO = Object.fromEntries(
+  Object.values(FORUM_WAYPOINTS_BY_ID).map((waypoint) => [
+    waypoint.id,
+    buildScaffoldGeo(waypoint, { arrivalRadiusM: 80, mapZoom: 18 }),
+  ])
+)
+
+const EXPANSION_GEO = Object.fromEntries(
+  Object.values(EXPANSION_WAYPOINTS_BY_ID).map((waypoint) => [
+    waypoint.id,
+    buildScaffoldGeo(waypoint, {
+      arrivalRadiusM: waypoint.id === 'appian-way' ? 200 : 120,
+      mapZoom: waypoint.id === 'appian-way' ? 15 : 16,
+    }),
+  ])
+)
 
 /** Map / geofence settings per waypoint — extend when adding new stops. */
 export const WAYPOINT_GEO = {
@@ -121,6 +150,8 @@ export const WAYPOINT_GEO = {
     arrivalRadiusM: CASTEL_SANT_ANGELO_ARRIVAL_RADIUS_M,
     mapZoom: 16,
   },
+  ...FORUM_GEO,
+  ...EXPANSION_GEO,
 }
 
 export const getWaypointGeo = (waypointId) => WAYPOINT_GEO[waypointId] ?? null

@@ -11,7 +11,19 @@ fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-if [[ "$WAYPOINT_ID" == "colosseum" ]]; then
+if [[ "$WAYPOINT_ID" == forum-* ]]; then
+  DIR="$ROOT/public/waypoints/forum-cluster/$WAYPOINT_ID"
+  required=(
+    modern-exterior.jpg
+    modern.mp4
+    modern-poster.jpg
+    ancient-reconstruction.mp4
+    ancient-reconstruction.jpg
+    ancient-poster.jpg
+    geocache-arrival-alert.wav
+  )
+  alert_path="$DIR/geocache-arrival-alert.wav"
+elif [[ "$WAYPOINT_ID" == "colosseum" ]]; then
   DIR="$ROOT/public/waypoints/colosseum/exterior"
   required=(
     modern-exterior.jpg

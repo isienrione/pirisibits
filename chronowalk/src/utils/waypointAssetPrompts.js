@@ -7,6 +7,14 @@ const DEFAULT_VIDEO_DURATION_SEC = 5;
 const getWaypointMediaRoot = (waypoint) => {
   const id = waypoint?.id ?? 'waypoint';
   if (id === 'colosseum') return `public/waypoints/${id}/exterior`;
+  if (id.startsWith('forum-')) return `public/waypoints/forum-cluster/${id}`;
+  const expansionRoot = {
+    'palatine-hill-cluster': 'palatine-hill-cluster',
+    'trajan-market': 'trajan-market',
+    'circus-maximus': 'circus-maximus',
+    'appian-way': 'via-appia',
+  }[id];
+  if (expansionRoot) return `public/waypoints/${expansionRoot}`;
   return `public/waypoints/${id}`;
 };
 

@@ -18,6 +18,7 @@ describe('waypoint public assets', () => {
     it(`${stopId} seed media paths exist under public/waypoints`, () => {
       const waypoint = getLocalWaypoint(stopId)
       expect(waypoint).toBeTruthy()
+      if (waypoint?.ship_assets === false) return
 
       const missing = []
 

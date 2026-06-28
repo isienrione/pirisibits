@@ -5,6 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VERIFY="$ROOT/scripts/verify-waypoint-assets.sh"
 
+# Heart of Ancient Rome stops with shipped media in repo (scaffolds excluded).
 STOP_IDS=(
   colosseum
   capitoline-hill

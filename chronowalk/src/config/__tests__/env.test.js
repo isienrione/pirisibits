@@ -35,8 +35,8 @@ describe('env URL params', () => {
   })
 
   it('reads explicit tour id from URL', () => {
-    setSearch('/?tour=rome-city')
-    expect(getTourId()).toBe('rome-city')
+    setSearch('/?tour=heart-of-ancient-rome')
+    expect(getTourId()).toBe('heart-of-ancient-rome')
   })
 
   it('reads resetTour and debugStop params', () => {

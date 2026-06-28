@@ -6,6 +6,8 @@ import { CAMPO_DE_FIORI_WAYPOINT } from '../data/campo-de-fiori'
 import { LARGO_ARGENTINA_WAYPOINT } from '../data/largo-argentina'
 import { CASTEL_SANT_ANGELO_WAYPOINT } from '../data/castel-sant-angelo'
 import { FONTANA_DI_TREVI_WAYPOINT } from '../data/fontana-di-trevi'
+import { EXPANSION_WAYPOINTS_BY_ID } from '../data/expansionWaypoints'
+import { FORUM_WAYPOINTS_BY_ID } from '../data/forumWaypoints'
 
 export const MEDIA_URL_KEYS = [
   'modern_image_url',
@@ -33,16 +35,28 @@ const COPY_KEYS = [
   'slider_freeze_at_sec',
 ]
 
-/**
- * Supabase rows may omit large media fields during MVP. Keep local seed assets as fallback.
- * Reject remote URLs that point at a different waypoint's folder (common copy-paste mistake).
- */
 const LOCAL_POV_KEYS = ['lat', 'lng', 'framingProfile']
+
+const LOCAL_WAYPOINTS = {
+  colosseum: COLOSSEUM_WAYPOINT,
+  pantheon: PANTHEON_WAYPOINT,
+  'piazza-navona': PIAZZA_NAVONA_WAYPOINT,
+  'capitoline-hill': CAPITOLINE_HILL_WAYPOINT,
+  'campo-de-fiori': CAMPO_DE_FIORI_WAYPOINT,
+  'largo-argentina': LARGO_ARGENTINA_WAYPOINT,
+  'castel-sant-angelo': CASTEL_SANT_ANGELO_WAYPOINT,
+  'fontana-di-trevi': FONTANA_DI_TREVI_WAYPOINT,
+  ...FORUM_WAYPOINTS_BY_ID,
+  ...EXPANSION_WAYPOINTS_BY_ID,
+}
 
 export const isForeignWaypointMediaUrl = (url, waypointId) => {
   if (!url || !waypointId) return false
-  const match = String(url).match(/\/waypoints\/([^/]+)\//)
-  return Boolean(match && match[1] !== waypointId)
+  const path = String(url)
+  if (!path.includes('/waypoints/')) return false
+  if (path.includes(`/${waypointId}/`)) return false
+  if (waypointId === 'colosseum' && path.includes('/waypoints/colosseum/')) return false
+  return true
 }
 
 export const mergeWaypointWithLocalDefaults = (remote, local) => {
@@ -51,7 +65,6 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
 
   const merged = { ...local, ...remote }
 
-  // Git seed paths are authoritative for slider/audio assets during local iteration.
   for (const key of MEDIA_URL_KEYS) {
     if (isForeignWaypointMediaUrl(merged[key], local.id)) {
       merged[key] = local[key]
@@ -66,7 +79,6 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
     if (!merged[key]) merged[key] = local[key]
   }
 
-  // Git seed is authoritative for camera POV — Supabase rows may lag during asset iteration.
   for (const key of LOCAL_POV_KEYS) {
     if (local[key] != null) merged[key] = local[key]
   }
@@ -78,14 +90,4 @@ export const mergeWaypointWithLocalDefaults = (remote, local) => {
   return merged
 }
 
-export const getLocalWaypoint = (id) => {
-  if (id === 'colosseum') return COLOSSEUM_WAYPOINT
-  if (id === 'pantheon') return PANTHEON_WAYPOINT
-  if (id === 'piazza-navona') return PIAZZA_NAVONA_WAYPOINT
-  if (id === 'capitoline-hill') return CAPITOLINE_HILL_WAYPOINT
-  if (id === 'campo-de-fiori') return CAMPO_DE_FIORI_WAYPOINT
-  if (id === 'largo-argentina') return LARGO_ARGENTINA_WAYPOINT
-  if (id === 'castel-sant-angelo') return CASTEL_SANT_ANGELO_WAYPOINT
-  if (id === 'fontana-di-trevi') return FONTANA_DI_TREVI_WAYPOINT
-  return null
-}
+export const getLocalWaypoint = (id) => LOCAL_WAYPOINTS[id] ?? null

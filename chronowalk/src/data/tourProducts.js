@@ -1,49 +1,49 @@
-import { ROME_CITY_TOUR } from './rome-city-tour'
-import { ROME_FORUM_CLUSTER_TOUR } from './rome-forum-cluster-tour'
+import { HEART_OF_ANCIENT_ROME_TOUR } from './heart-of-ancient-rome-tour'
+import { ROMAN_FORUM_TOUR } from './roman-forum-tour'
 
 /** Individual walking tours and the complete Rome bundle. Prices in USD. */
 export const TOUR_PRODUCTS = {
-  'rome-forum-cluster': {
-    id: 'rome-forum-cluster',
-    tourId: ROME_FORUM_CLUSTER_TOUR.id,
-    title: 'Forum Cluster',
-    tagline: 'Colosseum & the ancient forum ridge',
+  'roman-forum': {
+    id: 'roman-forum',
+    tourId: ROMAN_FORUM_TOUR.id,
+    title: 'Roman Forum',
+    tagline: 'Eight ruins, one sacred valley',
     description:
-      'Walk from the Colosseum up to Capitoline Hill with matched before/after reveals at each stop.',
+      'Walk the Forum floor from the Arch of Titus to Septimius Severus with matched before/after reveals at every stop.',
     priceUsd: 10,
     priceCents: 1000,
-    stopIds: ROME_FORUM_CLUSTER_TOUR.stopIds,
-    firstStopTitle: 'Colosseum',
+    stopIds: ROMAN_FORUM_TOUR.stopIds,
+    firstStopTitle: 'Arch of Titus',
   },
-  'rome-city': {
-    id: 'rome-city',
-    tourId: ROME_CITY_TOUR.id,
-    title: 'Rome City Loop',
-    tagline: 'Pantheon, fountains, piazzas & the Tiber',
+  'heart-of-ancient-rome': {
+    id: 'heart-of-ancient-rome',
+    tourId: HEART_OF_ANCIENT_ROME_TOUR.id,
+    title: 'Heart of Ancient Rome',
+    tagline: 'Colosseum, piazzas, fountains & the Tiber',
     description:
-      'A centro storico circuit from the Pantheon to Castel Sant\'Angelo — Baroque squares and layered Roman history.',
+      'The grand city loop — Colosseum and Palatine through centro storico to Castel Sant\'Angelo, Circus Maximus, and the Appian Way.',
     priceUsd: 10,
     priceCents: 1000,
-    stopIds: ROME_CITY_TOUR.stopIds,
-    firstStopTitle: 'Pantheon',
+    stopIds: HEART_OF_ANCIENT_ROME_TOUR.stopIds,
+    firstStopTitle: 'Colosseum',
   },
   'rome-complete': {
     id: 'rome-complete',
     title: 'Complete Rome',
-    tagline: 'Both walks — forum cluster + city loop',
+    tagline: 'Roman Forum + Heart of Ancient Rome',
     description:
-      'Unlock the full ChronoWalk Rome experience: the Forum Cluster and the City Loop together.',
+      'Unlock both ChronoWalk Rome experiences — the Forum cluster and the city-wide Heart of Ancient Rome tour.',
     priceUsd: 15,
     priceCents: 1500,
     savingsUsd: 5,
     badge: 'Best value',
-    includesProductIds: ['rome-forum-cluster', 'rome-city'],
+    includesProductIds: ['roman-forum', 'heart-of-ancient-rome'],
   },
 }
 
 export const TOUR_PRODUCT_LIST = [
-  TOUR_PRODUCTS['rome-forum-cluster'],
-  TOUR_PRODUCTS['rome-city'],
+  TOUR_PRODUCTS['roman-forum'],
+  TOUR_PRODUCTS['heart-of-ancient-rome'],
   TOUR_PRODUCTS['rome-complete'],
 ]
 
