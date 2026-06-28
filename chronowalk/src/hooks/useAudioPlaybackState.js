@@ -8,6 +8,9 @@ export const useAudioPlaybackState = () => {
   const [currentMode, setCurrentMode] = useState(AUDIO_MODES.AMBIENT);
   const [isTourNarrationPlaying, setIsTourNarrationPlaying] = useState(false);
   const [isTourNarrationActive, setIsTourNarrationActive] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const applyDetail = useCallback((detail = {}) => {
     setNeedsResumeAudio(Boolean(detail.needsResumeAudio ?? detail.interrupted));
@@ -16,6 +19,9 @@ export const useAudioPlaybackState = () => {
     setCurrentMode(detail.currentMode ?? AUDIO_MODES.AMBIENT);
     setIsTourNarrationPlaying(Boolean(detail.isTourNarrationPlaying));
     setIsTourNarrationActive(Boolean(detail.isTourNarrationActive));
+    setCurrentTime(Number.isFinite(detail.currentTime) ? detail.currentTime : 0);
+    setDuration(Number.isFinite(detail.duration) ? detail.duration : 0);
+    setPlaybackRate(Number.isFinite(detail.playbackRate) ? detail.playbackRate : 1);
   }, []);
 
   const syncFromOrchestrator = useCallback(() => {
@@ -33,6 +39,9 @@ export const useAudioPlaybackState = () => {
     setCurrentMode(state.currentMode ?? AUDIO_MODES.AMBIENT);
     setIsTourNarrationPlaying(Boolean(audioOrchestrator.isTourNarrationPlaying?.()));
     setIsTourNarrationActive(Boolean(audioOrchestrator.isTourNarrationActive?.()));
+    setCurrentTime(state.currentTime ?? 0);
+    setDuration(state.duration ?? 0);
+    setPlaybackRate(state.playbackRate ?? 1);
   }, []);
 
   useEffect(() => {
@@ -59,6 +68,10 @@ export const useAudioPlaybackState = () => {
     };
   }, [applyDetail, syncFromOrchestrator]);
 
+  const seekTo = useCallback((seconds) => audioOrchestrator.seekTo(seconds), []);
+  const setRate = useCallback((rate) => audioOrchestrator.setPlaybackRate(rate), []);
+  const cycleRate = useCallback(() => audioOrchestrator.cyclePlaybackRate(), []);
+
   return {
     needsResumeAudio,
     playbackInterrupted: needsResumeAudio,
@@ -67,5 +80,11 @@ export const useAudioPlaybackState = () => {
     currentMode,
     isTourNarrationPlaying,
     isTourNarrationActive,
+    currentTime,
+    duration,
+    playbackRate,
+    seekTo,
+    setPlaybackRate: setRate,
+    cyclePlaybackRate: cycleRate,
   };
 };

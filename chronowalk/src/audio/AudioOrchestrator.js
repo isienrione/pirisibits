@@ -6,6 +6,7 @@ import {
   VISUAL_SYNC_DELAY_MS,
   waitForCanPlayThrough,
 } from './audioMedia';
+import { readPlaybackRate, writePlaybackRate, PLAYBACK_RATES } from '../utils/appPreferences';
 
 const AUDIO_MODES = {
   AMBIENT: 'AMBIENT',
@@ -40,13 +41,86 @@ class AudioOrchestrator {
     this.wantsArrivalPlayback = false;
     this.playbackInterrupted = false;
     this.suppressPauseDetection = false;
+    this.playbackRate = readPlaybackRate();
 
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleArrivalPause = this.handleArrivalPause.bind(this);
     this.handleArrivalPlay = this.handleArrivalPlay.bind(this);
+    this.handleProgressUpdate = this.handleProgressUpdate.bind(this);
 
     this.arrivalPlayer.addEventListener('pause', this.handleArrivalPause);
     this.arrivalPlayer.addEventListener('play', this.handleArrivalPlay);
+    this.arrivalPlayer.addEventListener('timeupdate', this.handleProgressUpdate);
+    this.arrivalPlayer.addEventListener('loadedmetadata', this.handleProgressUpdate);
+    this.arrivalPlayer.addEventListener('durationchange', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('timeupdate', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('loadedmetadata', this.handleProgressUpdate);
+    this.transitPlayer.addEventListener('durationchange', this.handleProgressUpdate);
+
+    this.applyPlaybackRate();
+  }
+
+  handleProgressUpdate() {
+    this.emitPlaybackState();
+  }
+
+  getActiveNarrationPlayer() {
+    if (this.currentMode === AUDIO_MODES.ARRIVAL && this.wantsArrivalPlayback) {
+      return this.arrivalPlayer;
+    }
+    if (this.currentMode === AUDIO_MODES.TRANSIT && this.transitPlayer.src) {
+      return this.transitPlayer;
+    }
+    return null;
+  }
+
+  getProgress() {
+    const player = this.getActiveNarrationPlayer();
+    if (!player) {
+      return { currentTime: 0, duration: 0, playbackRate: this.playbackRate };
+    }
+
+    const duration = Number.isFinite(player.duration) ? player.duration : 0;
+    return {
+      currentTime: player.currentTime || 0,
+      duration,
+      playbackRate: this.playbackRate,
+    };
+  }
+
+  applyPlaybackRate() {
+    this.arrivalPlayer.playbackRate = this.playbackRate;
+    this.transitPlayer.playbackRate = this.playbackRate;
+  }
+
+  seekTo(seconds) {
+    const player = this.getActiveNarrationPlayer();
+    if (!player || !Number.isFinite(seconds)) return false;
+
+    const duration = Number.isFinite(player.duration) ? player.duration : null;
+    const clamped =
+      duration && duration > 0
+        ? Math.min(Math.max(seconds, 0), duration)
+        : Math.max(seconds, 0);
+
+    player.currentTime = clamped;
+    this.emitPlaybackState();
+    return true;
+  }
+
+  setPlaybackRate(rate) {
+    if (!PLAYBACK_RATES.includes(rate)) return this.playbackRate;
+    this.playbackRate = rate;
+    writePlaybackRate(rate);
+    this.applyPlaybackRate();
+    this.emitPlaybackState();
+    return rate;
+  }
+
+  cyclePlaybackRate() {
+    const currentIndex = PLAYBACK_RATES.indexOf(this.playbackRate);
+    const nextRate = PLAYBACK_RATES[(currentIndex + 1) % PLAYBACK_RATES.length];
+    return this.setPlaybackRate(nextRate);
   }
 
   handleArrivalPause() {
@@ -85,6 +159,7 @@ class AudioOrchestrator {
 
     const isTourNarrationPlaying = this.isTourNarrationPlaying();
     const isTourNarrationActive = this.isTourNarrationActive();
+    const progress = this.getProgress();
 
     this.windowRef.dispatchEvent(
       new CustomEvent(AUDIO_PLAYBACK_STATE_EVENT, {
@@ -98,6 +173,9 @@ class AudioOrchestrator {
           wantsArrivalPlayback: this.wantsArrivalPlayback,
           isTourNarrationPlaying,
           isTourNarrationActive,
+          currentTime: progress.currentTime,
+          duration: progress.duration,
+          playbackRate: progress.playbackRate,
         },
       })
     );
@@ -418,6 +496,7 @@ class AudioOrchestrator {
   }
 
   getState() {
+    const progress = this.getProgress();
     return {
       currentMode: this.currentMode,
       visualSyncFired: this.visualSyncFired,
@@ -425,6 +504,9 @@ class AudioOrchestrator {
       prefetchedArrivalUrl: this.prefetchedArrivalUrl,
       playbackInterrupted: this.playbackInterrupted,
       wantsArrivalPlayback: this.wantsArrivalPlayback,
+      currentTime: progress.currentTime,
+      duration: progress.duration,
+      playbackRate: progress.playbackRate,
     };
   }
 }

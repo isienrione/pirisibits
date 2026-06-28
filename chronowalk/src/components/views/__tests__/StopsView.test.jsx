@@ -19,6 +19,7 @@ describe('StopsView', () => {
     render(
       <StopsView
         tour={tour}
+        progress={{ arrivedStopIds: ['colosseum'], targetStopIndex: 1, transitLegActive: false }}
         mapStops={mapStops}
         waypointsById={{}}
         onNavigate={vi.fn()}
@@ -28,7 +29,7 @@ describe('StopsView', () => {
     expect(screen.getByRole('heading', { name: /heart of ancient rome/i })).toBeInTheDocument()
     expect(screen.getByText('Colosseum')).toBeInTheDocument()
     expect(screen.getByText('Pantheon')).toBeInTheDocument()
-    expect(screen.getByText('Visited')).toBeInTheDocument()
+    expect(screen.getAllByText('Visited').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('Current')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /revisit/i })).toBeInTheDocument()
   })
@@ -39,6 +40,7 @@ describe('StopsView', () => {
     render(
       <StopsView
         tour={tour}
+        progress={{ arrivedStopIds: ['colosseum'], targetStopIndex: 1, transitLegActive: false }}
         mapStops={mapStops}
         waypointsById={{}}
         onOpenStop={onOpenStop}

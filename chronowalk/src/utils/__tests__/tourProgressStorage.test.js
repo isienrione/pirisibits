@@ -22,6 +22,8 @@ describe('tourProgressStorage', () => {
       targetStopIndex: 1,
       arrivedStopIds: ['colosseum'],
       transitLegActive: true,
+      startedAtMs: null,
+      completedAtMs: null,
     }
     saveTourProgress('rome-core', progress)
     expect(loadTourProgress('rome-core')).toEqual(progress)

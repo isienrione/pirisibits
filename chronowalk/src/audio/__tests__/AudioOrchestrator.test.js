@@ -219,4 +219,21 @@ describe('AudioOrchestrator', () => {
     expect(dispatchedEvents).toHaveLength(0);
     expect(orchestrator.getState().visualSyncFired).toBe(false);
   });
+
+  it('seeks within the active narration player and cycles playback rate', async () => {
+    const { orchestrator } = createOrchestrator();
+
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.duration = 120;
+    orchestrator.arrivalPlayer.currentTime = 0;
+
+    expect(orchestrator.seekTo(42)).toBe(true);
+    expect(orchestrator.arrivalPlayer.currentTime).toBe(42);
+
+    expect(orchestrator.setPlaybackRate(1.25)).toBe(1.25);
+    expect(orchestrator.arrivalPlayer.playbackRate).toBe(1.25);
+    expect(orchestrator.cyclePlaybackRate()).toBe(1.5);
+  });
 });

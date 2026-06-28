@@ -7,6 +7,10 @@ const defaultProgress = () => ({
   arrivedStopIds: [],
   /** True while walking the leg toward targetStopIndex (after leaving prior stop) */
   transitLegActive: false,
+  /** When the visitor began this tour journey */
+  startedAtMs: null,
+  /** When every stop on the route was reached */
+  completedAtMs: null,
 })
 
 export const loadTourProgress = (tourId) => {
