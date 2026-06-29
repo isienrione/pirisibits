@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, cn } from './ui'
+import { BronzeButton, Button, GlassPanel, EditorialTitle, cn } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 
 const APP_NAME = 'ChronoWalk'
@@ -13,7 +13,7 @@ const VALUE_PROPOSITION =
 
 const TOUR_STATS = [
   { id: 'gps', label: 'GPS guided', accent: 'text-gold' },
-  { id: 'audio', label: 'Audio stories', accent: 'text-terracotta' },
+  { id: 'audio', label: 'Audio stories', accent: 'text-bronze' },
   { id: 'reveals', label: 'Historical reveals', accent: 'text-sky-blue' },
 ]
 
@@ -21,7 +21,7 @@ function StatPill({ label, accent }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-limestone/80 bg-warm-white/75 px-3 py-1.5',
+        'inline-flex items-center rounded-full border border-parchment/80 bg-ivory/80 px-3 py-1.5',
         'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate shadow-sm backdrop-blur-sm'
       )}
     >
@@ -37,9 +37,9 @@ function PreviewStopsList({ stops }) {
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-2.5"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand text-xs font-bold text-deep-slate">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-parchment text-xs font-bold text-deep-slate">
             {index + 1}
           </span>
           <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
@@ -73,10 +73,10 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     const title = getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId
 
     return (
-      <div className="relative min-h-screen bg-gradient-to-b from-warm-white via-sand/50 to-limestone/30">
+      <div className="relative min-h-screen bg-gradient-to-b from-ivory via-parchment/50 to-limestone/30">
         <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-end px-4 pb-safe pt-safe sm:px-6">
-          <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8">
-            <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
+          <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8">
+            <p className="text-eyebrow uppercase text-bronze">{APP_NAME}</p>
             <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
               Debug: {title}
             </h1>
@@ -85,9 +85,9 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
               <span className="font-medium text-deep-slate">?debugGeo=true</span> to fake GPS at this
               landmark.
             </p>
-            <Button size="lg" fullWidth className="mt-6" onClick={onStartTour}>
+            <BronzeButton size="lg" fullWidth className="mt-6" onClick={onStartTour}>
               Start Tour
-            </Button>
+            </BronzeButton>
           </GlassPanel>
         </div>
       </div>
@@ -95,7 +95,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-ivory paper-texture">
       <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
         <img
           src={heroSrc}
@@ -117,16 +117,10 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
-          <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
-
-          <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl lg:text-[2.75rem]">
+        <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8 lg:p-10" grain>
+          <EditorialTitle eyebrow={APP_NAME} size="lg" subtitle={VALUE_PROPOSITION}>
             {tour.title}
-          </h1>
-
-          <p className="mt-4 text-base leading-relaxed text-soft-slate sm:text-[1.05rem]">
-            {VALUE_PROPOSITION}
-          </p>
+          </EditorialTitle>
 
           <div className="mt-5 flex flex-wrap gap-2">
             {TOUR_STATS.map((stat) => (
@@ -141,9 +135,9 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
+            <BronzeButton size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
               Start Tour
-            </Button>
+            </BronzeButton>
             <Button
               variant="secondary"
               size="lg"
@@ -162,8 +156,8 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </div>
 
           {previewOpen ? (
-            <div className="mt-2 border-t border-limestone/50 pt-4">
-              <p className="text-eyebrow uppercase text-terracotta">Your route</p>
+            <div className="mt-2 border-t border-parchment/70 pt-4">
+              <p className="text-eyebrow uppercase text-bronze">Your route</p>
               <PreviewStopsList stops={stops} />
             </div>
           ) : null}

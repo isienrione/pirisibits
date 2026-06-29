@@ -809,7 +809,7 @@ const BeforeAfterSlider = ({
               onClick={replayVideos}
               aria-label="Replay comparison videos"
               className={cn(
-                'ml-1.5 min-h-11 rounded-lg px-2 text-terracotta underline underline-offset-2',
+                'ml-1.5 min-h-11 rounded-lg px-2 text-bronze underline underline-offset-2',
                 focusRing
               )}
             >
@@ -834,7 +834,7 @@ const BeforeAfterSlider = ({
             onClick={recalibrate}
             aria-label="Reset tilt center"
             className={cn(
-              'ml-1.5 min-h-11 rounded-lg px-2 text-terracotta underline underline-offset-2',
+              'ml-1.5 min-h-11 rounded-lg px-2 text-bronze underline underline-offset-2',
               focusRing
             )}
           >

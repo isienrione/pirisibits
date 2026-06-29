@@ -4,7 +4,7 @@ function AppIconPreview({ className }) {
   return (
     <div
       className={cn(
-        'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-terracotta to-gold shadow-glass',
+        'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-bronze to-gold shadow-plaque',
         className
       )}
       aria-hidden="true"

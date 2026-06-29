@@ -8,7 +8,7 @@ import {
 } from '../data/tourProducts'
 import { getTourById } from '../services/tourRegistry'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button, GlassPanel, cn } from './ui'
+import { BronzeButton, Button, GlassPanel, cn } from './ui'
 
 function ProductStopPreview({ stopIds }) {
   const stops = useMemo(
@@ -53,7 +53,7 @@ function TourProductCard({
     <GlassPanel
       className={cn(
         'relative overflow-hidden rounded-3xl p-5 transition',
-        selected ? 'border-gold/50 bg-gold/[0.05] shadow-glass-lg' : 'hover:border-gold/30'
+        selected ? 'border-bronze/45 bg-bronze/[0.04] shadow-plaque-lg' : 'hover:border-bronze/30'
       )}
     >
       {product.badge ? (
@@ -62,7 +62,7 @@ function TourProductCard({
         </span>
       ) : null}
 
-      <p className={cn('text-eyebrow uppercase text-terracotta', product.badge ? 'mt-3' : '')}>
+      <p className={cn('text-eyebrow uppercase text-bronze', product.badge ? 'mt-3' : '')}>
         {product.tagline}
       </p>
       <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">{product.title}</h3>
@@ -84,7 +84,7 @@ function TourProductCard({
             const child = getTourProduct(childId)
             if (!child) return null
             return (
-              <div key={childId} className="rounded-2xl border border-limestone/60 bg-warm-white/60 px-3 py-2.5">
+              <div key={childId} className="rounded-2xl border border-parchment/70 bg-ivory/70 px-3 py-2.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-deep-slate">
                   {child.title}
                 </p>
@@ -118,14 +118,14 @@ function TourProductCard({
             {selected ? 'Selected' : 'Select'}
           </Button>
         ) : (
-          <Button
+          <BronzeButton
             onClick={() => {
               triggerHaptic(HAPTIC_KIND.SUCCESS)
               onPurchase(product.id)
             }}
           >
             Buy {formatUsd(product.priceUsd)}
-          </Button>
+          </BronzeButton>
         )}
       </div>
     </GlassPanel>
@@ -178,7 +178,7 @@ function TourCatalog({
   return (
     <section aria-label="Rome tour options" className="space-y-4">
       <div>
-        <p className="text-eyebrow uppercase text-terracotta">Choose your walk</p>
+        <p className="text-eyebrow uppercase text-bronze">Choose your walk</p>
         <h2 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
           Self-guided audio tours at your pace
         </h2>
@@ -194,9 +194,9 @@ function TourCatalog({
       ) : null}
 
       {singleProducts.length ? (
-        <div className="space-y-4 border-t border-limestone/60 pt-6">
+        <div className="space-y-4 border-t border-parchment/80 pt-6">
           <div>
-            <p className="text-eyebrow uppercase text-terracotta">Single tours</p>
+            <p className="text-eyebrow uppercase text-bronze">Single tours</p>
             <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">
               One route at a time · {formatUsd(10)} each
             </h3>

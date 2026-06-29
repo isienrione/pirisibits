@@ -1,6 +1,6 @@
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
-import { Button, GlassPanel, MediaPlayerControls, cn } from './ui'
+import { Button, MediaPlayerControls, cn } from './ui'
 
 function PersistentAudioBar({
   title,
@@ -24,9 +24,9 @@ function PersistentAudioBar({
 
   return (
     <div className="pointer-events-auto w-full">
-      <GlassPanel className="overflow-hidden rounded-2xl border-deep-slate/10 bg-deep-slate/96 text-warm-white shadow-glass-lg backdrop-blur-glass">
+      <div className="overflow-hidden rounded-2xl border border-gold/20 bg-obsidian/96 text-ivory shadow-plaque-lg backdrop-blur-glass">
         <div className="flex items-center gap-3 px-3 py-2.5">
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gold/35 bg-deep-slate">
+          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gold/35 bg-obsidian">
             {posterUrl ? (
               <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
             ) : (
@@ -52,7 +52,7 @@ function PersistentAudioBar({
               <Button
                 variant="secondary"
                 size="sm"
-                className="border-warm-white/20 bg-warm-white/10 px-3 text-warm-white hover:bg-warm-white/15"
+                className="border-ivory/20 bg-ivory/10 px-3 text-ivory hover:bg-ivory/15"
                 onClick={onReopenCard}
               >
                 Open
@@ -60,7 +60,7 @@ function PersistentAudioBar({
             ) : null}
           </div>
         </div>
-      </GlassPanel>
+      </div>
     </div>
   )
 }

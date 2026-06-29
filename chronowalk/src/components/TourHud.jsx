@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { BronzeButton, Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -16,10 +16,10 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, co
   const completed = Math.max(0, currentStop - 1)
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
+    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-eyebrow uppercase text-terracotta">{tourTitle}</p>
+          <p className="truncate text-eyebrow uppercase text-bronze">{tourTitle}</p>
           <p
             className={cn(
               'mt-0.5 truncate font-display font-semibold leading-tight text-deep-slate',
@@ -51,7 +51,7 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
   const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
 
   return (
-    <div className={cn('shrink-0 overflow-hidden border border-limestone/70 bg-sand shadow-sm', sizeClass)}>
+    <div className={cn('shrink-0 overflow-hidden border border-parchment/70 bg-parchment shadow-sm', sizeClass)}>
       {posterUrl ? (
         <img
           src={posterUrl}
@@ -89,7 +89,7 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-glass-lg', compact ? 'p-3' : 'p-4')}>
+    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
         <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 
@@ -205,7 +205,7 @@ const TourHud = ({
   } else if (transitLegActive) {
     routeHeadline = 'Walking to'
     routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
-    statusLabel = 'Follow the terracotta path'
+    statusLabel = 'Follow the bronze path'
     statusTone = 'walking'
     showDirections = true
   } else if (atStop) {
@@ -248,9 +248,9 @@ const TourHud = ({
   const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined
 
   const routeAction = isFreePreview ? (
-    <Button fullWidth className={ctaInCard} onClick={onUnlockTour}>
+    <BronzeButton fullWidth className={ctaInCard} onClick={onUnlockTour}>
       View tours &amp; pricing
-    </Button>
+    </BronzeButton>
   ) : showContinue ? (
     <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>
       {dismissedWaypointTitle && onReopenWaypoint ? (
@@ -263,22 +263,22 @@ const TourHud = ({
           Reopen {dismissedWaypointTitle}
         </Button>
       ) : null}
-      <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
+      <BronzeButton fullWidth className={ctaInCard} onClick={onContinueTour}>
         Walk to {nextWaypoint.title}
-      </Button>
+      </BronzeButton>
     </div>
   ) : dismissedWaypointTitle && onReopenWaypoint && atStop ? (
-    <Button fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
+    <BronzeButton fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
       Reopen {dismissedWaypointTitle}
-    </Button>
+    </BronzeButton>
   ) : transitLegActive ? (
     <p className="text-xs leading-relaxed text-soft-slate">
       Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
     </p>
   ) : awaitingFirstStop ? (
-    <Button fullWidth className={ctaInCard} onClick={handleDirections}>
+    <BronzeButton fullWidth className={ctaInCard} onClick={handleDirections}>
       Get walking directions
-    </Button>
+    </BronzeButton>
   ) : null
 
   return (

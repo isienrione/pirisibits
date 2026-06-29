@@ -1,20 +1,5 @@
-import { GlassPanel, cn } from './ui'
+import { MedallionBadge, ParchmentCard, cn } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
-
-function DiscoveryIcon() {
-  return (
-    <svg className="mx-auto h-12 w-12 text-gold" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
-      <path
-        d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path d="M12 12 20 7.5M12 12v9M12 12 4 7.5" stroke="currentColor" strokeWidth="1.75" />
-    </svg>
-  )
-}
 
 const ArrivalMoment = ({ waypoint, visible }) => {
   const reducedMotion = useReducedMotion()
@@ -28,35 +13,44 @@ const ArrivalMoment = ({ waypoint, visible }) => {
     >
       <div
         className={cn(
-          'absolute inset-0 bg-deep-slate/55',
+          'absolute inset-0 bg-obsidian/55',
           !reducedMotion && 'animate-arrival-vignette'
         )}
         aria-hidden="true"
       />
       <div
         className={cn(
-          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(217,164,65,0.28),transparent_58%)]',
+          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(212,175,55,0.24),transparent_58%)]',
           !reducedMotion && 'animate-arrival-vignette'
         )}
         aria-hidden="true"
       />
 
       <div className="flex h-full items-end justify-center px-6 pb-[min(30vh,13rem)]">
-        <GlassPanel
+        <ParchmentCard
           className={cn(
-            'max-w-sm rounded-3xl border-gold/35 bg-warm-white/96 px-6 py-6 text-center shadow-glass-lg',
+            'max-w-sm border-gold/35 px-6 py-6 text-center shadow-plaque-lg',
             !reducedMotion && 'animate-arrival-discover'
           )}
         >
-          <DiscoveryIcon />
-          <p className="mt-4 text-eyebrow uppercase text-gold">Waypoint discovered</p>
+          <MedallionBadge size="md" pulse className="mx-auto">
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </MedallionBadge>
+          <p className="mt-4 text-eyebrow uppercase text-bronze">Waypoint discovered</p>
           <p className="mt-2 font-display text-2xl font-semibold leading-tight text-deep-slate">
             {waypoint.title}
           </p>
           <p className="mt-2 text-sm leading-relaxed text-soft-slate">
             Your story is ready below
           </p>
-        </GlassPanel>
+        </ParchmentCard>
       </div>
     </div>
   )

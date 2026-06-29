@@ -11,6 +11,7 @@ export function EditorialTitle({
   align = 'left',
   size = 'lg',
   className,
+  titleClassName,
   children,
 }) {
   const sizeStyles = {
@@ -34,7 +35,8 @@ export function EditorialTitle({
         className={cn(
           'font-display font-semibold leading-[1.08] tracking-tight text-deep-slate',
           sizeStyles[size],
-          eyebrow && 'mt-3'
+          eyebrow && 'mt-3',
+          titleClassName
         )}
       >
         {children}

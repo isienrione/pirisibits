@@ -76,8 +76,8 @@ export function BottomSheet({
     >
       <div
         className={cn(
-          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-sheet border border-limestone/60',
-          'bg-gradient-to-b from-warm-white via-warm-white to-sand/90 shadow-sheet-up'
+          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-sheet border border-parchment/70',
+          'bg-gradient-to-b from-ivory via-ivory to-parchment/90 shadow-sheet-up paper-texture'
         )}
       >
         <div className="flex shrink-0 items-center justify-center px-5 pt-2">

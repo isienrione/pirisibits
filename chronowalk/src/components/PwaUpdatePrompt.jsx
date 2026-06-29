@@ -11,9 +11,9 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
       role="status"
       aria-live="polite"
     >
-      <GlassPanel className="pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 shadow-glass-lg">
+      <GlassPanel className="pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 shadow-plaque-lg" grain>
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-gold">Update available</p>
+          <p className="text-eyebrow uppercase text-bronze">Update available</p>
           <p className="mt-1 text-sm leading-relaxed text-deep-slate">
             A new version of ChronoWalk is ready. Refresh to get the latest improvements.
           </p>
