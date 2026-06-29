@@ -21,6 +21,17 @@ describe('TourIntroContent', () => {
     expect(screen.getByText('Capitoline Hill')).toBeInTheDocument()
   })
 
+  it('places the free preview CTA before the route stop lists', () => {
+    render(<TourIntroContent onTryFreePreview={vi.fn()} onViewTours={vi.fn()} />)
+
+    const freePreview = screen.getByRole('region', { name: /free preview/i })
+    const routeInventory = screen.getByRole('region', { name: /tour preview/i })
+
+    expect(
+      freePreview.compareDocumentPosition(routeInventory) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+  })
+
   it('starts the free preview and opens the catalog', () => {
     const onTryFreePreview = vi.fn()
     const onViewTours = vi.fn()

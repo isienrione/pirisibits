@@ -82,44 +82,6 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
         ))}
       </ul>
 
-      <section className="mt-8 border-t border-limestone/60 pt-6" aria-label="Tour preview">
-        <p className="text-eyebrow uppercase text-terracotta">What you will walk</p>
-        <h2 className="mt-2 font-display text-xl font-semibold text-deep-slate">
-          Two routes, {totalStops} landmarks
-        </h2>
-        <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-          The Roman Forum tour covers every stop inside the Forum cluster. The Heart of Ancient Rome
-          loop takes you through the Colosseum, Capitoline Hill, and the rest of the city.
-        </p>
-
-        <div className="mt-6 space-y-6">
-          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
-            <p className="text-eyebrow uppercase text-terracotta">Roman Forum</p>
-            <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
-              Forum cluster · {forumStopCount} stops
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-              Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of
-              Saturn, Curia Julia, and Arch of Septimius Severus — the full Forum cluster walk.
-            </p>
-            <TourRouteStopList stopIds={ROMAN_FORUM_TOUR.stopIds} />
-          </div>
-
-          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
-            <p className="text-eyebrow uppercase text-terracotta">Heart of Ancient Rome</p>
-            <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
-              City loop · {cityLoopStopCount} stops
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-              The grand walking loop — Colosseum and Capitoline Hill through centro storico to Castel
-              Sant&apos;Angelo, Circus Maximus, and the Appian Way. Everything outside the Forum
-              cluster.
-            </p>
-            <TourRouteStopList stopIds={HEART_OF_ANCIENT_ROME_TOUR.stopIds} />
-          </div>
-        </div>
-      </section>
-
       <section
         className="mt-8 overflow-hidden rounded-3xl border border-gold/35 bg-gradient-to-br from-gold/[0.08] to-terracotta/[0.06]"
         aria-label="Free preview"
@@ -156,6 +118,44 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
             >
               Try for free
             </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8 border-t border-limestone/60 pt-6" aria-label="Tour preview">
+        <p className="text-eyebrow uppercase text-terracotta">What you will walk</p>
+        <h2 className="mt-2 font-display text-xl font-semibold text-deep-slate">
+          Two routes, {totalStops} landmarks
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+          The Roman Forum tour covers every stop inside the Forum cluster. The Heart of Ancient Rome
+          loop takes you through the Colosseum, Capitoline Hill, and the rest of the city.
+        </p>
+
+        <div className="mt-6 space-y-6">
+          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
+            <p className="text-eyebrow uppercase text-terracotta">Roman Forum</p>
+            <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
+              Forum cluster · {forumStopCount} stops
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+              Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of
+              Saturn, Curia Julia, and Arch of Septimius Severus — the full Forum cluster walk.
+            </p>
+            <TourRouteStopList stopIds={ROMAN_FORUM_TOUR.stopIds} />
+          </div>
+
+          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
+            <p className="text-eyebrow uppercase text-terracotta">Heart of Ancient Rome</p>
+            <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
+              City loop · {cityLoopStopCount} stops
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+              The grand walking loop — Colosseum and Capitoline Hill through centro storico to Castel
+              Sant&apos;Angelo, Circus Maximus, and the Appian Way. Everything outside the Forum
+              cluster.
+            </p>
+            <TourRouteStopList stopIds={HEART_OF_ANCIENT_ROME_TOUR.stopIds} />
           </div>
         </div>
       </section>
