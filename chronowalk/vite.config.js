@@ -148,9 +148,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules/mapbox-gl')) {
-            return 'mapbox'
-          }
           if (id.includes('node_modules/react-compare-slider')) {
             return 'compare-slider'
           }
