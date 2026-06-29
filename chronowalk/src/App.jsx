@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react'
 import TourLanding from './components/TourLanding'
 import TourHero from './components/TourHero'
 import TourHud from './components/TourHud'
@@ -12,6 +12,7 @@ import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
 import { getModernCoverUrl } from './utils/sliderMedia'
+import { lazyWithRecovery } from './utils/lazyWithRecovery'
 import { getTourDirectionsOrigin } from './utils/tourDirections'
 import { isAtWaypoint } from './utils/waypointProximity'
 import { getWaypointGeo } from './data/waypointGeo'
@@ -48,19 +49,32 @@ import {
   isAssetStudio,
 } from './config/env'
 
-const TourMap = lazy(() => import('./components/TourMap'))
-const WaypointAssetStudio = lazy(() => import('./components/WaypointAssetStudio'))
-const WaypointCard = lazy(() => import('./components/WaypointCard'))
-const TourOverviewView = lazy(() => import('./components/views/TourOverviewView'))
-const StopsView = lazy(() => import('./components/views/StopsView'))
-const SettingsView = lazy(() => import('./components/views/SettingsView'))
-const DirectionsView = lazy(() => import('./components/views/DirectionsView'))
+const TourMap = lazyWithRecovery(() => import('./components/TourMap'), 'map')
+const WaypointAssetStudio = lazyWithRecovery(
+  () => import('./components/WaypointAssetStudio'),
+  'asset studio'
+)
+const WaypointCard = lazyWithRecovery(() => import('./components/WaypointCard'), 'landmark card')
+const TourOverviewView = lazyWithRecovery(
+  () => import('./components/views/TourOverviewView'),
+  'tour overview'
+)
+const StopsView = lazyWithRecovery(() => import('./components/views/StopsView'), 'stops list')
+const SettingsView = lazyWithRecovery(() => import('./components/views/SettingsView'), 'settings')
+const DirectionsView = lazyWithRecovery(
+  () => import('./components/views/DirectionsView'),
+  'directions'
+)
 
 function TabLoadingFallback() {
   return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
 }
 
 function App() {
+  useEffect(() => {
+    sessionStorage.removeItem('cw-chunk-reload')
+  }, [])
+
   const assetStudio = isAssetStudio()
   const tourId = useMemo(() => getTourId(), [])
   const singleWaypointId = useMemo(() => getSingleWaypointId(), [])

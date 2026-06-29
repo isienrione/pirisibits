@@ -28,11 +28,10 @@ describe('registerAppServiceWorker', () => {
       expect.objectContaining({
         immediate: true,
         onNeedRefresh: expect.any(Function),
+        onOfflineReady: expect.any(Function),
       })
     )
     expect(listener).toHaveBeenCalledTimes(1)
-
-    controller.applyUpdate()
     expect(updateSW).toHaveBeenCalledWith(true)
   })
 })

@@ -16,7 +16,10 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
     immediate: true,
     onNeedRefresh() {
       listeners.forEach((listener) => listener())
+      // Apply updates immediately so stale cached chunks are replaced after deploys.
+      updateServiceWorker?.(true)
     },
+    onOfflineReady() {},
   })
 
   return {
