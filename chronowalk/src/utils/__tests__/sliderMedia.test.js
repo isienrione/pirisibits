@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import {
   bustMediaUrl,
   getAncientSliderUrl,
@@ -8,6 +8,9 @@ import {
   hasAncientSliderMedia,
   hasComparisonSliderMedia,
   isModernVideoImmersive,
+  isSliderVideoUrl,
+  prefetchArrivalSliderMedia,
+  resetArrivalMediaPrefetchForTests,
 } from '../sliderMedia'
 
 const navona = {
@@ -49,5 +52,26 @@ describe('sliderMedia', () => {
     expect(hasAncientSliderMedia(trevi)).toBe(false)
     expect(hasComparisonSliderMedia(trevi)).toBe(false)
     expect(hasComparisonSliderMedia(navona)).toBe(true)
+  })
+
+  it('detects slider video URLs', () => {
+    expect(isSliderVideoUrl('/waypoints/colosseum/modern.mp4')).toBe(true)
+    expect(isSliderVideoUrl('/waypoints/colosseum/modern.jpg')).toBe(false)
+  })
+
+  it('prefetches poster images and warms slider videos once per waypoint', () => {
+    resetArrivalMediaPrefetchForTests()
+    const imageSrcSpy = vi.spyOn(Image.prototype, 'src', 'set')
+    const createElementSpy = vi.spyOn(document, 'createElement')
+
+    prefetchArrivalSliderMedia(navona)
+    prefetchArrivalSliderMedia(navona)
+
+    expect(imageSrcSpy).toHaveBeenCalled()
+    expect(createElementSpy).toHaveBeenCalledWith('video')
+
+    imageSrcSpy.mockRestore()
+    createElementSpy.mockRestore()
+    resetArrivalMediaPrefetchForTests()
   })
 })
