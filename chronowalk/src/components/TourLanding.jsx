@@ -6,6 +6,7 @@ import { Button, GlassPanel } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 import PwaInstallPanel from './PwaInstallPanel'
 import TourIntroContent from './TourIntroContent'
+import FreePreviewCard from './FreePreviewCard'
 import TourCatalog, {
   getDefaultSelectableTourId,
   resolveActiveTour,
@@ -117,6 +118,7 @@ function TourLanding({
               <p className="mt-4 text-base leading-relaxed text-soft-slate">
                 Pick up where you left off or switch between your purchased routes.
               </p>
+              <FreePreviewCard onTryFreePreview={onTryFreePreview} className="mt-8" />
             </>
           )}
 

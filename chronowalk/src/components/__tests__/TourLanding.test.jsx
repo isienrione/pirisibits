@@ -73,4 +73,21 @@ describe('TourLanding', () => {
       expect.objectContaining({ id: 'heart-of-ancient-rome', title: 'Heart of Ancient Rome' })
     )
   })
+
+  it('shows free preview for users who already own tours', () => {
+    const onTryFreePreview = vi.fn()
+    render(
+      <TourLanding
+        ownedTourIds={['heart-of-ancient-rome']}
+        ownsAllTours={false}
+        onPurchaseProduct={vi.fn()}
+        onStartTour={vi.fn()}
+        onTryFreePreview={onTryFreePreview}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /try for free/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /try for free/i }))
+    expect(onTryFreePreview).toHaveBeenCalledTimes(1)
+  })
 })
