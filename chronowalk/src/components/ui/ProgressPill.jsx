@@ -14,7 +14,7 @@ export function ProgressPill({
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between gap-3">
-        <span className={cn(metaLabel, 'text-soft-slate')}>
+        <span className={metaLabel}>
           {label ?? `Stop ${safeCurrent} of ${total}`}
         </span>
         {status ? (

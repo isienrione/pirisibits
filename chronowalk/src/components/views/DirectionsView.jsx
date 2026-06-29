@@ -135,7 +135,7 @@ function DirectionsView({
                   key={`${step.instruction}-${index}`}
                   className="flex gap-3 rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-3"
                 >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold-text">
                     {index + 1}
                   </span>
                   <div className="min-w-0">

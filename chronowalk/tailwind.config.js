@@ -12,6 +12,8 @@ export default {
         limestone: '#E7D7BD',
         'deep-slate': '#17212B',
         'soft-slate': '#51606F',
+        caption: '#3D4A56',
+        'gold-text': '#8A6316',
         'sky-blue': '#7CB7D8',
         terracotta: '#C8643C',
         gold: '#D9A441',

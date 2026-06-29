@@ -35,10 +35,10 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, co
           ) : null}
         </div>
         <div className="shrink-0 text-right">
-          <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
+          <p className={cn(metaLabel)}>Progress</p>
           <p className={cn('font-display font-semibold tabular-nums text-deep-slate', compact ? 'text-lg' : 'text-xl')}>
-            <span className="text-gold">{currentStop}</span>
-            <span className="text-soft-slate/60"> / </span>
+            <span className="text-gold-text">{currentStop}</span>
+            <span className="text-caption"> / </span>
             <span>{totalStops}</span>
           </p>
         </div>
@@ -60,7 +60,7 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">
+        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-caption">
           {title?.slice(0, 2) ?? '—'}
         </div>
       )}

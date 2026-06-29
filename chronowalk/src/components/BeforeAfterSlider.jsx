@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
@@ -7,6 +7,7 @@ import { cn } from './ui/cn';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
+import { getFocusableElements, trapTabKey } from '../utils/focusTrap';
 
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
@@ -351,6 +352,10 @@ const BeforeAfterSlider = ({
   onRequestExit = null,
 }) => {
   const [immersive, setImmersive] = useState(startImmersive);
+  const immersiveDialogRef = useRef(null);
+  const fullScreenTriggerRef = useRef(null);
+  const immersiveReturnFocusRef = useRef(null);
+  const shouldRestoreImmersiveFocusRef = useRef(false);
   const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const immersiveHeightRatio = immersive ? 0.92 : maxFrameHeightRatio;
@@ -770,14 +775,40 @@ const BeforeAfterSlider = ({
     );
   };
 
+  useLayoutEffect(() => {
+    if (startImmersive && !immersiveReturnFocusRef.current) {
+      immersiveReturnFocusRef.current = document.activeElement;
+      shouldRestoreImmersiveFocusRef.current = true;
+    }
+  }, [startImmersive]);
+
+  const openImmersiveView = useCallback((trigger = null) => {
+    immersiveReturnFocusRef.current = trigger ?? document.activeElement;
+    shouldRestoreImmersiveFocusRef.current = true;
+    setImmersive(true);
+  }, []);
+
+  const closeImmersive = useCallback(() => {
+    setImmersive(false);
+  }, []);
+
   useEffect(() => {
     if (!immersive) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
+    const dialog = immersiveDialogRef.current;
+    const focusable = getFocusableElements(dialog);
+    focusable[0]?.focus({ preventScroll: true });
+
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') setImmersive(false);
+      if (event.key === 'Escape') {
+        closeImmersive();
+        return;
+      }
+
+      trapTabKey(event, dialog);
     };
 
     window.addEventListener('keydown', onKeyDown);
@@ -785,6 +816,18 @@ const BeforeAfterSlider = ({
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
     };
+  }, [immersive, closeImmersive]);
+
+  useLayoutEffect(() => {
+    if (immersive || !shouldRestoreImmersiveFocusRef.current) return;
+
+    shouldRestoreImmersiveFocusRef.current = false;
+    const trigger = fullScreenTriggerRef.current ?? immersiveReturnFocusRef.current;
+    immersiveReturnFocusRef.current = null;
+
+    if (trigger && typeof trigger.focus === 'function') {
+      trigger.focus({ preventScroll: true });
+    }
   }, [immersive]);
 
   const isMediaLoading =
@@ -887,12 +930,12 @@ const BeforeAfterSlider = ({
     return 'Drag to reveal the past.';
   };
 
-  const closeImmersive = () => setImmersive(false);
-
   const exitCompareView = () => {
     closeImmersive();
     onRequestExit?.();
   };
+
+  const immersiveTitleId = 'immersive-compare-title';
 
   const sliderShell = (
     <div
@@ -917,7 +960,10 @@ const BeforeAfterSlider = ({
           >
             Back
           </button>
-          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
+          <p
+            id={immersiveTitleId}
+            className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-caption')}
+          >
             Immersive compare
           </p>
           <button
@@ -955,8 +1001,9 @@ const BeforeAfterSlider = ({
             <span className="w-2" aria-hidden="true" />
           )}
           <button
+            ref={fullScreenTriggerRef}
             type="button"
-            onClick={() => setImmersive(true)}
+            onClick={(event) => openImmersiveView(event.currentTarget)}
             aria-label="Open full screen compare view"
             className={cn(
               'min-h-11 rounded-full border border-limestone/70 bg-warm-white/90 px-4 py-2.5 text-xs font-semibold text-deep-slate shadow-sm',
@@ -978,7 +1025,13 @@ const BeforeAfterSlider = ({
 
   if (immersive) {
     return (
-      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
+      <div
+        ref={immersiveDialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={immersiveTitleId}
+        className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe"
+      >
         <div className="flex h-full w-full min-h-0 flex-col">
           {sliderShell}
         </div>

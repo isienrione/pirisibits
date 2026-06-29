@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { usePwaInstall } from '../hooks/usePwaInstall'
-import { Button, GlassPanel } from './ui'
+import { Button, GlassPanel, cn, fineCaption } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 import PwaInstallPanel from './PwaInstallPanel'
 import TourIntroContent from './TourIntroContent'
@@ -162,7 +162,7 @@ function TourLanding({
                 <OfflineDownloadPanel tour={activeTour} compact />
               </div>
 
-              <p className="mt-5 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
+              <p className={cn('mt-5 text-center', fineCaption)}>
                 Walk to the first stop to unlock your opening story. Location is used only to guide
                 you between landmarks.
               </p>

@@ -57,7 +57,7 @@ function TourProductCard({
       )}
     >
       {product.badge ? (
-        <span className="inline-flex w-fit rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold">
+        <span className="inline-flex w-fit rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold-text">
           {product.badge}
         </span>
       ) : null}
@@ -103,7 +103,7 @@ function TourProductCard({
             {formatUsd(product.priceUsd)}
           </p>
           {product.savingsUsd ? (
-            <p className="text-xs text-gold">Save {formatUsd(product.savingsUsd)} vs buying separately</p>
+            <p className="text-xs font-semibold text-gold-text">Save {formatUsd(product.savingsUsd)} vs buying separately</p>
           ) : null}
         </div>
 

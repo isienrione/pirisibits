@@ -121,7 +121,7 @@ function AudioTranscriptSection({ waypoint }) {
       </summary>
       <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
       {!waypoint?.arrival_transcript ? (
-        <p className="mt-2 text-xs text-soft-slate/80">
+        <p className="mt-2 text-xs text-caption">
           Placeholder — timed captions will sync with narration in a future update.
         </p>
       ) : null}
@@ -167,7 +167,7 @@ function WaypointCardBody({
 }) {
   return (
     <div className={cn('px-6', className)}>
-      <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
+      <p className="text-eyebrow uppercase text-gold-text">{eyebrow}</p>
       <h2
         id={titleId}
         className={cn(

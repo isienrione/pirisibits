@@ -176,7 +176,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                   <li key={item}>{item}</li>
                 ))}
               </ol>
-              <p className="mt-3 text-soft-slate/70">
+              <p className="mt-3 text-caption">
                 Reference: {COLOSSEUM_FRAMING_REFERENCE.notes.join(' ')}
               </p>
             </details>

@@ -5,7 +5,7 @@ function StatColumn({ label, value }) {
   return (
     <div className="flex-1 text-center">
       <p className="font-display text-2xl font-semibold tabular-nums text-deep-slate">{value}</p>
-      <p className={cn(metaLabel, 'mt-1 text-soft-slate')}>{label}</p>
+      <p className={cn(metaLabel, 'mt-1')}>{label}</p>
     </div>
   )
 }
@@ -34,7 +34,7 @@ function TourCompleteView({
           </svg>
         </div>
 
-        <p className="mt-4 text-eyebrow uppercase text-gold">Journey complete</p>
+        <p className="mt-4 text-eyebrow uppercase text-gold-text">Journey complete</p>
         <h2 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
           {tour?.title ?? 'Tour complete'}
         </h2>

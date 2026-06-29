@@ -68,7 +68,7 @@ function TourOverviewView({
 
       {isFreePreview ? (
         <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
-          <p className="text-eyebrow uppercase text-gold">Sample unlocked</p>
+          <p className="text-eyebrow uppercase text-gold-text">Sample unlocked</p>
           <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
             Colosseum reconstruction &amp; intro audio
           </h3>
@@ -98,7 +98,7 @@ function TourOverviewView({
 
       {!isFreePreview && isAwaitingFirstStop ? (
         <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
-          <p className="text-eyebrow uppercase text-gold">Before you begin</p>
+          <p className="text-eyebrow uppercase text-gold-text">Before you begin</p>
           <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
             Start at the {startTitle}
           </h3>
