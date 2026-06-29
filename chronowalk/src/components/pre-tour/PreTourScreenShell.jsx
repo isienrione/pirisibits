@@ -7,8 +7,8 @@ function BackButton({ onBack, label = 'Back' }) {
   return (
     <Button
       variant="ghost"
-      size="sm"
-      className="mb-4 -ml-1 self-start rounded-full px-3"
+      size="md"
+      className="mb-4 -ml-2 self-start rounded-full px-5"
       onClick={onBack}
     >
       ← {label}
@@ -61,7 +61,7 @@ export function PreTourScreenShell({
           <div className="h-[min(22vh,10rem)] shrink-0 sm:h-[min(26vh,12rem)]" aria-hidden="true" />
         ) : null}
 
-        <div className="flex flex-1 flex-col py-2">
+        <div className="relative z-10 flex flex-1 flex-col py-2">
           {canGoBack && onBack ? <BackButton onBack={onBack} label={backLabel} /> : null}
           {children}
         </div>

@@ -1,21 +1,24 @@
 import { TOUR_PRODUCT_LIST, formatUsd } from '../../../data/tourProducts'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, ParchmentCard, SectionHeader, cn } from '../../ui'
+import { BronzeButton, ParchmentCard, SectionHeader, cn, tapAction } from '../../ui'
 import { getProductStopCount, isProductUnlocked } from '../catalogUtils'
 
 function CatalogListItem({ product, unlocked, onOpen }) {
   const stopCount = getProductStopCount(product)
 
   return (
-    <button
+    <ParchmentCard
+      as="button"
       type="button"
       onClick={() => {
         triggerHaptic(HAPTIC_KIND.SOFT_TAP)
         onOpen(product.id)
       }}
-      className="w-full text-left"
+      className={cn(
+        'w-full p-5 text-left transition hover:border-bronze/35 hover:shadow-plaque-lg',
+        tapAction
+      )}
     >
-      <ParchmentCard className="p-5 transition hover:border-bronze/35 hover:shadow-plaque-lg">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             {product.badge ? (
@@ -47,8 +50,7 @@ function CatalogListItem({ product, unlocked, onOpen }) {
             <p className="mt-2 text-xs font-semibold text-bronze">View details →</p>
           </div>
         </div>
-      </ParchmentCard>
-    </button>
+    </ParchmentCard>
   )
 }
 

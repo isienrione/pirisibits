@@ -45,7 +45,7 @@ export function WelcomeView({ onBrowseTours, onTryFreePreview, onPwaInstall }) {
         ))}
       </ul>
 
-      <div className="mt-8 flex flex-col gap-3">
+      <div className="mt-8 flex flex-col gap-4">
         <BronzeButton
           size="lg"
           fullWidth
