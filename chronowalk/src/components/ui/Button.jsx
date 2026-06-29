@@ -3,12 +3,12 @@ import { focusRing } from './focusRing'
 
 const variantStyles = {
   primary:
-    'bg-terracotta text-warm-white shadow-cta hover:bg-terracotta/90 active:bg-terracotta/95',
+    'border border-bronze/25 bg-gradient-to-b from-bronze via-bronze to-[#8f6324] text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-[#8f6324]/95 active:from-[#8f6324] active:to-bronze/90 motion-safe:active:scale-[0.98]',
   secondary:
-    'border border-limestone bg-warm-white/90 text-deep-slate hover:border-gold/40 hover:bg-sand/50',
+    'border border-bronze/40 bg-ivory text-deep-slate hover:border-bronze/60 hover:bg-parchment/50 motion-safe:active:scale-[0.98]',
   ghost:
-    'border border-terracotta/30 bg-terracotta/8 text-terracotta hover:bg-terracotta/12',
-  text: 'bg-transparent text-terracotta hover:text-terracotta/80 underline-offset-2 hover:underline',
+    'border border-bronze/30 bg-bronze/8 text-bronze hover:bg-bronze/12',
+  text: 'bg-transparent text-bronze hover:text-bronze/80 underline-offset-2 hover:underline',
 }
 
 const sizeStyles = {
@@ -31,7 +31,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 transition-colors duration-200',
+        'inline-flex items-center justify-center gap-2 transition-[color,background-color,border-color,box-shadow,transform] duration-200',
         focusRing,
         'disabled:pointer-events-none disabled:opacity-50',
         variantStyles[variant],

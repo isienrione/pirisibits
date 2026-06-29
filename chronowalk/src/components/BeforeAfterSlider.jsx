@@ -4,6 +4,7 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import { focusRing } from './ui/focusRing';
 import { cn } from './ui/cn';
+import { TimeFractureHandle } from './ui/TimeFractureSlider';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
@@ -159,49 +160,7 @@ const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next'
 );
 
 function CompareSliderHandle() {
-  const reducedMotion = useReducedMotion();
-
-  return (
-    <div className="relative flex h-full w-full items-center justify-center">
-      <div
-        className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2"
-        style={{
-          background:
-            'linear-gradient(to bottom, transparent 0%, #D9A441 18%, #FFFDF8 50%, #D9A441 82%, transparent 100%)',
-          boxShadow: '0 0 18px rgba(217, 164, 65, 0.55)',
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative z-10 flex h-[60px] w-[60px] items-center justify-center">
-        {!reducedMotion ? (
-          <span
-            className="pointer-events-none absolute inset-0 rounded-full motion-safe:animate-medallion-breathe"
-            aria-hidden="true"
-          />
-        ) : null}
-        <div
-          className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full border-2 border-warm-white"
-          style={{
-            background:
-              'radial-gradient(circle at 35% 28%, #FFFDF8 0%, #F4E7D0 18%, #D9A441 58%, #B8872E 100%)',
-            boxShadow:
-              'inset 0 2px 5px rgba(255,253,248,0.5), inset 0 -4px 10px rgba(23,33,43,0.38), 0 4px 14px rgba(23,33,43,0.22)',
-          }}
-          aria-hidden="true"
-        >
-          <svg className="h-5 w-5 text-warm-white" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M8 8 4 12l4 4M16 8l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
+  return <TimeFractureHandle />;
 }
 
 function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {

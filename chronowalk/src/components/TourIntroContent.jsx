@@ -3,7 +3,7 @@ import { HEART_OF_ANCIENT_ROME_TOUR } from '../data/heart-of-ancient-rome-tour'
 import { ROMAN_FORUM_TOUR } from '../data/roman-forum-tour'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { Button } from './ui'
+import { BronzeButton, EditorialTitle } from './ui'
 import FreePreviewCard from './FreePreviewCard'
 
 const APP_NAME = 'ChronoWalk'
@@ -41,9 +41,9 @@ function TourRouteStopList({ stopIds }) {
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-limestone/60 bg-warm-white/70 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-2.5"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sand text-xs font-bold text-deep-slate">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-parchment text-xs font-bold text-deep-slate">
             {index + 1}
           </span>
           <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
@@ -60,21 +60,20 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
 
   return (
     <>
-      <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
-      <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl">
-        A detailed, entertaining self-guided audio tour of Rome
-      </h1>
-      <p className="mt-4 text-base leading-relaxed text-soft-slate sm:text-[1.05rem]">
-        Walk the city on your own schedule with ChronoWalk as your expert companion — always ready
-        with layered stories, historical context, and the kind of fun knowledge that makes every
-        ruin feel alive.
-      </p>
+      <EditorialTitle
+        eyebrow={APP_NAME}
+        size="lg"
+        subtitle="Walk the city on your own schedule with ChronoWalk as your expert companion — always ready with layered stories, historical context, and the kind of fun knowledge that makes every ruin feel alive."
+      >
+        A detailed, entertaining self-guided audio tour of{' '}
+        <span className="font-display italic text-bronze">Rome</span>
+      </EditorialTitle>
 
       <ul className="mt-6 space-y-4">
         {PILLARS.map((pillar) => (
           <li
             key={pillar.id}
-            className="rounded-2xl border border-limestone/60 bg-sand/30 px-4 py-3.5"
+            className="rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3.5"
           >
             <p className="text-sm font-semibold text-deep-slate">{pillar.title}</p>
             <p className="mt-1.5 text-sm leading-relaxed text-soft-slate">{pillar.body}</p>
@@ -82,8 +81,8 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
         ))}
       </ul>
 
-      <section className="mt-8 border-t border-limestone/60 pt-6" aria-label="Tour preview">
-        <p className="text-eyebrow uppercase text-terracotta">What you will walk</p>
+      <section className="mt-8 border-t border-parchment/80 pt-6" aria-label="Tour preview">
+        <p className="text-eyebrow uppercase text-bronze">What you will walk</p>
         <h2 className="mt-2 font-display text-xl font-semibold text-deep-slate">
           Two routes, {totalStops} landmarks
         </h2>
@@ -93,8 +92,8 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
         </p>
 
         <div className="mt-6 space-y-6">
-          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
-            <p className="text-eyebrow uppercase text-terracotta">Roman Forum</p>
+          <div className="rounded-3xl border border-parchment/70 bg-parchment/20 px-4 py-4 sm:px-5">
+            <p className="text-eyebrow uppercase text-bronze">Roman Forum</p>
             <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
               Forum cluster · {forumStopCount} stops
             </h3>
@@ -105,8 +104,8 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
             <TourRouteStopList stopIds={ROMAN_FORUM_TOUR.stopIds} />
           </div>
 
-          <div className="rounded-3xl border border-limestone/60 bg-sand/20 px-4 py-4 sm:px-5">
-            <p className="text-eyebrow uppercase text-terracotta">Heart of Ancient Rome</p>
+          <div className="rounded-3xl border border-parchment/70 bg-parchment/20 px-4 py-4 sm:px-5">
+            <p className="text-eyebrow uppercase text-bronze">Heart of Ancient Rome</p>
             <h3 className="mt-2 font-display text-lg font-semibold text-deep-slate">
               City loop · {cityLoopStopCount} stops
             </h3>
@@ -124,7 +123,7 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
 
       {showCatalogCta ? (
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button
+          <BronzeButton
             size="lg"
             fullWidth
             className="sm:flex-1"
@@ -134,7 +133,7 @@ export function TourIntroContent({ onTryFreePreview, onViewTours, showCatalogCta
             }}
           >
             See tours &amp; pricing
-          </Button>
+          </BronzeButton>
         </div>
       ) : null}
     </>

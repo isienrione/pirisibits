@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { usePwaInstall } from '../hooks/usePwaInstall'
-import { Button, GlassPanel } from './ui'
+import { BronzeButton, GlassPanel, EditorialTitle } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 import PwaInstallPanel from './PwaInstallPanel'
 import TourIntroContent from './TourIntroContent'
@@ -68,7 +68,7 @@ function TourLanding({
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-ivory paper-texture">
       <div
         className={
           hasOwnedTours
@@ -103,7 +103,7 @@ function TourLanding({
           aria-hidden="true"
         />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10" grain>
+        <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8 lg:p-10" grain>
           {!hasOwnedTours ? (
             <TourIntroContent
               onTryFreePreview={onTryFreePreview}
@@ -111,13 +111,13 @@ function TourLanding({
             />
           ) : (
             <>
-              <p className="text-eyebrow uppercase text-terracotta">{APP_NAME}</p>
-              <h1 className="mt-3 font-display text-[2rem] font-semibold leading-[1.1] tracking-tight text-deep-slate sm:text-4xl">
+              <EditorialTitle
+                eyebrow={APP_NAME}
+                size="lg"
+                subtitle="Pick up where you left off or switch between your purchased routes."
+              >
                 Your Rome walking tours
-              </h1>
-              <p className="mt-4 text-base leading-relaxed text-soft-slate">
-                Pick up where you left off or switch between your purchased routes.
-              </p>
+              </EditorialTitle>
               <FreePreviewCard onTryFreePreview={onTryFreePreview} className="mt-8" />
             </>
           )}
@@ -137,8 +137,8 @@ function TourLanding({
           </div>
 
           {activeTour ? (
-            <div className="mt-8 border-t border-limestone/60 pt-6">
-              <p className="text-eyebrow uppercase text-terracotta">Ready to walk</p>
+            <div className="mt-8 border-t border-parchment/80 pt-6">
+              <p className="text-eyebrow uppercase text-bronze">Ready to walk</p>
               <h2 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
                 {activeTour.title}
               </h2>
@@ -148,7 +148,7 @@ function TourLanding({
                 {activeTour.subtitle}
               </p>
 
-              <Button
+              <BronzeButton
                 size="lg"
                 fullWidth
                 className="mt-5"
@@ -158,7 +158,7 @@ function TourLanding({
                 }}
               >
                 Start {activeTour.title}
-              </Button>
+              </BronzeButton>
 
               <div className="mt-5">
                 <OfflineDownloadPanel tour={activeTour} compact />
