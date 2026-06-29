@@ -279,6 +279,11 @@ function TourMapboxView({
     const markMapReady = () => {
       if (cancelled || !map.current) return
 
+      if (loadTimeoutId != null) {
+        window.clearTimeout(loadTimeoutId)
+        loadTimeoutId = null
+      }
+
       try {
         setupMapLayers(map.current, { stops, tour, bounds })
       } catch (error) {

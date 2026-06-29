@@ -315,26 +315,26 @@ function App() {
     await session.beginTransitToNextStop()
   }
 
-  const handleStartTour = async (selectedTour) => {
+  const handleStartTour = useCallback((selectedTour) => {
     if (selectedTour) {
       setActiveTour(selectedTour)
     }
     setFreePreviewStopId(null)
-    await requestDeviceTiltPermission()
+    setHasInteracted(true)
+    setActiveTab(NAV_TABS.MAP)
     tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
     void import('./components/WaypointCard')
-    setHasInteracted(true)
-    setActiveTab(NAV_TABS.TOUR)
-  }
+    void requestDeviceTiltPermission()
+  }, [])
 
-  const handleStartFreePreview = useCallback(async () => {
+  const handleStartFreePreview = useCallback(() => {
     setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
-    await requestDeviceTiltPermission()
-    void import('./components/TourMap')
-    void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
+    void import('./components/TourMap')
+    void import('./components/WaypointCard')
+    void requestDeviceTiltPermission()
   }, [])
 
   const openDirections = useCallback((landmark, title, origin = null) => {
