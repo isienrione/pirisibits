@@ -11,7 +11,6 @@ export function GlassPanel({ as: Component = 'div', className, grain = false, ch
       {...props}
     >
       {children}
-      {grain ? <div className="grain-overlay" aria-hidden="true" /> : null}
     </Component>
   )
 }

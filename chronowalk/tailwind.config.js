@@ -4,6 +4,10 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
   ],
+  future: {
+    // Prevent hover: styles from capturing the first tap on touch screens (iOS Safari double-tap bug).
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       colors: {
