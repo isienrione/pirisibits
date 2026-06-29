@@ -7,6 +7,7 @@ import {
   getModernSliderUrl,
   hasAncientSliderMedia,
   hasComparisonSliderMedia,
+  hasModernSliderMedia,
   isModernVideoImmersive,
 } from '../sliderMedia'
 
@@ -49,5 +50,22 @@ describe('sliderMedia', () => {
     expect(hasAncientSliderMedia(trevi)).toBe(false)
     expect(hasComparisonSliderMedia(trevi)).toBe(false)
     expect(hasComparisonSliderMedia(navona)).toBe(true)
+  })
+
+  it('skips media URLs for scaffolded waypoints that have not shipped assets', () => {
+    const forumStop = {
+      id: 'forum-arch-titus',
+      ship_assets: false,
+      modern_image_url: '/waypoints/forum-cluster/forum-arch-titus/modern-exterior.jpg',
+      modern_video_url: '/waypoints/forum-cluster/forum-arch-titus/modern.mp4',
+      ancient_video_url: '/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4',
+    }
+
+    expect(getModernCoverUrl(forumStop)).toBeNull()
+    expect(getModernSliderUrl(forumStop)).toBeNull()
+    expect(getAncientSliderUrl(forumStop)).toBeNull()
+    expect(hasModernSliderMedia(forumStop)).toBe(false)
+    expect(hasAncientSliderMedia(forumStop)).toBe(false)
+    expect(hasComparisonSliderMedia(forumStop)).toBe(false)
   })
 })
