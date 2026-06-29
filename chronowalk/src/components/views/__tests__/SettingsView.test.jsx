@@ -48,6 +48,7 @@ describe('SettingsView', () => {
     expect(screen.getByText('Audio stories')).toBeInTheDocument()
     expect(screen.getByText('Reduced motion')).toBeInTheDocument()
     expect(screen.getByText('Debug map overlays')).toBeInTheDocument()
+    expect(screen.getByText(/add chronowalk to your home screen/i)).toBeInTheDocument()
   })
 
   it('toggles audio preference', () => {

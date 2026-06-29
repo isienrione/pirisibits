@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
+import { usePwaInstall } from '../hooks/usePwaInstall'
 import { Button, GlassPanel } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
+import PwaInstallPanel from './PwaInstallPanel'
 import TourIntroContent from './TourIntroContent'
 import TourCatalog, {
   getDefaultSelectableTourId,
@@ -27,6 +29,7 @@ function TourLanding({
     () => initialTourId ?? getDefaultSelectableTourId(ownedTourIds, ownsAllTours)
   )
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
+  const pwaInstall = usePwaInstall()
 
   useEffect(() => {
     if (initialTourId && (ownsAllTours || ownedTourIds.includes(initialTourId))) {
@@ -99,7 +102,7 @@ function TourLanding({
           aria-hidden="true"
         />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
+        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10" grain>
           {!hasOwnedTours ? (
             <TourIntroContent
               onTryFreePreview={onTryFreePreview}
@@ -120,7 +123,7 @@ function TourLanding({
           <div
             ref={catalogRef}
             id="tour-catalog"
-            className={hasOwnedTours ? 'mt-8' : 'mt-10 border-t border-limestone/60 pt-8'}
+            className={hasOwnedTours ? 'mt-8' : 'mt-12 border-t border-limestone/60 pt-10'}
           >
             <TourCatalog
               selectedTourId={selectedTourId}
@@ -171,6 +174,21 @@ function TourLanding({
             </p>
           ) : null}
         </GlassPanel>
+
+        {pwaInstall.showInstallOption || pwaInstall.installed ? (
+          <PwaInstallPanel
+            className="mt-4 shadow-glass-lg"
+            compact
+            installed={pwaInstall.installed}
+            canPromptInstall={pwaInstall.canPromptInstall}
+            showIosInstructions={pwaInstall.showIosInstructions}
+            showInstallOption={pwaInstall.showInstallOption}
+            onInstall={() => {
+              triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+              void pwaInstall.promptInstall()
+            }}
+          />
+        ) : null}
 
         <div className="h-6 shrink-0 sm:h-8" aria-hidden="true" />
       </div>

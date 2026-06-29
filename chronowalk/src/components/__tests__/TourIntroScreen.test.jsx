@@ -27,7 +27,7 @@ describe('TourIntroContent', () => {
 
     render(<TourIntroContent onTryFreePreview={onTryFreePreview} onViewTours={onViewTours} />)
 
-    fireEvent.click(screen.getByRole('button', { name: /try a bit for free/i }))
+    fireEvent.click(screen.getByRole('button', { name: /try for free/i }))
     expect(onTryFreePreview).toHaveBeenCalledTimes(1)
 
     fireEvent.click(screen.getByRole('button', { name: /see tours & pricing/i }))

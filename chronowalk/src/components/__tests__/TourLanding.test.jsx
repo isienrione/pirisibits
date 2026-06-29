@@ -19,7 +19,7 @@ describe('TourLanding', () => {
         name: /detailed, entertaining self-guided audio tour of rome/i,
       })
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /try a bit for free/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /try for free/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /complete rome/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /^roman forum$/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: /^heart of ancient rome$/i })).toBeInTheDocument()
@@ -40,6 +40,20 @@ describe('TourLanding', () => {
     expect(screen.getByText(/^Single tours$/i)).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /buy \$10/i })).toHaveLength(2)
     expect(screen.getByRole('button', { name: /buy \$15/i })).toBeInTheDocument()
+  })
+
+  it('shows add to home screen install panel', () => {
+    render(
+      <TourLanding
+        ownedTourIds={[]}
+        ownsAllTours={false}
+        onPurchaseProduct={vi.fn()}
+        onStartTour={vi.fn()}
+        onTryFreePreview={vi.fn()}
+      />
+    )
+
+    expect(screen.getByText(/add chronowalk to your home screen/i)).toBeInTheDocument()
   })
 
   it('starts selected tour when owned', () => {

@@ -28,6 +28,7 @@ import {
 import { isDebugMedia } from '../config/env';
 
 const BeforeAfterSlider = lazy(() => import('./BeforeAfterSlider'));
+const ShareCard = lazy(() => import('./ShareCard'));
 
 const useMediaHeroState = (url) => {
   const [status, setStatus] = useState(url ? 'loading' : 'empty');
@@ -207,6 +208,7 @@ const WaypointCard = ({
   const [mediaError, setMediaError] = useState(null);
   const [calibration, setCalibration] = useState(() => loadCalibration(waypoint?.id));
   const [entered, setEntered] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const sliderRef = useRef(null);
   const syncGenerationRef = useRef(0);
   const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio } =
@@ -230,6 +232,7 @@ const WaypointCard = ({
     setMediaError(null);
     setCalibration(loadCalibration(waypoint?.id));
     setEntered(false);
+    setShareOpen(false);
     syncGenerationRef.current = 0;
   }, [waypoint?.id]);
 
@@ -421,6 +424,8 @@ const WaypointCard = ({
   };
 
   const showAudioControl = Boolean(waypoint.arrival_immersive_url) && !alignmentMode;
+  const shouldStartImmersive =
+    isFreshArrival && accessMode === 'arrival' && usesComparisonSlider;
 
   const eyebrow = alignmentMode
     ? 'Fine-tuning view'
@@ -506,6 +511,7 @@ const WaypointCard = ({
   ) : null;
 
   return (
+    <>
     <BottomSheet
       open={entered}
       flush
@@ -534,6 +540,7 @@ const WaypointCard = ({
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
                   embedded
+                  startImmersive={shouldStartImmersive}
                   modernImg={modernSliderUrl}
                   historicImg={ancientSliderUrl}
                   depthMap={waypoint.depth_map_url}
@@ -636,10 +643,13 @@ const WaypointCard = ({
             </div>
           </div>
         ) : showImmersiveView && usesComparisonSlider && !alignmentMode ? (
-          <div className="mt-5">
+          <div className="mt-5 space-y-3">
             <p className="text-sm text-soft-slate">
               Drag across the facade to travel between eras. Audio continues as you explore.
             </p>
+            <Button variant="secondary" fullWidth onClick={() => setShareOpen(true)}>
+              Share this reveal
+            </Button>
           </div>
         ) : showImmersiveView && usesModernVideo && !alignmentMode ? (
           <div className="mt-5">
@@ -677,6 +687,11 @@ const WaypointCard = ({
         {advancedSection}
       </WaypointCardBody>
     </BottomSheet>
+
+    <Suspense fallback={null}>
+      <ShareCard waypoint={waypoint} open={shareOpen} onClose={() => setShareOpen(false)} />
+    </Suspense>
+    </>
   );
 };
 
