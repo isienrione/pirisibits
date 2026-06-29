@@ -24,6 +24,7 @@ import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
+import { useArrivalMediaPrefetch } from './hooks/useArrivalMediaPrefetch'
 import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
 import { useCelebrationHaptic, useLocationHaptics } from './hooks/useHapticTriggers'
 import { HAPTIC_KIND, triggerHaptic } from './utils/haptics'
@@ -121,6 +122,12 @@ function App() {
     enabled: hasInteracted && Boolean(session.currentWaypoint) && audioEnabled,
     distance: session.distance,
     arrivalUrl: session.currentWaypoint?.arrival_immersive_url,
+    prefetchRadiusM: session.prefetchRadiusM,
+  })
+  useArrivalMediaPrefetch({
+    enabled: hasInteracted && Boolean(session.currentWaypoint),
+    distance: session.distance,
+    waypoint: session.currentWaypoint,
     prefetchRadiusM: session.prefetchRadiusM,
   })
 

@@ -87,3 +87,86 @@ export const getModernCoverUrl = (waypoint) =>
   bustMediaUrl(waypoint?.modern_image_url || waypoint?.modern_poster_url, waypoint)
 
 export const getAncientPosterUrl = (waypoint) => bustMediaUrl(waypoint?.ancient_poster_url, waypoint)
+
+const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i
+
+export const isSliderVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url))
+
+const prefetchedWaypointKeys = new Set()
+const prefetchedMediaUrls = new Set()
+
+const rememberPrefetchedUrl = (url) => {
+  if (!url || prefetchedMediaUrls.has(url)) return false
+  prefetchedMediaUrls.add(url)
+  return true
+}
+
+const prefetchPosterImage = (url) => {
+  if (!rememberPrefetchedUrl(url)) return
+
+  const image = new Image()
+  image.referrerPolicy = 'no-referrer'
+  image.src = url
+}
+
+const prefetchMediaLink = (url, as) => {
+  if (!rememberPrefetchedUrl(url) || typeof document === 'undefined') return
+
+  const link = document.createElement('link')
+  link.rel = 'prefetch'
+  link.as = as
+  link.href = url
+  document.head.appendChild(link)
+}
+
+const warmSliderVideo = (url) => {
+  if (!url || !isSliderVideoUrl(url) || !rememberPrefetchedUrl(url)) return
+
+  const video = document.createElement('video')
+  video.preload = 'metadata'
+  video.muted = true
+  video.playsInline = true
+  video.src = url
+  video.load()
+}
+
+/** Warm poster stills and slider video metadata while approaching the next stop. */
+export const prefetchArrivalSliderMedia = (waypoint) => {
+  if (!waypoint?.id) return
+
+  const cacheKey = `${waypoint.id}-${waypoint.media_cache_version ?? 1}`
+  if (prefetchedWaypointKeys.has(cacheKey)) return
+  prefetchedWaypointKeys.add(cacheKey)
+
+  const modernPoster = getModernPosterUrl(waypoint)
+  const ancientPoster = getAncientPosterUrl(waypoint)
+  const modernSlider = getModernSliderUrl(waypoint)
+  const ancientSlider = getAncientSliderUrl(waypoint)
+
+  if (modernPoster) prefetchPosterImage(modernPoster)
+  if (ancientPoster) prefetchPosterImage(ancientPoster)
+
+  if (modernSlider) {
+    if (isSliderVideoUrl(modernSlider)) {
+      warmSliderVideo(modernSlider)
+      prefetchMediaLink(modernSlider, 'video')
+    } else {
+      prefetchPosterImage(modernSlider)
+    }
+  }
+
+  if (ancientSlider) {
+    if (isSliderVideoUrl(ancientSlider)) {
+      warmSliderVideo(ancientSlider)
+      prefetchMediaLink(ancientSlider, 'video')
+    } else {
+      prefetchPosterImage(ancientSlider)
+    }
+  }
+}
+
+/** @internal test helper */
+export const resetArrivalMediaPrefetchForTests = () => {
+  prefetchedWaypointKeys.clear()
+  prefetchedMediaUrls.clear()
+}
