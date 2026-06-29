@@ -40,7 +40,7 @@ function AudioPlayerPanel({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-gold">Audio story</p>
+          <p className="text-eyebrow uppercase text-gold-text">Audio story</p>
           <p className="truncate font-display text-lg font-semibold leading-tight">{title}</p>
           {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-sand/80">{subtitle}</p> : null}
         </div>

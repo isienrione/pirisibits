@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useOfflineDownload } from '../../hooks/useOfflineDownload'
 import { formatDownloadSize } from '../../offline/estimateDownloadSize'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
-import { Button, GlassPanel, StatusBadge, cn, ctaInCard } from '../ui'
+import { Button, GlassPanel, StatusBadge, cn, ctaInCard, metaLabel } from '../ui'
 
 function DownloadProgressBar({ percent, label }) {
   const safePercent = Math.max(0, Math.min(100, percent ?? 0))
@@ -68,7 +68,7 @@ export function OfflineDownloadPanel({
       >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-eyebrow uppercase text-gold">Offline access</p>
+            <p className="text-eyebrow uppercase text-gold-text">Offline access</p>
             <h2
               className={cn(
                 'mt-1 font-display font-semibold leading-tight text-deep-slate',
@@ -93,14 +93,14 @@ export function OfflineDownloadPanel({
 
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
           <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+            <p className={cn(metaLabel)}>
               Estimated size
             </p>
             <p className="mt-1 font-semibold tabular-nums text-deep-slate">{estimatedSizeLabel}</p>
           </div>
           {estimate?.stopCount ? (
             <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+              <p className={cn(metaLabel)}>
                 Included
               </p>
               <p className="mt-1 font-semibold text-deep-slate">
@@ -110,7 +110,7 @@ export function OfflineDownloadPanel({
           ) : null}
           {isDownloaded && lastUpdatedLabel ? (
             <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+              <p className={cn(metaLabel)}>
                 Last updated
               </p>
               <p className="mt-1 font-semibold text-deep-slate">{lastUpdatedLabel}</p>

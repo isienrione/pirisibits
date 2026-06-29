@@ -13,17 +13,26 @@ export const ctaInCard = 'rounded-2xl'
 
 /** Micro-label for stats, nav tabs, and HUD metadata. */
 export const metaLabel =
-  'text-[0.65rem] font-semibold uppercase tracking-[0.14em]'
+  'text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-caption'
+
+/** Eyebrow label on light surfaces — meets AA against warm-white. */
+export const eyebrowOnLight = 'text-eyebrow uppercase text-gold-text'
+
+/** Secondary caption copy on light surfaces. */
+export const bodyCaption = 'text-xs leading-relaxed text-caption'
+
+/** Fine print on light surfaces (footer notes, helper text). */
+export const fineCaption = 'text-[0.7rem] leading-relaxed text-caption sm:text-xs'
 
 export const statusPill =
   'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold'
 
-export const statusWalking = 'bg-gold/15 text-gold'
+export const statusWalking = 'bg-gold/15 text-gold-text'
 
 export const statusArrived = 'bg-olive/15 text-olive'
 
-export const statusNeutral = 'bg-sand/80 text-soft-slate'
+export const statusNeutral = 'bg-sand/80 text-caption'
 
-export const statusLocked = 'bg-sand text-soft-slate'
+export const statusLocked = 'bg-sand text-caption'
 
-export const statusCurrent = 'bg-gold/15 text-gold'
+export const statusCurrent = 'bg-gold/15 text-gold-text'

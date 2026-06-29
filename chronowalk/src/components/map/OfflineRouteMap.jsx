@@ -240,7 +240,7 @@ export function OfflineRouteMap({
         </div>
 
         <GlassPanel className="border-gold/25 bg-gold/[0.05] p-4">
-          <p className="text-eyebrow uppercase text-gold">Walking guidance</p>
+          <p className="text-eyebrow uppercase text-gold-text">Walking guidance</p>
           <p className="mt-2 text-sm leading-relaxed text-deep-slate">{walkingInstruction}</p>
           {distanceLabel && !atStop ? (
             <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-soft-slate">

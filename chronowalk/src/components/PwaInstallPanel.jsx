@@ -66,13 +66,13 @@ export function PwaInstallPanel({
           ) : null}
 
           {!installed && showIosInstructions && !canPromptInstall ? (
-            <p className="mt-3 text-xs leading-relaxed text-soft-slate/90">
+            <p className="mt-3 text-xs leading-relaxed text-caption">
               Tip: use Safari — Chrome on iPhone cannot add PWAs to the home screen.
             </p>
           ) : null}
 
           {!installed && !canPromptInstall && !showIosInstructions ? (
-            <p className="mt-3 text-xs leading-relaxed text-soft-slate/90">
+            <p className="mt-3 text-xs leading-relaxed text-caption">
               On Android Chrome, use your browser menu → Install app or Add to Home Screen. On
               iPhone, open this page in Safari and use Share → Add to Home Screen.
             </p>
