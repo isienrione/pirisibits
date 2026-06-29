@@ -44,11 +44,22 @@ export default {
       },
       animation: {
         'sheet-enter': 'sheet-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'medallion-breathe': 'medallion-breathe 3.2s ease-in-out infinite',
       },
       keyframes: {
         'sheet-enter': {
           from: { transform: 'translateY(100%)' },
           to: { transform: 'translateY(0)' },
+        },
+        'medallion-breathe': {
+          '0%, 100%': {
+            boxShadow: '0 0 0 0 rgba(217, 164, 65, 0.28)',
+            opacity: '0.55',
+          },
+          '50%': {
+            boxShadow: '0 0 0 10px rgba(217, 164, 65, 0)',
+            opacity: '0.9',
+          },
         },
       },
     },

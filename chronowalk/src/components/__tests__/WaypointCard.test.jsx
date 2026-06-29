@@ -5,7 +5,11 @@ import { JOURNEY_STATE } from '../../hooks/useGeoLocation';
 import { AUDIO_MODES, AUDIO_SYNC_EVENT } from '../../audio/AudioOrchestrator';
 
 vi.mock('../BeforeAfterSlider', () => ({
-  default: () => <div data-testid="before-after-slider">Slider</div>,
+  default: ({ startImmersive }) => (
+    <div data-testid="before-after-slider" data-start-immersive={startImmersive ? 'true' : 'false'}>
+      Slider
+    </div>
+  ),
 }));
 
 const { transitionTo, pauseArrival, resumeArrival } = vi.hoisted(() => ({
@@ -78,7 +82,26 @@ describe('WaypointCard', () => {
     });
 
     expect(screen.getByTestId('before-after-slider')).toBeInTheDocument();
+    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'false');
     expect(screen.getByText('Then & now')).toBeInTheDocument();
+  });
+
+  it('starts immersive compare on a fresh on-foot arrival', async () => {
+    render(
+      <WaypointCard
+        waypoint={waypoint}
+        state={JOURNEY_STATE.ARRIVAL}
+        isFreshArrival
+        accessMode="arrival"
+        onClose={() => {}}
+      />
+    );
+
+    await act(async () => {
+      fireEvent(window, new CustomEvent(AUDIO_SYNC_EVENT, { detail: { generation: 1 } }));
+    });
+
+    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'true');
   });
 
   it('reveals modern video after sync for modern-video-only stops', async () => {

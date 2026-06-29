@@ -102,7 +102,7 @@ function TourLanding({
           aria-hidden="true"
         />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
+        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10" grain>
           {!hasOwnedTours ? (
             <TourIntroContent
               onTryFreePreview={onTryFreePreview}
