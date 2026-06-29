@@ -302,6 +302,33 @@ function TourMapboxView({
   }, [tour?.id, onMapFailure])
 
   useEffect(() => {
+    if (!mapContainer.current || !map.current) return undefined
+
+    const resizeMap = () => {
+      map.current?.resize()
+    }
+
+    resizeMap()
+    const resizeObserver = new ResizeObserver(resizeMap)
+    resizeObserver.observe(mapContainer.current)
+
+    const intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          resizeMap()
+        }
+      },
+      { threshold: 0.01 }
+    )
+    intersectionObserver.observe(mapContainer.current)
+
+    return () => {
+      resizeObserver.disconnect()
+      intersectionObserver.disconnect()
+    }
+  }, [mapLoaded])
+
+  useEffect(() => {
     if (!map.current || !mapLoaded) return
 
     const source = map.current.getSource('waypoint-zones')

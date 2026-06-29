@@ -846,7 +846,7 @@ const BeforeAfterSlider = ({
           <MediaFailFallback title="Modern view unavailable" />
         ) : (
           <>
-            <SliderEraLabels />
+            {!immersive ? <SliderEraLabels /> : null}
             {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%', touchAction: 'none' }}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cn } from '../ui/cn'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 
@@ -12,6 +12,7 @@ export function TabCrossFadePanel({
   children,
 }) {
   const reducedMotion = useReducedMotion()
+  const wasActiveRef = useRef(active)
   const [mounted, setMounted] = useState(active || keepMounted)
   const [visible, setVisible] = useState(active)
 
@@ -27,25 +28,29 @@ export function TabCrossFadePanel({
         setMounted(true)
       }
 
-      if (reducedMotion) {
+      const switchingIn = wasActiveRef.current === false
+
+      if (reducedMotion || !switchingIn) {
         setVisible(true)
-        return undefined
+      } else {
+        setVisible(false)
+        const frame = requestAnimationFrame(() => setVisible(true))
+        wasActiveRef.current = active
+        return () => cancelAnimationFrame(frame)
       }
-
+    } else {
       setVisible(false)
-      const frame = requestAnimationFrame(() => setVisible(true))
-      return () => cancelAnimationFrame(frame)
+
+      if (!keepMounted) {
+        const delay = reducedMotion ? 0 : TAB_CROSSFADE_MS
+        const timer = window.setTimeout(() => setMounted(false), delay)
+        wasActiveRef.current = active
+        return () => window.clearTimeout(timer)
+      }
     }
 
-    setVisible(false)
-
-    if (keepMounted) {
-      return undefined
-    }
-
-    const delay = reducedMotion ? 0 : TAB_CROSSFADE_MS
-    const timer = window.setTimeout(() => setMounted(false), delay)
-    return () => window.clearTimeout(timer)
+    wasActiveRef.current = active
+    return undefined
   }, [active, keepMounted, reducedMotion])
 
   if (!mounted) {
