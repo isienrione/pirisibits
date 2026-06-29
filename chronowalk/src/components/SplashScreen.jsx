@@ -54,7 +54,7 @@ export function SplashScreen({ onComplete }) {
     <div
       className={cn(
         'fixed inset-0 z-[500] flex items-center justify-center bg-obsidian transition-opacity duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)]',
-        phase === 'fading' ? 'opacity-0' : 'opacity-100'
+        phase === 'fading' ? 'pointer-events-none opacity-0' : 'opacity-100'
       )}
       role="status"
       aria-live="polite"
