@@ -16,7 +16,7 @@ function TourIntroScreen({ onTryFreePreview, onViewTours }) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-warm-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-ivory paper-texture">
       <div className="absolute inset-x-0 top-0 h-[min(58vh,36rem)] sm:h-[min(62vh,38rem)]">
         <img
           src={heroSrc}
@@ -38,7 +38,7 @@ function TourIntroScreen({ onTryFreePreview, onViewTours }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(30vh,12rem)] shrink-0 sm:h-[min(34vh,14rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-glass-lg sm:p-8 lg:p-10">
+        <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8 lg:p-10" grain>
           <TourIntroContent onTryFreePreview={onTryFreePreview} onViewTours={onViewTours} />
         </GlassPanel>
 

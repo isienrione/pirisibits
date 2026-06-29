@@ -3,7 +3,7 @@ import { focusRing } from './focusRing'
 
 const variantStyles = {
   default:
-    'border-limestone/70 bg-warm-white/90 text-deep-slate hover:border-terracotta/40 hover:bg-sand/70',
+    'border-parchment/70 bg-ivory/90 text-deep-slate hover:border-bronze/40 hover:bg-parchment/70',
   ghost: 'border-transparent bg-warm-white/60 text-soft-slate hover:bg-warm-white/90 hover:text-deep-slate',
   solid: 'border-limestone bg-sand/80 text-deep-slate hover:bg-sand',
 }

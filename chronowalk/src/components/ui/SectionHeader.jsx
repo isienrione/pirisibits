@@ -14,7 +14,7 @@ export function SectionHeader({
   return (
     <header className={cn(alignClass, className)}>
       {eyebrow ? (
-        <p className="text-eyebrow uppercase text-terracotta">{eyebrow}</p>
+        <p className="text-eyebrow uppercase text-bronze">{eyebrow}</p>
       ) : null}
       {title ? (
         <h2

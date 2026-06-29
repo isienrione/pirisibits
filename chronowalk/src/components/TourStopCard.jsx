@@ -1,7 +1,8 @@
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import {
+  BronzeButton,
   Button,
-  GlassPanel,
+  ParchmentCard,
   cn,
   focusRing,
   statusArrived,
@@ -52,16 +53,16 @@ export function TourStopCard({
   const isVisited = stop.status === 'completed'
 
   return (
-    <GlassPanel
+    <ParchmentCard
       className={cn(
-        'overflow-hidden transition hover:border-gold/40 hover:shadow-glass-lg',
-        isCurrent && 'border-gold/40 bg-gold/[0.06] shadow-glass-lg'
+        'overflow-hidden transition hover:border-bronze/35 hover:shadow-plaque-lg',
+        isCurrent && 'border-bronze/40 bg-bronze/[0.04] shadow-plaque-lg'
       )}
     >
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden bg-gradient-to-br from-sand to-limestone/50',
+            'relative shrink-0 overflow-hidden bg-gradient-to-br from-parchment to-limestone/50',
             compact ? 'h-36 w-full' : 'w-28 sm:w-32',
             !compact && 'min-h-[7rem]'
           )}
@@ -79,7 +80,7 @@ export function TourStopCard({
             </div>
           )}
           {isUpcoming || isLocked ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-warm-white/20">
+            <div className="absolute inset-0 flex items-center justify-center bg-ivory/25">
               <LockIcon />
             </div>
           ) : null}
@@ -87,8 +88,8 @@ export function TourStopCard({
             className={cn(
               'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
               isCurrent
-                ? 'bg-gold/90 text-warm-white ring-2 ring-gold/30'
-                : 'bg-warm-white/92 text-deep-slate'
+                ? 'bg-bronze text-ivory ring-2 ring-bronze/30'
+                : 'bg-ivory/95 text-deep-slate'
             )}
           >
             {index + 1}
@@ -112,17 +113,27 @@ export function TourStopCard({
             </span>
           </div>
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-soft-slate">{subtitle}</p>
-          <Button
-            variant={isVisited || isCurrent ? 'primary' : 'secondary'}
-            size="sm"
-            className={cn('mt-4', focusRing)}
-            onClick={() => onOpen?.(stop.id)}
-          >
-            {isLocked ? lockedActionLabel : isVisited ? 'Revisit' : actionLabel}
-          </Button>
+          {isVisited || isCurrent ? (
+            <BronzeButton
+              size="sm"
+              className={cn('mt-4', focusRing)}
+              onClick={() => onOpen?.(stop.id)}
+            >
+              {isLocked ? lockedActionLabel : isVisited ? 'Revisit' : actionLabel}
+            </BronzeButton>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              className={cn('mt-4', focusRing)}
+              onClick={() => onOpen?.(stop.id)}
+            >
+              {isLocked ? lockedActionLabel : actionLabel}
+            </Button>
+          )}
         </div>
       </div>
-    </GlassPanel>
+    </ParchmentCard>
   )
 }
 

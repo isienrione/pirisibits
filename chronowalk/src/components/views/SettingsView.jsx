@@ -18,7 +18,7 @@ function SettingsGroup({ title, children, className }) {
   return (
     <section className={cn('mt-6', className)}>
       {title ? (
-        <p className="mb-3 text-eyebrow uppercase text-terracotta">{title}</p>
+        <p className="mb-3 text-eyebrow uppercase text-bronze">{title}</p>
       ) : null}
       <GlassPanel className="overflow-hidden px-5 py-1">{children}</GlassPanel>
     </section>
@@ -30,7 +30,7 @@ function SettingRow({ title, description, children, last = false }) {
     <div
       className={cn(
         'flex items-center justify-between gap-5 py-4',
-        !last && 'border-b border-limestone/45'
+        !last && 'border-b border-parchment/50'
       )}
     >
       <div className="min-w-0 flex-1 pr-2">
@@ -121,13 +121,13 @@ function SettingsView({
       </SettingsGroup>
 
       <section className="mt-6">
-        <p className="mb-3 text-eyebrow uppercase text-terracotta">Offline</p>
+        <p className="mb-3 text-eyebrow uppercase text-bronze">Offline</p>
         {tour ? <OfflineDownloadPanel tour={tour} /> : null}
       </section>
 
       {pwaInstall.showInstallOption || pwaInstall.installed ? (
         <section className="mt-6">
-          <p className="mb-3 text-eyebrow uppercase text-terracotta">Home screen</p>
+          <p className="mb-3 text-eyebrow uppercase text-bronze">Home screen</p>
           <PwaInstallPanel
             installed={pwaInstall.installed}
             canPromptInstall={pwaInstall.canPromptInstall}

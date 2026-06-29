@@ -15,7 +15,7 @@ function DownloadProgressBar({ percent, label }) {
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-sand/80">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-terracotta to-gold motion-safe:transition-all motion-safe:duration-300"
+          className="h-full rounded-full bg-gradient-to-r from-bronze to-gold motion-safe:transition-all motion-safe:duration-300"
           style={{ width: `${safePercent}%` }}
         />
       </div>
@@ -123,7 +123,7 @@ export function OfflineDownloadPanel({
         ) : null}
 
         {error ? (
-          <p className="mt-4 rounded-2xl border border-terracotta/20 bg-terracotta/8 px-3 py-2 text-sm text-deep-slate">
+          <p className="mt-4 rounded-2xl border border-bronze/20 bg-bronze/8 px-3 py-2 text-sm text-deep-slate">
             {error}
           </p>
         ) : null}

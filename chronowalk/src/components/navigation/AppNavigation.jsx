@@ -20,13 +20,13 @@ function NavButton({ item, active, onSelect, layout }) {
         'relative flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl transition-colors',
         focusRing,
         layout === 'side' ? 'h-16 w-full px-2' : 'min-w-0 flex-1 px-2 py-2.5',
-        active ? 'font-semibold text-gold' : 'font-medium text-soft-slate hover:text-deep-slate'
+        active ? 'font-semibold text-bronze' : 'font-medium text-soft-slate hover:text-deep-slate'
       )}
     >
       {active ? (
         <span
           className={cn(
-            'absolute rounded-full bg-gold/15',
+            'absolute rounded-full bg-bronze/12',
             layout === 'side' ? 'inset-x-2 inset-y-1.5' : 'inset-x-1 bottom-1 top-1'
           )}
           aria-hidden="true"
@@ -47,7 +47,7 @@ export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
         <div className="pointer-events-auto mx-auto flex w-full max-w-md flex-col gap-2">
           {audioSlot}
           <nav
-            className="flex items-stretch rounded-[1.75rem] border border-limestone/70 bg-warm-white/96 p-1.5 shadow-glass-lg backdrop-blur-glass"
+            className="flex items-stretch rounded-[1.75rem] border border-parchment/80 bg-ivory/96 p-1.5 shadow-plaque-lg backdrop-blur-glass"
             aria-label="Main navigation"
           >
             {NAV_ITEMS.map((item) => (
@@ -64,7 +64,7 @@ export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
       </div>
 
       <nav
-        className="pointer-events-none fixed inset-y-0 left-0 z-[45] hidden w-[5.5rem] border-r border-limestone/60 bg-warm-white/95 px-2 py-6 shadow-glass backdrop-blur-glass lg:flex lg:flex-col lg:items-stretch"
+        className="pointer-events-none fixed inset-y-0 left-0 z-[45] hidden w-[5.5rem] border-r border-parchment/70 bg-ivory/95 px-2 py-6 shadow-plaque backdrop-blur-glass lg:flex lg:flex-col lg:items-stretch"
         aria-label="Main navigation"
       >
         <div className="pointer-events-auto flex flex-1 flex-col gap-2">

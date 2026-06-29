@@ -7,7 +7,7 @@ import {
   buildGoogleMapsDirectionsUrl,
   isSameLocation,
 } from '../../utils/walkingDirections'
-import { Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
+import { BronzeButton, Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
 
 function formatStepDistance(meters) {
   if (meters < 1000) return `${Math.round(meters)} m`
@@ -117,7 +117,7 @@ function DirectionsView({
       ) : (
         <>
           <GlassPanel className="mt-6 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-terracotta">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bronze">
               {originLabel}
             </p>
             <div className="mt-3 flex items-center justify-between gap-3 text-sm">
@@ -133,7 +133,7 @@ function DirectionsView({
               {directions.steps.map((step, index) => (
                 <li
                   key={`${step.instruction}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-3"
+                  className="flex gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-3"
                 >
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
                     {index + 1}
@@ -152,9 +152,9 @@ function DirectionsView({
           </GlassPanel>
 
           <div className="mt-4 flex flex-col gap-3 pb-4">
-            <Button fullWidth className={ctaInCard} onClick={onBack}>
+            <BronzeButton fullWidth className={ctaInCard} onClick={onBack}>
               Back to map
-            </Button>
+            </BronzeButton>
             {mapsUrl ? (
               <Button
                 variant="secondary"

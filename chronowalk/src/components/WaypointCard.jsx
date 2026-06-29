@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, Button, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import { BottomSheet, BronzeButton, Button, EditorialTitle, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -115,7 +115,7 @@ function AudioTranscriptSection({ waypoint }) {
     'Full captions and transcript will appear here as audio stories are published for this landmark.';
 
   return (
-    <details className="mt-4 rounded-2xl border border-limestone/70 bg-sand/30 px-4 py-3">
+    <details className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3">
       <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
         Captions &amp; transcript
       </summary>
@@ -167,21 +167,19 @@ function WaypointCardBody({
 }) {
   return (
     <div className={cn('px-6', className)}>
-      <p className="text-eyebrow uppercase text-gold">{eyebrow}</p>
-      <h2
-        id={titleId}
-        className={cn(
-          'mt-2 font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
-          titleHighlight && !reducedMotion && 'animate-arrival-title'
-        )}
+      <EditorialTitle
+        as="h2"
+        eyebrow={eyebrow}
+        size="md"
+        titleClassName={cn(titleHighlight && !reducedMotion && 'animate-arrival-title')}
       >
-        {title}
-      </h2>
+        <span id={titleId}>{title}</span>
+      </EditorialTitle>
       {hook ? (
         <p className="mt-3 text-base leading-relaxed text-soft-slate">{hook}</p>
       ) : null}
       {orientationHint ? (
-        <p className="mt-4 rounded-2xl border border-limestone/70 bg-sand/50 px-4 py-3 text-sm leading-relaxed text-soft-slate">
+        <p className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/30 px-4 py-3 text-sm leading-relaxed text-soft-slate">
           {orientationHint}
         </p>
       ) : null}
@@ -500,7 +498,7 @@ const WaypointCard = ({
 
         {debugMedia ? (
           <div className="rounded-2xl border border-limestone bg-deep-slate/5 p-3 text-left font-mono text-[10px] leading-relaxed text-soft-slate">
-            <p className="font-semibold text-terracotta">Media diagnostics</p>
+            <p className="font-semibold text-bronze">Media diagnostics</p>
             <p>modern: {modernSliderUrl}</p>
             <p>ancient: {ancientSliderUrl}</p>
             <p>mode: {usesModernVideo ? 'modern_video' : 'comparison'}</p>
@@ -588,7 +586,7 @@ const WaypointCard = ({
         className="pb-6"
       >
         {mediaError ? (
-          <p className="mt-4 rounded-2xl border border-terracotta/30 bg-terracotta/10 px-4 py-3 text-sm text-deep-slate" role="alert">
+          <p className="mt-4 rounded-2xl border border-bronze/30 bg-bronze/10 px-4 py-3 text-sm text-deep-slate" role="alert">
             {mediaError}
           </p>
         ) : null}
@@ -600,9 +598,9 @@ const WaypointCard = ({
               story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
             </p>
             {onViewTours ? (
-              <Button size="lg" fullWidth onClick={onViewTours}>
+              <BronzeButton size="lg" fullWidth onClick={onViewTours}>
                 View tours &amp; pricing
-              </Button>
+              </BronzeButton>
             ) : null}
           </div>
         ) : accessMode === 'remote' ? (
@@ -615,9 +613,9 @@ const WaypointCard = ({
         {!showImmersiveView && !alignmentMode ? (
           <div className="mt-6 space-y-3">
             {hasModernMedia ? (
-              <Button size="lg" fullWidth onClick={startTimePortal}>
+              <BronzeButton size="lg" fullWidth onClick={startTimePortal}>
                 {usesModernVideo ? 'Begin immersive view' : 'Step through time'}
-              </Button>
+              </BronzeButton>
             ) : null}
             <div className={usesModernVideo ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'}>
               {hasModernMedia && usesComparisonSlider ? (

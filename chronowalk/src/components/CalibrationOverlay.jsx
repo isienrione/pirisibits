@@ -17,7 +17,7 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
   };
 
   return (
-    <GlassPanel className="mt-4 border-terracotta/25 bg-sand/30 p-4">
+    <GlassPanel className="mt-4 border-bronze/25 bg-parchment/30 p-4">
       <SectionHeader
         className="mb-4"
         eyebrow="Ghost alignment"
@@ -28,7 +28,7 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
         <label className="block text-xs text-soft-slate">
           <span className="mb-2 flex items-center justify-between">
             <span>Horizontal offset</span>
-            <span className="font-mono text-terracotta">{values.offsetX}px</span>
+            <span className="font-mono text-bronze">{values.offsetX}px</span>
           </span>
           <input
             type="range"
@@ -44,7 +44,7 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
         <label className="block text-xs text-soft-slate">
           <span className="mb-2 flex items-center justify-between">
             <span>Vertical offset</span>
-            <span className="font-mono text-terracotta">{values.offsetY}px</span>
+            <span className="font-mono text-bronze">{values.offsetY}px</span>
           </span>
           <input
             type="range"
@@ -60,7 +60,7 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
         <label className="block text-xs text-soft-slate">
           <span className="mb-2 flex items-center justify-between">
             <span>Rotation</span>
-            <span className="font-mono text-terracotta">{values.rotate}°</span>
+            <span className="font-mono text-bronze">{values.rotate}°</span>
           </span>
           <input
             type="range"

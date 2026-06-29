@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../../data/waypointGeo'
 import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { estimateWalkMinutes } from '../../utils/tourStats'
 import TourStopCard from '../TourStopCard'
-import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
+import { BronzeButton, Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 function TourOverviewView({
@@ -78,13 +78,13 @@ function TourOverviewView({
             experience — locked landmarks show what you get when you buy.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <Button
+            <BronzeButton
               fullWidth
               className={ctaInCard}
               onClick={() => onOpenStop?.(FREE_PREVIEW_STOP_ID)}
             >
               Open Colosseum preview
-            </Button>
+            </BronzeButton>
             <Button
               variant="secondary"
               fullWidth
@@ -116,9 +116,9 @@ function TourOverviewView({
             </p>
           ) : null}
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <Button fullWidth className={ctaInCard} onClick={() => onGetDirections?.()}>
+            <BronzeButton fullWidth className={ctaInCard} onClick={() => onGetDirections?.()}>
               Get walking directions
-            </Button>
+            </BronzeButton>
             <Button
               variant="secondary"
               fullWidth
@@ -167,9 +167,9 @@ function TourOverviewView({
           </p>
         )}
 
-        <Button fullWidth className={cn(ctaInCard, 'mt-5')} onClick={() => onNavigate(NAV_TABS.MAP)}>
+        <BronzeButton fullWidth className={cn(ctaInCard, 'mt-5')} onClick={() => onNavigate(NAV_TABS.MAP)}>
           Open map
-        </Button>
+        </BronzeButton>
 
         {isFreePreview ? (
           <Button
@@ -218,7 +218,7 @@ function TourOverviewView({
       </div>
 
       <GlassPanel className="mt-6 p-5">
-        <p className="text-eyebrow uppercase text-terracotta">Included</p>
+        <p className="text-eyebrow uppercase text-bronze">Included</p>
         <ul className="mt-3 space-y-2 text-sm text-soft-slate">
           <li>GPS-guided walking between landmarks</li>
           <li>Place-aware audio stories on arrival</li>

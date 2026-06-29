@@ -1,11 +1,11 @@
 /** Shared layout and surface tokens for luxury-travel UI cohesion. */
 export const pageShell =
-  'h-full overflow-y-auto bg-gradient-to-b from-warm-white via-sand/15 to-limestone/10 pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
+  'h-full overflow-y-auto bg-gradient-to-b from-ivory via-parchment/20 to-limestone/15 pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
 
 export const pageContainer = 'mx-auto max-w-2xl px-6 pb-safe pt-safe lg:pt-10'
 
 export const cardSurface =
-  'rounded-3xl border border-limestone/70 bg-warm-white/92 shadow-glass backdrop-blur-glass'
+  'rounded-3xl border border-parchment/80 bg-ivory shadow-plaque backdrop-blur-glass'
 
 export const ctaPrimary = 'rounded-full'
 

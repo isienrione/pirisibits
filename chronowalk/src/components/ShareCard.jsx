@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useState } from 'react'
-import { BottomSheet, Button, cn } from './ui'
+import { BottomSheet, BronzeButton, Button, cn } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { getAncientPosterUrl, getModernPosterUrl } from '../utils/sliderMedia'
 
@@ -52,7 +52,7 @@ function buildShareSvg({ modernDataUrl, ancientDataUrl, title, eraLabel }) {
   <rect width="100%" height="100%" fill="#17212B" />
   <image href="${modernDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#modernHalf)" />
   <image href="${ancientDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#ancientHalf)" />
-  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#D9A441" />
+  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#D4AF37" />
   <text x="48" y="72" fill="#FFFDF8" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="5.5">TODAY</text>
   <text x="${EXPORT_WIDTH - 48}" y="88" fill="#D9A441" font-family="Fraunces, Georgia, serif" font-size="44" font-style="italic" text-anchor="end">${safeEra}</text>
   <rect x="0" y="${EXPORT_HEIGHT - 280}" width="${EXPORT_WIDTH}" height="280" fill="url(#footFade)" />
@@ -117,7 +117,7 @@ function downloadBlob(blob, filename) {
 export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Ancient Rome' }) {
   return (
     <div
-      className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl border border-limestone/70 bg-deep-slate shadow-glass-lg"
+      className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl border border-parchment/70 bg-obsidian shadow-plaque-lg"
       aria-hidden="true"
     >
       <div className="absolute inset-0 flex">
@@ -129,22 +129,23 @@ export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Anc
         </div>
       </div>
       <div
-        className="pointer-events-none absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2"
+        className="pointer-events-none absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2"
         style={{
           background:
-            'linear-gradient(to bottom, transparent 0%, #D9A441 18%, #FFFDF8 50%, #D9A441 82%, transparent 100%)',
-          boxShadow: '0 0 18px rgba(217, 164, 65, 0.55)',
+            'linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.15) 8%, #D4AF37 22%, #F7F3EC 50%, #D4AF37 78%, rgba(212, 175, 55, 0.15) 92%, transparent 100%)',
+          boxShadow:
+            '0 0 24px rgba(212, 175, 55, 0.65), 0 0 48px rgba(212, 175, 55, 0.25)',
         }}
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between px-4 pt-4">
-        <p className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-warm-white drop-shadow-md">
+        <p className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-ivory drop-shadow-md">
           Today
         </p>
         <p className="font-display text-xl italic text-gold drop-shadow-md">{eraLabel}</p>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-slate/95 via-deep-slate/70 to-transparent px-5 pb-5 pt-16">
-        <p className="font-display text-2xl font-semibold text-warm-white">{title}</p>
-        <p className="mt-2 flex items-center gap-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-warm-white/90">
+        <p className="font-display text-2xl font-semibold text-ivory">{title}</p>
+        <p className="mt-2 flex items-center gap-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/90">
           <span className="inline-block h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
           ChronoWalk
         </p>
@@ -267,9 +268,9 @@ export function ShareCard({
         )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button fullWidth disabled={busy || !resolvedModern || !resolvedAncient} onClick={handleShare}>
+          <BronzeButton fullWidth disabled={busy || !resolvedModern || !resolvedAncient} onClick={handleShare}>
             Share
-          </Button>
+          </BronzeButton>
           <Button
             variant="secondary"
             fullWidth

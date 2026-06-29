@@ -28,7 +28,7 @@ function LocationNotice({ status, onRetry, className, compact = false }) {
     <GlassPanel
       role="status"
       className={cn(
-        'pointer-events-auto rounded-2xl border-terracotta/25 bg-warm-white/95 px-4 py-3 shadow-glass',
+        'pointer-events-auto rounded-2xl border-bronze/25 bg-ivory/95 px-4 py-3 shadow-plaque',
         className
       )}
     >

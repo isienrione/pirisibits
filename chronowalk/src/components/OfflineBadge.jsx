@@ -13,7 +13,7 @@ export function OfflineBadge({ className }) {
       aria-label="Offline"
       aria-live="polite"
     >
-      <span className="h-1.5 w-1.5 rounded-full bg-terracotta" aria-hidden="true" />
+      <span className="h-1.5 w-1.5 rounded-full bg-bronze" aria-hidden="true" />
       Offline
     </div>
   )

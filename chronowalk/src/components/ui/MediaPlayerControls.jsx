@@ -34,12 +34,12 @@ const controlBase =
 
 const themes = {
   dark: {
-    primary: 'bg-terracotta text-warm-white hover:bg-terracotta/90',
-    secondary: 'bg-warm-white/10 text-warm-white hover:bg-warm-white/15',
+    primary: 'bg-bronze text-ivory shadow-bronze-cta hover:bg-bronze/90',
+    secondary: 'bg-ivory/10 text-ivory hover:bg-ivory/15 border border-gold/20',
   },
   light: {
-    primary: 'bg-terracotta text-warm-white hover:bg-terracotta/90',
-    secondary: 'border border-limestone/70 bg-warm-white/90 text-deep-slate hover:bg-sand/60',
+    primary: 'bg-bronze text-ivory shadow-bronze-cta hover:bg-bronze/90',
+    secondary: 'border border-bronze/35 bg-ivory text-deep-slate hover:bg-parchment/50',
   },
 }
 

@@ -198,7 +198,7 @@ export function OfflineRouteMap({
         style={{ paddingTop: 'max(5.75rem, calc(env(safe-area-inset-top) + 5rem))' }}
       >
         <div>
-          <p className="text-eyebrow uppercase text-terracotta">Offline route</p>
+          <p className="text-eyebrow uppercase text-bronze">Offline route</p>
           <h1 className="mt-1 font-display text-2xl font-semibold text-deep-slate">Walking overview</h1>
           <p className="mt-2 text-sm leading-relaxed text-soft-slate">
             Detailed street maps need internet. Your tour, GPS arrival detection, and downloaded
