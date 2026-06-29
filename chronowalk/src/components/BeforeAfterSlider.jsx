@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
@@ -18,8 +18,80 @@ const VIDEO_EXT = /\.(mp4|webm|mov)(\?.*)?$/i;
 const MEDIA_ASPECT = 16 / 9;
 const DEFAULT_MAX_FRAME_HEIGHT_RATIO = 0.58;
 const ALIGNMENT_MAX_FRAME_HEIGHT_RATIO = 0.5;
+const MODERN_DUOTONE_STRENGTH = 0.75;
+const MODERN_DUOTONE_SHADOW = { r: 23 / 255, g: 33 / 255, b: 43 / 255 };
+const MODERN_DUOTONE_HIGHLIGHT = { r: 1, g: 253 / 255, b: 248 / 255 };
 
 export const isVideoUrl = (url) => Boolean(url && VIDEO_EXT.test(url));
+
+export function getModernDuotoneFilterStyle({
+  duotone,
+  filterId,
+  alignmentMode = false,
+  baseStyle,
+}) {
+  if (!duotone || alignmentMode || !filterId) return baseStyle;
+  return { ...baseStyle, filter: `url(#${filterId})` };
+}
+
+function ModernDuotoneFilter({ filterId, strength = MODERN_DUOTONE_STRENGTH }) {
+  const originalWeight = 1 - strength;
+
+  return (
+    <svg
+      aria-hidden="true"
+      width="0"
+      height="0"
+      className="pointer-events-none absolute"
+      style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
+    >
+      <defs>
+        <filter
+          id={filterId}
+          colorInterpolationFilters="sRGB"
+          x="0%"
+          y="0%"
+          width="100%"
+          height="100%"
+        >
+          <feColorMatrix
+            in="SourceGraphic"
+            type="matrix"
+            values="0.2126 0.7152 0.0722 0 0
+                    0.2126 0.7152 0.0722 0 0
+                    0.2126 0.7152 0.0722 0 0
+                    0 0 0 1 0"
+            result="gray"
+          />
+          <feComponentTransfer in="gray" result="duotone">
+            <feFuncR
+              type="table"
+              tableValues={`${MODERN_DUOTONE_SHADOW.r} ${MODERN_DUOTONE_HIGHLIGHT.r}`}
+            />
+            <feFuncG
+              type="table"
+              tableValues={`${MODERN_DUOTONE_SHADOW.g} ${MODERN_DUOTONE_HIGHLIGHT.g}`}
+            />
+            <feFuncB
+              type="table"
+              tableValues={`${MODERN_DUOTONE_SHADOW.b} ${MODERN_DUOTONE_HIGHLIGHT.b}`}
+            />
+            <feFuncA type="table" tableValues="0 1" />
+          </feComponentTransfer>
+          <feComposite
+            in="duotone"
+            in2="SourceGraphic"
+            operator="arithmetic"
+            k1="0"
+            k2={strength}
+            k3={originalWeight}
+            k4="0"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
 
 const baseMediaStyle = {
   display: 'block',
@@ -204,8 +276,10 @@ function CompareSliderHandle() {
   );
 }
 
-function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
-  const labelShadow = '0 1px 8px rgba(23, 33, 43, 0.78), 0 0 1px rgba(23, 33, 43, 0.65)';
+function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD', duotone = false }) {
+  const labelShadow = duotone
+    ? '0 1px 10px rgba(23, 33, 43, 0.92), 0 0 2px rgba(23, 33, 43, 0.82)'
+    : '0 1px 8px rgba(23, 33, 43, 0.78), 0 0 1px rgba(23, 33, 43, 0.65)';
   const ancientShadow = '0 2px 14px rgba(23, 33, 43, 0.88), 0 0 1px rgba(23, 33, 43, 0.7)';
 
   return (
@@ -348,8 +422,10 @@ const BeforeAfterSlider = ({
   maxFrameHeightRatio,
   embedded = false,
   startImmersive = false,
+  duotone = true,
   onRequestExit = null,
 }) => {
+  const duotoneFilterId = useId().replace(/:/g, '');
   const [immersive, setImmersive] = useState(startImmersive);
   const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
@@ -425,6 +501,18 @@ const BeforeAfterSlider = ({
   const showPosters = compareReady && postersAvailable;
   const playbackMediaStyle = coverMediaStyle;
   const posterMediaStyle = coverMediaStyle;
+  const modernPosterMediaStyle = getModernDuotoneFilterStyle({
+    duotone,
+    filterId: duotoneFilterId,
+    alignmentMode,
+    baseStyle: posterMediaStyle,
+  });
+  const modernPlaybackMediaStyle = getModernDuotoneFilterStyle({
+    duotone,
+    filterId: duotoneFilterId,
+    alignmentMode,
+    baseStyle: playbackMediaStyle,
+  });
 
   useEffect(() => {
     if (tiltEnabled) recalibrate();
@@ -607,7 +695,7 @@ const BeforeAfterSlider = ({
   const renderAlignmentMedia = (src, label, isAncient = false) => {
     if (!src) return null;
 
-    const style = coverMediaStyle;
+    const style = isAncient ? coverMediaStyle : modernPosterMediaStyle;
     const ancientTransform = isAncient
       ? composeLayerTransform(calibration, parallaxTransform)
       : undefined;
@@ -673,7 +761,7 @@ const BeforeAfterSlider = ({
           <ReactCompareSliderImage
             src={modernPosterUrl}
             alt="Modern Colosseum"
-            style={posterMediaStyle}
+            style={modernPosterMediaStyle}
             referrerPolicy="no-referrer"
           />
         </SliderItemShell>
@@ -692,7 +780,7 @@ const BeforeAfterSlider = ({
             autoPlay
             preload="auto"
             aria-label="Modern Colosseum"
-            style={playbackMediaStyle}
+            style={modernPlaybackMediaStyle}
             onEnded={() => markEnded('modern')}
           />
         </SliderItemShell>
@@ -703,7 +791,7 @@ const BeforeAfterSlider = ({
       <ReactCompareSliderImage
         src={modernImg}
         alt="Modern Colosseum"
-        style={posterMediaStyle}
+        style={modernPosterMediaStyle}
         referrerPolicy="no-referrer"
       />
     );
@@ -799,6 +887,7 @@ const BeforeAfterSlider = ({
       role="group"
       aria-label="Compare today and ancient Rome views"
     >
+      {duotone && !alignmentMode ? <ModernDuotoneFilter filterId={duotoneFilterId} /> : null}
       {frameHeight > 0 ? (
         alignmentMode ? (
           <div className="relative h-full w-full overflow-hidden bg-deep-slate">
@@ -808,7 +897,7 @@ const BeforeAfterSlider = ({
           <MediaFailFallback title="Modern view unavailable" />
         ) : (
           <>
-            <SliderEraLabels />
+            <SliderEraLabels duotone={duotone && !alignmentMode} />
             {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%', touchAction: 'none' }}
