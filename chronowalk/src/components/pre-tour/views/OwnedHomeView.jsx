@@ -1,6 +1,6 @@
 import { getTourById } from '../../../services/tourRegistry'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, EditorialTitle, GlassPanel, ParchmentCard, cn } from '../../ui'
+import { BronzeButton, EditorialTitle, GlassPanel, ParchmentCard, cn, tapAction } from '../../ui'
 import FreePreviewCard from '../../FreePreviewCard'
 
 export function OwnedHomeView({
@@ -29,32 +29,30 @@ export function OwnedHomeView({
           Your Rome walking tours
         </EditorialTitle>
 
-        <div className="mt-6 space-y-3">
+        <div className="mt-6 space-y-4">
           {tours.map((tour) => {
             const selected = tour.id === selectedTourId
             return (
-              <button
+              <ParchmentCard
                 key={tour.id}
+                as="button"
                 type="button"
-                className="w-full text-left"
                 onClick={() => {
                   triggerHaptic(HAPTIC_KIND.SOFT_TAP)
                   onSelectTour(tour.id)
                 }}
+                className={cn(
+                  'w-full p-4 text-left transition',
+                  tapAction,
+                  selected ? 'border-bronze/40 bg-bronze/[0.04] shadow-plaque-lg' : 'hover:border-bronze/30'
+                )}
               >
-                <ParchmentCard
-                  className={cn(
-                    'p-4 transition',
-                    selected ? 'border-bronze/40 bg-bronze/[0.04] shadow-plaque-lg' : 'hover:border-bronze/30'
-                  )}
-                >
                   <p className="text-eyebrow uppercase text-bronze">{tour.subtitle}</p>
                   <h3 className="mt-1 font-display text-xl font-semibold text-deep-slate">{tour.title}</h3>
                   <p className="mt-2 text-sm text-soft-slate">
                     <span className="font-semibold text-deep-slate">{tour.stopIds.length} stops</span>
                   </p>
-                </ParchmentCard>
-              </button>
+              </ParchmentCard>
             )
           })}
         </div>

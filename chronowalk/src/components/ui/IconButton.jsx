@@ -1,5 +1,5 @@
 import { cn } from './cn'
-import { focusRing } from './focusRing'
+import { focusRing, tapAction, touchTarget } from './focusRing'
 
 const variantStyles = {
   default:
@@ -9,9 +9,9 @@ const variantStyles = {
 }
 
 const sizeStyles = {
-  sm: 'h-10 w-10',
-  md: 'h-11 w-11',
-  lg: 'h-12 w-12',
+  sm: 'h-11 w-11 min-h-11 min-w-11',
+  md: 'h-12 w-12 min-h-12 min-w-12',
+  lg: 'h-14 w-14 min-h-14 min-w-14',
 }
 
 export function IconButton({
@@ -30,6 +30,8 @@ export function IconButton({
       className={cn(
         'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200',
         focusRing,
+        touchTarget,
+        tapAction,
         variantStyles[variant],
         sizeStyles[size],
         className
