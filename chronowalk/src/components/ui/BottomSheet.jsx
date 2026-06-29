@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -20,7 +20,13 @@ export function BottomSheet({
 }) {
   const reducedMotion = useReducedMotion()
   const sheetRef = useRef(null)
+  const [riseKey, setRiseKey] = useState(0)
   useOpenHaptic(open)
+
+  useEffect(() => {
+    if (!open || reducedMotion || !cinematic) return undefined
+    setRiseKey((key) => key + 1)
+  }, [open, reducedMotion, cinematic])
 
   const handleClose = () => {
     triggerHaptic(HAPTIC_KIND.SOFT_TAP)
@@ -54,6 +60,7 @@ export function BottomSheet({
 
   return (
     <div
+      key={cinematic && open && !reducedMotion ? riseKey : undefined}
       ref={sheetRef}
       role="dialog"
       aria-modal="true"

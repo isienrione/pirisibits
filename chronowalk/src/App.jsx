@@ -8,6 +8,7 @@ import LocationNotice from './components/LocationNotice'
 import ErrorBoundary from './components/ErrorBoundary'
 import PersistentAudioBar from './components/PersistentAudioBar'
 import AppNavigation from './components/navigation/AppNavigation'
+import { TabCrossFadePanel } from './components/navigation/TabCrossFadePanel'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
@@ -314,26 +315,26 @@ function App() {
     await session.beginTransitToNextStop()
   }
 
-  const handleStartTour = async (selectedTour) => {
+  const handleStartTour = useCallback((selectedTour) => {
     if (selectedTour) {
       setActiveTour(selectedTour)
     }
     setFreePreviewStopId(null)
-    await requestDeviceTiltPermission()
+    setHasInteracted(true)
+    setActiveTab(NAV_TABS.MAP)
     tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
     void import('./components/WaypointCard')
-    setHasInteracted(true)
-    setActiveTab(NAV_TABS.TOUR)
-  }
+    void requestDeviceTiltPermission()
+  }, [])
 
-  const handleStartFreePreview = useCallback(async () => {
+  const handleStartFreePreview = useCallback(() => {
     setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
-    await requestDeviceTiltPermission()
-    void import('./components/TourMap')
-    void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
+    void import('./components/TourMap')
+    void import('./components/WaypointCard')
+    void requestDeviceTiltPermission()
   }, [])
 
   const openDirections = useCallback((landmark, title, origin = null) => {
@@ -502,7 +503,7 @@ function App() {
 
       <div
         id="main-tour-content"
-        className={mapTabActive ? 'relative h-full w-full' : 'hidden'}
+        className={mapTabActive ? 'relative z-[1] h-full w-full' : 'hidden'}
         aria-hidden={!mapTabActive}
       >
         <ErrorBoundary
@@ -588,7 +589,7 @@ function App() {
         ) : null}
       </div>
 
-      {activeTab === NAV_TABS.TOUR ? (
+      <TabCrossFadePanel active={activeTab === NAV_TABS.TOUR} className="min-h-full">
         <Suspense fallback={<TabLoadingFallback />}>
           <TourOverviewView
             tour={mapTour}
@@ -613,9 +614,9 @@ function App() {
             }}
           />
         </Suspense>
-      ) : null}
+      </TabCrossFadePanel>
 
-      {activeTab === NAV_TABS.STOPS ? (
+      <TabCrossFadePanel active={activeTab === NAV_TABS.STOPS} className="min-h-full">
         <Suspense fallback={<TabLoadingFallback />}>
           <StopsView
             tour={mapTour}
@@ -627,22 +628,27 @@ function App() {
             onNavigate={() => setActiveTab(NAV_TABS.MAP)}
           />
         </Suspense>
-      ) : null}
+      </TabCrossFadePanel>
 
-      {activeTab === NAV_TABS.DIRECTIONS && directionsDestination ? (
-        <Suspense fallback={<TabLoadingFallback />}>
-          <DirectionsView
-            destination={directionsDestination}
-            origin={directionsOrigin}
-            userPosition={session.position}
-            locationStatus={locationStatus}
-            onBack={() => setActiveTab(NAV_TABS.MAP)}
-            onOpenExternalMaps={handleOpenExternalMaps}
-          />
-        </Suspense>
-      ) : null}
+      <TabCrossFadePanel
+        active={activeTab === NAV_TABS.DIRECTIONS && Boolean(directionsDestination)}
+        className="min-h-full"
+      >
+        {directionsDestination ? (
+          <Suspense fallback={<TabLoadingFallback />}>
+            <DirectionsView
+              destination={directionsDestination}
+              origin={directionsOrigin}
+              userPosition={session.position}
+              locationStatus={locationStatus}
+              onBack={() => setActiveTab(NAV_TABS.MAP)}
+              onOpenExternalMaps={handleOpenExternalMaps}
+            />
+          </Suspense>
+        ) : null}
+      </TabCrossFadePanel>
 
-      {activeTab === NAV_TABS.SETTINGS ? (
+      <TabCrossFadePanel active={activeTab === NAV_TABS.SETTINGS} className="min-h-full">
         <Suspense fallback={<TabLoadingFallback />}>
           <SettingsView
             tour={mapTour}
@@ -656,7 +662,7 @@ function App() {
             onRetryLocation={session.retryLocation}
           />
         </Suspense>
-      ) : null}
+      </TabCrossFadePanel>
 
       <ErrorBoundary
         title="Landmark card unavailable"

@@ -1,3 +1,6 @@
+/** Waypoints with ship_assets: false are scaffolded in data but media is not in public/ yet. */
+export const hasShippedWaypointMedia = (waypoint) => waypoint?.ship_assets !== false
+
 /** Bust browser cache when replacing files at the same public/ path. Bump in seed after re-export. */
 export const bustMediaUrl = (url, waypoint) => {
   if (!url) return null
@@ -16,15 +19,23 @@ export const bustMediaUrl = (url, waypoint) => {
   return `${url}${separator}cwv=${encodeURIComponent(token)}`
 }
 
-export const getModernSliderUrl = (waypoint) =>
-  bustMediaUrl(waypoint?.modern_video_url || waypoint?.modern_image_url, waypoint)
+export const getModernSliderUrl = (waypoint) => {
+  if (!hasShippedWaypointMedia(waypoint)) return null
+  return bustMediaUrl(waypoint?.modern_video_url || waypoint?.modern_image_url, waypoint)
+}
 
-export const getAncientSliderUrl = (waypoint) =>
-  bustMediaUrl(waypoint?.ancient_video_url || waypoint?.ancient_image_url, waypoint)
+export const getAncientSliderUrl = (waypoint) => {
+  if (!hasShippedWaypointMedia(waypoint)) return null
+  return bustMediaUrl(waypoint?.ancient_video_url || waypoint?.ancient_image_url, waypoint)
+}
 
-export const hasModernSliderMedia = (waypoint) => Boolean(getModernSliderUrl(waypoint))
+export const hasModernSliderMedia = (waypoint) =>
+  hasShippedWaypointMedia(waypoint) &&
+  Boolean(waypoint?.modern_video_url || waypoint?.modern_image_url)
 
-export const hasAncientSliderMedia = (waypoint) => Boolean(getAncientSliderUrl(waypoint))
+export const hasAncientSliderMedia = (waypoint) =>
+  hasShippedWaypointMedia(waypoint) &&
+  Boolean(waypoint?.ancient_video_url || waypoint?.ancient_image_url)
 
 /** Stops with only a modern animated video — no before/after comparison layer. */
 export const isModernVideoImmersive = (waypoint) =>
@@ -80,10 +91,18 @@ export const resolveSliderPostAnimationLoopMs = (waypointValue) => {
 /** @deprecated Use resolveSliderPostAnimationLoopMs */
 export const resolveSliderPostAnimationHoldMs = resolveSliderPostAnimationLoopMs
 
-export const getModernPosterUrl = (waypoint) => bustMediaUrl(waypoint?.modern_poster_url, waypoint)
+export const getModernPosterUrl = (waypoint) => {
+  if (!hasShippedWaypointMedia(waypoint)) return null
+  return bustMediaUrl(waypoint?.modern_poster_url, waypoint)
+}
 
 /** Cover art for stops list, HUD, audio bar, and card hero — prefers modern-exterior stills. */
-export const getModernCoverUrl = (waypoint) =>
-  bustMediaUrl(waypoint?.modern_image_url || waypoint?.modern_poster_url, waypoint)
+export const getModernCoverUrl = (waypoint) => {
+  if (!hasShippedWaypointMedia(waypoint)) return null
+  return bustMediaUrl(waypoint?.modern_image_url || waypoint?.modern_poster_url, waypoint)
+}
 
-export const getAncientPosterUrl = (waypoint) => bustMediaUrl(waypoint?.ancient_poster_url, waypoint)
+export const getAncientPosterUrl = (waypoint) => {
+  if (!hasShippedWaypointMedia(waypoint)) return null
+  return bustMediaUrl(waypoint?.ancient_poster_url, waypoint)
+}

@@ -21,6 +21,10 @@
 
     --shadow-glass: 0 8px 32px rgba(23, 33, 43, 0.12), 0 2px 8px rgba(23, 33, 43, 0.06);
     --shadow-sheet: 0 -12px 40px rgba(23, 33, 43, 0.14);
+
+    --spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --spring-duration: 0.75s;
+    --tab-crossfade-duration: 200ms;
   }
 
   html {
@@ -55,7 +59,19 @@
   }
 
   .motion-safe-transition {
-    @apply motion-reduce:transition-none motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)];
+    @apply motion-reduce:transition-none motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[var(--spring)];
+  }
+
+  .tab-panel-motion {
+    @apply motion-reduce:transition-none motion-safe:transition-[opacity,transform] motion-safe:duration-200 motion-safe:ease-[var(--spring)];
+  }
+
+  .tab-panel-motion--active {
+    @apply relative z-[1] opacity-100 translate-y-0;
+  }
+
+  .tab-panel-motion--inactive {
+    @apply pointer-events-none absolute inset-0 z-0 opacity-0 translate-y-[6px];
   }
 }
 
@@ -128,7 +144,7 @@
   }
 
   .animate-sheet-rise {
-    animation: sheet-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: sheet-rise var(--spring-duration) var(--spring) forwards;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -146,6 +162,10 @@
 
     .animate-pulse {
       animation: none;
+    }
+
+    .tab-panel-motion--inactive {
+      transform: none;
     }
   }
 }

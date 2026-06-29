@@ -1,5 +1,6 @@
 import { FREE_PREVIEW_STOP_ID } from '../../data/freePreview'
 import { getWaypointGeo } from '../../data/waypointGeo'
+import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { estimateWalkMinutes } from '../../utils/tourStats'
 import TourStopCard from '../TourStopCard'
 import { Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'

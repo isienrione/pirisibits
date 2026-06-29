@@ -10,6 +10,9 @@ import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
 
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
+const SLIDER_RESTING_POSITION = 50;
+const REVEAL_WIPE_START_POSITION = 0;
+const REVEAL_WIPE_TRANSITION = '0.85s var(--spring)';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -378,6 +381,11 @@ const BeforeAfterSlider = ({
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
   const [animationLoopActive, setAnimationLoopActive] = useState(false);
+  const shouldRevealWipe = startImmersive && !reducedMotion;
+  const [sliderPosition, setSliderPosition] = useState(
+    shouldRevealWipe ? REVEAL_WIPE_START_POSITION : SLIDER_RESTING_POSITION
+  );
+  const [revealWipeComplete, setRevealWipeComplete] = useState(!shouldRevealWipe);
   const modernIsVideo = isVideoUrl(modernImg);
   const ancientIsVideo = isVideoUrl(historicImg);
   const resolvedPosterAt = resolveSliderPosterAtSec(posterAtSec);
@@ -437,11 +445,18 @@ const BeforeAfterSlider = ({
     setCompareReady(false);
     setAnimationLoopActive(false);
     loopPhaseRef.current = false;
+    if (shouldRevealWipe) {
+      setSliderPosition(REVEAL_WIPE_START_POSITION);
+      setRevealWipeComplete(false);
+    } else {
+      setSliderPosition(SLIDER_RESTING_POSITION);
+      setRevealWipeComplete(true);
+    }
     if (loopTimerRef.current) {
       window.clearTimeout(loopTimerRef.current);
       loopTimerRef.current = null;
     }
-  }, [modernImg, historicImg, resolvedPosterAt, resolvedLoopMs]);
+  }, [modernImg, historicImg, resolvedPosterAt, resolvedLoopMs, shouldRevealWipe]);
 
   useEffect(
     () => () => {
@@ -451,6 +466,29 @@ const BeforeAfterSlider = ({
     },
     []
   );
+
+  useEffect(() => {
+    if (!shouldRevealWipe || revealWipeComplete || frameHeight <= 0) return undefined;
+
+    const frame = requestAnimationFrame(() => {
+      setSliderPosition(SLIDER_RESTING_POSITION);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [shouldRevealWipe, revealWipeComplete, frameHeight]);
+
+  useEffect(() => {
+    if (
+      !shouldRevealWipe ||
+      revealWipeComplete ||
+      sliderPosition !== SLIDER_RESTING_POSITION
+    ) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => setRevealWipeComplete(true), 900);
+    return () => window.clearTimeout(timer);
+  }, [shouldRevealWipe, revealWipeComplete, sliderPosition]);
 
   const seekVideoToPosterFrame = useCallback(
     (video) => {
@@ -808,7 +846,7 @@ const BeforeAfterSlider = ({
           <MediaFailFallback title="Modern view unavailable" />
         ) : (
           <>
-            <SliderEraLabels />
+            {!immersive ? <SliderEraLabels /> : null}
             {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%', touchAction: 'none' }}
@@ -817,6 +855,11 @@ const BeforeAfterSlider = ({
               handle={<CompareSliderHandle />}
               onlyHandleDraggable={false}
               changePositionOnHover={false}
+              defaultPosition={sliderPosition}
+              transition={
+                shouldRevealWipe && !revealWipeComplete ? REVEAL_WIPE_TRANSITION : undefined
+              }
+              disabled={shouldRevealWipe && !revealWipeComplete}
               onPositionChange={handleSliderPositionChange}
             />
             <div className="grain-overlay" aria-hidden="true" />
