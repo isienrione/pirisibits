@@ -24,6 +24,11 @@ import { JOURNEY_STATE, LOCATION_STATUS } from './hooks/useGeoLocation'
 import { useTourSession } from './hooks/useTourSession'
 import { useAudioPageVisibility } from './hooks/useAudioPageVisibility'
 import { useArrivalAudioPrefetch } from './hooks/useArrivalAudioPrefetch'
+import { track } from './analytics/analytics'
+import {
+  readFirstArrivalTracked,
+  writeFirstArrivalTracked,
+} from './utils/appPreferences'
 import { useAudioPlaybackState } from './hooks/useAudioPlaybackState'
 import { useCelebrationHaptic, useLocationHaptics } from './hooks/useHapticTriggers'
 import { HAPTIC_KIND, triggerHaptic } from './utils/haptics'
@@ -185,6 +190,10 @@ function App() {
 
     triggerHaptic(HAPTIC_KIND.ARRIVAL_PULSE)
     session.markArrived()
+    if (!readFirstArrivalTracked()) {
+      track('first_arrival', { stopId: session.currentWaypoint.id })
+      writeFirstArrivalTracked(true)
+    }
     return revealWaypointCard(session.currentWaypoint)
   }, [
     hasInteracted,
@@ -325,6 +334,7 @@ function App() {
     void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.TOUR)
+    track('tour_started', { tourId: selectedTour?.id ?? tour?.id })
   }
 
   const handleStartFreePreview = useCallback(async () => {
@@ -334,6 +344,7 @@ function App() {
     void import('./components/WaypointCard')
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
+    track('preview_started')
   }, [])
 
   const openDirections = useCallback((landmark, title, origin = null) => {

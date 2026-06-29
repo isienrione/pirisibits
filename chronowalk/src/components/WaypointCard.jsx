@@ -8,6 +8,7 @@ import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useOpenHaptic } from '../hooks/useHapticTriggers';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
+import { track } from '../analytics/analytics';
 import { JOURNEY_STATE } from '../hooks/useGeoLocation';
 import { requestDeviceTiltPermission } from '../hooks/useDeviceTilt';
 import {
@@ -210,6 +211,7 @@ const WaypointCard = ({
   const [entered, setEntered] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const sliderRef = useRef(null);
+  const previewCompletedRef = useRef(false);
   const syncGenerationRef = useRef(0);
   const { isArrivalAudioPlaying, hasArrivalAudioSession, needsResumeAudio } =
     useAudioPlaybackState();
@@ -233,6 +235,7 @@ const WaypointCard = ({
     setCalibration(loadCalibration(waypoint?.id));
     setEntered(false);
     setShareOpen(false);
+    previewCompletedRef.current = false;
     syncGenerationRef.current = 0;
   }, [waypoint?.id]);
 
@@ -304,6 +307,21 @@ const WaypointCard = ({
       window.clearTimeout(timer)
     }
   }, [waypoint, accessMode, autoStartExperience])
+
+  useEffect(() => {
+    if (
+      previewCompletedRef.current ||
+      accessMode !== 'freeSample' ||
+      !autoStartExperience ||
+      !showImmersiveView ||
+      !waypoint?.id
+    ) {
+      return
+    }
+
+    previewCompletedRef.current = true
+    track('preview_completed', { stopId: waypoint.id })
+  }, [accessMode, autoStartExperience, showImmersiveView, waypoint?.id])
 
   if (!waypoint) return null;
   if (accessMode !== 'remote' && accessMode !== 'freeSample' && state !== JOURNEY_STATE.ARRIVAL) return null;
@@ -540,6 +558,7 @@ const WaypointCard = ({
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
                   embedded
+                  stopId={waypoint.id}
                   startImmersive={shouldStartImmersive}
                   modernImg={modernSliderUrl}
                   historicImg={ancientSliderUrl}

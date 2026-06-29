@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
+import { track } from '../analytics/analytics'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
 import { usePwaInstall } from '../hooks/usePwaInstall'
 import { Button, GlassPanel } from './ui'
@@ -36,6 +37,10 @@ function TourLanding({
       setSelectedTourId(initialTourId)
     }
   }, [initialTourId, ownedTourIds, ownsAllTours])
+
+  useEffect(() => {
+    track('landing_viewed')
+  }, [])
 
   const activeTour = useMemo(
     () => resolveActiveTour(selectedTourId, ownedTourIds, ownsAllTours),

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getTourProduct } from '../data/tourProducts'
+import { track } from '../analytics/analytics'
 import {
   ownsAnyTour,
   ownsTour,
@@ -34,6 +35,11 @@ export function useTourEntitlements() {
     (productId) => {
       const result = purchaseTourProduct(productId)
       if (result.ok) {
+        const product = getTourProduct(productId)
+        track('purchase', {
+          productId: result.productId ?? productId,
+          priceUsd: product?.priceUsd,
+        })
         notifyEntitlementsChanged()
         refresh()
       }

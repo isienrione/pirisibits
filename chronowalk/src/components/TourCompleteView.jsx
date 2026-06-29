@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { Button, GlassPanel, cn, ctaInCard, metaLabel } from './ui'
+import { track } from '../analytics/analytics'
 import { formatElapsedDuration, formatWalkedDistance } from '../utils/tourStats'
 
 function StatColumn({ label, value }) {
@@ -19,6 +21,13 @@ function TourCompleteView({
   onDismiss,
 }) {
   const totalStops = tour?.stopIds?.length ?? visitedCount
+
+  useEffect(() => {
+    track('tour_completed', {
+      tourId: tour?.id,
+      walkedMeters,
+    })
+  }, [tour?.id, walkedMeters])
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[60] flex items-center justify-center bg-deep-slate/50 px-4 backdrop-blur-sm">

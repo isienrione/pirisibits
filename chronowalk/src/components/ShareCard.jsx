@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useState } from 'react'
 import { BottomSheet, Button, cn } from './ui'
+import { track } from '../analytics/analytics'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { getAncientPosterUrl, getModernPosterUrl } from '../utils/sliderMedia'
 
@@ -196,6 +197,9 @@ export function ShareCard({
       const blob = await exportPng()
       const slug = waypoint?.id ?? 'chronowalk'
       downloadBlob(blob, `chronowalk-${slug}.png`)
+      if (waypoint?.id) {
+        track('view_shared', { stopId: waypoint.id })
+      }
     } catch (error) {
       console.error('ShareCard save failed:', error)
       setToast('Could not save image. Try again in a moment.')
@@ -218,10 +222,16 @@ export function ShareCard({
 
       if (navigator.canShare?.(shareData)) {
         await navigator.share(shareData)
+        if (waypoint?.id) {
+          track('view_shared', { stopId: waypoint.id })
+        }
         return
       }
 
       downloadBlob(blob, `chronowalk-${slug}.png`)
+      if (waypoint?.id) {
+        track('view_shared', { stopId: waypoint.id })
+      }
       setToast('Download started — press and hold the image to save on some devices.')
     } catch (error) {
       if (error?.name === 'AbortError') return
