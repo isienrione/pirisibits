@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useDeviceTilt } from '../hooks/useDeviceTilt';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
@@ -7,6 +7,8 @@ import { cn } from './ui/cn';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
+
+const ShareCard = lazy(() => import('./ShareCard'));
 
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
@@ -348,9 +350,11 @@ const BeforeAfterSlider = ({
   maxFrameHeightRatio,
   embedded = false,
   startImmersive = false,
+  shareWaypoint = null,
   onRequestExit = null,
 }) => {
   const [immersive, setImmersive] = useState(startImmersive);
+  const [shareOpen, setShareOpen] = useState(false);
   const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
   const immersiveHeightRatio = immersive ? 0.92 : maxFrameHeightRatio;
@@ -383,6 +387,12 @@ const BeforeAfterSlider = ({
   const resolvedPosterAt = resolveSliderPosterAtSec(posterAtSec);
   const resolvedLoopMs = resolveSliderPostAnimationLoopMs(postAnimationLoopMs);
   const usingVideo = modernIsVideo || ancientIsVideo;
+  const canShareView = Boolean(shareWaypoint && modernPosterUrl && ancientPosterUrl);
+
+  const openShareCard = useCallback(() => {
+    triggerHaptic(HAPTIC_KIND.SOFT_TAP);
+    setShareOpen(true);
+  }, []);
 
   const handleSliderPositionChange = useCallback((position) => {
     sliderPositionRef.current = position;
@@ -905,7 +915,7 @@ const BeforeAfterSlider = ({
       }
     >
       {immersive ? (
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-limestone/50 bg-warm-white/95 px-3 py-3 sm:px-4">
+        <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-limestone/50 bg-warm-white/95 px-3 py-3 sm:px-4">
           <button
             type="button"
             onClick={exitCompareView}
@@ -917,9 +927,23 @@ const BeforeAfterSlider = ({
           >
             Back
           </button>
-          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
-            Immersive compare
-          </p>
+          <div className="flex min-w-0 flex-col items-center gap-1 px-1 text-center">
+            <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
+              Immersive compare
+            </p>
+            {canShareView ? (
+              <button
+                type="button"
+                onClick={openShareCard}
+                className={cn(
+                  'min-h-9 rounded-full px-3 py-1 text-xs font-semibold text-terracotta underline-offset-2 hover:underline',
+                  focusRing
+                )}
+              >
+                Share this view
+              </button>
+            ) : null}
+          </div>
           <button
             type="button"
             onClick={closeImmersive}
@@ -978,11 +1002,24 @@ const BeforeAfterSlider = ({
 
   if (immersive) {
     return (
-      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
-        <div className="flex h-full w-full min-h-0 flex-col">
-          {sliderShell}
+      <>
+        <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
+          <div className="flex h-full w-full min-h-0 flex-col">
+            {sliderShell}
+          </div>
         </div>
-      </div>
+        {canShareView ? (
+          <Suspense fallback={null}>
+            <ShareCard
+              waypoint={shareWaypoint}
+              modernSrc={modernPosterUrl}
+              ancientSrc={ancientPosterUrl}
+              open={shareOpen}
+              onClose={() => setShareOpen(false)}
+            />
+          </Suspense>
+        ) : null}
+      </>
     );
   }
 

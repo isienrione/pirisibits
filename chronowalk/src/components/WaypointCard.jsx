@@ -551,6 +551,7 @@ const WaypointCard = ({
                   }
                   modernPosterUrl={getModernPosterUrl(waypoint)}
                   ancientPosterUrl={getAncientPosterUrl(waypoint)}
+                  shareWaypoint={waypoint}
                   calibration={calibration}
                   alignmentMode={alignmentMode}
                   maxFrameHeightRatio={0.62}

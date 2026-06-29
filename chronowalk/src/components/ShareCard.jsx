@@ -161,6 +161,9 @@ export function ShareCard({
   open,
   onClose,
   eraLabel = 'Ancient Rome',
+  titleOverride,
+  panelTitle = 'Share this reveal',
+  panelDescription,
 }) {
   const titleId = useId()
   const reducedMotion = useReducedMotion()
@@ -169,7 +172,9 @@ export function ShareCard({
 
   const resolvedModern = modernSrc ?? (waypoint ? getModernPosterUrl(waypoint) : null)
   const resolvedAncient = ancientSrc ?? (waypoint ? getAncientPosterUrl(waypoint) : null)
-  const title = waypoint?.title ?? 'Rome landmark'
+  const title = titleOverride ?? waypoint?.title ?? 'Rome landmark'
+  const description =
+    panelDescription ?? `A screenshot-ready before-and-after card for ${title}.`
 
   useEffect(() => {
     if (!toast) return undefined
@@ -245,11 +250,9 @@ export function ShareCard({
     >
       <div className={cn('pb-2', reducedMotion ? '' : 'motion-safe-transition')}>
         <h2 id={titleId} className="font-display text-2xl font-semibold text-deep-slate">
-          Share this reveal
+          {panelTitle}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-soft-slate">
-          A screenshot-ready before-and-after card for {title}.
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-soft-slate">{description}</p>
 
         {resolvedModern && resolvedAncient ? (
           <div className="mt-5">
