@@ -148,6 +148,16 @@ function TourCatalog({
 
   const bundleProduct = TOUR_PRODUCT_LIST.find((product) => product.includesProductIds?.length)
   const singleProducts = TOUR_PRODUCT_LIST.filter((product) => !product.includesProductIds?.length)
+  const singleProductMinPriceUsd = useMemo(() => {
+    if (!singleProducts.length) return null
+    return Math.min(...singleProducts.map((product) => product.priceUsd))
+  }, [singleProducts])
+  const singleProductsSharePrice = useMemo(
+    () =>
+      singleProductMinPriceUsd != null &&
+      singleProducts.every((product) => product.priceUsd === singleProductMinPriceUsd),
+    [singleProducts, singleProductMinPriceUsd]
+  )
 
   const handleSelectProduct = (product) => {
     if (product.includesProductIds?.length) {
@@ -198,7 +208,15 @@ function TourCatalog({
           <div>
             <p className="text-eyebrow uppercase text-terracotta">Single tours</p>
             <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">
-              One route at a time · {formatUsd(10)} each
+              One route at a time
+              {singleProductMinPriceUsd != null ? (
+                <>
+                  {' · '}
+                  {singleProductsSharePrice
+                    ? `${formatUsd(singleProductMinPriceUsd)} each`
+                    : `from ${formatUsd(singleProductMinPriceUsd)}`}
+                </>
+              ) : null}
             </h3>
           </div>
           <div className="space-y-4">{singleProducts.map(renderProductCard)}</div>
