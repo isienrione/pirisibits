@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import TourLanding from '../TourLanding'
 
-describe('TourLanding', () => {
-  it('shows intro content and purchase options on one page', () => {
+describe('TourLanding pre-tour screen stack', () => {
+  it('shows welcome screen first for new users', () => {
     render(
       <TourLanding
         ownedTourIds={[]}
@@ -19,13 +19,11 @@ describe('TourLanding', () => {
         name: /detailed, entertaining self-guided audio tour of rome/i,
       })
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /try for free/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /complete rome/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /^roman forum$/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 3, name: /^heart of ancient rome$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /browse tours & pricing/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /complete rome/i })).not.toBeInTheDocument()
   })
 
-  it('lists the bundle before single tour options', () => {
+  it('navigates to catalog as a separate screen', () => {
     render(
       <TourLanding
         ownedTourIds={[]}
@@ -36,13 +34,14 @@ describe('TourLanding', () => {
       />
     )
 
-    expect(screen.getByRole('heading', { level: 3, name: /^complete rome$/i })).toBeInTheDocument()
-    expect(screen.getByText(/^Single tours$/i)).toBeInTheDocument()
-    expect(screen.getAllByRole('button', { name: /buy \$10/i })).toHaveLength(2)
-    expect(screen.getByRole('button', { name: /buy \$15/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /browse tours & pricing/i }))
+
+    expect(screen.getByRole('heading', { name: /choose your walk/i })).toBeInTheDocument()
+    expect(screen.getByText(/complete rome/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument()
   })
 
-  it('shows add to home screen install panel', () => {
+  it('opens tour detail from catalog', () => {
     render(
       <TourLanding
         ownedTourIds={[]}
@@ -53,10 +52,29 @@ describe('TourLanding', () => {
       />
     )
 
-    expect(screen.getByText(/add chronowalk to your home screen/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /browse tours & pricing/i }))
+    fireEvent.click(screen.getByRole('heading', { name: /complete rome/i }))
+
+    expect(screen.getByRole('button', { name: /purchase \$15/i })).toBeInTheDocument()
+    expect(screen.getByText(/included landmarks/i)).toBeInTheDocument()
   })
 
-  it('starts selected tour when owned', () => {
+  it('shows owned home for returning purchasers', () => {
+    render(
+      <TourLanding
+        ownedTourIds={['heart-of-ancient-rome']}
+        ownsAllTours={false}
+        onPurchaseProduct={vi.fn()}
+        onStartTour={vi.fn()}
+        onTryFreePreview={vi.fn()}
+      />
+    )
+
+    expect(screen.getByRole('heading', { name: /your rome walking tours/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue with heart of ancient rome/i })).toBeInTheDocument()
+  })
+
+  it('walks through permissions before starting a owned tour', () => {
     const onStartTour = vi.fn()
     render(
       <TourLanding
@@ -68,17 +86,21 @@ describe('TourLanding', () => {
       />
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /start heart of ancient rome/i }))
+    fireEvent.click(screen.getByRole('button', { name: /continue with heart of ancient rome/i }))
+    fireEvent.click(screen.getByRole('button', { name: /begin journey/i }))
+    expect(screen.getByRole('heading', { name: /enable location for gps guidance/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /continue without enabling/i }))
     expect(onStartTour).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'heart-of-ancient-rome', title: 'Heart of Ancient Rome' })
+      expect.objectContaining({ id: 'heart-of-ancient-rome' })
     )
   })
 
-  it('shows free preview for users who already own tours', () => {
+  it('navigates to free preview screen before launching', () => {
     const onTryFreePreview = vi.fn()
     render(
       <TourLanding
-        ownedTourIds={['heart-of-ancient-rome']}
+        ownedTourIds={[]}
         ownsAllTours={false}
         onPurchaseProduct={vi.fn()}
         onStartTour={vi.fn()}
@@ -86,8 +108,11 @@ describe('TourLanding', () => {
       />
     )
 
-    expect(screen.getByRole('button', { name: /try for free/i })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /try for free/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^try for free$/i }))
+    expect(screen.getByRole('heading', { name: /walk the colosseum for free/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /start free preview/i }))
+    fireEvent.click(screen.getByRole('button', { name: /continue without enabling/i }))
     expect(onTryFreePreview).toHaveBeenCalledTimes(1)
   })
 })
