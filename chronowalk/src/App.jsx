@@ -11,7 +11,7 @@ import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
 import { estimateWalkedDistanceMeters } from './utils/tourStats'
-import { getModernCoverUrl } from './utils/sliderMedia'
+import { getModernCoverUrl, hasComparisonSliderMedia } from './utils/sliderMedia'
 import { getTourDirectionsOrigin } from './utils/tourDirections'
 import { isAtWaypoint } from './utils/waypointProximity'
 import { getWaypointGeo } from './data/waypointGeo'
@@ -418,6 +418,22 @@ function App() {
     [tour, session.progress.arrivedStopIds]
   )
 
+  const tourCompleteShareWaypoint = useMemo(() => {
+    if (!tour?.stopIds?.length) return null
+
+    for (let index = session.progress.arrivedStopIds.length - 1; index >= 0; index -= 1) {
+      const waypoint = session.waypointsById[session.progress.arrivedStopIds[index]]
+      if (waypoint && hasComparisonSliderMedia(waypoint)) return waypoint
+    }
+
+    for (const stopId of tour.stopIds) {
+      const waypoint = session.waypointsById[stopId]
+      if (waypoint && hasComparisonSliderMedia(waypoint)) return waypoint
+    }
+
+    return null
+  }, [tour?.stopIds, session.progress.arrivedStopIds, session.waypointsById])
+
   const audioWaypoint = activeWaypoint ?? discoveredWaypoint ?? session.currentWaypoint
   const audioPosterUrl = audioWaypoint ? getModernCoverUrl(audioWaypoint) : null
   const cardIsOpen = Boolean(activeWaypoint)
@@ -705,6 +721,7 @@ function App() {
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}
+          shareWaypoint={tourCompleteShareWaypoint}
           onViewSummary={() => {
             setCompletionDismissed(true)
             setActiveTab(NAV_TABS.TOUR)

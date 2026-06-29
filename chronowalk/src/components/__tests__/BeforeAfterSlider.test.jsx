@@ -26,11 +26,15 @@ describe('BeforeAfterSlider', () => {
       <BeforeAfterSlider
         modernImg="/modern.mp4"
         historicImg="/ancient.mp4"
+        modernPosterUrl="/modern-poster.jpg"
+        ancientPosterUrl="/ancient-poster.jpg"
+        shareWaypoint={{ id: 'colosseum', title: 'The Colosseum' }}
         startImmersive
       />
     )
 
     expect(screen.getByLabelText(/close full screen compare view/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /share this view/i })).toBeInTheDocument()
     expect(screen.queryByLabelText(/open full screen compare view/i)).not.toBeInTheDocument()
   })
 
