@@ -112,6 +112,10 @@ export const env = {
   /** Supabase project URL and anon key for waypoint data */
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL || '',
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+  /** Provider-agnostic analytics project key (PostHog, Plausible, Segment, etc.) */
+  analyticsKey: import.meta.env.VITE_ANALYTICS_KEY || '',
+  /** Optional custom ingest endpoint for the default analytics adapter */
+  analyticsEndpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT || '',
 }
 
 export const isMapboxConfigured = () => Boolean(env.mapboxToken)

@@ -7,6 +7,7 @@ import { cn } from './ui/cn';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
+import { track } from '../analytics/analytics';
 
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
@@ -348,6 +349,7 @@ const BeforeAfterSlider = ({
   maxFrameHeightRatio,
   embedded = false,
   startImmersive = false,
+  stopId = null,
   onRequestExit = null,
 }) => {
   const [immersive, setImmersive] = useState(startImmersive);
@@ -377,6 +379,7 @@ const BeforeAfterSlider = ({
   const modernPosterReady = usePosterProbe(modernPosterUrl);
   const ancientPosterReady = usePosterProbe(ancientPosterUrl);
   const [compareReady, setCompareReady] = useState(false);
+  const revealTrackedRef = useRef(false);
   const [animationLoopActive, setAnimationLoopActive] = useState(false);
   const modernIsVideo = isVideoUrl(modernImg);
   const ancientIsVideo = isVideoUrl(historicImg);
@@ -436,12 +439,19 @@ const BeforeAfterSlider = ({
     ancientEndedRef.current = false;
     setCompareReady(false);
     setAnimationLoopActive(false);
+    revealTrackedRef.current = false;
     loopPhaseRef.current = false;
     if (loopTimerRef.current) {
       window.clearTimeout(loopTimerRef.current);
       loopTimerRef.current = null;
     }
   }, [modernImg, historicImg, resolvedPosterAt, resolvedLoopMs]);
+
+  useEffect(() => {
+    if (!compareReady || !stopId || revealTrackedRef.current) return;
+    revealTrackedRef.current = true;
+    track('reveal_opened', { stopId });
+  }, [compareReady, stopId]);
 
   useEffect(
     () => () => {
