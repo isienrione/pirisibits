@@ -501,7 +501,11 @@ function App() {
       </a>
       <LiveAnnouncer message={liveAnnouncement} />
 
-      <TabCrossFadePanel active={mapTabActive} keepMounted id="main-tour-content" className="h-full w-full">
+      <div
+        id="main-tour-content"
+        className={mapTabActive ? 'relative z-[1] h-full w-full' : 'hidden'}
+        aria-hidden={!mapTabActive}
+      >
         <ErrorBoundary
           key={mapRetryKey}
           fullScreen
@@ -583,7 +587,7 @@ function App() {
             <OfflineBadge />
           </div>
         ) : null}
-      </TabCrossFadePanel>
+      </div>
 
       <TabCrossFadePanel active={activeTab === NAV_TABS.TOUR} className="min-h-full">
         <Suspense fallback={<TabLoadingFallback />}>
