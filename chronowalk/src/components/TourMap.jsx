@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
@@ -235,6 +235,8 @@ function MapDebugOverlay({
   )
 }
 
+const MAP_LOAD_TIMEOUT_MS = 15000
+
 function TourMapboxView({
   tour,
   stops,
@@ -254,6 +256,7 @@ function TourMapboxView({
   const map = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
+  const onMapFailureRef = useRef(onMapFailure)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
@@ -261,37 +264,94 @@ function TourMapboxView({
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
   useEffect(() => {
-    if (!mapboxToken || !mapContainer.current || map.current) return undefined
+    onMapFailureRef.current = onMapFailure
+  }, [onMapFailure])
+
+  useEffect(() => {
+    const container = mapContainer.current
+    if (!mapboxToken || !container || map.current) return undefined
 
     const bounds = tour ? getTourBounds(tour) : null
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
+    let cancelled = false
+    let loadTimeoutId = null
 
-    mapboxgl.accessToken = mapboxToken
+    const markMapReady = () => {
+      if (cancelled || !map.current) return
 
-    try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: MAP_STYLE,
-        center: [center.lng, center.lat],
-        zoom: tour?.mapZoom ?? 14,
-      })
-    } catch (error) {
-      console.error('Mapbox initialization failed:', error)
-      onMapFailure?.()
-      return undefined
+      try {
+        setupMapLayers(map.current, { stops, tour, bounds })
+      } catch (error) {
+        console.error('Map layer setup failed:', error)
+        onMapFailureRef.current?.()
+        return
+      }
+
+      setMapLoaded(true)
+      map.current.resize()
     }
 
-    map.current.on('error', (event) => {
-      console.warn('Mapbox runtime error:', event?.error ?? event)
-      onMapFailure?.()
-    })
+    const initMap = () => {
+      if (cancelled || map.current || !mapContainer.current) return
+      if (mapContainer.current.clientWidth === 0 || mapContainer.current.clientHeight === 0) return
 
-    map.current.on('load', () => {
-      setupMapLayers(map.current, { stops, tour, bounds })
-      setMapLoaded(true)
+      mapboxgl.accessToken = mapboxToken
+
+      try {
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: MAP_STYLE,
+          center: [center.lng, center.lat],
+          zoom: tour?.mapZoom ?? 14,
+        })
+      } catch (error) {
+        console.error('Mapbox initialization failed:', error)
+        onMapFailureRef.current?.()
+        return
+      }
+
+      map.current.on('error', (event) => {
+        const status = event?.error?.status
+        if (status === 401 || status === 403) {
+          console.warn('Mapbox auth error:', event?.error ?? event)
+          onMapFailureRef.current?.()
+        }
+      })
+
+      map.current.once('load', markMapReady)
+
+      loadTimeoutId = window.setTimeout(() => {
+        if (cancelled || map.current?.loaded?.()) return
+        console.warn('Mapbox load timed out')
+        onMapFailureRef.current?.()
+      }, MAP_LOAD_TIMEOUT_MS)
+    }
+
+    initMap()
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (map.current) {
+        map.current.resize()
+        return
+      }
+      initMap()
     })
+    resizeObserver.observe(container)
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        map.current?.resize()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     return () => {
+      cancelled = true
+      resizeObserver.disconnect()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      if (loadTimeoutId != null) {
+        window.clearTimeout(loadTimeoutId)
+      }
       setMapLoaded(false)
       userMarker.current = null
       landmarkMarkers.current.forEach((marker) => marker.remove())
@@ -299,7 +359,7 @@ function TourMapboxView({
       map.current?.remove()
       map.current = null
     }
-  }, [tour?.id, onMapFailure])
+  }, [tour?.id])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -481,6 +541,9 @@ const TourMap = ({
   awaitingFirstStop = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
+  const handleMapFailure = useCallback(() => {
+    setOfflineMapMode(true)
+  }, [])
 
   useEffect(() => {
     if (isOffline) setOfflineMapMode(true)
@@ -516,7 +579,7 @@ const TourMap = ({
       arrivalPulseActive={arrivalPulseActive}
       debugMapEnabled={debugMapEnabled}
       focusTarget={focusTarget}
-      onMapFailure={() => setOfflineMapMode(true)}
+      onMapFailure={handleMapFailure}
     />
   )
 }
