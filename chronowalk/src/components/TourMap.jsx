@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
+import mapboxgl from '../map/mapboxClient'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
@@ -235,7 +234,7 @@ function MapDebugOverlay({
   )
 }
 
-const MAP_LOAD_TIMEOUT_MS = 15000
+const MAP_BOOTSTRAP_TIMEOUT_MS = 10000
 
 function TourMapboxView({
   tour,
@@ -275,9 +274,23 @@ function TourMapboxView({
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
     let cancelled = false
     let loadTimeoutId = null
+    let bootstrapTimeoutId = window.setTimeout(() => {
+      if (cancelled || map.current?.loaded?.()) return
+      console.warn('Mapbox bootstrap timed out before the map became ready')
+      onMapFailureRef.current?.()
+    }, MAP_BOOTSTRAP_TIMEOUT_MS)
+
+    const clearBootstrapTimeout = () => {
+      if (bootstrapTimeoutId != null) {
+        window.clearTimeout(bootstrapTimeoutId)
+        bootstrapTimeoutId = null
+      }
+    }
 
     const markMapReady = () => {
       if (cancelled || !map.current) return
+
+      clearBootstrapTimeout()
 
       if (loadTimeoutId != null) {
         window.clearTimeout(loadTimeoutId)
@@ -317,19 +330,27 @@ function TourMapboxView({
 
       map.current.on('error', (event) => {
         const status = event?.error?.status
-        if (status === 401 || status === 403) {
+        const message = event?.error?.message ?? ''
+        if (
+          status === 401 ||
+          status === 403 ||
+          /unauthorized|forbidden|not authorized/i.test(message)
+        ) {
           console.warn('Mapbox auth error:', event?.error ?? event)
           onMapFailureRef.current?.()
         }
       })
 
       map.current.once('load', markMapReady)
+      if (map.current.loaded()) {
+        markMapReady()
+      }
 
       loadTimeoutId = window.setTimeout(() => {
         if (cancelled || map.current?.loaded?.()) return
         console.warn('Mapbox load timed out')
         onMapFailureRef.current?.()
-      }, MAP_LOAD_TIMEOUT_MS)
+      }, MAP_BOOTSTRAP_TIMEOUT_MS)
     }
 
     initMap()
@@ -352,6 +373,7 @@ function TourMapboxView({
 
     return () => {
       cancelled = true
+      clearBootstrapTimeout()
       resizeObserver.disconnect()
       document.removeEventListener('visibilitychange', onVisibilityChange)
       if (loadTimeoutId != null) {
