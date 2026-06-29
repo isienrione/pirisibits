@@ -112,6 +112,10 @@ export const env = {
   /** Supabase project URL and anon key for waypoint data */
   supabaseUrl: import.meta.env.VITE_SUPABASE_URL || '',
   supabaseAnonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || '',
+  /** App Store / Play Store review page */
+  reviewUrl: import.meta.env.VITE_REVIEW_URL || '',
+  /** Private feedback — mailto: or hosted form URL */
+  feedbackUrl: import.meta.env.VITE_FEEDBACK_URL || '',
 }
 
 export const isMapboxConfigured = () => Boolean(env.mapboxToken)

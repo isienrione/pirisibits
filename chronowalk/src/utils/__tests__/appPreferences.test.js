@@ -3,9 +3,11 @@ import {
   readAudioEnabled,
   readDebugMapPreference,
   readPlayerIconsPref,
+  readReviewPrompted,
   writeAudioEnabled,
   writeDebugMapPreference,
   writePlayerIconsPref,
+  writeReviewPrompted,
 } from '../appPreferences'
 
 describe('appPreferences', () => {
@@ -39,5 +41,16 @@ describe('appPreferences', () => {
     expect(readPlayerIconsPref()).toBe(false)
     writePlayerIconsPref(true)
     expect(readPlayerIconsPref()).toBe(true)
+  })
+
+  it('defaults review prompt to not shown when unset', () => {
+    expect(readReviewPrompted()).toBe(false)
+  })
+
+  it('persists review prompt preference', () => {
+    writeReviewPrompted(true)
+    expect(readReviewPrompted()).toBe(true)
+    writeReviewPrompted(false)
+    expect(readReviewPrompted()).toBe(false)
   })
 })
