@@ -7,6 +7,7 @@ import LiveAnnouncer from './components/LiveAnnouncer'
 import LocationNotice from './components/LocationNotice'
 import ErrorBoundary from './components/ErrorBoundary'
 import PersistentAudioBar from './components/PersistentAudioBar'
+import AudioPlayerScreen from './components/AudioPlayerScreen'
 import AppNavigation from './components/navigation/AppNavigation'
 import TourCompleteView from './components/TourCompleteView'
 import { NAV_TABS } from './components/navigation/navConfig'
@@ -106,6 +107,7 @@ function App() {
   const [waypointAccessMode, setWaypointAccessMode] = useState('arrival')
   const [stopOpenPrompt, setStopOpenPrompt] = useState(null)
   const [freshDiscoveryId, setFreshDiscoveryId] = useState(null)
+  const [audioPlayerOpen, setAudioPlayerOpen] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
@@ -446,7 +448,14 @@ function App() {
 
   const handleStopTourAudio = useCallback(() => {
     audioOrchestrator.stop()
+    setAudioPlayerOpen(false)
   }, [])
+
+  useEffect(() => {
+    if (!isTourNarrationActive) {
+      setAudioPlayerOpen(false)
+    }
+  }, [isTourNarrationActive])
 
   const handleReopenWaypoint = useCallback(() => {
     if (!discoveredWaypoint) return
@@ -580,6 +589,8 @@ function App() {
           onReopenWaypoint={handleReopenWaypoint}
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
+          onOpenProfile={() => setActiveTab(NAV_TABS.SETTINGS)}
+          onRecenter={session.retryLocation}
           hasBottomNav
         />
 
@@ -639,6 +650,7 @@ function App() {
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
             onNavigate={() => setActiveTab(NAV_TABS.MAP)}
+            onBack={() => setActiveTab(NAV_TABS.MAP)}
           />
         </Suspense>
       ) : null}
@@ -703,6 +715,7 @@ function App() {
               subtitle={audioWaypoint?.arrival_subtitle}
               posterUrl={audioPosterUrl}
               cardOpen={cardIsOpen}
+              onOpenPlayer={() => setAudioPlayerOpen(true)}
               onReopenCard={
                 cardDismissed && discoveredWaypoint && !activeWaypoint ? handleReopenWaypoint : null
               }
@@ -713,17 +726,39 @@ function App() {
         }
       />
 
+      <AudioPlayerScreen
+        open={audioPlayerOpen && isTourNarrationActive}
+        title={audioWaypoint?.title}
+        subtitle={audioWaypoint?.arrival_subtitle}
+        posterUrl={audioPosterUrl}
+        waypoint={audioWaypoint}
+        onClose={() => setAudioPlayerOpen(false)}
+        onTogglePlayback={handleToggleTourAudio}
+        onStop={handleStopTourAudio}
+      />
+
       {showTourComplete ? (
         <TourCompleteView
           tour={mapTour}
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}
+          shareWaypoint={
+            session.progress.arrivedStopIds.length > 0
+              ? session.waypointsById[
+                  session.progress.arrivedStopIds[session.progress.arrivedStopIds.length - 1]
+                ] ?? null
+              : null
+          }
           onViewSummary={() => {
             setCompletionDismissed(true)
             setActiveTab(NAV_TABS.TOUR)
           }}
           onDismiss={() => setCompletionDismissed(true)}
+          onBackToTours={() => {
+            setCompletionDismissed(true)
+            setActiveTab(NAV_TABS.TOUR)
+          }}
         />
       ) : null}
 

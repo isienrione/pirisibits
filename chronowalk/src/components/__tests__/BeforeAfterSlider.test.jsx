@@ -30,7 +30,8 @@ describe('BeforeAfterSlider', () => {
       />
     )
 
-    expect(screen.getByLabelText(/close full screen compare view/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /then & now/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/back to landmark card/i)).toBeInTheDocument()
     expect(screen.queryByLabelText(/open full screen compare view/i)).not.toBeInTheDocument()
   })
 

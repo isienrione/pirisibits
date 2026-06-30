@@ -1,9 +1,16 @@
-import { JOURNEY_STATE, LOCATION_STATUS } from '../hooks/useGeoLocation'
+import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { BronzeButton, Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import {
+  Button,
+  GlassPanel,
+  GoldButton,
+  IconButton,
+  cn,
+  metaLabel,
+} from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -12,46 +19,89 @@ function formatDistance(distance) {
   return `${(meters / 1000).toFixed(1)} km`
 }
 
-function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, compact = false }) {
-  const completed = Math.max(0, currentStop - 1)
-
+function TempleIcon({ className }) {
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-eyebrow uppercase text-bronze">{tourTitle}</p>
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 10h16M6 10V8l6-4 6 4v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M7 10v8M17 10v8M10 18h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M5 18h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MenuIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function LocateIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.75" />
+      <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CompassIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
+      <path d="m12 7 2 5-5 2-2-5 5-2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function MapHudHeader({
+  tourTitle,
+  completedStops,
+  totalStops,
+  onOpenProfile,
+  compact = false,
+}) {
+  return (
+    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3')}>
+      <div className="flex items-center gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-parchment/70 bg-parchment/50 text-bronze">
+          <TempleIcon className="h-5 w-5" />
+        </div>
+        <div className="min-w-0 flex-1">
           <p
             className={cn(
-              'mt-0.5 truncate font-display font-semibold leading-tight text-deep-slate',
+              'truncate font-display font-semibold leading-tight text-deep-slate',
               compact ? 'text-base' : 'text-lg'
             )}
           >
-            {currentStopTitle}
+            {tourTitle}
           </p>
-          {!compact ? (
-            <p className="mt-1 text-xs text-soft-slate">
-              {completed} of {totalStops} stops visited
-            </p>
-          ) : null}
-        </div>
-        <div className="shrink-0 text-right">
-          <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
-          <p className={cn('font-display font-semibold tabular-nums text-deep-slate', compact ? 'text-lg' : 'text-xl')}>
-            <span className="text-gold">{currentStop}</span>
-            <span className="text-soft-slate/60"> / </span>
-            <span>{totalStops}</span>
+          <p className="mt-0.5 text-xs text-soft-slate">
+            <span className="font-semibold text-deep-slate">{completedStops}</span>
+            <span className="text-soft-slate/70"> / </span>
+            <span>{totalStops} stops completed</span>
           </p>
         </div>
+        {onOpenProfile ? (
+          <IconButton
+            variant="ghost"
+            size="md"
+            label="Open profile and settings"
+            onClick={onOpenProfile}
+            className="shrink-0 border-parchment/70 bg-ivory/90"
+          >
+            <MenuIcon className="h-5 w-5" />
+          </IconButton>
+        ) : null}
       </div>
     </GlassPanel>
   )
 }
 
-function RouteThumbnail({ posterUrl, title, compact = false }) {
-  const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
-
+function RouteThumbnail({ posterUrl, title }) {
   return (
-    <div className={cn('shrink-0 overflow-hidden border border-parchment/70 bg-parchment shadow-sm', sizeClass)}>
+    <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-parchment/70 bg-parchment shadow-sm">
       {posterUrl ? (
         <img
           src={posterUrl}
@@ -68,65 +118,72 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
   )
 }
 
-function MapHudRouteCard({
+function MapHudNextStopCard({
   headline,
   subline,
-  statusLabel,
-  statusTone = 'default',
   distanceLabel,
   walkMinutes,
   posterUrl,
-  showDirections,
   onDirections,
   action,
-  compact = false,
 }) {
-  const statusClass =
-    statusTone === 'arrived'
-      ? statusArrived
-      : statusTone === 'walking'
-        ? statusWalking
-        : statusNeutral
-
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'p-3' : 'p-4')}>
-      <div className="flex items-start gap-3">
-        <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
-
+    <GlassPanel className="pointer-events-auto relative shadow-plaque-lg">
+      <div className="flex items-start gap-3 p-4">
+        <RouteThumbnail posterUrl={posterUrl} title={subline} />
         <div className="min-w-0 flex-1">
-          <p className={cn('text-eyebrow uppercase text-soft-slate')}>{headline}</p>
-          <p
-            className={cn(
-              'mt-0.5 font-display font-semibold leading-tight text-deep-slate',
-              compact ? 'text-base' : 'text-lg'
-            )}
-          >
+          <p className={cn(metaLabel, 'text-bronze')}>{headline}</p>
+          <p className="mt-0.5 font-display text-lg font-semibold leading-tight text-deep-slate">
             {subline}
           </p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-soft-slate">
-            {distanceLabel ? <span className="font-semibold text-deep-slate">{distanceLabel}</span> : null}
-            {walkMinutes ? <span>~{walkMinutes} min walk</span> : null}
-          </div>
-          {statusLabel ? (
-            <p className={cn(statusPill, 'mt-1.5', statusClass)}>{statusLabel}</p>
+          {distanceLabel || walkMinutes ? (
+            <p className="mt-1.5 text-sm text-soft-slate">
+              {distanceLabel ? <span className="font-semibold text-deep-slate">{distanceLabel}</span> : null}
+              {distanceLabel && walkMinutes ? <span className="text-limestone"> · </span> : null}
+              {walkMinutes ? <span>{walkMinutes} min walk</span> : null}
+            </p>
           ) : null}
         </div>
-
-        {showDirections && onDirections ? (
-          <Button
-            variant="secondary"
-            size="sm"
-            className="shrink-0 self-center px-3"
-            onClick={onDirections}
-            aria-label={`Directions to ${subline}`}
-          >
-            Directions
-          </Button>
-        ) : null}
       </div>
 
-      {action ? <div className={compact ? 'mt-3' : 'mt-4'}>{action}</div> : null}
+      {action ? <div className="border-t border-parchment/60 px-4 pb-4 pt-3">{action}</div> : null}
+
+      {onDirections ? (
+        <div className="border-t border-parchment/60 px-4 py-3">
+          <Button variant="text" fullWidth onClick={onDirections}>
+            Walking directions
+          </Button>
+        </div>
+      ) : null}
     </GlassPanel>
+  )
+}
+
+function MapFloatingControls({ onRecenter }) {
+  return (
+    <div className="pointer-events-auto flex flex-col gap-2">
+      {onRecenter ? (
+        <IconButton
+          variant="solid"
+          size="md"
+          label="Center map on your location"
+          onClick={onRecenter}
+          className="border-parchment/80 bg-ivory shadow-plaque"
+        >
+          <LocateIcon className="h-5 w-5" />
+        </IconButton>
+      ) : null}
+      <IconButton
+        variant="solid"
+        size="md"
+        label="Map compass"
+        className="border-parchment/80 bg-ivory shadow-plaque"
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        <CompassIcon className="h-5 w-5" />
+      </IconButton>
+    </div>
   )
 }
 
@@ -150,18 +207,16 @@ const TourHud = ({
   onContinueTour,
   onDirections,
   onUnlockTour,
+  onOpenProfile,
+  onRecenter,
   hasBottomNav = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
-  const currentStopTitle =
-    getWaypointGeo(currentStopId ?? targetStopId)?.title ?? 'Current stop'
 
   if (!isTourMode && !currentStopId) return null
 
   const totalStops = tour?.stopIds?.length ?? 1
-  const currentStopNumber = isTourMode
-    ? Math.min(progress.targetStopIndex + 1, totalStops)
-    : 1
+  const completedStops = isTourMode ? Math.max(0, progress.arrivedStopIds.length) : 0
   const tourTitle = isFreePreview ? 'Free preview' : tour?.title ?? 'ChronoWalk'
 
   const atStop = state === JOURNEY_STATE.ARRIVAL
@@ -182,53 +237,31 @@ const TourHud = ({
 
   const routeWaypoint = transitLegActive || !atStop ? currentWaypoint : nextWaypoint
   const posterUrl = routeWaypoint ? getModernCoverUrl(routeWaypoint) : null
+  const currentStopTitle =
+    getWaypointGeo(currentStopId ?? targetStopId)?.title ?? 'Current stop'
 
   let routeHeadline = 'Next stop'
   let routeSubline = nextWaypoint?.title ?? currentStopTitle
-  let statusLabel = null
-  let statusTone = 'default'
   let showDirections = false
 
   if (isFreePreview) {
     routeHeadline = 'Complete Rome tour'
     routeSubline = `${totalStops} landmarks on the map`
-    statusLabel = 'Colosseum unlocked — tap locked stops to preview the full tour'
-    statusTone = 'default'
   } else if (awaitingFirstStop) {
     routeHeadline = 'Tour begins at'
     routeSubline = firstStopTitle ?? 'Colosseum'
-    statusLabel = distanceLabel
-      ? `Walk ${distanceLabel} to start your journey`
-      : 'Head to the starting landmark to begin'
-    statusTone = 'walking'
     showDirections = true
   } else if (transitLegActive) {
     routeHeadline = 'Walking to'
     routeSubline = getWaypointGeo(targetStopId)?.title ?? routeSubline
-    statusLabel = 'Follow the bronze path'
-    statusTone = 'walking'
     showDirections = true
   } else if (atStop) {
     routeHeadline = 'You have arrived'
     routeSubline = currentStopTitle
-    statusLabel = dismissedWaypointTitle
-      ? 'Story minimized — reopen when ready'
-      : 'Explore the landmark to continue'
-    statusTone = 'arrived'
   } else {
-    routeHeadline = 'Heading to'
+    routeHeadline = 'Walking to'
     routeSubline = currentStopTitle
     showDirections = true
-    if (locationStatus === LOCATION_STATUS.DENIED) {
-      statusLabel = 'Location access needed'
-    } else if (locationStatus === LOCATION_STATUS.UNAVAILABLE) {
-      statusLabel = 'GPS unavailable'
-    } else if (locationStatus === LOCATION_STATUS.WAITING) {
-      statusLabel = 'Locating you…'
-    } else {
-      statusLabel = distanceLabel ? 'Walking' : 'Locating you…'
-    }
-    statusTone = 'walking'
   }
 
   const handleDirections = () => {
@@ -248,37 +281,28 @@ const TourHud = ({
   const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined
 
   const routeAction = isFreePreview ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={onUnlockTour}>
+    <GoldButton fullWidth onClick={onUnlockTour}>
       View tours &amp; pricing
-    </BronzeButton>
+    </GoldButton>
   ) : showContinue ? (
-    <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>
+    <div className="flex flex-col gap-2">
       {dismissedWaypointTitle && onReopenWaypoint ? (
-        <Button
-          variant="secondary"
-          fullWidth
-          className={ctaInCard}
-          onClick={onReopenWaypoint}
-        >
+        <Button variant="outline-gold" fullWidth onClick={onReopenWaypoint}>
           Reopen {dismissedWaypointTitle}
         </Button>
       ) : null}
-      <BronzeButton fullWidth className={ctaInCard} onClick={onContinueTour}>
-        Walk to {nextWaypoint.title}
-      </BronzeButton>
+      <GoldButton fullWidth showArrow onClick={onContinueTour}>
+        Continue
+      </GoldButton>
     </div>
   ) : dismissedWaypointTitle && onReopenWaypoint && atStop ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
+    <GoldButton fullWidth onClick={onReopenWaypoint}>
       Reopen {dismissedWaypointTitle}
-    </BronzeButton>
-  ) : transitLegActive ? (
-    <p className="text-xs leading-relaxed text-soft-slate">
-      Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
-    </p>
-  ) : awaitingFirstStop ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={handleDirections}>
-      Get walking directions
-    </BronzeButton>
+    </GoldButton>
+  ) : awaitingFirstStop || transitLegActive || (!atStop && showDirections) ? (
+    <GoldButton fullWidth showArrow onClick={handleDirections}>
+      {awaitingFirstStop ? 'Get directions' : 'Continue'}
+    </GoldButton>
   ) : null
 
   return (
@@ -288,14 +312,18 @@ const TourHud = ({
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
       >
         <div className="mx-auto w-full max-w-md">
-          <MapHudTopBar
+          <MapHudHeader
             tourTitle={tourTitle}
-            currentStopTitle={awaitingFirstStop ? (firstStopTitle ?? 'Starting point') : currentStopTitle}
-            currentStop={currentStopNumber}
+            completedStops={completedStops}
             totalStops={totalStops}
+            onOpenProfile={onOpenProfile}
             compact={compactHud}
           />
         </div>
+      </div>
+
+      <div className="pointer-events-none fixed right-4 top-[calc(env(safe-area-inset-top)+5.25rem)] z-40">
+        <MapFloatingControls onRecenter={onRecenter} />
       </div>
 
       {!hideRouteCard ? (
@@ -304,17 +332,13 @@ const TourHud = ({
           style={{ paddingBottom: bottomOffset }}
         >
           <div className="mx-auto w-full max-w-md">
-            <MapHudRouteCard
+            <MapHudNextStopCard
               headline={routeHeadline}
               subline={routeSubline}
-              statusLabel={statusLabel}
-              statusTone={statusTone}
-              distanceLabel={!atStop || awaitingFirstStop ? distanceLabel : null}
-              walkMinutes={!atStop || awaitingFirstStop ? walkMinutes : null}
+              distanceLabel={!atStop || awaitingFirstStop || transitLegActive ? distanceLabel : null}
+              walkMinutes={!atStop || awaitingFirstStop || transitLegActive ? walkMinutes : null}
               posterUrl={posterUrl}
-              showDirections={showDirections && !awaitingFirstStop}
-              onDirections={handleDirections}
-              compact={compactHud}
+              onDirections={showDirections && !routeAction ? handleDirections : null}
               action={routeAction}
             />
           </div>

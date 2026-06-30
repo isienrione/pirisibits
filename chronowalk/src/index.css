@@ -143,6 +143,27 @@
     animation: sheet-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
+  @keyframes confetti-fall {
+    0% {
+      transform: translate3d(0, -12vh, 0) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translate3d(0, 110vh, 0) rotate(540deg);
+      opacity: 0;
+    }
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -2rem;
+    width: 7px;
+    height: 10px;
+    border-radius: 1px;
+    opacity: 0.9;
+    animation: confetti-fall 4.5s linear infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-arrival-vignette,
     .animate-arrival-discover,
@@ -150,6 +171,11 @@
     .animate-arrival-title,
     .animate-sheet-rise {
       animation: none;
+    }
+
+    .confetti-piece {
+      animation: none;
+      display: none;
     }
 
     .animate-medallion-breathe {
@@ -240,4 +266,8 @@
 .compare-slider-frame .grain-overlay {
   z-index: 6;
   opacity: 0.04;
+}
+
+.map-parchment-tint .mapboxgl-canvas {
+  filter: saturate(0.72) sepia(0.12) brightness(1.03);
 }
