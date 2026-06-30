@@ -1,6 +1,8 @@
 export { Button } from './Button'
 export { BronzeButton } from './BronzeButton'
 export { GoldButton } from './GoldButton'
+export { FeaturePillRow } from './FeaturePillRow'
+export { getThemeShell, themeShell } from './themeShells'
 export { GlassPanel } from './GlassPanel'
 export { ParchmentCard } from './ParchmentCard'
 export { EditorialTitle } from './EditorialTitle'

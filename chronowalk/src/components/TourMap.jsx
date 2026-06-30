@@ -21,10 +21,10 @@ const mapboxToken = env.mapboxToken
 
 const MAP_COLORS = {
   completed: '#7A8B5A',
-  current: '#D9A441',
-  pending: '#51606F',
-  tourRoute: '#C8643C',
-  activeLeg: '#C8643C',
+  current: '#D4AF37',
+  pending: '#8B7355',
+  tourRoute: '#A8742A',
+  activeLeg: '#D4AF37',
 }
 
 const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
@@ -90,7 +90,7 @@ function setupMapLayers(map, { stops, tour, bounds }) {
         'line-color': MAP_COLORS.tourRoute,
         'line-width': 4,
         'line-opacity': 0.55,
-        'line-dasharray': [1.2, 1.4],
+        'line-dasharray': [2, 2.2],
       },
     })
 
@@ -124,22 +124,24 @@ function setupMapLayers(map, { stops, tour, bounds }) {
   }
 }
 
-const createLandmarkMarkerElement = (title, status) => {
+const createLandmarkMarkerElement = (title, status, index) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
 
   const dotClass =
     status === 'completed'
-      ? 'bg-olive'
+      ? 'bg-bronze text-ivory'
       : status === 'current'
-        ? 'bg-gold ring-2 ring-sand'
+        ? 'bg-gold text-obsidian ring-2 ring-ivory'
         : status === 'locked'
-          ? 'bg-soft-slate opacity-60'
-          : 'bg-soft-slate opacity-80'
+          ? 'bg-parchment text-soft-slate border border-limestone'
+          : 'bg-ivory text-bronze border border-bronze/40'
+
+  const label = index != null ? String(index) : '•'
 
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-warm-white/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-deep-slate shadow-sm">${title}</span>
+    <div class="flex h-7 w-7 items-center justify-center rounded-full text-[0.65rem] font-bold shadow-md ${dotClass}">${label}</div>
+    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-ivory/95 px-2 py-0.5 text-center text-[0.6rem] font-semibold text-deep-slate shadow-sm">${title}</span>
   `
   return el
 }
@@ -399,10 +401,10 @@ function TourMapboxView({
     landmarkMarkers.current.forEach((marker) => marker.remove())
     landmarkMarkers.current = []
 
-    stops.forEach((stop) => {
+    stops.forEach((stop, index) => {
       if (!stop?.landmark) return
       const marker = new mapboxgl.Marker({
-        element: createLandmarkMarkerElement(stop.title, stop.status),
+        element: createLandmarkMarkerElement(stop.title, stop.status, index + 1),
         anchor: 'bottom',
       })
         .setLngLat([stop.landmark.lng, stop.landmark.lat])
@@ -523,7 +525,7 @@ function TourMapboxView({
 
   return (
     <div className="relative h-screen w-full">
-      <div ref={mapContainer} className="h-full w-full" />
+      <div ref={mapContainer} className="map-parchment-tint h-full w-full" />
       {!mapLoaded ? (
         <div className="absolute inset-0 z-10">
           <LoadingPanel
