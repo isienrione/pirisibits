@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
+import AudioTranscriptSection from './AudioTranscriptSection';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
@@ -106,27 +107,6 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
         </div>
       )}
     </div>
-  );
-}
-
-function AudioTranscriptSection({ waypoint }) {
-  const transcript =
-    waypoint?.arrival_transcript ||
-    waypoint?.arrival_subtitle ||
-    'Full captions and transcript will appear here as audio stories are published for this landmark.';
-
-  return (
-    <details className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3">
-      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
-        Captions &amp; transcript
-      </summary>
-      <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
-      {!waypoint?.arrival_transcript ? (
-        <p className="mt-2 text-xs text-soft-slate/80">
-          Placeholder — timed captions will sync with narration in a future update.
-        </p>
-      ) : null}
-    </details>
   );
 }
 
@@ -713,7 +693,12 @@ const WaypointCard = ({
                 Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
-            <AudioTranscriptSection waypoint={waypoint} />
+            <details className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3">
+              <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+                Captions &amp; transcript
+              </summary>
+              <AudioTranscriptSection waypoint={waypoint} className="mt-3" />
+            </details>
           </div>
         ) : null}
 

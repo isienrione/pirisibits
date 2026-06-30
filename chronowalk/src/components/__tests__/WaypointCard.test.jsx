@@ -42,6 +42,17 @@ vi.mock('../../hooks/useAudioPlaybackState', () => ({
   }),
 }));
 
+vi.mock('../../hooks/useAudioProgress', () => ({
+  useAudioProgress: () => ({
+    currentTime: 0,
+    duration: 0,
+    playbackRate: 1,
+    seekTo: vi.fn(),
+    skipBy: vi.fn(),
+    setPlaybackRate: vi.fn(),
+  }),
+}));
+
 vi.mock('../../hooks/useDeviceTilt', () => ({
   requestDeviceTiltPermission: vi.fn(async () => true),
 }));
