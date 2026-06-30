@@ -241,3 +241,7 @@
   z-index: 6;
   opacity: 0.04;
 }
+
+.map-parchment-tint .mapboxgl-canvas {
+  filter: saturate(0.72) sepia(0.12) brightness(1.03);
+}

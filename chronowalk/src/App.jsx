@@ -580,6 +580,8 @@ function App() {
           onReopenWaypoint={handleReopenWaypoint}
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
+          onOpenProfile={() => setActiveTab(NAV_TABS.SETTINGS)}
+          onRecenter={session.retryLocation}
           hasBottomNav
         />
 
@@ -639,6 +641,7 @@ function App() {
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
             onNavigate={() => setActiveTab(NAV_TABS.MAP)}
+            onBack={() => setActiveTab(NAV_TABS.MAP)}
           />
         </Suspense>
       ) : null}
