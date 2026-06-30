@@ -87,7 +87,7 @@ describe('TourLanding pre-tour screen stack', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: /continue with heart of ancient rome/i }))
-    fireEvent.click(screen.getByRole('button', { name: /begin journey/i }))
+    fireEvent.click(screen.getByRole('button', { name: /start tour/i }))
     expect(screen.getByRole('heading', { name: /enable location for gps guidance/i })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /continue without enabling/i }))
