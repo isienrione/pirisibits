@@ -9,6 +9,8 @@ const variantStyles = {
     'border border-bronze/40 bg-ivory text-deep-slate hover:border-bronze/60 hover:bg-parchment/50',
   ghost:
     'border border-bronze/30 bg-bronze/8 text-bronze hover:bg-bronze/12',
+  'outline-dark':
+    'border border-ivory/30 bg-transparent font-display text-ivory hover:border-ivory/45 hover:bg-ivory/8',
   text: 'bg-transparent text-bronze hover:text-bronze/80 underline-offset-2 hover:underline',
 }
 

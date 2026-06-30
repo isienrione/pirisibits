@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { BronzeButton } from './BronzeButton'
+export { GoldButton } from './GoldButton'
 export { GlassPanel } from './GlassPanel'
 export { ParchmentCard } from './ParchmentCard'
 export { EditorialTitle } from './EditorialTitle'

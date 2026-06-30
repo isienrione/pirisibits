@@ -19,6 +19,24 @@ describe('PreTourFlow', () => {
     expect(screen.getByRole('heading', { name: /walk with chronowalk offline-ready/i })).toBeInTheDocument()
     expect(screen.getAllByText(/add chronowalk to your home screen/i).length).toBeGreaterThan(0)
   })
+
+  it('renders cinematic begin journey outside the light pre-tour shell', () => {
+    render(
+      <PreTourFlow
+        ownedTourIds={['heart-of-ancient-rome']}
+        ownsAllTours={false}
+        onPurchaseProduct={vi.fn()}
+        onStartTour={vi.fn()}
+        onTryFreePreview={vi.fn()}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /continue with heart of ancient rome/i }))
+
+    expect(screen.getByRole('button', { name: /start tour/i })).toBeInTheDocument()
+    expect(screen.getByText('Visual reveals')).toBeInTheDocument()
+    expect(screen.queryByText(/walk the city on your own schedule/i)).not.toBeInTheDocument()
+  })
 })
 
 describe('preTourConfig', () => {

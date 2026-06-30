@@ -120,6 +120,7 @@ export function PreTourFlow({
   )
 
   const showHero = HERO_SCREENS.has(currentScreen)
+  const isCinematicScreen = currentScreen === PRE_TOUR_SCREENS.BEGIN_JOURNEY
 
   const screenContent = useMemo(() => {
     switch (currentScreen) {
@@ -179,12 +180,7 @@ export function PreTourFlow({
         )
 
       case PRE_TOUR_SCREENS.BEGIN_JOURNEY:
-        return (
-          <BeginJourneyView
-            tourId={beginJourneyTourId ?? selectedTourId}
-            onStartJourney={(tour) => launchTour(tour)}
-          />
-        )
+        return null
 
       case PRE_TOUR_SCREENS.PERMISSIONS:
         return <PermissionsView onContinue={completePermissions} />
@@ -208,6 +204,16 @@ export function PreTourFlow({
     beginJourneyTourId,
     selectedTourId,
   ])
+
+  if (isCinematicScreen) {
+    return (
+      <BeginJourneyView
+        tourId={beginJourneyTourId ?? selectedTourId}
+        onStartJourney={(tour) => launchTour(tour)}
+        onBack={canGoBack ? popScreen : undefined}
+      />
+    )
+  }
 
   return (
     <PreTourScreenShell
