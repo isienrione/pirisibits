@@ -47,6 +47,12 @@ describe('TourHud', () => {
     expect(screen.getByRole('button', { name: /walk to pantheon/i })).toBeInTheDocument()
   })
 
+  it('renders nothing when hidden for map-first directions mode', () => {
+    const { container } = render(<TourHud {...baseProps} hidden />)
+
+    expect(container).toBeEmptyDOMElement()
+  })
+
   it('shows transit guidance while en route', () => {
     render(
       <TourHud

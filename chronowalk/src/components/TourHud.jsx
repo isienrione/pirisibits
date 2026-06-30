@@ -151,12 +151,13 @@ const TourHud = ({
   onDirections,
   onUnlockTour,
   hasBottomNav = false,
+  hidden = false,
 }) => {
   const isTourMode = Boolean(tour?.stopIds?.length)
   const currentStopTitle =
     getWaypointGeo(currentStopId ?? targetStopId)?.title ?? 'Current stop'
 
-  if (!isTourMode && !currentStopId) return null
+  if (hidden || (!isTourMode && !currentStopId)) return null
 
   const totalStops = tour?.stopIds?.length ?? 1
   const currentStopNumber = isTourMode

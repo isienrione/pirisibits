@@ -109,6 +109,22 @@ function setupMapLayers(map, { stops, tour, bounds }) {
         'line-opacity': 0.95,
       },
     })
+
+    map.addSource('directions-nav-route', {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    })
+
+    map.addLayer({
+      id: 'directions-nav-route-line',
+      type: 'line',
+      source: 'directions-nav-route',
+      paint: {
+        'line-color': MAP_COLORS.activeLeg,
+        'line-width': 6,
+        'line-opacity': 1,
+      },
+    })
   } else {
     map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(stops))
   }
@@ -250,6 +266,8 @@ function TourMapboxView({
   debugMapEnabled,
   focusTarget,
   onMapFailure,
+  directionsModeActive = false,
+  directionsGeometry = null,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -433,6 +451,14 @@ function TourMapboxView({
         features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
       })
 
+      if (directionsModeActive) {
+        map.current.getSource('active-leg-route')?.setData({
+          type: 'FeatureCollection',
+          features: [],
+        })
+        return
+      }
+
       if (activeLeg && transitLegActive) {
         const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
         const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
@@ -463,7 +489,75 @@ function TourMapboxView({
     return () => {
       cancelled = true
     }
-  }, [tour, stops, activeLeg, transitLegActive, mapLoaded])
+  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, directionsModeActive])
+
+  useEffect(() => {
+    if (!map.current || !mapLoaded) return
+
+    const tourOpacity = directionsModeActive ? 0.18 : 0.55
+    if (map.current.getLayer('tour-route-line')) {
+      map.current.setPaintProperty('tour-route-line', 'line-opacity', tourOpacity)
+    }
+
+    const navSource = map.current.getSource('directions-nav-route')
+    if (!navSource) return
+
+    if (directionsModeActive && directionsGeometry?.coordinates?.length) {
+      navSource.setData({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry: directionsGeometry, properties: {} }],
+      })
+
+      map.current.getSource('active-leg-route')?.setData({
+        type: 'FeatureCollection',
+        features: [],
+      })
+    } else {
+      navSource.setData({
+        type: 'FeatureCollection',
+        features: [],
+      })
+    }
+  }, [directionsModeActive, directionsGeometry, mapLoaded, transitLegActive])
+
+  useEffect(() => {
+    if (
+      !directionsModeActive ||
+      !directionsGeometry?.coordinates?.length ||
+      !map.current ||
+      !mapLoaded
+    ) {
+      return
+    }
+
+    const coordinates = directionsGeometry.coordinates
+    let minLng = coordinates[0][0]
+    let maxLng = coordinates[0][0]
+    let minLat = coordinates[0][1]
+    let maxLat = coordinates[0][1]
+
+    coordinates.forEach(([lng, lat]) => {
+      minLng = Math.min(minLng, lng)
+      maxLng = Math.max(maxLng, lng)
+      minLat = Math.min(minLat, lat)
+      maxLat = Math.max(maxLat, lat)
+    })
+
+    if (userPos?.lat != null && userPos?.lng != null) {
+      minLng = Math.min(minLng, userPos.lng)
+      maxLng = Math.max(maxLng, userPos.lng)
+      minLat = Math.min(minLat, userPos.lat)
+      maxLat = Math.max(maxLat, userPos.lat)
+    }
+
+    map.current.fitBounds(
+      [
+        [minLng - 0.0015, minLat - 0.0015],
+        [maxLng + 0.0015, maxLat + 0.0015],
+      ],
+      { padding: { top: 120, bottom: 220, left: 48, right: 48 }, maxZoom: 17, duration: 800 }
+    )
+  }, [directionsModeActive, directionsGeometry, mapLoaded, userPos?.lat, userPos?.lng])
 
   useEffect(() => {
     if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
@@ -566,6 +660,8 @@ const TourMap = ({
   focusTarget = null,
   isOffline = false,
   awaitingFirstStop = false,
+  directionsModeActive = false,
+  directionsGeometry = null,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -607,6 +703,8 @@ const TourMap = ({
       debugMapEnabled={debugMapEnabled}
       focusTarget={focusTarget}
       onMapFailure={handleMapFailure}
+      directionsModeActive={directionsModeActive}
+      directionsGeometry={directionsGeometry}
     />
   )
 }
