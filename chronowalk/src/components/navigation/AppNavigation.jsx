@@ -1,19 +1,22 @@
+import { useCallback } from 'react'
 import { NAV_ITEMS } from './navConfig'
 import { cn, focusRing, metaLabel, tapAction } from '../ui'
+import { usePressHandlers } from '../ui/usePressHandlers'
 import { triggerHaptic, HAPTIC_KIND } from '../../utils/haptics'
 
 function NavButton({ item, active, onSelect, layout }) {
   const { Icon, label, id } = item
 
-  const handleSelect = () => {
+  const handleSelect = useCallback(() => {
     if (!active) triggerHaptic(HAPTIC_KIND.SELECTION)
     onSelect(id)
-  }
+  }, [active, id, onSelect])
+
+  const pressHandlers = usePressHandlers(handleSelect)
 
   return (
     <button
       type="button"
-      onClick={handleSelect}
       aria-label={label}
       aria-current={active ? 'page' : undefined}
       className={cn(
@@ -23,6 +26,7 @@ function NavButton({ item, active, onSelect, layout }) {
         layout === 'side' ? 'h-16 w-full px-2' : 'min-w-0 flex-1 px-2 py-2.5',
         active ? 'font-semibold text-bronze' : 'font-medium text-soft-slate hover:text-deep-slate'
       )}
+      {...pressHandlers}
     >
       {active ? (
         <span

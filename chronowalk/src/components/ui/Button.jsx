@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { focusRing, tapAction } from './focusRing'
+import { usePressHandlers } from './usePressHandlers'
 
 const variantStyles = {
   primary:
@@ -25,8 +26,18 @@ export function Button({
   className,
   type = 'button',
   children,
+  onClick,
+  onPointerUp,
+  onPointerDown,
+  onPointerCancel,
   ...props
 }) {
+  const pressHandlers = usePressHandlers(onClick, {
+    onPointerUp,
+    onPointerDown,
+    onPointerCancel,
+  })
+
   return (
     <button
       type={type}
@@ -41,6 +52,7 @@ export function Button({
         className
       )}
       {...props}
+      {...pressHandlers}
     >
       {children}
     </button>
