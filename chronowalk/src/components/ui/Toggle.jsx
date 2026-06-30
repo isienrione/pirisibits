@@ -23,7 +23,7 @@ export function Toggle({ checked, onChange, label, disabled = false, className }
       <span
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors duration-200',
-          checked ? 'bg-bronze' : 'bg-limestone/90',
+          checked ? 'bg-olive' : 'bg-limestone/90',
           disabled && 'opacity-80'
         )}
         aria-hidden="true"

@@ -580,6 +580,8 @@ function App() {
           onReopenWaypoint={handleReopenWaypoint}
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
+          onOpenProfile={() => setActiveTab(NAV_TABS.SETTINGS)}
+          onRecenter={session.retryLocation}
           hasBottomNav
         />
 
@@ -639,6 +641,7 @@ function App() {
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
             onNavigate={() => setActiveTab(NAV_TABS.MAP)}
+            onBack={() => setActiveTab(NAV_TABS.MAP)}
           />
         </Suspense>
       ) : null}
@@ -719,11 +722,22 @@ function App() {
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}
+          shareWaypoint={
+            session.progress.arrivedStopIds.length > 0
+              ? session.waypointsById[
+                  session.progress.arrivedStopIds[session.progress.arrivedStopIds.length - 1]
+                ] ?? null
+              : null
+          }
           onViewSummary={() => {
             setCompletionDismissed(true)
             setActiveTab(NAV_TABS.TOUR)
           }}
           onDismiss={() => setCompletionDismissed(true)}
+          onBackToTours={() => {
+            setCompletionDismissed(true)
+            setActiveTab(NAV_TABS.TOUR)
+          }}
         />
       ) : null}
 

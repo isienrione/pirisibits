@@ -11,7 +11,7 @@ describe('AppNavigation', () => {
     expect(screen.getAllByRole('button', { name: /tour/i }).length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByRole('button', { name: /map/i }).length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByRole('button', { name: /stops/i }).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByRole('button', { name: /settings/i }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('button', { name: /profile/i }).length).toBeGreaterThanOrEqual(1)
   })
 
   it('marks the active tab and switches on click', () => {

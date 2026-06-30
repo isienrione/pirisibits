@@ -26,28 +26,28 @@ const baseProps = {
 }
 
 describe('TourHud', () => {
-  it('renders the premium top navigation bar', () => {
+  it('renders the compact map header with tour progress', () => {
     render(<TourHud {...baseProps} waypointExploreActive={false} />)
 
     expect(screen.getByText('Heart of Ancient Rome')).toBeInTheDocument()
+    expect(screen.getByText(/2 stops completed/i)).toBeInTheDocument()
+    expect(screen.getByText('You have arrived')).toBeInTheDocument()
     expect(screen.getAllByText('Colosseum').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('1')).toBeInTheDocument()
-    expect(screen.getByText('2')).toBeInTheDocument()
   })
 
   it('hides continue button while the waypoint card is open', () => {
     render(<TourHud {...baseProps} waypointExploreActive />)
 
-    expect(screen.queryByRole('button', { name: /walk to pantheon/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /continue/i })).toBeNull()
   })
 
   it('shows continue button after the waypoint card is dismissed', () => {
     render(<TourHud {...baseProps} waypointExploreActive={false} />)
 
-    expect(screen.getByRole('button', { name: /walk to pantheon/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
   })
 
-  it('shows transit guidance while en route', () => {
+  it('shows walking guidance while en route', () => {
     render(
       <TourHud
         {...baseProps}
@@ -61,8 +61,8 @@ describe('TourHud', () => {
       />
     )
 
-    expect(screen.getByText(/follow the bronze path/i)).toBeInTheDocument()
-    expect(screen.getByText(/transit narration is playing/i)).toBeInTheDocument()
+    expect(screen.getByText(/walking to/i)).toBeInTheDocument()
     expect(screen.getByText('240 m')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue/i })).toBeInTheDocument()
   })
 })

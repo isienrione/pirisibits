@@ -2,7 +2,8 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, BronzeButton, Button, EditorialTitle, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import { BottomSheet, BronzeButton, Button, EditorialTitle, GoldButton, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import WaypointMetadataRow from './WaypointMetadataRow';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -158,6 +159,7 @@ function WaypointCardBody({
   titleId,
   eyebrow,
   title,
+  subtitle,
   hook,
   orientationHint,
   titleHighlight = false,
@@ -170,6 +172,7 @@ function WaypointCardBody({
       <EditorialTitle
         as="h2"
         eyebrow={eyebrow}
+        subtitle={subtitle}
         size="md"
         titleClassName={cn(titleHighlight && !reducedMotion && 'animate-arrival-title')}
       >
@@ -422,8 +425,6 @@ const WaypointCard = ({
   };
 
   const showAudioControl = Boolean(waypoint.arrival_immersive_url) && !alignmentMode;
-  const shouldStartImmersive =
-    isFreshArrival && accessMode === 'arrival' && usesComparisonSlider;
 
   const eyebrow = alignmentMode
     ? 'Fine-tuning view'
@@ -538,7 +539,10 @@ const WaypointCard = ({
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
                   embedded
-                  startImmersive={shouldStartImmersive}
+                  startImmersive={showImmersiveView}
+                  modernEraLabel="Today"
+                  ancientEraLabel="Ancient Rome c. 80 AD"
+                  onShare={() => setShareOpen(true)}
                   modernImg={modernSliderUrl}
                   historicImg={ancientSliderUrl}
                   depthMap={waypoint.depth_map_url}
@@ -579,7 +583,14 @@ const WaypointCard = ({
         titleId={titleId}
         eyebrow={eyebrow}
         title={landmarkTitle}
-        hook={!alignmentMode ? narrativeHook : 'Line up the ancient layer over the modern facade.'}
+        subtitle={waypoint.arrival_subtitle}
+        hook={
+          alignmentMode
+            ? 'Line up the ancient layer over the modern facade.'
+            : !isFreshArrival
+              ? narrativeHook
+              : null
+        }
         orientationHint={orientationHint}
         titleHighlight={isFreshArrival && !showImmersiveView && !alignmentMode}
         reducedMotion={reducedMotion}
@@ -611,34 +622,64 @@ const WaypointCard = ({
         ) : null}
 
         {!showImmersiveView && !alignmentMode ? (
-          <div className="mt-6 space-y-3">
-            {hasModernMedia ? (
-              <BronzeButton size="lg" fullWidth onClick={startTimePortal}>
-                {usesModernVideo ? 'Begin immersive view' : 'Step through time'}
-              </BronzeButton>
+          <div className="mt-6 space-y-4">
+            <WaypointMetadataRow waypoint={waypoint} />
+
+            {showAudioControl ? (
+              <GoldButton
+                fullWidth
+                onClick={() => {
+                  triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+                  void handleAudioAction()
+                }}
+              >
+                {isArrivalAudioPlaying ? 'Pause audio story' : 'Start audio story'}
+              </GoldButton>
             ) : null}
-            <div className={usesModernVideo ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'}>
-              {hasModernMedia && usesComparisonSlider ? (
-                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openImageOnly}>
-                  Image only
-                </Button>
-              ) : null}
-              {hasModernMedia && usesModernVideo ? (
-                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openVideoOnly}>
-                  Video only
-                </Button>
-              ) : null}
-              {waypoint.arrival_immersive_url ? (
-                <Button
-                  variant="secondary"
-                  fullWidth
-                  className={ctaInCard}
-                  onClick={openAudioOnly}
-                >
-                  Audio only
-                </Button>
-              ) : null}
-            </div>
+
+            {hasModernMedia ? (
+              <Button
+                variant="outline-gold"
+                size="lg"
+                fullWidth
+                className={ctaInCard}
+                onClick={() => {
+                  triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+                  if (usesComparisonSlider) {
+                    startTimePortal()
+                  } else {
+                    openImageOnly()
+                  }
+                }}
+              >
+                Reveal ancient view
+              </Button>
+            ) : null}
+
+            {accessMode !== 'freeSample' && accessMode !== 'remote' ? (
+              <details className="rounded-2xl border border-parchment/60 bg-parchment/15 px-4 py-3">
+                <summary className="cursor-pointer text-sm font-semibold text-soft-slate">
+                  More options
+                </summary>
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {hasModernMedia && usesComparisonSlider ? (
+                    <Button variant="ghost" fullWidth className={ctaInCard} onClick={openImageOnly}>
+                      Image only
+                    </Button>
+                  ) : null}
+                  {hasModernMedia && usesModernVideo ? (
+                    <Button variant="ghost" fullWidth className={ctaInCard} onClick={openVideoOnly}>
+                      Video only
+                    </Button>
+                  ) : null}
+                  {waypoint.arrival_immersive_url ? (
+                    <Button variant="ghost" fullWidth className={ctaInCard} onClick={openAudioOnly}>
+                      Audio only
+                    </Button>
+                  ) : null}
+                </div>
+              </details>
+            ) : null}
           </div>
         ) : showImmersiveView && usesComparisonSlider && !alignmentMode ? (
           <div className="mt-5 space-y-3">
@@ -657,7 +698,7 @@ const WaypointCard = ({
           </div>
         ) : null}
 
-        {showAudioControl ? (
+        {showAudioControl && (showImmersiveView || alignmentMode) ? (
           <div className="mt-4 space-y-3">
             <AudioPlayerPanel
               title={landmarkTitle}
@@ -676,8 +717,8 @@ const WaypointCard = ({
           </div>
         ) : null}
 
-        <div className="mt-4 flex flex-col gap-2">
-          <Button variant="text" fullWidth onClick={onClose}>
+        <div className="mt-5 flex flex-col gap-2">
+          <Button variant="text" fullWidth className="text-deep-slate" onClick={onClose}>
             Continue walking
           </Button>
         </div>

@@ -82,7 +82,7 @@ describe('WaypointCard', () => {
     });
 
     expect(screen.getByTestId('before-after-slider')).toBeInTheDocument();
-    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'false');
+    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'true');
     expect(screen.getByText('Then & now')).toBeInTheDocument();
   });
 
@@ -139,7 +139,7 @@ describe('WaypointCard', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Step through time' }));
+      fireEvent.click(screen.getByRole('button', { name: /reveal ancient view/i }));
     });
 
     expect(transitionTo).toHaveBeenCalledWith(
@@ -154,11 +154,10 @@ describe('WaypointCard', () => {
   it('shows audio and immersive actions in a premium layout', () => {
     render(<WaypointCard waypoint={waypoint} state={JOURNEY_STATE.ARRIVAL} onClose={() => {}} />);
 
-    expect(screen.getByRole('button', { name: 'Step through time' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Image only' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Audio only' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /start audio story/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reveal ancient view/i })).toBeInTheDocument();
+    expect(screen.getByText(/more options/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Continue walking' })).toBeInTheDocument();
-    expect(screen.getByText(/captions & transcript/i)).toBeInTheDocument();
   });
 
   it('exposes dialog semantics for the landmark sheet', () => {
