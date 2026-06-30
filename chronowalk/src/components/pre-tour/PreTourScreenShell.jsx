@@ -61,7 +61,7 @@ export function PreTourScreenShell({
           <div className="h-[min(22vh,10rem)] shrink-0 sm:h-[min(26vh,12rem)]" aria-hidden="true" />
         ) : null}
 
-        <div className="relative z-10 flex flex-1 flex-col py-2">
+        <div className="relative z-10 flex flex-1 flex-col py-2 touch-manipulation">
           {canGoBack && onBack ? <BackButton onBack={onBack} label={backLabel} /> : null}
           {children}
         </div>

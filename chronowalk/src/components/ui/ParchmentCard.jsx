@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { tapAction } from './focusRing'
+import { usePressHandlers } from './usePressHandlers'
 
 /**
  * Museum-plaque card surface — warm paper, soft depth, optional fiber texture.
@@ -9,6 +10,10 @@ export function ParchmentCard({
   className,
   texture = true,
   children,
+  onClick,
+  onPointerUp,
+  onPointerDown,
+  onPointerCancel,
   ...props
 }) {
   const isInteractive =
@@ -16,6 +21,12 @@ export function ParchmentCard({
     Component === 'a' ||
     props.role === 'button' ||
     props.type === 'button'
+
+  const pressHandlers = usePressHandlers(isInteractive ? onClick : undefined, {
+    onPointerUp,
+    onPointerDown,
+    onPointerCancel,
+  })
 
   return (
     <Component
@@ -26,6 +37,7 @@ export function ParchmentCard({
         className
       )}
       {...props}
+      {...(isInteractive ? pressHandlers : onClick ? { onClick } : {})}
     >
       {children}
     </Component>

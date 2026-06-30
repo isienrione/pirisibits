@@ -4,7 +4,7 @@ export function GlassPanel({ as: Component = 'div', className, grain = false, ch
   return (
     <Component
       className={cn(
-        'rounded-3xl border border-parchment/80 bg-ivory/95 shadow-plaque backdrop-blur-glass',
+        'rounded-3xl border border-parchment/80 bg-ivory/95 shadow-plaque',
         grain && 'paper-texture relative overflow-hidden',
         className
       )}

@@ -7,4 +7,4 @@ export const touchTarget = 'min-h-12 min-w-12'
 
 /** Mobile-friendly tap behaviour — no double-tap zoom delay, reliable hit testing. */
 export const tapAction =
-  'touch-manipulation select-none relative z-[2] active:opacity-95 [-webkit-tap-highlight-color:transparent]'
+  'pointer-events-auto touch-manipulation select-none relative z-[2] active:opacity-95 [-webkit-tap-highlight-color:transparent]'

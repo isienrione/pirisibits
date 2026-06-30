@@ -32,7 +32,7 @@ export function FreePreviewView({ onStartPreview, onBrowseTours }) {
           <li>Locked landmarks show what you get when you buy</li>
         </ul>
 
-        <div className="mt-8 flex flex-col gap-3">
+        <div className="relative z-[3] mt-8 flex flex-col gap-3">
           <BronzeButton
             size="lg"
             fullWidth
