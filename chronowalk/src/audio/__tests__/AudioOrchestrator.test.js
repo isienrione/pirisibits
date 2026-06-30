@@ -7,6 +7,8 @@ const createMockAudio = () => ({
   paused: true,
   volume: 1,
   currentTime: 0,
+  duration: 120,
+  playbackRate: 1,
   readyState: HTMLMediaElement.HAVE_ENOUGH_DATA,
   src: '',
   preload: 'auto',
@@ -218,5 +220,30 @@ describe('AudioOrchestrator', () => {
 
     expect(dispatchedEvents).toHaveLength(0);
     expect(orchestrator.getState().visualSyncFired).toBe(false);
+  });
+
+  it('seeks and skips within the active narration player', () => {
+    const { orchestrator } = createOrchestrator();
+    orchestrator.currentMode = AUDIO_MODES.ARRIVAL;
+    orchestrator.wantsArrivalPlayback = true;
+    orchestrator.arrivalPlayer.src = '/audio/arrival.mp3';
+    orchestrator.arrivalPlayer.duration = 180;
+    orchestrator.arrivalPlayer.currentTime = 40;
+
+    expect(orchestrator.seekTo(75)).toBe(true);
+    expect(orchestrator.arrivalPlayer.currentTime).toBe(75);
+
+    orchestrator.skipBy(15);
+    expect(orchestrator.arrivalPlayer.currentTime).toBe(90);
+  });
+
+  it('applies playback rate to narration players', () => {
+    const { orchestrator } = createOrchestrator();
+
+    orchestrator.setPlaybackRate(1.25);
+
+    expect(orchestrator.arrivalPlayer.playbackRate).toBe(1.25);
+    expect(orchestrator.transitPlayer.playbackRate).toBe(1.25);
+    expect(orchestrator.getPlaybackRate()).toBe(1.25);
   });
 });

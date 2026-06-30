@@ -1,5 +1,5 @@
 import TourStopCard from '../TourStopCard'
-import { PageShell, SectionHeader } from '../ui'
+import { PageShell } from '../ui'
 
 function StopsView({
   tour,
@@ -9,6 +9,7 @@ function StopsView({
   onOpenStop,
   onNavigate,
   onUnlockTour,
+  onBack,
 }) {
   const stops = mapStops?.length
     ? mapStops
@@ -20,16 +21,27 @@ function StopsView({
 
   return (
     <PageShell>
-      <SectionHeader
-        align="left"
-        eyebrow={isFreePreview ? 'Free preview' : 'Route'}
-        title={tour?.title ?? 'Tour stops'}
-        subtitle={
-          isFreePreview
-            ? `${stops.length} landmarks on the map · Colosseum unlocked · tap locked stops to see what you are missing`
-            : `${stops.length} landmarks · revisit visited stops or preview any landmark`
-        }
-      />
+      <div className="flex items-start gap-3">
+        {onBack ? (
+          <button
+            type="button"
+            onClick={onBack}
+            className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-parchment/80 bg-ivory text-deep-slate shadow-sm"
+            aria-label="Back to map"
+          >
+            ←
+          </button>
+        ) : null}
+        <div className="min-w-0 flex-1">
+          <h1 className="font-display text-3xl font-semibold leading-tight text-deep-slate">
+            All stops
+          </h1>
+          <p className="mt-1 text-sm text-soft-slate">
+            {stops.length} stops in this tour
+            {isFreePreview ? ' · Colosseum unlocked in free preview' : ''}
+          </p>
+        </div>
+      </div>
 
       <div className="mt-6 space-y-4">
         {stops.map((stop, index) => (
@@ -38,7 +50,7 @@ function StopsView({
             stop={stop}
             index={index}
             waypoint={waypointsById?.[stop.id]}
-            lockedActionLabel={isFreePreview ? 'View pricing' : 'Unlock tour'}
+            lockedActionLabel={isFreePreview ? 'View pricing' : 'Locked'}
             onOpen={(stopId) => {
               if (stop.status === 'locked' && isFreePreview) {
                 onUnlockTour?.()

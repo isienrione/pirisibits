@@ -11,9 +11,17 @@
 | `exterior/` | Tour stop — standard slider deliverables (modern + ancient) |
 | `exterior/incoming/` | Drop `ancient-source.mp4` / `modern-source.mp4`, then `npm run process-waypoint -- colosseum` |
 | `interior/` | Future interior experience (not wired to tour yet) |
-| Root | Shared `Audio_sample.mp3` + `geocache-arrival-alert.wav` |
+| Root | Shared `geocache-arrival-alert.wav` |
 
-## Exterior deliverables
+## Exterior audio (W01 v2)
+
+| File | Role |
+|------|------|
+| `exterior/arrival-immersive-v2.mp3` | Full arrival narration (~6.5 min) — **replace placeholder with final mix** |
+| `exterior/ambient-exterior-crowd.mp3` | Low crowd bed under narration |
+| `exterior/W01_Colosseum_Exterior_v2.md` | Recording-ready script + transcript source |
+
+Transcript body is also embedded in `src/data/colosseum-exterior-w01.js` for the app transcript tab.
 
 | File | Role |
 |------|------|

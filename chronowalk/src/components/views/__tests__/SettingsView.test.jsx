@@ -43,7 +43,7 @@ describe('SettingsView', () => {
     )
 
     expect(screen.getByRole('heading', { name: /settings/i })).toBeInTheDocument()
-    expect(screen.getByText('Location')).toBeInTheDocument()
+    expect(screen.getByText('GPS guidance')).toBeInTheDocument()
     expect(screen.getByText('180 m away')).toBeInTheDocument()
     expect(screen.getByText('Audio stories')).toBeInTheDocument()
     expect(screen.getByText('Reduced motion')).toBeInTheDocument()
