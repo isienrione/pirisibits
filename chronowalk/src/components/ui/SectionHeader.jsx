@@ -1,6 +1,7 @@
 import { cn } from './cn'
 
 export function SectionHeader({
+  id,
   eyebrow,
   title,
   subtitle,
@@ -12,7 +13,7 @@ export function SectionHeader({
     align === 'left' ? 'text-left' : align === 'right' ? 'text-right' : 'text-center'
 
   return (
-    <header className={cn(alignClass, className)}>
+    <header id={id} className={cn(alignClass, className)}>
       {eyebrow ? (
         <p className="text-eyebrow uppercase text-bronze">{eyebrow}</p>
       ) : null}

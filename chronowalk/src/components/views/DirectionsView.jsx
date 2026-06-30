@@ -8,11 +8,7 @@ import {
   isSameLocation,
 } from '../../utils/walkingDirections'
 import { BronzeButton, Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
-
-function formatStepDistance(meters) {
-  if (meters < 1000) return `${Math.round(meters)} m`
-  return `${(meters / 1000).toFixed(1)} km`
-}
+import { DirectionsStepList, formatStepDistance } from '../DirectionsStepList'
 
 function DirectionsView({
   destination,
@@ -129,26 +125,7 @@ function DirectionsView({
               </span>
             </div>
 
-            <ol className="mt-4 space-y-3">
-              {directions.steps.map((step, index) => (
-                <li
-                  key={`${step.instruction}-${index}`}
-                  className="flex gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-3"
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xs font-bold text-gold">
-                    {index + 1}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="text-sm leading-relaxed text-deep-slate">{step.instruction}</p>
-                    {step.distanceM > 0 ? (
-                      <p className="mt-1 text-xs text-soft-slate">
-                        {formatStepDistance(step.distanceM)}
-                      </p>
-                    ) : null}
-                  </div>
-                </li>
-              ))}
-            </ol>
+          <DirectionsStepList steps={directions.steps} className="mt-4" />
           </GlassPanel>
 
           <div className="mt-4 flex flex-col gap-3 pb-4">

@@ -42,6 +42,9 @@ import {
   writeDebugMapPreference,
 } from './utils/appPreferences'
 import { isDebugGeo } from './config/env'
+import { useWalkingDirections } from './hooks/useWalkingDirections'
+import { resolveWalkingStepProgress } from './utils/walkingStepProgress'
+import DirectionsNavHud from './components/DirectionsNavHud'
 import {
   getAssetStudioWaypointId,
   getSingleWaypointId,
@@ -61,10 +64,6 @@ const TourOverviewView = lazyWithRecovery(
 )
 const StopsView = lazyWithRecovery(() => import('./components/views/StopsView'), 'stops list')
 const SettingsView = lazyWithRecovery(() => import('./components/views/SettingsView'), 'settings')
-const DirectionsView = lazyWithRecovery(
-  () => import('./components/views/DirectionsView'),
-  'directions'
-)
 
 function TabLoadingFallback() {
   return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
@@ -372,7 +371,13 @@ function App() {
       lng: landmark.lng,
       key: Date.now(),
     })
-    setActiveTab(NAV_TABS.DIRECTIONS)
+    setActiveTab(NAV_TABS.MAP)
+  }, [])
+
+  const closeDirections = useCallback(() => {
+    setDirectionsDestination(null)
+    setDirectionsOrigin(null)
+    setActiveTab(NAV_TABS.MAP)
   }, [])
 
   const handleDirections = useCallback(
@@ -430,6 +435,45 @@ function App() {
   const walkedMeters = useMemo(
     () => estimateWalkedDistanceMeters(tour, session.progress.arrivedStopIds),
     [tour, session.progress.arrivedStopIds]
+  )
+
+  const mapTabActive = activeTab === NAV_TABS.MAP
+  const directionsModeActive = mapTabActive && Boolean(directionsDestination)
+
+  const directionsRoutingOrigin = useMemo(() => {
+    if (directionsOrigin?.lat != null && directionsOrigin?.lng != null) {
+      return directionsOrigin
+    }
+    return session.position
+  }, [directionsOrigin, session.position?.lat, session.position?.lng])
+
+  const {
+    directions: walkingDirections,
+    loading: walkingDirectionsLoading,
+    error: walkingDirectionsError,
+    routingOrigin: resolvedDirectionsOrigin,
+    routingDestination: resolvedDirectionsDestination,
+  } = useWalkingDirections({
+    origin: directionsRoutingOrigin,
+    destination: directionsDestination,
+    enabled: directionsModeActive && hasInteracted && Boolean(tour),
+  })
+
+  const walkingStepProgress = useMemo(
+    () =>
+      resolveWalkingStepProgress({
+        userPos: session.position,
+        steps: walkingDirections?.steps ?? [],
+        geometry: walkingDirections?.geometry,
+        totalDistanceM: walkingDirections?.distanceM ?? 0,
+      }),
+    [
+      session.position?.lat,
+      session.position?.lng,
+      walkingDirections?.steps,
+      walkingDirections?.geometry,
+      walkingDirections?.distanceM,
+    ]
   )
 
   const audioWaypoint = activeWaypoint ?? discoveredWaypoint ?? session.currentWaypoint
@@ -502,7 +546,6 @@ function App() {
 
   const discoveryVisible =
     Boolean(discoveredWaypoint) && !activeWaypoint && !cardDismissed
-  const mapTabActive = activeTab === NAV_TABS.MAP
 
   return (
     <div className="relative h-screen w-full bg-warm-white lg:pl-[5.5rem]">
@@ -550,6 +593,8 @@ function App() {
               focusTarget={mapFocusTarget}
               isOffline={isOffline}
               awaitingFirstStop={session.isAwaitingFirstStop}
+              directionsModeActive={directionsModeActive}
+              directionsGeometry={walkingDirections?.geometry ?? null}
             />
           </Suspense>
         </ErrorBoundary>
@@ -581,9 +626,28 @@ function App() {
           onContinueTour={handleContinueTour}
           onDirections={handleDirections}
           hasBottomNav
+          hidden={directionsModeActive}
         />
 
-        {showLocationNotice && mapTabActive ? (
+        {directionsModeActive ? (
+          <DirectionsNavHud
+            destinationTitle={directionsDestination?.title}
+            directions={walkingDirections}
+            loading={walkingDirectionsLoading}
+            error={walkingDirectionsError}
+            currentStepIndex={walkingStepProgress.currentStepIndex}
+            routeProgress={walkingStepProgress.routeProgress}
+            locationStatus={locationStatus}
+            routingOrigin={resolvedDirectionsOrigin}
+            routingDestination={resolvedDirectionsDestination}
+            onClose={closeDirections}
+            onRecenter={session.retryLocation}
+            onOpenExternalMaps={handleOpenExternalMaps}
+            hasBottomNav
+          />
+        ) : null}
+
+        {showLocationNotice && mapTabActive && !directionsModeActive ? (
           <div className="pointer-events-none fixed inset-x-0 top-[calc(env(safe-area-inset-top)+5.5rem)] z-[42] px-4">
             <div className="pointer-events-auto mx-auto max-w-md">
               <LocationNotice
@@ -639,19 +703,6 @@ function App() {
             waypointsById={session.waypointsById}
             onOpenStop={handleOpenStop}
             onNavigate={() => setActiveTab(NAV_TABS.MAP)}
-          />
-        </Suspense>
-      ) : null}
-
-      {activeTab === NAV_TABS.DIRECTIONS && directionsDestination ? (
-        <Suspense fallback={<TabLoadingFallback />}>
-          <DirectionsView
-            destination={directionsDestination}
-            origin={directionsOrigin}
-            userPosition={session.position}
-            locationStatus={locationStatus}
-            onBack={() => setActiveTab(NAV_TABS.MAP)}
-            onOpenExternalMaps={handleOpenExternalMaps}
           />
         </Suspense>
       ) : null}

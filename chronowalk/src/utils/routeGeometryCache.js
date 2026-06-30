@@ -79,3 +79,55 @@ export function resetRouteGeometryCache(tourId) {
   if (typeof window === 'undefined' || !tourId) return
   window.sessionStorage.removeItem(storageKey(tourId))
 }
+
+const ADHOC_CACHE_KEY = 'chronowalk:adhoc-directions'
+
+function coordKey(point) {
+  if (!point?.lat || !point?.lng) return null
+  return `${point.lat.toFixed(5)},${point.lng.toFixed(5)}`
+}
+
+function adhocKey(origin, destination) {
+  const from = coordKey(origin)
+  const to = coordKey(destination)
+  if (!from || !to) return null
+  return `${from}->${to}`
+}
+
+function readAdhocCache() {
+  if (typeof window === 'undefined') return {}
+
+  try {
+    const raw = window.sessionStorage.getItem(ADHOC_CACHE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+
+function writeAdhocCache(cache) {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.sessionStorage.setItem(ADHOC_CACHE_KEY, JSON.stringify(cache))
+  } catch (error) {
+    console.warn('routeGeometryCache: failed to persist adhoc directions.', error)
+  }
+}
+
+export function cacheAdhocWalkingDirections(origin, destination, directions) {
+  const key = adhocKey(origin, destination)
+  if (!key || !directions?.steps?.length) return
+
+  const cache = readAdhocCache()
+  cache[key] = directions
+  writeAdhocCache(cache)
+}
+
+export function getAdhocWalkingDirections(origin, destination) {
+  const key = adhocKey(origin, destination)
+  if (!key) return null
+  return readAdhocCache()[key] ?? null
+}
