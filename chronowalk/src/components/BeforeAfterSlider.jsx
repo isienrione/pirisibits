@@ -163,46 +163,107 @@ function CompareSliderHandle() {
   return <TimeFractureHandle />;
 }
 
-function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
-  const labelShadow = '0 1px 8px rgba(23, 33, 43, 0.78), 0 0 1px rgba(23, 33, 43, 0.65)';
-  const ancientShadow = '0 2px 14px rgba(23, 33, 43, 0.88), 0 0 1px rgba(23, 33, 43, 0.7)';
+function SliderEraPills({
+  modernLabel = 'Today',
+  ancientLabel = 'Ancient Rome c. 80 AD',
+  immersive = false,
+}) {
+  const pillClass = cn(
+    'rounded-full border px-3.5 py-2 shadow-sm backdrop-blur-md',
+    immersive
+      ? 'border-ivory/20 bg-obsidian/40'
+      : 'border-parchment/60 bg-ivory/85'
+  )
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-between px-4 pt-4">
-      <div className="text-left">
+    <div
+      className={cn(
+        'pointer-events-none absolute inset-x-0 z-10 flex items-end justify-between px-4',
+        immersive ? 'bottom-6 pb-safe' : 'bottom-4'
+      )}
+    >
+      <div className={pillClass}>
         <p
-          className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-warm-white"
-          style={{ textShadow: labelShadow }}
+          className={cn(
+            'text-xs font-semibold',
+            immersive ? 'text-ivory' : 'text-deep-slate'
+          )}
         >
-          Today
+          {modernLabel}
         </p>
-        {modernYear ? (
-          <p
-            className="mt-0.5 font-sans text-[0.58rem] font-medium text-warm-white/90"
-            style={{ textShadow: labelShadow }}
-          >
-            {modernYear}
-          </p>
-        ) : null}
       </div>
-      <div className="text-right">
+      <div className={cn(pillClass, 'max-w-[58%] text-right')}>
         <p
-          className="font-display text-[1.6rem] italic leading-none text-gold"
-          style={{ textShadow: ancientShadow }}
+          className={cn(
+            'font-display text-sm italic leading-snug',
+            immersive ? 'text-gold' : 'text-bronze'
+          )}
         >
-          Ancient Rome
+          {ancientLabel}
         </p>
-        {ancientYear ? (
-          <p
-            className="mt-1 font-sans text-[0.58rem] font-medium text-gold/90"
-            style={{ textShadow: ancientShadow }}
-          >
-            {ancientYear}
-          </p>
-        ) : null}
       </div>
     </div>
-  );
+  )
+}
+
+function ImmersiveCompareHeader({ onBack, onShare }) {
+  return (
+    <div
+      className="pointer-events-none absolute inset-x-0 top-0 z-30"
+      style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
+    >
+      <div className="pointer-events-auto flex items-center justify-between gap-2 px-4 py-3">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="Back to landmark card"
+          className={cn(
+            'flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ivory/20 bg-obsidian/45 text-ivory backdrop-blur-sm',
+            focusRing
+          )}
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M14 6 8 12l6 6"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+
+        <div className="min-w-0 flex-1 px-2 text-center">
+          <h2 className="font-display text-xl font-semibold leading-tight text-ivory">Then &amp; Now</h2>
+          <p className="mt-0.5 text-xs text-parchment/80">Drag to explore the past</p>
+        </div>
+
+        {onShare ? (
+          <button
+            type="button"
+            onClick={onShare}
+            aria-label="Share this reveal"
+            className={cn(
+              'flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ivory/20 bg-obsidian/45 text-ivory backdrop-blur-sm',
+              focusRing
+            )}
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M8 12h11M14 6l6 6-6 6"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : (
+          <span className="h-11 w-11 shrink-0" aria-hidden="true" />
+        )}
+      </div>
+    </div>
+  )
 }
 
 function SliderLoadingSkeleton({ reducedMotion = false }) {
@@ -308,11 +369,14 @@ const BeforeAfterSlider = ({
   embedded = false,
   startImmersive = false,
   onRequestExit = null,
+  modernEraLabel = 'Today',
+  ancientEraLabel = 'Ancient Rome c. 80 AD',
+  onShare = null,
 }) => {
   const [immersive, setImmersive] = useState(startImmersive);
   const reducedMotion = useReducedMotion();
   const { x, y, isActive, recalibrate } = useDeviceTilt(tiltEnabled);
-  const immersiveHeightRatio = immersive ? 0.92 : maxFrameHeightRatio;
+  const immersiveHeightRatio = immersive ? 1 : maxFrameHeightRatio;
   const resolvedMaxFrameHeightRatio =
     immersiveHeightRatio ??
     (alignmentMode ? ALIGNMENT_MAX_FRAME_HEIGHT_RATIO : DEFAULT_MAX_FRAME_HEIGHT_RATIO);
@@ -767,7 +831,17 @@ const BeforeAfterSlider = ({
           <MediaFailFallback title="Modern view unavailable" />
         ) : (
           <>
-            <SliderEraLabels />
+            <SliderEraPills
+              modernLabel={modernEraLabel}
+              ancientLabel={ancientEraLabel}
+              immersive={immersive}
+            />
+            {immersive ? (
+              <div
+                className="pointer-events-none absolute inset-0 z-[5] bg-[radial-gradient(ellipse_at_center,transparent_42%,rgba(23,33,43,0.52)_100%)]"
+                aria-hidden="true"
+              />
+            ) : null}
             {isMediaLoading ? <SliderLoadingSkeleton reducedMotion={reducedMotion} /> : null}
             <ReactCompareSlider
               style={{ width: '100%', height: '100%', touchAction: 'none' }}
@@ -857,41 +931,13 @@ const BeforeAfterSlider = ({
     <div
       className={
         immersive
-          ? 'flex h-full min-h-0 flex-1 flex-col'
+          ? 'relative flex h-full min-h-0 flex-1 flex-col'
           : embedded
             ? 'w-full overflow-hidden'
             : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
       }
     >
-      {immersive ? (
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-limestone/50 bg-warm-white/95 px-3 py-3 sm:px-4">
-          <button
-            type="button"
-            onClick={exitCompareView}
-            aria-label="Back to landmark card"
-            className={cn(
-              'min-h-11 rounded-full border border-limestone bg-sand/60 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
-              focusRing
-            )}
-          >
-            Back
-          </button>
-          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
-            Immersive compare
-          </p>
-          <button
-            type="button"
-            onClick={closeImmersive}
-            aria-label="Close full screen compare view"
-            className={cn(
-              'min-h-11 rounded-full border border-limestone bg-warm-white/90 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
-              focusRing
-            )}
-          >
-            Close
-          </button>
-        </div>
-      ) : (
+      {!immersive ? (
         <div
           className={cn(
             'flex items-center justify-between gap-2 border-b border-limestone/50 px-3 py-2',
@@ -925,22 +971,23 @@ const BeforeAfterSlider = ({
             Full screen
           </button>
         </div>
-      )}
+      ) : null}
 
-      <div className={immersive ? 'flex min-h-0 flex-1 flex-col' : ''}>{renderSliderFrame()}</div>
+      <div className={immersive ? 'relative min-h-0 flex-1' : ''}>{renderSliderFrame()}</div>
 
-      <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
-        {renderCaption()}
-      </p>
+      {!immersive ? (
+        <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
+          {renderCaption()}
+        </p>
+      ) : null}
     </div>
   );
 
   if (immersive) {
     return (
-      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
-        <div className="flex h-full w-full min-h-0 flex-col">
-          {sliderShell}
-        </div>
+      <div className="fixed inset-0 z-[300] flex flex-col bg-obsidian">
+        <ImmersiveCompareHeader onBack={exitCompareView} onShare={onShare} />
+        <div className="flex h-full w-full min-h-0 flex-1 flex-col pt-safe">{sliderShell}</div>
       </div>
     );
   }

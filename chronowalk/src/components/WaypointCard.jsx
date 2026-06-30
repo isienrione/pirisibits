@@ -425,8 +425,6 @@ const WaypointCard = ({
   };
 
   const showAudioControl = Boolean(waypoint.arrival_immersive_url) && !alignmentMode;
-  const shouldStartImmersive =
-    isFreshArrival && accessMode === 'arrival' && usesComparisonSlider;
 
   const eyebrow = alignmentMode
     ? 'Fine-tuning view'
@@ -541,7 +539,10 @@ const WaypointCard = ({
                 <BeforeAfterSlider
                   key={`${waypoint.id}-${waypoint.media_cache_version ?? 1}`}
                   embedded
-                  startImmersive={shouldStartImmersive}
+                  startImmersive={showImmersiveView}
+                  modernEraLabel="Today"
+                  ancientEraLabel="Ancient Rome c. 80 AD"
+                  onShare={() => setShareOpen(true)}
                   modernImg={modernSliderUrl}
                   historicImg={ancientSliderUrl}
                   depthMap={waypoint.depth_map_url}

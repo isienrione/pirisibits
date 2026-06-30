@@ -82,7 +82,7 @@ describe('WaypointCard', () => {
     });
 
     expect(screen.getByTestId('before-after-slider')).toBeInTheDocument();
-    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'false');
+    expect(screen.getByTestId('before-after-slider')).toHaveAttribute('data-start-immersive', 'true');
     expect(screen.getByText('Then & now')).toBeInTheDocument();
   });
 

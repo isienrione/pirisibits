@@ -722,11 +722,22 @@ function App() {
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={tourStartedAtRef.current}
+          shareWaypoint={
+            session.progress.arrivedStopIds.length > 0
+              ? session.waypointsById[
+                  session.progress.arrivedStopIds[session.progress.arrivedStopIds.length - 1]
+                ] ?? null
+              : null
+          }
           onViewSummary={() => {
             setCompletionDismissed(true)
             setActiveTab(NAV_TABS.TOUR)
           }}
           onDismiss={() => setCompletionDismissed(true)}
+          onBackToTours={() => {
+            setCompletionDismissed(true)
+            setActiveTab(NAV_TABS.TOUR)
+          }}
         />
       ) : null}
 
