@@ -2,6 +2,22 @@
 # Shared helpers: find expansion waypoint incoming/ dirs and classify MP4 pairs.
 # Source from other scripts:  source "$(dirname "$0")/lib/waypoint-incoming.sh"
 
+# Stops with immersive_mode: modern_video — no ancient reconstruction slider.
+MODERN_VIDEO_ONLY_WAYPOINTS=(
+  fontana-di-trevi
+)
+
+waypoint_is_modern_video_only() {
+  local id="$1"
+  local entry
+  for entry in "${MODERN_VIDEO_ONLY_WAYPOINTS[@]}"; do
+    if [[ "$entry" == "$id" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
 WAYPOINT_INCOMING_ALIASES=(
   "capitoline-hill|Capitoline-Hill capitoline-hill"
   "campo-de-fiori|Campo-de-fiori campo-de-fiori"
@@ -175,6 +191,46 @@ incoming_find_pair() {
   return 1
 }
 
+incoming_find_modern() {
+  local dir="$1"
+  local modern="" f kind
+
+  shopt -s nullglob
+  [[ -f "$dir/modern-source.mp4" ]] && modern="$dir/modern-source.mp4"
+  if [[ -n "$modern" ]]; then
+    printf '%s' "$modern"
+    return 0
+  fi
+
+  while IFS= read -r -d '' f; do
+    kind="$(incoming_classify_mp4 "$f")"
+    if [[ "$kind" == "modern" ]]; then
+      printf '%s' "$f"
+      return 0
+    fi
+  done < <(incoming_list_mp4s "$dir")
+
+  return 1
+}
+
+incoming_find_modern_for_waypoint() {
+  local wp="$1"
+  local id="$2"
+  local dir modern deliverable
+
+  deliverable="$(waypoint_deliverable_dir "$wp" "$id")"
+  mkdir -p "$deliverable/incoming"
+
+  while IFS= read -r -d '' dir; do
+    if modern="$(incoming_find_modern "$dir")"; then
+      printf '%s' "$modern"
+      return 0
+    fi
+  done < <(incoming_collect_dirs "$wp" "$id")
+
+  return 1
+}
+
 incoming_find_pair_for_waypoint() {
   local wp="$1"
   local id="$2"
@@ -202,6 +258,18 @@ incoming_sync_canonical_names() {
 
   deliverable="$(waypoint_deliverable_dir "$wp" "$id")"
   canon="$deliverable/incoming"
+  mkdir -p "$canon"
+
+  if waypoint_is_modern_video_only "$id"; then
+    if ! modern="$(incoming_find_modern_for_waypoint "$wp" "$id")"; then
+      return 1
+    fi
+    if [[ "$modern" != "$canon/modern-source.mp4" ]]; then
+      cp -f "$modern" "$canon/modern-source.mp4"
+      echo "   → incoming/modern-source.mp4  (from $(basename "$modern"))"
+    fi
+    return 0
+  fi
 
   if ! pair="$(incoming_find_pair_for_waypoint "$wp" "$id")"; then
     return 1
@@ -209,7 +277,6 @@ incoming_sync_canonical_names() {
 
   modern="${pair%%|*}"
   ancient="${pair#*|}"
-  mkdir -p "$canon"
 
   if [[ "$modern" != "$canon/modern-source.mp4" ]]; then
     cp -f "$modern" "$canon/modern-source.mp4"
