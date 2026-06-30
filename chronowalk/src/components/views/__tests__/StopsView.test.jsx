@@ -25,12 +25,13 @@ describe('StopsView', () => {
       />
     )
 
-    expect(screen.getByRole('heading', { name: /heart of ancient rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /all stops/i })).toBeInTheDocument()
+    expect(screen.getByText(/2 stops in this tour/i)).toBeInTheDocument()
     expect(screen.getByText('Colosseum')).toBeInTheDocument()
     expect(screen.getByText('Pantheon')).toBeInTheDocument()
-    expect(screen.getByText('Visited')).toBeInTheDocument()
-    expect(screen.getByText('Current')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /revisit/i })).toBeInTheDocument()
+    expect(screen.getByText('Explore')).toBeInTheDocument()
+    expect(screen.getByText('Current stop')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /colosseum/i })).toBeInTheDocument()
   })
 
   it('requests opening a stop and navigates to the map', () => {
@@ -46,7 +47,7 @@ describe('StopsView', () => {
       />
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /revisit/i }))
+    fireEvent.click(screen.getByRole('button', { name: /colosseum/i }))
 
     expect(onOpenStop).toHaveBeenCalledWith('colosseum')
     expect(onNavigate).toHaveBeenCalled()

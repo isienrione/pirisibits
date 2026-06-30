@@ -76,7 +76,7 @@ export function BottomSheet({
     >
       <div
         className={cn(
-          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-sheet border border-parchment/70',
+          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-[2rem] border border-parchment/70',
           'bg-gradient-to-b from-ivory via-ivory to-parchment/90 shadow-sheet-up paper-texture'
         )}
       >

@@ -1,4 +1,5 @@
-import { MediaPlayerControls, cn } from './ui'
+import { useAudioProgress } from '../hooks/useAudioProgress'
+import { AudioScrubber, MediaPlayerControls, cn } from './ui'
 
 function AudioPlayerPanel({
   title,
@@ -8,7 +9,10 @@ function AudioPlayerPanel({
   onStop,
   posterUrl,
   className,
+  showScrubber = true,
 }) {
+  const { currentTime, duration, seekTo } = useAudioProgress()
+
   return (
     <div
       className={cn(
@@ -58,18 +62,17 @@ function AudioPlayerPanel({
         />
       </div>
 
-      <div className="relative mt-4 flex h-1 items-center gap-0.5" aria-hidden="true">
-        {Array.from({ length: 24 }, (_, index) => (
-          <span
-            key={index}
-            className={cn(
-              'h-full flex-1 rounded-full bg-gold/20',
-              isPlaying && index % 3 === 0 && 'bg-gold/50'
-            )}
-            style={{ minHeight: `${4 + (index % 5) * 2}px`, alignSelf: 'center' }}
+      {showScrubber ? (
+        <div className="relative mt-4">
+          <AudioScrubber
+            currentTime={currentTime}
+            duration={duration}
+            onSeek={seekTo}
+            disabled={duration <= 0}
+            theme="dark"
           />
-        ))}
-      </div>
+        </div>
+      ) : null}
     </div>
   )
 }
