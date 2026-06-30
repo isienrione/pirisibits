@@ -1,3 +1,9 @@
+import {
+  COLOSSEUM_EXTERIOR_W01,
+  COLOSSEUM_EXTERIOR_W01_AUDIO,
+  COLOSSEUM_EXTERIOR_W01_TRANSCRIPT,
+} from './colosseum-exterior-w01'
+
 export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 
 /** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=colosseum */
@@ -40,10 +46,14 @@ export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
  *
  * 4. Interior assets live in public/waypoints/colosseum/interior/ (future stop)
  *
- * Shared audio/alert at colosseum/ root.
+ * Audio (W01 v2 — replace placeholders in public/waypoints/colosseum/exterior/):
+ *    - arrival-immersive-v2.mp3 (~6.5 min narration)
+ *    - ambient-exterior-crowd.mp3 (loop under voice)
+ *    - W01_Colosseum_Exterior_v2.md (production script + transcript source)
+ *
+ * Shared alert at colosseum/ root: geocache-arrival-alert.wav
  */
 
-const COLOSSEUM_SAMPLE_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
 const COLOSSEUM_ARRIVAL_ALERT = '/waypoints/colosseum/geocache-arrival-alert.wav'
 const COLOSSEUM_EXTERIOR = '/waypoints/colosseum/exterior'
 const COLOSSEUM_MODERN_IMAGE = `${COLOSSEUM_EXTERIOR}/modern-exterior.jpg`
@@ -62,11 +72,14 @@ export const COLOSSEUM_SLIDER_POSTER_AT_SEC = 3
 export const COLOSSEUM_WAYPOINT = {
   id: 'colosseum',
   title: 'The Colosseum',
-  media_cache_version: 10,
-  arrival_headline: "You've reached the Colosseum!",
-  arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
-  immersive_orientation_hint:
-    'Stand facing the Colosseum facade, then tap Begin Immersive View for the best before/after reveal.',
+  script_id: COLOSSEUM_EXTERIOR_W01.waypointId,
+  script_version: COLOSSEUM_EXTERIOR_W01.scriptVersion,
+  media_cache_version: 11,
+  arrival_headline: COLOSSEUM_EXTERIOR_W01.arrivalHeadline,
+  arrival_subtitle: COLOSSEUM_EXTERIOR_W01.arrivalSubtitle,
+  arrival_transcript: COLOSSEUM_EXTERIOR_W01_TRANSCRIPT,
+  estimated_duration_minutes: COLOSSEUM_EXTERIOR_W01.estimatedDurationMinutes,
+  immersive_orientation_hint: COLOSSEUM_EXTERIOR_W01.immersiveOrientationHint,
   lat: COLOSSEUM.lat,
   lng: COLOSSEUM.lng,
   viewpoint: COLOSSEUM_VIEWPOINT,
@@ -79,8 +92,14 @@ export const COLOSSEUM_WAYPOINT = {
   slider_poster_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
   slider_post_animation_loop_ms: COLOSSEUM_SLIDER_POST_ANIMATION_LOOP_MS,
   slider_freeze_at_sec: COLOSSEUM_SLIDER_POSTER_AT_SEC,
-  ambient_url: COLOSSEUM_SAMPLE_AUDIO,
-  transit_narrative_url: COLOSSEUM_SAMPLE_AUDIO,
-  arrival_immersive_url: COLOSSEUM_SAMPLE_AUDIO,
+  ambient_url: COLOSSEUM_EXTERIOR_W01_AUDIO.ambientCrowd,
+  transit_narrative_url: COLOSSEUM_EXTERIOR_W01_AUDIO.ambientCrowd,
+  arrival_immersive_url: COLOSSEUM_EXTERIOR_W01_AUDIO.arrivalImmersive,
   arrival_alert_url: COLOSSEUM_ARRIVAL_ALERT,
+}
+
+export {
+  COLOSSEUM_EXTERIOR_W01,
+  COLOSSEUM_EXTERIOR_W01_AUDIO,
+  COLOSSEUM_EXTERIOR_W01_TRANSCRIPT,
 }
