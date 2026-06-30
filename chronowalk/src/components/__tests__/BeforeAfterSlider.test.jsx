@@ -46,4 +46,28 @@ describe('BeforeAfterSlider', () => {
     expect(screen.getByLabelText(/open full screen compare view/i)).toBeInTheDocument()
     expect(screen.queryByLabelText(/close full screen compare view/i)).not.toBeInTheDocument()
   })
+
+  it('mounts the hidden duotone filter definition when duotone is enabled', () => {
+    const { rerender } = render(
+      <BeforeAfterSlider
+        modernImg="/modern.jpg"
+        historicImg="/ancient.jpg"
+        embedded
+        duotone
+      />
+    )
+
+    expect(document.querySelector('filter')).toBeTruthy()
+
+    rerender(
+      <BeforeAfterSlider
+        modernImg="/modern.jpg"
+        historicImg="/ancient.jpg"
+        embedded
+        duotone={false}
+      />
+    )
+
+    expect(document.querySelector('filter')).toBeNull()
+  })
 })
