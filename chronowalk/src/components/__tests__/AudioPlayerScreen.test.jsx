@@ -41,8 +41,8 @@ describe('AudioPlayerScreen', () => {
     expect(screen.getByText('3:00')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /rewind 15 seconds/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /forward 15 seconds/i })).toBeInTheDocument()
-    expect(screen.getByText('Speed')).toBeInTheDocument()
-    expect(screen.getByText('Transcript')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /audio/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /transcript/i })).toBeInTheDocument()
   })
 
   it('minimizes when the header chevron is pressed', () => {

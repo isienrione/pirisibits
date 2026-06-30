@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { AUDIO_MODES } from '../audio/AudioOrchestrator'
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState'
 import { useAudioProgress } from '../hooks/useAudioProgress'
-import { cyclePlaybackSpeed, writePlaybackSpeed } from '../utils/appPreferences'
-import AudioTranscriptSection from './AudioTranscriptSection'
+import AudioTranscriptTabs from './AudioTranscriptTabs'
 import { AudioScrubber, GoldButton, cn, focusRing } from './ui'
 
 function ChevronDownIcon({ className }) {
@@ -55,23 +54,6 @@ function SkipIcon({ direction = 'back', className }) {
   )
 }
 
-function UtilityButton({ label, value, onClick, active = false }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'flex min-h-16 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-3 text-center transition',
-        active ? 'bg-parchment/70 text-deep-slate' : 'text-soft-slate hover:bg-parchment/45 hover:text-deep-slate',
-        focusRing
-      )}
-    >
-      <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">{label}</span>
-      <span className="text-sm font-semibold text-deep-slate">{value}</span>
-    </button>
-  )
-}
-
 function AudioPlayerScreen({
   open,
   title,
@@ -83,8 +65,7 @@ function AudioPlayerScreen({
   onStop,
 }) {
   const { isTourNarrationPlaying, currentMode } = useAudioPlaybackState()
-  const { currentTime, duration, playbackRate, seekTo, skipBy, setPlaybackRate } = useAudioProgress()
-  const [transcriptOpen, setTranscriptOpen] = useState(false)
+  const { currentTime, duration, seekTo, skipBy } = useAudioProgress()
 
   useEffect(() => {
     if (!open) return undefined
@@ -103,12 +84,6 @@ function AudioPlayerScreen({
     }
   }, [open, onClose])
 
-  useEffect(() => {
-    if (!open) {
-      setTranscriptOpen(false)
-    }
-  }, [open])
-
   if (!open) return null
 
   const modeLabel =
@@ -117,11 +92,6 @@ function AudioPlayerScreen({
       : currentMode === AUDIO_MODES.ARRIVAL
         ? 'Audio story'
         : 'Tour audio'
-
-  const handleSpeedChange = () => {
-    const next = cyclePlaybackSpeed(playbackRate)
-    setPlaybackRate(next)
-  }
 
   return (
     <div className="fixed inset-0 z-[70] flex flex-col bg-ivory">
@@ -209,7 +179,6 @@ function AudioPlayerScreen({
               )}
             >
               <SkipIcon direction="back" className="h-6 w-6" />
-              <span className="sr-only">15 seconds</span>
             </button>
 
             <GoldButton
@@ -238,28 +207,20 @@ function AudioPlayerScreen({
             </button>
           </div>
 
-          <div className="mt-8 flex gap-2 rounded-3xl border border-parchment/70 bg-parchment/25 p-2">
-            <UtilityButton
-              label="Speed"
-              value={`${playbackRate}x`}
-              onClick={handleSpeedChange}
+          <div className="mt-8">
+            <AudioTranscriptTabs
+              waypoint={waypoint}
+              title={title}
+              subtitle={subtitle}
+              posterUrl={posterUrl}
+              isPlaying={isTourNarrationPlaying}
+              onToggle={onTogglePlayback}
+              onStop={onStop}
+              showHeader={false}
+              showDockedPlayer={false}
+              showAudioControls={false}
             />
-            <UtilityButton label="Chapters" value="Soon" onClick={() => {}} />
-            <UtilityButton
-              label="Transcript"
-              value={transcriptOpen ? 'On' : 'Off'}
-              active={transcriptOpen}
-              onClick={() => setTranscriptOpen((current) => !current)}
-            />
-            <UtilityButton label="Timer" value="Off" onClick={() => {}} />
           </div>
-
-          {transcriptOpen ? (
-            <div className="mt-4 rounded-3xl border border-parchment/70 bg-ivory px-4 py-4 shadow-plaque">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bronze">Transcript</p>
-              <AudioTranscriptSection waypoint={waypoint} className="mt-3" />
-            </div>
-          ) : null}
         </div>
       </div>
     </div>

@@ -696,6 +696,7 @@ function App() {
             isFreshArrival={activeWaypoint?.id === freshDiscoveryId && waypointAccessMode === 'arrival'}
             autoStartExperience={waypointAccessMode === 'freeSample'}
             onViewTours={freePreviewStopId ? handleExitFreePreview : undefined}
+            onOpenFullPlayer={() => setAudioPlayerOpen(true)}
             onClose={() => {
               setActiveWaypoint(null)
               setCardDismissed(true)

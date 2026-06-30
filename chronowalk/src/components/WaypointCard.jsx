@@ -1,7 +1,6 @@
 import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
-import AudioTranscriptSection from './AudioTranscriptSection';
+import AudioTranscriptTabs from './AudioTranscriptTabs';
 import CalibrationOverlay from './CalibrationOverlay';
-import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
 import { BottomSheet, BronzeButton, Button, EditorialTitle, GoldButton, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
 import WaypointMetadataRow from './WaypointMetadataRow';
@@ -179,6 +178,7 @@ const WaypointCard = ({
   accessMode = 'arrival',
   autoStartExperience = false,
   onViewTours,
+  onOpenFullPlayer,
 }) => {
   const titleId = useId();
   const reducedMotion = useReducedMotion();
@@ -680,25 +680,21 @@ const WaypointCard = ({
 
         {showAudioControl && (showImmersiveView || alignmentMode) ? (
           <div className="mt-4 space-y-3">
-            <AudioPlayerPanel
+            <AudioTranscriptTabs
+              waypoint={waypoint}
               title={landmarkTitle}
               subtitle={waypoint.arrival_subtitle}
-              isPlaying={isArrivalAudioPlaying}
               posterUrl={heroPreviewUrl}
+              isPlaying={isArrivalAudioPlaying}
               onToggle={handleAudioAction}
               onStop={() => audioOrchestrator.stop()}
+              onOpenFullPlayer={onOpenFullPlayer}
             />
             {needsResumeAudio ? (
               <p className="text-xs text-soft-slate">
                 Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
-            <details className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3">
-              <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
-                Captions &amp; transcript
-              </summary>
-              <AudioTranscriptSection waypoint={waypoint} className="mt-3" />
-            </details>
           </div>
         ) : null}
 
