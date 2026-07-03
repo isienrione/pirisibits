@@ -5,9 +5,12 @@ import {
   isWaypointId,
   resolveJourneyStep,
 } from './manifest.js'
+import { buildEffectiveSequence } from './optionalPromotion.js'
 
-export function getManifestWaypointIds(manifest, path) {
-  return getTraversalSequence(manifest, path).filter((stepId) => isWaypointId(manifest, stepId))
+export function getManifestWaypointIds(manifest, path, promotedOptionalIds = []) {
+  return buildEffectiveSequence(manifest, path, promotedOptionalIds).filter((stepId) =>
+    isWaypointId(manifest, stepId)
+  )
 }
 
 export function buildManifestTour(manifest, path = manifest.journey?.default_path ?? 'a') {
@@ -66,14 +69,15 @@ export function buildMapStopsFromManifest(
     path = manifest.journey?.default_path ?? 'a',
     sequenceIndex = 0,
     completedWaypointIds = [],
+    promotedOptionalIds = [],
   } = {}
 ) {
   const completed = new Set(completedWaypointIds)
-  const step = resolveJourneyStep(manifest, path, sequenceIndex)
+  const step = resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds)
   const currentTargetId =
     step.type === 'waypoint' ? step.id : step.targetWaypoint?.id ?? null
 
-  const stopIds = getManifestWaypointIds(manifest, path)
+  const stopIds = getManifestWaypointIds(manifest, path, promotedOptionalIds)
 
   return stopIds
     .map((stopId, index) => {
@@ -96,12 +100,12 @@ export function buildMapStopsFromManifest(
     .filter(Boolean)
 }
 
-export function resolveActiveMapLeg(manifest, path, sequenceIndex) {
-  const step = resolveJourneyStep(manifest, path, sequenceIndex)
+export function resolveActiveMapLeg(manifest, path, sequenceIndex, promotedOptionalIds = []) {
+  const step = resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds)
   const targetId = step.type === 'waypoint' ? step.id : step.targetWaypoint?.id
   if (!targetId) return { activeTargetId: null, activeLeg: null, transitLegActive: false }
 
-  const sequence = getTraversalSequence(manifest, path)
+  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
   let previousWaypointId = null
 
   for (let index = 0; index < sequenceIndex; index += 1) {

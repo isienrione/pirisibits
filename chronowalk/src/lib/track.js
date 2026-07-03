@@ -20,6 +20,7 @@ export const TRACK_EVENTS = {
   PAUSE: 'pause',
   RESUME: 'resume',
   GPS_FALLBACK_USED: 'gps_fallback_used',
+  OPTIONAL_WAYPOINT_PROMOTED: 'optional_waypoint_promoted',
   DAY_COMPLETE: 'day_complete',
   LETTER_VIEW: 'letter_view',
   LETTER_SAVE: 'letter_save',

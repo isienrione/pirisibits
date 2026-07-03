@@ -1,5 +1,6 @@
 import rawManifest from './rome/manifest.json'
 import { parseRomeManifest } from './manifest.schema.js'
+import { buildEffectiveSequence } from './optionalPromotion.js'
 
 let cachedManifest = null
 
@@ -79,13 +80,13 @@ export function isWaypointId(manifest, stepId) {
   return Boolean(manifest.waypointsById?.[stepId] ?? manifest.waypoints?.[stepId])
 }
 
-export function getStepIdAtIndex(manifest, path, index) {
-  const sequence = getTraversalSequence(manifest, path)
+export function getStepIdAtIndex(manifest, path, index, promotedOptionalIds = []) {
+  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
   return sequence[index] ?? null
 }
 
-export function resolveJourneyStep(manifest, path, sequenceIndex) {
-  const stepId = getStepIdAtIndex(manifest, path, sequenceIndex)
+export function resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds = []) {
+  const stepId = getStepIdAtIndex(manifest, path, sequenceIndex, promotedOptionalIds)
   if (!stepId) {
     return { done: true, id: null, type: null, record: null, targetWaypoint: null }
   }
@@ -102,7 +103,7 @@ export function resolveJourneyStep(manifest, path, sequenceIndex) {
   }
 
   const record = getTransit(manifest, stepId)
-  const nextStepId = getStepIdAtIndex(manifest, path, sequenceIndex + 1)
+  const nextStepId = getStepIdAtIndex(manifest, path, sequenceIndex + 1, promotedOptionalIds)
   const targetWaypoint = nextStepId && isWaypointId(manifest, nextStepId)
     ? getWaypoint(manifest, nextStepId)
     : null

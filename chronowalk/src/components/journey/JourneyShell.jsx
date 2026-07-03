@@ -4,6 +4,8 @@ import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
+import { useOptionalPromotion } from '../../hooks/useOptionalPromotion.js'
+import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import ApproachingScreen from './ApproachingScreen.jsx'
@@ -14,10 +16,15 @@ import WalkingScreen from './WalkingScreen.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 
 export default function JourneyShell() {
-  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, states } =
+  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, states } =
     useJourney()
   const { manifest, loading, error } = useTourManifest()
-  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
+  const step = useJourneyStep(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
   const audio = useAudioEngine(manifest)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
@@ -31,6 +38,28 @@ export default function JourneyShell() {
 
   const needsPathChoice =
     step?.type === 'transit' && step?.needsPathChoice && !context.pathLocked && step.id === 't01'
+
+  const handleOptionalPromote = useCallback(
+    (waypointId) => {
+      if (!manifest) return
+      promoteOptional(waypointId, manifest)
+      const inserts = getPromotionInsertSteps(manifest, waypointId, context.path)
+      const transitId = inserts[0]
+      if (transitId) {
+        playedStepRef.current = null
+        storyStartedRef.current = null
+        audio.playTransit(transitId)
+        playedStepRef.current = transitId
+      }
+      track(TRACK_EVENTS.OPTIONAL_WAYPOINT_PROMOTED, { waypoint_id: waypointId })
+    },
+    [audio, context.path, manifest, promoteOptional]
+  )
+
+  useOptionalPromotion(manifest, context, {
+    onPromote: handleOptionalPromote,
+    enabled: state === JOURNEY_STATES.WALKING || state === JOURNEY_STATES.APPROACHING,
+  })
 
   useEffect(() => {
     if (audio.ready) setAudioUnlocked(true)

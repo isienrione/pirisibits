@@ -1,4 +1,5 @@
 import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
+import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -21,6 +22,7 @@ const defaultContext = () => ({
   currentSequenceIndex: 0,
   completedWaypointIds: [],
   completedTransitIds: [],
+  promotedOptionalIds: [],
   pathLocked: false,
   pausedAt: null,
 })
@@ -58,6 +60,10 @@ function readStorage() {
 
     if (mergedContext.pathLocked == null) {
       mergedContext.pathLocked = false
+    }
+
+    if (mergedContext.promotedOptionalIds == null) {
+      mergedContext.promotedOptionalIds = []
     }
 
     return {
@@ -119,6 +125,7 @@ export function beginJourney({ pace = JOURNEY_PACE.CLASSIC, path = JOURNEY_PATH.
     currentSequenceIndex: 0,
     completedWaypointIds: [],
     completedTransitIds: [],
+    promotedOptionalIds: [],
     pathLocked: false,
   })
 }
@@ -166,5 +173,21 @@ export function setActiveWaypointIndex(waypointId, manifest) {
   const index = manifest?.waypoints?.findIndex((waypoint) => waypoint.id === waypointId) ?? -1
   return transitionJourney(snapshot.state, {
     currentWaypointIndex: index >= 0 ? index : snapshot.context.currentWaypointIndex,
+  })
+}
+
+export function promoteOptionalWaypoint(waypointId, manifest) {
+  const { path, promotedOptionalIds = [], currentSequenceIndex } = snapshot.context
+  if (promotedOptionalIds.includes(waypointId)) return snapshot
+
+  const newPromoted = [...promotedOptionalIds, waypointId]
+  const inserts = getPromotionInsertSteps(manifest, waypointId, path)
+  const newEffective = buildEffectiveSequence(manifest, path, newPromoted)
+  const firstInsertId = inserts[0]
+  const newIndex = firstInsertId ? newEffective.indexOf(firstInsertId) : currentSequenceIndex
+
+  return transitionJourney(JOURNEY_STATES.WALKING, {
+    promotedOptionalIds: newPromoted,
+    currentSequenceIndex: newIndex >= 0 ? newIndex : currentSequenceIndex,
   })
 }

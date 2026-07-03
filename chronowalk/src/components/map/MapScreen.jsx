@@ -51,7 +51,12 @@ function ConfidenceChip({ label, active }) {
 export default function MapScreen() {
   const { state, context } = useJourney()
   const { manifest, loading, error } = useTourManifest()
-  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
+  const step = useJourneyStep(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
   const [directionsOpen, setDirectionsOpen] = useState(false)
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
@@ -71,17 +76,29 @@ export default function MapScreen() {
             path: context.path,
             sequenceIndex: context.currentSequenceIndex,
             completedWaypointIds: context.completedWaypointIds,
+            promotedOptionalIds: context.promotedOptionalIds,
           })
         : [],
-    [manifest, context.path, context.currentSequenceIndex, context.completedWaypointIds]
+    [
+      manifest,
+      context.path,
+      context.currentSequenceIndex,
+      context.completedWaypointIds,
+      context.promotedOptionalIds,
+    ]
   )
 
   const { activeTargetId, activeLeg, transitLegActive } = useMemo(
     () =>
       manifest
-        ? resolveActiveMapLeg(manifest, context.path, context.currentSequenceIndex)
+        ? resolveActiveMapLeg(
+            manifest,
+            context.path,
+            context.currentSequenceIndex,
+            context.promotedOptionalIds
+          )
         : { activeTargetId: null, activeLeg: null, transitLegActive: false },
-    [manifest, context.path, context.currentSequenceIndex]
+    [manifest, context.path, context.currentSequenceIndex, context.promotedOptionalIds]
   )
 
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null

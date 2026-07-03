@@ -6,8 +6,10 @@ import {
   subscribeJourney,
   transitionJourney,
   setJourneyPath,
+  promoteOptionalWaypoint,
   JOURNEY_STATES,
 } from '../journey'
+import { loadRomeManifest } from '../../content/manifest.js'
 
 describe('journey state machine', () => {
   beforeEach(() => {
@@ -44,5 +46,22 @@ describe('journey state machine', () => {
     transitionJourney(JOURNEY_STATES.ARRIVED)
     unsubscribe()
     expect(seen).toContain(JOURNEY_STATES.ARRIVED)
+  })
+
+  it('promotes optional w04 on path A and rewinds sequence to t02', () => {
+    const manifest = loadRomeManifest()
+    beginJourney({ pace: 'classic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 4,
+      completedWaypointIds: ['w01', 'w02', 'w03'],
+      pathLocked: true,
+    })
+
+    promoteOptionalWaypoint('w04', manifest)
+
+    const snapshot = getJourneySnapshot()
+    expect(snapshot.context.promotedOptionalIds).toEqual(['w04'])
+    expect(snapshot.context.currentSequenceIndex).toBe(4)
+    expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
   })
 })
