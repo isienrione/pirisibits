@@ -34,7 +34,8 @@ function AppRoutes() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/welcome" replace />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/journey" element={<JourneyPage />} />
