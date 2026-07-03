@@ -12,6 +12,7 @@ import {
   markTransitComplete,
   setActiveWaypointIndex,
   promoteOptionalWaypoint,
+  completeStoryAfterThreshold,
   JOURNEY_STATES,
 } from '../state/journey'
 
@@ -31,6 +32,7 @@ export function useJourney() {
     completeTransit: markTransitComplete,
     setActiveWaypoint: setActiveWaypointIndex,
     promoteOptional: promoteOptionalWaypoint,
+    completeStoryAfterThreshold,
   }
 }
 

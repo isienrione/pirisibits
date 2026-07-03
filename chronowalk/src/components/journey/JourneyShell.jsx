@@ -30,6 +30,15 @@ export default function JourneyShell() {
   const [audioUnlocked, setAudioUnlocked] = useState(false)
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
+  const prevStateRef = useRef(state)
+
+  useEffect(() => {
+    if (prevStateRef.current === JOURNEY_STATES.THRESHOLD && state === JOURNEY_STATES.WALKING) {
+      storyStartedRef.current = null
+      playedStepRef.current = null
+    }
+    prevStateRef.current = state
+  }, [state])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geo = useJourneyGeo(geoTarget, {

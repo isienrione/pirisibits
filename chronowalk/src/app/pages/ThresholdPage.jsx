@@ -3,6 +3,7 @@ import { useJourneyStep } from '../../hooks/useJourneyStep'
 import { JOURNEY_STATES } from '../../state/journey'
 import { resolveWaypointMedia } from '../../lib/tour'
 import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
+import { track, TRACK_EVENTS } from '../../lib/track'
 import Threshold from '../../components/Threshold'
 
 export function ThresholdDemoPage() {
@@ -19,9 +20,14 @@ export function ThresholdDemoPage() {
 }
 
 export function JourneyThresholdLayer() {
-  const { state, context, transition } = useJourney()
+  const { state, context, completeStoryAfterThreshold } = useJourney()
   const { manifest } = useTourManifest()
-  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
+  const step = useJourneyStep(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
 
   if (state !== JOURNEY_STATES.THRESHOLD || !manifest || step?.type !== 'waypoint') return null
 
@@ -31,7 +37,8 @@ export function JourneyThresholdLayer() {
   const resolved = resolveWaypointMedia(waypoint)
 
   const handleDismiss = () => {
-    transition(JOURNEY_STATES.STORY)
+    completeStoryAfterThreshold(step.id)
+    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, via_threshold: true })
   }
 
   return (
@@ -47,6 +54,7 @@ export function JourneyThresholdLayer() {
         nowAmbienceUrl={THRESHOLD_DEMO_WAYPOINT.nowAmbience}
         thenSoundscapeUrl={THRESHOLD_DEMO_WAYPOINT.thenSoundscape}
         active
+        dismissLabel="Continue walking"
         onDismiss={handleDismiss}
       />
     </div>

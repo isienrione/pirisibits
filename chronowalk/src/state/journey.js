@@ -176,6 +176,11 @@ export function setActiveWaypointIndex(waypointId, manifest) {
   })
 }
 
+export function completeStoryAfterThreshold(waypointId) {
+  markWaypointComplete(waypointId)
+  return advanceSequenceIndex()
+}
+
 export function promoteOptionalWaypoint(waypointId, manifest) {
   const { path, promotedOptionalIds = [], currentSequenceIndex } = snapshot.context
   if (promotedOptionalIds.includes(waypointId)) return snapshot

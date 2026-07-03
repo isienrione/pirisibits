@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
+import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
 import { parseRomeManifest } from '../src/content/manifest.schema.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -47,8 +48,24 @@ async function main() {
   const raw = JSON.parse(readFileSync(manifestPath, 'utf8'))
   const manifest = parseRomeManifest(raw)
   const audioPaths = collectManifestAudioPaths(manifest)
+  const durationEntries = Object.entries(manifest.durations ?? {})
 
   console.log(`✓ Manifest schema valid (${audioPaths.length} audio files referenced)`)
+
+  if (durationEntries.length) {
+    const audioKeys = new Set(audioPaths.map((path) => audioKeyFromManifestPath(path)))
+    const unknownDurationKeys = durationEntries
+      .map(([key]) => key)
+      .filter((key) => !audioKeys.has(key) && !audioPaths.includes(key))
+
+    if (unknownDurationKeys.length) {
+      console.error('✗ durations references unknown audio files:\n')
+      for (const key of unknownDurationKeys) console.error(`  - ${key}`)
+      process.exit(1)
+    }
+
+    console.log(`✓ durations map covers ${durationEntries.length} known audio files`)
+  }
 
   if (skipRemote) {
     console.log('✓ Skipping remote HEAD checks (--skip-remote)')

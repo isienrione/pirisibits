@@ -7,6 +7,7 @@ import {
   transitionJourney,
   setJourneyPath,
   promoteOptionalWaypoint,
+  completeStoryAfterThreshold,
   JOURNEY_STATES,
 } from '../journey'
 import { loadRomeManifest } from '../../content/manifest.js'
@@ -63,5 +64,17 @@ describe('journey state machine', () => {
     expect(snapshot.context.promotedOptionalIds).toEqual(['w04'])
     expect(snapshot.context.currentSequenceIndex).toBe(4)
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
+  })
+
+  it('completes story and advances after threshold dismiss', () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
+
+    completeStoryAfterThreshold('w01')
+
+    const snapshot = getJourneySnapshot()
+    expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snapshot.context.completedWaypointIds).toContain('w01')
+    expect(snapshot.context.currentSequenceIndex).toBe(1)
   })
 })

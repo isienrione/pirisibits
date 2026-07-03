@@ -1,4 +1,5 @@
 import { collectManifestAudioPaths } from '../content/audioPaths.js'
+import { findDurationMismatches } from '../content/durationVerification.js'
 import { mediaUrl } from '../lib/mediaUrl.js'
 import { clearCachedAudio, registerCachedAudio } from './audioUrl.js'
 import {
@@ -106,6 +107,7 @@ export async function verifyRomeAudioPackage(manifest) {
   const paths = listRomeAudioManifestPaths(manifest)
   const cache = await openRomeAudioCache()
   const missing = []
+  const durationChecks = []
 
   for (const manifestPath of paths) {
     const match = await cache.match(mediaUrl(manifestPath))
@@ -115,13 +117,21 @@ export async function verifyRomeAudioPackage(manifest) {
     }
 
     const blob = await match.blob()
-    if (!blob.size) missing.push(manifestPath)
+    if (!blob.size) {
+      missing.push(manifestPath)
+      continue
+    }
+
+    durationChecks.push({ path: manifestPath, blobSize: blob.size })
   }
 
+  const durationMismatches = findDurationMismatches(manifest, durationChecks)
+
   return {
-    valid: missing.length === 0,
+    valid: missing.length === 0 && durationMismatches.length === 0,
     total: paths.length,
     missing,
+    durationMismatches,
   }
 }
 
@@ -194,6 +204,12 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
 
     const audioVerification = await verifyRomeAudioPackage(manifest)
     if (!audioVerification.valid) {
+      const durationIssue = audioVerification.durationMismatches?.[0]
+      if (durationIssue) {
+        throw new Error(
+          `Offline duration check failed for ${durationIssue.path} (${durationIssue.blobSize} bytes, expected ≥${durationIssue.minimumBytes}).`
+        )
+      }
       throw new Error(`Offline verification failed (${audioVerification.missing.length} missing files).`)
     }
 
