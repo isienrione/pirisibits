@@ -1,8 +1,8 @@
-import { useJourney, useTourManifest } from '../hooks/useJourney'
-import { JOURNEY_STATES } from '../state/journey'
-import { resolveWaypointMedia } from '../lib/tour'
-import { THRESHOLD_DEMO_WAYPOINT } from '../data/thresholdDemo'
-import Threshold from '../components/Threshold'
+import { useJourney, useTourManifest } from '../../hooks/useJourney'
+import { JOURNEY_STATES } from '../../state/journey'
+import { resolveWaypointMedia } from '../../lib/tour'
+import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
+import Threshold from '../../components/Threshold'
 
 export function ThresholdDemoPage() {
   const waypoint = THRESHOLD_DEMO_WAYPOINT
