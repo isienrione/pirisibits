@@ -23,14 +23,14 @@ export function Toggle({ checked, onChange, label, disabled = false, className }
       <span
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors duration-200',
-          checked ? 'bg-bronze' : 'bg-limestone/90',
+          checked ? 'bg-accent' : 'bg-track-daylight',
           disabled && 'opacity-80'
         )}
         aria-hidden="true"
       >
         <span
           className={cn(
-            'absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-warm-white shadow-sm transition-transform duration-200',
+            'absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-bone shadow-card transition-transform duration-200',
             checked ? 'translate-x-5' : 'translate-x-0'
           )}
         />

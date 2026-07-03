@@ -17,15 +17,16 @@ import {
 } from '../utils/routeGeometryCache'
 import OfflineRouteMap from './map/OfflineRouteMap'
 import { LoadingPanel } from './ui'
+import { hex } from '../design/tokens.js'
 
 const mapboxToken = env.mapboxToken
 
 const MAP_COLORS = {
-  completed: '#7A8B5A',
-  current: '#D9A441',
-  pending: '#51606F',
-  tourRoute: '#C8643C',
-  activeLeg: '#C8643C',
+  completed: hex.verdigris,
+  current: hex.ember,
+  pending: hex.inkMuted,
+  tourRoute: hex.cityRome,
+  activeLeg: hex.cityRome,
 }
 
 const MAP_STYLE = env.mapboxStyleUrl
@@ -626,7 +627,7 @@ function TourMapboxView({
             label="Preparing your map…"
             hint="Drawing landmarks, routes, and walking paths"
             fullScreen
-            className="bg-warm-white/90 backdrop-blur-sm"
+            className="bg-bone/90"
           />
         </div>
       ) : null}

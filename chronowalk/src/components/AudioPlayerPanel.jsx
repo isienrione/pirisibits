@@ -12,21 +12,16 @@ function AudioPlayerPanel({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-gold/20 bg-gradient-to-b from-obsidian via-[#252525] to-obsidian p-4 text-ivory shadow-plaque-lg',
+        'relative overflow-hidden rounded-[var(--r-card)] border border-border-immersion bg-obsidian p-4 text-warm-white shadow-card',
         className
       )}
     >
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.08),transparent_55%)]"
-        aria-hidden="true"
-      />
-
       <div className="relative flex items-center gap-4">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-gold/45 bg-obsidian shadow-bronze-cta">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-[color-mix(in_srgb,var(--ember)_45%,var(--obsidian))] bg-obsidian">
           {posterUrl ? (
             <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gold/10 text-gold">
+            <div className="flex h-full w-full items-center justify-center bg-[color-mix(in_srgb,var(--ember)_10%,var(--obsidian))] text-ember">
               <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
                   d="M12 3a9 9 0 1 0 9 9"
@@ -39,15 +34,15 @@ function AudioPlayerPanel({
             </div>
           )}
           <span
-            className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-gold/25 ring-offset-2 ring-offset-obsidian"
+            className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-[color-mix(in_srgb,var(--ember)_25%,var(--obsidian))] ring-offset-2 ring-offset-obsidian"
             aria-hidden="true"
           />
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-gold">Audio story</p>
-          <p className="truncate font-display text-lg font-semibold leading-tight text-ivory">{title}</p>
-          {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-parchment/80">{subtitle}</p> : null}
+          <p className="text-eyebrow uppercase text-ember">Audio story</p>
+          <p className="truncate font-display text-lg font-semibold leading-tight text-warm-white">{title}</p>
+          {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-muted-warm">{subtitle}</p> : null}
         </div>
 
         <MediaPlayerControls
@@ -63,8 +58,8 @@ function AudioPlayerPanel({
           <span
             key={index}
             className={cn(
-              'h-full flex-1 rounded-full bg-gold/20',
-              isPlaying && index % 3 === 0 && 'bg-gold/50'
+              'h-full flex-1 rounded-full bg-[color-mix(in_srgb,var(--ember)_20%,var(--obsidian))]',
+              isPlaying && index % 3 === 0 && 'bg-[color-mix(in_srgb,var(--ember)_50%,var(--obsidian))]'
             )}
             style={{ minHeight: `${4 + (index % 5) * 2}px`, alignSelf: 'center' }}
           />

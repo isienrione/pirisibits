@@ -199,8 +199,7 @@ function CitySelectView({ onSelectRome }) {
             padding: '16px 18px',
             borderRadius: 16,
             border: '1px solid color-mix(in srgb, var(--city-rome) 55%, transparent)',
-            background:
-              'linear-gradient(135deg, color-mix(in srgb, var(--city-rome) 28%, var(--ink)) 0%, color-mix(in srgb, var(--city-rome) 12%, var(--obsidian)) 100%)',
+            background: 'color-mix(in srgb, var(--city-rome) 20%, var(--obsidian))',
             color: 'var(--warm-white)',
             textAlign: 'left',
             cursor: 'pointer',
@@ -312,8 +311,7 @@ function EnteringRomeView({ onBegin }) {
           style={{
             position: 'absolute',
             inset: 0,
-            background:
-              'linear-gradient(180deg, color-mix(in srgb, var(--city-rome) 25%, var(--obsidian)) 0%, var(--obsidian) 100%)',
+            background: 'color-mix(in srgb, var(--city-rome) 18%, var(--obsidian))',
           }}
         />
       )}
@@ -323,8 +321,7 @@ function EnteringRomeView({ onBegin }) {
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(180deg, color-mix(in srgb, var(--obsidian) 15%, transparent) 0%, color-mix(in srgb, var(--obsidian) 55%, transparent) 45%, var(--obsidian) 88%)',
+          background: 'color-mix(in srgb, var(--obsidian) 62%, transparent)',
         }}
       />
 
@@ -351,7 +348,7 @@ function EnteringRomeView({ onBegin }) {
             fontWeight: 500,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: '#F7DBB0',
+            color: 'var(--muted-warm)',
           }}
         >
           Your first city

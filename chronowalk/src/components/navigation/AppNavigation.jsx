@@ -52,7 +52,7 @@ export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
         <div className="pointer-events-auto mx-auto flex w-full max-w-md flex-col gap-2">
           {audioSlot}
           <nav
-            className="flex items-stretch rounded-[1.75rem] border border-parchment/80 bg-ivory/96 p-1.5 shadow-plaque-lg backdrop-blur-glass"
+            className="flex items-stretch rounded-[1.75rem] border border-border-daylight bg-bone p-1.5 shadow-card"
             aria-label="Main navigation"
           >
             {NAV_ITEMS.map((item) => (
@@ -69,7 +69,7 @@ export function AppNavigation({ activeTab, onChange, audioSlot = null }) {
       </div>
 
       <nav
-        className="pointer-events-none fixed inset-y-0 left-0 z-[45] hidden w-[5.5rem] border-r border-parchment/70 bg-ivory/95 px-2 py-6 shadow-plaque backdrop-blur-glass lg:flex lg:flex-col lg:items-stretch"
+        className="pointer-events-none fixed inset-y-0 left-0 z-[45] hidden w-[5.5rem] border-r border-border-daylight bg-bone px-2 py-6 shadow-card lg:flex lg:flex-col lg:items-stretch"
         aria-label="Main navigation"
       >
         <div className="pointer-events-auto flex flex-1 flex-col gap-2">

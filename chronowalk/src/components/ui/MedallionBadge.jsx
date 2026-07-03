@@ -7,12 +7,10 @@ const sizeStyles = {
   xl: 'h-28 w-28 text-lg',
 }
 
-/**
- * Engraved bronze medallion — inspired by the ChronoWalk logo mark.
- */
+/** Circular accent badge — flat surface, no medallion gradient. */
 export function MedallionBadge({
   size = 'md',
-  pulse = false,
+  pulse: _pulse = false,
   className,
   children,
   'aria-label': ariaLabel,
@@ -21,19 +19,13 @@ export function MedallionBadge({
     <div
       className={cn(
         'relative flex shrink-0 items-center justify-center rounded-full',
-        'border-2 border-gold/50 bg-gradient-to-br from-ivory via-parchment to-bronze/90',
-        'font-display font-semibold text-bronze shadow-bronze-cta',
-        pulse && 'animate-medallion-breathe',
+        'border-2 border-accent bg-bone font-display font-semibold text-accent shadow-card',
         sizeStyles[size],
         className
       )}
       aria-label={ariaLabel}
       role={ariaLabel ? 'img' : undefined}
     >
-      <div
-        className="pointer-events-none absolute inset-[3px] rounded-full border border-gold/25"
-        aria-hidden="true"
-      />
       {children}
     </div>
   )

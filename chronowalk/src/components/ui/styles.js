@@ -1,11 +1,30 @@
-/** Shared layout and surface tokens for luxury-travel UI cohesion. */
+/** Shared layout and surface tokens — DESIGN LAW compliant. */
 export const pageShell =
-  'h-full overflow-y-auto bg-gradient-to-b from-ivory via-parchment/20 to-limestone/15 pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
+  'h-full overflow-y-auto pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
 
 export const pageContainer = 'mx-auto max-w-2xl px-6 pb-safe pt-safe lg:pt-10'
 
+export const pageShellStyle = {
+  background: 'var(--bone)',
+  color: 'var(--ink)',
+  fontFamily: 'var(--font-ui)',
+}
+
 export const cardSurface =
-  'rounded-3xl border border-parchment/80 bg-ivory shadow-plaque backdrop-blur-glass'
+  'rounded-[var(--r-card)] border border-[color:var(--border-daylight)] bg-[color:var(--bone)]'
+
+export const cardSurfaceStyle = {
+  background: 'var(--bone)',
+  borderColor: 'var(--border-daylight)',
+  borderRadius: 'var(--r-card)',
+  boxShadow: 'var(--shadow-card)',
+}
+
+export const immersionSurfaceStyle = {
+  background: 'var(--obsidian)',
+  color: 'var(--warm-white)',
+  borderColor: 'var(--border-immersion)',
+}
 
 export const ctaPrimary = 'rounded-full'
 
@@ -18,12 +37,14 @@ export const metaLabel =
 export const statusPill =
   'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold'
 
-export const statusWalking = 'bg-gold/15 text-gold'
+export const statusWalking = 'bg-[color-mix(in_srgb,var(--ember)_15%,var(--bone))] text-[color:var(--ember)]'
 
-export const statusArrived = 'bg-olive/15 text-olive'
+export const statusArrived = 'bg-[color-mix(in_srgb,var(--verdigris)_15%,var(--bone))] text-[color:var(--verdigris)]'
 
-export const statusNeutral = 'bg-sand/80 text-soft-slate'
+export const statusNeutral =
+  'bg-[color-mix(in_srgb,var(--ink)_8%,var(--bone))] text-[color:var(--ink-muted)]'
 
-export const statusLocked = 'bg-sand text-soft-slate'
+export const statusLocked = 'bg-[color-mix(in_srgb,var(--ink)_6%,var(--bone))] text-[color:var(--ink-muted)]'
 
-export const statusCurrent = 'bg-gold/15 text-gold'
+export const statusCurrent =
+  'bg-[color-mix(in_srgb,var(--accent)_12%,var(--bone))] text-[color:var(--accent)]'

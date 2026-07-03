@@ -15,20 +15,12 @@ function ArrowRightIcon({ className }) {
   )
 }
 
-/**
- * Primary gold CTA — mockup-style cinematic tour start button.
- */
+/** Primary accent CTA — flat token fill, no gradients. */
 export function GoldButton({ className, showArrow = false, children, ...props }) {
   return (
     <Button
       size="lg"
-      className={cn(
-        'border border-gold/35 bg-gradient-to-b from-gold via-[#d4af37] to-[#b8942f] font-display text-ivory shadow-gold-glow',
-        'hover:from-gold/95 hover:via-[#d4af37]/95 hover:to-[#b8942f]/95',
-        'active:from-[#b8942f] active:to-gold/90',
-        showArrow && 'justify-between px-6',
-        className
-      )}
+      className={cn(showArrow && 'justify-between px-6', className)}
       {...props}
     >
       <span className={cn(showArrow && 'flex-1 text-center')}>{children}</span>

@@ -141,7 +141,7 @@ function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
                   ? '1px solid color-mix(in srgb, var(--city-rome) 65%, transparent)'
                   : '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
                 background: selected
-                  ? 'linear-gradient(135deg, color-mix(in srgb, var(--city-rome) 24%, var(--ink)) 0%, color-mix(in srgb, var(--city-rome) 10%, var(--obsidian)) 100%)'
+                  ? 'color-mix(in srgb, var(--city-rome) 18%, var(--obsidian))'
                   : 'color-mix(in srgb, var(--ink) 55%, transparent)',
                 color: 'var(--warm-white)',
                 textAlign: 'left',

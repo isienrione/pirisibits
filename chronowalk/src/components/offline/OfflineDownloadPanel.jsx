@@ -15,7 +15,7 @@ function DownloadProgressBar({ percent, label }) {
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-sand/80">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-bronze to-gold motion-safe:transition-all motion-safe:duration-300"
+          className="h-full rounded-full bg-accent motion-safe:transition-all motion-safe:duration-300"
           style={{ width: `${safePercent}%` }}
         />
       </div>

@@ -84,11 +84,11 @@ export function BeginJourneyView({ tourId, onStartJourney, onBack }) {
           onError={handleHeroError}
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-obsidian/10 via-obsidian/50 to-obsidian"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_55%,transparent)]"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-transparent"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_72%,transparent)]"
           aria-hidden="true"
         />
       </div>

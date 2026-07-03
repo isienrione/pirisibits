@@ -21,8 +21,8 @@ function StatPill({ label, accent }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-parchment/80 bg-ivory/80 px-3 py-1.5',
-        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate shadow-sm backdrop-blur-sm'
+        'inline-flex items-center rounded-full border border-border-daylight bg-bone px-3 py-1.5',
+        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-ink shadow-card'
       )}
     >
       <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full bg-current', accent)} aria-hidden="true" />
@@ -73,7 +73,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     const title = getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId
 
     return (
-      <div className="relative min-h-screen bg-gradient-to-b from-ivory via-parchment/50 to-limestone/30">
+      <div className="relative min-h-screen bg-bone">
         <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-end px-4 pb-safe pt-safe sm:px-6">
           <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8">
             <p className="text-eyebrow uppercase text-bronze">{APP_NAME}</p>
@@ -95,7 +95,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-ivory paper-texture">
+    <div className="relative min-h-screen overflow-x-hidden bg-bone">
       <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
         <img
           src={heroSrc}
@@ -105,11 +105,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           onError={handleHeroError}
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/35 to-warm-white"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--bone)_72%,transparent)]"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-deep-slate/50 via-deep-slate/5 to-transparent"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--ink)_45%,transparent)]"
           aria-hidden="true"
         />
       </div>

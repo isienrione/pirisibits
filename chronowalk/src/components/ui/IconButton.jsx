@@ -3,9 +3,9 @@ import { focusRing, tapAction, touchTarget } from './focusRing'
 
 const variantStyles = {
   default:
-    'border-parchment/70 bg-ivory/90 text-deep-slate hover:border-bronze/40 hover:bg-parchment/70',
-  ghost: 'border-transparent bg-warm-white/60 text-soft-slate hover:bg-warm-white/90 hover:text-deep-slate',
-  solid: 'border-limestone bg-sand/80 text-deep-slate hover:bg-sand',
+    'border-border-daylight bg-bone text-ink hover:border-[color-mix(in_srgb,var(--accent)_40%,var(--bone))] hover:bg-[color-mix(in_srgb,var(--accent)_6%,var(--bone))]',
+  ghost: 'border-transparent bg-[color-mix(in_srgb,var(--bone)_60%,transparent)] text-ink-muted hover:bg-bone hover:text-ink',
+  solid: 'border-border-daylight bg-track-daylight text-ink hover:bg-border-daylight',
 }
 
 const sizeStyles = {
@@ -28,7 +28,7 @@ export function IconButton({
       type={type}
       aria-label={label}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-sm transition-colors duration-200',
+        'inline-flex shrink-0 items-center justify-center rounded-full border shadow-card transition-colors duration-200',
         focusRing,
         touchTarget,
         tapAction,

@@ -1,13 +1,12 @@
 import { cn } from './cn'
+import { cardSurface, cardSurfaceStyle } from './styles'
 
-export function GlassPanel({ as: Component = 'div', className, grain = false, children, ...props }) {
+/** Daylight surface card — flat bone, token borders only. */
+export function GlassPanel({ as: Component = 'div', className, grain: _grain = false, children, style, ...props }) {
   return (
     <Component
-      className={cn(
-        'rounded-3xl border border-parchment/80 bg-ivory/95 shadow-plaque',
-        grain && 'paper-texture relative overflow-hidden',
-        className
-      )}
+      className={cn(cardSurface, className)}
+      style={{ ...cardSurfaceStyle, ...style }}
       {...props}
     >
       {children}

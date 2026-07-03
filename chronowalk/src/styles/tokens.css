@@ -13,21 +13,48 @@
   --muted-warm: #b9af9c;
   --ink-900: #2a1206;
   --text-dark: #16130f;
+  --ink-muted: color-mix(in srgb, var(--ink) 55%, var(--bone));
+  --ink-subtle: color-mix(in srgb, var(--ink) 45%, var(--bone));
+  --ink-faint: color-mix(in srgb, var(--ink) 68%, var(--bone));
+
+  /* borders & tracks */
+  --border-daylight: color-mix(in srgb, var(--ink) 14%, var(--bone));
+  --border-immersion: color-mix(in srgb, var(--warm-white) 12%, var(--obsidian));
+  --track-daylight: color-mix(in srgb, var(--ink) 10%, var(--bone));
 
   /* the glow */
   --ember: #e8a13c;
   --ember-glow: rgba(232, 161, 60, 0.55);
 
-  /* city accents */
+  /* city accents / act family */
   --city-rome: #e4552e;
   --city-kyoto: #6e8b3d;
   --city-paris: #8a2e44;
   --city-london: #3f6e86;
   --city-cusco: #b77a2a;
   --accent: var(--city-rome);
+  --coral: var(--city-rome);
+  --laurel: var(--city-kyoto);
+  --rose: var(--city-paris);
+  --tiber: var(--city-london);
+  --violet: #6b4f8a;
 
   /* confidence */
   --verdigris: #4f7a6a;
+
+  /* prism spectrum — threshold bloom, splash, act completion, letter route only */
+  --spectrum: linear-gradient(
+    135deg,
+    var(--city-rome) 0%,
+    var(--ember) 25%,
+    var(--city-kyoto) 50%,
+    var(--city-london) 75%,
+    var(--city-paris) 100%
+  );
+
+  /* elevation */
+  --shadow-card: 0 2px 8px color-mix(in srgb, var(--ink) 8%, transparent);
+  --shadow-sheet: 0 -8px 24px color-mix(in srgb, var(--ink) 10%, transparent);
 
   /* type */
   --font-display: 'Fraunces', Georgia, serif;

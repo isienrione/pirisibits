@@ -5,7 +5,7 @@ import { BronzeButton } from './ui'
 export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
   return (
     <section
-      className={`overflow-hidden rounded-3xl border border-gold/35 bg-gradient-to-br from-gold/[0.08] to-bronze/[0.06] ${className}`}
+      className={`overflow-hidden rounded-3xl border border-[color-mix(in_srgb,var(--ember)_35%,var(--bone))] bg-[color-mix(in_srgb,var(--accent)_6%,var(--bone))] ${className}`}
       aria-label="Free preview"
     >
       <div className="grid gap-0 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
@@ -16,7 +16,7 @@ export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
             className="h-full w-full object-cover object-center"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-obsidian/40 to-transparent sm:bg-gradient-to-r sm:from-transparent sm:to-obsidian/10"
+            className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_40%,transparent)]"
             aria-hidden="true"
           />
         </div>

@@ -20,7 +20,7 @@ const ArrivalMoment = ({ waypoint, visible }) => {
       />
       <div
         className={cn(
-          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(212,175,55,0.24),transparent_58%)]',
+          'absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,var(--ember-glow),transparent_58%)]',
           !reducedMotion && 'animate-arrival-vignette'
         )}
         aria-hidden="true"
@@ -29,11 +29,11 @@ const ArrivalMoment = ({ waypoint, visible }) => {
       <div className="flex h-full items-end justify-center px-6 pb-[min(30vh,13rem)]">
         <ParchmentCard
           className={cn(
-            'max-w-sm border-gold/35 px-6 py-6 text-center shadow-plaque-lg',
+            'max-w-sm border-[color-mix(in_srgb,var(--ember)_35%,var(--bone))] px-6 py-6 text-center',
             !reducedMotion && 'animate-arrival-discover'
           )}
         >
-          <MedallionBadge size="md" pulse className="mx-auto">
+          <MedallionBadge size="md" className="mx-auto">
             <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"
@@ -43,11 +43,11 @@ const ArrivalMoment = ({ waypoint, visible }) => {
               />
             </svg>
           </MedallionBadge>
-          <p className="mt-4 text-eyebrow uppercase text-bronze">Waypoint discovered</p>
-          <p className="mt-2 font-display text-2xl font-semibold leading-tight text-deep-slate">
+          <p className="mt-4 text-eyebrow uppercase text-accent">Waypoint discovered</p>
+          <p className="mt-2 font-display text-2xl font-semibold leading-tight text-ink">
             {waypoint.title}
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+          <p className="mt-2 text-sm leading-relaxed text-ink-muted">
             Your story is ready below
           </p>
         </ParchmentCard>

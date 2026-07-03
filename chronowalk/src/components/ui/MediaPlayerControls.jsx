@@ -34,12 +34,13 @@ const controlBase =
 
 const themes = {
   dark: {
-    primary: 'bg-bronze text-ivory shadow-bronze-cta hover:bg-bronze/90',
-    secondary: 'bg-ivory/10 text-ivory hover:bg-ivory/15 border border-gold/20',
+    primary: 'bg-accent text-bone shadow-card hover:opacity-90',
+    secondary:
+      'bg-[color-mix(in_srgb,var(--warm-white)_10%,var(--obsidian))] text-warm-white hover:bg-[color-mix(in_srgb,var(--warm-white)_15%,var(--obsidian))] border border-border-immersion',
   },
   light: {
-    primary: 'bg-bronze text-ivory shadow-bronze-cta hover:bg-bronze/90',
-    secondary: 'border border-bronze/35 bg-ivory text-deep-slate hover:bg-parchment/50',
+    primary: 'bg-accent text-bone shadow-card hover:opacity-90',
+    secondary: 'border border-border-daylight bg-bone text-ink hover:bg-track-daylight',
   },
 }
 

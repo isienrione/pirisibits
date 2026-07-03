@@ -102,7 +102,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-warm-white via-sand/20 to-limestone/20 text-deep-slate">
+    <div className="min-h-screen bg-bone text-ink">
       <div className="mx-auto max-w-3xl px-4 py-8 pb-safe pt-safe">
         <header className="mb-8">
           <SectionHeader

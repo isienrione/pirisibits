@@ -13,17 +13,18 @@ import {
 } from '../../utils/routeGeometryCache'
 import { estimateWalkMinutes } from '../../utils/tourStats'
 import { GlassPanel, StatusBadge, cn } from '../ui'
+import { hex } from '../../design/tokens.js'
 
 const STOP_COLORS = {
-  completed: '#7A8B5A',
-  current: '#D9A441',
-  upcoming: '#51606F',
+  completed: hex.verdigris,
+  current: hex.ember,
+  upcoming: hex.inkMuted,
 }
 
 function RouteOverviewSvg({ model }) {
   if (!model.fullRoutePath && !model.stops.length) {
     return (
-      <div className="flex h-[220px] items-center justify-center rounded-3xl border border-dashed border-limestone/70 bg-warm-white/60 text-sm text-soft-slate">
+      <div className="flex h-[220px] items-center justify-center rounded-3xl border border-dashed border-border-daylight bg-bone text-sm text-ink-muted">
         Route overview will appear once stops are loaded.
       </div>
     )
@@ -32,7 +33,7 @@ function RouteOverviewSvg({ model }) {
   return (
     <svg
       viewBox={`0 0 ${model.width} ${model.height}`}
-      className="h-[220px] w-full rounded-3xl border border-limestone/60 bg-gradient-to-b from-sand/35 to-warm-white/90"
+      className="h-[220px] w-full rounded-3xl border border-border-daylight bg-bone"
       role="img"
       aria-label="Simplified tour route overview"
     >
@@ -40,7 +41,7 @@ function RouteOverviewSvg({ model }) {
         <path
           d={model.fullRoutePath}
           fill="none"
-          stroke="#C8643C"
+          stroke={hex.cityRome}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -52,7 +53,7 @@ function RouteOverviewSvg({ model }) {
         <path
           d={model.activeRoutePath}
           fill="none"
-          stroke="#C8643C"
+          stroke={hex.cityRome}
           strokeWidth="4.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -65,7 +66,7 @@ function RouteOverviewSvg({ model }) {
             cy={stop.y}
             r={stop.status === 'current' ? 8 : 6}
             fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
-            stroke="#FFFCF7"
+            stroke={hex.warmWhite}
             strokeWidth="2"
           />
           <text
@@ -84,8 +85,8 @@ function RouteOverviewSvg({ model }) {
             cx={model.userPoint.x}
             cy={model.userPoint.y}
             r="9"
-            fill="#5BA4D9"
-            stroke="#FFFCF7"
+            fill={hex.cityLondon}
+            stroke={hex.warmWhite}
             strokeWidth="3"
           />
           <text
@@ -189,7 +190,7 @@ export function OfflineRouteMap({
   return (
     <div
       className={cn(
-        'flex h-screen w-full flex-col bg-gradient-to-b from-warm-white via-sand/20 to-warm-white px-4 pb-safe pt-safe',
+        'flex h-screen w-full flex-col bg-bone px-4 pb-safe pt-safe text-ink',
         className
       )}
     >

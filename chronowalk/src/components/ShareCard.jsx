@@ -143,7 +143,7 @@ export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Anc
         </p>
         <p className="font-display text-xl italic text-gold drop-shadow-md">{eraLabel}</p>
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-slate/95 via-deep-slate/70 to-transparent px-5 pb-5 pt-16">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-[color-mix(in_srgb,var(--ink)_88%,transparent)] px-5 pb-5 pt-16">
         <p className="font-display text-2xl font-semibold text-ivory">{title}</p>
         <p className="mt-2 flex items-center gap-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/90">
           <span className="inline-block h-2 w-2 rounded-full bg-gold" aria-hidden="true" />

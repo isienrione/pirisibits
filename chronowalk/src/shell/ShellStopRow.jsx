@@ -9,7 +9,7 @@ const STATUS_COPY = {
 
 function CheckIcon() {
   return (
-    <svg className="h-5 w-5 text-olive" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="h-5 w-5 text-verdigris" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
       <path d="m8 12.5 2.5 2.5L16 9.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
     </svg>
@@ -18,7 +18,7 @@ function CheckIcon() {
 
 function LockIcon() {
   return (
-    <svg className="h-5 w-5 text-soft-slate" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="h-5 w-5 text-ink-muted" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.75" />
       <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
     </svg>
@@ -27,7 +27,7 @@ function LockIcon() {
 
 function TargetIcon() {
   return (
-    <svg className="h-5 w-5 text-bronze" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="h-5 w-5 text-accent" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.75" />
       <circle cx="12" cy="12" r="2.5" fill="currentColor" />
     </svg>
@@ -59,27 +59,27 @@ export default function ShellStopRow({
       <ParchmentCard
         className={cn(
           'overflow-hidden transition',
-          isCurrent && 'border-bronze/35 bg-bronze/[0.04] shadow-plaque-lg',
-          onPress && !disabled && 'hover:border-bronze/35 hover:shadow-plaque-lg'
+          isCurrent && 'border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))] bg-[color-mix(in_srgb,var(--accent)_4%,var(--bone))]',
+          onPress && !disabled && 'hover:border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))]'
         )}
       >
         <div className="flex items-center gap-3 p-3">
-          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-gradient-to-br from-parchment to-limestone/50">
+          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-track-daylight">
             {imageUrl ? (
               <img src={imageUrl} alt="" className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-[10px] font-semibold uppercase tracking-wide text-soft-slate">
+              <div className="flex h-full items-center justify-center text-[10px] font-semibold uppercase tracking-wide text-ink-muted">
                 Stop
               </div>
             )}
-            <span className="absolute left-1.5 top-1.5 rounded-full bg-ivory/95 px-1.5 py-0.5 text-[11px] font-bold text-deep-slate shadow-sm">
+            <span className="absolute left-1.5 top-1.5 rounded-full bg-bone px-1.5 py-0.5 text-[11px] font-bold text-ink shadow-card">
               {index + 1}
             </span>
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="font-display text-lg font-medium text-deep-slate">{title}</p>
-            <p className="mt-0.5 text-sm text-soft-slate">{subtitle ?? meta.label}</p>
+            <p className="font-display text-lg font-medium text-ink">{title}</p>
+            <p className="mt-0.5 text-sm text-ink-muted">{subtitle ?? meta.label}</p>
           </div>
 
           <div className="shrink-0">

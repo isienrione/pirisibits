@@ -1,19 +1,19 @@
 import { cn } from './cn'
 import { tapAction } from './focusRing'
 import { usePressHandlers } from './usePressHandlers'
+import { cardSurface, cardSurfaceStyle } from './styles'
 
-/**
- * Museum-plaque card surface — warm paper, soft depth, optional fiber texture.
- */
+/** Daylight card surface — flat bone, no texture. */
 export function ParchmentCard({
   as: Component = 'div',
   className,
-  texture = true,
+  texture: _texture = true,
   children,
   onClick,
   onPointerUp,
   onPointerDown,
   onPointerCancel,
+  style,
   ...props
 }) {
   const isInteractive =
@@ -30,12 +30,8 @@ export function ParchmentCard({
 
   return (
     <Component
-      className={cn(
-        'rounded-3xl border border-parchment/80 bg-ivory shadow-plaque',
-        texture && 'paper-texture relative overflow-hidden',
-        isInteractive && tapAction,
-        className
-      )}
+      className={cn(cardSurface, isInteractive && tapAction, className)}
+      style={{ ...cardSurfaceStyle, ...style }}
       {...props}
       {...(isInteractive ? pressHandlers : onClick ? { onClick } : {})}
     >

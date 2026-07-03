@@ -1,5 +1,6 @@
 import { cn } from './cn'
 import { LoadingSpinner } from './LoadingSpinner'
+import { pageShellStyle } from './styles'
 
 export function LoadingPanel({
   label = 'Loading…',
@@ -10,17 +11,18 @@ export function LoadingPanel({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center bg-gradient-to-b from-ivory via-parchment/20 to-limestone/10 text-deep-slate',
-        fullScreen ? 'h-screen w-full' : 'min-h-[12rem] w-full rounded-3xl',
+        'flex flex-col items-center justify-center text-ink',
+        fullScreen ? 'h-screen w-full' : 'min-h-[12rem] w-full rounded-[var(--r-card)]',
         className
       )}
+      style={pageShellStyle}
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
       <LoadingSpinner />
       <p className="mt-4 text-sm font-semibold">{label}</p>
-      {hint ? <p className="mt-1 max-w-xs text-center text-xs text-soft-slate">{hint}</p> : null}
+      {hint ? <p className="mt-1 max-w-xs text-center text-xs text-ink-muted">{hint}</p> : null}
     </div>
   )
 }

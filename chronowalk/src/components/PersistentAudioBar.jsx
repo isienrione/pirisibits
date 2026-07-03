@@ -24,18 +24,18 @@ function PersistentAudioBar({
 
   return (
     <div className="pointer-events-auto w-full">
-      <div className="overflow-hidden rounded-2xl border border-gold/20 bg-obsidian/96 text-ivory shadow-plaque-lg backdrop-blur-glass">
+      <div className="overflow-hidden rounded-2xl border border-border-immersion bg-obsidian text-warm-white shadow-card">
         <div className="flex items-center gap-3 px-3 py-2.5">
-          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-gold/35 bg-obsidian">
+          <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[color-mix(in_srgb,var(--ember)_35%,var(--obsidian))] bg-obsidian">
             {posterUrl ? (
               <img src={posterUrl} alt="" className="h-full w-full object-cover" referrerPolicy="no-referrer" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-sm text-gold">♪</div>
+              <div className="flex h-full w-full items-center justify-center text-sm text-ember">♪</div>
             )}
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-gold">
+            <p className="text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ember">
               {modeLabel}
             </p>
             <p className="truncate text-sm font-semibold leading-tight">{title ?? 'Landmark story'}</p>
@@ -52,7 +52,7 @@ function PersistentAudioBar({
               <Button
                 variant="secondary"
                 size="sm"
-                className="border-ivory/20 bg-ivory/10 px-3 text-ivory hover:bg-ivory/15"
+                className="border-border-immersion bg-[color-mix(in_srgb,var(--warm-white)_10%,var(--obsidian))] px-3 text-warm-white hover:bg-[color-mix(in_srgb,var(--warm-white)_15%,var(--obsidian))]"
                 onClick={onReopenCard}
               >
                 Open

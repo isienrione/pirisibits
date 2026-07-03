@@ -127,7 +127,7 @@ const SliderItemShell = ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#17212B',
+        backgroundColor: 'var(--obsidian)',
       }}
     >
       <div
@@ -151,7 +151,7 @@ const SliderItemShell = ({
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
 const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
-  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-deep-slate to-deep-slate/90 p-6 text-center">
+  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-obsidian p-6 text-center text-warm-white">
     <p className="font-display text-base font-semibold text-gold">{message}</p>
     <p className="mt-3 max-w-xs text-sm text-sand/80">
       The portal will open once the matched ancient view is available.
@@ -207,10 +207,10 @@ function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
 
 function SliderLoadingSkeleton({ reducedMotion = false }) {
   return (
-    <div className="absolute inset-0 z-20 overflow-hidden bg-gradient-to-br from-sand via-limestone/50 to-warm-white">
+    <div className="absolute inset-0 z-20 overflow-hidden bg-bone">
       <div
         className={cn(
-          'absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]',
+          'absolute inset-0 bg-[color-mix(in_srgb,var(--bone)_55%,transparent)]',
           !reducedMotion && 'animate-pulse'
         )}
       />
@@ -224,7 +224,7 @@ function SliderLoadingSkeleton({ reducedMotion = false }) {
 
 function MediaFailFallback({ title = 'Media unavailable' }) {
   return (
-    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6 text-center">
+    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-bone px-6 text-center text-ink">
       <p className="font-display text-lg font-semibold text-deep-slate">{title}</p>
       <p className="mt-2 max-w-xs text-sm text-soft-slate">
         Check your connection and try again, or continue with the audio story.
@@ -782,7 +782,7 @@ const BeforeAfterSlider = ({
           </>
         )
       ) : (
-        <div className="aspect-video w-full bg-gradient-to-br from-sand to-limestone/50">
+        <div className="aspect-video w-full bg-track-daylight">
           <SliderLoadingSkeleton reducedMotion={reducedMotion} />
         </div>
       )}
@@ -860,7 +860,7 @@ const BeforeAfterSlider = ({
           ? 'flex h-full min-h-0 flex-1 flex-col'
           : embedded
             ? 'w-full overflow-hidden'
-            : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
+            : 'w-full overflow-hidden rounded-3xl border border-border-daylight shadow-card'
       }
     >
       {immersive ? (
@@ -929,7 +929,7 @@ const BeforeAfterSlider = ({
 
       <div className={immersive ? 'flex min-h-0 flex-1 flex-col' : ''}>{renderSliderFrame()}</div>
 
-      <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
+      <p className="border-t border-border-daylight bg-bone px-4 py-3 text-center text-sm leading-relaxed text-ink-muted">
         {renderCaption()}
       </p>
     </div>

@@ -62,7 +62,7 @@ const useMediaHeroState = (url) => {
 
 function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-track-daylight sm:aspect-[16/10]">
       {status === 'ready' && previewUrl ? (
         <>
           <img
@@ -72,7 +72,7 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
             referrerPolicy="no-referrer"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
+            className="absolute inset-0 bg-[color-mix(in_srgb,var(--ink)_55%,transparent)]"
             aria-hidden="true"
           />
         </>
@@ -131,7 +131,7 @@ function AudioTranscriptSection({ waypoint }) {
 
 function ModernImmersiveVideo({ videoUrl, posterUrl, landmarkTitle, onRequestExit }) {
   return (
-    <div className="relative mb-5 overflow-hidden rounded-b-3xl bg-black shadow-glass-lg">
+    <div className="relative mb-5 overflow-hidden rounded-b-3xl bg-black shadow-card">
       <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
         <video
           key={videoUrl}
@@ -521,7 +521,7 @@ const WaypointCard = ({
     >
       {showImmersiveView && usesComparisonSlider ? (
         <div ref={sliderRef} className="mb-5 touch-none" onTouchMove={(event) => event.stopPropagation()}>
-          <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
+          <div className="overflow-hidden rounded-b-3xl shadow-card">
             <ErrorBoundary
               title="Comparison view unavailable"
               message="The then-and-now slider could not load. You can still listen to the audio story below."

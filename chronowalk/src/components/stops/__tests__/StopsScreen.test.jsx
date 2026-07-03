@@ -10,7 +10,7 @@ describe('StopsScreen', () => {
     resetJourney()
   })
 
-  it('renders manifest stops in the ivory shell', async () => {
+  it('renders manifest stops in the daylight shell', async () => {
     beginJourney({ pace: 'classic' })
 
     render(
@@ -20,7 +20,7 @@ describe('StopsScreen', () => {
     )
 
     expect(await screen.findByRole('heading', { name: /all stops/i })).toBeInTheDocument()
-    expect(screen.getAllByText(/colosseum/i).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(/current stop/i).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(/colosseum/i)).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(/current stop/i)).length).toBeGreaterThan(0)
   })
 })

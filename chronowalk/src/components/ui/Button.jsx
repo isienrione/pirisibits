@@ -4,14 +4,14 @@ import { usePressHandlers } from './usePressHandlers'
 
 const variantStyles = {
   primary:
-    'border border-bronze/25 bg-gradient-to-b from-bronze via-bronze to-[#8f6324] text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-[#8f6324]/95 active:from-[#8f6324] active:to-bronze/90',
+    'border border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))] bg-accent text-bone hover:opacity-95 active:opacity-90',
   secondary:
-    'border border-bronze/40 bg-ivory text-deep-slate hover:border-bronze/60 hover:bg-parchment/50',
+    'border border-border-daylight bg-bone text-ink hover:border-[color-mix(in_srgb,var(--accent)_25%,var(--bone))]',
   ghost:
-    'border border-bronze/30 bg-bronze/8 text-bronze hover:bg-bronze/12',
+    'border border-border-daylight bg-transparent text-accent hover:bg-[color-mix(in_srgb,var(--accent)_8%,var(--bone))]',
   'outline-dark':
-    'border border-ivory/30 bg-transparent font-display text-ivory hover:border-ivory/45 hover:bg-ivory/8',
-  text: 'bg-transparent text-bronze hover:text-bronze/80 underline-offset-2 hover:underline',
+    'border border-border-immersion bg-transparent font-display text-warm-white hover:bg-[color-mix(in_srgb,var(--warm-white)_8%,var(--obsidian))]',
+  text: 'bg-transparent text-accent hover:opacity-80 underline-offset-2 hover:underline',
 }
 
 const sizeStyles = {
@@ -44,7 +44,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 transition-[color,background-color,border-color,box-shadow,opacity] duration-200',
+        'inline-flex items-center justify-center gap-2 font-[family-name:var(--font-ui)] transition-[color,background-color,border-color,opacity] duration-200',
         tapAction,
         focusRing,
         'disabled:pointer-events-none disabled:opacity-50',

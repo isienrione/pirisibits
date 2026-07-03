@@ -14,7 +14,7 @@ export function ProgressPill({
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between gap-3">
-        <span className={cn(metaLabel, 'text-soft-slate')}>
+        <span className={cn(metaLabel, 'text-ink-muted')}>
           {label ?? `Stop ${safeCurrent} of ${total}`}
         </span>
         {status ? (
@@ -24,7 +24,7 @@ export function ProgressPill({
         ) : null}
       </div>
       <div
-        className="h-1.5 overflow-hidden rounded-full bg-limestone/60"
+        className="h-1.5 overflow-hidden rounded-full bg-track-daylight"
         role="progressbar"
         aria-valuenow={safeCurrent}
         aria-valuemin={1}
@@ -32,7 +32,7 @@ export function ProgressPill({
         aria-label={label ?? `Tour progress: stop ${safeCurrent} of ${total}`}
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-gold to-bronze motion-reduce:transition-none transition-all duration-500 ease-out"
+          className="h-full rounded-full bg-accent motion-reduce:transition-none transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>

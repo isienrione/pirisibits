@@ -12,7 +12,7 @@ export function FreePreviewView({ onStartPreview, onBrowseTours }) {
           className="h-full w-full object-cover object-center"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-obsidian/70 via-obsidian/20 to-transparent"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_62%,transparent)]"
           aria-hidden="true"
         />
       </div>

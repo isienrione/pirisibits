@@ -187,7 +187,7 @@ function DirectionsNavHud({
                     aria-label="Walking route progress"
                   >
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-gold to-bronze motion-reduce:transition-none transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-accent motion-reduce:transition-none transition-all duration-500 ease-out"
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>

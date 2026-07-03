@@ -62,7 +62,7 @@ export function TourStopCard({
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden bg-gradient-to-br from-parchment to-limestone/50',
+            'relative shrink-0 overflow-hidden bg-track-daylight',
             compact ? 'h-36 w-full' : 'w-28 sm:w-32',
             !compact && 'min-h-[7rem]'
           )}
