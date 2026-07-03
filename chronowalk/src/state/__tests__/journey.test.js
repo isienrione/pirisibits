@@ -5,6 +5,7 @@ import {
   resetJourney,
   subscribeJourney,
   transitionJourney,
+  setJourneyPath,
   JOURNEY_STATES,
 } from '../journey'
 
@@ -21,14 +22,20 @@ describe('journey state machine', () => {
 
   it('persists and rehydrates from localStorage', () => {
     beginJourney({ pace: 'classic', waypointIndex: 2 })
-    transitionJourney(JOURNEY_STATES.APPROACHING)
+    transitionJourney(JOURNEY_STATES.APPROACHING, { currentSequenceIndex: 4 })
 
     const raw = localStorage.getItem('cw_journey_v1')
     expect(raw).toBeTruthy()
 
     const parsed = JSON.parse(raw)
     expect(parsed.state).toBe(JOURNEY_STATES.APPROACHING)
-    expect(parsed.context.currentWaypointIndex).toBe(2)
+    expect(parsed.context.currentSequenceIndex).toBe(4)
+  })
+
+  it('locks path at the act II fork', () => {
+    setJourneyPath('b')
+    expect(getJourneySnapshot().context.path).toBe('b')
+    expect(getJourneySnapshot().context.pathLocked).toBe(true)
   })
 
   it('notifies subscribers on transition', () => {

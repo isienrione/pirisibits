@@ -1,5 +1,6 @@
 import { grantAccess, revokeAccess } from '../../lib/config'
 import { useJourney, useTourManifest } from '../../hooks/useJourney'
+import { useJourneyStep } from '../../hooks/useJourneyStep'
 import { JOURNEY_STATES } from '../../state/journey'
 
 const STATE_BUTTONS = Object.values(JOURNEY_STATES)
@@ -7,11 +8,16 @@ const STATE_BUTTONS = Object.values(JOURNEY_STATES)
 export default function JourneyDevPanel() {
   const { state, context, transition, reset, begin, states } = useJourney()
   const { manifest } = useTourManifest()
+  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
 
   if (!import.meta.env.DEV) return null
 
-  const currentWaypoint =
-    manifest?.waypoints?.[context.currentWaypointIndex]?.name ?? '—'
+  const currentLabel =
+    step?.type === 'waypoint'
+      ? step.record?.title ?? step.id
+      : step?.type === 'transit'
+        ? `Transit ${step.id}`
+        : '—'
 
   return (
     <div
@@ -35,7 +41,7 @@ export default function JourneyDevPanel() {
         State: <strong>{state}</strong>
       </p>
       <p style={{ margin: '4px 0 0', opacity: 0.8 }}>
-        Stop: <strong>{currentWaypoint}</strong> (index {context.currentWaypointIndex})
+        Step: <strong>{currentLabel}</strong> (seq {context.currentSequenceIndex}, path {context.path})
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
         {STATE_BUTTONS.map((nextState) => (

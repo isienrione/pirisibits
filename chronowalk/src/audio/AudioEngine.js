@@ -88,6 +88,10 @@ export class AudioEngine {
     this.completedWaypointIds = new Set(ids)
   }
 
+  setCompletedTransitIds(ids = []) {
+    this.completedTransitIds = new Set(ids)
+  }
+
   markWaypointComplete(waypointId) {
     this.completedWaypointIds.add(waypointId)
   }

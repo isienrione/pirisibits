@@ -1,3 +1,5 @@
+import JourneyShell from '../../components/journey/JourneyShell.jsx'
+
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (
     <main
@@ -45,15 +47,7 @@ function ShellPage({ eyebrow, title, subtitle, children }) {
 }
 
 export function JourneyPage() {
-  return (
-    <>
-      <ShellPage
-        eyebrow="Journey shell"
-        title="Walking · Approaching · Arrival · Story · Threshold"
-        subtitle="Set state to threshold in the dev panel, or open /threshold-demo."
-      />
-    </>
-  )
+  return <JourneyShell />
 }
 
 export function MapPage() {

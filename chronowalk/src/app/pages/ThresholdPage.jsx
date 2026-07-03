@@ -1,4 +1,5 @@
 import { useJourney, useTourManifest } from '../../hooks/useJourney'
+import { useJourneyStep } from '../../hooks/useJourneyStep'
 import { JOURNEY_STATES } from '../../state/journey'
 import { resolveWaypointMedia } from '../../lib/tour'
 import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
@@ -20,10 +21,11 @@ export function ThresholdDemoPage() {
 export function JourneyThresholdLayer() {
   const { state, context } = useJourney()
   const { manifest } = useTourManifest()
+  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
 
-  if (state !== JOURNEY_STATES.THRESHOLD || !manifest) return null
+  if (state !== JOURNEY_STATES.THRESHOLD || !manifest || step?.type !== 'waypoint') return null
 
-  const waypoint = manifest.waypoints[context.currentWaypointIndex]
+  const waypoint = step.record
   if (!waypoint?.reconstruction) return null
 
   const resolved = resolveWaypointMedia(waypoint)

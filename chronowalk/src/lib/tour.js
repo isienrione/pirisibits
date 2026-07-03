@@ -18,6 +18,10 @@ export {
   getTraversalSequence,
   getAct,
   getWaypointIndex,
+  isTransitId,
+  isWaypointId,
+  getStepIdAtIndex,
+  resolveJourneyStep,
   collectManifestAudioPaths,
 } from '../content/manifest.js'
 

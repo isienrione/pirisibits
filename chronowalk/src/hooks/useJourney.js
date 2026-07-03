@@ -7,6 +7,10 @@ import {
   beginJourney,
   markWaypointComplete,
   advanceWaypointIndex,
+  advanceSequenceIndex,
+  setJourneyPath,
+  markTransitComplete,
+  setActiveWaypointIndex,
   JOURNEY_STATES,
 } from '../state/journey'
 
@@ -21,6 +25,10 @@ export function useJourney() {
     begin: beginJourney,
     completeWaypoint: markWaypointComplete,
     setWaypointIndex: advanceWaypointIndex,
+    advanceSequence: advanceSequenceIndex,
+    setPath: setJourneyPath,
+    completeTransit: markTransitComplete,
+    setActiveWaypoint: setActiveWaypointIndex,
   }
 }
 

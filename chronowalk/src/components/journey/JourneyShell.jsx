@@ -1,0 +1,269 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { useAudioEngine } from '../../hooks/useAudioEngine.js'
+import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
+import { useJourneyStep } from '../../hooks/useJourneyStep.js'
+import { track, TRACK_EVENTS } from '../../lib/track.js'
+import { JOURNEY_STATES } from '../../state/journey.js'
+import ApproachingScreen from './ApproachingScreen.jsx'
+import ArrivalScreen from './ArrivalScreen.jsx'
+import PathChoiceScreen from './PathChoiceScreen.jsx'
+import StoryScreen from './StoryScreen.jsx'
+import WalkingScreen from './WalkingScreen.jsx'
+import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
+
+export default function JourneyShell() {
+  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, states } =
+    useJourney()
+  const { manifest, loading, error } = useTourManifest()
+  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
+  const audio = useAudioEngine(manifest)
+  const [busy, setBusy] = useState(false)
+  const [audioUnlocked, setAudioUnlocked] = useState(false)
+  const playedStepRef = useRef(null)
+  const storyStartedRef = useRef(null)
+
+  const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
+  const geo = useJourneyGeo(geoTarget, {
+    debugMode: import.meta.env.DEV,
+  })
+
+  const needsPathChoice =
+    step?.type === 'transit' && step?.needsPathChoice && !context.pathLocked && step.id === 't01'
+
+  useEffect(() => {
+    if (audio.ready) setAudioUnlocked(true)
+  }, [audio.ready])
+
+  useEffect(() => {
+    if (!geoTarget || step?.type !== 'waypoint') return
+    if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+
+    if (geo.insideGeofence) {
+      if (state !== JOURNEY_STATES.ARRIVED) {
+        transition(JOURNEY_STATES.ARRIVED)
+        track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id })
+      }
+      return
+    }
+
+    if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
+      transition(JOURNEY_STATES.APPROACHING)
+    }
+  }, [geo.insideGeofence, geo.approachingGeofence, geoTarget, state, step?.id, step?.type, transition])
+
+  useEffect(() => {
+    if (!manifest || !step || step.done) return
+    if (!audioUnlocked) return
+    if (playedStepRef.current === step.id) return
+
+    if (state === JOURNEY_STATES.WALKING && step.type === 'transit' && !needsPathChoice) {
+      playedStepRef.current = step.id
+      audio.playTransit(step.id)
+      return
+    }
+
+    if (state === JOURNEY_STATES.STORY && step.type === 'waypoint' && storyStartedRef.current !== step.id) {
+      storyStartedRef.current = step.id
+      setActiveWaypoint(step.id, manifest)
+      audio.playWaypoint(step.id)
+    }
+  }, [
+    audio,
+    audioUnlocked,
+    manifest,
+    needsPathChoice,
+    setActiveWaypoint,
+    state,
+    step,
+  ])
+
+  const handleUnlockAudio = async () => {
+    setBusy(true)
+    const unlocked = await audio.unlock()
+    setAudioUnlocked(unlocked || audio.ready)
+    setBusy(false)
+  }
+
+  const handlePathChoice = async (path) => {
+    setBusy(true)
+    setPath(path)
+    audio.setPath(path)
+    playedStepRef.current = null
+    await audio.playTransit('t01')
+    playedStepRef.current = 't01'
+    setBusy(false)
+  }
+
+  const handleBeginStory = async () => {
+    if (!step?.record) return
+    setBusy(true)
+    transition(JOURNEY_STATES.STORY)
+    setBusy(false)
+  }
+
+  const handleStoryComplete = useCallback(() => {
+    if (!step?.record || step.type !== 'waypoint') return
+
+    completeWaypoint(step.id)
+    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
+    storyStartedRef.current = null
+    playedStepRef.current = null
+    advanceSequence()
+  }, [advanceSequence, completeWaypoint, step])
+
+  const handleTransitContinue = useCallback(() => {
+    if (!step?.record || step.type !== 'transit') return
+
+    completeTransit(step.id)
+    playedStepRef.current = null
+    advanceSequence()
+  }, [advanceSequence, completeTransit, step])
+
+  const handleOpenThreshold = () => {
+    transition(JOURNEY_STATES.THRESHOLD)
+  }
+
+  const handleSimulateArrival = () => {
+    if (!step?.record || step.type !== 'waypoint') return
+    transition(JOURNEY_STATES.ARRIVED)
+    track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, simulated: true })
+  }
+
+  if (state === JOURNEY_STATES.IDLE) {
+    return <Navigate to="/begin" replace />
+  }
+
+  if (loading) {
+    return (
+      <JourneyLayout eyebrow="Journey" title="Loading Rome…" subtitle="Preparing your path through the city." />
+    )
+  }
+
+  if (error) {
+    return (
+      <JourneyLayout eyebrow="Journey" title="Could not load tour" subtitle={error.message} />
+    )
+  }
+
+  if (!manifest || !step) {
+    return (
+      <JourneyLayout eyebrow="Journey" title="Tour unavailable" subtitle="Manifest did not load." />
+    )
+  }
+
+  if (step.done || state === JOURNEY_STATES.COMPLETE) {
+    return (
+      <JourneyLayout
+        eyebrow="Journey complete"
+        title="You walked Rome"
+        subtitle="Your letter and journal will gather what you heard along the way."
+      />
+    )
+  }
+
+  if (!audioUnlocked && !audio.ready) {
+    return (
+      <JourneyLayout
+        eyebrow="Journey"
+        title="Ready when you are"
+        subtitle="Tap once to wake the soundscape — narration, ambience, and the city between stops."
+      >
+        <JourneyPrimaryButton onClick={handleUnlockAudio} disabled={busy}>
+          {busy ? 'Starting audio…' : 'Begin sound'}
+        </JourneyPrimaryButton>
+      </JourneyLayout>
+    )
+  }
+
+  if (needsPathChoice) {
+    return <PathChoiceScreen onChoose={handlePathChoice} busy={busy} />
+  }
+
+  if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
+    return (
+      <StoryScreen
+        waypointName={step.record.title ?? step.record.name}
+        narrationPlaying={audio.narrationPlaying}
+        hasReconstruction={Boolean(step.record.reconstruction)}
+        onOpenThreshold={handleOpenThreshold}
+        onStoryComplete={handleStoryComplete}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.ARRIVED && step.type === 'waypoint') {
+    return (
+      <ArrivalScreen
+        waypointName={step.record.title ?? step.record.name}
+        arrivalLine={step.record.arrivalLine}
+        onBeginStory={handleBeginStory}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.APPROACHING && step.type === 'waypoint') {
+    return (
+      <ApproachingScreen
+        waypointName={step.record.title ?? step.record.name}
+        approachLine={step.record.approachLine}
+        distance={geo.distance}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.WALKING && step.type === 'transit') {
+    return (
+      <WalkingScreen
+        title={step.targetWaypoint?.title ?? 'On the way'}
+        subtitle={step.record.note ?? 'Follow the route between stops.'}
+        distance={geo.distance}
+        showContinue={!audio.narrationPlaying}
+        continueLabel="Continue"
+        onContinue={handleTransitContinue}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
+    return (
+      <WalkingScreen
+        title={step.record.title ?? step.record.name}
+        subtitle={step.record.approachLine}
+        distance={geo.distance}
+        onSimulateArrival={handleSimulateArrival}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.PAUSED) {
+    return (
+      <JourneyLayout
+        eyebrow="Paused"
+        title="Journey paused"
+        subtitle="Take a breath. Rome will wait."
+      >
+        <JourneyPrimaryButton onClick={() => transition(JOURNEY_STATES.WALKING)} disabled={busy}>
+          Resume walking
+        </JourneyPrimaryButton>
+      </JourneyLayout>
+    )
+  }
+
+  return (
+    <JourneyLayout
+      eyebrow="Journey"
+      title={step.record?.title ?? step.id}
+      subtitle={`State: ${state}`}
+    >
+      <JourneyPrimaryButton onClick={() => transition(states.WALKING)} disabled={busy}>
+        Return to walking
+      </JourneyPrimaryButton>
+    </JourneyLayout>
+  )
+}

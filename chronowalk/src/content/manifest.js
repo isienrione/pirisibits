@@ -71,6 +71,52 @@ export function getTraversalSequence(manifest, path = manifest.journey?.default_
   return manifest.journey?.sequences?.[path] ?? []
 }
 
+export function isTransitId(manifest, stepId) {
+  return Boolean(manifest.transits?.find?.((transit) => transit.id === stepId) ?? manifest.transits?.[stepId])
+}
+
+export function isWaypointId(manifest, stepId) {
+  return Boolean(manifest.waypointsById?.[stepId] ?? manifest.waypoints?.[stepId])
+}
+
+export function getStepIdAtIndex(manifest, path, index) {
+  const sequence = getTraversalSequence(manifest, path)
+  return sequence[index] ?? null
+}
+
+export function resolveJourneyStep(manifest, path, sequenceIndex) {
+  const stepId = getStepIdAtIndex(manifest, path, sequenceIndex)
+  if (!stepId) {
+    return { done: true, id: null, type: null, record: null, targetWaypoint: null }
+  }
+
+  if (isWaypointId(manifest, stepId)) {
+    const record = getWaypoint(manifest, stepId)
+    return {
+      done: false,
+      id: stepId,
+      type: 'waypoint',
+      record,
+      targetWaypoint: record,
+    }
+  }
+
+  const record = getTransit(manifest, stepId)
+  const nextStepId = getStepIdAtIndex(manifest, path, sequenceIndex + 1)
+  const targetWaypoint = nextStepId && isWaypointId(manifest, nextStepId)
+    ? getWaypoint(manifest, nextStepId)
+    : null
+
+  return {
+    done: false,
+    id: stepId,
+    type: 'transit',
+    record,
+    targetWaypoint,
+    needsPathChoice: Boolean(record?.choice),
+  }
+}
+
 export function getAct(manifest, actId) {
   return manifest.acts?.find((act) => act.id === actId) ?? null
 }

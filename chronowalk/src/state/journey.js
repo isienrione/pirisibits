@@ -18,7 +18,10 @@ const defaultContext = () => ({
   pace: JOURNEY_PACE.CLASSIC,
   path: JOURNEY_PATH.A,
   currentWaypointIndex: 0,
+  currentSequenceIndex: 0,
   completedWaypointIds: [],
+  completedTransitIds: [],
+  pathLocked: false,
   pausedAt: null,
 })
 
@@ -44,6 +47,18 @@ function readStorage() {
     }
 
     delete mergedContext.dayNumber
+
+    if (mergedContext.currentSequenceIndex == null) {
+      mergedContext.currentSequenceIndex = mergedContext.currentWaypointIndex ?? 0
+    }
+
+    if (mergedContext.completedTransitIds == null) {
+      mergedContext.completedTransitIds = []
+    }
+
+    if (mergedContext.pathLocked == null) {
+      mergedContext.pathLocked = false
+    }
 
     return {
       state: parsed.state ?? JOURNEY_STATES.IDLE,
@@ -101,7 +116,10 @@ export function beginJourney({ pace = JOURNEY_PACE.CLASSIC, path = JOURNEY_PATH.
     pace,
     path,
     currentWaypointIndex: waypointIndex,
+    currentSequenceIndex: 0,
     completedWaypointIds: [],
+    completedTransitIds: [],
+    pathLocked: false,
   })
 }
 
@@ -118,5 +136,35 @@ export function markWaypointComplete(waypointId) {
 export function advanceWaypointIndex(nextIndex) {
   return transitionJourney(snapshot.state, {
     currentWaypointIndex: nextIndex,
+  })
+}
+
+export function advanceSequenceIndex() {
+  return transitionJourney(JOURNEY_STATES.WALKING, {
+    currentSequenceIndex: snapshot.context.currentSequenceIndex + 1,
+  })
+}
+
+export function setJourneyPath(path) {
+  return transitionJourney(snapshot.state, {
+    path,
+    pathLocked: true,
+  })
+}
+
+export function markTransitComplete(transitId) {
+  const completed = snapshot.context.completedTransitIds.includes(transitId)
+    ? snapshot.context.completedTransitIds
+    : [...snapshot.context.completedTransitIds, transitId]
+
+  return transitionJourney(snapshot.state, {
+    completedTransitIds: completed,
+  })
+}
+
+export function setActiveWaypointIndex(waypointId, manifest) {
+  const index = manifest?.waypoints?.findIndex((waypoint) => waypoint.id === waypointId) ?? -1
+  return transitionJourney(snapshot.state, {
+    currentWaypointIndex: index >= 0 ? index : snapshot.context.currentWaypointIndex,
   })
 }
