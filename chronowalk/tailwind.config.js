@@ -37,6 +37,10 @@ export default {
       fontSize: {
         eyebrow: ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
       },
+      borderRadius: {
+        card: 'var(--radius-card)',
+        sheet: 'var(--radius-sheet)',
+      },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',
         'safe-top': 'max(0.75rem, env(safe-area-inset-top))',

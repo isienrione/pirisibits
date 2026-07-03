@@ -1,6 +1,6 @@
 import { FREE_PREVIEW_ANCIENT_POSTER } from '../data/freePreview'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { BronzeButton } from './ui'
+import { Button } from './ui'
 
 export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
   return (
@@ -21,15 +21,15 @@ export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
           />
         </div>
         <div className="flex flex-col justify-center px-5 py-5 sm:px-6">
-          <p className="text-eyebrow uppercase text-bronze">Try for free</p>
-          <h2 className="mt-2 font-display text-lg font-semibold text-deep-slate">
+          <p className="text-eyebrow uppercase text-ember">Try for free</p>
+          <h2 className="mt-2 font-display text-lg font-semibold text-ink900">
             Explore the full Rome tour on the map
           </h2>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+          <p className="mt-2 text-sm leading-relaxed text-muted">
             See every landmark on the bundled route — Forum cluster and city loop — with the
             Colosseum unlocked. Tap any locked stop to preview what you&apos;re missing.
           </p>
-          <BronzeButton
+          <Button
             size="lg"
             fullWidth
             className="mt-4"
@@ -39,7 +39,7 @@ export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
             }}
           >
             Try for free
-          </BronzeButton>
+          </Button>
         </div>
       </div>
     </section>

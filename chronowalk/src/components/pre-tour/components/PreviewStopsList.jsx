@@ -11,19 +11,19 @@ export function PreviewStopsList({ stops, className, variant = 'dark' }) {
           className={cn(
             'flex items-center gap-3 rounded-2xl px-3 py-2.5',
             isDark
-              ? 'border border-ivory/15 bg-ivory/5'
-              : 'border border-parchment/70 bg-ivory/80'
+              ? 'border border-ink800/15 bg-ink900/5'
+              : 'border border-ink800/70 bg-ink900/80'
           )}
         >
           <span
             className={cn(
               'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold',
-              isDark ? 'bg-ivory/10 text-ivory' : 'bg-parchment text-deep-slate'
+              isDark ? 'bg-ink900/10 text-bone' : 'bg-ink800 text-ink900'
             )}
           >
             {index + 1}
           </span>
-          <span className={cn('text-sm font-medium', isDark ? 'text-ivory/90' : 'text-deep-slate')}>
+          <span className={cn('text-sm font-medium', isDark ? 'text-bone/90' : 'text-ink900')}>
             {stop.title}
           </span>
         </li>

@@ -1,9 +1,9 @@
 import { cn } from './cn'
-import { pageContainer, pageShell, pageShellStyle } from './styles'
+import { pageContainer, pageShell } from './styles'
 
 export function PageShell({ children, className, containerClassName }) {
   return (
-    <div className={cn(pageShell, className)} style={pageShellStyle}>
+    <div className={cn(pageShell, 'text-bone', className)}>
       <div className={cn(pageContainer, containerClassName)}>{children}</div>
     </div>
   )

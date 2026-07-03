@@ -13,21 +13,21 @@ export default function ShellSettingRow({
   return (
     <div className="flex items-center gap-3 py-4 first:pt-4 last:pb-4">
       {Icon ? (
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--accent)_10%,var(--bone))] text-accent">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--accent)_10%,var(--bone))] text-ember">
           <Icon />
         </span>
       ) : null}
 
       <div className="min-w-0 flex-1">
-        <p className="text-base font-semibold text-ink">{title}</p>
+        <p className="text-base font-semibold text-ink900">{title}</p>
         {description ? (
-          <p className="mt-1 text-sm leading-relaxed text-ink-muted">{description}</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted">{description}</p>
         ) : null}
         {onPress ? (
           <button
             type="button"
             onClick={onPress}
-            className="mt-2 text-sm font-semibold text-accent"
+            className="mt-2 text-sm font-semibold text-ember"
           >
             {actionLabel ?? 'Try again'}
           </button>
@@ -37,7 +37,7 @@ export default function ShellSettingRow({
       {onToggle ? (
         <Toggle checked={checked} onChange={onToggle} label={title} />
       ) : value ? (
-        <span className="shrink-0 text-sm font-semibold text-ink-muted">{value}</span>
+        <span className="shrink-0 text-sm font-semibold text-muted">{value}</span>
       ) : null}
     </div>
   )

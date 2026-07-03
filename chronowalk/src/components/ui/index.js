@@ -1,11 +1,5 @@
 export { Button } from './Button'
-export { BronzeButton } from './BronzeButton'
-export { GoldButton } from './GoldButton'
-export { GlassPanel } from './GlassPanel'
-export { ParchmentCard } from './ParchmentCard'
 export { EditorialTitle } from './EditorialTitle'
-export { MedallionBadge } from './MedallionBadge'
-export { TimeFractureHandle } from './TimeFractureSlider'
 export { IconButton } from './IconButton'
 export { ProgressPill } from './ProgressPill'
 export { BottomSheet } from './BottomSheet'
@@ -14,7 +8,15 @@ export { LoadingPanel } from './LoadingPanel'
 export { LoadingSpinner } from './LoadingSpinner'
 export { PageShell } from './PageShell'
 export { Toggle } from './Toggle'
-export { StatusBadge } from './StatusBadge'
+export {
+  StatusBadge,
+  statusPill,
+  statusWalking,
+  statusArrived,
+  statusNeutral,
+  statusLocked,
+  statusCurrent,
+} from './StatusBadge'
 export { MediaPlayerControls } from './MediaPlayerControls'
 export { ConfirmDialog } from './ConfirmDialog'
 export { cn } from './cn'

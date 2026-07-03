@@ -148,16 +148,16 @@ const createLandmarkMarkerElement = (title, status) => {
 
   const dotClass =
     status === 'completed'
-      ? 'bg-olive'
+      ? 'bg-acthill'
       : status === 'current'
-        ? 'bg-gold ring-2 ring-sand'
+        ? 'bg-ember ring-2 ring-sand'
         : status === 'locked'
-          ? 'bg-soft-slate opacity-60'
-          : 'bg-soft-slate opacity-80'
+          ? 'bg-muted opacity-60'
+          : 'bg-muted opacity-80'
 
   el.innerHTML = `
     <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-warm-white/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-deep-slate shadow-sm">${title}</span>
+    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-bone/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-ink900 shadow-sm">${title}</span>
   `
   return el
 }
@@ -166,7 +166,7 @@ const createUserMarkerElement = () => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
   el.innerHTML = `
-    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warm-white shadow-lg">You</div>
+    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warmwhite shadow-lg">You</div>
   `
   return el
 }
@@ -197,12 +197,12 @@ function MapArrivalPulse({ point, active }) {
       aria-hidden="true"
     >
       <div
-        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
+        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ember/50 bg-ember/10 ${
           reducedMotion ? '' : 'animate-arrival-map-pulse'
         }`}
       />
       <div
-        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
+        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember/25 ${
           reducedMotion ? '' : 'animate-arrival-map-pulse'
         }`}
         style={{ animationDelay: '0.35s' }}
@@ -223,29 +223,29 @@ function MapDebugOverlay({
 }) {
   return (
     <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,20rem)] space-y-2">
-      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-gold shadow">
+      <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ember shadow">
         Debug map
       </div>
-      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warm-white shadow">
+      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warmwhite shadow">
         GPS: {debugGeo ? `simulated at ${activeTitle}` : 'live device location'}
       </div>
       {transitLegActive && activeLeg ? (
-        <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+        <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-xs text-sand shadow">
           Leg: {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
           {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
         </div>
       ) : null}
       {state ? (
         <div
-          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warm-white shadow ${
-            state === JOURNEY_STATE.ARRIVAL ? 'bg-olive/95' : 'bg-soft-slate/95'
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warmwhite shadow ${
+            state === JOURNEY_STATE.ARRIVAL ? 'bg-acthill/95' : 'bg-muted/95'
           }`}
         >
           Journey: {state}
           {distance != null ? ` (${Math.round(distance)} m)` : ''}
         </div>
       ) : null}
-      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+      <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-xs text-sand shadow">
         Arrival geofence: {geofenceThresholdM} m
       </div>
     </div>

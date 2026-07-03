@@ -1,6 +1,5 @@
 import { useEffect, useId } from 'react'
 import { Button } from './Button'
-import { GlassPanel } from './GlassPanel'
 import { cn } from './cn'
 import { focusRing } from './focusRing'
 import { useOpenHaptic } from '../../hooks/useHapticTriggers'
@@ -45,21 +44,21 @@ export function ConfirmDialog({
         aria-label="Dismiss dialog"
         onClick={onCancel}
       />
-      <GlassPanel
+      <div
         role="alertdialog"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
-        className="relative w-full max-w-md p-5"
+        className="bg-ink900 rounded-card relative w-full max-w-md p-5"
       >
-        <h2 id={titleId} className="font-display text-xl font-semibold text-ink">
+        <h2 id={titleId} className="font-display text-xl font-semibold text-ink900">
           {title}
         </h2>
-        <p id={descriptionId} className="mt-3 text-sm leading-relaxed text-ink-muted">
+        <p id={descriptionId} className="mt-3 text-sm leading-relaxed text-muted">
           {message}
         </p>
         <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Button variant="secondary" fullWidth className="sm:w-auto" onClick={onCancel}>
+          <Button variant="quiet" fullWidth className="sm:w-auto" onClick={onCancel}>
             {cancelLabel}
           </Button>
           <Button
@@ -71,7 +70,7 @@ export function ConfirmDialog({
             {confirmLabel}
           </Button>
         </div>
-      </GlassPanel>
+      </div>
     </div>
   )
 }

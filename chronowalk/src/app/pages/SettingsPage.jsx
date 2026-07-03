@@ -11,21 +11,21 @@ export function SettingsPage() {
       <SettingsPreferencesPanel />
 
       <section className="mt-8">
-        <h2 className="mb-3 px-1 text-sm font-semibold text-ink">Offline</h2>
+        <h2 className="mb-3 px-1 text-sm font-semibold text-ink900">Offline</h2>
         <OfflineAudioPanel />
       </section>
 
       <div className="mt-8 grid gap-3">
-        <Link to="/credits" className="text-sm font-semibold text-accent">
+        <Link to="/credits" className="text-sm font-semibold text-ember">
           Credits
         </Link>
-        <Link to="/journal" className="text-sm font-semibold text-accent">
+        <Link to="/journal" className="text-sm font-semibold text-ember">
           Open journal
         </Link>
-        <Link to="/letter" className="text-sm font-semibold text-accent">
+        <Link to="/letter" className="text-sm font-semibold text-ember">
           Open letter
         </Link>
-        <Link to="/journey" className="text-sm font-semibold text-accent">
+        <Link to="/journey" className="text-sm font-semibold text-ember">
           Back to walk
         </Link>
       </div>

@@ -12,7 +12,7 @@ function AudioPlayerPanel({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-[var(--r-card)] border border-border-immersion bg-obsidian p-4 text-warm-white shadow-card',
+        'relative overflow-hidden rounded-[var(--r-card)] border border-ink800 bg-obsidian p-4 text-warmwhite shadow-card',
         className
       )}
     >
@@ -41,7 +41,7 @@ function AudioPlayerPanel({
 
         <div className="min-w-0 flex-1">
           <p className="text-eyebrow uppercase text-ember">Audio story</p>
-          <p className="truncate font-display text-lg font-semibold leading-tight text-warm-white">{title}</p>
+          <p className="truncate font-display text-lg font-semibold leading-tight text-warmwhite">{title}</p>
           {subtitle ? <p className="mt-1 line-clamp-2 text-xs text-muted-warm">{subtitle}</p> : null}
         </div>
 

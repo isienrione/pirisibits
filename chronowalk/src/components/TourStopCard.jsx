@@ -1,15 +1,5 @@
 import { getModernCoverUrl } from '../utils/sliderMedia'
-import {
-  BronzeButton,
-  Button,
-  ParchmentCard,
-  cn,
-  focusRing,
-  statusArrived,
-  statusCurrent,
-  statusLocked,
-  statusPill,
-} from './ui'
+import { Button, cn, focusRing, statusArrived, statusCurrent, statusLocked, statusPill } from './ui'
 
 const STATUS_META = {
   completed: { label: 'Visited', className: statusArrived },
@@ -20,7 +10,7 @@ const STATUS_META = {
 
 function LockIcon() {
   return (
-    <svg className="h-4 w-4 text-soft-slate" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <svg className="h-4 w-4 text-muted" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="1.75" />
       <path
         d="M8 11V8a4 4 0 0 1 8 0v3"
@@ -53,16 +43,16 @@ export function TourStopCard({
   const isVisited = stop.status === 'completed'
 
   return (
-    <ParchmentCard
+    <div
       className={cn(
-        'overflow-hidden transition hover:border-bronze/35 hover:shadow-plaque-lg',
-        isCurrent && 'border-bronze/40 bg-bronze/[0.04] shadow-plaque-lg'
+        'overflow-hidden transition hover:border-ember/35',
+        isCurrent && 'border-ember/40 bg-ember/[0.04] '
       )}
     >
       <div className={cn('flex', compact ? 'flex-col' : 'gap-0 sm:gap-4')}>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden bg-track-daylight',
+            'relative shrink-0 overflow-hidden bg-ink800',
             compact ? 'h-36 w-full' : 'w-28 sm:w-32',
             !compact && 'min-h-[7rem]'
           )}
@@ -75,12 +65,12 @@ export function TourStopCard({
               referrerPolicy="no-referrer"
             />
           ) : (
-            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-soft-slate">
+            <div className="flex h-full min-h-[7rem] items-center justify-center px-2 text-center text-xs text-muted">
               Preview soon
             </div>
           )}
           {isUpcoming || isLocked ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-ivory/25">
+            <div className="absolute inset-0 flex items-center justify-center bg-ink900/25">
               <LockIcon />
             </div>
           ) : null}
@@ -88,8 +78,8 @@ export function TourStopCard({
             className={cn(
               'absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold shadow-sm',
               isCurrent
-                ? 'bg-bronze text-ivory ring-2 ring-bronze/30'
-                : 'bg-ivory/95 text-deep-slate'
+                ? 'bg-ember text-bone ring-2 ring-bronze/30'
+                : 'bg-ink900/95 text-ink900'
             )}
           >
             {index + 1}
@@ -98,7 +88,7 @@ export function TourStopCard({
 
         <div className={cn('min-w-0 flex-1', compact ? 'p-4' : 'px-4 py-4 pr-5')}>
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-display text-lg font-semibold leading-tight text-deep-slate">
+            <h3 className="font-display text-lg font-semibold leading-tight text-ink900">
               {stop.title}
             </h3>
             <span
@@ -112,18 +102,18 @@ export function TourStopCard({
               {status.label}
             </span>
           </div>
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-soft-slate">{subtitle}</p>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">{subtitle}</p>
           {isVisited || isCurrent ? (
-            <BronzeButton
+            <Button
               size="sm"
               className={cn('mt-4', focusRing)}
               onClick={() => onOpen?.(stop.id)}
             >
               {isLocked ? lockedActionLabel : isVisited ? 'Revisit' : actionLabel}
-            </BronzeButton>
+            </Button>
           ) : (
             <Button
-              variant="secondary"
+              variant="quiet"
               size="sm"
               className={cn('mt-4', focusRing)}
               onClick={() => onOpen?.(stop.id)}
@@ -133,7 +123,7 @@ export function TourStopCard({
           )}
         </div>
       </div>
-    </ParchmentCard>
+    </div>
   )
 }
 

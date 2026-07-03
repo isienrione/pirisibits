@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
-import { GlassPanel } from './ui'
 import TourIntroContent from './TourIntroContent'
 
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -38,9 +37,9 @@ function TourIntroScreen({ onTryFreePreview, onViewTours }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(30vh,12rem)] shrink-0 sm:h-[min(34vh,14rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-3xl p-6 sm:p-8 lg:p-10">
+        <div className="bg-ink900 rounded-card rounded-3xl p-6 sm:p-8 lg:p-10">
           <TourIntroContent onTryFreePreview={onTryFreePreview} onViewTours={onViewTours} />
-        </GlassPanel>
+        </div>
 
         <div className="h-6 shrink-0 sm:h-8" aria-hidden="true" />
       </div>

@@ -3,9 +3,9 @@ import { focusRing, tapAction, touchTarget } from './focusRing'
 
 const variantStyles = {
   default:
-    'border-border-daylight bg-bone text-ink hover:border-[color-mix(in_srgb,var(--accent)_40%,var(--bone))] hover:bg-[color-mix(in_srgb,var(--accent)_6%,var(--bone))]',
-  ghost: 'border-transparent bg-[color-mix(in_srgb,var(--bone)_60%,transparent)] text-ink-muted hover:bg-bone hover:text-ink',
-  solid: 'border-border-daylight bg-track-daylight text-ink hover:bg-border-daylight',
+    'border-ink800 bg-bone text-ink900 hover:border-[color-mix(in_srgb,var(--accent)_40%,var(--bone))] hover:bg-[color-mix(in_srgb,var(--accent)_6%,var(--bone))]',
+  ghost: 'border-transparent bg-[color-mix(in_srgb,var(--bone)_60%,transparent)] text-muted hover:bg-bone hover:text-ink900',
+  solid: 'border-ink800 bg-ink800 text-ink900 hover:bg-border-daylight',
 }
 
 const sizeStyles = {

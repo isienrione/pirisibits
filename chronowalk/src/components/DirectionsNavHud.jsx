@@ -4,15 +4,7 @@ import { estimateWalkMinutes } from '../utils/tourStats'
 import { buildGoogleMapsDirectionsUrl } from '../utils/walkingDirections'
 import DirectionsStepsSheet from './DirectionsStepsSheet'
 import { formatStepDistance } from './DirectionsStepList'
-import {
-  Button,
-  GlassPanel,
-  GoldButton,
-  IconButton,
-  LoadingPanel,
-  cn,
-  metaLabel,
-} from './ui'
+import { Button, IconButton, LoadingPanel, cn, metaLabel } from './ui'
 
 function LocateIcon({ className }) {
   return (
@@ -47,22 +39,22 @@ function GpsStatusPill({ locationStatus }) {
   const isWaiting = locationStatus === LOCATION_STATUS.WAITING
 
   return (
-    <GlassPanel className="pointer-events-none inline-flex items-center gap-2 rounded-full px-3 py-1.5 shadow-plaque">
+    <div className="bg-ink900 rounded-card pointer-events-none inline-flex items-center gap-2 rounded-full px-3 py-1.5 ">
       <span
         className={cn(
           'h-2 w-2 rounded-full',
-          isGood ? 'bg-olive' : isWaiting ? 'bg-gold' : 'bg-soft-slate'
+          isGood ? 'bg-acthill' : isWaiting ? 'bg-ember' : 'bg-muted'
         )}
         aria-hidden="true"
       />
-      <span className="text-xs font-semibold text-deep-slate">
+      <span className="text-xs font-semibold text-ink900">
         {isGood
           ? 'Good GPS signal'
           : isWaiting
             ? 'Finding GPS…'
             : 'GPS signal weak'}
       </span>
-    </GlassPanel>
+    </div>
   )
 }
 
@@ -103,10 +95,10 @@ function DirectionsNavHud({
         style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}
       >
         <div className="mx-auto flex w-full max-w-md items-start justify-between gap-2">
-          <GlassPanel className="pointer-events-auto px-3 py-2 shadow-plaque-lg">
-            <p className={cn(metaLabel, 'text-bronze')}>Walking guide</p>
-            <p className="text-sm font-semibold text-deep-slate">{stepLabel}</p>
-          </GlassPanel>
+          <div className="bg-ink900 rounded-card pointer-events-auto px-3 py-2 ">
+            <p className={cn(metaLabel, 'text-ember')}>Walking guide</p>
+            <p className="text-sm font-semibold text-ink900">{stepLabel}</p>
+          </div>
 
           <div className="pointer-events-auto flex flex-col items-end gap-2">
             <GpsStatusPill locationStatus={locationStatus} />
@@ -117,7 +109,7 @@ function DirectionsNavHud({
                   size="md"
                   label="Center map on your location"
                   onClick={onRecenter}
-                  className="border-parchment/80 bg-ivory shadow-plaque"
+                  className="border-ink800/80 bg-ink900 "
                 >
                   <LocateIcon className="h-5 w-5" />
                 </IconButton>
@@ -126,7 +118,7 @@ function DirectionsNavHud({
                 variant="solid"
                 size="md"
                 label="Map compass"
-                className="border-parchment/80 bg-ivory shadow-plaque"
+                className="border-ink800/80 bg-ink900 "
                 aria-hidden="true"
                 tabIndex={-1}
               >
@@ -138,7 +130,7 @@ function DirectionsNavHud({
                   size="md"
                   label="Exit walking directions"
                   onClick={onClose}
-                  className="border-parchment/80 bg-ivory shadow-plaque"
+                  className="border-ink800/80 bg-ink900 "
                 >
                   <CloseIcon className="h-5 w-5" />
                 </IconButton>
@@ -153,33 +145,33 @@ function DirectionsNavHud({
         style={{ paddingBottom: bottomOffset }}
       >
         <div className="mx-auto w-full max-w-md">
-          <GlassPanel className="pointer-events-auto shadow-plaque-lg">
+          <div className="bg-ink900 rounded-card pointer-events-auto ">
             <div className="p-4">
-              <p className={cn(metaLabel, 'text-bronze')}>Walk to</p>
-              <p className="mt-0.5 font-display text-lg font-semibold leading-tight text-deep-slate">
+              <p className={cn(metaLabel, 'text-ember')}>Walk to</p>
+              <p className="mt-0.5 font-display text-lg font-semibold leading-tight text-ink900">
                 {destinationTitle ?? 'Destination'}
               </p>
 
               {loading ? (
                 <LoadingPanel label="Loading walking directions…" className="mt-4 min-h-[4.5rem]" />
               ) : error ? (
-                <p className="mt-3 text-sm leading-relaxed text-soft-slate">{error}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{error}</p>
               ) : (
                 <>
-                  <div className="mt-2 flex items-center gap-2 text-sm text-soft-slate">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-muted">
                     {distanceM > 0 ? (
-                      <span className="font-semibold text-deep-slate">
+                      <span className="font-semibold text-ink900">
                         {formatStepDistance(distanceM)}
                       </span>
                     ) : null}
                     {distanceM > 0 && walkMinutes ? (
-                      <span className="text-limestone">·</span>
+                      <span className="text-muted">·</span>
                     ) : null}
                     {walkMinutes ? <span>{walkMinutes} min walk</span> : null}
                   </div>
 
                   <div
-                    className="mt-4 h-1.5 overflow-hidden rounded-full bg-limestone/60"
+                    className="mt-4 h-1.5 overflow-hidden rounded-full bg-ink800/60"
                     role="progressbar"
                     aria-valuenow={progressPercent}
                     aria-valuemin={0}
@@ -187,7 +179,7 @@ function DirectionsNavHud({
                     aria-label="Walking route progress"
                   >
                     <div
-                      className="h-full rounded-full bg-accent motion-reduce:transition-none transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-ember motion-reduce:transition-none transition-all duration-500 ease-out"
                       style={{ width: `${progressPercent}%` }}
                     />
                   </div>
@@ -195,7 +187,7 @@ function DirectionsNavHud({
               )}
             </div>
 
-            <div className="border-t border-parchment/60 px-4 pb-4 pt-3">
+            <div className="border-t border-ink800/60 px-4 pb-4 pt-3">
               {error && mapsUrl ? (
                 <Button
                   fullWidth
@@ -205,23 +197,24 @@ function DirectionsNavHud({
                 </Button>
               ) : (
                 <div className="flex flex-col gap-2">
-                  <GoldButton
+                  <Button
                     fullWidth
-                    showArrow
+                    className="justify-between px-6"
                     disabled={!stepCount}
                     onClick={() => setStepsOpen(true)}
                   >
-                    View steps
-                  </GoldButton>
+                    <span className="flex-1 text-center">View steps</span>
+                    <span aria-hidden="true">→</span>
+                  </Button>
                   {onClose ? (
-                    <Button variant="text" fullWidth onClick={onClose}>
+                    <Button variant="ghost" fullWidth onClick={onClose}>
                       Back to tour map
                     </Button>
                   ) : null}
                 </div>
               )}
             </div>
-          </GlassPanel>
+          </div>
         </div>
       </div>
 

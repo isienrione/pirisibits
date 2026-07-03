@@ -17,7 +17,7 @@ export default function ShellTabBar() {
   return (
     <nav
       aria-label="Tour navigation"
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-border-daylight bg-bone px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-card"
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink800 bg-bone px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-card"
       style={{ fontFamily: 'var(--font-ui)' }}
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-1">
@@ -30,7 +30,7 @@ export default function ShellTabBar() {
               <Link
                 to={tab.to}
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
-                  active ? 'text-accent' : 'text-ink-muted'
+                  active ? 'text-ember' : 'text-muted'
                 }`}
               >
                 <Icon />

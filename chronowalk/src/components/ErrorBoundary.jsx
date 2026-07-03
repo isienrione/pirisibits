@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Button, GlassPanel, cn, ctaInCard } from './ui'
+import { Button, cn, ctaInCard } from './ui'
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -34,18 +34,18 @@ export class ErrorBoundary extends Component {
       <div
         className={
           this.props.fullScreen
-            ? 'flex h-full min-h-[12rem] w-full items-center justify-center bg-warm-white p-6'
+            ? 'flex h-full min-h-[12rem] w-full items-center justify-center bg-bone p-6'
             : 'w-full p-4'
         }
         role="alert"
       >
-        <GlassPanel className="max-w-md p-6 text-center">
-          <p className="font-display text-xl font-semibold text-deep-slate">{title}</p>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">{message}</p>
+        <div className="bg-ink900 rounded-card max-w-md p-6 text-center">
+          <p className="font-display text-xl font-semibold text-ink900">{title}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted">{message}</p>
           <Button className={cn(ctaInCard, 'mt-5')} fullWidth onClick={this.handleRetry}>
             Try again
           </Button>
-        </GlassPanel>
+        </div>
       </div>
     )
   }

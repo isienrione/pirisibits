@@ -153,7 +153,7 @@ export default function LetterScreen() {
           <ActionButton onClick={handleShare} disabled={busy || !letter.stopCount}>
             Share letter
           </ActionButton>
-          <ActionButton onClick={handleSave} disabled={busy || !letter.stopCount} variant="secondary">
+          <ActionButton onClick={handleSave} disabled={busy || !letter.stopCount} variant="quiet">
             Save as image
           </ActionButton>
           {state !== JOURNEY_STATES.IDLE ? (

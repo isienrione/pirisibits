@@ -82,13 +82,13 @@ export default function StopsScreen() {
       <div className="mt-8 grid gap-3">
         <Link
           to="/journey"
-          className="block rounded-full bg-accent px-5 py-3.5 text-center text-sm font-semibold text-bone"
+          className="block rounded-full bg-ember px-5 py-3.5 text-center text-sm font-semibold text-bone"
         >
           Return to walk
         </Link>
         <Link
           to="/map"
-          className="block text-center text-sm font-semibold text-accent"
+          className="block text-center text-sm font-semibold text-ember"
         >
           Open map
         </Link>

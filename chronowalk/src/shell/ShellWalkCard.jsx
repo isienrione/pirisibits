@@ -1,4 +1,4 @@
-import { Button, GlassPanel } from '../components/ui'
+import { Button } from '../components/ui'
 
 function formatWalkEta(distanceM) {
   if (distanceM == null) return null
@@ -24,13 +24,13 @@ export default function ShellWalkCard({
   const eta = formatWalkEta(distanceM)
 
   return (
-    <GlassPanel className="relative overflow-hidden p-4">
+    <div className="bg-ink900 rounded-card relative overflow-hidden p-4">
       {onDismiss ? (
         <button
           type="button"
           aria-label="Dismiss"
           onClick={onDismiss}
-          className="absolute right-3 top-3 rounded-full p-1 text-ink-muted hover:text-ink"
+          className="absolute right-3 top-3 rounded-full p-1 text-muted hover:text-ink900"
         >
           ×
         </button>
@@ -44,17 +44,17 @@ export default function ShellWalkCard({
             className="h-16 w-16 shrink-0 rounded-2xl object-cover"
           />
         ) : (
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-track-daylight text-xs font-semibold uppercase tracking-wide text-ink-muted">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-ink800 text-xs font-semibold uppercase tracking-wide text-muted">
             Stop
           </div>
         )}
 
         <div className="min-w-0 flex-1 pr-6">
-          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-accent">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-ember">
             {eyebrow}
           </p>
-          <p className="font-display text-xl font-medium text-ink">{title}</p>
-          {eta ? <p className="mt-1 text-sm text-ink-muted">{eta}</p> : null}
+          <p className="font-display text-xl font-medium text-ink900">{title}</p>
+          {eta ? <p className="mt-1 text-sm text-muted">{eta}</p> : null}
         </div>
       </div>
 
@@ -65,6 +65,6 @@ export default function ShellWalkCard({
           </Button>
         </div>
       ) : null}
-    </GlassPanel>
+    </div>
   )
 }

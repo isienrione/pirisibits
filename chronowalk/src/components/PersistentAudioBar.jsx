@@ -24,7 +24,7 @@ function PersistentAudioBar({
 
   return (
     <div className="pointer-events-auto w-full">
-      <div className="overflow-hidden rounded-2xl border border-border-immersion bg-obsidian text-warm-white shadow-card">
+      <div className="overflow-hidden rounded-2xl border border-ink800 bg-obsidian text-warmwhite shadow-card">
         <div className="flex items-center gap-3 px-3 py-2.5">
           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full border border-[color-mix(in_srgb,var(--ember)_35%,var(--obsidian))] bg-obsidian">
             {posterUrl ? (
@@ -50,9 +50,9 @@ function PersistentAudioBar({
             />
             {!cardOpen && onReopenCard ? (
               <Button
-                variant="secondary"
+                variant="quiet"
                 size="sm"
-                className="border-border-immersion bg-[color-mix(in_srgb,var(--warm-white)_10%,var(--obsidian))] px-3 text-warm-white hover:bg-[color-mix(in_srgb,var(--warm-white)_15%,var(--obsidian))]"
+                className="border-ink800 bg-[color-mix(in_srgb,var(--warm-white)_10%,var(--obsidian))] px-3 text-warmwhite hover:bg-[color-mix(in_srgb,var(--warm-white)_15%,var(--obsidian))]"
                 onClick={onReopenCard}
               >
                 Open

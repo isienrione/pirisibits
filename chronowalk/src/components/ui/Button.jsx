@@ -3,15 +3,9 @@ import { focusRing, tapAction } from './focusRing'
 import { usePressHandlers } from './usePressHandlers'
 
 const variantStyles = {
-  primary:
-    'border border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))] bg-accent text-bone hover:opacity-95 active:opacity-90',
-  secondary:
-    'border border-border-daylight bg-bone text-ink hover:border-[color-mix(in_srgb,var(--accent)_25%,var(--bone))]',
-  ghost:
-    'border border-border-daylight bg-transparent text-accent hover:bg-[color-mix(in_srgb,var(--accent)_8%,var(--bone))]',
-  'outline-dark':
-    'border border-border-immersion bg-transparent font-display text-warm-white hover:bg-[color-mix(in_srgb,var(--warm-white)_8%,var(--obsidian))]',
-  text: 'bg-transparent text-accent hover:opacity-80 underline-offset-2 hover:underline',
+  primary: 'border border-ember bg-ember text-inkonfill hover:opacity-95 active:opacity-90',
+  quiet: 'border border-ink800 bg-transparent text-bone hover:opacity-90',
+  ghost: 'border border-transparent bg-transparent text-bone hover:opacity-80',
 }
 
 const sizeStyles = {
@@ -44,7 +38,7 @@ export function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 font-[family-name:var(--font-ui)] transition-[color,background-color,border-color,opacity] duration-200',
+        'inline-flex items-center justify-center gap-2 font-sans transition-opacity duration-200',
         tapAction,
         focusRing,
         'disabled:pointer-events-none disabled:opacity-50',

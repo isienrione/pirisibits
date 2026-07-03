@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useState } from 'react'
-import { BottomSheet, BronzeButton, Button, cn } from './ui'
+import { BottomSheet, Button, cn } from './ui'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { getAncientPosterUrl, getModernPosterUrl } from '../utils/sliderMedia'
 
@@ -44,21 +44,21 @@ function buildShareSvg({ modernDataUrl, ancientDataUrl, title, eraLabel }) {
       <rect x="${EXPORT_WIDTH / 2}" y="0" width="${EXPORT_WIDTH / 2}" height="${EXPORT_HEIGHT}" />
     </clipPath>
     <linearGradient id="footFade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#17212B" stop-opacity="0" />
-      <stop offset="55%" stop-color="#17212B" stop-opacity="0.72" />
-      <stop offset="100%" stop-color="#17212B" stop-opacity="0.94" />
+      <stop offset="0%" stop-color="#211C15" stop-opacity="0" />
+      <stop offset="55%" stop-color="#211C15" stop-opacity="0.72" />
+      <stop offset="100%" stop-color="#211C15" stop-opacity="0.94" />
     </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="#17212B" />
+  <rect width="100%" height="100%" fill="#211C15" />
   <image href="${modernDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#modernHalf)" />
   <image href="${ancientDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#ancientHalf)" />
-  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#D4AF37" />
-  <text x="48" y="72" fill="#FFFDF8" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="5.5">TODAY</text>
-  <text x="${EXPORT_WIDTH - 48}" y="88" fill="#D9A441" font-family="Fraunces, Georgia, serif" font-size="44" font-style="italic" text-anchor="end">${safeEra}</text>
+  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#E8A13C" />
+  <text x="48" y="72" fill="#F5EFE3" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="5.5">TODAY</text>
+  <text x="${EXPORT_WIDTH - 48}" y="88" fill="#E8A13C" font-family="Fraunces, Georgia, serif" font-size="44" font-style="italic" text-anchor="end">${safeEra}</text>
   <rect x="0" y="${EXPORT_HEIGHT - 280}" width="${EXPORT_WIDTH}" height="280" fill="url(#footFade)" />
-  <text x="56" y="${EXPORT_HEIGHT - 118}" fill="#FFFDF8" font-family="Fraunces, Georgia, serif" font-size="52" font-weight="600">${safeTitle}</text>
-  <circle cx="56" cy="${EXPORT_HEIGHT - 52}" r="7" fill="#D9A441" />
-  <text x="76" y="${EXPORT_HEIGHT - 44}" fill="#FFFDF8" font-family="DM Sans, system-ui, sans-serif" font-size="24" font-weight="600" letter-spacing="4">CHRONOWALK</text>
+  <text x="56" y="${EXPORT_HEIGHT - 118}" fill="#F5EFE3" font-family="Fraunces, Georgia, serif" font-size="52" font-weight="600">${safeTitle}</text>
+  <circle cx="56" cy="${EXPORT_HEIGHT - 52}" r="7" fill="#E8A13C" />
+  <text x="76" y="${EXPORT_HEIGHT - 44}" fill="#F5EFE3" font-family="DM Sans, system-ui, sans-serif" font-size="24" font-weight="600" letter-spacing="4">CHRONOWALK</text>
 </svg>`
 }
 
@@ -117,7 +117,7 @@ function downloadBlob(blob, filename) {
 export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Ancient Rome' }) {
   return (
     <div
-      className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl border border-parchment/70 bg-obsidian shadow-plaque-lg"
+      className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl border border-ink800/70 bg-obsidian "
       aria-hidden="true"
     >
       <div className="absolute inset-0 flex">
@@ -132,21 +132,21 @@ export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Anc
         className="pointer-events-none absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2"
         style={{
           background:
-            'linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.15) 8%, #D4AF37 22%, #F7F3EC 50%, #D4AF37 78%, rgba(212, 175, 55, 0.15) 92%, transparent 100%)',
+            'linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.15) 8%, #E8A13C 22%, #F7F1E6 50%, #E8A13C 78%, rgba(212, 175, 55, 0.15) 92%, transparent 100%)',
           boxShadow:
             '0 0 24px rgba(212, 175, 55, 0.65), 0 0 48px rgba(212, 175, 55, 0.25)',
         }}
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-between px-4 pt-4">
-        <p className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-ivory drop-shadow-md">
+        <p className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-bone drop-shadow-md">
           Today
         </p>
-        <p className="font-display text-xl italic text-gold drop-shadow-md">{eraLabel}</p>
+        <p className="font-display text-xl italic text-ember drop-shadow-md">{eraLabel}</p>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-[color-mix(in_srgb,var(--ink)_88%,transparent)] px-5 pb-5 pt-16">
-        <p className="font-display text-2xl font-semibold text-ivory">{title}</p>
-        <p className="mt-2 flex items-center gap-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-ivory/90">
-          <span className="inline-block h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
+        <p className="font-display text-2xl font-semibold text-bone">{title}</p>
+        <p className="mt-2 flex items-center gap-2 font-sans text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-bone/90">
+          <span className="inline-block h-2 w-2 rounded-full bg-ember" aria-hidden="true" />
           ChronoWalk
         </p>
       </div>
@@ -245,10 +245,10 @@ export function ShareCard({
       className="z-[360]"
     >
       <div className={cn('pb-2', reducedMotion ? '' : 'motion-safe-transition')}>
-        <h2 id={titleId} className="font-display text-2xl font-semibold text-deep-slate">
+        <h2 id={titleId} className="font-display text-2xl font-semibold text-ink900">
           Share this reveal
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+        <p className="mt-2 text-sm leading-relaxed text-muted">
           A screenshot-ready before-and-after card for {title}.
         </p>
 
@@ -262,17 +262,17 @@ export function ShareCard({
             />
           </div>
         ) : (
-          <p className="mt-5 rounded-2xl border border-limestone/70 bg-sand/40 px-4 py-3 text-sm text-soft-slate">
+          <p className="mt-5 rounded-2xl border border-ink800/70 bg-ink800/40 px-4 py-3 text-sm text-muted">
             Poster frames are still loading for this landmark.
           </p>
         )}
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <BronzeButton fullWidth disabled={busy || !resolvedModern || !resolvedAncient} onClick={handleShare}>
+          <Button fullWidth disabled={busy || !resolvedModern || !resolvedAncient} onClick={handleShare}>
             Share
-          </BronzeButton>
+          </Button>
           <Button
-            variant="secondary"
+            variant="quiet"
             fullWidth
             disabled={busy || !resolvedModern || !resolvedAncient}
             onClick={handleSave}
@@ -282,7 +282,7 @@ export function ShareCard({
         </div>
 
         {toast ? (
-          <p className="mt-4 rounded-2xl border border-limestone/70 bg-sand/50 px-4 py-3 text-sm text-deep-slate" role="status">
+          <p className="mt-4 rounded-2xl border border-ink800/70 bg-ink800/50 px-4 py-3 text-sm text-ink900" role="status">
             {toast}
           </p>
         ) : null}

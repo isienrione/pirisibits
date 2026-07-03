@@ -30,7 +30,7 @@ export function getShellTabs() {
   })).filter((tab) => tab.Icon)
 }
 
-/** Explorer (ivory) vs companion (ink) — presentation only. */
+/** Explorer (daylight) vs companion (ink) — presentation only. */
 export const SHELL_SURFACE = {
   EXPLORER: 'explorer',
   COMPANION: 'companion',
