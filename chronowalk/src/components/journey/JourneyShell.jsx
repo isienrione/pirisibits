@@ -31,6 +31,7 @@ export default function JourneyShell() {
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
   const playedResumeRef = useRef(false)
+  const playedCompletionRef = useRef(false)
   const prevStateRef = useRef(state)
 
   useEffect(() => {
@@ -95,6 +96,7 @@ export default function JourneyShell() {
     if (geo.insideGeofence) {
       if (state !== JOURNEY_STATES.ARRIVED) {
         transition(JOURNEY_STATES.ARRIVED)
+        if (audioUnlocked) void audio.playArrivalChime()
         track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id })
       }
       return
@@ -103,7 +105,7 @@ export default function JourneyShell() {
     if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
       transition(JOURNEY_STATES.APPROACHING)
     }
-  }, [geo.insideGeofence, geo.approachingGeofence, geoTarget, state, step?.id, step?.type, transition])
+  }, [geo.insideGeofence, geo.approachingGeofence, geoTarget, state, step?.id, step?.type, transition, audio, audioUnlocked])
 
   useEffect(() => {
     if (!manifest || !step || step.done) return
@@ -168,10 +170,11 @@ export default function JourneyShell() {
   const handleTransitContinue = useCallback(() => {
     if (!step?.record || step.type !== 'transit') return
 
+    audio.endTransit()
     completeTransit(step.id)
     playedStepRef.current = null
     advanceSequence()
-  }, [advanceSequence, completeTransit, step])
+  }, [advanceSequence, audio, completeTransit, step])
 
   const handleOpenThreshold = () => {
     audio.stopNarration()
@@ -181,8 +184,17 @@ export default function JourneyShell() {
   const handleSimulateArrival = () => {
     if (!step?.record || step.type !== 'waypoint') return
     transition(JOURNEY_STATES.ARRIVED)
+    if (audioUnlocked) void audio.playArrivalChime()
     track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, simulated: true })
   }
+
+  useEffect(() => {
+    if (!audioUnlocked || playedCompletionRef.current) return
+    if (!step?.done && state !== JOURNEY_STATES.COMPLETE) return
+
+    playedCompletionRef.current = true
+    void audio.playCompletionChime()
+  }, [audio, audioUnlocked, state, step?.done])
 
   if (state === JOURNEY_STATES.IDLE) {
     return <Navigate to="/begin" replace />

@@ -66,6 +66,18 @@ export function useAudioEngine(manifest) {
     await engineRef.current?.playResumeCue(cueKey)
   }, [])
 
+  const playArrivalChime = useCallback(async () => {
+    await engineRef.current?.playArrivalChime()
+  }, [])
+
+  const playCompletionChime = useCallback(async () => {
+    await engineRef.current?.playCompletionChime()
+  }, [])
+
+  const endTransit = useCallback(() => {
+    engineRef.current?.clearTransitSession()
+  }, [])
+
   const stopNarration = useCallback(() => {
     engineRef.current?.stopNarration()
   }, [])
@@ -81,6 +93,9 @@ export function useAudioEngine(manifest) {
     playWaypoint,
     playTransit,
     playResumeCue,
+    playArrivalChime,
+    playCompletionChime,
+    endTransit,
     stopNarration,
     setPath,
     engine: engineRef.current,

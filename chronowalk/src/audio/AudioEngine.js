@@ -40,6 +40,7 @@ export class AudioEngine {
     this.activeSources = []
 
     this.presenceTimer = null
+    this.longwalkTimer = null
     this.activeTransitId = null
     this.transitStartedAt = null
     this.longwalkPlayed = false
@@ -138,6 +139,16 @@ export class AudioEngine {
     await this.playPlan(plan)
   }
 
+  clearTransitSession() {
+    this.activeTransitId = null
+    this.transitStartedAt = null
+    this.longwalkPlayed = false
+    if (this.longwalkTimer) {
+      clearTimeout(this.longwalkTimer)
+      this.longwalkTimer = null
+    }
+  }
+
   async playTransit(transitId) {
     const transit = this.manifest.transits?.find?.((t) => t.id === transitId) ??
       (this.manifest.transits?.[transitId]
@@ -151,6 +162,10 @@ export class AudioEngine {
     this.activeTransitId = transitId
     this.transitStartedAt = Date.now()
     this.longwalkPlayed = false
+    if (this.longwalkTimer) {
+      clearTimeout(this.longwalkTimer)
+      this.longwalkTimer = null
+    }
     this.scheduleLongwalkCheck(transit)
 
     const plan = buildTransitPlan(
@@ -355,7 +370,9 @@ export class AudioEngine {
         return
       }
 
-      await this.playSystemCue(this.manifest?.system?.presence)
+      await this.playSystemCue(this.manifest?.system?.presence, {
+        levelDb: this.mix.presence.levelDb,
+      })
       this.schedulePresencePulse()
     }, delay)
   }
@@ -364,27 +381,41 @@ export class AudioEngine {
     const expectedMs = (transit.duration_s ?? 60) * 1000
     const thresholdMs = expectedMs * this.mix.longwalk.thresholdMultiplier
 
-    setTimeout(async () => {
-      if (
-        this.activeTransitId !== transit.id ||
-        this.longwalkPlayed ||
-        this.narrationPlaying
-      ) {
+    this.longwalkTimer = setTimeout(async () => {
+      this.longwalkTimer = null
+
+      if (this.activeTransitId !== transit.id || this.longwalkPlayed) {
         return
       }
 
       const elapsed = Date.now() - (this.transitStartedAt ?? Date.now())
       if (elapsed >= thresholdMs) {
         this.longwalkPlayed = true
-        await this.playSystemCue(this.manifest?.system?.longwalk)
+        await this.playSystemCue(this.manifest?.system?.longwalk, {
+          levelDb: this.mix.longwalk.levelDb,
+        })
       }
     }, thresholdMs)
   }
 
-  async playSystemCue(filename) {
+  async playSystemCue(filename, { levelDb = 0 } = {}) {
     if (!filename) return
     const url = resolveSystemUrl(filename)
-    await this.playOneShot(url)
+    await this.playOneShot(url, levelDb)
+  }
+
+  async playUiCue(cueKey) {
+    const filename = this.manifest?.system?.ui?.[cueKey]
+    if (!filename) return
+    await this.playSystemCue(filename)
+  }
+
+  async playArrivalChime() {
+    await this.playUiCue('arrival')
+  }
+
+  async playCompletionChime() {
+    await this.playUiCue('completion')
   }
 
   async playResumeCue(cueKey) {
@@ -394,7 +425,7 @@ export class AudioEngine {
     await this.playOneShot(url)
   }
 
-  async playOneShot(url) {
+  async playOneShot(url, levelDb = 0) {
     if (!url) return
 
     await this.init()
@@ -405,7 +436,12 @@ export class AudioEngine {
 
     const source = this.context.createBufferSource()
     source.buffer = buffer
-    source.connect(this.systemGain)
+
+    const cueGain = this.context.createGain()
+    cueGain.gain.value = dbToGain(levelDb)
+
+    source.connect(cueGain)
+    cueGain.connect(this.systemGain)
     source.start(0)
     this.activeSources.push(source)
     source.onended = () => {
@@ -416,6 +452,7 @@ export class AudioEngine {
   teardown() {
     this.stopPresence()
     this.stopNarration()
+    this.clearTransitSession()
     this.playbackGeneration += 1
 
     if (this.bedSource) {
