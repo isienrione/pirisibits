@@ -1,4 +1,5 @@
 import JourneyShell from '../../components/journey/JourneyShell.jsx'
+import MapScreen from '../../components/map/MapScreen.jsx'
 
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (
@@ -51,7 +52,7 @@ export function JourneyPage() {
 }
 
 export function MapPage() {
-  return <ShellPage eyebrow="Map" title="Three confidence layers" subtitle="M14 — Mapbox warm style." />
+  return <MapScreen />
 }
 
 export function JournalPage() {

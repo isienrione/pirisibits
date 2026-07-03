@@ -27,7 +27,7 @@ const MAP_COLORS = {
   activeLeg: '#C8643C',
 }
 
-const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
+const MAP_STYLE = env.mapboxStyleUrl
 
 function setupMapLayers(map, { stops, tour, bounds }) {
   if (!map.getSource('waypoint-zones')) {
@@ -288,7 +288,7 @@ function TourMapboxView({
     const container = mapContainer.current
     if (!mapboxToken || !container || map.current) return undefined
 
-    const bounds = tour ? getTourBounds(tour) : null
+    const bounds = tour?.bounds ?? (tour ? getTourBounds(tour) : null)
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
     let cancelled = false
     let loadTimeoutId = null

@@ -102,6 +102,8 @@ export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
  */
 export const env = {
   mapboxToken: import.meta.env.VITE_MAPBOX_TOKEN,
+  mapboxStyleUrl:
+    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/light-v11',
   get debugGeo() {
     return isDebugGeo()
   },

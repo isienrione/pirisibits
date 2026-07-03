@@ -78,6 +78,10 @@ export default function JourneyDevPanel() {
           Open welcome flow
         </a>
         {' · '}
+        <a href="/map" style={{ color: 'var(--ember)' }}>
+          Open map
+        </a>
+        {' · '}
         <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>
           Open threshold demo
         </a>

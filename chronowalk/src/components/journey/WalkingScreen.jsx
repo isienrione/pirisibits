@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { JourneyLayout, JourneyPrimaryButton, JourneySecondaryButton } from './JourneyLayout.jsx'
 
 export default function WalkingScreen({
@@ -30,6 +31,20 @@ export default function WalkingScreen({
           I&apos;ve arrived
         </JourneySecondaryButton>
       ) : null}
+
+      <Link
+        to="/map"
+        style={{
+          display: 'inline-block',
+          marginTop: 16,
+          color: 'var(--ember)',
+          fontSize: 'var(--fs-secondary)',
+          textDecoration: 'none',
+          fontWeight: 600,
+        }}
+      >
+        Open map
+      </Link>
     </JourneyLayout>
   )
 }
