@@ -1,24 +1,26 @@
-import { StrictMode, useCallback, useState } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import AppRouter from './app/AppRouter.jsx'
 import App from './App.jsx'
-import SplashScreen from './components/SplashScreen.jsx'
 import './pwa/pwaController.js'
 
-function Root() {
-  const [showSplash, setShowSplash] = useState(true)
-  const handleSplashComplete = useCallback(() => setShowSplash(false), [])
+const useV2 = import.meta.env.VITE_V2_APP !== 'false'
 
-  return (
-    <>
-      <App />
-      {showSplash ? <SplashScreen onComplete={handleSplashComplete} /> : null}
-    </>
-  )
+function Root() {
+  if (useV2) {
+    return <AppRouter />
+  }
+
+  return <App />
+}
+
+if (!useV2 && typeof document !== 'undefined') {
+  document.body.classList.add('legacy-v1')
 }
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Root />
-  </StrictMode>,
+  </StrictMode>
 )

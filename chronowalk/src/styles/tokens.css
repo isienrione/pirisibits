@@ -1,0 +1,65 @@
+/**
+ * ChronoWalk v2 design tokens — the law of the land.
+ * New v2 components must use these custom properties only.
+ */
+:root {
+  /* surfaces */
+  --obsidian: #16130f;
+  --ink: #211c15;
+  --bone: #f7f1e6;
+
+  /* text */
+  --warm-white: #f5efe3;
+  --muted-warm: #b9af9c;
+  --ink-900: #2a1206;
+  --text-dark: #16130f;
+
+  /* the glow */
+  --ember: #e8a13c;
+  --ember-glow: rgba(232, 161, 60, 0.55);
+
+  /* city accents */
+  --city-rome: #e4552e;
+  --city-kyoto: #6e8b3d;
+  --city-paris: #8a2e44;
+  --city-london: #3f6e86;
+  --city-cusco: #b77a2a;
+  --accent: var(--city-rome);
+
+  /* confidence */
+  --verdigris: #4f7a6a;
+
+  /* type */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --fs-hero: 40px;
+  --fs-title: 34px;
+  --fs-place: 32px;
+  --fs-h2: 22px;
+  --fs-reflect: 20px;
+  --fs-body: 17px;
+  --fs-secondary: 15px;
+  --fs-meta: 13px;
+  --fs-caption: 11px;
+
+  /* spacing: 4px grid */
+  --edge: 24px;
+  --gap-s: 8px;
+  --gap-m: 16px;
+  --gap-l: 24px;
+  --gap-xl: 40px;
+
+  /* shape */
+  --r-card: 12px;
+  --r-sheet: 24px;
+
+  /* motion */
+  --d-ui: 200ms;
+  --d-trans: 400ms;
+  --d-cinematic: 1200ms;
+  --ease: cubic-bezier(0.22, 0.8, 0.36, 1);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
