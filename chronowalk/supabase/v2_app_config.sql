@@ -26,6 +26,23 @@ create table if not exists public.purchases (
 create index if not exists purchases_access_token_idx on public.purchases (access_token);
 create index if not exists purchases_email_idx on public.purchases (email);
 
+-- Token validation for magic links (anon-safe; does not expose purchase rows)
+create or replace function public.validate_access_token(p_token text)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1
+    from public.purchases
+    where access_token = p_token::uuid
+  );
+$$;
+
+grant execute on function public.validate_access_token(text) to anon;
+
 alter table public.app_config enable row level security;
 alter table public.purchases enable row level security;
 

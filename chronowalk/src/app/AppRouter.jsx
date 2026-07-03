@@ -7,13 +7,13 @@ import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
 import { JourneyThresholdLayer, ThresholdDemoPage } from './pages/ThresholdPage'
 import {
-  AccessPage,
   BeginPage,
   JourneyPage,
   JournalPage,
   LetterPage,
   MapPage,
 } from './pages/PlaceholderPages'
+import { AccessPage } from './pages/AccessPage'
 import { LandingPage } from './pages/LandingPage'
 import { WelcomePage } from './pages/WelcomePage'
 

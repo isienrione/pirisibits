@@ -89,13 +89,3 @@ export function LetterPage() {
     />
   )
 }
-
-export function AccessPage() {
-  return (
-    <ShellPage
-      eyebrow="Access"
-      title="Welcome back, traveler."
-      subtitle="M9 — magic link validation and cw_access grant."
-    />
-  )
-}

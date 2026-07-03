@@ -102,4 +102,9 @@ export function grantAccess() {
   window.localStorage.setItem(ACCESS_KEY, 'true')
 }
 
+export function revokeAccess() {
+  if (typeof window === 'undefined') return
+  window.localStorage.removeItem(ACCESS_KEY)
+}
+
 export { ACCESS_KEY, AB_KEY }

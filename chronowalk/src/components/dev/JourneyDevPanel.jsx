@@ -1,3 +1,4 @@
+import { grantAccess, revokeAccess } from '../../lib/config'
 import { useJourney, useTourManifest } from '../../hooks/useJourney'
 import { JOURNEY_STATES } from '../../state/journey'
 
@@ -70,8 +71,18 @@ export default function JourneyDevPanel() {
         <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>
           Open threshold demo
         </a>
+        {' · '}
+        <a href="/access?token=dev" style={{ color: 'var(--ember)' }}>
+          Dev access link
+        </a>
       </p>
-      <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+        <button type="button" onClick={() => grantAccess()}>
+          Grant access
+        </button>
+        <button type="button" onClick={() => revokeAccess()}>
+          Revoke access
+        </button>
         <button type="button" onClick={() => begin({ dayNumber: 1 })}>
           Begin day 1
         </button>
