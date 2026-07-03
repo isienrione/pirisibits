@@ -58,6 +58,11 @@ export default function JourneyDevPanel() {
           </button>
         ))}
       </div>
+      <p style={{ margin: '10px 0 0', opacity: 0.75 }}>
+        <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>
+          Open threshold demo
+        </a>
+      </p>
       <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
         <button type="button" onClick={() => begin({ dayNumber: 1 })}>
           Begin day 1

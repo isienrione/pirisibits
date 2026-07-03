@@ -76,11 +76,13 @@ export function BeginPage() {
 
 export function JourneyPage() {
   return (
-    <ShellPage
-      eyebrow="Journey shell"
-      title="Walking · Approaching · Arrival · Story · Threshold"
-      subtitle="M11–M13 screens render inside this route by journey state."
-    />
+    <>
+      <ShellPage
+        eyebrow="Journey shell"
+        title="Walking · Approaching · Arrival · Story · Threshold"
+        subtitle="Set state to threshold in the dev panel, or open /threshold-demo."
+      />
+    </>
   )
 }
 

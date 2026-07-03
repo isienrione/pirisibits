@@ -2,8 +2,10 @@ import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
+import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
+import { JourneyThresholdLayer, ThresholdDemoPage } from './pages/ThresholdPage'
 import {
   AccessPage,
   BeginPage,
@@ -15,14 +17,22 @@ import {
   WelcomePage,
 } from './pages/PlaceholderPages'
 
-function AppRouter() {
-  useEffect(() => {
-    captureHostFromUrl()
-    initAnalytics()
-  }, [])
+function AppChrome() {
+  const { chromeHidden } = useThresholdChrome()
+
+  if (chromeHidden) return null
 
   return (
-    <BrowserRouter>
+    <>
+      <ConsentBar />
+      <JourneyDevPanel />
+    </>
+  )
+}
+
+function AppRoutes() {
+  return (
+    <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/welcome" element={<WelcomePage />} />
@@ -32,11 +42,27 @@ function AppRouter() {
         <Route path="/journal" element={<JournalPage />} />
         <Route path="/letter" element={<LetterPage />} />
         <Route path="/access" element={<AccessPage />} />
+        <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <ConsentBar />
-      <JourneyDevPanel />
-    </BrowserRouter>
+      <JourneyThresholdLayer />
+      <AppChrome />
+    </>
+  )
+}
+
+function AppRouter() {
+  useEffect(() => {
+    captureHostFromUrl()
+    initAnalytics()
+  }, [])
+
+  return (
+    <ThresholdChromeProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ThresholdChromeProvider>
   )
 }
 
