@@ -27,7 +27,7 @@ describe('Threshold', () => {
     renderThreshold()
 
     expect(screen.getByText('Now')).toBeInTheDocument()
-    expect(screen.getByText('80 AD')).toBeInTheDocument()
+    expect(screen.getByText('Then')).toBeInTheDocument()
     expect(screen.getByText('Press and hold to cross')).toBeInTheDocument()
     expect(screen.getByText('Evidence-based reconstruction')).toBeInTheDocument()
   })

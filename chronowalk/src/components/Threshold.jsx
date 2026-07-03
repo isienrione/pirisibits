@@ -91,7 +91,7 @@ export default function Threshold({
   waypoint,
   nowAmbienceUrl,
   thenSoundscapeUrl,
-  thenLabel = '80 AD',
+  thenLabel = 'Then',
   active = true,
   className = '',
 }) {

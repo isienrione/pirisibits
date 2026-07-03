@@ -15,5 +15,5 @@ export const THRESHOLD_DEMO_WAYPOINT = {
   nowAmbience: mediaUrl('/rome/audio/ambience_now.mp3'),
 }
 
-export const THRESHOLD_HOLD_MS = 1200
-export const THRESHOLD_RELEASE_MS = 600
+export const THRESHOLD_HOLD_MS = 2400
+export const THRESHOLD_RELEASE_MS = 900
