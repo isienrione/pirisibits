@@ -7,6 +7,7 @@ const LINKS = [
   { to: '/map', label: 'Map' },
   { to: '/journal', label: 'Journal' },
   { to: '/letter', label: 'Letter' },
+  { to: '/settings', label: 'Settings' },
 ]
 
 export default function CompanionDock() {

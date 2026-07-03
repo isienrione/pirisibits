@@ -90,6 +90,10 @@ export default function JourneyDevPanel() {
           Open letter
         </a>
         {' · '}
+        <a href="/settings" style={{ color: 'var(--ember)' }}>
+          Open settings
+        </a>
+        {' · '}
         <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>
           Open threshold demo
         </a>

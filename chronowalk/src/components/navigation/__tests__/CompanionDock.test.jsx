@@ -32,5 +32,6 @@ describe('CompanionDock', () => {
     expect(screen.getByLabelText(/companion navigation/i)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Map' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Letter' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument()
   })
 })
