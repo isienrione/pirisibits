@@ -26,6 +26,19 @@ Production `main` stays stable until Stage 5 field-test gate.
 
 Copy `chronowalk/.env.example` → `chronowalk/.env.local`. Never commit secrets.
 
+## Stage 4 (local)
+
+```bash
+cd chronowalk
+npm run check:content:local          # schema only
+npm run check:content                # needs reachable VITE_MEDIA_BASE (R2 CDN)
+npm run measure:durations            # ffprobe over CDN, or --from-dir=/path/to/rome/audio
+npm run generate:rome-manifest
+npm run check:content:strict
+```
+
+If `media.chronowalk.app` does not resolve, set `VITE_MEDIA_BASE` in `.env.local` to your R2 public `*.r2.dev` URL, or configure the custom domain in Cloudflare DNS first.
+
 ## Reuse from v1
 
 - `scripts/normalize-audio.sh`, GPS/distance utils, `AudioOrchestrator`, Supabase client, Mapbox patterns

@@ -17,29 +17,12 @@ import { collectManifestMediaPaths } from '../src/content/mediaPaths.js'
 import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
 import { durationCoverage } from '../src/content/durationManifest.js'
 import { parseRomeManifest } from '../src/content/manifest.schema.js'
+import { assertMediaHostResolvable, getMediaBase, loadEnvLocal, printMediaHostHelp } from './mediaBaseEnv.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const manifestPath = join(__dirname, '../src/content/rome/manifest.json')
 const skipRemote = process.argv.includes('--skip-remote')
 const requireFullDurations = process.argv.includes('--require-full-durations')
-
-function loadEnvLocal() {
-  try {
-    const envPath = join(__dirname, '../.env.local')
-    const raw = readFileSync(envPath, 'utf8')
-    for (const line of raw.split('\n')) {
-      const trimmed = line.trim()
-      if (!trimmed || trimmed.startsWith('#')) continue
-      const eq = trimmed.indexOf('=')
-      if (eq === -1) continue
-      const key = trimmed.slice(0, eq)
-      const value = trimmed.slice(eq + 1)
-      if (!process.env[key]) process.env[key] = value
-    }
-  } catch {
-    // optional
-  }
-}
 
 async function headCheck(url) {
   const response = await fetch(url, { method: 'HEAD' })
@@ -95,11 +78,13 @@ async function main() {
     return
   }
 
-  const base = process.env.VITE_MEDIA_BASE?.replace(/\/$/, '')
+  const base = getMediaBase()
   if (!base) {
     console.error('✗ VITE_MEDIA_BASE is not set. Use --skip-remote to validate schema only.')
     process.exit(1)
   }
+
+  await assertMediaHostResolvable(base)
 
   const missing = []
   const checked = []
@@ -122,6 +107,13 @@ async function main() {
 }
 
 main().catch((error) => {
+  if (error instanceof TypeError && String(error.message).includes('fetch failed')) {
+    const base = getMediaBase()
+    if (base) {
+      printMediaHostHelp(new URL(base).hostname)
+      process.exit(1)
+    }
+  }
   console.error(error instanceof Error ? error.message : error)
   process.exit(1)
 })
