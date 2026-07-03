@@ -163,6 +163,20 @@ export default function JournalScreen() {
         >
           Open map
         </Link>
+
+        <Link
+          to="/letter"
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            color: 'color-mix(in srgb, var(--ink) 60%, var(--bone))',
+            fontSize: 'var(--fs-secondary)',
+            textDecoration: 'none',
+            fontWeight: 600,
+          }}
+        >
+          Open letter
+        </Link>
       </div>
     </JournalLayout>
   )

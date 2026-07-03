@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
@@ -158,7 +158,26 @@ export default function JourneyShell() {
       <JourneyLayout
         eyebrow="Journey complete"
         title="You walked Rome"
-        subtitle="Your letter and journal will gather what you heard along the way."
+        subtitle="Your letter and journal gathered what you heard along the way."
+        footer={
+          <Link
+            to="/letter"
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '16px 20px',
+              borderRadius: 999,
+              background: 'var(--accent)',
+              color: 'var(--bone)',
+              fontSize: 'var(--fs-body)',
+              fontWeight: 600,
+              textAlign: 'center',
+              textDecoration: 'none',
+            }}
+          >
+            Read your letter
+          </Link>
+        }
       />
     )
   }

@@ -1,6 +1,7 @@
 import JourneyShell from '../../components/journey/JourneyShell.jsx'
 import MapScreen from '../../components/map/MapScreen.jsx'
 import JournalScreen from '../../components/journal/JournalScreen.jsx'
+import LetterScreen from '../../components/letter/LetterScreen.jsx'
 
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (
@@ -61,11 +62,5 @@ export function JournalPage() {
 }
 
 export function LetterPage() {
-  return (
-    <ShellPage
-      eyebrow="Journey letter"
-      title="The path you walked"
-      subtitle="M16 — SVG meander + share/save."
-    />
-  )
+  return <LetterScreen />
 }
