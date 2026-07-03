@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500&display=swap');
-@import './styles/tokens.css';
 
 @tailwind base;
 @tailwind components;
@@ -18,17 +17,16 @@
   body {
     @apply font-sans antialiased;
     background: var(--obsidian);
-    color: var(--warm-white);
-    font-family: var(--font-ui);
+    color: var(--bone);
   }
 
   body.legacy-v1 {
-    background: var(--bone);
-    color: var(--ink);
+    background: var(--obsidian);
+    color: var(--bone);
   }
 
   input[type='range'] {
-    accent-color: var(--accent);
+    accent-color: var(--ember);
   }
 
   button,

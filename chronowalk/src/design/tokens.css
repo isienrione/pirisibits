@@ -1,0 +1,38 @@
+/**
+ * ChronoWalk design tokens — single source of design truth.
+ * Import first in main.jsx before any other stylesheets.
+ */
+:root {
+  --obsidian: #16130f;
+  --ink-900: #211c15;
+  --ink-800: #26221b;
+  --bone: #f7f1e6;
+  --warm-white: #f5efe3;
+  --muted: #b9af9c;
+  --ember: #e8a13c;
+  --ember-deep: #c97f1e;
+  --ink-on-fill: #2a1206;
+
+  /* THE VITALITY SYSTEM — act accents (one family per screen, never big fills) */
+  --act-arena: #e4552e; /* I  · coral — blood, sand, energy   */
+  --act-hill: #7c9a5c; /* II · laurel — pines, wreaths       */
+  --act-forum: #e8a13c; /* III· ember — the classic heart     */
+  --act-market: #4e9b8f; /* IV · verdigris — patina, coins     */
+  --act-city: #b14a6e; /* V  · tyrian rose — piazza life     */
+  --act-river: #4e7d9b; /* VI · tiber blue — dusk on water    */
+  --act-encore: #8a6fb5; /* Enc· twilight violet — long road   */
+
+  --spectrum: linear-gradient(
+    135deg,
+    #e4552e,
+    #e8a13c,
+    #7c9a5c,
+    #4e9b8f,
+    #4e7d9b,
+    #8a6fb5,
+    #b14a6e
+  );
+  --seam-glow: 0 0 12px rgba(232, 161, 60, 0.45);
+  --radius-card: 14px;
+  --radius-sheet: 20px;
+}
