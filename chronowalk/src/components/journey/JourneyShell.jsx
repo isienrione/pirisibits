@@ -13,6 +13,7 @@ import ArrivalScreen from './ArrivalScreen.jsx'
 import PathChoiceScreen from './PathChoiceScreen.jsx'
 import StoryScreen from './StoryScreen.jsx'
 import WalkingScreen from './WalkingScreen.jsx'
+import RestScreen from './RestScreen.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 
 export default function JourneyShell() {
@@ -32,6 +33,8 @@ export default function JourneyShell() {
   const storyStartedRef = useRef(null)
   const playedResumeRef = useRef(false)
   const playedCompletionRef = useRef(false)
+  const scriptedRestNarrationStartedRef = useRef(null)
+  const scriptedRestEnteredRef = useRef(null)
   const prevStateRef = useRef(state)
 
   useEffect(() => {
@@ -52,8 +55,29 @@ export default function JourneyShell() {
       storyStartedRef.current = null
       playedStepRef.current = null
     }
+    if (prevStateRef.current === JOURNEY_STATES.PAUSED && state === JOURNEY_STATES.WALKING) {
+      scriptedRestNarrationStartedRef.current = null
+      scriptedRestEnteredRef.current = null
+    }
     prevStateRef.current = state
   }, [state])
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint' || !step.record?.scripted_rest) return
+    if (!audio.narrationPlaying) return
+    scriptedRestNarrationStartedRef.current = step.id
+  }, [audio.narrationPlaying, state, step?.id, step?.record?.scripted_rest, step?.type])
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint' || !step.record?.scripted_rest) return
+    if (audio.narrationPlaying) return
+    if (scriptedRestNarrationStartedRef.current !== step.id) return
+    if (scriptedRestEnteredRef.current === step.id) return
+
+    scriptedRestEnteredRef.current = step.id
+    transition(JOURNEY_STATES.PAUSED)
+    track(TRACK_EVENTS.PAUSE, { waypoint_id: step.id, scripted: true })
+  }, [audio.narrationPlaying, state, step?.id, step?.record?.scripted_rest, step?.type, transition])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geo = useJourneyGeo(geoTarget, {
@@ -176,6 +200,18 @@ export default function JourneyShell() {
     advanceSequence()
   }, [advanceSequence, audio, completeTransit, step])
 
+  const handleResumeFromRest = useCallback(() => {
+    if (!step?.record?.scripted_rest || step.type !== 'waypoint') return
+
+    completeWaypoint(step.id)
+    track(TRACK_EVENTS.RESUME, { waypoint_id: step.id, scripted: true })
+    storyStartedRef.current = null
+    playedStepRef.current = null
+    scriptedRestNarrationStartedRef.current = null
+    scriptedRestEnteredRef.current = null
+    advanceSequence()
+  }, [advanceSequence, completeWaypoint, step])
+
   const handleOpenThreshold = () => {
     audio.stopNarration()
     transition(JOURNEY_STATES.THRESHOLD)
@@ -271,6 +307,7 @@ export default function JourneyShell() {
         waypointName={step.record.title ?? step.record.name}
         narrationPlaying={audio.narrationPlaying}
         hasReconstruction={Boolean(step.record.reconstruction)}
+        scriptedRest={Boolean(step.record.scripted_rest)}
         onOpenThreshold={handleOpenThreshold}
         onStoryComplete={handleStoryComplete}
         busy={busy}
@@ -296,6 +333,7 @@ export default function JourneyShell() {
       <ArrivalScreen
         waypointName={step.record.title ?? step.record.name}
         arrivalLine={step.record.arrivalLine}
+        beginLabel={step.record.scripted_rest ? 'Begin rest' : 'Begin story'}
         onBeginStory={handleBeginStory}
         busy={busy}
       />
@@ -333,6 +371,17 @@ export default function JourneyShell() {
         subtitle={step.record.approachLine}
         distance={geo.distance}
         onSimulateArrival={handleSimulateArrival}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.PAUSED && step.type === 'waypoint' && step.record?.scripted_rest) {
+    return (
+      <RestScreen
+        title={step.record.title ?? step.record.name}
+        subtitle={step.record.arrivalLine}
+        onResume={handleResumeFromRest}
         busy={busy}
       />
     )

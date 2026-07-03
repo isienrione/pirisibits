@@ -4,10 +4,21 @@ export default function StoryScreen({
   waypointName,
   narrationPlaying,
   hasReconstruction,
+  scriptedRest = false,
   onOpenThreshold,
   onStoryComplete,
   busy = false,
 }) {
+  if (scriptedRest) {
+    return (
+      <JourneyLayout
+        eyebrow="Rest"
+        title={waypointName}
+        subtitle={narrationPlaying ? 'Listen…' : 'Take your time'}
+      />
+    )
+  }
+
   return (
     <JourneyLayout
       eyebrow="Story"

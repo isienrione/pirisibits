@@ -2,20 +2,35 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
-import { beginJourney, resetJourney, transitionJourney, JOURNEY_STATES } from '../../../state/journey.js'
+import {
+  beginJourney,
+  resetJourney,
+  transitionJourney,
+  getJourneySnapshot,
+  JOURNEY_STATES,
+} from '../../../state/journey.js'
 
 const playWaypointMock = vi.fn().mockResolvedValue(undefined)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
 const unlockMock = vi.fn().mockResolvedValue(true)
 
+const audioMock = vi.hoisted(() => ({
+  narrationPlaying: false,
+}))
+
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
   useAudioEngine: () => ({
     ready: true,
-    narrationPlaying: false,
+    get narrationPlaying() {
+      return audioMock.narrationPlaying
+    },
     unlock: unlockMock,
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
     playResumeCue: vi.fn().mockResolvedValue(undefined),
+    playArrivalChime: vi.fn().mockResolvedValue(undefined),
+    playCompletionChime: vi.fn().mockResolvedValue(undefined),
+    endTransit: vi.fn(),
     stopNarration: vi.fn(),
     setPath: vi.fn(),
   }),
@@ -49,10 +64,13 @@ function renderShell() {
   )
 }
 
+const PAUSE_SEQUENCE_INDEX = 9
+
 describe('JourneyShell', () => {
   beforeEach(() => {
     localStorage.clear()
     resetJourney()
+    audioMock.narrationPlaying = false
     playWaypointMock.mockClear()
     playTransitMock.mockClear()
     unlockMock.mockClear()
@@ -89,5 +107,47 @@ describe('JourneyShell', () => {
     expect(await screen.findByRole('button', { name: /begin story/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /begin story/i }))
     expect(screen.getByRole('button', { name: /step through the threshold/i })).toBeInTheDocument()
+  })
+
+  it('shows scripted rest arrival copy at the Forum pause stop', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.ARRIVED, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+    renderShell()
+
+    expect(await screen.findByRole('heading', { name: /forum rest/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /begin rest/i })).toBeInTheDocument()
+  })
+
+  it('enters scripted rest after pause narration ends', async () => {
+    audioMock.narrationPlaying = true
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+
+    const view = renderShell()
+    expect(await screen.findByText(/listen/i)).toBeInTheDocument()
+
+    audioMock.narrationPlaying = false
+    view.rerender(
+      <MemoryRouter>
+        <JourneyShell />
+      </MemoryRouter>
+    )
+
+    expect(await screen.findByText(/find shade/i)).toBeInTheDocument()
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.PAUSED)
+  })
+
+  it('resumes scripted Forum rest and advances to transit', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.PAUSED, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+    renderShell()
+
+    expect(await screen.findByRole('heading', { name: /forum rest/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /resume walking/i }))
+
+    const snap = getJourneySnapshot()
+    expect(snap.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snap.context.currentSequenceIndex).toBe(PAUSE_SEQUENCE_INDEX + 1)
+    expect(snap.context.completedWaypointIds).toContain('pause')
   })
 })
