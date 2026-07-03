@@ -133,8 +133,14 @@ export function resolveActiveMapLeg(manifest, path, sequenceIndex, promotedOptio
   }
 }
 
-export function getMapConfidenceLayers({ locationStatus, activeStop, distance, transitLegActive }) {
-  return [
+export function getMapConfidenceLayers({
+  locationStatus,
+  activeStop,
+  distance,
+  transitLegActive,
+  companionMode,
+}) {
+  const layers = [
     {
       id: 'position',
       label:
@@ -156,4 +162,12 @@ export function getMapConfidenceLayers({ locationStatus, activeStop, distance, t
       active: transitLegActive,
     },
   ]
+
+  if (companionMode === 'off_route') {
+    layers.push({ id: 'route_drift', label: 'Off route', active: true })
+  } else if (companionMode === 'observing') {
+    layers.push({ id: 'observing', label: 'Observing', active: true })
+  }
+
+  return layers
 }

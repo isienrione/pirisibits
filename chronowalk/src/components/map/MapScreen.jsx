@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import TourMap from '../TourMap.jsx'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
@@ -8,9 +8,13 @@ import {
   getMapConfidenceLayers,
   resolveActiveMapLeg,
 } from '../../content/mapStops.js'
+import { isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
+import { isDevPanelEnabled } from '../../config/env.js'
+import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
+import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
@@ -59,10 +63,28 @@ export default function MapScreen() {
   )
   const [directionsOpen, setDirectionsOpen] = useState(false)
   const [recenterKey, setRecenterKey] = useState(0)
+  const [devSimulateGps, setDevSimulateGps] = useState(false)
+
+  useEffect(() => {
+    if (!isDevPanelEnabled()) return undefined
+    const syncDevGps = () => setDevSimulateGps(readDevSimulateGps())
+    syncDevGps()
+    window.addEventListener(DEV_TOOLS_CHANGED, syncDevGps)
+    return () => window.removeEventListener(DEV_TOOLS_CHANGED, syncDevGps)
+  }, [])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geo = useJourneyGeo(geoTarget, {
     debugMode: import.meta.env.DEV,
+    simulateAtTarget: devSimulateGps,
+  })
+
+  const companion = useWalkingCompanion({
+    position: geo.position,
+    distance: geo.distance,
+    geofenceRadiusM: geoTarget?.geofence?.radius_m ?? 40,
+    locationStatus: geo.locationStatus,
+    enabled: isCompanionTrackingState(state),
   })
 
   const tour = useMemo(
@@ -143,6 +165,7 @@ export default function MapScreen() {
     activeStop,
     distance: geo.distance,
     transitLegActive,
+    companionMode: companion.mode,
   })
 
   if (state === JOURNEY_STATES.IDLE) {

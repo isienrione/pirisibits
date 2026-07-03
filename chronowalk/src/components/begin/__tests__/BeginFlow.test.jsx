@@ -27,6 +27,7 @@ vi.mock('../../../lib/track', () => ({
   TRACK_EVENTS: {
     JOURNEY_BEGIN: 'journey_begin',
     RESUME: 'resume',
+    GPS_FALLBACK_USED: 'gps_fallback_used',
   },
 }))
 
@@ -83,5 +84,29 @@ describe('BeginFlow', () => {
       pace: JOURNEY_PACE.CLASSIC,
       waypoint_index: 0,
     })
+  })
+
+  it('shows recovery copy when location permission is denied', async () => {
+    const { requestLocationAccess } = await import('../../../lib/locationAccess')
+    requestLocationAccess.mockResolvedValueOnce('denied')
+
+    renderBeginFlow()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: /enable location & start/i }))
+
+    expect(await screen.findByRole('heading', { name: /location access is off/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue without location/i })).toBeInTheDocument()
+    expect(trackMock).toHaveBeenCalledWith('gps_fallback_used', {
+      source: 'begin_flow',
+      result: 'denied',
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /continue without location/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey route')).toBeInTheDocument()
+    })
+    expect(beginMock).toHaveBeenCalled()
   })
 })

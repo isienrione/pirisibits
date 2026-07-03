@@ -20,7 +20,7 @@ import RestScreen from './RestScreen.jsx'
 import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
-import { COMPANION_MODES } from '../../content/companionGuidance.js'
+import { COMPANION_MODES, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 
 export default function JourneyShell() {
@@ -107,11 +107,11 @@ export default function JourneyShell() {
     distance: geo.distance,
     geofenceRadiusM: geoTarget?.geofence?.radius_m ?? 40,
     locationStatus: geo.locationStatus,
-    enabled: state === JOURNEY_STATES.WALKING,
+    enabled: isCompanionTrackingState(state),
   })
 
   useEffect(() => {
-    if (state !== JOURNEY_STATES.WALKING) {
+    if (!isCompanionTrackingState(state)) {
       prevCompanionModeRef.current = COMPANION_MODES.NORMAL
       return
     }
@@ -424,6 +424,9 @@ export default function JourneyShell() {
         waypointName={step.record.title ?? step.record.name}
         approachLine={step.record.approachLine}
         distance={geo.distance}
+        locationStatus={geo.locationStatus}
+        onRetryLocation={geo.retryLocation}
+        companionMode={companion.mode}
       />
     )
   }

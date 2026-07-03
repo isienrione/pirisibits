@@ -4,8 +4,10 @@ import {
   buildManifestTour,
   buildMapStopsFromManifest,
   getManifestTourBounds,
+  getMapConfidenceLayers,
   resolveActiveMapLeg,
 } from '../mapStops.js'
+import { COMPANION_MODES } from '../companionGuidance.js'
 
 describe('mapStops', () => {
   const manifest = loadRomeManifest()
@@ -52,5 +54,27 @@ describe('mapStops', () => {
     const bounds = getManifestTourBounds(manifest, stopIds)
     expect(bounds?.minLat).toBeLessThan(bounds?.maxLat)
     expect(bounds?.minLng).toBeLessThan(bounds?.maxLng)
+  })
+
+  it('adds companion confidence chips for off-route and observation', () => {
+    const activeStop = { title: 'The Forum', arrivalRadiusM: 40 }
+
+    const offRoute = getMapConfidenceLayers({
+      locationStatus: 'granted',
+      activeStop,
+      distance: 500,
+      transitLegActive: true,
+      companionMode: COMPANION_MODES.OFF_ROUTE,
+    })
+    expect(offRoute.some((layer) => layer.label === 'Off route' && layer.active)).toBe(true)
+
+    const observing = getMapConfidenceLayers({
+      locationStatus: 'granted',
+      activeStop,
+      distance: 120,
+      transitLegActive: false,
+      companionMode: COMPANION_MODES.OBSERVING,
+    })
+    expect(observing.some((layer) => layer.label === 'Observing' && layer.active)).toBe(true)
   })
 })

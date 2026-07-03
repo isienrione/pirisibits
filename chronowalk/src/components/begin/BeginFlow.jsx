@@ -225,7 +225,7 @@ function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
   )
 }
 
-function LocationPromptView({ pace, onEnable, onSkip, busy }) {
+function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, locationDenied = false }) {
   return (
     <BeginShell>
       <p
@@ -248,67 +248,117 @@ function LocationPromptView({ pace, onEnable, onSkip, busy }) {
           lineHeight: 1.15,
         }}
       >
-        Enable location for GPS guidance
+        {locationDenied ? 'Location access is off' : 'Enable location for GPS guidance'}
       </h1>
       <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
-        ChronoWalk uses your location only while the tour is active — to detect arrivals and guide you
-        between stops.
+        {locationDenied
+          ? 'You can still walk Rome, but arrivals will not auto-detect until location is enabled for this site in your browser settings.'
+          : 'ChronoWalk uses your location only while the tour is active — to detect arrivals and guide you between stops.'}
       </p>
 
-      <ul
-        style={{
-          margin: '24px 0 0',
-          padding: 0,
-          listStyle: 'none',
-          display: 'grid',
-          gap: 10,
-          fontSize: 'var(--fs-secondary)',
-          color: 'var(--muted-warm)',
-        }}
-      >
-        <li>Stories unlock when you reach each landmark</li>
-        <li>Walking directions stay in sync with your position</li>
-        <li>You can pause or change this anytime in Settings</li>
-      </ul>
+      {!locationDenied ? (
+        <ul
+          style={{
+            margin: '24px 0 0',
+            padding: 0,
+            listStyle: 'none',
+            display: 'grid',
+            gap: 10,
+            fontSize: 'var(--fs-secondary)',
+            color: 'var(--muted-warm)',
+          }}
+        >
+          <li>Stories unlock when you reach each landmark</li>
+          <li>Walking directions stay in sync with your position</li>
+          <li>You can pause or change this anytime in Settings</li>
+        </ul>
+      ) : (
+        <p style={{ marginTop: 20, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
+          Use the map for bearings, or tap &ldquo;I&apos;ve arrived&rdquo; at each stop when you are there.
+        </p>
+      )}
 
-      <button
-        type="button"
-        onClick={onEnable}
-        disabled={busy}
-        style={{
-          marginTop: 28,
-          width: '100%',
-          padding: '16px 20px',
-          border: 'none',
-          borderRadius: 999,
-          background: 'var(--accent)',
-          color: 'var(--bone)',
-          fontSize: 'var(--fs-body)',
-          fontWeight: 600,
-          cursor: busy ? 'wait' : 'pointer',
-        }}
-      >
-        {busy ? 'Requesting access…' : 'Enable location & start'}
-      </button>
+      {locationDenied ? (
+        <button
+          type="button"
+          onClick={onContinueAnyway}
+          disabled={busy}
+          style={{
+            marginTop: 28,
+            width: '100%',
+            padding: '16px 20px',
+            border: 'none',
+            borderRadius: 999,
+            background: 'var(--accent)',
+            color: 'var(--bone)',
+            fontSize: 'var(--fs-body)',
+            fontWeight: 600,
+            cursor: busy ? 'wait' : 'pointer',
+          }}
+        >
+          Continue without location
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onEnable}
+          disabled={busy}
+          style={{
+            marginTop: 28,
+            width: '100%',
+            padding: '16px 20px',
+            border: 'none',
+            borderRadius: 999,
+            background: 'var(--accent)',
+            color: 'var(--bone)',
+            fontSize: 'var(--fs-body)',
+            fontWeight: 600,
+            cursor: busy ? 'wait' : 'pointer',
+          }}
+        >
+          {busy ? 'Requesting access…' : 'Enable location & start'}
+        </button>
+      )}
 
-      <button
-        type="button"
-        onClick={onSkip}
-        disabled={busy}
-        style={{
-          marginTop: 12,
-          width: '100%',
-          padding: '14px 18px',
-          border: 'none',
-          borderRadius: 999,
-          background: 'transparent',
-          color: 'var(--muted-warm)',
-          fontSize: 'var(--fs-secondary)',
-          cursor: busy ? 'wait' : 'pointer',
-        }}
-      >
-        Continue without enabling
-      </button>
+      {!locationDenied ? (
+        <button
+          type="button"
+          onClick={onSkip}
+          disabled={busy}
+          style={{
+            marginTop: 12,
+            width: '100%',
+            padding: '14px 18px',
+            border: 'none',
+            borderRadius: 999,
+            background: 'transparent',
+            color: 'var(--muted-warm)',
+            fontSize: 'var(--fs-secondary)',
+            cursor: busy ? 'wait' : 'pointer',
+          }}
+        >
+          Continue without enabling
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onEnable}
+          disabled={busy}
+          style={{
+            marginTop: 12,
+            width: '100%',
+            padding: '14px 18px',
+            border: 'none',
+            borderRadius: 999,
+            background: 'transparent',
+            color: 'var(--muted-warm)',
+            fontSize: 'var(--fs-secondary)',
+            cursor: busy ? 'wait' : 'pointer',
+          }}
+        >
+          {busy ? 'Requesting access…' : 'Try location again'}
+        </button>
+      )}
     </BeginShell>
   )
 }
@@ -319,6 +369,7 @@ export default function BeginFlow() {
   const [step, setStep] = useState(() => (isResumable ? 'resume' : 'pace'))
   const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
   const [busy, setBusy] = useState(false)
+  const [locationDenied, setLocationDenied] = useState(false)
 
   const activePace = getPaceOption(selectedPace)
 
@@ -341,9 +392,17 @@ export default function BeginFlow() {
 
   const handleEnableLocation = async () => {
     setBusy(true)
-    await requestLocationAccess()
+    const result = await requestLocationAccess()
     setBusy(false)
-    startJourney()
+
+    if (result === 'granted') {
+      setLocationDenied(false)
+      startJourney()
+      return
+    }
+
+    setLocationDenied(true)
+    track(TRACK_EVENTS.GPS_FALLBACK_USED, { source: 'begin_flow', result })
   }
 
   if (step === 'resume') {
@@ -355,8 +414,10 @@ export default function BeginFlow() {
       <LocationPromptView
         pace={activePace}
         busy={busy}
+        locationDenied={locationDenied}
         onEnable={handleEnableLocation}
         onSkip={startJourney}
+        onContinueAnyway={startJourney}
       />
     )
   }

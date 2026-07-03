@@ -15,7 +15,7 @@ vi.mock('../../DirectionsNavHud.jsx', () => ({
 vi.mock('../../../hooks/useJourneyGeo.js', () => ({
   useJourneyGeo: () => ({
     position: { lat: 41.89, lng: 12.49 },
-    distance: 80,
+    distance: 520,
     insideGeofence: false,
     approachingGeofence: false,
     state: 'TRANSIT',
@@ -45,5 +45,6 @@ describe('MapScreen', () => {
     expect(await screen.findByTestId('tour-map')).toBeInTheDocument()
     expect(screen.getByText('Back to walk')).toBeInTheDocument()
     expect(screen.getByText('Position live')).toBeInTheDocument()
+    expect(screen.getByText('Off route')).toBeInTheDocument()
   })
 })

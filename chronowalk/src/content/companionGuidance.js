@@ -1,4 +1,5 @@
 import { LOCATION_STATUS } from '../hooks/useGeoLocation.js'
+import { JOURNEY_STATES } from '../state/journey.js'
 
 export const COMPANION_MODES = {
   NORMAL: 'normal',
@@ -67,4 +68,8 @@ export function companionCopy(mode, { targetTitle } = {}) {
   }
 
   return null
+}
+
+export function isCompanionTrackingState(state) {
+  return state === JOURNEY_STATES.WALKING || state === JOURNEY_STATES.APPROACHING
 }

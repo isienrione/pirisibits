@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import { JOURNEY_STATES } from '../../state/journey.js'
 import {
   COMPANION_MODES,
   companionCopy,
+  isCompanionTrackingState,
   movedEnough,
   resolveCompanionMode,
   resolveOffRouteThresholdM,
@@ -55,5 +57,11 @@ describe('companionGuidance', () => {
     )
     expect(companionCopy(COMPANION_MODES.OBSERVING)?.eyebrow).toBe('Observation')
     expect(companionCopy(COMPANION_MODES.NORMAL)).toBeNull()
+  })
+
+  it('tracks companion on walking and approaching states', () => {
+    expect(isCompanionTrackingState(JOURNEY_STATES.WALKING)).toBe(true)
+    expect(isCompanionTrackingState(JOURNEY_STATES.APPROACHING)).toBe(true)
+    expect(isCompanionTrackingState(JOURNEY_STATES.STORY)).toBe(false)
   })
 })
