@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
+import CompanionDock from '../components/navigation/CompanionDock'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
@@ -47,6 +48,7 @@ function AppRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />
+      <CompanionDock />
       <AppChrome />
     </>
   )

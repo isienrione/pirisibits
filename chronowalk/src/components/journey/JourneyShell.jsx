@@ -122,6 +122,7 @@ export default function JourneyShell() {
   }, [advanceSequence, completeTransit, step])
 
   const handleOpenThreshold = () => {
+    audio.stopNarration()
     transition(JOURNEY_STATES.THRESHOLD)
   }
 
@@ -205,6 +206,19 @@ export default function JourneyShell() {
       <StoryScreen
         waypointName={step.record.title ?? step.record.name}
         narrationPlaying={audio.narrationPlaying}
+        hasReconstruction={Boolean(step.record.reconstruction)}
+        onOpenThreshold={handleOpenThreshold}
+        onStoryComplete={handleStoryComplete}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.THRESHOLD && step.type === 'waypoint') {
+    return (
+      <StoryScreen
+        waypointName={step.record.title ?? step.record.name}
+        narrationPlaying={false}
         hasReconstruction={Boolean(step.record.reconstruction)}
         onOpenThreshold={handleOpenThreshold}
         onStoryComplete={handleStoryComplete}

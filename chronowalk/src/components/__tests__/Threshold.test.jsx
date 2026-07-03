@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import Threshold from '../Threshold'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext'
 
@@ -40,5 +40,16 @@ describe('Threshold', () => {
     )
 
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('calls onDismiss from journey controls', () => {
+    const onDismiss = vi.fn()
+    renderThreshold({ onDismiss })
+
+    fireEvent.click(screen.getByRole('button', { name: /return to story/i }))
+    expect(onDismiss).toHaveBeenCalledTimes(1)
+
+    fireEvent.click(screen.getByRole('button', { name: /close threshold/i }))
+    expect(onDismiss).toHaveBeenCalledTimes(2)
   })
 })

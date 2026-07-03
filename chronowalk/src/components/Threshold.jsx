@@ -95,6 +95,8 @@ export default function Threshold({
   active = true,
   embedded = false,
   className = '',
+  onDismiss = null,
+  dismissLabel = 'Return to story',
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -297,14 +299,44 @@ export default function Threshold({
           position: 'absolute',
           top: 'max(1rem, env(safe-area-inset-top))',
           left: 'var(--edge)',
-          fontSize: 'var(--fs-caption)',
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
-          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          zIndex: 2,
         }}
       >
-        Now
+        {onDismiss ? (
+          <button
+            type="button"
+            aria-label="Close threshold"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={onDismiss}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              border: '1px solid color-mix(in srgb, var(--warm-white) 20%, transparent)',
+              background: 'color-mix(in srgb, var(--obsidian) 70%, transparent)',
+              color: 'var(--warm-white)',
+              fontSize: 18,
+              lineHeight: 1,
+              cursor: 'pointer',
+            }}
+          >
+            ×
+          </button>
+        ) : null}
+        <span
+          style={{
+            fontSize: 'var(--fs-caption)',
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
+            pointerEvents: 'none',
+          }}
+        >
+          Now
+        </span>
       </div>
 
       <div
@@ -346,7 +378,7 @@ export default function Threshold({
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: 'max(2rem, env(safe-area-inset-bottom))',
+            bottom: onDismiss ? 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4rem))' : 'max(2rem, env(safe-area-inset-bottom))',
             transform: 'translateX(-50%)',
             padding: '8px 16px',
             borderRadius: 20,
@@ -358,6 +390,40 @@ export default function Threshold({
           }}
         >
           Press and hold to cross
+        </div>
+      ) : null}
+
+      {onDismiss ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: 'var(--edge)',
+            right: 'var(--edge)',
+            bottom: 'max(1.25rem, env(safe-area-inset-bottom))',
+            display: 'grid',
+            gap: 10,
+            zIndex: 2,
+          }}
+        >
+          <button
+            type="button"
+            onPointerDown={(event) => event.stopPropagation()}
+            onClick={onDismiss}
+            style={{
+              width: '100%',
+              padding: '14px 18px',
+              border: 'none',
+              borderRadius: 999,
+              background: 'color-mix(in srgb, var(--obsidian) 72%, transparent)',
+              color: 'var(--warm-white)',
+              fontSize: 'var(--fs-secondary)',
+              fontWeight: 600,
+              cursor: 'pointer',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            {dismissLabel}
+          </button>
         </div>
       ) : null}
     </div>

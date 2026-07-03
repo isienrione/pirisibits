@@ -19,7 +19,7 @@ export function ThresholdDemoPage() {
 }
 
 export function JourneyThresholdLayer() {
-  const { state, context } = useJourney()
+  const { state, context, transition } = useJourney()
   const { manifest } = useTourManifest()
   const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
 
@@ -29,6 +29,10 @@ export function JourneyThresholdLayer() {
   if (!waypoint?.reconstruction) return null
 
   const resolved = resolveWaypointMedia(waypoint)
+
+  const handleDismiss = () => {
+    transition(JOURNEY_STATES.STORY)
+  }
 
   return (
     <div
@@ -43,6 +47,7 @@ export function JourneyThresholdLayer() {
         nowAmbienceUrl={THRESHOLD_DEMO_WAYPOINT.nowAmbience}
         thenSoundscapeUrl={THRESHOLD_DEMO_WAYPOINT.thenSoundscape}
         active
+        onDismiss={handleDismiss}
       />
     </div>
   )
