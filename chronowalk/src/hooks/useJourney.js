@@ -13,6 +13,9 @@ import {
   setActiveWaypointIndex,
   promoteOptionalWaypoint,
   completeStoryAfterThreshold,
+  completeWaypointAndAdvance,
+  continueFromDayComplete,
+  jumpToSequenceIndex,
   isResumableJourney,
   resumeJourney,
   prepareResumeCueIfNeeded,
@@ -41,6 +44,9 @@ export function useJourney() {
     setActiveWaypoint: setActiveWaypointIndex,
     promoteOptional: promoteOptionalWaypoint,
     completeStoryAfterThreshold,
+    completeWaypointAndAdvance,
+    continueFromDayComplete,
+    jumpToSequence: jumpToSequenceIndex,
   }
 }
 

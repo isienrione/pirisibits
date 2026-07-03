@@ -97,6 +97,7 @@ export default function Threshold({
   className = '',
   onDismiss = null,
   dismissLabel = 'Return to story',
+  onHoldStart = null,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -171,6 +172,8 @@ export default function Threshold({
         markThresholdHintSeen()
       }
 
+      onHoldStart?.()
+
       if (reducedMotion) {
         setReveal(1)
         revealRef.current = 1
@@ -181,7 +184,7 @@ export default function Threshold({
       animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
-    [active, animateReveal, reducedMotion, showHint]
+    [active, animateReveal, onHoldStart, reducedMotion, showHint]
   )
 
   const handlePointerUp = useCallback(

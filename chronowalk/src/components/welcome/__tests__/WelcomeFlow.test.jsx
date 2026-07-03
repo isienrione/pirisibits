@@ -4,6 +4,18 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import WelcomeFlow from '../WelcomeFlow'
 import { WELCOME_REDUCED_MS } from '../../../data/welcomeConfig'
 
+const playUiCueMock = vi.fn().mockResolvedValue(undefined)
+
+vi.mock('../../../hooks/useJourney.js', () => ({
+  useTourManifest: () => ({ manifest: { system: { ui: { phase_transition: 'ui_phase_seam.mp3' } } } }),
+}))
+
+vi.mock('../../../hooks/useAudioEngine.js', () => ({
+  useAudioEngine: () => ({
+    playUiCue: playUiCueMock,
+  }),
+}))
+
 function renderWelcomeFlow() {
   return render(
     <MemoryRouter>
@@ -19,6 +31,7 @@ function renderWelcomeFlow() {
 describe('WelcomeFlow', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    playUiCueMock.mockClear()
     window.matchMedia = vi.fn().mockImplementation((query) => ({
       matches: query === '(prefers-reduced-motion: reduce)',
       media: query,

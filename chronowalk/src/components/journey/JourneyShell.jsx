@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import { isDevPanelEnabled } from '../../config/env.js'
+import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
@@ -14,11 +16,13 @@ import PathChoiceScreen from './PathChoiceScreen.jsx'
 import StoryScreen from './StoryScreen.jsx'
 import WalkingScreen from './WalkingScreen.jsx'
 import RestScreen from './RestScreen.jsx'
+import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
+import { ROME_ACTS } from '../../data/romePacing.js'
 
 export default function JourneyShell() {
-  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, states } =
+  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useJourney()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
@@ -30,6 +34,7 @@ export default function JourneyShell() {
   const audio = useAudioEngine(manifest)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
+  const [devSimulateGps, setDevSimulateGps] = useState(false)
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
   const playedResumeRef = useRef(false)
@@ -41,6 +46,14 @@ export default function JourneyShell() {
   useEffect(() => {
     prepareResumeCue()
   }, [prepareResumeCue])
+
+  useEffect(() => {
+    if (!isDevPanelEnabled()) return undefined
+    const syncDevGps = () => setDevSimulateGps(readDevSimulateGps())
+    syncDevGps()
+    window.addEventListener(DEV_TOOLS_CHANGED, syncDevGps)
+    return () => window.removeEventListener(DEV_TOOLS_CHANGED, syncDevGps)
+  }, [])
 
   useEffect(() => {
     if (!context.pendingResumeCue || !audioUnlocked || playedResumeRef.current) return
@@ -83,6 +96,7 @@ export default function JourneyShell() {
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geo = useJourneyGeo(geoTarget, {
     debugMode: import.meta.env.DEV,
+    simulateAtTarget: devSimulateGps,
   })
 
   const needsPathChoice =
@@ -185,12 +199,22 @@ export default function JourneyShell() {
   const handleStoryComplete = useCallback(() => {
     if (!step?.record || step.type !== 'waypoint') return
 
-    completeWaypoint(step.id)
     track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
     storyStartedRef.current = null
     playedStepRef.current = null
-    advanceSequence()
-  }, [advanceSequence, completeWaypoint, step])
+
+    const next = completeWaypointAndAdvance(step.id)
+    if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
+      track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
+    }
+  }, [completeWaypointAndAdvance, step])
+
+  const handleContinueClassicDay = useCallback(() => {
+    playedStepRef.current = null
+    storyStartedRef.current = null
+    continueFromDayComplete()
+    track(TRACK_EVENTS.RESUME, { day_break: true })
+  }, [continueFromDayComplete])
 
   const handleTransitContinue = useCallback(() => {
     if (!step?.record || step.type !== 'transit') return
@@ -375,6 +399,8 @@ export default function JourneyShell() {
         title={step.targetWaypoint?.title ?? 'On the way'}
         subtitle={step.record.note ?? 'Follow the route between stops.'}
         distance={geo.distance}
+        locationStatus={geo.locationStatus}
+        onRetryLocation={geo.retryLocation}
         showContinue={!audio.narrationPlaying}
         continueLabel="Continue"
         onContinue={handleTransitContinue}
@@ -389,7 +415,21 @@ export default function JourneyShell() {
         title={step.record.title ?? step.record.name}
         subtitle={step.record.approachLine}
         distance={geo.distance}
+        locationStatus={geo.locationStatus}
+        onRetryLocation={geo.retryLocation}
         onSimulateArrival={handleSimulateArrival}
+        busy={busy}
+      />
+    )
+  }
+
+  if (state === JOURNEY_STATES.DAY_COMPLETE) {
+    const act4 = ROME_ACTS.find((act) => act.id === 'act4')
+    return withInterruptionBanner(
+      <DayCompleteScreen
+        actTitle={act4 ? `Act ${act4.numeral} · ${act4.title}` : null}
+        actPromise={act4?.promise}
+        onContinue={handleContinueClassicDay}
         busy={busy}
       />
     )

@@ -55,6 +55,8 @@ vi.mock('../../../lib/track.js', () => ({
     STORY_COMPLETE: 'story_complete',
     OPTIONAL_WAYPOINT_PROMOTED: 'optional_waypoint_promoted',
     RESUME: 'resume',
+    DAY_COMPLETE: 'day_complete',
+    PAUSE: 'pause',
   },
 }))
 
@@ -137,6 +139,24 @@ describe('JourneyShell', () => {
 
     expect(await screen.findByText(/find shade/i)).toBeInTheDocument()
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.PAUSED)
+  })
+
+  it('shows classic day complete and continues to act V', async () => {
+    beginJourney({ pace: 'classic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.DAY_COMPLETE, {
+      currentSequenceIndex: 17,
+      completedWaypointIds: ['w14'],
+    })
+    renderShell()
+
+    expect(await screen.findByText(/day complete/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /the ancient city rests/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /continue to the living city/i }))
+
+    const snap = getJourneySnapshot()
+    expect(snap.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snap.context.currentSequenceIndex).toBe(18)
   })
 
   it('resumes scripted Forum rest and advances to transit', async () => {

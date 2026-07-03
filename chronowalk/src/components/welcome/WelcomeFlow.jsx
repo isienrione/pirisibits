@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useTourManifest } from '../../hooks/useJourney.js'
+import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import {
   PLATFORM_CITIES,
   ROME_ENTRANCE_IMAGE,
@@ -63,9 +65,10 @@ function WelcomeShell({ children, aura = false }) {
   )
 }
 
-function SplashView({ onDone, reducedMotion }) {
+function SplashView({ onDone, reducedMotion, onSeamStart }) {
   const [seamProgress, setSeamProgress] = useState(0)
   const fadeMs = reducedMotion ? WELCOME_REDUCED_MS : WELCOME_CROSSFADE_MS
+  const seamCuePlayedRef = useRef(false)
 
   useEffect(() => {
     if (reducedMotion) {
@@ -77,6 +80,11 @@ function SplashView({ onDone, reducedMotion }) {
     let raf = 0
 
     const tick = (now) => {
+      if (!seamCuePlayedRef.current) {
+        seamCuePlayedRef.current = true
+        onSeamStart?.()
+      }
+
       const t = Math.min(1, (now - seamStart) / WELCOME_SEAM_MS)
       setSeamProgress(t)
       if (t < 1) raf = requestAnimationFrame(tick)
@@ -89,7 +97,7 @@ function SplashView({ onDone, reducedMotion }) {
       window.clearTimeout(done)
       cancelAnimationFrame(raf)
     }
-  }, [onDone, reducedMotion])
+  }, [onDone, onSeamStart, reducedMotion])
 
   return (
     <WelcomeShell>
@@ -408,8 +416,14 @@ function EnteringRomeView({ onBegin }) {
 export default function WelcomeFlow() {
   const navigate = useNavigate()
   const reducedMotion = useReducedMotion()
+  const { manifest } = useTourManifest()
+  const audio = useAudioEngine(manifest)
   const [step, setStep] = useState('splash')
   const [visible, setVisible] = useState(true)
+
+  const playSeamCue = useCallback(() => {
+    void audio.playUiCue('phase_transition')
+  }, [audio])
 
   const transitionTo = (nextStep) => {
     if (reducedMotion) {
@@ -426,7 +440,7 @@ export default function WelcomeFlow() {
 
   const content =
     step === 'splash' ? (
-      <SplashView onDone={() => transitionTo('cities')} reducedMotion={reducedMotion} />
+      <SplashView onDone={() => transitionTo('cities')} reducedMotion={reducedMotion} onSeamStart={playSeamCue} />
     ) : step === 'cities' ? (
       <CitySelectView onSelectRome={() => transitionTo('entering')} />
     ) : (

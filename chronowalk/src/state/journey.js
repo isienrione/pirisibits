@@ -1,4 +1,5 @@
 import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
+import { shouldClassicDayBreak } from '../content/actBoundaries.js'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 
@@ -225,9 +226,29 @@ export function setActiveWaypointIndex(waypointId, manifest) {
   })
 }
 
-export function completeStoryAfterThreshold(waypointId) {
+export function completeWaypointAndAdvance(waypointId) {
   markWaypointComplete(waypointId)
+
+  if (shouldClassicDayBreak(snapshot.context.pace, waypointId)) {
+    return transitionJourney(JOURNEY_STATES.DAY_COMPLETE)
+  }
+
   return advanceSequenceIndex()
+}
+
+export function continueFromDayComplete() {
+  return advanceSequenceIndex()
+}
+
+export function jumpToSequenceIndex(index) {
+  const nextIndex = Math.max(0, Math.floor(index))
+  return transitionJourney(JOURNEY_STATES.WALKING, {
+    currentSequenceIndex: nextIndex,
+  })
+}
+
+export function completeStoryAfterThreshold(waypointId) {
+  return completeWaypointAndAdvance(waypointId)
 }
 
 export function promoteOptionalWaypoint(waypointId, manifest) {

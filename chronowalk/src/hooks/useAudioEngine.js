@@ -80,6 +80,10 @@ export function useAudioEngine(manifest) {
     await engineRef.current?.playCompletionChime()
   }, [])
 
+  const playUiCue = useCallback(async (cueKey) => {
+    await engineRef.current?.playUiCue(cueKey)
+  }, [])
+
   const endTransit = useCallback(() => {
     engineRef.current?.clearTransitSession()
   }, [])
@@ -106,6 +110,7 @@ export function useAudioEngine(manifest) {
     playResumeCue,
     playArrivalChime,
     playCompletionChime,
+    playUiCue,
     endTransit,
     stopNarration,
     resumePlayback,

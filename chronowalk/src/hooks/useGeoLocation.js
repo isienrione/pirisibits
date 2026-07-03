@@ -78,6 +78,14 @@ export const useGeoLocation = ({
   }, []);
 
   useEffect(() => {
+    if (simulateAtTarget && target) {
+      setLocationStatus(LOCATION_STATUS.GRANTED);
+      setJourney(
+        resolveJourneyState(target.lat, target.lng, target, geofenceThresholdM)
+      );
+      return;
+    }
+
     if (debugMode) {
       setLocationStatus(LOCATION_STATUS.GRANTED);
       if (debugPos?.lat != null && debugPos?.lng != null) {
@@ -122,7 +130,7 @@ export const useGeoLocation = ({
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, debugPos?.lat, debugPos?.lng, target, geofenceThresholdM, watchKey]);
+  }, [debugMode, debugPos?.lat, debugPos?.lng, simulateAtTarget, target, geofenceThresholdM, watchKey]);
 
   useEffect(() => {
     if (!journey.status) return;

@@ -8,12 +8,16 @@ import {
   setJourneyPath,
   promoteOptionalWaypoint,
   completeStoryAfterThreshold,
+  completeWaypointAndAdvance,
+  continueFromDayComplete,
+  jumpToSequenceIndex,
   resumeJourney,
   prepareResumeCueIfNeeded,
   clearPendingResumeCue,
   JOURNEY_STATES,
 } from '../journey'
 import { loadRomeManifest } from '../../content/manifest.js'
+import { buildEffectiveSequence } from '../../content/optionalPromotion.js'
 
 describe('journey state machine', () => {
   beforeEach(() => {
@@ -69,6 +73,47 @@ describe('journey state machine', () => {
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
   })
 
+  it('enters day complete after act IV on classic pace', () => {
+    const manifest = loadRomeManifest()
+    const w14Index = buildEffectiveSequence(manifest, 'a', []).indexOf('w14')
+    expect(w14Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: w14Index })
+
+    const next = completeWaypointAndAdvance('w14')
+    expect(next.state).toBe(JOURNEY_STATES.DAY_COMPLETE)
+    expect(next.context.completedWaypointIds).toContain('w14')
+    expect(next.context.currentSequenceIndex).toBe(w14Index)
+  })
+
+  it('continues from day complete into act V transit', () => {
+    const manifest = loadRomeManifest()
+    const w14Index = buildEffectiveSequence(manifest, 'a', []).indexOf('w14')
+
+    beginJourney({ pace: 'classic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.DAY_COMPLETE, {
+      currentSequenceIndex: w14Index,
+      completedWaypointIds: ['w14'],
+    })
+
+    const next = continueFromDayComplete()
+    expect(next.state).toBe(JOURNEY_STATES.WALKING)
+    expect(next.context.currentSequenceIndex).toBe(w14Index + 1)
+  })
+
+  it('advances past w14 without day break on heroic pace', () => {
+    const manifest = loadRomeManifest()
+    const w14Index = buildEffectiveSequence(manifest, 'a', []).indexOf('w14')
+
+    beginJourney({ pace: 'heroic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: w14Index })
+
+    const next = completeWaypointAndAdvance('w14')
+    expect(next.state).toBe(JOURNEY_STATES.WALKING)
+    expect(next.context.currentSequenceIndex).toBe(w14Index + 1)
+  })
+
   it('completes story and advances after threshold dismiss', () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
@@ -113,5 +158,12 @@ describe('journey state machine', () => {
     clearPendingResumeCue()
 
     expect(getJourneySnapshot().context.pendingResumeCue).toBeNull()
+  })
+
+  it('jumps to a sequence index for field testing', () => {
+    beginJourney({ pace: 'classic' })
+    const next = jumpToSequenceIndex(12)
+    expect(next.state).toBe(JOURNEY_STATES.WALKING)
+    expect(next.context.currentSequenceIndex).toBe(12)
   })
 })
