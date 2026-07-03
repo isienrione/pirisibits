@@ -5,6 +5,7 @@ import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
+import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useOptionalPromotion } from '../../hooks/useOptionalPromotion.js'
 import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
@@ -19,6 +20,7 @@ import RestScreen from './RestScreen.jsx'
 import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
+import { COMPANION_MODES } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 
 export default function JourneyShell() {
@@ -42,6 +44,7 @@ export default function JourneyShell() {
   const scriptedRestNarrationStartedRef = useRef(null)
   const scriptedRestEnteredRef = useRef(null)
   const prevStateRef = useRef(state)
+  const prevCompanionModeRef = useRef(COMPANION_MODES.NORMAL)
 
   useEffect(() => {
     prepareResumeCue()
@@ -98,6 +101,38 @@ export default function JourneyShell() {
     debugMode: import.meta.env.DEV,
     simulateAtTarget: devSimulateGps,
   })
+
+  const companion = useWalkingCompanion({
+    position: geo.position,
+    distance: geo.distance,
+    geofenceRadiusM: geoTarget?.geofence?.radius_m ?? 40,
+    locationStatus: geo.locationStatus,
+    enabled: state === JOURNEY_STATES.WALKING,
+  })
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.WALKING) {
+      prevCompanionModeRef.current = COMPANION_MODES.NORMAL
+      return
+    }
+
+    if (
+      companion.mode !== prevCompanionModeRef.current &&
+      companion.mode !== COMPANION_MODES.NORMAL
+    ) {
+      track(
+        companion.mode === COMPANION_MODES.OFF_ROUTE
+          ? TRACK_EVENTS.OFF_ROUTE
+          : TRACK_EVENTS.OBSERVATION,
+        {
+          waypoint_id: step?.type === 'waypoint' ? step.id : step?.targetWaypoint?.id,
+          distance_m: geo.distance != null ? Math.round(geo.distance) : null,
+        }
+      )
+    }
+
+    prevCompanionModeRef.current = companion.mode
+  }, [companion.mode, geo.distance, state, step?.id, step?.targetWaypoint?.id, step?.type])
 
   const needsPathChoice =
     step?.type === 'transit' && step?.needsPathChoice && !context.pathLocked && step.id === 't01'
@@ -401,6 +436,7 @@ export default function JourneyShell() {
         distance={geo.distance}
         locationStatus={geo.locationStatus}
         onRetryLocation={geo.retryLocation}
+        companionMode={companion.mode}
         showContinue={!audio.narrationPlaying}
         continueLabel="Continue"
         onContinue={handleTransitContinue}
@@ -417,6 +453,7 @@ export default function JourneyShell() {
         distance={geo.distance}
         locationStatus={geo.locationStatus}
         onRetryLocation={geo.retryLocation}
+        companionMode={companion.mode}
         onSimulateArrival={handleSimulateArrival}
         busy={busy}
       />

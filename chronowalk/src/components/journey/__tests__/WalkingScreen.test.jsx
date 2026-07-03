@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import WalkingScreen from '../WalkingScreen.jsx'
 import { LOCATION_STATUS } from '../../../hooks/useGeoLocation.js'
+import { COMPANION_MODES } from '../../../content/companionGuidance.js'
 
 function renderWalkingScreen(props) {
   return render(
@@ -38,5 +39,17 @@ describe('WalkingScreen', () => {
 
     expect(screen.queryByText(/location access is off/i)).not.toBeInTheDocument()
     expect(screen.getByText(/finding your position/i)).toBeInTheDocument()
+  })
+
+  it('shows companion off-route guidance', () => {
+    renderWalkingScreen({
+      title: 'The Forum',
+      subtitle: 'Approach line',
+      distance: 520,
+      companionMode: COMPANION_MODES.OFF_ROUTE,
+    })
+
+    expect(screen.getByText(/off route/i)).toBeInTheDocument()
+    expect(screen.getByText(/farther from the path/i)).toBeInTheDocument()
   })
 })

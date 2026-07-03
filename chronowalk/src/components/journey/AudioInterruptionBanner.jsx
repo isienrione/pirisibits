@@ -30,6 +30,17 @@ export default function AudioInterruptionBanner({ onResume, busy = false }) {
       >
         Sound was interrupted — tap to resume
       </button>
+      <p
+        style={{
+          margin: '8px 0 0',
+          textAlign: 'center',
+          fontSize: 11,
+          lineHeight: 1.45,
+          color: 'color-mix(in srgb, var(--warm-white) 72%, transparent)',
+        }}
+      >
+        This can happen when another app takes audio or your phone locks.
+      </p>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import LocationNotice from '../LocationNotice.jsx'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import CompanionNotice from './CompanionNotice.jsx'
 import { JourneyLayout, JourneyPrimaryButton, JourneySecondaryButton } from './JourneyLayout.jsx'
 
 export default function WalkingScreen({
@@ -9,6 +10,7 @@ export default function WalkingScreen({
   distance,
   locationStatus,
   onRetryLocation,
+  companionMode,
   onSimulateArrival,
   onContinue,
   continueLabel = 'Continue',
@@ -30,6 +32,8 @@ export default function WalkingScreen({
           <LocationNotice status={locationStatus} onRetry={onRetryLocation} compact />
         </div>
       ) : null}
+
+      <CompanionNotice mode={companionMode} targetTitle={title} />
 
       <p style={{ margin: '16px 0 0', fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
         {distanceLabel}
