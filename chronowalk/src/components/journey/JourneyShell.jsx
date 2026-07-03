@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
@@ -19,11 +19,14 @@ import WalkingScreen from './WalkingScreen.jsx'
 import RestScreen from './RestScreen.jsx'
 import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
+import JourneyHeader from './JourneyHeader.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
+import { useJourneyCompanion } from '../../context/JourneyCompanionContext.jsx'
 import { COMPANION_MODES, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 
 export default function JourneyShell() {
+  const { openRouteSheet, openSettingsSheet } = useJourneyCompanion()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useJourney()
   const { manifest, loading, error } = useTourManifest()
@@ -101,6 +104,28 @@ export default function JourneyShell() {
     debugMode: import.meta.env.DEV,
     simulateAtTarget: devSimulateGps,
   })
+
+  const walkingDirectionsDestination = useMemo(() => {
+    const geofence = geoTarget?.geofence
+    if (!geofence?.lat || !geofence?.lng) return null
+    return { lat: geofence.lat, lng: geofence.lng }
+  }, [geoTarget?.geofence])
+
+  const handleOpenExternalMaps = useCallback((url) => {
+    if (!url) return
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }, [])
+
+  const journeyHeader = (
+    <JourneyHeader onOpenRoute={openRouteSheet} onOpenSettings={openSettingsSheet} />
+  )
+
+  const walkingScreenProps = {
+    userPosition: geo.position,
+    directionsDestination: walkingDirectionsDestination,
+    onRecenter: geo.retryLocation,
+    onOpenExternalMaps: handleOpenExternalMaps,
+  }
 
   const companion = useWalkingCompanion({
     position: geo.position,
@@ -316,25 +341,41 @@ export default function JourneyShell() {
 
   if (loading) {
     return withInterruptionBanner(
-      <JourneyLayout eyebrow="Journey" title="Loading Rome…" subtitle="Preparing your path through the city." />
+      <JourneyLayout
+        header={journeyHeader}
+        eyebrow="Journey"
+        title="Loading Rome…"
+        subtitle="Preparing your path through the city."
+      />
     )
   }
 
   if (error) {
     return withInterruptionBanner(
-      <JourneyLayout eyebrow="Journey" title="Could not load tour" subtitle={error.message} />
+      <JourneyLayout
+        header={journeyHeader}
+        eyebrow="Journey"
+        title="Could not load tour"
+        subtitle={error.message}
+      />
     )
   }
 
   if (!manifest || !step) {
     return withInterruptionBanner(
-      <JourneyLayout eyebrow="Journey" title="Tour unavailable" subtitle="Manifest did not load." />
+      <JourneyLayout
+        header={journeyHeader}
+        eyebrow="Journey"
+        title="Tour unavailable"
+        subtitle="Manifest did not load."
+      />
     )
   }
 
   if (step.done || state === JOURNEY_STATES.COMPLETE) {
     return withInterruptionBanner(
       <JourneyLayout
+        header={journeyHeader}
         eyebrow="Journey complete"
         title="You walked Rome"
         subtitle="Your letter and journal gathered what you heard along the way."
@@ -364,6 +405,7 @@ export default function JourneyShell() {
   if (!audioUnlocked && !audio.ready) {
     return withInterruptionBanner(
       <JourneyLayout
+        header={journeyHeader}
         eyebrow="Journey"
         title="Ready when you are"
         subtitle="Tap once to wake the soundscape — narration, ambience, and the city between stops."
@@ -444,6 +486,7 @@ export default function JourneyShell() {
         continueLabel="Continue"
         onContinue={handleTransitContinue}
         busy={busy}
+        {...walkingScreenProps}
       />
     )
   }
@@ -459,6 +502,7 @@ export default function JourneyShell() {
         companionMode={companion.mode}
         onSimulateArrival={handleSimulateArrival}
         busy={busy}
+        {...walkingScreenProps}
       />
     )
   }
@@ -489,6 +533,7 @@ export default function JourneyShell() {
   if (state === JOURNEY_STATES.PAUSED) {
     return withInterruptionBanner(
       <JourneyLayout
+        header={journeyHeader}
         eyebrow="Paused"
         title="Journey paused"
         subtitle="Take a breath. Rome will wait."
@@ -502,6 +547,7 @@ export default function JourneyShell() {
 
   return withInterruptionBanner(
     <JourneyLayout
+      header={journeyHeader}
       eyebrow="Journey"
       title={step.record?.title ?? step.id}
       subtitle={`State: ${state}`}

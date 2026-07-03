@@ -1,17 +1,15 @@
 export const NAV_TABS = {
-  TOUR: 'tour',
+  JOURNEY: 'journey',
   MAP: 'map',
-  STOPS: 'stops',
-  DIRECTIONS: 'directions',
-  SETTINGS: 'settings',
+  JOURNAL: 'journal',
 }
 
 const iconClass = 'h-5 w-5 shrink-0'
 
 export const NAV_ITEMS = [
   {
-    id: NAV_TABS.TOUR,
-    label: 'Tour',
+    id: NAV_TABS.JOURNEY,
+    label: 'Journey',
     Icon: () => (
       <svg className={iconClass} viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
@@ -40,32 +38,17 @@ export const NAV_ITEMS = [
     ),
   },
   {
-    id: NAV_TABS.STOPS,
-    label: 'Stops',
+    id: NAV_TABS.JOURNAL,
+    label: 'Journal',
     Icon: () => (
       <svg className={iconClass} viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
-          d="M5 7h14M5 12h14M5 17h10"
+          d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 0-2 2V4Z"
           stroke="currentColor"
           strokeWidth="1.75"
-          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <circle cx="18" cy="17" r="2" stroke="currentColor" strokeWidth="1.75" />
-      </svg>
-    ),
-  },
-  {
-    id: NAV_TABS.SETTINGS,
-    label: 'Settings',
-    Icon: () => (
-      <svg className={iconClass} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.75" />
-        <path
-          d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          strokeLinecap="round"
-        />
+        <path d="M6 18h12M10 8h6M10 12h6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
       </svg>
     ),
   },

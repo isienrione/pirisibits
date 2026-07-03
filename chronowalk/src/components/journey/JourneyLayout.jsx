@@ -1,4 +1,4 @@
-export function JourneyLayout({ eyebrow, title, subtitle, children, footer }) {
+export function JourneyLayout({ header, eyebrow, title, subtitle, children, footer }) {
   return (
     <main
       style={{
@@ -11,6 +11,7 @@ export function JourneyLayout({ eyebrow, title, subtitle, children, footer }) {
       }}
     >
       <div style={{ maxWidth: 420, margin: '0 auto', paddingTop: 24 }}>
+        {header}
         {eyebrow ? (
           <p
             style={{

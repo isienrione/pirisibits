@@ -196,6 +196,8 @@ const WaypointCard = ({
   accessMode = 'arrival',
   autoStartExperience = false,
   onViewTours,
+  embedded = false,
+  onEnterThreshold,
 }) => {
   const titleId = useId();
   const reducedMotion = useReducedMotion();
@@ -236,9 +238,13 @@ const WaypointCard = ({
 
   useEffect(() => {
     if (!waypoint) return undefined;
+    if (embedded) {
+      setEntered(true);
+      return undefined;
+    }
     const frame = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(frame);
-  }, [waypoint]);
+  }, [embedded, waypoint]);
 
   useOpenHaptic(showImmersiveView);
 
@@ -342,6 +348,11 @@ const WaypointCard = ({
 
   const startTimePortal = async () => {
     setMediaError(null);
+
+    if (embedded && onEnterThreshold && usesComparisonSlider) {
+      onEnterThreshold();
+      return;
+    }
 
     if (!waypoint.arrival_immersive_url) {
       setMediaError('Arrival audio is not available for this landmark yet.');

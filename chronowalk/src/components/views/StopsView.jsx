@@ -6,6 +6,7 @@ function StopsView({
   mapStops,
   waypointsById,
   isFreePreview = false,
+  embedded = false,
   onOpenStop,
   onNavigate,
   onUnlockTour,
@@ -18,20 +19,22 @@ function StopsView({
         status: index === 0 ? 'current' : 'upcoming',
       }))
 
-  return (
-    <PageShell>
-      <SectionHeader
-        align="left"
-        eyebrow={isFreePreview ? 'Free preview' : 'Route'}
-        title={tour?.title ?? 'Tour stops'}
-        subtitle={
-          isFreePreview
-            ? `${stops.length} landmarks on the map · Colosseum unlocked · tap locked stops to see what you are missing`
-            : `${stops.length} landmarks · revisit visited stops or preview any landmark`
-        }
-      />
+  const content = (
+    <>
+      {!embedded ? (
+        <SectionHeader
+          align="left"
+          eyebrow={isFreePreview ? 'Free preview' : 'Route'}
+          title={tour?.title ?? 'Tour stops'}
+          subtitle={
+            isFreePreview
+              ? `${stops.length} landmarks on the map · Colosseum unlocked · tap locked stops to see what you are missing`
+              : `${stops.length} landmarks · revisit visited stops or preview any landmark`
+          }
+        />
+      ) : null}
 
-      <div className="mt-6 space-y-4">
+      <div className={embedded ? 'space-y-4' : 'mt-6 space-y-4'}>
         {stops.map((stop, index) => (
           <TourStopCard
             key={stop.id}
@@ -50,8 +53,12 @@ function StopsView({
           />
         ))}
       </div>
-    </PageShell>
+    </>
   )
+
+  if (embedded) return content
+
+  return <PageShell>{content}</PageShell>
 }
 
 export default StopsView

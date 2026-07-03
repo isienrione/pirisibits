@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import MapScreen from '../MapScreen.jsx'
+import { JourneyCompanionProvider } from '../../../context/JourneyCompanionContext.jsx'
 import { beginJourney, resetJourney } from '../../../state/journey.js'
 
 vi.mock('../../TourMap.jsx', () => ({
@@ -27,7 +28,9 @@ vi.mock('../../../hooks/useJourneyGeo.js', () => ({
 function renderMap() {
   return render(
     <MemoryRouter>
-      <MapScreen />
+      <JourneyCompanionProvider>
+        <MapScreen />
+      </JourneyCompanionProvider>
     </MemoryRouter>
   )
 }

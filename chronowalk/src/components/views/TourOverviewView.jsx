@@ -19,6 +19,7 @@ function TourOverviewView({
   isAwaitingFirstStop,
   firstStopTitle,
   isFreePreview = false,
+  hideStopsList = false,
   onNavigate,
   onGetDirections,
   onOpenStop,
@@ -183,48 +184,52 @@ function TourOverviewView({
         ) : null}
       </div>
 
-      <div className="mt-6">
-        <SectionHeader
-          align="left"
-          eyebrow="Complete tour"
-          title="All landmarks"
-          subtitle={
-            isFreePreview
-              ? 'Tap locked stops to see what you are missing'
-              : "Revisit stops you've seen or preview any landmark on the route"
-          }
-          className="mb-4"
-        />
-        <div className="space-y-4">
-          {stops.map((stop, index) => (
-            <TourStopCard
-              key={stop.id}
-              stop={stop}
-              index={index}
-              waypoint={waypointsById?.[stop.id]}
-              compact
-              lockedActionLabel={isFreePreview ? 'View pricing' : 'Unlock tour'}
-              onOpen={(stopId) => {
-                if (stop.status === 'locked' && isFreePreview) {
-                  onUnlockTour?.()
-                  return
-                }
-                onOpenStop?.(stopId)
-                onNavigate(NAV_TABS.MAP)
-              }}
-            />
-          ))}
+      {!hideStopsList ? (
+        <div className="mt-6">
+          <SectionHeader
+            align="left"
+            eyebrow="Complete tour"
+            title="All landmarks"
+            subtitle={
+              isFreePreview
+                ? 'Tap locked stops to see what you are missing'
+                : "Revisit stops you've seen or preview any landmark on the route"
+            }
+            className="mb-4"
+          />
+          <div className="space-y-4">
+            {stops.map((stop, index) => (
+              <TourStopCard
+                key={stop.id}
+                stop={stop}
+                index={index}
+                waypoint={waypointsById?.[stop.id]}
+                compact
+                lockedActionLabel={isFreePreview ? 'View pricing' : 'Unlock tour'}
+                onOpen={(stopId) => {
+                  if (stop.status === 'locked' && isFreePreview) {
+                    onUnlockTour?.()
+                    return
+                  }
+                  onOpenStop?.(stopId)
+                  onNavigate(NAV_TABS.MAP)
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      <div className="bg-ink900 rounded-card mt-6 p-5">
-        <p className="text-eyebrow uppercase text-ember">Included</p>
-        <ul className="mt-3 space-y-2 text-sm text-muted">
-          <li>GPS-guided walking between landmarks</li>
-          <li>Place-aware audio stories on arrival</li>
-          <li>Then-and-now visual reconstructions</li>
-        </ul>
-      </div>
+      {!hideStopsList ? (
+        <div className="bg-ink900 rounded-card mt-6 p-5">
+          <p className="text-eyebrow uppercase text-ember">Included</p>
+          <ul className="mt-3 space-y-2 text-sm text-muted">
+            <li>GPS-guided walking between landmarks</li>
+            <li>Place-aware audio stories on arrival</li>
+            <li>Then-and-now visual reconstructions</li>
+          </ul>
+        </div>
+      ) : null}
     </PageShell>
   )
 }

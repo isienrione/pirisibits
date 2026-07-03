@@ -16,6 +16,7 @@ export default function ShellWalkCard({
   distanceM,
   imageUrl,
   onContinue,
+  onOpenRoute,
   onDismiss,
   continueLabel = 'Continue',
 }) {
@@ -58,11 +59,18 @@ export default function ShellWalkCard({
         </div>
       </div>
 
-      {onContinue ? (
-        <div className="mt-4 flex justify-end">
-          <Button type="button" size="sm" onClick={onContinue} className="px-5 py-2.5 text-sm">
-            {continueLabel} →
-          </Button>
+      {onContinue || onOpenRoute ? (
+        <div className="mt-4 flex justify-end gap-2">
+          {onOpenRoute ? (
+            <Button type="button" variant="quiet" size="sm" onClick={onOpenRoute} className="px-5 py-2.5 text-sm">
+              Route
+            </Button>
+          ) : null}
+          {onContinue ? (
+            <Button type="button" size="sm" onClick={onContinue} className="px-5 py-2.5 text-sm">
+              {continueLabel} →
+            </Button>
+          ) : null}
         </div>
       ) : null}
     </div>

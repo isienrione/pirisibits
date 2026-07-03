@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useJourney } from '../hooks/useJourney.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
+import { persistShellTab } from './tabPersistence.js'
 
 export default function ShellTabBar() {
   const { state } = useJourney()
@@ -29,6 +30,7 @@ export default function ShellTabBar() {
             <li key={tab.id} className="flex-1">
               <Link
                 to={tab.to}
+                onClick={() => persistShellTab(tab.to)}
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
                   active ? 'text-ember' : 'text-muted'
                 }`}
