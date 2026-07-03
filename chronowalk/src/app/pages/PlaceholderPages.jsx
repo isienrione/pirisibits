@@ -1,5 +1,6 @@
 import JourneyShell from '../../components/journey/JourneyShell.jsx'
 import MapScreen from '../../components/map/MapScreen.jsx'
+import JournalScreen from '../../components/journal/JournalScreen.jsx'
 
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (
@@ -56,13 +57,7 @@ export function MapPage() {
 }
 
 export function JournalPage() {
-  return (
-    <ShellPage
-      eyebrow="Journal"
-      title="Your Rome is still ahead of you."
-      subtitle="M15 — timeline on bone background."
-    />
-  )
+  return <JournalScreen />
 }
 
 export function LetterPage() {
