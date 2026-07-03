@@ -201,7 +201,6 @@ const manifest = {
     w04: wp('w04', {
       act: 'act2',
       chapters: ['w04_ch1.mp3', 'w04_ch2.mp3'],
-      inserts: ['ins_window'],
       optional_on_path: 'a',
       approachLine: 'The emperors\' hill climbs above the Forum.',
       arrivalLine: 'The word palace was born on this slope.',
@@ -223,7 +222,6 @@ const manifest = {
     w08: wp('w08', {
       act: 'act3',
       chapters: ['w08.mp3'],
-      inserts: ['ins_fire'],
       approachLine: 'The round temple is just ahead.',
       arrivalLine: 'The flame that guarded Rome burned here.',
     }),
@@ -263,20 +261,20 @@ const manifest = {
       act: 'act5',
       zone: 'centro',
       chapters: ['w15.mp3'],
-      inserts: ['ins_water_trevi'],
       approachLine: 'The steps rise ahead — take them slowly.',
       arrivalLine: 'A staircase built for seeing and being seen.',
     }),
     w16: wp('w16', {
       act: 'act5',
       chapters: ['w16.mp3'],
-      inserts: ['ins_agrippa'],
+      inserts: ['ins_water_trevi'],
       approachLine: 'You\'ll hear the fountain before you see it.',
       arrivalLine: 'Throw a coin if you wish — the water doesn\'t mind.',
     }),
     w17: wp('w17', {
       act: 'act5',
       chapters: ['w17_ch1.mp3', 'w17_ch2.mp3', 'w17_ch3.mp3', 'w17_ch4.mp3'],
+      inserts: ['ins_agrippa'],
       interior_zone: 'pantheon_interior',
       reconstruction: {
         now: '/rome/img/w13_now.avif',
@@ -296,6 +294,7 @@ const manifest = {
     w19: wp('w19', {
       act: 'act5',
       chapters: ['w19.mp3'],
+      inserts: ['ins_fire'],
       approachLine: 'The market square opens — morning or evening, always alive.',
       arrivalLine: 'Flowers, fruit, and four centuries of chatter.',
     }),
