@@ -58,23 +58,6 @@ export function allWaypointIdsForDay(manifest, dayNumber) {
   return day?.waypoints ?? []
 }
 
-export function getFirstWaypointIndexForDay(manifest, dayNumber) {
-  const firstId = allWaypointIdsForDay(manifest, dayNumber)[0]
-  if (!firstId) return 0
-
-  const index = manifest?.waypoints?.findIndex((waypoint) => waypoint.id === firstId) ?? -1
-  return index >= 0 ? index : 0
-}
-
-export function getDaySummaries(manifest) {
-  return (manifest?.days ?? []).map((day) => ({
-    day: day.day,
-    title: day.title,
-    start: day.start,
-    stopCount: day.waypoints?.length ?? 0,
-  }))
-}
-
 export function orderedWaypointIds(manifest) {
   return manifest?.waypoints?.map((waypoint) => waypoint.id) ?? []
 }

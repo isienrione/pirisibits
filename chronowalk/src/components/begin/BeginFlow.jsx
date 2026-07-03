@@ -1,9 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useJourney, useTourManifest } from '../../hooks/useJourney'
+import {
+  JOURNEY_PACE,
+  PACE_OPTIONS,
+  PACE_ORIENTATION,
+  getPaceOption,
+} from '../../data/romePacing'
+import { useJourney } from '../../hooks/useJourney'
 import { requestLocationAccess } from '../../lib/locationAccess'
 import { track, TRACK_EVENTS } from '../../lib/track'
-import { getDaySummaries, getFirstWaypointIndexForDay } from '../../lib/tour'
 
 function BeginShell({ children }) {
   return (
@@ -22,7 +27,7 @@ function BeginShell({ children }) {
   )
 }
 
-function DaySelectView({ days, selectedDay, onSelectDay, onContinue }) {
+function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
   return (
     <BeginShell>
       <p
@@ -43,23 +48,21 @@ function DaySelectView({ days, selectedDay, onSelectDay, onContinue }) {
           fontSize: 'var(--fs-title)',
           fontWeight: 500,
           lineHeight: 1.15,
+          fontStyle: 'italic',
         }}
       >
-        Which day of Rome?
+        Rome is yours. How do you want to take it?
       </h1>
-      <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
-        Two walks. Pick the day you are starting today — you can return for the other anytime.
-      </p>
 
       <div style={{ display: 'grid', gap: 12, marginTop: 28 }}>
-        {days.map((day) => {
-          const selected = selectedDay === day.day
+        {PACE_OPTIONS.map((option) => {
+          const selected = selectedPace === option.id
 
           return (
             <button
-              key={day.day}
+              key={option.id}
               type="button"
-              onClick={() => onSelectDay(day.day)}
+              onClick={() => onSelectPace(option.id)}
               style={{
                 width: '100%',
                 padding: '16px 18px',
@@ -75,52 +78,75 @@ function DaySelectView({ days, selectedDay, onSelectDay, onContinue }) {
                 cursor: 'pointer',
               }}
             >
-              <span
-                style={{
-                  display: 'block',
-                  fontSize: 'var(--fs-caption)',
-                  fontWeight: 600,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: selected ? 'var(--ember)' : 'var(--muted-warm)',
-                }}
-              >
-                Day {day.day}
+              <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 20,
+                    fontWeight: 500,
+                  }}
+                >
+                  {option.title}
+                </span>
+                {option.badge ? (
+                  <span
+                    style={{
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                      background: 'color-mix(in srgb, var(--ember) 22%, transparent)',
+                      color: 'var(--ember)',
+                      fontSize: 10,
+                      fontWeight: 600,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {option.badge}
+                  </span>
+                ) : null}
               </span>
               <span
                 style={{
                   display: 'block',
-                  marginTop: 6,
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 22,
-                  fontWeight: 500,
+                  marginTop: 8,
+                  fontSize: 'var(--fs-secondary)',
+                  lineHeight: 1.5,
+                  color: 'var(--muted-warm)',
                 }}
               >
-                {day.title}
-              </span>
-              <span style={{ display: 'block', marginTop: 4, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
-                {day.stopCount} stops · starts at {day.start}
+                {option.description}
               </span>
             </button>
           )
         })}
       </div>
 
+      <p
+        style={{
+          marginTop: 20,
+          fontSize: 'var(--fs-meta)',
+          lineHeight: 1.55,
+          color: 'var(--muted-warm)',
+          fontStyle: 'italic',
+        }}
+      >
+        {PACE_ORIENTATION}
+      </p>
+
       <button
         type="button"
         onClick={onContinue}
-        disabled={!selectedDay}
         style={{
-          marginTop: 28,
+          marginTop: 24,
           width: '100%',
           padding: '16px 20px',
           border: 'none',
           borderRadius: 999,
-          background: selectedDay ? 'var(--accent)' : 'color-mix(in srgb, var(--muted-warm) 35%, var(--ink))',
-          color: selectedDay ? 'var(--bone)' : 'var(--muted-warm)',
+          background: 'var(--accent)',
+          color: 'var(--bone)',
           fontSize: 'var(--fs-body)',
           fontWeight: 600,
-          cursor: selectedDay ? 'pointer' : 'not-allowed',
+          cursor: 'pointer',
         }}
       >
         Continue
@@ -129,7 +155,7 @@ function DaySelectView({ days, selectedDay, onSelectDay, onContinue }) {
   )
 }
 
-function LocationPromptView({ day, onEnable, onSkip, busy }) {
+function LocationPromptView({ pace, onEnable, onSkip, busy }) {
   return (
     <BeginShell>
       <p
@@ -141,7 +167,7 @@ function LocationPromptView({ day, onEnable, onSkip, busy }) {
           color: 'var(--muted-warm)',
         }}
       >
-        Day {day.day} · {day.title}
+        {pace.title}
       </p>
       <h1
         style={{
@@ -220,34 +246,15 @@ function LocationPromptView({ day, onEnable, onSkip, busy }) {
 export default function BeginFlow() {
   const navigate = useNavigate()
   const { begin } = useJourney()
-  const { manifest, loading, error } = useTourManifest()
-  const [step, setStep] = useState('day')
-  const [selectedDay, setSelectedDay] = useState(null)
+  const [step, setStep] = useState('pace')
+  const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
   const [busy, setBusy] = useState(false)
 
-  if (loading) {
-    return (
-      <BeginShell>
-        <p style={{ margin: 0, color: 'var(--muted-warm)' }}>Loading Rome…</p>
-      </BeginShell>
-    )
-  }
-
-  if (error || !manifest) {
-    return (
-      <BeginShell>
-        <p style={{ margin: 0, color: '#e88a8a' }}>Could not load the Rome tour. Try again shortly.</p>
-      </BeginShell>
-    )
-  }
-
-  const days = getDaySummaries(manifest)
-  const activeDay = days.find((day) => day.day === selectedDay)
+  const activePace = getPaceOption(selectedPace)
 
   const startJourney = () => {
-    const waypointIndex = getFirstWaypointIndexForDay(manifest, selectedDay)
-    begin({ dayNumber: selectedDay, waypointIndex })
-    track(TRACK_EVENTS.JOURNEY_BEGIN, { day_number: selectedDay, waypoint_index: waypointIndex })
+    begin({ pace: selectedPace, waypointIndex: 0 })
+    track(TRACK_EVENTS.JOURNEY_BEGIN, { pace: selectedPace, waypoint_index: 0 })
     navigate('/journey', { replace: true })
   }
 
@@ -258,10 +265,10 @@ export default function BeginFlow() {
     startJourney()
   }
 
-  if (step === 'location' && activeDay) {
+  if (step === 'location') {
     return (
       <LocationPromptView
-        day={activeDay}
+        pace={activePace}
         busy={busy}
         onEnable={handleEnableLocation}
         onSkip={startJourney}
@@ -270,14 +277,10 @@ export default function BeginFlow() {
   }
 
   return (
-    <DaySelectView
-      days={days}
-      selectedDay={selectedDay}
-      onSelectDay={setSelectedDay}
-      onContinue={() => {
-        if (!selectedDay) return
-        setStep('location')
-      }}
+    <PaceSelectView
+      selectedPace={selectedPace}
+      onSelectPace={setSelectedPace}
+      onContinue={() => setStep('location')}
     />
   )
 }

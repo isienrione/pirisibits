@@ -6,7 +6,7 @@ import { buildCheckoutUrl, getHost, getHostLabel } from '../../lib/host'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 const INCLUDED = [
-  '22 locations across 2 days',
+  '22 places across six acts',
   'Place-aware audio at every stop',
   'Press-and-hold reconstructions',
   'Walking directions between landmarks',
@@ -159,7 +159,7 @@ export default function LandingScreen() {
             maxWidth: '28rem',
           }}
         >
-          Twenty-two places. Two days. Stories and reconstructions that unlock exactly where you
+          Twenty-two places. Six acts. Stories and reconstructions that unlock exactly where you
           stand.
         </p>
 

@@ -55,7 +55,7 @@ describe('WelcomeFlow', () => {
     fireEvent.click(screen.getByRole('button', { name: /rome/i }))
 
     expect(screen.getByRole('heading', { name: 'Rome' })).toBeInTheDocument()
-    expect(screen.getByText('Twenty-two places. Two days. Stories that unlock exactly where you stand.')).toBeInTheDocument()
+    expect(screen.getByText('Twenty-two places. Six acts. Stories that unlock exactly where you stand.')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Begin' }))
 

@@ -1,3 +1,5 @@
+import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
+
 const STORAGE_KEY = 'cw_journey_v1'
 
 export const JOURNEY_STATES = {
@@ -13,7 +15,8 @@ export const JOURNEY_STATES = {
 }
 
 const defaultContext = () => ({
-  dayNumber: 1,
+  pace: JOURNEY_PACE.CLASSIC,
+  path: JOURNEY_PATH.A,
   currentWaypointIndex: 0,
   completedWaypointIds: [],
   pausedAt: null,
@@ -31,12 +34,20 @@ function readStorage() {
     const raw = window.localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState()
     const parsed = JSON.parse(raw)
+    const mergedContext = {
+      ...defaultContext(),
+      ...parsed.context,
+    }
+
+    if (mergedContext.dayNumber != null && mergedContext.pace == null) {
+      mergedContext.pace = JOURNEY_PACE.CLASSIC
+    }
+
+    delete mergedContext.dayNumber
+
     return {
       state: parsed.state ?? JOURNEY_STATES.IDLE,
-      context: {
-        ...defaultContext(),
-        ...parsed.context,
-      },
+      context: mergedContext,
     }
   } catch {
     return defaultState()
@@ -85,9 +96,10 @@ export function resetJourney() {
   return snapshot
 }
 
-export function beginJourney({ dayNumber = 1, waypointIndex = 0 } = {}) {
+export function beginJourney({ pace = JOURNEY_PACE.CLASSIC, path = JOURNEY_PATH.A, waypointIndex = 0 } = {}) {
   return transitionJourney(JOURNEY_STATES.WALKING, {
-    dayNumber,
+    pace,
+    path,
     currentWaypointIndex: waypointIndex,
     completedWaypointIds: [],
   })

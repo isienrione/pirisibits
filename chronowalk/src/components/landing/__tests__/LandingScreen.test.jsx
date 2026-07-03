@@ -47,7 +47,7 @@ describe('LandingScreen', () => {
 
     expect(screen.getByText('Recommended by Hotel Roma')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /walk where rome/i })).toBeInTheDocument()
-    expect(screen.getByText('22 locations across 2 days')).toBeInTheDocument()
+    expect(screen.getByText('22 places across six acts')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /unlock rome — €17/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })

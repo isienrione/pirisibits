@@ -17,7 +17,7 @@ Production `main` stays stable until Stage 5 field-test gate.
 ## Prompt order
 
 1. M1 tokens → M3 manifest → M2 routes/journey → M4 config → M5 analytics
-2. M6 Threshold → M7 welcome → M8 landing → M9 access → M10–M17 screens
+2. M6 Threshold → M7 welcome → M8 landing → M9 access → M10 begin (pace + acts, not days) → M11–M17 screens
 3. M18–M21 content pipeline (parallel after M3)
 4. M22 remove dev panel (after Stage 5)
 5. M23–M25 bulletproof

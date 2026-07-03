@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import manifest from '../../../public/tours/rome/manifest.json'
-import { getWaypoint, getDaySummaries, getFirstWaypointIndexForDay, orderedWaypointIds } from '../../lib/tour'
+import { getWaypoint, orderedWaypointIds } from '../../lib/tour'
 
 describe('rome tour manifest', () => {
   it('loads 22 waypoints and 21 transits', () => {
@@ -26,20 +26,5 @@ describe('rome tour manifest', () => {
   it('orders waypoint ids in chapter sequence', () => {
     expect(orderedWaypointIds(manifest)[0]).toBe('w01')
     expect(orderedWaypointIds(manifest)[21]).toBe('w22')
-  })
-
-  it('summarizes days and resolves first waypoint index', () => {
-    const summaries = getDaySummaries(manifest)
-
-    expect(summaries).toHaveLength(2)
-    expect(summaries[0]).toMatchObject({
-      day: 1,
-      title: 'The Ancient City',
-      start: 'The Colosseum',
-      stopCount: 14,
-    })
-
-    expect(getFirstWaypointIndexForDay(manifest, 1)).toBe(0)
-    expect(getFirstWaypointIndexForDay(manifest, 2)).toBe(14)
   })
 })

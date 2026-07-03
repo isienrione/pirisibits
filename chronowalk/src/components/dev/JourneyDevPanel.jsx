@@ -87,7 +87,7 @@ export default function JourneyDevPanel() {
         <button type="button" onClick={() => revokeAccess()}>
           Revoke access
         </button>
-        <button type="button" onClick={() => begin({ dayNumber: 1 })}>
+        <button type="button" onClick={() => begin({ pace: 'classic', waypointIndex: 0 })}>
           Begin day 1
         </button>
         <button type="button" onClick={reset}>

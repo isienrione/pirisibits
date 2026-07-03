@@ -20,7 +20,7 @@ describe('journey state machine', () => {
   })
 
   it('persists and rehydrates from localStorage', () => {
-    beginJourney({ dayNumber: 1, waypointIndex: 2 })
+    beginJourney({ pace: 'classic', waypointIndex: 2 })
     transitionJourney(JOURNEY_STATES.APPROACHING)
 
     const raw = localStorage.getItem('cw_journey_v1')

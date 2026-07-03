@@ -1,22 +1,9 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { BeginPage } from '../BeginPage'
 import { ACCESS_KEY } from '../../../lib/config'
 import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
-import manifest from '../../../../public/tours/rome/manifest.json'
-
-vi.mock('../../../hooks/useJourney', async (importOriginal) => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    useTourManifest: () => ({
-      manifest,
-      loading: false,
-      error: null,
-    }),
-  }
-})
 
 function renderBeginPage() {
   return render(
@@ -47,7 +34,7 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
-    expect(screen.getByRole('heading', { name: /which day of rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
   })
 
   it('redirects purchasers with an in-progress journey to journey', () => {

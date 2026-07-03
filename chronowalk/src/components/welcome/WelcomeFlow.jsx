@@ -379,7 +379,7 @@ function EnteringRomeView({ onBegin }) {
             maxWidth: '28rem',
           }}
         >
-          Twenty-two places. Two days. Stories that unlock exactly where you stand.
+          Twenty-two places. Six acts. Stories that unlock exactly where you stand.
         </p>
 
         <button
