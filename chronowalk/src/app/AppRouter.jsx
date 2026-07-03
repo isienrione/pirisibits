@@ -14,8 +14,8 @@ import {
   LandingPage,
   LetterPage,
   MapPage,
-  WelcomePage,
 } from './pages/PlaceholderPages'
+import { WelcomePage } from './pages/WelcomePage'
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()

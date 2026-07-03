@@ -54,16 +54,6 @@ export function LandingPage() {
   )
 }
 
-export function WelcomePage() {
-  return (
-    <ShellPage
-      eyebrow="Platform entrance"
-      title="Cross into a city's past."
-      subtitle="M7 — splash → city select → entering Rome."
-    />
-  )
-}
-
 export function BeginPage() {
   return (
     <ShellPage
