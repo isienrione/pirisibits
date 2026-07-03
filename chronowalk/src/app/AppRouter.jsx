@@ -6,6 +6,8 @@ import {
   readRomeOfflineStatus,
   verifyRomeAudioPackage,
 } from '../audio/offlinePackage.js'
+import { hydrateRomeMapTileCache, verifyRomeMapTiles } from '../map/offlineMapTiles.js'
+import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
 import CompanionDock from '../components/navigation/CompanionDock'
@@ -81,6 +83,11 @@ function AppRouter() {
       if (cancelled || !verification.valid) return
 
       await hydrateRomeAudioCache(manifest)
+
+      const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+      if (cancelled || (!mapVerification.valid && !mapVerification.skipped)) return
+
+      await hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
     }
 
     void restoreOfflineAudio()

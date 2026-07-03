@@ -1,6 +1,15 @@
 import { collectManifestAudioPaths } from '../content/audioPaths.js'
 import { mediaUrl } from '../lib/mediaUrl.js'
 import { clearCachedAudio, registerCachedAudio } from './audioUrl.js'
+import {
+  clearRomeMapTiles,
+  downloadRomeMapTiles,
+  estimateRomeMapTileDownload,
+  hydrateRomeMapTileCache,
+  isRomeMapReadyOffline,
+  verifyRomeMapTiles,
+} from '../map/offlineMapTiles.js'
+import { env } from '../config/env.js'
 
 export const ROME_OFFLINE_PACKAGE_ID = 'rome'
 export const ROME_AUDIO_CACHE = 'chronowalk-rome-audio-v2'
@@ -25,23 +34,51 @@ export function listRomeAudioManifestPaths(manifest) {
 
 export function estimateRomeAudioDownload(manifest) {
   const paths = listRomeAudioManifestPaths(manifest)
+  const mapEstimate = estimateRomeMapTileDownload(manifest)
   return {
     fileCount: paths.length,
     bytes: paths.length * ESTIMATED_BYTES_PER_FILE,
+    mapTileCount: mapEstimate.tileCount,
+    mapBytes: mapEstimate.bytes,
+    totalBytes: paths.length * ESTIMATED_BYTES_PER_FILE + mapEstimate.bytes,
   }
 }
 
 export function readRomeOfflineStatus() {
   if (typeof window === 'undefined') {
-    return { status: OFFLINE_AUDIO_STATUS.NONE, fileCount: 0, downloadedAt: null, error: null }
+    return {
+      status: OFFLINE_AUDIO_STATUS.NONE,
+      fileCount: 0,
+      mapTileCount: 0,
+      downloadedAt: null,
+      error: null,
+    }
   }
 
   try {
     const raw = window.localStorage.getItem(ROME_OFFLINE_STATUS_KEY)
-    if (!raw) return { status: OFFLINE_AUDIO_STATUS.NONE, fileCount: 0, downloadedAt: null, error: null }
-    return JSON.parse(raw)
+    if (!raw) {
+      return {
+        status: OFFLINE_AUDIO_STATUS.NONE,
+        fileCount: 0,
+        mapTileCount: 0,
+        downloadedAt: null,
+        error: null,
+      }
+    }
+    const parsed = JSON.parse(raw)
+    return {
+      mapTileCount: 0,
+      ...parsed,
+    }
   } catch {
-    return { status: OFFLINE_AUDIO_STATUS.NONE, fileCount: 0, downloadedAt: null, error: null }
+    return {
+      status: OFFLINE_AUDIO_STATUS.NONE,
+      fileCount: 0,
+      mapTileCount: 0,
+      downloadedAt: null,
+      error: null,
+    }
   }
 }
 
@@ -105,17 +142,29 @@ export async function hydrateRomeAudioCache(manifest) {
 
 export async function downloadRomeAudioPackage(manifest, { onProgress, signal } = {}) {
   const paths = listRomeAudioManifestPaths(manifest)
+  const mapEstimate = estimateRomeMapTileDownload(manifest)
+  const totalSteps = paths.length + mapEstimate.tileCount
   const cache = await openRomeAudioCache()
 
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.DOWNLOADING,
     fileCount: paths.length,
+    mapTileCount: mapEstimate.tileCount,
     downloadedAt: null,
     error: null,
   })
 
   try {
     let completed = 0
+
+    const reportProgress = (currentPath) => {
+      onProgress?.({
+        completed,
+        total: totalSteps,
+        percent: clampPercent((completed / totalSteps) * 100),
+        currentPath,
+      })
+    }
 
     for (const manifestPath of paths) {
       if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
@@ -140,25 +189,37 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       }
 
       completed += 1
-      onProgress?.({
-        completed,
-        total: paths.length,
-        percent: clampPercent((completed / paths.length) * 100),
-        currentPath: manifestPath,
-      })
+      reportProgress(manifestPath)
     }
 
-    const verification = await verifyRomeAudioPackage(manifest)
-    if (!verification.valid) {
-      throw new Error(`Offline verification failed (${verification.missing.length} missing files).`)
+    const audioVerification = await verifyRomeAudioPackage(manifest)
+    if (!audioVerification.valid) {
+      throw new Error(`Offline verification failed (${audioVerification.missing.length} missing files).`)
     }
 
     await hydrateRomeAudioCache(manifest)
+
+    if (env.mapboxToken && mapEstimate.tileCount > 0) {
+      await downloadRomeMapTiles(manifest, {
+        signal,
+        token: env.mapboxToken,
+        onProgress: ({ completed: mapCompleted, currentPath }) => {
+          completed = paths.length + mapCompleted
+          reportProgress(currentPath)
+        },
+      })
+    }
+
+    const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+    if (!mapVerification.valid && !mapVerification.skipped) {
+      throw new Error(`Map tile verification failed (${mapVerification.missing.length} missing).`)
+    }
 
     const downloadedAt = Date.now()
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
       fileCount: paths.length,
+      mapTileCount: mapVerification.total,
       downloadedAt,
       error: null,
     })
@@ -166,13 +227,16 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     return {
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
       fileCount: paths.length,
+      mapTileCount: mapVerification.total,
       downloadedAt,
-      verification,
+      verification: audioVerification,
+      mapVerification,
     }
   } catch (error) {
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.FAILED,
       fileCount: paths.length,
+      mapTileCount: mapEstimate.tileCount,
       downloadedAt: null,
       error: error?.message ?? 'Download failed',
     })
@@ -186,10 +250,12 @@ export async function clearRomeAudioPackage(manifest) {
 
   await Promise.all(paths.map((manifestPath) => cache.delete(mediaUrl(manifestPath))))
   clearCachedAudio()
+  await clearRomeMapTiles(manifest, { token: env.mapboxToken })
 
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.NONE,
     fileCount: 0,
+    mapTileCount: 0,
     downloadedAt: null,
     error: null,
   })
@@ -201,5 +267,6 @@ export async function isRomeAudioReadyOffline(manifest) {
   const status = readRomeOfflineStatus()
   if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return false
   const verification = await verifyRomeAudioPackage(manifest)
-  return verification.valid
+  if (!verification.valid) return false
+  return isRomeMapReadyOffline(manifest, { token: env.mapboxToken })
 }

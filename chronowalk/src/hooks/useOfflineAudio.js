@@ -75,7 +75,7 @@ export function useOfflineAudio() {
   return {
     manifest,
     estimate,
-    estimateLabel: estimate ? formatDownloadSize(estimate.bytes) : '—',
+    estimateLabel: estimate ? formatDownloadSize(estimate.totalBytes ?? estimate.bytes) : '—',
     status,
     isReady,
     isDownloading,

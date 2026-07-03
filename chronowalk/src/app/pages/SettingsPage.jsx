@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import OfflineAudioPanel from '../../components/offline/OfflineAudioPanel.jsx'
+import SettingsGuidancePanel from '../../components/settings/SettingsGuidancePanel.jsx'
 
 export function SettingsPage() {
   return (
@@ -40,6 +41,8 @@ export function SettingsPage() {
         <div style={{ marginTop: 28 }}>
           <OfflineAudioPanel />
         </div>
+
+        <SettingsGuidancePanel />
 
         <Link
           to="/journey"

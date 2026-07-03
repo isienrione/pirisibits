@@ -85,7 +85,7 @@ export default function OfflineAudioPanel() {
         Download Rome for offline
       </h2>
       <p style={{ margin: '10px 0 0', fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'color-mix(in srgb, var(--ink) 68%, var(--bone))' }}>
-        Cache narration, beds, inserts, and system cues so the tour keeps playing without data.
+        Cache narration, beds, inserts, system cues, and map tiles for the Rome route.
       </p>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
@@ -111,6 +111,19 @@ export default function OfflineAudioPanel() {
           >
             <strong className="num">{estimate.fileCount}</strong>
             <span> audio files</span>
+          </div>
+        ) : null}
+        {estimate?.mapTileCount ? (
+          <div
+            style={{
+              padding: '10px 12px',
+              borderRadius: 12,
+              background: 'color-mix(in srgb, var(--ink) 4%, var(--bone))',
+              fontSize: 'var(--fs-meta)',
+            }}
+          >
+            <strong className="num">{estimate.mapTileCount}</strong>
+            <span> map tiles</span>
           </div>
         ) : null}
         {isReady ? (
@@ -197,7 +210,7 @@ export default function OfflineAudioPanel() {
       </div>
 
       <p style={{ margin: '14px 0 0', fontSize: 'var(--fs-meta)', lineHeight: 1.5, color: 'color-mix(in srgb, var(--ink) 55%, var(--bone))' }}>
-        Live maps may still need a connection. Audio plays from cache once the download is verified.
+        Street maps for the tour route cache with the download when Mapbox is configured. Turn-by-turn directions still need a live connection.
       </p>
     </section>
   )

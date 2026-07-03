@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import mapboxgl from '../map/mapboxClient'
+import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
@@ -339,6 +340,7 @@ function TourMapboxView({
           style: MAP_STYLE,
           center: [center.lng, center.lat],
           zoom: tour?.mapZoom ?? 14,
+          transformRequest: createMapboxTransformRequest(),
         })
       } catch (error) {
         console.error('Mapbox initialization failed:', error)

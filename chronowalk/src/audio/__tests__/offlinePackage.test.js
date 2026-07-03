@@ -27,6 +27,7 @@ describe('offlinePackage', () => {
     const estimate = estimateRomeAudioDownload(manifest)
     expect(estimate.fileCount).toBe(listRomeAudioManifestPaths(manifest).length)
     expect(estimate.bytes).toBeGreaterThan(0)
+    expect(estimate.totalBytes).toBeGreaterThanOrEqual(estimate.bytes)
   })
 
   it('persists offline status in localStorage', () => {
