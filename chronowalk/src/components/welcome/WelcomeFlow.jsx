@@ -430,7 +430,7 @@ export default function WelcomeFlow() {
     ) : step === 'cities' ? (
       <CitySelectView onSelectRome={() => transitionTo('entering')} />
     ) : (
-      <EnteringRomeView onBegin={() => navigate('/begin')} />
+      <EnteringRomeView onBegin={() => navigate('/landing')} />
     )
 
   return (

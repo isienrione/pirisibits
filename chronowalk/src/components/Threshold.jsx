@@ -93,6 +93,7 @@ export default function Threshold({
   thenSoundscapeUrl,
   thenLabel = 'Then',
   active = true,
+  embedded = false,
   className = '',
 }) {
   const reducedMotion = useReducedMotion()
@@ -226,7 +227,7 @@ export default function Threshold({
         position: 'relative',
         width: '100%',
         height: '100%',
-        minHeight: '100dvh',
+        minHeight: embedded ? '100%' : '100dvh',
         overflow: 'hidden',
         touchAction: 'none',
         background: 'var(--obsidian)',

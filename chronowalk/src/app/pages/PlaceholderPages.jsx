@@ -44,16 +44,6 @@ function ShellPage({ eyebrow, title, subtitle, children }) {
   )
 }
 
-export function LandingPage() {
-  return (
-    <ShellPage
-      eyebrow="ChronoWalk"
-      title="Rome, as it once was."
-      subtitle="v2 landing — M8 will replace this shell with the money screen."
-    />
-  )
-}
-
 export function BeginPage() {
   return (
     <ShellPage

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { formatConfigPrice, loadAppConfig } from './config'
+import { formatConfigPrice, loadAppConfig } from '../lib/config'
 
 export function usePrice() {
   const [price, setPrice] = useState({ label: '€17', cents: 1700, currency: 'EUR' })

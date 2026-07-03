@@ -10,6 +10,7 @@ function renderWelcomeFlow() {
       <Routes>
         <Route path="/" element={<WelcomeFlow />} />
         <Route path="/begin" element={<div>Begin route</div>} />
+        <Route path="/landing" element={<div>Landing route</div>} />
       </Routes>
     </MemoryRouter>
   )
@@ -44,7 +45,7 @@ describe('WelcomeFlow', () => {
     expect(screen.getByRole('button', { name: /rome/i })).toBeInTheDocument()
   })
 
-  it('advances to entering Rome and navigates to begin', () => {
+  it('advances to entering Rome and navigates to landing', () => {
     renderWelcomeFlow()
 
     act(() => {
@@ -58,6 +59,6 @@ describe('WelcomeFlow', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Begin' }))
 
-    expect(screen.getByText('Begin route')).toBeInTheDocument()
+    expect(screen.getByText('Landing route')).toBeInTheDocument()
   })
 })

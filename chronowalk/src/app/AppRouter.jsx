@@ -11,10 +11,10 @@ import {
   BeginPage,
   JourneyPage,
   JournalPage,
-  LandingPage,
   LetterPage,
   MapPage,
 } from './pages/PlaceholderPages'
+import { LandingPage } from './pages/LandingPage'
 import { WelcomePage } from './pages/WelcomePage'
 
 function AppChrome() {
