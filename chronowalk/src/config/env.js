@@ -93,6 +93,22 @@ export const isDebugMap = () => {
   return parseBooleanEnv(import.meta.env.VITE_DEBUG_MAP)
 }
 
+/**
+ * Journey dev panel for field testing and QA.
+ * Enabled in Vite dev, via ?devPanel=true, or VITE_DEV_PANEL=true.
+ * Remove entirely after Stage 5 field-test gate (M22).
+ */
+export const isDevPanelEnabled = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('devPanel')
+    if (param !== null) return parseBooleanEnv(param)
+  }
+
+  if (import.meta.env.DEV) return true
+
+  return parseBooleanEnv(import.meta.env.VITE_DEV_PANEL)
+}
+
 /** @deprecated Use getSingleWaypointId or getTourId */
 export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 

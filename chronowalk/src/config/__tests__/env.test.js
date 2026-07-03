@@ -4,6 +4,7 @@ import {
   getSingleWaypointId,
   getTourId,
   isDebugMap,
+  isDevPanelEnabled,
   shouldResetTour,
 } from '../env'
 
@@ -59,5 +60,13 @@ describe('env URL params', () => {
   it('enables map debug overlays while debugGeo is active', () => {
     setSearch('/?debugGeo=true')
     expect(isDebugMap()).toBe(true)
+  })
+
+  it('enables dev panel via URL param', () => {
+    setSearch('/?devPanel=true')
+    expect(isDevPanelEnabled()).toBe(true)
+
+    setSearch('/?devPanel=false')
+    expect(isDevPanelEnabled()).toBe(false)
   })
 })

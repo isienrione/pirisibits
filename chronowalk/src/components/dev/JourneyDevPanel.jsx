@@ -1,3 +1,4 @@
+import { isDevPanelEnabled } from '../../config/env.js'
 import { grantAccess, revokeAccess } from '../../lib/config'
 import { useJourney, useTourManifest } from '../../hooks/useJourney'
 import { useJourneyStep } from '../../hooks/useJourneyStep'
@@ -15,7 +16,7 @@ export default function JourneyDevPanel() {
     context.promotedOptionalIds
   )
 
-  if (!import.meta.env.DEV) return null
+  if (!isDevPanelEnabled()) return null
 
   const currentLabel =
     step?.type === 'waypoint'

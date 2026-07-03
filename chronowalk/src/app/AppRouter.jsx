@@ -10,6 +10,8 @@ import { hydrateRomeMapTileCache, verifyRomeMapTiles } from '../map/offlineMapTi
 import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
+import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
+import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import CompanionDock from '../components/navigation/CompanionDock'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { loadRomeManifest } from '../content/manifest.js'
@@ -36,6 +38,7 @@ function AppChrome() {
   return (
     <>
       <ConsentBar />
+      <NetworkStatusBanner />
       <JourneyDevPanel />
     </>
   )
@@ -43,7 +46,7 @@ function AppChrome() {
 
 function AppRoutes() {
   return (
-    <>
+    <V2ErrorBoundary title="Tour unavailable">
       <Routes>
         <Route path="/" element={<Navigate to="/welcome" replace />} />
         <Route path="/landing" element={<LandingPage />} />
@@ -61,7 +64,7 @@ function AppRoutes() {
       <JourneyThresholdLayer />
       <CompanionDock />
       <AppChrome />
-    </>
+    </V2ErrorBoundary>
   )
 }
 
