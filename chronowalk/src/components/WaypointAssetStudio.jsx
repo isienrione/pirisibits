@@ -39,7 +39,7 @@ const PromptBlock = ({ title, body, tool }) => {
       <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-muted">
         {body}
       </pre>
-    </div>
+    </section>
   );
 };
 
@@ -179,7 +179,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 Reference: {COLOSSEUM_FRAMING_REFERENCE.notes.join(' ')}
               </p>
             </details>
-          </div>
+          </section>
         ) : null}
 
         <section className="bg-ink900 rounded-card mb-8 grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
@@ -237,7 +237,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               </a>
             ) : null}
           </div>
-        </div>
+        </section>
 
         <PromptBlock
           title="Shared camera rules (reference — do not paste alone)"
@@ -273,7 +273,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               <strong className="text-ink900">DaVinci / export</strong> — use brief to pull poster frames at ~3s
             </li>
           </ol>
-        </div>
+        </section>
 
         <div className="mt-6 space-y-4">
           <PromptBlock
@@ -312,7 +312,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
         <section className="bg-ink900 rounded-card mt-6 p-4">
           <h2 className="text-sm font-semibold text-ink900">Deliverable paths</h2>
@@ -321,7 +321,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               <li key={path}>{path}</li>
             ))}
           </ul>
-        </div>
+        </section>
 
         <p className="mt-8 text-center text-xs text-muted">
           Studio URL: {studioPageUrl}

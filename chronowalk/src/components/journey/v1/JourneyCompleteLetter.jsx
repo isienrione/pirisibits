@@ -1,42 +1,39 @@
-import { formatElapsedDuration, formatWalkedDistance } from '../../../utils/tourStats.js'
+import { useMemo } from 'react'
+import { buildJourneyLetter } from '../../../content/journeyLetter.js'
+import { useTourManifest } from '../../../hooks/useJourney.js'
+import JourneyLetter from './JourneyLetter.jsx'
 
 export default function JourneyCompleteLetter({
   tour,
   visitedCount,
   walkedMeters,
   startedAtMs,
+  arrivedStopIds = [],
+  path = 'a',
 }) {
-  const totalStops = tour?.stopIds?.length ?? visitedCount
+  const { manifest } = useTourManifest()
+
+  const letter = useMemo(() => {
+    if (!manifest) return null
+    return buildJourneyLetter(manifest, {
+      completedWaypointIds: arrivedStopIds,
+      path,
+    })
+  }, [arrivedStopIds, manifest, path])
+
+  const title = tour?.title ? `You walked ${tour.title}` : letter?.title ?? 'The path you walked'
 
   return (
-    <div className="mx-auto flex min-h-full max-w-md flex-col px-6 pb-12 pt-16">
-      <p className="text-eyebrow uppercase text-ember">Your letter</p>
-      <h1 className="mt-4 font-display text-4xl font-medium leading-tight text-warmwhite">
-        You walked {tour?.title ?? 'Rome'}
-      </h1>
-      <p className="mt-6 text-base leading-relaxed text-muted">
-        Every stop left a trace — the crowd at the arena, the forum stones under your feet, the
-        living city at dusk. This is the route you heard.
-      </p>
-
-      <div className="mt-10 space-y-4 border-y border-ink800 py-8 text-sm">
-        <p>
-          <span className="font-semibold text-warmwhite">{visitedCount}</span>
-          <span className="text-muted"> of {totalStops} landmarks visited</span>
-        </p>
-        <p>
-          <span className="font-semibold text-warmwhite">{formatWalkedDistance(walkedMeters)}</span>
-          <span className="text-muted"> walked</span>
-        </p>
-        <p>
-          <span className="font-semibold text-warmwhite">{formatElapsedDuration(startedAtMs)}</span>
-          <span className="text-muted"> on the path</span>
-        </p>
-      </div>
-
-      <p className="mt-auto pt-10 font-display text-xl italic leading-relaxed text-muted">
-        Rome keeps its echoes for those who walk slowly enough to hear them.
-      </p>
-    </div>
+    <JourneyLetter
+      title={title}
+      stopCount={visitedCount}
+      walkedMeters={walkedMeters ?? letter?.walkedMeters ?? 0}
+      startedAtMs={startedAtMs}
+      closingLine={
+        letter?.reflection ??
+        'Rome keeps its echoes for those who walk slowly enough to hear them.'
+      }
+      stops={letter?.stops ?? []}
+    />
   )
 }

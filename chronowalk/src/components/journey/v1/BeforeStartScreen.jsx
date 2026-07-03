@@ -7,7 +7,7 @@ export default function BeforeStartScreen({ onBegin }) {
   const [selectedActId, setSelectedActId] = useState(ROME_ACTS[0]?.id ?? 'act1')
 
   return (
-    <div className="mx-auto flex min-h-full max-w-md flex-col px-6 pb-8 pt-10">
+    <div className="flex min-h-full w-full flex-col px-6 pb-8 pt-10">
       <p className="text-eyebrow uppercase text-muted">Before you walk</p>
       <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-warmwhite">
         Choose your first act

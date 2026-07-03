@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AUDIO_MODES, audioOrchestrator } from '../../../audio/AudioOrchestrator.js'
 import { ThresholdChromeProvider } from '../../../context/ThresholdChromeContext.jsx'
 import { useAudioPlaybackState } from '../../../hooks/useAudioPlaybackState.js'
@@ -9,6 +9,7 @@ import {
 } from '../../../utils/sliderMedia.js'
 import Threshold from '../../Threshold.jsx'
 import { resolveV1JourneyPhase, V1_JOURNEY_PHASE } from '../../../utils/v1JourneyPhase.js'
+import { readDevV1PhaseOverride, DEV_TOOLS_CHANGED } from '../../dev/devTools.js'
 import BeforeStartScreen from './BeforeStartScreen.jsx'
 import WalkingJourneyScreen, { pauseWalkingAudio } from './WalkingJourneyScreen.jsx'
 import ApproachingJourneyScreen from './ApproachingJourneyScreen.jsx'
@@ -54,18 +55,36 @@ export default function JourneyTabView({
   isTourNarrationActive,
 }) {
   const { currentMode } = useAudioPlaybackState()
+  const [phaseOverride, setPhaseOverride] = useState(() =>
+    import.meta.env.DEV ? readDevV1PhaseOverride() : null
+  )
 
-  const phase = resolveV1JourneyPhase({
-    isTourComplete,
-    isAwaitingFirstStop: session.isAwaitingFirstStop,
-    journeyBegun,
-    geoState: session.state,
-    distance: session.distance,
-    activeWaypoint,
-    thresholdActive,
-    discoveredWaypoint,
-    cardDismissed,
-  })
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined
+    const syncPhaseOverride = () => setPhaseOverride(readDevV1PhaseOverride())
+    window.addEventListener(DEV_TOOLS_CHANGED, syncPhaseOverride)
+    return () => window.removeEventListener(DEV_TOOLS_CHANGED, syncPhaseOverride)
+  }, [])
+
+  const phase =
+    phaseOverride ??
+    resolveV1JourneyPhase({
+      isTourComplete,
+      isAwaitingFirstStop: session.isAwaitingFirstStop,
+      journeyBegun,
+      geoState: session.state,
+      distance: session.distance,
+      activeWaypoint,
+      thresholdActive,
+      discoveredWaypoint,
+      cardDismissed,
+    })
+
+  const previewWaypoint =
+    activeWaypoint ??
+    discoveredWaypoint ??
+    session.currentWaypoint ??
+    (session.targetStopId ? session.waypointsById?.[session.targetStopId] : null)
 
   const seamProgress = useMemo(() => {
     const total = tour?.stopIds?.length ?? 1
@@ -87,7 +106,7 @@ export default function JourneyTabView({
   const ambientActive =
     currentMode === AUDIO_MODES.AMBIENT && !audioOrchestrator.ambientPlayer?.paused
 
-  const thresholdWaypoint = buildThresholdWaypoint(activeWaypoint ?? discoveredWaypoint)
+  const thresholdWaypoint = buildThresholdWaypoint(previewWaypoint ?? activeWaypoint ?? discoveredWaypoint)
 
   let content = null
 
@@ -117,12 +136,12 @@ export default function JourneyTabView({
       )
       break
     case V1_JOURNEY_PHASE.ARRIVED:
-      content = <JourneyArrivedScreen waypoint={discoveredWaypoint ?? session.currentWaypoint} />
+      content = <JourneyArrivedScreen waypoint={previewWaypoint} />
       break
     case V1_JOURNEY_PHASE.STORY:
       content = (
         <StoryJourneyScreen
-          waypoint={activeWaypoint}
+          waypoint={previewWaypoint}
           onEnterThreshold={() => onThresholdActiveChange?.(true)}
           onContinue={onContinueFromStory}
         />
@@ -152,6 +171,8 @@ export default function JourneyTabView({
           visitedCount={session.progress.arrivedStopIds.length}
           walkedMeters={walkedMeters}
           startedAtMs={startedAtMs}
+          arrivedStopIds={session.progress.arrivedStopIds}
+          path={session.progress.path ?? 'a'}
         />
       )
       break

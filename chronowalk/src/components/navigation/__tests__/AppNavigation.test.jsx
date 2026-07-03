@@ -8,9 +8,9 @@ describe('AppNavigation', () => {
     render(<AppNavigation activeTab={NAV_TABS.MAP} onChange={vi.fn()} />)
 
     expect(screen.getAllByRole('navigation', { name: /main navigation/i })).toHaveLength(2)
-    expect(screen.getAllByRole('button', { name: /journey/i }).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByRole('button', { name: /map/i }).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByRole('button', { name: /journal/i }).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByRole('button', { name: /^journey$/i })).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: /^map$/i })).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: /^journal$/i })).toHaveLength(2)
   })
 
   it('marks the active tab and switches on click', () => {

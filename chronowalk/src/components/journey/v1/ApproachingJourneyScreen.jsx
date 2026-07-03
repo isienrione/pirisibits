@@ -28,7 +28,7 @@ export default function ApproachingJourneyScreen({
 
       <div className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_55%,transparent)]" />
 
-      <div className="relative mx-auto flex min-h-full max-w-md flex-col justify-end px-6 pb-16 pt-24">
+      <div className="relative flex min-h-full w-full flex-col justify-end px-6 pb-16 pt-24">
         <p className="text-eyebrow uppercase text-ember">Approaching</p>
         <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-warmwhite">
           {targetTitle ?? 'Almost there'}

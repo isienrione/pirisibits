@@ -49,7 +49,7 @@ export default function StoryJourneyScreen({
   if (!waypoint) return null
 
   return (
-    <div className="mx-auto flex min-h-full max-w-md flex-col px-6 pb-10 pt-12">
+    <div className="flex min-h-full w-full flex-col px-6 pb-10 pt-12">
       <p className="text-eyebrow uppercase text-ember">Story</p>
       <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-warmwhite">
         {waypoint.title}

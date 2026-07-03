@@ -23,7 +23,7 @@ export default function WalkingJourneyScreen({
     distance != null ? `${Math.round(distance)} m away` : 'Finding your position…'
 
   return (
-    <div className="mx-auto flex min-h-full max-w-md flex-col px-6 pb-10 pt-16">
+    <div className="flex min-h-full w-full flex-col px-6 pb-10 pt-16">
       <AmbientIndicator active={ambientActive} />
 
       <h1 className="mt-6 font-display text-4xl font-medium leading-tight text-warmwhite">
