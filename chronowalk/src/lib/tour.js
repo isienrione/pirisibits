@@ -40,6 +40,7 @@ export function resolveWaypointMedia(waypoint) {
           loop: mediaUrl(waypoint.reconstruction.loop),
         }
       : null,
+    now_image: waypoint.now_image ?? null,
   }
 }
 

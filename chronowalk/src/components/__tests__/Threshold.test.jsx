@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import Threshold from '../Threshold'
+import { AI_NOW_DISCLOSURE_COPY } from '../threshold/ThresholdSourceBadge.jsx'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext'
 
 const waypoint = {
@@ -29,7 +30,7 @@ describe('Threshold', () => {
     expect(screen.getByText('Now')).toBeInTheDocument()
     expect(screen.getByText('Then')).toBeInTheDocument()
     expect(screen.getByText('Press and hold to cross')).toBeInTheDocument()
-    expect(screen.getByText('Evidence-based reconstruction')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /about this reconstruction/i })).toBeInTheDocument()
   })
 
   it('returns null without reconstruction data', () => {
@@ -40,6 +41,42 @@ describe('Threshold', () => {
     )
 
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('shows AI disclosure badge only for ai_generated now images', () => {
+    renderThreshold({
+      waypoint: {
+        ...waypoint,
+        now_image: { source: 'ai_generated' },
+      },
+    })
+
+    expect(screen.getByRole('button', { name: /about this present-day view/i })).toBeInTheDocument()
+    expect(screen.queryByText(new RegExp(AI_NOW_DISCLOSURE_COPY.slice(0, 20)))).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /about this present-day view/i }))
+    expect(screen.getByText(AI_NOW_DISCLOSURE_COPY)).toBeInTheDocument()
+  })
+
+  it('does not show AI disclosure badge for wikimedia now images', () => {
+    renderThreshold({
+      waypoint: {
+        ...waypoint,
+        now_image: { source: 'wikimedia' },
+      },
+    })
+
+    expect(screen.queryByRole('button', { name: /about this present-day view/i })).not.toBeInTheDocument()
+  })
+
+  it('shows reconstruction honesty caption behind an info badge', () => {
+    renderThreshold()
+
+    expect(screen.getByRole('button', { name: /about this reconstruction/i })).toBeInTheDocument()
+    expect(screen.queryByText('Evidence-based reconstruction')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /about this reconstruction/i }))
+    expect(screen.getByText('Evidence-based reconstruction')).toBeInTheDocument()
   })
 
   it('calls onDismiss from journey controls', () => {

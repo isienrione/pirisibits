@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { nowImageSchema, validateNowImageSemantics } from './nowImage.schema.js'
 
 const geofenceSchema = z.object({
   lat: z.number(),
@@ -26,6 +27,7 @@ const waypointSchema = z.object({
   optional_on_path: z.enum(['a', 'b']).optional(),
   scripted_rest: z.boolean().optional(),
   photo: z.string().optional(),
+  now_image: nowImageSchema.optional(),
   reconstruction: reconstructionSchema.optional(),
   approachLine: z.string().optional(),
   arrivalLine: z.string().optional(),
@@ -123,6 +125,7 @@ export function validateManifestSemantics(manifest) {
     if (!manifest.acts.some((act) => act.waypoints.includes(id))) {
       errors.push(`waypoint ${id} is not listed in any act`)
     }
+    validateNowImageSemantics(id, waypoint.now_image, errors)
   }
 
   for (const [id, insert] of Object.entries(manifest.inserts)) {

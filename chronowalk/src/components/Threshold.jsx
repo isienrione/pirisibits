@@ -10,6 +10,9 @@ import {
   revealToClipRight,
   revealToSeamPercent,
 } from '../utils/thresholdReveal'
+import ThresholdSourceBadge, {
+  AI_NOW_DISCLOSURE_COPY,
+} from './threshold/ThresholdSourceBadge.jsx'
 
 function ThresholdLayerImage({ src, alt, className, style }) {
   const [failed, setFailed] = useState(false)
@@ -221,6 +224,9 @@ export default function Threshold({
 
   if (!active || !reconstruction) return null
 
+  const thenCaption = reconstruction.caption ?? null
+  const showNowAiBadge = waypoint?.now_image?.source === 'ai_generated'
+
   const seamLeft = `${revealToSeamPercent(reveal)}%`
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
@@ -357,23 +363,20 @@ export default function Threshold({
         {thenLabel}
       </div>
 
-      {reconstruction.caption ? (
-        <p
-          style={{
-            position: 'absolute',
-            left: 'var(--edge)',
-            right: 'var(--edge)',
-            bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4rem))',
-            margin: 0,
-            textAlign: 'center',
-            fontSize: 10,
-            lineHeight: 1.5,
-            color: 'color-mix(in srgb, var(--warm-white) 70%, transparent)',
-            pointerEvents: 'none',
-          }}
-        >
-          {reconstruction.caption}
-        </p>
+      {showNowAiBadge ? (
+        <ThresholdSourceBadge
+          align="left"
+          label="About this present-day view"
+          caption={AI_NOW_DISCLOSURE_COPY}
+        />
+      ) : null}
+
+      {thenCaption ? (
+        <ThresholdSourceBadge
+          align="right"
+          label="About this reconstruction"
+          caption={thenCaption}
+        />
       ) : null}
 
       {showHint ? (

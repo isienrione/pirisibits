@@ -200,7 +200,14 @@
         "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
       },
       "approachLine": "The amphitheatre rises ahead — slow your pace and look up.",
-      "arrivalLine": "Take a second. / Look up."
+      "arrivalLine": "Take a second. / Look up.",
+      "now_image": {
+        "file": "w01_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w02": {
       "title": "Colosseum interior",
@@ -219,7 +226,14 @@
         "ins_whopaid"
       ],
       "approachLine": "Step inside — the floor you expect is not the floor that was.",
-      "arrivalLine": "You are standing where the crowd never stood."
+      "arrivalLine": "You are standing where the crowd never stood.",
+      "now_image": {
+        "file": "w02_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w03": {
       "title": "Arch of Titus",
@@ -248,7 +262,14 @@
         "caption": "Evidence-based reconstruction · relief details simplified for clarity"
       },
       "approachLine": "The Forum opens — Titus' arch marks the threshold.",
-      "arrivalLine": "Stand where triumph entered the city."
+      "arrivalLine": "Stand where triumph entered the city.",
+      "now_image": {
+        "file": "w03_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w04": {
       "title": "The Palatine",
@@ -265,7 +286,14 @@
       ],
       "optional_on_path": "a",
       "approachLine": "The emperors' hill climbs above the Forum.",
-      "arrivalLine": "The word palace was born on this slope."
+      "arrivalLine": "The word palace was born on this slope.",
+      "now_image": {
+        "file": "w04_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w06": {
       "title": "Basilica of Maxentius",
@@ -283,7 +311,14 @@
         "ins_constantine"
       ],
       "approachLine": "Vaulted halls loom through the columns ahead.",
-      "arrivalLine": "Imagine the roof still whole above you."
+      "arrivalLine": "Imagine the roof still whole above you.",
+      "now_image": {
+        "file": "w06_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w07": {
       "title": "Via Sacra",
@@ -301,7 +336,14 @@
         "ins_caesar_tease"
       ],
       "approachLine": "You are walking the Sacred Way — keep to the stones.",
-      "arrivalLine": "Processions passed here for a thousand years."
+      "arrivalLine": "Processions passed here for a thousand years.",
+      "now_image": {
+        "file": "w07_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w08": {
       "title": "Temple of Vesta",
@@ -316,7 +358,14 @@
         "w08.mp3"
       ],
       "approachLine": "The round temple is just ahead.",
-      "arrivalLine": "The flame that guarded Rome burned here."
+      "arrivalLine": "The flame that guarded Rome burned here.",
+      "now_image": {
+        "file": "w08_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "pause": {
       "title": "Forum rest",
@@ -332,7 +381,14 @@
       ],
       "scripted_rest": true,
       "approachLine": "Find shade. The Forum can wait.",
-      "arrivalLine": "Nothing expires. Nothing is skipped forever."
+      "arrivalLine": "Nothing expires. Nothing is skipped forever.",
+      "now_image": {
+        "file": "pause_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w10": {
       "title": "The Rostra",
@@ -347,7 +403,14 @@
         "w10.mp3"
       ],
       "approachLine": "The speakers' platform is near — listen for echoes.",
-      "arrivalLine": "Orators once held Rome from this spot."
+      "arrivalLine": "Orators once held Rome from this spot.",
+      "now_image": {
+        "file": "w10_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w11_12": {
       "title": "Heart of the Forum",
@@ -362,7 +425,14 @@
         "w11_12.mp3"
       ],
       "approachLine": "The arch and the Senate house share one standpoint.",
-      "arrivalLine": "Two stories, one square of stone."
+      "arrivalLine": "Two stories, one square of stone.",
+      "now_image": {
+        "file": "w11_12_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w13": {
       "title": "Capitoline Hill",
@@ -377,7 +447,14 @@
         "w13.mp3"
       ],
       "approachLine": "Climb toward the hill where Rome's gods watched over the city.",
-      "arrivalLine": "The Capitoline — heart of public faith."
+      "arrivalLine": "The Capitoline — heart of public faith.",
+      "now_image": {
+        "file": "w13_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w14": {
       "title": "Trajan's Market",
@@ -392,7 +469,14 @@
         "w14.mp3"
       ],
       "approachLine": "Brick arcades stack ahead — Rome's great market hall.",
-      "arrivalLine": "Shops and offices once hummed in these halls."
+      "arrivalLine": "Shops and offices once hummed in these halls.",
+      "now_image": {
+        "file": "w14_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w15": {
       "title": "Spanish Steps",
@@ -407,7 +491,14 @@
         "w15.mp3"
       ],
       "approachLine": "The steps rise ahead — take them slowly.",
-      "arrivalLine": "A staircase built for seeing and being seen."
+      "arrivalLine": "A staircase built for seeing and being seen.",
+      "now_image": {
+        "file": "w15_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w16": {
       "title": "Fontana di Trevi",
@@ -425,7 +516,14 @@
         "ins_water_trevi"
       ],
       "approachLine": "You'll hear the fountain before you see it.",
-      "arrivalLine": "Throw a coin if you wish — the water doesn't mind."
+      "arrivalLine": "Throw a coin if you wish — the water doesn't mind.",
+      "now_image": {
+        "file": "w16_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w17": {
       "title": "The Pantheon",
@@ -453,7 +551,14 @@
         "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
       },
       "approachLine": "The rotunda appears through the streets.",
-      "arrivalLine": "Two thousand years of sky through one opening."
+      "arrivalLine": "Two thousand years of sky through one opening.",
+      "now_image": {
+        "file": "w13_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w18": {
       "title": "Piazza Navona",
@@ -468,7 +573,14 @@
         "w18.mp3"
       ],
       "approachLine": "Bernini's fountain plays ahead — the stadium shape beneath your feet.",
-      "arrivalLine": "A racetrack turned piazza — Rome's living room."
+      "arrivalLine": "A racetrack turned piazza — Rome's living room.",
+      "now_image": {
+        "file": "w18_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w19": {
       "title": "Campo de' Fiori",
@@ -486,7 +598,14 @@
         "ins_fire"
       ],
       "approachLine": "The market square opens — morning or evening, always alive.",
-      "arrivalLine": "Flowers, fruit, and four centuries of chatter."
+      "arrivalLine": "Flowers, fruit, and four centuries of chatter.",
+      "now_image": {
+        "file": "w19_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w20": {
       "title": "Largo di Torre Argentina",
@@ -501,7 +620,14 @@
         "w20.mp3"
       ],
       "approachLine": "Sacred ruins below street level — cats and columns.",
-      "arrivalLine": "This is where Caesar died."
+      "arrivalLine": "This is where Caesar died.",
+      "now_image": {
+        "file": "w20_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w21": {
       "title": "Castel Sant'Angelo",
@@ -519,7 +645,14 @@
         "w21_alt_bruno"
       ],
       "approachLine": "Hadrian's tomb rises beside the river.",
-      "arrivalLine": "Emperor, fortress, refuge — one stone silhouette."
+      "arrivalLine": "Emperor, fortress, refuge — one stone silhouette.",
+      "now_image": {
+        "file": "w21_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "enc_circus": {
       "title": "Circus Maximus floor",
@@ -537,7 +670,14 @@
         "ins_window"
       ],
       "approachLine": "Walk out onto the grass at the bottom of the valley.",
-      "arrivalLine": "You are where the crowd stood."
+      "arrivalLine": "You are where the crowd stood.",
+      "now_image": {
+        "file": "enc_circus_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     },
     "w22": {
       "title": "Via Appia Antica",
@@ -552,7 +692,14 @@
         "w22.mp3"
       ],
       "approachLine": "The basalt stones stretch south — the queen of roads.",
-      "arrivalLine": "Walk where legions and merchants left Rome."
+      "arrivalLine": "Walk where legions and merchants left Rome.",
+      "now_image": {
+        "file": "w22_now.avif",
+        "source": null,
+        "license": null,
+        "credit": null,
+        "source_url": null
+      }
     }
   },
   "transits": {

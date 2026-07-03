@@ -23,6 +23,7 @@ import { BeginPage } from './pages/BeginPage'
 import { LandingPage } from './pages/LandingPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { SettingsPage } from './pages/SettingsPage.jsx'
+import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
 import { StopsPage } from './pages/StopsPage.jsx'
 
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path="/journal" element={<JournalPage />} />
         <Route path="/letter" element={<LetterPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/credits" element={<CreditsPage />} />
         <Route path="/access" element={<AccessPage />} />
         <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

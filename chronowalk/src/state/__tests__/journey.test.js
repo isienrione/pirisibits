@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import {
   beginJourney,
   getJourneySnapshot,
@@ -127,16 +127,20 @@ describe('journey state machine', () => {
   })
 
   it('queues a resume cue when continuing a saved journey', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-06-27T14:00:00Z'))
+
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.WALKING, {
       currentSequenceIndex: 2,
       completedWaypointIds: ['w01'],
-      lastActiveAt: Date.now() - 60 * 60 * 1000,
+      lastActiveAt: new Date('2026-06-27T12:00:00Z').getTime(),
     })
 
     resumeJourney()
 
     expect(getJourneySnapshot().context.pendingResumeCue).toBe('same_day')
+    vi.useRealTimers()
   })
 
   it('prepares resume cue after being away long enough', () => {

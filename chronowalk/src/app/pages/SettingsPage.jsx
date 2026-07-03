@@ -16,6 +16,9 @@ export function SettingsPage() {
       </section>
 
       <div className="mt-8 grid gap-3">
+        <Link to="/credits" className="text-sm font-semibold text-bronze">
+          Credits
+        </Link>
         <Link to="/journal" className="text-sm font-semibold text-bronze">
           Open journal
         </Link>
