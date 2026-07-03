@@ -8,7 +8,12 @@ const STATE_BUTTONS = Object.values(JOURNEY_STATES)
 export default function JourneyDevPanel() {
   const { state, context, transition, reset, begin, states } = useJourney()
   const { manifest } = useTourManifest()
-  const step = useJourneyStep(manifest, context.path, context.currentSequenceIndex)
+  const step = useJourneyStep(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
 
   if (!import.meta.env.DEV) return null
 

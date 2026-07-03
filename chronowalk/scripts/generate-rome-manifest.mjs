@@ -3,12 +3,19 @@
  * Generates src/content/rome/manifest.json from route data.
  * Run: node scripts/generate-rome-manifest.mjs
  */
-import { writeFileSync } from 'node:fs'
+import { writeFileSync, readFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { mergeDurationMaps, seedDurationsFromTransits } from '../src/content/durationManifest.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const outPath = join(__dirname, '../src/content/rome/manifest.json')
+const durationsPath = join(__dirname, '../src/content/rome/durations.json')
+
+function loadMeasuredDurations() {
+  if (!existsSync(durationsPath)) return {}
+  return JSON.parse(readFileSync(durationsPath, 'utf8'))
+}
 
 const geo = {
   w01: { lat: 41.8902, lng: 12.4922, radius_m: 45, name: 'The Colosseum' },
@@ -397,8 +404,10 @@ const manifest = {
       new_day: 'resume_new_day.mp3',
     },
   },
-  durations: {},
 }
+
+manifest.durations = mergeDurationMaps(seedDurationsFromTransits(manifest), loadMeasuredDurations())
 
 writeFileSync(outPath, `${JSON.stringify(manifest, null, 2)}\n`)
 console.log(`Wrote ${outPath}`)
+console.log(`  durations: ${Object.keys(manifest.durations).length} entries`)

@@ -13,6 +13,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
 import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
+import { durationCoverage } from '../src/content/durationManifest.js'
 import { parseRomeManifest } from '../src/content/manifest.schema.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -65,6 +66,13 @@ async function main() {
     }
 
     console.log(`✓ durations map covers ${durationEntries.length} known audio files`)
+
+    const coverage = durationCoverage(manifest, audioPaths)
+    if (coverage.covered < coverage.total) {
+      console.log(
+        `  (${coverage.covered}/${coverage.total} shipping files have durations — run npm run measure:durations for full map)`
+      )
+    }
   }
 
   if (skipRemote) {
