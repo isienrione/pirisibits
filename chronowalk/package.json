@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "vite",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
     "build": "npm run generate:pwa-assets && vite build",
     "lint": "eslint .",
