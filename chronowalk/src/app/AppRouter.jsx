@@ -12,7 +12,7 @@ import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
-import CompanionDock from '../components/navigation/CompanionDock'
+import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { loadRomeManifest } from '../content/manifest.js'
 import { captureHostFromUrl } from '../lib/host'
@@ -23,12 +23,8 @@ import { BeginPage } from './pages/BeginPage'
 import { LandingPage } from './pages/LandingPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { SettingsPage } from './pages/SettingsPage.jsx'
-import {
-  JourneyPage,
-  JournalPage,
-  LetterPage,
-  MapPage,
-} from './pages/PlaceholderPages'
+import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
+import { StopsPage } from './pages/StopsPage.jsx'
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()
@@ -54,6 +50,7 @@ function AppRoutes() {
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/journey" element={<JourneyPage />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/stops" element={<StopsPage />} />
         <Route path="/journal" element={<JournalPage />} />
         <Route path="/letter" element={<LetterPage />} />
         <Route path="/settings" element={<SettingsPage />} />
@@ -62,7 +59,7 @@ function AppRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />
-      <CompanionDock />
+      <ShellTabBar />
       <AppChrome />
     </V2ErrorBoundary>
   )

@@ -19,6 +19,9 @@ import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { isDebugMap } from '../../config/env.js'
+import { useNavigate } from 'react-router-dom'
+import { toWalkCardModel } from '../../content/stopPresentation.js'
+import { ShellWalkCard } from '../../shell'
 
 function ConfidenceChip({ label, active }) {
   return (
@@ -53,6 +56,7 @@ function ConfidenceChip({ label, active }) {
 }
 
 export default function MapScreen() {
+  const navigate = useNavigate()
   const { state, context } = useJourney()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
@@ -125,6 +129,7 @@ export default function MapScreen() {
   )
 
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
+  const walkCard = manifest && activeStop ? toWalkCardModel(manifest, activeStop, geo.distance) : null
 
   const directionsDestination = directionsOpen ? activeStop?.landmark ?? null : null
 
@@ -293,34 +298,21 @@ export default function MapScreen() {
             <ConfidenceChip key={layer.id} label={layer.label} active={layer.active} />
           ))}
         </div>
-
-        {activeStop ? (
-          <div
-            style={{
-              padding: '12px 14px',
-              borderRadius: 16,
-              background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
-              border: '1px solid color-mix(in srgb, var(--warm-white) 10%, transparent)',
-              color: 'var(--warm-white)',
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontSize: 'var(--fs-caption)',
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: 'var(--muted-warm)',
-              }}
-            >
-              Heading to
-            </p>
-            <p style={{ margin: '4px 0 0', fontFamily: 'var(--font-display)', fontSize: 20 }}>
-              {activeStop.title}
-            </p>
-          </div>
-        ) : null}
       </div>
+
+      {!directionsOpen && walkCard ? (
+        <div
+          className="absolute inset-x-3 z-40"
+          style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
+        >
+          <ShellWalkCard
+            title={walkCard.title}
+            distanceM={walkCard.distanceM}
+            imageUrl={walkCard.imageUrl}
+            onContinue={() => navigate('/journey')}
+          />
+        </div>
+      ) : null}
 
       {directionsOpen ? (
         <DirectionsNavHud
