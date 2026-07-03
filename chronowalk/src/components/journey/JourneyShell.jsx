@@ -16,7 +16,7 @@ import WalkingScreen from './WalkingScreen.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 
 export default function JourneyShell() {
-  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, states } =
+  const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, states } =
     useJourney()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
@@ -30,7 +30,21 @@ export default function JourneyShell() {
   const [audioUnlocked, setAudioUnlocked] = useState(false)
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
+  const playedResumeRef = useRef(false)
   const prevStateRef = useRef(state)
+
+  useEffect(() => {
+    prepareResumeCue()
+  }, [prepareResumeCue])
+
+  useEffect(() => {
+    if (!context.pendingResumeCue || !audioUnlocked || playedResumeRef.current) return
+
+    playedResumeRef.current = true
+    void audio.playResumeCue(context.pendingResumeCue)
+    track(TRACK_EVENTS.RESUME, { cue: context.pendingResumeCue })
+    clearPendingResumeCue()
+  }, [audio, audioUnlocked, clearPendingResumeCue, context.pendingResumeCue])
 
   useEffect(() => {
     if (prevStateRef.current === JOURNEY_STATES.THRESHOLD && state === JOURNEY_STATES.WALKING) {

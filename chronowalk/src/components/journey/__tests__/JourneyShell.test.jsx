@@ -15,6 +15,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     unlock: unlockMock,
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
+    playResumeCue: vi.fn().mockResolvedValue(undefined),
     stopNarration: vi.fn(),
     setPath: vi.fn(),
   }),
@@ -35,6 +36,8 @@ vi.mock('../../../lib/track.js', () => ({
   TRACK_EVENTS: {
     WAYPOINT_ARRIVED: 'waypoint_arrived',
     STORY_COMPLETE: 'story_complete',
+    OPTIONAL_WAYPOINT_PROMOTED: 'optional_waypoint_promoted',
+    RESUME: 'resume',
   },
 }))
 

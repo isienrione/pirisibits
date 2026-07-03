@@ -10,6 +10,76 @@ import { useJourney } from '../../hooks/useJourney'
 import { requestLocationAccess } from '../../lib/locationAccess'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
+function ResumePromptView({ onContinue, onStartFresh }) {
+  return (
+    <BeginShell>
+      <p
+        style={{
+          margin: 0,
+          fontSize: 'var(--fs-caption)',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: 'var(--muted-warm)',
+        }}
+      >
+        Welcome back
+      </p>
+      <h1
+        style={{
+          margin: '8px 0 0',
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--fs-title)',
+          fontWeight: 500,
+          lineHeight: 1.15,
+          fontStyle: 'italic',
+        }}
+      >
+        Rome kept your place
+      </h1>
+      <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
+        Pick up where you left off, or begin again from the Colosseum.
+      </p>
+
+      <button
+        type="button"
+        onClick={onContinue}
+        style={{
+          marginTop: 28,
+          width: '100%',
+          padding: '16px 20px',
+          border: 'none',
+          borderRadius: 999,
+          background: 'var(--accent)',
+          color: 'var(--bone)',
+          fontSize: 'var(--fs-body)',
+          fontWeight: 600,
+          cursor: 'pointer',
+        }}
+      >
+        Continue your walk
+      </button>
+
+      <button
+        type="button"
+        onClick={onStartFresh}
+        style={{
+          marginTop: 12,
+          width: '100%',
+          padding: '14px 18px',
+          border: 'none',
+          borderRadius: 999,
+          background: 'transparent',
+          color: 'var(--muted-warm)',
+          fontSize: 'var(--fs-secondary)',
+          cursor: 'pointer',
+        }}
+      >
+        Start fresh
+      </button>
+    </BeginShell>
+  )
+}
+
 function BeginShell({ children }) {
   return (
     <main
@@ -245,8 +315,8 @@ function LocationPromptView({ pace, onEnable, onSkip, busy }) {
 
 export default function BeginFlow() {
   const navigate = useNavigate()
-  const { begin } = useJourney()
-  const [step, setStep] = useState('pace')
+  const { begin, resume, reset, isResumable } = useJourney()
+  const [step, setStep] = useState(() => (isResumable ? 'resume' : 'pace'))
   const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
   const [busy, setBusy] = useState(false)
 
@@ -258,11 +328,26 @@ export default function BeginFlow() {
     navigate('/journey', { replace: true })
   }
 
+  const handleContinueWalk = () => {
+    resume()
+    track(TRACK_EVENTS.RESUME, { source: 'begin_flow' })
+    navigate('/journey', { replace: true })
+  }
+
+  const handleStartFresh = () => {
+    reset()
+    setStep('pace')
+  }
+
   const handleEnableLocation = async () => {
     setBusy(true)
     await requestLocationAccess()
     setBusy(false)
     startJourney()
+  }
+
+  if (step === 'resume') {
+    return <ResumePromptView onContinue={handleContinueWalk} onStartFresh={handleStartFresh} />
   }
 
   if (step === 'location') {

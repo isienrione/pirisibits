@@ -8,6 +8,9 @@ import {
   setJourneyPath,
   promoteOptionalWaypoint,
   completeStoryAfterThreshold,
+  resumeJourney,
+  prepareResumeCueIfNeeded,
+  clearPendingResumeCue,
   JOURNEY_STATES,
 } from '../journey'
 import { loadRomeManifest } from '../../content/manifest.js'
@@ -76,5 +79,39 @@ describe('journey state machine', () => {
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
     expect(snapshot.context.completedWaypointIds).toContain('w01')
     expect(snapshot.context.currentSequenceIndex).toBe(1)
+  })
+
+  it('queues a resume cue when continuing a saved journey', () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 2,
+      completedWaypointIds: ['w01'],
+      lastActiveAt: Date.now() - 60 * 60 * 1000,
+    })
+
+    resumeJourney()
+
+    expect(getJourneySnapshot().context.pendingResumeCue).toBe('same_day')
+  })
+
+  it('prepares resume cue after being away long enough', () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 1,
+      lastActiveAt: Date.now() - 10 * 60 * 1000,
+    })
+
+    prepareResumeCueIfNeeded()
+
+    expect(getJourneySnapshot().context.pendingResumeCue).toMatch(/same_day|new_day/)
+  })
+
+  it('clears pending resume cue after playback', () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.WALKING, { pendingResumeCue: 'same_day' })
+
+    clearPendingResumeCue()
+
+    expect(getJourneySnapshot().context.pendingResumeCue).toBeNull()
   })
 })

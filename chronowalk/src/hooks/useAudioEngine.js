@@ -62,6 +62,10 @@ export function useAudioEngine(manifest) {
     await engineRef.current?.playTransit(transitId)
   }, [])
 
+  const playResumeCue = useCallback(async (cueKey) => {
+    await engineRef.current?.playResumeCue(cueKey)
+  }, [])
+
   const stopNarration = useCallback(() => {
     engineRef.current?.stopNarration()
   }, [])
@@ -76,6 +80,7 @@ export function useAudioEngine(manifest) {
     unlock,
     playWaypoint,
     playTransit,
+    playResumeCue,
     stopNarration,
     setPath,
     engine: engineRef.current,

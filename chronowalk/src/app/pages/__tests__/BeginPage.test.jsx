@@ -37,12 +37,16 @@ describe('BeginPage', () => {
     expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
   })
 
-  it('redirects purchasers with an in-progress journey to journey', () => {
+  it('shows resume prompt for purchasers with an in-progress journey', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
-    transitionJourney(JOURNEY_STATES.WALKING)
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 2,
+      completedWaypointIds: ['w01'],
+    })
 
     renderBeginPage()
 
-    expect(screen.getByText('Journey route')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /rome kept your place/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue your walk/i })).toBeInTheDocument()
   })
 })

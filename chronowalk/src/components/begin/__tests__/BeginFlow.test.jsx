@@ -5,11 +5,16 @@ import BeginFlow from '../BeginFlow'
 import { JOURNEY_PACE } from '../../../data/romePacing'
 
 const beginMock = vi.fn()
+const resumeMock = vi.fn()
+const resetMock = vi.fn()
 const trackMock = vi.fn()
 
 vi.mock('../../../hooks/useJourney', () => ({
   useJourney: () => ({
     begin: beginMock,
+    resume: resumeMock,
+    reset: resetMock,
+    isResumable: false,
   }),
 }))
 
@@ -21,6 +26,7 @@ vi.mock('../../../lib/track', () => ({
   track: (...args) => trackMock(...args),
   TRACK_EVENTS: {
     JOURNEY_BEGIN: 'journey_begin',
+    RESUME: 'resume',
   },
 }))
 
@@ -38,6 +44,8 @@ function renderBeginFlow() {
 describe('BeginFlow', () => {
   beforeEach(() => {
     beginMock.mockClear()
+    resumeMock.mockClear()
+    resetMock.mockClear()
     trackMock.mockClear()
   })
 

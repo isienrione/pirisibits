@@ -1,5 +1,6 @@
 import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
+import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -25,6 +26,8 @@ const defaultContext = () => ({
   promotedOptionalIds: [],
   pathLocked: false,
   pausedAt: null,
+  lastActiveAt: null,
+  pendingResumeCue: null,
 })
 
 const defaultState = () => ({
@@ -66,6 +69,14 @@ function readStorage() {
       mergedContext.promotedOptionalIds = []
     }
 
+    if (mergedContext.lastActiveAt == null && mergedContext.pausedAt != null) {
+      mergedContext.lastActiveAt = mergedContext.pausedAt
+    }
+
+    if (mergedContext.pendingResumeCue == null) {
+      mergedContext.pendingResumeCue = null
+    }
+
     return {
       state: parsed.state ?? JOURNEY_STATES.IDLE,
       context: mergedContext,
@@ -102,12 +113,49 @@ export function transitionJourney(nextState, contextPatch = {}) {
     context: {
       ...snapshot.context,
       ...contextPatch,
+      lastActiveAt: contextPatch.lastActiveAt ?? Date.now(),
       pausedAt: nextState === JOURNEY_STATES.PAUSED ? Date.now() : null,
     },
   }
   writeStorage(snapshot)
   emit()
   return snapshot
+}
+
+export function isResumableJourney(journeySnapshot = snapshot) {
+  if (
+    journeySnapshot.state === JOURNEY_STATES.COMPLETE ||
+    journeySnapshot.state === JOURNEY_STATES.IDLE
+  ) {
+    return false
+  }
+
+  const { currentSequenceIndex = 0, completedWaypointIds = [] } = journeySnapshot.context
+  return currentSequenceIndex > 0 || completedWaypointIds.length > 0
+}
+
+export function resumeJourney(now = Date.now()) {
+  if (!isResumableJourney()) return snapshot
+
+  const cue = resolveResumeCue(snapshot.context.lastActiveAt, now)
+  const nextState =
+    snapshot.state === JOURNEY_STATES.IDLE ? JOURNEY_STATES.WALKING : snapshot.state
+
+  return transitionJourney(nextState, { pendingResumeCue: cue })
+}
+
+export function prepareResumeCueIfNeeded(now = Date.now()) {
+  if (!isResumableJourney()) return snapshot
+  if (snapshot.context.pendingResumeCue) return snapshot
+  if (!wasAwayLongEnough(snapshot.context.lastActiveAt, now)) return snapshot
+
+  const cue = resolveResumeCue(snapshot.context.lastActiveAt, now)
+  return transitionJourney(snapshot.state, { pendingResumeCue: cue })
+}
+
+export function clearPendingResumeCue() {
+  if (!snapshot.context.pendingResumeCue) return snapshot
+  return transitionJourney(snapshot.state, { pendingResumeCue: null })
 }
 
 export function resetJourney() {
@@ -127,6 +175,7 @@ export function beginJourney({ pace = JOURNEY_PACE.CLASSIC, path = JOURNEY_PATH.
     completedTransitIds: [],
     promotedOptionalIds: [],
     pathLocked: false,
+    pendingResumeCue: null,
   })
 }
 

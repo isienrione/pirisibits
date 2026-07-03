@@ -1,12 +1,11 @@
 import { MIX_CONFIG } from './mix.config.js'
 import { dbToGain } from './db.js'
-import { resolvePlanItemUrl } from './audioUrl.js'
+import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl } from './audioUrl.js'
 import {
   buildTransitPlan,
   buildWaypointPlan,
   resolveActiveZone,
 } from './buildPlaybackPlan.js'
-import { resolveSystemUrl } from './audioUrl.js'
 
 const JOURNEY_WALKING = 'walking'
 
@@ -385,6 +384,17 @@ export class AudioEngine {
   async playSystemCue(filename) {
     if (!filename) return
     const url = resolveSystemUrl(filename)
+    await this.playOneShot(url)
+  }
+
+  async playResumeCue(cueKey) {
+    const filename = this.manifest?.system?.resume?.[cueKey]
+    if (!filename) return
+    const url = resolveNarrationUrl(filename)
+    await this.playOneShot(url)
+  }
+
+  async playOneShot(url) {
     if (!url) return
 
     await this.init()

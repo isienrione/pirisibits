@@ -13,6 +13,10 @@ import {
   setActiveWaypointIndex,
   promoteOptionalWaypoint,
   completeStoryAfterThreshold,
+  isResumableJourney,
+  resumeJourney,
+  prepareResumeCueIfNeeded,
+  clearPendingResumeCue,
   JOURNEY_STATES,
 } from '../state/journey'
 
@@ -22,9 +26,13 @@ export function useJourney() {
   return {
     ...snapshot,
     states: JOURNEY_STATES,
+    isResumable: isResumableJourney(snapshot),
     transition: transitionJourney,
     reset: resetJourney,
     begin: beginJourney,
+    resume: resumeJourney,
+    prepareResumeCue: prepareResumeCueIfNeeded,
+    clearPendingResumeCue,
     completeWaypoint: markWaypointComplete,
     setWaypointIndex: advanceWaypointIndex,
     advanceSequence: advanceSequenceIndex,
