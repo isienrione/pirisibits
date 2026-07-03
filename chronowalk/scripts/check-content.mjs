@@ -5,6 +5,7 @@
  * Usage:
  *   npm run check:content
  *   npm run check:content -- --skip-remote
+ *   npm run check:content -- --require-full-durations
  *
  * Env: VITE_MEDIA_BASE (required unless --skip-remote)
  */
@@ -20,6 +21,7 @@ import { parseRomeManifest } from '../src/content/manifest.schema.js'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const manifestPath = join(__dirname, '../src/content/rome/manifest.json')
 const skipRemote = process.argv.includes('--skip-remote')
+const requireFullDurations = process.argv.includes('--require-full-durations')
 
 function loadEnvLocal() {
   try {
@@ -73,10 +75,19 @@ async function main() {
 
     const coverage = durationCoverage(manifest, audioPaths)
     if (coverage.covered < coverage.total) {
-      console.log(
-        `  (${coverage.covered}/${coverage.total} shipping files have durations — run npm run measure:durations for full map)`
-      )
+      const message = `  (${coverage.covered}/${coverage.total} shipping files have durations — run npm run measure:durations for full map)`
+      if (requireFullDurations) {
+        console.error(`✗ durations incomplete (${coverage.covered}/${coverage.total}):\n`)
+        for (const key of coverage.missing) console.error(`  - ${key}`)
+        process.exit(1)
+      }
+      console.log(message)
+    } else if (requireFullDurations) {
+      console.log(`✓ durations map covers all ${coverage.total} shipping audio files`)
     }
+  } else if (requireFullDurations) {
+    console.error('✗ durations map is missing from manifest')
+    process.exit(1)
   }
 
   if (skipRemote) {

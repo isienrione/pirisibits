@@ -399,6 +399,10 @@ const manifest = {
       completion: 'ui_completion_tone.mp3',
     },
     preview: 'preview_pantheon.mp3',
+    threshold_ambience: {
+      now: 'ambience_now.mp3',
+      then: 'ambience_then.mp3',
+    },
     resume: {
       same_day: 'resume_same_day.mp3',
       new_day: 'resume_new_day.mp3',

@@ -20,6 +20,7 @@ vi.mock('../../../hooks/useJourneyGeo.js', () => ({
     approachingGeofence: false,
     state: 'TRANSIT',
     locationStatus: 'granted',
+    retryLocation: vi.fn(),
   }),
 }))
 

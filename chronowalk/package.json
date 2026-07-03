@@ -28,6 +28,8 @@
     "measure:durations": "node scripts/measure-rome-durations.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:content:local": "node scripts/check-content.mjs --skip-remote",
+    "check:content:strict": "node scripts/check-content.mjs --require-full-durations",
+    "check:content:local:strict": "node scripts/check-content.mjs --skip-remote --require-full-durations",
     "test:watch": "vitest"
   },
   "dependencies": {

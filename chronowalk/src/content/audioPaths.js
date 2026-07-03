@@ -1,5 +1,7 @@
 /** Audio file path resolution for Rome tour content on R2. */
 
+import { collectThresholdAmbiencePaths } from './thresholdAmbience.js'
+
 export const ROME_AUDIO_ROOT = '/rome/audio'
 
 export const AUDIO_CATEGORIES = {
@@ -68,6 +70,10 @@ export function collectManifestAudioPaths(manifest) {
   if (manifest.system.preview) add(AUDIO_CATEGORIES.NARRATION, manifest.system.preview)
   for (const file of Object.values(manifest.system.resume ?? {})) {
     add(AUDIO_CATEGORIES.NARRATION, file)
+  }
+
+  for (const path of collectThresholdAmbiencePaths(manifest)) {
+    paths.add(path)
   }
 
   return [...paths].sort()

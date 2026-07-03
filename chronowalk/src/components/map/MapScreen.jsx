@@ -58,6 +58,7 @@ export default function MapScreen() {
     context.promotedOptionalIds
   )
   const [directionsOpen, setDirectionsOpen] = useState(false)
+  const [recenterKey, setRecenterKey] = useState(0)
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geo = useJourneyGeo(geoTarget, {
@@ -128,6 +129,15 @@ export default function MapScreen() {
     [geo.position, directions?.steps, directions?.geometry, directions?.distanceM]
   )
 
+  const focusTarget = useMemo(() => {
+    if (!geo.position?.lat || !geo.position?.lng) return null
+    return {
+      lat: geo.position.lat,
+      lng: geo.position.lng,
+      key: recenterKey,
+    }
+  }, [geo.position?.lat, geo.position?.lng, recenterKey])
+
   const confidenceLayers = getMapConfidenceLayers({
     locationStatus: geo.locationStatus,
     activeStop,
@@ -176,6 +186,11 @@ export default function MapScreen() {
     setDirectionsOpen(true)
   }
 
+  const handleRecenter = () => {
+    geo.retryLocation?.()
+    setRecenterKey((key) => key + 1)
+  }
+
   return (
     <div style={{ position: 'relative', minHeight: '100dvh', background: 'var(--obsidian)' }}>
       <TourMap
@@ -192,6 +207,7 @@ export default function MapScreen() {
         debugMapEnabled={isDebugMap()}
         directionsModeActive={directionsOpen}
         directionsGeometry={directions?.geometry ?? null}
+        focusTarget={focusTarget}
       />
 
       <div
@@ -295,7 +311,7 @@ export default function MapScreen() {
           routingOrigin={routingOrigin}
           routingDestination={routingDestination}
           onClose={() => setDirectionsOpen(false)}
-          onRecenter={() => {}}
+          onRecenter={handleRecenter}
           hasBottomNav={false}
         />
       ) : null}

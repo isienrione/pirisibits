@@ -82,6 +82,12 @@ export const romeManifestSchema = z.object({
     ui: z.record(z.string(), z.string()),
     preview: z.string().optional(),
     resume: z.record(z.string(), z.string()).optional(),
+    threshold_ambience: z
+      .object({
+        now: z.string(),
+        then: z.string(),
+      })
+      .optional(),
   }),
   durations: z.record(z.string(), z.number()),
 })
