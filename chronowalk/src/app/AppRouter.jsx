@@ -6,16 +6,16 @@ import { ThresholdChromeProvider, useThresholdChrome } from '../context/Threshol
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
 import { JourneyThresholdLayer, ThresholdDemoPage } from './pages/ThresholdPage'
+import { AccessPage } from './pages/AccessPage'
+import { BeginPage } from './pages/BeginPage'
+import { LandingPage } from './pages/LandingPage'
+import { WelcomePage } from './pages/WelcomePage'
 import {
-  BeginPage,
   JourneyPage,
   JournalPage,
   LetterPage,
   MapPage,
 } from './pages/PlaceholderPages'
-import { AccessPage } from './pages/AccessPage'
-import { LandingPage } from './pages/LandingPage'
-import { WelcomePage } from './pages/WelcomePage'
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()

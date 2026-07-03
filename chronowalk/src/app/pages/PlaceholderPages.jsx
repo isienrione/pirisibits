@@ -44,16 +44,6 @@ function ShellPage({ eyebrow, title, subtitle, children }) {
   )
 }
 
-export function BeginPage() {
-  return (
-    <ShellPage
-      eyebrow="Begin journey"
-      title="Rome is ready when you are."
-      subtitle="M10 — day selector and location pre-prompt."
-    />
-  )
-}
-
 export function JourneyPage() {
   return (
     <>

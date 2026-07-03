@@ -60,6 +60,10 @@ export default function JourneyDevPanel() {
         ))}
       </div>
       <p style={{ margin: '10px 0 0', opacity: 0.75 }}>
+        <a href="/begin" style={{ color: 'var(--ember)' }}>
+          Open begin flow
+        </a>
+        {' · '}
         <a href="/landing" style={{ color: 'var(--ember)' }}>
           Open landing
         </a>
