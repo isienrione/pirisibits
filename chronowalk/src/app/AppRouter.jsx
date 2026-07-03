@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import {
   hydrateRomeAudioCache,
@@ -30,6 +30,8 @@ import { WelcomePage } from './pages/WelcomePage'
 import { SettingsPage } from './pages/SettingsPage.jsx'
 import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
+
+const LabPage = import.meta.env.DEV ? lazy(() => import('./pages/LabPage.jsx')) : null
 
 function LegacyStopsRedirect() {
   return <Navigate to="/journey?sheet=route" replace />
@@ -121,6 +123,16 @@ function AppRoutes() {
           <Route path="/credits" element={<CreditsPage />} />
           <Route path="/access" element={<AccessPage />} />
           <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
+          {import.meta.env.DEV && LabPage ? (
+            <Route
+              path="/lab"
+              element={
+                <Suspense fallback={null}>
+                  <LabPage />
+                </Suspense>
+              }
+            />
+          ) : null}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <JourneyThresholdLayer />
