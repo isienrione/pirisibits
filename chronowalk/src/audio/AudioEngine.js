@@ -46,6 +46,117 @@ export class AudioEngine {
     this.longwalkPlayed = false
 
     this.onNarrationChange = null
+    this.onInterruptionChange = null
+
+    this.playbackInterrupted = false
+    this.playingBeforeHidden = false
+    this.activePlayback = null
+    this.interruptedPlayback = null
+    this.visibilityListenerAttached = false
+  }
+
+  handleVisibilityChange = () => {
+    if (typeof document === 'undefined') return
+
+    if (document.hidden) {
+      this.onPageHidden()
+      return
+    }
+
+    void this.onPageVisible()
+  }
+
+  handleForegroundReturn = () => {
+    if (typeof document === 'undefined' || document.hidden) return
+    void this.onPageVisible()
+  }
+
+  attachVisibilityListener() {
+    if (this.visibilityListenerAttached || typeof document === 'undefined') return
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange)
+    window.addEventListener('focus', this.handleForegroundReturn)
+    window.addEventListener('pageshow', this.handleForegroundReturn)
+    this.visibilityListenerAttached = true
+  }
+
+  detachVisibilityListener() {
+    if (!this.visibilityListenerAttached || typeof document === 'undefined') return
+
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange)
+    window.removeEventListener('focus', this.handleForegroundReturn)
+    window.removeEventListener('pageshow', this.handleForegroundReturn)
+    this.visibilityListenerAttached = false
+  }
+
+  onPageHidden() {
+    this.playingBeforeHidden = this.narrationPlaying
+  }
+
+  async onPageVisible() {
+    await this.syncPlaybackState()
+    this.playingBeforeHidden = false
+  }
+
+  async syncPlaybackState() {
+    if (this.context?.state === 'suspended' && this.context.resume) {
+      try {
+        await this.context.resume()
+      } catch {
+        // Resume may require a user gesture after another app steals the session.
+      }
+    }
+
+    const contextSuspended = this.context?.state === 'suspended'
+    const needsResume =
+      this.playingBeforeHidden &&
+      Boolean(this.activePlayback) &&
+      (!this.narrationPlaying || contextSuspended)
+
+    if (needsResume) {
+      this.interruptedPlayback = { ...this.activePlayback }
+    }
+
+    this.setPlaybackInterrupted(needsResume)
+    return needsResume
+  }
+
+  isPlaybackInterrupted() {
+    return this.playbackInterrupted
+  }
+
+  setPlaybackInterrupted(interrupted) {
+    if (this.playbackInterrupted === interrupted) return
+    this.playbackInterrupted = interrupted
+    this.onInterruptionChange?.(interrupted)
+  }
+
+  async resumeInterruptedPlayback() {
+    await this.init()
+
+    if (this.context?.state === 'suspended' && this.context.resume) {
+      await this.context.resume()
+    }
+
+    const target = this.interruptedPlayback ?? this.activePlayback
+    this.setPlaybackInterrupted(false)
+    this.interruptedPlayback = null
+
+    if (!target) return true
+
+    if (target.kind === 'transit') {
+      await this.playTransit(target.id)
+    } else {
+      await this.playWaypoint(target.id)
+    }
+
+    return true
+  }
+
+  clearActivePlayback() {
+    this.activePlayback = null
+    this.interruptedPlayback = null
+    this.setPlaybackInterrupted(false)
   }
 
   async init() {
@@ -136,7 +247,11 @@ export class AudioEngine {
       this.getPlaybackContext()
     )
 
+    this.activePlayback = { kind: 'waypoint', id: waypointId }
     await this.playPlan(plan)
+    if (!this.playbackInterrupted) {
+      this.activePlayback = null
+    }
   }
 
   clearTransitSession() {
@@ -175,7 +290,11 @@ export class AudioEngine {
       this.getPlaybackContext()
     )
 
+    this.activePlayback = { kind: 'transit', id: transitId }
     await this.playPlan(plan)
+    if (!this.playbackInterrupted) {
+      this.activePlayback = null
+    }
   }
 
   async play(stopId) {
@@ -332,6 +451,7 @@ export class AudioEngine {
     this.playbackGeneration += 1
     this.stopNarrationSources()
     this.setNarrationPlaying(false)
+    this.clearActivePlayback()
   }
 
   stopNarrationSources() {
@@ -450,10 +570,12 @@ export class AudioEngine {
   }
 
   teardown() {
+    this.detachVisibilityListener()
     this.stopPresence()
     this.stopNarration()
     this.clearTransitSession()
     this.playbackGeneration += 1
+    this.playingBeforeHidden = false
 
     if (this.bedSource) {
       try {

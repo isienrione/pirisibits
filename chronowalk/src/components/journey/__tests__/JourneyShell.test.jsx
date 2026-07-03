@@ -24,6 +24,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     get narrationPlaying() {
       return audioMock.narrationPlaying
     },
+    playbackInterrupted: false,
     unlock: unlockMock,
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
@@ -32,6 +33,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     playCompletionChime: vi.fn().mockResolvedValue(undefined),
     endTransit: vi.fn(),
     stopNarration: vi.fn(),
+    resumePlayback: vi.fn().mockResolvedValue(undefined),
     setPath: vi.fn(),
   }),
 }))

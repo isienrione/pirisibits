@@ -6,6 +6,7 @@ import { JOURNEY_STATES } from '../state/journey.js'
 export function useAudioEngine(manifest) {
   const engineRef = useRef(null)
   const [narrationPlaying, setNarrationPlaying] = useState(false)
+  const [playbackInterrupted, setPlaybackInterrupted] = useState(false)
   const [ready, setReady] = useState(false)
   const { state, context } = useJourney()
 
@@ -14,6 +15,8 @@ export function useAudioEngine(manifest) {
 
     const engine = createAudioEngine(manifest, { path: context.path })
     engine.onNarrationChange = setNarrationPlaying
+    engine.onInterruptionChange = setPlaybackInterrupted
+    engine.attachVisibilityListener()
     engineRef.current = engine
 
     engine.init().then(() => {
@@ -22,10 +25,13 @@ export function useAudioEngine(manifest) {
 
     return () => {
       engine.onNarrationChange = null
+      engine.onInterruptionChange = null
+      engine.detachVisibilityListener()
       engine.teardown()
       engineRef.current = null
       setReady(false)
       setNarrationPlaying(false)
+      setPlaybackInterrupted(false)
     }
   }, [manifest])
 
@@ -82,6 +88,10 @@ export function useAudioEngine(manifest) {
     engineRef.current?.stopNarration()
   }, [])
 
+  const resumePlayback = useCallback(async () => {
+    await engineRef.current?.resumeInterruptedPlayback()
+  }, [])
+
   const setPath = useCallback((path) => {
     engineRef.current?.setPath(path)
   }, [])
@@ -89,6 +99,7 @@ export function useAudioEngine(manifest) {
   return {
     ready,
     narrationPlaying,
+    playbackInterrupted,
     unlock,
     playWaypoint,
     playTransit,
@@ -97,6 +108,7 @@ export function useAudioEngine(manifest) {
     playCompletionChime,
     endTransit,
     stopNarration,
+    resumePlayback,
     setPath,
     engine: engineRef.current,
   }

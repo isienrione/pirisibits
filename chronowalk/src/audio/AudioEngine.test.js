@@ -145,6 +145,43 @@ describe('AudioEngine', () => {
 
     vi.useRealTimers();
   });
+
+  it('marks playback interrupted after returning from background without auto-resuming', async () => {
+    const interruptedStates = [];
+    engine.onInterruptionChange = (interrupted) => interruptedStates.push(interrupted);
+    engine.activePlayback = { kind: 'waypoint', id: 'w01' };
+    engine.setNarrationPlaying(true);
+
+    engine.onPageHidden();
+    engine.setNarrationPlaying(false);
+
+    await engine.onPageVisible();
+
+    expect(interruptedStates.at(-1)).toBe(true);
+    expect(engine.isPlaybackInterrupted()).toBe(true);
+    expect(engine.interruptedPlayback).toEqual({ kind: 'waypoint', id: 'w01' });
+  });
+
+  it('does not mark interruption when narration was not playing before hide', async () => {
+    engine.activePlayback = { kind: 'waypoint', id: 'w01' };
+    engine.setNarrationPlaying(false);
+
+    engine.onPageHidden();
+    await engine.onPageVisible();
+
+    expect(engine.isPlaybackInterrupted()).toBe(false);
+  });
+
+  it('resumes interrupted playback from the saved waypoint', async () => {
+    const playWaypoint = vi.spyOn(engine, 'playWaypoint').mockResolvedValue(undefined);
+    engine.interruptedPlayback = { kind: 'waypoint', id: 'w01' };
+    engine.setPlaybackInterrupted(true);
+
+    await engine.resumeInterruptedPlayback();
+
+    expect(playWaypoint).toHaveBeenCalledWith('w01');
+    expect(engine.isPlaybackInterrupted()).toBe(false);
+  });
 });
 
 function manifestFromEngine(engine) {

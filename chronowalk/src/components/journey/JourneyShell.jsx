@@ -14,6 +14,7 @@ import PathChoiceScreen from './PathChoiceScreen.jsx'
 import StoryScreen from './StoryScreen.jsx'
 import WalkingScreen from './WalkingScreen.jsx'
 import RestScreen from './RestScreen.jsx'
+import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 
 export default function JourneyShell() {
@@ -236,26 +237,44 @@ export default function JourneyShell() {
     return <Navigate to="/begin" replace />
   }
 
+  const interruptionBanner =
+    audioUnlocked && audio.playbackInterrupted ? (
+      <AudioInterruptionBanner
+        busy={busy}
+        onResume={() => {
+          setBusy(true)
+          void audio.resumePlayback().finally(() => setBusy(false))
+        }}
+      />
+    ) : null
+
+  const withInterruptionBanner = (content) => (
+    <>
+      {interruptionBanner}
+      {content}
+    </>
+  )
+
   if (loading) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout eyebrow="Journey" title="Loading Rome…" subtitle="Preparing your path through the city." />
     )
   }
 
   if (error) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout eyebrow="Journey" title="Could not load tour" subtitle={error.message} />
     )
   }
 
   if (!manifest || !step) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout eyebrow="Journey" title="Tour unavailable" subtitle="Manifest did not load." />
     )
   }
 
   if (step.done || state === JOURNEY_STATES.COMPLETE) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Journey complete"
         title="You walked Rome"
@@ -284,7 +303,7 @@ export default function JourneyShell() {
   }
 
   if (!audioUnlocked && !audio.ready) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Journey"
         title="Ready when you are"
@@ -298,11 +317,11 @@ export default function JourneyShell() {
   }
 
   if (needsPathChoice) {
-    return <PathChoiceScreen onChoose={handlePathChoice} busy={busy} />
+    return withInterruptionBanner(<PathChoiceScreen onChoose={handlePathChoice} busy={busy} />)
   }
 
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
-    return (
+    return withInterruptionBanner(
       <StoryScreen
         waypointName={step.record.title ?? step.record.name}
         narrationPlaying={audio.narrationPlaying}
@@ -316,7 +335,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.THRESHOLD && step.type === 'waypoint') {
-    return (
+    return withInterruptionBanner(
       <StoryScreen
         waypointName={step.record.title ?? step.record.name}
         narrationPlaying={false}
@@ -329,7 +348,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.ARRIVED && step.type === 'waypoint') {
-    return (
+    return withInterruptionBanner(
       <ArrivalScreen
         waypointName={step.record.title ?? step.record.name}
         arrivalLine={step.record.arrivalLine}
@@ -341,7 +360,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.APPROACHING && step.type === 'waypoint') {
-    return (
+    return withInterruptionBanner(
       <ApproachingScreen
         waypointName={step.record.title ?? step.record.name}
         approachLine={step.record.approachLine}
@@ -351,7 +370,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.WALKING && step.type === 'transit') {
-    return (
+    return withInterruptionBanner(
       <WalkingScreen
         title={step.targetWaypoint?.title ?? 'On the way'}
         subtitle={step.record.note ?? 'Follow the route between stops.'}
@@ -365,7 +384,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
-    return (
+    return withInterruptionBanner(
       <WalkingScreen
         title={step.record.title ?? step.record.name}
         subtitle={step.record.approachLine}
@@ -377,7 +396,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.PAUSED && step.type === 'waypoint' && step.record?.scripted_rest) {
-    return (
+    return withInterruptionBanner(
       <RestScreen
         title={step.record.title ?? step.record.name}
         subtitle={step.record.arrivalLine}
@@ -388,7 +407,7 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.PAUSED) {
-    return (
+    return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Paused"
         title="Journey paused"
@@ -401,7 +420,7 @@ export default function JourneyShell() {
     )
   }
 
-  return (
+  return withInterruptionBanner(
     <JourneyLayout
       eyebrow="Journey"
       title={step.record?.title ?? step.id}
