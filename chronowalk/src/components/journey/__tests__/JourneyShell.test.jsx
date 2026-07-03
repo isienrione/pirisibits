@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
+import { JourneyCompanionProvider } from '../../../context/JourneyCompanionContext.jsx'
 import {
   beginJourney,
   resetJourney,
@@ -63,7 +64,9 @@ vi.mock('../../../lib/track.js', () => ({
 function renderShell() {
   return render(
     <MemoryRouter>
-      <JourneyShell />
+      <JourneyCompanionProvider>
+        <JourneyShell />
+      </JourneyCompanionProvider>
     </MemoryRouter>
   )
 }
@@ -89,8 +92,8 @@ describe('JourneyShell', () => {
     beginJourney({ pace: 'classic' })
     renderShell()
 
-    expect(await screen.findByText('Walking')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+    expect(await screen.findByText('Walking guide')).toBeInTheDocument()
+    expect(screen.getByText(/walk to/i)).toBeInTheDocument()
   })
 
   it('shows path choice at t01 before path is locked', async () => {
@@ -133,7 +136,9 @@ describe('JourneyShell', () => {
     audioMock.narrationPlaying = false
     view.rerender(
       <MemoryRouter>
-        <JourneyShell />
+        <JourneyCompanionProvider>
+          <JourneyShell />
+        </JourneyCompanionProvider>
       </MemoryRouter>
     )
 

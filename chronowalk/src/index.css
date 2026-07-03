@@ -127,6 +127,48 @@
     }
   }
 
+  @keyframes living-seam-breathe {
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes letter-route-draw {
+    from {
+      stroke-dashoffset: var(--letter-path-length, 1);
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes threshold-bloom {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) scaleX(0.35);
+    }
+    45% {
+      opacity: 0.3;
+      transform: translateX(-50%) scaleX(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) scaleX(1.15);
+    }
+  }
+
+  .animate-living-seam {
+    animation: living-seam-breathe 3s ease-in-out infinite;
+  }
+
+  .animate-letter-route-draw {
+    animation: letter-route-draw 2.5s ease-out forwards;
+  }
+
   .animate-arrival-vignette {
     animation: arrival-vignette 2.4s ease-in-out infinite;
   }
@@ -152,7 +194,9 @@
     .animate-arrival-discover,
     .animate-arrival-map-pulse,
     .animate-arrival-title,
-    .animate-sheet-rise {
+    .animate-sheet-rise,
+    .animate-living-seam,
+    .animate-letter-route-draw {
       animation: none;
     }
 

@@ -1,7 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import TourMap from '../TourMap.jsx'
-import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import {
   buildManifestTour,
   buildMapStopsFromManifest,
@@ -16,12 +15,11 @@ import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
 import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
-import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
-import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { isDebugMap } from '../../config/env.js'
 import { useNavigate } from 'react-router-dom'
 import { toWalkCardModel } from '../../content/stopPresentation.js'
 import { ShellWalkCard } from '../../shell'
+import { useJourneyCompanion } from '../../context/JourneyCompanionContext.jsx'
 
 function ConfidenceChip({ label, active }) {
   return (
@@ -57,6 +55,7 @@ function ConfidenceChip({ label, active }) {
 
 export default function MapScreen() {
   const navigate = useNavigate()
+  const { openRouteSheet } = useJourneyCompanion()
   const { state, context } = useJourney()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
@@ -65,7 +64,6 @@ export default function MapScreen() {
     context.currentSequenceIndex,
     context.promotedOptionalIds
   )
-  const [directionsOpen, setDirectionsOpen] = useState(false)
   const [recenterKey, setRecenterKey] = useState(0)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
 
@@ -131,31 +129,6 @@ export default function MapScreen() {
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
   const walkCard = manifest && activeStop ? toWalkCardModel(manifest, activeStop, geo.distance) : null
 
-  const directionsDestination = directionsOpen ? activeStop?.landmark ?? null : null
-
-  const {
-    directions,
-    loading: directionsLoading,
-    error: directionsError,
-    routingOrigin,
-    routingDestination,
-  } = useWalkingDirections({
-    origin: geo.position,
-    destination: directionsDestination,
-    enabled: directionsOpen && Boolean(activeStop),
-  })
-
-  const walkingStepProgress = useMemo(
-    () =>
-      resolveWalkingStepProgress({
-        userPos: geo.position,
-        steps: directions?.steps ?? [],
-        geometry: directions?.geometry,
-        totalDistanceM: directions?.distanceM ?? 0,
-      }),
-    [geo.position, directions?.steps, directions?.geometry, directions?.distanceM]
-  )
-
   const focusTarget = useMemo(() => {
     if (!geo.position?.lat || !geo.position?.lng) return null
     return {
@@ -210,13 +183,13 @@ export default function MapScreen() {
     )
   }
 
-  const handleOpenDirections = () => {
-    setDirectionsOpen(true)
-  }
-
   const handleRecenter = () => {
     geo.retryLocation?.()
     setRecenterKey((key) => key + 1)
+  }
+
+  const handleOpenRouteFromPin = () => {
+    openRouteSheet()
   }
 
   return (
@@ -233,8 +206,6 @@ export default function MapScreen() {
         distance={geo.distance}
         arrivalPulseActive={geo.insideGeofence}
         debugMapEnabled={isDebugMap()}
-        directionsModeActive={directionsOpen}
-        directionsGeometry={directions?.geometry ?? null}
         focusTarget={focusTarget}
       />
 
@@ -273,24 +244,22 @@ export default function MapScreen() {
             Back to walk
           </Link>
 
-          {activeStop && !directionsOpen ? (
-            <button
-              type="button"
-              onClick={handleOpenDirections}
-              style={{
-                padding: '10px 14px',
-                borderRadius: 999,
-                border: 'none',
-                background: 'var(--accent)',
-                color: 'var(--bone)',
-                fontSize: 'var(--fs-secondary)',
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
-            >
-              Walk there
-            </button>
-          ) : null}
+          <button
+            type="button"
+            onClick={handleOpenRouteFromPin}
+            style={{
+              padding: '10px 14px',
+              borderRadius: 999,
+              border: '1px solid color-mix(in srgb, var(--warm-white) 16%, transparent)',
+              background: 'transparent',
+              color: 'var(--warm-white)',
+              fontSize: 'var(--fs-secondary)',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Route
+          </button>
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -300,7 +269,7 @@ export default function MapScreen() {
         </div>
       </div>
 
-      {!directionsOpen && walkCard ? (
+      {walkCard ? (
         <div
           className="absolute inset-x-3 z-40"
           style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
@@ -310,25 +279,9 @@ export default function MapScreen() {
             distanceM={walkCard.distanceM}
             imageUrl={walkCard.imageUrl}
             onContinue={() => navigate('/journey')}
+            onOpenRoute={handleOpenRouteFromPin}
           />
         </div>
-      ) : null}
-
-      {directionsOpen ? (
-        <DirectionsNavHud
-          destinationTitle={activeStop?.title ?? 'Destination'}
-          directions={directions}
-          loading={directionsLoading}
-          error={directionsError}
-          currentStepIndex={walkingStepProgress.currentStepIndex}
-          routeProgress={walkingStepProgress.routeProgress}
-          locationStatus={geo.locationStatus}
-          routingOrigin={routingOrigin}
-          routingDestination={routingDestination}
-          onClose={() => setDirectionsOpen(false)}
-          onRecenter={handleRecenter}
-          hasBottomNav={false}
-        />
       ) : null}
     </div>
   )

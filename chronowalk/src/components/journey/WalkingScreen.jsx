@@ -1,6 +1,10 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import LocationNotice from '../LocationNotice.jsx'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
+import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import CompanionNotice from './CompanionNotice.jsx'
 import { JourneyLayout, JourneyPrimaryButton, JourneySecondaryButton } from './JourneyLayout.jsx'
 
@@ -16,6 +20,10 @@ export default function WalkingScreen({
   continueLabel = 'Continue',
   showContinue = false,
   busy = false,
+  userPosition = null,
+  directionsDestination = null,
+  onRecenter,
+  onOpenExternalMaps,
 }) {
   const distanceLabel =
     distance != null ? `${Math.round(distance)} m away` : 'Finding your position…'
@@ -24,6 +32,52 @@ export default function WalkingScreen({
     locationStatus &&
     locationStatus !== LOCATION_STATUS.GRANTED &&
     locationStatus !== LOCATION_STATUS.WAITING
+
+  const {
+    directions,
+    loading: directionsLoading,
+    error: directionsError,
+    routingOrigin,
+    routingDestination: resolvedDestination,
+  } = useWalkingDirections({
+    origin: userPosition,
+    destination: directionsDestination,
+    enabled: Boolean(directionsDestination),
+  })
+
+  const walkingStepProgress = useMemo(
+    () =>
+      resolveWalkingStepProgress({
+        userPos: userPosition,
+        steps: directions?.steps ?? [],
+        geometry: directions?.geometry,
+        totalDistanceM: directions?.distanceM ?? 0,
+      }),
+    [userPosition, directions?.steps, directions?.geometry, directions?.distanceM]
+  )
+
+  const showDirectionsHud = Boolean(directionsDestination)
+
+  if (showDirectionsHud) {
+    return (
+      <div style={{ position: 'relative', minHeight: '100dvh', background: 'var(--obsidian)' }}>
+        <DirectionsNavHud
+          destinationTitle={title ?? 'Destination'}
+          directions={directions}
+          loading={directionsLoading}
+          error={directionsError}
+          currentStepIndex={walkingStepProgress.currentStepIndex}
+          routeProgress={walkingStepProgress.routeProgress}
+          locationStatus={locationStatus}
+          routingOrigin={routingOrigin}
+          routingDestination={resolvedDestination}
+          onRecenter={onRecenter ?? onRetryLocation}
+          onOpenExternalMaps={onOpenExternalMaps}
+          hasBottomNav
+        />
+      </div>
+    )
+  }
 
   return (
     <JourneyLayout eyebrow="Walking" title={title} subtitle={subtitle}>

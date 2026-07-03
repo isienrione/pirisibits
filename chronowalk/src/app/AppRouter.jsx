@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import {
   hydrateRomeAudioCache,
   OFFLINE_AUDIO_STATUS,
@@ -13,10 +13,15 @@ import JourneyDevPanel from '../components/dev/JourneyDevPanel'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ShellTabBar } from '../shell'
+import { JourneyCompanionProvider } from '../context/JourneyCompanionContext.jsx'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { loadRomeManifest } from '../content/manifest.js'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
+import { readPersistedShellTab, persistShellTab } from '../shell/tabPersistence.js'
+import { SHELL_COMPANION_PATHS } from '../shell/config.js'
+import { useJourney } from '../hooks/useJourney.js'
+import { JOURNEY_STATES } from '../state/journey.js'
 import { JourneyThresholdLayer, ThresholdDemoPage } from './pages/ThresholdPage'
 import { AccessPage } from './pages/AccessPage'
 import { BeginPage } from './pages/BeginPage'
@@ -25,7 +30,63 @@ import { WelcomePage } from './pages/WelcomePage'
 import { SettingsPage } from './pages/SettingsPage.jsx'
 import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
-import { StopsPage } from './pages/StopsPage.jsx'
+
+const LabPage = import.meta.env.DEV ? lazy(() => import('./pages/LabPage.jsx')) : null
+
+function LegacyStopsRedirect() {
+  return <Navigate to="/journey?sheet=route" replace />
+}
+
+function LegacySettingsRedirect() {
+  return <Navigate to="/journey?sheet=settings" replace />
+}
+
+function HostLandingRedirect() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const hostCode = new URLSearchParams(location.search).get('h')
+    if (!hostCode) return
+
+    captureHostFromUrl(location.search)
+
+    if (location.pathname !== '/journey') {
+      navigate('/journey', { replace: true })
+    }
+  }, [location.pathname, location.search, navigate])
+
+  return null
+}
+
+function ShellTabPersistence() {
+  const location = useLocation()
+
+  useEffect(() => {
+    persistShellTab(location.pathname)
+  }, [location.pathname])
+
+  return null
+}
+
+function RestoreCompanionTab() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { state } = useJourney()
+
+  useEffect(() => {
+    if (state === JOURNEY_STATES.IDLE) return
+    if (SHELL_COMPANION_PATHS.includes(location.pathname)) return
+    if (location.pathname !== '/begin' && location.pathname !== '/welcome') return
+
+    const target = readPersistedShellTab('/journey')
+    if (target !== location.pathname) {
+      navigate(target, { replace: true })
+    }
+  }, [location.pathname, navigate, state])
+
+  return null
+}
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()
@@ -43,27 +104,42 @@ function AppChrome() {
 
 function AppRoutes() {
   return (
-    <V2ErrorBoundary title="Tour unavailable">
-      <Routes>
-        <Route path="/" element={<Navigate to="/welcome" replace />} />
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/welcome" element={<WelcomePage />} />
-        <Route path="/begin" element={<BeginPage />} />
-        <Route path="/journey" element={<JourneyPage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/stops" element={<StopsPage />} />
-        <Route path="/journal" element={<JournalPage />} />
-        <Route path="/letter" element={<LetterPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/credits" element={<CreditsPage />} />
-        <Route path="/access" element={<AccessPage />} />
-        <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      <JourneyThresholdLayer />
-      <ShellTabBar />
-      <AppChrome />
-    </V2ErrorBoundary>
+    <JourneyCompanionProvider>
+      <V2ErrorBoundary title="Tour unavailable">
+        <HostLandingRedirect />
+        <ShellTabPersistence />
+        <RestoreCompanionTab />
+        <Routes>
+          <Route path="/" element={<Navigate to="/welcome" replace />} />
+          <Route path="/landing" element={<LandingPage />} />
+          <Route path="/welcome" element={<WelcomePage />} />
+          <Route path="/begin" element={<BeginPage />} />
+          <Route path="/journey" element={<JourneyPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/stops" element={<LegacyStopsRedirect />} />
+          <Route path="/journal" element={<JournalPage />} />
+          <Route path="/letter" element={<LetterPage />} />
+          <Route path="/settings" element={<LegacySettingsRedirect />} />
+          <Route path="/credits" element={<CreditsPage />} />
+          <Route path="/access" element={<AccessPage />} />
+          <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
+          {import.meta.env.DEV && LabPage ? (
+            <Route
+              path="/lab"
+              element={
+                <Suspense fallback={null}>
+                  <LabPage />
+                </Suspense>
+              }
+            />
+          ) : null}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <JourneyThresholdLayer />
+        <ShellTabBar />
+        <AppChrome />
+      </V2ErrorBoundary>
+    </JourneyCompanionProvider>
   )
 }
 

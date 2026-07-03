@@ -37,10 +37,13 @@ import { audioOrchestrator } from './audio/AudioOrchestrator'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 import {
   readAudioEnabled,
+  readActiveTab,
   readDebugMapPreference,
+  writeActiveTab,
   writeAudioEnabled,
   writeDebugMapPreference,
 } from './utils/appPreferences'
+import { captureHostFromUrl } from './lib/host'
 import { isDebugGeo } from './config/env'
 import { useWalkingDirections } from './hooks/useWalkingDirections'
 import { resolveWalkingStepProgress } from './utils/walkingStepProgress'
@@ -58,12 +61,14 @@ const WaypointAssetStudio = lazyWithRecovery(
   'asset studio'
 )
 const WaypointCard = lazyWithRecovery(() => import('./components/WaypointCard'), 'landmark card')
-const TourOverviewView = lazyWithRecovery(
-  () => import('./components/views/TourOverviewView'),
-  'tour overview'
+const JourneyTabView = lazyWithRecovery(
+  () => import('./components/views/JourneyTabView'),
+  'journey home'
 )
-const StopsView = lazyWithRecovery(() => import('./components/views/StopsView'), 'stops list')
-const SettingsView = lazyWithRecovery(() => import('./components/views/SettingsView'), 'settings')
+const JournalTabView = lazyWithRecovery(
+  () => import('./components/views/JournalTabViewLegacy'),
+  'journal'
+)
 
 function TabLoadingFallback() {
   return <LoadingPanel label="Loading view…" className="min-h-[50vh]" />
@@ -72,6 +77,10 @@ function TabLoadingFallback() {
 function App() {
   useEffect(() => {
     sessionStorage.removeItem('cw-chunk-reload')
+    captureHostFromUrl()
+    if (new URLSearchParams(window.location.search).get('h')) {
+      writeActiveTab(NAV_TABS.JOURNEY)
+    }
   }, [])
 
   const assetStudio = isAssetStudio()
@@ -98,13 +107,20 @@ function App() {
   const tourStartedAtRef = useRef(null)
 
   const [hasInteracted, setHasInteracted] = useState(false)
-  const [activeTab, setActiveTab] = useState(NAV_TABS.MAP)
+  const [activeTab, setActiveTab] = useState(() => readActiveTab())
+  const handleTabChange = useCallback((tab) => {
+    setActiveTab(tab)
+    writeActiveTab(tab)
+  }, [])
+
   const [activeWaypoint, setActiveWaypoint] = useState(null)
   const [discoveredWaypoint, setDiscoveredWaypoint] = useState(null)
   const [cardDismissed, setCardDismissed] = useState(false)
   const [waypointAccessMode, setWaypointAccessMode] = useState('arrival')
   const [stopOpenPrompt, setStopOpenPrompt] = useState(null)
   const [freshDiscoveryId, setFreshDiscoveryId] = useState(null)
+  const [journeyBegun, setJourneyBegun] = useState(false)
+  const [thresholdActive, setThresholdActive] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(() => readAudioEnabled())
   const [debugMapEnabled, setDebugMapEnabled] = useState(() => readDebugMapPreference())
   const [liveAnnouncement, setLiveAnnouncement] = useState('')
@@ -143,7 +159,8 @@ function App() {
       setFreshDiscoveryId(waypoint.id)
       setDiscoveredWaypoint(waypoint)
       setCardDismissed(false)
-      setActiveTab(NAV_TABS.MAP)
+      setActiveTab(NAV_TABS.JOURNEY)
+      writeActiveTab(NAV_TABS.JOURNEY)
       setLiveAnnouncement(
         `Waypoint discovered: ${waypoint.title}. Your story is unlocking.`
       )
@@ -218,7 +235,8 @@ function App() {
       setDiscoveredWaypoint(waypoint)
       setActiveWaypoint(waypoint)
       setCardDismissed(false)
-      setActiveTab(NAV_TABS.MAP)
+      setActiveTab(NAV_TABS.JOURNEY)
+      writeActiveTab(NAV_TABS.JOURNEY)
 
       if (geo?.landmark) {
         setMapFocusTarget({
@@ -333,7 +351,9 @@ function App() {
     }
     setFreePreviewStopId(null)
     setHasInteracted(true)
-    setActiveTab(NAV_TABS.MAP)
+    setJourneyBegun(false)
+    setActiveTab(NAV_TABS.JOURNEY)
+    writeActiveTab(NAV_TABS.JOURNEY)
     tourStartedAtRef.current = Date.now()
     void import('./components/TourMap')
     void import('./components/WaypointCard')
@@ -343,7 +363,9 @@ function App() {
   const handleStartFreePreview = useCallback(() => {
     setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
     setHasInteracted(true)
-    setActiveTab(NAV_TABS.MAP)
+    setJourneyBegun(false)
+    setActiveTab(NAV_TABS.JOURNEY)
+    writeActiveTab(NAV_TABS.JOURNEY)
     void import('./components/TourMap')
     void import('./components/WaypointCard')
     void requestDeviceTiltPermission()
@@ -371,13 +393,13 @@ function App() {
       lng: landmark.lng,
       key: Date.now(),
     })
-    setActiveTab(NAV_TABS.MAP)
+    setActiveTab(NAV_TABS.JOURNEY)
   }, [])
 
   const closeDirections = useCallback(() => {
     setDirectionsDestination(null)
     setDirectionsOrigin(null)
-    setActiveTab(NAV_TABS.MAP)
+    setActiveTab(NAV_TABS.JOURNEY)
   }, [])
 
   const handleDirections = useCallback(
@@ -424,11 +446,20 @@ function App() {
     !isDebugGeo() &&
     locationStatus !== LOCATION_STATUS.GRANTED
 
+  const handleReopenWaypoint = useCallback(() => {
+    if (!discoveredWaypoint) return
+    handleOpenStop(discoveredWaypoint.id)
+  }, [discoveredWaypoint, handleOpenStop])
+
+  const mapTabActive = activeTab === NAV_TABS.MAP
+  const journeyTabActive = activeTab === NAV_TABS.JOURNEY
+
   const showTourComplete =
     session.isTourComplete &&
     !completionDismissed &&
     !activeWaypoint &&
-    cardDismissed
+    cardDismissed &&
+    !journeyTabActive
 
   useCelebrationHaptic(showTourComplete)
 
@@ -437,8 +468,7 @@ function App() {
     [tour, session.progress.arrivedStopIds]
   )
 
-  const mapTabActive = activeTab === NAV_TABS.MAP
-  const directionsModeActive = mapTabActive && Boolean(directionsDestination)
+  const directionsModeActive = journeyTabActive && Boolean(directionsDestination)
 
   const directionsRoutingOrigin = useMemo(() => {
     if (directionsOrigin?.lat != null && directionsOrigin?.lng != null) {
@@ -492,10 +522,20 @@ function App() {
     audioOrchestrator.stop()
   }, [])
 
-  const handleReopenWaypoint = useCallback(() => {
-    if (!discoveredWaypoint) return
-    handleOpenStop(discoveredWaypoint.id)
-  }, [discoveredWaypoint, handleOpenStop])
+  const handleContinueFromStory = useCallback(() => {
+    setActiveWaypoint(null)
+    setCardDismissed(true)
+    setThresholdActive(false)
+    setFreshDiscoveryId(null)
+    setWaypointAccessMode('arrival')
+  }, [])
+
+  const handleJourneyBegin = useCallback(() => {
+    setJourneyBegun(true)
+    if (audioEnabled) {
+      void session.startTourAmbient()
+    }
+  }, [audioEnabled, session.startTourAmbient])
 
   if (assetStudio) {
     return (
@@ -599,7 +639,7 @@ function App() {
           </Suspense>
         </ErrorBoundary>
 
-        <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible} />
+        <ArrivalMoment waypoint={discoveredWaypoint} visible={discoveryVisible && !journeyTabActive} />
 
         <TourHud
           tour={mapTour}
@@ -629,7 +669,7 @@ function App() {
           hidden={directionsModeActive}
         />
 
-        {directionsModeActive ? (
+        {directionsModeActive && mapTabActive ? (
           <DirectionsNavHud
             destinationTitle={directionsDestination?.title}
             directions={walkingDirections}
@@ -666,87 +706,81 @@ function App() {
         ) : null}
       </div>
 
-      {activeTab === NAV_TABS.TOUR ? (
+      {directionsModeActive && journeyTabActive ? (
+        <DirectionsNavHud
+          destinationTitle={directionsDestination?.title}
+          directions={walkingDirections}
+          loading={walkingDirectionsLoading}
+          error={walkingDirectionsError}
+          currentStepIndex={walkingStepProgress.currentStepIndex}
+          routeProgress={walkingStepProgress.routeProgress}
+          locationStatus={locationStatus}
+          routingOrigin={resolvedDirectionsOrigin}
+          routingDestination={resolvedDirectionsDestination}
+          onClose={closeDirections}
+          onRecenter={session.retryLocation}
+          onOpenExternalMaps={handleOpenExternalMaps}
+          hasBottomNav
+        />
+      ) : null}
+
+      {journeyTabActive ? (
         <Suspense fallback={<TabLoadingFallback />}>
-          <TourOverviewView
+          <JourneyTabView
             tour={mapTour}
-            isFreePreview={isFreePreview}
-            onUnlockTour={handleExitFreePreview}
-            progress={session.progress}
-            mapStops={session.mapStops}
-            waypointsById={session.waypointsById}
-            targetStopId={session.targetStopId}
-            nextWaypoint={session.nextWaypoint}
-            state={session.state}
-            distance={session.distance}
-            transitLegActive={session.progress.transitLegActive}
-            isAwaitingFirstStop={session.isAwaitingFirstStop}
-            firstStopTitle={session.firstStopTitle}
-            onNavigate={setActiveTab}
-            onOpenStop={handleOpenStop}
-            onGetDirections={() => {
-              if (!tour?.stopIds?.[0]) return
-              const landmark = getWaypointGeo(tour.stopIds[0])?.landmark
-              openDirections(landmark, session.firstStopTitle)
-            }}
+            session={session}
+            isTourComplete={session.isTourComplete && !completionDismissed}
+            journeyBegun={journeyBegun}
+            onJourneyBegin={handleJourneyBegin}
+            thresholdActive={thresholdActive}
+            onThresholdActiveChange={setThresholdActive}
+            activeWaypoint={activeWaypoint}
+            discoveredWaypoint={discoveredWaypoint}
+            cardDismissed={cardDismissed}
+            onContinueFromStory={handleContinueFromStory}
+            walkedMeters={walkedMeters}
+            startedAtMs={tourStartedAtRef.current}
+            isTourNarrationActive={isTourNarrationActive}
           />
         </Suspense>
       ) : null}
 
-      {activeTab === NAV_TABS.STOPS ? (
+      {activeTab === NAV_TABS.JOURNAL ? (
         <Suspense fallback={<TabLoadingFallback />}>
-          <StopsView
+          <JournalTabView
             tour={mapTour}
-            isFreePreview={isFreePreview}
-            onUnlockTour={handleExitFreePreview}
-            mapStops={session.mapStops}
-            waypointsById={session.waypointsById}
-            onOpenStop={handleOpenStop}
-            onNavigate={() => setActiveTab(NAV_TABS.MAP)}
+            arrivedStopIds={session.progress.arrivedStopIds}
           />
         </Suspense>
       ) : null}
 
-      {activeTab === NAV_TABS.SETTINGS ? (
-        <Suspense fallback={<TabLoadingFallback />}>
-          <SettingsView
-            tour={mapTour}
-            locationStatus={locationStatus}
-            journeyState={session.state}
-            distance={session.distance}
-            audioEnabled={audioEnabled}
-            onAudioEnabledChange={handleAudioEnabledChange}
-            debugMapEnabled={debugMapEnabled}
-            onDebugMapEnabledChange={handleDebugMapEnabledChange}
-            onRetryLocation={session.retryLocation}
-          />
-        </Suspense>
+      {!journeyTabActive ? (
+        <ErrorBoundary
+          title="Landmark card unavailable"
+          message="The arrival card could not load. Try reopening the stop from the map."
+        >
+          <Suspense fallback={null}>
+            <WaypointCard
+              waypoint={activeWaypoint}
+              state={session.state}
+              accessMode={waypointAccessMode}
+              isFreshArrival={activeWaypoint?.id === freshDiscoveryId && waypointAccessMode === 'arrival'}
+              autoStartExperience={waypointAccessMode === 'freeSample'}
+              onViewTours={freePreviewStopId ? handleExitFreePreview : undefined}
+              onClose={() => {
+                setActiveWaypoint(null)
+                setCardDismissed(true)
+                setWaypointAccessMode('arrival')
+                setThresholdActive(false)
+              }}
+            />
+          </Suspense>
+        </ErrorBoundary>
       ) : null}
-
-      <ErrorBoundary
-        title="Landmark card unavailable"
-        message="The arrival card could not load. Try reopening the stop from the map."
-      >
-        <Suspense fallback={null}>
-          <WaypointCard
-            waypoint={activeWaypoint}
-            state={session.state}
-            accessMode={waypointAccessMode}
-            isFreshArrival={activeWaypoint?.id === freshDiscoveryId && waypointAccessMode === 'arrival'}
-            autoStartExperience={waypointAccessMode === 'freeSample'}
-            onViewTours={freePreviewStopId ? handleExitFreePreview : undefined}
-            onClose={() => {
-              setActiveWaypoint(null)
-              setCardDismissed(true)
-              setWaypointAccessMode('arrival')
-            }}
-          />
-        </Suspense>
-      </ErrorBoundary>
 
       <AppNavigation
         activeTab={activeTab}
-        onChange={setActiveTab}
+        onChange={handleTabChange}
         audioSlot={
           isTourNarrationActive ? (
             <PersistentAudioBar
@@ -772,7 +806,7 @@ function App() {
           startedAtMs={tourStartedAtRef.current}
           onViewSummary={() => {
             setCompletionDismissed(true)
-            setActiveTab(NAV_TABS.TOUR)
+            handleTabChange(NAV_TABS.JOURNEY)
           }}
           onDismiss={() => setCompletionDismissed(true)}
         />

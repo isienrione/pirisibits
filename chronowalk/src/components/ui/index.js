@@ -19,6 +19,8 @@ export {
 } from './StatusBadge'
 export { MediaPlayerControls } from './MediaPlayerControls'
 export { ConfirmDialog } from './ConfirmDialog'
+export { LivingSeam } from './LivingSeam'
+export { ArrivalCard } from './ArrivalCard'
 export { cn } from './cn'
 export { focusRing, touchTarget, tapAction } from './focusRing'
 export { usePressHandlers } from './usePressHandlers'

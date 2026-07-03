@@ -5,7 +5,8 @@ import { useJourney, useTourManifest } from '../../hooks/useJourney'
 import { useJourneyStep } from '../../hooks/useJourneyStep'
 import { buildEffectiveSequence } from '../../content/optionalPromotion.js'
 import { JOURNEY_STATES } from '../../state/journey'
-import { readDevSimulateGps, setDevSimulateGps } from './devTools.js'
+import { readDevSimulateGps, setDevSimulateGps, readDevV1PhaseOverride, setDevV1PhaseOverride } from './devTools.js'
+import { V1_JOURNEY_PHASE } from '../../utils/v1JourneyPhase.js'
 
 const STATE_BUTTONS = Object.values(JOURNEY_STATES)
 
@@ -20,6 +21,7 @@ export default function JourneyDevPanel() {
   )
   const [sequenceInput, setSequenceInput] = useState(String(context.currentSequenceIndex))
   const [simulateGps, setSimulateGps] = useState(readDevSimulateGps)
+  const [v1PhaseOverride, setV1PhaseOverride] = useState(readDevV1PhaseOverride)
 
   if (!isDevPanelEnabled()) return null
 
@@ -45,6 +47,16 @@ export default function JourneyDevPanel() {
     const next = !simulateGps
     setSimulateGps(next)
     setDevSimulateGps(next)
+  }
+
+  const handleV1Phase = (phase) => {
+    setV1PhaseOverride(phase)
+    setDevV1PhaseOverride(phase)
+  }
+
+  const handleClearV1Phase = () => {
+    setV1PhaseOverride(null)
+    setDevV1PhaseOverride(null)
   }
 
   return (
@@ -104,6 +116,35 @@ export default function JourneyDevPanel() {
         ) : null}
       </div>
 
+      <div style={{ marginTop: 10 }}>
+        <p style={{ margin: '0 0 6px', opacity: 0.85 }}>V1 journey phase override</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {Object.values(V1_JOURNEY_PHASE).map((phase) => (
+            <button
+              key={phase}
+              type="button"
+              onClick={() => handleV1Phase(phase)}
+              style={{
+                padding: '4px 8px',
+                borderRadius: 999,
+                border: '1px solid color-mix(in srgb, var(--warm-white) 25%, transparent)',
+                background:
+                  v1PhaseOverride === phase
+                    ? 'color-mix(in srgb, var(--ember) 35%, transparent)'
+                    : 'transparent',
+                color: 'var(--warm-white)',
+                fontSize: 11,
+              }}
+            >
+              {phase}
+            </button>
+          ))}
+          <button type="button" onClick={handleClearV1Phase}>
+            Clear
+          </button>
+        </div>
+      </div>
+
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
         {STATE_BUTTONS.map((nextState) => (
           <button
@@ -153,6 +194,10 @@ export default function JourneyDevPanel() {
         {' · '}
         <a href="/settings" style={{ color: 'var(--ember)' }}>
           Open settings
+        </a>
+        {' · '}
+        <a href="/lab" style={{ color: 'var(--ember)' }}>
+          Open lab
         </a>
         {' · '}
         <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>

@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  readActiveTab,
   readAudioEnabled,
   readDebugMapPreference,
   readPlayerIconsPref,
+  writeActiveTab,
   writeAudioEnabled,
   writeDebugMapPreference,
   writePlayerIconsPref,
 } from '../appPreferences'
+import { NAV_TABS } from '../../components/navigation/navConfig'
 
 describe('appPreferences', () => {
   beforeEach(() => {
@@ -39,5 +42,14 @@ describe('appPreferences', () => {
     expect(readPlayerIconsPref()).toBe(false)
     writePlayerIconsPref(true)
     expect(readPlayerIconsPref()).toBe(true)
+  })
+
+  it('defaults active tab to journey when unset', () => {
+    expect(readActiveTab()).toBe(NAV_TABS.JOURNEY)
+  })
+
+  it('persists active tab', () => {
+    writeActiveTab(NAV_TABS.MAP)
+    expect(readActiveTab()).toBe(NAV_TABS.MAP)
   })
 })
