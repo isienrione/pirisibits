@@ -1,6 +1,7 @@
 import { collectManifestAudioPaths } from '../content/audioPaths.js'
+import { collectManifestMediaPaths } from '../content/mediaPaths.js'
 import { findDurationMismatches } from '../content/durationVerification.js'
-import { mediaUrl } from '../lib/mediaUrl.js'
+import { registerCachedMedia, clearCachedMedia, cacheUrlForManifestPath } from '../lib/mediaUrl.js'
 import { clearCachedAudio, registerCachedAudio } from './audioUrl.js'
 import {
   clearRomeMapTiles,
@@ -24,24 +25,51 @@ export const OFFLINE_AUDIO_STATUS = {
 }
 
 const ESTIMATED_BYTES_PER_FILE = 750_000
+const ESTIMATED_BYTES_PER_IMAGE = 400_000
+const ESTIMATED_BYTES_PER_VIDEO = 3_000_000
 
 function clampPercent(value) {
   return Math.max(0, Math.min(100, Math.round(value)))
+}
+
+function mediaContentType(manifestPath) {
+  if (manifestPath.endsWith('.avif')) return 'image/avif'
+  if (manifestPath.endsWith('.webp')) return 'image/webp'
+  if (manifestPath.endsWith('.mp4')) return 'video/mp4'
+  if (/\.jpe?g$/i.test(manifestPath)) return 'image/jpeg'
+  return 'application/octet-stream'
+}
+
+function estimateMediaBytes(manifestPath) {
+  if (manifestPath.includes('/video/') || manifestPath.endsWith('.mp4')) {
+    return ESTIMATED_BYTES_PER_VIDEO
+  }
+  return ESTIMATED_BYTES_PER_IMAGE
 }
 
 export function listRomeAudioManifestPaths(manifest) {
   return collectManifestAudioPaths(manifest)
 }
 
+export function listRomeMediaManifestPaths(manifest) {
+  return collectManifestMediaPaths(manifest)
+}
+
 export function estimateRomeAudioDownload(manifest) {
-  const paths = listRomeAudioManifestPaths(manifest)
+  const audioPaths = listRomeAudioManifestPaths(manifest)
+  const mediaPaths = listRomeMediaManifestPaths(manifest)
   const mapEstimate = estimateRomeMapTileDownload(manifest)
+  const audioBytes = audioPaths.length * ESTIMATED_BYTES_PER_FILE
+  const mediaBytes = mediaPaths.reduce((sum, path) => sum + estimateMediaBytes(path), 0)
+
   return {
-    fileCount: paths.length,
-    bytes: paths.length * ESTIMATED_BYTES_PER_FILE,
+    fileCount: audioPaths.length,
+    mediaFileCount: mediaPaths.length,
+    bytes: audioBytes,
+    mediaBytes,
     mapTileCount: mapEstimate.tileCount,
     mapBytes: mapEstimate.bytes,
-    totalBytes: paths.length * ESTIMATED_BYTES_PER_FILE + mapEstimate.bytes,
+    totalBytes: audioBytes + mediaBytes + mapEstimate.bytes,
   }
 }
 
@@ -50,6 +78,7 @@ export function readRomeOfflineStatus() {
     return {
       status: OFFLINE_AUDIO_STATUS.NONE,
       fileCount: 0,
+      mediaFileCount: 0,
       mapTileCount: 0,
       downloadedAt: null,
       error: null,
@@ -62,6 +91,7 @@ export function readRomeOfflineStatus() {
       return {
         status: OFFLINE_AUDIO_STATUS.NONE,
         fileCount: 0,
+        mediaFileCount: 0,
         mapTileCount: 0,
         downloadedAt: null,
         error: null,
@@ -76,6 +106,7 @@ export function readRomeOfflineStatus() {
     return {
       status: OFFLINE_AUDIO_STATUS.NONE,
       fileCount: 0,
+      mediaFileCount: 0,
       mapTileCount: 0,
       downloadedAt: null,
       error: null,
@@ -97,20 +128,19 @@ async function openRomeAudioCache() {
 
 export async function hasCachedRomeAudio(manifestPath) {
   const cache = await openRomeAudioCache()
-  const match = await cache.match(mediaUrl(manifestPath))
+  const match = await cache.match(cacheUrlForManifestPath(manifestPath))
   if (!match?.ok) return false
   const blob = await match.blob()
   return blob.size > 0
 }
 
-export async function verifyRomeAudioPackage(manifest) {
-  const paths = listRomeAudioManifestPaths(manifest)
+async function verifyCachedManifestPaths(paths, { durationChecks = false, manifest } = {}) {
   const cache = await openRomeAudioCache()
   const missing = []
-  const durationChecks = []
+  const durationCheckInputs = []
 
   for (const manifestPath of paths) {
-    const match = await cache.match(mediaUrl(manifestPath))
+    const match = await cache.match(cacheUrlForManifestPath(manifestPath))
     if (!match?.ok) {
       missing.push(manifestPath)
       continue
@@ -122,10 +152,14 @@ export async function verifyRomeAudioPackage(manifest) {
       continue
     }
 
-    durationChecks.push({ path: manifestPath, blobSize: blob.size })
+    if (durationChecks) {
+      durationCheckInputs.push({ path: manifestPath, blobSize: blob.size })
+    }
   }
 
-  const durationMismatches = findDurationMismatches(manifest, durationChecks)
+  const durationMismatches = durationChecks
+    ? findDurationMismatches(manifest, durationCheckInputs)
+    : []
 
   return {
     valid: missing.length === 0 && durationMismatches.length === 0,
@@ -135,12 +169,32 @@ export async function verifyRomeAudioPackage(manifest) {
   }
 }
 
+export async function verifyRomeAudioPackage(manifest) {
+  const audioPaths = listRomeAudioManifestPaths(manifest)
+  const mediaPaths = listRomeMediaManifestPaths(manifest)
+
+  const audioVerification = await verifyCachedManifestPaths(audioPaths, {
+    durationChecks: true,
+    manifest,
+  })
+  const mediaVerification = await verifyCachedManifestPaths(mediaPaths)
+
+  return {
+    valid: audioVerification.valid && mediaVerification.valid,
+    total: audioVerification.total + mediaVerification.total,
+    missing: [...audioVerification.missing, ...mediaVerification.missing],
+    durationMismatches: audioVerification.durationMismatches,
+    mediaMissing: mediaVerification.missing,
+  }
+}
+
 export async function hydrateRomeAudioCache(manifest) {
-  const paths = listRomeAudioManifestPaths(manifest)
+  const audioPaths = listRomeAudioManifestPaths(manifest)
+  const mediaPaths = listRomeMediaManifestPaths(manifest)
   const cache = await openRomeAudioCache()
 
-  for (const manifestPath of paths) {
-    const response = await cache.match(mediaUrl(manifestPath))
+  for (const manifestPath of audioPaths) {
+    const response = await cache.match(cacheUrlForManifestPath(manifestPath))
     if (!response?.ok) continue
 
     const blob = await response.blob()
@@ -148,17 +202,58 @@ export async function hydrateRomeAudioCache(manifest) {
 
     registerCachedAudio(manifestPath, URL.createObjectURL(blob))
   }
+
+  for (const manifestPath of mediaPaths) {
+    const response = await cache.match(cacheUrlForManifestPath(manifestPath))
+    if (!response?.ok) continue
+
+    const blob = await response.blob()
+    if (!blob.size) continue
+
+    registerCachedMedia(manifestPath, URL.createObjectURL(blob))
+  }
+}
+
+async function downloadManifestPaths(paths, { cache, signal, onPathComplete, contentTypeForPath }) {
+  for (const manifestPath of paths) {
+    if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
+
+    const sourceUrl = cacheUrlForManifestPath(manifestPath)
+    const existing = await cache.match(sourceUrl)
+    if (!existing?.ok) {
+      const response = await fetch(sourceUrl)
+      if (!response.ok) {
+        throw new Error(`Failed to download ${manifestPath} (${response.status})`)
+      }
+
+      const blob = await response.blob()
+      if (!blob.size) {
+        throw new Error(`Downloaded empty file for ${manifestPath}`)
+      }
+
+      await cache.put(sourceUrl, new Response(blob, {
+        status: 200,
+        headers: {
+          'Content-Type': response.headers.get('Content-Type') ?? contentTypeForPath(manifestPath),
+        },
+      }))
+    }
+
+    onPathComplete(manifestPath)
+  }
 }
 
 export async function downloadRomeAudioPackage(manifest, { onProgress, signal } = {}) {
-  const paths = listRomeAudioManifestPaths(manifest)
+  const audioPaths = listRomeAudioManifestPaths(manifest)
+  const mediaPaths = listRomeMediaManifestPaths(manifest)
   const mapEstimate = estimateRomeMapTileDownload(manifest)
-  const totalSteps = paths.length + mapEstimate.tileCount
+  const totalSteps = audioPaths.length + mediaPaths.length + mapEstimate.tileCount
   const cache = await openRomeAudioCache()
 
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.DOWNLOADING,
-    fileCount: paths.length,
+    fileCount: audioPaths.length,
+    mediaFileCount: mediaPaths.length,
     mapTileCount: mapEstimate.tileCount,
     downloadedAt: null,
     error: null,
@@ -176,41 +271,34 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       })
     }
 
-    for (const manifestPath of paths) {
-      if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
-
-      const sourceUrl = mediaUrl(manifestPath)
-      const existing = await cache.match(sourceUrl)
-      if (!existing?.ok) {
-        const response = await fetch(sourceUrl)
-        if (!response.ok) {
-          throw new Error(`Failed to download ${manifestPath} (${response.status})`)
-        }
-
-        const blob = await response.blob()
-        if (!blob.size) {
-          throw new Error(`Downloaded empty file for ${manifestPath}`)
-        }
-
-        await cache.put(sourceUrl, new Response(blob, {
-          status: 200,
-          headers: { 'Content-Type': response.headers.get('Content-Type') ?? 'audio/mpeg' },
-        }))
-      }
-
+    const onPathComplete = (manifestPath) => {
       completed += 1
       reportProgress(manifestPath)
     }
 
-    const audioVerification = await verifyRomeAudioPackage(manifest)
-    if (!audioVerification.valid) {
-      const durationIssue = audioVerification.durationMismatches?.[0]
+    await downloadManifestPaths(audioPaths, {
+      cache,
+      signal,
+      onPathComplete,
+      contentTypeForPath: () => 'audio/mpeg',
+    })
+
+    await downloadManifestPaths(mediaPaths, {
+      cache,
+      signal,
+      onPathComplete,
+      contentTypeForPath: mediaContentType,
+    })
+
+    const packageVerification = await verifyRomeAudioPackage(manifest)
+    if (!packageVerification.valid) {
+      const durationIssue = packageVerification.durationMismatches?.[0]
       if (durationIssue) {
         throw new Error(
           `Offline duration check failed for ${durationIssue.path} (${durationIssue.blobSize} bytes, expected ≥${durationIssue.minimumBytes}).`
         )
       }
-      throw new Error(`Offline verification failed (${audioVerification.missing.length} missing files).`)
+      throw new Error(`Offline verification failed (${packageVerification.missing.length} missing files).`)
     }
 
     await hydrateRomeAudioCache(manifest)
@@ -220,7 +308,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
         signal,
         token: env.mapboxToken,
         onProgress: ({ completed: mapCompleted, currentPath }) => {
-          completed = paths.length + mapCompleted
+          completed = audioPaths.length + mediaPaths.length + mapCompleted
           reportProgress(currentPath)
         },
       })
@@ -234,7 +322,8 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     const downloadedAt = Date.now()
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
-      fileCount: paths.length,
+      fileCount: audioPaths.length,
+      mediaFileCount: mediaPaths.length,
       mapTileCount: mapVerification.total,
       downloadedAt,
       error: null,
@@ -242,16 +331,18 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
 
     return {
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
-      fileCount: paths.length,
+      fileCount: audioPaths.length,
+      mediaFileCount: mediaPaths.length,
       mapTileCount: mapVerification.total,
       downloadedAt,
-      verification: audioVerification,
+      verification: packageVerification,
       mapVerification,
     }
   } catch (error) {
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.FAILED,
-      fileCount: paths.length,
+      fileCount: audioPaths.length,
+      mediaFileCount: mediaPaths.length,
       mapTileCount: mapEstimate.tileCount,
       downloadedAt: null,
       error: error?.message ?? 'Download failed',
@@ -261,22 +352,29 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
 }
 
 export async function clearRomeAudioPackage(manifest) {
-  const paths = listRomeAudioManifestPaths(manifest)
+  const audioPaths = listRomeAudioManifestPaths(manifest)
+  const mediaPaths = listRomeMediaManifestPaths(manifest)
   const cache = await openRomeAudioCache()
 
-  await Promise.all(paths.map((manifestPath) => cache.delete(mediaUrl(manifestPath))))
+  await Promise.all(
+    [...audioPaths, ...mediaPaths].map((manifestPath) =>
+      cache.delete(cacheUrlForManifestPath(manifestPath))
+    )
+  )
   clearCachedAudio()
+  clearCachedMedia()
   await clearRomeMapTiles(manifest, { token: env.mapboxToken })
 
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.NONE,
     fileCount: 0,
+    mediaFileCount: 0,
     mapTileCount: 0,
     downloadedAt: null,
     error: null,
   })
 
-  return { deleted: paths.length }
+  return { deleted: audioPaths.length + mediaPaths.length }
 }
 
 export async function isRomeAudioReadyOffline(manifest) {

@@ -12,6 +12,7 @@ import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
+import { collectManifestMediaPaths } from '../src/content/mediaPaths.js'
 import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
 import { durationCoverage } from '../src/content/durationManifest.js'
 import { parseRomeManifest } from '../src/content/manifest.schema.js'
@@ -49,9 +50,12 @@ async function main() {
   const raw = JSON.parse(readFileSync(manifestPath, 'utf8'))
   const manifest = parseRomeManifest(raw)
   const audioPaths = collectManifestAudioPaths(manifest)
+  const mediaPaths = collectManifestMediaPaths(manifest)
   const durationEntries = Object.entries(manifest.durations ?? {})
 
-  console.log(`✓ Manifest schema valid (${audioPaths.length} audio files referenced)`)
+  console.log(
+    `✓ Manifest schema valid (${audioPaths.length} audio files, ${mediaPaths.length} visual assets referenced)`
+  )
 
   if (durationEntries.length) {
     const audioKeys = new Set(audioPaths.map((path) => audioKeyFromManifestPath(path)))
@@ -89,7 +93,7 @@ async function main() {
   const missing = []
   const checked = []
 
-  for (const path of audioPaths) {
+  for (const path of [...audioPaths, ...mediaPaths]) {
     const url = `${base}${path}`
     checked.push(url)
     const ok = await headCheck(url)
@@ -102,7 +106,8 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`✓ All ${checked.length} audio files present at ${base}`)
+  console.log(`✓ All ${audioPaths.length} audio files present at ${base}`)
+  console.log(`✓ All ${mediaPaths.length} visual assets present at ${base}`)
 }
 
 main().catch((error) => {

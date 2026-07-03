@@ -3,6 +3,7 @@ import { loadRomeManifest } from '../../content/manifest.js'
 import {
   estimateRomeAudioDownload,
   listRomeAudioManifestPaths,
+  listRomeMediaManifestPaths,
   readRomeOfflineStatus,
   ROME_OFFLINE_STATUS_KEY,
   writeRomeOfflineStatus,
@@ -23,11 +24,19 @@ describe('offlinePackage', () => {
     expect(paths[0]).toMatch(/^\/rome\/audio\//)
   })
 
+  it('lists manifest media paths for threshold reconstructions', () => {
+    const paths = listRomeMediaManifestPaths(manifest)
+    expect(paths).toContain('/rome/video/w01_then_loop.mp4')
+    expect(paths.length).toBe(10)
+  })
+
   it('estimates download size from file count', () => {
     const estimate = estimateRomeAudioDownload(manifest)
     expect(estimate.fileCount).toBe(listRomeAudioManifestPaths(manifest).length)
+    expect(estimate.mediaFileCount).toBe(listRomeMediaManifestPaths(manifest).length)
     expect(estimate.bytes).toBeGreaterThan(0)
-    expect(estimate.totalBytes).toBeGreaterThanOrEqual(estimate.bytes)
+    expect(estimate.mediaBytes).toBeGreaterThan(0)
+    expect(estimate.totalBytes).toBeGreaterThanOrEqual(estimate.bytes + estimate.mediaBytes)
   })
 
   it('persists offline status in localStorage', () => {
