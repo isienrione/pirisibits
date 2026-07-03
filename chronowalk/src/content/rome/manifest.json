@@ -1,0 +1,758 @@
+{
+  "city": "rome",
+  "id": "rome",
+  "name": "Rome",
+  "accent": "--city-rome",
+  "price_fallback_cents": 1700,
+  "reflections": [
+    "You walked where senators argued and emperors passed — and Rome let you in.",
+    "The living city opened its piazzas, fountains, and evening light to you.",
+    "Twenty centuries folded into one walk. You crossed them on foot.",
+    "Some chapters remain ahead — Rome keeps a seat for your return."
+  ],
+  "acts": [
+    {
+      "id": "act1",
+      "numeral": "I",
+      "title": "The Arena",
+      "waypoints": [
+        "w01",
+        "w02"
+      ]
+    },
+    {
+      "id": "act2",
+      "numeral": "II",
+      "title": "The Gate & the Hill",
+      "waypoints": [
+        "w03",
+        "w04"
+      ]
+    },
+    {
+      "id": "act3",
+      "numeral": "III",
+      "title": "The Forum",
+      "waypoints": [
+        "w06",
+        "w07",
+        "w08",
+        "pause",
+        "w10",
+        "w11_12",
+        "w13"
+      ]
+    },
+    {
+      "id": "act4",
+      "numeral": "IV",
+      "title": "The Market",
+      "waypoints": [
+        "w14"
+      ]
+    },
+    {
+      "id": "act5",
+      "numeral": "V",
+      "title": "The Living City",
+      "waypoints": [
+        "w15",
+        "w16",
+        "w17",
+        "w18",
+        "w19",
+        "w20"
+      ]
+    },
+    {
+      "id": "act6",
+      "numeral": "VI",
+      "title": "The River",
+      "waypoints": [
+        "w21"
+      ]
+    },
+    {
+      "id": "encore",
+      "numeral": "Encore",
+      "title": "The Long Games & the Long Road",
+      "waypoints": [
+        "enc_circus",
+        "w22"
+      ]
+    }
+  ],
+  "journey": {
+    "paths": [
+      "a",
+      "b"
+    ],
+    "default_path": "a",
+    "path_reorder": {
+      "b": [
+        "w04",
+        "w03"
+      ]
+    },
+    "sequences": {
+      "a": [
+        "w01",
+        "w02",
+        "t01",
+        "w03",
+        "w06",
+        "t05",
+        "w07",
+        "t06",
+        "w08",
+        "pause",
+        "t07",
+        "w10",
+        "t08",
+        "w11_12",
+        "t09",
+        "w13",
+        "t10",
+        "w14",
+        "t14",
+        "w15",
+        "t15",
+        "w16",
+        "t12",
+        "w17",
+        "t13",
+        "w18",
+        "t18",
+        "w19",
+        "t19",
+        "w20",
+        "t16",
+        "w21",
+        "enc_circus",
+        "t22",
+        "w22"
+      ],
+      "b": [
+        "w01",
+        "w02",
+        "t01",
+        "w04",
+        "t02",
+        "w03",
+        "w06",
+        "t05",
+        "w07",
+        "t06",
+        "w08",
+        "pause",
+        "t07",
+        "w10",
+        "t08",
+        "w11_12",
+        "t09",
+        "w13",
+        "t10",
+        "w14",
+        "t14",
+        "w15",
+        "t15",
+        "w16",
+        "t12",
+        "w17",
+        "t13",
+        "w18",
+        "t18",
+        "w19",
+        "t19",
+        "w20",
+        "t16",
+        "w21",
+        "enc_circus",
+        "t22",
+        "w22"
+      ]
+    },
+    "optional_waypoints": {
+      "a": [
+        "w04"
+      ]
+    }
+  },
+  "waypoints": {
+    "w01": {
+      "title": "The Colosseum",
+      "act": "act1",
+      "geofence": {
+        "lat": 41.8902,
+        "lng": 12.4922,
+        "radius_m": 45
+      },
+      "zone": "centro",
+      "chapters": [
+        "w01.mp3"
+      ],
+      "inserts": [],
+      "photo": "/rome/img/w01_hero.avif",
+      "reconstruction": {
+        "now": "/rome/img/w01_now.avif",
+        "then": "/rome/img/w01_then.avif",
+        "loop": "/rome/video/w01_then_loop.mp4",
+        "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
+      },
+      "approachLine": "The amphitheatre rises ahead — slow your pace and look up.",
+      "arrivalLine": "Take a second. / Look up."
+    },
+    "w02": {
+      "title": "Colosseum interior",
+      "act": "act1",
+      "geofence": {
+        "lat": 41.8904,
+        "lng": 12.4924,
+        "radius_m": 40
+      },
+      "zone": "underworld",
+      "chapters": [
+        "w02_ch1.mp3",
+        "w02_ch2.mp3"
+      ],
+      "inserts": [
+        "ins_whopaid"
+      ],
+      "approachLine": "Step inside — the floor you expect is not the floor that was.",
+      "arrivalLine": "You are standing where the crowd never stood."
+    },
+    "w03": {
+      "title": "Arch of Titus",
+      "act": "act2",
+      "geofence": {
+        "lat": 41.8905,
+        "lng": 12.48835,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w03_ch1.mp3",
+        "w03_ch2.mp3"
+      ],
+      "outro_variants": {
+        "a": "w03_outro_a.mp3",
+        "b": "w03_outro_b.mp3"
+      },
+      "inserts": [
+        "ins_jerusalem"
+      ],
+      "reconstruction": {
+        "now": "/rome/img/w03_now.avif",
+        "then": "/rome/img/w03_then.avif",
+        "loop": "/rome/video/w03_then_loop.mp4",
+        "caption": "Evidence-based reconstruction · relief details simplified for clarity"
+      },
+      "approachLine": "The Forum opens — Titus' arch marks the threshold.",
+      "arrivalLine": "Stand where triumph entered the city."
+    },
+    "w04": {
+      "title": "The Palatine",
+      "act": "act2",
+      "geofence": {
+        "lat": 41.8886,
+        "lng": 12.4872,
+        "radius_m": 50
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w04_ch1.mp3",
+        "w04_ch2.mp3"
+      ],
+      "inserts": [
+        "ins_window"
+      ],
+      "optional_on_path": "a",
+      "approachLine": "The emperors' hill climbs above the Forum.",
+      "arrivalLine": "The word palace was born on this slope."
+    },
+    "w06": {
+      "title": "Basilica of Maxentius",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89175,
+        "lng": 12.488,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w06.mp3"
+      ],
+      "inserts": [
+        "ins_constantine"
+      ],
+      "approachLine": "Vaulted halls loom through the columns ahead.",
+      "arrivalLine": "Imagine the roof still whole above you."
+    },
+    "w07": {
+      "title": "Via Sacra",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89255,
+        "lng": 12.48535,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w07.mp3"
+      ],
+      "inserts": [
+        "ins_caesar_tease"
+      ],
+      "approachLine": "You are walking the Sacred Way — keep to the stones.",
+      "arrivalLine": "Processions passed here for a thousand years."
+    },
+    "w08": {
+      "title": "Temple of Vesta",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89182,
+        "lng": 12.48715,
+        "radius_m": 35
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w08.mp3"
+      ],
+      "inserts": [
+        "ins_fire"
+      ],
+      "approachLine": "The round temple is just ahead.",
+      "arrivalLine": "The flame that guarded Rome burned here."
+    },
+    "pause": {
+      "title": "Forum rest",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.8919,
+        "lng": 12.4865,
+        "radius_m": 80
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "pause.mp3"
+      ],
+      "scripted_rest": true,
+      "approachLine": "Find shade. The Forum can wait.",
+      "arrivalLine": "Nothing expires. Nothing is skipped forever."
+    },
+    "w10": {
+      "title": "The Rostra",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89282,
+        "lng": 12.48518,
+        "radius_m": 35
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w10.mp3"
+      ],
+      "approachLine": "The speakers' platform is near — listen for echoes.",
+      "arrivalLine": "Orators once held Rome from this spot."
+    },
+    "w11_12": {
+      "title": "Heart of the Forum",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89301,
+        "lng": 12.48442,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w11_12.mp3"
+      ],
+      "approachLine": "The arch and the Senate house share one standpoint.",
+      "arrivalLine": "Two stories, one square of stone."
+    },
+    "w13": {
+      "title": "Capitoline Hill",
+      "act": "act3",
+      "geofence": {
+        "lat": 41.89324,
+        "lng": 12.48275,
+        "radius_m": 45
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w13.mp3"
+      ],
+      "approachLine": "Climb toward the hill where Rome's gods watched over the city.",
+      "arrivalLine": "The Capitoline — heart of public faith."
+    },
+    "w14": {
+      "title": "Trajan's Market",
+      "act": "act4",
+      "geofence": {
+        "lat": 41.8956,
+        "lng": 12.48595,
+        "radius_m": 45
+      },
+      "zone": "centro",
+      "chapters": [
+        "w14.mp3"
+      ],
+      "approachLine": "Brick arcades stack ahead — Rome's great market hall.",
+      "arrivalLine": "Shops and offices once hummed in these halls."
+    },
+    "w15": {
+      "title": "Spanish Steps",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.90597,
+        "lng": 12.48259,
+        "radius_m": 40
+      },
+      "zone": "centro",
+      "chapters": [
+        "w15.mp3"
+      ],
+      "inserts": [
+        "ins_water_trevi"
+      ],
+      "approachLine": "The steps rise ahead — take them slowly.",
+      "arrivalLine": "A staircase built for seeing and being seen."
+    },
+    "w16": {
+      "title": "Fontana di Trevi",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.90094,
+        "lng": 12.48331,
+        "radius_m": 35
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w16.mp3"
+      ],
+      "inserts": [
+        "ins_agrippa"
+      ],
+      "approachLine": "You'll hear the fountain before you see it.",
+      "arrivalLine": "Throw a coin if you wish — the water doesn't mind."
+    },
+    "w17": {
+      "title": "The Pantheon",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.89885,
+        "lng": 12.47687,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w17_ch1.mp3",
+        "w17_ch2.mp3",
+        "w17_ch3.mp3",
+        "w17_ch4.mp3"
+      ],
+      "interior_zone": "pantheon_interior",
+      "reconstruction": {
+        "now": "/rome/img/w13_now.avif",
+        "then": "/rome/img/w13_then.avif",
+        "loop": "/rome/video/w13_then_loop.mp4",
+        "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
+      },
+      "approachLine": "The rotunda appears through the streets.",
+      "arrivalLine": "Two thousand years of sky through one opening."
+    },
+    "w18": {
+      "title": "Piazza Navona",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.89918,
+        "lng": 12.47306,
+        "radius_m": 45
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w18.mp3"
+      ],
+      "approachLine": "Bernini's fountain plays ahead — the stadium shape beneath your feet.",
+      "arrivalLine": "A racetrack turned piazza — Rome's living room."
+    },
+    "w19": {
+      "title": "Campo de' Fiori",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.89559,
+        "lng": 12.47223,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w19.mp3"
+      ],
+      "approachLine": "The market square opens — morning or evening, always alive.",
+      "arrivalLine": "Flowers, fruit, and four centuries of chatter."
+    },
+    "w20": {
+      "title": "Largo di Torre Argentina",
+      "act": "act5",
+      "geofence": {
+        "lat": 41.89528,
+        "lng": 12.47694,
+        "radius_m": 40
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w20.mp3"
+      ],
+      "approachLine": "Sacred ruins below street level — cats and columns.",
+      "arrivalLine": "This is where Caesar died."
+    },
+    "w21": {
+      "title": "Castel Sant'Angelo",
+      "act": "act6",
+      "geofence": {
+        "lat": 41.90306,
+        "lng": 12.46627,
+        "radius_m": 45
+      },
+      "zone": "river",
+      "chapters": [
+        "w21.mp3"
+      ],
+      "alt_inserts": [
+        "w21_alt_bruno"
+      ],
+      "approachLine": "Hadrian's tomb rises beside the river.",
+      "arrivalLine": "Emperor, fortress, refuge — one stone silhouette."
+    },
+    "enc_circus": {
+      "title": "Circus Maximus floor",
+      "act": "encore",
+      "geofence": {
+        "lat": 41.8859,
+        "lng": 12.4857,
+        "radius_m": 55
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "enc_circus.mp3"
+      ],
+      "inserts": [
+        "ins_window"
+      ],
+      "approachLine": "Walk out onto the grass at the bottom of the valley.",
+      "arrivalLine": "You are where the crowd stood."
+    },
+    "w22": {
+      "title": "Via Appia Antica",
+      "act": "encore",
+      "geofence": {
+        "lat": 41.85655,
+        "lng": 12.51185,
+        "radius_m": 60
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "w22.mp3"
+      ],
+      "approachLine": "The basalt stones stretch south — the queen of roads.",
+      "arrivalLine": "Walk where legions and merchants left Rome."
+    }
+  },
+  "transits": {
+    "t01": {
+      "after": "w02",
+      "audio": "t01_shared.mp3",
+      "zone": "antiquity",
+      "variants": {
+        "a": "t01_fork_a.mp3",
+        "b": "t01_fork_b.mp3"
+      },
+      "choice": true,
+      "duration_s": 70
+    },
+    "t02": {
+      "after": "w04",
+      "audio": "t02.mp3",
+      "zone": "antiquity",
+      "duration_s": 25
+    },
+    "t05": {
+      "after": "w06",
+      "audio": "t05.mp3",
+      "zone": "antiquity",
+      "duration_s": 30
+    },
+    "t06": {
+      "after": "w07",
+      "audio": "t06.mp3",
+      "zone": "antiquity",
+      "duration_s": 25
+    },
+    "t07": {
+      "after": "w08",
+      "audio": "t07.mp3",
+      "zone": "antiquity",
+      "duration_s": 35
+    },
+    "t08": {
+      "after": "w10",
+      "audio": "t08.mp3",
+      "zone": "antiquity",
+      "duration_s": 15
+    },
+    "t09": {
+      "after": "w11_12",
+      "audio": "t09.mp3",
+      "zone": "antiquity",
+      "duration_s": 25
+    },
+    "t10": {
+      "after": "w13",
+      "audio": "t10.mp3",
+      "zone": "antiquity",
+      "duration_s": 30
+    },
+    "t14": {
+      "after": "w14",
+      "audio": "t14.mp3",
+      "zone": "centro",
+      "duration_s": 600
+    },
+    "t15": {
+      "after": "w15",
+      "audio": "t15.mp3",
+      "zone": "centro",
+      "duration_s": 30
+    },
+    "t12": {
+      "after": "w16",
+      "audio": "t12.mp3",
+      "zone": "centro",
+      "duration_s": 30
+    },
+    "t13": {
+      "after": "w17",
+      "audio": "t13.mp3",
+      "zone": "centro",
+      "duration_s": 30
+    },
+    "t18": {
+      "after": "w18",
+      "audio": "t18.mp3",
+      "zone": "centro",
+      "duration_s": 25
+    },
+    "t19": {
+      "after": "w19",
+      "audio": "t19.mp3",
+      "zone": "centro",
+      "duration_s": 35,
+      "note": "Campo → Largo"
+    },
+    "t16": {
+      "after": "w20",
+      "audio": "t16.mp3",
+      "zone": "river",
+      "duration_s": 40
+    },
+    "t22": {
+      "after": "enc_circus",
+      "audio": "t22.mp3",
+      "zone": "antiquity",
+      "duration_s": 120
+    },
+    "t03": {
+      "after": "w04",
+      "zone": "antiquity",
+      "variants": {
+        "a": "t03_a.mp3",
+        "b": "t03_b.mp3"
+      },
+      "duration_s": 30
+    }
+  },
+  "inserts": {
+    "ins_whopaid": {
+      "audio": "ins_whopaid.mp3",
+      "requires": [
+        "w01"
+      ]
+    },
+    "ins_window": {
+      "audio": "ins_window.mp3",
+      "requires": [
+        "w04"
+      ]
+    },
+    "ins_jerusalem": {
+      "audio": "ins_jerusalem.mp3",
+      "requires": [
+        "w01"
+      ]
+    },
+    "ins_fire": {
+      "audio": "ins_fire.mp3",
+      "requires": [
+        "w08"
+      ]
+    },
+    "ins_caesar_tease": {
+      "audio": "ins_caesar_tease.mp3",
+      "requiresAny": [
+        "w07",
+        "w11_12"
+      ]
+    },
+    "ins_water_trevi": {
+      "audio": "ins_water_trevi.mp3",
+      "requires": [
+        "w15"
+      ]
+    },
+    "ins_agrippa": {
+      "audio": "ins_agrippa.mp3",
+      "requires": [
+        "w16"
+      ]
+    },
+    "ins_constantine": {
+      "audio": "ins_constantine.mp3",
+      "requiresHeard": [
+        "t01"
+      ]
+    },
+    "w21_alt_bruno": {
+      "audio": "w21_alt_bruno.mp3",
+      "playIfMissing": [
+        "w19"
+      ]
+    }
+  },
+  "beds": {
+    "antiquity": "bed_antiquity.mp3",
+    "centro": "bed_centro.mp3",
+    "river": "bed_river.mp3",
+    "underworld": "bed_underworld.mp3",
+    "pantheon_interior": "bed_pantheon_interior.mp3"
+  },
+  "system": {
+    "presence": "sfx_presence.mp3",
+    "longwalk": "t_longwalk.mp3",
+    "no_ticket": [
+      "alt_forum_1.mp3",
+      "alt_forum_2.mp3"
+    ],
+    "ui": {
+      "arrival": "ui_arrival_chime.mp3",
+      "threshold": "ui_threshold_tone.mp3",
+      "phase_transition": "ui_phase_seam.mp3",
+      "completion": "ui_completion_tone.mp3"
+    },
+    "preview": "preview_pantheon.mp3",
+    "resume": {
+      "same_day": "resume_same_day.mp3",
+      "new_day": "resume_new_day.mp3"
+    }
+  },
+  "durations": {}
+}

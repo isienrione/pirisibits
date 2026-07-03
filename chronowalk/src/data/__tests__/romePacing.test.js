@@ -22,5 +22,6 @@ describe('romePacing', () => {
     expect(getActForWaypoint('w01')?.title).toBe('The Arena')
     expect(getActForWaypoint('w15')?.title).toBe('The Living City')
     expect(getActForWaypoint('w22')?.title).toBe('The Long Games & the Long Road')
+    expect(getActForWaypoint('enc_circus')?.id).toBe('encore')
   })
 })

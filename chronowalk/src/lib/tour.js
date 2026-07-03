@@ -1,46 +1,33 @@
+import { loadRomeManifest, clearRomeManifestCache } from '../content/manifest.js'
 import { mediaUrl } from './mediaUrl'
 
-const MANIFEST_URL = '/tours/rome/manifest.json'
-
-let cachedManifest = null
-
 export async function loadTourManifest() {
-  if (cachedManifest) return cachedManifest
-
-  const response = await fetch(MANIFEST_URL)
-  if (!response.ok) {
-    throw new Error(`Failed to load tour manifest: ${response.status}`)
-  }
-
-  cachedManifest = await response.json()
-  return cachedManifest
+  return loadRomeManifest()
 }
 
 export function clearTourManifestCache() {
-  cachedManifest = null
+  clearRomeManifestCache()
 }
 
-export function getWaypoint(manifest, waypointId) {
-  return manifest?.waypoints?.find((waypoint) => waypoint.id === waypointId) ?? null
-}
-
-export function getWaypointByIndex(manifest, index) {
-  const id = manifest?.waypoints?.[index]?.id
-  return id ? getWaypoint(manifest, id) : null
-}
-
-export function getTransitAfter(manifest, waypointId) {
-  return manifest?.transits?.find((transit) => transit.after === waypointId) ?? null
-}
+export {
+  getWaypoint,
+  getWaypointByIndex,
+  getTransitAfter,
+  getTransit,
+  orderedWaypointIds,
+  getTraversalSequence,
+  getAct,
+  getWaypointIndex,
+  collectManifestAudioPaths,
+} from '../content/manifest.js'
 
 export function resolveWaypointMedia(waypoint) {
   if (!waypoint) return null
 
   return {
     ...waypoint,
-    audioUrl: mediaUrl(waypoint.audio),
+    audioUrl: waypoint.chapters?.[0] ? mediaUrl(`/rome/audio/narration/${waypoint.chapters[0]}`) : null,
     photoUrl: mediaUrl(waypoint.photo),
-    transcriptUrl: mediaUrl(waypoint.transcript),
     reconstruction: waypoint.reconstruction
       ? {
           ...waypoint.reconstruction,
@@ -49,15 +36,10 @@ export function resolveWaypointMedia(waypoint) {
           loop: mediaUrl(waypoint.reconstruction.loop),
         }
       : null,
-    faq: (waypoint.faq ?? []).map(mediaUrl),
   }
 }
 
-export function allWaypointIdsForDay(manifest, dayNumber) {
-  const day = manifest?.days?.find((entry) => entry.day === dayNumber)
-  return day?.waypoints ?? []
-}
-
-export function orderedWaypointIds(manifest) {
-  return manifest?.waypoints?.map((waypoint) => waypoint.id) ?? []
+// Legacy helper — acts replaced days
+export function allWaypointIdsForDay() {
+  return []
 }

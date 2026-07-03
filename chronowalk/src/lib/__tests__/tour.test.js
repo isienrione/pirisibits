@@ -1,30 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import manifest from '../../../public/tours/rome/manifest.json'
-import { getWaypoint, orderedWaypointIds } from '../../lib/tour'
+import { loadTourManifest, getWaypoint, getTraversalSequence } from '../tour'
 
-describe('rome tour manifest', () => {
-  it('loads 22 waypoints and 21 transits', () => {
-    expect(manifest.waypoints).toHaveLength(22)
-    expect(manifest.transits).toHaveLength(21)
+describe('tour manifest loader', () => {
+  it('loads the acts-based rome manifest', async () => {
+    const manifest = await loadTourManifest()
+
+    expect(manifest.acts).toHaveLength(7)
+    expect(manifest.waypoints.length).toBeGreaterThan(15)
+    expect(getWaypoint(manifest, 'w17')?.chapters).toHaveLength(4)
   })
 
-  it('maps day plans to waypoint ids', () => {
-    const day1 = manifest.days.find((day) => day.day === 1)
-    const day2 = manifest.days.find((day) => day.day === 2)
-    expect(day1.waypoints).toHaveLength(14)
-    expect(day2.waypoints).toHaveLength(8)
-    expect(day1.waypoints[0]).toBe('w01')
-    expect(day2.waypoints[0]).toBe('w15')
-  })
+  it('exposes path-specific traversal sequences', async () => {
+    const manifest = await loadTourManifest()
+    const pathA = getTraversalSequence(manifest, 'a')
+    const pathB = getTraversalSequence(manifest, 'b')
 
-  it('resolves waypoint by id', () => {
-    const colosseum = getWaypoint(manifest, 'w01')
-    expect(colosseum?.name).toBe('The Colosseum')
-    expect(colosseum?.coords.lat).toBeCloseTo(41.8902, 4)
-  })
-
-  it('orders waypoint ids in chapter sequence', () => {
-    expect(orderedWaypointIds(manifest)[0]).toBe('w01')
-    expect(orderedWaypointIds(manifest)[21]).toBe('w22')
+    expect(pathA.indexOf('w03')).toBeLessThan(pathA.indexOf('w06'))
+    expect(pathB.indexOf('w04')).toBeLessThan(pathB.indexOf('w03'))
   })
 })
