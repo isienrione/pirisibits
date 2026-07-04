@@ -13,15 +13,24 @@ const STORAGE_KEY = 'chronowalk:journey-recap'
  */
 
 /**
+ * @typedef {Object} JourneyRecapJournal
+ * @property {string} stopId
+ * @property {string} text
+ * @property {string} recordedAt
+ */
+
+/**
  * @typedef {Object} JourneyRecap
  * @property {JourneyRecapPhoto[]} photos
  * @property {JourneyRecapAudio[]} audioListened
+ * @property {JourneyRecapJournal[]} journal
  */
 
 function emptyRecap() {
   return {
     photos: [],
     audioListened: [],
+    journal: [],
   }
 }
 
@@ -39,6 +48,7 @@ export function readJourneyRecap() {
     return {
       photos: Array.isArray(parsed?.photos) ? parsed.photos : [],
       audioListened: Array.isArray(parsed?.audioListened) ? parsed.audioListened : [],
+      journal: Array.isArray(parsed?.journal) ? parsed.journal : [],
     }
   } catch {
     return emptyRecap()
@@ -94,6 +104,25 @@ export function recordAudioListened(stopId) {
 
 /**
  * @param {string} stopId
+ * @param {string} text
+ */
+export function recordJournalReflection(stopId, text) {
+  if (!stopId || !text?.trim()) return
+
+  const recap = readJourneyRecap()
+  if (recap.journal.some((entry) => entry.stopId === stopId)) return
+
+  recap.journal.push({
+    stopId,
+    text: text.trim(),
+    recordedAt: new Date().toISOString(),
+  })
+
+  writeJourneyRecap(recap)
+}
+
+/**
+ * @param {string} stopId
  * @param {JourneyRecap} [recap]
  */
 export function hasPhotoCapture(stopId, recap = readJourneyRecap()) {
@@ -106,6 +135,14 @@ export function hasPhotoCapture(stopId, recap = readJourneyRecap()) {
  */
 export function hasAudioListened(stopId, recap = readJourneyRecap()) {
   return recap.audioListened.some((entry) => entry.stopId === stopId)
+}
+
+/**
+ * @param {string} stopId
+ * @param {JourneyRecap} [recap]
+ */
+export function hasJournalReflection(stopId, recap = readJourneyRecap()) {
+  return recap.journal.some((entry) => entry.stopId === stopId)
 }
 
 export function getJourneyRecapStorageKey() {

@@ -2,9 +2,11 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import {
   getJourneyRecapStorageKey,
   hasAudioListened,
+  hasJournalReflection,
   hasPhotoCapture,
   readJourneyRecap,
   recordAudioListened,
+  recordJournalReflection,
   recordPhotoCapture,
 } from '../journeyRecapStorage'
 
@@ -17,6 +19,7 @@ describe('journeyRecapStorage', () => {
     expect(readJourneyRecap()).toEqual({
       photos: [],
       audioListened: [],
+      journal: [],
     })
   })
 
@@ -38,6 +41,16 @@ describe('journeyRecapStorage', () => {
     const recap = readJourneyRecap()
     expect(recap.audioListened).toHaveLength(1)
     expect(hasAudioListened('colosseum', recap)).toBe(true)
+  })
+
+  it('records journal reflections once per stop', () => {
+    recordJournalReflection('colosseum', 'Stone remembers.')
+    recordJournalReflection('colosseum', 'Another line.')
+
+    const recap = readJourneyRecap()
+    expect(recap.journal).toHaveLength(1)
+    expect(recap.journal[0].text).toBe('Stone remembers.')
+    expect(hasJournalReflection('colosseum', recap)).toBe(true)
   })
 
   it('exposes the storage key', () => {

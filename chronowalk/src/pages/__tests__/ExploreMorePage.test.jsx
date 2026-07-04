@@ -15,6 +15,7 @@ function renderExploreMorePage() {
       <Routes>
         <Route path={ROUTES.exploreMore} element={<ExploreMorePage />} />
         <Route path={ROUTES.romePassport} element={<div>Rome passport</div>} />
+        <Route path={ROUTES.journeyMemories} element={<div>Journey memories</div>} />
         <Route path={ROUTES.home} element={<div>Home</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
@@ -55,6 +56,16 @@ describe('ExploreMorePage', () => {
     fireEvent.click(screen.getByRole('button', { name: /return home/i }))
     await waitFor(() => {
       expect(screen.getByText('Home')).toBeInTheDocument()
+    })
+  })
+
+  it('opens journey memories from explore more', async () => {
+    renderExploreMorePage()
+
+    fireEvent.click(screen.getByRole('button', { name: /your memories/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey memories')).toBeInTheDocument()
     })
   })
 

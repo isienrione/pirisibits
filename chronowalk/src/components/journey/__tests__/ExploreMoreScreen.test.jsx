@@ -47,4 +47,21 @@ describe('ExploreMoreScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /return home/i }))
     expect(onReturnHome).toHaveBeenCalledTimes(1)
   })
+
+  it('opens journey memories when provided', () => {
+    const onViewMemories = vi.fn()
+
+    render(
+      <ExploreMoreScreen
+        title={content.title}
+        subtitle={content.subtitle}
+        journeys={content.journeys}
+        onBack={vi.fn()}
+        onViewMemories={onViewMemories}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /your memories/i }))
+    expect(onViewMemories).toHaveBeenCalledTimes(1)
+  })
 })

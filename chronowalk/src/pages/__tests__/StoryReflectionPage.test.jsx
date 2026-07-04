@@ -7,6 +7,7 @@ import {
   defaultJourneySnapshot,
   hydrateJourney,
 } from '../../state/journeyState'
+import { readJourneyRecap } from '../../utils/journeyRecapStorage'
 import { ROUTES } from '../../routes/paths'
 
 function renderReflectionPage() {
@@ -47,6 +48,15 @@ describe('StoryReflectionPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /^continue$/i }))
 
     expect(screen.getByText('Landmark card')).toBeInTheDocument()
+  })
+
+  it('records a journal reflection for the current stop', () => {
+    renderReflectionPage()
+
+    const recap = readJourneyRecap()
+    expect(recap.journal).toHaveLength(1)
+    expect(recap.journal[0].stopId).toBe('pantheon')
+    expect(recap.journal[0].text).toMatch(/two thousand years/i)
   })
 
   it('redirects outside story state', () => {

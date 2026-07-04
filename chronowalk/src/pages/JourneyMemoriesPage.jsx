@@ -1,36 +1,37 @@
 import { useCallback, useMemo } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { getExploreMoreContent } from '../content/launchExploreMore'
-import ExploreMoreScreen from '../components/journey/ExploreMoreScreen'
+import { buildJourneyMemories } from '../content/launchJourneyMemories'
+import JourneyMemoriesScreen from '../components/journey/JourneyMemoriesScreen'
 import { useJourney } from '../hooks/useJourney'
 import { JOURNEY_STATES } from '../state/journeyState'
+import { readJourneyRecap } from '../utils/journeyRecapStorage'
 import {
   ROUTES,
   arrivalPath,
   continueWalkingPath,
   exploreMorePath,
-  journeyMemoriesPath,
   landmarkPath,
-  romePassportPath,
   thresholdPath,
 } from '../routes/paths'
 
-export default function ExploreMorePage() {
+export default function JourneyMemoriesPage() {
   const navigate = useNavigate()
-  const { state } = useJourney()
+  const { state, context, manifest } = useJourney()
 
-  const content = useMemo(() => getExploreMoreContent(), [])
+  const recap = useMemo(() => readJourneyRecap(), [])
+
+  const archive = useMemo(
+    () =>
+      buildJourneyMemories({
+        manifest,
+        context,
+        recap,
+      }),
+    [context, manifest, recap]
+  )
 
   const handleBack = useCallback(() => {
-    navigate(romePassportPath(), { replace: true })
-  }, [navigate])
-
-  const handleReturnHome = useCallback(() => {
-    navigate(ROUTES.home, { replace: true })
-  }, [navigate])
-
-  const handleViewMemories = useCallback(() => {
-    navigate(journeyMemoriesPath(), { replace: true })
+    navigate(exploreMorePath(), { replace: true })
   }, [navigate])
 
   if (state !== JOURNEY_STATES.COMPLETE) {
@@ -50,13 +51,14 @@ export default function ExploreMorePage() {
   }
 
   return (
-    <ExploreMoreScreen
-      title={content.title}
-      subtitle={content.subtitle}
-      journeys={content.journeys}
+    <JourneyMemoriesScreen
+      title={archive.title}
+      subtitle={archive.subtitle}
+      places={archive.places}
+      stories={archive.stories}
+      photos={archive.photos}
+      journal={archive.journal}
       onBack={handleBack}
-      onReturnHome={handleReturnHome}
-      onViewMemories={handleViewMemories}
     />
   )
 }

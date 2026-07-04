@@ -1,9 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { getStoryReflectionSentence } from '../content/launchStoryReflections'
 import { useJourney } from '../hooks/useJourney'
 import { JOURNEY_STATES } from '../state/journeyState'
 import StoryReflectionMoment from '../components/journey/StoryReflectionMoment'
+import { recordJournalReflection } from '../utils/journeyRecapStorage'
 import {
   ROUTES,
   arrivalPath,
@@ -18,6 +19,14 @@ export default function StoryReflectionPage() {
   const handleContinue = useCallback(() => {
     navigate(landmarkPath(), { replace: true })
   }, [navigate])
+
+  const reflectionSentence = getStoryReflectionSentence(currentStop)
+
+  useEffect(() => {
+    if (currentStop?.id) {
+      recordJournalReflection(currentStop.id, reflectionSentence)
+    }
+  }, [currentStop?.id, reflectionSentence])
 
   if (state !== JOURNEY_STATES.STORY) {
     if (state === JOURNEY_STATES.ARRIVED) {
@@ -38,7 +47,7 @@ export default function StoryReflectionPage() {
 
   return (
     <StoryReflectionMoment
-      sentence={getStoryReflectionSentence(currentStop)}
+      sentence={reflectionSentence}
       onContinue={handleContinue}
     />
   )

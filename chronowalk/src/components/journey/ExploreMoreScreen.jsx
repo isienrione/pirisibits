@@ -45,6 +45,7 @@ export default function ExploreMoreScreen({
   journeys = [],
   onBack,
   onReturnHome,
+  onViewMemories,
 }) {
   return (
     <div
@@ -75,6 +76,18 @@ export default function ExploreMoreScreen({
             <JourneyPanel key={journey.id} journey={journey} />
           ))}
         </section>
+
+        {onViewMemories ? (
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={onViewMemories}
+              className="text-sm font-medium tracking-[0.08em] text-bronze underline decoration-bronze/30 underline-offset-4 transition hover:text-bronze-dark"
+            >
+              Your memories
+            </button>
+          </div>
+        ) : null}
 
         {onReturnHome ? (
           <footer className="pb-8">
