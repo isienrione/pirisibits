@@ -89,3 +89,7 @@ export function continueWalkingPath() {
 export function journeySummaryPath() {
   return ROUTES.journeySummary
 }
+
+export function completePath() {
+  return ROUTES.complete
+}

@@ -1,20 +1,19 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import JourneyCompletePage from '../JourneyCompletePage'
 import JourneyLetterPage from '../JourneyLetterPage'
 import {
   JOURNEY_STATES,
   defaultJourneySnapshot,
   hydrateJourney,
 } from '../../state/journeyState'
+import { writeTravelerName } from '../../utils/travelerProfile'
 import { ROUTES } from '../../routes/paths'
 
-function renderCompletePage() {
+function renderLetterPage() {
   return render(
-    <MemoryRouter initialEntries={[ROUTES.complete]}>
+    <MemoryRouter initialEntries={[ROUTES.journeySummary]}>
       <Routes>
-        <Route path={ROUTES.complete} element={<JourneyCompletePage />} />
         <Route path={ROUTES.journeySummary} element={<JourneyLetterPage />} />
         <Route path={ROUTES.home} element={<div>Home</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
@@ -23,36 +22,36 @@ function renderCompletePage() {
   )
 }
 
-describe('JourneyCompletePage', () => {
+describe('JourneyLetterPage', () => {
   beforeEach(() => {
     window.localStorage.clear()
+    writeTravelerName('Livia')
     hydrateJourney({
       state: JOURNEY_STATES.COMPLETE,
       context: {
         ...defaultJourneySnapshot().context,
         currentStopId: 'castel-sant-angelo',
         currentStopIndex: 11,
-        completedStopIds: ['colosseum', 'pantheon'],
+        completedStopIds: ['colosseum', 'pantheon', 'piazza-navona'],
       },
     })
   })
 
-  it('renders the journey complete moment in immersion mode', () => {
-    renderCompletePage()
+  it('renders the journey letter for a completed tour', () => {
+    renderLetterPage()
 
-    expect(screen.getByTestId('journey-complete-moment')).toBeInTheDocument()
-    expect(
-      screen.getByRole('heading', { level: 1, name: /you walked ancient rome/i })
-    ).toBeInTheDocument()
+    expect(screen.getByTestId('journey-letter')).toBeInTheDocument()
+    expect(screen.getByText('Dear Livia,')).toBeInTheDocument()
+    expect(screen.getByText(/never stopped remembering/i)).toBeInTheDocument()
   })
 
-  it('routes to the summary from the primary action', async () => {
-    renderCompletePage()
+  it('returns home from the letter', async () => {
+    renderLetterPage()
 
-    fireEvent.click(screen.getByRole('button', { name: /view summary/i }))
+    fireEvent.click(screen.getByRole('button', { name: /return home/i }))
 
     await waitFor(() => {
-      expect(screen.getByTestId('journey-letter')).toBeInTheDocument()
+      expect(screen.getByText('Home')).toBeInTheDocument()
     })
   })
 
@@ -62,7 +61,7 @@ describe('JourneyCompletePage', () => {
       context: defaultJourneySnapshot().context,
     })
 
-    renderCompletePage()
+    renderLetterPage()
 
     expect(screen.getByText('Journey map')).toBeInTheDocument()
   })
