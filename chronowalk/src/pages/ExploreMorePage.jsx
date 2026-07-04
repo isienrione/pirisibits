@@ -1,39 +1,30 @@
 import { useCallback, useMemo } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { buildJourneyLetter } from '../content/launchJourneyLetter'
-import JourneyLetter from '../components/journey/JourneyLetter'
+import { getExploreMoreContent } from '../content/launchExploreMore'
+import ExploreMoreScreen from '../components/journey/ExploreMoreScreen'
 import { useJourney } from '../hooks/useJourney'
 import { JOURNEY_STATES } from '../state/journeyState'
-import { readTravelerName } from '../utils/travelerProfile'
 import {
   ROUTES,
   arrivalPath,
   continueWalkingPath,
-  journeyTimelinePath,
   landmarkPath,
+  romePassportPath,
   thresholdPath,
 } from '../routes/paths'
 
-export default function JourneyLetterPage() {
+export default function ExploreMorePage() {
   const navigate = useNavigate()
-  const { state, context, manifest } = useJourney()
+  const { state } = useJourney()
 
-  const letter = useMemo(
-    () =>
-      buildJourneyLetter({
-        travelerName: readTravelerName(),
-        manifest,
-        context,
-      }),
-    [context, manifest]
-  )
+  const content = useMemo(() => getExploreMoreContent(), [])
+
+  const handleBack = useCallback(() => {
+    navigate(romePassportPath(), { replace: true })
+  }, [navigate])
 
   const handleReturnHome = useCallback(() => {
     navigate(ROUTES.home, { replace: true })
-  }, [navigate])
-
-  const handleViewTimeline = useCallback(() => {
-    navigate(journeyTimelinePath(), { replace: true })
   }, [navigate])
 
   if (state !== JOURNEY_STATES.COMPLETE) {
@@ -53,12 +44,11 @@ export default function JourneyLetterPage() {
   }
 
   return (
-    <JourneyLetter
-      salutation={letter.salutation}
-      paragraphs={letter.paragraphs}
-      signOff={letter.signOff}
-      signature={letter.signature}
-      onViewTimeline={handleViewTimeline}
+    <ExploreMoreScreen
+      title={content.title}
+      subtitle={content.subtitle}
+      journeys={content.journeys}
+      onBack={handleBack}
       onReturnHome={handleReturnHome}
     />
   )
