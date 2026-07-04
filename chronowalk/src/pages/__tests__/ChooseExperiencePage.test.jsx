@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import ChooseExperiencePage from '../ChooseExperiencePage'
-import { ROUTES } from '../../routes/paths'
+import { locationPermissionPath } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -55,10 +55,10 @@ describe('ChooseExperiencePage', () => {
     )
   })
 
-  it('continues to journey with selected experience', () => {
+  it('continues to location permission with selected experience', () => {
     renderRomeExperience()
 
     fireEvent.click(screen.getByRole('button', { name: /continue/i }))
-    expect(navigate).toHaveBeenCalledWith(ROUTES.journey, { replace: true })
+    expect(navigate).toHaveBeenCalledWith(locationPermissionPath('rome'), { replace: true })
   })
 })

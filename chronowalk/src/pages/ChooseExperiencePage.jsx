@@ -4,7 +4,7 @@ import tourHeroFallback from '../assets/tour-hero.svg'
 import { getLaunchExperiences } from '../content/launchExperiences'
 import { GoldButton, cn } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { locationPermissionPath } from '../routes/paths'
 
 function ExperienceCard({ experience, isSelected, onSelect }) {
   const [heroSrc, setHeroSrc] = useState(experience.heroImage)
@@ -123,7 +123,7 @@ export default function ChooseExperiencePage() {
           showArrow
           className="mt-4"
           disabled={!selectedId}
-          onClick={() => navigate(ROUTES.journey, { replace: true })}
+          onClick={() => navigate(locationPermissionPath(destinationId), { replace: true })}
         >
           Continue
         </GoldButton>

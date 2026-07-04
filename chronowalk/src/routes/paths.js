@@ -21,3 +21,7 @@ export function beginJourneyPath(destinationId) {
 export function chooseExperiencePath(destinationId) {
   return `${ROUTES.begin}/${destinationId}/experience`
 }
+
+export function locationPermissionPath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}/location`
+}
