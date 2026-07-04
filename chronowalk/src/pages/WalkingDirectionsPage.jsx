@@ -7,7 +7,7 @@ import { JOURNEY_STATES } from '../state/journeyState'
 import WalkingDirectionsGuide from '../components/journey/WalkingDirectionsGuide'
 import { resolveWalkingStepProgress } from '../utils/walkingStepProgress'
 import { buildGoogleMapsDirectionsUrl } from '../utils/walkingDirections'
-import { ROUTES } from '../routes/paths'
+import { ROUTES, arrivalPath } from '../routes/paths'
 
 export default function WalkingDirectionsPage() {
   const navigate = useNavigate()
@@ -58,7 +58,12 @@ export default function WalkingDirectionsPage() {
   }, [])
 
   if (!canGuide) {
-    return <Navigate to={ROUTES.journey} replace />
+    return (
+      <Navigate
+        to={state === JOURNEY_STATES.ARRIVED ? arrivalPath() : ROUTES.journey}
+        replace
+      />
+    )
   }
 
   return (

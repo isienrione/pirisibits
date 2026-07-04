@@ -4,6 +4,7 @@ export const ROUTES = {
   begin: '/begin',
   journey: '/journey',
   walkingDirections: '/journey/directions',
+  arrival: '/journey/arrival',
   complete: '/complete',
 }
 
@@ -33,4 +34,8 @@ export function offlineDownloadPath(destinationId) {
 
 export function walkingDirectionsPath() {
   return ROUTES.walkingDirections
+}
+
+export function arrivalPath() {
+  return ROUTES.arrival
 }

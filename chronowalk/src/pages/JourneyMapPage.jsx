@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { LOCATION_STATUS, useGeoLocation } from '../hooks/useGeoLocation'
 import { useJourneyGeoSync } from '../hooks/useJourneyGeoSync'
 import { JOURNEY_STATES } from '../state/journeyState'
@@ -8,9 +8,10 @@ import { useJourney } from '../hooks/useJourney'
 import JourneyExplorerMap from '../components/journey/JourneyExplorerMap'
 import JourneyBottomCard from '../components/journey/JourneyBottomCard'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { ROUTES, arrivalPath } from '../routes/paths'
 
 export default function JourneyMapPage() {
+  const navigate = useNavigate()
   const { state, context, manifest, currentStop, nextStop, setState, states } = useJourney()
 
   const target = currentStop?.coords
@@ -27,12 +28,22 @@ export default function JourneyMapPage() {
     }
   }, [manifest, state])
 
+  useEffect(() => {
+    if (state === JOURNEY_STATES.ARRIVED) {
+      navigate(arrivalPath(), { replace: true })
+    }
+  }, [navigate, state])
+
   const handleSimulateArrival = useCallback(() => {
     setState(states.ARRIVED)
   }, [setState, states.ARRIVED])
 
   if (!currentStop && state === JOURNEY_STATES.IDLE) {
     return <Navigate to={ROUTES.begin} replace />
+  }
+
+  if (state === JOURNEY_STATES.ARRIVED) {
+    return null
   }
 
   const userPos =

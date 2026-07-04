@@ -54,6 +54,7 @@ function renderWalkingDirections(initialEntry = ROUTES.walkingDirections) {
       <Routes>
         <Route path={ROUTES.walkingDirections} element={<WalkingDirectionsPage />} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
+        <Route path={ROUTES.arrival} element={<div>Arrival ceremony</div>} />
       </Routes>
     </MemoryRouter>
   )
@@ -89,7 +90,7 @@ describe('WalkingDirectionsPage', () => {
     expect(screen.getByText('Journey map')).toBeInTheDocument()
   })
 
-  it('redirects to journey map when not in walking flow', () => {
+  it('redirects to arrival ceremony when no longer en route', () => {
     hydrateJourney({
       state: JOURNEY_STATES.ARRIVED,
       context: {
@@ -101,6 +102,6 @@ describe('WalkingDirectionsPage', () => {
 
     renderWalkingDirections()
 
-    expect(screen.getByText('Journey map')).toBeInTheDocument()
+    expect(screen.getByText('Arrival ceremony')).toBeInTheDocument()
   })
 })
