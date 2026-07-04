@@ -67,4 +67,17 @@ describe('LandingPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /preview story/i }))
     expect(navigate).toHaveBeenCalledWith(ROUTES.legacy)
   })
+
+  it('opens settings from the landing header', () => {
+    navigate.mockClear()
+
+    render(
+      <MemoryRouter>
+        <LandingPage />
+      </MemoryRouter>
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /^settings$/i }))
+    expect(navigate).toHaveBeenCalledWith(ROUTES.settings)
+  })
 })

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { BronzeButton, Button, ParchmentCard, cn } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { ROUTES, settingsPath } from '../routes/paths'
 
 const LOGO_SRC = '/brand/chronowalk-logo.png'
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
@@ -42,11 +42,20 @@ export default function LandingPage() {
         />
 
         <div className="relative flex h-full flex-col px-6 pt-safe">
-          <img
-            src={LOGO_SRC}
-            alt="ChronoWalk"
-            className="h-auto w-[min(52vw,11rem)] drop-shadow-[0_4px_24px_rgba(28,28,28,0.35)]"
-          />
+          <div className="flex items-start justify-between gap-4">
+            <img
+              src={LOGO_SRC}
+              alt="ChronoWalk"
+              className="h-auto w-[min(52vw,11rem)] drop-shadow-[0_4px_24px_rgba(28,28,28,0.35)]"
+            />
+            <button
+              type="button"
+              onClick={() => navigate(settingsPath())}
+              className="mt-1 min-h-11 rounded-full px-3 text-sm font-medium text-ivory/80 transition hover:text-ivory"
+            >
+              Settings
+            </button>
+          </div>
         </div>
       </div>
 
