@@ -5,6 +5,9 @@ export const ROUTES = {
   journey: '/journey',
   walkingDirections: '/journey/directions',
   arrival: '/journey/arrival',
+  landmark: '/journey/landmark',
+  story: '/journey/story',
+  threshold: '/journey/threshold',
   complete: '/complete',
 }
 
@@ -38,4 +41,16 @@ export function walkingDirectionsPath() {
 
 export function arrivalPath() {
   return ROUTES.arrival
+}
+
+export function landmarkPath() {
+  return ROUTES.landmark
+}
+
+export function storyPath() {
+  return ROUTES.story
+}
+
+export function thresholdPath() {
+  return ROUTES.threshold
 }

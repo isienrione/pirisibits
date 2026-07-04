@@ -8,7 +8,17 @@ import {
   getJourneySnapshot,
   hydrateJourney,
 } from '../../state/journeyState'
-import { ROUTES } from '../../routes/paths'
+import { ROUTES, landmarkPath } from '../../routes/paths'
+
+const navigate = vi.fn()
+
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => navigate,
+  }
+})
 
 function renderArrivalPage() {
   return render(
@@ -24,6 +34,7 @@ function renderArrivalPage() {
 describe('JourneyArrivalPage', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    navigate.mockClear()
     hydrateJourney(defaultJourneySnapshot())
   })
 
@@ -79,5 +90,6 @@ describe('JourneyArrivalPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /open story/i }))
 
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(navigate).toHaveBeenCalledWith(landmarkPath(), { replace: true })
   })
 })

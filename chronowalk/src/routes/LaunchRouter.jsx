@@ -11,6 +11,7 @@ import OfflineDownloadPage from '../pages/OfflineDownloadPage.jsx'
 import JourneyMapPage from '../pages/JourneyMapPage.jsx'
 import WalkingDirectionsPage from '../pages/WalkingDirectionsPage.jsx'
 import JourneyArrivalPage from '../pages/JourneyArrivalPage.jsx'
+import LandmarkCardPage from '../pages/LandmarkCardPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -28,6 +29,9 @@ export default function LaunchRouter() {
         <Route path={`${ROUTES.begin}/:destinationId`} element={<TourDetailPage />} />
         <Route path={ROUTES.walkingDirections} element={<WalkingDirectionsPage />} />
         <Route path={ROUTES.arrival} element={<JourneyArrivalPage />} />
+        <Route path={ROUTES.landmark} element={<LandmarkCardPage />} />
+        <Route path={ROUTES.story} element={<Navigate to={ROUTES.legacy} replace />} />
+        <Route path={ROUTES.threshold} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path={ROUTES.journey} element={<JourneyMapPage />} />
         <Route path={ROUTES.complete} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
