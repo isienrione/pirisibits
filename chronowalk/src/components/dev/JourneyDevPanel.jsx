@@ -5,7 +5,8 @@ import { JOURNEY_STATE_LIST } from '../../state/journeyState'
  * Dev-only journey state controls. Not rendered in production builds.
  */
 export default function JourneyDevPanel() {
-  const { state, context, setState, updateContext, reset } = useJourney()
+  const { state, context, currentStop, manifest, setState, updateContext, reset } = useJourney()
+  const firstStop = manifest.stops[0]
 
   return (
     <div
@@ -30,7 +31,7 @@ export default function JourneyDevPanel() {
         state: <strong>{state}</strong>
       </p>
       <p style={{ margin: '0 0 8px', wordBreak: 'break-word' }}>
-        stop: {context.currentStopId ?? '—'} ({context.currentStopIndex})
+        stop: {currentStop?.title ?? context.currentStopId ?? '—'} ({context.currentStopIndex})
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
         {JOURNEY_STATE_LIST.map((nextState) => (
@@ -57,13 +58,14 @@ export default function JourneyDevPanel() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
+            if (!firstStop) return
             updateContext({
-              currentStopId: 'colosseum',
-              currentStopIndex: 0,
+              currentStopId: firstStop.id,
+              currentStopIndex: firstStop.number - 1,
               hasAccess: true,
             })
-          }
+          }}
           style={{ minHeight: 32, padding: '4px 8px', cursor: 'pointer' }}
         >
           Set stop
