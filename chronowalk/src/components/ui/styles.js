@@ -13,7 +13,7 @@ export const ctaInCard = 'rounded-2xl'
 
 /** Micro-label for stats, nav tabs, and HUD metadata. */
 export const metaLabel =
-  'text-[0.65rem] font-semibold uppercase tracking-[0.14em]'
+  'text-[11px] font-semibold uppercase tracking-[0.12em]'
 
 export const statusPill =
   'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold'

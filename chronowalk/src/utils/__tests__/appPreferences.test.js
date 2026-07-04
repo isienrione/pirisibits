@@ -1,11 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  applyTextSizePreference,
   readAudioEnabled,
+  readAudioSpeed,
   readDebugMapPreference,
   readPlayerIconsPref,
+  readTextSize,
   writeAudioEnabled,
+  writeAudioSpeed,
   writeDebugMapPreference,
   writePlayerIconsPref,
+  writeTextSize,
 } from '../appPreferences'
 
 describe('appPreferences', () => {
@@ -39,5 +44,22 @@ describe('appPreferences', () => {
     expect(readPlayerIconsPref()).toBe(false)
     writePlayerIconsPref(true)
     expect(readPlayerIconsPref()).toBe(true)
+  })
+
+  it('defaults audio speed to 1x when unset', () => {
+    expect(readAudioSpeed()).toBe(1)
+  })
+
+  it('persists audio speed preference', () => {
+    writeAudioSpeed(1.25)
+    expect(readAudioSpeed()).toBe(1.25)
+  })
+
+  it('persists text size preference and applies scale', () => {
+    writeTextSize('large')
+    expect(readTextSize()).toBe('large')
+    expect(document.documentElement.style.fontSize).toBe('112%')
+    applyTextSizePreference('default')
+    expect(document.documentElement.style.fontSize).toBe('100%')
   })
 })

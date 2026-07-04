@@ -13,6 +13,7 @@
     -moz-osx-font-smoothing: grayscale;
     --audio-bar-inset: 0px;
     --bottom-stack-inset: 5.5rem;
+    --launch-bottom-gutter: max(1rem, env(safe-area-inset-bottom));
   }
 
   body {
@@ -41,6 +42,22 @@
 
   .bottom-safe-offset {
     bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));
+  }
+
+  .h-dvh {
+    height: 100dvh;
+  }
+
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+
+  .pb-launch-bottom {
+    padding-bottom: calc(var(--launch-bottom-gutter) + 0.75rem);
+  }
+
+  .mb-launch-bottom {
+    margin-bottom: var(--launch-bottom-gutter);
   }
 
   .motion-safe-transition {

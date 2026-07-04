@@ -14,6 +14,8 @@ import {
   planContinueWalking,
 } from '../content/journeyProgress'
 import { getCurrentStop, loadRomeTourManifest } from '../content/romeTourManifest'
+import { ROUTES } from '../routes/paths'
+import { appNavigate } from '../routes/navigation'
 
 export function useJourney() {
   const snapshot = useSyncExternalStore(subscribeJourney, getJourneySnapshot, getJourneySnapshot)
@@ -42,17 +44,13 @@ export function useJourney() {
     if (plan.isComplete) {
       updateJourneyContext(plan.nextContext)
       setJourneyState(JOURNEY_STATES.COMPLETE)
-      if (typeof window !== 'undefined') {
-        window.location.assign('/complete')
-      }
+      appNavigate(ROUTES.complete)
       return plan
     }
 
     updateJourneyContext(plan.nextContext)
     setJourneyState(JOURNEY_STATES.WALKING)
-    if (typeof window !== 'undefined') {
-      window.location.assign('/journey')
-    }
+    appNavigate(ROUTES.journey)
     return plan
   }, [manifest, snapshot.context, currentStop])
 
