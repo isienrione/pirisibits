@@ -10,6 +10,7 @@ const BeginJourneyPage = lazy(() => import('../pages/BeginJourneyPage.jsx'))
 const JourneyMapPage = lazy(() => import('../pages/JourneyMapPage.jsx'))
 const CompletePage = lazy(() => import('../pages/CompletePage.jsx'))
 const StopsPage = lazy(() => import('../pages/StopsPage.jsx'))
+const SettingsPage = lazy(() => import('../pages/SettingsPage.jsx'))
 const LegacyAppPage = lazy(() => import('../pages/LegacyAppPage.jsx'))
 
 function NavigationBridge() {
@@ -40,7 +41,7 @@ export default function LaunchRouter() {
           <Route path={ROUTES.legacy} element={<LegacyAppPage />} />
           <Route path={ROUTES.map} element={<Navigate to={ROUTES.journey} replace />} />
           <Route path={ROUTES.stops} element={<StopsPage />} />
-          <Route path={ROUTES.settings} element={<Navigate to={ROUTES.legacy} replace />} />
+          <Route path={ROUTES.settings} element={<SettingsPage />} />
           <Route path="*" element={<Navigate to={ROUTES.landing} replace />} />
         </Routes>
       </Suspense>

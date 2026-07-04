@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  PREFERENCES_CHANGED_EVENT,
+  readAudioSpeed,
+} from '../utils/appPreferences'
 
 function clampProgress(value) {
   if (!Number.isFinite(value)) return 0
@@ -18,6 +22,7 @@ export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
   useEffect(() => {
     const audio = new Audio()
     audio.preload = 'metadata'
+    audio.playbackRate = readAudioSpeed()
     audioRef.current = audio
 
     const onLoaded = () => {
@@ -46,7 +51,13 @@ export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
     audio.addEventListener('play', onPlay)
     audio.addEventListener('pause', onPause)
 
+    const onPreferencesChanged = () => {
+      audio.playbackRate = readAudioSpeed()
+    }
+    window.addEventListener(PREFERENCES_CHANGED_EVENT, onPreferencesChanged)
+
     return () => {
+      window.removeEventListener(PREFERENCES_CHANGED_EVENT, onPreferencesChanged)
       audio.pause()
       audio.removeEventListener('loadedmetadata', onLoaded)
       audio.removeEventListener('timeupdate', onTimeUpdate)
@@ -68,6 +79,8 @@ export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
   const toggle = useCallback(async () => {
     const audio = audioRef.current
     if (!audio) return
+
+    audio.playbackRate = readAudioSpeed()
 
     if (audio.paused) {
       try {
