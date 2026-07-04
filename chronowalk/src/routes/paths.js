@@ -9,3 +9,7 @@ export const ROUTES = {
 export function tourDetailPath(destinationId) {
   return `${ROUTES.begin}/${destinationId}`
 }
+
+export function purchasePath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}/purchase`
+}

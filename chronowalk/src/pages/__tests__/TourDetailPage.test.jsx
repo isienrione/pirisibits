@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import TourDetailPage from '../TourDetailPage'
-import { ROUTES } from '../../routes/paths'
+import { purchasePath, ROUTES } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -60,10 +60,10 @@ describe('TourDetailPage', () => {
     expect(navigate).toHaveBeenCalledWith(ROUTES.begin)
   })
 
-  it('navigates to legacy from purchase CTA', () => {
+  it('navigates to purchase from purchase CTA', () => {
     renderRomeDetail()
 
     fireEvent.click(screen.getByRole('button', { name: /purchase journey/i }))
-    expect(navigate).toHaveBeenCalledWith(ROUTES.legacy)
+    expect(navigate).toHaveBeenCalledWith(purchasePath('rome'))
   })
 })

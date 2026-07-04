@@ -12,7 +12,7 @@ import {
   cn,
 } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { purchasePath, ROUTES } from '../routes/paths'
 
 const STOP_COLORS = {
   selected: '#D4AF37',
@@ -319,7 +319,7 @@ export default function TourDetailPage() {
             size="lg"
             fullWidth
             className="mt-4"
-            onClick={() => navigate(ROUTES.legacy)}
+            onClick={() => navigate(purchasePath(destinationId))}
           >
             Purchase journey
           </BronzeButton>
