@@ -4,10 +4,14 @@ import {
   readAudioEnabled,
   readAudioSpeed,
   readDebugMapPreference,
+  readHapticsEnabled,
+  readNotificationsEnabled,
   readPlayerIconsPref,
   writeAudioEnabled,
   writeAudioSpeed,
   writeDebugMapPreference,
+  writeHapticsEnabled,
+  writeNotificationsEnabled,
   writePlayerIconsPref,
 } from '../appPreferences'
 
@@ -53,5 +57,16 @@ describe('appPreferences', () => {
     expect(readAudioSpeed()).toBe(1.5)
     expect(cycleAudioSpeed(1.5)).toBe(2)
     expect(readAudioSpeed()).toBe(2)
+  })
+
+  it('persists notification and haptics preferences', () => {
+    expect(readNotificationsEnabled()).toBe(true)
+    expect(readHapticsEnabled()).toBe(true)
+
+    writeNotificationsEnabled(false)
+    writeHapticsEnabled(false)
+
+    expect(readNotificationsEnabled()).toBe(false)
+    expect(readHapticsEnabled()).toBe(false)
   })
 })

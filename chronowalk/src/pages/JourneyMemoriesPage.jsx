@@ -10,6 +10,7 @@ import {
   arrivalPath,
   continueWalkingPath,
   exploreMorePath,
+  settingsPath,
   landmarkPath,
   thresholdPath,
 } from '../routes/paths'
@@ -32,6 +33,10 @@ export default function JourneyMemoriesPage() {
 
   const handleBack = useCallback(() => {
     navigate(exploreMorePath(), { replace: true })
+  }, [navigate])
+
+  const handleOpenSettings = useCallback(() => {
+    navigate(settingsPath())
   }, [navigate])
 
   if (state !== JOURNEY_STATES.COMPLETE) {
@@ -59,6 +64,7 @@ export default function JourneyMemoriesPage() {
       photos={archive.photos}
       journal={archive.journal}
       onBack={handleBack}
+      onOpenSettings={handleOpenSettings}
     />
   )
 }

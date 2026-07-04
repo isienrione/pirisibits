@@ -26,6 +26,7 @@ import JourneyTimelinePage from '../pages/JourneyTimelinePage.jsx'
 import RomePassportPage from '../pages/RomePassportPage.jsx'
 import ExploreMorePage from '../pages/ExploreMorePage.jsx'
 import JourneyMemoriesPage from '../pages/JourneyMemoriesPage.jsx'
+import SettingsPage from '../pages/SettingsPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -33,6 +34,7 @@ export default function LaunchRouter() {
     <BrowserRouter>
       <Routes>
         <Route path={ROUTES.home} element={<LandingPage />} />
+        <Route path={ROUTES.settings} element={<SettingsPage />} />
         <Route path={ROUTES.legacy} element={<LegacyAppPage />} />
         <Route path={ROUTES.begin} element={<TourSelectionPage />} />
         <Route path={`${ROUTES.begin}/:destinationId/purchase`} element={<PurchasePage />} />

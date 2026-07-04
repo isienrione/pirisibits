@@ -165,6 +165,7 @@ export default function JourneyMemoriesScreen({
   photos = [],
   journal = [],
   onBack,
+  onOpenSettings,
 }) {
   const [activeSection, setActiveSection] = useState(MEMORY_SECTIONS.PLACES)
   const [activeStoryId, setActiveStoryId] = useState(null)
@@ -264,6 +265,18 @@ export default function JourneyMemoriesScreen({
             )
           ) : null}
         </section>
+
+        {onOpenSettings ? (
+          <footer className="pb-8">
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              className="text-sm font-medium tracking-[0.08em] text-bronze underline decoration-bronze/30 underline-offset-4 transition hover:text-bronze-dark"
+            >
+              Settings
+            </button>
+          </footer>
+        ) : null}
       </div>
     </div>
   )

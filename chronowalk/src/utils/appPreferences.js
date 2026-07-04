@@ -2,6 +2,8 @@ const AUDIO_ENABLED_KEY = 'chronowalk-audio-enabled'
 const AUDIO_SPEED_KEY = 'chronowalk-audio-speed'
 const DEBUG_MAP_KEY = 'chronowalk-debug-map'
 const PLAYER_ICONS_KEY = 'chronowalk-player-icons'
+const NOTIFICATIONS_KEY = 'chronowalk:notifications'
+const HAPTICS_KEY = 'chronowalk:haptics-enabled'
 
 export const STORY_PLAYBACK_SPEEDS = [1, 1.25, 1.5, 2]
 export const PREFERENCES_CHANGED_EVENT = 'chronowalk:preferences-changed'
@@ -69,3 +71,35 @@ export const writeDebugMapPreference = (enabled) => writeBool(DEBUG_MAP_KEY, ena
 export const readPlayerIconsPref = () => readBool(PLAYER_ICONS_KEY, false)
 
 export const writePlayerIconsPref = (enabled) => writeBool(PLAYER_ICONS_KEY, enabled)
+
+export const readNotificationsEnabled = () => {
+  if (typeof window === 'undefined') return true
+  const stored = window.localStorage.getItem(NOTIFICATIONS_KEY)
+  if (stored === null) return true
+  return stored === 'true'
+}
+
+export const writeNotificationsEnabled = (enabled) => {
+  writeBool(NOTIFICATIONS_KEY, enabled)
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(PREFERENCES_CHANGED_EVENT))
+  }
+}
+
+export const readHapticsEnabled = () => {
+  if (typeof window === 'undefined') return true
+  const stored = window.localStorage.getItem(HAPTICS_KEY)
+  if (stored === null) return true
+  return stored === 'true'
+}
+
+export const writeHapticsEnabled = (enabled) => {
+  writeBool(HAPTICS_KEY, enabled)
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(PREFERENCES_CHANGED_EVENT))
+  }
+}
+
+export function formatPlaybackSpeed(speed) {
+  return Number.isInteger(speed) ? `${speed}×` : `${speed}×`
+}

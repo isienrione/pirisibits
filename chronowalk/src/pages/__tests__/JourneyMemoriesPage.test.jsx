@@ -20,6 +20,7 @@ function renderMemoriesPage() {
       <Routes>
         <Route path={ROUTES.journeyMemories} element={<JourneyMemoriesPage />} />
         <Route path={ROUTES.exploreMore} element={<div>Explore more</div>} />
+        <Route path={ROUTES.settings} element={<div>Settings</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
     </MemoryRouter>
@@ -57,6 +58,16 @@ describe('JourneyMemoriesPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Explore more')).toBeInTheDocument()
+    })
+  })
+
+  it('opens settings from memories', async () => {
+    renderMemoriesPage()
+
+    fireEvent.click(screen.getByRole('button', { name: /^settings$/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Settings')).toBeInTheDocument()
     })
   })
 

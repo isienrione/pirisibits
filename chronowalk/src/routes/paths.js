@@ -20,6 +20,7 @@ export const ROUTES = {
   romePassport: '/complete/passport',
   exploreMore: '/complete/explore',
   journeyMemories: '/complete/memories',
+  settings: '/settings',
 }
 
 export function tourDetailPath(destinationId) {
@@ -108,6 +109,10 @@ export function exploreMorePath() {
 
 export function journeyMemoriesPath() {
   return ROUTES.journeyMemories
+}
+
+export function settingsPath() {
+  return ROUTES.settings
 }
 
 export function completePath() {

@@ -100,6 +100,26 @@ describe('JourneyMemoriesScreen', () => {
     expect(onBack).toHaveBeenCalledTimes(1)
     expect(screen.getByText(emptyMessageFor(MEMORY_SECTIONS.PLACES))).toBeInTheDocument()
   })
+
+  it('opens settings when provided', () => {
+    const onOpenSettings = vi.fn()
+
+    render(
+      <JourneyMemoriesScreen
+        title={archive.title}
+        subtitle={archive.subtitle}
+        places={[]}
+        stories={[]}
+        photos={[]}
+        journal={[]}
+        onBack={vi.fn()}
+        onOpenSettings={onOpenSettings}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /^settings$/i }))
+    expect(onOpenSettings).toHaveBeenCalledTimes(1)
+  })
 })
 
 function emptyMessageFor(section) {
