@@ -83,6 +83,7 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],
         globIgnores: ['**/waypoints/**'],
         navigateFallback: '/index.html',

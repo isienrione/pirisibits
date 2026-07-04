@@ -41,6 +41,10 @@ export default {
         card: 'var(--radius-card)',
         sheet: 'var(--radius-sheet)',
       },
+      boxShadow: {
+        card: 'var(--shadow-card)',
+        sheet: 'var(--shadow-sheet)',
+      },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',
         'safe-top': 'max(0.75rem, env(safe-area-inset-top))',
