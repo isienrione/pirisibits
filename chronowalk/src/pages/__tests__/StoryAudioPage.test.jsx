@@ -32,6 +32,10 @@ vi.mock('../../hooks/useOfflineDownload', () => ({
   }),
 }))
 
+vi.mock('../../utils/journeyRecapStorage', () => ({
+  recordAudioListened: vi.fn(),
+}))
+
 function renderStoryPage() {
   return render(
     <MemoryRouter initialEntries={[ROUTES.story]}>
@@ -68,12 +72,15 @@ describe('StoryAudioPage', () => {
   })
 
   it('routes to reflection when the story ends', async () => {
+    const { recordAudioListened } = await import('../../utils/journeyRecapStorage')
+
     renderStoryPage()
 
     expect(typeof capturedOnEnded).toBe('function')
     capturedOnEnded()
 
     await waitFor(() => {
+      expect(recordAudioListened).toHaveBeenCalledWith('colosseum')
       expect(screen.getByText('Story reflection')).toBeInTheDocument()
     })
   })

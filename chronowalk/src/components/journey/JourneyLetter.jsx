@@ -5,6 +5,7 @@ export default function JourneyLetter({
   paragraphs = [],
   signOff,
   signature,
+  onViewTimeline,
   onReturnHome,
 }) {
   return (
@@ -41,6 +42,18 @@ export default function JourneyLetter({
           <p className="font-display text-xl leading-relaxed text-ivory/88">{signOff}</p>
           <p className="mt-3 font-display text-2xl italic text-gold/90">{signature}</p>
         </footer>
+
+        {onViewTimeline ? (
+          <div className="mt-16">
+            <button
+              type="button"
+              onClick={onViewTimeline}
+              className="text-sm font-medium tracking-[0.08em] text-gold/80 underline decoration-gold/30 underline-offset-4 transition hover:text-gold"
+            >
+              Your timeline
+            </button>
+          </div>
+        ) : null}
 
         <div className="mt-20 w-full max-w-xs sm:mt-24">
           <GoldButton fullWidth showArrow onClick={onReturnHome}>
