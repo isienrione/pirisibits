@@ -1,30 +1,22 @@
-import { useCallback, useMemo, useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import ContinueWalkingTransition from '../components/journey/ContinueWalkingTransition'
+import { useCallback } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import ThresholdReveal from '../components/journey/ThresholdReveal'
 import { useJourney } from '../hooks/useJourney'
 import { getLocalWaypoint } from '../services/waypointMerge'
 import { JOURNEY_STATES } from '../state/journeyState'
 import { resolveThresholdMedia } from '../utils/thresholdMedia'
-import { ROUTES, arrivalPath, landmarkPath } from '../routes/paths'
+import { ROUTES, arrivalPath, landmarkPath, reconstructionPath } from '../routes/paths'
 
 export default function ThresholdPage() {
+  const navigate = useNavigate()
   const { state, currentStop } = useJourney()
-  const [revealComplete, setRevealComplete] = useState(false)
 
-  const waypoint = useMemo(
-    () => (currentStop?.id ? getLocalWaypoint(currentStop.id) : null),
-    [currentStop?.id]
-  )
-
-  const media = useMemo(
-    () => resolveThresholdMedia(currentStop, waypoint),
-    [currentStop, waypoint]
-  )
+  const waypoint = currentStop?.id ? getLocalWaypoint(currentStop.id) : null
+  const media = resolveThresholdMedia(currentStop, waypoint)
 
   const handleRevealComplete = useCallback(() => {
-    setRevealComplete(true)
-  }, [])
+    navigate(reconstructionPath(), { replace: true })
+  }, [navigate])
 
   if (state !== JOURNEY_STATES.THRESHOLD) {
     if (state === JOURNEY_STATES.STORY) {
@@ -44,14 +36,11 @@ export default function ThresholdPage() {
   }
 
   return (
-    <>
-      <ThresholdReveal
-        stopTitle={currentStop.shortTitle ?? currentStop.title}
-        modernUrl={media.modernUrl}
-        ancientUrl={media.ancientUrl}
-        onRevealComplete={handleRevealComplete}
-      />
-      <ContinueWalkingTransition open={revealComplete} />
-    </>
+    <ThresholdReveal
+      stopTitle={currentStop.shortTitle ?? currentStop.title}
+      modernUrl={media.modernUrl}
+      ancientUrl={media.ancientUrl}
+      onRevealComplete={handleRevealComplete}
+    />
   )
 }

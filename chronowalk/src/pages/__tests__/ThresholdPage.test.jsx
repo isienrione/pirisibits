@@ -34,6 +34,7 @@ function renderThresholdPage() {
     <MemoryRouter initialEntries={[ROUTES.threshold]}>
       <Routes>
         <Route path={ROUTES.threshold} element={<ThresholdPage />} />
+        <Route path={ROUTES.reconstruction} element={<div>Ancient reconstruction</div>} />
         <Route path={ROUTES.landmark} element={<div>Landmark card</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
@@ -66,7 +67,7 @@ describe('ThresholdPage', () => {
     expect(screen.getByText('Hold')).toBeInTheDocument()
   })
 
-  it('shows continue walking after the reveal ceremony', () => {
+  it('routes to ancient reconstruction after the reveal ceremony', () => {
     renderThresholdPage()
 
     fireEvent.pointerDown(screen.getByTestId('threshold-surface'))
@@ -81,8 +82,7 @@ describe('ThresholdPage', () => {
       vi.runAllTimers()
     })
 
-    expect(screen.getByTestId('continue-walking-transition')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /continue walking/i })).toBeInTheDocument()
+    expect(screen.getByText('Ancient reconstruction')).toBeInTheDocument()
   })
 
   it('redirects outside threshold state', () => {
