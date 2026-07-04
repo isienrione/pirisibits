@@ -5,3 +5,7 @@ export const ROUTES = {
   journey: '/journey',
   complete: '/complete',
 }
+
+export function tourDetailPath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}`
+}

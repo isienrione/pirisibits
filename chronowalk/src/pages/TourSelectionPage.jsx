@@ -4,7 +4,7 @@ import tourHeroFallback from '../assets/tour-hero.svg'
 import { LAUNCH_DESTINATIONS } from '../content/launchDestinations'
 import { Button, cn } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { ROUTES, tourDetailPath } from '../routes/paths'
 
 function DestinationCard({ destination, onSelect }) {
   const [heroSrc, setHeroSrc] = useState(destination.heroImage)
@@ -64,7 +64,7 @@ export default function TourSelectionPage() {
 
   const handleSelect = (destination) => {
     if (!destination.available) return
-    navigate(ROUTES.legacy)
+    navigate(tourDetailPath(destination.id))
   }
 
   return (

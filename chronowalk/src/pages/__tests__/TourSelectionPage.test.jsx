@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import TourSelectionPage from '../TourSelectionPage'
-import { ROUTES } from '../../routes/paths'
+import { ROUTES, tourDetailPath } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -36,7 +36,7 @@ describe('TourSelectionPage', () => {
     expect(screen.getByText('The eternal city')).toBeInTheDocument()
   })
 
-  it('navigates to legacy when Rome is selected', () => {
+  it('navigates to Rome tour detail when Rome is selected', () => {
     render(
       <MemoryRouter>
         <TourSelectionPage />
@@ -44,7 +44,7 @@ describe('TourSelectionPage', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: /rome/i }))
-    expect(navigate).toHaveBeenCalledWith(ROUTES.legacy)
+    expect(navigate).toHaveBeenCalledWith(tourDetailPath('rome'))
   })
 
   it('does not navigate when an unavailable destination is selected', () => {
