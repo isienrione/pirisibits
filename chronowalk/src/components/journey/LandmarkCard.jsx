@@ -1,25 +1,7 @@
 import { useEffect, useState } from 'react'
 import { BottomSheet, Button, GoldButton, cn } from '../ui'
 import tourHeroFallback from '../../assets/tour-hero.svg'
-
-async function loadTranscriptContent(transcript) {
-  if (!transcript || typeof transcript !== 'string') return null
-
-  const trimmed = transcript.trim()
-  if (!trimmed) return null
-
-  if (!trimmed.startsWith('/') && !trimmed.startsWith('http')) {
-    return trimmed
-  }
-
-  try {
-    const response = await fetch(trimmed)
-    if (!response.ok) return null
-    return await response.text()
-  } catch {
-    return null
-  }
-}
+import { loadTranscriptContent } from '../../utils/transcriptContent'
 
 export default function LandmarkCard({
   stop,

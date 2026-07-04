@@ -11,7 +11,7 @@ import {
   readAudioSpeed,
   PREFERENCES_CHANGED_EVENT,
 } from '../utils/appPreferences'
-import { ROUTES, arrivalPath, landmarkPath, storyChaptersPath, thresholdPath } from '../routes/paths'
+import { ROUTES, arrivalPath, landmarkPath, storyChaptersPath, storyTranscriptPath, thresholdPath } from '../routes/paths'
 
 export default function StoryAudioPage() {
   const navigate = useNavigate()
@@ -56,6 +56,10 @@ export default function StoryAudioPage() {
     navigate(storyChaptersPath(), { replace: true })
   }, [navigate])
 
+  const handleOpenTranscript = useCallback(() => {
+    navigate(storyTranscriptPath(), { replace: true })
+  }, [navigate])
+
   if (state !== JOURNEY_STATES.STORY) {
     if (state === JOURNEY_STATES.ARRIVED) {
       return <Navigate to={arrivalPath()} replace />
@@ -90,6 +94,7 @@ export default function StoryAudioPage() {
       onCycleSpeed={handleCycleSpeed}
       onBack={handleBack}
       onOpenChapters={handleOpenChapters}
+      onOpenTranscript={handleOpenTranscript}
     />
   )
 }

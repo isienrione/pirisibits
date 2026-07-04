@@ -33,6 +33,7 @@ function renderStoryPage() {
       <Routes>
         <Route path={ROUTES.story} element={<StoryAudioPage />} />
         <Route path={ROUTES.storyChapters} element={<div>Story chapters</div>} />
+        <Route path={ROUTES.storyTranscript} element={<div>Story transcript</div>} />
         <Route path={ROUTES.landmark} element={<div>Landmark card</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
@@ -65,6 +66,14 @@ describe('StoryAudioPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /chapters/i }))
 
     expect(screen.getByText('Story chapters')).toBeInTheDocument()
+  })
+
+  it('opens the transcript reader from the player', () => {
+    renderStoryPage()
+
+    fireEvent.click(screen.getByRole('button', { name: /^transcript$/i }))
+
+    expect(screen.getByText('Story transcript')).toBeInTheDocument()
   })
 
   it('redirects outside story state', () => {

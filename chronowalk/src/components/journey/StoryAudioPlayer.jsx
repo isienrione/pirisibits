@@ -68,6 +68,7 @@ export default function StoryAudioPlayer({
   onCycleSpeed,
   onBack,
   onOpenChapters,
+  onOpenTranscript,
 }) {
   const [heroSrc, setHeroSrc] = useState(stop?.heroImage ?? tourHeroFallback)
 
@@ -91,7 +92,16 @@ export default function StoryAudioPlayer({
           <ChevronDownIcon className="h-6 w-6" />
         </IconButton>
 
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+          {onOpenTranscript ? (
+            <button
+              type="button"
+              className="min-h-11 rounded-full border border-ivory/15 px-4 text-sm font-medium text-ivory/80 transition hover:border-gold/35 hover:text-gold"
+              onClick={onOpenTranscript}
+            >
+              Transcript
+            </button>
+          ) : null}
           {onOpenChapters ? (
             <button
               type="button"
