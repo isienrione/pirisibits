@@ -22,16 +22,17 @@ describe('LandingPage', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByText('ChronoWalk')).toBeInTheDocument()
-    expect(screen.getByText('Rome, as it once was.')).toBeInTheDocument()
-    expect(
-      screen.getByText(/GPS-guided audio stories, ancient reconstructions/i)
-    ).toBeInTheDocument()
+    expect(screen.getByAltText('ChronoWalk')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /Rome,\s*as it once was\./i })).toBeInTheDocument()
+    expect(screen.getByText(/Walk the eternal city as it stood under emperors/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /begin your journey/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try the free preview/i })).toBeInTheDocument()
-    expect(screen.getByText(/22 places · self-paced · works offline/i)).toBeInTheDocument()
+    expect(screen.getByText('22 places')).toBeInTheDocument()
+    expect(screen.getByText('Self-paced')).toBeInTheDocument()
+    expect(screen.getByText('Works offline')).toBeInTheDocument()
     expect(screen.getByText('Hear the Pantheon')).toBeInTheDocument()
-    expect(screen.getByText(/Free preview · 4 minutes/i)).toBeInTheDocument()
+    expect(screen.getByText('4 minutes')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /preview story/i })).toBeInTheDocument()
   })
 
   it('navigates to begin journey from primary CTA', () => {
@@ -53,6 +54,17 @@ describe('LandingPage', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: /try the free preview/i }))
+    expect(navigate).toHaveBeenCalledWith(ROUTES.legacy)
+  })
+
+  it('navigates to legacy from preview story CTA', () => {
+    render(
+      <MemoryRouter>
+        <LandingPage />
+      </MemoryRouter>
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /preview story/i }))
     expect(navigate).toHaveBeenCalledWith(ROUTES.legacy)
   })
 })
