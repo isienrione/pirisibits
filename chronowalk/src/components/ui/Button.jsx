@@ -4,7 +4,7 @@ import { usePressHandlers } from './usePressHandlers'
 
 const variantStyles = {
   primary:
-    'border border-bronze/25 bg-gradient-to-b from-bronze via-bronze to-[#8f6324] text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-[#8f6324]/95 active:from-[#8f6324] active:to-bronze/90',
+    'border border-bronze/25 bg-gradient-to-b from-bronze via-bronze to-bronze-dark text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-bronze-dark/95 active:from-bronze-dark active:to-bronze/90',
   secondary:
     'border border-bronze/40 bg-ivory text-deep-slate hover:border-bronze/60 hover:bg-parchment/50',
   ghost:

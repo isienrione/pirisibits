@@ -1,0 +1,67 @@
+/**
+ * ChronoWalk design tokens — single global source for CSS custom properties.
+ * Imported once via src/index.css.
+ */
+
+:root {
+  /* Palette */
+  --color-ivory: #f7f3ec;
+  --color-parchment: #ede3cf;
+  --color-sand: #e2d6be;
+  --color-limestone: #e2d6be;
+  --color-soft-slate: #686e72;
+  --color-deep-slate: #17212b;
+  --color-obsidian: #1c1c1c;
+  --color-sky-blue: #7cb7d8;
+  --color-bronze: #a8742a;
+  --color-bronze-dark: #8f6324;
+  --color-terracotta: #a8742a;
+  --color-gold: #d4af37;
+  --color-gold-dark: #b8942f;
+  --color-olive: #7a8b5a;
+
+  /* Semantic roles */
+  --surface-immersive: var(--color-obsidian);
+  --surface-editorial: var(--color-ivory);
+  --surface-editorial-alt: var(--color-parchment);
+  --text-ink: var(--color-deep-slate);
+  --text-muted: var(--color-soft-slate);
+  --cta-primary: var(--color-bronze);
+  --accent-arrival: var(--color-gold);
+  --accent-magic: var(--color-gold);
+  --status-success: var(--color-olive);
+
+  /* Typography */
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Fraunces', Georgia, serif;
+
+  /* Motion */
+  --spring-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring-duration: 0.65s;
+
+  /* Shadows */
+  --shadow-glass: 0 8px 32px rgba(28, 28, 28, 0.1), 0 2px 8px rgba(28, 28, 28, 0.05);
+  --shadow-plaque: 0 4px 24px rgba(28, 28, 28, 0.08), 0 1px 3px rgba(28, 28, 28, 0.04);
+  --shadow-sheet: 0 -12px 40px rgba(28, 28, 28, 0.14);
+  --shadow-bronze-cta: 0 8px 24px rgba(168, 116, 42, 0.28),
+    inset 0 1px 0 rgba(255, 253, 248, 0.15);
+  --shadow-gold-glow: 0 0 32px rgba(212, 175, 55, 0.22);
+
+  /* Tap targets */
+  --tap-target-min: 3rem;
+  --tap-target-comfortable: 3.5rem;
+
+  /* Compare-slider time fracture */
+  --gradient-time-fracture: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(212, 175, 55, 0.15) 8%,
+    var(--color-gold) 22%,
+    var(--color-ivory) 50%,
+    var(--color-gold) 78%,
+    rgba(212, 175, 55, 0.15) 92%,
+    transparent 100%
+  );
+  --shadow-time-fracture: 0 0 24px rgba(212, 175, 55, 0.65),
+    0 0 48px rgba(212, 175, 55, 0.25), inset 0 0 8px rgba(255, 253, 248, 0.4);
+}

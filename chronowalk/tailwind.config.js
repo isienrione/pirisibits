@@ -1,3 +1,5 @@
+import { motion, shadows, tailwindColors, tapTargets } from './src/design/tokens.js'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -10,21 +12,7 @@ export default {
   },
   theme: {
     extend: {
-      colors: {
-        ivory: '#F7F3EC',
-        parchment: '#EDE3CF',
-        'warm-white': '#F7F3EC',
-        sand: '#EDE3CF',
-        limestone: '#E2D6BE',
-        'deep-slate': '#17212B',
-        'soft-slate': '#686E72',
-        obsidian: '#1C1C1C',
-        'sky-blue': '#7CB7D8',
-        bronze: '#A8742A',
-        terracotta: '#A8742A',
-        gold: '#D4AF37',
-        olive: '#7A8B5A',
-      },
+      colors: tailwindColors,
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         display: ['Fraunces', 'Georgia', 'serif'],
@@ -38,21 +26,29 @@ export default {
         panel: '1.25rem',
       },
       boxShadow: {
-        glass: '0 8px 32px rgba(28, 28, 28, 0.1), 0 2px 8px rgba(28, 28, 28, 0.05)',
-        'glass-lg': '0 12px 40px rgba(28, 28, 28, 0.14), 0 4px 12px rgba(28, 28, 28, 0.06)',
-        plaque: '0 4px 24px rgba(28, 28, 28, 0.08), 0 1px 3px rgba(28, 28, 28, 0.04)',
-        'plaque-lg': '0 12px 40px rgba(28, 28, 28, 0.12), 0 4px 12px rgba(28, 28, 28, 0.06)',
-        'sheet-up': '0 -12px 40px rgba(28, 28, 28, 0.14)',
-        cta: '0 8px 24px rgba(168, 116, 42, 0.28)',
-        'bronze-cta': '0 8px 24px rgba(168, 116, 42, 0.28), inset 0 1px 0 rgba(255, 253, 248, 0.15)',
-        'gold-glow': '0 0 32px rgba(212, 175, 55, 0.22)',
+        glass: shadows.glass,
+        'glass-lg': shadows.glassLg,
+        plaque: shadows.plaque,
+        'plaque-lg': shadows.plaqueLg,
+        'sheet-up': shadows.sheetUp,
+        cta: shadows.cta,
+        'bronze-cta': shadows.bronzeCta,
+        'gold-glow': shadows.goldGlow,
       },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',
         'safe-top': 'max(0.75rem, env(safe-area-inset-top))',
+        'tap-min': tapTargets.min,
+        'tap-comfortable': tapTargets.comfortable,
       },
       backdropBlur: {
         glass: '16px',
+      },
+      transitionTimingFunction: {
+        spring: motion.spring,
+      },
+      transitionDuration: {
+        spring: motion.springDuration,
       },
       animation: {
         'sheet-enter': 'sheet-enter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards',
