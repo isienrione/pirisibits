@@ -14,7 +14,13 @@ const STOP_COLORS = {
   destination: palette.gold,
 }
 
-function JourneyRouteSvg({ model, destinationStopId, journeyState }) {
+function JourneyRouteSvg({
+  model,
+  destinationStopId,
+  journeyState,
+  selectedStopId,
+  onSelectStop,
+}) {
   if (!model.stops.length) {
     return (
       <div className="flex h-full min-h-[22rem] items-center justify-center text-sm text-soft-slate">
@@ -65,16 +71,17 @@ function JourneyRouteSvg({ model, destinationStopId, journeyState }) {
 
       {model.stops.map((stop) => {
         const isDestination = stop.id === destinationId
-        const radius = isDestination ? 11 : stop.status === 'current' ? 8 : 6
+        const isSelected = stop.id === selectedStopId
+        const radius = isSelected ? 10 : isDestination ? 11 : stop.status === 'current' ? 8 : 6
 
         return (
           <g key={stop.id}>
-            {isDestination ? (
+            {isDestination || isSelected ? (
               <circle
                 cx={stop.x}
                 cy={stop.y}
                 r="18"
-                fill={palette.gold}
+                fill={isSelected ? palette.bronze : palette.gold}
                 fillOpacity="0.14"
                 className="motion-safe:animate-medallion-breathe"
               />
@@ -84,13 +91,34 @@ function JourneyRouteSvg({ model, destinationStopId, journeyState }) {
               cy={stop.y}
               r={radius}
               fill={
-                isDestination
-                  ? STOP_COLORS.destination
-                  : STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming
+                isSelected
+                  ? STOP_COLORS.completed
+                  : isDestination
+                    ? STOP_COLORS.destination
+                    : STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming
               }
               stroke={palette.ivory}
               strokeWidth="2.5"
             />
+            {onSelectStop ? (
+              <circle
+                cx={stop.x}
+                cy={stop.y}
+                r="18"
+                fill="transparent"
+                className="cursor-pointer"
+                onClick={() => onSelectStop(stop.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    onSelectStop(stop.id)
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Select ${stop.title}`}
+              />
+            ) : null}
           </g>
         )
       })}
@@ -118,6 +146,9 @@ export default function JourneyExplorerMap({
   nextStopId,
   userPos,
   journeyState,
+  selectedStopId = null,
+  onSelectStop,
+  visibleStopIds = null,
   className,
 }) {
   const destinationStopId =
@@ -126,18 +157,20 @@ export default function JourneyExplorerMap({
   const model = useMemo(() => {
     if (!manifest) return null
 
-    const stops = manifest.stops.map((stop) => {
-      let status = 'upcoming'
-      if (completedStopIds.includes(stop.id)) status = 'completed'
-      else if (stop.id === currentStopId) status = 'current'
+    const stops = manifest.stops
+      .filter((stop) => !visibleStopIds?.length || visibleStopIds.includes(stop.id))
+      .map((stop) => {
+        let status = 'upcoming'
+        if (completedStopIds.includes(stop.id)) status = 'completed'
+        else if (stop.id === currentStopId) status = 'current'
 
-      return {
-        id: stop.id,
-        title: stop.shortTitle,
-        landmark: stop.coords,
-        status,
-      }
-    })
+        return {
+          id: stop.id,
+          title: stop.shortTitle,
+          landmark: stop.coords,
+          status,
+        }
+      })
 
     const activeLeg =
       journeyState !== JOURNEY_STATES.ARRIVED && currentStopId && nextStopId
@@ -154,7 +187,7 @@ export default function JourneyExplorerMap({
       width: 420,
       height: 520,
     })
-  }, [completedStopIds, currentStopId, journeyState, manifest, nextStopId, userPos])
+  }, [completedStopIds, currentStopId, journeyState, manifest, nextStopId, userPos, visibleStopIds])
 
   return (
     <div
@@ -170,6 +203,8 @@ export default function JourneyExplorerMap({
             model={model}
             destinationStopId={destinationStopId}
             journeyState={journeyState}
+            selectedStopId={selectedStopId}
+            onSelectStop={onSelectStop}
           />
         ) : null}
       </div>

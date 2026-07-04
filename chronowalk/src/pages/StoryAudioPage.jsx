@@ -11,6 +11,7 @@ import {
   readAudioSpeed,
   PREFERENCES_CHANGED_EVENT,
 } from '../utils/appPreferences'
+import { recordAudioListened } from '../utils/journeyRecapStorage'
 import { ROUTES, arrivalPath, landmarkPath, storyChaptersPath, storyReflectionPath, storyTranscriptPath, thresholdPath } from '../routes/paths'
 
 export default function StoryAudioPage() {
@@ -29,8 +30,11 @@ export default function StoryAudioPage() {
   )
 
   const handleStoryEnded = useCallback(() => {
+    if (currentStop?.id) {
+      recordAudioListened(currentStop.id)
+    }
     navigate(storyReflectionPath(), { replace: true })
-  }, [navigate])
+  }, [currentStop?.id, navigate])
 
   const {
     isPlaying,

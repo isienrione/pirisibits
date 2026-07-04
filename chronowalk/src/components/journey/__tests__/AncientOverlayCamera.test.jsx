@@ -19,6 +19,10 @@ vi.mock('../../../utils/overlayCapture', () => ({
   downloadCapture: vi.fn(),
 }))
 
+vi.mock('../../../utils/journeyRecapStorage', () => ({
+  recordPhotoCapture: vi.fn(),
+}))
+
 describe('AncientOverlayCamera', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -58,6 +62,7 @@ describe('AncientOverlayCamera', () => {
 
   it('captures a blended frame', async () => {
     const { captureOverlayFrame, downloadCapture } = await import('../../../utils/overlayCapture')
+    const { recordPhotoCapture } = await import('../../../utils/journeyRecapStorage')
 
     render(
       <AncientOverlayCamera
@@ -73,6 +78,7 @@ describe('AncientOverlayCamera', () => {
     await vi.waitFor(() => {
       expect(captureOverlayFrame).toHaveBeenCalled()
       expect(downloadCapture).toHaveBeenCalled()
+      expect(recordPhotoCapture).toHaveBeenCalledWith('colosseum')
     })
   })
 })
