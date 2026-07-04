@@ -54,6 +54,7 @@ export default function RomePassportScreen({
   edition,
   stamps = [],
   onBack,
+  onExploreMore,
 }) {
   return (
     <div
@@ -155,6 +156,18 @@ export default function RomePassportScreen({
             </div>
           </div>
         </section>
+
+        {onExploreMore ? (
+          <footer className="pb-8">
+            <button
+              type="button"
+              onClick={onExploreMore}
+              className="text-sm font-medium tracking-[0.08em] text-bronze underline decoration-bronze/30 underline-offset-4 transition hover:text-bronze-dark"
+            >
+              Explore more
+            </button>
+          </footer>
+        ) : null}
       </div>
     </div>
   )

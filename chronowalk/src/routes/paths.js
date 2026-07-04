@@ -18,6 +18,7 @@ export const ROUTES = {
   journeySummary: '/complete/summary',
   journeyTimeline: '/complete/timeline',
   romePassport: '/complete/passport',
+  exploreMore: '/complete/explore',
 }
 
 export function tourDetailPath(destinationId) {
@@ -98,6 +99,10 @@ export function journeyTimelinePath() {
 
 export function romePassportPath() {
   return ROUTES.romePassport
+}
+
+export function exploreMorePath() {
+  return ROUTES.exploreMore
 }
 
 export function completePath() {

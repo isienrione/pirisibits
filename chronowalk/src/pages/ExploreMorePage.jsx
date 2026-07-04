@@ -1,40 +1,30 @@
 import { useCallback, useMemo } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { buildRomePassport } from '../content/launchRomePassport'
-import RomePassportScreen from '../components/journey/RomePassportScreen'
+import { getExploreMoreContent } from '../content/launchExploreMore'
+import ExploreMoreScreen from '../components/journey/ExploreMoreScreen'
 import { useJourney } from '../hooks/useJourney'
 import { JOURNEY_STATES } from '../state/journeyState'
-import { readTravelerName } from '../utils/travelerProfile'
 import {
   ROUTES,
   arrivalPath,
   continueWalkingPath,
-  exploreMorePath,
-  journeyTimelinePath,
   landmarkPath,
+  romePassportPath,
   thresholdPath,
 } from '../routes/paths'
 
-export default function RomePassportPage() {
+export default function ExploreMorePage() {
   const navigate = useNavigate()
-  const { state, context, manifest } = useJourney()
+  const { state } = useJourney()
 
-  const passport = useMemo(
-    () =>
-      buildRomePassport({
-        travelerName: readTravelerName(),
-        manifest,
-        context,
-      }),
-    [context, manifest]
-  )
+  const content = useMemo(() => getExploreMoreContent(), [])
 
   const handleBack = useCallback(() => {
-    navigate(journeyTimelinePath(), { replace: true })
+    navigate(romePassportPath(), { replace: true })
   }, [navigate])
 
-  const handleExploreMore = useCallback(() => {
-    navigate(exploreMorePath(), { replace: true })
+  const handleReturnHome = useCallback(() => {
+    navigate(ROUTES.home, { replace: true })
   }, [navigate])
 
   if (state !== JOURNEY_STATES.COMPLETE) {
@@ -54,14 +44,12 @@ export default function RomePassportPage() {
   }
 
   return (
-    <RomePassportScreen
-      title={passport.title}
-      subtitle={passport.subtitle}
-      holderName={passport.holderName}
-      edition={passport.edition}
-      stamps={passport.stamps}
+    <ExploreMoreScreen
+      title={content.title}
+      subtitle={content.subtitle}
+      journeys={content.journeys}
       onBack={handleBack}
-      onExploreMore={handleExploreMore}
+      onReturnHome={handleReturnHome}
     />
   )
 }

@@ -58,4 +58,23 @@ describe('RomePassportScreen', () => {
 
     expect(screen.getByText(/passport is ready/i)).toBeInTheDocument()
   })
+
+  it('opens explore more when provided', () => {
+    const onExploreMore = vi.fn()
+
+    render(
+      <RomePassportScreen
+        title="Rome Passport"
+        subtitle="A keepsake of the monuments you visited on foot."
+        holderName="Livia"
+        edition="Ancient Rome · ChronoWalk"
+        stamps={stamps}
+        onBack={vi.fn()}
+        onExploreMore={onExploreMore}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /explore more/i }))
+    expect(onExploreMore).toHaveBeenCalledTimes(1)
+  })
 })
