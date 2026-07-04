@@ -16,6 +16,7 @@ function renderTimelinePage() {
       <Routes>
         <Route path={ROUTES.journeyTimeline} element={<JourneyTimelinePage />} />
         <Route path={ROUTES.journeySummary} element={<div>Journey letter</div>} />
+        <Route path={ROUTES.romePassport} element={<div>Rome passport</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
     </MemoryRouter>
@@ -53,6 +54,16 @@ describe('JourneyTimelinePage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Journey letter')).toBeInTheDocument()
+    })
+  })
+
+  it('opens the rome passport from the timeline', async () => {
+    renderTimelinePage()
+
+    fireEvent.click(screen.getByRole('button', { name: /your passport/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Rome passport')).toBeInTheDocument()
     })
   })
 

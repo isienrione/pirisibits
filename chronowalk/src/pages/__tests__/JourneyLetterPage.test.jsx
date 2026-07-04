@@ -16,6 +16,7 @@ function renderLetterPage() {
       <Routes>
         <Route path={ROUTES.journeySummary} element={<JourneyLetterPage />} />
         <Route path={ROUTES.journeyTimeline} element={<div>Journey timeline</div>} />
+        <Route path={ROUTES.romePassport} element={<div>Rome passport</div>} />
         <Route path={ROUTES.home} element={<div>Home</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>

@@ -10,7 +10,9 @@ import {
   arrivalPath,
   continueWalkingPath,
   journeySummaryPath,
+  journeyTimelinePath,
   landmarkPath,
+  romePassportPath,
   thresholdPath,
 } from '../routes/paths'
 
@@ -44,6 +46,10 @@ export default function JourneyTimelinePage() {
     setSelectedStopId((current) => (current === stopId ? null : stopId))
   }, [])
 
+  const handleViewPassport = useCallback(() => {
+    navigate(romePassportPath(), { replace: true })
+  }, [navigate])
+
   if (state !== JOURNEY_STATES.COMPLETE) {
     if (state === JOURNEY_STATES.THRESHOLD) {
       return <Navigate to={continueWalkingPath()} replace />
@@ -72,6 +78,7 @@ export default function JourneyTimelinePage() {
       selectedStopId={selectedStopId}
       onSelectStop={handleSelectStop}
       onBack={handleBack}
+      onViewPassport={handleViewPassport}
     />
   )
 }

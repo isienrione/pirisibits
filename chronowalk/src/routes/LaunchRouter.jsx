@@ -23,6 +23,7 @@ import ContinueWalkingPage from '../pages/ContinueWalkingPage.jsx'
 import JourneyCompletePage from '../pages/JourneyCompletePage.jsx'
 import JourneyLetterPage from '../pages/JourneyLetterPage.jsx'
 import JourneyTimelinePage from '../pages/JourneyTimelinePage.jsx'
+import RomePassportPage from '../pages/RomePassportPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -53,6 +54,7 @@ export default function LaunchRouter() {
         <Route path={ROUTES.complete} element={<JourneyCompletePage />} />
         <Route path={ROUTES.journeySummary} element={<JourneyLetterPage />} />
         <Route path={ROUTES.journeyTimeline} element={<JourneyTimelinePage />} />
+        <Route path={ROUTES.romePassport} element={<RomePassportPage />} />
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
       </Routes>
     </BrowserRouter>

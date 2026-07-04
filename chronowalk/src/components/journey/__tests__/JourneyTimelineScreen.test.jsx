@@ -64,4 +64,25 @@ describe('JourneyTimelineScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /back to your letter/i }))
     expect(onBack).toHaveBeenCalledTimes(1)
   })
+
+  it('opens the passport when provided', () => {
+    const onViewPassport = vi.fn()
+
+    render(
+      <JourneyTimelineScreen
+        intro={timeline.intro}
+        routeLabel={timeline.routeLabel}
+        monuments={timeline.monuments}
+        moments={timeline.moments}
+        manifest={manifest}
+        completedStopIds={['colosseum', 'pantheon']}
+        currentStopId="pantheon"
+        onViewPassport={onViewPassport}
+        onBack={vi.fn()}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /your passport/i }))
+    expect(onViewPassport).toHaveBeenCalledTimes(1)
+  })
 })

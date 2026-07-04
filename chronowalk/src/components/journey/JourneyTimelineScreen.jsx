@@ -87,6 +87,7 @@ export default function JourneyTimelineScreen({
   selectedStopId,
   onSelectStop,
   onBack,
+  onViewPassport,
 }) {
   const momentRefs = useRef({})
 
@@ -202,6 +203,18 @@ export default function JourneyTimelineScreen({
             })}
           </ol>
         </section>
+
+        {onViewPassport ? (
+          <footer className="pb-8">
+            <button
+              type="button"
+              onClick={onViewPassport}
+              className="text-sm font-medium tracking-[0.08em] text-bronze underline decoration-bronze/30 underline-offset-4 transition hover:text-bronze-dark"
+            >
+              Your passport
+            </button>
+          </footer>
+        ) : null}
       </div>
     </div>
   )
