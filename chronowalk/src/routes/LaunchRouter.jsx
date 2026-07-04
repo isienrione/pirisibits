@@ -9,6 +9,7 @@ import ChooseExperiencePage from '../pages/ChooseExperiencePage.jsx'
 import LocationPermissionPage from '../pages/LocationPermissionPage.jsx'
 import OfflineDownloadPage from '../pages/OfflineDownloadPage.jsx'
 import JourneyMapPage from '../pages/JourneyMapPage.jsx'
+import WalkingDirectionsPage from '../pages/WalkingDirectionsPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -24,6 +25,7 @@ export default function LaunchRouter() {
         <Route path={`${ROUTES.begin}/:destinationId/location`} element={<LocationPermissionPage />} />
         <Route path={`${ROUTES.begin}/:destinationId/download`} element={<OfflineDownloadPage />} />
         <Route path={`${ROUTES.begin}/:destinationId`} element={<TourDetailPage />} />
+        <Route path={ROUTES.walkingDirections} element={<WalkingDirectionsPage />} />
         <Route path={ROUTES.journey} element={<JourneyMapPage />} />
         <Route path={ROUTES.complete} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />

@@ -3,6 +3,7 @@ export const ROUTES = {
   legacy: '/legacy',
   begin: '/begin',
   journey: '/journey',
+  walkingDirections: '/journey/directions',
   complete: '/complete',
 }
 
@@ -28,4 +29,8 @@ export function locationPermissionPath(destinationId) {
 
 export function offlineDownloadPath(destinationId) {
   return `${ROUTES.begin}/${destinationId}/download`
+}
+
+export function walkingDirectionsPath() {
+  return ROUTES.walkingDirections
 }

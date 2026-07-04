@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNext } from '../../content/journeyProgress'
 import { JOURNEY_STATES } from '../../state/journeyState'
 import { useJourney } from '../../hooks/useJourney'
-import { cn, statusArrived, statusWalking } from '../ui'
+import { walkingDirectionsPath } from '../../routes/paths'
+import { Button, cn, statusArrived, statusWalking } from '../ui'
 import { metaLabel } from '../ui/styles'
 
 function formatWalkingTime(meters) {
@@ -17,6 +19,7 @@ const STATE_LABELS = {
 }
 
 export default function JourneyBottomCard({ onSimulateArrival }) {
+  const navigate = useNavigate()
   const { state, currentStop, nextStop, distanceToNextM } = useJourney()
 
   const showCard = [JOURNEY_STATES.WALKING, JOURNEY_STATES.APPROACHING, JOURNEY_STATES.ARRIVED].includes(
@@ -27,6 +30,7 @@ export default function JourneyBottomCard({ onSimulateArrival }) {
 
   const isArrived = state === JOURNEY_STATES.ARRIVED
   const isApproaching = state === JOURNEY_STATES.APPROACHING
+  const canRequestDirections = !isArrived && Boolean(nextStop)
   const destination = isArrived ? currentStop : nextStop ?? currentStop
   const distanceLabel = !isArrived ? formatDistanceToNext(distanceToNextM) : null
   const walkTime = !isArrived ? formatWalkingTime(distanceToNextM) : null
@@ -70,6 +74,16 @@ export default function JourneyBottomCard({ onSimulateArrival }) {
                 About {distanceLabel}
                 {walkTime ? ` · ${walkTime}` : ''}
               </p>
+            ) : null}
+
+            {canRequestDirections ? (
+              <Button
+                variant="text"
+                className="mt-4 h-auto min-h-11 justify-start px-0 text-base font-medium text-bronze"
+                onClick={() => navigate(walkingDirectionsPath())}
+              >
+                Walking directions
+              </Button>
             ) : null}
           </div>
 
