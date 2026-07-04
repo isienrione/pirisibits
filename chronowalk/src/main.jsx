@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import JourneyDevPanel from './components/dev/JourneyDevPanel.jsx'
+import ContinueWalkingTransition from './components/journey/ContinueWalkingTransition.jsx'
 import './pwa/pwaController.js'
 
 function Root() {
@@ -14,6 +15,7 @@ function Root() {
     <>
       <App />
       {showSplash ? <SplashScreen onComplete={handleSplashComplete} /> : null}
+      <ContinueWalkingTransition />
       {import.meta.env.DEV ? <JourneyDevPanel /> : null}
     </>
   )
