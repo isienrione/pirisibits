@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import BeginJourneyPage from '../BeginJourneyPage'
-import { ROUTES } from '../../routes/paths'
+import { chooseExperiencePath } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -39,10 +39,10 @@ describe('BeginJourneyPage', () => {
     expect(screen.getByRole('button', { name: /start journey/i })).toBeInTheDocument()
   })
 
-  it('navigates to journey when start journey is tapped', () => {
+  it('navigates to choose experience when start journey is tapped', () => {
     renderRomeBeginJourney()
 
     fireEvent.click(screen.getByRole('button', { name: /start journey/i }))
-    expect(navigate).toHaveBeenCalledWith(ROUTES.journey, { replace: true })
+    expect(navigate).toHaveBeenCalledWith(chooseExperiencePath('rome'), { replace: true })
   })
 })

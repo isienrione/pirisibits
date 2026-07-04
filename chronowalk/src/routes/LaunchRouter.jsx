@@ -5,6 +5,7 @@ import TourSelectionPage from '../pages/TourSelectionPage.jsx'
 import TourDetailPage from '../pages/TourDetailPage.jsx'
 import PurchasePage from '../pages/PurchasePage.jsx'
 import BeginJourneyPage from '../pages/BeginJourneyPage.jsx'
+import ChooseExperiencePage from '../pages/ChooseExperiencePage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -16,6 +17,7 @@ export default function LaunchRouter() {
         <Route path={ROUTES.begin} element={<TourSelectionPage />} />
         <Route path={`${ROUTES.begin}/:destinationId/purchase`} element={<PurchasePage />} />
         <Route path={`${ROUTES.begin}/:destinationId/start`} element={<BeginJourneyPage />} />
+        <Route path={`${ROUTES.begin}/:destinationId/experience`} element={<ChooseExperiencePage />} />
         <Route path={`${ROUTES.begin}/:destinationId`} element={<TourDetailPage />} />
         <Route path={ROUTES.journey} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path={ROUTES.complete} element={<Navigate to={ROUTES.legacy} replace />} />

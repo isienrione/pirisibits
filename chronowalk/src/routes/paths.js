@@ -17,3 +17,7 @@ export function purchasePath(destinationId) {
 export function beginJourneyPath(destinationId) {
   return `${ROUTES.begin}/${destinationId}/start`
 }
+
+export function chooseExperiencePath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}/experience`
+}

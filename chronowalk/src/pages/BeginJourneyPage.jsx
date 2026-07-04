@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getLaunchTourDetail } from '../content/launchTourDetail'
 import { BronzeButton } from '../components/ui'
-import { ROUTES } from '../routes/paths'
+import { chooseExperiencePath } from '../routes/paths'
 
 export default function BeginJourneyPage() {
   const navigate = useNavigate()
@@ -66,7 +66,7 @@ export default function BeginJourneyPage() {
           size="lg"
           fullWidth
           className="mt-12"
-          onClick={() => navigate(ROUTES.journey, { replace: true })}
+          onClick={() => navigate(chooseExperiencePath(destinationId), { replace: true })}
         >
           Start Journey
         </BronzeButton>
