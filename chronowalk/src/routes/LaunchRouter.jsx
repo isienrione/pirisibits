@@ -15,6 +15,7 @@ import LandmarkCardPage from '../pages/LandmarkCardPage.jsx'
 import StoryAudioPage from '../pages/StoryAudioPage.jsx'
 import StoryChaptersPage from '../pages/StoryChaptersPage.jsx'
 import StoryTranscriptPage from '../pages/StoryTranscriptPage.jsx'
+import ThresholdPage from '../pages/ThresholdPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -35,8 +36,8 @@ export default function LaunchRouter() {
         <Route path={ROUTES.landmark} element={<LandmarkCardPage />} />
         <Route path={ROUTES.storyChapters} element={<StoryChaptersPage />} />
         <Route path={ROUTES.storyTranscript} element={<StoryTranscriptPage />} />
+        <Route path={ROUTES.threshold} element={<ThresholdPage />} />
         <Route path={ROUTES.story} element={<StoryAudioPage />} />
-        <Route path={ROUTES.threshold} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path={ROUTES.journey} element={<JourneyMapPage />} />
         <Route path={ROUTES.complete} element={<Navigate to={ROUTES.legacy} replace />} />
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
