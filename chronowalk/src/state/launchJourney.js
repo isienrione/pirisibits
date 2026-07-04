@@ -12,12 +12,15 @@ export function beginLaunchTour(manifest, options = {}) {
 
   if (!stop) return null
 
+  const startedAt = new Date().toISOString()
+
   updateJourneyContext({
     currentStopId: stop.id,
     currentStopIndex: stop.number - 1,
     completedStopIds: [],
     audioProgress: 0,
     hasAccess: true,
+    journeyStartedAt: startedAt,
   })
   setJourneyState(JOURNEY_STATES.WALKING)
   return stop

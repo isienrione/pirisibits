@@ -16,5 +16,6 @@ describe('beginLaunchTour', () => {
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.WALKING)
     expect(getJourneySnapshot().context.currentStopId).toBe('colosseum')
     expect(getJourneySnapshot().context.completedStopIds).toEqual([])
+    expect(getJourneySnapshot().context.journeyStartedAt).toMatch(/^\d{4}-/)
   })
 })

@@ -19,6 +19,7 @@ export const defaultJourneyContext = () => ({
   completedStopIds: [],
   audioProgress: 0,
   hasAccess: true,
+  journeyStartedAt: null,
   lastUpdatedAt: new Date().toISOString(),
 })
 
@@ -37,6 +38,8 @@ function normalizeContext(raw = {}) {
         ? Math.min(1, Math.max(0, raw.audioProgress))
         : 0,
     hasAccess: raw.hasAccess !== false,
+    journeyStartedAt:
+      typeof raw.journeyStartedAt === 'string' ? raw.journeyStartedAt : null,
     lastUpdatedAt:
       typeof raw.lastUpdatedAt === 'string' ? raw.lastUpdatedAt : new Date().toISOString(),
   }
