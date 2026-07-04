@@ -15,6 +15,7 @@ export const ROUTES = {
   overlay: '/journey/overlay',
   continueWalking: '/journey/continue',
   complete: '/complete',
+  journeySummary: '/complete/summary',
 }
 
 export function tourDetailPath(destinationId) {
@@ -83,4 +84,8 @@ export function overlayPath() {
 
 export function continueWalkingPath() {
   return ROUTES.continueWalking
+}
+
+export function journeySummaryPath() {
+  return ROUTES.journeySummary
 }
