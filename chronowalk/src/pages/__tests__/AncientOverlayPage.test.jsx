@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import ReconstructionPage from '../ReconstructionPage'
+import AncientOverlayPage from '../AncientOverlayPage'
 import {
   JOURNEY_STATES,
   defaultJourneySnapshot,
@@ -9,19 +9,31 @@ import {
 } from '../../state/journeyState'
 import { ROUTES } from '../../routes/paths'
 
-function renderReconstructionPage() {
+vi.mock('../../hooks/useCameraStream', () => ({
+  useCameraStream: () => ({
+    stream: { getTracks: () => [{ stop: vi.fn() }] },
+    status: 'ready',
+    error: null,
+  }),
+}))
+
+vi.mock('../../utils/overlayCapture', () => ({
+  captureOverlayFrame: vi.fn(),
+  downloadCapture: vi.fn(),
+}))
+
+function renderOverlayPage() {
   return render(
-    <MemoryRouter initialEntries={[ROUTES.reconstruction]}>
+    <MemoryRouter initialEntries={[ROUTES.overlay]}>
       <Routes>
-        <Route path={ROUTES.reconstruction} element={<ReconstructionPage />} />
-        <Route path={ROUTES.overlay} element={<div>Ancient overlay</div>} />
+        <Route path={ROUTES.overlay} element={<AncientOverlayPage />} />
         <Route path={ROUTES.landmark} element={<div>Landmark card</div>} />
       </Routes>
     </MemoryRouter>
   )
 }
 
-describe('ReconstructionPage', () => {
+describe('AncientOverlayPage', () => {
   beforeEach(() => {
     window.localStorage.clear()
     hydrateJourney({
@@ -34,19 +46,20 @@ describe('ReconstructionPage', () => {
     })
   })
 
-  it('renders the ancient reconstruction explorer in threshold state', () => {
-    renderReconstructionPage()
+  it('renders the ancient overlay camera in threshold state', () => {
+    renderOverlayPage()
 
-    expect(screen.getByTestId('ancient-reconstruction-explorer')).toBeInTheDocument()
-    expect(screen.getByAltText(/ancient reconstruction of colosseum/i)).toBeInTheDocument()
+    expect(screen.getByTestId('ancient-overlay-camera')).toBeInTheDocument()
+    expect(screen.getByLabelText(/ancient overlay opacity/i)).toBeInTheDocument()
   })
 
-  it('routes to the ancient overlay after exploration', () => {
-    renderReconstructionPage()
+  it('shows continue walking after the overlay is dismissed', () => {
+    renderOverlayPage()
 
     fireEvent.click(screen.getByRole('button', { name: /continue journey/i }))
 
-    expect(screen.getByText('Ancient overlay')).toBeInTheDocument()
+    expect(screen.getByTestId('continue-walking-transition')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue walking/i })).toBeInTheDocument()
   })
 
   it('redirects outside threshold state', () => {
@@ -59,7 +72,7 @@ describe('ReconstructionPage', () => {
       },
     })
 
-    renderReconstructionPage()
+    renderOverlayPage()
 
     expect(screen.getByText('Landmark card')).toBeInTheDocument()
   })

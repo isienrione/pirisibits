@@ -1,16 +1,17 @@
-import { useCallback, useMemo } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
-import AncientReconstructionExplorer from '../components/journey/AncientReconstructionExplorer'
-import { getReconstructionScene } from '../content/reconstructionHotspots'
+import { useCallback, useMemo, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import AncientOverlayCamera from '../components/journey/AncientOverlayCamera'
+import ContinueWalkingTransition from '../components/journey/ContinueWalkingTransition'
 import { useJourney } from '../hooks/useJourney'
 import { getLocalWaypoint } from '../services/waypointMerge'
 import { JOURNEY_STATES } from '../state/journeyState'
+import { loadCalibration } from '../utils/calibrationStorage'
 import { resolveReconstructionMedia } from '../utils/reconstructionMedia'
-import { ROUTES, arrivalPath, landmarkPath, overlayPath } from '../routes/paths'
+import { ROUTES, arrivalPath, landmarkPath } from '../routes/paths'
 
-export default function ReconstructionPage() {
-  const navigate = useNavigate()
+export default function AncientOverlayPage() {
   const { state, currentStop } = useJourney()
+  const [readyToContinue, setReadyToContinue] = useState(false)
 
   const waypoint = useMemo(
     () => (currentStop?.id ? getLocalWaypoint(currentStop.id) : null),
@@ -22,14 +23,14 @@ export default function ReconstructionPage() {
     [currentStop, waypoint]
   )
 
-  const scene = useMemo(
-    () => getReconstructionScene(currentStop, media.imageUrl),
-    [currentStop, media.imageUrl]
+  const calibration = useMemo(
+    () => loadCalibration(currentStop?.id),
+    [currentStop?.id]
   )
 
   const handleContinue = useCallback(() => {
-    navigate(overlayPath(), { replace: true })
-  }, [navigate])
+    setReadyToContinue(true)
+  }, [])
 
   if (state !== JOURNEY_STATES.THRESHOLD) {
     if (state === JOURNEY_STATES.STORY) {
@@ -49,11 +50,15 @@ export default function ReconstructionPage() {
   }
 
   return (
-    <AncientReconstructionExplorer
-      stopTitle={currentStop.shortTitle ?? currentStop.title}
-      imageUrl={scene.imageUrl}
-      hotspots={scene.hotspots}
-      onContinue={handleContinue}
-    />
+    <>
+      <AncientOverlayCamera
+        stopTitle={currentStop.shortTitle ?? currentStop.title}
+        stopId={currentStop.id}
+        overlayUrl={media.imageUrl}
+        calibration={calibration}
+        onContinue={handleContinue}
+      />
+      <ContinueWalkingTransition open={readyToContinue} />
+    </>
   )
 }

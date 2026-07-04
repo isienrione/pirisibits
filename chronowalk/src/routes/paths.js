@@ -11,6 +11,7 @@ export const ROUTES = {
   storyTranscript: '/journey/story/transcript',
   threshold: '/journey/threshold',
   reconstruction: '/journey/reconstruction',
+  overlay: '/journey/overlay',
   complete: '/complete',
 }
 
@@ -68,4 +69,8 @@ export function thresholdPath() {
 
 export function reconstructionPath() {
   return ROUTES.reconstruction
+}
+
+export function overlayPath() {
+  return ROUTES.overlay
 }
