@@ -1,7 +1,8 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import LandmarkCardPage from '../LandmarkCardPage'
+import StoryAudioPage from '../StoryAudioPage'
 import {
   JOURNEY_STATES,
   defaultJourneySnapshot,
@@ -10,6 +11,24 @@ import {
 } from '../../state/journeyState'
 import { ROUTES } from '../../routes/paths'
 
+vi.mock('../../hooks/useStoryAudio', () => ({
+  useStoryAudio: () => ({
+    isPlaying: false,
+    duration: 180,
+    currentTime: 0,
+    progress: 0,
+    toggle: vi.fn(),
+    seekBy: vi.fn(),
+    seekToProgress: vi.fn(),
+  }),
+}))
+
+vi.mock('../../hooks/useOfflineDownload', () => ({
+  useOfflineDownload: () => ({
+    isDownloaded: false,
+  }),
+}))
+
 function renderLandmarkPage(initialEntry = ROUTES.landmark) {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
@@ -17,7 +36,7 @@ function renderLandmarkPage(initialEntry = ROUTES.landmark) {
         <Route path={ROUTES.landmark} element={<LandmarkCardPage />} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
         <Route path={ROUTES.arrival} element={<div>Arrival ceremony</div>} />
-        <Route path={ROUTES.story} element={<div>Story player</div>} />
+        <Route path={ROUTES.story} element={<StoryAudioPage />} />
         <Route path={ROUTES.threshold} element={<div>Threshold reveal</div>} />
       </Routes>
     </MemoryRouter>
@@ -63,7 +82,7 @@ describe('LandmarkCardPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /begin story/i }))
 
-    expect(screen.getByText('Story player')).toBeInTheDocument()
+    expect(screen.getByTestId('story-audio-player')).toBeInTheDocument()
   })
 
   it('enters threshold when see ancient rome is chosen', () => {

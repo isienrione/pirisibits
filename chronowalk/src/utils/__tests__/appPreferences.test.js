@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
+  cycleAudioSpeed,
   readAudioEnabled,
+  readAudioSpeed,
   readDebugMapPreference,
   readPlayerIconsPref,
   writeAudioEnabled,
+  writeAudioSpeed,
   writeDebugMapPreference,
   writePlayerIconsPref,
 } from '../appPreferences'
@@ -39,5 +42,16 @@ describe('appPreferences', () => {
     expect(readPlayerIconsPref()).toBe(false)
     writePlayerIconsPref(true)
     expect(readPlayerIconsPref()).toBe(true)
+  })
+
+  it('defaults story playback speed to 1x', () => {
+    expect(readAudioSpeed()).toBe(1)
+  })
+
+  it('persists and cycles story playback speed', () => {
+    writeAudioSpeed(1.5)
+    expect(readAudioSpeed()).toBe(1.5)
+    expect(cycleAudioSpeed(1.5)).toBe(2)
+    expect(readAudioSpeed()).toBe(2)
   })
 })
