@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { isDebugGeo } from '../config/env'
 import { BronzeButton, Button } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
-import { ROUTES } from '../routes/paths'
+import { offlineDownloadPath } from '../routes/paths'
 
 const HEADLINE = "We'll know exactly when you've reached each story."
 
@@ -30,7 +30,7 @@ export default function LocationPermissionPage() {
   const [isRequesting, setIsRequesting] = useState(false)
 
   const continueToJourney = () => {
-    navigate(ROUTES.journey, { replace: true, state: { destinationId } })
+    navigate(offlineDownloadPath(destinationId), { replace: true })
   }
 
   const handleEnable = async () => {

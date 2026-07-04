@@ -25,3 +25,7 @@ export function chooseExperiencePath(destinationId) {
 export function locationPermissionPath(destinationId) {
   return `${ROUTES.begin}/${destinationId}/location`
 }
+
+export function offlineDownloadPath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}/download`
+}

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import LocationPermissionPage from '../LocationPermissionPage'
-import { ROUTES } from '../../routes/paths'
+import { offlineDownloadPath } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -50,7 +50,7 @@ describe('LocationPermissionPage', () => {
     expect(screen.queryByText(/gps/i)).not.toBeInTheDocument()
   })
 
-  it('requests location and continues to journey when enabled', async () => {
+  it('requests location and continues to offline download when enabled', async () => {
     navigator.geolocation.getCurrentPosition = vi.fn((success) => success({}))
 
     renderLocationPermission()
@@ -58,20 +58,14 @@ describe('LocationPermissionPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /enable location/i }))
 
     await waitFor(() => {
-      expect(navigate).toHaveBeenCalledWith(ROUTES.journey, {
-        replace: true,
-        state: { destinationId: 'rome' },
-      })
+      expect(navigate).toHaveBeenCalledWith(offlineDownloadPath('rome'), { replace: true })
     })
   })
 
-  it('continues to journey when not now is tapped', () => {
+  it('continues to offline download when not now is tapped', () => {
     renderLocationPermission()
 
     fireEvent.click(screen.getByRole('button', { name: /not now/i }))
-    expect(navigate).toHaveBeenCalledWith(ROUTES.journey, {
-      replace: true,
-      state: { destinationId: 'rome' },
-    })
+    expect(navigate).toHaveBeenCalledWith(offlineDownloadPath('rome'), { replace: true })
   })
 })
