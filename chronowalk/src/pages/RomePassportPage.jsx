@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { buildJourneyLetter } from '../content/launchJourneyLetter'
-import JourneyLetter from '../components/journey/JourneyLetter'
+import { buildRomePassport } from '../content/launchRomePassport'
+import RomePassportScreen from '../components/journey/RomePassportScreen'
 import { useJourney } from '../hooks/useJourney'
 import { JOURNEY_STATES } from '../state/journeyState'
 import { readTravelerName } from '../utils/travelerProfile'
@@ -14,13 +14,13 @@ import {
   thresholdPath,
 } from '../routes/paths'
 
-export default function JourneyLetterPage() {
+export default function RomePassportPage() {
   const navigate = useNavigate()
   const { state, context, manifest } = useJourney()
 
-  const letter = useMemo(
+  const passport = useMemo(
     () =>
-      buildJourneyLetter({
+      buildRomePassport({
         travelerName: readTravelerName(),
         manifest,
         context,
@@ -28,11 +28,7 @@ export default function JourneyLetterPage() {
     [context, manifest]
   )
 
-  const handleReturnHome = useCallback(() => {
-    navigate(ROUTES.home, { replace: true })
-  }, [navigate])
-
-  const handleViewTimeline = useCallback(() => {
+  const handleBack = useCallback(() => {
     navigate(journeyTimelinePath(), { replace: true })
   }, [navigate])
 
@@ -53,13 +49,13 @@ export default function JourneyLetterPage() {
   }
 
   return (
-    <JourneyLetter
-      salutation={letter.salutation}
-      paragraphs={letter.paragraphs}
-      signOff={letter.signOff}
-      signature={letter.signature}
-      onViewTimeline={handleViewTimeline}
-      onReturnHome={handleReturnHome}
+    <RomePassportScreen
+      title={passport.title}
+      subtitle={passport.subtitle}
+      holderName={passport.holderName}
+      edition={passport.edition}
+      stamps={passport.stamps}
+      onBack={handleBack}
     />
   )
 }
