@@ -1,16 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { formatDistanceToNext } from '../../content/journeyProgress'
+import { formatDistanceToNext, formatWalkingTime } from '../../content/journeyProgress'
 import { JOURNEY_STATES } from '../../state/journeyState'
 import { useJourney } from '../../hooks/useJourney'
 import { walkingDirectionsPath } from '../../routes/paths'
 import { Button, cn, statusArrived, statusWalking } from '../ui'
 import { metaLabel } from '../ui/styles'
-
-function formatWalkingTime(meters) {
-  if (!meters || meters <= 0) return null
-  const minutes = Math.max(1, Math.round(meters / 80))
-  return `${minutes} min`
-}
 
 const STATE_LABELS = {
   [JOURNEY_STATES.WALKING]: 'Walking',

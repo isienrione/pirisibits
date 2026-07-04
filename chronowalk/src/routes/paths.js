@@ -13,6 +13,7 @@ export const ROUTES = {
   threshold: '/journey/threshold',
   reconstruction: '/journey/reconstruction',
   overlay: '/journey/overlay',
+  continueWalking: '/journey/continue',
   complete: '/complete',
 }
 
@@ -78,4 +79,8 @@ export function reconstructionPath() {
 
 export function overlayPath() {
   return ROUTES.overlay
+}
+
+export function continueWalkingPath() {
+  return ROUTES.continueWalking
 }

@@ -19,6 +19,7 @@ import StoryReflectionPage from '../pages/StoryReflectionPage.jsx'
 import ThresholdPage from '../pages/ThresholdPage.jsx'
 import ReconstructionPage from '../pages/ReconstructionPage.jsx'
 import AncientOverlayPage from '../pages/AncientOverlayPage.jsx'
+import ContinueWalkingPage from '../pages/ContinueWalkingPage.jsx'
 import { ROUTES } from './paths.js'
 
 export default function LaunchRouter() {
@@ -43,6 +44,7 @@ export default function LaunchRouter() {
         <Route path={ROUTES.threshold} element={<ThresholdPage />} />
         <Route path={ROUTES.reconstruction} element={<ReconstructionPage />} />
         <Route path={ROUTES.overlay} element={<AncientOverlayPage />} />
+        <Route path={ROUTES.continueWalking} element={<ContinueWalkingPage />} />
         <Route path={ROUTES.story} element={<StoryAudioPage />} />
         <Route path={ROUTES.journey} element={<JourneyMapPage />} />
         <Route path={ROUTES.complete} element={<Navigate to={ROUTES.legacy} replace />} />

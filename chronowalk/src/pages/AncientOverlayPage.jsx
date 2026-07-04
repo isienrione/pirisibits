@@ -1,36 +1,24 @@
-import { useCallback, useMemo, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useCallback } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import AncientOverlayCamera from '../components/journey/AncientOverlayCamera'
-import ContinueWalkingTransition from '../components/journey/ContinueWalkingTransition'
 import { useJourney } from '../hooks/useJourney'
 import { getLocalWaypoint } from '../services/waypointMerge'
 import { JOURNEY_STATES } from '../state/journeyState'
 import { loadCalibration } from '../utils/calibrationStorage'
 import { resolveReconstructionMedia } from '../utils/reconstructionMedia'
-import { ROUTES, arrivalPath, landmarkPath } from '../routes/paths'
+import { ROUTES, arrivalPath, continueWalkingPath, landmarkPath } from '../routes/paths'
 
 export default function AncientOverlayPage() {
+  const navigate = useNavigate()
   const { state, currentStop } = useJourney()
-  const [readyToContinue, setReadyToContinue] = useState(false)
 
-  const waypoint = useMemo(
-    () => (currentStop?.id ? getLocalWaypoint(currentStop.id) : null),
-    [currentStop?.id]
-  )
-
-  const media = useMemo(
-    () => resolveReconstructionMedia(currentStop, waypoint),
-    [currentStop, waypoint]
-  )
-
-  const calibration = useMemo(
-    () => loadCalibration(currentStop?.id),
-    [currentStop?.id]
-  )
+  const waypoint = currentStop?.id ? getLocalWaypoint(currentStop.id) : null
+  const media = resolveReconstructionMedia(currentStop, waypoint)
+  const calibration = loadCalibration(currentStop?.id)
 
   const handleContinue = useCallback(() => {
-    setReadyToContinue(true)
-  }, [])
+    navigate(continueWalkingPath(), { replace: true })
+  }, [navigate])
 
   if (state !== JOURNEY_STATES.THRESHOLD) {
     if (state === JOURNEY_STATES.STORY) {
@@ -50,15 +38,12 @@ export default function AncientOverlayPage() {
   }
 
   return (
-    <>
-      <AncientOverlayCamera
-        stopTitle={currentStop.shortTitle ?? currentStop.title}
-        stopId={currentStop.id}
-        overlayUrl={media.imageUrl}
-        calibration={calibration}
-        onContinue={handleContinue}
-      />
-      <ContinueWalkingTransition open={readyToContinue} />
-    </>
+    <AncientOverlayCamera
+      stopTitle={currentStop.shortTitle ?? currentStop.title}
+      stopId={currentStop.id}
+      overlayUrl={media.imageUrl}
+      calibration={calibration}
+      onContinue={handleContinue}
+    />
   )
 }

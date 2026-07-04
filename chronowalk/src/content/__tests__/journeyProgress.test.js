@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { loadRomeTourManifest } from '../romeTourManifest'
 import {
   estimateDistanceBetweenStops,
+  formatWalkingTime,
   getNextStop,
   isLastStop,
   markStopCompleted,
@@ -28,6 +29,11 @@ describe('journeyProgress', () => {
     const next = getNextStop(manifest, colosseum)
     const meters = estimateDistanceBetweenStops(colosseum, next)
     expect(meters).toBeGreaterThan(0)
+  })
+
+  it('formats walking time from distance', () => {
+    expect(formatWalkingTime(400)).toBe('5 min walk')
+    expect(formatWalkingTime(null)).toBeNull()
   })
 
   it('plans mid-tour continue with updated progress', () => {

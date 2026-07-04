@@ -48,6 +48,13 @@ export function formatDistanceToNext(meters) {
   return formatWalkedDistance(meters)
 }
 
+/** Rough walking pace for launch estimates (~4.8 km/h). */
+export function formatWalkingTime(meters) {
+  if (!meters || meters <= 0) return null
+  const minutes = Math.max(1, Math.round(meters / 80))
+  return `${minutes} min walk`
+}
+
 /**
  * @param {string[]} completedStopIds
  * @param {string} stopId

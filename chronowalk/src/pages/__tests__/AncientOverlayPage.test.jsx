@@ -27,6 +27,7 @@ function renderOverlayPage() {
     <MemoryRouter initialEntries={[ROUTES.overlay]}>
       <Routes>
         <Route path={ROUTES.overlay} element={<AncientOverlayPage />} />
+        <Route path={ROUTES.continueWalking} element={<div>Continue walking</div>} />
         <Route path={ROUTES.landmark} element={<div>Landmark card</div>} />
       </Routes>
     </MemoryRouter>
@@ -53,13 +54,12 @@ describe('AncientOverlayPage', () => {
     expect(screen.getByLabelText(/ancient overlay opacity/i)).toBeInTheDocument()
   })
 
-  it('shows continue walking after the overlay is dismissed', () => {
+  it('routes to continue walking after the overlay is dismissed', () => {
     renderOverlayPage()
 
     fireEvent.click(screen.getByRole('button', { name: /continue journey/i }))
 
-    expect(screen.getByTestId('continue-walking-transition')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /continue walking/i })).toBeInTheDocument()
+    expect(screen.getByText('Continue walking')).toBeInTheDocument()
   })
 
   it('redirects outside threshold state', () => {
