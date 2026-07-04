@@ -70,12 +70,25 @@ function walk(dir, files = []) {
   return files
 }
 
+/** Paths using the launch-flow explorer palette (ivory/bronze) until migrated to DESIGN_LAW. */
+const SKIP_PREFIXES = [
+  'pages/',
+  'components/journey/',
+  'components/ui/',
+  'design/tokens.js',
+]
+
+function shouldSkip(rel) {
+  if (SKIP_FILES.has(rel)) return true
+  return SKIP_PREFIXES.some((prefix) => rel.startsWith(prefix) || rel === prefix)
+}
+
 function stripComments(line) {
   return line.replace(/\/\/.*$/, '').replace(/\/\*.*?\*\//g, '')
 }
 
 function checkForbiddenSubstrings(rel, line, lineNo, violations) {
-  if (SKIP_FILES.has(rel)) return
+  if (shouldSkip(rel)) return
 
   const content = stripComments(line)
   for (const needle of FORBIDDEN_SUBSTRINGS) {
@@ -90,7 +103,7 @@ function checkForbiddenSubstrings(rel, line, lineNo, violations) {
 
 function checkJsxHex(rel, line, lineNo, violations) {
   if (!JSX_EXT.test(rel)) return
-  if (SKIP_FILES.has(rel)) return
+  if (shouldSkip(rel)) return
 
   const hasClassOrStyle = /\bclassName\s*=/.test(line) || /\bstyle\s*=/.test(line)
   if (!hasClassOrStyle) return

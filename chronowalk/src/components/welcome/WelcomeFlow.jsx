@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { useTourManifest } from '../../hooks/useJourney.js'
+import { useTourManifest } from '../../hooks/useV2Journey.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import {
   PLATFORM_CITIES,

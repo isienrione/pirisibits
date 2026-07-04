@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
-import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
 import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
@@ -25,7 +25,7 @@ import { ROME_ACTS } from '../../data/romePacing.js'
 
 export default function JourneyShell() {
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
-    useJourney()
+    useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,

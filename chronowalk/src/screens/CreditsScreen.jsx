@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ABOUT_IMAGERY_COPY, collectWikimediaCredits } from '../content/imageCredits.js'
-import { useTourManifest } from '../hooks/useJourney.js'
+import { useTourManifest } from '../hooks/useV2Journey.js'
 import { PageShell, SectionHeader } from '../components/ui'
 
 export default function CreditsScreen() {

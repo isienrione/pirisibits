@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAudioEngine } from '../audio/AudioEngine.js'
-import { useJourney } from './useJourney.js'
+import { useV2Journey } from './useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 
 export function useAudioEngine(manifest) {
@@ -8,7 +8,7 @@ export function useAudioEngine(manifest) {
   const [narrationPlaying, setNarrationPlaying] = useState(false)
   const [playbackInterrupted, setPlaybackInterrupted] = useState(false)
   const [ready, setReady] = useState(false)
-  const { state, context } = useJourney()
+  const { state, context } = useV2Journey()
 
   useEffect(() => {
     if (!manifest) return undefined

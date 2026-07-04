@@ -1,5 +1,5 @@
 import rawManifest from './rome/manifest.json'
-import { parseRomeManifest } from './manifest.schema.js'
+import { parseRomeManifest } from './romeManifestZod.schema.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
 
 let cachedManifest = null
@@ -126,5 +126,5 @@ export function getWaypointIndex(manifest, waypointId) {
   return orderedWaypointIds(manifest).indexOf(waypointId)
 }
 
-export { parseRomeManifest } from './manifest.schema.js'
+export { parseRomeManifest } from './romeManifestZod.schema.js'
 export { collectManifestAudioPaths } from './audioPaths.js'

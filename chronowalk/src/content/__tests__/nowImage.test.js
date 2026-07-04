@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { nowImageSchema } from '../nowImage.schema.js'
-import { parseRomeManifest } from '../manifest.schema.js'
+import { parseRomeManifest } from '../romeManifestZod.schema.js'
 import rawManifest from '../rome/manifest.json'
 
 describe('nowImage schema', () => {

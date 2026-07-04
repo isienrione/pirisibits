@@ -1,4 +1,4 @@
-import { useJourney, useTourManifest } from '../../hooks/useJourney'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep'
 import { JOURNEY_STATES } from '../../state/journey'
@@ -27,7 +27,7 @@ export function ThresholdDemoPage() {
 }
 
 export function JourneyThresholdLayer() {
-  const { state, context, completeStoryAfterThreshold } = useJourney()
+  const { state, context, completeStoryAfterThreshold } = useV2Journey()
   const { manifest } = useTourManifest()
   const audio = useAudioEngine(manifest)
   const step = useJourneyStep(

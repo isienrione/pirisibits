@@ -1,3 +1,5 @@
+import { motion, shadows, tailwindColors, tapTargets } from './src/design/tokens.js'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -9,26 +11,7 @@ export default {
   },
   theme: {
     extend: {
-      colors: {
-        transparent: 'transparent',
-        current: 'currentColor',
-        obsidian: 'var(--obsidian)',
-        ink900: 'var(--ink-900)',
-        ink800: 'var(--ink-800)',
-        bone: 'var(--bone)',
-        warmwhite: 'var(--warm-white)',
-        muted: 'var(--muted)',
-        ember: 'var(--ember)',
-        emberdeep: 'var(--ember-deep)',
-        inkonfill: 'var(--ink-on-fill)',
-        actarena: 'var(--act-arena)',
-        acthill: 'var(--act-hill)',
-        actforum: 'var(--act-forum)',
-        actmarket: 'var(--act-market)',
-        actcity: 'var(--act-city)',
-        actriver: 'var(--act-river)',
-        actencore: 'var(--act-encore)',
-      },
+      colors: tailwindColors,
       fontFamily: {
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         display: ['Fraunces', 'Georgia', 'serif'],
@@ -42,12 +25,31 @@ export default {
         sheet: 'var(--radius-sheet)',
       },
       boxShadow: {
-        card: 'var(--shadow-card)',
-        sheet: 'var(--shadow-sheet)',
+        card: shadows.card,
+        sheet: shadows.sheet,
+        glass: shadows.glass,
+        'glass-lg': shadows.glassLg,
+        plaque: shadows.plaque,
+        'plaque-lg': shadows.plaqueLg,
+        'sheet-up': shadows.sheetUp,
+        cta: shadows.cta,
+        'bronze-cta': shadows.bronzeCta,
+        'gold-glow': shadows.goldGlow,
       },
       spacing: {
         'safe-bottom': 'max(1rem, env(safe-area-inset-bottom))',
         'safe-top': 'max(0.75rem, env(safe-area-inset-top))',
+        'tap-min': tapTargets.min,
+        'tap-comfortable': tapTargets.comfortable,
+      },
+      backdropBlur: {
+        glass: '16px',
+      },
+      transitionTimingFunction: {
+        spring: motion.spring,
+      },
+      transitionDuration: {
+        spring: motion.springDuration,
       },
       animation: {
         'sheet-enter': 'sheet-enter 0.5s cubic-bezier(0.22, 0.8, 0.36, 1) forwards',

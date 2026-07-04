@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useJourney } from '../../hooks/useJourney.js'
+import { useV2Journey } from '../../hooks/useV2Journey.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 
 const LINKS = [
@@ -11,7 +11,7 @@ const LINKS = [
 ]
 
 export default function CompanionDock() {
-  const { state } = useJourney()
+  const { state } = useV2Journey()
   const location = useLocation()
 
   if (state === JOURNEY_STATES.IDLE) return null

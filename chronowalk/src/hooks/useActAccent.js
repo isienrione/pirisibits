@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { actAccentValue } from '../design/actAccents.ts'
 import { resolveJourneyStep } from '../content/manifest.js'
 import { getActForWaypoint } from '../data/romePacing.js'
-import { useJourney, useTourManifest } from './useJourney.js'
+import { useV2Journey, useTourManifest } from './useV2Journey.js'
 
 /**
  * Returns the current journey act's accent as a CSS `var(...)` value.
  * Components should consume this hook — never hardcode an act accent.
  */
 export function useActAccent() {
-  const { context } = useJourney()
+  const { context } = useV2Journey()
   const { manifest } = useTourManifest()
 
   return useMemo(() => {

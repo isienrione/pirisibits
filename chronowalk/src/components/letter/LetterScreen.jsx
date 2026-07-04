@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { buildJourneyLetter, projectMeanderPoints } from '../../content/journeyLetter.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import LetterMeander from './LetterMeander.jsx'
 import { saveLetterCard, shareLetterCard } from './letterExport.js'
@@ -77,7 +77,7 @@ function ActionButton({ children, onClick, disabled = false, variant = 'primary'
 }
 
 export default function LetterScreen() {
-  const { state, context } = useJourney()
+  const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')

@@ -1,10 +1,10 @@
 import { useNetworkStatus } from '../hooks/useNetworkStatus.js'
-import { useJourney } from '../hooks/useJourney.js'
+import { useV2Journey } from '../hooks/useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 
 export default function NetworkStatusBanner() {
   const { isOffline } = useNetworkStatus()
-  const { state } = useJourney()
+  const { state } = useV2Journey()
 
   if (!isOffline || state === JOURNEY_STATES.IDLE) return null
 

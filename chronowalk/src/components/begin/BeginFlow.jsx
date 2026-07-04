@@ -6,7 +6,7 @@ import {
   PACE_ORIENTATION,
   getPaceOption,
 } from '../../data/romePacing'
-import { useJourney } from '../../hooks/useJourney'
+import { useV2Journey } from '../../hooks/useV2Journey'
 import { requestLocationAccess } from '../../lib/locationAccess'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
@@ -365,7 +365,7 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
 
 export default function BeginFlow() {
   const navigate = useNavigate()
-  const { begin, resume, reset, isResumable } = useJourney()
+  const { begin, resume, reset, isResumable } = useV2Journey()
   const [step, setStep] = useState(() => (isResumable ? 'resume' : 'pace'))
   const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
   const [busy, setBusy] = useState(false)

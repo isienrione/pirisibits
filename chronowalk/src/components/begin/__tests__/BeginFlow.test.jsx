@@ -9,8 +9,8 @@ const resumeMock = vi.fn()
 const resetMock = vi.fn()
 const trackMock = vi.fn()
 
-vi.mock('../../../hooks/useJourney', () => ({
-  useJourney: () => ({
+vi.mock('../../../hooks/useV2Journey', () => ({
+  useV2Journey: () => ({
     begin: beginMock,
     resume: resumeMock,
     reset: resetMock,

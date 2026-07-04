@@ -1,75 +1,75 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import {
-  getJourneySnapshot,
-  subscribeJourney,
-  transitionJourney,
-  resetJourney,
-  beginJourney,
-  markWaypointComplete,
-  advanceWaypointIndex,
-  advanceSequenceIndex,
-  setJourneyPath,
-  markTransitComplete,
-  setActiveWaypointIndex,
-  promoteOptionalWaypoint,
-  completeStoryAfterThreshold,
-  completeWaypointAndAdvance,
-  continueFromDayComplete,
-  jumpToSequenceIndex,
-  isResumableJourney,
-  resumeJourney,
-  prepareResumeCueIfNeeded,
-  clearPendingResumeCue,
   JOURNEY_STATES,
-} from '../state/journey'
+  getJourneySnapshot,
+  resetJourney,
+  setJourneyState,
+  subscribeJourney,
+  updateJourneyContext,
+} from '../state/journeyState'
+import {
+  estimateDistanceBetweenStops,
+  getNextStop,
+  isLastStop,
+  planContinueWalking,
+} from '../content/journeyProgress'
+import { getCurrentStop, loadRomeTourManifest } from '../content/romeTourManifest'
 
 export function useJourney() {
   const snapshot = useSyncExternalStore(subscribeJourney, getJourneySnapshot, getJourneySnapshot)
+  const manifest = useMemo(() => loadRomeTourManifest(), [])
+  const currentStop = useMemo(
+    () => getCurrentStop(manifest, snapshot.context),
+    [manifest, snapshot.context]
+  )
+  const nextStop = useMemo(
+    () => getNextStop(manifest, currentStop),
+    [manifest, currentStop]
+  )
+  const distanceToNextM = useMemo(
+    () => estimateDistanceBetweenStops(currentStop, nextStop),
+    [currentStop, nextStop]
+  )
+  const lastStop = useMemo(
+    () => isLastStop(manifest, currentStop),
+    [manifest, currentStop]
+  )
+
+  const continueWalking = useCallback(() => {
+    const plan = planContinueWalking(manifest, snapshot.context, currentStop)
+    if (!plan.ok) return plan
+
+    if (plan.isComplete) {
+      updateJourneyContext(plan.nextContext)
+      setJourneyState(JOURNEY_STATES.COMPLETE)
+      if (typeof window !== 'undefined') {
+        window.location.assign('/complete')
+      }
+      return plan
+    }
+
+    updateJourneyContext(plan.nextContext)
+    setJourneyState(JOURNEY_STATES.WALKING)
+    if (typeof window !== 'undefined') {
+      window.location.assign('/journey')
+    }
+    return plan
+  }, [manifest, snapshot.context, currentStop])
 
   return {
-    ...snapshot,
+    state: snapshot.state,
+    context: snapshot.context,
+    manifest,
+    currentStop,
+    nextStop,
+    distanceToNextM,
+    isLastStop: lastStop,
     states: JOURNEY_STATES,
-    isResumable: isResumableJourney(snapshot),
-    transition: transitionJourney,
+    setState: setJourneyState,
+    updateContext: updateJourneyContext,
     reset: resetJourney,
-    begin: beginJourney,
-    resume: resumeJourney,
-    prepareResumeCue: prepareResumeCueIfNeeded,
-    clearPendingResumeCue,
-    completeWaypoint: markWaypointComplete,
-    setWaypointIndex: advanceWaypointIndex,
-    advanceSequence: advanceSequenceIndex,
-    setPath: setJourneyPath,
-    completeTransit: markTransitComplete,
-    setActiveWaypoint: setActiveWaypointIndex,
-    promoteOptional: promoteOptionalWaypoint,
-    completeStoryAfterThreshold,
-    completeWaypointAndAdvance,
-    continueFromDayComplete,
-    jumpToSequence: jumpToSequenceIndex,
+    continueWalking,
   }
 }
 
-export function useTourManifest() {
-  const [manifest, setManifest] = useState(null)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    import('../lib/tour')
-      .then(({ loadTourManifest }) => loadTourManifest())
-      .then((data) => {
-        if (!cancelled) setManifest(data)
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  return { manifest, error, loading: !manifest && !error }
-}
+export { JOURNEY_STATES }

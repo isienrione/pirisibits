@@ -2,18 +2,19 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './design/tokens.css'
 import './index.css'
+import LaunchRouter from './routes/LaunchRouter.jsx'
 import AppRouter from './app/AppRouter.jsx'
 import App from './App.jsx'
 import './pwa/pwaController.js'
 
-const useV2 = import.meta.env.VITE_V2_APP !== 'false'
+const useV2 = import.meta.env.VITE_V2_APP === 'true'
 
 function Root() {
   if (useV2) {
     return <AppRouter />
   }
 
-  return <App />
+  return <LaunchRouter />
 }
 
 if (!useV2 && typeof document !== 'undefined') {

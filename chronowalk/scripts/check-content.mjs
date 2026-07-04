@@ -16,7 +16,7 @@ import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
 import { collectManifestMediaPaths } from '../src/content/mediaPaths.js'
 import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
 import { durationCoverage } from '../src/content/durationManifest.js'
-import { parseRomeManifest } from '../src/content/manifest.schema.js'
+import { parseRomeManifest } from '../src/content/romeManifestZod.schema.js'
 import { assertMediaHostResolvable, getMediaBase, loadEnvLocal, printMediaHostHelp } from './mediaBaseEnv.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))

@@ -1,182 +1,109 @@
-import { useState } from 'react'
-import { isDevPanelEnabled } from '../../config/env.js'
-import { grantAccess, revokeAccess } from '../../lib/config'
-import { useJourney, useTourManifest } from '../../hooks/useJourney'
-import { useJourneyStep } from '../../hooks/useJourneyStep'
-import { buildEffectiveSequence } from '../../content/optionalPromotion.js'
-import { JOURNEY_STATES } from '../../state/journey'
-import { readDevSimulateGps, setDevSimulateGps } from './devTools.js'
+import { useJourney } from '../../hooks/useJourney'
+import { JOURNEY_STATE_LIST } from '../../state/journeyState'
+import { ROUTES } from '../../routes/paths'
 
-const STATE_BUTTONS = Object.values(JOURNEY_STATES)
-
+/**
+ * Dev-only journey state controls. Not rendered in production builds.
+ */
 export default function JourneyDevPanel() {
-  const { state, context, transition, reset, begin, jumpToSequence, states } = useJourney()
-  const { manifest } = useTourManifest()
-  const step = useJourneyStep(
-    manifest,
-    context.path,
-    context.currentSequenceIndex,
-    context.promotedOptionalIds
-  )
-  const [sequenceInput, setSequenceInput] = useState(String(context.currentSequenceIndex))
-  const [simulateGps, setSimulateGps] = useState(readDevSimulateGps)
+  const { state, context, currentStop, manifest, setState, updateContext, reset } = useJourney()
+  const firstStop = manifest.stops[0]
 
-  if (!isDevPanelEnabled()) return null
-
-  const sequence = manifest
-    ? buildEffectiveSequence(manifest, context.path, context.promotedOptionalIds)
-    : []
-  const maxSequenceIndex = Math.max(0, sequence.length - 1)
-
-  const currentLabel =
-    step?.type === 'waypoint'
-      ? step.record?.title ?? step.id
-      : step?.type === 'transit'
-        ? `Transit ${step.id}`
-        : '—'
-
-  const handleJump = () => {
-    const parsed = Number.parseInt(sequenceInput, 10)
-    if (Number.isNaN(parsed)) return
-    jumpToSequence(Math.min(Math.max(0, parsed), maxSequenceIndex))
-  }
-
-  const handleToggleSimulateGps = () => {
-    const next = !simulateGps
-    setSimulateGps(next)
-    setDevSimulateGps(next)
-  }
+  if (import.meta.env.PROD) return null
 
   return (
     <div
+      data-testid="journey-dev-panel"
       style={{
         position: 'fixed',
         right: 8,
-        bottom: 96,
+        bottom: 8,
         zIndex: 9999,
-        width: 'min(92vw, 18rem)',
-        padding: 12,
-        borderRadius: 'var(--r-card)',
-        background: 'color-mix(in srgb, var(--ink) 92%, transparent)',
-        border: '1px solid color-mix(in srgb, var(--ember) 35%, transparent)',
-        color: 'var(--warm-white)',
-        fontSize: 'var(--fs-meta)',
-        fontFamily: 'var(--font-ui)',
+        maxWidth: 280,
+        padding: 8,
+        background: 'rgba(0,0,0,0.85)',
+        color: '#f7f3ec',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: 12,
+        lineHeight: 1.4,
+        borderRadius: 8,
       }}
     >
-      <p style={{ margin: 0, fontWeight: 600 }}>Journey dev panel</p>
-      <p style={{ margin: '6px 0 0', opacity: 0.8 }}>
-        State: <strong>{state}</strong>
+      <p style={{ margin: '0 0 6px', fontWeight: 700 }}>Journey dev</p>
+      <p style={{ margin: '0 0 8px' }}>
+        state: <strong>{state}</strong>
       </p>
-      <p style={{ margin: '4px 0 0', opacity: 0.8 }}>
-        Step: <strong>{currentLabel}</strong> (seq {context.currentSequenceIndex}, path {context.path})
+      <p style={{ margin: '0 0 8px', wordBreak: 'break-word' }}>
+        stop: {currentStop?.title ?? context.currentStopId ?? '—'} ({context.currentStopIndex})
       </p>
-
-      <div style={{ marginTop: 10 }}>
-        <label style={{ display: 'block', marginBottom: 4, opacity: 0.85 }}>
-          Jump to sequence (0–{maxSequenceIndex})
-        </label>
-        <div style={{ display: 'flex', gap: 6 }}>
-          <input
-            type="number"
-            min={0}
-            max={maxSequenceIndex}
-            value={sequenceInput}
-            onChange={(event) => setSequenceInput(event.target.value)}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              padding: '6px 8px',
-              borderRadius: 8,
-              border: '1px solid color-mix(in srgb, var(--warm-white) 25%, transparent)',
-              background: 'color-mix(in srgb, var(--ink) 70%, transparent)',
-              color: 'var(--warm-white)',
-            }}
-          />
-          <button type="button" onClick={handleJump}>
-            Jump
-          </button>
-        </div>
-        {sequence[Number.parseInt(sequenceInput, 10)] ? (
-          <p style={{ margin: '4px 0 0', opacity: 0.7 }}>
-            → {sequence[Number.parseInt(sequenceInput, 10)]}
-          </p>
-        ) : null}
-      </div>
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
-        {STATE_BUTTONS.map((nextState) => (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+        {JOURNEY_STATE_LIST.map((nextState) => (
           <button
             key={nextState}
             type="button"
-            onClick={() => transition(nextState)}
+            aria-pressed={state === nextState}
+            onClick={() => setState(nextState)}
             style={{
+              minHeight: 32,
+              minWidth: 32,
               padding: '4px 8px',
-              borderRadius: 999,
-              border: '1px solid color-mix(in srgb, var(--warm-white) 25%, transparent)',
-              background:
-                state === nextState
-                  ? 'color-mix(in srgb, var(--ember) 35%, transparent)'
-                  : 'transparent',
-              color: 'var(--warm-white)',
-              fontSize: 11,
+              border: state === nextState ? '1px solid #d4af37' : '1px solid #686e72',
+              borderRadius: 4,
+              background: state === nextState ? '#a8742a' : '#17212b',
+              color: '#f7f3ec',
+              cursor: 'pointer',
             }}
           >
             {nextState}
           </button>
         ))}
       </div>
-      <p style={{ margin: '10px 0 0', opacity: 0.75 }}>
-        <a href="/begin" style={{ color: 'var(--ember)' }}>
-          Open begin flow
-        </a>
+      <p style={{ margin: '0 0 8px', opacity: 0.85 }}>
+        <a href={ROUTES.home} style={{ color: '#e8a13c' }}>Home</a>
         {' · '}
-        <a href="/landing" style={{ color: 'var(--ember)' }}>
-          Open landing
-        </a>
+        <a href={ROUTES.begin} style={{ color: '#e8a13c' }}>Begin</a>
         {' · '}
-        <a href="/welcome" style={{ color: 'var(--ember)' }}>
-          Open welcome flow
-        </a>
+        <a href={ROUTES.journey} style={{ color: '#e8a13c' }}>Map</a>
         {' · '}
-        <a href="/map" style={{ color: 'var(--ember)' }}>
-          Open map
-        </a>
+        <a href={ROUTES.journeySummary} style={{ color: '#e8a13c' }}>Letter</a>
         {' · '}
-        <a href="/journal" style={{ color: 'var(--ember)' }}>
-          Open journal
-        </a>
+        <a href={ROUTES.journeyTimeline} style={{ color: '#e8a13c' }}>Timeline</a>
         {' · '}
-        <a href="/letter" style={{ color: 'var(--ember)' }}>
-          Open letter
-        </a>
+        <a href={ROUTES.romePassport} style={{ color: '#e8a13c' }}>Passport</a>
         {' · '}
-        <a href="/settings" style={{ color: 'var(--ember)' }}>
-          Open settings
-        </a>
+        <a href={ROUTES.exploreMore} style={{ color: '#e8a13c' }}>Explore</a>
         {' · '}
-        <a href="/threshold-demo" style={{ color: 'var(--ember)' }}>
-          Open threshold demo
-        </a>
+        <a href={ROUTES.journeyMemories} style={{ color: '#e8a13c' }}>Memories</a>
         {' · '}
-        <a href="/access?token=dev" style={{ color: 'var(--ember)' }}>
-          Dev access link
-        </a>
+        <a href={ROUTES.settings} style={{ color: '#e8a13c' }}>Settings</a>
       </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-        <button type="button" onClick={() => grantAccess()}>
-          Grant access
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (!firstStop) return
+            updateContext({
+              currentStopId: firstStop.id,
+              currentStopIndex: firstStop.number - 1,
+              hasAccess: true,
+            })
+          }}
+          style={{ minHeight: 32, padding: '4px 8px', cursor: 'pointer' }}
+        >
+          Set stop
         </button>
-        <button type="button" onClick={() => revokeAccess()}>
-          Revoke access
+        <button
+          type="button"
+          onClick={() => updateContext({ audioProgress: 0.5 })}
+          style={{ minHeight: 32, padding: '4px 8px', cursor: 'pointer' }}
+        >
+          Audio 50%
         </button>
-        <button type="button" onClick={() => begin({ pace: 'classic', waypointIndex: 0 })}>
-          Begin day 1
-        </button>
-        <button type="button" onClick={handleToggleSimulateGps}>
-          {simulateGps ? 'GPS: simulated' : 'GPS: live'}
-        </button>
-        <button type="button" onClick={reset}>
+        <button
+          type="button"
+          onClick={reset}
+          style={{ minHeight: 32, padding: '4px 8px', cursor: 'pointer' }}
+        >
           Reset
         </button>
       </div>

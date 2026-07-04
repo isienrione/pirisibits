@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { loadRomeManifest } from '../manifest.js'
 import { collectManifestAudioPaths } from '../audioPaths.js'
-import { parseRomeManifest } from '../manifest.schema.js'
+import { parseRomeManifest } from '../romeManifestZod.schema.js'
 import rawManifest from '../rome/manifest.json'
 
 describe('rome content manifest', () => {

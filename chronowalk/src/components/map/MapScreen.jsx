@@ -12,7 +12,7 @@ import { isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
-import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
 import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
@@ -57,7 +57,7 @@ function ConfidenceChip({ label, active }) {
 
 export default function MapScreen() {
   const navigate = useNavigate()
-  const { state, context } = useJourney()
+  const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,

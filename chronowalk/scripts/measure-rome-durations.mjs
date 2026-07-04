@@ -17,7 +17,7 @@ import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
 import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
 import { buildDurationsMap, mergeDurationMaps, seedDurationsFromTransits } from '../src/content/durationManifest.js'
-import { parseRomeManifest } from '../src/content/manifest.schema.js'
+import { parseRomeManifest } from '../src/content/romeManifestZod.schema.js'
 import { assertMediaHostResolvable, getMediaBase, loadEnvLocal } from './mediaBaseEnv.mjs'
 import {
   assertReadableFile,

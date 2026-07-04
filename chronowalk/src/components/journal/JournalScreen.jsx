@@ -6,7 +6,7 @@ import {
   summarizeJournalProgress,
 } from '../../content/journalTimeline.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import JournalTimeline from './JournalTimeline.jsx'
 
 function JournalLayout({ eyebrow, title, subtitle, children, footer }) {
@@ -70,7 +70,7 @@ function JournalLayout({ eyebrow, title, subtitle, children, footer }) {
 }
 
 export default function JournalScreen() {
-  const { state, context } = useJourney()
+  const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
   if (loading) {

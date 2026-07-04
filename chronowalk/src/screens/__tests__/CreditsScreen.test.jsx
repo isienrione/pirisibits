@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import CreditsScreen from '../CreditsScreen.jsx'
 
-vi.mock('../../hooks/useJourney.js', () => ({
+vi.mock('../../hooks/useV2Journey.js', () => ({
   useTourManifest: () => ({
     manifest: {
       waypoints: {

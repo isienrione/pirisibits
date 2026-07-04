@@ -11,3 +11,16 @@ export const ctaInCard = 'rounded-2xl'
 /** Micro-label for stats, nav tabs, and HUD metadata. */
 export const metaLabel =
   'text-[0.65rem] font-semibold uppercase tracking-[0.14em]'
+
+export const statusPill =
+  'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold'
+
+export const statusWalking = 'bg-gold/15 text-gold'
+
+export const statusArrived = 'bg-olive/15 text-olive'
+
+export const statusNeutral = 'bg-sand/80 text-soft-slate'
+
+export const statusLocked = 'bg-sand text-soft-slate'
+
+export const statusCurrent = 'bg-gold/15 text-gold'

@@ -3,13 +3,13 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { buildMapStopsFromManifest } from '../../content/mapStops.js'
 import { toStopRowModel } from '../../content/stopPresentation.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { useJourney, useTourManifest } from '../../hooks/useJourney.js'
+import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { PageShell, SectionHeader } from '../ui'
 import { ShellStopRow } from '../../shell'
 
 export default function StopsScreen() {
   const navigate = useNavigate()
-  const { state, context } = useJourney()
+  const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
   const rows = useMemo(() => {
