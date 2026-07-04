@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useCameraStream } from '../../hooks/useCameraStream'
 import { buildCalibrationTransform, DEFAULT_CALIBRATION } from '../../utils/calibrationStorage'
 import { captureOverlayFrame, downloadCapture } from '../../utils/overlayCapture'
+import { recordPhotoCapture } from '../../utils/journeyRecapStorage'
 import { HAPTIC_KIND, triggerHaptic } from '../../utils/haptics'
 import { cn } from '../ui'
 
@@ -65,6 +66,9 @@ export default function AncientOverlayCamera({
 
       const slug = (stopId ?? 'chronowalk').replace(/\s+/g, '-')
       downloadCapture(blob, `chronowalk-${slug}-overlay.png`)
+      if (stopId) {
+        recordPhotoCapture(stopId)
+      }
       triggerHaptic(HAPTIC_KIND.SUCCESS)
       setCaptureMessage('Saved to your device')
     } catch (captureError) {

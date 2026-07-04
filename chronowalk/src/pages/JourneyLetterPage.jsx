@@ -9,6 +9,7 @@ import {
   ROUTES,
   arrivalPath,
   continueWalkingPath,
+  journeyTimelinePath,
   landmarkPath,
   thresholdPath,
 } from '../routes/paths'
@@ -29,6 +30,10 @@ export default function JourneyLetterPage() {
 
   const handleReturnHome = useCallback(() => {
     navigate(ROUTES.home, { replace: true })
+  }, [navigate])
+
+  const handleViewTimeline = useCallback(() => {
+    navigate(journeyTimelinePath(), { replace: true })
   }, [navigate])
 
   if (state !== JOURNEY_STATES.COMPLETE) {
@@ -53,6 +58,7 @@ export default function JourneyLetterPage() {
       paragraphs={letter.paragraphs}
       signOff={letter.signOff}
       signature={letter.signature}
+      onViewTimeline={handleViewTimeline}
       onReturnHome={handleReturnHome}
     />
   )

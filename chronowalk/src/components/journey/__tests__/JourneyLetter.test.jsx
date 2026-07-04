@@ -39,4 +39,22 @@ describe('JourneyLetter', () => {
     fireEvent.click(screen.getByRole('button', { name: /return home/i }))
     expect(onReturnHome).toHaveBeenCalledTimes(1)
   })
+
+  it('opens the timeline when provided', () => {
+    const onViewTimeline = vi.fn()
+
+    render(
+      <JourneyLetter
+        salutation="Dear Livia,"
+        paragraphs={['You listened.']}
+        signOff="With gratitude,"
+        signature="ChronoWalk"
+        onViewTimeline={onViewTimeline}
+        onReturnHome={vi.fn()}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /your timeline/i }))
+    expect(onViewTimeline).toHaveBeenCalledTimes(1)
+  })
 })

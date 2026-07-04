@@ -15,6 +15,7 @@ function renderLetterPage() {
     <MemoryRouter initialEntries={[ROUTES.journeySummary]}>
       <Routes>
         <Route path={ROUTES.journeySummary} element={<JourneyLetterPage />} />
+        <Route path={ROUTES.journeyTimeline} element={<div>Journey timeline</div>} />
         <Route path={ROUTES.home} element={<div>Home</div>} />
         <Route path={ROUTES.journey} element={<div>Journey map</div>} />
       </Routes>
@@ -52,6 +53,16 @@ describe('JourneyLetterPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Home')).toBeInTheDocument()
+    })
+  })
+
+  it('opens the journey timeline from the letter', async () => {
+    renderLetterPage()
+
+    fireEvent.click(screen.getByRole('button', { name: /your timeline/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey timeline')).toBeInTheDocument()
     })
   })
 
