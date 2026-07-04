@@ -83,6 +83,8 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        // Main app chunk exceeds Workbox default 2 MiB precache cap (~2.5 MB minified).
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],
         globIgnores: ['**/waypoints/**'],
         navigateFallback: '/index.html',
