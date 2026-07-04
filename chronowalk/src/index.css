@@ -43,6 +43,14 @@
     bottom: max(1.25rem, calc(env(safe-area-inset-bottom) + 0.75rem));
   }
 
+  .h-dvh {
+    height: 100dvh;
+  }
+
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+
   .motion-safe-transition {
     @apply motion-reduce:transition-none motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)];
   }
