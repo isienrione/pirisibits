@@ -7,6 +7,7 @@ export const ROUTES = {
   arrival: '/journey/arrival',
   landmark: '/journey/landmark',
   story: '/journey/story',
+  storyChapters: '/journey/story/chapters',
   threshold: '/journey/threshold',
   complete: '/complete',
 }
@@ -49,6 +50,10 @@ export function landmarkPath() {
 
 export function storyPath() {
   return ROUTES.story
+}
+
+export function storyChaptersPath() {
+  return ROUTES.storyChapters
 }
 
 export function thresholdPath() {

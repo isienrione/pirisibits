@@ -67,6 +67,7 @@ export default function StoryAudioPlayer({
   onSeekToProgress,
   onCycleSpeed,
   onBack,
+  onOpenChapters,
 }) {
   const [heroSrc, setHeroSrc] = useState(stop?.heroImage ?? tourHeroFallback)
 
@@ -91,6 +92,15 @@ export default function StoryAudioPlayer({
         </IconButton>
 
         <div className="mt-4 flex items-center gap-3">
+          {onOpenChapters ? (
+            <button
+              type="button"
+              className="min-h-11 rounded-full border border-ivory/15 px-4 text-sm font-medium text-ivory/80 transition hover:border-gold/35 hover:text-gold"
+              onClick={onOpenChapters}
+            >
+              Chapters
+            </button>
+          ) : null}
           {isOffline ? <OfflineReadyPill /> : null}
           <button
             type="button"

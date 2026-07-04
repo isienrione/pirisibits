@@ -28,6 +28,7 @@ describe('StoryAudioPlayer', () => {
     onSeekToProgress: vi.fn(),
     onCycleSpeed: vi.fn(),
     onBack: vi.fn(),
+    onOpenChapters: vi.fn(),
   }
 
   it('renders premium immersion audio layout with artwork and chapter title', () => {
@@ -64,5 +65,14 @@ describe('StoryAudioPlayer', () => {
     expect(onCycleSpeed).toHaveBeenCalledTimes(1)
     expect(onBack).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
+  })
+
+  it('opens the chapter timeline from the player', () => {
+    const onOpenChapters = vi.fn()
+
+    render(<StoryAudioPlayer {...baseProps} onOpenChapters={onOpenChapters} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /chapters/i }))
+    expect(onOpenChapters).toHaveBeenCalledTimes(1)
   })
 })
