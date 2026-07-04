@@ -90,6 +90,10 @@ function buildRomeTourDetail() {
       durationLabel: '4 minutes',
       src: ROME_PREVIEW_AUDIO,
     },
+    anticipation: {
+      headline: 'Rome is waiting.',
+      sentence: 'When you are ready, the streets of the eternal city will open before you.',
+    },
   }
 }
 

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import PurchasePage from '../PurchasePage'
-import { ROUTES } from '../../routes/paths'
+import { beginJourneyPath } from '../../routes/paths'
 
 const navigate = vi.fn()
 
@@ -53,13 +53,13 @@ describe('PurchasePage', () => {
     expect(navigate).toHaveBeenCalledWith('/begin/rome')
   })
 
-  it('confirms purchase and navigates to legacy', () => {
+  it('confirms purchase and navigates to begin journey', () => {
     renderRomePurchase()
 
     fireEvent.click(screen.getByRole('button', { name: /pay \$15/i }))
     expect(screen.getByRole('button', { name: /confirming/i })).toBeDisabled()
 
     vi.advanceTimersByTime(450)
-    expect(navigate).toHaveBeenCalledWith(ROUTES.legacy, { replace: true })
+    expect(navigate).toHaveBeenCalledWith(beginJourneyPath('rome'), { replace: true })
   })
 })

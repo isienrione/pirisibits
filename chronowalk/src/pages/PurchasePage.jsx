@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getLaunchTourDetail } from '../content/launchTourDetail'
 import { formatUsd } from '../data/tourProducts'
 import { Button, GoldButton, cn } from '../components/ui'
-import { ROUTES, tourDetailPath } from '../routes/paths'
+import { beginJourneyPath, ROUTES, tourDetailPath } from '../routes/paths'
 
 function LockIcon({ className }) {
   return (
@@ -42,7 +42,7 @@ export default function PurchasePage() {
     if (isConfirming) return
     setIsConfirming(true)
     window.setTimeout(() => {
-      navigate(ROUTES.legacy, { replace: true })
+      navigate(beginJourneyPath(destinationId), { replace: true })
     }, 450)
   }
 

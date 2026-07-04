@@ -13,3 +13,7 @@ export function tourDetailPath(destinationId) {
 export function purchasePath(destinationId) {
   return `${ROUTES.begin}/${destinationId}/purchase`
 }
+
+export function beginJourneyPath(destinationId) {
+  return `${ROUTES.begin}/${destinationId}/start`
+}
