@@ -15,6 +15,7 @@ import LandmarkCardPage from '../pages/LandmarkCardPage.jsx'
 import StoryAudioPage from '../pages/StoryAudioPage.jsx'
 import StoryChaptersPage from '../pages/StoryChaptersPage.jsx'
 import StoryTranscriptPage from '../pages/StoryTranscriptPage.jsx'
+import StoryReflectionPage from '../pages/StoryReflectionPage.jsx'
 import ThresholdPage from '../pages/ThresholdPage.jsx'
 import ReconstructionPage from '../pages/ReconstructionPage.jsx'
 import AncientOverlayPage from '../pages/AncientOverlayPage.jsx'
@@ -38,6 +39,7 @@ export default function LaunchRouter() {
         <Route path={ROUTES.landmark} element={<LandmarkCardPage />} />
         <Route path={ROUTES.storyChapters} element={<StoryChaptersPage />} />
         <Route path={ROUTES.storyTranscript} element={<StoryTranscriptPage />} />
+        <Route path={ROUTES.storyReflection} element={<StoryReflectionPage />} />
         <Route path={ROUTES.threshold} element={<ThresholdPage />} />
         <Route path={ROUTES.reconstruction} element={<ReconstructionPage />} />
         <Route path={ROUTES.overlay} element={<AncientOverlayPage />} />

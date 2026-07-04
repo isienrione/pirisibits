@@ -12,12 +12,17 @@ function clampProgress(value) {
 /**
  * Lightweight story audio controller with persisted progress callbacks.
  */
-export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
+export function useStoryAudio({ src, initialProgress = 0, onProgressChange, onEnded }) {
   const audioRef = useRef(null)
+  const onEndedRef = useRef(onEnded)
   const [isPlaying, setIsPlaying] = useState(false)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
   const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    onEndedRef.current = onEnded
+  }, [onEnded])
 
   useEffect(() => {
     const audio = new Audio()
@@ -41,13 +46,16 @@ export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
       }
     }
 
-    const onEnded = () => setIsPlaying(false)
+    const onEndedHandler = () => {
+      setIsPlaying(false)
+      onEndedRef.current?.()
+    }
     const onPlay = () => setIsPlaying(true)
     const onPause = () => setIsPlaying(false)
 
     audio.addEventListener('loadedmetadata', onLoaded)
     audio.addEventListener('timeupdate', onTimeUpdate)
-    audio.addEventListener('ended', onEnded)
+    audio.addEventListener('ended', onEndedHandler)
     audio.addEventListener('play', onPlay)
     audio.addEventListener('pause', onPause)
 
@@ -61,7 +69,7 @@ export function useStoryAudio({ src, initialProgress = 0, onProgressChange }) {
       audio.pause()
       audio.removeEventListener('loadedmetadata', onLoaded)
       audio.removeEventListener('timeupdate', onTimeUpdate)
-      audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('ended', onEndedHandler)
       audio.removeEventListener('play', onPlay)
       audio.removeEventListener('pause', onPause)
       audioRef.current = null

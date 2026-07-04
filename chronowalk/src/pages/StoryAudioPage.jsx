@@ -11,7 +11,7 @@ import {
   readAudioSpeed,
   PREFERENCES_CHANGED_EVENT,
 } from '../utils/appPreferences'
-import { ROUTES, arrivalPath, landmarkPath, storyChaptersPath, storyTranscriptPath, thresholdPath } from '../routes/paths'
+import { ROUTES, arrivalPath, landmarkPath, storyChaptersPath, storyReflectionPath, storyTranscriptPath, thresholdPath } from '../routes/paths'
 
 export default function StoryAudioPage() {
   const navigate = useNavigate()
@@ -28,6 +28,10 @@ export default function StoryAudioPage() {
     [updateContext]
   )
 
+  const handleStoryEnded = useCallback(() => {
+    navigate(storyReflectionPath(), { replace: true })
+  }, [navigate])
+
   const {
     isPlaying,
     duration,
@@ -40,6 +44,7 @@ export default function StoryAudioPage() {
     src: currentStop?.audio,
     initialProgress: context.audioProgress ?? 0,
     onProgressChange: handleProgress,
+    onEnded: handleStoryEnded,
   })
 
   const handleCycleSpeed = useCallback(() => {
