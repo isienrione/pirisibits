@@ -5,14 +5,15 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { loadRomeTourManifest } from '../../content/romeTourManifest'
 import { LoadingPanel } from '../ui'
 import OfflineRouteMap from '../map/OfflineRouteMap'
+import { palette } from '../../design/tokens'
 import { HEART_OF_ANCIENT_ROME_TOUR } from '../../data/heart-of-ancient-rome-tour'
 
 const WARM_MAP_STYLE = 'mapbox://styles/mapbox/outdoors-v12'
 
 const MARKER_COLORS = {
-  completed: '#A8742A',
-  current: '#D4AF37',
-  upcoming: '#686E72',
+  completed: palette.bronze,
+  current: palette.gold,
+  upcoming: palette.softSlate,
 }
 
 function stopsToGeoJson(stops, currentStopId, completedStopIds) {
@@ -105,7 +106,7 @@ function JourneyMapboxView({ stops, currentStopId, completedStopIds, userPos }) 
             MARKER_COLORS.upcoming,
           ],
           'circle-stroke-width': 2,
-          'circle-stroke-color': '#F7F3EC',
+          'circle-stroke-color': palette.ivory,
         },
       })
       map.current.addLayer({
@@ -118,7 +119,7 @@ function JourneyMapboxView({ stops, currentStopId, completedStopIds, userPos }) 
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
         },
         paint: {
-          'text-color': '#1C1C1C',
+          'text-color': palette.obsidian,
         },
       })
     }

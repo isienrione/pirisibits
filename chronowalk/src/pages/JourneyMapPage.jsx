@@ -47,17 +47,14 @@ export default function JourneyMapPage() {
   }
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-obsidian">
+    <div className="relative h-dvh w-full overflow-hidden bg-obsidian">
       <JourneyLaunchMap
         currentStopId={context.currentStopId}
         completedStopIds={context.completedStopIds}
         userPos={locationStatus === LOCATION_STATUS.GRANTED ? position : null}
       />
 
-      <JourneyBottomCard
-        onSimulateArrival={handleSimulateArrival}
-        onOpenStory={handleOpenStory}
-      />
+      <JourneyBottomCard onSimulateArrival={handleSimulateArrival} />
       <JourneyArrivalOverlay onOpenStory={handleOpenStory} />
       <StoryPlayer />
       <ThresholdReveal onRevealComplete={handleRevealComplete} />

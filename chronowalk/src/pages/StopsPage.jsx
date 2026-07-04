@@ -54,8 +54,8 @@ export default function StopsPage() {
   )
 
   return (
-    <div className="min-h-screen bg-ivory">
-      <PageShell className="bg-transparent pb-32">
+    <div className="min-h-dvh overflow-x-hidden bg-ivory">
+      <PageShell className="bg-transparent pb-[calc(6.5rem+var(--launch-bottom-gutter))]">
         <header className="pt-2">
           <p className="text-eyebrow uppercase text-bronze">Route reference</p>
           <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
@@ -81,7 +81,7 @@ export default function StopsPage() {
 
       <div
         className={cn(
-          'fixed inset-x-0 bottom-0 z-40 border-t border-parchment/80 bg-ivory/95 px-6 py-4 pb-safe backdrop-blur-glass'
+          'fixed inset-x-0 bottom-0 z-40 border-t border-parchment/80 bg-ivory/95 px-6 py-4 pb-launch-bottom backdrop-blur-glass'
         )}
       >
         <GoldButton fullWidth showArrow onClick={returnToJourney}>

@@ -37,7 +37,7 @@ export default function BeginJourneyPage() {
   const effectiveStatus = locationRequested ? locationStatus : null
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-obsidian via-[#242424] to-obsidian text-ivory">
+    <div className="relative min-h-dvh overflow-x-hidden bg-gradient-to-b from-obsidian via-obsidian to-obsidian text-ivory">
       <div className="absolute inset-x-0 top-0 h-56 overflow-hidden opacity-80">
         <img
           src={FREE_PREVIEW_ANCIENT_POSTER}
@@ -48,7 +48,7 @@ export default function BeginJourneyPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-obsidian" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-lg flex-col px-6 pb-safe pt-safe">
+      <div className="relative mx-auto flex min-h-dvh max-w-lg flex-col px-6 pb-safe pt-safe">
         <Button
           variant="ghost"
           size="sm"
@@ -93,7 +93,7 @@ export default function BeginJourneyPage() {
             </Button>
           </div>
 
-          <p className="mt-6 text-xs leading-relaxed text-ivory/55">
+          <p className="mt-6 text-sm leading-relaxed text-ivory/70">
             We use your location only while the tour is active to guide you between landmarks.
           </p>
         </div>

@@ -18,7 +18,7 @@ export default function LandingPage() {
   const stopCount = manifest.stops.length
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-obsidian text-ivory">
+    <div className="relative min-h-dvh overflow-x-hidden bg-obsidian text-ivory">
       <div className="absolute inset-0">
         <img
           src={heroSrc}
@@ -31,7 +31,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent" />
       </div>
 
-      <div className="relative mx-auto flex min-h-screen max-w-2xl flex-col px-6 pb-safe pt-safe">
+      <div className="relative mx-auto flex min-h-dvh max-w-2xl flex-col px-6 pb-safe pt-safe">
         <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-gold/90">
           {APP_NAME}
         </p>
@@ -69,7 +69,7 @@ export default function LandingPage() {
             </Button>
           </div>
 
-          <p className="mt-5 text-center text-xs text-ivory/55">
+          <p className="mt-5 text-center text-sm text-ivory/70">
             {stopCount} places · self-paced · works offline
           </p>
 
@@ -96,7 +96,7 @@ export default function LandingPage() {
             </div>
           </section>
 
-          <p className="mt-8 pb-4 text-center text-xs text-ivory/45">
+          <p className="mt-8 pb-4 text-center text-sm text-ivory/65">
             <Link to={ROUTES.legacy} className="underline-offset-2 hover:underline">
               Open classic tour experience
             </Link>

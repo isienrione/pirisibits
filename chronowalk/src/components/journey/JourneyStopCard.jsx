@@ -36,7 +36,7 @@ export default function JourneyStopCard({ stop, status = 'upcoming', onPress, cl
         )}
         <span
           className={cn(
-            'absolute left-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full text-[0.65rem] font-bold',
+            'absolute left-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold',
             isCurrent
               ? 'bg-gold text-obsidian ring-2 ring-gold/35'
               : isVisited
@@ -71,7 +71,7 @@ export default function JourneyStopCard({ stop, status = 'upcoming', onPress, cl
           </span>
         </div>
         {isVisited ? (
-          <p className="mt-1 text-xs text-soft-slate">Tap to reopen</p>
+          <p className="mt-1 text-sm text-soft-slate">Tap to reopen</p>
         ) : null}
       </div>
     </>
@@ -83,7 +83,7 @@ export default function JourneyStopCard({ stop, status = 'upcoming', onPress, cl
         type="button"
         onClick={onPress}
         className={cn(
-          'flex w-full items-center gap-4 rounded-2xl border px-3 py-3 text-left transition-colors',
+          'flex min-h-11 w-full items-center gap-4 rounded-2xl border px-3 py-3 text-left motion-safe:transition-colors',
           isCurrent
             ? 'border-gold/45 bg-gold/[0.06] shadow-sm'
             : 'border-parchment/80 bg-ivory hover:border-bronze/25 hover:bg-parchment/20',

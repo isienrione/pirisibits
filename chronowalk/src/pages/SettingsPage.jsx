@@ -57,7 +57,7 @@ function SegmentedControl({ options, value, onChange, formatLabel = (v) => Strin
             type="button"
             aria-pressed={selected}
             className={cn(
-              'min-h-10 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors',
+              'min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold motion-safe:transition-colors',
               selected
                 ? 'border-bronze/40 bg-bronze/10 text-deep-slate'
                 : 'border-parchment/80 bg-ivory text-soft-slate hover:border-bronze/25'
@@ -127,11 +127,11 @@ export default function SettingsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-dvh overflow-x-hidden bg-ivory">
       <PageShell className="bg-transparent pb-8">
         <button
           type="button"
-          className="mb-4 text-sm font-medium text-soft-slate hover:text-deep-slate"
+          className="mb-4 inline-flex min-h-11 items-center text-sm font-medium text-soft-slate hover:text-deep-slate"
           onClick={() => navigate(ROUTES.journey)}
         >
           ← Back

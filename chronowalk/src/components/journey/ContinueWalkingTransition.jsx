@@ -21,10 +21,10 @@ export default function ContinueWalkingTransition({ open = true, className = '' 
 
   return (
     <div
-      className={`pointer-events-none fixed inset-x-0 bottom-0 z-[80] px-4 pb-safe ${className}`.trim()}
+      className={`pointer-events-none fixed inset-x-0 bottom-0 z-[80] px-4 pb-launch-bottom ${className}`.trim()}
       data-testid="continue-walking-transition"
     >
-      <div className="pointer-events-auto mx-auto mb-4 max-w-lg rounded-3xl border border-gold/25 bg-ivory/95 p-5 shadow-plaque-lg backdrop-blur-glass">
+      <div className="pointer-events-auto mx-auto mb-launch-bottom max-w-lg rounded-3xl border border-gold/25 bg-ivory/95 p-5 shadow-plaque-lg backdrop-blur-glass motion-safe:transition-colors">
         <p className="text-eyebrow uppercase text-bronze">{heading}</p>
         <p className="mt-2 font-display text-xl font-semibold leading-tight text-deep-slate">
           {targetTitle}

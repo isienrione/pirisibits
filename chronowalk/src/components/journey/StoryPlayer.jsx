@@ -88,7 +88,7 @@ export default function StoryPlayer({ onStepThroughTime }) {
         </div>
       </div>
 
-      <div className="border-t border-gold/15 bg-gradient-to-b from-[#252525] to-obsidian px-6 py-5 pb-safe">
+      <div className="border-t border-gold/15 bg-gradient-to-b from-obsidian via-obsidian to-obsidian px-6 py-5 pb-launch-bottom">
         <div className="flex items-center justify-center gap-4">
           <IconButton
             label="Rewind 15 seconds"
@@ -138,7 +138,7 @@ export default function StoryPlayer({ onStepThroughTime }) {
             className="h-2 w-full cursor-pointer appearance-none rounded-full bg-gold/20 accent-gold"
             onChange={(event) => seekToProgress(Number(event.target.value) / 1000)}
           />
-          <div className="mt-1 flex justify-between text-xs tabular-nums text-parchment/70">
+          <div className="mt-1 flex justify-between text-sm tabular-nums text-parchment/80">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>

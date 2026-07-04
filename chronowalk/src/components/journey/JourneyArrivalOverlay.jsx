@@ -48,11 +48,11 @@ export default function JourneyArrivalOverlay({ onOpenStory }) {
         aria-hidden="true"
       />
 
-      <div className="flex h-full items-end justify-center px-6 pb-[min(28vh,12rem)]">
+      <div className="flex h-full items-end justify-center px-6 pb-[calc(var(--launch-bottom-gutter)+1rem)]">
         <div
           className={cn(
             'pointer-events-auto max-w-sm rounded-3xl border border-gold/35 bg-ivory/95 px-6 py-6 text-center shadow-plaque-lg backdrop-blur-glass',
-            !reducedMotion && 'animate-arrival-discover'
+            !reducedMotion && 'animate-arrival-discover motion-safe:transition-opacity'
           )}
         >
           <MedallionBadge size="md" pulse className="mx-auto">
@@ -77,7 +77,7 @@ export default function JourneyArrivalOverlay({ onOpenStory }) {
               Open story
             </GoldButton>
           ) : (
-            <p className="mt-5 text-xs text-soft-slate">Arriving…</p>
+            <p className="mt-5 text-sm text-soft-slate">Arriving…</p>
           )}
         </div>
       </div>

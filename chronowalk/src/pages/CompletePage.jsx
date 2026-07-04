@@ -27,7 +27,7 @@ function StatColumn({ label, value }) {
   return (
     <div className="flex-1 text-center">
       <p className="font-display text-2xl font-semibold tabular-nums text-ivory">{value}</p>
-      <p className={cn(metaLabel, 'mt-1.5 text-parchment/75')}>{label}</p>
+      <p className={cn(metaLabel, 'mt-1.5 text-parchment/85')}>{label}</p>
     </div>
   )
 }
@@ -53,7 +53,7 @@ export default function CompletePage() {
   const timeSpent = startedAtMs ? formatElapsedDuration(startedAtMs) : '—'
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-obsidian px-6 pb-safe pt-safe text-ivory">
+    <div className="relative flex min-h-dvh flex-col bg-obsidian px-6 pb-safe pt-safe text-ivory">
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.2)_0%,transparent_62%)]"
         aria-hidden="true"
