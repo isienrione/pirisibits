@@ -6,6 +6,7 @@ import { getLocalWaypoint } from '../services/waypointMerge'
 import { getDistance } from '../utils/distance'
 import { estimateWalkMinutes } from '../utils/tourStats'
 import { getLaunchDestination } from './launchDestinations'
+import { TOUR_HERO_PHOTO, getModernPosterUrl } from './modernPhotoRegistry.js'
 
 const ROME_STOP_IDS = [...HEART_OF_ANCIENT_ROME_TOUR.stopIds, ...ROMAN_FORUM_STOP_IDS]
 
@@ -27,7 +28,7 @@ function buildStops(stopIds) {
         waypoint?.modern_poster_url ??
         waypoint?.ancient_poster_url ??
         waypoint?.modern_image_url ??
-        null,
+        getModernPosterUrl(stopId),
     }
   })
 }
@@ -71,7 +72,7 @@ function buildRomeTourDetail() {
     tagline: product?.tagline ?? 'Forum cluster + city loop',
     description:
       'Two thousand years of empire, faith, and genius — restored where you stand, told at your pace.',
-    heroImage: destination?.heroImage ?? `/tour-hero.jpg?v=${__APP_BUILD_ID__}`,
+    heroImage: destination?.heroImage ?? TOUR_HERO_PHOTO,
     productId: product?.id ?? 'rome-complete',
     priceUsd: product?.priceUsd ?? 15,
     stops,

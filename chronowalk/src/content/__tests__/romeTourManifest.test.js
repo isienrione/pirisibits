@@ -31,8 +31,8 @@ describe('manifest.schema', () => {
     })
 
     assertManifestStopShape(stop)
-    expect(stop.heroImage).toContain('/waypoints/test-stop/')
-    expect(stop.transcript).toContain('/waypoints/test-stop/transcript.txt')
+    expect(stop.heroImage).toBe('/waypoints/colosseum/exterior/modern-poster.jpg')
+    expect(stop.transcript).toBe('/waypoints/colosseum/exterior/transcript.txt')
   })
 })
 

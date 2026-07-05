@@ -1,4 +1,4 @@
-/** @typedef {{ lat: number, lng: number }} ManifestCoords */
+import { TOUR_HERO_PHOTO, getModernPosterUrl } from './modernPhotoRegistry.js'
 
 /**
  * @typedef {Object} ManifestStop
@@ -49,17 +49,18 @@ export const MANIFEST_STOP_FIELDS = [
 ]
 
 export const PLACEHOLDER_MEDIA = {
-  heroImage: '/waypoints/placeholder/modern-poster.jpg',
+  heroImage: TOUR_HERO_PHOTO,
   audio: '/waypoints/placeholder/Audio_sample.mp3',
   transcript: '/waypoints/placeholder/transcript.txt',
-  reconstructionNow: '/waypoints/placeholder/modern.mp4',
-  reconstructionThen: '/waypoints/placeholder/ancient-reconstruction.mp4',
+  reconstructionNow: '/waypoints/colosseum/exterior/modern.mp4',
+  reconstructionThen: '/waypoints/colosseum/exterior/ancient-reconstruction.mp4',
 }
 
 export function placeholderPathsForStop(stopId) {
-  const base = `/waypoints/${stopId}`
+  const poster = getModernPosterUrl(stopId)
+  const base = poster.replace(/\/modern-poster\.jpg$/, '')
   return {
-    heroImage: `${base}/modern-poster.jpg`,
+    heroImage: poster,
     audio: `${base}/Audio_sample.mp3`,
     transcript: `${base}/transcript.txt`,
     reconstructionNow: `${base}/modern.mp4`,

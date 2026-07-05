@@ -1,0 +1,113 @@
+{
+  "incomingDir": "public/waypoints/_incoming/modern-photos",
+  "poster": {
+    "width": 1280,
+    "height": 720,
+    "quality": 85
+  },
+  "exterior": {
+    "maxWidth": 2400,
+    "quality": 88
+  },
+  "tourHeroSource": "colosseum-exterior.jpg",
+  "photos": [
+    {
+      "file": "colosseum-exterior.jpg",
+      "title": "Colosseum (exterior)",
+      "destinations": ["colosseum/exterior"],
+      "alsoTourHero": true
+    },
+    {
+      "file": "colosseum-interior.jpg",
+      "title": "Colosseum (interior)",
+      "destinations": ["colosseum/interior"]
+    },
+    {
+      "file": "palatine-hill.jpg",
+      "title": "Roman Forum from Palatine",
+      "destinations": ["palatine-hill-cluster", "capitoline-hill"]
+    },
+    {
+      "file": "trajan-market.jpg",
+      "title": "Trajan's Market",
+      "destinations": ["trajan-market"]
+    },
+    {
+      "file": "pantheon.jpg",
+      "title": "Pantheon",
+      "destinations": ["pantheon"]
+    },
+    {
+      "file": "trevi-fountain.jpg",
+      "title": "Trevi Fountain",
+      "destinations": ["fontana-di-trevi"]
+    },
+    {
+      "file": "largo-argentina.jpg",
+      "title": "Largo di Torre Argentina",
+      "destinations": ["largo-argentina"]
+    },
+    {
+      "file": "piazza-navona.jpg",
+      "title": "Piazza Navona",
+      "destinations": ["piazza-navona", "campo-de-fiori"]
+    },
+    {
+      "file": "castel-sant-angelo.jpg",
+      "title": "Castel Sant'Angelo",
+      "destinations": ["castel-sant-angelo"],
+      "optional": true
+    },
+    {
+      "file": "circus-maximus.jpg",
+      "title": "Circus Maximus",
+      "destinations": ["circus-maximus"],
+      "optional": true
+    },
+    {
+      "file": "appian-way.jpg",
+      "title": "Appian Way",
+      "destinations": ["via-appia"]
+    },
+    {
+      "file": "forum-arch-titus.jpg",
+      "title": "Arch of Titus",
+      "destinations": ["forum-cluster/forum-arch-titus"]
+    },
+    {
+      "file": "forum-basilica-maxentius.jpg",
+      "title": "Temple of Vespasian and Titus / Basilica of Maxentius",
+      "destinations": ["forum-cluster/forum-basilica-maxentius"]
+    },
+    {
+      "file": "forum-via-sacra.jpg",
+      "title": "Via Sacra",
+      "destinations": ["forum-cluster/forum-via-sacra"]
+    },
+    {
+      "file": "forum-temple-vesta.jpg",
+      "title": "Temple of Vesta",
+      "destinations": ["forum-cluster/forum-temple-vesta"]
+    },
+    {
+      "file": "forum-rostra.jpg",
+      "title": "The Rostra",
+      "destinations": ["forum-cluster/forum-rostra"]
+    },
+    {
+      "file": "forum-temple-saturn.jpg",
+      "title": "Temple of Saturn",
+      "destinations": ["forum-cluster/forum-temple-saturn"]
+    },
+    {
+      "file": "forum-curia-julia.jpg",
+      "title": "Curia Julia",
+      "destinations": ["forum-cluster/forum-curia-julia"]
+    },
+    {
+      "file": "forum-arch-severus.jpg",
+      "title": "Arch of Septimius Severus",
+      "destinations": ["forum-cluster/forum-arch-severus"]
+    }
+  ]
+}

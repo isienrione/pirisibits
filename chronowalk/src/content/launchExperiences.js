@@ -1,4 +1,6 @@
-const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
+import { TOUR_HERO_PHOTO } from './modernPhotoRegistry.js'
+
+const tourHeroPhoto = TOUR_HERO_PHOTO
 
 /** Screen 6 — experience modes for a launch destination. */
 export const ROME_LAUNCH_EXPERIENCES = [

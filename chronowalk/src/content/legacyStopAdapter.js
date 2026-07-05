@@ -1,5 +1,6 @@
 import { getWaypointGeo } from '../data/waypointGeo'
 import { getLocalWaypoint } from '../services/waypointMerge'
+import { getModernPosterUrl } from './modernPhotoRegistry'
 import { deriveShortTitle, normalizeManifestStop } from './manifest.schema'
 
 /**
@@ -24,7 +25,10 @@ export function buildStopFromLegacy(stopId, index, nextStopId) {
     subtitle,
     coords: landmark ?? { lat: 0, lng: 0 },
     radiusM: geo?.geofenceThresholdM ?? 30,
-    heroImage: waypoint?.modern_poster_url ?? waypoint?.modern_image_url,
+    heroImage:
+      waypoint?.modern_poster_url ??
+      waypoint?.modern_image_url ??
+      getModernPosterUrl(stopId),
     audio: waypoint?.arrival_immersive_url ?? waypoint?.ambient_url,
     transcript: waypoint?.arrival_transcript,
     reconstructionNow: waypoint?.modern_video_url ?? waypoint?.modern_image_url,

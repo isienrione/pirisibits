@@ -35,6 +35,16 @@
 | Circus Maximus | `circus-maximus/` |
 | Appian Way | `via-appia/` |
 
+### Modern-day photos (batch install)
+
+Drop JPEGs in `_incoming/modern-photos/` (see README there), then:
+
+```bash
+npm run install:modern-photos
+```
+
+This writes `modern-exterior.jpg` and `modern-poster.jpg` into each waypoint folder.
+
 **Full tour (legacy debug):** `?tour=rome-core`
 
 Verify shipped stops: `npm run verify-all-waypoints`

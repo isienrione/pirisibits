@@ -1,4 +1,6 @@
-const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
+import { TOUR_HERO_PHOTO } from './modernPhotoRegistry.js'
+
+const tourHeroPhoto = TOUR_HERO_PHOTO
 
 /** Launch destination cards — Screen 2 Tour Selection. */
 export const LAUNCH_DESTINATIONS = [
