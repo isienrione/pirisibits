@@ -14,4 +14,3 @@
   VITE_V2_APP = "true"
   VITE_FIGMA_REDESIGN = "true"
   VITE_ALLOW_DEV_ACCESS = "true"
-  VITE_DEV_PANEL = "true"
