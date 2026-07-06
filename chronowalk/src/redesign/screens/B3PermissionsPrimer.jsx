@@ -58,7 +58,8 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           <ChronoWalkLogo
             size={88}
             mode="breathe"
-            monumentOpacity={0.14}
+            monumentPhoto={colosseumNow}
+            monumentOpacity={0.1}
             showWordmark
           />
           <p

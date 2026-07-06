@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette, BottomScrim, Eyebrow, Seam, ChronoWalkLogo } from '../ui/index.js'
+import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
 
 export default function C4ArrivalMoment({
   accent = T.actI,
@@ -38,28 +38,18 @@ export default function C4ArrivalMoment({
       <BottomScrim strength={0.88} />
       <Seam />
 
-      <div
-        key={key}
-        style={{
-          position: 'absolute',
-          top: '36%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 120,
-          height: 120,
-        }}
-      >
+      <div key={key} style={{ position: 'absolute', top: '36%', left: '50%', transform: 'translate(-50%, -50%)' }}>
         {[0, 1, 2].map((i) => (
           <div
             key={i}
             style={{
               position: 'absolute',
-              inset: 0,
-              margin: 'auto',
               width: 56,
               height: 56,
               borderRadius: '50%',
               border: `1.5px solid ${accent}`,
+              top: '50%',
+              left: '50%',
               animation: 'pulseRingOut 2.2s ease-out forwards',
               animationDelay: `${i * 0.45}s`,
             }}
@@ -68,19 +58,16 @@ export default function C4ArrivalMoment({
         <div
           style={{
             position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2,
+            top: '50%',
+            left: '50%',
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            background: accent,
+            transform: 'translate(-50%, -50%)',
+            boxShadow: `0 0 12px ${accent}`,
           }}
-        >
-          <ChronoWalkLogo
-            size={84}
-            mode="breathe"
-            monumentOpacity={0.16}
-          />
-        </div>
+        />
       </div>
 
       <div
