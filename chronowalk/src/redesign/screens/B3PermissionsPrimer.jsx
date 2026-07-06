@@ -1,125 +1,153 @@
-import { T, F } from "../tokens.js";
-import { severusNow } from "../images.js";
-import { RedesignNavCtx } from '../nav.js';
-import { Seam, Vignette } from '../ui/index.js';
-import { useContext } from "react";
+import { MapPin, Navigation, Shield } from 'lucide-react'
+import { T, F } from '../tokens.js'
+import { colosseumNow } from '../images.js'
+import { Vignette } from '../ui/index.js'
+import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
+import { PrimaryButton } from '../ui/PrimaryButton.jsx'
+import { GhostButton } from '../ui/GhostButton.jsx'
+
+const BENEFITS = [
+  {
+    icon: Navigation,
+    text: 'Arrival stories unlock when you reach each landmark',
+  },
+  {
+    icon: MapPin,
+    text: 'Walking directions stay in sync with your position',
+  },
+  {
+    icon: Shield,
+    text: 'You can change this anytime in Settings',
+  },
+]
 
 export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, paceTitle }) {
-  const { navigate } = useContext(RedesignNavCtx);
-
   return (
-    <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
-      {/* Full-bleed forum ruins photo — dramatic sky, muted */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${severusNow})`,
-        backgroundSize: "cover", backgroundPosition: "center 25%",
-        filter: "brightness(0.22) saturate(0.45)",
-      }} />
+    <div
+      style={{
+        background: T.obsidian,
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+        fontFamily: F.body,
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${colosseumNow})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 30%',
+          filter: 'brightness(0.28) saturate(0.5)',
+        }}
+      />
       <Vignette />
 
-      {/* Vertical Seam — the dividing line between what we do / never do */}
-      <Seam />
-
-      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column" }}>
-
-        {/* Top area — logomark centered */}
-        <div style={{ textAlign: "center", paddingTop: 56, paddingBottom: 36 }}>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" style={{ filter: "drop-shadow(0 0 5px rgba(232,161,60,0.55))" }} />
-            <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
-          </svg>
-        </div>
-
-        {/* Two-column zone — Seam is the visual divider */}
-        <div style={{ display: "flex", flex: 1, paddingBottom: 28 }}>
-
-          {/* LEFT — "While walking:" */}
-          <div style={{ width: "50%", padding: "0 20px 0 28px", display: "flex", flexDirection: "column" }}>
-            <span style={{
-              fontFamily: F.body, fontSize: 11, color: T.ember,
-              letterSpacing: "0.18em", textTransform: "uppercase",
-              display: "block", marginBottom: 22,
-            }}>
-              While walking:
-            </span>
-            <p style={{ fontSize: 15, color: T.warmWhite, lineHeight: 1.65, fontWeight: 400 }}>
-              knows which story to tell
-            </p>
-          </div>
-
-          {/* RIGHT — "Never:" */}
-          <div style={{ width: "50%", padding: "0 28px 0 20px", display: "flex", flexDirection: "column" }}>
-            <span style={{
-              fontFamily: F.body, fontSize: 11, color: T.muted,
-              letterSpacing: "0.18em", textTransform: "uppercase",
-              display: "block", marginBottom: 22,
-            }}>
-              Never:
-            </span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {["background tracking", "storing", "selling"].map((item) => (
-                <div key={item} style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ color: `${T.muted}70`, fontSize: 12, lineHeight: 1, flexShrink: 0 }}>·</span>
-                  <p style={{ fontSize: 14, color: `${T.warmWhite}90`, lineHeight: 1.55 }}>{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom panel — exact copy + CTA */}
-        <div style={{ padding: "22px 28px 44px", borderTop: `1px solid ${T.ink800}` }}>
-          <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.75, marginBottom: 28 }}>
-            {paceTitle ? `${paceTitle} · ` : ''}
-            ChronoWalk uses your location{' '}
-            <span style={{ color: T.warmWhite }}>only while walking the tour.</span>
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          padding:
+            'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px max(32px, calc(env(safe-area-inset-bottom) + 24px))',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <ChronoWalkLogo size={68} />
+          <p
+            style={{
+              marginTop: 14,
+              fontSize: 11,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: T.muted,
+            }}
+          >
+            Before you walk
           </p>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => (onEnable ? onEnable() : navigate('B4'))}
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            maxWidth: 360,
+            margin: '0 auto',
+            width: '100%',
+          }}
+        >
+          <h1
             style={{
-              width: '100%', padding: '16px',
-              background: T.ember, color: T.obsidian,
-              borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
-              border: 'none', cursor: busy ? 'wait' : 'pointer',
-              boxShadow: '0 0 24px rgba(232,161,60,0.42)',
-              marginBottom: 12,
-              opacity: busy ? 0.75 : 1,
+              fontFamily: F.display,
+              fontSize: 34,
+              fontWeight: 300,
+              color: T.warmWhite,
+              lineHeight: 1.12,
+              margin: '0 0 14px',
+              textAlign: 'center',
             }}
           >
+            Enable location for GPS guidance
+          </h1>
+          <p
+            style={{
+              fontSize: 15,
+              color: T.muted,
+              lineHeight: 1.65,
+              textAlign: 'center',
+              margin: '0 0 28px',
+            }}
+          >
+            ChronoWalk uses your location only while you are walking the tour — never in the
+            background when the app is closed.
+          </p>
+
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {BENEFITS.map(({ icon: Icon, text }) => (
+              <li key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                <span
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: 'rgba(232,161,60,0.14)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={18} color={T.ember} strokeWidth={1.8} />
+                </span>
+                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}dd`, lineHeight: 1.55 }}>{text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div style={{ marginTop: 24 }}>
+          {paceTitle ? (
+            <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 16px' }}>
+              {paceTitle} pace selected
+            </p>
+          ) : null}
+          <PrimaryButton onClick={onEnable} disabled={busy}>
             {busy ? 'Requesting access…' : 'Enable location & start'}
-          </button>
+          </PrimaryButton>
           {onSkip ? (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={onSkip}
-              style={{
-                width: '100%', padding: '14px',
-                background: 'transparent', color: T.muted,
-                border: 'none', cursor: busy ? 'wait' : 'pointer', fontSize: 14,
-              }}
-            >
-              Continue without enabling
-            </button>
-          ) : (
-          <button
-            onClick={() => navigate("B4")}
-            style={{
-              width: "100%", padding: "16px",
-              background: T.ember, color: T.obsidian,
-              borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
-              border: "none", cursor: "pointer",
-              boxShadow: "0 0 24px rgba(232,161,60,0.42)",
-            }}
-          >
-            Sounds fair — continue
-          </button>
-          )}
+            <div style={{ marginTop: 10 }}>
+              <GhostButton onClick={onSkip} disabled={busy}>
+                Continue without enabling
+              </GhostButton>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
-  );
+  )
 }

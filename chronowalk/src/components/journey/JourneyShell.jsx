@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
+import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
@@ -115,9 +116,16 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [audio.narrationPlaying, state, step?.id, step?.record?.scripted_rest, step?.type, transition])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
+  const geoDebug = useJourneyGeoDebugOptions(
+    geoTarget?.geofence
+      ? { lat: geoTarget.geofence.lat, lng: geoTarget.geofence.lng }
+      : null,
+    { geofenceRadiusM: geoTarget?.geofence?.radius_m ?? 40 },
+  )
   const geo = useJourneyGeo(geoTarget, {
-    debugMode: import.meta.env.DEV,
-    simulateAtTarget: devSimulateGps,
+    debugMode: geoDebug.debugMode,
+    simulateAtTarget: geoDebug.simulateAtTarget || devSimulateGps,
+    debugPosition: geoDebug.debugPosition,
   })
 
   const companion = useWalkingCompanion({

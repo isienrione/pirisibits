@@ -10,6 +10,7 @@ import { hydrateRomeMapTileCache, verifyRomeMapTiles } from '../map/offlineMapTi
 import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
+import V2FieldTestPanel from '../components/dev/V2FieldTestPanel.jsx'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
@@ -40,8 +41,14 @@ import RedesignCreditsPage from '../redesign/pages/RedesignCreditsPage.jsx'
 import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
 import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
 import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
+import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 
 const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+
+function TourDebugBootstrap() {
+  useTourDebugBootstrap()
+  return null
+}
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()
@@ -85,6 +92,8 @@ function AppRoutes() {
       <JourneyThresholdLayer />
       <ShellTabBar />
       <PwaUpdatePrompt />
+      <TourDebugBootstrap />
+      <V2FieldTestPanel />
       <AppChrome />
     </V2ErrorBoundary>
   )

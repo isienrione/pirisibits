@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useGeoLocation, JOURNEY_STATE as GEO_STATE } from './useGeoLocation.js'
 
-export function useJourneyGeo(waypoint, { debugMode = false, simulateAtTarget = false } = {}) {
+export function useJourneyGeo(waypoint, { debugMode = false, simulateAtTarget = false, debugPosition = null } = {}) {
   const target = useMemo(() => {
     if (!waypoint?.geofence) return null
     return {
@@ -14,6 +14,7 @@ export function useJourneyGeo(waypoint, { debugMode = false, simulateAtTarget = 
     target,
     geofenceThresholdM: waypoint?.geofence?.radius_m ?? 40,
     debugMode,
+    debugPosition,
     simulateAtTarget,
   })
 

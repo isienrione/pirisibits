@@ -62,6 +62,11 @@ describe('env URL params', () => {
     expect(isDebugMap()).toBe(true)
   })
 
+  it('accepts geo_debug as an alias for debugGeo', () => {
+    setSearch('/?geo_debug=true&debugStop=colosseum')
+    expect(isDebugMap()).toBe(true)
+  })
+
   it('enables dev panel via URL param', () => {
     setSearch('/?devPanel=true')
     expect(isDevPanelEnabled()).toBe(true)

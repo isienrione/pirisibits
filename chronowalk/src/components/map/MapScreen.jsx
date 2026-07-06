@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import TourMap from '../TourMap.jsx'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import {
@@ -10,7 +10,8 @@ import {
 } from '../../content/mapStops.js'
 import { isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { isDevPanelEnabled } from '../../config/env.js'
+import { isDevPanelEnabled, isDebugMap } from '../../config/env.js'
+import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
@@ -18,8 +19,6 @@ import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
-import { isDebugMap } from '../../config/env.js'
-import { useNavigate } from 'react-router-dom'
 import { toWalkCardModel } from '../../content/stopPresentation.js'
 import { ShellWalkCard } from '../../shell'
 
@@ -78,9 +77,16 @@ export default function MapScreen() {
   }, [])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
+  const geoDebug = useJourneyGeoDebugOptions(
+    geoTarget?.geofence
+      ? { lat: geoTarget.geofence.lat, lng: geoTarget.geofence.lng }
+      : null,
+    { geofenceRadiusM: geoTarget?.geofence?.radius_m ?? 40 },
+  )
   const geo = useJourneyGeo(geoTarget, {
-    debugMode: import.meta.env.DEV,
-    simulateAtTarget: devSimulateGps,
+    debugMode: geoDebug.debugMode,
+    simulateAtTarget: geoDebug.simulateAtTarget || devSimulateGps,
+    debugPosition: geoDebug.debugPosition,
   })
 
   const companion = useWalkingCompanion({

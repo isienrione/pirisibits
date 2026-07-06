@@ -3,14 +3,47 @@ const parseBooleanEnv = (value) => {
   return normalized === 'true' || normalized === '1' || normalized === 'yes'
 }
 
-/** Runtime debug geo: URL param overrides build-time env (handy on Netlify). */
-export const isDebugGeo = () => {
+const DEBUG_GEO_PARAM_KEYS = ['debugGeo', 'geo_debug']
+
+/** Raw debug-geo URL/build value (true, walking, approaching, etc.). */
+export const getDebugGeoParam = () => {
   if (typeof window !== 'undefined') {
-    const param = new URLSearchParams(window.location.search).get('debugGeo')
-    if (param !== null) return parseBooleanEnv(param)
+    const params = new URLSearchParams(window.location.search)
+    for (const key of DEBUG_GEO_PARAM_KEYS) {
+      const param = params.get(key)
+      if (param !== null) return param
+    }
   }
 
-  return parseBooleanEnv(import.meta.env.VITE_DEBUG_GEO)
+  if (parseBooleanEnv(import.meta.env.VITE_DEBUG_GEO)) return 'true'
+  return null
+}
+
+/** Runtime debug geo: URL param (?debugGeo or ?geo_debug) overrides build-time env. */
+export const isDebugGeo = () => {
+  const param = getDebugGeoParam()
+  if (param === null) return false
+  const normalized = String(param).trim().toLowerCase()
+  if (['walking', 'transit', 'approach', 'approaching', 'near'].includes(normalized)) {
+    return true
+  }
+  return parseBooleanEnv(param)
+}
+
+/**
+ * Simulated GPS placement while debug geo is active.
+ * - arrived (default): inside geofence — triggers arrival cards
+ * - approaching: just outside geofence
+ * - walking: farther away — walking / map UI
+ */
+export const getDebugGeoPlacement = () => {
+  if (!isDebugGeo()) return null
+  const normalized = String(getDebugGeoParam() ?? 'true')
+    .trim()
+    .toLowerCase()
+  if (['walking', 'transit'].includes(normalized)) return 'walking'
+  if (['approach', 'approaching', 'near'].includes(normalized)) return 'approaching'
+  return 'arrived'
 }
 
 /** Creator studio for AI asset prompts (?assetStudio=true). */
