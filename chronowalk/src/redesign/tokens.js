@@ -18,8 +18,8 @@ export const T = {
 }
 
 export const F = {
-  display: "'Fraunces', Georgia, serif",
-  body: "'DM Sans', system-ui, sans-serif",
+  display: "'Cinzel', 'Fraunces', Georgia, serif",
+  body: "'Inter', 'DM Sans', system-ui, sans-serif",
 }
 
 export const ACT_COLORS = {

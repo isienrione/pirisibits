@@ -66,8 +66,8 @@
   --r-card: var(--radius-card);
   --r-sheet: var(--radius-sheet);
 
-  --font-display: 'Fraunces', Georgia, serif;
-  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Cinzel', 'Fraunces', Georgia, serif;
+  --font-ui: 'Inter', 'DM Sans', system-ui, sans-serif;
   --fs-hero: 40px;
   --fs-title: 34px;
   --fs-place: 32px;

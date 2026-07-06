@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette, BottomScrim, Eyebrow, Seam, ChronoWalkLogo } from '../ui/index.js'
+import { Vignette, BottomScrim, Eyebrow, Seam, ArrivalPulse } from '../ui/index.js'
 
 export default function C4ArrivalMoment({
   accent = T.actI,
@@ -11,10 +11,10 @@ export default function C4ArrivalMoment({
   onBeginStory,
   busy = false,
 }) {
-  const [key, setKey] = useState(0)
+  const [pulseKey, setPulseKey] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setKey((k) => k + 1), 2800)
+    const t = setInterval(() => setPulseKey((k) => k + 1), 3200)
     return () => clearInterval(t)
   }, [])
 
@@ -39,48 +39,14 @@ export default function C4ArrivalMoment({
       <Seam />
 
       <div
-        key={key}
         style={{
           position: 'absolute',
           top: '36%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 120,
-          height: 120,
         }}
       >
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              margin: 'auto',
-              width: 56,
-              height: 56,
-              borderRadius: '50%',
-              border: `1.5px solid ${accent}`,
-              animation: 'pulseRingOut 2.2s ease-out forwards',
-              animationDelay: `${i * 0.45}s`,
-            }}
-          />
-        ))}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2,
-          }}
-        >
-          <ChronoWalkLogo
-            size={84}
-            mode="breathe"
-            monumentOpacity={0.16}
-          />
-        </div>
+        <ArrivalPulse size={240} accent={accent} cycleKey={pulseKey} logoSize={86} />
       </div>
 
       <div
