@@ -1,8 +1,7 @@
 import { MapPin, Navigation, Shield } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette } from '../ui/index.js'
-import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
+import { Vignette, ChronoWalkLogo } from '../ui/index.js'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
 
@@ -56,7 +55,13 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <ChronoWalkLogo size={68} />
+          <ChronoWalkLogo
+            size={88}
+            mode="breathe"
+            monumentPhoto={colosseumNow}
+            monumentOpacity={0.1}
+            showWordmark
+          />
           <p
             style={{
               marginTop: 14,

@@ -3,6 +3,7 @@ import BeginFlow from '../../components/begin/BeginFlow'
 import { hasAccess } from '../../lib/config'
 
 import RedesignBeginFlow from '../../redesign/RedesignBeginFlow.jsx'
+import RedesignRouteShell from '../../redesign/RedesignRouteShell.jsx'
 
 const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
 

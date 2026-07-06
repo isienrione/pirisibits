@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
-import { Vignette, BottomScrim } from '../ui/index.js';
+import { Vignette, BottomScrim, ChronoWalkLogo } from '../ui/index.js';
 
 export default function B2MakeItYours({
   showIosInstructions = false,
@@ -49,12 +49,9 @@ export default function B2MakeItYours({
       {/* Content — all type ON the photograph */}
       <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "64px 28px 52px" }}>
 
-        {/* Small logomark */}
+        {/* Brand mark */}
         <div style={{ marginBottom: 44 }}>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.5))" }} />
-            <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
-          </svg>
+          <ChronoWalkLogo size={52} mode="breathe" monumentPhoto={spanishSteps} monumentOpacity={0.11} />
         </div>
 
         <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 10, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
