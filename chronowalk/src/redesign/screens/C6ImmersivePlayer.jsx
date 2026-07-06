@@ -1,126 +1,283 @@
-import { useState, useRef } from "react";
-import { Play, Pause, SkipBack, SkipForward, Volume2, ChevronLeft } from "lucide-react";
-import { T, F } from "../tokens.js";
-import { colosseumNow } from "../images.js";
-import { RedesignNavCtx } from '../nav.js';
-import { Vignette, Eyebrow } from '../ui/index.js';
-import { useContext } from "react";
+import { useState, useRef, useEffect } from 'react'
+import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
+import { T, F } from '../tokens.js'
+import { colosseumNow } from '../images.js'
+import { Vignette, Eyebrow } from '../ui/index.js'
 
-export default function C6ImmersivePlayer() {
-  const { navigate } = useContext(RedesignNavCtx);
-  const accent    = T.actI;
-  const [playing, setPlaying]   = useState(true);
-  const [progress, setProgress] = useState(0.42);
-  const [tab, setTab]           = useState("chapters");
-  const [speed, setSpeed]       = useState("1×");
+/**
+ * Immersion — dedicated audio player (Figma C6). Separate from threshold & arrival.
+ */
+export default function C6ImmersivePlayer({
+  accent = T.actI,
+  actLabel = 'ACT I — THE ARENA',
+  title = 'The Colosseum',
+  chapterTitle = 'The Beast Awakens',
+  chapterIndex = 0,
+  chapterCount = 3,
+  photo = colosseumNow,
+  transcript = '',
+  narrationPlaying = false,
+  initialTab = 'chapters',
+  onTogglePlay,
+  onSkipBack,
+  onSkipForward,
+  onStoryComplete,
+  onBack,
+}) {
+  const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'chapters')
+  const [progress] = useState(0.35)
+  const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
-  const bars = useRef(Array.from({ length: 52 }, () => 8 + Math.random() * 32)).current;
+  useEffect(() => {
+    if (initialTab === 'transcript') setTab('transcript')
+  }, [initialTab])
+
+  const chapters = Array.from({ length: chapterCount }, (_, i) => ({
+    n: i + 1,
+    title: i === chapterIndex ? chapterTitle : `Chapter ${i + 1}`,
+  }))
 
   return (
-    <div style={{ background: T.obsidian, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
-      {/* Full-bleed blurred photo bg */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${colosseumNow})`,
-        backgroundSize: "cover", backgroundPosition: "center 30%",
-        filter: "blur(24px) brightness(0.22) saturate(0.5)",
-      }} />
-      {/* Dark overlay */}
-      <div style={{ position: "absolute", inset: 0, background: "rgba(22,19,15,0.78)" }} />
+    <div
+      style={{
+        background: T.obsidian,
+        height: '100%',
+        fontFamily: F.body,
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${photo})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 30%',
+          filter: 'blur(20px) brightness(0.25) saturate(0.55)',
+        }}
+      />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,19,15,0.82)' }} />
       <Vignette />
 
-      <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%", padding: "48px 24px 24px" }}>
-        {/* Header */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexShrink: 0 }}>
-          <button onClick={() => navigate("C5")} style={{ display: "flex", alignItems: "center", gap: 2, color: T.muted, background: "none", border: "none", cursor: "pointer", fontFamily: F.body, fontSize: 13 }}>
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px max(24px, env(safe-area-inset-bottom))',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 20,
+            flexShrink: 0,
+          }}
+        >
+          <button
+            type="button"
+            onClick={onBack}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              color: T.muted,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontFamily: F.body,
+              fontSize: 13,
+            }}
+          >
             <ChevronLeft size={17} /> Waypoint
           </button>
-          <Eyebrow color={accent}>CHAPTER 2 OF 3</Eyebrow>
+          <Eyebrow color={accent}>
+            CHAPTER {chapterIndex + 1} OF {chapterCount}
+          </Eyebrow>
           <div style={{ width: 72 }} />
         </div>
 
-        {/* Chapter title — ON photograph */}
-        <h2 style={{ fontFamily: F.display, fontSize: 40, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 5, flexShrink: 0, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
-          Fifty Thousand<br />Witnesses
+        <p style={{ fontSize: 11, color: T.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 6 }}>
+          {actLabel}
+        </p>
+        <h2
+          style={{
+            fontFamily: F.display,
+            fontSize: 36,
+            color: T.warmWhite,
+            fontWeight: 300,
+            lineHeight: 1.08,
+            marginBottom: 4,
+            flexShrink: 0,
+          }}
+        >
+          {chapterTitle}
         </h2>
-        <p style={{ fontSize: 13, color: T.muted, marginBottom: 24, flexShrink: 0 }}>The Colosseum · Act I</p>
+        <p style={{ fontSize: 14, color: T.muted, marginBottom: 22, flexShrink: 0 }}>{title}</p>
 
         {/* Waveform */}
-        <div style={{ display: "flex", alignItems: "center", gap: 1.5, height: 52, marginBottom: 10, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 1.5, height: 44, marginBottom: 8, flexShrink: 0 }}>
           {bars.map((h, i) => (
-            <div key={i} onClick={() => setProgress(i / bars.length)} style={{
-              flex: 1, height: h, borderRadius: 1,
-              background: (i / bars.length) < progress ? accent : `${T.muted}35`,
-              cursor: "pointer", transition: "background 120ms",
-              boxShadow: (i / bars.length) < progress ? `0 0 4px ${accent}60` : "none",
-            }} />
+            <div
+              key={i}
+              style={{
+                flex: 1,
+                height: h,
+                borderRadius: 1,
+                background: i / bars.length < progress ? accent : `${T.muted}35`,
+                boxShadow: i / bars.length < progress ? `0 0 4px ${accent}60` : 'none',
+              }}
+            />
           ))}
         </div>
-
-        {/* Time */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24, flexShrink: 0 }}>
-          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums" }}>4:22</span>
-          <span style={{ fontSize: 12, color: T.muted }}>−6:01</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, flexShrink: 0 }}>
+          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>0:00</span>
+          <span style={{ fontSize: 12, color: T.muted }}>Playing</span>
         </div>
 
         {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexShrink: 0 }}>
-          <button onClick={() => setSpeed(s => s === "1×" ? "1.5×" : s === "1.5×" ? "2×" : "1×")} style={{ fontFamily: F.body, fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer", minWidth: 28 }}>{speed}</button>
-          <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipBack size={28} /></button>
-          <button onClick={() => setPlaying(!playing)} style={{
-            width: 72, height: 72, borderRadius: 36, background: T.ember, border: "none", cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 0 28px rgba(232,161,60,0.55)",
-          }}>
-            {playing ? <Pause size={30} fill={T.obsidian} color={T.obsidian} /> : <Play size={30} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 4 }} />}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 28,
+            marginBottom: 24,
+            flexShrink: 0,
+          }}
+        >
+          <button
+            type="button"
+            onClick={onSkipBack}
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
+          >
+            <SkipBack size={26} />
           </button>
-          <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipForward size={28} /></button>
-          <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><Volume2 size={20} /></button>
+          <button
+            type="button"
+            onClick={onTogglePlay}
+            style={{
+              width: 68,
+              height: 68,
+              borderRadius: 34,
+              background: T.ember,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 28px rgba(232,161,60,0.55)',
+            }}
+          >
+            {narrationPlaying ? (
+              <Pause size={28} fill={T.obsidian} color={T.obsidian} />
+            ) : (
+              <Play size={28} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={onSkipForward}
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
+          >
+            <SkipForward size={26} />
+          </button>
         </div>
 
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: 24, borderBottom: `1px solid ${T.ink800}`, marginBottom: 14, flexShrink: 0 }}>
-          {(["chapters", "transcript", "stops"]).map(t => (
-            <button key={t} onClick={() => setTab(t)} style={{
-              paddingBottom: 10, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
-              color: tab === t ? T.warmWhite : T.muted, marginBottom: -1,
-              background: "none", border: "none",
-              borderBottom: `1.5px solid ${tab === t ? accent : "transparent"}`,
-              cursor: "pointer", fontFamily: F.body,
-            }}>{t}</button>
+        <div
+          style={{
+            display: 'flex',
+            gap: 24,
+            borderBottom: `1px solid ${T.ink800}`,
+            marginBottom: 12,
+            flexShrink: 0,
+          }}
+        >
+          {['chapters', 'transcript'].map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(t)}
+              style={{
+                paddingBottom: 8,
+                fontSize: 11,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: tab === t ? T.warmWhite : T.muted,
+                marginBottom: -1,
+                background: 'none',
+                border: 'none',
+                borderBottom: `1.5px solid ${tab === t ? accent : 'transparent'}`,
+                cursor: 'pointer',
+                fontFamily: F.body,
+              }}
+            >
+              {t}
+            </button>
           ))}
         </div>
 
-        <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none" }}>
-          {tab === "chapters" && (
+        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', marginBottom: 12 }}>
+          {tab === 'transcript' ? (
+            <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.8 }}>{transcript || 'Transcript loading…'}</p>
+          ) : (
             <div>
-              {["The Beast Awakens", "Fifty Thousand Witnesses", "The Concrete Memory"].map((ch, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, paddingBottom: 14 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 4, flexShrink: 0, background: i < 1 ? T.ember : i === 1 ? accent : T.ink800, boxShadow: i === 1 ? `0 0 8px ${accent}` : "none" }} />
-                  <span style={{ fontSize: 14, color: i === 1 ? T.warmWhite : T.muted }}>{ch}</span>
-                </div>
-              ))}
-            </div>
-          )}
-          {tab === "transcript" && (
-            <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.8 }}>
-              "Vespasian began it. Titus opened it — in 80 AD, with one hundred days of games. Fifty thousand people in tiered marble. The noise was not applause. It was the city breathing together for the first time..."
-            </p>
-          )}
-          {tab === "stops" && (
-            <div>
-              {["The Colosseum", "The Arch of Constantine", "The Palatine Hill"].map((s, i) => (
-                <div key={i} style={{ paddingBottom: 14, borderBottom: `1px solid ${T.ink800}`, marginBottom: 14 }}>
-                  <span style={{ fontSize: 14, color: i === 0 ? accent : T.muted }}>
-                    {i === 0 && <span style={{ fontSize: 10, color: accent, marginRight: 8 }}>NOW PLAYING</span>}
-                    {s}
-                  </span>
+              {chapters.map((ch, i) => (
+                <div
+                  key={ch.n}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '10px 0',
+                    opacity: i === chapterIndex ? 1 : 0.55,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      background: i === chapterIndex ? accent : T.ink800,
+                      boxShadow: i === chapterIndex ? `0 0 8px ${accent}` : 'none',
+                    }}
+                  />
+                  <span style={{ fontSize: 14, color: i === chapterIndex ? T.warmWhite : T.muted }}>{ch.title}</span>
                 </div>
               ))}
             </div>
           )}
         </div>
+
+        {onStoryComplete ? (
+          <button
+            type="button"
+            onClick={onStoryComplete}
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: 12,
+              border: `1px solid ${T.muted}44`,
+              background: 'transparent',
+              color: T.warmWhite,
+              fontFamily: F.body,
+              fontSize: 14,
+              fontWeight: 500,
+              cursor: 'pointer',
+              flexShrink: 0,
+            }}
+          >
+            Continue walk →
+          </button>
+        ) : null}
       </div>
     </div>
-  );
+  )
 }

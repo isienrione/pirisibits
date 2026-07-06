@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow, THEN_colosseum } from "../images.js";
 import { Vignette } from '../ui/index.js';
@@ -8,14 +8,24 @@ export default function C7Threshold({
   thenPhoto = THEN_colosseum,
   honestyCaption = 'Statue placement evidence-based; awning colors informed conjecture',
   onDismiss,
+  onCrossed,
 }) {
   const [state, setState]       = useState("idle");
   const [bloomPos, setBloomPos] = useState({ x: 195, y: 422 });
   const [bloomR, setBloomR]     = useState(0);
   const holdTimer = useRef(null);
   const bloomRAF  = useRef(null);
+  const crossedNotified = useRef(false);
 
   const isThen = state === "crossed" || state === "returning";
+
+  useEffect(() => {
+    if (state === 'crossed' && !crossedNotified.current) {
+      crossedNotified.current = true
+      onCrossed?.()
+    }
+    if (state === 'idle') crossedNotified.current = false
+  }, [state, onCrossed])
 
   const cleanup = () => {
     if (holdTimer.current) { clearTimeout(holdTimer.current); holdTimer.current = null; }

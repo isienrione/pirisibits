@@ -30,7 +30,7 @@ export function ThresholdDemoPage() {
 }
 
 export function JourneyThresholdLayer() {
-  const { state, context, completeStoryAfterThreshold } = useV2Journey()
+  const { state, context, transition } = useV2Journey()
   const { manifest } = useTourManifest()
   const audio = useAudioEngine(manifest)
   const step = useJourneyStep(
@@ -49,8 +49,7 @@ export function JourneyThresholdLayer() {
   const ambience = resolveThresholdAmbienceUrls(manifest)
 
   const handleDismiss = () => {
-    completeStoryAfterThreshold(step.id)
-    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, via_threshold: true })
+    transition(JOURNEY_STATES.STORY)
   }
 
   return useFigmaRedesign ? (

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
@@ -27,12 +27,12 @@ import { formatDistanceToNext } from '../../content/journeyProgress.js'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import C3Approaching from '../../redesign/screens/C3Approaching.jsx'
 import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
-import C5Story from '../../redesign/screens/C5Story.jsx'
+import C6ImmersivePlayer from '../../redesign/screens/C6ImmersivePlayer.jsx'
 import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
 import C8bThePause from '../../redesign/screens/C8bThePause.jsx'
 import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
 import { ACT_COLORS, T } from '../../redesign/tokens.js'
-import RedesignAudioUnlock from '../../redesign/ui/RedesignAudioUnlock.jsx'
+import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
 import {
   accentForWaypoint,
   approachCopy,
@@ -43,7 +43,6 @@ import {
 } from '../../redesign/lib/waypointPresentation.js'
 
 export default function JourneyShell({ variant = 'legacy' }) {
-  const navigate = useNavigate()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -65,6 +64,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const scriptedRestEnteredRef = useRef(null)
   const prevStateRef = useRef(state)
   const prevCompanionModeRef = useRef(COMPANION_MODES.NORMAL)
+  const storyViewRef = useRef('chapters')
 
   useEffect(() => {
     prepareResumeCue()
@@ -253,9 +253,29 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleBeginStory = async () => {
     if (!step?.record) return
+    storyViewRef.current = 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
     setBusy(false)
+  }
+
+  const handleStepThroughTime = () => {
+    if (!step?.record) return
+    if (step.record.reconstruction) {
+      transition(JOURNEY_STATES.THRESHOLD)
+      return
+    }
+    handleBeginStory()
+  }
+
+  const handleAudioOnly = () => {
+    storyViewRef.current = 'chapters'
+    handleBeginStory()
+  }
+
+  const handleTranscript = () => {
+    storyViewRef.current = 'transcript'
+    handleBeginStory()
   }
 
   const handleStoryComplete = useCallback(() => {
@@ -394,7 +414,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   if (!audioUnlocked && !audio.ready) {
     if (variant === 'redesign') {
       return withInterruptionBanner(
-        <RedesignAudioUnlock onUnlock={handleUnlockAudio} busy={busy} />
+        <RedesignJourneyWelcome onUnlock={handleUnlockAudio} busy={busy} />
       )
     }
     return withInterruptionBanner(
@@ -437,18 +457,33 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
     if (variant === 'redesign') {
-      const props = redesignWaypointProps(step.record)
+      const record = step.record
+      const props = redesignWaypointProps(record)
+      const chapters = record.chapters?.length
+        ? record.chapters
+        : [{ title: signatureLine(record) }]
+      const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
+      const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
+
       return withInterruptionBanner(
-        <C5Story
-          {...props}
+        <C6ImmersivePlayer
+          accent={props.accent}
+          actLabel={actLabel}
+          title={props.title}
+          chapterTitle={chapters[0]?.title ?? signatureLine(record)}
+          chapterIndex={0}
+          chapterCount={Math.max(chapters.length, 1)}
+          photo={props.photo}
+          transcript={record.transcriptPreview ?? signatureLine(record)}
           narrationPlaying={audio.narrationPlaying}
+          initialTab={storyViewRef.current}
           onTogglePlay={() =>
             audio.narrationPlaying ? audio.stopNarration() : void audio.resumePlayback()
           }
-          onOpenThreshold={handleOpenThreshold}
+          onSkipBack={() => audio.stopNarration()}
+          onSkipForward={() => audio.stopNarration()}
           onStoryComplete={handleStoryComplete}
-          onOpenSettings={() => navigate('/settings')}
-          hasReconstruction={Boolean(step.record.reconstruction)}
+          onBack={() => transition(JOURNEY_STATES.ARRIVED)}
         />
       )
     }
@@ -469,14 +504,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
       return withInterruptionBanner(
-        <C5Story
-          {...props}
-          narrationPlaying={false}
-          onOpenThreshold={handleOpenThreshold}
-          onStoryComplete={handleStoryComplete}
-          onOpenSettings={() => navigate('/settings')}
-          hasReconstruction={Boolean(step.record.reconstruction)}
-        />
+        <div style={{ height: '100%', background: T.obsidian }}>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: `url(${props.photo})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'brightness(0.35)',
+            }}
+          />
+        </div>
       )
     }
     return withInterruptionBanner(
@@ -497,7 +536,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return withInterruptionBanner(
         <C4ArrivalMoment
           {...props}
-          onBeginStory={handleBeginStory}
+          description={signatureLine(step.record)}
+          hasReconstruction={Boolean(step.record.reconstruction)}
+          onStepThroughTime={handleStepThroughTime}
+          onAudioOnly={handleAudioOnly}
+          onTranscript={handleTranscript}
           busy={busy}
         />
       )
