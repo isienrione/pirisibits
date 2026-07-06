@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
@@ -43,6 +43,7 @@ import {
 } from '../../redesign/lib/waypointPresentation.js'
 
 export default function JourneyShell({ variant = 'legacy' }) {
+  const navigate = useNavigate()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -446,6 +447,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           }
           onOpenThreshold={handleOpenThreshold}
           onStoryComplete={handleStoryComplete}
+          onOpenSettings={() => navigate('/settings')}
           hasReconstruction={Boolean(step.record.reconstruction)}
         />
       )
@@ -472,6 +474,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           narrationPlaying={false}
           onOpenThreshold={handleOpenThreshold}
           onStoryComplete={handleStoryComplete}
+          onOpenSettings={() => navigate('/settings')}
           hasReconstruction={Boolean(step.record.reconstruction)}
         />
       )

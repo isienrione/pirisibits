@@ -31,6 +31,10 @@ export default function StopsScreen() {
     context.promotedOptionalIds,
   ])
 
+  const openStop = (waypointId) => {
+    navigate(`/journal/${waypointId}`)
+  }
+
   if (state === JOURNEY_STATES.IDLE) {
     return <Navigate to="/begin" replace />
   }
@@ -72,8 +76,8 @@ export default function StopsScreen() {
               subtitle={row.subtitle}
               imageUrl={row.imageUrl}
               status={row.status}
-              onPress={row.status === 'locked' ? undefined : () => navigate('/journey')}
-              disabled={row.status === 'locked'}
+              onPress={() => openStop(row.id)}
+              disabled={false}
             />
           </li>
         ))}

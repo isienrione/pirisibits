@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { useContext } from "react";
 import { T, F } from "../tokens.js";
@@ -21,6 +20,7 @@ export default function G1Settings({
     hapticFeedback: true,
     reduceMotion: false,
     playbackSpeed: 1,
+    ambientBed: 'Subtle',
   };
 
   const setState = (patch) => {
@@ -82,9 +82,19 @@ export default function G1Settings({
         <Row label="Narration speed" sub="Default for new chapters"
           right={
             <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
-              {["1×","1.5×","2×"].map(s => (
-                <button key={s} style={{ padding: "4px 8px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: s === "1×" ? T.warmWhite : "transparent", color: s === "1×" ? T.ink : T.muted, border: "none", cursor: "pointer" }}>{s}</button>
-              ))}
+              {[1, 1.5, 2].map((speed) => {
+                const label = speed === 1 ? '1×' : `${speed}×`
+                const active = Number(state.playbackSpeed ?? 1) === speed
+                return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setState({ playbackSpeed: speed })}
+                  style={{ padding: "4px 8px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: active ? T.warmWhite : "transparent", color: active ? T.ink : T.muted, border: "none", cursor: "pointer" }}
+                >
+                  {label}
+                </button>
+              )})}
             </div>
           }
         />
@@ -103,8 +113,15 @@ export default function G1Settings({
         <Row label="Ambient bed" sub="Narration volume follows system"
           right={
             <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
-              {["Subtle","Off"].map(s => (
-                <button key={s} style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: s === "Subtle" ? T.warmWhite : "transparent", color: s === "Subtle" ? T.ink : T.muted, border: "none", cursor: "pointer" }}>{s}</button>
+              {["Subtle","Off"].map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => setState({ ambientBed: mode })}
+                  style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: (state.ambientBed ?? 'Subtle') === mode ? T.warmWhite : "transparent", color: (state.ambientBed ?? 'Subtle') === mode ? T.ink : T.muted, border: "none", cursor: "pointer" }}
+                >
+                  {mode}
+                </button>
               ))}
             </div>
           }

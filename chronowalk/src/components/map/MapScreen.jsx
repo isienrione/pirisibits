@@ -67,6 +67,7 @@ export default function MapScreen() {
   const [directionsOpen, setDirectionsOpen] = useState(false)
   const [recenterKey, setRecenterKey] = useState(0)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
+  const [selectedStopId, setSelectedStopId] = useState(null)
 
   useEffect(() => {
     if (!isDevPanelEnabled()) return undefined
@@ -75,6 +76,10 @@ export default function MapScreen() {
     window.addEventListener(DEV_TOOLS_CHANGED, syncDevGps)
     return () => window.removeEventListener(DEV_TOOLS_CHANGED, syncDevGps)
   }, [])
+
+  useEffect(() => {
+    if (activeTargetId) setSelectedStopId(activeTargetId)
+  }, [activeTargetId])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geoDebug = useJourneyGeoDebugOptions(
@@ -135,9 +140,10 @@ export default function MapScreen() {
   )
 
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
-  const walkCard = manifest && activeStop ? toWalkCardModel(manifest, activeStop, geo.distance) : null
+  const selectedStop = stops.find((stop) => stop.id === selectedStopId) ?? activeStop
+  const walkCard = manifest && selectedStop ? toWalkCardModel(manifest, selectedStop, geo.distance) : null
 
-  const directionsDestination = directionsOpen ? activeStop?.landmark ?? null : null
+  const directionsDestination = directionsOpen ? selectedStop?.landmark ?? null : null
 
   const {
     directions,
@@ -148,7 +154,7 @@ export default function MapScreen() {
   } = useWalkingDirections({
     origin: geo.position,
     destination: directionsDestination,
-    enabled: directionsOpen && Boolean(activeStop),
+    enabled: directionsOpen && Boolean(selectedStop),
   })
 
   const walkingStepProgress = useMemo(
@@ -179,7 +185,7 @@ export default function MapScreen() {
     companionMode: companion.mode,
   })
 
-  if (state === JOURNEY_STATES.IDLE) {
+  if (state === JOURNEY_STATES.IDLE && import.meta.env.VITE_FIGMA_REDESIGN === 'false') {
     return <Navigate to="/begin" replace />
   }
 
@@ -242,6 +248,7 @@ export default function MapScreen() {
         directionsModeActive={directionsOpen}
         directionsGeometry={directions?.geometry ?? null}
         focusTarget={focusTarget}
+        onStopSelect={(stopId) => setSelectedStopId(stopId)}
       />
 
       <div
@@ -264,6 +271,22 @@ export default function MapScreen() {
           }}
         >
           <Link
+            to="/stops"
+            style={{
+              padding: '10px 14px',
+              borderRadius: 999,
+              background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
+              color: 'var(--warm-white)',
+              textDecoration: 'none',
+              fontSize: 'var(--fs-secondary)',
+              fontWeight: 600,
+              border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
+            }}
+          >
+            All stops
+          </Link>
+
+          <Link
             to="/journey"
             style={{
               padding: '10px 14px',
@@ -279,7 +302,7 @@ export default function MapScreen() {
             Back to walk
           </Link>
 
-          {activeStop && !directionsOpen ? (
+          {selectedStop && !directionsOpen ? (
             <button
               type="button"
               onClick={handleOpenDirections}
@@ -315,7 +338,9 @@ export default function MapScreen() {
             title={walkCard.title}
             distanceM={walkCard.distanceM}
             imageUrl={walkCard.imageUrl}
-            onContinue={() => navigate('/journey')}
+            eyebrow={selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
+            onContinue={() => navigate(`/journal/${selectedStop.id}`)}
+            continueLabel="Open stop card"
           />
         </div>
       ) : null}

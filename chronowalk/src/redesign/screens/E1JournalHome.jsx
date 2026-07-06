@@ -16,6 +16,8 @@ export default function E1JournalHome({
   onStartWalk,
   onCardClick,
   onLetterClick,
+  onAllStopsClick,
+  onSettingsClick,
   showDevToggle = !embedded,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
@@ -60,11 +62,23 @@ export default function E1JournalHome({
       <div style={{ padding: "max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 16px", flexShrink: 0, position: "relative", zIndex: 2 }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 4 }}>
           <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1 }}>{headline}</h1>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {onAllStopsClick ? (
+              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${T.ember}55`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
+                All stops
+              </button>
+            ) : null}
+            {onSettingsClick ? (
+              <button type="button" onClick={onSettingsClick} style={{ fontSize: 10, color: T.muted, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
+                Settings
+              </button>
+            ) : null}
           {showDevToggle ? (
           <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
             {showEmptyDev ? "filled" : "empty"}
           </button>
           ) : null}
+          </div>
         </div>
         <p style={{ fontSize: 13, color: T.muted }}>{subtitle}</p>
       </div>
@@ -135,11 +149,19 @@ export default function E1JournalHome({
                     <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>{card.name}</p>
                     <p style={{ fontSize: 14, color: T.muted, fontStyle: "italic", lineHeight: 1.55, marginBottom: 14 }}>"{card.sigLine}"</p>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <button style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (onCardClick) onCardClick(card.id)
+                          else navigate('E2')
+                        }}
+                        style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                      >
                         <div style={{ width: 28, height: 28, borderRadius: 14, background: `${group.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <Play size={11} fill={group.color} color={group.color} style={{ marginLeft: 2 }} />
                         </div>
-                        <span style={{ fontSize: 12, color: group.color, fontWeight: 500 }}>Listen again</span>
+                        <span style={{ fontSize: 12, color: group.color, fontWeight: 500 }}>Open stop</span>
                       </button>
                       <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
                     </div>

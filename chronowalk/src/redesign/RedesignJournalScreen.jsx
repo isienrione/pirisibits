@@ -12,6 +12,12 @@ function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
 }
 
+function statusLabel(status) {
+  if (status === 'completed') return 'Visited'
+  if (status === 'current') return 'Current'
+  return 'On route'
+}
+
 export default function RedesignJournalScreen({ embedded = true }) {
   const navigate = useNavigate()
   const { state, context } = useV2Journey()
@@ -31,14 +37,15 @@ export default function RedesignJournalScreen({ embedded = true }) {
         color: actColorForNumeral(act.numeral),
         name: act.title,
         cards: act.entries
-          .filter((entry) => entry.status === 'completed')
+          .filter((entry) => entry.onPath)
           .map((entry) => {
             const waypoint = getWaypoint(manifest, entry.id)
             return {
               id: entry.id,
               name: titleForWaypoint(waypoint),
               sigLine: signatureLine(waypoint),
-              ts: 'Completed',
+              ts: statusLabel(entry.status),
+              status: entry.status,
               photo: photoForWaypoint(waypoint),
             }
           }),
@@ -48,7 +55,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
 
   const progress = useMemo(() => summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context)), [manifest, context])
   const headline = journalHeadline(progress)
-  const isEmpty = state === JOURNEY_STATES.IDLE || groups.length === 0
+  const isEmpty = !manifest || groups.length === 0
 
   if (loading) {
     return (
@@ -86,6 +93,8 @@ export default function RedesignJournalScreen({ embedded = true }) {
       onStartWalk={() => navigate(state === JOURNEY_STATES.IDLE ? '/begin' : '/journey')}
       onCardClick={(waypointId) => navigate(`/journal/${waypointId}`)}
       onLetterClick={() => navigate('/letter')}
+      onAllStopsClick={() => navigate('/stops')}
+      onSettingsClick={() => navigate('/settings')}
     />
   )
 }

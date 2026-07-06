@@ -93,9 +93,11 @@ export default function G2Credits({ onBack }) {
                   {item.type}{" "}
                   <span style={{ color: T.ink }}>— {item.author}</span>
                   {" · "}{item.license}
-                  {item.url && (
-                    <span style={{ color: T.muted }}>{" · "}{item.url}</span>
-                  )}
+                  {item.url ? (
+                    <a href={`https://${item.url}`} target="_blank" rel="noreferrer" style={{ color: T.ember, textDecoration: 'none' }}>
+                      {' · '}{item.url}
+                    </a>
+                  ) : null}
                 </p>
               </div>
             ))}
@@ -117,7 +119,7 @@ export default function G2Credits({ onBack }) {
         <div style={{ paddingTop: 20, borderTop: `1px solid ${T.muted}28` }}>
           <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.7, fontStyle: "italic" }}>
             Facts checked against current scholarship — corrections:{" "}
-            <span style={{ color: T.ink }}>hello@chronowalk.com</span>
+            <a href="mailto:hello@chronowalk.com" style={{ color: T.ink, textDecoration: 'none' }}>hello@chronowalk.com</a>
           </p>
         </div>
       </div>

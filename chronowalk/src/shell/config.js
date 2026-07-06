@@ -1,10 +1,15 @@
 import { NAV_ITEMS, NAV_TABS } from '../components/navigation/navConfig.jsx'
 
-/** Figma spec: three tabs — Journey · Map · Journal */
-export const SHELL_TAB_ORDER = [NAV_TABS.TOUR, NAV_TABS.MAP, NAV_TABS.JOURNAL]
+const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+
+/** Figma spec: Journey · Stops · Map · Journal */
+export const SHELL_TAB_ORDER = useFigmaRedesign
+  ? [NAV_TABS.TOUR, NAV_TABS.STOPS, NAV_TABS.MAP, NAV_TABS.JOURNAL]
+  : [NAV_TABS.TOUR, NAV_TABS.MAP, NAV_TABS.JOURNAL]
 
 export const SHELL_TAB_META = {
   [NAV_TABS.TOUR]: { to: '/journey', label: 'Journey' },
+  [NAV_TABS.STOPS]: { to: '/stops', label: 'Stops' },
   [NAV_TABS.MAP]: { to: '/map', label: 'Map' },
   [NAV_TABS.JOURNAL]: { to: '/journal', label: 'Journal' },
 }

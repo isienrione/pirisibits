@@ -16,6 +16,8 @@ export default function C5Story({
   onOpenThreshold,
   onStoryComplete,
   hasReconstruction = true,
+  onOpenSettings,
+  onSkipForward,
 }) {
   const [chapter, setChapter] = useState(0)
   const [tab, setTab] = useState('audio')
@@ -165,10 +167,18 @@ export default function C5Story({
               <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
             )}
           </button>
-          <button type="button" style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}>
+          <button
+            type="button"
+            onClick={() => (onSkipForward ? onSkipForward() : setChapter((current) => Math.min(current + 1, chapters.length - 1)))}
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
+          >
             <SkipForward size={22} />
           </button>
-          <button type="button" style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, marginLeft: 'auto' }}>
+          <button
+            type="button"
+            onClick={() => (onOpenSettings ? onOpenSettings() : undefined)}
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, marginLeft: 'auto' }}
+          >
             <Volume2 size={20} />
           </button>
         </div>

@@ -4,16 +4,18 @@ import { getDebugGeoPlacement, isDebugGeo, isDevPanelEnabled } from '../../confi
 import { setDevSimulateGps } from '../dev/devTools.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
-import { findSequenceIndexForWaypoint, resolveDebugWaypointId } from '../../lib/debugWaypoint.js'
-import { JOURNEY_STATES, transitionJourney } from '../../state/journey.js'
+import { resolveDebugWaypointId } from '../../lib/debugWaypoint.js'
+import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
 
 const PANEL_OPEN_KEY = 'cw_v2_field_panel_open'
 
 const STAGING_WAYPOINTS = [
   { label: 'Colosseum', id: 'colosseum' },
-  { label: 'Capitoline', id: 'capitoline-hill' },
   { label: 'Pantheon', id: 'pantheon' },
   { label: 'Navona', id: 'piazza-navona' },
+  { label: 'Capitoline', id: 'capitoline-hill' },
+  { label: 'Trevi', id: 'fontana-di-trevi' },
+  { label: 'Castel', id: 'castel-sant-angelo' },
 ]
 
 function readPanelOpen() {
@@ -31,7 +33,7 @@ export default function V2FieldTestPanel() {
   const navigate = useNavigate()
   const location = useLocation()
   const { manifest } = useTourManifest()
-  const { state, context, begin, jumpToSequence } = useV2Journey()
+  const { state, context } = useV2Journey()
   const [open, setOpen] = useState(readPanelOpen)
 
   const step = useJourneyStep(
@@ -66,20 +68,10 @@ export default function V2FieldTestPanel() {
   const jumpToStop = (slug) => {
     if (!manifest) return
     const waypointId = resolveDebugWaypointId(slug, manifest)
-    const path = context.path || manifest.journey?.default_path || 'a'
-    const index = findSequenceIndexForWaypoint(manifest, waypointId, path, context.promotedOptionalIds)
-    if (index < 0) return
+    if (!waypointId) return
 
-    if (state === JOURNEY_STATES.IDLE || state === JOURNEY_STATES.COMPLETE) {
-      begin({ pace: context.pace || 'classic', path, waypointIndex: 0 })
-    }
-
-    jumpToSequence(index)
-
-    const placement = getDebugGeoPlacement()
-    transitionJourney(
-      isDebugGeo() && placement === 'arrived' ? JOURNEY_STATES.ARRIVED : JOURNEY_STATES.WALKING,
-    )
+    jumpToWaypointInJourney(manifest, waypointId, context, state)
+    navigate('/journey', { replace: true })
   }
 
   const chipStyle = {

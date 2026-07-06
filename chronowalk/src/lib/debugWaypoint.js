@@ -2,13 +2,36 @@ import { buildEffectiveSequence } from '../content/optionalPromotion.js'
 
 const SLUG_ALIASES = {
   colosseum: 'w01',
-  pantheon: 'w03',
-  'piazza-navona': 'w06',
-  'capitoline-hill': 'w02',
-  'largo-argentina': 'w04',
-  'campo-de-fiori': 'w05',
-  'castel-sant-angelo': 'w07',
-  'fontana-di-trevi': 'w08',
+  'colosseum-interior': 'w02',
+  'arch-of-titus': 'w03',
+  'arch-titus': 'w03',
+  palatine: 'w04',
+  'palatine-hill': 'w04',
+  'basilica-of-maxentius': 'w06',
+  'via-sacra': 'w07',
+  'temple-of-vesta': 'w08',
+  pause: 'pause',
+  'forum-rest': 'pause',
+  rostra: 'w10',
+  'heart-of-the-forum': 'w11_12',
+  'capitoline-hill': 'w13',
+  capitoline: 'w13',
+  'trajans-market': 'w14',
+  'trajan-market': 'w14',
+  'spanish-steps': 'w15',
+  'fontana-di-trevi': 'w16',
+  trevi: 'w16',
+  pantheon: 'w17',
+  'piazza-navona': 'w18',
+  navona: 'w18',
+  'campo-de-fiori': 'w19',
+  'largo-argentina': 'w20',
+  argentina: 'w20',
+  'castel-sant-angelo': 'w21',
+  castel: 'w21',
+  'circus-maximus': 'enc_circus',
+  'via-appia': 'w22',
+  'via-appia-antica': 'w22',
 }
 
 function normalizeSlug(value) {
@@ -30,7 +53,7 @@ export function resolveDebugWaypointId(rawId, manifest) {
   const fromWaypoints = manifest.waypoints?.find((waypoint) => {
     const id = normalizeSlug(waypoint.id)
     const title = normalizeSlug(waypoint.title)
-    const photo = normalizeSlug(waypoint.photo)
+    const photo = normalizeSlug(waypoint.photo ?? '')
     return id === slug || title.includes(slug.replace(/-/g, ' ')) || photo.includes(slug)
   })
 

@@ -122,9 +122,30 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               fontSize: 13, color: T.muted,
               lineHeight: 1.65, textAlign: "center",
               fontStyle: "italic",
+              marginBottom: 16,
             }}>
               The full version will still be here tomorrow.
             </p>
+
+            {onDismiss ? (
+              <button
+                type="button"
+                onClick={() => onDismiss()}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  background: "transparent",
+                  color: T.muted,
+                  borderRadius: 12,
+                  fontFamily: F.body,
+                  fontSize: 14,
+                  border: `1px solid ${T.muted}40`,
+                  cursor: "pointer",
+                }}
+              >
+                Continue without the ticket
+              </button>
+            ) : null}
           </div>
         </div>
       </div>

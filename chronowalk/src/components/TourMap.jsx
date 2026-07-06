@@ -142,9 +142,16 @@ function setupMapLayers(map, { stops, tour, bounds }) {
   }
 }
 
-const createLandmarkMarkerElement = (title, status) => {
+const createLandmarkMarkerElement = (title, status, onPress) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
+  if (onPress) {
+    el.style.cursor = 'pointer'
+    el.addEventListener('click', (event) => {
+      event.stopPropagation()
+      onPress()
+    })
+  }
 
   const dotClass =
     status === 'completed'
@@ -270,6 +277,7 @@ function TourMapboxView({
   onMapFailure,
   directionsModeActive = false,
   directionsGeometry = null,
+  onStopSelect = null,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -423,14 +431,14 @@ function TourMapboxView({
     stops.forEach((stop) => {
       if (!stop?.landmark) return
       const marker = new mapboxgl.Marker({
-        element: createLandmarkMarkerElement(stop.title, stop.status),
+        element: createLandmarkMarkerElement(stop.title, stop.status, onStopSelect ? () => onStopSelect(stop.id) : null),
         anchor: 'bottom',
       })
         .setLngLat([stop.landmark.lng, stop.landmark.lat])
         .addTo(map.current)
       landmarkMarkers.current.push(marker)
     })
-  }, [stops, mapLoaded])
+  }, [stops, mapLoaded, onStopSelect])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !mapboxToken) return undefined
@@ -665,6 +673,7 @@ const TourMap = ({
   awaitingFirstStop = false,
   directionsModeActive = false,
   directionsGeometry = null,
+  onStopSelect = null,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -708,6 +717,7 @@ const TourMap = ({
       onMapFailure={handleMapFailure}
       directionsModeActive={directionsModeActive}
       directionsGeometry={directionsGeometry}
+      onStopSelect={onStopSelect}
     />
   )
 }

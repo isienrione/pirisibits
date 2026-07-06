@@ -17,6 +17,7 @@ export default function E2MemoryDetail({
   transcript,
   chapters: chaptersProp,
   onBack,
+  onWalkToStop,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
 
@@ -49,6 +50,28 @@ export default function E2MemoryDetail({
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 48px" }}>
         <Eyebrow color={accent} hairline>{actLabel}</Eyebrow>
         <h2 style={{ fontFamily: F.display, fontSize: 28, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: "10px 0 20px" }}>{title}</h2>
+
+        {onWalkToStop ? (
+          <button
+            type="button"
+            onClick={onWalkToStop}
+            style={{
+              width: '100%',
+              marginBottom: 20,
+              padding: '13px 16px',
+              borderRadius: 12,
+              border: 'none',
+              background: accent,
+              color: T.warmWhite,
+              fontFamily: F.body,
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: 'pointer',
+            }}
+          >
+            Walk to this stop
+          </button>
+        ) : null}
 
         {/* Large 4:5 diptych */}
         <div style={{ display: "flex", marginBottom: 8, borderRadius: 14, overflow: "hidden", height: halfH }}>
@@ -96,18 +119,22 @@ export default function E2MemoryDetail({
         {/* Per-chapter listen-again rows */}
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>CHAPTERS</p>
         {chapters.map((ch, i) => (
-          <div key={ch.n}>
+          <div key={ch.n ?? i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}
-            <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "12px 0", cursor: "pointer" }}>
+            <button
+              type="button"
+              onClick={onWalkToStop}
+              style={{ width: '100%', display: "flex", alignItems: "center", gap: 14, padding: "12px 0", cursor: "pointer", background: 'none', border: 'none', textAlign: 'left' }}
+            >
               <div style={{ width: 36, height: 36, borderRadius: 18, background: `${accent}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Play size={13} fill={accent} color={accent} style={{ marginLeft: 2 }} />
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14, color: T.ink, fontWeight: 500, lineHeight: 1.3, marginBottom: 2 }}>{ch.title}</p>
-                <p style={{ fontSize: 12, color: T.muted }}>Chapter {ch.n}</p>
+                <p style={{ fontSize: 14, color: T.ink, fontWeight: 500, lineHeight: 1.3, marginBottom: 2 }}>{ch.title ?? ch}</p>
+                <p style={{ fontSize: 12, color: T.muted }}>Chapter {ch.n ?? i + 1}</p>
               </div>
-              <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>{ch.dur}</span>
-            </div>
+              <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>{ch.dur ?? ''}</span>
+            </button>
           </div>
         ))}
       </div>

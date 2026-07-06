@@ -28,6 +28,7 @@ import { SettingsPage } from './pages/SettingsPage.jsx'
 import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
 import { StopsPage } from './pages/StopsPage.jsx'
+import RedesignStopsPage from '../redesign/pages/RedesignStopsPage.jsx'
 import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
 import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
@@ -79,7 +80,7 @@ function AppRoutes() {
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/journey" element={<JourneyPage />} />
         <Route path="/map" element={useFigmaRedesign ? <RedesignMapPage /> : <MapPage />} />
-        <Route path="/stops" element={<StopsPage />} />
+        <Route path="/stops" element={useFigmaRedesign ? <RedesignStopsPage /> : <StopsPage />} />
         <Route path="/journal" element={useFigmaRedesign ? <RedesignJournalPage /> : <JournalPage />} />
         <Route path="/journal/:waypointId" element={useFigmaRedesign ? <RedesignMemoryDetailPage /> : <Navigate to="/journal" replace />} />
         <Route path="/letter" element={useFigmaRedesign ? <RedesignLetterPage /> : <LetterPage />} />
