@@ -8,7 +8,7 @@ export const SHELL_TAB_ORDER = useFigmaRedesign
   : [NAV_TABS.TOUR, NAV_TABS.MAP, NAV_TABS.JOURNAL]
 
 export const SHELL_TAB_META = {
-  [NAV_TABS.TOUR]: { to: '/journey', label: 'Journey' },
+  [NAV_TABS.TOUR]: { to: '/tour', label: 'Tour' },
   [NAV_TABS.STOPS]: { to: '/stops', label: 'Stops' },
   [NAV_TABS.MAP]: { to: '/map', label: 'Map' },
   [NAV_TABS.JOURNAL]: { to: '/journal', label: 'Journal' },

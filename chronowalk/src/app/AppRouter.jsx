@@ -32,7 +32,7 @@ import RedesignStopsPage from '../redesign/pages/RedesignStopsPage.jsx'
 import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
 import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
-import RedesignMapPage from '../redesign/pages/RedesignMapPage.jsx'
+import RedesignTourPage from '../redesign/pages/RedesignTourPage.jsx'
 import RedesignPreviewPage from '../redesign/pages/RedesignPreviewPage.jsx'
 import RedesignWelcomePage from '../redesign/pages/RedesignWelcomePage.jsx'
 import RedesignSetupPage from '../redesign/pages/RedesignSetupPage.jsx'
@@ -78,6 +78,7 @@ function AppRoutes() {
         <Route path="/no-ticket" element={useFigmaRedesign ? <RedesignNoTicketPage /> : <Navigate to="/journey" replace />} />
         <Route path="/welcome" element={useFigmaRedesign ? <RedesignWelcomePage /> : <WelcomePage />} />
         <Route path="/begin" element={<BeginPage />} />
+        <Route path="/tour" element={useFigmaRedesign ? <RedesignTourPage /> : <Navigate to="/journey" replace />} />
         <Route path="/journey" element={<JourneyPage />} />
         <Route path="/map" element={useFigmaRedesign ? <RedesignMapPage /> : <MapPage />} />
         <Route path="/stops" element={useFigmaRedesign ? <RedesignStopsPage /> : <StopsPage />} />

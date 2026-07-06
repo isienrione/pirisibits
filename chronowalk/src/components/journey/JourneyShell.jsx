@@ -389,7 +389,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (step.done || state === JOURNEY_STATES.COMPLETE) {
     if (variant === 'redesign') {
-      return withInterruptionBanner(<Navigate to="/letter" replace />)
+      return withInterruptionBanner(<Navigate to="/tour" replace />)
     }
     return withInterruptionBanner(
       <JourneyLayout
