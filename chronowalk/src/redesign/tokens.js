@@ -1,0 +1,33 @@
+/** ChronoWalk redesign tokens — Figma Make / UX Master Spec */
+
+export const T = {
+  obsidian: '#16130F',
+  ink: '#211C15',
+  ink800: '#26221B',
+  bone: '#F7F1E6',
+  warmWhite: '#F5EFE3',
+  muted: '#B9AF9C',
+  ember: '#E8A13C',
+  actI: '#E4552E',
+  actII: '#7C9A5C',
+  actIII: '#E8A13C',
+  actIV: '#4E9B8F',
+  actV: '#B14A6E',
+  actVI: '#4E7D9B',
+  encore: '#8A6FB5',
+}
+
+export const F = {
+  display: "'Fraunces', Georgia, serif",
+  body: "'DM Sans', system-ui, sans-serif",
+}
+
+export const ACT_COLORS = {
+  I: T.actI,
+  II: T.actII,
+  III: T.actIII,
+  IV: T.actIV,
+  V: T.actV,
+  VI: T.actVI,
+  ENC: T.encore,
+}

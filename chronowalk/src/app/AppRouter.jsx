@@ -27,6 +27,21 @@ import { SettingsPage } from './pages/SettingsPage.jsx'
 import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
 import { StopsPage } from './pages/StopsPage.jsx'
+import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
+import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
+import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
+import RedesignMapPage from '../redesign/pages/RedesignMapPage.jsx'
+import RedesignPreviewPage from '../redesign/pages/RedesignPreviewPage.jsx'
+import RedesignWelcomePage from '../redesign/pages/RedesignWelcomePage.jsx'
+import RedesignSetupPage from '../redesign/pages/RedesignSetupPage.jsx'
+import RedesignAccessConfirmedPage from '../redesign/pages/RedesignAccessConfirmedPage.jsx'
+import RedesignSettingsPage from '../redesign/pages/RedesignSettingsPage.jsx'
+import RedesignCreditsPage from '../redesign/pages/RedesignCreditsPage.jsx'
+import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
+import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
+import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
+
+const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()
@@ -46,17 +61,23 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
-        <Route path="/" element={<Navigate to="/welcome" replace />} />
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/" element={<Navigate to={useFigmaRedesign ? '/landing' : '/welcome'} replace />} />
+        <Route path="/landing" element={useFigmaRedesign ? <RedesignLandingPage /> : <LandingPage />} />
+        <Route path="/prototype" element={<FigmaPrototypeApp />} />
+        <Route path="/preview" element={useFigmaRedesign ? <RedesignPreviewPage /> : <Navigate to="/landing" replace />} />
+        <Route path="/setup" element={useFigmaRedesign ? <RedesignSetupPage /> : <Navigate to="/begin" replace />} />
+        <Route path="/access/confirmed" element={useFigmaRedesign ? <RedesignAccessConfirmedPage /> : <Navigate to="/begin" replace />} />
+        <Route path="/no-ticket" element={useFigmaRedesign ? <RedesignNoTicketPage /> : <Navigate to="/journey" replace />} />
+        <Route path="/welcome" element={useFigmaRedesign ? <RedesignWelcomePage /> : <WelcomePage />} />
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/journey" element={<JourneyPage />} />
-        <Route path="/map" element={<MapPage />} />
+        <Route path="/map" element={useFigmaRedesign ? <RedesignMapPage /> : <MapPage />} />
         <Route path="/stops" element={<StopsPage />} />
-        <Route path="/journal" element={<JournalPage />} />
-        <Route path="/letter" element={<LetterPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/credits" element={<CreditsPage />} />
+        <Route path="/journal" element={useFigmaRedesign ? <RedesignJournalPage /> : <JournalPage />} />
+        <Route path="/journal/:waypointId" element={useFigmaRedesign ? <RedesignMemoryDetailPage /> : <Navigate to="/journal" replace />} />
+        <Route path="/letter" element={useFigmaRedesign ? <RedesignLetterPage /> : <LetterPage />} />
+        <Route path="/settings" element={useFigmaRedesign ? <RedesignSettingsPage /> : <SettingsPage />} />
+        <Route path="/credits" element={useFigmaRedesign ? <RedesignCreditsPage /> : <CreditsPage />} />
         <Route path="/access" element={<AccessPage />} />
         <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

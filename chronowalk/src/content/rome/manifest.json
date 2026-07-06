@@ -192,9 +192,9 @@
         "w01.mp3"
       ],
       "inserts": [],
-      "photo": "/rome/img/w01_hero.avif",
+      "photo": "/waypoints/colosseum/exterior/modern-poster.jpg",
       "reconstruction": {
-        "now": "/rome/img/w01_now.avif",
+        "now": "/waypoints/colosseum/exterior/modern-poster.jpg",
         "then": "/rome/img/w01_then.avif",
         "loop": "/rome/video/w01_then_loop.mp4",
         "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
@@ -202,10 +202,10 @@
       "approachLine": "The amphitheatre rises ahead — slow your pace and look up.",
       "arrivalLine": "Take a second. / Look up.",
       "now_image": {
-        "file": "w01_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
       }
     },
@@ -228,12 +228,13 @@
       "approachLine": "Step inside — the floor you expect is not the floor that was.",
       "arrivalLine": "You are standing where the crowd never stood.",
       "now_image": {
-        "file": "w02_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/colosseum/interior/modern-poster.jpg"
     },
     "w03": {
       "title": "Arch of Titus",
@@ -256,7 +257,7 @@
         "ins_jerusalem"
       ],
       "reconstruction": {
-        "now": "/rome/img/w03_now.avif",
+        "now": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
         "then": "/rome/img/w03_then.avif",
         "loop": "/rome/video/w03_then_loop.mp4",
         "caption": "Evidence-based reconstruction · relief details simplified for clarity"
@@ -264,12 +265,13 @@
       "approachLine": "The Forum opens — Titus' arch marks the threshold.",
       "arrivalLine": "Stand where triumph entered the city.",
       "now_image": {
-        "file": "w03_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg"
     },
     "w04": {
       "title": "The Palatine",
@@ -288,12 +290,13 @@
       "approachLine": "The emperors' hill climbs above the Forum.",
       "arrivalLine": "The word palace was born on this slope.",
       "now_image": {
-        "file": "w04_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/palatine-hill-cluster/modern-poster.jpg"
     },
     "w06": {
       "title": "Basilica of Maxentius",
@@ -313,12 +316,13 @@
       "approachLine": "Vaulted halls loom through the columns ahead.",
       "arrivalLine": "Imagine the roof still whole above you.",
       "now_image": {
-        "file": "w06_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg"
     },
     "w07": {
       "title": "Via Sacra",
@@ -338,12 +342,13 @@
       "approachLine": "You are walking the Sacred Way — keep to the stones.",
       "arrivalLine": "Processions passed here for a thousand years.",
       "now_image": {
-        "file": "w07_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg"
     },
     "w08": {
       "title": "Temple of Vesta",
@@ -360,12 +365,13 @@
       "approachLine": "The round temple is just ahead.",
       "arrivalLine": "The flame that guarded Rome burned here.",
       "now_image": {
-        "file": "w08_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg"
     },
     "pause": {
       "title": "Forum rest",
@@ -405,12 +411,13 @@
       "approachLine": "The speakers' platform is near — listen for echoes.",
       "arrivalLine": "Orators once held Rome from this spot.",
       "now_image": {
-        "file": "w10_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg"
     },
     "w11_12": {
       "title": "Heart of the Forum",
@@ -427,12 +434,13 @@
       "approachLine": "The arch and the Senate house share one standpoint.",
       "arrivalLine": "Two stories, one square of stone.",
       "now_image": {
-        "file": "w11_12_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg"
     },
     "w13": {
       "title": "Capitoline Hill",
@@ -449,12 +457,13 @@
       "approachLine": "Climb toward the hill where Rome's gods watched over the city.",
       "arrivalLine": "The Capitoline — heart of public faith.",
       "now_image": {
-        "file": "w13_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/capitoline-hill/modern-poster.jpg"
     },
     "w14": {
       "title": "Trajan's Market",
@@ -471,12 +480,13 @@
       "approachLine": "Brick arcades stack ahead — Rome's great market hall.",
       "arrivalLine": "Shops and offices once hummed in these halls.",
       "now_image": {
-        "file": "w14_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/trajan-market/modern-poster.jpg"
     },
     "w15": {
       "title": "Spanish Steps",
@@ -493,12 +503,13 @@
       "approachLine": "The steps rise ahead — take them slowly.",
       "arrivalLine": "A staircase built for seeing and being seen.",
       "now_image": {
-        "file": "w15_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/spanish-steps/modern-poster.jpg"
     },
     "w16": {
       "title": "Fontana di Trevi",
@@ -518,12 +529,13 @@
       "approachLine": "You'll hear the fountain before you see it.",
       "arrivalLine": "Throw a coin if you wish — the water doesn't mind.",
       "now_image": {
-        "file": "w16_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/fontana-di-trevi/modern-poster.jpg"
     },
     "w17": {
       "title": "The Pantheon",
@@ -545,7 +557,7 @@
       ],
       "interior_zone": "pantheon_interior",
       "reconstruction": {
-        "now": "/rome/img/w13_now.avif",
+        "now": "/waypoints/pantheon/modern-poster.jpg",
         "then": "/rome/img/w13_then.avif",
         "loop": "/rome/video/w13_then_loop.mp4",
         "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
@@ -553,12 +565,13 @@
       "approachLine": "The rotunda appears through the streets.",
       "arrivalLine": "Two thousand years of sky through one opening.",
       "now_image": {
-        "file": "w13_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/pantheon/modern-poster.jpg"
     },
     "w18": {
       "title": "Piazza Navona",
@@ -575,12 +588,13 @@
       "approachLine": "Bernini's fountain plays ahead — the stadium shape beneath your feet.",
       "arrivalLine": "A racetrack turned piazza — Rome's living room.",
       "now_image": {
-        "file": "w18_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/piazza-navona/modern-poster.jpg"
     },
     "w19": {
       "title": "Campo de' Fiori",
@@ -600,12 +614,13 @@
       "approachLine": "The market square opens — morning or evening, always alive.",
       "arrivalLine": "Flowers, fruit, and four centuries of chatter.",
       "now_image": {
-        "file": "w19_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/campo-de-fiori/modern-poster.jpg"
     },
     "w20": {
       "title": "Largo di Torre Argentina",
@@ -622,12 +637,13 @@
       "approachLine": "Sacred ruins below street level — cats and columns.",
       "arrivalLine": "This is where Caesar died.",
       "now_image": {
-        "file": "w20_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/largo-argentina/modern-poster.jpg"
     },
     "w21": {
       "title": "Castel Sant'Angelo",
@@ -647,12 +663,13 @@
       "approachLine": "Hadrian's tomb rises beside the river.",
       "arrivalLine": "Emperor, fortress, refuge — one stone silhouette.",
       "now_image": {
-        "file": "w21_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/castel-sant-angelo/modern-poster.jpg"
     },
     "enc_circus": {
       "title": "Circus Maximus floor",
@@ -672,12 +689,13 @@
       "approachLine": "Walk out onto the grass at the bottom of the valley.",
       "arrivalLine": "You are where the crowd stood.",
       "now_image": {
-        "file": "enc_circus_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/circus-maximus/modern-poster.jpg"
     },
     "w22": {
       "title": "Via Appia Antica",
@@ -694,12 +712,13 @@
       "approachLine": "The basalt stones stretch south — the queen of roads.",
       "arrivalLine": "Walk where legions and merchants left Rome.",
       "now_image": {
-        "file": "w22_now.avif",
-        "source": null,
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
         "license": null,
-        "credit": null,
+        "credit": "ChronoWalk production photography",
         "source_url": null
-      }
+      },
+      "photo": "/waypoints/via-appia/modern-poster.jpg"
     }
   },
   "transits": {

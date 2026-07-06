@@ -3,14 +3,16 @@ import { useV2Journey } from '../hooks/useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
 
+const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+
 export default function ShellTabBar() {
   const { state } = useV2Journey()
   const location = useLocation()
 
-  if (state === JOURNEY_STATES.IDLE) return null
-
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
   if (!onCompanionRoute) return null
+
+  if (!useFigmaRedesign && state === JOURNEY_STATES.IDLE) return null
 
   const tabs = getShellTabs()
 

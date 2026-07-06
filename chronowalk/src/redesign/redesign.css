@@ -1,0 +1,147 @@
+/* ChronoWalk Figma redesign — grain, seam, journey animations */
+
+.cw-grain {
+  position: relative;
+}
+
+.cw-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  opacity: 0.028;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+@keyframes seamBreathe {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes presencePulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.6);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseRingOut {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.8);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes approachPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.85);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.75;
+  }
+}
+
+@keyframes sheetFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+:root {
+  --shell-tab-bar-height: calc(3.25rem + max(0.5rem, env(safe-area-inset-bottom)));
+}
+
+html.redesign-pwa,
+html.redesign-pwa body,
+html.redesign-pwa #root {
+  min-height: 100dvh;
+  min-height: var(--app-height, 100dvh);
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+.redesign-app-shell {
+  width: 100%;
+  min-height: 100dvh;
+  min-height: var(--app-height, 100dvh);
+  background: var(--obsidian);
+  position: relative;
+  overflow: hidden;
+}
+
+.redesign-phone-frame {
+  width: 100%;
+  min-height: 100dvh;
+  min-height: var(--app-height, 100dvh);
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  background: var(--obsidian);
+}
+
+.redesign-phone-frame--companion {
+  padding-bottom: var(--shell-tab-bar-height);
+}
+
+.redesign-prototype-chrome {
+  min-height: 100dvh;
+  background: #060503;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 32px;
+  gap: 18px;
+}

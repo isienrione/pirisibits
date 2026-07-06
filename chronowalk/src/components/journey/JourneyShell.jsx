@@ -22,8 +22,26 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
+import { formatDistanceToNext } from '../../content/journeyProgress.js'
+import C2Walking from '../../redesign/screens/C2Walking.jsx'
+import C3Approaching from '../../redesign/screens/C3Approaching.jsx'
+import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
+import C5Story from '../../redesign/screens/C5Story.jsx'
+import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
+import C8bThePause from '../../redesign/screens/C8bThePause.jsx'
+import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
+import { ACT_COLORS, T } from '../../redesign/tokens.js'
+import RedesignAudioUnlock from '../../redesign/ui/RedesignAudioUnlock.jsx'
+import {
+  accentForWaypoint,
+  approachCopy,
+  arrivalCopy,
+  photoForWaypoint,
+  signatureLine,
+  titleForWaypoint,
+} from '../../redesign/lib/waypointPresentation.js'
 
-export default function JourneyShell() {
+export default function JourneyShell({ variant = 'legacy' }) {
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -333,6 +351,9 @@ export default function JourneyShell() {
   }
 
   if (step.done || state === JOURNEY_STATES.COMPLETE) {
+    if (variant === 'redesign') {
+      return withInterruptionBanner(<Navigate to="/letter" replace />)
+    }
     return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Journey complete"
@@ -362,6 +383,11 @@ export default function JourneyShell() {
   }
 
   if (!audioUnlocked && !audio.ready) {
+    if (variant === 'redesign') {
+      return withInterruptionBanner(
+        <RedesignAudioUnlock onUnlock={handleUnlockAudio} busy={busy} />
+      )
+    }
     return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Journey"
@@ -376,10 +402,46 @@ export default function JourneyShell() {
   }
 
   if (needsPathChoice) {
+    if (variant === 'redesign') {
+      return withInterruptionBanner(
+        <C8aPathChoice
+          busy={busy}
+          onChoose={(path) => handlePathChoice(path === 'B' ? 'b' : 'a')}
+        />
+      )
+    }
     return withInterruptionBanner(<PathChoiceScreen onChoose={handlePathChoice} busy={busy} />)
   }
 
+  const redesignWaypointProps = (record) =>
+    record
+      ? {
+          accent: accentForWaypoint(record, manifest),
+          title: titleForWaypoint(record),
+          photo: photoForWaypoint(record),
+          direction: approachCopy(record),
+          arrivalLine: arrivalCopy(record),
+          signatureLine: signatureLine(record),
+          actNumeral: record.act?.replace('act', '').toUpperCase() ?? 'I',
+        }
+      : {}
+
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
+    if (variant === 'redesign') {
+      const props = redesignWaypointProps(step.record)
+      return withInterruptionBanner(
+        <C5Story
+          {...props}
+          narrationPlaying={audio.narrationPlaying}
+          onTogglePlay={() =>
+            audio.narrationPlaying ? audio.stopNarration() : void audio.resumePlayback()
+          }
+          onOpenThreshold={handleOpenThreshold}
+          onStoryComplete={handleStoryComplete}
+          hasReconstruction={Boolean(step.record.reconstruction)}
+        />
+      )
+    }
     return withInterruptionBanner(
       <StoryScreen
         waypointName={step.record.title ?? step.record.name}
@@ -394,6 +456,18 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.THRESHOLD && step.type === 'waypoint') {
+    if (variant === 'redesign') {
+      const props = redesignWaypointProps(step.record)
+      return withInterruptionBanner(
+        <C5Story
+          {...props}
+          narrationPlaying={false}
+          onOpenThreshold={handleOpenThreshold}
+          onStoryComplete={handleStoryComplete}
+          hasReconstruction={Boolean(step.record.reconstruction)}
+        />
+      )
+    }
     return withInterruptionBanner(
       <StoryScreen
         waypointName={step.record.title ?? step.record.name}
@@ -407,6 +481,16 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.ARRIVED && step.type === 'waypoint') {
+    if (variant === 'redesign') {
+      const props = redesignWaypointProps(step.record)
+      return withInterruptionBanner(
+        <C4ArrivalMoment
+          {...props}
+          onBeginStory={handleBeginStory}
+          busy={busy}
+        />
+      )
+    }
     return withInterruptionBanner(
       <ArrivalScreen
         waypointName={step.record.title ?? step.record.name}
@@ -419,6 +503,15 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.APPROACHING && step.type === 'waypoint') {
+    if (variant === 'redesign') {
+      const props = redesignWaypointProps(step.record)
+      return withInterruptionBanner(
+        <C3Approaching
+          {...props}
+          subtitle={formatDistanceToNext(geo.distance) ?? 'almost there'}
+        />
+      )
+    }
     return withInterruptionBanner(
       <ApproachingScreen
         waypointName={step.record.title ?? step.record.name}
@@ -432,6 +525,20 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.WALKING && step.type === 'transit') {
+    if (variant === 'redesign') {
+      const target = step.targetWaypoint
+      const props = redesignWaypointProps(target)
+      return withInterruptionBanner(
+        <C2Walking
+          {...props}
+          distanceM={geo.distance}
+          onSimulateArrival={null}
+          onPause={() => transition(JOURNEY_STATES.PAUSED)}
+          onContinue={!audio.narrationPlaying ? handleTransitContinue : null}
+          continueLabel="Continue"
+        />
+      )
+    }
     return withInterruptionBanner(
       <WalkingScreen
         title={step.targetWaypoint?.title ?? 'On the way'}
@@ -449,6 +556,17 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
+    if (variant === 'redesign') {
+      const props = redesignWaypointProps(step.record)
+      return withInterruptionBanner(
+        <C2Walking
+          {...props}
+          distanceM={geo.distance}
+          onSimulateArrival={handleSimulateArrival}
+          onPause={() => transition(JOURNEY_STATES.PAUSED)}
+        />
+      )
+    }
     return withInterruptionBanner(
       <WalkingScreen
         title={step.record.title ?? step.record.name}
@@ -465,6 +583,23 @@ export default function JourneyShell() {
 
   if (state === JOURNEY_STATES.DAY_COMPLETE) {
     const act4 = ROME_ACTS.find((act) => act.id === 'act4')
+    if (variant === 'redesign') {
+      return withInterruptionBanner(
+        <C8cActComplete
+          actTitle={act4 ? `ACT ${act4.numeral} · ${act4.title.toUpperCase()}` : 'ACT IV · THE MARKET'}
+          closingLine={act4?.promise ?? 'The ancient city, complete.'}
+          stats={[
+            `${context.completedWaypointIds.length} stops`,
+            '4.1 km',
+            '21 centuries',
+          ]}
+          accent={ACT_COLORS.IV ?? T.actIV}
+          onContinue={handleContinueClassicDay}
+          onSavePlace={() => transition(JOURNEY_STATES.PAUSED)}
+          busy={busy}
+        />
+      )
+    }
     return withInterruptionBanner(
       <DayCompleteScreen
         actTitle={act4 ? `Act ${act4.numeral} · ${act4.title}` : null}
@@ -476,6 +611,11 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.PAUSED && step.type === 'waypoint' && step.record?.scripted_rest) {
+    if (variant === 'redesign') {
+      return withInterruptionBanner(
+        <C8bThePause onResume={handleResumeFromRest} busy={busy} />
+      )
+    }
     return withInterruptionBanner(
       <RestScreen
         title={step.record.title ?? step.record.name}
@@ -487,6 +627,11 @@ export default function JourneyShell() {
   }
 
   if (state === JOURNEY_STATES.PAUSED) {
+    if (variant === 'redesign') {
+      return withInterruptionBanner(
+        <C8bThePause onResume={() => transition(JOURNEY_STATES.WALKING)} busy={busy} />
+      )
+    }
     return withInterruptionBanner(
       <JourneyLayout
         eyebrow="Paused"

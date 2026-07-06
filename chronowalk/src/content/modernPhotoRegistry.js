@@ -91,6 +91,10 @@ export const MODERN_PHOTO_PATHS = {
     exterior: `${WP}/forum-cluster/forum-arch-severus/modern-exterior.jpg`,
     poster: `${WP}/forum-cluster/forum-arch-severus/modern-poster.jpg`,
   },
+  'spanish-steps': {
+    exterior: `${WP}/spanish-steps/modern-exterior.jpg`,
+    poster: `${WP}/spanish-steps/modern-poster.jpg`,
+  },
 }
 
 /** Default tour / app hero when no stop-specific image is set. */

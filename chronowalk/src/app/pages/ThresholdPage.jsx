@@ -7,6 +7,9 @@ import { resolveWaypointMedia } from '../../lib/tour'
 import { resolveThresholdAmbienceUrls } from '../../content/thresholdAmbience.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
 import Threshold from '../../components/Threshold'
+import RedesignThresholdOverlay from '../../redesign/ui/RedesignThresholdOverlay.jsx'
+
+const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
 
 export function ThresholdDemoPage() {
   const { manifest } = useTourManifest()
@@ -50,7 +53,9 @@ export function JourneyThresholdLayer() {
     track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, via_threshold: true })
   }
 
-  return (
+  return useFigmaRedesign ? (
+    <RedesignThresholdOverlay waypoint={resolved} onDismiss={handleDismiss} />
+  ) : (
     <div
       style={{
         position: 'fixed',

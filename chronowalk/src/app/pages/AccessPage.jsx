@@ -4,10 +4,13 @@ import AccessScreen from '../../components/access/AccessScreen'
 import { hasAccess } from '../../lib/config'
 import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey'
 
+const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+
 function getAccessDestination() {
   const { state } = getJourneySnapshot()
   const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
-  return inProgress ? '/journey' : '/begin'
+  if (inProgress) return '/journey'
+  return useFigmaRedesign ? '/access/confirmed' : '/begin'
 }
 
 export function AccessPage() {

@@ -17,6 +17,7 @@
     "verify-waypoint": "bash scripts/verify-waypoint-assets.sh",
     "verify-all-waypoints": "bash scripts/verify-all-waypoint-assets.sh",
     "install:modern-photos": "node scripts/install-modern-photos.mjs",
+    "install:now-files": "node scripts/install-now-files.mjs",
     "process-piazza-navona": "bash scripts/process-waypoint-assets.sh piazza-navona",
     "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
     "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",
@@ -37,6 +38,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
+    "lucide-react": "^0.511.0",
     "mapbox-gl": "^3.25.0",
     "posthog-js": "^1.396.5",
     "react": "^19.2.6",

@@ -1,0 +1,118 @@
+{
+  "sourceDir": "PHOTOGRAPHY/NOW-files",
+  "poster": { "width": 1280, "height": 720, "quality": 85 },
+  "exterior": { "maxWidth": 2400, "quality": 88 },
+  "photos": [
+    {
+      "file": "colosseum-exterior-NOW.png",
+      "destinations": ["colosseum/exterior"],
+      "tourHero": true
+    },
+    {
+      "file": "colosseum-interior-NOW.jpg",
+      "destinations": ["colosseum/interior"]
+    },
+    {
+      "file": "arch-of-titus-NOW.png",
+      "destinations": ["forum-cluster/forum-arch-titus"]
+    },
+    {
+      "file": "palatine-terrace-NOW.png",
+      "destinations": ["palatine-hill-cluster"]
+    },
+    {
+      "file": "capitoline-hill-NOW.png",
+      "destinations": ["capitoline-hill"]
+    },
+    {
+      "file": "basilica-of-maxentius-NOW.png",
+      "destinations": ["forum-cluster/forum-basilica-maxentius"]
+    },
+    {
+      "file": "via-sacra-NOW.png",
+      "destinations": ["forum-cluster/forum-via-sacra"]
+    },
+    {
+      "file": "temple-of-vesta-NOW.png",
+      "destinations": ["forum-cluster/forum-temple-vesta"]
+    },
+    {
+      "file": "Rostra-NOW.png",
+      "destinations": ["forum-cluster/forum-rostra"]
+    },
+    {
+      "file": "temple-of-saturn-NOW.png",
+      "destinations": ["forum-cluster/forum-temple-saturn"]
+    },
+    {
+      "file": "severus-and-curia-NOW.png",
+      "destinations": ["forum-cluster/forum-arch-severus"]
+    },
+    {
+      "file": "curia-julia-NOW.png",
+      "destinations": ["forum-cluster/forum-curia-julia"]
+    },
+    {
+      "file": "trajans-market-NOW.png",
+      "destinations": ["trajan-market"]
+    },
+    {
+      "file": "spanish-steps-NOW.png",
+      "destinations": ["spanish-steps"]
+    },
+    {
+      "file": "fontana-di-trevi-NOW.png",
+      "destinations": ["fontana-di-trevi"]
+    },
+    {
+      "file": "pantheon-exterior-NOW.png",
+      "destinations": ["pantheon"]
+    },
+    {
+      "file": "piazza-navona-NOW.png",
+      "destinations": ["piazza-navona"]
+    },
+    {
+      "file": "campo-de-fiori-NOW.png",
+      "destinations": ["campo-de-fiori"]
+    },
+    {
+      "file": "largo-di-torre-argentina-NOW.png",
+      "destinations": ["largo-argentina"]
+    },
+    {
+      "file": "castel-sant-angelo-NOW.png",
+      "destinations": ["castel-sant-angelo"]
+    },
+    {
+      "file": "circo-massimo-NOW.png",
+      "destinations": ["circus-maximus"]
+    },
+    {
+      "file": "via-appia-NOW.png",
+      "destinations": ["via-appia"]
+    }
+  ],
+  "manifestWaypoints": {
+    "w01": "colosseum/exterior",
+    "w02": "colosseum/interior",
+    "w03": "forum-cluster/forum-arch-titus",
+    "w04": "palatine-hill-cluster",
+    "w06": "forum-cluster/forum-basilica-maxentius",
+    "w07": "forum-cluster/forum-via-sacra",
+    "w08": "forum-cluster/forum-temple-vesta",
+    "w10": "forum-cluster/forum-rostra",
+    "w11_12": "forum-cluster/forum-arch-severus",
+    "w13": "capitoline-hill",
+    "w14": "trajan-market",
+    "w15": "spanish-steps",
+    "w16": "fontana-di-trevi",
+    "w17": "pantheon",
+    "w18": "piazza-navona",
+    "w19": "campo-de-fiori",
+    "w20": "largo-argentina",
+    "w21": "castel-sant-angelo",
+    "enc_circus": "circus-maximus",
+    "w22": "via-appia"
+  }
+}

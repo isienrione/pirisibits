@@ -29,11 +29,13 @@ import JourneyMemoriesPage from '../pages/JourneyMemoriesPage.jsx'
 import SettingsPage from '../pages/SettingsPage.jsx'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel.jsx'
 import { ROUTES } from './paths.js'
+import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
 
 export default function LaunchRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/prototype" element={<FigmaPrototypeApp />} />
         <Route path={ROUTES.home} element={<LandingPage />} />
         <Route path={ROUTES.settings} element={<SettingsPage />} />
         <Route path={ROUTES.legacy} element={<LegacyAppPage />} />
