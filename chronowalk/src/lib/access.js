@@ -5,13 +5,17 @@ const UUID_RE =
 
 const DEV_TOKENS = new Set(['dev', 'local'])
 
+function allowsDevAccessTokens() {
+  return import.meta.env.DEV || import.meta.env.VITE_ALLOW_DEV_ACCESS === 'true'
+}
+
 export function parseAccessToken(search = '') {
   return new URLSearchParams(search).get('token')?.trim() ?? ''
 }
 
 export function isAccessTokenFormat(token) {
   if (!token) return false
-  if (import.meta.env.DEV && DEV_TOKENS.has(token.toLowerCase())) return true
+  if (allowsDevAccessTokens() && DEV_TOKENS.has(token.toLowerCase())) return true
   return UUID_RE.test(token)
 }
 
@@ -20,7 +24,7 @@ export async function validateAccessToken(token) {
     return { ok: false, reason: 'invalid_format' }
   }
 
-  if (import.meta.env.DEV && DEV_TOKENS.has(token.toLowerCase())) {
+  if (allowsDevAccessTokens() && DEV_TOKENS.has(token.toLowerCase())) {
     return { ok: true, source: 'dev' }
   }
 
