@@ -2,3 +2,14 @@
   base = "chronowalk"
   command = "VITE_BUILD_ID=\"${COMMIT_REF:-$GITHUB_SHA}\" npm run build"
   publish = "dist"
+
+# SPA client routes (/landing, /journey, /map, etc.)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Figma branch builds: enable v2 + redesign shell (secrets still set in Netlify UI)
+[context.figma.environment]
+  VITE_V2_APP = "true"
+  VITE_FIGMA_REDESIGN = "true"
