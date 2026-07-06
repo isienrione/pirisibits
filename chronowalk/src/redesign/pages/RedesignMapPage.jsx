@@ -7,7 +7,7 @@ import MapScreen from '../../components/map/MapScreen.jsx'
 export default function RedesignMapPage() {
   return (
     <div className="redesign-phone-frame redesign-phone-frame--companion">
-      <MapScreen />
+      <MapScreen variant="redesign" />
     </div>
   )
 }

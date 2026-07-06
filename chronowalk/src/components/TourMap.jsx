@@ -8,7 +8,7 @@ import {
   fetchWalkingDirections,
 } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
-import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
+import { env, isDebugGeo, isDebugMap, isDevPanelEnabled, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -31,11 +31,15 @@ const MAP_COLORS = {
 
 const MAP_STYLE = env.mapboxStyleUrl
 
-function setupMapLayers(map, { stops, tour, bounds }) {
+function setupMapLayers(map, { stops, tour, bounds, minimalUI, activeTargetId }) {
+  const geofenceStops = minimalUI
+    ? stops.filter((stop) => stop.id === activeTargetId)
+    : stops
+
   if (!map.getSource('waypoint-zones')) {
     map.addSource('waypoint-zones', {
       type: 'geojson',
-      data: stopsToFeatureCollection(stops),
+      data: stopsToFeatureCollection(geofenceStops),
     })
 
     map.addLayer({
@@ -54,7 +58,7 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
-        'fill-opacity': 0.14,
+        'fill-opacity': minimalUI ? 0.08 : 0.14,
       },
     })
 
@@ -74,8 +78,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
-        'line-width': 2,
-        'line-opacity': 0.65,
+        'line-width': minimalUI ? 1.5 : 2,
+        'line-opacity': minimalUI ? 0.35 : 0.65,
       },
     })
 
@@ -90,8 +94,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       source: 'tour-route',
       paint: {
         'line-color': MAP_COLORS.tourRoute,
-        'line-width': 4,
-        'line-opacity': 0.55,
+        'line-width': minimalUI ? 3 : 4,
+        'line-opacity': minimalUI ? 0.28 : 0.55,
         'line-dasharray': [1.2, 1.4],
       },
     })
@@ -128,7 +132,7 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       },
     })
   } else {
-    map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(stops))
+    map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(geofenceStops))
   }
 
   if (bounds && tour?.stopIds?.length > 1) {
@@ -137,12 +141,12 @@ function setupMapLayers(map, { stops, tour, bounds }) {
         [bounds.minLng - 0.005, bounds.minLat - 0.004],
         [bounds.maxLng + 0.005, bounds.maxLat + 0.004],
       ],
-      { padding: 56, maxZoom: 15, duration: 0 }
+      { padding: minimalUI ? 72 : 56, maxZoom: minimalUI ? 14 : 15, duration: 0 }
     )
   }
 }
 
-const createLandmarkMarkerElement = (title, status, onPress) => {
+const createLandmarkMarkerElement = (title, status, onPress, { showLabel = true } = {}) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
   if (onPress) {
@@ -162,19 +166,24 @@ const createLandmarkMarkerElement = (title, status, onPress) => {
           ? 'bg-muted opacity-60'
           : 'bg-muted opacity-80'
 
+  const dotSize = showLabel ? 'h-6 w-6' : 'h-3 w-3'
+  const labelHtml = showLabel
+    ? `<span class="mt-1 max-w-[5.5rem] truncate rounded bg-bone/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-ink900 shadow-sm">${title}</span>`
+    : ''
+
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-bone/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-ink900 shadow-sm">${title}</span>
+    <div class="flex ${dotSize} items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
+    ${labelHtml}
   `
   return el
 }
 
-const createUserMarkerElement = () => {
+const createUserMarkerElement = (minimalUI = false) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
-  el.innerHTML = `
-    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warmwhite shadow-lg">You</div>
-  `
+  el.innerHTML = minimalUI
+    ? `<div class="flex h-5 w-5 items-center justify-center rounded-full border-[3px] border-warm-white bg-sky-blue shadow-lg"></div>`
+    : `<div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warmwhite shadow-lg">You</div>`
   return el
 }
 
@@ -265,6 +274,7 @@ function TourMapboxView({
   tour,
   stops,
   activeTargetId,
+  selectedStopId = null,
   activeLeg,
   transitLegActive,
   geofenceThresholdM,
@@ -278,6 +288,7 @@ function TourMapboxView({
   directionsModeActive = false,
   directionsGeometry = null,
   onStopSelect = null,
+  minimalUI = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -287,7 +298,8 @@ function TourMapboxView({
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const debugGeo = isDebugGeo()
-  const showDebugOverlay = debugMapEnabled || isDebugMap()
+  const showDebugOverlay =
+    (debugMapEnabled || isDebugMap()) && (!minimalUI || isDevPanelEnabled())
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
   useEffect(() => {
@@ -326,7 +338,7 @@ function TourMapboxView({
       }
 
       try {
-        setupMapLayers(map.current, { stops, tour, bounds })
+        setupMapLayers(map.current, { stops, tour, bounds, minimalUI, activeTargetId })
       } catch (error) {
         console.error('Map layer setup failed:', error)
         onMapFailureRef.current?.()
@@ -422,7 +434,10 @@ function TourMapboxView({
 
     const source = map.current.getSource('waypoint-zones')
     if (source) {
-      source.setData(stopsToFeatureCollection(stops))
+      const geofenceStops = minimalUI
+        ? stops.filter((stop) => stop.id === activeTargetId)
+        : stops
+      source.setData(stopsToFeatureCollection(geofenceStops))
     }
 
     landmarkMarkers.current.forEach((marker) => marker.remove())
@@ -430,15 +445,22 @@ function TourMapboxView({
 
     stops.forEach((stop) => {
       if (!stop?.landmark) return
+      const showLabel =
+        !minimalUI || stop.id === activeTargetId || stop.id === selectedStopId
       const marker = new mapboxgl.Marker({
-        element: createLandmarkMarkerElement(stop.title, stop.status, onStopSelect ? () => onStopSelect(stop.id) : null),
+        element: createLandmarkMarkerElement(
+          stop.title,
+          stop.status,
+          onStopSelect ? () => onStopSelect(stop.id) : null,
+          { showLabel },
+        ),
         anchor: 'bottom',
       })
         .setLngLat([stop.landmark.lng, stop.landmark.lat])
         .addTo(map.current)
       landmarkMarkers.current.push(marker)
     })
-  }, [stops, mapLoaded, onStopSelect])
+  }, [stops, mapLoaded, onStopSelect, minimalUI, activeTargetId, selectedStopId])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !mapboxToken) return undefined
@@ -581,7 +603,7 @@ function TourMapboxView({
       userMarker.current.setLngLat([markerLng, markerLat])
     } else {
       userMarker.current = new mapboxgl.Marker({
-        element: createUserMarkerElement(),
+        element: createUserMarkerElement(minimalUI),
         anchor: 'bottom',
       })
         .setLngLat([markerLng, markerLat])
@@ -660,6 +682,7 @@ const TourMap = ({
   tour,
   stops = [],
   activeTargetId,
+  selectedStopId = null,
   activeLeg,
   transitLegActive,
   geofenceThresholdM,
@@ -674,6 +697,7 @@ const TourMap = ({
   directionsModeActive = false,
   directionsGeometry = null,
   onStopSelect = null,
+  minimalUI = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -705,6 +729,7 @@ const TourMap = ({
       tour={tour}
       stops={stops}
       activeTargetId={activeTargetId}
+      selectedStopId={selectedStopId}
       activeLeg={activeLeg}
       transitLegActive={transitLegActive}
       geofenceThresholdM={geofenceThresholdM}
@@ -718,6 +743,7 @@ const TourMap = ({
       directionsModeActive={directionsModeActive}
       directionsGeometry={directionsGeometry}
       onStopSelect={onStopSelect}
+      minimalUI={minimalUI}
     />
   )
 }

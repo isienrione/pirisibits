@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import C7Threshold from '../screens/C7Threshold.jsx'
-import { photoForWaypoint, thenPhotoForWaypoint } from '../lib/waypointPresentation.js'
+import {
+  honestyCaptionForWaypoint,
+  photoForWaypoint,
+  thenLabelForWaypoint,
+  thenPhotoForWaypoint,
+} from '../lib/waypointPresentation.js'
 
 export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
   const [crossed, setCrossed] = useState(false)
@@ -8,11 +13,17 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
   if (!waypoint) return null
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 70, background: '#16130F' }}>
+    <div
+      className="cw-threshold-surface"
+      style={{ position: 'fixed', inset: 0, zIndex: 70, background: '#16130F' }}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <C7Threshold
+        embedded
         nowPhoto={photoForWaypoint(waypoint)}
         thenPhoto={thenPhotoForWaypoint(waypoint)}
-        honestyCaption={waypoint.reconstruction?.honesty ?? waypoint.honestyCaption}
+        thenLabel={thenLabelForWaypoint(waypoint)}
+        honestyCaption={honestyCaptionForWaypoint(waypoint)}
         onCrossed={() => setCrossed(true)}
       />
       {crossed && onDismiss ? (

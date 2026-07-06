@@ -1,6 +1,8 @@
 import { T } from '../tokens.js'
 import { getNowPhotoUrl } from '../images.js'
 import { getAct } from '../../content/manifest.js'
+import { getModernExteriorUrl, getModernPosterUrl } from '../../content/modernPhotoRegistry.js'
+import { mediaUrl } from '../../lib/mediaUrl.js'
 
 const ACT_COLOR = {
   act1: T.actI,
@@ -22,6 +24,26 @@ const ACT_NUMERAL = {
   encore: 'ENC',
 }
 
+const PHOTO_STOP_ALIASES = {
+  'via-appia': 'appian-way',
+}
+
+/** Map manifest photo paths to modernPhotoRegistry stop ids. */
+export function legacyStopIdFromWaypoint(waypoint) {
+  const photo = waypoint?.photo ?? ''
+  if (photo.includes('/colosseum/interior/')) return 'colosseum-interior'
+
+  const forumMatch = photo.match(/forum-cluster\/([^/]+)/)
+  if (forumMatch) return forumMatch[1]
+
+  const directMatch = photo.match(/\/waypoints\/([^/]+)/)
+  if (!directMatch) return null
+
+  const slug = directMatch[1]
+  if (slug === 'forum-cluster') return null
+  return PHOTO_STOP_ALIASES[slug] ?? slug
+}
+
 export function accentForWaypoint(waypoint, manifest) {
   const actId = waypoint?.act
   if (actId && ACT_COLOR[actId]) return ACT_COLOR[actId]
@@ -38,15 +60,62 @@ export function numeralForWaypoint(waypoint) {
   return ACT_NUMERAL[waypoint?.act] ?? 'I'
 }
 
+export function resolvePhotoUrl(path) {
+  if (!path) return null
+  return mediaUrl(path) ?? path
+}
+
 export function photoForWaypoint(waypoint) {
-  if (waypoint?.photo) return waypoint.photo
-  if (waypoint?.reconstruction?.now) return waypoint.reconstruction.now
-  if (waypoint?.legacy_stop_id) return getNowPhotoUrl(waypoint.legacy_stop_id)
+  if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
+  if (waypoint?.reconstruction?.now) return resolvePhotoUrl(waypoint.reconstruction.now)
+  const stopId = legacyStopIdFromWaypoint(waypoint)
+  if (stopId) return getNowPhotoUrl(stopId)
   return getNowPhotoUrl('colosseum')
 }
 
 export function thenPhotoForWaypoint(waypoint) {
-  return waypoint?.reconstruction?.then ?? photoForWaypoint(waypoint)
+  if (waypoint?.reconstruction?.then) {
+    return resolvePhotoUrl(waypoint.reconstruction.then)
+  }
+
+  if (waypoint?.id) {
+    const manifestThen = resolvePhotoUrl(`/rome/img/${waypoint.id}_then.avif`)
+    if (manifestThen) return manifestThen
+  }
+
+  const stopId = legacyStopIdFromWaypoint(waypoint)
+  if (stopId) {
+    return getModernExteriorUrl(stopId)
+  }
+
+  return photoForWaypoint(waypoint)
+}
+
+/** True when THEN uses a dedicated reconstruction asset (not poster fallback). */
+export function hasDistinctThenPhoto(waypoint) {
+  if (waypoint?.reconstruction?.then) return true
+  const stopId = legacyStopIdFromWaypoint(waypoint)
+  if (!stopId) return false
+  const nowPath = waypoint?.photo ?? getModernPosterUrl(stopId)
+  const thenPath = getModernExteriorUrl(stopId)
+  return nowPath !== thenPath
+}
+
+export function thenLabelForWaypoint(waypoint) {
+  return waypoint?.reconstruction?.era ?? waypoint?.era ?? 'ANCIENT ROME'
+}
+
+export function honestyCaptionForWaypoint(waypoint) {
+  return (
+    waypoint?.reconstruction?.caption ??
+    waypoint?.reconstruction?.honesty ??
+    'Interpretive reconstruction informed by archaeology and scholarship.'
+  )
+}
+
+/** Every stop supports the threshold slider. */
+export function supportsThresholdExperience() {
+  return true
 }
 
 export function titleForWaypoint(waypoint) {

@@ -23,6 +23,8 @@ export default function C6ImmersivePlayer({
   onSkipForward,
   onStoryComplete,
   onBack,
+  onOpenThreshold,
+  onViewImages,
 }) {
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'chapters')
   const [progress] = useState(0.35)
@@ -190,6 +192,51 @@ export default function C6ImmersivePlayer({
             <SkipForward size={26} />
           </button>
         </div>
+
+        {(onOpenThreshold || onViewImages) && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexShrink: 0 }}>
+            {onOpenThreshold ? (
+              <button
+                type="button"
+                onClick={onOpenThreshold}
+                style={{
+                  flex: 1,
+                  padding: '11px 10px',
+                  borderRadius: 10,
+                  border: `1px solid ${accent}66`,
+                  background: `${accent}12`,
+                  color: T.warmWhite,
+                  fontFamily: F.body,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                Step through time
+              </button>
+            ) : null}
+            {onViewImages ? (
+              <button
+                type="button"
+                onClick={onViewImages}
+                style={{
+                  flex: 1,
+                  padding: '11px 10px',
+                  borderRadius: 10,
+                  border: `1px solid ${T.muted}44`,
+                  background: 'transparent',
+                  color: T.muted,
+                  fontFamily: F.body,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                View images only
+              </button>
+            ) : null}
+          </div>
+        )}
 
         <div
           style={{

@@ -43,7 +43,7 @@ export function JourneyThresholdLayer() {
   if (state !== JOURNEY_STATES.THRESHOLD || !manifest || step?.type !== 'waypoint') return null
 
   const waypoint = step.record
-  if (!waypoint?.reconstruction) return null
+  if (!waypoint) return null
 
   const resolved = resolveWaypointMedia(waypoint)
   const ambience = resolveThresholdAmbienceUrls(manifest)
@@ -53,7 +53,7 @@ export function JourneyThresholdLayer() {
   }
 
   return useFigmaRedesign ? (
-    <RedesignThresholdOverlay waypoint={resolved} onDismiss={handleDismiss} />
+    <RedesignThresholdOverlay waypoint={waypoint} onDismiss={handleDismiss} />
   ) : (
     <div
       style={{

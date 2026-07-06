@@ -7,10 +7,13 @@ import {
 } from '../state/journey.js'
 import { findSequenceIndexForWaypoint } from './debugWaypoint.js'
 
-/** Jump the linear journey to a manifest waypoint id and enter walk/arrived state. */
-export function jumpToWaypointInJourney(manifest, waypointId, context, state) {
+const STORY_VIEW_KEY = 'cw_story_view'
+
+/** Jump the linear journey to a manifest waypoint id and optional target state. */
+export function jumpToWaypointInJourney(manifest, waypointId, context, state, options = {}) {
   if (!manifest || !waypointId) return false
 
+  const { targetState = null, storyView = null } = options
   const path = context.path || manifest.journey?.default_path || 'a'
   const index = findSequenceIndexForWaypoint(
     manifest,
@@ -30,12 +33,22 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state) {
 
   jumpToSequenceIndex(index)
 
+  if (storyView && typeof window !== 'undefined') {
+    window.sessionStorage.setItem(STORY_VIEW_KEY, storyView)
+  }
+
   const placement = getDebugGeoPlacement()
-  transitionJourney(
-    isDebugGeo() && placement === 'arrived'
-      ? JOURNEY_STATES.ARRIVED
-      : JOURNEY_STATES.WALKING,
-  )
+  const fallback =
+    isDebugGeo() && placement === 'arrived' ? JOURNEY_STATES.ARRIVED : JOURNEY_STATES.WALKING
+
+  transitionJourney(targetState ?? fallback)
 
   return true
+}
+
+export function consumeStoryViewIntent() {
+  if (typeof window === 'undefined') return null
+  const value = window.sessionStorage.getItem(STORY_VIEW_KEY)
+  if (value) window.sessionStorage.removeItem(STORY_VIEW_KEY)
+  return value
 }

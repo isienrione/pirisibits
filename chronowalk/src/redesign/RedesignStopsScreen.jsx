@@ -61,9 +61,12 @@ export default function RedesignStopsScreen() {
     navigate(`/journal/${waypointId}`)
   }
 
-  const walkToStop = (waypointId) => {
+  const walkToStop = (waypointId, targetState = null, storyView = null) => {
     if (!manifest) return
-    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state)
+    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+      targetState,
+      storyView,
+    })
     if (jumped) navigate('/journey')
   }
 
@@ -135,18 +138,32 @@ export default function RedesignStopsScreen() {
                     <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                       {statusLabel(card.status)}
                     </span>
-                    <div style={{ display: 'flex', gap: 8 }}>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                      <button
+                        type="button"
+                        onClick={() => walkToStop(card.id, JOURNEY_STATES.THRESHOLD)}
+                        style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                      >
+                        Threshold
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
+                        style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                      >
+                        Audio
+                      </button>
                       <button
                         type="button"
                         onClick={() => openStop(card.id)}
-                        style={{ fontSize: 12, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 10px', cursor: 'pointer' }}
+                        style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                       >
                         Open card
                       </button>
                       <button
                         type="button"
                         onClick={() => walkToStop(card.id)}
-                        style={{ fontSize: 12, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 10px', cursor: 'pointer', fontWeight: 600 }}
+                        style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
                       >
                         Walk here
                       </button>

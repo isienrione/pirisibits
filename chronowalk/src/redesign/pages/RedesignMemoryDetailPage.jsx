@@ -2,11 +2,14 @@ import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getWaypoint } from '../../content/manifest.js'
 import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
+import { JOURNEY_STATES } from '../../state/journey.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
 import {
   accentForWaypoint,
+  honestyCaptionForWaypoint,
   photoForWaypoint,
   signatureLine,
+  thenLabelForWaypoint,
   thenPhotoForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
@@ -30,10 +33,17 @@ export default function RedesignMemoryDetailPage() {
     return getAct(manifest, waypoint.act)
   }, [manifest, waypoint?.act])
 
-  const handleWalkToStop = () => {
+  const goToStopExperience = (targetState, storyView = null) => {
     if (!manifest || !waypointId) return
-    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state)
+    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+      targetState,
+      storyView,
+    })
     if (jumped) navigate('/journey')
+  }
+
+  const handleWalkToStop = () => {
+    goToStopExperience(null)
   }
 
   if (loading) {
@@ -64,12 +74,18 @@ export default function RedesignMemoryDetailPage() {
           title={titleForWaypoint(waypoint)}
           nowPhoto={photoForWaypoint(waypoint)}
           thenPhoto={thenPhotoForWaypoint(waypoint)}
+          thenLabel={thenLabelForWaypoint(waypoint)}
+          honestyCaption={honestyCaptionForWaypoint(waypoint)}
           signatureLine={signatureLine(waypoint)}
           facts={waypoint.keyFacts ?? []}
           transcript={waypoint.transcriptPreview}
           chapters={waypoint.chapters ?? []}
           onBack={() => navigate('/journal')}
           onWalkToStop={handleWalkToStop}
+          onStepThroughTime={() => goToStopExperience(JOURNEY_STATES.THRESHOLD)}
+          onAudioOnly={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
+          onTranscript={() => goToStopExperience(JOURNEY_STATES.STORY, 'transcript')}
+          onViewImages={() => goToStopExperience(JOURNEY_STATES.ARRIVED)}
         />
       </div>
     </RedesignRouteShell>

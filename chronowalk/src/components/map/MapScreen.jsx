@@ -22,39 +22,41 @@ import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { toWalkCardModel } from '../../content/stopPresentation.js'
 import { ShellWalkCard } from '../../shell'
 
-function ConfidenceChip({ label, active }) {
+function ConfidenceChip({ label, active, compact = false }) {
   return (
     <span
       style={{
         display: 'inline-flex',
         alignItems: 'center',
         gap: 6,
-        padding: '6px 10px',
+        padding: compact ? '5px 9px' : '6px 10px',
         borderRadius: 999,
         border: `1px solid color-mix(in srgb, var(--warm-white) ${active ? '22%' : '10%'}, transparent)`,
         background: active
           ? 'color-mix(in srgb, var(--verdigris) 18%, var(--ink))'
           : 'color-mix(in srgb, var(--ink) 72%, transparent)',
         color: active ? 'var(--warm-white)' : 'var(--muted-warm)',
-        fontSize: 'var(--fs-meta)',
+        fontSize: compact ? '0.68rem' : 'var(--fs-meta)',
         fontWeight: 600,
       }}
     >
-      <span
-        aria-hidden="true"
-        style={{
-          width: 7,
-          height: 7,
-          borderRadius: '50%',
-          background: active ? 'var(--verdigris)' : 'color-mix(in srgb, var(--muted-warm) 70%, transparent)',
-        }}
-      />
+      {!compact ? (
+        <span
+          aria-hidden="true"
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: '50%',
+            background: active ? 'var(--verdigris)' : 'color-mix(in srgb, var(--muted-warm) 70%, transparent)',
+          }}
+        />
+      ) : null}
       {label}
     </span>
   )
 }
 
-export default function MapScreen() {
+export default function MapScreen({ variant = 'legacy' }) {
   const navigate = useNavigate()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -68,6 +70,7 @@ export default function MapScreen() {
   const [recenterKey, setRecenterKey] = useState(0)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   const [selectedStopId, setSelectedStopId] = useState(null)
+  const isRedesign = variant === 'redesign'
 
   useEffect(() => {
     if (!isDevPanelEnabled()) return undefined
@@ -76,10 +79,6 @@ export default function MapScreen() {
     window.addEventListener(DEV_TOOLS_CHANGED, syncDevGps)
     return () => window.removeEventListener(DEV_TOOLS_CHANGED, syncDevGps)
   }, [])
-
-  useEffect(() => {
-    if (activeTargetId) setSelectedStopId(activeTargetId)
-  }, [activeTargetId])
 
   const geoTarget = step?.type === 'waypoint' ? step.record : step?.targetWaypoint
   const geoDebug = useJourneyGeoDebugOptions(
@@ -139,6 +138,10 @@ export default function MapScreen() {
     [manifest, context.path, context.currentSequenceIndex, context.promotedOptionalIds]
   )
 
+  useEffect(() => {
+    if (activeTargetId) setSelectedStopId(activeTargetId)
+  }, [activeTargetId])
+
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
   const selectedStop = stops.find((stop) => stop.id === selectedStopId) ?? activeStop
   const walkCard = manifest && selectedStop ? toWalkCardModel(manifest, selectedStop, geo.distance) : null
@@ -184,6 +187,11 @@ export default function MapScreen() {
     transitLegActive,
     companionMode: companion.mode,
   })
+
+  const alertLayers = confidenceLayers.filter(
+    (layer) => layer.id === 'route_drift' || layer.id === 'observing',
+  )
+  const visibleConfidenceLayers = isRedesign ? alertLayers : confidenceLayers
 
   if (state === JOURNEY_STATES.IDLE && import.meta.env.VITE_FIGMA_REDESIGN === 'false') {
     return <Navigate to="/begin" replace />
@@ -232,11 +240,19 @@ export default function MapScreen() {
   }
 
   return (
-    <div style={{ position: 'relative', minHeight: '100dvh', background: 'var(--obsidian)' }}>
+    <div
+      style={{
+        position: 'relative',
+        minHeight: isRedesign ? '100%' : '100dvh',
+        height: isRedesign ? '100%' : undefined,
+        background: 'var(--obsidian)',
+      }}
+    >
       <TourMap
         tour={tour}
         stops={stops}
         activeTargetId={activeTargetId}
+        selectedStopId={selectedStopId}
         activeLeg={activeLeg}
         transitLegActive={transitLegActive}
         geofenceThresholdM={activeStop?.arrivalRadiusM ?? 40}
@@ -245,104 +261,260 @@ export default function MapScreen() {
         distance={geo.distance}
         arrivalPulseActive={geo.insideGeofence}
         debugMapEnabled={isDebugMap()}
+        minimalUI={isRedesign}
         directionsModeActive={directionsOpen}
         directionsGeometry={directions?.geometry ?? null}
         focusTarget={focusTarget}
         onStopSelect={(stopId) => setSelectedStopId(stopId)}
       />
 
-      <div
-        style={{
-          position: 'absolute',
-          top: 'max(12px, env(safe-area-inset-top))',
-          left: 12,
-          right: 12,
-          zIndex: 40,
-          display: 'grid',
-          gap: 10,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 12,
-          }}
-        >
-          <Link
-            to="/stops"
+      {isRedesign ? (
+        <>
+          <div
             style={{
-              padding: '10px 14px',
-              borderRadius: 999,
-              background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
-              color: 'var(--warm-white)',
-              textDecoration: 'none',
-              fontSize: 'var(--fs-secondary)',
-              fontWeight: 600,
-              border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
+              position: 'absolute',
+              top: 'max(10px, env(safe-area-inset-top))',
+              left: 12,
+              right: 12,
+              zIndex: 40,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 10,
+              pointerEvents: 'none',
             }}
           >
-            All stops
-          </Link>
-
-          <Link
-            to="/journey"
-            style={{
-              padding: '10px 14px',
-              borderRadius: 999,
-              background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
-              color: 'var(--warm-white)',
-              textDecoration: 'none',
-              fontSize: 'var(--fs-secondary)',
-              fontWeight: 600,
-              border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
-            }}
-          >
-            Back to walk
-          </Link>
-
-          {selectedStop && !directionsOpen ? (
+            <Link
+              to="/journey"
+              style={{
+                pointerEvents: 'auto',
+                padding: '9px 14px',
+                borderRadius: 999,
+                background: 'color-mix(in srgb, var(--ink) 82%, transparent)',
+                color: 'var(--warm-white)',
+                textDecoration: 'none',
+                fontSize: 13,
+                fontWeight: 600,
+                border: '1px solid color-mix(in srgb, var(--warm-white) 10%, transparent)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              ← Walk
+            </Link>
             <button
               type="button"
-              onClick={handleOpenDirections}
+              onClick={handleRecenter}
+              aria-label="Recenter map"
+              style={{
+                pointerEvents: 'auto',
+                width: 38,
+                height: 38,
+                borderRadius: 19,
+                border: '1px solid color-mix(in srgb, var(--warm-white) 10%, transparent)',
+                background: 'color-mix(in srgb, var(--ink) 82%, transparent)',
+                color: 'var(--warm-white)',
+                fontSize: 18,
+                lineHeight: 1,
+                cursor: 'pointer',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              ◎
+            </button>
+          </div>
+
+          {visibleConfidenceLayers.length > 0 ? (
+            <div
+              style={{
+                position: 'absolute',
+                top: 'max(56px, calc(env(safe-area-inset-top) + 46px))',
+                left: 12,
+                right: 12,
+                zIndex: 40,
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 6,
+                pointerEvents: 'none',
+              }}
+            >
+              {visibleConfidenceLayers.map((layer) => (
+                <ConfidenceChip key={layer.id} label={layer.label} active={layer.active} compact />
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'max(12px, env(safe-area-inset-top))',
+            left: 12,
+            right: 12,
+            zIndex: 40,
+            display: 'grid',
+            gap: 10,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+            }}
+          >
+            <Link
+              to="/stops"
               style={{
                 padding: '10px 14px',
                 borderRadius: 999,
-                border: 'none',
-                background: 'var(--accent)',
-                color: 'var(--bone)',
+                background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
+                color: 'var(--warm-white)',
+                textDecoration: 'none',
                 fontSize: 'var(--fs-secondary)',
                 fontWeight: 600,
-                cursor: 'pointer',
+                border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
               }}
             >
-              Walk there
-            </button>
-          ) : null}
-        </div>
+              All stops
+            </Link>
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {confidenceLayers.map((layer) => (
-            <ConfidenceChip key={layer.id} label={layer.label} active={layer.active} />
-          ))}
+            <Link
+              to="/journey"
+              style={{
+                padding: '10px 14px',
+                borderRadius: 999,
+                background: 'color-mix(in srgb, var(--ink) 88%, transparent)',
+                color: 'var(--warm-white)',
+                textDecoration: 'none',
+                fontSize: 'var(--fs-secondary)',
+                fontWeight: 600,
+                border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
+              }}
+            >
+              Back to walk
+            </Link>
+
+            {selectedStop && !directionsOpen ? (
+              <button
+                type="button"
+                onClick={handleOpenDirections}
+                style={{
+                  padding: '10px 14px',
+                  borderRadius: 999,
+                  border: 'none',
+                  background: 'var(--accent)',
+                  color: 'var(--bone)',
+                  fontSize: 'var(--fs-secondary)',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                Walk there
+              </button>
+            ) : null}
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {visibleConfidenceLayers.map((layer) => (
+              <ConfidenceChip key={layer.id} label={layer.label} active={layer.active} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {!directionsOpen && walkCard ? (
-        <div
-          className="absolute inset-x-3 z-40"
-          style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
-        >
-          <ShellWalkCard
-            title={walkCard.title}
-            distanceM={walkCard.distanceM}
-            imageUrl={walkCard.imageUrl}
-            eyebrow={selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
-            onContinue={() => navigate(`/journal/${selectedStop.id}`)}
-            continueLabel="Open stop card"
-          />
-        </div>
+        isRedesign ? (
+          <div
+            style={{
+              position: 'absolute',
+              left: 12,
+              right: 12,
+              zIndex: 40,
+              bottom: 'max(4.75rem, calc(env(safe-area-inset-bottom) + 3.75rem))',
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => navigate(`/journal/${selectedStop.id}`)}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '11px 14px',
+                borderRadius: 14,
+                border: '1px solid color-mix(in srgb, var(--warm-white) 8%, transparent)',
+                background: 'color-mix(in srgb, var(--ink) 86%, transparent)',
+                backdropFilter: 'blur(10px)',
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+            >
+              {walkCard.imageUrl ? (
+                <img
+                  src={walkCard.imageUrl}
+                  alt=""
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 10,
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                  }}
+                />
+              ) : null}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 10,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: 'var(--accent)',
+                    fontWeight: 600,
+                  }}
+                >
+                  {selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
+                </p>
+                <p
+                  style={{
+                    margin: '2px 0 0',
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 16,
+                    color: 'var(--warm-white)',
+                    fontWeight: 400,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {walkCard.title}
+                </p>
+                {walkCard.distanceM != null ? (
+                  <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--muted-warm)' }}>
+                    {Math.round(walkCard.distanceM)} m
+                  </p>
+                ) : null}
+              </div>
+              <span style={{ color: 'var(--muted-warm)', fontSize: 18, flexShrink: 0 }}>→</span>
+            </button>
+          </div>
+        ) : (
+          <div
+            className="absolute inset-x-3 z-40"
+            style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
+          >
+            <ShellWalkCard
+              title={walkCard.title}
+              distanceM={walkCard.distanceM}
+              imageUrl={walkCard.imageUrl}
+              eyebrow={selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
+              onContinue={() => navigate(`/journal/${selectedStop.id}`)}
+              continueLabel="Open stop card"
+            />
+          </div>
+        )
       ) : null}
 
       {directionsOpen ? (

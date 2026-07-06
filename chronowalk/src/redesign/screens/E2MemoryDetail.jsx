@@ -5,6 +5,7 @@ import { T, F } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow } from '../ui/index.js';
+import C7Threshold from './C7Threshold.jsx';
 
 export default function E2MemoryDetail({
   accent = T.actI,
@@ -12,17 +13,22 @@ export default function E2MemoryDetail({
   title = 'The Colosseum',
   nowPhoto = colosseumNow,
   thenPhoto = colosseumNow,
+  thenLabel = 'ANCIENT ROME',
+  honestyCaption = 'Interpretive reconstruction informed by archaeology and scholarship.',
   signatureLine: sigLine = 'The concrete is still crystallizing.',
   facts: factsProp,
   transcript,
   chapters: chaptersProp,
   onBack,
   onWalkToStop,
+  onStepThroughTime,
+  onAudioOnly,
+  onTranscript,
+  onViewImages,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
 
-  const halfW = (390 - 40 - 1.5) / 2;   // ≈ 174px
-  const halfH = Math.round(halfW * 1.25); // 4:5 ratio ≈ 218px
+  const immersionH = Math.round(((390 - 48) * 4) / 3);
 
   const [txOpen, setTxOpen] = useState(false);
 
@@ -57,7 +63,7 @@ export default function E2MemoryDetail({
             onClick={onWalkToStop}
             style={{
               width: '100%',
-              marginBottom: 20,
+              marginBottom: 12,
               padding: '13px 16px',
               borderRadius: 12,
               border: 'none',
@@ -73,22 +79,119 @@ export default function E2MemoryDetail({
           </button>
         ) : null}
 
-        {/* Large 4:5 diptych */}
-        <div style={{ display: "flex", marginBottom: 8, borderRadius: 14, overflow: "hidden", height: halfH }}>
-          <div style={{ width: halfW, flexShrink: 0, overflow: "hidden" }}>
-            <img src={nowPhoto} alt="TODAY" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
+        {(onStepThroughTime || onAudioOnly || onTranscript || onViewImages) ? (
+          <div style={{ marginBottom: 20 }}>
+            {onStepThroughTime ? (
+              <button
+                type="button"
+                onClick={onStepThroughTime}
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: accent,
+                  color: T.warmWhite,
+                  fontFamily: F.body,
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  marginBottom: 8,
+                }}
+              >
+                Step through time
+              </button>
+            ) : null}
+            <div style={{ display: 'flex', gap: 8, marginBottom: onViewImages ? 8 : 0 }}>
+              {onAudioOnly ? (
+                <button
+                  type="button"
+                  onClick={onAudioOnly}
+                  style={{
+                    flex: 1,
+                    padding: '12px 10px',
+                    borderRadius: 999,
+                    border: `1.5px solid ${T.muted}55`,
+                    background: 'transparent',
+                    color: T.ink,
+                    fontFamily: F.body,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Audio only
+                </button>
+              ) : null}
+              {onTranscript ? (
+                <button
+                  type="button"
+                  onClick={onTranscript}
+                  style={{
+                    flex: 1,
+                    padding: '12px 10px',
+                    borderRadius: 999,
+                    border: `1.5px solid ${T.muted}55`,
+                    background: 'transparent',
+                    color: T.ink,
+                    fontFamily: F.body,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Transcript
+                </button>
+              ) : null}
+            </div>
+            {onViewImages ? (
+              <button
+                type="button"
+                onClick={onViewImages}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: 999,
+                  border: `1.5px solid ${accent}55`,
+                  background: 'transparent',
+                  color: accent,
+                  fontFamily: F.body,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                View images only
+              </button>
+            ) : null}
           </div>
-          <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: "0 0 10px rgba(232,161,60,0.55)", animation: "seamBreathe 3s ease-in-out infinite" }} />
-          <div style={{ flex: 1, overflow: "hidden" }}>
-            <img src={thenPhoto} alt="c. 80 AD" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.74) saturate(1.2)" }} />
-          </div>
+        ) : null}
+
+        {/* Interactive threshold — hold or drag the seam */}
+        <p style={{ fontSize: 11, color: accent, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500, marginBottom: 10 }}>
+          Immersion
+        </p>
+        <div
+          style={{
+            marginBottom: 8,
+            borderRadius: 16,
+            overflow: 'hidden',
+            height: Math.min(immersionH, 360),
+            boxShadow: '0 8px 28px rgba(33,28,21,0.12)',
+          }}
+        >
+          <C7Threshold
+            nowPhoto={nowPhoto}
+            thenPhoto={thenPhoto}
+            thenLabel={thenLabel}
+            honestyCaption={honestyCaption}
+          />
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-          <span style={{ fontSize: 9, color: T.muted, letterSpacing: "0.14em", textTransform: "uppercase" }}>TODAY</span>
-          <span style={{ fontSize: 9, color: T.muted, letterSpacing: "0.14em", textTransform: "uppercase" }}>c. 80 AD</span>
-        </div>
-        <p style={{ fontSize: 11, color: T.muted, lineHeight: 1.6, marginBottom: 26, fontStyle: "italic" }}>
-          Statue placement evidence-based; crowd density and awning colours informed conjecture.
+        <p style={{ fontSize: 11, color: T.muted, textAlign: 'center', marginBottom: 6, letterSpacing: '0.08em' }}>
+          Then · Now
+        </p>
+        <p style={{ fontSize: 11, color: T.muted, lineHeight: 1.6, marginBottom: 26, fontStyle: 'italic' }}>
+          {honestyCaption}
         </p>
 
         {/* Key facts — editorial list, hairline-separated, no bullets */}
@@ -123,7 +226,7 @@ export default function E2MemoryDetail({
             {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}
             <button
               type="button"
-              onClick={onWalkToStop}
+              onClick={onAudioOnly ?? onWalkToStop}
               style={{ width: '100%', display: "flex", alignItems: "center", gap: 14, padding: "12px 0", cursor: "pointer", background: 'none', border: 'none', textAlign: 'left' }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 18, background: `${accent}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>

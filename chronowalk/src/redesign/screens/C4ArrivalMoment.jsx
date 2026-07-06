@@ -3,17 +3,17 @@ import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 
 /**
- * Arrival — full-bleed photo + cream card (Figma: YOU'VE ARRIVED, Step through time).
+ * Arrival — full-bleed photo + cream card with full immersive options on every stop.
  */
 export default function C4ArrivalMoment({
   accent = T.actI,
   title = 'The Colosseum',
   photo = colosseumNow,
   description = 'Take a second. Look up.',
-  hasReconstruction = true,
   onStepThroughTime,
   onAudioOnly,
   onTranscript,
+  onViewImages,
   busy = false,
 }) {
   return (
@@ -28,7 +28,6 @@ export default function C4ArrivalMoment({
         flexDirection: 'column',
       }}
     >
-      {/* Photo hero — top ~52% */}
       <div style={{ position: 'relative', flex: '0 0 52%', minHeight: 280, overflow: 'hidden' }}>
         <div
           style={{
@@ -47,8 +46,6 @@ export default function C4ArrivalMoment({
             background: 'linear-gradient(to bottom, rgba(22,19,15,0.15) 0%, rgba(22,19,15,0.55) 100%)',
           }}
         />
-
-        {/* Centered water-drop beacon */}
         <div
           style={{
             position: 'absolute',
@@ -62,7 +59,6 @@ export default function C4ArrivalMoment({
         </div>
       </div>
 
-      {/* Cream arrival card */}
       <div
         style={{
           flex: 1,
@@ -88,63 +84,31 @@ export default function C4ArrivalMoment({
         >
           {title}
         </h1>
-        <p
+        <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.65, marginBottom: 20 }}>{description}</p>
+
+        <button
+          type="button"
+          disabled={busy}
+          onClick={onStepThroughTime}
           style={{
-            fontSize: 15,
-            color: T.muted,
-            lineHeight: 1.65,
-            marginBottom: 24,
+            width: '100%',
+            padding: '16px 20px',
+            borderRadius: 14,
+            border: 'none',
+            background: accent,
+            color: T.warmWhite,
+            fontFamily: F.body,
+            fontWeight: 600,
+            fontSize: 16,
+            cursor: busy ? 'wait' : 'pointer',
+            marginBottom: 10,
+            boxShadow: `0 4px 20px ${accent}44`,
           }}
         >
-          {description}
-        </p>
+          Step through time
+        </button>
 
-        {hasReconstruction ? (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onStepThroughTime}
-            style={{
-              width: '100%',
-              padding: '16px 20px',
-              borderRadius: 14,
-              border: 'none',
-              background: accent,
-              color: T.warmWhite,
-              fontFamily: F.body,
-              fontWeight: 600,
-              fontSize: 16,
-              cursor: busy ? 'wait' : 'pointer',
-              marginBottom: 14,
-              boxShadow: `0 4px 20px ${accent}44`,
-            }}
-          >
-            Step through time
-          </button>
-        ) : (
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onAudioOnly}
-            style={{
-              width: '100%',
-              padding: '16px 20px',
-              borderRadius: 14,
-              border: 'none',
-              background: accent,
-              color: T.warmWhite,
-              fontFamily: F.body,
-              fontWeight: 600,
-              fontSize: 16,
-              cursor: busy ? 'wait' : 'pointer',
-              marginBottom: 14,
-            }}
-          >
-            Begin story
-          </button>
-        )}
-
-        <div style={{ display: 'flex', gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
           <button
             type="button"
             disabled={busy}
@@ -184,6 +148,28 @@ export default function C4ArrivalMoment({
             Transcript
           </button>
         </div>
+
+        {onViewImages ? (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={onViewImages}
+            style={{
+              width: '100%',
+              padding: '12px',
+              borderRadius: 999,
+              border: `1.5px solid ${accent}55`,
+              background: 'transparent',
+              color: accent,
+              fontFamily: F.body,
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: busy ? 'wait' : 'pointer',
+            }}
+          >
+            View images only
+          </button>
+        ) : null}
       </div>
     </div>
   )

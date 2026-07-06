@@ -10,6 +10,7 @@ import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useOptionalPromotion } from '../../hooks/useOptionalPromotion.js'
 import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
+import { consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import ApproachingScreen from './ApproachingScreen.jsx'
@@ -86,6 +87,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     track(TRACK_EVENTS.RESUME, { cue: context.pendingResumeCue })
     clearPendingResumeCue()
   }, [audio, audioUnlocked, clearPendingResumeCue, context.pendingResumeCue])
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
+    const intent = consumeStoryViewIntent()
+    if (intent) storyViewRef.current = intent
+  }, [state, step?.id, step?.type])
 
   useEffect(() => {
     if (prevStateRef.current === JOURNEY_STATES.THRESHOLD && state === JOURNEY_STATES.WALKING) {
@@ -261,11 +268,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleStepThroughTime = () => {
     if (!step?.record) return
-    if (step.record.reconstruction) {
-      transition(JOURNEY_STATES.THRESHOLD)
-      return
-    }
-    handleBeginStory()
+    transition(JOURNEY_STATES.THRESHOLD)
+  }
+
+  const handleViewImages = () => {
+    audio.stopNarration()
+    transition(JOURNEY_STATES.ARRIVED)
   }
 
   const handleAudioOnly = () => {
@@ -484,6 +492,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
           onSkipForward={() => audio.stopNarration()}
           onStoryComplete={handleStoryComplete}
           onBack={() => transition(JOURNEY_STATES.ARRIVED)}
+          onOpenThreshold={handleOpenThreshold}
+          onViewImages={handleViewImages}
         />
       )
     }
@@ -537,7 +547,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
         <C4ArrivalMoment
           {...props}
           description={signatureLine(step.record)}
-          hasReconstruction={Boolean(step.record.reconstruction)}
           onStepThroughTime={handleStepThroughTime}
           onAudioOnly={handleAudioOnly}
           onTranscript={handleTranscript}

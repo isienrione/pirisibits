@@ -1,180 +1,499 @@
-import { useState, useRef, useEffect } from "react";
-import { T, F } from "../tokens.js";
-import { colosseumNow, THEN_colosseum } from "../images.js";
-import { Vignette } from '../ui/index.js';
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { T, F } from '../tokens.js'
+import { colosseumNow, THEN_colosseum } from '../images.js'
+import { Vignette } from '../ui/index.js'
 
+const HOLD_MS = 900
+
+function pillStyle(active) {
+  return {
+    fontFamily: F.body,
+    fontSize: 10,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    padding: '5px 10px',
+    borderRadius: 999,
+    background: active ? 'rgba(22,19,15,0.72)' : 'rgba(22,19,15,0.45)',
+    color: active ? T.warmWhite : `${T.muted}CC`,
+    border: `1px solid ${active ? `${T.ember}55` : `${T.muted}33`}`,
+    backdropFilter: 'blur(6px)',
+    textShadow: '0 1px 6px rgba(0,0,0,0.6)',
+  }
+}
+
+/**
+ * Threshold — press-and-hold or drag scrubs the seam right → left (NOW → THEN).
+ * Touch-safe: pointer-first; no touchstart preventDefault (breaks iOS hold).
+ */
 export default function C7Threshold({
   nowPhoto = colosseumNow,
   thenPhoto = THEN_colosseum,
+  thenLabel = 'ANCIENT ROME',
   honestyCaption = 'Statue placement evidence-based; awning colors informed conjecture',
-  onDismiss,
   onCrossed,
+  embedded = false,
 }) {
-  const [state, setState]       = useState("idle");
-  const [bloomPos, setBloomPos] = useState({ x: 195, y: 422 });
-  const [bloomR, setBloomR]     = useState(0);
-  const holdTimer = useRef(null);
-  const bloomRAF  = useRef(null);
-  const crossedNotified = useRef(false);
+  const [seamPct, setSeamPct] = useState(0)
+  const [holding, setHolding] = useState(false)
+  const [crossed, setCrossed] = useState(false)
+  const [thenFallback, setThenFallback] = useState(false)
+  const containerRef = useRef(null)
+  const rafRef = useRef(null)
+  const holdStartRef = useRef(0)
+  const pointerDownXRef = useRef(0)
+  const dragModeRef = useRef(false)
+  const bloomPosRef = useRef({ x: 0, y: 0 })
+  const crossedNotified = useRef(false)
+  const holdingRef = useRef(false)
+  const seamPctRef = useRef(0)
 
-  const isThen = state === "crossed" || state === "returning";
+  const useStyledThen = thenFallback || !thenPhoto || thenPhoto === nowPhoto
+  const seamLeftPct = (1 - seamPct) * 100
 
   useEffect(() => {
-    if (state === 'crossed' && !crossedNotified.current) {
+    setThenFallback(false)
+  }, [thenPhoto])
+
+  useEffect(() => {
+    if (crossed && !crossedNotified.current) {
       crossedNotified.current = true
       onCrossed?.()
     }
-    if (state === 'idle') crossedNotified.current = false
-  }, [state, onCrossed])
+    if (!crossed) crossedNotified.current = false
+  }, [crossed, onCrossed])
 
-  const cleanup = () => {
-    if (holdTimer.current) { clearTimeout(holdTimer.current); holdTimer.current = null; }
-    if (bloomRAF.current)  { cancelAnimationFrame(bloomRAF.current); bloomRAF.current = null; }
-  };
-
-  const handleDown = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setBloomPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    setState("holding");
-    setBloomR(0);
-    const start = performance.now();
-    const tick = (now) => {
-      const pct = Math.min((now - start) / 700, 1);
-      setBloomR(pct);
-      if (pct < 1) bloomRAF.current = requestAnimationFrame(tick);
-      else setState("crossed");
-    };
-    bloomRAF.current = requestAnimationFrame(tick);
-  };
-
-  const handleUp = () => {
-    cleanup();
-    if (state === "crossed") {
-      setState("returning");
-      setTimeout(() => setState("idle"), 420);
-    } else if (state === "holding") {
-      setState("idle");
-      setBloomR(0);
+  const stopHold = useCallback(() => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
     }
-  };
+    holdingRef.current = false
+    dragModeRef.current = false
+    setHolding(false)
+  }, [])
 
-  return (
+  const scrubFromClientX = useCallback((clientX) => {
+    const el = containerRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const x = clientX - rect.left
+    const pct = 1 - Math.max(0, Math.min(1, x / rect.width))
+    seamPctRef.current = pct
+    setSeamPct(pct)
+    if (pct >= 0.98) {
+      setCrossed(true)
+      stopHold()
+    }
+  }, [stopHold])
+
+  const tick = useCallback(
+    (now) => {
+      if (!holdingRef.current || dragModeRef.current) return
+      const pct = Math.min((now - holdStartRef.current) / HOLD_MS, 1)
+      seamPctRef.current = pct
+      setSeamPct(pct)
+      if (pct >= 1) {
+        setCrossed(true)
+        stopHold()
+        return
+      }
+      rafRef.current = requestAnimationFrame(tick)
+    },
+    [stopHold],
+  )
+
+  const startHold = useCallback(
+    (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      e.preventDefault()
+      e.stopPropagation()
+
+      const el = containerRef.current
+      if (!el) return
+
+      if (el.setPointerCapture) {
+        try {
+          el.setPointerCapture(e.pointerId)
+        } catch {
+          /* ignore */
+        }
+      }
+
+      const rect = el.getBoundingClientRect()
+      bloomPosRef.current = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      }
+      pointerDownXRef.current = e.clientX
+      dragModeRef.current = false
+
+      if (crossed) {
+        setCrossed(false)
+        seamPctRef.current = 0
+        setSeamPct(0)
+      }
+
+      holdingRef.current = true
+      setHolding(true)
+      holdStartRef.current = performance.now()
+      rafRef.current = requestAnimationFrame(tick)
+    },
+    [crossed, tick],
+  )
+
+  const moveHold = useCallback(
+    (e) => {
+      if (!holdingRef.current) return
+      if (Math.abs(e.clientX - pointerDownXRef.current) > 10) {
+        dragModeRef.current = true
+      }
+      if (dragModeRef.current) {
+        if (e.cancelable) e.preventDefault()
+        const el = containerRef.current
+        if (el) {
+          const rect = el.getBoundingClientRect()
+          bloomPosRef.current = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          }
+        }
+        scrubFromClientX(e.clientX)
+      }
+    },
+    [scrubFromClientX],
+  )
+
+  const endHold = useCallback(
+    (e) => {
+      const el = containerRef.current
+      if (el?.releasePointerCapture) {
+        try {
+          el.releasePointerCapture(e.pointerId)
+        } catch {
+          /* ignore */
+        }
+      }
+      if (holdingRef.current && seamPctRef.current < 0.98 && !dragModeRef.current) {
+        seamPctRef.current = 0
+        setSeamPct(0)
+      }
+      stopHold()
+    },
+    [stopHold],
+  )
+
+  const crossInstant = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      stopHold()
+      seamPctRef.current = 1
+      setSeamPct(1)
+      setCrossed(true)
+    },
+    [stopHold],
+  )
+
+  const returnToNow = useCallback(
+    (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      stopHold()
+      seamPctRef.current = 0
+      setCrossed(false)
+      setSeamPct(0)
+    },
+    [stopHold],
+  )
+
+  useEffect(() => () => stopHold(), [stopHold])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return undefined
+
+    const blockContextMenu = (e) => e.preventDefault()
+
+    el.addEventListener('contextmenu', blockContextMenu)
+
+    return () => {
+      el.removeEventListener('contextmenu', blockContextMenu)
+    }
+  }, [])
+
+  const thenClip = `inset(0 ${100 - seamPct * 100}% 0 0)`
+  const thenFilter = useStyledThen
+    ? 'sepia(72%) contrast(0.82) brightness(0.72) saturate(1.35) hue-rotate(-8deg)'
+    : 'sepia(42%) contrast(0.92) brightness(0.86) saturate(1.12)'
+
+  const surface = (
     <div
-      style={{ height: "100%", position: "relative", overflow: "hidden", cursor: "pointer", userSelect: "none", touchAction: "none" }}
-      onPointerDown={handleDown} onPointerUp={handleUp} onPointerLeave={handleUp}
+      ref={containerRef}
+      className="cw-threshold-surface"
+      style={{
+        height: '100%',
+        position: 'relative',
+        overflow: 'hidden',
+        touchAction: 'none',
+        WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+        cursor: 'pointer',
+      }}
+      onContextMenu={(e) => e.preventDefault()}
+      onPointerDown={(e) => {
+        if (e.target.closest('button')) return
+        startHold(e)
+      }}
+      onPointerMove={moveHold}
+      onPointerUp={endHold}
+      onPointerCancel={endHold}
+      onPointerLeave={(e) => {
+        if (holdingRef.current) endHold(e)
+      }}
     >
-      {/* NOW — colosseum exterior */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${nowPhoto})`,
-        backgroundSize: "cover", backgroundPosition: "center 20%",
-        transition: "opacity 500ms ease",
-        opacity: isThen ? 0 : 1,
-        filter: "brightness(0.75)",
-      }} />
+      {/* NOW — today (right of seam) */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${nowPhoto})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 20%',
+        }}
+      />
 
-      {/* THEN — sepia ancient */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${thenPhoto})`,
-        backgroundSize: "cover", backgroundPosition: "center",
-        filter: "sepia(60%) contrast(0.85) brightness(0.75) saturate(1.3)",
-        transition: "opacity 500ms ease",
-        opacity: isThen ? 1 : 0,
-      }} />
+      {/* THEN — ancient (revealed left of seam as it sweeps RTL) */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${thenPhoto})`,
+          backgroundSize: 'cover',
+          backgroundPosition: useStyledThen ? 'center 18%' : 'center',
+          filter: thenFilter,
+          clipPath: thenClip,
+          WebkitClipPath: thenClip,
+        }}
+      >
+        {/* hidden img to detect broken THEN assets */}
+        <img
+          src={thenPhoto}
+          alt=""
+          aria-hidden
+          style={{ display: 'none' }}
+          onError={() => setThenFallback(true)}
+        />
+      </div>
 
-      {/* Base scrim */}
-      <div style={{ position: "absolute", inset: 0, background: `rgba(22,19,15,${isThen ? 0.18 : 0.1})`, transition: "background 500ms" }} />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `rgba(22,19,15,${0.04 + seamPct * 0.1})`,
+          pointerEvents: 'none',
+        }}
+      />
 
       <Vignette />
 
-      {/* Ember bloom from touch point */}
-      {(state === "holding" || state === "crossed") && (
-        <div style={{
-          position: "absolute",
-          left: bloomPos.x, top: bloomPos.y,
-          width: 700, height: 700, borderRadius: "50%",
-          background: `radial-gradient(circle, rgba(232,161,60,0.32) 0%, rgba(232,161,60,0.12) 35%, transparent 70%)`,
-          transform: `translate(-50%, -50%) scale(${bloomR})`,
-          transition: state === "crossed" ? "transform 600ms ease-out" : "none",
-          pointerEvents: "none", zIndex: 5,
-        }} />
+      {/* Hold pulse — ember bloom at touch point */}
+      {holding && (
+        <div
+          style={{
+            position: 'absolute',
+            left: bloomPosRef.current.x,
+            top: bloomPosRef.current.y,
+            width: 280,
+            height: 280,
+            borderRadius: '50%',
+            transform: `translate(-50%, -50%) scale(${0.35 + seamPct * 0.85})`,
+            background: 'radial-gradient(circle, rgba(232,161,60,0.42) 0%, rgba(232,161,60,0.14) 40%, transparent 72%)',
+            pointerEvents: 'none',
+            zIndex: 8,
+            animation: dragModeRef.current ? 'none' : 'thresholdHoldPulse 0.75s ease-in-out infinite',
+          }}
+        />
       )}
 
-      {/* Spectrum shimmer on crossing */}
-      {state === "crossed" && (
-        <div style={{
-          position: "absolute", top: 0, left: "50%", bottom: 0, width: 32, transform: "translateX(-50%)",
-          background: `linear-gradient(to bottom, ${T.actI}, ${T.actII}, ${T.actIII}, ${T.actIV}, ${T.actV}, ${T.actVI}, ${T.encore})`,
-          opacity: 0.25, animation: "fadeOut 1.2s ease-out forwards", pointerEvents: "none", zIndex: 6,
-        }} />
-      )}
+      {/* Seam line + handle */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: `${seamLeftPct}%`,
+          transform: 'translateX(-50%)',
+          width: 2,
+          background: T.ember,
+          boxShadow: holding
+            ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
+            : '0 0 14px rgba(232,161,60,0.55)',
+          zIndex: 9,
+          pointerEvents: 'none',
+          transition: holding ? 'none' : 'left 420ms ease-out, box-shadow 200ms',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            border: `2px solid ${T.ember}`,
+            background: 'rgba(22,19,15,0.55)',
+            backdropFilter: 'blur(6px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: holding ? '0 0 22px rgba(232,161,60,0.75)' : '0 0 16px rgba(232,161,60,0.5)',
+            animation: holding ? 'none' : 'seamBreathe 3s ease-in-out infinite',
+          }}
+        >
+          <span style={{ color: T.ember, fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
+        </div>
+      </div>
 
-      {/* Vertical Seam with glow */}
-      <div style={{
-        position: "absolute", top: 0, bottom: 0, left: "50%", width: 1.5,
-        transform: "translateX(-50%)",
-        background: T.ember,
-        boxShadow: `0 0 ${state === "holding" ? "20px" : "12px"} rgba(232,161,60,${state === "holding" ? "0.7" : "0.45"})`,
-        opacity: state === "holding" ? 1 : 0.75,
-        animation: "seamBreathe 3s ease-in-out infinite",
-        transition: "opacity 200ms, box-shadow 200ms",
-        pointerEvents: "none", zIndex: 7,
-      }} />
-
-      {/* Instruction — first time */}
-      {state === "idle" && (
-        <div style={{ position: "absolute", bottom: 64, left: 0, right: 0, textAlign: "center", zIndex: 10 }}>
-          <p style={{ fontFamily: F.body, fontSize: 14, color: T.warmWhite, letterSpacing: "0.06em", textShadow: "0 1px 12px rgba(0,0,0,0.8)" }}>
-            Press and hold to cross.
+      {!holding && !crossed && seamPct < 0.02 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: embedded ? 52 : 72,
+            left: 0,
+            right: 0,
+            textAlign: 'center',
+            zIndex: 10,
+            pointerEvents: 'none',
+          }}
+        >
+          <p
+            style={{
+              fontFamily: F.body,
+              fontSize: 13,
+              color: T.warmWhite,
+              letterSpacing: '0.06em',
+              textShadow: '0 1px 12px rgba(0,0,0,0.85)',
+            }}
+          >
+            Press and hold — or drag the seam
           </p>
         </div>
       )}
 
-      {/* Year chip */}
-      <div style={{ position: "absolute", bottom: 22, right: 18, zIndex: 10 }}>
-        <span style={{
-          fontFamily: F.body, fontSize: 11, letterSpacing: "0.14em", textTransform: "uppercase",
-          color: isThen ? T.ember : T.muted, transition: "color 400ms",
-          textShadow: "0 1px 8px rgba(0,0,0,0.8)",
-        }}>{isThen ? "c. 80 AD" : "TODAY"}</span>
+      <div style={{ position: 'absolute', bottom: 14, left: 14, zIndex: 10, pointerEvents: 'none' }}>
+        <span style={pillStyle(seamPct > 0.2)}>{thenLabel}</span>
       </div>
 
-      {/* Honesty caption */}
-      {isThen && (
-        <div style={{ position: "absolute", bottom: 22, left: 16, maxWidth: 210, zIndex: 10 }}>
-          <p style={{ fontFamily: F.body, fontSize: 10, color: `${T.muted}BB`, lineHeight: 1.55 }}>
+      <div style={{ position: 'absolute', bottom: 14, right: 14, zIndex: 10, pointerEvents: 'none' }}>
+        <span style={pillStyle(seamPct < 0.8)}>TODAY</span>
+      </div>
+
+      {crossed && honestyCaption ? (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 44,
+            left: 14,
+            maxWidth: 240,
+            zIndex: 10,
+            pointerEvents: 'none',
+          }}
+        >
+          <p style={{ fontFamily: F.body, fontSize: 10, color: `${T.muted}CC`, lineHeight: 1.55 }}>
             {honestyCaption}
           </p>
         </div>
-      )}
+      ) : null}
 
-      {/* Accessibility / reduce-motion toggle — quiet, bottom-right, above year chip */}
       <button
-        onPointerDown={e => e.stopPropagation()}
-        onClick={e => {
-          e.stopPropagation();
-          cleanup();
-          if (isThen) {
-            setState("returning");
-            setTimeout(() => setState("idle"), 400);
-          } else {
-            setState("crossed");
-          }
-        }}
+        type="button"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={crossed ? returnToNow : crossInstant}
         style={{
-          position: "absolute", bottom: 48, right: 18, zIndex: 10,
-          background: "none", border: "none", cursor: "pointer",
-          fontFamily: F.body, fontSize: 12,
+          position: 'absolute',
+          bottom: 44,
+          right: 14,
+          zIndex: 11,
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          fontFamily: F.body,
+          fontSize: 12,
           color: `${T.muted}CC`,
-          textShadow: "0 1px 8px rgba(0,0,0,0.8)",
-          letterSpacing: "0.03em",
-          padding: 0,
-          transition: "opacity 250ms",
+          textShadow: '0 1px 8px rgba(0,0,0,0.8)',
+          padding: '8px 4px',
         }}
       >
-        {isThen ? "Return" : "Cross without holding"}
+        {crossed ? 'Return to today' : 'Cross without holding'}
       </button>
     </div>
-  );
+  )
+
+  if (!embedded) return surface
+
+  return (
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        background: T.obsidian,
+        fontFamily: F.body,
+      }}
+    >
+      <p
+        style={{
+          textAlign: 'center',
+          padding: 'max(44px, calc(env(safe-area-inset-top) + 12px)) 16px 14px',
+          margin: 0,
+          fontSize: 11,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: `${T.muted}99`,
+          flexShrink: 0,
+        }}
+      >
+        Immersion
+      </p>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '0 20px max(16px, env(safe-area-inset-bottom))',
+          minHeight: 0,
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            borderRadius: 20,
+            overflow: 'hidden',
+            aspectRatio: '3 / 4',
+            maxHeight: '58vh',
+            margin: '0 auto',
+            width: '100%',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
+          }}
+        >
+          <div style={{ position: 'absolute', inset: 0 }}>{surface}</div>
+        </div>
+        <p
+          style={{
+            textAlign: 'center',
+            margin: '14px 0 0',
+            fontSize: 12,
+            color: `${T.muted}99`,
+            letterSpacing: '0.08em',
+          }}
+        >
+          Then · Now
+        </p>
+      </div>
+    </div>
+  )
 }
