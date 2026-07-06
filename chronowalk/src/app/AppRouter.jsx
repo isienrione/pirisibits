@@ -11,6 +11,7 @@ import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
+import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
@@ -62,6 +63,7 @@ function AppRoutes() {
       </Routes>
       <JourneyThresholdLayer />
       <ShellTabBar />
+      <PwaUpdatePrompt />
       <AppChrome />
     </V2ErrorBoundary>
   )

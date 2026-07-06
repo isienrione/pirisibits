@@ -34,16 +34,19 @@ export default defineConfig({
         'pwa/screenshot-wide.jpg',
       ],
       manifest: {
+        id: '/',
         name: 'ChronoWalk',
         short_name: 'ChronoWalk',
         description:
           'GPS-guided walking tours of Rome with place-aware audio and historical reveals.',
-        theme_color: '#FFFDF8',
-        background_color: '#FFFDF8',
+        theme_color: '#16130F',
+        background_color: '#16130F',
         display: 'standalone',
+        display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         scope: '/',
-        start_url: '/',
+        start_url: '/landing',
+        categories: ['travel', 'navigation'],
         icons: [
           {
             src: 'pwa/icon-192.png',
