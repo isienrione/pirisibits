@@ -117,19 +117,39 @@ html.redesign-pwa #root {
   width: 100%;
   min-height: 100dvh;
   min-height: var(--app-height, 100dvh);
+  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  display: flex;
+  flex-direction: column;
   background: var(--obsidian);
   position: relative;
   overflow: hidden;
+}
+
+.redesign-app-shell > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 .redesign-phone-frame {
   width: 100%;
   min-height: 100dvh;
   min-height: var(--app-height, 100dvh);
+  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  display: flex;
+  flex-direction: column;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
   background: var(--obsidian);
+}
+
+.redesign-phone-frame > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 .redesign-phone-frame--companion {

@@ -19,8 +19,6 @@ export default function B1PrismWelcome({ onComplete }) {
   // Circle circumference for r=52
   const C = 2 * Math.PI * 52;
 
-  const frameLabel = phase === 0 ? "Frame 1 — circle draws" : phase === 1 ? "Frame 2 — spectrum hairline" : "Frame 3 — ember resolves";
-
   return (
     <div
       style={{ background: "#000000", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", fontFamily: F.body }}
@@ -29,9 +27,9 @@ export default function B1PrismWelcome({ onComplete }) {
       {/* Dim photo — near-black so animation reads clean; satisfies immersion rule */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${severusNow})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.04) saturate(0.2)", pointerEvents: "none" }} />
       <Vignette />
-      {/* Prototype frame label */}
-      <div style={{ position: "absolute", top: 52, left: 0, right: 0, textAlign: "center" }}>
-        <span style={{ fontSize: 10, color: `${T.muted}55`, letterSpacing: "0.16em" }}>{frameLabel}</span>
+      {/* Tap hint — production; frame label kept for prototype gallery */}
+      <div style={{ position: "absolute", top: "max(52px, env(safe-area-inset-top))", left: 0, right: 0, textAlign: "center", zIndex: 2 }}>
+        <span style={{ fontSize: 10, color: `${T.muted}88`, letterSpacing: "0.16em" }}>TAP TO CONTINUE</span>
       </div>
 
       {/* PrismSeam logomark SVG */}

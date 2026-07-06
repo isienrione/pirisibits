@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption } from '../data/romePacing.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
+import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
+import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
+import B4PaceSelector from './screens/B4PaceSelector.jsx'
+import C8dResume from './screens/C8dResume.jsx'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 
 export default function RedesignBeginFlow() {

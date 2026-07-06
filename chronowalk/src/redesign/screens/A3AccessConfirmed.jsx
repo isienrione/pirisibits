@@ -79,9 +79,10 @@ export default function A3AccessConfirmed({ onContinue }) {
       <div style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
-        padding: "0 32px 72px",
+        padding: "0 32px max(72px, calc(env(safe-area-inset-bottom) + 48px))",
         display: "flex", flexDirection: "column", alignItems: "center",
         textAlign: "center",
+        zIndex: 2,
       }}>
         <h1 style={{
           fontFamily: F.display,
