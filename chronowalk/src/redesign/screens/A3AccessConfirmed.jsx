@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Vignette, ChronoWalkLogo } from '../ui/index.js';
+import { Vignette } from '../ui/index.js';
 
 export default function A3AccessConfirmed({ onContinue }) {
   const { navigate } = useContext(RedesignNavCtx);
@@ -74,16 +74,6 @@ export default function A3AccessConfirmed({ onContinue }) {
           boxShadow: "0 0 16px rgba(232,161,60,0.8), 0 0 32px rgba(232,161,60,0.3)",
         }} />
       )}
-
-      <div style={{
-        position: 'absolute',
-        top: 'max(72px, calc(env(safe-area-inset-top) + 40px))',
-        left: 0, right: 0,
-        display: 'flex', justifyContent: 'center',
-        zIndex: 2,
-      }}>
-        <ChronoWalkLogo size={100} mode="descend" seamPct={pct} monumentPhoto={colosseumNow} monumentOpacity={0.1} />
-      </div>
 
       {/* Content — lower half, clear of the Seam draw zone */}
       <div style={{

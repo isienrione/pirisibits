@@ -7,7 +7,6 @@ import { hasAccess } from '../lib/config.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { usePrice } from '../hooks/usePrice.js'
 import A1LandingHero from './screens/A1LandingHero.jsx'
-import RedesignRouteShell from './RedesignRouteShell.jsx'
 
 export default function RedesignLandingPage() {
   const navigate = useNavigate()

@@ -17,26 +17,6 @@
   mix-blend-mode: multiply;
 }
 
-@keyframes logoSeamBreathe {
-  0%,
-  100% {
-    opacity: 0.82;
-    filter: drop-shadow(0 0 6px rgba(232, 161, 60, 0.45));
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 14px rgba(232, 161, 60, 0.85));
-  }
-}
-
-.cw-logo-seam-breathe {
-  animation: logoSeamBreathe 3.2s ease-in-out infinite;
-}
-
-.cw-seam-transition {
-  mix-blend-mode: screen;
-}
-
 @keyframes seamBreathe {
   0%,
   100% {

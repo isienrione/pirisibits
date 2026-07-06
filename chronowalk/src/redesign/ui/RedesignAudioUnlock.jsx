@@ -1,8 +1,6 @@
 import { T, F } from '../tokens.js'
-import { colosseumNow } from '../images.js'
 import { PrimaryButton } from './PrimaryButton.jsx'
 import { Eyebrow } from './Eyebrow.jsx'
-import ChronoWalkLogo from './ChronoWalkLogo.jsx'
 
 export default function RedesignAudioUnlock({ onUnlock, busy = false }) {
   return (
@@ -18,9 +16,6 @@ export default function RedesignAudioUnlock({ onUnlock, busy = false }) {
         padding: 'max(48px, env(safe-area-inset-top) + 24px) 24px max(32px, env(safe-area-inset-bottom) + 24px)',
       }}
     >
-      <div style={{ marginBottom: 20, opacity: 0.9 }}>
-        <ChronoWalkLogo size={64} mode="breathe" monumentPhoto={colosseumNow} monumentOpacity={0.09} />
-      </div>
       <Eyebrow color={T.ember}>JOURNEY</Eyebrow>
       <h1
         style={{

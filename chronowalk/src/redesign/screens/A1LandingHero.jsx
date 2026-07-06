@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Play, ChevronRight } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
-import { Vignette, BottomScrim, Eyebrow, Seam, ChronoWalkLogo } from '../ui/index.js'
+import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
 
 export default function A1LandingHero({ onPurchase, onPreview, onPreviewStory }) {
   const [demoState, setDemoState] = useState('now')
@@ -54,8 +54,13 @@ export default function A1LandingHero({ onPurchase, onPreview, onPreviewStory })
             padding: 'max(52px, calc(env(safe-area-inset-top) + 16px)) 24px 0',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <ChronoWalkLogo size={36} mode="breathe" monumentOpacity={0.12} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+              <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
+              <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
+              <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
+              <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
+            </svg>
             <span
               style={{
                 fontSize: 12,

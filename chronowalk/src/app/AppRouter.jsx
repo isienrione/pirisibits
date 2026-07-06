@@ -41,7 +41,6 @@ import RedesignCreditsPage from '../redesign/pages/RedesignCreditsPage.jsx'
 import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
 import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
 import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
-import { SeamScreenTransition } from '../redesign/ui/index.js'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 
 const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
@@ -94,7 +93,6 @@ function AppRoutes() {
       <ShellTabBar />
       <PwaUpdatePrompt />
       <TourDebugBootstrap />
-      {useFigmaRedesign ? <SeamScreenTransition /> : null}
       <V2FieldTestPanel />
       <AppChrome />
     </V2ErrorBoundary>
