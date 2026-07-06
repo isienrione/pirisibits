@@ -1,14 +1,13 @@
 # ChronoWalk — Figma Design Transfer
 
-> **Status:** Live Figma MCP read is **still blocked** in this Cloud Agent session (server reports connection error; tools like `whoami` and `get_design_context` are unavailable). Activating MCP in **Cursor Desktop** does not automatically authenticate the **Cloud Agent** VM — they are separate environments.
+> **Status:** Live Figma MCP read is **still blocked** in this Cloud Agent session (server reports connection error; direct API returns `401 Unauthorized`). Activating MCP in **Cursor Desktop** does not authenticate the **Cloud Agent** VM.
 >
-> **Target file (user-specified):** Figma Make project folder `chronowalk` → file **`ChronoWalk mobile prototype.make`**
->
-> **To complete the live sync, provide:**
-> 1. The **Make project URL** copied from Figma (e.g. `https://www.figma.com/make/<projectKey>/...`)
-> 2. Run the read in **Cursor Desktop Agent** (not Cloud Agent), where your Figma MCP auth is active
->
-> For Make files, the agent should use MCP **resources** to list project files, then `get_design_context` (supported for Figma Make) to export code and structure.
+> **Target Make project (user-provided):**
+> - **URL:** https://www.figma.com/make/6xh4JlL3kBXDDuZO92RCE8/ChronoWalk-mobile-prototype?t=JVdLbHruJT5blZ1Q-1
+> - **File key:** `6xh4JlL3kBXDDuZO92RCE8`
+> - **Project name:** ChronoWalk-mobile-prototype
+> - **Session / node param (`t`):** `JVdLbHruJT5blZ1Q-1`
+> - **Folder in Figma:** `chronowalk` → `ChronoWalk mobile prototype.make`
 
 **Last assembled:** July 6, 2026  
 **Repo branch at assembly:** `figma` (same commit as `main`)  
@@ -379,4 +378,26 @@ When Figma MCP is connected in the **same session** as the agent:
 
 ## 15. Live Figma Make export
 
-_Pending — Cloud Agent could not reach Figma MCP. Re-run in Cursor Desktop with the Make link._
+**Source:** [ChronoWalk mobile prototype (Make)](https://www.figma.com/make/6xh4JlL3kBXDDuZO92RCE8/ChronoWalk-mobile-prototype?t=JVdLbHruJT5blZ1Q-1)
+
+| Field | Value |
+|-------|-------|
+| Make URL | `https://www.figma.com/make/6xh4JlL3kBXDDuZO92RCE8/ChronoWalk-mobile-prototype?t=JVdLbHruJT5blZ1Q-1` |
+| File key | `6xh4JlL3kBXDDuZO92RCE8` |
+| Node / session (`t`) | `JVdLbHruJT5blZ1Q-1` |
+
+### MCP commands to run (Cursor Desktop, Figma MCP green)
+
+```text
+1. whoami()
+2. Fetch Make resources for the project URL above
+3. get_metadata(fileKey="6xh4JlL3kBXDDuZO92RCE8")
+4. get_design_context(fileKey="6xh4JlL3kBXDDuZO92RCE8", nodeId="JVdLbHruJT5blZ1Q-1")
+5. For each screen frame returned by metadata, call get_design_context per node
+6. get_screenshot(fileKey="6xh4JlL3kBXDDuZO92RCE8", nodeId="<each-screen-node>")
+7. get_variable_defs(fileKey="6xh4JlL3kBXDDuZO92RCE8", nodeId="JVdLbHruJT5blZ1Q-1")
+```
+
+### Export payload
+
+_Pending — Cloud Agent session returned `401 Unauthorized` from `https://mcp.figma.com/mcp`. Re-run export in Cursor Desktop Agent with authenticated Figma MCP, then paste results below._
