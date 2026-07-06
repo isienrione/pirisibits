@@ -1,8 +1,14 @@
 # ChronoWalk — Figma Design Transfer
 
-> **Status:** This document was assembled from the implemented ChronoWalk codebase and mockup-aligned commit history. A live read from Figma was **not possible** in the Cloud Agent environment because the Figma MCP server is not authenticated here.
+> **Status:** Live Figma MCP read is **still blocked** in this Cloud Agent session (server reports connection error; tools like `whoami` and `get_design_context` are unavailable). Activating MCP in **Cursor Desktop** does not automatically authenticate the **Cloud Agent** VM — they are separate environments.
 >
-> **To complete a live Figma sync:** paste your Figma file URL (e.g. `https://www.figma.com/design/<fileKey>/...`) and ensure the Figma plugin is connected in Cursor Desktop. The agent can then call `get_design_context`, `get_metadata`, `get_variable_defs`, and `get_screenshot` to append node-level exports below.
+> **Target file (user-specified):** Figma Make project folder `chronowalk` → file **`ChronoWalk mobile prototype.make`**
+>
+> **To complete the live sync, provide:**
+> 1. The **Make project URL** copied from Figma (e.g. `https://www.figma.com/make/<projectKey>/...`)
+> 2. Run the read in **Cursor Desktop Agent** (not Cloud Agent), where your Figma MCP auth is active
+>
+> For Make files, the agent should use MCP **resources** to list project files, then `get_design_context` (supported for Figma Make) to export code and structure.
 
 **Last assembled:** July 6, 2026  
 **Repo branch at assembly:** `figma` (same commit as `main`)  
@@ -350,17 +356,27 @@ Commits reference Figma mockup phases implemented in code:
 
 ---
 
-## 14. Figma sync checklist (pending live read)
+## 14. Figma Make sync checklist (pending live read)
 
-When Figma MCP is connected, append to this document:
+**Target:** `chronowalk/ChronoWalk mobile prototype.make`
 
-- [ ] Figma file URL and file key
-- [ ] Page/frame inventory from `get_metadata`
-- [ ] Variable definitions from `get_variable_defs`
-- [ ] Component ↔ code mapping from `get_code_connect_map`
-- [ ] Per-frame design context exports
-- [ ] Screenshots for visual reference
+When Figma MCP is connected in the **same session** as the agent:
 
-**Prompt to use once connected:**
+- [ ] Make project URL pasted in chat
+- [ ] MCP resources list — all files in the Make project
+- [ ] Download / fetch `ChronoWalk mobile prototype.make`
+- [ ] `get_metadata` for screen/frame inventory
+- [ ] `get_design_context` per major screen (Make exports underlying code)
+- [ ] `get_variable_defs` for tokens
+- [ ] `get_screenshot` for visual reference
+- [ ] Append exports below this section
 
-> Using this Figma file: `<paste URL>`, read all pages and frames with `get_metadata`, then export design context for each major screen. Append the results to `chronowalk/docs/FIGMA_DESIGN_TRANSFER.md`.
+**Prompt to use in Cursor Desktop (with MCP green):**
+
+> Fetch all resources from this Make project: `<paste Make URL>`. Download `ChronoWalk mobile prototype.make`, read every screen with `get_design_context`, and append the full export to `chronowalk/docs/FIGMA_DESIGN_TRANSFER.md` section 15.
+
+---
+
+## 15. Live Figma Make export
+
+_Pending — Cloud Agent could not reach Figma MCP. Re-run in Cursor Desktop with the Make link._
