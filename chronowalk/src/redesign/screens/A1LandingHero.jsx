@@ -55,7 +55,7 @@ export default function A1LandingHero({ onPurchase, onPreview, onPreviewStory })
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <ChronoWalkLogo size={36} mode="breathe" monumentOpacity={0.12} />
+            <ChronoWalkLogo size={36} mode="breathe" monumentOpacity={0.16} />
             <span
               style={{
                 fontSize: 12,

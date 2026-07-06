@@ -63,8 +63,7 @@ export default function B1PrismWelcome({ onComplete }) {
         size={148}
         mode="welcome"
         phase={phase}
-        monumentPhoto={severusNow}
-        monumentOpacity={0.09}
+        monumentOpacity={0.12}
       />
 
       <div

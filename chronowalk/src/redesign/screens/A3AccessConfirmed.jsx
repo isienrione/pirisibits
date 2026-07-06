@@ -82,7 +82,7 @@ export default function A3AccessConfirmed({ onContinue }) {
         display: 'flex', justifyContent: 'center',
         zIndex: 2,
       }}>
-        <ChronoWalkLogo size={100} mode="descend" seamPct={pct} monumentPhoto={colosseumNow} monumentOpacity={0.1} />
+        <ChronoWalkLogo size={100} mode="descend" seamPct={pct} monumentOpacity={0.14} />
       </div>
 
       {/* Content — lower half, clear of the Seam draw zone */}

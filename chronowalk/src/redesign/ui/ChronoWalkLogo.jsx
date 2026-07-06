@@ -1,18 +1,17 @@
 import { useId, useMemo } from 'react'
 import { T, F } from '../tokens.js'
-import { severusNow } from '../images.js'
 
-const TEMPLE_PATH =
-  'M38 78 L38 58 L46 50 L54 58 L54 78 M66 78 L66 58 L74 50 L82 58 L82 78 M32 78 L88 78 M42 50 L60 36 L78 50'
+/** Classical arch + two pillars — faint monument behind the seam. */
+const ARCH_MONUMENT =
+  'M40 76 V52 Q60 40 80 52 V76 M34 76 H86'
 
 /**
- * ChronoWalk brand mark — faint monument inside a circle, vertical seam of light/fire.
- * Modes: static | breathe | welcome (phased draw) | descend (seam 0→1)
+ * The Seam Mark — thin circle, faint arch monument, vertical ray of light bisecting both.
+ * @see brand spec: "The moment time opens. Past and present align."
  */
 export default function ChronoWalkLogo({
   size = 120,
-  monumentPhoto = severusNow,
-  monumentOpacity = 0.08,
+  monumentOpacity = 0.14,
   mode = 'breathe',
   phase = 2,
   seamPct = 1,
@@ -21,28 +20,31 @@ export default function ChronoWalkLogo({
   style = {},
 }) {
   const uid = useId().replace(/:/g, '')
-  const view = 120
   const cx = 60
   const cy = 60
   const r = 52
   const circumference = 2 * Math.PI * r
-  const seamLen = 104
+  const seamFull = 112
+  const seamTop = 4
+  const seamBottom = 116
 
   const circleOffset = useMemo(() => {
     if (mode === 'welcome') return phase >= 0 ? 0 : circumference
     return 0
   }, [mode, phase, circumference])
 
-  const spectrumOffset = mode === 'welcome' && phase >= 1 ? 0 : seamLen
-  const emberOpacity = mode === 'welcome' ? (phase >= 2 ? 1 : 0) : 1
-  const spectrumOpacity = mode === 'welcome' && phase >= 2 ? 0 : mode === 'welcome' ? 1 : 0
+  const drawnLen = mode === 'descend' ? seamFull * seamPct : seamFull
+  const seamDashoffset = mode === 'welcome' && phase < 1 ? seamFull : 0
+  const showSpectrum = mode === 'welcome' && phase === 1
+  const seamResolved = mode !== 'welcome' || phase >= 2
 
-  const seamHeight = mode === 'descend' ? seamPct : 1
-  const breatheClass = mode === 'breathe' ? 'cw-logo-seam-breathe' : ''
+  const breatheClass = mode === 'breathe' ? 'cw-seam-mark-breathe' : ''
+
+  const seamY2 = seamTop + drawnLen
 
   return (
     <div
-      className={`cw-brand-mark ${className}`.trim()}
+      className={`cw-seam-mark ${className}`.trim()}
       style={{
         display: 'inline-flex',
         flexDirection: 'column',
@@ -53,137 +55,174 @@ export default function ChronoWalkLogo({
       <svg
         width={size}
         height={size}
-        viewBox={`0 0 ${view} ${view}`}
+        viewBox="0 0 120 120"
         aria-hidden="true"
         style={{ overflow: 'visible', display: 'block' }}
       >
         <defs>
           <clipPath id={`${uid}-clip`}>
-            <circle cx={cx} cy={cy} r={r - 4} />
+            <circle cx={cx} cy={cy} r={r - 2} />
           </clipPath>
+          <linearGradient id={`${uid}-ray`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#E8A13C" stopOpacity="0" />
+            <stop offset="12%" stopColor="#FFE9B8" stopOpacity="0.95" />
+            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="1" />
+            <stop offset="88%" stopColor="#FFE9B8" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#E8A13C" stopOpacity="0" />
+          </linearGradient>
           <linearGradient id={`${uid}-spec`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#E4552E" />
-            <stop offset="17%" stopColor="#E8A13C" />
-            <stop offset="34%" stopColor="#7C9A5C" />
-            <stop offset="50%" stopColor="#4E9B8F" />
-            <stop offset="67%" stopColor="#4E7D9B" />
-            <stop offset="83%" stopColor="#8A6FB5" />
-            <stop offset="100%" stopColor="#B14A6E" />
+            <stop offset="0%" stopColor={T.actI} stopOpacity="0" />
+            <stop offset="20%" stopColor={T.actIII} />
+            <stop offset="40%" stopColor={T.actII} />
+            <stop offset="60%" stopColor={T.actIV} />
+            <stop offset="80%" stopColor={T.actVI} />
+            <stop offset="100%" stopColor={T.encore} stopOpacity="0" />
           </linearGradient>
-          <linearGradient id={`${uid}-fire`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFD08A" />
-            <stop offset="45%" stopColor={T.ember} />
-            <stop offset="100%" stopColor="#C45A20" />
-          </linearGradient>
-          <filter id={`${uid}-glow`} x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <filter id={`${uid}-glow`} x="-80%" y="-10%" width="260%" height="120%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id={`${uid}-halo`} x="-120%" y="-5%" width="340%" height="110%">
+            <feGaussianBlur stdDeviation="8" />
+          </filter>
         </defs>
 
-        {/* Circle frame */}
+        {/* Delicate circle */}
         <circle
           cx={cx}
           cy={cy}
           r={r}
           fill="none"
-          stroke={`${T.warmWhite}55`}
-          strokeWidth="1"
-          strokeLinecap="round"
+          stroke="#D4AF37"
+          strokeWidth="0.9"
+          strokeOpacity="0.85"
           strokeDasharray={circumference}
           strokeDashoffset={circleOffset}
           style={{
-            transition: mode === 'welcome' ? 'stroke-dashoffset 1200ms cubic-bezier(0.4,0,0.2,1)' : undefined,
+            transition: mode === 'welcome' ? 'stroke-dashoffset 1100ms cubic-bezier(0.4,0,0.2,1)' : undefined,
           }}
         />
 
-        {/* Faint monument — photo + silhouette inside circle */}
-        <g clipPath={`url(#${uid}-clip)`}>
-          {monumentPhoto ? (
-            <image
-              href={monumentPhoto}
-              x={8}
-              y={8}
-              width={104}
-              height={104}
-              preserveAspectRatio="xMidYMid slice"
-              opacity={monumentOpacity}
-            />
-          ) : null}
+        {/* Faint monument — arch behind the seam */}
+        <g clipPath={`url(#${uid}-clip)`} opacity={monumentOpacity}>
           <path
-            d={TEMPLE_PATH}
+            d={ARCH_MONUMENT}
             fill="none"
             stroke={T.warmWhite}
-            strokeWidth="0.9"
-            opacity={Math.min(monumentOpacity * 2.2, 0.16)}
+            strokeWidth="1.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </g>
 
-        {/* Spectrum seam (welcome phase 1) */}
-        {(mode === 'welcome' || spectrumOpacity > 0) && (
+        {/* Welcome: brief spectrum seam before resolving to gold ray */}
+        {showSpectrum ? (
           <line
             x1={cx}
-            y1={8}
+            y1={seamTop}
             x2={cx}
-            y2={112}
+            y2={seamBottom}
             stroke={`url(#${uid}-spec)`}
-            strokeWidth="1.6"
+            strokeWidth="1.4"
             strokeLinecap="round"
-            strokeDasharray={seamLen}
-            strokeDashoffset={spectrumOffset}
-            opacity={spectrumOpacity}
+            strokeDasharray={seamFull}
+            strokeDashoffset={seamDashoffset}
             style={{
-              transition: 'stroke-dashoffset 800ms cubic-bezier(0.4,0,0.2,1), opacity 500ms ease',
-              filter: 'drop-shadow(0 0 3px rgba(232,161,60,0.45))',
+              transition: 'stroke-dashoffset 700ms cubic-bezier(0.4,0,0.2,1)',
+              opacity: 0.85,
             }}
           />
-        )}
+        ) : null}
 
-        {/* Ember / fire seam */}
-        <g className={breatheClass} filter={`url(#${uid}-glow)`} opacity={emberOpacity}>
+        {/* The Seam — electric ray of light */}
+        {seamResolved ? (
+          <g className={breatheClass}>
+            {/* Wide soft halo */}
+            <line
+              x1={cx}
+              y1={seamTop}
+              x2={cx}
+              y2={mode === 'descend' ? seamY2 : seamBottom}
+              stroke="#E8A13C"
+              strokeWidth="7"
+              strokeLinecap="round"
+              opacity="0.22"
+              filter={`url(#${uid}-halo)`}
+            />
+            {/* Gold beam */}
+            <line
+              x1={cx}
+              y1={seamTop}
+              x2={cx}
+              y2={mode === 'descend' ? seamY2 : seamBottom}
+              stroke={`url(#${uid}-ray)`}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              filter={`url(#${uid}-glow)`}
+              strokeDasharray={mode === 'welcome' ? seamFull : undefined}
+              strokeDashoffset={mode === 'welcome' && phase === 2 ? 0 : undefined}
+              style={{
+                transition: mode === 'descend' ? 'y2 60ms linear' : undefined,
+              }}
+            />
+            {/* Hot core needle */}
+            <line
+              x1={cx}
+              y1={seamTop + 8}
+              x2={cx}
+              y2={(mode === 'descend' ? seamY2 : seamBottom) - 8}
+              stroke="#FFFFFF"
+              strokeWidth="0.6"
+              strokeLinecap="round"
+              opacity="0.92"
+            />
+          </g>
+        ) : mode === 'welcome' && phase === 0 ? null : (
           <line
             x1={cx}
-            y1={8 + (1 - seamHeight) * 104}
+            y1={seamTop}
             x2={cx}
-            y2={8 + seamHeight * 104}
-            stroke={`url(#${uid}-fire)`}
+            y2={mode === 'descend' ? seamY2 : seamBottom}
+            stroke={`url(#${uid}-ray)`}
             strokeWidth="2"
             strokeLinecap="round"
-            style={{
-              transition: mode === 'welcome' ? 'opacity 500ms ease' : 'y1 80ms linear, y2 80ms linear',
-            }}
+            strokeDasharray={seamFull}
+            strokeDashoffset={seamFull - drawnLen}
+            filter={`url(#${uid}-glow)`}
           />
-        </g>
+        )}
       </svg>
 
       {showWordmark ? (
-        <div style={{ marginTop: size * 0.22, textAlign: 'center' }}>
+        <div style={{ marginTop: size * 0.2, textAlign: 'center' }}>
           <p
             style={{
               margin: 0,
-              fontFamily: F.body,
-              fontSize: Math.max(10, size * 0.11),
-              letterSpacing: '0.28em',
+              fontFamily: F.display,
+              fontSize: Math.max(11, size * 0.12),
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              color: T.warmWhite,
-              fontWeight: 600,
+              color: '#D4AF37',
+              fontWeight: 500,
             }}
           >
             ChronoWalk
           </p>
           <p
             style={{
-              margin: '6px 0 0',
-              fontSize: Math.max(9, size * 0.075),
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
+              margin: '8px 0 0',
+              fontFamily: F.display,
+              fontSize: Math.max(9, size * 0.07),
+              fontStyle: 'italic',
               color: T.muted,
+              lineHeight: 1.5,
+              maxWidth: 220,
             }}
           >
-            Walk · Listen · Time travel
+            The moment time opens.
           </p>
         </div>
       ) : null}

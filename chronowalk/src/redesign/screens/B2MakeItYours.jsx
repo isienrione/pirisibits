@@ -51,7 +51,7 @@ export default function B2MakeItYours({
 
         {/* Brand mark */}
         <div style={{ marginBottom: 44 }}>
-          <ChronoWalkLogo size={52} mode="breathe" monumentPhoto={spanishSteps} monumentOpacity={0.11} />
+          <ChronoWalkLogo size={52} mode="breathe" monumentOpacity={0.14} />
         </div>
 
         <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 10, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>

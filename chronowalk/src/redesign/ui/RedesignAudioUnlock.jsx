@@ -19,7 +19,7 @@ export default function RedesignAudioUnlock({ onUnlock, busy = false }) {
       }}
     >
       <div style={{ marginBottom: 20, opacity: 0.9 }}>
-        <ChronoWalkLogo size={64} mode="breathe" monumentPhoto={colosseumNow} monumentOpacity={0.09} />
+        <ChronoWalkLogo size={64} mode="breathe" monumentOpacity={0.14} />
       </div>
       <Eyebrow color={T.ember}>JOURNEY</Eyebrow>
       <h1
