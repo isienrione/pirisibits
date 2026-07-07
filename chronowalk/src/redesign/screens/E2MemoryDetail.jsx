@@ -13,6 +13,7 @@ export default function E2MemoryDetail({
   title = 'The Colosseum',
   nowPhoto = colosseumNow,
   thenPhoto = colosseumNow,
+  thenLoop = null,
   thenLabel = 'ANCIENT ROME',
   honestyCaption = 'Interpretive reconstruction informed by archaeology and scholarship.',
   signatureLine: sigLine = 'The concrete is still crystallizing.',
@@ -183,6 +184,7 @@ export default function E2MemoryDetail({
           <C7Threshold
             nowPhoto={nowPhoto}
             thenPhoto={thenPhoto}
+            thenLoop={thenLoop}
             thenLabel={thenLabel}
             honestyCaption={honestyCaption}
           />

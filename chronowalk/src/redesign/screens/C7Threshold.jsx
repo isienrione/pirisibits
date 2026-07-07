@@ -5,6 +5,79 @@ import { Vignette } from '../ui/index.js'
 
 const HOLD_MS = 900
 
+function ThenMediaLayer({ thenPhoto, thenLoop, thenClip, thenFilter, useStyledThen, onFallback }) {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !thenLoop) return undefined
+    const playPromise = video.play()
+    if (playPromise?.catch) {
+      playPromise.catch(() => onFallback?.())
+    }
+    return undefined
+  }, [thenLoop, onFallback])
+
+  const objectPosition = useStyledThen ? 'center 18%' : 'center'
+
+  if (thenLoop) {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          clipPath: thenClip,
+          WebkitClipPath: thenClip,
+          filter: thenFilter,
+        }}
+      >
+        <video
+          ref={videoRef}
+          src={thenLoop}
+          poster={thenPhoto}
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="auto"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition,
+          }}
+          onError={() => onFallback?.()}
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${thenPhoto})`,
+        backgroundSize: 'cover',
+        backgroundPosition: objectPosition,
+        filter: thenFilter,
+        clipPath: thenClip,
+        WebkitClipPath: thenClip,
+      }}
+    >
+      <img
+        src={thenPhoto}
+        alt=""
+        aria-hidden
+        style={{ display: 'none' }}
+        onError={() => onFallback?.()}
+      />
+    </div>
+  )
+}
+
 function pillStyle(active) {
   return {
     fontFamily: F.body,
@@ -28,6 +101,7 @@ function pillStyle(active) {
 export default function C7Threshold({
   nowPhoto = colosseumNow,
   thenPhoto = THEN_colosseum,
+  thenLoop = null,
   thenLabel = 'ANCIENT ROME',
   honestyCaption = 'Statue placement evidence-based; awning colors informed conjecture',
   onCrossed,
@@ -48,7 +122,7 @@ export default function C7Threshold({
   const holdingRef = useRef(false)
   const seamPctRef = useRef(0)
 
-  const useStyledThen = thenFallback || !thenPhoto || thenPhoto === nowPhoto
+  const useStyledThen = thenFallback || (!thenLoop && (!thenPhoto || thenPhoto === nowPhoto))
   const seamLeftPct = (1 - seamPct) * 100
 
   useEffect(() => {
@@ -265,27 +339,14 @@ export default function C7Threshold({
       />
 
       {/* THEN — ancient (revealed left of seam as it sweeps RTL) */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${thenPhoto})`,
-          backgroundSize: 'cover',
-          backgroundPosition: useStyledThen ? 'center 18%' : 'center',
-          filter: thenFilter,
-          clipPath: thenClip,
-          WebkitClipPath: thenClip,
-        }}
-      >
-        {/* hidden img to detect broken THEN assets */}
-        <img
-          src={thenPhoto}
-          alt=""
-          aria-hidden
-          style={{ display: 'none' }}
-          onError={() => setThenFallback(true)}
-        />
-      </div>
+      <ThenMediaLayer
+        thenPhoto={thenPhoto}
+        thenLoop={thenLoop}
+        thenClip={thenClip}
+        thenFilter={thenFilter}
+        useStyledThen={useStyledThen}
+        onFallback={() => setThenFallback(true)}
+      />
 
       <div
         style={{

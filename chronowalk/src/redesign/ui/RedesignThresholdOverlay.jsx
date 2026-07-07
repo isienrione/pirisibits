@@ -4,6 +4,7 @@ import {
   honestyCaptionForWaypoint,
   photoForWaypoint,
   thenLabelForWaypoint,
+  thenLoopForWaypoint,
   thenPhotoForWaypoint,
 } from '../lib/waypointPresentation.js'
 
@@ -31,6 +32,7 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
         reserveCtaSpace={crossed && Boolean(onDismiss)}
         nowPhoto={photoForWaypoint(waypoint)}
         thenPhoto={thenPhotoForWaypoint(waypoint)}
+        thenLoop={thenLoopForWaypoint(waypoint)}
         thenLabel={thenLabelForWaypoint(waypoint)}
         honestyCaption={honestyCaptionForWaypoint(waypoint)}
         onCrossed={() => setCrossed(true)}

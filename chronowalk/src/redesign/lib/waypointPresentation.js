@@ -74,6 +74,10 @@ export function photoForWaypoint(waypoint) {
 }
 
 export function thenPhotoForWaypoint(waypoint) {
+  if (waypoint?.reconstruction?.loop) {
+    return resolvePhotoUrl(waypoint.reconstruction.now ?? waypoint.photo)
+  }
+
   if (waypoint?.reconstruction?.then) {
     return resolvePhotoUrl(waypoint.reconstruction.then)
   }
@@ -91,8 +95,14 @@ export function thenPhotoForWaypoint(waypoint) {
   return photoForWaypoint(waypoint)
 }
 
+export function thenLoopForWaypoint(waypoint) {
+  if (!waypoint?.reconstruction?.loop) return null
+  return resolvePhotoUrl(waypoint.reconstruction.loop)
+}
+
 /** True when THEN uses a dedicated reconstruction asset (not poster fallback). */
 export function hasDistinctThenPhoto(waypoint) {
+  if (waypoint?.reconstruction?.loop) return true
   if (waypoint?.reconstruction?.then) return true
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (!stopId) return false

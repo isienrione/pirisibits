@@ -10,6 +10,7 @@ import {
   photoForWaypoint,
   signatureLine,
   thenLabelForWaypoint,
+  thenLoopForWaypoint,
   thenPhotoForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
@@ -74,6 +75,7 @@ export default function RedesignMemoryDetailPage() {
           title={titleForWaypoint(waypoint)}
           nowPhoto={photoForWaypoint(waypoint)}
           thenPhoto={thenPhotoForWaypoint(waypoint)}
+          thenLoop={thenLoopForWaypoint(waypoint)}
           thenLabel={thenLabelForWaypoint(waypoint)}
           honestyCaption={honestyCaptionForWaypoint(waypoint)}
           signatureLine={signatureLine(waypoint)}

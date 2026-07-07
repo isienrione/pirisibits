@@ -195,8 +195,8 @@
       "photo": "/waypoints/colosseum/exterior/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/colosseum/exterior/modern-poster.jpg",
-        "then": "/rome/img/w01_then.avif",
-        "loop": "/rome/video/w01_then_loop.mp4",
+        "then": "/waypoints/colosseum/exterior/modern-poster.jpg",
+        "loop": "/waypoints/colosseum/exterior/ancient-reconstruction.mp4",
         "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
       },
       "approachLine": "The amphitheatre rises ahead — slow your pace and look up.",
@@ -234,7 +234,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/colosseum/interior/modern-poster.jpg"
+      "photo": "/waypoints/colosseum/interior/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/colosseum/interior/modern-poster.jpg",
+        "then": "/waypoints/colosseum/interior/modern-poster.jpg",
+        "loop": "/waypoints/colosseum/interior/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w03": {
       "title": "Arch of Titus",
@@ -258,8 +264,8 @@
       ],
       "reconstruction": {
         "now": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
-        "then": "/rome/img/w03_then.avif",
-        "loop": "/rome/video/w03_then_loop.mp4",
+        "then": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4",
         "caption": "Evidence-based reconstruction · relief details simplified for clarity"
       },
       "approachLine": "The Forum opens — Titus' arch marks the threshold.",
@@ -296,7 +302,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/palatine-hill-cluster/modern-poster.jpg"
+      "photo": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+        "then": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+        "loop": "/waypoints/palatine-hill-cluster/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w06": {
       "title": "Basilica of Maxentius",
@@ -322,7 +334,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg"
+      "photo": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+        "then": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-basilica-maxentius/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w07": {
       "title": "Via Sacra",
@@ -348,7 +366,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg"
+      "photo": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+        "then": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-via-sacra/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w08": {
       "title": "Temple of Vesta",
@@ -371,7 +395,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg"
+      "photo": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+        "then": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-temple-vesta/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "pause": {
       "title": "Forum rest",
@@ -417,7 +447,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg"
+      "photo": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+        "then": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-rostra/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w11_12": {
       "title": "Heart of the Forum",
@@ -440,7 +476,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg"
+      "photo": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+        "then": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+        "loop": "/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w13": {
       "title": "Capitoline Hill",
@@ -463,7 +505,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/capitoline-hill/modern-poster.jpg"
+      "photo": "/waypoints/capitoline-hill/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/capitoline-hill/modern-poster.jpg",
+        "then": "/waypoints/capitoline-hill/modern-poster.jpg",
+        "loop": "/waypoints/capitoline-hill/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w14": {
       "title": "Trajan's Market",
@@ -486,7 +534,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/trajan-market/modern-poster.jpg"
+      "photo": "/waypoints/trajan-market/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/trajan-market/modern-poster.jpg",
+        "then": "/waypoints/trajan-market/modern-poster.jpg",
+        "loop": "/waypoints/trajan-market/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w15": {
       "title": "Spanish Steps",
@@ -509,7 +563,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/spanish-steps/modern-poster.jpg"
+      "photo": "/waypoints/spanish-steps/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/spanish-steps/modern-poster.jpg",
+        "then": "/waypoints/spanish-steps/modern-poster.jpg",
+        "loop": "/waypoints/spanish-steps/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w16": {
       "title": "Fontana di Trevi",
@@ -535,7 +595,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/fontana-di-trevi/modern-poster.jpg"
+      "photo": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+        "then": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+        "loop": "/waypoints/fontana-di-trevi/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w17": {
       "title": "The Pantheon",
@@ -558,8 +624,8 @@
       "interior_zone": "pantheon_interior",
       "reconstruction": {
         "now": "/waypoints/pantheon/modern-poster.jpg",
-        "then": "/rome/img/w13_then.avif",
-        "loop": "/rome/video/w13_then_loop.mp4",
+        "then": "/waypoints/pantheon/modern-poster.jpg",
+        "loop": "/waypoints/pantheon/ancient-reconstruction.mp4",
         "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
       },
       "approachLine": "The rotunda appears through the streets.",
@@ -594,7 +660,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/piazza-navona/modern-poster.jpg"
+      "photo": "/waypoints/piazza-navona/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/piazza-navona/modern-poster.jpg",
+        "then": "/waypoints/piazza-navona/modern-poster.jpg",
+        "loop": "/waypoints/piazza-navona/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w19": {
       "title": "Campo de' Fiori",
@@ -620,7 +692,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/campo-de-fiori/modern-poster.jpg"
+      "photo": "/waypoints/campo-de-fiori/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/campo-de-fiori/modern-poster.jpg",
+        "then": "/waypoints/campo-de-fiori/modern-poster.jpg",
+        "loop": "/waypoints/campo-de-fiori/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w20": {
       "title": "Largo di Torre Argentina",
@@ -643,7 +721,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/largo-argentina/modern-poster.jpg"
+      "photo": "/waypoints/largo-argentina/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/largo-argentina/modern-poster.jpg",
+        "then": "/waypoints/largo-argentina/modern-poster.jpg",
+        "loop": "/waypoints/largo-argentina/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w21": {
       "title": "Castel Sant'Angelo",
@@ -669,7 +753,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/castel-sant-angelo/modern-poster.jpg"
+      "photo": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+        "then": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+        "loop": "/waypoints/castel-sant-angelo/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "enc_circus": {
       "title": "Circus Maximus floor",
@@ -695,7 +785,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/circus-maximus/modern-poster.jpg"
+      "photo": "/waypoints/circus-maximus/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/circus-maximus/modern-poster.jpg",
+        "then": "/waypoints/circus-maximus/modern-poster.jpg",
+        "loop": "/waypoints/circus-maximus/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w22": {
       "title": "Via Appia Antica",
@@ -718,7 +814,13 @@
         "credit": "ChronoWalk production photography",
         "source_url": null
       },
-      "photo": "/waypoints/via-appia/modern-poster.jpg"
+      "photo": "/waypoints/via-appia/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/via-appia/modern-poster.jpg",
+        "then": "/waypoints/via-appia/modern-poster.jpg",
+        "loop": "/waypoints/via-appia/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     }
   },
   "transits": {
