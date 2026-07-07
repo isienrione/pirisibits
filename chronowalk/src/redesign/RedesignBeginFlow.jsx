@@ -5,14 +5,17 @@ import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
+import { titleForWaypoint } from './lib/waypointPresentation.js'
+import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
 import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
+import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
-import { titleForWaypoint } from './lib/waypointPresentation.js'
 
 export default function RedesignBeginFlow() {
   const navigate = useNavigate()
-  const { begin, resume, reset, isResumable, context } = useV2Journey()
+  const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
+    useV2Journey()
   const { manifest } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -21,12 +24,28 @@ export default function RedesignBeginFlow() {
     context.promotedOptionalIds,
   )
   const [stepName, setStepName] = useState(() => (isResumable ? 'resume' : 'pace'))
-  const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
+  const [selectedPace, setSelectedPace] = useState(context.pace ?? JOURNEY_PACE.CLASSIC)
+  const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
 
   const startJourney = () => {
-    begin({ pace: selectedPace, waypointIndex: 0 })
-    track(TRACK_EVENTS.JOURNEY_BEGIN, { pace: selectedPace, waypoint_index: 0 })
+    const tourIds = manifest ? getTourWaypointIds(manifest, { ...context, pace: selectedPace, customWaypointIds: ownPaceStops }) : []
+    const firstId = tourIds[0]
+    const sequenceIndex =
+      manifest && firstId
+        ? Math.max(
+            0,
+            findSequenceIndexForWaypoint(manifest, firstId, context.path, context.promotedOptionalIds),
+          )
+        : 0
+
+    begin({
+      pace: selectedPace,
+      path: context.path,
+      sequenceIndex,
+      customWaypointIds: selectedPace === JOURNEY_PACE.OWN ? ownPaceStops : null,
+    })
+    track(TRACK_EVENTS.JOURNEY_BEGIN, { pace: selectedPace, waypoint_index: sequenceIndex })
     navigate('/journey', { replace: true })
   }
 
@@ -40,6 +59,15 @@ export default function RedesignBeginFlow() {
     }
     track(TRACK_EVENTS.GPS_FALLBACK_USED, { source: 'begin_flow', result })
     startJourney()
+  }
+
+  const handlePaceContinue = () => {
+    setJourneyPace(selectedPace)
+    if (selectedPace === JOURNEY_PACE.OWN) {
+      setStepName('pickStops')
+      return
+    }
+    setStepName('location')
   }
 
   if (stepName === 'resume') {
@@ -58,6 +86,24 @@ export default function RedesignBeginFlow() {
           onStartFresh={() => {
             reset()
             setStepName('pace')
+          }}
+        />
+      </div>
+    )
+  }
+
+  if (stepName === 'pickStops') {
+    return (
+      <div className="redesign-app-shell">
+        <B5OwnPaceStopPicker
+          manifest={manifest}
+          context={{ ...context, pace: JOURNEY_PACE.OWN }}
+          selectedIds={ownPaceStops}
+          onChangeSelected={setOwnPaceStops}
+          onBack={() => setStepName('pace')}
+          onContinue={() => {
+            setCustomWaypointIds(ownPaceStops)
+            setStepName('location')
           }}
         />
       </div>
@@ -83,7 +129,7 @@ export default function RedesignBeginFlow() {
         options={PACE_OPTIONS}
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
-        onContinue={() => setStepName('location')}
+        onContinue={handlePaceContinue}
       />
     </div>
   )

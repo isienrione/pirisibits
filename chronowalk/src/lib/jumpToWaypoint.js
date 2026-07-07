@@ -5,7 +5,7 @@ import {
   JOURNEY_STATES,
   transitionJourney,
 } from '../state/journey.js'
-import { findSequenceIndexForWaypoint } from './debugWaypoint.js'
+import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
 
 const STORY_VIEW_KEY = 'cw_story_view'
 
@@ -28,10 +28,12 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
       pace: context.pace || 'classic',
       path,
       waypointIndex: 0,
+      sequenceIndex: index,
+      customWaypointIds: context.customWaypointIds,
     })
+  } else {
+    jumpToSequenceIndex(index)
   }
-
-  jumpToSequenceIndex(index)
 
   if (storyView && typeof window !== 'undefined') {
     window.sessionStorage.setItem(STORY_VIEW_KEY, storyView)

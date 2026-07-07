@@ -29,6 +29,7 @@ const defaultContext = () => ({
   pausedAt: null,
   lastActiveAt: null,
   pendingResumeCue: null,
+  customWaypointIds: null,
 })
 
 const defaultState = () => ({
@@ -76,6 +77,10 @@ function readStorage() {
 
     if (mergedContext.pendingResumeCue == null) {
       mergedContext.pendingResumeCue = null
+    }
+
+    if (mergedContext.customWaypointIds == null) {
+      mergedContext.customWaypointIds = null
     }
 
     return {
@@ -166,18 +171,35 @@ export function resetJourney() {
   return snapshot
 }
 
-export function beginJourney({ pace = JOURNEY_PACE.CLASSIC, path = JOURNEY_PATH.A, waypointIndex = 0 } = {}) {
+export function beginJourney({
+  pace = JOURNEY_PACE.CLASSIC,
+  path = JOURNEY_PATH.A,
+  waypointIndex = 0,
+  sequenceIndex = 0,
+  customWaypointIds = null,
+} = {}) {
   return transitionJourney(JOURNEY_STATES.WALKING, {
     pace,
     path,
     currentWaypointIndex: waypointIndex,
-    currentSequenceIndex: 0,
+    currentSequenceIndex: sequenceIndex,
     completedWaypointIds: [],
     completedTransitIds: [],
     promotedOptionalIds: [],
     pathLocked: false,
     pendingResumeCue: null,
+    customWaypointIds,
   })
+}
+
+export function setCustomWaypointIds(customWaypointIds) {
+  return transitionJourney(snapshot.state, {
+    customWaypointIds: customWaypointIds?.length ? [...customWaypointIds] : null,
+  })
+}
+
+export function setJourneyPace(pace) {
+  return transitionJourney(snapshot.state, { pace })
 }
 
 export function markWaypointComplete(waypointId) {
