@@ -12,7 +12,7 @@ export default function RedesignSettingsPage() {
 
   return (
     <RedesignRouteShell>
-      <div className="redesign-app-shell redesign-phone-frame">
+      <div className="redesign-app-shell redesign-phone-frame redesign-phone-frame--companion">
         <G1Settings
           prefs={prefs}
           onSetPref={setPref}

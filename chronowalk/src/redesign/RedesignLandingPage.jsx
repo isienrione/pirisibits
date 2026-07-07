@@ -30,7 +30,11 @@ export default function RedesignLandingPage() {
   }
 
   const handleTryFree = () => {
-    navigate(hasAccess() ? '/begin' : '/access')
+    if (hasAccess()) {
+      navigate('/tour')
+      return
+    }
+    navigate('/access')
   }
 
   return (

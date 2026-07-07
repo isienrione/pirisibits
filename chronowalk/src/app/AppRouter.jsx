@@ -44,8 +44,16 @@ import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
 import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
 import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
+import { hasAccess } from '../lib/config.js'
 
 const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+
+function HomeRedirect() {
+  if (useFigmaRedesign && hasAccess()) {
+    return <Navigate to="/tour" replace />
+  }
+  return <Navigate to={useFigmaRedesign ? '/landing' : '/welcome'} replace />
+}
 
 function TourDebugBootstrap() {
   useTourDebugBootstrap()
@@ -70,7 +78,7 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
-        <Route path="/" element={<Navigate to={useFigmaRedesign ? '/landing' : '/welcome'} replace />} />
+        <Route path="/" element={<HomeRedirect />} />
         <Route path="/landing" element={useFigmaRedesign ? <RedesignLandingPage /> : <LandingPage />} />
         <Route path="/prototype" element={<FigmaPrototypeApp />} />
         <Route path="/preview" element={useFigmaRedesign ? <RedesignPreviewPage /> : <Navigate to="/landing" replace />} />

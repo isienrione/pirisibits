@@ -10,7 +10,8 @@ function getAccessDestination() {
   const { state } = getJourneySnapshot()
   const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
   if (inProgress) return '/journey'
-  return useFigmaRedesign ? '/access/confirmed' : '/begin'
+  if (useFigmaRedesign) return '/tour'
+  return '/begin'
 }
 
 export function AccessPage() {

@@ -14,7 +14,11 @@ export const SHELL_TAB_META = {
   [NAV_TABS.JOURNAL]: { to: '/journal', label: 'Journal' },
 }
 
-export const SHELL_COMPANION_PATHS = SHELL_TAB_ORDER.map((id) => SHELL_TAB_META[id].to)
+export const SHELL_COMPANION_PATHS = [
+  ...SHELL_TAB_ORDER.map((id) => SHELL_TAB_META[id].to),
+  '/journey',
+  '/settings',
+]
 
 export function getShellTabs() {
   const byId = Object.fromEntries(NAV_ITEMS.map((item) => [item.id, item]))
