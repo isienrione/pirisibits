@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette, BottomScrim } from '../ui/index.js';
@@ -44,7 +44,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
       <div style={{
         position: "relative", zIndex: 10,
         height: "100%", display: "flex", flexDirection: "column",
-        padding: "56px 24px 40px",
+        padding: `56px 24px ${SHELL_TAB_BAR_INSET}`,
       }}>
         {/* Title */}
         <div style={{ marginBottom: 28, flexShrink: 0 }}>
