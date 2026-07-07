@@ -1,4 +1,4 @@
-import { T, F } from "../tokens.js";
+import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
 import { severusNow } from "../images.js";
 import { Seam, Vignette } from '../ui/index.js';
 
@@ -53,7 +53,7 @@ export default function C8bThePause({ onResume, busy = false }) {
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
         gap: 20,
-        padding: "28px 36px 0",
+        padding: `28px 36px ${SHELL_TAB_BAR_INSET}`,
         zIndex: 10,
       }}>
         {/* Ghost "I'm ready" button — barely there */}

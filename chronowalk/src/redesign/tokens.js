@@ -22,6 +22,9 @@ export const F = {
   body: "'DM Sans', system-ui, sans-serif",
 }
 
+/** Bottom padding when the fixed shell tab bar is visible. */
+export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(8px, env(safe-area-inset-bottom)))'
+
 export const ACT_COLORS = {
   I: T.actI,
   II: T.actII,

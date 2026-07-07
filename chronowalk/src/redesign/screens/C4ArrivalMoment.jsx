@@ -1,4 +1,4 @@
-import { T, F } from '../tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 
@@ -67,7 +67,7 @@ export default function C4ArrivalMoment({
           marginTop: -24,
           position: 'relative',
           zIndex: 10,
-          padding: '28px 24px max(28px, calc(env(safe-area-inset-bottom) + 16px))',
+          padding: `28px 24px ${SHELL_TAB_BAR_INSET}`,
           boxShadow: '0 -8px 32px rgba(33,28,21,0.12)',
         }}
       >

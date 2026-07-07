@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -265,7 +265,7 @@ export default function B5OwnPaceStopPicker({
       <div
         style={{
           flexShrink: 0,
-          padding: '14px 24px max(14px, env(safe-area-inset-bottom))',
+          padding: `14px 24px ${SHELL_TAB_BAR_INSET}`,
           borderTop: `1px solid ${T.ink800}22`,
           background: T.bone,
         }}

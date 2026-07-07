@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Settings } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { pantheonNow } from '../images.js'
 import { Eyebrow } from '../ui/index.js'
 import { formatDistanceToNext, formatWalkingTime } from '../../content/journeyProgress.js'
@@ -179,7 +179,7 @@ export default function C2Walking({
         </p>
       </div>
 
-      <div style={{ padding: '12px 20px max(8px, env(safe-area-inset-bottom))', flexShrink: 0, position: 'relative', zIndex: 2, display: 'flex', gap: 16 }}>
+      <div style={{ padding: `12px 20px ${SHELL_TAB_BAR_INSET}`, flexShrink: 0, position: 'relative', zIndex: 2, display: 'flex', gap: 16 }}>
         {onPause ? (
           <button type="button" onClick={onPause} style={{ background: 'none', border: 'none', cursor: 'pointer', color: T.muted, fontSize: 13, padding: 0 }}>
             ‖ Pause walk

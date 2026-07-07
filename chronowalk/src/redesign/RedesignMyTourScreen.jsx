@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F } from './tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -196,7 +196,6 @@ export default function RedesignMyTourScreen() {
         style={{
           background: T.bone,
           height: '100%',
-        minHeight: '100dvh',
           display: 'grid',
           placeItems: 'center',
           fontFamily: F.body,
@@ -253,7 +252,6 @@ export default function RedesignMyTourScreen() {
       style={{
         background: T.bone,
         height: '100%',
-        minHeight: '100dvh',
         fontFamily: F.body,
         display: 'flex',
         flexDirection: 'column',
@@ -562,7 +560,7 @@ export default function RedesignMyTourScreen() {
       <div
         style={{
           flexShrink: 0,
-          padding: '16px 24px max(8px, env(safe-area-inset-bottom))',
+          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
           background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
           borderTop: `1px solid ${T.ink800}18`,
           position: 'relative',
@@ -583,7 +581,7 @@ export default function RedesignMyTourScreen() {
             fontSize: 15,
             border: 'none',
             cursor: 'pointer',
-            marginBottom: 14,
+            marginBottom: 8,
             boxShadow: `0 0 22px ${ctaColor}50`,
           }}
         >

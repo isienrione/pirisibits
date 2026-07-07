@@ -5,7 +5,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F } from './tokens.js'
+import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 
@@ -104,7 +104,7 @@ export default function RedesignStopsScreen() {
   }
 
   return (
-    <div className="cw-grain" style={{ background: T.bone, height: '100%', minHeight: '100dvh', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 12px', flexShrink: 0 }}>
         <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: 4 }}>
           All stops
@@ -114,7 +114,7 @@ export default function RedesignStopsScreen() {
         </p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: 'var(--shell-tab-bar-height)' }}>
+      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: 16 }}>
         <div
           style={{
             position: 'absolute',
@@ -285,7 +285,7 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: '12px 24px max(12px, env(safe-area-inset-bottom))', borderTop: `1px solid ${T.muted}28` }}>
+        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
           <button
             type="button"
             onClick={() => navigate('/begin')}

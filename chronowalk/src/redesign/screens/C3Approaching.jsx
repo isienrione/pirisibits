@@ -1,4 +1,4 @@
-import { T, F } from '../tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Seam, Vignette, Eyebrow } from '../ui/index.js'
 
@@ -77,7 +77,7 @@ export default function C3Approaching({
       <div
         style={{
           position: 'absolute',
-          bottom: 'max(72px, calc(env(safe-area-inset-bottom) + 48px))',
+          bottom: `calc(${SHELL_TAB_BAR_INSET} + 16px)`,
           left: 0,
           right: 0,
           padding: '0 32px',

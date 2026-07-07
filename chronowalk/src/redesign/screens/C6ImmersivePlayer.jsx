@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 
@@ -71,7 +71,7 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px max(24px, env(safe-area-inset-bottom))',
+          padding: `max(48px, calc(env(safe-area-inset-top) + 16px)) 24px ${SHELL_TAB_BAR_INSET}`,
         }}
       >
         <div

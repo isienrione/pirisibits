@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { buildJournalTimeline } from '../../content/journalTimeline.js'
 import { getWaypoint } from '../../content/manifest.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
-import { T, F, ACT_COLORS } from '../tokens.js'
+import { T, F, ACT_COLORS, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from '../lib/waypointPresentation.js'
 import { Eyebrow, PrimaryButton } from '../ui/index.js'
 
@@ -50,7 +50,7 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
     <div
       className="cw-grain redesign-app-shell"
       style={{
-        minHeight: '100dvh',
+        minHeight: '100%',
         background: T.bone,
         fontFamily: F.body,
         display: 'flex',
@@ -159,7 +159,7 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
       <div
         style={{
           flexShrink: 0,
-          padding: '16px 24px max(28px, calc(env(safe-area-inset-bottom) + 20px))',
+          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
           borderTop: `1px solid ${T.muted}28`,
           background: T.bone,
         }}

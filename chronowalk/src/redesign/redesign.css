@@ -203,7 +203,7 @@
 }
 
 :root {
-  --shell-tab-bar-height: calc(3.25rem + max(0.5rem, env(safe-area-inset-bottom)));
+  --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
 }
 
 html.redesign-pwa,
@@ -255,7 +255,13 @@ html.redesign-pwa #root {
 }
 
 .redesign-phone-frame--companion {
-  padding-bottom: var(--shell-tab-bar-height);
+  box-sizing: border-box;
+}
+
+.redesign-phone-frame--companion > * {
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
 }
 
 .redesign-prototype-chrome {

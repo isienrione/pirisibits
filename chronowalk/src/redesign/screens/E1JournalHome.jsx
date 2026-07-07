@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, severusNow, archTitusNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, MiniActLine } from '../ui/index.js';
@@ -170,7 +170,7 @@ export default function E1JournalHome({
               ))}
             </div>
           ))}
-          <div style={{ height: embedded ? 'var(--shell-tab-bar-height)' : 12 }} />
+          <div style={{ height: embedded ? SHELL_TAB_BAR_INSET : 12 }} />
         </div>
       )}
 
