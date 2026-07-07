@@ -127,7 +127,7 @@ export default function C7Threshold({
 
   useEffect(() => {
     setThenFallback(false)
-  }, [thenPhoto])
+  }, [thenPhoto, thenLoop])
 
   useEffect(() => {
     if (crossed && !crossedNotified.current) {
@@ -297,9 +297,11 @@ export default function C7Threshold({
   }, [])
 
   const thenClip = `inset(0 ${100 - seamPct * 100}% 0 0)`
-  const thenFilter = useStyledThen
-    ? 'sepia(72%) contrast(0.82) brightness(0.72) saturate(1.35) hue-rotate(-8deg)'
-    : 'sepia(42%) contrast(0.92) brightness(0.86) saturate(1.12)'
+  const thenFilter = thenLoop && !thenFallback
+    ? 'none'
+    : useStyledThen
+      ? 'sepia(72%) contrast(0.82) brightness(0.72) saturate(1.35) hue-rotate(-8deg)'
+      : 'sepia(42%) contrast(0.92) brightness(0.86) saturate(1.12)'
 
   const surface = (
     <div

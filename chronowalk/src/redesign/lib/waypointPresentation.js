@@ -66,8 +66,8 @@ export function resolvePhotoUrl(path) {
 }
 
 export function photoForWaypoint(waypoint) {
-  if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
   if (waypoint?.reconstruction?.now) return resolvePhotoUrl(waypoint.reconstruction.now)
+  if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (stopId) return getNowPhotoUrl(stopId)
   return getNowPhotoUrl('colosseum')

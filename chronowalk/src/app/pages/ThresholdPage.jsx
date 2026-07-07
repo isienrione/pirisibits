@@ -53,7 +53,7 @@ export function JourneyThresholdLayer() {
   }
 
   return useFigmaRedesign ? (
-    <RedesignThresholdOverlay waypoint={waypoint} onDismiss={handleDismiss} />
+    <RedesignThresholdOverlay waypoint={resolved} onDismiss={handleDismiss} />
   ) : (
     <div
       style={{

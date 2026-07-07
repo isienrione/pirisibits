@@ -14,3 +14,5 @@
   VITE_V2_APP = "true"
   VITE_FIGMA_REDESIGN = "true"
   VITE_ALLOW_DEV_ACCESS = "true"
+  # Serve waypoint photos/videos from the Netlify site (public/waypoints), not R2.
+  VITE_MEDIA_BASE = ""
