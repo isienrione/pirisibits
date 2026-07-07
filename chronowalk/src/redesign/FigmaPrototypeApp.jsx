@@ -53,7 +53,7 @@ const SCREENS = [
   { id: 'C3', label: 'Approaching', Component: C3Approaching },
   { id: 'C4', label: 'Arrival Moment', Component: C4ArrivalMoment },
   { id: 'C5', label: 'Story', Component: C5Story },
-  { id: 'C7', label: 'Threshold', Component: C7Threshold },
+  { id: 'C7', label: 'Threshold', Component: () => <C7Threshold embedded /> },
   { id: 'C6', label: 'Immersive Player', Component: C6ImmersivePlayer },
   { id: 'C8a', label: 'Path Choice', Component: C8aPathChoice },
   { id: 'C8b', label: 'The Pause', Component: C8bThePause },

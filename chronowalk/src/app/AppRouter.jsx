@@ -43,6 +43,7 @@ import RedesignCreditsPage from '../redesign/pages/RedesignCreditsPage.jsx'
 import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
 import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
 import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
+import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { hasAccess } from '../lib/config.js'
 
@@ -102,6 +103,7 @@ function AppRoutes() {
       </Routes>
       <JourneyThresholdLayer />
       <ShellTabBar />
+      <FlowEscapeButton />
       <PwaUpdatePrompt />
       <TourDebugBootstrap />
       <V2FieldTestPanel />

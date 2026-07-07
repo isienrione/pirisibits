@@ -32,6 +32,7 @@ export default function C7Threshold({
   honestyCaption = 'Statue placement evidence-based; awning colors informed conjecture',
   onCrossed,
   embedded = false,
+  reserveCtaSpace = false,
 }) {
   const [seamPct, setSeamPct] = useState(0)
   const [holding, setHolding] = useState(false)
@@ -436,64 +437,15 @@ export default function C7Threshold({
 
   return (
     <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        background: T.obsidian,
-        fontFamily: F.body,
-      }}
+      className={`cw-threshold-embedded${reserveCtaSpace ? ' cw-threshold-embedded--reserve-cta' : ''}`}
+      style={{ background: T.obsidian, fontFamily: F.body }}
     >
-      <p
-        style={{
-          textAlign: 'center',
-          padding: 'max(44px, calc(env(safe-area-inset-top) + 12px)) 16px 14px',
-          margin: 0,
-          fontSize: 11,
-          letterSpacing: '0.2em',
-          textTransform: 'uppercase',
-          color: `${T.muted}99`,
-          flexShrink: 0,
-        }}
-      >
-        Immersion
-      </p>
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '0 20px max(16px, env(safe-area-inset-bottom))',
-          minHeight: 0,
-        }}
-      >
-        <div
-          style={{
-            position: 'relative',
-            borderRadius: 20,
-            overflow: 'hidden',
-            aspectRatio: '3 / 4',
-            maxHeight: '58vh',
-            margin: '0 auto',
-            width: '100%',
-            boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
-          }}
-        >
-          <div style={{ position: 'absolute', inset: 0 }}>{surface}</div>
-        </div>
-        <p
-          style={{
-            textAlign: 'center',
-            margin: '14px 0 0',
-            fontSize: 12,
-            color: `${T.muted}99`,
-            letterSpacing: '0.08em',
-          }}
-        >
-          Then · Now
-        </p>
+      <p className="cw-threshold-embedded__eyebrow">Immersion</p>
+      <div className="cw-threshold-embedded__card">
+        <div className="cw-threshold-embedded__handle" aria-hidden />
+        <div className="cw-threshold-embedded__surface">{surface}</div>
       </div>
+      <p className="cw-threshold-embedded__footer">Then · Now</p>
     </div>
   )
 }

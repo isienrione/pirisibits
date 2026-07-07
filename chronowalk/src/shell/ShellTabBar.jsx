@@ -9,6 +9,8 @@ export default function ShellTabBar() {
   const { state } = useV2Journey()
   const location = useLocation()
 
+  if (state === JOURNEY_STATES.THRESHOLD) return null
+
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
   if (!onCompanionRoute) return null
 

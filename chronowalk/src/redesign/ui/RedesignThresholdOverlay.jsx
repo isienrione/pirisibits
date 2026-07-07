@@ -15,11 +15,20 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
   return (
     <div
       className="cw-threshold-surface"
-      style={{ position: 'fixed', inset: 0, zIndex: 70, background: '#16130F' }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 70,
+        height: '100dvh',
+        width: '100%',
+        background: '#16130F',
+        overflow: 'hidden',
+      }}
       onContextMenu={(e) => e.preventDefault()}
     >
       <C7Threshold
         embedded
+        reserveCtaSpace={crossed && Boolean(onDismiss)}
         nowPhoto={photoForWaypoint(waypoint)}
         thenPhoto={thenPhotoForWaypoint(waypoint)}
         thenLabel={thenLabelForWaypoint(waypoint)}
@@ -32,10 +41,11 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
           onClick={onDismiss}
           style={{
             position: 'absolute',
-            bottom: 'max(28px, env(safe-area-inset-bottom))',
+            bottom: 'max(14px, calc(env(safe-area-inset-bottom) + 8px))',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 80,
+            width: 'min(420px, calc(100% - 32px))',
             padding: '15px 28px',
             borderRadius: 14,
             border: 'none',
