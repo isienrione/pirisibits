@@ -10,7 +10,9 @@ import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypoin
 import { ActNode, Eyebrow } from './ui/index.js'
 
 const SEAM_X = 38
-const NODE_R = 7
+const ACT_DIAMOND = 14
+const STOP_NODE_R = 4
+const ROW_INSET = SEAM_X + ACT_DIAMOND / 2 + 12
 
 function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
@@ -134,20 +136,20 @@ export default function RedesignStopsScreen() {
               <div
                 style={{
                   position: 'relative',
-                  padding: `12px 20px 10px ${SEAM_X + NODE_R + 14}px`,
+                  padding: `12px 20px 10px ${ROW_INSET}px`,
                 }}
               >
                 <div
                   style={{
                     position: 'absolute',
-                    left: SEAM_X - 4,
-                    top: 18,
-                    width: 8,
-                    height: 8,
-                    borderRadius: 2,
+                    left: SEAM_X - ACT_DIAMOND / 2,
+                    top: 14,
+                    width: ACT_DIAMOND,
+                    height: ACT_DIAMOND,
+                    borderRadius: 3,
                     background: group.color,
                     transform: 'rotate(45deg)',
-                    boxShadow: `0 0 8px ${group.color}55`,
+                    boxShadow: `0 0 0 4px ${group.color}22, 0 0 14px ${group.color}66`,
                     zIndex: 2,
                   }}
                   aria-hidden
@@ -166,25 +168,25 @@ export default function RedesignStopsScreen() {
                     key={card.id}
                     style={{
                       position: 'relative',
-                      padding: `0 20px ${isLastInAct ? 18 : 14}px ${SEAM_X + NODE_R + 14}px`,
+                      padding: `0 20px ${isLastInAct ? 18 : 14}px ${ROW_INSET}px`,
                       opacity: faded ? 0.72 : 1,
                     }}
                   >
                     <div
                       style={{
                         position: 'absolute',
-                        left: SEAM_X - NODE_R,
-                        top: 44,
+                        left: SEAM_X - STOP_NODE_R,
+                        top: 48,
                         zIndex: 2,
                       }}
                     >
-                      <ActNode status={nodeStatusForStop(card.status)} color={group.color} radius={NODE_R} />
+                      <ActNode status={nodeStatusForStop(card.status)} color={group.color} radius={STOP_NODE_R} />
                     </div>
 
                     <span
                       style={{
                         position: 'absolute',
-                        left: SEAM_X + NODE_R + 2,
+                        left: SEAM_X + STOP_NODE_R + 4,
                         top: 12,
                         fontSize: 11,
                         color: T.muted,
