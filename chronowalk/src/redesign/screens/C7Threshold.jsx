@@ -5,6 +5,15 @@ import { Vignette } from '../ui/index.js'
 
 const HOLD_MS = 900
 
+const THRESHOLD_COVER_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+  objectPosition: 'center',
+}
+
 function ThenMediaLayer({ thenPhoto, thenLoop, thenClip, thenFilter, useStyledThen, onFallback }) {
   const videoRef = useRef(null)
 
@@ -40,14 +49,7 @@ function ThenMediaLayer({ thenPhoto, thenLoop, thenClip, thenFilter, useStyledTh
           playsInline
           autoPlay
           preload="auto"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition,
-          }}
+          style={{ ...THRESHOLD_COVER_STYLE, objectPosition }}
           onError={() => onFallback?.()}
         />
       </div>
@@ -329,15 +331,13 @@ export default function C7Threshold({
         if (holdingRef.current) endHold(e)
       }}
     >
-      {/* NOW — today (right of seam) */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${nowPhoto})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 20%',
-        }}
+      {/* NOW — today (right of seam); match THEN video cover + center framing */}
+      <img
+        src={nowPhoto}
+        alt=""
+        aria-hidden
+        draggable={false}
+        style={THRESHOLD_COVER_STYLE}
       />
 
       {/* THEN — ancient (revealed left of seam as it sweeps RTL) */}
