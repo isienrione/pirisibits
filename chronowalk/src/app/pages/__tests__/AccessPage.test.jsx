@@ -20,6 +20,7 @@ function renderAccessPage(initialEntry = '/access') {
     <MemoryRouter initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/access" element={<AccessPage />} />
+        <Route path="/welcome" element={<div>Welcome route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
@@ -34,21 +35,30 @@ describe('AccessPage', () => {
     validateMock.mockReset()
   })
 
-  it('redirects visitors who already have access to begin', () => {
+  it('sends owners without saved progress into onboarding at welcome', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
+
+    renderAccessPage()
+
+    expect(screen.getByText('Welcome route')).toBeInTheDocument()
+  })
+
+  it('offers resume to owners with a real in-progress journey', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 3 })
 
     renderAccessPage()
 
     expect(screen.getByText('Begin route')).toBeInTheDocument()
   })
 
-  it('grants access and redirects when a magic link token validates', async () => {
+  it('grants access and sends first-time purchasers to welcome', async () => {
     validateMock.mockResolvedValue({ ok: true, source: 'dev' })
 
     renderAccessPage('/access?token=dev')
 
     await waitFor(() => {
-      expect(screen.getByText('Begin route')).toBeInTheDocument()
+      expect(screen.getByText('Welcome route')).toBeInTheDocument()
     })
 
     expect(localStorage.getItem(ACCESS_KEY)).toBe('true')

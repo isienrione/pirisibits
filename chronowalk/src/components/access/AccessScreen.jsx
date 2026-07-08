@@ -95,7 +95,7 @@ export default function AccessScreen({ onValidated }) {
           color: 'var(--muted-warm)',
         }}
       >
-        Access
+        Your ticket
       </p>
       <h1
         style={{
@@ -119,8 +119,8 @@ export default function AccessScreen({ onValidated }) {
       {status === 'success' ? (
         <StatusMessage
           tone="success"
-          title="Rome is yours."
-          body="Taking you to the beginning of your journey."
+          title="Rome is ready."
+          body="Opening Rome for you…"
         />
       ) : null}
 
@@ -143,7 +143,7 @@ export default function AccessScreen({ onValidated }) {
                 color: 'var(--muted-warm)',
               }}
             >
-              After purchase, we email you a personal link. Open it on this phone to restore access.
+              After purchase, we email you a personal link. Open it on this phone to return to Rome.
             </p>
           ) : null}
 
@@ -159,7 +159,7 @@ export default function AccessScreen({ onValidated }) {
                 color: 'var(--muted-warm)',
               }}
             >
-              Access token
+              From your email
             </label>
             <input
               id="access-token"
@@ -195,7 +195,7 @@ export default function AccessScreen({ onValidated }) {
                 cursor: 'pointer',
               }}
             >
-              Restore access
+              Enter Rome
             </button>
           </form>
         </>

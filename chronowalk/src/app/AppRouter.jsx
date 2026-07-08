@@ -40,10 +40,13 @@ import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { hasAccess } from '../lib/config.js'
+import { isResumableJourney } from '../state/journey.js'
 
 function HomeRedirect() {
   if (hasAccess()) {
-    return <Navigate to="/tour" replace />
+    // Returning travelers mid-journey are offered a resume; owners without a
+    // real in-progress journey begin the cinematic onboarding at /welcome.
+    return <Navigate to={isResumableJourney() ? '/begin' : '/welcome'} replace />
   }
   return <Navigate to="/landing" replace />
 }
