@@ -100,6 +100,7 @@
         "w02",
         "t01",
         "w03",
+        "t04",
         "w06",
         "t05",
         "w07",
@@ -137,8 +138,9 @@
         "w02",
         "t01",
         "w04",
-        "t02",
+        "t03",
         "w03",
+        "t04",
         "w06",
         "t05",
         "w07",
@@ -256,7 +258,7 @@
         "w03_ch2.mp3"
       ],
       "outro_variants": {
-        "a": "w03_outro_a.mp3",
+        "a": "forum_intro_gate.mp3",
         "b": "w03_outro_b.mp3"
       },
       "inserts": [
@@ -290,7 +292,8 @@
       "zone": "antiquity",
       "chapters": [
         "w04_ch1.mp3",
-        "w04_ch2.mp3"
+        "w04_ch2.mp3",
+        "forum_intro_above.mp3"
       ],
       "optional_on_path": "a",
       "approachLine": "The emperors' hill climbs above the Forum.",
@@ -842,6 +845,12 @@
       "zone": "antiquity",
       "duration_s": 25
     },
+    "t04": {
+      "after": "w03",
+      "audio": "t04_forum.mp3",
+      "zone": "antiquity",
+      "duration_s": 18
+    },
     "t05": {
       "after": "w06",
       "audio": "t05.mp3",
@@ -1029,6 +1038,7 @@
     "t01_fork_a.mp3": 70,
     "t01_fork_b.mp3": 70,
     "t02.mp3": 25,
+    "t04_forum.mp3": 18,
     "t05.mp3": 30,
     "t06.mp3": 25,
     "t07.mp3": 35,
