@@ -90,21 +90,32 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],
         globIgnores: ['**/waypoints/**'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/offline\.html$/],
+        navigateFallbackDenylist: [
+          /^\/offline\.html$/,
+          /^\/rome\//,
+          /^\/waypoints\//,
+          /^\/assets\//,
+          // Never serve the SPA shell for any request to a file with an extension
+          // (mp3, mp4, jpg, json, …). Prevents caching HTML under an asset URL.
+          /\.[a-zA-Z0-9]+$/,
+        ],
         runtimeCaching: [
           {
-            urlPattern: ({ sameOrigin, url }) =>
+            urlPattern: ({ sameOrigin, request, url }) =>
               sameOrigin &&
+              request.destination !== 'document' &&
               /\.(?:png|jpg|jpeg|svg|gif|webp|mp3|mp4|woff2?)$/i.test(url.pathname),
             handler: 'CacheFirst',
             options: {
-              cacheName: 'chronowalk-static-assets',
+              // Bumped cache name to abandon entries poisoned with HTML from a
+              // previous SPA-fallback (200 index.html served for missing media).
+              cacheName: 'chronowalk-media-v2',
               expiration: {
                 maxEntries: 200,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
               },
               cacheableResponse: {
-                statuses: [0, 200],
+                statuses: [200],
               },
             },
           },
