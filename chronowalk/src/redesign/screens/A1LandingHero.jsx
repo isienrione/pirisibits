@@ -4,7 +4,7 @@ import { T, F } from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
 import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
 
-export default function A1LandingHero({ onPurchase, onPreview, onPreviewStory }) {
+export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPreview, onPreviewStory }) {
   const [demoState, setDemoState] = useState('now')
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export default function A1LandingHero({ onPurchase, onPreview, onPreviewStory })
               cursor: 'pointer',
             }}
           >
-            <span>Get ChronoWalk Rome — $17</span>
+            <span>Get ChronoWalk Rome — {priceLabel}</span>
             <ChevronRight size={18} />
           </button>
           <button

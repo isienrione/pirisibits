@@ -11,7 +11,9 @@ export default function A2FreePreviewStory({
   thenPhoto = THEN_pantheon,
   tagline = 'A temple to all gods — or a tomb for emperors?',
   narrationPlaying = false,
+  audioAvailable = true,
   onTogglePlay,
+  onThresholdCross,
   onUnlock,
   onBack,
 }) {
@@ -21,7 +23,10 @@ export default function A2FreePreviewStory({
 
   const down = () => {
     setHoldState("holding");
-    holdTimer.current = setTimeout(() => setHoldState("crossed"), 700);
+    holdTimer.current = setTimeout(() => {
+      setHoldState("crossed");
+      onThresholdCross?.();
+    }, 700);
   };
   const up = () => {
     if (holdTimer.current) clearTimeout(holdTimer.current);
@@ -95,29 +100,40 @@ export default function A2FreePreviewStory({
           {tagline}
         </p>
 
-        {/* Progress */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ height: 1.5, background: T.ink800, borderRadius: 1 }}>
-            <div style={{ height: "100%", width: "32%", background: T.ember, borderRadius: 1, boxShadow: "0 0 8px rgba(232,161,60,0.5)" }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
-            <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>1:17</span>
-            <span style={{ fontSize: 11, color: T.muted }}>4:00</span>
-          </div>
-        </div>
+        {/* Player — only when preview audio can actually play */}
+        {audioAvailable ? (
+          <>
+            {/* Progress */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ height: 1.5, background: T.ink800, borderRadius: 1 }}>
+                <div style={{ height: "100%", width: "32%", background: T.ember, borderRadius: 1, boxShadow: "0 0 8px rgba(232,161,60,0.5)" }} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6 }}>
+                <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>1:17</span>
+                <span style={{ fontSize: 11, color: T.muted }}>4:00</span>
+              </div>
+            </div>
 
-        {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 32, marginBottom: 16 }}>
-          <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipBack size={22} /></button>
-          <button
-            type="button"
-            onClick={() => onTogglePlay?.()}
-            style={{ width: 56, height: 56, borderRadius: 28, background: T.ember, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px rgba(232,161,60,0.5)" }}
-          >
-            {narrationPlaying ? <Pause size={22} fill={T.obsidian} color={T.obsidian} /> : <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />}
-          </button>
-          <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipForward size={22} /></button>
-        </div>
+            {/* Controls */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 32, marginBottom: 16 }}>
+              <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipBack size={22} /></button>
+              <button
+                type="button"
+                onClick={() => onTogglePlay?.()}
+                style={{ width: 56, height: 56, borderRadius: 28, background: T.ember, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 20px rgba(232,161,60,0.5)" }}
+              >
+                {narrationPlaying ? <Pause size={22} fill={T.obsidian} color={T.obsidian} /> : <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />}
+              </button>
+              <button style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0 }}><SkipForward size={22} /></button>
+            </div>
+          </>
+        ) : import.meta.env.DEV ? (
+          <div style={{ textAlign: "center", padding: "18px 0 16px" }}>
+            <span style={{ fontSize: 12, color: T.muted, lineHeight: 1.6 }}>
+              Preview audio unavailable in development
+            </span>
+          </div>
+        ) : null}
 
         {/* Tabs */}
         <div style={{ display: "flex", gap: 24, borderBottom: `1px solid ${T.ink800}`, marginBottom: 12 }}>

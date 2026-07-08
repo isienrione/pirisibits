@@ -10,7 +10,7 @@ import A1LandingHero from './screens/A1LandingHero.jsx'
 
 export default function RedesignLandingPage() {
   const navigate = useNavigate()
-  const { cents, checkoutUrl } = usePrice()
+  const { cents, checkoutUrl, label } = usePrice()
 
   const handlePurchase = () => {
     const url = buildCheckoutUrl(checkoutUrl, {
@@ -34,12 +34,13 @@ export default function RedesignLandingPage() {
       navigate('/tour')
       return
     }
-    navigate('/access')
+    navigate('/preview')
   }
 
   return (
     <div className="redesign-app-shell">
       <A1LandingHero
+        priceLabel={label}
         onPurchase={handlePurchase}
         onPreview={handleTryFree}
         onPreviewStory={handlePreviewStory}

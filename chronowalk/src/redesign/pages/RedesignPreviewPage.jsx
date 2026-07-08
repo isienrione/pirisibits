@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getWaypoint } from '../../content/manifest.js'
 import { resolveSystemUrl } from '../../audio/audioUrl.js'
@@ -21,6 +21,8 @@ export default function RedesignPreviewPage() {
   const { cents, checkoutUrl } = usePrice()
   const audioRef = useRef(null)
   const [playing, setPlaying] = useState(false)
+  const [audioError, setAudioError] = useState(false)
+  const thresholdTrackedRef = useRef(false)
 
   const waypoint = useMemo(
     () => (manifest ? getWaypoint(manifest, 'w17') : null),
@@ -31,6 +33,18 @@ export default function RedesignPreviewPage() {
     () => (manifest?.system?.preview ? resolveSystemUrl(manifest.system.preview) : null),
     [manifest],
   )
+
+  const audioAvailable = Boolean(previewUrl) && !audioError
+
+  useEffect(() => {
+    track(TRACK_EVENTS.PREVIEW_START, { source: 'preview' })
+  }, [])
+
+  const handleThresholdCross = () => {
+    if (thresholdTrackedRef.current) return
+    thresholdTrackedRef.current = true
+    track(TRACK_EVENTS.THRESHOLD_DEMO, { source: 'preview' })
+  }
 
   const handleUnlock = () => {
     const url = buildCheckoutUrl(checkoutUrl, { host: getHost(), abVariantCents: cents })
@@ -67,9 +81,13 @@ export default function RedesignPreviewPage() {
             ref={audioRef}
             src={previewUrl}
             preload="metadata"
-            onEnded={() => setPlaying(false)}
+            onEnded={() => {
+              setPlaying(false)
+              track(TRACK_EVENTS.PREVIEW_COMPLETE, { source: 'preview' })
+            }}
             onPause={() => setPlaying(false)}
             onPlay={() => setPlaying(true)}
+            onError={() => setAudioError(true)}
           />
         ) : null}
         <A2FreePreviewStory
@@ -78,7 +96,9 @@ export default function RedesignPreviewPage() {
           thenPhoto={waypoint ? thenPhotoForWaypoint(waypoint) : THEN_pantheon}
           tagline={waypoint?.approachLine ?? 'A temple to all gods — or a tomb for emperors?'}
           narrationPlaying={playing}
+          audioAvailable={audioAvailable}
           onTogglePlay={togglePlay}
+          onThresholdCross={handleThresholdCross}
           onUnlock={handleUnlock}
           onBack={() => navigate('/landing')}
         />
