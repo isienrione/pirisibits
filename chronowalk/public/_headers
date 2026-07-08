@@ -1,0 +1,13 @@
+# The service worker and app shell must never be held in the HTTP cache,
+# otherwise browsers keep running an old service worker and never pick up
+# new deploys. Content-hashed assets under /assets/ stay long-cached.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+/workbox-*.js
+  Cache-Control: no-cache, no-store, must-revalidate
+/registerSW.js
+  Cache-Control: no-cache, no-store, must-revalidate
+/index.html
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache
