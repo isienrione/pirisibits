@@ -1,10 +1,4 @@
-import JourneyShell from '../../components/journey/JourneyShell.jsx'
-import MapScreen from '../../components/map/MapScreen.jsx'
-import JournalScreen from '../../components/journal/JournalScreen.jsx'
-import LetterScreen from '../../components/letter/LetterScreen.jsx'
 import RedesignJourneyPage from '../../redesign/pages/RedesignJourneyPage.jsx'
-
-const useFigmaRedesign = true
 
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (
@@ -53,17 +47,5 @@ function ShellPage({ eyebrow, title, subtitle, children }) {
 }
 
 export function JourneyPage() {
-  return useFigmaRedesign ? <RedesignJourneyPage /> : <JourneyShell />
-}
-
-export function MapPage() {
-  return <MapScreen />
-}
-
-export function JournalPage() {
-  return <JournalScreen />
-}
-
-export function LetterPage() {
-  return <LetterScreen />
+  return <RedesignJourneyPage />
 }

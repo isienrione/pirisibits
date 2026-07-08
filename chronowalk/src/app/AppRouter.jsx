@@ -22,12 +22,7 @@ import { initAnalytics } from '../lib/track'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import { AccessPage } from './pages/AccessPage'
 import { BeginPage } from './pages/BeginPage'
-import { LandingPage } from './pages/LandingPage'
-import { WelcomePage } from './pages/WelcomePage'
-import { SettingsPage } from './pages/SettingsPage.jsx'
-import { CreditsPage } from './pages/CreditsPage.jsx'
-import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
-import { StopsPage } from './pages/StopsPage.jsx'
+import { JourneyPage } from './pages/PlaceholderPages'
 import RedesignStopsPage from '../redesign/pages/RedesignStopsPage.jsx'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
 import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
@@ -46,13 +41,11 @@ import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { hasAccess } from '../lib/config.js'
 
-const useFigmaRedesign = true
-
 function HomeRedirect() {
-  if (useFigmaRedesign && hasAccess()) {
+  if (hasAccess()) {
     return <Navigate to="/tour" replace />
   }
-  return <Navigate to={useFigmaRedesign ? '/landing' : '/welcome'} replace />
+  return <Navigate to="/landing" replace />
 }
 
 function TourDebugBootstrap() {
@@ -79,22 +72,22 @@ function AppRoutes() {
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
-        <Route path="/landing" element={useFigmaRedesign ? <RedesignLandingPage /> : <LandingPage />} />
-        <Route path="/preview" element={useFigmaRedesign ? <RedesignPreviewPage /> : <Navigate to="/landing" replace />} />
-        <Route path="/setup" element={useFigmaRedesign ? <RedesignSetupPage /> : <Navigate to="/begin" replace />} />
-        <Route path="/access/confirmed" element={useFigmaRedesign ? <RedesignAccessConfirmedPage /> : <Navigate to="/begin" replace />} />
-        <Route path="/no-ticket" element={useFigmaRedesign ? <RedesignNoTicketPage /> : <Navigate to="/journey" replace />} />
-        <Route path="/welcome" element={useFigmaRedesign ? <RedesignWelcomePage /> : <WelcomePage />} />
+        <Route path="/landing" element={<RedesignLandingPage />} />
+        <Route path="/preview" element={<RedesignPreviewPage />} />
+        <Route path="/setup" element={<RedesignSetupPage />} />
+        <Route path="/access/confirmed" element={<RedesignAccessConfirmedPage />} />
+        <Route path="/no-ticket" element={<RedesignNoTicketPage />} />
+        <Route path="/welcome" element={<RedesignWelcomePage />} />
         <Route path="/begin" element={<BeginPage />} />
-        <Route path="/tour" element={useFigmaRedesign ? <RedesignTourPage /> : <Navigate to="/journey" replace />} />
+        <Route path="/tour" element={<RedesignTourPage />} />
         <Route path="/journey" element={<JourneyPage />} />
-        <Route path="/map" element={useFigmaRedesign ? <RedesignMapPage /> : <MapPage />} />
-        <Route path="/stops" element={useFigmaRedesign ? <RedesignStopsPage /> : <StopsPage />} />
-        <Route path="/journal" element={useFigmaRedesign ? <RedesignJournalPage /> : <JournalPage />} />
-        <Route path="/journal/:waypointId" element={useFigmaRedesign ? <RedesignMemoryDetailPage /> : <Navigate to="/journal" replace />} />
-        <Route path="/letter" element={useFigmaRedesign ? <RedesignLetterPage /> : <LetterPage />} />
-        <Route path="/settings" element={useFigmaRedesign ? <RedesignSettingsPage /> : <SettingsPage />} />
-        <Route path="/credits" element={useFigmaRedesign ? <RedesignCreditsPage /> : <CreditsPage />} />
+        <Route path="/map" element={<RedesignMapPage />} />
+        <Route path="/stops" element={<RedesignStopsPage />} />
+        <Route path="/journal" element={<RedesignJournalPage />} />
+        <Route path="/journal/:waypointId" element={<RedesignMemoryDetailPage />} />
+        <Route path="/letter" element={<RedesignLetterPage />} />
+        <Route path="/settings" element={<RedesignSettingsPage />} />
+        <Route path="/credits" element={<RedesignCreditsPage />} />
         <Route path="/access" element={<AccessPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

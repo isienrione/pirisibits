@@ -4,14 +4,11 @@ import AccessScreen from '../../components/access/AccessScreen'
 import { hasAccess } from '../../lib/config'
 import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey'
 
-const useFigmaRedesign = true
-
 function getAccessDestination() {
   const { state } = getJourneySnapshot()
   const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
   if (inProgress) return '/journey'
-  if (useFigmaRedesign) return '/tour'
-  return '/begin'
+  return '/tour'
 }
 
 export function AccessPage() {

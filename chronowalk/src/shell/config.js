@@ -1,11 +1,7 @@
 import { NAV_ITEMS, NAV_TABS } from '../components/navigation/navConfig.jsx'
 
-const useFigmaRedesign = true
-
 /** Figma spec: Journey · Stops · Map · Journal */
-export const SHELL_TAB_ORDER = useFigmaRedesign
-  ? [NAV_TABS.TOUR, NAV_TABS.STOPS, NAV_TABS.MAP, NAV_TABS.JOURNAL]
-  : [NAV_TABS.TOUR, NAV_TABS.MAP, NAV_TABS.JOURNAL]
+export const SHELL_TAB_ORDER = [NAV_TABS.TOUR, NAV_TABS.STOPS, NAV_TABS.MAP, NAV_TABS.JOURNAL]
 
 export const SHELL_TAB_META = {
   [NAV_TABS.TOUR]: { to: '/tour', label: 'My Tour' },

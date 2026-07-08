@@ -5,8 +5,6 @@ import { hasAccess } from '../../lib/config.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import { T, F } from '../tokens.js'
 
-const useFigmaRedesign = true
-
 function homePath() {
   return hasAccess() ? '/tour' : '/landing'
 }
@@ -15,8 +13,6 @@ export default function FlowEscapeButton() {
   const navigate = useNavigate()
   const location = useLocation()
   const { state: journeyState, transition } = useV2Journey()
-
-  if (!useFigmaRedesign) return null
 
   const handleBack = () => {
     const { pathname } = location
