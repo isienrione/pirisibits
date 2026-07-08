@@ -4,7 +4,7 @@ import JournalScreen from '../../components/journal/JournalScreen.jsx'
 import LetterScreen from '../../components/letter/LetterScreen.jsx'
 import RedesignJourneyPage from '../../redesign/pages/RedesignJourneyPage.jsx'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 function ShellPage({ eyebrow, title, subtitle, children }) {
   return (

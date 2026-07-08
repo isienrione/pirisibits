@@ -5,7 +5,7 @@ import { hasAccess } from '../../lib/config.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import { T, F } from '../tokens.js'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 function homePath() {
   return hasAccess() ? '/tour' : '/landing'

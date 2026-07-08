@@ -4,7 +4,7 @@ import { hasAccess } from '../../lib/config'
 
 import RedesignBeginFlow from '../../redesign/RedesignBeginFlow.jsx'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 export function BeginPage() {
   if (!hasAccess()) {

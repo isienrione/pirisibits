@@ -1,6 +1,6 @@
 import { NAV_ITEMS, NAV_TABS } from '../components/navigation/navConfig.jsx'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 /** Figma spec: Journey · Stops · Map · Journal */
 export const SHELL_TAB_ORDER = useFigmaRedesign

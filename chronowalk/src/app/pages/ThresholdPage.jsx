@@ -9,7 +9,7 @@ import { track, TRACK_EVENTS } from '../../lib/track'
 import Threshold from '../../components/Threshold'
 import RedesignThresholdOverlay from '../../redesign/ui/RedesignThresholdOverlay.jsx'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 export function ThresholdDemoPage() {
   const { manifest } = useTourManifest()

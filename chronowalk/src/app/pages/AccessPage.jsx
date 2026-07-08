@@ -4,7 +4,7 @@ import AccessScreen from '../../components/access/AccessScreen'
 import { hasAccess } from '../../lib/config'
 import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 function getAccessDestination() {
   const { state } = getJourneySnapshot()

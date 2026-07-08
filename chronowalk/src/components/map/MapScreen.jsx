@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import TourMap from '../TourMap.jsx'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import {
@@ -192,10 +192,6 @@ export default function MapScreen({ variant = 'legacy' }) {
     (layer) => layer.id === 'route_drift' || layer.id === 'observing',
   )
   const visibleConfidenceLayers = isRedesign ? alertLayers : confidenceLayers
-
-  if (state === JOURNEY_STATES.IDLE && import.meta.env.VITE_FIGMA_REDESIGN === 'false') {
-    return <Navigate to="/begin" replace />
-  }
 
   if (loading) {
     return (

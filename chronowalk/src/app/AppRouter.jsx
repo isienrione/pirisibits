@@ -19,7 +19,7 @@ import { ThresholdChromeProvider, useThresholdChrome } from '../context/Threshol
 import { loadRomeManifest } from '../content/manifest.js'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
-import { JourneyThresholdLayer, ThresholdDemoPage } from './pages/ThresholdPage'
+import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import { AccessPage } from './pages/AccessPage'
 import { BeginPage } from './pages/BeginPage'
 import { LandingPage } from './pages/LandingPage'
@@ -29,7 +29,6 @@ import { CreditsPage } from './pages/CreditsPage.jsx'
 import { JourneyPage, JournalPage, LetterPage, MapPage } from './pages/PlaceholderPages'
 import { StopsPage } from './pages/StopsPage.jsx'
 import RedesignStopsPage from '../redesign/pages/RedesignStopsPage.jsx'
-import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
 import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
 import RedesignMapPage from '../redesign/pages/RedesignMapPage.jsx'
@@ -47,7 +46,7 @@ import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { hasAccess } from '../lib/config.js'
 
-const useFigmaRedesign = import.meta.env.VITE_FIGMA_REDESIGN !== 'false'
+const useFigmaRedesign = true
 
 function HomeRedirect() {
   if (useFigmaRedesign && hasAccess()) {
@@ -81,7 +80,6 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
         <Route path="/landing" element={useFigmaRedesign ? <RedesignLandingPage /> : <LandingPage />} />
-        <Route path="/prototype" element={<FigmaPrototypeApp />} />
         <Route path="/preview" element={useFigmaRedesign ? <RedesignPreviewPage /> : <Navigate to="/landing" replace />} />
         <Route path="/setup" element={useFigmaRedesign ? <RedesignSetupPage /> : <Navigate to="/begin" replace />} />
         <Route path="/access/confirmed" element={useFigmaRedesign ? <RedesignAccessConfirmedPage /> : <Navigate to="/begin" replace />} />
@@ -98,7 +96,6 @@ function AppRoutes() {
         <Route path="/settings" element={useFigmaRedesign ? <RedesignSettingsPage /> : <SettingsPage />} />
         <Route path="/credits" element={useFigmaRedesign ? <RedesignCreditsPage /> : <CreditsPage />} />
         <Route path="/access" element={<AccessPage />} />
-        <Route path="/threshold-demo" element={<ThresholdDemoPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />
