@@ -479,17 +479,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
           actLabel={actLabel}
           title={props.title}
           chapterTitle={chapters[0]?.title ?? signatureLine(record)}
-          chapterIndex={0}
-          chapterCount={Math.max(chapters.length, 1)}
+          chapterIndex={audio.progress?.chapterCount ? audio.progress.chapterIndex : 0}
+          chapterCount={audio.progress?.chapterCount || Math.max(chapters.length, 1)}
           photo={props.photo}
           transcript={record.transcriptPreview ?? signatureLine(record)}
           narrationPlaying={audio.narrationPlaying}
+          currentTime={audio.progress?.currentTime ?? 0}
+          duration={audio.progress?.duration ?? 0}
           initialTab={storyViewRef.current}
-          onTogglePlay={() =>
-            audio.narrationPlaying ? audio.stopNarration() : void audio.resumePlayback()
-          }
-          onSkipBack={() => audio.stopNarration()}
-          onSkipForward={() => audio.stopNarration()}
+          onTogglePlay={() => audio.toggleNarration()}
+          onSkipBack={() => audio.skipNarration(-15)}
+          onSkipForward={() => audio.skipNarration(15)}
+          onSeek={(seconds) => audio.seekNarration(seconds)}
+          onSelectChapter={(i) => audio.jumpToChapter(i)}
           onStoryComplete={handleStoryComplete}
           onBack={() => transition(JOURNEY_STATES.ARRIVED)}
           onOpenThreshold={handleOpenThreshold}

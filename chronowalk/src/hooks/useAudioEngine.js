@@ -8,6 +8,16 @@ export function useAudioEngine(manifest) {
   const [narrationPlaying, setNarrationPlaying] = useState(false)
   const [playbackInterrupted, setPlaybackInterrupted] = useState(false)
   const [ready, setReady] = useState(false)
+  const [progress, setProgress] = useState({
+    currentTime: 0,
+    duration: 0,
+    chapterIndex: 0,
+    chapterCount: 0,
+    itemIndex: 0,
+    itemCount: 0,
+    playing: false,
+    paused: false,
+  })
   const { state, context } = useV2Journey()
 
   useEffect(() => {
@@ -16,6 +26,7 @@ export function useAudioEngine(manifest) {
     const engine = createAudioEngine(manifest, { path: context.path })
     engine.onNarrationChange = setNarrationPlaying
     engine.onInterruptionChange = setPlaybackInterrupted
+    engine.onProgress = setProgress
     engine.attachVisibilityListener()
     engineRef.current = engine
 
@@ -26,6 +37,7 @@ export function useAudioEngine(manifest) {
     return () => {
       engine.onNarrationChange = null
       engine.onInterruptionChange = null
+      engine.onProgress = null
       engine.detachVisibilityListener()
       engine.teardown()
       engineRef.current = null
@@ -34,6 +46,16 @@ export function useAudioEngine(manifest) {
       setPlaybackInterrupted(false)
     }
   }, [manifest])
+
+  // Drive a smooth scrubber/timer while narration is playing.
+  useEffect(() => {
+    if (!narrationPlaying) return undefined
+    const id = setInterval(() => {
+      const engine = engineRef.current
+      if (engine) setProgress(engine.getNarrationProgress())
+    }, 200)
+    return () => clearInterval(id)
+  }, [narrationPlaying])
 
   useEffect(() => {
     const engine = engineRef.current
@@ -96,6 +118,30 @@ export function useAudioEngine(manifest) {
     await engineRef.current?.resumeInterruptedPlayback()
   }, [])
 
+  const pauseNarration = useCallback(() => {
+    engineRef.current?.pauseNarration()
+  }, [])
+
+  const resumeNarration = useCallback(() => {
+    void engineRef.current?.resumeNarration()
+  }, [])
+
+  const toggleNarration = useCallback(() => {
+    engineRef.current?.toggleNarration()
+  }, [])
+
+  const seekNarration = useCallback((seconds) => {
+    void engineRef.current?.seekNarration(seconds)
+  }, [])
+
+  const skipNarration = useCallback((deltaSeconds) => {
+    void engineRef.current?.skipNarration(deltaSeconds)
+  }, [])
+
+  const jumpToChapter = useCallback((chapterIndex) => {
+    void engineRef.current?.jumpToChapter(chapterIndex)
+  }, [])
+
   const setPath = useCallback((path) => {
     engineRef.current?.setPath(path)
   }, [])
@@ -104,6 +150,7 @@ export function useAudioEngine(manifest) {
     ready,
     narrationPlaying,
     playbackInterrupted,
+    progress,
     unlock,
     playWaypoint,
     playTransit,
@@ -114,6 +161,12 @@ export function useAudioEngine(manifest) {
     endTransit,
     stopNarration,
     resumePlayback,
+    pauseNarration,
+    resumeNarration,
+    toggleNarration,
+    seekNarration,
+    skipNarration,
+    jumpToChapter,
     setPath,
     engine: engineRef.current,
   }

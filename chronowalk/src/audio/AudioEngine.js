@@ -39,6 +39,9 @@ export class AudioEngine {
     this.playbackGeneration = 0
     this.activeSources = []
 
+    // Controllable narration session (play/pause/seek/skip across a plan).
+    this.session = null
+
     this.presenceTimer = null
     this.longwalkTimer = null
     this.activeTransitId = null
@@ -47,6 +50,7 @@ export class AudioEngine {
 
     this.onNarrationChange = null
     this.onInterruptionChange = null
+    this.onProgress = null
 
     this.playbackInterrupted = false
     this.playingBeforeHidden = false
@@ -249,9 +253,6 @@ export class AudioEngine {
 
     this.activePlayback = { kind: 'waypoint', id: waypointId }
     await this.playPlan(plan)
-    if (!this.playbackInterrupted) {
-      this.activePlayback = null
-    }
   }
 
   clearTransitSession() {
@@ -292,9 +293,6 @@ export class AudioEngine {
 
     this.activePlayback = { kind: 'transit', id: transitId }
     await this.playPlan(plan)
-    if (!this.playbackInterrupted) {
-      this.activePlayback = null
-    }
   }
 
   async play(stopId) {
@@ -371,54 +369,247 @@ export class AudioEngine {
 
     const generation = ++this.playbackGeneration
     this.stopNarrationSources()
+    this.session = {
+      plan,
+      index: 0,
+      generation,
+      source: null,
+      buffer: null,
+      startedAt: 0,
+      offset: 0,
+      paused: false,
+    }
     this.setNarrationPlaying(true)
+    await this.startCurrentItem(0)
+  }
 
-    for (const item of plan) {
-      if (generation !== this.playbackGeneration) return
+  async startCurrentItem(offset = 0) {
+    const session = this.session
+    if (!session || session.generation !== this.playbackGeneration || !this.context) return
 
-      const url = resolvePlanItemUrl(item)
-      if (!url) continue
-
-      await this.playBuffer(url, item.type === 'insert')
+    const item = session.plan[session.index]
+    if (!item) {
+      this.finishSession()
+      return
     }
 
-    if (generation === this.playbackGeneration) {
-      this.setNarrationPlaying(false)
+    const url = resolvePlanItemUrl(item)
+    if (!url) {
+      session.index += 1
+      session.offset = 0
+      await this.startCurrentItem(0)
+      return
+    }
+
+    const buffer = await this.loadBuffer(url, this.context)
+    // Bail if the session was replaced/stopped while the buffer was loading.
+    if (this.session !== session || session.generation !== this.playbackGeneration || !this.context) {
+      return
+    }
+
+    if (!buffer) {
+      session.index += 1
+      session.offset = 0
+      await this.startCurrentItem(0)
+      return
+    }
+
+    const source = this.context.createBufferSource()
+    source.buffer = buffer
+    source.connect(this.narrationGain)
+
+    const startOffset = Math.min(Math.max(offset, 0), buffer.duration || 0)
+    session.source = source
+    session.buffer = buffer
+    session.offset = startOffset
+    session.startedAt = this.context.currentTime
+    session.paused = false
+    this.activeSources.push(source)
+
+    source.onended = () => {
+      this.activeSources = this.activeSources.filter((s) => s !== source)
+      const active = this.session
+      // Ignore endings from sources we deliberately detached (pause/seek/stop).
+      if (!active || active.source !== source) return
+      if (active.generation !== this.playbackGeneration || active.paused) return
+
+      active.source = null
+      active.index += 1
+      active.offset = 0
+      if (active.index >= active.plan.length) {
+        this.finishSession()
+      } else {
+        void this.startCurrentItem(0)
+      }
+    }
+
+    source.start(0, startOffset)
+    this.setNarrationPlaying(true)
+    this.emitProgress()
+  }
+
+  finishSession() {
+    this.session = null
+    this.setNarrationPlaying(false)
+    if (!this.playbackInterrupted) {
+      this.activePlayback = null
+    }
+    this.emitProgress()
+  }
+
+  detachCurrentSource() {
+    const session = this.session
+    if (!session?.source) return
+    const src = session.source
+    session.source = null
+    try {
+      src.stop()
+    } catch {
+      // already stopped
+    }
+    this.activeSources = this.activeSources.filter((s) => s !== src)
+  }
+
+  getNarrationTime() {
+    const session = this.session
+    if (!session) return 0
+    if (session.paused || !session.source || !this.context) return session.offset
+    return session.offset + Math.max(this.context.currentTime - session.startedAt, 0)
+  }
+
+  getNarrationProgress() {
+    const session = this.session
+    if (!session) {
+      return {
+        currentTime: 0,
+        duration: 0,
+        chapterIndex: 0,
+        chapterCount: 0,
+        itemIndex: 0,
+        itemCount: 0,
+        playing: false,
+        paused: false,
+      }
+    }
+
+    const narrationIndices = session.plan
+      .map((item, i) => (item.type === 'narration' ? i : -1))
+      .filter((i) => i >= 0)
+    const chapterCount = narrationIndices.length
+    const reached = narrationIndices.filter((i) => i <= session.index).length
+    const chapterIndex = Math.max(Math.min(reached, chapterCount) - 1, 0)
+
+    return {
+      currentTime: this.getNarrationTime(),
+      duration: session.buffer?.duration ?? 0,
+      chapterIndex,
+      chapterCount,
+      itemIndex: session.index,
+      itemCount: session.plan.length,
+      playing: this.narrationPlaying,
+      paused: session.paused,
     }
   }
 
-  playBuffer(url, isInsert = false) {
-    return new Promise((resolve) => {
-      if (!this.context) {
-        resolve()
-        return
+  emitProgress() {
+    this.onProgress?.(this.getNarrationProgress())
+  }
+
+  pauseNarration() {
+    const session = this.session
+    if (!session || session.paused || !session.source) return
+    session.offset = this.getNarrationTime()
+    session.paused = true
+    this.detachCurrentSource()
+    this.setNarrationPlaying(false)
+    this.emitProgress()
+  }
+
+  async resumeNarration() {
+    const session = this.session
+    if (!session || !session.paused) return
+    await this.init()
+    if (this.context?.state === 'suspended' && this.context.resume) {
+      try {
+        await this.context.resume()
+      } catch {
+        // Resume may require a fresh user gesture.
       }
+    }
+    session.paused = false
+    this.setNarrationPlaying(true)
+    await this.startCurrentItem(session.offset)
+  }
 
-      this.loadBuffer(url, this.context).then((buffer) => {
-        if (!buffer || !this.context) {
-          resolve()
-          return
-        }
+  toggleNarration() {
+    const session = this.session
+    if (!session) return
+    if (session.paused) {
+      void this.resumeNarration()
+    } else {
+      this.pauseNarration()
+    }
+  }
 
-        const source = this.context.createBufferSource()
-        source.buffer = buffer
-        source.connect(this.narrationGain)
-        source.onended = () => {
-          this.activeSources = this.activeSources.filter((s) => s !== source)
-          resolve()
-        }
-        this.activeSources.push(source)
+  async seekNarration(seconds) {
+    const session = this.session
+    if (!session) return
 
-        if (isInsert) {
-          const pauseSec = (this.mix.insert.headMs + this.mix.insert.tailMs) / 2000
-          source.start(0)
-          // head/tail silence baked into insert files; no extra pause needed in engine
-          void pauseSec
-        } else {
-          source.start(0)
-        }
-      })
-    })
+    const duration = session.buffer?.duration ?? 0
+    const target = Number.isFinite(seconds) ? seconds : 0
+
+    // Cross into adjacent chapters when skipping past the current item's edges.
+    if (duration && target >= duration && session.index < session.plan.length - 1) {
+      await this.jumpToItem(session.index + 1, 0)
+      return
+    }
+    if (target < 0 && session.index > 0) {
+      await this.jumpToItem(session.index - 1, 0)
+      return
+    }
+
+    const clamped = Math.min(Math.max(target, 0), duration || 0)
+    const wasPlaying = !session.paused && Boolean(session.source)
+    this.detachCurrentSource()
+    session.offset = clamped
+    if (wasPlaying) {
+      await this.startCurrentItem(clamped)
+    } else {
+      this.emitProgress()
+    }
+  }
+
+  skipNarration(deltaSeconds) {
+    return this.seekNarration(this.getNarrationTime() + deltaSeconds)
+  }
+
+  async jumpToItem(index, offset = 0) {
+    const session = this.session
+    if (!session) return
+    const clampedIndex = Math.min(Math.max(index, 0), session.plan.length - 1)
+    const wasPlaying = !session.paused
+    this.detachCurrentSource()
+    session.index = clampedIndex
+    session.offset = offset
+    session.buffer = null
+    if (wasPlaying) {
+      session.paused = false
+      await this.startCurrentItem(offset)
+    } else {
+      session.paused = true
+      this.emitProgress()
+    }
+  }
+
+  async jumpToChapter(chapterIndex) {
+    const session = this.session
+    if (!session) return
+    const narrationIndices = session.plan
+      .map((item, i) => (item.type === 'narration' ? i : -1))
+      .filter((i) => i >= 0)
+    const target = narrationIndices[chapterIndex]
+    if (target === undefined) return
+    await this.jumpToItem(target, 0)
   }
 
   setNarrationPlaying(playing) {
@@ -450,8 +641,10 @@ export class AudioEngine {
   stopNarration() {
     this.playbackGeneration += 1
     this.stopNarrationSources()
+    this.session = null
     this.setNarrationPlaying(false)
     this.clearActivePlayback()
+    this.emitProgress()
   }
 
   stopNarrationSources() {

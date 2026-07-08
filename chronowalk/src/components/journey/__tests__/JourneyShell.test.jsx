@@ -25,6 +25,16 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
       return audioMock.narrationPlaying
     },
     playbackInterrupted: false,
+    progress: {
+      currentTime: 0,
+      duration: 0,
+      chapterIndex: 0,
+      chapterCount: 0,
+      itemIndex: 0,
+      itemCount: 0,
+      playing: false,
+      paused: false,
+    },
     unlock: unlockMock,
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
@@ -34,6 +44,12 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     endTransit: vi.fn(),
     stopNarration: vi.fn(),
     resumePlayback: vi.fn().mockResolvedValue(undefined),
+    pauseNarration: vi.fn(),
+    resumeNarration: vi.fn(),
+    toggleNarration: vi.fn(),
+    seekNarration: vi.fn(),
+    skipNarration: vi.fn(),
+    jumpToChapter: vi.fn(),
     setPath: vi.fn(),
   }),
 }))
@@ -68,7 +84,7 @@ function renderShell() {
   )
 }
 
-const PAUSE_SEQUENCE_INDEX = 9
+const PAUSE_SEQUENCE_INDEX = 10
 
 describe('JourneyShell', () => {
   beforeEach(() => {

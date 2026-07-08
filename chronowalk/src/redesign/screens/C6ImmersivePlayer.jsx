@@ -4,6 +4,14 @@ import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+  const total = Math.floor(seconds)
+  const m = Math.floor(total / 60)
+  const s = total % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
 /**
  * Immersion — dedicated audio player (Figma C6). Separate from threshold & arrival.
  */
@@ -17,18 +25,56 @@ export default function C6ImmersivePlayer({
   photo = colosseumNow,
   transcript = '',
   narrationPlaying = false,
+  currentTime = 0,
+  duration = 0,
   initialTab = 'chapters',
   onTogglePlay,
   onSkipBack,
   onSkipForward,
+  onSeek,
+  onSelectChapter,
   onStoryComplete,
   onBack,
   onOpenThreshold,
   onViewImages,
 }) {
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'chapters')
-  const [progress] = useState(0.35)
+  const [dragProgress, setDragProgress] = useState(null)
+  const seekTrackRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
+
+  const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
+  const progress = dragProgress ?? liveProgress
+  const canSeek = typeof onSeek === 'function' && duration > 0
+  const displayTime = dragProgress != null ? dragProgress * duration : currentTime
+
+  const seekFromClientX = (clientX) => {
+    const el = seekTrackRef.current
+    if (!el) return null
+    const rect = el.getBoundingClientRect()
+    if (rect.width <= 0) return null
+    return Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1)
+  }
+
+  const handleSeekPointerDown = (e) => {
+    if (!canSeek) return
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    const frac = seekFromClientX(e.clientX)
+    if (frac != null) setDragProgress(frac)
+  }
+
+  const handleSeekPointerMove = (e) => {
+    if (!canSeek || dragProgress == null) return
+    const frac = seekFromClientX(e.clientX)
+    if (frac != null) setDragProgress(frac)
+  }
+
+  const handleSeekPointerUp = (e) => {
+    if (!canSeek || dragProgress == null) return
+    const frac = seekFromClientX(e.clientX) ?? dragProgress
+    setDragProgress(null)
+    onSeek(frac * duration)
+  }
 
   useEffect(() => {
     if (initialTab === 'transcript') setTab('transcript')
@@ -124,8 +170,24 @@ export default function C6ImmersivePlayer({
         </h2>
         <p style={{ fontSize: 14, color: T.muted, marginBottom: 22, flexShrink: 0 }}>{title}</p>
 
-        {/* Waveform */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 1.5, height: 44, marginBottom: 8, flexShrink: 0 }}>
+        {/* Waveform / scrubber */}
+        <div
+          ref={seekTrackRef}
+          onPointerDown={handleSeekPointerDown}
+          onPointerMove={handleSeekPointerMove}
+          onPointerUp={handleSeekPointerUp}
+          onPointerCancel={handleSeekPointerUp}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            height: 44,
+            marginBottom: 8,
+            flexShrink: 0,
+            cursor: canSeek ? 'pointer' : 'default',
+            touchAction: 'none',
+          }}
+        >
           {bars.map((h, i) => (
             <div
               key={i}
@@ -133,6 +195,7 @@ export default function C6ImmersivePlayer({
                 flex: 1,
                 height: h,
                 borderRadius: 1,
+                pointerEvents: 'none',
                 background: i / bars.length < progress ? accent : `${T.muted}35`,
                 boxShadow: i / bars.length < progress ? `0 0 4px ${accent}60` : 'none',
               }}
@@ -140,8 +203,12 @@ export default function C6ImmersivePlayer({
           ))}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, flexShrink: 0 }}>
-          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>0:00</span>
-          <span style={{ fontSize: 12, color: T.muted }}>Playing</span>
+          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
+            {formatTime(displayTime)}
+          </span>
+          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
+            {duration > 0 ? formatTime(duration) : narrationPlaying ? 'Playing' : 'Paused'}
+          </span>
         </div>
 
         {/* Controls */}
@@ -277,13 +344,21 @@ export default function C6ImmersivePlayer({
           ) : (
             <div>
               {chapters.map((ch, i) => (
-                <div
+                <button
                   key={ch.n}
+                  type="button"
+                  onClick={() => onSelectChapter?.(i)}
+                  disabled={!onSelectChapter}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: 12,
                     padding: '10px 0',
+                    width: '100%',
+                    textAlign: 'left',
+                    background: 'none',
+                    border: 'none',
+                    cursor: onSelectChapter ? 'pointer' : 'default',
                     opacity: i === chapterIndex ? 1 : 0.55,
                   }}
                 >
@@ -292,12 +367,15 @@ export default function C6ImmersivePlayer({
                       width: 8,
                       height: 8,
                       borderRadius: 4,
+                      flexShrink: 0,
                       background: i === chapterIndex ? accent : T.ink800,
                       boxShadow: i === chapterIndex ? `0 0 8px ${accent}` : 'none',
                     }}
                   />
-                  <span style={{ fontSize: 14, color: i === chapterIndex ? T.warmWhite : T.muted }}>{ch.title}</span>
-                </div>
+                  <span style={{ fontSize: 14, fontFamily: F.body, color: i === chapterIndex ? T.warmWhite : T.muted }}>
+                    {ch.title}
+                  </span>
+                </button>
               ))}
             </div>
           )}

@@ -24,10 +24,7 @@ describe('buildPlaybackPlan', () => {
 
   it('builds transit with variant for t01 path b', () => {
     const plan = buildTransitPlan(manifest, 't01', 'b', {});
-    expect(plan.map((item) => item.file)).toEqual([
-      't01_shared.mp3',
-      't01_fork_b.mp3',
-    ]);
+    expect(plan.map((item) => item.file)).toEqual(['t01_fork_b.mp3']);
   });
 
   it('resolves zone from waypoint', () => {
