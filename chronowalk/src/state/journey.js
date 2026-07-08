@@ -17,6 +17,31 @@ export const JOURNEY_STATES = {
   COMPLETE: 'complete',
 }
 
+/**
+ * The sacred, cinematic moments of the walk. During these the global bottom
+ * navigation and app chrome are hidden so the screen feels immersive rather
+ * than like a normal app view. Single source of truth for both the tab bar and
+ * the chrome context so the two systems can never disagree.
+ */
+export const IMMERSIVE_JOURNEY_STATES = new Set([
+  JOURNEY_STATES.ARRIVED,
+  JOURNEY_STATES.STORY,
+  JOURNEY_STATES.THRESHOLD,
+  JOURNEY_STATES.DAY_COMPLETE,
+  JOURNEY_STATES.COMPLETE,
+])
+
+const IMMERSIVE_JOURNEY_STATES_LOWER = new Set(
+  [...IMMERSIVE_JOURNEY_STATES].map((value) => value.toLowerCase()),
+)
+
+/** True when the journey state should render chrome-free (case-tolerant). */
+export function isImmersiveJourneyState(state) {
+  if (typeof state !== 'string') return false
+  if (IMMERSIVE_JOURNEY_STATES.has(state)) return true
+  return IMMERSIVE_JOURNEY_STATES_LOWER.has(state.toLowerCase())
+}
+
 const defaultContext = () => ({
   pace: JOURNEY_PACE.CLASSIC,
   path: JOURNEY_PATH.A,

@@ -25,6 +25,12 @@ export const F = {
 /** Bottom padding when the fixed shell tab bar is visible. */
 export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(8px, env(safe-area-inset-bottom)))'
 
+/**
+ * Bottom padding for immersive (chrome-free) screens where the tab bar is
+ * hidden — no tab-bar reservation, just breathing room + the safe-area inset.
+ */
+export const SHELL_SAFE_BOTTOM_INSET = 'max(24px, env(safe-area-inset-bottom))'
+
 export const ACT_COLORS = {
   I: T.actI,
   II: T.actII,

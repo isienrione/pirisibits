@@ -39,8 +39,9 @@ import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage
 import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
+import { useV2Journey } from '../hooks/useV2Journey.js'
 import { hasAccess } from '../lib/config.js'
-import { isResumableJourney } from '../state/journey.js'
+import { isImmersiveJourneyState, isResumableJourney } from '../state/journey.js'
 
 function HomeRedirect() {
   if (hasAccess()) {
@@ -58,8 +59,11 @@ function TourDebugBootstrap() {
 
 function AppChrome() {
   const { chromeHidden } = useThresholdChrome()
+  const { state } = useV2Journey()
 
-  if (chromeHidden) return null
+  // Hide app chrome during the threshold press-hold (chromeHidden) and during
+  // every immersive journey moment, keeping both systems in agreement.
+  if (chromeHidden || isImmersiveJourneyState(state)) return null
 
   return (
     <>

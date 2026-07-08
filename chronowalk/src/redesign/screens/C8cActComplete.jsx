@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
+import { T, F, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
 import { capitolineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette } from '../ui/index.js';
@@ -104,7 +104,7 @@ export default function C8cActComplete({
       {/* Content — lower half */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
-        padding: `0 28px ${SHELL_TAB_BAR_INSET}`,
+        padding: `0 28px ${SHELL_SAFE_BOTTOM_INSET}`,
         zIndex: 10,
       }}>
         {/* Stats — DM Sans mono */}
