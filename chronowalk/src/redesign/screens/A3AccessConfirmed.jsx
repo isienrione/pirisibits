@@ -37,7 +37,7 @@ export default function A3AccessConfirmed({ onContinue }) {
   }, []);
 
   return (
-    <div style={{ background: "#000000", height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
+    <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
       {/* Dim photo — satisfies photo-on-every-immersion-screen; brightness kept near-black */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${colosseumNow})`, backgroundSize: "cover", backgroundPosition: "center 20%", filter: "brightness(0.04) saturate(0.3)" }} />
       <Vignette />

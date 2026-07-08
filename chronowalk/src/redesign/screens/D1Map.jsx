@@ -51,7 +51,7 @@ export default function D1Map({ embedded = false }) {
 
   return (
     <div
-      style={{ height:"100%", position:"relative", overflow:"hidden", fontFamily:F.body, background:"#EFE7D2" }}
+      style={{ height:"100%", position:"relative", overflow:"hidden", fontFamily:F.body, background:T.bone }}
       onClick={() => setSelectedPin(null)}
     >
       {/* ──────────────────────────────────────────────────────────────── */}

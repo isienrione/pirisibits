@@ -21,7 +21,7 @@ export default function B1PrismWelcome({ onComplete }) {
 
   return (
     <div
-      style={{ background: "#000000", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", fontFamily: F.body }}
+      style={{ background: T.obsidian, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", fontFamily: F.body }}
       onClick={() => (onComplete ? onComplete() : setCycleKey(k => k + 1))}
     >
       {/* Dim photo — near-black so animation reads clean; satisfies immersion rule */}
