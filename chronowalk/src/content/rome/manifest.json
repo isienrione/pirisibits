@@ -75,9 +75,8 @@
     {
       "id": "encore",
       "numeral": "Encore",
-      "title": "The Long Games & the Long Road",
+      "title": "The Long Road",
       "waypoints": [
-        "enc_circus",
         "w22"
       ]
     }
@@ -129,8 +128,6 @@
         "w20",
         "t16",
         "w21",
-        "enc_circus",
-        "t22",
         "w22"
       ],
       "b": [
@@ -169,8 +166,6 @@
         "w20",
         "t16",
         "w21",
-        "enc_circus",
-        "t22",
         "w22"
       ]
     },
@@ -765,38 +760,6 @@
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       }
     },
-    "enc_circus": {
-      "title": "Circus Maximus floor",
-      "act": "encore",
-      "geofence": {
-        "lat": 41.8859,
-        "lng": 12.4857,
-        "radius_m": 55
-      },
-      "zone": "antiquity",
-      "chapters": [
-        "enc_circus.mp3"
-      ],
-      "inserts": [
-        "ins_window"
-      ],
-      "approachLine": "Walk out onto the grass at the bottom of the valley.",
-      "arrivalLine": "You are where the crowd stood.",
-      "now_image": {
-        "file": "modern-poster.jpg",
-        "source": "commissioned",
-        "license": null,
-        "credit": "ChronoWalk production photography",
-        "source_url": null
-      },
-      "photo": "/waypoints/circus-maximus/modern-poster.jpg",
-      "reconstruction": {
-        "now": "/waypoints/circus-maximus/modern-poster.jpg",
-        "then": "/waypoints/circus-maximus/modern-poster.jpg",
-        "loop": "/waypoints/circus-maximus/ancient-reconstruction.mp4",
-        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
-      }
-    },
     "w22": {
       "title": "Via Appia Antica",
       "act": "encore",
@@ -830,7 +793,6 @@
   "transits": {
     "t01": {
       "after": "w02",
-      "audio": "t01_shared.mp3",
       "zone": "antiquity",
       "variants": {
         "a": "t01_fork_a.mp3",
@@ -889,7 +851,6 @@
     },
     "t14": {
       "after": "w14",
-      "audio": "t14.mp3",
       "zone": "centro",
       "duration_s": 600
     },
@@ -930,17 +891,10 @@
       "zone": "river",
       "duration_s": 40
     },
-    "t22": {
-      "after": "enc_circus",
-      "audio": "t22.mp3",
-      "zone": "antiquity",
-      "duration_s": 120
-    },
     "t03": {
       "after": "w04",
       "zone": "antiquity",
       "variants": {
-        "a": "t03_a.mp3",
         "b": "t03_b.mp3"
       },
       "duration_s": 30
@@ -1034,7 +988,6 @@
     }
   },
   "durations": {
-    "t01_shared.mp3": 70,
     "t01_fork_a.mp3": 70,
     "t01_fork_b.mp3": 70,
     "t02.mp3": 25,
@@ -1045,15 +998,12 @@
     "t08.mp3": 15,
     "t09.mp3": 25,
     "t10.mp3": 30,
-    "t14.mp3": 600,
     "t15.mp3": 30,
     "t12.mp3": 30,
     "t13.mp3": 30,
     "t18.mp3": 25,
     "t19.mp3": 35,
     "t16.mp3": 40,
-    "t22.mp3": 120,
-    "t03_a.mp3": 30,
     "t03_b.mp3": 30
   }
 }

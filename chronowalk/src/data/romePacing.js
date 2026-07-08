@@ -81,10 +81,10 @@ export const ROME_ACTS = [
   {
     id: 'encore',
     numeral: 'Encore',
-    title: 'The Long Games & the Long Road',
-    waypoints: ['enc_circus', 'w22'],
-    entry: 'Circus Maximus floor',
-    promise: 'The window from the hill, paid off on the ground.',
+    title: 'The Long Road',
+    waypoints: ['w22'],
+    entry: 'Via Appia Antica',
+    promise: 'Walk where legions and merchants left Rome.',
   },
 ]
 

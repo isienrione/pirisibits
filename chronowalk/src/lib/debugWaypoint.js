@@ -29,7 +29,6 @@ const SLUG_ALIASES = {
   argentina: 'w20',
   'castel-sant-angelo': 'w21',
   castel: 'w21',
-  'circus-maximus': 'enc_circus',
   'via-appia': 'w22',
   'via-appia-antica': 'w22',
 }

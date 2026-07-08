@@ -9,7 +9,6 @@ export const INSERT_AFTER_CHAPTER = {
   w16: { 0: ['ins_water_trevi'] },
   w17: { 3: ['ins_agrippa'] },
   w19: { 0: ['ins_fire'] },
-  enc_circus: { 0: ['ins_window'] },
 }
 
 export const INSERT_ON_TRANSIT_START = {
