@@ -10,6 +10,8 @@ import {
   getJourneySnapshot,
   JOURNEY_STATES,
 } from '../../../state/journey.js'
+import { loadRomeManifest } from '../../../content/manifest.js'
+import { buildEffectiveSequence } from '../../../content/optionalPromotion.js'
 
 const playWaypointMock = vi.fn().mockResolvedValue(undefined)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
@@ -140,6 +142,22 @@ describe('JourneyShell', () => {
 
     expect(await screen.findByRole('heading', { name: /colosseum exterior/i })).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
+  })
+
+  it('advances from transit when continue walking is tapped', async () => {
+    const manifest = loadRomeManifest()
+    const t04Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t04')
+    expect(t04Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t04Index })
+    renderShell({ variant: 'redesign' })
+
+    const continueBtn = await screen.findByTestId('transit-continue')
+    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+    fireEvent.click(continueBtn)
+
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t04Index + 1)
   })
 
   it('shows path choice at t01 before path is locked', async () => {

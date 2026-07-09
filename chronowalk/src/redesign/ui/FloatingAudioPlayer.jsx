@@ -79,7 +79,7 @@ export default function FloatingAudioPlayer({
         left: 12,
         right: 12,
         bottom: `calc(${bottomInset} + 8px)`,
-        zIndex: 55,
+        zIndex: 65,
         maxWidth: 512,
         margin: '0 auto',
       }}

@@ -223,6 +223,24 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const needsPathChoice =
     step?.type === 'transit' && step?.needsPathChoice && !context.pathLocked && step.id === 't01'
 
+  const seedTransitDock = useCallback(
+    (transitStep) => {
+      if (!manifest || transitStep?.type !== 'transit') return
+      const target = transitStep.targetWaypoint
+      if (!target) return
+      setDockSnapshot({
+        kind: 'transit',
+        id: transitStep.id,
+        title: titleForWaypoint(target),
+        subtitle: 'On the way',
+        accent: accentForWaypoint(target, manifest),
+        duration: audio.progress?.duration ?? 0,
+        transcript: resolveStepTranscript(transitStep, context.path),
+      })
+    },
+    [audio.progress?.duration, context.path, manifest]
+  )
+
   const handleOptionalPromote = useCallback(
     (waypointId) => {
       if (!manifest) return
@@ -408,24 +426,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     geo.accuracy != null && geo.accuracy > POOR_ACCURACY_M
 
   useEffect(() => {
+    if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || needsPathChoice) return
+    if (!manifest || !audioUnlocked) return
+    seedTransitDock(step)
+  }, [audioUnlocked, manifest, needsPathChoice, seedTransitDock, state, step?.id, step?.type])
+
+  useEffect(() => {
     if (!manifest || !step || step.done) return
     if (!audioUnlocked) return
     if (playedStepRef.current === step.id) return
 
     if (state === JOURNEY_STATES.WALKING && step.type === 'transit' && !needsPathChoice) {
       playedStepRef.current = step.id
-      const target = step.targetWaypoint
-      if (target) {
-        setDockSnapshot({
-          kind: 'transit',
-          id: step.id,
-          title: titleForWaypoint(target),
-          subtitle: 'On the way',
-          accent: accentForWaypoint(target, manifest),
-          duration: audio.progress?.duration ?? 0,
-          transcript: resolveStepTranscript(step, context.path),
-        })
-      }
+      seedTransitDock(step)
       void audio.playTransit(step.id)
       return
     }
@@ -442,6 +455,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     context.path,
     needsPathChoice,
     setActiveWaypoint,
+    seedTransitDock,
     state,
     step,
   ])
@@ -458,6 +472,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setPath(path)
     audio.setPath(path)
     playedStepRef.current = null
+    if (step?.type === 'transit') seedTransitDock(step)
     await audio.playTransit('t01')
     playedStepRef.current = 't01'
     setBusy(false)
@@ -511,15 +526,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [continueFromDayComplete])
 
   const handleTransitContinue = useCallback(() => {
-    if (!step?.record || step.type !== 'transit') return
+    const transitId = step?.type === 'transit' ? step.id : null
+    if (!transitId) return
 
     audio.stopNarration()
     audio.endTransit()
-    completeTransit(step.id)
+    completeTransit(transitId)
     playedStepRef.current = null
+    storyStartedRef.current = null
+    arrivedWaypointRef.current = null
     setDockSnapshot(null)
     advanceSequence()
-  }, [advanceSequence, audio, completeTransit, step])
+    track(TRACK_EVENTS.RESUME, { transit_id: transitId, advance: true })
+  }, [advanceSequence, audio, completeTransit, step?.id, step?.type])
 
   const handleResumeFromRest = useCallback(() => {
     if (!step?.record?.scripted_rest || step.type !== 'waypoint') return
@@ -604,10 +623,16 @@ export default function JourneyShell({ variant = 'legacy' }) {
   ])
 
   const dockEnded = Boolean(resolvedDockSnapshot) && !narrationSessionLive
+  const inlineTransitAudio =
+    variant === 'redesign' &&
+    state === JOURNEY_STATES.WALKING &&
+    step?.type === 'transit' &&
+    !needsPathChoice
   const dockActive =
     variant === 'redesign' &&
     audioUnlocked &&
     Boolean(resolvedDockSnapshot) &&
+    !inlineTransitAudio &&
     state !== JOURNEY_STATES.STORY &&
     state !== JOURNEY_STATES.THRESHOLD
   const dockBottomInset = isImmersiveJourneyState(state)
@@ -942,16 +967,32 @@ export default function JourneyShell({ variant = 'legacy' }) {
       const transitNote =
         step.record?.note ??
         'The city between stops has its own stories — listen while Rome rolls past.'
+      const transitTranscript = resolveStepTranscript(step, context.path)
+      const variantKey = context.path === 'b' ? 'b' : 'a'
+      const transitTrackTitle =
+        step.record?.variant_meta?.[variantKey]?.title ??
+        step.record?.title ??
+        null
       return withInterruptionBanner(
         <C2Transit
           {...props}
           note={transitNote}
           progressPct={journeyProgressPct}
-          extraBottomInset={dockActive ? 88 : 0}
           onOpenSettings={openSettings}
           onContinue={handleTransitContinue}
-          continueLabel={audio.narrationPlaying ? 'Skip ahead →' : 'Continue'}
+          continueLabel={audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →'}
           narrationPlaying={audio.narrationPlaying}
+          narrationPaused={Boolean(audio.progress?.paused)}
+          currentTime={audio.progress?.currentTime ?? 0}
+          duration={audio.progress?.duration ?? 0}
+          playbackRate={audio.playbackRate}
+          transcript={transitTranscript}
+          trackTitle={transitTrackTitle}
+          onToggleAudio={() => audio.toggleNarration()}
+          onSkipBack={() => audio.skipNarration(-15)}
+          onSkipForward={() => audio.skipNarration(15)}
+          onSeek={(seconds) => audio.seekNarration(seconds)}
+          onCycleSpeed={handleCycleSpeed}
           map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )

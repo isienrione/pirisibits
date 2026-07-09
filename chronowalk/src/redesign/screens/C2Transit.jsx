@@ -1,21 +1,77 @@
-import { Settings } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Settings, Play, Pause, SkipBack, SkipForward } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
+import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+  const total = Math.floor(seconds)
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`
+}
 
 export default function C2Transit({
   accent = T.actI,
   title = 'The Pantheon',
   note = 'The city between stops has its own stories.',
   progressPct = 35,
-  extraBottomInset = 0,
   onOpenSettings,
   onContinue,
-  continueLabel = 'Continue',
+  continueLabel = 'Continue walking →',
   narrationPlaying = false,
+  narrationPaused = false,
+  currentTime = 0,
+  duration = 0,
+  playbackRate = 1,
+  transcript = '',
+  trackTitle = null,
+  onToggleAudio,
+  onSkipBack,
+  onSkipForward,
+  onSeek,
+  onCycleSpeed,
   map,
 }) {
   const navigate = useNavigate()
+  const [showTranscript, setShowTranscript] = useState(false)
+  const [dragProgress, setDragProgress] = useState(null)
+  const seekTrackRef = useRef(null)
+
+  const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
+  const progress = dragProgress ?? liveProgress
+  const canSeek = typeof onSeek === 'function' && duration > 0
+  const displayTime = dragProgress != null ? dragProgress * duration : currentTime
+  const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
+  const audioLive = narrationPlaying || narrationPaused || duration > 0
+
+  const seekFromClientX = (clientX) => {
+    const el = seekTrackRef.current
+    if (!el) return null
+    const rect = el.getBoundingClientRect()
+    if (rect.width <= 0) return null
+    return Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1)
+  }
+
+  const handleSeekPointerDown = (e) => {
+    if (!canSeek) return
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    const frac = seekFromClientX(e.clientX)
+    if (frac != null) setDragProgress(frac)
+  }
+
+  const handleSeekPointerMove = (e) => {
+    if (!canSeek || dragProgress == null) return
+    const frac = seekFromClientX(e.clientX)
+    if (frac != null) setDragProgress(frac)
+  }
+
+  const handleSeekPointerUp = (e) => {
+    if (!canSeek || dragProgress == null) return
+    const frac = seekFromClientX(e.clientX) ?? dragProgress
+    setDragProgress(null)
+    onSeek(frac * duration)
+  }
 
   return (
     <div
@@ -107,7 +163,7 @@ export default function C2Transit({
               height: 7,
               borderRadius: 3.5,
               background: accent,
-              animation: 'presencePulse 2.5s ease-in-out infinite',
+              animation: narrationPlaying ? 'presencePulse 2.5s ease-in-out infinite' : 'none',
             }}
           />
           <span style={{ fontSize: 11, color: T.ink, letterSpacing: '0.06em' }}>ON ROUTE</span>
@@ -124,7 +180,7 @@ export default function C2Transit({
           marginTop: -28,
         }}
       >
-        <Eyebrow color={accent}>ON THE ROAD</Eyebrow>
+        <Eyebrow color={accent}>WALKING TO</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -135,47 +191,210 @@ export default function C2Transit({
             margin: '8px 0 6px',
           }}
         >
-          Toward {title}
+          {title}
         </h1>
         <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.6, margin: '0 0 4px' }}>
           {note}
         </p>
-        <p style={{ fontSize: 12, color: T.muted, letterSpacing: '0.05em', margin: '10px 0 0' }}>
-          ♪ Listen while you walk
-        </p>
+      </div>
+
+      {/* Inline narration controls — always visible on transit legs */}
+      <div
+        style={{
+          flexShrink: 0,
+          margin: '12px 16px 0',
+          padding: '14px 14px 12px',
+          borderRadius: 14,
+          background: T.obsidian,
+          border: `1px solid ${T.ink800}`,
+          boxShadow: '0 8px 28px rgba(0,0,0,0.18)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent }}>
+              {narrationPlaying ? 'Now playing' : narrationPaused ? 'Paused' : audioLive ? 'Narration' : 'On the way'}
+            </div>
+            <div
+              style={{
+                fontSize: 14,
+                color: T.warmWhite,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                marginTop: 2,
+              }}
+            >
+              {trackTitle ?? `Toward ${title}`}
+            </div>
+          </div>
+          {onToggleAudio ? (
+            <button
+              type="button"
+              onClick={onToggleAudio}
+              aria-label={narrationPlaying ? 'Pause' : 'Play'}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                flexShrink: 0,
+                marginLeft: 10,
+                background: T.ember,
+                border: 'none',
+                cursor: 'pointer',
+                display: 'grid',
+                placeItems: 'center',
+              }}
+            >
+              {narrationPlaying ? (
+                <Pause size={20} fill={T.obsidian} color={T.obsidian} />
+              ) : (
+                <Play size={20} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
+              )}
+            </button>
+          ) : null}
+        </div>
+
+        <div
+          ref={seekTrackRef}
+          onPointerDown={handleSeekPointerDown}
+          onPointerMove={handleSeekPointerMove}
+          onPointerUp={handleSeekPointerUp}
+          onPointerCancel={handleSeekPointerUp}
+          style={{
+            height: 32,
+            display: 'flex',
+            alignItems: 'center',
+            cursor: canSeek ? 'pointer' : 'default',
+            touchAction: 'none',
+            marginBottom: 6,
+          }}
+        >
+          <div style={{ position: 'relative', width: '100%', height: 4, borderRadius: 2, background: `${T.muted}33` }}>
+            <div style={{ position: 'absolute', inset: 0, width: `${progress * 100}%`, borderRadius: 2, background: accent }} />
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+          <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{formatTime(displayTime)}</span>
+          <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
+            {duration > 0 ? `-${formatTime(remaining)}` : narrationPlaying ? 'Playing' : 'Ready'}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {onSkipBack ? (
+              <button
+                type="button"
+                onClick={onSkipBack}
+                aria-label="Back 15 seconds"
+                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
+              >
+                <SkipBack size={20} />
+              </button>
+            ) : null}
+            {onSkipForward ? (
+              <button
+                type="button"
+                onClick={onSkipForward}
+                aria-label="Forward 15 seconds"
+                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
+              >
+                <SkipForward size={20} />
+              </button>
+            ) : null}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {onCycleSpeed ? (
+              <button
+                type="button"
+                onClick={onCycleSpeed}
+                style={{
+                  background: `${T.muted}22`,
+                  border: 'none',
+                  borderRadius: 999,
+                  padding: '4px 12px',
+                  cursor: 'pointer',
+                  color: T.warmWhite,
+                  fontFamily: F.body,
+                  fontSize: 12,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {formatPlaybackSpeed(playbackRate)}
+              </button>
+            ) : null}
+            {transcript ? (
+              <button
+                type="button"
+                onClick={() => setShowTranscript((v) => !v)}
+                style={{
+                  background: 'none',
+                  border: `1px solid ${T.muted}44`,
+                  borderRadius: 999,
+                  padding: '4px 12px',
+                  cursor: 'pointer',
+                  color: T.muted,
+                  fontFamily: F.body,
+                  fontSize: 12,
+                }}
+              >
+                {showTranscript ? 'Hide text' : 'Read instead'}
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        {showTranscript && transcript ? (
+          <div
+            style={{
+              marginTop: 12,
+              maxHeight: 140,
+              overflowY: 'auto',
+              padding: '12px 14px',
+              borderRadius: 10,
+              background: T.ink800,
+              border: `1px solid ${T.muted}22`,
+              fontSize: 13,
+              lineHeight: 1.55,
+              color: T.warmWhite,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {transcript}
+          </div>
+        ) : null}
       </div>
 
       <div
         style={{
-          padding: `14px 20px calc(${SHELL_TAB_BAR_INSET} + ${extraBottomInset}px)`,
+          padding: `14px 20px calc(${SHELL_TAB_BAR_INSET} + 8px)`,
           flexShrink: 0,
           position: 'relative',
-          zIndex: 2,
+          zIndex: 70,
         }}
       >
         {onContinue ? (
           <button
             type="button"
+            data-testid="transit-continue"
             onClick={onContinue}
             style={{
               width: '100%',
               background: T.ember,
               border: 'none',
               borderRadius: 12,
-              padding: '13px 16px',
+              padding: '14px 16px',
               cursor: 'pointer',
               color: T.obsidian,
               fontWeight: 600,
-              fontSize: 14,
+              fontSize: 15,
             }}
           >
             {continueLabel}
           </button>
-        ) : (
-          <p style={{ margin: 0, fontSize: 13, color: T.muted, fontStyle: 'italic', textAlign: 'center' }}>
-            {narrationPlaying ? 'Narration playing — use the player below to pause or skip ahead.' : 'Continue when ready.'}
-          </p>
-        )}
+        ) : null}
       </div>
     </div>
   )
