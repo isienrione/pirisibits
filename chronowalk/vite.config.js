@@ -88,6 +88,8 @@ export default defineConfig({
         // Tie precache identity to the deploy commit so stale walking-screen chunks
         // are replaced after branch deploys (figma → production).
         cacheId: `chronowalk-${resolveBuildId()}`,
+        skipWaiting: true,
+        clientsClaim: true,
         cleanupOutdatedCaches: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],

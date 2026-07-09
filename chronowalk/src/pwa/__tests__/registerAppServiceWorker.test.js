@@ -1,7 +1,22 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { registerAppServiceWorker } from '../registerAppServiceWorker'
 
+vi.mock('../pwaCacheUtils.js', () => ({
+  broadcastForceReload: vi.fn(),
+  hardReload: vi.fn(),
+  isChromeBrowser: vi.fn(() => false),
+  listenForForceReload: vi.fn(() => () => {}),
+  nudgeWaitingServiceWorker: vi.fn(async () => {}),
+  purgeAllPwaCaches: vi.fn(async () => {}),
+  showUpdatingOverlay: vi.fn(),
+  unregisterAllServiceWorkers: vi.fn(async () => {}),
+}))
+
 describe('registerAppServiceWorker', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('does not register a service worker outside production', () => {
     const registerSW = vi.fn()
     const controller = registerAppServiceWorker(registerSW, { isProd: false })
