@@ -78,6 +78,22 @@ export const getSingleWaypointId = () => {
   return params.get('singleWaypoint') || null
 }
 
+/**
+ * Substitute Rome geofences with local test coordinates (e.g. Santiago for field QA).
+ * ?testRegion=chile or VITE_TEST_LOCATION_REGION=chile
+ */
+export const getTestLocationRegion = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('testRegion')
+    if (param) return String(param).trim().toLowerCase()
+  }
+
+  const fromEnv = String(import.meta.env.VITE_TEST_LOCATION_REGION ?? '').trim().toLowerCase()
+  return fromEnv || null
+}
+
+export const isChileTestLocations = () => getTestLocationRegion() === 'chile'
+
 /** Clear saved tour progress when ?resetTour=true */
 export const shouldResetTour = () => {
   if (typeof window === 'undefined') return false

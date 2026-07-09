@@ -1,6 +1,7 @@
 import rawManifest from './rome/manifest.json'
 import { parseRomeManifest } from './romeManifestZod.schema.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
+import { applyGeofenceOverride } from '../data/testLocationOverrides.js'
 
 let cachedManifest = null
 
@@ -39,10 +40,18 @@ function normalizeManifest(manifest) {
   }
 }
 
+function withTestGeofence(waypointId, waypoint) {
+  if (!waypoint?.geofence) return waypoint
+  const geofence = applyGeofenceOverride(waypointId, waypoint.geofence)
+  if (geofence === waypoint.geofence) return waypoint
+  return { ...waypoint, geofence }
+}
+
 export function getWaypoint(manifest, waypointId) {
   const waypoint = manifest.waypointsById?.[waypointId] ?? manifest.waypoints?.find((w) => w.id === waypointId)
   if (!waypoint) return null
-  return waypoint.id ? waypoint : { id: waypointId, ...waypoint }
+  const resolved = waypoint.id ? waypoint : { id: waypointId, ...waypoint }
+  return withTestGeofence(waypointId, resolved)
 }
 
 export function getWaypointByIndex(manifest, index) {
