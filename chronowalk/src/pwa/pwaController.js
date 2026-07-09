@@ -1,4 +1,5 @@
 import { registerSW } from 'virtual:pwa-register'
+import { ensureFreshBuild } from './ensureFreshBuild.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
 
 function syncAppHeight() {
@@ -12,4 +13,8 @@ if (typeof window !== 'undefined') {
   window.visualViewport?.addEventListener('resize', syncAppHeight)
 }
 
-export const pwaController = registerAppServiceWorker(registerSW)
+const isMigratingBuild = ensureFreshBuild()
+
+export const pwaController = isMigratingBuild
+  ? registerAppServiceWorker(registerSW, { isProd: false })
+  : registerAppServiceWorker(registerSW)

@@ -1,64 +1,65 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ensureFreshBuild } from '../ensureFreshBuild'
+import {
+  BUILD_RELOAD_GUARD_KEY,
+  BUILD_STORAGE_KEY,
+  ensureFreshBuild,
+} from '../ensureFreshBuild.js'
 
 describe('ensureFreshBuild', () => {
   beforeEach(() => {
-    vi.stubGlobal('__APP_BUILD_ID__', 'abc123')
     localStorage.clear()
     sessionStorage.clear()
-    vi.stubGlobal('fetch', vi.fn())
   })
 
-  afterEach(() => {
-    vi.unstubAllGlobals()
-    vi.unstubAllEnvs()
-    vi.restoreAllMocks()
+  it('stores the build id on first visit', () => {
+    expect(ensureFreshBuild('build-new')).toBe(false)
+    expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')
   })
 
-  it('skips migration outside production', async () => {
-    vi.stubEnv('PROD', false)
-    const result = await ensureFreshBuild({ buildId: 'abc123' })
-    expect(result).toEqual({ migrating: false })
-    expect(fetch).not.toHaveBeenCalled()
+  it('does nothing when the stored build matches', () => {
+    localStorage.setItem(BUILD_STORAGE_KEY, 'build-new')
+    expect(ensureFreshBuild('build-new')).toBe(false)
   })
 
-  it('migrates when the stored build id does not match', async () => {
-    vi.stubEnv('PROD', true)
-    localStorage.setItem('cw-app-build', 'old-build')
+  it('clears caches and reloads when the build changes', async () => {
+    localStorage.setItem(BUILD_STORAGE_KEY, 'build-old')
 
-    const replace = vi.fn()
-    vi.stubGlobal('location', { ...window.location, replace })
-    vi.stubGlobal('navigator', {})
-
-    const result = await ensureFreshBuild({ buildId: 'abc123' })
-
-    expect(result).toEqual({ migrating: true })
-    expect(sessionStorage.getItem('cw-build-migration')).toBe('abc123')
-    expect(replace).toHaveBeenCalled()
-  })
-
-  it('does not migrate when build id and service worker marker match', async () => {
-    vi.stubEnv('PROD', true)
-    localStorage.setItem('cw-app-build', 'abc123')
-
-    fetch.mockResolvedValue({
-      ok: true,
-      text: async () => 'self.__WB_MANIFEST; chronowalk-abc123',
+    const cacheDelete = vi.fn().mockResolvedValue(true)
+    vi.stubGlobal('caches', {
+      keys: vi.fn().mockResolvedValue(['workbox-precache']),
+      delete: cacheDelete,
     })
 
+    const unregister = vi.fn().mockResolvedValue(true)
+    const getRegistrations = vi.fn().mockResolvedValue([{ unregister }])
     vi.stubGlobal('navigator', {
       serviceWorker: {
-        ready: Promise.resolve(),
-        getRegistration: vi.fn().mockResolvedValue({
-          active: { scriptURL: 'https://chronowalk.com/sw.js' },
-          update: vi.fn(),
-        }),
+        getRegistrations,
       },
     })
 
-    const result = await ensureFreshBuild({ buildId: 'abc123' })
+    const reload = vi.fn()
+    vi.stubGlobal('location', { reload: reload })
 
-    expect(result).toEqual({ migrating: false })
-    expect(localStorage.getItem('cw-sw-script-url')).toBe('https://chronowalk.com/sw.js')
+    expect(ensureFreshBuild('build-new')).toBe(true)
+
+    await vi.waitFor(() => {
+      expect(reload).toHaveBeenCalled()
+    })
+
+    expect(cacheDelete).toHaveBeenCalledWith('workbox-precache')
+    expect(getRegistrations).toHaveBeenCalled()
+    expect(unregister).toHaveBeenCalled()
+    expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')
+    expect(sessionStorage.getItem(BUILD_RELOAD_GUARD_KEY)).toBe('1')
+  })
+
+  it('avoids a second migration reload in the same session', () => {
+    sessionStorage.setItem(BUILD_RELOAD_GUARD_KEY, '1')
+    localStorage.setItem(BUILD_STORAGE_KEY, 'build-old')
+
+    expect(ensureFreshBuild('build-new')).toBe(false)
+    expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')
+    expect(sessionStorage.getItem(BUILD_RELOAD_GUARD_KEY)).toBeNull()
   })
 })

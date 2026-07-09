@@ -85,27 +85,24 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
       return () => listeners.delete(listener)
     },
     async checkForAppUpdate() {
+      showUpdatingOverlay('Refreshing…')
+
+      await purgeAllPwaCaches()
+      await unregisterAllServiceWorkers()
+
       if (!('serviceWorker' in navigator)) {
         scheduleReload()
         return
       }
 
-      showUpdatingOverlay('Refreshing…')
-
-      const registration = await navigator.serviceWorker.ready
-        .then(() => navigator.serviceWorker.getRegistration())
-        .catch(() => navigator.serviceWorker.getRegistration())
-
-      await nudgeWaitingServiceWorker(registration)
-
       if (isChromeBrowser()) {
         broadcastForceReload()
-        await purgeAllPwaCaches()
-        await unregisterAllServiceWorkers()
         scheduleReload()
         return
       }
 
+      const registration = await navigator.serviceWorker.getRegistration()
+      await nudgeWaitingServiceWorker(registration)
       if (registration) await registration.update()
       activateUpdate()
     },
