@@ -14,6 +14,7 @@ export default function KaraokeTranscript({
   fontSize = 18,
   variant = 'dark',
   fullHeight = false,
+  immersive = false,
   testId = 'karaoke-transcript',
 }) {
   const scrollRef = useRef(null)
@@ -25,7 +26,7 @@ export default function KaraokeTranscript({
   )
 
   const activeIndex = resolveActiveWordIndex(wordCount, currentTime, duration)
-  const syncActive = playing && duration > 0 && activeIndex >= 0
+  const syncActive = duration > 0 && activeIndex >= 0 && (playing || currentTime > 0)
 
   useEffect(() => {
     if (!syncActive || !activeWordRef.current || !scrollRef.current) return
@@ -33,8 +34,12 @@ export default function KaraokeTranscript({
   }, [activeIndex, syncActive])
 
   const isBone = variant === 'bone'
-  const shellBg = isBone ? 'rgba(255,255,255,0.92)' : `${T.ink800}ee`
-  const shellBorder = isBone ? `${T.ink800}22` : `${T.muted}22`
+  const shellBg = immersive
+    ? 'transparent'
+    : isBone
+      ? 'rgba(255,255,255,0.92)'
+      : `${T.ink800}ee`
+  const shellBorder = immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
   const defaultInk = isBone ? T.ink : T.warmWhite
   const spokenInk = isBone ? `${T.ink}88` : `${T.warmWhite}66`
   const upcomingInk = isBone ? `${T.ink}44` : `${T.warmWhite}38`
@@ -48,11 +53,11 @@ export default function KaraokeTranscript({
       data-testid={testId}
       style={{
         background: shellBg,
-        border: `1px solid ${shellBorder}`,
-        borderRadius: 16,
-        padding: fullHeight ? '22px 20px 28px' : '16px 16px 18px',
-        flex: fullHeight ? 1 : undefined,
-        minHeight: fullHeight ? 0 : undefined,
+        border: immersive ? 'none' : `1px solid ${shellBorder}`,
+        borderRadius: immersive ? 0 : 16,
+        padding: immersive ? '4px 2px 8px' : fullHeight ? '22px 20px 28px' : '16px 16px 18px',
+        flex: fullHeight || immersive ? 1 : undefined,
+        minHeight: fullHeight || immersive ? 0 : undefined,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',

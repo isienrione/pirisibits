@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
@@ -46,6 +46,11 @@ export default function FloatingAudioPlayer({
   const displayTime = dragProgress != null ? dragProgress * duration : currentTime
   const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
   const handleMain = ended ? onReplay : onToggle
+  const reading = Boolean(showTranscript && transcript)
+
+  useEffect(() => {
+    if (showTranscript) setExpanded(true)
+  }, [showTranscript])
 
   const seekFromClientX = (clientX) => {
     const el = trackRef.current
@@ -80,9 +85,13 @@ export default function FloatingAudioPlayer({
         left: 12,
         right: 12,
         bottom: `calc(${bottomInset} + 8px)`,
+        top: reading ? 'max(72px, calc(env(safe-area-inset-top) + 56px))' : undefined,
         zIndex: 65,
         maxWidth: 512,
         margin: '0 auto',
+        display: reading ? 'flex' : 'block',
+        flexDirection: reading ? 'column' : undefined,
+        justifyContent: reading ? 'flex-end' : undefined,
       }}
     >
       <div
@@ -94,6 +103,9 @@ export default function FloatingAudioPlayer({
           backdropFilter: 'blur(14px)',
           overflow: 'hidden',
           fontFamily: F.body,
+          display: reading ? 'flex' : 'block',
+          flexDirection: reading ? 'column' : undefined,
+          maxHeight: reading ? '100%' : undefined,
         }}
       >
         {/* Live progress hairline */}
@@ -182,7 +194,33 @@ export default function FloatingAudioPlayer({
 
         {/* Expanded controls */}
         {expanded ? (
-          <div style={{ padding: '0 14px 14px' }}>
+          <div
+            style={{
+              padding: reading ? '0 12px 12px' : '0 14px 14px',
+              display: 'flex',
+              flexDirection: 'column',
+              flex: reading ? 1 : undefined,
+              minHeight: reading ? 0 : undefined,
+              overflow: reading ? 'hidden' : undefined,
+            }}
+          >
+            {reading && transcript ? (
+              <div style={{ flex: 1, minHeight: 0, marginBottom: 10, display: 'flex' }}>
+                <KaraokeTranscript
+                  transcript={transcript}
+                  currentTime={currentTime}
+                  duration={duration}
+                  playing={narrationPlaying}
+                  accent={accent}
+                  fontSize={17}
+                  fullHeight
+                  immersive
+                  testId="dock-karaoke-transcript"
+                />
+              </div>
+            ) : null}
+
+            <div style={{ flexShrink: 0 }}>
             <div
               ref={trackRef}
               onPointerDown={onPointerDown}
@@ -380,7 +418,7 @@ export default function FloatingAudioPlayer({
               ) : null}
             </div>
 
-            {showTranscript && transcript ? (
+            {!reading && showTranscript && transcript ? (
               <KaraokeTranscript
                 transcript={transcript}
                 currentTime={currentTime}
@@ -391,6 +429,7 @@ export default function FloatingAudioPlayer({
                 testId="dock-karaoke-transcript"
               />
             ) : null}
+            </div>
           </div>
         ) : null}
       </div>

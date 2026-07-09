@@ -48,6 +48,7 @@ export default function C2Transit({
   const displayTime = dragProgress != null ? dragProgress * duration : currentTime
   const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
   const audioLive = narrationPlaying || narrationPaused || duration > 0
+  const reading = Boolean(showTranscript && transcript)
 
   const seekFromClientX = (clientX) => {
     const el = seekTrackRef.current
@@ -109,7 +110,8 @@ export default function C2Transit({
         />
       </div>
 
-      {/* Map — capped height so audio + continue are never clipped below the fold */}
+      {/* Map — hidden in read mode so lyrics fill the screen */}
+      {!reading ? (
       <div
         style={{
           flexShrink: 0,
@@ -172,6 +174,7 @@ export default function C2Transit({
           <span style={{ fontSize: 11, color: T.ink, letterSpacing: '0.06em' }}>ON ROUTE</span>
         </div>
       </div>
+      ) : null}
 
       <div
         style={{
@@ -179,22 +182,23 @@ export default function C2Transit({
           minHeight: 0,
           overflow: 'hidden',
           flexShrink: 1,
-          padding: showTranscript && transcript ? '10px 16px 0' : '14px 20px 0',
+          padding: reading ? '8px 12px 0' : showTranscript && transcript ? '10px 16px 0' : '14px 20px 0',
           background: T.bone,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
-        {showTranscript && transcript ? (
+        {reading ? (
           <KaraokeTranscript
             transcript={transcript}
             currentTime={currentTime}
             duration={duration}
             playing={narrationPlaying}
             accent={accent}
-            fontSize={17}
+            fontSize={19}
             variant="bone"
             fullHeight
+            immersive
             testId="transit-transcript"
           />
         ) : (
@@ -231,13 +235,14 @@ export default function C2Transit({
         <div
           data-testid="transit-audio-panel"
           style={{
-            margin: '10px 16px 0',
-            padding: '14px 14px 12px',
+            margin: reading ? '8px 12px 0' : '10px 16px 0',
+            padding: reading ? '10px 12px' : '14px 14px 12px',
             borderRadius: 14,
             background: T.obsidian,
             border: `1px solid ${T.ink800}`,
           }}
         >
+          {!reading ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent }}>
@@ -282,6 +287,7 @@ export default function C2Transit({
               </button>
             ) : null}
           </div>
+          ) : null}
 
           <div
             ref={seekTrackRef}
@@ -311,7 +317,31 @@ export default function C2Transit({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: reading ? 12 : 16 }}>
+              {reading && onToggleAudio ? (
+                <button
+                  type="button"
+                  onClick={onToggleAudio}
+                  aria-label={narrationPlaying ? 'Pause' : 'Play'}
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    flexShrink: 0,
+                    background: T.ember,
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'grid',
+                    placeItems: 'center',
+                  }}
+                >
+                  {narrationPlaying ? (
+                    <Pause size={18} fill={T.obsidian} color={T.obsidian} />
+                  ) : (
+                    <Play size={18} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
+                  )}
+                </button>
+              ) : null}
               {onSkipBack ? (
                 <button type="button" onClick={onSkipBack} aria-label="Back 15 seconds" style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}>
                   <SkipBack size={20} />

@@ -83,7 +83,10 @@ export function resolveActiveWordIndex(wordCount, currentTime, duration) {
   const progress = Math.min(Math.max(currentTime / duration, 0), 1)
   if (progress >= 1) return wordCount - 1
 
-  return Math.min(wordCount - 1, Math.floor(progress * wordCount))
+  // Proportional sync runs slightly ahead of speech — lag one word so highlight
+  // matches what the ear is hearing, not what is about to be said.
+  const projected = Math.floor(progress * wordCount)
+  return Math.min(wordCount - 1, Math.max(0, projected - 1))
 }
 
 /**

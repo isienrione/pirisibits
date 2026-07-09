@@ -34,8 +34,10 @@ describe('transcriptContent', () => {
     expect(wordCount).toBe(4)
     expect(paragraphs).toHaveLength(2)
     expect(resolveActiveWordIndex(wordCount, 0, 10)).toBe(0)
-    expect(resolveActiveWordIndex(wordCount, 2.5, 10)).toBe(1)
-    expect(resolveActiveWordIndex(wordCount, 9.9, 10)).toBe(3)
+    expect(resolveActiveWordIndex(wordCount, 2.5, 10)).toBe(0)
+    expect(resolveActiveWordIndex(wordCount, 5, 10)).toBe(1)
+    expect(resolveActiveWordIndex(wordCount, 9.9, 10)).toBe(2)
+    expect(resolveActiveWordIndex(wordCount, 10, 10)).toBe(3)
   })
 })
 
