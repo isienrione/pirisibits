@@ -118,6 +118,97 @@ export default function C6ImmersivePlayer({
     title: chapterTitles?.[i] ?? (i === chapterIndex ? chapterTitle : `Chapter ${i + 1}`),
   }))
 
+  const openThreshold = onOpenThreshold ?? onViewImages
+  const showReconstructionActions = hasReconstruction && Boolean(openThreshold)
+  const showContinue = Boolean(onStoryComplete) && (storyEnded || !hasReconstruction)
+
+  const footerContent = showReconstructionActions ? (
+    <div style={{ display: 'grid', gap: 10 }}>
+      <button
+        type="button"
+        data-testid="story-open-threshold"
+        onClick={openThreshold}
+        style={{
+          width: '100%',
+          padding: '15px',
+          borderRadius: 12,
+          border: 'none',
+          background: T.ember,
+          color: T.obsidian,
+          fontFamily: F.body,
+          fontSize: 15,
+          fontWeight: 600,
+          cursor: 'pointer',
+          boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+        }}
+      >
+        {storyEnded ? 'When you’re ready, cross into the past →' : 'View now & then →'}
+      </button>
+      {showContinue ? (
+        <button
+          type="button"
+          data-testid="story-continue"
+          onClick={onStoryComplete}
+          style={{
+            width: '100%',
+            padding: '13px',
+            borderRadius: 12,
+            border: `1px solid ${T.muted}44`,
+            background: 'transparent',
+            color: T.warmWhite,
+            fontFamily: F.body,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: 'pointer',
+          }}
+        >
+          Continue walking →
+        </button>
+      ) : onStoryComplete ? (
+        <button
+          type="button"
+          data-testid="story-continue"
+          onClick={onStoryComplete}
+          style={{
+            width: '100%',
+            padding: '13px',
+            borderRadius: 12,
+            border: `1px solid ${T.muted}44`,
+            background: 'transparent',
+            color: T.warmWhite,
+            fontFamily: F.body,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: 'pointer',
+          }}
+        >
+          Done listening — continue walking →
+        </button>
+      ) : null}
+    </div>
+  ) : showContinue ? (
+    <button
+      type="button"
+      data-testid="story-continue"
+      onClick={onStoryComplete}
+      style={{
+        width: '100%',
+        padding: '15px',
+        borderRadius: 12,
+        border: 'none',
+        background: T.ember,
+        color: T.obsidian,
+        fontFamily: F.body,
+        fontSize: 15,
+        fontWeight: 600,
+        cursor: 'pointer',
+        boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+      }}
+    >
+      Continue walking →
+    </button>
+  ) : null
+
   return (
     <div
       style={{
@@ -128,6 +219,7 @@ export default function C6ImmersivePlayer({
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
+        minHeight: 0,
       }}
     >
       <div
@@ -149,7 +241,7 @@ export default function C6ImmersivePlayer({
           zIndex: 10,
           display: 'flex',
           flexDirection: 'column',
-          height: '100%',
+          flex: 1,
           minHeight: 0,
           padding: `max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 0`,
         }}
@@ -375,7 +467,7 @@ export default function C6ImmersivePlayer({
           ))}
         </div>
 
-        <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', scrollbarWidth: 'none', marginBottom: 12, paddingBottom: 8 }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', scrollbarWidth: 'none', paddingBottom: 8 }}>
           {tab === 'transcript' ? (
             <div
               style={{
@@ -435,81 +527,24 @@ export default function C6ImmersivePlayer({
             </div>
           )}
         </div>
+      </div>
 
+      {footerContent ? (
         <div
+          data-testid="story-footer"
           style={{
+            position: 'relative',
+            zIndex: 12,
             flexShrink: 0,
-            paddingTop: 8,
-            paddingBottom: `max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+            padding: `10px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
             borderTop: `1px solid ${T.ink800}`,
-            background: 'linear-gradient(to top, rgba(22,19,15,0.98) 70%, transparent)',
+            background: 'rgba(22,19,15,0.98)',
+            boxShadow: '0 -8px 24px rgba(0,0,0,0.35)',
           }}
         >
-        {storyEnded && hasReconstruction && onOpenThreshold ? (
-          <div style={{ display: 'grid', gap: 10 }}>
-            <button
-              type="button"
-              onClick={onOpenThreshold}
-              style={{
-                width: '100%',
-                padding: '15px',
-                borderRadius: 12,
-                border: 'none',
-                background: T.ember,
-                color: T.obsidian,
-                fontFamily: F.body,
-                fontSize: 15,
-                fontWeight: 600,
-                cursor: 'pointer',
-                boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-              }}
-            >
-              When you’re ready, cross into the past →
-            </button>
-            {onStoryComplete ? (
-              <button
-                type="button"
-                onClick={onStoryComplete}
-                style={{
-                  width: '100%',
-                  padding: '13px',
-                  borderRadius: 12,
-                  border: `1px solid ${T.muted}44`,
-                  background: 'transparent',
-                  color: T.warmWhite,
-                  fontFamily: F.body,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                Continue walking →
-              </button>
-            ) : null}
-          </div>
-        ) : storyEnded && onStoryComplete ? (
-          <button
-            type="button"
-            onClick={onStoryComplete}
-            style={{
-              width: '100%',
-              padding: '15px',
-              borderRadius: 12,
-              border: 'none',
-              background: T.ember,
-              color: T.obsidian,
-              fontFamily: F.body,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-            }}
-          >
-            Continue walking →
-          </button>
-        ) : null}
+          {footerContent}
         </div>
-      </div>
+      ) : null}
     </div>
   )
 }

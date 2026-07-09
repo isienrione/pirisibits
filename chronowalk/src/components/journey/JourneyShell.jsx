@@ -285,6 +285,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   // Reset the "story finished" reveal whenever we leave the story or change stop.
   useEffect(() => {
+    thresholdAutoOpenedRef.current = null
     if (state !== JOURNEY_STATES.STORY) {
       setStoryEnded(false)
       return
@@ -315,8 +316,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (step.record?.scripted_rest || storyEnded) return
     const duration = audio.progress?.duration ?? 0
     const current = audio.progress?.currentTime ?? 0
-    if (duration <= 0 || audio.narrationPlaying) return
-    if (current < duration * 0.9) return
+    if (audio.narrationPlaying) return
+    const nearEnd = duration > 0 ? current >= duration * 0.85 : current >= 30
+    if (!nearEnd) return
     if (storyCompleteTrackedRef.current === step.id) {
       setStoryEnded(true)
       return
@@ -346,7 +348,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const timer = setTimeout(() => {
       audio.stopNarration()
       transition(JOURNEY_STATES.THRESHOLD)
-    }, 700)
+    }, 1200)
     return () => clearTimeout(timer)
   }, [
     audio,

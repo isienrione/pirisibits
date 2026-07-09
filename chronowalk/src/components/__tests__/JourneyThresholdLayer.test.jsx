@@ -49,9 +49,9 @@ describe('JourneyThresholdLayer', () => {
 
     await crossThreshold()
 
-    expect(await screen.findByRole('button', { name: /continue walking/i })).toBeInTheDocument()
+    expect(await screen.findByTestId('threshold-continue')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: /continue walking/i }))
+    fireEvent.click(screen.getByTestId('threshold-continue'))
 
     const snapshot = getJourneySnapshot()
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
@@ -71,7 +71,24 @@ describe('JourneyThresholdLayer', () => {
 
     await crossThreshold()
 
-    expect(await screen.findByRole('button', { name: /continue walking/i })).toBeInTheDocument()
+    expect(await screen.findByTestId('threshold-continue')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /back to story/i })).not.toBeInTheDocument()
+  })
+
+  it('allows skipping the hold interaction to continue walking', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
+
+    render(
+      <ThresholdChromeProvider>
+        <JourneyThresholdLayer />
+      </ThresholdChromeProvider>
+    )
+
+    fireEvent.click(await screen.findByTestId('threshold-skip'))
+
+    const snapshot = getJourneySnapshot()
+    expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snapshot.context.completedWaypointIds).toContain('w01')
   })
 })

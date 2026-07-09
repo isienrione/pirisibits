@@ -145,6 +145,16 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
   })
 
+  it('shows colosseum threshold and continue actions during story', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('story-footer')).toBeInTheDocument()
+    expect(screen.getByTestId('story-open-threshold')).toBeInTheDocument()
+    expect(screen.getByTestId('story-continue')).toBeInTheDocument()
+  })
+
   it('advances from transit when continue walking is tapped', async () => {
     const manifest = loadRomeManifest()
     const t04Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t04')
