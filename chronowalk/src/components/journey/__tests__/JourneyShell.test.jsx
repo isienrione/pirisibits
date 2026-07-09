@@ -213,11 +213,45 @@ describe('JourneyShell', () => {
   it('shows path choice at t01 before path is locked', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 2, pathLocked: false })
-    renderShell()
+    renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByRole('heading', { name: /two doors into ancient rome/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /through the forum gate/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /up the palatine/i })).toBeInTheDocument()
+    expect(await screen.findByTestId('path-choice-screen')).toBeInTheDocument()
+    expect(screen.getByTestId('path-choice-a')).toBeInTheDocument()
+    expect(screen.getByTestId('path-choice-b')).toBeInTheDocument()
+    expect(playTransitMock).not.toHaveBeenCalled()
+  })
+
+  it('plays chosen path audio when t01 path is selected', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 2, pathLocked: false })
+    renderShell({ variant: 'redesign' })
+
+    fireEvent.click(await screen.findByTestId('path-choice-b'))
+    expect(playTransitMock).toHaveBeenCalledWith('t01')
+    expect(getJourneySnapshot().context.path).toBe('b')
+    expect(getJourneySnapshot().context.pathLocked).toBe(true)
+  })
+
+  it('does not auto-play t01 after w02 threshold until path is chosen', async () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const w02Index = seq.indexOf('w02')
+    const t01Index = seq.indexOf('t01')
+    expect(w02Index).toBeGreaterThanOrEqual(0)
+    expect(seq[w02Index + 1]).toBe('t01')
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: false })
+    transitionJourney(JOURNEY_STATES.THRESHOLD, {
+      currentSequenceIndex: w02Index,
+      completedWaypointIds: seq.slice(0, w02Index).filter((id) => id.startsWith('w')),
+    })
+    completeStoryAfterThreshold('w02')
+    playTransitMock.mockClear()
+
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('path-choice-screen')).toBeInTheDocument()
+    expect(playTransitMock).not.toHaveBeenCalled()
   })
 
   it('moves from arrival to story', async () => {

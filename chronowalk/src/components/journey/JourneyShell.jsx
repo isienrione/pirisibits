@@ -227,6 +227,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const needsPathChoice =
     step?.type === 'transit' && step?.needsPathChoice && !context.pathLocked && step.id === 't01'
 
+  const inlineTransitAudio =
+    variant === 'redesign' &&
+    state === JOURNEY_STATES.WALKING &&
+    step?.type === 'transit' &&
+    !needsPathChoice
+
   const seedTransitDock = useCallback(
     (transitStep) => {
       if (!manifest || transitStep?.type !== 'transit') return
@@ -246,16 +252,26 @@ export default function JourneyShell({ variant = 'legacy' }) {
   )
 
   // After threshold (e.g. w07), the next step is often a transit leg (t06 → Vesta).
+  // Never auto-play t01 — travelers must pick Path A or B first.
   useEffect(() => {
     if (!justLeftThresholdRef.current) return
     if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || !step.id) return
+    if (needsPathChoice) return
     if (!audioUnlocked) return
 
     justLeftThresholdRef.current = false
     playedStepRef.current = step.id
     seedTransitDock(step)
     void audio.playTransit(step.id)
-  }, [audio, audioUnlocked, seedTransitDock, state, step?.id, step?.type])
+  }, [audio, audioUnlocked, needsPathChoice, seedTransitDock, state, step?.id, step?.type])
+
+  // Path fork is silent until the traveler confirms A or B.
+  useEffect(() => {
+    if (!needsPathChoice) return
+    audio.stopNarration()
+    playedStepRef.current = null
+    setDockSnapshot(null)
+  }, [audio, needsPathChoice, step?.id])
 
   const handleOptionalPromote = useCallback(
     (waypointId) => {
@@ -539,9 +555,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handlePathChoice = async (path) => {
     setBusy(true)
+    audio.stopNarration()
     setPath(path)
     audio.setPath(path)
     playedStepRef.current = null
+    setDockSnapshot(null)
     if (step?.type === 'transit') seedTransitDock(step)
     await audio.playTransit('t01')
     playedStepRef.current = 't01'
@@ -697,6 +715,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     variant === 'redesign' &&
     audioUnlocked &&
     Boolean(resolvedDockSnapshot) &&
+    !inlineTransitAudio &&
+    !needsPathChoice &&
     state !== JOURNEY_STATES.STORY &&
     state !== JOURNEY_STATES.THRESHOLD
   const dockBottomInset = isImmersiveJourneyState(state)
