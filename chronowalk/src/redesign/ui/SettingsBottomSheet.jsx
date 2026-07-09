@@ -9,6 +9,7 @@ import {
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { SETTINGS_LINKS } from '../../content/launchSettings.js'
+import { WALKING_UI_REVISION } from '../../content/walkingUiRevision.js'
 import { pwaController } from '../../pwa/pwaController.js'
 
 function Hairline() {
@@ -288,7 +289,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
             {typeof __APP_BUILD_ID__ !== 'undefined' ? (
               <>
                 <br />
-                Build {__APP_BUILD_ID__}
+                Build {__APP_BUILD_ID__} · Walking UI {WALKING_UI_REVISION}
               </>
             ) : null}
           </p>

@@ -10,6 +10,9 @@ import {
   sanitizeWalkDistanceM,
 } from '../../content/journeyProgress.js'
 
+/** Baked into this chunk — must bump when layout changes (see walkingUiRevision.js). */
+export const WALKING_UI_REVISION = 5
+
 const WALK_BG = T.obsidian
 const WALK_INK = T.bone
 const WALK_MUTED = `${T.bone}88`
@@ -195,6 +198,7 @@ export default function C2Walking({
   return (
     <div
       className="cw-grain cw-walking-dark"
+      data-walking-ui-rev={WALKING_UI_REVISION}
       style={{
         background: WALK_BG,
         height: '100%',

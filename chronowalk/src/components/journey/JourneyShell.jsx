@@ -28,7 +28,9 @@ import { chapterAtIndex, chapterTitle, combinedChapterTranscript } from '../../c
 import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
 import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
-import C2Walking from '../../redesign/screens/C2Walking.jsx'
+import C2Walking, { WALKING_UI_REVISION as loadedWalkingUiRevision } from '../../redesign/screens/C2Walking.jsx'
+import { WALKING_UI_REVISION as requiredWalkingUiRevision } from '../../content/walkingUiRevision.js'
+import { clearAllCaches, unregisterAllServiceWorkers } from '../../pwa/pwaCacheUtils.js'
 import C2Transit from '../../redesign/screens/C2Transit.jsx'
 import C3Approaching from '../../redesign/screens/C3Approaching.jsx'
 import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
@@ -102,6 +104,23 @@ export default function JourneyShell({ variant = 'legacy' }) {
   useEffect(() => {
     prepareResumeCue()
   }, [prepareResumeCue])
+
+  useEffect(() => {
+    if (variant !== 'redesign') return
+    if (loadedWalkingUiRevision === requiredWalkingUiRevision) return
+    if (typeof sessionStorage === 'undefined') return
+    const guard = sessionStorage.getItem('cw-walking-ui-reload')
+    if (guard) {
+      sessionStorage.removeItem('cw-walking-ui-reload')
+      return
+    }
+    sessionStorage.setItem('cw-walking-ui-reload', '1')
+    void (async () => {
+      await clearAllCaches()
+      await unregisterAllServiceWorkers()
+      window.location.reload()
+    })()
+  }, [variant])
 
   useEffect(() => {
     if (!isDevPanelEnabled()) return undefined
