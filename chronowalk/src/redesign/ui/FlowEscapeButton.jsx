@@ -14,6 +14,12 @@ export default function FlowEscapeButton() {
   const location = useLocation()
   const { state: journeyState, transition } = useV2Journey()
 
+  // Threshold is a one-way crossing — the global back control sent travellers to
+  // Arrived and trapped them in a story → threshold loop.
+  if (location.pathname === '/journey' && journeyState === JOURNEY_STATES.THRESHOLD) {
+    return null
+  }
+
   const handleBack = () => {
     const { pathname } = location
 

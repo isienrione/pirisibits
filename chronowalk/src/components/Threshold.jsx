@@ -165,6 +165,8 @@ export default function Threshold({
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
   const [holding, setHolding] = useState(false)
+  const [latchedToThen, setLatchedToThen] = useState(false)
+  const latchedRef = useRef(false)
   const [showHint, setShowHint] = useState(() => !hasSeenThresholdHint())
   const [videoPlaying, setVideoPlaying] = useState(false)
 
@@ -228,6 +230,19 @@ export default function Threshold({
     (event) => {
       if (!active) return
       if (event.target.closest('button')) return
+
+      if (latchedRef.current) {
+        latchedRef.current = false
+        setLatchedToThen(false)
+        setHolding(false)
+        setVideoPlaying(false)
+        cancelAnimation()
+        setReveal(0)
+        revealRef.current = 0
+        audioRef.current?.rampToNow(reducedMotion ? 200 : THRESHOLD_RELEASE_MS)
+        return
+      }
+
       try {
         event.currentTarget.setPointerCapture(event.pointerId)
       } catch {
@@ -257,7 +272,7 @@ export default function Threshold({
       animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
-    [active, animateReveal, notifyFullyRevealed, onHoldStart, reducedMotion, showHint]
+    [active, animateReveal, cancelAnimation, notifyFullyRevealed, onHoldStart, reducedMotion, showHint]
   )
 
   const handlePointerUp = useCallback(
@@ -268,26 +283,52 @@ export default function Threshold({
       holdStartRef.current = null
       pointerIdRef.current = null
       setHolding(false)
-      setVideoPlaying(false)
 
-      if (waypoint?.id) {
+      if (waypoint?.id && heldMs > 0) {
         track(TRACK_EVENTS.THRESHOLD_HOLD, {
           duration_ms: Math.round(heldMs),
           waypoint_id: waypoint.id,
+          latched: revealRef.current >= REVEAL_COMPLETE,
         })
       }
 
       if (reducedMotion) {
+        if (revealRef.current >= REVEAL_COMPLETE) {
+          latchedRef.current = true
+          setLatchedToThen(true)
+          setVideoPlaying(true)
+          return
+        }
         setReveal(0)
         revealRef.current = 0
+        setVideoPlaying(false)
         audioRef.current?.rampToNow(200)
         return
       }
 
+      if (revealRef.current >= REVEAL_COMPLETE) {
+        latchedRef.current = true
+        setLatchedToThen(true)
+        cancelAnimation()
+        setReveal(1)
+        revealRef.current = 1
+        setVideoPlaying(true)
+        return
+      }
+
+      setVideoPlaying(false)
       animateReveal(revealRef.current, 0, THRESHOLD_RELEASE_MS)
       audioRef.current?.rampToNow(THRESHOLD_RELEASE_MS)
     },
-    [animateReveal, reducedMotion, waypoint?.id]
+    [animateReveal, cancelAnimation, reducedMotion, waypoint?.id]
+  )
+
+  const handlePointerLeave = useCallback(
+    (event) => {
+      if (latchedRef.current) return
+      handlePointerUp(event)
+    },
+    [handlePointerUp]
   )
 
   useEffect(() => cancelAnimation, [cancelAnimation])
@@ -346,9 +387,13 @@ export default function Threshold({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      onPointerLeave={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
       role="img"
-      aria-label={`Press and hold to cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`}
+      aria-label={
+        latchedToThen
+          ? `Showing ${thenLabel}. Tap to return to today at ${waypoint?.name ?? 'this place'}.`
+          : `Press and hold to cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`
+      }
     >
       <ThresholdMediaCanvas
         thenLayer={thenLayer}
@@ -382,7 +427,7 @@ export default function Threshold({
           boxShadow: holding
             ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
             : '0 0 18px 4px var(--ember-glow)',
-          opacity: reveal > 0.02 && reveal < 0.98 ? 1 : embedded && reveal > 0 ? 1 : 0,
+          opacity: reveal > 0.02 && reveal < REVEAL_COMPLETE ? 1 : 0,
           transition: holding ? 'none' : 'left 420ms ease-out, opacity 150ms var(--ease)',
           pointerEvents: 'none',
           zIndex: 2,
@@ -501,7 +546,7 @@ export default function Threshold({
         />
       ) : null}
 
-      {showHint ? (
+      {showHint && !latchedToThen ? (
         <div
           style={{
             position: 'absolute',
@@ -523,6 +568,29 @@ export default function Threshold({
           }}
         >
           Press and hold to cross
+        </div>
+      ) : null}
+
+      {latchedToThen ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: embedded
+              ? 'max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))'
+              : 'max(2rem, env(safe-area-inset-bottom))',
+            transform: 'translateX(-50%)',
+            padding: '8px 16px',
+            borderRadius: 20,
+            background: 'color-mix(in srgb, var(--obsidian) 60%, transparent)',
+            fontSize: 'var(--fs-meta)',
+            fontWeight: 500,
+            color: 'var(--warm-white)',
+            pointerEvents: 'none',
+            zIndex: 3,
+          }}
+        >
+          Tap to return to today
         </div>
       ) : null}
 

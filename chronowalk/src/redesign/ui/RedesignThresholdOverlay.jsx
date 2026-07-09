@@ -15,7 +15,6 @@ export default function RedesignThresholdOverlay({
   nowAmbienceUrl = null,
   thenSoundscapeUrl = null,
   onComplete,
-  onBackToStory,
 }) {
   const [crossed, setCrossed] = useState(false)
 
@@ -37,7 +36,7 @@ export default function RedesignThresholdOverlay({
     >
       <C7Threshold
         embedded
-        reserveCtaSpace={crossed && Boolean(onComplete || onBackToStory)}
+        reserveCtaSpace={crossed && Boolean(onComplete)}
         waypointId={waypoint.id}
         waypointName={titleForWaypoint(waypoint)}
         nowPhoto={photoForWaypoint(waypoint)}
@@ -72,29 +71,6 @@ export default function RedesignThresholdOverlay({
           }}
         >
           Continue walking →
-        </button>
-      ) : null}
-      {crossed && onBackToStory ? (
-        <button
-          type="button"
-          onClick={onBackToStory}
-          style={{
-            position: 'absolute',
-            bottom: crossed && onComplete
-              ? 'max(72px, calc(env(safe-area-inset-bottom) + 66px))'
-              : 'max(14px, calc(env(safe-area-inset-bottom) + 8px))',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 80,
-            background: 'none',
-            border: 'none',
-            color: `${T.bone}88`,
-            fontSize: 13,
-            cursor: 'pointer',
-            padding: '8px 12px',
-          }}
-        >
-          Back to story
         </button>
       ) : null}
     </div>

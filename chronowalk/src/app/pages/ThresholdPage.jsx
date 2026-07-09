@@ -8,7 +8,7 @@ import { resolveThresholdAmbienceUrls } from '../../content/thresholdAmbience.js
 import RedesignThresholdOverlay from '../../redesign/ui/RedesignThresholdOverlay.jsx'
 
 export function JourneyThresholdLayer() {
-  const { state, context, transition, completeStoryAfterThreshold } = useV2Journey()
+  const { state, context, completeStoryAfterThreshold } = useV2Journey()
   const manifest = useMemo(() => loadRomeManifest(), [])
   const step = useJourneyStep(
     manifest,
@@ -29,17 +29,12 @@ export function JourneyThresholdLayer() {
     completeStoryAfterThreshold(waypoint.id)
   }
 
-  const handleBackToStory = () => {
-    transition(JOURNEY_STATES.STORY)
-  }
-
   return (
     <RedesignThresholdOverlay
       waypoint={resolved}
       nowAmbienceUrl={nowAmbienceUrl}
       thenSoundscapeUrl={thenSoundscapeUrl}
       onComplete={handleComplete}
-      onBackToStory={handleBackToStory}
     />
   )
 }
