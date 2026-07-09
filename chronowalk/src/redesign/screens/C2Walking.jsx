@@ -4,7 +4,11 @@ import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { pantheonNow } from '../images.js'
 import { Eyebrow } from '../ui/index.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
-import { formatDistanceToNext, formatWalkingTime } from '../../content/journeyProgress.js'
+import {
+  formatDistanceToNext,
+  formatWalkingTime,
+  sanitizeWalkDistanceM,
+} from '../../content/journeyProgress.js'
 
 function GpsChip({ locationStatus = LOCATION_STATUS.WAITING, accent = T.actI }) {
   const waiting = locationStatus === LOCATION_STATUS.WAITING
@@ -116,10 +120,12 @@ function CompassDial({
 }
 
 function resolveDistanceCopy(distanceM, estimatedDistanceM) {
-  if (distanceM != null) {
+  const liveDistanceM = sanitizeWalkDistanceM(distanceM)
+
+  if (liveDistanceM != null) {
     return {
-      primary: formatDistanceToNext(distanceM),
-      secondary: formatWalkingTime(distanceM),
+      primary: formatDistanceToNext(liveDistanceM),
+      secondary: formatWalkingTime(liveDistanceM),
       estimated: false,
       pending: false,
     }
