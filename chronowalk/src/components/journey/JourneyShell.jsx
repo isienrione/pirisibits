@@ -146,8 +146,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (intent) storyViewRef.current = intent
   }, [state, step?.id, step?.type])
 
+  const justLeftThresholdRef = useRef(false)
+
   useEffect(() => {
     if (prevStateRef.current === JOURNEY_STATES.THRESHOLD && state === JOURNEY_STATES.WALKING) {
+      justLeftThresholdRef.current = true
       storyStartedRef.current = null
       playedStepRef.current = null
       setDockSnapshot(null)
@@ -241,6 +244,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
     },
     [audio.progress?.duration, context.path, manifest]
   )
+
+  // After threshold (e.g. w07), the next step is often a transit leg (t06 → Vesta).
+  useEffect(() => {
+    if (!justLeftThresholdRef.current) return
+    if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || !step.id) return
+    if (!audioUnlocked) return
+
+    justLeftThresholdRef.current = false
+    playedStepRef.current = step.id
+    seedTransitDock(step)
+    void audio.playTransit(step.id)
+  }, [audio, audioUnlocked, seedTransitDock, state, step?.id, step?.type])
 
   const handleOptionalPromote = useCallback(
     (waypointId) => {
@@ -676,16 +691,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
   ])
 
   const dockEnded = Boolean(resolvedDockSnapshot) && !narrationSessionLive
-  const inlineTransitAudio =
-    variant === 'redesign' &&
-    state === JOURNEY_STATES.WALKING &&
-    step?.type === 'transit' &&
-    !needsPathChoice
   const dockActive =
     variant === 'redesign' &&
     audioUnlocked &&
     Boolean(resolvedDockSnapshot) &&
-    !inlineTransitAudio &&
     state !== JOURNEY_STATES.STORY &&
     state !== JOURNEY_STATES.THRESHOLD
   const dockBottomInset = isImmersiveJourneyState(state)
@@ -1019,7 +1028,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
       const props = redesignWaypointProps(target)
       const transitNote =
         step.record?.note ??
-        'The city between stops has its own stories — listen while Rome rolls past.'
+        (step.record?.title
+          ? `Listen on the way — ${String(step.record.title).replace(/^→\s*/, '')}`
+          : 'The city between stops has its own stories — listen while Rome rolls past.')
       const transitTranscript = resolveStepTranscript(step, context.path)
       const variantKey = context.path === 'b' ? 'b' : 'a'
       const transitTrackTitle =

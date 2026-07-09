@@ -8,6 +8,7 @@ import {
   resetJourney,
   transitionJourney,
   getJourneySnapshot,
+  completeStoryAfterThreshold,
   JOURNEY_STATES,
 } from '../../../state/journey.js'
 import { loadRomeManifest } from '../../../content/manifest.js'
@@ -158,6 +159,45 @@ describe('JourneyShell', () => {
     fireEvent.click(continueBtn)
 
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t04Index + 1)
+  })
+
+  it('shows t06 Temple of Vesta transit narration panel and script', async () => {
+    const manifest = loadRomeManifest()
+    const t06Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t06')
+    expect(t06Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t06Index })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('transit-screen')).toBeInTheDocument()
+    expect(screen.getByTestId('transit-audio-panel')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /temple of vesta/i })).toBeInTheDocument()
+    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+    expect(screen.getByTestId('transit-continue')).toBeInTheDocument()
+    expect(playTransitMock).toHaveBeenCalledWith('t06')
+  })
+
+  it('starts t06 transit narration after leaving w07 threshold', async () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const w07Index = seq.indexOf('w07')
+    expect(w07Index).toBeGreaterThanOrEqual(0)
+    expect(seq[w07Index + 1]).toBe('t06')
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.THRESHOLD, {
+      currentSequenceIndex: w07Index,
+      completedWaypointIds: seq.slice(0, w07Index).filter((id) => id.startsWith('w')),
+    })
+    completeStoryAfterThreshold('w07')
+
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('transit-audio-panel')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /temple of vesta/i })).toBeInTheDocument()
+    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+    expect(playTransitMock).toHaveBeenCalledWith('t06')
   })
 
   it('shows path choice at t01 before path is locked', async () => {

@@ -76,6 +76,7 @@ export default function C2Transit({
   return (
     <div
       className="cw-grain"
+      data-testid="transit-screen"
       style={{
         background: T.bone,
         height: '100%',
@@ -84,6 +85,7 @@ export default function C2Transit({
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
+        minHeight: 0,
       }}
     >
       <div
@@ -91,15 +93,10 @@ export default function C2Transit({
           height: 3,
           background: `${T.muted}28`,
           flexShrink: 0,
-          position: 'relative',
-          zIndex: 4,
         }}
       >
         <div
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
             height: '100%',
             width: `${progressPct}%`,
             background: accent,
@@ -108,10 +105,12 @@ export default function C2Transit({
         />
       </div>
 
+      {/* Map — capped height so audio + continue are never clipped below the fold */}
       <div
         style={{
-          flex: 1,
-          minHeight: 0,
+          flexShrink: 0,
+          height: 'min(34vh, 220px)',
+          minHeight: 140,
           position: 'relative',
           background: T.obsidian,
         }}
@@ -172,229 +171,225 @@ export default function C2Transit({
 
       <div
         style={{
-          flexShrink: 0,
-          padding: '18px 20px 0',
-          position: 'relative',
-          zIndex: 2,
-          background: `linear-gradient(to top, ${T.bone} 88%, transparent)`,
-          marginTop: -28,
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          flexShrink: 1,
+          padding: '14px 20px 0',
+          background: T.bone,
         }}
       >
         <Eyebrow color={accent}>WALKING TO</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
-            fontSize: 28,
+            fontSize: 26,
             color: T.ink,
             fontWeight: 300,
             lineHeight: 1.12,
-            margin: '8px 0 6px',
+            margin: '6px 0 4px',
           }}
         >
           {title}
         </h1>
-        <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.6, margin: '0 0 4px' }}>
+        <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.55, margin: 0 }}>
           {note}
         </p>
       </div>
 
-      {/* Inline narration controls — always visible on transit legs */}
+      {/* Sticky footer — narration controls + continue always on screen */}
       <div
         style={{
           flexShrink: 0,
-          margin: '12px 16px 0',
-          padding: '14px 14px 12px',
-          borderRadius: 14,
-          background: T.obsidian,
-          border: `1px solid ${T.ink800}`,
-          boxShadow: '0 8px 28px rgba(0,0,0,0.18)',
+          background: T.bone,
+          borderTop: `1px solid ${T.muted}28`,
+          boxShadow: '0 -8px 24px rgba(22,19,15,0.08)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent }}>
-              {narrationPlaying ? 'Now playing' : narrationPaused ? 'Paused' : audioLive ? 'Narration' : 'On the way'}
+        <div
+          data-testid="transit-audio-panel"
+          style={{
+            margin: '10px 16px 0',
+            padding: '14px 14px 12px',
+            borderRadius: 14,
+            background: T.obsidian,
+            border: `1px solid ${T.ink800}`,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent }}>
+                {narrationPlaying ? 'Now playing' : narrationPaused ? 'Paused' : audioLive ? 'Narration' : 'On the way'}
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  color: T.warmWhite,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  marginTop: 2,
+                }}
+              >
+                {trackTitle ?? `Toward ${title}`}
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 14,
-                color: T.warmWhite,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                marginTop: 2,
-              }}
-            >
-              {trackTitle ?? `Toward ${title}`}
+            {onToggleAudio ? (
+              <button
+                type="button"
+                onClick={onToggleAudio}
+                aria-label={narrationPlaying ? 'Pause' : 'Play'}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 22,
+                  flexShrink: 0,
+                  marginLeft: 10,
+                  background: T.ember,
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'grid',
+                  placeItems: 'center',
+                }}
+              >
+                {narrationPlaying ? (
+                  <Pause size={20} fill={T.obsidian} color={T.obsidian} />
+                ) : (
+                  <Play size={20} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
+                )}
+              </button>
+            ) : null}
+          </div>
+
+          <div
+            ref={seekTrackRef}
+            onPointerDown={handleSeekPointerDown}
+            onPointerMove={handleSeekPointerMove}
+            onPointerUp={handleSeekPointerUp}
+            onPointerCancel={handleSeekPointerUp}
+            style={{
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              cursor: canSeek ? 'pointer' : 'default',
+              touchAction: 'none',
+              marginBottom: 6,
+            }}
+          >
+            <div style={{ position: 'relative', width: '100%', height: 4, borderRadius: 2, background: `${T.muted}33` }}>
+              <div style={{ position: 'absolute', inset: 0, width: `${progress * 100}%`, borderRadius: 2, background: accent }} />
             </div>
           </div>
-          {onToggleAudio ? (
-            <button
-              type="button"
-              onClick={onToggleAudio}
-              aria-label={narrationPlaying ? 'Pause' : 'Play'}
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{formatTime(displayTime)}</span>
+            <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
+              {duration > 0 ? `-${formatTime(remaining)}` : narrationPlaying ? 'Playing' : 'Ready'}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              {onSkipBack ? (
+                <button type="button" onClick={onSkipBack} aria-label="Back 15 seconds" style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}>
+                  <SkipBack size={20} />
+                </button>
+              ) : null}
+              {onSkipForward ? (
+                <button type="button" onClick={onSkipForward} aria-label="Forward 15 seconds" style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}>
+                  <SkipForward size={20} />
+                </button>
+              ) : null}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {onCycleSpeed ? (
+                <button
+                  type="button"
+                  onClick={onCycleSpeed}
+                  style={{
+                    background: `${T.muted}22`,
+                    border: 'none',
+                    borderRadius: 999,
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    color: T.warmWhite,
+                    fontFamily: F.body,
+                    fontSize: 12,
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {formatPlaybackSpeed(playbackRate)}
+                </button>
+              ) : null}
+              {transcript ? (
+                <button
+                  type="button"
+                  onClick={() => setShowTranscript((v) => !v)}
+                  style={{
+                    background: 'none',
+                    border: `1px solid ${T.muted}44`,
+                    borderRadius: 999,
+                    padding: '4px 12px',
+                    cursor: 'pointer',
+                    color: T.muted,
+                    fontFamily: F.body,
+                    fontSize: 12,
+                  }}
+                >
+                  {showTranscript ? 'Hide text' : 'Read instead'}
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          {showTranscript && transcript ? (
+            <div
+              data-testid="transit-transcript"
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                flexShrink: 0,
-                marginLeft: 10,
-                background: T.ember,
-                border: 'none',
-                cursor: 'pointer',
-                display: 'grid',
-                placeItems: 'center',
+                marginTop: 12,
+                maxHeight: 120,
+                overflowY: 'auto',
+                padding: '12px 14px',
+                borderRadius: 10,
+                background: T.ink800,
+                border: `1px solid ${T.muted}22`,
+                fontSize: 13,
+                lineHeight: 1.55,
+                color: T.warmWhite,
+                whiteSpace: 'pre-wrap',
               }}
             >
-              {narrationPlaying ? (
-                <Pause size={20} fill={T.obsidian} color={T.obsidian} />
-              ) : (
-                <Play size={20} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
-              )}
-            </button>
+              {transcript}
+            </div>
           ) : null}
         </div>
 
         <div
-          ref={seekTrackRef}
-          onPointerDown={handleSeekPointerDown}
-          onPointerMove={handleSeekPointerMove}
-          onPointerUp={handleSeekPointerUp}
-          onPointerCancel={handleSeekPointerUp}
           style={{
-            height: 32,
-            display: 'flex',
-            alignItems: 'center',
-            cursor: canSeek ? 'pointer' : 'default',
-            touchAction: 'none',
-            marginBottom: 6,
+            padding: `12px 20px calc(${SHELL_TAB_BAR_INSET} + 8px)`,
           }}
         >
-          <div style={{ position: 'relative', width: '100%', height: 4, borderRadius: 2, background: `${T.muted}33` }}>
-            <div style={{ position: 'absolute', inset: 0, width: `${progress * 100}%`, borderRadius: 2, background: accent }} />
-          </div>
+          {onContinue ? (
+            <button
+              type="button"
+              data-testid="transit-continue"
+              onClick={onContinue}
+              style={{
+                width: '100%',
+                background: T.ember,
+                border: 'none',
+                borderRadius: 12,
+                padding: '14px 16px',
+                cursor: 'pointer',
+                color: T.obsidian,
+                fontWeight: 600,
+                fontSize: 15,
+              }}
+            >
+              {continueLabel}
+            </button>
+          ) : null}
         </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-          <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{formatTime(displayTime)}</span>
-          <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
-            {duration > 0 ? `-${formatTime(remaining)}` : narrationPlaying ? 'Playing' : 'Ready'}
-          </span>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            {onSkipBack ? (
-              <button
-                type="button"
-                onClick={onSkipBack}
-                aria-label="Back 15 seconds"
-                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
-              >
-                <SkipBack size={20} />
-              </button>
-            ) : null}
-            {onSkipForward ? (
-              <button
-                type="button"
-                onClick={onSkipForward}
-                aria-label="Forward 15 seconds"
-                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
-              >
-                <SkipForward size={20} />
-              </button>
-            ) : null}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {onCycleSpeed ? (
-              <button
-                type="button"
-                onClick={onCycleSpeed}
-                style={{
-                  background: `${T.muted}22`,
-                  border: 'none',
-                  borderRadius: 999,
-                  padding: '4px 12px',
-                  cursor: 'pointer',
-                  color: T.warmWhite,
-                  fontFamily: F.body,
-                  fontSize: 12,
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {formatPlaybackSpeed(playbackRate)}
-              </button>
-            ) : null}
-            {transcript ? (
-              <button
-                type="button"
-                onClick={() => setShowTranscript((v) => !v)}
-                style={{
-                  background: 'none',
-                  border: `1px solid ${T.muted}44`,
-                  borderRadius: 999,
-                  padding: '4px 12px',
-                  cursor: 'pointer',
-                  color: T.muted,
-                  fontFamily: F.body,
-                  fontSize: 12,
-                }}
-              >
-                {showTranscript ? 'Hide text' : 'Read instead'}
-              </button>
-            ) : null}
-          </div>
-        </div>
-
-        {showTranscript && transcript ? (
-          <div
-            style={{
-              marginTop: 12,
-              maxHeight: 140,
-              overflowY: 'auto',
-              padding: '12px 14px',
-              borderRadius: 10,
-              background: T.ink800,
-              border: `1px solid ${T.muted}22`,
-              fontSize: 13,
-              lineHeight: 1.55,
-              color: T.warmWhite,
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {transcript}
-          </div>
-        ) : null}
-      </div>
-
-      <div
-        style={{
-          padding: `14px 20px calc(${SHELL_TAB_BAR_INSET} + 8px)`,
-          flexShrink: 0,
-          position: 'relative',
-          zIndex: 70,
-        }}
-      >
-        {onContinue ? (
-          <button
-            type="button"
-            data-testid="transit-continue"
-            onClick={onContinue}
-            style={{
-              width: '100%',
-              background: T.ember,
-              border: 'none',
-              borderRadius: 12,
-              padding: '14px 16px',
-              cursor: 'pointer',
-              color: T.obsidian,
-              fontWeight: 600,
-              fontSize: 15,
-            }}
-          >
-            {continueLabel}
-          </button>
-        ) : null}
       </div>
     </div>
   )
