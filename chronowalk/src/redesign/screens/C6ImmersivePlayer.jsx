@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Info } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
@@ -9,8 +9,8 @@ import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
 import {
-  hasSeenWaypointRevealInvite,
-  markWaypointRevealInviteSeen,
+  hasSeenThresholdRevealTutorial,
+  markThresholdRevealTutorialSeen,
 } from '../../utils/thresholdWaypointReveal.js'
 
 const DEFAULT_SPEEDS = [0.8, 1, 1.2]
@@ -74,7 +74,8 @@ export default function C6ImmersivePlayer({
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
   const [dragProgress, setDragProgress] = useState(null)
   const [showAudioNotice, setShowAudioNotice] = useState(false)
-  const [showRevealInvite, setShowRevealInvite] = useState(false)
+  const [autoRevealInvite, setAutoRevealInvite] = useState(false)
+  const [promptedRevealInvite, setPromptedRevealInvite] = useState(false)
   const [focusReveal, setFocusReveal] = useState(false)
   const seekTrackRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
@@ -118,20 +119,36 @@ export default function C6ImmersivePlayer({
   }, [initialTab])
 
   useEffect(() => {
-    setShowRevealInvite(hasReconstruction && !hasSeenWaypointRevealInvite(waypointId))
+    setAutoRevealInvite(hasReconstruction && !hasSeenThresholdRevealTutorial())
+    setPromptedRevealInvite(false)
     setFocusReveal(false)
   }, [hasReconstruction, waypointId])
+
+  const dismissRevealInvite = useCallback(() => {
+    if (autoRevealInvite) markThresholdRevealTutorialSeen()
+    setAutoRevealInvite(false)
+    setPromptedRevealInvite(false)
+  }, [autoRevealInvite])
+
+  const handleThresholdHelp = useCallback(() => {
+    if (autoRevealInvite && !promptedRevealInvite) {
+      setPromptedRevealInvite(true)
+      return
+    }
+    setPromptedRevealInvite((prev) => !prev)
+  }, [autoRevealInvite, promptedRevealInvite])
 
   const handleRevealHoldStart = useCallback(() => {
     if (!hasReconstruction) return
 
-    if (showRevealInvite) {
-      markWaypointRevealInviteSeen(waypointId)
-      setShowRevealInvite(false)
+    if (autoRevealInvite || promptedRevealInvite) {
+      markThresholdRevealTutorialSeen()
+      setAutoRevealInvite(false)
+      setPromptedRevealInvite(false)
     }
 
     setFocusReveal(true)
-  }, [hasReconstruction, showRevealInvite, waypointId])
+  }, [autoRevealInvite, hasReconstruction, promptedRevealInvite])
 
   const handleRevealHoldEnd = useCallback(() => {
     setFocusReveal(false)
@@ -158,6 +175,9 @@ export default function C6ImmersivePlayer({
     continueLabel ??
     (storyEnded || !narrationPlaying ? 'Continue walking →' : 'Skip ahead →')
   const chromeHidden = focusReveal
+  const showRevealInvite =
+    hasReconstruction && !chromeHidden && (autoRevealInvite || promptedRevealInvite)
+  const revealInviteInteractive = promptedRevealInvite
 
   const tabBar = (
     <div
@@ -384,8 +404,13 @@ export default function C6ImmersivePlayer({
       <div className="cw-waypoint-immersive__hero">
         {heroLayer}
 
-        {showRevealInvite && hasReconstruction && !chromeHidden ? (
-          <ThresholdRevealInvite thenLabel={thenLabel} accent={accent} />
+        {showRevealInvite ? (
+          <ThresholdRevealInvite
+            thenLabel={thenLabel}
+            accent={accent}
+            interactive={revealInviteInteractive}
+            onDismiss={dismissRevealInvite}
+          />
         ) : null}
 
         <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
@@ -428,28 +453,34 @@ export default function C6ImmersivePlayer({
           >
             <ChevronLeft size={17} /> Back
           </button>
-          <button
-            type="button"
-            aria-label="About this stop"
-            onClick={onOpenThreshold ?? onViewImages ?? undefined}
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: 17,
-              border: 'none',
-              background: 'rgba(22,19,15,0.45)',
-              backdropFilter: 'blur(8px)',
-              color: T.warmWhite,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: onOpenThreshold || onViewImages ? 'pointer' : 'default',
-              opacity: onOpenThreshold || onViewImages ? 1 : 0.35,
-              pointerEvents: 'auto',
-            }}
-          >
-            <Info size={16} />
-          </button>
+          {hasReconstruction ? (
+            <button
+              type="button"
+              data-testid="threshold-help"
+              aria-label="How to cross the threshold"
+              onClick={handleThresholdHelp}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 14,
+                border: `1px solid rgba(245,240,232,0.35)`,
+                background: 'rgba(22,19,15,0.55)',
+                backdropFilter: 'blur(8px)',
+                color: T.warmWhite,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                fontFamily: F.body,
+                fontSize: 15,
+                fontWeight: 600,
+                lineHeight: 1,
+                pointerEvents: 'auto',
+              }}
+            >
+              ?
+            </button>
+          ) : null}
         </div>
 
         <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">

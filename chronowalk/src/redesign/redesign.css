@@ -454,13 +454,41 @@ html.redesign-pwa #root {
   );
 }
 
+.cw-reveal-invite--interactive {
+  pointer-events: auto;
+  background: rgba(22, 19, 15, 0.72);
+}
+
 .cw-reveal-invite__card {
+  position: relative;
   width: min(100%, 340px);
   padding: 20px 18px 18px;
   border-radius: 20px;
   background: color-mix(in srgb, var(--obsidian) 94%, transparent);
   border: 1px solid color-mix(in srgb, var(--ember) 45%, transparent);
   animation: cwRevealInviteCardGlow 2.8s ease-in-out infinite, cwRevealInviteEnter 520ms ease-out both;
+}
+
+.cw-reveal-invite--interactive .cw-reveal-invite__card {
+  pointer-events: auto;
+}
+
+.cw-reveal-invite__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--warm-white) 18%, transparent);
+  background: color-mix(in srgb, var(--obsidian) 80%, transparent);
+  color: var(--warm-white);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
 }
 
 .cw-reveal-invite__eyebrow {

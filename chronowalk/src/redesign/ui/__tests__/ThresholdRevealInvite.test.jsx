@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
 import ThresholdRevealInvite, { eraPhraseForInvite } from '../ThresholdRevealInvite.jsx'
 
 describe('ThresholdRevealInvite', () => {
@@ -14,5 +14,14 @@ describe('ThresholdRevealInvite', () => {
     expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
     expect(screen.getByText(/press and hold anywhere on the image/i)).toBeInTheDocument()
     expect(screen.getByText(/press & hold to cross the threshold/i)).toBeInTheDocument()
+  })
+
+  it('shows a close control in interactive mode', () => {
+    const onDismiss = vi.fn()
+    render(
+      <ThresholdRevealInvite thenLabel="ANCIENT ROME" interactive onDismiss={onDismiss} />
+    )
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+    expect(onDismiss).toHaveBeenCalledTimes(1)
   })
 })

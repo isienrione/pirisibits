@@ -152,12 +152,26 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('reveal-invite')).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
     expect(screen.getByTestId('story-continue')).toBeInTheDocument()
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
     expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
     expect(screen.queryByText(/press and hold to cross/i)).not.toBeInTheDocument()
+  })
+
+  it('shows threshold help but not auto invite after the first tutorial', async () => {
+    localStorage.setItem('cw_threshold_reveal_tutorial_seen', 'true')
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
+    expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('threshold-help'))
+    expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()
   })
 
   it('advances from transit when continue walking is tapped', async () => {

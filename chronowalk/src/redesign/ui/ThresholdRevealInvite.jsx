@@ -41,16 +41,35 @@ function RevealDemo({ reducedMotion, accent, thenLabel }) {
 }
 
 /**
- * First-time threshold invitation — animated press-and-hold demo + headline.
- * pointer-events: none so holds pass through to the threshold beneath.
+ * Threshold invitation — animated press-and-hold demo + headline.
+ * Auto mode: pointer-events none so holds pass through to the threshold beneath.
+ * Interactive mode: prompted from the ? control — dismissible without holding.
  */
-export default function ThresholdRevealInvite({ thenLabel = 'ANCIENT ROME', accent = T.ember }) {
+export default function ThresholdRevealInvite({
+  thenLabel = 'ANCIENT ROME',
+  accent = T.ember,
+  interactive = false,
+  onDismiss,
+}) {
   const reducedMotion = useReducedMotion()
   const eraPhrase = eraPhraseForInvite(thenLabel)
 
   return (
-    <div className="cw-reveal-invite" aria-live="polite">
+    <div
+      className={`cw-reveal-invite${interactive ? ' cw-reveal-invite--interactive' : ''}`}
+      aria-live="polite"
+    >
       <div className="cw-reveal-invite__card" data-testid="reveal-invite">
+        {interactive && onDismiss ? (
+          <button
+            type="button"
+            className="cw-reveal-invite__close"
+            aria-label="Close"
+            onClick={onDismiss}
+          >
+            ×
+          </button>
+        ) : null}
         <p className="cw-reveal-invite__eyebrow">Cross into the past</p>
 
         <RevealDemo reducedMotion={reducedMotion} accent={accent} thenLabel={thenLabel} />

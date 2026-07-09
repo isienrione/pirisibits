@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import {
-  hasSeenWaypointRevealInvite,
-  markWaypointRevealInviteSeen,
+  hasSeenThresholdRevealTutorial,
+  markThresholdRevealTutorialSeen,
 } from '../thresholdWaypointReveal.js'
 
 describe('thresholdWaypointReveal', () => {
@@ -9,12 +9,11 @@ describe('thresholdWaypointReveal', () => {
     localStorage.clear()
   })
 
-  it('tracks reveal invite per waypoint', () => {
-    expect(hasSeenWaypointRevealInvite('w01')).toBe(false)
+  it('tracks the threshold tutorial once globally', () => {
+    expect(hasSeenThresholdRevealTutorial()).toBe(false)
 
-    markWaypointRevealInviteSeen('w01')
+    markThresholdRevealTutorialSeen()
 
-    expect(hasSeenWaypointRevealInvite('w01')).toBe(true)
-    expect(hasSeenWaypointRevealInvite('w02')).toBe(false)
+    expect(hasSeenThresholdRevealTutorial()).toBe(true)
   })
 })
