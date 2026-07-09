@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import KaraokeTranscript from '../KaraokeTranscript.jsx'
 
 describe('KaraokeTranscript', () => {
-  it('renders cleaned words and marks the active word while playing', () => {
+  it('renders cleaned transcript text without word highlighting', () => {
     render(
       <KaraokeTranscript
         transcript="[warm] Hello world."
@@ -16,7 +16,7 @@ describe('KaraokeTranscript', () => {
 
     expect(screen.getByTestId('karaoke')).toBeInTheDocument()
     expect(screen.queryByText(/\[warm\]/)).not.toBeInTheDocument()
-    expect(screen.getByText('Hello')).toHaveAttribute('data-active', 'true')
+    expect(screen.getByText('Hello')).not.toHaveAttribute('data-active')
     expect(screen.getByText('world.')).not.toHaveAttribute('data-active')
   })
 })

@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { T, F } from '../tokens.js'
-import { parseTranscriptForKaraoke, resolveActiveWordIndex } from '../../utils/transcriptContent.js'
+import { parseTranscriptForKaraoke } from '../../utils/transcriptContent.js'
 
 /**
- * Spotify-style read-along: full card, word-by-word highlight synced to narration progress.
+ * Read-along transcript: full card, static text (no word-by-word sync highlight).
  */
 export default function KaraokeTranscript({
   transcript = '',
-  currentTime = 0,
-  duration = 0,
-  playing = false,
-  accent = T.ember,
+  currentTime: _currentTime = 0,
+  duration: _duration = 0,
+  playing: _playing = false,
+  accent: _accent = T.ember,
   fontSize = 18,
   variant = 'dark',
   fullHeight = false,
@@ -18,20 +18,11 @@ export default function KaraokeTranscript({
   testId = 'karaoke-transcript',
 }) {
   const scrollRef = useRef(null)
-  const activeWordRef = useRef(null)
 
-  const { paragraphs, timeline } = useMemo(
+  const { paragraphs } = useMemo(
     () => parseTranscriptForKaraoke(transcript),
     [transcript]
   )
-
-  const activeIndex = resolveActiveWordIndex(timeline, currentTime, duration)
-  const syncActive = duration > 0 && activeIndex >= 0 && (playing || currentTime > 0)
-
-  useEffect(() => {
-    if (!syncActive || !activeWordRef.current || !scrollRef.current) return
-    activeWordRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' })
-  }, [activeIndex, syncActive])
 
   const isBone = variant === 'bone'
   const shellBg = immersive
@@ -41,8 +32,6 @@ export default function KaraokeTranscript({
       : `${T.ink800}ee`
   const shellBorder = immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
   const defaultInk = isBone ? T.ink : T.warmWhite
-  const spokenInk = isBone ? `${T.ink}88` : `${T.warmWhite}66`
-  const upcomingInk = isBone ? `${T.ink}44` : `${T.warmWhite}38`
 
   if (!paragraphs.length) {
     return null
@@ -85,28 +74,18 @@ export default function KaraokeTranscript({
               letterSpacing: '0.01em',
             }}
           >
-            {paragraph.words.map((word) => {
-              const isActive = syncActive && word.index === activeIndex
-              const isSpoken = syncActive && word.index < activeIndex
-              const color = isActive ? accent : isSpoken ? spokenInk : syncActive ? upcomingInk : defaultInk
-
-              return (
-                <span
-                  key={`${paragraph.id}-${word.index}`}
-                  ref={isActive ? activeWordRef : undefined}
-                  data-word-index={word.index}
-                  data-active={isActive ? 'true' : undefined}
-                  style={{
-                    color,
-                    fontWeight: isActive ? 500 : 300,
-                    transition: 'color 0.18s ease, opacity 0.18s ease',
-                    textShadow: isActive ? `0 0 18px ${accent}55` : 'none',
-                  }}
-                >
-                  {word.text}{' '}
-                </span>
-              )
-            })}
+            {paragraph.words.map((word) => (
+              <span
+                key={`${paragraph.id}-${word.index}`}
+                data-word-index={word.index}
+                style={{
+                  color: defaultInk,
+                  fontWeight: 300,
+                }}
+              >
+                {word.text}{' '}
+              </span>
+            ))}
           </p>
         ))}
       </div>
