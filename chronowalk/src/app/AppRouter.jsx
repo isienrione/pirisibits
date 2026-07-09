@@ -5,6 +5,8 @@ import ConsentBar from '../components/ConsentBar'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
+import ChileTestLocationBanner from '../components/dev/ChileTestLocationBanner.jsx'
+import V2FieldTestPanel from '../components/dev/V2FieldTestPanel.jsx'
 import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
@@ -112,6 +114,8 @@ function AppRoutes() {
       <ShellTabBar />
       <FlowEscapeButton />
       <PwaUpdatePrompt />
+      <ChileTestLocationBanner />
+      <V2FieldTestPanel />
       <TourDebugBootstrap />
       {import.meta.env.DEV && LazyUxRegressionTester ? (
         <Suspense fallback={null}>

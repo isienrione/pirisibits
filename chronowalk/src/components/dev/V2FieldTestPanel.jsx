@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getDebugGeoPlacement, isDebugGeo, isDevPanelEnabled } from '../../config/env.js'
+import { getDebugGeoPlacement, isChileTestLocations, isDebugGeo, isDevPanelEnabled } from '../../config/env.js'
 import { setDevSimulateGps } from '../dev/devTools.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
@@ -161,6 +161,8 @@ export default function V2FieldTestPanel() {
       <p style={{ margin: '0 0 8px' }}>
         GPS: {isDebugGeo() ? `simulated (${getDebugGeoPlacement()})` : 'live'}
         <br />
+        Region: {isChileTestLocations() ? 'Chile test coords' : 'Rome'}
+        <br />
         Stop: {activeLabel}
         <br />
         State: {state}
@@ -196,6 +198,20 @@ export default function V2FieldTestPanel() {
           style={chipStyle}
         >
           Arrive
+        </button>
+        <button
+          type="button"
+          onClick={() => mergeSearch({ testRegion: 'chile', resetTour: 'true', geo_debug: null })}
+          style={chipStyle}
+        >
+          Chile GPS
+        </button>
+        <button
+          type="button"
+          onClick={() => mergeSearch({ testRegion: null })}
+          style={chipStyle}
+        >
+          Rome GPS
         </button>
       </div>
     </div>

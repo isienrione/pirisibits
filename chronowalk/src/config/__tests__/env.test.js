@@ -2,7 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   getDebugStopId,
   getSingleWaypointId,
+  getTestLocationRegion,
   getTourId,
+  isChileTestLocations,
   isDebugMap,
   isDevPanelEnabled,
   shouldResetTour,
@@ -73,5 +75,15 @@ describe('env URL params', () => {
 
     setSearch('/?devPanel=false')
     expect(isDevPanelEnabled()).toBe(false)
+  })
+
+  it('reads testRegion for Chile GPS substitutes', () => {
+    setSearch('/?testRegion=chile')
+    expect(getTestLocationRegion()).toBe('chile')
+    expect(isChileTestLocations()).toBe(true)
+
+    setSearch('/')
+    expect(getTestLocationRegion()).toBeNull()
+    expect(isChileTestLocations()).toBe(false)
   })
 })

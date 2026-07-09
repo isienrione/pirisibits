@@ -48,6 +48,7 @@ import {
 } from './fontana-di-trevi'
 import { FORUM_WAYPOINTS_BY_ID } from './forumWaypoints'
 import { EXPANSION_WAYPOINTS_BY_ID } from './expansionWaypoints'
+import { applyWaypointGeoOverride } from './testLocationOverrides.js'
 
 const buildScaffoldGeo = (waypoint, { arrivalRadiusM = 100, mapZoom = 17 } = {}) => ({
   id: waypoint.id,
@@ -154,4 +155,8 @@ export const WAYPOINT_GEO = {
   ...EXPANSION_GEO,
 }
 
-export const getWaypointGeo = (waypointId) => WAYPOINT_GEO[waypointId] ?? null
+export const getWaypointGeo = (waypointId) => {
+  const geo = WAYPOINT_GEO[waypointId] ?? null
+  if (!geo) return null
+  return applyWaypointGeoOverride(waypointId, geo)
+}
