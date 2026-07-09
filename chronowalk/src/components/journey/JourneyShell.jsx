@@ -908,6 +908,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           extraBottomInset={dockActive ? 88 : 0}
           onPause={() => transition(JOURNEY_STATES.PAUSED)}
           onOpenSettings={openSettings}
+          map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )
     }

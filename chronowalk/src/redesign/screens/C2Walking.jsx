@@ -10,7 +10,12 @@ import {
   sanitizeWalkDistanceM,
 } from '../../content/journeyProgress.js'
 
-function GpsChip({ locationStatus = LOCATION_STATUS.WAITING, accent = T.actI }) {
+const WALK_BG = T.obsidian
+const WALK_INK = T.bone
+const WALK_MUTED = `${T.bone}88`
+const WALK_GLASS = 'rgba(22,19,15,0.78)'
+
+function GpsChip({ locationStatus = LOCATION_STATUS.WAITING, accent = T.actI, dark = false }) {
   const waiting = locationStatus === LOCATION_STATUS.WAITING
   const denied =
     locationStatus === LOCATION_STATUS.DENIED ||
@@ -31,7 +36,15 @@ function GpsChip({ locationStatus = LOCATION_STATUS.WAITING, accent = T.actI }) 
           animation: waiting || granted ? 'presencePulse 2.5s ease-in-out infinite' : undefined,
         }}
       />
-      <span style={{ fontSize: 11, color: T.ink, letterSpacing: '0.06em' }}>{label}</span>
+      <span
+        style={{
+          fontSize: 11,
+          color: dark ? WALK_INK : T.ink,
+          letterSpacing: '0.06em',
+        }}
+      >
+        {label}
+      </span>
     </div>
   )
 }
@@ -50,9 +63,9 @@ function CompassDial({
           position: 'absolute',
           inset: 0,
           borderRadius: '50%',
-          border: `1px solid ${accent}30`,
-          background: `radial-gradient(circle at 50% 42%, ${T.warmWhite} 0%, ${T.bone} 72%)`,
-          boxShadow: `inset 0 0 0 1px ${T.warmWhite}`,
+          border: `1px solid ${accent}35`,
+          background: `radial-gradient(circle at 50% 42%, ${T.ink800} 0%, ${WALK_BG} 74%)`,
+          boxShadow: `inset 0 0 0 1px ${accent}18`,
         }}
       />
       {['N', 'E', 'S', 'W'].map((label, index) => {
@@ -70,7 +83,7 @@ function CompassDial({
               transform: 'translate(-50%, -50%)',
               fontSize: 10,
               letterSpacing: '0.08em',
-              color: label === 'N' ? accent : `${T.muted}99`,
+              color: label === 'N' ? accent : `${WALK_MUTED}`,
               fontWeight: label === 'N' ? 700 : 500,
             }}
           >
@@ -105,7 +118,7 @@ function CompassDial({
           textAlign: 'center',
           margin: 0,
           fontSize: 10,
-          color: T.muted,
+          color: WALK_MUTED,
           letterSpacing: '0.04em',
         }}
       >
@@ -171,6 +184,7 @@ export default function C2Walking({
   onContinue,
   continueLabel = 'Continue',
   companionLine = null,
+  map = null,
 }) {
   const navigate = useNavigate()
   const distanceCopy = resolveDistanceCopy(distanceM, estimatedDistanceM)
@@ -180,20 +194,21 @@ export default function C2Walking({
 
   return (
     <div
-      className="cw-grain"
+      className="cw-grain cw-walking-dark"
       style={{
-        background: T.bone,
+        background: WALK_BG,
         height: '100%',
         fontFamily: F.body,
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
+        color: WALK_INK,
       }}
     >
       <div
         style={{
           height: 3,
-          background: `${T.muted}28`,
+          background: `${T.muted}18`,
           flexShrink: 0,
           position: 'relative',
           zIndex: 2,
@@ -234,7 +249,7 @@ export default function C2Walking({
           style={{
             position: 'absolute',
             inset: 0,
-            background: `linear-gradient(to top, ${T.bone} 8%, transparent 45%, rgba(22,19,15,0.18) 100%)`,
+            background: `linear-gradient(to top, ${WALK_BG} 4%, transparent 42%, rgba(0,0,0,0.35) 100%)`,
           }}
         />
         <div
@@ -253,15 +268,15 @@ export default function C2Walking({
             onClick={onOpenSettings ?? (() => navigate('/settings'))}
             aria-label="Settings"
             style={{
-              background: 'rgba(247,241,230,0.92)',
-              border: 'none',
+              background: WALK_GLASS,
+              border: `1px solid ${T.muted}22`,
               borderRadius: 20,
               width: 36,
               height: 36,
               display: 'grid',
               placeItems: 'center',
               cursor: 'pointer',
-              color: `${T.ink}80`,
+              color: `${WALK_INK}cc`,
               backdropFilter: 'blur(8px)',
             }}
           >
@@ -269,13 +284,14 @@ export default function C2Walking({
           </button>
           <div
             style={{
-              background: 'rgba(247,241,230,0.92)',
+              background: WALK_GLASS,
+              border: `1px solid ${T.muted}22`,
               borderRadius: 20,
               padding: '5px 10px',
               backdropFilter: 'blur(8px)',
             }}
           >
-            <GpsChip locationStatus={locationStatus} accent={accent} />
+            <GpsChip locationStatus={locationStatus} accent={accent} dark />
           </div>
         </div>
         <div
@@ -298,7 +314,7 @@ export default function C2Walking({
           >
             ACT {actNumeral}
           </span>
-          <span style={{ fontSize: 11, color: `${T.ink}88`, letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: 11, color: `${WALK_INK}bb`, letterSpacing: '0.04em' }}>
             Next stop ahead
           </span>
         </div>
@@ -349,7 +365,7 @@ export default function C2Walking({
               style={{
                 fontFamily: F.display,
                 fontSize: 30,
-                color: T.ink,
+                color: WALK_INK,
                 fontWeight: 300,
                 lineHeight: 1.08,
                 margin: '4px 0 0',
@@ -362,7 +378,7 @@ export default function C2Walking({
                 style={{
                   margin: '5px 0 0',
                   fontSize: 13,
-                  color: `${T.ink}66`,
+                  color: `${WALK_INK}77`,
                   lineHeight: 1.45,
                   fontStyle: 'italic',
                 }}
@@ -376,7 +392,7 @@ export default function C2Walking({
         <div style={{ marginBottom: 14 }}>
           <span
             style={{
-              color: distanceCopy.pending ? T.muted : accent,
+              color: distanceCopy.pending ? WALK_MUTED : accent,
               fontSize: distanceCopy.pending ? 14 : 16,
               fontWeight: distanceCopy.pending ? 500 : 600,
               fontVariantNumeric: 'tabular-nums',
@@ -386,7 +402,7 @@ export default function C2Walking({
             {distanceCopy.primary}
           </span>
           {distanceCopy.secondary ? (
-            <span style={{ color: `${T.ink}55`, fontSize: 13 }}>
+            <span style={{ color: `${WALK_INK}66`, fontSize: 13 }}>
               {' '}
               · {distanceCopy.secondary}
               {distanceCopy.estimated ? ' · estimated' : ''}
@@ -400,11 +416,11 @@ export default function C2Walking({
               marginBottom: 14,
               padding: '10px 12px',
               borderRadius: 10,
-              background: `${T.muted}14`,
-              border: `1px solid ${T.muted}28`,
+              background: `${T.muted}12`,
+              border: `1px solid ${T.muted}24`,
             }}
           >
-            <p style={{ margin: 0, fontSize: 13, color: `${T.ink}88`, lineHeight: 1.55 }}>
+            <p style={{ margin: 0, fontSize: 13, color: WALK_MUTED, lineHeight: 1.55 }}>
               Location is off — distance and live compass need GPS. You can still follow the route
               on the map, or tap “I&apos;m here” when you arrive.
             </p>
@@ -439,7 +455,7 @@ export default function C2Walking({
               flexShrink: 0,
             }}
           />
-          <p style={{ fontSize: 15, color: T.ink, lineHeight: 1.65, opacity: 0.72, margin: 0 }}>
+          <p style={{ fontSize: 15, color: WALK_INK, lineHeight: 1.65, opacity: 0.78, margin: 0 }}>
             {direction}
           </p>
         </div>
@@ -447,26 +463,64 @@ export default function C2Walking({
         <p
           style={{
             fontSize: 13,
-            color: T.muted,
+            color: WALK_MUTED,
             lineHeight: 1.65,
             fontStyle: 'italic',
-            margin: '0 0 14px',
+            margin: '0 0 16px',
           }}
         >
           {companionLine ?? 'Still with you. No rush — Rome has waited this long.'}
         </p>
 
-        {!embedded ? (
+        {map ? (
+          <div
+            style={{
+              marginBottom: 10,
+              borderRadius: 12,
+              overflow: 'hidden',
+              border: `1px solid ${T.muted}22`,
+              height: 132,
+              position: 'relative',
+              background: T.ink800,
+            }}
+          >
+            {map}
+            {!embedded ? (
+              <button
+                type="button"
+                onClick={() => navigate('/map')}
+                aria-label="Open full map"
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  bottom: 10,
+                  background: WALK_GLASS,
+                  border: `1px solid ${T.muted}28`,
+                  borderRadius: 8,
+                  padding: '6px 10px',
+                  cursor: 'pointer',
+                  color: WALK_INK,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                Full map
+              </button>
+            ) : null}
+          </div>
+        ) : !embedded ? (
           <button
             type="button"
             onClick={() => navigate('/map')}
             style={{
-              background: `${T.muted}18`,
-              border: `1px solid ${T.muted}33`,
+              background: `${T.muted}14`,
+              border: `1px solid ${T.muted}28`,
               borderRadius: 10,
               padding: '10px 14px',
               cursor: 'pointer',
-              color: T.ink,
+              color: WALK_INK,
               fontSize: 13,
               fontWeight: 600,
               letterSpacing: '0.04em',
@@ -484,8 +538,8 @@ export default function C2Walking({
           flexShrink: 0,
           position: 'relative',
           zIndex: 2,
-          borderTop: `1px solid ${T.muted}22`,
-          background: T.bone,
+          borderTop: `1px solid ${T.muted}18`,
+          background: WALK_BG,
         }}
       >
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -497,7 +551,7 @@ export default function C2Walking({
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                color: T.muted,
+                color: WALK_MUTED,
                 fontSize: 13,
                 padding: 0,
               }}
@@ -547,7 +601,7 @@ export default function C2Walking({
             style={{
               margin: '10px 0 0',
               fontSize: 12,
-              color: T.muted,
+              color: WALK_MUTED,
               lineHeight: 1.5,
               fontStyle: 'italic',
             }}

@@ -57,7 +57,7 @@ export default function JourneyInlineMap({ manifest, context, geo }) {
         style={{
           width: '100%',
           height: '100%',
-          background: 'var(--bone, #F7F1E6)',
+          background: 'var(--obsidian, #16130F)',
           display: 'grid',
           placeItems: 'center',
           color: 'var(--muted-warm, #706C65)',
