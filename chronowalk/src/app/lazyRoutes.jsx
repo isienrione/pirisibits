@@ -48,11 +48,6 @@ export const LazyTourPage = lazyRoute(
   'tour',
 )
 
-export const LazyJourneyPage = lazyRoute(
-  () => import('./pages/PlaceholderPages.jsx').then((m) => ({ default: m.JourneyPage })),
-  'journey',
-)
-
 export const LazyMapPage = lazyRoute(
   () => import('../redesign/pages/RedesignMapPage.jsx'),
   'map',

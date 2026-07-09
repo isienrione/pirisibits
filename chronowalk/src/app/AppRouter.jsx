@@ -10,6 +10,7 @@ import { ThresholdChromeProvider, useThresholdChrome } from '../context/Threshol
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
+import RedesignJourneyPage from '../redesign/pages/RedesignJourneyPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
@@ -24,7 +25,6 @@ import {
   LazyBeginPage,
   LazyCreditsPage,
   LazyJournalPage,
-  LazyJourneyPage,
   LazyLetterPage,
   LazyMapPage,
   LazyMemoryDetailPage,
@@ -89,7 +89,7 @@ function AppRoutes() {
         <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<LazyBeginPage />} />
         <Route path="/tour" element={<LazyTourPage />} />
-        <Route path="/journey" element={<LazyJourneyPage />} />
+        <Route path="/journey" element={<RedesignJourneyPage />} />
         <Route path="/map" element={<LazyMapPage />} />
         <Route path="/stops" element={<LazyStopsPage />} />
         <Route path="/journal" element={<LazyJournalPage />} />

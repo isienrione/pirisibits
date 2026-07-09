@@ -2,6 +2,7 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
+import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
 import {
   beginJourney,
   resetJourney,
@@ -64,6 +65,8 @@ vi.mock('../../../hooks/useJourneyGeo.js', () => ({
     approachingGeofence: false,
     state: 'TRANSIT',
     locationStatus: 'granted',
+    position: { lat: 41.8902, lng: 12.4922 },
+    retryLocation: vi.fn(),
   }),
 }))
 
@@ -80,10 +83,12 @@ vi.mock('../../../lib/track.js', () => ({
   },
 }))
 
-function renderShell() {
+function renderShell(props = {}) {
   return render(
     <MemoryRouter>
-      <JourneyShell />
+      <SettingsSheetProvider>
+        <JourneyShell {...props} />
+      </SettingsSheetProvider>
     </MemoryRouter>
   )
 }
@@ -92,6 +97,11 @@ const PAUSE_SEQUENCE_INDEX = 10
 
 describe('JourneyShell', () => {
   beforeEach(() => {
+    global.ResizeObserver = class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
     localStorage.clear()
     resetJourney()
     audioMock.narrationPlaying = false
@@ -111,6 +121,16 @@ describe('JourneyShell', () => {
 
     expect(await screen.findByText('Walking')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+  })
+
+  it('shows redesign walking UI for the first waypoint', async () => {
+    beginJourney({ pace: 'classic' })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByText(/walking to/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+    expect(screen.queryByText('GUIDE')).not.toBeInTheDocument()
+    expect(screen.queryByText('MAP')).not.toBeInTheDocument()
   })
 
   it('shows path choice at t01 before path is locked', async () => {
@@ -153,7 +173,9 @@ describe('JourneyShell', () => {
     audioMock.narrationPlaying = false
     view.rerender(
       <MemoryRouter>
-        <JourneyShell />
+        <SettingsSheetProvider>
+          <JourneyShell />
+        </SettingsSheetProvider>
       </MemoryRouter>
     )
 
