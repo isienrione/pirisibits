@@ -10,6 +10,7 @@ export function bindAutoplayHtmlAudio(audio, { onPlaying, onPlayFailed } = {}) {
   const cleanup = () => {
     cancelled = true
     document.removeEventListener('pointerdown', onGesture, true)
+    document.removeEventListener('touchstart', onGesture, true)
     audio.removeEventListener('canplay', onCanPlay)
   }
 
@@ -21,11 +22,13 @@ export function bindAutoplayHtmlAudio(audio, { onPlaying, onPlayFailed } = {}) {
       if (cancelled) return
       onPlayFailed?.()
       document.addEventListener('pointerdown', onGesture, true)
+      document.addEventListener('touchstart', onGesture, true)
     })
   }
 
   const onGesture = () => {
     document.removeEventListener('pointerdown', onGesture, true)
+    document.removeEventListener('touchstart', onGesture, true)
     start()
   }
 

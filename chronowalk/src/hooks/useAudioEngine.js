@@ -117,7 +117,7 @@ export function useAudioEngine(manifest) {
   }, [])
 
   const playWaypoint = useCallback(async (waypointId, options) => {
-    await engineRef.current?.playWaypoint(waypointId, options)
+    return (await engineRef.current?.playWaypoint(waypointId, options)) ?? false
   }, [])
 
   const playTransit = useCallback(async (transitId) => {

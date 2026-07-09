@@ -101,6 +101,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const storyCompleteTrackedRef = useRef(null)
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
+  const narrationInFlightRef = useRef(null)
+  const storyAutoplayGestureRef = useRef(null)
   const playedResumeRef = useRef(false)
   const playedCompletionRef = useRef(false)
   const scriptedRestNarrationStartedRef = useRef(null)
@@ -266,16 +268,47 @@ export default function JourneyShell({ variant = 'legacy' }) {
   )
 
   const tryStartWaypointNarration = useCallback(
-    (waypointId) => {
-      if (!manifest || !audioUnlocked || !waypointId) return false
+    async (waypointId) => {
+      if (!manifest || !waypointId) return false
+      if (narrationInFlightRef.current === waypointId) return false
       if (storyStartedRef.current === waypointId) return false
 
-      storyStartedRef.current = waypointId
-      setActiveWaypoint(waypointId, manifest)
-      void audio.playWaypoint(waypointId)
-      return true
+      narrationInFlightRef.current = waypointId
+      try {
+        const unlocked = await audio.unlock()
+        if (unlocked) setAudioUnlocked(true)
+        setActiveWaypoint(waypointId, manifest)
+        const started = await audio.playWaypoint(waypointId)
+        if (started) storyStartedRef.current = waypointId
+        return started
+      } finally {
+        if (narrationInFlightRef.current === waypointId) {
+          narrationInFlightRef.current = null
+        }
+      }
     },
-    [audio, audioUnlocked, manifest, setActiveWaypoint]
+    [audio, manifest, setActiveWaypoint]
+  )
+
+  const clearStoryAutoplayGesture = useCallback(() => {
+    if (!storyAutoplayGestureRef.current) return
+    document.removeEventListener('pointerdown', storyAutoplayGestureRef.current, true)
+    document.removeEventListener('touchstart', storyAutoplayGestureRef.current, true)
+    storyAutoplayGestureRef.current = null
+  }, [])
+
+  const armStoryAutoplayGesture = useCallback(
+    (waypointId) => {
+      if (!waypointId || storyAutoplayGestureRef.current) return
+      const onGesture = () => {
+        clearStoryAutoplayGesture()
+        void tryStartWaypointNarration(waypointId)
+      }
+      storyAutoplayGestureRef.current = onGesture
+      document.addEventListener('pointerdown', onGesture, true)
+      document.addEventListener('touchstart', onGesture, true)
+    },
+    [clearStoryAutoplayGesture, tryStartWaypointNarration]
   )
 
   // After threshold (e.g. w07), the next step is often a transit leg (t06 → Vesta).
@@ -332,6 +365,49 @@ export default function JourneyShell({ variant = 'legacy' }) {
   useEffect(() => {
     if (audio.ready) setAudioUnlocked(true)
   }, [audio.ready])
+
+  // Reset story-start guard when the active story waypoint changes.
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
+    if (storyStartedRef.current && storyStartedRef.current !== step.id) {
+      storyStartedRef.current = null
+    }
+  }, [state, step?.id, step?.type])
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') {
+      clearStoryAutoplayGesture()
+      return undefined
+    }
+
+    let cancelled = false
+
+    const attempt = async () => {
+      const started = await tryStartWaypointNarration(step.id)
+      if (cancelled || started || storyStartedRef.current === step.id) return
+      armStoryAutoplayGesture(step.id)
+    }
+
+    void attempt()
+
+    return () => {
+      cancelled = true
+      clearStoryAutoplayGesture()
+    }
+  }, [
+    armStoryAutoplayGesture,
+    clearStoryAutoplayGesture,
+    state,
+    step?.id,
+    step?.type,
+    tryStartWaypointNarration,
+  ])
+
+  useEffect(() => () => clearStoryAutoplayGesture(), [clearStoryAutoplayGesture])
+
+  useEffect(() => {
+    if (audio.narrationPlaying) clearStoryAutoplayGesture()
+  }, [audio.narrationPlaying, clearStoryAutoplayGesture])
 
   // Reset the "story finished" reveal whenever we leave the story or change stop.
   useEffect(() => {
@@ -454,7 +530,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
       if (variant === 'redesign') {
         storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
         transition(JOURNEY_STATES.STORY)
-        tryStartWaypointNarration(waypointId)
+        void tryStartWaypointNarration(waypointId).then((started) => {
+          if (!started) armStoryAutoplayGesture(waypointId)
+        })
       } else {
         transition(JOURNEY_STATES.ARRIVED)
       }
@@ -464,7 +542,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
+    [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
   )
 
   const arriveAtWaypoint = useCallback(
@@ -572,11 +650,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
       playedStepRef.current = step.id
       seedTransitDock(step)
       void audio.playTransit(step.id)
-      return
-    }
-
-    if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
-      tryStartWaypointNarration(step.id)
     }
   }, [
     audio,
@@ -587,7 +660,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
     seedTransitDock,
     state,
     step,
-    tryStartWaypointNarration,
   ])
 
   const handleUnlockAudio = async () => {
@@ -615,7 +687,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
-    if (step.type === 'waypoint') tryStartWaypointNarration(step.id)
+    if (step.type === 'waypoint') void tryStartWaypointNarration(step.id)
     setBusy(false)
   }
 

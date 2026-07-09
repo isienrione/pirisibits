@@ -57,7 +57,7 @@ describe('AudioEngine', () => {
   });
 
   it('plays waypoint narration plan without throwing', async () => {
-    await expect(engine.playWaypoint('w01')).resolves.toBeUndefined();
+    await expect(engine.playWaypoint('w01')).resolves.toEqual(expect.any(Boolean));
   });
 
   it('marks waypoint complete for insert eligibility', () => {

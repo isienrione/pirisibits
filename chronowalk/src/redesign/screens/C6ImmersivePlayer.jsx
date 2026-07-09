@@ -522,28 +522,28 @@ export default function C6ImmersivePlayer({
 
       {reading ? (
         <div className="cw-waypoint-immersive__read-layer cw-waypoint-immersive__chrome">
-          {tabBar}
+          <div className="cw-waypoint-immersive__read-tabs">{tabBar}</div>
           <div className="cw-waypoint-immersive__read-body">
-            {transcriptAvailable && transcript ? (
-              <KaraokeTranscript
-                transcript={transcript}
-                currentTime={currentTime}
-                duration={duration}
-                playing={narrationPlaying}
-                accent={accent}
-                fontSize={transcriptFontSize + 2}
-                fullHeight
-                immersive
-                readingMode
-                testId="story-karaoke-transcript"
-              />
-            ) : (
-              <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
-                {import.meta.env.DEV
-                  ? 'No written transcript is wired for this stop yet (development).'
-                  : 'A written transcript for this stop is coming soon.'}
-              </p>
-            )}
+            <div className="cw-waypoint-immersive__read-scroll">
+              {transcriptAvailable && transcript ? (
+                <KaraokeTranscript
+                  transcript={transcript}
+                  currentTime={currentTime}
+                  duration={duration}
+                  playing={narrationPlaying}
+                  accent={accent}
+                  fontSize={transcriptFontSize + 2}
+                  readingMode
+                  testId="story-karaoke-transcript"
+                />
+              ) : (
+                <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
+                  {import.meta.env.DEV
+                    ? 'No written transcript is wired for this stop yet (development).'
+                    : 'A written transcript for this stop is coming soon.'}
+                </p>
+              )}
+            </div>
           </div>
           <div className="cw-waypoint-immersive__read-footer">
             {audioPlayerBlock(true)}

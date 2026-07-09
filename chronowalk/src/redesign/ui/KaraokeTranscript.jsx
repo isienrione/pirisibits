@@ -40,6 +40,31 @@ export default function KaraokeTranscript({
     return null
   }
 
+  if (readingMode) {
+    return (
+      <div data-testid={testId}>
+        {paragraphs.map((paragraph) => (
+          <p
+            key={paragraph.id}
+            style={{
+              fontFamily: F.display,
+              fontWeight: 300,
+              fontSize,
+              lineHeight: 1.9,
+              margin: '0 0 1.35em',
+              letterSpacing: '0.01em',
+              color: defaultInk,
+            }}
+          >
+            {paragraph.words.map((word) => (
+              <span key={`${paragraph.id}-${word.index}`}>{word.text} </span>
+            ))}
+          </p>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div
       data-testid={testId}

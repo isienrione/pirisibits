@@ -14,7 +14,7 @@ import {
 import { loadRomeManifest } from '../../../content/manifest.js'
 import { buildEffectiveSequence } from '../../../content/optionalPromotion.js'
 
-const playWaypointMock = vi.fn().mockResolvedValue(undefined)
+const playWaypointMock = vi.fn().mockResolvedValue(true)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
 const unlockMock = vi.fn().mockResolvedValue(true)
 

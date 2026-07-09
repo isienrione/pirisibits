@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getWaypoint } from '../../content/manifest.js'
-import { resolveSystemUrl } from '../../audio/audioUrl.js'
+import { bindAutoplayHtmlAudio } from '../../audio/autoplayHtmlAudio.js'
+import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { useTourManifest } from '../../hooks/useV2Journey.js'
 import { buildCheckoutUrl, getHost } from '../../lib/host.js'
 import { usePrice } from '../../hooks/usePrice.js'
@@ -14,6 +15,7 @@ export default function RedesignPreviewPage() {
   const { manifest, loading } = useTourManifest()
   const { cents, checkoutUrl } = usePrice()
   const audioRef = useRef(null)
+  const [audioNode, setAudioNode] = useState(null)
   const [playing, setPlaying] = useState(false)
   const [audioError, setAudioError] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -26,7 +28,7 @@ export default function RedesignPreviewPage() {
   )
 
   const previewUrl = useMemo(
-    () => (manifest?.system?.preview ? resolveSystemUrl(manifest.system.preview) : null),
+    () => (manifest?.system?.preview ? resolvePreviewUrl(manifest.system.preview) : null),
     [manifest],
   )
 
@@ -37,7 +39,16 @@ export default function RedesignPreviewPage() {
   }, [])
 
   useEffect(() => {
-    const audio = audioRef.current
+    setPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    setAudioError(false)
+    setAudioNode(null)
+    thresholdTrackedRef.current = false
+  }, [previewUrl])
+
+  useEffect(() => {
+    const audio = audioNode
     if (!audio || !audioAvailable) return undefined
 
     const onTime = () => setCurrentTime(audio.currentTime)
@@ -46,12 +57,17 @@ export default function RedesignPreviewPage() {
     audio.addEventListener('loadedmetadata', onMeta)
     audio.addEventListener('durationchange', onMeta)
 
+    const stopAutoplay = bindAutoplayHtmlAudio(audio, {
+      onPlaying: () => setPlaying(true),
+    })
+
     return () => {
+      stopAutoplay()
       audio.removeEventListener('timeupdate', onTime)
       audio.removeEventListener('loadedmetadata', onMeta)
       audio.removeEventListener('durationchange', onMeta)
     }
-  }, [audioAvailable, previewUrl])
+  }, [audioAvailable, audioNode, previewUrl])
 
   const handleThresholdCross = () => {
     if (thresholdTrackedRef.current) return
@@ -91,9 +107,13 @@ export default function RedesignPreviewPage() {
       <div className="redesign-app-shell" style={{ height: '100dvh' }}>
         {previewUrl ? (
           <audio
-            ref={audioRef}
+            key={previewUrl}
+            ref={(node) => {
+              audioRef.current = node
+              setAudioNode(node)
+            }}
             src={previewUrl}
-            preload="metadata"
+            preload="auto"
             onEnded={() => setPlaying(false)}
             onPause={() => setPlaying(false)}
             onPlay={() => setPlaying(true)}

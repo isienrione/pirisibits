@@ -258,7 +258,7 @@ export class AudioEngine {
     )
 
     this.activePlayback = { kind: 'waypoint', id: waypointId }
-    await this.playPlan(plan)
+    return this.playPlan(plan)
   }
 
   clearTransitSession() {
@@ -371,7 +371,7 @@ export class AudioEngine {
 
   async playPlan(plan) {
     await this.init()
-    if (!this.context || !plan.length) return
+    if (!this.context || !plan.length) return false
 
     const generation = ++this.playbackGeneration
     this.stopNarrationSources()
@@ -385,8 +385,8 @@ export class AudioEngine {
       offset: 0,
       paused: false,
     }
-    this.setNarrationPlaying(true)
     await this.startCurrentItem(0)
+    return this.narrationPlaying
   }
 
   async startCurrentItem(offset = 0) {
