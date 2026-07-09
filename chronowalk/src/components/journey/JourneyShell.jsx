@@ -24,7 +24,7 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { chapterAtIndex, chapterTitle } from '../../content/chapterMeta.js'
+import { chapterAtIndex, chapterTitle, combinedChapterTranscript } from '../../content/chapterMeta.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
 import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -780,7 +780,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       )
       const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
       const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
-      const realTranscript = record.arrival_transcript ?? record.transcript ?? ''
+      const realTranscript = record.transcript ?? combinedChapterTranscript(record.chapters)
       // In dev, only trust "audio available" once the engine confirms items or a
       // duration; in prod the deployed media is present, so never gate controls.
       const audioAvailable =

@@ -9,6 +9,7 @@ import {
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { SETTINGS_LINKS } from '../../content/launchSettings.js'
+import { pwaController } from '../../pwa/pwaController.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -263,6 +264,11 @@ export default function SettingsBottomSheet({ open, onClose }) {
           <ActionRow label="Restore purchase" onClick={handleRestore} />
           <ActionRow label="Help" onClick={handleHelp} />
           <ActionRow label="About" onClick={handleAbout} />
+          <ActionRow
+            label="Refresh app"
+            detail="Get the latest version"
+            onClick={() => void pwaController.checkForAppUpdate()}
+          />
 
           {offline.error ? (
             <p style={{ margin: '8px 0 0', fontSize: 12, color: T.muted, lineHeight: 1.5 }}>{offline.error}</p>
@@ -279,6 +285,12 @@ export default function SettingsBottomSheet({ open, onClose }) {
             }}
           >
             ChronoWalk · Rome · made to disappear.
+            {typeof __APP_BUILD_ID__ !== 'undefined' ? (
+              <>
+                <br />
+                Build {__APP_BUILD_ID__}
+              </>
+            ) : null}
           </p>
         </div>
       </div>

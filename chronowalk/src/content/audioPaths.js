@@ -1,5 +1,6 @@
 /** Audio file path resolution for Rome tour content on R2. */
 
+import { chapterFile } from './chapterMeta.js'
 import { collectThresholdAmbiencePaths } from './thresholdAmbience.js'
 
 export const ROME_AUDIO_ROOT = '/rome/audio'
@@ -46,7 +47,7 @@ export function collectManifestAudioPaths(manifest) {
   }
 
   for (const waypoint of Object.values(manifest.waypoints)) {
-    for (const chapter of waypoint.chapters) add(AUDIO_CATEGORIES.NARRATION, chapter)
+    for (const chapter of waypoint.chapters) add(AUDIO_CATEGORIES.NARRATION, chapterFile(chapter))
     for (const outro of Object.values(waypoint.outro_variants ?? {})) add(AUDIO_CATEGORIES.NARRATION, outro)
   }
 

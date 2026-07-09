@@ -19,12 +19,27 @@ const waypointDisplaySchema = z.object({
   combinedLabel: z.string().optional(),
 })
 
+const chapterSchema = z.union([
+  z.string(),
+  z.object({
+    file: z.string(),
+    title: z.string().optional(),
+    transcript: z.string().optional(),
+  }),
+])
+
+const variantMetaSchema = z.object({
+  title: z.string().optional(),
+  transcript: z.string().optional(),
+})
+
 const waypointSchema = z.object({
   title: z.string(),
   act: z.string(),
   geofence: geofenceSchema,
   zone: z.string(),
-  chapters: z.array(z.string()).min(1),
+  chapters: z.array(chapterSchema).min(1),
+  transcript: z.string().optional(),
   inserts: z.array(z.string()).optional(),
   alt_inserts: z.array(z.string()).optional(),
   outro_variants: z.record(z.string(), z.string()).optional(),
@@ -42,8 +57,11 @@ const waypointSchema = z.object({
 const transitSchema = z.object({
   after: z.string().optional(),
   audio: z.string().optional(),
+  title: z.string().optional(),
+  transcript: z.string().optional(),
   zone: z.string().optional(),
   variants: z.record(z.string(), z.string()).optional(),
+  variant_meta: z.record(z.string(), variantMetaSchema).optional(),
   choice: z.boolean().optional(),
   duration_s: z.number().optional(),
   note: z.string().optional(),
@@ -51,6 +69,8 @@ const transitSchema = z.object({
 
 const insertSchema = z.object({
   audio: z.string(),
+  title: z.string().optional(),
+  transcript: z.string().optional(),
   requires: z.array(z.string()).optional(),
   requiresAny: z.array(z.string()).optional(),
   requiresHeard: z.array(z.string()).optional(),

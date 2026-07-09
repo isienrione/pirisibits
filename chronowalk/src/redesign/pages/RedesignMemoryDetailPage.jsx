@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getWaypoint } from '../../content/manifest.js'
+import { getAct, getWaypoint } from '../../content/manifest.js'
 import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
@@ -14,7 +14,7 @@ import {
   thenPhotoForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
-import { getAct } from '../../content/manifest.js'
+import { chapterTitle } from '../../content/chapterMeta.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import E2MemoryDetail from '../screens/E2MemoryDetail.jsx'
 
@@ -80,8 +80,11 @@ export default function RedesignMemoryDetailPage() {
           honestyCaption={honestyCaptionForWaypoint(waypoint)}
           signatureLine={signatureLine(waypoint)}
           facts={waypoint.keyFacts ?? []}
-          transcript={waypoint.transcriptPreview}
-          chapters={waypoint.chapters ?? []}
+          transcript={waypoint.transcript ?? waypoint.transcriptPreview}
+          chapters={(waypoint.chapters ?? []).map((chapter, index) => ({
+            n: index + 1,
+            title: chapterTitle(chapter, `Chapter ${index + 1}`),
+          }))}
           onBack={() => navigate('/journal')}
           onWalkToStop={handleWalkToStop}
           onStepThroughTime={() => goToStopExperience(JOURNEY_STATES.THRESHOLD)}

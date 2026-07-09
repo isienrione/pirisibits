@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { loadRomeManifest } from '../manifest.js'
 import { collectManifestAudioPaths } from '../audioPaths.js'
+import { chapterFile } from '../chapterMeta.js'
 import { parseRomeManifest } from '../romeManifestZod.schema.js'
 import rawManifest from '../rome/manifest.json'
 
@@ -10,8 +11,9 @@ describe('rome content manifest', () => {
     expect(manifest.city).toBe('rome')
     expect(manifest.acts).toHaveLength(7)
     expect(Object.keys(manifest.waypoints)).toContain('w01')
-    expect(Object.keys(manifest.waypoints)).toContain('enc_circus')
-    expect(manifest.waypoints.w02.chapters).toEqual(['w02_ch1.mp3', 'w02_ch2.mp3'])
+    expect(Object.keys(manifest.waypoints)).toContain('w22')
+    expect(manifest.waypoints.w02.chapters.map(chapterFile)).toEqual(['w02_ch1.mp3', 'w02_ch2.mp3'])
+    expect(manifest.waypoints.w01.transcript).toMatch(/underwater/i)
   })
 
   it('rejects an invalid zone reference', () => {
