@@ -100,6 +100,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const dwellTimerRef = useRef(null)
   // Always points at the latest arriveAtWaypoint so the timer closure is fresh.
   const arriveRef = useRef(null)
+  const thresholdAutoOpenedRef = useRef(null)
 
   useEffect(() => {
     prepareResumeCue()
@@ -283,6 +284,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (audio.narrationEnded.nonce === 0) return
     if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
     if (step.record?.scripted_rest) return
+    if (audio.narrationEnded.kind && audio.narrationEnded.kind !== 'waypoint') return
     if (audio.narrationEnded.id && audio.narrationEnded.id !== step.id) return
     if (storyCompleteTrackedRef.current === step.id) return
 
@@ -290,6 +292,57 @@ export default function JourneyShell({ variant = 'legacy' }) {
     track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, ended: true })
     setStoryEnded(true)
   }, [audio.narrationEnded, state, step?.id, step?.type, step?.record?.scripted_rest])
+
+  // Fallback when the engine ends playback but the ended event is missed (mobile
+  // backgrounding, buffer edge cases, or a race with step changes).
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
+    if (step.record?.scripted_rest || storyEnded) return
+    const duration = audio.progress?.duration ?? 0
+    const current = audio.progress?.currentTime ?? 0
+    if (duration <= 0 || audio.narrationPlaying) return
+    if (current < duration * 0.9) return
+    if (storyCompleteTrackedRef.current === step.id) {
+      setStoryEnded(true)
+      return
+    }
+    storyCompleteTrackedRef.current = step.id
+    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, ended: true, fallback: true })
+    setStoryEnded(true)
+  }, [
+    audio.narrationPlaying,
+    audio.progress?.currentTime,
+    audio.progress?.duration,
+    state,
+    step?.id,
+    step?.record?.scripted_rest,
+    step?.type,
+    storyEnded,
+  ])
+
+  // Waypoints with reconstruction open the now/then threshold once the story ends.
+  useEffect(() => {
+    if (variant !== 'redesign') return
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
+    if (!storyEnded || !step.record?.reconstruction) return
+    if (thresholdAutoOpenedRef.current === step.id) return
+
+    thresholdAutoOpenedRef.current = step.id
+    const timer = setTimeout(() => {
+      audio.stopNarration()
+      transition(JOURNEY_STATES.THRESHOLD)
+    }, 700)
+    return () => clearTimeout(timer)
+  }, [
+    audio,
+    state,
+    step?.id,
+    step?.record?.reconstruction,
+    step?.type,
+    storyEnded,
+    transition,
+    variant,
+  ])
 
   const handleCycleSpeed = useCallback(() => {
     const current = audio.playbackRate ?? 1
@@ -830,10 +883,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
       // In dev, only trust "audio available" once the engine confirms items or a
       // duration; in prod the deployed media is present, so never gate controls.
       const audioAvailable =
-        !import.meta.env.DEV ||
         audio.narrationPlaying ||
         (audio.progress?.itemCount ?? 0) > 0 ||
-        (audio.progress?.duration ?? 0) > 0
+        (audio.progress?.duration ?? 0) > 0 ||
+        storyEnded
 
       return withInterruptionBanner(
         <C6ImmersivePlayer

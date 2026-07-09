@@ -150,7 +150,8 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          padding: `max(48px, calc(env(safe-area-inset-top) + 16px)) 24px ${SHELL_SAFE_BOTTOM_INSET}`,
+          minHeight: 0,
+          padding: `max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 0`,
         }}
       >
         <div
@@ -341,51 +342,6 @@ export default function C6ImmersivePlayer({
           </p>
         ) : null}
 
-        {(onViewImages && storyEnded) || (onOpenThreshold && storyEnded && hasReconstruction) ? (
-          <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexShrink: 0 }}>
-            {onOpenThreshold && storyEnded && hasReconstruction ? (
-              <button
-                type="button"
-                onClick={onOpenThreshold}
-                style={{
-                  flex: 1,
-                  padding: '11px 10px',
-                  borderRadius: 10,
-                  border: `1px solid ${accent}66`,
-                  background: `${accent}12`,
-                  color: T.warmWhite,
-                  fontFamily: F.body,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                Step through time
-              </button>
-            ) : null}
-            {onViewImages ? (
-              <button
-                type="button"
-                onClick={onViewImages}
-                style={{
-                  flex: 1,
-                  padding: '11px 10px',
-                  borderRadius: 10,
-                  border: `1px solid ${T.muted}44`,
-                  background: 'transparent',
-                  color: T.muted,
-                  fontFamily: F.body,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                }}
-              >
-                View images only
-              </button>
-            ) : null}
-          </div>
-        ) : null}
-
         <div
           style={{
             display: 'flex',
@@ -419,7 +375,7 @@ export default function C6ImmersivePlayer({
           ))}
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', marginBottom: 12 }}>
+        <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', scrollbarWidth: 'none', marginBottom: 12, paddingBottom: 8 }}>
           {tab === 'transcript' ? (
             <div
               style={{
@@ -480,8 +436,17 @@ export default function C6ImmersivePlayer({
           )}
         </div>
 
+        <div
+          style={{
+            flexShrink: 0,
+            paddingTop: 8,
+            paddingBottom: `max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+            borderTop: `1px solid ${T.ink800}`,
+            background: 'linear-gradient(to top, rgba(22,19,15,0.98) 70%, transparent)',
+          }}
+        >
         {storyEnded && hasReconstruction && onOpenThreshold ? (
-          <div style={{ display: 'grid', gap: 10, flexShrink: 0 }}>
+          <div style={{ display: 'grid', gap: 10 }}>
             <button
               type="button"
               onClick={onOpenThreshold}
@@ -537,33 +502,13 @@ export default function C6ImmersivePlayer({
               fontSize: 15,
               fontWeight: 600,
               cursor: 'pointer',
-              flexShrink: 0,
               boxShadow: '0 0 24px rgba(232,161,60,0.4)',
             }}
           >
             Continue walking →
           </button>
-        ) : onStoryComplete ? (
-          <button
-            type="button"
-            onClick={onStoryComplete}
-            style={{
-              width: '100%',
-              padding: '14px',
-              borderRadius: 12,
-              border: `1px solid ${T.muted}44`,
-              background: 'transparent',
-              color: T.warmWhite,
-              fontFamily: F.body,
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: 'pointer',
-              flexShrink: 0,
-            }}
-          >
-            Continue walk →
-          </button>
         ) : null}
+        </div>
       </div>
     </div>
   )

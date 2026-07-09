@@ -26,7 +26,7 @@ export default function RedesignThresholdOverlay({
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 70,
+        zIndex: 100,
         height: '100dvh',
         width: '100%',
         background: T.obsidian,
