@@ -41,7 +41,10 @@ export function PwaUpdatePrompt() {
   return (
     <PwaUpdatePromptView
       visible={visible}
-      onUpdate={() => pwaController.applyUpdate()}
+      onUpdate={() => {
+        pwaController.applyUpdate()
+        setVisible(false)
+      }}
       onDismiss={() => setVisible(false)}
     />
   )

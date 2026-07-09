@@ -1,5 +1,5 @@
 import { registerSW } from 'virtual:pwa-register'
-import { ensureFreshBuild } from './ensureFreshBuild.js'
+import { ensureFreshBuildAsync } from './ensureFreshBuild.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
 
 function syncAppHeight() {
@@ -13,8 +13,20 @@ if (typeof window !== 'undefined') {
   window.visualViewport?.addEventListener('resize', syncAppHeight)
 }
 
-const isMigratingBuild = ensureFreshBuild()
+const devStub = registerAppServiceWorker(registerSW, { isProd: false })
 
-export const pwaController = isMigratingBuild
-  ? registerAppServiceWorker(registerSW, { isProd: false })
-  : registerAppServiceWorker(registerSW)
+/** Resolves once build migration (if any) has finished and the SW controller is ready. */
+export const pwaReady = (async () => {
+  if (typeof window === 'undefined') return devStub
+
+  const isMigrating = await ensureFreshBuildAsync()
+  if (isMigrating) return devStub
+
+  return registerAppServiceWorker(registerSW)
+})()
+
+export let pwaController = devStub
+
+void pwaReady.then((controller) => {
+  pwaController = controller
+})

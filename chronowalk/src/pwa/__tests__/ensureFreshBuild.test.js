@@ -3,6 +3,8 @@ import {
   BUILD_RELOAD_GUARD_KEY,
   BUILD_STORAGE_KEY,
   ensureFreshBuild,
+  ensureFreshBuildAsync,
+  parseBuildIdFromSwSource,
 } from '../ensureFreshBuild.js'
 
 describe('ensureFreshBuild', () => {
@@ -61,5 +63,45 @@ describe('ensureFreshBuild', () => {
     expect(ensureFreshBuild('build-new')).toBe(false)
     expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')
     expect(sessionStorage.getItem(BUILD_RELOAD_GUARD_KEY)).toBeNull()
+  })
+
+  it('parses build id from sw.js source', () => {
+    expect(parseBuildIdFromSwSource('prefix: "chronowalk-abc1234"')).toBe('abc1234')
+    expect(parseBuildIdFromSwSource('setCacheNameDetails({ prefix: "chronowalk-deadbeef" })')).toBe(
+      'deadbeef'
+    )
+  })
+
+  it('migrates when the network sw.js reports a newer build than the running bundle', async () => {
+    localStorage.setItem(BUILD_STORAGE_KEY, 'build-old')
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      text: () => Promise.resolve('prefix: "chronowalk-build-new"'),
+    }))
+
+    const cacheDelete = vi.fn().mockResolvedValue(true)
+    vi.stubGlobal('caches', {
+      keys: vi.fn().mockResolvedValue(['workbox-precache']),
+      delete: cacheDelete,
+    })
+
+    const unregister = vi.fn().mockResolvedValue(true)
+    vi.stubGlobal('navigator', {
+      serviceWorker: {
+        getRegistrations: vi.fn().mockResolvedValue([{ unregister }]),
+      },
+    })
+
+    const reload = vi.fn()
+    vi.stubGlobal('location', { reload: reload })
+
+    await expect(ensureFreshBuildAsync('build-old')).resolves.toBe(true)
+
+    await vi.waitFor(() => {
+      expect(reload).toHaveBeenCalled()
+    })
+
+    expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')
   })
 })

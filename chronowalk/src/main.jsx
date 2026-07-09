@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-// Build migration must run before the service worker registers (via pwaController).
-import './pwa/pwaController.js'
+import { pwaReady } from './pwa/pwaController.js'
 import './design/tokens.css'
 import './redesign/redesign.css'
 import './index.css'
@@ -14,8 +13,14 @@ if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
 }
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AppRouter />
-  </StrictMode>,
-)
+async function boot() {
+  await pwaReady
+
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <AppRouter />
+    </StrictMode>
+  )
+}
+
+void boot()
