@@ -7,6 +7,9 @@
  * - w01 Colosseum → Teatro Municipal de Las Condes
  * - Forum act (w06–w13) → cluster around Plaza Perú
  * - w15 Spanish Steps → Apumanque
+ * - w16 Trevi → Av. Las Condes 10373 (Estoril)
+ * - w17 Pantheon → Quebrada Honda 10246
+ * - w18 Navona → Tip y Tap San Crescente
  */
 import { getTestLocationRegion } from '../config/env.js'
 
@@ -29,6 +32,27 @@ const APUMANQUE = {
   lat: -33.40972,
   lng: -70.5675,
   label: 'Apumanque (Spanish Steps stand-in)',
+}
+
+/** Av. Las Condes 10373, casi esquina Estoril (OSM highway segment). */
+const AV_LAS_CONDES_10373_ESTORIL = {
+  lat: -33.38813,
+  lng: -70.53943,
+  label: 'Av. Las Condes 10373, Estoril (Trevi stand-in)',
+}
+
+/** Quebrada Honda 10246, La Foresta (OSM house node). */
+const QUEBRADA_HONDA_10246 = {
+  lat: -33.408143,
+  lng: -70.522404,
+  label: 'Quebrada Honda 10246 (Pantheon stand-in)',
+}
+
+/** Tip y Tap, San Crescente 20, El Golf (OSM restaurant node). */
+const TIP_Y_TAP_SAN_CRESCENTE = {
+  lat: -33.417018,
+  lng: -70.595435,
+  label: 'Tip y Tap San Crescente (Navona stand-in)',
 }
 
 /** Manifest waypoint id → substitute geofence (Rome radius_m preserved when omitted). */
@@ -76,6 +100,9 @@ export const CHILE_MANIFEST_GEOFENCES = {
   },
   w14: { lat: -33.4142, lng: -70.5989, radius_m: 45, label: 'Near Plaza Perú (Trajan\'s Market)' },
   w15: { ...APUMANQUE, radius_m: 35 },
+  w16: { ...AV_LAS_CONDES_10373_ESTORIL, radius_m: 35 },
+  w17: { ...QUEBRADA_HONDA_10246, radius_m: 40 },
+  w18: { ...TIP_Y_TAP_SAN_CRESCENTE, radius_m: 45 },
 }
 
 /** Legacy tour slugs → manifest id for shared Chile coords. */
@@ -97,6 +124,11 @@ const LEGACY_SLUG_TO_MANIFEST_ID = {
   'trajans-market': 'w14',
   'trajan-market': 'w14',
   'spanish-steps': 'w15',
+  'fontana-di-trevi': 'w16',
+  trevi: 'w16',
+  pantheon: 'w17',
+  'piazza-navona': 'w18',
+  navona: 'w18',
   'forum-basilica-maxentius': 'w06',
   'forum-via-sacra': 'w07',
   'forum-temple-vesta': 'w08',
@@ -116,6 +148,9 @@ export function getChileTestLocationSummary() {
     'Colosseum → Teatro Municipal de Las Condes',
     'Forum → Plaza Perú cluster',
     'Spanish Steps → Apumanque',
+    'Trevi → Av. Las Condes 10373 (Estoril)',
+    'Pantheon → Quebrada Honda 10246',
+    'Navona → Tip y Tap San Crescente',
   ]
 }
 

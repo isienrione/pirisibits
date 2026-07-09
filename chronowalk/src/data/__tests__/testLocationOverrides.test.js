@@ -44,6 +44,22 @@ describe('testLocationOverrides', () => {
     expect(geofence.lng).toBeCloseTo(-70.5675, 4)
   })
 
+  it('substitutes Living City stops with new Las Condes addresses', () => {
+    vi.mocked(getTestLocationRegion).mockReturnValue('chile')
+
+    const trevi = applyGeofenceOverride('w16', { lat: 41.90094, lng: 12.48331, radius_m: 35 })
+    expect(trevi.lat).toBeCloseTo(-33.38813, 4)
+    expect(trevi.lng).toBeCloseTo(-70.53943, 4)
+
+    const pantheon = applyGeofenceOverride('w17', { lat: 41.89885, lng: 12.47687, radius_m: 40 })
+    expect(pantheon.lat).toBeCloseTo(-33.408143, 4)
+    expect(pantheon.lng).toBeCloseTo(-70.522404, 4)
+
+    const navona = applyGeofenceOverride('w18', { lat: 41.89918, lng: 12.47306, radius_m: 45 })
+    expect(navona.lat).toBeCloseTo(-33.417018, 4)
+    expect(navona.lng).toBeCloseTo(-70.595435, 4)
+  })
+
   it('maps legacy colosseum slug through manifest id', () => {
     vi.mocked(getTestLocationRegion).mockReturnValue('chile')
 
