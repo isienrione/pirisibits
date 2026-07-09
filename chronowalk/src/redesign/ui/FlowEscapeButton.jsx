@@ -24,8 +24,12 @@ export default function FlowEscapeButton() {
     const { pathname } = location
 
     if (pathname === '/journey') {
-      if (journeyState === JOURNEY_STATES.THRESHOLD || journeyState === JOURNEY_STATES.STORY) {
-        transition(JOURNEY_STATES.ARRIVED)
+      if (journeyState === JOURNEY_STATES.STORY) {
+        transition(JOURNEY_STATES.WALKING)
+        return
+      }
+      if (journeyState === JOURNEY_STATES.ARRIVED) {
+        transition(JOURNEY_STATES.WALKING)
         return
       }
       if (

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chapterAtIndex, chapterAudioFile, chapterTitle } from './chapterMeta.js'
+import { chapterAtIndex, chapterAudioFile, chapterTitle, resolveStepTranscript } from './chapterMeta.js'
 
 describe('chapterMeta', () => {
   it('reads string chapters', () => {
@@ -15,5 +15,23 @@ describe('chapterMeta', () => {
       file: 'w06.mp3',
       title: 'Basilica of Maxentius',
     })
+  })
+
+  it('resolves waypoint and transit transcripts for read-along', () => {
+    expect(
+      resolveStepTranscript({
+        type: 'waypoint',
+        record: { transcript: 'Exterior script', chapters: [{ transcript: 'chapter' }] },
+      })
+    ).toBe('Exterior script')
+
+    expect(
+      resolveStepTranscript({
+        type: 'transit',
+        record: {
+          variant_meta: { a: { transcript: 'Forum path' }, b: { transcript: 'Palatine path' } },
+        },
+      }, 'b')
+    ).toBe('Palatine path')
   })
 })

@@ -10,8 +10,7 @@ export default function C4ArrivalMoment({
   title = 'The Colosseum',
   photo = colosseumNow,
   description = 'Take a second. Look up.',
-  onStepThroughTime,
-  onAudioOnly,
+  onBeginListening,
   onTranscript,
   onViewImages,
   busy = false,
@@ -89,7 +88,7 @@ export default function C4ArrivalMoment({
         <button
           type="button"
           disabled={busy}
-          onClick={onStepThroughTime}
+          onClick={onBeginListening}
           style={{
             width: '100%',
             padding: '16px 20px',
@@ -105,48 +104,31 @@ export default function C4ArrivalMoment({
             boxShadow: `0 4px 20px ${accent}44`,
           }}
         >
-          Step through time
+          Begin listening
         </button>
 
         <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onAudioOnly}
-            style={{
-              flex: 1,
-              padding: '13px 12px',
-              borderRadius: 999,
-              border: `1.5px solid ${T.muted}55`,
-              background: 'transparent',
-              color: T.ink,
-              fontFamily: F.body,
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: busy ? 'wait' : 'pointer',
-            }}
-          >
-            Audio only
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onTranscript}
-            style={{
-              flex: 1,
-              padding: '13px 12px',
-              borderRadius: 999,
-              border: `1.5px solid ${T.muted}55`,
-              background: 'transparent',
-              color: T.ink,
-              fontFamily: F.body,
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: busy ? 'wait' : 'pointer',
-            }}
-          >
-            Transcript
-          </button>
+          {onTranscript ? (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onTranscript}
+              style={{
+                flex: 1,
+                padding: '13px 12px',
+                borderRadius: 999,
+                border: `1.5px solid ${T.muted}55`,
+                background: 'transparent',
+                color: T.ink,
+                fontFamily: F.body,
+                fontSize: 14,
+                fontWeight: 500,
+                cursor: busy ? 'wait' : 'pointer',
+              }}
+            >
+              Read instead
+            </button>
+          ) : null}
         </div>
 
         {onViewImages ? (

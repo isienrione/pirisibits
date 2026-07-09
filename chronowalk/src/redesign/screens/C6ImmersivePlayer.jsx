@@ -341,9 +341,9 @@ export default function C6ImmersivePlayer({
           </p>
         ) : null}
 
-        {(onOpenThreshold || onViewImages) && (
+        {(onViewImages && storyEnded) || (onOpenThreshold && storyEnded && hasReconstruction) ? (
           <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexShrink: 0 }}>
-            {onOpenThreshold ? (
+            {onOpenThreshold && storyEnded && hasReconstruction ? (
               <button
                 type="button"
                 onClick={onOpenThreshold}
@@ -384,7 +384,7 @@ export default function C6ImmersivePlayer({
               </button>
             ) : null}
           </div>
-        )}
+        ) : null}
 
         <div
           style={{

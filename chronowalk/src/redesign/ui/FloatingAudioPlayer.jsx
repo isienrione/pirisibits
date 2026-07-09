@@ -31,9 +31,11 @@ export default function FloatingAudioPlayer({
   onCycleSpeed,
   onStop,
   onDismiss,
+  transcript = '',
   bottomInset = '16px',
 }) {
   const [expanded, setExpanded] = useState(false)
+  const [showTranscript, setShowTranscript] = useState(false)
   const [dragProgress, setDragProgress] = useState(null)
   const trackRef = useRef(null)
 
@@ -315,6 +317,24 @@ export default function FloatingAudioPlayer({
                   {formatPlaybackSpeed(playbackRate)}
                 </button>
               ) : <span />}
+              {transcript ? (
+                <button
+                  type="button"
+                  onClick={() => setShowTranscript((v) => !v)}
+                  style={{
+                    background: 'none',
+                    border: `1px solid ${T.muted}44`,
+                    borderRadius: 999,
+                    padding: '5px 14px',
+                    cursor: 'pointer',
+                    color: T.muted,
+                    fontFamily: F.body,
+                    fontSize: 12,
+                  }}
+                >
+                  {showTranscript ? 'Hide text' : 'Read instead'}
+                </button>
+              ) : null}
               {ended && onDismiss ? (
                 <button
                   type="button"
@@ -358,6 +378,26 @@ export default function FloatingAudioPlayer({
                 </button>
               ) : null}
             </div>
+
+            {showTranscript && transcript ? (
+              <div
+                style={{
+                  marginTop: 12,
+                  maxHeight: 160,
+                  overflowY: 'auto',
+                  padding: '12px 14px',
+                  borderRadius: 10,
+                  background: `${T.ink800}`,
+                  border: `1px solid ${T.muted}22`,
+                  fontSize: 13,
+                  lineHeight: 1.55,
+                  color: T.warmWhite,
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                {transcript}
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

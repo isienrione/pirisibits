@@ -133,6 +133,15 @@ describe('JourneyShell', () => {
     expect(screen.queryByText('MAP')).not.toBeInTheDocument()
   })
 
+  it('redesign auto-starts waypoint narration when story opens', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByRole('heading', { name: /colosseum exterior/i })).toBeInTheDocument()
+    expect(playWaypointMock).toHaveBeenCalledWith('w01')
+  })
+
   it('shows path choice at t01 before path is locked', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 2, pathLocked: false })

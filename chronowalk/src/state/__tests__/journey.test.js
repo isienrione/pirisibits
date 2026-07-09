@@ -58,6 +58,7 @@ describe('journey state machine', () => {
 
   it('promotes optional w04 on path A and rewinds sequence to t02', () => {
     const manifest = loadRomeManifest()
+    const t02Index = buildEffectiveSequence(manifest, 'a', ['w04']).indexOf('t02')
     beginJourney({ pace: 'classic', path: 'a' })
     transitionJourney(JOURNEY_STATES.WALKING, {
       currentSequenceIndex: 4,
@@ -69,7 +70,7 @@ describe('journey state machine', () => {
 
     const snapshot = getJourneySnapshot()
     expect(snapshot.context.promotedOptionalIds).toEqual(['w04'])
-    expect(snapshot.context.currentSequenceIndex).toBe(4)
+    expect(snapshot.context.currentSequenceIndex).toBe(t02Index)
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
   })
 
@@ -124,6 +125,19 @@ describe('journey state machine', () => {
     expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
     expect(snapshot.context.completedWaypointIds).toContain('w01')
     expect(snapshot.context.currentSequenceIndex).toBe(1)
+  })
+
+  it('does not double-advance when threshold completes an already-finished waypoint', () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 1,
+      completedWaypointIds: ['w01'],
+    })
+
+    const next = completeWaypointAndAdvance('w01')
+
+    expect(next.state).toBe(JOURNEY_STATES.WALKING)
+    expect(next.context.currentSequenceIndex).toBe(1)
   })
 
   it('queues a resume cue when continuing a saved journey', () => {

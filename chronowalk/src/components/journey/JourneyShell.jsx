@@ -24,7 +24,7 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { chapterAtIndex, chapterTitle, combinedChapterTranscript } from '../../content/chapterMeta.js'
+import { chapterAtIndex, chapterTitle, combinedChapterTranscript, resolveStepTranscript } from '../../content/chapterMeta.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
 import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -294,6 +294,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       subtitle: step.type === 'transit' ? 'On the way' : 'Now playing',
       accent: accentForWaypoint(record, manifest),
       duration: audio.progress?.duration || prev?.duration || 0,
+      transcript: resolveStepTranscript(step, context.path),
     }))
   }, [
     audio.narrationPlaying,
@@ -337,14 +338,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
         dwellTimerRef.current = null
       }
 
-      transition(JOURNEY_STATES.ARRIVED)
+      if (variant === 'redesign') {
+        storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
+        transition(JOURNEY_STATES.STORY)
+      } else {
+        transition(JOURNEY_STATES.ARRIVED)
+      }
       if (audioUnlocked) void audio.playArrivalChime()
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, source })
       if (source === 'manual') {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: step.id })
       }
     },
-    [audio, audioUnlocked, state, step, transition]
+    [audio, audioUnlocked, state, step, transition, variant]
   )
 
   useEffect(() => {
@@ -417,6 +423,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           subtitle: 'On the way',
           accent: accentForWaypoint(target, manifest),
           duration: audio.progress?.duration ?? 0,
+          transcript: resolveStepTranscript(step, context.path),
         })
       }
       void audio.playTransit(step.id)
@@ -432,6 +439,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     audio,
     audioUnlocked,
     manifest,
+    context.path,
     needsPathChoice,
     setActiveWaypoint,
     state,
@@ -463,24 +471,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setBusy(false)
   }
 
-  const handleStepThroughTime = () => {
-    if (!step?.record) return
-    transition(JOURNEY_STATES.THRESHOLD)
+  const handleTranscript = () => {
+    storyViewRef.current = 'transcript'
+    handleBeginStory()
   }
 
   const handleViewImages = () => {
     audio.stopNarration()
-    transition(JOURNEY_STATES.ARRIVED)
-  }
-
-  const handleAudioOnly = () => {
-    storyViewRef.current = 'chapters'
-    handleBeginStory()
-  }
-
-  const handleTranscript = () => {
-    storyViewRef.current = 'transcript'
-    handleBeginStory()
+    transition(JOURNEY_STATES.THRESHOLD)
   }
 
   const handleStoryComplete = useCallback(() => {
@@ -572,6 +570,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     Boolean(audio.progress?.paused)
 
   const resolvedDockSnapshot = useMemo(() => {
+    // Full-screen C6 owns playback during story; threshold has its own overlay.
     if (state === JOURNEY_STATES.STORY || state === JOURNEY_STATES.THRESHOLD) return null
     if (dockSnapshot) return dockSnapshot
     if (!manifest || !step || !narrationSessionLive) return null
@@ -586,12 +585,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
       subtitle: step.type === 'transit' ? 'On the way' : 'Now playing',
       accent: accentForWaypoint(record, manifest),
       duration: audio.progress?.duration ?? 0,
+      transcript: resolveStepTranscript(step, context.path),
     }
   }, [
     audio.progress?.duration,
     audio.progress?.itemCount,
     audio.progress?.paused,
     audio.narrationPlaying,
+    context.path,
     dockSnapshot,
     manifest,
     narrationSessionLive,
@@ -634,6 +635,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       onCycleSpeed={handleCycleSpeed}
       onStop={handleDockStop}
       onDismiss={handleDockDismiss}
+      transcript={resolvedDockSnapshot.transcript}
       bottomInset={dockBottomInset}
     />
   ) : null
@@ -839,7 +841,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
           onSelectChapter={(i) => audio.jumpToChapter(i)}
           onOpenTranscript={() => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id })}
           onStoryComplete={handleStoryComplete}
-          onBack={() => transition(JOURNEY_STATES.ARRIVED)}
+          onBack={() => {
+            audio.stopNarration()
+            storyStartedRef.current = null
+            playedStepRef.current = null
+            transition(JOURNEY_STATES.WALKING)
+          }}
           onOpenThreshold={handleOpenThreshold}
           onViewImages={handleViewImages}
         />
@@ -882,8 +889,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         <C4ArrivalMoment
           {...props}
           description={signatureLine(step.record)}
-          onStepThroughTime={handleStepThroughTime}
-          onAudioOnly={handleAudioOnly}
+          onBeginListening={handleBeginStory}
           onTranscript={handleTranscript}
           busy={busy}
         />

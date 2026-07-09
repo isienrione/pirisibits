@@ -274,10 +274,17 @@ export function setActiveWaypointIndex(waypointId, manifest) {
 }
 
 export function completeWaypointAndAdvance(waypointId) {
+  const alreadyComplete = snapshot.context.completedWaypointIds.includes(waypointId)
   markWaypointComplete(waypointId)
 
   if (shouldClassicDayBreak(snapshot.context.pace, waypointId)) {
     return transitionJourney(JOURNEY_STATES.DAY_COMPLETE)
+  }
+
+  // Threshold or story completion can fire twice (e.g. back → arrived → threshold
+  // again). Never skip the next transit/waypoint by advancing the index twice.
+  if (alreadyComplete) {
+    return transitionJourney(JOURNEY_STATES.WALKING)
   }
 
   return advanceSequenceIndex()

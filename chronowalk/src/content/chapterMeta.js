@@ -41,3 +41,22 @@ export function combinedChapterTranscript(chapters) {
     .filter(Boolean)
     .join('\n\n')
 }
+
+/** Full readable script for a waypoint or transit step (for dock / read-along). */
+export function resolveStepTranscript(step, path = 'a') {
+  if (!step?.record) return null
+
+  if (step.type === 'waypoint') {
+    const record = step.record
+    return record.transcript ?? combinedChapterTranscript(record.chapters) ?? null
+  }
+
+  if (step.type === 'transit') {
+    const transit = step.record
+    if (transit.transcript) return transit.transcript
+    const variantKey = path === 'b' ? 'b' : 'a'
+    return transit.variant_meta?.[variantKey]?.transcript ?? null
+  }
+
+  return null
+}
