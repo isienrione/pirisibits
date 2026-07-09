@@ -144,6 +144,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
     expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
+    expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
   it('shows inline threshold and read instead during story', async () => {
