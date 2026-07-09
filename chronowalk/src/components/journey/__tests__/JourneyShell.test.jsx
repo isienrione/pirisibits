@@ -208,7 +208,7 @@ describe('JourneyShell', () => {
     expect(playTransitMock).toHaveBeenCalledWith('t06')
   })
 
-  it('starts t06 transit narration after leaving w07 threshold', async () => {
+  it('starts t06 transit narration after completing w07 story', async () => {
     const manifest = loadRomeManifest()
     const seq = buildEffectiveSequence(manifest, 'a', [])
     const w07Index = seq.indexOf('w07')
@@ -216,7 +216,7 @@ describe('JourneyShell', () => {
     expect(seq[w07Index + 1]).toBe('t06')
 
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
-    transitionJourney(JOURNEY_STATES.THRESHOLD, {
+    transitionJourney(JOURNEY_STATES.STORY, {
       currentSequenceIndex: w07Index,
       completedWaypointIds: seq.slice(0, w07Index).filter((id) => id.startsWith('w')),
     })
@@ -228,6 +228,21 @@ describe('JourneyShell', () => {
     expect(screen.getByRole('heading', { name: /temple of vesta/i })).toBeInTheDocument()
     expect(screen.getByText(/read instead/i)).toBeInTheDocument()
     expect(playTransitMock).toHaveBeenCalledWith('t06')
+  })
+
+  it('renders unified transit shell for t15 en route to Trevi', async () => {
+    const manifest = loadRomeManifest()
+    const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
+    expect(t15Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t15Index })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('transit-screen')).toBeInTheDocument()
+    expect(screen.getByTestId('transit-audio-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('transit-continue')).toBeInTheDocument()
+    expect(playTransitMock).toHaveBeenCalledWith('t15')
   })
 
   it('t15 Trevi arrival begins w16 story from transit screen', async () => {

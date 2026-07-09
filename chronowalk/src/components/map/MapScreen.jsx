@@ -162,8 +162,13 @@ export default function MapScreen({ variant = 'legacy' }) {
   const handleManualArrival = useCallback(() => {
     if (!step?.record || step.type !== 'waypoint') return
     if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+    if (isRedesign) {
+      transition(JOURNEY_STATES.STORY)
+      navigate('/journey')
+      return
+    }
     transition(JOURNEY_STATES.ARRIVED)
-  }, [state, step, transition])
+  }, [isRedesign, navigate, state, step, transition])
 
   const handleRecenter = useCallback(() => {
     geo.retryLocation?.()

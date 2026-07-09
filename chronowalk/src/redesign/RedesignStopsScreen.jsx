@@ -256,17 +256,10 @@ export default function RedesignStopsScreen() {
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
                             type="button"
-                            onClick={() => walkToStop(card.id, JOURNEY_STATES.THRESHOLD)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
-                          >
-                            Threshold
-                          </button>
-                          <button
-                            type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
                             style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
-                            Audio
+                            Listen here
                           </button>
                           <button
                             type="button"

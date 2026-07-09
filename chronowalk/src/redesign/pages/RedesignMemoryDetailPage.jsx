@@ -87,10 +87,10 @@ export default function RedesignMemoryDetailPage() {
           }))}
           onBack={() => navigate('/journal')}
           onWalkToStop={handleWalkToStop}
-          onStepThroughTime={() => goToStopExperience(JOURNEY_STATES.THRESHOLD)}
+          onStepThroughTime={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
           onAudioOnly={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
           onTranscript={() => goToStopExperience(JOURNEY_STATES.STORY, 'transcript')}
-          onViewImages={() => goToStopExperience(JOURNEY_STATES.ARRIVED)}
+          onViewImages={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
         />
       </div>
     </RedesignRouteShell>

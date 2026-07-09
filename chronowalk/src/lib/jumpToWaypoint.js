@@ -6,6 +6,7 @@ import {
   transitionJourney,
 } from '../state/journey.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
+import { normalizeRedesignJourneyState } from '../redesign/lib/redesignJourneyState.js'
 
 const STORY_VIEW_KEY = 'cw_story_view'
 
@@ -43,7 +44,9 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
   const fallback =
     isDebugGeo() && placement === 'arrived' ? JOURNEY_STATES.ARRIVED : JOURNEY_STATES.WALKING
 
-  transitionJourney(targetState ?? fallback)
+  const resolvedState = normalizeRedesignJourneyState(targetState ?? fallback)
+
+  transitionJourney(resolvedState)
 
   return true
 }

@@ -2,6 +2,7 @@ import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
 import { shouldClassicDayBreak } from '../content/actBoundaries.js'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
+import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -110,7 +111,7 @@ function readStorage() {
     }
 
     return {
-      state: parsed.state ?? JOURNEY_STATES.IDLE,
+      state: migratePersistedJourneyState(parsed.state ?? JOURNEY_STATES.IDLE),
       context: mergedContext,
     }
   } catch {

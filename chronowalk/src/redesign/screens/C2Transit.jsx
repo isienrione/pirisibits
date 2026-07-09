@@ -177,30 +177,31 @@ export default function C2Transit({
       ) : null}
 
       <div
+        className={reading ? 'cw-transit-immersive__read-layer' : undefined}
         style={{
           flex: 1,
           minHeight: 0,
           overflow: 'hidden',
           flexShrink: 1,
-          padding: reading ? '8px 12px 0' : showTranscript && transcript ? '10px 16px 0' : '14px 20px 0',
+          padding: reading ? 0 : showTranscript && transcript ? '10px 16px 0' : '14px 20px 0',
           background: T.bone,
           display: 'flex',
           flexDirection: 'column',
         }}
       >
         {reading ? (
-          <KaraokeTranscript
-            transcript={transcript}
-            currentTime={currentTime}
-            duration={duration}
-            playing={narrationPlaying}
-            accent={accent}
-            fontSize={19}
-            variant="bone"
-            fullHeight
-            immersive
-            testId="transit-transcript"
-          />
+          <div className="cw-transit-immersive__read-scroll" data-testid="transit-read-scroll">
+            <KaraokeTranscript
+              transcript={transcript}
+              currentTime={currentTime}
+              duration={duration}
+              playing={narrationPlaying}
+              accent={accent}
+              fontSize={19}
+              readingMode
+              testId="transit-transcript"
+            />
+          </div>
         ) : (
           <>
             <Eyebrow color={accent}>WALKING TO</Eyebrow>

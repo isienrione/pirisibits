@@ -60,6 +60,7 @@ import {
   buildImmersivePlayerProps,
   redesignWaypointShellProps,
 } from '../../redesign/lib/waypointImmersiveProps.js'
+import { buildTransitImmersiveProps } from '../../redesign/lib/transitImmersiveProps.js'
 import JourneyInlineMap from './JourneyInlineMap.jsx'
 import { bearingDegrees } from '../../utils/bearing.js'
 
@@ -724,6 +725,22 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setBusy(false)
   }
 
+  // Redesign skips ARRIVED — recover stale sessions (e.g. map tab manual arrival).
+  const arrivedRecoveryRef = useRef(null)
+  useEffect(() => {
+    if (variant !== 'redesign') return undefined
+    if (state !== JOURNEY_STATES.ARRIVED || step?.type !== 'waypoint') {
+      if (state !== JOURNEY_STATES.ARRIVED) arrivedRecoveryRef.current = null
+      return undefined
+    }
+    if (arrivedRecoveryRef.current === step.id) return undefined
+    arrivedRecoveryRef.current = step.id
+    storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
+    transition(JOURNEY_STATES.STORY)
+    void tryStartWaypointNarrationRef.current(step.id)
+    return undefined
+  }, [state, step?.id, step?.type, transition, variant])
+
   const handleTranscript = () => {
     storyViewRef.current = 'transcript'
     handleBeginStory()
@@ -1194,45 +1211,35 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (state === JOURNEY_STATES.WALKING && step.type === 'transit') {
     if (variant === 'redesign') {
-      const target = step.targetWaypoint
-      const props = redesignWaypointProps(target)
-      const transitNote =
-        step.record?.note ??
-        (step.record?.title
-          ? `Listen on the way — ${String(step.record.title).replace(/^→\s*/, '')}`
-          : 'The city between stops has its own stories — listen while Rome rolls past.')
-      const transitTranscript = resolveStepTranscript(step, context.path)
-      const variantKey = context.path === 'b' ? 'b' : 'a'
-      const transitTrackTitle =
-        step.record?.variant_meta?.[variantKey]?.title ??
-        step.record?.title ??
-        null
+      const transitProps = buildTransitImmersiveProps({
+        step,
+        manifest,
+        context,
+        journeyProgressPct,
+        audio: {
+          narrationPlaying: audio.narrationPlaying,
+          progress: audio.progress,
+          playbackRate: audio.playbackRate,
+        },
+        handlers: {
+          onOpenSettings: openSettings,
+          onContinue: handleTransitContinue,
+          continueLabel: audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →',
+          destinationTitle: titleForWaypoint(step.targetWaypoint),
+          onArriveAtDestination: handleTransitDestinationArrival,
+          atDestination:
+            Boolean(step.targetWaypoint) &&
+            (geo.insideGeofence || locationShy),
+          onToggleAudio: () => audio.toggleNarration(),
+          onSkipBack: () => audio.skipNarration(-15),
+          onSkipForward: () => audio.skipNarration(15),
+          onSeek: (seconds) => audio.seekNarration(seconds),
+          onCycleSpeed: handleCycleSpeed,
+        },
+      })
       return withInterruptionBanner(
         <C2Transit
-          {...props}
-          note={transitNote}
-          progressPct={journeyProgressPct}
-          onOpenSettings={openSettings}
-          onContinue={handleTransitContinue}
-          continueLabel={audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →'}
-          narrationPlaying={audio.narrationPlaying}
-          narrationPaused={Boolean(audio.progress?.paused)}
-          currentTime={audio.progress?.currentTime ?? 0}
-          duration={audio.progress?.duration ?? 0}
-          playbackRate={audio.playbackRate}
-          transcript={transitTranscript}
-          trackTitle={transitTrackTitle}
-          destinationTitle={titleForWaypoint(step.targetWaypoint)}
-          onArriveAtDestination={handleTransitDestinationArrival}
-          atDestination={
-            Boolean(step.targetWaypoint) &&
-            (geo.insideGeofence || locationShy)
-          }
-          onToggleAudio={() => audio.toggleNarration()}
-          onSkipBack={() => audio.skipNarration(-15)}
-          onSkipForward={() => audio.skipNarration(15)}
-          onSeek={(seconds) => audio.seekNarration(seconds)}
-          onCycleSpeed={handleCycleSpeed}
+          {...transitProps}
           map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )
