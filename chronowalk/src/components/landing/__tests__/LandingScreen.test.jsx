@@ -1,7 +1,11 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { getTourProductTruth } from '../../../content/tourProductTruth.js'
+import { loadRomeManifest } from '../../../content/manifest.js'
 import LandingScreen from '../LandingScreen'
+
+const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
 
 vi.mock('../../../hooks/usePrice', () => ({
   usePrice: () => ({
@@ -47,7 +51,7 @@ describe('LandingScreen', () => {
 
     expect(screen.getByText('Recommended by Hotel Roma')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /walk where rome/i })).toBeInTheDocument()
-    expect(screen.getByText('22 places across six acts')).toBeInTheDocument()
+    expect(screen.getByText(PRODUCT_TRUTH.placesAcrossActsLabel)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /unlock rome — €17/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })

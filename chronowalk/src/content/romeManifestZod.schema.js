@@ -14,6 +14,11 @@ const reconstructionSchema = z.object({
   caption: z.string().optional(),
 })
 
+const waypointDisplaySchema = z.object({
+  publicPlaceCount: z.number().int().positive().optional(),
+  combinedLabel: z.string().optional(),
+})
+
 const waypointSchema = z.object({
   title: z.string(),
   act: z.string(),
@@ -26,6 +31,7 @@ const waypointSchema = z.object({
   interior_zone: z.string().optional(),
   optional_on_path: z.enum(['a', 'b']).optional(),
   scripted_rest: z.boolean().optional(),
+  display: waypointDisplaySchema.optional(),
   photo: z.string().optional(),
   now_image: nowImageSchema.optional(),
   reconstruction: reconstructionSchema.optional(),
@@ -58,12 +64,26 @@ const actSchema = z.object({
   waypoints: z.array(z.string()).min(1),
 })
 
+const productSchema = z.object({
+  publicPlaceCount: z.number().int().positive(),
+  visitStopCount: z.number().int().positive().optional(),
+  classicVisitStopCount: z.number().int().positive().optional(),
+  storyStopCount: z.number().int().positive().optional(),
+  actCount: z.number().int().positive().optional(),
+  durationLabel: z.string().optional(),
+  ownershipLabel: z.string().optional(),
+  distanceLabel: z.string().optional(),
+  priceFallbackCents: z.number().int().positive().optional(),
+  currency: z.string().optional(),
+})
+
 export const romeManifestSchema = z.object({
   city: z.literal('rome'),
   id: z.string(),
   name: z.string(),
   accent: z.string().optional(),
   price_fallback_cents: z.number().optional(),
+  product: productSchema.optional(),
   reflections: z.array(z.string()).optional(),
   acts: z.array(actSchema).min(1),
   journey: z.object({

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { buildJournalTimeline } from '../../content/journalTimeline.js'
+import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { getWaypoint } from '../../content/manifest.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
 import { T, F, ACT_COLORS, SHELL_TAB_BAR_INSET } from '../tokens.js'
@@ -44,7 +45,15 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
       .filter((g) => g.stops.length > 0)
   }, [manifest, context])
 
-  const stopCount = groups.reduce((n, g) => n + g.stops.length, 0)
+  const stopCount = useMemo(() => {
+    if (!manifest) return 0
+    return getTourProductTruth(manifest, {
+      path: context.path,
+      pace: context.pace,
+      promotedOptionalIds: context.promotedOptionalIds,
+      customWaypointIds: context.customWaypointIds,
+    }).visitStopCount
+  }, [manifest, context.path, context.pace, context.promotedOptionalIds, context.customWaypointIds])
 
   return (
     <div

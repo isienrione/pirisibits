@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react'
 import { Play, ChevronRight } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
+import { loadRomeManifest } from '../../content/manifest.js'
+import { getRedesignHeroTrustStats } from '../../content/tourProductTruth.js'
 import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
+
+const HERO_TRUST_STATS = getRedesignHeroTrustStats(loadRomeManifest())
 
 export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPreview, onPreviewStory }) {
   const [demoState, setDemoState] = useState('now')
@@ -208,7 +212,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
             padding: '0 24px 36px',
           }}
         >
-          {['22 stops', 'Works offline', 'Yours forever'].map((v) => (
+          {HERO_TRUST_STATS.map((v) => (
             <div key={v} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ width: 4, height: 4, borderRadius: 2, background: T.ember }} />
               <span style={{ fontSize: 12, color: `${T.warmWhite}99` }}>{v}</span>

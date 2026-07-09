@@ -24,6 +24,7 @@ import {
   clearPendingResumeCue,
   JOURNEY_STATES,
 } from '../state/journey'
+import { loadRomeManifest } from '../content/manifest.js'
 
 export function useV2Journey() {
   const snapshot = useSyncExternalStore(subscribeJourney, getJourneySnapshot, getJourneySnapshot)
@@ -61,14 +62,12 @@ export function useTourManifest() {
   useEffect(() => {
     let cancelled = false
 
-    import('../lib/tour')
-      .then(({ loadTourManifest }) => loadTourManifest())
-      .then((data) => {
-        if (!cancelled) setManifest(data)
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err)
-      })
+    try {
+      const data = loadRomeManifest()
+      if (!cancelled) setManifest(data)
+    } catch (err) {
+      if (!cancelled) setError(err)
+    }
 
     return () => {
       cancelled = true

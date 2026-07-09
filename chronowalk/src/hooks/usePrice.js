@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
 import { formatConfigPrice, loadAppConfig } from '../lib/config'
+import { loadRomeManifest } from '../content/manifest.js'
+
+const ROME_PRICE_FALLBACK = loadRomeManifest().product?.priceFallbackCents
+  ?? loadRomeManifest().price_fallback_cents
+  ?? 1700
 
 export function usePrice() {
-  const [price, setPrice] = useState({ label: '€17', cents: 1700, currency: 'EUR' })
+  const [price, setPrice] = useState({
+    label: formatConfigPrice(ROME_PRICE_FALLBACK, 'EUR'),
+    cents: ROME_PRICE_FALLBACK,
+    currency: 'EUR',
+  })
 
   useEffect(() => {
     let cancelled = false

@@ -9,6 +9,9 @@ import { track, TRACK_EVENTS } from '../../lib/track.js'
 import {
   photoForWaypoint,
   thenPhotoForWaypoint,
+  thenLoopForWaypoint,
+  thenLabelForWaypoint,
+  honestyCaptionForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
 import { THEN_pantheon } from '../images.js'
@@ -94,6 +97,10 @@ export default function RedesignPreviewPage() {
           title={waypoint ? titleForWaypoint(waypoint) : 'The Pantheon'}
           photo={waypoint ? photoForWaypoint(waypoint) : undefined}
           thenPhoto={waypoint ? thenPhotoForWaypoint(waypoint) : THEN_pantheon}
+          thenLoop={waypoint ? thenLoopForWaypoint(waypoint) : null}
+          thenLabel={waypoint ? thenLabelForWaypoint(waypoint) : 'ANCIENT ROME'}
+          honestyCaption={waypoint ? honestyCaptionForWaypoint(waypoint) : null}
+          waypointId={waypoint?.id ?? 'w17'}
           tagline={waypoint?.approachLine ?? 'A temple to all gods — or a tomb for emperors?'}
           narrationPlaying={playing}
           audioAvailable={audioAvailable}

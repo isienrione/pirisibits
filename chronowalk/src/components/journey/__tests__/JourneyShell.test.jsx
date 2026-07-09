@@ -35,6 +35,9 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
       playing: false,
       paused: false,
     },
+    playbackRate: 1,
+    setPlaybackRate: vi.fn(),
+    narrationEnded: { nonce: 0, kind: null, id: null },
     unlock: unlockMock,
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
@@ -73,6 +76,7 @@ vi.mock('../../../lib/track.js', () => ({
     RESUME: 'resume',
     DAY_COMPLETE: 'day_complete',
     PAUSE: 'pause',
+    TRANSCRIPT_OPEN: 'transcript_open',
   },
 }))
 

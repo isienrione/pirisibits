@@ -182,6 +182,7 @@ export default function E2MemoryDetail({
           }}
         >
           <C7Threshold
+            embedded
             nowPhoto={nowPhoto}
             thenPhoto={thenPhoto}
             thenLoop={thenLoop}

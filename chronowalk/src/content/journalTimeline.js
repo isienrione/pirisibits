@@ -1,5 +1,6 @@
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, resolveJourneyStep } from './manifest.js'
+import { isVisitStop } from './tourProductTruth.js'
 
 export function pickJournalReflection(manifest, completedCount) {
   const reflections = manifest?.reflections ?? []
@@ -44,6 +45,7 @@ export function buildJournalTimeline(
         status,
         onPath,
         optional: Boolean(waypoint?.optional_on_path) && !onPath,
+        isVisitStop: isVisitStop(waypoint),
       }
     }),
   }))
@@ -51,7 +53,7 @@ export function buildJournalTimeline(
 
 export function summarizeJournalProgress(timeline) {
   const entries = timeline.flatMap((act) => act.entries)
-  const onPathEntries = entries.filter((entry) => entry.onPath)
+  const onPathEntries = entries.filter((entry) => entry.onPath && entry.isVisitStop !== false)
   const completed = onPathEntries.filter((entry) => entry.status === 'completed').length
   const total = onPathEntries.length
 

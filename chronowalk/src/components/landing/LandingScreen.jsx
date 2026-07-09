@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
 import Threshold from '../Threshold'
 import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
+import { loadRomeManifest } from '../../content/manifest.js'
+import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { usePrice } from '../../hooks/usePrice'
 import { buildCheckoutUrl, getHost, getHostLabel } from '../../lib/host'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
+const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
+
 const INCLUDED = [
-  '22 places across six acts',
+  PRODUCT_TRUTH.placesAcrossActsLabel,
   'Place-aware audio at every stop',
   'Press-and-hold reconstructions',
   'Walking directions between landmarks',

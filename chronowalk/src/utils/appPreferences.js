@@ -5,7 +5,7 @@ const PLAYER_ICONS_KEY = 'chronowalk-player-icons'
 const NOTIFICATIONS_KEY = 'chronowalk:notifications'
 const HAPTICS_KEY = 'chronowalk:haptics-enabled'
 
-export const STORY_PLAYBACK_SPEEDS = [1, 1.25, 1.5, 2]
+export const STORY_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.25, 1.5, 2]
 export const PREFERENCES_CHANGED_EVENT = 'chronowalk:preferences-changed'
 
 const readBool = (key, fallback = false) => {

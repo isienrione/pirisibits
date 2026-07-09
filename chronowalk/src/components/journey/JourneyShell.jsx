@@ -12,7 +12,7 @@ import { useOptionalPromotion } from '../../hooks/useOptionalPromotion.js'
 import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
 import { consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
-import { JOURNEY_STATES } from '../../state/journey.js'
+import { JOURNEY_STATES, isImmersiveJourneyState } from '../../state/journey.js'
 import ApproachingScreen from './ApproachingScreen.jsx'
 import ArrivalScreen from './ArrivalScreen.jsx'
 import PathChoiceScreen from './PathChoiceScreen.jsx'
@@ -22,18 +22,24 @@ import RestScreen from './RestScreen.jsx'
 import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
-import { COMPANION_MODES, isCompanionTrackingState } from '../../content/companionGuidance.js'
+import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { formatDistanceToNext } from '../../content/journeyProgress.js'
+import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
+import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops } from '../../content/journeyProgress.js'
+import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
+import C2Transit from '../../redesign/screens/C2Transit.jsx'
 import C3Approaching from '../../redesign/screens/C3Approaching.jsx'
 import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
 import C6ImmersivePlayer from '../../redesign/screens/C6ImmersivePlayer.jsx'
 import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
 import C8bThePause from '../../redesign/screens/C8bThePause.jsx'
 import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
-import { ACT_COLORS, T } from '../../redesign/tokens.js'
+import { ACT_COLORS, T, SHELL_TAB_BAR_INSET, SHELL_SAFE_BOTTOM_INSET } from '../../redesign/tokens.js'
 import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
+import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
+import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
+import { getAppPreferences } from '../../hooks/useAppPreferences.js'
 import {
   accentForWaypoint,
   approachCopy,
@@ -42,10 +48,24 @@ import {
   signatureLine,
   titleForWaypoint,
 } from '../../redesign/lib/waypointPresentation.js'
+import JourneyInlineMap from './JourneyInlineMap.jsx'
+import { bearingDegrees } from '../../utils/bearing.js'
+
+// GPS in Rome drifts, so arrival is confirmed only after a stable, continuous
+// presence near the landmark — never the instant the radius is first touched.
+const ARRIVAL_DWELL_MS = 5000
+// When the position's radius of uncertainty is worse than this, we don't
+// auto-arrive; the traveller can still tap "I'm here".
+const POOR_ACCURACY_M = 60
+
+// Speeds offered by the immersive player's speed pill (subset of the shared
+// STORY_PLAYBACK_SPEEDS preference set).
+const PLAYER_SPEEDS = [0.8, 1, 1.2]
 
 export default function JourneyShell({ variant = 'legacy' }) {
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
+  const { openSettings } = useSettingsSheet()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -57,6 +77,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
+  // True once the current waypoint's narration reaches its natural end.
+  const [storyEnded, setStoryEnded] = useState(false)
+  // Last heard narration — keeps the floating dock visible after audio ends.
+  const [dockSnapshot, setDockSnapshot] = useState(null)
+  const storyCompleteTrackedRef = useRef(null)
   const playedStepRef = useRef(null)
   const storyStartedRef = useRef(null)
   const playedResumeRef = useRef(false)
@@ -66,6 +91,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const prevStateRef = useRef(state)
   const prevCompanionModeRef = useRef(COMPANION_MODES.NORMAL)
   const storyViewRef = useRef('chapters')
+  // Guards a waypoint from arriving twice (dwell timer + manual tap can race).
+  const arrivedWaypointRef = useRef(null)
+  // Handle for the 5s continuous-presence timer; null when not counting.
+  const dwellTimerRef = useRef(null)
+  // Always points at the latest arriveAtWaypoint so the timer closure is fresh.
+  const arriveRef = useRef(null)
 
   useEffect(() => {
     prepareResumeCue()
@@ -197,23 +228,157 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (audio.ready) setAudioUnlocked(true)
   }, [audio.ready])
 
+  // Reset the "story finished" reveal whenever we leave the story or change stop.
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY) {
+      setStoryEnded(false)
+      return
+    }
+    storyCompleteTrackedRef.current = null
+    setStoryEnded(false)
+  }, [state, step?.id])
+
+  // Natural end of a waypoint's narration → mark complete + reveal next action.
+  // Scripted-rest waypoints intentionally route to PAUSED instead, so skip them.
+  useEffect(() => {
+    if (audio.narrationEnded.nonce === 0) return
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
+    if (step.record?.scripted_rest) return
+    if (audio.narrationEnded.id && audio.narrationEnded.id !== step.id) return
+    if (storyCompleteTrackedRef.current === step.id) return
+
+    storyCompleteTrackedRef.current = step.id
+    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, ended: true })
+    setStoryEnded(true)
+  }, [audio.narrationEnded, state, step?.id, step?.type, step?.record?.scripted_rest])
+
+  const handleCycleSpeed = useCallback(() => {
+    const current = audio.playbackRate ?? 1
+    const idx = PLAYER_SPEEDS.indexOf(current)
+    const next = PLAYER_SPEEDS[(idx + 1) % PLAYER_SPEEDS.length]
+    audio.setPlaybackRate(next)
+  }, [audio])
+
+  // Remember what's playing so the dock can linger (with replay) after audio ends.
+  useEffect(() => {
+    if (!manifest || !step || state === JOURNEY_STATES.STORY) return
+    const sessionLive = (audio.progress?.itemCount ?? 0) > 0 || audio.narrationPlaying
+    if (!sessionLive) return
+
+    const record = step.type === 'waypoint' ? step.record : step.targetWaypoint
+    setDockSnapshot((prev) => ({
+      kind: step.type === 'transit' ? 'transit' : 'waypoint',
+      id: step.id,
+      title: titleForWaypoint(record),
+      subtitle: step.type === 'transit' ? 'On the way' : 'Now playing',
+      accent: accentForWaypoint(record, manifest),
+      duration: audio.progress?.duration || prev?.duration || 0,
+    }))
+  }, [
+    audio.narrationPlaying,
+    audio.progress?.duration,
+    audio.progress?.itemCount,
+    manifest,
+    state,
+    step?.id,
+    step?.record,
+    step?.targetWaypoint,
+    step?.type,
+  ])
+
+  const handleDockReplay = useCallback(() => {
+    if (!dockSnapshot) return
+    if (dockSnapshot.kind === 'transit') void audio.playTransit(dockSnapshot.id)
+    else void audio.playWaypoint(dockSnapshot.id)
+  }, [audio, dockSnapshot])
+
+  const handleDockStop = useCallback(() => {
+    audio.stopNarration()
+  }, [audio])
+
+  const handleDockDismiss = useCallback(() => {
+    audio.stopNarration()
+    setDockSnapshot(null)
+  }, [audio])
+
+  // Confirmed arrival — auto (after 5s dwell) or manual ("I'm here"). Guarded so
+  // the dwell timer and a manual tap can never fire arrival for the same
+  // waypoint twice.
+  const arriveAtWaypoint = useCallback(
+    (source) => {
+      if (!step?.record || step.type !== 'waypoint') return
+      if (arrivedWaypointRef.current === step.id) return
+      if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+
+      arrivedWaypointRef.current = step.id
+      if (dwellTimerRef.current != null) {
+        clearTimeout(dwellTimerRef.current)
+        dwellTimerRef.current = null
+      }
+
+      transition(JOURNEY_STATES.ARRIVED)
+      if (audioUnlocked) void audio.playArrivalChime()
+      track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, source })
+      if (source === 'manual') {
+        track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: step.id })
+      }
+    },
+    [audio, audioUnlocked, state, step, transition]
+  )
+
+  useEffect(() => {
+    arriveRef.current = arriveAtWaypoint
+  }, [arriveAtWaypoint])
+
+  // Reset the arrival guard and any pending dwell whenever the target changes.
+  useEffect(() => {
+    arrivedWaypointRef.current = null
+    if (dwellTimerRef.current != null) {
+      clearTimeout(dwellTimerRef.current)
+      dwellTimerRef.current = null
+    }
+  }, [step?.id])
+
   useEffect(() => {
     if (!geoTarget || step?.type !== 'waypoint') return
     if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+    if (arrivedWaypointRef.current === step.id) return
 
-    if (geo.insideGeofence) {
-      if (state !== JOURNEY_STATES.ARRIVED) {
-        transition(JOURNEY_STATES.ARRIVED)
-        if (audioUnlocked) void audio.playArrivalChime()
-        track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id })
+    // Reject drift: a wildly uncertain fix can flicker "inside" the radius, so
+    // we never auto-arrive on it (the "I'm here" button still works).
+    const accuracyReliable = geo.accuracy == null || geo.accuracy <= POOR_ACCURACY_M
+
+    if (geo.insideGeofence && accuracyReliable) {
+      // Start counting continuous presence; keep any timer already running so a
+      // steady position matures to arrival even without further GPS updates.
+      if (dwellTimerRef.current == null) {
+        dwellTimerRef.current = setTimeout(() => {
+          dwellTimerRef.current = null
+          arriveRef.current?.('auto')
+        }, ARRIVAL_DWELL_MS)
       }
       return
+    }
+
+    // Left the radius (or accuracy went bad) before dwell matured — cancel.
+    if (dwellTimerRef.current != null) {
+      clearTimeout(dwellTimerRef.current)
+      dwellTimerRef.current = null
     }
 
     if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
       transition(JOURNEY_STATES.APPROACHING)
     }
-  }, [geo.insideGeofence, geo.approachingGeofence, geoTarget, state, step?.id, step?.type, transition, audio, audioUnlocked])
+  }, [geo.insideGeofence, geo.approachingGeofence, geo.accuracy, geoTarget, state, step?.id, step?.type, transition])
+
+  useEffect(() => () => {
+    if (dwellTimerRef.current != null) clearTimeout(dwellTimerRef.current)
+  }, [])
+
+  // True when the fix is too uncertain to trust for auto-arrival — used to
+  // gently surface the manual "I'm here" affordance.
+  const locationShy =
+    geo.accuracy != null && geo.accuracy > POOR_ACCURACY_M
 
   useEffect(() => {
     if (!manifest || !step || step.done) return
@@ -260,7 +425,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleBeginStory = async () => {
     if (!step?.record) return
-    storyViewRef.current = 'chapters'
+    storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
     setBusy(false)
@@ -289,7 +454,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const handleStoryComplete = useCallback(() => {
     if (!step?.record || step.type !== 'waypoint') return
 
-    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
+    // Avoid double-counting if the audio already ended and fired story_complete.
+    if (storyCompleteTrackedRef.current !== step.id) {
+      storyCompleteTrackedRef.current = step.id
+      track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
+    }
     storyStartedRef.current = null
     playedStepRef.current = null
 
@@ -332,12 +501,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     transition(JOURNEY_STATES.THRESHOLD)
   }
 
-  const handleSimulateArrival = () => {
-    if (!step?.record || step.type !== 'waypoint') return
-    transition(JOURNEY_STATES.ARRIVED)
-    if (audioUnlocked) void audio.playArrivalChime()
-    track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, simulated: true })
-  }
+  const handleManualArrival = () => arriveAtWaypoint('manual')
 
   useEffect(() => {
     if (!audioUnlocked || playedCompletionRef.current) return
@@ -362,10 +526,49 @@ export default function JourneyShell({ variant = 'legacy' }) {
       />
     ) : null
 
+  // Persistent narration dock — lingers after audio ends so the traveller can
+  // replay or dismiss. Hidden on the full-screen story player.
+  const dockSessionLive = (audio.progress?.itemCount ?? 0) > 0 || audio.narrationPlaying
+  const dockEnded = Boolean(dockSnapshot) && !dockSessionLive
+  const dockActive =
+    variant === 'redesign' &&
+    audioUnlocked &&
+    Boolean(dockSnapshot) &&
+    state !== JOURNEY_STATES.STORY
+  const dockBottomInset = isImmersiveJourneyState(state)
+    ? SHELL_SAFE_BOTTOM_INSET
+    : SHELL_TAB_BAR_INSET
+  const floatingPlayer = dockActive ? (
+    <FloatingAudioPlayer
+      accent={dockSnapshot.accent}
+      title={dockSnapshot.title}
+      subtitle={dockEnded ? 'Just heard' : dockSnapshot.subtitle}
+      narrationPlaying={audio.narrationPlaying}
+      ended={dockEnded}
+      currentTime={
+        dockEnded
+          ? dockSnapshot.duration
+          : (audio.progress?.currentTime ?? 0)
+      }
+      duration={dockEnded ? dockSnapshot.duration : (audio.progress?.duration ?? 0)}
+      playbackRate={audio.playbackRate}
+      onToggle={() => (dockEnded ? handleDockReplay() : audio.toggleNarration())}
+      onReplay={handleDockReplay}
+      onSkipBack={() => audio.skipNarration(-15)}
+      onSkipForward={() => audio.skipNarration(15)}
+      onSeek={(seconds) => audio.seekNarration(seconds)}
+      onCycleSpeed={handleCycleSpeed}
+      onStop={handleDockStop}
+      onDismiss={handleDockDismiss}
+      bottomInset={dockBottomInset}
+    />
+  ) : null
+
   const withInterruptionBanner = (content) => (
     <>
       {interruptionBanner}
       {content}
+      {floatingPlayer}
     </>
   )
 
@@ -463,6 +666,51 @@ export default function JourneyShell({ variant = 'legacy' }) {
         }
       : {}
 
+  const journeyProgressPct = resolveJourneyProgressPct(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
+
+  const previousWaypoint = getPreviousWaypointInSequence(
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds
+  )
+
+  const estimatedWalkDistanceM =
+    geo.distance == null && geoTarget
+      ? estimateDistanceBetweenStops(previousWaypoint, geoTarget)
+      : null
+
+  const walkingBearingDeg = (() => {
+    const target = geoTarget?.geofence
+    if (!target?.lat || !target?.lng) return { deg: null, live: false }
+
+    if (geo.position?.lat != null && geo.position?.lng != null) {
+      return {
+        deg: bearingDegrees(geo.position.lat, geo.position.lng, target.lat, target.lng),
+        live: true,
+      }
+    }
+
+    const origin = previousWaypoint?.geofence
+    if (origin?.lat != null && origin?.lng != null) {
+      return {
+        deg: bearingDegrees(origin.lat, origin.lng, target.lat, target.lng),
+        live: false,
+      }
+    }
+
+    return { deg: null, live: false }
+  })()
+
+  const walkingCompanion = companionCopy(companion.mode, {
+    targetTitle: geoTarget ? titleForWaypoint(geoTarget) : null,
+  })
+
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
     if (variant === 'redesign') {
       const record = step.record
@@ -472,6 +720,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
         : [{ title: signatureLine(record) }]
       const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
       const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
+      const realTranscript = record.arrival_transcript ?? record.transcript ?? ''
+      // In dev, only trust "audio available" once the engine confirms items or a
+      // duration; in prod the deployed media is present, so never gate controls.
+      const audioAvailable =
+        !import.meta.env.DEV ||
+        audio.narrationPlaying ||
+        (audio.progress?.itemCount ?? 0) > 0 ||
+        (audio.progress?.duration ?? 0) > 0
 
       return withInterruptionBanner(
         <C6ImmersivePlayer
@@ -482,16 +738,24 @@ export default function JourneyShell({ variant = 'legacy' }) {
           chapterIndex={audio.progress?.chapterCount ? audio.progress.chapterIndex : 0}
           chapterCount={audio.progress?.chapterCount || Math.max(chapters.length, 1)}
           photo={props.photo}
-          transcript={record.transcriptPreview ?? signatureLine(record)}
+          transcript={realTranscript}
+          transcriptAvailable={Boolean(realTranscript)}
           narrationPlaying={audio.narrationPlaying}
           currentTime={audio.progress?.currentTime ?? 0}
           duration={audio.progress?.duration ?? 0}
+          playbackRate={audio.playbackRate}
+          speeds={PLAYER_SPEEDS}
+          onCycleSpeed={handleCycleSpeed}
+          audioAvailable={audioAvailable}
+          storyEnded={storyEnded}
+          hasReconstruction={Boolean(record.reconstruction)}
           initialTab={storyViewRef.current}
           onTogglePlay={() => audio.toggleNarration()}
           onSkipBack={() => audio.skipNarration(-15)}
           onSkipForward={() => audio.skipNarration(15)}
           onSeek={(seconds) => audio.seekNarration(seconds)}
           onSelectChapter={(i) => audio.jumpToChapter(i)}
+          onOpenTranscript={() => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id })}
           onStoryComplete={handleStoryComplete}
           onBack={() => transition(JOURNEY_STATES.ARRIVED)}
           onOpenThreshold={handleOpenThreshold}
@@ -514,21 +778,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (state === JOURNEY_STATES.THRESHOLD && step.type === 'waypoint') {
     if (variant === 'redesign') {
-      const props = redesignWaypointProps(step.record)
-      return withInterruptionBanner(
-        <div style={{ height: '100%', background: T.obsidian }}>
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: `url(${props.photo})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              filter: 'brightness(0.35)',
-            }}
-          />
-        </div>
-      )
+      // Full-screen threshold is rendered by JourneyThresholdLayer in AppRouter.
+      return null
     }
     return withInterruptionBanner(
       <StoryScreen
@@ -573,7 +824,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return withInterruptionBanner(
         <C3Approaching
           {...props}
+          approachLine={props.direction}
+          progressPct={journeyProgressPct}
           subtitle={formatDistanceToNext(geo.distance) ?? 'almost there'}
+          onArrive={handleManualArrival}
+          locationShy={locationShy}
+          companionEyebrow={walkingCompanion?.eyebrow ?? null}
+          companionTitle={walkingCompanion?.title ?? null}
+          companionSubtitle={walkingCompanion?.subtitle ?? null}
         />
       )
     }
@@ -593,14 +851,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const target = step.targetWaypoint
       const props = redesignWaypointProps(target)
+      const transitNote =
+        step.record?.note ??
+        'The city between stops has its own stories — listen while Rome rolls past.'
       return withInterruptionBanner(
-        <C2Walking
+        <C2Transit
           {...props}
-          distanceM={geo.distance}
-          onSimulateArrival={null}
-          onPause={() => transition(JOURNEY_STATES.PAUSED)}
+          note={transitNote}
+          progressPct={journeyProgressPct}
+          extraBottomInset={dockActive ? 88 : 0}
+          onOpenSettings={openSettings}
           onContinue={!audio.narrationPlaying ? handleTransitContinue : null}
           continueLabel="Continue"
+          map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )
     }
@@ -627,8 +890,22 @@ export default function JourneyShell({ variant = 'legacy' }) {
         <C2Walking
           {...props}
           distanceM={geo.distance}
-          onSimulateArrival={handleSimulateArrival}
+          estimatedDistanceM={estimatedWalkDistanceM}
+          bearingDeg={walkingBearingDeg.deg}
+          bearingIsLive={walkingBearingDeg.live}
+          progressPct={journeyProgressPct}
+          locationStatus={geo.locationStatus}
+          onRetryLocation={geo.retryLocation}
+          companionLine={
+            companion.mode === COMPANION_MODES.NORMAL
+              ? null
+              : walkingCompanion?.subtitle ?? walkingCompanion?.title
+          }
+          onSimulateArrival={handleManualArrival}
+          locationShy={locationShy}
+          extraBottomInset={dockActive ? 88 : 0}
           onPause={() => transition(JOURNEY_STATES.PAUSED)}
+          onOpenSettings={openSettings}
         />
       )
     }
@@ -640,7 +917,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         locationStatus={geo.locationStatus}
         onRetryLocation={geo.retryLocation}
         companionMode={companion.mode}
-        onSimulateArrival={handleSimulateArrival}
+        onSimulateArrival={handleManualArrival}
         busy={busy}
       />
     )

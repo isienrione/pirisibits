@@ -160,6 +160,10 @@ export default defineConfig({
     port: 5173,
   },
   build: {
+    modulePreload: {
+      resolveDependencies: (_filename, deps) =>
+        deps.filter((dep) => !dep.includes('mapbox')),
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -168,6 +172,9 @@ export default defineConfig({
           }
           if (id.includes('node_modules/@supabase')) {
             return 'supabase'
+          }
+          if (id.includes('node_modules/mapbox-gl')) {
+            return 'mapbox'
           }
         },
       },

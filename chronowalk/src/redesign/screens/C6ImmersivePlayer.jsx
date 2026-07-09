@@ -3,6 +3,10 @@ import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
+import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
+import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
+
+const DEFAULT_SPEEDS = [0.8, 1, 1.2]
 
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
@@ -24,29 +28,41 @@ export default function C6ImmersivePlayer({
   chapterCount = 3,
   photo = colosseumNow,
   transcript = '',
+  transcriptAvailable = false,
   narrationPlaying = false,
   currentTime = 0,
   duration = 0,
+  playbackRate = 1,
+  speeds = DEFAULT_SPEEDS,
+  onCycleSpeed,
+  audioAvailable = true,
+  storyEnded = false,
+  hasReconstruction = false,
   initialTab = 'chapters',
   onTogglePlay,
   onSkipBack,
   onSkipForward,
   onSeek,
   onSelectChapter,
+  onOpenTranscript,
   onStoryComplete,
   onBack,
   onOpenThreshold,
   onViewImages,
 }) {
+  const { prefs } = useAppPreferences()
+  const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'chapters')
   const [dragProgress, setDragProgress] = useState(null)
+  const [showAudioNotice, setShowAudioNotice] = useState(false)
   const seekTrackRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
-  const canSeek = typeof onSeek === 'function' && duration > 0
+  const canSeek = typeof onSeek === 'function' && duration > 0 && audioAvailable
   const displayTime = dragProgress != null ? dragProgress * duration : currentTime
+  const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
 
   const seekFromClientX = (clientX) => {
     const el = seekTrackRef.current
@@ -79,6 +95,22 @@ export default function C6ImmersivePlayer({
   useEffect(() => {
     if (initialTab === 'transcript') setTab('transcript')
   }, [initialTab])
+
+  // Only surface the "no audio" notice after a grace period so a normal load
+  // (buffers still resolving) never flashes it.
+  useEffect(() => {
+    if (audioAvailable) {
+      setShowAudioNotice(false)
+      return undefined
+    }
+    const id = setTimeout(() => setShowAudioNotice(true), 1600)
+    return () => clearTimeout(id)
+  }, [audioAvailable])
+
+  const selectTab = (next) => {
+    setTab(next)
+    if (next === 'transcript') onOpenTranscript?.()
+  }
 
   const chapters = Array.from({ length: chapterCount }, (_, i) => ({
     n: i + 1,
@@ -181,11 +213,12 @@ export default function C6ImmersivePlayer({
             display: 'flex',
             alignItems: 'center',
             gap: 1.5,
-            height: 44,
-            marginBottom: 8,
+            height: 56,
+            marginBottom: 4,
             flexShrink: 0,
             cursor: canSeek ? 'pointer' : 'default',
             touchAction: 'none',
+            opacity: audioAvailable ? 1 : 0.4,
           }}
         >
           {bars.map((h, i) => (
@@ -202,12 +235,33 @@ export default function C6ImmersivePlayer({
             />
           ))}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, flexShrink: 0 }}>
-          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexShrink: 0 }}>
+          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums', minWidth: 40 }}>
             {formatTime(displayTime)}
           </span>
-          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>
-            {duration > 0 ? formatTime(duration) : narrationPlaying ? 'Playing' : 'Paused'}
+          {onCycleSpeed ? (
+            <button
+              type="button"
+              onClick={onCycleSpeed}
+              aria-label={`Playback speed ${formatPlaybackSpeed(playbackRate)}`}
+              style={{
+                background: `${T.muted}22`,
+                border: 'none',
+                borderRadius: 999,
+                padding: '4px 12px',
+                cursor: 'pointer',
+                color: T.warmWhite,
+                fontFamily: F.body,
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                letterSpacing: '0.02em',
+              }}
+            >
+              {formatPlaybackSpeed(playbackRate)}
+            </button>
+          ) : null}
+          <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums', minWidth: 40, textAlign: 'right' }}>
+            {duration > 0 ? `-${formatTime(remaining)}` : narrationPlaying ? 'Playing' : 'Paused'}
           </span>
         </div>
 
@@ -225,20 +279,26 @@ export default function C6ImmersivePlayer({
           <button
             type="button"
             onClick={onSkipBack}
-            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
+            disabled={!audioAvailable}
+            aria-label="Back 15 seconds"
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
           >
             <SkipBack size={26} />
+            <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
           </button>
           <button
             type="button"
             onClick={onTogglePlay}
+            disabled={!audioAvailable}
+            aria-label={narrationPlaying ? 'Pause' : 'Play'}
             style={{
               width: 68,
               height: 68,
               borderRadius: 34,
               background: T.ember,
               border: 'none',
-              cursor: 'pointer',
+              cursor: audioAvailable ? 'pointer' : 'default',
+              opacity: audioAvailable ? 1 : 0.4,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -254,11 +314,31 @@ export default function C6ImmersivePlayer({
           <button
             type="button"
             onClick={onSkipForward}
-            style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
+            disabled={!audioAvailable}
+            aria-label="Forward 15 seconds"
+            style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
           >
             <SkipForward size={26} />
+            <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
           </button>
         </div>
+
+        {showAudioNotice ? (
+          <p
+            style={{
+              margin: '0 0 16px',
+              fontSize: 12,
+              color: T.muted,
+              textAlign: 'center',
+              lineHeight: 1.5,
+              flexShrink: 0,
+            }}
+          >
+            {import.meta.env.DEV
+              ? 'Narration audio is unavailable in this development build.'
+              : 'Narration is preparing — check your connection.'}
+          </p>
+        ) : null}
 
         {(onOpenThreshold || onViewImages) && (
           <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexShrink: 0 }}>
@@ -314,11 +394,11 @@ export default function C6ImmersivePlayer({
             flexShrink: 0,
           }}
         >
-          {['chapters', 'transcript'].map((t) => (
+          {[['chapters', 'chapters'], ['transcript', 'Read instead']].map(([t, label]) => (
             <button
               key={t}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => selectTab(t)}
               style={{
                 paddingBottom: 8,
                 fontSize: 11,
@@ -333,14 +413,32 @@ export default function C6ImmersivePlayer({
                 fontFamily: F.body,
               }}
             >
-              {t}
+              {label}
             </button>
           ))}
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', marginBottom: 12 }}>
           {tab === 'transcript' ? (
-            <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.8 }}>{transcript || 'Transcript loading…'}</p>
+            <div
+              style={{
+                background: T.bone,
+                borderRadius: 12,
+                padding: '18px 18px 20px',
+              }}
+            >
+              {transcriptAvailable && transcript ? (
+                <p style={{ fontFamily: F.display, fontWeight: 300, fontSize: transcriptFontSize, color: T.ink, lineHeight: 1.85, margin: 0, whiteSpace: 'pre-wrap' }}>
+                  {transcript}
+                </p>
+              ) : (
+                <p style={{ fontFamily: F.body, fontSize: 14, color: `${T.ink}99`, lineHeight: 1.7, margin: 0, fontStyle: 'italic' }}>
+                  {import.meta.env.DEV
+                    ? 'No written transcript is wired for this stop yet (development).'
+                    : 'A written transcript for this stop is coming soon.'}
+                </p>
+              )}
+            </div>
           ) : (
             <div>
               {chapters.map((ch, i) => (
@@ -381,7 +479,49 @@ export default function C6ImmersivePlayer({
           )}
         </div>
 
-        {onStoryComplete ? (
+        {storyEnded && hasReconstruction && onOpenThreshold ? (
+          <button
+            type="button"
+            onClick={onOpenThreshold}
+            style={{
+              width: '100%',
+              padding: '15px',
+              borderRadius: 12,
+              border: 'none',
+              background: T.ember,
+              color: T.obsidian,
+              fontFamily: F.body,
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: 'pointer',
+              flexShrink: 0,
+              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+            }}
+          >
+            When you’re ready, cross into the past →
+          </button>
+        ) : storyEnded && onStoryComplete ? (
+          <button
+            type="button"
+            onClick={onStoryComplete}
+            style={{
+              width: '100%',
+              padding: '15px',
+              borderRadius: 12,
+              border: 'none',
+              background: T.ember,
+              color: T.obsidian,
+              fontFamily: F.body,
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: 'pointer',
+              flexShrink: 0,
+              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+            }}
+          >
+            Continue walking →
+          </button>
+        ) : onStoryComplete ? (
           <button
             type="button"
             onClick={onStoryComplete}

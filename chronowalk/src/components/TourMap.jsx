@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import mapboxgl from '../map/mapboxClient'
+import mapboxCssUrl from 'mapbox-gl/dist/mapbox-gl.css?url'
 import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
@@ -289,6 +290,7 @@ function TourMapboxView({
   directionsGeometry = null,
   onStopSelect = null,
   minimalUI = false,
+  fillContainer = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -309,6 +311,14 @@ function TourMapboxView({
   useEffect(() => {
     const container = mapContainer.current
     if (!mapboxToken || !container || map.current) return undefined
+
+    if (!document.querySelector(`link[data-cw-mapbox-css="1"]`)) {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = mapboxCssUrl
+      link.dataset.cwMapboxCss = '1'
+      document.head.appendChild(link)
+    }
 
     const bounds = tour?.bounds ?? (tour ? getTourBounds(tour) : null)
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
@@ -649,7 +659,7 @@ function TourMapboxView({
   const activeTitle = activeTarget?.title ?? 'waypoint'
 
   return (
-    <div className="relative h-screen w-full">
+    <div className={fillContainer ? 'relative h-full w-full' : 'relative h-screen w-full'}>
       <div ref={mapContainer} className="h-full w-full" />
       {!mapLoaded ? (
         <div className="absolute inset-0 z-10">
@@ -698,6 +708,7 @@ const TourMap = ({
   directionsGeometry = null,
   onStopSelect = null,
   minimalUI = false,
+  fillContainer = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -744,6 +755,7 @@ const TourMap = ({
       directionsGeometry={directionsGeometry}
       onStopSelect={onStopSelect}
       minimalUI={minimalUI}
+      fillContainer={fillContainer}
     />
   )
 }

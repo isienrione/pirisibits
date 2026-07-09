@@ -4,6 +4,18 @@
   "name": "Rome",
   "accent": "--city-rome",
   "price_fallback_cents": 1700,
+  "product": {
+    "publicPlaceCount": 22,
+    "visitStopCount": 18,
+    "classicVisitStopCount": 17,
+    "storyStopCount": 18,
+    "actCount": 6,
+    "durationLabel": "two days",
+    "ownershipLabel": "yours forever",
+    "distanceLabel": "~8 km walking",
+    "priceFallbackCents": 1700,
+    "currency": "EUR"
+  },
   "reflections": [
     "You walked where senators argued and emperors passed — and Rome let you in.",
     "The living city opened its piazzas, fountains, and evening light to you.",
@@ -455,6 +467,10 @@
     },
     "w11_12": {
       "title": "Heart of the Forum",
+      "display": {
+        "publicPlaceCount": 2,
+        "combinedLabel": "Arch of Septimius Severus & Curia Julia"
+      },
       "act": "act3",
       "geofence": {
         "lat": 41.89301,

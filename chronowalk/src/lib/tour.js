@@ -23,6 +23,7 @@ export {
   getStepIdAtIndex,
   resolveJourneyStep,
   collectManifestAudioPaths,
+  getTourProductTruth,
 } from '../content/manifest.js'
 
 export function resolveWaypointMedia(waypoint) {

@@ -1,47 +1,50 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import {
-  hydrateRomeAudioCache,
-  OFFLINE_AUDIO_STATUS,
-  readRomeOfflineStatus,
-  verifyRomeAudioPackage,
-} from '../audio/offlinePackage.js'
-import { hydrateRomeMapTileCache, verifyRomeMapTiles } from '../map/offlineMapTiles.js'
 import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
-import JourneyDevPanel from '../components/dev/JourneyDevPanel'
-import V2FieldTestPanel from '../components/dev/V2FieldTestPanel.jsx'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
-import { loadRomeManifest } from '../content/manifest.js'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
-import { JourneyThresholdLayer } from './pages/ThresholdPage'
-import { AccessPage } from './pages/AccessPage'
-import { BeginPage } from './pages/BeginPage'
-import { JourneyPage } from './pages/PlaceholderPages'
-import RedesignStopsPage from '../redesign/pages/RedesignStopsPage.jsx'
 import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
-import RedesignJournalPage from '../redesign/pages/RedesignJournalPage.jsx'
-import RedesignMapPage from '../redesign/pages/RedesignMapPage.jsx'
-import RedesignTourPage from '../redesign/pages/RedesignTourPage.jsx'
-import RedesignPreviewPage from '../redesign/pages/RedesignPreviewPage.jsx'
-import RedesignWelcomePage from '../redesign/pages/RedesignWelcomePage.jsx'
-import RedesignSetupPage from '../redesign/pages/RedesignSetupPage.jsx'
-import RedesignAccessConfirmedPage from '../redesign/pages/RedesignAccessConfirmedPage.jsx'
-import RedesignSettingsPage from '../redesign/pages/RedesignSettingsPage.jsx'
-import RedesignCreditsPage from '../redesign/pages/RedesignCreditsPage.jsx'
-import RedesignLetterPage from '../redesign/pages/RedesignLetterPage.jsx'
-import RedesignMemoryDetailPage from '../redesign/pages/RedesignMemoryDetailPage.jsx'
-import RedesignNoTicketPage from '../redesign/pages/RedesignNoTicketPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
+import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { hasAccess } from '../lib/config.js'
 import { isImmersiveJourneyState, isResumableJourney } from '../state/journey.js'
+import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
+import { JourneyThresholdLayer } from './pages/ThresholdPage'
+import {
+  LazyAccessConfirmedPage,
+  LazyAccessPage,
+  LazyBeginPage,
+  LazyCreditsPage,
+  LazyJournalPage,
+  LazyJourneyPage,
+  LazyLetterPage,
+  LazyMapPage,
+  LazyMemoryDetailPage,
+  LazyNoTicketPage,
+  LazyPreviewPage,
+  LazySettingsPage,
+  LazySetupPage,
+  LazyStopsPage,
+  LazyTourPage,
+  LazyWelcomePage,
+} from './lazyRoutes.jsx'
+
+let LazyUxRegressionTester = null
+
+if (import.meta.env.DEV) {
+  LazyUxRegressionTester = lazyWithRecovery(
+    () => import('../components/dev/UxRegressionTester.jsx'),
+    'ux regression tester',
+  )
+}
 
 function HomeRedirect() {
   if (hasAccess()) {
@@ -69,7 +72,6 @@ function AppChrome() {
     <>
       <ConsentBar />
       <NetworkStatusBanner />
-      <JourneyDevPanel />
     </>
   )
 }
@@ -80,22 +82,22 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
         <Route path="/landing" element={<RedesignLandingPage />} />
-        <Route path="/preview" element={<RedesignPreviewPage />} />
-        <Route path="/setup" element={<RedesignSetupPage />} />
-        <Route path="/access/confirmed" element={<RedesignAccessConfirmedPage />} />
-        <Route path="/no-ticket" element={<RedesignNoTicketPage />} />
-        <Route path="/welcome" element={<RedesignWelcomePage />} />
-        <Route path="/begin" element={<BeginPage />} />
-        <Route path="/tour" element={<RedesignTourPage />} />
-        <Route path="/journey" element={<JourneyPage />} />
-        <Route path="/map" element={<RedesignMapPage />} />
-        <Route path="/stops" element={<RedesignStopsPage />} />
-        <Route path="/journal" element={<RedesignJournalPage />} />
-        <Route path="/journal/:waypointId" element={<RedesignMemoryDetailPage />} />
-        <Route path="/letter" element={<RedesignLetterPage />} />
-        <Route path="/settings" element={<RedesignSettingsPage />} />
-        <Route path="/credits" element={<RedesignCreditsPage />} />
-        <Route path="/access" element={<AccessPage />} />
+        <Route path="/preview" element={<LazyPreviewPage />} />
+        <Route path="/setup" element={<LazySetupPage />} />
+        <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
+        <Route path="/no-ticket" element={<LazyNoTicketPage />} />
+        <Route path="/welcome" element={<LazyWelcomePage />} />
+        <Route path="/begin" element={<LazyBeginPage />} />
+        <Route path="/tour" element={<LazyTourPage />} />
+        <Route path="/journey" element={<LazyJourneyPage />} />
+        <Route path="/map" element={<LazyMapPage />} />
+        <Route path="/stops" element={<LazyStopsPage />} />
+        <Route path="/journal" element={<LazyJournalPage />} />
+        <Route path="/journal/:waypointId" element={<LazyMemoryDetailPage />} />
+        <Route path="/letter" element={<LazyLetterPage />} />
+        <Route path="/settings" element={<LazySettingsPage />} />
+        <Route path="/credits" element={<LazyCreditsPage />} />
+        <Route path="/access" element={<LazyAccessPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />
@@ -103,7 +105,11 @@ function AppRoutes() {
       <FlowEscapeButton />
       <PwaUpdatePrompt />
       <TourDebugBootstrap />
-      <V2FieldTestPanel />
+      {import.meta.env.DEV && LazyUxRegressionTester ? (
+        <Suspense fallback={null}>
+          <LazyUxRegressionTester />
+        </Suspense>
+      ) : null}
       <AppChrome />
     </V2ErrorBoundary>
   )
@@ -119,15 +125,20 @@ function AppRouter() {
     let cancelled = false
 
     async function restoreOfflineAudio() {
+      const { readRomeOfflineStatus, OFFLINE_AUDIO_STATUS, verifyRomeAudioPackage, hydrateRomeAudioCache } =
+        await import('../audio/offlinePackage.js')
+
       const status = readRomeOfflineStatus()
       if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return
 
+      const { loadRomeManifest } = await import('../content/manifest.js')
       const manifest = loadRomeManifest()
       const verification = await verifyRomeAudioPackage(manifest)
       if (cancelled || !verification.valid) return
 
       await hydrateRomeAudioCache(manifest)
 
+      const { verifyRomeMapTiles, hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
       const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
       if (cancelled || (!mapVerification.valid && !mapVerification.skipped)) return
 
@@ -144,7 +155,9 @@ function AppRouter() {
   return (
     <ThresholdChromeProvider>
       <BrowserRouter>
-        <AppRoutes />
+        <SettingsSheetProvider>
+          <AppRoutes />
+        </SettingsSheetProvider>
       </BrowserRouter>
     </ThresholdChromeProvider>
   )

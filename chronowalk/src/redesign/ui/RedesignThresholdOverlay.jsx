@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { T } from '../tokens.js'
 import C7Threshold from '../screens/C7Threshold.jsx'
 import {
   honestyCaptionForWaypoint,
@@ -6,9 +7,15 @@ import {
   thenLabelForWaypoint,
   thenLoopForWaypoint,
   thenPhotoForWaypoint,
+  titleForWaypoint,
 } from '../lib/waypointPresentation.js'
 
-export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
+export default function RedesignThresholdOverlay({
+  waypoint,
+  nowAmbienceUrl = null,
+  thenSoundscapeUrl = null,
+  onDismiss,
+}) {
   const [crossed, setCrossed] = useState(false)
 
   if (!waypoint) return null
@@ -22,7 +29,7 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
         zIndex: 70,
         height: '100dvh',
         width: '100%',
-        background: '#16130F',
+        background: T.obsidian,
         overflow: 'hidden',
       }}
       onContextMenu={(e) => e.preventDefault()}
@@ -30,11 +37,15 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
       <C7Threshold
         embedded
         reserveCtaSpace={crossed && Boolean(onDismiss)}
+        waypointId={waypoint.id}
+        waypointName={titleForWaypoint(waypoint)}
         nowPhoto={photoForWaypoint(waypoint)}
         thenPhoto={thenPhotoForWaypoint(waypoint)}
         thenLoop={thenLoopForWaypoint(waypoint)}
         thenLabel={thenLabelForWaypoint(waypoint)}
         honestyCaption={honestyCaptionForWaypoint(waypoint)}
+        nowAmbienceUrl={nowAmbienceUrl}
+        thenSoundscapeUrl={thenSoundscapeUrl}
         onCrossed={() => setCrossed(true)}
       />
       {crossed && onDismiss ? (
@@ -51,8 +62,8 @@ export default function RedesignThresholdOverlay({ waypoint, onDismiss }) {
             padding: '15px 28px',
             borderRadius: 14,
             border: 'none',
-            background: '#E8A13C',
-            color: '#16130F',
+            background: T.ember,
+            color: T.obsidian,
             fontWeight: 600,
             fontSize: 15,
             cursor: 'pointer',

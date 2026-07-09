@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play } from "lucide-react";
+import { Play, Settings } from "lucide-react";
 import { useContext } from "react";
 import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, severusNow, archTitusNow, palatineNow } from "../images.js";
@@ -69,8 +69,13 @@ export default function E1JournalHome({
               </button>
             ) : null}
             {onSettingsClick ? (
-              <button type="button" onClick={onSettingsClick} style={{ fontSize: 10, color: T.muted, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
-                Settings
+              <button
+                type="button"
+                onClick={onSettingsClick}
+                aria-label="Settings"
+                style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
+              >
+                <Settings size={18} />
               </button>
             ) : null}
           {showDevToggle ? (

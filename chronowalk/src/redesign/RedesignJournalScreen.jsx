@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { buildJournalTimeline, journalHeadline, summarizeJournalProgress } from '../content/journalTimeline.js'
 import { JOURNEY_STATES } from '../state/journey.js'
+import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { T, ACT_COLORS } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
@@ -20,6 +21,7 @@ function statusLabel(status) {
 
 export default function RedesignJournalScreen({ embedded = true }) {
   const navigate = useNavigate()
+  const { openSettings } = useSettingsSheet()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
@@ -94,7 +96,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
       onCardClick={(waypointId) => navigate(`/journal/${waypointId}`)}
       onLetterClick={() => navigate('/letter')}
       onAllStopsClick={() => navigate('/stops')}
-      onSettingsClick={() => navigate('/settings')}
+      onSettingsClick={openSettings}
     />
   )
 }

@@ -7,6 +7,7 @@ import {
   isLastStop,
   markStopCompleted,
   planContinueWalking,
+  resolveJourneyProgressPct,
 } from '../journeyProgress'
 
 describe('journeyProgress', () => {
@@ -61,5 +62,13 @@ describe('journeyProgress', () => {
   it('dedupes completed stop ids', () => {
     expect(markStopCompleted(['colosseum'], 'colosseum')).toEqual(['colosseum'])
     expect(markStopCompleted(['colosseum'], 'pantheon')).toEqual(['colosseum', 'pantheon'])
+  })
+
+  it('resolves journey progress along the effective sequence', () => {
+    const pct = resolveJourneyProgressPct(manifest, 'a', 0, [])
+    expect(pct).toBe(0)
+    const mid = resolveJourneyProgressPct(manifest, 'a', 5, [])
+    expect(mid).toBeGreaterThan(0)
+    expect(mid).toBeLessThan(100)
   })
 })

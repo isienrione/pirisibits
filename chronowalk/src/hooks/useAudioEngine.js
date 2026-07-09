@@ -2,12 +2,20 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAudioEngine } from '../audio/AudioEngine.js'
 import { useV2Journey } from './useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
+import {
+  PREFERENCES_CHANGED_EVENT,
+  readAudioSpeed,
+  writeAudioSpeed,
+} from '../utils/appPreferences.js'
 
 export function useAudioEngine(manifest) {
   const engineRef = useRef(null)
   const [narrationPlaying, setNarrationPlaying] = useState(false)
   const [playbackInterrupted, setPlaybackInterrupted] = useState(false)
   const [ready, setReady] = useState(false)
+  const [playbackRate, setPlaybackRateState] = useState(() => readAudioSpeed())
+  // Bumps once each time a narration plan reaches its natural end.
+  const [narrationEnded, setNarrationEnded] = useState({ nonce: 0, kind: null, id: null })
   const [progress, setProgress] = useState({
     currentTime: 0,
     duration: 0,
@@ -27,6 +35,13 @@ export function useAudioEngine(manifest) {
     engine.onNarrationChange = setNarrationPlaying
     engine.onInterruptionChange = setPlaybackInterrupted
     engine.onProgress = setProgress
+    engine.onNarrationEnded = (ended) =>
+      setNarrationEnded((prev) => ({
+        nonce: prev.nonce + 1,
+        kind: ended?.kind ?? null,
+        id: ended?.id ?? null,
+      }))
+    engine.playbackRate = readAudioSpeed()
     engine.attachVisibilityListener()
     engineRef.current = engine
 
@@ -38,6 +53,7 @@ export function useAudioEngine(manifest) {
       engine.onNarrationChange = null
       engine.onInterruptionChange = null
       engine.onProgress = null
+      engine.onNarrationEnded = null
       engine.detachVisibilityListener()
       engine.teardown()
       engineRef.current = null
@@ -73,6 +89,24 @@ export function useAudioEngine(manifest) {
     context.completedTransitIds,
     state,
   ])
+
+  // Keep the engine's rate in sync if another surface (e.g. Settings) changes it.
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+    const sync = () => {
+      const speed = readAudioSpeed()
+      setPlaybackRateState(speed)
+      engineRef.current?.setPlaybackRate(speed)
+    }
+    window.addEventListener(PREFERENCES_CHANGED_EVENT, sync)
+    return () => window.removeEventListener(PREFERENCES_CHANGED_EVENT, sync)
+  }, [])
+
+  const setPlaybackRate = useCallback((rate) => {
+    writeAudioSpeed(rate)
+    setPlaybackRateState(rate)
+    engineRef.current?.setPlaybackRate(rate)
+  }, [])
 
   const unlock = useCallback(async () => {
     const engine = engineRef.current
@@ -151,6 +185,9 @@ export function useAudioEngine(manifest) {
     narrationPlaying,
     playbackInterrupted,
     progress,
+    playbackRate,
+    setPlaybackRate,
+    narrationEnded,
     unlock,
     playWaypoint,
     playTransit,

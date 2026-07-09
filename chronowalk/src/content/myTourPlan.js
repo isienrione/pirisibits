@@ -3,6 +3,7 @@ import { getClassicDayBreakWaypointId } from './actBoundaries.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, isWaypointId, resolveJourneyStep } from './manifest.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
+import { isVisitStop } from './tourProductTruth.js'
 
 const CLASSIC_DAY2_ACTS = new Set(['act5', 'act6'])
 
@@ -102,6 +103,7 @@ export function buildMyTourActs(manifest, context) {
             hook: waypoint?.approachLine ?? waypoint?.arrivalLine ?? '',
             status: deriveStopStatus(waypointId, completed, currentId),
             waypoint,
+            isVisitStop: isVisitStop(waypoint),
           }
         })
 
@@ -127,7 +129,7 @@ export function buildMyTourActs(manifest, context) {
 }
 
 export function summarizeMyTour(acts) {
-  const stops = acts.flatMap((act) => act.stops)
+  const stops = acts.flatMap((act) => act.stops).filter((stop) => stop.isVisitStop !== false)
   const completed = stops.filter((stop) => stop.status === 'completed').length
   return { completed, total: stops.length, actCount: acts.length }
 }

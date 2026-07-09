@@ -85,6 +85,22 @@ export function getStepIdAtIndex(manifest, path, index, promotedOptionalIds = []
   return sequence[index] ?? null
 }
 
+/** Last waypoint before the current sequence index (skips transits). */
+export function getPreviousWaypointInSequence(
+  manifest,
+  path,
+  sequenceIndex,
+  promotedOptionalIds = []
+) {
+  for (let index = sequenceIndex - 1; index >= 0; index -= 1) {
+    const stepId = getStepIdAtIndex(manifest, path, index, promotedOptionalIds)
+    if (stepId && isWaypointId(manifest, stepId)) {
+      return getWaypoint(manifest, stepId)
+    }
+  }
+  return null
+}
+
 export function resolveJourneyStep(manifest, path, sequenceIndex, promotedOptionalIds = []) {
   const stepId = getStepIdAtIndex(manifest, path, sequenceIndex, promotedOptionalIds)
   if (!stepId) {
@@ -128,3 +144,4 @@ export function getWaypointIndex(manifest, waypointId) {
 
 export { parseRomeManifest } from './romeManifestZod.schema.js'
 export { collectManifestAudioPaths } from './audioPaths.js'
+export { getTourProductTruth } from './tourProductTruth.js'

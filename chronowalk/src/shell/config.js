@@ -13,7 +13,6 @@ export const SHELL_TAB_META = {
 export const SHELL_COMPANION_PATHS = [
   ...SHELL_TAB_ORDER.map((id) => SHELL_TAB_META[id].to),
   '/journey',
-  '/settings',
 ]
 
 export function getShellTabs() {

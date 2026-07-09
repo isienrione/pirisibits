@@ -14,6 +14,40 @@ import ThresholdSourceBadge, {
   AI_NOW_DISCLOSURE_COPY,
 } from './threshold/ThresholdSourceBadge.jsx'
 
+const REVEAL_COMPLETE = 0.98
+
+/** Shared framing for both eras — same box, same scale, minimal crop. */
+const THRESHOLD_LAYER_STYLE = {
+  position: 'absolute',
+  inset: 0,
+  width: '100%',
+  height: '100%',
+  objectFit: 'contain',
+  objectPosition: 'center center',
+  display: 'block',
+}
+
+function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion }) {
+  return (
+    <div className="threshold-media-canvas">
+      <div className="threshold-media-canvas__frame">
+        {thenLayer}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            clipPath: nowClip,
+            WebkitClipPath: nowClip,
+            transition: reducedMotion ? 'clip-path 200ms var(--ease), opacity 200ms var(--ease)' : undefined,
+          }}
+        >
+          {nowLayer}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ThresholdLayerImage({ src, alt, className, style }) {
   const [failed, setFailed] = useState(false)
 
@@ -37,6 +71,7 @@ function ThresholdLayerImage({ src, alt, className, style }) {
       alt={alt ?? ''}
       className={className}
       style={style}
+      draggable={false}
       onError={() => setFailed(true)}
     />
   )
@@ -87,8 +122,24 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
   )
 }
 
+function eraPillStyle(active) {
+  return {
+    fontSize: 10,
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    padding: '5px 10px',
+    borderRadius: 999,
+    background: active ? 'color-mix(in srgb, var(--obsidian) 72%, transparent)' : 'color-mix(in srgb, var(--obsidian) 45%, transparent)',
+    color: active ? 'var(--warm-white)' : 'color-mix(in srgb, var(--muted-warm) 80%, transparent)',
+    border: `1px solid ${active ? 'color-mix(in srgb, var(--ember) 33%, transparent)' : 'color-mix(in srgb, var(--muted-warm) 20%, transparent)'}`,
+    backdropFilter: 'blur(6px)',
+    pointerEvents: 'none',
+  }
+}
+
 /**
  * Press-and-hold time crossing — signature ChronoWalk interaction.
+ * Single canonical implementation for journey, preview, and landing demo.
  */
 export default function Threshold({
   waypoint,
@@ -101,6 +152,7 @@ export default function Threshold({
   onDismiss = null,
   dismissLabel = 'Return to story',
   onHoldStart = null,
+  onFullyRevealed = null,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -108,6 +160,7 @@ export default function Threshold({
   const holdStartRef = useRef(null)
   const rafRef = useRef(null)
   const pointerIdRef = useRef(null)
+  const fullyRevealedHoldRef = useRef(false)
 
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
@@ -136,6 +189,12 @@ export default function Threshold({
     }
   }, [])
 
+  const notifyFullyRevealed = useCallback(() => {
+    if (fullyRevealedHoldRef.current) return
+    fullyRevealedHoldRef.current = true
+    onFullyRevealed?.()
+  }, [onFullyRevealed])
+
   const animateReveal = useCallback(
     (from, to, durationMs, onDone) => {
       cancelAnimation()
@@ -148,6 +207,10 @@ export default function Threshold({
         setReveal(value)
         revealRef.current = value
 
+        if (to >= REVEAL_COMPLETE && value >= REVEAL_COMPLETE) {
+          notifyFullyRevealed()
+        }
+
         if (t < 1) {
           rafRef.current = requestAnimationFrame(step)
         } else {
@@ -158,15 +221,21 @@ export default function Threshold({
 
       rafRef.current = requestAnimationFrame(step)
     },
-    [cancelAnimation]
+    [cancelAnimation, notifyFullyRevealed]
   )
 
   const handlePointerDown = useCallback(
     (event) => {
       if (!active) return
-      event.currentTarget.setPointerCapture(event.pointerId)
+      if (event.target.closest('button')) return
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId)
+      } catch {
+        // jsdom and some browsers may reject capture
+      }
       pointerIdRef.current = event.pointerId
       holdStartRef.current = performance.now()
+      fullyRevealedHoldRef.current = false
       setHolding(true)
       setVideoPlaying(true)
 
@@ -180,6 +249,7 @@ export default function Threshold({
       if (reducedMotion) {
         setReveal(1)
         revealRef.current = 1
+        notifyFullyRevealed()
         audioRef.current?.rampToThen(200)
         return
       }
@@ -187,7 +257,7 @@ export default function Threshold({
       animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
-    [active, animateReveal, onHoldStart, reducedMotion, showHint]
+    [active, animateReveal, notifyFullyRevealed, onHoldStart, reducedMotion, showHint]
   )
 
   const handlePointerUp = useCallback(
@@ -231,6 +301,33 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
+  const thenLayer =
+    reconstruction.loop ? (
+      <ThresholdVideo
+        src={reconstruction.loop}
+        poster={reconstruction.then}
+        playing={videoPlaying}
+        className="threshold-layer"
+        style={THRESHOLD_LAYER_STYLE}
+      />
+    ) : (
+      <ThresholdLayerImage
+        src={thenSrc}
+        alt=""
+        className="threshold-layer"
+        style={THRESHOLD_LAYER_STYLE}
+      />
+    )
+
+  const nowLayer = (
+    <ThresholdLayerImage
+      src={reconstruction.now}
+      alt=""
+      className="threshold-layer"
+      style={THRESHOLD_LAYER_STYLE}
+    />
+  )
+
   return (
     <div
       className={`threshold-root ${className}`.trim()}
@@ -241,50 +338,36 @@ export default function Threshold({
         minHeight: embedded ? '100%' : '100dvh',
         overflow: 'hidden',
         touchAction: 'none',
+        WebkitTouchCallout: 'none',
         background: 'var(--obsidian)',
         userSelect: 'none',
       }}
+      onContextMenu={(event) => event.preventDefault()}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onPointerLeave={handlePointerUp}
       role="img"
       aria-label={`Press and hold to cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`}
     >
-      <div style={{ position: 'absolute', inset: 0 }}>
-        {reconstruction.loop ? (
-          <ThresholdVideo
-            src={reconstruction.loop}
-            poster={reconstruction.then}
-            playing={videoPlaying}
-            className="threshold-layer"
-            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-          />
-        ) : (
-          <ThresholdLayerImage
-            src={thenSrc}
-            alt=""
-            className="threshold-layer"
-            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
-          />
-        )}
-      </div>
+      <ThresholdMediaCanvas
+        thenLayer={thenLayer}
+        nowLayer={nowLayer}
+        nowClip={nowClip}
+        reducedMotion={reducedMotion}
+      />
 
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          clipPath: nowClip,
-          WebkitClipPath: nowClip,
-          transition: reducedMotion ? 'clip-path 200ms var(--ease), opacity 200ms var(--ease)' : undefined,
-        }}
-      >
-        <ThresholdLayerImage
-          src={reconstruction.now}
-          alt=""
-          className="threshold-layer"
-          style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+      {embedded ? (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(circle at 50% 50%, transparent 55%, rgba(8,8,8,0.28) 100%)',
+            pointerEvents: 'none',
+          }}
         />
-      </div>
+      ) : null}
 
       <div
         aria-hidden="true"
@@ -293,75 +376,114 @@ export default function Threshold({
           top: 0,
           bottom: 0,
           left: seamLeft,
-          width: 3,
+          width: embedded ? 2 : 3,
           transform: 'translateX(-50%)',
           background: 'var(--ember)',
-          boxShadow: '0 0 18px 4px var(--ember-glow)',
-          opacity: reveal > 0.02 && reveal < 0.98 ? 1 : 0,
-          transition: 'opacity 150ms var(--ease)',
+          boxShadow: holding
+            ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
+            : '0 0 18px 4px var(--ember-glow)',
+          opacity: reveal > 0.02 && reveal < 0.98 ? 1 : embedded && reveal > 0 ? 1 : 0,
+          transition: holding ? 'none' : 'left 420ms ease-out, opacity 150ms var(--ease)',
           pointerEvents: 'none',
-        }}
-      />
-
-      <div
-        style={{
-          position: 'absolute',
-          top: 'max(1rem, env(safe-area-inset-top))',
-          left: 'var(--edge)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
           zIndex: 2,
         }}
       >
-        {onDismiss ? (
-          <button
-            type="button"
-            aria-label="Close threshold"
-            onPointerDown={(event) => event.stopPropagation()}
-            onClick={onDismiss}
+        {embedded ? (
+          <div
             style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               width: 36,
               height: 36,
-              borderRadius: '50%',
-              border: '1px solid color-mix(in srgb, var(--warm-white) 20%, transparent)',
-              background: 'color-mix(in srgb, var(--obsidian) 70%, transparent)',
-              color: 'var(--warm-white)',
-              fontSize: 18,
-              lineHeight: 1,
-              cursor: 'pointer',
+              borderRadius: 18,
+              border: '2px solid var(--ember)',
+              background: 'color-mix(in srgb, var(--obsidian) 55%, transparent)',
+              backdropFilter: 'blur(6px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: holding ? '0 0 22px rgba(232,161,60,0.75)' : '0 0 16px rgba(232,161,60,0.5)',
             }}
           >
-            ×
-          </button>
+            <span style={{ color: 'var(--ember)', fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
+          </div>
         ) : null}
-        <span
-          style={{
-            fontSize: 'var(--fs-caption)',
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
-            pointerEvents: 'none',
-          }}
-        >
-          Now
-        </span>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          top: 'max(1rem, env(safe-area-inset-top))',
-          right: 'var(--edge)',
-          fontSize: 'var(--fs-caption)',
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
-          pointerEvents: 'none',
-        }}
-      >
-        {thenLabel}
-      </div>
+      {!embedded ? (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              top: 'max(1rem, env(safe-area-inset-top))',
+              left: 'var(--edge)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              zIndex: 2,
+            }}
+          >
+            {onDismiss ? (
+              <button
+                type="button"
+                aria-label="Close threshold"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={onDismiss}
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: '50%',
+                  border: '1px solid color-mix(in srgb, var(--warm-white) 20%, transparent)',
+                  background: 'color-mix(in srgb, var(--obsidian) 70%, transparent)',
+                  color: 'var(--warm-white)',
+                  fontSize: 18,
+                  lineHeight: 1,
+                  cursor: 'pointer',
+                }}
+              >
+                ×
+              </button>
+            ) : null}
+            <span
+              style={{
+                fontSize: 'var(--fs-caption)',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
+                pointerEvents: 'none',
+              }}
+            >
+              Now
+            </span>
+          </div>
+
+          <div
+            style={{
+              position: 'absolute',
+              top: 'max(1rem, env(safe-area-inset-top))',
+              right: 'var(--edge)',
+              fontSize: 'var(--fs-caption)',
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'color-mix(in srgb, var(--warm-white) 60%, transparent)',
+              pointerEvents: 'none',
+            }}
+          >
+            {thenLabel}
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={{ position: 'absolute', bottom: 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
+            <span style={eraPillStyle(reveal > 0.2)}>{thenLabel}</span>
+          </div>
+          <div style={{ position: 'absolute', bottom: 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
+            <span style={eraPillStyle(reveal < 0.8)}>Today</span>
+          </div>
+        </>
+      )}
 
       {showNowAiBadge ? (
         <ThresholdSourceBadge
@@ -384,7 +506,11 @@ export default function Threshold({
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: onDismiss ? 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4rem))' : 'max(2rem, env(safe-area-inset-bottom))',
+            bottom: embedded
+              ? 'max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))'
+              : onDismiss
+                ? 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4rem))'
+                : 'max(2rem, env(safe-area-inset-bottom))',
             transform: 'translateX(-50%)',
             padding: '8px 16px',
             borderRadius: 20,
@@ -393,6 +519,7 @@ export default function Threshold({
             fontWeight: 500,
             color: 'var(--warm-white)',
             pointerEvents: 'none',
+            zIndex: 3,
           }}
         >
           Press and hold to cross

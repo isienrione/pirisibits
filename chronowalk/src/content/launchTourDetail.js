@@ -1,34 +1,27 @@
 import { HEART_OF_ANCIENT_ROME_TOUR } from '../data/heart-of-ancient-rome-tour'
-import { ROMAN_FORUM_STOP_IDS } from '../data/forumWaypoints'
-import { getWaypointGeo } from '../data/waypointGeo'
 import { getTourProduct } from '../data/tourProducts'
-import { getLocalWaypoint } from '../services/waypointMerge'
 import { getDistance } from '../utils/distance'
 import { estimateWalkMinutes } from '../utils/tourStats'
 import { getLaunchDestination } from './launchDestinations'
+import { loadRomeManifest } from './manifest.js'
+import { getWaypoint } from './manifest.js'
+import { getTourProductTruth } from './tourProductTruth.js'
 import { TOUR_HERO_PHOTO, getModernPosterUrl } from './modernPhotoRegistry.js'
-
-const ROME_STOP_IDS = [...HEART_OF_ANCIENT_ROME_TOUR.stopIds, ...ROMAN_FORUM_STOP_IDS]
 
 const ROME_PREVIEW_AUDIO = '/waypoints/colosseum/Audio_sample.mp3'
 
-function buildStops(stopIds) {
-  return stopIds.map((stopId, index) => {
-    const geo = getWaypointGeo(stopId)
-    const waypoint = getLocalWaypoint(stopId)
-    const title = geo?.title ?? waypoint?.title ?? stopId
+function buildStopsFromManifest(manifest, visitStopIds) {
+  return visitStopIds.map((stopId, index) => {
+    const waypoint = getWaypoint(manifest, stopId)
+    const geofence = waypoint?.geofence
 
     return {
       id: stopId,
       number: index + 1,
-      title,
-      shortTitle: title.split(' ').slice(0, 2).join(' '),
-      landmark: geo?.landmark ?? (waypoint ? { lat: waypoint.lat, lng: waypoint.lng } : null),
-      heroImage:
-        waypoint?.modern_poster_url ??
-        waypoint?.ancient_poster_url ??
-        waypoint?.modern_image_url ??
-        getModernPosterUrl(stopId),
+      title: waypoint?.title ?? stopId,
+      shortTitle: (waypoint?.title ?? stopId).split(' ').slice(0, 2).join(' '),
+      landmark: geofence ? { lat: geofence.lat, lng: geofence.lng } : null,
+      heroImage: waypoint?.photo ? waypoint.photo : getModernPosterUrl(stopId),
     }
   })
 }
@@ -59,9 +52,11 @@ function formatWalkingTime(minutes) {
 }
 
 function buildRomeTourDetail() {
+  const manifest = loadRomeManifest()
+  const truth = getTourProductTruth(manifest)
   const destination = getLaunchDestination('rome')
   const product = getTourProduct('rome-complete')
-  const stops = buildStops(ROME_STOP_IDS)
+  const stops = buildStopsFromManifest(manifest, truth.visitStopIds)
   const distanceMeters = sumRouteDistanceMeters(stops)
   const walkingMinutes = estimateWalkMinutes(distanceMeters)
 
@@ -77,14 +72,15 @@ function buildRomeTourDetail() {
     priceUsd: product?.priceUsd ?? 15,
     stops,
     tour: {
-      id: 'rome-launch-detail',
-      stopIds: ROME_STOP_IDS,
+      id: HEART_OF_ANCIENT_ROME_TOUR.id,
+      stopIds: truth.visitStopIds,
     },
     stats: {
-      duration: '4+ hours',
-      distance: formatDistanceKm(distanceMeters),
+      duration: truth.durationLabel,
+      distance: truth.distanceLabel !== '—' ? truth.distanceLabel : formatDistanceKm(distanceMeters),
       walkingTime: formatWalkingTime(walkingMinutes),
-      stories: destination?.placeCount ?? stops.length,
+      stories: truth.publicPlaceCount,
+      visitStops: truth.visitStopCount,
     },
     previewAudio: {
       title: 'Colosseum — opening story',
@@ -95,6 +91,7 @@ function buildRomeTourDetail() {
       headline: 'Rome is waiting.',
       sentence: 'When you are ready, the streets of the eternal city will open before you.',
     },
+    productTruth: truth,
   }
 }
 

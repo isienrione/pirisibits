@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import TourMap from '../TourMap.jsx'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
@@ -20,6 +20,8 @@ import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { toWalkCardModel } from '../../content/stopPresentation.js'
+import { resolveMapBottomCard, MAP_BOTTOM_CTA } from '../../content/mapBottomCard.js'
+import MapBottomCard from '../../redesign/ui/MapBottomCard.jsx'
 import { ShellWalkCard } from '../../shell'
 
 function ConfidenceChip({ label, active, compact = false }) {
@@ -58,7 +60,7 @@ function ConfidenceChip({ label, active, compact = false }) {
 
 export default function MapScreen({ variant = 'legacy' }) {
   const navigate = useNavigate()
-  const { state, context } = useV2Journey()
+  const { state, context, transition } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -144,7 +146,71 @@ export default function MapScreen({ variant = 'legacy' }) {
 
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
   const selectedStop = stops.find((stop) => stop.id === selectedStopId) ?? activeStop
-  const walkCard = manifest && selectedStop ? toWalkCardModel(manifest, selectedStop, geo.distance) : null
+  const walkCard = manifest && activeStop ? toWalkCardModel(manifest, activeStop, geo.distance) : null
+
+  const bottomCard = resolveMapBottomCard({
+    journeyState: state,
+    step,
+    activeStop,
+    distanceM: geo.distance,
+    companionMode: companion.mode,
+    sequenceIndex: context.currentSequenceIndex,
+    completedWaypointIds: context.completedWaypointIds,
+    directionsOpen,
+  })
+
+  const handleManualArrival = useCallback(() => {
+    if (!step?.record || step.type !== 'waypoint') return
+    if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+    transition(JOURNEY_STATES.ARRIVED)
+  }, [state, step, transition])
+
+  const handleRecenter = useCallback(() => {
+    geo.retryLocation?.()
+    setRecenterKey((key) => key + 1)
+  }, [geo])
+
+  const handleBottomCardCta = useCallback(() => {
+    if (!bottomCard) return
+
+    switch (bottomCard.ctaAction) {
+      case MAP_BOTTOM_CTA.GET_DIRECTIONS:
+      case MAP_BOTTOM_CTA.OPEN_DIRECTIONS:
+        setDirectionsOpen(true)
+        break
+      case MAP_BOTTOM_CTA.MANUAL_ARRIVAL:
+        handleManualArrival()
+        break
+      case MAP_BOTTOM_CTA.OPEN_STORY:
+        transition(JOURNEY_STATES.STORY)
+        navigate('/journey')
+        break
+      case MAP_BOTTOM_CTA.WALK_TO_NEXT:
+        if (step?.targetWaypoint?.id) {
+          setSelectedStopId(step.targetWaypoint.id)
+        } else if (activeTargetId) {
+          setSelectedStopId(activeTargetId)
+        }
+        transition(JOURNEY_STATES.WALKING)
+        setDirectionsOpen(true)
+        break
+      case MAP_BOTTOM_CTA.BACK_TO_ROUTE:
+        if (activeTargetId) setSelectedStopId(activeTargetId)
+        handleRecenter()
+        setDirectionsOpen(true)
+        break
+      default:
+        break
+    }
+  }, [
+    activeTargetId,
+    bottomCard,
+    handleManualArrival,
+    handleRecenter,
+    navigate,
+    step?.targetWaypoint?.id,
+    transition,
+  ])
 
   const directionsDestination = directionsOpen ? selectedStop?.landmark ?? null : null
 
@@ -228,11 +294,6 @@ export default function MapScreen({ variant = 'legacy' }) {
 
   const handleOpenDirections = () => {
     setDirectionsOpen(true)
-  }
-
-  const handleRecenter = () => {
-    geo.retryLocation?.()
-    setRecenterKey((key) => key + 1)
   }
 
   return (
@@ -419,7 +480,7 @@ export default function MapScreen({ variant = 'legacy' }) {
         </div>
       )}
 
-      {!directionsOpen && walkCard ? (
+      {!directionsOpen && bottomCard ? (
         isRedesign ? (
           <div
             style={{
@@ -430,71 +491,13 @@ export default function MapScreen({ variant = 'legacy' }) {
               bottom: 'max(4.75rem, calc(env(safe-area-inset-bottom) + 3.75rem))',
             }}
           >
-            <button
-              type="button"
-              onClick={() => navigate(`/journal/${selectedStop.id}`)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '11px 14px',
-                borderRadius: 14,
-                border: '1px solid color-mix(in srgb, var(--warm-white) 8%, transparent)',
-                background: 'color-mix(in srgb, var(--ink) 86%, transparent)',
-                backdropFilter: 'blur(10px)',
-                cursor: 'pointer',
-                textAlign: 'left',
-              }}
-            >
-              {walkCard.imageUrl ? (
-                <img
-                  src={walkCard.imageUrl}
-                  alt=""
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 10,
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                  }}
-                />
-              ) : null}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 10,
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: 'var(--accent)',
-                    fontWeight: 600,
-                  }}
-                >
-                  {selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
-                </p>
-                <p
-                  style={{
-                    margin: '2px 0 0',
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 16,
-                    color: 'var(--warm-white)',
-                    fontWeight: 400,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {walkCard.title}
-                </p>
-                {walkCard.distanceM != null ? (
-                  <p style={{ margin: '2px 0 0', fontSize: 12, color: 'var(--muted-warm)' }}>
-                    {Math.round(walkCard.distanceM)} m
-                  </p>
-                ) : null}
-              </div>
-              <span style={{ color: 'var(--muted-warm)', fontSize: 18, flexShrink: 0 }}>→</span>
-            </button>
+            <MapBottomCard
+              title={bottomCard.title}
+              meta={bottomCard.meta}
+              ctaLabel={bottomCard.ctaLabel}
+              imageUrl={walkCard?.imageUrl ?? null}
+              onCta={handleBottomCardCta}
+            />
           </div>
         ) : (
           <div
@@ -502,12 +505,12 @@ export default function MapScreen({ variant = 'legacy' }) {
             style={{ bottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4.5rem))' }}
           >
             <ShellWalkCard
-              title={walkCard.title}
-              distanceM={walkCard.distanceM}
-              imageUrl={walkCard.imageUrl}
-              eyebrow={selectedStop?.id === activeTargetId ? 'Next stop' : 'Selected stop'}
-              onContinue={() => navigate(`/journal/${selectedStop.id}`)}
-              continueLabel="Open stop card"
+              title={bottomCard.title}
+              subtitle={bottomCard.meta}
+              imageUrl={walkCard?.imageUrl ?? null}
+              eyebrow=""
+              onContinue={handleBottomCardCta}
+              continueLabel={bottomCard.ctaLabel}
             />
           </div>
         )

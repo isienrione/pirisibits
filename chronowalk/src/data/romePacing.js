@@ -105,7 +105,7 @@ export function getActSummaries() {
   return ROME_ACTS.map((act) => ({
     id: act.id,
     label: `${act.numeral} · ${act.title}`,
-    stopCount: act.waypoints.length,
+    stopCount: act.waypoints.filter((waypointId) => waypointId !== 'pause').length,
     entry: act.entry,
     promise: act.promise,
   }))

@@ -1,5 +1,6 @@
 import { getDistance } from '../utils/distance'
 import { formatWalkedDistance } from '../utils/tourStats'
+import { buildEffectiveSequence } from './optionalPromotion.js'
 
 /**
  * @param {import('./manifest.schema.js').RomeTourManifest} manifest
@@ -25,19 +26,22 @@ export function isLastStop(manifest, currentStop) {
   return getNextStop(manifest, currentStop) == null
 }
 
+function stopCoords(stop) {
+  if (stop?.coords?.lat != null && stop?.coords?.lng != null) return stop.coords
+  if (stop?.geofence?.lat != null && stop?.geofence?.lng != null) return stop.geofence
+  return null
+}
+
 /**
  * @param {import('./manifest.schema.js').ManifestStop | null} fromStop
  * @param {import('./manifest.schema.js').ManifestStop | null} toStop
  */
 export function estimateDistanceBetweenStops(fromStop, toStop) {
-  if (!fromStop?.coords || !toStop?.coords) return null
+  const from = stopCoords(fromStop)
+  const to = stopCoords(toStop)
+  if (!from || !to) return null
 
-  const meters = getDistance(
-    fromStop.coords.lat,
-    fromStop.coords.lng,
-    toStop.coords.lat,
-    toStop.coords.lng
-  )
+  const meters = getDistance(from.lat, from.lng, to.lat, to.lng)
 
   if (!Number.isFinite(meters) || meters <= 0) return null
   return meters
@@ -53,6 +57,26 @@ export function formatWalkingTime(meters) {
   if (!meters || meters <= 0) return null
   const minutes = Math.max(1, Math.round(meters / 80))
   return `${minutes} min walk`
+}
+
+/**
+ * Rough journey progress along the effective sequence (0–100).
+ */
+export function resolveJourneyProgressPct(
+  manifest,
+  path,
+  sequenceIndex,
+  promotedOptionalIds = []
+) {
+  if (!manifest) return 0
+
+  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+  if (!sequence.length) return 0
+  if (sequence.length === 1) return 100
+
+  return Math.round(
+    Math.min(100, Math.max(0, (sequenceIndex / (sequence.length - 1)) * 100))
+  )
 }
 
 /**

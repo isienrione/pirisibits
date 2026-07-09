@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { BronzeButton, Button, ParchmentCard, cn } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
+import { getLandingTrustStats } from '../content/tourProductTruth.js'
+import { loadRomeManifest } from '../content/manifest.js'
 import { ROUTES, settingsPath } from '../routes/paths'
 
 const LOGO_SRC = '/brand/chronowalk-logo.png'
@@ -12,11 +14,7 @@ const PANTHEON_PREVIEW_POSTER = '/waypoints/pantheon/ancient-poster.jpg'
 const SUPPORTING_COPY =
   'Walk the eternal city as it stood under emperors — every stone restored, every moment waiting to be lived.'
 
-const TRUST_STATS = [
-  { id: 'places', label: '22 places' },
-  { id: 'pace', label: 'Self-paced' },
-  { id: 'offline', label: 'Works offline' },
-]
+const TRUST_STATS = getLandingTrustStats(loadRomeManifest())
 
 export default function LandingPage() {
   const navigate = useNavigate()

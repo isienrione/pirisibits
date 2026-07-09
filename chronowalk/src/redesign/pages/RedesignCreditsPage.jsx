@@ -8,7 +8,7 @@ export default function RedesignCreditsPage() {
   return (
     <RedesignRouteShell>
       <div className="redesign-app-shell redesign-phone-frame">
-        <G2Credits onBack={() => navigate('/settings')} />
+        <G2Credits onBack={() => navigate(-1)} />
       </div>
     </RedesignRouteShell>
   )

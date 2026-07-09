@@ -42,6 +42,9 @@ export class AudioEngine {
     // Controllable narration session (play/pause/seek/skip across a plan).
     this.session = null
 
+    // User-selected narration speed (see appPreferences STORY_PLAYBACK_SPEEDS).
+    this.playbackRate = 1
+
     this.presenceTimer = null
     this.longwalkTimer = null
     this.activeTransitId = null
@@ -51,6 +54,9 @@ export class AudioEngine {
     this.onNarrationChange = null
     this.onInterruptionChange = null
     this.onProgress = null
+    // Fires only when a narration plan reaches its natural end (not on
+    // stop/pause/seek), so callers can reveal the "story finished" moment.
+    this.onNarrationEnded = null
 
     this.playbackInterrupted = false
     this.playingBeforeHidden = false
@@ -416,6 +422,7 @@ export class AudioEngine {
 
     const source = this.context.createBufferSource()
     source.buffer = buffer
+    source.playbackRate.value = this.playbackRate || 1
     source.connect(this.narrationGain)
 
     const startOffset = Math.min(Math.max(offset, 0), buffer.duration || 0)
@@ -449,12 +456,16 @@ export class AudioEngine {
   }
 
   finishSession() {
+    const ended = this.activePlayback
     this.session = null
     this.setNarrationPlaying(false)
     if (!this.playbackInterrupted) {
       this.activePlayback = null
     }
     this.emitProgress()
+    // Natural completion only — stop()/teardown() clear the session directly and
+    // never route through here.
+    this.onNarrationEnded?.(ended)
   }
 
   detachCurrentSource() {
@@ -474,7 +485,27 @@ export class AudioEngine {
     const session = this.session
     if (!session) return 0
     if (session.paused || !session.source || !this.context) return session.offset
-    return session.offset + Math.max(this.context.currentTime - session.startedAt, 0)
+    const rate = this.playbackRate || 1
+    return session.offset + Math.max(this.context.currentTime - session.startedAt, 0) * rate
+  }
+
+  setPlaybackRate(rate) {
+    const next = Number.isFinite(rate) && rate > 0 ? rate : 1
+    const session = this.session
+    // Re-anchor a live source so elapsed time stays continuous across the change.
+    if (session?.source && !session.paused && this.context) {
+      session.offset = this.getNarrationTime()
+      session.startedAt = this.context.currentTime
+      this.playbackRate = next
+      try {
+        session.source.playbackRate.value = next
+      } catch {
+        // Some engines reject rate changes on a stopped source; ignore.
+      }
+    } else {
+      this.playbackRate = next
+    }
+    this.emitProgress()
   }
 
   getNarrationProgress() {

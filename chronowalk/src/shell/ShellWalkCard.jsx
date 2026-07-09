@@ -13,6 +13,7 @@ function formatWalkEta(distanceM) {
 export default function ShellWalkCard({
   eyebrow = 'Next stop',
   title,
+  subtitle,
   distanceM,
   imageUrl,
   onContinue,
@@ -21,7 +22,7 @@ export default function ShellWalkCard({
 }) {
   if (!title) return null
 
-  const eta = formatWalkEta(distanceM)
+  const eta = subtitle ?? formatWalkEta(distanceM)
 
   return (
     <div className="bg-ink900 rounded-card relative overflow-hidden p-4">
@@ -50,9 +51,11 @@ export default function ShellWalkCard({
         )}
 
         <div className="min-w-0 flex-1 pr-6">
-          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-ember">
-            {eyebrow}
-          </p>
+          {eyebrow ? (
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-ember">
+              {eyebrow}
+            </p>
+          ) : null}
           <p className="font-display text-xl font-medium text-ink900">{title}</p>
           {eta ? <p className="mt-1 text-sm text-muted">{eta}</p> : null}
         </div>

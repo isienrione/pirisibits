@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { Eyebrow } from './ui/index.js'
@@ -50,6 +51,7 @@ function ChronowalkMark() {
 
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
+  const { openSettings } = useSettingsSheet()
   const { state, context, begin, setCustomWaypointIds } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -282,13 +284,14 @@ export default function RedesignMyTourScreen() {
               CHRONOWALK
             </span>
           </div>
-          <Link
-            to="/settings"
-            style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4 }}
+          <button
+            type="button"
+            onClick={openSettings}
+            style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
             aria-label="Settings"
           >
             <Settings size={18} />
-          </Link>
+          </button>
         </div>
 
         <h1

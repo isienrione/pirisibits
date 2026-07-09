@@ -1,6 +1,14 @@
 import { TOUR_HERO_PHOTO } from './modernPhotoRegistry.js'
+import { loadRomeManifest } from './manifest.js'
+import { getTourProductTruth } from './tourProductTruth.js'
 
 const tourHeroPhoto = TOUR_HERO_PHOTO
+
+function resolvePlaceCount(destination) {
+  if (destination.id !== 'rome') return destination.placeCount
+  const manifest = loadRomeManifest()
+  return getTourProductTruth(manifest).publicPlaceCount
+}
 
 /** Launch destination cards — Screen 2 Tour Selection. */
 export const LAUNCH_DESTINATIONS = [
@@ -57,5 +65,10 @@ export const LAUNCH_DESTINATIONS = [
 ]
 
 export function getLaunchDestination(id) {
-  return LAUNCH_DESTINATIONS.find((destination) => destination.id === id) ?? null
+  const destination = LAUNCH_DESTINATIONS.find((item) => item.id === id) ?? null
+  if (!destination) return null
+  return {
+    ...destination,
+    placeCount: resolvePlaceCount(destination),
+  }
 }

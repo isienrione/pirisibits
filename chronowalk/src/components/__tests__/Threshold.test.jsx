@@ -4,6 +4,15 @@ import Threshold from '../Threshold'
 import { AI_NOW_DISCLOSURE_COPY } from '../threshold/ThresholdSourceBadge.jsx'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext'
 
+vi.mock('../../audio/thresholdAudio.js', () => ({
+  ThresholdAudioCrossfade: class {
+    start() {}
+    stop() {}
+    rampToThen() {}
+    rampToNow() {}
+  },
+}))
+
 const waypoint = {
   id: 'w13',
   name: 'The Pantheon',
