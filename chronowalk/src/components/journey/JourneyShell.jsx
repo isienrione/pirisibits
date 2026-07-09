@@ -25,7 +25,7 @@ import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
-import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops } from '../../content/journeyProgress.js'
+import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import C2Transit from '../../redesign/screens/C2Transit.jsx'
@@ -680,8 +680,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
     context.promotedOptionalIds
   )
 
+  const liveWalkDistanceM = sanitizeWalkDistanceM(geo.distance)
+
   const estimatedWalkDistanceM =
-    geo.distance == null && geoTarget
+    liveWalkDistanceM == null && geoTarget
       ? estimateDistanceBetweenStops(previousWaypoint, geoTarget)
       : null
 
@@ -826,7 +828,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           {...props}
           approachLine={props.direction}
           progressPct={journeyProgressPct}
-          subtitle={formatDistanceToNext(geo.distance) ?? 'almost there'}
+          subtitle={formatDistanceToNext(liveWalkDistanceM ?? estimatedWalkDistanceM) ?? 'almost there'}
           onArrive={handleManualArrival}
           locationShy={locationShy}
           companionEyebrow={walkingCompanion?.eyebrow ?? null}
@@ -889,7 +891,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return withInterruptionBanner(
         <C2Walking
           {...props}
-          distanceM={geo.distance}
+          distanceM={liveWalkDistanceM}
           estimatedDistanceM={estimatedWalkDistanceM}
           bearingDeg={walkingBearingDeg.deg}
           bearingIsLive={walkingBearingDeg.live}

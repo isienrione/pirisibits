@@ -47,6 +47,15 @@ export function estimateDistanceBetweenStops(fromStop, toStop) {
   return meters
 }
 
+/** Beyond this, GPS is almost certainly wrong or the traveller isn't on-site yet. */
+export const MAX_PLAUSIBLE_WALK_DISTANCE_M = 12_000
+
+export function sanitizeWalkDistanceM(meters) {
+  if (meters == null || !Number.isFinite(meters) || meters < 0) return null
+  if (meters > MAX_PLAUSIBLE_WALK_DISTANCE_M) return null
+  return meters
+}
+
 export function formatDistanceToNext(meters) {
   if (meters == null) return null
   return formatWalkedDistance(meters)

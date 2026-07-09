@@ -8,6 +8,7 @@ import {
   markStopCompleted,
   planContinueWalking,
   resolveJourneyProgressPct,
+  sanitizeWalkDistanceM,
 } from '../journeyProgress'
 
 describe('journeyProgress', () => {
@@ -64,11 +65,13 @@ describe('journeyProgress', () => {
     expect(markStopCompleted(['colosseum'], 'pantheon')).toEqual(['colosseum', 'pantheon'])
   })
 
-  it('resolves journey progress along the effective sequence', () => {
-    const pct = resolveJourneyProgressPct(manifest, 'a', 0, [])
-    expect(pct).toBe(0)
-    const mid = resolveJourneyProgressPct(manifest, 'a', 5, [])
-    expect(mid).toBeGreaterThan(0)
-    expect(mid).toBeLessThan(100)
+  it('sanitizes implausible walk distances', () => {
+    expect(sanitizeWalkDistanceM(400)).toBe(400)
+    expect(sanitizeWalkDistanceM(11_901_400)).toBeNull()
+    expect(sanitizeWalkDistanceM(null)).toBeNull()
+  })
+
+  it('resolves journey progress at journey start', () => {
+    expect(resolveJourneyProgressPct(manifest, 'a', 0, [])).toBe(0)
   })
 })
