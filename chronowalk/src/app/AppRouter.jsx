@@ -9,7 +9,7 @@ import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
-import RedesignLandingPage from '../redesign/RedesignLandingPage.jsx'
+import ChronoWalkLanding from '../landing/ChronoWalkLanding.jsx'
 import RedesignJourneyPage from '../redesign/pages/RedesignJourneyPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
@@ -46,13 +46,17 @@ if (import.meta.env.DEV) {
   )
 }
 
-function HomeRedirect() {
+function HomeRoute() {
   if (hasAccess()) {
     // Returning travelers mid-journey are offered a resume; owners without a
     // real in-progress journey begin the cinematic onboarding at /welcome.
     return <Navigate to={isResumableJourney() ? '/begin' : '/welcome'} replace />
   }
-  return <Navigate to="/landing" replace />
+  return <ChronoWalkLanding />
+}
+
+function PublicLandingRoute() {
+  return <ChronoWalkLanding />
 }
 
 function TourDebugBootstrap() {
@@ -80,8 +84,8 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
-        <Route path="/" element={<HomeRedirect />} />
-        <Route path="/landing" element={<RedesignLandingPage />} />
+        <Route path="/" element={<HomeRoute />} />
+        <Route path="/landing" element={<PublicLandingRoute />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/setup" element={<LazySetupPage />} />
         <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />

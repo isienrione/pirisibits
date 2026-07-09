@@ -29,6 +29,10 @@ export const TRACK_EVENTS = {
   LETTER_SHARE: 'letter_share',
   REVIEW_CLICK: 'review_click',
   TRANSCRIPT_OPEN: 'transcript_open',
+  LANDING_VIEW: 'landing_view',
+  LANDING_CTA_BEGIN: 'landing_cta_begin',
+  LANDING_CTA_PREVIEW: 'landing_cta_preview',
+  LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
 }
 
 function baseProps(extra = {}) {
