@@ -140,6 +140,26 @@ describe('journey state machine', () => {
     expect(next.context.currentSequenceIndex).toBe(1)
   })
 
+  it('marks the journey complete after the final waypoint', () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const w22Index = seq.indexOf('w22')
+    expect(w22Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'heroic', path: 'a' })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: w22Index,
+      completedWaypointIds: seq.slice(0, w22Index).filter((id) => id.startsWith('w')),
+    })
+
+    completeWaypointAndAdvance('w22', manifest)
+
+    const snapshot = getJourneySnapshot()
+    expect(snapshot.state).toBe(JOURNEY_STATES.COMPLETE)
+    expect(snapshot.context.completedWaypointIds).toContain('w22')
+    expect(snapshot.context.currentSequenceIndex).toBe(w22Index + 1)
+  })
+
   it('queues a resume cue when continuing a saved journey', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-06-27T14:00:00Z'))

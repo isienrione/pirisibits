@@ -325,4 +325,21 @@ describe('JourneyShell', () => {
     expect(snap.context.currentSequenceIndex).toBe(PAUSE_SEQUENCE_INDEX + 1)
     expect(snap.context.completedWaypointIds).toContain('pause')
   })
+
+  it('shows journey complete screen after via appia', async () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+
+    beginJourney({ pace: 'heroic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.COMPLETE, {
+      currentSequenceIndex: seq.length,
+      completedWaypointIds: seq.filter((id) => id.startsWith('w')),
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('journey-complete-screen')).toBeInTheDocument()
+    expect(screen.getByText(/you walked ancient rome/i)).toBeInTheDocument()
+    expect(screen.getByTestId('journey-complete-letter')).toBeInTheDocument()
+    expect(screen.getByTestId('journey-complete-tour')).toBeInTheDocument()
+  })
 })

@@ -26,7 +26,7 @@ export function JourneyThresholdLayer() {
   const { nowAmbienceUrl, thenSoundscapeUrl } = resolveThresholdAmbienceUrls(manifest)
 
   const handleComplete = () => {
-    completeStoryAfterThreshold(waypoint.id)
+    completeStoryAfterThreshold(waypoint.id, manifest)
   }
 
   return (

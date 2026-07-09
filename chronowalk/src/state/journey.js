@@ -244,10 +244,21 @@ export function advanceWaypointIndex(nextIndex) {
   })
 }
 
-export function advanceSequenceIndex() {
-  return transitionJourney(JOURNEY_STATES.WALKING, {
+export function advanceSequenceIndex(manifest = null) {
+  const next = transitionJourney(JOURNEY_STATES.WALKING, {
     currentSequenceIndex: snapshot.context.currentSequenceIndex + 1,
   })
+  return markJourneyCompleteIfPastEnd(manifest, next)
+}
+
+function markJourneyCompleteIfPastEnd(manifest, journeySnapshot = snapshot) {
+  if (!manifest) return journeySnapshot
+  const { path, currentSequenceIndex, promotedOptionalIds } = journeySnapshot.context
+  const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+  if (currentSequenceIndex >= sequence.length && journeySnapshot.state !== JOURNEY_STATES.COMPLETE) {
+    return transitionJourney(JOURNEY_STATES.COMPLETE, { currentSequenceIndex })
+  }
+  return journeySnapshot
 }
 
 export function setJourneyPath(path) {
@@ -274,7 +285,7 @@ export function setActiveWaypointIndex(waypointId, manifest) {
   })
 }
 
-export function completeWaypointAndAdvance(waypointId) {
+export function completeWaypointAndAdvance(waypointId, manifest = null) {
   const alreadyComplete = snapshot.context.completedWaypointIds.includes(waypointId)
   markWaypointComplete(waypointId)
 
@@ -285,14 +296,14 @@ export function completeWaypointAndAdvance(waypointId) {
   // Threshold or story completion can fire twice (e.g. back → arrived → threshold
   // again). Never skip the next transit/waypoint by advancing the index twice.
   if (alreadyComplete) {
-    return transitionJourney(JOURNEY_STATES.WALKING)
+    return markJourneyCompleteIfPastEnd(manifest, transitionJourney(JOURNEY_STATES.WALKING))
   }
 
-  return advanceSequenceIndex()
+  return advanceSequenceIndex(manifest)
 }
 
-export function continueFromDayComplete() {
-  return advanceSequenceIndex()
+export function continueFromDayComplete(manifest = null) {
+  return advanceSequenceIndex(manifest)
 }
 
 export function jumpToSequenceIndex(index) {
@@ -302,8 +313,8 @@ export function jumpToSequenceIndex(index) {
   })
 }
 
-export function completeStoryAfterThreshold(waypointId) {
-  return completeWaypointAndAdvance(waypointId)
+export function completeStoryAfterThreshold(waypointId, manifest = null) {
+  return completeWaypointAndAdvance(waypointId, manifest)
 }
 
 export function promoteOptionalWaypoint(waypointId, manifest) {

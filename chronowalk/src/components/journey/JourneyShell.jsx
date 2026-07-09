@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
@@ -25,7 +25,9 @@ import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 import { chapterAtIndex, chapterTitle, combinedChapterTranscript, resolveStepTranscript } from '../../content/chapterMeta.js'
-import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
+import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
+import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
+import { isVisitStop } from '../../content/tourProductTruth.js'
 import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import C2Walking, { WALKING_UI_REVISION as loadedWalkingUiRevision } from '../../redesign/screens/C2Walking.jsx'
@@ -38,6 +40,7 @@ import C6ImmersivePlayer from '../../redesign/screens/C6ImmersivePlayer.jsx'
 import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
 import C8bThePause from '../../redesign/screens/C8bThePause.jsx'
 import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
+import C8eJourneyComplete from '../../redesign/screens/C8eJourneyComplete.jsx'
 import { ACT_COLORS, T, SHELL_TAB_BAR_INSET, SHELL_SAFE_BOTTOM_INSET } from '../../redesign/tokens.js'
 import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
@@ -66,6 +69,7 @@ const POOR_ACCURACY_M = 60
 const PLAYER_SPEEDS = [0.8, 1, 1.2]
 
 export default function JourneyShell({ variant = 'legacy' }) {
+  const navigate = useNavigate()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
   const { openSettings } = useSettingsSheet()
@@ -76,6 +80,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
     context.currentSequenceIndex,
     context.promotedOptionalIds
   )
+
+  const visitedStopCount = useMemo(() => {
+    if (!manifest) return 0
+    return context.completedWaypointIds.filter((id) => isVisitStop(getWaypoint(manifest, id))).length
+  }, [context.completedWaypointIds, manifest])
   const audio = useAudioEngine(manifest)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
@@ -607,18 +616,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setStoryEnded(false)
     setDockSnapshot(null)
 
-    const next = completeWaypointAndAdvance(step.id)
+    const next = completeWaypointAndAdvance(step.id, manifest)
     if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
       track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
     }
-  }, [audio, completeWaypointAndAdvance, state, step])
+  }, [audio, completeWaypointAndAdvance, manifest, state, step])
 
   const handleContinueClassicDay = useCallback(() => {
     playedStepRef.current = null
     storyStartedRef.current = null
-    continueFromDayComplete()
+    continueFromDayComplete(manifest)
     track(TRACK_EVENTS.RESUME, { day_break: true })
-  }, [continueFromDayComplete])
+  }, [continueFromDayComplete, manifest])
 
   const handleTransitContinue = useCallback(() => {
     const transitId = step?.type === 'transit' ? step.id : null
@@ -631,9 +640,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyStartedRef.current = null
     arrivedWaypointRef.current = null
     setDockSnapshot(null)
-    advanceSequence()
+    advanceSequence(manifest)
     track(TRACK_EVENTS.RESUME, { transit_id: transitId, advance: true })
-  }, [advanceSequence, audio, completeTransit, step?.id, step?.type])
+  }, [advanceSequence, audio, completeTransit, manifest, step?.id, step?.type])
 
   const handleResumeFromRest = useCallback(() => {
     if (!step?.record?.scripted_rest || step.type !== 'waypoint') return
@@ -644,8 +653,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     playedStepRef.current = null
     scriptedRestNarrationStartedRef.current = null
     scriptedRestEnteredRef.current = null
-    advanceSequence()
-  }, [advanceSequence, completeWaypoint, step])
+    advanceSequence(manifest)
+  }, [advanceSequence, completeWaypoint, manifest, step])
 
   const handleOpenThreshold = () => {
     audio.stopNarration()
@@ -726,7 +735,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     !needsPathChoice &&
     state !== JOURNEY_STATES.STORY &&
     state !== JOURNEY_STATES.THRESHOLD &&
-    state !== JOURNEY_STATES.PAUSED
+    state !== JOURNEY_STATES.PAUSED &&
+    state !== JOURNEY_STATES.COMPLETE
   const dockBottomInset = isImmersiveJourneyState(state)
     ? SHELL_SAFE_BOTTOM_INSET
     : SHELL_TAB_BAR_INSET
@@ -783,9 +793,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     )
   }
 
-  if (step.done || state === JOURNEY_STATES.COMPLETE) {
+  if (state === JOURNEY_STATES.COMPLETE || step?.done) {
     if (variant === 'redesign') {
-      return withInterruptionBanner(<Navigate to="/tour" replace />)
+      const moment = getJourneyCompleteMoment(manifest)
+      return withInterruptionBanner(
+        <C8eJourneyComplete
+          headline={moment.headline}
+          subline={moment.subline}
+          stopCount={visitedStopCount}
+          accent={T.encore}
+          onReadLetter={() => navigate('/letter')}
+          onReturnTour={() => navigate('/tour')}
+        />
+      )
     }
     return withInterruptionBanner(
       <JourneyLayout
