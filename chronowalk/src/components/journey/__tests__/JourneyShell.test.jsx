@@ -210,6 +210,27 @@ describe('JourneyShell', () => {
     expect(playTransitMock).toHaveBeenCalledWith('t06')
   })
 
+  it('t15 Trevi arrival begins w16 story from transit screen', async () => {
+    const manifest = loadRomeManifest()
+    const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
+    expect(t15Index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: t15Index,
+      completedWaypointIds: ['w15'],
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('transit-arrive-destination')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('transit-arrive-destination'))
+
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)
+    expect(await screen.findByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
+    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+  })
+
   it('shows path choice at t01 before path is locked', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 2, pathLocked: false })

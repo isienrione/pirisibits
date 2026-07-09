@@ -542,7 +542,6 @@ export default function C6ImmersivePlayer({
                 </button>
               ))}
             </div>
-            </div>
           )}
         </div>
       </div>

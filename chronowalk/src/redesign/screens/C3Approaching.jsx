@@ -94,7 +94,7 @@ export default function C3Approaching({
           boxShadow: `0 -8px 32px ${T.ink}12`,
           padding: `18px 20px calc(${SHELL_TAB_BAR_INSET} + 16px)`,
           position: 'relative',
-          zIndex: 10,
+          zIndex: 12,
         }}
       >
         {showCompanion ? (
@@ -162,6 +162,7 @@ export default function C3Approaching({
         {onArrive ? (
           <button
             type="button"
+            data-testid="manual-arrive"
             onClick={onArrive}
             style={{
               marginTop: 18,

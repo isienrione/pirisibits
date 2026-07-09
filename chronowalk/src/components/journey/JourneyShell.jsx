@@ -24,7 +24,7 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { chapterAtIndex, chapterTitle, combinedChapterTranscript, resolveStepTranscript } from '../../content/chapterMeta.js'
+import { chapterAtIndex, chapterTitle, resolveStepTranscript } from '../../content/chapterMeta.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
@@ -446,13 +446,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // Confirmed arrival — auto (after 5s dwell) or manual ("I'm here"). Guarded so
   // the dwell timer and a manual tap can never fire arrival for the same
   // waypoint twice.
-  const arriveAtWaypoint = useCallback(
-    (source) => {
-      if (!step?.record || step.type !== 'waypoint') return
-      if (arrivedWaypointRef.current === step.id) return
-      if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
-
-      arrivedWaypointRef.current = step.id
+  const beginWaypointStory = useCallback(
+    (waypointId, source) => {
+      arrivedWaypointRef.current = waypointId
       if (dwellTimerRef.current != null) {
         clearTimeout(dwellTimerRef.current)
         dwellTimerRef.current = null
@@ -465,13 +461,49 @@ export default function JourneyShell({ variant = 'legacy' }) {
         transition(JOURNEY_STATES.ARRIVED)
       }
       if (audioUnlocked) void audio.playArrivalChime()
-      track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: step.id, source })
-      if (source === 'manual') {
-        track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: step.id })
+      track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
+      if (source === 'manual' || source === 'transit_manual') {
+        track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [audio, audioUnlocked, state, step, transition, variant]
+    [audio, audioUnlocked, transition, variant]
   )
+
+  const arriveAtWaypoint = useCallback(
+    (source) => {
+      if (!step?.record || step.type !== 'waypoint') return
+      if (
+        arrivedWaypointRef.current === step.id &&
+        source === 'manual' &&
+        state !== JOURNEY_STATES.STORY &&
+        state !== JOURNEY_STATES.ARRIVED &&
+        state !== JOURNEY_STATES.THRESHOLD
+      ) {
+        arrivedWaypointRef.current = null
+      }
+      if (arrivedWaypointRef.current === step.id) return
+      if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+
+      beginWaypointStory(step.id, source)
+    },
+    [beginWaypointStory, state, step]
+  )
+
+  const handleTransitDestinationArrival = useCallback(() => {
+    if (!manifest || step?.type !== 'transit' || !step.targetWaypoint) return
+
+    const transitId = step.id
+    const waypointId = step.targetWaypoint.id
+
+    audio.stopNarration()
+    audio.endTransit()
+    completeTransit(transitId)
+    playedStepRef.current = null
+    storyStartedRef.current = null
+    setDockSnapshot(null)
+    advanceSequence(manifest)
+    beginWaypointStory(waypointId, 'transit_manual')
+  }, [advanceSequence, audio, beginWaypointStory, completeTransit, manifest, step])
 
   useEffect(() => {
     arriveRef.current = arriveAtWaypoint
@@ -938,7 +970,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       )
       const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
       const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
-      const realTranscript = record.transcript ?? combinedChapterTranscript(record.chapters)
+      const realTranscript = resolveStepTranscript(step, context.path)
       // In dev, only trust "audio available" once the engine confirms items or a
       // duration; in prod the deployed media is present, so never gate controls.
       const audioAvailable =
@@ -1102,6 +1134,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
           playbackRate={audio.playbackRate}
           transcript={transitTranscript}
           trackTitle={transitTrackTitle}
+          destinationTitle={titleForWaypoint(step.targetWaypoint)}
+          onArriveAtDestination={handleTransitDestinationArrival}
+          atDestination={
+            Boolean(step.targetWaypoint) &&
+            (geo.insideGeofence || locationShy)
+          }
           onToggleAudio={() => audio.toggleNarration()}
           onSkipBack={() => audio.skipNarration(-15)}
           onSkipForward={() => audio.skipNarration(15)}
@@ -1146,6 +1184,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
               : walkingCompanion?.subtitle ?? walkingCompanion?.title
           }
           onSimulateArrival={handleManualArrival}
+          insideGeofence={geo.insideGeofence}
           locationShy={locationShy}
           extraBottomInset={dockActive ? 88 : 0}
           onPause={() => transition(JOURNEY_STATES.PAUSED)}

@@ -188,6 +188,7 @@ export default function C2Walking({
   continueLabel = 'Continue',
   companionLine = null,
   map = null,
+  insideGeofence = false,
 }) {
   const navigate = useNavigate()
   const distanceCopy = resolveDistanceCopy(distanceM, estimatedDistanceM)
@@ -541,11 +542,34 @@ export default function C2Walking({
           padding: `12px 20px calc(${SHELL_TAB_BAR_INSET} + ${extraBottomInset}px)`,
           flexShrink: 0,
           position: 'relative',
-          zIndex: 2,
+          zIndex: 12,
           borderTop: `1px solid ${T.muted}18`,
           background: WALK_BG,
         }}
       >
+        {onSimulateArrival && (insideGeofence || locationShy) ? (
+          <button
+            type="button"
+            data-testid="manual-arrive"
+            onClick={onSimulateArrival}
+            style={{
+              width: '100%',
+              marginBottom: 12,
+              background: 'transparent',
+              border: `1px solid ${accent}`,
+              borderRadius: 12,
+              padding: '12px 22px',
+              cursor: 'pointer',
+              color: accent,
+              fontFamily: F.body,
+              fontSize: 14,
+              fontWeight: 600,
+              letterSpacing: '0.04em',
+            }}
+          >
+            I&apos;m here
+          </button>
+        ) : null}
         <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           {onPause ? (
             <button
@@ -581,9 +605,10 @@ export default function C2Walking({
               {continueLabel}
             </button>
           ) : null}
-          {onSimulateArrival ? (
+          {onSimulateArrival && !(insideGeofence || locationShy) ? (
             <button
               type="button"
+              data-testid="manual-arrive"
               onClick={onSimulateArrival}
               style={{
                 background: 'none',

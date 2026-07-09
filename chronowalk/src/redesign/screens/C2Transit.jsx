@@ -33,6 +33,9 @@ export default function C2Transit({
   onSeek,
   onCycleSpeed,
   map,
+  destinationTitle = null,
+  onArriveAtDestination,
+  atDestination = false,
 }) {
   const navigate = useNavigate()
   const [showTranscript, setShowTranscript] = useState(false)
@@ -365,8 +368,35 @@ export default function C2Transit({
         <div
           style={{
             padding: `12px 20px calc(${SHELL_TAB_BAR_INSET} + 8px)`,
+            position: 'relative',
+            zIndex: 12,
           }}
         >
+          {onArriveAtDestination ? (
+            <button
+              type="button"
+              data-testid="transit-arrive-destination"
+              onClick={onArriveAtDestination}
+              style={{
+                width: '100%',
+                marginBottom: onContinue ? 10 : 0,
+                background: atDestination ? T.ember : 'transparent',
+                border: atDestination ? 'none' : `1px solid ${accent}`,
+                borderRadius: 12,
+                padding: '14px 16px',
+                cursor: 'pointer',
+                color: atDestination ? T.obsidian : accent,
+                fontWeight: 600,
+                fontSize: 15,
+                fontFamily: F.body,
+                boxShadow: atDestination ? '0 0 24px rgba(232,161,60,0.35)' : 'none',
+              }}
+            >
+              {atDestination
+                ? `I'm here — begin ${destinationTitle ?? title}`
+                : `I've arrived — begin ${destinationTitle ?? title}`}
+            </button>
+          ) : null}
           {onContinue ? (
             <button
               type="button"
