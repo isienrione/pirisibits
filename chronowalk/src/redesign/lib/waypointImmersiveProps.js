@@ -14,6 +14,7 @@ import {
   thenLoopForWaypoint,
   thenPhotoForWaypoint,
   titleForWaypoint,
+  reconstructionSourceNoteForWaypoint,
 } from './waypointPresentation.js'
 
 export function actLabelForWaypoint(waypoint, manifest) {
@@ -74,6 +75,7 @@ export function buildImmersivePlayerProps({
     thenLoop: thenLoopForWaypoint(waypoint),
     thenLabel: thenLabelForWaypoint(waypoint),
     honestyCaption: honestyCaptionForWaypoint(waypoint),
+    sourceNote: reconstructionSourceNoteForWaypoint(waypoint),
     nowAmbienceUrl,
     thenSoundscapeUrl,
     transcript,

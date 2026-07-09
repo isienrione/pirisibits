@@ -145,6 +145,18 @@ export function honestyCaptionForWaypoint(waypoint) {
   )
 }
 
+/** Tiny footer copy for reconstruction / present-day image sourcing. */
+export function reconstructionSourceNoteForWaypoint(waypoint) {
+  const parts = []
+  const reconstructionCaption =
+    waypoint?.reconstruction?.caption ?? waypoint?.reconstruction?.honesty ?? null
+  if (reconstructionCaption) parts.push(reconstructionCaption)
+  if (waypoint?.now_image?.source === 'ai_generated') {
+    parts.push('Present-day view: AI-assisted rendering.')
+  }
+  return parts.length ? parts.join(' · ') : null
+}
+
 /** Every stop supports the threshold slider. */
 export function supportsThresholdExperience() {
   return true

@@ -88,6 +88,14 @@ describe('Threshold', () => {
     expect(screen.getByText('Evidence-based reconstruction')).toBeInTheDocument()
   })
 
+  it('hides era pills and source badges in immersive embedded mode', () => {
+    renderThreshold({ embedded: true, immersive: true, thenLabel: 'ANCIENT ROME' })
+
+    expect(screen.queryByText('Today')).not.toBeInTheDocument()
+    expect(screen.queryByText('ANCIENT ROME')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /about this reconstruction/i })).not.toBeInTheDocument()
+  })
+
   it('calls onDismiss from journey controls', () => {
     const onDismiss = vi.fn()
     renderThreshold({ onDismiss })

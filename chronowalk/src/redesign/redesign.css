@@ -237,6 +237,82 @@
   pointer-events: auto;
 }
 
+.cw-waypoint-immersive--reading .cw-waypoint-immersive__hero-title {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.cw-waypoint-immersive--reading .cw-waypoint-immersive__hero-scrim {
+  opacity: 0.35;
+}
+
+.cw-waypoint-immersive--reading .cw-waypoint-immersive__topbar {
+  z-index: 22;
+}
+
+.cw-waypoint-immersive__read-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 14;
+  display: flex;
+  flex-direction: column;
+  padding: max(52px, calc(env(safe-area-inset-top) + 44px)) 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(22, 19, 15, 0.55) 0%,
+    rgba(22, 19, 15, 0.9) 18%,
+    rgba(22, 19, 15, 0.94) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+.cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__read-layer {
+  padding-bottom: calc(56px + max(12px, env(safe-area-inset-bottom)));
+}
+
+.cw-waypoint-immersive__read-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  margin: 8px 16px 0;
+  padding: 18px 18px 14px;
+  border-radius: 16px 16px 0 0;
+  background: rgba(22, 19, 15, 0.78);
+  border: 1px solid rgba(245, 240, 232, 0.1);
+  box-shadow: inset 0 1px 0 rgba(245, 240, 232, 0.06);
+}
+
+.cw-waypoint-immersive__read-footer {
+  flex-shrink: 0;
+  padding: 10px 24px 12px;
+  border-top: 1px solid rgba(245, 240, 232, 0.08);
+  background: rgba(22, 19, 15, 0.92);
+}
+
+.cw-waypoint-immersive__source-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(4px, env(safe-area-inset-bottom));
+  z-index: 11;
+  margin: 0;
+  padding: 0 20px 2px;
+  font-size: 9px;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: rgba(245, 240, 232, 0.34);
+  pointer-events: none;
+}
+
+.cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__source-note {
+  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)) + 2px);
+}
+
+.cw-waypoint-immersive--reading.cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__source-note {
+  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)) + 2px);
+}
+
 .cw-waypoint-immersive__chrome {
   transition: opacity 280ms ease, visibility 280ms ease;
 }

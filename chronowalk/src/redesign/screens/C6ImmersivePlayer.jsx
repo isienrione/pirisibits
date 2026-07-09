@@ -53,6 +53,7 @@ export default function C6ImmersivePlayer({
   thenLoop = null,
   thenLabel = 'ANCIENT ROME',
   honestyCaption = null,
+  sourceNote = null,
   nowAmbienceUrl = null,
   thenSoundscapeUrl = null,
   initialTab = 'chapters',
@@ -391,7 +392,14 @@ export default function C6ImmersivePlayer({
 
   return (
     <div
-      className={`cw-waypoint-immersive${chromeHidden ? ' cw-waypoint-immersive--focus' : ''}`}
+      className={[
+        'cw-waypoint-immersive',
+        chromeHidden ? 'cw-waypoint-immersive--focus' : '',
+        reading ? 'cw-waypoint-immersive--reading' : '',
+        showContinuity ? 'cw-waypoint-immersive--with-continuity' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={{
         background: T.obsidian,
         height: '100%',
@@ -419,7 +427,7 @@ export default function C6ImmersivePlayer({
         </div>
 
         <div
-          className="cw-waypoint-immersive__chrome"
+          className="cw-waypoint-immersive__topbar cw-waypoint-immersive__chrome"
           style={{
             position: 'absolute',
             top: 'max(12px, env(safe-area-inset-top))',
@@ -512,6 +520,36 @@ export default function C6ImmersivePlayer({
         </div>
       </div>
 
+      {reading ? (
+        <div className="cw-waypoint-immersive__read-layer cw-waypoint-immersive__chrome">
+          {tabBar}
+          <div className="cw-waypoint-immersive__read-body">
+            {transcriptAvailable && transcript ? (
+              <KaraokeTranscript
+                transcript={transcript}
+                currentTime={currentTime}
+                duration={duration}
+                playing={narrationPlaying}
+                accent={accent}
+                fontSize={transcriptFontSize + 2}
+                fullHeight
+                immersive
+                readingMode
+                testId="story-karaoke-transcript"
+              />
+            ) : (
+              <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
+                {import.meta.env.DEV
+                  ? 'No written transcript is wired for this stop yet (development).'
+                  : 'A written transcript for this stop is coming soon.'}
+              </p>
+            )}
+          </div>
+          <div className="cw-waypoint-immersive__read-footer">
+            {audioPlayerBlock(true)}
+          </div>
+        </div>
+      ) : (
       <div
         className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity' : ''}`}
         style={{
@@ -522,61 +560,35 @@ export default function C6ImmersivePlayer({
             : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
-        {reading ? (
-          <>
-            {tabBar}
-            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-              {transcriptAvailable && transcript ? (
-                <KaraokeTranscript
-                  transcript={transcript}
-                  currentTime={currentTime}
-                  duration={duration}
-                  playing={narrationPlaying}
-                  accent={accent}
-                  fontSize={transcriptFontSize + 4}
-                  fullHeight
-                  immersive
-                  testId="story-karaoke-transcript"
-                />
-              ) : (
-                <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
-                  {import.meta.env.DEV
-                    ? 'No written transcript is wired for this stop yet (development).'
-                    : 'A written transcript for this stop is coming soon.'}
-                </p>
-              )}
-            </div>
-            <div style={{ flexShrink: 0, paddingTop: 10, borderTop: `1px solid ${T.ink800}`, marginTop: 4 }}>
-              {audioPlayerBlock(true)}
-            </div>
-          </>
-        ) : (
-          <>
-            {audioPlayerBlock(false)}
+        {audioPlayerBlock(false)}
 
-            {showAudioNotice ? (
-              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
-                {import.meta.env.DEV
-                  ? 'Narration audio is unavailable in this development build.'
-                  : 'Narration is preparing — check your connection.'}
-              </p>
-            ) : null}
+        {showAudioNotice ? (
+          <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+            {import.meta.env.DEV
+              ? 'Narration audio is unavailable in this development build.'
+              : 'Narration is preparing — check your connection.'}
+          </p>
+        ) : null}
 
-            {tabBar}
+        {tabBar}
 
-            <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
-              Chapter {chapterIndex + 1} of {chapterCount}
-              {chapterTitle ? (
-                <>
-                  {' '}
-                  · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
-                </>
-              ) : null}
-            </p>
-          </>
-        )}
-
+        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
+          Chapter {chapterIndex + 1} of {chapterCount}
+          {chapterTitle ? (
+            <>
+              {' '}
+              · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
+            </>
+          ) : null}
+        </p>
       </div>
+      )}
+
+      {sourceNote && hasReconstruction ? (
+        <p className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome" aria-label="Reconstruction source">
+          {sourceNote}
+        </p>
+      ) : null}
 
       {showContinuity ? (
         <div className="cw-waypoint-immersive__continuity cw-waypoint-immersive__chrome">

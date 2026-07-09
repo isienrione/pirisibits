@@ -15,6 +15,7 @@ export default function KaraokeTranscript({
   variant = 'dark',
   fullHeight = false,
   immersive = false,
+  readingMode = false,
   testId = 'karaoke-transcript',
 }) {
   const scrollRef = useRef(null)
@@ -25,12 +26,14 @@ export default function KaraokeTranscript({
   )
 
   const isBone = variant === 'bone'
-  const shellBg = immersive
+  const shellBg = readingMode
     ? 'transparent'
-    : isBone
-      ? 'rgba(255,255,255,0.92)'
-      : `${T.ink800}ee`
-  const shellBorder = immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
+    : immersive
+      ? 'transparent'
+      : isBone
+        ? 'rgba(255,255,255,0.92)'
+        : `${T.ink800}ee`
+  const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
   const defaultInk = isBone ? T.ink : T.warmWhite
 
   if (!paragraphs.length) {
@@ -44,9 +47,9 @@ export default function KaraokeTranscript({
         background: shellBg,
         border: immersive ? 'none' : `1px solid ${shellBorder}`,
         borderRadius: immersive ? 0 : 16,
-        padding: immersive ? '4px 2px 8px' : fullHeight ? '22px 20px 28px' : '16px 16px 18px',
-        flex: fullHeight || immersive ? 1 : undefined,
-        minHeight: fullHeight || immersive ? 0 : undefined,
+        padding: readingMode ? '0 2px 8px' : immersive ? '4px 2px 8px' : fullHeight ? '22px 20px 28px' : '16px 16px 18px',
+        flex: fullHeight || immersive || readingMode ? 1 : undefined,
+        minHeight: fullHeight || immersive || readingMode ? 0 : undefined,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',

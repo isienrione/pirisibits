@@ -549,18 +549,18 @@ export default function Threshold({
             {thenLabel}
           </div>
         </>
-      ) : !hideUi && embedded ? (
+      ) : !hideUi && embedded && !immersive ? (
         <>
-          <div style={{ position: 'absolute', bottom: embedded ? (immersive ? '46%' : 14) : 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', bottom: embedded ? 14 : 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
             <span style={eraPillStyle(reveal > 0.2)}>{thenLabel}</span>
           </div>
-          <div style={{ position: 'absolute', bottom: embedded ? (immersive ? '46%' : 14) : 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', bottom: embedded ? 14 : 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
             <span style={eraPillStyle(reveal < 0.8)}>Today</span>
           </div>
         </>
       ) : null}
 
-      {!hideUi && showNowAiBadge ? (
+      {!hideUi && !immersive && showNowAiBadge ? (
         <ThresholdSourceBadge
           align="left"
           label="About this present-day view"
@@ -568,7 +568,7 @@ export default function Threshold({
         />
       ) : null}
 
-      {!hideUi && thenCaption ? (
+      {!hideUi && !immersive && thenCaption ? (
         <ThresholdSourceBadge
           align="right"
           label="About this reconstruction"
