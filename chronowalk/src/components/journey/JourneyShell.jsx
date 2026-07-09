@@ -24,7 +24,7 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { chapterAtIndex, chapterTitle, chapterTranscript, resolveStepTranscript } from '../../content/chapterMeta.js'
+import { resolveStepTranscript } from '../../content/chapterMeta.js'
 import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
@@ -55,6 +55,10 @@ import {
   signatureLine,
   titleForWaypoint,
 } from '../../redesign/lib/waypointPresentation.js'
+import {
+  buildImmersivePlayerProps,
+  redesignWaypointShellProps,
+} from '../../redesign/lib/waypointImmersiveProps.js'
 import JourneyInlineMap from './JourneyInlineMap.jsx'
 import { bearingDegrees } from '../../utils/bearing.js'
 
@@ -370,29 +374,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyEnded,
   ])
 
-  // Waypoints with reconstruction open the now/then threshold once the story ends.
-  useEffect(() => {
-    if (variant !== 'redesign') return
-    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
-    if (!storyEnded || !step.record?.reconstruction) return
-    if (thresholdAutoOpenedRef.current === step.id) return
-
-    thresholdAutoOpenedRef.current = step.id
-    const timer = setTimeout(() => {
-      audio.stopNarration()
-      transition(JOURNEY_STATES.THRESHOLD)
-    }, 1200)
-    return () => clearTimeout(timer)
-  }, [
-    audio,
-    state,
-    step?.id,
-    step?.record?.reconstruction,
-    step?.type,
-    storyEnded,
-    transition,
-    variant,
-  ])
+  // Threshold is inline on the immersive player — narration keeps playing while
+  // the traveller looks through time. No separate THRESHOLD screen handoff.
 
   const handleCycleSpeed = useCallback(() => {
     const current = audio.playbackRate ?? 1
@@ -629,6 +612,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   const handleViewImages = () => {
+    if (variant === 'redesign') return
     audio.stopNarration()
     transition(JOURNEY_STATES.THRESHOLD)
   }
@@ -690,6 +674,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [advanceSequence, completeWaypoint, manifest, step])
 
   const handleOpenThreshold = () => {
+    if (variant === 'redesign') return
     audio.stopNarration()
     transition(JOURNEY_STATES.THRESHOLD)
   }
@@ -900,17 +885,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   const redesignWaypointProps = (record) =>
-    record
-      ? {
-          accent: accentForWaypoint(record, manifest),
-          title: titleForWaypoint(record),
-          photo: photoForWaypoint(record),
-          direction: approachCopy(record),
-          arrivalLine: arrivalCopy(record),
-          signatureLine: signatureLine(record),
-          actNumeral: record.act?.replace('act', '').toUpperCase() ?? 'I',
-        }
-      : {}
+    record ? redesignWaypointShellProps(record, manifest) : {}
 
   const journeyProgressPct = resolveJourneyProgressPct(
     manifest,
@@ -962,72 +937,56 @@ export default function JourneyShell({ variant = 'legacy' }) {
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
     if (variant === 'redesign') {
       const record = step.record
-      const props = redesignWaypointProps(record)
       const chapters = record.chapters?.length ? record.chapters : []
-      const activeChapter = chapterAtIndex(
-        chapters,
-        audio.progress?.chapterIndex ?? 0,
-        signatureLine(record)
-      )
-      const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
-      const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
       const activeChapterIndex = audio.progress?.chapterCount
         ? audio.progress.chapterIndex
         : 0
-      const chapterEntry = chapters[activeChapterIndex]
-      const chapterScopedTranscript = chapterTranscript(chapterEntry)
-      const realTranscript =
-        chapters.length > 1 && chapterScopedTranscript
-          ? stripDirectorCues(chapterScopedTranscript)
-          : resolveStepTranscript(step, context.path)
-      // In dev, only trust "audio available" once the engine confirms items or a
-      // duration; in prod the deployed media is present, so never gate controls.
       const audioAvailable =
         audio.narrationPlaying ||
         (audio.progress?.itemCount ?? 0) > 0 ||
         (audio.progress?.duration ?? 0) > 0 ||
         storyEnded
 
-      return withInterruptionBanner(
-        <C6ImmersivePlayer
-          accent={props.accent}
-          actLabel={actLabel}
-          title={props.title}
-          chapterTitle={activeChapter.title}
-          chapterIndex={audio.progress?.chapterCount ? audio.progress.chapterIndex : 0}
-          chapterCount={audio.progress?.chapterCount || Math.max(chapters.length, 1)}
-          chapterTitles={chapters.map((chapter, index) =>
-            chapterTitle(chapter, `Chapter ${index + 1}`)
-          )}
-          photo={props.photo}
-          transcript={realTranscript}
-          transcriptAvailable={Boolean(realTranscript)}
-          narrationPlaying={audio.narrationPlaying}
-          currentTime={audio.progress?.currentTime ?? 0}
-          duration={audio.progress?.duration ?? 0}
-          playbackRate={audio.playbackRate}
-          speeds={PLAYER_SPEEDS}
-          onCycleSpeed={handleCycleSpeed}
-          audioAvailable={audioAvailable}
-          storyEnded={storyEnded}
-          hasReconstruction={Boolean(record.reconstruction)}
-          initialTab={storyViewRef.current}
-          onTogglePlay={() => audio.toggleNarration()}
-          onSkipBack={() => audio.skipNarration(-15)}
-          onSkipForward={() => audio.skipNarration(15)}
-          onSeek={(seconds) => audio.seekNarration(seconds)}
-          onSelectChapter={(i) => audio.jumpToChapter(i)}
-          onOpenTranscript={() => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id })}
-          onStoryComplete={handleStoryComplete}
-          onBack={() => {
+      const realTranscript = resolveStepTranscript(step, context.path)
+      const playerProps = buildImmersivePlayerProps({
+        waypoint: record,
+        waypointId: step.id,
+        manifest,
+        chapterIndex: activeChapterIndex,
+        storyEnded,
+        initialTab: storyViewRef.current,
+        transcriptOverride: realTranscript ? stripDirectorCues(realTranscript) : null,
+        audio: {
+          narrationPlaying: audio.narrationPlaying,
+          currentTime: audio.progress?.currentTime ?? 0,
+          duration: audio.progress?.duration ?? 0,
+          playbackRate: audio.playbackRate,
+          chapterCount: audio.progress?.chapterCount || Math.max(chapters.length, 1),
+          audioAvailable,
+        },
+        handlers: {
+          speeds: PLAYER_SPEEDS,
+          onCycleSpeed: handleCycleSpeed,
+          onTogglePlay: () => audio.toggleNarration(),
+          onSkipBack: () => audio.skipNarration(-15),
+          onSkipForward: () => audio.skipNarration(15),
+          onSeek: (seconds) => audio.seekNarration(seconds),
+          onSelectChapter: (i) => audio.jumpToChapter(i),
+          onOpenTranscript: () => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id }),
+          onStoryComplete: handleStoryComplete,
+          onThresholdCross: () =>
+            track(TRACK_EVENTS.THRESHOLD_HOLD, { waypoint_id: step.id, inline: true }),
+          onBack: () => {
             audio.stopNarration()
             storyStartedRef.current = null
             playedStepRef.current = null
             transition(JOURNEY_STATES.WALKING)
-          }}
-          onOpenThreshold={handleOpenThreshold}
-          onViewImages={handleViewImages}
-        />
+          },
+        },
+      })
+
+      return withInterruptionBanner(
+        <C6ImmersivePlayer {...playerProps} />
       )
     }
     return withInterruptionBanner(

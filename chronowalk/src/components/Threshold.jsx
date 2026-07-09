@@ -17,7 +17,7 @@ import ThresholdSourceBadge, {
 const REVEAL_COMPLETE = 0.98
 
 /** Shared framing for both eras — same box, same scale, minimal crop. */
-const THRESHOLD_LAYER_STYLE = {
+const THRESHOLD_LAYER_CONTAIN = {
   position: 'absolute',
   inset: 0,
   width: '100%',
@@ -27,10 +27,16 @@ const THRESHOLD_LAYER_STYLE = {
   display: 'block',
 }
 
-function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion }) {
+const THRESHOLD_LAYER_COVER = {
+  ...THRESHOLD_LAYER_CONTAIN,
+  objectFit: 'cover',
+  objectPosition: 'center 28%',
+}
+
+function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, immersive = false }) {
   return (
-    <div className="threshold-media-canvas">
-      <div className="threshold-media-canvas__frame">
+    <div className={`threshold-media-canvas${immersive ? ' threshold-media-canvas--immersive' : ''}`}>
+      <div className={`threshold-media-canvas__frame${immersive ? ' threshold-media-canvas__frame--immersive' : ''}`}>
         {thenLayer}
         <div
           style={{
@@ -148,11 +154,14 @@ export default function Threshold({
   thenLabel = 'Then',
   active = true,
   embedded = false,
+  immersive = false,
   className = '',
   onDismiss = null,
   dismissLabel = 'Return to story',
   onHoldStart = null,
+  onHoldEnd = null,
   onFullyRevealed = null,
+  hideUi = false,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -161,13 +170,14 @@ export default function Threshold({
   const rafRef = useRef(null)
   const pointerIdRef = useRef(null)
   const fullyRevealedHoldRef = useRef(false)
+  const holdSessionRef = useRef(false)
 
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
   const [holding, setHolding] = useState(false)
   const [latchedToThen, setLatchedToThen] = useState(false)
   const latchedRef = useRef(false)
-  const [showHint, setShowHint] = useState(() => !hasSeenThresholdHint())
+  const [showHint, setShowHint] = useState(() => !immersive && !hasSeenThresholdHint())
   const [videoPlaying, setVideoPlaying] = useState(false)
 
   useHideThresholdChrome(holding)
@@ -251,6 +261,7 @@ export default function Threshold({
       pointerIdRef.current = event.pointerId
       holdStartRef.current = performance.now()
       fullyRevealedHoldRef.current = false
+      holdSessionRef.current = true
       setHolding(true)
       setVideoPlaying(true)
 
@@ -275,11 +286,21 @@ export default function Threshold({
     [active, animateReveal, cancelAnimation, notifyFullyRevealed, onHoldStart, reducedMotion, showHint]
   )
 
+  const endHoldSession = useCallback(
+    (detail) => {
+      if (!holdSessionRef.current) return
+      holdSessionRef.current = false
+      onHoldEnd?.(detail)
+    },
+    [onHoldEnd],
+  )
+
   const handlePointerUp = useCallback(
     (event) => {
       if (pointerIdRef.current != null && event.pointerId !== pointerIdRef.current) return
 
       const heldMs = holdStartRef.current ? performance.now() - holdStartRef.current : 0
+      const hadHoldSession = holdSessionRef.current
       holdStartRef.current = null
       pointerIdRef.current = null
       setHolding(false)
@@ -297,12 +318,14 @@ export default function Threshold({
           latchedRef.current = true
           setLatchedToThen(true)
           setVideoPlaying(true)
+          if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: true })
           return
         }
         setReveal(0)
         revealRef.current = 0
         setVideoPlaying(false)
         audioRef.current?.rampToNow(200)
+        if (hadHoldSession) endHoldSession({ reveal: 0, latched: false })
         return
       }
 
@@ -313,14 +336,16 @@ export default function Threshold({
         setReveal(1)
         revealRef.current = 1
         setVideoPlaying(true)
+        if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: true })
         return
       }
 
       setVideoPlaying(false)
       animateReveal(revealRef.current, 0, THRESHOLD_RELEASE_MS)
       audioRef.current?.rampToNow(THRESHOLD_RELEASE_MS)
+      if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: false })
     },
-    [animateReveal, cancelAnimation, reducedMotion, waypoint?.id]
+    [animateReveal, cancelAnimation, endHoldSession, reducedMotion, waypoint?.id]
   )
 
   const handlePointerLeave = useCallback(
@@ -342,6 +367,8 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
+  const layerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
+
   const thenLayer =
     reconstruction.loop ? (
       <ThresholdVideo
@@ -349,14 +376,14 @@ export default function Threshold({
         poster={reconstruction.then}
         playing={videoPlaying}
         className="threshold-layer"
-        style={THRESHOLD_LAYER_STYLE}
+        style={layerStyle}
       />
     ) : (
       <ThresholdLayerImage
         src={thenSrc}
         alt=""
         className="threshold-layer"
-        style={THRESHOLD_LAYER_STYLE}
+        style={layerStyle}
       />
     )
 
@@ -365,13 +392,13 @@ export default function Threshold({
       src={reconstruction.now}
       alt=""
       className="threshold-layer"
-      style={THRESHOLD_LAYER_STYLE}
+      style={layerStyle}
     />
   )
 
   return (
     <div
-      className={`threshold-root ${className}`.trim()}
+      className={`threshold-root ${immersive ? 'threshold-root--immersive' : ''} ${className}`.trim()}
       style={{
         position: 'relative',
         width: '100%',
@@ -400,9 +427,10 @@ export default function Threshold({
         nowLayer={nowLayer}
         nowClip={nowClip}
         reducedMotion={reducedMotion}
+        immersive={immersive}
       />
 
-      {embedded ? (
+      {embedded && !hideUi ? (
         <div
           aria-hidden="true"
           style={{
@@ -414,50 +442,52 @@ export default function Threshold({
         />
       ) : null}
 
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: seamLeft,
-          width: embedded ? 2 : 3,
-          transform: 'translateX(-50%)',
-          background: 'var(--ember)',
-          boxShadow: holding
-            ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
-            : '0 0 18px 4px var(--ember-glow)',
-          opacity: reveal > 0.02 && reveal < REVEAL_COMPLETE ? 1 : 0,
-          transition: holding ? 'none' : 'left 420ms ease-out, opacity 150ms var(--ease)',
-          pointerEvents: 'none',
-          zIndex: 2,
-        }}
-      >
-        {embedded ? (
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              border: '2px solid var(--ember)',
-              background: 'color-mix(in srgb, var(--obsidian) 55%, transparent)',
-              backdropFilter: 'blur(6px)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: holding ? '0 0 22px rgba(232,161,60,0.75)' : '0 0 16px rgba(232,161,60,0.5)',
-            }}
-          >
-            <span style={{ color: 'var(--ember)', fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
-          </div>
-        ) : null}
-      </div>
+      {!hideUi ? (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: seamLeft,
+            width: embedded ? 2 : 3,
+            transform: 'translateX(-50%)',
+            background: 'var(--ember)',
+            boxShadow: holding
+              ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
+              : '0 0 18px 4px var(--ember-glow)',
+            opacity: reveal > 0.02 && reveal < REVEAL_COMPLETE ? 1 : 0,
+            transition: holding ? 'none' : 'left 420ms ease-out, opacity 150ms var(--ease)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        >
+          {embedded ? (
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                border: '2px solid var(--ember)',
+                background: 'color-mix(in srgb, var(--obsidian) 55%, transparent)',
+                backdropFilter: 'blur(6px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: holding ? '0 0 22px rgba(232,161,60,0.75)' : '0 0 16px rgba(232,161,60,0.5)',
+              }}
+            >
+              <span style={{ color: 'var(--ember)', fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
-      {!embedded ? (
+      {!hideUi && !embedded ? (
         <>
           <div
             style={{
@@ -519,18 +549,18 @@ export default function Threshold({
             {thenLabel}
           </div>
         </>
-      ) : (
+      ) : !hideUi && embedded ? (
         <>
-          <div style={{ position: 'absolute', bottom: 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', bottom: embedded ? (immersive ? '46%' : 14) : 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
             <span style={eraPillStyle(reveal > 0.2)}>{thenLabel}</span>
           </div>
-          <div style={{ position: 'absolute', bottom: 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', bottom: embedded ? (immersive ? '46%' : 14) : 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
             <span style={eraPillStyle(reveal < 0.8)}>Today</span>
           </div>
         </>
-      )}
+      ) : null}
 
-      {showNowAiBadge ? (
+      {!hideUi && showNowAiBadge ? (
         <ThresholdSourceBadge
           align="left"
           label="About this present-day view"
@@ -538,7 +568,7 @@ export default function Threshold({
         />
       ) : null}
 
-      {thenCaption ? (
+      {!hideUi && thenCaption ? (
         <ThresholdSourceBadge
           align="right"
           label="About this reconstruction"
@@ -546,7 +576,7 @@ export default function Threshold({
         />
       ) : null}
 
-      {showHint && !latchedToThen ? (
+      {!hideUi && showHint && !latchedToThen ? (
         <div
           style={{
             position: 'absolute',
@@ -571,7 +601,7 @@ export default function Threshold({
         </div>
       ) : null}
 
-      {latchedToThen ? (
+      {!hideUi && latchedToThen ? (
         <div
           style={{
             position: 'absolute',

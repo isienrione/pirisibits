@@ -13,6 +13,16 @@ function lazyRoute(importFn, label) {
   }
 }
 
+export const LazyWaypointPreviewPage = lazyRoute(
+  () => import('../redesign/pages/RedesignWaypointPreviewPage.jsx'),
+  'waypoint preview',
+)
+
+export const LazyColosseumPreviewPage = lazyRoute(
+  () => import('../redesign/pages/RedesignColosseumPreviewPage.jsx'),
+  'colosseum preview',
+)
+
 export const LazyPreviewPage = lazyRoute(
   () => import('../redesign/pages/RedesignPreviewPage.jsx'),
   'preview',

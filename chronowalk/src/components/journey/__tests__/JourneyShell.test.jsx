@@ -141,18 +141,22 @@ describe('JourneyShell', () => {
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByRole('heading', { name: /colosseum exterior/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+    expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
   })
 
-  it('shows colosseum threshold and continue actions during story', async () => {
+  it('shows inline threshold and read instead during story', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('story-footer')).toBeInTheDocument()
-    expect(screen.getByTestId('story-open-threshold')).toBeInTheDocument()
-    expect(screen.getByTestId('story-continue')).toBeInTheDocument()
+    expect(await screen.findByTestId('reveal-invite')).toBeInTheDocument()
+    expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
+    expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
+    expect(screen.queryByText(/press and hold to cross/i)).not.toBeInTheDocument()
   })
 
   it('advances from transit when continue walking is tapped', async () => {

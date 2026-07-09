@@ -9,6 +9,7 @@ import { RedesignNavCtx } from './nav.js'
 import './redesign.css'
 
 import A1LandingHero from './screens/A1LandingHero.jsx'
+import { loadRomeManifest, getWaypoint } from '../content/manifest.js'
 import A2FreePreviewStory from './screens/A2FreePreviewStory.jsx'
 import A3AccessConfirmed from './screens/A3AccessConfirmed.jsx'
 import B1PrismWelcome from './screens/B1PrismWelcome.jsx'
@@ -24,6 +25,7 @@ import C4ArrivalMoment from './screens/C4ArrivalMoment.jsx'
 import C5Story from './screens/C5Story.jsx'
 import C7Threshold from './screens/C7Threshold.jsx'
 import C6ImmersivePlayer from './screens/C6ImmersivePlayer.jsx'
+import { buildImmersivePlayerProps } from './lib/waypointImmersiveProps.js'
 import C8aPathChoice from './screens/C8aPathChoice.jsx'
 import C8bThePause from './screens/C8bThePause.jsx'
 import C8cActComplete from './screens/C8cActComplete.jsx'
@@ -38,9 +40,27 @@ import G1Settings from './screens/G1Settings.jsx'
 import G2Credits from './screens/G2Credits.jsx'
 import G3SystemStates from './screens/G3SystemStates.jsx'
 
+const PROTOTYPE_MANIFEST = loadRomeManifest()
+const PROTOTYPE_W17 = getWaypoint(PROTOTYPE_MANIFEST, 'w17')
+const PROTOTYPE_W01 = getWaypoint(PROTOTYPE_MANIFEST, 'w01')
+
 const SCREENS = [
   { id: 'A1', label: 'Landing Hero', Component: A1LandingHero },
-  { id: 'A2', label: 'Free Preview', Component: A2FreePreviewStory },
+  {
+    id: 'A2',
+    label: 'Free Preview',
+    Component: () => (
+      <A2FreePreviewStory
+        manifest={PROTOTYPE_MANIFEST}
+        waypoint={PROTOTYPE_W17}
+        waypointId="w17"
+        narrationPlaying
+        currentTime={77}
+        duration={240}
+        audioAvailable
+      />
+    ),
+  },
   { id: 'A3', label: 'Access Confirmed', Component: A3AccessConfirmed },
   { id: 'B1', label: 'Prism Welcome', Component: B1PrismWelcome },
   { id: 'B2', label: 'Make It Yours', Component: B2MakeItYours },
@@ -54,7 +74,25 @@ const SCREENS = [
   { id: 'C4', label: 'Arrival Moment', Component: C4ArrivalMoment },
   { id: 'C5', label: 'Story', Component: C5Story },
   { id: 'C7', label: 'Threshold', Component: () => <C7Threshold embedded framed /> },
-  { id: 'C6', label: 'Immersive Player', Component: C6ImmersivePlayer },
+  {
+    id: 'C6',
+    label: 'Immersive (Colosseum)',
+    Component: () => (
+      <C6ImmersivePlayer
+        {...buildImmersivePlayerProps({
+          waypoint: PROTOTYPE_W01,
+          waypointId: 'w01',
+          manifest: PROTOTYPE_MANIFEST,
+          audio: {
+            narrationPlaying: true,
+            currentTime: 77,
+            duration: 240,
+            audioAvailable: true,
+          },
+        })}
+      />
+    ),
+  },
   { id: 'C8a', label: 'Path Choice', Component: C8aPathChoice },
   { id: 'C8b', label: 'The Pause', Component: C8bThePause },
   { id: 'C8c', label: 'Act Complete', Component: C8cActComplete },

@@ -6,15 +6,6 @@ import { useTourManifest } from '../../hooks/useV2Journey.js'
 import { buildCheckoutUrl, getHost } from '../../lib/host.js'
 import { usePrice } from '../../hooks/usePrice.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
-import {
-  photoForWaypoint,
-  thenPhotoForWaypoint,
-  thenLoopForWaypoint,
-  thenLabelForWaypoint,
-  honestyCaptionForWaypoint,
-  titleForWaypoint,
-} from '../lib/waypointPresentation.js'
-import { THEN_pantheon } from '../images.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import A2FreePreviewStory from '../screens/A2FreePreviewStory.jsx'
 
@@ -25,6 +16,8 @@ export default function RedesignPreviewPage() {
   const audioRef = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [audioError, setAudioError] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const thresholdTrackedRef = useRef(false)
 
   const waypoint = useMemo(
@@ -42,6 +35,23 @@ export default function RedesignPreviewPage() {
   useEffect(() => {
     track(TRACK_EVENTS.PREVIEW_START, { source: 'preview' })
   }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !audioAvailable) return undefined
+
+    const onTime = () => setCurrentTime(audio.currentTime)
+    const onMeta = () => setDuration(audio.duration || 0)
+    audio.addEventListener('timeupdate', onTime)
+    audio.addEventListener('loadedmetadata', onMeta)
+    audio.addEventListener('durationchange', onMeta)
+
+    return () => {
+      audio.removeEventListener('timeupdate', onTime)
+      audio.removeEventListener('loadedmetadata', onMeta)
+      audio.removeEventListener('durationchange', onMeta)
+    }
+  }, [audioAvailable, previewUrl])
 
   const handleThresholdCross = () => {
     if (thresholdTrackedRef.current) return
@@ -78,33 +88,39 @@ export default function RedesignPreviewPage() {
 
   return (
     <RedesignRouteShell>
-      <div className="redesign-app-shell">
+      <div className="redesign-app-shell" style={{ height: '100dvh' }}>
         {previewUrl ? (
           <audio
             ref={audioRef}
             src={previewUrl}
             preload="metadata"
-            onEnded={() => {
-              setPlaying(false)
-              track(TRACK_EVENTS.PREVIEW_COMPLETE, { source: 'preview' })
-            }}
+            onEnded={() => setPlaying(false)}
             onPause={() => setPlaying(false)}
             onPlay={() => setPlaying(true)}
             onError={() => setAudioError(true)}
           />
         ) : null}
         <A2FreePreviewStory
-          title={waypoint ? titleForWaypoint(waypoint) : 'The Pantheon'}
-          photo={waypoint ? photoForWaypoint(waypoint) : undefined}
-          thenPhoto={waypoint ? thenPhotoForWaypoint(waypoint) : THEN_pantheon}
-          thenLoop={waypoint ? thenLoopForWaypoint(waypoint) : null}
-          thenLabel={waypoint ? thenLabelForWaypoint(waypoint) : 'ANCIENT ROME'}
-          honestyCaption={waypoint ? honestyCaptionForWaypoint(waypoint) : null}
+          manifest={manifest}
+          waypoint={waypoint}
           waypointId={waypoint?.id ?? 'w17'}
-          tagline={waypoint?.approachLine ?? 'A temple to all gods — or a tomb for emperors?'}
           narrationPlaying={playing}
           audioAvailable={audioAvailable}
+          currentTime={currentTime}
+          duration={duration}
           onTogglePlay={togglePlay}
+          onSkipBack={() => {
+            const audio = audioRef.current
+            if (audio) audio.currentTime = Math.max(0, audio.currentTime - 15)
+          }}
+          onSkipForward={() => {
+            const audio = audioRef.current
+            if (audio) audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 15)
+          }}
+          onSeek={(seconds) => {
+            const audio = audioRef.current
+            if (audio) audio.currentTime = seconds
+          }}
           onThresholdCross={handleThresholdCross}
           onUnlock={handleUnlock}
           onBack={() => navigate('/landing')}

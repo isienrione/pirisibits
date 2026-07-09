@@ -29,6 +29,8 @@ import {
   LazyMapPage,
   LazyMemoryDetailPage,
   LazyNoTicketPage,
+  LazyColosseumPreviewPage,
+  LazyWaypointPreviewPage,
   LazyPreviewPage,
   LazySettingsPage,
   LazySetupPage,
@@ -49,8 +51,8 @@ if (import.meta.env.DEV) {
 function HomeRoute() {
   if (hasAccess()) {
     // Returning travelers mid-journey are offered a resume; owners without a
-    // real in-progress journey begin the cinematic onboarding at /welcome.
-    return <Navigate to={isResumableJourney() ? '/begin' : '/welcome'} replace />
+    // real in-progress journey start setup (install / offline prep).
+    return <Navigate to={isResumableJourney() ? '/begin' : '/setup'} replace />
   }
   return <ChronoWalkLanding />
 }
@@ -87,6 +89,8 @@ function AppRoutes() {
         <Route path="/" element={<HomeRoute />} />
         <Route path="/landing" element={<PublicLandingRoute />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
+        <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
+        <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
         <Route path="/setup" element={<LazySetupPage />} />
         <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />

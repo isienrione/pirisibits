@@ -16,7 +16,11 @@ export default function C7Threshold({
   nowAmbienceUrl = null,
   thenSoundscapeUrl = null,
   onCrossed,
+  onHoldStart = null,
+  onHoldEnd = null,
+  hideUi = false,
   embedded = false,
+  immersive = false,
   framed = false,
   reserveCtaSpace = false,
   active = true,
@@ -37,9 +41,13 @@ export default function C7Threshold({
       waypoint={waypoint}
       thenLabel={thenLabel}
       embedded={embedded || framed}
+      immersive={immersive}
       active={active}
       nowAmbienceUrl={nowAmbienceUrl}
       thenSoundscapeUrl={thenSoundscapeUrl}
+      onHoldStart={onHoldStart}
+      onHoldEnd={onHoldEnd}
+      hideUi={hideUi}
       onFullyRevealed={onCrossed}
     />
   )
@@ -48,7 +56,7 @@ export default function C7Threshold({
 
   return (
     <div
-      className={`cw-threshold-embedded${reserveCtaSpace ? ' cw-threshold-embedded--reserve-cta' : ''}`}
+      className={`cw-threshold-embedded${immersive ? ' cw-threshold-immersive' : ''}${reserveCtaSpace ? ' cw-threshold-embedded--reserve-cta' : ''}`}
       style={{ background: T.obsidian, fontFamily: F.body, height: framed ? '100%' : '100%' }}
     >
       {framed ? (

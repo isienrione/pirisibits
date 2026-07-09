@@ -96,8 +96,30 @@ export function thenPhotoForWaypoint(waypoint) {
 }
 
 export function thenLoopForWaypoint(waypoint) {
-  if (!waypoint?.reconstruction?.loop) return null
-  return resolvePhotoUrl(waypoint.reconstruction.loop)
+  const loop = waypoint?.reconstruction?.loop ?? inferredReconstructionLoopPath(waypoint)
+  if (!loop) return null
+  return resolvePhotoUrl(loop)
+}
+
+/** Infer standard ancient-reconstruction.mp4 path from the waypoint photo folder. */
+export function inferredReconstructionLoopPath(waypoint) {
+  const photo = waypoint?.photo ?? ''
+  if (!photo.includes('/waypoints/')) return null
+
+  const nested = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/(?:exterior|interior)\/)/)
+  if (nested) return `${nested[1]}ancient-reconstruction.mp4`
+
+  const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
+  if (flat) return `${flat[1]}ancient-reconstruction.mp4`
+
+  return null
+}
+
+/** True when the unified immersive player should embed then/now threshold. */
+export function hasImmersiveThreshold(waypoint) {
+  if (!waypoint || waypoint.scripted_rest) return false
+  if (waypoint.reconstruction) return true
+  return Boolean(legacyStopIdFromWaypoint(waypoint))
 }
 
 /** True when THEN uses a dedicated reconstruction asset (not poster fallback). */

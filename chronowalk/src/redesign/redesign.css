@@ -91,6 +91,18 @@
   object-position: center center;
 }
 
+.threshold-media-canvas--immersive {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.threshold-media-canvas__frame--immersive {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
 .cw-threshold-embedded {
   position: absolute;
   inset: 0;
@@ -156,6 +168,115 @@
   font-size: 12px;
   letter-spacing: 0.08em;
   color: color-mix(in srgb, var(--muted) 60%, transparent);
+}
+
+/* Unified waypoint view — full-bleed hero + audio panel (C6 / every stop). */
+.cw-waypoint-immersive {
+  position: relative;
+}
+
+.cw-waypoint-immersive__hero {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--obsidian);
+}
+
+.cw-waypoint-immersive__hero-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 8, 8, 0.35) 0%, transparent 18%),
+    linear-gradient(0deg, rgba(22, 19, 15, 0.98) 0%, rgba(22, 19, 15, 0.72) 34%, rgba(22, 19, 15, 0.2) 58%, transparent 72%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cw-waypoint-immersive__hero-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 42%;
+  z-index: 5;
+  padding: 0 24px 10px;
+  pointer-events: none;
+}
+
+.cw-waypoint-immersive__threshold {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.cw-waypoint-immersive__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  max-height: 46%;
+  overflow: hidden;
+  background: transparent !important;
+  border-top: none !important;
+}
+
+.cw-waypoint-immersive__chrome {
+  transition: opacity 280ms ease, visibility 280ms ease;
+}
+
+.cw-waypoint-immersive--focus .cw-waypoint-immersive__chrome {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cw-waypoint-immersive--focus .cw-waypoint-immersive__hero {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+.cw-waypoint-immersive--focus .cw-waypoint-immersive__hero-scrim {
+  opacity: 0;
+}
+
+.cw-threshold-immersive.cw-threshold-embedded,
+.cw-threshold-immersive .cw-threshold-embedded {
+  position: absolute;
+  inset: 0;
+  min-height: unset;
+  height: 100%;
+  padding: 0;
+  display: block;
+  gap: 0;
+}
+
+.cw-threshold-immersive .cw-threshold-embedded__surface {
+  position: absolute;
+  inset: 0;
+}
+
+.cw-threshold-immersive .cw-threshold-surface {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.cw-threshold-immersive .threshold-media-canvas {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.cw-threshold-immersive .threshold-media-canvas__frame {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+.cw-threshold-immersive .threshold-layer {
+  object-fit: cover;
+  object-position: center 28%;
 }
 
 .cw-flow-escape:hover,
@@ -296,4 +417,254 @@ html.redesign-pwa #root {
   align-items: center;
   padding: 20px 16px 32px;
   gap: 18px;
+}
+
+/* First-time threshold invitation — hero overlay with press-and-hold demo. */
+.cw-reveal-invite {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(56px, calc(env(safe-area-inset-top) + 40px)) 20px 46%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 90% 70% at 50% 42%,
+    rgba(22, 19, 15, 0.55) 0%,
+    rgba(22, 19, 15, 0.15) 55%,
+    transparent 75%
+  );
+}
+
+.cw-reveal-invite__card {
+  width: min(100%, 340px);
+  padding: 20px 18px 18px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--obsidian) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ember) 45%, transparent);
+  animation: cwRevealInviteCardGlow 2.8s ease-in-out infinite, cwRevealInviteEnter 520ms ease-out both;
+}
+
+.cw-reveal-invite__eyebrow {
+  margin: 0 0 14px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ember);
+  font-weight: 600;
+}
+
+.cw-reveal-invite__demo {
+  position: relative;
+  height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warm-white) 8%, transparent);
+}
+
+.cw-reveal-invite__demo-then {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #6b4a2e 0%, #c9925a 38%, #8b6914 100%);
+}
+
+.cw-reveal-invite__demo-now {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #4a5568 0%, #9aa5b5 45%, #6b7280 100%);
+  animation: cwRevealInviteSweep 3.6s ease-in-out infinite;
+}
+
+.cw-reveal-invite__demo--static .cw-reveal-invite__demo-now {
+  animation: none;
+  clip-path: inset(0 38% 0 0);
+}
+
+.cw-reveal-invite__demo-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  left: 100%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--ember) 80%, transparent);
+  animation: cwRevealInviteSeam 3.6s ease-in-out infinite;
+}
+
+.cw-reveal-invite__demo--static .cw-reveal-invite__demo-seam {
+  left: 62%;
+  animation: none;
+}
+
+.cw-reveal-invite__demo-finger {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  animation: cwRevealInviteFinger 3.6s ease-in-out infinite;
+}
+
+.cw-reveal-invite__demo-finger-core {
+  display: block;
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: 2px solid color-mix(in srgb, var(--ember) 85%, transparent);
+  background: color-mix(in srgb, var(--obsidian) 50%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--ember) 45%, transparent);
+}
+
+.cw-reveal-invite__demo-label {
+  position: absolute;
+  bottom: 7px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--obsidian) 72%, transparent);
+  color: color-mix(in srgb, var(--warm-white) 88%, transparent);
+}
+
+.cw-reveal-invite__demo-label--now {
+  right: 8px;
+}
+
+.cw-reveal-invite__demo-label--then {
+  left: 8px;
+}
+
+.cw-reveal-invite__headline {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--warm-white);
+  text-align: center;
+}
+
+.cw-reveal-invite__body {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--muted) 92%, transparent);
+  text-align: center;
+}
+
+.cw-reveal-invite__hint {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ember);
+}
+
+.cw-reveal-invite__hint-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ember);
+  animation: presencePulse 1.6s ease-in-out infinite;
+}
+
+@keyframes cwRevealInviteSweep {
+  0%,
+  14% {
+    clip-path: inset(0 0 0 0);
+  }
+  32%,
+  54% {
+    clip-path: inset(0 38% 0 0);
+  }
+  72%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes cwRevealInviteSeam {
+  0%,
+  14% {
+    left: 100%;
+    opacity: 0;
+  }
+  32%,
+  54% {
+    left: 62%;
+    opacity: 1;
+  }
+  72%,
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes cwRevealInviteFinger {
+  0%,
+  12% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(1);
+  }
+  22%,
+  28% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  42%,
+  56% {
+    opacity: 1;
+    transform: translate(-68%, 0) scale(0.86);
+  }
+  68%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(1);
+  }
+}
+
+@keyframes cwRevealInviteCardGlow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--ember) 30%, transparent),
+      0 10px 36px rgba(0, 0, 0, 0.42);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--ember) 65%, transparent),
+      0 0 44px color-mix(in srgb, var(--ember) 28%, transparent),
+      0 14px 44px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes cwRevealInviteEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-reveal-invite__card,
+  .cw-reveal-invite__demo-now,
+  .cw-reveal-invite__demo-seam,
+  .cw-reveal-invite__demo-finger,
+  .cw-reveal-invite__hint-pulse {
+    animation: none;
+  }
 }

@@ -1,11 +1,17 @@
-import { useState, useRef, useEffect } from 'react'
-import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Info } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
+import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
+import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
+import {
+  hasSeenWaypointRevealInvite,
+  markWaypointRevealInviteSeen,
+} from '../../utils/thresholdWaypointReveal.js'
 
 const DEFAULT_SPEEDS = [0.8, 1, 1.2]
 
@@ -18,7 +24,8 @@ function formatTime(seconds) {
 }
 
 /**
- * Immersion — dedicated audio player (Figma C6). Separate from threshold & arrival.
+ * Unified waypoint view — full-bleed landmark + then/now threshold, audio below.
+ * Matches the Pantheon free-preview layout for every stop.
  */
 export default function C6ImmersivePlayer({
   accent = T.actI,
@@ -29,6 +36,7 @@ export default function C6ImmersivePlayer({
   chapterCount = 3,
   chapterTitles = null,
   photo = colosseumNow,
+  tagline = null,
   transcript = '',
   transcriptAvailable = false,
   narrationPlaying = false,
@@ -40,6 +48,13 @@ export default function C6ImmersivePlayer({
   audioAvailable = true,
   storyEnded = false,
   hasReconstruction = false,
+  waypointId = 'waypoint',
+  thenPhoto = null,
+  thenLoop = null,
+  thenLabel = 'ANCIENT ROME',
+  honestyCaption = null,
+  nowAmbienceUrl = null,
+  thenSoundscapeUrl = null,
   initialTab = 'chapters',
   onTogglePlay,
   onSkipBack,
@@ -49,14 +64,17 @@ export default function C6ImmersivePlayer({
   onOpenTranscript,
   onStoryComplete,
   onBack,
+  onThresholdCross,
   onOpenThreshold,
   onViewImages,
 }) {
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
-  const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'chapters')
+  const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
   const [dragProgress, setDragProgress] = useState(null)
   const [showAudioNotice, setShowAudioNotice] = useState(false)
+  const [showRevealInvite, setShowRevealInvite] = useState(false)
+  const [focusReveal, setFocusReveal] = useState(false)
   const seekTrackRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
@@ -98,8 +116,26 @@ export default function C6ImmersivePlayer({
     if (initialTab === 'transcript') setTab('transcript')
   }, [initialTab])
 
-  // Only surface the "no audio" notice after a grace period so a normal load
-  // (buffers still resolving) never flashes it.
+  useEffect(() => {
+    setShowRevealInvite(hasReconstruction && !hasSeenWaypointRevealInvite(waypointId))
+    setFocusReveal(false)
+  }, [hasReconstruction, waypointId])
+
+  const handleRevealHoldStart = useCallback(() => {
+    if (!hasReconstruction) return
+
+    if (showRevealInvite) {
+      markWaypointRevealInviteSeen(waypointId)
+      setShowRevealInvite(false)
+    }
+
+    setFocusReveal(true)
+  }, [hasReconstruction, showRevealInvite, waypointId])
+
+  const handleRevealHoldEnd = useCallback(() => {
+    setFocusReveal(false)
+  }, [])
+
   useEffect(() => {
     if (audioAvailable) {
       setShowAudioNotice(false)
@@ -114,15 +150,10 @@ export default function C6ImmersivePlayer({
     if (next === 'transcript') onOpenTranscript?.()
   }
 
-  const chapters = Array.from({ length: chapterCount }, (_, i) => ({
-    n: i + 1,
-    title: chapterTitles?.[i] ?? (i === chapterIndex ? chapterTitle : `Chapter ${i + 1}`),
-  }))
-
-  const openThreshold = onOpenThreshold ?? onViewImages
-  const showReconstructionActions = hasReconstruction && Boolean(openThreshold)
-  const showContinue = Boolean(onStoryComplete) && (storyEnded || !hasReconstruction)
   const reading = tab === 'transcript'
+  const subtitle = tagline ?? chapterTitle
+  const showContinue = Boolean(onStoryComplete) && storyEnded
+  const chromeHidden = focusReveal
 
   const tabBar = (
     <div
@@ -130,11 +161,11 @@ export default function C6ImmersivePlayer({
         display: 'flex',
         gap: 24,
         borderBottom: `1px solid ${T.ink800}`,
-        marginBottom: reading ? 8 : 12,
+        marginBottom: reading ? 8 : 10,
         flexShrink: 0,
       }}
     >
-      {[['chapters', 'chapters'], ['transcript', 'Read instead']].map(([t, label]) => (
+      {[['audio', 'audio'], ['transcript', 'Read instead']].map(([t, label]) => (
         <button
           key={t}
           type="button"
@@ -170,8 +201,8 @@ export default function C6ImmersivePlayer({
         display: 'flex',
         alignItems: 'center',
         gap: 1.5,
-        height: compact ? 28 : 56,
-        marginBottom: compact ? 2 : 4,
+        height: compact ? 28 : 40,
+        marginBottom: compact ? 2 : 6,
         flexShrink: 0,
         cursor: canSeek ? 'pointer' : 'default',
         touchAction: 'none',
@@ -200,7 +231,7 @@ export default function C6ImmersivePlayer({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: compact ? 8 : 20,
+        marginBottom: compact ? 8 : 12,
         flexShrink: 0,
       }}
     >
@@ -229,7 +260,7 @@ export default function C6ImmersivePlayer({
         </button>
       ) : null}
       <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums', minWidth: 40, textAlign: 'right' }}>
-        {duration > 0 ? `-${formatTime(remaining)}` : narrationPlaying ? 'Playing' : 'Paused'}
+        {duration > 0 ? formatTime(duration) : narrationPlaying ? 'Playing' : 'Paused'}
       </span>
     </div>
   )
@@ -241,7 +272,7 @@ export default function C6ImmersivePlayer({
         alignItems: 'center',
         justifyContent: 'center',
         gap: compact ? 20 : 28,
-        marginBottom: compact ? 0 : 24,
+        marginBottom: compact ? 0 : 14,
         flexShrink: 0,
       }}
     >
@@ -252,7 +283,7 @@ export default function C6ImmersivePlayer({
         aria-label="Back 15 seconds"
         style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
       >
-        <SkipBack size={compact ? 22 : 26} />
+        <SkipBack size={compact ? 22 : 24} />
         <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
       </button>
       <button
@@ -261,9 +292,9 @@ export default function C6ImmersivePlayer({
         disabled={!audioAvailable}
         aria-label={narrationPlaying ? 'Pause' : 'Play'}
         style={{
-          width: compact ? 52 : 68,
-          height: compact ? 52 : 68,
-          borderRadius: compact ? 26 : 34,
+          width: compact ? 52 : 60,
+          height: compact ? 52 : 60,
+          borderRadius: compact ? 26 : 30,
           background: T.ember,
           border: 'none',
           cursor: audioAvailable ? 'pointer' : 'default',
@@ -271,13 +302,13 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: compact ? '0 0 18px rgba(232,161,60,0.45)' : '0 0 28px rgba(232,161,60,0.55)',
+          boxShadow: '0 0 22px rgba(232,161,60,0.5)',
         }}
       >
         {narrationPlaying ? (
-          <Pause size={compact ? 24 : 28} fill={T.obsidian} color={T.obsidian} />
+          <Pause size={compact ? 22 : 24} fill={T.obsidian} color={T.obsidian} />
         ) : (
-          <Play size={compact ? 24 : 28} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
+          <Play size={compact ? 22 : 24} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
         )}
       </button>
       <button
@@ -287,7 +318,7 @@ export default function C6ImmersivePlayer({
         aria-label="Forward 15 seconds"
         style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
       >
-        <SkipForward size={compact ? 22 : 26} />
+        <SkipForward size={compact ? 22 : 24} />
         <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
       </button>
     </div>
@@ -301,137 +332,75 @@ export default function C6ImmersivePlayer({
     </>
   )
 
-  const footerContent = showReconstructionActions ? (
-    <div style={{ display: 'grid', gap: 10 }}>
-      <button
-        type="button"
-        data-testid="story-open-threshold"
-        onClick={openThreshold}
-        style={{
-          width: '100%',
-          padding: '15px',
-          borderRadius: 12,
-          border: 'none',
-          background: T.ember,
-          color: T.obsidian,
-          fontFamily: F.body,
-          fontSize: 15,
-          fontWeight: 600,
-          cursor: 'pointer',
-          boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-        }}
-      >
-        {storyEnded ? 'When you’re ready, cross into the past →' : 'View now & then →'}
-      </button>
-      {showContinue ? (
-        <button
-          type="button"
-          data-testid="story-continue"
-          onClick={onStoryComplete}
-          style={{
-            width: '100%',
-            padding: '13px',
-            borderRadius: 12,
-            border: `1px solid ${T.muted}44`,
-            background: 'transparent',
-            color: T.warmWhite,
-            fontFamily: F.body,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: 'pointer',
-          }}
-        >
-          Continue walking →
-        </button>
-      ) : onStoryComplete ? (
-        <button
-          type="button"
-          data-testid="story-continue"
-          onClick={onStoryComplete}
-          style={{
-            width: '100%',
-            padding: '13px',
-            borderRadius: 12,
-            border: `1px solid ${T.muted}44`,
-            background: 'transparent',
-            color: T.warmWhite,
-            fontFamily: F.body,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: 'pointer',
-          }}
-        >
-          Done listening — continue walking →
-        </button>
-      ) : null}
+  const heroLayer = hasReconstruction ? (
+    <div className="cw-waypoint-immersive__threshold">
+      <C7Threshold
+        embedded
+        immersive
+        waypointId={waypointId}
+        waypointName={title}
+        nowPhoto={photo}
+        thenPhoto={thenPhoto ?? photo}
+        thenLoop={thenLoop}
+        thenLabel={thenLabel}
+        honestyCaption={honestyCaption ?? undefined}
+        nowAmbienceUrl={nowAmbienceUrl}
+        thenSoundscapeUrl={thenSoundscapeUrl}
+        hideUi={chromeHidden}
+        onHoldStart={handleRevealHoldStart}
+        onHoldEnd={handleRevealHoldEnd}
+        onCrossed={onThresholdCross}
+      />
     </div>
-  ) : showContinue ? (
-    <button
-      type="button"
-      data-testid="story-continue"
-      onClick={onStoryComplete}
+  ) : (
+    <div
+      className="cw-waypoint-immersive__photo"
       style={{
-        width: '100%',
-        padding: '15px',
-        borderRadius: 12,
-        border: 'none',
-        background: T.ember,
-        color: T.obsidian,
-        fontFamily: F.body,
-        fontSize: 15,
-        fontWeight: 600,
-        cursor: 'pointer',
-        boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${photo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 28%',
       }}
-    >
-      Continue walking →
-    </button>
-  ) : null
+    />
+  )
 
   return (
     <div
+      className={`cw-waypoint-immersive${chromeHidden ? ' cw-waypoint-immersive--focus' : ''}`}
       style={{
         background: T.obsidian,
         height: '100%',
         fontFamily: F.body,
-        display: 'flex',
-        flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
         minHeight: 0,
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${photo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center 30%',
-          filter: 'blur(20px) brightness(0.25) saturate(0.55)',
-        }}
-      />
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,19,15,0.82)' }} />
-      <Vignette />
+      <div className="cw-waypoint-immersive__hero">
+        {heroLayer}
 
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          display: 'flex',
-          flexDirection: 'column',
-          flex: 1,
-          minHeight: 0,
-          padding: `max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 0`,
-        }}
-      >
+        {showRevealInvite && hasReconstruction && !chromeHidden ? (
+          <ThresholdRevealInvite thenLabel={thenLabel} accent={accent} />
+        ) : null}
+
+        <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
+        <div className="cw-waypoint-immersive__chrome">
+          <Vignette />
+        </div>
+
         <div
+          className="cw-waypoint-immersive__chrome"
           style={{
+            position: 'absolute',
+            top: 'max(12px, env(safe-area-inset-top))',
+            left: 16,
+            right: 16,
+            zIndex: 12,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: reading ? 10 : 20,
-            flexShrink: 0,
+            pointerEvents: 'none',
           }}
         >
           <button
@@ -441,47 +410,85 @@ export default function C6ImmersivePlayer({
               display: 'flex',
               alignItems: 'center',
               gap: 2,
-              color: T.muted,
-              background: 'none',
+              color: T.warmWhite,
+              background: 'rgba(22,19,15,0.45)',
+              backdropFilter: 'blur(8px)',
               border: 'none',
+              borderRadius: 999,
+              padding: '6px 10px 6px 6px',
               cursor: 'pointer',
               fontFamily: F.body,
               fontSize: 13,
+              pointerEvents: 'auto',
             }}
           >
-            <ChevronLeft size={17} /> Waypoint
+            <ChevronLeft size={17} /> Back
           </button>
-          <Eyebrow color={accent}>
-            CHAPTER {chapterIndex + 1} OF {chapterCount}
-          </Eyebrow>
-          <div style={{ width: 72 }} />
+          <button
+            type="button"
+            aria-label="About this stop"
+            onClick={onOpenThreshold ?? onViewImages ?? undefined}
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 17,
+              border: 'none',
+              background: 'rgba(22,19,15,0.45)',
+              backdropFilter: 'blur(8px)',
+              color: T.warmWhite,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: onOpenThreshold || onViewImages ? 'pointer' : 'default',
+              opacity: onOpenThreshold || onViewImages ? 1 : 0.35,
+              pointerEvents: 'auto',
+            }}
+          >
+            <Info size={16} />
+          </button>
         </div>
 
+        <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">
+          <Eyebrow color={accent}>{actLabel}</Eyebrow>
+          <h2
+            style={{
+              fontFamily: F.display,
+              fontSize: 34,
+              color: T.warmWhite,
+              fontWeight: 300,
+              lineHeight: 1.05,
+              margin: '8px 0 4px',
+            }}
+          >
+            {title}
+          </h2>
+          <p
+            style={{
+              fontFamily: F.display,
+              fontSize: 14,
+              color: 'rgba(245,240,232,0.82)',
+              fontStyle: 'italic',
+              margin: 0,
+              lineHeight: 1.45,
+            }}
+          >
+            {subtitle}
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="cw-waypoint-immersive__panel cw-waypoint-immersive__chrome"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          padding: `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+        }}
+      >
         {reading ? (
           <>
-            <p
-              style={{
-                fontSize: 12,
-                color: T.muted,
-                margin: '0 0 10px',
-                flexShrink: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {chapterTitle} · {title}
-            </p>
             {tabBar}
-            <div
-              style={{
-                flex: 1,
-                minHeight: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-              }}
-            >
+            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
               {transcriptAvailable && transcript ? (
                 <KaraokeTranscript
                   transcript={transcript}
@@ -489,7 +496,7 @@ export default function C6ImmersivePlayer({
                   duration={duration}
                   playing={narrationPlaying}
                   accent={accent}
-                  fontSize={transcriptFontSize + 5}
+                  fontSize={transcriptFontSize + 4}
                   fullHeight
                   immersive
                   testId="story-karaoke-transcript"
@@ -502,125 +509,61 @@ export default function C6ImmersivePlayer({
                 </p>
               )}
             </div>
-            <div
-              style={{
-                flexShrink: 0,
-                paddingTop: 10,
-                borderTop: `1px solid ${T.ink800}`,
-                marginTop: 4,
-              }}
-            >
+            <div style={{ flexShrink: 0, paddingTop: 10, borderTop: `1px solid ${T.ink800}`, marginTop: 4 }}>
               {audioPlayerBlock(true)}
             </div>
           </>
         ) : (
           <>
-        <p style={{ fontSize: 11, color: T.muted, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 6 }}>
-          {actLabel}
-        </p>
-        <h2
-          style={{
-            fontFamily: F.display,
-            fontSize: 36,
-            color: T.warmWhite,
-            fontWeight: 300,
-            lineHeight: 1.08,
-            marginBottom: 4,
-            flexShrink: 0,
-          }}
-        >
-          {chapterTitle}
-        </h2>
-        <p style={{ fontSize: 14, color: T.muted, marginBottom: 22, flexShrink: 0 }}>{title}</p>
+            {audioPlayerBlock(false)}
 
-        {audioPlayerBlock(false)}
+            {showAudioNotice ? (
+              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+                {import.meta.env.DEV
+                  ? 'Narration audio is unavailable in this development build.'
+                  : 'Narration is preparing — check your connection.'}
+              </p>
+            ) : null}
 
-        {showAudioNotice ? (
-          <p
+            {tabBar}
+
+            <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
+              Chapter {chapterIndex + 1} of {chapterCount}
+              {chapterTitle ? (
+                <>
+                  {' '}
+                  · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
+                </>
+              ) : null}
+            </p>
+          </>
+        )}
+
+        {showContinue ? (
+          <button
+            type="button"
+            data-testid="story-continue"
+            onClick={onStoryComplete}
             style={{
-              margin: '0 0 16px',
-              fontSize: 12,
-              color: T.muted,
-              textAlign: 'center',
-              lineHeight: 1.5,
+              width: '100%',
+              marginTop: 10,
+              padding: '14px',
+              borderRadius: 12,
+              border: 'none',
+              background: T.ember,
+              color: T.obsidian,
+              fontFamily: F.body,
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: 'pointer',
+              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
               flexShrink: 0,
             }}
           >
-            {import.meta.env.DEV
-              ? 'Narration audio is unavailable in this development build.'
-              : 'Narration is preparing — check your connection.'}
-          </p>
+            Continue walking →
+          </button>
         ) : null}
-
-        {tabBar}
-
-        <div
-          style={{
-            flex: 1,
-            minHeight: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            paddingBottom: 8,
-          }}
-        >
-            <div style={{ overflowY: 'auto', scrollbarWidth: 'none', flex: 1, minHeight: 0 }}>
-              {chapters.map((ch, i) => (
-                <button
-                  key={ch.n}
-                  type="button"
-                  onClick={() => onSelectChapter?.(i)}
-                  disabled={!onSelectChapter}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    padding: '10px 0',
-                    width: '100%',
-                    textAlign: 'left',
-                    background: 'none',
-                    border: 'none',
-                    cursor: onSelectChapter ? 'pointer' : 'default',
-                    opacity: i === chapterIndex ? 1 : 0.55,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: 4,
-                      flexShrink: 0,
-                      background: i === chapterIndex ? accent : T.ink800,
-                      boxShadow: i === chapterIndex ? `0 0 8px ${accent}` : 'none',
-                    }}
-                  />
-                  <span style={{ fontSize: 14, fontFamily: F.body, color: i === chapterIndex ? T.warmWhite : T.muted }}>
-                    {ch.title}
-                  </span>
-                </button>
-              ))}
-            </div>
-        </div>
-          </>
-        )}
       </div>
-
-      {footerContent ? (
-        <div
-          data-testid="story-footer"
-          style={{
-            position: 'relative',
-            zIndex: 12,
-            flexShrink: 0,
-            padding: `10px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
-            borderTop: `1px solid ${T.ink800}`,
-            background: 'rgba(22,19,15,0.98)',
-            boxShadow: '0 -8px 24px rgba(0,0,0,0.35)',
-          }}
-        >
-          {footerContent}
-        </div>
-      ) : null}
     </div>
   )
 }
