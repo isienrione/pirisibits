@@ -23,13 +23,21 @@ vi.mock('../../audio/thresholdAudio.js', () => ({
   },
 }))
 
+async function crossThreshold() {
+  expect(await screen.findByText(/press and hold to cross/i)).toBeInTheDocument()
+
+  const surface = document.querySelector('.threshold-root')
+  expect(surface).toBeTruthy()
+  fireEvent.pointerDown(surface, { pointerId: 1, clientX: 100, clientY: 100 })
+}
+
 describe('JourneyThresholdLayer', () => {
   beforeEach(() => {
     localStorage.clear()
     resetJourney()
   })
 
-  it('returns to story when dismissed after threshold', async () => {
+  it('advances the journey after threshold completion', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
 
@@ -39,17 +47,34 @@ describe('JourneyThresholdLayer', () => {
       </ThresholdChromeProvider>
     )
 
-    expect(await screen.findByText(/press and hold to cross/i)).toBeInTheDocument()
+    await crossThreshold()
 
-    const surface = document.querySelector('.threshold-root')
-    expect(surface).toBeTruthy()
-    fireEvent.pointerDown(surface, { pointerId: 1, clientX: 100, clientY: 100 })
+    expect(await screen.findByRole('button', { name: /continue walking/i })).toBeInTheDocument()
 
-    expect(await screen.findByRole('button', { name: /continue to story/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /continue walking/i }))
 
-    fireEvent.click(screen.getByRole('button', { name: /continue to story/i }))
+    const snapshot = getJourneySnapshot()
+    expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snapshot.context.completedWaypointIds).toContain('w01')
+    expect(snapshot.context.currentSequenceIndex).toBe(1)
+  })
+
+  it('returns to story when back is chosen after threshold', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
+
+    render(
+      <ThresholdChromeProvider>
+        <JourneyThresholdLayer />
+      </ThresholdChromeProvider>
+    )
+
+    await crossThreshold()
+
+    fireEvent.click(await screen.findByRole('button', { name: /back to story/i }))
 
     const snapshot = getJourneySnapshot()
     expect(snapshot.state).toBe(JOURNEY_STATES.STORY)
+    expect(snapshot.context.currentSequenceIndex).toBe(0)
   })
 })
