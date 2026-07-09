@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
@@ -24,6 +24,7 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
+import { chapterAtIndex, chapterTitle } from '../../content/chapterMeta.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence } from '../../content/manifest.js'
 import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -129,6 +130,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (prevStateRef.current === JOURNEY_STATES.THRESHOLD && state === JOURNEY_STATES.WALKING) {
       storyStartedRef.current = null
       playedStepRef.current = null
+      setDockSnapshot(null)
     }
     if (prevStateRef.current === JOURNEY_STATES.PAUSED && state === JOURNEY_STATES.WALKING) {
       scriptedRestNarrationStartedRef.current = null
@@ -387,7 +389,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
     if (state === JOURNEY_STATES.WALKING && step.type === 'transit' && !needsPathChoice) {
       playedStepRef.current = step.id
-      audio.playTransit(step.id)
+      const target = step.targetWaypoint
+      if (target) {
+        setDockSnapshot({
+          kind: 'transit',
+          id: step.id,
+          title: titleForWaypoint(target),
+          subtitle: 'On the way',
+          accent: accentForWaypoint(target, manifest),
+          duration: audio.progress?.duration ?? 0,
+        })
+      }
+      void audio.playTransit(step.id)
       return
     }
 
@@ -453,6 +466,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleStoryComplete = useCallback(() => {
     if (!step?.record || step.type !== 'waypoint') return
+    if (state !== JOURNEY_STATES.STORY) return
+
+    audio.stopNarration()
 
     // Avoid double-counting if the audio already ended and fired story_complete.
     if (storyCompleteTrackedRef.current !== step.id) {
@@ -461,12 +477,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     }
     storyStartedRef.current = null
     playedStepRef.current = null
+    setStoryEnded(false)
+    setDockSnapshot(null)
 
     const next = completeWaypointAndAdvance(step.id)
     if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
       track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
     }
-  }, [completeWaypointAndAdvance, step])
+  }, [audio, completeWaypointAndAdvance, state, step])
 
   const handleContinueClassicDay = useCallback(() => {
     playedStepRef.current = null
@@ -478,9 +496,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const handleTransitContinue = useCallback(() => {
     if (!step?.record || step.type !== 'transit') return
 
+    audio.stopNarration()
     audio.endTransit()
     completeTransit(step.id)
     playedStepRef.current = null
+    setDockSnapshot(null)
     advanceSequence()
   }, [advanceSequence, audio, completeTransit, step])
 
@@ -526,31 +546,66 @@ export default function JourneyShell({ variant = 'legacy' }) {
       />
     ) : null
 
-  // Persistent narration dock — lingers after audio ends so the traveller can
-  // replay or dismiss. Hidden on the full-screen story player.
-  const dockSessionLive = (audio.progress?.itemCount ?? 0) > 0 || audio.narrationPlaying
-  const dockEnded = Boolean(dockSnapshot) && !dockSessionLive
+  // Persistent narration dock — visible during walking/transit narration and briefly after.
+  const narrationSessionLive =
+    audio.narrationPlaying ||
+    (audio.progress?.itemCount ?? 0) > 0 ||
+    Boolean(audio.progress?.paused)
+
+  const resolvedDockSnapshot = useMemo(() => {
+    if (state === JOURNEY_STATES.STORY || state === JOURNEY_STATES.THRESHOLD) return null
+    if (dockSnapshot) return dockSnapshot
+    if (!manifest || !step || !narrationSessionLive) return null
+
+    const record = step.type === 'transit' ? step.targetWaypoint : step.record
+    if (!record) return null
+
+    return {
+      kind: step.type === 'transit' ? 'transit' : 'waypoint',
+      id: step.id,
+      title: titleForWaypoint(record),
+      subtitle: step.type === 'transit' ? 'On the way' : 'Now playing',
+      accent: accentForWaypoint(record, manifest),
+      duration: audio.progress?.duration ?? 0,
+    }
+  }, [
+    audio.progress?.duration,
+    audio.progress?.itemCount,
+    audio.progress?.paused,
+    audio.narrationPlaying,
+    dockSnapshot,
+    manifest,
+    narrationSessionLive,
+    state,
+    step?.id,
+    step?.record,
+    step?.targetWaypoint,
+    step?.type,
+  ])
+
+  const dockEnded = Boolean(resolvedDockSnapshot) && !narrationSessionLive
   const dockActive =
     variant === 'redesign' &&
     audioUnlocked &&
-    Boolean(dockSnapshot) &&
-    state !== JOURNEY_STATES.STORY
+    Boolean(resolvedDockSnapshot) &&
+    state !== JOURNEY_STATES.STORY &&
+    state !== JOURNEY_STATES.THRESHOLD
   const dockBottomInset = isImmersiveJourneyState(state)
     ? SHELL_SAFE_BOTTOM_INSET
     : SHELL_TAB_BAR_INSET
   const floatingPlayer = dockActive ? (
     <FloatingAudioPlayer
-      accent={dockSnapshot.accent}
-      title={dockSnapshot.title}
-      subtitle={dockEnded ? 'Just heard' : dockSnapshot.subtitle}
+      accent={resolvedDockSnapshot.accent}
+      title={resolvedDockSnapshot.title}
+      subtitle={dockEnded ? 'Just heard' : resolvedDockSnapshot.subtitle}
       narrationPlaying={audio.narrationPlaying}
       ended={dockEnded}
       currentTime={
         dockEnded
-          ? dockSnapshot.duration
+          ? resolvedDockSnapshot.duration
           : (audio.progress?.currentTime ?? 0)
       }
-      duration={dockEnded ? dockSnapshot.duration : (audio.progress?.duration ?? 0)}
+      duration={dockEnded ? resolvedDockSnapshot.duration : (audio.progress?.duration ?? 0)}
       playbackRate={audio.playbackRate}
       onToggle={() => (dockEnded ? handleDockReplay() : audio.toggleNarration())}
       onReplay={handleDockReplay}
@@ -717,9 +772,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const record = step.record
       const props = redesignWaypointProps(record)
-      const chapters = record.chapters?.length
-        ? record.chapters
-        : [{ title: signatureLine(record) }]
+      const chapters = record.chapters?.length ? record.chapters : []
+      const activeChapter = chapterAtIndex(
+        chapters,
+        audio.progress?.chapterIndex ?? 0,
+        signatureLine(record)
+      )
       const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
       const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
       const realTranscript = record.arrival_transcript ?? record.transcript ?? ''
@@ -736,9 +794,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
           accent={props.accent}
           actLabel={actLabel}
           title={props.title}
-          chapterTitle={chapters[0]?.title ?? signatureLine(record)}
+          chapterTitle={activeChapter.title}
           chapterIndex={audio.progress?.chapterCount ? audio.progress.chapterIndex : 0}
           chapterCount={audio.progress?.chapterCount || Math.max(chapters.length, 1)}
+          chapterTitles={chapters.map((chapter, index) =>
+            chapterTitle(chapter, `Chapter ${index + 1}`)
+          )}
           photo={props.photo}
           transcript={realTranscript}
           transcriptAvailable={Boolean(realTranscript)}
@@ -863,8 +924,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
           progressPct={journeyProgressPct}
           extraBottomInset={dockActive ? 88 : 0}
           onOpenSettings={openSettings}
-          onContinue={!audio.narrationPlaying ? handleTransitContinue : null}
-          continueLabel="Continue"
+          onContinue={handleTransitContinue}
+          continueLabel={audio.narrationPlaying ? 'Skip ahead →' : 'Continue'}
+          narrationPlaying={audio.narrationPlaying}
           map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )

@@ -59,7 +59,7 @@ describe('JourneyThresholdLayer', () => {
     expect(snapshot.context.currentSequenceIndex).toBe(1)
   })
 
-  it('returns to story when back is chosen after threshold', async () => {
+  it('does not offer a back-to-story loop after crossing', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.THRESHOLD, { currentSequenceIndex: 0 })
 
@@ -71,10 +71,7 @@ describe('JourneyThresholdLayer', () => {
 
     await crossThreshold()
 
-    fireEvent.click(await screen.findByRole('button', { name: /back to story/i }))
-
-    const snapshot = getJourneySnapshot()
-    expect(snapshot.state).toBe(JOURNEY_STATES.STORY)
-    expect(snapshot.context.currentSequenceIndex).toBe(0)
+    expect(await screen.findByRole('button', { name: /continue walking/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /back to story/i })).not.toBeInTheDocument()
   })
 })

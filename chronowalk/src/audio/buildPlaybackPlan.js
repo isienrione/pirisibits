@@ -1,4 +1,5 @@
 import { AUDIO_CATEGORIES } from '../content/audioPaths.js'
+import { chapterAudioFile } from '../content/chapterMeta.js'
 import { isInsertEligible } from './insertEligibility.js'
 import { INSERT_AFTER_CHAPTER, INSERT_ON_TRANSIT_START } from './insertTiming.js'
 
@@ -49,7 +50,8 @@ export function buildWaypointPlan(manifest, waypointId, path, context) {
   const chapterInserts = INSERT_AFTER_CHAPTER[waypointId] ?? {}
 
   waypoint.chapters.forEach((chapter, index) => {
-    plan.push(narrationItem(chapter))
+    const file = chapterAudioFile(chapter)
+    if (file) plan.push(narrationItem(file))
     plan.push(...eligibleInserts(manifest, chapterInserts[index], context))
   })
 
@@ -61,7 +63,7 @@ export function buildWaypointPlan(manifest, waypointId, path, context) {
   }
 
   const outro = waypoint.outro_variants?.[path]
-  if (outro) plan.push(narrationItem(outro))
+  if (outro) plan.push(narrationItem(chapterAudioFile(outro) ?? outro))
 
   return plan
 }

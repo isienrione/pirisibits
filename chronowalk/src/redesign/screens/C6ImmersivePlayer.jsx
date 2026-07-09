@@ -26,6 +26,7 @@ export default function C6ImmersivePlayer({
   chapterTitle = 'The Beast Awakens',
   chapterIndex = 0,
   chapterCount = 3,
+  chapterTitles = null,
   photo = colosseumNow,
   transcript = '',
   transcriptAvailable = false,
@@ -114,7 +115,7 @@ export default function C6ImmersivePlayer({
 
   const chapters = Array.from({ length: chapterCount }, (_, i) => ({
     n: i + 1,
-    title: i === chapterIndex ? chapterTitle : `Chapter ${i + 1}`,
+    title: chapterTitles?.[i] ?? (i === chapterIndex ? chapterTitle : `Chapter ${i + 1}`),
   }))
 
   return (
@@ -480,26 +481,47 @@ export default function C6ImmersivePlayer({
         </div>
 
         {storyEnded && hasReconstruction && onOpenThreshold ? (
-          <button
-            type="button"
-            onClick={onOpenThreshold}
-            style={{
-              width: '100%',
-              padding: '15px',
-              borderRadius: 12,
-              border: 'none',
-              background: T.ember,
-              color: T.obsidian,
-              fontFamily: F.body,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              flexShrink: 0,
-              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-            }}
-          >
-            When you’re ready, cross into the past →
-          </button>
+          <div style={{ display: 'grid', gap: 10, flexShrink: 0 }}>
+            <button
+              type="button"
+              onClick={onOpenThreshold}
+              style={{
+                width: '100%',
+                padding: '15px',
+                borderRadius: 12,
+                border: 'none',
+                background: T.ember,
+                color: T.obsidian,
+                fontFamily: F.body,
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+              }}
+            >
+              When you’re ready, cross into the past →
+            </button>
+            {onStoryComplete ? (
+              <button
+                type="button"
+                onClick={onStoryComplete}
+                style={{
+                  width: '100%',
+                  padding: '13px',
+                  borderRadius: 12,
+                  border: `1px solid ${T.muted}44`,
+                  background: 'transparent',
+                  color: T.warmWhite,
+                  fontFamily: F.body,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                Continue walking →
+              </button>
+            ) : null}
+          </div>
         ) : storyEnded && onStoryComplete ? (
           <button
             type="button"

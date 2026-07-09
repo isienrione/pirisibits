@@ -12,6 +12,7 @@ export default function C2Transit({
   onOpenSettings,
   onContinue,
   continueLabel = 'Continue',
+  narrationPlaying = false,
   map,
 }) {
   const navigate = useNavigate()
@@ -172,7 +173,7 @@ export default function C2Transit({
           </button>
         ) : (
           <p style={{ margin: 0, fontSize: 13, color: T.muted, fontStyle: 'italic', textAlign: 'center' }}>
-            Narration playing — continue when it ends.
+            {narrationPlaying ? 'Narration playing — use the player below to pause or skip ahead.' : 'Continue when ready.'}
           </p>
         )}
       </div>
