@@ -24,7 +24,8 @@ import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
 import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
-import { chapterAtIndex, chapterTitle, resolveStepTranscript } from '../../content/chapterMeta.js'
+import { chapterAtIndex, chapterTitle, chapterTranscript, resolveStepTranscript } from '../../content/chapterMeta.js'
+import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
@@ -970,7 +971,15 @@ export default function JourneyShell({ variant = 'legacy' }) {
       )
       const act = record.act ? manifest.acts?.find((a) => a.id === record.act) : null
       const actLabel = act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : `ACT ${props.actNumeral}`
-      const realTranscript = resolveStepTranscript(step, context.path)
+      const activeChapterIndex = audio.progress?.chapterCount
+        ? audio.progress.chapterIndex
+        : 0
+      const chapterEntry = chapters[activeChapterIndex]
+      const chapterScopedTranscript = chapterTranscript(chapterEntry)
+      const realTranscript =
+        chapters.length > 1 && chapterScopedTranscript
+          ? stripDirectorCues(chapterScopedTranscript)
+          : resolveStepTranscript(step, context.path)
       // In dev, only trust "audio available" once the engine confirms items or a
       // duration; in prod the deployed media is present, so never gate controls.
       const audioAvailable =

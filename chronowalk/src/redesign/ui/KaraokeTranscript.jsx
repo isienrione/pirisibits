@@ -20,12 +20,12 @@ export default function KaraokeTranscript({
   const scrollRef = useRef(null)
   const activeWordRef = useRef(null)
 
-  const { paragraphs, wordCount } = useMemo(
+  const { paragraphs, timeline } = useMemo(
     () => parseTranscriptForKaraoke(transcript),
     [transcript]
   )
 
-  const activeIndex = resolveActiveWordIndex(wordCount, currentTime, duration)
+  const activeIndex = resolveActiveWordIndex(timeline, currentTime, duration)
   const syncActive = duration > 0 && activeIndex >= 0 && (playing || currentTime > 0)
 
   useEffect(() => {

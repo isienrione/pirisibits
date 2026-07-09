@@ -30,14 +30,20 @@ describe('transcriptContent', () => {
   })
 
   it('tokenizes karaoke words and resolves active index from playback', () => {
-    const { paragraphs, wordCount } = parseTranscriptForKaraoke('[warm] One two.\n\nThree four.')
+    const { paragraphs, wordCount, timeline } = parseTranscriptForKaraoke('[warm] One two.\n\nThree four.')
     expect(wordCount).toBe(4)
     expect(paragraphs).toHaveLength(2)
-    expect(resolveActiveWordIndex(wordCount, 0, 10)).toBe(0)
-    expect(resolveActiveWordIndex(wordCount, 2.5, 10)).toBe(0)
-    expect(resolveActiveWordIndex(wordCount, 5, 10)).toBe(1)
-    expect(resolveActiveWordIndex(wordCount, 9.9, 10)).toBe(2)
-    expect(resolveActiveWordIndex(wordCount, 10, 10)).toBe(3)
+    expect(timeline).toHaveLength(4)
+    expect(resolveActiveWordIndex(timeline, 0, 10)).toBe(0)
+    expect(resolveActiveWordIndex(timeline, 10, 10)).toBe(3)
+  })
+
+  it('weights longer words and paragraph gaps in the karaoke timeline', () => {
+    const { timeline } = parseTranscriptForKaraoke('Short.\n\nA much longer sentence here.')
+    expect(timeline[0].startProgress).toBe(0)
+    expect(timeline[timeline.length - 1].endProgress).toBe(1)
+    // First word after a paragraph break carries extra gap weight.
+    expect(timeline[1].weight).toBeGreaterThan(timeline[0].weight)
   })
 })
 
