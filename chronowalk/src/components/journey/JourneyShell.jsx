@@ -273,6 +273,13 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setDockSnapshot(null)
   }, [audio, needsPathChoice, step?.id])
 
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.PAUSED) return
+    audio.stopNarration()
+    setDockSnapshot(null)
+    playedStepRef.current = null
+  }, [audio, state])
+
   const handleOptionalPromote = useCallback(
     (waypointId) => {
       if (!manifest) return
@@ -718,7 +725,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     !inlineTransitAudio &&
     !needsPathChoice &&
     state !== JOURNEY_STATES.STORY &&
-    state !== JOURNEY_STATES.THRESHOLD
+    state !== JOURNEY_STATES.THRESHOLD &&
+    state !== JOURNEY_STATES.PAUSED
   const dockBottomInset = isImmersiveJourneyState(state)
     ? SHELL_SAFE_BOTTOM_INSET
     : SHELL_TAB_BAR_INSET

@@ -315,10 +315,10 @@ describe('JourneyShell', () => {
   it('resumes scripted Forum rest and advances to transit', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.PAUSED, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
-    renderShell()
+    renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByRole('heading', { name: /forum rest/i })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /resume walking/i }))
+    expect(await screen.findByTestId('pause-screen')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('pause-ready'))
 
     const snap = getJourneySnapshot()
     expect(snap.state).toBe(JOURNEY_STATES.WALKING)
