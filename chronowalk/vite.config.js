@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url'
 
 function resolveBuildId() {
   if (process.env.VITE_BUILD_ID) return process.env.VITE_BUILD_ID
+  if (process.env.CF_PAGES_COMMIT_SHA) {
+    return process.env.CF_PAGES_COMMIT_SHA.slice(0, 7)
+  }
   if (process.env.COMMIT_REF) return process.env.COMMIT_REF
   if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA.slice(0, 12)
   try {

@@ -87,7 +87,7 @@ Copy `.env.example` to `.env` in the `chronowalk/` directory.
 | `VITE_CDN_BASE_URL` | No | Prefix for large media hosted on a CDN |
 | `VITE_API_BASE_URL` | No | Reserved for future API integration |
 
-On Netlify (or similar), set the same `VITE_*` variables in the site environment and redeploy. URL query params can override several debug flags without redeploying.
+Production deploys via **Cloudflare Pages** from the `figma` branch — see [`docs/CLOUDFLARE_PAGES.md`](docs/CLOUDFLARE_PAGES.md). Set the same `VITE_*` variables in the Cloudflare project environment. URL query params can override several debug flags without redeploying.
 
 ## Mapbox setup
 
