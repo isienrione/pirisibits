@@ -399,7 +399,7 @@ export default function C2Transit({
           style={{
             padding: `12px 20px calc(${SHELL_TAB_BAR_INSET} + 8px)`,
             position: 'relative',
-            zIndex: 12,
+            zIndex: 62,
           }}
         >
           {onArriveAtDestination ? (

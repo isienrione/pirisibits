@@ -63,6 +63,7 @@ export default function C6ImmersivePlayer({
   onSelectChapter,
   onOpenTranscript,
   onStoryComplete,
+  continueLabel = null,
   onBack,
   onThresholdCross,
   onOpenThreshold,
@@ -152,7 +153,10 @@ export default function C6ImmersivePlayer({
 
   const reading = tab === 'transcript'
   const subtitle = tagline ?? chapterTitle
-  const showContinue = Boolean(onStoryComplete) && storyEnded
+  const showContinuity = Boolean(onStoryComplete)
+  const continuityLabel =
+    continueLabel ??
+    (storyEnded || !narrationPlaying ? 'Continue walking →' : 'Skip ahead →')
   const chromeHidden = focusReveal
 
   const tabBar = (
@@ -478,11 +482,13 @@ export default function C6ImmersivePlayer({
       </div>
 
       <div
-        className="cw-waypoint-immersive__panel cw-waypoint-immersive__chrome"
+        className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity' : ''}`}
         style={{
           display: 'flex',
           flexDirection: 'column',
-          padding: `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+          padding: showContinuity
+            ? '8px 24px 10px'
+            : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
         {reading ? (
@@ -539,14 +545,16 @@ export default function C6ImmersivePlayer({
           </>
         )}
 
-        {showContinue ? (
+      </div>
+
+      {showContinuity ? (
+        <div className="cw-waypoint-immersive__continuity cw-waypoint-immersive__chrome">
           <button
             type="button"
             data-testid="story-continue"
             onClick={onStoryComplete}
             style={{
               width: '100%',
-              marginTop: 10,
               padding: '14px',
               borderRadius: 12,
               border: 'none',
@@ -557,13 +565,12 @@ export default function C6ImmersivePlayer({
               fontWeight: 600,
               cursor: 'pointer',
               boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-              flexShrink: 0,
             }}
           >
-            Continue walking →
+            {continuityLabel}
           </button>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   )
 }

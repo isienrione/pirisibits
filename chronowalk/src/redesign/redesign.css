@@ -215,9 +215,26 @@
   bottom: 0;
   z-index: 10;
   max-height: 46%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: transparent !important;
   border-top: none !important;
+}
+
+.cw-waypoint-immersive__panel--with-continuity {
+  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)));
+  max-height: 40%;
+}
+
+.cw-waypoint-immersive__continuity {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 0 24px max(12px, env(safe-area-inset-bottom));
+  pointer-events: auto;
 }
 
 .cw-waypoint-immersive__chrome {

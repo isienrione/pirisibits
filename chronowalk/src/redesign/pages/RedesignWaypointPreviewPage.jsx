@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getWaypoint } from '../../content/manifest.js'
 import { resolveNarrationUrl } from '../../audio/audioUrl.js'
+import { bindAutoplayHtmlAudio } from '../../audio/autoplayHtmlAudio.js'
 import { chapterFile } from '../../content/chapterMeta.js'
 import { useTourManifest } from '../../hooks/useV2Journey.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
@@ -20,6 +21,7 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
 
   const { manifest, loading } = useTourManifest()
   const audioRef = useRef(null)
+  const [audioNode, setAudioNode] = useState(null)
   const [playing, setPlaying] = useState(false)
   const [audioError, setAudioError] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -44,11 +46,12 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
     setCurrentTime(0)
     setDuration(0)
     setAudioError(false)
+    setAudioNode(null)
     thresholdTrackedRef.current = false
   }, [waypointId, narrationUrl])
 
   useEffect(() => {
-    const audio = audioRef.current
+    const audio = audioNode
     if (!audio || !audioAvailable) return undefined
 
     const onTime = () => setCurrentTime(audio.currentTime)
@@ -57,14 +60,17 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
     audio.addEventListener('loadedmetadata', onMeta)
     audio.addEventListener('durationchange', onMeta)
 
-    void audio.play().then(() => setPlaying(true)).catch(() => {})
+    const stopAutoplay = bindAutoplayHtmlAudio(audio, {
+      onPlaying: () => setPlaying(true),
+    })
 
     return () => {
+      stopAutoplay()
       audio.removeEventListener('timeupdate', onTime)
       audio.removeEventListener('loadedmetadata', onMeta)
       audio.removeEventListener('durationchange', onMeta)
     }
-  }, [audioAvailable, narrationUrl])
+  }, [audioAvailable, audioNode, narrationUrl])
 
   const togglePlay = () => {
     const audio = audioRef.current
@@ -135,9 +141,12 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
         {narrationUrl ? (
           <audio
             key={narrationUrl}
-            ref={audioRef}
+            ref={(node) => {
+              audioRef.current = node
+              setAudioNode(node)
+            }}
             src={narrationUrl}
-            preload="metadata"
+            preload="auto"
             onEnded={() => setPlaying(false)}
             onPause={() => setPlaying(false)}
             onPlay={() => setPlaying(true)}

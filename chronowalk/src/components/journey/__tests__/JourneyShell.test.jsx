@@ -154,6 +154,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('reveal-invite')).toBeInTheDocument()
     expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
+    expect(screen.getByTestId('story-continue')).toBeInTheDocument()
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
     expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
     expect(screen.queryByText(/press and hold to cross/i)).not.toBeInTheDocument()

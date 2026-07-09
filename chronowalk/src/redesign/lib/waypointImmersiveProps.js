@@ -48,6 +48,7 @@ export function buildImmersivePlayerProps({
   audio = {},
   handlers = {},
   transcriptOverride = null,
+  continueLabel = null,
 }) {
   const chapters = waypoint?.chapters?.length ? waypoint.chapters : []
   const { nowAmbienceUrl, thenSoundscapeUrl } = resolveThresholdAmbienceUrls(manifest)
@@ -92,6 +93,7 @@ export function buildImmersivePlayerProps({
     onSelectChapter: handlers.onSelectChapter,
     onOpenTranscript: handlers.onOpenTranscript,
     onStoryComplete: handlers.onStoryComplete,
+    continueLabel,
     onThresholdCross: handlers.onThresholdCross,
     onBack: handlers.onBack,
     onOpenThreshold: handlers.onOpenThreshold,

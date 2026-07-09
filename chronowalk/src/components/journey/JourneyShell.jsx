@@ -265,6 +265,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     [audio.progress?.duration, context.path, manifest]
   )
 
+  const tryStartWaypointNarration = useCallback(
+    (waypointId) => {
+      if (!manifest || !audioUnlocked || !waypointId) return false
+      if (storyStartedRef.current === waypointId) return false
+
+      storyStartedRef.current = waypointId
+      setActiveWaypoint(waypointId, manifest)
+      void audio.playWaypoint(waypointId)
+      return true
+    },
+    [audio, audioUnlocked, manifest, setActiveWaypoint]
+  )
+
   // After threshold (e.g. w07), the next step is often a transit leg (t06 → Vesta).
   // Never auto-play t01 — travelers must pick Path A or B first.
   useEffect(() => {
@@ -441,6 +454,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       if (variant === 'redesign') {
         storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
         transition(JOURNEY_STATES.STORY)
+        tryStartWaypointNarration(waypointId)
       } else {
         transition(JOURNEY_STATES.ARRIVED)
       }
@@ -450,7 +464,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [audio, audioUnlocked, transition, variant]
+    [audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
   )
 
   const arriveAtWaypoint = useCallback(
@@ -561,10 +575,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return
     }
 
-    if (state === JOURNEY_STATES.STORY && step.type === 'waypoint' && storyStartedRef.current !== step.id) {
-      storyStartedRef.current = step.id
-      setActiveWaypoint(step.id, manifest)
-      audio.playWaypoint(step.id)
+    if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
+      tryStartWaypointNarration(step.id)
     }
   }, [
     audio,
@@ -572,10 +584,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
     manifest,
     context.path,
     needsPathChoice,
-    setActiveWaypoint,
     seedTransitDock,
     state,
     step,
+    tryStartWaypointNarration,
   ])
 
   const handleUnlockAudio = async () => {
@@ -603,6 +615,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
+    if (step.type === 'waypoint') tryStartWaypointNarration(step.id)
     setBusy(false)
   }
 
@@ -964,6 +977,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
           chapterCount: audio.progress?.chapterCount || Math.max(chapters.length, 1),
           audioAvailable,
         },
+        continueLabel:
+          storyEnded || !audio.narrationPlaying ? 'Continue walking →' : 'Skip ahead →',
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
