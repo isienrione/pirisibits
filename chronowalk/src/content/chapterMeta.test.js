@@ -27,6 +27,13 @@ describe('chapterMeta', () => {
 
     expect(
       resolveStepTranscript({
+        type: 'waypoint',
+        record: { transcript: '[warm] Exterior script [pause]', chapters: [] },
+      })
+    ).toBe('Exterior script')
+
+    expect(
+      resolveStepTranscript({
         type: 'transit',
         record: {
           variant_meta: { a: { transcript: 'Forum path' }, b: { transcript: 'Palatine path' } },

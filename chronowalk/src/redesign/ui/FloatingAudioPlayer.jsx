@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
+import KaraokeTranscript from './KaraokeTranscript.jsx'
 
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
@@ -380,23 +381,15 @@ export default function FloatingAudioPlayer({
             </div>
 
             {showTranscript && transcript ? (
-              <div
-                style={{
-                  marginTop: 12,
-                  maxHeight: 160,
-                  overflowY: 'auto',
-                  padding: '12px 14px',
-                  borderRadius: 10,
-                  background: `${T.ink800}`,
-                  border: `1px solid ${T.muted}22`,
-                  fontSize: 13,
-                  lineHeight: 1.55,
-                  color: T.warmWhite,
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {transcript}
-              </div>
+              <KaraokeTranscript
+                transcript={transcript}
+                currentTime={currentTime}
+                duration={duration}
+                playing={narrationPlaying}
+                accent={accent}
+                fontSize={14}
+                testId="dock-karaoke-transcript"
+              />
             ) : null}
           </div>
         ) : null}

@@ -1,3 +1,5 @@
+import { stripDirectorCues } from '../utils/transcriptContent.js'
+
 /** Helpers for waypoint chapter entries (string filename or { file, title, transcript }). */
 
 export function chapterFile(chapter) {
@@ -36,10 +38,17 @@ export function chaptersToFiles(chapters) {
 }
 
 export function combinedChapterTranscript(chapters) {
-  return (chapters ?? [])
+  const raw = (chapters ?? [])
     .map(chapterTranscript)
     .filter(Boolean)
     .join('\n\n')
+  return raw ? stripDirectorCues(raw) : ''
+}
+
+function readableTranscript(raw) {
+  if (!raw || typeof raw !== 'string') return null
+  const cleaned = stripDirectorCues(raw)
+  return cleaned || null
 }
 
 /** Full readable script for a waypoint or transit step (for dock / read-along). */
@@ -48,14 +57,14 @@ export function resolveStepTranscript(step, path = 'a') {
 
   if (step.type === 'waypoint') {
     const record = step.record
-    return record.transcript ?? combinedChapterTranscript(record.chapters) ?? null
+    return (readableTranscript(record.transcript) ?? combinedChapterTranscript(record.chapters)) || null
   }
 
   if (step.type === 'transit') {
     const transit = step.record
-    if (transit.transcript) return transit.transcript
+    if (transit.transcript) return readableTranscript(transit.transcript)
     const variantKey = path === 'b' ? 'b' : 'a'
-    return transit.variant_meta?.[variantKey]?.transcript ?? null
+    return readableTranscript(transit.variant_meta?.[variantKey]?.transcript)
   }
 
   return null

@@ -3,6 +3,7 @@ import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
+import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
 
@@ -284,7 +285,7 @@ export default function C6ImmersivePlayer({
         <h2
           style={{
             fontFamily: F.display,
-            fontSize: 36,
+            fontSize: tab === 'transcript' ? 30 : 36,
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.08,
@@ -467,29 +468,45 @@ export default function C6ImmersivePlayer({
           ))}
         </div>
 
-        <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', scrollbarWidth: 'none', paddingBottom: 8 }}>
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            paddingBottom: 8,
+          }}
+        >
           {tab === 'transcript' ? (
-            <div
-              style={{
-                background: T.bone,
-                borderRadius: 12,
-                padding: '18px 18px 20px',
-              }}
-            >
-              {transcriptAvailable && transcript ? (
-                <p style={{ fontFamily: F.display, fontWeight: 300, fontSize: transcriptFontSize, color: T.ink, lineHeight: 1.85, margin: 0, whiteSpace: 'pre-wrap' }}>
-                  {transcript}
-                </p>
-              ) : (
+            transcriptAvailable && transcript ? (
+              <KaraokeTranscript
+                transcript={transcript}
+                currentTime={currentTime}
+                duration={duration}
+                playing={narrationPlaying}
+                accent={accent}
+                fontSize={transcriptFontSize + 2}
+                fullHeight
+                testId="story-karaoke-transcript"
+              />
+            ) : (
+              <div
+                style={{
+                  background: T.bone,
+                  borderRadius: 12,
+                  padding: '18px 18px 20px',
+                }}
+              >
                 <p style={{ fontFamily: F.body, fontSize: 14, color: `${T.ink}99`, lineHeight: 1.7, margin: 0, fontStyle: 'italic' }}>
                   {import.meta.env.DEV
                     ? 'No written transcript is wired for this stop yet (development).'
                     : 'A written transcript for this stop is coming soon.'}
                 </p>
-              )}
-            </div>
+              </div>
+            )
           ) : (
-            <div>
+            <div style={{ overflowY: 'auto', scrollbarWidth: 'none', flex: 1, minHeight: 0 }}>
               {chapters.map((ch, i) => (
                 <button
                   key={ch.n}
@@ -524,6 +541,7 @@ export default function C6ImmersivePlayer({
                   </span>
                 </button>
               ))}
+            </div>
             </div>
           )}
         </div>

@@ -1,8 +1,11 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 import {
   attachParagraphProgress,
+  parseTranscriptForKaraoke,
+  resolveActiveWordIndex,
   resolveCurrentParagraphIndex,
   splitTranscriptParagraphs,
+  stripDirectorCues,
 } from '../transcriptContent'
 import {
   readTranscriptBookmarks,
@@ -10,6 +13,11 @@ import {
 } from '../transcriptBookmarks'
 
 describe('transcriptContent', () => {
+  it('strips ElevenLabs director cues from readable copy', () => {
+    const raw = '[warm] Hello [pause] world.\n\n[PRE-NARRATION PAUSE — 8 seconds]\n\n[slow] Keep going.'
+    expect(stripDirectorCues(raw)).toBe('Hello world.\n\nKeep going.')
+  })
+
   it('splits transcript text into paragraphs', () => {
     const paragraphs = splitTranscriptParagraphs('First paragraph.\n\nSecond paragraph.')
     expect(paragraphs).toEqual(['First paragraph.', 'Second paragraph.'])
@@ -19,6 +27,15 @@ describe('transcriptContent', () => {
     const paragraphs = attachParagraphProgress(['One', 'Two', 'Three'])
     expect(paragraphs[1].startProgress).toBeCloseTo(1 / 3)
     expect(resolveCurrentParagraphIndex(paragraphs, 0.4)).toBe(1)
+  })
+
+  it('tokenizes karaoke words and resolves active index from playback', () => {
+    const { paragraphs, wordCount } = parseTranscriptForKaraoke('[warm] One two.\n\nThree four.')
+    expect(wordCount).toBe(4)
+    expect(paragraphs).toHaveLength(2)
+    expect(resolveActiveWordIndex(wordCount, 0, 10)).toBe(0)
+    expect(resolveActiveWordIndex(wordCount, 2.5, 10)).toBe(1)
+    expect(resolveActiveWordIndex(wordCount, 9.9, 10)).toBe(3)
   })
 })
 

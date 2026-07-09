@@ -3,6 +3,7 @@ import { Settings, Play, Pause, SkipBack, SkipForward } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
+import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 
 function formatTime(seconds) {
@@ -173,28 +174,46 @@ export default function C2Transit({
         style={{
           flex: 1,
           minHeight: 0,
-          overflowY: 'auto',
+          overflow: 'hidden',
           flexShrink: 1,
-          padding: '14px 20px 0',
+          padding: showTranscript && transcript ? '10px 16px 0' : '14px 20px 0',
           background: T.bone,
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        <Eyebrow color={accent}>WALKING TO</Eyebrow>
-        <h1
-          style={{
-            fontFamily: F.display,
-            fontSize: 26,
-            color: T.ink,
-            fontWeight: 300,
-            lineHeight: 1.12,
-            margin: '6px 0 4px',
-          }}
-        >
-          {title}
-        </h1>
-        <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.55, margin: 0 }}>
-          {note}
-        </p>
+        {showTranscript && transcript ? (
+          <KaraokeTranscript
+            transcript={transcript}
+            currentTime={currentTime}
+            duration={duration}
+            playing={narrationPlaying}
+            accent={accent}
+            fontSize={17}
+            variant="bone"
+            fullHeight
+            testId="transit-transcript"
+          />
+        ) : (
+          <>
+            <Eyebrow color={accent}>WALKING TO</Eyebrow>
+            <h1
+              style={{
+                fontFamily: F.display,
+                fontSize: 26,
+                color: T.ink,
+                fontWeight: 300,
+                lineHeight: 1.12,
+                margin: '6px 0 4px',
+              }}
+            >
+              {title}
+            </h1>
+            <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.55, margin: 0 }}>
+              {note}
+            </p>
+          </>
+        )}
       </div>
 
       {/* Sticky footer — narration controls + continue always on screen */}
@@ -341,27 +360,6 @@ export default function C2Transit({
               ) : null}
             </div>
           </div>
-
-          {showTranscript && transcript ? (
-            <div
-              data-testid="transit-transcript"
-              style={{
-                marginTop: 12,
-                maxHeight: 120,
-                overflowY: 'auto',
-                padding: '12px 14px',
-                borderRadius: 10,
-                background: T.ink800,
-                border: `1px solid ${T.muted}22`,
-                fontSize: 13,
-                lineHeight: 1.55,
-                color: T.warmWhite,
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {transcript}
-            </div>
-          ) : null}
         </div>
 
         <div
