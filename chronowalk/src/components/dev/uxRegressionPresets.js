@@ -43,7 +43,7 @@ export const UX_ROUTE_TARGETS = [
   { id: 'landing', label: 'Landing', path: '/landing' },
   { id: 'preview', label: 'Preview', path: '/preview' },
   { id: 'access', label: 'Access', path: '/access' },
-  { id: 'welcome', label: 'Welcome', path: '/welcome' },
+  { id: 'setup', label: 'Setup', path: '/setup' },
   { id: 'begin', label: 'Begin', path: '/begin' },
   { id: 'tour', label: 'My Tour', path: '/tour' },
   { id: 'journey', label: 'Journey', path: '/journey' },
@@ -116,7 +116,7 @@ export function applyPurchasedFirstTimePreset() {
   resetJourney()
 
   return {
-    route: '/welcome',
+    route: '/setup',
     searchParams: {},
   }
 }

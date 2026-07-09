@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { buildCheckoutUrl, getHost } from '../lib/host.js'
-import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingHero from './LandingHero.jsx'
 import LandingProblemSection from './LandingProblemSection.jsx'
@@ -12,8 +11,6 @@ import LandingRomeJourneySection from './LandingRomeJourneySection.jsx'
 import LandingFinalCtaSection from './LandingFinalCtaSection.jsx'
 import LandingStickyCta from './LandingStickyCta.jsx'
 import { useLandingPrice } from './useLandingPrice.js'
-import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
-import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import './ChronoWalkLanding.css'
 
 /**
@@ -46,15 +43,6 @@ export default function ChronoWalkLanding() {
 
   const handleTryFreeStory = useCallback(() => {
     track(TRACK_EVENTS.LANDING_CTA_PREVIEW, { source: 'landing' })
-    const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
-    if (url) primePreviewAudioForNavigation(url)
-    navigate('/preview')
-  }, [navigate])
-
-  const handleLivePantheon = useCallback(() => {
-    track(TRACK_EVENTS.LANDING_CTA_PREVIEW, { source: 'landing', preview: 'pantheon' })
-    const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
-    if (url) primePreviewAudioForNavigation(url)
     navigate('/preview')
   }, [navigate])
 
@@ -82,7 +70,7 @@ export default function ChronoWalkLanding() {
     <main
       className={`cw-landing cw-landing--document${stickyVisible ? ' cw-landing--sticky-pad' : ''}`}
     >
-      <LandingHero onBegin={handleBeginJourney} onLivePantheon={handleLivePantheon} />
+      <LandingHero onBegin={handleBeginJourney} onPreview={handleTryFreeStory} />
       <LandingProblemSection />
       <LandingPromiseSection />
       <LandingHowItWorksSection />

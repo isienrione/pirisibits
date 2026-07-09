@@ -46,9 +46,10 @@ export function resolveSystemUrl(filename) {
   return getAudioUrl(systemPath(filename))
 }
 
-/** Free Pantheon sample — manifest.system.preview ships under narration/. */
+/** Free Pantheon sample — narration files live under /rome/audio/narration/. */
 export function resolvePreviewUrl(filename) {
-  return getAudioUrl(narrationPath(filename))
+  const file = filename === 'preview_pantheon.mp3' ? 'w17_ch1.mp3' : filename
+  return getAudioUrl(narrationPath(file))
 }
 
 export function resolvePlanItemUrl(item) {

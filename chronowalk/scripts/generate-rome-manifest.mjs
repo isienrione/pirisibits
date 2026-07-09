@@ -398,7 +398,7 @@ const manifest = {
       phase_transition: 'ui_phase_seam.mp3',
       completion: 'ui_completion_tone.mp3',
     },
-    preview: 'preview_pantheon.mp3',
+    preview: 'w17_ch1.mp3',
     threshold_ambience: {
       now: 'ambience_now.mp3',
       then: 'ambience_then.mp3',

@@ -3,7 +3,21 @@ import ChronoWalkLogo from '../redesign/ui/ChronoWalkLogo.jsx'
 import { tourHero } from '../redesign/images.js'
 import { LANDING_CONTENT } from './landingData.js'
 
-export default function LandingHero({ onBegin, onLivePantheon }) {
+function PlayIcon() {
+  return (
+    <svg
+      className="cw-landing-hero__play-icon"
+      viewBox="0 0 24 24"
+      width="14"
+      height="14"
+      aria-hidden
+    >
+      <path d="M8 5.5v13l11-6.5L8 5.5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+export default function LandingHero({ onBegin, onPreview }) {
   const hero = LANDING_CONTENT.hero
   const [imageOk, setImageOk] = useState(true)
 
@@ -58,17 +72,26 @@ export default function LandingHero({ onBegin, onLivePantheon }) {
           </h1>
           <p className="cw-landing-hero__sub">{hero.subheadline}</p>
 
+          <button
+            type="button"
+            className="cw-landing-hero__audio"
+            onClick={onPreview}
+          >
+            <span className="cw-landing-hero__play" aria-hidden>
+              <PlayIcon />
+            </span>
+            <span className="cw-landing-hero__audio-label">
+              {hero.audioPreview.label}
+              <span className="cw-landing-hero__audio-meta"> · {hero.audioPreview.meta}</span>
+            </span>
+          </button>
+
           <div className="cw-landing-hero__actions">
             <button type="button" className="cw-landing-btn cw-landing-btn--coral cw-landing-btn--glow" onClick={onBegin}>
               {hero.primaryCta}
             </button>
-          </div>
-
-          <div className="cw-landing-hero__try">
-            <p className="cw-landing-hero__try-title">{hero.tryAppTitle}</p>
-            <p className="cw-landing-hero__try-subtitle">{hero.freeStoryTitle}</p>
-            <button type="button" className="cw-landing-hero__pantheon" onClick={onLivePantheon}>
-              {hero.freeStoryCta}
+            <button type="button" className="cw-landing-hero__secondary" onClick={onPreview}>
+              {hero.secondaryCta} →
             </button>
           </div>
         </div>

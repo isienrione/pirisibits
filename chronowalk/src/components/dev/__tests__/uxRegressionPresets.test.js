@@ -42,7 +42,7 @@ describe('uxRegressionPresets', () => {
   it('purchased first-time grants access and resets journey', () => {
     const result = applyPurchasedFirstTimePreset()
 
-    expect(result.route).toBe('/welcome')
+    expect(result.route).toBe('/setup')
     expect(localStorage.getItem(ACCESS_KEY)).toBe('true')
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.IDLE)
   })

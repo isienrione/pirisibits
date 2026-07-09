@@ -9,7 +9,7 @@ export default function RedesignAccessConfirmedPage() {
   const handleContinue = () => {
     const { state } = getJourneySnapshot()
     const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
-    navigate(inProgress ? '/journey' : '/welcome', { replace: true })
+    navigate(inProgress ? '/journey' : '/setup', { replace: true })
   }
 
   return (

@@ -10,6 +10,7 @@ export default function B2MakeItYours({
   downloadProgress: downloadProgressProp,
   downloadComplete = false,
   onInstall,
+  onDownload,
   onContinue,
   onSkip,
 }) {
@@ -115,8 +116,8 @@ export default function B2MakeItYours({
               style={{ flexShrink: 0, cursor: downloadComplete || dlProgress >= 1 ? "default" : "pointer" }}
               onClick={() => {
                 if (downloadComplete || dlProgress >= 1) return
-                if (onInstall) {
-                  onInstall()
+                if (onDownload) {
+                  onDownload()
                   return
                 }
                 if (!downloadingLocal && dlProgress < 1) setDownloadingLocal(true)

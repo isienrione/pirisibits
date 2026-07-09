@@ -226,3 +226,61 @@ export function buildOwnPacePickerActs(manifest, context) {
 export function needsOwnPaceSelection(context) {
   return context.pace === JOURNEY_PACE.OWN && !(context.customWaypointIds?.length > 0)
 }
+
+/**
+ * Act-grouped tour for the free-preview ghost state — one sample stop unlocked, rest locked.
+ * @param {import('./manifest.js').RomeManifest} manifest
+ * @param {string} previewWaypointId
+ */
+export function buildPreviewTourActs(manifest, previewWaypointId = 'w17') {
+  if (!manifest?.acts) return []
+
+  const context = {
+    pace: JOURNEY_PACE.CLASSIC,
+    path: manifest.journey?.default_path ?? 'a',
+  }
+  const tourWaypointIds = new Set(getTourWaypointIds(manifest, context))
+
+  return manifest.acts
+    .map((manifestAct) => {
+      const meta = ACT_META[manifestAct.id] ?? manifestAct
+      const stops = manifestAct.waypoints
+        .filter((waypointId) => isWaypointId(manifest, waypointId))
+        .filter((waypointId) => tourWaypointIds.has(waypointId))
+        .map((waypointId) => {
+          const waypoint = getWaypoint(manifest, waypointId)
+          const isSample = waypointId === previewWaypointId
+          return {
+            id: waypointId,
+            title: waypoint?.title ?? waypointId,
+            hook: waypoint?.approachLine ?? waypoint?.arrivalLine ?? '',
+            status: isSample ? 'sample' : 'locked',
+            waypoint,
+            isVisitStop: isVisitStop(waypoint),
+          }
+        })
+
+      if (!stops.length) return null
+
+      return {
+        id: manifestAct.id,
+        numeral: manifestAct.numeral,
+        title: meta.title ?? manifestAct.title,
+        promise: meta.promise ?? '',
+        colorKey: manifestAct.id,
+        locked: false,
+        status: 'ahead',
+        actStatus: 'ahead',
+        stops,
+        photoStop: stops[0]?.waypoint ?? null,
+      }
+    })
+    .filter(Boolean)
+}
+
+export function summarizePreviewTour(acts) {
+  const stops = acts.flatMap((act) => act.stops).filter((stop) => stop.isVisitStop !== false)
+  const sample = stops.filter((stop) => stop.status === 'sample').length
+  const locked = stops.filter((stop) => stop.status === 'locked').length
+  return { sample, locked, total: stops.length, actCount: acts.length }
+}

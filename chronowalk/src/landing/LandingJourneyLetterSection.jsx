@@ -1,28 +1,29 @@
 import ChronoWalkLogo from '../redesign/ui/ChronoWalkLogo.jsx'
-import LandingSection from './LandingSection.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingJourneyLetterSection() {
-  const { id, headline, copy, mockLetter } = LANDING_CONTENT['journey-letter']
+  const { id, headline, copy, preview } = LANDING_CONTENT.letter
 
   return (
-    <LandingSection id={id} title={headline} variant="dark">
-      <p className="cw-landing-lead">{copy}</p>
-      <article className="cw-landing-letter-card">
-        <div className="cw-landing-letter-card__glow" aria-hidden />
-        <svg className="cw-landing-letter-card__seam" viewBox="0 0 200 120" aria-hidden preserveAspectRatio="none">
-          <path
-            d="M 8 96 C 40 88, 52 40, 88 56 S 120 72, 148 44 S 176 28, 192 18"
-            fill="none"
-          />
-        </svg>
-        <header className="cw-landing-letter-card__head">
-          <ChronoWalkLogo size={18} />
-          <span>{mockLetter.date}</span>
-        </header>
-        <p className="cw-landing-letter-card__reflection">{mockLetter.reflection}</p>
-        <p className="cw-landing-letter-card__stats">{mockLetter.stats}</p>
-      </article>
-    </LandingSection>
+    <section id={id} className="cw-gallery-section cw-gallery-section--obsidian cw-gallery-letter" aria-labelledby={`${id}-heading`}>
+      <div className="cw-landing-wrap cw-gallery-section__inner">
+        <h2 id={`${id}-heading`} className="cw-gallery-section__title">
+          {headline}
+        </h2>
+        <p className="cw-gallery-letter__lead">{copy}</p>
+
+        <article className="cw-gallery-letter-card" aria-label="Journey letter preview">
+          <div className="cw-gallery-letter-card__glow" aria-hidden />
+          <header className="cw-gallery-letter-card__head">
+            <ChronoWalkLogo size={16} />
+            <time dateTime="2026-08-12">{preview.date}</time>
+          </header>
+          <blockquote className="cw-gallery-letter-card__reflection">
+            <p>{preview.reflection}</p>
+          </blockquote>
+          <footer className="cw-gallery-letter-card__stats">{preview.stats}</footer>
+        </article>
+      </div>
+    </section>
   )
 }

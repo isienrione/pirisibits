@@ -12,8 +12,10 @@ export default function RedesignSetupPage() {
   const handleInstall = async () => {
     if (canPromptInstall) {
       await promptInstall()
-      return
     }
+  }
+
+  const handleDownload = () => {
     if (!offline.isDownloading && !offline.isReady) {
       void offline.startDownload()
     }
@@ -27,11 +29,12 @@ export default function RedesignSetupPage() {
       <div className="redesign-app-shell">
         <B2MakeItYours
           showIosInstructions={showIosInstructions}
-          canInstall={canPromptInstall || showIosInstructions || !offline.isReady}
+          canInstall={canPromptInstall}
           downloading={offline.isDownloading}
           downloadProgress={downloadProgress}
           downloadComplete={offline.isReady}
           onInstall={handleInstall}
+          onDownload={handleDownload}
           onContinue={() => navigate('/begin', { replace: true })}
           onSkip={() => navigate('/begin', { replace: true })}
         />

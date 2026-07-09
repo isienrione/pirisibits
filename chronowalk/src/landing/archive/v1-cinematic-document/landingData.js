@@ -10,9 +10,6 @@ export const LANDING_PRICE_FALLBACK_LABEL = '€17'
 
 export const hostBannerPrefix = 'Recommended by'
 
-/** Pantheon free-sample narration (manifest.system.preview · ~4 min exterior chapter). */
-export const LANDING_PREVIEW_AUDIO_FILE = 'w17_ch1.mp3'
-
 /** Shared CTA labels used across sections. */
 export const LANDING_CTA = {
   begin: 'Begin your journey',
@@ -60,10 +57,12 @@ export const LANDING_CONTENT = {
     subheadline:
       'A cinematic walking companion with GPS-guided stories, ancient reconstructions, and a ready-made route through the city’s most legendary places.',
     primaryCta: LANDING_CTA.begin,
-    tryAppTitle: 'Try the ChronoWalk App',
-    freeStoryTitle: 'Experience a free story',
-    freeStoryCta: 'The Pantheon',
+    secondaryCta: LANDING_CTA.tryFree,
     supportLine: 'No group. No planning spiral. Start today.',
+    audioPreview: {
+      label: 'Hear the Pantheon',
+      meta: 'Free · 4 minutes',
+    },
   },
 
   problem: {
