@@ -1,6 +1,5 @@
 import {
   readDevGeofencesMode,
-  syncDevGeofencesModeFromUrl,
 } from '../content/devGeofenceTools.js'
 
 const parseBooleanEnv = (value) => {
@@ -97,8 +96,9 @@ export const shouldResetTour = () => {
  */
 export const getDevGeofencesMode = () => {
   if (typeof window !== 'undefined') {
-    const fromUrl = syncDevGeofencesModeFromUrl()
-    if (fromUrl) return fromUrl
+    const param = new URLSearchParams(window.location.search).get('devGeofences')
+    if (param === 'off' || param === '0' || param === 'false') return null
+    if (param) return String(param).trim().toLowerCase()
     const stored = readDevGeofencesMode()
     if (stored) return stored
   }

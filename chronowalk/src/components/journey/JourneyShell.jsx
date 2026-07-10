@@ -987,7 +987,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const withInterruptionBanner = (content) => (
     <>
       {interruptionBanner}
-      {devGeofenceActive ? <DevGeofenceHud geoTarget={geoTarget} geo={geo} /> : null}
+      {devGeofenceActive && !loading && geoTarget ? (
+        <DevGeofenceHud geoTarget={geoTarget} geo={geo} />
+      ) : null}
       {content}
       {floatingPlayer}
     </>

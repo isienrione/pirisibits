@@ -67,17 +67,21 @@ export function useTourManifest() {
       try {
         clearRomeManifestCache()
         const data = loadRomeManifest()
-        if (!cancelled) setManifest(data)
+        if (!cancelled) {
+          setError(null)
+          setManifest(data)
+        }
       } catch (err) {
         if (!cancelled) setError(err)
       }
     }
 
     load()
-    window.addEventListener(DEV_GEOFENCES_CHANGED, load)
+    const onModeChange = () => load()
+    window.addEventListener(DEV_GEOFENCES_CHANGED, onModeChange)
     return () => {
       cancelled = true
-      window.removeEventListener(DEV_GEOFENCES_CHANGED, load)
+      window.removeEventListener(DEV_GEOFENCES_CHANGED, onModeChange)
     }
   }, [])
 
