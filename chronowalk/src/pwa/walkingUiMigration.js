@@ -1,5 +1,6 @@
 import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { clearAllCaches, unregisterAllServiceWorkers } from './pwaCacheUtils.js'
+import { fetchWithTimeout } from './fetchWithTimeout.js'
 
 export const WALKING_UI_RELOAD_GUARD = 'cw-walking-ui-reload'
 export const WALKING_UI_STORAGE_KEY = 'cw-walking-ui-rev'
@@ -26,11 +27,11 @@ export async function fetchDeployedWalkingUiRevision() {
   if (typeof fetch === 'undefined') return null
 
   try {
-    const jsonRes = await fetch(`/walking-ui-revision.json?_=${Date.now()}`, {
+    const jsonRes = await fetchWithTimeout(`/walking-ui-revision.json?_=${Date.now()}`, {
       cache: 'no-store',
       credentials: 'same-origin',
     })
-    if (jsonRes.ok) {
+    if (jsonRes?.ok) {
       const payload = await jsonRes.json()
       if (typeof payload?.revision === 'number') return payload.revision
     }
@@ -39,11 +40,11 @@ export async function fetchDeployedWalkingUiRevision() {
   }
 
   try {
-    const htmlRes = await fetch(`/?_=${Date.now()}`, {
+    const htmlRes = await fetchWithTimeout(`/?_=${Date.now()}`, {
       cache: 'no-store',
       credentials: 'same-origin',
     })
-    if (!htmlRes.ok) return null
+    if (!htmlRes?.ok) return null
     return parseWalkingUiRevisionFromHtml(await htmlRes.text())
   } catch {
     return null

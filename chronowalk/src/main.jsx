@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { pwaReady } from './pwa/pwaController.js'
+import './pwa/pwaController.js'
 import './design/tokens.css'
 import './redesign/redesign.css'
 import './index.css'
@@ -18,14 +18,8 @@ if (typeof document !== 'undefined') {
   }
 }
 
-async function boot() {
-  await pwaReady
-
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
-      <AppRouter />
-    </StrictMode>
-  )
-}
-
-void boot()
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <AppRouter />
+  </StrictMode>
+)

@@ -1,4 +1,5 @@
 import { clearAllCaches, unregisterAllServiceWorkers } from './pwaCacheUtils.js'
+import { fetchWithTimeout } from './fetchWithTimeout.js'
 
 export const BUILD_STORAGE_KEY = 'cw-app-build'
 export const BUILD_RELOAD_GUARD_KEY = 'cw-build-migration-reload'
@@ -21,11 +22,11 @@ export function parseBuildIdFromSwSource(swSource) {
 export async function fetchDeployedBuildId(currentBuildId = __APP_BUILD_ID__) {
   if (typeof fetch === 'undefined') return null
   try {
-    const response = await fetch(`/sw.js?_=${Date.now()}`, {
+    const response = await fetchWithTimeout(`/sw.js?_=${Date.now()}`, {
       cache: 'no-store',
       credentials: 'same-origin',
     })
-    if (!response.ok) return null
+    if (!response?.ok) return null
     const source = await response.text()
     return parseBuildIdFromSwSource(source) ?? currentBuildId
   } catch {
