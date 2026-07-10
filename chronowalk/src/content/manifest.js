@@ -1,17 +1,30 @@
 import rawManifest from './rome/manifest.json'
 import { parseRomeManifest } from './romeManifestZod.schema.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
+import { applyDevGeofenceOverrides } from './applyDevGeofenceOverrides.js'
+import { getDevGeofencesMode } from '../config/env.js'
 
 let cachedManifest = null
+let cachedManifestKey = null
 
 export function loadRomeManifest() {
-  if (cachedManifest) return cachedManifest
-  cachedManifest = normalizeManifest(parseRomeManifest(rawManifest))
+  const overrideMode = getDevGeofencesMode()
+  const cacheKey = overrideMode ?? 'rome'
+  if (cachedManifest && cachedManifestKey === cacheKey) return cachedManifest
+
+  let parsed = parseRomeManifest(rawManifest)
+  if (overrideMode) {
+    parsed = applyDevGeofenceOverrides(parsed, overrideMode)
+  }
+
+  cachedManifest = normalizeManifest(parsed)
+  cachedManifestKey = cacheKey
   return cachedManifest
 }
 
 export function clearRomeManifestCache() {
   cachedManifest = null
+  cachedManifestKey = null
 }
 
 function normalizeManifest(manifest) {

@@ -85,6 +85,23 @@ export const shouldResetTour = () => {
   return parseBooleanEnv(param)
 }
 
+/**
+ * Temporary field-test geofences (?devGeofences=santiago or VITE_DEV_GEOFENCES=santiago).
+ * Remaps selected Rome waypoint radii to Santiago coordinates for live GPS QA.
+ */
+export const getDevGeofencesMode = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('devGeofences')
+    if (param) return String(param).trim().toLowerCase()
+  }
+
+  const fromEnv = import.meta.env.VITE_DEV_GEOFENCES
+  if (fromEnv) return String(fromEnv).trim().toLowerCase()
+  return null
+}
+
+export const isDevGeofencesSantiago = () => getDevGeofencesMode() === 'santiago'
+
 /** Unlock every tour without purchase (QA / demos). */
 export const isUnlockAllTours = () => {
   if (typeof window === 'undefined') return false
