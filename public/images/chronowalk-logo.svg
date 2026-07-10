@@ -1,0 +1,53 @@
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Premium Metallic Gold Gradient -->
+    <linearGradient id="goldMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B89332" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#AA822A" />
+    </linearGradient>
+
+    <!-- The Glowing Vertical Lens Flare Seam -->
+    <linearGradient id="verticalSeamGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0" />
+      <stop offset="30%" stop-color="#D4AF37" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#FFF4D0" stop-opacity="1" />
+      <stop offset="70%" stop-color="#D4AF37" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Core Soft Volumetric Glow -->
+    <radialGradient id="centerCoreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF4D0" stop-opacity="0.6" />
+      <stop offset="40%" stop-color="#D4AF37" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background fill to test visibility - remove if transparency is preferred -->
+  <rect width="100%" height="100%" fill="#0B0B0D"/>
+
+  <!-- Layer 1: Ambient Backdrop Light Core -->
+  <circle cx="250" cy="250" r="160" fill="url(#centerCoreGlow)" />
+
+  <!-- Layer 2: The Canonical Perfect Outer Frame Circle -->
+  <circle cx="250" cy="250" r="180" stroke="url(#goldMetallic)" stroke-width="10" opacity="0.85" />
+
+  <!-- Layer 3: Classical Roman Temple Architecture -->
+  <!-- Pediment (Triangular Top) -->
+  <polygon points="150,180 250,130 350,180" fill="none" stroke="url(#goldMetallic)" stroke-width="10" stroke-linejoin="round" />
+  <!-- Architrave (Beam below roof) -->
+  <line x1="160" y1="190" x2="340" y2="190" stroke="url(#goldMetallic)" stroke-width="10" />
+  <!-- The 4 Classical Pillars -->
+  <line x1="185" y1="190" x2="185" y2="320" stroke="url(#goldMetallic)" stroke-width="10" stroke-linecap="round" />
+  <line x1="225" y1="190" x2="225" y2="320" stroke="url(#goldMetallic)" stroke-width="10" stroke-linecap="round" />
+  <line x1="275" y1="190" x2="275" y2="320" stroke="url(#goldMetallic)" stroke-width="10" stroke-linecap="round" />
+  <line x1="315" y1="190" x2="315" y2="320" stroke="url(#goldMetallic)" stroke-width="10" stroke-linecap="round" />
+  <!-- Stylobate (Base Platform) -->
+  <line x1="150" y1="330" x2="350" y2="330" stroke="url(#goldMetallic)" stroke-width="12" />
+
+  <!-- Layer 4: The Signature Vertical Light Seam -->
+  <line x1="250" y1="20" x2="250" y2="480" stroke="url(#verticalSeamGlow)" stroke-width="18" stroke-linecap="round" />
+  <!-- Micro High-Intensity Center Flare Core -->
+  <circle cx="250" cy="250" r="15" fill="#FFFFFF" />
+</svg>
