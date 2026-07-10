@@ -1,7 +1,7 @@
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingSiteHeader({ onPreview }) {
-  const { nav, cta } = LANDING_CONTENT.header
+  const { nav, cta, ctaShort = 'Try free' } = LANDING_CONTENT.header
 
   return (
     <header className="cw-v2-header">
@@ -21,11 +21,13 @@ export default function LandingSiteHeader({ onPreview }) {
 
         {onPreview ? (
           <button type="button" className="cw-v2-header__cta" onClick={onPreview}>
-            {cta}
+            <span className="cw-v2-header__cta-label cw-v2-header__cta-label--long">{cta}</span>
+            <span className="cw-v2-header__cta-label cw-v2-header__cta-label--short">{ctaShort}</span>
           </button>
         ) : (
           <a href="#try-free" className="cw-v2-header__cta">
-            {cta}
+            <span className="cw-v2-header__cta-label cw-v2-header__cta-label--long">{cta}</span>
+            <span className="cw-v2-header__cta-label cw-v2-header__cta-label--short">{ctaShort}</span>
           </a>
         )}
       </div>

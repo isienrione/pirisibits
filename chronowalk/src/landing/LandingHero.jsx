@@ -35,34 +35,34 @@ export default function LandingHero({ onPreview }) {
 
           <div className="cw-v2-hero__actions">
             {onPreview ? (
-              <button type="button" className="cw-v2-btn cw-v2-btn--coral" onClick={onPreview}>
+              <button type="button" className="cw-v2-btn cw-v2-btn--coral cw-v2-btn--block" onClick={onPreview}>
                 {hero.primaryCta}
               </button>
             ) : (
-              <a href="#try-free" className="cw-v2-btn cw-v2-btn--coral">
+              <a href="#try-free" className="cw-v2-btn cw-v2-btn--coral cw-v2-btn--block">
                 {hero.primaryCta}
               </a>
             )}
-            <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline">
+            <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline cw-v2-btn--block">
               {hero.secondaryCta}
             </a>
           </div>
 
           {hero.ctaHint ? <p className="cw-v2-hero__cta-hint">{hero.ctaHint}</p> : null}
-
-          <dl className="cw-v2-hero__stats">
-            {hero.stats.map((stat) => (
-              <div key={stat.label} className="cw-v2-hero__stat">
-                <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
-                <dd className="cw-v2-hero__stat-label">{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
         <div className="cw-v2-hero__device">
           <LandingLivePhoneMockup variant="audio" />
         </div>
+
+        <dl className="cw-v2-hero__stats">
+          {hero.stats.map((stat) => (
+            <div key={stat.label} className="cw-v2-hero__stat">
+              <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
+              <dd className="cw-v2-hero__stat-label">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )

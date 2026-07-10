@@ -124,14 +124,14 @@ export const LANDING_SECTION_ORDER = [
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'Audio walking app · Rome · Works offline',
+    eyebrow: 'Rome · Offline audio walks',
     headline: 'Walk Rome freely — with the history you\'d miss on your own.',
     accentLine: 'Rome, as it once was.',
     subheadline:
-      'A self-guided app on your phone. Wander at your pace — no tour group, no fixed schedule. When you reach each landmark, the story begins. Never walk past a ruin wondering what you missed.',
+      'A self-guided audio walk on your phone. Wander at your pace — stories start when you reach each landmark.',
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
     secondaryCta: LANDING_CTA.seeRoutes,
-    ctaHint: 'Free Pantheon preview · ~4 min · Enough to see how the app works',
+    ctaHint: 'Free Pantheon preview · ~4 min',
     stats: [
       { value: '22 stops', label: 'Colosseum to Appian Way' },
       { value: 'Offline', label: 'Download once, walk without signal' },
@@ -353,6 +353,7 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     cta: LANDING_CTA.tryFreeSneakPeek,
+    ctaShort: 'Try free',
   },
 
   footer: {
