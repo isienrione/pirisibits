@@ -1,5 +1,7 @@
 import { registerSW } from 'virtual:pwa-register'
 import { ensureFreshBuildAsync } from './ensureFreshBuild.js'
+import { ensureWalkingUiFresh } from './walkingUiMigration.js'
+import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
 
 function syncAppHeight() {
@@ -21,6 +23,9 @@ export const pwaReady = (async () => {
 
   const isMigrating = await ensureFreshBuildAsync()
   if (isMigrating) return devStub
+
+  const walkingUiMigrating = await ensureWalkingUiFresh(WALKING_UI_REVISION)
+  if (walkingUiMigrating) return devStub
 
   return registerAppServiceWorker(registerSW)
 })()

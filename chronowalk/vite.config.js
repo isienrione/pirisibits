@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 
 function resolveBuildId() {
   if (process.env.VITE_BUILD_ID) return process.env.VITE_BUILD_ID
@@ -18,12 +20,44 @@ function resolveBuildId() {
   }
 }
 
+function readWalkingUiRevision() {
+  const root = join(dirname(fileURLToPath(import.meta.url)), 'src/content')
+  const source = readFileSync(join(root, 'walkingUiRevision.js'), 'utf8')
+  const match = source.match(/WALKING_UI_REVISION\s*=\s*(\d+)/)
+  if (!match) throw new Error('walkingUiRevision.js missing WALKING_UI_REVISION')
+  return Number(match[1])
+}
+
+const walkingUiRevision = readWalkingUiRevision()
+const buildId = resolveBuildId()
+
+function walkingUiRevisionPlugin() {
+  return {
+    name: 'walking-ui-revision',
+    transformIndexHtml(html) {
+      const tags = [
+        `<meta name="cw-app-build" content="${buildId}" />`,
+        `<meta name="cw-walking-ui-rev" content="${walkingUiRevision}" />`,
+      ]
+      return html.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`)
+    },
+    generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'walking-ui-revision.json',
+        source: `${JSON.stringify({ revision: walkingUiRevision }, null, 2)}\n`,
+      })
+    },
+  }
+}
+
 const pwaRegisterMock = fileURLToPath(new URL('./src/test/mocks/pwa-register.js', import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    walkingUiRevisionPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
@@ -90,7 +124,7 @@ export default defineConfig({
       workbox: {
         // Tie precache identity to the deploy commit so stale walking-screen chunks
         // are replaced after branch deploys (figma → production).
-        cacheId: `chronowalk-${resolveBuildId()}`,
+        cacheId: `chronowalk-${buildId}`,
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
@@ -161,7 +195,7 @@ export default defineConfig({
     }),
   ],
   define: {
-    __APP_BUILD_ID__: JSON.stringify(resolveBuildId()),
+    __APP_BUILD_ID__: JSON.stringify(buildId),
   },
   server: {
     host: true,

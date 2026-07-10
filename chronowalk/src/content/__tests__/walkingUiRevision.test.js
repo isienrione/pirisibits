@@ -12,10 +12,13 @@ describe('walking UI revision', () => {
     expect(exportedRevision).toBe(WALKING_UI_REVISION)
   })
 
-  it('does not ship the pre-redesign GUIDE/MAP walking tabs', () => {
-    const source = readFileSync(join(root, 'redesign/screens/C2Walking.jsx'), 'utf8')
-    expect(source).not.toMatch(/GUIDE/)
-    expect(source).toContain('cw-walking-dark')
-    expect(source).toContain('CompassDial')
+  it('ships the unified walking companion screen', () => {
+    const c2Source = readFileSync(join(root, 'redesign/screens/C2Walking.jsx'), 'utf8')
+    const screenSource = readFileSync(join(root, 'redesign/screens/WalkingCompanionScreen.jsx'), 'utf8')
+
+    expect(c2Source).toContain('WalkingCompanionScreen')
+    expect(c2Source).not.toMatch(/GUIDE/)
+    expect(c2Source).not.toContain('CompassDial')
+    expect(screenSource).toContain('cw-walking-companion')
   })
 })

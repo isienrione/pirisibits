@@ -46,4 +46,4 @@ If testers still see an old UI after a deploy:
 
 Settings footer (scroll to bottom): `Build <commit> · Walking UI <n>`.
 
-Walking screen should be **dark obsidian** with compass and map snippet — not the legacy cream screen with GUIDE/MAP tabs. Walking UI revision mismatches trigger a one-time cache wipe + reload (see `walkingUiRevision.js`).
+Walking screen should be **dark obsidian** with a large map hero and floating dock — not the legacy compass layout or cream GUIDE/MAP tabs. Walking UI revision mismatches trigger a one-time cache wipe + reload (see `walkingUiRevision.js` and `walkingUiMigration.js`).

@@ -36,9 +36,12 @@ import {
   sanitizeWalkDistanceM,
 } from '../../content/journeyProgress.js'
 import { isWithinApproachDistance } from '../../redesign/lib/walkingCompanionPhase.js'
-import C2Walking, { WALKING_UI_REVISION as loadedWalkingUiRevision } from '../../redesign/screens/C2Walking.jsx'
+import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import { WALKING_UI_REVISION as requiredWalkingUiRevision } from '../../content/walkingUiRevision.js'
-import { clearAllCaches, unregisterAllServiceWorkers } from '../../pwa/pwaCacheUtils.js'
+import {
+  ensureWalkingUiFresh,
+  recoverLegacyWalkingDom,
+} from '../../pwa/walkingUiMigration.js'
 import C2Transit from '../../redesign/screens/C2Transit.jsx'
 import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
 import C6ImmersivePlayer from '../../redesign/screens/C6ImmersivePlayer.jsx'
@@ -132,20 +135,23 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   useEffect(() => {
     if (variant !== 'redesign') return
-    if (loadedWalkingUiRevision === requiredWalkingUiRevision) return
-    if (typeof sessionStorage === 'undefined') return
-    const guard = sessionStorage.getItem('cw-walking-ui-reload')
-    if (guard) {
-      sessionStorage.removeItem('cw-walking-ui-reload')
-      return
-    }
-    sessionStorage.setItem('cw-walking-ui-reload', '1')
-    void (async () => {
-      await clearAllCaches()
-      await unregisterAllServiceWorkers()
-      window.location.reload()
-    })()
+    void ensureWalkingUiFresh(requiredWalkingUiRevision)
   }, [variant])
+
+  useEffect(() => {
+    if (variant !== 'redesign') return
+    if (
+      state !== JOURNEY_STATES.WALKING &&
+      state !== JOURNEY_STATES.APPROACHING
+    ) {
+      return undefined
+    }
+
+    const frame = requestAnimationFrame(() => {
+      void recoverLegacyWalkingDom(requiredWalkingUiRevision)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [variant, state, step?.id])
 
   useEffect(() => {
     if (!isDevPanelEnabled()) return undefined
