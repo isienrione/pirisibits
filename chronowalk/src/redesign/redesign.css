@@ -514,6 +514,36 @@
   );
 }
 
+.cw-dev-geofence-hud {
+  position: fixed;
+  top: max(8px, env(safe-area-inset-top));
+  left: 12px;
+  right: 12px;
+  z-index: 120;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(22, 19, 15, 0.92);
+  border: 1px solid rgba(232, 161, 60, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.cw-dev-geofence-hud__title {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e8a13c;
+}
+
+.cw-dev-geofence-hud__line {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(245, 240, 232, 0.88);
+}
+
 html.redesign-pwa,
 html.redesign-pwa body,
 html.redesign-pwa #root {

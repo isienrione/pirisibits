@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { getDebugStopId, shouldResetTour } from '../config/env.js'
+import { getDebugStopId, isDevGeofencesSantiago, shouldResetTour } from '../config/env.js'
+import { buildEffectiveSequence } from '../content/optionalPromotion.js'
+import { isTransitId } from '../content/manifest.js'
 import { findSequenceIndexForWaypoint, resolveDebugWaypointId } from '../lib/debugWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from './useV2Journey.js'
@@ -37,11 +39,20 @@ export function useTourDebugBootstrap() {
       return
     }
 
+    let targetIndex = sequenceIndex
+    if (isDevGeofencesSantiago() && targetIndex > 0) {
+      const sequence = buildEffectiveSequence(manifest, path, context.promotedOptionalIds)
+      const previousStepId = sequence[targetIndex - 1]
+      if (isTransitId(manifest, previousStepId)) {
+        targetIndex -= 1
+      }
+    }
+
     if (state === JOURNEY_STATES.IDLE || state === JOURNEY_STATES.COMPLETE) {
       begin({ pace: context.pace || 'classic', path, waypointIndex: 0 })
     }
 
-    jumpToSequence(sequenceIndex)
+    jumpToSequence(targetIndex)
     appliedRef.current = true
   }, [begin, context.path, context.pace, context.promotedOptionalIds, jumpToSequence, manifest, reset, state])
 }

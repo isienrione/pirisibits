@@ -1,3 +1,8 @@
+import {
+  readDevGeofencesMode,
+  syncDevGeofencesModeFromUrl,
+} from '../content/devGeofenceTools.js'
+
 const parseBooleanEnv = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase()
   return normalized === 'true' || normalized === '1' || normalized === 'yes'
@@ -88,11 +93,14 @@ export const shouldResetTour = () => {
 /**
  * Temporary field-test geofences (?devGeofences=santiago or VITE_DEV_GEOFENCES=santiago).
  * Remaps selected Rome waypoint radii to Santiago coordinates for live GPS QA.
+ * Persists in sessionStorage so /begin → /journey navigation does not drop the flag.
  */
 export const getDevGeofencesMode = () => {
   if (typeof window !== 'undefined') {
-    const param = new URLSearchParams(window.location.search).get('devGeofences')
-    if (param) return String(param).trim().toLowerCase()
+    const fromUrl = syncDevGeofencesModeFromUrl()
+    if (fromUrl) return fromUrl
+    const stored = readDevGeofencesMode()
+    if (stored) return stored
   }
 
   const fromEnv = import.meta.env.VITE_DEV_GEOFENCES
@@ -131,6 +139,7 @@ export const isDebugMedia = () => {
  */
 export const isDebugMap = () => {
   if (isDebugGeo()) return true
+  if (isDevGeofencesSantiago()) return true
 
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search)

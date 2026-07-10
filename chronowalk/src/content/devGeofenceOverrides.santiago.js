@@ -10,25 +10,25 @@ export const SANTIAGO_DEV_GEOFENCE_SITES = {
     label: 'Starbucks Callao (Mariano Sánchez Fontecilla 310)',
     lat: -33.4199373,
     lng: -70.5982434,
-    radius_m: 45,
+    radius_m: 80,
   },
   novotel: {
     label: 'Novotel Santiago Providencia',
     lat: -33.4211425,
     lng: -70.6030903,
-    radius_m: 45,
+    radius_m: 80,
   },
   rishtedar: {
     label: 'Rishtedar Providencia',
     lat: -33.4207131,
     lng: -70.60342,
-    radius_m: 45,
+    radius_m: 80,
   },
   'av-providencia-2529': {
     label: 'Av. Providencia 2529',
     lat: -33.4195973,
     lng: -70.6035081,
-    radius_m: 45,
+    radius_m: 80,
   },
 }
 

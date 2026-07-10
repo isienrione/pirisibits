@@ -24,7 +24,8 @@ import {
   clearPendingResumeCue,
   JOURNEY_STATES,
 } from '../state/journey'
-import { loadRomeManifest } from '../content/manifest.js'
+import { clearRomeManifestCache, loadRomeManifest } from '../content/manifest.js'
+import { DEV_GEOFENCES_CHANGED } from '../content/devGeofenceTools.js'
 
 export function useV2Journey() {
   const snapshot = useSyncExternalStore(subscribeJourney, getJourneySnapshot, getJourneySnapshot)
@@ -62,15 +63,21 @@ export function useTourManifest() {
   useEffect(() => {
     let cancelled = false
 
-    try {
-      const data = loadRomeManifest()
-      if (!cancelled) setManifest(data)
-    } catch (err) {
-      if (!cancelled) setError(err)
+    const load = () => {
+      try {
+        clearRomeManifestCache()
+        const data = loadRomeManifest()
+        if (!cancelled) setManifest(data)
+      } catch (err) {
+        if (!cancelled) setError(err)
+      }
     }
 
+    load()
+    window.addEventListener(DEV_GEOFENCES_CHANGED, load)
     return () => {
       cancelled = true
+      window.removeEventListener(DEV_GEOFENCES_CHANGED, load)
     }
   }, [])
 

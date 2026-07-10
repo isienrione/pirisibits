@@ -141,6 +141,9 @@ Push `public/waypoints/<id>/` media to git before expecting new assets on Netlif
 **Remove before Rome production QA is done.** Enables live GPS arrival cards at four Santiago
 locations by remapping Rome forum waypoints. Do **not** use `debugGeo` — use your phone’s real GPS.
 
+The flag **sticks in sessionStorage** after the first visit, so it survives `/begin` → `/journey`
+navigation even when the URL loses `?devGeofences=santiago`. Look for the orange **“Santiago GPS test active”** banner on the walking screen.
+
 | Rome stop | Test location | Coordinates |
 |-----------|---------------|-------------|
 | w06 Basilica | Starbucks Callao (Mariano Sánchez Fontecilla 310) | -33.4199, -70.5982 |
@@ -148,13 +151,15 @@ locations by remapping Rome forum waypoints. Do **not** use `debugGeo` — use y
 | w08 Temple of Vesta | Rishtedar Providencia | -33.4207, -70.6034 |
 | w10 Rostra | Av. Providencia 2529 | -33.4196, -70.6035 |
 
-Enable with `?devGeofences=santiago` (or `VITE_DEV_GEOFENCES=santiago` in `.env`).
+Enable with `?devGeofences=santiago` (or `VITE_DEV_GEOFENCES=santiago` in `.env`). Disable with `?devGeofences=off`.
 
 | Goal | URL |
 |------|-----|
 | Fresh journey, walk to Basilica test site | `/journey?devGeofences=santiago&resetTour=true` |
-| Jump to Basilica walking leg | `/journey?devGeofences=santiago&debugStop=basilica-of-maxentius` |
+| Jump to Basilica **walking leg** (transit t04) | `/journey?devGeofences=santiago&debugStop=basilica-of-maxentius` |
 | Jump to Vesta walking leg | `/journey?devGeofences=santiago&debugStop=temple-of-vesta` |
+
+If auto-arrival does not flip within ~30 s outdoors, tap **I'm here** at the bottom, then **Begin Chapter**.
 
 Override source: `src/content/devGeofenceOverrides.santiago.js`
 

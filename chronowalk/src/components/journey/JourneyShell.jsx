@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { isDevPanelEnabled } from '../../config/env.js'
+import { isDevGeofencesSantiago, isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
@@ -68,6 +68,7 @@ import {
 } from '../../redesign/lib/waypointImmersiveProps.js'
 import { buildTransitImmersiveProps } from '../../redesign/lib/transitImmersiveProps.js'
 import JourneyInlineMap from './JourneyInlineMap.jsx'
+import DevGeofenceHud from '../dev/DevGeofenceHud.jsx'
 
 // GPS in Rome drifts, so arrival is confirmed only after a stable, continuous
 // presence near the landmark — never the instant the radius is first touched.
@@ -75,6 +76,8 @@ const ARRIVAL_DWELL_MS = 5000
 // When the position's radius of uncertainty is worse than this, we don't
 // auto-arrive; the traveller can still tap "I'm here".
 const POOR_ACCURACY_M = 60
+// Indoor Santiago field tests often report 80–120 m accuracy; relax while dev geofences are on.
+const DEV_GEOFENCE_ACCURACY_M = 150
 
 // Speeds offered by the immersive player's speed pill (subset of the shared
 // STORY_PLAYBACK_SPEEDS preference set).
@@ -222,6 +225,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     simulateAtTarget: geoDebug.simulateAtTarget || devSimulateGps,
     debugPosition: geoDebug.debugPosition,
   })
+  const devGeofenceActive = isDevGeofencesSantiago()
+  const arrivalAccuracyLimitM = devGeofenceActive ? DEV_GEOFENCE_ACCURACY_M : POOR_ACCURACY_M
 
   const companion = useWalkingCompanion({
     position: geo.position,
@@ -688,7 +693,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
     // Reject drift: a wildly uncertain fix can flicker "inside" the radius, so
     // we never auto-arrive on it (the "I'm here" button still works).
-    const accuracyReliable = geo.accuracy == null || geo.accuracy <= POOR_ACCURACY_M
+    const accuracyReliable = geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
 
     if (geo.insideGeofence && accuracyReliable) {
       if (variant !== 'redesign') {
@@ -712,7 +717,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
       transition(JOURNEY_STATES.APPROACHING)
     }
-  }, [geo.insideGeofence, geo.approachingGeofence, geo.accuracy, geoTarget, state, step?.id, step?.type, transition])
+  }, [arrivalAccuracyLimitM, geo.insideGeofence, geo.approachingGeofence, geo.accuracy, geoTarget, state, step?.id, step?.type, transition, variant])
 
   useEffect(() => () => {
     if (dwellTimerRef.current != null) clearTimeout(dwellTimerRef.current)
@@ -721,10 +726,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // True when the fix is too uncertain to trust for auto-arrival — used to
   // gently surface the manual "I'm here" affordance.
   const locationShy =
-    geo.accuracy != null && geo.accuracy > POOR_ACCURACY_M
+    geo.accuracy != null && geo.accuracy > arrivalAccuracyLimitM
 
   const gpsArrivalReliable =
-    geo.accuracy == null || geo.accuracy <= POOR_ACCURACY_M
+    geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
   const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
 
   useEffect(() => {
@@ -982,6 +987,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const withInterruptionBanner = (content) => (
     <>
       {interruptionBanner}
+      {devGeofenceActive ? <DevGeofenceHud geoTarget={geoTarget} geo={geo} /> : null}
       {content}
       {floatingPlayer}
     </>
