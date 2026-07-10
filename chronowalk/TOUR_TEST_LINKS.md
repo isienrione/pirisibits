@@ -138,30 +138,78 @@ Push `public/waypoints/<id>/` media to git before expecting new assets on Netlif
 
 ## Temporary Santiago GPS field test (Providencia / Las Condes)
 
-**Remove before Rome production QA is done.** Enables live GPS arrival cards at four Santiago
-locations by remapping Rome forum waypoints. Do **not** use `debugGeo` — use your phone’s real GPS.
+**Remove before Rome production QA is done.** ChronoWalk Rome journey with temporary Santiago
+geofence overrides. Forum stops are remapped to Providencia/Las Condes for live GPS QA on
+**iPhone Safari**. Do **not** use `debugGeo` — that fakes Rome coordinates.
+
+**Branch:** `figma` · **Production:** https://chronowalk.com
 
 The flag **sticks in sessionStorage** after the first visit, so it survives `/begin` → `/journey`
-navigation even when the URL loses `?devGeofences=santiago`. Look for the orange **“Santiago GPS test active”** banner on the walking screen.
+navigation even when the URL loses `?devGeofences=santiago`. Look for the orange **“Santiago GPS test active”** banner on the walking screen (site name, distance, accuracy, inside/outside geofence).
 
-| Rome stop | Test location | Coordinates |
-|-----------|---------------|-------------|
+### Geofence map (80 m radius each)
+
+| Rome waypoint | Test location | Coordinates |
+|---------------|---------------|-------------|
 | w06 Basilica | Starbucks Callao (Mariano Sánchez Fontecilla 310) | -33.4199, -70.5982 |
 | w07 Via Sacra | Novotel Santiago Providencia | -33.4211, -70.6031 |
 | w08 Temple of Vesta | Rishtedar Providencia | -33.4207, -70.6034 |
 | w10 Rostra | Av. Providencia 2529 | -33.4196, -70.6035 |
 
-Enable with `?devGeofences=santiago` (or `VITE_DEV_GEOFENCES=santiago` in `.env`). Disable with `?devGeofences=off`.
+### What we're testing
+
+Real GPS arrival on iPhone Safari — distance updates, geofence → “You have arrived”, **Begin Chapter** → chime + narration, full story flow.
+
+### Correct test flow
+
+1. Open the **leg-specific link before walking** (sets which stop you're walking toward).
+2. Confirm screen says **“Walking to [that stop]”**.
+3. Walk there with the app open and location allowed.
+4. **Do not** open a new link on arrival — wait for GPS auto-arrival.
+5. Tap **Begin Chapter**. Fallback: **I'm here** → **Begin Chapter**.
+
+If stuck on “Loading Rome…” or Safari crashes, hard-refresh or open a new tab (infinite reload loop fixed in `f26fb4c`).
+
+### Production links (iPhone Safari)
 
 | Goal | URL |
 |------|-----|
-| Fresh journey, walk to Basilica test site | `/journey?devGeofences=santiago&resetTour=true` |
-| Jump to Basilica **walking leg** (transit t04) | `/journey?devGeofences=santiago&debugStop=basilica-of-maxentius` |
-| Jump to Vesta walking leg | `/journey?devGeofences=santiago&debugStop=temple-of-vesta` |
+| Basilica / Starbucks | https://chronowalk.com/journey?devGeofences=santiago&debugStop=basilica-of-maxentius |
+| Via Sacra / Novotel | https://chronowalk.com/journey?devGeofences=santiago&debugStop=via-sacra |
+| Temple of Vesta / Rishtedar | https://chronowalk.com/journey?devGeofences=santiago&debugStop=temple-of-vesta |
+| Rostra / Providencia 2529 | https://chronowalk.com/journey?devGeofences=santiago&debugStop=rostra |
+| Fresh journey from start | https://chronowalk.com/journey?devGeofences=santiago&resetTour=true |
+| Turn off test mode | https://chronowalk.com/journey?devGeofences=off |
+
+Enable with `?devGeofences=santiago` (or `VITE_DEV_GEOFENCES=santiago` in `.env`). Disable with `?devGeofences=off`.
+
+### Expected distances from Av. Providencia 2529 (Rostra site)
+
+| Site | Approx. distance |
+|------|------------------|
+| Rostra (you) | ~0 m — inside geofence |
+| Rishtedar | ~120 m |
+| Novotel | ~175 m |
+| Starbucks Callao | ~490 m |
+
+### Field test checklist
+
+- [ ] iPhone Safari, location allowed
+- [ ] Orange “Santiago GPS test active” banner visible
+- [ ] Correct `debugStop` for your destination
+- [ ] Outdoors if possible (better GPS accuracy)
+- [ ] **Begin Chapter** after arrival (not before)
 
 If auto-arrival does not flip within ~30 s outdoors, tap **I'm here** at the bottom, then **Begin Chapter**.
 
-Override source: `src/content/devGeofenceOverrides.santiago.js`
+### Key files (debugging)
+
+| File | Purpose |
+|------|---------|
+| `src/content/devGeofenceOverrides.santiago.js` | Santiago coordinates |
+| `src/content/devGeofenceTools.js` | sessionStorage persistence |
+| `src/components/journey/JourneyShell.jsx` | Arrival logic, HUD mount |
+| `src/components/dev/DevGeofenceHud.jsx` | Orange test banner |
 
 ---
 
