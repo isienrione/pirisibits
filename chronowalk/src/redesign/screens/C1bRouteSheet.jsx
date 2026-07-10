@@ -57,7 +57,7 @@ export function C1bRouteSheet({
   return (
     <div style={{ position: "absolute", inset: 0, zIndex: 40 }}>
       <div
-        style={{ position: "absolute", inset: 0, background: "rgba(22,19,15,0.45)", animation: "sheetFadeIn 200ms ease" }}
+        style={{ position: "absolute", inset: 0, background: "rgba(11,11,13,0.45)", animation: "sheetFadeIn 200ms ease" }}
         onClick={onClose}
       />
 
@@ -68,7 +68,7 @@ export function C1bRouteSheet({
         borderRadius: "20px 20px 0 0",
         display: "flex", flexDirection: "column",
         animation: "slideUp 320ms cubic-bezier(0.32,0.72,0,1)",
-        boxShadow: "0 -8px 40px rgba(22,19,15,0.3)",
+        boxShadow: "0 -8px 40px rgba(11,11,13,0.3)",
       }}>
         <div style={{ paddingTop: 12, paddingBottom: 6, display: "flex", justifyContent: "center", flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: `${T.muted}45` }} />
@@ -158,7 +158,7 @@ export function C1bRouteSheet({
                             />
                             <div style={{
                               position: "absolute", bottom: 0, left: 0, right: 0,
-                              background: "linear-gradient(to top, rgba(22,19,15,0.7) 0%, transparent 100%)",
+                              background: "linear-gradient(to top, rgba(11,11,13,0.7) 0%, transparent 100%)",
                               padding: "20px 14px 12px",
                             }}>
                               <p style={{ fontFamily: F.display, fontSize: 18, color: T.warmWhite, fontWeight: 300 }}>{stop.name}</p>

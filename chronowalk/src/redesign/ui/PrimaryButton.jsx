@@ -1,7 +1,11 @@
 import { T, F } from '../tokens.js'
 
-export function PrimaryButton({ children, onClick, color = T.ember, textColor, style, disabled = false }) {
-  const fg = textColor ?? (color === T.ember ? T.obsidian : T.warmWhite)
+export function PrimaryButton({ children, onClick, color = T.terracotta, textColor, style, disabled = false }) {
+  const fg =
+    textColor ??
+    (color === T.gold || color === T.ember || color === T.terracotta || color === T.actI
+      ? T.obsidian
+      : T.warmWhite)
   return (
     <button
       type="button"

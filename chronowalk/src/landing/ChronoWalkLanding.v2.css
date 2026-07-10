@@ -1,16 +1,19 @@
 /* ChronoWalk landing v2 — premium design reference */
 
 .cw-landing--premium {
-  --v2-obsidian: #0d0b09;
-  --v2-raised: #17130f;
-  --v2-ink: #211c15;
-  --v2-bone: #f4ede1;
-  --v2-muted: #a9a093;
-  --v2-soft: #d2cbc0;
-  --v2-border: #38332c;
-  --v2-border-visible: #6f665c;
-  --v2-ember: #d4a04a;
-  --v2-coral: #f2624c;
+  --v2-obsidian: var(--obsidian);
+  --v2-raised: var(--charcoal);
+  --v2-ink: var(--charcoal);
+  --v2-bone: var(--bone);
+  --v2-muted: color-mix(in srgb, #e9e2d5 58%, var(--obsidian));
+  --v2-soft: #e9e2d5;
+  --v2-border: color-mix(in srgb, #e9e2d5 18%, var(--charcoal));
+  --v2-border-visible: color-mix(in srgb, #e9e2d5 34%, var(--charcoal));
+  --v2-ember: var(--gold);
+  --v2-terracotta: var(--act-arena, #e4552e);
+  --v2-coral: var(--v2-terracotta);
+  --v2-bronze: var(--bronze);
+  --v2-olive: var(--olive);
   --v2-max: 72rem;
   --v2-narrow: 56rem;
   --v2-pricing: 64rem;
@@ -51,11 +54,12 @@
 
 .cw-v2-eyebrow {
   margin: 0 0 1rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tagline);
   text-transform: uppercase;
-  color: var(--v2-ember);
+  color: var(--color-tracking-tagline);
 }
 
 .cw-v2-eyebrow--hero {
@@ -67,7 +71,7 @@
 .cw-v2-eyebrow__rule {
   width: 2rem;
   height: 1px;
-  background: var(--v2-ember);
+  background: var(--gold);
 }
 
 .cw-v2-section__header {
@@ -84,7 +88,8 @@
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 400;
   line-height: 1.12;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-brand-header);
+  text-transform: uppercase;
   text-wrap: balance;
   color: var(--v2-bone);
   position: relative;
@@ -134,25 +139,35 @@
 .cw-v2-header__brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.65rem;
   text-decoration: none;
   color: inherit;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.cw-v2-header__emblem {
+  flex-shrink: 0;
 }
 
 .cw-v2-header__mark {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: var(--v2-coral);
+  background: var(--gold);
   flex-shrink: 0;
 }
 
 .cw-v2-header__name,
 .cw-v2-footer__name {
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: 1.1rem;
-  letter-spacing: -0.02em;
+  font-size: clamp(0.82rem, 2.4vw, 1.05rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--v2-bone);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .cw-v2-header__nav {
@@ -177,18 +192,22 @@
   padding: 0.5rem 1.25rem;
   border: none;
   border-radius: 999px;
-  background: var(--v2-bone);
-  color: var(--v2-obsidian);
+  background: var(--v2-terracotta);
+  color: var(--v2-bone);
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: background 160ms ease;
+  box-shadow:
+    0 0 20px color-mix(in srgb, var(--v2-terracotta) 38%, transparent),
+    0 4px 14px color-mix(in srgb, var(--v2-terracotta) 24%, transparent);
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .cw-v2-header__cta:hover {
-  background: color-mix(in srgb, var(--v2-bone) 92%, #fff 8%);
+  background: color-mix(in srgb, var(--v2-terracotta) 92%, #fff 8%);
+  transform: scale(1.02);
 }
 
 .cw-v2-header__cta-label--short {
@@ -225,22 +244,36 @@
 
 .cw-v2-btn--coral {
   background: var(--v2-coral);
-  color: var(--v2-obsidian);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--v2-coral) 55%, var(--v2-obsidian));
+  color: var(--v2-bone);
+  box-shadow:
+    0 0 28px color-mix(in srgb, var(--v2-coral) 42%, transparent),
+    0 6px 24px color-mix(in srgb, var(--v2-coral) 28%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--v2-coral) 55%, var(--v2-obsidian));
 }
 
 .cw-v2-btn--coral:hover {
   transform: scale(1.02);
+  background: color-mix(in srgb, var(--v2-coral) 92%, #fff 8%);
 }
 
 .cw-v2-btn--outline {
-  background: #14110f;
+  background: var(--charcoal);
   border: 1px solid var(--v2-border-visible);
   color: var(--v2-bone);
 }
 
+.cw-v2-btn--tier {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--tier-accent, var(--gold)) 55%, transparent);
+  color: color-mix(in srgb, var(--tier-accent, var(--gold)) 82%, var(--v2-bone));
+}
+
+.cw-v2-btn--tier:hover {
+  background: color-mix(in srgb, var(--tier-accent, var(--gold)) 10%, var(--charcoal));
+}
+
 .cw-v2-btn--outline:hover {
-  background: #1c1916;
+  background: var(--charcoal);
   border-color: color-mix(in srgb, var(--v2-bone) 35%, var(--v2-border-visible));
 }
 
@@ -368,9 +401,13 @@
 
 .cw-v2-hero__stat-label {
   margin: 0.25rem 0 0;
-  font-size: 0.78rem;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.625rem;
+  font-weight: 500;
   line-height: 1.45;
-  color: var(--v2-soft);
+  letter-spacing: var(--tracking-tagline);
+  text-transform: uppercase;
+  color: var(--color-tracking-tagline);
 }
 
 .cw-v2-hero__preview-meta {
@@ -804,7 +841,7 @@
 /* —— FAQ v2 —— */
 
 .cw-v2-faq {
-  background: #12100e;
+  background: var(--obsidian);
 }
 
 .cw-v2-faq__list {
@@ -905,11 +942,9 @@
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: 1.65rem;
   font-weight: 400;
-  color: var(--v2-bone);
-}
-
-.cw-v2-pricing-card__tier-name--gold {
-  color: var(--v2-ember);
+  letter-spacing: var(--tracking-brand-header);
+  text-transform: uppercase;
+  color: var(--tier-accent);
 }
 
 .cw-v2-pricing-card--featured .cw-v2-pricing-card__eyebrow {
@@ -1344,12 +1379,40 @@
   border-radius: 1.5rem;
   border: 1px solid var(--v2-border);
   background: var(--v2-raised);
+  --tier-accent: var(--gold);
+}
+
+.cw-v2-pricing-card--rome-central {
+  --tier-accent: var(--bronze);
+}
+
+.cw-v2-pricing-card--rome-essential {
+  --tier-accent: var(--olive);
+}
+
+.cw-v2-pricing-card--rome-complete {
+  --tier-accent: var(--gold);
+}
+
+.cw-v2-pricing-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  border-radius: 1.5rem 1.5rem 0 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--tier-accent) 20%, transparent),
+    var(--tier-accent),
+    color-mix(in srgb, var(--tier-accent) 20%, transparent)
+  );
 }
 
 .cw-v2-pricing-card--featured {
-  border-color: color-mix(in srgb, var(--v2-ember) 40%, transparent);
+  border-color: color-mix(in srgb, var(--tier-accent) 48%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--v2-ember) 10%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--tier-accent) 16%, transparent),
     0 24px 48px color-mix(in srgb, #000 50%, transparent);
 }
 
@@ -1360,7 +1423,7 @@
   transform: translate(-50%, -50%);
   padding: 0.35rem 1rem;
   border-radius: 999px;
-  background: var(--v2-ember);
+  background: var(--tier-accent);
   color: var(--v2-obsidian);
   font-size: 0.68rem;
   font-weight: 700;
@@ -1373,7 +1436,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--v2-muted);
+  color: color-mix(in srgb, var(--tier-accent) 65%, var(--v2-muted));
 }
 
 .cw-v2-pricing-card__eyebrow--gold {
@@ -1422,7 +1485,7 @@
   padding: 0.85rem 0.75rem;
   border-radius: 0.65rem;
   background: var(--v2-obsidian);
-  border: 1px solid var(--v2-border);
+  border: 1px solid color-mix(in srgb, var(--tier-accent) 30%, var(--v2-border));
   position: relative;
   z-index: 1;
 }
@@ -1446,11 +1509,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   line-height: 1.35;
-  color: var(--v2-bone);
-}
-
-.cw-v2-pricing-card--featured .cw-v2-pricing-card__stat dd {
-  color: color-mix(in srgb, var(--v2-bone) 92%, var(--v2-ember) 8%);
+  color: color-mix(in srgb, var(--tier-accent) 22%, var(--v2-bone));
 }
 
 .cw-v2-pricing-card__description {
@@ -1535,7 +1594,7 @@
 }
 
 .cw-v2-tier-map__path {
-  stroke: #8b5a34;
+  stroke: var(--tier-accent, var(--gold));
   stroke-width: 1.25;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1543,15 +1602,15 @@
 }
 
 .cw-v2-tier-map__stop-ring {
-  fill: color-mix(in srgb, #fff8ef 72%, transparent);
-  stroke: #9a7048;
+  fill: color-mix(in srgb, var(--tier-accent, var(--gold)) 12%, var(--v2-bone));
+  stroke: color-mix(in srgb, var(--tier-accent, var(--gold)) 72%, transparent);
   stroke-width: 0.6;
   filter: drop-shadow(0 0.4px 0.8px rgb(0 0 0 / 0.28));
 }
 
 .cw-v2-tier-map__stop-fill {
-  fill: #d4ad72;
-  stroke: #8b6848;
+  fill: color-mix(in srgb, var(--tier-accent, var(--gold)) 78%, #fff);
+  stroke: color-mix(in srgb, var(--tier-accent, var(--gold)) 55%, transparent);
   stroke-width: 0.35;
 }
 
@@ -1585,9 +1644,9 @@
 }
 
 .cw-v2-tier-map--featured .cw-v2-tier-map__frame {
-  border-color: color-mix(in srgb, var(--v2-ember) 35%, transparent);
+  border-color: color-mix(in srgb, var(--tier-accent, var(--gold)) 40%, transparent);
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--v2-ember) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--tier-accent, var(--gold)) 16%, transparent),
     0 16px 38px color-mix(in srgb, #000 48%, transparent);
 }
 
@@ -1615,11 +1674,7 @@
   height: 1.1rem;
   margin-top: 0.15rem;
   flex-shrink: 0;
-  color: var(--v2-ember);
-}
-
-.cw-v2-pricing__pin--featured {
-  color: var(--v2-coral);
+  color: var(--tier-accent, var(--gold));
 }
 
 .cw-v2-pricing-card__item {
@@ -1639,11 +1694,7 @@
   height: 1.25rem;
   margin-top: 0.1rem;
   flex-shrink: 0;
-  color: var(--v2-ember);
-}
-
-.cw-v2-pricing__check--coral {
-  color: var(--v2-coral);
+  color: var(--tier-accent, var(--gold));
 }
 
 .cw-v2-pricing__footnote {
@@ -1684,6 +1735,16 @@
   gap: 2rem;
   max-width: var(--v2-max);
   margin-inline: auto;
+}
+
+.cw-v2-footer__brand-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cw-v2-footer__logo {
+  align-items: flex-start;
 }
 
 .cw-v2-footer__brand {
@@ -1746,7 +1807,8 @@
   }
 
   .cw-v2-header__name {
-    font-size: 1rem;
+    font-size: clamp(0.72rem, 3.6vw, 0.88rem);
+    letter-spacing: 0.18em;
   }
 
   .cw-v2-header__cta {
@@ -1816,7 +1878,7 @@
   .cw-v2-hero__headline {
     font-size: clamp(1.72rem, 7.8vw, 2.05rem);
     line-height: 1.1;
-    text-shadow: 0 1px 14px rgba(13, 11, 9, 0.45);
+    text-shadow: 0 1px 14px rgba(11, 11, 13, 0.45);
   }
 
   .cw-v2-hero__accent {

@@ -1,14 +1,14 @@
 import { T, F } from '../tokens.js'
 
-export function Eyebrow({ children, color = T.ember, hairline = false }) {
+export function Eyebrow({ children, color = T.gold, hairline = false }) {
   return (
     <div>
       <span
         style={{
           display: 'block',
           fontFamily: F.body,
-          fontSize: 11,
-          letterSpacing: '0.18em',
+          fontSize: 10,
+          letterSpacing: '0.25em',
           textTransform: 'uppercase',
           color,
           fontWeight: 500,

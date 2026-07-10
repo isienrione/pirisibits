@@ -79,7 +79,7 @@ export default function C5Story({
             backgroundPosition: 'center 25%',
           }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,19,15,0.2)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,11,13,0.2)' }} />
         <div
           style={{
             position: 'absolute',
@@ -87,7 +87,7 @@ export default function C5Story({
             left: 0,
             right: 0,
             height: '40%',
-            background: 'linear-gradient(to top, rgba(22,19,15,0.95) 0%, transparent 100%)',
+            background: 'linear-gradient(to top, rgba(11,11,13,0.95) 0%, transparent 100%)',
           }}
         />
         <Seam />

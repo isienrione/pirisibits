@@ -79,7 +79,7 @@ export default function B4PaceSelector({
         filter: "brightness(0.12) saturate(0.4)",
         zIndex: 0,
       }} />
-      <div style={{ position: "absolute", inset: 0, background: "rgba(22,19,15,0.7)", zIndex: 1 }} />
+      <div style={{ position: "absolute", inset: 0, background: "rgba(11,11,13,0.7)", zIndex: 1 }} />
 
       <div style={{ position: "relative", zIndex: 5, display: "flex", flexDirection: "column", height: "100%" }}>
         {/* Seam top tick */}
@@ -154,7 +154,7 @@ export default function B4PaceSelector({
           onClick={handleContinue}
           style={{
             width: '100%', padding: '15px',
-            background: activeIndex != null && activeIndex >= 0 ? T.ember : T.ink800,
+            background: activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800,
             color: activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted,
             borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
             border: 'none', cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',

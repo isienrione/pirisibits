@@ -26,7 +26,7 @@
   }
 
   input[type='range'] {
-    accent-color: var(--ember);
+    accent-color: var(--gold);
   }
 
   button,
@@ -42,6 +42,24 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  .cw-brand-header {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-brand-header);
+  }
+
+  .cw-tracking-tagline {
+    font-family: var(--font-ui);
+    font-size: 0.625rem;
+    line-height: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tagline);
+    color: var(--color-tracking-tagline);
   }
 }
 

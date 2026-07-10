@@ -3,14 +3,9 @@ import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
 
-function CheckIcon({ featured }) {
+function CheckIcon() {
   return (
-    <svg
-      className={`cw-v2-pricing__check${featured ? ' cw-v2-pricing__check--coral' : ''}`}
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden
-    >
+    <svg className="cw-v2-pricing__check" viewBox="0 0 20 20" fill="none" aria-hidden>
       <path
         d="M4 10.5 8 14.5 16 6.5"
         stroke="currentColor"
@@ -49,13 +44,13 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
             return (
               <article
                 key={tier.id}
-                className={`cw-v2-pricing-card${isFeatured ? ' cw-v2-pricing-card--featured' : ''}`}
+                className={`cw-v2-pricing-card cw-v2-pricing-card--${tier.id}${isFeatured ? ' cw-v2-pricing-card--featured' : ''}`}
               >
                 {tier.badge ? (
                   <span className="cw-v2-pricing-card__ribbon">{tier.badge}</span>
                 ) : null}
 
-                <p className={`cw-v2-pricing-card__tier-name${isFeatured ? ' cw-v2-pricing-card__tier-name--gold' : ''}`}>
+                <p className="cw-v2-pricing-card__tier-name">
                   {tier.tierLabel ?? tier.eyebrow}
                 </p>
                 {tier.tierLabel && tier.eyebrow ? (
@@ -110,20 +105,20 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                     : null}
                   {isFeatured && tier.includesLabel ? (
                     <li className="cw-v2-pricing-card__item">
-                      <CheckIcon featured />
+                      <CheckIcon />
                       <span>{tier.includesLabel}</span>
                     </li>
                   ) : null}
                   {tier.featuredBullet ? (
                     <li className="cw-v2-pricing-card__item cw-v2-pricing-card__item--bold">
-                      <CheckIcon featured />
+                      <CheckIcon />
                       <span>{tier.featuredBullet}</span>
                     </li>
                   ) : null}
                   {isFeatured
                     ? tier.bullets.map((item) => (
                         <li key={item} className="cw-v2-pricing-card__item">
-                          <CheckIcon featured />
+                          <CheckIcon />
                           <span>{item}</span>
                         </li>
                       ))
@@ -135,7 +130,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                   className={
                     isFeatured
                       ? 'cw-v2-btn cw-v2-btn--coral cw-v2-btn--block'
-                      : 'cw-v2-btn cw-v2-btn--outline cw-v2-btn--block'
+                      : 'cw-v2-btn cw-v2-btn--tier cw-v2-btn--block'
                   }
                   onClick={() => onBeginTier(tier.id)}
                 >

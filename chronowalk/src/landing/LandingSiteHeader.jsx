@@ -1,3 +1,4 @@
+import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingSiteHeader({ onPreview }) {
@@ -6,8 +7,8 @@ export default function LandingSiteHeader({ onPreview }) {
   return (
     <header className="cw-v2-header">
       <div className="cw-v2-header__inner">
-        <a href="#top" className="cw-v2-header__brand">
-          <span className="cw-v2-header__mark" aria-hidden />
+        <a href="#top" className="cw-v2-header__brand" aria-label="ChronoWalk home">
+          <ChronoWalkLogo size={36} variant="dark" className="cw-v2-header__emblem" />
           <span className="cw-v2-header__name">ChronoWalk</span>
         </a>
 

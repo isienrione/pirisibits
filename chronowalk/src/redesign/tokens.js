@@ -1,13 +1,19 @@
-/** ChronoWalk redesign tokens — Figma Make / UX Master Spec */
+/** ChronoWalk redesign tokens — aligned with official brand palette. */
 
 export const T = {
-  obsidian: '#16130F',
-  ink: '#211C15',
-  ink800: '#26221B',
-  bone: '#F7F1E6',
-  warmWhite: '#F5EFE3',
+  obsidian: '#0B0B0D',
+  charcoal: '#1A1A1F',
+  ink: '#1A1A1F',
+  ink800: '#1A1A1F',
+  bone: '#FAF6EF',
+  warmWhite: '#FAF6EF',
+  limestone: '#E9E2D5',
+  bronze: '#8B8638',
+  gold: '#D4AF37',
+  olive: '#6B7A52',
+  terracotta: '#E4552E',
   muted: '#B9AF9C',
-  ember: '#E8A13C',
+  ember: '#D4AF37',
   actI: '#E4552E',
   actII: '#7C9A5C',
   actIII: '#E8A13C',

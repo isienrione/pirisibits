@@ -76,7 +76,7 @@ export default function RedesignLetterPage() {
   if (loading) {
     return (
       <RedesignRouteShell>
-        <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#16130F' }} />
+        <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#0B0B0D' }} />
       </RedesignRouteShell>
     )
   }
@@ -84,7 +84,7 @@ export default function RedesignLetterPage() {
   if (error || !letter) {
     return (
       <RedesignRouteShell>
-        <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32, color: '#F5EFE3' }}>
+        <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32, color: '#FAF6EF' }}>
           <p>{error?.message ?? 'Your letter is not ready yet. Keep walking.'}</p>
           <button type="button" onClick={() => navigate('/journey')} style={{ marginTop: 16 }}>
             Back to walk

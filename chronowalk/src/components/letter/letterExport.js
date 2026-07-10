@@ -24,7 +24,7 @@ export function buildLetterCardSvg(letter, meander) {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <rect width="100%" height="100%" fill="#F7F1E6" />
+  <rect width="100%" height="100%" fill="#FAF6EF" />
   <text x="56" y="72" fill="#211C15" font-family="DM Sans, system-ui, sans-serif" font-size="14" letter-spacing="3">JOURNEY LETTER</text>
   <text x="56" y="132" fill="#211C15" font-family="Fraunces, Georgia, serif" font-size="42" font-weight="600">${safeTitle}</text>
   <rect x="56" y="170" width="688" height="260" rx="18" fill="#EFE7D8" />

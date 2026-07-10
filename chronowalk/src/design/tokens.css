@@ -3,11 +3,23 @@
  * Import first in main.jsx before any other stylesheets.
  */
 :root {
-  --obsidian: #16130f;
+  /* ChronoWalk brand palette (official) */
+  --obsidian: #0b0b0d;
+  --charcoal: #1a1a1f;
+  --warm-ivory: #faf6ef;
+  --limestone: #e9e2d5;
+  --bronze: #8b8638;
+  --gold: #d4af37;
+  --olive: #6b7a52;
+
+  --tracking-brand-header: 0.2em;
+  --tracking-tagline: 0.25em;
+  --color-tracking-tagline: var(--limestone);
+
   --ink-900: #211c15;
   --ink-800: #26221b;
-  --bone: #f7f1e6;
-  --warm-white: #f5efe3;
+  --bone: var(--warm-ivory);
+  --warm-white: var(--warm-ivory);
   --muted: #b9af9c;
   --ember: #e8a13c;
   --ember-deep: #c97f1e;
@@ -32,7 +44,7 @@
     #8a6fb5,
     #b14a6e
   );
-  --seam-glow: 0 0 12px rgba(232, 161, 60, 0.45);
+  --seam-glow: 0 0 12px rgba(212, 175, 55, 0.45);
   --radius-card: 14px;
   --radius-sheet: 20px;
 
@@ -92,4 +104,20 @@
 
 .num {
   font-variant-numeric: tabular-nums;
+}
+
+.cw-brand-header {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-brand-header);
+}
+
+.cw-tracking-tagline {
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tagline);
+  color: var(--color-tracking-tagline);
 }

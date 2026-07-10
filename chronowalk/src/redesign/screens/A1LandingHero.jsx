@@ -143,7 +143,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               opacity: demoState === 'then' ? 1 : 0,
             }}
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(22,19,15,0.22)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,11,13,0.22)' }} />
           <Seam />
           <div
             style={{
@@ -195,7 +195,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               borderRadius: 12,
               fontFamily: F.body,
               fontSize: 15,
-              background: 'rgba(22,19,15,0.35)',
+              background: 'rgba(11,11,13,0.35)',
               cursor: 'pointer',
               backdropFilter: 'blur(8px)',
             }}

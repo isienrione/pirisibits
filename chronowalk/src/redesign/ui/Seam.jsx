@@ -1,6 +1,6 @@
 import { T } from '../tokens.js'
 
-export function Seam({ variant = 'vertical', accent = T.ember, pct = 0, style: extra = {} }) {
+export function Seam({ variant = 'vertical', accent = T.gold, pct = 0, style: extra = {} }) {
   const base =
     variant === 'horizontal'
       ? { position: 'absolute', left: 0, right: 0, height: 1.5 }
@@ -19,7 +19,7 @@ export function Seam({ variant = 'vertical', accent = T.ember, pct = 0, style: e
     variant === 'progress'
       ? { boxShadow: `0 0 8px ${accent}80` }
       : {
-          boxShadow: '0 0 12px rgba(232,161,60,0.45)',
+          boxShadow: '0 0 12px rgba(212, 175, 55, 0.45)',
           animation: 'seamBreathe 3s ease-in-out infinite',
         }
 

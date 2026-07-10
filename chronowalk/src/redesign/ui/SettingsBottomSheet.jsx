@@ -171,7 +171,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 80 }} role="presentation">
       <div
-        style={{ position: 'absolute', inset: 0, background: 'rgba(22,19,15,0.45)' }}
+        style={{ position: 'absolute', inset: 0, background: 'rgba(11,11,13,0.45)' }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -191,7 +191,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
           borderRadius: '24px 24px 0 0',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 -8px 40px rgba(22,19,15,0.28)',
+          boxShadow: '0 -8px 40px rgba(11,11,13,0.28)',
           animation: 'slideUp 320ms cubic-bezier(0.32,0.72,0,1)',
           fontFamily: F.body,
         }}

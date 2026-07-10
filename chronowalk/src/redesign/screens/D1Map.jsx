@@ -282,7 +282,7 @@ export default function D1Map({ embedded = false }) {
             borderRadius:"20px 20px 0 0",
             padding:"12px 20px 44px",
             zIndex:30,
-            boxShadow:"0 -8px 32px rgba(22,19,15,0.14)",
+            boxShadow:"0 -8px 32px rgba(11,11,13,0.14)",
             animation:"slideUp 240ms cubic-bezier(0.32,0.72,0,1)",
           }}
           onClick={e => e.stopPropagation()}

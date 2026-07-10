@@ -1,3 +1,4 @@
+import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingSiteFooter() {
@@ -8,10 +9,12 @@ export default function LandingSiteFooter() {
     <footer className="cw-v2-footer">
       <div className="cw-v2-footer__inner">
         <div className="cw-v2-footer__brand-block">
-          <div className="cw-v2-footer__brand">
-            <span className="cw-v2-header__mark" aria-hidden />
-            <span className="cw-v2-footer__name">ChronoWalk</span>
-          </div>
+          <ChronoWalkLogo
+            className="cw-v2-footer__logo"
+            width={260}
+            variant="dark"
+            layout="stacked"
+          />
           <p className="cw-v2-footer__tagline">{tagline}</p>
         </div>
 

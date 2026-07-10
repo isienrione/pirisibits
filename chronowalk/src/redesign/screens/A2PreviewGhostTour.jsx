@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Lock } from 'lucide-react'
+import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { T, F } from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
@@ -65,7 +66,8 @@ export default function A2PreviewGhostTour({
       }}
     >
       <div style={{ flexShrink: 0, padding: 'max(18px, env(safe-area-inset-top)) 24px 12px' }}>
-        <Eyebrow color={T.ember}>YOUR TOUR</Eyebrow>
+        <ChronoWalkLogo className="cw-preview-ghost__logo" width={240} variant="light" hideTagline />
+        <Eyebrow color={T.gold}>YOUR TOUR</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -91,8 +93,8 @@ export default function A2PreviewGhostTour({
             top: 0,
             bottom: 0,
             width: 1.5,
-            background: T.ember,
-            boxShadow: '0 0 12px rgba(232,161,60,0.35)',
+            background: T.gold,
+            boxShadow: '0 0 12px rgba(212, 175, 55, 0.45)',
             zIndex: 0,
           }}
         />
@@ -331,7 +333,7 @@ export default function A2PreviewGhostTour({
           style={{
             width: '100%',
             padding: '15px',
-            background: T.ember,
+            background: T.terracotta,
             color: T.obsidian,
             borderRadius: 12,
             fontFamily: F.body,

@@ -96,7 +96,7 @@ export default function RedesignThresholdOverlay({
               padding: '12px 20px',
               borderRadius: 14,
               border: `1px solid ${T.muted}44`,
-              background: 'rgba(22,19,15,0.72)',
+              background: 'rgba(11,11,13,0.72)',
               color: T.warmWhite,
               fontWeight: 500,
               fontSize: 14,

@@ -43,7 +43,7 @@ export function showUpdatingOverlay(message = 'Updating…') {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'rgba(22, 19, 15, 0.92)',
+    background: 'rgba(11, 11, 13, 0.92)',
     color: '#f5f0e8',
     fontFamily: 'system-ui, sans-serif',
     fontSize: '16px',

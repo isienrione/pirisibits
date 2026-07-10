@@ -96,7 +96,7 @@ export default function FloatingAudioPlayer({
     >
       <div
         style={{
-          background: 'rgba(22,19,15,0.94)',
+          background: 'rgba(11,11,13,0.94)',
           border: `1px solid ${T.ink800}`,
           borderRadius: 16,
           boxShadow: '0 12px 40px rgba(0,0,0,0.45)',

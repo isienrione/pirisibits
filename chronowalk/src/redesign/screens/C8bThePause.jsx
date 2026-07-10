@@ -74,7 +74,7 @@ export default function C8bThePause({ onResume, busy = false }) {
           alignItems: 'center',
           gap: 14,
           padding: `16px 36px calc(${SHELL_SAFE_BOTTOM_INSET} + 12px)`,
-          background: 'linear-gradient(to top, rgba(22,19,15,0.92) 55%, transparent)',
+          background: 'linear-gradient(to top, rgba(11,11,13,0.92) 55%, transparent)',
         }}
       >
         <button
@@ -87,7 +87,7 @@ export default function C8bThePause({ onResume, busy = false }) {
             padding: '15px 36px',
             border: `1px solid rgba(245,239,227,0.28)`,
             borderRadius: 12,
-            background: 'rgba(22,19,15,0.55)',
+            background: 'rgba(11,11,13,0.55)',
             color: T.warmWhite,
             fontFamily: F.body,
             fontSize: 15,

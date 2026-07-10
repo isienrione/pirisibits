@@ -163,7 +163,7 @@ export default function RedesignPreviewPage() {
 
   if (loading) {
     return (
-      <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#16130F' }} />
+      <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#0B0B0D' }} />
     )
   }
 

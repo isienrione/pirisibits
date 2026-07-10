@@ -42,7 +42,7 @@ export default function C4ArrivalMoment({
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(to bottom, rgba(22,19,15,0.15) 0%, rgba(22,19,15,0.55) 100%)',
+            background: 'linear-gradient(to bottom, rgba(11,11,13,0.15) 0%, rgba(11,11,13,0.55) 100%)',
           }}
         />
         <div

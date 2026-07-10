@@ -19,6 +19,11 @@ export default {
       },
       fontSize: {
         eyebrow: ['0.6875rem', { lineHeight: '1rem', letterSpacing: '0.18em', fontWeight: '600' }],
+        'tagline-micro': ['0.625rem', { lineHeight: '1rem', letterSpacing: '0.25em', fontWeight: '500' }],
+      },
+      letterSpacing: {
+        'brand-header': '0.2em',
+        tagline: '0.25em',
       },
       borderRadius: {
         card: 'var(--radius-card)',

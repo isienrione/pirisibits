@@ -83,7 +83,7 @@ export default function FlowEscapeButton() {
         padding: '6px 10px 6px 6px',
         borderRadius: 999,
         border: `1px solid ${T.muted}22`,
-        background: 'rgba(22,19,15,0.35)',
+        background: 'rgba(11,11,13,0.35)',
         color: `${T.muted}CC`,
         fontFamily: F.body,
         fontSize: 12,

@@ -13,7 +13,7 @@ export function GhostButton({ children, onClick, style }) {
         borderRadius: 12,
         fontFamily: F.body,
         fontSize: 15,
-        background: 'rgba(22,19,15,0.35)',
+        background: 'rgba(11,11,13,0.35)',
         cursor: 'pointer',
         backdropFilter: 'blur(8px)',
         ...style,

@@ -13,6 +13,13 @@ const SRC_ROOT = join(__dirname, '../src')
 
 /** Approved 6-digit hex (from design/tokens.css). Case-insensitive. */
 const APPROVED_HEX = new Set([
+  '0B0B0D',
+  '1A1A1F',
+  'FAF6EF',
+  'E9E2D5',
+  '8B8638',
+  'D4AF37',
+  '6B7A52',
   '16130F',
   '211C15',
   '26221B',
@@ -40,7 +47,6 @@ const FORBIDDEN_SUBSTRINGS = [
   'ivory',
   'parchment',
   'limestone',
-  '#D4AF37',
   '#EDE3CF',
   '#F7F3EC',
   'gold-glow',
@@ -76,6 +82,7 @@ const SKIP_PREFIXES = [
   'components/journey/',
   'components/ui/',
   'design/tokens.js',
+  'redesign/tokens.js',
 ]
 
 function shouldSkip(rel) {
