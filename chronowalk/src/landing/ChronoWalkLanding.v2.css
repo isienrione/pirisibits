@@ -25,6 +25,7 @@
 .cw-landing--premium main {
   display: flex;
   flex-direction: column;
+  isolation: isolate;
 }
 
 .cw-v2-wrap {
@@ -80,6 +81,8 @@
   letter-spacing: -0.02em;
   text-wrap: balance;
   color: var(--v2-bone);
+  position: relative;
+  z-index: 1;
 }
 
 .cw-v2-section__lead {
@@ -108,10 +111,8 @@
   inset-inline: 0;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
-  background: color-mix(in srgb, var(--v2-obsidian) 70%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--v2-border);
+  background: var(--v2-obsidian);
 }
 
 .cw-v2-header__inner {
@@ -215,6 +216,7 @@
 .cw-v2-btn--coral {
   background: var(--v2-coral);
   color: var(--v2-obsidian);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--v2-coral) 55%, var(--v2-obsidian));
 }
 
 .cw-v2-btn--coral:hover {
@@ -246,50 +248,16 @@
 .cw-v2-hero__photo {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-.cw-v2-hero__scrim {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.cw-v2-hero__scrim--vertical {
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--v2-obsidian) 92%, transparent) 0%,
-    color-mix(in srgb, var(--v2-obsidian) 45%, transparent) 22%,
-    transparent 48%
-  );
-}
-
-.cw-v2-hero__scrim--horizontal {
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--v2-obsidian) 78%, transparent) 0%,
-    color-mix(in srgb, var(--v2-obsidian) 38%, transparent) 36%,
-    transparent 58%
-  );
-}
-
-@media (min-width: 56rem) {
-  .cw-v2-hero__scrim--horizontal {
-    background: linear-gradient(
-      to right,
-      color-mix(in srgb, var(--v2-obsidian) 82%, transparent) 0%,
-      color-mix(in srgb, var(--v2-obsidian) 42%, transparent) 28%,
-      transparent 46%
-    );
-  }
-}
-
 .cw-v2-hero__layout {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   gap: 2.5rem;
   align-items: center;
@@ -314,9 +282,9 @@
   border-radius: 1rem;
   background: linear-gradient(
     118deg,
-    color-mix(in srgb, var(--v2-obsidian) 72%, transparent) 0%,
-    color-mix(in srgb, var(--v2-obsidian) 38%, transparent) 68%,
-    transparent 100%
+    rgba(13, 11, 9, 0.82) 0%,
+    rgba(13, 11, 9, 0.42) 68%,
+    rgba(13, 11, 9, 0) 100%
   );
 }
 
@@ -545,8 +513,8 @@
 .cw-v2-benefits__card {
   padding: 1.25rem 1.35rem;
   border-radius: 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--v2-border) 85%, transparent);
-  background: color-mix(in srgb, var(--v2-raised) 70%, transparent);
+  border: 1px solid var(--v2-border);
+  background: var(--v2-raised);
 }
 
 .cw-v2-benefits__title {
@@ -579,7 +547,7 @@
   padding: 1.5rem;
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, var(--v2-coral) 25%, var(--v2-border));
-  background: color-mix(in srgb, var(--v2-raised) 80%, transparent);
+  background: var(--v2-raised);
 }
 
 .cw-v2-try-free__visual {
@@ -613,7 +581,7 @@
 .cw-v2-try-free__card-body {
   margin: 0.85rem 0 0;
   line-height: 1.6;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 .cw-v2-try-free__actions {

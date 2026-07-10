@@ -18,9 +18,6 @@ export default function LandingHero({ onPreview }) {
           onError={() => setImageOk(false)}
         />
       ) : null}
-      <div className="cw-v2-hero__scrim cw-v2-hero__scrim--vertical" aria-hidden />
-      <div className="cw-v2-hero__scrim cw-v2-hero__scrim--horizontal" aria-hidden />
-
       <div className="cw-v2-hero__layout">
         <div className="cw-v2-hero__content">
           <p className="cw-v2-eyebrow cw-v2-eyebrow--hero">
