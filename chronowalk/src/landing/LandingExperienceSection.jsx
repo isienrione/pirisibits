@@ -5,7 +5,7 @@ import LandingPhoneFrame from './LandingPhoneFrame.jsx'
 const SCREEN_IMAGES = {
   map: LANDING_V2.screenMap,
   listening: LANDING_V2.screenListening,
-  letter: LANDING_V2.screenLetter,
+  threshold: LANDING_V2.threshold,
 }
 
 export default function LandingExperienceSection() {

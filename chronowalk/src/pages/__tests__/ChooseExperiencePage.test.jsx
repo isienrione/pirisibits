@@ -33,11 +33,11 @@ describe('ChooseExperiencePage', () => {
     renderRomeExperience()
 
     expect(screen.getByRole('heading', { level: 1, name: /choose your experience/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /the classic split/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /the heroic day/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /take it in chapters/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /the full day/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /your own pace/i })).toBeInTheDocument()
-    expect(screen.getByText('2 days')).toBeInTheDocument()
-    expect(screen.getByText('8 hours')).toBeInTheDocument()
+    expect(screen.getByText('Your pace')).toBeInTheDocument()
+    expect(screen.getByText('~8 hours')).toBeInTheDocument()
     expect(screen.getByText('No limit')).toBeInTheDocument()
   })
 
@@ -46,10 +46,10 @@ describe('ChooseExperiencePage', () => {
 
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
 
-    const heroicDay = screen.getByRole('button', { name: /the heroic day/i })
-    fireEvent.click(heroicDay)
-    expect(heroicDay).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: /the classic split/i })).toHaveAttribute(
+    const fullDay = screen.getByRole('button', { name: /the full day/i })
+    fireEvent.click(fullDay)
+    expect(fullDay).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /take it in chapters/i })).toHaveAttribute(
       'aria-pressed',
       'false'
     )

@@ -5,12 +5,16 @@ import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingSiteHeader from './LandingSiteHeader.jsx'
 import LandingHero from './LandingHero.jsx'
+import LandingUserFlowSection from './LandingUserFlowSection.jsx'
+import LandingMonumentsCarousel from './LandingMonumentsCarousel.jsx'
+import LandingBenefitsSection from './LandingBenefitsSection.jsx'
+import LandingTryFreeSection from './LandingTryFreeSection.jsx'
 import LandingThresholdSection from './LandingThresholdSection.jsx'
-import LandingExperienceSection from './LandingExperienceSection.jsx'
-import LandingPersonasSection from './LandingPersonasSection.jsx'
-import LandingComparisonSection from './LandingComparisonSection.jsx'
-import LandingJourneyLetterSection from './LandingJourneyLetterSection.jsx'
+import LandingWhoItsForSection from './LandingWhoItsForSection.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
+import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
+import LandingComparisonSection from './LandingComparisonSection.jsx'
+import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
@@ -20,7 +24,7 @@ import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 
 /**
- * Premium landing — block flow matching design reference.
+ * Premium landing v3 — clarity-first flow for cold visitors.
  */
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
@@ -68,15 +72,19 @@ export default function ChronoWalkLanding() {
 
   return (
     <div className="cw-landing cw-landing--premium">
-      <LandingSiteHeader />
+      <LandingSiteHeader onPreview={handlePreview} />
       <main>
         <LandingHero onPreview={handlePreview} />
+        <LandingUserFlowSection />
+        <LandingMonumentsCarousel />
+        <LandingBenefitsSection />
+        <LandingTryFreeSection onPreview={handlePreview} />
         <LandingThresholdSection />
-        <LandingExperienceSection />
-        <LandingPersonasSection />
-        <LandingComparisonSection />
-        <LandingJourneyLetterSection />
+        <LandingWhoItsForSection />
         <LandingRomeTiersSection onBeginTier={handleBeginTier} />
+        <LandingFaqSectionV2 />
+        <LandingComparisonSection />
+        <LandingFinalCtaSectionV2 onPreview={handlePreview} />
       </main>
       <LandingSiteFooter />
     </div>

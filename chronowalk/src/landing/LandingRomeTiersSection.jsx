@@ -1,6 +1,7 @@
 import { LANDING_CONTENT } from './landingData.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
+import { getLandingTierStats } from './landingTierStats.js'
 
 function CheckIcon({ featured }) {
   return (
@@ -37,11 +38,13 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
             {section.headline}
           </h2>
           <p className="cw-v2-section__lead">{section.subheadline}</p>
+          {section.intro ? <p className="cw-v2-pricing__intro">{section.intro}</p> : null}
         </header>
 
         <div className="cw-v2-pricing__grid">
           {tiers.map((tier) => {
             const isFeatured = tier.id === 'rome-complete'
+            const stats = getLandingTierStats(tier.id)
 
             return (
               <article
@@ -52,17 +55,32 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                   <span className="cw-v2-pricing-card__ribbon">{tier.badge}</span>
                 ) : null}
 
-                <p className={`cw-v2-pricing-card__eyebrow${isFeatured ? ' cw-v2-pricing-card__eyebrow--gold' : ''}`}>
-                  {tier.eyebrow}
-                  {tier.tierLabel ? (
-                    <span className="cw-v2-pricing-card__tier-label"> · {tier.tierLabel}</span>
-                  ) : null}
+                <p className={`cw-v2-pricing-card__tier-name${isFeatured ? ' cw-v2-pricing-card__tier-name--gold' : ''}`}>
+                  {tier.tierLabel ?? tier.eyebrow}
                 </p>
+                {tier.tierLabel && tier.eyebrow ? (
+                  <p className="cw-v2-pricing-card__eyebrow">{tier.eyebrow}</p>
+                ) : null}
 
                 <div className="cw-v2-pricing-card__price-row">
                   <span className="cw-v2-pricing-card__price">{tier.price}</span>
                   <span className="cw-v2-pricing-card__note">{tier.priceNote}</span>
                 </div>
+
+                <dl className="cw-v2-pricing-card__stats" aria-label="Tour coverage">
+                  <div className="cw-v2-pricing-card__stat">
+                    <dt>Audio</dt>
+                    <dd>{stats.audioLabel}</dd>
+                  </div>
+                  <div className="cw-v2-pricing-card__stat">
+                    <dt>Tour time</dt>
+                    <dd>{stats.routeTimeLabel}</dd>
+                  </div>
+                  <div className="cw-v2-pricing-card__stat">
+                    <dt>Route</dt>
+                    <dd>{stats.distanceLabel}</dd>
+                  </div>
+                </dl>
 
                 <p className="cw-v2-pricing-card__description">{tier.description}</p>
 

@@ -1,6 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 
-export default function LandingSiteHeader() {
+export default function LandingSiteHeader({ onPreview }) {
   const { nav, cta } = LANDING_CONTENT.header
 
   return (
@@ -19,9 +19,15 @@ export default function LandingSiteHeader() {
           ))}
         </nav>
 
-        <a href="#pricing" className="cw-v2-header__cta">
-          {cta}
-        </a>
+        {onPreview ? (
+          <button type="button" className="cw-v2-header__cta" onClick={onPreview}>
+            {cta}
+          </button>
+        ) : (
+          <a href="#try-free" className="cw-v2-header__cta">
+            {cta}
+          </a>
+        )}
       </div>
     </header>
   )

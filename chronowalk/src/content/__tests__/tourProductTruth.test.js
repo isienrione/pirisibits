@@ -43,7 +43,7 @@ describe('tourProductTruth', () => {
     expect(truth.storyStopCount).toBe(18)
     expect(truth.publicPlacesLabel).toBe('22 places')
     expect(truth.visitStopsLabel).toBe('18 stops')
-    expect(truth.durationLabel).toBe('two days')
+    expect(truth.durationLabel).toBe('your pace')
     expect(truth.ownershipLabel).toBe('yours forever')
     expect(truth.priceFallbackCents).toBe(1700)
     expect(truth.currency).toBe('EUR')

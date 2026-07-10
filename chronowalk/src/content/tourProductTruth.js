@@ -136,7 +136,7 @@ export function getTourProductTruth(manifest, options = {}) {
   const storyStopCount = product.storyStopCount ?? computeStoryStopCount(manifest, { ...options, path, pace })
   const actCount = product.actCount ?? 6
 
-  const durationLabel = product.durationLabel ?? 'two days'
+  const durationLabel = product.durationLabel ?? 'your pace'
   const ownershipLabel = product.ownershipLabel ?? 'yours forever'
   const distanceLabel = product.distanceLabel ?? '—'
   const priceFallbackCents = product.priceFallbackCents ?? manifest?.price_fallback_cents ?? 1700

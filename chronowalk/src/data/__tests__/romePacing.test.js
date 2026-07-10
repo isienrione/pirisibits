@@ -14,7 +14,7 @@ describe('romePacing', () => {
       id: JOURNEY_PACE.CLASSIC,
       badge: 'Most loved',
     })
-    expect(getPaceOption(JOURNEY_PACE.HEROIC).title).toBe('The Heroic Day')
+    expect(getPaceOption(JOURNEY_PACE.HEROIC).title).toBe('The full day')
   })
 
   it('maps waypoints to six acts plus encore', () => {

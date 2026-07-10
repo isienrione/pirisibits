@@ -12,15 +12,15 @@ export const PACE_ORIENTATION =
 export const PACE_OPTIONS = [
   {
     id: JOURNEY_PACE.CLASSIC,
-    title: 'The Classic Split',
+    title: 'Take it in chapters',
     badge: 'Most loved',
-    description: 'The ancient city one outing, the living city another. Acts I–IV, then V–VI.',
+    description: 'Ancient stops first, then the living city. Pause between acts whenever you like.',
     default: true,
   },
   {
     id: JOURNEY_PACE.HEROIC,
-    title: 'The Heroic Day',
-    description: 'All of it, dawn to golden hour. Bring real shoes and real ambition.',
+    title: 'The full day',
+    description: 'All of it in one go — dawn to golden hour. Bring real shoes and real ambition.',
   },
   {
     id: JOURNEY_PACE.OWN,

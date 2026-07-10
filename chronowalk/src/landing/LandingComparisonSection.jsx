@@ -1,6 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 
-function CompareCell({ value }) {
+function CompareCell({ value, featured }) {
   if (value === false) {
     return (
       <span className="cw-v2-compare__muted">
@@ -10,7 +10,11 @@ function CompareCell({ value }) {
     )
   }
 
-  return <span className="cw-v2-compare__text">{value}</span>
+  return (
+    <span className={featured ? 'cw-v2-compare__text' : 'cw-v2-compare__text cw-v2-compare__text--alt'}>
+      {value}
+    </span>
+  )
 }
 
 export default function LandingComparisonSection() {
@@ -53,16 +57,16 @@ export default function LandingComparisonSection() {
               <div className="cw-v2-compare__feature" role="rowheader">
                 {row.feature}
               </div>
-              <div className="cw-v2-compare__cell cw-v2-compare__cell--featured" role="cell">
-                <span className="cw-v2-compare__check" aria-hidden>✓</span>
-                <CompareCell value={row.chrono} />
-              </div>
-              <div className="cw-v2-compare__cell" role="cell">
-                <CompareCell value={row.questo} />
-              </div>
-              <div className="cw-v2-compare__cell" role="cell">
-                <CompareCell value={row.voicemap} />
-              </div>
+              {columns.map((col) => (
+                <div
+                  key={col.id}
+                  className={`cw-v2-compare__cell${col.featured ? ' cw-v2-compare__cell--featured' : ''}`}
+                  role="cell"
+                >
+                  {col.featured ? <span className="cw-v2-compare__check" aria-hidden>✓</span> : null}
+                  <CompareCell value={row[col.id]} featured={col.featured} />
+                </div>
+              ))}
             </div>
           ))}
         </div>

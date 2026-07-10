@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildBoundsFromStops,
   buildRoutePathD,
+  getLandingTierMapBounds,
   getLandingTierRouteStops,
   LANDING_TIER_ROUTES,
   projectRouteStops,
@@ -26,16 +28,28 @@ describe('landingTierRoutes', () => {
     }
   })
 
-  it('projects stops inside the shared Rome frame', () => {
-    const stops = getLandingTierRouteStops('rome-complete')
-    const points = projectRouteStops(stops, { bounds: ROME_LANDING_MAP_BOUNDS })
-    points.forEach((point) => {
-      expect(point.x).toBeGreaterThanOrEqual(8)
-      expect(point.x).toBeLessThanOrEqual(92)
-      expect(point.y).toBeGreaterThanOrEqual(8)
-      expect(point.y).toBeLessThanOrEqual(64)
-    })
-    expect(buildRoutePathD(points).startsWith('M ')).toBe(true)
+  it('projects stops inside each tier map frame', () => {
+    for (const tierId of ['rome-central', 'rome-essential', 'rome-complete']) {
+      const stops = getLandingTierRouteStops(tierId)
+      const bounds = getLandingTierMapBounds(tierId)
+      const points = projectRouteStops(stops, { bounds, padding: 7 })
+      points.forEach((point) => {
+        expect(point.x).toBeGreaterThanOrEqual(7)
+        expect(point.x).toBeLessThanOrEqual(93)
+        expect(point.y).toBeGreaterThanOrEqual(7)
+        expect(point.y).toBeLessThanOrEqual(73)
+      })
+      expect(buildRoutePathD(points).startsWith('M ')).toBe(true)
+    }
+  })
+
+  it('zooms central and ancient tiers tighter than complete', () => {
+    const centralSpan = spanForBounds(getLandingTierMapBounds('rome-central'))
+    const essentialSpan = spanForBounds(getLandingTierMapBounds('rome-essential'))
+    const completeSpan = spanForBounds(getLandingTierMapBounds('rome-complete'))
+
+    expect(centralSpan).toBeLessThan(completeSpan)
+    expect(essentialSpan).toBeLessThan(completeSpan)
   })
 
   it('shows central tier north of essential on the shared map', () => {
@@ -50,3 +64,7 @@ describe('landingTierRoutes', () => {
     expect(centralAvgY).toBeLessThan(essentialAvgY)
   })
 })
+
+function spanForBounds(bounds) {
+  return bounds.maxLat - bounds.minLat + (bounds.maxLng - bounds.minLng)
+}

@@ -6,17 +6,17 @@ const tourHeroPhoto = TOUR_HERO_PHOTO
 export const ROME_LAUNCH_EXPERIENCES = [
   {
     id: 'classic-split',
-    title: 'The Classic Split',
-    duration: '2 days',
-    walkingStyle: 'Morning forum · afternoon city',
+    title: 'Take it in chapters',
+    duration: 'Your pace',
+    walkingStyle: 'Forum core, then the city loop',
     description:
-      'Divide Rome into two unhurried chapters — the Forum cluster, then the grand city loop.',
+      'A natural order if you want structure — ancient stops first, then the living city. Take a week between chapters if you like.',
     heroImage: tourHeroPhoto,
   },
   {
     id: 'heroic-day',
-    title: 'The Heroic Day',
-    duration: '8 hours',
+    title: 'The full day',
+    duration: '~8 hours',
     walkingStyle: 'One ambitious circuit',
     description:
       'Walk the full journey in a single day — for travelers who want every landmark while the light holds.',
@@ -24,7 +24,7 @@ export const ROME_LAUNCH_EXPERIENCES = [
   },
   {
     id: 'your-own-pace',
-    title: 'Your Own Pace',
+    title: 'Your own pace',
     duration: 'No limit',
     walkingStyle: 'Pause anytime',
     description:

@@ -1,17 +1,6 @@
 import { buildSmoothRouteD } from './landingRomeMapPaths.js'
-import { ROME_LANDING_BASEMAP_PATH } from './landingMapboxStatic.js'
-import {
-  getLandingTierRouteStops,
-  projectRouteStops,
-  ROME_LANDING_MAP_BOUNDS,
-} from './landingTierRoutes.js'
-
-const MAP_OPTIONS = {
-  width: 100,
-  height: 80,
-  padding: 5,
-  bounds: ROME_LANDING_MAP_BOUNDS,
-}
+import { getLandingTierBasemapPath } from './landingMapboxStatic.js'
+import { getLandingTierMapBounds, getLandingTierRouteStops, projectRouteStops } from './landingTierRoutes.js'
 
 function PinIcon({ featured = false }) {
   return (
@@ -72,7 +61,13 @@ function MapMarker({ point, index, showTooltip }) {
  */
 export default function LandingTierRouteMap({ tierId, featured = false, className = '' }) {
   const stops = getLandingTierRouteStops(tierId)
-  const points = projectRouteStops(stops, MAP_OPTIONS)
+  const bounds = getLandingTierMapBounds(tierId)
+  const points = projectRouteStops(stops, {
+    width: 100,
+    height: 80,
+    padding: 7,
+    bounds,
+  })
   const routePath = buildSmoothRouteD(points)
   const showTooltips = points.length <= 9
 
@@ -85,13 +80,14 @@ export default function LandingTierRouteMap({ tierId, featured = false, classNam
     >
       <div className="cw-v2-tier-map__frame">
         <img
-          src={ROME_LANDING_BASEMAP_PATH}
+          src={getLandingTierBasemapPath(tierId)}
           alt=""
           className="cw-v2-tier-map__photo"
           loading="lazy"
           decoding="async"
         />
         <div className="cw-v2-tier-map__tone" aria-hidden />
+        <div className="cw-v2-tier-map__glow" aria-hidden />
 
         <svg
           viewBox="0 0 100 80"
@@ -100,7 +96,12 @@ export default function LandingTierRouteMap({ tierId, featured = false, classNam
           role="img"
           aria-hidden
         >
-          {routePath ? <path d={routePath} className="cw-v2-tier-map__path" fill="none" /> : null}
+          {routePath ? (
+            <>
+              <path d={routePath} className="cw-v2-tier-map__path-halo" fill="none" />
+              <path d={routePath} className="cw-v2-tier-map__path" fill="none" />
+            </>
+          ) : null}
 
           {points.map((point, index) => (
             <MapMarker

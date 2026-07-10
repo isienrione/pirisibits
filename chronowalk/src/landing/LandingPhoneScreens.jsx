@@ -36,7 +36,7 @@ export function JourneyPickScreen() {
         <div className="cw-landing-screen__tour-header">
           <p className="cw-landing-screen__eyebrow">MY TOUR</p>
           <h3 className="cw-landing-screen__title">Rome on foot</h3>
-          <p className="cw-landing-screen__sub">The Classic Split · 22 places</p>
+          <p className="cw-landing-screen__sub">Your pace · 22 places</p>
         </div>
 
         <div className="cw-landing-screen__tour-list">

@@ -74,12 +74,60 @@ const COMPLETE_ROUTE = [
   'appian-way',
 ]
 
-/** Shared map frame so tier coverage is comparable at a glance. */
+/** Wide Rome frame — complete tier and legacy helpers. */
 export const ROME_LANDING_MAP_BOUNDS = {
   minLat: 41.854,
   maxLat: 41.907,
   minLng: 12.464,
   maxLng: 12.514,
+}
+
+const TIER_MAP_PADDING = {
+  'rome-central': 0.38,
+  'rome-essential': 0.34,
+  'rome-complete': 0.14,
+}
+
+const MIN_MAP_LAT_SPAN = 0.011
+const MIN_MAP_LNG_SPAN = 0.013
+
+/** Build a padded bounding box around a stop cluster. */
+export function buildBoundsFromStops(stops, paddingRatio = 0.25) {
+  if (!stops.length) return ROME_LANDING_MAP_BOUNDS
+
+  const lats = stops.map((stop) => stop.lat)
+  const lngs = stops.map((stop) => stop.lng)
+  let minLat = Math.min(...lats)
+  let maxLat = Math.max(...lats)
+  let minLng = Math.min(...lngs)
+  let maxLng = Math.max(...lngs)
+
+  const latSpan = Math.max(maxLat - minLat, MIN_MAP_LAT_SPAN)
+  const lngSpan = Math.max(maxLng - minLng, MIN_MAP_LNG_SPAN)
+  const centerLat = (minLat + maxLat) / 2
+  const centerLng = (minLng + maxLng) / 2
+
+  minLat = centerLat - latSpan / 2
+  maxLat = centerLat + latSpan / 2
+  minLng = centerLng - lngSpan / 2
+  maxLng = centerLng + lngSpan / 2
+
+  const latPad = latSpan * paddingRatio
+  const lngPad = lngSpan * paddingRatio
+
+  return {
+    minLat: minLat - latPad,
+    maxLat: maxLat + latPad,
+    minLng: minLng - lngPad,
+    maxLng: maxLng + lngPad,
+  }
+}
+
+/** Per-tier map frame — central and ancient tiers zoom into their clusters. */
+export function getLandingTierMapBounds(tierId) {
+  const stops = getLandingTierRouteStops(tierId)
+  const padding = TIER_MAP_PADDING[tierId] ?? 0.2
+  return buildBoundsFromStops(stops, padding)
 }
 
 const TIBER_GEO = [

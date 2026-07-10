@@ -16,16 +16,16 @@ export default function B4PaceSelector({
 
   const defaultOptions = [
     {
-      title: "The Classic Split",
+      title: "Take it in chapters",
       badge: "Most loved",
-      desc: "The ancient city one outing, the living city another. Acts I–IV, then V–VI.",
+      desc: "Ancient stops first, then the living city. Pause between acts whenever you like.",
       img: colosseumNow,
       dots: [T.actI, T.actII, T.actIII, T.actIV, null, null, null],
     },
     {
-      title: "The Heroic Day",
+      title: "The full day",
       badge: null,
-      desc: "All of it, dawn to golden hour. Bring real shoes and real ambition.",
+      desc: "All of it in one go — dawn to golden hour. Bring real shoes and real ambition.",
       img: capitolineNow,
       dots: [T.actI, T.actII, T.actIII, T.actIV, T.actV, T.actVI, T.encore],
     },
