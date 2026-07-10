@@ -197,6 +197,13 @@ export class AudioEngine {
     return ctx
   }
 
+  /** Resume AudioContext during a user gesture (iOS Safari autoplay). */
+  primeForGesture() {
+    void this.init().then((ctx) => {
+      if (ctx?.state === 'suspended' && ctx.resume) void ctx.resume()
+    })
+  }
+
   setManifest(manifest) {
     this.manifest = manifest
   }

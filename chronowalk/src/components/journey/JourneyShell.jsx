@@ -442,7 +442,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       if (retryTimer != null) window.clearTimeout(retryTimer)
       clearStoryAutoplayGesture()
     }
-  }, [clearStoryAutoplayGesture, state, step?.id, step?.type])
+  }, [clearStoryAutoplayGesture, state, step?.id, step?.type, audioUnlocked])
 
   useEffect(() => () => clearStoryAutoplayGesture(), [clearStoryAutoplayGesture])
 
@@ -568,10 +568,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
         dwellTimerRef.current = null
       }
 
+      audioOpsRef.current.stopNarration()
+      audioOpsRef.current.primeForGesture()
+
       if (variant === 'redesign') {
         storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
         transition(JOURNEY_STATES.STORY)
         void tryStartWaypointNarration(waypointId).then((started) => {
+          if (started) setAudioUnlocked(true)
           if (started && audioUnlocked) void audioOpsRef.current.playArrivalChime()
           else if (!started) armStoryAutoplayGesture(waypointId)
         })
@@ -731,6 +735,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleBeginStory = async () => {
     if (!step?.record) return
+    audio.primeForGesture()
     storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
@@ -1180,6 +1185,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           locationStatus={geo.locationStatus}
           onRetryLocation={geo.retryLocation}
           onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+          onPrimeAudio={() => audio.primeForGesture()}
           insideGeofence={gpsArrived}
           near
           extraBottomInset={dockActive ? 88 : 0}
@@ -1234,6 +1240,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           estimatedDistanceM={estimatedWalkDistanceM}
           locationStatus={geo.locationStatus}
           onRetryLocation={geo.retryLocation}
+          onPrimeAudio={() => audio.primeForGesture()}
           near={
             !gpsArrived &&
             (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
@@ -1271,6 +1278,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           locationStatus={geo.locationStatus}
           onRetryLocation={geo.retryLocation}
           onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+          onPrimeAudio={() => audio.primeForGesture()}
           insideGeofence={gpsArrived}
           near={
             !gpsArrived &&

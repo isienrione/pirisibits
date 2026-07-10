@@ -45,6 +45,7 @@ export default function WalkingCompanionScreen({
   onSeek,
   onCycleSpeed,
   onBeginChapter,
+  onPrimeAudio,
   onContinue,
   continueLabel = 'Continue walking →',
   onPause,
@@ -267,7 +268,10 @@ export default function WalkingCompanionScreen({
                 type="button"
                 data-testid={beginChapterTestId}
                 className="cw-walking-companion__begin-chapter cw-wc-pressable"
-                onClick={onBeginChapter}
+                onClick={() => {
+                  onPrimeAudio?.()
+                  onBeginChapter?.()
+                }}
               >
                 {beginChapterLabel}
               </button>

@@ -15,6 +15,7 @@ import {
   prepareResumeCueIfNeeded,
   clearPendingResumeCue,
   JOURNEY_STATES,
+  shouldHideShellTabBar,
 } from '../journey'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { buildEffectiveSequence } from '../../content/optionalPromotion.js'
@@ -203,5 +204,12 @@ describe('journey state machine', () => {
     const next = jumpToSequenceIndex(12)
     expect(next.state).toBe(JOURNEY_STATES.WALKING)
     expect(next.context.currentSequenceIndex).toBe(12)
+  })
+
+  it('hides shell tab bar during walking legs on /journey', () => {
+    expect(shouldHideShellTabBar(JOURNEY_STATES.WALKING, '/journey')).toBe(true)
+    expect(shouldHideShellTabBar(JOURNEY_STATES.APPROACHING, '/journey')).toBe(true)
+    expect(shouldHideShellTabBar(JOURNEY_STATES.WALKING, '/map')).toBe(false)
+    expect(shouldHideShellTabBar(JOURNEY_STATES.STORY, '/journey')).toBe(true)
   })
 })

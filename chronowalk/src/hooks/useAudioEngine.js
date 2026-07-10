@@ -116,6 +116,10 @@ export function useAudioEngine(manifest) {
     return Boolean(engine.context)
   }, [])
 
+  const primeForGesture = useCallback(() => {
+    engineRef.current?.primeForGesture()
+  }, [])
+
   const playWaypoint = useCallback(async (waypointId, options) => {
     return (await engineRef.current?.playWaypoint(waypointId, options)) ?? false
   }, [])
@@ -189,6 +193,7 @@ export function useAudioEngine(manifest) {
     setPlaybackRate,
     narrationEnded,
     unlock,
+    primeForGesture,
     playWaypoint,
     playTransit,
     playResumeCue,

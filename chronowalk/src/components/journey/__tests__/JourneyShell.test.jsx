@@ -43,6 +43,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     setPlaybackRate: vi.fn(),
     narrationEnded: { nonce: 0, kind: null, id: null },
     unlock: unlockMock,
+    primeForGesture: vi.fn(),
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
     playResumeCue: vi.fn().mockResolvedValue(undefined),

@@ -11,6 +11,11 @@ import AppRouter from './app/AppRouter.jsx'
 // variable can boot an older generation of the app.
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
+  const standalone =
+    window.matchMedia?.('(display-mode: standalone)')?.matches || window.navigator.standalone === true
+  if (!standalone) {
+    document.documentElement.style.setProperty('--wc-browser-chrome', '52px')
+  }
 }
 
 async function boot() {

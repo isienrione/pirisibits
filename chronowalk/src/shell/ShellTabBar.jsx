@@ -1,15 +1,13 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useV2Journey } from '../hooks/useV2Journey.js'
-import { isImmersiveJourneyState } from '../state/journey.js'
+import { shouldHideShellTabBar } from '../state/journey.js'
 import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
 
 export default function ShellTabBar() {
   const { state } = useV2Journey()
   const location = useLocation()
 
-  // Sacred journey moments (arrival, story, threshold, completion) are
-  // chrome-free — no global bottom navigation.
-  if (isImmersiveJourneyState(state)) return null
+  if (shouldHideShellTabBar(state, location.pathname)) return null
 
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
   if (!onCompanionRoute) return null

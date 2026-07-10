@@ -44,6 +44,14 @@ export function isImmersiveJourneyState(state) {
   return IMMERSIVE_JOURNEY_STATES_LOWER.has(state.toLowerCase())
 }
 
+const WALKING_LEG_STATES = new Set([JOURNEY_STATES.WALKING, JOURNEY_STATES.APPROACHING])
+
+/** True on /journey while en route — tab bar would cover walking controls. */
+export function shouldHideShellTabBar(state, pathname = '') {
+  if (isImmersiveJourneyState(state)) return true
+  return pathname === '/journey' && WALKING_LEG_STATES.has(state)
+}
+
 const defaultContext = () => ({
   pace: JOURNEY_PACE.CLASSIC,
   path: JOURNEY_PATH.A,
