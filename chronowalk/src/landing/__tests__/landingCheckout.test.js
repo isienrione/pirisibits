@@ -5,6 +5,10 @@ import {
 } from '../landingCheckout.js'
 
 describe('landingCheckout', () => {
+  it('uses fixed cents for central tier', () => {
+    expect(resolveLandingTierCents('rome-central', 1700)).toBe(900)
+  })
+
   it('uses fixed cents for essential tier', () => {
     expect(resolveLandingTierCents('rome-essential', 1700)).toBe(1200)
   })

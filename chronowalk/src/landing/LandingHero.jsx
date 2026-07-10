@@ -1,77 +1,62 @@
 import { useState } from 'react'
-import ChronoWalkLogo from '../redesign/ui/ChronoWalkLogo.jsx'
-import { tourHero } from '../redesign/images.js'
 import { LANDING_CONTENT } from './landingData.js'
+import { LANDING_V2 } from './landingVisualAssets.js'
 
-export default function LandingHero({ onBegin, onLivePantheon }) {
+export default function LandingHero({ onPreview }) {
   const hero = LANDING_CONTENT.hero
   const [imageOk, setImageOk] = useState(true)
 
-  const heroClassName = [
-    'cw-landing-hero',
-    imageOk ? 'cw-landing-hero--photo' : 'cw-landing-hero--fallback',
-  ].join(' ')
-
-  const heroStyle = imageOk
-    ? {
-        backgroundImage: `linear-gradient(
-            180deg,
-            color-mix(in srgb, var(--obsidian, #16130f) 72%, transparent) 0%,
-            color-mix(in srgb, var(--obsidian, #16130f) 88%, transparent) 42%,
-            color-mix(in srgb, var(--obsidian, #16130f) 96%, transparent) 100%
-          ),
-          linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--obsidian, #16130f) 94%, transparent) 0%,
-            color-mix(in srgb, var(--ember, #e8a13c) 8%, var(--obsidian, #16130f)) 55%,
-            color-mix(in srgb, var(--obsidian, #16130f) 98%, transparent) 100%
-          ),
-          url(${tourHero})`,
-      }
-    : undefined
-
   return (
-    <section
-      id="hero"
-      className={heroClassName}
-      style={heroStyle}
-      aria-labelledby="hero-heading"
-    >
+    <section id={hero.id} className="cw-v2-hero" aria-labelledby="hero-heading">
       {imageOk ? (
         <img
-          src={tourHero}
-          alt=""
-          className="cw-landing-hero__probe"
+          src={LANDING_V2.heroRome}
+          alt="The Roman Forum and Colosseum bathed in golden hour light"
+          className="cw-v2-hero__photo"
           onError={() => setImageOk(false)}
         />
       ) : null}
+      <div className="cw-v2-hero__scrim cw-v2-hero__scrim--vertical" aria-hidden />
+      <div className="cw-v2-hero__scrim cw-v2-hero__scrim--horizontal" aria-hidden />
 
-      <div className="cw-landing-wrap cw-landing-hero__inner">
-        <header className="cw-landing-hero__mark">
-          <ChronoWalkLogo size={22} />
-          <span>ChronoWalk · Rome</span>
-        </header>
+      <div className="cw-v2-hero__content">
+        <p className="cw-v2-eyebrow cw-v2-eyebrow--hero">
+          <span className="cw-v2-eyebrow__rule" aria-hidden />
+          {hero.eyebrow}
+        </p>
 
-        <div className="cw-landing-hero__stage">
-          <h1 id="hero-heading" className="cw-landing-hero__headline">
-            {hero.headline}
-          </h1>
-          <p className="cw-landing-hero__sub">{hero.subheadline}</p>
+        <h1 id="hero-heading" className="cw-v2-hero__headline">
+          {hero.headline}
+        </h1>
+        <p className="cw-v2-hero__sub">{hero.subheadline}</p>
 
-          <div className="cw-landing-hero__actions">
-            <button type="button" className="cw-landing-btn cw-landing-btn--coral cw-landing-btn--glow" onClick={onBegin}>
-              {hero.primaryCta}
+        <div className="cw-v2-hero__actions">
+          <a href="#pricing" className="cw-v2-btn cw-v2-btn--coral">
+            {hero.primaryCta}
+          </a>
+          {onPreview ? (
+            <button type="button" className="cw-v2-btn cw-v2-btn--outline" onClick={onPreview}>
+              {hero.secondaryCta}
             </button>
-          </div>
-
-          <div className="cw-landing-hero__try">
-            <p className="cw-landing-hero__try-title">{hero.tryAppTitle}</p>
-            <p className="cw-landing-hero__try-subtitle">{hero.freeStoryTitle}</p>
-            <button type="button" className="cw-landing-hero__pantheon" onClick={onLivePantheon}>
-              {hero.freeStoryCta}
-            </button>
-          </div>
+          ) : (
+            <a href="#threshold" className="cw-v2-btn cw-v2-btn--outline">
+              {hero.secondaryCta}
+            </a>
+          )}
         </div>
+
+        <dl className="cw-v2-hero__stats">
+          {hero.stats.map((stat) => (
+            <div key={stat.label} className="cw-v2-hero__stat">
+              <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
+              <dd className="cw-v2-hero__stat-label">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {onPreview && hero.freeStoryMeta ? (
+          <p className="cw-v2-hero__preview-meta">{hero.freeStoryMeta}</p>
+        ) : null}
       </div>
     </section>
   )

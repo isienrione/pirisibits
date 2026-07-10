@@ -1,6 +1,4 @@
-import { readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { clearAllCaches, unregisterAllServiceWorkers } from './pwaCacheUtils.js'
 
 export const WALKING_UI_RELOAD_GUARD = 'cw-walking-ui-reload'
@@ -15,13 +13,9 @@ export function parseWalkingUiRevisionFromHtml(source) {
   return match ? Number(match[1]) : null
 }
 
-/** Read required revision from source (tests + build plugin). */
+/** Read required revision from the bundled walking UI manifest. */
 export function readRequiredWalkingUiRevision() {
-  const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'content')
-  const source = readFileSync(join(root, 'walkingUiRevision.js'), 'utf8')
-  const match = source.match(/WALKING_UI_REVISION\s*=\s*(\d+)/)
-  if (!match) throw new Error('walkingUiRevision.js missing WALKING_UI_REVISION')
-  return Number(match[1])
+  return WALKING_UI_REVISION
 }
 
 /**

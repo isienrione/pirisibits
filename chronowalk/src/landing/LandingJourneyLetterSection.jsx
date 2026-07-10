@@ -1,27 +1,34 @@
-import ChronoWalkLogo from '../redesign/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingJourneyLetterSection() {
-  const { id, headline, copy, preview } = LANDING_CONTENT.letter
+  const { id, eyebrow, headline, preview } = LANDING_CONTENT.letter
 
   return (
-    <section id={id} className="cw-gallery-section cw-gallery-section--obsidian cw-gallery-letter" aria-labelledby={`${id}-heading`}>
-      <div className="cw-landing-wrap cw-gallery-section__inner">
-        <h2 id={`${id}-heading`} className="cw-gallery-section__title">
-          {headline}
-        </h2>
-        <p className="cw-gallery-letter__lead">{copy}</p>
+    <section id={id} className="cw-v2-section cw-v2-letter" aria-labelledby={`${id}-heading`}>
+      <div className="cw-v2-wrap cw-v2-wrap--narrow">
+        <header className="cw-v2-section__header">
+          <p className="cw-v2-eyebrow">{eyebrow}</p>
+          <h2 id={`${id}-heading`} className="cw-v2-section__title">
+            {headline}
+          </h2>
+        </header>
 
-        <article className="cw-gallery-letter-card" aria-label="Journey letter preview">
-          <div className="cw-gallery-letter-card__glow" aria-hidden />
-          <header className="cw-gallery-letter-card__head">
-            <ChronoWalkLogo size={16} />
-            <time dateTime="2026-08-12">{preview.date}</time>
+        <article className="cw-v2-letter-card" aria-label="Journey letter preview">
+          <header className="cw-v2-letter-card__bar">
+            <p>{preview.label}</p>
           </header>
-          <blockquote className="cw-gallery-letter-card__reflection">
-            <p>{preview.reflection}</p>
-          </blockquote>
-          <footer className="cw-gallery-letter-card__stats">{preview.stats}</footer>
+          <div className="cw-v2-letter-card__body">
+            <p className="cw-v2-letter-card__date">{preview.date}</p>
+            <p className="cw-v2-letter-card__reflection">{preview.reflection}</p>
+            <div className="cw-v2-letter-card__stats">
+              {preview.stats.map((stat) => (
+                <div key={stat.label} className="cw-v2-letter-card__stat">
+                  <p className="cw-v2-letter-card__stat-value">{stat.value}</p>
+                  <p className="cw-v2-letter-card__stat-label">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </article>
       </div>
     </section>

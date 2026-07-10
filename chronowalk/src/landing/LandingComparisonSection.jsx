@@ -1,43 +1,70 @@
 import { LANDING_CONTENT } from './landingData.js'
 
+function CompareCell({ value }) {
+  if (value === false) {
+    return (
+      <span className="cw-v2-compare__muted">
+        <span className="cw-v2-compare__x" aria-hidden>×</span>
+        Not offered
+      </span>
+    )
+  }
+
+  return <span className="cw-v2-compare__text">{value}</span>
+}
+
 export default function LandingComparisonSection() {
-  const { id, headline, problemColumn, solutionColumn, rows } = LANDING_CONTENT.comparison
+  const { id, eyebrow, headline, columns, rows } = LANDING_CONTENT.comparison
 
   return (
     <section
       id={id}
-      className="cw-doc-section cw-doc-section--bone cw-landing-compare"
+      className="cw-v2-section cw-v2-section--raised cw-v2-compare"
       aria-labelledby={`${id}-heading`}
     >
-      <div className="cw-landing-wrap cw-doc-section__inner">
-        <h2 id={`${id}-heading`} className="cw-landing-compare__headline">
-          {headline}
-        </h2>
+      <div className="cw-v2-wrap">
+        <header className="cw-v2-section__header">
+          <p className="cw-v2-eyebrow">{eyebrow}</p>
+          <h2 id={`${id}-heading`} className="cw-v2-section__title">
+            {headline}
+          </h2>
+        </header>
 
-        <div className="cw-landing-compare__table" role="table" aria-label={headline}>
-          <div className="cw-landing-compare__header" role="row">
-            <div className="cw-landing-compare__header-cell cw-landing-compare__header-cell--problem" role="columnheader">
-              {problemColumn}
-            </div>
-            <div className="cw-landing-compare__header-cell cw-landing-compare__header-cell--solution" role="columnheader">
-              {solutionColumn}
-            </div>
-          </div>
-
-          <div className="cw-landing-compare__body">
-            {rows.map((row) => (
-              <article key={row.problem} className="cw-landing-compare__row" role="row">
-                <div className="cw-landing-compare__cell cw-landing-compare__cell--problem" role="cell">
-                  <span className="cw-landing-compare__mobile-label">{problemColumn}</span>
-                  <p>{row.problem}</p>
+        <div className="cw-v2-compare__table" role="table" aria-label={headline}>
+          <div className="cw-v2-compare__head" role="row">
+            <div className="cw-v2-compare__corner" aria-hidden />
+            {columns.map((col) => (
+              <div
+                key={col.id}
+                className={`cw-v2-compare__col-head${col.featured ? ' cw-v2-compare__col-head--featured' : ''}`}
+                role="columnheader"
+              >
+                <div className="cw-v2-compare__col-brand">
+                  {col.featured ? <span className="cw-v2-header__mark" aria-hidden /> : null}
+                  <span className="cw-v2-compare__col-label">{col.label}</span>
                 </div>
-                <div className="cw-landing-compare__cell cw-landing-compare__cell--solution" role="cell">
-                  <span className="cw-landing-compare__mobile-label">{solutionColumn}</span>
-                  <p>{row.solution}</p>
-                </div>
-              </article>
+                <p className="cw-v2-compare__col-tag">{col.tag}</p>
+              </div>
             ))}
           </div>
+
+          {rows.map((row) => (
+            <div key={row.feature} className="cw-v2-compare__row" role="row">
+              <div className="cw-v2-compare__feature" role="rowheader">
+                {row.feature}
+              </div>
+              <div className="cw-v2-compare__cell cw-v2-compare__cell--featured" role="cell">
+                <span className="cw-v2-compare__check" aria-hidden>✓</span>
+                <CompareCell value={row.chrono} />
+              </div>
+              <div className="cw-v2-compare__cell" role="cell">
+                <CompareCell value={row.questo} />
+              </div>
+              <div className="cw-v2-compare__cell" role="cell">
+                <CompareCell value={row.voicemap} />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

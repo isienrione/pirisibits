@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "npm run check:design && vitest run",
     "check:design": "node scripts/check-design.mjs",
+    "fetch:rome-landing-basemap": "node scripts/fetch-rome-landing-basemap.mjs",
     "process-pantheon": "bash scripts/process-pantheon-assets.sh",
     "verify-pantheon": "bash scripts/verify-pantheon-assets.sh",
     "process-waypoint": "bash scripts/process-waypoint-assets.sh",
