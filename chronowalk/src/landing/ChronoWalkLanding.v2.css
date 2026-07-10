@@ -5,8 +5,10 @@
   --v2-raised: #17130f;
   --v2-ink: #211c15;
   --v2-bone: #f4ede1;
-  --v2-muted: #9a9084;
+  --v2-muted: #a9a093;
+  --v2-soft: #d2cbc0;
   --v2-border: #38332c;
+  --v2-border-visible: #6f665c;
   --v2-ember: #d4a04a;
   --v2-coral: #f2624c;
   --v2-max: 72rem;
@@ -85,10 +87,12 @@
   font-size: clamp(1rem, 2.2vw, 1.12rem);
   line-height: 1.6;
   text-wrap: pretty;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 .cw-v2-section {
+  position: relative;
+  z-index: 2;
   padding-block: 6rem;
   background: var(--v2-obsidian);
 }
@@ -218,13 +222,14 @@
 }
 
 .cw-v2-btn--outline {
-  background: transparent;
-  border: 1px solid var(--v2-border);
+  background: color-mix(in srgb, var(--v2-obsidian) 40%, transparent);
+  border: 1px solid var(--v2-border-visible);
   color: var(--v2-bone);
 }
 
 .cw-v2-btn--outline:hover {
-  background: color-mix(in srgb, var(--v2-bone) 5%, transparent);
+  background: color-mix(in srgb, var(--v2-bone) 8%, transparent);
+  border-color: color-mix(in srgb, var(--v2-bone) 35%, var(--v2-border-visible));
 }
 
 /* —— Hero —— */
@@ -256,14 +261,30 @@
 .cw-v2-hero__scrim--vertical {
   background: linear-gradient(
     to top,
-    var(--v2-obsidian) 0%,
-    color-mix(in srgb, var(--v2-obsidian) 50%, transparent) 45%,
-    color-mix(in srgb, var(--v2-obsidian) 70%, transparent) 100%
+    color-mix(in srgb, var(--v2-obsidian) 92%, transparent) 0%,
+    color-mix(in srgb, var(--v2-obsidian) 45%, transparent) 22%,
+    transparent 48%
   );
 }
 
 .cw-v2-hero__scrim--horizontal {
-  background: linear-gradient(to right, color-mix(in srgb, var(--v2-obsidian) 80%, transparent), transparent 55%);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--v2-obsidian) 78%, transparent) 0%,
+    color-mix(in srgb, var(--v2-obsidian) 38%, transparent) 36%,
+    transparent 58%
+  );
+}
+
+@media (min-width: 56rem) {
+  .cw-v2-hero__scrim--horizontal {
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--v2-obsidian) 82%, transparent) 0%,
+      color-mix(in srgb, var(--v2-obsidian) 42%, transparent) 28%,
+      transparent 46%
+    );
+  }
 }
 
 .cw-v2-hero__layout {
@@ -282,6 +303,21 @@
   position: relative;
   width: 100%;
   padding: 0;
+}
+
+.cw-v2-hero__content::before {
+  content: '';
+  position: absolute;
+  inset: -1.5rem -1rem -1.5rem -1.25rem;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 1rem;
+  background: linear-gradient(
+    118deg,
+    color-mix(in srgb, var(--v2-obsidian) 72%, transparent) 0%,
+    color-mix(in srgb, var(--v2-obsidian) 38%, transparent) 68%,
+    transparent 100%
+  );
 }
 
 .cw-v2-hero__headline {
@@ -310,7 +346,7 @@
   margin: 1.25rem 0 0;
   font-size: clamp(1rem, 2.2vw, 1.08rem);
   line-height: 1.65;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 .cw-v2-hero__actions {
@@ -325,7 +361,7 @@
   max-width: 28rem;
   font-size: 0.82rem;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--v2-muted) 95%, transparent);
+  color: var(--v2-muted);
 }
 
 .cw-v2-hero__stats {
@@ -366,13 +402,13 @@
   margin: 0.25rem 0 0;
   font-size: 0.78rem;
   line-height: 1.45;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 .cw-v2-hero__preview-meta {
   margin: 1rem 0 0;
   font-size: 0.82rem;
-  color: color-mix(in srgb, var(--v2-muted) 92%, transparent);
+  color: var(--v2-muted);
 }
 
 .cw-v2-hero__preview {
@@ -479,7 +515,7 @@
   margin: 0.45rem 0 0;
   font-size: 0.88rem;
   line-height: 1.55;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 @media (min-width: 64rem) {
@@ -525,7 +561,7 @@
   margin: 0.55rem 0 0;
   font-size: 0.92rem;
   line-height: 1.6;
-  color: var(--v2-muted);
+  color: var(--v2-soft);
 }
 
 @media (min-width: 48rem) {
@@ -590,7 +626,7 @@
 .cw-v2-try-free__trust {
   margin: 1rem 0 0;
   font-size: 0.82rem;
-  color: color-mix(in srgb, var(--v2-muted) 92%, transparent);
+  color: var(--v2-muted);
 }
 
 @media (min-width: 48rem) {
@@ -1358,7 +1394,7 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--v2-muted) 92%, transparent);
+  color: var(--v2-muted);
 }
 
 .cw-v2-pricing-card__eyebrow--gold .cw-v2-pricing-card__tier-label {
@@ -1406,7 +1442,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--v2-muted) 90%, transparent);
+  color: var(--v2-muted);
 }
 
 .cw-v2-pricing-card__stat dd {
@@ -1547,7 +1583,7 @@
   margin: 0.55rem 0 0;
   font-size: 0.72rem;
   line-height: 1.45;
-  color: color-mix(in srgb, var(--v2-muted) 92%, transparent);
+  color: var(--v2-muted);
 }
 
 .cw-v2-tier-map--featured .cw-v2-tier-map__frame {
