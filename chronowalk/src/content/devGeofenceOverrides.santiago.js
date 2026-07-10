@@ -30,6 +30,18 @@ export const SANTIAGO_DEV_GEOFENCE_SITES = {
     lng: -70.6035081,
     radius_m: 80,
   },
+  bidasoa: {
+    label: 'Bidasoa Restaurant (Av. Vitacura 4873)',
+    lat: -33.3983714,
+    lng: -70.5852255,
+    radius_m: 80,
+  },
+  quinoa: {
+    label: 'Quinoa Restaurant (Luis Pasteur 5393)',
+    lat: -33.3951022,
+    lng: -70.5820337,
+    radius_m: 80,
+  },
 }
 
 /** Rome waypoint ids remapped to Santiago test sites (forum cluster + Rostra). */
@@ -37,5 +49,7 @@ export const SANTIAGO_DEV_WAYPOINT_GEOFENCES = {
   w06: SANTIAGO_DEV_GEOFENCE_SITES['starbucks-callao'],
   w07: SANTIAGO_DEV_GEOFENCE_SITES.novotel,
   w08: SANTIAGO_DEV_GEOFENCE_SITES.rishtedar,
+  pause: SANTIAGO_DEV_GEOFENCE_SITES.quinoa,
   w10: SANTIAGO_DEV_GEOFENCE_SITES['av-providencia-2529'],
+  w11_12: SANTIAGO_DEV_GEOFENCE_SITES.bidasoa,
 }
