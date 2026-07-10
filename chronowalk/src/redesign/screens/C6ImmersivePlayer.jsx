@@ -593,10 +593,11 @@ export default function C6ImmersivePlayer({
       ) : null}
 
       {showContinuity ? (
-        <div className="cw-waypoint-immersive__continuity cw-waypoint-immersive__chrome">
+        <div className="cw-waypoint-immersive__continuity">
           <button
             type="button"
             data-testid="story-continue"
+            className="cw-wc-pressable"
             onClick={onStoryComplete}
             style={{
               width: '100%',

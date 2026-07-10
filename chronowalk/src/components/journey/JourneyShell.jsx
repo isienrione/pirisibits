@@ -112,6 +112,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     waypointAutoplayRef.current = createWaypointAutoplayCoordinator()
   }
   const storyAutoplayGestureRef = useRef(null)
+  const storyPlaybackSeenRef = useRef(false)
   const audioOpsRef = useRef(audio)
   audioOpsRef.current = audio
   const playedResumeRef = useRef(false)
@@ -453,6 +454,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // Reset the "story finished" reveal whenever we leave the story or change stop.
   useEffect(() => {
     thresholdAutoOpenedRef.current = null
+    storyPlaybackSeenRef.current = false
     if (state !== JOURNEY_STATES.STORY) {
       setStoryEnded(false)
       return
@@ -460,6 +462,44 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyCompleteTrackedRef.current = null
     setStoryEnded(false)
   }, [state, step?.id])
+
+  useEffect(() => {
+    if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') {
+      storyPlaybackSeenRef.current = false
+      return
+    }
+    if (
+      audio.narrationPlaying ||
+      (audio.progress?.duration ?? 0) > 0 ||
+      (audio.progress?.itemCount ?? 0) > 0
+    ) {
+      storyPlaybackSeenRef.current = true
+    }
+  }, [
+    audio.narrationPlaying,
+    audio.progress?.duration,
+    audio.progress?.itemCount,
+    state,
+    step?.id,
+    step?.type,
+  ])
+
+  const markStoryEnded = useCallback(
+    (waypointId, { fallback = false } = {}) => {
+      if (!waypointId || storyCompleteTrackedRef.current === waypointId) {
+        setStoryEnded(true)
+        return
+      }
+      storyCompleteTrackedRef.current = waypointId
+      track(TRACK_EVENTS.STORY_COMPLETE, {
+        waypoint_id: waypointId,
+        ended: true,
+        ...(fallback ? { fallback: true } : {}),
+      })
+      setStoryEnded(true)
+    },
+    [],
+  )
 
   // Natural end of a waypoint's narration → mark complete + reveal next action.
   // Scripted-rest waypoints intentionally route to PAUSED instead, so skip them.
@@ -469,34 +509,35 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (step.record?.scripted_rest) return
     if (audio.narrationEnded.kind && audio.narrationEnded.kind !== 'waypoint') return
     if (audio.narrationEnded.id && audio.narrationEnded.id !== step.id) return
-    if (storyCompleteTrackedRef.current === step.id) return
 
-    storyCompleteTrackedRef.current = step.id
-    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, ended: true })
-    setStoryEnded(true)
-  }, [audio.narrationEnded, state, step?.id, step?.type, step?.record?.scripted_rest])
+    markStoryEnded(step.id)
+  }, [audio.narrationEnded, markStoryEnded, state, step?.id, step?.record?.scripted_rest, step?.type])
 
   // Fallback when the engine ends playback but the ended event is missed (mobile
-  // backgrounding, buffer edge cases, or a race with step changes).
+  // backgrounding, buffer edge cases, insert tails, or races with step changes).
   useEffect(() => {
     if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
     if (step.record?.scripted_rest || storyEnded) return
+    if (audio.narrationPlaying) return
+
     const duration = audio.progress?.duration ?? 0
     const current = audio.progress?.currentTime ?? 0
-    if (audio.narrationPlaying) return
-    const nearEnd = duration > 0 ? current >= duration * 0.85 : current >= 30
-    if (!nearEnd) return
-    if (storyCompleteTrackedRef.current === step.id) {
-      setStoryEnded(true)
-      return
-    }
-    storyCompleteTrackedRef.current = step.id
-    track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id, ended: true, fallback: true })
-    setStoryEnded(true)
+    const nearEnd = duration > 0 ? current >= duration * 0.85 : false
+    const sessionDrained =
+      storyPlaybackSeenRef.current &&
+      duration === 0 &&
+      current === 0 &&
+      (audio.progress?.itemCount ?? 0) === 0
+
+    if (!nearEnd && !sessionDrained) return
+
+    markStoryEnded(step.id, { fallback: true })
   }, [
     audio.narrationPlaying,
     audio.progress?.currentTime,
     audio.progress?.duration,
+    audio.progress?.itemCount,
+    markStoryEnded,
     state,
     step?.id,
     step?.record?.scripted_rest,

@@ -223,8 +223,8 @@
 }
 
 .cw-waypoint-immersive__panel--with-continuity {
-  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)));
-  max-height: 40%;
+  bottom: var(--wc-continuity-stack);
+  max-height: min(40%, calc(100% - var(--wc-continuity-stack) - 18%));
 }
 
 .cw-waypoint-immersive__continuity {
@@ -232,8 +232,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 20;
+  z-index: 30;
   padding: 0 24px max(12px, env(safe-area-inset-bottom));
+  padding-bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px));
+  pointer-events: auto;
+}
+
+.cw-waypoint-immersive--focus .cw-waypoint-immersive__continuity {
+  opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -313,7 +320,7 @@
 }
 
 .cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__read-layer {
-  padding-bottom: calc(56px + max(12px, env(safe-area-inset-bottom)));
+  padding-bottom: var(--wc-continuity-stack);
 }
 
 .cw-waypoint-immersive__read-footer {
@@ -340,11 +347,11 @@
 }
 
 .cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__source-note {
-  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)) + 2px);
+  bottom: calc(var(--wc-continuity-stack) + 2px);
 }
 
 .cw-waypoint-immersive--reading.cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__source-note {
-  bottom: calc(56px + max(12px, env(safe-area-inset-bottom)) + 2px);
+  bottom: calc(var(--wc-continuity-stack) + 2px);
 }
 
 /* Transit narration — shared scroll/read pattern as waypoint immersive. */
@@ -499,6 +506,12 @@
 
 :root {
   --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  --wc-continuity-btn-height: 52px;
+  --wc-continuity-stack: calc(
+    var(--wc-continuity-btn-height)
+    + max(12px, env(safe-area-inset-bottom))
+    + var(--wc-browser-chrome, 0px)
+  );
 }
 
 html.redesign-pwa,

@@ -169,6 +169,23 @@ describe('JourneyShell', () => {
     expect(screen.queryByText(/press and hold to cross/i)).not.toBeInTheDocument()
   })
 
+  it.each(['w06', 'w07', 'w08'])('shows continuity button during %s forum story', async (waypointId) => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const index = seq.indexOf(waypointId)
+    expect(index).toBeGreaterThanOrEqual(0)
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: index,
+      completedWaypointIds: seq.slice(0, index).filter((id) => id.startsWith('w')),
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('story-continue')).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
+  })
+
   it('shows threshold help but not auto invite after the first tutorial', async () => {
     localStorage.setItem('cw_threshold_reveal_tutorial_seen', 'true')
     beginJourney({ pace: 'classic' })
