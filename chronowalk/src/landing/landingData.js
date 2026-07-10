@@ -46,6 +46,8 @@ export const LANDING_SECTION_ORDER = [
   'rescue',
   'promise',
   'how-it-works',
+  'comparison',
+  'lifestyle',
   'threshold',
   'rome-journey',
   'credibility',
@@ -108,18 +110,64 @@ export const LANDING_CONTENT = {
       {
         title: 'Choose the Rome journey',
         copy: 'Start when you are ready. Two self-paced days through the city’s most legendary places.',
+        mockup: 'journey',
       },
       {
         title: 'Follow the route',
         copy: 'A warm, simple map guides you between landmarks. Download before you leave the hotel.',
+        mockup: 'map',
       },
       {
         title: 'Arrive and listen',
         copy: 'When you reach a landmark, ChronoWalk opens the story exactly where it happened.',
+        mockup: 'audio',
       },
       {
         title: 'Reveal the past',
         copy: 'Press and hold to cross from today’s ruins into a reconstruction of the ancient scene.',
+        mockup: 'threshold',
+      },
+    ],
+  },
+
+  comparison: {
+    id: 'comparison',
+    headline: 'Built for travelers, not tourists.',
+    problemColumn: 'The Problem with General Apps',
+    solutionColumn: 'The ChronoWalk Experience',
+    rows: [
+      {
+        problem: 'Generic AI narration & unpredictable marketplace quality',
+        solution: 'Premium studio-produced narratives and original cinematic soundscapes.',
+      },
+      {
+        problem: 'Endless screen-staring, phone trivia, and rigid game puzzles',
+        solution: 'Heads-up exploration. Listen automatically on location via responsive GPS.',
+      },
+      {
+        problem: 'Fragmented individual checklists and planning spirals',
+        solution: 'A complete, deeply structured 2-day historical itinerary ready out of the box.',
+      },
+    ],
+  },
+
+  lifestyle: {
+    banners: [
+      {
+        id: 'shared-moments',
+        tone: 'warm',
+        imageKey: 'forum',
+        placeholderLabel: 'Couple sharing headphones at the Roman Forum',
+        caption:
+          'Designed for shared moments. Pause for espresso, step into shade, or explore at your own pace.',
+      },
+      {
+        id: 'heads-up',
+        tone: 'cool',
+        imageKey: 'pantheon',
+        placeholderLabel: 'Traveler looking up at the Pantheon portico',
+        caption:
+          'Heads-up exploration. GPS triggers the audio automatically so your phone stays in your hand, and your eyes stay on Rome.',
       },
     ],
   },

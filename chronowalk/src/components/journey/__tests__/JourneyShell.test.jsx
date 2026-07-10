@@ -98,6 +98,12 @@ function renderShell(props = {}) {
 
 const PAUSE_SEQUENCE_INDEX = 10
 
+function openTransitFullPlayer(screen) {
+  fireEvent.click(
+    screen.getByRole('button', { name: /open full narration player/i })
+  )
+}
+
 describe('JourneyShell', () => {
   beforeEach(() => {
     global.ResizeObserver = class {
@@ -180,11 +186,13 @@ describe('JourneyShell', () => {
     const t04Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t04')
     expect(t04Index).toBeGreaterThanOrEqual(0)
 
+    audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t04Index })
     renderShell({ variant: 'redesign' })
 
     const continueBtn = await screen.findByTestId('transit-continue')
+    openTransitFullPlayer(screen)
     expect(screen.getByText(/read instead/i)).toBeInTheDocument()
     fireEvent.click(continueBtn)
 
@@ -196,6 +204,7 @@ describe('JourneyShell', () => {
     const t06Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t06')
     expect(t06Index).toBeGreaterThanOrEqual(0)
 
+    audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t06Index })
     renderShell({ variant: 'redesign' })
@@ -203,6 +212,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('transit-screen')).toBeInTheDocument()
     expect(screen.getByTestId('transit-audio-panel')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /temple of vesta/i })).toBeInTheDocument()
+    openTransitFullPlayer(screen)
     expect(screen.getByText(/read instead/i)).toBeInTheDocument()
     expect(screen.getByTestId('transit-continue')).toBeInTheDocument()
     expect(playTransitMock).toHaveBeenCalledWith('t06')
@@ -215,6 +225,7 @@ describe('JourneyShell', () => {
     expect(w07Index).toBeGreaterThanOrEqual(0)
     expect(seq[w07Index + 1]).toBe('t06')
 
+    audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.STORY, {
       currentSequenceIndex: w07Index,
@@ -226,6 +237,7 @@ describe('JourneyShell', () => {
 
     expect(await screen.findByTestId('transit-audio-panel')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /temple of vesta/i })).toBeInTheDocument()
+    openTransitFullPlayer(screen)
     expect(screen.getByText(/read instead/i)).toBeInTheDocument()
     expect(playTransitMock).toHaveBeenCalledWith('t06')
   })
@@ -235,6 +247,7 @@ describe('JourneyShell', () => {
     const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
     expect(t15Index).toBeGreaterThanOrEqual(0)
 
+    audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: t15Index })
     renderShell({ variant: 'redesign' })
@@ -257,8 +270,8 @@ describe('JourneyShell', () => {
     })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('transit-arrive-destination')).toBeInTheDocument()
-    fireEvent.click(screen.getByTestId('transit-arrive-destination'))
+    fireEvent.click(await screen.findByTestId('transit-im-here'))
+    fireEvent.click(await screen.findByTestId('transit-arrive-destination'))
 
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)

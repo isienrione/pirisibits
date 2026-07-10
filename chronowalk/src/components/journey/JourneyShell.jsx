@@ -23,20 +23,23 @@ import RestScreen from './RestScreen.jsx'
 import DayCompleteScreen from './DayCompleteScreen.jsx'
 import AudioInterruptionBanner from './AudioInterruptionBanner.jsx'
 import { JourneyLayout, JourneyPrimaryButton } from './JourneyLayout.jsx'
-import { COMPANION_MODES, companionCopy, isCompanionTrackingState } from '../../content/companionGuidance.js'
+import { COMPANION_MODES, isCompanionTrackingState } from '../../content/companionGuidance.js'
 import { ROME_ACTS } from '../../data/romePacing.js'
 import { resolveStepTranscript } from '../../content/chapterMeta.js'
 import { stripDirectorCues } from '../../utils/transcriptContent.js'
 import { getStepIdAtIndex, getPreviousWaypointInSequence, getWaypoint } from '../../content/manifest.js'
 import { getJourneyCompleteMoment } from '../../content/launchJourneyComplete.js'
 import { isVisitStop } from '../../content/tourProductTruth.js'
-import { formatDistanceToNext, resolveJourneyProgressPct, estimateDistanceBetweenStops, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
-import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import {
+  estimateDistanceBetweenStops,
+  resolveJourneyProgressPct,
+  sanitizeWalkDistanceM,
+} from '../../content/journeyProgress.js'
+import { isWithinApproachDistance } from '../../redesign/lib/walkingCompanionPhase.js'
 import C2Walking, { WALKING_UI_REVISION as loadedWalkingUiRevision } from '../../redesign/screens/C2Walking.jsx'
 import { WALKING_UI_REVISION as requiredWalkingUiRevision } from '../../content/walkingUiRevision.js'
 import { clearAllCaches, unregisterAllServiceWorkers } from '../../pwa/pwaCacheUtils.js'
 import C2Transit from '../../redesign/screens/C2Transit.jsx'
-import C3Approaching from '../../redesign/screens/C3Approaching.jsx'
 import C4ArrivalMoment from '../../redesign/screens/C4ArrivalMoment.jsx'
 import C6ImmersivePlayer from '../../redesign/screens/C6ImmersivePlayer.jsx'
 import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
@@ -62,7 +65,6 @@ import {
 } from '../../redesign/lib/waypointImmersiveProps.js'
 import { buildTransitImmersiveProps } from '../../redesign/lib/transitImmersiveProps.js'
 import JourneyInlineMap from './JourneyInlineMap.jsx'
-import { bearingDegrees } from '../../utils/bearing.js'
 
 // GPS in Rome drifts, so arrival is confirmed only after a stable, continuous
 // presence near the landmark — never the instant the radius is first touched.
@@ -638,13 +640,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const accuracyReliable = geo.accuracy == null || geo.accuracy <= POOR_ACCURACY_M
 
     if (geo.insideGeofence && accuracyReliable) {
-      // Start counting continuous presence; keep any timer already running so a
-      // steady position matures to arrival even without further GPS updates.
-      if (dwellTimerRef.current == null) {
-        dwellTimerRef.current = setTimeout(() => {
-          dwellTimerRef.current = null
-          arriveRef.current?.('auto')
-        }, ARRIVAL_DWELL_MS)
+      if (variant !== 'redesign') {
+        // Legacy: mature dwell before auto-arrival.
+        if (dwellTimerRef.current == null) {
+          dwellTimerRef.current = setTimeout(() => {
+            dwellTimerRef.current = null
+            arriveRef.current?.('auto')
+          }, ARRIVAL_DWELL_MS)
+        }
       }
       return
     }
@@ -668,6 +671,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // gently surface the manual "I'm here" affordance.
   const locationShy =
     geo.accuracy != null && geo.accuracy > POOR_ACCURACY_M
+
+  const gpsArrivalReliable =
+    geo.accuracy == null || geo.accuracy <= POOR_ACCURACY_M
+  const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
 
   useEffect(() => {
     if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || needsPathChoice) return
@@ -1043,32 +1050,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
       ? estimateDistanceBetweenStops(previousWaypoint, geoTarget)
       : null
 
-  const walkingBearingDeg = (() => {
-    const target = geoTarget?.geofence
-    if (!target?.lat || !target?.lng) return { deg: null, live: false }
-
-    if (geo.position?.lat != null && geo.position?.lng != null) {
-      return {
-        deg: bearingDegrees(geo.position.lat, geo.position.lng, target.lat, target.lng),
-        live: true,
-      }
-    }
-
-    const origin = previousWaypoint?.geofence
-    if (origin?.lat != null && origin?.lng != null) {
-      return {
-        deg: bearingDegrees(origin.lat, origin.lng, target.lat, target.lng),
-        live: false,
-      }
-    }
-
-    return { deg: null, live: false }
-  })()
-
-  const walkingCompanion = companionCopy(companion.mode, {
-    targetTitle: geoTarget ? titleForWaypoint(geoTarget) : null,
-  })
-
   if (state === JOURNEY_STATES.STORY && step.type === 'waypoint') {
     if (variant === 'redesign') {
       const record = step.record
@@ -1184,16 +1165,20 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
       return withInterruptionBanner(
-        <C3Approaching
+        <C2Walking
           {...props}
-          approachLine={props.direction}
+          stopKey={step.id}
+          distanceM={liveWalkDistanceM}
+          estimatedDistanceM={estimatedWalkDistanceM}
           progressPct={journeyProgressPct}
-          subtitle={formatDistanceToNext(liveWalkDistanceM ?? estimatedWalkDistanceM) ?? 'almost there'}
-          onArrive={handleManualArrival}
-          locationShy={locationShy}
-          companionEyebrow={walkingCompanion?.eyebrow ?? null}
-          companionTitle={walkingCompanion?.title ?? null}
-          companionSubtitle={walkingCompanion?.subtitle ?? null}
+          locationStatus={geo.locationStatus}
+          onRetryLocation={geo.retryLocation}
+          onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+          insideGeofence={gpsArrived}
+          near
+          extraBottomInset={dockActive ? 88 : 0}
+          onOpenSettings={openSettings}
+          map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )
     }
@@ -1226,10 +1211,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           onContinue: handleTransitContinue,
           continueLabel: audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →',
           destinationTitle: titleForWaypoint(step.targetWaypoint),
-          onArriveAtDestination: handleTransitDestinationArrival,
-          atDestination:
-            Boolean(step.targetWaypoint) &&
-            (geo.insideGeofence || locationShy),
+          onBeginChapter: handleTransitDestinationArrival,
           onToggleAudio: () => audio.toggleNarration(),
           onSkipBack: () => audio.skipNarration(-15),
           onSkipForward: () => audio.skipNarration(15),
@@ -1240,6 +1222,16 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return withInterruptionBanner(
         <C2Transit
           {...transitProps}
+          stopKey={step.id}
+          arrived={gpsArrived}
+          distanceM={liveWalkDistanceM}
+          estimatedDistanceM={estimatedWalkDistanceM}
+          locationStatus={geo.locationStatus}
+          onRetryLocation={geo.retryLocation}
+          near={
+            !gpsArrived &&
+            (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
+          }
           map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
         />
       )
@@ -1266,21 +1258,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return withInterruptionBanner(
         <C2Walking
           {...props}
+          stopKey={step.id}
           distanceM={liveWalkDistanceM}
           estimatedDistanceM={estimatedWalkDistanceM}
-          bearingDeg={walkingBearingDeg.deg}
-          bearingIsLive={walkingBearingDeg.live}
           progressPct={journeyProgressPct}
           locationStatus={geo.locationStatus}
           onRetryLocation={geo.retryLocation}
-          companionLine={
-            companion.mode === COMPANION_MODES.NORMAL
-              ? null
-              : walkingCompanion?.subtitle ?? walkingCompanion?.title
+          onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+          insideGeofence={gpsArrived}
+          near={
+            !gpsArrived &&
+            (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
           }
-          onSimulateArrival={handleManualArrival}
-          insideGeofence={geo.insideGeofence}
-          locationShy={locationShy}
           extraBottomInset={dockActive ? 88 : 0}
           onPause={() => transition(JOURNEY_STATES.PAUSED)}
           onOpenSettings={openSettings}

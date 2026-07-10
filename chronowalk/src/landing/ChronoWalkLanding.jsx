@@ -6,7 +6,9 @@ import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingHero from './LandingHero.jsx'
 import LandingProblemSection from './LandingProblemSection.jsx'
 import LandingPromiseSection from './LandingCorePromiseSection.jsx'
+import LandingComparisonSection from './LandingComparisonSection.jsx'
 import LandingHowItWorksSection from './LandingHowItWorksSection.jsx'
+import LandingLifestyleSection from './LandingLifestyleSection.jsx'
 import LandingThresholdDemo from './LandingThresholdDemo.jsx'
 import LandingRomeJourneySection from './LandingRomeJourneySection.jsx'
 import LandingFinalCtaSection from './LandingFinalCtaSection.jsx'
@@ -85,7 +87,9 @@ export default function ChronoWalkLanding() {
       <LandingHero onBegin={handleBeginJourney} onLivePantheon={handleLivePantheon} />
       <LandingProblemSection />
       <LandingPromiseSection />
+      <LandingComparisonSection />
       <LandingHowItWorksSection />
+      <LandingLifestyleSection />
       <LandingThresholdDemo />
       <LandingRomeJourneySection
         priceLabel={priceLabel}

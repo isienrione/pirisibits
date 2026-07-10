@@ -83,6 +83,7 @@ export default function JourneyInlineMap({ manifest, context, geo }) {
       distance={geo.distance}
       debugMapEnabled={isDebugMap()}
       minimalUI
+      walkingCompanionUI
       fillContainer
     />
   )

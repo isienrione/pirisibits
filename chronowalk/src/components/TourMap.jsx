@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { LocateFixed } from 'lucide-react'
 import mapboxgl from '../map/mapboxClient'
 import mapboxCssUrl from 'mapbox-gl/dist/mapbox-gl.css?url'
 import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
@@ -32,7 +33,7 @@ const MAP_COLORS = {
 
 const MAP_STYLE = env.mapboxStyleUrl
 
-function setupMapLayers(map, { stops, tour, bounds, minimalUI, activeTargetId }) {
+function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId }) {
   const geofenceStops = minimalUI
     ? stops.filter((stop) => stop.id === activeTargetId)
     : stops
@@ -111,9 +112,10 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, activeTargetId })
       type: 'line',
       source: 'active-leg-route',
       paint: {
-        'line-color': MAP_COLORS.activeLeg,
-        'line-width': 5,
-        'line-opacity': 0.95,
+        'line-color': walkingCompanionUI ? '#E4552E' : MAP_COLORS.activeLeg,
+        'line-width': walkingCompanionUI ? 4 : 5,
+        'line-opacity': walkingCompanionUI ? 0.92 : 0.95,
+        ...(walkingCompanionUI ? { 'line-dasharray': [2, 2.2] } : {}),
       },
     })
 
@@ -290,6 +292,7 @@ function TourMapboxView({
   directionsGeometry = null,
   onStopSelect = null,
   minimalUI = false,
+  walkingCompanionUI = false,
   fillContainer = false,
 }) {
   const mapContainer = useRef(null)
@@ -348,7 +351,7 @@ function TourMapboxView({
       }
 
       try {
-        setupMapLayers(map.current, { stops, tour, bounds, minimalUI, activeTargetId })
+        setupMapLayers(map.current, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId })
       } catch (error) {
         console.error('Map layer setup failed:', error)
         onMapFailureRef.current?.()
@@ -455,8 +458,10 @@ function TourMapboxView({
 
     stops.forEach((stop) => {
       if (!stop?.landmark) return
+      if (walkingCompanionUI && stop.id !== activeTargetId) return
       const showLabel =
-        !minimalUI || stop.id === activeTargetId || stop.id === selectedStopId
+        !walkingCompanionUI &&
+        (!minimalUI || stop.id === activeTargetId || stop.id === selectedStopId)
       const marker = new mapboxgl.Marker({
         element: createLandmarkMarkerElement(
           stop.title,
@@ -470,7 +475,7 @@ function TourMapboxView({
         .addTo(map.current)
       landmarkMarkers.current.push(marker)
     })
-  }, [stops, mapLoaded, onStopSelect, minimalUI, activeTargetId, selectedStopId])
+  }, [stops, mapLoaded, onStopSelect, minimalUI, walkingCompanionUI, activeTargetId, selectedStopId])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !mapboxToken) return undefined
@@ -656,6 +661,34 @@ function TourMapboxView({
     })
   }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
+  const handleRecenter = useCallback(() => {
+    if (!map.current || !mapLoaded) return
+    const bounds = new mapboxgl.LngLatBounds()
+    if (userPos?.lat != null && userPos?.lng != null) {
+      bounds.extend([userPos.lng, userPos.lat])
+    }
+    if (activeTarget?.landmark) {
+      bounds.extend([activeTarget.landmark.lng, activeTarget.landmark.lat])
+    }
+    if (bounds.isEmpty()) return
+    map.current.fitBounds(bounds, {
+      padding: { top: 56, bottom: 96, left: 40, right: 40 },
+      maxZoom: 17,
+      duration: 650,
+    })
+  }, [mapLoaded, userPos?.lat, userPos?.lng, activeTarget?.landmark])
+
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !walkingCompanionUI) return
+    if (map.current.getLayer('tour-route-line')) {
+      map.current.setPaintProperty('tour-route-line', 'line-opacity', 0.1)
+    }
+    if (map.current.getLayer('active-leg-route-line')) {
+      map.current.setPaintProperty('active-leg-route-line', 'line-color', '#E4552E')
+      map.current.setPaintProperty('active-leg-route-line', 'line-dasharray', [2, 2.2])
+    }
+  }, [mapLoaded, walkingCompanionUI])
+
   const activeTitle = activeTarget?.title ?? 'waypoint'
 
   return (
@@ -672,6 +705,16 @@ function TourMapboxView({
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
+      {walkingCompanionUI && mapLoaded ? (
+        <button
+          type="button"
+          className="absolute bottom-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(245,239,227,0.12)] bg-[rgba(28,26,24,0.82)] text-[#F5EFE3] shadow-lg backdrop-blur-md"
+          onClick={handleRecenter}
+          aria-label="Recenter map"
+        >
+          <LocateFixed size={16} strokeWidth={2} />
+        </button>
+      ) : null}
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}
@@ -708,6 +751,7 @@ const TourMap = ({
   directionsGeometry = null,
   onStopSelect = null,
   minimalUI = false,
+  walkingCompanionUI = false,
   fillContainer = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
@@ -755,6 +799,7 @@ const TourMap = ({
       directionsGeometry={directionsGeometry}
       onStopSelect={onStopSelect}
       minimalUI={minimalUI}
+      walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
     />
   )
