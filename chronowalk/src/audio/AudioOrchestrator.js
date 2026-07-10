@@ -6,6 +6,13 @@ import {
   VISUAL_SYNC_DELAY_MS,
   waitForCanPlayThrough,
 } from './audioMedia';
+import {
+  configurePlaybackAudioSession,
+  primePlaybackAudioSession,
+  releaseMediaChannelPlayback,
+  resetMediaChannelPlayback,
+  retainMediaChannelPlayback,
+} from './configureAudioSession';
 
 const AUDIO_MODES = {
   AMBIENT: 'AMBIENT',
@@ -47,6 +54,24 @@ class AudioOrchestrator {
 
     this.arrivalPlayer.addEventListener('pause', this.handleArrivalPause);
     this.arrivalPlayer.addEventListener('play', this.handleArrivalPlay);
+
+    configurePlaybackAudioSession();
+  }
+
+  async preparePlaybackSession() {
+    await primePlaybackAudioSession();
+  }
+
+  retainMediaChannel() {
+    retainMediaChannelPlayback();
+  }
+
+  releaseMediaChannel() {
+    releaseMediaChannelPlayback();
+  }
+
+  resetMediaChannel() {
+    resetMediaChannelPlayback();
   }
 
   handleArrivalPause() {
@@ -227,12 +252,20 @@ class AudioOrchestrator {
     }
 
     try {
+      await this.preparePlaybackSession();
+      this.retainMediaChannel();
       this.alertPlayer.pause();
       this.alertPlayer.currentTime = 0;
       this.alertPlayer.volume = ARRIVAL_ALERT_VOLUME;
       this.alertPlayer.src = alertUrl;
       await this.alertPlayer.play();
+      this.alertPlayer.addEventListener(
+        'ended',
+        () => this.releaseMediaChannel(),
+        { once: true }
+      );
     } catch (error) {
+      this.releaseMediaChannel();
       console.warn('Arrival alert playback blocked.', error);
     }
   }
@@ -263,6 +296,8 @@ class AudioOrchestrator {
     void this.fadeVolume(this.transitPlayer, 0, FADE_DURATION_MS);
 
     try {
+      await this.preparePlaybackSession();
+      this.retainMediaChannel();
       this.arrivalPlayer.volume = 0;
 
       if (this.arrivalPlayer.src !== this.audioUrls.arrival) {
@@ -285,6 +320,7 @@ class AudioOrchestrator {
         this.scheduleVisualSync(generation);
       }
     } catch (error) {
+      this.releaseMediaChannel();
       console.warn('Audio playback blocked. User needs to interact first.', error);
     }
   }
@@ -328,6 +364,8 @@ class AudioOrchestrator {
         return;
       }
 
+      await this.preparePlaybackSession();
+      this.retainMediaChannel();
       this.clearPendingSync();
       this.visualSyncFired = false;
 
@@ -347,6 +385,7 @@ class AudioOrchestrator {
         this.emitPlaybackState();
       }
     } catch (error) {
+      this.releaseMediaChannel();
       console.warn('Audio playback blocked. User needs to interact first.', error);
     }
   }
@@ -369,6 +408,8 @@ class AudioOrchestrator {
     }
 
     try {
+      await this.preparePlaybackSession();
+      this.retainMediaChannel();
       if (!this.arrivalPlayer.src) {
         this.arrivalPlayer.src = this.audioUrls.arrival;
       }
@@ -379,6 +420,7 @@ class AudioOrchestrator {
       this.setPlaybackInterrupted(false);
       return true;
     } catch (error) {
+      this.releaseMediaChannel();
       console.warn('AudioOrchestrator: manual resume blocked.', error);
       this.setPlaybackInterrupted(true);
       return false;
@@ -411,6 +453,7 @@ class AudioOrchestrator {
       player.volume = 1;
     });
 
+    this.resetMediaChannel();
     this.suppressPauseDetection = false;
     this.setPlaybackInterrupted(false);
 

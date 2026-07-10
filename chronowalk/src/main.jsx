@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.jsx'
 import SplashScreen from './components/SplashScreen.jsx'
 import './pwa/pwaController.js'
+import { configurePlaybackAudioSession } from './audio/configureAudioSession.js'
+
+configurePlaybackAudioSession()
 
 function Root() {
   const [showSplash, setShowSplash] = useState(true)

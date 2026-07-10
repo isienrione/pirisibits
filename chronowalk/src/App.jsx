@@ -34,6 +34,7 @@ import { useTourEntitlements } from './hooks/useTourEntitlements'
 import { ROME_CORE_TOUR } from './data/rome-core-tour'
 import { getTourById } from './services/tourRegistry'
 import { audioOrchestrator } from './audio/AudioOrchestrator'
+import { primePlaybackAudioSession } from './audio/configureAudioSession'
 import { requestDeviceTiltPermission } from './hooks/useDeviceTilt'
 import {
   readAudioEnabled,
@@ -332,6 +333,7 @@ function App() {
       setActiveTour(selectedTour)
     }
     setFreePreviewStopId(null)
+    void primePlaybackAudioSession()
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
     tourStartedAtRef.current = Date.now()
@@ -342,6 +344,7 @@ function App() {
 
   const handleStartFreePreview = useCallback(() => {
     setFreePreviewStopId(FREE_PREVIEW_STOP_ID)
+    void primePlaybackAudioSession()
     setHasInteracted(true)
     setActiveTab(NAV_TABS.MAP)
     void import('./components/TourMap')
