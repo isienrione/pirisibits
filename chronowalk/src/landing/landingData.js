@@ -19,6 +19,52 @@ export const LANDING_CTA = {
   tryFree: 'Try a free story',
 }
 
+/** Explicit free-preview product block — Pantheon sample before purchase. */
+export const FREE_PREVIEW = {
+  title: 'The Pantheon Sneak Peek',
+  meta: 'Free Preview · 4 minutes',
+  copy:
+    'Test the cinematic narration, walk the location, and experience exactly how the GPS triggers before spending a single euro.',
+}
+
+/** Tiered Rome journey offerings shown on the landing product showcase. */
+export const ROME_TIERS = [
+  {
+    id: 'rome-essential',
+    title: 'ChronoWalk Rome: Essentials',
+    price: '€12',
+    priceCents: 1200,
+    badge: 'Classic Archeology',
+    landmarkLine: 'Colosseum + Roman Forum',
+    description:
+      'A tightly focused journey mapping out the twin hearts of the ancient empire.',
+    landmarks: ['Colosseum', 'Roman Forum'],
+    bullets: [
+      'Studio-produced audio guides',
+      'Offline maps & GPS sync',
+      '3 Then-and-now reconstructions',
+    ],
+    primaryCta: 'Begin Journey',
+  },
+  {
+    id: 'rome-complete',
+    title: 'ChronoWalk Rome: The Complete Experience',
+    price: '€17',
+    priceCents: 1700,
+    badge: 'Most Popular',
+    featuredBullet: '+ At your own pace customizable itinerary (choose which stops)',
+    description:
+      'The ultimate self-paced Roman holiday. Adds the sprawling open city and total route control.',
+    landmarks: ['Colosseum', 'Roman Forum', 'The Pantheon', 'Trevi Fountain', 'Spanish Steps'],
+    bullets: [
+      'All 22 historical locations',
+      'Every signature Then-and-now visual reconstruction',
+      "The digital post-walk 'Journey Letter' keepsake",
+    ],
+    primaryCta: 'Begin Journey',
+  },
+]
+
 /**
  * Replace `{price}` in landing copy strings.
  * @param {string} text
@@ -49,7 +95,9 @@ export const LANDING_SECTION_ORDER = [
   'comparison',
   'lifestyle',
   'threshold',
+  'free-preview',
   'rome-journey',
+  'rome-tiers',
   'credibility',
   'letter',
   'faq',
@@ -63,7 +111,9 @@ export const LANDING_CONTENT = {
       'A cinematic walking companion with GPS-guided stories, ancient reconstructions, and a ready-made route through the city’s most legendary places.',
     primaryCta: LANDING_CTA.begin,
     tryAppTitle: 'Try the ChronoWalk App',
-    freeStoryTitle: 'Experience a free story',
+    freeStoryTitle: FREE_PREVIEW.title,
+    freeStoryMeta: FREE_PREVIEW.meta,
+    freeStoryCopy: FREE_PREVIEW.copy,
     freeStoryCta: 'The Pantheon',
     supportLine: 'No group. No planning spiral. Start today.',
   },
@@ -181,22 +231,32 @@ export const LANDING_CONTENT = {
       'Evidence-based reconstruction · some colors and crowd details are informed conjecture.',
   },
 
+  'free-preview': {
+    id: 'free-preview',
+    ...FREE_PREVIEW,
+    cta: 'The Pantheon',
+  },
+
+  'rome-tiers': {
+    id: 'rome-tiers',
+    headline: 'Pick your depth. Walk at your own pace.',
+    subheadline:
+      'One-time purchases. No rolling subscriptions. Yours for the whole journey.',
+    tiers: ROME_TIERS,
+  },
+
   [ROME_JOURNEY_SECTION_ID]: {
     id: ROME_JOURNEY_SECTION_ID,
     headline: 'Your first city: Rome.',
     productTitle: 'ChronoWalk Rome',
-    routeStops: ['Colosseum', 'Roman Forum', 'Pantheon', 'Trevi', 'Spanish Steps'],
+    routeStops: ROME_TIERS[1].landmarks,
     highlightBullets: ['22 places', 'Two self-paced days', 'Offline-ready'],
-    bullets: [
-      '22 places',
-      'Two self-paced days',
-      'GPS-guided stories',
-      'Then-and-now reconstructions',
-      'Offline-ready',
-    ],
+    bullets: ROME_TIERS[1].bullets,
+    tiers: ROME_TIERS,
     priceLine: `${PRICE_PLACEHOLDER} · one purchase · two self-paced days`,
     primaryCta: LANDING_CTA.begin,
     secondaryCta: LANDING_CTA.tryFree,
+    secondaryPreview: FREE_PREVIEW,
   },
 
   credibility: {

@@ -19,4 +19,11 @@ describe('host attribution', () => {
     expect(url).toContain('checkout%5Bcustom%5D%5Bhost%5D=hotelroma1')
     expect(url).toContain('checkout%5Bcustom%5D%5Bab_variant%5D=1700')
   })
+
+  it('appends product id when provided', () => {
+    const url = buildCheckoutUrl('https://checkout.example/buy', {
+      productId: 'rome-complete',
+    })
+    expect(url).toContain('checkout%5Bcustom%5D%5Bproduct_id%5D=rome-complete')
+  })
 })

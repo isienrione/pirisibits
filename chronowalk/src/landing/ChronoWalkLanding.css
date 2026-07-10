@@ -3022,3 +3022,228 @@
     max-width: 46rem;
   }
 }
+
+/* —— Rome tier pricing —— */
+
+.cw-landing-pricing {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+.cw-landing-pricing__inner {
+  gap: clamp(2.5rem, 6vw, 3.75rem);
+}
+
+.cw-landing-pricing__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.cw-landing-pricing__headline {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  color: var(--warm-white, #f5efe3);
+}
+
+.cw-landing-pricing__subtitle {
+  margin: 0;
+  font-size: clamp(1rem, 2.2vw, 1.12rem);
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--warm-white, #f5efe3) 72%, transparent);
+}
+
+.cw-landing-pricing__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  width: 100%;
+  max-width: 56rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 52rem) {
+  .cw-landing-pricing__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+.cw-landing-pricing-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--muted-warm, #b9af9c) 28%, transparent);
+  background: color-mix(in srgb, var(--ink-800, #26221b) 55%, transparent);
+}
+
+.cw-landing-pricing-card--featured {
+  border-color: color-mix(in srgb, var(--ember, #e8a13c) 40%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ember, #e8a13c) 18%, transparent),
+    0 0 32px color-mix(in srgb, var(--ember, #e8a13c) 22%, transparent),
+    0 18px 48px color-mix(in srgb, var(--obsidian, #16130f) 55%, transparent);
+}
+
+.cw-landing-pricing-card__badge {
+  display: inline-flex;
+  align-self: flex-start;
+  margin: 1.15rem 1.15rem 0;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--warm-white, #f5efe3) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--muted-warm, #b9af9c) 35%, transparent);
+}
+
+.cw-landing-pricing-card__badge--ribbon {
+  position: absolute;
+  top: 0;
+  right: 1.15rem;
+  margin: 0;
+  transform: translateY(-50%);
+  padding: 0.38rem 0.85rem;
+  border-radius: 0.35rem;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ember, #e8a13c) 92%, #fff 8%),
+    var(--ember-deep, #c97f1e)
+  );
+  border: none;
+  color: var(--ink-on-fill, #2a1206);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ember, #e8a13c) 35%, transparent);
+}
+
+.cw-landing-pricing-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.85rem;
+  padding: clamp(1.35rem, 3.5vw, 1.75rem);
+}
+
+.cw-landing-pricing-card--featured .cw-landing-pricing-card__body {
+  padding-top: clamp(1.65rem, 3.5vw, 2rem);
+}
+
+.cw-landing-pricing-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.cw-landing-pricing-card__title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.15rem, 2.8vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--warm-white, #f5efe3);
+}
+
+.cw-landing-pricing-card__price {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ember, #e8a13c);
+}
+
+.cw-landing-pricing-card__description {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--warm-white, #f5efe3) 78%, transparent);
+}
+
+.cw-landing-pricing-card__landmarks {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.55rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+  color: var(--warm-white, #f5efe3);
+  background: color-mix(in srgb, var(--obsidian, #16130f) 65%, transparent);
+  border: 1px solid color-mix(in srgb, var(--muted-warm, #b9af9c) 22%, transparent);
+}
+
+.cw-landing-pricing-card--featured .cw-landing-pricing-card__landmarks {
+  border-color: color-mix(in srgb, var(--ember, #e8a13c) 22%, transparent);
+}
+
+.cw-landing-pricing-card__bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1;
+}
+
+.cw-landing-pricing-card__bullet {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--warm-white, #f5efe3) 84%, transparent);
+}
+
+.cw-landing-pricing-card__bullet::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--muted-warm, #b9af9c) 85%, transparent);
+}
+
+.cw-landing-pricing-card--featured .cw-landing-pricing-card__bullet::before {
+  background: var(--ember, #e8a13c);
+}
+
+.cw-landing-pricing-card__bullet--featured {
+  font-weight: 700;
+  color: var(--warm-white, #f5efe3);
+}
+
+.cw-landing-pricing-card__cta {
+  margin-top: 0.65rem;
+}
+
+.cw-landing-pricing-card__cta--essential {
+  border: 1.5px solid color-mix(in srgb, var(--warm-white, #f5efe3) 28%, transparent);
+  background: color-mix(in srgb, var(--obsidian, #16130f) 35%, transparent);
+  color: var(--warm-white, #f5efe3);
+  transition: border-color 180ms ease, background 180ms ease;
+}
+
+.cw-landing-pricing-card__cta--essential:hover {
+  border-color: color-mix(in srgb, var(--warm-white, #f5efe3) 42%, transparent);
+  background: color-mix(in srgb, var(--ink-800, #26221b) 72%, transparent);
+}
+
+.cw-landing-pricing-card--featured .cw-landing-pricing-card__cta {
+  width: 100%;
+}

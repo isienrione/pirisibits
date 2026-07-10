@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { buildCheckoutUrl, getHost } from '../lib/host.js'
+import { getHost } from '../lib/host.js'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingHero from './LandingHero.jsx'
@@ -11,9 +11,11 @@ import LandingHowItWorksSection from './LandingHowItWorksSection.jsx'
 import LandingLifestyleSection from './LandingLifestyleSection.jsx'
 import LandingThresholdDemo from './LandingThresholdDemo.jsx'
 import LandingRomeJourneySection from './LandingRomeJourneySection.jsx'
+import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingFinalCtaSection from './LandingFinalCtaSection.jsx'
 import LandingStickyCta from './LandingStickyCta.jsx'
 import { useLandingPrice } from './useLandingPrice.js'
+import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import './ChronoWalkLanding.css'
@@ -60,25 +62,38 @@ export default function ChronoWalkLanding() {
     navigate('/preview')
   }, [navigate])
 
+  const handleBeginTier = useCallback(
+    (tierId) => {
+      track(TRACK_EVENTS.LANDING_CTA_BEGIN, { source: 'landing', tier: tierId })
+
+      const tierCents = resolveLandingTierCents(tierId, cents)
+      const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
+        host: getHost(),
+        abVariantCents: cents,
+      })
+
+      if (!url) {
+        console.warn(
+          '[ChronoWalk landing] Checkout URL unavailable — using tier fallback and /access route.',
+          tierId,
+        )
+        navigate('/access')
+        return
+      }
+
+      track(TRACK_EVENTS.CHECKOUT_OPEN, {
+        price_cents: tierCents,
+        source: 'landing',
+        tier: tierId,
+      })
+      window.location.assign(url)
+    },
+    [cents, checkoutUrl, navigate],
+  )
+
   const handleBeginJourney = useCallback(() => {
-    track(TRACK_EVENTS.LANDING_CTA_BEGIN, { source: 'landing' })
-
-    const url = buildCheckoutUrl(checkoutUrl, {
-      host: getHost(),
-      abVariantCents: cents,
-    })
-
-    if (!url) {
-      console.warn(
-        '[ChronoWalk landing] Checkout URL unavailable — using €17 fallback and /access route.',
-      )
-      navigate('/access')
-      return
-    }
-
-    track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents, source: 'landing' })
-    window.location.assign(url)
-  }, [cents, checkoutUrl, navigate])
+    handleBeginTier('rome-complete')
+  }, [handleBeginTier])
 
   return (
     <main
@@ -96,6 +111,7 @@ export default function ChronoWalkLanding() {
         onBegin={handleBeginJourney}
         onPreview={handleTryFreeStory}
       />
+      <LandingRomeTiersSection onBeginTier={handleBeginTier} />
       <LandingFinalCtaSection onBegin={handleBeginJourney} onPreview={handleTryFreeStory} />
       <LandingStickyCta
         visible={stickyVisible}

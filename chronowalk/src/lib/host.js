@@ -41,11 +41,12 @@ export function getHostLabel(code = getHost()) {
   return HOST_MAP[code] ?? code
 }
 
-export function buildCheckoutUrl(baseUrl, { host, abVariantCents } = {}) {
+export function buildCheckoutUrl(baseUrl, { host, abVariantCents, productId } = {}) {
   if (!baseUrl) return null
 
   const url = new URL(baseUrl)
   if (host) url.searchParams.set('checkout[custom][host]', host)
   if (abVariantCents) url.searchParams.set('checkout[custom][ab_variant]', String(abVariantCents))
+  if (productId) url.searchParams.set('checkout[custom][product_id]', productId)
   return url.toString()
 }
