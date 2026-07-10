@@ -359,6 +359,34 @@ export default function C6ImmersivePlayer({
     </>
   )
 
+  const chapterMeta = (
+    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
+      Chapter {chapterIndex + 1} of {chapterCount}
+      {chapterTitle ? (
+        <>
+          {' '}
+          · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
+        </>
+      ) : null}
+    </p>
+  )
+
+  const sourceNoteInline =
+    sourceNote && hasReconstruction ? (
+      <p
+        className="cw-waypoint-immersive__source-note-inline"
+        style={{
+          fontSize: 11,
+          lineHeight: 1.4,
+          color: 'rgba(245,240,232,0.45)',
+          margin: '0 0 10px',
+          flexShrink: 0,
+        }}
+      >
+        {sourceNote}
+      </p>
+    ) : null
+
   const heroLayer = hasReconstruction ? (
     <div className="cw-waypoint-immersive__threshold">
       <C7Threshold
@@ -553,7 +581,7 @@ export default function C6ImmersivePlayer({
         </div>
       ) : (
       <div
-        className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity' : ''}`}
+        className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity cw-waypoint-immersive__panel--preview-flow' : ''}`}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -562,31 +590,33 @@ export default function C6ImmersivePlayer({
             : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
-        {audioPlayerBlock(false)}
+        {showContinuity ? (
+          <>
+            {tabBar}
+            {chapterMeta}
+            {sourceNoteInline}
+            {audioPlayerBlock(true)}
+          </>
+        ) : (
+          <>
+            {audioPlayerBlock(false)}
 
-        {showAudioNotice ? (
-          <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
-            {import.meta.env.DEV
-              ? 'Narration audio is unavailable in this development build.'
-              : 'Narration is preparing — check your connection.'}
-          </p>
-        ) : null}
+            {showAudioNotice ? (
+              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+                {import.meta.env.DEV
+                  ? 'Narration audio is unavailable in this development build.'
+                  : 'Narration is preparing — check your connection.'}
+              </p>
+            ) : null}
 
-        {tabBar}
-
-        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
-          Chapter {chapterIndex + 1} of {chapterCount}
-          {chapterTitle ? (
-            <>
-              {' '}
-              · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
-            </>
-          ) : null}
-        </p>
+            {tabBar}
+            {chapterMeta}
+          </>
+        )}
       </div>
       )}
 
-      {sourceNote && hasReconstruction ? (
+      {sourceNote && hasReconstruction && !showContinuity ? (
         <p className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome" aria-label="Reconstruction source">
           {sourceNote}
         </p>

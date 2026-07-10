@@ -354,6 +354,50 @@
   bottom: calc(var(--wc-continuity-stack) + 2px);
 }
 
+.cw-waypoint-immersive__panel--preview-flow {
+  justify-content: flex-end;
+}
+
+@media (max-width: 47.99rem) {
+  .cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__hero-title {
+    top: max(52px, calc(env(safe-area-inset-top) + 44px));
+    bottom: auto;
+    padding: 8px 20px 0;
+    text-align: center;
+  }
+
+  .cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__hero-title h2 {
+    font-size: 28px;
+    line-height: 1.08;
+    margin: 6px 0 4px;
+  }
+
+  .cw-waypoint-immersive--with-continuity .cw-waypoint-immersive__hero-title p {
+    font-size: 13px;
+    max-width: 22rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cw-waypoint-immersive__panel--with-continuity {
+    max-height: min(50%, calc(100% - var(--wc-continuity-stack) - 20%));
+    padding-left: 20px;
+    padding-right: 20px;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(22, 19, 15, 0.55) 10%,
+      rgba(22, 19, 15, 0.94) 24%
+    ) !important;
+  }
+
+  .cw-waypoint-immersive__source-note-inline {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 8px !important;
+  }
+}
+
 /* Transit narration — shared scroll/read pattern as waypoint immersive. */
 .cw-transit-immersive__read-layer {
   flex: 1;
