@@ -1,6 +1,6 @@
-import { useMemo, useState, useEffect, useCallback } from 'react'
+import { Suspense, useMemo, useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import TourMap from '../TourMap.jsx'
+import { lazyWithRecovery } from '../../utils/lazyWithRecovery.js'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import {
   buildManifestTour,
@@ -23,6 +23,27 @@ import { toWalkCardModel } from '../../content/stopPresentation.js'
 import { resolveMapBottomCard, MAP_BOTTOM_CTA } from '../../content/mapBottomCard.js'
 import MapBottomCard from '../../redesign/ui/MapBottomCard.jsx'
 import { ShellWalkCard } from '../../shell'
+
+const TourMap = lazyWithRecovery(() => import('../TourMap.jsx'), 'map')
+
+function MapLoadingFallback() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        minHeight: 220,
+        background: 'var(--obsidian, #0B0B0D)',
+        display: 'grid',
+        placeItems: 'center',
+        color: 'var(--muted-warm, #706C65)',
+        fontSize: 13,
+      }}
+    >
+      Map loading…
+    </div>
+  )
+}
 
 function ConfidenceChip({ label, active, compact = false }) {
   return (
@@ -310,7 +331,8 @@ export default function MapScreen({ variant = 'legacy' }) {
         background: 'var(--obsidian)',
       }}
     >
-      <TourMap
+      <Suspense fallback={<MapLoadingFallback />}>
+        <TourMap
         tour={tour}
         stops={stops}
         activeTargetId={activeTargetId}
@@ -328,7 +350,8 @@ export default function MapScreen({ variant = 'legacy' }) {
         directionsGeometry={directions?.geometry ?? null}
         focusTarget={focusTarget}
         onStopSelect={(stopId) => setSelectedStopId(stopId)}
-      />
+        />
+      </Suspense>
 
       {isRedesign ? (
         <>

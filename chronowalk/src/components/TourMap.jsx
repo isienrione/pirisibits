@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LocateFixed } from 'lucide-react'
-import mapboxgl from '../map/mapboxClient'
-import mapboxCssUrl from 'mapbox-gl/dist/mapbox-gl.css?url'
+import { loadMapboxRuntime } from '../map/mapboxLoader.js'
 import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
@@ -297,6 +296,7 @@ function TourMapboxView({
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
+  const mapboxglRef = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const onMapFailureRef = useRef(onMapFailure)
@@ -314,14 +314,6 @@ function TourMapboxView({
   useEffect(() => {
     const container = mapContainer.current
     if (!mapboxToken || !container || map.current) return undefined
-
-    if (!document.querySelector(`link[data-cw-mapbox-css="1"]`)) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = mapboxCssUrl
-      link.dataset.cwMapboxCss = '1'
-      document.head.appendChild(link)
-    }
 
     const bounds = tour?.bounds ?? (tour ? getTourBounds(tour) : null)
     const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
@@ -362,7 +354,7 @@ function TourMapboxView({
       map.current.resize()
     }
 
-    const initMap = () => {
+    const initMap = (mapboxgl) => {
       if (cancelled || map.current || !mapContainer.current) return
       if (mapContainer.current.clientWidth === 0 || mapContainer.current.clientHeight === 0) return
 
@@ -407,14 +399,25 @@ function TourMapboxView({
       }, MAP_BOOTSTRAP_TIMEOUT_MS)
     }
 
-    initMap()
+    void loadMapboxRuntime()
+      .then((mapboxgl) => {
+        if (cancelled) return
+        mapboxglRef.current = mapboxgl
+        initMap(mapboxgl)
+      })
+      .catch((error) => {
+        console.error('Mapbox runtime load failed:', error)
+        onMapFailureRef.current?.()
+      })
 
     const resizeObserver = new ResizeObserver(() => {
       if (map.current) {
         map.current.resize()
         return
       }
-      initMap()
+      if (mapboxglRef.current) {
+        initMap(mapboxglRef.current)
+      }
     })
     resizeObserver.observe(container)
 
@@ -439,11 +442,13 @@ function TourMapboxView({
       landmarkMarkers.current = []
       map.current?.remove()
       map.current = null
+      mapboxglRef.current = null
     }
   }, [tour?.id])
 
   useEffect(() => {
-    if (!map.current || !mapLoaded) return
+    const mapboxgl = mapboxglRef.current
+    if (!map.current || !mapLoaded || !mapboxgl) return
 
     const source = map.current.getSource('waypoint-zones')
     if (source) {
@@ -608,7 +613,8 @@ function TourMapboxView({
   }, [directionsModeActive, directionsGeometry, mapLoaded, userPos?.lat, userPos?.lng])
 
   useEffect(() => {
-    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
+    const mapboxgl = mapboxglRef.current
+    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded || !mapboxgl) return
 
     const anchor = activeTarget?.landmark
     const markerLng = debugGeo && anchor ? anchor.lng + 0.0002 : userPos.lng
@@ -662,7 +668,8 @@ function TourMapboxView({
   }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
   const handleRecenter = useCallback(() => {
-    if (!map.current || !mapLoaded) return
+    const mapboxgl = mapboxglRef.current
+    if (!map.current || !mapLoaded || !mapboxgl) return
     const bounds = new mapboxgl.LngLatBounds()
     if (userPos?.lat != null && userPos?.lng != null) {
       bounds.extend([userPos.lng, userPos.lat])

@@ -1,11 +1,31 @@
-import { useMemo } from 'react'
-import TourMap from '../TourMap.jsx'
+import { Suspense, useMemo } from 'react'
+import { lazyWithRecovery } from '../../utils/lazyWithRecovery.js'
 import {
   buildManifestTour,
   buildMapStopsFromManifest,
   resolveActiveMapLeg,
 } from '../../content/mapStops.js'
 import { isDebugMap } from '../../config/env.js'
+
+const TourMap = lazyWithRecovery(() => import('../TourMap.jsx'), 'map')
+
+function InlineMapLoadingFallback() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        background: 'var(--obsidian, #0B0B0D)',
+        display: 'grid',
+        placeItems: 'center',
+        color: 'var(--muted-warm, #706C65)',
+        fontSize: 13,
+      }}
+    >
+      Map loading…
+    </div>
+  )
+}
 
 /**
  * Minimal Mapbox embed for in-journey screens (transit).
@@ -70,7 +90,8 @@ export default function JourneyInlineMap({ manifest, context, geo }) {
   }
 
   return (
-    <TourMap
+    <Suspense fallback={<InlineMapLoadingFallback />}>
+      <TourMap
       tour={tour}
       stops={stops}
       activeTargetId={activeTargetId}
@@ -85,6 +106,7 @@ export default function JourneyInlineMap({ manifest, context, geo }) {
       minimalUI
       walkingCompanionUI
       fillContainer
-    />
+      />
+    </Suspense>
   )
 }

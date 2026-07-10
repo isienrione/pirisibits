@@ -23,14 +23,6 @@
         background: #16130f;
         color: #f5efe3;
       }
-
-      #root:empty::before {
-        content: 'Loading ChronoWalk…';
-        display: block;
-        padding: 2.5rem 1.5rem;
-        font: 500 1rem/1.5 system-ui, -apple-system, sans-serif;
-        text-align: center;
-      }
     </style>
     <script>
       ;(function () {
@@ -66,8 +58,30 @@
       })()
     </script>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="margin: 0; background: #16130f; color: #f5efe3">
+    <div id="root">
+      <p
+        id="cw-boot-hint"
+        style="
+          margin: 0;
+          padding: 2.5rem 1.5rem;
+          font: 500 1rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          text-align: center;
+        "
+      >
+        Loading ChronoWalk…
+      </p>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      ;(function () {
+        var hint = document.getElementById('cw-boot-hint')
+        window.setTimeout(function () {
+          if (!hint || !document.getElementById('cw-boot-hint')) return
+          hint.textContent =
+            'ChronoWalk is taking longer than usual. Try refreshing, or open this page in a private tab.'
+        }, 12000)
+      })()
+    </script>
   </body>
 </html>

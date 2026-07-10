@@ -71,7 +71,6 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
     immediate: true,
     onNeedRefresh() {
       listeners.forEach((listener) => listener())
-      activateUpdate()
     },
     onOfflineReady() {},
   })

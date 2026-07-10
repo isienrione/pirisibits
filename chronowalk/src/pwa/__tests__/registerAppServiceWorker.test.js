@@ -58,6 +58,9 @@ describe('registerAppServiceWorker', () => {
       })
     )
     expect(listener).toHaveBeenCalledTimes(1)
+    expect(updateSW).not.toHaveBeenCalled()
+
+    controller.applyUpdate()
     expect(updateSW).toHaveBeenCalledWith(true)
   })
 

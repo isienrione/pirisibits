@@ -9,8 +9,6 @@ import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
-import ChronoWalkLanding from '../landing/ChronoWalkLanding.jsx'
-import RedesignJourneyPage from '../redesign/pages/RedesignJourneyPage.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
@@ -25,6 +23,8 @@ import {
   LazyBeginPage,
   LazyCreditsPage,
   LazyJournalPage,
+  LazyJourneyPage,
+  LazyLandingPage,
   LazyLetterPage,
   LazyMapPage,
   LazyMemoryDetailPage,
@@ -54,11 +54,11 @@ function HomeRoute() {
     // real in-progress journey start setup (install / offline prep).
     return <Navigate to={isResumableJourney() ? '/begin' : '/setup'} replace />
   }
-  return <ChronoWalkLanding />
+  return <LazyLandingPage />
 }
 
 function PublicLandingRoute() {
-  return <ChronoWalkLanding />
+  return <LazyLandingPage />
 }
 
 function TourDebugBootstrap() {
@@ -97,7 +97,7 @@ function AppRoutes() {
         <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<LazyBeginPage />} />
         <Route path="/tour" element={<LazyTourPage />} />
-        <Route path="/journey" element={<RedesignJourneyPage />} />
+        <Route path="/journey" element={<LazyJourneyPage />} />
         <Route path="/map" element={<LazyMapPage />} />
         <Route path="/stops" element={<LazyStopsPage />} />
         <Route path="/journal" element={<LazyJournalPage />} />

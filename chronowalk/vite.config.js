@@ -203,6 +203,7 @@ export default defineConfig({
   },
   build: {
     modulePreload: {
+      polyfill: false,
       resolveDependencies: (_filename, deps) =>
         deps.filter((dep) => !dep.includes('mapbox')),
     },
@@ -217,6 +218,15 @@ export default defineConfig({
           }
           if (id.includes('node_modules/mapbox-gl')) {
             return 'mapbox'
+          }
+          if (
+            id.includes('/src/config/env') ||
+            id.includes('/src/design/tokens') ||
+            id.includes('/src/components/ui/') ||
+            id.includes('/src/utils/lazyWithRecovery') ||
+            id.includes('lucide-react')
+          ) {
+            return 'app-shared'
           }
         },
       },
