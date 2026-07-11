@@ -15,6 +15,9 @@ export default function TourRoutePreviewPanel({
   loading = false,
   context,
   cityLabel = 'Rome, Italy',
+  eyebrow,
+  title,
+  subtitle,
 }) {
   const stops = useMemo(
     () =>
@@ -38,19 +41,28 @@ export default function TourRoutePreviewPanel({
 
   const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
 
+  const headerEyebrow = eyebrow ?? cityLabel.toUpperCase()
+  const headerTitle =
+    title ??
+    (stopCount > 0 ? `${stopCount} stops · your route` : 'Your route')
+  const headerSubtitle =
+    subtitle === undefined && firstStopTitle
+      ? `Starting at ${firstStopTitle} — scroll the map to see every stop in order.`
+      : subtitle
+
   return (
     <div className="cw-route-preview-panel">
       <div className="cw-route-preview-panel__header">
-        <Eyebrow color={T.ember}>{cityLabel.toUpperCase()}</Eyebrow>
+        <Eyebrow color={T.ember}>{headerEyebrow}</Eyebrow>
         <h1
           className="cw-route-preview-panel__title"
           style={{ fontFamily: F.display, color: T.ink }}
         >
-          {stopCount} stops · your route
+          {headerTitle}
         </h1>
-        {firstStopTitle ? (
+        {headerSubtitle ? (
           <p className="cw-route-preview-panel__subtitle" style={{ color: T.muted }}>
-            Starting at {firstStopTitle} — scroll the map to see every stop in order.
+            {headerSubtitle}
           </p>
         ) : null}
       </div>

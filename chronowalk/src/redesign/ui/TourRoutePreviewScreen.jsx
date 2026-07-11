@@ -17,7 +17,7 @@ export default function TourRoutePreviewScreen({
 }) {
   return (
     <div className="cw-grain cw-route-preview-screen" data-testid={testId}>
-      <TourRoutePreviewPanel manifest={manifest} loading={loading} context={context} />
+      <TourRoutePreviewPanel manifest={manifest} loading={loading} context={context} subtitle={null} />
 
       <footer
         className="cw-route-preview-screen__footer"
