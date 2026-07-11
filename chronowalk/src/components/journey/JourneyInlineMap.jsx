@@ -31,7 +31,13 @@ function InlineMapLoadingFallback() {
  * Minimal Mapbox embed for in-journey screens (transit).
  * Parent must provide a bounded height (flex: 1 or explicit px).
  */
-export default function JourneyInlineMap({ manifest, context, geo }) {
+export default function JourneyInlineMap({
+  manifest,
+  context,
+  geo,
+  directionsGeometry = null,
+  directionsModeActive = false,
+}) {
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
     [manifest, context.path]
@@ -106,6 +112,8 @@ export default function JourneyInlineMap({ manifest, context, geo }) {
       minimalUI
       walkingCompanionUI
       fillContainer
+      directionsGeometry={directionsGeometry}
+      directionsModeActive={directionsModeActive}
       />
     </Suspense>
   )

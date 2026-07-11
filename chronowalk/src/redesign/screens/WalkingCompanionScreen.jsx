@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
+import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
+import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
 import {
@@ -25,6 +28,8 @@ export default function WalkingCompanionScreen({
   actNumeral = 'I',
   stopKey = 'default',
   map,
+  userPosition = null,
+  destination = null,
   distanceM = null,
   estimatedDistanceM = null,
   locationStatus = LOCATION_STATUS.WAITING,
@@ -57,8 +62,35 @@ export default function WalkingCompanionScreen({
   const [fullPlayerOpen, setFullPlayerOpen] = useState(false)
   const [userConfirmedArrival, setUserConfirmedArrival] = useState(false)
   const [dragProgress, setDragProgress] = useState(null)
+  const [routeView, setRouteView] = useState('map')
   const approachCueRef = useRef(null)
 
+  const showArrivedUI = arrived || userConfirmedArrival
+
+  const { directions, loading: directionsLoading, error: directionsError } = useWalkingDirections({
+    origin: userPosition,
+    destination,
+    enabled: !showArrivedUI && Boolean(destination),
+  })
+
+  const walkingStepProgress = useMemo(
+    () =>
+      resolveWalkingStepProgress({
+        userPos: userPosition,
+        steps: directions?.steps ?? [],
+        geometry: directions?.geometry,
+        totalDistanceM: directions?.distanceM ?? 0,
+      }),
+    [userPosition, directions?.steps, directions?.geometry, directions?.distanceM],
+  )
+
+  const mapWithRoute =
+    map && isValidElement(map)
+      ? cloneElement(map, {
+          directionsGeometry: directions?.geometry ?? null,
+          directionsModeActive: Boolean(directions?.geometry),
+        })
+      : map
   useEffect(() => {
     if (arrived) setUserConfirmedArrival(true)
   }, [arrived])
@@ -66,10 +98,10 @@ export default function WalkingCompanionScreen({
   useEffect(() => {
     setUserConfirmedArrival(false)
     setFullPlayerOpen(false)
+    setRouteView('map')
     approachCueRef.current = null
   }, [stopKey])
 
-  const showArrivedUI = arrived || userConfirmedArrival
   const approaching =
     !showArrivedUI && (near || isWithinApproachDistance(distanceM))
 
@@ -207,22 +239,52 @@ export default function WalkingCompanionScreen({
       </header>
 
       <div className="cw-walking-companion__map-wrap">
-        <div
-          className={`cw-walking-companion__hero-layer${showArrivedUI ? '' : ' cw-walking-companion__hero-layer--visible'}`}
-          aria-hidden={showArrivedUI}
-        >
-          {map}
-        </div>
-        <div
-          className={`cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived${
-            showArrivedUI ? ' cw-walking-companion__hero-layer--visible' : ''
-          }`}
-          aria-hidden={!showArrivedUI}
-        >
-          {photo ? (
-            <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
-          ) : null}
-          <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
+        {!showArrivedUI ? (
+          <div className="cw-walking-companion__view-toggle" role="tablist" aria-label="Route view">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={routeView === 'map'}
+              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              onClick={() => setRouteView('map')}
+            >
+              Map
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={routeView === 'steps'}
+              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              onClick={() => setRouteView('steps')}
+            >
+              Steps
+            </button>
+          </div>
+        ) : null}
+
+        <div className="cw-walking-companion__hero-stack">
+          {showArrivedUI ? (
+            <div
+              className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived cw-walking-companion__hero-layer--visible"
+            >
+              {photo ? (
+                <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
+              ) : null}
+              <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
+            </div>
+          ) : routeView === 'steps' ? (
+            <WalkingCompanionStepsPanel
+              steps={directions?.steps ?? []}
+              currentStepIndex={walkingStepProgress.currentStepIndex}
+              loading={directionsLoading}
+              error={directionsError}
+              destinationTitle={title}
+            />
+          ) : (
+            <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
+              {mapWithRoute}
+            </div>
+          )}
         </div>
       </div>
 
