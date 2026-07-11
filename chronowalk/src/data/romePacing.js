@@ -21,7 +21,7 @@ export const PACE_OPTIONS = [
     priceLabel: '$17.99',
     priceCents: 1799,
     description:
-      'The complete Rome — ancient monuments, the Forum, Pantheon, centro storico, Castel Sant\'Angelo, and Via Appia in one continuous walk.',
+      "The complete Rome — Colosseum, the Roman Forum, Circus Maximus, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
     includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
     actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'capitoline',
