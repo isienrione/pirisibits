@@ -15,6 +15,19 @@ export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'en
 
 export const PACE_OPTIONS = [
   {
+    id: JOURNEY_PACE.HEROIC,
+    title: 'Roma eterna',
+    badge: 'Most loved',
+    priceLabel: '$17.99',
+    priceCents: 1799,
+    description:
+      'The complete Rome — ancient monuments, the Forum, Pantheon, centro storico, Castel Sant\'Angelo, and Via Appia in one continuous walk.',
+    includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
+    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'capitoline',
+    default: true,
+  },
+  {
     id: JOURNEY_PACE.CENTRAL,
     title: 'Roma central',
     badge: null,
@@ -25,12 +38,11 @@ export const PACE_OPTIONS = [
     includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
     actDots: [null, null, null, 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'pantheon',
-    default: true,
   },
   {
     id: JOURNEY_PACE.CLASSIC,
     title: 'Roma antica',
-    badge: 'Most loved',
+    badge: null,
     priceLabel: '$12',
     priceCents: 1200,
     description:
@@ -38,18 +50,6 @@ export const PACE_OPTIONS = [
     includedSummary: 'Colosseum · Arch of Titus · Roman Forum',
     actDots: ['act1', 'act2', 'act3', null, null, null, null],
     imageKey: 'colosseum',
-  },
-  {
-    id: JOURNEY_PACE.HEROIC,
-    title: 'Roma eterna',
-    badge: null,
-    priceLabel: '$17.99',
-    priceCents: 1799,
-    description:
-      'The complete Rome — ancient monuments, the Forum, Pantheon, centro storico, Castel Sant\'Angelo, and Via Appia in one continuous walk.',
-    includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
-    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
-    imageKey: 'capitoline',
   },
   {
     id: JOURNEY_PACE.OWN,
@@ -134,7 +134,7 @@ export function getPaceOption(paceId) {
 }
 
 export function getDefaultPace() {
-  return PACE_OPTIONS.find((option) => option.default)?.id ?? JOURNEY_PACE.CENTRAL
+  return PACE_OPTIONS.find((option) => option.default)?.id ?? JOURNEY_PACE.HEROIC
 }
 
 export function getActForWaypoint(waypointId) {

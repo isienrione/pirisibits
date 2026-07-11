@@ -45,7 +45,6 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
-    fireEvent.click(screen.getByRole('button', { name: /roma eterna/i }))
     fireEvent.click(screen.getByRole('button', { name: /begin — roma eterna/i }))
 
     expect(screen.getByTestId('tour-route-preview')).toBeInTheDocument()
