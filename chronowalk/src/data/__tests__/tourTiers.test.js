@@ -8,7 +8,7 @@ import { TOUR_TIER_WAYPOINTS } from '../tourTiers.js'
 describe('tourTiers', () => {
   const manifest = loadRomeManifest()
 
-  it('defines Roma central as centro storico + Pantheon + Via Appia', () => {
+  it('defines Roma Centrale as centro storico + Pantheon + Via Appia', () => {
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CENTRAL]).toEqual([
       'w14',
       'w15',
@@ -22,7 +22,7 @@ describe('tourTiers', () => {
     ])
   })
 
-  it('defines Roma antica as Colosseum + Forum', () => {
+  it('defines Roma Antica as Colosseum + Forum', () => {
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('w01')
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('w13')
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).not.toContain('w14')
