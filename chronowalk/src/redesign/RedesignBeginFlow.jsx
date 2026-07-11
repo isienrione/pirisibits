@@ -104,16 +104,14 @@ export default function RedesignBeginFlow() {
 
   if (stepName === 'mapPreview') {
     return (
-      <div className="redesign-app-shell">
-        <TourRoutePreviewScreen
-          manifest={manifest}
-          loading={loading}
-          context={context}
-          continueLabel="Set up your walk"
-          footerNote="Next you'll choose your pace and enable location — then the guided tutorial begins at your first stop."
-          onContinue={() => setStepName('pace')}
-        />
-      </div>
+      <TourRoutePreviewScreen
+        manifest={manifest}
+        loading={loading}
+        context={context}
+        continueLabel="Set up your walk"
+        footerNote="Next you'll choose your pace and enable location — then the guided tutorial begins at your first stop."
+        onContinue={() => setStepName('pace')}
+      />
     )
   }
 

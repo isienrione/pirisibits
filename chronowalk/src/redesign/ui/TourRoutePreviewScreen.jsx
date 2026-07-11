@@ -1,4 +1,4 @@
-import { T, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import { SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { PrimaryButton } from './index.js'
 import TourRoutePreviewPanel from './TourRoutePreviewPanel.jsx'
 
@@ -16,13 +16,13 @@ export default function TourRoutePreviewScreen({
   testId = 'tour-route-preview',
 }) {
   return (
-    <div
-      className="cw-grain redesign-app-shell cw-route-preview-screen"
-      data-testid={testId}
-    >
+    <div className="cw-grain cw-route-preview-screen" data-testid={testId}>
       <TourRoutePreviewPanel manifest={manifest} loading={loading} context={context} />
 
-      <footer className="cw-route-preview-screen__footer">
+      <footer
+        className="cw-route-preview-screen__footer"
+        style={{ paddingBottom: SHELL_TAB_BAR_INSET }}
+      >
         {footerNote ? <p className="cw-route-preview-screen__note">{footerNote}</p> : null}
         <PrimaryButton onClick={onContinue} disabled={busy}>
           {busy ? 'Loading…' : continueLabel}

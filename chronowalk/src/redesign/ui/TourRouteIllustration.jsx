@@ -47,12 +47,14 @@ export default function TourRouteIllustration({ manifest, context, className = '
       data-testid="tour-route-illustration"
       aria-label={`Tour route with ${stops.length} stops in order`}
     >
-      <svg
-        viewBox={`0 0 ${layout.width} ${layout.height}`}
-        className="cw-route-illustration__svg"
-        role="img"
-        aria-hidden="true"
-      >
+      <div className="cw-route-illustration__viewport">
+        <svg
+          viewBox={`0 0 ${layout.width} ${layout.height}`}
+          className="cw-route-illustration__svg"
+          role="img"
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMin meet"
+        >
         <defs>
           <linearGradient id="cw-route-paper" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#F3EBDD" />
@@ -153,7 +155,8 @@ export default function TourRouteIllustration({ manifest, context, className = '
             </g>
           )
         })}
-      </svg>
+        </svg>
+      </div>
     </div>
   )
 }

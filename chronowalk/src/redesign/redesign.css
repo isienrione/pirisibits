@@ -1133,26 +1133,37 @@ html.redesign-pwa #root {
 
 /* ── Illustrated tour route preview ── */
 .cw-route-preview-screen {
+  width: 100%;
+  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  min-height: 100dvh;
+  min-height: var(--app-height, 100dvh);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: #faf6ef;
   font-family: 'DM Sans', system-ui, sans-serif;
+  position: relative;
 }
 
 .cw-route-preview-screen > .cw-route-preview-panel {
   flex: 1 1 0;
   min-height: 0;
+  width: 100%;
 }
 
 .cw-route-preview-screen__footer {
   flex: 0 0 auto;
-  padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  width: 100%;
+  padding: 10px 20px 12px;
   border-top: 1px solid rgba(185, 175, 156, 0.22);
   background: #faf6ef;
 }
 
 .cw-route-preview-screen__note {
-  margin: 0 0 10px;
-  font-size: 12px;
-  line-height: 1.45;
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.4;
   color: #b9af9c;
   text-align: center;
 }
@@ -1165,63 +1176,80 @@ html.redesign-pwa #root {
 }
 
 .cw-route-preview-panel__header {
-  flex-shrink: 0;
-  padding: max(44px, calc(env(safe-area-inset-top) + 12px)) 20px 8px;
+  flex: 0 0 auto;
+  padding: max(40px, calc(env(safe-area-inset-top) + 10px)) 16px 6px;
 }
 
 .cw-route-preview-panel__title {
-  margin: 8px 0 4px;
-  font-size: 26px;
+  margin: 6px 0 0;
+  font-size: 24px;
   font-weight: 300;
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 .cw-route-preview-panel__subtitle {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.45;
+  display: none;
 }
 
 .cw-route-preview-panel__hero {
   flex: 1 1 0;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none;
-  padding: 4px 10px 8px;
-  -webkit-overflow-scrolling: touch;
+  min-height: calc(
+    100dvh - 10rem - var(--shell-tab-bar-height, 4.75rem) - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+  );
+  overflow: hidden;
+  padding: 0 8px 6px;
+  display: flex;
+  flex-direction: column;
 }
 
 .cw-route-preview-panel__loading {
-  height: 100%;
-  min-height: 280px;
+  flex: 1 1 auto;
+  min-height: inherit;
   display: grid;
   place-items: center;
   font-size: 13px;
-  border-radius: 18px;
+  border-radius: 20px;
   background: rgba(185, 175, 156, 0.12);
 }
 
 .cw-route-illustration {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
   width: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .cw-route-illustration--empty {
-  min-height: 100%;
+  flex: 1 1 auto;
+  min-height: inherit;
   display: grid;
   place-items: center;
 }
 
+.cw-route-illustration__viewport {
+  flex: 1 1 auto;
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f3ebdd 0%, #e8dfcf 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(185, 175, 156, 0.35),
+    0 10px 36px rgba(26, 26, 31, 0.1);
+}
+
 .cw-route-illustration__svg {
   width: 100%;
-  height: auto;
   min-height: 100%;
+  height: auto;
   display: block;
-  border-radius: 18px;
-  flex: 1 1 auto;
+  vertical-align: top;
 }
 
 /* ── Walking companion (transit + waypoint walking) ── */
