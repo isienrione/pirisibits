@@ -9,17 +9,17 @@ import {
 } from '../romePacing'
 
 describe('romePacing', () => {
-  it('defines four tour tiers with Roma eterna as the default', () => {
+  it('defines four tour tiers with Roma Eterna as the default', () => {
     expect(PACE_OPTIONS).toHaveLength(4)
     expect(PACE_OPTIONS[0]).toMatchObject({
       id: JOURNEY_PACE.HEROIC,
-      title: 'Roma eterna',
+      title: 'Roma Eterna',
       badge: 'Most loved',
       priceLabel: '$17.99',
     })
     expect(getDefaultPace()).toBe(JOURNEY_PACE.HEROIC)
-    expect(getPaceOption(JOURNEY_PACE.CLASSIC).title).toBe('Roma antica')
-    expect(getPaceOption(JOURNEY_PACE.CENTRAL).title).toBe('Roma central')
+    expect(getPaceOption(JOURNEY_PACE.CLASSIC).title).toBe('Roma Antica')
+    expect(getPaceOption(JOURNEY_PACE.CENTRAL).title).toBe('Roma Centrale')
     expect(getPaceOption(JOURNEY_PACE.OWN).priceLabel).toBe('$17.99')
   })
 

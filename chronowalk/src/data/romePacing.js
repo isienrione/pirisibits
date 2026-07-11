@@ -16,7 +16,7 @@ export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'en
 export const PACE_OPTIONS = [
   {
     id: JOURNEY_PACE.HEROIC,
-    title: 'Roma eterna',
+    title: 'Roma Eterna',
     badge: 'Most loved',
     priceLabel: '$17.99',
     priceCents: 1799,
@@ -29,7 +29,7 @@ export const PACE_OPTIONS = [
   },
   {
     id: JOURNEY_PACE.CENTRAL,
-    title: 'Roma central',
+    title: 'Roma Centrale',
     badge: null,
     priceLabel: '$12',
     priceCents: 1200,
@@ -41,7 +41,7 @@ export const PACE_OPTIONS = [
   },
   {
     id: JOURNEY_PACE.CLASSIC,
-    title: 'Roma antica',
+    title: 'Roma Antica',
     badge: null,
     priceLabel: '$12',
     priceCents: 1200,

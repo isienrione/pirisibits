@@ -2,7 +2,7 @@ import { JOURNEY_PACE, ROME_ACTS } from './romePacing.js'
 
 /** Fixed waypoint order for tiered tours (path A walking order). */
 export const TOUR_TIER_WAYPOINTS = {
-  /** Roma central — centro storico + Pantheon (no Colosseum or Forum). */
+  /** Roma Centrale — centro storico + Pantheon (no Colosseum or Forum). */
   [JOURNEY_PACE.CENTRAL]: [
     'w14',
     'w15',
@@ -14,7 +14,7 @@ export const TOUR_TIER_WAYPOINTS = {
     'w21',
     'w22',
   ],
-  /** Roma antica — Colosseum + Forum cluster. */
+  /** Roma Antica — Colosseum + Forum cluster. */
   [JOURNEY_PACE.CLASSIC]: [
     'w01',
     'w02',
