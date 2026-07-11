@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { loadRomeManifest } from '../manifest.js'
 import {
   buildTourRoadmap,
+  buildTourRoadmapForContext,
   summarizeTourRoadmap,
   tourRoadmapHeadline,
 } from '../tourRoadmap.js'
+import { JOURNEY_PACE } from '../../data/romePacing.js'
 
 describe('tourRoadmap', () => {
   const manifest = loadRomeManifest()
@@ -39,5 +41,24 @@ describe('tourRoadmap', () => {
     const { completed, total } = summarizeTourRoadmap(stops)
     expect(completed).toBe(1)
     expect(total).toBe(stops.length)
+  })
+
+  it('filters roadmap stops by pace', () => {
+    const classic = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.CLASSIC })
+    const heroic = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.HEROIC })
+
+    expect(heroic.length).toBeGreaterThan(classic.length)
+    expect(classic.some((stop) => stop.id === 'w22')).toBe(false)
+    expect(heroic.some((stop) => stop.id === 'w22')).toBe(true)
+  })
+
+  it('filters own-pace roadmap to selected stops', () => {
+    const own = buildTourRoadmapForContext(manifest, {
+      path: 'a',
+      pace: JOURNEY_PACE.OWN,
+      customWaypointIds: ['w01', 'w06'],
+    })
+
+    expect(own.map((stop) => stop.id)).toEqual(['w01', 'w06'])
   })
 })

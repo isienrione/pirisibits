@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption } from '../data/romePacing.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
@@ -14,9 +14,8 @@ import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
 
-function initialBeginStep(isResumable, context) {
+function initialBeginStep(isResumable) {
   if (isResumable) return 'resume'
-  if (shouldShowTourRoutePreview(context)) return 'mapPreview'
   return 'pace'
 }
 
@@ -32,10 +31,21 @@ export default function RedesignBeginFlow() {
     context.currentSequenceIndex,
     context.promotedOptionalIds,
   )
-  const [stepName, setStepName] = useState(() => initialBeginStep(isResumable, context))
+  const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
   const [selectedPace, setSelectedPace] = useState(context.pace ?? JOURNEY_PACE.CLASSIC)
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
+
+  const previewContext = useMemo(
+    () => ({
+      ...context,
+      pace: selectedPace,
+      customWaypointIds: selectedPace === JOURNEY_PACE.OWN ? ownPaceStops : context.customWaypointIds,
+    }),
+    [context, selectedPace, ownPaceStops],
+  )
+
+  const showRoutePreview = shouldShowTourRoutePreview(context)
 
   useEffect(() => {
     const { replay, fresh } = applyReplayOnboardingFromSearch(searchParams.toString())
@@ -43,11 +53,9 @@ export default function RedesignBeginFlow() {
 
     if (fresh) {
       reset()
-      setStepName('mapPreview')
+      setStepName('pace')
     } else if (isResumable) {
       setStepName('resume')
-    } else if (shouldShowTourRoutePreview(context)) {
-      setStepName('mapPreview')
     } else {
       setStepName('pace')
     }
@@ -60,8 +68,21 @@ export default function RedesignBeginFlow() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
+  const advanceAfterPaceSelection = () => {
+    if (selectedPace === JOURNEY_PACE.OWN) {
+      setStepName('pickStops')
+      return
+    }
+    setStepName(showRoutePreview ? 'mapPreview' : 'location')
+  }
+
+  const advanceAfterOwnPaceSelection = () => {
+    setCustomWaypointIds(ownPaceStops)
+    setStepName(showRoutePreview ? 'mapPreview' : 'location')
+  }
+
   const startJourney = () => {
-    const tourIds = manifest ? getTourWaypointIds(manifest, { ...context, pace: selectedPace, customWaypointIds: ownPaceStops }) : []
+    const tourIds = manifest ? getTourWaypointIds(manifest, previewContext) : []
     const firstId = tourIds[0]
     const sequenceIndex =
       manifest && firstId
@@ -95,11 +116,7 @@ export default function RedesignBeginFlow() {
 
   const handlePaceContinue = () => {
     setJourneyPace(selectedPace)
-    if (selectedPace === JOURNEY_PACE.OWN) {
-      setStepName('pickStops')
-      return
-    }
-    setStepName('location')
+    advanceAfterPaceSelection()
   }
 
   if (stepName === 'mapPreview') {
@@ -107,10 +124,10 @@ export default function RedesignBeginFlow() {
       <TourRoutePreviewScreen
         manifest={manifest}
         loading={loading}
-        context={context}
-        continueLabel="Set up your walk"
-        footerNote="Next you'll choose your pace and enable location — then the guided tutorial begins at your first stop."
-        onContinue={() => setStepName('pace')}
+        context={previewContext}
+        continueLabel="Enable location & begin"
+        footerNote="Next you'll enable location — then the guided tutorial begins at your first stop."
+        onContinue={() => setStepName('location')}
       />
     )
   }
@@ -146,10 +163,7 @@ export default function RedesignBeginFlow() {
           selectedIds={ownPaceStops}
           onChangeSelected={setOwnPaceStops}
           onBack={() => setStepName('pace')}
-          onContinue={() => {
-            setCustomWaypointIds(ownPaceStops)
-            setStepName('location')
-          }}
+          onContinue={advanceAfterOwnPaceSelection}
         />
       </div>
     )

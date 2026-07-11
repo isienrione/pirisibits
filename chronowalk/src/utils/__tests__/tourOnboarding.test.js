@@ -11,6 +11,8 @@ import {
   storyCardPhases,
   applyReplayOnboardingFromSearch,
 } from '../tourOnboarding.js'
+import { loadRomeManifest } from '../../content/manifest.js'
+import { JOURNEY_PACE } from '../../data/romePacing.js'
 
 describe('tourOnboarding', () => {
   beforeEach(() => {
@@ -38,12 +40,31 @@ describe('tourOnboarding', () => {
   })
 
   it('limits first-stop onboarding to the opening waypoint', () => {
-    const context = { completedWaypointIds: [], currentSequenceIndex: 0 }
-    expect(isOnFirstTourStop(context, { type: 'waypoint' })).toBe(true)
-    expect(isOnFirstTourStop(context, { type: 'transit' })).toBe(false)
-    expect(isOnFirstTourStop({ completedWaypointIds: ['w01'], currentSequenceIndex: 1 }, { type: 'waypoint' })).toBe(
-      false,
-    )
+    const manifest = loadRomeManifest()
+    const context = { completedWaypointIds: [], currentSequenceIndex: 0, pace: JOURNEY_PACE.CLASSIC, path: 'a' }
+    expect(isOnFirstTourStop(context, { type: 'waypoint', id: 'w01' }, manifest)).toBe(true)
+    expect(isOnFirstTourStop(context, { type: 'transit' }, manifest)).toBe(false)
+    expect(
+      isOnFirstTourStop(
+        { completedWaypointIds: ['w01'], currentSequenceIndex: 1, pace: JOURNEY_PACE.CLASSIC, path: 'a' },
+        { type: 'waypoint', id: 'w03' },
+        manifest,
+      ),
+    ).toBe(false)
+  })
+
+  it('treats the first selected own-pace stop as the opening waypoint', () => {
+    const manifest = loadRomeManifest()
+    const ownContext = {
+      completedWaypointIds: [],
+      currentSequenceIndex: 4,
+      pace: JOURNEY_PACE.OWN,
+      path: 'a',
+      customWaypointIds: ['w06', 'w07'],
+    }
+
+    expect(isOnFirstTourStop(ownContext, { type: 'waypoint', id: 'w06' }, manifest)).toBe(true)
+    expect(isOnFirstTourStop(ownContext, { type: 'waypoint', id: 'w01' }, manifest)).toBe(false)
   })
 
   it('resolves card phases from journey state', () => {

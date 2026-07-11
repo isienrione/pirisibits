@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { buildTourRoadmap } from '../../content/tourRoadmap.js'
+import { buildTourRoadmapForContext } from '../../content/tourRoadmap.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { getWaypoint } from '../../content/manifest.js'
 import { T, F } from '../tokens.js'
@@ -21,12 +21,15 @@ export default function TourRoutePreviewPanel({
 }) {
   const stops = useMemo(
     () =>
-      buildTourRoadmap(manifest, {
+      buildTourRoadmapForContext(manifest, {
         path: context?.path ?? 'a',
+        pace: context?.pace,
+        promotedOptionalIds: context?.promotedOptionalIds ?? [],
+        customWaypointIds: context?.customWaypointIds,
         sequenceIndex: 0,
         completedWaypointIds: [],
       }),
-    [manifest, context?.path],
+    [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds],
   )
 
   const stopCount = useMemo(() => {

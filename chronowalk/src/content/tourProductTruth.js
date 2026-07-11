@@ -131,7 +131,11 @@ export function getTourProductTruth(manifest, options = {}) {
 
   const computedPublicPlaceCount = computePublicPlaceCount(manifest)
   const publicPlaceCount = product.publicPlaceCount ?? computedPublicPlaceCount
-  const visitStopCount = product.visitStopCount ?? visitStopIds.length
+  const useComputedVisitCount =
+    options.pace != null || (options.customWaypointIds != null && options.customWaypointIds.length > 0)
+  const visitStopCount = useComputedVisitCount
+    ? visitStopIds.length
+    : (product.visitStopCount ?? visitStopIds.length)
   const classicVisitStopCount = product.classicVisitStopCount ?? classicVisitStopIds.length
   const storyStopCount = product.storyStopCount ?? computeStoryStopCount(manifest, { ...options, path, pace })
   const actCount = product.actCount ?? 6

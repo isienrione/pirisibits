@@ -2,6 +2,7 @@ import { getDistance } from '../utils/distance.js'
 import { buildJournalTimeline } from './journalTimeline.js'
 import { getWaypoint } from './manifest.js'
 import { formatDistanceToNext, formatWalkingTime } from './journeyProgress.js'
+import { getTourWaypointIds } from './myTourPlan.js'
 
 function legMeta(fromWaypoint, toWaypoint) {
   if (!fromWaypoint?.geofence || !toWaypoint?.geofence) return null
@@ -59,6 +60,34 @@ export function buildTourRoadmap(
       isLast: index === onPath.length - 1,
     }
   })
+}
+
+/** Pace- and selection-aware roadmap — filters to the active tour itinerary. */
+export function buildTourRoadmapForContext(
+  manifest,
+  {
+    path = 'a',
+    pace,
+    promotedOptionalIds = [],
+    customWaypointIds = null,
+    sequenceIndex = 0,
+    completedWaypointIds = [],
+  } = {},
+) {
+  if (!manifest) return []
+
+  const tourIds = new Set(
+    getTourWaypointIds(manifest, {
+      path,
+      pace,
+      promotedOptionalIds,
+      customWaypointIds,
+    }),
+  )
+
+  return buildTourRoadmap(manifest, { path, sequenceIndex, completedWaypointIds }).filter((stop) =>
+    tourIds.has(stop.id),
+  )
 }
 
 export function summarizeTourRoadmap(stops) {

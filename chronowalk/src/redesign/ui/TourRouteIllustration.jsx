@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { buildTourRoadmap } from '../../content/tourRoadmap.js'
+import { buildTourRoadmapForContext } from '../../content/tourRoadmap.js'
 import { getWaypoint } from '../../content/manifest.js'
 import { ACT_COLORS, T, F } from '../tokens.js'
 import { titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -16,8 +16,11 @@ import {
 export default function TourRouteIllustration({ manifest, context, className = '' }) {
   const stops = useMemo(() => {
     if (!manifest) return []
-    return buildTourRoadmap(manifest, {
+    return buildTourRoadmapForContext(manifest, {
       path: context?.path ?? 'a',
+      pace: context?.pace,
+      promotedOptionalIds: context?.promotedOptionalIds ?? [],
+      customWaypointIds: context?.customWaypointIds,
       sequenceIndex: 0,
       completedWaypointIds: [],
     }).map((stop) => {
@@ -29,7 +32,7 @@ export default function TourRouteIllustration({ manifest, context, className = '
         actTitle: stop.actTitle,
       }
     })
-  }, [manifest, context?.path])
+  }, [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds])
 
   const layout = useMemo(() => buildIllustratedRouteLayout(stops), [stops])
 

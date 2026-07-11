@@ -49,6 +49,14 @@ describe('tourProductTruth', () => {
     expect(truth.currency).toBe('EUR')
   })
 
+  it('uses computed visit stop counts when pace is selected', () => {
+    const classic = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const heroic = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
+
+    expect(classic.visitStopCount).toBe(17)
+    expect(heroic.visitStopCount).toBe(18)
+  })
+
   it('formats places across acts copy', () => {
     expect(formatPlacesAcrossActs(22, 6)).toBe('22 places across 6 acts')
   })

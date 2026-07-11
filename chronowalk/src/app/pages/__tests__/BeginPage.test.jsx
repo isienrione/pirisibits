@@ -1,9 +1,9 @@
 import { describe, expect, it, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { BeginPage } from '../BeginPage'
 import { ACCESS_KEY } from '../../../lib/config'
-import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
+import { JOURNEY_STATES, resetJourney, transitionJourney } from '../../../state/journey'
 
 function renderBeginPage() {
   return render(
@@ -20,6 +20,7 @@ function renderBeginPage() {
 describe('BeginPage', () => {
   beforeEach(() => {
     localStorage.clear()
+    resetJourney()
     transitionJourney(JOURNEY_STATES.IDLE)
   })
 
@@ -29,14 +30,27 @@ describe('BeginPage', () => {
     expect(screen.getByText('Landing route')).toBeInTheDocument()
   })
 
-  it('renders the begin flow for purchasers without an active journey', () => {
+  it('starts at pace selection for first-tour purchasers', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
 
     renderBeginPage()
 
+    expect(screen.getByText(/choose your/i)).toBeInTheDocument()
+    expect(screen.getByText(/rhythm/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
+  })
+
+  it('shows pace-aware route preview after choosing a pace', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+
+    renderBeginPage()
+
+    fireEvent.click(screen.getByRole('button', { name: /the full day/i }))
+    fireEvent.click(screen.getByRole('button', { name: /begin — the full day/i }))
+
     expect(screen.getByTestId('tour-route-preview')).toBeInTheDocument()
     expect(screen.getByText(/your route/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /set up your walk/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /enable location & begin/i })).toBeInTheDocument()
   })
 
   it('skips route preview when onboarding was already completed', () => {
@@ -45,9 +59,10 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
+    fireEvent.click(screen.getByRole('button', { name: /begin — take it in chapters/i }))
+
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
-    expect(screen.getByText(/choose your/i)).toBeInTheDocument()
-    expect(screen.getByText(/rhythm/i)).toBeInTheDocument()
+    expect(screen.getByText(/enable location for gps guidance/i)).toBeInTheDocument()
   })
 
   it('shows resume prompt for purchasers with an in-progress journey', () => {

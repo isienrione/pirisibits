@@ -1,3 +1,5 @@
+import { getTourWaypointIds } from '../content/myTourPlan.js'
+
 const ONBOARDING_KEY = 'cw_tour_onboarding_complete'
 
 /** True after the traveler has finished first-tour onboarding (map + instruction cards). */
@@ -46,15 +48,21 @@ export function shouldShowTourOnboarding(context) {
   return isFreshTourStart(context)
 }
 
-/** Route preview at /begin — before pace and permissions. */
+/** Route preview at /begin — after pace (and own-pace stop selection). */
 export function shouldShowTourRoutePreview(context) {
   return shouldShowTourOnboarding(context)
 }
 
-/** First visit stop — no completed waypoints and active step is a waypoint. */
-export function isOnFirstTourStop(context, step) {
+/** First visit stop — opening waypoint on the active tour itinerary. */
+export function isOnFirstTourStop(context, step, manifest = null) {
   if (!shouldShowTourOnboarding(context)) return false
   if (step?.type !== 'waypoint') return false
+
+  if (manifest && step.id) {
+    const firstId = getTourWaypointIds(manifest, context)[0]
+    if (firstId) return step.id === firstId
+  }
+
   return (context.currentSequenceIndex ?? 0) === 0
 }
 

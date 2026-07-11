@@ -825,7 +825,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (!step?.record || step.type !== 'waypoint') return
     if (state !== JOURNEY_STATES.STORY) return
 
-    if (isOnFirstTourStop(context, step)) {
+    if (isOnFirstTourStop(context, step, manifest)) {
       markTourOnboardingComplete()
     }
 
@@ -1065,7 +1065,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   const wrapWithFirstStopOnboarding = (node, { near = false, insideGeofence = false, hasReconstruction = false, bottomInset = 0 } = {}) => {
-    if (variant !== 'redesign' || !isOnFirstTourStop(context, step)) return node
+    if (variant !== 'redesign' || !isOnFirstTourStop(context, step, manifest)) return node
     return (
       <>
         {node}
@@ -1194,7 +1194,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         wrapWithFirstStopOnboarding(
           <C6ImmersivePlayer
             {...playerProps}
-            suppressAutoRevealInvite={isOnFirstTourStop(context, step)}
+            suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
           />,
           {
             hasReconstruction: Boolean(playerProps.hasReconstruction),
