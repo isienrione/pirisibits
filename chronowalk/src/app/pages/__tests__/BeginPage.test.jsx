@@ -34,7 +34,20 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
-    expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
+    expect(screen.getByTestId('tour-route-preview')).toBeInTheDocument()
+    expect(screen.getByText(/your route/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /set up your walk/i })).toBeInTheDocument()
+  })
+
+  it('skips route preview when onboarding was already completed', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
+
+    renderBeginPage()
+
+    expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
+    expect(screen.getByText(/choose your/i)).toBeInTheDocument()
+    expect(screen.getByText(/rhythm/i)).toBeInTheDocument()
   })
 
   it('shows resume prompt for purchasers with an in-progress journey', () => {

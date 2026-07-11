@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import TourOnboardingCards from '../TourOnboardingCards.jsx'
 
@@ -20,7 +20,7 @@ describe('TourOnboardingCards', () => {
     expect(screen.getByText(/Head toward The Colosseum/i)).toBeInTheDocument()
   })
 
-  it('advances to the reveal card during story playback', () => {
+  it('shows the listen card first during story playback', () => {
     render(
       <TourOnboardingCards
         state="story"
@@ -30,8 +30,8 @@ describe('TourOnboardingCards', () => {
       />,
     )
 
-    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'reveal')
-    expect(screen.getByText(/Press & hold the image/i)).toBeInTheDocument()
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(screen.getByText(/Play and pause narration/i)).toBeInTheDocument()
   })
 
   it('marks onboarding complete after the final card is dismissed', () => {
@@ -44,7 +44,11 @@ describe('TourOnboardingCards', () => {
       />,
     )
 
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
     fireEvent.click(screen.getByRole('button', { name: 'Got it' }))
+
     expect(localStorage.getItem('cw_tour_onboarding_complete')).toBe('true')
   })
 })

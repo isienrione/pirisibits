@@ -7,23 +7,31 @@ import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
+import { shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
+import TourRoutePreviewScreen from './ui/TourRoutePreviewScreen.jsx'
 import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
 
+function initialBeginStep(isResumable, context) {
+  if (isResumable) return 'resume'
+  if (shouldShowTourRoutePreview(context)) return 'mapPreview'
+  return 'pace'
+}
+
 export default function RedesignBeginFlow() {
   const navigate = useNavigate()
   const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
     useV2Journey()
-  const { manifest } = useTourManifest()
+  const { manifest, loading } = useTourManifest()
   const step = useJourneyStep(
     manifest,
     context.path,
     context.currentSequenceIndex,
     context.promotedOptionalIds,
   )
-  const [stepName, setStepName] = useState(() => (isResumable ? 'resume' : 'pace'))
+  const [stepName, setStepName] = useState(() => initialBeginStep(isResumable, context))
   const [selectedPace, setSelectedPace] = useState(context.pace ?? JOURNEY_PACE.CLASSIC)
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
@@ -68,6 +76,21 @@ export default function RedesignBeginFlow() {
       return
     }
     setStepName('location')
+  }
+
+  if (stepName === 'mapPreview') {
+    return (
+      <div className="redesign-app-shell">
+        <TourRoutePreviewScreen
+          manifest={manifest}
+          loading={loading}
+          context={context}
+          continueLabel="Set up your walk"
+          footerNote="Next you'll choose your pace and enable location — then the guided tutorial begins at your first stop."
+          onContinue={() => setStepName('pace')}
+        />
+      </div>
+    )
   }
 
   if (stepName === 'resume') {

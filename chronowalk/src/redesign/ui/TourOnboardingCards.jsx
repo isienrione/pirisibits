@@ -8,9 +8,21 @@ import {
   resolveTourOnboardingCardPhase,
 } from '../../utils/tourOnboarding.js'
 
+function renderBody(text) {
+  const parts = text.split(/\*\*(.+?)\*\*/g)
+  return parts.map((part, index) =>
+    index % 2 === 1 ? (
+      <strong key={index} style={{ color: T.warmWhite, fontWeight: 600 }}>
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  )
+}
+
 /**
  * Floating instruction cards for first-tour / first-stop onboarding.
- * Advances through walk → arrive → listen → reveal as the journey progresses.
  */
 export default function TourOnboardingCards({
   state,
@@ -21,15 +33,16 @@ export default function TourOnboardingCards({
   hasReconstruction = false,
   bottomInset = 0,
 }) {
+  const [dismissedPhases, setDismissedPhases] = useState(() => new Set())
+
   const activePhase = resolveTourOnboardingCardPhase({
     state,
     stepType,
     near,
     insideGeofence,
     hasReconstruction,
+    dismissedPhases,
   })
-
-  const [dismissedPhases, setDismissedPhases] = useState(() => new Set())
 
   useEffect(() => {
     if (!activePhase) return
@@ -84,7 +97,7 @@ export default function TourOnboardingCards({
 
   if (!copy || !visiblePhase) return null
 
-  const isLast = visiblePhase === 'reveal'
+  const isLast = visiblePhase === 'reveal' || (visiblePhase === 'continue' && !hasReconstruction)
 
   return (
     <div
@@ -125,7 +138,7 @@ export default function TourOnboardingCards({
         </h2>
 
         <p id="tour-onboarding-card-body" className="cw-tour-onboarding-cards__body" style={{ fontFamily: F.body }}>
-          {copy.body}
+          {renderBody(copy.body)}
         </p>
 
         <button

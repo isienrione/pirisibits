@@ -146,14 +146,14 @@ describe('JourneyShell', () => {
     expect(screen.queryByText('MAP')).not.toBeInTheDocument()
   })
 
-  it('shows map overview before audio unlock on a first tour', async () => {
+  it('shows audio unlock welcome before journey audio starts', async () => {
     audioMock.ready = false
     beginJourney({ pace: 'classic' })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('tour-onboarding-map')).toBeInTheDocument()
-    expect(screen.getByText(/stops in order/i)).toBeInTheDocument()
+    expect(await screen.findByText(/your rome awaits/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /begin your walk/i })).toBeInTheDocument()
+    expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
   it('redesign auto-starts waypoint narration when story opens', async () => {
@@ -172,8 +172,8 @@ describe('JourneyShell', () => {
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'reveal')
-    expect(screen.getByText(/Press & hold the image/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(screen.getByText(/Play and pause narration/i)).toBeInTheDocument()
     expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()

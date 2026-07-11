@@ -6,6 +6,8 @@ import {
   markTourOnboardingComplete,
   resolveTourOnboardingCardPhase,
   shouldShowTourOnboarding,
+  shouldShowTourRoutePreview,
+  storyCardPhases,
 } from '../tourOnboarding.js'
 
 describe('tourOnboarding', () => {
@@ -16,6 +18,7 @@ describe('tourOnboarding', () => {
   it('detects fresh first-tour travelers', () => {
     expect(hasCompletedTourOnboarding()).toBe(false)
     expect(shouldShowTourOnboarding({ completedWaypointIds: [] })).toBe(true)
+    expect(shouldShowTourRoutePreview({ completedWaypointIds: [] })).toBe(true)
     expect(shouldShowTourOnboarding({ completedWaypointIds: ['w01'] })).toBe(false)
   })
 
@@ -46,23 +49,36 @@ describe('tourOnboarding', () => {
       }),
     ).toBe('arrive')
     expect(
-      resolveTourOnboardingCardPhase({ state: 'approaching', stepType: 'waypoint' }),
-    ).toBe('arrive')
-    expect(
       resolveTourOnboardingCardPhase({ state: 'story', stepType: 'waypoint' }),
     ).toBe('listen')
     expect(
       resolveTourOnboardingCardPhase({
         state: 'story',
         stepType: 'waypoint',
+        dismissedPhases: new Set(['listen']),
+      }),
+    ).toBe('transcript')
+    expect(
+      resolveTourOnboardingCardPhase({
+        state: 'story',
+        stepType: 'waypoint',
         hasReconstruction: true,
+        dismissedPhases: new Set(['listen', 'transcript', 'continue']),
       }),
     ).toBe('reveal')
+  })
+
+  it('orders story cards with reveal last when available', () => {
+    expect(storyCardPhases(false)).toEqual(['listen', 'transcript', 'continue'])
+    expect(storyCardPhases(true)).toEqual(['listen', 'transcript', 'continue', 'reveal'])
   })
 
   it('returns card copy for each phase', () => {
     const walk = cardCopyForPhase('walk', 'The Colosseum')
     expect(walk.title).toMatch(/Colosseum/)
+    expect(cardCopyForPhase('listen').title).toMatch(/pause/i)
+    expect(cardCopyForPhase('transcript').title).toMatch(/script/i)
+    expect(cardCopyForPhase('continue').title).toMatch(/next stop/i)
     expect(cardCopyForPhase('reveal').title).toMatch(/hold/i)
   })
 })

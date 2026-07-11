@@ -51,12 +51,10 @@ import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
 import C8eJourneyComplete from '../../redesign/screens/C8eJourneyComplete.jsx'
 import { ACT_COLORS, T, SHELL_TAB_BAR_INSET, SHELL_SAFE_BOTTOM_INSET } from '../../redesign/tokens.js'
 import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
-import TourOnboardingMapOverview from '../../redesign/ui/TourOnboardingMapOverview.jsx'
 import TourOnboardingCards from '../../redesign/ui/TourOnboardingCards.jsx'
 import {
   isOnFirstTourStop,
   markTourOnboardingComplete,
-  shouldShowTourOnboarding,
 } from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
 import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
@@ -1086,11 +1084,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   if (!audioUnlocked && !audio.ready) {
     if (variant === 'redesign') {
-      const WelcomeScreen = shouldShowTourOnboarding(context)
-        ? TourOnboardingMapOverview
-        : RedesignJourneyWelcome
       return withInterruptionBanner(
-        <WelcomeScreen onUnlock={handleUnlockAudio} busy={busy} />
+        <RedesignJourneyWelcome onUnlock={handleUnlockAudio} busy={busy} />
       )
     }
     return withInterruptionBanner(

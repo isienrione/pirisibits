@@ -2,59 +2,52 @@ import { useMemo } from 'react'
 import { buildTourRoadmap } from '../../content/tourRoadmap.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { getWaypoint } from '../../content/manifest.js'
-import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
-import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import { T, F } from '../tokens.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
-import { Eyebrow, PrimaryButton } from './index.js'
+import { Eyebrow } from './index.js'
 import TourRouteOverviewMap from './TourRouteOverviewMap.jsx'
 
 /**
- * First-tour map overview — full route on map plus ordered stop list before audio unlock.
+ * Shared map + ordered stop list for tour route previews.
  */
-export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
-  const { context } = useV2Journey()
-  const { manifest, loading } = useTourManifest()
-
+export default function TourRoutePreviewPanel({
+  manifest,
+  loading = false,
+  context,
+  mapHeight = 260,
+  cityLabel = 'Rome, Italy',
+}) {
   const stops = useMemo(
     () =>
       buildTourRoadmap(manifest, {
-        path: context.path,
+        path: context?.path ?? 'a',
         sequenceIndex: 0,
         completedWaypointIds: [],
       }),
-    [manifest, context.path],
+    [manifest, context?.path],
   )
 
   const stopCount = useMemo(() => {
     if (!manifest) return 0
     return getTourProductTruth(manifest, {
-      path: context.path,
-      pace: context.pace,
-      promotedOptionalIds: context.promotedOptionalIds,
-      customWaypointIds: context.customWaypointIds,
+      path: context?.path ?? 'a',
+      pace: context?.pace,
+      promotedOptionalIds: context?.promotedOptionalIds ?? [],
+      customWaypointIds: context?.customWaypointIds,
     }).visitStopCount
-  }, [manifest, context.path, context.pace, context.promotedOptionalIds, context.customWaypointIds])
+  }, [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds])
+
+  const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
 
   return (
-    <div
-      className="cw-grain redesign-app-shell"
-      data-testid="tour-onboarding-map"
-      style={{
-        minHeight: '100%',
-        background: T.bone,
-        fontFamily: F.body,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}
-    >
+    <>
       <div
         style={{
           padding: 'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px 12px',
           flexShrink: 0,
         }}
       >
-        <Eyebrow color={T.ember}>YOUR ROUTE</Eyebrow>
+        <Eyebrow color={T.ember}>{cityLabel.toUpperCase()}</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -65,10 +58,12 @@ export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
             margin: '12px 0 8px',
           }}
         >
-          {stopCount} stops in order
+          {stopCount} stops · your route
         </h1>
         <p style={{ fontSize: 15, color: T.muted, lineHeight: 1.6, margin: 0 }}>
-          This is your full walk through Rome — narration unlocks as you arrive at each place.
+          {firstStopTitle
+            ? `You'll begin at ${firstStopTitle} and walk through Rome in order — narration unlocks as you arrive at each place.`
+            : 'Walk Rome in order — narration unlocks as you arrive at each place.'}
         </p>
       </div>
 
@@ -76,7 +71,7 @@ export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
         style={{
           flexShrink: 0,
           margin: '0 16px 12px',
-          height: 220,
+          height: mapHeight,
           borderRadius: 14,
           overflow: 'hidden',
           border: `1px solid ${T.muted}33`,
@@ -97,7 +92,7 @@ export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
             Loading map…
           </div>
         ) : (
-          <TourRouteOverviewMap manifest={manifest} context={context} />
+          <TourRouteOverviewMap manifest={manifest} context={context ?? { path: 'a' }} />
         )}
       </div>
 
@@ -155,11 +150,26 @@ export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
                   <div style={{ width: 40, height: 40, borderRadius: 8, background: `${T.muted}22` }} />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 15, fontWeight: isFirst ? 600 : 500, color: T.ink, margin: 0, lineHeight: 1.25 }}>
+                  <p
+                    style={{
+                      fontSize: 15,
+                      fontWeight: isFirst ? 600 : 500,
+                      color: T.ink,
+                      margin: 0,
+                      lineHeight: 1.25,
+                    }}
+                  >
                     {titleForWaypoint(waypoint)}
                   </p>
                   {stop.legToNext && !stop.isLast ? (
-                    <p style={{ fontSize: 11, color: T.muted, margin: '3px 0 0', fontFamily: 'ui-monospace, monospace' }}>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: T.muted,
+                        margin: '3px 0 0',
+                        fontFamily: 'ui-monospace, monospace',
+                      }}
+                    >
                       {stop.legToNext}
                     </p>
                   ) : null}
@@ -183,22 +193,6 @@ export default function TourOnboardingMapOverview({ onUnlock, busy = false }) {
           })
         )}
       </div>
-
-      <div
-        style={{
-          flexShrink: 0,
-          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
-          borderTop: `1px solid ${T.muted}28`,
-          background: T.bone,
-        }}
-      >
-        <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', marginBottom: 14, lineHeight: 1.5 }}>
-          Tap once to wake sound — then we&apos;ll guide you through your first stop.
-        </p>
-        <PrimaryButton onClick={onUnlock} disabled={busy}>
-          {busy ? 'Starting audio…' : 'Begin your walk'}
-        </PrimaryButton>
-      </div>
-    </div>
+    </>
   )
 }
