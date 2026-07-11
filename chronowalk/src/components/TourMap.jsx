@@ -604,20 +604,31 @@ function TourMapboxView({
   }, [tour, stops, activeLeg, transitLegActive, mapLoaded, directionsModeActive, walkingCompanionUI])
 
   useEffect(() => {
-    if (!walkingCompanionUI || !mapLoaded) return
-    frameWalkingCompanion(false)
-  }, [walkingCompanionUI, mapLoaded, activeTargetId, frameWalkingCompanion])
+    if (!walkingCompanionUI || !mapLoaded || !map.current) return
 
-  useEffect(() => {
-    if (!walkingCompanionUI || !mapLoaded) return
-    if (!legRouteCoordinates?.length && !directionsGeometry?.coordinates?.length) return
-    frameWalkingCompanion(true)
+    const shouldAnimate =
+      Boolean(legRouteCoordinates?.length || directionsGeometry?.coordinates?.length)
+
+    const frame = () => frameWalkingCompanion(shouldAnimate)
+
+    if (map.current.isStyleLoaded()) {
+      frame()
+      return undefined
+    }
+
+    map.current.once('idle', frame)
+    return () => {
+      map.current?.off('idle', frame)
+    }
   }, [
+    walkingCompanionUI,
+    mapLoaded,
+    activeTargetId,
+    userPos?.lat,
+    userPos?.lng,
+    legRouteCoordinates,
     directionsGeometry,
     frameWalkingCompanion,
-    legRouteCoordinates,
-    mapLoaded,
-    walkingCompanionUI,
   ])
 
   useEffect(() => {
@@ -647,10 +658,6 @@ function TourMapboxView({
         type: 'FeatureCollection',
         features: [],
       })
-
-      if (walkingCompanionUI) {
-        frameWalkingCompanion(true)
-      }
     } else {
       navSource.setData({
         type: 'FeatureCollection',
@@ -660,7 +667,6 @@ function TourMapboxView({
   }, [
     directionsModeActive,
     directionsGeometry,
-    frameWalkingCompanion,
     mapLoaded,
     transitLegActive,
     walkingCompanionUI,

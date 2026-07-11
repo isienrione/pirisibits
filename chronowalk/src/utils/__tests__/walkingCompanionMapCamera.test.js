@@ -3,6 +3,7 @@ import {
   WALKING_COMPANION_MIN_ZOOM,
   applyWalkingCompanionCamera,
   collectWalkingCompanionBoundsPoints,
+  expandBoundsMinimumSpan,
 } from '../walkingCompanionMapCamera'
 
 describe('walkingCompanionMapCamera', () => {
@@ -20,11 +21,26 @@ describe('walkingCompanionMapCamera', () => {
     expect(points).toHaveLength(5)
   })
 
+  it('ignores invalid coordinates', () => {
+    const points = collectWalkingCompanionBoundsPoints({
+      userPos: { lat: 999, lng: 12.49 },
+      destination: { lat: 41.891, lng: 12.492 },
+    })
+
+    expect(points).toEqual([[12.492, 41.891]])
+  })
+
   it('centers on a single point at the minimum walking zoom', () => {
     const jumpTo = vi.fn()
-    const map = { jumpTo, fitBounds: vi.fn(), getZoom: () => 14, setZoom: vi.fn() }
+    const resize = vi.fn()
+    const map = {
+      jumpTo,
+      isStyleLoaded: () => true,
+      resize,
+      cameraForBounds: vi.fn(),
+    }
 
-    applyWalkingCompanionCamera(map, {}, [[12.492, 41.891]])
+    applyWalkingCompanionCamera(map, { LngLatBounds: class {} }, [[12.492, 41.891]])
 
     expect(jumpTo).toHaveBeenCalledWith({
       center: [12.492, 41.891],
@@ -32,26 +48,34 @@ describe('walkingCompanionMapCamera', () => {
     })
   })
 
-  it('enforces the minimum zoom after fitBounds', () => {
-    const fitBounds = vi.fn()
-    const setZoom = vi.fn()
+  it('uses cameraForBounds and clamps zoom for multi-point routes', () => {
+    const jumpTo = vi.fn()
     const map = {
-      fitBounds,
-      getZoom: () => 13.2,
-      setZoom,
-      jumpTo: vi.fn(),
+      jumpTo,
+      easeTo: vi.fn(),
+      isStyleLoaded: () => true,
+      resize: vi.fn(),
+      cameraForBounds: vi.fn(() => ({
+        center: { lng: 12.491, lat: 41.8905 },
+        zoom: 13.4,
+      })),
     }
     const mapboxgl = {
       LngLatBounds: class {
         constructor() {
-          this.empty = false
+          this.points = []
         }
-        extend() {
-          return this
+        extend(point) {
+          this.points.push(point)
         }
-        isEmpty() {
-          return false
+        getNorthEast() {
+          return { lat: 41.891, lng: 12.492 }
         }
+        getSouthWest() {
+          return { lat: 41.89, lng: 12.49 }
+        }
+        setNorthEast() {}
+        setSouthWest() {}
       },
     }
 
@@ -64,7 +88,24 @@ describe('walkingCompanionMapCamera', () => {
       ],
     )
 
-    expect(fitBounds).toHaveBeenCalled()
-    expect(setZoom).toHaveBeenCalledWith(WALKING_COMPANION_MIN_ZOOM)
+    expect(map.cameraForBounds).toHaveBeenCalled()
+    expect(jumpTo).toHaveBeenCalledWith({
+      center: [12.491, 41.8905],
+      zoom: WALKING_COMPANION_MIN_ZOOM,
+    })
+  })
+
+  it('expands collapsed bounds to a minimum span', () => {
+    const bounds = {
+      getNorthEast: () => ({ lat: 41.8905, lng: 12.48835 }),
+      getSouthWest: () => ({ lat: 41.8905, lng: 12.48835 }),
+      setNorthEast: vi.fn(),
+      setSouthWest: vi.fn(),
+    }
+
+    expandBoundsMinimumSpan(bounds)
+
+    expect(bounds.setNorthEast).toHaveBeenCalled()
+    expect(bounds.setSouthWest).toHaveBeenCalled()
   })
 })
