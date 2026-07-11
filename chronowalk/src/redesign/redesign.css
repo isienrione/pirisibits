@@ -1131,6 +1131,25 @@ html.redesign-pwa #root {
   }
 }
 
+/* ── Illustrated tour route preview ── */
+.cw-route-illustration {
+  width: 100%;
+  padding: 0 4px 4px;
+}
+
+.cw-route-illustration--empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+}
+
+.cw-route-illustration__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+}
+
 /* ── Walking companion (transit + waypoint walking) ── */
 .cw-walking-companion {
   position: relative;

@@ -28,7 +28,7 @@ export default function TourRoutePreviewScreen({
         overflow: 'hidden',
       }}
     >
-      <TourRoutePreviewPanel manifest={manifest} loading={loading} context={context} mapHeight={280} />
+      <TourRoutePreviewPanel manifest={manifest} loading={loading} context={context} />
 
       <div
         style={{
