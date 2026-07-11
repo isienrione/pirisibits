@@ -1572,6 +1572,19 @@ html.redesign-pwa #root {
   color: color-mix(in srgb, var(--wc-accent, #e4552e) 80%, var(--wc-warm-white));
 }
 
+.cw-walking-directions__retry {
+  margin-top: 14px;
+  border: 1px solid color-mix(in srgb, var(--wc-accent, #e4552e) 35%, transparent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--wc-warm-white);
+  background: rgba(245, 239, 227, 0.06);
+  cursor: pointer;
+}
+
 .cw-walking-companion__hero-layer {
   position: absolute;
   inset: 0;

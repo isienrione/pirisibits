@@ -30,6 +30,7 @@ export default function WalkingCompanionScreen({
   map,
   userPosition = null,
   destination = null,
+  legFallback = null,
   distanceM = null,
   estimatedDistanceM = null,
   locationStatus = LOCATION_STATUS.WAITING,
@@ -67,11 +68,13 @@ export default function WalkingCompanionScreen({
 
   const showArrivedUI = arrived || userConfirmedArrival
 
-  const { directions, loading: directionsLoading, error: directionsError } = useWalkingDirections({
-    origin: userPosition,
-    destination,
-    enabled: !showArrivedUI && Boolean(destination),
-  })
+  const { directions, loading: directionsLoading, error: directionsError, retry: retryDirections } =
+    useWalkingDirections({
+      origin: userPosition,
+      destination,
+      legFallback,
+      enabled: !showArrivedUI && Boolean(destination),
+    })
 
   const walkingStepProgress = useMemo(
     () =>
@@ -279,6 +282,7 @@ export default function WalkingCompanionScreen({
               loading={directionsLoading}
               error={directionsError}
               destinationTitle={title}
+              onRetry={retryDirections}
             />
           ) : (
             <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
