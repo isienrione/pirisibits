@@ -19,44 +19,6 @@ function CompareCell({ value, featured }) {
   )
 }
 
-function CompareMobileCards({ columns, rows }) {
-  const featuredColumn = columns.find((col) => col.featured)
-  const altColumns = columns.filter((col) => !col.featured)
-
-  return (
-    <div className="cw-v2-compare__cards" aria-label="Comparison by feature">
-      {rows.map((row) => (
-        <article key={row.feature} className="cw-v2-compare__card">
-          <h3 className="cw-v2-compare__card-feature">{row.feature}</h3>
-
-          {featuredColumn ? (
-            <div className="cw-v2-compare__card-chrono">
-              <p className="cw-v2-compare__card-label">{featuredColumn.label}</p>
-              <div className="cw-v2-compare__card-value">
-                <span className="cw-v2-compare__check" aria-hidden>
-                  ✓
-                </span>
-                <CompareCell value={row[featuredColumn.id]} featured />
-              </div>
-            </div>
-          ) : null}
-
-          <ul className="cw-v2-compare__card-alts">
-            {altColumns.map((col) => (
-              <li key={col.id} className="cw-v2-compare__card-alt">
-                <p className="cw-v2-compare__card-label">{col.label}</p>
-                <div className="cw-v2-compare__card-value">
-                  <CompareCell value={row[col.id]} featured={false} />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </article>
-      ))}
-    </div>
-  )
-}
-
 export default function LandingComparisonSection() {
   const { id, eyebrow, headline, columns, rows } = LANDING_CONTENT.comparison
 
@@ -73,8 +35,6 @@ export default function LandingComparisonSection() {
             {headline}
           </h2>
         </header>
-
-        <CompareMobileCards columns={columns} rows={rows} />
 
         <div className="cw-v2-compare__table" role="table" aria-label={headline}>
           <div className="cw-v2-compare__head" role="row">
@@ -105,12 +65,15 @@ export default function LandingComparisonSection() {
                   className={`cw-v2-compare__cell${col.featured ? ' cw-v2-compare__cell--featured' : ''}`}
                   role="cell"
                 >
-                  {col.featured ? (
-                    <span className="cw-v2-compare__check" aria-hidden>
-                      ✓
-                    </span>
-                  ) : null}
-                  <CompareCell value={row[col.id]} featured={col.featured} />
+                  <p className="cw-v2-compare__cell-label">{col.label}</p>
+                  <div className="cw-v2-compare__cell-body">
+                    {col.featured ? (
+                      <span className="cw-v2-compare__check" aria-hidden>
+                        ✓
+                      </span>
+                    ) : null}
+                    <CompareCell value={row[col.id]} featured={col.featured} />
+                  </div>
                 </div>
               ))}
             </div>
