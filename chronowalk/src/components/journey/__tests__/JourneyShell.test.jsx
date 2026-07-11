@@ -20,11 +20,12 @@ const unlockMock = vi.fn().mockResolvedValue(true)
 
 const audioMock = vi.hoisted(() => ({
   narrationPlaying: false,
+  ready: true,
 }))
 
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
   useAudioEngine: () => ({
-    ready: true,
+    ready: audioMock.ready,
     get narrationPlaying() {
       return audioMock.narrationPlaying
     },
@@ -115,6 +116,7 @@ describe('JourneyShell', () => {
     localStorage.clear()
     resetJourney()
     audioMock.narrationPlaying = false
+    audioMock.ready = true
     playWaypointMock.mockClear()
     playTransitMock.mockClear()
     unlockMock.mockClear()
@@ -138,9 +140,20 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByText(/walking to/i)).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /the colosseum/i })).toBeInTheDocument()
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'walk')
     expect(screen.queryByText('GUIDE')).not.toBeInTheDocument()
     expect(screen.queryByText('MAP')).not.toBeInTheDocument()
+  })
+
+  it('shows map overview before audio unlock on a first tour', async () => {
+    audioMock.ready = false
+    beginJourney({ pace: 'classic' })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-map')).toBeInTheDocument()
+    expect(screen.getByText(/stops in order/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /begin your walk/i })).toBeInTheDocument()
   })
 
   it('redesign auto-starts waypoint narration when story opens', async () => {
@@ -154,7 +167,24 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
-  it('shows inline threshold and read instead during story', async () => {
+  it('shows first-tour onboarding cards instead of auto threshold invite during story', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'reveal')
+    expect(screen.getByText(/Press & hold the image/i)).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
+    expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
+    expect(screen.getByTestId('story-continue')).toBeInTheDocument()
+    expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
+  })
+
+  it('shows inline threshold invite after first-tour onboarding is complete', async () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })

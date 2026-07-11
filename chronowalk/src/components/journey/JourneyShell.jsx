@@ -51,6 +51,13 @@ import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
 import C8eJourneyComplete from '../../redesign/screens/C8eJourneyComplete.jsx'
 import { ACT_COLORS, T, SHELL_TAB_BAR_INSET, SHELL_SAFE_BOTTOM_INSET } from '../../redesign/tokens.js'
 import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
+import TourOnboardingMapOverview from '../../redesign/ui/TourOnboardingMapOverview.jsx'
+import TourOnboardingCards from '../../redesign/ui/TourOnboardingCards.jsx'
+import {
+  isOnFirstTourStop,
+  markTourOnboardingComplete,
+  shouldShowTourOnboarding,
+} from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
 import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
 import { getAppPreferences } from '../../hooks/useAppPreferences.js'
@@ -820,6 +827,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (!step?.record || step.type !== 'waypoint') return
     if (state !== JOURNEY_STATES.STORY) return
 
+    if (isOnFirstTourStop(context, step)) {
+      markTourOnboardingComplete()
+    }
+
     audio.stopNarration()
 
     // Avoid double-counting if the audio already ended and fired story_complete.
@@ -836,7 +847,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
       track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
     }
-  }, [audio, completeWaypointAndAdvance, manifest, state, step])
+  }, [audio, completeWaypointAndAdvance, context, manifest, state, step])
 
   const handleContinueClassicDay = useCallback(() => {
     playedStepRef.current = null
@@ -1055,10 +1066,31 @@ export default function JourneyShell({ variant = 'legacy' }) {
     )
   }
 
+  const wrapWithFirstStopOnboarding = (node, { near = false, insideGeofence = false, hasReconstruction = false, bottomInset = 0 } = {}) => {
+    if (variant !== 'redesign' || !isOnFirstTourStop(context, step)) return node
+    return (
+      <>
+        {node}
+        <TourOnboardingCards
+          state={state}
+          stepType={step?.type}
+          stopTitle={step?.record ? titleForWaypoint(step.record) : 'your first stop'}
+          near={near}
+          insideGeofence={insideGeofence}
+          hasReconstruction={hasReconstruction}
+          bottomInset={bottomInset}
+        />
+      </>
+    )
+  }
+
   if (!audioUnlocked && !audio.ready) {
     if (variant === 'redesign') {
+      const WelcomeScreen = shouldShowTourOnboarding(context)
+        ? TourOnboardingMapOverview
+        : RedesignJourneyWelcome
       return withInterruptionBanner(
-        <RedesignJourneyWelcome onUnlock={handleUnlockAudio} busy={busy} />
+        <WelcomeScreen onUnlock={handleUnlockAudio} busy={busy} />
       )
     }
     return withInterruptionBanner(
@@ -1164,7 +1196,16 @@ export default function JourneyShell({ variant = 'legacy' }) {
       })
 
       return withInterruptionBanner(
-        <C6ImmersivePlayer {...playerProps} />
+        wrapWithFirstStopOnboarding(
+          <C6ImmersivePlayer
+            {...playerProps}
+            suppressAutoRevealInvite={isOnFirstTourStop(context, step)}
+          />,
+          {
+            hasReconstruction: Boolean(playerProps.hasReconstruction),
+            bottomInset: dockActive ? 88 : 0,
+          },
+        ),
       )
     }
     return withInterruptionBanner(
@@ -1224,23 +1265,33 @@ export default function JourneyShell({ variant = 'legacy' }) {
   if (state === JOURNEY_STATES.APPROACHING && step.type === 'waypoint') {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
+      const nearApproach =
+        !gpsArrived &&
+        (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
       return withInterruptionBanner(
-        <C2Walking
-          {...props}
-          stopKey={step.id}
-          distanceM={liveWalkDistanceM}
-          estimatedDistanceM={estimatedWalkDistanceM}
-          progressPct={journeyProgressPct}
-          locationStatus={geo.locationStatus}
-          onRetryLocation={geo.retryLocation}
-          onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
-          onPrimeAudio={() => audio.primeForGesture()}
-          insideGeofence={gpsArrived}
-          near
-          extraBottomInset={dockActive ? 88 : 0}
-          onOpenSettings={openSettings}
-          map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
-        />
+        wrapWithFirstStopOnboarding(
+          <C2Walking
+            {...props}
+            stopKey={step.id}
+            distanceM={liveWalkDistanceM}
+            estimatedDistanceM={estimatedWalkDistanceM}
+            progressPct={journeyProgressPct}
+            locationStatus={geo.locationStatus}
+            onRetryLocation={geo.retryLocation}
+            onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+            onPrimeAudio={() => audio.primeForGesture()}
+            insideGeofence={gpsArrived}
+            near
+            extraBottomInset={dockActive ? 88 : 0}
+            onOpenSettings={openSettings}
+            map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
+          />,
+          {
+            near: nearApproach,
+            insideGeofence: gpsArrived,
+            bottomInset: dockActive ? 88 : 0,
+          },
+        ),
       )
     }
     return withInterruptionBanner(
@@ -1317,27 +1368,34 @@ export default function JourneyShell({ variant = 'legacy' }) {
   if (state === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
+      const nearApproach =
+        !gpsArrived &&
+        (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
       return withInterruptionBanner(
-        <C2Walking
-          {...props}
-          stopKey={step.id}
-          distanceM={liveWalkDistanceM}
-          estimatedDistanceM={estimatedWalkDistanceM}
-          progressPct={journeyProgressPct}
-          locationStatus={geo.locationStatus}
-          onRetryLocation={geo.retryLocation}
-          onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
-          onPrimeAudio={() => audio.primeForGesture()}
-          insideGeofence={gpsArrived}
-          near={
-            !gpsArrived &&
-            (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
-          }
-          extraBottomInset={dockActive ? 88 : 0}
-          onPause={() => transition(JOURNEY_STATES.PAUSED)}
-          onOpenSettings={openSettings}
-          map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
-        />
+        wrapWithFirstStopOnboarding(
+          <C2Walking
+            {...props}
+            stopKey={step.id}
+            distanceM={liveWalkDistanceM}
+            estimatedDistanceM={estimatedWalkDistanceM}
+            progressPct={journeyProgressPct}
+            locationStatus={geo.locationStatus}
+            onRetryLocation={geo.retryLocation}
+            onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
+            onPrimeAudio={() => audio.primeForGesture()}
+            insideGeofence={gpsArrived}
+            near={nearApproach}
+            extraBottomInset={dockActive ? 88 : 0}
+            onPause={() => transition(JOURNEY_STATES.PAUSED)}
+            onOpenSettings={openSettings}
+            map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
+          />,
+          {
+            near: nearApproach,
+            insideGeofence: gpsArrived,
+            bottomInset: dockActive ? 88 : 0,
+          },
+        ),
       )
     }
     return withInterruptionBanner(

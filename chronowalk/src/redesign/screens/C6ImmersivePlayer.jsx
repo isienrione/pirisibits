@@ -71,6 +71,7 @@ export default function C6ImmersivePlayer({
   onOpenThreshold,
   onViewImages,
   forceRevealInvite = false,
+  suppressAutoRevealInvite = false,
 }) {
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
@@ -123,12 +124,15 @@ export default function C6ImmersivePlayer({
   }, [initialTab])
 
   useEffect(() => {
-    const showInvite = hasReconstruction && (forceRevealInvite || !hasSeenThresholdRevealTutorial())
+    const showInvite =
+      hasReconstruction &&
+      !suppressAutoRevealInvite &&
+      (forceRevealInvite || !hasSeenThresholdRevealTutorial())
     setAutoRevealInvite(showInvite)
     setPromptedRevealInvite(false)
     setFocusReveal(false)
     setRevealLatched(false)
-  }, [forceRevealInvite, hasReconstruction, waypointId])
+  }, [forceRevealInvite, hasReconstruction, suppressAutoRevealInvite, waypointId])
 
   const dismissRevealInvite = useCallback(() => {
     if (autoRevealInvite) markThresholdRevealTutorialSeen()
