@@ -22,26 +22,47 @@ export const fetchWalkingDirections = async (from, to, accessToken) => {
 
   try {
     const response = await fetch(url)
-    if (!response.ok) return null
+    if (!response.ok) {
+      let detail = null
+      try {
+        const payload = await response.json()
+        detail = payload?.message ?? payload?.code ?? null
+      } catch {
+        detail = null
+      }
+      console.warn('fetchWalkingDirections: Mapbox Directions failed.', response.status, detail)
+      return null
+    }
 
     const data = await response.json()
+    if (data?.code && data.code !== 'Ok') {
+      console.warn('fetchWalkingDirections: Mapbox Directions error.', data.code, data.message)
+      return null
+    }
+
     const route = data?.routes?.[0]
     if (!route) return null
 
     const leg = route.legs?.[0]
+    const steps = normalizeWalkingSteps(
+      leg?.steps?.map((step) => ({
+        instruction: step.maneuver?.instruction ?? 'Continue',
+        distanceM: step.distance ?? 0,
+        durationSec: step.duration ?? 0,
+        type: step.maneuver?.type ?? 'continue',
+      })) ?? [],
+    )
+
+    if (!steps.length) {
+      console.warn('fetchWalkingDirections: route returned without usable steps.')
+      return null
+    }
 
     return {
       geometry: route.geometry ?? null,
       distanceM: leg?.distance ?? route.distance ?? 0,
       durationSec: leg?.duration ?? route.duration ?? 0,
-      steps: normalizeWalkingSteps(
-        leg?.steps?.map((step) => ({
-          instruction: step.maneuver?.instruction ?? 'Continue',
-          distanceM: step.distance ?? 0,
-          durationSec: step.duration ?? 0,
-          type: step.maneuver?.type ?? 'continue',
-        })) ?? []
-      ),
+      steps,
       origin: { lat: from.lat, lng: from.lng },
       destination: { lat: to.lat, lng: to.lng },
     }

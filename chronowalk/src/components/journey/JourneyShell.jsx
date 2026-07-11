@@ -36,6 +36,7 @@ import {
   sanitizeWalkDistanceM,
 } from '../../content/journeyProgress.js'
 import { isWithinApproachDistance } from '../../redesign/lib/walkingCompanionPhase.js'
+import { resolveActiveMapLeg } from '../../content/mapStops.js'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import { WALKING_UI_REVISION as requiredWalkingUiRevision } from '../../content/walkingUiRevision.js'
 import {
@@ -235,6 +236,42 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (geoTarget?.geofence?.lat == null || geoTarget?.geofence?.lng == null) return null
     return { lat: geoTarget.geofence.lat, lng: geoTarget.geofence.lng }
   }, [geoTarget?.geofence?.lat, geoTarget?.geofence?.lng])
+
+  const walkingLegFallback = useMemo(() => {
+    if (!manifest) return null
+
+    const { activeLeg } = resolveActiveMapLeg(
+      manifest,
+      context.path,
+      context.currentSequenceIndex,
+      context.promotedOptionalIds,
+    )
+    if (!activeLeg?.fromId || !activeLeg?.toId) return null
+
+    const fromWaypoint = getWaypoint(manifest, activeLeg.fromId)
+    const toWaypoint = getWaypoint(manifest, activeLeg.toId)
+    if (
+      fromWaypoint?.geofence?.lat == null ||
+      fromWaypoint?.geofence?.lng == null ||
+      toWaypoint?.geofence?.lat == null ||
+      toWaypoint?.geofence?.lng == null
+    ) {
+      return null
+    }
+
+    return {
+      tourId: manifest.id ?? manifest.city ?? 'rome',
+      fromId: activeLeg.fromId,
+      toId: activeLeg.toId,
+      from: { lat: fromWaypoint.geofence.lat, lng: fromWaypoint.geofence.lng },
+      to: { lat: toWaypoint.geofence.lat, lng: toWaypoint.geofence.lng },
+    }
+  }, [
+    manifest,
+    context.path,
+    context.currentSequenceIndex,
+    context.promotedOptionalIds,
+  ])
 
   const devGeofenceActive = isDevGeofencesSantiago()
   const arrivalAccuracyLimitM = devGeofenceActive ? DEV_GEOFENCE_ACCURACY_M : POOR_ACCURACY_M
@@ -1276,6 +1313,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             stopKey={step.id}
             userPosition={geo.position}
             destination={walkingDestination}
+            legFallback={walkingLegFallback}
             distanceM={liveWalkDistanceM}
             estimatedDistanceM={estimatedWalkDistanceM}
             progressPct={journeyProgressPct}
@@ -1340,6 +1378,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           stopKey={step.id}
           userPosition={geo.position}
           destination={walkingDestination}
+          legFallback={walkingLegFallback}
           arrived={gpsArrived}
           distanceM={liveWalkDistanceM}
           estimatedDistanceM={estimatedWalkDistanceM}
@@ -1383,6 +1422,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             stopKey={step.id}
             userPosition={geo.position}
             destination={walkingDestination}
+            legFallback={walkingLegFallback}
             distanceM={liveWalkDistanceM}
             estimatedDistanceM={estimatedWalkDistanceM}
             progressPct={journeyProgressPct}
