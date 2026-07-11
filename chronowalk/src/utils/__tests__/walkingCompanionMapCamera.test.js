@@ -18,7 +18,7 @@ describe('walkingCompanionMapCamera', () => {
       ],
     })
 
-    expect(points).toHaveLength(5)
+    expect(points).toHaveLength(6)
   })
 
   it('ignores invalid coordinates', () => {
@@ -28,6 +28,31 @@ describe('walkingCompanionMapCamera', () => {
     })
 
     expect(points).toEqual([[12.492, 41.891]])
+  })
+
+  it('omits user position when includeUser is false', () => {
+    const points = collectWalkingCompanionBoundsPoints({
+      userPos: { lat: 41.89, lng: 12.49 },
+      destination: { lat: 41.891, lng: 12.492 },
+      includeUser: false,
+    })
+
+    expect(points).toEqual([[12.492, 41.891]])
+  })
+
+  it('samples only route endpoints instead of every coordinate', () => {
+    const points = collectWalkingCompanionBoundsPoints({
+      destination: { lat: 41.891, lng: 12.492 },
+      routeCoordinates: [
+        [12.49, 41.89],
+        [12.4905, 41.8905],
+        [12.491, 41.891],
+        [12.4915, 41.8915],
+        [12.492, 41.892],
+      ],
+    })
+
+    expect(points).toHaveLength(4)
   })
 
   it('centers on a single point at the minimum walking zoom', () => {

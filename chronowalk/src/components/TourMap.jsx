@@ -308,38 +308,33 @@ function TourMapboxView({
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const [legRouteCoordinates, setLegRouteCoordinates] = useState(null)
+  const walkingCameraPinRef = useRef(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay =
     (debugMapEnabled || isDebugMap()) && (!minimalUI || isDevPanelEnabled())
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
   const frameWalkingCompanion = useCallback(
-    (animate = false) => {
-      if (!walkingCompanionUI || !map.current || !mapLoaded || !mapboxglRef.current) return
+    ({ includeUser = false } = {}) => {
+      if (!walkingCompanionUI || !map.current || !mapLoaded || !mapboxglRef.current) return false
 
       const previousStop = activeLeg
         ? stops.find((stop) => stop.id === activeLeg.fromId)?.landmark ?? null
         : null
 
-      const routeCoordinates =
-        directionsModeActive && directionsGeometry?.coordinates?.length
-          ? directionsGeometry.coordinates
-          : legRouteCoordinates ?? []
-
       const points = collectWalkingCompanionBoundsPoints({
         userPos,
         destination: activeTarget?.landmark ?? null,
         previousStop,
-        routeCoordinates,
+        routeCoordinates: legRouteCoordinates ?? [],
+        includeUser,
       })
 
-      applyWalkingCompanionCamera(map.current, mapboxglRef.current, points, { animate })
+      return applyWalkingCompanionCamera(map.current, mapboxglRef.current, points)
     },
     [
       activeLeg,
       activeTarget?.landmark,
-      directionsGeometry,
-      directionsModeActive,
       legRouteCoordinates,
       mapLoaded,
       stops,
@@ -350,7 +345,12 @@ function TourMapboxView({
 
   useEffect(() => {
     setLegRouteCoordinates(null)
+    walkingCameraPinRef.current = null
   }, [activeLeg?.fromId, activeLeg?.toId])
+
+  useEffect(() => {
+    walkingCameraPinRef.current = null
+  }, [activeTargetId])
 
   useEffect(() => {
     onMapFailureRef.current = onMapFailure
@@ -538,21 +538,23 @@ function TourMapboxView({
     const loadRoutes = async () => {
       if (!tour?.stopIds?.length || tour.stopIds.length < 2) return
 
-      const landmarks = tour.stopIds
-        .map((id) => stops.find((stop) => stop.id === id)?.landmark)
-        .filter(Boolean)
+      if (!walkingCompanionUI) {
+        const landmarks = tour.stopIds
+          .map((id) => stops.find((stop) => stop.id === id)?.landmark)
+          .filter(Boolean)
 
-      const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
-      if (cancelled || !fullRoute) return
+        const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
+        if (cancelled || !fullRoute) return
 
-      cacheTourRoute(tour.id, fullRoute)
+        cacheTourRoute(tour.id, fullRoute)
 
-      map.current.getSource('tour-route')?.setData({
-        type: 'FeatureCollection',
-        features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
-      })
+        map.current.getSource('tour-route')?.setData({
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
+        })
+      }
 
-      if (directionsModeActive) {
+      if (directionsModeActive && !walkingCompanionUI) {
         map.current.getSource('active-leg-route')?.setData({
           type: 'FeatureCollection',
           features: [],
@@ -606,10 +608,19 @@ function TourMapboxView({
   useEffect(() => {
     if (!walkingCompanionUI || !mapLoaded || !map.current) return
 
-    const shouldAnimate =
-      Boolean(legRouteCoordinates?.length || directionsGeometry?.coordinates?.length)
+    const legKey = legRouteCoordinates?.length ? 'leg' : 'dest'
+    const pinKey = `${activeTargetId}:${legKey}`
+    const currentPin = walkingCameraPinRef.current
 
-    const frame = () => frameWalkingCompanion(shouldAnimate)
+    if (currentPin === pinKey) return
+    if (currentPin?.endsWith(':leg') && legKey === 'dest') return
+
+    const frame = () => {
+      const framed = frameWalkingCompanion({ includeUser: false })
+      if (framed) {
+        walkingCameraPinRef.current = pinKey
+      }
+    }
 
     if (map.current.isStyleLoaded()) {
       frame()
@@ -620,16 +631,7 @@ function TourMapboxView({
     return () => {
       map.current?.off('idle', frame)
     }
-  }, [
-    walkingCompanionUI,
-    mapLoaded,
-    activeTargetId,
-    userPos?.lat,
-    userPos?.lng,
-    legRouteCoordinates,
-    directionsGeometry,
-    frameWalkingCompanion,
-  ])
+  }, [walkingCompanionUI, mapLoaded, activeTargetId, legRouteCoordinates, frameWalkingCompanion])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -775,8 +777,12 @@ function TourMapboxView({
   }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
   const handleRecenter = useCallback(() => {
-    frameWalkingCompanion(true)
-  }, [frameWalkingCompanion])
+    walkingCameraPinRef.current = null
+    const framed = frameWalkingCompanion({ includeUser: true })
+    if (framed) {
+      walkingCameraPinRef.current = `${activeTargetId}:user`
+    }
+  }, [activeTargetId, frameWalkingCompanion])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !walkingCompanionUI) return
