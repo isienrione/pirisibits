@@ -39,7 +39,7 @@ describe('Threshold', () => {
     expect(screen.getByText('Now')).toBeInTheDocument()
     expect(screen.getByText('Then')).toBeInTheDocument()
     expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
-    expect(screen.getByText('Hold to reveal')).toBeInTheDocument()
+    expect(screen.getByText('Press & hold to reveal')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /about this reconstruction/i })).toBeInTheDocument()
   })
 

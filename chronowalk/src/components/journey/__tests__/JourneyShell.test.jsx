@@ -195,7 +195,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
-    expect(screen.getByText(/hold to reveal/i)).toBeInTheDocument()
+    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('threshold-help'))
     expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()

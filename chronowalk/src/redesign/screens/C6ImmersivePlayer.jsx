@@ -459,8 +459,6 @@ export default function C6ImmersivePlayer({
           />
         ) : null}
 
-        {showHoldHint ? <ThresholdHoldHint className="cw-threshold-hold-hint--immersive" /> : null}
-
         <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
         <div className="cw-waypoint-immersive__chrome">
           <Vignette />
@@ -557,6 +555,9 @@ export default function C6ImmersivePlayer({
           >
             {subtitle}
           </p>
+          {showHoldHint ? (
+            <ThresholdHoldHint className="cw-threshold-hold-hint--under-title" />
+          ) : null}
         </div>
       </div>
 
