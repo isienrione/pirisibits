@@ -247,11 +247,13 @@ export default function B4PaceSelector({
                         <span
                           style={{
                             fontSize: 9,
-                            color: T.ember,
-                            border: `1px solid ${T.ember}50`,
+                            fontWeight: 600,
+                            color: T.bone,
+                            background: T.gold,
                             borderRadius: 6,
-                            padding: '2px 7px',
+                            padding: '3px 8px',
                             letterSpacing: '0.12em',
+                            textTransform: 'uppercase',
                           }}
                         >
                           {opt.badge}
