@@ -166,7 +166,7 @@ describe('JourneyShell', () => {
     expect(screen.getByTestId('story-continue')).toBeInTheDocument()
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
     expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
-    expect(screen.queryByText(/press and hold to cross/i)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-hold-hint')).not.toBeInTheDocument()
   })
 
   it.each(['w06', 'w07', 'w08'])('shows continuity button during %s forum story', async (waypointId) => {
@@ -194,6 +194,8 @@ describe('JourneyShell', () => {
 
     expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
+    expect(screen.getByText(/hold to reveal/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('threshold-help'))
     expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()

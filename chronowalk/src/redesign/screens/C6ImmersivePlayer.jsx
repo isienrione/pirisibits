@@ -4,6 +4,7 @@ import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
+import ThresholdHoldHint from '../ui/ThresholdHoldHint.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
@@ -79,6 +80,7 @@ export default function C6ImmersivePlayer({
   const [autoRevealInvite, setAutoRevealInvite] = useState(false)
   const [promptedRevealInvite, setPromptedRevealInvite] = useState(false)
   const [focusReveal, setFocusReveal] = useState(false)
+  const [revealLatched, setRevealLatched] = useState(false)
   const seekTrackRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
@@ -125,6 +127,7 @@ export default function C6ImmersivePlayer({
     setAutoRevealInvite(showInvite)
     setPromptedRevealInvite(false)
     setFocusReveal(false)
+    setRevealLatched(false)
   }, [forceRevealInvite, hasReconstruction, waypointId])
 
   const dismissRevealInvite = useCallback(() => {
@@ -144,6 +147,8 @@ export default function C6ImmersivePlayer({
   const handleRevealHoldStart = useCallback(() => {
     if (!hasReconstruction) return
 
+    setRevealLatched(false)
+
     if (autoRevealInvite || promptedRevealInvite) {
       markThresholdRevealTutorialSeen()
       setAutoRevealInvite(false)
@@ -153,8 +158,9 @@ export default function C6ImmersivePlayer({
     setFocusReveal(true)
   }, [autoRevealInvite, hasReconstruction, promptedRevealInvite])
 
-  const handleRevealHoldEnd = useCallback(() => {
+  const handleRevealHoldEnd = useCallback((detail) => {
     setFocusReveal(false)
+    setRevealLatched(Boolean(detail?.latched))
   }, [])
 
   useEffect(() => {
@@ -180,6 +186,8 @@ export default function C6ImmersivePlayer({
   const chromeHidden = focusReveal
   const showRevealInvite =
     hasReconstruction && !chromeHidden && (autoRevealInvite || promptedRevealInvite)
+  const showHoldHint =
+    hasReconstruction && !chromeHidden && !revealLatched && !showRevealInvite
   const revealInviteInteractive = promptedRevealInvite
 
   const tabBar = (
@@ -450,6 +458,8 @@ export default function C6ImmersivePlayer({
             onDismiss={dismissRevealInvite}
           />
         ) : null}
+
+        {showHoldHint ? <ThresholdHoldHint className="cw-threshold-hold-hint--immersive" /> : null}
 
         <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
         <div className="cw-waypoint-immersive__chrome">

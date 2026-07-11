@@ -51,6 +51,71 @@
   }
 }
 
+.cw-threshold-hold-hint {
+  position: absolute;
+  left: 50%;
+  bottom: max(2rem, calc(env(safe-area-inset-bottom) + 1.25rem));
+  transform: translateX(-50%);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--ember) 28%, transparent);
+  background: color-mix(in srgb, var(--obsidian) 62%, transparent);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+}
+
+.cw-threshold-hold-hint--embedded {
+  bottom: max(2.75rem, calc(env(safe-area-inset-bottom) + 1.75rem));
+}
+
+.cw-threshold-hold-hint--immersive {
+  bottom: 46%;
+  z-index: 6;
+}
+
+.cw-threshold-hold-hint__pulse {
+  position: relative;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ember);
+}
+
+.cw-threshold-hold-hint__pulse::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ember) 55%, transparent);
+  animation: thresholdHoldPulse 2s ease-in-out infinite;
+}
+
+.cw-threshold-hold-hint__label {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--warm-white) 88%, transparent);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-threshold-hold-hint__pulse::after {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+
 .cw-threshold-surface {
   touch-action: none;
 }

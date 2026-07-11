@@ -4,7 +4,6 @@ import { useHideThresholdChrome } from '../context/ThresholdChromeContext'
 import { THRESHOLD_HOLD_MS, THRESHOLD_RELEASE_MS } from '../data/thresholdDemo'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
-import { hasSeenThresholdHint, markThresholdHintSeen } from '../utils/thresholdHint'
 import {
   reducedMotionReveal,
   revealToClipRight,
@@ -13,6 +12,7 @@ import {
 import ThresholdSourceBadge, {
   AI_NOW_DISCLOSURE_COPY,
 } from './threshold/ThresholdSourceBadge.jsx'
+import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
 
 const REVEAL_COMPLETE = 0.98
 
@@ -177,8 +177,8 @@ export default function Threshold({
   const [holding, setHolding] = useState(false)
   const [latchedToThen, setLatchedToThen] = useState(false)
   const latchedRef = useRef(false)
-  const [showHint, setShowHint] = useState(() => !immersive && !hasSeenThresholdHint())
   const [videoPlaying, setVideoPlaying] = useState(false)
+  const showHoldHint = !hideUi && !holding && !latchedToThen && !immersive
 
   useHideThresholdChrome(holding)
 
@@ -265,11 +265,6 @@ export default function Threshold({
       setHolding(true)
       setVideoPlaying(true)
 
-      if (showHint) {
-        setShowHint(false)
-        markThresholdHintSeen()
-      }
-
       onHoldStart?.()
 
       if (reducedMotion) {
@@ -283,7 +278,7 @@ export default function Threshold({
       animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
-    [active, animateReveal, cancelAnimation, notifyFullyRevealed, onHoldStart, reducedMotion, showHint]
+    [active, animateReveal, cancelAnimation, notifyFullyRevealed, onHoldStart, reducedMotion]
   )
 
   const endHoldSession = useCallback(
@@ -576,29 +571,10 @@ export default function Threshold({
         />
       ) : null}
 
-      {!hideUi && showHint && !latchedToThen ? (
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: embedded
-              ? 'max(2.5rem, calc(env(safe-area-inset-bottom) + 1.5rem))'
-              : onDismiss
-                ? 'max(5.5rem, calc(env(safe-area-inset-bottom) + 4rem))'
-                : 'max(2rem, env(safe-area-inset-bottom))',
-            transform: 'translateX(-50%)',
-            padding: '8px 16px',
-            borderRadius: 20,
-            background: 'color-mix(in srgb, var(--obsidian) 60%, transparent)',
-            fontSize: 'var(--fs-meta)',
-            fontWeight: 500,
-            color: 'var(--warm-white)',
-            pointerEvents: 'none',
-            zIndex: 3,
-          }}
-        >
-          Press and hold to cross
-        </div>
+      {!hideUi && showHoldHint ? (
+        <ThresholdHoldHint
+          className={embedded ? 'cw-threshold-hold-hint--embedded' : undefined}
+        />
       ) : null}
 
       {!hideUi && latchedToThen ? (

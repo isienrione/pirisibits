@@ -32,13 +32,14 @@ function renderThreshold(props = {}) {
 }
 
 describe('Threshold', () => {
-  it('renders labels and the first-time hint', () => {
+  it('renders labels and the persistent hold hint', () => {
     localStorage.clear()
     renderThreshold()
 
     expect(screen.getByText('Now')).toBeInTheDocument()
     expect(screen.getByText('Then')).toBeInTheDocument()
-    expect(screen.getByText('Press and hold to cross')).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
+    expect(screen.getByText('Hold to reveal')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /about this reconstruction/i })).toBeInTheDocument()
   })
 
@@ -94,6 +95,7 @@ describe('Threshold', () => {
     expect(screen.queryByText('Today')).not.toBeInTheDocument()
     expect(screen.queryByText('ANCIENT ROME')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /about this reconstruction/i })).not.toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-hold-hint')).not.toBeInTheDocument()
   })
 
   it('calls onDismiss from journey controls', () => {
