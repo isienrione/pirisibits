@@ -230,6 +230,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     simulateAtTarget: geoDebug.simulateAtTarget || devSimulateGps,
     debugPosition: geoDebug.debugPosition,
   })
+
+  const walkingDestination = useMemo(() => {
+    if (geoTarget?.geofence?.lat == null || geoTarget?.geofence?.lng == null) return null
+    return { lat: geoTarget.geofence.lat, lng: geoTarget.geofence.lng }
+  }, [geoTarget?.geofence?.lat, geoTarget?.geofence?.lng])
+
   const devGeofenceActive = isDevGeofencesSantiago()
   const arrivalAccuracyLimitM = devGeofenceActive ? DEV_GEOFENCE_ACCURACY_M : POOR_ACCURACY_M
 
@@ -1268,6 +1274,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
           <C2Walking
             {...props}
             stopKey={step.id}
+            userPosition={geo.position}
+            destination={walkingDestination}
             distanceM={liveWalkDistanceM}
             estimatedDistanceM={estimatedWalkDistanceM}
             progressPct={journeyProgressPct}
@@ -1330,6 +1338,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
         <C2Transit
           {...transitProps}
           stopKey={step.id}
+          userPosition={geo.position}
+          destination={walkingDestination}
           arrived={gpsArrived}
           distanceM={liveWalkDistanceM}
           estimatedDistanceM={estimatedWalkDistanceM}
@@ -1371,6 +1381,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
           <C2Walking
             {...props}
             stopKey={step.id}
+            userPosition={geo.position}
+            destination={walkingDestination}
             distanceM={liveWalkDistanceM}
             estimatedDistanceM={estimatedWalkDistanceM}
             progressPct={journeyProgressPct}
