@@ -11,6 +11,30 @@ export function markTourOnboardingComplete() {
   window.localStorage.setItem(ONBOARDING_KEY, 'true')
 }
 
+export function clearTourOnboarding() {
+  if (typeof window === 'undefined') return
+  window.localStorage.removeItem(ONBOARDING_KEY)
+}
+
+/**
+ * Mobile-friendly replay — open /begin?replayOnboarding=1 (add &fresh=1 to restart from scratch).
+ * @returns {{ replay: boolean, fresh: boolean }}
+ */
+export function parseReplayOnboardingSearch(search = '') {
+  const params = new URLSearchParams(search)
+  return {
+    replay: params.get('replayOnboarding') === '1',
+    fresh: params.get('fresh') === '1',
+  }
+}
+
+export function applyReplayOnboardingFromSearch(search = '') {
+  const { replay, fresh } = parseReplayOnboardingSearch(search)
+  if (!replay) return { replay: false, fresh: false }
+  clearTourOnboarding()
+  return { replay: true, fresh }
+}
+
 function isFreshTourStart(context) {
   if (!context) return true
   return (context.completedWaypointIds?.length ?? 0) === 0

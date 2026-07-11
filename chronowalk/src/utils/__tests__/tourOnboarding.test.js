@@ -3,11 +3,13 @@ import {
   cardCopyForPhase,
   hasCompletedTourOnboarding,
   isOnFirstTourStop,
+  clearTourOnboarding,
   markTourOnboardingComplete,
   resolveTourOnboardingCardPhase,
   shouldShowTourOnboarding,
   shouldShowTourRoutePreview,
   storyCardPhases,
+  applyReplayOnboardingFromSearch,
 } from '../tourOnboarding.js'
 
 describe('tourOnboarding', () => {
@@ -26,6 +28,13 @@ describe('tourOnboarding', () => {
     markTourOnboardingComplete()
     expect(hasCompletedTourOnboarding()).toBe(true)
     expect(shouldShowTourOnboarding({ completedWaypointIds: [] })).toBe(false)
+  })
+
+  it('clears onboarding for mobile replay links', () => {
+    markTourOnboardingComplete()
+    const result = applyReplayOnboardingFromSearch('?replayOnboarding=1&fresh=1')
+    expect(result).toEqual({ replay: true, fresh: true })
+    expect(hasCompletedTourOnboarding()).toBe(false)
   })
 
   it('limits first-stop onboarding to the opening waypoint', () => {

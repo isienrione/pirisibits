@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption } from '../data/romePacing.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
@@ -7,7 +7,7 @@ import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
-import { shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
+import { applyReplayOnboardingFromSearch, shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
 import TourRoutePreviewScreen from './ui/TourRoutePreviewScreen.jsx'
 import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
@@ -22,6 +22,7 @@ function initialBeginStep(isResumable, context) {
 
 export default function RedesignBeginFlow() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
     useV2Journey()
   const { manifest, loading } = useTourManifest()
@@ -35,6 +36,29 @@ export default function RedesignBeginFlow() {
   const [selectedPace, setSelectedPace] = useState(context.pace ?? JOURNEY_PACE.CLASSIC)
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    const { replay, fresh } = applyReplayOnboardingFromSearch(searchParams.toString())
+    if (!replay) return
+
+    if (fresh) {
+      reset()
+      setStepName('mapPreview')
+    } else if (isResumable) {
+      setStepName('resume')
+    } else if (shouldShowTourRoutePreview(context)) {
+      setStepName('mapPreview')
+    } else {
+      setStepName('pace')
+    }
+
+    if (searchParams.has('replayOnboarding') || searchParams.has('fresh')) {
+      const next = new URLSearchParams(searchParams)
+      next.delete('replayOnboarding')
+      next.delete('fresh')
+      setSearchParams(next, { replace: true })
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
   const startJourney = () => {
     const tourIds = manifest ? getTourWaypointIds(manifest, { ...context, pace: selectedPace, customWaypointIds: ownPaceStops }) : []
