@@ -1,24 +1,95 @@
 /**
  * Fetch a walking route GeoJSON line between two landmarks via Mapbox Directions.
  */
-import { normalizeWalkingSteps } from '../utils/walkingDirections'
+import {
+  buildInstructionFromManeuver,
+  cleanInstruction,
+  extractBannerInstruction,
+  instructionUsesStreet,
+  normalizeWalkingSteps,
+  pickBestWalkingDirections,
+} from '../utils/walkingDirections'
 
-export const fetchWalkingRoute = async (from, to, accessToken) => {
-  const result = await fetchWalkingDirections(from, to, accessToken)
+export const fetchWalkingRoute = async (from, to, accessToken, options = {}) => {
+  const result = await fetchWalkingDirections(from, to, accessToken, options)
   return result?.geometry ?? null
 }
 
+function parseMapboxStep(step) {
+  const streetName = step.name || step.ref || null
+  const bannerInstruction = extractBannerInstruction(step)
+  const maneuverInstruction = cleanInstruction(step.maneuver?.instruction ?? '')
+  const builtInstruction = buildInstructionFromManeuver(step.maneuver, streetName)
+
+  let instruction = bannerInstruction
+
+  if (!instruction && builtInstruction && !instructionUsesStreet(maneuverInstruction, streetName)) {
+    instruction = builtInstruction
+  }
+
+  if (!instruction && maneuverInstruction) {
+    instruction = maneuverInstruction
+  }
+
+  if (!instruction) {
+    instruction = 'Continue'
+  }
+
+  return {
+    instruction,
+    streetName,
+    distanceM: step.distance ?? 0,
+    durationSec: step.duration ?? 0,
+    type: step.maneuver?.type ?? 'continue',
+    modifier: step.maneuver?.modifier ?? null,
+  }
+}
+
+function parseMapboxRoute(route, { destinationTitle = null } = {}) {
+  const leg = route?.legs?.[0]
+  const steps = normalizeWalkingSteps(
+    leg?.steps?.map(parseMapboxStep) ?? [],
+    { destinationTitle },
+  )
+
+  if (!steps.length) return null
+
+  return {
+    geometry: route.geometry ?? null,
+    distanceM: leg?.distance ?? route.distance ?? 0,
+    durationSec: leg?.duration ?? route.duration ?? 0,
+    steps,
+  }
+}
+
+function buildDirectionsUrl(from, to, accessToken, options = {}) {
+  const coordinates = `${from.lng},${from.lat};${to.lng},${to.lat}`
+  const params = new URLSearchParams({
+    geometries: 'geojson',
+    overview: 'full',
+    steps: 'true',
+    banner_instructions: 'true',
+    language: options.language ?? 'en',
+    voice_units: 'metric',
+    alternatives: 'true',
+    walkway_bias: '-0.85',
+    access_token: accessToken,
+  })
+
+  if (options.destinationName) {
+    params.set('waypoint_names', `;${options.destinationName.slice(0, 120)}`)
+  }
+
+  return `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?${params.toString()}`
+}
+
 /** Walking directions with turn-by-turn steps for in-app guidance. */
-export const fetchWalkingDirections = async (from, to, accessToken) => {
+export const fetchWalkingDirections = async (from, to, accessToken, options = {}) => {
   if (!from?.lat || !from?.lng || !to?.lat || !to?.lng || !accessToken) {
     return null
   }
 
-  const coordinates = `${from.lng},${from.lat};${to.lng},${to.lat}`
-  const url =
-    `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}` +
-    `?geometries=geojson&overview=full&steps=true&language=en&voice_units=metric` +
-    `&access_token=${encodeURIComponent(accessToken)}`
+  const url = buildDirectionsUrl(from, to, accessToken, options)
 
   try {
     const response = await fetch(url)
@@ -40,32 +111,24 @@ export const fetchWalkingDirections = async (from, to, accessToken) => {
       return null
     }
 
-    const route = data?.routes?.[0]
-    if (!route) return null
+    const routes = data?.routes ?? []
+    if (!routes.length) return null
 
-    const leg = route.legs?.[0]
-    const steps = normalizeWalkingSteps(
-      leg?.steps?.map((step) => ({
-        instruction: step.maneuver?.instruction ?? 'Continue',
-        distanceM: step.distance ?? 0,
-        durationSec: step.duration ?? 0,
-        type: step.maneuver?.type ?? 'continue',
-      })) ?? [],
+    const parsed = routes
+      .map((route) =>
+        parseMapboxRoute(route, { destinationTitle: options.destinationName ?? null }),
+      )
+      .filter(Boolean)
+
+    const best = pickBestWalkingDirections(
+      parsed.map((result) => ({
+        ...result,
+        origin: { lat: from.lat, lng: from.lng },
+        destination: { lat: to.lat, lng: to.lng },
+      })),
     )
 
-    if (!steps.length) {
-      console.warn('fetchWalkingDirections: route returned without usable steps.')
-      return null
-    }
-
-    return {
-      geometry: route.geometry ?? null,
-      distanceM: leg?.distance ?? route.distance ?? 0,
-      durationSec: leg?.duration ?? route.duration ?? 0,
-      steps,
-      origin: { lat: from.lat, lng: from.lng },
-      destination: { lat: to.lat, lng: to.lng },
-    }
+    return best ?? null
   } catch (error) {
     console.warn('fetchWalkingDirections: Mapbox Directions failed.', error)
     return null
@@ -79,7 +142,7 @@ export const fetchTourWalkingRoute = async (landmarks, accessToken) => {
   const coordinates = landmarks.map((point) => `${point.lng},${point.lat}`).join(';')
   const url =
     `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}` +
-    `?geometries=geojson&overview=full&access_token=${encodeURIComponent(accessToken)}`
+    `?geometries=geojson&overview=full&walkway_bias=-0.85&access_token=${encodeURIComponent(accessToken)}`
 
   try {
     const response = await fetch(url)

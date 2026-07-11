@@ -34,7 +34,7 @@ function writeCache(tourId, cache) {
 }
 
 function legKey(fromId, toId) {
-  return `${fromId}->${toId}`
+  return `${fromId}->${toId}:v2`
 }
 
 export function cacheTourRoute(tourId, geometry) {

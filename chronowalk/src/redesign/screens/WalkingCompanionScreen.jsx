@@ -73,6 +73,7 @@ export default function WalkingCompanionScreen({
       origin: userPosition,
       destination,
       legFallback,
+      destinationName: title,
       enabled: !showArrivedUI && Boolean(destination),
     })
 

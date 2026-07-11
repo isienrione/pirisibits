@@ -9,7 +9,7 @@ import {
   cacheLegDirections,
   cacheLegRoute,
 } from '../utils/routeGeometryCache'
-import { isSameLocation } from '../utils/walkingDirections'
+import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
 
 function geometryFromLegCache(tourId, fromId, toId) {
   const coordinates = getLegRouteCoordinates(tourId, fromId, toId)
@@ -18,14 +18,14 @@ function geometryFromLegCache(tourId, fromId, toId) {
 }
 
 /** Load precomputed tour-leg directions (stop → stop), with session cache + Mapbox fallback. */
-export async function loadTourLegDirections(legFallback, accessToken) {
+export async function loadTourLegDirections(legFallback, accessToken, options = {}) {
   if (!legFallback?.tourId || !legFallback?.fromId || !legFallback?.toId) return null
 
   const { tourId, fromId, toId, from, to } = legFallback
   const cachedSteps = getLegWalkingSteps(tourId, fromId, toId)
   const cachedGeometry = geometryFromLegCache(tourId, fromId, toId)
 
-  if (cachedSteps?.length) {
+  if (cachedSteps?.length && scoreWalkingStepQuality(cachedSteps) >= 6) {
     return {
       steps: cachedSteps,
       geometry: cachedGeometry,
@@ -39,7 +39,9 @@ export async function loadTourLegDirections(legFallback, accessToken) {
     return null
   }
 
-  const result = await fetchWalkingDirections(from, to, accessToken)
+  const result = await fetchWalkingDirections(from, to, accessToken, {
+    destinationName: options.destinationName,
+  })
   if (!result?.steps?.length) return null
 
   cacheLegDirections(tourId, fromId, toId, result.steps)
@@ -51,9 +53,7 @@ export async function loadTourLegDirections(legFallback, accessToken) {
 }
 
 function pickBestDirections(adhocResult, legResult) {
-  if (adhocResult?.steps?.length) return adhocResult
-  if (legResult?.steps?.length) return legResult
-  return null
+  return pickBestWalkingDirections([adhocResult, legResult].filter(Boolean))
 }
 
 export function useWalkingDirections({
@@ -61,6 +61,7 @@ export function useWalkingDirections({
   destination,
   enabled = true,
   legFallback = null,
+  destinationName = null,
   reloadKey = 0,
 }) {
   const [loading, setLoading] = useState(false)
@@ -101,7 +102,7 @@ export function useWalkingDirections({
       }
 
       const legPromise = legFallback
-        ? loadTourLegDirections(legFallback, env.mapboxToken)
+        ? loadTourLegDirections(legFallback, env.mapboxToken, { destinationName })
         : Promise.resolve(null)
 
       if (!routingOrigin) {
@@ -147,6 +148,7 @@ export function useWalkingDirections({
         routingOrigin,
         routingDestination,
         env.mapboxToken,
+        { destinationName },
       )
 
       const [adhocResult, legResult] = await Promise.all([adhocPromise, legPromise])
@@ -177,6 +179,7 @@ export function useWalkingDirections({
   }, [
     enabled,
     legFallback,
+    destinationName,
     reloadKey,
     retryNonce,
     routingDestination,

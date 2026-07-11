@@ -41,16 +41,16 @@ describe('useWalkingDirections', () => {
   })
 
   it('falls back to tour-leg directions when GPS routing fails', async () => {
+    const legResult = {
+      steps: legSteps,
+      geometry: { type: 'LineString', coordinates: [[12.4872, 41.8886], [12.48835, 41.8905]] },
+      distanceM: 232,
+      durationSec: 180,
+    }
+
     fetchWalkingDirections.mockImplementation(async (from, to) => {
       if (from.lat === 41.889 && to.lat === 41.8905) return null
-      if (from.lat === 41.8886 && to.lat === 41.8905) {
-        return {
-          steps: legSteps,
-          geometry: { type: 'LineString', coordinates: [[12.4872, 41.8886], [12.48835, 41.8905]] },
-          distanceM: 232,
-          durationSec: 180,
-        }
-      }
+      if (from.lat === 41.8886 && to.lat === 41.8905) return legResult
       return null
     })
 
@@ -59,6 +59,7 @@ describe('useWalkingDirections', () => {
         origin: { lat: 41.889, lng: 12.4878 },
         destination: { lat: 41.8905, lng: 12.48835 },
         legFallback,
+        destinationName: 'Arch of Titus',
       }),
     )
 
@@ -74,7 +75,9 @@ describe('useWalkingDirections', () => {
     getLegWalkingSteps.mockReturnValue(legSteps)
     fetchWalkingDirections.mockResolvedValue(null)
 
-    const cached = await loadTourLegDirections(legFallback, 'pk.test-token')
+    const cached = await loadTourLegDirections(legFallback, 'pk.test-token', {
+      destinationName: 'Arch of Titus',
+    })
 
     expect(cached?.steps).toEqual(legSteps)
     expect(fetchWalkingDirections).not.toHaveBeenCalled()
