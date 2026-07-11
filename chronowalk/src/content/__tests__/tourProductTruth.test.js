@@ -25,13 +25,17 @@ describe('tourProductTruth', () => {
   })
 
   it('derives visit stop ids on the default path', () => {
-    const heroic = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
-    const classic = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const eterna = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
+    const antica = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const central = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CENTRAL })
 
-    expect(heroic).not.toContain('pause')
-    expect(classic).not.toContain('pause')
-    expect(classic).not.toContain('w22')
-    expect(heroic.length).toBeGreaterThan(classic.length)
+    expect(eterna).not.toContain('pause')
+    expect(antica).not.toContain('pause')
+    expect(central).not.toContain('pause')
+    expect(antica).not.toContain('w14')
+    expect(central).not.toContain('w01')
+    expect(eterna.length).toBeGreaterThan(antica.length)
+    expect(eterna.length).toBeGreaterThan(central.length)
   })
 
   it('exposes canonical marketing and in-app counts from manifest product metadata', () => {
@@ -50,11 +54,13 @@ describe('tourProductTruth', () => {
   })
 
   it('uses computed visit stop counts when pace is selected', () => {
-    const classic = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CLASSIC })
-    const heroic = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
+    const central = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CENTRAL })
+    const antica = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
-    expect(classic.visitStopCount).toBe(17)
-    expect(heroic.visitStopCount).toBe(18)
+    expect(central.visitStopCount).toBe(9)
+    expect(antica.visitStopCount).toBe(9)
+    expect(eterna.visitStopCount).toBe(18)
   })
 
   it('formats places across acts copy', () => {

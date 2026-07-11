@@ -1,6 +1,7 @@
-/** Rome journey pacing — acts model (replaces the old two-day split). */
+/** Rome journey pacing — tiered tour products (replaces the old two-day split). */
 
 export const JOURNEY_PACE = {
+  CENTRAL: 'central',
   CLASSIC: 'classic',
   HEROIC: 'heroic',
   OWN: 'own',
@@ -9,23 +10,58 @@ export const JOURNEY_PACE = {
 export const PACE_ORIENTATION =
   'You can change your mind at any time. Nothing expires. Nothing is skipped forever.'
 
+/** Seven act slots for tier cards — null means the act is not in this tour. */
+export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore']
+
 export const PACE_OPTIONS = [
   {
-    id: JOURNEY_PACE.CLASSIC,
-    title: 'Take it in chapters',
-    badge: 'Most loved',
-    description: 'Ancient stops first, then the living city. Pause between acts whenever you like.',
+    id: JOURNEY_PACE.CENTRAL,
+    title: 'Roma central',
+    badge: null,
+    priceLabel: '$12',
+    priceCents: 1200,
+    description:
+      "Centro storico and the Pantheon — Spanish Steps, Trevi, Navona, Campo de' Fiori, Trajan's Market, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
+    includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
+    actDots: [null, null, null, 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'pantheon',
     default: true,
   },
   {
+    id: JOURNEY_PACE.CLASSIC,
+    title: 'Roma antica',
+    badge: 'Most loved',
+    priceLabel: '$12',
+    priceCents: 1200,
+    description:
+      'The Colosseum and the full Forum walk — from the Arena through the Arch of Titus and every Forum stop to the Capitoline.',
+    includedSummary: 'Colosseum · Arch of Titus · Roman Forum',
+    actDots: ['act1', 'act2', 'act3', null, null, null, null],
+    imageKey: 'colosseum',
+  },
+  {
     id: JOURNEY_PACE.HEROIC,
-    title: 'The full day',
-    description: 'All of it in one go — dawn to golden hour. Bring real shoes and real ambition.',
+    title: 'Roma eterna',
+    badge: null,
+    priceLabel: '$17.99',
+    priceCents: 1799,
+    description:
+      'The complete Rome — ancient monuments, the Forum, Pantheon, centro storico, Castel Sant\'Angelo, and Via Appia in one continuous walk.',
+    includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
+    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'capitoline',
   },
   {
     id: JOURNEY_PACE.OWN,
-    title: 'Your Own Pace',
-    description: "Any act, any order, as many mornings as you like. I'll keep your place.",
+    title: 'At your own pace',
+    badge: null,
+    priceLabel: '$17.99',
+    priceCents: 1799,
+    description:
+      'Pick any stops you like — one morning or many. Build your own route through every landmark in the catalog.',
+    includedSummary: 'Any act · any order · your itinerary',
+    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'trajan',
   },
 ]
 
@@ -95,6 +131,10 @@ export const JOURNEY_PATH = {
 
 export function getPaceOption(paceId) {
   return PACE_OPTIONS.find((option) => option.id === paceId) ?? PACE_OPTIONS[0]
+}
+
+export function getDefaultPace() {
+  return PACE_OPTIONS.find((option) => option.default)?.id ?? JOURNEY_PACE.CENTRAL
 }
 
 export function getActForWaypoint(waypointId) {

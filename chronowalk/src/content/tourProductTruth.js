@@ -1,15 +1,10 @@
-import { JOURNEY_PACE, ROME_ACTS } from '../data/romePacing.js'
+import { JOURNEY_PACE } from '../data/romePacing.js'
+import { getTierActIds, getTierWaypointIds } from '../data/tourTiers.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint } from './manifest.js'
 
 function getTourActIds(pace) {
-  if (pace === JOURNEY_PACE.HEROIC) {
-    return ROME_ACTS.map((act) => act.id)
-  }
-  if (pace === JOURNEY_PACE.CLASSIC) {
-    return ROME_ACTS.filter((act) => act.id !== 'encore').map((act) => act.id)
-  }
-  return null
+  return getTierActIds(pace)
 }
 
 /** Pause / scripted rest — on the route but not a landmark stop. */
@@ -68,6 +63,15 @@ export function getVisitStopIds(
     return pathIds.filter((id) => {
       const waypoint = getWaypoint(manifest, id)
       return selected.has(id) && isVisitStop(waypoint)
+    })
+  }
+
+  const tierIds = getTierWaypointIds(pace)
+  if (tierIds) {
+    const allowed = new Set(tierIds)
+    return pathIds.filter((id) => {
+      const waypoint = getWaypoint(manifest, id)
+      return allowed.has(id) && isVisitStop(waypoint)
     })
   }
 

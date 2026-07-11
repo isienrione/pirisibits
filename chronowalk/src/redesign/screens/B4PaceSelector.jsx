@@ -1,9 +1,38 @@
-import { useState, useEffect, useRef } from "react";
-import { T, F } from "../tokens.js";
-import { colosseumNow, capitolineNow, severusNow, trajansNow } from "../images.js";
-import { RedesignNavCtx } from '../nav.js';
-import { Eyebrow } from '../ui/index.js';
-import { useContext } from "react";
+import { useContext, useMemo, useState } from 'react'
+import { T, F } from '../tokens.js'
+import {
+  colosseumNow,
+  capitolineNow,
+  pantheonNow,
+  trajansNow,
+} from '../images.js'
+import { RedesignNavCtx } from '../nav.js'
+import { Eyebrow } from '../ui/index.js'
+import { ACT_DOT_KEYS } from '../../data/romePacing.js'
+
+const PACE_IMAGES = {
+  pantheon: pantheonNow,
+  colosseum: colosseumNow,
+  capitoline: capitolineNow,
+  trajan: trajansNow,
+}
+
+const ACT_DOT_COLORS = {
+  act1: T.actI,
+  act2: T.actII,
+  act3: T.actIII,
+  act4: T.actIV,
+  act5: T.actV,
+  act6: T.actVI,
+  encore: T.encore,
+}
+
+function resolveDots(actDots = []) {
+  return ACT_DOT_KEYS.map((key, index) => {
+    const actId = actDots[index] ?? null
+    return actId ? ACT_DOT_COLORS[actId] ?? T.ink800 : null
+  })
+}
 
 export default function B4PaceSelector({
   options: optionsProp,
@@ -11,54 +40,31 @@ export default function B4PaceSelector({
   onSelectPace,
   onContinue,
 }) {
-  const { navigate } = useContext(RedesignNavCtx);
-  const [selected, setSelected] = useState(null);
+  const { navigate } = useContext(RedesignNavCtx)
+  const [selected, setSelected] = useState(null)
 
-  const defaultOptions = [
-    {
-      title: "Take it in chapters",
-      badge: "Most loved",
-      desc: "Ancient stops first, then the living city. Pause between acts whenever you like.",
-      img: colosseumNow,
-      dots: [T.actI, T.actII, T.actIII, T.actIV, null, null, null],
-    },
-    {
-      title: "The full day",
-      badge: null,
-      desc: "All of it in one go — dawn to golden hour. Bring real shoes and real ambition.",
-      img: capitolineNow,
-      dots: [T.actI, T.actII, T.actIII, T.actIV, T.actV, T.actVI, T.encore],
-    },
-    {
-      title: "Your Own Pace",
-      badge: null,
-      desc: "Any act, any order, as many mornings as you like. I'll keep your place.",
-      img: trajansNow,
-      dots: [T.actI, null, T.actIII, null, T.actV, null, T.encore],
-    },
-  ];
-
-  const options =
-    optionsProp?.map((opt, i) => ({
-      title: opt.title,
-      badge: opt.badge ?? null,
-      desc: opt.description,
-      img: [colosseumNow, capitolineNow, trajansNow][i] ?? colosseumNow,
-      dots: [
-        [T.actI, T.actII, T.actIII, T.actIV, null, null, null],
-        [T.actI, T.actII, T.actIII, T.actIV, T.actV, T.actVI, T.encore],
-        [T.actI, null, T.actIII, null, T.actV, null, T.encore],
-      ][i],
-      id: opt.id,
-    })) ?? defaultOptions;
+  const options = useMemo(
+    () =>
+      (optionsProp ?? []).map((opt) => ({
+        id: opt.id,
+        title: opt.title,
+        badge: opt.badge ?? null,
+        desc: opt.description,
+        included: opt.includedSummary ?? null,
+        priceLabel: opt.priceLabel ?? null,
+        img: PACE_IMAGES[opt.imageKey] ?? colosseumNow,
+        dots: resolveDots(opt.actDots),
+      })),
+    [optionsProp],
+  )
 
   const activeIndex =
-    selectedPace != null ? options.findIndex((opt) => opt.id === selectedPace) : selected;
+    selectedPace != null ? options.findIndex((opt) => opt.id === selectedPace) : selected
 
   const handleSelect = (index) => {
-    setSelected(index);
-    onSelectPace?.(options[index].id);
-  };
+    setSelected(index)
+    onSelectPace?.(options[index].id)
+  }
 
   const handleContinue = () => {
     if (activeIndex == null || activeIndex < 0) return
@@ -70,74 +76,221 @@ export default function B4PaceSelector({
   }
 
   return (
-    <div style={{ background: T.obsidian, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', padding: '48px 24px 32px', overflow: 'hidden', position: 'relative' }}>
-      {/* Subtle bg photo */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url(${severusNow})`,
-        backgroundSize: "cover", backgroundPosition: "center 40%",
-        filter: "brightness(0.12) saturate(0.4)",
-        zIndex: 0,
-      }} />
-      <div style={{ position: "absolute", inset: 0, background: "rgba(11,11,13,0.7)", zIndex: 1 }} />
+    <div
+      style={{
+        background: T.obsidian,
+        height: '100%',
+        fontFamily: F.body,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '48px 24px 32px',
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${pantheonNow})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 40%',
+          filter: 'brightness(0.12) saturate(0.4)',
+          zIndex: 0,
+        }}
+      />
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,11,13,0.7)', zIndex: 1 }} />
 
-      <div style={{ position: "relative", zIndex: 5, display: "flex", flexDirection: "column", height: "100%" }}>
-        {/* Seam top tick */}
-        <div style={{ height: 32, position: "relative", marginBottom: 16, flexShrink: 0 }}>
-          <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1.5, background: T.ember, opacity: 0.7, boxShadow: "0 0 12px rgba(232,161,60,0.45)" }} />
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 5,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          minHeight: 0,
+        }}
+      >
+        <div style={{ height: 32, position: 'relative', marginBottom: 16, flexShrink: 0 }}>
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: 0,
+              bottom: 0,
+              width: 1.5,
+              background: T.ember,
+              opacity: 0.7,
+              boxShadow: '0 0 12px rgba(232,161,60,0.45)',
+            }}
+          />
         </div>
 
         <Eyebrow color={T.ember}>BEFORE YOU BEGIN</Eyebrow>
-        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, margin: "10px 0 20px", flexShrink: 0 }}>
-          Choose your<br />rhythm.
+        <h2
+          style={{
+            fontFamily: F.display,
+            fontSize: 44,
+            color: T.warmWhite,
+            fontWeight: 300,
+            lineHeight: 1.05,
+            margin: '10px 0 16px',
+            flexShrink: 0,
+          }}
+        >
+          Choose your
+          <br />
+          Rome.
         </h2>
 
-        {/* Photo-led option cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1, overflow: "hidden" }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            paddingBottom: 4,
+          }}
+        >
           {options.map((opt, i) => (
             <button
-              key={i}
+              key={opt.id}
               type="button"
               onClick={() => handleSelect(i)}
               style={{
-                textAlign: 'left', background: T.ink,
+                textAlign: 'left',
+                background: T.ink,
                 border: `1.5px solid ${activeIndex === i ? T.ember : T.ink800}`,
-                borderRadius: 14, cursor: "pointer",
-                transition: "border-color 300ms",
-                flex: 1, overflow: "hidden", display: "flex", flexDirection: "column",
+                borderRadius: 14,
+                cursor: 'pointer',
+                transition: 'border-color 300ms',
+                flexShrink: 0,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
                 boxShadow: activeIndex === i ? '0 0 20px rgba(232,161,60,0.15)' : 'none',
               }}
             >
-              {/* 4:3 photo header */}
-              <div style={{ width: "100%", height: 80, overflow: "hidden", flexShrink: 0, position: "relative" }}>
+              <div
+                style={{
+                  width: '100%',
+                  height: 72,
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                  position: 'relative',
+                }}
+              >
                 <img
                   src={opt.img}
                   alt={opt.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 40%', filter: `brightness(${activeIndex === i ? 0.7 : 0.55})`, transition: 'filter 300ms' }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'center 40%',
+                    filter: `brightness(${activeIndex === i ? 0.7 : 0.55})`,
+                    transition: 'filter 300ms',
+                  }}
                 />
-                {/* Gradient over photo */}
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(33,28,21,0.7) 0%, transparent 60%)" }} />
-                {/* Title on photo */}
-                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "flex-end", padding: "0 14px 10px" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                    <span style={{ fontFamily: F.display, fontSize: 20, color: T.warmWhite, fontWeight: 400, lineHeight: 1.1 }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(to right, rgba(33,28,21,0.82) 0%, transparent 70%)',
+                  }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    padding: '0 14px 10px',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      gap: 8,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: F.display,
+                        fontSize: 20,
+                        color: T.warmWhite,
+                        fontWeight: 400,
+                        lineHeight: 1.1,
+                      }}
+                    >
                       {opt.title}
                     </span>
-                    {opt.badge && (
-                      <span style={{ fontSize: 9, color: T.ember, border: `1px solid ${T.ember}50`, borderRadius: 6, padding: "2px 7px", letterSpacing: "0.12em" }}>
-                        {opt.badge}
-                      </span>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                      {opt.priceLabel ? (
+                        <span
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 600,
+                            color: T.ember,
+                            letterSpacing: '0.02em',
+                          }}
+                        >
+                          {opt.priceLabel}
+                        </span>
+                      ) : null}
+                      {opt.badge ? (
+                        <span
+                          style={{
+                            fontSize: 9,
+                            color: T.ember,
+                            border: `1px solid ${T.ember}50`,
+                            borderRadius: 6,
+                            padding: '2px 7px',
+                            letterSpacing: '0.12em',
+                          }}
+                        >
+                          {opt.badge}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Text + dots */}
-              <div style={{ padding: "10px 14px 12px" }}>
-                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 10 }}>{opt.desc}</p>
-                <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ padding: '10px 14px 12px' }}>
+                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 6 }}>
+                  {opt.desc}
+                </p>
+                {opt.included ? (
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: `${T.warmWhite}99`,
+                      lineHeight: 1.5,
+                      marginBottom: 10,
+                      letterSpacing: '0.01em',
+                    }}
+                  >
+                    {opt.included}
+                  </p>
+                ) : null}
+                <div style={{ display: 'flex', gap: 6 }}>
                   {opt.dots.map((color, di) => (
-                    <div key={di} style={{ width: 8, height: 8, borderRadius: 4, background: color ?? T.ink800, opacity: color ? 1 : 0.35 }} />
+                    <div
+                      key={di}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 4,
+                        background: color ?? T.ink800,
+                        opacity: color ? 1 : 0.35,
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -145,7 +298,16 @@ export default function B4PaceSelector({
           ))}
         </div>
 
-        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.7, textAlign: "center", margin: "14px 0 10px", flexShrink: 0 }}>
+        <p
+          style={{
+            fontSize: 13,
+            color: T.muted,
+            lineHeight: 1.7,
+            textAlign: 'center',
+            margin: '14px 0 10px',
+            flexShrink: 0,
+          }}
+        >
           You can change your mind at any time. Nothing expires. Nothing is skipped forever.
         </p>
 
@@ -153,18 +315,26 @@ export default function B4PaceSelector({
           type="button"
           onClick={handleContinue}
           style={{
-            width: '100%', padding: '15px',
+            width: '100%',
+            padding: '15px',
             background: activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800,
             color: activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted,
-            borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
-            border: 'none', cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',
-            transition: 'background 300ms, color 300ms', flexShrink: 0,
+            borderRadius: 12,
+            fontFamily: F.body,
+            fontWeight: 600,
+            fontSize: 15,
+            border: 'none',
+            cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',
+            transition: 'background 300ms, color 300ms',
+            flexShrink: 0,
             boxShadow: activeIndex != null && activeIndex >= 0 ? '0 0 20px rgba(232,161,60,0.35)' : 'none',
           }}
         >
-          {activeIndex != null && activeIndex >= 0 ? `Begin — ${options[activeIndex].title}` : 'Select a pace'}
+          {activeIndex != null && activeIndex >= 0
+            ? `Begin — ${options[activeIndex].title}`
+            : 'Select a tour'}
         </button>
       </div>
     </div>
-  );
+  )
 }

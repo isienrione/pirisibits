@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption } from '../data/romePacing.js'
+import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption, getDefaultPace } from '../data/romePacing.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
@@ -32,7 +32,7 @@ export default function RedesignBeginFlow() {
     context.promotedOptionalIds,
   )
   const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
-  const [selectedPace, setSelectedPace] = useState(context.pace ?? JOURNEY_PACE.CLASSIC)
+  const [selectedPace, setSelectedPace] = useState(context.pace ?? getDefaultPace())
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
 

@@ -36,7 +36,7 @@ describe('BeginPage', () => {
     renderBeginPage()
 
     expect(screen.getByText(/choose your/i)).toBeInTheDocument()
-    expect(screen.getByText(/rhythm/i)).toBeInTheDocument()
+    expect(screen.getByText(/rome\./i)).toBeInTheDocument()
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
@@ -45,8 +45,8 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
-    fireEvent.click(screen.getByRole('button', { name: /the full day/i }))
-    fireEvent.click(screen.getByRole('button', { name: /begin — the full day/i }))
+    fireEvent.click(screen.getByRole('button', { name: /roma eterna/i }))
+    fireEvent.click(screen.getByRole('button', { name: /begin — roma eterna/i }))
 
     expect(screen.getByTestId('tour-route-preview')).toBeInTheDocument()
     expect(screen.getByText(/your route/i)).toBeInTheDocument()
@@ -59,7 +59,8 @@ describe('BeginPage', () => {
 
     renderBeginPage()
 
-    fireEvent.click(screen.getByRole('button', { name: /begin — take it in chapters/i }))
+    fireEvent.click(screen.getByRole('button', { name: /roma antica/i }))
+    fireEvent.click(screen.getByRole('button', { name: /begin — roma antica/i }))
 
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
     expect(screen.getByText(/enable location for gps guidance/i)).toBeInTheDocument()

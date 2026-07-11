@@ -158,7 +158,7 @@ describe('journey state machine', () => {
     const snapshot = getJourneySnapshot()
     expect(snapshot.state).toBe(JOURNEY_STATES.COMPLETE)
     expect(snapshot.context.completedWaypointIds).toContain('w22')
-    expect(snapshot.context.currentSequenceIndex).toBe(w22Index + 1)
+    expect(snapshot.context.currentSequenceIndex).toBe(w22Index)
   })
 
   it('queues a resume cue when continuing a saved journey', () => {

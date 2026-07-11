@@ -1,4 +1,5 @@
 import { JOURNEY_PACE, ROME_ACTS } from '../data/romePacing.js'
+import { getTierActIds, getTierWaypointIds } from '../data/tourTiers.js'
 import { getClassicDayBreakWaypointId } from './actBoundaries.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, isWaypointId, resolveJourneyStep } from './manifest.js'
@@ -9,15 +10,9 @@ const CLASSIC_DAY2_ACTS = new Set(['act5', 'act6'])
 
 const ACT_META = Object.fromEntries(ROME_ACTS.map((act) => [act.id, act]))
 
-/** Act ids included in the tour for classic / heroic paces. */
+/** Act ids included in the tour for each pace. */
 export function getTourActIds(pace) {
-  if (pace === JOURNEY_PACE.HEROIC) {
-    return ROME_ACTS.map((act) => act.id)
-  }
-  if (pace === JOURNEY_PACE.CLASSIC) {
-    return ROME_ACTS.filter((act) => act.id !== 'encore').map((act) => act.id)
-  }
-  return null
+  return getTierActIds(pace)
 }
 
 /** Ordered waypoint ids on the active path that belong to the chosen tour. */
@@ -25,7 +20,7 @@ export function getTourWaypointIds(manifest, context) {
   if (!manifest) return []
 
   const path = context.path ?? manifest.journey?.default_path ?? 'a'
-  const pace = context.pace ?? JOURNEY_PACE.CLASSIC
+  const pace = context.pace ?? JOURNEY_PACE.CENTRAL
   const allPathIds = getManifestWaypointIds(manifest, path, context.promotedOptionalIds ?? [])
 
   if (pace === JOURNEY_PACE.OWN) {
@@ -33,11 +28,23 @@ export function getTourWaypointIds(manifest, context) {
     return allPathIds.filter((id) => selected.has(id))
   }
 
+  const tierIds = getTierWaypointIds(pace)
+  if (tierIds) {
+    const allowed = new Set(tierIds)
+    return allPathIds.filter((id) => allowed.has(id))
+  }
+
   const allowedActs = new Set(getTourActIds(pace))
   return allPathIds.filter((id) => {
     const waypoint = getWaypoint(manifest, id)
     return waypoint?.act && allowedActs.has(waypoint.act)
   })
+}
+
+export function isLastTourWaypoint(waypointId, manifest, context) {
+  if (!manifest || !waypointId) return false
+  const tourIds = getTourWaypointIds(manifest, context)
+  return tourIds.length > 0 && tourIds[tourIds.length - 1] === waypointId
 }
 
 export function isClassicDayTwoUnlocked(context) {

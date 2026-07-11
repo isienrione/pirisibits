@@ -44,12 +44,15 @@ describe('tourRoadmap', () => {
   })
 
   it('filters roadmap stops by pace', () => {
-    const classic = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.CLASSIC })
-    const heroic = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.HEROIC })
+    const antica = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.CLASSIC })
+    const central = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.CENTRAL })
+    const eterna = buildTourRoadmapForContext(manifest, { path: 'a', pace: JOURNEY_PACE.HEROIC })
 
-    expect(heroic.length).toBeGreaterThan(classic.length)
-    expect(classic.some((stop) => stop.id === 'w22')).toBe(false)
-    expect(heroic.some((stop) => stop.id === 'w22')).toBe(true)
+    expect(eterna.length).toBeGreaterThan(antica.length)
+    expect(central.some((stop) => stop.id === 'w17')).toBe(true)
+    expect(central.some((stop) => stop.id === 'w01')).toBe(false)
+    expect(antica.some((stop) => stop.id === 'w01')).toBe(true)
+    expect(antica.some((stop) => stop.id === 'w14')).toBe(false)
   })
 
   it('filters own-pace roadmap to selected stops', () => {

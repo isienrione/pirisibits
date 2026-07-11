@@ -1,5 +1,6 @@
-import { JOURNEY_PACE, JOURNEY_PATH } from '../data/romePacing'
+import { JOURNEY_PACE, JOURNEY_PATH, getDefaultPace } from '../data/romePacing'
 import { shouldClassicDayBreak } from '../content/actBoundaries.js'
+import { isLastTourWaypoint } from '../content/myTourPlan.js'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
@@ -53,7 +54,7 @@ export function shouldHideShellTabBar(state, pathname = '') {
 }
 
 const defaultContext = () => ({
-  pace: JOURNEY_PACE.CLASSIC,
+  pace: getDefaultPace(),
   path: JOURNEY_PATH.A,
   currentWaypointIndex: 0,
   currentSequenceIndex: 0,
@@ -207,7 +208,7 @@ export function resetJourney() {
 }
 
 export function beginJourney({
-  pace = JOURNEY_PACE.CLASSIC,
+  pace = getDefaultPace(),
   path = JOURNEY_PATH.A,
   waypointIndex = 0,
   sequenceIndex = 0,
@@ -300,6 +301,10 @@ export function completeWaypointAndAdvance(waypointId, manifest = null) {
 
   if (shouldClassicDayBreak(snapshot.context.pace, waypointId)) {
     return transitionJourney(JOURNEY_STATES.DAY_COMPLETE)
+  }
+
+  if (manifest && isLastTourWaypoint(waypointId, manifest, snapshot.context)) {
+    return markJourneyCompleteIfPastEnd(manifest, transitionJourney(JOURNEY_STATES.COMPLETE))
   }
 
   // Threshold or story completion can fire twice (e.g. back → arrived → threshold
