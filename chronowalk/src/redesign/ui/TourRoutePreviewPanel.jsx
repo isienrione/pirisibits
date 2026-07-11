@@ -8,7 +8,7 @@ import { Eyebrow } from './index.js'
 import TourRouteIllustration from './TourRouteIllustration.jsx'
 
 /**
- * Shared route preview — illustrated roadmap + compact summary (no Mapbox).
+ * Shared route preview — illustrated roadmap dominates the screen.
  */
 export default function TourRoutePreviewPanel({
   manifest,
@@ -37,66 +37,33 @@ export default function TourRoutePreviewPanel({
   }, [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds])
 
   const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
-  const lastStopTitle = stops.length
-    ? titleForWaypoint(getWaypoint(manifest, stops[stops.length - 1].id))
-    : null
 
   return (
-    <>
-      <div
-        style={{
-          padding: 'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px 10px',
-          flexShrink: 0,
-        }}
-      >
+    <div className="cw-route-preview-panel">
+      <div className="cw-route-preview-panel__header">
         <Eyebrow color={T.ember}>{cityLabel.toUpperCase()}</Eyebrow>
         <h1
-          style={{
-            fontFamily: F.display,
-            fontSize: 32,
-            fontWeight: 300,
-            color: T.ink,
-            lineHeight: 1.12,
-            margin: '10px 0 8px',
-          }}
+          className="cw-route-preview-panel__title"
+          style={{ fontFamily: F.display, color: T.ink }}
         >
           {stopCount} stops · your route
         </h1>
-        <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.55, margin: 0 }}>
-          {firstStopTitle && lastStopTitle
-            ? `${firstStopTitle} → ${lastStopTitle}. Walk in order — narration unlocks at each place.`
-            : 'Walk in order — narration unlocks as you arrive at each place.'}
-        </p>
+        {firstStopTitle ? (
+          <p className="cw-route-preview-panel__subtitle" style={{ color: T.muted }}>
+            Starting at {firstStopTitle} — scroll the map to see every stop in order.
+          </p>
+        ) : null}
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          minHeight: 0,
-          overflowY: 'auto',
-          scrollbarWidth: 'none',
-          padding: '0 12px 8px',
-        }}
-      >
+      <div className="cw-route-preview-panel__hero">
         {loading || !manifest ? (
-          <div
-            style={{
-              margin: '0 4px',
-              height: 240,
-              borderRadius: 16,
-              display: 'grid',
-              placeItems: 'center',
-              background: `${T.muted}18`,
-              color: T.muted,
-              fontSize: 13,
-            }}
-          >
+          <div className="cw-route-preview-panel__loading" style={{ color: T.muted }}>
             Loading route…
           </div>
         ) : (
           <TourRouteIllustration manifest={manifest} context={context ?? { path: 'a' }} />
         )}
       </div>
-    </>
+    </div>
   )
 }

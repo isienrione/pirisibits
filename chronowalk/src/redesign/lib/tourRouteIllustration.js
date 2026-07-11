@@ -10,9 +10,9 @@
  * @returns {{ points: IllustratedStop[], width: number, height: number, pathD: string }}
  */
 export function buildIllustratedRouteLayout(stops, opts = {}) {
-  const width = opts.width ?? 340
-  const rowGap = opts.rowGap ?? 46
-  const paddingY = opts.paddingY ?? 36
+  const width = opts.width ?? 360
+  const rowGap = opts.rowGap ?? 40
+  const paddingY = opts.paddingY ?? 32
   const paddingX = 28
   const count = stops.length
 
