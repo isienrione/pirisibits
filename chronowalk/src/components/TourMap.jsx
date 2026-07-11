@@ -513,11 +513,15 @@ function TourMapboxView({
       }
 
       if (activeLeg && transitLegActive) {
-        const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
-        const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
+        const fromStop = stops.find((stop) => stop.id === activeLeg.fromId)
+        const toStop = stops.find((stop) => stop.id === activeLeg.toId)
+        const from = fromStop?.landmark
+        const to = toStop?.landmark
 
         if (from && to) {
-          const directions = await fetchWalkingDirections(from, to, mapboxToken)
+          const directions = await fetchWalkingDirections(from, to, mapboxToken, {
+            destinationName: toStop?.title ?? null,
+          })
 
           if (!cancelled && directions?.geometry) {
             cacheLegRoute(tour.id, activeLeg.fromId, activeLeg.toId, directions.geometry)
