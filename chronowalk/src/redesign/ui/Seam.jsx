@@ -1,6 +1,6 @@
 import { T } from '../tokens.js'
 
-export function Seam({ variant = 'vertical', accent = T.gold, pct = 0, style: extra = {} }) {
+export function Seam({ variant = 'vertical', accent = T.ember, pct = 0, style: extra = {} }) {
   const base =
     variant === 'horizontal'
       ? { position: 'absolute', left: 0, right: 0, height: 1.5 }

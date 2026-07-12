@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { T } from '../tokens.js'
+import {T, withAlpha} from '../tokens.js'
 import C7Threshold from '../screens/C7Threshold.jsx'
 import {
   honestyCaptionForWaypoint,
@@ -95,7 +95,7 @@ export default function RedesignThresholdOverlay({
               width: '100%',
               padding: '12px 20px',
               borderRadius: 14,
-              border: `1px solid ${T.muted}44`,
+              border: `1px solid ${withAlpha(T.muted, '44')}`,
               background: 'rgba(11,11,13,0.72)',
               color: T.warmWhite,
               fontWeight: 500,

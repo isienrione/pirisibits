@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette } from '../ui/index.js';
@@ -44,7 +44,7 @@ export default function C5ReflectionBeat() {
         opacity: showContinue ? 1 : 0,
         transition: "opacity 700ms ease",
       }}>
-        <button onClick={() => navigate("C5")} style={{ background: "none", border: "none", cursor: "pointer", color: `${T.warmWhite}CC`, fontSize: 15, fontFamily: F.body, letterSpacing: "0.06em" }}>
+        <button onClick={() => navigate("C5")} style={{ background: "none", border: "none", cursor: "pointer", color: `${withAlpha(T.warmWhite, 'CC')}`, fontSize: 15, fontFamily: F.body, letterSpacing: "0.06em" }}>
           Continue
         </button>
       </div>

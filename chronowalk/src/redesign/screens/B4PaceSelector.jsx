@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from 'react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import {
   colosseumNow,
   capitolineNow,
@@ -249,7 +249,7 @@ export default function B4PaceSelector({
                             fontSize: 9,
                             fontWeight: 600,
                             color: T.bone,
-                            background: T.gold,
+                            background: T.ember,
                             borderRadius: 6,
                             padding: '3px 8px',
                             letterSpacing: '0.12em',
@@ -272,7 +272,7 @@ export default function B4PaceSelector({
                   <p
                     style={{
                       fontSize: 11,
-                      color: `${T.warmWhite}99`,
+                      color: `${withAlpha(T.warmWhite, '99')}`,
                       lineHeight: 1.5,
                       marginBottom: 10,
                       letterSpacing: '0.01em',

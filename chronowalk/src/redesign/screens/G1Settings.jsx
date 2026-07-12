@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { RedesignNavCtx } from '../nav.js';
 
 export default function G1Settings({
@@ -31,7 +31,7 @@ export default function G1Settings({
     return (
       <button onClick={onToggle} style={{
         width: 44, height: 26, borderRadius: 13,
-        background: on ? "#5B5249" : `${T.muted}38`,
+        background: on ? 'color-mix(in srgb, var(--ink-900) 55%, var(--muted))' : withAlpha(T.muted, '38'),
         position: "relative", border: "none", cursor: "pointer",
         transition: "background 250ms", flexShrink: 0,
       }}>
@@ -63,7 +63,7 @@ export default function G1Settings({
   }
 
   function Hairline() {
-    return <div style={{ height: 1, background: `${T.muted}28` }} />;
+    return <div style={{ height: 1, background: `${withAlpha(T.muted, '28')}` }} />;
   }
 
   return (
@@ -81,7 +81,7 @@ export default function G1Settings({
         <Hairline />
         <Row label="Narration speed" sub="Default for new chapters"
           right={
-            <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
+            <div style={{ display: "flex", background: `${withAlpha(T.muted, '22')}`, borderRadius: 8, padding: 2, gap: 2 }}>
               {[1, 1.5, 2].map((speed) => {
                 const label = speed === 1 ? '1×' : `${speed}×`
                 const active = Number(state.playbackSpeed ?? 1) === speed
@@ -112,7 +112,7 @@ export default function G1Settings({
         <Hairline />
         <Row label="Ambient bed" sub="Narration volume follows system"
           right={
-            <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
+            <div style={{ display: "flex", background: `${withAlpha(T.muted, '22')}`, borderRadius: 8, padding: 2, gap: 2 }}>
               {["Subtle","Off"].map((mode) => (
                 <button
                   key={mode}

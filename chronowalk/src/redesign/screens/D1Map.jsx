@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
 import { Eyebrow, TabBar } from '../ui/index.js';
 
@@ -289,7 +289,7 @@ export default function D1Map({ embedded = false }) {
         >
           {/* Sheet drag handle */}
           <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
-            <div style={{ width:32, height:3.5, borderRadius:2, background:`${T.muted}45` }}/>
+            <div style={{ width:32, height:3.5, borderRadius:2, background:`${withAlpha(T.muted, '45')}` }}/>
           </div>
 
           {/* Pin content row */}

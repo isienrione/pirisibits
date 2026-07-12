@@ -1,5 +1,5 @@
 import { useMemo, useRef } from 'react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { parseTranscriptForKaraoke } from '../../utils/transcriptContent.js'
 
 /**
@@ -32,8 +32,8 @@ export default function KaraokeTranscript({
       ? 'transparent'
       : isBone
         ? 'rgba(255,255,255,0.92)'
-        : `${T.ink800}ee`
-  const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
+        : `${withAlpha(T.ink800, 'EE')}`
+  const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${withAlpha(T.ink800, '22')}` : `${withAlpha(T.muted, '22')}`
   const defaultInk = isBone ? T.ink : T.warmWhite
 
   if (!paragraphs.length) {

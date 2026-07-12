@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Volume1 } from "lucide-react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow, severusNow } from "../images.js";
 import { Seam, Vignette } from '../ui/index.js';
 
@@ -32,13 +32,13 @@ export default function G3SystemStates() {
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, marginBottom: 20 }}>
             Download when you're back on wifi.
           </p>
-          <button style={{ padding: "9px 24px", border: `1px solid ${T.ink800}`, borderRadius: 8, background: "transparent", color: `${T.warmWhite}BB`, fontFamily: F.body, fontSize: 13, cursor: "pointer" }}>
+          <button style={{ padding: "9px 24px", border: `1px solid ${T.ink800}`, borderRadius: 8, background: "transparent", color: `${withAlpha(T.warmWhite, 'BB')}`, fontFamily: F.body, fontSize: 13, cursor: "pointer" }}>
             Retry
           </button>
         </div>
         {/* Zone label */}
         <div style={{ position: "absolute", top: 8, left: 12, zIndex: 10 }}>
-          <span style={{ fontSize: 9, color: `${T.muted}80`, letterSpacing: "0.16em", textTransform: "uppercase" }}>a · OFFLINE WITHOUT PACK</span>
+          <span style={{ fontSize: 9, color: `${withAlpha(T.muted, '80')}`, letterSpacing: "0.16em", textTransform: "uppercase" }}>a · OFFLINE WITHOUT PACK</span>
         </div>
       </div>
 
@@ -49,14 +49,14 @@ export default function G3SystemStates() {
           <span style={{ fontSize: 9, color: T.actI, letterSpacing: "0.18em", textTransform: "uppercase" }}>WALKING TO</span>
           <p style={{ fontFamily: F.display, fontSize: 26, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: "5px 0 3px" }}>The Pantheon</p>
           <span style={{ color: T.actI, fontSize: 14, fontWeight: 600 }}>380 m</span>
-          <span style={{ color: `${T.ink}55`, fontSize: 12 }}> · about 5 min</span>
+          <span style={{ color: `${withAlpha(T.ink, '55')}`, fontSize: 12 }}> · about 5 min</span>
         </div>
 
         {/* Single amber banner — NOT red */}
         <div style={{
           margin: "10px 16px 0",
-          background: `${T.ember}16`,
-          border: `1px solid ${T.ember}40`,
+          background: `${withAlpha(T.ember, '16')}`,
+          border: `1px solid ${withAlpha(T.ember, '40')}`,
           borderRadius: 10,
           padding: "12px 14px",
           display: "flex",
@@ -74,7 +74,7 @@ export default function G3SystemStates() {
 
         {/* Zone label */}
         <div style={{ position: "absolute", top: 8, left: 12, zIndex: 10 }}>
-          <span style={{ fontSize: 9, color: `${T.muted}80`, letterSpacing: "0.16em", textTransform: "uppercase" }}>b · GPS DENIED</span>
+          <span style={{ fontSize: 9, color: `${withAlpha(T.muted, '80')}`, letterSpacing: "0.16em", textTransform: "uppercase" }}>b · GPS DENIED</span>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default function G3SystemStates() {
         {/* Toast — quiet, bottom, auto-dismisses */}
         <div style={{
           position: "absolute", bottom: 14, left: 16, right: 16, zIndex: 20,
-          background: `${T.ink}F0`,
+          background: `${withAlpha(T.ink, 'F0')}`,
           borderRadius: 10,
           padding: "11px 16px",
           display: "flex", alignItems: "center", gap: 10,
@@ -105,11 +105,11 @@ export default function G3SystemStates() {
 
         {/* Zone label */}
         <div style={{ position: "absolute", top: 8, left: 12, zIndex: 10 }}>
-          <span style={{ fontSize: 9, color: `${T.muted}80`, letterSpacing: "0.16em", textTransform: "uppercase" }}>c · AUDIO INTERRUPTION</span>
+          <span style={{ fontSize: 9, color: `${withAlpha(T.muted, '80')}`, letterSpacing: "0.16em", textTransform: "uppercase" }}>c · AUDIO INTERRUPTION</span>
         </div>
         {!toastVisible && (
           <div style={{ position: "absolute", bottom: 8, right: 16, zIndex: 10 }}>
-            <span style={{ fontSize: 9, color: `${T.muted}60`, letterSpacing: "0.1em" }}>tap to replay</span>
+            <span style={{ fontSize: 9, color: `${withAlpha(T.muted, '60')}`, letterSpacing: "0.1em" }}>tap to replay</span>
           </div>
         )}
       </div>

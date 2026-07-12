@@ -7,7 +7,7 @@ import {
 } from '../content/tourRoadmap.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, F } from './tokens.js'
+import {T, F, withAlpha} from './tokens.js'
 import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
 import { Eyebrow } from './ui/index.js'
@@ -25,8 +25,8 @@ function TimelineDot({ status }) {
         borderRadius: 7,
         flexShrink: 0,
         background: isCompleted || isCurrent ? T.ember : 'transparent',
-        border: isUpcoming ? `1.5px solid ${T.muted}44` : `2px solid ${isCurrent ? T.ink : T.ember}`,
-        boxShadow: isCompleted || isCurrent ? `0 0 8px ${T.ember}55` : 'none',
+        border: isUpcoming ? `1.5px solid ${withAlpha(T.muted, '44')}` : `2px solid ${isCurrent ? T.ink : T.ember}`,
+        boxShadow: isCompleted || isCurrent ? `0 0 8px ${withAlpha(T.ember, '55')}` : 'none',
         opacity: isUpcoming ? 0.45 : 1,
         zIndex: 2,
       }}
@@ -45,7 +45,7 @@ function TimelineLine({ faded, isLast }) {
         top: 14,
         bottom: -8,
         width: 2,
-        background: faded ? `${T.muted}33` : T.ember,
+        background: faded ? `${withAlpha(T.muted, '33')}` : T.ember,
         opacity: faded ? 0.55 : 0.85,
         zIndex: 1,
       }}
@@ -245,7 +245,7 @@ export default function RedesignTourRoadmapScreen() {
                     width: 72,
                     height: 56,
                     borderRadius: 8,
-                    background: `${T.muted}22`,
+                    background: `${withAlpha(T.muted, '22')}`,
                     flexShrink: 0,
                   }}
                 />
@@ -259,7 +259,7 @@ export default function RedesignTourRoadmapScreen() {
         style={{
           flexShrink: 0,
           padding: '14px 24px max(14px, env(safe-area-inset-bottom))',
-          borderTop: `1px solid ${T.muted}28`,
+          borderTop: `1px solid ${withAlpha(T.muted, '28')}`,
           background: T.bone,
           display: 'flex',
           flexDirection: 'column',
@@ -282,7 +282,7 @@ export default function RedesignTourRoadmapScreen() {
               fontSize: 15,
               textAlign: 'center',
               textDecoration: 'none',
-              boxShadow: `0 4px 20px ${T.ember}44`,
+              boxShadow: `0 4px 20px ${withAlpha(T.ember, '44')}`,
             }}
           >
             Continue walk →

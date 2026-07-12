@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, Seam } from '../ui/index.js';
@@ -122,7 +122,7 @@ export default function C1JourneyHome() {
                 <p style={{
                   fontFamily: F.display,
                   fontSize: 22,
-                  color: act.status === "ahead" ? `${T.ink}85` : T.ink,
+                  color: act.status === "ahead" ? `${withAlpha(T.ink, '85')}` : T.ink,
                   fontWeight: 300,
                   lineHeight: 1.1,
                   marginBottom: 3,
@@ -151,8 +151,8 @@ export default function C1JourneyHome() {
       <div style={{
         flexShrink: 0,
         padding: "16px 24px 16px",
-        background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-        borderTop: `1px solid ${T.ink800}18`,
+        background: `linear-gradient(to bottom, ${withAlpha(T.bone, '00')} 0%, ${T.bone} 18%)`,
+        borderTop: `1px solid ${withAlpha(T.ink800, '18')}`,
         position: "relative", zIndex: 5,
       }}>
         <button
@@ -164,7 +164,7 @@ export default function C1JourneyHome() {
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
             marginBottom: 16,
-            boxShadow: `0 0 22px ${T.actI}50`,
+            boxShadow: `0 0 22px ${withAlpha(T.actI, '50')}`,
           }}
         >
           Begin Act I — The Arena
@@ -187,7 +187,7 @@ export default function C1JourneyHome() {
       {/* Inline tab bar */}
       <div style={{
         flexShrink: 0, display: "flex",
-        borderTop: `1px solid ${T.ink800}22`,
+        borderTop: `1px solid ${withAlpha(T.ink800, '22')}`,
         background: T.bone, paddingBottom: 32, paddingTop: 4,
         zIndex: 5,
       }}>

@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from './tokens.js'
 import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -425,7 +425,7 @@ export default function RedesignMyTourScreen() {
                         width: 56,
                         height: 56,
                         borderRadius: 10,
-                        background: `${T.muted}22`,
+                        background: `${withAlpha(T.muted, '22')}`,
                         flexShrink: 0,
                       }}
                     />
@@ -462,7 +462,7 @@ export default function RedesignMyTourScreen() {
                       style={{
                         fontFamily: F.display,
                         fontSize: 22,
-                        color: faded ? `${T.ink}85` : T.ink,
+                        color: faded ? `${withAlpha(T.ink, '85')}` : T.ink,
                         fontWeight: 300,
                         lineHeight: 1.1,
                         margin: '0 0 3px',
@@ -564,8 +564,8 @@ export default function RedesignMyTourScreen() {
         style={{
           flexShrink: 0,
           padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
-          background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-          borderTop: `1px solid ${T.ink800}18`,
+          background: `linear-gradient(to bottom, ${withAlpha(T.bone, '00')} 0%, ${T.bone} 18%)`,
+          borderTop: `1px solid ${withAlpha(T.ink800, '18')}`,
           position: 'relative',
           zIndex: 5,
         }}
@@ -611,7 +611,7 @@ export default function RedesignMyTourScreen() {
             onClick={handleStartFromHere}
             style={{
               fontSize: 13,
-              color: geoBusy ? `${T.muted}88` : T.muted,
+              color: geoBusy ? `${withAlpha(T.muted, '88')}` : T.muted,
               background: 'none',
               border: 'none',
               cursor: geoBusy ? 'default' : 'pointer',

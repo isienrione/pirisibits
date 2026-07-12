@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Play, ChevronLeft, ChevronDown } from "lucide-react";
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow } from '../ui/index.js';
@@ -112,7 +112,7 @@ export default function E2MemoryDetail({
                     flex: 1,
                     padding: '12px 10px',
                     borderRadius: 999,
-                    border: `1.5px solid ${T.muted}55`,
+                    border: `1.5px solid ${withAlpha(T.muted, '55')}`,
                     background: 'transparent',
                     color: T.ink,
                     fontFamily: F.body,
@@ -132,7 +132,7 @@ export default function E2MemoryDetail({
                     flex: 1,
                     padding: '12px 10px',
                     borderRadius: 999,
-                    border: `1.5px solid ${T.muted}55`,
+                    border: `1.5px solid ${withAlpha(T.muted, '55')}`,
                     background: 'transparent',
                     color: T.ink,
                     fontFamily: F.body,
@@ -201,14 +201,14 @@ export default function E2MemoryDetail({
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
         {facts.map((fact, i) => (
           <div key={i}>
-            {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: "14px 0" }} />}
+            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.muted, '28')}`, margin: "14px 0" }} />}
             <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75 }}>{fact}</p>
           </div>
         ))}
 
         {/* Transcript accordion */}
         <div style={{ marginTop: 28, marginBottom: 24 }}>
-          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${T.muted}28`, borderBottom: `1px solid ${T.muted}28` }}>
+          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${withAlpha(T.muted, '28')}`, borderBottom: `1px solid ${withAlpha(T.muted, '28')}` }}>
             <span style={{ fontSize: 13, color: T.ink, fontWeight: 500, fontFamily: F.body }}>Full transcript</span>
             <ChevronDown size={16} color={T.muted} style={{ transform: txOpen ? "rotate(180deg)" : "none", transition: "transform 250ms" }} />
           </button>
@@ -217,7 +217,7 @@ export default function E2MemoryDetail({
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.82 }}>
                 {transcript ?? '"You are standing at the largest amphitheater ever built. The Romans called it the Flavian Amphitheatre — the Colosseum is a nickname. Vespasian began it. Titus opened it in 80 AD with one hundred days of games. Both are dead, and the building is not. That tells you something about what they understood about power..."'}
               </p>
-              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: 10, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
+              <p style={{ fontSize: 11, color: `${withAlpha(T.muted, '88')}`, marginTop: 10, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
             </div>
           )}
         </div>
@@ -226,7 +226,7 @@ export default function E2MemoryDetail({
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>CHAPTERS</p>
         {chapters.map((ch, i) => (
           <div key={ch.n ?? i}>
-            {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}
+            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.muted, '20')}` }} />}
             <button
               type="button"
               onClick={onAudioOnly ?? onWalkToStop}

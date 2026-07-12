@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
 
@@ -72,7 +72,7 @@ export default function B2MakeItYours({
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
                 {showIosInstructions
-                  ? <>Tap <span style={{ color: `${T.warmWhite}BB` }}>Share</span> — then &quot;Add to Home Screen&quot;</>
+                  ? <>Tap <span style={{ color: `${withAlpha(T.warmWhite, 'BB')}` }}>Share</span> — then &quot;Add to Home Screen&quot;</>
                   : 'Install a home-screen icon for tour day.'}
               </p>
             </div>
@@ -80,12 +80,12 @@ export default function B2MakeItYours({
             <div style={{ flexShrink: 0 }}>
               <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
                 {/* Phone body */}
-                <rect x="9" y="4" width="28" height="38" rx="4" stroke={`${T.muted}55`} strokeWidth="1.2" />
+                <rect x="9" y="4" width="28" height="38" rx="4" stroke={`${withAlpha(T.muted, '55')}`} strokeWidth="1.2" />
                 {/* Share arrow up */}
                 <line x1="23" y1="30" x2="23" y2="17" stroke={T.warmWhite} strokeWidth="1.5" strokeLinecap="round" />
                 <polyline points="17,23 23,17 29,23" fill="none" stroke={T.warmWhite} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 {/* Box at arrow base */}
-                <path d="M18 27 L15 27 L15 38 L31 38 L31 27 L28 27" stroke={`${T.warmWhite}80`} strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M18 27 L15 27 L15 38 L31 38 L31 27 L28 27" stroke={`${withAlpha(T.warmWhite, '80')}`} strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function B2MakeItYours({
                     strokeDasharray: ringC,
                     strokeDashoffset: ringC * (1 - dlProgress),
                     transition: "stroke-dashoffset 160ms linear, stroke 400ms",
-                    filter: dlProgress > 0 && dlProgress < 1 ? `drop-shadow(0 0 3px ${T.actI}90)` : "none",
+                    filter: dlProgress > 0 && dlProgress < 1 ? `drop-shadow(0 0 3px ${withAlpha(T.actI, '90')})` : "none",
                   }}
                 />
                 {/* Down arrow when idle */}

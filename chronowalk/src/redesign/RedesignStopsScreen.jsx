@@ -6,7 +6,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import {T, ACT_COLORS, F, SHELL_TAB_BAR_INSET, withAlpha} from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 
@@ -239,7 +239,7 @@ export default function RedesignStopsScreen() {
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />
                           )}
                           <div style={{ flex: 1, padding: '14px 16px' }}>
-                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>
+                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${withAlpha(T.ink, '99')}` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>
                               {card.name}
                             </p>
                             <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45 }}>
@@ -249,7 +249,7 @@ export default function RedesignStopsScreen() {
                         </div>
                       </button>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${T.muted}18` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${withAlpha(T.muted, '18')}` }}>
                         <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                           {statusLabel(card.status)}
                         </span>
@@ -257,14 +257,14 @@ export default function RedesignStopsScreen() {
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
                             Listen here
                           </button>
                           <button
                             type="button"
                             onClick={() => openStop(card.id)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
                             Open card
                           </button>
@@ -287,7 +287,7 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
+        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${withAlpha(T.muted, '28')}` }}>
           <button
             type="button"
             onClick={() => navigate('/begin')}

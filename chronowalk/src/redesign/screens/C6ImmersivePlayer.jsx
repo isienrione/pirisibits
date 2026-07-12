@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import {T, F, SHELL_SAFE_BOTTOM_INSET, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
@@ -256,7 +256,7 @@ export default function C6ImmersivePlayer({
             height: compact ? Math.max(6, h * 0.45) : h,
             borderRadius: 1,
             pointerEvents: 'none',
-            background: i / bars.length < progress ? accent : `${T.muted}35`,
+            background: i / bars.length < progress ? accent : `${withAlpha(T.muted, '35')}`,
             boxShadow: i / bars.length < progress ? `0 0 4px ${accent}60` : 'none',
           }}
         />
@@ -283,7 +283,7 @@ export default function C6ImmersivePlayer({
           onClick={onCycleSpeed}
           aria-label={`Playback speed ${formatPlaybackSpeed(playbackRate)}`}
           style={{
-            background: `${T.muted}22`,
+            background: `${withAlpha(T.muted, '22')}`,
             border: 'none',
             borderRadius: 999,
             padding: compact ? '3px 10px' : '4px 12px',

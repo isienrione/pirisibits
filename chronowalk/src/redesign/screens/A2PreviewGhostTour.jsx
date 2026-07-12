@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Lock } from 'lucide-react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
@@ -67,7 +67,7 @@ export default function A2PreviewGhostTour({
     >
       <div style={{ flexShrink: 0, padding: 'max(18px, env(safe-area-inset-top)) 24px 12px' }}>
         <ChronoWalkLogo className="cw-preview-ghost__logo" width={240} variant="light" hideTagline />
-        <Eyebrow color={T.gold}>YOUR TOUR</Eyebrow>
+        <Eyebrow color={T.ember}>YOUR TOUR</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -93,7 +93,7 @@ export default function A2PreviewGhostTour({
             top: 0,
             bottom: 0,
             width: 1.5,
-            background: T.gold,
+            background: T.ember,
             boxShadow: '0 0 12px rgba(212, 175, 55, 0.45)',
             zIndex: 0,
           }}
@@ -177,7 +177,7 @@ export default function A2PreviewGhostTour({
                       style={{
                         fontFamily: F.display,
                         fontSize: 22,
-                        color: `${T.ink}90`,
+                        color: `${withAlpha(T.ink, '90')}`,
                         fontWeight: 300,
                         lineHeight: 1.1,
                         margin: '0 0 3px',
@@ -319,8 +319,8 @@ export default function A2PreviewGhostTour({
         style={{
           flexShrink: 0,
           padding: '16px 24px max(16px, env(safe-area-inset-bottom))',
-          background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-          borderTop: `1px solid ${T.ink800}18`,
+          background: `linear-gradient(to bottom, ${withAlpha(T.bone, '00')} 0%, ${T.bone} 18%)`,
+          borderTop: `1px solid ${withAlpha(T.ink800, '18')}`,
         }}
       >
         <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65, margin: '0 0 14px', fontStyle: 'italic' }}>

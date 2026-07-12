@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { severusNow } from "../images.js";
 import { Vignette } from '../ui/index.js';
 
@@ -29,7 +29,7 @@ export default function B1PrismWelcome({ onComplete }) {
       <Vignette />
       {/* Tap hint — production; frame label kept for prototype gallery */}
       <div style={{ position: "absolute", top: "max(52px, env(safe-area-inset-top))", left: 0, right: 0, textAlign: "center", zIndex: 2 }}>
-        <span style={{ fontSize: 10, color: `${T.muted}88`, letterSpacing: "0.16em" }}>TAP TO CONTINUE</span>
+        <span style={{ fontSize: 10, color: `${withAlpha(T.muted, '88')}`, letterSpacing: "0.16em" }}>TAP TO CONTINUE</span>
       </div>
 
       {/* PrismSeam logomark SVG */}
@@ -50,7 +50,7 @@ export default function B1PrismWelcome({ onComplete }) {
         <circle
           cx="60" cy="60" r="52"
           fill="none"
-          stroke={`${T.warmWhite}50`}
+          stroke={`${withAlpha(T.warmWhite, '50')}`}
           strokeWidth="1"
           strokeLinecap="round"
           style={{

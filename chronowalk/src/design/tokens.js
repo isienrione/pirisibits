@@ -7,10 +7,12 @@ export const palette = {
   warmIvory: '#FAF6EF',
   limestone: '#E9E2D5',
   bronze: '#8B8638',
-  gold: '#D4AF37',
+  /** @deprecated Alias of ember — was #D4AF37; use hex.ember or var(--ember). */
+  gold: '#E8A13C',
   olive: '#6B7A52',
-  ivory: '#F7F3EC',
-  parchment: '#EDE3CF',
+  ivory: '#FAF6EF',
+  /** @deprecated Use limestone / bone — was #EDE3CF. */
+  parchment: '#E9E2D5',
   sand: '#E2D6BE',
   softSlate: '#686E72',
   deepSlate: '#17212B',
@@ -27,8 +29,9 @@ export const semantic = {
   textInk: palette.deepSlate,
   textMuted: palette.softSlate,
   ctaPrimary: palette.bronze,
-  accentArrival: palette.gold,
-  accentMagic: palette.gold,
+  /** @deprecated Use ember / hex.ember for seam accents. */
+  accentArrival: '#E8A13C',
+  accentMagic: '#E8A13C',
   statusSuccess: palette.olive,
 }
 
@@ -84,7 +87,8 @@ export const hex = {
   warmIvory: '#FAF6EF',
   limestone: '#E9E2D5',
   bronze: '#8B8638',
-  gold: '#D4AF37',
+  /** @deprecated Alias of ember — was #D4AF37; use hex.ember or var(--ember). */
+  gold: '#E8A13C',
   olive: '#6B7A52',
   ink: '#211c15',
   bone: '#FAF6EF',
@@ -115,7 +119,8 @@ export const tailwindColors = {
   'warm-ivory': palette.warmIvory,
   limestone: palette.limestone,
   bronze: palette.bronze,
-  gold: palette.gold,
+  /** @deprecated Use ember / var(--ember). */
+  gold: 'var(--ember)',
   olive: palette.olive,
   ivory: palette.ivory,
   parchment: palette.parchment,

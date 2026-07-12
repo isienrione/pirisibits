@@ -1,6 +1,6 @@
 import { T, F } from '../tokens.js'
 
-export function Eyebrow({ children, color = T.gold, hairline = false }) {
+export function Eyebrow({ children, color = T.ember, hairline = false }) {
   return (
     <div>
       <span

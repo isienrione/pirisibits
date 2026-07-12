@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Play, Pause, SkipForward, Volume2, ChevronRight } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Eyebrow, Seam } from '../ui/index.js'
 
@@ -111,7 +111,7 @@ export default function C5Story({
               }}
             />
             <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, textAlign: 'center', zIndex: 6 }}>
-              <span style={{ fontSize: 10, color: `${T.bone}88`, letterSpacing: '0.1em' }}>Press and hold to cross</span>
+              <span style={{ fontSize: 10, color: `${withAlpha(T.bone, '88')}`, letterSpacing: '0.1em' }}>Press and hold to cross</span>
             </div>
           </>
         ) : null}
@@ -229,7 +229,7 @@ export default function C5Story({
           style={{
             alignSelf: 'flex-start',
             fontSize: 10,
-            color: `${T.muted}70`,
+            color: `${withAlpha(T.muted, '70')}`,
             background: 'none',
             border: `1px solid ${T.ink800}`,
             borderRadius: 6,
@@ -283,7 +283,7 @@ export default function C5Story({
               cursor: 'pointer',
               fontFamily: F.body,
               fontSize: 15,
-              color: `${T.warmWhite}CC`,
+              color: `${withAlpha(T.warmWhite, 'CC')}`,
               letterSpacing: '0.06em',
               opacity: showContinue ? 1 : 0,
               transition: 'opacity 700ms ease',

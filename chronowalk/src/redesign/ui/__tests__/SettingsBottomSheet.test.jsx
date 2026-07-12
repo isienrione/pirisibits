@@ -50,7 +50,7 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
-    expect(screen.getByText('ChronoWalk · Rome · made to disappear.')).toBeInTheDocument()
+    expect(screen.getByText(/ChronoWalk · Rome · made to disappear\./)).toBeInTheDocument()
   })
 
   it('persists audio speed selection', () => {

@@ -1,5 +1,5 @@
 import { MapPin, Navigation, Shield } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
 import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
@@ -124,7 +124,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
                 >
                   <Icon size={18} color={T.ember} strokeWidth={1.8} />
                 </span>
-                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}dd`, lineHeight: 1.55 }}>{text}</p>
+                <p style={{ margin: 0, fontSize: 14, color: `${withAlpha(T.warmWhite, 'DD')}`, lineHeight: 1.55 }}>{text}</p>
               </li>
             ))}
           </ul>

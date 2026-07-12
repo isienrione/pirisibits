@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -122,7 +122,7 @@ export default function B5OwnPaceStopPicker({
           const actLabel = act.numeral === 'Encore' ? 'ENCORE' : `ACT ${act.numeral}`
 
           return (
-            <div key={act.id} style={{ borderTop: `1px solid ${T.ink800}18` }}>
+            <div key={act.id} style={{ borderTop: `1px solid ${withAlpha(T.ink800, '18')}` }}>
               <div
                 style={{
                   width: '100%',
@@ -266,7 +266,7 @@ export default function B5OwnPaceStopPicker({
         style={{
           flexShrink: 0,
           padding: `14px 24px ${SHELL_TAB_BAR_INSET}`,
-          borderTop: `1px solid ${T.ink800}22`,
+          borderTop: `1px solid ${withAlpha(T.ink800, '22')}`,
           background: T.bone,
         }}
       >
@@ -285,7 +285,7 @@ export default function B5OwnPaceStopPicker({
             fontSize: 15,
             border: 'none',
             cursor: canContinue ? 'pointer' : 'default',
-            boxShadow: canContinue ? `0 0 20px ${T.ember}44` : 'none',
+            boxShadow: canContinue ? `0 0 20px ${withAlpha(T.ember, '44')}` : 'none',
           }}
         >
           {canContinue ? `Build my tour — ${selected.size} stops` : 'Select at least one stop'}

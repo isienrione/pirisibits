@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Play, Settings } from "lucide-react";
 import { useContext } from "react";
-import { T, F, SHELL_TAB_BAR_INSET } from "../tokens.js";
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, severusNow, archTitusNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, MiniActLine } from '../ui/index.js';
@@ -64,7 +64,7 @@ export default function E1JournalHome({
           <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1 }}>{headline}</h1>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {onAllStopsClick ? (
-              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${T.ember}55`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
+              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${withAlpha(T.ember, '55')}`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
                 All stops
               </button>
             ) : null}
@@ -79,7 +79,7 @@ export default function E1JournalHome({
               </button>
             ) : null}
           {showDevToggle ? (
-          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
+          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
             {showEmptyDev ? "filled" : "empty"}
           </button>
           ) : null}
@@ -90,7 +90,7 @@ export default function E1JournalHome({
 
       {showEmpty ? (
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flexDirection: 'column', gap: 20, padding: '0 32px' }}>
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: "50%", width: 1.5, transform: "translateX(-50%)", background: T.ember, boxShadow: "0 0 10px rgba(232,161,60,0.4)", animation: "seamBreathe 3s ease-in-out infinite" }} />
+          <div style={{ position: "absolute", top: 0, bottom: 0, left: "50%", width: 1.5, transform: "translateX(-50%)", background: T.ember, boxShadow: 'var(--seam-glow)', animation: "seamBreathe 3s ease-in-out infinite" }} />
           <p style={{ fontFamily: F.display, fontSize: 18, color: T.muted, fontStyle: "italic", lineHeight: 1.7, textAlign: "center", position: "relative", zIndex: 1 }}>
             Your journey will collect itself here. Walk, and Rome writes.
           </p>
@@ -105,7 +105,7 @@ export default function E1JournalHome({
 
           {/* Journey Letter pinned — the ONE dark card in the light room */}
           <div style={{ padding: "4px 24px 24px" }}>
-            <div style={{ background: T.ink, borderRadius: 14, padding: 18, boxShadow: "0 4px 18px rgba(33,28,21,0.14)" }}>
+            <div style={{ background: T.ink, borderRadius: 14, padding: 18, boxShadow: '0 4px 18px color-mix(in srgb, var(--ink-900) 14%, transparent)' }}>
               <div style={{ marginBottom: 14 }}>
                 <svg width="100%" height="26" viewBox="0 0 310 26" preserveAspectRatio="none">
                   {[
@@ -140,13 +140,13 @@ export default function E1JournalHome({
               </div>
               {group.cards.map(card => (
                 <div key={card.id} style={{ padding: "0 24px 16px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
-                  <div style={{ background: T.warmWhite, borderRadius: 14, padding: 20, boxShadow: "0 1px 10px rgba(33,28,21,0.07)" }}>
+                  <div style={{ background: T.warmWhite, borderRadius: 14, padding: 20, boxShadow: '0 1px 10px color-mix(in srgb, var(--ink-900) 7%, transparent)' }}>
                     {/* Diptych: NOW | ember seam | THEN */}
                     <div style={{ display: "flex", marginBottom: 16, borderRadius: 10, overflow: "hidden", height: 108 }}>
                       <div style={{ flex: 1, overflow: "hidden" }}>
                         <img src={card.photo} alt="NOW" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
                       </div>
-                      <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: "0 0 6px rgba(232,161,60,0.55)", animation: "seamBreathe 3s ease-in-out infinite" }} />
+                      <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: 'var(--seam-glow)', animation: "seamBreathe 3s ease-in-out infinite" }} />
                       <div style={{ flex: 1, overflow: "hidden" }}>
                         <img src={card.photo} alt="THEN" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.76)" }} />
                       </div>
@@ -180,7 +180,7 @@ export default function E1JournalHome({
       )}
 
       {!embedded && (
-      <div style={{ flexShrink: 0, display: "flex", borderTop: `1px solid ${T.ink800}22`, background: T.bone, paddingBottom: "max(28px, env(safe-area-inset-bottom))", paddingTop: 4 }}>
+      <div style={{ flexShrink: 0, display: "flex", borderTop: `1px solid ${withAlpha(T.ink800, '22')}`, background: T.bone, paddingBottom: "max(28px, env(safe-area-inset-bottom))", paddingTop: 4 }}>
         {(["JOURNEY","MAP","JOURNAL"]).map(tab => (
           <button key={tab} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, paddingTop: 8, fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em", color: tab === "JOURNAL" ? T.actI : T.muted, background: "none", border: "none", cursor: "pointer" }}>
             <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNAL" ? T.actI : "transparent" }} />
