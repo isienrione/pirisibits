@@ -76,7 +76,7 @@ function ThresholdLayerImage({ src, alt, className, style }) {
       src={src}
       alt={alt ?? ''}
       className={className}
-      style={style}
+      style={{ ...style, pointerEvents: 'none' }}
       draggable={false}
       onError={() => setFailed(true)}
     />
@@ -116,13 +116,14 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     <video
       ref={videoRef}
       className={className}
-      style={style}
+      style={{ ...style, pointerEvents: 'none' }}
       src={src}
       poster={poster}
       muted
       loop
       playsInline
       preload="metadata"
+      draggable={false}
       onError={() => setFailed(true)}
     />
   )
@@ -171,6 +172,7 @@ export default function Threshold({
   const pointerIdRef = useRef(null)
   const fullyRevealedHoldRef = useRef(false)
   const holdSessionRef = useRef(false)
+  const rootRef = useRef(null)
 
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
@@ -181,6 +183,47 @@ export default function Threshold({
   const showHoldHint = !hideUi && !holding && !latchedToThen && !immersive
 
   useHideThresholdChrome(holding)
+
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root || !active) return undefined
+
+    const blockBrowserGesture = (event) => {
+      if (event.target.closest?.('button')) return
+      event.preventDefault()
+    }
+
+    const blockSelection = (event) => {
+      event.preventDefault()
+    }
+
+    root.addEventListener('touchstart', blockBrowserGesture, { passive: false })
+    root.addEventListener('contextmenu', blockSelection)
+    root.addEventListener('selectstart', blockSelection)
+    root.addEventListener('dragstart', blockSelection)
+
+    return () => {
+      root.removeEventListener('touchstart', blockBrowserGesture)
+      root.removeEventListener('contextmenu', blockSelection)
+      root.removeEventListener('selectstart', blockSelection)
+      root.removeEventListener('dragstart', blockSelection)
+    }
+  }, [active])
+
+  useEffect(() => {
+    const body = typeof document !== 'undefined' ? document.body : null
+    if (!body) return undefined
+
+    if (holding || latchedToThen) {
+      body.classList.add('cw-threshold-holding')
+      return () => {
+        body.classList.remove('cw-threshold-holding')
+      }
+    }
+
+    body.classList.remove('cw-threshold-holding')
+    return undefined
+  }, [holding, latchedToThen])
 
   useEffect(() => {
     audioRef.current = new ThresholdAudioCrossfade()
@@ -240,6 +283,9 @@ export default function Threshold({
     (event) => {
       if (!active) return
       if (event.target.closest('button')) return
+
+      event.preventDefault()
+      window.getSelection?.()?.removeAllRanges?.()
 
       if (latchedRef.current) {
         latchedRef.current = false
@@ -393,7 +439,8 @@ export default function Threshold({
 
   return (
     <div
-      className={`threshold-root ${immersive ? 'threshold-root--immersive' : ''} ${className}`.trim()}
+      ref={rootRef}
+      className={`threshold-root cw-threshold-surface ${immersive ? 'threshold-root--immersive' : ''} ${className}`.trim()}
       style={{
         position: 'relative',
         width: '100%',
@@ -402,6 +449,7 @@ export default function Threshold({
         overflow: 'hidden',
         touchAction: 'none',
         WebkitTouchCallout: 'none',
+        WebkitUserSelect: 'none',
         background: 'var(--obsidian)',
         userSelect: 'none',
       }}

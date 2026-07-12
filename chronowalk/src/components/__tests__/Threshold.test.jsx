@@ -43,6 +43,24 @@ describe('Threshold', () => {
     expect(screen.getByRole('button', { name: /about this reconstruction/i })).toBeInTheDocument()
   })
 
+  it('marks the threshold surface as non-selectable', () => {
+    renderThreshold()
+
+    const root = document.querySelector('.threshold-root')
+    expect(root).toHaveClass('cw-threshold-surface')
+    expect(root).toHaveStyle({ touchAction: 'none', userSelect: 'none' })
+  })
+
+  it('prevents default browser touch gestures on the surface', () => {
+    renderThreshold()
+
+    const root = document.querySelector('.threshold-root')
+    const event = new Event('touchstart', { bubbles: true, cancelable: true })
+    const preventDefault = vi.spyOn(event, 'preventDefault')
+    root.dispatchEvent(event)
+    expect(preventDefault).toHaveBeenCalled()
+  })
+
   it('returns null without reconstruction data', () => {
     const { container } = render(
       <ThresholdChromeProvider>

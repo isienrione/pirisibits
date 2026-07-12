@@ -145,15 +145,29 @@
 }
 
 .cw-threshold-surface,
-.cw-threshold-surface * {
+.cw-threshold-surface *,
+.threshold-root,
+.threshold-root * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.cw-threshold-surface img {
+.cw-threshold-surface img,
+.cw-threshold-surface video,
+.threshold-root img,
+.threshold-root video,
+.threshold-layer {
   pointer-events: none;
   -webkit-user-drag: none;
+  user-drag: none;
+}
+
+body.cw-threshold-holding,
+body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true']) {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
 }
 
 /* THEN + NOW share one 9:16 portrait canvas — contain, not cover, so both eras stay aligned. */
