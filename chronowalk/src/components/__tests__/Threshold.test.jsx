@@ -61,6 +61,23 @@ describe('Threshold', () => {
     expect(preventDefault).toHaveBeenCalled()
   })
 
+  it('does not pull back when the pointer leaves while capture is active', () => {
+    vi.useFakeTimers()
+    renderThreshold()
+
+    const root = document.querySelector('.threshold-root')
+    fireEvent.pointerDown(root, { pointerId: 7, clientX: 120, clientY: 120 })
+    fireEvent.pointerLeave(root, { pointerId: 7, clientX: 0, clientY: 0 })
+
+    expect(screen.queryByText('Tap to return to today')).not.toBeInTheDocument()
+
+    vi.advanceTimersByTime(2100)
+    fireEvent.pointerUp(root, { pointerId: 7, clientX: 0, clientY: 0 })
+
+    expect(screen.getByText('Tap to return to today')).toBeInTheDocument()
+    vi.useRealTimers()
+  })
+
   it('returns null without reconstruction data', () => {
     const { container } = render(
       <ThresholdChromeProvider>
