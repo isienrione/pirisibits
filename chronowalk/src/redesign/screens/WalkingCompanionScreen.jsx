@@ -143,6 +143,9 @@ export default function WalkingCompanionScreen({
       showArrivedUI,
     }) && typeof onToggleAudio === 'function'
 
+  const showDefaultContinue =
+    !showArrivedUI && !onContinue && !onPause && (near || approaching)
+
   const seekFromClientX = (clientX, trackRef) => {
     const el = trackRef?.current
     if (!el) return null
@@ -339,16 +342,25 @@ export default function WalkingCompanionScreen({
           </div>
         ) : (
           <div className="cw-walking-companion__dock">
-            {onPause ? (
+            {onContinue ? (
+              <button
+                type="button"
+                data-testid={mode === 'transit' ? 'transit-continue' : 'walking-continue'}
+                className="cw-walking-companion__dock-btn cw-wc-pressable"
+                onClick={onContinue}
+              >
+                {continueLabel.replace(/\s*→\s*$/, '')}
+              </button>
+            ) : onPause ? (
               <button type="button" className="cw-walking-companion__dock-btn cw-wc-pressable" onClick={onPause}>
                 Pause walk
               </button>
-            ) : onContinue ? (
+            ) : showDefaultContinue ? (
               <button
                 type="button"
-                data-testid="transit-continue"
+                data-testid="walking-continue"
                 className="cw-walking-companion__dock-btn cw-wc-pressable"
-                onClick={onContinue}
+                onClick={() => setUserConfirmedArrival(true)}
               >
                 {continueLabel.replace(/\s*→\s*$/, '')}
               </button>

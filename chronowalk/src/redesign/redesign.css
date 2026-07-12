@@ -1289,8 +1289,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   color: var(--wc-warm-white);
   height: 100%;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   font-family: 'DM Sans', system-ui, sans-serif;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
@@ -1415,8 +1415,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap {
-  flex: 1 1 58%;
-  min-height: min(58vh, 58%);
+  min-height: 0;
   position: relative;
   margin: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
   border-radius: 16px;

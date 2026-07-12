@@ -1,7 +1,7 @@
 import WalkingCompanionScreen from './WalkingCompanionScreen.jsx'
 
 /** Baked into this chunk — must bump when layout changes (see walkingUiRevision.js). */
-export const WALKING_UI_REVISION = 14
+export const WALKING_UI_REVISION = 15
 
 /** Walking toward a waypoint — delegates to the unified walking companion layout. */
 export default function C2Walking({
