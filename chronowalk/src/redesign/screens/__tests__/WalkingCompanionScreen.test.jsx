@@ -63,4 +63,38 @@ describe('WalkingCompanionScreen', () => {
     expect(screen.queryByRole('tab', { name: 'Steps' })).not.toBeInTheDocument()
     expect(screen.getByText('You have arrived')).toBeInTheDocument()
   })
+
+  it('shows continue and arrival actions in the footer dock', () => {
+    render(
+      <WalkingCompanionScreen
+        title="Temple of Vesta"
+        mode="transit"
+        transcript="On the way to the temple…"
+        duration={120}
+        currentTime={30}
+        narrationPlaying
+        onToggleAudio={() => {}}
+        onContinue={() => {}}
+        map={<div data-testid="walking-map">Map</div>}
+      />
+    )
+
+    expect(screen.getByTestId('transit-audio-panel')).toBeInTheDocument()
+    expect(screen.getByTestId('transit-continue')).toBeInTheDocument()
+    expect(screen.getByTestId('transit-im-here')).toBeInTheDocument()
+  })
+
+  it('prefers continue over pause when both handlers are provided', () => {
+    render(
+      <WalkingCompanionScreen
+        title="Colosseum interior"
+        onContinue={() => {}}
+        onPause={() => {}}
+        map={<div data-testid="walking-map">Map</div>}
+      />
+    )
+
+    expect(screen.getByTestId('walking-continue')).toBeInTheDocument()
+    expect(screen.queryByText('Pause walk')).not.toBeInTheDocument()
+  })
 })
