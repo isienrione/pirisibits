@@ -247,24 +247,24 @@ export default function RedesignStopsScreen() {
                             </p>
                           </div>
                         </div>
-                        <div
-                          className="cw-stop-row-card__footer"
-                          style={{ borderTop: `1px solid ${withAlpha(T.mutedDecor, '18')}` }}
-                        >
-                          <span style={{ fontSize: 11, color: group.textColor ?? accentTextFor(group.color), letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                            {statusLabel(card.status)}
-                          </span>
-                        </div>
                       </button>
-                      <button
-                        type="button"
-                        className="cw-wc-pressable cw-hit-target-inline cw-stop-row-card__listen"
-                        data-testid="stop-row-listen"
-                        onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                        style={{ minHeight: 44, minWidth: 44 }}
+                      <div
+                        className="cw-stop-row-card__footer"
+                        style={{ borderTop: `1px solid ${withAlpha(T.mutedDecor, '18')}` }}
                       >
-                        Listen
-                      </button>
+                        <span style={{ fontSize: 11, color: group.textColor ?? accentTextFor(group.color), letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                          {statusLabel(card.status)}
+                        </span>
+                        <button
+                          type="button"
+                          className="cw-wc-pressable cw-hit-target-inline cw-stop-row-card__listen"
+                          data-testid="stop-row-listen"
+                          onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
+                          style={{ minHeight: 44, minWidth: 44 }}
+                        >
+                          Listen
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )

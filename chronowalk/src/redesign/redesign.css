@@ -1442,6 +1442,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   flex: 1;
   border: 1px solid transparent;
   border-radius: 10px;
+  min-height: 44px;
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 600;
@@ -1449,6 +1450,13 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   color: var(--wc-gray);
   background: transparent;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-walking-companion__view-btn:active {
+  transform: none;
+  opacity: 1;
 }
 
 .cw-walking-companion__view-btn--active {
@@ -1618,12 +1626,21 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   pointer-events: auto;
 }
 
-.cw-walking-companion__hero-layer:not(.cw-walking-companion__hero-layer--arrived) > :first-child {
+.cw-walking-companion__hero-layer--steps {
+  background: var(--wc-bg, #0a0908);
+  overflow: hidden;
+}
+
+.cw-walking-companion__hero-layer--steps .cw-walking-directions {
+  height: 100%;
+}
+
+.cw-walking-companion__hero-layer:not(.cw-walking-companion__hero-layer--arrived):not(.cw-walking-companion__hero-layer--steps) > :first-child {
   width: 100%;
   height: 100%;
 }
 
-.cw-walking-companion__hero-layer:not(.cw-walking-companion__hero-layer--arrived)::after {
+.cw-walking-companion__hero-layer:not(.cw-walking-companion__hero-layer--arrived):not(.cw-walking-companion__hero-layer--steps)::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -2180,6 +2197,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 
 .cw-stop-row-card {
   position: relative;
+  isolation: isolate;
 }
 
 .cw-stop-row-card__main {
@@ -2198,14 +2216,18 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-stop-row-card__footer {
   display: flex;
   align-items: center;
-  padding: 10px 16px 14px;
-  padding-right: 96px;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 12px 10px;
+}
+
+.cw-stop-row-card__footer .cw-hit-target-inline {
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .cw-stop-row-card__listen {
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
+  position: static;
 }
 
 .cw-immersive-hit-tab {

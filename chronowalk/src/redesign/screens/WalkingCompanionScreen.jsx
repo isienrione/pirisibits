@@ -242,7 +242,7 @@ export default function WalkingCompanionScreen({
               type="button"
               role="tab"
               aria-selected={routeView === 'map'}
-              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              className={`cw-walking-companion__view-btn${routeView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('map')}
             >
               Map
@@ -251,7 +251,7 @@ export default function WalkingCompanionScreen({
               type="button"
               role="tab"
               aria-selected={routeView === 'steps'}
-              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              className={`cw-walking-companion__view-btn${routeView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('steps')}
             >
               Steps
@@ -269,19 +269,28 @@ export default function WalkingCompanionScreen({
               ) : null}
               <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
             </div>
-          ) : routeView === 'steps' ? (
-            <WalkingCompanionStepsPanel
-              steps={directions?.steps ?? []}
-              currentStepIndex={walkingStepProgress.currentStepIndex}
-              loading={directionsLoading}
-              error={directionsError}
-              destinationTitle={title}
-              onRetry={retryDirections}
-            />
           ) : (
-            <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
-              {map}
-            </div>
+            <>
+              <div
+                className={`cw-walking-companion__hero-layer${routeView === 'map' ? ' cw-walking-companion__hero-layer--visible' : ''}`}
+                aria-hidden={routeView !== 'map'}
+              >
+                {map}
+              </div>
+              <div
+                className={`cw-walking-companion__hero-layer cw-walking-companion__hero-layer--steps${routeView === 'steps' ? ' cw-walking-companion__hero-layer--visible' : ''}`}
+                aria-hidden={routeView !== 'steps'}
+              >
+                <WalkingCompanionStepsPanel
+                  steps={directions?.steps ?? []}
+                  currentStepIndex={walkingStepProgress.currentStepIndex}
+                  loading={directionsLoading}
+                  error={directionsError}
+                  destinationTitle={title}
+                  onRetry={retryDirections}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>

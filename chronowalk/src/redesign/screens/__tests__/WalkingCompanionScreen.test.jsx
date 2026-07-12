@@ -37,18 +37,18 @@ describe('WalkingCompanionScreen', () => {
     )
 
     expect(screen.getByTestId('walking-map')).toBeInTheDocument()
-    expect(screen.queryByTestId('walking-directions-steps')).not.toBeInTheDocument()
+    expect(screen.getByTestId('walking-directions-steps').closest('.cw-walking-companion__hero-layer--visible')).toBeNull()
 
     fireEvent.click(screen.getByRole('tab', { name: 'Steps' }))
 
-    expect(screen.queryByTestId('walking-map')).not.toBeInTheDocument()
-    expect(screen.getByTestId('walking-directions-steps')).toBeInTheDocument()
+    expect(screen.getByTestId('walking-map')).toBeInTheDocument()
+    expect(screen.getByTestId('walking-directions-steps').closest('.cw-walking-companion__hero-layer--visible')).toBeTruthy()
     expect(screen.getByText('Step 1 of 2')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('tab', { name: 'Map' }))
 
     expect(screen.getByTestId('walking-map')).toBeInTheDocument()
-    expect(screen.queryByTestId('walking-directions-steps')).not.toBeInTheDocument()
+    expect(screen.getByTestId('walking-directions-steps').closest('.cw-walking-companion__hero-layer--visible')).toBeNull()
   })
 
   it('hides the route toggle after arrival', () => {
