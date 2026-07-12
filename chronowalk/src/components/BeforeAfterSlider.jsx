@@ -4,7 +4,6 @@ import { useReducedMotion } from '../hooks/useReducedMotion';
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import { focusRing } from './ui/focusRing';
 import { cn } from './ui/cn';
-import { TimeFractureHandle } from './ui/TimeFractureSlider';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
@@ -127,7 +126,7 @@ const SliderItemShell = ({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        backgroundColor: '#17212B',
+        backgroundColor: 'var(--obsidian)',
       }}
     >
       <div
@@ -151,16 +150,34 @@ const SliderItemShell = ({
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
 const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
-  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-deep-slate to-deep-slate/90 p-6 text-center">
-    <p className="font-display text-base font-semibold text-gold">{message}</p>
-    <p className="mt-3 max-w-xs text-sm text-sand/80">
+  <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-obsidian p-6 text-center text-warmwhite">
+    <p className="font-display text-base font-semibold text-ember">{message}</p>
+    <p className="mt-3 max-w-xs text-sm text-muted/80">
       The portal will open once the matched ancient view is available.
     </p>
   </div>
 );
 
 function CompareSliderHandle() {
-  return <TimeFractureHandle />;
+  return (
+    <div className="relative flex h-full w-full items-center justify-center" aria-hidden="true">
+      <div
+        className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-ember"
+        style={{ boxShadow: 'var(--seam-glow)' }}
+      />
+      <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ember bg-bone">
+        <svg className="h-5 w-5 text-inkonfill" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M8 8 4 12l4 4M16 8l4 4-4 4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+  );
 }
 
 function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
@@ -171,14 +188,14 @@ function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex justify-between px-4 pt-4">
       <div className="text-left">
         <p
-          className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-warm-white"
+          className="font-sans text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-warmwhite"
           style={{ textShadow: labelShadow }}
         >
           Today
         </p>
         {modernYear ? (
           <p
-            className="mt-0.5 font-sans text-[0.58rem] font-medium text-warm-white/90"
+            className="mt-0.5 font-sans text-[0.58rem] font-medium text-warmwhite/90"
             style={{ textShadow: labelShadow }}
           >
             {modernYear}
@@ -187,14 +204,14 @@ function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
       </div>
       <div className="text-right">
         <p
-          className="font-display text-[1.6rem] italic leading-none text-gold"
+          className="font-display text-[1.6rem] italic leading-none text-ember"
           style={{ textShadow: ancientShadow }}
         >
           Ancient Rome
         </p>
         {ancientYear ? (
           <p
-            className="mt-1 font-sans text-[0.58rem] font-medium text-gold/90"
+            className="mt-1 font-sans text-[0.58rem] font-medium text-ember/90"
             style={{ textShadow: ancientShadow }}
           >
             {ancientYear}
@@ -207,16 +224,16 @@ function SliderEraLabels({ modernYear = '2026', ancientYear = 'c. 80 AD' }) {
 
 function SliderLoadingSkeleton({ reducedMotion = false }) {
   return (
-    <div className="absolute inset-0 z-20 overflow-hidden bg-gradient-to-br from-sand via-limestone/50 to-warm-white">
+    <div className="absolute inset-0 z-20 overflow-hidden bg-bone">
       <div
         className={cn(
-          'absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,253,248,0.55)_50%,transparent_75%)] bg-[length:200%_100%]',
+          'absolute inset-0 bg-[color-mix(in_srgb,var(--bone)_55%,transparent)]',
           !reducedMotion && 'animate-pulse'
         )}
       />
       <div className="flex h-full flex-col items-center justify-center px-6 text-center">
-        <p className="text-sm font-medium text-deep-slate">Preparing the time portal…</p>
-        <p className="mt-2 text-xs text-soft-slate">Loading matched views</p>
+        <p className="text-sm font-medium text-ink900">Preparing the time portal…</p>
+        <p className="mt-2 text-xs text-muted">Loading matched views</p>
       </div>
     </div>
   );
@@ -224,9 +241,9 @@ function SliderLoadingSkeleton({ reducedMotion = false }) {
 
 function MediaFailFallback({ title = 'Media unavailable' }) {
   return (
-    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-gradient-to-b from-sand to-limestone/60 px-6 text-center">
-      <p className="font-display text-lg font-semibold text-deep-slate">{title}</p>
-      <p className="mt-2 max-w-xs text-sm text-soft-slate">
+    <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-bone px-6 text-center text-ink900">
+      <p className="font-display text-lg font-semibold text-ink900">{title}</p>
+      <p className="mt-2 max-w-xs text-sm text-muted">
         Check your connection and try again, or continue with the audio story.
       </p>
     </div>
@@ -586,7 +603,7 @@ const BeforeAfterSlider = ({
     );
 
     if (!isAncient) {
-      return <div className="absolute inset-0 bg-deep-slate">{media}</div>;
+      return <div className="absolute inset-0 bg-ink900">{media}</div>;
     }
 
     return (
@@ -609,7 +626,7 @@ const BeforeAfterSlider = ({
 
     if (!modernSrc) {
       return (
-        <div className="flex h-full items-center justify-center bg-deep-slate px-4 text-center text-sm text-sand">
+        <div className="flex h-full items-center justify-center bg-ink900 px-4 text-center text-sm text-sand">
           Modern reference image is missing for alignment.
         </div>
       );
@@ -697,7 +714,7 @@ const BeforeAfterSlider = ({
           animateParallax={!alignmentMode}
         >
           {ancientMedia.loading ? (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-deep-slate/70 text-xs text-sand">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-ink900/70 text-xs text-sand">
               Loading ancient Rome…
             </div>
           ) : null}
@@ -760,7 +777,7 @@ const BeforeAfterSlider = ({
     >
       {frameHeight > 0 ? (
         alignmentMode ? (
-          <div className="relative h-full w-full overflow-hidden bg-deep-slate">
+          <div className="relative h-full w-full overflow-hidden bg-ink900">
             {renderAlignmentView()}
           </div>
         ) : modernLayerFailed ? (
@@ -782,7 +799,7 @@ const BeforeAfterSlider = ({
           </>
         )
       ) : (
-        <div className="aspect-video w-full bg-gradient-to-br from-sand to-limestone/50">
+        <div className="aspect-video w-full bg-ink800">
           <SliderLoadingSkeleton reducedMotion={reducedMotion} />
         </div>
       )}
@@ -809,7 +826,7 @@ const BeforeAfterSlider = ({
               onClick={replayVideos}
               aria-label="Replay comparison videos"
               className={cn(
-                'ml-1.5 min-h-11 rounded-lg px-2 text-bronze underline underline-offset-2',
+                'ml-1.5 min-h-11 rounded-lg px-2 text-ember underline underline-offset-2',
                 focusRing
               )}
             >
@@ -834,7 +851,7 @@ const BeforeAfterSlider = ({
             onClick={recalibrate}
             aria-label="Reset tilt center"
             className={cn(
-              'ml-1.5 min-h-11 rounded-lg px-2 text-bronze underline underline-offset-2',
+              'ml-1.5 min-h-11 rounded-lg px-2 text-ember underline underline-offset-2',
               focusRing
             )}
           >
@@ -860,23 +877,23 @@ const BeforeAfterSlider = ({
           ? 'flex h-full min-h-0 flex-1 flex-col'
           : embedded
             ? 'w-full overflow-hidden'
-            : 'w-full overflow-hidden rounded-3xl border border-limestone/60 shadow-glass'
+            : 'w-full overflow-hidden rounded-3xl border border-ink800 shadow-card'
       }
     >
       {immersive ? (
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-limestone/50 bg-warm-white/95 px-3 py-3 sm:px-4">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-ink800/50 bg-bone/95 px-3 py-3 sm:px-4">
           <button
             type="button"
             onClick={exitCompareView}
             aria-label="Back to landmark card"
             className={cn(
-              'min-h-11 rounded-full border border-limestone bg-sand/60 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
+              'min-h-11 rounded-full border border-ink800 bg-ink800/60 px-3 py-2.5 text-xs font-semibold text-ink900 sm:px-4',
               focusRing
             )}
           >
             Back
           </button>
-          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-soft-slate')}>
+          <p className={cn('text-xs font-semibold uppercase tracking-[0.14em] text-muted')}>
             Immersive compare
           </p>
           <button
@@ -884,7 +901,7 @@ const BeforeAfterSlider = ({
             onClick={closeImmersive}
             aria-label="Close full screen compare view"
             className={cn(
-              'min-h-11 rounded-full border border-limestone bg-warm-white/90 px-3 py-2.5 text-xs font-semibold text-deep-slate sm:px-4',
+              'min-h-11 rounded-full border border-ink800 bg-bone/90 px-3 py-2.5 text-xs font-semibold text-ink900 sm:px-4',
               focusRing
             )}
           >
@@ -894,8 +911,8 @@ const BeforeAfterSlider = ({
       ) : (
         <div
           className={cn(
-            'flex items-center justify-between gap-2 border-b border-limestone/50 px-3 py-2',
-            embedded ? 'bg-warm-white/95' : 'bg-sand/40'
+            'flex items-center justify-between gap-2 border-b border-ink800/50 px-3 py-2',
+            embedded ? 'bg-bone/95' : 'bg-ink800/40'
           )}
         >
           {embedded && onRequestExit ? (
@@ -904,7 +921,7 @@ const BeforeAfterSlider = ({
               onClick={exitCompareView}
               aria-label="Back to landmark card"
               className={cn(
-                'min-h-11 rounded-full border border-limestone/70 bg-warm-white/90 px-3 py-2.5 text-xs font-semibold text-deep-slate shadow-sm',
+                'min-h-11 rounded-full border border-ink800/70 bg-bone/90 px-3 py-2.5 text-xs font-semibold text-ink900 shadow-sm',
                 focusRing
               )}
             >
@@ -918,7 +935,7 @@ const BeforeAfterSlider = ({
             onClick={() => setImmersive(true)}
             aria-label="Open full screen compare view"
             className={cn(
-              'min-h-11 rounded-full border border-limestone/70 bg-warm-white/90 px-4 py-2.5 text-xs font-semibold text-deep-slate shadow-sm',
+              'min-h-11 rounded-full border border-ink800/70 bg-bone/90 px-4 py-2.5 text-xs font-semibold text-ink900 shadow-sm',
               focusRing
             )}
           >
@@ -929,7 +946,7 @@ const BeforeAfterSlider = ({
 
       <div className={immersive ? 'flex min-h-0 flex-1 flex-col' : ''}>{renderSliderFrame()}</div>
 
-      <p className="border-t border-limestone/40 bg-warm-white/95 px-4 py-3 text-center text-sm leading-relaxed text-soft-slate backdrop-blur-sm">
+      <p className="border-t border-ink800 bg-bone px-4 py-3 text-center text-sm leading-relaxed text-muted">
         {renderCaption()}
       </p>
     </div>
@@ -937,7 +954,7 @@ const BeforeAfterSlider = ({
 
   if (immersive) {
     return (
-      <div className="fixed inset-0 z-[300] flex flex-col bg-deep-slate pt-safe pb-safe">
+      <div className="fixed inset-0 z-[300] flex flex-col bg-ink900 pt-safe pb-safe">
         <div className="flex h-full w-full min-h-0 flex-col">
           {sliderShell}
         </div>

@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import mapboxgl from '../map/mapboxClient'
+import { LocateFixed } from 'lucide-react'
+import {
+  applyWalkingCompanionCamera,
+  collectWalkingCompanionBoundsPoints,
+  WALKING_COMPANION_MIN_ZOOM,
+} from '../utils/walkingCompanionMapCamera.js'
+import { loadMapboxRuntime } from '../map/mapboxLoader.js'
+import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
@@ -7,7 +14,7 @@ import {
   fetchWalkingDirections,
 } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
-import { env, isDebugGeo, isDebugMap, isMapboxConfigured } from '../config/env'
+import { env, isDebugGeo, isDebugMap, isDevPanelEnabled, isMapboxConfigured } from '../config/env'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -16,24 +23,29 @@ import {
 } from '../utils/routeGeometryCache'
 import OfflineRouteMap from './map/OfflineRouteMap'
 import { LoadingPanel } from './ui'
+import { hex } from '../design/tokens.js'
 
 const mapboxToken = env.mapboxToken
 
 const MAP_COLORS = {
-  completed: '#7A8B5A',
-  current: '#D9A441',
-  pending: '#51606F',
-  tourRoute: '#C8643C',
-  activeLeg: '#C8643C',
+  completed: hex.verdigris,
+  current: hex.ember,
+  pending: hex.inkMuted,
+  tourRoute: hex.cityRome,
+  activeLeg: hex.cityRome,
 }
 
-const MAP_STYLE = 'mapbox://styles/mapbox/light-v11'
+const MAP_STYLE = env.mapboxStyleUrl
 
-function setupMapLayers(map, { stops, tour, bounds }) {
+function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId }) {
+  const geofenceStops = minimalUI
+    ? stops.filter((stop) => stop.id === activeTargetId)
+    : stops
+
   if (!map.getSource('waypoint-zones')) {
     map.addSource('waypoint-zones', {
       type: 'geojson',
-      data: stopsToFeatureCollection(stops),
+      data: stopsToFeatureCollection(geofenceStops),
     })
 
     map.addLayer({
@@ -52,7 +64,7 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
-        'fill-opacity': 0.14,
+        'fill-opacity': minimalUI ? 0.08 : 0.14,
       },
     })
 
@@ -72,8 +84,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
           MAP_COLORS.pending,
           MAP_COLORS.pending,
         ],
-        'line-width': 2,
-        'line-opacity': 0.65,
+        'line-width': minimalUI ? 1.5 : 2,
+        'line-opacity': minimalUI ? 0.35 : 0.65,
       },
     })
 
@@ -88,8 +100,8 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       source: 'tour-route',
       paint: {
         'line-color': MAP_COLORS.tourRoute,
-        'line-width': 4,
-        'line-opacity': 0.55,
+        'line-width': minimalUI ? 3 : 4,
+        'line-opacity': minimalUI ? 0.28 : 0.55,
         'line-dasharray': [1.2, 1.4],
       },
     })
@@ -104,9 +116,10 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       type: 'line',
       source: 'active-leg-route',
       paint: {
-        'line-color': MAP_COLORS.activeLeg,
-        'line-width': 5,
-        'line-opacity': 0.95,
+        'line-color': walkingCompanionUI ? '#E4552E' : MAP_COLORS.activeLeg,
+        'line-width': walkingCompanionUI ? 4 : 5,
+        'line-opacity': walkingCompanionUI ? 0.92 : 0.95,
+        ...(walkingCompanionUI ? { 'line-dasharray': [2, 2.2] } : {}),
       },
     })
 
@@ -126,46 +139,68 @@ function setupMapLayers(map, { stops, tour, bounds }) {
       },
     })
   } else {
-    map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(stops))
+    map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(geofenceStops))
   }
 
-  if (bounds && tour?.stopIds?.length > 1) {
+  if (bounds && tour?.stopIds?.length > 1 && !walkingCompanionUI) {
     map.fitBounds(
       [
         [bounds.minLng - 0.005, bounds.minLat - 0.004],
         [bounds.maxLng + 0.005, bounds.maxLat + 0.004],
       ],
-      { padding: 56, maxZoom: 15, duration: 0 }
+      { padding: minimalUI ? 72 : 56, maxZoom: minimalUI ? 14 : 15, duration: 0 }
     )
   }
 }
 
-const createLandmarkMarkerElement = (title, status) => {
+const createLandmarkMarkerElement = (title, status, onPress, { showLabel = true } = {}) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
+  if (onPress) {
+    el.style.cursor = 'pointer'
+    el.addEventListener('click', (event) => {
+      event.stopPropagation()
+      onPress()
+    })
+  }
 
   const dotClass =
     status === 'completed'
-      ? 'bg-olive'
+      ? 'bg-acthill'
       : status === 'current'
-        ? 'bg-gold ring-2 ring-sand'
+        ? 'bg-ember ring-2 ring-sand'
         : status === 'locked'
-          ? 'bg-soft-slate opacity-60'
-          : 'bg-soft-slate opacity-80'
+          ? 'bg-muted opacity-60'
+          : 'bg-muted opacity-80'
+
+  const dotSize = showLabel ? 'h-6 w-6' : 'h-3 w-3'
+  const labelHtml = showLabel
+    ? `<span class="mt-1 max-w-[5.5rem] truncate rounded bg-bone/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-ink900 shadow-sm">${title}</span>`
+    : ''
 
   el.innerHTML = `
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
-    <span class="mt-1 max-w-[5.5rem] truncate rounded bg-warm-white/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-deep-slate shadow-sm">${title}</span>
+    <div class="flex ${dotSize} items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
+    ${labelHtml}
   `
   return el
 }
 
-const createUserMarkerElement = () => {
+const createLegOriginMarkerElement = () => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
+  el.setAttribute('aria-hidden', 'true')
   el.innerHTML = `
-    <div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warm-white shadow-lg">You</div>
+    <div class="flex h-4 w-4 items-center justify-center rounded-full border-2 border-warm-white bg-acthill shadow-md"></div>
   `
+  return el
+}
+
+const createUserMarkerElement = (minimalUI = false) => {
+  const el = document.createElement('div')
+  el.className = 'flex flex-col items-center'
+  el.innerHTML = minimalUI
+    ? `<div class="flex h-5 w-5 items-center justify-center rounded-full border-[3px] border-warm-white bg-sky-blue shadow-lg"></div>`
+    : `<div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warmwhite shadow-lg">You</div>`
   return el
 }
 
@@ -195,12 +230,12 @@ function MapArrivalPulse({ point, active }) {
       aria-hidden="true"
     >
       <div
-        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gold/50 bg-gold/10 ${
+        className={`absolute h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ember/50 bg-ember/10 ${
           reducedMotion ? '' : 'animate-arrival-map-pulse'
         }`}
       />
       <div
-        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/25 ${
+        className={`absolute h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember/25 ${
           reducedMotion ? '' : 'animate-arrival-map-pulse'
         }`}
         style={{ animationDelay: '0.35s' }}
@@ -221,29 +256,29 @@ function MapDebugOverlay({
 }) {
   return (
     <div className="pointer-events-none absolute left-3 top-3 z-30 max-w-[min(92vw,20rem)] space-y-2">
-      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-gold shadow">
+      <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ember shadow">
         Debug map
       </div>
-      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warm-white shadow">
+      <div className="rounded-lg bg-sky-blue/95 px-3 py-1.5 text-xs text-warmwhite shadow">
         GPS: {debugGeo ? `simulated at ${activeTitle}` : 'live device location'}
       </div>
       {transitLegActive && activeLeg ? (
-        <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+        <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-xs text-sand shadow">
           Leg: {stops.find((s) => s.id === activeLeg.fromId)?.title ?? activeLeg.fromId} →{' '}
           {stops.find((s) => s.id === activeLeg.toId)?.title ?? activeLeg.toId}
         </div>
       ) : null}
       {state ? (
         <div
-          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warm-white shadow ${
-            state === JOURNEY_STATE.ARRIVAL ? 'bg-olive/95' : 'bg-soft-slate/95'
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-warmwhite shadow ${
+            state === JOURNEY_STATE.ARRIVAL ? 'bg-acthill/95' : 'bg-muted/95'
           }`}
         >
           Journey: {state}
           {distance != null ? ` (${Math.round(distance)} m)` : ''}
         </div>
       ) : null}
-      <div className="rounded-lg bg-deep-slate/90 px-3 py-1.5 text-xs text-sand shadow">
+      <div className="rounded-lg bg-ink900/90 px-3 py-1.5 text-xs text-sand shadow">
         Arrival geofence: {geofenceThresholdM} m
       </div>
     </div>
@@ -256,6 +291,7 @@ function TourMapboxView({
   tour,
   stops,
   activeTargetId,
+  selectedStopId = null,
   activeLeg,
   transitLegActive,
   geofenceThresholdM,
@@ -268,17 +304,63 @@ function TourMapboxView({
   onMapFailure,
   directionsModeActive = false,
   directionsGeometry = null,
+  onStopSelect = null,
+  minimalUI = false,
+  walkingCompanionUI = false,
+  fillContainer = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
+  const mapboxglRef = useRef(null)
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const onMapFailureRef = useRef(onMapFailure)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
+  const [legRouteCoordinates, setLegRouteCoordinates] = useState(null)
+  const walkingCameraPinRef = useRef(null)
   const debugGeo = isDebugGeo()
-  const showDebugOverlay = debugMapEnabled || isDebugMap()
+  const showDebugOverlay =
+    (debugMapEnabled || isDebugMap()) && (!minimalUI || isDevPanelEnabled())
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
+
+  const frameWalkingCompanion = useCallback(
+    ({ includeUser = false } = {}) => {
+      if (!walkingCompanionUI || !map.current || !mapLoaded || !mapboxglRef.current) return false
+
+      const previousStop = activeLeg
+        ? stops.find((stop) => stop.id === activeLeg.fromId)?.landmark ?? null
+        : null
+
+      const points = collectWalkingCompanionBoundsPoints({
+        userPos,
+        destination: activeTarget?.landmark ?? null,
+        previousStop,
+        routeCoordinates: legRouteCoordinates ?? [],
+        includeUser,
+      })
+
+      return applyWalkingCompanionCamera(map.current, mapboxglRef.current, points)
+    },
+    [
+      activeLeg,
+      activeTarget?.landmark,
+      legRouteCoordinates,
+      mapLoaded,
+      stops,
+      userPos,
+      walkingCompanionUI,
+    ],
+  )
+
+  useEffect(() => {
+    setLegRouteCoordinates(null)
+    walkingCameraPinRef.current = null
+  }, [activeLeg?.fromId, activeLeg?.toId])
+
+  useEffect(() => {
+    walkingCameraPinRef.current = null
+  }, [activeTargetId])
 
   useEffect(() => {
     onMapFailureRef.current = onMapFailure
@@ -288,8 +370,11 @@ function TourMapboxView({
     const container = mapContainer.current
     if (!mapboxToken || !container || map.current) return undefined
 
-    const bounds = tour ? getTourBounds(tour) : null
-    const center = bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
+    const bounds = tour?.bounds ?? (tour ? getTourBounds(tour) : null)
+    const center =
+      walkingCompanionUI && activeTarget?.landmark
+        ? activeTarget.landmark
+        : bounds?.center ?? activeTarget?.landmark ?? { lat: 41.89, lng: 12.49 }
     let cancelled = false
     let loadTimeoutId = null
     let bootstrapTimeoutId = window.setTimeout(() => {
@@ -316,7 +401,7 @@ function TourMapboxView({
       }
 
       try {
-        setupMapLayers(map.current, { stops, tour, bounds })
+        setupMapLayers(map.current, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId })
       } catch (error) {
         console.error('Map layer setup failed:', error)
         onMapFailureRef.current?.()
@@ -327,7 +412,7 @@ function TourMapboxView({
       map.current.resize()
     }
 
-    const initMap = () => {
+    const initMap = (mapboxgl) => {
       if (cancelled || map.current || !mapContainer.current) return
       if (mapContainer.current.clientWidth === 0 || mapContainer.current.clientHeight === 0) return
 
@@ -338,7 +423,8 @@ function TourMapboxView({
           container: mapContainer.current,
           style: MAP_STYLE,
           center: [center.lng, center.lat],
-          zoom: tour?.mapZoom ?? 14,
+          zoom: walkingCompanionUI ? WALKING_COMPANION_MIN_ZOOM : tour?.mapZoom ?? 14,
+          transformRequest: createMapboxTransformRequest(),
         })
       } catch (error) {
         console.error('Mapbox initialization failed:', error)
@@ -371,14 +457,25 @@ function TourMapboxView({
       }, MAP_BOOTSTRAP_TIMEOUT_MS)
     }
 
-    initMap()
+    void loadMapboxRuntime()
+      .then((mapboxgl) => {
+        if (cancelled) return
+        mapboxglRef.current = mapboxgl
+        initMap(mapboxgl)
+      })
+      .catch((error) => {
+        console.error('Mapbox runtime load failed:', error)
+        onMapFailureRef.current?.()
+      })
 
     const resizeObserver = new ResizeObserver(() => {
       if (map.current) {
         map.current.resize()
         return
       }
-      initMap()
+      if (mapboxglRef.current) {
+        initMap(mapboxglRef.current)
+      }
     })
     resizeObserver.observe(container)
 
@@ -403,15 +500,20 @@ function TourMapboxView({
       landmarkMarkers.current = []
       map.current?.remove()
       map.current = null
+      mapboxglRef.current = null
     }
   }, [tour?.id])
 
   useEffect(() => {
-    if (!map.current || !mapLoaded) return
+    const mapboxgl = mapboxglRef.current
+    if (!map.current || !mapLoaded || !mapboxgl) return
 
     const source = map.current.getSource('waypoint-zones')
     if (source) {
-      source.setData(stopsToFeatureCollection(stops))
+      const geofenceStops = minimalUI
+        ? stops.filter((stop) => stop.id === activeTargetId)
+        : stops
+      source.setData(stopsToFeatureCollection(geofenceStops))
     }
 
     landmarkMarkers.current.forEach((marker) => marker.remove())
@@ -419,15 +521,49 @@ function TourMapboxView({
 
     stops.forEach((stop) => {
       if (!stop?.landmark) return
+
+      if (walkingCompanionUI) {
+        const isDestination = stop.id === activeTargetId
+        const isLegOrigin = activeLeg?.fromId === stop.id
+        if (!isDestination && !isLegOrigin) return
+
+        const marker = new mapboxgl.Marker({
+          element: isLegOrigin
+            ? createLegOriginMarkerElement()
+            : createLandmarkMarkerElement(stop.title, stop.status, null, { showLabel: false }),
+          anchor: isLegOrigin ? 'center' : 'bottom',
+        })
+          .setLngLat([stop.landmark.lng, stop.landmark.lat])
+          .addTo(map.current)
+        landmarkMarkers.current.push(marker)
+        return
+      }
+
+      const showLabel =
+        !minimalUI || stop.id === activeTargetId || stop.id === selectedStopId
       const marker = new mapboxgl.Marker({
-        element: createLandmarkMarkerElement(stop.title, stop.status),
+        element: createLandmarkMarkerElement(
+          stop.title,
+          stop.status,
+          onStopSelect ? () => onStopSelect(stop.id) : null,
+          { showLabel },
+        ),
         anchor: 'bottom',
       })
         .setLngLat([stop.landmark.lng, stop.landmark.lat])
         .addTo(map.current)
       landmarkMarkers.current.push(marker)
     })
-  }, [stops, mapLoaded])
+  }, [
+    stops,
+    mapLoaded,
+    onStopSelect,
+    minimalUI,
+    walkingCompanionUI,
+    activeTargetId,
+    activeLeg?.fromId,
+    selectedStopId,
+  ])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !mapboxToken) return undefined
@@ -437,21 +573,23 @@ function TourMapboxView({
     const loadRoutes = async () => {
       if (!tour?.stopIds?.length || tour.stopIds.length < 2) return
 
-      const landmarks = tour.stopIds
-        .map((id) => stops.find((stop) => stop.id === id)?.landmark)
-        .filter(Boolean)
+      if (!walkingCompanionUI) {
+        const landmarks = tour.stopIds
+          .map((id) => stops.find((stop) => stop.id === id)?.landmark)
+          .filter(Boolean)
 
-      const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
-      if (cancelled || !fullRoute) return
+        const fullRoute = await fetchTourWalkingRoute(landmarks, mapboxToken)
+        if (cancelled || !fullRoute) return
 
-      cacheTourRoute(tour.id, fullRoute)
+        cacheTourRoute(tour.id, fullRoute)
 
-      map.current.getSource('tour-route')?.setData({
-        type: 'FeatureCollection',
-        features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
-      })
+        map.current.getSource('tour-route')?.setData({
+          type: 'FeatureCollection',
+          features: [{ type: 'Feature', geometry: fullRoute, properties: {} }],
+        })
+      }
 
-      if (directionsModeActive) {
+      if (directionsModeActive && !walkingCompanionUI) {
         map.current.getSource('active-leg-route')?.setData({
           type: 'FeatureCollection',
           features: [],
@@ -459,12 +597,16 @@ function TourMapboxView({
         return
       }
 
-      if (activeLeg && transitLegActive) {
-        const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
-        const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
+      if (activeLeg && (transitLegActive || walkingCompanionUI)) {
+        const fromStop = stops.find((stop) => stop.id === activeLeg.fromId)
+        const toStop = stops.find((stop) => stop.id === activeLeg.toId)
+        const from = fromStop?.landmark
+        const to = toStop?.landmark
 
         if (from && to) {
-          const directions = await fetchWalkingDirections(from, to, mapboxToken)
+          const directions = await fetchWalkingDirections(from, to, mapboxToken, {
+            destinationName: toStop?.title ?? null,
+          })
 
           if (!cancelled && directions?.geometry) {
             cacheLegRoute(tour.id, activeLeg.fromId, activeLeg.toId, directions.geometry)
@@ -474,6 +616,10 @@ function TourMapboxView({
               type: 'FeatureCollection',
               features: [{ type: 'Feature', geometry: directions.geometry, properties: {} }],
             })
+
+            if (walkingCompanionUI) {
+              setLegRouteCoordinates(directions.geometry.coordinates ?? null)
+            }
           }
         }
       } else {
@@ -481,6 +627,9 @@ function TourMapboxView({
           type: 'FeatureCollection',
           features: [],
         })
+        if (walkingCompanionUI) {
+          setLegRouteCoordinates(null)
+        }
       }
     }
 
@@ -489,7 +638,32 @@ function TourMapboxView({
     return () => {
       cancelled = true
     }
-  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, directionsModeActive])
+  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, directionsModeActive, walkingCompanionUI])
+
+  useEffect(() => {
+    if (!walkingCompanionUI || !mapLoaded || !map.current) return
+    if (!legRouteCoordinates?.length) return
+
+    const pinKey = `${activeTargetId}:leg`
+    if (walkingCameraPinRef.current === pinKey) return
+
+    const frame = () => {
+      const framed = frameWalkingCompanion({ includeUser: false })
+      if (framed) {
+        walkingCameraPinRef.current = pinKey
+      }
+    }
+
+    if (map.current.isStyleLoaded()) {
+      frame()
+      return undefined
+    }
+
+    map.current.once('idle', frame)
+    return () => {
+      map.current?.off('idle', frame)
+    }
+  }, [walkingCompanionUI, mapLoaded, activeTargetId, legRouteCoordinates, frameWalkingCompanion])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -498,11 +672,17 @@ function TourMapboxView({
     if (map.current.getLayer('tour-route-line')) {
       map.current.setPaintProperty('tour-route-line', 'line-opacity', tourOpacity)
     }
+  }, [directionsModeActive, mapLoaded])
+
+  useEffect(() => {
+    if (!directionsModeActive || !map.current || !mapLoaded) {
+      return
+    }
 
     const navSource = map.current.getSource('directions-nav-route')
     if (!navSource) return
 
-    if (directionsModeActive && directionsGeometry?.coordinates?.length) {
+    if (directionsGeometry?.coordinates?.length) {
       navSource.setData({
         type: 'FeatureCollection',
         features: [{ type: 'Feature', geometry: directionsGeometry, properties: {} }],
@@ -518,10 +698,17 @@ function TourMapboxView({
         features: [],
       })
     }
-  }, [directionsModeActive, directionsGeometry, mapLoaded, transitLegActive])
+  }, [
+    directionsModeActive,
+    directionsGeometry,
+    mapLoaded,
+    transitLegActive,
+    walkingCompanionUI,
+  ])
 
   useEffect(() => {
     if (
+      walkingCompanionUI ||
       !directionsModeActive ||
       !directionsGeometry?.coordinates?.length ||
       !map.current ||
@@ -555,12 +742,20 @@ function TourMapboxView({
         [minLng - 0.0015, minLat - 0.0015],
         [maxLng + 0.0015, maxLat + 0.0015],
       ],
-      { padding: { top: 120, bottom: 220, left: 48, right: 48 }, maxZoom: 17, duration: 800 }
+      { padding: { top: 120, bottom: 220, left: 48, right: 48 }, maxZoom: 17, duration: 800 },
     )
-  }, [directionsModeActive, directionsGeometry, mapLoaded, userPos?.lat, userPos?.lng])
+  }, [
+    directionsModeActive,
+    directionsGeometry,
+    mapLoaded,
+    userPos?.lat,
+    userPos?.lng,
+    walkingCompanionUI,
+  ])
 
   useEffect(() => {
-    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded) return
+    const mapboxgl = mapboxglRef.current
+    if (!userPos?.lat || !userPos?.lng || !map.current || !mapLoaded || !mapboxgl) return
 
     const anchor = activeTarget?.landmark
     const markerLng = debugGeo && anchor ? anchor.lng + 0.0002 : userPos.lng
@@ -570,7 +765,7 @@ function TourMapboxView({
       userMarker.current.setLngLat([markerLng, markerLat])
     } else {
       userMarker.current = new mapboxgl.Marker({
-        element: createUserMarkerElement(),
+        element: createUserMarkerElement(minimalUI),
         anchor: 'bottom',
       })
         .setLngLat([markerLng, markerLat])
@@ -613,10 +808,29 @@ function TourMapboxView({
     })
   }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
 
+  const handleRecenter = useCallback(() => {
+    walkingCameraPinRef.current = null
+    const framed = frameWalkingCompanion({ includeUser: true })
+    if (framed) {
+      walkingCameraPinRef.current = `${activeTargetId}:user`
+    }
+  }, [activeTargetId, frameWalkingCompanion])
+
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !walkingCompanionUI) return
+    if (map.current.getLayer('tour-route-line')) {
+      map.current.setPaintProperty('tour-route-line', 'line-opacity', 0.1)
+    }
+    if (map.current.getLayer('active-leg-route-line')) {
+      map.current.setPaintProperty('active-leg-route-line', 'line-color', '#E4552E')
+      map.current.setPaintProperty('active-leg-route-line', 'line-dasharray', [2, 2.2])
+    }
+  }, [mapLoaded, walkingCompanionUI])
+
   const activeTitle = activeTarget?.title ?? 'waypoint'
 
   return (
-    <div className="relative h-screen w-full">
+    <div className={fillContainer ? 'relative h-full w-full' : 'relative h-screen w-full'}>
       <div ref={mapContainer} className="h-full w-full" />
       {!mapLoaded ? (
         <div className="absolute inset-0 z-10">
@@ -624,11 +838,21 @@ function TourMapboxView({
             label="Preparing your map…"
             hint="Drawing landmarks, routes, and walking paths"
             fullScreen
-            className="bg-warm-white/90 backdrop-blur-sm"
+            className="bg-bone/90"
           />
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
+      {walkingCompanionUI && mapLoaded ? (
+        <button
+          type="button"
+          className="absolute bottom-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(245,239,227,0.12)] bg-[rgba(28,26,24,0.82)] text-[#F5EFE3] shadow-lg backdrop-blur-md"
+          onClick={handleRecenter}
+          aria-label="Recenter map"
+        >
+          <LocateFixed size={16} strokeWidth={2} />
+        </button>
+      ) : null}
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}
@@ -649,6 +873,7 @@ const TourMap = ({
   tour,
   stops = [],
   activeTargetId,
+  selectedStopId = null,
   activeLeg,
   transitLegActive,
   geofenceThresholdM,
@@ -662,6 +887,10 @@ const TourMap = ({
   awaitingFirstStop = false,
   directionsModeActive = false,
   directionsGeometry = null,
+  onStopSelect = null,
+  minimalUI = false,
+  walkingCompanionUI = false,
+  fillContainer = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -693,6 +922,7 @@ const TourMap = ({
       tour={tour}
       stops={stops}
       activeTargetId={activeTargetId}
+      selectedStopId={selectedStopId}
       activeLeg={activeLeg}
       transitLegActive={transitLegActive}
       geofenceThresholdM={geofenceThresholdM}
@@ -705,6 +935,10 @@ const TourMap = ({
       onMapFailure={handleMapFailure}
       directionsModeActive={directionsModeActive}
       directionsGeometry={directionsGeometry}
+      onStopSelect={onStopSelect}
+      minimalUI={minimalUI}
+      walkingCompanionUI={walkingCompanionUI}
+      fillContainer={fillContainer}
     />
   )
 }

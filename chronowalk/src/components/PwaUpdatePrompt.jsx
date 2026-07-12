@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, GlassPanel } from './ui'
+import { Button } from './ui'
 import { pwaController } from '../pwa/pwaController'
 
 export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
@@ -11,10 +11,10 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
       role="status"
       aria-live="polite"
     >
-      <GlassPanel className="pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 shadow-plaque-lg" grain>
+      <div className="bg-ink900 rounded-card pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 ">
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-bronze">Update available</p>
-          <p className="mt-1 text-sm leading-relaxed text-deep-slate">
+          <p className="text-eyebrow uppercase text-ember">Update available</p>
+          <p className="mt-1 text-sm leading-relaxed text-ink900">
             A new version of ChronoWalk is ready. Refresh to get the latest improvements.
           </p>
         </div>
@@ -26,7 +26,7 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
             Later
           </Button>
         </div>
-      </GlassPanel>
+      </div>
     </div>
   )
 }
@@ -41,7 +41,10 @@ export function PwaUpdatePrompt() {
   return (
     <PwaUpdatePromptView
       visible={visible}
-      onUpdate={() => pwaController.applyUpdate()}
+      onUpdate={() => {
+        pwaController.applyUpdate()
+        setVisible(false)
+      }}
       onDismiss={() => setVisible(false)}
     />
   )

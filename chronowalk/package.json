@@ -4,16 +4,23 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "vite",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
     "build": "npm run generate:pwa-assets && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "npm run check:design && npm run check:assets && vitest run",
+    "check:design": "node scripts/check-design.mjs",
+    "check:assets": "node scripts/check-assets.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs",
+    "fetch:rome-landing-basemap": "node scripts/fetch-rome-landing-basemap.mjs",
     "process-pantheon": "bash scripts/process-pantheon-assets.sh",
     "verify-pantheon": "bash scripts/verify-pantheon-assets.sh",
     "process-waypoint": "bash scripts/process-waypoint-assets.sh",
     "verify-waypoint": "bash scripts/verify-waypoint-assets.sh",
     "verify-all-waypoints": "bash scripts/verify-all-waypoint-assets.sh",
+    "install:modern-photos": "node scripts/install-modern-photos.mjs",
+    "install:now-files": "node scripts/install-now-files.mjs",
     "process-piazza-navona": "bash scripts/process-waypoint-assets.sh piazza-navona",
     "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
     "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",
@@ -23,15 +30,24 @@
     "git-add-expansion-media": "bash scripts/git-add-expansion-media.sh",
     "cleanup-expansion-folders": "bash scripts/cleanup-expansion-folders.sh",
     "normalize-audio": "bash scripts/normalize-audio.sh",
+    "generate:rome-manifest": "node scripts/generate-rome-manifest.mjs",
+    "measure:durations": "node scripts/measure-rome-durations.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "check:content:local": "node scripts/check-content.mjs --skip-remote",
+    "check:content:strict": "node scripts/check-content.mjs --require-full-durations",
+    "check:content:local:strict": "node scripts/check-content.mjs --skip-remote --require-full-durations",
     "test:watch": "vitest"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
+    "lucide-react": "^0.511.0",
     "mapbox-gl": "^3.25.0",
+    "posthog-js": "^1.396.5",
     "react": "^19.2.6",
     "react-compare-slider": "^4.0.0",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -51,6 +67,7 @@
     "tailwindcss": "^3.4.19",
     "vite": "^8.0.12",
     "vite-plugin-pwa": "^1.3.0",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.9",
+    "zod": "^4.4.3"
   }
 }

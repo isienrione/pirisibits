@@ -29,11 +29,11 @@ export function EditorialTitle({
   return (
     <div className={cn(alignStyles[align], className)}>
       {eyebrow ? (
-        <p className="text-eyebrow uppercase tracking-[0.2em] text-bronze">{eyebrow}</p>
+        <p className="text-eyebrow uppercase tracking-[0.2em] text-ember">{eyebrow}</p>
       ) : null}
       <Component
         className={cn(
-          'font-display font-semibold leading-[1.08] tracking-tight text-deep-slate',
+          'font-display font-semibold leading-[1.08] tracking-tight text-ink900',
           sizeStyles[size],
           eyebrow && 'mt-3',
           titleClassName
@@ -43,12 +43,12 @@ export function EditorialTitle({
         {italicHighlight ? (
           <>
             {' '}
-            <span className="font-display italic text-bronze">{italicHighlight}</span>
+            <span className="font-display italic text-ember">{italicHighlight}</span>
           </>
         ) : null}
       </Component>
       {subtitle ? (
-        <p className="mt-4 max-w-prose text-base leading-relaxed text-soft-slate sm:text-[1.05rem]">
+        <p className="mt-4 max-w-prose text-base leading-relaxed text-muted sm:text-[1.05rem]">
           {subtitle}
         </p>
       ) : null}

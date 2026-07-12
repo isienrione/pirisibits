@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useOfflineDownload } from '../../hooks/useOfflineDownload'
 import { formatDownloadSize } from '../../offline/estimateDownloadSize'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
-import { Button, GlassPanel, StatusBadge, cn, ctaInCard } from '../ui'
+import { Button, StatusBadge, cn, ctaInCard } from '../ui'
 
 function DownloadProgressBar({ percent, label }) {
   const safePercent = Math.max(0, Math.min(100, percent ?? 0))
@@ -10,12 +10,12 @@ function DownloadProgressBar({ percent, label }) {
   return (
     <div className="mt-4" role="status" aria-live="polite">
       <div className="mb-2 flex items-center justify-between gap-3 text-xs">
-        <span className="font-medium text-deep-slate">{label ?? 'Downloading tour…'}</span>
-        <span className="tabular-nums text-soft-slate">{safePercent}%</span>
+        <span className="font-medium text-ink900">{label ?? 'Downloading tour…'}</span>
+        <span className="tabular-nums text-muted">{safePercent}%</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-sand/80">
+      <div className="h-2 overflow-hidden rounded-full bg-ink800/80">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-bronze to-gold motion-safe:transition-all motion-safe:duration-300"
+          className="h-full rounded-full bg-ember motion-safe:transition-all motion-safe:duration-300"
           style={{ width: `${safePercent}%` }}
         />
       </div>
@@ -25,7 +25,7 @@ function DownloadProgressBar({ percent, label }) {
 
 function MapInternetNotice({ className }) {
   return (
-    <p className={cn('text-xs leading-relaxed text-soft-slate', className)}>
+    <p className={cn('text-xs leading-relaxed text-muted', className)}>
       Detailed live maps and turn-by-turn walking routes may still require an internet connection.
       Stories, imagery, and audio for downloaded stops remain available offline.
     </p>
@@ -59,19 +59,19 @@ export function OfflineDownloadPanel({
 
   return (
     <>
-      <GlassPanel
-        className={cn(
+      <div
+        className={cn("bg-ink900 rounded-card", 
           compact ? 'p-5' : 'p-5 sm:p-6',
-          isDownloaded ? 'border-olive/25 bg-olive/[0.04]' : 'border-gold/25 bg-gold/[0.04]',
+          isDownloaded ? 'border-olive/25 bg-acthill/[0.04]' : 'border-ember/25 bg-ember/[0.04]',
           className
         )}
       >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-eyebrow uppercase text-gold">Offline access</p>
+            <p className="text-eyebrow uppercase text-ember">Offline access</p>
             <h2
               className={cn(
-                'mt-1 font-display font-semibold leading-tight text-deep-slate',
+                'mt-1 font-display font-semibold leading-tight text-ink900',
                 compact ? 'text-xl' : 'text-2xl'
               )}
             >
@@ -85,35 +85,35 @@ export function OfflineDownloadPanel({
           ) : null}
         </div>
 
-        <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+        <p className="mt-3 text-sm leading-relaxed text-muted">
           Save audio stories, historical reveals, and imagery for{' '}
-          <span className="font-medium text-deep-slate">{tour.title}</span> so the tour keeps
+          <span className="font-medium text-ink900">{tour.title}</span> so the tour keeps
           working when connectivity is limited.
         </p>
 
         <div className="mt-4 flex flex-wrap gap-3 text-sm">
-          <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+          <div className="rounded-2xl border border-ink800/60 bg-bone/80 px-3 py-2">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">
               Estimated size
             </p>
-            <p className="mt-1 font-semibold tabular-nums text-deep-slate">{estimatedSizeLabel}</p>
+            <p className="mt-1 font-semibold tabular-nums text-ink900">{estimatedSizeLabel}</p>
           </div>
           {estimate?.stopCount ? (
-            <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+            <div className="rounded-2xl border border-ink800/60 bg-bone/80 px-3 py-2">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">
                 Included
               </p>
-              <p className="mt-1 font-semibold text-deep-slate">
+              <p className="mt-1 font-semibold text-ink900">
                 {estimate.stopCount} stops · {estimate.assetCount} assets
               </p>
             </div>
           ) : null}
           {isDownloaded && lastUpdatedLabel ? (
-            <div className="rounded-2xl border border-limestone/60 bg-warm-white/80 px-3 py-2">
-              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-soft-slate">
+            <div className="rounded-2xl border border-ink800/60 bg-bone/80 px-3 py-2">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted">
                 Last updated
               </p>
-              <p className="mt-1 font-semibold text-deep-slate">{lastUpdatedLabel}</p>
+              <p className="mt-1 font-semibold text-ink900">{lastUpdatedLabel}</p>
             </div>
           ) : null}
         </div>
@@ -123,7 +123,7 @@ export function OfflineDownloadPanel({
         ) : null}
 
         {error ? (
-          <p className="mt-4 rounded-2xl border border-bronze/20 bg-bronze/8 px-3 py-2 text-sm text-deep-slate">
+          <p className="mt-4 rounded-2xl border border-ember/20 bg-ember/8 px-3 py-2 text-sm text-ink900">
             {error}
           </p>
         ) : null}
@@ -141,7 +141,7 @@ export function OfflineDownloadPanel({
           ) : (
             <>
               <Button
-                variant="secondary"
+                variant="quiet"
                 fullWidth
                 className={cn(ctaInCard, 'sm:flex-1')}
                 disabled={isDownloading}
@@ -161,8 +161,8 @@ export function OfflineDownloadPanel({
           )}
         </div>
 
-        <MapInternetNotice className="mt-4 border-t border-limestone/50 pt-4" />
-      </GlassPanel>
+        <MapInternetNotice className="mt-4 border-t border-ink800/50 pt-4" />
+      </div>
 
       <ConfirmDialog
         open={deleteOpen}

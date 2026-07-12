@@ -23,9 +23,9 @@ export function GoldButton({ className, showArrow = false, children, ...props })
     <Button
       size="lg"
       className={cn(
-        'border border-gold/35 bg-gradient-to-b from-gold via-[#d4af37] to-[#b8942f] font-display text-ivory shadow-gold-glow',
-        'hover:from-gold/95 hover:via-[#d4af37]/95 hover:to-[#b8942f]/95',
-        'active:from-[#b8942f] active:to-gold/90',
+        'border border-gold/35 bg-gradient-to-b from-gold via-gold to-gold-dark font-display text-ivory shadow-gold-glow',
+        'hover:from-gold/95 hover:via-gold/95 hover:to-gold-dark/95',
+        'active:from-gold-dark active:to-gold/90',
         showArrow && 'justify-between px-6',
         className
       )}
