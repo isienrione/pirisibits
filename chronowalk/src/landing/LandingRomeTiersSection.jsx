@@ -1,5 +1,4 @@
 import { LANDING_CONTENT } from './landingData.js'
-import { getLandingRouteStats } from './landingRouteStats.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
@@ -21,10 +20,6 @@ function CheckIcon() {
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
   const tiers = section.tiers ?? []
-  const routeStats = getLandingRouteStats()
-
-  const tierBullet = (item) =>
-    item.startsWith('All 22 stops') ? routeStats.completeTierBullet : item
 
   return (
     <section
@@ -104,7 +99,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                     ? tier.bullets.map((item) => (
                         <li key={item} className="cw-v2-pricing-card__item">
                           <CheckIcon />
-                          <span>{tierBullet(item)}</span>
+                          <span>{item}</span>
                         </li>
                       ))
                     : null}
@@ -124,7 +119,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                     ? tier.bullets.map((item) => (
                         <li key={item} className="cw-v2-pricing-card__item">
                           <CheckIcon />
-                          <span>{tierBullet(item)}</span>
+                          <span>{item}</span>
                         </li>
                       ))
                     : null}

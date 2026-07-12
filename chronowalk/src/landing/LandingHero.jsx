@@ -1,15 +1,10 @@
 import { useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
-import { getLandingRouteStats } from './landingRouteStats.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 export default function LandingHero({ onPreview }) {
   const hero = LANDING_CONTENT.hero
-  const routeStats = getLandingRouteStats()
-  const heroStats = hero.stats.map((stat, index) =>
-    index === 0 ? { ...stat, value: routeStats.heroStatValue } : stat,
-  )
   const [imageOk, setImageOk] = useState(true)
 
   return (
@@ -61,7 +56,7 @@ export default function LandingHero({ onPreview }) {
         </div>
 
         <dl className="cw-v2-hero__stats">
-          {heroStats.map((stat) => (
+          {hero.stats.map((stat) => (
             <div key={stat.label} className="cw-v2-hero__stat">
               <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
               <dd className="cw-v2-hero__stat-label">{stat.label}</dd>

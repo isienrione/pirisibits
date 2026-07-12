@@ -1,5 +1,9 @@
+import { getLandingRouteStats } from './landingRouteStats.js'
+
 /** Scroll target for the Rome journey / purchase section. */
 export const ROME_JOURNEY_SECTION_ID = 'rome-journey'
+
+const ROUTE_STATS = getLandingRouteStats()
 
 /** Token replaced at render time with the live price label (e.g. €17). */
 export const PRICE_PLACEHOLDER = '{price}'
@@ -78,7 +82,7 @@ export const ROME_TIERS = [
     includesLabel: 'Roma Historica + Roma Antica + the full city loop',
     featuredBullet: '+ Choose and re-order your stops (own-pace itinerary)',
     bullets: [
-      'All 22 stops — Colosseum and Forum to the Appian Way',
+      ROUTE_STATS.completeTierBullet,
       'Every Threshold reconstruction on the route',
       'Pause and resume anytime — one day or spread across the trip',
     ],
@@ -133,7 +137,7 @@ export const LANDING_CONTENT = {
     secondaryCta: LANDING_CTA.seeRoutes,
     ctaHint: 'Free Pantheon preview · ~4 min',
     stats: [
-      { value: '22 stops', label: 'Colosseum to Appian Way' },
+      { value: ROUTE_STATS.heroStatValue, label: 'Colosseum to Appian Way' },
       { value: 'Offline', label: 'Download once, walk without signal' },
       { value: 'One-time', label: 'No subscription' },
     ],
@@ -184,7 +188,7 @@ export const LANDING_CONTENT = {
   monuments: {
     id: 'monuments',
     eyebrow: 'The route',
-    headline: '22 places across ancient and living Rome.',
+    headline: ROUTE_STATS.monumentsHeadline,
     subheadline:
       'Colosseum and Forum to Trevi, Navona, Castel Sant\'Angelo, and the Appian Way — each with its own story.',
   },
@@ -471,7 +475,7 @@ export const LANDING_CONTENT = {
     headline: 'Your first city: Rome.',
     productTitle: 'ChronoWalk Rome',
     routeStops: ['Colosseum', 'Roman Forum', 'The Pantheon', 'Trevi Fountain', 'Spanish Steps'],
-    highlightBullets: ['22 places', 'Your pace', 'Offline-ready'],
+    highlightBullets: [ROUTE_STATS.highlightBullet, 'Your pace', 'Offline-ready'],
     bullets: ROME_TIERS[1].bullets,
     tiers: ROME_TIERS,
     priceLine: `${PRICE_PLACEHOLDER} · one purchase · yours to walk whenever`,

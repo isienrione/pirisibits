@@ -1,5 +1,9 @@
+import { getLandingRouteStats } from '../../landingRouteStats.js'
+
 /** Scroll target for the Rome journey / purchase section. */
 export const ROME_JOURNEY_SECTION_ID = 'rome-journey'
+
+const ROUTE_STATS = getLandingRouteStats()
 
 /** Token replaced at render time with the live price label (e.g. €17). */
 export const PRICE_PLACEHOLDER = '{price}'
@@ -137,9 +141,9 @@ export const LANDING_CONTENT = {
     headline: 'Your first city: Rome.',
     productTitle: 'ChronoWalk Rome',
     routeStops: ['Colosseum', 'Roman Forum', 'Pantheon', 'Trevi', 'Spanish Steps'],
-    highlightBullets: ['22 places', 'Two self-paced days', 'Offline-ready'],
+    highlightBullets: [ROUTE_STATS.highlightBullet, 'Two self-paced days', 'Offline-ready'],
     bullets: [
-      '22 places',
+      ROUTE_STATS.highlightBullet,
       'Two self-paced days',
       'GPS-guided stories',
       'Then-and-now reconstructions',
@@ -165,7 +169,7 @@ export const LANDING_CONTENT = {
     preview: {
       date: 'Rome · 12 August 2026',
       reflection: 'Today you stood where an empire decided the fate of the world.',
-      stats: '22 places · 9.4 km · twenty centuries',
+      stats: `${ROUTE_STATS.stopsLabel} · 9.4 km · twenty centuries`,
     },
   },
 
