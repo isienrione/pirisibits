@@ -20,10 +20,9 @@ export const JOURNEY_STATES = {
 }
 
 /**
- * The sacred, cinematic moments of the walk. During these the global bottom
- * navigation and app chrome are hidden so the screen feels immersive rather
- * than like a normal app view. Single source of truth for both the tab bar and
- * the chrome context so the two systems can never disagree.
+ * The sacred, cinematic moments of the walk. During these the consent/network
+ * chrome is hidden so the screen feels immersive. Tab navigation stays visible
+ * except during an active threshold press-and-hold reveal.
  */
 export const IMMERSIVE_JOURNEY_STATES = new Set([
   JOURNEY_STATES.ARRIVED,
@@ -45,12 +44,9 @@ export function isImmersiveJourneyState(state) {
   return IMMERSIVE_JOURNEY_STATES_LOWER.has(state.toLowerCase())
 }
 
-const WALKING_LEG_STATES = new Set([JOURNEY_STATES.WALKING, JOURNEY_STATES.APPROACHING])
-
-/** True on /journey while en route — tab bar would cover walking controls. */
-export function shouldHideShellTabBar(state, pathname = '') {
-  if (isImmersiveJourneyState(state)) return true
-  return pathname === '/journey' && WALKING_LEG_STATES.has(state)
+/** Hide the shell tab bar only during an active threshold press-and-hold reveal. */
+export function shouldHideShellTabBar(chromeHidden = false) {
+  return Boolean(chromeHidden)
 }
 
 const defaultContext = () => ({
