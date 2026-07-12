@@ -9,7 +9,8 @@ import { Eyebrow, MiniActLine } from '../ui/index.js';
 export default function E1JournalHome({
   embedded = false,
   headline = 'Your Rome',
-  subtitle = '2–3 July 2025',
+  subtitle = '',
+  letterMeta = null,
   groups: groupsProp = null,
   empty = false,
   loading = false,
@@ -85,7 +86,7 @@ export default function E1JournalHome({
           ) : null}
           </div>
         </div>
-        <p style={{ fontSize: 13, color: T.muted }}>{subtitle}</p>
+        {subtitle ? <p style={{ fontSize: 13, color: T.muted }}>{subtitle}</p> : null}
       </div>
 
       {showEmpty ? (
@@ -124,7 +125,9 @@ export default function E1JournalHome({
                 <div>
                   <p style={{ fontSize: 11, color: T.ember, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 6 }}>JOURNEY LETTER</p>
                   <p style={{ fontFamily: F.display, fontSize: 20, color: T.warmWhite, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>Dear Isidora —</p>
-                  <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>Rome · 2–3 July 2025 · 21 centuries</p>
+                  {letterMeta ? (
+                    <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>{letterMeta}</p>
+                  ) : null}
                 </div>
                 <button type="button" onClick={() => (onLetterClick ? onLetterClick() : navigate("F1"))} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 12, fontFamily: F.body, flexShrink: 0, marginLeft: 12 }}>Open</button>
               </div>

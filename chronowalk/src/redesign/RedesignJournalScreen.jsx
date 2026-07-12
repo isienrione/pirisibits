@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { buildJournalTimeline, journalHeadline, summarizeJournalProgress } from '../content/journalTimeline.js'
+import { formatJourneyLetterMetaLine } from '../content/journeyLetter.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
@@ -57,6 +58,10 @@ export default function RedesignJournalScreen({ embedded = true }) {
 
   const progress = useMemo(() => summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context)), [manifest, context])
   const headline = journalHeadline(progress)
+  const letterMeta = useMemo(
+    () => (manifest ? formatJourneyLetterMetaLine(manifest, context, state) : null),
+    [manifest, context, state],
+  )
   const isEmpty = !manifest || groups.length === 0
 
   if (loading) {
@@ -90,6 +95,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
       embedded={embedded}
       headline="Your Rome"
       subtitle={headline}
+      letterMeta={letterMeta}
       groups={groups}
       empty={isEmpty}
       onStartWalk={() => navigate(state === JOURNEY_STATES.IDLE ? '/begin' : '/journey')}

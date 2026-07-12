@@ -585,7 +585,7 @@ export default function Threshold({
                 boxShadow: holding ? '0 0 22px rgba(232,161,60,0.75)' : '0 0 16px rgba(232,161,60,0.5)',
               }}
             >
-              <span style={{ color: 'var(--ember)', fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
+              <span style={{ color: 'var(--ink-on-fill)', fontSize: 11, letterSpacing: 2, fontWeight: 600 }}>‹›</span>
             </div>
           ) : null}
         </div>

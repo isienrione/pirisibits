@@ -1,6 +1,16 @@
 /**
  * Journey-driven map companion card — one primary CTA, warm map chrome.
  */
+
+/** Dark-surface token pairs — title/meta must stay ≥4.5:1 on `surface`. */
+export const MAP_BOTTOM_CARD_TOKENS = {
+  surface: 'color-mix(in srgb, var(--ink) 86%, transparent)',
+  title: 'var(--warm-white)',
+  meta: 'color-mix(in srgb, var(--warm-white) 82%, transparent)',
+  ctaBackground: 'var(--accent)',
+  ctaText: 'var(--ink-on-fill)',
+}
+
 export default function MapBottomCard({
   title,
   meta,
@@ -16,7 +26,7 @@ export default function MapBottomCard({
       style={{
         borderRadius: 16,
         border: '1px solid color-mix(in srgb, var(--warm-white) 8%, transparent)',
-        background: 'color-mix(in srgb, var(--ink) 86%, transparent)',
+        background: MAP_BOTTOM_CARD_TOKENS.surface,
         backdropFilter: 'blur(10px)',
         overflow: 'hidden',
       }}
@@ -49,7 +59,7 @@ export default function MapBottomCard({
               fontFamily: 'var(--font-display)',
               fontSize: 17,
               lineHeight: 1.25,
-              color: 'var(--warm-white)',
+              color: MAP_BOTTOM_CARD_TOKENS.title,
               fontWeight: 400,
             }}
           >
@@ -61,7 +71,7 @@ export default function MapBottomCard({
                 margin: '4px 0 0',
                 fontSize: 13,
                 lineHeight: 1.35,
-                color: 'var(--muted-warm)',
+                color: MAP_BOTTOM_CARD_TOKENS.meta,
               }}
             >
               {meta}
@@ -80,8 +90,8 @@ export default function MapBottomCard({
             padding: '12px 16px',
             borderRadius: 12,
             border: 'none',
-            background: 'var(--accent)',
-            color: 'var(--bone)',
+            background: MAP_BOTTOM_CARD_TOKENS.ctaBackground,
+            color: MAP_BOTTOM_CARD_TOKENS.ctaText,
             fontSize: 14,
             fontWeight: 600,
             cursor: disabled ? 'wait' : 'pointer',

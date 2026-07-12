@@ -2,6 +2,49 @@ import { getDistance } from '../utils/distance.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint } from './manifest.js'
 import { pickJournalReflection } from './journalTimeline.js'
+import { ROME_TIME_ZONE } from './journeyResume.js'
+import { JOURNEY_STATES } from '../state/journey.js'
+
+export function formatJourneyDateRange(
+  startMs,
+  endMs = startMs,
+  timeZone = ROME_TIME_ZONE,
+) {
+  if (!startMs) return null
+
+  const resolvedEnd = endMs ?? startMs
+  const dayFormatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone })
+  const monthFormatter = new Intl.DateTimeFormat('en-GB', { month: 'long', timeZone })
+  const yearFormatter = new Intl.DateTimeFormat('en-GB', { year: 'numeric', timeZone })
+
+  const startDay = dayFormatter.format(new Date(startMs))
+  const endDay = dayFormatter.format(new Date(resolvedEnd))
+  const month = monthFormatter.format(new Date(resolvedEnd))
+  const year = yearFormatter.format(new Date(resolvedEnd))
+
+  if (startDay === endDay) return `${startDay} ${month} ${year}`
+  return `${startDay}–${endDay} ${month} ${year}`
+}
+
+export function hasJourneyStarted(context = {}, state = JOURNEY_STATES.IDLE) {
+  const completedCount = context.completedWaypointIds?.length ?? 0
+  if (completedCount > 0) return true
+  if (state !== JOURNEY_STATES.IDLE) return true
+  return Boolean(context.journeyStartedAtMs ?? context.lastActiveAt)
+}
+
+export function formatJourneyLetterMetaLine(manifest, context = {}, state = JOURNEY_STATES.IDLE) {
+  if (!hasJourneyStarted(context, state)) return null
+
+  const city = manifest?.name ?? 'Rome'
+  const startMs = context.journeyStartedAtMs ?? context.lastActiveAt
+  const endMs = context.lastActiveAt ?? startMs
+  const dateRange = formatJourneyDateRange(startMs, endMs)
+  const parts = [city]
+  if (dateRange) parts.push(dateRange)
+  parts.push('21 centuries')
+  return parts.join(' · ')
+}
 
 export function buildLetterStops(manifest, completedWaypointIds = [], path = 'a') {
   const pathOrder = getManifestWaypointIds(manifest, path)

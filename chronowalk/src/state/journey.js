@@ -60,6 +60,7 @@ const defaultContext = () => ({
   pathLocked: false,
   pausedAt: null,
   lastActiveAt: null,
+  journeyStartedAtMs: null,
   pendingResumeCue: null,
   customWaypointIds: null,
 })
@@ -221,6 +222,7 @@ export function beginJourney({
     pathLocked: false,
     pendingResumeCue: null,
     customWaypointIds,
+    journeyStartedAtMs: snapshot.context.journeyStartedAtMs ?? Date.now(),
   })
 }
 

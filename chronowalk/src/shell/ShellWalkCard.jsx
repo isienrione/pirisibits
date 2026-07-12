@@ -56,7 +56,7 @@ export default function ShellWalkCard({
               {eyebrow}
             </p>
           ) : null}
-          <p className="font-display text-xl font-medium text-ink900">{title}</p>
+          <p className="font-display text-xl font-medium text-warm-white">{title}</p>
           {eta ? <p className="mt-1 text-sm text-muted">{eta}</p> : null}
         </div>
       </div>
