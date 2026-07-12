@@ -22,7 +22,7 @@ function DustParticles({ reducedMotion }) {
       {particles.map((particle) => (
         <span
           key={particle.id}
-          className="absolute rounded-full bg-gold/30 animate-splash-dust"
+          className="absolute rounded-full bg-[color-mix(in_srgb,var(--ember)_30%,transparent)] animate-splash-dust"
           style={{
             left: particle.left,
             top: particle.top,
@@ -61,7 +61,7 @@ export function SplashScreen({ onComplete }) {
       aria-label="Loading ChronoWalk"
     >
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.12)_0%,transparent_62%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--ember-glow)_0%,transparent_62%)]"
         aria-hidden="true"
       />
       <DustParticles reducedMotion={reducedMotion} />
@@ -75,10 +75,11 @@ export function SplashScreen({ onComplete }) {
         <img
           src={LOGO_SRC}
           alt=""
-          className="h-auto w-full max-w-[min(72vw,18rem)] drop-shadow-gold-glow"
+          className="h-auto w-full max-w-[min(72vw,18rem)]"
+          style={{ filter: 'drop-shadow(0 0 32px var(--ember-glow))' }}
           aria-hidden="true"
         />
-        <p className="mt-6 font-display text-sm font-medium uppercase tracking-[0.35em] text-gold/85">
+        <p className="mt-6 font-display text-sm font-medium uppercase tracking-[0.35em] text-ember">
           Walk Through Time
         </p>
       </div>

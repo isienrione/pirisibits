@@ -12,18 +12,19 @@ import {
   getTourRouteCoordinates,
 } from '../../utils/routeGeometryCache'
 import { estimateWalkMinutes } from '../../utils/tourStats'
-import { GlassPanel, StatusBadge, cn } from '../ui'
+import { StatusBadge, cn } from '../ui'
+import { hex } from '../../design/tokens.js'
 
 const STOP_COLORS = {
-  completed: '#7A8B5A',
-  current: '#D9A441',
-  upcoming: '#51606F',
+  completed: hex.verdigris,
+  current: hex.ember,
+  upcoming: hex.inkMuted,
 }
 
 function RouteOverviewSvg({ model }) {
   if (!model.fullRoutePath && !model.stops.length) {
     return (
-      <div className="flex h-[220px] items-center justify-center rounded-3xl border border-dashed border-limestone/70 bg-warm-white/60 text-sm text-soft-slate">
+      <div className="flex h-[220px] items-center justify-center rounded-3xl border border-dashed border-ink800 bg-bone text-sm text-muted">
         Route overview will appear once stops are loaded.
       </div>
     )
@@ -32,7 +33,7 @@ function RouteOverviewSvg({ model }) {
   return (
     <svg
       viewBox={`0 0 ${model.width} ${model.height}`}
-      className="h-[220px] w-full rounded-3xl border border-limestone/60 bg-gradient-to-b from-sand/35 to-warm-white/90"
+      className="h-[220px] w-full rounded-3xl border border-ink800 bg-bone"
       role="img"
       aria-label="Simplified tour route overview"
     >
@@ -40,7 +41,7 @@ function RouteOverviewSvg({ model }) {
         <path
           d={model.fullRoutePath}
           fill="none"
-          stroke="#C8643C"
+          stroke={hex.cityRome}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -52,7 +53,7 @@ function RouteOverviewSvg({ model }) {
         <path
           d={model.activeRoutePath}
           fill="none"
-          stroke="#C8643C"
+          stroke={hex.cityRome}
           strokeWidth="4.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -65,14 +66,14 @@ function RouteOverviewSvg({ model }) {
             cy={stop.y}
             r={stop.status === 'current' ? 8 : 6}
             fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
-            stroke="#FFFCF7"
+            stroke={hex.warmWhite}
             strokeWidth="2"
           />
           <text
             x={stop.x}
             y={stop.y - 12}
             textAnchor="middle"
-            className="fill-deep-slate text-[9px] font-semibold"
+            className="fill-ink900 text-[9px] font-semibold"
           >
             {stop.title?.split(' ').slice(0, 2).join(' ')}
           </text>
@@ -84,8 +85,8 @@ function RouteOverviewSvg({ model }) {
             cx={model.userPoint.x}
             cy={model.userPoint.y}
             r="9"
-            fill="#5BA4D9"
-            stroke="#FFFCF7"
+            fill={hex.cityLondon}
+            stroke={hex.warmWhite}
             strokeWidth="3"
           />
           <text
@@ -104,16 +105,16 @@ function RouteOverviewSvg({ model }) {
 
 function WaypointSummaryCard({ eyebrow, title, detail, badge }) {
   return (
-    <GlassPanel className="p-4">
+    <div className="bg-ink900 rounded-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-eyebrow uppercase text-soft-slate">{eyebrow}</p>
-          <p className="mt-1 font-display text-lg font-semibold leading-tight text-deep-slate">{title}</p>
-          {detail ? <p className="mt-1.5 text-sm text-soft-slate">{detail}</p> : null}
+          <p className="text-eyebrow uppercase text-muted">{eyebrow}</p>
+          <p className="mt-1 font-display text-lg font-semibold leading-tight text-ink900">{title}</p>
+          {detail ? <p className="mt-1.5 text-sm text-muted">{detail}</p> : null}
         </div>
         {badge}
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 
@@ -189,7 +190,7 @@ export function OfflineRouteMap({
   return (
     <div
       className={cn(
-        'flex h-screen w-full flex-col bg-gradient-to-b from-warm-white via-sand/20 to-warm-white px-4 pb-safe pt-safe',
+        'flex h-screen w-full flex-col bg-bone px-4 pb-safe pt-safe text-ink900',
         className
       )}
     >
@@ -198,9 +199,9 @@ export function OfflineRouteMap({
         style={{ paddingTop: 'max(5.75rem, calc(env(safe-area-inset-top) + 5rem))' }}
       >
         <div>
-          <p className="text-eyebrow uppercase text-bronze">Offline route</p>
-          <h1 className="mt-1 font-display text-2xl font-semibold text-deep-slate">Walking overview</h1>
-          <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+          <p className="text-eyebrow uppercase text-actforumtext">Offline route</p>
+          <h1 className="mt-1 font-display text-2xl font-semibold text-ink900">Walking overview</h1>
+          <p className="mt-2 text-sm leading-relaxed text-muted">
             Detailed street maps need internet. Your tour, GPS arrival detection, and downloaded
             stories still work offline.
           </p>
@@ -239,18 +240,18 @@ export function OfflineRouteMap({
           ) : null}
         </div>
 
-        <GlassPanel className="border-gold/25 bg-gold/[0.05] p-4">
-          <p className="text-eyebrow uppercase text-gold">Walking guidance</p>
-          <p className="mt-2 text-sm leading-relaxed text-deep-slate">{walkingInstruction}</p>
+        <div className="bg-ink900 rounded-card border-ember/25 bg-ember/[0.05] p-4">
+          <p className="text-eyebrow uppercase text-ember">Walking guidance</p>
+          <p className="mt-2 text-sm leading-relaxed text-ink900">{walkingInstruction}</p>
           {distanceLabel && !atStop ? (
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-soft-slate">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted">
               Distance to next waypoint: {distanceLabel}
               {walkMinutes ? ` · ~${walkMinutes} min` : ''}
             </p>
           ) : null}
-        </GlassPanel>
+        </div>
 
-        <p className="pb-2 text-center text-xs leading-relaxed text-soft-slate">
+        <p className="pb-2 text-center text-xs leading-relaxed text-muted">
           Use the route card below to continue your tour, reopen stories, or get directions when you
           are back online.
         </p>

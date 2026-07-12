@@ -8,7 +8,7 @@ import {
 } from '../data/tourProducts'
 import { getTourById } from '../services/tourRegistry'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { BronzeButton, Button, GlassPanel, cn } from './ui'
+import { Button, cn } from './ui'
 
 function ProductStopPreview({ stopIds }) {
   const stops = useMemo(
@@ -23,8 +23,8 @@ function ProductStopPreview({ stopIds }) {
   return (
     <ul className="mt-3 space-y-1.5">
       {stops.map((stop, index) => (
-        <li key={stop.id} className="flex items-center gap-2 text-sm text-soft-slate">
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sand text-[0.65rem] font-bold text-deep-slate">
+        <li key={stop.id} className="flex items-center gap-2 text-sm text-muted">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink800 text-[0.65rem] font-bold text-ink900">
             {index + 1}
           </span>
           <span>{stop.title}</span>
@@ -50,29 +50,29 @@ function TourProductCard({
     : product.stopIds?.length ?? 0
 
   return (
-    <GlassPanel
-      className={cn(
+    <div
+      className={cn("bg-ink900 rounded-card", 
         'relative overflow-hidden rounded-3xl p-5 transition',
-        selected ? 'border-bronze/45 bg-bronze/[0.04] shadow-plaque-lg' : 'hover:border-bronze/30'
+        selected ? 'border-ember/45 bg-ember/[0.04] ' : 'hover:border-ember/30'
       )}
     >
       {product.badge ? (
-        <span className="inline-flex w-fit rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold">
+        <span className="inline-flex w-fit rounded-full bg-ember/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ember">
           {product.badge}
         </span>
       ) : null}
 
-      <p className={cn('text-eyebrow uppercase text-bronze', product.badge ? 'mt-3' : '')}>
+      <p className={cn('text-eyebrow uppercase text-ember', product.badge ? 'mt-3' : '')}>
         {product.tagline}
       </p>
-      <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">{product.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-soft-slate">{product.description}</p>
+      <h3 className="mt-2 font-display text-xl font-semibold text-ink900">{product.title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{product.description}</p>
 
-      <p className="mt-3 text-sm text-soft-slate">
-        <span className="font-semibold text-deep-slate">{stopCount} stops</span>
+      <p className="mt-3 text-sm text-muted">
+        <span className="font-semibold text-ink900">{stopCount} stops</span>
         {product.firstStopTitle ? (
           <>
-            <span className="text-limestone"> · </span>
+            <span className="text-muted"> · </span>
             <span>Starts at {product.firstStopTitle}</span>
           </>
         ) : null}
@@ -84,8 +84,8 @@ function TourProductCard({
             const child = getTourProduct(childId)
             if (!child) return null
             return (
-              <div key={childId} className="rounded-2xl border border-parchment/70 bg-ivory/70 px-3 py-2.5">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-deep-slate">
+              <div key={childId} className="rounded-2xl border border-ink800/70 bg-ink900/70 px-3 py-2.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink900">
                   {child.title}
                 </p>
                 <ProductStopPreview stopIds={child.stopIds} />
@@ -99,11 +99,11 @@ function TourProductCard({
 
       <div className="mt-5 flex items-end justify-between gap-3">
         <div>
-          <p className="font-display text-2xl font-semibold text-deep-slate">
+          <p className="font-display text-2xl font-semibold text-ink900">
             {formatUsd(product.priceUsd)}
           </p>
           {product.savingsUsd ? (
-            <p className="text-xs text-gold">Save {formatUsd(product.savingsUsd)} vs buying separately</p>
+            <p className="text-xs text-ember">Save {formatUsd(product.savingsUsd)} vs buying separately</p>
           ) : null}
         </div>
 
@@ -118,17 +118,17 @@ function TourProductCard({
             {selected ? 'Selected' : 'Select'}
           </Button>
         ) : (
-          <BronzeButton
+          <Button
             onClick={() => {
               triggerHaptic(HAPTIC_KIND.SUCCESS)
               onPurchase(product.id)
             }}
           >
             Buy {formatUsd(product.priceUsd)}
-          </BronzeButton>
+          </Button>
         )}
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 
@@ -178,11 +178,11 @@ function TourCatalog({
   return (
     <section aria-label="Rome tour options" className="space-y-4">
       <div>
-        <p className="text-eyebrow uppercase text-bronze">Choose your walk</p>
-        <h2 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
+        <p className="text-eyebrow uppercase text-ember">Choose your walk</p>
+        <h2 className="mt-2 font-display text-2xl font-semibold text-ink900">
           Self-guided audio tours at your pace
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-soft-slate">
+        <p className="mt-2 text-sm leading-relaxed text-muted">
           Detailed, entertaining walks you can finish in a few hours or spread across different days.
           The Roman Forum tour covers every forum-cluster landmark; the city loop includes the
           Colosseum, Capitoline Hill, and the rest of ancient Rome.
@@ -194,10 +194,10 @@ function TourCatalog({
       ) : null}
 
       {singleProducts.length ? (
-        <div className="space-y-4 border-t border-parchment/80 pt-6">
+        <div className="space-y-4 border-t border-ink800/80 pt-6">
           <div>
-            <p className="text-eyebrow uppercase text-bronze">Single tours</p>
-            <h3 className="mt-2 font-display text-xl font-semibold text-deep-slate">
+            <p className="text-eyebrow uppercase text-ember">Single tours</p>
+            <h3 className="mt-2 font-display text-xl font-semibold text-ink900">
               One route at a time · {formatUsd(10)} each
             </h3>
           </div>

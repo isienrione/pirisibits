@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../data/waypointGeo'
 import { getModernCoverUrl } from '../utils/sliderMedia'
 import { getTourDirectionsOrigin } from '../utils/tourDirections'
 import { estimateWalkMinutes } from '../utils/tourStats'
-import { BronzeButton, Button, GlassPanel, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
+import { Button, cn, ctaInCard, metaLabel, statusArrived, statusNeutral, statusPill, statusWalking } from './ui'
 
 function formatDistance(distance) {
   if (distance == null || Number.isNaN(distance)) return null
@@ -16,34 +16,34 @@ function MapHudTopBar({ tourTitle, currentStopTitle, currentStop, totalStops, co
   const completed = Math.max(0, currentStop - 1)
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
+    <div className={cn("bg-ink900 rounded-card", 'pointer-events-auto ', compact ? 'px-3 py-2.5' : 'px-4 py-3.5')}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-eyebrow uppercase text-bronze">{tourTitle}</p>
+          <p className="truncate text-eyebrow uppercase text-ember">{tourTitle}</p>
           <p
             className={cn(
-              'mt-0.5 truncate font-display font-semibold leading-tight text-deep-slate',
+              'mt-0.5 truncate font-display font-semibold leading-tight text-ink900',
               compact ? 'text-base' : 'text-lg'
             )}
           >
             {currentStopTitle}
           </p>
           {!compact ? (
-            <p className="mt-1 text-xs text-soft-slate">
+            <p className="mt-1 text-xs text-muted">
               {completed} of {totalStops} stops visited
             </p>
           ) : null}
         </div>
         <div className="shrink-0 text-right">
-          <p className={cn(metaLabel, 'text-soft-slate')}>Progress</p>
-          <p className={cn('font-display font-semibold tabular-nums text-deep-slate', compact ? 'text-lg' : 'text-xl')}>
-            <span className="text-gold">{currentStop}</span>
-            <span className="text-soft-slate/60"> / </span>
+          <p className={cn(metaLabel, 'text-muted')}>Progress</p>
+          <p className={cn('font-display font-semibold tabular-nums text-ink900', compact ? 'text-lg' : 'text-xl')}>
+            <span className="text-ember">{currentStop}</span>
+            <span className="text-muted/60"> / </span>
             <span>{totalStops}</span>
           </p>
         </div>
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 
@@ -51,7 +51,7 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
   const sizeClass = compact ? 'h-12 w-12 rounded-xl' : 'h-16 w-16 rounded-2xl'
 
   return (
-    <div className={cn('shrink-0 overflow-hidden border border-parchment/70 bg-parchment shadow-sm', sizeClass)}>
+    <div className={cn('shrink-0 overflow-hidden border border-ink800/70 bg-ink800 shadow-sm', sizeClass)}>
       {posterUrl ? (
         <img
           src={posterUrl}
@@ -60,7 +60,7 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-soft-slate">
+        <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-muted">
           {title?.slice(0, 2) ?? '—'}
         </div>
       )}
@@ -89,22 +89,22 @@ function MapHudRouteCard({
         : statusNeutral
 
   return (
-    <GlassPanel className={cn('pointer-events-auto shadow-plaque-lg', compact ? 'p-3' : 'p-4')}>
+    <div className={cn("bg-ink900 rounded-card", 'pointer-events-auto ', compact ? 'p-3' : 'p-4')}>
       <div className="flex items-start gap-3">
         <RouteThumbnail posterUrl={posterUrl} title={subline} compact={compact} />
 
         <div className="min-w-0 flex-1">
-          <p className={cn('text-eyebrow uppercase text-soft-slate')}>{headline}</p>
+          <p className={cn('text-eyebrow uppercase text-muted')}>{headline}</p>
           <p
             className={cn(
-              'mt-0.5 font-display font-semibold leading-tight text-deep-slate',
+              'mt-0.5 font-display font-semibold leading-tight text-ink900',
               compact ? 'text-base' : 'text-lg'
             )}
           >
             {subline}
           </p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-soft-slate">
-            {distanceLabel ? <span className="font-semibold text-deep-slate">{distanceLabel}</span> : null}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted">
+            {distanceLabel ? <span className="font-semibold text-ink900">{distanceLabel}</span> : null}
             {walkMinutes ? <span>~{walkMinutes} min walk</span> : null}
           </div>
           {statusLabel ? (
@@ -114,7 +114,7 @@ function MapHudRouteCard({
 
         {showDirections && onDirections ? (
           <Button
-            variant="secondary"
+            variant="quiet"
             size="sm"
             className="shrink-0 self-center px-3"
             onClick={onDirections}
@@ -126,7 +126,7 @@ function MapHudRouteCard({
       </div>
 
       {action ? <div className={compact ? 'mt-3' : 'mt-4'}>{action}</div> : null}
-    </GlassPanel>
+    </div>
   )
 }
 
@@ -249,14 +249,14 @@ const TourHud = ({
   const bottomOffset = hasBottomNav ? 'max(var(--bottom-stack-inset), env(safe-area-inset-bottom))' : undefined
 
   const routeAction = isFreePreview ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={onUnlockTour}>
+    <Button fullWidth className={ctaInCard} onClick={onUnlockTour}>
       View tours &amp; pricing
-    </BronzeButton>
+    </Button>
   ) : showContinue ? (
     <div className={cn('flex flex-col gap-2', dismissedWaypointTitle && 'sm:flex-row')}>
       {dismissedWaypointTitle && onReopenWaypoint ? (
         <Button
-          variant="secondary"
+          variant="quiet"
           fullWidth
           className={ctaInCard}
           onClick={onReopenWaypoint}
@@ -264,22 +264,22 @@ const TourHud = ({
           Reopen {dismissedWaypointTitle}
         </Button>
       ) : null}
-      <BronzeButton fullWidth className={ctaInCard} onClick={onContinueTour}>
+      <Button fullWidth className={ctaInCard} onClick={onContinueTour}>
         Walk to {nextWaypoint.title}
-      </BronzeButton>
+      </Button>
     </div>
   ) : dismissedWaypointTitle && onReopenWaypoint && atStop ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
+    <Button fullWidth className={ctaInCard} onClick={onReopenWaypoint}>
       Reopen {dismissedWaypointTitle}
-    </BronzeButton>
+    </Button>
   ) : transitLegActive ? (
-    <p className="text-xs leading-relaxed text-soft-slate">
+    <p className="text-xs leading-relaxed text-muted">
       Transit narration is playing. Arrival unlocks when you reach {routeSubline}.
     </p>
   ) : awaitingFirstStop ? (
-    <BronzeButton fullWidth className={ctaInCard} onClick={handleDirections}>
+    <Button fullWidth className={ctaInCard} onClick={handleDirections}>
       Get walking directions
-    </BronzeButton>
+    </Button>
   ) : null
 
   return (

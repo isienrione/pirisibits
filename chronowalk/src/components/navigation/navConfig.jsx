@@ -2,6 +2,7 @@ export const NAV_TABS = {
   TOUR: 'tour',
   MAP: 'map',
   STOPS: 'stops',
+  JOURNAL: 'journal',
   DIRECTIONS: 'directions',
   SETTINGS: 'settings',
 }
@@ -51,6 +52,20 @@ export const NAV_ITEMS = [
           strokeLinecap="round"
         />
         <circle cx="18" cy="17" r="2" stroke="currentColor" strokeWidth="1.75" />
+      </svg>
+    ),
+  },
+  {
+    id: NAV_TABS.JOURNAL,
+    label: 'Journal',
+    Icon: () => (
+      <svg className={iconClass} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M6 4h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"
+          stroke="currentColor"
+          strokeWidth="1.75"
+        />
+        <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
       </svg>
     ),
   },

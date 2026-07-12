@@ -1,16 +1,73 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { env } from '../config/env'
 import { fetchWalkingDirections } from '../services/fetchWalkingRoute'
 import {
   getAdhocWalkingDirections,
   cacheAdhocWalkingDirections,
+  getLegRouteCoordinates,
+  getLegWalkingSteps,
+  cacheLegDirections,
+  cacheLegRoute,
 } from '../utils/routeGeometryCache'
-import { isSameLocation } from '../utils/walkingDirections'
+import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
 
-export function useWalkingDirections({ origin, destination, enabled = true }) {
+function geometryFromLegCache(tourId, fromId, toId) {
+  const coordinates = getLegRouteCoordinates(tourId, fromId, toId)
+  if (!coordinates?.length) return null
+  return { type: 'LineString', coordinates }
+}
+
+/** Load precomputed tour-leg directions (stop → stop), with session cache + Mapbox fallback. */
+export async function loadTourLegDirections(legFallback, accessToken, options = {}) {
+  if (!legFallback?.tourId || !legFallback?.fromId || !legFallback?.toId) return null
+
+  const { tourId, fromId, toId, from, to } = legFallback
+  const cachedSteps = getLegWalkingSteps(tourId, fromId, toId)
+  const cachedGeometry = geometryFromLegCache(tourId, fromId, toId)
+
+  if (cachedSteps?.length && scoreWalkingStepQuality(cachedSteps) >= 6) {
+    return {
+      steps: cachedSteps,
+      geometry: cachedGeometry,
+      distanceM: cachedSteps.reduce((sum, step) => sum + (step.distanceM ?? 0), 0),
+      durationSec: cachedSteps.reduce((sum, step) => sum + (step.durationSec ?? 0), 0),
+      source: 'leg-cache',
+    }
+  }
+
+  if (!from?.lat || from?.lng == null || !to?.lat || to?.lng == null || !accessToken) {
+    return null
+  }
+
+  const result = await fetchWalkingDirections(from, to, accessToken, {
+    destinationName: options.destinationName,
+  })
+  if (!result?.steps?.length) return null
+
+  cacheLegDirections(tourId, fromId, toId, result.steps)
+  if (result.geometry) {
+    cacheLegRoute(tourId, fromId, toId, result.geometry)
+  }
+
+  return { ...result, source: 'leg-fetch' }
+}
+
+function pickBestDirections(adhocResult, legResult) {
+  return pickBestWalkingDirections([adhocResult, legResult].filter(Boolean))
+}
+
+export function useWalkingDirections({
+  origin,
+  destination,
+  enabled = true,
+  legFallback = null,
+  destinationName = null,
+  reloadKey = 0,
+}) {
   const [loading, setLoading] = useState(false)
   const [directions, setDirections] = useState(null)
   const [error, setError] = useState(null)
+  const [retryNonce, setRetryNonce] = useState(0)
 
   const routingOrigin = useMemo(() => {
     if (origin?.lat == null || origin?.lng == null) return null
@@ -21,6 +78,10 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
     if (destination?.lat == null || destination?.lng == null) return null
     return { lat: destination.lat, lng: destination.lng }
   }, [destination?.lat, destination?.lng])
+
+  const retry = useCallback(() => {
+    setRetryNonce((value) => value + 1)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -40,11 +101,27 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
         return
       }
 
+      const legPromise = legFallback
+        ? loadTourLegDirections(legFallback, env.mapboxToken, { destinationName })
+        : Promise.resolve(null)
+
       if (!routingOrigin) {
-        setDirections(null)
-        setError(
-          'Enable location access so ChronoWalk can build directions from where you are standing.'
-        )
+        setLoading(true)
+        setError(null)
+
+        const legResult = await legPromise
+        if (cancelled) return
+
+        if (legResult?.steps?.length) {
+          setDirections(legResult)
+          setError(null)
+        } else {
+          setDirections(null)
+          setError(
+            'Enable location access for live directions, or wait a moment while the route loads.',
+          )
+        }
+
         setLoading(false)
         return
       }
@@ -56,9 +133,9 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
         return
       }
 
-      const cached = getAdhocWalkingDirections(routingOrigin, routingDestination)
-      if (cached?.steps?.length) {
-        setDirections(cached)
+      const cachedAdhoc = getAdhocWalkingDirections(routingOrigin, routingDestination)
+      if (cachedAdhoc?.steps?.length) {
+        setDirections(cachedAdhoc)
         setError(null)
         setLoading(false)
         return
@@ -67,20 +144,27 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
       setLoading(true)
       setError(null)
 
-      const result = await fetchWalkingDirections(
+      const adhocPromise = fetchWalkingDirections(
         routingOrigin,
         routingDestination,
-        env.mapboxToken
+        env.mapboxToken,
+        { destinationName },
       )
+
+      const [adhocResult, legResult] = await Promise.all([adhocPromise, legPromise])
 
       if (cancelled) return
 
-      if (!result?.steps?.length) {
+      const best = pickBestDirections(adhocResult, legResult)
+
+      if (!best?.steps?.length) {
         setDirections(null)
         setError('Could not load walking directions. Try again or open Google Maps.')
       } else {
-        cacheAdhocWalkingDirections(routingOrigin, routingDestination, result)
-        setDirections(result)
+        if (best === adhocResult) {
+          cacheAdhocWalkingDirections(routingOrigin, routingDestination, adhocResult)
+        }
+        setDirections(best)
         setError(null)
       }
 
@@ -92,7 +176,15 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
     return () => {
       cancelled = true
     }
-  }, [enabled, routingDestination, routingOrigin])
+  }, [
+    enabled,
+    legFallback,
+    destinationName,
+    reloadKey,
+    retryNonce,
+    routingDestination,
+    routingOrigin,
+  ])
 
   return {
     directions,
@@ -100,5 +192,6 @@ export function useWalkingDirections({ origin, destination, enabled = true }) {
     error,
     routingOrigin,
     routingDestination,
+    retry,
   }
 }

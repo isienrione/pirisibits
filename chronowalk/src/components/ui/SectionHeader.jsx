@@ -15,12 +15,12 @@ export function SectionHeader({
   return (
     <header id={id} className={cn(alignClass, className)}>
       {eyebrow ? (
-        <p className="text-eyebrow uppercase text-bronze">{eyebrow}</p>
+        <p className="text-eyebrow uppercase text-ember">{eyebrow}</p>
       ) : null}
       {title ? (
         <h2
           className={cn(
-            'font-display text-3xl font-semibold leading-tight tracking-tight text-deep-slate',
+            'font-display text-3xl font-semibold leading-tight tracking-tight text-ink900',
             eyebrow && 'mt-2',
             titleClassName
           )}
@@ -29,7 +29,7 @@ export function SectionHeader({
         </h2>
       ) : null}
       {subtitle ? (
-        <p className="mt-3 text-sm leading-relaxed text-soft-slate">{subtitle}</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">{subtitle}</p>
       ) : null}
     </header>
   )

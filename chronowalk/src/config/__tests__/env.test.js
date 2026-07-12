@@ -1,11 +1,19 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   getDebugStopId,
+  getDevGeofencesMode,
   getSingleWaypointId,
   getTourId,
   isDebugMap,
+  isDevGeofencesSantiago,
+  isDevPanelEnabled,
   shouldResetTour,
 } from '../env'
+import {
+  clearDevGeofencesMode,
+  DEV_GEOFENCES_MODE_KEY,
+  syncDevGeofencesModeFromUrl,
+} from '../../content/devGeofenceTools'
 
 const setSearch = (search) => {
   window.history.replaceState({}, '', search || '/')
@@ -14,6 +22,7 @@ const setSearch = (search) => {
 describe('env URL params', () => {
   afterEach(() => {
     setSearch('')
+    clearDevGeofencesMode()
   })
 
   it('defaults to no tour until selected on the landing screen', () => {
@@ -46,6 +55,7 @@ describe('env URL params', () => {
   })
 
   it('enables map debug overlays via debugMap or debug params', () => {
+    clearDevGeofencesMode()
     setSearch('/?debugMap=true')
     expect(isDebugMap()).toBe(true)
 
@@ -58,6 +68,36 @@ describe('env URL params', () => {
 
   it('enables map debug overlays while debugGeo is active', () => {
     setSearch('/?debugGeo=true')
+    expect(isDebugMap()).toBe(true)
+  })
+
+  it('accepts geo_debug as an alias for debugGeo', () => {
+    setSearch('/?geo_debug=true&debugStop=colosseum')
+    expect(isDebugMap()).toBe(true)
+  })
+
+  it('enables dev panel via URL param', () => {
+    setSearch('/?devPanel=true')
+    expect(isDevPanelEnabled()).toBe(true)
+
+    setSearch('/?devPanel=false')
+    expect(isDevPanelEnabled()).toBe(false)
+  })
+
+  it('persists devGeofences mode across navigation without query params', () => {
+    setSearch('/journey?devGeofences=santiago')
+    syncDevGeofencesModeFromUrl()
+    expect(getDevGeofencesMode()).toBe('santiago')
+    expect(isDevGeofencesSantiago()).toBe(true)
+
+    setSearch('/begin')
+    expect(getDevGeofencesMode()).toBe('santiago')
+    expect(window.sessionStorage.getItem(DEV_GEOFENCES_MODE_KEY)).toBe('santiago')
+  })
+
+  it('enables map debug overlays while Santiago dev geofences are active', () => {
+    setSearch('/journey?devGeofences=santiago')
+    syncDevGeofencesModeFromUrl()
     expect(isDebugMap()).toBe(true)
   })
 })

@@ -12,7 +12,7 @@ export function LoadingSpinner({ size = 'md', className }) {
   return (
     <div
       className={cn(
-        'rounded-full border-gold/25 border-t-gold',
+        'rounded-full border-[color-mix(in_srgb,var(--accent)_25%,var(--bone))] border-t-accent',
         SIZE_CLASS[size] ?? SIZE_CLASS.md,
         !reducedMotion && 'animate-spin',
         className

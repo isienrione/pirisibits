@@ -3,7 +3,6 @@ import { usePwaInstall } from '../../hooks/usePwaInstall'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { JOURNEY_STATE, LOCATION_STATUS } from '../../hooks/useGeoLocation'
 import {
-  GlassPanel,
   PageShell,
   SectionHeader,
   StatusBadge,
@@ -18,9 +17,9 @@ function SettingsGroup({ title, children, className }) {
   return (
     <section className={cn('mt-6', className)}>
       {title ? (
-        <p className="mb-3 text-eyebrow uppercase text-bronze">{title}</p>
+        <p className="mb-3 text-eyebrow uppercase text-ember">{title}</p>
       ) : null}
-      <GlassPanel className="overflow-hidden px-5 py-1">{children}</GlassPanel>
+      <div className="bg-ink900 rounded-card overflow-hidden px-5 py-1">{children}</div>
     </section>
   )
 }
@@ -30,13 +29,13 @@ function SettingRow({ title, description, children, last = false }) {
     <div
       className={cn(
         'flex items-center justify-between gap-5 py-4',
-        !last && 'border-b border-parchment/50'
+        !last && 'border-b border-ink800/50'
       )}
     >
       <div className="min-w-0 flex-1 pr-2">
-        <p className="text-sm font-semibold text-deep-slate">{title}</p>
+        <p className="text-sm font-semibold text-ink900">{title}</p>
         {description ? (
-          <p className="mt-1.5 text-sm leading-relaxed text-soft-slate">{description}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-muted">{description}</p>
         ) : null}
       </div>
       <div className="flex shrink-0 items-center justify-end">{children}</div>
@@ -90,9 +89,9 @@ function SettingsView({
 
       {(locationStatus === LOCATION_STATUS.DENIED ||
         locationStatus === LOCATION_STATUS.UNAVAILABLE) && (
-        <GlassPanel className="mt-6 px-4 py-4">
+        <div className="bg-ink900 rounded-card mt-6 px-4 py-4">
           <LocationNotice status={locationStatus} onRetry={onRetryLocation} />
-        </GlassPanel>
+        </div>
       )}
 
       <SettingsGroup title="Guidance">
@@ -121,13 +120,13 @@ function SettingsView({
       </SettingsGroup>
 
       <section className="mt-6">
-        <p className="mb-3 text-eyebrow uppercase text-bronze">Offline</p>
+        <p className="mb-3 text-eyebrow uppercase text-ember">Offline</p>
         {tour ? <OfflineDownloadPanel tour={tour} /> : null}
       </section>
 
       {pwaInstall.showInstallOption || pwaInstall.installed ? (
         <section className="mt-6">
-          <p className="mb-3 text-eyebrow uppercase text-bronze">Home screen</p>
+          <p className="mb-3 text-eyebrow uppercase text-ember">Home screen</p>
           <PwaInstallPanel
             installed={pwaInstall.installed}
             canPromptInstall={pwaInstall.canPromptInstall}

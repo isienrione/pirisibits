@@ -7,7 +7,7 @@ import {
   buildGoogleMapsDirectionsUrl,
   isSameLocation,
 } from '../../utils/walkingDirections'
-import { BronzeButton, Button, GlassPanel, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
+import { Button, LoadingPanel, PageShell, SectionHeader, cn, ctaInCard } from '../ui'
 import { DirectionsStepList, formatStepDistance } from '../DirectionsStepList'
 
 function DirectionsView({
@@ -102,39 +102,39 @@ function DirectionsView({
       {loading ? (
         <LoadingPanel label="Loading walking directions…" className="mt-6 min-h-[40vh]" />
       ) : error ? (
-        <GlassPanel className="mt-6 p-5 text-center">
-          <p className="text-sm text-soft-slate">{error}</p>
+        <div className="bg-ink900 rounded-card mt-6 p-5 text-center">
+          <p className="text-sm text-muted">{error}</p>
           {mapsUrl ? (
             <Button className={cn(ctaInCard, 'mt-4')} fullWidth onClick={() => onOpenExternalMaps?.(mapsUrl)}>
               Open in Google Maps
             </Button>
           ) : null}
-        </GlassPanel>
+        </div>
       ) : (
         <>
-          <GlassPanel className="mt-6 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-bronze">
+          <div className="bg-ink900 rounded-card mt-6 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ember">
               {originLabel}
             </p>
             <div className="mt-3 flex items-center justify-between gap-3 text-sm">
-              <span className="font-semibold text-deep-slate">
+              <span className="font-semibold text-ink900">
                 {formatStepDistance(directions.distanceM)}
               </span>
-              <span className="text-soft-slate">
+              <span className="text-muted">
                 ~{estimateWalkMinutes(directions.distanceM)} min walk
               </span>
             </div>
 
           <DirectionsStepList steps={directions.steps} className="mt-4" />
-          </GlassPanel>
+          </div>
 
           <div className="mt-4 flex flex-col gap-3 pb-4">
-            <BronzeButton fullWidth className={ctaInCard} onClick={onBack}>
+            <Button fullWidth className={ctaInCard} onClick={onBack}>
               Back to map
-            </BronzeButton>
+            </Button>
             {mapsUrl ? (
               <Button
-                variant="secondary"
+                variant="quiet"
                 fullWidth
                 className={ctaInCard}
                 onClick={() => onOpenExternalMaps?.(mapsUrl)}
@@ -142,7 +142,7 @@ function DirectionsView({
                 Open in Google Maps
               </Button>
             ) : null}
-            <p className="text-center text-xs leading-relaxed text-soft-slate">
+            <p className="text-center text-xs leading-relaxed text-muted">
               Use Google Maps only if these directions fail or you need to leave the app.
             </p>
           </div>
