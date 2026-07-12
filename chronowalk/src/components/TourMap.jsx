@@ -185,6 +185,16 @@ const createLandmarkMarkerElement = (title, status, onPress, { showLabel = true 
   return el
 }
 
+const createLegOriginMarkerElement = () => {
+  const el = document.createElement('div')
+  el.className = 'flex flex-col items-center'
+  el.setAttribute('aria-hidden', 'true')
+  el.innerHTML = `
+    <div class="flex h-4 w-4 items-center justify-center rounded-full border-2 border-warm-white bg-acthill shadow-md"></div>
+  `
+  return el
+}
+
 const createUserMarkerElement = (minimalUI = false) => {
   const el = document.createElement('div')
   el.className = 'flex flex-col items-center'
@@ -511,10 +521,26 @@ function TourMapboxView({
 
     stops.forEach((stop) => {
       if (!stop?.landmark) return
-      if (walkingCompanionUI && stop.id !== activeTargetId) return
+
+      if (walkingCompanionUI) {
+        const isDestination = stop.id === activeTargetId
+        const isLegOrigin = activeLeg?.fromId === stop.id
+        if (!isDestination && !isLegOrigin) return
+
+        const marker = new mapboxgl.Marker({
+          element: isLegOrigin
+            ? createLegOriginMarkerElement()
+            : createLandmarkMarkerElement(stop.title, stop.status, null, { showLabel: false }),
+          anchor: isLegOrigin ? 'center' : 'bottom',
+        })
+          .setLngLat([stop.landmark.lng, stop.landmark.lat])
+          .addTo(map.current)
+        landmarkMarkers.current.push(marker)
+        return
+      }
+
       const showLabel =
-        !walkingCompanionUI &&
-        (!minimalUI || stop.id === activeTargetId || stop.id === selectedStopId)
+        !minimalUI || stop.id === activeTargetId || stop.id === selectedStopId
       const marker = new mapboxgl.Marker({
         element: createLandmarkMarkerElement(
           stop.title,
@@ -528,7 +554,16 @@ function TourMapboxView({
         .addTo(map.current)
       landmarkMarkers.current.push(marker)
     })
-  }, [stops, mapLoaded, onStopSelect, minimalUI, walkingCompanionUI, activeTargetId, selectedStopId])
+  }, [
+    stops,
+    mapLoaded,
+    onStopSelect,
+    minimalUI,
+    walkingCompanionUI,
+    activeTargetId,
+    activeLeg?.fromId,
+    selectedStopId,
+  ])
 
   useEffect(() => {
     if (!map.current || !mapLoaded || !mapboxToken) return undefined
