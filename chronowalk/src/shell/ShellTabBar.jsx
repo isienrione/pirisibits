@@ -1,16 +1,30 @@
+import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useV2Journey } from '../hooks/useV2Journey.js'
+import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
 import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
 
 export default function ShellTabBar() {
-  const { state } = useV2Journey()
+  const { chromeHidden } = useThresholdChrome()
   const location = useLocation()
 
-  if (shouldHideShellTabBar(state, location.pathname)) return null
-
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
-  if (!onCompanionRoute) return null
+  const visible = onCompanionRoute && !shouldHideShellTabBar(chromeHidden)
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (visible) {
+      root.dataset.shellTabBar = 'visible'
+    } else {
+      delete root.dataset.shellTabBar
+    }
+
+    return () => {
+      delete root.dataset.shellTabBar
+    }
+  }, [visible])
+
+  if (!visible) return null
 
   const tabs = getShellTabs()
 

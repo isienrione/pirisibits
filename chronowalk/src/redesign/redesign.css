@@ -658,6 +658,7 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
 
 :root {
   --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   --wc-continuity-stack: calc(
     var(--wc-continuity-btn-height)
@@ -746,6 +747,11 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
+  padding-bottom: var(--wc-shell-tab-inset, 0px);
+}
+
+html.redesign-pwa[data-shell-tab-bar='visible'] {
+  --wc-shell-tab-inset: var(--shell-tab-bar-height);
 }
 
 .redesign-phone-frame--companion > * {
@@ -1656,7 +1662,7 @@ html.redesign-pwa #root {
   padding:
     10px
     max(16px, env(safe-area-inset-right))
-    calc(max(16px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
+    calc(max(12px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
     max(16px, env(safe-area-inset-left));
 }
 

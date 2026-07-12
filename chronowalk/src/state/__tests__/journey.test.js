@@ -206,10 +206,8 @@ describe('journey state machine', () => {
     expect(next.context.currentSequenceIndex).toBe(12)
   })
 
-  it('hides shell tab bar during walking legs on /journey', () => {
-    expect(shouldHideShellTabBar(JOURNEY_STATES.WALKING, '/journey')).toBe(true)
-    expect(shouldHideShellTabBar(JOURNEY_STATES.APPROACHING, '/journey')).toBe(true)
-    expect(shouldHideShellTabBar(JOURNEY_STATES.WALKING, '/map')).toBe(false)
-    expect(shouldHideShellTabBar(JOURNEY_STATES.STORY, '/journey')).toBe(true)
+  it('hides shell tab bar only during threshold reveal', () => {
+    expect(shouldHideShellTabBar(false)).toBe(false)
+    expect(shouldHideShellTabBar(true)).toBe(true)
   })
 })
