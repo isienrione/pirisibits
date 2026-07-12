@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, isValidElement, cloneElement } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -88,13 +88,6 @@ export default function WalkingCompanionScreen({
     [userPosition, directions?.steps, directions?.geometry, directions?.distanceM],
   )
 
-  const mapWithRoute =
-    map && isValidElement(map)
-      ? cloneElement(map, {
-          directionsGeometry: directions?.geometry ?? null,
-          directionsModeActive: Boolean(directions?.geometry),
-        })
-      : map
   useEffect(() => {
     if (arrived) setUserConfirmedArrival(true)
   }, [arrived])
@@ -287,7 +280,7 @@ export default function WalkingCompanionScreen({
             />
           ) : (
             <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
-              {mapWithRoute}
+              {map}
             </div>
           )}
         </div>
