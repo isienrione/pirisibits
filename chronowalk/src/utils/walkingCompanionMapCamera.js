@@ -100,14 +100,9 @@ export function expandBoundsMinimumSpan(bounds, minSpanDeg = MIN_BOUNDS_SPAN_DEG
   return bounds
 }
 
-function clampZoom(zoom) {
-  if (!Number.isFinite(zoom)) return WALKING_COMPANION_MIN_ZOOM
-  return Math.min(WALKING_COMPANION_MAX_ZOOM, Math.max(WALKING_COMPANION_MIN_ZOOM, zoom))
-}
-
 /**
- * Frame the walking companion map on the active leg — never the full tour.
- * Uses cameraForBounds so tight or collapsed routes do not break tile loading.
+ * Frame the walking companion map on the active leg.
+ * Uses fitBounds (never jumpTo/setZoom) so Mapbox tiles keep rendering on mobile Safari.
  */
 export function applyWalkingCompanionCamera(
   map,
@@ -121,38 +116,16 @@ export function applyWalkingCompanionCamera(
   const validPoints = points.filter(isValidLngLat)
   if (!validPoints.length) return false
 
-  if (validPoints.length === 1) {
-    map.jumpTo({
-      center: validPoints[0],
-      zoom: WALKING_COMPANION_MIN_ZOOM,
-    })
-    requestAnimationFrame(() => map.resize())
-    return true
-  }
-
   const bounds = new mapboxgl.LngLatBounds()
   validPoints.forEach((point) => bounds.extend(point))
   expandBoundsMinimumSpan(bounds)
 
-  const camera = map.cameraForBounds(bounds, {
+  map.fitBounds(bounds, {
     padding,
     maxZoom: WALKING_COMPANION_MAX_ZOOM,
+    duration: 0,
+    essential: true,
   })
 
-  if (!camera?.center || !Number.isFinite(camera.zoom)) {
-    map.jumpTo({
-      center: validPoints[0],
-      zoom: WALKING_COMPANION_MIN_ZOOM,
-    })
-    requestAnimationFrame(() => map.resize())
-    return true
-  }
-
-  map.jumpTo({
-    center: [camera.center.lng, camera.center.lat],
-    zoom: clampZoom(camera.zoom),
-  })
-
-  requestAnimationFrame(() => map.resize())
   return true
 }

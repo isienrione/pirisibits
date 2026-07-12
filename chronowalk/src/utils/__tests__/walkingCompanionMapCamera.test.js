@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
-  WALKING_COMPANION_MIN_ZOOM,
+  WALKING_COMPANION_MAX_ZOOM,
   applyWalkingCompanionCamera,
   collectWalkingCompanionBoundsPoints,
   expandBoundsMinimumSpan,
@@ -55,35 +55,11 @@ describe('walkingCompanionMapCamera', () => {
     expect(points).toHaveLength(4)
   })
 
-  it('centers on a single point at the minimum walking zoom', () => {
-    const jumpTo = vi.fn()
-    const resize = vi.fn()
+  it('uses fitBounds for any valid point set', () => {
+    const fitBounds = vi.fn()
     const map = {
-      jumpTo,
+      fitBounds,
       isStyleLoaded: () => true,
-      resize,
-      cameraForBounds: vi.fn(),
-    }
-
-    applyWalkingCompanionCamera(map, { LngLatBounds: class {} }, [[12.492, 41.891]])
-
-    expect(jumpTo).toHaveBeenCalledWith({
-      center: [12.492, 41.891],
-      zoom: WALKING_COMPANION_MIN_ZOOM,
-    })
-  })
-
-  it('uses cameraForBounds and clamps zoom for multi-point routes', () => {
-    const jumpTo = vi.fn()
-    const map = {
-      jumpTo,
-      easeTo: vi.fn(),
-      isStyleLoaded: () => true,
-      resize: vi.fn(),
-      cameraForBounds: vi.fn(() => ({
-        center: { lng: 12.491, lat: 41.8905 },
-        zoom: 13.4,
-      })),
     }
     const mapboxgl = {
       LngLatBounds: class {
@@ -104,20 +80,15 @@ describe('walkingCompanionMapCamera', () => {
       },
     }
 
-    applyWalkingCompanionCamera(
-      map,
-      mapboxgl,
-      [
-        [12.49, 41.89],
-        [12.492, 41.891],
-      ],
-    )
+    applyWalkingCompanionCamera(map, mapboxgl, [[12.492, 41.891]])
 
-    expect(map.cameraForBounds).toHaveBeenCalled()
-    expect(jumpTo).toHaveBeenCalledWith({
-      center: [12.491, 41.8905],
-      zoom: WALKING_COMPANION_MIN_ZOOM,
-    })
+    expect(fitBounds).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        maxZoom: WALKING_COMPANION_MAX_ZOOM,
+        duration: 0,
+      }),
+    )
   })
 
   it('expands collapsed bounds to a minimum span', () => {

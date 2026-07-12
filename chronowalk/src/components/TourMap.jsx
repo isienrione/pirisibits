@@ -607,13 +607,10 @@ function TourMapboxView({
 
   useEffect(() => {
     if (!walkingCompanionUI || !mapLoaded || !map.current) return
+    if (!legRouteCoordinates?.length) return
 
-    const legKey = legRouteCoordinates?.length ? 'leg' : 'dest'
-    const pinKey = `${activeTargetId}:${legKey}`
-    const currentPin = walkingCameraPinRef.current
-
-    if (currentPin === pinKey) return
-    if (currentPin?.endsWith(':leg') && legKey === 'dest') return
+    const pinKey = `${activeTargetId}:leg`
+    if (walkingCameraPinRef.current === pinKey) return
 
     const frame = () => {
       const framed = frameWalkingCompanion({ includeUser: false })
