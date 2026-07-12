@@ -36,7 +36,7 @@ describe('TourDetailPage', () => {
     expect(screen.getByText('Duration')).toBeInTheDocument()
     expect(screen.getByText('Distance')).toBeInTheDocument()
     expect(screen.getByText('Walking')).toBeInTheDocument()
-    expect(screen.getByText('Stories')).toBeInTheDocument()
+    expect(screen.getByText('Stops')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /your route/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /preview story/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /timeline/i })).toBeInTheDocument()
