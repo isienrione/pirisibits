@@ -271,10 +271,7 @@ export default function WalkingCompanionScreen({
             </div>
           ) : (
             <>
-              <div
-                className={`cw-walking-companion__hero-layer${routeView === 'map' ? ' cw-walking-companion__hero-layer--visible' : ''}`}
-                aria-hidden={routeView !== 'map'}
-              >
+              <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--map">
                 {map}
               </div>
               <div
@@ -284,7 +281,7 @@ export default function WalkingCompanionScreen({
                 <WalkingCompanionStepsPanel
                   steps={directions?.steps ?? []}
                   currentStepIndex={walkingStepProgress.currentStepIndex}
-                  loading={directionsLoading}
+                  loading={directionsLoading && !(directions?.steps?.length)}
                   error={directionsError}
                   destinationTitle={title}
                   onRetry={retryDirections}
