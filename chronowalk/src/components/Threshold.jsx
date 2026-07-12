@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ThresholdAudioCrossfade } from '../audio/thresholdAudio'
 import { useHideThresholdChrome } from '../context/ThresholdChromeContext'
-import { THRESHOLD_HOLD_MS, THRESHOLD_RELEASE_MS } from '../data/thresholdDemo'
+import { THRESHOLD_HOLD_MS, THRESHOLD_HOLD_COMMIT_MS, THRESHOLD_HOLD_COMMIT_FINISH_MS, THRESHOLD_RELEASE_MS } from '../data/thresholdDemo'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
 import {
@@ -172,6 +172,8 @@ export default function Threshold({
   const pointerIdRef = useRef(null)
   const fullyRevealedHoldRef = useRef(false)
   const holdSessionRef = useRef(false)
+  const holdCommittedRef = useRef(false)
+  const holdCommitTimerRef = useRef(null)
   const rootRef = useRef(null)
 
   const [reveal, setReveal] = useState(0)
@@ -244,6 +246,13 @@ export default function Threshold({
     }
   }, [])
 
+  const clearHoldCommitTimer = useCallback(() => {
+    if (holdCommitTimerRef.current != null) {
+      window.clearTimeout(holdCommitTimerRef.current)
+      holdCommitTimerRef.current = null
+    }
+  }, [])
+
   const notifyFullyRevealed = useCallback(() => {
     if (fullyRevealedHoldRef.current) return
     fullyRevealedHoldRef.current = true
@@ -279,6 +288,25 @@ export default function Threshold({
     [cancelAnimation, notifyFullyRevealed]
   )
 
+  const latchToThen = useCallback(() => {
+    latchedRef.current = true
+    setLatchedToThen(true)
+    cancelAnimation()
+    setReveal(1)
+    revealRef.current = 1
+    setVideoPlaying(true)
+    notifyFullyRevealed()
+  }, [cancelAnimation, notifyFullyRevealed])
+
+  const commitHoldToReveal = useCallback(() => {
+    if (!holdSessionRef.current || latchedRef.current || holdCommittedRef.current) return
+
+    holdCommittedRef.current = true
+    cancelAnimation()
+    animateReveal(revealRef.current, 1, THRESHOLD_HOLD_COMMIT_FINISH_MS)
+    audioRef.current?.rampToThen(THRESHOLD_HOLD_COMMIT_FINISH_MS)
+  }, [animateReveal, cancelAnimation])
+
   const handlePointerDown = useCallback(
     (event) => {
       if (!active) return
@@ -289,6 +317,8 @@ export default function Threshold({
 
       if (latchedRef.current) {
         latchedRef.current = false
+        holdCommittedRef.current = false
+        clearHoldCommitTimer()
         setLatchedToThen(false)
         setHolding(false)
         setVideoPlaying(false)
@@ -307,7 +337,9 @@ export default function Threshold({
       pointerIdRef.current = event.pointerId
       holdStartRef.current = performance.now()
       fullyRevealedHoldRef.current = false
+      holdCommittedRef.current = false
       holdSessionRef.current = true
+      clearHoldCommitTimer()
       setHolding(true)
       setVideoPlaying(true)
 
@@ -321,10 +353,23 @@ export default function Threshold({
         return
       }
 
+      holdCommitTimerRef.current = window.setTimeout(() => {
+        commitHoldToReveal()
+      }, THRESHOLD_HOLD_COMMIT_MS)
+
       animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
-    [active, animateReveal, cancelAnimation, notifyFullyRevealed, onHoldStart, reducedMotion]
+    [
+      active,
+      animateReveal,
+      cancelAnimation,
+      clearHoldCommitTimer,
+      commitHoldToReveal,
+      notifyFullyRevealed,
+      onHoldStart,
+      reducedMotion,
+    ],
   )
 
   const endHoldSession = useCallback(
@@ -342,6 +387,8 @@ export default function Threshold({
 
       const heldMs = holdStartRef.current ? performance.now() - holdStartRef.current : 0
       const hadHoldSession = holdSessionRef.current
+      const wasCommitted = holdCommittedRef.current
+      clearHoldCommitTimer()
       holdStartRef.current = null
       pointerIdRef.current = null
       setHolding(false)
@@ -350,16 +397,22 @@ export default function Threshold({
         track(TRACK_EVENTS.THRESHOLD_HOLD, {
           duration_ms: Math.round(heldMs),
           waypoint_id: waypoint.id,
-          latched: revealRef.current >= REVEAL_COMPLETE,
+          latched:
+            wasCommitted ||
+            heldMs >= THRESHOLD_HOLD_COMMIT_MS ||
+            revealRef.current >= REVEAL_COMPLETE,
         })
       }
 
+      const shouldLatch =
+        wasCommitted ||
+        heldMs >= THRESHOLD_HOLD_COMMIT_MS ||
+        revealRef.current >= REVEAL_COMPLETE
+
       if (reducedMotion) {
-        if (revealRef.current >= REVEAL_COMPLETE) {
-          latchedRef.current = true
-          setLatchedToThen(true)
-          setVideoPlaying(true)
-          if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: true })
+        if (shouldLatch) {
+          latchToThen()
+          if (hadHoldSession) endHoldSession({ reveal: 1, latched: true })
           return
         }
         setReveal(0)
@@ -370,14 +423,9 @@ export default function Threshold({
         return
       }
 
-      if (revealRef.current >= REVEAL_COMPLETE) {
-        latchedRef.current = true
-        setLatchedToThen(true)
-        cancelAnimation()
-        setReveal(1)
-        revealRef.current = 1
-        setVideoPlaying(true)
-        if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: true })
+      if (shouldLatch) {
+        latchToThen()
+        if (hadHoldSession) endHoldSession({ reveal: 1, latched: true })
         return
       }
 
@@ -386,18 +434,31 @@ export default function Threshold({
       audioRef.current?.rampToNow(THRESHOLD_RELEASE_MS)
       if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: false })
     },
-    [animateReveal, cancelAnimation, endHoldSession, reducedMotion, waypoint?.id]
+    [
+      animateReveal,
+      clearHoldCommitTimer,
+      endHoldSession,
+      latchToThen,
+      reducedMotion,
+      waypoint?.id,
+    ],
   )
 
   const handlePointerLeave = useCallback(
     (event) => {
-      if (latchedRef.current) return
+      if (latchedRef.current || holdCommittedRef.current) return
+      if (pointerIdRef.current != null) return
       handlePointerUp(event)
     },
-    [handlePointerUp]
+    [handlePointerUp],
   )
 
-  useEffect(() => cancelAnimation, [cancelAnimation])
+  useEffect(() => {
+    return () => {
+      clearHoldCommitTimer()
+      cancelAnimation()
+    }
+  }, [cancelAnimation, clearHoldCommitTimer])
 
   if (!active || !reconstruction) return null
 
