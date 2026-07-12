@@ -15,7 +15,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
       key: 'A',
       label: 'Path A — The Forum Direct',
       chip: '~45 min shorter',
-      chipStyle: { background: T.ember, color: T.obsidian },
+      chipStyle: { background: T.ember, color: T.inkOnFill },
       body: 'Straight through the gate of triumphs and down into the heart. The Palatine stays available as an optional climb.',
       cta: 'Take The Forum Direct',
     },

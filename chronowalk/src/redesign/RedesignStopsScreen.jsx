@@ -6,7 +6,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import {T, ACT_COLORS, F, SHELL_TAB_BAR_INSET, withAlpha} from './tokens.js'
+import {T, ACT_COLORS, F, SHELL_TAB_BAR_INSET, withAlpha, accentTextFor, actTextForNumeral} from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 
@@ -51,6 +51,7 @@ export default function RedesignStopsScreen() {
       .map((act) => ({
         act: act.numeral,
         color: actColorForNumeral(act.numeral),
+        textColor: actTextForNumeral(act.numeral),
         name: act.title,
         cards: act.entries
           .filter((entry) => entry.onPath)
@@ -249,29 +250,29 @@ export default function RedesignStopsScreen() {
                         </div>
                       </button>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${withAlpha(T.muted, '18')}` }}>
-                        <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${withAlpha(T.mutedDecor, '18')}` }}>
+                        <span style={{ fontSize: 11, color: group.textColor ?? accentTextFor(group.color), letterSpacing: '0.12em', textTransform: 'uppercase' }}>
                           {statusLabel(card.status)}
                         </span>
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.mutedDecor, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
                             Listen here
                           </button>
                           <button
                             type="button"
                             onClick={() => openStop(card.id)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.mutedDecor, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
                             Open card
                           </button>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
+                            style={{ fontSize: 11, color: T.inkOnFill, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
                           >
                             Walk here
                           </button>
@@ -287,11 +288,11 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${withAlpha(T.muted, '28')}` }}>
+        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${withAlpha(T.mutedDecor, '28')}` }}>
           <button
             type="button"
             onClick={() => navigate('/begin')}
-            style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}
+            style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: T.ember, color: T.inkOnFill, fontWeight: 600, cursor: 'pointer' }}
           >
             Begin the tour
           </button>

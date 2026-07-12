@@ -112,7 +112,7 @@ export default function E2MemoryDetail({
                     flex: 1,
                     padding: '12px 10px',
                     borderRadius: 999,
-                    border: `1.5px solid ${withAlpha(T.muted, '55')}`,
+                    border: `1.5px solid ${withAlpha(T.mutedDecor, '55')}`,
                     background: 'transparent',
                     color: T.ink,
                     fontFamily: F.body,
@@ -132,7 +132,7 @@ export default function E2MemoryDetail({
                     flex: 1,
                     padding: '12px 10px',
                     borderRadius: 999,
-                    border: `1.5px solid ${withAlpha(T.muted, '55')}`,
+                    border: `1.5px solid ${withAlpha(T.mutedDecor, '55')}`,
                     background: 'transparent',
                     color: T.ink,
                     fontFamily: F.body,
@@ -201,14 +201,14 @@ export default function E2MemoryDetail({
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
         {facts.map((fact, i) => (
           <div key={i}>
-            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.muted, '28')}`, margin: "14px 0" }} />}
+            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.mutedDecor, '28')}`, margin: "14px 0" }} />}
             <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75 }}>{fact}</p>
           </div>
         ))}
 
         {/* Transcript accordion */}
         <div style={{ marginTop: 28, marginBottom: 24 }}>
-          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${withAlpha(T.muted, '28')}`, borderBottom: `1px solid ${withAlpha(T.muted, '28')}` }}>
+          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${withAlpha(T.mutedDecor, '28')}`, borderBottom: `1px solid ${withAlpha(T.mutedDecor, '28')}` }}>
             <span style={{ fontSize: 13, color: T.ink, fontWeight: 500, fontFamily: F.body }}>Full transcript</span>
             <ChevronDown size={16} color={T.muted} style={{ transform: txOpen ? "rotate(180deg)" : "none", transition: "transform 250ms" }} />
           </button>
@@ -226,7 +226,7 @@ export default function E2MemoryDetail({
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>CHAPTERS</p>
         {chapters.map((ch, i) => (
           <div key={ch.n ?? i}>
-            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.muted, '20')}` }} />}
+            {i > 0 && <div style={{ height: 1, background: `${withAlpha(T.mutedDecor, '20')}` }} />}
             <button
               type="button"
               onClick={onAudioOnly ?? onWalkToStop}

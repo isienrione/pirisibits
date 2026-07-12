@@ -13,7 +13,7 @@ import { WALKING_UI_REVISION } from '../../content/walkingUiRevision.js'
 import { pwaController } from '../../pwa/pwaController.js'
 
 function Hairline() {
-  return <div style={{ height: 1, background: `${withAlpha(T.muted, '28')}` }} aria-hidden="true" />
+  return <div style={{ height: 1, background: `${withAlpha(T.mutedDecor, '28')}` }} aria-hidden="true" />
 }
 
 function Row({ label, right }) {
@@ -35,7 +35,7 @@ function Row({ label, right }) {
 
 function Segmented({ options, value, onChange, formatLabel = (v) => String(v) }) {
   return (
-    <div style={{ display: 'flex', background: `${withAlpha(T.muted, '22')}`, borderRadius: 8, padding: 2, gap: 2, flexShrink: 0 }}>
+    <div style={{ display: 'flex', background: `${withAlpha(T.mutedDecor, '22')}`, borderRadius: 8, padding: 2, gap: 2, flexShrink: 0 }}>
       {options.map((option) => {
         const active = value === option
         return (
@@ -75,7 +75,7 @@ function Toggle({ on, onToggle, label }) {
         width: 44,
         height: 26,
         borderRadius: 13,
-        background: on ? 'color-mix(in srgb, var(--ink-900) 55%, var(--muted))' : withAlpha(T.muted, '38'),
+        background: on ? 'color-mix(in srgb, var(--ink-900) 55%, var(--muted-decor))' : withAlpha(T.mutedDecor, '38'),
         position: 'relative',
         border: 'none',
         cursor: 'pointer',
@@ -197,7 +197,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
         }}
       >
         <div style={{ paddingTop: 12, paddingBottom: 8, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: `${withAlpha(T.muted, '45')}` }} />
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: `${withAlpha(T.mutedDecor, '45')}` }} />
         </div>
 
         <div

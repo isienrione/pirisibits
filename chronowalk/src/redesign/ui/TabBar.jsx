@@ -30,7 +30,7 @@ export function TabBar({ active = 'JOURNEY', onChange }) {
             fontFamily: F.body,
             fontSize: 10,
             letterSpacing: '0.12em',
-            color: active === tab ? T.actI : T.muted,
+            color: active === tab ? T.actIText : T.muted,
             background: 'none',
             border: 'none',
             cursor: onChange ? 'pointer' : 'default',

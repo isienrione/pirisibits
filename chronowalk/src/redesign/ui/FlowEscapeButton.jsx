@@ -82,7 +82,7 @@ export default function FlowEscapeButton() {
         gap: 2,
         padding: '6px 10px 6px 6px',
         borderRadius: 999,
-        border: `1px solid ${withAlpha(T.muted, '22')}`,
+        border: `1px solid ${withAlpha(T.mutedDecor, '22')}`,
         background: 'rgba(11,11,13,0.35)',
         color: `${withAlpha(T.muted, 'CC')}`,
         fontFamily: F.body,

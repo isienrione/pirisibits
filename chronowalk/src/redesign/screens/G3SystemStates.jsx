@@ -46,9 +46,9 @@ export default function G3SystemStates() {
       <div style={{ height: zoneH, position: "relative", overflow: "hidden", background: T.bone, flexShrink: 0 }}>
         {/* Walking screen context (dimmed) */}
         <div style={{ padding: "14px 20px 0", opacity: 0.45 }}>
-          <span style={{ fontSize: 9, color: T.actI, letterSpacing: "0.18em", textTransform: "uppercase" }}>WALKING TO</span>
+          <span style={{ fontSize: 9, color: T.actIText, letterSpacing: "0.18em", textTransform: "uppercase" }}>WALKING TO</span>
           <p style={{ fontFamily: F.display, fontSize: 26, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: "5px 0 3px" }}>The Pantheon</p>
-          <span style={{ color: T.actI, fontSize: 14, fontWeight: 600 }}>380 m</span>
+          <span style={{ color: T.actIText, fontSize: 14, fontWeight: 600 }}>380 m</span>
           <span style={{ color: `${withAlpha(T.ink, '55')}`, fontSize: 12 }}> · about 5 min</span>
         </div>
 

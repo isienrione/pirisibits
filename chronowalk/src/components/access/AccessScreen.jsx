@@ -189,7 +189,7 @@ export default function AccessScreen({ onValidated }) {
                 border: 'none',
                 borderRadius: 999,
                 background: 'var(--accent)',
-                color: 'var(--bone)',
+                color: 'var(--ink-on-fill)',
                 fontSize: 'var(--fs-body)',
                 fontWeight: 600,
                 cursor: 'pointer',

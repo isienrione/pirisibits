@@ -256,7 +256,7 @@ export default function C6ImmersivePlayer({
             height: compact ? Math.max(6, h * 0.45) : h,
             borderRadius: 1,
             pointerEvents: 'none',
-            background: i / bars.length < progress ? accent : `${withAlpha(T.muted, '35')}`,
+            background: i / bars.length < progress ? accent : `${withAlpha(T.mutedDecor, '35')}`,
             boxShadow: i / bars.length < progress ? `0 0 4px ${accent}60` : 'none',
           }}
         />
@@ -283,7 +283,7 @@ export default function C6ImmersivePlayer({
           onClick={onCycleSpeed}
           aria-label={`Playback speed ${formatPlaybackSpeed(playbackRate)}`}
           style={{
-            background: `${withAlpha(T.muted, '22')}`,
+            background: `${withAlpha(T.mutedDecor, '22')}`,
             border: 'none',
             borderRadius: 999,
             padding: compact ? '3px 10px' : '4px 12px',
@@ -534,7 +534,7 @@ export default function C6ImmersivePlayer({
         </div>
 
         <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">
-          <Eyebrow color={accent}>{actLabel}</Eyebrow>
+          <Eyebrow color={accent} onDark>{actLabel}</Eyebrow>
           <h2
             style={{
               fontFamily: F.display,

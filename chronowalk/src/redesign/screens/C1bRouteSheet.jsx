@@ -71,7 +71,7 @@ export function C1bRouteSheet({
         boxShadow: "0 -8px 40px rgba(11,11,13,0.3)",
       }}>
         <div style={{ paddingTop: 12, paddingBottom: 6, display: "flex", justifyContent: "center", flexShrink: 0 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: `${withAlpha(T.muted, '45')}` }} />
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: `${withAlpha(T.mutedDecor, '45')}` }} />
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 20px 14px", flexShrink: 0 }}>

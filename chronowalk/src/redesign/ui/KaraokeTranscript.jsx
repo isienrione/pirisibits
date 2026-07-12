@@ -33,7 +33,7 @@ export default function KaraokeTranscript({
       : isBone
         ? 'rgba(255,255,255,0.92)'
         : `${withAlpha(T.ink800, 'EE')}`
-  const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${withAlpha(T.ink800, '22')}` : `${withAlpha(T.muted, '22')}`
+  const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${withAlpha(T.ink800, '22')}` : `${withAlpha(T.mutedDecor, '22')}`
   const defaultInk = isBone ? T.ink : T.warmWhite
 
   if (!paragraphs.length) {

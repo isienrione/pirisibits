@@ -150,7 +150,7 @@ export default function C8cActComplete({
           onClick={() => (onContinue ? onContinue() : navigate("C2"))}
           style={{
             width: "100%", padding: "15px",
-            background: verdigris, color: T.warmWhite,
+            background: verdigris, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",

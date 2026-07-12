@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
-import {T, F, withAlpha} from "../tokens.js";
+import {T, F, withAlpha, accentTextFor} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, Seam } from '../ui/index.js';
@@ -110,7 +110,7 @@ export default function C1JourneyHome() {
                   fontSize: 10,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: act.status === "ahead" ? `${act.color}70` : act.color,
+                  color: act.status === "ahead" ? `${withAlpha(accentTextFor(act.color), '88')}` : accentTextFor(act.color),
                   fontWeight: 500,
                   display: "block",
                   marginBottom: 2,
@@ -159,7 +159,7 @@ export default function C1JourneyHome() {
           onClick={() => navigate("C2")}
           style={{
             width: "100%", padding: "15px",
-            background: T.actI, color: T.warmWhite,
+            background: T.actI, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
@@ -196,7 +196,7 @@ export default function C1JourneyHome() {
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", gap: 4, paddingTop: 8,
             fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em",
-            color: tab === "JOURNEY" ? T.actI : T.muted,
+            color: tab === "JOURNEY" ? T.actIText : T.muted,
             background: "none", border: "none", cursor: "pointer",
           }}>
             <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNEY" ? T.actI : "transparent" }} />

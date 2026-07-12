@@ -66,7 +66,7 @@ export default function G2Credits({ onBack }) {
         </h2>
 
         {/* AI disclosure — editorial intro paragraph */}
-        <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${withAlpha(T.muted, '28')}` }}>
+        <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${withAlpha(T.mutedDecor, '28')}` }}>
           <p style={{ fontSize: 11, color: T.muted, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 12 }}>
             AI RECONSTRUCTIONS
           </p>
@@ -85,7 +85,7 @@ export default function G2Credits({ onBack }) {
 
         {attributions.map((group, gi) => (
           <div key={group.stop} style={{ marginBottom: 24 }}>
-            {gi > 0 && <div style={{ height: 1, background: `${withAlpha(T.muted, '20')}`, marginBottom: 24, marginTop: -12 }} />}
+            {gi > 0 && <div style={{ height: 1, background: `${withAlpha(T.mutedDecor, '20')}`, marginBottom: 24, marginTop: -12 }} />}
             <p style={{ fontSize: 13, color: T.ink, fontWeight: 500, marginBottom: 8 }}>{group.stop}</p>
             {group.items.map((item, ii) => (
               <div key={ii} style={{ paddingLeft: 16, marginBottom: 6 }}>
@@ -105,7 +105,7 @@ export default function G2Credits({ onBack }) {
         ))}
 
         {/* Music & SFX */}
-        <div style={{ marginBottom: 28, paddingTop: 8, borderTop: `1px solid ${withAlpha(T.muted, '28')}` }}>
+        <div style={{ marginBottom: 28, paddingTop: 8, borderTop: `1px solid ${withAlpha(T.mutedDecor, '28')}` }}>
           <p style={{ fontSize: 11, color: T.muted, letterSpacing: "0.18em", textTransform: "uppercase", margin: "20px 0 12px" }}>
             MUSIC & SOUND
           </p>
@@ -116,7 +116,7 @@ export default function G2Credits({ onBack }) {
         </div>
 
         {/* Footer — verbatim from spec */}
-        <div style={{ paddingTop: 20, borderTop: `1px solid ${withAlpha(T.muted, '28')}` }}>
+        <div style={{ paddingTop: 20, borderTop: `1px solid ${withAlpha(T.mutedDecor, '28')}` }}>
           <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.7, fontStyle: "italic" }}>
             Facts checked against current scholarship — corrections:{" "}
             <a href="mailto:hello@chronowalk.com" style={{ color: T.ink, textDecoration: 'none' }}>hello@chronowalk.com</a>

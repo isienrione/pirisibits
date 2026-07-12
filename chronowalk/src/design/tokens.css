@@ -20,7 +20,8 @@
   --ink-800: #26221b;
   --bone: var(--warm-ivory);
   --warm-white: var(--warm-ivory);
-  --muted: #b9af9c;
+  --muted: #756c5c;
+  --muted-decor: #b9af9c;
   --ember: #e8a13c;
   --ember-deep: #c97f1e;
   --ink-on-fill: #2a1206;
@@ -33,6 +34,16 @@
   --act-city: #b14a6e; /* V  · tyrian rose — piazza life     */
   --act-river: #4e7d9b; /* VI · tiber blue — dusk on water    */
   --act-encore: #8a6fb5; /* Enc· twilight violet — long road   */
+  /* WCAG text variants on bone (≥4.95:1) */
+  --act-arena-text: #b23413;
+  --act-hill-text: #55703a;
+  --act-forum-text: #8f5e10;
+  --act-market-text: #2f6e63;
+  --act-city-text: #963a5b;
+  --act-river-text: #3a607a;
+  --act-encore-text: #6a4f96;
+  /* Accent text on dark immersion surfaces */
+  --act-city-on-dark: #d488a4;
 
   --spectrum: linear-gradient(
     135deg,
@@ -51,6 +62,7 @@
   /* Compatibility aliases — v2 inline components expect these names */
   --ink: var(--ink-900);
   --muted-warm: var(--muted);
+  --muted-warm-decor: var(--muted-decor);
   --accent: var(--act-arena);
   --ember-glow: rgba(232, 161, 60, 0.55);
   --verdigris: var(--act-market);
@@ -69,9 +81,9 @@
   --ink-subtle: color-mix(in srgb, var(--ink-900) 45%, var(--bone));
   --ink-faint: color-mix(in srgb, var(--ink-900) 68%, var(--bone));
   --text-dark: var(--obsidian);
-  --border-daylight: color-mix(in srgb, var(--ink-900) 14%, var(--bone));
+  --border-daylight: color-mix(in srgb, var(--muted-decor) 55%, var(--bone));
   --border-immersion: color-mix(in srgb, var(--warm-white) 12%, var(--obsidian));
-  --track-daylight: color-mix(in srgb, var(--ink-900) 10%, var(--bone));
+  --track-daylight: color-mix(in srgb, var(--muted-decor) 45%, var(--bone));
 
   --shadow-card: 0 2px 8px color-mix(in srgb, var(--ink-900) 8%, transparent);
   --shadow-sheet: 0 -8px 24px color-mix(in srgb, var(--ink-900) 10%, transparent);

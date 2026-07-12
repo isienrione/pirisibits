@@ -193,7 +193,7 @@
   border: none;
   border-radius: 999px;
   background: var(--v2-terracotta);
-  color: var(--v2-bone);
+  color: var(--ink-on-fill, #2a1206);
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 600;
@@ -244,7 +244,7 @@
 
 .cw-v2-btn--coral {
   background: var(--v2-coral);
-  color: var(--v2-bone);
+  color: var(--ink-on-fill, #2a1206);
   box-shadow:
     0 0 28px color-mix(in srgb, var(--v2-coral) 42%, transparent),
     0 6px 24px color-mix(in srgb, var(--v2-coral) 28%, transparent),

@@ -22,7 +22,10 @@ export const T = {
   /** Legacy name for act I coral accent. */
   terracotta: 'var(--act-arena)',
   muted: 'var(--muted)',
+  /** Hairlines, borders, tracks, disabled fills — not for text. */
+  mutedDecor: 'var(--muted-decor)',
   ember: 'var(--ember)',
+  inkOnFill: 'var(--ink-on-fill)',
   actI: 'var(--act-arena)',
   actII: 'var(--act-hill)',
   actIII: 'var(--act-forum)',
@@ -30,6 +33,14 @@ export const T = {
   actV: 'var(--act-city)',
   actVI: 'var(--act-river)',
   encore: 'var(--act-encore)',
+  actIText: 'var(--act-arena-text)',
+  actIIText: 'var(--act-hill-text)',
+  actIIIText: 'var(--act-forum-text)',
+  actIVText: 'var(--act-market-text)',
+  actVText: 'var(--act-city-text)',
+  actVIText: 'var(--act-river-text)',
+  encoreText: 'var(--act-encore-text)',
+  actCityOnDark: 'var(--act-city-on-dark)',
 }
 
 export const F = {
@@ -67,4 +78,44 @@ export const ACT_COLORS = {
   V: T.actV,
   VI: T.actVI,
   ENC: T.encore,
+}
+
+export const ACT_TEXT_COLORS = {
+  I: T.actIText,
+  II: T.actIIText,
+  III: T.actIIIText,
+  IV: T.actIVText,
+  V: T.actVText,
+  VI: T.actVIText,
+  ENC: T.encoreText,
+}
+
+const ACCENT_TO_TEXT = {
+  [T.actI]: T.actIText,
+  [T.actII]: T.actIIText,
+  [T.actIII]: T.actIIIText,
+  [T.actIV]: T.actIVText,
+  [T.actV]: T.actVText,
+  [T.actVI]: T.actVIText,
+  [T.encore]: T.encoreText,
+  [T.ember]: T.actIIIText,
+  [T.terracotta]: T.actIText,
+}
+
+const ACCENT_TO_TEXT_ON_DARK = {
+  [T.actV]: T.actCityOnDark,
+}
+
+/** Readable act accent text on bone for labels under 18px. */
+export function accentTextFor(accent) {
+  return ACCENT_TO_TEXT[accent] ?? accent
+}
+
+/** Readable act accent text on dark immersion surfaces. */
+export function accentTextOnDarkFor(accent) {
+  return ACCENT_TO_TEXT_ON_DARK[accent] ?? accentTextFor(accent)
+}
+
+export function actTextForNumeral(numeral) {
+  return ACT_TEXT_COLORS[numeral] ?? T.actIText
 }

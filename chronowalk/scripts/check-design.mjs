@@ -24,6 +24,7 @@ const APPROVED_HEX = new Set([
   '26221B',
   'F7F1E6',
   'F5EFE3',
+  '756C5C',
   'B9AF9C',
   'E8A13C',
   'C97F1E',
@@ -34,6 +35,14 @@ const APPROVED_HEX = new Set([
   'B14A6E',
   '4E7D9B',
   '8A6FB5',
+  'B23413',
+  '55703A',
+  '8F5E10',
+  '2F6E63',
+  '963A5B',
+  '3A607A',
+  '6A4F96',
+  'D488A4',
 ])
 
 /** Banned legacy hex — must never appear outside token definition files. */

@@ -75,7 +75,7 @@ export default function TourRouteIllustration({ manifest, context, className = '
           height={layout.height - 16}
           rx="18"
           fill="url(#cw-route-paper)"
-          stroke={`${withAlpha(T.muted, '55')}`}
+          stroke={`${withAlpha(T.mutedDecor, '55')}`}
           strokeWidth="1.2"
         />
 

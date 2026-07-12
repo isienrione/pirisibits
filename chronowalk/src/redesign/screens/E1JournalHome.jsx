@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Play, Settings } from "lucide-react";
 import { useContext } from "react";
-import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from "../tokens.js";
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha, accentTextFor} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, severusNow, archTitusNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, MiniActLine } from '../ui/index.js';
@@ -79,7 +79,7 @@ export default function E1JournalHome({
               </button>
             ) : null}
           {showDevToggle ? (
-          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${withAlpha(T.muted, '40')}`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
+          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${withAlpha(T.mutedDecor, '40')}`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
             {showEmptyDev ? "filled" : "empty"}
           </button>
           ) : null}
@@ -95,7 +95,7 @@ export default function E1JournalHome({
             Your journey will collect itself here. Walk, and Rome writes.
           </p>
           {onStartWalk ? (
-            <button type="button" onClick={onStartWalk} style={{ position: 'relative', zIndex: 1, padding: '12px 20px', borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}>
+            <button type="button" onClick={onStartWalk} style={{ position: 'relative', zIndex: 1, padding: '12px 20px', borderRadius: 12, border: 'none', background: T.ember, color: T.inkOnFill, fontWeight: 600, cursor: 'pointer' }}>
               Start walking
             </button>
           ) : null}
@@ -166,7 +166,7 @@ export default function E1JournalHome({
                         <div style={{ width: 28, height: 28, borderRadius: 14, background: `${group.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <Play size={11} fill={group.color} color={group.color} style={{ marginLeft: 2 }} />
                         </div>
-                        <span style={{ fontSize: 12, color: group.color, fontWeight: 500 }}>Open stop</span>
+                        <span style={{ fontSize: 12, color: accentTextFor(group.color), fontWeight: 500 }}>Open stop</span>
                       </button>
                       <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
                     </div>
@@ -182,7 +182,7 @@ export default function E1JournalHome({
       {!embedded && (
       <div style={{ flexShrink: 0, display: "flex", borderTop: `1px solid ${withAlpha(T.ink800, '22')}`, background: T.bone, paddingBottom: "max(28px, env(safe-area-inset-bottom))", paddingTop: 4 }}>
         {(["JOURNEY","MAP","JOURNAL"]).map(tab => (
-          <button key={tab} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, paddingTop: 8, fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em", color: tab === "JOURNAL" ? T.actI : T.muted, background: "none", border: "none", cursor: "pointer" }}>
+          <button key={tab} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, paddingTop: 8, fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em", color: tab === "JOURNAL" ? T.actIText : T.muted, background: "none", border: "none", cursor: "pointer" }}>
             <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNAL" ? T.actI : "transparent" }} />
             {tab}
           </button>

@@ -80,7 +80,7 @@ export default function B2MakeItYours({
             <div style={{ flexShrink: 0 }}>
               <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
                 {/* Phone body */}
-                <rect x="9" y="4" width="28" height="38" rx="4" stroke={`${withAlpha(T.muted, '55')}`} strokeWidth="1.2" />
+                <rect x="9" y="4" width="28" height="38" rx="4" stroke={`${withAlpha(T.mutedDecor, '55')}`} strokeWidth="1.2" />
                 {/* Share arrow up */}
                 <line x1="23" y1="30" x2="23" y2="17" stroke={T.warmWhite} strokeWidth="1.5" strokeLinecap="round" />
                 <polyline points="17,23 23,17 29,23" fill="none" stroke={T.warmWhite} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -103,7 +103,7 @@ export default function B2MakeItYours({
                 Streets of Rome, weak signal, strong stories.
               </p>
               {downloadComplete || dlProgress >= 1 ? (
-                <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Downloaded ✓</p>
+                <p style={{ fontSize: 12, color: T.actIIText, marginTop: 6 }}>Downloaded ✓</p>
               ) : downloading && dlProgress > 0 && dlProgress < 1 ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
                   {Math.round(dlProgress * 215)} MB of 215 MB
@@ -173,7 +173,7 @@ export default function B2MakeItYours({
             <button
               type="button"
               onClick={() => onInstall?.()}
-              style={{ width: '100%', padding: '15px', background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
+              style={{ width: '100%', padding: '15px', background: T.ember, color: T.inkOnFill, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
             >
               {showIosInstructions ? 'Got it — continue' : 'Add to home screen'}
             </button>

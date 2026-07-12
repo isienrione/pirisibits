@@ -169,7 +169,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               width: '100%',
               padding: '15px 20px',
               background: T.ember,
-              color: T.obsidian,
+              color: T.inkOnFill,
               borderRadius: 12,
               fontFamily: F.body,
               fontWeight: 600,

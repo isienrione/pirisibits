@@ -117,7 +117,7 @@ export default function C4ArrivalMoment({
                 flex: 1,
                 padding: '13px 12px',
                 borderRadius: 999,
-                border: `1.5px solid ${withAlpha(T.muted, '55')}`,
+                border: `1.5px solid ${withAlpha(T.mutedDecor, '55')}`,
                 background: 'transparent',
                 color: T.ink,
                 fontFamily: F.body,

@@ -63,7 +63,7 @@ export default function C8dResume({
           onClick={() => (onContinue ? onContinue() : navigate("C5"))}
           style={{
             width: "100%", padding: "15px",
-            background: accent, color: T.warmWhite,
+            background: accent, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",

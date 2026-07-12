@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from './tokens.js'
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha, accentTextFor} from './tokens.js'
 import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -425,7 +425,7 @@ export default function RedesignMyTourScreen() {
                         width: 56,
                         height: 56,
                         borderRadius: 10,
-                        background: `${withAlpha(T.muted, '22')}`,
+                        background: `${withAlpha(T.mutedDecor, '22')}`,
                         flexShrink: 0,
                       }}
                     />
@@ -449,7 +449,7 @@ export default function RedesignMyTourScreen() {
                         fontSize: 10,
                         letterSpacing: '0.2em',
                         textTransform: 'uppercase',
-                        color: faded ? `${color}70` : color,
+                        color: faded ? `${withAlpha(accentTextFor(color), '88')}` : accentTextFor(color),
                         fontWeight: 500,
                         display: 'block',
                         marginBottom: 2,
@@ -577,7 +577,7 @@ export default function RedesignMyTourScreen() {
             width: '100%',
             padding: '15px',
             background: ctaColor,
-            color: T.warmWhite,
+            color: T.inkOnFill,
             borderRadius: 12,
             fontFamily: F.body,
             fontWeight: 600,

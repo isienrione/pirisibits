@@ -210,7 +210,7 @@ export default function C8eJourneyComplete({
             fontFamily: F.body,
             fontWeight: 500,
             fontSize: 14,
-            border: `1px solid ${withAlpha(T.muted, '33')}`,
+            border: `1px solid ${withAlpha(T.mutedDecor, '33')}`,
             cursor: busy ? 'wait' : 'pointer',
           }}
         >

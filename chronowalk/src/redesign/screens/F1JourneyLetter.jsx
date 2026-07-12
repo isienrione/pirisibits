@@ -112,7 +112,7 @@ export default function F1JourneyLetter({
             disabled={busy}
             onClick={() => onSave?.()}
             style={{
-            width: "100%", padding: "16px", background: T.ember, color: T.obsidian,
+            width: "100%", padding: "16px", background: T.ember, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
             border: "none", cursor: busy ? 'wait' : "pointer", marginBottom: 10,
             boxShadow: "0 0 24px rgba(232,161,60,0.45)",

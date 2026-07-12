@@ -44,7 +44,7 @@ export default function ShellTabBar() {
               <Link
                 to={tab.to}
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
-                  active ? 'text-ember' : 'text-muted'
+                  active ? 'text-actforumtext' : 'text-muted'
                 }`}
               >
                 <Icon />
