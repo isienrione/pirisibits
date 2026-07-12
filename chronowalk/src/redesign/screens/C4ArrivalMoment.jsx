@@ -1,4 +1,4 @@
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import {T, F, SHELL_SAFE_BOTTOM_INSET, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 
@@ -117,7 +117,7 @@ export default function C4ArrivalMoment({
                 flex: 1,
                 padding: '13px 12px',
                 borderRadius: 999,
-                border: `1.5px solid ${T.muted}55`,
+                border: `1.5px solid ${withAlpha(T.mutedDecor, '55')}`,
                 background: 'transparent',
                 color: T.ink,
                 fontFamily: F.body,

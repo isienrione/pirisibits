@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useV2Journey } from '../../hooks/useV2Journey.js'
 import { hasAccess } from '../../lib/config.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 
 function homePath() {
   return hasAccess() ? '/tour' : '/landing'
@@ -82,9 +82,9 @@ export default function FlowEscapeButton() {
         gap: 2,
         padding: '6px 10px 6px 6px',
         borderRadius: 999,
-        border: `1px solid ${T.muted}22`,
+        border: `1px solid ${withAlpha(T.mutedDecor, '22')}`,
         background: 'rgba(11,11,13,0.35)',
-        color: `${T.muted}CC`,
+        color: `${withAlpha(T.muted, 'CC')}`,
         fontFamily: F.body,
         fontSize: 12,
         letterSpacing: '0.04em',

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha, accentTextFor} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, Seam } from '../ui/index.js';
@@ -110,7 +110,7 @@ export default function C1JourneyHome() {
                   fontSize: 10,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: act.status === "ahead" ? `${act.color}70` : act.color,
+                  color: act.status === "ahead" ? `${withAlpha(accentTextFor(act.color), '88')}` : accentTextFor(act.color),
                   fontWeight: 500,
                   display: "block",
                   marginBottom: 2,
@@ -122,7 +122,7 @@ export default function C1JourneyHome() {
                 <p style={{
                   fontFamily: F.display,
                   fontSize: 22,
-                  color: act.status === "ahead" ? `${T.ink}85` : T.ink,
+                  color: act.status === "ahead" ? `${withAlpha(T.ink, '85')}` : T.ink,
                   fontWeight: 300,
                   lineHeight: 1.1,
                   marginBottom: 3,
@@ -151,20 +151,20 @@ export default function C1JourneyHome() {
       <div style={{
         flexShrink: 0,
         padding: "16px 24px 16px",
-        background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-        borderTop: `1px solid ${T.ink800}18`,
+        background: `linear-gradient(to bottom, ${withAlpha(T.bone, '00')} 0%, ${T.bone} 18%)`,
+        borderTop: `1px solid ${withAlpha(T.ink800, '18')}`,
         position: "relative", zIndex: 5,
       }}>
         <button
           onClick={() => navigate("C2")}
           style={{
             width: "100%", padding: "15px",
-            background: T.actI, color: T.warmWhite,
+            background: T.actI, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
             marginBottom: 16,
-            boxShadow: `0 0 22px ${T.actI}50`,
+            boxShadow: `0 0 22px ${withAlpha(T.actI, '50')}`,
           }}
         >
           Begin Act I — The Arena
@@ -187,7 +187,7 @@ export default function C1JourneyHome() {
       {/* Inline tab bar */}
       <div style={{
         flexShrink: 0, display: "flex",
-        borderTop: `1px solid ${T.ink800}22`,
+        borderTop: `1px solid ${withAlpha(T.ink800, '22')}`,
         background: T.bone, paddingBottom: 32, paddingTop: 4,
         zIndex: 5,
       }}>
@@ -196,7 +196,7 @@ export default function C1JourneyHome() {
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", gap: 4, paddingTop: 8,
             fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em",
-            color: tab === "JOURNEY" ? T.actI : T.muted,
+            color: tab === "JOURNEY" ? T.actIText : T.muted,
             background: "none", border: "none", cursor: "pointer",
           }}>
             <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNEY" ? T.actI : "transparent" }} />

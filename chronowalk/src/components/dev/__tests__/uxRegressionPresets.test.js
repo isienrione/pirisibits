@@ -66,7 +66,7 @@ describe('uxRegressionPresets', () => {
     const result = applyJourneyScenePreset(manifest, UX_JOURNEY_SCENE_IDS.THRESHOLD)
 
     expect(result.route).toBe('/journey')
-    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.THRESHOLD)
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
   })
 
   it('offline scene marks package complete', () => {

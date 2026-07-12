@@ -35,10 +35,10 @@ describe('AccessScreen', () => {
       </MemoryRouter>
     )
 
-    fireEvent.change(screen.getByLabelText(/access token/i), {
+    fireEvent.change(screen.getByLabelText(/from your email/i), {
       target: { value: 'dev' },
     })
-    fireEvent.click(screen.getByRole('button', { name: /restore access/i }))
+    fireEvent.click(screen.getByRole('button', { name: /enter rome/i }))
 
     await waitFor(() => {
       expect(screen.getByText(/confirming your purchase/i)).toBeInTheDocument()

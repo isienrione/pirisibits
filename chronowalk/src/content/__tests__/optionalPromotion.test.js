@@ -20,7 +20,7 @@ describe('optional waypoint promotion', () => {
     const w03Index = sequence.indexOf('w03')
     const w06Index = sequence.indexOf('w06')
 
-    expect(sequence.slice(w03Index + 1, w06Index)).toEqual(['t02', 'w04', 't03'])
+    expect(sequence.slice(w03Index + 1, w06Index)).toEqual(['t04', 't02', 'w04', 't03'])
     expect(getPromotionInsertSteps(manifest, 'w04', 'a')).toEqual(['t02', 'w04', 't03'])
   })
 

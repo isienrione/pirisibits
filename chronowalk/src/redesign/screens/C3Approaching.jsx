@@ -1,4 +1,4 @@
-import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Eyebrow } from '../ui/index.js'
 
@@ -91,7 +91,7 @@ export default function C3Approaching({
           background: T.warmWhite,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          boxShadow: `0 -8px 32px ${T.ink}12`,
+          boxShadow: `0 -8px 32px ${withAlpha(T.ink, '12')}`,
           padding: `18px 20px calc(${SHELL_TAB_BAR_INSET} + 16px)`,
           position: 'relative',
           zIndex: 12,
@@ -116,7 +116,7 @@ export default function C3Approaching({
               </p>
             ) : null}
             {companionSubtitle ? (
-              <p style={{ margin: 0, fontSize: 13, color: `${T.ink}72`, lineHeight: 1.55 }}>
+              <p style={{ margin: 0, fontSize: 13, color: `${withAlpha(T.ink, '72')}`, lineHeight: 1.55 }}>
                 {companionSubtitle}
               </p>
             ) : null}
@@ -153,7 +153,7 @@ export default function C3Approaching({
             <p style={{ fontSize: 14, color: accent, letterSpacing: '0.04em', margin: '0 0 8px' }}>
               {subtitle}
             </p>
-            <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: 14, color: `${withAlpha(T.ink, '72')}`, lineHeight: 1.6, margin: 0 }}>
               {approachLine}
             </p>
           </div>

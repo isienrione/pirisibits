@@ -1,4 +1,4 @@
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow, severusNow } from "../images.js";
 import { Eyebrow } from '../ui/index.js';
 
@@ -21,7 +21,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
           — and Rome planned for it.
         </p>
         {/* Accent hairline under context */}
-        <div style={{ width: "100%", height: 1, background: `${T.muted}28`, marginBottom: 28 }} />
+        <div style={{ width: "100%", height: 1, background: `${withAlpha(T.mutedDecor, '28')}`, marginBottom: 28 }} />
       </div>
 
       {/* Scrollable content */}
@@ -56,9 +56,9 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               display: "flex", alignItems: "center", gap: 8,
             }}>
               <span>2 stories</span>
-              <span style={{ color: `${T.muted}60` }}>·</span>
+              <span style={{ color: `${withAlpha(T.muted, '60')}` }}>·</span>
               <span>free ground</span>
-              <span style={{ color: `${T.muted}60` }}>·</span>
+              <span style={{ color: `${withAlpha(T.muted, '60')}` }}>·</span>
               <span>zero queue</span>
             </p>
 
@@ -66,7 +66,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
             <div style={{
               borderRadius: 12, overflow: "hidden",
               background: `${T.warmWhite}`,
-              border: `1px solid ${T.muted}30`,
+              border: `1px solid ${withAlpha(T.mutedDecor, '30')}`,
               padding: "14px 14px 10px",
               marginBottom: 20,
             }}>
@@ -75,14 +75,14 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               </p>
               <svg width="100%" height="90" viewBox="0 0 310 90">
                 {/* Via dei Fori Imperiali — main road */}
-                <rect x="0" y="36" width="310" height="18" rx="3" fill={`${T.muted}18`} />
+                <rect x="0" y="36" width="310" height="18" rx="3" fill={`${withAlpha(T.mutedDecor, '18')}`} />
                 <text x="155" y="49" textAnchor="middle" style={{ fontSize: "8px", fill: T.muted, letterSpacing: "0.12em" }}>
                   VIA DEI FORI IMPERIALI
                 </text>
 
                 {/* Forum grounds below the road */}
-                <rect x="10" y="60" width="280" height="22" rx="4" fill={`${T.actIV}12`} />
-                <text x="155" y="75" textAnchor="middle" style={{ fontSize: "8px", fill: T.actIV, letterSpacing: "0.1em", opacity: 0.8 }}>
+                <rect x="10" y="60" width="280" height="22" rx="4" fill={`${withAlpha(T.actIV, '12')}`} />
+                <text x="155" y="75" textAnchor="middle" style={{ fontSize: "8px", fill: T.actIVText, letterSpacing: "0.1em", opacity: 0.8 }}>
                   ROMAN FORUM
                 </text>
 
@@ -107,7 +107,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               onClick={() => (onTakeWalk ? onTakeWalk() : undefined)}
               style={{
               width: "100%", padding: "15px",
-              background: accent, color: T.warmWhite,
+              background: accent, color: T.inkOnFill,
               borderRadius: 12, fontFamily: F.body,
               fontWeight: 600, fontSize: 15,
               border: "none", cursor: "pointer",
@@ -139,7 +139,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
                   borderRadius: 12,
                   fontFamily: F.body,
                   fontSize: 14,
-                  border: `1px solid ${T.muted}40`,
+                  border: `1px solid ${withAlpha(T.mutedDecor, '40')}`,
                   cursor: "pointer",
                 }}
               >

@@ -243,7 +243,7 @@ export function buildPreviewTourActs(manifest, previewWaypointId = 'w17') {
   if (!manifest?.acts) return []
 
   const context = {
-    pace: JOURNEY_PACE.CLASSIC,
+    pace: JOURNEY_PACE.HEROIC,
     path: manifest.journey?.default_path ?? 'a',
   }
   const tourWaypointIds = new Set(getTourWaypointIds(manifest, context))

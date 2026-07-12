@@ -1,4 +1,4 @@
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 
 /** Three-tab EXPLORER bar — Journey · Map · Journal */
 export function TabBar({ active = 'JOURNEY', onChange }) {
@@ -8,7 +8,7 @@ export function TabBar({ active = 'JOURNEY', onChange }) {
     <div
       style={{
         display: 'flex',
-        borderTop: `1px solid ${T.ink800}22`,
+        borderTop: `1px solid ${withAlpha(T.ink800, '22')}`,
         background: T.bone,
         paddingBottom: 'max(28px, env(safe-area-inset-bottom))',
         paddingTop: 4,
@@ -30,7 +30,7 @@ export function TabBar({ active = 'JOURNEY', onChange }) {
             fontFamily: F.body,
             fontSize: 10,
             letterSpacing: '0.12em',
-            color: active === tab ? T.actI : T.muted,
+            color: active === tab ? T.actIText : T.muted,
             background: 'none',
             border: 'none',
             cursor: onChange ? 'pointer' : 'default',

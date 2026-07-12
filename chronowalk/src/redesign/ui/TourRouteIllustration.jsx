@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { buildTourRoadmapForContext } from '../../content/tourRoadmap.js'
 import { getWaypoint } from '../../content/manifest.js'
-import { ACT_COLORS, T, F } from '../tokens.js'
+import {ACT_COLORS, T, F, withAlpha} from '../tokens.js'
 import { titleForWaypoint } from '../lib/waypointPresentation.js'
 import {
   actColorForNumeral,
@@ -75,7 +75,7 @@ export default function TourRouteIllustration({ manifest, context, className = '
           height={layout.height - 16}
           rx="18"
           fill="url(#cw-route-paper)"
-          stroke={`${T.muted}55`}
+          stroke={`${withAlpha(T.mutedDecor, '55')}`}
           strokeWidth="1.2"
         />
 
@@ -148,7 +148,7 @@ export default function TourRouteIllustration({ manifest, context, className = '
                 x={point.labelX}
                 y={point.y + 4}
                 textAnchor={point.labelAnchor}
-                fill={isFirst ? T.ink : `${T.ink}CC`}
+                fill={isFirst ? T.ink : `${withAlpha(T.ink, 'CC')}`}
                 fontSize="11"
                 fontWeight={isFirst ? 600 : 500}
                 fontFamily={F.body}

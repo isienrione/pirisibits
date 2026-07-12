@@ -144,7 +144,7 @@ export default function TourOnboardingCards({
         <button
           type="button"
           className="cw-tour-onboarding-cards__action"
-          style={{ fontFamily: F.body, background: T.ember, color: T.obsidian }}
+          style={{ fontFamily: F.body, background: T.ember, color: T.inkOnFill }}
           onClick={() => {
             dismissCurrent()
             if (isLast) finishOnboarding()

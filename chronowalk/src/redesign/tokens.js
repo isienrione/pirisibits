@@ -1,31 +1,51 @@
-/** ChronoWalk redesign tokens — aligned with official brand palette. */
+/**
+ * ChronoWalk redesign tokens — CSS variable aliases only (DESIGN_LAW).
+ * Every color resolves from src/design/tokens.css; no hex literals here.
+ */
 
 export const T = {
-  obsidian: '#0B0B0D',
-  charcoal: '#1A1A1F',
-  ink: '#1A1A1F',
-  ink800: '#1A1A1F',
-  bone: '#FAF6EF',
-  warmWhite: '#FAF6EF',
-  limestone: '#E9E2D5',
-  bronze: '#8B8638',
-  gold: '#D4AF37',
-  olive: '#6B7A52',
-  terracotta: '#E4552E',
-  muted: '#B9AF9C',
-  ember: '#D4AF37',
-  actI: '#E4552E',
-  actII: '#7C9A5C',
-  actIII: '#E8A13C',
-  actIV: '#4E9B8F',
-  actV: '#B14A6E',
-  actVI: '#4E7D9B',
-  encore: '#8A6FB5',
+  obsidian: 'var(--obsidian)',
+  charcoal: 'var(--charcoal)',
+  /** Legacy key — was charcoal #1A1A1F; daylight text uses ink-900 per Law. */
+  ink: 'var(--ink-900)',
+  ink800: 'var(--ink-800)',
+  bone: 'var(--bone)',
+  warmWhite: 'var(--warm-white)',
+  /** Legacy brand token in tokens.css. */
+  limestone: 'var(--limestone)',
+  /** Legacy brand token — still defined in tokens.css. */
+  bronze: 'var(--bronze)',
+  /** @deprecated Use T.ember — gold was #D4AF37; ember (#E8A13C) is the sacred seam. */
+  gold: 'var(--ember)',
+  /** Legacy brand token — still defined in tokens.css. */
+  olive: 'var(--olive)',
+  /** Legacy name for act I coral accent. */
+  terracotta: 'var(--act-arena)',
+  muted: 'var(--muted)',
+  /** Hairlines, borders, tracks, disabled fills — not for text. */
+  mutedDecor: 'var(--muted-decor)',
+  ember: 'var(--ember)',
+  inkOnFill: 'var(--ink-on-fill)',
+  actI: 'var(--act-arena)',
+  actII: 'var(--act-hill)',
+  actIII: 'var(--act-forum)',
+  actIV: 'var(--act-market)',
+  actV: 'var(--act-city)',
+  actVI: 'var(--act-river)',
+  encore: 'var(--act-encore)',
+  actIText: 'var(--act-arena-text)',
+  actIIText: 'var(--act-hill-text)',
+  actIIIText: 'var(--act-forum-text)',
+  actIVText: 'var(--act-market-text)',
+  actVText: 'var(--act-city-text)',
+  actVIText: 'var(--act-river-text)',
+  encoreText: 'var(--act-encore-text)',
+  actCityOnDark: 'var(--act-city-on-dark)',
 }
 
 export const F = {
-  display: "'Fraunces', Georgia, serif",
-  body: "'DM Sans', system-ui, sans-serif",
+  display: 'var(--font-display)',
+  body: 'var(--font-ui)',
 }
 
 /** Bottom padding when the fixed shell tab bar is visible. */
@@ -37,6 +57,19 @@ export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(8px, 
  */
 export const SHELL_SAFE_BOTTOM_INSET = 'max(24px, env(safe-area-inset-bottom))'
 
+/**
+ * Opacity via color-mix — use instead of appending hex alpha suffixes to T.* tokens.
+ * @param {string} token CSS color, e.g. T.ember
+ * @param {string} hexPair Two-digit hex alpha (00–FF)
+ */
+export function withAlpha(token, hexPair) {
+  const n = Number.parseInt(hexPair, 16)
+  if (!Number.isFinite(n) || n <= 0) return 'transparent'
+  if (n >= 255) return token
+  const pct = Math.round((n / 255) * 100)
+  return `color-mix(in srgb, ${token} ${pct}%, transparent)`
+}
+
 export const ACT_COLORS = {
   I: T.actI,
   II: T.actII,
@@ -45,4 +78,44 @@ export const ACT_COLORS = {
   V: T.actV,
   VI: T.actVI,
   ENC: T.encore,
+}
+
+export const ACT_TEXT_COLORS = {
+  I: T.actIText,
+  II: T.actIIText,
+  III: T.actIIIText,
+  IV: T.actIVText,
+  V: T.actVText,
+  VI: T.actVIText,
+  ENC: T.encoreText,
+}
+
+const ACCENT_TO_TEXT = {
+  [T.actI]: T.actIText,
+  [T.actII]: T.actIIText,
+  [T.actIII]: T.actIIIText,
+  [T.actIV]: T.actIVText,
+  [T.actV]: T.actVText,
+  [T.actVI]: T.actVIText,
+  [T.encore]: T.encoreText,
+  [T.ember]: T.actIIIText,
+  [T.terracotta]: T.actIText,
+}
+
+const ACCENT_TO_TEXT_ON_DARK = {
+  [T.actV]: T.actCityOnDark,
+}
+
+/** Readable act accent text on bone for labels under 18px. */
+export function accentTextFor(accent) {
+  return ACCENT_TO_TEXT[accent] ?? accent
+}
+
+/** Readable act accent text on dark immersion surfaces. */
+export function accentTextOnDarkFor(accent) {
+  return ACCENT_TO_TEXT_ON_DARK[accent] ?? accentTextFor(accent)
+}
+
+export function actTextForNumeral(numeral) {
+  return ACT_TEXT_COLORS[numeral] ?? T.actIText
 }

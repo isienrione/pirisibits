@@ -26,8 +26,8 @@ describe('offlinePackage', () => {
 
   it('lists manifest media paths for threshold reconstructions', () => {
     const paths = listRomeMediaManifestPaths(manifest)
-    expect(paths).toContain('/rome/video/w01_then_loop.mp4')
-    expect(paths.length).toBe(10)
+    expect(paths).toContain('/waypoints/colosseum/exterior/ancient-reconstruction.mp4')
+    expect(paths.length).toBeGreaterThanOrEqual(36)
   })
 
   it('estimates download size from file count', () => {

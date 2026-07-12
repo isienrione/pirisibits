@@ -8,6 +8,10 @@ Binding rules for all UI work. Violations fail `npm run check:design` in CI.
 
 Use **only** tokens from `chronowalk/src/design/tokens.css`. No invented hex, no legacy palette names (`ivory`, `parchment`, `bronze`, `gold`, `slate-*`, etc.).
 
+**Muted split:** `--muted` is text-only (secondary / meta copy on bone). `--muted-decor` is decoration-only (hairlines, borders, tracks, dividers, disabled fills). Never use `--muted` for non-text chrome.
+
+**Act accent text:** Accent-colored labels under 18px (or under 18.66px non-bold) use the `*-text` variant on bone. Dots, ticks, hairlines, progress fills, and pulses stay on the fill accent.
+
 ### Surfaces
 
 | Context | Background | Text |
@@ -19,7 +23,7 @@ Use **only** tokens from `chronowalk/src/design/tokens.css`. No invented hex, no
 
 One act accent family per screen — eyebrows, hairlines, progress, pulses, data. **Never large fills.**
 
-Use `useActAccent()` from `src/hooks/useActAccent.js`. Components consume the hook; never hardcode an act accent.
+Use `useActAccent()` from `src/hooks/useActAccent.js`. It returns `{ accent, accentText }`. Components consume the hook; never hardcode an act accent.
 
 ### Spectrum gradient
 
@@ -62,7 +66,8 @@ Import **first** in `main.jsx`:
 ```css
 :root {
   --obsidian:#16130F; --ink-900:#211C15; --ink-800:#26221B;
-  --bone:#F7F1E6; --warm-white:#F5EFE3; --muted:#B9AF9C;
+  --bone:#F7F1E6; --warm-white:#F5EFE3;
+  --muted:#756C5C; --muted-decor:#B9AF9C;
   --ember:#E8A13C; --ember-deep:#C97F1E; --ink-on-fill:#2A1206;
   /* THE VITALITY SYSTEM — act accents (one family per screen, never big fills) */
   --act-arena:#E4552E;     /* I  · coral — blood, sand, energy   */
@@ -72,6 +77,14 @@ Import **first** in `main.jsx`:
   --act-city:#B14A6E;      /* V  · tyrian rose — piazza life     */
   --act-river:#4E7D9B;     /* VI · tiber blue — dusk on water    */
   --act-encore:#8A6FB5;    /* Enc· twilight violet — long road   */
+  --act-arena-text:#B23413;
+  --act-hill-text:#55703A;
+  --act-forum-text:#8F5E10;
+  --act-market-text:#2F6E63;
+  --act-city-text:#963A5B;
+  --act-river-text:#3A607A;
+  --act-encore-text:#6A4F96;
+  --act-city-on-dark:#D488A4;
   --spectrum:linear-gradient(135deg,#E4552E,#E8A13C,#7C9A5C,#4E9B8F,#4E7D9B,#8A6FB5,#B14A6E);
   --seam-glow:0 0 12px rgba(232,161,60,.45);
   --radius-card:14px; --radius-sheet:20px;
@@ -89,17 +102,26 @@ Import **first** in `main.jsx`:
 | `--ink-800` | `#26221B` | `ink800` | Borders, tracks, quiet fills |
 | `--bone` | `#F7F1E6` | `bone` | Daylight surface / immersion text |
 | `--warm-white` | `#F5EFE3` | `warmwhite` | Immersion primary text |
-| `--muted` | `#B9AF9C` | `muted` | Secondary / meta text |
+| `--muted` | `#756C5C` | `muted` | Secondary / meta **text** on bone |
+| `--muted-decor` | `#B9AF9C` | `muteddecor` | Hairlines, borders, tracks, disabled fills |
 | `--ember` | `#E8A13C` | `ember` | Sacred seam; primary CTA fill |
 | `--ember-deep` | `#C97F1E` | `emberdeep` | Ember pressed / depth |
-| `--ink-on-fill` | `#2A1206` | `inkonfill` | Text on ember fill |
-| `--act-arena` | `#E4552E` | `actarena` | Act I accent |
+| `--ink-on-fill` | `#2A1206` | `inkonfill` | Text on ember / accent fills |
+| `--act-arena` | `#E4552E` | `actarena` | Act I accent (fills, dots, hairlines) |
+| `--act-arena-text` | `#B23413` | `actarenatext` | Act I labels on bone |
 | `--act-hill` | `#7C9A5C` | `acthill` | Act II accent |
+| `--act-hill-text` | `#55703A` | `acthilltext` | Act II labels on bone |
 | `--act-forum` | `#E8A13C` | `actforum` | Act III accent |
+| `--act-forum-text` | `#8F5E10` | `actforumtext` | Act III labels on bone |
 | `--act-market` | `#4E9B8F` | `actmarket` | Act IV accent |
+| `--act-market-text` | `#2F6E63` | `actmarkettext` | Act IV labels on bone |
 | `--act-city` | `#B14A6E` | `actcity` | Act V accent |
+| `--act-city-text` | `#963A5B` | `actcitytext` | Act V labels on bone |
+| `--act-city-on-dark` | `#D488A4` | `actcityondark` | Act V labels on dark surfaces |
 | `--act-river` | `#4E7D9B` | `actriver` | Act VI accent |
+| `--act-river-text` | `#3A607A` | `actrivertext` | Act VI labels on bone |
 | `--act-encore` | `#8A6FB5` | `actencore` | Encore accent |
+| `--act-encore-text` | `#6A4F96` | `actencoretext` | Encore labels on bone |
 | `--spectrum` | (gradient) | — | Prism moments only |
 | `--seam-glow` | rgba ember | — | Threshold / compare seam |
 | `--radius-card` | `14px` | `rounded-card` | Card radius |
@@ -107,15 +129,15 @@ Import **first** in `main.jsx`:
 
 ### Act → accent map (`src/design/actAccents.ts`)
 
-| Act id | Variable |
-|--------|----------|
-| `act1` | `--act-arena` |
-| `act2` | `--act-hill` |
-| `act3` | `--act-forum` |
-| `act4` | `--act-market` |
-| `act5` | `--act-city` |
-| `act6` | `--act-river` |
-| `encore` | `--act-encore` |
+| Act id | Accent | Text on bone |
+|--------|--------|--------------|
+| `act1` | `--act-arena` | `--act-arena-text` |
+| `act2` | `--act-hill` | `--act-hill-text` |
+| `act3` | `--act-forum` | `--act-forum-text` |
+| `act4` | `--act-market` | `--act-market-text` |
+| `act5` | `--act-city` | `--act-city-text` |
+| `act6` | `--act-river` | `--act-river-text` |
+| `encore` | `--act-encore` | `--act-encore-text` |
 
 ### Button API (`Button.jsx`)
 

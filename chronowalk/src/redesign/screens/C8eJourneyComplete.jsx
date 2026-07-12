@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import {T, F, SHELL_SAFE_BOTTOM_INSET, withAlpha} from '../tokens.js'
 import { appiaNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
 
@@ -112,7 +112,7 @@ export default function C8eJourneyComplete({
             fontSize: 20,
             fontStyle: 'italic',
             fontWeight: 300,
-            color: `${T.warmWhite}CC`,
+            color: `${withAlpha(T.warmWhite, 'CC')}`,
             lineHeight: 1.5,
             textAlign: 'center',
             margin: 0,
@@ -210,7 +210,7 @@ export default function C8eJourneyComplete({
             fontFamily: F.body,
             fontWeight: 500,
             fontSize: 14,
-            border: `1px solid ${T.muted}33`,
+            border: `1px solid ${withAlpha(T.mutedDecor, '33')}`,
             cursor: busy ? 'wait' : 'pointer',
           }}
         >

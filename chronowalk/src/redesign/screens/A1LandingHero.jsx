@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Play, ChevronRight } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { getRedesignHeroTrustStats } from '../../content/tourProductTruth.js'
@@ -104,7 +104,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
             <br />
             time.
           </h1>
-          <p style={{ fontSize: 16, color: `${T.warmWhite}CC`, lineHeight: 1.65 }}>
+          <p style={{ fontSize: 16, color: `${withAlpha(T.warmWhite, 'CC')}`, lineHeight: 1.65 }}>
             Rome, narrated like a film —
             <br />
             revealed by your touch.
@@ -169,7 +169,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               width: '100%',
               padding: '15px 20px',
               background: T.ember,
-              color: T.obsidian,
+              color: T.inkOnFill,
               borderRadius: 12,
               fontFamily: F.body,
               fontWeight: 600,
@@ -215,7 +215,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
           {HERO_TRUST_STATS.map((v) => (
             <div key={v} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <div style={{ width: 4, height: 4, borderRadius: 2, background: T.ember }} />
-              <span style={{ fontSize: 12, color: `${T.warmWhite}99` }}>{v}</span>
+              <span style={{ fontSize: 12, color: `${withAlpha(T.warmWhite, '99')}` }}>{v}</span>
             </div>
           ))}
         </div>

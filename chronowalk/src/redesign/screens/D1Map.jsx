@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha, accentTextFor} from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
 import { Eyebrow, TabBar } from '../ui/index.js';
 
@@ -219,7 +219,7 @@ export default function D1Map({ embedded = false }) {
                 border:`1px solid ${on ? chip.color : `${chip.color}55`}`,
                 borderRadius:20,
                 background: on ? `${chip.color}20` : "rgba(247,241,230,0.88)",
-                color: chip.color,
+                color: on ? accentTextFor(chip.color) : accentTextFor(chip.color),
                 fontSize:12, fontWeight:500,
                 cursor:"pointer", whiteSpace:"nowrap",
                 backdropFilter:"blur(6px)",
@@ -289,7 +289,7 @@ export default function D1Map({ embedded = false }) {
         >
           {/* Sheet drag handle */}
           <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
-            <div style={{ width:32, height:3.5, borderRadius:2, background:`${T.muted}45` }}/>
+            <div style={{ width:32, height:3.5, borderRadius:2, background:`${withAlpha(T.mutedDecor, '45')}` }}/>
           </div>
 
           {/* Pin content row */}
@@ -324,7 +324,7 @@ export default function D1Map({ embedded = false }) {
             </span>
             <button style={{
               fontSize:13, fontWeight:500,
-              color:sel.color, background:"none",
+              color:accentTextFor(sel.color), background:"none",
               border:"none", cursor:"pointer",
               fontFamily:F.body,
             }}>

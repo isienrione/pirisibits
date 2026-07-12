@@ -54,19 +54,19 @@ describe('BeginFlow', () => {
     renderBeginFlow()
 
     expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
-    expect(screen.getByText('Take it in chapters')).toBeInTheDocument()
-    expect(screen.getByText('The full day')).toBeInTheDocument()
+    expect(screen.getByText('Roma Eterna')).toBeInTheDocument()
+    expect(screen.getByText('Roma Antica')).toBeInTheDocument()
     expect(screen.getByText(/nothing is skipped forever/i)).toBeInTheDocument()
   })
 
   it('lets the traveler pick a pace and reach the location prompt', () => {
     renderBeginFlow()
 
-    fireEvent.click(screen.getByRole('button', { name: /the full day/i }))
+    fireEvent.click(screen.getByRole('button', { name: /roma eterna/i }))
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
 
     expect(screen.getByRole('heading', { name: /enable location/i })).toBeInTheDocument()
-    expect(screen.getByText('The full day')).toBeInTheDocument()
+    expect(screen.getByText('Roma Eterna')).toBeInTheDocument()
   })
 
   it('starts the journey at the Colosseum after location permission', async () => {

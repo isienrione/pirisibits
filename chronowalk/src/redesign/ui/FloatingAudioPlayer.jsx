@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import {T, F, withAlpha} from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
 
@@ -109,7 +109,7 @@ export default function FloatingAudioPlayer({
         }}
       >
         {/* Live progress hairline */}
-        <div style={{ height: 2, background: `${T.muted}22` }}>
+        <div style={{ height: 2, background: `${withAlpha(T.mutedDecor, '22')}` }}>
           <div style={{ height: '100%', width: `${progress * 100}%`, background: accent, boxShadow: `0 0 6px ${accent}` }} />
         </div>
 
@@ -235,7 +235,7 @@ export default function FloatingAudioPlayer({
                 touchAction: 'none',
               }}
             >
-              <div style={{ position: 'relative', width: '100%', height: 4, borderRadius: 2, background: `${T.muted}33` }}>
+              <div style={{ position: 'relative', width: '100%', height: 4, borderRadius: 2, background: `${withAlpha(T.mutedDecor, '33')}` }}>
                 <div style={{ position: 'absolute', inset: 0, width: `${progress * 100}%`, borderRadius: 2, background: accent }} />
                 <div
                   style={{
@@ -342,7 +342,7 @@ export default function FloatingAudioPlayer({
                   onClick={onCycleSpeed}
                   aria-label={`Playback speed ${formatPlaybackSpeed(playbackRate)}`}
                   style={{
-                    background: `${T.muted}22`,
+                    background: `${withAlpha(T.mutedDecor, '22')}`,
                     border: 'none',
                     borderRadius: 999,
                     padding: '5px 14px',
@@ -362,7 +362,7 @@ export default function FloatingAudioPlayer({
                   onClick={() => setShowTranscript((v) => !v)}
                   style={{
                     background: 'none',
-                    border: `1px solid ${T.muted}44`,
+                    border: `1px solid ${withAlpha(T.mutedDecor, '44')}`,
                     borderRadius: 999,
                     padding: '5px 14px',
                     cursor: 'pointer',
@@ -383,7 +383,7 @@ export default function FloatingAudioPlayer({
                     alignItems: 'center',
                     gap: 6,
                     background: 'none',
-                    border: `1px solid ${T.muted}44`,
+                    border: `1px solid ${withAlpha(T.mutedDecor, '44')}`,
                     borderRadius: 999,
                     padding: '5px 14px',
                     cursor: 'pointer',
@@ -404,7 +404,7 @@ export default function FloatingAudioPlayer({
                     alignItems: 'center',
                     gap: 6,
                     background: 'none',
-                    border: `1px solid ${T.muted}44`,
+                    border: `1px solid ${withAlpha(T.mutedDecor, '44')}`,
                     borderRadius: 999,
                     padding: '5px 14px',
                     cursor: 'pointer',

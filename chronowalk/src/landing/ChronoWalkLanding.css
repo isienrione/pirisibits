@@ -215,7 +215,7 @@
 
 .cw-landing-btn--coral {
   background: var(--act-arena, #e4552e);
-  color: var(--bone, #f7f1e6);
+  color: var(--ink-on-fill, #2a1206);
 }
 
 .cw-landing-btn--glow {
@@ -791,7 +791,7 @@
   text-align: center;
   font-size: 0.58rem;
   font-weight: 600;
-  color: var(--warm-white, #f5efe3);
+  color: var(--ink-on-fill, #2a1206);
 }
 
 /* Map screen */
@@ -863,6 +863,10 @@
 .cw-landing-screen--player > :not(.cw-landing-screen__player-scrim) {
   position: relative;
   z-index: 1;
+}
+
+.cw-landing-screen--player .cw-landing-screen__eyebrow {
+  color: var(--act-city-on-dark, #d488a4);
 }
 
 .cw-landing-screen__player-title {
@@ -1950,12 +1954,12 @@
 
 .cw-landing-btn--coral {
   background: var(--act-arena, #e4552e);
-  color: var(--bone, #f7f1e6);
+  color: var(--ink-on-fill, #2a1206);
 }
 
 .cw-landing-btn--primary {
   background: var(--ember, #e8a13c);
-  color: var(--obsidian, #16130f);
+  color: var(--ink-on-fill, #2a1206);
 }
 
 .cw-landing-btn--ghost {

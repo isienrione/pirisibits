@@ -17,6 +17,16 @@ const ACT_COLOR = {
   encore: T.encore,
 }
 
+const ACT_TEXT_COLOR = {
+  act1: T.actIText,
+  act2: T.actIIText,
+  act3: T.actIIIText,
+  act4: T.actIVText,
+  act5: T.actVText,
+  act6: T.actVIText,
+  encore: T.encoreText,
+}
+
 const PREVIEW_CONTEXT = {
   pace: JOURNEY_PACE.CLASSIC,
   path: 'a',
@@ -62,7 +72,7 @@ export function JourneyPickScreen() {
                 />
                 {photo ? <img src={photo} alt="" className="cw-landing-screen__tour-photo" /> : null}
                 <div className="cw-landing-screen__tour-copy">
-                  <span className="cw-landing-screen__tour-act-label" style={{ color }}>
+                  <span className="cw-landing-screen__tour-act-label" style={{ color: ACT_TEXT_COLOR[act.colorKey] ?? T.actIText }}>
                     {actLabel}
                   </span>
                   <strong>{act.title}</strong>

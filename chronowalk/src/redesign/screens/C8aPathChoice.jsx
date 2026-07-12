@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import {T, F, SHELL_SAFE_BOTTOM_INSET, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
 import { Vignette, BottomScrim } from '../ui/index.js'
@@ -15,7 +15,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
       key: 'A',
       label: 'Path A — The Forum Direct',
       chip: '~45 min shorter',
-      chipStyle: { background: T.ember, color: T.obsidian },
+      chipStyle: { background: T.ember, color: T.inkOnFill },
       body: 'Straight through the gate of triumphs and down into the heart. The Palatine stays available as an optional climb.',
       cta: 'Take The Forum Direct',
     },
@@ -132,7 +132,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
                   {path.chip}
                 </span>
               </div>
-              <p style={{ fontSize: 14, color: `${T.warmWhite}CC`, lineHeight: 1.65, margin: 0 }}>{path.body}</p>
+              <p style={{ fontSize: 14, color: `${withAlpha(T.warmWhite, 'CC')}`, lineHeight: 1.65, margin: 0 }}>{path.body}</p>
               <span
                 style={{
                   fontSize: 13,

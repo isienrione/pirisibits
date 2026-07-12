@@ -1,4 +1,4 @@
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { spanishSteps } from "../images.js";
 
 export default function F2ShareCard() {
@@ -41,7 +41,7 @@ export default function F2ShareCard() {
               style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.55))" }} />
             <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
           </svg>
-          <span style={{ fontSize: 10, color: `${T.muted}80`, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+          <span style={{ fontSize: 10, color: `${withAlpha(T.muted, '80')}`, letterSpacing: "0.16em", textTransform: "uppercase" }}>
             CHRONOWALK
           </span>
         </div>
@@ -83,7 +83,7 @@ export default function F2ShareCard() {
 
           {/* Stats — single mono row */}
           <p style={{
-            fontSize: 14, color: `${T.warmWhite}CC`,
+            fontSize: 14, color: `${withAlpha(T.warmWhite, 'CC')}`,
             fontVariantNumeric: "tabular-nums",
             textAlign: "center", letterSpacing: "0.04em",
           }}>

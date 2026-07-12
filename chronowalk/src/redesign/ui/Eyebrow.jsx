@@ -1,6 +1,9 @@
-import { T, F } from '../tokens.js'
+import { T, F, accentTextFor, accentTextOnDarkFor } from '../tokens.js'
 
-export function Eyebrow({ children, color = T.gold, hairline = false }) {
+export function Eyebrow({ children, color = T.ember, textColor, hairline = false, onDark = false }) {
+  const labelColor =
+    textColor ?? (onDark ? accentTextOnDarkFor(color) : accentTextFor(color))
+
   return (
     <div>
       <span
@@ -10,7 +13,7 @@ export function Eyebrow({ children, color = T.gold, hairline = false }) {
           fontSize: 10,
           letterSpacing: '0.25em',
           textTransform: 'uppercase',
-          color,
+          color: labelColor,
           fontWeight: 500,
         }}
       >

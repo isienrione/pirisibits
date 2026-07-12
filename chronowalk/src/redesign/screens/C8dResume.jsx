@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import {T, F, withAlpha} from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette, BottomScrim, Eyebrow } from '../ui/index.js';
@@ -63,7 +63,7 @@ export default function C8dResume({
           onClick={() => (onContinue ? onContinue() : navigate("C5"))}
           style={{
             width: "100%", padding: "15px",
-            background: accent, color: T.warmWhite,
+            background: accent, color: T.inkOnFill,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
@@ -81,7 +81,7 @@ export default function C8dResume({
           onClick={() => (onStartFresh ? onStartFresh() : navigate("B4"))}
           style={{
           width: "100%", textAlign: "center",
-          fontSize: 13, color: `${T.warmWhite}65`,
+          fontSize: 13, color: `${withAlpha(T.warmWhite, '65')}`,
           background: "none", border: "none",
           cursor: "pointer", fontFamily: F.body,
         }}>
