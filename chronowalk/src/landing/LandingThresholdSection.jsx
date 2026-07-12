@@ -1,5 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
+import LandingPicture from './LandingPicture.jsx'
 
 export default function LandingThresholdSection() {
   const section = LANDING_CONTENT.threshold
@@ -25,11 +26,12 @@ export default function LandingThresholdSection() {
 
         <div className="cw-v2-threshold__visual">
           <div className="cw-v2-threshold__frame">
-            <img
-              src={LANDING_V2.threshold}
+            <LandingPicture
+              asset={LANDING_V2.threshold}
               alt="A ruined Roman temple morphing into its vivid ancient reconstruction"
               className="cw-v2-threshold__image"
               loading="lazy"
+              decoding="async"
             />
             <span className="cw-v2-threshold__hold">{section.holdLabel}</span>
           </div>

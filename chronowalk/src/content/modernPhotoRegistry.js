@@ -112,6 +112,23 @@ export function getModernPosterUrl(stopId) {
 }
 
 /** @param {string | null | undefined} stopId */
+export function getModernPosterThumbUrl(stopId) {
+  return getModernPosterUrl(stopId).replace(/modern-poster\.jpg$/, 'modern-poster-thumb.webp')
+}
+
+/** @param {string | null | undefined} posterPath */
+export function getPosterThumbPath(posterPath) {
+  if (!posterPath) return null
+  if (posterPath.endsWith('modern-poster.jpg')) {
+    return posterPath.replace(/modern-poster\.jpg$/, 'modern-poster-thumb.webp')
+  }
+  if (posterPath.endsWith('ancient-poster.jpg')) {
+    return posterPath.replace(/ancient-poster\.jpg$/, 'ancient-poster-thumb.webp')
+  }
+  return null
+}
+
+/** @param {string | null | undefined} stopId */
 export function getModernExteriorUrl(stopId) {
   return getModernPhotoPaths(stopId).exterior
 }

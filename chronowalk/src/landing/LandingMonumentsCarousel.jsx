@@ -31,6 +31,7 @@ export default function LandingMonumentsCarousel() {
                       alt={monument.title}
                       className="cw-v2-monuments__photo"
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <p className="cw-v2-monuments__title">{monument.title}</p>

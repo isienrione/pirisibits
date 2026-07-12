@@ -14,6 +14,14 @@ export function getLandingTierBasemapPath(tierId) {
   return ROME_LANDING_BASEMAP_BY_TIER[tierId] ?? ROME_LANDING_BASEMAP_BY_TIER['rome-complete']
 }
 
+export function getLandingTierBasemapAsset(tierId) {
+  const fallback = getLandingTierBasemapPath(tierId)
+  return {
+    webp: fallback.replace(/\.jpg$/, '.webp'),
+    fallback,
+  }
+}
+
 export function buildRomeLandingBasemapUrl(
   token,
   bounds = ROME_LANDING_MAP_BOUNDS,

@@ -1,5 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
+import LandingPicture from './LandingPicture.jsx'
 
 export default function LandingPersonasSection() {
   const section = LANDING_CONTENT.personas
@@ -13,11 +14,12 @@ export default function LandingPersonasSection() {
             {section.headline}
           </h2>
           <div className="cw-v2-personas__photo-wrap">
-            <img
-              src={LANDING_V2.lifestyleCouple}
+            <LandingPicture
+              asset={LANDING_V2.lifestyleCouple}
               alt="A couple sharing earphones, looking up at a Roman monument at golden hour"
               className="cw-v2-personas__photo"
               loading="lazy"
+              decoding="async"
             />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
 import LandingPhoneFrame from './LandingPhoneFrame.jsx'
+import LandingPicture from './LandingPicture.jsx'
 
 const SCREEN_IMAGES = {
   map: LANDING_V2.screenMap,
@@ -30,11 +31,12 @@ export default function LandingExperienceSection() {
           {section.screens.map((screen) => (
             <article key={screen.title} className="cw-v2-experience__card">
               <LandingPhoneFrame label={screen.title}>
-                <img
-                  src={SCREEN_IMAGES[screen.imageKey]}
+                <LandingPicture
+                  asset={SCREEN_IMAGES[screen.imageKey]}
                   alt={screen.title}
                   className="cw-v2-experience__screen"
                   loading="lazy"
+                  decoding="async"
                 />
               </LandingPhoneFrame>
               <h3 className="cw-v2-experience__title">{screen.title}</h3>

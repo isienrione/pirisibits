@@ -7,7 +7,7 @@ import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import {T, ACT_COLORS, F, SHELL_TAB_BAR_INSET, withAlpha, accentTextFor, actTextForNumeral} from './tokens.js'
-import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
+import { signatureLine, thumbPhotoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 
 const SEAM_X = 38
@@ -64,7 +64,7 @@ export default function RedesignStopsScreen() {
               name: titleForWaypoint(waypoint),
               sigLine: signatureLine(waypoint),
               status: entry.status,
-              photo: photoForWaypoint(waypoint),
+              photo: thumbPhotoForWaypoint(waypoint),
             }
           }),
       }))

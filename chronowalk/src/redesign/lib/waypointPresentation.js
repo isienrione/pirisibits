@@ -73,6 +73,14 @@ export function photoForWaypoint(waypoint) {
   return getNowPhotoUrl('colosseum')
 }
 
+/** Small WebP list thumbnail — never use full posters in stop/journal lists. */
+export function thumbPhotoForWaypoint(waypoint) {
+  const full = photoForWaypoint(waypoint)
+  if (!full) return null
+  const thumb = full.replace(/\/(modern|ancient)-poster\.jpg(\?.*)?$/, '/$1-poster-thumb.webp$2')
+  return thumb !== full ? thumb : full
+}
+
 export function thenPhotoForWaypoint(waypoint) {
   if (waypoint?.reconstruction?.loop) {
     return resolvePhotoUrl(waypoint.reconstruction.now ?? waypoint.photo)

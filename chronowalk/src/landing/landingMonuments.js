@@ -1,4 +1,4 @@
-import { getModernPosterUrl } from '../content/modernPhotoRegistry.js'
+import { getModernPosterThumbUrl } from '../content/modernPhotoRegistry.js'
 import { LANDING_ROUTE_STOPS, LANDING_TIER_ROUTES } from './landingTierRoutes.js'
 
 /** All monuments on the complete Rome route — for landing carousel. */
@@ -11,7 +11,7 @@ export function getLandingMonuments() {
       id,
       title: stop?.title ?? id,
       short: stop?.short ?? stop?.title ?? id,
-      photo: getModernPosterUrl(id),
+      photo: getModernPosterThumbUrl(id),
     }
   })
 }

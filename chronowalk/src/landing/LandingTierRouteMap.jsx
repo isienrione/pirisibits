@@ -1,6 +1,7 @@
 import { buildSmoothRouteD } from './landingRomeMapPaths.js'
-import { getLandingTierBasemapPath } from './landingMapboxStatic.js'
+import { getLandingTierBasemapAsset } from './landingMapboxStatic.js'
 import { getLandingTierMapBounds, getLandingTierRouteStops, projectRouteStops } from './landingTierRoutes.js'
+import LandingPicture from './LandingPicture.jsx'
 
 function PinIcon({ featured = false }) {
   return (
@@ -79,8 +80,8 @@ export default function LandingTierRouteMap({ tierId, featured = false, classNam
       aria-label={`Route map with ${points.length} included stops`}
     >
       <div className="cw-v2-tier-map__frame">
-        <img
-          src={getLandingTierBasemapPath(tierId)}
+        <LandingPicture
+          asset={getLandingTierBasemapAsset(tierId)}
           alt=""
           className="cw-v2-tier-map__photo"
           loading="lazy"

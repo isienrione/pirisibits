@@ -8,7 +8,7 @@ describe('getLandingMonuments', () => {
     expect(monuments[0]).toMatchObject({
       id: expect.any(String),
       title: expect.any(String),
-      photo: expect.stringMatching(/^\/waypoints\//),
+      photo: expect.stringMatching(/modern-poster-thumb\.webp$/),
     })
   })
 })

@@ -1,13 +1,10 @@
 import { LANDING_CONTENT } from './landingData.js'
-import {
-  LANDING_COLOSSEUM_NOW,
-  LANDING_FORUM_NOW,
-  LANDING_PANTHEON_NOW,
-} from './landingVisualAssets.js'
+import { LANDING_LIFESTYLE_THUMBS } from './landingVisualAssets.js'
+import { mediaUrl } from '../lib/mediaUrl.js'
 
 const LIFESTYLE_IMAGES = {
-  forum: LANDING_FORUM_NOW,
-  pantheon: LANDING_PANTHEON_NOW,
+  forum: LANDING_LIFESTYLE_THUMBS.forum,
+  pantheon: LANDING_LIFESTYLE_THUMBS.pantheon,
 }
 
 export default function LandingLifestyleSection() {
@@ -27,10 +24,11 @@ export default function LandingLifestyleSection() {
                 <span>{banner.placeholderLabel}</span>
               </div>
               <img
-                src={LIFESTYLE_IMAGES[banner.imageKey]}
+                src={mediaUrl(LIFESTYLE_IMAGES[banner.imageKey])}
                 alt=""
                 className="cw-landing-lifestyle__image"
                 loading="lazy"
+                decoding="async"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
                 }}

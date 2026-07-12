@@ -1,5 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
+import LandingPicture from './LandingPicture.jsx'
 
 export default function LandingWhoItsForSection() {
   const section = LANDING_CONTENT['who-its-for']
@@ -20,11 +21,12 @@ export default function LandingWhoItsForSection() {
         </header>
 
         <div className="cw-v2-who__banner">
-          <img
-            src={LANDING_V2.lifestyleCouple}
+          <LandingPicture
+            asset={LANDING_V2.lifestyleCouple}
             alt="A couple sharing earphones, looking up at a Roman monument at golden hour"
             className="cw-v2-who__banner-photo"
             loading="lazy"
+            decoding="async"
           />
         </div>
 

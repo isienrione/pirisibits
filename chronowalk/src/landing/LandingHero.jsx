@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
+import LandingPicture from './LandingPicture.jsx'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 export default function LandingHero({ onPreview }) {
@@ -10,8 +11,8 @@ export default function LandingHero({ onPreview }) {
   return (
     <section id={hero.id} className="cw-v2-hero" aria-labelledby="hero-heading">
       {imageOk ? (
-        <img
-          src={LANDING_V2.heroRome}
+        <LandingPicture
+          asset={LANDING_V2.heroRome}
           alt=""
           aria-hidden="true"
           className="cw-v2-hero__photo"
