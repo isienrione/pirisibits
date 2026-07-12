@@ -1,0 +1,235 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "route": "/landing",
+      "type": "contrast",
+      "textIncludes": "MY TOUR"
+    },
+    {
+      "route": "/landing",
+      "type": "contrast",
+      "textIncludes": "You are here"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "ChronoWalk home"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "How it works"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "Try free"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "Pricing"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "FAQ"
+    },
+    {
+      "route": "/landing",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/preview",
+      "type": "contrast",
+      "textIncludes": "Read instead"
+    },
+    {
+      "route": "/preview",
+      "type": "contrast",
+      "textIncludes": "Chapter 1 of 4 · The Pantheon — EXTERIOR (~520 words · ≈4:00)"
+    },
+    {
+      "route": "/preview",
+      "type": "contrast",
+      "textIncludes": "0:00"
+    },
+    {
+      "route": "/preview",
+      "type": "contrast",
+      "textIncludes": "3:57"
+    },
+    {
+      "route": "/preview",
+      "type": "contrast",
+      "textIncludes": "15"
+    },
+    {
+      "route": "/preview",
+      "type": "target-size",
+      "textIncludes": "Back 15 seconds"
+    },
+    {
+      "route": "/preview",
+      "type": "target-size",
+      "textIncludes": "Forward 15 seconds"
+    },
+    {
+      "route": "/preview",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/setup",
+      "type": "contrast",
+      "textIncludes": "Two small things before Rome."
+    },
+    {
+      "route": "/setup",
+      "type": "contrast",
+      "textIncludes": "Install a home-screen icon for tour day."
+    },
+    {
+      "route": "/setup",
+      "type": "contrast",
+      "textIncludes": "— 215 MB"
+    },
+    {
+      "route": "/setup",
+      "type": "contrast",
+      "textIncludes": "Streets of Rome, weak signal, strong stories."
+    },
+    {
+      "route": "/setup",
+      "type": "contrast",
+      "textIncludes": "I'll do this later"
+    },
+    {
+      "route": "/setup",
+      "type": "target-size",
+      "textIncludes": "I'll do this later"
+    },
+    {
+      "route": "/setup",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/stops",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/journal",
+      "type": "contrast",
+      "textIncludes": "All stops"
+    },
+    {
+      "route": "/journal",
+      "type": "contrast",
+      "textIncludes": "Open"
+    },
+    {
+      "route": "/journal",
+      "type": "target-size",
+      "textIncludes": "Open"
+    },
+    {
+      "route": "/journal",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/no-ticket",
+      "type": "contrast",
+      "textIncludes": "VIA DEI FORI IMPERIALI"
+    },
+    {
+      "route": "/no-ticket",
+      "type": "contrast",
+      "textIncludes": "ROMAN FORUM"
+    },
+    {
+      "route": "/no-ticket",
+      "type": "contrast",
+      "textIncludes": "You"
+    },
+    {
+      "route": "/no-ticket",
+      "type": "contrast",
+      "textIncludes": "Railing"
+    },
+    {
+      "route": "/no-ticket",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/access",
+      "type": "contrast",
+      "textIncludes": "Your ticket"
+    },
+    {
+      "route": "/access",
+      "type": "contrast",
+      "textIncludes": "After purchase, we email you a personal link. Open it on this phone to return to"
+    },
+    {
+      "route": "/access",
+      "type": "contrast",
+      "textIncludes": "From your email"
+    },
+    {
+      "route": "/access",
+      "type": "contrast",
+      "textIncludes": "Haven't purchased yet? Unlock Rome"
+    },
+    {
+      "route": "/access",
+      "type": "target-size",
+      "textIncludes": "Unlock Rome"
+    },
+    {
+      "route": "/access",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    },
+    {
+      "route": "/map",
+      "type": "contrast",
+      "textIncludes": "Current waypoint"
+    },
+    {
+      "route": "/map",
+      "type": "contrast",
+      "textIncludes": "The Colosseum"
+    },
+    {
+      "route": "/map",
+      "type": "contrast",
+      "textIncludes": "GPS will refine your distance as you walk."
+    },
+    {
+      "route": "/map",
+      "type": "contrast",
+      "textIncludes": "Head toward The Colosseum to reach your next story."
+    },
+    {
+      "route": "/map",
+      "type": "target-size",
+      "textIncludes": "← Walk"
+    },
+    {
+      "route": "/map",
+      "type": "target-size",
+      "textIncludes": "Recenter map"
+    },
+    {
+      "route": "/map",
+      "type": "target-size",
+      "textIncludes": "Go back"
+    }
+  ]
+}

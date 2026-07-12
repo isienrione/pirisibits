@@ -177,6 +177,10 @@
 }
 
 .cw-v2-header__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.35rem;
   font-size: 0.88rem;
   color: var(--v2-muted);
   text-decoration: none;
@@ -189,6 +193,10 @@
 
 .cw-v2-header__cta {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
   padding: 0.5rem 1.25rem;
   border: none;
   border-radius: 999px;
@@ -1891,6 +1899,7 @@
   }
 
   .cw-v2-header__cta {
+    min-height: 2.75rem;
     padding: 0.45rem 0.85rem;
     font-size: 0.78rem;
   }

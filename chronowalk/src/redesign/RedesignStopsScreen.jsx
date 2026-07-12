@@ -205,6 +205,7 @@ export default function RedesignStopsScreen() {
                     </span>
 
                     <div
+                      className="cw-stop-row-card"
                       style={{
                         background: T.warmWhite,
                         borderRadius: 14,
@@ -215,10 +216,13 @@ export default function RedesignStopsScreen() {
                     >
                       <button
                         type="button"
+                        className="cw-wc-pressable cw-stop-row-card__main"
+                        data-testid="stop-row-main"
                         onClick={() => openStop(card.id)}
-                        style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', padding: 0, textAlign: 'left' }}
+                        aria-label={`Open ${card.name}`}
+                        style={{ minHeight: 44 }}
                       >
-                        <div style={{ display: 'flex', height: 96 }}>
+                        <div style={{ display: 'flex', minHeight: 96 }}>
                           {card.photo ? (
                             <img
                               src={card.photo}
@@ -243,36 +247,24 @@ export default function RedesignStopsScreen() {
                             </p>
                           </div>
                         </div>
-                      </button>
-
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${withAlpha(T.mutedDecor, '18')}` }}>
-                        <span style={{ fontSize: 11, color: group.textColor ?? accentTextFor(group.color), letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                          {statusLabel(card.status)}
-                        </span>
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                          <button
-                            type="button"
-                            onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.mutedDecor, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
-                          >
-                            Listen here
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openStop(card.id)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${withAlpha(T.mutedDecor, '40')}`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
-                          >
-                            Open card
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 11, color: T.inkOnFill, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
-                          >
-                            Walk here
-                          </button>
+                        <div
+                          className="cw-stop-row-card__footer"
+                          style={{ borderTop: `1px solid ${withAlpha(T.mutedDecor, '18')}` }}
+                        >
+                          <span style={{ fontSize: 11, color: group.textColor ?? accentTextFor(group.color), letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+                            {statusLabel(card.status)}
+                          </span>
                         </div>
-                      </div>
+                      </button>
+                      <button
+                        type="button"
+                        className="cw-wc-pressable cw-hit-target-inline cw-stop-row-card__listen"
+                        data-testid="stop-row-listen"
+                        onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
+                        style={{ minHeight: 44, minWidth: 44 }}
+                      >
+                        Listen
+                      </button>
                     </div>
                   </div>
                 )

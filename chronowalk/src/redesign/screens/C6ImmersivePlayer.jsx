@@ -208,14 +208,13 @@ export default function C6ImmersivePlayer({
         <button
           key={t}
           type="button"
+          className="cw-immersive-hit-tab"
           onClick={() => selectTab(t)}
           style={{
-            paddingBottom: 8,
             fontSize: 11,
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
             color: tab === t ? T.warmWhite : T.muted,
-            marginBottom: -1,
             background: 'none',
             border: 'none',
             borderBottom: `1.5px solid ${tab === t ? accent : 'transparent'}`,
@@ -484,17 +483,15 @@ export default function C6ImmersivePlayer({
         >
           <button
             type="button"
+            className="cw-immersive-hit-back"
+            data-testid="immersive-back"
             onClick={onBack}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
               color: T.warmWhite,
               background: 'rgba(11,11,13,0.45)',
               backdropFilter: 'blur(8px)',
               border: 'none',
               borderRadius: 999,
-              padding: '6px 10px 6px 6px',
               cursor: 'pointer',
               fontFamily: F.body,
               fontSize: 13,

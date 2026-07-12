@@ -152,6 +152,16 @@ Import **first** in `main.jsx`:
 ## Enforcement
 
 ```bash
-npm run check:design   # forbidden strings + rogue hex in JSX className/style
-npm test             # runs check:design then vitest
+npm run check:design    # forbidden strings + rogue hex in JSX className/style
+npm run check:assets    # landing optimized assets must be ≤ 400 KB
+npm run check:contrast  # rendered WCAG 2.1 contrast + touch-target audit (requires build)
+npm test                # runs check:design, check:assets, then vitest
+```
+
+### Rendered contrast (`check:contrast`)
+
+After `npm run build`, the contrast audit serves the production bundle and visits `/landing`, `/preview`, `/setup`, `/stops`, `/journal`, `/no-ticket`, `/access`, and `/map` at 390×844. It walks visible text nodes, computes WCAG 2.1 contrast (4.5:1 normal, 3:1 large/bold), flags interactive targets smaller than 40×40px, and fails on violations not listed in `scripts/contrast-allowlist.json`.
+
+```bash
+npm run build && npm run check:contrast
 ```

@@ -65,7 +65,7 @@ export default function E1JournalHome({
           <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1 }}>{headline}</h1>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {onAllStopsClick ? (
-              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${withAlpha(T.ember, '55')}`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
+              <button type="button" onClick={onAllStopsClick} className="cw-hit-target-inline" style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${withAlpha(T.ember, '55')}`, borderRadius: 20, fontFamily: F.body, minHeight: 44 }}>
                 All stops
               </button>
             ) : null}
@@ -74,7 +74,8 @@ export default function E1JournalHome({
                 type="button"
                 onClick={onSettingsClick}
                 aria-label="Settings"
-                style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
+                className="cw-hit-target-icon"
+                style={{ color: T.muted, lineHeight: 0 }}
               >
                 <Settings size={18} />
               </button>
@@ -159,12 +160,14 @@ export default function E1JournalHome({
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <button
                         type="button"
+                        data-testid="journal-open-stop"
                         onClick={(e) => {
                           e.stopPropagation()
                           if (onCardClick) onCardClick(card.id)
                           else navigate('E2')
                         }}
-                        style={{ display: "flex", alignItems: "center", gap: 7, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        className="cw-hit-target-row"
+                        style={{ gap: 7 }}
                       >
                         <div style={{ width: 28, height: 28, borderRadius: 14, background: `${group.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <Play size={11} fill={group.color} color={group.color} style={{ marginLeft: 2 }} />

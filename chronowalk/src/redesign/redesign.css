@@ -2127,3 +2127,105 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
     animation: none;
   }
 }
+
+/* —— Touch targets (≥44px effective hit area) —— */
+
+.cw-hit-target-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 14px;
+  margin: -7px -6px;
+  border: 1px solid color-mix(in srgb, var(--muted-decor, #b9af9c) 40%, transparent);
+  border-radius: 8px;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--ink-900, #16130f);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-hit-target-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin: -10px -8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-hit-target-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 6px;
+  margin: -8px -6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-stop-row-card {
+  position: relative;
+}
+
+.cw-stop-row-card__main {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-stop-row-card__footer {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px 14px;
+  padding-right: 96px;
+}
+
+.cw-stop-row-card__listen {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+}
+
+.cw-immersive-hit-tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px 8px;
+  margin-bottom: -1px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cw-immersive-hit-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px 12px 8px 8px;
+  margin: -4px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
