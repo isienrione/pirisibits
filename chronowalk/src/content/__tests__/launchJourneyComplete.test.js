@@ -6,8 +6,8 @@ describe('launchJourneyComplete', () => {
     const moment = getJourneyCompleteMoment({ id: 'rome-launch' })
 
     expect(moment.headline).toBe('You walked Ancient Rome.')
-    expect(moment.subline).toMatch(/beneath your feet/i)
-    expect(moment.heroImage).toContain('/waypoints/colosseum/')
+    expect(moment.subline).toMatch(/under your feet/i)
+    expect(moment.heroImage).toContain('/waypoints/via-appia/')
   })
 
   it('falls back to default completion copy', () => {

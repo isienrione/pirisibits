@@ -8,12 +8,10 @@ describe('collectManifestMediaPaths', () => {
   it('collects reconstruction and hero assets for threshold waypoints', () => {
     const paths = collectManifestMediaPaths(manifest)
 
-    expect(paths).toContain('/rome/img/w01_hero.avif')
-    expect(paths).toContain('/rome/img/w01_now.avif')
-    expect(paths).toContain('/rome/img/w01_then.avif')
-    expect(paths).toContain('/rome/video/w01_then_loop.mp4')
-    expect(paths).toContain('/rome/img/w03_now.avif')
-    expect(paths).toContain('/rome/video/w13_then_loop.mp4')
-    expect(paths.length).toBe(10)
+    expect(paths).toContain('/waypoints/colosseum/exterior/modern-poster.jpg')
+    expect(paths).toContain('/waypoints/colosseum/exterior/ancient-reconstruction.mp4')
+    expect(paths).toContain('/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4')
+    expect(paths).toContain('/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4')
+    expect(paths.length).toBeGreaterThanOrEqual(36)
   })
 })

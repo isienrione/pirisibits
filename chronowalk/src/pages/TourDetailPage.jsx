@@ -13,9 +13,10 @@ import {
 } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
 import { purchasePath, ROUTES } from '../routes/paths'
+import { hex } from '../design/tokens.js'
 
 const STOP_COLORS = {
-  selected: '#D4AF37',
+  selected: hex.ember,
   default: '#A8742A',
   muted: '#C9B89A',
 }
@@ -52,14 +53,14 @@ function TourRoutePreview({ model, selectedStopId }) {
         return (
           <g key={stop.id}>
             {isSelected ? (
-              <circle cx={stop.x} cy={stop.y} r="14" fill="#D4AF37" fillOpacity="0.18" />
+              <circle cx={stop.x} cy={stop.y} r="14" fill={hex.ember} fillOpacity="0.18" />
             ) : null}
             <circle
               cx={stop.x}
               cy={stop.y}
               r={isSelected ? 7 : 5}
               fill={isSelected ? STOP_COLORS.selected : STOP_COLORS.default}
-              stroke="#F7F3EC"
+              stroke={hex.bone}
               strokeWidth="2"
             />
           </g>
