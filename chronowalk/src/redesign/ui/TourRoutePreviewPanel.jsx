@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { buildTourRoadmapForContext } from '../../content/tourRoadmap.js'
-import { getTourProductTruth } from '../../content/tourProductTruth.js'
+import { getVisibleStopCounts } from '../../content/services/stopCounts.js'
 import { getWaypoint } from '../../content/manifest.js'
 import { T, F } from '../tokens.js'
 import { titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -34,13 +34,8 @@ export default function TourRoutePreviewPanel({
 
   const stopCount = useMemo(() => {
     if (!manifest) return 0
-    return getTourProductTruth(manifest, {
-      path: context?.path ?? 'a',
-      pace: context?.pace,
-      promotedOptionalIds: context?.promotedOptionalIds ?? [],
-      customWaypointIds: context?.customWaypointIds,
-    }).visitStopCount
-  }, [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds])
+    return getVisibleStopCounts(manifest, context?.path ?? 'a').total
+  }, [manifest, context?.path])
 
   const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
 

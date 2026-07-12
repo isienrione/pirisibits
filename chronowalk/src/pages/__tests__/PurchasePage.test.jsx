@@ -39,7 +39,7 @@ describe('PurchasePage', () => {
 
     expect(screen.getByText('Rome')).toBeInTheDocument()
     expect(screen.getByText(/Forum cluster \+ city loop/i)).toBeInTheDocument()
-    expect(screen.getByText(/22 places · yours to keep/i)).toBeInTheDocument()
+    expect(screen.getByText(/20 stops · yours to keep/i)).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
     expect(screen.getByText('$15')).toBeInTheDocument()
     expect(screen.getByText('Secure payment')).toBeInTheDocument()

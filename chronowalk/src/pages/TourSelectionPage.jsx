@@ -50,7 +50,7 @@ function DestinationCard({ destination, onSelect }) {
       </div>
 
       <div className="px-6 py-6 sm:px-8 sm:py-7">
-        <p className={cn(metaLabel, 'text-bronze')}>{destination.placeCount} places</p>
+        <p className={cn(metaLabel, 'text-bronze')}>{destination.placeCount} stops</p>
         <p className="mt-3 max-w-prose text-base leading-relaxed text-soft-slate">
           {destination.description}
         </p>

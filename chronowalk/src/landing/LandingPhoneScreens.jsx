@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { JOURNEY_PACE } from '../data/romePacing.js'
 import { buildMyTourActs, currentActForTour, primaryCtaLabel } from '../content/myTourPlan.js'
 import { loadRomeManifest } from '../content/manifest.js'
+import { getLandingRouteStats } from './landingRouteStats.js'
 import { photoForWaypoint } from '../redesign/lib/waypointPresentation.js'
 import { T, F } from '../redesign/tokens.js'
 import LandingColosseumThreshold from './LandingColosseumThreshold.jsx'
@@ -36,6 +37,7 @@ const PREVIEW_CONTEXT = {
 
 export function JourneyPickScreen() {
   const acts = useMemo(() => buildMyTourActs(loadRomeManifest(), PREVIEW_CONTEXT), [])
+  const routeStats = useMemo(() => getLandingRouteStats(), [])
   const currentAct = useMemo(() => currentActForTour(acts), [acts])
   const ctaLabel = useMemo(() => primaryCtaLabel(acts, false), [acts])
   const visibleActs = acts.slice(0, 3)
@@ -46,7 +48,7 @@ export function JourneyPickScreen() {
         <div className="cw-landing-screen__tour-header">
           <p className="cw-landing-screen__eyebrow">MY TOUR</p>
           <h3 className="cw-landing-screen__title">Rome on foot</h3>
-          <p className="cw-landing-screen__sub">Your pace · 22 places</p>
+          <p className="cw-landing-screen__sub">{routeStats.phoneSubline}</p>
         </div>
 
         <div className="cw-landing-screen__tour-list">

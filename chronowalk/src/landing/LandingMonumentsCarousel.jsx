@@ -1,8 +1,10 @@
 import { LANDING_CONTENT } from './landingData.js'
+import { getLandingRouteStats } from './landingRouteStats.js'
 import { getLandingMonuments } from './landingMonuments.js'
 
 export default function LandingMonumentsCarousel() {
   const section = LANDING_CONTENT.monuments
+  const routeStats = getLandingRouteStats()
   const monuments = getLandingMonuments()
 
   return (
@@ -15,7 +17,7 @@ export default function LandingMonumentsCarousel() {
         <header className="cw-v2-section__header">
           <p className="cw-v2-eyebrow">{section.eyebrow}</p>
           <h2 id={`${section.id}-heading`} className="cw-v2-section__title">
-            {section.headline}
+            {routeStats.monumentsHeadline}
           </h2>
           {section.subheadline ? <p className="cw-v2-section__lead">{section.subheadline}</p> : null}
         </header>

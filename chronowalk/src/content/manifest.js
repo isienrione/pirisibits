@@ -158,3 +158,4 @@ export function getWaypointIndex(manifest, waypointId) {
 export { parseRomeManifest } from './romeManifestZod.schema.js'
 export { collectManifestAudioPaths } from './audioPaths.js'
 export { getTourProductTruth } from './tourProductTruth.js'
+export { getVisibleStopCounts, getVisibleStopIds } from './services/stopCounts.js'

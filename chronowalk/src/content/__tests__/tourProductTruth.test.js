@@ -38,33 +38,36 @@ describe('tourProductTruth', () => {
     expect(eterna.length).toBeGreaterThan(central.length)
   })
 
-  it('exposes canonical marketing and in-app counts from manifest product metadata', () => {
+  it('exposes canonical marketing and in-app counts from the manifest stop selector', () => {
     const truth = getTourProductTruth(manifest)
 
-    expect(truth.publicPlaceCount).toBe(22)
-    expect(truth.visitStopCount).toBe(18)
+    expect(truth.publicPlaceCount).toBe(20)
+    expect(truth.visitStopCount).toBe(20)
     expect(truth.classicVisitStopCount).toBe(17)
     expect(truth.storyStopCount).toBe(18)
-    expect(truth.publicPlacesLabel).toBe('22 places')
-    expect(truth.visitStopsLabel).toBe('18 stops')
+    expect(truth.publicPlacesLabel).toBe('20 places')
+    expect(truth.visitStopsLabel).toBe('20 stops')
     expect(truth.durationLabel).toBe('your pace')
     expect(truth.ownershipLabel).toBe('yours forever')
     expect(truth.priceFallbackCents).toBe(1700)
     expect(truth.currency).toBe('EUR')
   })
 
-  it('uses computed visit stop counts when pace is selected', () => {
+  it('uses pace-specific ids for routing while keeping canonical stop totals', () => {
     const central = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CENTRAL })
     const antica = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CLASSIC })
     const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
-    expect(central.visitStopCount).toBe(9)
-    expect(antica.visitStopCount).toBe(9)
-    expect(eterna.visitStopCount).toBe(18)
+    expect(central.visitStopCount).toBe(20)
+    expect(antica.visitStopCount).toBe(20)
+    expect(eterna.visitStopCount).toBe(20)
+    expect(central.paceVisitStopIds.length).toBe(9)
+    expect(antica.paceVisitStopIds.length).toBe(9)
+    expect(eterna.paceVisitStopIds.length).toBe(18)
   })
 
   it('formats places across acts copy', () => {
-    expect(formatPlacesAcrossActs(22, 6)).toBe('22 places across 6 acts')
+    expect(formatPlacesAcrossActs(20, 6)).toBe('20 stops across 6 acts')
   })
 
   it('includes optional w04 in catalog landmarks', () => {

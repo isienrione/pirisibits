@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { getTourProductTruth } from '../../content/tourProductTruth.js'
+import { getVisibleStopCounts } from '../../content/services/stopCounts.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
 import { SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { PrimaryButton } from './index.js'
@@ -14,13 +14,8 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
 
   const stopCount = useMemo(() => {
     if (!manifest) return 0
-    return getTourProductTruth(manifest, {
-      path: context.path,
-      pace: context.pace,
-      promotedOptionalIds: context.promotedOptionalIds,
-      customWaypointIds: context.customWaypointIds,
-    }).visitStopCount
-  }, [manifest, context.path, context.pace, context.promotedOptionalIds, context.customWaypointIds])
+    return getVisibleStopCounts(manifest, context.path).total
+  }, [manifest, context.path])
 
   return (
     <div className="cw-grain cw-route-preview-screen" data-testid="journey-welcome">

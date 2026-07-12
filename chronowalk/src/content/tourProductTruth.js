@@ -2,6 +2,7 @@ import { JOURNEY_PACE } from '../data/romePacing.js'
 import { getTierActIds, getTierWaypointIds } from '../data/tourTiers.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint } from './manifest.js'
+import { getVisibleStopCounts, getVisibleStopIds } from './services/stopCounts.js'
 
 function getTourActIds(pace) {
   return getTierActIds(pace)
@@ -105,13 +106,13 @@ export function formatVisitStopsLabel(count) {
 }
 
 export function formatPlacesAcrossActs(publicPlaceCount, actCount) {
-  const places = formatPublicPlacesLabel(publicPlaceCount)
-  if (!Number.isFinite(actCount) || actCount <= 0) return places
-  return `${places} across ${actCount} act${actCount === 1 ? '' : 's'}`
+  const stops = formatVisitStopsLabel(publicPlaceCount)
+  if (!Number.isFinite(actCount) || actCount <= 0) return stops
+  return `${stops} across ${actCount} act${actCount === 1 ? '' : 's'}`
 }
 
 export function formatPlacesYoursToKeep(publicPlaceCount) {
-  return `${formatPublicPlacesLabel(publicPlaceCount)} · yours to keep`
+  return `${formatVisitStopsLabel(publicPlaceCount)} · yours to keep`
 }
 
 export function formatPlacesAvailableNow(publicPlaceCount) {
@@ -132,14 +133,12 @@ export function getTourProductTruth(manifest, options = {}) {
     path,
     pace: JOURNEY_PACE.CLASSIC,
   })
+  const visibleStopCounts = getVisibleStopCounts(manifest, path)
+  const visibleStopIds = getVisibleStopIds(manifest, path)
 
   const computedPublicPlaceCount = computePublicPlaceCount(manifest)
-  const publicPlaceCount = product.publicPlaceCount ?? computedPublicPlaceCount
-  const useComputedVisitCount =
-    options.pace != null || (options.customWaypointIds != null && options.customWaypointIds.length > 0)
-  const visitStopCount = useComputedVisitCount
-    ? visitStopIds.length
-    : (product.visitStopCount ?? visitStopIds.length)
+  const publicPlaceCount = visibleStopCounts.total
+  const visitStopCount = visibleStopCounts.total
   const classicVisitStopCount = product.classicVisitStopCount ?? classicVisitStopIds.length
   const storyStopCount = product.storyStopCount ?? computeStoryStopCount(manifest, { ...options, path, pace })
   const actCount = product.actCount ?? 6
@@ -162,8 +161,10 @@ export function getTourProductTruth(manifest, options = {}) {
     priceFallbackCents,
     currency,
     computedPublicPlaceCount,
-    visitStopIds,
+    visitStopIds: visibleStopIds,
+    paceVisitStopIds: visitStopIds,
     classicVisitStopIds,
+    visibleStopCounts,
     publicPlacesLabel: formatPublicPlacesLabel(publicPlaceCount),
     visitStopsLabel: formatVisitStopsLabel(visitStopCount),
     classicVisitStopsLabel: formatVisitStopsLabel(classicVisitStopCount),
@@ -177,7 +178,7 @@ export function getTourProductTruth(manifest, options = {}) {
 export function getLandingTrustStats(manifest) {
   const truth = getTourProductTruth(manifest)
   return [
-    { id: 'places', label: truth.publicPlacesLabel },
+    { id: 'places', label: truth.visitStopsLabel },
     { id: 'pace', label: 'Self-paced' },
     { id: 'offline', label: 'Works offline' },
   ]

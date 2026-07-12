@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { buildJournalTimeline } from '../content/journalTimeline.js'
-import { getTourProductTruth } from '../content/tourProductTruth.js'
+import { getVisibleStopCounts } from '../content/services/stopCounts.js'
 import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
@@ -73,13 +73,8 @@ export default function RedesignStopsScreen() {
 
   const totalStops = useMemo(() => {
     if (!manifest) return 0
-    return getTourProductTruth(manifest, {
-      path: context.path,
-      pace: context.pace,
-      promotedOptionalIds: context.promotedOptionalIds,
-      customWaypointIds: context.customWaypointIds,
-    }).visitStopCount
-  }, [manifest, context.path, context.pace, context.promotedOptionalIds, context.customWaypointIds])
+    return getVisibleStopCounts(manifest, context.path).total
+  }, [manifest, context.path])
 
   const openStop = (waypointId) => {
     navigate(`/journal/${waypointId}`)

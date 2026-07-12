@@ -278,7 +278,7 @@ export default function TourDetailPage() {
           <StatCard label="Duration" value={detail.stats.duration} />
           <StatCard label="Distance" value={detail.stats.distance} />
           <StatCard label="Walking" value={detail.stats.walkingTime} />
-          <StatCard label="Stories" value={detail.stats.stories} />
+          <StatCard label="Stops" value={detail.stats.visitStops} />
         </div>
 
         <section className="mt-10" aria-label="Route preview">

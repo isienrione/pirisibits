@@ -56,7 +56,14 @@ export default function RedesignJournalScreen({ embedded = true }) {
       .filter((group) => group.cards.length > 0)
   }, [manifest, context.path, context.currentSequenceIndex, context.completedWaypointIds])
 
-  const progress = useMemo(() => summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context)), [manifest, context])
+  const progress = useMemo(
+    () =>
+      summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context), {
+        manifest,
+        path: context.path,
+      }),
+    [manifest, context],
+  )
   const headline = journalHeadline(progress)
   const letterMeta = useMemo(
     () => (manifest ? formatJourneyLetterMetaLine(manifest, context, state) : null),

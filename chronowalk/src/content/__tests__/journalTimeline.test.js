@@ -59,10 +59,10 @@ describe('journalTimeline', () => {
       path: 'a',
       completedWaypointIds: ['w01', 'w02'],
     })
-    const summary = summarizeJournalProgress(timeline)
+    const summary = summarizeJournalProgress(timeline, { manifest, path: 'a' })
 
     expect(summary.completed).toBe(2)
-    expect(summary.total).toBeGreaterThan(10)
+    expect(summary.total).toBe(20)
     expect(journalHeadline(summary)).toBe('Your Rome is unfolding.')
   })
 })

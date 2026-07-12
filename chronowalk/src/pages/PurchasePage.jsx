@@ -71,7 +71,7 @@ export default function PurchasePage() {
             <p className="font-display text-3xl font-semibold text-deep-slate">{detail.title}</p>
             <p className="mt-2 text-base text-soft-slate">{detail.tagline}</p>
             <p className="mt-3 text-sm text-soft-slate">
-              {detail.stats.stories} places · yours to keep
+              {detail.stats.visitStops} stops · yours to keep
             </p>
           </div>
 

@@ -7,7 +7,7 @@ const tourHeroPhoto = TOUR_HERO_PHOTO
 function resolvePlaceCount(destination) {
   if (destination.id !== 'rome') return destination.placeCount
   const manifest = loadRomeManifest()
-  return getTourProductTruth(manifest).publicPlaceCount
+  return getTourProductTruth(manifest).visitStopCount
 }
 
 /** Launch destination cards — Screen 2 Tour Selection. */

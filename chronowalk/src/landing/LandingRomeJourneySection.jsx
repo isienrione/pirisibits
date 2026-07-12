@@ -1,9 +1,13 @@
 import LandingRouteSchematic from './LandingRouteSchematic.jsx'
 import { LANDING_CONTENT, ROME_JOURNEY_SECTION_ID } from './landingData.js'
+import { getLandingRouteStats } from './landingRouteStats.js'
 
 export default function LandingRomeJourneySection({ priceLabel, onBegin, onPreview }) {
   const section = LANDING_CONTENT[ROME_JOURNEY_SECTION_ID]
-  const bullets = section.highlightBullets ?? section.bullets
+  const routeStats = getLandingRouteStats()
+  const bullets = (section.highlightBullets ?? section.bullets).map((item) =>
+    item === '22 places' ? routeStats.highlightBullet : item,
+  )
 
   return (
     <section
