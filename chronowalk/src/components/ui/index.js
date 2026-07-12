@@ -14,7 +14,15 @@ export { LoadingPanel } from './LoadingPanel'
 export { LoadingSpinner } from './LoadingSpinner'
 export { PageShell } from './PageShell'
 export { Toggle } from './Toggle'
-export { StatusBadge } from './StatusBadge'
+export {
+  StatusBadge,
+  statusPill,
+  statusWalking,
+  statusArrived,
+  statusNeutral,
+  statusLocked,
+  statusCurrent,
+} from './StatusBadge'
 export { MediaPlayerControls } from './MediaPlayerControls'
 export { ConfirmDialog } from './ConfirmDialog'
 export { cn } from './cn'

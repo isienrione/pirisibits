@@ -1,6 +1,6 @@
 import { getTourById } from '../../../services/tourRegistry'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, EditorialTitle, GlassPanel, ParchmentCard, cn, tapAction } from '../../ui'
+import { EditorialTitle, Button, cn, tapAction } from '../../ui'
 import FreePreviewCard from '../../FreePreviewCard'
 
 export function OwnedHomeView({
@@ -20,7 +20,7 @@ export function OwnedHomeView({
 
   return (
     <div className="space-y-6">
-      <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8" grain>
+      <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
         <EditorialTitle
           eyebrow="ChronoWalk"
           size="lg"
@@ -33,32 +33,31 @@ export function OwnedHomeView({
           {tours.map((tour) => {
             const selected = tour.id === selectedTourId
             return (
-              <ParchmentCard
+              <button
                 key={tour.id}
-                as="button"
                 type="button"
                 onClick={() => {
                   triggerHaptic(HAPTIC_KIND.SOFT_TAP)
                   onSelectTour(tour.id)
                 }}
                 className={cn(
-                  'w-full p-4 text-left transition',
+                  'bg-ink900 rounded-card w-full p-4 text-left transition',
                   tapAction,
-                  selected ? 'border-bronze/40 bg-bronze/[0.04] shadow-plaque-lg' : 'hover:border-bronze/30'
+                  selected ? 'border-ember/40 bg-ember/[0.04]' : 'hover:border-ember/30'
                 )}
               >
-                  <p className="text-eyebrow uppercase text-bronze">{tour.subtitle}</p>
-                  <h3 className="mt-1 font-display text-xl font-semibold text-deep-slate">{tour.title}</h3>
-                  <p className="mt-2 text-sm text-soft-slate">
-                    <span className="font-semibold text-deep-slate">{tour.stopIds.length} stops</span>
+                  <p className="text-eyebrow uppercase text-ember">{tour.subtitle}</p>
+                  <h3 className="mt-1 font-display text-xl font-semibold text-ink900">{tour.title}</h3>
+                  <p className="mt-2 text-sm text-muted">
+                    <span className="font-semibold text-ink900">{tour.stopIds.length} stops</span>
                   </p>
-              </ParchmentCard>
+              </button>
             )
           })}
         </div>
 
         {selectedTourId ? (
-          <BronzeButton
+          <Button
             size="lg"
             fullWidth
             className="mt-6"
@@ -68,15 +67,15 @@ export function OwnedHomeView({
             }}
           >
             Continue with {getTourById(selectedTourId)?.title ?? 'tour'}
-          </BronzeButton>
+          </Button>
         ) : null}
-      </GlassPanel>
+      </div>
 
       <FreePreviewCard onTryFreePreview={onTryFreePreview} className="mt-0" />
 
-      <BronzeButton variant="secondary" fullWidth onClick={onBrowseTours}>
+      <Button variant="quiet" fullWidth onClick={onBrowseTours}>
         Browse all tours
-      </BronzeButton>
+      </Button>
     </div>
   )
 }

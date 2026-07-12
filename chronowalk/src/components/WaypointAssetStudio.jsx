@@ -10,7 +10,7 @@ import {
   MODERN_FRAMING_CHECKLIST,
 } from '../utils/modernFramingGuide';
 import { buildAssetStudioUrl, listAssetStudioEntries } from '../utils/assetStudioUrls';
-import { Button, GlassPanel, SectionHeader } from './ui';
+import { Button, SectionHeader } from './ui';
 
 const PromptBlock = ({ title, body, tool }) => {
   const [copied, setCopied] = useState(false);
@@ -26,20 +26,20 @@ const PromptBlock = ({ title, body, tool }) => {
   };
 
   return (
-    <GlassPanel as="section" className="p-4">
+    <section className="bg-ink900 rounded-card p-4">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-semibold text-deep-slate">{title}</h3>
-          {tool ? <p className="mt-1 text-xs uppercase tracking-wide text-soft-slate">{tool}</p> : null}
+          <h3 className="text-sm font-semibold text-ink900">{title}</h3>
+          {tool ? <p className="mt-1 text-xs uppercase tracking-wide text-muted">{tool}</p> : null}
         </div>
         <Button variant="ghost" size="sm" onClick={handleCopy}>
           {copied ? 'Copied' : 'Copy'}
         </Button>
       </div>
-      <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-soft-slate">
+      <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-muted">
         {body}
       </pre>
-    </GlassPanel>
+    </section>
   );
 };
 
@@ -87,7 +87,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-warm-white text-soft-slate">
+      <div className="flex min-h-screen items-center justify-center bg-bone text-muted">
         Loading waypoint asset studio…
       </div>
     );
@@ -95,14 +95,14 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
 
   if (error || !waypoint || !promptPack) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-warm-white px-6 text-center text-terracotta">
+      <div className="flex min-h-screen items-center justify-center bg-bone px-6 text-center text-terracotta">
         {error || 'Waypoint not found.'}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-warm-white via-sand/20 to-limestone/20 text-deep-slate">
+    <div className="min-h-screen bg-bone text-ink900">
       <div className="mx-auto max-w-3xl px-4 py-8 pb-safe pt-safe">
         <header className="mb-8">
           <SectionHeader
@@ -112,16 +112,16 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             subtitle="Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference image and viewpoint metadata — same pipeline used for the Colosseum portal."
           />
 
-          <GlassPanel className="mt-5 p-4">
+          <div className="bg-ink900 rounded-card mt-5 p-4">
             <p className="text-eyebrow uppercase text-terracotta">Bookmark this page</p>
-            <p className="mt-2 break-all font-mono text-xs text-soft-slate">{studioPageUrl}</p>
-            <p className="mt-3 text-xs text-soft-slate">
+            <p className="mt-2 break-all font-mono text-xs text-muted">{studioPageUrl}</p>
+            <p className="mt-3 text-xs text-muted">
               All stops:{' '}
               {studioEntries.map((entry, index) => (
                 <span key={entry.id}>
                   {index > 0 ? ' · ' : null}
                   {entry.id === waypointId ? (
-                    <span className="font-medium text-deep-slate">{entry.title}</span>
+                    <span className="font-medium text-ink900">{entry.title}</span>
                   ) : (
                     <a
                       href={entry.search}
@@ -133,22 +133,21 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 </span>
               ))}
             </p>
-          </GlassPanel>
+          </div>
         </header>
 
         {framing ? (
-          <GlassPanel
-            as="section"
+          <section
             className={`mb-8 p-4 ${
               framing.passes
-                ? 'border-olive/40 bg-olive/5'
-                : 'border-gold/40 bg-gold/5'
+                ? 'border-olive/40 bg-acthill/5'
+                : 'border-ember/40 bg-ember/5'
             }`}
           >
-            <h2 className="text-sm font-semibold text-deep-slate">
+            <h2 className="text-sm font-semibold text-ink900">
               Framing check (Colosseum standard)
             </h2>
-            <p className="mt-2 text-xs text-soft-slate">
+            <p className="mt-2 text-xs text-muted">
               Colosseum reference: viewpoint ~{framing.colosseumReferenceOffsetM} m from center, pitch{' '}
               {framing.colosseumReferencePitch}° (large approach). This waypoint (
               {framing.framingProfile.replace('_', ' ')}): offset{' '}
@@ -156,34 +155,34 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               {framing.pitch ?? 'unknown'}°.
             </p>
             {framing.warnings.length ? (
-              <ul className="mt-3 space-y-2 text-sm text-gold">
+              <ul className="mt-3 space-y-2 text-sm text-ember">
                 {framing.warnings.map((warning) => (
                   <li key={warning}>• {warning}</li>
                 ))}
               </ul>
             ) : null}
             {framing.tips.length ? (
-              <ul className="mt-3 space-y-1 text-xs text-olive">
+              <ul className="mt-3 space-y-1 text-xs text-acthill">
                 {framing.tips.map((tip) => (
                   <li key={tip}>✓ {tip}</li>
                 ))}
               </ul>
             ) : null}
-            <details className="mt-4 text-xs text-soft-slate">
+            <details className="mt-4 text-xs text-muted">
               <summary className="cursor-pointer text-terracotta">Framing checklist for all waypoints</summary>
               <ol className="mt-2 list-decimal space-y-1 pl-5">
                 {MODERN_FRAMING_CHECKLIST.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ol>
-              <p className="mt-3 text-soft-slate/70">
+              <p className="mt-3 text-muted/70">
                 Reference: {COLOSSEUM_FRAMING_REFERENCE.notes.join(' ')}
               </p>
             </details>
-          </GlassPanel>
+          </section>
         ) : null}
 
-        <GlassPanel as="section" className="mb-8 grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <section className="bg-ink900 rounded-card mb-8 grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
           <div>
             <p className="mb-2 text-eyebrow uppercase text-terracotta">
               Modern reference (source still)
@@ -192,11 +191,11 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               <img
                 src={modernReferencePath}
                 alt={`Modern reference for ${promptPack.title}`}
-                className="aspect-video w-full rounded-lg border border-limestone object-cover"
+                className="aspect-video w-full rounded-lg border border-ink800 object-cover"
                 referrerPolicy="no-referrer"
               />
             ) : (
-              <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-limestone text-sm text-soft-slate">
+              <div className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-ink800 text-sm text-muted">
                 Add modern_image_url to the waypoint seed
               </div>
             )}
@@ -212,9 +211,9 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             ) : null}
           </div>
 
-          <div className="text-sm text-soft-slate">
-            <p className="font-semibold text-deep-slate">Viewpoint metadata</p>
-            <ul className="mt-3 space-y-2 font-mono text-xs leading-relaxed text-soft-slate">
+          <div className="text-sm text-muted">
+            <p className="font-semibold text-ink900">Viewpoint metadata</p>
+            <ul className="mt-3 space-y-2 font-mono text-xs leading-relaxed text-muted">
               <li>id: {promptPack.waypointId}</li>
               <li>
                 stand: {promptPack.viewpoint.standLat}, {promptPack.viewpoint.standLng}
@@ -232,13 +231,13 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 href={promptPack.streetViewUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-4 inline-flex items-center justify-center rounded-full border border-terracotta/35 bg-terracotta/8 px-3 py-1.5 text-xs font-semibold text-terracotta transition hover:bg-terracotta/15"
+                className="mt-4 inline-flex items-center justify-center rounded-full border border-ember/35 bg-terracotta/8 px-3 py-1.5 text-xs font-semibold text-terracotta transition hover:bg-terracotta/15"
               >
                 Open Street View at viewpoint
               </a>
             ) : null}
           </div>
-        </GlassPanel>
+        </section>
 
         <PromptBlock
           title="Shared camera rules (reference — do not paste alone)"
@@ -246,11 +245,11 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
           tool="Context for you · optional prefix"
         />
 
-        <GlassPanel as="section" className="mb-6 border-terracotta/20 bg-sand/40 p-4 text-sm text-soft-slate">
-          <h2 className="font-semibold text-deep-slate">Recommended order ({promptPack.title})</h2>
+        <section className="bg-ink900 rounded-card mb-6 border-ember/20 bg-ink800/40 p-4 text-sm text-muted">
+          <h2 className="font-semibold text-ink900">Recommended order ({promptPack.title})</h2>
           <ol className="mt-3 list-decimal space-y-2 pl-5">
             <li>
-              <strong className="text-deep-slate">
+              <strong className="text-ink900">
                 {modernReferencePath ? 'Skip modern still' : 'Capture modern still'}
               </strong>
               {modernReferencePath
@@ -258,23 +257,23 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 : ' — export modern-exterior.jpg from Street View at the viewpoint above.'}
             </li>
             <li>
-              <strong className="text-deep-slate">Runway / Pika</strong> — paste{' '}
+              <strong className="text-ink900">Runway / Pika</strong> — paste{' '}
               <em>Modern animated video</em>, upload <code className="text-terracotta">modern-exterior.jpg</code> → save{' '}
               <code className="text-terracotta">modern.mp4</code>
             </li>
             <li>
-              <strong className="text-deep-slate">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
+              <strong className="text-ink900">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
               photo as image reference → save <code className="text-terracotta">ancient-reconstruction.jpg</code>
             </li>
             <li>
-              <strong className="text-deep-slate">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
+              <strong className="text-ink900">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
               ancient still + motion-sync from modern clip → save <code className="text-terracotta">ancient-reconstruction.mp4</code>
             </li>
             <li>
-              <strong className="text-deep-slate">DaVinci / export</strong> — use brief to pull poster frames at ~3s
+              <strong className="text-ink900">DaVinci / export</strong> — use brief to pull poster frames at ~3s
             </li>
           </ol>
-        </GlassPanel>
+        </section>
 
         <div className="mt-6 space-y-4">
           <PromptBlock
@@ -299,12 +298,12 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
           />
         </div>
 
-        <GlassPanel as="section" className="mt-8 p-4">
-          <h2 className="text-sm font-semibold text-deep-slate">Workflow checklist</h2>
-          <div className="mt-4 space-y-4 text-sm text-soft-slate">
+        <section className="bg-ink900 rounded-card mt-8 p-4">
+          <h2 className="text-sm font-semibold text-ink900">Workflow checklist</h2>
+          <div className="mt-4 space-y-4 text-sm text-muted">
             {Object.values(promptPack.tooling).map((block) => (
               <div key={block.title}>
-                <p className="font-medium text-deep-slate">{block.title}</p>
+                <p className="font-medium text-ink900">{block.title}</p>
                 <ol className="mt-2 list-decimal space-y-1 pl-5">
                   {block.steps.map((step) => (
                     <li key={step}>{step}</li>
@@ -313,18 +312,18 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
               </div>
             ))}
           </div>
-        </GlassPanel>
+        </section>
 
-        <GlassPanel as="section" className="mt-6 p-4">
-          <h2 className="text-sm font-semibold text-deep-slate">Deliverable paths</h2>
-          <ul className="mt-3 space-y-1 font-mono text-xs text-soft-slate">
+        <section className="bg-ink900 rounded-card mt-6 p-4">
+          <h2 className="text-sm font-semibold text-ink900">Deliverable paths</h2>
+          <ul className="mt-3 space-y-1 font-mono text-xs text-muted">
             {promptPack.fileManifest.map((path) => (
               <li key={path}>{path}</li>
             ))}
           </ul>
-        </GlassPanel>
+        </section>
 
-        <p className="mt-8 text-center text-xs text-soft-slate">
+        <p className="mt-8 text-center text-xs text-muted">
           Studio URL: {studioPageUrl}
         </p>
       </div>

@@ -20,7 +20,7 @@ describe('TourLanding pre-tour screen stack', () => {
       })
     ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /browse tours & pricing/i })).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: /complete rome/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /Roma Eterna/i })).not.toBeInTheDocument()
   })
 
   it('navigates to catalog as a separate screen', () => {
@@ -37,7 +37,7 @@ describe('TourLanding pre-tour screen stack', () => {
     fireEvent.click(screen.getByRole('button', { name: /browse tours & pricing/i }))
 
     expect(screen.getByRole('heading', { name: /choose your walk/i })).toBeInTheDocument()
-    expect(screen.getByText(/complete rome/i)).toBeInTheDocument()
+    expect(screen.getByText(/Roma Eterna/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument()
   })
 
@@ -53,7 +53,7 @@ describe('TourLanding pre-tour screen stack', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: /browse tours & pricing/i }))
-    fireEvent.click(screen.getByRole('heading', { name: /complete rome/i }))
+    fireEvent.click(screen.getByRole('heading', { name: /Roma Eterna/i }))
 
     expect(screen.getByRole('button', { name: /purchase \$15/i })).toBeInTheDocument()
     expect(screen.getByText(/included landmarks/i)).toBeInTheDocument()

@@ -1,0 +1,135 @@
+/**
+ * ChronoWalk design tokens — single source of design truth.
+ * Import first in main.jsx before any other stylesheets.
+ */
+:root {
+  /* ChronoWalk brand palette (official) */
+  --obsidian: #0b0b0d;
+  --charcoal: #1a1a1f;
+  --warm-ivory: #faf6ef;
+  --limestone: #e9e2d5;
+  --bronze: #8b8638;
+  --gold: #d4af37;
+  --olive: #6b7a52;
+
+  --tracking-brand-header: 0.2em;
+  --tracking-tagline: 0.25em;
+  --color-tracking-tagline: var(--limestone);
+
+  --ink-900: #211c15;
+  --ink-800: #26221b;
+  --bone: var(--warm-ivory);
+  --warm-white: var(--warm-ivory);
+  --muted: #756c5c;
+  --muted-decor: #b9af9c;
+  --ember: #e8a13c;
+  --ember-deep: #c97f1e;
+  --ink-on-fill: #2a1206;
+
+  /* THE VITALITY SYSTEM — act accents (one family per screen, never big fills) */
+  --act-arena: #e4552e; /* I  · coral — blood, sand, energy   */
+  --act-hill: #7c9a5c; /* II · laurel — pines, wreaths       */
+  --act-forum: #e8a13c; /* III· ember — the classic heart     */
+  --act-market: #4e9b8f; /* IV · verdigris — patina, coins     */
+  --act-city: #b14a6e; /* V  · tyrian rose — piazza life     */
+  --act-river: #4e7d9b; /* VI · tiber blue — dusk on water    */
+  --act-encore: #8a6fb5; /* Enc· twilight violet — long road   */
+  /* WCAG text variants on bone (≥4.95:1) */
+  --act-arena-text: #b23413;
+  --act-hill-text: #55703a;
+  --act-forum-text: #8f5e10;
+  --act-market-text: #2f6e63;
+  --act-city-text: #963a5b;
+  --act-river-text: #3a607a;
+  --act-encore-text: #6a4f96;
+  /* Accent text on dark immersion surfaces */
+  --act-city-on-dark: #d488a4;
+
+  --spectrum: linear-gradient(
+    135deg,
+    #e4552e,
+    #e8a13c,
+    #7c9a5c,
+    #4e9b8f,
+    #4e7d9b,
+    #8a6fb5,
+    #b14a6e
+  );
+  --seam-glow: 0 0 12px rgba(232, 161, 60, 0.45);
+  --radius-card: 14px;
+  --radius-sheet: 20px;
+
+  /* Compatibility aliases — v2 inline components expect these names */
+  --ink: var(--ink-900);
+  --muted-warm: var(--muted);
+  --muted-warm-decor: var(--muted-decor);
+  --accent: var(--act-arena);
+  --ember-glow: rgba(232, 161, 60, 0.55);
+  --verdigris: var(--act-market);
+  --city-rome: var(--act-arena);
+  --city-kyoto: #6e8b3d;
+  --city-paris: #8a2e44;
+  --city-london: #3f6e86;
+  --city-cusco: #b77a2a;
+  --coral: var(--act-arena);
+  --laurel: var(--act-hill);
+  --rose: var(--act-city);
+  --tiber: var(--act-river);
+  --violet: var(--act-encore);
+
+  --ink-muted: color-mix(in srgb, var(--ink-900) 55%, var(--bone));
+  --ink-subtle: color-mix(in srgb, var(--ink-900) 45%, var(--bone));
+  --ink-faint: color-mix(in srgb, var(--ink-900) 68%, var(--bone));
+  --text-dark: var(--obsidian);
+  --border-daylight: color-mix(in srgb, var(--muted-decor) 55%, var(--bone));
+  --border-immersion: color-mix(in srgb, var(--warm-white) 12%, var(--obsidian));
+  --track-daylight: color-mix(in srgb, var(--muted-decor) 45%, var(--bone));
+
+  --shadow-card: 0 2px 8px color-mix(in srgb, var(--ink-900) 8%, transparent);
+  --shadow-sheet: 0 -8px 24px color-mix(in srgb, var(--ink-900) 10%, transparent);
+  --r-card: var(--radius-card);
+  --r-sheet: var(--radius-sheet);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui: 'DM Sans', system-ui, sans-serif;
+  --fs-hero: 40px;
+  --fs-title: 34px;
+  --fs-place: 32px;
+  --fs-h2: 22px;
+  --fs-reflect: 20px;
+  --fs-body: 17px;
+  --fs-secondary: 15px;
+  --fs-meta: 13px;
+  --fs-caption: 11px;
+
+  --edge: 24px;
+  --gap-s: 8px;
+  --gap-m: 16px;
+  --gap-l: 24px;
+  --gap-xl: 40px;
+
+  --d-ui: 200ms;
+  --d-trans: 400ms;
+  --d-cinematic: 1200ms;
+  --ease: cubic-bezier(0.22, 0.8, 0.36, 1);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.cw-brand-header {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-brand-header);
+}
+
+.cw-tracking-tagline {
+  font-family: var(--font-ui);
+  font-size: 0.625rem;
+  line-height: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tagline);
+  color: var(--color-tracking-tagline);
+}

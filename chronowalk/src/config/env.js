@@ -1,16 +1,53 @@
+import {
+  readDevGeofencesMode,
+} from '../content/devGeofenceTools.js'
+
 const parseBooleanEnv = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase()
   return normalized === 'true' || normalized === '1' || normalized === 'yes'
 }
 
-/** Runtime debug geo: URL param overrides build-time env (handy on Netlify). */
-export const isDebugGeo = () => {
+const DEBUG_GEO_PARAM_KEYS = ['debugGeo', 'geo_debug']
+
+/** Raw debug-geo URL/build value (true, walking, approaching, etc.). */
+export const getDebugGeoParam = () => {
   if (typeof window !== 'undefined') {
-    const param = new URLSearchParams(window.location.search).get('debugGeo')
-    if (param !== null) return parseBooleanEnv(param)
+    const params = new URLSearchParams(window.location.search)
+    for (const key of DEBUG_GEO_PARAM_KEYS) {
+      const param = params.get(key)
+      if (param !== null) return param
+    }
   }
 
-  return parseBooleanEnv(import.meta.env.VITE_DEBUG_GEO)
+  if (parseBooleanEnv(import.meta.env.VITE_DEBUG_GEO)) return 'true'
+  return null
+}
+
+/** Runtime debug geo: URL param (?debugGeo or ?geo_debug) overrides build-time env. */
+export const isDebugGeo = () => {
+  const param = getDebugGeoParam()
+  if (param === null) return false
+  const normalized = String(param).trim().toLowerCase()
+  if (['walking', 'transit', 'approach', 'approaching', 'near'].includes(normalized)) {
+    return true
+  }
+  return parseBooleanEnv(param)
+}
+
+/**
+ * Simulated GPS placement while debug geo is active.
+ * - arrived (default): inside geofence — triggers arrival cards
+ * - approaching: just outside geofence
+ * - walking: farther away — walking / map UI
+ */
+export const getDebugGeoPlacement = () => {
+  if (!isDebugGeo()) return null
+  const normalized = String(getDebugGeoParam() ?? 'true')
+    .trim()
+    .toLowerCase()
+  if (['walking', 'transit'].includes(normalized)) return 'walking'
+  if (['approach', 'approaching', 'near'].includes(normalized)) return 'approaching'
+  return 'arrived'
 }
 
 /** Creator studio for AI asset prompts (?assetStudio=true). */
@@ -52,6 +89,27 @@ export const shouldResetTour = () => {
   return parseBooleanEnv(param)
 }
 
+/**
+ * Temporary field-test geofences (?devGeofences=santiago or VITE_DEV_GEOFENCES=santiago).
+ * Remaps selected Rome waypoint radii to Santiago coordinates for live GPS QA.
+ * Persists in sessionStorage so /begin → /journey navigation does not drop the flag.
+ */
+export const getDevGeofencesMode = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('devGeofences')
+    if (param === 'off' || param === '0' || param === 'false') return null
+    if (param) return String(param).trim().toLowerCase()
+    const stored = readDevGeofencesMode()
+    if (stored) return stored
+  }
+
+  const fromEnv = import.meta.env.VITE_DEV_GEOFENCES
+  if (fromEnv) return String(fromEnv).trim().toLowerCase()
+  return null
+}
+
+export const isDevGeofencesSantiago = () => getDevGeofencesMode() === 'santiago'
+
 /** Unlock every tour without purchase (QA / demos). */
 export const isUnlockAllTours = () => {
   if (typeof window === 'undefined') return false
@@ -81,6 +139,7 @@ export const isDebugMedia = () => {
  */
 export const isDebugMap = () => {
   if (isDebugGeo()) return true
+  if (isDevGeofencesSantiago()) return true
 
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search)
@@ -93,6 +152,22 @@ export const isDebugMap = () => {
   return parseBooleanEnv(import.meta.env.VITE_DEBUG_MAP)
 }
 
+/**
+ * Journey dev panel for field testing and QA.
+ * Enabled in Vite dev, via ?devPanel=true, or VITE_DEV_PANEL=true.
+ * Remove entirely after Stage 5 field-test gate (M22).
+ */
+export const isDevPanelEnabled = () => {
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('devPanel')
+    if (param !== null) return parseBooleanEnv(param)
+  }
+
+  if (import.meta.env.DEV) return true
+
+  return parseBooleanEnv(import.meta.env.VITE_DEV_PANEL)
+}
+
 /** @deprecated Use getSingleWaypointId or getTourId */
 export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
 
@@ -102,6 +177,8 @@ export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
  */
 export const env = {
   mapboxToken: import.meta.env.VITE_MAPBOX_TOKEN,
+  mapboxStyleUrl:
+    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/light-v11',
   get debugGeo() {
     return isDebugGeo()
   },

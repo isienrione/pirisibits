@@ -18,10 +18,8 @@ export function TimeFractureHandle({ className, size = 'md' }) {
       <div
         className="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2"
         style={{
-          background:
-            'linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.15) 8%, #D4AF37 22%, #F7F3EC 50%, #D4AF37 78%, rgba(212, 175, 55, 0.15) 92%, transparent 100%)',
-          boxShadow:
-            '0 0 24px rgba(212, 175, 55, 0.65), 0 0 48px rgba(212, 175, 55, 0.25), inset 0 0 8px rgba(255, 253, 248, 0.4)',
+          background: 'var(--gradient-time-fracture)',
+          boxShadow: 'var(--shadow-time-fracture)',
         }}
         aria-hidden="true"
       />

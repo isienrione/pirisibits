@@ -23,10 +23,25 @@ describe('tourProducts', () => {
     ])
   })
 
+  it('defines central rome as the centro loop without the archaeological park', () => {
+    expect(TOUR_PRODUCTS['rome-central'].priceUsd).toBe(9)
+    expect(TOUR_PRODUCTS['rome-central'].stopIds).toEqual([
+      'pantheon',
+      'spanish-steps',
+      'fontana-di-trevi',
+      'piazza-navona',
+      'campo-de-fiori',
+      'largo-argentina',
+      'castel-sant-angelo',
+    ])
+    expect(getTourIdsForProduct('rome-central')).toEqual(['central-rome'])
+  })
+
   it('lists the bundle before individual tours', () => {
     expect(TOUR_PRODUCT_LIST[0].id).toBe('rome-complete')
-    expect(TOUR_PRODUCT_LIST[1].id).toBe('roman-forum')
-    expect(TOUR_PRODUCT_LIST[2].id).toBe('heart-of-ancient-rome')
+    expect(TOUR_PRODUCT_LIST[1].id).toBe('rome-central')
+    expect(TOUR_PRODUCT_LIST[2].id).toBe('roman-forum')
+    expect(TOUR_PRODUCT_LIST[3].id).toBe('heart-of-ancient-rome')
   })
 
   it('formats whole-dollar prices', () => {

@@ -53,10 +53,10 @@ export function TourFeatureRow({ className }) {
     <ul className={cn('flex items-start justify-between gap-2', className)}>
       {FEATURES.map(({ id, label, Icon }) => (
         <li key={id} className="flex min-w-0 flex-1 flex-col items-center gap-2 text-center">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/15 text-ivory/90">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-ink800/15 text-bone/90">
             <Icon className="h-5 w-5" />
           </span>
-          <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ivory/75">
+          <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-bone/75">
             {label}
           </span>
         </li>

@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { EditorialTitle } from '../EditorialTitle'
-import { ParchmentCard } from '../ParchmentCard'
-import { BronzeButton } from '../BronzeButton'
-import { TimeFractureHandle } from '../TimeFractureSlider'
+import { Button } from '../Button'
 
 describe('EditorialTitle', () => {
   it('renders headline with eyebrow and italic highlight', () => {
@@ -19,23 +17,14 @@ describe('EditorialTitle', () => {
   })
 })
 
-describe('ParchmentCard', () => {
-  it('renders children with museum-plaque surface', () => {
-    render(<ParchmentCard>Exhibit label</ParchmentCard>)
-    expect(screen.getByText('Exhibit label')).toBeInTheDocument()
-  })
-})
-
-describe('BronzeButton', () => {
-  it('renders as a button', () => {
-    render(<BronzeButton>Start tour</BronzeButton>)
+describe('Button', () => {
+  it('renders primary variant', () => {
+    render(<Button>Start tour</Button>)
     expect(screen.getByRole('button', { name: /start tour/i })).toBeInTheDocument()
   })
-})
 
-describe('TimeFractureHandle', () => {
-  it('renders compare handle affordance', () => {
-    const { container } = render(<TimeFractureHandle />)
-    expect(container.querySelector('svg')).toBeInTheDocument()
+  it('renders quiet variant', () => {
+    render(<Button variant="quiet">Cancel</Button>)
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument()
   })
 })

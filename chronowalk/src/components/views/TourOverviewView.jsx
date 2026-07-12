@@ -3,7 +3,7 @@ import { getWaypointGeo } from '../../data/waypointGeo'
 import { JOURNEY_STATE } from '../../hooks/useGeoLocation'
 import { estimateWalkMinutes } from '../../utils/tourStats'
 import TourStopCard from '../TourStopCard'
-import { BronzeButton, Button, GlassPanel, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
+import { Button, PageShell, ProgressPill, SectionHeader, ctaInCard, cn } from '../ui'
 import { NAV_TABS } from '../navigation/navConfig'
 
 function TourOverviewView({
@@ -27,7 +27,7 @@ function TourOverviewView({
   if (!tour) {
     return (
       <PageShell containerClassName="flex min-h-[50vh] items-center justify-center text-center">
-        <p className="text-soft-slate">Single-stop mode — open the map to explore this landmark.</p>
+        <p className="text-muted">Single-stop mode — open the map to explore this landmark.</p>
       </PageShell>
     )
   }
@@ -68,25 +68,25 @@ function TourOverviewView({
       />
 
       {isFreePreview ? (
-        <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
-          <p className="text-eyebrow uppercase text-gold">Sample unlocked</p>
-          <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
+        <div className="bg-ink900 rounded-card mt-6 border-ember/30 bg-ember/[0.05] p-5">
+          <p className="text-eyebrow uppercase text-ember">Sample unlocked</p>
+          <h3 className="mt-2 font-display text-2xl font-semibold text-ink900">
             Colosseum reconstruction &amp; intro audio
           </h3>
-          <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+          <p className="mt-3 text-sm leading-relaxed text-muted">
             Explore the full tour map and stop list below. Tap the Colosseum to try the immersive
             experience — locked landmarks show what you get when you buy.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <BronzeButton
+            <Button
               fullWidth
               className={ctaInCard}
               onClick={() => onOpenStop?.(FREE_PREVIEW_STOP_ID)}
             >
               Open Colosseum preview
-            </BronzeButton>
+            </Button>
             <Button
-              variant="secondary"
+              variant="quiet"
               fullWidth
               className={ctaInCard}
               onClick={() => onNavigate(NAV_TABS.MAP)}
@@ -94,33 +94,33 @@ function TourOverviewView({
               Open map
             </Button>
           </div>
-        </GlassPanel>
+        </div>
       ) : null}
 
       {!isFreePreview && isAwaitingFirstStop ? (
-        <GlassPanel className="mt-6 border-gold/30 bg-gold/[0.05] p-5">
-          <p className="text-eyebrow uppercase text-gold">Before you begin</p>
-          <h3 className="mt-2 font-display text-2xl font-semibold text-deep-slate">
+        <div className="bg-ink900 rounded-card mt-6 border-ember/30 bg-ember/[0.05] p-5">
+          <p className="text-eyebrow uppercase text-ember">Before you begin</p>
+          <h3 className="mt-2 font-display text-2xl font-semibold text-ink900">
             Start at the {startTitle}
           </h3>
-          <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+          <p className="mt-3 text-sm leading-relaxed text-muted">
             Your tour does not begin until you reach the first landmark. Walk to the {startTitle},
             then your first audio story and historical reveal will unlock automatically.
           </p>
           {distance != null ? (
-            <p className="mt-3 text-sm text-deep-slate">
+            <p className="mt-3 text-sm text-ink900">
               <span className="font-semibold">{Math.round(distance)} m away</span>
               {estimateWalkMinutes(distance) ? (
-                <span className="text-soft-slate"> · ~{estimateWalkMinutes(distance)} min walk</span>
+                <span className="text-muted"> · ~{estimateWalkMinutes(distance)} min walk</span>
               ) : null}
             </p>
           ) : null}
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <BronzeButton fullWidth className={ctaInCard} onClick={() => onGetDirections?.()}>
+            <Button fullWidth className={ctaInCard} onClick={() => onGetDirections?.()}>
               Get walking directions
-            </BronzeButton>
+            </Button>
             <Button
-              variant="secondary"
+              variant="quiet"
               fullWidth
               className={ctaInCard}
               onClick={() => onNavigate(NAV_TABS.MAP)}
@@ -128,10 +128,10 @@ function TourOverviewView({
               Open map
             </Button>
           </div>
-        </GlassPanel>
+        </div>
       ) : null}
 
-      <GlassPanel className="mt-6 p-5">
+      <div className="bg-ink900 rounded-card mt-6 p-5">
         <ProgressPill
           current={currentStop}
           total={totalStops}
@@ -144,36 +144,36 @@ function TourOverviewView({
         />
 
         {!isFreePreview ? (
-          <div className="mt-5 space-y-3 text-sm text-soft-slate">
+          <div className="mt-5 space-y-3 text-sm text-muted">
             <p>
-              <span className="font-semibold text-deep-slate">Now:</span> {currentTitle}
+              <span className="font-semibold text-ink900">Now:</span> {currentTitle}
             </p>
             {nextWaypoint && state !== JOURNEY_STATE.ARRIVAL ? (
               <p>
-                <span className="font-semibold text-deep-slate">Next:</span> {nextWaypoint.title}
+                <span className="font-semibold text-ink900">Next:</span> {nextWaypoint.title}
               </p>
             ) : null}
             {distance != null && state !== JOURNEY_STATE.ARRIVAL ? (
               <p>
-                <span className="font-semibold text-deep-slate">Distance:</span>{' '}
+                <span className="font-semibold text-ink900">Distance:</span>{' '}
                 {Math.round(distance)} m
               </p>
             ) : null}
           </div>
         ) : (
-          <p className="mt-5 text-sm leading-relaxed text-soft-slate">
+          <p className="mt-5 text-sm leading-relaxed text-muted">
             The complete Rome bundle includes the Roman Forum cluster and the city loop —{' '}
             {totalStops} landmarks with audio and reconstructions at each stop.
           </p>
         )}
 
-        <BronzeButton fullWidth className={cn(ctaInCard, 'mt-5')} onClick={() => onNavigate(NAV_TABS.MAP)}>
+        <Button fullWidth className={cn(ctaInCard, 'mt-5')} onClick={() => onNavigate(NAV_TABS.MAP)}>
           Open map
-        </BronzeButton>
+        </Button>
 
         {isFreePreview ? (
           <Button
-            variant="secondary"
+            variant="quiet"
             fullWidth
             className={cn(ctaInCard, 'mt-3')}
             onClick={() => onUnlockTour?.()}
@@ -181,7 +181,7 @@ function TourOverviewView({
             View tours &amp; pricing
           </Button>
         ) : null}
-      </GlassPanel>
+      </div>
 
       <div className="mt-6">
         <SectionHeader
@@ -217,14 +217,14 @@ function TourOverviewView({
         </div>
       </div>
 
-      <GlassPanel className="mt-6 p-5">
-        <p className="text-eyebrow uppercase text-bronze">Included</p>
-        <ul className="mt-3 space-y-2 text-sm text-soft-slate">
+      <div className="bg-ink900 rounded-card mt-6 p-5">
+        <p className="text-eyebrow uppercase text-ember">Included</p>
+        <ul className="mt-3 space-y-2 text-sm text-muted">
           <li>GPS-guided walking between landmarks</li>
           <li>Place-aware audio stories on arrival</li>
           <li>Then-and-now visual reconstructions</li>
         </ul>
-      </GlassPanel>
+      </div>
     </PageShell>
   )
 }

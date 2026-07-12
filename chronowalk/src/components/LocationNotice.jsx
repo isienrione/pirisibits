@@ -1,4 +1,4 @@
-import { Button, GlassPanel, cn } from './ui'
+import { Button, cn } from './ui'
 import { LOCATION_STATUS } from '../hooks/useGeoLocation'
 
 const COPY = {
@@ -25,20 +25,20 @@ function LocationNotice({ status, onRetry, className, compact = false }) {
   const copy = COPY[status] ?? COPY[LOCATION_STATUS.UNAVAILABLE]
 
   return (
-    <GlassPanel
+    <div
       role="status"
-      className={cn(
-        'pointer-events-auto rounded-2xl border-bronze/25 bg-ivory/95 px-4 py-3 shadow-plaque',
+      className={cn("bg-ink900 rounded-card", 
+        'pointer-events-auto rounded-2xl border-ember/25 bg-ink900/95 px-4 py-3 ',
         className
       )}
     >
-      <p className="text-sm font-semibold text-deep-slate">{copy.title}</p>
+      <p className="text-sm font-semibold text-ink900">{copy.title}</p>
       {!compact ? (
-        <p className="mt-1 text-sm leading-relaxed text-soft-slate">{copy.body}</p>
+        <p className="mt-1 text-sm leading-relaxed text-muted">{copy.body}</p>
       ) : null}
       {copy.action && onRetry ? (
         <Button
-          variant="secondary"
+          variant="quiet"
           size="sm"
           className="mt-3"
           onClick={onRetry}
@@ -46,7 +46,7 @@ function LocationNotice({ status, onRetry, className, compact = false }) {
           {copy.action}
         </Button>
       ) : null}
-    </GlassPanel>
+    </div>
   )
 }
 

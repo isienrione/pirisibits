@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, lazy, Suspense } from 'react';
 import CalibrationOverlay from './CalibrationOverlay';
 import AudioPlayerPanel from './AudioPlayerPanel';
 import ErrorBoundary from './ErrorBoundary';
-import { BottomSheet, BronzeButton, Button, EditorialTitle, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
+import { BottomSheet, Button, EditorialTitle, LoadingPanel, LoadingSpinner, cn, ctaInCard } from './ui';
 import { audioOrchestrator, AUDIO_MODES, AUDIO_SYNC_EVENT } from '../audio/AudioOrchestrator';
 import { useAudioPlaybackState } from '../hooks/useAudioPlaybackState';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -62,7 +62,7 @@ const useMediaHeroState = (url) => {
 
 function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-sand via-limestone/40 to-warm-white sm:aspect-[16/10]">
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink800 sm:aspect-[16/10]">
       {status === 'ready' && previewUrl ? (
         <>
           <img
@@ -72,7 +72,7 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
             referrerPolicy="no-referrer"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-deep-slate/70 via-deep-slate/25 to-deep-slate/5"
+            className="absolute inset-0 bg-[color-mix(in_srgb,var(--ink)_55%,transparent)]"
             aria-hidden="true"
           />
         </>
@@ -81,22 +81,22 @@ function WaypointMediaHero({ previewUrl, status, landmarkTitle }) {
           {status === 'loading' ? (
             <>
               <LoadingSpinner className="mb-4" />
-              <p className="text-sm font-medium text-deep-slate">Loading landmark view…</p>
+              <p className="text-sm font-medium text-ink900">Loading landmark view…</p>
             </>
           ) : status === 'error' ? (
             <>
-              <p className="font-display text-lg font-semibold text-deep-slate">
+              <p className="font-display text-lg font-semibold text-ink900">
                 Preview unavailable
               </p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
+              <p className="mt-2 max-w-xs text-sm text-muted">
                 We couldn&apos;t load the modern view for {landmarkTitle}. You can still start the
                 audio story below.
               </p>
             </>
           ) : (
             <>
-              <p className="font-display text-lg font-semibold text-deep-slate">View coming soon</p>
-              <p className="mt-2 max-w-xs text-sm text-soft-slate">
+              <p className="font-display text-lg font-semibold text-ink900">View coming soon</p>
+              <p className="mt-2 max-w-xs text-sm text-muted">
                 The visual reconstruction for {landmarkTitle} is being prepared. The audio story is
                 ready when you are.
               </p>
@@ -115,13 +115,13 @@ function AudioTranscriptSection({ waypoint }) {
     'Full captions and transcript will appear here as audio stories are published for this landmark.';
 
   return (
-    <details className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3">
-      <summary className="cursor-pointer text-sm font-semibold text-deep-slate">
+    <details className="mt-4 rounded-2xl border border-ink800/70 bg-ink800/25 px-4 py-3">
+      <summary className="cursor-pointer text-sm font-semibold text-ink900">
         Captions &amp; transcript
       </summary>
-      <p className="mt-3 text-sm leading-relaxed text-soft-slate">{transcript}</p>
+      <p className="mt-3 text-sm leading-relaxed text-muted">{transcript}</p>
       {!waypoint?.arrival_transcript ? (
-        <p className="mt-2 text-xs text-soft-slate/80">
+        <p className="mt-2 text-xs text-muted/80">
           Placeholder — timed captions will sync with narration in a future update.
         </p>
       ) : null}
@@ -131,7 +131,7 @@ function AudioTranscriptSection({ waypoint }) {
 
 function ModernImmersiveVideo({ videoUrl, posterUrl, landmarkTitle, onRequestExit }) {
   return (
-    <div className="relative mb-5 overflow-hidden rounded-b-3xl bg-black shadow-glass-lg">
+    <div className="relative mb-5 overflow-hidden rounded-b-3xl bg-black shadow-card">
       <div className="relative aspect-[4/3] w-full sm:aspect-[16/10]">
         <video
           key={videoUrl}
@@ -145,8 +145,8 @@ function ModernImmersiveVideo({ videoUrl, posterUrl, landmarkTitle, onRequestExi
           aria-label={`Immersive video of ${landmarkTitle}`}
         />
       </div>
-      <div className="border-t border-white/10 bg-deep-slate/90 px-4 py-3">
-        <Button variant="text" fullWidth onClick={onRequestExit}>
+      <div className="border-t border-white/10 bg-ink900/90 px-4 py-3">
+        <Button variant="ghost" fullWidth onClick={onRequestExit}>
           Hide video
         </Button>
       </div>
@@ -176,10 +176,10 @@ function WaypointCardBody({
         <span id={titleId}>{title}</span>
       </EditorialTitle>
       {hook ? (
-        <p className="mt-3 text-base leading-relaxed text-soft-slate">{hook}</p>
+        <p className="mt-3 text-base leading-relaxed text-muted">{hook}</p>
       ) : null}
       {orientationHint ? (
-        <p className="mt-4 rounded-2xl border border-parchment/70 bg-parchment/30 px-4 py-3 text-sm leading-relaxed text-soft-slate">
+        <p className="mt-4 rounded-2xl border border-ink800/70 bg-ink800/30 px-4 py-3 text-sm leading-relaxed text-muted">
           {orientationHint}
         </p>
       ) : null}
@@ -442,7 +442,7 @@ const WaypointCard = ({
   const advancedSection =
     usesComparisonSlider ? (
     <details
-      className="mt-6 border-t border-limestone/60 pt-4"
+      className="mt-6 border-t border-ink800/60 pt-4"
       open={advancedOpen}
       onToggle={(event) => {
         const nextOpen = event.currentTarget.open;
@@ -450,7 +450,7 @@ const WaypointCard = ({
         if (nextOpen) triggerHaptic(HAPTIC_KIND.SOFT_TAP);
       }}
     >
-      <summary className="cursor-pointer text-sm font-semibold text-soft-slate transition hover:text-deep-slate">
+      <summary className="cursor-pointer text-sm font-semibold text-muted transition hover:text-ink900">
         Advanced
       </summary>
       <div className="mt-4 space-y-3">
@@ -477,7 +477,7 @@ const WaypointCard = ({
             ) : null}
             {!alignmentMode ? (
               <Button
-                variant="text"
+                variant="ghost"
                 fullWidth
                 onClick={() => setShowImmersiveView(false)}
               >
@@ -497,8 +497,8 @@ const WaypointCard = ({
         ) : null}
 
         {debugMedia ? (
-          <div className="rounded-2xl border border-limestone bg-deep-slate/5 p-3 text-left font-mono text-[10px] leading-relaxed text-soft-slate">
-            <p className="font-semibold text-bronze">Media diagnostics</p>
+          <div className="rounded-2xl border border-ink800 bg-ink900/5 p-3 text-left font-mono text-[10px] leading-relaxed text-muted">
+            <p className="font-semibold text-ember">Media diagnostics</p>
             <p>modern: {modernSliderUrl}</p>
             <p>ancient: {ancientSliderUrl}</p>
             <p>mode: {usesModernVideo ? 'modern_video' : 'comparison'}</p>
@@ -521,7 +521,7 @@ const WaypointCard = ({
     >
       {showImmersiveView && usesComparisonSlider ? (
         <div ref={sliderRef} className="mb-5 touch-none" onTouchMove={(event) => event.stopPropagation()}>
-          <div className="overflow-hidden rounded-b-3xl shadow-glass-lg">
+          <div className="overflow-hidden rounded-b-3xl shadow-card">
             <ErrorBoundary
               title="Comparison view unavailable"
               message="The then-and-now slider could not load. You can still listen to the audio story below."
@@ -586,25 +586,25 @@ const WaypointCard = ({
         className="pb-6"
       >
         {mediaError ? (
-          <p className="mt-4 rounded-2xl border border-bronze/30 bg-bronze/10 px-4 py-3 text-sm text-deep-slate" role="alert">
+          <p className="mt-4 rounded-2xl border border-ember/30 bg-ember/10 px-4 py-3 text-sm text-ink900" role="alert">
             {mediaError}
           </p>
         ) : null}
 
         {accessMode === 'freeSample' ? (
           <div className="mt-4 space-y-3">
-            <p className="rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
+            <p className="rounded-2xl border border-ember/30 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-ink900">
               This is your free taste of ChronoWalk — the Colosseum reconstruction and opening audio
               story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
             </p>
             {onViewTours ? (
-              <BronzeButton size="lg" fullWidth onClick={onViewTours}>
+              <Button size="lg" fullWidth onClick={onViewTours}>
                 View tours &amp; pricing
-              </BronzeButton>
+              </Button>
             ) : null}
           </div>
         ) : accessMode === 'remote' ? (
-          <p className="mt-4 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3 text-sm leading-relaxed text-deep-slate">
+          <p className="mt-4 rounded-2xl border border-ember/30 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-ink900">
             You are viewing this landmark remotely. Visit on foot for the full GPS-guided arrival
             experience.
           </p>
@@ -613,24 +613,24 @@ const WaypointCard = ({
         {!showImmersiveView && !alignmentMode ? (
           <div className="mt-6 space-y-3">
             {hasModernMedia ? (
-              <BronzeButton size="lg" fullWidth onClick={startTimePortal}>
+              <Button size="lg" fullWidth onClick={startTimePortal}>
                 {usesModernVideo ? 'Begin immersive view' : 'Step through time'}
-              </BronzeButton>
+              </Button>
             ) : null}
             <div className={usesModernVideo ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'}>
               {hasModernMedia && usesComparisonSlider ? (
-                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openImageOnly}>
+                <Button variant="quiet" fullWidth className={ctaInCard} onClick={openImageOnly}>
                   Image only
                 </Button>
               ) : null}
               {hasModernMedia && usesModernVideo ? (
-                <Button variant="secondary" fullWidth className={ctaInCard} onClick={openVideoOnly}>
+                <Button variant="quiet" fullWidth className={ctaInCard} onClick={openVideoOnly}>
                   Video only
                 </Button>
               ) : null}
               {waypoint.arrival_immersive_url ? (
                 <Button
-                  variant="secondary"
+                  variant="quiet"
                   fullWidth
                   className={ctaInCard}
                   onClick={openAudioOnly}
@@ -642,16 +642,16 @@ const WaypointCard = ({
           </div>
         ) : showImmersiveView && usesComparisonSlider && !alignmentMode ? (
           <div className="mt-5 space-y-3">
-            <p className="text-sm text-soft-slate">
+            <p className="text-sm text-muted">
               Drag across the facade to travel between eras. Audio continues as you explore.
             </p>
-            <Button variant="secondary" fullWidth onClick={() => setShareOpen(true)}>
+            <Button variant="quiet" fullWidth onClick={() => setShareOpen(true)}>
               Share this reveal
             </Button>
           </div>
         ) : showImmersiveView && usesModernVideo && !alignmentMode ? (
           <div className="mt-5">
-            <p className="text-sm text-soft-slate">
+            <p className="text-sm text-muted">
               Watch the modern scene come alive. Audio continues as you explore.
             </p>
           </div>
@@ -668,7 +668,7 @@ const WaypointCard = ({
               onStop={() => audioOrchestrator.stop()}
             />
             {needsResumeAudio ? (
-              <p className="text-xs text-soft-slate">
+              <p className="text-xs text-muted">
                 Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
@@ -677,7 +677,7 @@ const WaypointCard = ({
         ) : null}
 
         <div className="mt-4 flex flex-col gap-2">
-          <Button variant="text" fullWidth onClick={onClose}>
+          <Button variant="ghost" fullWidth onClick={onClose}>
             Continue walking
           </Button>
         </div>

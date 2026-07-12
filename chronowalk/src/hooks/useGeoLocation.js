@@ -60,6 +60,8 @@ export const useGeoLocation = ({
   const [locationStatus, setLocationStatus] = useState(() =>
     debugMode ? LOCATION_STATUS.GRANTED : LOCATION_STATUS.WAITING
   );
+  // Radius of uncertainty in metres (null when unknown / simulated).
+  const [accuracy, setAccuracy] = useState(null);
   const [watchKey, setWatchKey] = useState(0);
   const [journey, setJourney] = useState(() =>
     debugMode && debugPos
@@ -78,6 +80,14 @@ export const useGeoLocation = ({
   }, []);
 
   useEffect(() => {
+    if (simulateAtTarget && target) {
+      setLocationStatus(LOCATION_STATUS.GRANTED);
+      setJourney(
+        resolveJourneyState(target.lat, target.lng, target, geofenceThresholdM)
+      );
+      return;
+    }
+
     if (debugMode) {
       setLocationStatus(LOCATION_STATUS.GRANTED);
       if (debugPos?.lat != null && debugPos?.lng != null) {
@@ -104,6 +114,9 @@ export const useGeoLocation = ({
         const lng = pos.coords.longitude;
 
         setLocationStatus(LOCATION_STATUS.GRANTED);
+        setAccuracy(
+          typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null
+        );
         setJourney(resolveJourneyState(lat, lng, target, geofenceThresholdM));
 
         const dist = getDistance(lat, lng, target.lat, target.lng);
@@ -122,7 +135,7 @@ export const useGeoLocation = ({
     );
 
     return () => navigator.geolocation.clearWatch(watcher);
-  }, [debugMode, debugPos?.lat, debugPos?.lng, target, geofenceThresholdM, watchKey]);
+  }, [debugMode, debugPos?.lat, debugPos?.lng, simulateAtTarget, target, geofenceThresholdM, watchKey]);
 
   useEffect(() => {
     if (!journey.status) return;
@@ -133,6 +146,7 @@ export const useGeoLocation = ({
     position: { lat: journey.lat, lng: journey.lng },
     state,
     distance: journey.distance,
+    accuracy,
     locationStatus,
     retryLocation,
   };

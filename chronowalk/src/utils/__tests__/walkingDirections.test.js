@@ -1,14 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildInstructionFromManeuver,
   cleanInstruction,
-  isSameLocation,
+  humanizeWalkingSteps,
+  isGenericInstruction,
+  isGenericStreetName,
   normalizeWalkingSteps,
+  pickBestWalkingDirections,
+  scoreWalkingStepQuality,
 } from '../walkingDirections'
 
 describe('walkingDirections', () => {
   it('cleans html from instructions', () => {
     expect(cleanInstruction('Turn <b>left</b> onto Via dei Fori Imperiali')).toBe(
-      'Turn left onto Via dei Fori Imperiali'
+      'Turn left onto Via dei Fori Imperiali',
     )
   })
 
@@ -24,9 +29,71 @@ describe('walkingDirections', () => {
     expect(steps[0].distanceM).toBe(20)
   })
 
-  it('detects when origin and destination are the same place', () => {
-    const point = { lat: 41.89, lng: 12.49 }
-    expect(isSameLocation(point, { lat: 41.8901, lng: 12.4901 })).toBe(true)
-    expect(isSameLocation(point, { lat: 41.91, lng: 12.49 })).toBe(false)
+  it('detects generic walkway labels', () => {
+    expect(isGenericStreetName('the walkway')).toBe(true)
+    expect(isGenericStreetName('Colosseo')).toBe(false)
+    expect(isGenericInstruction('Turn right onto the walkway')).toBe(true)
+  })
+
+  it('builds named-street instructions from maneuver metadata', () => {
+    expect(
+      buildInstructionFromManeuver(
+        { type: 'turn', modifier: 'right' },
+        'Via di San Giovanni in Laterano',
+      ),
+    ).toBe('Turn right onto Via di San Giovanni in Laterano')
+  })
+
+  it('humanizes generic walkway steps toward the destination', () => {
+    const steps = humanizeWalkingSteps(
+      [
+        {
+          instruction: 'Turn right onto the walkway',
+          distanceM: 41,
+          type: 'turn',
+          modifier: 'right',
+        },
+        {
+          instruction: 'Walk south on the walkway',
+          distanceM: 56,
+          type: 'continue',
+          modifier: 'south',
+        },
+      ],
+      'Colosseum interior',
+    )
+
+    expect(steps[0].instruction).toContain('Colosseum interior')
+    expect(steps[0].instruction).not.toContain('walkway')
+  })
+
+  it('prefers routes with named streets over generic walkway routes', () => {
+    const generic = {
+      steps: [
+        { instruction: 'Turn right onto the walkway', distanceM: 40, type: 'turn' },
+        { instruction: 'Turn right onto the walkway', distanceM: 50, type: 'turn' },
+      ],
+    }
+    const named = {
+      steps: [
+        {
+          instruction: 'Turn right onto Colosseo',
+          streetName: 'Colosseo',
+          distanceM: 140,
+          type: 'turn',
+        },
+        {
+          instruction: 'Continue on Via di San Giovanni in Laterano',
+          streetName: 'Via di San Giovanni in Laterano',
+          distanceM: 90,
+          type: 'continue',
+        },
+      ],
+    }
+
+    expect(scoreWalkingStepQuality(named.steps)).toBeGreaterThan(
+      scoreWalkingStepQuality(generic.steps),
+    )
+    expect(pickBestWalkingDirections([generic, named])).toBe(named)
   })
 })
