@@ -1,5 +1,6 @@
 import { Suspense, useMemo, useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
 import { lazyWithRecovery } from '../../utils/lazyWithRecovery.js'
 import DirectionsNavHud from '../DirectionsNavHud.jsx'
 import {
@@ -371,9 +372,14 @@ export default function MapScreen({ variant = 'legacy' }) {
           >
             <Link
               to="/journey"
+              aria-label="Back to walk"
               style={{
                 pointerEvents: 'auto',
-                padding: '9px 14px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                minHeight: 44,
+                padding: '8px 14px 8px 10px',
                 borderRadius: 999,
                 background: 'color-mix(in srgb, var(--ink) 82%, transparent)',
                 color: 'var(--warm-white)',
@@ -384,7 +390,8 @@ export default function MapScreen({ variant = 'legacy' }) {
                 backdropFilter: 'blur(8px)',
               }}
             >
-              ← Walk
+              <ChevronLeft size={18} strokeWidth={2.25} aria-hidden />
+              Back to walk
             </Link>
             <button
               type="button"

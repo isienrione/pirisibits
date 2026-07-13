@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Play, ChevronLeft, ChevronDown } from "lucide-react";
+import { Play, ChevronDown } from "lucide-react";
 import { useContext } from "react";
 import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow } from '../ui/index.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 import C7Threshold from './C7Threshold.jsx';
 
 export default function E2MemoryDetail({
@@ -49,9 +50,11 @@ export default function E2MemoryDetail({
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Back */}
       <div style={{ padding: "48px 24px 16px", flexShrink: 0 }}>
-        <button type="button" onClick={() => (onBack ? onBack() : navigate("E1"))} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: T.muted, fontFamily: F.body, fontSize: 13, padding: 0 }}>
-          <ChevronLeft size={16} /> Journal
-        </button>
+        <BackNavButton
+          variant="inline"
+          label="Journal"
+          onClick={() => (onBack ? onBack() : navigate("E1"))}
+        />
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 48px" }}>

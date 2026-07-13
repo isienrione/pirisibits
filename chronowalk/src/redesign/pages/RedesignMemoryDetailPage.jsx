@@ -16,6 +16,7 @@ import {
 } from '../lib/waypointPresentation.js'
 import { chapterTitle } from '../../content/chapterMeta.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import E2MemoryDetail from '../screens/E2MemoryDetail.jsx'
 
 export default function RedesignMemoryDetailPage() {
@@ -60,7 +61,7 @@ export default function RedesignMemoryDetailPage() {
       <RedesignRouteShell>
         <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32 }}>
           <p>Stop not found.</p>
-          <button type="button" onClick={() => navigate('/stops')}>Back to all stops</button>
+          <BackNavButton variant="inline" label="All stops" onClick={() => navigate('/stops')} />
         </div>
       </RedesignRouteShell>
     )

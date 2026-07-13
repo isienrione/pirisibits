@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import BackNavButton from '../../redesign/ui/BackNavButton.jsx'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { grantAccess } from '../../lib/config'
 import { track, TRACK_EVENTS } from '../../lib/track'
@@ -86,6 +87,12 @@ export default function AccessScreen({ onValidated }) {
 
   return (
     <AccessShell>
+      <BackNavButton
+        variant="immersive"
+        label="Home"
+        onClick={() => navigate('/landing', { replace: true })}
+        style={{ marginBottom: 20 }}
+      />
       <p
         style={{
           margin: 0,

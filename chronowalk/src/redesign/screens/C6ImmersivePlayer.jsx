@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward } from 'lucide-react'
 import {T, F, SHELL_SAFE_BOTTOM_INSET, withAlpha} from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
 import ThresholdHoldHint from '../ui/ThresholdHoldHint.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
@@ -481,25 +482,18 @@ export default function C6ImmersivePlayer({
             pointerEvents: 'none',
           }}
         >
-          <button
-            type="button"
-            className="cw-immersive-hit-back"
-            data-testid="immersive-back"
-            onClick={onBack}
-            style={{
-              color: T.warmWhite,
-              background: 'rgba(11,11,13,0.45)',
-              backdropFilter: 'blur(8px)',
-              border: 'none',
-              borderRadius: 999,
-              cursor: 'pointer',
-              fontFamily: F.body,
-              fontSize: 13,
-              pointerEvents: 'auto',
-            }}
-          >
-            <ChevronLeft size={17} /> Back
-          </button>
+          {onBack ? (
+            <div style={{ pointerEvents: 'auto' }}>
+              <BackNavButton
+                variant="immersive"
+                label="Back"
+                onClick={onBack}
+                data-testid="immersive-back"
+              />
+            </div>
+          ) : (
+            <span />
+          )}
           {hasReconstruction ? (
             <button
               type="button"

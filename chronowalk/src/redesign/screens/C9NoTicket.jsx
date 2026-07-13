@@ -1,8 +1,9 @@
 import {T, F, withAlpha} from "../tokens.js";
 import { colosseumNow, severusNow } from "../images.js";
 import { Eyebrow } from '../ui/index.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 
-export default function C9NoTicket({ onTakeWalk, onDismiss }) {
+export default function C9NoTicket({ onTakeWalk, onDismiss, onBack }) {
   const accent = T.actI;
 
   return (
@@ -10,6 +11,11 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
 
       {/* Header */}
       <div style={{ padding: "52px 24px 0", flexShrink: 0, position: "relative", zIndex: 2 }}>
+        {onBack ? (
+          <div style={{ marginBottom: 16 }}>
+            <BackNavButton variant="inline" label="Back to walk" onClick={onBack} />
+          </div>
+        ) : null}
         <h2 style={{
           fontFamily: F.display, fontSize: 26,
           color: T.ink, fontWeight: 300,

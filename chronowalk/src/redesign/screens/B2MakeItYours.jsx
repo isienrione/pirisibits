@@ -3,6 +3,8 @@ import {T, F, withAlpha} from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
 
+import BackNavButton from '../ui/BackNavButton.jsx'
+
 export default function B2MakeItYours({
   showIosInstructions = false,
   canInstall = true,
@@ -13,6 +15,7 @@ export default function B2MakeItYours({
   onDownload,
   onContinue,
   onSkip,
+  onBack,
 }) {
   const [downloadingLocal, setDownloadingLocal] = useState(false);
   const [dlProgressLocal, setDlProgressLocal]   = useState(0);
@@ -49,6 +52,12 @@ export default function B2MakeItYours({
 
       {/* Content — all type ON the photograph */}
       <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "64px 28px 52px" }}>
+
+        {onBack ? (
+          <div style={{ position: 'absolute', top: 'max(12px, env(safe-area-inset-top))', left: 16, zIndex: 20 }}>
+            <BackNavButton variant="immersive" label="Home" onClick={onBack} />
+          </div>
+        ) : null}
 
         {/* Small logomark */}
         <div style={{ marginBottom: 44 }}>

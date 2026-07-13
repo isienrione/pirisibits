@@ -15,7 +15,10 @@ export default function RedesignAccessConfirmedPage() {
   return (
     <RedesignRouteShell>
       <div className="redesign-app-shell">
-        <A3AccessConfirmed onContinue={handleContinue} />
+        <A3AccessConfirmed
+          onContinue={handleContinue}
+          onBack={() => navigate('/landing', { replace: true })}
+        />
       </div>
     </RedesignRouteShell>
   )

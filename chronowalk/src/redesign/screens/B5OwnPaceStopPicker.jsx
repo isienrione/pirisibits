@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import {T, F, SHELL_TAB_BAR_INSET, withAlpha} from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
 
@@ -73,21 +74,9 @@ export default function B5OwnPaceStopPicker({
     >
       <div style={{ padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 12px', flexShrink: 0 }}>
         {onBack ? (
-          <button
-            type="button"
-            onClick={onBack}
-            style={{
-              fontSize: 13,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              marginBottom: 12,
-            }}
-          >
-            ← Back
-          </button>
+          <div style={{ marginBottom: 12 }}>
+            <BackNavButton variant="inline" label="Back" onClick={onBack} />
+          </div>
         ) : null}
         <Eyebrow color={T.ember}>YOUR OWN PACE</Eyebrow>
         <h1

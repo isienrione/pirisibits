@@ -5,6 +5,7 @@ import { Vignette } from '../ui/index.js'
 import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
+import BackNavButton from '../ui/BackNavButton.jsx'
 
 const BENEFITS = [
   {
@@ -21,7 +22,7 @@ const BENEFITS = [
   },
 ]
 
-export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, paceTitle }) {
+export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, paceTitle, onBack }) {
   return (
     <div
       style={{
@@ -55,6 +56,11 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
             'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px max(32px, calc(env(safe-area-inset-bottom) + 24px))',
         }}
       >
+        {onBack ? (
+          <div style={{ marginBottom: 16 }}>
+            <BackNavButton variant="immersive" label="Back" onClick={onBack} />
+          </div>
+        ) : null}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <ChronoWalkLogo size={68} />
           <p

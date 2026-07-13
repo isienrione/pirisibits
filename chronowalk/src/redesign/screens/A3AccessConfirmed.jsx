@@ -4,8 +4,9 @@ import { T, F } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette } from '../ui/index.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 
-export default function A3AccessConfirmed({ onContinue }) {
+export default function A3AccessConfirmed({ onContinue, onBack }) {
   const { navigate } = useContext(RedesignNavCtx);
   // Animate seam drawing downward: 0 → full height, then hold, then restart
   const [pct, setPct] = useState(0);
@@ -41,6 +42,12 @@ export default function A3AccessConfirmed({ onContinue }) {
       {/* Dim photo — satisfies photo-on-every-immersion-screen; brightness kept near-black */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${colosseumNow})`, backgroundSize: "cover", backgroundPosition: "center 20%", filter: "brightness(0.04) saturate(0.3)" }} />
       <Vignette />
+
+      {onBack ? (
+        <div style={{ position: 'absolute', top: 'max(12px, env(safe-area-inset-top))', left: 16, zIndex: 3 }}>
+          <BackNavButton variant="immersive" label="Home" onClick={onBack} />
+        </div>
+      ) : null}
 
       {/* Seam drawing downward — the key turning in the lock */}
       {/* Outer glow envelope */}

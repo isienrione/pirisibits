@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 
 export default function F1JourneyLetter({
   firstName = "",
@@ -55,6 +56,11 @@ export default function F1JourneyLetter({
 
       {/* Content */}
       <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%", padding: "52px 28px 28px", overflowY: "auto", scrollbarWidth: "none" }}>
+        {onBack ? (
+          <div style={{ marginBottom: 12, flexShrink: 0 }}>
+            <BackNavButton variant="immersive" label="Journal" onClick={onBack} />
+          </div>
+        ) : null}
         {/* Spectrum route SVG */}
         <div style={{ flexShrink: 0, height: 170, position: "relative", marginBottom: 4 }}>
           <svg width="100%" height="170" viewBox="0 0 390 170" preserveAspectRatio="xMinYMin meet">
@@ -125,11 +131,6 @@ export default function F1JourneyLetter({
           >Share it.</button>
           {statusMessage ? (
             <p style={{ fontSize: 12, color: T.actII, marginBottom: 12, textAlign: 'center' }}>{statusMessage}</p>
-          ) : null}
-          {onBack ? (
-            <button type="button" onClick={onBack} style={{ width: '100%', padding: '12px', background: 'transparent', border: `1px solid ${T.ink800}`, color: T.muted, borderRadius: 10, cursor: 'pointer' }}>
-              Back to journal
-            </button>
           ) : null}
         </div>
       </div>

@@ -37,6 +37,7 @@ export default function RedesignSetupPage() {
           onDownload={handleDownload}
           onContinue={() => navigate('/begin', { replace: true })}
           onSkip={() => navigate('/begin', { replace: true })}
+          onBack={() => navigate('/landing', { replace: true })}
         />
       </div>
     </RedesignRouteShell>

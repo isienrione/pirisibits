@@ -8,6 +8,7 @@ import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
 import { applyReplayOnboardingFromSearch, shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
+import { homePath } from './lib/backNavigation.js'
 import TourRoutePreviewScreen from './ui/TourRoutePreviewScreen.jsx'
 import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
@@ -119,6 +120,19 @@ export default function RedesignBeginFlow() {
     advanceAfterPaceSelection()
   }
 
+  const goBackToTour = () => navigate(homePath(), { replace: true })
+
+  const goBackFromMapPreview = () => {
+    if (selectedPace === JOURNEY_PACE.OWN) setStepName('pickStops')
+    else setStepName('pace')
+  }
+
+  const goBackFromLocation = () => {
+    if (showRoutePreview) setStepName('mapPreview')
+    else if (selectedPace === JOURNEY_PACE.OWN) setStepName('pickStops')
+    else setStepName('pace')
+  }
+
   if (stepName === 'mapPreview') {
     return (
       <TourRoutePreviewScreen
@@ -128,6 +142,7 @@ export default function RedesignBeginFlow() {
         continueLabel="Enable location & begin"
         footerNote="Next you'll enable location — then the guided tutorial begins at your first stop."
         onContinue={() => setStepName('location')}
+        onBack={goBackFromMapPreview}
       />
     )
   }
@@ -140,6 +155,7 @@ export default function RedesignBeginFlow() {
       <div className="redesign-app-shell">
         <C8dResume
           resumeLabel={resumeLabel}
+          onBack={goBackToTour}
           onContinue={() => {
             resume()
             track(TRACK_EVENTS.RESUME, { source: 'begin_flow' })
@@ -177,6 +193,7 @@ export default function RedesignBeginFlow() {
           busy={busy}
           onEnable={handleEnableLocation}
           onSkip={startJourney}
+          onBack={goBackFromLocation}
         />
       </div>
     )
@@ -189,6 +206,7 @@ export default function RedesignBeginFlow() {
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}
+        onBack={goBackToTour}
       />
     </div>
   )

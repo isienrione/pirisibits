@@ -1,7 +1,7 @@
-import { ChevronLeft } from "lucide-react";
 import { useContext } from "react";
 import {T, F, withAlpha} from "../tokens.js";
 import { RedesignNavCtx } from '../nav.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 
 export default function G2Credits({ onBack }) {
   const { navigate } = useContext(RedesignNavCtx);
@@ -55,9 +55,11 @@ export default function G2Credits({ onBack }) {
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ padding: "48px 24px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-        <button type="button" onClick={() => (onBack ? onBack() : navigate("G1"))} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: T.muted, fontFamily: F.body, fontSize: 13, padding: 0 }}>
-          <ChevronLeft size={16} /> Settings
-        </button>
+        <BackNavButton
+          variant="inline"
+          label="Back"
+          onClick={() => (onBack ? onBack() : navigate("G1"))}
+        />
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 48px" }}>

@@ -5,6 +5,7 @@ import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { saveLetterCard, shareLetterCard } from '../../components/letter/letterExport.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import F1JourneyLetter from '../screens/F1JourneyLetter.jsx'
 
 export default function RedesignLetterPage() {
@@ -86,9 +87,9 @@ export default function RedesignLetterPage() {
       <RedesignRouteShell>
         <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32, color: '#FAF6EF' }}>
           <p>{error?.message ?? 'Your letter is not ready yet. Keep walking.'}</p>
-          <button type="button" onClick={() => navigate('/journey')} style={{ marginTop: 16 }}>
-            Back to walk
-          </button>
+          <div style={{ marginTop: 16 }}>
+            <BackNavButton variant="immersive" label="Back to walk" onClick={() => navigate('/journey')} />
+          </div>
         </div>
       </RedesignRouteShell>
     )

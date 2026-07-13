@@ -11,6 +11,7 @@ export default function RedesignNoTicketPage() {
         <C9NoTicket
           onTakeWalk={() => navigate('/journey')}
           onDismiss={() => navigate('/journey')}
+          onBack={() => navigate('/journey', { replace: true })}
         />
       </div>
     </RedesignRouteShell>

@@ -8,6 +8,7 @@ import {
 } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
 import { Eyebrow } from '../ui/index.js'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import { ACT_DOT_KEYS } from '../../data/romePacing.js'
 
 const PACE_IMAGES = {
@@ -39,6 +40,7 @@ export default function B4PaceSelector({
   selectedPace,
   onSelectPace,
   onContinue,
+  onBack,
 }) {
   const { navigate } = useContext(RedesignNavCtx)
   const [selected, setSelected] = useState(null)
@@ -100,6 +102,19 @@ export default function B4PaceSelector({
         }}
       />
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(11,11,13,0.7)', zIndex: 1 }} />
+
+      {onBack ? (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'max(12px, env(safe-area-inset-top))',
+            left: 24,
+            zIndex: 10,
+          }}
+        >
+          <BackNavButton variant="immersive" label="My Tour" onClick={onBack} />
+        </div>
+      ) : null}
 
       <div
         style={{

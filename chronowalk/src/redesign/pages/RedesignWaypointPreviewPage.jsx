@@ -9,6 +9,7 @@ import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { buildImmersivePlayerProps } from '../lib/waypointImmersiveProps.js'
 import { T } from '../tokens.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import C6ImmersivePlayer from '../screens/C6ImmersivePlayer.jsx'
 
 const DEFAULT_PREVIEW_WAYPOINT = 'w01'
@@ -100,7 +101,7 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
       <RedesignRouteShell>
         <div className="redesign-app-shell" style={{ padding: 24, color: T.warmWhite }}>
           <p>Unknown waypoint: {waypointId}</p>
-          <button type="button" onClick={() => navigate('/landing')}>Back</button>
+          <BackNavButton variant="immersive" label="Home" onClick={() => navigate('/landing')} />
         </div>
       </RedesignRouteShell>
     )

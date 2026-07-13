@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, Lock } from 'lucide-react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import {T, F, withAlpha} from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
+import BackNavButton from '../ui/BackNavButton.jsx'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -66,6 +67,11 @@ export default function A2PreviewGhostTour({
       }}
     >
       <div style={{ flexShrink: 0, padding: 'max(18px, env(safe-area-inset-top)) 24px 12px' }}>
+        {onBack ? (
+          <div style={{ marginBottom: 12 }}>
+            <BackNavButton variant="inline" label="Home" onClick={onBack} />
+          </div>
+        ) : null}
         <ChronoWalkLogo className="cw-preview-ghost__logo" width={240} variant="light" hideTagline />
         <Eyebrow color={T.ember}>YOUR TOUR</Eyebrow>
         <h1
@@ -345,24 +351,6 @@ export default function A2PreviewGhostTour({
         >
           Unlock all {productTruth?.publicPlacesLabel ?? `${progress.total} places`}
         </button>
-        {onBack ? (
-          <button
-            type="button"
-            onClick={onBack}
-            style={{
-              width: '100%',
-              marginTop: 10,
-              padding: '12px',
-              background: 'transparent',
-              border: 'none',
-              color: T.muted,
-              cursor: 'pointer',
-              fontFamily: F.body,
-            }}
-          >
-            Back to Home
-          </button>
-        ) : null}
       </div>
     </div>
   )

@@ -3,11 +3,13 @@ import {T, F, withAlpha} from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette, BottomScrim, Eyebrow } from '../ui/index.js';
+import BackNavButton from '../ui/BackNavButton.jsx';
 
 export default function C8dResume({
   resumeLabel = 'Pick up at the Temple of Vesta',
   onContinue,
   onStartFresh,
+  onBack,
   busy = false,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
@@ -33,6 +35,11 @@ export default function C8dResume({
         justifyContent: "flex-end",
         padding: "0 28px 60px",
       }}>
+        {onBack ? (
+          <div style={{ position: 'absolute', top: 'max(12px, env(safe-area-inset-top))', left: 16 }}>
+            <BackNavButton variant="immersive" label="My Tour" onClick={onBack} />
+          </div>
+        ) : null}
         <Eyebrow color={accent}>WELCOME BACK</Eyebrow>
 
         <h1 style={{
