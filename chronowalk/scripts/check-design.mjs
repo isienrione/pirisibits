@@ -13,12 +13,16 @@ const SRC_ROOT = join(__dirname, '../src')
 
 /** Approved 6-digit hex (from design/tokens.css). Case-insensitive. */
 const APPROVED_HEX = new Set([
+  '101113',
   '0B0B0D',
   '1A1A1F',
+  'F3EEE6',
   'FAF6EF',
   'E9E2D5',
   '8B8638',
+  'C7A348',
   'D4AF37',
+  'E95B2E',
   '6B7A52',
   '16130F',
   '211C15',
@@ -28,6 +32,7 @@ const APPROVED_HEX = new Set([
   'B9AF9C',
   'E8A13C',
   'C97F1E',
+  'A88838',
   '2A1206',
   'E4552E',
   '7C9A5C',

@@ -116,7 +116,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       type: 'line',
       source: 'active-leg-route',
       paint: {
-        'line-color': walkingCompanionUI ? '#E4552E' : MAP_COLORS.activeLeg,
+        'line-color': walkingCompanionUI ? '#C7A348' : MAP_COLORS.activeLeg,
         'line-width': walkingCompanionUI ? 4 : 5,
         'line-opacity': walkingCompanionUI ? 0.92 : 0.95,
         ...(walkingCompanionUI ? { 'line-dasharray': [2, 2.2] } : {}),
@@ -822,7 +822,7 @@ function TourMapboxView({
       map.current.setPaintProperty('tour-route-line', 'line-opacity', 0.1)
     }
     if (map.current.getLayer('active-leg-route-line')) {
-      map.current.setPaintProperty('active-leg-route-line', 'line-color', '#E4552E')
+      map.current.setPaintProperty('active-leg-route-line', 'line-color', '#C7A348')
       map.current.setPaintProperty('active-leg-route-line', 'line-dasharray', [2, 2.2])
     }
   }, [mapLoaded, walkingCompanionUI])

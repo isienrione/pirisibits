@@ -73,7 +73,7 @@ export function JourneyPickScreen() {
           })}
         </div>
 
-        <div className="cw-landing-screen__tour-cta" style={{ background: ACT_COLOR[currentAct?.colorKey] ?? T.actI }}>
+        <div className="cw-landing-screen__tour-cta" style={{ background: T.terracotta }}>
           {ctaLabel}
         </div>
       </div>
@@ -104,10 +104,10 @@ function MapPreviewArt() {
         strokeWidth="5"
         strokeLinecap="round"
       />
-      <circle cx="308" cy="655" r="7" fill={T.actI} stroke="#F5EFE3" strokeWidth="2" />
-      <circle cx="285" cy="630" r="6" fill={T.actI} stroke="#F5EFE3" strokeWidth="2" />
-      <circle cx="255" cy="596" r="9" fill={T.gold} stroke="#FAF6EF" strokeWidth="2" />
-      <circle cx="218" cy="558" r="6" fill={T.ink800} stroke="#F5EFE3" strokeWidth="2" />
+      <circle cx="308" cy="655" r="7" fill={T.actI} stroke="#F3EEE6" strokeWidth="2" />
+      <circle cx="285" cy="630" r="6" fill={T.actI} stroke="#F3EEE6" strokeWidth="2" />
+      <circle cx="255" cy="596" r="9" fill={T.gold} stroke="#F3EEE6" strokeWidth="2" />
+      <circle cx="218" cy="558" r="6" fill={T.ink800} stroke="#F3EEE6" strokeWidth="2" />
       <text x="255" y="580" textAnchor="middle" fill={T.ink} fontSize="11" fontFamily={F.body}>
         You are here
       </text>

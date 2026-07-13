@@ -62,6 +62,6 @@ export function shortStopLabel(title, maxLen = 22) {
 }
 
 export function actColorForNumeral(numeral, actColors) {
-  if (!numeral) return actColors.I ?? '#E4552E'
-  return actColors[numeral] ?? actColors.I ?? '#E4552E'
+  if (!numeral) return actColors.I ?? '#C7A348'
+  return actColors[numeral] ?? actColors.I ?? '#C7A348'
 }

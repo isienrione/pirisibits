@@ -22,7 +22,7 @@ import {
  * Presentation only — callers supply routing, GPS, and narration handlers.
  */
 export default function WalkingCompanionScreen({
-  accent = T.actI,
+  accent = T.gold,
   title = 'The Pantheon',
   photo = pantheonNow,
   actNumeral = 'I',
@@ -182,6 +182,7 @@ export default function WalkingCompanionScreen({
       data-walking-phase={phase}
       style={{
         '--wc-accent': accent,
+        '--wc-action': T.terracotta,
         '--wc-success': T.actII,
         '--wc-footer-extra': `${extraBottomInset}px`,
       }}

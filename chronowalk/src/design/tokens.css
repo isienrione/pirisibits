@@ -4,12 +4,13 @@
  */
 :root {
   /* ChronoWalk brand palette (official) */
-  --obsidian: #0b0b0d;
+  --obsidian: #101113;
   --charcoal: #1a1a1f;
-  --warm-ivory: #faf6ef;
+  --warm-ivory: #f3eee6;
   --limestone: #e9e2d5;
   --bronze: #8b8638;
-  --gold: #d4af37;
+  --gold: #c7a348; /* Roman Gold — discovery, timeline, reconstructions */
+  --terracotta: #e95b2e; /* CTA, buttons, progress — action only */
   --olive: #6b7a52;
 
   --tracking-brand-header: 0.2em;
@@ -26,7 +27,7 @@
   --ink-on-fill: #2a1206;
 
   /* THE VITALITY SYSTEM — act accents (one family per screen, never big fills) */
-  --act-arena: #e4552e; /* I  · coral — blood, sand, energy   */
+  --act-arena: #c7a348; /* I  · roman gold — arena, discovery   */
   --act-hill: #7c9a5c; /* II · laurel — pines, wreaths       */
   --act-forum: #e8a13c; /* III· ember — the classic heart     */
   --act-market: #4e9b8f; /* IV · verdigris — patina, coins     */
@@ -36,7 +37,7 @@
 
   --spectrum: linear-gradient(
     135deg,
-    #e4552e,
+    #c7a348,
     #e8a13c,
     #7c9a5c,
     #4e9b8f,
@@ -44,22 +45,23 @@
     #8a6fb5,
     #b14a6e
   );
-  --seam-glow: 0 0 12px rgba(212, 175, 55, 0.45);
+  --seam-glow: 0 0 12px rgba(199, 163, 72, 0.45);
   --radius-card: 14px;
   --radius-sheet: 20px;
 
   /* Compatibility aliases — v2 inline components expect these names */
   --ink: var(--ink-900);
   --muted-warm: var(--muted);
-  --accent: var(--act-arena);
+  --accent: var(--terracotta);
+  --discovery: var(--gold);
   --ember-glow: rgba(232, 161, 60, 0.55);
   --verdigris: var(--act-market);
-  --city-rome: var(--act-arena);
+  --city-rome: var(--gold);
   --city-kyoto: #6e8b3d;
   --city-paris: #8a2e44;
   --city-london: #3f6e86;
   --city-cusco: #b77a2a;
-  --coral: var(--act-arena);
+  --coral: var(--terracotta);
   --laurel: var(--act-hill);
   --rose: var(--act-city);
   --tiber: var(--act-river);

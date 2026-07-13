@@ -15,7 +15,7 @@ import { metaLabel } from '../components/ui/styles'
 import { purchasePath, ROUTES } from '../routes/paths'
 
 const STOP_COLORS = {
-  selected: '#D4AF37',
+  selected: '#C7A348',
   default: '#A8742A',
   muted: '#C9B89A',
 }
@@ -52,7 +52,7 @@ function TourRoutePreview({ model, selectedStopId }) {
         return (
           <g key={stop.id}>
             {isSelected ? (
-              <circle cx={stop.x} cy={stop.y} r="14" fill="#D4AF37" fillOpacity="0.18" />
+              <circle cx={stop.x} cy={stop.y} r="14" fill="#C7A348" fillOpacity="0.18" />
             ) : null}
             <circle
               cx={stop.x}

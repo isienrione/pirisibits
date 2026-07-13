@@ -32,7 +32,7 @@ export default function FloatingTransitAudioPlayer({
   narrationPlaying = false,
   currentTime = 0,
   duration = 0,
-  accent = T.actI,
+  accent = T.terracotta,
   onToggle,
   onOpenFullPlayer,
   testId = 'transit-audio-panel',

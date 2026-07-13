@@ -44,21 +44,21 @@ function buildShareSvg({ modernDataUrl, ancientDataUrl, title, eraLabel }) {
       <rect x="${EXPORT_WIDTH / 2}" y="0" width="${EXPORT_WIDTH / 2}" height="${EXPORT_HEIGHT}" />
     </clipPath>
     <linearGradient id="footFade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0B0B0D" stop-opacity="0" />
-      <stop offset="55%" stop-color="#0B0B0D" stop-opacity="0.72" />
-      <stop offset="100%" stop-color="#0B0B0D" stop-opacity="0.94" />
+      <stop offset="0%" stop-color="#101113" stop-opacity="0" />
+      <stop offset="55%" stop-color="#101113" stop-opacity="0.72" />
+      <stop offset="100%" stop-color="#101113" stop-opacity="0.94" />
     </linearGradient>
   </defs>
-  <rect width="100%" height="100%" fill="#0B0B0D" />
+  <rect width="100%" height="100%" fill="#101113" />
   <image href="${modernDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#modernHalf)" />
   <image href="${ancientDataUrl}" x="0" y="0" width="${EXPORT_WIDTH}" height="${EXPORT_HEIGHT}" preserveAspectRatio="xMidYMid slice" clip-path="url(#ancientHalf)" />
-  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#D4AF37" />
-  <text x="48" y="72" fill="#FAF6EF" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="5.5">TODAY</text>
-  <text x="${EXPORT_WIDTH - 48}" y="88" fill="#D4AF37" font-family="Fraunces, Georgia, serif" font-size="44" font-style="italic" text-anchor="end">${safeEra}</text>
+  <rect x="${EXPORT_WIDTH / 2 - 1}" y="0" width="2" height="${EXPORT_HEIGHT}" fill="#C7A348" />
+  <text x="48" y="72" fill="#F3EEE6" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="600" letter-spacing="5.5">TODAY</text>
+  <text x="${EXPORT_WIDTH - 48}" y="88" fill="#C7A348" font-family="Fraunces, Georgia, serif" font-size="44" font-style="italic" text-anchor="end">${safeEra}</text>
   <rect x="0" y="${EXPORT_HEIGHT - 280}" width="${EXPORT_WIDTH}" height="280" fill="url(#footFade)" />
-  <text x="56" y="${EXPORT_HEIGHT - 118}" fill="#FAF6EF" font-family="Fraunces, Georgia, serif" font-size="52" font-weight="600">${safeTitle}</text>
-  <circle cx="56" cy="${EXPORT_HEIGHT - 52}" r="7" fill="#D4AF37" />
-  <text x="76" y="${EXPORT_HEIGHT - 44}" fill="#FAF6EF" font-family="DM Sans, system-ui, sans-serif" font-size="24" font-weight="600" letter-spacing="4">CHRONOWALK</text>
+  <text x="56" y="${EXPORT_HEIGHT - 118}" fill="#F3EEE6" font-family="Fraunces, Georgia, serif" font-size="52" font-weight="600">${safeTitle}</text>
+  <circle cx="56" cy="${EXPORT_HEIGHT - 52}" r="7" fill="#C7A348" />
+  <text x="76" y="${EXPORT_HEIGHT - 44}" fill="#F3EEE6" font-family="DM Sans, system-ui, sans-serif" font-size="24" font-weight="600" letter-spacing="4">CHRONOWALK</text>
 </svg>`
 }
 
@@ -132,7 +132,7 @@ export function ShareCardPreview({ modernSrc, ancientSrc, title, eraLabel = 'Anc
         className="pointer-events-none absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2"
         style={{
           background:
-            'linear-gradient(to bottom, transparent 0%, rgba(212, 175, 55, 0.15) 8%, #D4AF37 22%, #FAF6EF 50%, #D4AF37 78%, rgba(212, 175, 55, 0.15) 92%, transparent 100%)',
+            'linear-gradient(to bottom, transparent 0%, rgba(199, 163, 72, 0.15) 8%, #C7A348 22%, #F3EEE6 50%, #C7A348 78%, rgba(199, 163, 72, 0.15) 92%, transparent 100%)',
           boxShadow:
             '0 0 24px rgba(212, 175, 55, 0.65), 0 0 48px rgba(212, 175, 55, 0.25)',
         }}
