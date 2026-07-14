@@ -18,7 +18,7 @@ export function Chip({ children, color, active = false, onClick, type = 'button'
         whiteSpace: 'nowrap',
         backdropFilter: 'blur(6px)',
         fontFamily: F.body,
-        transition: 'background 200ms, border-color 200ms',
+        transition: 'background var(--d-ui, 200ms) var(--ease-enter), border-color var(--d-ui, 200ms) var(--ease-enter)',
         flexShrink: 0,
       }}
     >

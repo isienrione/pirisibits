@@ -100,7 +100,24 @@
   --d-ui: 200ms;
   --d-trans: 400ms;
   --d-cinematic: 1200ms;
-  --ease: cubic-bezier(0.22, 0.8, 0.36, 1);
+
+  /* Motion Design System — single source; see docs/MOTION_SYSTEM.md */
+  --d-instant: 80ms;
+  --d-micro: 160ms;
+  --d-feedback: 220ms;
+  --d-panel: 360ms;
+  --d-sheet: 380ms;
+  --d-rise: 700ms;
+  --d-reveal: 900ms;
+  --d-charge: 2400ms;
+  --d-breathe: 2800ms;
+
+  --ease-enter: cubic-bezier(0.22, 0.8, 0.36, 1);
+  --ease-standard: cubic-bezier(0.33, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-pressure: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-breathe: ease-in-out;
+  --ease: var(--ease-enter);
 }
 
 .num {

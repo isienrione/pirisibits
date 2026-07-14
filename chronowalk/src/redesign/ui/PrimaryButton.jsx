@@ -13,6 +13,7 @@ export function PrimaryButton({
   disabled = false,
   glow = true,
   type = 'button',
+  className = '',
   ...rest
 }) {
   const fg =
@@ -25,6 +26,7 @@ export function PrimaryButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      className={['cw-motion-pressable', className].filter(Boolean).join(' ')}
       style={{
         width: '100%',
         padding: S.m,
@@ -38,6 +40,8 @@ export function PrimaryButton({
         cursor: disabled ? 'wait' : 'pointer',
         opacity: disabled ? 0.7 : 1,
         boxShadow: glow ? `0 0 22px ${color}55` : 'none',
+        transition:
+          'opacity var(--d-feedback, 220ms) var(--ease-pressure), transform var(--d-micro, 160ms) var(--ease-pressure)',
         ...style,
       }}
       {...rest}

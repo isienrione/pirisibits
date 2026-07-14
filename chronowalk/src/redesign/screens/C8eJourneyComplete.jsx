@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
-import { PrimaryButton, SecondaryButton } from '../ui/index.js'
+import { PrimaryButton, SecondaryButton, Vignette } from '../ui/index.js'
+import { RiseIn } from '../motion/index.js'
 import { appiaNow } from '../images.js'
-import { Vignette } from '../ui/index.js'
 
 export default function C8eJourneyComplete({
   headline = 'You walked Ancient Rome.',
@@ -14,13 +13,6 @@ export default function C8eJourneyComplete({
   onReadLetter,
   onReturnTour,
 }) {
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setRevealed(true), 180)
-    return () => clearTimeout(timer)
-  }, [])
-
   const stats = stopCount > 0 ? [`${stopCount} stop${stopCount === 1 ? '' : 's'}`] : []
 
   return (
@@ -50,7 +42,9 @@ export default function C8eJourneyComplete({
       />
       <Vignette />
 
-      <div
+      <RiseIn
+        category="journal"
+        show
         style={{
           position: 'relative',
           zIndex: 10,
@@ -61,9 +55,6 @@ export default function C8eJourneyComplete({
           alignItems: 'center',
           justifyContent: 'center',
           padding: `max(64px, calc(env(safe-area-inset-top) + ${S.xl})) ${S.xl} ${S.l}`,
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? 'translateY(0)' : 'translateY(12px)',
-          transition: 'opacity 700ms ease, transform 700ms ease',
         }}
       >
         <h1
@@ -95,16 +86,19 @@ export default function C8eJourneyComplete({
         >
           {subline}
         </p>
-      </div>
+      </RiseIn>
 
-      <div
+      <RiseIn
+        category="navigation"
+        show
+        delay={200}
+        duration={900}
+        y={0}
         style={{
           position: 'relative',
           zIndex: 12,
           flexShrink: 0,
           padding: `0 ${S.edge} calc(${SHELL_SAFE_BOTTOM_INSET} + ${S.m})`,
-          opacity: revealed ? 1 : 0,
-          transition: 'opacity 900ms ease 200ms',
         }}
       >
         {stats.length ? (
@@ -140,7 +134,7 @@ export default function C8eJourneyComplete({
         >
           Return to My Tour
         </SecondaryButton>
-      </div>
+      </RiseIn>
     </div>
   )
 }

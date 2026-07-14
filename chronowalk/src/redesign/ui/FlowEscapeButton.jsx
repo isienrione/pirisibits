@@ -92,7 +92,7 @@ export default function FlowEscapeButton() {
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         opacity: 0.42,
-        transition: 'opacity 180ms ease, background 180ms ease',
+        transition: 'opacity var(--d-feedback, 220ms) var(--ease-pressure), background var(--d-feedback, 220ms) var(--ease-pressure)',
       }}
     >
       <ChevronLeft size={16} strokeWidth={2} aria-hidden />
