@@ -105,9 +105,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.WALKING && step.type === 'transit') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.AFTER_STORY,
-      title: 'Next stop',
-      meta: nextLandmark,
-      ctaLabel: `Walk to ${nextLandmark}`,
+      title: nextLandmark,
+      meta: 'Next stop',
+      ctaLabel: 'Walk here',
       ctaAction: MAP_BOTTOM_CTA.WALK_TO_NEXT,
       landmark: nextLandmark,
     }
@@ -130,7 +130,7 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.WALKING,
-      title: `Walking to ${landmark}`,
+      title: landmark,
       meta: formatDistanceMeta(distanceM, { about: true }),
       ctaLabel: 'Directions',
       ctaAction: MAP_BOTTOM_CTA.OPEN_DIRECTIONS,
@@ -152,7 +152,7 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.PAUSED && step.type === 'waypoint') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.WALKING,
-      title: `Walking to ${landmark}`,
+      title: landmark,
       meta: formatDistanceMeta(distanceM, { about: true }),
       ctaLabel: 'Directions',
       ctaAction: MAP_BOTTOM_CTA.OPEN_DIRECTIONS,

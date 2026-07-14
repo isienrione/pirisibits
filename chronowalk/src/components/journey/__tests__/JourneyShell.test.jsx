@@ -24,6 +24,16 @@ const audioMock = vi.hoisted(() => ({
 }))
 
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
+  useAudioProgress: () => ({
+    currentTime: 0,
+    duration: 0,
+    chapterIndex: 0,
+    chapterCount: 0,
+    itemIndex: 0,
+    itemCount: 0,
+    playing: false,
+    paused: false,
+  }),
   useAudioEngine: () => ({
     ready: audioMock.ready,
     get narrationPlaying() {
@@ -50,6 +60,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     playResumeCue: vi.fn().mockResolvedValue(undefined),
     playArrivalChime: vi.fn().mockResolvedValue(undefined),
     playCompletionChime: vi.fn().mockResolvedValue(undefined),
+    setZone: vi.fn().mockResolvedValue(undefined),
     endTransit: vi.fn(),
     stopNarration: vi.fn(),
     resumePlayback: vi.fn().mockResolvedValue(undefined),
@@ -57,8 +68,8 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     resumeNarration: vi.fn(),
     toggleNarration: vi.fn(),
     seekNarration: vi.fn(),
-    skipNarration: vi.fn(),
     jumpToChapter: vi.fn(),
+    skipNarration: vi.fn(),
     setPath: vi.fn(),
   }),
 }))
@@ -139,7 +150,7 @@ describe('JourneyShell', () => {
     beginJourney({ pace: 'classic' })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByText(/walking to/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('walking-companion-screen')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1, name: /the colosseum/i })).toBeInTheDocument()
     expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'walk')
     expect(screen.queryByText('GUIDE')).not.toBeInTheDocument()
@@ -163,7 +174,6 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
-    expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
@@ -226,7 +236,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
-    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
+    expect(screen.getByText(/hold to unlock history/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('threshold-help'))
     expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()
@@ -309,7 +319,7 @@ describe('JourneyShell', () => {
     expect(playTransitMock).toHaveBeenCalledWith('t15')
   })
 
-  it('t15 Trevi arrival begins w16 story from transit screen', async () => {
+  it('t15 Trevi arrival opens w16 ceremonial arrival from transit screen', async () => {
     const manifest = loadRomeManifest()
     const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
     expect(t15Index).toBeGreaterThanOrEqual(0)
@@ -324,10 +334,10 @@ describe('JourneyShell', () => {
     fireEvent.click(await screen.findByTestId('transit-im-here'))
     fireEvent.click(await screen.findByTestId('transit-arrive-destination'))
 
-    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.ARRIVED)
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)
-    expect(await screen.findByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
-    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('arrival-ceremony')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
   })
 
   it('shows path choice at t01 before path is locked', async () => {
@@ -382,6 +392,16 @@ describe('JourneyShell', () => {
     expect(await screen.findByRole('button', { name: /begin story/i })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /begin story/i }))
     expect(screen.getByRole('button', { name: /step through the threshold/i })).toBeInTheDocument()
+  })
+
+  it('redesign shows ceremonial arrival instead of skipping to story', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.ARRIVED, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('arrival-ceremony')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /the colosseum/i })).toBeInTheDocument()
+    expect(playWaypointMock).not.toHaveBeenCalled()
   })
 
   it('shows scripted rest arrival copy at the Forum pause stop', async () => {

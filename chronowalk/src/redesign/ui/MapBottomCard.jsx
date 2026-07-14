@@ -1,3 +1,8 @@
+import { CinematicImage } from './CinematicImage.jsx'
+import { PrimaryButton } from './PrimaryButton.jsx'
+import { TYPE } from '../typography.js'
+import { R } from '../tokens.js'
+
 /**
  * Journey-driven map companion card — one primary CTA, warm map chrome.
  */
@@ -14,43 +19,41 @@ export default function MapBottomCard({
   return (
     <div
       style={{
-        borderRadius: 16,
+        borderRadius: R.card,
         border: '1px solid color-mix(in srgb, var(--warm-white) 8%, transparent)',
         background: 'color-mix(in srgb, var(--ink) 86%, transparent)',
-        backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(12px)',
         overflow: 'hidden',
+        boxShadow: 'var(--shadow-floating)',
       }}
     >
       <div
         style={{
           display: 'flex',
           alignItems: 'flex-start',
-          gap: 12,
-          padding: '13px 14px 0',
+          gap: 'var(--gap-m)',
+          padding: 'var(--gap-m) var(--gap-m) 0',
         }}
       >
         {imageUrl ? (
-          <img
+          <CinematicImage
             src={imageUrl}
             alt=""
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 10,
-              objectFit: 'cover',
-              flexShrink: 0,
-            }}
+            width={44}
+            height={44}
+            radius="md"
+            grade="film"
+            overlay="soft"
+            position="upper"
+            shadow="none"
           />
         ) : null}
-        <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 4 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 'var(--gap-s)' }}>
           <p
             style={{
-              margin: 0,
-              fontFamily: 'var(--font-display)',
-              fontSize: 17,
-              lineHeight: 1.25,
+              ...TYPE.cardTitle,
               color: 'var(--warm-white)',
-              fontWeight: 400,
+              fontSize: 17,
             }}
           >
             {title}
@@ -58,9 +61,8 @@ export default function MapBottomCard({
           {meta ? (
             <p
               style={{
-                margin: '4px 0 0',
-                fontSize: 13,
-                lineHeight: 1.35,
+                ...TYPE.meta,
+                margin: 'var(--gap-s) 0 0',
                 color: 'var(--muted-warm)',
               }}
             >
@@ -70,26 +72,17 @@ export default function MapBottomCard({
         </div>
       </div>
 
-      <div style={{ padding: '12px 14px 14px' }}>
-        <button
-          type="button"
+      <div style={{ padding: 'var(--gap-m)' }}>
+        <PrimaryButton
           onClick={onCta}
           disabled={disabled}
-          style={{
-            width: '100%',
-            padding: '12px 16px',
-            borderRadius: 12,
-            border: 'none',
-            background: 'var(--accent)',
-            color: 'var(--bone)',
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: disabled ? 'wait' : 'pointer',
-            opacity: disabled ? 0.75 : 1,
-          }}
+          busy={disabled}
+          glow={false}
+          color="var(--accent)"
+          textColor="var(--obsidian)"
         >
           {ctaLabel}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )

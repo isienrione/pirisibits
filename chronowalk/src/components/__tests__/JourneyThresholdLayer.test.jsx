@@ -24,7 +24,7 @@ vi.mock('../../audio/thresholdAudio.js', () => ({
 }))
 
 async function crossThreshold() {
-  expect(await screen.findByText(/press and hold to cross/i)).toBeInTheDocument()
+  expect(await screen.findByText(/hold to unlock history/i)).toBeInTheDocument()
 
   const surface = document.querySelector('.threshold-root')
   expect(surface).toBeTruthy()

@@ -7,10 +7,11 @@ import {
 } from '../content/tourRoadmap.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, F } from './tokens.js'
+import { T, F, R, TAP, S } from './tokens.js'
+import { TYPE } from './typography.js'
 import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
-import { Eyebrow } from './ui/index.js'
+import { Eyebrow, CinematicImage } from './ui/index.js'
 
 function TimelineDot({ status }) {
   const isCompleted = status === 'completed'
@@ -97,7 +98,22 @@ export default function RedesignTourRoadmapScreen() {
     return (
       <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Tour unavailable'}</p>
-        <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: 16, padding: '12px 16px', borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/begin')}
+          className="cw-motion-pressable"
+          style={{
+            marginTop: S.m,
+            minHeight: TAP.min,
+            padding: `0 ${S.m}`,
+            borderRadius: R.control,
+            border: 'none',
+            background: T.ember,
+            color: T.obsidian,
+            cursor: 'pointer',
+            ...TYPE.button,
+          }}
+        >
           Start tour
         </button>
       </div>
@@ -226,18 +242,17 @@ export default function RedesignTourRoadmapScreen() {
               </div>
 
               {photo ? (
-                <img
+                <CinematicImage
                   src={photo}
                   alt=""
-                  style={{
-                    width: 72,
-                    height: 56,
-                    borderRadius: 8,
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                    filter: faded ? 'grayscale(0.35) saturate(0.5)' : 'none',
-                    opacity: faded ? 0.55 : 1,
-                  }}
+                  width={72}
+                  height={56}
+                  radius="sm"
+                  grade="film"
+                  overlay="soft"
+                  position="landmark"
+                  shadow="still"
+                  faded={faded}
                 />
               ) : (
                 <div

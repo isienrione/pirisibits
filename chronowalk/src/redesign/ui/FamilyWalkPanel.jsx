@@ -15,7 +15,7 @@ function Toggle({ on, onToggle, label }) {
         width: 44,
         height: 26,
         borderRadius: 13,
-        background: on ? '#5B5249' : `${T.muted}38`,
+        background: on ? `color-mix(in srgb, ${T.ink} 72%, ${T.muted})` : `${T.muted}38`,
         position: 'relative',
         border: 'none',
         cursor: 'pointer',
@@ -32,7 +32,7 @@ function Toggle({ on, onToggle, label }) {
           borderRadius: 10,
           background: T.warmWhite,
           boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
-          transition: 'left 250ms',
+          transition: 'left var(--d-feedback, 220ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))',
         }}
       />
     </button>

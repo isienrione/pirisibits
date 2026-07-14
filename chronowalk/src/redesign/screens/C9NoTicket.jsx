@@ -1,6 +1,6 @@
 import { T, F } from "../tokens.js";
 import { colosseumNow, severusNow } from "../images.js";
-import { Eyebrow } from '../ui/index.js';
+import { Eyebrow, CinematicImage } from '../ui/index.js';
 
 export default function C9NoTicket({ onTakeWalk, onDismiss }) {
   const accent = T.actI;
@@ -31,14 +31,17 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
         <div style={{ marginBottom: 20 }}>
           <Eyebrow color={accent} hairline>AN ALTERNATIVE WALK</Eyebrow>
           <div style={{ marginTop: 14 }}>
-            {/* Offer photo — 4:3 */}
-            <div style={{ borderRadius: 14, overflow: "hidden", marginBottom: 16, aspectRatio: "4/3" }}>
-              <img
-                src={severusNow}
-                alt="The Forum from the Railing"
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }}
-              />
-            </div>
+            <CinematicImage
+              src={severusNow}
+              alt="The Forum from the Railing"
+              aspect="landscape"
+              radius="lg"
+              grade="film"
+              overlay="soft"
+              position="upper"
+              shadow="soft"
+              style={{ marginBottom: 16 }}
+            />
 
             {/* Offer title */}
             <h3 style={{

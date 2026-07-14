@@ -2,6 +2,8 @@
 
 Binding rules for all UI work. Violations fail `npm run check:design` in CI.
 
+**Philosophy & refinement gate:** [chronowalk/docs/DESIGN_DIRECTIVE.md](chronowalk/docs/DESIGN_DIRECTIVE.md) — never redesign; subtract before you add; every change must calm, immerse, and stay timeless.
+
 ## The Law
 
 ### Colors

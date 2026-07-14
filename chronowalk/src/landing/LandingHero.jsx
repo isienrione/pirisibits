@@ -15,6 +15,9 @@ export default function LandingHero({ onPreview }) {
           alt=""
           aria-hidden="true"
           className="cw-v2-hero__photo"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           onError={() => setImageOk(false)}
         />
       ) : null}

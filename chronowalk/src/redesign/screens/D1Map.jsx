@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, R } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
-import { Eyebrow, TabBar } from '../ui/index.js';
+import { Eyebrow, TabBar, Chip, CinematicImage } from '../ui/index.js';
 
 export default function D1Map({ embedded = false }) {
   const [activeAct, setActiveAct]   = useState(null);
@@ -211,25 +211,14 @@ export default function D1Map({ embedded = false }) {
         {actChips.map(chip => {
           const on = activeAct === chip.id;
           return (
-            <button
+            <Chip
               key={chip.id}
+              color={chip.color}
+              active={on}
               onClick={e => { e.stopPropagation(); setActiveAct(on ? null : chip.id); }}
-              style={{
-                padding:"4px 12px",
-                border:`1px solid ${on ? chip.color : `${chip.color}55`}`,
-                borderRadius:20,
-                background: on ? `${chip.color}20` : "rgba(247,241,230,0.88)",
-                color: chip.color,
-                fontSize:12, fontWeight:500,
-                cursor:"pointer", whiteSpace:"nowrap",
-                backdropFilter:"blur(6px)",
-                fontFamily:F.body,
-                transition:"background 200ms, border-color 200ms",
-                flexShrink:0,
-              }}
             >
               {chip.label}
-            </button>
+            </Chip>
           );
         })}
       </div>
@@ -240,11 +229,11 @@ export default function D1Map({ embedded = false }) {
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, left:20, zIndex:22,
           padding:"10px 16px",
-          background:"rgba(247,241,230,0.92)", border:`1px solid rgba(33,28,21,0.12)`,
+          background:"color-mix(in srgb, var(--bone, #faf6ef) 92%, transparent)", border:`1px solid rgba(33,28,21,0.12)`,
           borderRadius:24, fontSize:13, color:T.ink,
           fontFamily:F.body, cursor:"pointer",
           backdropFilter:"blur(8px)",
-          transition:"bottom 240ms cubic-bezier(0.32,0.72,0,1)",
+          transition:"bottom var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))",
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -256,11 +245,11 @@ export default function D1Map({ embedded = false }) {
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, right:20, zIndex:22,
           width:44, height:44,
-          background:"rgba(247,241,230,0.92)", border:`1px solid rgba(33,28,21,0.12)`,
+          background:"color-mix(in srgb, var(--bone, #faf6ef) 92%, transparent)", border:`1px solid rgba(33,28,21,0.12)`,
           borderRadius:22,
           display:"flex", alignItems:"center", justifyContent:"center",
           cursor:"pointer", backdropFilter:"blur(8px)",
-          transition:"bottom 240ms cubic-bezier(0.32,0.72,0,1)",
+          transition:"bottom var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))",
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -279,25 +268,32 @@ export default function D1Map({ embedded = false }) {
           style={{
             position:"absolute", bottom:0, left:0, right:0,
             background:T.bone,
-            borderRadius:"20px 20px 0 0",
-            padding:"12px 20px 44px",
+            borderRadius:`${R.sheet} ${R.sheet} 0 0`,
+            padding:"12px 20px max(44px, calc(env(safe-area-inset-bottom) + 16px))",
             zIndex:30,
-            boxShadow:"0 -8px 32px rgba(11,11,13,0.14)",
-            animation:"slideUp 240ms cubic-bezier(0.32,0.72,0,1)",
+            boxShadow:"var(--shadow-sheet, 0 -8px 32px rgba(11,11,13,0.14))",
+            animation:"cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both",
           }}
           onClick={e => e.stopPropagation()}
         >
           {/* Sheet drag handle */}
           <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
-            <div style={{ width:32, height:3.5, borderRadius:2, background:`${T.muted}45` }}/>
+            <div style={{ width:36, height:4, borderRadius:2, background:`${T.muted}45` }}/>
           </div>
 
           {/* Pin content row */}
           <div style={{ display:"flex", gap:14, alignItems:"flex-start", marginBottom:14 }}>
-            {/* NOW thumb */}
-            <img
-              src={sel.photo} alt={sel.name}
-              style={{ width:72, height:72, borderRadius:10, objectFit:"cover", flexShrink:0 }}
+            {/* NOW still */}
+            <CinematicImage
+              src={sel.photo}
+              alt={sel.name}
+              width={72}
+              height={72}
+              radius="md"
+              grade="film"
+              overlay="soft"
+              position="landmark"
+              shadow="still"
             />
             <div style={{ flex:1 }}>
               {/* Act eyebrow */}

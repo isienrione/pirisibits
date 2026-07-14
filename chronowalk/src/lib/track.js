@@ -1,12 +1,12 @@
-import posthog from 'posthog-js'
 import { getHost } from './host'
 import { getAbVariantCents } from './config'
 
 const CONSENT_KEY = 'cw_analytics_consent'
 
 let initialized = false
+let posthogModulePromise = null
 
-export const TRACK_EVENTS = {
+const TRACK_EVENTS = {
   QR_SCAN: 'qr_scan',
   PREVIEW_START: 'preview_start',
   PREVIEW_COMPLETE: 'preview_complete',
@@ -35,12 +35,21 @@ export const TRACK_EVENTS = {
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
 }
 
+export { TRACK_EVENTS }
+
 function baseProps(extra = {}) {
   return {
     host: getHost(),
     ab_variant: getAbVariantCents(),
     ...extra,
   }
+}
+
+function loadPosthog() {
+  if (!posthogModulePromise) {
+    posthogModulePromise = import('posthog-js').then((mod) => mod.default ?? mod)
+  }
+  return posthogModulePromise
 }
 
 export function initAnalytics() {
@@ -52,17 +61,31 @@ export function initAnalytics() {
   const consent = window.localStorage.getItem(CONSENT_KEY)
   if (consent === 'declined') return
 
-  posthog.init(key, {
-    api_host: 'https://eu.i.posthog.com',
-    autocapture: false,
-    capture_pageview: true,
-    persistence: consent === 'accepted' ? 'localStorage' : 'memory',
-  })
+  const start = () => {
+    void loadPosthog().then((ph) => {
+      if (initialized) return
+      const consentNow = window.localStorage.getItem(CONSENT_KEY)
+      if (consentNow === 'declined') return
 
-  initialized = true
+      ph.init(key, {
+        api_host: 'https://eu.i.posthog.com',
+        autocapture: false,
+        capture_pageview: true,
+        persistence: consentNow === 'accepted' ? 'localStorage' : 'memory',
+      })
 
-  if (new URLSearchParams(window.location.search).has('h')) {
-    track(TRACK_EVENTS.QR_SCAN)
+      initialized = true
+
+      if (new URLSearchParams(window.location.search).has('h')) {
+        track(TRACK_EVENTS.QR_SCAN)
+      }
+    })
+  }
+
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(start, { timeout: 2500 })
+  } else {
+    window.setTimeout(start, 1)
   }
 }
 
@@ -71,10 +94,12 @@ export function setAnalyticsConsent(accepted) {
   window.localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined')
 
   if (!accepted && initialized) {
-    posthog.opt_out_capturing()
+    void loadPosthog().then((ph) => ph.opt_out_capturing())
   } else if (accepted) {
     initAnalytics()
-    if (initialized) posthog.opt_in_capturing()
+    void loadPosthog().then((ph) => {
+      if (initialized) ph.opt_in_capturing()
+    })
   }
 }
 
@@ -85,5 +110,7 @@ export function getAnalyticsConsent() {
 
 export function track(event, properties = {}) {
   if (!initialized) return
-  posthog.capture(event, baseProps(properties))
+  void loadPosthog().then((ph) => {
+    ph.capture(event, baseProps(properties))
+  })
 }

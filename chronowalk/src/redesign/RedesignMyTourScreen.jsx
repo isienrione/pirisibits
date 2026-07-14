@@ -1,9 +1,18 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
-import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
-import { Eyebrow } from './ui/index.js'
+import { useSettingsSheetActions } from './context/SettingsSheetContext.jsx'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { T, F, S, R, SHELL_TAB_BAR_INSET, TAP, ICON } from './tokens.js'
+import { TYPE } from './typography.js'
+import {
+  PrimaryButton,
+  TextButton,
+  ScreenHeader,
+  BrandMark,
+  StatusMark,
+  GoldSeam,
+  CinematicImage,
+} from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import {
@@ -38,20 +47,9 @@ const ACT_COLOR = {
 const SEAM_X = 38
 const NODE_R = 7
 
-function ChronowalkMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
-      <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
-    </svg>
-  )
-}
-
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
   const { state, context, begin, setCustomWaypointIds } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -198,12 +196,16 @@ export default function RedesignMyTourScreen() {
         style={{
           background: T.bone,
           height: '100%',
-          display: 'grid',
-          placeItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: S.m,
           fontFamily: F.body,
           color: T.muted,
         }}
       >
+        <GoldSeam moment="loading" />
         Loading your tour…
       </div>
     )
@@ -211,19 +213,21 @@ export default function RedesignMyTourScreen() {
 
   if (error || !manifest) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}>
+      <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: S.xl, fontFamily: F.body }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Tour unavailable'}</p>
         <Link
           to="/begin"
           style={{
             display: 'inline-block',
-            marginTop: 16,
-            padding: '12px 16px',
-            borderRadius: 10,
+            marginTop: S.m,
+            padding: `${S.m}`,
+            minHeight: TAP.min,
+            borderRadius: R.control,
             background: T.ember,
             color: T.obsidian,
             textDecoration: 'none',
             fontWeight: 600,
+            ...TYPE.button,
           }}
         >
           Start tour
@@ -261,17 +265,15 @@ export default function RedesignMyTourScreen() {
         position: 'relative',
       }}
     >
-      <div
-        style={{
-          padding: 'max(48px, calc(env(safe-area-inset-top) + 12px)) 24px 8px',
-          flexShrink: 0,
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ChronowalkMark />
+      <ScreenHeader
+        layout="brand"
+        title="ROME: ETERNAL CITY"
+        metaLeft={paceLabel}
+        metaRight={`${progress.completed}/${progress.total}`}
+        onSettings={openSettings}
+        brand={
+          <>
+            <BrandMark />
             <span
               style={{
                 fontSize: 11,
@@ -283,68 +285,22 @@ export default function RedesignMyTourScreen() {
             >
               CHRONOWALK
             </span>
-          </div>
-          <button
-            type="button"
-            onClick={openSettings}
-            style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
-            aria-label="Settings"
-          >
-            <Settings size={18} />
-          </button>
-        </div>
-
-        <h1
-          style={{
-            fontFamily: F.display,
-            fontSize: 32,
-            fontWeight: 300,
-            color: T.ink,
-            lineHeight: 1.05,
-            margin: '0 0 6px',
-            letterSpacing: '0.02em',
-          }}
-        >
-          ROME: ETERNAL CITY
-        </h1>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <Eyebrow color={T.actI} hairline>
-            {paceLabel.toUpperCase()}
-          </Eyebrow>
-          <span
-            style={{
-              fontSize: 11,
-              color: T.muted,
-              fontVariantNumeric: 'tabular-nums',
-              letterSpacing: '0.06em',
-            }}
-          >
-            {progress.completed}/{progress.total} stops
-          </span>
-        </div>
+          </>
+        }
+      >
         {context.pace === JOURNEY_PACE.OWN ? (
-          <button
-            type="button"
+          <TextButton
+            underline
+            style={{ marginTop: S.m, fontSize: 12 }}
             onClick={() => {
               setPickerSelection(context.customWaypointIds ?? [])
               setPickerMode(true)
             }}
-            style={{
-              marginTop: 10,
-              fontSize: 12,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              textDecoration: 'underline',
-              textUnderlineOffset: 3,
-            }}
           >
             Edit today&apos;s stops
-          </button>
+          </TextButton>
         ) : null}
-      </div>
+      </ScreenHeader>
 
       <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
         <div
@@ -361,7 +317,7 @@ export default function RedesignMyTourScreen() {
           }}
         />
 
-        <div style={{ paddingBottom: 16 }}>
+        <div style={{ paddingBottom: S.l }}>
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
             const faded = act.status === 'ahead' || act.locked
@@ -376,10 +332,10 @@ export default function RedesignMyTourScreen() {
                     position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: `14px 20px 14px ${SEAM_X + NODE_R + 14}px`,
-                    gap: 12,
+                    padding: `${S.m} ${S.l} ${S.m} ${SEAM_X + NODE_R + 14}px`,
+                    gap: S.m,
                     opacity: act.locked ? 0.38 : faded ? 0.55 : 1,
-                    transition: 'opacity 300ms',
+                    transition: 'opacity var(--d-panel, 360ms) var(--ease-enter, cubic-bezier(0.25, 0.1, 0.25, 1))',
                   }}
                 >
                   <div
@@ -407,24 +363,24 @@ export default function RedesignMyTourScreen() {
                   />
 
                   {photo ? (
-                    <img
+                    <CinematicImage
                       src={photo}
                       alt=""
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
-                        objectFit: 'cover',
-                        flexShrink: 0,
-                        filter: faded ? 'brightness(0.7) saturate(0.55)' : 'none',
-                      }}
+                      width={56}
+                      height={56}
+                      radius="md"
+                      grade="film"
+                      overlay="soft"
+                      position="upper"
+                      shadow="still"
+                      faded={faded}
                     />
                   ) : (
                     <div
                       style={{
                         width: 56,
                         height: 56,
-                        borderRadius: 10,
+                        borderRadius: R.control,
                         background: `${T.muted}22`,
                         flexShrink: 0,
                       }}
@@ -446,11 +402,8 @@ export default function RedesignMyTourScreen() {
                   >
                     <span
                       style={{
-                        fontSize: 10,
-                        letterSpacing: '0.2em',
-                        textTransform: 'uppercase',
+                        ...TYPE.kicker,
                         color: faded ? `${color}70` : color,
-                        fontWeight: 500,
                         display: 'block',
                         marginBottom: 2,
                       }}
@@ -460,25 +413,20 @@ export default function RedesignMyTourScreen() {
                     </span>
                     <p
                       style={{
-                        fontFamily: F.display,
-                        fontSize: 22,
+                        ...TYPE.heading,
                         color: faded ? `${T.ink}85` : T.ink,
-                        fontWeight: 300,
-                        lineHeight: 1.1,
-                        margin: '0 0 3px',
+                        marginBottom: 3,
                       }}
                     >
                       {act.title}
                     </p>
                     <p
                       style={{
-                        fontSize: 13,
+                        ...TYPE.meta,
                         color: T.muted,
-                        lineHeight: 1.4,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        margin: 0,
                       }}
                     >
                       {act.promise}
@@ -489,16 +437,25 @@ export default function RedesignMyTourScreen() {
                     type="button"
                     onClick={() => toggleActExpanded(act.id)}
                     aria-label={expanded ? 'Collapse act' : 'Expand act'}
+                    className="cw-motion-pressable"
                     style={{
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      padding: 4,
+                      minWidth: TAP.min,
+                      minHeight: TAP.min,
+                      padding: 0,
+                      display: 'inline-grid',
+                      placeItems: 'center',
                       flexShrink: 0,
                       color: T.muted,
                     }}
                   >
-                    {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expanded ? (
+                      <ChevronUp size={ICON.md} strokeWidth={ICON.stroke} />
+                    ) : (
+                      <ChevronDown size={ICON.md} strokeWidth={ICON.stroke} />
+                    )}
                   </button>
                 </div>
 
@@ -513,23 +470,23 @@ export default function RedesignMyTourScreen() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: 10,
-                            padding: `8px 20px 8px ${SEAM_X + NODE_R + 14}px`,
+                            padding: `${S.s} ${S.l} ${S.s} ${SEAM_X + NODE_R + 14}px`,
                             opacity: stopFaded ? 0.5 : 1,
                           }}
                         >
                           <div style={{ width: 56, flexShrink: 0 }} />
                           {stopPhoto ? (
-                            <img
+                            <CinematicImage
                               src={stopPhoto}
                               alt=""
-                              style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: stopFaded ? 'saturate(0.5)' : 'none',
-                              }}
+                              width={36}
+                              height={36}
+                              radius="sm"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={stopFaded}
                             />
                           ) : null}
                           <div style={{ flex: 1, minWidth: 0 }}>
@@ -546,9 +503,9 @@ export default function RedesignMyTourScreen() {
                             </p>
                           </div>
                           {stop.status === 'completed' ? (
-                            <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>DONE</span>
+                            <StatusMark kind="done" color={color} />
                           ) : stop.status === 'current' ? (
-                            <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>NOW</span>
+                            <StatusMark kind="now" color={T.ember} />
                           ) : null}
                         </div>
                       )
@@ -563,63 +520,27 @@ export default function RedesignMyTourScreen() {
       <div
         style={{
           flexShrink: 0,
-          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
+          padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`,
           background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-          borderTop: `1px solid ${T.ink800}18`,
+          borderTop: `1px solid ${T.ink800}14`,
           position: 'relative',
           zIndex: 5,
         }}
       >
-        <button
-          type="button"
+        <PrimaryButton
+          color={ctaColor}
+          textColor={T.warmWhite}
+          glow={false}
           onClick={handlePrimaryCta}
-          style={{
-            width: '100%',
-            padding: '15px',
-            background: ctaColor,
-            color: T.warmWhite,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: 'pointer',
-            marginBottom: 8,
-            boxShadow: `0 0 22px ${ctaColor}50`,
-          }}
+          style={{ marginBottom: S.m }}
         >
           {ctaLabel}
-        </button>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 36 }}>
-          <button
-            type="button"
-            onClick={() => setSheetOpen(true)}
-            style={{
-              fontSize: 13,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: F.body,
-            }}
-          >
-            Route
-          </button>
-          <button
-            type="button"
-            disabled={geoBusy}
-            onClick={handleStartFromHere}
-            style={{
-              fontSize: 13,
-              color: geoBusy ? `${T.muted}88` : T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: geoBusy ? 'default' : 'pointer',
-              fontFamily: F.body,
-            }}
-          >
-            Start from where I am
-          </button>
+        </PrimaryButton>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: S.xl }}>
+          <TextButton onClick={() => setSheetOpen(true)}>Route</TextButton>
+          <TextButton disabled={geoBusy} onClick={handleStartFromHere}>
+            Start from here
+          </TextButton>
         </div>
         {state === JOURNEY_STATES.IDLE && acts.length === 0 ? (
           <Link
@@ -627,7 +548,7 @@ export default function RedesignMyTourScreen() {
             style={{
               display: 'block',
               textAlign: 'center',
-              marginTop: 12,
+              marginTop: S.m,
               fontSize: 13,
               color: T.muted,
             }}

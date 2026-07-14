@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSettingsSheet } from '../context/SettingsSheetContext.jsx'
+import { useSettingsSheetActions } from '../context/SettingsSheetContext.jsx'
 
 /** Opens the companion settings sheet and returns to the previous screen. */
 export default function RedesignSettingsPage() {
   const navigate = useNavigate()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
 
   useEffect(() => {
     openSettings()

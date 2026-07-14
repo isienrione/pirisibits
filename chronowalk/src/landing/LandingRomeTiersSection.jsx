@@ -51,11 +51,8 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                 ) : null}
 
                 <p className="cw-v2-pricing-card__tier-name">
-                  {tier.tierLabel ?? tier.eyebrow}
+                  {tier.eyebrow ?? tier.tierLabel}
                 </p>
-                {tier.tierLabel && tier.eyebrow ? (
-                  <p className="cw-v2-pricing-card__eyebrow">{tier.eyebrow}</p>
-                ) : null}
 
                 <div className="cw-v2-pricing-card__price-row">
                   <span className="cw-v2-pricing-card__price">{tier.price}</span>
@@ -78,10 +75,6 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                 </dl>
 
                 <p className="cw-v2-pricing-card__description">{tier.description}</p>
-
-                {tier.landmarkLine ? (
-                  <p className="cw-v2-pricing-card__landmarks">{tier.landmarkLine}</p>
-                ) : null}
 
                 <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
 

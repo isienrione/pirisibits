@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { PrimaryButton, SecondaryButton, Vignette } from '../ui/index.js'
+import { RiseIn } from '../motion/index.js'
 import { appiaNow } from '../images.js'
-import { Vignette } from '../ui/index.js'
 
 export default function C8eJourneyComplete({
   headline = 'You walked Ancient Rome.',
@@ -13,18 +13,7 @@ export default function C8eJourneyComplete({
   onReadLetter,
   onReturnTour,
 }) {
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setRevealed(true), 180)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const stats = [
-    stopCount > 0 ? `${stopCount} stop${stopCount === 1 ? '' : 's'}` : null,
-    '21 centuries',
-    'One road still here',
-  ].filter(Boolean)
+  const stats = stopCount > 0 ? [`${stopCount} stop${stopCount === 1 ? '' : 's'}`] : []
 
   return (
     <div
@@ -47,25 +36,15 @@ export default function C8eJourneyComplete({
           backgroundImage: `url(${heroPhoto})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 42%',
-          filter: 'brightness(0.14) saturate(0.42)',
-          pointerEvents: 'none',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(rgba(138,111,181,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(138,111,181,0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '44px 44px',
+          filter: 'brightness(0.22) saturate(0.5)',
           pointerEvents: 'none',
         }}
       />
       <Vignette />
 
-      <div
+      <RiseIn
+        category="journal"
+        show
         style={{
           position: 'relative',
           zIndex: 10,
@@ -75,23 +54,9 @@ export default function C8eJourneyComplete({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 'max(56px, calc(env(safe-area-inset-top) + 24px)) 32px 24px',
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? 'translateY(0)' : 'translateY(12px)',
-          transition: 'opacity 700ms ease, transform 700ms ease',
+          padding: `max(64px, calc(env(safe-area-inset-top) + ${S.xl})) ${S.xl} ${S.l}`,
         }}
       >
-        <p
-          style={{
-            fontSize: 11,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: accent,
-            margin: '0 0 18px',
-          }}
-        >
-          Journey complete
-        </p>
         <h1
           style={{
             fontFamily: F.display,
@@ -100,7 +65,7 @@ export default function C8eJourneyComplete({
             color: T.warmWhite,
             lineHeight: 1.1,
             textAlign: 'center',
-            margin: '0 0 14px',
+            margin: `0 0 ${S.m}`,
             textShadow: '0 2px 24px rgba(0,0,0,0.55)',
           }}
         >
@@ -109,114 +74,67 @@ export default function C8eJourneyComplete({
         <p
           style={{
             fontFamily: F.display,
-            fontSize: 20,
+            fontSize: 18,
             fontStyle: 'italic',
             fontWeight: 300,
             color: `${T.warmWhite}CC`,
             lineHeight: 1.5,
             textAlign: 'center',
             margin: 0,
-            maxWidth: 360,
+            maxWidth: 340,
           }}
         >
           {subline}
         </p>
-      </div>
+      </RiseIn>
 
-      <div
+      <RiseIn
+        category="navigation"
+        show
+        delay={200}
+        duration={900}
+        y={0}
         style={{
           position: 'relative',
           zIndex: 12,
           flexShrink: 0,
-          padding: `0 28px calc(${SHELL_SAFE_BOTTOM_INSET} + 12px)`,
-          opacity: revealed ? 1 : 0,
-          transition: 'opacity 900ms ease 200ms',
+          padding: `0 ${S.edge} calc(${SHELL_SAFE_BOTTOM_INSET} + ${S.m})`,
         }}
       >
         {stats.length ? (
-          <div
+          <p
             style={{
-              display: 'flex',
-              gap: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 22,
-              flexWrap: 'wrap',
+              fontSize: 13,
+              color: T.muted,
+              textAlign: 'center',
+              margin: `0 0 ${S.l}`,
+              fontVariantNumeric: 'tabular-nums',
             }}
           >
-            {stats.map((stat, index) => (
-              <span
-                key={stat}
-                style={{
-                  fontSize: 13,
-                  color: T.muted,
-                  fontVariantNumeric: 'tabular-nums',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                {index > 0 ? <span style={{ color: T.ink800, fontSize: 10 }}>·</span> : null}
-                {stat}
-              </span>
-            ))}
-          </div>
+            {stats[0]}
+          </p>
         ) : null}
 
-        <div
-          style={{
-            width: 1.5,
-            height: 24,
-            background: T.ember,
-            margin: '0 auto 22px',
-            boxShadow: '0 0 12px rgba(232,161,60,0.45)',
-          }}
-        />
-
-        <button
-          type="button"
-          data-testid="journey-complete-letter"
+        <PrimaryButton
+          color={accent}
+          textColor={T.warmWhite}
+          glow={false}
           disabled={busy}
           onClick={() => onReadLetter?.()}
-          style={{
-            width: '100%',
-            padding: '15px',
-            background: accent,
-            color: T.warmWhite,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: busy ? 'wait' : 'pointer',
-            marginBottom: 12,
-            boxShadow: `0 0 22px ${accent}55`,
-          }}
+          style={{ marginBottom: S.m }}
+          data-testid="journey-complete-letter"
         >
           Read your letter
-        </button>
+        </PrimaryButton>
 
-        <button
-          type="button"
-          data-testid="journey-complete-tour"
+        <SecondaryButton
           disabled={busy}
           onClick={() => onReturnTour?.()}
-          style={{
-            width: '100%',
-            padding: '13px',
-            background: 'transparent',
-            color: T.muted,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 500,
-            fontSize: 14,
-            border: `1px solid ${T.muted}33`,
-            cursor: busy ? 'wait' : 'pointer',
-          }}
+          data-testid="journey-complete-tour"
         >
           Return to My Tour
-        </button>
-      </div>
+        </SecondaryButton>
+      </RiseIn>
     </div>
   )
 }

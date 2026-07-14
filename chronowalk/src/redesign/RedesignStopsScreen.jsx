@@ -6,9 +6,20 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, ACT_COLORS, F, S, R, TAP, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { TYPE } from './typography.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
-import { ActNode, Eyebrow } from './ui/index.js'
+import {
+  ActNode,
+  Eyebrow,
+  PrimaryButton,
+  SecondaryButton,
+  ScreenHeader,
+  SurfaceCard,
+  StatusMark,
+  GoldSeam,
+  CinematicImage,
+} from './ui/index.js'
 
 const SEAM_X = 38
 const ACT_DIAMOND = 14
@@ -19,11 +30,10 @@ function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
 }
 
-function statusLabel(status) {
-  if (status === 'completed') return 'Visited'
-  if (status === 'current') return 'Current'
-  if (status === 'upcoming') return 'Upcoming'
-  return 'On route'
+function statusKind(status) {
+  if (status === 'completed') return 'visited'
+  if (status === 'current') return 'here'
+  return null
 }
 
 function nodeStatusForStop(status) {
@@ -95,17 +105,45 @@ export default function RedesignStopsScreen() {
 
   if (loading) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'grid', placeItems: 'center' }}>
-        <p style={{ color: T.muted }}>Loading route…</p>
+      <div
+        className="cw-grain"
+        style={{
+          background: T.bone,
+          height: '100%',
+          fontFamily: F.body,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: S.m,
+        }}
+      >
+        <GoldSeam moment="loading" />
+        <p style={{ color: T.muted, margin: 0 }}>Loading route…</p>
       </div>
     )
   }
 
   if (error || !manifest) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, padding: 32 }}>
+      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, padding: S.xl }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Route unavailable'}</p>
-        <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: 16, padding: '12px 16px', borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/begin')}
+          className="cw-motion-pressable"
+          style={{
+            marginTop: S.m,
+            minHeight: TAP.min,
+            padding: `0 ${S.m}`,
+            borderRadius: R.control,
+            border: 'none',
+            background: T.ember,
+            color: T.obsidian,
+            cursor: 'pointer',
+            ...TYPE.button,
+          }}
+        >
           Start tour
         </button>
       </div>
@@ -114,16 +152,13 @@ export default function RedesignStopsScreen() {
 
   return (
     <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 12px', flexShrink: 0 }}>
-        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: 4 }}>
-          All stops
-        </h1>
-        <p style={{ fontSize: 13, color: T.muted }}>
-          {totalStops} stops on your Rome route
-        </p>
-      </div>
+      <ScreenHeader
+        layout="plain"
+        title="All stops"
+        subtitle={`${totalStops} on your route`}
+      />
 
-      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: 16 }}>
+      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: S.l }}>
         <div
           style={{
             position: 'absolute',
@@ -139,13 +174,13 @@ export default function RedesignStopsScreen() {
           aria-hidden
         />
 
-        <div style={{ position: 'relative', zIndex: 1, paddingBottom: 16 }}>
+        <div style={{ position: 'relative', zIndex: 1, paddingBottom: S.l }}>
           {groups.map((group) => (
             <div key={group.act}>
               <div
                 style={{
                   position: 'relative',
-                  padding: `12px 20px 10px ${ROW_INSET}px`,
+                  padding: `${S.m} ${S.l} ${S.s} ${ROW_INSET}px`,
                 }}
               >
                 <div
@@ -177,7 +212,7 @@ export default function RedesignStopsScreen() {
                     key={card.id}
                     style={{
                       position: 'relative',
-                      padding: `0 20px ${isLastInAct ? 18 : 14}px ${ROW_INSET}px`,
+                      padding: `0 ${S.l} ${isLastInAct ? S.l : S.m} ${ROW_INSET}px`,
                       opacity: faded ? 0.72 : 1,
                     }}
                   >
@@ -208,12 +243,10 @@ export default function RedesignStopsScreen() {
                       {card.order}
                     </span>
 
-                    <div
+                    <SurfaceCard
+                      tone="light"
+                      radius={12}
                       style={{
-                        background: T.warmWhite,
-                        borderRadius: 14,
-                        overflow: 'hidden',
-                        boxShadow: '0 1px 10px rgba(33,28,21,0.07)',
                         borderLeft: card.status === 'current' ? `2px solid ${group.color}` : '2px solid transparent',
                       }}
                     >
@@ -222,62 +255,84 @@ export default function RedesignStopsScreen() {
                         onClick={() => openStop(card.id)}
                         style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', padding: 0, textAlign: 'left' }}
                       >
-                        <div style={{ display: 'flex', height: 96 }}>
+                        <div style={{ display: 'flex', height: 100 }}>
                           {card.photo ? (
-                            <img
+                            <CinematicImage
                               src={card.photo}
                               alt=""
-                              style={{
-                                width: 96,
-                                height: '100%',
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: faded ? 'saturate(0.55) brightness(0.92)' : 'none',
-                              }}
+                              width={96}
+                              height="100%"
+                              aspect="fill"
+                              radius="none"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={faded}
                             />
                           ) : (
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />
                           )}
-                          <div style={{ flex: 1, padding: '14px 16px' }}>
-                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>
+                          <div style={{ flex: 1, padding: S.m }}>
+                            <p
+                              style={{
+                                ...TYPE.cardTitle,
+                                color: faded ? `${T.ink}99` : T.ink,
+                                marginBottom: S.s,
+                              }}
+                            >
                               {card.name}
                             </p>
-                            <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45 }}>
+                            <p
+                              style={{
+                                ...TYPE.caption,
+                                color: T.muted,
+                                fontStyle: 'italic',
+                              }}
+                            >
                               {card.sigLine}
                             </p>
                           </div>
                         </div>
                       </button>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${T.muted}18` }}>
-                        <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                          {statusLabel(card.status)}
-                        </span>
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                          <button
-                            type="button"
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${S.m} ${S.m} ${S.l}`, borderTop: `1px solid ${T.muted}14` }}>
+                        {statusKind(card.status) ? (
+                          <StatusMark kind={statusKind(card.status)} color={group.color} />
+                        ) : (
+                          <span style={{ minHeight: 16 }} />
+                        )}
+                        <div style={{ display: 'flex', gap: S.s, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                          <SecondaryButton
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            color={T.ink}
+                            borderColor={`${T.muted}35`}
+                            style={{
+                              width: 'auto',
+                              minHeight: 44,
+                              padding: `${S.s} ${S.m}`,
+                              fontSize: 13,
+                              fontWeight: 500,
+                            }}
                           >
-                            Listen here
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openStop(card.id)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
-                          >
-                            Open card
-                          </button>
-                          <button
-                            type="button"
+                            Listen
+                          </SecondaryButton>
+                          <PrimaryButton
                             onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
+                            color={T.ember}
+                            glow={false}
+                            style={{
+                              width: 'auto',
+                              minHeight: 44,
+                              padding: `${S.s} ${S.m}`,
+                              fontSize: 13,
+                            }}
                           >
                             Walk here
-                          </button>
+                          </PrimaryButton>
                         </div>
                       </div>
-                    </div>
+                    </SurfaceCard>
                   </div>
                 )
               })}
@@ -287,14 +342,10 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
-          <button
-            type="button"
-            onClick={() => navigate('/begin')}
-            style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}
-          >
+        <div style={{ padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
+          <PrimaryButton color={T.ember} glow={false} onClick={() => navigate('/begin')}>
             Begin the tour
-          </button>
+          </PrimaryButton>
         </div>
       ) : null}
     </div>

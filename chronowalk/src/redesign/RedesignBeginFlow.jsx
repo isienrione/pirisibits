@@ -13,6 +13,8 @@ import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
+import { GoldSeam } from './ui/index.js'
+import { T, F, S } from './tokens.js'
 
 function initialBeginStep(isResumable) {
   if (isResumable) return 'resume'
@@ -35,6 +37,7 @@ export default function RedesignBeginFlow() {
   const [selectedPace, setSelectedPace] = useState(context.pace ?? getDefaultPace())
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
+  const [gpsAcquiredMoment, setGpsAcquiredMoment] = useState(false)
 
   const previewContext = useMemo(
     () => ({
@@ -107,7 +110,7 @@ export default function RedesignBeginFlow() {
     const result = await requestLocationAccess()
     setBusy(false)
     if (result === 'granted') {
-      startJourney()
+      setGpsAcquiredMoment(true)
       return
     }
     track(TRACK_EVENTS.GPS_FALLBACK_USED, { source: 'begin_flow', result })
@@ -117,6 +120,40 @@ export default function RedesignBeginFlow() {
   const handlePaceContinue = () => {
     setJourneyPace(selectedPace)
     advanceAfterPaceSelection()
+  }
+
+  if (gpsAcquiredMoment) {
+    return (
+      <div
+        className="redesign-app-shell"
+        data-testid="gps-acquired-moment"
+        style={{
+          background: T.obsidian,
+          height: '100%',
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: S.l,
+          fontFamily: F.body,
+          padding: S.edge,
+        }}
+      >
+        <GoldSeam moment="gpsAcquired" onComplete={startJourney} />
+        <p
+          style={{
+            margin: 0,
+            fontSize: 14,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: T.muted,
+          }}
+        >
+          Location ready
+        </p>
+      </div>
+    )
   }
 
   if (stepName === 'mapPreview') {

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useV2Journey } from '../../hooks/useV2Journey.js'
 import { hasAccess } from '../../lib/config.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
-import { T, F } from '../tokens.js'
+import { T, F, ICON, TAP } from '../tokens.js'
 
 function homePath() {
   return hasAccess() ? '/tour' : '/landing'
@@ -80,7 +80,8 @@ export default function FlowEscapeButton() {
         display: 'flex',
         alignItems: 'center',
         gap: 2,
-        padding: '6px 10px 6px 6px',
+        minHeight: TAP.min,
+        padding: '6px 12px 6px 8px',
         borderRadius: 999,
         border: `1px solid ${T.muted}22`,
         background: 'rgba(11,11,13,0.35)',
@@ -92,10 +93,10 @@ export default function FlowEscapeButton() {
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         opacity: 0.42,
-        transition: 'opacity 180ms ease, background 180ms ease',
+        transition: 'opacity var(--d-feedback, 220ms) var(--ease-pressure), background var(--d-feedback, 220ms) var(--ease-pressure)',
       }}
     >
-      <ChevronLeft size={16} strokeWidth={2} aria-hidden />
+      <ChevronLeft size={ICON.sm} strokeWidth={ICON.stroke} aria-hidden />
       <span>Back</span>
     </button>
   )

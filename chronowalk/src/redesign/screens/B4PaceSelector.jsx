@@ -1,5 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
-import { T, F } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { PrimaryButton } from '../ui/index.js'
 import {
   colosseumNow,
   capitolineNow,
@@ -7,7 +8,6 @@ import {
   trajansNow,
 } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
-import { Eyebrow } from '../ui/index.js'
 import { ACT_DOT_KEYS } from '../../data/romePacing.js'
 
 const PACE_IMAGES = {
@@ -83,7 +83,7 @@ export default function B4PaceSelector({
         fontFamily: F.body,
         display: 'flex',
         flexDirection: 'column',
-        padding: '48px 24px 32px',
+        padding: `max(48px, calc(env(safe-area-inset-top) + ${S.l})) ${S.edge} ${SHELL_SAFE_BOTTOM_INSET}`,
         overflow: 'hidden',
         position: 'relative',
       }}
@@ -111,7 +111,7 @@ export default function B4PaceSelector({
           minHeight: 0,
         }}
       >
-        <div style={{ height: 32, position: 'relative', marginBottom: 16, flexShrink: 0 }}>
+        <div style={{ height: S.xl, position: 'relative', marginBottom: S.m, flexShrink: 0 }}>
           <div
             style={{
               position: 'absolute',
@@ -126,7 +126,6 @@ export default function B4PaceSelector({
           />
         </div>
 
-        <Eyebrow color={T.ember}>BEFORE YOU BEGIN</Eyebrow>
         <h2
           style={{
             fontFamily: F.display,
@@ -134,7 +133,7 @@ export default function B4PaceSelector({
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.05,
-            margin: '10px 0 16px',
+            margin: `0 0 ${S.l}`,
             flexShrink: 0,
           }}
         >
@@ -147,11 +146,11 @@ export default function B4PaceSelector({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 10,
+            gap: S.m,
             flex: 1,
             minHeight: 0,
             overflowY: 'auto',
-            paddingBottom: 4,
+            paddingBottom: S.s,
           }}
         >
           {options.map((opt, i) => (
@@ -170,13 +169,13 @@ export default function B4PaceSelector({
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: activeIndex === i ? '0 0 20px rgba(232,161,60,0.15)' : 'none',
+                boxShadow: 'none',
               }}
             >
               <div
                 style={{
                   width: '100%',
-                  height: 72,
+                  height: 68,
                   overflow: 'hidden',
                   flexShrink: 0,
                   position: 'relative',
@@ -207,7 +206,7 @@ export default function B4PaceSelector({
                     inset: 0,
                     display: 'flex',
                     alignItems: 'flex-end',
-                    padding: '0 14px 10px',
+                    padding: `0 ${S.m} ${S.s}`,
                   }}
                 >
                   <div
@@ -216,7 +215,7 @@ export default function B4PaceSelector({
                       alignItems: 'flex-end',
                       justifyContent: 'space-between',
                       width: '100%',
-                      gap: 8,
+                      gap: S.s,
                     }}
                   >
                     <span
@@ -230,7 +229,7 @@ export default function B4PaceSelector({
                     >
                       {opt.title}
                     </span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: S.s, flexShrink: 0 }}>
                       {opt.priceLabel ? (
                         <span
                           style={{
@@ -251,7 +250,7 @@ export default function B4PaceSelector({
                             color: T.bone,
                             background: T.gold,
                             borderRadius: 6,
-                            padding: '3px 8px',
+                            padding: `3px ${S.s}`,
                             letterSpacing: '0.12em',
                             textTransform: 'uppercase',
                           }}
@@ -264,30 +263,17 @@ export default function B4PaceSelector({
                 </div>
               </div>
 
-              <div style={{ padding: '10px 14px 12px' }}>
-                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 6 }}>
-                  {opt.desc}
+              <div style={{ padding: `${S.m} ${S.m} ${S.l}` }}>
+                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: `0 0 ${S.m}` }}>
+                  {opt.desc || opt.included}
                 </p>
-                {opt.included ? (
-                  <p
-                    style={{
-                      fontSize: 11,
-                      color: `${T.warmWhite}99`,
-                      lineHeight: 1.5,
-                      marginBottom: 10,
-                      letterSpacing: '0.01em',
-                    }}
-                  >
-                    {opt.included}
-                  </p>
-                ) : null}
-                <div style={{ display: 'flex', gap: 6 }}>
+                <div style={{ display: 'flex', gap: S.s }}>
                   {opt.dots.map((color, di) => (
                     <div
                       key={di}
                       style={{
-                        width: 8,
-                        height: 8,
+                        width: 7,
+                        height: 7,
                         borderRadius: 4,
                         background: color ?? T.ink800,
                         opacity: color ? 1 : 0.35,
@@ -302,40 +288,33 @@ export default function B4PaceSelector({
 
         <p
           style={{
-            fontSize: 13,
+            fontSize: 12,
             color: T.muted,
-            lineHeight: 1.7,
+            lineHeight: 1.55,
             textAlign: 'center',
-            margin: '14px 0 10px',
+            margin: `${S.l} 0 ${S.m}`,
             flexShrink: 0,
           }}
         >
-          You can change your mind at any time. Nothing expires. Nothing is skipped forever.
+          You can change this anytime.
         </p>
 
-        <button
-          type="button"
+        <PrimaryButton
+          color={activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800}
+          textColor={activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted}
+          disabled={activeIndex == null || activeIndex < 0}
           onClick={handleContinue}
           style={{
-            width: '100%',
-            padding: '15px',
-            background: activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800,
-            color: activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
             cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',
             transition: 'background 300ms, color 300ms',
             flexShrink: 0,
-            boxShadow: activeIndex != null && activeIndex >= 0 ? '0 0 20px rgba(232,161,60,0.35)' : 'none',
+            opacity: 1,
           }}
         >
           {activeIndex != null && activeIndex >= 0
             ? `Begin — ${options[activeIndex].title}`
             : 'Select a tour'}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )

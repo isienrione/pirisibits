@@ -236,12 +236,14 @@ export default defineConfig({
           if (id.includes('node_modules/mapbox-gl')) {
             return 'mapbox'
           }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'lucide'
+          }
           if (
             id.includes('/src/config/env') ||
             id.includes('/src/design/tokens') ||
             id.includes('/src/components/ui/') ||
-            id.includes('/src/utils/lazyWithRecovery') ||
-            id.includes('lucide-react')
+            id.includes('/src/utils/lazyWithRecovery')
           ) {
             return 'app-shared'
           }

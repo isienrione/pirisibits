@@ -1,7 +1,7 @@
-/** Dashed act-accent route line — separator between Journal act groups */
+/** Dashed act-accent route line — separator between Journal chapters */
 export function MiniActLine({ color }) {
   return (
-    <div style={{ padding: '12px 20px 4px' }}>
+    <div style={{ padding: 'var(--gap-l) var(--edge) var(--gap-s)' }} aria-hidden>
       <svg width="100%" height="14" viewBox="0 0 310 14" preserveAspectRatio="none">
         <line
           x1="2"

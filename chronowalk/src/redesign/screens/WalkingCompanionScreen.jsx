@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
 import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
+import { GoldSeam } from '../ui/GoldSeam.jsx'
+import { CinematicImage } from '../ui/CinematicImage.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
 import {
@@ -40,8 +42,8 @@ export default function WalkingCompanionScreen({
   mode = 'waypoint',
   narrationPlaying = false,
   narrationPaused = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   playbackRate = 1,
   transcript = '',
   trackTitle = null,
@@ -65,6 +67,18 @@ export default function WalkingCompanionScreen({
   const [dragProgress, setDragProgress] = useState(null)
   const [routeView, setRouteView] = useState('map')
   const approachCueRef = useRef(null)
+  const engineProgress = useAudioProgress()
+
+  /* Prefer engine store so the companion layout is not driven by shell scrubber ticks. */
+  const currentTime =
+    engineProgress.duration > 0 || engineProgress.playing || engineProgress.paused
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration = engineProgress.duration > 0 ? engineProgress.duration : durationProp
+  const narrationPausedLive =
+    engineProgress.duration > 0 || engineProgress.playing || engineProgress.paused
+      ? engineProgress.paused
+      : narrationPaused
 
   const showArrivedUI = arrived || userConfirmedArrival
 
@@ -139,7 +153,7 @@ export default function WalkingCompanionScreen({
       duration,
       currentTime,
       narrationPlaying,
-      narrationPaused,
+      narrationPaused: narrationPausedLive,
       showArrivedUI,
     }) && typeof onToggleAudio === 'function'
 
@@ -189,21 +203,31 @@ export default function WalkingCompanionScreen({
       <header className="cw-walking-companion__header">
         {showArrivedUI ? (
           <div className="cw-walking-companion__arrived-copy">
-            <div className="cw-walking-companion__arrived-badge" aria-hidden>
-              <CheckCircle2 size={20} strokeWidth={2} />
-            </div>
             <p className="cw-walking-companion__arrived-label">You have arrived</p>
+            <div className="cw-walking-companion__arrived-seam" aria-hidden>
+              <GoldSeam moment="arrival" key={`arrive-seam-${stopKey}`} />
+            </div>
             <h1 className="cw-walking-companion__title">{title}</h1>
           </div>
         ) : (
           <>
             <p className="cw-walking-companion__act">ACT {actNumeral}</p>
-            <p className="cw-walking-companion__eyebrow">Walking to</p>
 
             <div className="cw-walking-companion__title-row">
               <h1 className="cw-walking-companion__title">{title}</h1>
               {photo ? (
-                <img className="cw-walking-companion__thumb" src={photo} alt="" />
+                <CinematicImage
+                  src={photo}
+                  alt=""
+                  width={52}
+                  height={52}
+                  radius="md"
+                  grade="film"
+                  overlay="soft"
+                  position="landmark"
+                  shadow="still"
+                  className="cw-walking-companion__thumb"
+                />
               ) : null}
             </div>
 
@@ -265,7 +289,18 @@ export default function WalkingCompanionScreen({
               className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived cw-walking-companion__hero-layer--visible"
             >
               {photo ? (
-                <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
+                <CinematicImage
+                  src={photo}
+                  alt=""
+                  aspect="fill"
+                  height="100%"
+                  radius="none"
+                  grade="dusk"
+                  overlay="none"
+                  position="landmark"
+                  shadow="none"
+                  className="cw-walking-companion__arrived-photo"
+                />
               ) : null}
               <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
             </div>
@@ -360,7 +395,16 @@ export default function WalkingCompanionScreen({
               type="button"
               data-testid={mode === 'transit' ? 'transit-im-here' : 'manual-arrive'}
               className="cw-walking-companion__dock-btn cw-walking-companion__dock-btn--primary cw-wc-pressable"
-              onClick={() => setUserConfirmedArrival(true)}
+              onClick={() => {
+                onPrimeAudio?.()
+                // Waypoint arrivals enter JourneyShell's ceremonial ARRIVED screen.
+                // Transit keeps the in-companion confirm → Begin Chapter flow.
+                if (mode === 'waypoint' && onBeginChapter) {
+                  onBeginChapter()
+                  return
+                }
+                setUserConfirmedArrival(true)
+              }}
             >
               I'm here
             </button>
