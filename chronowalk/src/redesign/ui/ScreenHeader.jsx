@@ -1,4 +1,5 @@
-import { T, F, S, SCREEN_HEADER_PAD } from '../tokens.js'
+import { T, S, SCREEN_HEADER_PAD } from '../tokens.js'
+import { TYPE, TYPE_SPACE, displayTitleStyle } from '../typography.js'
 import { IconButton } from './IconButton.jsx'
 
 /**
@@ -25,13 +26,9 @@ export function ScreenHeader({
   style,
 }) {
   const titleStyle = {
-    fontFamily: F.display,
-    fontSize: titleSize,
-    fontWeight: 300,
+    ...displayTitleStyle(titleSize),
     color: T.ink,
-    lineHeight: titleSize >= 32 ? 1.05 : 1.15,
-    margin: 0,
-    letterSpacing: titleLetterSpacing ?? (layout === 'brand' ? '0.02em' : undefined),
+    letterSpacing: titleLetterSpacing ?? displayTitleStyle(titleSize).letterSpacing,
   }
 
   return (
@@ -70,7 +67,7 @@ export function ScreenHeader({
         <h1
           style={{
             ...titleStyle,
-            marginBottom: subtitle || metaLeft != null ? S.m : 0,
+            marginBottom: subtitle || metaLeft != null ? TYPE_SPACE.afterDisplay : 0,
           }}
         >
           {title}
@@ -87,13 +84,12 @@ export function ScreenHeader({
             marginTop: layout === 'brand' ? S.s : 0,
           }}
         >
-          <span style={{ fontSize: 12, color: T.muted, letterSpacing: '0.04em' }}>{metaLeft}</span>
+          <span style={{ ...TYPE.meta, color: T.muted }}>{metaLeft}</span>
           <span
             style={{
-              fontSize: 12,
+              ...TYPE.meta,
               color: T.muted,
               fontVariantNumeric: 'tabular-nums',
-              letterSpacing: '0.04em',
             }}
           >
             {metaRight}
@@ -101,7 +97,9 @@ export function ScreenHeader({
         </div>
       ) : null}
 
-      {subtitle ? <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>{subtitle}</p> : null}
+      {subtitle ? (
+        <p style={{ ...TYPE.subtitle, color: T.muted }}>{subtitle}</p>
+      ) : null}
 
       {children}
     </div>

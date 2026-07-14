@@ -1,4 +1,5 @@
 import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import { TYPE, displayTitleStyle } from '../typography.js'
 import { colosseumNow } from '../images.js'
 import { Eyebrow, CinematicImage } from '../ui/index.js'
 
@@ -139,20 +140,17 @@ export default function C3Approaching({
             <Eyebrow color={accent}>ALMOST THERE</Eyebrow>
             <h1
               style={{
-                fontFamily: F.display,
-                fontSize: 32,
+                ...displayTitleStyle(32),
                 color: T.ink,
-                fontWeight: 300,
-                lineHeight: 1.08,
                 margin: '6px 0 4px',
               }}
             >
               {title}
             </h1>
-            <p style={{ fontSize: 14, color: accent, letterSpacing: '0.04em', margin: '0 0 8px' }}>
+            <p style={{ ...TYPE.meta, color: accent, margin: '0 0 8px' }}>
               {subtitle}
             </p>
-            <p style={{ fontSize: 14, color: `${T.ink}72`, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ ...TYPE.ui, color: `${T.ink}72`, fontSize: 14 }}>
               {approachLine}
             </p>
           </div>

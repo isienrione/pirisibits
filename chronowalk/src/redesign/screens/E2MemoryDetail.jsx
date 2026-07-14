@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Play, ChevronDown } from "lucide-react";
 import { useContext } from "react";
 import { T, F, S } from "../tokens.js";
+import { TYPE, displayTitleStyle, TYPE_SPACE } from "../typography.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, BackLink, PrimaryButton, SectionLabel } from '../ui/index.js';
@@ -54,7 +55,7 @@ export default function E2MemoryDetail({
 
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: `0 ${S.edge} ${S.xl}` }}>
         <Eyebrow color={accent} hairline>{actLabel}</Eyebrow>
-        <h2 style={{ fontFamily: F.display, fontSize: 28, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: `${S.m} 0 ${S.l}` }}>{title}</h2>
+        <h2 style={{ ...displayTitleStyle(28), color: T.ink, margin: `${S.m} 0 ${TYPE_SPACE.afterDisplay}` }}>{title}</h2>
 
         {onWalkToStop ? (
           <PrimaryButton
@@ -170,7 +171,7 @@ export default function E2MemoryDetail({
         {facts.map((fact, i) => (
           <div key={i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: `${S.m} 0` }} />}
-            <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75 }}>{fact}</p>
+            <p style={{ ...TYPE.ui, color: T.ink, fontSize: 14, lineHeight: 'var(--lh-prose)' }}>{fact}</p>
           </div>
         ))}
 
@@ -182,10 +183,10 @@ export default function E2MemoryDetail({
           </button>
           {txOpen && (
             <div style={{ padding: `${S.m} 0 ${S.s}` }}>
-              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.82 }}>
+              <p style={{ ...TYPE.meta, color: T.muted, lineHeight: 'var(--lh-prose)' }}>
                 {transcript ?? '"You are standing at the largest amphitheater ever built. The Romans called it the Flavian Amphitheatre — the Colosseum is a nickname. Vespasian began it. Titus opened it in 80 AD with one hundred days of games. Both are dead, and the building is not. That tells you something about what they understood about power..."'}
               </p>
-              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: S.m, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
+              <p style={{ ...TYPE.caption, color: `${T.muted}88`, marginTop: S.m, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
             </div>
           )}
         </div>

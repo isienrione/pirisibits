@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { TYPE } from './typography.js'
 import {
   PrimaryButton,
   TextButton,
@@ -399,11 +400,8 @@ export default function RedesignMyTourScreen() {
                   >
                     <span
                       style={{
-                        fontSize: 10,
-                        letterSpacing: '0.2em',
-                        textTransform: 'uppercase',
+                        ...TYPE.kicker,
                         color: faded ? `${color}70` : color,
-                        fontWeight: 500,
                         display: 'block',
                         marginBottom: 2,
                       }}
@@ -413,25 +411,20 @@ export default function RedesignMyTourScreen() {
                     </span>
                     <p
                       style={{
-                        fontFamily: F.display,
-                        fontSize: 22,
+                        ...TYPE.heading,
                         color: faded ? `${T.ink}85` : T.ink,
-                        fontWeight: 300,
-                        lineHeight: 1.1,
-                        margin: '0 0 3px',
+                        marginBottom: 3,
                       }}
                     >
                       {act.title}
                     </p>
                     <p
                       style={{
-                        fontSize: 13,
+                        ...TYPE.meta,
                         color: T.muted,
-                        lineHeight: 1.4,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        margin: 0,
                       }}
                     >
                       {act.promise}

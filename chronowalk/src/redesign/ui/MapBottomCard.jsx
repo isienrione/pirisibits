@@ -1,4 +1,5 @@
 import { CinematicImage } from './CinematicImage.jsx'
+import { TYPE } from '../typography.js'
 
 /**
  * Journey-driven map companion card — one primary CTA, warm map chrome.
@@ -47,12 +48,9 @@ export default function MapBottomCard({
         <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 'var(--gap-s)' }}>
           <p
             style={{
-              margin: 0,
-              fontFamily: 'var(--font-display)',
-              fontSize: 17,
-              lineHeight: 1.25,
+              ...TYPE.cardTitle,
               color: 'var(--warm-white)',
-              fontWeight: 400,
+              fontSize: 17,
             }}
           >
             {title}
@@ -60,9 +58,8 @@ export default function MapBottomCard({
           {meta ? (
             <p
               style={{
+                ...TYPE.meta,
                 margin: 'var(--gap-s) 0 0',
-                fontSize: 13,
-                lineHeight: 1.35,
                 color: 'var(--muted-warm)',
               }}
             >
@@ -84,8 +81,7 @@ export default function MapBottomCard({
             border: 'none',
             background: 'var(--accent)',
             color: 'var(--bone)',
-            fontSize: 14,
-            fontWeight: 600,
+            ...TYPE.button,
             cursor: disabled ? 'wait' : 'pointer',
             opacity: disabled ? 0.75 : 1,
           }}

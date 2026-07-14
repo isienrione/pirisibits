@@ -1,5 +1,6 @@
 import { ChevronLeft } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * In-flow back row (Journal ← memory detail, Own-pace ← pick stops).
@@ -19,8 +20,7 @@ export function BackLink({ children = 'Back', onClick, style, showIcon = true })
         border: 'none',
         cursor: 'pointer',
         color: T.muted,
-        fontFamily: F.body,
-        fontSize: 13,
+        ...TYPE.textAction,
         padding: 0,
         ...style,
       }}

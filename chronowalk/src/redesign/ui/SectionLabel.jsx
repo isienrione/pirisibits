@@ -1,20 +1,16 @@
-import { T, F } from '../tokens.js'
+import { T } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * Compact uppercase section labels (KEY FACTS / CHAPTERS).
- * Distinct from Eyebrow (10px / 0.25em) — this is 11px / 0.18em.
+ * Distinct from Eyebrow (kicker) — denser tracking, one step larger.
  */
 export function SectionLabel({ children, color = T.muted, style }) {
   return (
     <p
       style={{
-        fontSize: 11,
+        ...TYPE.section,
         color,
-        letterSpacing: '0.18em',
-        textTransform: 'uppercase',
-        fontWeight: 500,
-        margin: 0,
-        fontFamily: F.body,
         ...style,
       }}
     >

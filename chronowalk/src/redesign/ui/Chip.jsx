@@ -1,4 +1,4 @@
-import { F } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /** Filter or badge chip — used in D1 Map filters and act badges */
 export function Chip({ children, color, active = false, onClick, type = 'button' }) {
@@ -12,12 +12,10 @@ export function Chip({ children, color, active = false, onClick, type = 'button'
         borderRadius: 20,
         background: active ? `${color}20` : 'rgba(247,241,230,0.88)',
         color,
-        fontSize: 12,
-        fontWeight: 500,
+        ...TYPE.chip,
         cursor: 'pointer',
         whiteSpace: 'nowrap',
         backdropFilter: 'blur(6px)',
-        fontFamily: F.body,
         transition: 'background var(--d-ui, 200ms) var(--ease-enter), border-color var(--d-ui, 200ms) var(--ease-enter)',
         flexShrink: 0,
       }}

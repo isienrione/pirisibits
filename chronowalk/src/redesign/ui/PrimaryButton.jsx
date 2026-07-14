@@ -1,4 +1,5 @@
-import { T, F, S } from '../tokens.js'
+import { T, S } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * Primary full-width CTA — shared across begin, journey, and shell footers.
@@ -33,9 +34,7 @@ export function PrimaryButton({
         background: color,
         color: fg,
         borderRadius: 12,
-        fontFamily: F.body,
-        fontWeight: 600,
-        fontSize: 15,
+        ...TYPE.button,
         border: 'none',
         cursor: disabled ? 'wait' : 'pointer',
         opacity: disabled ? 0.7 : 1,

@@ -1,17 +1,15 @@
-import { T, F } from '../tokens.js'
+import { T } from '../tokens.js'
+import { TYPE, TYPE_SPACE } from '../typography.js'
 
 export function Eyebrow({ children, color = T.gold, hairline = false }) {
   return (
-    <div>
+    <div style={{ marginBottom: hairline ? 0 : undefined }}>
       <span
         style={{
           display: 'block',
-          fontFamily: F.body,
-          fontSize: 10,
-          letterSpacing: '0.25em',
-          textTransform: 'uppercase',
+          ...TYPE.kicker,
           color,
-          fontWeight: 500,
+          margin: 0,
         }}
       >
         {children}
@@ -22,7 +20,7 @@ export function Eyebrow({ children, color = T.gold, hairline = false }) {
             width: 28,
             height: 1.5,
             background: color,
-            marginTop: 5,
+            marginTop: 6,
             borderRadius: 1,
           }}
         />
@@ -30,3 +28,6 @@ export function Eyebrow({ children, color = T.gold, hairline = false }) {
     </div>
   )
 }
+
+/** Default space after a kicker before a display title. */
+export const EYEBROW_AFTER = TYPE_SPACE.afterKicker

@@ -1,4 +1,5 @@
-import { T, F } from '../tokens.js'
+import { T } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * Low-emphasis text action (Route, Start from here, Edit stops, Skip).
@@ -17,12 +18,11 @@ export function TextButton({
       onClick={onClick}
       disabled={disabled}
       style={{
-        fontSize: 13,
+        ...TYPE.textAction,
         color: disabled ? `${T.muted}88` : T.muted,
         background: 'none',
         border: 'none',
         cursor: disabled ? 'default' : 'pointer',
-        fontFamily: F.body,
         padding: 0,
         textDecoration: underline ? 'underline' : 'none',
         textUnderlineOffset: underline ? 3 : undefined,

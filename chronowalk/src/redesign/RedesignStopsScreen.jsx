@@ -7,6 +7,7 @@ import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { T, ACT_COLORS, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { TYPE } from './typography.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import {
   ActNode,
@@ -257,10 +258,22 @@ export default function RedesignStopsScreen() {
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />
                           )}
                           <div style={{ flex: 1, padding: S.m }}>
-                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: S.s }}>
+                            <p
+                              style={{
+                                ...TYPE.cardTitle,
+                                color: faded ? `${T.ink}99` : T.ink,
+                                marginBottom: S.s,
+                              }}
+                            >
                               {card.name}
                             </p>
-                            <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45, margin: 0 }}>
+                            <p
+                              style={{
+                                ...TYPE.caption,
+                                color: T.muted,
+                                fontStyle: 'italic',
+                              }}
+                            >
                               {card.sigLine}
                             </p>
                           </div>

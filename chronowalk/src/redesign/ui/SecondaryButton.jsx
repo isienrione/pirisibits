@@ -1,4 +1,5 @@
-import { T, F, S } from '../tokens.js'
+import { T, S } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * Quiet outline CTA for bone / light surfaces (journey complete, journal actions).
@@ -25,9 +26,7 @@ export function SecondaryButton({
         background: 'transparent',
         color,
         borderRadius: 12,
-        fontFamily: F.body,
-        fontWeight: 500,
-        fontSize: 14,
+        ...TYPE.buttonQuiet,
         border: `1px solid ${borderColor ?? `${T.muted}33`}`,
         cursor: disabled ? 'wait' : 'pointer',
         opacity: disabled ? 0.7 : 1,

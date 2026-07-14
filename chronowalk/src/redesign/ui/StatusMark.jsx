@@ -1,31 +1,26 @@
+import { F } from '../tokens.js'
+import { TYPE } from '../typography.js'
+
 /**
  * Compact status marks (Visited / Here / DONE / NOW).
- * Keeps existing letter-spacing and case per kind.
+ * Caption hierarchy: status uses section-scale type with status tracking.
  */
 export function StatusMark({ kind, color, style }) {
   const recipes = {
     visited: {
       children: 'Visited',
-      fontSize: 11,
-      letterSpacing: '0.12em',
       textTransform: 'uppercase',
     },
     here: {
       children: 'Here',
-      fontSize: 11,
-      letterSpacing: '0.12em',
       textTransform: 'uppercase',
     },
     done: {
       children: 'DONE',
-      fontSize: 10,
-      letterSpacing: '0.1em',
       textTransform: 'none',
     },
     now: {
       children: 'NOW',
-      fontSize: 10,
-      letterSpacing: '0.1em',
       textTransform: 'none',
     },
   }
@@ -36,9 +31,9 @@ export function StatusMark({ kind, color, style }) {
   return (
     <span
       style={{
-        fontSize: recipe.fontSize,
+        ...TYPE.status,
+        fontFamily: F.body,
         color,
-        letterSpacing: recipe.letterSpacing,
         textTransform: recipe.textTransform,
         minHeight: kind === 'visited' || kind === 'here' ? 16 : undefined,
         ...style,

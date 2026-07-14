@@ -1,4 +1,5 @@
-import { T, F, S } from '../tokens.js'
+import { T, S } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /**
  * Ghost CTA for immersive (photo) surfaces — translucent border + blur.
@@ -16,8 +17,8 @@ export function GhostButton({ children, onClick, style, disabled = false, type =
         border: `1.5px solid rgba(245,239,227,0.25)`,
         color: T.warmWhite,
         borderRadius: 12,
-        fontFamily: F.body,
-        fontSize: 15,
+        ...TYPE.button,
+        fontWeight: 500,
         background: 'rgba(11,11,13,0.35)',
         cursor: disabled ? 'wait' : 'pointer',
         opacity: disabled ? 0.7 : 1,

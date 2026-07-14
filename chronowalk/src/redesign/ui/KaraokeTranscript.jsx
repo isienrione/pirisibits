@@ -1,5 +1,6 @@
 import { useMemo, useRef } from 'react'
 import { T, F } from '../tokens.js'
+import { TYPE_SPACE } from '../typography.js'
 import { parseTranscriptForKaraoke } from '../../utils/transcriptContent.js'
 
 /**
@@ -36,6 +37,15 @@ export default function KaraokeTranscript({
   const shellBorder = readingMode || immersive ? 'transparent' : isBone ? `${T.ink800}22` : `${T.muted}22`
   const defaultInk = isBone ? T.ink : T.warmWhite
 
+  const proseStyle = {
+    fontFamily: F.display,
+    fontWeight: 300,
+    fontSize,
+    lineHeight: 'var(--lh-prose)',
+    margin: `0 0 ${TYPE_SPACE.afterParagraph}`,
+    letterSpacing: 'var(--tracking-prose)',
+  }
+
   if (!paragraphs.length) {
     return null
   }
@@ -44,18 +54,7 @@ export default function KaraokeTranscript({
     return (
       <div data-testid={testId}>
         {paragraphs.map((paragraph) => (
-          <p
-            key={paragraph.id}
-            style={{
-              fontFamily: F.display,
-              fontWeight: 300,
-              fontSize,
-              lineHeight: 1.9,
-              margin: '0 0 1.35em',
-              letterSpacing: '0.01em',
-              color: defaultInk,
-            }}
-          >
+          <p key={paragraph.id} style={{ ...proseStyle, color: defaultInk }}>
             {paragraph.words.map((word) => (
               <span key={`${paragraph.id}-${word.index}`}>{word.text} </span>
             ))}
@@ -91,17 +90,7 @@ export default function KaraokeTranscript({
         }}
       >
         {paragraphs.map((paragraph) => (
-          <p
-            key={paragraph.id}
-            style={{
-              fontFamily: F.display,
-              fontWeight: 300,
-              fontSize,
-              lineHeight: 1.9,
-              margin: '0 0 1.35em',
-              letterSpacing: '0.01em',
-            }}
-          >
+          <p key={paragraph.id} style={proseStyle}>
             {paragraph.words.map((word) => (
               <span
                 key={`${paragraph.id}-${word.index}`}

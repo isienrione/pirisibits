@@ -30,6 +30,7 @@ export {
   IMAGE_POSITION,
   IMAGE_SHADOW,
 } from './cinematicImage.js'
+export { TYPE, TYPE_SPACE, displayTitleStyle } from '../typography.js'
 export { ActNode } from './ActNode.jsx'
 export { MiniActLine } from './MiniActLine.jsx'
 export { GrainSurface } from './GrainSurface.jsx'
