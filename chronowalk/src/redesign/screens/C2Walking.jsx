@@ -1,7 +1,7 @@
 import WalkingCompanionScreen from './WalkingCompanionScreen.jsx'
 
 /** Baked into this chunk — must bump when layout changes (see walkingUiRevision.js). */
-export const WALKING_UI_REVISION = 14
+export const WALKING_UI_REVISION = 15
 
 /** Walking toward a waypoint — delegates to the unified walking companion layout. */
 export default function C2Walking({
@@ -31,8 +31,9 @@ export default function C2Walking({
       mode="waypoint"
       testId="walking-companion-screen"
       onBeginChapter={onBeginChapter}
-      arrived={insideGeofence}
-      near={near}
+      // JourneyShell owns ceremonial arrived (C4). Companion stays in walking until then.
+      arrived={false}
+      near={near || insideGeofence}
     />
   )
 }

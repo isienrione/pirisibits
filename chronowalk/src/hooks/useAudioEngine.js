@@ -184,6 +184,10 @@ export function useAudioEngine(manifest) {
     engineRef.current?.setPath(path)
   }, [])
 
+  const setZone = useCallback(async (zone) => {
+    await engineRef.current?.setZone(zone)
+  }, [])
+
   return {
     ready,
     narrationPlaying,
@@ -200,6 +204,7 @@ export function useAudioEngine(manifest) {
     playArrivalChime,
     playCompletionChime,
     playUiCue,
+    setZone,
     endTransit,
     stopNarration,
     resumePlayback,

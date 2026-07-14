@@ -359,7 +359,16 @@ export default function WalkingCompanionScreen({
               type="button"
               data-testid={mode === 'transit' ? 'transit-im-here' : 'manual-arrive'}
               className="cw-walking-companion__dock-btn cw-walking-companion__dock-btn--primary cw-wc-pressable"
-              onClick={() => setUserConfirmedArrival(true)}
+              onClick={() => {
+                onPrimeAudio?.()
+                // Waypoint arrivals enter JourneyShell's ceremonial ARRIVED screen.
+                // Transit keeps the in-companion confirm → Begin Chapter flow.
+                if (mode === 'waypoint' && onBeginChapter) {
+                  onBeginChapter()
+                  return
+                }
+                setUserConfirmedArrival(true)
+              }}
             >
               I'm here
             </button>

@@ -670,24 +670,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
 
-      if (variant === 'redesign') {
-        storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-        transition(JOURNEY_STATES.STORY)
-        void tryStartWaypointNarration(waypointId).then((started) => {
-          if (started) setAudioUnlocked(true)
-          if (started && audioUnlocked) void audioOpsRef.current.playArrivalChime()
-          else if (!started) armStoryAutoplayGesture(waypointId)
-        })
-      } else {
-        transition(JOURNEY_STATES.ARRIVED)
-        if (audioUnlocked) void audio.playArrivalChime()
+      // Redesign holds on ARRIVED for the ceremonial entrance, then the user
+      // chooses Begin listening → STORY. Legacy jumps straight to ARRIVED UI too.
+      transition(JOURNEY_STATES.ARRIVED)
+      if (variant !== 'redesign' && audioUnlocked) {
+        void audio.playArrivalChime()
       }
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
       if (source === 'manual' || source === 'transit_manual') {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
+    [audio, audioUnlocked, transition, variant]
   )
 
   const arriveAtWaypoint = useCallback(
@@ -851,21 +845,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setBusy(false)
   }
 
-  // Redesign skips ARRIVED — recover stale sessions (e.g. map tab manual arrival).
-  const arrivedRecoveryRef = useRef(null)
-  useEffect(() => {
-    if (variant !== 'redesign') return undefined
-    if (state !== JOURNEY_STATES.ARRIVED || step?.type !== 'waypoint') {
-      if (state !== JOURNEY_STATES.ARRIVED) arrivedRecoveryRef.current = null
-      return undefined
-    }
-    if (arrivedRecoveryRef.current === step.id) return undefined
-    arrivedRecoveryRef.current = step.id
-    storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-    transition(JOURNEY_STATES.STORY)
-    void tryStartWaypointNarrationRef.current(step.id)
-    return undefined
-  }, [state, step?.id, step?.type, transition, variant])
+  const handleArrivalAtmosphere = useCallback(() => {
+    if (!audioUnlocked) return
+    void audio.playArrivalChime()
+    const zone = step?.record?.zone
+    if (zone) void audio.setZone(zone)
+  }, [audio, audioUnlocked, step?.record?.zone])
 
   const handleTranscript = () => {
     storyViewRef.current = 'transcript'
@@ -1353,6 +1338,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           description={signatureLine(step.record)}
           onBeginListening={handleBeginStory}
           onTranscript={handleTranscript}
+          onAtmosphereStart={handleArrivalAtmosphere}
           busy={busy}
         />
       )

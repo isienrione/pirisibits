@@ -66,7 +66,7 @@ Legacy `Seam` re-exports a breathing fill line for older call sites. Prefer
 |---|---|---|---|
 | **Loading** | `loading` | `RedesignMyTourScreen.jsx`, `RedesignStopsScreen.jsx` | Manifest loading state |
 | **Chapter transition** | `chapterTransition` | `C6ImmersivePlayer.jsx` continuity panel | Story complete → continue CTA |
-| **Arrival** | `arrival` | `C4ArrivalMoment.jsx`, `WalkingCompanionScreen.jsx` | Arrived UI / arrival card |
+| **Arrival** | `arrival` | `C4ArrivalMoment.jsx` (ceremonial sequence), transit companion arrived chrome | Geofence / “I’m here” → ARRIVED ceremony — see `docs/ARRIVAL_CEREMONY.md` |
 | **GPS acquired** | `gpsAcquired` | `RedesignBeginFlow.jsx` | Location permission `granted` before journey start |
 | **Purchase success** | `purchaseSuccess` | `A3AccessConfirmed.jsx` | Access confirmed after purchase |
 | **Tour unlocked** | `tourUnlocked` | Same ceremony as purchase — preset available; A3 is the live unlock surface (“Rome is yours”) | Access / entitlement granted |
