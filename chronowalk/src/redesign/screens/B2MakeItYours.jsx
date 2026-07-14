@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
+import { PrimaryButton, GhostButton, TextButton } from "../ui/index.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
 
@@ -178,25 +179,20 @@ export default function B2MakeItYours({
 
         <div style={{ marginTop: "auto", textAlign: "center", paddingTop: S.xl, display: 'grid', gap: S.m }}>
           {canInstall ? (
-            <button
-              type="button"
-              onClick={() => onInstall?.()}
-              style={{ width: '100%', padding: S.m, background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
-            >
+            <PrimaryButton color={T.ember} onClick={() => onInstall?.()}>
               {showIosInstructions ? 'Continue' : 'Add to home screen'}
-            </button>
+            </PrimaryButton>
           ) : null}
-          <button
-            type="button"
+          <GhostButton
             onClick={() => (onContinue ? onContinue() : onSkip?.())}
-            style={{ width: '100%', padding: S.m, background: 'transparent', color: T.warmWhite, borderRadius: 12, fontFamily: F.body, fontSize: 15, border: `1px solid ${T.ink800}`, cursor: 'pointer' }}
+            style={{ border: `1px solid ${T.ink800}`, background: 'transparent', backdropFilter: 'none', padding: S.m }}
           >
             Continue to Rome
-          </button>
+          </GhostButton>
           {!canInstall ? (
-            <button type="button" onClick={() => (onSkip ? onSkip() : undefined)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 13, letterSpacing: "0.04em", fontFamily: F.body, paddingTop: S.s }}>
+            <TextButton onClick={() => (onSkip ? onSkip() : undefined)} style={{ paddingTop: S.s, letterSpacing: '0.04em' }}>
               Skip for now
-            </button>
+            </TextButton>
           ) : null}
         </div>
       </div>

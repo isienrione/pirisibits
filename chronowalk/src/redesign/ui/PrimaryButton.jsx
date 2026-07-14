@@ -1,6 +1,20 @@
 import { T, F, S } from '../tokens.js'
 
-export function PrimaryButton({ children, onClick, color = T.terracotta, textColor, style, disabled = false }) {
+/**
+ * Primary full-width CTA — shared across begin, journey, and shell footers.
+ * Default glow matches setup/cinematic screens; pass glow={false} for quieter shell CTAs.
+ */
+export function PrimaryButton({
+  children,
+  onClick,
+  color = T.terracotta,
+  textColor,
+  style,
+  disabled = false,
+  glow = true,
+  type = 'button',
+  ...rest
+}) {
   const fg =
     textColor ??
     (color === T.gold || color === T.ember || color === T.terracotta || color === T.actI
@@ -8,7 +22,7 @@ export function PrimaryButton({ children, onClick, color = T.terracotta, textCol
       : T.warmWhite)
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       style={{
@@ -23,9 +37,10 @@ export function PrimaryButton({ children, onClick, color = T.terracotta, textCol
         border: 'none',
         cursor: disabled ? 'wait' : 'pointer',
         opacity: disabled ? 0.7 : 1,
-        boxShadow: `0 0 22px ${color}55`,
+        boxShadow: glow ? `0 0 22px ${color}55` : 'none',
         ...style,
       }}
+      {...rest}
     >
       {children}
     </button>

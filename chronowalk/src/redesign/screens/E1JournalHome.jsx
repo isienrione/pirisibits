@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { Play, Settings } from "lucide-react";
+import { Play } from "lucide-react";
 import { useContext } from "react";
-import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from "../tokens.js";
+import { T, F, S, SHELL_TAB_BAR_INSET } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, severusNow, archTitusNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Eyebrow, MiniActLine } from '../ui/index.js';
+import {
+  Eyebrow,
+  MiniActLine,
+  ScreenHeader,
+  SurfaceCard,
+  TabBar,
+  PrimaryButton,
+} from '../ui/index.js';
 
 export default function E1JournalHome({
   embedded = false,
@@ -59,34 +66,27 @@ export default function E1JournalHome({
   return (
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
       {/* Header */}
-      <div style={{ padding: SCREEN_HEADER_PAD, flexShrink: 0, position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: S.m }}>
-          <h1 style={{ fontFamily: F.display, fontSize: 30, color: T.ink, fontWeight: 300, lineHeight: 1.15, margin: 0, maxWidth: '70%' }}>{headline}</h1>
-          <div style={{ display: 'flex', gap: S.s, alignItems: 'center' }}>
+      <ScreenHeader
+        layout="split"
+        title={headline}
+        titleSize={30}
+        subtitle={subtitle}
+        onSettings={onSettingsClick}
+        trailing={
+          <>
             {onAllStopsClick ? (
               <button type="button" onClick={onAllStopsClick} style={{ fontSize: 11, color: T.ember, background: 'none', border: `1px solid ${T.ember}44`, borderRadius: 8, padding: `${S.s} ${S.m}`, cursor: 'pointer', fontFamily: F.body }}>
                 All stops
               </button>
             ) : null}
-            {onSettingsClick ? (
-              <button
-                type="button"
-                onClick={onSettingsClick}
-                aria-label="Settings"
-                style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
-              >
-                <Settings size={18} />
+            {showDevToggle ? (
+              <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 8, padding: `3px ${S.m}`, cursor: "pointer", fontFamily: F.body }}>
+                {showEmptyDev ? "filled" : "empty"}
               </button>
             ) : null}
-          {showDevToggle ? (
-          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 8, padding: `3px ${S.m}`, cursor: "pointer", fontFamily: F.body }}>
-            {showEmptyDev ? "filled" : "empty"}
-          </button>
-          ) : null}
-          </div>
-        </div>
-        <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>{subtitle}</p>
-      </div>
+          </>
+        }
+      />
 
       {showEmpty ? (
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", flexDirection: 'column', gap: S.l, padding: `0 ${S.xl}` }}>
@@ -95,9 +95,11 @@ export default function E1JournalHome({
             Your journey will collect itself here. Walk, and Rome writes.
           </p>
           {onStartWalk ? (
-            <button type="button" onClick={onStartWalk} style={{ position: 'relative', zIndex: 1, padding: `${S.m} ${S.l}`, borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}>
-              Start walking
-            </button>
+            <div style={{ position: 'relative', zIndex: 1, width: 'auto' }}>
+              <PrimaryButton color={T.ember} glow={false} onClick={onStartWalk} style={{ width: 'auto', padding: `${S.m} ${S.l}` }}>
+                Start walking
+              </PrimaryButton>
+            </div>
           ) : null}
         </div>
       ) : (
@@ -105,7 +107,7 @@ export default function E1JournalHome({
 
           {/* Journey Letter pinned — the ONE dark card in the light room */}
           <div style={{ padding: `${S.s} ${S.edge} ${S.xl}` }}>
-            <div style={{ background: T.ink, borderRadius: 14, padding: S.l }}>
+            <SurfaceCard tone="dark" radius={14} padding={S.l}>
               <div style={{ marginBottom: S.m }}>
                 <svg width="100%" height="26" viewBox="0 0 310 26" preserveAspectRatio="none">
                   {[
@@ -127,7 +129,7 @@ export default function E1JournalHome({
                 </div>
                 <button type="button" onClick={() => (onLetterClick ? onLetterClick() : navigate("F1"))} style={{ background: "none", border: "none", cursor: "pointer", color: T.ember, fontSize: 13, fontFamily: F.body, flexShrink: 0, marginLeft: 12 }}>Open</button>
               </div>
-            </div>
+            </SurfaceCard>
           </div>
 
           {/* Act groups with memory cards */}
@@ -139,7 +141,7 @@ export default function E1JournalHome({
               </div>
               {group.cards.map(card => (
                 <div key={card.id} style={{ padding: `0 ${S.edge} ${S.l}`, cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
-                  <div style={{ background: T.warmWhite, borderRadius: 12, padding: S.l }}>
+                  <SurfaceCard tone="light" radius={12} padding={S.l}>
                     {/* Diptych: NOW | ember seam | THEN */}
                     <div style={{ display: "flex", marginBottom: S.l, borderRadius: 10, overflow: "hidden", height: 108 }}>
                       <div style={{ flex: 1, overflow: "hidden" }}>
@@ -169,7 +171,7 @@ export default function E1JournalHome({
                       </button>
                       <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
                     </div>
-                  </div>
+                  </SurfaceCard>
                 </div>
               ))}
             </div>
@@ -178,16 +180,7 @@ export default function E1JournalHome({
         </div>
       )}
 
-      {!embedded && (
-      <div style={{ flexShrink: 0, display: "flex", borderTop: `1px solid ${T.ink800}22`, background: T.bone, paddingBottom: "max(28px, env(safe-area-inset-bottom))", paddingTop: 4 }}>
-        {(["JOURNEY","MAP","JOURNAL"]).map(tab => (
-          <button key={tab} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, paddingTop: 8, fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em", color: tab === "JOURNAL" ? T.actI : T.muted, background: "none", border: "none", cursor: "pointer" }}>
-            <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNAL" ? T.actI : "transparent" }} />
-            {tab}
-          </button>
-        ))}
-      </div>
-      )}
+      {!embedded && <TabBar active="JOURNAL" />}
     </div>
   );
 }

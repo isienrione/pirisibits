@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Play, ChevronLeft, ChevronDown } from "lucide-react";
+import { Play, ChevronDown } from "lucide-react";
 import { useContext } from "react";
 import { T, F, S } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Eyebrow } from '../ui/index.js';
+import { Eyebrow, BackLink, PrimaryButton, SectionLabel } from '../ui/index.js';
 import C7Threshold from './C7Threshold.jsx';
 
 export default function E2MemoryDetail({
@@ -49,9 +49,7 @@ export default function E2MemoryDetail({
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Back */}
       <div style={{ padding: `max(48px, calc(env(safe-area-inset-top) + ${S.m})) ${S.edge} ${S.m}`, flexShrink: 0 }}>
-        <button type="button" onClick={() => (onBack ? onBack() : navigate("E1"))} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: T.muted, fontFamily: F.body, fontSize: 13, padding: 0 }}>
-          <ChevronLeft size={16} /> Journal
-        </button>
+        <BackLink onClick={() => (onBack ? onBack() : navigate("E1"))}>Journal</BackLink>
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: `0 ${S.edge} ${S.xl}` }}>
@@ -59,49 +57,29 @@ export default function E2MemoryDetail({
         <h2 style={{ fontFamily: F.display, fontSize: 28, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: `${S.m} 0 ${S.l}` }}>{title}</h2>
 
         {onWalkToStop ? (
-          <button
-            type="button"
+          <PrimaryButton
+            color={accent}
+            textColor={T.warmWhite}
+            glow={false}
             onClick={onWalkToStop}
-            style={{
-              width: '100%',
-              marginBottom: S.m,
-              padding: `${S.m}`,
-              borderRadius: 12,
-              border: 'none',
-              background: accent,
-              color: T.warmWhite,
-              fontFamily: F.body,
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: 'pointer',
-            }}
+            style={{ marginBottom: S.m, fontSize: 14 }}
           >
             Walk to this stop
-          </button>
+          </PrimaryButton>
         ) : null}
 
         {(onStepThroughTime || onAudioOnly || onTranscript || onViewImages) ? (
           <div style={{ marginBottom: S.l }}>
             {onStepThroughTime ? (
-              <button
-                type="button"
+              <PrimaryButton
+                color={accent}
+                textColor={T.warmWhite}
+                glow={false}
                 onClick={onStepThroughTime}
-                style={{
-                  width: '100%',
-                  padding: S.m,
-                  borderRadius: 12,
-                  border: 'none',
-                  background: accent,
-                  color: T.warmWhite,
-                  fontFamily: F.body,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                  marginBottom: S.s,
-                }}
+                style={{ marginBottom: S.s, fontSize: 14 }}
               >
                 Step through time
-              </button>
+              </PrimaryButton>
             ) : null}
             <div style={{ display: 'flex', gap: S.s, marginBottom: onViewImages ? S.s : 0 }}>
               {onAudioOnly ? (
@@ -188,7 +166,7 @@ export default function E2MemoryDetail({
         </div>
 
         {/* Key facts — editorial list, hairline-separated, no bullets */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: S.m }}>KEY FACTS</p>
+        <SectionLabel color={accent} style={{ marginBottom: S.m }}>KEY FACTS</SectionLabel>
         {facts.map((fact, i) => (
           <div key={i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: `${S.m} 0` }} />}
@@ -213,7 +191,7 @@ export default function E2MemoryDetail({
         </div>
 
         {/* Per-chapter listen-again rows */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: S.m }}>CHAPTERS</p>
+        <SectionLabel color={accent} style={{ marginBottom: S.m }}>CHAPTERS</SectionLabel>
         {chapters.map((ch, i) => (
           <div key={ch.n ?? i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}

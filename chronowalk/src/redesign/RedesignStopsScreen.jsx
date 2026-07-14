@@ -6,9 +6,16 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, ACT_COLORS, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
-import { ActNode, Eyebrow } from './ui/index.js'
+import {
+  ActNode,
+  Eyebrow,
+  PrimaryButton,
+  ScreenHeader,
+  SurfaceCard,
+  StatusMark,
+} from './ui/index.js'
 
 const SEAM_X = 38
 const ACT_DIAMOND = 14
@@ -19,9 +26,9 @@ function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
 }
 
-function statusLabel(status) {
-  if (status === 'completed') return 'Visited'
-  if (status === 'current') return 'Here'
+function statusKind(status) {
+  if (status === 'completed') return 'visited'
+  if (status === 'current') return 'here'
   return null
 }
 
@@ -113,14 +120,11 @@ export default function RedesignStopsScreen() {
 
   return (
     <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: SCREEN_HEADER_PAD, flexShrink: 0 }}>
-        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: S.m }}>
-          All stops
-        </h1>
-        <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>
-          {totalStops} on your route
-        </p>
-      </div>
+      <ScreenHeader
+        layout="plain"
+        title="All stops"
+        subtitle={`${totalStops} on your route`}
+      />
 
       <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: S.l }}>
         <div
@@ -207,11 +211,10 @@ export default function RedesignStopsScreen() {
                       {card.order}
                     </span>
 
-                    <div
+                    <SurfaceCard
+                      tone="light"
+                      radius={12}
                       style={{
-                        background: T.warmWhite,
-                        borderRadius: 12,
-                        overflow: 'hidden',
                         borderLeft: card.status === 'current' ? `2px solid ${group.color}` : '2px solid transparent',
                       }}
                     >
@@ -248,9 +251,11 @@ export default function RedesignStopsScreen() {
                       </button>
 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${S.m} ${S.m} ${S.l}`, borderTop: `1px solid ${T.muted}14` }}>
-                        <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase', minHeight: 16 }}>
-                          {statusLabel(card.status) ?? ''}
-                        </span>
+                        {statusKind(card.status) ? (
+                          <StatusMark kind={statusKind(card.status)} color={group.color} />
+                        ) : (
+                          <span style={{ minHeight: 16 }} />
+                        )}
                         <div style={{ display: 'flex', gap: S.s, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
                             type="button"
@@ -268,7 +273,7 @@ export default function RedesignStopsScreen() {
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </SurfaceCard>
                   </div>
                 )
               })}
@@ -279,13 +284,9 @@ export default function RedesignStopsScreen() {
 
       {state === JOURNEY_STATES.IDLE ? (
         <div style={{ padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
-          <button
-            type="button"
-            onClick={() => navigate('/begin')}
-            style={{ width: '100%', padding: S.m, borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}
-          >
+          <PrimaryButton color={T.ember} glow={false} onClick={() => navigate('/begin')}>
             Begin the tour
-          </button>
+          </PrimaryButton>
         </div>
       ) : null}
     </div>

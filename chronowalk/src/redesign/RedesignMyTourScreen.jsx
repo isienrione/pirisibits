@@ -1,8 +1,15 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
-import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { T, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
+import {
+  PrimaryButton,
+  TextButton,
+  ScreenHeader,
+  BrandMark,
+  StatusMark,
+} from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import {
@@ -36,17 +43,6 @@ const ACT_COLOR = {
 
 const SEAM_X = 38
 const NODE_R = 7
-
-function ChronowalkMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
-      <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
-    </svg>
-  )
-}
 
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
@@ -260,17 +256,15 @@ export default function RedesignMyTourScreen() {
         position: 'relative',
       }}
     >
-      <div
-        style={{
-          padding: SCREEN_HEADER_PAD,
-          flexShrink: 0,
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: S.l }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: S.s }}>
-            <ChronowalkMark />
+      <ScreenHeader
+        layout="brand"
+        title="ROME: ETERNAL CITY"
+        metaLeft={paceLabel}
+        metaRight={`${progress.completed}/${progress.total}`}
+        onSettings={openSettings}
+        brand={
+          <>
+            <BrandMark />
             <span
               style={{
                 fontSize: 11,
@@ -282,74 +276,22 @@ export default function RedesignMyTourScreen() {
             >
               CHRONOWALK
             </span>
-          </div>
-          <button
-            type="button"
-            onClick={openSettings}
-            style={{ color: T.muted, background: 'none', border: 'none', lineHeight: 0, padding: 4, cursor: 'pointer' }}
-            aria-label="Settings"
-          >
-            <Settings size={18} />
-          </button>
-        </div>
-
-        <h1
-          style={{
-            fontFamily: F.display,
-            fontSize: 32,
-            fontWeight: 300,
-            color: T.ink,
-            lineHeight: 1.05,
-            margin: `0 0 ${S.m}`,
-            letterSpacing: '0.02em',
-          }}
-        >
-          ROME: ETERNAL CITY
-        </h1>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: S.m, marginTop: S.s }}>
-          <span
-            style={{
-              fontSize: 12,
-              color: T.muted,
-              letterSpacing: '0.04em',
-            }}
-          >
-            {paceLabel}
-          </span>
-          <span
-            style={{
-              fontSize: 12,
-              color: T.muted,
-              fontVariantNumeric: 'tabular-nums',
-              letterSpacing: '0.04em',
-            }}
-          >
-            {progress.completed}/{progress.total}
-          </span>
-        </div>
+          </>
+        }
+      >
         {context.pace === JOURNEY_PACE.OWN ? (
-          <button
-            type="button"
+          <TextButton
+            underline
+            style={{ marginTop: S.m, fontSize: 12 }}
             onClick={() => {
               setPickerSelection(context.customWaypointIds ?? [])
               setPickerMode(true)
             }}
-            style={{
-              marginTop: S.m,
-              fontSize: 12,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              textDecoration: 'underline',
-              textUnderlineOffset: 3,
-            }}
           >
             Edit today&apos;s stops
-          </button>
+          </TextButton>
         ) : null}
-      </div>
+      </ScreenHeader>
 
       <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
         <div
@@ -551,9 +493,9 @@ export default function RedesignMyTourScreen() {
                             </p>
                           </div>
                           {stop.status === 'completed' ? (
-                            <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>DONE</span>
+                            <StatusMark kind="done" color={color} />
                           ) : stop.status === 'current' ? (
-                            <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>NOW</span>
+                            <StatusMark kind="now" color={T.ember} />
                           ) : null}
                         </div>
                       )
@@ -575,55 +517,20 @@ export default function RedesignMyTourScreen() {
           zIndex: 5,
         }}
       >
-        <button
-          type="button"
+        <PrimaryButton
+          color={ctaColor}
+          textColor={T.warmWhite}
+          glow={false}
           onClick={handlePrimaryCta}
-          style={{
-            width: '100%',
-            padding: S.m,
-            background: ctaColor,
-            color: T.warmWhite,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: 'pointer',
-            marginBottom: S.m,
-          }}
+          style={{ marginBottom: S.m }}
         >
           {ctaLabel}
-        </button>
+        </PrimaryButton>
         <div style={{ display: 'flex', justifyContent: 'center', gap: S.xl }}>
-          <button
-            type="button"
-            onClick={() => setSheetOpen(true)}
-            style={{
-              fontSize: 13,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              fontFamily: F.body,
-            }}
-          >
-            Route
-          </button>
-          <button
-            type="button"
-            disabled={geoBusy}
-            onClick={handleStartFromHere}
-            style={{
-              fontSize: 13,
-              color: geoBusy ? `${T.muted}88` : T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: geoBusy ? 'default' : 'pointer',
-              fontFamily: F.body,
-            }}
-          >
+          <TextButton onClick={() => setSheetOpen(true)}>Route</TextButton>
+          <TextButton disabled={geoBusy} onClick={handleStartFromHere}>
             Start from here
-          </button>
+          </TextButton>
         </div>
         {state === JOURNEY_STATES.IDLE && acts.length === 0 ? (
           <Link

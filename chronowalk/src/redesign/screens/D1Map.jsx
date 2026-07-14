@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
-import { Eyebrow, TabBar } from '../ui/index.js';
+import { Eyebrow, TabBar, Chip } from '../ui/index.js';
 
 export default function D1Map({ embedded = false }) {
   const [activeAct, setActiveAct]   = useState(null);
@@ -211,25 +211,14 @@ export default function D1Map({ embedded = false }) {
         {actChips.map(chip => {
           const on = activeAct === chip.id;
           return (
-            <button
+            <Chip
               key={chip.id}
+              color={chip.color}
+              active={on}
               onClick={e => { e.stopPropagation(); setActiveAct(on ? null : chip.id); }}
-              style={{
-                padding:"4px 12px",
-                border:`1px solid ${on ? chip.color : `${chip.color}55`}`,
-                borderRadius:20,
-                background: on ? `${chip.color}20` : "rgba(247,241,230,0.88)",
-                color: chip.color,
-                fontSize:12, fontWeight:500,
-                cursor:"pointer", whiteSpace:"nowrap",
-                backdropFilter:"blur(6px)",
-                fontFamily:F.body,
-                transition:"background 200ms, border-color 200ms",
-                flexShrink:0,
-              }}
             >
               {chip.label}
-            </button>
+            </Chip>
           );
         })}
       </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { PrimaryButton, SecondaryButton } from '../ui/index.js'
 import { appiaNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
 
@@ -120,48 +121,25 @@ export default function C8eJourneyComplete({
           </p>
         ) : null}
 
-        <button
-          type="button"
-          data-testid="journey-complete-letter"
+        <PrimaryButton
+          color={accent}
+          textColor={T.warmWhite}
+          glow={false}
           disabled={busy}
           onClick={() => onReadLetter?.()}
-          style={{
-            width: '100%',
-            padding: S.m,
-            background: accent,
-            color: T.warmWhite,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: busy ? 'wait' : 'pointer',
-            marginBottom: S.m,
-          }}
+          style={{ marginBottom: S.m }}
+          data-testid="journey-complete-letter"
         >
           Read your letter
-        </button>
+        </PrimaryButton>
 
-        <button
-          type="button"
-          data-testid="journey-complete-tour"
+        <SecondaryButton
           disabled={busy}
           onClick={() => onReturnTour?.()}
-          style={{
-            width: '100%',
-            padding: S.m,
-            background: 'transparent',
-            color: T.muted,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 500,
-            fontSize: 14,
-            border: `1px solid ${T.muted}33`,
-            cursor: busy ? 'wait' : 'pointer',
-          }}
+          data-testid="journey-complete-tour"
         >
           Return to My Tour
-        </button>
+        </SecondaryButton>
       </div>
     </div>
   )

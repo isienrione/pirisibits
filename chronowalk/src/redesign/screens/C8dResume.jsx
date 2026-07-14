@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
+import { PrimaryButton, TextButton, Vignette, BottomScrim } from "../ui/index.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Vignette, BottomScrim } from '../ui/index.js';
 
 export default function C8dResume({
   resumeLabel = 'Pick up at the Temple of Vesta',
@@ -54,36 +54,24 @@ export default function C8dResume({
           {resumeLabel}
         </p>
 
-        {/* Primary */}
-        <button
-          type="button"
+        <PrimaryButton
+          color={accent}
+          textColor={T.warmWhite}
+          glow={false}
           disabled={busy}
           onClick={() => (onContinue ? onContinue() : navigate("C5"))}
-          style={{
-            width: "100%", padding: S.m,
-            background: accent, color: T.warmWhite,
-            borderRadius: 12, fontFamily: F.body,
-            fontWeight: 600, fontSize: 15,
-            border: "none", cursor: "pointer",
-            marginBottom: S.m,
-          }}
+          style={{ marginBottom: S.m }}
         >
           Continue walking
-        </button>
+        </PrimaryButton>
 
-        {/* Quiet */}
-        <button
-          type="button"
+        <TextButton
           disabled={busy}
           onClick={() => (onStartFresh ? onStartFresh() : navigate("B4"))}
-          style={{
-          width: "100%", textAlign: "center",
-          fontSize: 13, color: `${T.warmWhite}65`,
-          background: "none", border: "none",
-          cursor: "pointer", fontFamily: F.body,
-        }}>
+          style={{ width: '100%', textAlign: 'center', color: `${T.warmWhite}65` }}
+        >
           Start from where I am
-        </button>
+        </TextButton>
       </div>
     </div>
   );

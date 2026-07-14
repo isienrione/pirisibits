@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import { PrimaryButton, BackLink } from '../ui/index.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
 
@@ -72,21 +73,9 @@ export default function B5OwnPaceStopPicker({
     >
       <div style={{ padding: SCREEN_HEADER_PAD, flexShrink: 0 }}>
         {onBack ? (
-          <button
-            type="button"
-            onClick={onBack}
-            style={{
-              fontSize: 13,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              marginBottom: S.m,
-            }}
-          >
+          <BackLink onClick={onBack} showIcon={false} style={{ marginBottom: S.m }}>
             ← Back
-          </button>
+          </BackLink>
         ) : null}
         <h1
           style={{
@@ -258,27 +247,18 @@ export default function B5OwnPaceStopPicker({
           background: T.bone,
         }}
       >
-        <button
-          type="button"
+        <PrimaryButton
+          color={canContinue ? T.ember : T.ink800}
+          textColor={canContinue ? T.obsidian : T.muted}
           disabled={!canContinue}
+          glow={false}
           onClick={onContinue}
-          style={{
-            width: '100%',
-            padding: S.m,
-            background: canContinue ? T.ember : T.ink800,
-            color: canContinue ? T.obsidian : T.muted,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: canContinue ? 'pointer' : 'default',
-          }}
+          style={{ cursor: canContinue ? 'pointer' : 'default', opacity: 1 }}
         >
           {canContinue
             ? `Continue · ${selected.size} stop${selected.size === 1 ? '' : 's'}`
             : 'Select at least one stop'}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )

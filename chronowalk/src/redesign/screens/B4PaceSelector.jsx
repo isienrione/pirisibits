@@ -1,5 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { PrimaryButton } from '../ui/index.js'
 import {
   colosseumNow,
   capitolineNow,
@@ -298,28 +299,22 @@ export default function B4PaceSelector({
           You can change this anytime.
         </p>
 
-        <button
-          type="button"
+        <PrimaryButton
+          color={activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800}
+          textColor={activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted}
+          disabled={activeIndex == null || activeIndex < 0}
           onClick={handleContinue}
           style={{
-            width: '100%',
-            padding: S.m,
-            background: activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800,
-            color: activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
             cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',
             transition: 'background 300ms, color 300ms',
             flexShrink: 0,
+            opacity: 1,
           }}
         >
           {activeIndex != null && activeIndex >= 0
             ? `Begin — ${options[activeIndex].title}`
             : 'Select a tour'}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )
