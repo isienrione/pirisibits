@@ -15,7 +15,7 @@ function InlineMapLoadingFallback() {
       style={{
         width: '100%',
         height: '100%',
-        background: 'var(--obsidian, #0B0B0D)',
+        background: 'var(--obsidian, #101113)',
         display: 'grid',
         placeItems: 'center',
         color: 'var(--muted-warm, #706C65)',
@@ -83,7 +83,7 @@ export default function JourneyInlineMap({
         style={{
           width: '100%',
           height: '100%',
-          background: 'var(--obsidian, #0B0B0D)',
+          background: 'var(--obsidian, #101113)',
           display: 'grid',
           placeItems: 'center',
           color: 'var(--muted-warm, #706C65)',

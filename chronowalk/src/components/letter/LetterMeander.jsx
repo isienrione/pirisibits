@@ -34,7 +34,7 @@ export default function LetterMeander({ meander, emptyLabel = 'Your path will dr
       <path
         d={meander.path}
         fill="none"
-        stroke="var(--accent)"
+        stroke="var(--discovery)"
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -46,8 +46,8 @@ export default function LetterMeander({ meander, emptyLabel = 'Your path will dr
             cx={point.x}
             cy={point.y}
             r={index === meander.points.length - 1 ? 7 : 5}
-            fill={index === meander.points.length - 1 ? 'var(--accent)' : 'var(--bone)'}
-            stroke="var(--accent)"
+            fill={index === meander.points.length - 1 ? 'var(--discovery)' : 'var(--bone)'}
+            stroke="var(--discovery)"
             strokeWidth="2"
           />
         </g>

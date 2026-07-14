@@ -52,8 +52,8 @@ function LockupImage({ src, width, aspect, className, alt = 'ChronoWalk' }) {
 function WordmarkTitle({ variant, className }) {
   const color =
     variant === 'light'
-      ? 'var(--color-obsidian, #0B0B0D)'
-      : 'var(--color-warm-ivory, #FAF6EF)'
+      ? 'var(--color-obsidian, #101113)'
+      : 'var(--color-warm-ivory, #F3EEE6)'
 
   return (
     <span

@@ -214,21 +214,21 @@
 }
 
 .cw-landing-btn--coral {
-  background: var(--act-arena, #e4552e);
+  background: var(--terracotta, #e95b2e);
   color: var(--bone, #f7f1e6);
 }
 
 .cw-landing-btn--glow {
   box-shadow:
-    0 0 28px color-mix(in srgb, var(--act-arena, #e4552e) 42%, transparent),
-    0 6px 24px color-mix(in srgb, var(--act-arena, #e4552e) 28%, transparent);
+    0 0 28px color-mix(in srgb, var(--terracotta, #e95b2e) 42%, transparent),
+    0 6px 24px color-mix(in srgb, var(--terracotta, #e95b2e) 28%, transparent);
   transition: box-shadow 200ms ease, transform 200ms ease;
 }
 
 .cw-landing-btn--glow:hover {
   box-shadow:
-    0 0 36px color-mix(in srgb, var(--act-arena, #e4552e) 52%, transparent),
-    0 8px 28px color-mix(in srgb, var(--act-arena, #e4552e) 34%, transparent);
+    0 0 36px color-mix(in srgb, var(--terracotta, #e95b2e) 52%, transparent),
+    0 8px 28px color-mix(in srgb, var(--terracotta, #e95b2e) 34%, transparent);
 }
 
 .cw-landing-btn--glow:active {
@@ -1600,7 +1600,7 @@
   font-size: clamp(1.85rem, 5vw, 2.35rem);
   font-weight: 400;
   line-height: 1;
-  color: var(--act-arena, #e4552e);
+  color: var(--gold, #c7a348);
   letter-spacing: -0.02em;
 }
 
@@ -1949,7 +1949,7 @@
 }
 
 .cw-landing-btn--coral {
-  background: var(--act-arena, #e4552e);
+  background: var(--terracotta, #e95b2e);
   color: var(--bone, #f7f1e6);
 }
 

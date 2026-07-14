@@ -1,13 +1,13 @@
 function StatusDot({ status }) {
   const styles = {
     completed: {
-      background: 'var(--accent)',
-      border: '2px solid var(--accent)',
+      background: 'var(--discovery)',
+      border: '2px solid var(--discovery)',
     },
     current: {
       background: 'var(--bone)',
-      border: '2px solid var(--accent)',
-      boxShadow: '0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent)',
+      border: '2px solid var(--discovery)',
+      boxShadow: '0 0 0 4px color-mix(in srgb, var(--discovery) 18%, transparent)',
     },
     upcoming: {
       background: 'var(--bone)',

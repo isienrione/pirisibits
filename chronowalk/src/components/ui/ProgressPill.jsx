@@ -33,7 +33,7 @@ export function ProgressPill({
         aria-label={label ?? `Tour progress: stop ${safeCurrent} of ${total}`}
       >
         <div
-          className="h-full rounded-full bg-ember motion-reduce:transition-none transition-all duration-500 ease-out"
+          className="h-full rounded-full bg-terracotta motion-reduce:transition-none transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>

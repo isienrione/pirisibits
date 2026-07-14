@@ -16,7 +16,7 @@ export default function LandingThresholdSection() {
           <ul className="cw-v2-bullet-list">
             {section.bullets.map((item) => (
               <li key={item} className="cw-v2-bullet-list__item">
-                <span className="cw-v2-bullet-list__dot cw-v2-bullet-list__dot--coral" aria-hidden />
+                <span className="cw-v2-bullet-list__dot cw-v2-bullet-list__dot--gold" aria-hidden />
                 {item}
               </li>
             ))}

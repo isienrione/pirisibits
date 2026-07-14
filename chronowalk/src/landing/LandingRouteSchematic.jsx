@@ -34,7 +34,7 @@ export default function LandingRouteSchematic({
       <svg viewBox="0 0 100 82" className="cw-landing-route-schematic__svg" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="cw-route-grad" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--act-arena, #e4552e)" stopOpacity="0.85" />
+            <stop offset="0%" stopColor="var(--gold, #c7a348)" stopOpacity="0.85" />
             <stop offset="55%" stopColor="var(--ember, #e8a13c)" stopOpacity="0.95" />
             <stop offset="100%" stopColor="var(--act-teal, #4e9b8f)" stopOpacity="0.8" />
           </linearGradient>

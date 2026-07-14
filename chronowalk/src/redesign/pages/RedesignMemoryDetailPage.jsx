@@ -50,7 +50,7 @@ export default function RedesignMemoryDetailPage() {
   if (loading) {
     return (
       <RedesignRouteShell>
-        <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#FAF6EF' }} />
+        <div className="redesign-app-shell" style={{ minHeight: '100dvh', background: '#F3EEE6' }} />
       </RedesignRouteShell>
     )
   }

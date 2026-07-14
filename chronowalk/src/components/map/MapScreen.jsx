@@ -33,7 +33,7 @@ function MapLoadingFallback() {
         width: '100%',
         height: '100%',
         minHeight: 220,
-        background: 'var(--obsidian, #0B0B0D)',
+        background: 'var(--obsidian, #101113)',
         display: 'grid',
         placeItems: 'center',
         color: 'var(--muted-warm, #706C65)',

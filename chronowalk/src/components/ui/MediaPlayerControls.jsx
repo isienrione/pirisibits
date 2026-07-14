@@ -34,12 +34,12 @@ const controlBase =
 
 const themes = {
   dark: {
-    primary: 'bg-ember text-bone shadow-card hover:opacity-90',
+    primary: 'bg-terracotta text-bone shadow-card hover:opacity-90',
     secondary:
       'bg-[color-mix(in_srgb,var(--warm-white)_10%,var(--obsidian))] text-warmwhite hover:bg-[color-mix(in_srgb,var(--warm-white)_15%,var(--obsidian))] border border-ink800',
   },
   light: {
-    primary: 'bg-ember text-bone shadow-card hover:opacity-90',
+    primary: 'bg-terracotta text-bone shadow-card hover:opacity-90',
     secondary: 'border border-ink800 bg-bone text-ink900 hover:bg-ink800',
   },
 }

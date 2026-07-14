@@ -59,8 +59,8 @@ export default function ShellStopRow({
       <div
         className={cn(
           'overflow-hidden transition',
-          isCurrent && 'border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))] bg-[color-mix(in_srgb,var(--accent)_4%,var(--bone))]',
-          onPress && !disabled && 'hover:border-[color-mix(in_srgb,var(--accent)_35%,var(--bone))]'
+          isCurrent && 'border-[color-mix(in_srgb,var(--discovery)_35%,var(--bone))] bg-[color-mix(in_srgb,var(--discovery)_4%,var(--bone))]',
+          onPress && !disabled && 'hover:border-[color-mix(in_srgb,var(--discovery)_35%,var(--bone))]'
         )}
       >
         <div className="flex items-center gap-3 p-3">
