@@ -86,7 +86,7 @@ function FloatingTransitAudioPlayer({
           {narrationPlaying ? (
             <Pause size={16} fill={T.obsidian} color={T.obsidian} />
           ) : (
-            <Play size={16} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 1 }} />
+            <Play size={16} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
           )}
         </button>
 

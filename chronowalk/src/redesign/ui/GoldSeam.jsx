@@ -128,9 +128,9 @@ function motionToAnimation(motion, variant, loop) {
 }
 
 function easingFor(motion) {
-  if (motion === 'drawDown' || motion === 'drawAcross') return 'cubic-bezier(0.4, 0, 0.2, 1)'
-  if (motion === 'flash') return 'cubic-bezier(0.22, 1, 0.36, 1)'
-  return 'ease-in-out'
+  if (motion === 'drawDown' || motion === 'drawAcross') return 'var(--ease-standard, cubic-bezier(0.4, 0, 0.2, 1))'
+  if (motion === 'flash') return 'var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))'
+  return 'var(--ease-breathe, ease-in-out)'
 }
 
 function layoutStyles(variant, layout, length, pct, thickness) {

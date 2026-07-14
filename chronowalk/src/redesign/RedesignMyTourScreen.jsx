@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheetActions } from './context/SettingsSheetContext.jsx'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, S, SHELL_TAB_BAR_INSET, TAP, ICON } from './tokens.js'
+import { T, F, S, R, SHELL_TAB_BAR_INSET, TAP, ICON } from './tokens.js'
 import { TYPE } from './typography.js'
 import {
   PrimaryButton,
@@ -221,11 +221,13 @@ export default function RedesignMyTourScreen() {
             display: 'inline-block',
             marginTop: S.m,
             padding: `${S.m}`,
-            borderRadius: 10,
+            minHeight: TAP.min,
+            borderRadius: R.control,
             background: T.ember,
             color: T.obsidian,
             textDecoration: 'none',
             fontWeight: 600,
+            ...TYPE.button,
           }}
         >
           Start tour
@@ -333,7 +335,7 @@ export default function RedesignMyTourScreen() {
                     padding: `${S.m} ${S.l} ${S.m} ${SEAM_X + NODE_R + 14}px`,
                     gap: S.m,
                     opacity: act.locked ? 0.38 : faded ? 0.55 : 1,
-                    transition: 'opacity 300ms',
+                    transition: 'opacity var(--d-panel, 360ms) var(--ease-enter, cubic-bezier(0.25, 0.1, 0.25, 1))',
                   }}
                 >
                   <div
@@ -378,7 +380,7 @@ export default function RedesignMyTourScreen() {
                       style={{
                         width: 56,
                         height: 56,
-                        borderRadius: 10,
+                        borderRadius: R.control,
                         background: `${T.muted}22`,
                         flexShrink: 0,
                       }}

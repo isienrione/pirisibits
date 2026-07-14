@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, R } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
 import { Eyebrow, TabBar, Chip, CinematicImage } from '../ui/index.js';
 
@@ -229,11 +229,11 @@ export default function D1Map({ embedded = false }) {
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, left:20, zIndex:22,
           padding:"10px 16px",
-          background:"rgba(247,241,230,0.92)", border:`1px solid rgba(33,28,21,0.12)`,
+          background:"color-mix(in srgb, var(--bone, #faf6ef) 92%, transparent)", border:`1px solid rgba(33,28,21,0.12)`,
           borderRadius:24, fontSize:13, color:T.ink,
           fontFamily:F.body, cursor:"pointer",
           backdropFilter:"blur(8px)",
-          transition:"bottom 240ms cubic-bezier(0.32,0.72,0,1)",
+          transition:"bottom var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))",
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -245,11 +245,11 @@ export default function D1Map({ embedded = false }) {
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, right:20, zIndex:22,
           width:44, height:44,
-          background:"rgba(247,241,230,0.92)", border:`1px solid rgba(33,28,21,0.12)`,
+          background:"color-mix(in srgb, var(--bone, #faf6ef) 92%, transparent)", border:`1px solid rgba(33,28,21,0.12)`,
           borderRadius:22,
           display:"flex", alignItems:"center", justifyContent:"center",
           cursor:"pointer", backdropFilter:"blur(8px)",
-          transition:"bottom 240ms cubic-bezier(0.32,0.72,0,1)",
+          transition:"bottom var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))",
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -268,17 +268,17 @@ export default function D1Map({ embedded = false }) {
           style={{
             position:"absolute", bottom:0, left:0, right:0,
             background:T.bone,
-            borderRadius:"20px 20px 0 0",
-            padding:"12px 20px 44px",
+            borderRadius:`${R.sheet} ${R.sheet} 0 0`,
+            padding:"12px 20px max(44px, calc(env(safe-area-inset-bottom) + 16px))",
             zIndex:30,
-            boxShadow:"0 -8px 32px rgba(11,11,13,0.14)",
-            animation:"slideUp 240ms cubic-bezier(0.32,0.72,0,1)",
+            boxShadow:"var(--shadow-sheet, 0 -8px 32px rgba(11,11,13,0.14))",
+            animation:"cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both",
           }}
           onClick={e => e.stopPropagation()}
         >
           {/* Sheet drag handle */}
           <div style={{ display:"flex", justifyContent:"center", marginBottom:14 }}>
-            <div style={{ width:32, height:3.5, borderRadius:2, background:`${T.muted}45` }}/>
+            <div style={{ width:36, height:4, borderRadius:2, background:`${T.muted}45` }}/>
           </div>
 
           {/* Pin content row */}

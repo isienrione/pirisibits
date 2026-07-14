@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, R } from "../tokens.js";
 import { colosseumNow, capitolineNow, severusNow, trajansNow, archTitusNow, palatineNow, templeSaturnNow, viaSacraNow } from "../images.js";
 import { Eyebrow, CinematicImage } from '../ui/index.js';
 import { photoForWaypoint } from '../lib/waypointPresentation.js';
@@ -65,10 +65,10 @@ export function C1bRouteSheet({
         position: "absolute", bottom: 0, left: 0, right: 0,
         height: "84%",
         background: T.bone,
-        borderRadius: "20px 20px 0 0",
+        borderRadius: `${R.sheet} ${R.sheet} 0 0`,
         display: "flex", flexDirection: "column",
-        animation: "slideUp 320ms cubic-bezier(0.32,0.72,0,1)",
-        boxShadow: "0 -8px 40px rgba(11,11,13,0.3)",
+        animation: "cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both",
+        boxShadow: "var(--shadow-sheet, 0 -8px 40px rgba(11,11,13,0.3))",
       }}>
         <div style={{ paddingTop: 12, paddingBottom: 6, display: "flex", justifyContent: "center", flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: `${T.muted}45` }} />

@@ -31,7 +31,7 @@ export default function G1Settings({
     return (
       <button onClick={onToggle} style={{
         width: 44, height: 26, borderRadius: 13,
-        background: on ? "#5B5249" : `${T.muted}38`,
+        background: on ? `color-mix(in srgb, ${T.ink} 72%, ${T.muted})` : `${T.muted}38`,
         position: "relative", border: "none", cursor: "pointer",
         transition: "background 250ms", flexShrink: 0,
       }}>

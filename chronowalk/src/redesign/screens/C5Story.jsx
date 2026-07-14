@@ -164,7 +164,7 @@ export default function C5Story({
             {narrationPlaying ? (
               <Pause size={22} fill={T.obsidian} color={T.obsidian} />
             ) : (
-              <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
+              <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
             )}
           </button>
           <button

@@ -127,7 +127,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               backgroundImage: `url(${colosseumNow})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transition: 'opacity 700ms ease-in-out',
+              transition: 'opacity var(--d-rise, 480ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))',
               opacity: demoState === 'now' ? 1 : 0,
             }}
           />
@@ -139,7 +139,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               filter: 'sepia(65%) contrast(0.82) brightness(0.75)',
-              transition: 'opacity 700ms ease-in-out',
+              transition: 'opacity var(--d-rise, 480ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))',
               opacity: demoState === 'then' ? 1 : 0,
             }}
           />

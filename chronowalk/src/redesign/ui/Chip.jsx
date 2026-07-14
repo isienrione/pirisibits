@@ -1,4 +1,4 @@
-import { R } from '../tokens.js'
+import { R, TAP } from '../tokens.js'
 import { TYPE } from '../typography.js'
 
 /** Filter or badge chip — used in D1 Map filters and act badges */
@@ -9,11 +9,11 @@ export function Chip({ children, color, active = false, onClick, type = 'button'
       onClick={onClick}
       className="cw-motion-pressable"
       style={{
-        minHeight: 36,
+        minHeight: TAP.min,
         padding: '6px 14px',
         border: `1px solid ${active ? color : `${color}55`}`,
         borderRadius: R.control,
-        background: active ? `${color}20` : 'color-mix(in srgb, var(--bone, #f7f1e6) 88%, transparent)',
+        background: active ? `${color}20` : 'color-mix(in srgb, var(--bone, #faf6ef) 88%, transparent)',
         color,
         ...TYPE.chip,
         cursor: 'pointer',

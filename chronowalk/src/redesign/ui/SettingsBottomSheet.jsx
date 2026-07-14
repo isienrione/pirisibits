@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
-import { T, F, S, R } from '../tokens.js'
+import { T, F, S, R, TAP } from '../tokens.js'
 import { TextButton } from './TextButton.jsx'
 import { TYPE, displayTitleStyle } from '../typography.js'
 import {
@@ -30,7 +30,7 @@ function Row({ label, right }) {
         padding: '14px 0',
       }}
     >
-      <p style={{ margin: 0, fontSize: 17, color: T.ink, lineHeight: 1.3, fontFamily: F.body }}>{label}</p>
+      <p style={{ ...TYPE.body, color: T.ink }}>{label}</p>
       {right}
     </div>
   )
@@ -46,6 +46,7 @@ function Segmented({ options, value, onChange, formatLabel = (v) => String(v) })
             key={String(option)}
             type="button"
             onClick={() => onChange(option)}
+            className="cw-motion-pressable"
             style={{
               padding: '5px 10px',
               borderRadius: 6,
@@ -56,6 +57,7 @@ function Segmented({ options, value, onChange, formatLabel = (v) => String(v) })
               border: 'none',
               cursor: 'pointer',
               minWidth: 40,
+              minHeight: TAP.min,
             }}
           >
             {formatLabel(option)}
@@ -78,7 +80,7 @@ function Toggle({ on, onToggle, label }) {
         width: 44,
         height: 26,
         borderRadius: 13,
-        background: on ? '#5B5249' : `${T.muted}38`,
+        background: on ? `color-mix(in srgb, ${T.ink} 72%, ${T.muted})` : `${T.muted}38`,
         position: 'relative',
         border: 'none',
         cursor: 'pointer',
@@ -122,7 +124,7 @@ function ActionRow({ label, onClick, detail }) {
           textAlign: 'left',
         }}
       >
-        <span style={{ fontSize: 17, color: T.ink, fontFamily: F.body }}>{label}</span>
+        <span style={{ ...TYPE.body, color: T.ink }}>{label}</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: T.muted, fontSize: 13, fontFamily: F.body }}>
           {detail ? <span>{detail}</span> : null}
           <ChevronRight size={16} />
@@ -219,7 +221,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
           </TextButton>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: `0 ${S.edge}` }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            scrollbarWidth: 'none',
+            padding: `0 ${S.edge}`,
+            paddingBottom: `max(${S.l}, env(safe-area-inset-bottom))`,
+          }}
+        >
           <Hairline />
           <Row
             label="Audio speed"
@@ -281,7 +291,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
 
           <p
             style={{
-              margin: '20px 0 24px',
+              margin: '20px 0 0',
               fontSize: 12,
               color: `${T.muted}cc`,
               textAlign: 'center',

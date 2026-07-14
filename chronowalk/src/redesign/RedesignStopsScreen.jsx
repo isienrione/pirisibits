@@ -6,7 +6,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, ACT_COLORS, F, S, R, TAP, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { TYPE } from './typography.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import {
@@ -128,7 +128,22 @@ export default function RedesignStopsScreen() {
     return (
       <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, padding: S.xl }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Route unavailable'}</p>
-        <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: S.m, padding: S.m, borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/begin')}
+          className="cw-motion-pressable"
+          style={{
+            marginTop: S.m,
+            minHeight: TAP.min,
+            padding: `0 ${S.m}`,
+            borderRadius: R.control,
+            border: 'none',
+            background: T.ember,
+            color: T.obsidian,
+            cursor: 'pointer',
+            ...TYPE.button,
+          }}
+        >
           Start tour
         </button>
       </div>

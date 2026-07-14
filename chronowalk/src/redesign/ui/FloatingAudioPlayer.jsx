@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, memo } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
-import { T, F, S } from '../tokens.js'
+import { T, F, S, R, TAP, ICON } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
@@ -112,7 +112,7 @@ function FloatingAudioPlayer({
         style={{
           background: 'rgba(11,11,13,0.94)',
           border: `1px solid ${T.ink800}`,
-          borderRadius: 16,
+          borderRadius: R.card,
           boxShadow: '0 12px 40px rgba(0,0,0,0.45)',
           backdropFilter: 'blur(14px)',
           overflow: 'hidden',
@@ -177,10 +177,11 @@ function FloatingAudioPlayer({
             type="button"
             onClick={handleMain}
             aria-label={ended ? 'Replay' : narrationPlaying ? 'Pause' : 'Play'}
+            className="cw-motion-pressable"
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
+              width: TAP.minPx,
+              height: TAP.minPx,
+              borderRadius: TAP.minPx / 2,
               flexShrink: 0,
               background: ended ? `${accent}33` : T.ember,
               border: ended ? `1px solid ${accent}66` : 'none',
@@ -191,11 +192,11 @@ function FloatingAudioPlayer({
             }}
           >
             {ended ? (
-              <RotateCcw size={17} color={accent} />
+              <RotateCcw size={ICON.md} color={accent} />
             ) : narrationPlaying ? (
-              <Pause size={18} fill={T.obsidian} color={T.obsidian} />
+              <Pause size={ICON.md} fill={T.obsidian} color={T.obsidian} />
             ) : (
-              <Play size={18} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
+              <Play size={ICON.md} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
             )}
           </button>
 
@@ -203,9 +204,22 @@ function FloatingAudioPlayer({
             type="button"
             onClick={() => setExpanded((v) => !v)}
             aria-label={expanded ? 'Minimize player' : 'Expand player'}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: T.muted, lineHeight: 0, flexShrink: 0 }}
+            className="cw-motion-pressable"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: T.muted,
+              lineHeight: 0,
+              flexShrink: 0,
+              minWidth: TAP.min,
+              minHeight: TAP.min,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            {expanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
+            {expanded ? <ChevronDown size={ICON.lg} /> : <ChevronUp size={ICON.lg} />}
           </button>
         </div>
 
@@ -287,10 +301,12 @@ function FloatingAudioPlayer({
               <button
                 type="button"
                 onClick={onReplay}
+                className="cw-motion-pressable"
                 style={{
                   width: '100%',
+                  minHeight: TAP.min,
                   padding: '12px',
-                  borderRadius: 10,
+                  borderRadius: R.control,
                   border: 'none',
                   background: T.ember,
                   color: T.obsidian,
@@ -305,7 +321,7 @@ function FloatingAudioPlayer({
                   marginBottom: 12,
                 }}
               >
-                <RotateCcw size={16} /> Replay
+                <RotateCcw size={ICON.sm} /> Replay
               </button>
             ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 24 }}>
@@ -313,15 +329,29 @@ function FloatingAudioPlayer({
                 type="button"
                 onClick={onSkipBack}
                 aria-label="Back 15 seconds"
-                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
+                className="cw-motion-pressable"
+                style={{
+                  color: T.muted,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  lineHeight: 0,
+                  position: 'relative',
+                  minWidth: TAP.min,
+                  minHeight: TAP.min,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <SkipBack size={22} />
+                <SkipBack size={ICON.lg} />
                 <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 7, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
               </button>
               <button
                 type="button"
                 onClick={onToggle}
                 aria-label={narrationPlaying ? 'Pause' : 'Play'}
+                className="cw-motion-pressable"
                 style={{
                   width: 52,
                   height: 52,
@@ -335,18 +365,31 @@ function FloatingAudioPlayer({
                 }}
               >
                 {narrationPlaying ? (
-                  <Pause size={22} fill={T.obsidian} color={T.obsidian} />
+                  <Pause size={ICON.lg} fill={T.obsidian} color={T.obsidian} />
                 ) : (
-                  <Play size={22} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
+                  <Play size={ICON.lg} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
                 )}
               </button>
               <button
                 type="button"
                 onClick={onSkipForward}
                 aria-label="Forward 15 seconds"
-                style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, position: 'relative' }}
+                className="cw-motion-pressable"
+                style={{
+                  color: T.muted,
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  lineHeight: 0,
+                  position: 'relative',
+                  minWidth: TAP.min,
+                  minHeight: TAP.min,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <SkipForward size={22} />
+                <SkipForward size={ICON.lg} />
                 <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 7, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
               </button>
             </div>

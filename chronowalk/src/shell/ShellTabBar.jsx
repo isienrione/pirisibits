@@ -75,7 +75,7 @@ export default function ShellTabBar() {
             <li key={tab.id} className="flex-1">
               <Link
                 to={tab.to}
-                className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
+                className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.14em] transition-colors ${
                   active ? 'text-ember' : 'text-muted'
                 }`}
                 onPointerEnter={() => {

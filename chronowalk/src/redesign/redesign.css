@@ -923,11 +923,16 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   object-position: center 28%;
 }
 
-.cw-flow-escape:hover,
-.cw-flow-escape:focus-visible {
+.cw-flow-escape:hover {
   opacity: 0.88;
   background: rgba(11, 11, 13, 0.62);
-  outline: none;
+}
+
+.cw-flow-escape:focus-visible {
+  opacity: 0.95;
+  background: rgba(11, 11, 13, 0.62);
+  outline: 2px solid color-mix(in srgb, var(--warm-white, #faf6ef) 55%, transparent);
+  outline-offset: 2px;
 }
 
 @keyframes pulseRingOut {
@@ -1144,11 +1149,11 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 
 .cw-reveal-invite__close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
+  top: 6px;
+  right: 6px;
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
   border: 1px solid color-mix(in srgb, var(--warm-white) 18%, transparent);
   background: color-mix(in srgb, var(--obsidian) 80%, transparent);
   color: var(--warm-white);
@@ -1424,12 +1429,12 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 
 .cw-tour-onboarding-cards__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;
+  right: 8px;
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: none;
   border-radius: 999px;
@@ -1617,11 +1622,11 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 /* ── Walking companion (transit + waypoint walking) ── */
 .cw-walking-companion {
   position: relative;
-  --wc-bg: #11100f;
-  --wc-card: rgba(28, 26, 24, 0.72);
-  --wc-warm-white: #f5efe3;
-  --wc-gray: #9a948b;
-  --wc-border: rgba(245, 239, 227, 0.07);
+  --wc-bg: var(--obsidian, #0b0b0d);
+  --wc-card: color-mix(in srgb, var(--charcoal, #1a1a1f) 72%, transparent);
+  --wc-warm-white: var(--warm-white, #faf6ef);
+  --wc-gray: var(--muted, #b9af9c);
+  --wc-border: color-mix(in srgb, var(--warm-white, #faf6ef) 7%, transparent);
   --wc-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
   --wc-ease: var(--ease-enter, cubic-bezier(0.25, 0.1, 0.25, 1));
   --wc-ease-out: var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1));
@@ -2137,8 +2142,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   transform: translateY(14px) scale(0.98);
   pointer-events: none;
   transition:
-    opacity 0.42s var(--wc-ease),
-    transform 0.42s var(--wc-ease-out);
+    opacity var(--d-panel, 360ms) var(--wc-ease),
+    transform var(--d-panel, 360ms) var(--wc-ease-out);
   margin-bottom: 8px;
 }
 
@@ -2504,9 +2509,9 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   z-index: 0;
   background: linear-gradient(
     110deg,
-    color-mix(in srgb, var(--bone, #e9e2d5) 35%, transparent) 0%,
+    color-mix(in srgb, var(--bone, #faf6ef) 35%, transparent) 0%,
     color-mix(in srgb, var(--warm-white, #faf6ef) 55%, transparent) 45%,
-    color-mix(in srgb, var(--bone, #e9e2d5) 35%, transparent) 90%
+    color-mix(in srgb, var(--bone, #faf6ef) 35%, transparent) 90%
   );
   background-size: 200% 100%;
   animation: cwCineShimmer var(--d-breathe, 2800ms) var(--ease-breathe, ease-in-out) infinite;
@@ -2645,6 +2650,11 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-motion-pressable {
   transform: translateZ(0);
   touch-action: manipulation;
+}
+
+.cw-motion-pressable:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ember, #e8a13c) 55%, transparent);
+  outline-offset: 2px;
 }
 
 .cw-motion-pressable:active:not(:disabled) {
