@@ -43,6 +43,8 @@ async function main() {
   const sizes = [
     { file: join(outputDir, 'icon-192.png'), size: 192, scale: 0.86 },
     { file: join(outputDir, 'icon-512.png'), size: 512, scale: 0.86 },
+    // iOS Add-to-Home-Screen looks at /apple-touch-icon.png first (site root)
+    { file: join(publicDir, 'apple-touch-icon.png'), size: 180, scale: 0.86 },
     { file: join(outputDir, 'apple-touch-icon.png'), size: 180, scale: 0.86 },
     { file: join(publicDir, 'favicon-32.png'), size: 32, scale: 0.9 },
     { file: join(publicDir, 'favicon-16.png'), size: 16, scale: 0.9 },
