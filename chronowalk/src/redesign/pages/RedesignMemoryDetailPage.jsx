@@ -8,12 +8,12 @@ import {
   accentForWaypoint,
   honestyCaptionForWaypoint,
   photoForWaypoint,
-  signatureLine,
   thenLabelForWaypoint,
   thenLoopForWaypoint,
   thenPhotoForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
+import { memoryDiscoveries, memoryQuote } from '../lib/journalMemory.js'
 import { chapterTitle } from '../../content/chapterMeta.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import E2MemoryDetail from '../screens/E2MemoryDetail.jsx'
@@ -71,15 +71,15 @@ export default function RedesignMemoryDetailPage() {
       <div className="redesign-app-shell redesign-phone-frame">
         <E2MemoryDetail
           accent={accentForWaypoint(waypoint, manifest)}
-          actLabel={act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : undefined}
+          actLabel={act ? `Chapter ${act.numeral} — ${act.title}` : undefined}
           title={titleForWaypoint(waypoint)}
           nowPhoto={photoForWaypoint(waypoint)}
           thenPhoto={thenPhotoForWaypoint(waypoint)}
           thenLoop={thenLoopForWaypoint(waypoint)}
           thenLabel={thenLabelForWaypoint(waypoint)}
           honestyCaption={honestyCaptionForWaypoint(waypoint)}
-          signatureLine={signatureLine(waypoint)}
-          facts={waypoint.keyFacts ?? []}
+          signatureLine={memoryQuote(waypoint)}
+          discoveries={memoryDiscoveries(waypoint)}
           transcript={waypoint.transcript ?? waypoint.transcriptPreview}
           chapters={(waypoint.chapters ?? []).map((chapter, index) => ({
             n: index + 1,
@@ -87,6 +87,7 @@ export default function RedesignMemoryDetailPage() {
           }))}
           onBack={() => navigate('/journal')}
           onWalkToStop={handleWalkToStop}
+          onListenAgain={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
           onStepThroughTime={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
           onAudioOnly={() => goToStopExperience(JOURNEY_STATES.STORY, 'chapters')}
           onTranscript={() => goToStopExperience(JOURNEY_STATES.STORY, 'transcript')}

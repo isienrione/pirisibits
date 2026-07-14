@@ -146,8 +146,8 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
     case 'reveal':
       return {
         eyebrow: 'Reveal',
-        title: 'Press & hold the image',
-        body: 'See how this place looked centuries ago — press and hold anywhere on the photo. Your narration keeps playing while you explore.',
+        title: 'Hold to unlock history',
+        body: 'See how this place looked centuries ago — hold anywhere on the photo. History unlocks beneath your finger while narration keeps playing.',
       }
     default:
       return null

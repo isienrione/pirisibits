@@ -19,6 +19,7 @@ create table if not exists public.purchases (
   order_id text not null unique,
   host text,
   ab_variant integer,
+  product_id text,
   access_token uuid not null default gen_random_uuid(),
   created_at timestamptz not null default now()
 );

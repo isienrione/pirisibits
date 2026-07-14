@@ -12,8 +12,8 @@ describe('ThresholdRevealInvite', () => {
     render(<ThresholdRevealInvite thenLabel="ANCIENT ROME" />)
     expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()
     expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
-    expect(screen.getByText(/press and hold anywhere on the image/i)).toBeInTheDocument()
-    expect(screen.getByText(/press & hold to cross the threshold/i)).toBeInTheDocument()
+    expect(screen.getByText(/hold anywhere on the image/i)).toBeInTheDocument()
+    expect(screen.getByText(/hold to unlock history/i)).toBeInTheDocument()
   })
 
   it('shows a close control in interactive mode', () => {

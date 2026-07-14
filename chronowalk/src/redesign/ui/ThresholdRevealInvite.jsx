@@ -79,12 +79,12 @@ export default function ThresholdRevealInvite({
         </h3>
 
         <p className="cw-reveal-invite__body" style={{ fontFamily: F.body }}>
-          Press and hold anywhere on the image above. The city reveals itself — your narration keeps playing.
+          Hold anywhere on the image. History unlocks beneath your finger — narration keeps playing.
         </p>
 
         <p className="cw-reveal-invite__hint" style={{ fontFamily: F.body }}>
           <span className="cw-reveal-invite__hint-pulse" aria-hidden />
-          Press &amp; hold to cross the threshold
+          Hold to unlock history
         </p>
       </div>
     </div>

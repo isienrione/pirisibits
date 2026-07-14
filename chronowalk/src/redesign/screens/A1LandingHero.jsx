@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Play, ChevronRight } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, ICON, S } from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { getRedesignHeroTrustStats } from '../../content/tourProductTruth.js'
-import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
+import { Vignette, BottomScrim, Eyebrow, Seam, PrimaryButton, GhostButton } from '../ui/index.js'
 
 const HERO_TRUST_STATS = getRedesignHeroTrustStats(loadRomeManifest())
 
@@ -127,7 +127,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               backgroundImage: `url(${colosseumNow})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transition: 'opacity 700ms ease-in-out',
+              transition: 'opacity var(--d-rise, 480ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))',
               opacity: demoState === 'now' ? 1 : 0,
             }}
           />
@@ -139,7 +139,7 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               filter: 'sepia(65%) contrast(0.82) brightness(0.75)',
-              transition: 'opacity 700ms ease-in-out',
+              transition: 'opacity var(--d-rise, 480ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1))',
               opacity: demoState === 'then' ? 1 : 0,
             }}
           />
@@ -161,47 +161,17 @@ export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPrev
           </div>
         </div>
 
-        <div style={{ padding: '0 24px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <button
-            type="button"
+        <div style={{ padding: `0 ${S.edge} ${S.l}`, display: 'flex', flexDirection: 'column', gap: S.m }}>
+          <PrimaryButton
             onClick={onPurchase}
-            style={{
-              width: '100%',
-              padding: '15px 20px',
-              background: T.ember,
-              color: T.obsidian,
-              borderRadius: 12,
-              fontFamily: F.body,
-              fontWeight: 600,
-              fontSize: 15,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              border: 'none',
-              cursor: 'pointer',
-            }}
+            color={T.gold}
+            textColor={T.obsidian}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
           >
             <span>Get ChronoWalk Rome — {priceLabel}</span>
-            <ChevronRight size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={onPreview}
-            style={{
-              width: '100%',
-              padding: '14px 20px',
-              border: '1.5px solid rgba(245,239,227,0.25)',
-              color: T.warmWhite,
-              borderRadius: 12,
-              fontFamily: F.body,
-              fontSize: 15,
-              background: 'rgba(11,11,13,0.35)',
-              cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            Try the free story
-          </button>
+            <ChevronRight size={ICON.md} strokeWidth={ICON.stroke} aria-hidden />
+          </PrimaryButton>
+          <GhostButton onClick={onPreview}>Try the free story</GhostButton>
         </div>
 
         <div

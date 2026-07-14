@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, S, R, TAP } from '../tokens.js'
+import { TextButton } from './TextButton.jsx'
+import { TYPE, displayTitleStyle } from '../typography.js'
 import {
   useAppPreferences,
   SETTINGS_PLAYBACK_SPEEDS,
@@ -28,7 +30,7 @@ function Row({ label, right }) {
         padding: '14px 0',
       }}
     >
-      <p style={{ margin: 0, fontSize: 17, color: T.ink, lineHeight: 1.3, fontFamily: F.body }}>{label}</p>
+      <p style={{ ...TYPE.body, color: T.ink }}>{label}</p>
       {right}
     </div>
   )
@@ -44,6 +46,7 @@ function Segmented({ options, value, onChange, formatLabel = (v) => String(v) })
             key={String(option)}
             type="button"
             onClick={() => onChange(option)}
+            className="cw-motion-pressable"
             style={{
               padding: '5px 10px',
               borderRadius: 6,
@@ -54,6 +57,7 @@ function Segmented({ options, value, onChange, formatLabel = (v) => String(v) })
               border: 'none',
               cursor: 'pointer',
               minWidth: 40,
+              minHeight: TAP.min,
             }}
           >
             {formatLabel(option)}
@@ -76,11 +80,11 @@ function Toggle({ on, onToggle, label }) {
         width: 44,
         height: 26,
         borderRadius: 13,
-        background: on ? '#5B5249' : `${T.muted}38`,
+        background: on ? `color-mix(in srgb, ${T.ink} 72%, ${T.muted})` : `${T.muted}38`,
         position: 'relative',
         border: 'none',
         cursor: 'pointer',
-        transition: 'background 250ms',
+        transition: 'background var(--d-feedback, 220ms) var(--ease-enter)',
         flexShrink: 0,
       }}
     >
@@ -94,7 +98,7 @@ function Toggle({ on, onToggle, label }) {
           borderRadius: 10,
           background: T.warmWhite,
           boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
-          transition: 'left 250ms',
+          transition: 'left var(--d-feedback, 220ms) var(--ease-exit)',
         }}
       />
     </button>
@@ -120,7 +124,7 @@ function ActionRow({ label, onClick, detail }) {
           textAlign: 'left',
         }}
       >
-        <span style={{ fontSize: 17, color: T.ink, fontFamily: F.body }}>{label}</span>
+        <span style={{ ...TYPE.body, color: T.ink }}>{label}</span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: T.muted, fontSize: 13, fontFamily: F.body }}>
           {detail ? <span>{detail}</span> : null}
           <ChevronRight size={16} />
@@ -189,15 +193,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
           right: 0,
           maxHeight: 'min(88dvh, 640px)',
           background: T.bone,
-          borderRadius: '24px 24px 0 0',
+          borderRadius: `${R.sheet} ${R.sheet} 0 0`,
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 -8px 40px rgba(11,11,13,0.28)',
-          animation: 'slideUp 320ms cubic-bezier(0.32,0.72,0,1)',
+          boxShadow: 'var(--shadow-sheet)',
+          animation: 'cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both',
           fontFamily: F.body,
         }}
       >
-        <div style={{ paddingTop: 12, paddingBottom: 8, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ paddingTop: S.m, paddingBottom: S.s, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: `${T.muted}45` }} />
         </div>
 
@@ -206,21 +210,26 @@ export default function SettingsBottomSheet({ open, onClose }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 24px 8px',
+            padding: `0 ${S.edge} ${S.s}`,
             flexShrink: 0,
+            gap: S.m,
           }}
         >
-          <h2 style={{ margin: 0, fontFamily: F.display, fontSize: 22, color: T.ink, fontWeight: 300 }}>Settings</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{ fontSize: 13, color: T.muted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: F.body }}
-          >
+          <h2 style={{ ...displayTitleStyle(22), color: T.ink, paddingTop: 0 }}>Settings</h2>
+          <TextButton onClick={onClose} style={{ ...TYPE.meta, fontWeight: 500, color: T.ink }}>
             Done
-          </button>
+          </TextButton>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: '0 24px' }}>
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            scrollbarWidth: 'none',
+            padding: `0 ${S.edge}`,
+            paddingBottom: `max(${S.l}, env(safe-area-inset-bottom))`,
+          }}
+        >
           <Hairline />
           <Row
             label="Audio speed"
@@ -282,7 +291,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
 
           <p
             style={{
-              margin: '20px 0 24px',
+              margin: '20px 0 0',
               fontSize: 12,
               color: `${T.muted}cc`,
               textAlign: 'center',

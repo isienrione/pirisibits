@@ -176,5 +176,12 @@ export function arrivalCopy(waypoint) {
 }
 
 export function signatureLine(waypoint) {
-  return waypoint?.sigLine ?? waypoint?.reflection ?? 'The city keeps its place for you.'
+  // Keep the public name; memory-book quote resolution lives in journalMemory.
+  // Prefer authored lines, then arrival beat (most waypoints have this).
+  if (waypoint?.sigLine?.trim()) return waypoint.sigLine.trim()
+  if (waypoint?.reflection?.trim()) return waypoint.reflection.trim()
+  if (waypoint?.arrivalLine) {
+    return String(waypoint.arrivalLine).replace(/\s*\/\s*/g, ' ').replace(/\s+/g, ' ').trim()
+  }
+  return 'The city keeps its place for you.'
 }

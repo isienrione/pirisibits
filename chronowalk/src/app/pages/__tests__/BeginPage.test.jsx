@@ -10,6 +10,7 @@ function renderBeginPage() {
     <MemoryRouter initialEntries={['/begin']}>
       <Routes>
         <Route path="/begin" element={<BeginPage />} />
+        <Route path="/purchase" element={<div>Purchase route</div>} />
         <Route path="/landing" element={<div>Landing route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
@@ -20,14 +21,15 @@ function renderBeginPage() {
 describe('BeginPage', () => {
   beforeEach(() => {
     localStorage.clear()
+    sessionStorage.clear()
     resetJourney()
     transitionJourney(JOURNEY_STATES.IDLE)
   })
 
-  it('redirects visitors without access to landing', () => {
+  it('redirects visitors without access to purchase', () => {
     renderBeginPage()
 
-    expect(screen.getByText('Landing route')).toBeInTheDocument()
+    expect(screen.getByText('Purchase route')).toBeInTheDocument()
   })
 
   it('starts at pace selection for first-tour purchasers', () => {
@@ -62,7 +64,8 @@ describe('BeginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /begin — roma antica/i }))
 
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
-    expect(screen.getByText(/enable location for gps guidance/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /turn on location/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /enable location & begin/i })).toBeInTheDocument()
   })
 
   it('shows resume prompt for purchasers with an in-progress journey', () => {
@@ -75,6 +78,6 @@ describe('BeginPage', () => {
     renderBeginPage()
 
     expect(screen.getByRole('heading', { name: /rome kept your place/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /continue your walk/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue walking/i })).toBeInTheDocument()
   })
 })

@@ -1,9 +1,8 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { env } from '../config/env.js'
 import ConsentBar from '../components/ConsentBar'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
-import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
@@ -15,12 +14,23 @@ import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { hasAccess } from '../lib/config.js'
-import { isImmersiveJourneyState, isResumableJourney } from '../state/journey.js'
+import { isImmersiveJourneyState, isResumableJourney, JOURNEY_STATES } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
-import { JourneyThresholdLayer } from './pages/ThresholdPage'
+import RequireAccess from './RequireAccess.jsx'
+
+const JourneyThresholdLayer = lazyWithRecovery(
+  () =>
+    import('./pages/ThresholdPage.jsx').then((m) => ({
+      default: m.JourneyThresholdLayer,
+    })),
+  'threshold',
+)
+
+const PwaUpdatePrompt = lazy(() => import('../components/PwaUpdatePrompt.jsx'))
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
+  LazyPurchaseFlowPage,
   LazyBeginPage,
   LazyCreditsPage,
   LazyJournalPage,
@@ -92,27 +102,117 @@ function AppRoutes() {
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
-        <Route path="/setup" element={<LazySetupPage />} />
+        <Route
+          path="/setup"
+          element={
+            <RequireAccess>
+              <LazySetupPage />
+            </RequireAccess>
+          }
+        />
         <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
-        <Route path="/no-ticket" element={<LazyNoTicketPage />} />
-        <Route path="/welcome" element={<LazyWelcomePage />} />
-        <Route path="/begin" element={<LazyBeginPage />} />
-        <Route path="/tour" element={<LazyTourPage />} />
-        <Route path="/journey" element={<LazyJourneyPage />} />
-        <Route path="/map" element={<LazyMapPage />} />
-        <Route path="/stops" element={<LazyStopsPage />} />
-        <Route path="/journal" element={<LazyJournalPage />} />
-        <Route path="/journal/:waypointId" element={<LazyMemoryDetailPage />} />
-        <Route path="/letter" element={<LazyLetterPage />} />
-        <Route path="/settings" element={<LazySettingsPage />} />
+        <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
+        <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
+        <Route
+          path="/no-ticket"
+          element={
+            <RequireAccess>
+              <LazyNoTicketPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/welcome"
+          element={
+            <RequireAccess>
+              <LazyWelcomePage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/begin"
+          element={
+            <RequireAccess>
+              <LazyBeginPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/tour"
+          element={
+            <RequireAccess>
+              <LazyTourPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journey"
+          element={
+            <RequireAccess>
+              <LazyJourneyPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/map"
+          element={
+            <RequireAccess>
+              <LazyMapPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/stops"
+          element={
+            <RequireAccess>
+              <LazyStopsPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journal"
+          element={
+            <RequireAccess>
+              <LazyJournalPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journal/:waypointId"
+          element={
+            <RequireAccess>
+              <LazyMemoryDetailPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/letter"
+          element={
+            <RequireAccess>
+              <LazyLetterPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <RequireAccess>
+              <LazySettingsPage />
+            </RequireAccess>
+          }
+        />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <JourneyThresholdLayer />
+      <Suspense fallback={null}>
+        <JourneyThresholdLayer />
+      </Suspense>
       <ShellTabBar />
       <FlowEscapeButton />
-      <PwaUpdatePrompt />
+      <Suspense fallback={null}>
+        <PwaUpdatePrompt />
+      </Suspense>
       <TourDebugBootstrap />
       {import.meta.env.DEV && LazyUxRegressionTester ? (
         <Suspense fallback={null}>
@@ -124,6 +224,21 @@ function AppRoutes() {
   )
 }
 
+function PrefetchThresholdWhenNear() {
+  const { state } = useV2Journey()
+  useEffect(() => {
+    if (
+      state === JOURNEY_STATES.ARRIVED ||
+      state === JOURNEY_STATES.STORY ||
+      state === JOURNEY_STATES.THRESHOLD ||
+      state === JOURNEY_STATES.WALKING
+    ) {
+      void import('./pages/ThresholdPage.jsx')
+    }
+  }, [state])
+  return null
+}
+
 function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
@@ -132,6 +247,8 @@ function AppRouter() {
 
   useEffect(() => {
     let cancelled = false
+    let idleId = null
+    let timeoutId = null
 
     async function restoreOfflineAudio() {
       const { readRomeOfflineStatus, OFFLINE_AUDIO_STATUS, verifyRomeAudioPackage, hydrateRomeAudioCache } =
@@ -154,10 +271,22 @@ function AppRouter() {
       await hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
     }
 
-    void restoreOfflineAudio()
+    const schedule = () => {
+      void restoreOfflineAudio()
+    }
+
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(schedule, { timeout: 4000 })
+    } else {
+      timeoutId = window.setTimeout(schedule, 1200)
+    }
 
     return () => {
       cancelled = true
+      if (idleId != null && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId != null) window.clearTimeout(timeoutId)
     }
   }, [])
 
@@ -166,6 +295,7 @@ function AppRouter() {
       <BrowserRouter>
         <SettingsSheetProvider>
           <FamilyWalkProvider>
+            <PrefetchThresholdWhenNear />
             <AppRoutes />
           </FamilyWalkProvider>
         </SettingsSheetProvider>

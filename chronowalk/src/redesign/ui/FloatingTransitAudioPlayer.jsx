@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, memo } from 'react'
 import { Pause, Play } from 'lucide-react'
 import { T } from '../tokens.js'
 import { formatRemainingShort } from '../lib/walkingCompanionFormat.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 
 const BAR_HEIGHTS = [0.22, 0.38, 0.52, 0.72, 1, 0.82, 0.58, 0.34]
 
@@ -26,20 +27,28 @@ function TinyWaveform({ playing, progress }) {
  * Mini floating companion for transit narration — Apple Maps / Music mini-player feel.
  * Tap the card (not play) to open the full narration player.
  */
-export default function FloatingTransitAudioPlayer({
+function FloatingTransitAudioPlayer({
   visible = false,
   title = 'Approaching the Colosseum',
   narrationPlaying = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   accent = T.actI,
   onToggle,
   onOpenFullPlayer,
   testId = 'transit-audio-panel',
   className = '',
+  liveEngineProgress = true,
 }) {
   const [mounted, setMounted] = useState(visible)
   const [present, setPresent] = useState(visible)
+  const engineProgress = useAudioProgress()
+  const currentTime =
+    liveEngineProgress && (engineProgress.duration > 0 || engineProgress.playing)
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration =
+    liveEngineProgress && engineProgress.duration > 0 ? engineProgress.duration : durationProp
 
   useEffect(() => {
     if (visible) {
@@ -77,7 +86,7 @@ export default function FloatingTransitAudioPlayer({
           {narrationPlaying ? (
             <Pause size={16} fill={T.obsidian} color={T.obsidian} />
           ) : (
-            <Play size={16} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 1 }} />
+            <Play size={16} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
           )}
         </button>
 
@@ -105,3 +114,5 @@ export default function FloatingTransitAudioPlayer({
     </div>
   )
 }
+
+export default memo(FloatingTransitAudioPlayer)

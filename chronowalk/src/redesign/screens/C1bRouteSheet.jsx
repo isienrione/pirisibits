@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, R } from "../tokens.js";
 import { colosseumNow, capitolineNow, severusNow, trajansNow, archTitusNow, palatineNow, templeSaturnNow, viaSacraNow } from "../images.js";
-import { Eyebrow } from '../ui/index.js';
+import { Eyebrow, CinematicImage } from '../ui/index.js';
 import { photoForWaypoint } from '../lib/waypointPresentation.js';
 
 const DEFAULT_GROUPS = [
@@ -65,10 +65,10 @@ export function C1bRouteSheet({
         position: "absolute", bottom: 0, left: 0, right: 0,
         height: "84%",
         background: T.bone,
-        borderRadius: "20px 20px 0 0",
+        borderRadius: `${R.sheet} ${R.sheet} 0 0`,
         display: "flex", flexDirection: "column",
-        animation: "slideUp 320ms cubic-bezier(0.32,0.72,0,1)",
-        boxShadow: "0 -8px 40px rgba(11,11,13,0.3)",
+        animation: "cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both",
+        boxShadow: "var(--shadow-sheet, 0 -8px 40px rgba(11,11,13,0.3))",
       }}>
         <div style={{ paddingTop: 12, paddingBottom: 6, display: "flex", justifyContent: "center", flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: `${T.muted}45` }} />
@@ -119,9 +119,16 @@ export function C1bRouteSheet({
                       </span>
 
                       {stop.photoSrc ? (
-                        <img
-                          src={stop.photoSrc} alt=""
-                          style={{ width: 48, height: 48, borderRadius: 8, objectFit: "cover", flexShrink: 0 }}
+                        <CinematicImage
+                          src={stop.photoSrc}
+                          alt=""
+                          width={48}
+                          height={48}
+                          radius="sm"
+                          grade="film"
+                          overlay="soft"
+                          position="upper"
+                          shadow="still"
                         />
                       ) : null}
 
@@ -151,14 +158,19 @@ export function C1bRouteSheet({
                     {isExpanded && (
                       <div style={{ margin: "2px 20px 12px", borderRadius: 14, overflow: "hidden", background: T.warmWhite, boxShadow: "0 2px 12px rgba(33,28,21,0.08)" }}>
                         {stop.photoSrc ? (
-                          <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%", overflow: "hidden" }}>
-                            <img
-                              src={stop.photoSrc} alt=""
-                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                          <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
+                            <CinematicImage
+                              src={stop.photoSrc}
+                              alt=""
+                              aspect="wide"
+                              radius="none"
+                              grade="film"
+                              overlay="bottom"
+                              position="landmark"
+                              shadow="none"
                             />
                             <div style={{
-                              position: "absolute", bottom: 0, left: 0, right: 0,
-                              background: "linear-gradient(to top, rgba(11,11,13,0.7) 0%, transparent 100%)",
+                              position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 3,
                               padding: "20px 14px 12px",
                             }}>
                               <p style={{ fontFamily: F.display, fontSize: 18, color: T.warmWhite, fontWeight: 300 }}>{stop.name}</p>

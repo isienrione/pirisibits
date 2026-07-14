@@ -1,5 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createAudioEngine } from '../audio/AudioEngine.js'
+import {
+  getAudioProgressSnapshot,
+  publishAudioProgress,
+  resetAudioProgressStore,
+  subscribeAudioProgress,
+} from '../audio/audioProgressStore.js'
 import { useV2Journey } from './useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import {
@@ -7,6 +13,15 @@ import {
   readAudioSpeed,
   writeAudioSpeed,
 } from '../utils/appPreferences.js'
+
+/** Subscribe to scrubber progress without coupling unrelated engine consumers. */
+export function useAudioProgress() {
+  return useSyncExternalStore(
+    subscribeAudioProgress,
+    getAudioProgressSnapshot,
+    getAudioProgressSnapshot,
+  )
+}
 
 export function useAudioEngine(manifest) {
   const engineRef = useRef(null)
@@ -16,16 +31,8 @@ export function useAudioEngine(manifest) {
   const [playbackRate, setPlaybackRateState] = useState(() => readAudioSpeed())
   // Bumps once each time a narration plan reaches its natural end.
   const [narrationEnded, setNarrationEnded] = useState({ nonce: 0, kind: null, id: null })
-  const [progress, setProgress] = useState({
-    currentTime: 0,
-    duration: 0,
-    chapterIndex: 0,
-    chapterCount: 0,
-    itemIndex: 0,
-    itemCount: 0,
-    playing: false,
-    paused: false,
-  })
+  // Coarse progress for JourneyShell story-end / dock logic — not every scrubber tick.
+  const [coarseProgress, setCoarseProgress] = useState(() => getAudioProgressSnapshot())
   const { state, context } = useV2Journey()
 
   useEffect(() => {
@@ -34,7 +41,9 @@ export function useAudioEngine(manifest) {
     const engine = createAudioEngine(manifest, { path: context.path })
     engine.onNarrationChange = setNarrationPlaying
     engine.onInterruptionChange = setPlaybackInterrupted
-    engine.onProgress = setProgress
+    engine.onProgress = (next) => {
+      publishAudioProgress(next)
+    }
     engine.onNarrationEnded = (ended) =>
       setNarrationEnded((prev) => ({
         nonce: prev.nonce + 1,
@@ -60,18 +69,45 @@ export function useAudioEngine(manifest) {
       setReady(false)
       setNarrationPlaying(false)
       setPlaybackInterrupted(false)
+      resetAudioProgressStore()
+      setCoarseProgress(getAudioProgressSnapshot())
     }
   }, [manifest])
 
-  // Drive a smooth scrubber/timer while narration is playing.
+  // Publish fine-grained scrubber ticks to the store (deduped).
   useEffect(() => {
     if (!narrationPlaying) return undefined
     const id = setInterval(() => {
       const engine = engineRef.current
-      if (engine) setProgress(engine.getNarrationProgress())
+      if (engine) publishAudioProgress(engine.getNarrationProgress())
     }, 200)
     return () => clearInterval(id)
   }, [narrationPlaying])
+
+  // Refresh JourneyShell at 1Hz — enough for end-of-story / dock fields, far fewer re-renders.
+  useEffect(() => {
+    const pull = () => {
+      const engine = engineRef.current
+      const next = engine ? engine.getNarrationProgress() : getAudioProgressSnapshot()
+      publishAudioProgress(next)
+      setCoarseProgress((prev) => {
+        if (
+          prev.duration === next.duration &&
+          prev.itemCount === next.itemCount &&
+          prev.playing === next.playing &&
+          prev.paused === next.paused &&
+          Math.floor(prev.currentTime) === Math.floor(next.currentTime) &&
+          prev.chapterIndex === next.chapterIndex
+        ) {
+          return prev
+        }
+        return next
+      })
+    }
+    pull()
+    const id = setInterval(pull, narrationPlaying ? 1000 : 2500)
+    return () => clearInterval(id)
+  }, [narrationPlaying, manifest])
 
   useEffect(() => {
     const engine = engineRef.current
@@ -184,11 +220,16 @@ export function useAudioEngine(manifest) {
     engineRef.current?.setPath(path)
   }, [])
 
+  const setZone = useCallback(async (zone) => {
+    await engineRef.current?.setZone(zone)
+  }, [])
+
   return {
     ready,
     narrationPlaying,
     playbackInterrupted,
-    progress,
+    /** Coarse (≤1Hz) snapshot for shell logic; use useAudioProgress() for scrubbers. */
+    progress: coarseProgress,
     playbackRate,
     setPlaybackRate,
     narrationEnded,
@@ -200,6 +241,7 @@ export function useAudioEngine(manifest) {
     playArrivalChime,
     playCompletionChime,
     playUiCue,
+    setZone,
     endTransit,
     stopNarration,
     resumePlayback,

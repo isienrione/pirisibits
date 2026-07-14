@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F, S, TAP, ICON, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette, Eyebrow } from '../ui/index.js'
+import { Vignette, Eyebrow, PrimaryButton, GoldSeam } from '../ui/index.js'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
 import ThresholdHoldHint from '../ui/ThresholdHoldHint.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import {
   hasSeenThresholdRevealTutorial,
   markThresholdRevealTutorialSeen,
@@ -41,8 +42,8 @@ export default function C6ImmersivePlayer({
   transcript = '',
   transcriptAvailable = false,
   narrationPlaying = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   playbackRate = 1,
   speeds = DEFAULT_SPEEDS,
   onCycleSpeed,
@@ -75,6 +76,12 @@ export default function C6ImmersivePlayer({
 }) {
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
+  const engineProgress = useAudioProgress()
+  const currentTime =
+    engineProgress.duration > 0 || engineProgress.playing
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration = engineProgress.duration > 0 ? engineProgress.duration : durationProp
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
   const [dragProgress, setDragProgress] = useState(null)
   const [showAudioNotice, setShowAudioNotice] = useState(false)
@@ -320,7 +327,21 @@ export default function C6ImmersivePlayer({
         onClick={onSkipBack}
         disabled={!audioAvailable}
         aria-label="Back 15 seconds"
-        style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
+        className="cw-motion-pressable"
+        style={{
+          color: T.muted,
+          background: 'none',
+          border: 'none',
+          cursor: audioAvailable ? 'pointer' : 'default',
+          lineHeight: 0,
+          opacity: audioAvailable ? 1 : 0.35,
+          position: 'relative',
+          minWidth: TAP.min,
+          minHeight: TAP.min,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
         <SkipBack size={compact ? 22 : 24} />
         <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
@@ -330,6 +351,7 @@ export default function C6ImmersivePlayer({
         onClick={onTogglePlay}
         disabled={!audioAvailable}
         aria-label={narrationPlaying ? 'Pause' : 'Play'}
+        className="cw-motion-pressable"
         style={{
           width: compact ? 52 : 60,
           height: compact ? 52 : 60,
@@ -347,7 +369,7 @@ export default function C6ImmersivePlayer({
         {narrationPlaying ? (
           <Pause size={compact ? 22 : 24} fill={T.obsidian} color={T.obsidian} />
         ) : (
-          <Play size={compact ? 22 : 24} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 3 }} />
+          <Play size={compact ? 22 : 24} fill={T.obsidian} color={T.obsidian} style={{ marginLeft: 2 }} />
         )}
       </button>
       <button
@@ -355,7 +377,21 @@ export default function C6ImmersivePlayer({
         onClick={onSkipForward}
         disabled={!audioAvailable}
         aria-label="Forward 15 seconds"
-        style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
+        className="cw-motion-pressable"
+        style={{
+          color: T.muted,
+          background: 'none',
+          border: 'none',
+          cursor: audioAvailable ? 'pointer' : 'default',
+          lineHeight: 0,
+          opacity: audioAvailable ? 1 : 0.35,
+          position: 'relative',
+          minWidth: TAP.min,
+          minHeight: TAP.min,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
       >
         <SkipForward size={compact ? 22 : 24} />
         <span style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: T.muted, pointerEvents: 'none' }}>15</span>
@@ -372,14 +408,8 @@ export default function C6ImmersivePlayer({
   )
 
   const chapterMeta = (
-    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
+    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: `0 0 ${S.m}`, flexShrink: 0 }}>
       Chapter {chapterIndex + 1} of {chapterCount}
-      {chapterTitle ? (
-        <>
-          {' '}
-          · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
-        </>
-      ) : null}
     </p>
   )
 
@@ -473,8 +503,8 @@ export default function C6ImmersivePlayer({
           style={{
             position: 'absolute',
             top: 'max(12px, env(safe-area-inset-top))',
-            left: 16,
-            right: 16,
+            left: S.edge,
+            right: S.edge,
             zIndex: 12,
             display: 'flex',
             alignItems: 'center',
@@ -485,6 +515,7 @@ export default function C6ImmersivePlayer({
           <button
             type="button"
             onClick={onBack}
+            className="cw-motion-pressable"
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -494,14 +525,15 @@ export default function C6ImmersivePlayer({
               backdropFilter: 'blur(8px)',
               border: 'none',
               borderRadius: 999,
-              padding: '6px 10px 6px 6px',
+              minHeight: TAP.min,
+              padding: '6px 12px 6px 8px',
               cursor: 'pointer',
               fontFamily: F.body,
               fontSize: 13,
               pointerEvents: 'auto',
             }}
           >
-            <ChevronLeft size={17} /> Back
+            <ChevronLeft size={ICON.md} strokeWidth={ICON.stroke} /> Back
           </button>
           {hasReconstruction ? (
             <button
@@ -509,10 +541,11 @@ export default function C6ImmersivePlayer({
               data-testid="threshold-help"
               aria-label="How to cross the threshold"
               onClick={handleThresholdHelp}
+              className="cw-motion-pressable"
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: 14,
+                width: TAP.minPx,
+                height: TAP.minPx,
+                borderRadius: TAP.minPx / 2,
                 border: `1px solid rgba(245,240,232,0.35)`,
                 background: 'rgba(11,11,13,0.55)',
                 backdropFilter: 'blur(8px)',
@@ -542,7 +575,7 @@ export default function C6ImmersivePlayer({
               color: T.warmWhite,
               fontWeight: 300,
               lineHeight: 1.05,
-              margin: '8px 0 4px',
+              margin: `${S.s} 0 ${S.s}`,
             }}
           >
             {title}
@@ -601,8 +634,8 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           flexDirection: 'column',
           padding: showContinuity
-            ? '8px 24px 10px'
-            : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+            ? `${S.m} ${S.edge} ${S.m}`
+            : `${S.m} ${S.edge} max(${S.m}, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
         {showContinuity ? (
@@ -617,7 +650,7 @@ export default function C6ImmersivePlayer({
             {audioPlayerBlock(false)}
 
             {showAudioNotice ? (
-              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+              <p style={{ margin: `0 0 ${S.m}`, fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
                 {import.meta.env.DEV
                   ? 'Narration audio is unavailable in this development build.'
                   : 'Narration is preparing — check your connection.'}
@@ -639,27 +672,18 @@ export default function C6ImmersivePlayer({
 
       {showContinuity ? (
         <div className="cw-waypoint-immersive__continuity">
-          <button
-            type="button"
+          <div style={{ margin: '0 auto 16px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <GoldSeam moment="chapterTransition" key={`chapter-seam-${chapterIndex}`} />
+          </div>
+          <PrimaryButton
             data-testid="story-continue"
             className="cw-wc-pressable"
+            color={T.terracotta}
+            glow={false}
             onClick={onStoryComplete}
-            style={{
-              width: '100%',
-              padding: '14px',
-              borderRadius: 12,
-              border: 'none',
-              background: T.terracotta,
-              color: T.obsidian,
-              fontFamily: F.body,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
-            }}
           >
             {continuityLabel}
-          </button>
+          </PrimaryButton>
         </div>
       ) : null}
     </div>

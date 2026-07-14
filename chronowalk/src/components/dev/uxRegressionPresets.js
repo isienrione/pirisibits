@@ -43,6 +43,7 @@ export const UX_ROUTE_TARGETS = [
   { id: 'landing', label: 'Landing', path: '/landing' },
   { id: 'preview', label: 'Preview', path: '/preview' },
   { id: 'access', label: 'Access', path: '/access' },
+  { id: 'purchase', label: 'Purchase', path: '/purchase?tier=rome-complete' },
   { id: 'setup', label: 'Setup', path: '/setup' },
   { id: 'begin', label: 'Begin', path: '/begin' },
   { id: 'tour', label: 'My Tour', path: '/tour' },

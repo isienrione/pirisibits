@@ -1,4 +1,5 @@
-import { T, F } from '../tokens.js'
+import { T } from '../tokens.js'
+import { TYPE } from '../typography.js'
 
 /** Three-tab EXPLORER bar — Journey · Map · Journal */
 export function TabBar({ active = 'JOURNEY', onChange }) {
@@ -27,9 +28,7 @@ export function TabBar({ active = 'JOURNEY', onChange }) {
             alignItems: 'center',
             gap: 4,
             paddingTop: 8,
-            fontFamily: F.body,
-            fontSize: 10,
-            letterSpacing: '0.12em',
+            ...TYPE.tab,
             color: active === tab ? T.actI : T.muted,
             background: 'none',
             border: 'none',

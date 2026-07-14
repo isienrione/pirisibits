@@ -13,6 +13,13 @@ import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
+
+  /** Pause decorative CSS when the tab is hidden — no visual change when visible. */
+  const syncHiddenFlag = () => {
+    document.documentElement.dataset.cwHidden = document.hidden ? 'true' : 'false'
+  }
+  syncHiddenFlag()
+  document.addEventListener('visibilitychange', syncHiddenFlag)
 }
 
 createRoot(document.getElementById('root')).render(

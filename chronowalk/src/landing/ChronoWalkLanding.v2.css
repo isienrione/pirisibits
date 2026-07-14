@@ -97,7 +97,7 @@
 }
 
 .cw-v2-section__lead {
-  margin: 1.5rem 0 0;
+  margin: 2.5rem 0 0;
   font-size: clamp(1rem, 2.2vw, 1.12rem);
   line-height: 1.6;
   text-wrap: pretty;
@@ -107,7 +107,7 @@
 }
 
 .cw-v2-section {
-  padding-block: 6rem;
+  padding-block: 7rem;
   background: var(--v2-obsidian);
 }
 
@@ -1444,7 +1444,7 @@
 
 .cw-v2-pricing__grid {
   display: grid;
-  gap: 2rem;
+  gap: 2.5rem;
   margin-top: 4rem;
   align-items: start;
 }
@@ -1454,8 +1454,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 2rem;
-  border-radius: 1.5rem;
+  padding: 2.5rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--v2-border);
   background: var(--v2-raised);
   --tier-accent: var(--gold);
@@ -1541,7 +1541,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 .cw-v2-pricing-card__price {
@@ -1560,8 +1560,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.65rem;
-  margin: 1rem 0 0;
-  padding: 0.85rem 0.75rem;
+  margin: 1.5rem 0 0;
+  padding: 1rem 0.85rem;
   border-radius: 0.65rem;
   background: var(--v2-obsidian);
   border: 1px solid color-mix(in srgb, var(--tier-accent) 30%, var(--v2-border));
@@ -1592,7 +1592,7 @@
 }
 
 .cw-v2-pricing-card__description {
-  margin: 1rem 0 0;
+  margin: 1.5rem 0 0;
   line-height: 1.6;
   color: var(--v2-muted);
 }
@@ -1612,7 +1612,7 @@
 }
 
 .cw-v2-tier-map {
-  margin: 1.25rem 0 0;
+  margin: 1.5rem 0 0;
 }
 
 .cw-v2-tier-map__frame {
@@ -1910,7 +1910,7 @@
   }
 
   .cw-v2-section {
-    padding-block: 3.5rem;
+    padding-block: 5rem;
   }
 
   .cw-v2-section:first-of-type {
@@ -1937,7 +1937,7 @@
   }
 
   .cw-v2-section__lead {
-    margin-top: 0.85rem;
+    margin-top: 1.5rem;
     font-size: 0.94rem;
     line-height: 1.55;
   }
@@ -2109,7 +2109,7 @@
   }
 
   .cw-v2-pricing-card {
-    padding: 1.35rem 1.15rem;
+    padding: 1.75rem 1.5rem;
     border-radius: 1.15rem;
   }
 

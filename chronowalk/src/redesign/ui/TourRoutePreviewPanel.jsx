@@ -45,12 +45,10 @@ export default function TourRoutePreviewPanel({
   const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
 
   const headerEyebrow = eyebrow ?? cityLabel.toUpperCase()
-  const headerTitle =
-    title ??
-    (stopCount > 0 ? `${stopCount} stops · your route` : 'Your route')
+  const headerTitle = title ?? 'Your route'
   const headerSubtitle =
-    subtitle === undefined && firstStopTitle
-      ? `Starting at ${firstStopTitle} — scroll the map to see every stop in order.`
+    subtitle === undefined && firstStopTitle && stopCount > 0
+      ? `${stopCount} stops · starting at ${firstStopTitle}`
       : subtitle
 
   return (

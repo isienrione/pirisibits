@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Lock } from 'lucide-react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { T, F } from '../tokens.js'
-import { Eyebrow } from '../ui/index.js'
+import { Eyebrow, CinematicImage, PrimaryButton, TextButton } from '../ui/index.js'
+import { S } from '../tokens.js'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -133,17 +134,17 @@ export default function A2PreviewGhostTour({
                   />
 
                   {photo ? (
-                    <img
+                    <CinematicImage
                       src={photo}
                       alt=""
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
-                        objectFit: 'cover',
-                        flexShrink: 0,
-                        filter: 'brightness(0.78) saturate(0.55)',
-                      }}
+                      width={56}
+                      height={56}
+                      radius="md"
+                      grade="film"
+                      overlay="soft"
+                      position="upper"
+                      shadow="still"
+                      faded
                     />
                   ) : null}
 
@@ -245,17 +246,17 @@ export default function A2PreviewGhostTour({
                         >
                           <div style={{ width: 56, flexShrink: 0 }} />
                           {stopPhoto ? (
-                            <img
+                            <CinematicImage
                               src={stopPhoto}
                               alt=""
-                              style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: isLocked ? 'saturate(0.35) brightness(0.82)' : 'none',
-                              }}
+                              width={36}
+                              height={36}
+                              radius="sm"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={isLocked}
                             />
                           ) : null}
                           <div style={{ flex: 1, minWidth: 0 }}>
@@ -318,50 +319,22 @@ export default function A2PreviewGhostTour({
       <div
         style={{
           flexShrink: 0,
-          padding: '16px 24px max(16px, env(safe-area-inset-bottom))',
+          padding: `${S.m} ${S.edge} max(${S.m}, env(safe-area-inset-bottom))`,
           background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
           borderTop: `1px solid ${T.ink800}18`,
         }}
       >
-        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65, margin: '0 0 14px', fontStyle: 'italic' }}>
+        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65, margin: `0 0 ${S.m}`, fontStyle: 'italic' }}>
           That&apos;s one room of {productTruth?.publicPlaceCount ?? progress.total}. The rest of Rome is waiting
           outside.
         </p>
-        <button
-          type="button"
-          onClick={() => onUnlock?.()}
-          style={{
-            width: '100%',
-            padding: '15px',
-            background: T.terracotta,
-            color: T.obsidian,
-            borderRadius: 12,
-            fontFamily: F.body,
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
+        <PrimaryButton onClick={() => onUnlock?.()} color={T.terracotta} glow={false}>
           Unlock all {productTruth?.publicPlacesLabel ?? `${progress.total} places`}
-        </button>
+        </PrimaryButton>
         {onBack ? (
-          <button
-            type="button"
-            onClick={onBack}
-            style={{
-              width: '100%',
-              marginTop: 10,
-              padding: '12px',
-              background: 'transparent',
-              border: 'none',
-              color: T.muted,
-              cursor: 'pointer',
-              fontFamily: F.body,
-            }}
-          >
+          <TextButton onClick={onBack} style={{ width: '100%', marginTop: S.s, textAlign: 'center' }}>
             Back to Home
-          </button>
+          </TextButton>
         ) : null}
       </div>
     </div>

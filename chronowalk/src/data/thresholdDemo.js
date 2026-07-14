@@ -1,6 +1,12 @@
 import { getWaypoint, loadRomeManifest } from '../content/manifest.js'
 import { resolveThresholdAmbienceUrls } from '../content/thresholdAmbience.js'
 import { mediaUrl } from '../lib/mediaUrl'
+export {
+  HOLD_MS as THRESHOLD_HOLD_MS,
+  HOLD_COMMIT_MS as THRESHOLD_HOLD_COMMIT_MS,
+  HOLD_COMMIT_FINISH_MS as THRESHOLD_HOLD_COMMIT_FINISH_MS,
+  HOLD_RELEASE_MS as THRESHOLD_RELEASE_MS,
+} from '../interaction/pressHoldSpec.js'
 
 const manifest = loadRomeManifest()
 const pantheon = getWaypoint(manifest, 'w17')
@@ -19,8 +25,3 @@ export const THRESHOLD_DEMO_WAYPOINT = {
   nowAmbience: nowAmbienceUrl,
   thenSoundscape: thenSoundscapeUrl,
 }
-
-export const THRESHOLD_HOLD_MS = 2400
-export const THRESHOLD_HOLD_COMMIT_MS = 2000
-export const THRESHOLD_RELEASE_MS = 900
-export const THRESHOLD_HOLD_COMMIT_FINISH_MS = 400

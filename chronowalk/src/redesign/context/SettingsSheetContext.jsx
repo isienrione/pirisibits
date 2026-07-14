@@ -6,7 +6,8 @@ const SettingsBottomSheet = lazyWithRecovery(
   'settings sheet',
 )
 
-const SettingsSheetContext = createContext(null)
+const SettingsSheetActionsContext = createContext(null)
+const SettingsSheetStateContext = createContext(null)
 
 export function SettingsSheetProvider({ children }) {
   const [open, setOpen] = useState(false)
@@ -14,31 +15,56 @@ export function SettingsSheetProvider({ children }) {
   const openSettings = useCallback(() => setOpen(true), [])
   const closeSettings = useCallback(() => setOpen(false), [])
 
-  const value = useMemo(
+  const actions = useMemo(
     () => ({
-      isOpen: open,
       openSettings,
       closeSettings,
     }),
-    [closeSettings, open, openSettings],
+    [closeSettings, openSettings],
   )
 
+  const state = useMemo(() => ({ isOpen: open }), [open])
+
   return (
-    <SettingsSheetContext.Provider value={value}>
-      {children}
-      {open ? (
-        <Suspense fallback={null}>
-          <SettingsBottomSheet open={open} onClose={closeSettings} />
-        </Suspense>
-      ) : null}
-    </SettingsSheetContext.Provider>
+    <SettingsSheetActionsContext.Provider value={actions}>
+      <SettingsSheetStateContext.Provider value={state}>
+        {children}
+        {open ? (
+          <Suspense fallback={null}>
+            <SettingsBottomSheet open={open} onClose={closeSettings} />
+          </Suspense>
+        ) : null}
+      </SettingsSheetStateContext.Provider>
+    </SettingsSheetActionsContext.Provider>
   )
 }
 
-export function useSettingsSheet() {
-  const context = useContext(SettingsSheetContext)
+/** Stable actions — does not re-render when the sheet opens/closes. */
+export function useSettingsSheetActions() {
+  const context = useContext(SettingsSheetActionsContext)
   if (!context) {
-    throw new Error('useSettingsSheet must be used within SettingsSheetProvider')
+    throw new Error('useSettingsSheetActions must be used within SettingsSheetProvider')
   }
   return context
+}
+
+export function useSettingsSheetState() {
+  const context = useContext(SettingsSheetStateContext)
+  if (!context) {
+    throw new Error('useSettingsSheetState must be used within SettingsSheetProvider')
+  }
+  return context
+}
+
+/** Combined hook for existing call sites. Prefer actions-only when isOpen unused. */
+export function useSettingsSheet() {
+  const actions = useSettingsSheetActions()
+  const state = useSettingsSheetState()
+  return useMemo(
+    () => ({
+      ...actions,
+      ...state,
+    }),
+    [actions, state],
+  )
 }

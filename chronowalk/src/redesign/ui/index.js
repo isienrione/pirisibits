@@ -1,13 +1,36 @@
 export { Vignette } from './Vignette.jsx'
 export { BottomScrim } from './BottomScrim.jsx'
 export { Seam } from './Seam.jsx'
+export { GoldSeam, GOLD_SEAM_ACCENT } from './GoldSeam.jsx'
+export { GOLD_SEAM_MOMENTS, GOLD_SEAM_MOMENT_KEYS, resolveGoldSeamPreset } from './goldSeamPresets.js'
+export { PressHoldOrb } from './PressHoldOrb.jsx'
+export { default as ThresholdHoldHint } from './ThresholdHoldHint.jsx'
 export { Eyebrow } from './Eyebrow.jsx'
 export { PrimaryButton } from './PrimaryButton.jsx'
 export { GhostButton } from './GhostButton.jsx'
+export { SecondaryButton } from './SecondaryButton.jsx'
+export { TextButton } from './TextButton.jsx'
+export { IconButton } from './IconButton.jsx'
+export { BackLink } from './BackLink.jsx'
+export { ScreenHeader } from './ScreenHeader.jsx'
+export { SurfaceCard } from './SurfaceCard.jsx'
+export { StatusMark } from './StatusMark.jsx'
+export { SectionLabel } from './SectionLabel.jsx'
+export { BrandMark } from './BrandMark.jsx'
 export { TabBar } from './TabBar.jsx'
 export { Chip } from './Chip.jsx'
 export { PulseRings } from './PulseRings.jsx'
 export { PhotoHero } from './PhotoHero.jsx'
+export { CinematicImage } from './CinematicImage.jsx'
+export {
+  IMAGE_RADIUS,
+  IMAGE_ASPECT,
+  IMAGE_GRADE,
+  IMAGE_OVERLAY,
+  IMAGE_POSITION,
+  IMAGE_SHADOW,
+} from './cinematicImage.js'
+export { TYPE, TYPE_SPACE, displayTitleStyle } from '../typography.js'
 export { ActNode } from './ActNode.jsx'
 export { MiniActLine } from './MiniActLine.jsx'
 export { GrainSurface } from './GrainSurface.jsx'

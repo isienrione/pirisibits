@@ -21,6 +21,8 @@ Set in **Workers & Pages → your project → Settings → Environment variables
 | `VITE_MAPBOX_TOKEN` | `pk.…` | Required for map |
 | `VITE_MEDIA_BASE` | *(empty)* | Same as former Netlify production |
 | `VITE_BUILD_ID` | *(optional)* | Omit to use `CF_PAGES_COMMIT_SHA` automatically |
+| `VITE_LEMON_CHECKOUT_URL` | Lemon buy link | Required for live pay; without it CTAs use `/purchase` placeholders — see `docs/LEMON_SQUEEZY_TRANSACTIONS.md` |
+| `VITE_ALLOW_DEV_ACCESS` | `true` only on preview | Never on production chronowalk.com |
 
 `vite.config.js` resolves the deploy id in this order: `VITE_BUILD_ID` → `CF_PAGES_COMMIT_SHA` (first 7 chars) → `COMMIT_REF` → `GITHUB_SHA` → local `git rev-parse`. That id is baked into `__APP_BUILD_ID__` and the Workbox cache prefix (`chronowalk-<id>` in `/sw.js`).
 

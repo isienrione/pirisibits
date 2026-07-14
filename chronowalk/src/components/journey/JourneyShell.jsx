@@ -60,7 +60,7 @@ import {
 } from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
 import WalkSyncBar from '../../redesign/ui/WalkSyncBar.jsx'
-import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
+import { useSettingsSheetActions } from '../../redesign/context/SettingsSheetContext.jsx'
 import { getAppPreferences } from '../../hooks/useAppPreferences.js'
 import {
   accentForWaypoint,
@@ -95,7 +95,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const navigate = useNavigate()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -113,6 +113,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [syncStatus, setSyncStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
+  const [audioUnlockCeremony, setAudioUnlockCeremony] = useState(false)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
@@ -669,24 +670,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
 
-      if (variant === 'redesign') {
-        storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-        transition(JOURNEY_STATES.STORY)
-        void tryStartWaypointNarration(waypointId).then((started) => {
-          if (started) setAudioUnlocked(true)
-          if (started && audioUnlocked) void audioOpsRef.current.playArrivalChime()
-          else if (!started) armStoryAutoplayGesture(waypointId)
-        })
-      } else {
-        transition(JOURNEY_STATES.ARRIVED)
-        if (audioUnlocked) void audio.playArrivalChime()
+      // Redesign holds on ARRIVED for the ceremonial entrance, then the user
+      // chooses Begin listening → STORY. Legacy jumps straight to ARRIVED UI too.
+      transition(JOURNEY_STATES.ARRIVED)
+      if (variant !== 'redesign' && audioUnlocked) {
+        void audio.playArrivalChime()
       }
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
       if (source === 'manual' || source === 'transit_manual') {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
+    [audio, audioUnlocked, transition, variant]
   )
 
   const arriveAtWaypoint = useCallback(
@@ -814,8 +809,17 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const handleUnlockAudio = async () => {
     setBusy(true)
     const unlocked = await audio.unlock()
-    setAudioUnlocked(unlocked || audio.ready)
+    const ok = Boolean(unlocked || audio.ready)
     setBusy(false)
+    if (!ok) return
+    if (variant === 'redesign') {
+      setAudioUnlockCeremony(true)
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, 850)
+      })
+      setAudioUnlockCeremony(false)
+    }
+    setAudioUnlocked(true)
   }
 
   const handlePathChoice = async (path) => {
@@ -841,21 +845,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setBusy(false)
   }
 
-  // Redesign skips ARRIVED — recover stale sessions (e.g. map tab manual arrival).
-  const arrivedRecoveryRef = useRef(null)
-  useEffect(() => {
-    if (variant !== 'redesign') return undefined
-    if (state !== JOURNEY_STATES.ARRIVED || step?.type !== 'waypoint') {
-      if (state !== JOURNEY_STATES.ARRIVED) arrivedRecoveryRef.current = null
-      return undefined
-    }
-    if (arrivedRecoveryRef.current === step.id) return undefined
-    arrivedRecoveryRef.current = step.id
-    storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-    transition(JOURNEY_STATES.STORY)
-    void tryStartWaypointNarrationRef.current(step.id)
-    return undefined
-  }, [state, step?.id, step?.type, transition, variant])
+  const handleArrivalAtmosphere = useCallback(() => {
+    if (!audioUnlocked) return
+    void audio.playArrivalChime()
+    const zone = step?.record?.zone
+    if (zone) void audio.setZone(zone)
+  }, [audio, audioUnlocked, step?.record?.zone])
 
   const handleTranscript = () => {
     storyViewRef.current = 'transcript'
@@ -1020,11 +1015,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
       subtitle={dockEnded ? 'Just heard' : resolvedDockSnapshot.subtitle}
       narrationPlaying={audio.narrationPlaying}
       ended={dockEnded}
-      currentTime={
-        dockEnded
-          ? resolvedDockSnapshot.duration
-          : (audio.progress?.currentTime ?? 0)
-      }
+      /* Scrubber time comes from audioProgressStore inside the player — keep props stable. */
+      currentTime={dockEnded ? resolvedDockSnapshot.duration : 0}
       duration={dockEnded ? resolvedDockSnapshot.duration : (audio.progress?.duration ?? 0)}
       playbackRate={audio.playbackRate}
       onToggle={() => {
@@ -1139,10 +1131,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     )
   }
 
-  if (!audioUnlocked && !audio.ready) {
+  if ((!audioUnlocked && !audio.ready) || audioUnlockCeremony) {
     if (variant === 'redesign') {
       return withInterruptionBanner(
-        <RedesignJourneyWelcome onUnlock={handleUnlockAudio} busy={busy} />
+        <RedesignJourneyWelcome
+          onUnlock={handleUnlockAudio}
+          busy={busy || audioUnlockCeremony}
+          audioJustUnlocked={audioUnlockCeremony}
+        />,
       )
     }
     return withInterruptionBanner(
@@ -1218,7 +1214,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
         transcriptOverride: realTranscript ? stripDirectorCues(realTranscript) : null,
         audio: {
           narrationPlaying: audio.narrationPlaying,
-          currentTime: audio.progress?.currentTime ?? 0,
+          /* Scrubber follows audioProgressStore inside C6 — avoid 1Hz prop churn. */
+          currentTime: 0,
           duration: audio.progress?.duration ?? 0,
           playbackRate: audio.playbackRate,
           chapterCount: audio.progress?.chapterCount || Math.max(chapters.length, 1),
@@ -1339,6 +1336,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           description={signatureLine(step.record)}
           onBeginListening={handleBeginStory}
           onTranscript={handleTranscript}
+          onAtmosphereStart={handleArrivalAtmosphere}
           busy={busy}
         />
       )

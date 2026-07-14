@@ -59,8 +59,19 @@ export const fonts = {
 }
 
 export const motion = {
-  spring: 'var(--ease)',
+  spring: 'var(--ease-enter)',
   springDuration: '0.65s',
+  enter: 'var(--ease-enter)',
+  exit: 'var(--ease-exit)',
+  standard: 'var(--ease-standard)',
+  pressure: 'var(--ease-pressure)',
+  breathe: 'var(--ease-breathe)',
+  durationUi: 'var(--d-ui)',
+  durationNav: 'var(--d-trans)',
+  durationPanel: 'var(--d-panel)',
+  durationSheet: 'var(--d-sheet)',
+  durationReveal: 'var(--d-reveal)',
+  durationCeremony: 'var(--d-cinematic)',
 }
 
 export const shadows = {
