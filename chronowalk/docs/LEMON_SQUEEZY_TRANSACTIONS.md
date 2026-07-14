@@ -13,7 +13,9 @@ ChronoWalk is waiting on Lemon Squeezy store confirmation. The **buyer journey i
 
 While Lemon is pending, step 2 opens **`/purchase`** instead: calm instructions + tier summary.
 
-**Staging purchase (implemented now):** on local Vite (or preview with `VITE_ALLOW_DEV_ACCESS=true`), **/purchase → Complete staging purchase** mints a magic token, unlocks the phone, and opens `/access/confirmed?token=…` — the same unlock path live Lemon will use.
+**Paywall:** choosing a pack always opens **`/purchase`**. Setup, begin, tour, journey, map, stops, and journal are blocked until `cw_access` is granted. There is no free continue.
+
+**Dev unlock only:** `/purchase?tier=rome-complete&devUnlock=1` shows “simulate paid unlock” (local / `VITE_ALLOW_DEV_ACCESS`). Never the default traveler path.
 
 ## What to do when Lemon confirms
 
@@ -84,11 +86,11 @@ Wire your email provider in the TODO inside the function (Resend recommended). E
 
 ### 7. Staging without Lemon (works today)
 
-**Option A — full simulated transaction**
+**Option A — simulated paid unlock (QA only)**
 
 1. `npm run dev` (or set `VITE_ALLOW_DEV_ACCESS=true` on a preview)
-2. Open `/landing` → Begin Journey (or `/purchase?tier=rome-complete`)
-3. Tap **Complete staging purchase**
+2. Open `/purchase?tier=rome-complete&devUnlock=1`
+3. Tap **Dev only — simulate paid unlock**
 4. Land on `/access/confirmed` → **Begin setup** → unlocked Rome
 
 **Option B — shortcut token**

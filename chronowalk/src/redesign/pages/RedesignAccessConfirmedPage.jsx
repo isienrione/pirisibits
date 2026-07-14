@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access.js'
 import { grantAccess, hasAccess } from '../../lib/config.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
+import { clearPendingPurchaseTier } from '../../lib/pendingPurchase.js'
 import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import A3AccessConfirmed from '../screens/A3AccessConfirmed.jsx'
@@ -28,6 +29,7 @@ export default function RedesignAccessConfirmedPage() {
       if (cancelled) return
       if (result.ok) {
         grantAccess()
+        clearPendingPurchaseTier()
         track(TRACK_EVENTS.PURCHASE, { source: result.source ?? 'confirmed' })
         setReady(true)
         return

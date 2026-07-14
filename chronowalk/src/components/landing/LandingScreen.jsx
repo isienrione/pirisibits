@@ -4,7 +4,8 @@ import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { usePrice } from '../../hooks/usePrice'
-import { buildCheckoutUrl, getHost, getHostLabel } from '../../lib/host'
+import { getHostLabel } from '../../lib/host'
+import { rememberPendingPurchaseTier } from '../../lib/pendingPurchase'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
@@ -72,18 +73,12 @@ export default function LandingScreen() {
   const checkoutReady = Boolean(checkoutUrl)
 
   const handlePurchase = () => {
-    const url = buildCheckoutUrl(checkoutUrl, {
-      host: getHost(),
-      abVariantCents: cents,
-    })
-
-    if (!url) {
-      navigate('/purchase')
-      return
+    rememberPendingPurchaseTier('rome-complete')
+    // Always require the /purchase gate — never unlock from this CTA alone.
+    if (checkoutUrl) {
+      track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents, deferred: true })
     }
-
-    track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents })
-    window.location.assign(url)
+    navigate('/purchase?tier=rome-complete')
   }
 
   return (

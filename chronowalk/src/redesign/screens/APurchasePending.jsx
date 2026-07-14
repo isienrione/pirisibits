@@ -140,8 +140,9 @@ export default function APurchasePending({
                 Lemon Squeezy pending
               </p>
               <p style={{ ...TYPE.body, color: T.muted, margin: '6px 0 0', fontSize: 14 }}>
-                Live card checkout appears when <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code> is
-                set. Until then, staging can complete the same unlock path on this device.
+                Your selected tour stays here until payment completes. Live card checkout appears when{' '}
+                <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code> is set — Rome will not unlock without
+                purchase.
               </p>
               <div style={{ marginTop: S.m }}>
                 <GoldSeam moment="loading" />
@@ -150,9 +151,9 @@ export default function APurchasePending({
           )}
 
           {!checkoutReady && stagingAllowed && onStagingCheckout ? (
-            <PrimaryButton onClick={onStagingCheckout} busy={busy} color={T.ember} glow={false}>
-              Complete staging purchase
-            </PrimaryButton>
+            <GhostButton onClick={onStagingCheckout} busy={busy}>
+              Dev only — simulate paid unlock
+            </GhostButton>
           ) : null}
 
           {onPreview ? (
@@ -181,18 +182,14 @@ export default function APurchasePending({
 
           {!checkoutReady && stagingAllowed ? (
             <p style={{ ...TYPE.meta, color: `${T.muted}99`, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
-              Staging purchase mints a magic token, unlocks this phone, and opens the confirmation ceremony —
-              the same path a live Lemon payment will take.
+              Developer unlock is only for local QA (<code>?devUnlock=1</code>). Travelers never see a free path into
+              the tour.
             </p>
           ) : null}
 
           {!checkoutReady && !stagingAllowed ? (
             <p style={{ ...TYPE.meta, color: `${T.muted}99`, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
-              Local / staging unlock:{' '}
-              <Link to="/access?token=dev" style={{ color: T.ember, textDecoration: 'none' }}>
-                /access?token=dev
-              </Link>{' '}
-              with <code>VITE_ALLOW_DEV_ACCESS</code>.
+              Already have an access email? Restore below. There is no free continue into Rome from this screen.
             </p>
           ) : null}
         </div>

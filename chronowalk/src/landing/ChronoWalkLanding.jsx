@@ -18,6 +18,7 @@ import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
+import { rememberPendingPurchaseTier } from '../lib/pendingPurchase.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import './ChronoWalkLanding.css'
@@ -44,6 +45,7 @@ export default function ChronoWalkLanding() {
   const handleBeginTier = useCallback(
     (tierId) => {
       track(TRACK_EVENTS.LANDING_CTA_BEGIN, { source: 'landing', tier: tierId })
+      rememberPendingPurchaseTier(tierId)
 
       const tierCents = resolveLandingTierCents(tierId, cents)
       const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
@@ -51,11 +53,8 @@ export default function ChronoWalkLanding() {
         abVariantCents: cents,
       })
 
+      // Always land on /purchase first — never enter setup/tour until unlocked.
       if (!url) {
-        console.warn(
-          '[ChronoWalk landing] Checkout URL unavailable — opening purchase placeholder.',
-          tierId,
-        )
         navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
         return
       }
@@ -65,7 +64,7 @@ export default function ChronoWalkLanding() {
         source: 'landing',
         tier: tierId,
       })
-      window.location.assign(url)
+      navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
     },
     [cents, checkoutUrl, navigate],
   )

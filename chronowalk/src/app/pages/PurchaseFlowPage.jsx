@@ -12,24 +12,37 @@ import {
   completeStagingPurchase,
   isStagingCheckoutAllowed,
 } from '../../lib/stagingCheckout.js'
+import { rememberPendingPurchaseTier } from '../../lib/pendingPurchase.js'
+import { hasAccess } from '../../lib/config.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandoff.js'
 
 /**
- * /purchase — Lemon Squeezy when configured; staging purchase otherwise (dev / allow-dev-access).
- * Query: ?tier=rome-complete (optional)
+ * /purchase — paywall. Lemon when configured; otherwise blocked until Lemon is live.
+ * Staging unlock only with ?devUnlock=1 (never the default pack → walk path).
  */
 export function PurchaseFlowPage() {
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const tierId = params.get('tier')
   const tier = useMemo(() => getTierById(tierId), [tierId])
-  const stagingAllowed = isStagingCheckoutAllowed()
+  const allowDevUnlock =
+    isStagingCheckoutAllowed() && (params.get('devUnlock') === '1' || params.get('devUnlock') === 'true')
 
   const [checkoutReady, setCheckoutReady] = useState(false)
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    if (hasAccess()) {
+      navigate('/setup', { replace: true })
+    }
+  }, [navigate])
+
+  useEffect(() => {
+    if (tierId) rememberPendingPurchaseTier(tierId)
+  }, [tierId])
 
   useEffect(() => {
     track(TRACK_EVENTS.LANDING_CTA_BEGIN, {
@@ -80,10 +93,10 @@ export function PurchaseFlowPage() {
         <APurchasePending
           tier={tier}
           checkoutReady={checkoutReady}
-          stagingAllowed={stagingAllowed}
+          stagingAllowed={allowDevUnlock}
           busy={busy}
           onContinueCheckout={handleCheckout}
-          onStagingCheckout={handleStagingCheckout}
+          onStagingCheckout={allowDevUnlock ? handleStagingCheckout : undefined}
           onPreview={handlePreview}
         />
       </div>

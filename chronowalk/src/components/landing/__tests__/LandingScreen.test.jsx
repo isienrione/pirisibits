@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { getTourProductTruth } from '../../../content/tourProductTruth.js'
 import { loadRomeManifest } from '../../../content/manifest.js'
 import LandingScreen from '../LandingScreen'
@@ -56,18 +56,22 @@ describe('LandingScreen', () => {
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 
-  it('opens checkout with host and price metadata', () => {
+  it('opens the purchase gate instead of unlocking for free', () => {
     render(
-      <MemoryRouter>
-        <LandingScreen />
+      <MemoryRouter initialEntries={['/']}>
+        <Routes>
+          <Route path="/" element={<LandingScreen />} />
+          <Route path="/purchase" element={<div>Purchase gate</div>} />
+        </Routes>
       </MemoryRouter>
     )
 
     fireEvent.click(screen.getByRole('button', { name: /unlock rome — €17/i }))
 
-    expect(trackMock).toHaveBeenCalledWith('checkout_open', { price_cents: 1700 })
-    expect(window.location.assign).toHaveBeenCalledWith(
-      'https://checkout.example.com/rome?checkout%5Bcustom%5D%5Bhost%5D=hotelroma1&checkout%5Bcustom%5D%5Bab_variant%5D=1700'
-    )
+    expect(screen.getByText('Purchase gate')).toBeInTheDocument()
+    expect(trackMock).toHaveBeenCalledWith('checkout_open', {
+      price_cents: 1700,
+      deferred: true,
+    })
   })
 })

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { grantAccess } from '../../lib/config'
+import { clearPendingPurchaseTier } from '../../lib/pendingPurchase'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 function AccessShell({ children }) {
@@ -66,6 +67,7 @@ export default function AccessScreen({ onValidated }) {
 
       if (result.ok) {
         grantAccess()
+        clearPendingPurchaseTier()
         track(TRACK_EVENTS.PURCHASE, { source: result.source ?? 'token' })
         setStatus('success')
         onValidated?.()

@@ -16,6 +16,7 @@ import { useV2Journey } from '../hooks/useV2Journey.js'
 import { hasAccess } from '../lib/config.js'
 import { isImmersiveJourneyState, isResumableJourney, JOURNEY_STATES } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
+import RequireAccess from './RequireAccess.jsx'
 
 const JourneyThresholdLayer = lazyWithRecovery(
   () =>
@@ -101,21 +102,105 @@ function AppRoutes() {
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
-        <Route path="/setup" element={<LazySetupPage />} />
+        <Route
+          path="/setup"
+          element={
+            <RequireAccess>
+              <LazySetupPage />
+            </RequireAccess>
+          }
+        />
         <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
         <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
         <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
-        <Route path="/no-ticket" element={<LazyNoTicketPage />} />
-        <Route path="/welcome" element={<LazyWelcomePage />} />
-        <Route path="/begin" element={<LazyBeginPage />} />
-        <Route path="/tour" element={<LazyTourPage />} />
-        <Route path="/journey" element={<LazyJourneyPage />} />
-        <Route path="/map" element={<LazyMapPage />} />
-        <Route path="/stops" element={<LazyStopsPage />} />
-        <Route path="/journal" element={<LazyJournalPage />} />
-        <Route path="/journal/:waypointId" element={<LazyMemoryDetailPage />} />
-        <Route path="/letter" element={<LazyLetterPage />} />
-        <Route path="/settings" element={<LazySettingsPage />} />
+        <Route
+          path="/no-ticket"
+          element={
+            <RequireAccess>
+              <LazyNoTicketPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/welcome"
+          element={
+            <RequireAccess>
+              <LazyWelcomePage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/begin"
+          element={
+            <RequireAccess>
+              <LazyBeginPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/tour"
+          element={
+            <RequireAccess>
+              <LazyTourPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journey"
+          element={
+            <RequireAccess>
+              <LazyJourneyPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/map"
+          element={
+            <RequireAccess>
+              <LazyMapPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/stops"
+          element={
+            <RequireAccess>
+              <LazyStopsPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journal"
+          element={
+            <RequireAccess>
+              <LazyJournalPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/journal/:waypointId"
+          element={
+            <RequireAccess>
+              <LazyMemoryDetailPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/letter"
+          element={
+            <RequireAccess>
+              <LazyLetterPage />
+            </RequireAccess>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <RequireAccess>
+              <LazySettingsPage />
+            </RequireAccess>
+          }
+        />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

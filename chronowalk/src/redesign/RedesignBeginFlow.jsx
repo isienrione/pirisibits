@@ -15,6 +15,7 @@ import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
 import { GoldSeam } from './ui/index.js'
 import { T, F, S } from './tokens.js'
+import { paceIdForPurchaseTier, readPurchasedTier } from '../lib/pendingPurchase.js'
 
 function initialBeginStep(isResumable) {
   if (isResumable) return 'resume'
@@ -33,11 +34,25 @@ export default function RedesignBeginFlow() {
     context.currentSequenceIndex,
     context.promotedOptionalIds,
   )
+  const purchasedPace = useMemo(() => paceIdForPurchaseTier(readPurchasedTier()), [])
   const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
-  const [selectedPace, setSelectedPace] = useState(context.pace ?? getDefaultPace())
+  const [selectedPace, setSelectedPace] = useState(
+    () => context.pace ?? purchasedPace ?? getDefaultPace(),
+  )
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
   const [gpsAcquiredMoment, setGpsAcquiredMoment] = useState(false)
+
+  /** Post-purchase: show packs as owned itineraries — never as an unpaid checkout. */
+  const paceOptions = useMemo(
+    () =>
+      PACE_OPTIONS.map((opt) => ({
+        ...opt,
+        priceLabel: 'Included',
+        badge: purchasedPace && opt.id === purchasedPace ? 'Your tour' : opt.badge,
+      })),
+    [purchasedPace],
+  )
 
   const previewContext = useMemo(
     () => ({
@@ -222,7 +237,7 @@ export default function RedesignBeginFlow() {
   return (
     <div className="redesign-app-shell">
       <B4PaceSelector
-        options={PACE_OPTIONS}
+        options={paceOptions}
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}

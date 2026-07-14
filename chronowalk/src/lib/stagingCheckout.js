@@ -3,6 +3,7 @@ import { getAbVariantCents, grantAccess } from './config.js'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { track, TRACK_EVENTS } from './track.js'
 import { rememberLocalPurchaseToken } from './access.js'
+import { clearPendingPurchaseTier } from './pendingPurchase.js'
 
 const STAGING_KEY = 'cw_staging_purchase_v1'
 
@@ -54,6 +55,7 @@ export function completeStagingPurchase({ tierId = null, source = 'staging_check
 
   rememberLocalPurchaseToken(token)
   grantAccess()
+  clearPendingPurchaseTier()
 
   track(TRACK_EVENTS.CHECKOUT_OPEN, {
     price_cents: priceCents,
