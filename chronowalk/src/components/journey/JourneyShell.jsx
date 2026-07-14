@@ -4,6 +4,7 @@ import { isDevGeofencesSantiago, isDevPanelEnabled } from '../../config/env.js'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
+import { useSyncedAudioControls } from '../../hooks/useSyncedAudioControls.js'
 import { createWaypointAutoplayCoordinator } from '../../audio/waypointAutoplay.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
@@ -58,6 +59,7 @@ import {
   markTourOnboardingComplete,
 } from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
+import WalkSyncBar from '../../redesign/ui/WalkSyncBar.jsx'
 import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
 import { getAppPreferences } from '../../hooks/useAppPreferences.js'
 import {
@@ -107,6 +109,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
     return context.completedWaypointIds.filter((id) => isVisitStop(getWaypoint(manifest, id))).length
   }, [context.completedWaypointIds, manifest])
   const audio = useAudioEngine(manifest)
+  const syncAudio = useSyncedAudioControls(audio)
+  const [syncStatus, setSyncStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
@@ -1023,7 +1027,17 @@ export default function JourneyShell({ variant = 'legacy' }) {
       }
       duration={dockEnded ? resolvedDockSnapshot.duration : (audio.progress?.duration ?? 0)}
       playbackRate={audio.playbackRate}
-      onToggle={() => (dockEnded ? handleDockReplay() : audio.toggleNarration())}
+      onToggle={() => {
+        if (dockEnded) {
+          handleDockReplay()
+          return
+        }
+        void syncAudio.toggleSyncedPlayback().catch((err) => {
+          if (err?.code === 'resume_leader_only') {
+            setSyncStatus('Only the leader can resume for everyone.')
+          }
+        })
+      }}
       onReplay={handleDockReplay}
       onSkipBack={() => audio.skipNarration(-15)}
       onSkipForward={() => audio.skipNarration(15)}
@@ -1215,10 +1229,18 @@ export default function JourneyShell({ variant = 'legacy' }) {
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
-          onTogglePlay: () => audio.toggleNarration(),
+          onTogglePlay: () => {
+            void syncAudio.toggleSyncedPlayback().catch((err) => {
+              if (err?.code === 'resume_leader_only') {
+                setSyncStatus('Only the leader can resume for everyone.')
+              }
+            })
+          },
           onSkipBack: () => audio.skipNarration(-15),
           onSkipForward: () => audio.skipNarration(15),
-          onSeek: (seconds) => audio.seekNarration(seconds),
+          onSeek: (seconds) => {
+            void syncAudio.seekSynced(seconds)
+          },
           onSelectChapter: (i) => audio.jumpToChapter(i),
           onOpenTranscript: () => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id }),
           onStoryComplete: handleStoryComplete,
@@ -1235,10 +1257,42 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
       return withInterruptionBanner(
         wrapWithFirstStopOnboarding(
-          <C6ImmersivePlayer
-            {...playerProps}
-            suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
-          />,
+          <div style={{ position: 'relative', height: '100%' }}>
+            <C6ImmersivePlayer
+              {...playerProps}
+              suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
+            />
+            {syncAudio.joinCode ? (
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 12,
+                  right: 12,
+                  bottom: dockActive ? 96 : 'max(16px, env(safe-area-inset-bottom))',
+                  zIndex: 30,
+                }}
+              >
+                <WalkSyncBar
+                  syncEnabled={syncAudio.syncEnabled}
+                  joinCode={syncAudio.joinCode}
+                  isLeader={syncAudio.isLeader}
+                  resumePolicy={syncAudio.resumePolicy}
+                  canResumeForAll={syncAudio.canResumeForAll}
+                  narrationPlaying={audio.narrationPlaying}
+                  onToggleSync={() => void syncAudio.family?.setSyncEnabled(!syncAudio.syncEnabled)}
+                  onPauseAll={() => void syncAudio.pauseForEveryone()}
+                  onResumeAll={() => {
+                    void syncAudio.resumeForEveryone().catch((err) => {
+                      if (err?.code === 'resume_leader_only') {
+                        setSyncStatus('Only the leader can resume for everyone.')
+                      }
+                    })
+                  }}
+                  statusMessage={syncStatus}
+                />
+              </div>
+            ) : null}
+          </div>,
           {
             hasReconstruction: Boolean(playerProps.hasReconstruction),
             bottomInset: dockActive ? 88 : 0,
@@ -1365,7 +1419,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
           continueLabel: audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →',
           destinationTitle: titleForWaypoint(step.targetWaypoint),
           onBeginChapter: handleTransitDestinationArrival,
-          onToggleAudio: () => audio.toggleNarration(),
+          onToggleAudio: () => {
+            void syncAudio.toggleSyncedPlayback().catch(() => {})
+          },
           onSkipBack: () => audio.skipNarration(-15),
           onSkipForward: () => audio.skipNarration(15),
           onSeek: (seconds) => audio.seekNarration(seconds),

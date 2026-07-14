@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import SettingsBottomSheet from '../SettingsBottomSheet.jsx'
 import { writeAudioSpeed } from '../../../utils/appPreferences.js'
+import { FamilyWalkProvider } from '../../context/FamilyWalkContext.jsx'
 
 vi.mock('../../../hooks/useOfflineAudio.js', () => ({
   useOfflineAudio: () => ({
@@ -27,7 +28,9 @@ function renderSheet(open = true) {
   const onClose = vi.fn()
   render(
     <MemoryRouter>
-      <SettingsBottomSheet open={open} onClose={onClose} />
+      <FamilyWalkProvider>
+        <SettingsBottomSheet open={open} onClose={onClose} />
+      </FamilyWalkProvider>
     </MemoryRouter>,
   )
   return { onClose }
@@ -50,7 +53,8 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
-    expect(screen.getByText('ChronoWalk · Rome · made to disappear.')).toBeInTheDocument()
+    expect(screen.getByTestId('family-walk-panel')).toBeInTheDocument()
+    expect(screen.getByText(/ChronoWalk · Rome · made to disappear/)).toBeInTheDocument()
   })
 
   it('persists audio speed selection', () => {
