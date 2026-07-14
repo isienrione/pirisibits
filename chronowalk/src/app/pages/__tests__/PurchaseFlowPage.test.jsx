@@ -33,11 +33,13 @@ vi.mock('../../../lib/track.js', () => ({
 }))
 
 describe('PurchaseFlowPage', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
     localStorage.clear()
     sessionStorage.clear()
     stagingAllowedMock.mockReturnValue(false)
+    const { resolveCheckoutBaseUrl } = await import('../../../lib/checkout.js')
+    resolveCheckoutBaseUrl.mockResolvedValue('')
   })
 
   it('blocks free unlock — no staging CTA without ?devUnlock=1', async () => {
