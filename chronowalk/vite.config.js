@@ -64,6 +64,7 @@ export default defineConfig({
         'favicon.svg',
         'favicon-32.png',
         'favicon-16.png',
+        'apple-touch-icon.png',
         'brand/emblem-dark.png',
         'offline.html',
         'tour-hero.jpg',
@@ -89,6 +90,12 @@ export default defineConfig({
         start_url: '/landing',
         categories: ['travel', 'navigation'],
         icons: [
+          {
+            src: 'apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png',
+            purpose: 'any',
+          },
           {
             src: 'pwa/icon-192.png',
             sizes: '192x192',

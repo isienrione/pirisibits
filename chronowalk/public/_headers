@@ -13,6 +13,8 @@
   Cache-Control: public, max-age=3600, must-revalidate
 /favicon-*.png
   Cache-Control: public, max-age=3600, must-revalidate
+/apple-touch-icon.png
+  Cache-Control: public, max-age=3600, must-revalidate
 /pwa/icon-*.png
   Cache-Control: public, max-age=3600, must-revalidate
 /pwa/apple-touch-icon.png
