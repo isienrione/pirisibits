@@ -1,7 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ThresholdAudioCrossfade } from '../audio/thresholdAudio'
 import { useHideThresholdChrome } from '../context/ThresholdChromeContext'
-import { THRESHOLD_HOLD_MS, THRESHOLD_HOLD_COMMIT_MS, THRESHOLD_HOLD_COMMIT_FINISH_MS, THRESHOLD_RELEASE_MS } from '../data/thresholdDemo'
+import {
+  HOLD_COMMIT_FINISH_MS,
+  HOLD_COMMIT_MS,
+  HOLD_COPY,
+  HOLD_MS,
+  HOLD_RELEASE_MS,
+  HOLD_RELEASE_SNAP_MS,
+  HOLD_SOUND,
+  easeHoldProgress,
+  easeHoldRelease,
+} from '../interaction/pressHoldSpec.js'
+import { useHoldHaptics } from '../interaction/useHoldHaptics.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
 import {
@@ -13,6 +24,7 @@ import ThresholdSourceBadge, {
   AI_NOW_DISCLOSURE_COPY,
 } from './threshold/ThresholdSourceBadge.jsx'
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
+import { PressHoldOrb } from '../redesign/ui/PressHoldOrb.jsx'
 
 const REVEAL_COMPLETE = 0.98
 
@@ -165,6 +177,7 @@ export default function Threshold({
   hideUi = false,
 }) {
   const reducedMotion = useReducedMotion()
+  const holdHaptics = useHoldHaptics()
   const reconstruction = waypoint?.reconstruction
   const audioRef = useRef(null)
   const holdStartRef = useRef(null)
@@ -174,15 +187,18 @@ export default function Threshold({
   const holdSessionRef = useRef(false)
   const holdCommittedRef = useRef(false)
   const holdCommitTimerRef = useRef(null)
+  const releaseOrbTimerRef = useRef(null)
   const rootRef = useRef(null)
 
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
   const [holding, setHolding] = useState(false)
+  const [holdPhase, setHoldPhase] = useState('idle')
   const [latchedToThen, setLatchedToThen] = useState(false)
   const latchedRef = useRef(false)
   const [videoPlaying, setVideoPlaying] = useState(false)
-  const showHoldHint = !hideUi && !holding && !latchedToThen && !immersive
+  const showHoldHint = !hideUi && !holding && holdPhase === 'idle' && !latchedToThen && !immersive
+  const showHoldOrb = !hideUi && (holding || holdPhase === 'releasing' || holdPhase === 'unlocked')
 
   useHideThresholdChrome(holding)
 
@@ -260,16 +276,20 @@ export default function Threshold({
   }, [onFullyRevealed])
 
   const animateReveal = useCallback(
-    (from, to, durationMs, onDone) => {
+    (from, to, durationMs, { onDone, ease = easeHoldProgress, hapticClock = false } = {}) => {
       cancelAnimation()
       const start = performance.now()
 
       const step = (now) => {
         const t = Math.min(1, (now - start) / durationMs)
-        const eased = 1 - (1 - t) ** 3
+        const eased = ease(t)
         const value = from + (to - from) * eased
         setReveal(value)
         revealRef.current = value
+
+        if (hapticClock && holdStartRef.current != null) {
+          holdHaptics.tick(now - holdStartRef.current)
+        }
 
         if (to >= REVEAL_COMPLETE && value >= REVEAL_COMPLETE) {
           notifyFullyRevealed()
@@ -285,27 +305,40 @@ export default function Threshold({
 
       rafRef.current = requestAnimationFrame(step)
     },
-    [cancelAnimation, notifyFullyRevealed]
+    [cancelAnimation, holdHaptics, notifyFullyRevealed],
   )
 
   const latchToThen = useCallback(() => {
     latchedRef.current = true
     setLatchedToThen(true)
+    setHoldPhase('unlocked')
+    setHolding(false)
     cancelAnimation()
     setReveal(1)
     revealRef.current = 1
     setVideoPlaying(true)
+    holdHaptics.tick(HOLD_COMMIT_MS)
     notifyFullyRevealed()
-  }, [cancelAnimation, notifyFullyRevealed])
+    if (releaseOrbTimerRef.current != null) window.clearTimeout(releaseOrbTimerRef.current)
+    releaseOrbTimerRef.current = window.setTimeout(() => {
+      if (latchedRef.current) setHoldPhase('idle')
+      releaseOrbTimerRef.current = null
+    }, HOLD_RELEASE_SNAP_MS)
+  }, [cancelAnimation, holdHaptics, notifyFullyRevealed])
 
   const commitHoldToReveal = useCallback(() => {
     if (!holdSessionRef.current || latchedRef.current || holdCommittedRef.current) return
 
     holdCommittedRef.current = true
+    setHoldPhase('charging')
     cancelAnimation()
-    animateReveal(revealRef.current, 1, THRESHOLD_HOLD_COMMIT_FINISH_MS)
-    audioRef.current?.rampToThen(THRESHOLD_HOLD_COMMIT_FINISH_MS)
-  }, [animateReveal, cancelAnimation])
+    holdHaptics.tick(HOLD_COMMIT_MS)
+    animateReveal(revealRef.current, 1, HOLD_COMMIT_FINISH_MS, {
+      ease: easeHoldProgress,
+      hapticClock: true,
+    })
+    audioRef.current?.rampToThen(HOLD_SOUND.commitFinishRampMs)
+  }, [animateReveal, cancelAnimation, holdHaptics])
 
   const handlePointerDown = useCallback(
     (event) => {
@@ -321,11 +354,12 @@ export default function Threshold({
         clearHoldCommitTimer()
         setLatchedToThen(false)
         setHolding(false)
+        setHoldPhase('idle')
         setVideoPlaying(false)
         cancelAnimation()
         setReveal(0)
         revealRef.current = 0
-        audioRef.current?.rampToNow(reducedMotion ? 200 : THRESHOLD_RELEASE_MS)
+        audioRef.current?.rampToNow(reducedMotion ? 200 : HOLD_RELEASE_MS)
         return
       }
 
@@ -340,25 +374,42 @@ export default function Threshold({
       holdCommittedRef.current = false
       holdSessionRef.current = true
       clearHoldCommitTimer()
+      if (releaseOrbTimerRef.current != null) {
+        window.clearTimeout(releaseOrbTimerRef.current)
+        releaseOrbTimerRef.current = null
+      }
+      holdHaptics.reset()
       setHolding(true)
+      setHoldPhase('pressing')
       setVideoPlaying(true)
+      holdHaptics.tick(0)
 
       onHoldStart?.()
 
       if (reducedMotion) {
         setReveal(1)
         revealRef.current = 1
+        setHoldPhase('unlocked')
         notifyFullyRevealed()
         audioRef.current?.rampToThen(200)
+        holdHaptics.tick(HOLD_COMMIT_MS)
         return
       }
 
+      // Pressure settles into charging on the next frame for a readable press-in.
+      window.requestAnimationFrame(() => {
+        if (holdSessionRef.current) setHoldPhase('charging')
+      })
+
       holdCommitTimerRef.current = window.setTimeout(() => {
         commitHoldToReveal()
-      }, THRESHOLD_HOLD_COMMIT_MS)
+      }, HOLD_COMMIT_MS)
 
-      animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
-      audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
+      animateReveal(revealRef.current, 1, HOLD_MS, {
+        ease: easeHoldProgress,
+        hapticClock: true,
+      })
+      audioRef.current?.rampToThen(HOLD_SOUND.chargeRampMs)
     },
     [
       active,
@@ -366,6 +417,7 @@ export default function Threshold({
       cancelAnimation,
       clearHoldCommitTimer,
       commitHoldToReveal,
+      holdHaptics,
       notifyFullyRevealed,
       onHoldStart,
       reducedMotion,
@@ -399,14 +451,14 @@ export default function Threshold({
           waypoint_id: waypoint.id,
           latched:
             wasCommitted ||
-            heldMs >= THRESHOLD_HOLD_COMMIT_MS ||
+            heldMs >= HOLD_COMMIT_MS ||
             revealRef.current >= REVEAL_COMPLETE,
         })
       }
 
       const shouldLatch =
         wasCommitted ||
-        heldMs >= THRESHOLD_HOLD_COMMIT_MS ||
+        heldMs >= HOLD_COMMIT_MS ||
         revealRef.current >= REVEAL_COMPLETE
 
       if (reducedMotion) {
@@ -418,6 +470,7 @@ export default function Threshold({
         setReveal(0)
         revealRef.current = 0
         setVideoPlaying(false)
+        setHoldPhase('idle')
         audioRef.current?.rampToNow(200)
         if (hadHoldSession) endHoldSession({ reveal: 0, latched: false })
         return
@@ -429,15 +482,23 @@ export default function Threshold({
         return
       }
 
+      holdHaptics.cancel(heldMs)
+      setHoldPhase('releasing')
       setVideoPlaying(false)
-      animateReveal(revealRef.current, 0, THRESHOLD_RELEASE_MS)
-      audioRef.current?.rampToNow(THRESHOLD_RELEASE_MS)
+      animateReveal(revealRef.current, 0, HOLD_RELEASE_MS, { ease: easeHoldRelease })
+      audioRef.current?.rampToNow(HOLD_SOUND.releaseRampMs)
+      if (releaseOrbTimerRef.current != null) window.clearTimeout(releaseOrbTimerRef.current)
+      releaseOrbTimerRef.current = window.setTimeout(() => {
+        setHoldPhase('idle')
+        releaseOrbTimerRef.current = null
+      }, HOLD_RELEASE_SNAP_MS)
       if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: false })
     },
     [
       animateReveal,
       clearHoldCommitTimer,
       endHoldSession,
+      holdHaptics,
       latchToThen,
       reducedMotion,
       waypoint?.id,
@@ -457,6 +518,7 @@ export default function Threshold({
     return () => {
       clearHoldCommitTimer()
       cancelAnimation()
+      if (releaseOrbTimerRef.current != null) window.clearTimeout(releaseOrbTimerRef.current)
     }
   }, [cancelAnimation, clearHoldCommitTimer])
 
@@ -501,7 +563,17 @@ export default function Threshold({
   return (
     <div
       ref={rootRef}
-      className={`threshold-root cw-threshold-surface ${immersive ? 'threshold-root--immersive' : ''} ${className}`.trim()}
+      className={[
+        'threshold-root',
+        'cw-threshold-surface',
+        immersive ? 'threshold-root--immersive' : '',
+        holding ? 'cw-threshold-surface--holding' : '',
+        holdPhase === 'charging' || holdPhase === 'pressing' ? 'cw-threshold-surface--charging' : '',
+        latchedToThen ? 'cw-threshold-surface--unlocked' : '',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={{
         position: 'relative',
         width: '100%',
@@ -513,6 +585,7 @@ export default function Threshold({
         WebkitUserSelect: 'none',
         background: 'var(--obsidian)',
         userSelect: 'none',
+        '--cw-hold-progress': String(reveal),
       }}
       onContextMenu={(event) => event.preventDefault()}
       onPointerDown={handlePointerDown}
@@ -522,8 +595,8 @@ export default function Threshold({
       role="img"
       aria-label={
         latchedToThen
-          ? `Showing ${thenLabel}. Tap to return to today at ${waypoint?.name ?? 'this place'}.`
-          : `Press and hold to cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`
+          ? `Showing ${thenLabel}. ${HOLD_COPY.returnToday} at ${waypoint?.name ?? 'this place'}.`
+          : `Hold to unlock history — cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`
       }
     >
       <ThresholdMediaCanvas
@@ -533,6 +606,7 @@ export default function Threshold({
         reducedMotion={reducedMotion}
         immersive={immersive}
       />
+      <div className="cw-threshold-atmosphere" aria-hidden />
 
       {embedded && !hideUi ? (
         <div
@@ -558,10 +632,13 @@ export default function Threshold({
             transform: 'translateX(-50%)',
             background: 'var(--ember)',
             boxShadow: holding
-              ? '0 0 24px rgba(232,161,60,0.85), 0 0 48px rgba(232,161,60,0.35)'
-              : '0 0 18px 4px var(--ember-glow)',
+              ? '0 0 22px color-mix(in srgb, var(--gold, #d4af37) 70%, transparent), 0 0 48px color-mix(in srgb, var(--gold, #d4af37) 28%, transparent)'
+              : '0 0 18px 4px var(--seam-glow, var(--ember-glow))',
+            background: 'var(--gold, var(--ember))',
             opacity: reveal > 0.02 && reveal < REVEAL_COMPLETE ? 1 : 0,
-            transition: holding ? 'none' : 'left 420ms ease-out, opacity 150ms var(--ease)',
+            transition: holding
+              ? 'none'
+              : 'left 420ms cubic-bezier(0.22, 1, 0.36, 1), opacity 150ms var(--ease)',
             pointerEvents: 'none',
             zIndex: 2,
           }}
@@ -683,7 +760,18 @@ export default function Threshold({
       {!hideUi && showHoldHint ? (
         <ThresholdHoldHint
           className={embedded ? 'cw-threshold-hold-hint--embedded' : undefined}
+          phase="idle"
+          progress={0}
         />
+      ) : null}
+
+      {!hideUi && showHoldOrb ? (
+        <div className="cw-press-hold-stage" aria-hidden>
+          <PressHoldOrb
+            phase={holdPhase === 'pressing' ? 'pressing' : holdPhase}
+            progress={reveal}
+          />
+        </div>
       ) : null}
 
       {!hideUi && latchedToThen ? (
@@ -698,6 +786,7 @@ export default function Threshold({
             padding: '8px 16px',
             borderRadius: 20,
             background: 'color-mix(in srgb, var(--obsidian) 60%, transparent)',
+            backdropFilter: 'blur(10px)',
             fontSize: 'var(--fs-meta)',
             fontWeight: 500,
             color: 'var(--warm-white)',
@@ -705,7 +794,7 @@ export default function Threshold({
             zIndex: 3,
           }}
         >
-          Tap to return to today
+          {HOLD_COPY.returnToday}
         </div>
       ) : null}
 

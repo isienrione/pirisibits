@@ -1,4 +1,4 @@
-/** @typedef {'softTap' | 'selection' | 'success' | 'warning' | 'arrivalPulse' | 'arrivalUnlock'} HapticKind */
+/** @typedef {'softTap' | 'selection' | 'success' | 'warning' | 'arrivalPulse' | 'arrivalUnlock' | 'holdPress' | 'holdMid' | 'holdUnlock' | 'holdCancel'} HapticKind */
 
 export const HAPTIC_KIND = {
   SOFT_TAP: 'softTap',
@@ -7,6 +7,14 @@ export const HAPTIC_KIND = {
   WARNING: 'warning',
   ARRIVAL_PULSE: 'arrivalPulse',
   ARRIVAL_UNLOCK: 'arrivalUnlock',
+  /** Signature Press & Hold — finger down */
+  HOLD_PRESS: 'holdPress',
+  /** Signature Press & Hold — mid charge */
+  HOLD_MID: 'holdMid',
+  /** Signature Press & Hold — history unlocked */
+  HOLD_UNLOCK: 'holdUnlock',
+  /** Signature Press & Hold — incomplete release */
+  HOLD_CANCEL: 'holdCancel',
 }
 
 /** Millisecond vibration patterns for browsers without native haptics. */
@@ -17,6 +25,10 @@ const VIBRATION_PATTERNS = {
   warning: [28, 72, 28],
   arrivalPulse: [10],
   arrivalUnlock: [12, 36, 16, 52, 20],
+  holdPress: [6],
+  holdMid: [10],
+  holdUnlock: [14, 40, 18, 56, 22],
+  holdCancel: [7],
 }
 
 /** Minimum gap between identical haptics to avoid buzzing. */
@@ -27,6 +39,10 @@ const COOLDOWN_MS = {
   warning: 800,
   arrivalPulse: 2500,
   arrivalUnlock: 1200,
+  holdPress: 80,
+  holdMid: 400,
+  holdUnlock: 900,
+  holdCancel: 200,
 }
 
 const lastTriggeredAt = new Map()
@@ -76,8 +92,18 @@ async function runCapacitorHaptic(kind) {
         await haptics.impact?.({ style: 'MEDIUM' })
         return true
       case HAPTIC_KIND.ARRIVAL_UNLOCK:
+      case HAPTIC_KIND.HOLD_UNLOCK:
         await haptics.notification?.({ type: 'SUCCESS' })
         await haptics.impact?.({ style: 'HEAVY' })
+        return true
+      case HAPTIC_KIND.HOLD_PRESS:
+        await haptics.impact?.({ style: 'LIGHT' })
+        return true
+      case HAPTIC_KIND.HOLD_MID:
+        await haptics.selectionChanged?.()
+        return true
+      case HAPTIC_KIND.HOLD_CANCEL:
+        await haptics.impact?.({ style: 'LIGHT' })
         return true
       default:
         return false
@@ -96,16 +122,22 @@ function runCordovaHaptic(kind) {
       taptic.notification({ type: 'warning' })
       return true
     }
-    if (kind === HAPTIC_KIND.SUCCESS || kind === HAPTIC_KIND.ARRIVAL_UNLOCK) {
+    if (
+      kind === HAPTIC_KIND.SUCCESS ||
+      kind === HAPTIC_KIND.ARRIVAL_UNLOCK ||
+      kind === HAPTIC_KIND.HOLD_UNLOCK
+    ) {
       taptic.notification({ type: 'success' })
       return true
     }
-    if (kind === HAPTIC_KIND.SELECTION && taptic.selection) {
+    if ((kind === HAPTIC_KIND.SELECTION || kind === HAPTIC_KIND.HOLD_MID) && taptic.selection) {
       taptic.selection()
       return true
     }
     const style =
-      kind === HAPTIC_KIND.SOFT_TAP
+      kind === HAPTIC_KIND.SOFT_TAP ||
+      kind === HAPTIC_KIND.HOLD_PRESS ||
+      kind === HAPTIC_KIND.HOLD_CANCEL
         ? 'light'
         : kind === HAPTIC_KIND.ARRIVAL_PULSE
           ? 'medium'

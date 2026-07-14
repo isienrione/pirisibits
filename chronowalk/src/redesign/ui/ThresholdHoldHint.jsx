@@ -1,21 +1,16 @@
-import { Pointer } from 'lucide-react'
+import { HOLD_COPY } from '../../interaction/pressHoldSpec.js'
+import { PressHoldOrb } from './PressHoldOrb.jsx'
 
 /**
- * Persistent affordance for press-and-hold threshold reveal.
- * Stays visible whenever a reconstruction is available — not first-visit only.
+ * Persistent affordance for the signature Press & Hold.
+ * Communicates unlocking history — never a UI button.
  */
-function PressHoldIcon() {
-  return (
-    <span className="cw-threshold-hold-hint__icon-wrap" aria-hidden="true">
-      <Pointer size={18} strokeWidth={2.25} className="cw-threshold-hold-hint__icon" />
-    </span>
-  )
-}
-
 export default function ThresholdHoldHint({
-  label = 'Press & hold to reveal',
+  label = HOLD_COPY.idle,
   className = '',
   testId = 'threshold-hold-hint',
+  phase = 'idle',
+  progress = 0,
 }) {
   return (
     <div
@@ -23,8 +18,13 @@ export default function ThresholdHoldHint({
       data-testid={testId}
       aria-hidden="true"
     >
-      <PressHoldIcon />
-      <span className="cw-threshold-hold-hint__label">{label}</span>
+      <PressHoldOrb
+        phase={phase}
+        progress={progress}
+        label={label}
+        compact
+        className="cw-threshold-hold-hint__orb"
+      />
     </div>
   )
 }
