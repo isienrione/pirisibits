@@ -10,7 +10,7 @@ import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { T, F } from './tokens.js'
 import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
-import { Eyebrow } from './ui/index.js'
+import { Eyebrow, CinematicImage } from './ui/index.js'
 
 function TimelineDot({ status }) {
   const isCompleted = status === 'completed'
@@ -226,18 +226,17 @@ export default function RedesignTourRoadmapScreen() {
               </div>
 
               {photo ? (
-                <img
+                <CinematicImage
                   src={photo}
                   alt=""
-                  style={{
-                    width: 72,
-                    height: 56,
-                    borderRadius: 8,
-                    objectFit: 'cover',
-                    flexShrink: 0,
-                    filter: faded ? 'grayscale(0.35) saturate(0.5)' : 'none',
-                    opacity: faded ? 0.55 : 1,
-                  }}
+                  width={72}
+                  height={56}
+                  radius="sm"
+                  grade="film"
+                  overlay="soft"
+                  position="landmark"
+                  shadow="still"
+                  faded={faded}
                 />
               ) : (
                 <div

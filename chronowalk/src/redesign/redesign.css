@@ -1680,11 +1680,12 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-walking-companion__thumb {
   width: 52px;
   height: 52px;
-  border-radius: 11px;
-  object-fit: cover;
   flex-shrink: 0;
-  border: 1px solid var(--wc-border);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  border: 1px solid color-mix(in srgb, var(--wc-warm-white) 10%, transparent);
+}
+
+.cw-walking-companion__thumb.cw-cine-image {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.14);
 }
 
 .cw-walking-companion__subtitle {
@@ -1957,20 +1958,23 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-walking-companion__arrived-photo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 32%;
-  filter: saturate(0.94) brightness(0.9);
+}
+
+.cw-walking-companion__arrived-photo.cw-cine-image {
+  border-radius: inherit;
 }
 
 .cw-walking-companion__arrived-photo-scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(17, 16, 15, 0.06) 0%,
-    rgba(17, 16, 15, 0.14) 52%,
-    rgba(17, 16, 15, 0.36) 100%
-  );
+  background:
+    linear-gradient(
+      180deg,
+      rgba(11, 11, 13, 0.14) 0%,
+      rgba(11, 11, 13, 0.08) 40%,
+      rgba(11, 11, 13, 0.48) 100%
+    ),
+    radial-gradient(ellipse at 50% 38%, transparent 42%, rgba(11, 11, 13, 0.35) 100%);
   pointer-events: none;
 }
 
@@ -2452,6 +2456,158 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   pointer-events: auto;
 }
 
+/* ── Cinematic image presentation ── */
+
+.cw-cine-image {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--obsidian, #0b0b0d) 88%, var(--muted, #b9af9c));
+  flex-shrink: 0;
+  transform: translateZ(0);
+}
+
+.cw-cine-image__skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--bone, #e9e2d5) 35%, transparent) 0%,
+    color-mix(in srgb, var(--warm-white, #faf6ef) 55%, transparent) 45%,
+    color-mix(in srgb, var(--bone, #e9e2d5) 35%, transparent) 90%
+  );
+  background-size: 200% 100%;
+  animation: cwCineShimmer var(--d-breathe, 2800ms) var(--ease-breathe, ease-in-out) infinite;
+  opacity: 1;
+  transition: opacity var(--d-panel, 360ms) var(--ease-exit);
+}
+
+.cw-cine-image--loaded .cw-cine-image__skeleton {
+  opacity: 0;
+  animation: none;
+}
+
+.cw-cine-image__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transform: scale(1.03);
+  transition:
+    opacity var(--d-rise, 700ms) var(--ease-exit),
+    transform calc(var(--d-rise, 700ms) + 200ms) var(--ease-exit);
+  will-change: opacity, transform;
+}
+
+.cw-cine-image--loaded .cw-cine-image__media {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cw-cine-image__fallback {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--obsidian) 80%, var(--gold, #d4af37)) 0%,
+    var(--obsidian) 100%
+  );
+}
+
+.cw-cine-image__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cw-cine-image--overlay-none .cw-cine-image__overlay {
+  display: none;
+}
+
+.cw-cine-image--overlay-soft .cw-cine-image__overlay {
+  background:
+    linear-gradient(180deg, rgba(11, 11, 13, 0.12) 0%, transparent 42%, rgba(11, 11, 13, 0.28) 100%),
+    radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(11, 11, 13, 0.22) 100%);
+}
+
+.cw-cine-image--overlay-bottom .cw-cine-image__overlay {
+  background: linear-gradient(180deg, transparent 35%, rgba(11, 11, 13, 0.45) 100%);
+}
+
+.cw-cine-image--overlay-immersive .cw-cine-image__overlay {
+  background:
+    linear-gradient(180deg, rgba(11, 11, 13, 0.2) 0%, transparent 38%, rgba(11, 11, 13, 0.55) 100%),
+    radial-gradient(ellipse at 50% 35%, transparent 40%, rgba(11, 11, 13, 0.4) 100%);
+}
+
+.cw-cine-image--overlay-vignette .cw-cine-image__overlay {
+  background: radial-gradient(ellipse at 50% 42%, transparent 45%, rgba(11, 11, 13, 0.38) 100%);
+}
+
+.cw-cine-hero {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--obsidian, #0b0b0d);
+}
+
+.cw-cine-hero__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transform: scale(1.04);
+  transition:
+    opacity var(--d-reveal, 900ms) var(--ease-exit),
+    transform 1400ms var(--ease-exit);
+  will-change: opacity, transform;
+}
+
+.cw-cine-hero--loaded .cw-cine-hero__media {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cw-cine-hero__fallback {
+  position: absolute;
+  inset: 0;
+  background: var(--obsidian, #0b0b0d);
+}
+
+@keyframes cwCineShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-cine-image__skeleton {
+    animation: none;
+  }
+
+  .cw-cine-image__media,
+  .cw-cine-hero__media {
+    transition: opacity var(--d-ui, 200ms) ease;
+    transform: none;
+  }
+
+  .cw-cine-image--loaded .cw-cine-image__media,
+  .cw-cine-hero--loaded .cw-cine-hero__media {
+    transform: none;
+  }
+}
+
 /* Motion Design System utilities */
 .cw-motion-pressable {
   transform: translateZ(0);
@@ -2554,7 +2710,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   object-fit: cover;
   object-position: center 28%;
   display: block;
-  filter: saturate(0.92) brightness(0.92);
+  filter: saturate(0.74) contrast(1.08) brightness(0.86);
 }
 
 .cw-arrival-ceremony__vignette {

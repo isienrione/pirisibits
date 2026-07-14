@@ -1,3 +1,5 @@
+import { CinematicImage } from './CinematicImage.jsx'
+
 /**
  * Journey-driven map companion card — one primary CTA, warm map chrome.
  */
@@ -30,16 +32,16 @@ export default function MapBottomCard({
         }}
       >
         {imageUrl ? (
-          <img
+          <CinematicImage
             src={imageUrl}
             alt=""
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 10,
-              objectFit: 'cover',
-              flexShrink: 0,
-            }}
+            width={44}
+            height={44}
+            radius="md"
+            grade="film"
+            overlay="soft"
+            position="upper"
+            shadow="none"
           />
         ) : null}
         <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 'var(--gap-s)' }}>

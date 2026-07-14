@@ -10,6 +10,7 @@ import {
   BrandMark,
   StatusMark,
   GoldSeam,
+  CinematicImage,
 } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -359,17 +360,17 @@ export default function RedesignMyTourScreen() {
                   />
 
                   {photo ? (
-                    <img
+                    <CinematicImage
                       src={photo}
                       alt=""
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
-                        objectFit: 'cover',
-                        flexShrink: 0,
-                        filter: faded ? 'brightness(0.7) saturate(0.55)' : 'none',
-                      }}
+                      width={56}
+                      height={56}
+                      radius="md"
+                      grade="film"
+                      overlay="soft"
+                      position="upper"
+                      shadow="still"
+                      faded={faded}
                     />
                   ) : (
                     <div
@@ -471,17 +472,17 @@ export default function RedesignMyTourScreen() {
                         >
                           <div style={{ width: 56, flexShrink: 0 }} />
                           {stopPhoto ? (
-                            <img
+                            <CinematicImage
                               src={stopPhoto}
                               alt=""
-                              style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: stopFaded ? 'saturate(0.5)' : 'none',
-                              }}
+                              width={36}
+                              height={36}
+                              radius="sm"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={stopFaded}
                             />
                           ) : null}
                           <div style={{ flex: 1, minWidth: 0 }}>

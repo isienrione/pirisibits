@@ -16,6 +16,7 @@ import {
   SurfaceCard,
   StatusMark,
   GoldSeam,
+  CinematicImage,
 } from './ui/index.js'
 
 const SEAM_X = 38
@@ -239,16 +240,18 @@ export default function RedesignStopsScreen() {
                       >
                         <div style={{ display: 'flex', height: 100 }}>
                           {card.photo ? (
-                            <img
+                            <CinematicImage
                               src={card.photo}
                               alt=""
-                              style={{
-                                width: 96,
-                                height: '100%',
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: faded ? 'saturate(0.55) brightness(0.92)' : 'none',
-                              }}
+                              width={96}
+                              height="100%"
+                              aspect="fill"
+                              radius="none"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={faded}
                             />
                           ) : (
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />

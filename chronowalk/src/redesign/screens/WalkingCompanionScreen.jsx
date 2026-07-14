@@ -8,6 +8,7 @@ import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
 import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
 import { GoldSeam } from '../ui/GoldSeam.jsx'
+import { CinematicImage } from '../ui/CinematicImage.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
 import {
@@ -202,7 +203,18 @@ export default function WalkingCompanionScreen({
             <div className="cw-walking-companion__title-row">
               <h1 className="cw-walking-companion__title">{title}</h1>
               {photo ? (
-                <img className="cw-walking-companion__thumb" src={photo} alt="" />
+                <CinematicImage
+                  src={photo}
+                  alt=""
+                  width={52}
+                  height={52}
+                  radius="md"
+                  grade="film"
+                  overlay="soft"
+                  position="landmark"
+                  shadow="still"
+                  className="cw-walking-companion__thumb"
+                />
               ) : null}
             </div>
 
@@ -264,7 +276,18 @@ export default function WalkingCompanionScreen({
               className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived cw-walking-companion__hero-layer--visible"
             >
               {photo ? (
-                <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
+                <CinematicImage
+                  src={photo}
+                  alt=""
+                  aspect="fill"
+                  height="100%"
+                  radius="none"
+                  grade="dusk"
+                  overlay="none"
+                  position="landmark"
+                  shadow="none"
+                  className="cw-walking-companion__arrived-photo"
+                />
               ) : null}
               <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
             </div>

@@ -21,6 +21,15 @@ export { TabBar } from './TabBar.jsx'
 export { Chip } from './Chip.jsx'
 export { PulseRings } from './PulseRings.jsx'
 export { PhotoHero } from './PhotoHero.jsx'
+export { CinematicImage } from './CinematicImage.jsx'
+export {
+  IMAGE_RADIUS,
+  IMAGE_ASPECT,
+  IMAGE_GRADE,
+  IMAGE_OVERLAY,
+  IMAGE_POSITION,
+  IMAGE_SHADOW,
+} from './cinematicImage.js'
 export { ActNode } from './ActNode.jsx'
 export { MiniActLine } from './MiniActLine.jsx'
 export { GrainSurface } from './GrainSurface.jsx'

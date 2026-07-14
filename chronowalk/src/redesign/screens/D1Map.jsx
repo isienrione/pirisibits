@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
-import { Eyebrow, TabBar, Chip } from '../ui/index.js';
+import { Eyebrow, TabBar, Chip, CinematicImage } from '../ui/index.js';
 
 export default function D1Map({ embedded = false }) {
   const [activeAct, setActiveAct]   = useState(null);
@@ -283,10 +283,17 @@ export default function D1Map({ embedded = false }) {
 
           {/* Pin content row */}
           <div style={{ display:"flex", gap:14, alignItems:"flex-start", marginBottom:14 }}>
-            {/* NOW thumb */}
-            <img
-              src={sel.photo} alt={sel.name}
-              style={{ width:72, height:72, borderRadius:10, objectFit:"cover", flexShrink:0 }}
+            {/* NOW still */}
+            <CinematicImage
+              src={sel.photo}
+              alt={sel.name}
+              width={72}
+              height={72}
+              radius="md"
+              grade="film"
+              overlay="soft"
+              position="landmark"
+              shadow="still"
             />
             <div style={{ flex:1 }}>
               {/* Act eyebrow */}

@@ -1,6 +1,6 @@
 import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Eyebrow } from '../ui/index.js'
+import { Eyebrow, CinematicImage } from '../ui/index.js'
 
 export default function C3Approaching({
   accent = T.actI,
@@ -124,17 +124,16 @@ export default function C3Approaching({
         ) : null}
 
         <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-          <img
+          <CinematicImage
             src={photo}
             alt=""
-            style={{
-              width: 88,
-              height: 88,
-              borderRadius: 14,
-              objectFit: 'cover',
-              flexShrink: 0,
-              boxShadow: `0 0 0 1px ${accent}33`,
-            }}
+            width={88}
+            height={88}
+            radius="lg"
+            grade="film"
+            overlay="soft"
+            position="landmark"
+            shadow="soft"
           />
           <div style={{ minWidth: 0, flex: 1 }}>
             <Eyebrow color={accent}>ALMOST THERE</Eyebrow>

@@ -11,6 +11,7 @@ import {
   SurfaceCard,
   TabBar,
   PrimaryButton,
+  CinematicImage,
 } from '../ui/index.js';
 
 export default function E1JournalHome({
@@ -145,11 +146,32 @@ export default function E1JournalHome({
                     {/* Diptych: NOW | ember seam | THEN */}
                     <div style={{ display: "flex", marginBottom: S.l, borderRadius: 10, overflow: "hidden", height: 108 }}>
                       <div style={{ flex: 1, overflow: "hidden" }}>
-                        <img src={card.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
+                        <CinematicImage
+                          src={card.photo}
+                          alt=""
+                          aspect="fill"
+                          height="100%"
+                          radius="none"
+                          grade="film"
+                          overlay="soft"
+                          position="upper"
+                          shadow="none"
+                        />
                       </div>
                       <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: "0 0 6px rgba(232,161,60,0.55)", animation: "seamBreathe 3s ease-in-out infinite" }} />
                       <div style={{ flex: 1, overflow: "hidden" }}>
-                        <img src={card.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.76)" }} />
+                        <CinematicImage
+                          src={card.photo}
+                          alt=""
+                          aspect="fill"
+                          height="100%"
+                          radius="none"
+                          grade="none"
+                          overlay="vignette"
+                          position="upper"
+                          shadow="none"
+                          extraFilter="sepia(0.65) contrast(0.8) brightness(0.76)"
+                        />
                       </div>
                     </div>
                     <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: S.m }}>{card.name}</p>

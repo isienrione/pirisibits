@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from '../tokens.js'
-import { PrimaryButton, BackLink } from '../ui/index.js'
+import { PrimaryButton, BackLink, CinematicImage } from '../ui/index.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
 
@@ -205,10 +205,16 @@ export default function B5OwnPaceStopPicker({
                           ) : null}
                         </div>
                         {photo ? (
-                          <img
+                          <CinematicImage
                             src={photo}
                             alt=""
-                            style={{ width: 44, height: 44, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }}
+                            width={44}
+                            height={44}
+                            radius="sm"
+                            grade="film"
+                            overlay="soft"
+                            position="upper"
+                            shadow="still"
                           />
                         ) : null}
                         <div style={{ flex: 1, minWidth: 0 }}>

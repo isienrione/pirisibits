@@ -3,7 +3,7 @@ import { Settings } from "lucide-react";
 import { T, F } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Eyebrow, Seam } from '../ui/index.js';
+import { Eyebrow, Seam, CinematicImage } from '../ui/index.js';
 import { useContext } from "react";
 import { C1bRouteSheet } from './C1bRouteSheet.jsx';
 
@@ -86,20 +86,18 @@ export default function C1JourneyHome() {
                 }),
               }} />
 
-              {/* 56 × 56 photo thumb — leads the row */}
-              <img
+              {/* 56 × 56 cinematic still — leads the row */}
+              <CinematicImage
                 src={act.photo}
                 alt={act.name}
-                style={{
-                  width: 56, height: 56,
-                  borderRadius: 10,
-                  objectFit: "cover",
-                  flexShrink: 0,
-                  filter: act.status === "ahead"
-                    ? "brightness(0.7) saturate(0.55)"
-                    : "none",
-                  transition: "filter 300ms",
-                }}
+                width={56}
+                height={56}
+                radius="md"
+                grade="film"
+                overlay="soft"
+                position="upper"
+                shadow="still"
+                faded={act.status === "ahead"}
               />
 
               {/* Text block */}

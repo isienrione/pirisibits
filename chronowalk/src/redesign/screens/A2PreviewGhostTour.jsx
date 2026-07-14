@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp, Lock } from 'lucide-react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { T, F } from '../tokens.js'
-import { Eyebrow } from '../ui/index.js'
+import { Eyebrow, CinematicImage } from '../ui/index.js'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
@@ -133,17 +133,17 @@ export default function A2PreviewGhostTour({
                   />
 
                   {photo ? (
-                    <img
+                    <CinematicImage
                       src={photo}
                       alt=""
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
-                        objectFit: 'cover',
-                        flexShrink: 0,
-                        filter: 'brightness(0.78) saturate(0.55)',
-                      }}
+                      width={56}
+                      height={56}
+                      radius="md"
+                      grade="film"
+                      overlay="soft"
+                      position="upper"
+                      shadow="still"
+                      faded
                     />
                   ) : null}
 
@@ -245,17 +245,17 @@ export default function A2PreviewGhostTour({
                         >
                           <div style={{ width: 56, flexShrink: 0 }} />
                           {stopPhoto ? (
-                            <img
+                            <CinematicImage
                               src={stopPhoto}
                               alt=""
-                              style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: isLocked ? 'saturate(0.35) brightness(0.82)' : 'none',
-                              }}
+                              width={36}
+                              height={36}
+                              radius="sm"
+                              grade="film"
+                              overlay="soft"
+                              position="upper"
+                              shadow="none"
+                              faded={isLocked}
                             />
                           ) : null}
                           <div style={{ flex: 1, minWidth: 0 }}>
