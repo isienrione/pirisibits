@@ -11,6 +11,7 @@ import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
+import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { hasAccess } from '../lib/config.js'
@@ -164,7 +165,9 @@ function AppRouter() {
     <ThresholdChromeProvider>
       <BrowserRouter>
         <SettingsSheetProvider>
-          <AppRoutes />
+          <FamilyWalkProvider>
+            <AppRoutes />
+          </FamilyWalkProvider>
         </SettingsSheetProvider>
       </BrowserRouter>
     </ThresholdChromeProvider>

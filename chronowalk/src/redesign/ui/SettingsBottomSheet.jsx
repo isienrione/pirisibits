@@ -11,6 +11,7 @@ import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { SETTINGS_LINKS } from '../../content/launchSettings.js'
 import { WALKING_UI_REVISION } from '../../content/walkingUiRevision.js'
 import { pwaController } from '../../pwa/pwaController.js'
+import FamilyWalkPanel from './FamilyWalkPanel.jsx'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -255,6 +256,10 @@ export default function SettingsBottomSheet({ open, onClose }) {
               />
             }
           />
+          <Hairline />
+
+          <FamilyWalkPanel />
+
           <Hairline />
 
           <ActionRow
