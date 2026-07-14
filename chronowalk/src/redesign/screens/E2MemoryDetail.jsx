@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Play, ChevronLeft, ChevronDown } from "lucide-react";
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, S } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow } from '../ui/index.js';
@@ -48,15 +48,15 @@ export default function E2MemoryDetail({
   return (
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Back */}
-      <div style={{ padding: "48px 24px 16px", flexShrink: 0 }}>
+      <div style={{ padding: `max(48px, calc(env(safe-area-inset-top) + ${S.m})) ${S.edge} ${S.m}`, flexShrink: 0 }}>
         <button type="button" onClick={() => (onBack ? onBack() : navigate("E1"))} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: T.muted, fontFamily: F.body, fontSize: 13, padding: 0 }}>
           <ChevronLeft size={16} /> Journal
         </button>
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 48px" }}>
+      <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: `0 ${S.edge} ${S.xl}` }}>
         <Eyebrow color={accent} hairline>{actLabel}</Eyebrow>
-        <h2 style={{ fontFamily: F.display, fontSize: 28, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: "10px 0 20px" }}>{title}</h2>
+        <h2 style={{ fontFamily: F.display, fontSize: 28, color: T.ink, fontWeight: 300, lineHeight: 1.1, margin: `${S.m} 0 ${S.l}` }}>{title}</h2>
 
         {onWalkToStop ? (
           <button
@@ -64,8 +64,8 @@ export default function E2MemoryDetail({
             onClick={onWalkToStop}
             style={{
               width: '100%',
-              marginBottom: 12,
-              padding: '13px 16px',
+              marginBottom: S.m,
+              padding: `${S.m}`,
               borderRadius: 12,
               border: 'none',
               background: accent,
@@ -81,14 +81,14 @@ export default function E2MemoryDetail({
         ) : null}
 
         {(onStepThroughTime || onAudioOnly || onTranscript || onViewImages) ? (
-          <div style={{ marginBottom: 20 }}>
+          <div style={{ marginBottom: S.l }}>
             {onStepThroughTime ? (
               <button
                 type="button"
                 onClick={onStepThroughTime}
                 style={{
                   width: '100%',
-                  padding: '14px 16px',
+                  padding: S.m,
                   borderRadius: 12,
                   border: 'none',
                   background: accent,
@@ -97,20 +97,20 @@ export default function E2MemoryDetail({
                   fontWeight: 600,
                   fontSize: 14,
                   cursor: 'pointer',
-                  marginBottom: 8,
+                  marginBottom: S.s,
                 }}
               >
                 Step through time
               </button>
             ) : null}
-            <div style={{ display: 'flex', gap: 8, marginBottom: onViewImages ? 8 : 0 }}>
+            <div style={{ display: 'flex', gap: S.s, marginBottom: onViewImages ? S.s : 0 }}>
               {onAudioOnly ? (
                 <button
                   type="button"
                   onClick={onAudioOnly}
                   style={{
                     flex: 1,
-                    padding: '12px 10px',
+                    padding: `${S.m} ${S.m}`,
                     borderRadius: 999,
                     border: `1.5px solid ${T.muted}55`,
                     background: 'transparent',
@@ -130,7 +130,7 @@ export default function E2MemoryDetail({
                   onClick={onTranscript}
                   style={{
                     flex: 1,
-                    padding: '12px 10px',
+                    padding: `${S.m} ${S.m}`,
                     borderRadius: 999,
                     border: `1.5px solid ${T.muted}55`,
                     background: 'transparent',
@@ -151,7 +151,7 @@ export default function E2MemoryDetail({
                 onClick={onViewImages}
                 style={{
                   width: '100%',
-                  padding: '12px',
+                  padding: S.m,
                   borderRadius: 999,
                   border: `1.5px solid ${accent}55`,
                   background: 'transparent',
@@ -171,7 +171,7 @@ export default function E2MemoryDetail({
         {/* Interactive threshold — hold or drag the seam */}
         <div
           style={{
-            marginBottom: 28,
+            marginBottom: S.xl,
             borderRadius: 16,
             overflow: 'hidden',
             height: Math.min(immersionH, 360),
@@ -188,39 +188,39 @@ export default function E2MemoryDetail({
         </div>
 
         {/* Key facts — editorial list, hairline-separated, no bullets */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
+        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: S.m }}>KEY FACTS</p>
         {facts.map((fact, i) => (
           <div key={i}>
-            {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: "14px 0" }} />}
+            {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: `${S.m} 0` }} />}
             <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75 }}>{fact}</p>
           </div>
         ))}
 
         {/* Transcript accordion */}
-        <div style={{ marginTop: 28, marginBottom: 24 }}>
-          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${T.muted}28`, borderBottom: `1px solid ${T.muted}28` }}>
+        <div style={{ marginTop: S.xl, marginBottom: S.l }}>
+          <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: `${S.m} 0`, borderTop: `1px solid ${T.muted}28`, borderBottom: `1px solid ${T.muted}28` }}>
             <span style={{ fontSize: 13, color: T.ink, fontWeight: 500, fontFamily: F.body }}>Full transcript</span>
             <ChevronDown size={16} color={T.muted} style={{ transform: txOpen ? "rotate(180deg)" : "none", transition: "transform 250ms" }} />
           </button>
           {txOpen && (
-            <div style={{ padding: "16px 0 8px" }}>
+            <div style={{ padding: `${S.m} 0 ${S.s}` }}>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.82 }}>
                 {transcript ?? '"You are standing at the largest amphitheater ever built. The Romans called it the Flavian Amphitheatre — the Colosseum is a nickname. Vespasian began it. Titus opened it in 80 AD with one hundred days of games. Both are dead, and the building is not. That tells you something about what they understood about power..."'}
               </p>
-              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: 10, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
+              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: S.m, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
             </div>
           )}
         </div>
 
         {/* Per-chapter listen-again rows */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>CHAPTERS</p>
+        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: S.m }}>CHAPTERS</p>
         {chapters.map((ch, i) => (
           <div key={ch.n ?? i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}
             <button
               type="button"
               onClick={onAudioOnly ?? onWalkToStop}
-              style={{ width: '100%', display: "flex", alignItems: "center", gap: 14, padding: "12px 0", cursor: "pointer", background: 'none', border: 'none', textAlign: 'left' }}
+              style={{ width: '100%', display: "flex", alignItems: "center", gap: S.m, padding: `${S.m} 0`, cursor: "pointer", background: 'none', border: 'none', textAlign: 'left' }}
             >
               <div style={{ width: 36, height: 36, borderRadius: 18, background: `${accent}15`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Play size={13} fill={accent} color={accent} style={{ marginLeft: 2 }} />

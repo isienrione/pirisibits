@@ -1,5 +1,5 @@
 import { MapPin, Navigation } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
 import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
@@ -47,11 +47,10 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          padding:
-            'max(56px, calc(env(safe-area-inset-top) + 24px)) 28px max(36px, calc(env(safe-area-inset-bottom) + 28px))',
+          padding: `max(64px, calc(env(safe-area-inset-top) + ${S.l})) ${S.edge} ${SHELL_SAFE_BOTTOM_INSET}`,
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+        <div style={{ textAlign: 'center', marginBottom: S.xl }}>
           <ChronoWalkLogo size={64} />
         </div>
 
@@ -73,7 +72,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               fontWeight: 300,
               color: T.warmWhite,
               lineHeight: 1.15,
-              margin: '0 0 16px',
+              margin: `0 0 ${S.m}`,
               textAlign: 'center',
             }}
           >
@@ -85,7 +84,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               color: T.muted,
               lineHeight: 1.7,
               textAlign: 'center',
-              margin: '0 0 36px',
+              margin: `0 0 ${S.xl}`,
             }}
           >
             Used only while you walk — never when the app is closed.
@@ -98,11 +97,11 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               padding: 0,
               display: 'flex',
               flexDirection: 'column',
-              gap: 20,
+              gap: S.l,
             }}
           >
             {BENEFITS.map(({ icon: Icon, text }) => (
-              <li key={text} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <li key={text} style={{ display: 'flex', alignItems: 'center', gap: S.m }}>
                 <span
                   style={{
                     width: 32,
@@ -123,9 +122,9 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           </ul>
         </div>
 
-        <div style={{ marginTop: 32 }}>
+        <div style={{ marginTop: S.xl }}>
           {paceTitle ? (
-            <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 18px' }}>
+            <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: `0 0 ${S.m}` }}>
               {paceTitle}
             </p>
           ) : null}
@@ -133,7 +132,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
             {busy ? 'Requesting…' : 'Enable location & begin'}
           </PrimaryButton>
           {onSkip ? (
-            <div style={{ marginTop: 12 }}>
+            <div style={{ marginTop: S.m }}>
               <GhostButton onClick={onSkip} disabled={busy}>
                 Continue without location
               </GhostButton>

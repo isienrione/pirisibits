@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, S } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
 
@@ -116,7 +116,7 @@ export default function FloatingAudioPlayer({
         ) : null}
 
         {/* Minimized row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: S.m, padding: `${S.m}` }}>
           <div
             style={{
               width: 9,
@@ -199,7 +199,7 @@ export default function FloatingAudioPlayer({
         {expanded ? (
           <div
             style={{
-              padding: reading ? '0 12px 12px' : '0 14px 14px',
+              padding: reading ? `0 ${S.m} ${S.m}` : `0 ${S.m} ${S.m}`,
               display: 'flex',
               flexDirection: 'column',
               flex: reading ? 1 : undefined,

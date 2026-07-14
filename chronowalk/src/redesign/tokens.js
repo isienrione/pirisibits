@@ -28,14 +28,40 @@ export const F = {
   body: "'DM Sans', system-ui, sans-serif",
 }
 
+/**
+ * Spacing scale — mirrors `src/design/tokens.css` (`--edge`, `--gap-*`).
+ * Prefer these over ad-hoc px for screen edge, section, card, and CTA rhythm.
+ */
+export const S = {
+  edge: 'var(--edge)',
+  s: 'var(--gap-s)',
+  m: 'var(--gap-m)',
+  l: 'var(--gap-l)',
+  xl: 'var(--gap-xl)',
+}
+
+/** Pixel literals of the same scale (layout math / seam offsets). */
+export const S_PX = {
+  edge: 24,
+  s: 8,
+  m: 16,
+  l: 24,
+  xl: 40,
+}
+
+/** Shared screen chrome paddings — pixel-perfect across tab screens. */
+export const SCREEN_PAD_X = S.edge
+export const SCREEN_HEADER_PAD = `max(56px, calc(env(safe-area-inset-top) + ${S.m})) ${S.edge} ${S.l}`
+export const SCREEN_FOOTER_PAD = `${S.l} ${S.edge}`
+
 /** Bottom padding when the fixed shell tab bar is visible. */
-export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(8px, env(safe-area-inset-bottom)))'
+export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(var(--gap-s), env(safe-area-inset-bottom)))'
 
 /**
  * Bottom padding for immersive (chrome-free) screens where the tab bar is
  * hidden — no tab-bar reservation, just breathing room + the safe-area inset.
  */
-export const SHELL_SAFE_BOTTOM_INSET = 'max(24px, env(safe-area-inset-bottom))'
+export const SHELL_SAFE_BOTTOM_INSET = 'max(var(--gap-xl), env(safe-area-inset-bottom))'
 
 export const ACT_COLORS = {
   I: T.actI,

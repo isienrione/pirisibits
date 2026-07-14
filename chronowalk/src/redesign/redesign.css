@@ -1175,13 +1175,13 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-route-preview-screen__footer {
   flex: 0 0 auto;
   width: 100%;
-  padding: 16px 24px 18px;
+  padding: var(--gap-l) var(--edge) var(--gap-l);
   border-top: 1px solid rgba(185, 175, 156, 0.18);
   background: #faf6ef;
 }
 
 .cw-route-preview-screen__note {
-  margin: 0 0 12px;
+  margin: 0 0 var(--gap-m);
   font-size: 12px;
   line-height: 1.45;
   color: #b9af9c;
@@ -1197,18 +1197,18 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 
 .cw-route-preview-panel__header {
   flex: 0 0 auto;
-  padding: max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 12px;
+  padding: max(56px, calc(env(safe-area-inset-top) + var(--gap-m))) var(--edge) var(--gap-l);
 }
 
 .cw-route-preview-panel__title {
-  margin: 8px 0 0;
+  margin: var(--gap-s) 0 0;
   font-size: 28px;
   font-weight: 300;
   line-height: 1.08;
 }
 
 .cw-route-preview-panel__subtitle {
-  margin: 10px 0 0;
+  margin: var(--gap-m) 0 0;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -1219,7 +1219,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
     100dvh - 10rem - var(--shell-tab-bar-height, 4.75rem) - env(safe-area-inset-top) - env(safe-area-inset-bottom)
   );
   overflow: hidden;
-  padding: 0 16px 12px;
+  padding: 0 var(--edge) var(--gap-m);
   display: flex;
   flex-direction: column;
 }
@@ -1315,14 +1315,14 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-walking-companion__header {
   flex-shrink: 0;
   padding:
-    max(20px, calc(env(safe-area-inset-top) + 8px))
-    max(24px, env(safe-area-inset-right))
-    22px
-    max(24px, env(safe-area-inset-left));
+    max(var(--gap-l), calc(env(safe-area-inset-top) + var(--gap-s)))
+    max(var(--edge), env(safe-area-inset-right))
+    var(--gap-l)
+    max(var(--edge), env(safe-area-inset-left));
 }
 
 .cw-walking-companion__act {
-  margin: 0 0 8px;
+  margin: 0 0 var(--gap-s);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1342,8 +1342,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 12px;
+  gap: var(--gap-m);
+  margin-bottom: var(--gap-m);
 }
 
 .cw-walking-companion__title {
@@ -1660,18 +1660,18 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   z-index: 3;
   flex-shrink: 0;
   padding:
-    10px
-    max(16px, env(safe-area-inset-right))
-    calc(max(12px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
-    max(16px, env(safe-area-inset-left));
+    var(--gap-m)
+    max(var(--edge), env(safe-area-inset-right))
+    calc(max(var(--gap-m), env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
+    max(var(--edge), env(safe-area-inset-left));
 }
 
 .cw-walking-companion__dock {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 6px 4px;
+  gap: var(--gap-m);
+  padding: var(--gap-s) var(--gap-s);
   min-height: 52px;
 }
 

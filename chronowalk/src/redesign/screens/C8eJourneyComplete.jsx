@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { appiaNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
 
@@ -59,7 +59,7 @@ export default function C8eJourneyComplete({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 'max(64px, calc(env(safe-area-inset-top) + 32px)) 32px 28px',
+          padding: `max(64px, calc(env(safe-area-inset-top) + ${S.xl})) ${S.xl} ${S.l}`,
           opacity: revealed ? 1 : 0,
           transform: revealed ? 'translateY(0)' : 'translateY(12px)',
           transition: 'opacity 700ms ease, transform 700ms ease',
@@ -73,7 +73,7 @@ export default function C8eJourneyComplete({
             color: T.warmWhite,
             lineHeight: 1.1,
             textAlign: 'center',
-            margin: '0 0 16px',
+            margin: `0 0 ${S.m}`,
             textShadow: '0 2px 24px rgba(0,0,0,0.55)',
           }}
         >
@@ -101,7 +101,7 @@ export default function C8eJourneyComplete({
           position: 'relative',
           zIndex: 12,
           flexShrink: 0,
-          padding: `0 28px calc(${SHELL_SAFE_BOTTOM_INSET} + 16px)`,
+          padding: `0 ${S.edge} calc(${SHELL_SAFE_BOTTOM_INSET} + ${S.m})`,
           opacity: revealed ? 1 : 0,
           transition: 'opacity 900ms ease 200ms',
         }}
@@ -112,7 +112,7 @@ export default function C8eJourneyComplete({
               fontSize: 13,
               color: T.muted,
               textAlign: 'center',
-              margin: '0 0 24px',
+              margin: `0 0 ${S.l}`,
               fontVariantNumeric: 'tabular-nums',
             }}
           >
@@ -127,7 +127,7 @@ export default function C8eJourneyComplete({
           onClick={() => onReadLetter?.()}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: S.m,
             background: accent,
             color: T.warmWhite,
             borderRadius: 12,
@@ -136,7 +136,7 @@ export default function C8eJourneyComplete({
             fontSize: 15,
             border: 'none',
             cursor: busy ? 'wait' : 'pointer',
-            marginBottom: 12,
+            marginBottom: S.m,
           }}
         >
           Read your letter
@@ -149,7 +149,7 @@ export default function C8eJourneyComplete({
           onClick={() => onReturnTour?.()}
           style={{
             width: '100%',
-            padding: '13px',
+            padding: S.m,
             background: 'transparent',
             color: T.muted,
             borderRadius: 12,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
 
@@ -48,26 +48,35 @@ export default function B2MakeItYours({
       <BottomScrim strength={0.90} />
 
       {/* Content — all type ON the photograph */}
-      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "72px 28px 56px" }}>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 10,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          padding: `max(64px, calc(env(safe-area-inset-top) + ${S.xl})) ${S.edge} ${SHELL_SAFE_BOTTOM_INSET}`,
+        }}
+      >
 
         {/* Small logomark */}
-        <div style={{ marginBottom: 48 }}>
+        <div style={{ marginBottom: S.xl }}>
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.5))" }} />
             <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
           </svg>
         </div>
 
-        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 12, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
+        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: S.m, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
           Make it yours.
         </h2>
-        <p style={{ fontSize: 15, color: T.muted, marginBottom: 48, lineHeight: 1.65 }}>Two quiet steps before you walk.</p>
+        <p style={{ fontSize: 15, color: T.muted, marginBottom: S.xl, lineHeight: 1.65 }}>Two quiet steps before you walk.</p>
 
         {/* ── Row 1 — Home screen ── */}
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 26, paddingBottom: 26 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: S.l, paddingBottom: S.l }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: S.m }}>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 8, lineHeight: 1.4 }}>
+              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: S.s, lineHeight: 1.4 }}>
                 Home screen
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65 }}>
@@ -92,19 +101,19 @@ export default function B2MakeItYours({
         </div>
 
         {/* ── Row 2 — Download ── */}
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 26, paddingBottom: 26 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: S.l, paddingBottom: S.l }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: S.m }}>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 8, lineHeight: 1.4 }}>
+              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: S.s, lineHeight: 1.4 }}>
                 Download for offline
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65 }}>
                 About 215 MB — ready when the streets are quiet.
               </p>
               {downloadComplete || dlProgress >= 1 ? (
-                <p style={{ fontSize: 12, color: T.actII, marginTop: 8 }}>Ready</p>
+                <p style={{ fontSize: 12, color: T.actII, marginTop: S.s }}>Ready</p>
               ) : downloading && dlProgress > 0 && dlProgress < 1 ? (
-                <p style={{ fontSize: 12, color: T.ember, marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
+                <p style={{ fontSize: 12, color: T.ember, marginTop: S.s, fontVariantNumeric: "tabular-nums" }}>
                   {Math.round(dlProgress * 100)}%
                 </p>
               ) : null}
@@ -167,12 +176,12 @@ export default function B2MakeItYours({
         {/* Bottom hairline divider */}
         <div style={{ borderTop: `1px solid ${T.ink800}` }} />
 
-        <div style={{ marginTop: "auto", textAlign: "center", paddingTop: 28, display: 'grid', gap: 14 }}>
+        <div style={{ marginTop: "auto", textAlign: "center", paddingTop: S.xl, display: 'grid', gap: S.m }}>
           {canInstall ? (
             <button
               type="button"
               onClick={() => onInstall?.()}
-              style={{ width: '100%', padding: '15px', background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
+              style={{ width: '100%', padding: S.m, background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
             >
               {showIosInstructions ? 'Continue' : 'Add to home screen'}
             </button>
@@ -180,12 +189,12 @@ export default function B2MakeItYours({
           <button
             type="button"
             onClick={() => (onContinue ? onContinue() : onSkip?.())}
-            style={{ width: '100%', padding: '14px', background: 'transparent', color: T.warmWhite, borderRadius: 12, fontFamily: F.body, fontSize: 15, border: `1px solid ${T.ink800}`, cursor: 'pointer' }}
+            style={{ width: '100%', padding: S.m, background: 'transparent', color: T.warmWhite, borderRadius: 12, fontFamily: F.body, fontSize: 15, border: `1px solid ${T.ink800}`, cursor: 'pointer' }}
           >
             Continue to Rome
           </button>
           {!canInstall ? (
-            <button type="button" onClick={() => (onSkip ? onSkip() : undefined)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 13, letterSpacing: "0.04em", fontFamily: F.body, paddingTop: 4 }}>
+            <button type="button" onClick={() => (onSkip ? onSkip() : undefined)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 13, letterSpacing: "0.04em", fontFamily: F.body, paddingTop: S.s }}>
               Skip for now
             </button>
           ) : null}

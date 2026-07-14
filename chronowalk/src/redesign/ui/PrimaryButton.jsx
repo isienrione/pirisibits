@@ -1,4 +1,4 @@
-import { T, F } from '../tokens.js'
+import { T, F, S } from '../tokens.js'
 
 export function PrimaryButton({ children, onClick, color = T.terracotta, textColor, style, disabled = false }) {
   const fg =
@@ -13,7 +13,7 @@ export function PrimaryButton({ children, onClick, color = T.terracotta, textCol
       disabled={disabled}
       style={{
         width: '100%',
-        padding: '15px',
+        padding: S.m,
         background: color,
         color: fg,
         borderRadius: 12,

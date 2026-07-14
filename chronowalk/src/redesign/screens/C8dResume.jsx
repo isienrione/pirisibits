@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { T, F } from "../tokens.js";
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette, BottomScrim } from '../ui/index.js';
@@ -31,7 +31,7 @@ export default function C8dResume({
         position: "absolute", inset: 0, zIndex: 10,
         display: "flex", flexDirection: "column",
         justifyContent: "flex-end",
-        padding: "0 28px 64px",
+        padding: `0 ${S.edge} ${SHELL_SAFE_BOTTOM_INSET}`,
       }}>
         <h1 style={{
           fontFamily: F.display,
@@ -39,7 +39,7 @@ export default function C8dResume({
           color: T.warmWhite,
           fontWeight: 300,
           lineHeight: 1.1,
-          margin: "0 0 12px",
+          margin: `0 0 ${S.m}`,
           textShadow: "0 2px 24px rgba(0,0,0,0.55)",
         }}>
           Rome kept your place.
@@ -49,7 +49,7 @@ export default function C8dResume({
           fontSize: 15,
           color: T.muted,
           lineHeight: 1.55,
-          marginBottom: 36,
+          marginBottom: S.xl,
         }}>
           {resumeLabel}
         </p>
@@ -60,12 +60,12 @@ export default function C8dResume({
           disabled={busy}
           onClick={() => (onContinue ? onContinue() : navigate("C5"))}
           style={{
-            width: "100%", padding: "15px",
+            width: "100%", padding: S.m,
             background: accent, color: T.warmWhite,
             borderRadius: 12, fontFamily: F.body,
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
-            marginBottom: 14,
+            marginBottom: S.m,
           }}
         >
           Continue walking

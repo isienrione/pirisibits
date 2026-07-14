@@ -6,7 +6,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
-import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, ACT_COLORS, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 
@@ -102,9 +102,9 @@ export default function RedesignStopsScreen() {
 
   if (error || !manifest) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, padding: 32 }}>
+      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, padding: S.xl }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Route unavailable'}</p>
-        <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: 16, padding: '12px 16px', borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
+        <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: S.m, padding: S.m, borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
           Start tour
         </button>
       </div>
@@ -113,8 +113,8 @@ export default function RedesignStopsScreen() {
 
   return (
     <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: 'max(52px, calc(env(safe-area-inset-top) + 20px)) 24px 20px', flexShrink: 0 }}>
-        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: 8 }}>
+      <div style={{ padding: SCREEN_HEADER_PAD, flexShrink: 0 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: S.m }}>
           All stops
         </h1>
         <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>
@@ -122,7 +122,7 @@ export default function RedesignStopsScreen() {
         </p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: 16 }}>
+      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative', paddingBottom: S.l }}>
         <div
           style={{
             position: 'absolute',
@@ -138,13 +138,13 @@ export default function RedesignStopsScreen() {
           aria-hidden
         />
 
-        <div style={{ position: 'relative', zIndex: 1, paddingBottom: 16 }}>
+        <div style={{ position: 'relative', zIndex: 1, paddingBottom: S.l }}>
           {groups.map((group) => (
             <div key={group.act}>
               <div
                 style={{
                   position: 'relative',
-                  padding: `12px 20px 10px ${ROW_INSET}px`,
+                  padding: `${S.m} ${S.l} ${S.s} ${ROW_INSET}px`,
                 }}
               >
                 <div
@@ -176,7 +176,7 @@ export default function RedesignStopsScreen() {
                     key={card.id}
                     style={{
                       position: 'relative',
-                      padding: `0 20px ${isLastInAct ? 18 : 14}px ${ROW_INSET}px`,
+                      padding: `0 ${S.l} ${isLastInAct ? S.l : S.m} ${ROW_INSET}px`,
                       opacity: faded ? 0.72 : 1,
                     }}
                   >
@@ -236,8 +236,8 @@ export default function RedesignStopsScreen() {
                           ) : (
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />
                           )}
-                          <div style={{ flex: 1, padding: '16px 18px' }}>
-                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>
+                          <div style={{ flex: 1, padding: S.m }}>
+                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: S.s }}>
                               {card.name}
                             </p>
                             <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45, margin: 0 }}>
@@ -247,22 +247,22 @@ export default function RedesignStopsScreen() {
                         </div>
                       </button>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 16px', borderTop: `1px solid ${T.muted}14` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `${S.m} ${S.m} ${S.l}`, borderTop: `1px solid ${T.muted}14` }}>
                         <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase', minHeight: 16 }}>
                           {statusLabel(card.status) ?? ''}
                         </span>
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                        <div style={{ display: 'flex', gap: S.s, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 12, color: T.ink, background: 'none', border: `1px solid ${T.muted}35`, borderRadius: 8, padding: '7px 10px', cursor: 'pointer' }}
+                            style={{ fontSize: 12, color: T.ink, background: 'none', border: `1px solid ${T.muted}35`, borderRadius: 8, padding: `${S.s} ${S.m}`, cursor: 'pointer' }}
                           >
                             Listen
                           </button>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 12, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '7px 10px', cursor: 'pointer', fontWeight: 600 }}
+                            style={{ fontSize: 12, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: `${S.s} ${S.m}`, cursor: 'pointer', fontWeight: 600 }}
                           >
                             Walk here
                           </button>
@@ -278,11 +278,11 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
+        <div style={{ padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
           <button
             type="button"
             onClick={() => navigate('/begin')}
-            style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}
+            style={{ width: '100%', padding: S.m, borderRadius: 12, border: 'none', background: T.ember, color: T.obsidian, fontWeight: 600, cursor: 'pointer' }}
           >
             Begin the tour
           </button>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
+import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
 
@@ -70,7 +70,7 @@ export default function B5OwnPaceStopPicker({
         overflow: 'hidden',
       }}
     >
-      <div style={{ padding: 'max(52px, calc(env(safe-area-inset-top) + 20px)) 24px 20px', flexShrink: 0 }}>
+      <div style={{ padding: SCREEN_HEADER_PAD, flexShrink: 0 }}>
         {onBack ? (
           <button
             type="button"
@@ -82,7 +82,7 @@ export default function B5OwnPaceStopPicker({
               border: 'none',
               cursor: 'pointer',
               padding: 0,
-              marginBottom: 16,
+              marginBottom: S.m,
             }}
           >
             ← Back
@@ -95,7 +95,7 @@ export default function B5OwnPaceStopPicker({
             fontWeight: 300,
             color: T.ink,
             lineHeight: 1.15,
-            margin: '0 0 10px',
+            margin: `0 0 ${S.m}`,
           }}
         >
           {title}
@@ -103,7 +103,7 @@ export default function B5OwnPaceStopPicker({
         <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.55, margin: 0 }}>{subtitle}</p>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: '0 0 16px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: `0 0 ${S.m}` }}>
         {acts.map((act) => {
           const color = ACT_COLOR[act.colorKey] ?? T.actI
           const expanded = expandedActs.has(act.id)
@@ -116,8 +116,8 @@ export default function B5OwnPaceStopPicker({
                   width: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 10,
-                  padding: '16px 24px',
+                  gap: S.m,
+                  padding: `${S.m} ${S.edge}`,
                 }}
               >
                 <button
@@ -127,7 +127,7 @@ export default function B5OwnPaceStopPicker({
                     flex: 1,
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 10,
+                    gap: S.m,
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
@@ -156,7 +156,7 @@ export default function B5OwnPaceStopPicker({
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    padding: '4px 8px',
+                    padding: `4px ${S.s}`,
                   }}
                 >
                   {act.stops.every((stop) => selected.has(stop.id)) ? 'Clear' : 'All'}
@@ -190,8 +190,8 @@ export default function B5OwnPaceStopPicker({
                           width: '100%',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 12,
-                          padding: '14px 24px 14px 32px',
+                          gap: S.m,
+                          padding: `${S.m} ${S.edge} ${S.m} ${S.xl}`,
                           background: checked ? `${color}0c` : 'transparent',
                           border: 'none',
                           borderLeft: checked ? `2px solid ${color}` : '2px solid transparent',
@@ -229,7 +229,7 @@ export default function B5OwnPaceStopPicker({
                           {stop.hook ? (
                             <p
                               style={{
-                                margin: '3px 0 0',
+                                margin: `${S.s} 0 0`,
                                 fontSize: 12,
                                 color: T.muted,
                                 overflow: 'hidden',
@@ -253,7 +253,7 @@ export default function B5OwnPaceStopPicker({
       <div
         style={{
           flexShrink: 0,
-          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
+          padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`,
           borderTop: `1px solid ${T.ink800}18`,
           background: T.bone,
         }}
@@ -264,7 +264,7 @@ export default function B5OwnPaceStopPicker({
           onClick={onContinue}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: S.m,
             background: canContinue ? T.ember : T.ink800,
             color: canContinue ? T.obsidian : T.muted,
             borderRadius: 12,

@@ -1,4 +1,4 @@
-import { T, F } from '../tokens.js'
+import { T, F, S } from '../tokens.js'
 
 export function GhostButton({ children, onClick, style }) {
   return (
@@ -7,7 +7,7 @@ export function GhostButton({ children, onClick, style }) {
       onClick={onClick}
       style={{
         width: '100%',
-        padding: '14px 20px',
+        padding: `${S.m} ${S.l}`,
         border: `1.5px solid rgba(245,239,227,0.25)`,
         color: T.warmWhite,
         borderRadius: 12,

@@ -90,6 +90,7 @@
   --fs-meta: 13px;
   --fs-caption: 11px;
 
+  /* Spacing rhythm — use for edge, section, card, and CTA geometry */
   --edge: 24px;
   --gap-s: 8px;
   --gap-m: 16px;

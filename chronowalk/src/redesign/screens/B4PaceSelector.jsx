@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from 'react'
-import { T, F } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import {
   colosseumNow,
   capitolineNow,
@@ -82,7 +82,7 @@ export default function B4PaceSelector({
         fontFamily: F.body,
         display: 'flex',
         flexDirection: 'column',
-        padding: '48px 24px 32px',
+        padding: `max(48px, calc(env(safe-area-inset-top) + ${S.l})) ${S.edge} ${SHELL_SAFE_BOTTOM_INSET}`,
         overflow: 'hidden',
         position: 'relative',
       }}
@@ -110,7 +110,7 @@ export default function B4PaceSelector({
           minHeight: 0,
         }}
       >
-        <div style={{ height: 32, position: 'relative', marginBottom: 16, flexShrink: 0 }}>
+        <div style={{ height: S.xl, position: 'relative', marginBottom: S.m, flexShrink: 0 }}>
           <div
             style={{
               position: 'absolute',
@@ -132,7 +132,7 @@ export default function B4PaceSelector({
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.05,
-            margin: '0 0 20px',
+            margin: `0 0 ${S.l}`,
             flexShrink: 0,
           }}
         >
@@ -145,11 +145,11 @@ export default function B4PaceSelector({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 12,
+            gap: S.m,
             flex: 1,
             minHeight: 0,
             overflowY: 'auto',
-            paddingBottom: 4,
+            paddingBottom: S.s,
           }}
         >
           {options.map((opt, i) => (
@@ -205,7 +205,7 @@ export default function B4PaceSelector({
                     inset: 0,
                     display: 'flex',
                     alignItems: 'flex-end',
-                    padding: '0 14px 10px',
+                    padding: `0 ${S.m} ${S.s}`,
                   }}
                 >
                   <div
@@ -214,7 +214,7 @@ export default function B4PaceSelector({
                       alignItems: 'flex-end',
                       justifyContent: 'space-between',
                       width: '100%',
-                      gap: 8,
+                      gap: S.s,
                     }}
                   >
                     <span
@@ -228,7 +228,7 @@ export default function B4PaceSelector({
                     >
                       {opt.title}
                     </span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: S.s, flexShrink: 0 }}>
                       {opt.priceLabel ? (
                         <span
                           style={{
@@ -249,7 +249,7 @@ export default function B4PaceSelector({
                             color: T.bone,
                             background: T.gold,
                             borderRadius: 6,
-                            padding: '3px 8px',
+                            padding: `3px ${S.s}`,
                             letterSpacing: '0.12em',
                             textTransform: 'uppercase',
                           }}
@@ -262,11 +262,11 @@ export default function B4PaceSelector({
                 </div>
               </div>
 
-              <div style={{ padding: '14px 16px 16px' }}>
-                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: '0 0 10px' }}>
+              <div style={{ padding: `${S.m} ${S.m} ${S.l}` }}>
+                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: `0 0 ${S.m}` }}>
                   {opt.desc || opt.included}
                 </p>
-                <div style={{ display: 'flex', gap: 6 }}>
+                <div style={{ display: 'flex', gap: S.s }}>
                   {opt.dots.map((color, di) => (
                     <div
                       key={di}
@@ -291,7 +291,7 @@ export default function B4PaceSelector({
             color: T.muted,
             lineHeight: 1.55,
             textAlign: 'center',
-            margin: '18px 0 12px',
+            margin: `${S.l} 0 ${S.m}`,
             flexShrink: 0,
           }}
         >
@@ -303,7 +303,7 @@ export default function B4PaceSelector({
           onClick={handleContinue}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: S.m,
             background: activeIndex != null && activeIndex >= 0 ? T.terracotta : T.ink800,
             color: activeIndex != null && activeIndex >= 0 ? T.obsidian : T.muted,
             borderRadius: 12,

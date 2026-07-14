@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, F, S, SCREEN_HEADER_PAD, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import {
@@ -210,14 +210,14 @@ export default function RedesignMyTourScreen() {
 
   if (error || !manifest) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}>
+      <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: S.xl, fontFamily: F.body }}>
         <p style={{ color: T.muted }}>{error?.message ?? 'Tour unavailable'}</p>
         <Link
           to="/begin"
           style={{
             display: 'inline-block',
-            marginTop: 16,
-            padding: '12px 16px',
+            marginTop: S.m,
+            padding: `${S.m}`,
             borderRadius: 10,
             background: T.ember,
             color: T.obsidian,
@@ -262,14 +262,14 @@ export default function RedesignMyTourScreen() {
     >
       <div
         style={{
-          padding: 'max(52px, calc(env(safe-area-inset-top) + 16px)) 24px 14px',
+          padding: SCREEN_HEADER_PAD,
           flexShrink: 0,
           position: 'relative',
           zIndex: 2,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: S.l }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: S.s }}>
             <ChronowalkMark />
             <span
               style={{
@@ -300,13 +300,13 @@ export default function RedesignMyTourScreen() {
             fontWeight: 300,
             color: T.ink,
             lineHeight: 1.05,
-            margin: '0 0 10px',
+            margin: `0 0 ${S.m}`,
             letterSpacing: '0.02em',
           }}
         >
           ROME: ETERNAL CITY
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginTop: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: S.m, marginTop: S.s }}>
           <span
             style={{
               fontSize: 12,
@@ -335,7 +335,7 @@ export default function RedesignMyTourScreen() {
               setPickerMode(true)
             }}
             style={{
-              marginTop: 10,
+              marginTop: S.m,
               fontSize: 12,
               color: T.muted,
               background: 'none',
@@ -366,7 +366,7 @@ export default function RedesignMyTourScreen() {
           }}
         />
 
-        <div style={{ paddingBottom: 16 }}>
+        <div style={{ paddingBottom: S.l }}>
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
             const faded = act.status === 'ahead' || act.locked
@@ -381,8 +381,8 @@ export default function RedesignMyTourScreen() {
                     position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: `14px 20px 14px ${SEAM_X + NODE_R + 14}px`,
-                    gap: 12,
+                    padding: `${S.m} ${S.l} ${S.m} ${SEAM_X + NODE_R + 14}px`,
+                    gap: S.m,
                     opacity: act.locked ? 0.38 : faded ? 0.55 : 1,
                     transition: 'opacity 300ms',
                   }}
@@ -518,7 +518,7 @@ export default function RedesignMyTourScreen() {
                             display: 'flex',
                             alignItems: 'center',
                             gap: 10,
-                            padding: `8px 20px 8px ${SEAM_X + NODE_R + 14}px`,
+                            padding: `${S.s} ${S.l} ${S.s} ${SEAM_X + NODE_R + 14}px`,
                             opacity: stopFaded ? 0.5 : 1,
                           }}
                         >
@@ -568,7 +568,7 @@ export default function RedesignMyTourScreen() {
       <div
         style={{
           flexShrink: 0,
-          padding: `20px 24px ${SHELL_TAB_BAR_INSET}`,
+          padding: `${S.l} ${S.edge} ${SHELL_TAB_BAR_INSET}`,
           background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
           borderTop: `1px solid ${T.ink800}14`,
           position: 'relative',
@@ -580,7 +580,7 @@ export default function RedesignMyTourScreen() {
           onClick={handlePrimaryCta}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: S.m,
             background: ctaColor,
             color: T.warmWhite,
             borderRadius: 12,
@@ -589,12 +589,12 @@ export default function RedesignMyTourScreen() {
             fontSize: 15,
             border: 'none',
             cursor: 'pointer',
-            marginBottom: 12,
+            marginBottom: S.m,
           }}
         >
           {ctaLabel}
         </button>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 40 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: S.xl }}>
           <button
             type="button"
             onClick={() => setSheetOpen(true)}
@@ -631,7 +631,7 @@ export default function RedesignMyTourScreen() {
             style={{
               display: 'block',
               textAlign: 'center',
-              marginTop: 12,
+              marginTop: S.m,
               fontSize: 13,
               color: T.muted,
             }}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
@@ -372,7 +372,7 @@ export default function C6ImmersivePlayer({
   )
 
   const chapterMeta = (
-    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 10px', flexShrink: 0 }}>
+    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: `0 0 ${S.m}`, flexShrink: 0 }}>
       Chapter {chapterIndex + 1} of {chapterCount}
     </p>
   )
@@ -536,7 +536,7 @@ export default function C6ImmersivePlayer({
               color: T.warmWhite,
               fontWeight: 300,
               lineHeight: 1.05,
-              margin: '8px 0 4px',
+              margin: `${S.s} 0 ${S.s}`,
             }}
           >
             {title}
@@ -595,8 +595,8 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           flexDirection: 'column',
           padding: showContinuity
-            ? '12px 24px 14px'
-            : `14px 24px max(16px, ${SHELL_SAFE_BOTTOM_INSET})`,
+            ? `${S.m} ${S.edge} ${S.m}`
+            : `${S.m} ${S.edge} max(${S.m}, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
         {showContinuity ? (
@@ -611,7 +611,7 @@ export default function C6ImmersivePlayer({
             {audioPlayerBlock(false)}
 
             {showAudioNotice ? (
-              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+              <p style={{ margin: `0 0 ${S.m}`, fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
                 {import.meta.env.DEV
                   ? 'Narration audio is unavailable in this development build.'
                   : 'Narration is preparing — check your connection.'}
@@ -640,7 +640,7 @@ export default function C6ImmersivePlayer({
             onClick={onStoryComplete}
             style={{
               width: '100%',
-              padding: '14px',
+              padding: S.m,
               borderRadius: 12,
               border: 'none',
               background: T.terracotta,

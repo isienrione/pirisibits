@@ -25,8 +25,8 @@ export default function MapBottomCard({
         style={{
           display: 'flex',
           alignItems: 'flex-start',
-          gap: 12,
-          padding: '13px 14px 0',
+          gap: 'var(--gap-m)',
+          padding: 'var(--gap-m) var(--gap-m) 0',
         }}
       >
         {imageUrl ? (
@@ -42,7 +42,7 @@ export default function MapBottomCard({
             }}
           />
         ) : null}
-        <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 4 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingBottom: meta ? 0 : 'var(--gap-s)' }}>
           <p
             style={{
               margin: 0,
@@ -58,7 +58,7 @@ export default function MapBottomCard({
           {meta ? (
             <p
               style={{
-                margin: '4px 0 0',
+                margin: 'var(--gap-s) 0 0',
                 fontSize: 13,
                 lineHeight: 1.35,
                 color: 'var(--muted-warm)',
@@ -70,14 +70,14 @@ export default function MapBottomCard({
         </div>
       </div>
 
-      <div style={{ padding: '12px 14px 14px' }}>
+      <div style={{ padding: 'var(--gap-m)' }}>
         <button
           type="button"
           onClick={onCta}
           disabled={disabled}
           style={{
             width: '100%',
-            padding: '12px 16px',
+            padding: 'var(--gap-m)',
             borderRadius: 12,
             border: 'none',
             background: 'var(--accent)',
