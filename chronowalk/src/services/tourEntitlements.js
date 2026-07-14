@@ -76,13 +76,27 @@ export const ownsAnyTour = (ownedTourIds = readOwnedTourIds()) => {
   return ownedTourIds.length > 0
 }
 
-export const purchaseTourProduct = (productId) => {
+/**
+ * Record a purchase.
+ * @param {string} productId
+ * @param {{ replace?: boolean }} [options] When replace is true, this product becomes
+ *   the sole owned landing package (avoids a stale "complete" default masking a smaller buy).
+ */
+export const purchaseTourProduct = (productId, options = {}) => {
   const normalizedProductId = normalizeProductId(productId)
   if (!getTourProduct(normalizedProductId)) {
     return { ok: false, reason: 'unknown_product' }
   }
 
   const tourIds = getTourIdsForProduct(normalizedProductId)
+  const replace = Boolean(options.replace)
+
+  if (replace) {
+    persistOwnedTourIds(tourIds)
+    persistPurchasedProductIds([normalizedProductId])
+    return { ok: true, tourIds, productId: normalizedProductId }
+  }
+
   const owned = new Set(readOwnedTourIds() ?? [])
   for (const tourId of tourIds) {
     owned.add(tourId)

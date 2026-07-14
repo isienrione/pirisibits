@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { grantAccess } from '../../lib/config'
+import { readPendingProductId } from '../../data/pendingPurchase.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 function AccessShell({ children }) {
@@ -55,7 +56,7 @@ export default function AccessScreen({ onValidated }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = parseAccessToken(`?${searchParams.toString()}`)
-  const productId = readProductIdFromSearch(searchParams)
+  const productId = readProductIdFromSearch(searchParams) || readPendingProductId()
   const [status, setStatus] = useState(token ? 'validating' : 'idle')
   const [manualToken, setManualToken] = useState('')
 

@@ -59,15 +59,28 @@ describe('BeginPage', () => {
 
   it('scopes begin options to the purchased package without pricing', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
-    purchaseTourProduct('rome-essential')
+    purchaseTourProduct('rome-essential', { replace: true })
 
     renderBeginPage()
 
     expect(screen.getByTestId('purchased-package-summary')).toHaveTextContent(/roma antica/i)
-    expect(screen.getByRole('button', { name: /at your own pace/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /customize stops/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /continue — full route/i })).toBeInTheDocument()
-    expect(screen.queryByText(/roma historica/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /roma eterna/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /roma historica/i })).not.toBeInTheDocument()
     expect(screen.queryByText(/\$17|€17|\$12|€12|\$9|€9/)).not.toBeInTheDocument()
+  })
+
+  it('keeps Roma Historica purchasers on the centro storico package only', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    purchaseTourProduct('rome-central', { replace: true })
+
+    renderBeginPage()
+
+    expect(screen.getByTestId('purchased-package-summary')).toHaveTextContent(/roma historica/i)
+    expect(screen.getByText(/stops included in roma historica/i)).toBeInTheDocument()
+    expect(screen.queryByText(/roma eterna/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/roma antica/i)).not.toBeInTheDocument()
   })
 
   it('skips route preview when onboarding was already completed', () => {

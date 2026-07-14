@@ -2,6 +2,11 @@ import {
   purchaseTourProduct,
   readPurchasedProductIds,
 } from '../services/tourEntitlements.js'
+import {
+  clearPendingProductId,
+  normalizeLandingProductId,
+  readPendingProductId,
+} from '../data/pendingPurchase.js'
 
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
@@ -106,22 +111,34 @@ export function hasAccess() {
 /**
  * Unlock the app on this device.
  * Optional productId records which landing package was purchased (for /begin setup).
- * When omitted and no product is stored yet, defaults to Rome Complete.
+ * Falls back to a pending tier stashed at checkout, then existing purchases, then Complete.
  */
 export function grantAccess(productId) {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(ACCESS_KEY, 'true')
 
+  const fromArg =
+    typeof productId === 'string' && productId.trim()
+      ? (normalizeLandingProductId(productId) ?? productId.trim())
+      : null
+  const pending = readPendingProductId()
   const existing = readPurchasedProductIds()
-  const resolvedProductId = productId || (existing.length ? null : DEFAULT_ACCESS_PRODUCT_ID)
+  const resolvedProductId =
+    fromArg || pending || (existing.length ? null : DEFAULT_ACCESS_PRODUCT_ID)
+
   if (resolvedProductId) {
-    purchaseTourProduct(resolvedProductId)
+    // Replace when the traveler explicitly bought a tier so a smaller package
+    // cannot be masked by a leftover complete default.
+    const shouldReplace = Boolean(fromArg || pending || !existing.length)
+    purchaseTourProduct(resolvedProductId, { replace: shouldReplace })
+    clearPendingProductId()
   }
 }
 
 export function revokeAccess() {
   if (typeof window === 'undefined') return
   window.localStorage.removeItem(ACCESS_KEY)
+  clearPendingProductId()
 }
 
 export { ACCESS_KEY, AB_KEY }

@@ -36,8 +36,18 @@ describe('romePacing', () => {
   it('offers full-route vs customize start modes for a purchased package', () => {
     const modes = getBeginStartModes(getPaceOption(JOURNEY_PACE.CLASSIC))
     expect(modes).toHaveLength(2)
-    expect(modes[0]).toMatchObject({ id: START_MODE.FULL, paceId: JOURNEY_PACE.CLASSIC })
-    expect(modes[1]).toMatchObject({ id: START_MODE.OWN, paceId: JOURNEY_PACE.OWN })
+    expect(modes[0]).toMatchObject({
+      id: START_MODE.FULL,
+      paceId: JOURNEY_PACE.CLASSIC,
+      title: 'Full route',
+      badge: 'Roma Antica',
+    })
+    expect(modes[1]).toMatchObject({
+      id: START_MODE.OWN,
+      paceId: JOURNEY_PACE.OWN,
+      title: 'Customize stops',
+    })
+    expect(modes.some((mode) => /roma eterna|roma historica/i.test(mode.title))).toBe(false)
     expect(JSON.stringify(modes)).not.toMatch(/€|\$\d/)
   })
 

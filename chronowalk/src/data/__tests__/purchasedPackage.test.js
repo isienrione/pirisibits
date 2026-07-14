@@ -18,13 +18,13 @@ describe('purchasedPackage', () => {
   })
 
   it('resolves Roma Antica / centro storico packages from purchases', () => {
-    purchaseTourProduct('rome-essential')
+    purchaseTourProduct('rome-essential', { replace: true })
     expect(resolvePurchasedProductId()).toBe('rome-essential')
     expect(resolvePurchasedPace()).toBe(JOURNEY_PACE.CLASSIC)
     expect(getPurchasedPackageOption().title).toBe('Roma Antica')
 
     clearTourEntitlements()
-    purchaseTourProduct('rome-central')
+    purchaseTourProduct('rome-central', { replace: true })
     expect(resolvePurchasedProductId()).toBe('rome-central')
     expect(getPurchasedPackageOption().title).toBe('Roma Historica')
   })
@@ -33,5 +33,12 @@ describe('purchasedPackage', () => {
     purchaseTourProduct('rome-central')
     purchaseTourProduct('rome-complete')
     expect(resolvePurchasedProductId()).toBe('rome-complete')
+  })
+
+  it('keeps centro storico alone after a replace purchase', () => {
+    purchaseTourProduct('rome-complete', { replace: true })
+    purchaseTourProduct('rome-central', { replace: true })
+    expect(resolvePurchasedProductId()).toBe('rome-central')
+    expect(getPurchasedPackageOption().title).toBe('Roma Historica')
   })
 })

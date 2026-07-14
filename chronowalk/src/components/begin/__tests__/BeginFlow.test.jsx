@@ -58,7 +58,8 @@ describe('BeginFlow', () => {
 
     expect(screen.getByRole('heading', { name: /review & begin/i })).toBeInTheDocument()
     expect(screen.getAllByText(/roma eterna/i).length).toBeGreaterThan(0)
-    expect(screen.getByText(/at your own pace/i)).toBeInTheDocument()
+    expect(screen.getByText(/customize stops/i)).toBeInTheDocument()
+    expect(screen.getByText(/full route/i)).toBeInTheDocument()
     expect(screen.queryByText(/€\d|\$\d/)).not.toBeInTheDocument()
     expect(screen.getByText(/confirm your layout next/i)).toBeInTheDocument()
   })
