@@ -48,7 +48,12 @@ export default function FlowEscapeButton() {
       return
     }
 
-    if (pathname === '/setup' || pathname === '/access/confirmed' || pathname === '/preview') {
+    if (
+      pathname === '/setup' ||
+      pathname === '/access/confirmed' ||
+      pathname === '/preview' ||
+      pathname === '/purchase'
+    ) {
       navigate('/landing', { replace: true })
       return
     }

@@ -26,6 +26,11 @@ Production `main` stays stable until Stage 5 field-test gate.
 
 Copy `chronowalk/.env.example` → `chronowalk/.env.local`. Never commit secrets.
 
+## Lemon Squeezy (commerce)
+
+Until the store is confirmed, tier CTAs open **`/purchase`** (placeholders + instructions).  
+When ready: set `VITE_LEMON_CHECKOUT_URL`, deploy `supabase/functions/lemon-squeezy-webhook`, follow **`docs/LEMON_SQUEEZY_TRANSACTIONS.md`**.
+
 ## Stage 4 (local)
 
 ```bash

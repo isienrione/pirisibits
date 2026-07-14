@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Threshold from '../Threshold'
 import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
 import { loadRomeManifest } from '../../content/manifest.js'
@@ -66,6 +66,7 @@ function FeatureRow() {
 }
 
 export default function LandingScreen() {
+  const navigate = useNavigate()
   const { label, cents, checkoutUrl } = usePrice()
   const hostLabel = getHostLabel()
   const checkoutReady = Boolean(checkoutUrl)
@@ -76,7 +77,10 @@ export default function LandingScreen() {
       abVariantCents: cents,
     })
 
-    if (!url) return
+    if (!url) {
+      navigate('/purchase')
+      return
+    }
 
     track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents })
     window.location.assign(url)
@@ -221,18 +225,17 @@ export default function LandingScreen() {
         <button
           type="button"
           onClick={handlePurchase}
-          disabled={!checkoutReady}
           style={{
             marginTop: 28,
             width: '100%',
             padding: '16px 20px',
             border: 'none',
             borderRadius: 999,
-            background: checkoutReady ? 'var(--accent)' : 'color-mix(in srgb, var(--muted-warm) 35%, var(--ink))',
-            color: checkoutReady ? 'var(--bone)' : 'var(--muted-warm)',
+            background: 'var(--accent)',
+            color: 'var(--bone)',
             fontSize: 'var(--fs-body)',
             fontWeight: 600,
-            cursor: checkoutReady ? 'pointer' : 'not-allowed',
+            cursor: 'pointer',
           }}
         >
           Unlock Rome — {label}
@@ -247,8 +250,8 @@ export default function LandingScreen() {
               textAlign: 'center',
             }}
           >
-            Checkout is not configured yet. Set <code>VITE_LEMON_CHECKOUT_URL</code> in{' '}
-            <code>.env.local</code>.
+            Lemon Squeezy pending — you&apos;ll see the purchase steps next. Live checkout appears when
+            the store URL is set.
           </p>
         ) : null}
 

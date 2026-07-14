@@ -47,16 +47,19 @@ export default function AccessScreen({ onValidated }) {
   const [searchParams] = useSearchParams()
   const token = parseAccessToken(`?${searchParams.toString()}`)
   const [status, setStatus] = useState(token ? 'validating' : 'idle')
+  const [errorReason, setErrorReason] = useState(null)
   const [manualToken, setManualToken] = useState('')
 
   useEffect(() => {
     if (!token) {
       setStatus('idle')
+      setErrorReason(null)
       return undefined
     }
 
     let cancelled = false
     setStatus('validating')
+    setErrorReason(null)
 
     validateAccessToken(token).then((result) => {
       if (cancelled) return
@@ -69,6 +72,7 @@ export default function AccessScreen({ onValidated }) {
         return
       }
 
+      setErrorReason(result.reason ?? 'invalid')
       setStatus('error')
     })
 
@@ -124,7 +128,15 @@ export default function AccessScreen({ onValidated }) {
         />
       ) : null}
 
-      {status === 'error' ? (
+      {status === 'error' && errorReason === 'not_configured' ? (
+        <StatusMessage
+          tone="muted"
+          title="Purchases are nearly ready."
+          body="Access validation needs Supabase + the Lemon Squeezy webhook. Until then, staging can use a dev token, or wait for your confirmation email once checkout is live."
+        />
+      ) : null}
+
+      {status === 'error' && errorReason !== 'not_configured' ? (
         <StatusMessage
           tone="error"
           title="This link is not valid."
@@ -144,6 +156,11 @@ export default function AccessScreen({ onValidated }) {
               }}
             >
               After purchase, we email you a personal link. Open it on this phone to return to Rome.
+              Waiting on Lemon Squeezy? See the steps at{' '}
+              <Link to="/purchase" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+                /purchase
+              </Link>
+              .
             </p>
           ) : null}
 
@@ -203,7 +220,7 @@ export default function AccessScreen({ onValidated }) {
 
       <p style={{ marginTop: 28, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
         Haven&apos;t purchased yet?{' '}
-        <Link to="/landing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+        <Link to="/purchase" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
           Unlock Rome
         </Link>
       </p>

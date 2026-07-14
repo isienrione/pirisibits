@@ -126,3 +126,8 @@ export const LazyAccessPage = lazyRoute(
   () => import('./pages/AccessPage.jsx').then((m) => ({ default: m.AccessPage })),
   'access',
 )
+
+export const LazyPurchaseFlowPage = lazyRoute(
+  () => import('./pages/PurchaseFlowPage.jsx').then((m) => ({ default: m.PurchaseFlowPage })),
+  'purchase',
+)

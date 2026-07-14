@@ -53,10 +53,10 @@ export default function ChronoWalkLanding() {
 
       if (!url) {
         console.warn(
-          '[ChronoWalk landing] Checkout URL unavailable — using tier fallback and /access route.',
+          '[ChronoWalk landing] Checkout URL unavailable — opening purchase placeholder.',
           tierId,
         )
-        navigate('/access')
+        navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
         return
       }
 

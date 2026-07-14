@@ -29,6 +29,7 @@ const PwaUpdatePrompt = lazy(() => import('../components/PwaUpdatePrompt.jsx'))
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
+  LazyPurchaseFlowPage,
   LazyBeginPage,
   LazyCreditsPage,
   LazyJournalPage,
@@ -102,6 +103,8 @@ function AppRoutes() {
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
         <Route path="/setup" element={<LazySetupPage />} />
         <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
+        <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
+        <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<LazyBeginPage />} />
