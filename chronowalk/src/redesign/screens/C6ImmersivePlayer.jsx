@@ -372,14 +372,8 @@ export default function C6ImmersivePlayer({
   )
 
   const chapterMeta = (
-    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
+    <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 10px', flexShrink: 0 }}>
       Chapter {chapterIndex + 1} of {chapterCount}
-      {chapterTitle ? (
-        <>
-          {' '}
-          · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
-        </>
-      ) : null}
     </p>
   )
 
@@ -601,8 +595,8 @@ export default function C6ImmersivePlayer({
           display: 'flex',
           flexDirection: 'column',
           padding: showContinuity
-            ? '8px 24px 10px'
-            : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+            ? '12px 24px 14px'
+            : `14px 24px max(16px, ${SHELL_SAFE_BOTTOM_INSET})`,
         }}
       >
         {showContinuity ? (
@@ -655,7 +649,6 @@ export default function C6ImmersivePlayer({
               fontSize: 15,
               fontWeight: 600,
               cursor: 'pointer',
-              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
             }}
           >
             {continuityLabel}

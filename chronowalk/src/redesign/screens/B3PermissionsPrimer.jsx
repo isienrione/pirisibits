@@ -1,4 +1,4 @@
-import { MapPin, Navigation, Shield } from 'lucide-react'
+import { MapPin, Navigation } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
@@ -9,15 +9,11 @@ import { GhostButton } from '../ui/GhostButton.jsx'
 const BENEFITS = [
   {
     icon: Navigation,
-    text: 'Arrival stories unlock when you reach each landmark',
+    text: 'Stories unlock when you arrive',
   },
   {
     icon: MapPin,
-    text: 'Walking directions stay in sync with your position',
-  },
-  {
-    icon: Shield,
-    text: 'You can change this anytime in Settings',
+    text: 'Walking directions stay with you',
   },
 ]
 
@@ -52,22 +48,11 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           display: 'flex',
           flexDirection: 'column',
           padding:
-            'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px max(32px, calc(env(safe-area-inset-bottom) + 24px))',
+            'max(56px, calc(env(safe-area-inset-top) + 24px)) 28px max(36px, calc(env(safe-area-inset-bottom) + 28px))',
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <ChronoWalkLogo size={68} />
-          <p
-            style={{
-              marginTop: 14,
-              fontSize: 11,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: T.muted,
-            }}
-          >
-            Before you walk
-          </p>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <ChronoWalkLogo size={64} />
         </div>
 
         <div
@@ -76,7 +61,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            maxWidth: 360,
+            maxWidth: 340,
             margin: '0 auto',
             width: '100%',
           }}
@@ -84,65 +69,73 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           <h1
             style={{
               fontFamily: F.display,
-              fontSize: 34,
+              fontSize: 36,
               fontWeight: 300,
               color: T.warmWhite,
-              lineHeight: 1.12,
-              margin: '0 0 14px',
+              lineHeight: 1.15,
+              margin: '0 0 16px',
               textAlign: 'center',
             }}
           >
-            Enable location for GPS guidance
+            Turn on location
           </h1>
           <p
             style={{
               fontSize: 15,
               color: T.muted,
-              lineHeight: 1.65,
+              lineHeight: 1.7,
               textAlign: 'center',
-              margin: '0 0 28px',
+              margin: '0 0 36px',
             }}
           >
-            ChronoWalk uses your location only while you are walking the tour — never in the
-            background when the app is closed.
+            Used only while you walk — never when the app is closed.
           </p>
 
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <ul
+            style={{
+              listStyle: 'none',
+              margin: 0,
+              padding: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 20,
+            }}
+          >
             {BENEFITS.map(({ icon: Icon, text }) => (
-              <li key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+              <li key={text} style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <span
                   style={{
-                    width: 36,
-                    height: 36,
+                    width: 32,
+                    height: 32,
                     borderRadius: 10,
-                    background: 'rgba(232,161,60,0.14)',
+                    border: `1px solid ${T.ember}44`,
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     flexShrink: 0,
                   }}
                 >
-                  <Icon size={18} color={T.ember} strokeWidth={1.8} />
+                  <Icon size={16} color={T.ember} strokeWidth={1.8} />
                 </span>
-                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}dd`, lineHeight: 1.55 }}>{text}</p>
+                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}cc`, lineHeight: 1.5 }}>{text}</p>
               </li>
             ))}
           </ul>
         </div>
 
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 32 }}>
           {paceTitle ? (
-            <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 16px' }}>
-              {paceTitle} pace selected
+            <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 18px' }}>
+              {paceTitle}
             </p>
           ) : null}
           <PrimaryButton onClick={onEnable} disabled={busy}>
-            {busy ? 'Requesting access…' : 'Enable location & start'}
+            {busy ? 'Requesting…' : 'Enable location & begin'}
           </PrimaryButton>
           {onSkip ? (
-            <div style={{ marginTop: 10 }}>
+            <div style={{ marginTop: 12 }}>
               <GhostButton onClick={onSkip} disabled={busy}>
-                Continue without enabling
+                Continue without location
               </GhostButton>
             </div>
           ) : null}

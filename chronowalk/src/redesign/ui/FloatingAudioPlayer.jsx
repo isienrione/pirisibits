@@ -18,7 +18,7 @@ function formatTime(seconds) {
 export default function FloatingAudioPlayer({
   accent = T.actI,
   title = 'Rome',
-  subtitle = 'Now playing',
+  subtitle = '',
   narrationPlaying = false,
   ended = false,
   currentTime = 0,
@@ -108,10 +108,12 @@ export default function FloatingAudioPlayer({
           maxHeight: reading ? '100%' : undefined,
         }}
       >
-        {/* Live progress hairline */}
-        <div style={{ height: 2, background: `${T.muted}22` }}>
-          <div style={{ height: '100%', width: `${progress * 100}%`, background: accent, boxShadow: `0 0 6px ${accent}` }} />
-        </div>
+        {/* Live progress hairline — collapsed only (expanded has scrubber) */}
+        {!expanded ? (
+          <div style={{ height: 2, background: `${T.muted}22` }}>
+            <div style={{ height: '100%', width: `${progress * 100}%`, background: accent }} />
+          </div>
+        ) : null}
 
         {/* Minimized row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px' }}>
@@ -140,7 +142,7 @@ export default function FloatingAudioPlayer({
               padding: 0,
             }}
           >
-            <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent }}>
+            <div style={{ fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent, display: subtitle ? 'block' : 'none' }}>
               {subtitle}
             </div>
             <div
@@ -150,6 +152,7 @@ export default function FloatingAudioPlayer({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
+                marginTop: subtitle ? 0 : 2,
               }}
             >
               {title}

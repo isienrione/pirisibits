@@ -56,7 +56,7 @@ describe('resolveMapBottomCard', () => {
     })
 
     expect(card.stateId).toBe(MAP_BOTTOM_CARD_STATES.WALKING)
-    expect(card.title).toBe('Walking to The Pantheon')
+    expect(card.title).toBe('The Pantheon')
     expect(card.meta).toContain('about')
     expect(card.ctaLabel).toBe('Directions')
   })
@@ -107,9 +107,9 @@ describe('resolveMapBottomCard', () => {
     })
 
     expect(card.stateId).toBe(MAP_BOTTOM_CARD_STATES.AFTER_STORY)
-    expect(card.title).toBe('Next stop')
-    expect(card.meta).toBe('Piazza Navona')
-    expect(card.ctaLabel).toBe('Walk to Piazza Navona')
+    expect(card.title).toBe('Piazza Navona')
+    expect(card.meta).toBe('Next stop')
+    expect(card.ctaLabel).toBe('Walk here')
     expect(card.ctaAction).toBe(MAP_BOTTOM_CTA.WALK_TO_NEXT)
   })
 

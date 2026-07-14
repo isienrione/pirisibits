@@ -57,6 +57,10 @@ export default function RedesignJournalScreen({ embedded = true }) {
 
   const progress = useMemo(() => summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context)), [manifest, context])
   const headline = journalHeadline(progress)
+  const subtitle =
+    progress.total > 0
+      ? `${progress.completed} of ${progress.total} visited`
+      : 'Memories collect as you walk'
   const isEmpty = !manifest || groups.length === 0
 
   if (loading) {
@@ -64,7 +68,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
       <E1JournalHome
         embedded={embedded}
         loading
-        headline="Your Rome"
+        headline="Journal"
         subtitle="Gathering your path…"
         groups={[]}
         empty={false}
@@ -88,8 +92,8 @@ export default function RedesignJournalScreen({ embedded = true }) {
   return (
     <E1JournalHome
       embedded={embedded}
-      headline="Your Rome"
-      subtitle={headline}
+      headline={headline}
+      subtitle={subtitle}
       groups={groups}
       empty={isEmpty}
       onStartWalk={() => navigate(state === JOURNEY_STATES.IDLE ? '/begin' : '/journey')}

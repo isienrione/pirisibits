@@ -7,7 +7,6 @@ import {
   trajansNow,
 } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
-import { Eyebrow } from '../ui/index.js'
 import { ACT_DOT_KEYS } from '../../data/romePacing.js'
 
 const PACE_IMAGES = {
@@ -126,7 +125,6 @@ export default function B4PaceSelector({
           />
         </div>
 
-        <Eyebrow color={T.ember}>BEFORE YOU BEGIN</Eyebrow>
         <h2
           style={{
             fontFamily: F.display,
@@ -134,7 +132,7 @@ export default function B4PaceSelector({
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.05,
-            margin: '10px 0 16px',
+            margin: '0 0 20px',
             flexShrink: 0,
           }}
         >
@@ -147,7 +145,7 @@ export default function B4PaceSelector({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 10,
+            gap: 12,
             flex: 1,
             minHeight: 0,
             overflowY: 'auto',
@@ -170,13 +168,13 @@ export default function B4PaceSelector({
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: activeIndex === i ? '0 0 20px rgba(232,161,60,0.15)' : 'none',
+                boxShadow: 'none',
               }}
             >
               <div
                 style={{
                   width: '100%',
-                  height: 72,
+                  height: 68,
                   overflow: 'hidden',
                   flexShrink: 0,
                   position: 'relative',
@@ -264,30 +262,17 @@ export default function B4PaceSelector({
                 </div>
               </div>
 
-              <div style={{ padding: '10px 14px 12px' }}>
-                <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.6, marginBottom: 6 }}>
-                  {opt.desc}
+              <div style={{ padding: '14px 16px 16px' }}>
+                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: '0 0 10px' }}>
+                  {opt.desc || opt.included}
                 </p>
-                {opt.included ? (
-                  <p
-                    style={{
-                      fontSize: 11,
-                      color: `${T.warmWhite}99`,
-                      lineHeight: 1.5,
-                      marginBottom: 10,
-                      letterSpacing: '0.01em',
-                    }}
-                  >
-                    {opt.included}
-                  </p>
-                ) : null}
                 <div style={{ display: 'flex', gap: 6 }}>
                   {opt.dots.map((color, di) => (
                     <div
                       key={di}
                       style={{
-                        width: 8,
-                        height: 8,
+                        width: 7,
+                        height: 7,
                         borderRadius: 4,
                         background: color ?? T.ink800,
                         opacity: color ? 1 : 0.35,
@@ -302,15 +287,15 @@ export default function B4PaceSelector({
 
         <p
           style={{
-            fontSize: 13,
+            fontSize: 12,
             color: T.muted,
-            lineHeight: 1.7,
+            lineHeight: 1.55,
             textAlign: 'center',
-            margin: '14px 0 10px',
+            margin: '18px 0 12px',
             flexShrink: 0,
           }}
         >
-          You can change your mind at any time. Nothing expires. Nothing is skipped forever.
+          You can change this anytime.
         </p>
 
         <button
@@ -329,7 +314,6 @@ export default function B4PaceSelector({
             cursor: activeIndex != null && activeIndex >= 0 ? 'pointer' : 'default',
             transition: 'background 300ms, color 300ms',
             flexShrink: 0,
-            boxShadow: activeIndex != null && activeIndex >= 0 ? '0 0 20px rgba(232,161,60,0.35)' : 'none',
           }}
         >
           {activeIndex != null && activeIndex >= 0

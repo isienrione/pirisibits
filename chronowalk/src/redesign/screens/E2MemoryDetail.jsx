@@ -169,16 +169,12 @@ export default function E2MemoryDetail({
         ) : null}
 
         {/* Interactive threshold — hold or drag the seam */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500, marginBottom: 10 }}>
-          Immersion
-        </p>
         <div
           style={{
-            marginBottom: 8,
+            marginBottom: 28,
             borderRadius: 16,
             overflow: 'hidden',
             height: Math.min(immersionH, 360),
-            boxShadow: '0 8px 28px rgba(33,28,21,0.12)',
           }}
         >
           <C7Threshold
@@ -190,12 +186,6 @@ export default function E2MemoryDetail({
             honestyCaption={honestyCaption}
           />
         </div>
-        <p style={{ fontSize: 11, color: T.muted, textAlign: 'center', marginBottom: 6, letterSpacing: '0.08em' }}>
-          Then · Now
-        </p>
-        <p style={{ fontSize: 11, color: T.muted, lineHeight: 1.6, marginBottom: 26, fontStyle: 'italic' }}>
-          {honestyCaption}
-        </p>
 
         {/* Key facts — editorial list, hairline-separated, no bullets */}
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
@@ -236,8 +226,7 @@ export default function E2MemoryDetail({
                 <Play size={13} fill={accent} color={accent} style={{ marginLeft: 2 }} />
               </div>
               <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 14, color: T.ink, fontWeight: 500, lineHeight: 1.3, marginBottom: 2 }}>{ch.title ?? ch}</p>
-                <p style={{ fontSize: 12, color: T.muted }}>Chapter {ch.n ?? i + 1}</p>
+                <p style={{ fontSize: 14, color: T.ink, fontWeight: 500, lineHeight: 1.3, margin: 0 }}>{ch.title ?? ch}</p>
               </div>
               <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>{ch.dur ?? ''}</span>
             </button>

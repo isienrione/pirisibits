@@ -153,18 +153,18 @@ export function primaryCtaLabel(acts, journeyActive) {
     current.numeral === 'Encore' ? 'Encore' : `Act ${current.numeral}`
 
   if (journeyActive) {
-    return `Continue — ${numeralLabel} · ${current.title}`
+    return `Continue · ${numeralLabel}`
   }
 
   if (current.stops.every((stop) => stop.status === 'completed')) {
     const next = acts.find((act) => act.actStatus !== 'done' && !act.locked)
     if (next) {
       const nextLabel = next.numeral === 'Encore' ? 'Encore' : `Act ${next.numeral}`
-      return `Begin ${nextLabel} — ${next.title}`
+      return `Begin ${nextLabel}`
     }
   }
 
-  return `Begin ${numeralLabel} — ${current.title}`
+  return `Begin ${numeralLabel}`
 }
 
 /** Flat walking-order groups for the route sheet. */

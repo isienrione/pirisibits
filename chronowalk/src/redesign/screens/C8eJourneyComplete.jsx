@@ -20,11 +20,7 @@ export default function C8eJourneyComplete({
     return () => clearTimeout(timer)
   }, [])
 
-  const stats = [
-    stopCount > 0 ? `${stopCount} stop${stopCount === 1 ? '' : 's'}` : null,
-    '21 centuries',
-    'One road still here',
-  ].filter(Boolean)
+  const stats = stopCount > 0 ? [`${stopCount} stop${stopCount === 1 ? '' : 's'}`] : []
 
   return (
     <div
@@ -47,19 +43,7 @@ export default function C8eJourneyComplete({
           backgroundImage: `url(${heroPhoto})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 42%',
-          filter: 'brightness(0.14) saturate(0.42)',
-          pointerEvents: 'none',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(rgba(138,111,181,0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(138,111,181,0.05) 1px, transparent 1px)
-          `,
-          backgroundSize: '44px 44px',
+          filter: 'brightness(0.22) saturate(0.5)',
           pointerEvents: 'none',
         }}
       />
@@ -75,23 +59,12 @@ export default function C8eJourneyComplete({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 'max(56px, calc(env(safe-area-inset-top) + 24px)) 32px 24px',
+          padding: 'max(64px, calc(env(safe-area-inset-top) + 32px)) 32px 28px',
           opacity: revealed ? 1 : 0,
           transform: revealed ? 'translateY(0)' : 'translateY(12px)',
           transition: 'opacity 700ms ease, transform 700ms ease',
         }}
       >
-        <p
-          style={{
-            fontSize: 11,
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-            color: accent,
-            margin: '0 0 18px',
-          }}
-        >
-          Journey complete
-        </p>
         <h1
           style={{
             fontFamily: F.display,
@@ -100,7 +73,7 @@ export default function C8eJourneyComplete({
             color: T.warmWhite,
             lineHeight: 1.1,
             textAlign: 'center',
-            margin: '0 0 14px',
+            margin: '0 0 16px',
             textShadow: '0 2px 24px rgba(0,0,0,0.55)',
           }}
         >
@@ -109,14 +82,14 @@ export default function C8eJourneyComplete({
         <p
           style={{
             fontFamily: F.display,
-            fontSize: 20,
+            fontSize: 18,
             fontStyle: 'italic',
             fontWeight: 300,
             color: `${T.warmWhite}CC`,
             lineHeight: 1.5,
             textAlign: 'center',
             margin: 0,
-            maxWidth: 360,
+            maxWidth: 340,
           }}
         >
           {subline}
@@ -128,50 +101,24 @@ export default function C8eJourneyComplete({
           position: 'relative',
           zIndex: 12,
           flexShrink: 0,
-          padding: `0 28px calc(${SHELL_SAFE_BOTTOM_INSET} + 12px)`,
+          padding: `0 28px calc(${SHELL_SAFE_BOTTOM_INSET} + 16px)`,
           opacity: revealed ? 1 : 0,
           transition: 'opacity 900ms ease 200ms',
         }}
       >
         {stats.length ? (
-          <div
+          <p
             style={{
-              display: 'flex',
-              gap: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 22,
-              flexWrap: 'wrap',
+              fontSize: 13,
+              color: T.muted,
+              textAlign: 'center',
+              margin: '0 0 24px',
+              fontVariantNumeric: 'tabular-nums',
             }}
           >
-            {stats.map((stat, index) => (
-              <span
-                key={stat}
-                style={{
-                  fontSize: 13,
-                  color: T.muted,
-                  fontVariantNumeric: 'tabular-nums',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                {index > 0 ? <span style={{ color: T.ink800, fontSize: 10 }}>·</span> : null}
-                {stat}
-              </span>
-            ))}
-          </div>
+            {stats[0]}
+          </p>
         ) : null}
-
-        <div
-          style={{
-            width: 1.5,
-            height: 24,
-            background: T.ember,
-            margin: '0 auto 22px',
-            boxShadow: '0 0 12px rgba(232,161,60,0.45)',
-          }}
-        />
 
         <button
           type="button"
@@ -190,7 +137,6 @@ export default function C8eJourneyComplete({
             border: 'none',
             cursor: busy ? 'wait' : 'pointer',
             marginBottom: 12,
-            boxShadow: `0 0 22px ${accent}55`,
           }}
         >
           Read your letter

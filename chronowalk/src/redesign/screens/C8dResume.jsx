@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Vignette, BottomScrim, Eyebrow } from '../ui/index.js';
+import { Vignette, BottomScrim } from '../ui/index.js';
 
 export default function C8dResume({
   resumeLabel = 'Pick up at the Temple of Vesta',
@@ -31,29 +31,27 @@ export default function C8dResume({
         position: "absolute", inset: 0, zIndex: 10,
         display: "flex", flexDirection: "column",
         justifyContent: "flex-end",
-        padding: "0 28px 60px",
+        padding: "0 28px 64px",
       }}>
-        <Eyebrow color={accent}>WELCOME BACK</Eyebrow>
-
         <h1 style={{
           fontFamily: F.display,
           fontSize: 34,
           color: T.warmWhite,
           fontWeight: 300,
           lineHeight: 1.1,
-          margin: "14px 0 8px",
+          margin: "0 0 12px",
           textShadow: "0 2px 24px rgba(0,0,0,0.55)",
         }}>
           Rome kept your place.
         </h1>
 
         <p style={{
-          fontSize: 14,
+          fontSize: 15,
           color: T.muted,
-          lineHeight: 1.6,
-          marginBottom: 32,
+          lineHeight: 1.55,
+          marginBottom: 36,
         }}>
-          It's had practice waiting.
+          {resumeLabel}
         </p>
 
         {/* Primary */}
@@ -68,10 +66,9 @@ export default function C8dResume({
             fontWeight: 600, fontSize: 15,
             border: "none", cursor: "pointer",
             marginBottom: 14,
-            boxShadow: `0 0 22px ${accent}55`,
           }}
         >
-          {resumeLabel}
+          Continue walking
         </button>
 
         {/* Quiet */}

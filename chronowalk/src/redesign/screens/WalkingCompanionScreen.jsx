@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
@@ -189,16 +188,12 @@ export default function WalkingCompanionScreen({
       <header className="cw-walking-companion__header">
         {showArrivedUI ? (
           <div className="cw-walking-companion__arrived-copy">
-            <div className="cw-walking-companion__arrived-badge" aria-hidden>
-              <CheckCircle2 size={20} strokeWidth={2} />
-            </div>
             <p className="cw-walking-companion__arrived-label">You have arrived</p>
             <h1 className="cw-walking-companion__title">{title}</h1>
           </div>
         ) : (
           <>
             <p className="cw-walking-companion__act">ACT {actNumeral}</p>
-            <p className="cw-walking-companion__eyebrow">Walking to</p>
 
             <div className="cw-walking-companion__title-row">
               <h1 className="cw-walking-companion__title">{title}</h1>

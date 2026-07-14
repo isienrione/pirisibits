@@ -59,12 +59,12 @@ export default function E1JournalHome({
   return (
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
       {/* Header */}
-      <div style={{ padding: "max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 16px", flexShrink: 0, position: "relative", zIndex: 2 }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 4 }}>
-          <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1 }}>{headline}</h1>
+      <div style={{ padding: "max(52px, calc(env(safe-area-inset-top) + 20px)) 24px 20px", flexShrink: 0, position: "relative", zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 8 }}>
+          <h1 style={{ fontFamily: F.display, fontSize: 30, color: T.ink, fontWeight: 300, lineHeight: 1.15, margin: 0, maxWidth: '70%' }}>{headline}</h1>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {onAllStopsClick ? (
-              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${T.ember}55`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
+              <button type="button" onClick={onAllStopsClick} style={{ fontSize: 11, color: T.ember, background: 'none', border: `1px solid ${T.ember}44`, borderRadius: 8, padding: '5px 10px', cursor: 'pointer', fontFamily: F.body }}>
                 All stops
               </button>
             ) : null}
@@ -79,13 +79,13 @@ export default function E1JournalHome({
               </button>
             ) : null}
           {showDevToggle ? (
-          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 20, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
+          <button onClick={() => setShowEmptyDev(!showEmptyDev)} style={{ fontSize: 10, color: T.muted, background: "none", border: `1px solid ${T.muted}40`, borderRadius: 8, padding: "3px 10px", cursor: "pointer", fontFamily: F.body }}>
             {showEmptyDev ? "filled" : "empty"}
           </button>
           ) : null}
           </div>
         </div>
-        <p style={{ fontSize: 13, color: T.muted }}>{subtitle}</p>
+        <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>{subtitle}</p>
       </div>
 
       {showEmpty ? (
@@ -104,9 +104,9 @@ export default function E1JournalHome({
         <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", paddingBottom: 16, position: "relative", zIndex: 2 }}>
 
           {/* Journey Letter pinned — the ONE dark card in the light room */}
-          <div style={{ padding: "4px 24px 24px" }}>
-            <div style={{ background: T.ink, borderRadius: 14, padding: 18, boxShadow: "0 4px 18px rgba(33,28,21,0.14)" }}>
-              <div style={{ marginBottom: 14 }}>
+          <div style={{ padding: "8px 24px 28px" }}>
+            <div style={{ background: T.ink, borderRadius: 14, padding: 22 }}>
+              <div style={{ marginBottom: 16 }}>
                 <svg width="100%" height="26" viewBox="0 0 310 26" preserveAspectRatio="none">
                   {[
                     [T.actI, "M 0 13 L 44 13"],   [T.actII,  "M 44 13 L 88 13"],
@@ -122,11 +122,10 @@ export default function E1JournalHome({
               </div>
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                 <div>
-                  <p style={{ fontSize: 11, color: T.ember, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 6 }}>JOURNEY LETTER</p>
-                  <p style={{ fontFamily: F.display, fontSize: 20, color: T.warmWhite, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>Dear Isidora —</p>
-                  <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>Rome · 2–3 July 2025 · 21 centuries</p>
+                  <p style={{ fontFamily: F.display, fontSize: 22, color: T.warmWhite, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>Journey letter</p>
+                  <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: 0 }}>Rome · 2–3 July 2025</p>
                 </div>
-                <button type="button" onClick={() => (onLetterClick ? onLetterClick() : navigate("F1"))} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 12, fontFamily: F.body, flexShrink: 0, marginLeft: 12 }}>Open</button>
+                <button type="button" onClick={() => (onLetterClick ? onLetterClick() : navigate("F1"))} style={{ background: "none", border: "none", cursor: "pointer", color: T.ember, fontSize: 13, fontFamily: F.body, flexShrink: 0, marginLeft: 12 }}>Open</button>
               </div>
             </div>
           </div>
@@ -135,27 +134,28 @@ export default function E1JournalHome({
           {groups.map((group, gi) => (
             <div key={group.act}>
               {gi > 0 && <MiniActLine color={group.color} />}
-              <div style={{ padding: "8px 24px 16px" }}>
+              <div style={{ padding: "12px 24px 12px" }}>
                 <Eyebrow color={group.color} hairline>ACT {group.act} — {group.name}</Eyebrow>
               </div>
               {group.cards.map(card => (
-                <div key={card.id} style={{ padding: "0 24px 16px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
-                  <div style={{ background: T.warmWhite, borderRadius: 14, padding: 20, boxShadow: "0 1px 10px rgba(33,28,21,0.07)" }}>
+                <div key={card.id} style={{ padding: "0 24px 20px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
+                  <div style={{ background: T.warmWhite, borderRadius: 12, padding: 22 }}>
                     {/* Diptych: NOW | ember seam | THEN */}
-                    <div style={{ display: "flex", marginBottom: 16, borderRadius: 10, overflow: "hidden", height: 108 }}>
+                    <div style={{ display: "flex", marginBottom: 18, borderRadius: 10, overflow: "hidden", height: 108 }}>
                       <div style={{ flex: 1, overflow: "hidden" }}>
-                        <img src={card.photo} alt="NOW" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
+                        <img src={card.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
                       </div>
                       <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: "0 0 6px rgba(232,161,60,0.55)", animation: "seamBreathe 3s ease-in-out infinite" }} />
                       <div style={{ flex: 1, overflow: "hidden" }}>
-                        <img src={card.photo} alt="THEN" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.76)" }} />
+                        <img src={card.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.76)" }} />
                       </div>
                     </div>
-                    <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>{card.name}</p>
-                    <p style={{ fontSize: 14, color: T.muted, fontStyle: "italic", lineHeight: 1.55, marginBottom: 14 }}>"{card.sigLine}"</p>
+                    <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 8 }}>{card.name}</p>
+                    <p style={{ fontSize: 14, color: T.muted, fontStyle: "italic", lineHeight: 1.55, marginBottom: 16 }}>"{card.sigLine}"</p>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <button
                         type="button"
+                        aria-label={`Open ${card.name}`}
                         onClick={(e) => {
                           e.stopPropagation()
                           if (onCardClick) onCardClick(card.id)
@@ -166,9 +166,8 @@ export default function E1JournalHome({
                         <div style={{ width: 28, height: 28, borderRadius: 14, background: `${group.color}18`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <Play size={11} fill={group.color} color={group.color} style={{ marginLeft: 2 }} />
                         </div>
-                        <span style={{ fontSize: 12, color: group.color, fontWeight: 500 }}>Open stop</span>
                       </button>
-                      <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
+                      <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
                     </div>
                   </div>
                 </div>

@@ -21,9 +21,8 @@ function actColorForNumeral(numeral) {
 
 function statusLabel(status) {
   if (status === 'completed') return 'Visited'
-  if (status === 'current') return 'Current'
-  if (status === 'upcoming') return 'Upcoming'
-  return 'On route'
+  if (status === 'current') return 'Here'
+  return null
 }
 
 function nodeStatusForStop(status) {
@@ -114,12 +113,12 @@ export default function RedesignStopsScreen() {
 
   return (
     <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: 'max(48px, calc(env(safe-area-inset-top) + 16px)) 24px 12px', flexShrink: 0 }}>
-        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: 4 }}>
+      <div style={{ padding: 'max(52px, calc(env(safe-area-inset-top) + 20px)) 24px 20px', flexShrink: 0 }}>
+        <h1 style={{ fontFamily: F.display, fontSize: 32, color: T.ink, fontWeight: 300, lineHeight: 1.1, marginBottom: 8 }}>
           All stops
         </h1>
-        <p style={{ fontSize: 13, color: T.muted }}>
-          {totalStops} stops on your Rome route
+        <p style={{ fontSize: 14, color: T.muted, margin: 0 }}>
+          {totalStops} on your route
         </p>
       </div>
 
@@ -211,9 +210,8 @@ export default function RedesignStopsScreen() {
                     <div
                       style={{
                         background: T.warmWhite,
-                        borderRadius: 14,
+                        borderRadius: 12,
                         overflow: 'hidden',
-                        boxShadow: '0 1px 10px rgba(33,28,21,0.07)',
                         borderLeft: card.status === 'current' ? `2px solid ${group.color}` : '2px solid transparent',
                       }}
                     >
@@ -222,7 +220,7 @@ export default function RedesignStopsScreen() {
                         onClick={() => openStop(card.id)}
                         style={{ width: '100%', border: 'none', background: 'transparent', cursor: 'pointer', padding: 0, textAlign: 'left' }}
                       >
-                        <div style={{ display: 'flex', height: 96 }}>
+                        <div style={{ display: 'flex', height: 100 }}>
                           {card.photo ? (
                             <img
                               src={card.photo}
@@ -238,40 +236,33 @@ export default function RedesignStopsScreen() {
                           ) : (
                             <div style={{ width: 96, background: `${group.color}18`, flexShrink: 0 }} />
                           )}
-                          <div style={{ flex: 1, padding: '14px 16px' }}>
-                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>
+                          <div style={{ flex: 1, padding: '16px 18px' }}>
+                            <p style={{ fontFamily: F.display, fontSize: 18, color: faded ? `${T.ink}99` : T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>
                               {card.name}
                             </p>
-                            <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45 }}>
+                            <p style={{ fontSize: 12, color: T.muted, fontStyle: 'italic', lineHeight: 1.45, margin: 0 }}>
                               {card.sigLine}
                             </p>
                           </div>
                         </div>
                       </button>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${T.muted}18` }}>
-                        <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                          {statusLabel(card.status)}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 16px', borderTop: `1px solid ${T.muted}14` }}>
+                        <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase', minHeight: 16 }}>
+                          {statusLabel(card.status) ?? ''}
                         </span>
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
+                            style={{ fontSize: 12, color: T.ink, background: 'none', border: `1px solid ${T.muted}35`, borderRadius: 8, padding: '7px 10px', cursor: 'pointer' }}
                           >
-                            Listen here
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openStop(card.id)}
-                            style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
-                          >
-                            Open card
+                            Listen
                           </button>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
+                            style={{ fontSize: 12, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '7px 10px', cursor: 'pointer', fontWeight: 600 }}
                           >
                             Walk here
                           </button>

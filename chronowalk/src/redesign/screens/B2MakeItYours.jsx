@@ -48,32 +48,32 @@ export default function B2MakeItYours({
       <BottomScrim strength={0.90} />
 
       {/* Content — all type ON the photograph */}
-      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "64px 28px 52px" }}>
+      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "72px 28px 56px" }}>
 
         {/* Small logomark */}
-        <div style={{ marginBottom: 44 }}>
+        <div style={{ marginBottom: 48 }}>
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.5))" }} />
             <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
           </svg>
         </div>
 
-        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 10, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
+        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 12, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
           Make it yours.
         </h2>
-        <p style={{ fontSize: 14, color: T.muted, marginBottom: 44, lineHeight: 1.6 }}>Two small things before Rome.</p>
+        <p style={{ fontSize: 15, color: T.muted, marginBottom: 48, lineHeight: 1.65 }}>Two quiet steps before you walk.</p>
 
         {/* ── Row 1 — Home screen ── */}
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
+        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 26, paddingBottom: 26 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 6, lineHeight: 1.4 }}>
-                Put Rome on your home screen
+              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 8, lineHeight: 1.4 }}>
+                Home screen
               </p>
-              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65 }}>
                 {showIosInstructions
                   ? <>Tap <span style={{ color: `${T.warmWhite}BB` }}>Share</span> — then &quot;Add to Home Screen&quot;</>
-                  : 'Install a home-screen icon for tour day.'}
+                  : 'One tap away on tour day.'}
               </p>
             </div>
             {/* Platform illustration — iOS share-sheet arrow */}
@@ -92,21 +92,20 @@ export default function B2MakeItYours({
         </div>
 
         {/* ── Row 2 — Download ── */}
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
+        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 26, paddingBottom: 26 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5, lineHeight: 1.4 }}>
-                Download the walk
-                <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> — 215 MB</span>
+              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 8, lineHeight: 1.4 }}>
+                Download for offline
               </p>
-              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Streets of Rome, weak signal, strong stories.
+              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65 }}>
+                About 215 MB — ready when the streets are quiet.
               </p>
               {downloadComplete || dlProgress >= 1 ? (
-                <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Downloaded ✓</p>
+                <p style={{ fontSize: 12, color: T.actII, marginTop: 8 }}>Ready</p>
               ) : downloading && dlProgress > 0 && dlProgress < 1 ? (
-                <p style={{ fontSize: 12, color: T.ember, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
-                  {Math.round(dlProgress * 215)} MB of 215 MB
+                <p style={{ fontSize: 12, color: T.ember, marginTop: 8, fontVariantNumeric: "tabular-nums" }}>
+                  {Math.round(dlProgress * 100)}%
                 </p>
               ) : null}
             </div>
@@ -168,14 +167,14 @@ export default function B2MakeItYours({
         {/* Bottom hairline divider */}
         <div style={{ borderTop: `1px solid ${T.ink800}` }} />
 
-        <div style={{ marginTop: "auto", textAlign: "center", paddingTop: 24, display: 'grid', gap: 12 }}>
+        <div style={{ marginTop: "auto", textAlign: "center", paddingTop: 28, display: 'grid', gap: 14 }}>
           {canInstall ? (
             <button
               type="button"
               onClick={() => onInstall?.()}
               style={{ width: '100%', padding: '15px', background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
             >
-              {showIosInstructions ? 'Got it — continue' : 'Add to home screen'}
+              {showIosInstructions ? 'Continue' : 'Add to home screen'}
             </button>
           ) : null}
           <button
@@ -185,9 +184,11 @@ export default function B2MakeItYours({
           >
             Continue to Rome
           </button>
-          <button type="button" onClick={() => (onSkip ? onSkip() : undefined)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 13, letterSpacing: "0.06em", fontFamily: F.body }}>
-            I'll do this later
-          </button>
+          {!canInstall ? (
+            <button type="button" onClick={() => (onSkip ? onSkip() : undefined)} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 13, letterSpacing: "0.04em", fontFamily: F.body, paddingTop: 4 }}>
+              Skip for now
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
-import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import {
@@ -263,13 +262,13 @@ export default function RedesignMyTourScreen() {
     >
       <div
         style={{
-          padding: 'max(48px, calc(env(safe-area-inset-top) + 12px)) 24px 8px',
+          padding: 'max(52px, calc(env(safe-area-inset-top) + 16px)) 24px 14px',
           flexShrink: 0,
           position: 'relative',
           zIndex: 2,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ChronowalkMark />
             <span
@@ -301,25 +300,31 @@ export default function RedesignMyTourScreen() {
             fontWeight: 300,
             color: T.ink,
             lineHeight: 1.05,
-            margin: '0 0 6px',
+            margin: '0 0 10px',
             letterSpacing: '0.02em',
           }}
         >
           ROME: ETERNAL CITY
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <Eyebrow color={T.actI} hairline>
-            {paceLabel.toUpperCase()}
-          </Eyebrow>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginTop: 4 }}>
           <span
             style={{
-              fontSize: 11,
+              fontSize: 12,
               color: T.muted,
-              fontVariantNumeric: 'tabular-nums',
-              letterSpacing: '0.06em',
+              letterSpacing: '0.04em',
             }}
           >
-            {progress.completed}/{progress.total} stops
+            {paceLabel}
+          </span>
+          <span
+            style={{
+              fontSize: 12,
+              color: T.muted,
+              fontVariantNumeric: 'tabular-nums',
+              letterSpacing: '0.04em',
+            }}
+          >
+            {progress.completed}/{progress.total}
           </span>
         </div>
         {context.pace === JOURNEY_PACE.OWN ? (
@@ -563,9 +568,9 @@ export default function RedesignMyTourScreen() {
       <div
         style={{
           flexShrink: 0,
-          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
+          padding: `20px 24px ${SHELL_TAB_BAR_INSET}`,
           background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
-          borderTop: `1px solid ${T.ink800}18`,
+          borderTop: `1px solid ${T.ink800}14`,
           position: 'relative',
           zIndex: 5,
         }}
@@ -584,13 +589,12 @@ export default function RedesignMyTourScreen() {
             fontSize: 15,
             border: 'none',
             cursor: 'pointer',
-            marginBottom: 8,
-            boxShadow: `0 0 22px ${ctaColor}50`,
+            marginBottom: 12,
           }}
         >
           {ctaLabel}
         </button>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 36 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 40 }}>
           <button
             type="button"
             onClick={() => setSheetOpen(true)}
@@ -618,7 +622,7 @@ export default function RedesignMyTourScreen() {
               fontFamily: F.body,
             }}
           >
-            Start from where I am
+            Start from here
           </button>
         </div>
         {state === JOURNEY_STATES.IDLE && acts.length === 0 ? (
