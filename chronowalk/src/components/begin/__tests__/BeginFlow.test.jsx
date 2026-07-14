@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import BeginFlow from '../BeginFlow'
 import { JOURNEY_PACE } from '../../../data/romePacing'
+import { clearTourEntitlements, purchaseTourProduct } from '../../../services/tourEntitlements'
 
 const beginMock = vi.fn()
 const resumeMock = vi.fn()
@@ -48,28 +49,30 @@ describe('BeginFlow', () => {
     resumeMock.mockClear()
     resetMock.mockClear()
     trackMock.mockClear()
+    clearTourEntitlements()
+    purchaseTourProduct('rome-complete')
   })
 
-  it('shows the pace selector copy from the acts model', () => {
+  it('shows post-purchase review copy without pricing', () => {
     renderBeginFlow()
 
-    expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
-    expect(screen.getByText('Take it in chapters')).toBeInTheDocument()
-    expect(screen.getByText('The full day')).toBeInTheDocument()
-    expect(screen.getByText(/nothing is skipped forever/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /review & begin/i })).toBeInTheDocument()
+    expect(screen.getAllByText(/roma eterna/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/at your own pace/i)).toBeInTheDocument()
+    expect(screen.queryByText(/€\d|\$\d/)).not.toBeInTheDocument()
+    expect(screen.getByText(/confirm your layout next/i)).toBeInTheDocument()
   })
 
-  it('lets the traveler pick a pace and reach the location prompt', () => {
+  it('lets the traveler pick a start mode and reach the location prompt', () => {
     renderBeginFlow()
 
-    fireEvent.click(screen.getByRole('button', { name: /the full day/i }))
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
 
     expect(screen.getByRole('heading', { name: /enable location/i })).toBeInTheDocument()
-    expect(screen.getByText('The full day')).toBeInTheDocument()
+    expect(screen.getAllByText('Roma Eterna').length).toBeGreaterThan(0)
   })
 
-  it('starts the journey at the Colosseum after location permission', async () => {
+  it('starts the purchased full route after location permission', async () => {
     renderBeginFlow()
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
@@ -79,10 +82,12 @@ describe('BeginFlow', () => {
       expect(screen.getByText('Journey route')).toBeInTheDocument()
     })
 
-    expect(beginMock).toHaveBeenCalledWith({ pace: JOURNEY_PACE.CLASSIC, waypointIndex: 0 })
+    expect(beginMock).toHaveBeenCalledWith({ pace: JOURNEY_PACE.HEROIC, waypointIndex: 0 })
     expect(trackMock).toHaveBeenCalledWith('journey_begin', {
-      pace: JOURNEY_PACE.CLASSIC,
+      pace: JOURNEY_PACE.HEROIC,
       waypoint_index: 0,
+      product_id: 'rome-complete',
+      start_mode: 'full',
     })
   })
 

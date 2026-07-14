@@ -1,5 +1,11 @@
+import {
+  purchaseTourProduct,
+  readPurchasedProductIds,
+} from '../services/tourEntitlements.js'
+
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
+const DEFAULT_ACCESS_PRODUCT_ID = 'rome-complete'
 
 const FALLBACK_CONFIG = {
   price: { cents: 1700, currency: 'EUR' },
@@ -97,9 +103,20 @@ export function hasAccess() {
   return window.localStorage.getItem(ACCESS_KEY) === 'true'
 }
 
-export function grantAccess() {
+/**
+ * Unlock the app on this device.
+ * Optional productId records which landing package was purchased (for /begin setup).
+ * When omitted and no product is stored yet, defaults to Rome Complete.
+ */
+export function grantAccess(productId) {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(ACCESS_KEY, 'true')
+
+  const existing = readPurchasedProductIds()
+  const resolvedProductId = productId || (existing.length ? null : DEFAULT_ACCESS_PRODUCT_ID)
+  if (resolvedProductId) {
+    purchaseTourProduct(resolvedProductId)
+  }
 }
 
 export function revokeAccess() {

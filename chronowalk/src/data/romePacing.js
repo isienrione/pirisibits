@@ -1,4 +1,4 @@
-/** Rome journey pacing — tiered tour products (replaces the old two-day split). */
+/** Rome journey pacing — post-purchase tour layouts (not for sale on /begin). */
 
 export const JOURNEY_PACE = {
   CENTRAL: 'central',
@@ -7,19 +7,28 @@ export const JOURNEY_PACE = {
   OWN: 'own',
 }
 
-export const PACE_ORIENTATION =
-  'You can change your mind at any time. Nothing expires. Nothing is skipped forever.'
+/** How a purchaser starts the tour they already own. */
+export const START_MODE = {
+  FULL: 'full',
+  OWN: 'own',
+}
 
-/** Seven act slots for tier cards — null means the act is not in this tour. */
+export const PACE_ORIENTATION =
+  'Confirm your layout next. You can change stops anytime — nothing expires.'
+
+/** Seven act slots for package cards — null means the act is not in this tour. */
 export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore']
 
+/**
+ * Purchasable tour packages (mirrors landing tiers).
+ * Pricing lives only on /landing — these objects describe layout, not checkout.
+ */
 export const PACE_OPTIONS = [
   {
     id: JOURNEY_PACE.HEROIC,
+    productId: 'rome-complete',
     title: 'Roma Eterna',
-    badge: 'Most loved',
-    priceLabel: '$17.99',
-    priceCents: 1799,
+    badge: 'Full Rome',
     description:
       "The complete Rome — Colosseum, the Roman Forum, Circus Maximus, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
     includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
@@ -29,10 +38,9 @@ export const PACE_OPTIONS = [
   },
   {
     id: JOURNEY_PACE.CENTRAL,
-    title: 'Roma Centrale',
+    productId: 'rome-central',
+    title: 'Roma Historica',
     badge: null,
-    priceLabel: '$12',
-    priceCents: 1200,
     description:
       "Centro storico and the Pantheon — Spanish Steps, Trevi, Navona, Campo de' Fiori, Trajan's Market, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
     includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
@@ -41,29 +49,28 @@ export const PACE_OPTIONS = [
   },
   {
     id: JOURNEY_PACE.CLASSIC,
+    productId: 'rome-essential',
     title: 'Roma Antica',
     badge: null,
-    priceLabel: '$12',
-    priceCents: 1200,
     description:
       'The Colosseum and the full Forum walk — from the Arena through the Arch of Titus and every Forum stop to the Capitoline.',
     includedSummary: 'Colosseum · Arch of Titus · Roman Forum',
     actDots: ['act1', 'act2', 'act3', null, null, null, null],
     imageKey: 'colosseum',
   },
-  {
-    id: JOURNEY_PACE.OWN,
-    title: 'At your own pace',
-    badge: null,
-    priceLabel: '$17.99',
-    priceCents: 1799,
-    description:
-      'Pick any stops you like — one morning or many. Build your own route through every landmark in the catalog.',
-    includedSummary: 'Any act · any order · your itinerary',
-    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
-    imageKey: 'trajan',
-  },
 ]
+
+/** Own-pace is a start mode, not a purchasable package. */
+export const OWN_PACE_OPTION = {
+  id: JOURNEY_PACE.OWN,
+  title: 'At your own pace',
+  badge: null,
+  description:
+    'Pick any stops from the package you purchased — one morning or many. Build your own route.',
+  includedSummary: 'Your stops · your order · your itinerary',
+  actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+  imageKey: 'trajan',
+}
 
 export const ROME_ACTS = [
   {
@@ -129,12 +136,56 @@ export const JOURNEY_PATH = {
   B: 'b',
 }
 
+const PRODUCT_TO_PACE = Object.fromEntries(
+  PACE_OPTIONS.filter((option) => option.productId).map((option) => [option.productId, option.id]),
+)
+
 export function getPaceOption(paceId) {
+  if (paceId === JOURNEY_PACE.OWN) return OWN_PACE_OPTION
   return PACE_OPTIONS.find((option) => option.id === paceId) ?? PACE_OPTIONS[0]
 }
 
 export function getDefaultPace() {
   return PACE_OPTIONS.find((option) => option.default)?.id ?? JOURNEY_PACE.HEROIC
+}
+
+export function getPaceForProductId(productId) {
+  if (!productId) return getDefaultPace()
+  return PRODUCT_TO_PACE[productId] ?? getDefaultPace()
+}
+
+export function getPackageOptionForProductId(productId) {
+  return getPaceOption(getPaceForProductId(productId))
+}
+
+/**
+ * Start-mode cards shown after purchase — full purchased route vs customize.
+ * @param {ReturnType<typeof getPaceOption>} packageOption
+ */
+export function getBeginStartModes(packageOption) {
+  const pkg = packageOption ?? getPaceOption(getDefaultPace())
+  return [
+    {
+      id: START_MODE.FULL,
+      paceId: pkg.id,
+      title: pkg.title,
+      description: `Begin with every stop in ${pkg.title} — the guided layout you unlocked.`,
+      includedSummary: pkg.includedSummary,
+      actDots: pkg.actDots,
+      imageKey: pkg.imageKey,
+      badge: 'Full route',
+    },
+    {
+      id: START_MODE.OWN,
+      paceId: JOURNEY_PACE.OWN,
+      title: OWN_PACE_OPTION.title,
+      description: `Customize from the stops included in ${pkg.title}. Pick what you want today.`,
+      includedSummary: OWN_PACE_OPTION.includedSummary,
+      actDots: pkg.actDots,
+      imageKey: OWN_PACE_OPTION.imageKey,
+      badge: null,
+    },
+  ]
 }
 
 export function getActForWaypoint(waypointId) {

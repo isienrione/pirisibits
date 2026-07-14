@@ -1,10 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption, getDefaultPace } from '../data/romePacing.js'
+import {
+  JOURNEY_PACE,
+  START_MODE,
+  getBeginStartModes,
+  getPaceOption,
+} from '../data/romePacing.js'
+import {
+  getEntitlementPoolPace,
+  getPurchasedPackageOption,
+} from '../data/purchasedPackage.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
+import { useTourEntitlements } from '../hooks/useTourEntitlements.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
 import { applyReplayOnboardingFromSearch, shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
@@ -24,6 +34,7 @@ export default function RedesignBeginFlow() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
     useV2Journey()
+  const { purchasedProductIds } = useTourEntitlements()
   const { manifest, loading } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -31,18 +42,34 @@ export default function RedesignBeginFlow() {
     context.currentSequenceIndex,
     context.promotedOptionalIds,
   )
+
+  const packageOption = useMemo(
+    () => getPurchasedPackageOption(purchasedProductIds),
+    [purchasedProductIds],
+  )
+  const entitlementPace = useMemo(
+    () => getEntitlementPoolPace(purchasedProductIds),
+    [purchasedProductIds],
+  )
+  const startModes = useMemo(() => getBeginStartModes(packageOption), [packageOption])
+
   const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
-  const [selectedPace, setSelectedPace] = useState(context.pace ?? getDefaultPace())
+  const [selectedStartMode, setSelectedStartMode] = useState(START_MODE.FULL)
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
+
+  const selectedPace =
+    selectedStartMode === START_MODE.OWN ? JOURNEY_PACE.OWN : entitlementPace
 
   const previewContext = useMemo(
     () => ({
       ...context,
       pace: selectedPace,
+      entitlementPace,
+      purchasedPace: entitlementPace,
       customWaypointIds: selectedPace === JOURNEY_PACE.OWN ? ownPaceStops : context.customWaypointIds,
     }),
-    [context, selectedPace, ownPaceStops],
+    [context, selectedPace, entitlementPace, ownPaceStops],
   )
 
   const showRoutePreview = shouldShowTourRoutePreview(context)
@@ -69,7 +96,7 @@ export default function RedesignBeginFlow() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
   const advanceAfterPaceSelection = () => {
-    if (selectedPace === JOURNEY_PACE.OWN) {
+    if (selectedStartMode === START_MODE.OWN) {
       setStepName('pickStops')
       return
     }
@@ -98,7 +125,12 @@ export default function RedesignBeginFlow() {
       sequenceIndex,
       customWaypointIds: selectedPace === JOURNEY_PACE.OWN ? ownPaceStops : null,
     })
-    track(TRACK_EVENTS.JOURNEY_BEGIN, { pace: selectedPace, waypoint_index: sequenceIndex })
+    track(TRACK_EVENTS.JOURNEY_BEGIN, {
+      pace: selectedPace,
+      waypoint_index: sequenceIndex,
+      product_id: packageOption.productId,
+      start_mode: selectedStartMode,
+    })
     navigate('/journey', { replace: true })
   }
 
@@ -126,7 +158,7 @@ export default function RedesignBeginFlow() {
         loading={loading}
         context={previewContext}
         continueLabel="Enable location & begin"
-        footerNote="Next you'll enable location — then the guided tutorial begins at your first stop."
+        footerNote="Confirm this layout, then enable location — the guided walk starts at your first stop."
         onContinue={() => setStepName('location')}
       />
     )
@@ -159,11 +191,17 @@ export default function RedesignBeginFlow() {
       <div className="redesign-app-shell">
         <B5OwnPaceStopPicker
           manifest={manifest}
-          context={{ ...context, pace: JOURNEY_PACE.OWN }}
+          context={{
+            ...context,
+            pace: JOURNEY_PACE.OWN,
+            entitlementPace,
+            purchasedPace: entitlementPace,
+          }}
           selectedIds={ownPaceStops}
           onChangeSelected={setOwnPaceStops}
           onBack={() => setStepName('pace')}
           onContinue={advanceAfterOwnPaceSelection}
+          subtitle={`Choose from the stops included in ${packageOption.title}. Your tour roadmap builds from this list.`}
         />
       </div>
     )
@@ -173,7 +211,11 @@ export default function RedesignBeginFlow() {
     return (
       <div className="redesign-app-shell">
         <B3PermissionsPrimer
-          paceTitle={getPaceOption(selectedPace)?.title}
+          paceTitle={
+            selectedStartMode === START_MODE.OWN
+              ? getPaceOption(JOURNEY_PACE.OWN)?.title
+              : packageOption.title
+          }
           busy={busy}
           onEnable={handleEnableLocation}
           onSkip={startJourney}
@@ -185,9 +227,10 @@ export default function RedesignBeginFlow() {
   return (
     <div className="redesign-app-shell">
       <B4PaceSelector
-        options={PACE_OPTIONS}
-        selectedPace={selectedPace}
-        onSelectPace={setSelectedPace}
+        packageOption={packageOption}
+        startModes={startModes}
+        selectedStartMode={selectedStartMode}
+        onSelectStartMode={setSelectedStartMode}
         onContinue={handlePaceContinue}
       />
     </div>

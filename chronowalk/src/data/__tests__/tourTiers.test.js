@@ -8,7 +8,7 @@ import { TOUR_TIER_WAYPOINTS } from '../tourTiers.js'
 describe('tourTiers', () => {
   const manifest = loadRomeManifest()
 
-  it('defines Roma Centrale as centro storico + Pantheon + Via Appia', () => {
+  it('defines Roma Historica as centro storico + Pantheon + Via Appia', () => {
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CENTRAL]).toEqual([
       'w14',
       'w15',

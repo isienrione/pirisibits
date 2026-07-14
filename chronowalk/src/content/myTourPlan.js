@@ -201,12 +201,22 @@ export function buildOwnPacePickerActs(manifest, context) {
   const path = context.path ?? manifest.journey?.default_path ?? 'a'
   const pathWaypointIds = new Set(getManifestWaypointIds(manifest, path, context.promotedOptionalIds ?? []))
 
+  // Own-pace may only choose among stops included in the purchased package.
+  const poolPace = context.entitlementPace ?? context.purchasedPace ?? null
+  const tierIds = poolPace && poolPace !== JOURNEY_PACE.HEROIC && poolPace !== JOURNEY_PACE.OWN
+    ? getTierWaypointIds(poolPace)
+    : null
+  const allowedIds = tierIds
+    ? new Set(tierIds.filter((id) => id !== 'pause'))
+    : pathWaypointIds
+
   return manifest.acts
     .map((manifestAct) => {
       const meta = ACT_META[manifestAct.id] ?? manifestAct
       const stops = manifestAct.waypoints
         .filter((waypointId) => isWaypointId(manifest, waypointId))
         .filter((waypointId) => pathWaypointIds.has(waypointId))
+        .filter((waypointId) => allowedIds.has(waypointId))
         .map((waypointId) => {
           const waypoint = getWaypoint(manifest, waypointId)
           return {
@@ -242,8 +252,9 @@ export function needsOwnPaceSelection(context) {
 export function buildPreviewTourActs(manifest, previewWaypointId = 'w17') {
   if (!manifest?.acts) return []
 
+  // Free Pantheon preview sits on the full Rome package layout (not Antica-only).
   const context = {
-    pace: JOURNEY_PACE.CLASSIC,
+    pace: JOURNEY_PACE.HEROIC,
     path: manifest.journey?.default_path ?? 'a',
   }
   const tourWaypointIds = new Set(getTourWaypointIds(manifest, context))

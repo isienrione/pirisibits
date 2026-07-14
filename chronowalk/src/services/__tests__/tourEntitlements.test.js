@@ -41,8 +41,20 @@ describe('tourEntitlements', () => {
 
   it('unlocks both tours after bundle purchase', () => {
     purchaseTourProduct('rome-complete')
-    expect(readOwnedTourIds().sort()).toEqual(['heart-of-ancient-rome', 'roman-forum'])
+    expect(readOwnedTourIds().sort()).toEqual([
+      'central-rome',
+      'heart-of-ancient-rome',
+      'roman-forum',
+    ])
     expect(ownsTour('roman-forum')).toBe(true)
     expect(ownsTour('heart-of-ancient-rome')).toBe(true)
+    expect(ownsTour('central-rome')).toBe(true)
+  })
+
+  it('records landing Roma Antica package purchases', () => {
+    const result = purchaseTourProduct('rome-essential')
+    expect(result.ok).toBe(true)
+    expect(result.productId).toBe('rome-essential')
   })
 })
+

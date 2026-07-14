@@ -42,10 +42,20 @@ function StatusMessage({ title, body, tone = 'muted' }) {
   )
 }
 
+function readProductIdFromSearch(searchParams) {
+  return (
+    searchParams.get('product_id')
+    || searchParams.get('productId')
+    || searchParams.get('tier')
+    || ''
+  ).trim() || null
+}
+
 export default function AccessScreen({ onValidated }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = parseAccessToken(`?${searchParams.toString()}`)
+  const productId = readProductIdFromSearch(searchParams)
   const [status, setStatus] = useState(token ? 'validating' : 'idle')
   const [manualToken, setManualToken] = useState('')
 
@@ -62,8 +72,11 @@ export default function AccessScreen({ onValidated }) {
       if (cancelled) return
 
       if (result.ok) {
-        grantAccess()
-        track(TRACK_EVENTS.PURCHASE, { source: result.source ?? 'token' })
+        grantAccess(productId)
+        track(TRACK_EVENTS.PURCHASE, {
+          source: result.source ?? 'token',
+          product_id: productId ?? undefined,
+        })
         setStatus('success')
         onValidated?.()
         return
@@ -75,7 +88,7 @@ export default function AccessScreen({ onValidated }) {
     return () => {
       cancelled = true
     }
-  }, [token, onValidated])
+  }, [token, productId, onValidated])
 
   const handleManualSubmit = (event) => {
     event.preventDefault()

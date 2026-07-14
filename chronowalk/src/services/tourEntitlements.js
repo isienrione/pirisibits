@@ -1,4 +1,4 @@
-import { getTourIdsForProduct } from '../data/tourProducts'
+import { getTourIdsForProduct, getTourProduct } from '../data/tourProducts'
 import { isUnlockAllTours } from '../config/env'
 
 const ENTITLEMENTS_KEY = 'chronowalk-owned-tours'
@@ -12,6 +12,10 @@ const TOUR_ID_ALIASES = {
 const PRODUCT_ID_ALIASES = {
   'rome-forum-cluster': 'roman-forum',
   'rome-city': 'heart-of-ancient-rome',
+  // Landing / checkout aliases
+  'roma-historica': 'rome-central',
+  'roma-antica': 'rome-essential',
+  'roma-eterna': 'rome-complete',
 }
 
 const normalizeTourId = (tourId) => TOUR_ID_ALIASES[tourId] ?? tourId
@@ -74,9 +78,11 @@ export const ownsAnyTour = (ownedTourIds = readOwnedTourIds()) => {
 
 export const purchaseTourProduct = (productId) => {
   const normalizedProductId = normalizeProductId(productId)
-  const tourIds = getTourIdsForProduct(normalizedProductId)
-  if (!tourIds.length) return { ok: false, reason: 'unknown_product' }
+  if (!getTourProduct(normalizedProductId)) {
+    return { ok: false, reason: 'unknown_product' }
+  }
 
+  const tourIds = getTourIdsForProduct(normalizedProductId)
   const owned = new Set(readOwnedTourIds() ?? [])
   for (const tourId of tourIds) {
     owned.add(tourId)

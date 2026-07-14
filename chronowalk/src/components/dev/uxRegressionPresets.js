@@ -4,6 +4,7 @@ import { getManifestWaypointIds } from '../../content/mapStops.js'
 import { JOURNEY_PACE } from '../../data/romePacing.js'
 import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
 import { grantAccess, revokeAccess } from '../../lib/config.js'
+import { clearTourEntitlements } from '../../services/tourEntitlements.js'
 import {
   OFFLINE_AUDIO_STATUS,
   writeRomeOfflineStatus,
@@ -95,6 +96,7 @@ export function buildReturningProgressContext(manifest, path = 'a') {
 
 export function applyFirstTimeVisitorPreset() {
   revokeAccess()
+  clearTourEntitlements()
   resetJourney()
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.NONE,
@@ -112,7 +114,8 @@ export function applyFirstTimeVisitorPreset() {
 }
 
 export function applyPurchasedFirstTimePreset() {
-  grantAccess()
+  clearTourEntitlements()
+  grantAccess('rome-complete')
   resetJourney()
 
   return {
@@ -126,7 +129,8 @@ export function applyReturningWithProgressPreset(manifest) {
     return { route: '/begin', searchParams: {} }
   }
 
-  grantAccess()
+  clearTourEntitlements()
+  grantAccess('rome-essential')
   const path = manifest.journey?.default_path ?? 'a'
   const context = buildReturningProgressContext(manifest, path)
 
@@ -139,7 +143,8 @@ export function applyReturningWithProgressPreset(manifest) {
 }
 
 function ensureOwnedJourney(manifest, waypointId = DEFAULT_QA_WAYPOINT) {
-  grantAccess()
+  clearTourEntitlements()
+  grantAccess('rome-complete')
 
   const path = manifest.journey?.default_path ?? 'a'
   const sequenceIndex = Math.max(
