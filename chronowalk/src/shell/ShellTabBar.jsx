@@ -4,6 +4,19 @@ import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
 import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
 
+const PREFETCHERS = {
+  '/tour': () => import('../redesign/pages/RedesignTourPage.jsx'),
+  '/stops': () => import('../redesign/pages/RedesignStopsPage.jsx'),
+  '/map': () => import('../redesign/pages/RedesignMapPage.jsx'),
+  '/journal': () => import('../redesign/pages/RedesignJournalPage.jsx'),
+}
+
+function prefetchCompanionRoutes() {
+  Object.values(PREFETCHERS).forEach((load) => {
+    void load()
+  })
+}
+
 export default function ShellTabBar() {
   const { chromeHidden } = useThresholdChrome()
   const location = useLocation()
@@ -24,6 +37,24 @@ export default function ShellTabBar() {
     }
   }, [visible])
 
+  useEffect(() => {
+    if (!visible) return undefined
+    let idleId = null
+    let timeoutId = null
+    const run = () => prefetchCompanionRoutes()
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(run, { timeout: 2000 })
+    } else {
+      timeoutId = window.setTimeout(run, 600)
+    }
+    return () => {
+      if (idleId != null && typeof window.cancelIdleCallback === 'function') {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId != null) window.clearTimeout(timeoutId)
+    }
+  }, [visible])
+
   if (!visible) return null
 
   const tabs = getShellTabs()
@@ -38,6 +69,7 @@ export default function ShellTabBar() {
         {tabs.map((tab) => {
           const active = location.pathname === tab.to
           const Icon = tab.Icon
+          const prefetch = PREFETCHERS[tab.to]
 
           return (
             <li key={tab.id} className="flex-1">
@@ -46,6 +78,12 @@ export default function ShellTabBar() {
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
                   active ? 'text-ember' : 'text-muted'
                 }`}
+                onPointerEnter={() => {
+                  if (prefetch) void prefetch()
+                }}
+                onFocus={() => {
+                  if (prefetch) void prefetch()
+                }}
               >
                 <Icon />
                 <span>{tab.label}</span>

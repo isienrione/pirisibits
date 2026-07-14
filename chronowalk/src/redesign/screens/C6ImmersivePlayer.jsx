@@ -9,6 +9,7 @@ import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import {
   hasSeenThresholdRevealTutorial,
   markThresholdRevealTutorialSeen,
@@ -41,8 +42,8 @@ export default function C6ImmersivePlayer({
   transcript = '',
   transcriptAvailable = false,
   narrationPlaying = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   playbackRate = 1,
   speeds = DEFAULT_SPEEDS,
   onCycleSpeed,
@@ -75,6 +76,12 @@ export default function C6ImmersivePlayer({
 }) {
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
+  const engineProgress = useAudioProgress()
+  const currentTime =
+    engineProgress.duration > 0 || engineProgress.playing
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration = engineProgress.duration > 0 ? engineProgress.duration : durationProp
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
   const [dragProgress, setDragProgress] = useState(null)
   const [showAudioNotice, setShowAudioNotice] = useState(false)

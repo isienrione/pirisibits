@@ -24,6 +24,16 @@ const audioMock = vi.hoisted(() => ({
 }))
 
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
+  useAudioProgress: () => ({
+    currentTime: 0,
+    duration: 0,
+    chapterIndex: 0,
+    chapterCount: 0,
+    itemIndex: 0,
+    itemCount: 0,
+    playing: false,
+    paused: false,
+  }),
   useAudioEngine: () => ({
     ready: audioMock.ready,
     get narrationPlaying() {
@@ -226,7 +236,7 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
-    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
+    expect(screen.getByText(/hold to unlock history/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('threshold-help'))
     expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()

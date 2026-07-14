@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import { IMAGE_GRADE, IMAGE_POSITION } from './cinematicImage.js'
 import { BottomScrim } from './BottomScrim.jsx'
 import { Vignette } from './Vignette.jsx'
@@ -7,7 +7,7 @@ import { Vignette } from './Vignette.jsx'
  * Full-bleed cinematic photo layer for immersive screens.
  * Grade + vignette + bottom scrim — assets unchanged.
  */
-export function PhotoHero({
+function PhotoHero({
   src,
   brightness,
   position = 'landmark',
@@ -15,6 +15,7 @@ export function PhotoHero({
   grade = 'dusk',
   scrim = true,
   vignette = true,
+  priority = true,
   className = '',
   style,
 }) {
@@ -42,7 +43,9 @@ export function PhotoHero({
           className="cw-cine-hero__media"
           src={src}
           alt=""
-          decoding="async"
+          loading={priority ? 'eager' : 'lazy'}
+          decoding={priority ? 'sync' : 'async'}
+          fetchPriority={priority ? 'high' : 'auto'}
           draggable={false}
           style={{ objectPosition, filter }}
           onLoad={() => setLoaded(true)}
@@ -56,3 +59,6 @@ export function PhotoHero({
     </div>
   )
 }
+
+export { PhotoHero }
+export default memo(PhotoHero)

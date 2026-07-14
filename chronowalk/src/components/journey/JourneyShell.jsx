@@ -60,7 +60,7 @@ import {
 } from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
 import WalkSyncBar from '../../redesign/ui/WalkSyncBar.jsx'
-import { useSettingsSheet } from '../../redesign/context/SettingsSheetContext.jsx'
+import { useSettingsSheetActions } from '../../redesign/context/SettingsSheetContext.jsx'
 import { getAppPreferences } from '../../hooks/useAppPreferences.js'
 import {
   accentForWaypoint,
@@ -95,7 +95,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const navigate = useNavigate()
   const { state, context, transition, completeWaypoint, completeTransit, advanceSequence, setPath, setActiveWaypoint, promoteOptional, prepareResumeCue, clearPendingResumeCue, completeWaypointAndAdvance, continueFromDayComplete, states } =
     useV2Journey()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -1015,11 +1015,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
       subtitle={dockEnded ? 'Just heard' : resolvedDockSnapshot.subtitle}
       narrationPlaying={audio.narrationPlaying}
       ended={dockEnded}
-      currentTime={
-        dockEnded
-          ? resolvedDockSnapshot.duration
-          : (audio.progress?.currentTime ?? 0)
-      }
+      /* Scrubber time comes from audioProgressStore inside the player — keep props stable. */
+      currentTime={dockEnded ? resolvedDockSnapshot.duration : 0}
       duration={dockEnded ? resolvedDockSnapshot.duration : (audio.progress?.duration ?? 0)}
       playbackRate={audio.playbackRate}
       onToggle={() => {
@@ -1217,7 +1214,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
         transcriptOverride: realTranscript ? stripDirectorCues(realTranscript) : null,
         audio: {
           narrationPlaying: audio.narrationPlaying,
-          currentTime: audio.progress?.currentTime ?? 0,
+          /* Scrubber follows audioProgressStore inside C6 — avoid 1Hz prop churn. */
+          currentTime: 0,
           duration: audio.progress?.duration ?? 0,
           playbackRate: audio.playbackRate,
           chapterCount: audio.progress?.chapterCount || Math.max(chapters.length, 1),

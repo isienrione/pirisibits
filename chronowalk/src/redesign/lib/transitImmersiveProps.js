@@ -27,7 +27,8 @@ export function buildTransitImmersiveProps({
     progressPct: journeyProgressPct,
     narrationPlaying: audio.narrationPlaying,
     narrationPaused: Boolean(audio.progress?.paused),
-    currentTime: audio.progress?.currentTime ?? 0,
+    /* Scrubber follows audioProgressStore in WalkingCompanion / mini player. */
+    currentTime: 0,
     duration: audio.progress?.duration ?? 0,
     playbackRate: audio.playbackRate,
     transcript: rawTranscript ? stripDirectorCues(rawTranscript) : '',

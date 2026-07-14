@@ -192,6 +192,15 @@
   }
 }
 
+/* Pause decorative infinite animations when the tab is backgrounded */
+html[data-cw-hidden='true'] [style*='presencePulse'],
+html[data-cw-hidden='true'] [style*='seamBreathe'],
+html[data-cw-hidden='true'] [style*='approachPulse'],
+html[data-cw-hidden='true'] .cw-gold-seam,
+html[data-cw-hidden='true'] .cw-press-hold--idle {
+  animation-play-state: paused !important;
+}
+
 @keyframes presencePulse {
   0%,
   100% {
@@ -2528,6 +2537,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-cine-image--loaded .cw-cine-image__media {
   opacity: 1;
   transform: scale(1);
+  will-change: auto;
 }
 
 .cw-cine-image__fallback {
@@ -2596,6 +2606,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-cine-hero--loaded .cw-cine-hero__media {
   opacity: 1;
   transform: scale(1);
+  will-change: auto;
 }
 
 .cw-cine-hero__fallback {

@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, memo } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
 import { T, F, S } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
 
 function formatTime(seconds) {
@@ -15,14 +16,14 @@ function formatTime(seconds) {
  * area during the journey so audio (especially transit narration heard while
  * walking) is always visible and controllable — never a mystery sound.
  */
-export default function FloatingAudioPlayer({
+function FloatingAudioPlayer({
   accent = T.actI,
   title = 'Rome',
   subtitle = '',
   narrationPlaying = false,
   ended = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   playbackRate = 1,
   onToggle,
   onReplay,
@@ -34,11 +35,25 @@ export default function FloatingAudioPlayer({
   onDismiss,
   transcript = '',
   bottomInset = '16px',
+  /** When true (default), scrubber ticks come from the audio progress store. */
+  liveEngineProgress = true,
 }) {
   const [expanded, setExpanded] = useState(false)
   const [showTranscript, setShowTranscript] = useState(false)
   const [dragProgress, setDragProgress] = useState(null)
   const trackRef = useRef(null)
+  const engineProgress = useAudioProgress()
+
+  const currentTime = ended
+    ? durationProp || engineProgress.duration
+    : liveEngineProgress && (engineProgress.duration > 0 || engineProgress.playing)
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration = ended
+    ? durationProp || engineProgress.duration
+    : liveEngineProgress && engineProgress.duration > 0
+      ? engineProgress.duration
+      : durationProp
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : ended ? 1 : 0
   const progress = dragProgress ?? liveProgress
@@ -47,7 +62,6 @@ export default function FloatingAudioPlayer({
   const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
   const handleMain = ended ? onReplay : onToggle
   const reading = Boolean(showTranscript && transcript)
-
   useEffect(() => {
     if (showTranscript) setExpanded(true)
   }, [showTranscript])
@@ -439,3 +453,5 @@ export default function FloatingAudioPlayer({
     </div>
   )
 }
+
+export default memo(FloatingAudioPlayer)

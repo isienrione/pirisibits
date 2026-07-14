@@ -205,33 +205,65 @@ export function useFamilyWalk() {
   const syncOn = Boolean(session?.syncEnabled)
   const resumeAllowed = canResumeForAll(session, deviceId)
 
-  return {
-    deviceId,
-    bundle,
-    session,
-    busy,
-    error,
-    clearError: () => setError(null),
-    isLeader: leader,
-    syncEnabled: syncOn,
-    resumePolicy: session?.resumePolicy ?? 'leader',
-    canResumeForAll: resumeAllowed,
-    setupBundle,
-    redeemInvite,
-    startSharedWalk,
-    joinSharedWalk,
-    leaveSharedWalk,
-    setSyncEnabled,
-    setResumePolicy,
-    publishPause,
-    publishResume,
-    publishSeek,
-    publishClock,
-    applyingRemoteRef,
-    refreshBundle: () =>
+  const clearError = useCallback(() => setError(null), [])
+  const refreshBundle = useCallback(
+    () =>
       refreshFamilyBundle().then((next) => {
         setBundle(next)
         return next
       }),
-  }
+    [],
+  )
+
+  return useMemo(
+    () => ({
+      deviceId,
+      bundle,
+      session,
+      busy,
+      error,
+      clearError,
+      isLeader: leader,
+      syncEnabled: syncOn,
+      resumePolicy: session?.resumePolicy ?? 'leader',
+      canResumeForAll: resumeAllowed,
+      setupBundle,
+      redeemInvite,
+      startSharedWalk,
+      joinSharedWalk,
+      leaveSharedWalk,
+      setSyncEnabled,
+      setResumePolicy,
+      publishPause,
+      publishResume,
+      publishSeek,
+      publishClock,
+      applyingRemoteRef,
+      refreshBundle,
+    }),
+    [
+      applyingRemoteRef,
+      bundle,
+      busy,
+      clearError,
+      deviceId,
+      error,
+      joinSharedWalk,
+      leader,
+      leaveSharedWalk,
+      publishClock,
+      publishPause,
+      publishResume,
+      publishSeek,
+      redeemInvite,
+      refreshBundle,
+      resumeAllowed,
+      session,
+      setResumePolicy,
+      setSyncEnabled,
+      setupBundle,
+      startSharedWalk,
+      syncOn,
+    ],
+  )
 }

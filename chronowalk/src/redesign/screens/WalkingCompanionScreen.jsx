@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
+import { useAudioProgress } from '../../hooks/useAudioEngine.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
 import { pantheonNow } from '../images.js'
@@ -41,8 +42,8 @@ export default function WalkingCompanionScreen({
   mode = 'waypoint',
   narrationPlaying = false,
   narrationPaused = false,
-  currentTime = 0,
-  duration = 0,
+  currentTime: currentTimeProp = 0,
+  duration: durationProp = 0,
   playbackRate = 1,
   transcript = '',
   trackTitle = null,
@@ -66,6 +67,18 @@ export default function WalkingCompanionScreen({
   const [dragProgress, setDragProgress] = useState(null)
   const [routeView, setRouteView] = useState('map')
   const approachCueRef = useRef(null)
+  const engineProgress = useAudioProgress()
+
+  /* Prefer engine store so the companion layout is not driven by shell scrubber ticks. */
+  const currentTime =
+    engineProgress.duration > 0 || engineProgress.playing || engineProgress.paused
+      ? engineProgress.currentTime
+      : currentTimeProp
+  const duration = engineProgress.duration > 0 ? engineProgress.duration : durationProp
+  const narrationPausedLive =
+    engineProgress.duration > 0 || engineProgress.playing || engineProgress.paused
+      ? engineProgress.paused
+      : narrationPaused
 
   const showArrivedUI = arrived || userConfirmedArrival
 
@@ -140,7 +153,7 @@ export default function WalkingCompanionScreen({
       duration,
       currentTime,
       narrationPlaying,
-      narrationPaused,
+      narrationPaused: narrationPausedLive,
       showArrivedUI,
     }) && typeof onToggleAudio === 'function'
 

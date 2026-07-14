@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
+import { useSettingsSheetActions } from './context/SettingsSheetContext.jsx'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { T, F, S, SHELL_TAB_BAR_INSET, TAP, ICON } from './tokens.js'
 import { TYPE } from './typography.js'
@@ -49,7 +49,7 @@ const NODE_R = 7
 
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
   const { state, context, begin, setCustomWaypointIds } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [sheetOpen, setSheetOpen] = useState(false)

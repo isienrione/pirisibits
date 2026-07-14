@@ -8,7 +8,7 @@ import {
 } from '../content/journalTimeline.js'
 import { buildJourneyLetter } from '../content/journeyLetter.js'
 import { JOURNEY_STATES } from '../state/journey.js'
-import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
+import { useSettingsSheetActions } from './context/SettingsSheetContext.jsx'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { T, ACT_COLORS } from './tokens.js'
 import {
@@ -43,7 +43,7 @@ function formatLetterFootnote(letter, distanceLabel) {
 
 export default function RedesignJournalScreen({ embedded = true }) {
   const navigate = useNavigate()
-  const { openSettings } = useSettingsSheet()
+  const { openSettings } = useSettingsSheetActions()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 

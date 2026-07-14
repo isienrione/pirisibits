@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState } from 'react'
 import {
   IMAGE_ASPECT,
   IMAGE_GRADE,
@@ -12,7 +12,7 @@ import {
  * Cinematic still — radius, grade, overlay, shadow, fade, loading.
  * Assets unchanged; presentation only.
  */
-export function CinematicImage({
+function CinematicImage({
   src,
   alt = '',
   width,
@@ -26,6 +26,9 @@ export function CinematicImage({
   faded = false,
   /** Appended to the grade filter (e.g. sepia for “THEN” diptychs). */
   extraFilter = '',
+  /** Eager + high fetch priority for LCP / above-the-fold stills. */
+  priority = false,
+  loading,
   className = '',
   style,
   testId = 'cinematic-image',
@@ -44,6 +47,7 @@ export function CinematicImage({
   const objectPosition = IMAGE_POSITION[position] ?? position
   const boxShadow = IMAGE_SHADOW[shadow] ?? shadow
   const overlayKey = IMAGE_OVERLAY[overlay] ? overlay : 'soft'
+  const loadingMode = loading ?? (priority ? 'eager' : 'lazy')
 
   return (
     <div
@@ -72,8 +76,9 @@ export function CinematicImage({
           className="cw-cine-image__media"
           src={src}
           alt={alt}
-          loading="lazy"
-          decoding="async"
+          loading={loadingMode}
+          decoding={priority ? 'sync' : 'async'}
+          fetchPriority={priority ? 'high' : 'auto'}
           draggable={false}
           style={{
             objectPosition,
@@ -93,4 +98,5 @@ export function CinematicImage({
   )
 }
 
-export default CinematicImage
+export { CinematicImage }
+export default memo(CinematicImage)
