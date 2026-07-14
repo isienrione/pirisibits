@@ -9,6 +9,14 @@
   Cache-Control: no-cache, no-store, must-revalidate
 /index.html
   Cache-Control: no-cache
+/favicon.svg
+  Cache-Control: public, max-age=3600, must-revalidate
+/favicon-*.png
+  Cache-Control: public, max-age=3600, must-revalidate
+/pwa/icon-*.png
+  Cache-Control: public, max-age=3600, must-revalidate
+/pwa/apple-touch-icon.png
+  Cache-Control: public, max-age=3600, must-revalidate
 /walking-ui-revision.json
   Cache-Control: no-cache, no-store, must-revalidate
 /

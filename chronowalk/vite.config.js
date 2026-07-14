@@ -62,11 +62,15 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: [
         'favicon.svg',
+        'favicon-32.png',
+        'favicon-16.png',
+        'brand/emblem-dark.png',
         'offline.html',
         'tour-hero.jpg',
         'pwa/icon-192.png',
         'pwa/icon-512.png',
         'pwa/icon-maskable-512.png',
+        'pwa/apple-touch-icon.png',
         'pwa/screenshot-mobile.jpg',
         'pwa/screenshot-wide.jpg',
       ],
@@ -88,6 +92,12 @@ export default defineConfig({
           {
             src: 'pwa/icon-192.png',
             sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'pwa/apple-touch-icon.png',
+            sizes: '180x180',
             type: 'image/png',
             purpose: 'any',
           },
