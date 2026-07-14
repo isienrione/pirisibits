@@ -9,6 +9,7 @@ import {
   ScreenHeader,
   BrandMark,
   StatusMark,
+  GoldSeam,
 } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -193,12 +194,16 @@ export default function RedesignMyTourScreen() {
         style={{
           background: T.bone,
           height: '100%',
-          display: 'grid',
-          placeItems: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: S.m,
           fontFamily: F.body,
           color: T.muted,
         }}
       >
+        <GoldSeam moment="loading" />
         Loading your tour…
       </div>
     )

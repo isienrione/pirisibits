@@ -113,6 +113,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [syncStatus, setSyncStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
+  const [audioUnlockCeremony, setAudioUnlockCeremony] = useState(false)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
@@ -814,8 +815,17 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const handleUnlockAudio = async () => {
     setBusy(true)
     const unlocked = await audio.unlock()
-    setAudioUnlocked(unlocked || audio.ready)
+    const ok = Boolean(unlocked || audio.ready)
     setBusy(false)
+    if (!ok) return
+    if (variant === 'redesign') {
+      setAudioUnlockCeremony(true)
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, 850)
+      })
+      setAudioUnlockCeremony(false)
+    }
+    setAudioUnlocked(true)
   }
 
   const handlePathChoice = async (path) => {
@@ -1139,10 +1149,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     )
   }
 
-  if (!audioUnlocked && !audio.ready) {
+  if ((!audioUnlocked && !audio.ready) || audioUnlockCeremony) {
     if (variant === 'redesign') {
       return withInterruptionBanner(
-        <RedesignJourneyWelcome onUnlock={handleUnlockAudio} busy={busy} />
+        <RedesignJourneyWelcome
+          onUnlock={handleUnlockAudio}
+          busy={busy || audioUnlockCeremony}
+          audioJustUnlocked={audioUnlockCeremony}
+        />,
       )
     }
     return withInterruptionBanner(

@@ -1,6 +1,8 @@
 export { Vignette } from './Vignette.jsx'
 export { BottomScrim } from './BottomScrim.jsx'
 export { Seam } from './Seam.jsx'
+export { GoldSeam, GOLD_SEAM_ACCENT } from './GoldSeam.jsx'
+export { GOLD_SEAM_MOMENTS, GOLD_SEAM_MOMENT_KEYS, resolveGoldSeamPreset } from './goldSeamPresets.js'
 export { Eyebrow } from './Eyebrow.jsx'
 export { PrimaryButton } from './PrimaryButton.jsx'
 export { GhostButton } from './GhostButton.jsx'

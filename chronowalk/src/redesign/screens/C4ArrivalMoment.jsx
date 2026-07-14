@@ -1,6 +1,6 @@
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
+import { Vignette, Eyebrow, PulseRings, GoldSeam } from '../ui/index.js'
 
 /**
  * Arrival — full-bleed photo + cream card with full immersive options on every stop.
@@ -71,6 +71,9 @@ export default function C4ArrivalMoment({
         }}
       >
         <Eyebrow color={accent}>YOU&apos;VE ARRIVED</Eyebrow>
+        <div style={{ margin: '12px 0 4px' }}>
+          <GoldSeam moment="arrival" />
+        </div>
         <h1
           style={{
             fontFamily: F.display,

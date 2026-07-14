@@ -15,6 +15,7 @@ import {
   ScreenHeader,
   SurfaceCard,
   StatusMark,
+  GoldSeam,
 } from './ui/index.js'
 
 const SEAM_X = 38
@@ -101,8 +102,21 @@ export default function RedesignStopsScreen() {
 
   if (loading) {
     return (
-      <div className="cw-grain" style={{ background: T.bone, height: '100%', fontFamily: F.body, display: 'grid', placeItems: 'center' }}>
-        <p style={{ color: T.muted }}>Loading route…</p>
+      <div
+        className="cw-grain"
+        style={{
+          background: T.bone,
+          height: '100%',
+          fontFamily: F.body,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: S.m,
+        }}
+      >
+        <GoldSeam moment="loading" />
+        <p style={{ color: T.muted, margin: 0 }}>Loading route…</p>
       </div>
     )
   }

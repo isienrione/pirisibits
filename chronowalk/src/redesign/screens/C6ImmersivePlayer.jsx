@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
 import { T, F, S, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
-import { Vignette, Eyebrow, PrimaryButton } from '../ui/index.js'
+import { Vignette, Eyebrow, PrimaryButton, GoldSeam } from '../ui/index.js'
 import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
 import ThresholdHoldHint from '../ui/ThresholdHoldHint.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
@@ -633,6 +633,9 @@ export default function C6ImmersivePlayer({
 
       {showContinuity ? (
         <div className="cw-waypoint-immersive__continuity">
+          <div style={{ margin: '0 auto 16px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <GoldSeam moment="chapterTransition" key={`chapter-seam-${chapterIndex}`} />
+          </div>
           <PrimaryButton
             data-testid="story-continue"
             className="cw-wc-pressable"

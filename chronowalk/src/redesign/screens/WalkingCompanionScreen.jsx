@@ -7,6 +7,7 @@ import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
 import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
+import { GoldSeam } from '../ui/GoldSeam.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
 import {
@@ -189,6 +190,9 @@ export default function WalkingCompanionScreen({
         {showArrivedUI ? (
           <div className="cw-walking-companion__arrived-copy">
             <p className="cw-walking-companion__arrived-label">You have arrived</p>
+            <div className="cw-walking-companion__arrived-seam" aria-hidden>
+              <GoldSeam moment="arrival" key={`arrive-seam-${stopKey}`} />
+            </div>
             <h1 className="cw-walking-companion__title">{title}</h1>
           </div>
         ) : (

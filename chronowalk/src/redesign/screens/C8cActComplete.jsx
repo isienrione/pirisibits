@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
 import { capitolineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Vignette } from '../ui/index.js';
+import { Vignette, GoldSeam } from '../ui/index.js'
 import { useContext } from "react";
 
 export default function C8cActComplete({
@@ -135,13 +135,10 @@ export default function C8cActComplete({
           {closingLine}
         </p>
 
-        {/* Seam tick — ember: time itself, always, regardless of act */}
-        <div style={{
-          width: 1.5, height: 24, background: T.ember,
-          margin: "0 auto 24px",
-          boxShadow: "0 0 12px rgba(232,161,60,0.45)",
-          animation: "seamBreathe 3s ease-in-out infinite",
-        }} />
+        {/* Gold Seam — act transition (time itself, always, regardless of act accent) */}
+        <div style={{ margin: '0 auto 24px' }}>
+          <GoldSeam moment="actTransition" />
+        </div>
 
         {/* Primary */}
         <button
