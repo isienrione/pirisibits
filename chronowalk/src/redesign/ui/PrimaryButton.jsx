@@ -1,5 +1,8 @@
-import { T, S } from '../tokens.js'
+import { T, S, R, TAP } from '../tokens.js'
 import { TYPE } from '../typography.js'
+
+const PRESS =
+  'opacity var(--d-feedback, 220ms) var(--ease-pressure), transform var(--d-micro, 160ms) var(--ease-pressure)'
 
 /**
  * Primary full-width CTA — shared across begin, journey, and shell footers.
@@ -13,6 +16,7 @@ export function PrimaryButton({
   style,
   disabled = false,
   glow = true,
+  busy = false,
   type = 'button',
   className = '',
   ...rest
@@ -22,25 +26,26 @@ export function PrimaryButton({
     (color === T.gold || color === T.ember || color === T.terracotta || color === T.actI
       ? T.obsidian
       : T.warmWhite)
+  const inert = disabled || busy
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={inert}
       className={['cw-motion-pressable', className].filter(Boolean).join(' ')}
       style={{
         width: '100%',
-        padding: S.m,
+        minHeight: TAP.min,
+        padding: `${S.m} ${S.l}`,
         background: color,
         color: fg,
-        borderRadius: 12,
+        borderRadius: R.control,
         ...TYPE.button,
         border: 'none',
-        cursor: disabled ? 'wait' : 'pointer',
-        opacity: disabled ? 0.7 : 1,
-        boxShadow: glow ? `0 0 22px ${color}55` : 'none',
-        transition:
-          'opacity var(--d-feedback, 220ms) var(--ease-pressure), transform var(--d-micro, 160ms) var(--ease-pressure)',
+        cursor: busy ? 'wait' : inert ? 'not-allowed' : 'pointer',
+        opacity: inert ? 0.55 : 1,
+        boxShadow: glow && !inert ? `0 8px 28px ${color}40, 0 0 0 1px ${color}22` : 'none',
+        transition: PRESS,
         ...style,
       }}
       {...rest}

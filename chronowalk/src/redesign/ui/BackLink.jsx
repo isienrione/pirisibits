@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'lucide-react'
-import { T } from '../tokens.js'
+import { T, TAP, ICON } from '../tokens.js'
 import { TYPE } from '../typography.js'
 
 /**
@@ -12,8 +12,9 @@ export function BackLink({ children = 'Back', onClick, style, showIcon = true })
     <button
       type="button"
       onClick={onClick}
+      className="cw-motion-pressable"
       style={{
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
         gap: showIcon ? 4 : 0,
         background: 'none',
@@ -21,11 +22,15 @@ export function BackLink({ children = 'Back', onClick, style, showIcon = true })
         cursor: 'pointer',
         color: T.muted,
         ...TYPE.textAction,
-        padding: 0,
+        minHeight: TAP.min,
+        padding: '10px 4px',
+        margin: '-10px -4px',
+        transition:
+          'opacity var(--d-feedback, 220ms) var(--ease-pressure), transform var(--d-micro, 160ms) var(--ease-pressure)',
         ...style,
       }}
     >
-      {showIcon ? <ChevronLeft size={16} aria-hidden /> : null}
+      {showIcon ? <ChevronLeft size={ICON.sm} strokeWidth={ICON.stroke} aria-hidden /> : null}
       {children}
     </button>
   )

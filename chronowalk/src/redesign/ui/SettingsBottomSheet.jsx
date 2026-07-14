@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
-import { T, F } from '../tokens.js'
+import { T, F, S, R } from '../tokens.js'
+import { TextButton } from './TextButton.jsx'
+import { TYPE, displayTitleStyle } from '../typography.js'
 import {
   useAppPreferences,
   SETTINGS_PLAYBACK_SPEEDS,
@@ -189,15 +191,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
           right: 0,
           maxHeight: 'min(88dvh, 640px)',
           background: T.bone,
-          borderRadius: '24px 24px 0 0',
+          borderRadius: `${R.sheet} ${R.sheet} 0 0`,
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 -8px 40px rgba(11,11,13,0.28)',
+          boxShadow: 'var(--shadow-sheet)',
           animation: 'cwMotionSheetUp var(--d-sheet, 380ms) var(--ease-exit, cubic-bezier(0.22, 1, 0.36, 1)) both',
           fontFamily: F.body,
         }}
       >
-        <div style={{ paddingTop: 12, paddingBottom: 8, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ paddingTop: S.m, paddingBottom: S.s, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
           <div style={{ width: 36, height: 4, borderRadius: 2, background: `${T.muted}45` }} />
         </div>
 
@@ -206,21 +208,18 @@ export default function SettingsBottomSheet({ open, onClose }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '0 24px 8px',
+            padding: `0 ${S.edge} ${S.s}`,
             flexShrink: 0,
+            gap: S.m,
           }}
         >
-          <h2 style={{ margin: 0, fontFamily: F.display, fontSize: 22, color: T.ink, fontWeight: 300 }}>Settings</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{ fontSize: 13, color: T.muted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: F.body }}
-          >
+          <h2 style={{ ...displayTitleStyle(22), color: T.ink, paddingTop: 0 }}>Settings</h2>
+          <TextButton onClick={onClose} style={{ ...TYPE.meta, fontWeight: 500, color: T.ink }}>
             Done
-          </button>
+          </TextButton>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: '0 24px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: `0 ${S.edge}` }}>
           <Hairline />
           <Row
             label="Audio speed"

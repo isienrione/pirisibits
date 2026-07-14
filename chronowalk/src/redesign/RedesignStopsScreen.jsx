@@ -13,6 +13,7 @@ import {
   ActNode,
   Eyebrow,
   PrimaryButton,
+  SecondaryButton,
   ScreenHeader,
   SurfaceCard,
   StatusMark,
@@ -287,20 +288,33 @@ export default function RedesignStopsScreen() {
                           <span style={{ minHeight: 16 }} />
                         )}
                         <div style={{ display: 'flex', gap: S.s, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                          <button
-                            type="button"
+                          <SecondaryButton
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
-                            style={{ fontSize: 12, color: T.ink, background: 'none', border: `1px solid ${T.muted}35`, borderRadius: 8, padding: `${S.s} ${S.m}`, cursor: 'pointer' }}
+                            color={T.ink}
+                            borderColor={`${T.muted}35`}
+                            style={{
+                              width: 'auto',
+                              minHeight: 44,
+                              padding: `${S.s} ${S.m}`,
+                              fontSize: 13,
+                              fontWeight: 500,
+                            }}
                           >
                             Listen
-                          </button>
-                          <button
-                            type="button"
+                          </SecondaryButton>
+                          <PrimaryButton
                             onClick={() => walkToStop(card.id)}
-                            style={{ fontSize: 12, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: `${S.s} ${S.m}`, cursor: 'pointer', fontWeight: 600 }}
+                            color={T.ember}
+                            glow={false}
+                            style={{
+                              width: 'auto',
+                              minHeight: 44,
+                              padding: `${S.s} ${S.m}`,
+                              fontSize: 13,
+                            }}
                           >
                             Walk here
-                          </button>
+                          </PrimaryButton>
                         </div>
                       </div>
                     </SurfaceCard>

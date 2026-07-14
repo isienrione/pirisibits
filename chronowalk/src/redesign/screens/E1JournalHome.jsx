@@ -113,11 +113,15 @@ export default function E1JournalHome({
           height: '100%',
           fontFamily: F.body,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: S.m,
+          color: T.muted,
         }}
       >
-        <p style={{ ...TYPE.meta, color: T.muted }}>Gathering your pages…</p>
+        <GoldSeam moment="loading" />
+        <p style={{ ...TYPE.meta, color: T.muted, margin: 0 }}>Gathering your pages…</p>
       </div>
     )
   }
@@ -380,13 +384,13 @@ export default function E1JournalHome({
                             aria-hidden
                             style={{
                               position: 'absolute',
-                              right: 10,
-                              bottom: 10,
+                              right: S.s,
+                              bottom: S.s,
                               width: 56,
                               height: 56,
                               borderRadius: 10,
                               overflow: 'hidden',
-                              boxShadow: '0 6px 18px rgba(11,11,13,0.35)',
+                              boxShadow: 'var(--shadow-elev-still)',
                               border: `1px solid ${T.warmWhite}33`,
                             }}
                           >

@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, S, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, F, S, SHELL_TAB_BAR_INSET, TAP, ICON } from './tokens.js'
 import { TYPE } from './typography.js'
 import {
   PrimaryButton,
@@ -435,16 +435,25 @@ export default function RedesignMyTourScreen() {
                     type="button"
                     onClick={() => toggleActExpanded(act.id)}
                     aria-label={expanded ? 'Collapse act' : 'Expand act'}
+                    className="cw-motion-pressable"
                     style={{
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      padding: 4,
+                      minWidth: TAP.min,
+                      minHeight: TAP.min,
+                      padding: 0,
+                      display: 'inline-grid',
+                      placeItems: 'center',
                       flexShrink: 0,
                       color: T.muted,
                     }}
                   >
-                    {expanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                    {expanded ? (
+                      <ChevronUp size={ICON.md} strokeWidth={ICON.stroke} />
+                    ) : (
+                      <ChevronDown size={ICON.md} strokeWidth={ICON.stroke} />
+                    )}
                   </button>
                 </div>
 

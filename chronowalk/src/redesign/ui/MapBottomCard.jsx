@@ -1,5 +1,7 @@
 import { CinematicImage } from './CinematicImage.jsx'
+import { PrimaryButton } from './PrimaryButton.jsx'
 import { TYPE } from '../typography.js'
+import { R } from '../tokens.js'
 
 /**
  * Journey-driven map companion card — one primary CTA, warm map chrome.
@@ -17,11 +19,12 @@ export default function MapBottomCard({
   return (
     <div
       style={{
-        borderRadius: 16,
+        borderRadius: R.card,
         border: '1px solid color-mix(in srgb, var(--warm-white) 8%, transparent)',
         background: 'color-mix(in srgb, var(--ink) 86%, transparent)',
-        backdropFilter: 'blur(10px)',
+        backdropFilter: 'blur(12px)',
         overflow: 'hidden',
+        boxShadow: 'var(--shadow-floating)',
       }}
     >
       <div
@@ -70,24 +73,16 @@ export default function MapBottomCard({
       </div>
 
       <div style={{ padding: 'var(--gap-m)' }}>
-        <button
-          type="button"
+        <PrimaryButton
           onClick={onCta}
           disabled={disabled}
-          style={{
-            width: '100%',
-            padding: 'var(--gap-m)',
-            borderRadius: 12,
-            border: 'none',
-            background: 'var(--accent)',
-            color: 'var(--bone)',
-            ...TYPE.button,
-            cursor: disabled ? 'wait' : 'pointer',
-            opacity: disabled ? 0.75 : 1,
-          }}
+          busy={disabled}
+          glow={false}
+          color="var(--accent)"
+          textColor="var(--obsidian)"
         >
           {ctaLabel}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   )
