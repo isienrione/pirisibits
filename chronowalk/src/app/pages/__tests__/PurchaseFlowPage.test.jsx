@@ -26,7 +26,7 @@ describe('PurchaseFlowPage', () => {
     vi.clearAllMocks()
   })
 
-  it('shows Lemon pending placeholder with transaction steps', async () => {
+  it('shows Lemon pending placeholder with staging purchase CTA', async () => {
     render(
       <MemoryRouter initialEntries={['/purchase?tier=rome-complete']}>
         <Routes>
@@ -38,6 +38,7 @@ describe('PurchaseFlowPage', () => {
     expect(await screen.findByText(/checkout is almost ready/i)).toBeInTheDocument()
     expect(screen.getByText(/pay securely/i)).toBeInTheDocument()
     expect(screen.getByText(/lemon squeezy pending/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /complete staging purchase/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 

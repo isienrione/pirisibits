@@ -8,13 +8,17 @@ import {
   openCheckout,
   resolveCheckoutBaseUrl,
 } from '../../lib/checkout.js'
+import {
+  completeStagingPurchase,
+  isStagingCheckoutAllowed,
+} from '../../lib/stagingCheckout.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandoff.js'
 
 /**
- * /purchase — bridge into Lemon Squeezy when configured; calm placeholder otherwise.
+ * /purchase — Lemon Squeezy when configured; staging purchase otherwise (dev / allow-dev-access).
  * Query: ?tier=rome-complete (optional)
  */
 export function PurchaseFlowPage() {
@@ -22,6 +26,7 @@ export function PurchaseFlowPage() {
   const [params] = useSearchParams()
   const tierId = params.get('tier')
   const tier = useMemo(() => getTierById(tierId), [tierId])
+  const stagingAllowed = isStagingCheckoutAllowed()
 
   const [checkoutReady, setCheckoutReady] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -52,6 +57,16 @@ export function PurchaseFlowPage() {
     }
   }, [tierId])
 
+  const handleStagingCheckout = useCallback(() => {
+    setBusy(true)
+    const result = completeStagingPurchase({ tierId, source: 'purchase_flow_staging' })
+    if (!result.ok) {
+      setBusy(false)
+      return
+    }
+    navigate(result.redirectTo, { replace: true })
+  }, [navigate, tierId])
+
   const handlePreview = useCallback(() => {
     track(TRACK_EVENTS.LANDING_CTA_PREVIEW, { source: 'purchase_flow', preview: 'pantheon' })
     const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
@@ -65,8 +80,10 @@ export function PurchaseFlowPage() {
         <APurchasePending
           tier={tier}
           checkoutReady={checkoutReady}
+          stagingAllowed={stagingAllowed}
           busy={busy}
           onContinueCheckout={handleCheckout}
+          onStagingCheckout={handleStagingCheckout}
           onPreview={handlePreview}
         />
       </div>

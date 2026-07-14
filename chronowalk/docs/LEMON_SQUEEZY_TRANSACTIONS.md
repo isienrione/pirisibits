@@ -11,7 +11,9 @@ ChronoWalk is waiting on Lemon Squeezy store confirmation. The **buyer journey i
 5. **Ceremony** — optional `/access/confirmed` (“Rome is yours.”)  
 6. **Setup** — `/setup` → `/begin` → walk  
 
-While Lemon is pending, step 2 opens **`/purchase`** instead: calm instructions + tier summary + restore/dev paths.
+While Lemon is pending, step 2 opens **`/purchase`** instead: calm instructions + tier summary.
+
+**Staging purchase (implemented now):** on local Vite (or preview with `VITE_ALLOW_DEV_ACCESS=true`), **/purchase → Complete staging purchase** mints a magic token, unlocks the phone, and opens `/access/confirmed?token=…` — the same unlock path live Lemon will use.
 
 ## What to do when Lemon confirms
 
@@ -80,14 +82,23 @@ Wire your email provider in the TODO inside the function (Resend recommended). E
 6. Open the emailed `/access?token=…` link → lands in `/setup`  
 7. Device has `localStorage.cw_access === 'true'`
 
-### 7. Staging without Lemon
+### 7. Staging without Lemon (works today)
+
+**Option A — full simulated transaction**
+
+1. `npm run dev` (or set `VITE_ALLOW_DEV_ACCESS=true` on a preview)
+2. Open `/landing` → Begin Journey (or `/purchase?tier=rome-complete`)
+3. Tap **Complete staging purchase**
+4. Land on `/access/confirmed` → **Begin setup** → unlocked Rome
+
+**Option B — shortcut token**
 
 ```bash
 # .env.local or Cloudflare preview only — never production
 VITE_ALLOW_DEV_ACCESS=true
 ```
 
-Then visit: `/access?token=dev` (or `local`).
+Visit: `/access?token=dev` (or `local`).
 
 ## In-app routes
 

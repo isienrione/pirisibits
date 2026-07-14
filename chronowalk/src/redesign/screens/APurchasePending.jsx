@@ -11,8 +11,10 @@ import { TRANSACTION_STEPS } from '../../lib/checkout.js'
 export default function APurchasePending({
   tier = null,
   checkoutReady = false,
+  stagingAllowed = false,
   busy = false,
   onContinueCheckout,
+  onStagingCheckout,
   onPreview,
 }) {
   const priceLabel = tier?.price ?? null
@@ -138,14 +140,20 @@ export default function APurchasePending({
                 Lemon Squeezy pending
               </p>
               <p style={{ ...TYPE.body, color: T.muted, margin: '6px 0 0', fontSize: 14 }}>
-                When confirmation arrives, set <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code> (and
-                the webhook). This button then becomes live checkout — no redesign required.
+                Live card checkout appears when <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code> is
+                set. Until then, staging can complete the same unlock path on this device.
               </p>
               <div style={{ marginTop: S.m }}>
                 <GoldSeam moment="loading" />
               </div>
             </div>
           )}
+
+          {!checkoutReady && stagingAllowed && onStagingCheckout ? (
+            <PrimaryButton onClick={onStagingCheckout} busy={busy} color={T.ember} glow={false}>
+              Complete staging purchase
+            </PrimaryButton>
+          ) : null}
 
           {onPreview ? (
             <GhostButton onClick={onPreview}>Try the Pantheon free</GhostButton>
@@ -171,13 +179,20 @@ export default function APurchasePending({
             </Link>
           </p>
 
-          {!checkoutReady ? (
+          {!checkoutReady && stagingAllowed ? (
             <p style={{ ...TYPE.meta, color: `${T.muted}99`, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
-              Local / staging: open{' '}
+              Staging purchase mints a magic token, unlocks this phone, and opens the confirmation ceremony —
+              the same path a live Lemon payment will take.
+            </p>
+          ) : null}
+
+          {!checkoutReady && !stagingAllowed ? (
+            <p style={{ ...TYPE.meta, color: `${T.muted}99`, textAlign: 'center', margin: 0, lineHeight: 1.5 }}>
+              Local / staging unlock:{' '}
               <Link to="/access?token=dev" style={{ color: T.ember, textDecoration: 'none' }}>
                 /access?token=dev
               </Link>{' '}
-              when <code>VITE_ALLOW_DEV_ACCESS</code> is enabled.
+              with <code>VITE_ALLOW_DEV_ACCESS</code>.
             </p>
           ) : null}
         </div>
