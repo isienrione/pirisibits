@@ -252,10 +252,20 @@ export const LANDING_CONTENT = {
       {
         step: '3',
         title: 'Arrive, listen, reveal',
-        body: 'Stories and reconstructions appear where they belong.',
+        body: 'Open stories and reconstructions where they belong.',
         mockup: 'audio',
       },
     ],
+    /** Progressive disclosure — keeps scan time low; details live elsewhere too. */
+    more: {
+      summary: 'Pause, resume, and Threshold',
+      items: [
+        'Pause anytime and continue later — one morning or several.',
+        'At selected landmarks, press and hold to compare today’s view with the past.',
+      ],
+      thresholdHref: '#threshold',
+      thresholdLabel: 'See the Threshold',
+    },
   },
 
   monuments: {
