@@ -162,19 +162,15 @@ export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter']
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'Rome · Offline audio walks',
-    headline: 'Walk Rome freely — with the history you\'d miss on your own.',
-    accentLine: 'Rome, as it once was.',
+    eyebrow: 'Rome · Walk at your own pace',
+    headline: 'Walk until the city starts talking.',
+    /** Supporting line — place-tied stories under the transformation headline. */
+    accentLine: 'Stories begin when you reach the places where they happened.',
     subheadline:
-      'A self-guided audio walk on your phone. Wander at your pace — stories start when you reach each landmark.',
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: LANDING_CTA.seeRoutes,
-    ctaHint: 'Free Pantheon preview · ~4 min',
-    stats: [
-      { value: '22 stops', label: 'Colosseum to Appian Way' },
-      { value: 'Offline', label: 'Download once, walk without signal' },
-      { value: 'One-time', label: 'No subscription' },
-    ],
+      'A self-guided Rome experience with cinematic narration, GPS-guided walking and evidence-based reconstructions — on your phone, at your pace.',
+    primaryCta: 'Try one stop free',
+    secondaryCta: 'Explore Rome routes from €9',
+    trustLine: 'No group · No subscription · Download once',
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },

@@ -48,21 +48,12 @@ export default function LandingHero({ onPreview }) {
             </a>
           </div>
 
-          {hero.ctaHint ? <p className="cw-v2-hero__cta-hint">{hero.ctaHint}</p> : null}
+          {hero.trustLine ? <p className="cw-v2-hero__trust">{hero.trustLine}</p> : null}
         </div>
 
         <div className="cw-v2-hero__device">
           <LandingLivePhoneMockup variant="audio" />
         </div>
-
-        <dl className="cw-v2-hero__stats">
-          {hero.stats.map((stat) => (
-            <div key={stat.label} className="cw-v2-hero__stat">
-              <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
-              <dd className="cw-v2-hero__stat-label">{stat.label}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   )

@@ -355,11 +355,13 @@
   margin-top: 2rem;
 }
 
-.cw-v2-hero__cta-hint {
+.cw-v2-hero__cta-hint,
+.cw-v2-hero__trust {
   margin: 0.85rem 0 0;
   max-width: 28rem;
   font-size: 0.82rem;
   line-height: 1.5;
+  letter-spacing: 0.04em;
   color: var(--v2-muted);
 }
 
@@ -1976,7 +1978,8 @@
     margin-top: 1.15rem;
   }
 
-  .cw-v2-hero__cta-hint {
+  .cw-v2-hero__cta-hint,
+  .cw-v2-hero__trust {
     margin-top: 0.65rem;
     font-size: 0.76rem;
     text-align: center;
