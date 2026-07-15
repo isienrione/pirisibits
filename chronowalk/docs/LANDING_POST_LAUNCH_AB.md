@@ -56,10 +56,15 @@ Live order already matches this implementation sequence (Act I Promise → Act I
 
 | | Copy |
 |-|------|
-| **A (live control)** | Walk until the city starts talking. |
+| **A (control)** | Walk until the city starts talking. |
 | **B** | Walk Rome freely—with the history you’d miss on your own. |
 
-**Live today:** Variant **A**. Next: measure A against B (PostHog flag) — do not resurrect the retired line *Stories begin when you arrive.*
+**Status: LIVE — sticky 50/50.** Assignment in `landingExperiments.js` (`cw_landing_exp_hero`).  
+QA override: `?landing_exp_hero=a` or `?landing_exp_hero=b`.  
+Property on funnel events: `landing_exp_hero` (do not use `ab_variant`).  
+Disable via `LANDING_EXP_HERO_ENABLED = false` (forces A without wiping storage).
+
+Default copy in `LANDING_CONTENT.hero.headline` remains A for tests / SEO docs.
 
 **Measure:** Preview-start rate · Route-view rate · Checkout-start rate
 

@@ -13,6 +13,7 @@
  */
 
 import { track, TRACK_EVENTS } from '../lib/track.js'
+import { ensureLandingExpHero, peekLandingExpHero } from './landingExperiments.js'
 
 /** Allowed section ids for CTA context (keep short + stable). */
 export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
@@ -35,8 +36,10 @@ const onceFlags = {
 }
 
 function landingProps(extra = {}) {
+  const exp = peekLandingExpHero() ?? ensureLandingExpHero()
   return {
     source: 'landing',
+    landing_exp_hero: exp,
     ...extra,
   }
 }

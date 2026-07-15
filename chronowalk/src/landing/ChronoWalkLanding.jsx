@@ -33,6 +33,7 @@ import {
   trackLandingRoutesCta,
   trackLandingView,
 } from './landingAnalytics.js'
+import { ensureLandingExpHero } from './landingExperiments.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 
@@ -46,6 +47,7 @@ export default function ChronoWalkLanding() {
   const { cents, checkoutUrl } = useLandingPrice()
 
   useEffect(() => {
+    ensureLandingExpHero()
     trackLandingView()
   }, [])
 

@@ -1,6 +1,7 @@
 import posthog from 'posthog-js'
 import { getHost } from './host'
 import { getAbVariantCents } from './config'
+import { peekLandingExpHero } from '../landing/landingExperiments.js'
 
 const CONSENT_KEY = 'cw_analytics_consent'
 
@@ -42,9 +43,11 @@ export const TRACK_EVENTS = {
 }
 
 function baseProps(extra = {}) {
+  const landingExpHero = peekLandingExpHero()
   return {
     host: getHost(),
     ab_variant: getAbVariantCents(),
+    ...(landingExpHero ? { landing_exp_hero: landingExpHero } : {}),
     ...extra,
   }
 }

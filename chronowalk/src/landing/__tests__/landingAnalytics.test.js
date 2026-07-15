@@ -14,6 +14,7 @@ import {
   trackLandingThresholdStart,
   trackLandingView,
 } from '../landingAnalytics.js'
+import { resetLandingExperimentsForTests } from '../landingExperiments.js'
 
 vi.mock('../../lib/track.js', async (importOriginal) => {
   const actual = await importOriginal()
@@ -28,6 +29,8 @@ import { track } from '../../lib/track.js'
 describe('landing conversion analytics', () => {
   beforeEach(() => {
     resetLandingAnalyticsForTests()
+    resetLandingExperimentsForTests()
+    window.history.replaceState({}, '', '/?landing_exp_hero=a')
     track.mockClear()
   })
 
@@ -35,7 +38,10 @@ describe('landing conversion analytics', () => {
     expect(trackLandingView()).toBe(true)
     expect(trackLandingView()).toBe(false)
     expect(track).toHaveBeenCalledTimes(1)
-    expect(track).toHaveBeenCalledWith(TRACK_EVENTS.LANDING_VIEW, expect.objectContaining({ source: 'landing' }))
+    expect(track).toHaveBeenCalledWith(
+      TRACK_EVENTS.LANDING_VIEW,
+      expect.objectContaining({ source: 'landing', landing_exp_hero: 'a' }),
+    )
   })
 
   it('includes section context on preview and routes CTAs', () => {
@@ -43,11 +49,11 @@ describe('landing conversion analytics', () => {
     trackLandingRoutesCta(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.LANDING_CTA_PREVIEW,
-      expect.objectContaining({ section: 'hero', preview: 'pantheon' }),
+      expect.objectContaining({ section: 'hero', preview: 'pantheon', landing_exp_hero: 'a' }),
     )
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.LANDING_CTA_ROUTES,
-      expect.objectContaining({ section: 'final-cta', target: 'pricing' }),
+      expect.objectContaining({ section: 'final-cta', target: 'pricing', landing_exp_hero: 'a' }),
     )
   })
 

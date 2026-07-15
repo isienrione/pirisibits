@@ -197,7 +197,7 @@ export const LANDING_CONTENT = {
     id: 'top',
     eyebrow: 'ChronoWalk · Rome',
     headline: 'Walk until the city starts talking.',
-    /** Place-tied support under the emotional headline. */
+    /** Mirrored by LANDING_EXP_HERO_COPY.a — live headline may be A/B via landingExperiments. */
     accentLine: 'Walk freely. Keep the context.',
     subheadline:
       'Self-guided Rome walks — narration and Threshold tied to the stones in front of you.',

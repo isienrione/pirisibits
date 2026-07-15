@@ -1,16 +1,20 @@
 import { useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_HERO } from './landingVisualAssets.js'
+import { ensureLandingExpHero, getHeroCopyForExp } from './landingExperiments.js'
 import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
  * Act I hero — transformation first, function second.
  * Full-bleed cinematic Rome plate (distinct from interludes / ending).
+ * Headline: Test 1 A/B via `landingExperiments` (`landing_exp_hero`).
  */
 export default function LandingHero({ onPreview, onRoutes }) {
   const hero = LANDING_CONTENT.hero
   const [imageOk, setImageOk] = useState(true)
+  const [expHero] = useState(() => ensureLandingExpHero())
+  const headline = getHeroCopyForExp(expHero).headline
 
   return (
     <section id={hero.id} className="cw-v2-hero" aria-labelledby="hero-heading">
@@ -35,7 +39,7 @@ export default function LandingHero({ onPreview, onRoutes }) {
           </p>
 
           <h1 id="hero-heading" className="cw-v2-hero__headline">
-            {hero.headline}
+            {headline}
           </h1>
 
           <span className="cw-v2-hero__seam" aria-hidden="true" />
