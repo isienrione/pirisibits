@@ -5,10 +5,15 @@ const COLOSSEUM_EXTERIOR = '/waypoints/colosseum/exterior'
 const LANDING_IMG = '/landing'
 const CINEMATIC = `${LANDING_IMG}/cinematic`
 
-/** Shared landing imagery — keep NOW/THEN coherent across threshold demo + phone mockups. */
-export const LANDING_COLOSSEUM_NOW = colosseumNow
-export const LANDING_COLOSSEUM_THEN = mediaUrl(`${COLOSSEUM_EXTERIOR}/ancient-reconstruction.jpg`)
+/**
+ * Shared landing imagery — keep NOW/THEN coherent across threshold demo + phone mockups.
+ * Threshold pair is a matched 3:4 crop set (dissolve reveal) under /landing/threshold/.
+ */
+export const LANDING_COLOSSEUM_NOW = `${LANDING_IMG}/threshold/colosseum-now.jpg`
+export const LANDING_COLOSSEUM_THEN = `${LANDING_IMG}/threshold/colosseum-then.jpg`
 export const LANDING_COLOSSEUM_THEN_LOOP = mediaUrl(`${COLOSSEUM_EXTERIOR}/ancient-reconstruction.mp4`)
+/** Waypoint poster — used where a live “today” still is needed outside Threshold. */
+export const LANDING_COLOSSEUM_NOW_WAYPOINT = colosseumNow
 export const LANDING_PANTHEON_NOW = pantheonNow
 export const LANDING_FORUM_NOW = mediaUrl('/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg')
 

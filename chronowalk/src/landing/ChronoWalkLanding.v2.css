@@ -705,6 +705,12 @@
   opacity: 0.9;
 }
 
+/* Path variant always shows the phone screens under each step */
+.cw-v2-user-flow--path .cw-v2-user-flow__device {
+  display: flex;
+  max-width: 7.25rem;
+}
+
 .cw-v2-user-flow__screen {
   display: block;
   width: 100%;
@@ -850,6 +856,10 @@
   .cw-v2-user-flow__device {
     display: flex;
     max-width: 10rem;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__device {
+    max-width: 9.5rem;
   }
 }
 
@@ -3251,8 +3261,13 @@
   inset: 0;
 }
 
+.cw-threshold-stage__then {
+  z-index: 0;
+}
+
 .cw-threshold-stage__now {
   z-index: 1;
+  transition: opacity 40ms linear;
 }
 
 .cw-threshold-stage img,
@@ -3261,20 +3276,35 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 55%;
   pointer-events: none;
 }
 
-/* Match amphitheatre mass across landscape THEN vs portrait NOW */
-.cw-threshold-stage__img--then {
-  object-position: 50% 58%;
-  transform: scale(1.08);
-  transform-origin: center 55%;
+/* Pre-cropped matched 3:4 assets — keep mild shared framing, no divergent scales */
+.cw-threshold-stage__img--then,
+.cw-threshold-stage__img--now {
+  transform: none;
 }
 
-.cw-threshold-stage__img--now {
-  object-position: 46% 62%;
-  transform: scale(1.12);
-  transform-origin: center 58%;
+.cw-threshold-stage__seam--dissolve {
+  inset: auto 12% 18% 12%;
+  left: auto;
+  right: auto;
+  width: auto;
+  height: 2px;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--gold, #c9a227) 70%, transparent),
+    transparent
+  );
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.cw-threshold-stage__seam--dissolve.is-active {
+  opacity: 0.55;
 }
 
 .cw-threshold-stage__tag {
