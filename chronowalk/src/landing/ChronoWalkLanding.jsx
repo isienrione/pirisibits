@@ -17,7 +17,6 @@ import LandingTryFreeSection from './LandingTryFreeSection.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingTrustProofSection from './LandingTrustProofSection.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
-import LandingWhoItsForSection from './LandingWhoItsForSection.jsx'
 import LandingComparisonSection from './LandingComparisonSection.jsx'
 import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
@@ -104,8 +103,7 @@ export default function ChronoWalkLanding() {
           <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingTrustProofSection />
           <LandingFaqSectionV2 />
-          {/* Preserved lower until trust/proof and After Rome fully replace these beats. */}
-          <LandingWhoItsForSection />
+          {/* Comparison kept lower for SEO / deep links until trust fully covers intent. */}
           <LandingComparisonSection />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingAfterRomeSection />

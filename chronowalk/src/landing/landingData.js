@@ -154,10 +154,10 @@ export const LANDING_ACTS = [
  * Existing beats remounted lower in Act III so deep links / SEO copy stay live
  * until trust + After Rome fully replace them. Not part of the primary narrative order.
  */
-export const LANDING_PRESERVED_LOWER_SECTIONS = ['who-its-for', 'comparison']
+export const LANDING_PRESERVED_LOWER_SECTIONS = ['comparison']
 
 /** Legacy hash targets kept resolving while content is relocated. */
-export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter']
+export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for']
 
 export const LANDING_CONTENT = {
   hero: {
@@ -193,10 +193,29 @@ export const LANDING_CONTENT = {
 
   'real-moment': {
     id: 'real-moment',
-    eyebrow: 'In the city',
-    headline: 'You arrive. The story opens here.',
-    body: 'Reach the Pantheon, the Forum, or the Colosseum and narration begins where it happened — not as a podcast you could play anywhere, but as a scene tied to the stones in front of you.',
-    aside: 'Keep your eyes up. The phone only needs to know you have arrived.',
+    eyebrow: 'Real moments',
+    headline: 'Rome on your terms.',
+    scenarios: [
+      {
+        prompt: 'No ticket?',
+        lines: ['The monument may be sold out.', 'The city isn’t.'],
+      },
+      {
+        prompt: 'Free afternoon?',
+        lines: ['Begin where you are.', 'Pause when Rome distracts you.'],
+      },
+      {
+        prompt: 'Love to wander?',
+        lines: [
+          'Keep the freedom, but skip the inevitable FOMO.',
+          'Lose the feeling that you are missing everything.',
+        ],
+      },
+      {
+        prompt: 'History curious?',
+        lines: ['The stones stop looking like rubble once the story begins.'],
+      },
+    ],
   },
 
   trust: {
@@ -331,6 +350,11 @@ export const LANDING_CONTENT = {
     holdLabel: 'Hold to reveal',
   },
 
+  /**
+   * @deprecated Phase 7 — persona cards replaced by `real-moment` scenarios.
+   * `#who-its-for` deeplink is hosted inside LandingRealMomentSection.
+   * Content retained for archive / reference only (component renders null).
+   */
   'who-its-for': {
     id: 'who-its-for',
     eyebrow: 'Who it\'s for',
