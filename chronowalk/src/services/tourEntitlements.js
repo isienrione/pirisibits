@@ -1,4 +1,4 @@
-import { getTourIdsForProduct } from '../data/tourProducts'
+import { getTourIdsForProduct, getTourProduct } from '../data/tourProducts'
 import { isUnlockAllTours } from '../config/env'
 
 const ENTITLEMENTS_KEY = 'chronowalk-owned-tours'
@@ -12,6 +12,10 @@ const TOUR_ID_ALIASES = {
 const PRODUCT_ID_ALIASES = {
   'rome-forum-cluster': 'roman-forum',
   'rome-city': 'heart-of-ancient-rome',
+  // Landing / checkout aliases
+  'roma-historica': 'rome-central',
+  'roma-antica': 'rome-essential',
+  'roma-eterna': 'rome-complete',
 }
 
 const normalizeTourId = (tourId) => TOUR_ID_ALIASES[tourId] ?? tourId
@@ -72,10 +76,26 @@ export const ownsAnyTour = (ownedTourIds = readOwnedTourIds()) => {
   return ownedTourIds.length > 0
 }
 
-export const purchaseTourProduct = (productId) => {
+/**
+ * Record a purchase.
+ * @param {string} productId
+ * @param {{ replace?: boolean }} [options] When replace is true, this product becomes
+ *   the sole owned landing package (avoids a stale "complete" default masking a smaller buy).
+ */
+export const purchaseTourProduct = (productId, options = {}) => {
   const normalizedProductId = normalizeProductId(productId)
+  if (!getTourProduct(normalizedProductId)) {
+    return { ok: false, reason: 'unknown_product' }
+  }
+
   const tourIds = getTourIdsForProduct(normalizedProductId)
-  if (!tourIds.length) return { ok: false, reason: 'unknown_product' }
+  const replace = Boolean(options.replace)
+
+  if (replace) {
+    persistOwnedTourIds(tourIds)
+    persistPurchasedProductIds([normalizedProductId])
+    return { ok: true, tourIds, productId: normalizedProductId }
+  }
 
   const owned = new Set(readOwnedTourIds() ?? [])
   for (const tourId of tourIds) {

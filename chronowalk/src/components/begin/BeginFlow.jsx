@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   JOURNEY_PACE,
-  PACE_OPTIONS,
+  START_MODE,
   PACE_ORIENTATION,
+  getBeginStartModes,
   getPaceOption,
 } from '../../data/romePacing'
+import {
+  getEntitlementPoolPace,
+  getPurchasedPackageOption,
+} from '../../data/purchasedPackage.js'
 import { useV2Journey } from '../../hooks/useV2Journey'
+import { useTourEntitlements } from '../../hooks/useTourEntitlements.js'
 import { requestLocationAccess } from '../../lib/locationAccess'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
@@ -97,7 +103,7 @@ function BeginShell({ children }) {
   )
 }
 
-function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
+function StartModeSelectView({ packageOption, startModes, selectedStartMode, onSelectStartMode, onContinue }) {
   return (
     <BeginShell>
       <p
@@ -109,7 +115,7 @@ function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
           color: 'var(--muted-warm)',
         }}
       >
-        Begin journey
+        Your tour
       </p>
       <h1
         style={{
@@ -121,18 +127,21 @@ function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
           fontStyle: 'italic',
         }}
       >
-        Rome is yours. How do you want to take it?
+        Review & begin
       </h1>
+      <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
+        You unlocked {packageOption.title}. Choose the full guided route, or customize from those stops.
+      </p>
 
       <div style={{ display: 'grid', gap: 12, marginTop: 28 }}>
-        {PACE_OPTIONS.map((option) => {
-          const selected = selectedPace === option.id
+        {startModes.map((option) => {
+          const selected = selectedStartMode === option.id
 
           return (
             <button
               key={option.id}
               type="button"
-              onClick={() => onSelectPace(option.id)}
+              onClick={() => onSelectStartMode(option.id)}
               style={{
                 width: '100%',
                 padding: '16px 18px',
@@ -366,16 +375,34 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
 export default function BeginFlow() {
   const navigate = useNavigate()
   const { begin, resume, reset, isResumable } = useV2Journey()
+  const { purchasedProductIds } = useTourEntitlements()
+  const packageOption = useMemo(
+    () => getPurchasedPackageOption(purchasedProductIds),
+    [purchasedProductIds],
+  )
+  const entitlementPace = useMemo(
+    () => getEntitlementPoolPace(purchasedProductIds),
+    [purchasedProductIds],
+  )
+  const startModes = useMemo(() => getBeginStartModes(packageOption), [packageOption])
+
   const [step, setStep] = useState(() => (isResumable ? 'resume' : 'pace'))
-  const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
+  const [selectedStartMode, setSelectedStartMode] = useState(START_MODE.FULL)
   const [busy, setBusy] = useState(false)
   const [locationDenied, setLocationDenied] = useState(false)
 
+  const selectedPace =
+    selectedStartMode === START_MODE.OWN ? JOURNEY_PACE.OWN : entitlementPace
   const activePace = getPaceOption(selectedPace)
 
   const startJourney = () => {
     begin({ pace: selectedPace, waypointIndex: 0 })
-    track(TRACK_EVENTS.JOURNEY_BEGIN, { pace: selectedPace, waypoint_index: 0 })
+    track(TRACK_EVENTS.JOURNEY_BEGIN, {
+      pace: selectedPace,
+      waypoint_index: 0,
+      product_id: packageOption.productId,
+      start_mode: selectedStartMode,
+    })
     navigate('/journey', { replace: true })
   }
 
@@ -412,7 +439,7 @@ export default function BeginFlow() {
   if (step === 'location') {
     return (
       <LocationPromptView
-        pace={activePace}
+        pace={selectedStartMode === START_MODE.OWN ? activePace : packageOption}
         busy={busy}
         locationDenied={locationDenied}
         onEnable={handleEnableLocation}
@@ -423,9 +450,11 @@ export default function BeginFlow() {
   }
 
   return (
-    <PaceSelectView
-      selectedPace={selectedPace}
-      onSelectPace={setSelectedPace}
+    <StartModeSelectView
+      packageOption={packageOption}
+      startModes={startModes}
+      selectedStartMode={selectedStartMode}
+      onSelectStartMode={setSelectedStartMode}
       onContinue={() => setStep('location')}
     />
   )

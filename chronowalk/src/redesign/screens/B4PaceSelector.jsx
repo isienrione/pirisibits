@@ -8,7 +8,7 @@ import {
 } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
 import { Eyebrow } from '../ui/index.js'
-import { ACT_DOT_KEYS } from '../../data/romePacing.js'
+import { ACT_DOT_KEYS, getBeginStartModes, getPaceOption, getDefaultPace } from '../../data/romePacing.js'
 
 const PACE_IMAGES = {
   pantheon: pantheonNow,
@@ -34,36 +34,48 @@ function resolveDots(actDots = []) {
   })
 }
 
+/**
+ * Post-purchase begin step — review the owned package and choose full route vs customize.
+ * Prices are never shown here; checkout lives on /landing only.
+ */
 export default function B4PaceSelector({
-  options: optionsProp,
-  selectedPace,
-  onSelectPace,
+  packageOption: packageOptionProp,
+  startModes: startModesProp,
+  selectedStartMode,
+  onSelectStartMode,
   onContinue,
+  // Legacy props kept for the Figma prototype gallery
+  options: _legacyOptions,
+  selectedPace: _legacySelectedPace,
+  onSelectPace: _legacyOnSelectPace,
 }) {
   const { navigate } = useContext(RedesignNavCtx)
   const [selected, setSelected] = useState(null)
 
-  const options = useMemo(
-    () =>
-      (optionsProp ?? []).map((opt) => ({
-        id: opt.id,
-        title: opt.title,
-        badge: opt.badge ?? null,
-        desc: opt.description,
-        included: opt.includedSummary ?? null,
-        priceLabel: opt.priceLabel ?? null,
-        img: PACE_IMAGES[opt.imageKey] ?? colosseumNow,
-        dots: resolveDots(opt.actDots),
-      })),
-    [optionsProp],
+  const packageOption = useMemo(
+    () => packageOptionProp ?? getPaceOption(getDefaultPace()),
+    [packageOptionProp],
   )
 
+  const modes = useMemo(() => {
+    const raw = startModesProp ?? getBeginStartModes(packageOption)
+    return raw.map((opt) => ({
+      id: opt.id,
+      title: opt.title,
+      badge: opt.badge ?? null,
+      desc: opt.description,
+      included: opt.includedSummary ?? null,
+      img: PACE_IMAGES[opt.imageKey] ?? colosseumNow,
+      dots: resolveDots(opt.actDots),
+    }))
+  }, [startModesProp, packageOption])
+
   const activeIndex =
-    selectedPace != null ? options.findIndex((opt) => opt.id === selectedPace) : selected
+    selectedStartMode != null ? modes.findIndex((opt) => opt.id === selectedStartMode) : selected
 
   const handleSelect = (index) => {
     setSelected(index)
-    onSelectPace?.(options[index].id)
+    onSelectStartMode?.(modes[index].id)
   }
 
   const handleContinue = () => {
@@ -126,22 +138,62 @@ export default function B4PaceSelector({
           />
         </div>
 
-        <Eyebrow color={T.ember}>BEFORE YOU BEGIN</Eyebrow>
+        <Eyebrow color={T.ember}>YOUR TOUR</Eyebrow>
         <h2
           style={{
             fontFamily: F.display,
-            fontSize: 44,
+            fontSize: 40,
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.05,
-            margin: '10px 0 16px',
+            margin: '10px 0 8px',
             flexShrink: 0,
           }}
         >
-          Choose your
-          <br />
-          Rome.
+          Review &amp; begin
         </h2>
+        <p
+          style={{
+            fontSize: 13,
+            color: T.muted,
+            lineHeight: 1.55,
+            margin: '0 0 16px',
+            flexShrink: 0,
+          }}
+        >
+          You unlocked <span style={{ color: T.warmWhite }}>{packageOption.title}</span>.
+          Choose the full guided route, or customize from those stops.
+        </p>
+
+        <div
+          style={{
+            flexShrink: 0,
+            marginBottom: 14,
+            padding: '14px 16px',
+            borderRadius: 14,
+            border: `1px solid ${T.ink800}`,
+            background: 'rgba(33,28,21,0.72)',
+          }}
+          data-testid="purchased-package-summary"
+        >
+          <p
+            style={{
+              fontFamily: F.display,
+              fontSize: 22,
+              color: T.warmWhite,
+              fontWeight: 400,
+              margin: 0,
+              lineHeight: 1.15,
+            }}
+          >
+            {packageOption.title}
+          </p>
+          {packageOption.includedSummary ? (
+            <p style={{ fontSize: 12, color: `${T.warmWhite}99`, margin: '8px 0 0', lineHeight: 1.5 }}>
+              {packageOption.includedSummary}
+            </p>
+          ) : null}
+        </div>
 
         <div
           style={{
@@ -154,7 +206,7 @@ export default function B4PaceSelector({
             paddingBottom: 4,
           }}
         >
-          {options.map((opt, i) => (
+          {modes.map((opt, i) => (
             <button
               key={opt.id}
               type="button"
@@ -230,36 +282,22 @@ export default function B4PaceSelector({
                     >
                       {opt.title}
                     </span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                      {opt.priceLabel ? (
-                        <span
-                          style={{
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: T.ember,
-                            letterSpacing: '0.02em',
-                          }}
-                        >
-                          {opt.priceLabel}
-                        </span>
-                      ) : null}
-                      {opt.badge ? (
-                        <span
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 600,
-                            color: T.bone,
-                            background: T.gold,
-                            borderRadius: 6,
-                            padding: '3px 8px',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          {opt.badge}
-                        </span>
-                      ) : null}
-                    </div>
+                    {opt.badge ? (
+                      <span
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 600,
+                          color: T.bone,
+                          background: T.gold,
+                          borderRadius: 6,
+                          padding: '3px 8px',
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {opt.badge}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -310,7 +348,7 @@ export default function B4PaceSelector({
             flexShrink: 0,
           }}
         >
-          You can change your mind at any time. Nothing expires. Nothing is skipped forever.
+          Next you&apos;ll confirm the tour layout. No checkout here — you already own this walk.
         </p>
 
         <button
@@ -333,8 +371,10 @@ export default function B4PaceSelector({
           }}
         >
           {activeIndex != null && activeIndex >= 0
-            ? `Begin — ${options[activeIndex].title}`
-            : 'Select a tour'}
+            ? modes[activeIndex].id === 'own'
+              ? 'Continue — Customize stops'
+              : 'Continue — Full route'
+            : 'Select how to begin'}
         </button>
       </div>
     </div>

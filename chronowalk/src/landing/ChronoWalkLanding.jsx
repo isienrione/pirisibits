@@ -24,6 +24,7 @@ import { ROME_JOURNEY_SECTION_ID } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
+import { stashPendingProductId } from '../data/pendingPurchase.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
@@ -52,6 +53,10 @@ export default function ChronoWalkLanding() {
     (tierId) => {
       track(TRACK_EVENTS.LANDING_CTA_BEGIN, { source: 'landing', tier: tierId })
 
+      // Remember the chosen package so /access → /begin can scope the tour
+      // (full route vs customize) without re-offering other priced tiers.
+      const stashed = stashPendingProductId(tierId)
+
       const tierCents = resolveLandingTierCents(tierId, cents)
       const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
         host: getHost(),
@@ -63,7 +68,7 @@ export default function ChronoWalkLanding() {
           '[ChronoWalk landing] Checkout URL unavailable — using tier fallback and /access route.',
           tierId,
         )
-        navigate('/access')
+        navigate(stashed ? `/access?product_id=${encodeURIComponent(stashed)}` : '/access')
         return
       }
 
