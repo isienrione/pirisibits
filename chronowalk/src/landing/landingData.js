@@ -355,7 +355,8 @@ export const LANDING_CONTENT = {
         step: '3',
         title: 'Arrive, listen, reveal',
         body: 'When you arrive, the chapter opens.',
-        mockup: 'arrive',
+        /* Listening fills the frame with photo + player — matches the step copy. */
+        mockup: 'listening',
       },
     ],
   },

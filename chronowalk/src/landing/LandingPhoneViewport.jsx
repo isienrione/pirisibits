@@ -2,7 +2,8 @@ import LandingPhoneFrame from './LandingPhoneFrame.jsx'
 
 /**
  * Fits a full 390×844 app artboard inside the phone frame.
- * Content is authored at phone pixels, then scaled to the shell width.
+ * Content is authored at phone pixels, then scaled to the *screen* width
+ * (inner bezel), not the outer titanium shell.
  */
 export default function LandingPhoneViewport({ label, size = 'md', children }) {
   return (
