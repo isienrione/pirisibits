@@ -17,7 +17,6 @@ import LandingTryFreeSection from './LandingTryFreeSection.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingTrustProofSection from './LandingTrustProofSection.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
-import LandingComparisonSection from './LandingComparisonSection.jsx'
 import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
@@ -103,8 +102,8 @@ export default function ChronoWalkLanding() {
           <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingTrustProofSection />
           <LandingFaqSectionV2 />
-          {/* Comparison kept lower for SEO / deep links until trust fully covers intent. */}
-          <LandingComparisonSection />
+          {/* Phase 9 — comparison feature matrix unmounted; #compare still resolves. */}
+          <div id="compare" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingAfterRomeSection />
           <LandingFinalCtaSectionV2 onPreview={handlePreview} />

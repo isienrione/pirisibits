@@ -153,11 +153,12 @@ export const LANDING_ACTS = [
 /**
  * Existing beats remounted lower in Act III so deep links / SEO copy stay live
  * until trust + After Rome fully replace them. Not part of the primary narrative order.
+ * Phase 9 — comparison feature matrix removed; benefits appear once only.
  */
-export const LANDING_PRESERVED_LOWER_SECTIONS = ['comparison']
+export const LANDING_PRESERVED_LOWER_SECTIONS = []
 
 /** Legacy hash targets kept resolving while content is relocated. */
-export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for']
+export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for', 'compare']
 
 export const LANDING_CONTENT = {
   hero: {
@@ -224,20 +225,7 @@ export const LANDING_CONTENT = {
     headline: 'Cinematic, but researched.',
     subheadline:
       'Stories are thoroughly researched, reconstructions are evidence-based, and interpretive details are clearly noted. No fake certainty. No generic AI narration.',
-    items: [
-      {
-        title: 'Stories where you stand',
-        body: 'GPS-triggered narration starts when you reach each stop — built for heads-up walking.',
-      },
-      {
-        title: 'Threshold reconstructions',
-        body: 'At selected landmarks, press and hold to compare today’s view with a researched reconstruction of the same vantage.',
-      },
-      {
-        title: 'Yours to keep',
-        body: 'One-time purchase. Download once, walk offline — no subscription and no group timetable.',
-      },
-    ],
+    /** Phase 9 — feature bullets live only under `benefits`; trust is research posture alone. */
   },
 
   'after-rome': {
@@ -304,19 +292,23 @@ export const LANDING_CONTENT = {
   benefits: {
     id: 'benefits',
     eyebrow: 'What you get',
-    headline: 'A walking guide in your pocket — not a group tour.',
+    headline: 'A guide that moves with you.',
     items: [
       {
-        title: 'Stories where you stand',
-        body: 'Narration starts when you reach each stop. Keep your eyes on Rome, not your screen.',
-      },
-      {
-        title: 'Never miss the context',
-        body: 'Studio-written history tied to each place — the facts and scenes you\'d skip without a guide.',
+        title: 'Stories right where you are standing',
+        body: 'The narration begins at the place it belongs.',
       },
       {
         title: 'Your trip, your pace',
-        body: 'No flag, no crowd of thirty, no timetable. Pause for espresso and continue when you like.',
+        body: 'Pause, split the route or return another morning.',
+      },
+      {
+        title: 'Downloaded once',
+        body: 'The journey works without relying on a constant signal.',
+      },
+      {
+        title: 'Yours to keep',
+        body: 'Return to the stories after the trip.',
       },
     ],
   },

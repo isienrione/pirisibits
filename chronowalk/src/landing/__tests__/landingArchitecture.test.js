@@ -41,14 +41,13 @@ describe('landing editorial architecture', () => {
     }
   })
 
-  it('preserves comparison only as a lower-funnel relic (who-its-for → real-moment)', () => {
-    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual(['comparison'])
-    expect(LANDING_CONTENT.comparison.id).toBe('compare')
+  it('no longer mounts repeated feature matrices as preserved-lower sections', () => {
+    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual([])
   })
 
   it('exposes legacy deeplink ids for scroll/hash resolution', () => {
     expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(
-      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for']),
+      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for', 'compare']),
     )
   })
 
@@ -63,5 +62,15 @@ describe('landing editorial architecture', () => {
     ])
     expect(section.aside).toBeUndefined()
     expect(section.body).toBeUndefined()
+  })
+
+  it('lists benefits once with the playbook value props', () => {
+    expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
+      'Stories right where you are standing',
+      'Your trip, your pace',
+      'Downloaded once',
+      'Yours to keep',
+    ])
+    expect(LANDING_CONTENT.trust.items).toBeUndefined()
   })
 })
