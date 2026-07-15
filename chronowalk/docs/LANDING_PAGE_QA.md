@@ -21,8 +21,8 @@ Confirm the landing page does not break other parts of the app.
 
 | Check | How to test | Expected result |
 |-------|-------------|-----------------|
-| `/` shows landing | Go to `http://localhost:5173/` without owning the tour | Full ChronoWalk landing page appears (not an error screen). |
-| `/landing` works | Go to `http://localhost:5173/landing` | Same landing page as `/` (for visitors without access). |
+| `/` shows landing | Go to `http://localhost:5173/` (including after a prior purchase on this device) | Full ChronoWalk landing page appears — never silently redirects to `/setup`. |
+| `/landing` works | Go to `http://localhost:5173/landing` | Same landing page as `/`. |
 | `/preview` works | Open `http://localhost:5173/preview` | Free Pantheon preview screen loads. |
 | `/access` works | Open `http://localhost:5173/access` | Restore-access / code entry screen loads. |
 | `/welcome` works | Open while logged in as an owner (if you have access) | Welcome/onboarding screen loads. |
