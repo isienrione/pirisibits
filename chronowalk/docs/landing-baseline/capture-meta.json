@@ -1,0 +1,290 @@
+{
+  "capturedAt": "2026-07-15T00:00:41.187Z",
+  "baseUrl": "http://127.0.0.1:4173/",
+  "branch": "landing-editorial-restructure",
+  "note": "Baseline before editorial restructure. Live landing preserved + archived under src/landing/archive/v3-premium-baseline-2026-07-14/",
+  "screenshots": [
+    {
+      "viewport": "390x844",
+      "width": 390,
+      "height": 844,
+      "title": "ChronoWalk",
+      "h1": "Walk Rome freely — with the history you'd miss on your own.",
+      "aboveFold": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-390x844-above-fold.jpg",
+      "fullPage": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-390x844-full.jpg"
+    },
+    {
+      "viewport": "430x932",
+      "width": 430,
+      "height": 932,
+      "title": "ChronoWalk",
+      "h1": "Walk Rome freely — with the history you'd miss on your own.",
+      "aboveFold": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-430x932-above-fold.jpg",
+      "fullPage": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-430x932-full.jpg"
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "height": 1024,
+      "title": "ChronoWalk",
+      "h1": "Walk Rome freely — with the history you'd miss on your own.",
+      "aboveFold": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-768x1024-above-fold.jpg",
+      "fullPage": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-768x1024-full.jpg"
+    },
+    {
+      "viewport": "1024x1366",
+      "width": 1024,
+      "height": 1366,
+      "title": "ChronoWalk",
+      "h1": "Walk Rome freely — with the history you'd miss on your own.",
+      "aboveFold": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-1024x1366-above-fold.jpg",
+      "fullPage": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-1024x1366-full.jpg"
+    },
+    {
+      "viewport": "1440x1000",
+      "width": 1440,
+      "height": 1000,
+      "title": "ChronoWalk",
+      "h1": "Walk Rome freely — with the history you'd miss on your own.",
+      "aboveFold": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-1440x1000-above-fold.jpg",
+      "fullPage": "/workspace/chronowalk/docs/landing-baseline/screenshots/landing-1440x1000-full.jpg"
+    }
+  ],
+  "lighthouse": {
+    "mobile": {
+      "formFactor": "mobile",
+      "url": "http://127.0.0.1:4173/",
+      "fetchTime": "2026-07-15T00:00:16.657Z",
+      "scores": {
+        "performance": 69,
+        "accessibility": 95,
+        "bestPractices": 100,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaint": "3.0 s",
+        "largestContentfulPaint": "17.6 s",
+        "totalBlockingTime": "20 ms",
+        "cumulativeLayoutShift": "0",
+        "speedIndex": "3.0 s",
+        "interactive": "18.4 s"
+      },
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 623 KiB",
+          "score": 0
+        },
+        {
+          "id": "uses-responsive-images",
+          "title": "Properly size images",
+          "displayValue": "Est savings of 6,828 KiB",
+          "score": 0
+        },
+        {
+          "id": "modern-image-formats",
+          "title": "Serve images in next-gen formats",
+          "displayValue": "Est savings of 5,430 KiB",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-resources",
+          "title": "Eliminate render-blocking resources",
+          "displayValue": "Est savings of 300 ms",
+          "score": 0
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "displayValue": "Est savings of 19 KiB",
+          "score": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 0 ms",
+          "score": 100
+        }
+      ]
+    },
+    "desktop": {
+      "formFactor": "desktop",
+      "url": "http://127.0.0.1:4173/",
+      "fetchTime": "2026-07-15T00:00:29.342Z",
+      "scores": {
+        "performance": 58,
+        "accessibility": 95,
+        "bestPractices": 100,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaint": "3.0 s",
+        "largestContentfulPaint": "17.6 s",
+        "totalBlockingTime": "0 ms",
+        "cumulativeLayoutShift": "0",
+        "speedIndex": "3.0 s",
+        "interactive": "18.4 s"
+      },
+      "opportunities": [
+        {
+          "id": "modern-image-formats",
+          "title": "Serve images in next-gen formats",
+          "displayValue": "Est savings of 5,713 KiB",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 623 KiB",
+          "score": 0
+        },
+        {
+          "id": "prioritize-lcp-image",
+          "title": "Preload Largest Contentful Paint image",
+          "displayValue": "Est savings of 1,210 ms",
+          "score": 0
+        },
+        {
+          "id": "uses-responsive-images",
+          "title": "Properly size images",
+          "displayValue": "Est savings of 7,706 KiB",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-resources",
+          "title": "Eliminate render-blocking resources",
+          "displayValue": "Est savings of 450 ms",
+          "score": 0
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "displayValue": "Est savings of 19 KiB",
+          "score": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 0 ms",
+          "score": 100
+        }
+      ]
+    }
+  },
+  "productionMatch": {
+    "url": "https://chronowalk.com/",
+    "h1MatchesLocal": true,
+    "note": "Production H1 and .cw-landing--premium matched local preview at capture time."
+  },
+  "lighthouseProduction": {
+    "mobile": {
+      "formFactor": "mobile",
+      "url": "https://chronowalk.com/",
+      "fetchTime": "2026-07-15T00:02:08.991Z",
+      "scores": {
+        "performance": 68,
+        "accessibility": 95,
+        "bestPractices": 96,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaint": "3.4 s",
+        "largestContentfulPaint": "16.9 s",
+        "totalBlockingTime": "0 ms",
+        "cumulativeLayoutShift": "0",
+        "speedIndex": "3.4 s",
+        "interactive": "17.6 s"
+      },
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 613 KiB",
+          "score": 0
+        },
+        {
+          "id": "uses-responsive-images",
+          "title": "Properly size images",
+          "displayValue": "Est savings of 6,828 KiB",
+          "score": 0
+        },
+        {
+          "id": "modern-image-formats",
+          "title": "Serve images in next-gen formats",
+          "displayValue": "Est savings of 5,430 KiB",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-resources",
+          "title": "Eliminate render-blocking resources",
+          "displayValue": "Est savings of 320 ms",
+          "score": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 60 ms",
+          "score": 100
+        }
+      ]
+    },
+    "desktop": {
+      "formFactor": "desktop",
+      "url": "https://chronowalk.com/",
+      "fetchTime": "2026-07-15T00:02:21.908Z",
+      "scores": {
+        "performance": 56,
+        "accessibility": 95,
+        "bestPractices": 96,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaint": "4.6 s",
+        "largestContentfulPaint": "19.2 s",
+        "totalBlockingTime": "0 ms",
+        "cumulativeLayoutShift": "0",
+        "speedIndex": "4.6 s",
+        "interactive": "20.1 s"
+      },
+      "opportunities": [
+        {
+          "id": "modern-image-formats",
+          "title": "Serve images in next-gen formats",
+          "displayValue": "Est savings of 5,713 KiB",
+          "score": 0
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 612 KiB",
+          "score": 0
+        },
+        {
+          "id": "uses-responsive-images",
+          "title": "Properly size images",
+          "displayValue": "Est savings of 7,706 KiB",
+          "score": 0
+        },
+        {
+          "id": "render-blocking-resources",
+          "title": "Eliminate render-blocking resources",
+          "displayValue": "Est savings of 320 ms",
+          "score": 0
+        },
+        {
+          "id": "legacy-javascript",
+          "title": "Avoid serving legacy JavaScript to modern browsers",
+          "displayValue": "Est savings of 8 KiB",
+          "score": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 60 ms",
+          "score": 100
+        }
+      ]
+    }
+  }
+}
