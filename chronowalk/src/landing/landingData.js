@@ -26,7 +26,7 @@ export const FREE_PREVIEW = {
   title: 'The Pantheon Sneak Peek',
   meta: 'Free Preview · 4 minutes',
   copy:
-    'Test the cinematic narration, walk the location, and experience exactly how the GPS triggers before spending a single euro.',
+    'Hear one full scene at the Pantheon — the same stop included in every Rome package.',
 }
 
 /** Tiered Rome journey offerings shown on the landing product showcase. */
@@ -43,8 +43,7 @@ export const ROME_TIERS = [
       'The Pantheon and the living city around it — Trevi, Navona, Campo, Argentina, and Castel Sant\'Angelo. Outside Parco Archeologico del Colosseo.',
     bullets: [
       'Full Pantheon chapters + Threshold (same stop as the free preview)',
-      'Studio-written narration · GPS-triggered on arrival',
-      'Download once, walk offline — no park ticket needed',
+      'Centro storico stops — no park ticket needed',
     ],
     primaryCta: 'Begin Journey',
   },
@@ -58,10 +57,8 @@ export const ROME_TIERS = [
     description:
       'The ancient core — Colosseum and Roman Forum — with the full ChronoWalk experience at each stop.',
     bullets: [
-      'Studio-written narration (not generic audio tours)',
-      'Stories start when you arrive — GPS-triggered',
+      'Colosseum and Roman Forum stops',
       'Threshold reconstructions at key landmarks',
-      'Download once, walk offline',
     ],
     primaryCta: 'Begin Journey',
   },
@@ -80,7 +77,6 @@ export const ROME_TIERS = [
     bullets: [
       'All 22 stops — Colosseum and Forum to the Appian Way',
       'Every Threshold reconstruction on the route',
-      'Pause and resume anytime — one day or spread across the trip',
     ],
     primaryCta: 'Begin Journey',
   },
@@ -153,24 +149,26 @@ export const LANDING_ACTS = [
 /**
  * Existing beats remounted lower in Act III so deep links / SEO copy stay live
  * until trust + After Rome fully replace them. Not part of the primary narrative order.
+ * Phase 9 — comparison feature matrix removed; benefits appear once only.
  */
-export const LANDING_PRESERVED_LOWER_SECTIONS = ['comparison']
+export const LANDING_PRESERVED_LOWER_SECTIONS = []
 
 /** Legacy hash targets kept resolving while content is relocated. */
-export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for']
+export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for', 'compare']
 
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'Rome · Walk at your own pace',
+    eyebrow: 'Rome · On foot',
     headline: 'Walk until the city starts talking.',
     /** Supporting line — place-tied stories under the transformation headline. */
     accentLine: 'Stories begin when you reach the places where they happened.',
     subheadline:
-      'A self-guided Rome experience with cinematic narration, GPS-guided walking and evidence-based reconstructions — on your phone, at your pace.',
+      'A self-guided Rome experience — cinematic stories tied to the stones in front of you.',
     primaryCta: 'Try one stop free',
     secondaryCta: 'Explore Rome routes from €9',
-    trustLine: 'No group · No subscription · Download once',
+    /** Purchase objections near CTA; feature depth lives once under `#benefits`. */
+    trustLine: 'No group · No subscription · One-time purchase',
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },
@@ -224,20 +222,7 @@ export const LANDING_CONTENT = {
     headline: 'Cinematic, but researched.',
     subheadline:
       'Stories are thoroughly researched, reconstructions are evidence-based, and interpretive details are clearly noted. No fake certainty. No generic AI narration.',
-    items: [
-      {
-        title: 'Stories where you stand',
-        body: 'GPS-triggered narration starts when you reach each stop — built for heads-up walking.',
-      },
-      {
-        title: 'Threshold reconstructions',
-        body: 'At selected landmarks, press and hold to compare today’s view with a researched reconstruction of the same vantage.',
-      },
-      {
-        title: 'Yours to keep',
-        body: 'One-time purchase. Download once, walk offline — no subscription and no group timetable.',
-      },
-    ],
+    /** Phase 9 — feature bullets live only under `benefits`; trust is research posture alone. */
   },
 
   'after-rome': {
@@ -254,7 +239,7 @@ export const LANDING_CONTENT = {
     id: 'how-it-works',
     eyebrow: 'How it works',
     headline: 'Three steps. Then Rome.',
-    subheadline: 'No group schedule. No complicated setup.',
+    subheadline: 'Ready in minutes.',
     steps: [
       {
         step: '1',
@@ -265,26 +250,16 @@ export const LANDING_CONTENT = {
       {
         step: '2',
         title: 'Walk freely',
-        body: 'Download once. GPS keeps the route in sync.',
+        body: 'A map that follows your walk.',
         mockup: 'map',
       },
       {
         step: '3',
         title: 'Arrive, listen, reveal',
-        body: 'Open stories and reconstructions where they belong.',
+        body: 'Open the story when you arrive.',
         mockup: 'audio',
       },
     ],
-    /** Progressive disclosure — keeps scan time low; details live elsewhere too. */
-    more: {
-      summary: 'Pause, resume, and Threshold',
-      items: [
-        'Pause anytime and continue later — one morning or several.',
-        'At selected landmarks, press and hold to compare today’s view with the past.',
-      ],
-      thresholdHref: '#threshold',
-      thresholdLabel: 'See the Threshold',
-    },
   },
 
   monuments: {
@@ -303,20 +278,24 @@ export const LANDING_CONTENT = {
 
   benefits: {
     id: 'benefits',
-    eyebrow: 'What you get',
-    headline: 'A walking guide in your pocket — not a group tour.',
+    eyebrow: 'Carry with you',
+    headline: 'What stays with you.',
     items: [
       {
-        title: 'Stories where you stand',
-        body: 'Narration starts when you reach each stop. Keep your eyes on Rome, not your screen.',
-      },
-      {
-        title: 'Never miss the context',
-        body: 'Studio-written history tied to each place — the facts and scenes you\'d skip without a guide.',
+        title: 'Stories right where you are standing',
+        body: 'The narration begins at the place it belongs.',
       },
       {
         title: 'Your trip, your pace',
-        body: 'No flag, no crowd of thirty, no timetable. Pause for espresso and continue when you like.',
+        body: 'Pause, split the route or return another morning.',
+      },
+      {
+        title: 'Downloaded once',
+        body: 'The journey works without relying on a constant signal.',
+      },
+      {
+        title: 'Yours to keep',
+        body: 'Return to the stories after the trip.',
       },
     ],
   },
@@ -326,7 +305,7 @@ export const LANDING_CONTENT = {
     eyebrow: 'Try before you buy',
     headline: 'Free sneak peek — one stop, full experience.',
     subheadline:
-      'Not the whole app — one Pantheon chapter, enough to hear the narration, feel the GPS trigger, and decide if ChronoWalk is for you.',
+      'Not the whole app — one Pantheon chapter, enough to hear the storytelling and decide if ChronoWalk fits how you walk.',
     card: FREE_PREVIEW,
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
     secondaryCta: 'See full Rome routes',
@@ -462,8 +441,7 @@ export const LANDING_CONTENT = {
   pricing: {
     id: 'pricing',
     headline: 'Pick how much of Rome you want.',
-    subheadline:
-      'Self-guided audio walking tours. One-time purchase — download the route and it is yours for the trip and after.',
+    subheadline: 'One-time purchase per package — yours for the trip and after.',
     intro:
       'Every package includes GPS-triggered narration, offline download, and the Pantheon preview stop.',
     footnote:
@@ -475,6 +453,7 @@ export const LANDING_CONTENT = {
     nav: [
       { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
+      { label: 'What stays', href: '#benefits' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
@@ -484,11 +463,11 @@ export const LANDING_CONTENT = {
   },
 
   footer: {
-    tagline:
-      'Self-guided audio walking tours for Rome — researched, studio-written, and yours to keep.',
+    tagline: 'Self-guided walking stories for Rome — researched and yours to keep.',
     nav: [
       { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
+      { label: 'What stays', href: '#benefits' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
