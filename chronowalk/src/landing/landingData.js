@@ -52,7 +52,7 @@ export const ROME_TIERS = [
       'Centro storico stops — no park ticket needed',
     ],
     expandLabel: 'See stop list & inclusions',
-    primaryCta: 'Begin Rome',
+    primaryCta: 'Choose Roma Historica',
   },
   {
     id: 'rome-essential',
@@ -71,7 +71,7 @@ export const ROME_TIERS = [
       'Threshold reconstructions at key landmarks',
     ],
     expandLabel: 'See stop list & inclusions',
-    primaryCta: 'Begin Rome',
+    primaryCta: 'Choose Roma Antica',
   },
   {
     id: 'rome-complete',
@@ -93,7 +93,7 @@ export const ROME_TIERS = [
       'Every Threshold reconstruction on the route',
     ],
     expandLabel: 'See stop list & inclusions',
-    primaryCta: 'Begin Rome',
+    primaryCta: 'Choose Roma Eterna',
   },
 ]
 

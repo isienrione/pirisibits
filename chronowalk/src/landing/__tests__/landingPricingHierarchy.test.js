@@ -30,6 +30,14 @@ describe('pricing card hierarchy content', () => {
     expect(eterna.badge).not.toMatch(/%|popular|bestseller/i)
   })
 
+  it('names each purchase CTA after its package', () => {
+    expect(ROME_TIERS.map((tier) => tier.primaryCta)).toEqual([
+      'Choose Roma Historica',
+      'Choose Roma Antica',
+      'Choose Roma Eterna',
+    ])
+  })
+
   it('exposes stop counts for the simplified meta row', () => {
     for (const tier of ROME_TIERS) {
       const stats = getLandingTierStats(tier.id)
