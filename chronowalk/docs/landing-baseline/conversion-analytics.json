@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-07-15T00:02:30.000Z",
+  "status": "unavailable_in_environment",
+  "reason": "No VITE_POSTHOG_KEY or PostHog personal API credentials in this cloud agent environment; live conversion counts/rates cannot be queried.",
+  "provider": {
+    "name": "PostHog",
+    "apiHost": "https://eu.i.posthog.com",
+    "clientInit": "src/lib/track.js",
+    "consentKey": "cw_analytics_consent"
+  },
+  "instrumentedFunnel": [
+    { "event": "landing_view", "role": "denominator / session start", "fired": true },
+    { "event": "landing_cta_preview", "role": "preview CTR numerator", "fired": true },
+    { "event": "landing_cta_begin", "role": "purchase-intent CTR numerator", "fired": true },
+    { "event": "checkout_open", "role": "checkout handoff", "fired": true },
+    { "event": "purchase", "role": "paid conversion", "fired": "app-wide (not landing-only)" },
+    { "event": "threshold_demo", "role": "engagement", "fired": true },
+    { "event": "threshold_hold", "role": "engagement depth", "fired": true },
+    { "event": "landing_scroll_product", "role": "scroll to product", "fired": false }
+  ],
+  "suggestedRates": [
+    "landing_view → landing_cta_preview",
+    "landing_view → landing_cta_begin",
+    "landing_cta_begin → checkout_open",
+    "checkout_open → purchase"
+  ],
+  "liveMetrics": null
+}

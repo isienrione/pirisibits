@@ -17,6 +17,11 @@ function CheckIcon() {
   )
 }
 
+/**
+ * Act III — pricing. Compact decision hierarchy above the fold;
+ * maps, stop lists, and inclusions fold under progressive disclosure.
+ * Checkout wiring and analytics stay in `onBeginTier`.
+ */
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
   const tiers = section.tiers ?? []
@@ -40,102 +45,100 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
           {tiers.map((tier) => {
             const isFeatured = tier.id === 'rome-complete'
             const stats = getLandingTierStats(tier.id)
+            const stops = getLandingTierRouteStops(tier.id)
+            const routeName = tier.name ?? tier.eyebrow
+            const detailsId = `pricing-details-${tier.id}`
 
             return (
               <article
                 key={tier.id}
                 className={`cw-v2-pricing-card cw-v2-pricing-card--${tier.id}${isFeatured ? ' cw-v2-pricing-card--featured' : ''}`}
+                aria-labelledby={`pricing-name-${tier.id}`}
               >
                 {tier.badge ? (
                   <span className="cw-v2-pricing-card__ribbon">{tier.badge}</span>
                 ) : null}
 
-                <p className="cw-v2-pricing-card__tier-name">
-                  {tier.tierLabel ?? tier.eyebrow}
-                </p>
-                {tier.tierLabel && tier.eyebrow ? (
-                  <p className="cw-v2-pricing-card__eyebrow">{tier.eyebrow}</p>
-                ) : null}
+                <h3 id={`pricing-name-${tier.id}`} className="cw-v2-pricing-card__name">
+                  {routeName}
+                </h3>
+                <p className="cw-v2-pricing-card__best-for">{tier.bestFor}</p>
 
                 <div className="cw-v2-pricing-card__price-row">
                   <span className="cw-v2-pricing-card__price">{tier.price}</span>
                   <span className="cw-v2-pricing-card__note">{tier.priceNote}</span>
                 </div>
 
-                <dl className="cw-v2-pricing-card__stats" aria-label="Tour coverage">
-                  <div className="cw-v2-pricing-card__stat">
-                    <dt>Audio</dt>
-                    <dd>{stats.audioLabel}</dd>
-                  </div>
-                  <div className="cw-v2-pricing-card__stat">
-                    <dt>Tour time</dt>
+                <dl className="cw-v2-pricing-card__meta" aria-label={`${routeName} coverage`}>
+                  <div className="cw-v2-pricing-card__meta-item">
+                    <dt>Time</dt>
                     <dd>{stats.routeTimeLabel}</dd>
                   </div>
-                  <div className="cw-v2-pricing-card__stat">
-                    <dt>Route</dt>
-                    <dd>{stats.distanceLabel}</dd>
+                  <div className="cw-v2-pricing-card__meta-item">
+                    <dt>Stops</dt>
+                    <dd>{stats.stopCount}</dd>
                   </div>
                 </dl>
 
-                <p className="cw-v2-pricing-card__description">{tier.description}</p>
-
-                {tier.landmarkLine ? (
-                  <p className="cw-v2-pricing-card__landmarks">{tier.landmarkLine}</p>
-                ) : null}
-
-                <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
-
-                <ul className="cw-v2-pricing-card__list cw-v2-pricing-card__list--monuments">
-                  {getLandingTierRouteStops(tier.id).map((stop) => (
-                    <li key={stop.id} className="cw-v2-pricing-card__item">
-                      <PinIcon featured={isFeatured} />
-                      <span>{stop.title}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <ul className="cw-v2-pricing-card__list">
-                  {!isFeatured
-                    ? tier.bullets.map((item) => (
-                        <li key={item} className="cw-v2-pricing-card__item">
-                          <CheckIcon />
-                          <span>{item}</span>
-                        </li>
-                      ))
-                    : null}
-                  {isFeatured && tier.includesLabel ? (
-                    <li className="cw-v2-pricing-card__item">
-                      <CheckIcon />
-                      <span>{tier.includesLabel}</span>
-                    </li>
-                  ) : null}
-                  {tier.featuredBullet ? (
-                    <li className="cw-v2-pricing-card__item cw-v2-pricing-card__item--bold">
-                      <CheckIcon />
-                      <span>{tier.featuredBullet}</span>
-                    </li>
-                  ) : null}
-                  {isFeatured
-                    ? tier.bullets.map((item) => (
-                        <li key={item} className="cw-v2-pricing-card__item">
-                          <CheckIcon />
-                          <span>{item}</span>
-                        </li>
-                      ))
-                    : null}
-                </ul>
+                <p className="cw-v2-pricing-card__outcome">{tier.outcome}</p>
 
                 <button
                   type="button"
                   className={
                     isFeatured
-                      ? 'cw-v2-btn cw-v2-btn--coral cw-v2-btn--block'
-                      : 'cw-v2-btn cw-v2-btn--tier cw-v2-btn--block'
+                      ? 'cw-v2-btn cw-v2-btn--coral cw-v2-btn--block cw-v2-pricing-card__cta'
+                      : 'cw-v2-btn cw-v2-btn--tier cw-v2-btn--block cw-v2-pricing-card__cta'
                   }
                   onClick={() => onBeginTier(tier.id)}
                 >
                   {tier.primaryCta}
                 </button>
+
+                <details className="cw-v2-pricing-card__details" id={detailsId}>
+                  <summary className="cw-v2-pricing-card__summary">
+                    {tier.expandLabel ?? 'See every stop and inclusion'}
+                  </summary>
+
+                  <div className="cw-v2-pricing-card__details-body">
+                    <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
+
+                    <ul className="cw-v2-pricing-card__list cw-v2-pricing-card__list--monuments">
+                      {stops.map((stop) => (
+                        <li key={stop.id} className="cw-v2-pricing-card__item">
+                          <PinIcon featured={isFeatured} />
+                          <span>{stop.title}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <ul className="cw-v2-pricing-card__list cw-v2-pricing-card__list--inclusions">
+                      {tier.includesLabel ? (
+                        <li className="cw-v2-pricing-card__item">
+                          <CheckIcon />
+                          <span>{tier.includesLabel}</span>
+                        </li>
+                      ) : null}
+                      {tier.featuredBullet ? (
+                        <li className="cw-v2-pricing-card__item cw-v2-pricing-card__item--bold">
+                          <CheckIcon />
+                          <span>{tier.featuredBullet}</span>
+                        </li>
+                      ) : null}
+                      {tier.bullets.map((item) => (
+                        <li key={item} className="cw-v2-pricing-card__item">
+                          <CheckIcon />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                      {tier.landmarkLine ? (
+                        <li className="cw-v2-pricing-card__item">
+                          <CheckIcon />
+                          <span>{tier.landmarkLine}</span>
+                        </li>
+                      ) : null}
+                    </ul>
+                  </div>
+                </details>
               </article>
             )
           })}
