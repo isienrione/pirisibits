@@ -13,8 +13,7 @@ import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.
 import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
-import { hasAccess } from '../lib/config.js'
-import { isImmersiveJourneyState, isResumableJourney } from '../state/journey.js'
+import { isImmersiveJourneyState } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import {
@@ -49,13 +48,10 @@ if (import.meta.env.DEV) {
   )
 }
 
-function HomeRoute() {
-  if (hasAccess()) {
-    // Returning travelers mid-journey are offered a resume; owners without a
-    // real in-progress journey start setup (install / offline prep).
-    return <Navigate to={isResumableJourney() ? '/begin' : '/setup'} replace />
-  }
-  return <LazyLandingPage />
+// Apex chronowalk.com must open the marketing site. Send `/` to `/landing`
+// (same page) so owners with cw_access never get silently redirected to /setup.
+function ApexHomeRedirect() {
+  return <Navigate to="/landing" replace />
 }
 
 function PublicLandingRoute() {
@@ -82,7 +78,7 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
-        <Route path="/" element={<HomeRoute />} />
+        <Route path="/" element={<ApexHomeRedirect />} />
         <Route path="/landing" element={<PublicLandingRoute />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />

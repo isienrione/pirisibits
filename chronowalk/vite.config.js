@@ -5,6 +5,7 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import { mapManifestToCloudflareCanonical } from './src/pwa/cloudflarePrecacheUrls.js'
 
 function resolveBuildId() {
   if (process.env.VITE_BUILD_ID) return process.env.VITE_BUILD_ID
@@ -59,6 +60,12 @@ export default defineConfig({
     react(),
     walkingUiRevisionPlugin(),
     VitePWA({
+      // Custom SW: Cloudflare Pretty URLs 308 `/index.html` → `/`, which breaks
+      // Workbox's default navigateFallback and shows Chrome ERR_FAILED for every
+      // document navigation on phones that already have the SW controlling.
+      strategies: 'injectManifest',
+      srcDir: 'src/pwa',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
       includeAssets: [
         'favicon.svg',
@@ -66,7 +73,9 @@ export default defineConfig({
         'favicon-16.png',
         'apple-touch-icon.png',
         'brand/emblem-dark.png',
-        'offline.html',
+        // offline.html is copied from public/ and rewritten to `/offline` in
+        // manifestTransforms (Cloudflare Pretty URLs). Do not list it here —
+        // a duplicate unmapped entry would break SW install on 308 redirects.
         'tour-hero.jpg',
         'pwa/icon-192.png',
         'pwa/icon-512.png',
@@ -138,72 +147,19 @@ export default defineConfig({
           },
         ],
       },
-      workbox: {
+      injectManifest: {
         // Tie precache identity to the deploy commit so stale walking-screen chunks
         // are replaced after branch deploys (figma → production).
-        cacheId: `chronowalk-${buildId}`,
-        skipWaiting: true,
-        clientsClaim: true,
-        cleanupOutdatedCaches: true,
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2,json}'],
         globIgnores: ['**/waypoints/**'],
-        navigateFallback: '/index.html',
-        navigateFallbackDenylist: [
-          /^\/offline\.html$/,
-          /^\/rome\//,
-          /^\/waypoints\//,
-          /^\/assets\//,
-          // Never serve the SPA shell for any request to a file with an extension
-          // (mp3, mp4, jpg, json, …). Prevents caching HTML under an asset URL.
-          /\.[a-zA-Z0-9]+$/,
-        ],
-        runtimeCaching: [
-          {
-            urlPattern: ({ sameOrigin, request, url }) =>
-              sameOrigin &&
-              request.destination !== 'document' &&
-              /\.(?:png|jpg|jpeg|svg|gif|webp|mp3|mp4|woff2?)$/i.test(url.pathname),
-            handler: 'CacheFirst',
-            options: {
-              // Bumped cache name to abandon entries poisoned with HTML from a
-              // previous SPA-fallback (200 index.html served for missing media).
-              cacheName: 'chronowalk-media-v2',
-              expiration: {
-                maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24 * 30,
-              },
-              cacheableResponse: {
-                statuses: [200],
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'chronowalk-google-fonts-stylesheets',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'chronowalk-google-fonts-webfonts',
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/api\.mapbox\.com\/.*/i,
-            handler: 'NetworkOnly',
-          },
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        // Cloudflare Pages Pretty URLs 308 `/index.html` → `/` and
+        // `/offline.html` → `/offline`. Precache the 200 URLs Workbox can fetch.
+        manifestTransforms: [
+          async (entries) => ({
+            manifest: mapManifestToCloudflareCanonical(entries),
+            warnings: [],
+          }),
         ],
       },
       devOptions: {

@@ -41,6 +41,16 @@ Cloudflare Pages reads `public/_redirects`:
 /*    /index.html   200
 ```
 
+### Pretty URLs warning (PWA)
+
+Cloudflare Pages also **redirects** `/index.html` → `/` and `/offline.html` → `/offline` (308). Workbox must therefore precache those canonical paths and prefer the network for navigations. The custom service worker in `src/pwa/sw.js` does this.
+
+If a phone shows **This site can’t be reached / ERR_FAILED** for `chronowalk.com` while desktop curls still get HTTP 200, a stale/broken service worker is almost always the cause:
+
+1. Open a **Private / Incognito** tab to confirm the live site loads.
+2. Clear site data for `chronowalk.com` (Chrome: Site settings → Clear & reset).
+3. Or wait for a fresh deploy: browsers fetch `/sw.js` outside the old SW and auto-activate the fixed worker (`skipWaiting` + `clientsClaim`).
+
 ## Cache headers
 
 `public/_headers` ships with the build and tells Cloudflare **not** to edge-cache the app shell or service worker (`/`, `/index.html`, `/sw.js`, workbox bundles). Hashed files under `/assets/` stay long-lived via content hashes.
