@@ -3,7 +3,7 @@ import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
  * Act II — How it works as a sequential path (connected steps).
- * Copy leads; compact phones sit under each step on all breakpoints.
+ * Realistic phone frames with product screens lead each step.
  */
 export default function LandingUserFlowSection() {
   const section = LANDING_CONTENT['user-flow']
@@ -40,7 +40,7 @@ export default function LandingUserFlowSection() {
                   <span className="cw-v2-user-flow__node-ring">{step.step}</span>
                 </div>
                 <div className="cw-v2-user-flow__device" aria-hidden="true">
-                  <LandingLivePhoneMockup variant={step.mockup} compact />
+                  <LandingLivePhoneMockup variant={step.mockup} size="md" />
                 </div>
                 <h3 className="cw-v2-user-flow__title">{step.title}</h3>
                 <p className="cw-v2-user-flow__body">{step.body}</p>

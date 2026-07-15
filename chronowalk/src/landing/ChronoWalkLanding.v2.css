@@ -527,9 +527,9 @@
   z-index: 1;
   display: none;
   justify-content: center;
-  max-width: 14rem;
+  max-width: 17.5rem;
   margin-inline: auto;
-  opacity: 0.92;
+  opacity: 1;
 }
 
 .cw-v2-hero__screen {
@@ -619,9 +619,9 @@
   .cw-v2-hero__device {
     display: flex;
     justify-content: flex-end;
-    max-width: 16.5rem;
+    max-width: 18rem;
     margin-inline: 0;
-    opacity: 0.88;
+    opacity: 1;
   }
 }
 
@@ -725,17 +725,31 @@
 .cw-v2-user-flow__device {
   display: none;
   justify-content: center;
-  order: 4;
-  margin-top: 1rem;
-  max-width: 8.25rem;
+  order: 2;
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+  width: min(100%, 13.5rem);
+  max-width: 13.5rem;
   margin-inline: auto;
-  opacity: 0.9;
 }
 
 /* Path variant always shows the phone screens under each step */
 .cw-v2-user-flow--path .cw-v2-user-flow__device {
   display: flex;
-  max-width: 7.25rem;
+  width: min(100%, 13.5rem);
+  max-width: 13.5rem;
+}
+
+.cw-v2-user-flow--path .cw-v2-user-flow__title {
+  order: 3;
+}
+
+.cw-v2-user-flow--path .cw-v2-user-flow__body {
+  order: 4;
+}
+
+.cw-v2-user-flow--path .cw-v2-user-flow__node {
+  order: 1;
 }
 
 .cw-v2-user-flow__screen {
@@ -882,11 +896,13 @@
 
   .cw-v2-user-flow__device {
     display: flex;
-    max-width: 10rem;
+    width: min(100%, 15rem);
+    max-width: 15rem;
   }
 
   .cw-v2-user-flow--path .cw-v2-user-flow__device {
-    max-width: 9.5rem;
+    width: min(100%, 15rem);
+    max-width: 15rem;
   }
 }
 
@@ -1027,7 +1043,7 @@
   display: none;
   margin: 0;
   justify-self: center;
-  max-width: 15.5rem;
+  max-width: 17.5rem;
   width: 100%;
 }
 
@@ -1069,7 +1085,7 @@
   .cw-v2-try-free__visual {
     display: block;
     justify-self: end;
-    max-width: 16.5rem;
+    max-width: 18rem;
   }
 }
 
@@ -1470,13 +1486,14 @@
 
 .cw-v2-live-phone {
   width: 100%;
-  max-width: 15.25rem;
+  max-width: 17.25rem;
   margin-inline: auto;
 }
 
-.cw-v2-live-phone--compact {
-  max-width: 12.75rem;
-}
+.cw-v2-live-phone--sm { max-width: 12.75rem; }
+.cw-v2-live-phone--md { max-width: 15.5rem; }
+.cw-v2-live-phone--lg { max-width: 17.25rem; }
+.cw-v2-live-phone--compact { max-width: 12.75rem; }
 
 .cw-v2-live-phone .cw-landing-phone {
   max-width: none;
@@ -1484,7 +1501,7 @@
 }
 
 .cw-v2-hero__device .cw-v2-live-phone {
-  max-width: 16rem;
+  max-width: 18rem;
 }
 
 @media (min-width: 48rem) {
@@ -1926,19 +1943,14 @@
 
 .cw-landing--premium .cw-landing-phone {
   width: 100%;
-  max-width: 15.25rem;
 }
 
 .cw-landing--premium .cw-landing-phone__shell {
-  border-radius: 2.15rem;
-  border: 1px solid color-mix(in srgb, var(--v2-border) 80%, #000);
-  background: linear-gradient(160deg, #3a3530 0%, #14110e 42%, #0a0908 100%);
-  padding: 0.38rem;
-  box-shadow: 0 22px 44px color-mix(in srgb, #000 58%, transparent);
+  /* Keep realistic hardware chrome from ChronoWalkLanding.css */
+  border: 1px solid color-mix(in srgb, var(--v2-border) 55%, #000);
 }
 
 .cw-landing--premium .cw-landing-phone__screen {
-  border-radius: 1.78rem;
   overflow: hidden;
 }
 
