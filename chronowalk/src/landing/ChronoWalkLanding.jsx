@@ -3,17 +3,21 @@ import { useNavigate } from 'react-router-dom'
 import { getHost } from '../lib/host.js'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
+import LandingAct from './LandingAct.jsx'
 import LandingSiteHeader from './LandingSiteHeader.jsx'
 import LandingHero from './LandingHero.jsx'
+import LandingEmotionalInterludeSection from './LandingEmotionalInterludeSection.jsx'
+import LandingThresholdSection from './LandingThresholdSection.jsx'
+import LandingEarlyCtaSection from './LandingEarlyCtaSection.jsx'
 import LandingUserFlowSection from './LandingUserFlowSection.jsx'
+import LandingRealMomentSection from './LandingRealMomentSection.jsx'
 import LandingMonumentsCarousel from './LandingMonumentsCarousel.jsx'
 import LandingBenefitsSection from './LandingBenefitsSection.jsx'
 import LandingTryFreeSection from './LandingTryFreeSection.jsx'
-import LandingThresholdSection from './LandingThresholdSection.jsx'
-import LandingWhoItsForSection from './LandingWhoItsForSection.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
+import LandingTrustProofSection from './LandingTrustProofSection.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
-import LandingComparisonSection from './LandingComparisonSection.jsx'
+import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import { useLandingPrice } from './useLandingPrice.js'
@@ -24,7 +28,9 @@ import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 
 /**
- * Premium landing v3 — clarity-first flow for cold visitors.
+ * Premium landing — editorial three-act architecture.
+ * Act I Promise → Act II Experience → Act III Decision.
+ * Baseline preserved in archive/v3-premium-baseline-2026-07-14/.
  */
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
@@ -71,20 +77,31 @@ export default function ChronoWalkLanding() {
   )
 
   return (
-    <div className="cw-landing cw-landing--premium">
+    <div className="cw-landing cw-landing--premium cw-landing--editorial">
       <LandingSiteHeader onPreview={handlePreview} />
       <main>
-        <LandingHero onPreview={handlePreview} />
-        <LandingUserFlowSection />
-        <LandingMonumentsCarousel />
-        <LandingBenefitsSection />
-        <LandingTryFreeSection onPreview={handlePreview} />
-        <LandingThresholdSection />
-        <LandingWhoItsForSection />
-        <LandingRomeTiersSection onBeginTier={handleBeginTier} />
-        <LandingFaqSectionV2 />
-        <LandingComparisonSection />
-        <LandingFinalCtaSectionV2 onPreview={handlePreview} />
+        <LandingAct label="Act I — The Promise">
+          <LandingHero onPreview={handlePreview} />
+          <LandingEmotionalInterludeSection />
+          <LandingThresholdSection />
+          <LandingEarlyCtaSection onPreview={handlePreview} />
+        </LandingAct>
+
+        <LandingAct label="Act II — The Experience">
+          <LandingUserFlowSection />
+          <LandingRealMomentSection />
+          <LandingMonumentsCarousel />
+          <LandingBenefitsSection />
+          <LandingTryFreeSection onPreview={handlePreview} />
+        </LandingAct>
+
+        <LandingAct label="Act III — The Decision">
+          <LandingRomeTiersSection onBeginTier={handleBeginTier} />
+          <LandingTrustProofSection />
+          <LandingFaqSectionV2 />
+          <LandingAfterRomeSection />
+          <LandingFinalCtaSectionV2 onPreview={handlePreview} />
+        </LandingAct>
       </main>
       <LandingSiteFooter />
     </div>

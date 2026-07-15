@@ -107,18 +107,47 @@ export const stickyCta = {
   secondary: 'Try free story',
 }
 
+/**
+ * Editorial architecture — Act I Promise → Act II Experience → Act III Decision.
+ * Keys match LANDING_CONTENT; see docs/LANDING_EDITORIAL_ARCHITECTURE.md.
+ */
 export const LANDING_SECTION_ORDER = [
+  // Act I — The Promise
   'hero',
+  'interlude',
+  'threshold',
+  'early-cta',
+  // Act II — The Experience
   'user-flow',
+  'real-moment',
   'monuments',
   'benefits',
   'try-free',
-  'threshold',
-  'who-its-for',
+  // Act III — The Decision
   'pricing',
+  'trust',
   'faq',
-  'comparison',
+  'after-rome',
   'final-cta',
+]
+
+/** Act landmarks for composition / a11y (not DOM ids). */
+export const LANDING_ACTS = [
+  {
+    id: 'act-i',
+    label: 'Act I — The Promise',
+    sections: ['hero', 'interlude', 'threshold', 'early-cta'],
+  },
+  {
+    id: 'act-ii',
+    label: 'Act II — The Experience',
+    sections: ['user-flow', 'real-moment', 'monuments', 'benefits', 'try-free'],
+  },
+  {
+    id: 'act-iii',
+    label: 'Act III — The Decision',
+    sections: ['pricing', 'trust', 'faq', 'after-rome', 'final-cta'],
+  },
 ]
 
 export const LANDING_CONTENT = {
@@ -139,6 +168,62 @@ export const LANDING_CONTENT = {
     ],
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
+  },
+
+  interlude: {
+    id: 'interlude',
+    eyebrow: 'Before the route',
+    headline: 'Most of Rome is hiding in plain sight.',
+    body: 'You stand before columns, arches, stones, and empty spaces. You know they mattered. Without the scene behind them, they stay quiet.',
+  },
+
+  'early-cta': {
+    id: 'early-cta',
+    headline: 'Hear one stop before you decide.',
+    subheadline: 'A free Pantheon chapter — then the full Rome routes when you are ready.',
+    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    secondaryCta: LANDING_CTA.seeRoutes,
+    hint: 'Free Pantheon preview · ~4 min · No account required',
+  },
+
+  'real-moment': {
+    id: 'real-moment',
+    eyebrow: 'In the city',
+    headline: 'You arrive. The story opens here.',
+    body: 'Reach the Pantheon, the Forum, or the Colosseum and narration begins where it happened — not as a podcast you could play anywhere, but as a scene tied to the stones in front of you.',
+    aside: 'Keep your eyes up. The phone only needs to know you have arrived.',
+  },
+
+  trust: {
+    id: 'trust',
+    eyebrow: 'Grounded, not generic',
+    headline: 'Cinematic, but researched.',
+    subheadline:
+      'Stories are thoroughly researched, reconstructions are evidence-based, and interpretive details are clearly noted. No fake certainty. No generic AI narration.',
+    items: [
+      {
+        title: 'Stories where you stand',
+        body: 'GPS-triggered narration starts when you reach each stop — built for heads-up walking.',
+      },
+      {
+        title: 'Threshold reconstructions',
+        body: 'At selected landmarks, press and hold to compare today’s view with a researched reconstruction of the same vantage.',
+      },
+      {
+        title: 'Yours to keep',
+        body: 'One-time purchase. Download once, walk offline — no subscription and no group timetable.',
+      },
+    ],
+  },
+
+  'after-rome': {
+    id: 'after-rome',
+    eyebrow: 'After the walk',
+    headline: 'End with something worth keeping.',
+    previewLabel: 'Your Journey Letter',
+    reflection:
+      'When the route is done, ChronoWalk leaves you with a letter for the day — a keepsake of the places you stopped and the scenes you heard, so Rome stays clearer than a folder of photos.',
+    closing: 'The walk is temporary. The way you see the city does not have to be.',
   },
 
   'user-flow': {
@@ -347,6 +432,7 @@ export const LANDING_CONTENT = {
 
   header: {
     nav: [
+      { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
@@ -360,6 +446,7 @@ export const LANDING_CONTENT = {
     tagline:
       'Self-guided audio walking tours for Rome — researched, studio-written, and yours to keep.',
     nav: [
+      { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
