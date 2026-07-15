@@ -1,7 +1,7 @@
 import { LANDING_CONTENT } from './landingData.js'
 
 /**
- * Act II — benefits once.
+ * Act II — benefits once (“What stays with you”).
  * Editorial list (not cards); product advantages appear only here.
  */
 export default function LandingBenefitsSection() {
@@ -21,7 +21,7 @@ export default function LandingBenefitsSection() {
           </h2>
         </header>
 
-        <ul className="cw-v2-benefits__list" aria-label="What you get with ChronoWalk">
+        <ul className="cw-v2-benefits__list" aria-label="What stays with you">
           {section.items.map((item, index) => (
             <li key={item.title} className="cw-v2-benefits__item">
               {index > 0 ? <span className="cw-v2-benefits__seam" aria-hidden="true" /> : null}

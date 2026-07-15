@@ -25,7 +25,7 @@ Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 | 5 | How it works | `LandingUserFlowSection.jsx` | `#how-it-works` | Existing |
 | 6 | Real-moment | `LandingRealMomentSection.jsx` | `#real-moment` (+ `#who-its-for`) | Phase 7 scenarios |
 | 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Phase 8 journey timeline |
-| 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Phase 9 — once only |
+| 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Phase 9 — What stays with you (once) |
 | 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Existing |
 | 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Existing |
 | 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Research prose (no feature list) |
@@ -51,7 +51,7 @@ Legacy hashes: `LANDING_LEGACY_DEEPLINK_IDS`
 - Responsive `cw-v2-*` layouts  
 - `#who-its-for` resolves inside real-moment scenarios (persona cards removed Phase 7)
 - `#compare` deeplink only (comparison feature matrix unmounted Phase 9)
-- Benefits appear once under `#benefits` (trust no longer repeats feature bullets)
+- Benefits appear once under `#benefits` as **What stays with you** (see `LANDING_FEATURE_CONSOLIDATION.md`)
 - Baseline archive under `archive/v3-premium-baseline-2026-07-14/`
 
 ## Next (not this prompt)

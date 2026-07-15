@@ -64,7 +64,8 @@ describe('landing editorial architecture', () => {
     expect(section.body).toBeUndefined()
   })
 
-  it('lists benefits once with the playbook value props', () => {
+  it('lists benefits once under What stays with you', () => {
+    expect(LANDING_CONTENT.benefits.headline).toBe('What stays with you.')
     expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
       'Stories right where you are standing',
       'Your trip, your pace',
@@ -72,5 +73,6 @@ describe('landing editorial architecture', () => {
       'Yours to keep',
     ])
     expect(LANDING_CONTENT.trust.items).toBeUndefined()
+    expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
   })
 })
