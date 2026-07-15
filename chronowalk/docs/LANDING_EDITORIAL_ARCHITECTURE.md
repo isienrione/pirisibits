@@ -71,6 +71,10 @@ Do not change design without measuring. Event catalog, primary funnel, and test 
 
 Copy + CSS restraint pass only — no new sections. Report: `LANDING_FINAL_QA.md` (files/sections changed, remaining concerns, A/B tests, readiness scores).
 
+### Post-launch measurement
+
+One experiment at a time: `LANDING_POST_LAUNCH_AB.md` (hero copy → primary CTA → Threshold placement → pricing order). Beat jobs for the final target page live there and in `LANDING_FINAL_QA.md`.
+
 ## Preserved (not redesigned)
 
 - CTA destinations (`/preview`, `#pricing`, checkout)  
@@ -86,6 +90,6 @@ Copy + CSS restraint pass only — no new sections. Report: `LANDING_FINAL_QA.md
 
 ## Next (not this prompt)
 
-- Fresh Rome photography set (hero / interlude / after-rome / ending plates)
-- Optional A/B: sticky header CTA treatment (see `LANDING_FINAL_QA.md`)
+- Drop-in dusk cinematic masters (`public/landing/cinematic/_masters/` + `npm run prepare:landing-cinematic`)
+- Post-launch A/B sequence in `LANDING_POST_LAUNCH_AB.md` (do not batch)
 - Eventual removal of preserved-lower archive once replacements fully cover SEO intent

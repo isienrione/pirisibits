@@ -45,24 +45,32 @@ Unchanged in structure: Interlude, Monuments trail, FAQ accordion, Act markers, 
 ## Remaining concerns
 
 1. **Cinematic variety shipping** — Hero / interlude / After Rome / ending now use four distinct plates under `public/landing/cinematic/` (Forum dusk, Colosseum, Castel, Trevi). Drop dusk masters into `_masters/` + `npm run prepare:landing-cinematic` to swap in blue-hour panoramas without code changes.
-2. **Sticky header still competes** with hero coral in the first viewport — intentional for conversion; worth A/B (below).
+2. **Sticky header still competes** with hero coral in the first viewport — intentional for conversion; deprioritized vs the four post-launch tests in `LANDING_POST_LAUNCH_AB.md`.
 3. **Monument stop posters** carry most mid-page place imagery; how-it-works remains type-led on phone/tablet by design.
 4. **FAQ still teaches** “do not fake certainty” — intentional home for scholarly tone; Threshold disclaimer was shortened instead of removing the FAQ item.
 5. **Visual regression / Lighthouse** not run in this environment — verify on device before ship.
 6. **Legacy uppercase tracking** may linger on unrelated archive CSS — live v2 titles are sentence case.
 
-## Recommended A/B tests
+## Recommended A/B tests (after launch)
 
-| Test | A (current) | B | Primary metric |
-|------|-------------|---|----------------|
-| Hero secondary | `See packages` → `#pricing` | `Explore the route` → `#monuments` | `landing_cta_routes` → `landing_pricing_view` / `checkout_open` |
-| Header CTA | Sticky coral always | Outline/ghost until scroll past `#threshold` | `landing_cta_preview` by `section:header` vs `hero` |
-| Early CTA | Outline after Threshold | Remove early-cta band (scroll straight to Act II) | Preview starts vs bounce after Threshold |
-| Try-free phone | Desktop only | Always show audio mockup | `landing_cta_preview` `section:try-free` |
-| Why headline | `Tied to the stones…` | Restore `Walk freely. Keep the context.` | Scroll depth to pricing / `landing_cta_begin` |
-| Pricing intro length | Short line | Feature laundry list | `landing_cta_begin` by tier |
+**Do not test everything at once.** Authoritative plan: [`LANDING_POST_LAUNCH_AB.md`](./LANDING_POST_LAUNCH_AB.md).
+
+| # | Test | A | B | Measure |
+|---|------|---|---|---------|
+| 1 | Hero positioning | *Walk until the city starts talking.* | *Walk Rome freely—with the history you’d miss on your own.* | Preview-start · route-view · checkout-start |
+| 2 | Early Threshold placement | Immediately after hero/interlude **(live)** | After How It Works | Threshold completion · preview-start · scroll depth · checkout-start |
+| 3 | Primary CTA | *Try one stop free* **(live)** | *Hear the Pantheon free* | Preview-start · preview completion · paid conversion |
+| 4 | Pricing order | Central → Ancient → Complete **(live)** | Complete → Ancient → Central | Product mix · AOV · checkout conversion |
+
+Live hero headline today is still *Stories begin when you arrive.* — replace with A (or A vs B) before reading Test 1 as a clean experiment.
 
 Instrument via existing PostHog events in `LANDING_ANALYTICS.md` — do not change design without measuring.
+
+## Target page (what “done” feels like)
+
+Visitor needs something to do in Rome → hero **curious** → cinematic **feel** → Threshold **different** → How It Works **clear** → Real Moments **relevant** → route **substance** → benefits **risk off** → preview **certainty** → pricing **easy choice** → trust **doubts** → After Rome **emotional value** → final CTA **memory**, not function.
+
+That sequence is the Founder Playbook implementation order already reflected in the live mount map.
 
 ## Readiness scores
 
@@ -74,4 +82,4 @@ Holistic editorial + responsive polish (10 = ship-confident). Not Lighthouse sco
 | **Tablet** (48–64rem) | **8.0 / 10** | Phone diet + tablet section rhythm solid; hero stays single-column Rome-first until desktop. Remaining: Act marker / seam stacking at Act I→II join. |
 | **Desktop** (≥64rem) | **8.5 / 10** | One hero phone + try-free phone + how-it-works compact phones only where space allows; list gold overuse fixed. Remaining: photography variety; header vs hero coral twin. |
 
-**Overall ship readiness:** ready for measured release; run the A/B tests above before another redesign pass.
+**Overall ship readiness:** ready for measured release; run Tests 1→4 in `LANDING_POST_LAUNCH_AB.md` sequentially before another redesign pass.

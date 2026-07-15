@@ -91,3 +91,16 @@ npm test -- --run src/landing/__tests__/landingAnalytics.test.js src/landing/__t
 ### PostHog UI
 
 Insights → Funnel using the primary funnel events; filter path `/` or `/landing`; break down `landing_cta_preview` by `section` and `landing_cta_begin` by `tier`.
+
+## Post-launch experiments
+
+Run **one** test at a time. Plan, variants, and metric definitions: [`LANDING_POST_LAUNCH_AB.md`](./LANDING_POST_LAUNCH_AB.md).
+
+| Order | Experiment | Key decision |
+|------:|------------|--------------|
+| 1 | Hero headline A/B | Curiosity vs clarity positioning |
+| 2 | Primary CTA label | Generic free stop vs Pantheon-specific |
+| 3 | Threshold before vs after How It Works | Proof timing |
+| 4 | Pricing card order | Mix / AOV vs conversion |
+
+When enabling a flag, attach a stable property (e.g. `landing_exp_hero: a|b`) on `landing_view` and all downstream events for that session so funnels can break down cleanly. Do not reuse `ab_variant` (reserved for price AB cents in `track.js`).
