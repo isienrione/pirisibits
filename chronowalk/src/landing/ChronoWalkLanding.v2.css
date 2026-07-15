@@ -2293,6 +2293,250 @@
   }
 }
 
+/* —— Signature Threshold (Act I) —— */
+
+.cw-sig-threshold {
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
+}
+
+.cw-sig-threshold__layout {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+  justify-items: center;
+}
+
+.cw-sig-threshold__intro {
+  max-width: 36rem;
+  text-align: center;
+}
+
+.cw-sig-threshold__headline {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  text-wrap: balance;
+  color: var(--v2-bone);
+}
+
+.cw-sig-threshold__headline-line {
+  display: block;
+}
+
+.cw-sig-threshold__body {
+  margin: 1.25rem 0 0;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: clamp(1rem, 2.2vw, 1.08rem);
+  line-height: 1.65;
+  color: var(--v2-soft);
+}
+
+.cw-sig-threshold__support {
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--v2-ember) 80%, var(--v2-bone));
+}
+
+.cw-sig-threshold__stage-wrap {
+  width: 100%;
+  max-width: 40rem;
+}
+
+.cw-sig-threshold__stage-frame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: min(72svh, 36rem);
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+  background: var(--v2-raised, var(--charcoal));
+  outline: none;
+}
+
+.cw-sig-threshold__stage-frame:focus-visible {
+  box-shadow: 0 0 0 2px var(--v2-obsidian), 0 0 0 4px color-mix(in srgb, var(--gold) 70%, transparent);
+}
+
+.cw-sig-threshold__status {
+  margin: 0.85rem 0 0;
+  text-align: center;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--v2-muted);
+}
+
+.cw-sig-threshold__controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.cw-sig-threshold__fallback {
+  min-width: 12rem;
+}
+
+.cw-sig-threshold__disclaimer {
+  max-width: 34rem;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
+
+.cw-threshold-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cw-threshold-stage--interactive {
+  /* Allow vertical page scroll; hold still works via pointer events */
+  touch-action: pan-y;
+  cursor: pointer;
+}
+
+.cw-doc-threshold-demo.cw-threshold-stage--interactive {
+  touch-action: pan-y;
+}
+
+.cw-sig-threshold .cw-doc-threshold-demo__seam {
+  width: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--gold) 35%, transparent);
+}
+
+.cw-threshold-stage__then,
+.cw-threshold-stage__now {
+  position: absolute;
+  inset: 0;
+}
+
+.cw-threshold-stage__now {
+  z-index: 1;
+}
+
+.cw-threshold-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.cw-threshold-stage__tag {
+  position: absolute;
+  top: 0.85rem;
+  z-index: 3;
+  padding: 0.28rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--v2-bone) 18%, transparent);
+  background: color-mix(in srgb, var(--v2-obsidian) 72%, transparent);
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--v2-bone);
+}
+
+.cw-threshold-stage__tag--now {
+  left: 0.85rem;
+}
+
+.cw-threshold-stage__tag--then {
+  right: 0.85rem;
+}
+
+.cw-threshold-stage__seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--gold) 35%, transparent);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+.cw-threshold-stage__seam.is-active {
+  opacity: 1;
+}
+
+.cw-threshold-stage__progress {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 1.1rem;
+  z-index: 4;
+  height: 2px;
+  background: color-mix(in srgb, var(--v2-bone) 18%, transparent);
+  pointer-events: none;
+}
+
+.cw-threshold-stage__progress-fill {
+  display: block;
+  height: 100%;
+  width: var(--threshold-progress, 0%);
+  background: var(--gold);
+}
+
+.cw-threshold-stage__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  z-index: 4;
+  margin: 0;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  background: color-mix(in srgb, var(--v2-obsidian) 70%, transparent);
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--v2-bone);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.cw-v2-early-cta--compact {
+  padding-block: clamp(2rem, 5vw, 3.25rem);
+}
+
+.cw-v2-early-cta--compact .cw-v2-section__title {
+  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 64rem) {
+  .cw-sig-threshold__stage-frame {
+    aspect-ratio: 4 / 5;
+    max-width: 28rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-threshold-stage__seam {
+    box-shadow: none;
+    transition: none;
+  }
+}
+
 /* —— Editorial acts (architecture shell) —— */
 
 .cw-landing-act {

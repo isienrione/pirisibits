@@ -184,10 +184,10 @@ export const LANDING_CONTENT = {
 
   'early-cta': {
     id: 'early-cta',
-    headline: 'Hear one stop before you decide.',
-    subheadline: 'A free Pantheon chapter — then the full Rome routes when you are ready.',
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: LANDING_CTA.seeRoutes,
+    headline: null,
+    subheadline: null,
+    primaryCta: 'Try the Pantheon stop free',
+    secondaryCta: null,
     hint: 'Free Pantheon preview · ~4 min · No account required',
   },
 
@@ -313,8 +313,17 @@ export const LANDING_CONTENT = {
 
   threshold: {
     id: 'threshold',
-    eyebrow: 'What makes it different',
+    eyebrow: 'Threshold',
     headline: 'Press and hold. The ruin becomes the room.',
+    headlineLines: ['Press and hold.', 'The ruin becomes the room.'],
+    body: 'At selected landmarks, compare what stands today with an evidence-based reconstruction from the same viewpoint.',
+    support: 'Where historians disagree, we say so.',
+    disclaimer:
+      'Colors and crowd details are interpretive where noted — we do not fake certainty. Gaps in the record are acknowledged in the experience.',
+    holdHint: 'Press and hold',
+    revealLabel: 'Reveal the past',
+    hideLabel: 'Show today',
+    /** @deprecated legacy fields retained for archived components */
     subheadline:
       'At selected landmarks, compare today’s stones with an evidence-based reconstruction of the same view. Colors and crowd details are interpretive where noted — we do not fake certainty.',
     bullets: [

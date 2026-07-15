@@ -1,20 +1,21 @@
 import { LANDING_CONTENT } from './landingData.js'
 
-/** Act I — early conversion band after Threshold (preview + pricing). */
+/** Act I — early conversion band immediately under Threshold. */
 export default function LandingEarlyCtaSection({ onPreview }) {
   const section = LANDING_CONTENT['early-cta']
 
   return (
     <section
       id={section.id}
-      className="cw-v2-section cw-v2-early-cta"
-      aria-labelledby={`${section.id}-heading`}
+      className="cw-v2-section cw-v2-early-cta cw-v2-early-cta--compact"
+      aria-label={section.primaryCta}
     >
       <div className="cw-v2-wrap cw-v2-wrap--narrow cw-v2-early-cta__inner">
-        <h2 id={`${section.id}-heading`} className="cw-v2-section__title">
-          {section.headline}
-        </h2>
-        {section.subheadline ? <p className="cw-v2-section__lead">{section.subheadline}</p> : null}
+        {section.headline ? (
+          <h2 id={`${section.id}-heading`} className="cw-v2-section__title">
+            {section.headline}
+          </h2>
+        ) : null}
         <div className="cw-v2-early-cta__actions">
           {onPreview ? (
             <button type="button" className="cw-v2-btn cw-v2-btn--coral" onClick={onPreview}>
@@ -25,9 +26,11 @@ export default function LandingEarlyCtaSection({ onPreview }) {
               {section.primaryCta}
             </a>
           )}
-          <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline">
-            {section.secondaryCta}
-          </a>
+          {section.secondaryCta ? (
+            <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline">
+              {section.secondaryCta}
+            </a>
+          ) : null}
         </div>
         {section.hint ? <p className="cw-v2-early-cta__hint">{section.hint}</p> : null}
       </div>
