@@ -1,51 +1,49 @@
-# Cinematic interlude — image asset spec
+# Landing cinematic planes
 
-Used by `CinematicInterlude` (`src/landing/CinematicInterlude.jsx`) for narrative breaks between landing acts.
+Full-bleed Rome photography for hero, Act I interlude, After Rome, and the final ending — **four distinct plates**, not one crop family.
 
-## Current assets (committed)
+## Wired slots
 
-Derived from `public/landing/hero-rome.png` (Roman Forum / Colosseum dusk plate already in the repo):
+| Export | Path | Default subject |
+|--------|------|-----------------|
+| `LANDING_HERO` | `public/landing/cinematic/hero/` | Forum dusk + Colosseum (`hero-rome.png`) |
+| `LANDING_CINEMATIC_INTERLUDE` | `…/interlude/` | Colosseum exterior |
+| `LANDING_AFTER_ROME` | `…/after-rome/` | Castel Sant’Angelo from Ponte |
+| `LANDING_ENDING` | `…/ending/` | Trevi Fountain |
 
-| File | Crop | Size |
-|------|------|------|
-| `public/landing/interlude-desktop.jpg` | 16:9 | 1600×900 |
-| `public/landing/interlude-mobile.jpg` | 4:5 | 960×1200 |
-| `public/landing/interlude-lqip.jpg` | tiny LQIP | ~32×18 |
+Each slot ships `desktop` / `mobile` JPG + WebP + AVIF + `lqip.jpg`. Sources live in `landingVisualAssets.js` via `cinematicPlane()`.
 
-Paths wired in `LANDING_CINEMATIC_INTERLUDE` (`landingVisualAssets.js`).
+## Swap in dusk masters (recommended)
 
-## Recommended remaster (when shooting / selecting a dedicated plate)
+Your blue-hour aerials / lit Colosseum / Castel reflections / Trevi night / Trastevere / Victor Emmanuel plates belong here:
 
-| Criterion | Spec |
-|-----------|------|
-| Subject | Cinematic Rome street or monument |
-| Crowd | Low tourist density |
-| Light | Strong directional light (golden hour / dusk preferred) |
-| Composition | Enough negative space for centered editorial copy |
-| Desktop | 16:9, ≥1920×1080, jpeg/webp |
-| Mobile | 4:5 (or 3:4), ≥1080×1350, jpeg/webp |
-| Tone | Quiet, atmospheric — not a souvenir collage |
+1. Save as:
+   - `public/landing/cinematic/_masters/hero.jpg`
+   - `public/landing/cinematic/_masters/interlude.jpg`
+   - `public/landing/cinematic/_masters/after-rome.jpg`
+   - `public/landing/cinematic/_masters/ending.jpg`
+2. From `chronowalk/`:
 
-Replace files in place (same filenames) or update `LANDING_CINEMATIC_INTERLUDE` sources.
-
-## Placeholder path (if assets are missing in a fork)
-
-```
-/landing/interlude-desktop.jpg
-/landing/interlude-mobile.jpg
-/landing/interlude-lqip.jpg
+```bash
+npm run prepare:landing-cinematic
 ```
 
-## Component reuse
+See `_masters/README.md` for suggested subject mapping.
+
+## Component reuse (interlude)
 
 ```jsx
 <CinematicInterlude
-  id="interlude-act-ii"
-  lines={['Line one.', 'Line two.', 'Line three.']}
+  id="interlude-act-i"
+  lines={['…']}
   image={LANDING_CINEMATIC_INTERLUDE}
   seam="both"
   parallax
 />
 ```
 
-Parallax is a few pixels of `translate3d` on scroll (rAF + IntersectionObserver). It is off when `prefers-reduced-motion: reduce` or `parallax={false}`. No scroll-jacking; no animation libraries.
+Parallax is a few pixels of `translate3d` on scroll (rAF + IntersectionObserver). Off when `prefers-reduced-motion: reduce` or `parallax={false}`.
+
+## Legacy root files
+
+`public/landing/interlude-desktop.jpg` (and mobile / lqip) remain for older forks; live landing reads `cinematic/interlude/*` only.

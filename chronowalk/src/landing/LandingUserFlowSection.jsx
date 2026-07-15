@@ -2,17 +2,18 @@ import { LANDING_CONTENT } from './landingData.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
- * Act II — How it works in three scannable steps.
- * Phones support the beat; copy leads. Secondary details hide under progressive disclosure.
+ * Act II — How it works as a sequential path (connected steps).
+ * Copy leads; compact phones sit under each step on all breakpoints.
  */
 export default function LandingUserFlowSection() {
   const section = LANDING_CONTENT['user-flow']
   const more = section.more
+  const steps = section.steps ?? []
 
   return (
     <section
       id={section.id}
-      className="cw-v2-section cw-v2-section--raised cw-v2-user-flow cw-v2-user-flow--essential"
+      className="cw-v2-section cw-v2-section--raised cw-v2-user-flow cw-v2-user-flow--essential cw-v2-user-flow--path"
       aria-labelledby={`${section.id}-heading`}
     >
       <div className="cw-v2-wrap">
@@ -26,19 +27,21 @@ export default function LandingUserFlowSection() {
           ) : null}
         </header>
 
-        <ol className="cw-v2-user-flow__track">
-          {section.steps.map((step, index) => (
+        <ol className="cw-v2-user-flow__track" aria-label="Three steps to walk Rome">
+          {steps.map((step, index) => (
             <li key={step.title} className="cw-v2-user-flow__step">
               {index > 0 ? (
-                <span className="cw-v2-user-flow__seam" aria-hidden="true" />
+                <span className="cw-v2-user-flow__path" aria-hidden="true">
+                  <span className="cw-v2-user-flow__path-line" />
+                </span>
               ) : null}
               <article className="cw-v2-user-flow__card">
+                <div className="cw-v2-user-flow__node" aria-hidden="true">
+                  <span className="cw-v2-user-flow__node-ring">{step.step}</span>
+                </div>
                 <div className="cw-v2-user-flow__device" aria-hidden="true">
                   <LandingLivePhoneMockup variant={step.mockup} compact />
                 </div>
-                <p className="cw-v2-user-flow__step-num">
-                  <span className="cw-v2-user-flow__step-label">Step</span> {step.step}
-                </p>
                 <h3 className="cw-v2-user-flow__title">{step.title}</h3>
                 <p className="cw-v2-user-flow__body">{step.body}</p>
               </article>

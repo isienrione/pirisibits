@@ -1,6 +1,11 @@
-import { useId, useRef, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import { getLandingRouteJourney } from './landingMonuments.js'
+import {
+  observeLandingSectionOnce,
+  trackLandingRouteExpand,
+  trackLandingRouteView,
+} from './landingAnalytics.js'
 
 /**
  * Act II — continuous Rome route (not a monument catalog).
@@ -9,10 +14,13 @@ import { getLandingRouteJourney } from './landingMonuments.js'
  */
 export default function LandingMonumentsCarousel() {
   const section = LANDING_CONTENT.monuments
-  const { stops, chapters, previewStops, totalStops } = getLandingRouteJourney()
+  const { stops, chapters, previewStops, previewSegments, totalStops } = getLandingRouteJourney()
   const [expanded, setExpanded] = useState(false)
   const listId = useId()
   const stopRefs = useRef([])
+  const sectionRef = useRef(null)
+
+  useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingRouteView()), [])
 
   const visibleStops = expanded
     ? chapters.flatMap((chapter) => chapter.stops)
@@ -49,6 +57,7 @@ export default function LandingMonumentsCarousel() {
 
   return (
     <section
+      ref={sectionRef}
       id={section.id}
       className={`cw-v2-section cw-v2-monuments${expanded ? ' cw-v2-monuments--expanded' : ''}`}
       aria-labelledby={`${section.id}-heading`}
@@ -101,17 +110,31 @@ export default function LandingMonumentsCarousel() {
               className="cw-v2-monuments__track cw-v2-monuments__track--preview"
               aria-label={section.previewAriaLabel}
             >
-              {previewStops.map((stop, index) => (
-                <RouteStop
-                  key={stop.id}
-                  stop={stop}
-                  index={index}
-                  refCallback={(el) => {
-                    stopRefs.current[index] = el
-                  }}
-                  onKeyDown={handleStopKeyDown}
-                  showPhoto
-                />
+              {previewSegments.map(({ stop, skippedAfter }, index) => (
+                <Fragment key={stop.id}>
+                  <RouteStop
+                    stop={stop}
+                    index={index}
+                    refCallback={(el) => {
+                      stopRefs.current[index] = el
+                    }}
+                    onKeyDown={handleStopKeyDown}
+                    showPhoto
+                  />
+                  {skippedAfter > 0 ? (
+                    <li
+                      className="cw-v2-monuments__skip"
+                      aria-hidden="true"
+                      title={`${skippedAfter} more stop${skippedAfter === 1 ? '' : 's'} on the full route`}
+                    >
+                      <span className="cw-v2-monuments__skip-track">
+                        {Array.from({ length: skippedAfter }, (_, dotIndex) => (
+                          <span key={dotIndex} className="cw-v2-monuments__skip-dot" />
+                        ))}
+                      </span>
+                    </li>
+                  ) : null}
+                </Fragment>
               ))}
             </ol>
           )}
@@ -147,7 +170,11 @@ export default function LandingMonumentsCarousel() {
               aria-controls={listId}
               onClick={() => {
                 stopRefs.current = []
-                setExpanded((value) => !value)
+                setExpanded((value) => {
+                  const next = !value
+                  trackLandingRouteExpand({ expanded: next })
+                  return next
+                })
               }}
             >
               {expanded ? section.collapseLabel : section.expandLabel}
@@ -179,6 +206,8 @@ function RouteStop({ stop, index, refCallback, onKeyDown, showPhoto }) {
             <img
               src={stop.photo}
               alt=""
+              width={160}
+              height={160}
               className="cw-v2-monuments__photo"
               loading="lazy"
               decoding="async"

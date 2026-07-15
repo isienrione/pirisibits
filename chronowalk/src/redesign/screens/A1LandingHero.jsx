@@ -8,7 +8,7 @@ import { Vignette, BottomScrim, Eyebrow, Seam } from '../ui/index.js'
 
 const HERO_TRUST_STATS = getRedesignHeroTrustStats(loadRomeManifest())
 
-export default function A1LandingHero({ priceLabel = '€17', onPurchase, onPreview, onPreviewStory }) {
+export default function A1LandingHero({ priceLabel = '$17.99', onPurchase, onPreview, onPreviewStory }) {
   const [demoState, setDemoState] = useState('now')
 
   useEffect(() => {

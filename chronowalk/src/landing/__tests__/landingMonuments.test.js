@@ -22,7 +22,7 @@ describe('getLandingMonuments', () => {
 
 describe('getLandingRouteJourney', () => {
   it('groups the complete route into narrative chapters spanning every stop', () => {
-    const { stops, chapters, previewStops, totalStops } = getLandingRouteJourney()
+    const { stops, chapters, previewStops, previewSegments, totalStops } = getLandingRouteJourney()
 
     expect(totalStops).toBe(stops.length)
     expect(chapters).toHaveLength(LANDING_ROUTE_CHAPTERS.length)
@@ -31,6 +31,11 @@ describe('getLandingRouteJourney', () => {
     )
     expect(previewStops.map((stop) => stop.id)).toEqual(LANDING_ROUTE_PREVIEW_IDS)
     expect(previewStops.every((stop) => stop.featured)).toBe(true)
+    expect(previewSegments.map((segment) => segment.stop.id)).toEqual(LANDING_ROUTE_PREVIEW_IDS)
+    expect(previewSegments.map((segment) => segment.skippedAfter)).toEqual([1, 10, 0, 3, 1, 0])
+    expect(
+      previewSegments.reduce((sum, segment) => sum + 1 + segment.skippedAfter, 0),
+    ).toBe(totalStops)
   })
 
   it('sells continuity in section copy, not a stop count catalog', () => {

@@ -143,7 +143,8 @@ export default function AccessScreen({ onValidated }) {
                 color: 'var(--muted-warm)',
               }}
             >
-              After purchase, we email you a personal link. Open it on this phone to return to Rome.
+              After purchase, open the personal link from your email on this phone — or paste it
+              below. This screen is for returning buyers only, not checkout.
             </p>
           ) : null}
 
@@ -203,8 +204,14 @@ export default function AccessScreen({ onValidated }) {
 
       <p style={{ marginTop: 28, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
         Haven&apos;t purchased yet?{' '}
-        <Link to="/landing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
-          Unlock Rome
+        <Link to="/landing#pricing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+          See Rome packages
+        </Link>
+      </p>
+      <p style={{ marginTop: 12, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
+        Trying the free sample?{' '}
+        <Link to="/preview" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+          Hear the Pantheon
         </Link>
       </p>
     </AccessShell>

@@ -13,6 +13,16 @@ import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
+
+  const motionQuery =
+    typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)')
+      : null
+  const syncReducedMotionClass = () => {
+    document.documentElement.classList.toggle('cw-reduce-motion', Boolean(motionQuery?.matches))
+  }
+  syncReducedMotionClass()
+  motionQuery?.addEventListener?.('change', syncReducedMotionClass)
 }
 
 createRoot(document.getElementById('root')).render(

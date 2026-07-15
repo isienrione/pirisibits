@@ -198,7 +198,7 @@ function TourCatalog({
           <div>
             <p className="text-eyebrow uppercase text-ember">Single tours</p>
             <h3 className="mt-2 font-display text-xl font-semibold text-ink900">
-              One route at a time · {formatUsd(10)} each
+              One route at a time · {formatUsd(12)} each
             </h3>
           </div>
           <div className="space-y-4">{singleProducts.map(renderProductCard)}</div>

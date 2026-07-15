@@ -1,8 +1,8 @@
 import { LANDING_COLOSSEUM_NOW, LANDING_COLOSSEUM_THEN } from './landingVisualAssets.js'
-import { landingThresholdClip } from './landingThresholdClip.js'
 
 /**
- * Colosseum then/now threshold visual — shared NOW/THEN assets.
+ * Colosseum then/now threshold visual — matched 3:4 crops with dissolve reveal.
+ * Clip-wipes exaggerate viewpoint mismatch; opacity dissolve keeps the beat readable.
  * Keeps legacy `cw-doc-threshold-demo*` classes for phone mockups.
  */
 export default function LandingColosseumThreshold({
@@ -17,10 +17,9 @@ export default function LandingColosseumThreshold({
   showProgress = false,
   labelledBy,
 }) {
-  const clip = landingThresholdClip(reveal)
-  const insetPct = Math.min(1, Math.max(0, reveal)) * 50
-  const seamVisible = reveal > 0.02 && reveal < 0.98
-  const progressPct = Math.round(Math.min(1, Math.max(0, reveal)) * 100)
+  const amount = Math.min(1, Math.max(0, reveal))
+  const progressPct = Math.round(amount * 100)
+  const dissolving = amount > 0.02 && amount < 0.98
 
   return (
     <div
@@ -29,24 +28,21 @@ export default function LandingColosseumThreshold({
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerLeave}
-      role={interactive ? 'group' : 'img'}
+      role="img"
       aria-labelledby={labelledBy}
       aria-label={
         labelledBy
           ? undefined
           : 'Colosseum today compared with an evidence-based ancient reconstruction'
       }
-      aria-valuemin={interactive ? 0 : undefined}
-      aria-valuemax={interactive ? 100 : undefined}
-      aria-valuenow={interactive ? progressPct : undefined}
-      aria-valuetext={interactive ? `${progressPct}% past revealed` : undefined}
     >
       <div className="cw-doc-threshold-demo__then cw-threshold-stage__then" aria-hidden="true">
         <img
+          className="cw-threshold-stage__img cw-threshold-stage__img--then"
           src={LANDING_COLOSSEUM_THEN}
           alt=""
-          width={1280}
-          height={720}
+          width={960}
+          height={1280}
           loading="lazy"
           decoding="async"
           draggable={false}
@@ -58,14 +54,15 @@ export default function LandingColosseumThreshold({
 
       <div
         className="cw-doc-threshold-demo__now cw-threshold-stage__now"
-        style={{ clipPath: clip, WebkitClipPath: clip }}
+        style={{ opacity: 1 - amount }}
         aria-hidden="true"
       >
         <img
+          className="cw-threshold-stage__img cw-threshold-stage__img--now"
           src={LANDING_COLOSSEUM_NOW}
           alt=""
-          width={941}
-          height={1672}
+          width={960}
+          height={1280}
           loading="lazy"
           decoding="async"
           draggable={false}
@@ -76,13 +73,7 @@ export default function LandingColosseumThreshold({
       </div>
 
       <div
-        className={`cw-doc-threshold-demo__seam cw-threshold-stage__seam cw-threshold-stage__seam--left${seamVisible ? ' cw-doc-threshold-demo__seam--active is-active' : ''}`}
-        style={{ left: `${insetPct}%` }}
-        aria-hidden="true"
-      />
-      <div
-        className={`cw-threshold-stage__seam cw-threshold-stage__seam--right${seamVisible ? ' is-active' : ''}`}
-        style={{ right: `${insetPct}%` }}
+        className={`cw-doc-threshold-demo__seam cw-threshold-stage__seam cw-threshold-stage__seam--dissolve${dissolving ? ' cw-doc-threshold-demo__seam--active is-active' : ''}`}
         aria-hidden="true"
       />
 
@@ -96,7 +87,7 @@ export default function LandingColosseumThreshold({
         </div>
       ) : null}
 
-      {hint && reveal < 0.15 ? (
+      {hint && amount < 0.15 ? (
         <p className="cw-doc-threshold-demo__hint cw-threshold-stage__hint">{hint}</p>
       ) : null}
     </div>

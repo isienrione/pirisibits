@@ -23,7 +23,11 @@ describe('AccessScreen', () => {
 
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
     expect(screen.getByText(/personal link/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /unlock rome/i })).toHaveAttribute('href', '/landing')
+    expect(screen.getByRole('link', { name: /see rome packages/i })).toHaveAttribute(
+      'href',
+      '/landing#pricing',
+    )
+    expect(screen.getByRole('link', { name: /hear the pantheon/i })).toHaveAttribute('href', '/preview')
   })
 
   it('submits a pasted token to the access route', async () => {
@@ -35,10 +39,10 @@ describe('AccessScreen', () => {
       </MemoryRouter>
     )
 
-    fireEvent.change(screen.getByLabelText(/access token/i), {
+    fireEvent.change(screen.getByLabelText(/from your email/i), {
       target: { value: 'dev' },
     })
-    fireEvent.click(screen.getByRole('button', { name: /restore access/i }))
+    fireEvent.click(screen.getByRole('button', { name: /enter rome/i }))
 
     await waitFor(() => {
       expect(screen.getByText(/confirming your purchase/i)).toBeInTheDocument()

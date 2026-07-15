@@ -1,7 +1,9 @@
+import { useEffect, useRef } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
+import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
 
 function CheckIcon() {
   return (
@@ -18,16 +20,21 @@ function CheckIcon() {
 }
 
 /**
- * Act III — pricing. Compact decision hierarchy above the fold;
- * maps, stop lists, and inclusions fold under progressive disclosure.
- * Checkout wiring and analytics stay in `onBeginTier`.
+ * Act III — pricing. Map stays visible; stop list + inclusions fold open.
+ * Checkout stays in `onBeginTier` (purchase path, not access-code).
  */
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
   const tiers = section.tiers ?? []
+  const sectionRef = useRef(null)
+  const timeLabel = section.metaTimeLabel ?? 'Est. duration'
+  const stopsLabel = section.metaStopsLabel ?? 'Key stops'
+
+  useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
 
   return (
     <section
+      ref={sectionRef}
       id={section.id}
       className="cw-v2-section cw-v2-pricing"
       aria-labelledby={`${section.id}-heading`}
@@ -71,16 +78,18 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
                 <dl className="cw-v2-pricing-card__meta" aria-label={`${routeName} coverage`}>
                   <div className="cw-v2-pricing-card__meta-item">
-                    <dt>Time</dt>
+                    <dt>{timeLabel}</dt>
                     <dd>{stats.routeTimeLabel}</dd>
                   </div>
                   <div className="cw-v2-pricing-card__meta-item">
-                    <dt>Stops</dt>
+                    <dt>{stopsLabel}</dt>
                     <dd>{stats.stopCount}</dd>
                   </div>
                 </dl>
 
                 <p className="cw-v2-pricing-card__outcome">{tier.outcome}</p>
+
+                <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
 
                 <button
                   type="button"
@@ -96,12 +105,10 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
                 <details className="cw-v2-pricing-card__details" id={detailsId}>
                   <summary className="cw-v2-pricing-card__summary">
-                    {tier.expandLabel ?? 'See every stop and inclusion'}
+                    {tier.expandLabel ?? 'See stop list & inclusions'}
                   </summary>
 
                   <div className="cw-v2-pricing-card__details-body">
-                    <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
-
                     <ul className="cw-v2-pricing-card__list cw-v2-pricing-card__list--monuments">
                       {stops.map((stop) => (
                         <li key={stop.id} className="cw-v2-pricing-card__item">
@@ -145,6 +152,14 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
         </div>
 
         {section.footnote ? <p className="cw-v2-pricing__footnote">{section.footnote}</p> : null}
+
+        {section.accessHref ? (
+          <p className="cw-v2-pricing__access">
+            <a href={section.accessHref} className="cw-v2-pricing__access-link">
+              {section.accessLinkLabel ?? 'Already purchased? Enter your access link'}
+            </a>
+          </p>
+        ) : null}
       </div>
     </section>
   )

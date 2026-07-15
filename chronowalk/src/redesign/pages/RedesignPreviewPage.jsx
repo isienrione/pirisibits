@@ -139,7 +139,8 @@ export default function RedesignPreviewPage() {
       window.location.assign(url)
       return
     }
-    navigate('/access')
+    // Purchase path only — never mix unlock with access-code entry.
+    navigate('/landing#pricing')
   }
 
   const handleBack = () => {

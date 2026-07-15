@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 
 export default function LandingSiteFooter() {
-  const { tagline, nav, credit } = LANDING_CONTENT.footer
+  const { tagline, nav, credit, accessHref, accessLinkLabel } = LANDING_CONTENT.footer
   const year = new Date().getFullYear()
 
   return (
@@ -11,11 +12,18 @@ export default function LandingSiteFooter() {
         <div className="cw-v2-footer__brand-block">
           <ChronoWalkLogo
             className="cw-v2-footer__logo"
-            width={260}
+            width={220}
             variant="dark"
             layout="stacked"
           />
           <p className="cw-v2-footer__tagline">{tagline}</p>
+          {accessHref ? (
+            <p className="cw-v2-footer__access">
+              <Link to={accessHref} className="cw-v2-footer__access-link">
+                {accessLinkLabel ?? 'Already purchased? Enter access'}
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         <nav className="cw-v2-footer__nav" aria-label="Footer">
