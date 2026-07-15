@@ -23,10 +23,10 @@ export const LANDING_CTA = {
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
 export const FREE_PREVIEW = {
-  title: 'The Pantheon Sneak Peek',
-  meta: 'Free Preview · 4 minutes',
+  title: 'The Pantheon stop',
+  meta: 'Free · ~4 minutes',
   copy:
-    'Hear one full scene at the Pantheon — the same stop included in every Rome package.',
+    'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
 }
 
 /** Tiered Rome journey offerings shown on the landing product showcase. */
@@ -303,13 +303,15 @@ export const LANDING_CONTENT = {
   'try-free': {
     id: 'try-free',
     eyebrow: 'Try before you buy',
-    headline: 'Free sneak peek — one stop, full experience.',
+    headline: 'One stop.\nThe full ChronoWalk feeling.',
     subheadline:
-      'Not the whole app — one Pantheon chapter, enough to hear the storytelling and decide if ChronoWalk fits how you walk.',
+      'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
     card: FREE_PREVIEW,
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: 'See full Rome routes',
-    trustLine: 'No account required · Same stop included in every Rome package',
+    primaryCta: 'Try the Pantheon stop free',
+    secondaryCta: 'Explore all Rome routes',
+    trustLine: 'No account required.',
+    included: 'Included: one Pantheon chapter (~4 min) — narration, GPS arrival, and Threshold.',
+    notIncluded: 'Not included: the full Rome route or every stop on a paid package.',
   },
 
   threshold: {
