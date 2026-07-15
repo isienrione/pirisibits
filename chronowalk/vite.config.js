@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { execSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -31,6 +31,15 @@ function readWalkingUiRevision() {
 const walkingUiRevision = readWalkingUiRevision()
 const buildId = resolveBuildId()
 
+function readIosSplashLinkTags() {
+  const splashLinksPath = join(
+    dirname(fileURLToPath(import.meta.url)),
+    'public/pwa/ios-splash-links.html',
+  )
+  if (!existsSync(splashLinksPath)) return ''
+  return readFileSync(splashLinksPath, 'utf8').trim()
+}
+
 function walkingUiRevisionPlugin() {
   return {
     name: 'walking-ui-revision',
@@ -39,6 +48,8 @@ function walkingUiRevisionPlugin() {
         `<meta name="cw-app-build" content="${buildId}" />`,
         `<meta name="cw-walking-ui-rev" content="${walkingUiRevision}" />`,
       ]
+      const splashLinks = readIosSplashLinkTags()
+      if (splashLinks) tags.push(splashLinks)
       return html.replace('</head>', `    ${tags.join('\n    ')}\n  </head>`)
     },
     generateBundle() {
@@ -74,6 +85,8 @@ export default defineConfig({
         'pwa/apple-touch-icon.png',
         'pwa/screenshot-mobile.jpg',
         'pwa/screenshot-wide.jpg',
+        'pwa/splash/*.png',
+        'pwa/ios-splash-links.html',
       ],
       manifest: {
         id: '/',

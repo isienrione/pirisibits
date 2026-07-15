@@ -34,6 +34,22 @@ describe('PwaInstallPanel', () => {
     expect(screen.queryByRole('button', { name: /add to home screen/i })).not.toBeInTheDocument()
   })
 
+  it('tells Chrome-on-iPhone users to open Safari', () => {
+    render(
+      <PwaInstallPanel
+        installed={false}
+        canPromptInstall={false}
+        showIosInstructions
+        needsSafariForInstall
+        showInstallOption
+        onInstall={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText(/open this page in/i)).toBeInTheDocument()
+    expect(screen.getByText(/safari/i)).toBeInTheDocument()
+  })
+
   it('shows installed state after the app is on the home screen', () => {
     render(
       <PwaInstallPanel

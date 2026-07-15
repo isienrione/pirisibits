@@ -25,11 +25,16 @@ export function isIosDevice() {
   return /iphone|ipad|ipod/i.test(navigator.userAgent)
 }
 
+/** Chrome / Edge / Firefox / Opera on iOS — cannot Add to Home Screen; must open Safari. */
+export function isIosNonSafari() {
+  if (!isIosDevice()) return false
+  return /crios|fxios|edgios|opr\//i.test(navigator.userAgent)
+}
+
 /** Safari on iOS — no beforeinstallprompt; user must use Share → Add to Home Screen. */
 export function isIosSafari() {
   if (!isIosDevice()) return false
-  const ua = navigator.userAgent
-  return /safari/i.test(ua) && !/crios|fxios|edgios|opr\//i.test(ua)
+  return !isIosNonSafari()
 }
 
 export function supportsNativeInstallPrompt() {

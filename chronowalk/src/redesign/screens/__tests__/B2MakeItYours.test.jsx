@@ -21,4 +21,34 @@ describe('B2MakeItYours analytics row', () => {
     fireEvent.click(screen.getByRole('switch', { name: /enable analytics/i }))
     expect(onAnalyticsChange).toHaveBeenCalledWith(true)
   })
+
+  it('shows numbered Share → Add steps on iOS Safari', () => {
+    render(
+      <B2MakeItYours
+        showIosInstructions
+        canInstall
+        onInstall={vi.fn()}
+        onContinue={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText(/tap/i)).toBeInTheDocument()
+    expect(screen.getByText(/share/i)).toBeInTheDocument()
+    expect(screen.getByText(/add to home screen/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /i've added it/i })).toBeInTheDocument()
+  })
+
+  it('tells non-Safari iOS browsers to open Safari', () => {
+    render(
+      <B2MakeItYours
+        showIosInstructions
+        needsSafariForInstall
+        canInstall
+        onInstall={vi.fn()}
+        onContinue={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByText(/open this page in/i)).toBeInTheDocument()
+  })
 })

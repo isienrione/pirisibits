@@ -12,6 +12,10 @@ import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 // variable can boot an older generation of the app.
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
+  // iOS home-screen PWAs report navigator.standalone before display-mode media matches.
+  if (window.navigator?.standalone === true) {
+    document.documentElement.classList.add('ios-standalone')
+  }
   initMobileViewportChrome()
 
   const motionQuery =

@@ -18,6 +18,7 @@ export function PwaInstallPanel({
   installed,
   canPromptInstall,
   showIosInstructions,
+  needsSafariForInstall = false,
   showInstallOption,
   onInstall,
   compact = false,
@@ -41,11 +42,18 @@ export function PwaInstallPanel({
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Open ChronoWalk from your home screen like any other app — full screen, no browser chrome.
             </p>
+          ) : needsSafariForInstall ? (
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Open this page in <span className="font-semibold text-ink900">Safari</span>, then tap{' '}
+              <span className="font-semibold text-ink900">Share</span> →{' '}
+              <span className="font-semibold text-ink900">Add to Home Screen</span>.
+              Chrome and other iPhone browsers cannot install the app.
+            </p>
           ) : showIosInstructions ? (
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              In Safari, tap <span className="font-semibold text-ink900">Share</span> at the bottom,
+              Tap <span className="font-semibold text-ink900">Share</span> at the bottom,
               then choose <span className="font-semibold text-ink900">Add to Home Screen</span>.
-              The ChronoWalk icon will sit alongside your other apps.
+              The ChronoWalk icon will sit alongside your other apps and open full-screen.
             </p>
           ) : (
             <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -65,9 +73,10 @@ export function PwaInstallPanel({
             </Button>
           ) : null}
 
-          {!installed && showIosInstructions && !canPromptInstall ? (
+          {!installed && showIosInstructions && !canPromptInstall && !needsSafariForInstall ? (
             <p className="mt-3 text-xs leading-relaxed text-muted/90">
-              Tip: use Safari — Chrome on iPhone cannot add PWAs to the home screen.
+              After adding, open ChronoWalk from the home-screen icon for the splash screen and
+              full-screen status bar.
             </p>
           ) : null}
 

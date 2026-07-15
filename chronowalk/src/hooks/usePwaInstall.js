@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { isIosSafari, isStandaloneMode } from '../utils/pwaInstall'
+import { isIosDevice, isIosNonSafari, isStandaloneMode } from '../utils/pwaInstall'
 
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
@@ -55,13 +55,16 @@ export function usePwaInstall() {
   }, [deferredPrompt])
 
   const canPromptInstall = Boolean(deferredPrompt)
-  const showIosInstructions = !installed && isIosSafari()
+  // All iOS browsers need Share → Add to Home Screen (Chrome/Firefox must open Safari first).
+  const showIosInstructions = !installed && isIosDevice()
+  const needsSafariForInstall = showIosInstructions && isIosNonSafari()
   const showInstallOption = !installed
 
   return {
     installed,
     canPromptInstall,
     showIosInstructions,
+    needsSafariForInstall,
     showInstallOption,
     promptInstall,
   }

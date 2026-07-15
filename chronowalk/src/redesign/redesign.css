@@ -704,6 +704,23 @@ html.redesign-pwa #root {
   min-height: var(--app-height, 100dvh);
   height: 100%;
   overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Installed home-screen PWA: kill double-tap zoom and Safari tap flash — native-app feel */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  html.redesign-pwa {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+html.redesign-pwa.ios-standalone,
+html.redesign-pwa.ios-standalone body {
+  /* navigator.standalone is iOS-only and not covered by display-mode in older Safari */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .redesign-app-shell {
