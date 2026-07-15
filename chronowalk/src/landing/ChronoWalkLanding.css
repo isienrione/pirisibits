@@ -770,10 +770,10 @@
 .cw-landing-phone__artboard {
   width: 390px;
   height: 844px;
-  transform: scale(calc(100cqw / 390));
   transform-origin: top left;
   pointer-events: none;
   user-select: none;
+  /* transform: scale(...) set by LandingPhoneViewport ResizeObserver */
 }
 
 .cw-landing-screen {
