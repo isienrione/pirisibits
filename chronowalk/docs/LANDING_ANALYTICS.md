@@ -96,11 +96,19 @@ Insights → Funnel using the primary funnel events; filter path `/` or `/landin
 
 Run **one** test at a time. Plan, variants, and metric definitions: [`LANDING_POST_LAUNCH_AB.md`](./LANDING_POST_LAUNCH_AB.md).
 
-| Order | Experiment | Key decision |
-|------:|------------|--------------|
-| 1 | Hero headline A/B | Curiosity vs clarity positioning |
-| 2 | Primary CTA label | Generic free stop vs Pantheon-specific |
-| 3 | Threshold before vs after How It Works | Proof timing |
-| 4 | Pricing card order | Mix / AOV vs conversion |
+| Order | Experiment | Key decision | Status |
+|------:|------------|--------------|--------|
+| 1 | Hero headline A/B | Curiosity vs clarity positioning | **Live** — `landing_exp_hero` sticky 50/50 |
+| 2 | Primary CTA label | Generic free stop vs Pantheon-specific | Planned |
+| 3 | Threshold before vs after How It Works | Proof timing | Planned |
+| 4 | Pricing card order | Mix / AOV vs conversion | Planned |
 
-When enabling a flag, attach a stable property (e.g. `landing_exp_hero: a|b`) on `landing_view` and all downstream events for that session so funnels can break down cleanly. Do not reuse `ab_variant` (reserved for price AB cents in `track.js`).
+### Test 1 instrumentation
+
+- Assign: `ensureLandingExpHero()` on landing mount (`landingExperiments.js`)
+- Storage: `localStorage.cw_landing_exp_hero` = `a` | `b`
+- Override: `?landing_exp_hero=a|b`
+- Events: every `landingAnalytics` payload includes `landing_exp_hero`; `track()` base props inherit when assigned (so `preview_start` / `purchase` can break down)
+- PostHog: funnel `landing_view` → … break down by `landing_exp_hero`
+
+Do not reuse `ab_variant` (reserved for price AB cents in `track.js`).
