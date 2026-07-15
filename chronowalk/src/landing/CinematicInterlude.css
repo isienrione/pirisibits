@@ -1,0 +1,172 @@
+/* Reusable cinematic narrative break */
+
+.cw-cinematic-interlude {
+  position: relative;
+  background: var(--v2-obsidian, var(--obsidian));
+}
+
+.cw-cinematic-interlude__seam {
+  height: 1px;
+  width: min(4.5rem, 28vw);
+  margin-inline: auto;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 28%, transparent);
+}
+
+.cw-cinematic-interlude__seam--before {
+  margin-top: clamp(0.75rem, 2vw, 1.25rem);
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.cw-cinematic-interlude__seam--after {
+  margin-top: clamp(0.75rem, 2vw, 1.25rem);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+.cw-cinematic-interlude__stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Mobile-first reserved ratio — prevents CLS before image paints */
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-height: min(88svh, 52rem);
+}
+
+@media (min-width: 48rem) {
+  .cw-cinematic-interlude__stage {
+    aspect-ratio: 16 / 9;
+    max-height: min(78svh, 40rem);
+  }
+}
+
+.cw-cinematic-interlude__media {
+  position: absolute;
+  inset: -8% 0;
+  z-index: 0;
+  will-change: transform;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--v2-obsidian, var(--obsidian));
+}
+
+.cw-cinematic-interlude__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cw-cinematic-interlude__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 48%,
+      color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 28%, transparent) 0%,
+      color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 72%, transparent) 70%,
+      color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 88%, transparent) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 55%, transparent) 0%,
+      transparent 28%,
+      transparent 72%,
+      color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 70%, transparent) 100%
+    );
+}
+
+.cw-cinematic-interlude__copy {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.75rem, 5vw, 3.5rem) 1.5rem;
+  text-align: center;
+}
+
+.cw-cinematic-interlude__verse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-wrap: balance;
+  color: var(--v2-bone);
+  text-shadow: 0 1px 24px color-mix(in srgb, var(--v2-obsidian, var(--obsidian)) 65%, transparent);
+}
+
+.cw-cinematic-interlude__line {
+  display: block;
+  width: 100%;
+}
+
+.cw-cinematic-interlude__line--loud {
+  font-size: clamp(2rem, 5.8vw, 3.25rem);
+  line-height: 1.12;
+}
+
+.cw-cinematic-interlude__line--quiet {
+  margin-top: 0.55rem;
+  font-size: clamp(1.6rem, 4.4vw, 2.4rem);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.18;
+  color: color-mix(in srgb, var(--v2-muted, var(--muted)) 40%, var(--v2-bone));
+}
+
+.cw-cinematic-interlude__inner-seam {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin: 1.5rem auto 1.35rem;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 30%, transparent);
+}
+
+.cw-cinematic-interlude__line--turn {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--v2-soft);
+  max-width: 28ch;
+}
+
+@media (max-width: 47.99rem) {
+  .cw-cinematic-interlude__verse {
+    max-width: 16ch;
+  }
+
+  .cw-cinematic-interlude__line--turn {
+    max-width: 22ch;
+  }
+
+  .cw-cinematic-interlude__inner-seam {
+    margin: 1.25rem auto 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-cinematic-interlude__media {
+    inset: 0;
+    will-change: auto;
+    transform: none !important;
+  }
+
+  .cw-cinematic-interlude__seam,
+  .cw-cinematic-interlude__inner-seam {
+    box-shadow: none;
+  }
+}
