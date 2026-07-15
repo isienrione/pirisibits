@@ -93,11 +93,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
                 <button
                   type="button"
-                  className={
-                    isFeatured
-                      ? 'cw-v2-btn cw-v2-btn--coral cw-v2-btn--block cw-v2-pricing-card__cta'
-                      : 'cw-v2-btn cw-v2-btn--tier cw-v2-btn--block cw-v2-pricing-card__cta'
-                  }
+                  className="cw-v2-btn cw-v2-btn--tier cw-v2-btn--block cw-v2-pricing-card__cta"
                   onClick={() => onBeginTier(tier.id)}
                 >
                   {tier.primaryCta}

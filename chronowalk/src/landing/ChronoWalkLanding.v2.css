@@ -15,6 +15,11 @@
   --v2-coral: var(--v2-terracotta);
   --v2-bronze: var(--bronze);
   --v2-olive: var(--olive);
+  /* Package accents — aligned with Lemon Squeezy product cards */
+  --v2-silver: #c5c0b6;
+  --v2-package-historica: var(--v2-silver);
+  --v2-package-antica: #6f8054;
+  --v2-package-eterna: var(--ember, #e8a13c);
   --v2-max: 72rem;
   --v2-narrow: 56rem;
   --v2-pricing: 64rem;
@@ -231,6 +236,7 @@
   .cw-v2-header__cta:hover,
   .cw-v2-btn,
   .cw-v2-btn--coral:hover,
+  .cw-v2-btn--tier:hover,
   .cw-v2-btn--outline:hover {
     transition: none;
     transform: none;
@@ -330,13 +336,24 @@
 }
 
 .cw-v2-btn--tier {
-  background: transparent;
-  border: 1px solid color-mix(in srgb, var(--tier-accent, var(--gold)) 55%, transparent);
-  color: color-mix(in srgb, var(--tier-accent, var(--gold)) 82%, var(--v2-bone));
+  background: var(--tier-accent, var(--gold));
+  border: 1px solid color-mix(in srgb, var(--tier-accent, var(--gold)) 72%, #1a1814);
+  color: var(--tier-cta-ink, var(--v2-obsidian));
+  font-weight: 600;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 14%, transparent) inset,
+    0 4px 16px color-mix(in srgb, var(--tier-accent, var(--gold)) 24%, transparent);
 }
 
 .cw-v2-btn--tier:hover {
-  background: color-mix(in srgb, var(--tier-accent, var(--gold)) 10%, var(--charcoal));
+  transform: scale(1.02);
+  background: color-mix(in srgb, var(--tier-accent, var(--gold)) 88%, #fff 12%);
+  color: var(--tier-cta-ink, var(--v2-obsidian));
+}
+
+.cw-v2-btn--tier:focus-visible {
+  outline: 2px solid var(--tier-accent, var(--gold));
+  outline-offset: 3px;
 }
 
 .cw-v2-btn--outline:hover {
@@ -2314,19 +2331,25 @@
   border-radius: 1rem;
   border: 1px solid var(--v2-border);
   background: var(--v2-raised);
-  --tier-accent: var(--gold);
+  --tier-accent: var(--v2-package-eterna);
+  --tier-cta-ink: var(--v2-obsidian);
 }
 
 .cw-v2-pricing-card--rome-central {
-  --tier-accent: var(--bronze);
+  --tier-accent: var(--v2-package-historica);
+  --tier-cta-ink: var(--v2-obsidian);
+  border-color: color-mix(in srgb, var(--v2-package-historica) 34%, var(--v2-border));
 }
 
 .cw-v2-pricing-card--rome-essential {
-  --tier-accent: var(--olive);
+  --tier-accent: var(--v2-package-antica);
+  --tier-cta-ink: #faf6ef;
+  border-color: color-mix(in srgb, var(--v2-package-antica) 40%, var(--v2-border));
 }
 
 .cw-v2-pricing-card--rome-complete {
-  --tier-accent: var(--gold);
+  --tier-accent: var(--v2-package-eterna);
+  --tier-cta-ink: var(--v2-obsidian);
 }
 
 .cw-v2-pricing-card::before {
@@ -2345,8 +2368,10 @@
 }
 
 .cw-v2-pricing-card--featured {
-  border-color: color-mix(in srgb, var(--tier-accent) 38%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tier-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--tier-accent) 55%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--tier-accent) 22%, transparent),
+    0 0 28px color-mix(in srgb, var(--tier-accent) 18%, transparent);
 }
 
 .cw-v2-pricing-card__ribbon {
@@ -2445,13 +2470,8 @@
   margin-top: 1.15rem;
 }
 
-.cw-v2-pricing-card__cta.cw-v2-btn--coral {
-  box-shadow: 0 1px 0 color-mix(in srgb, #fff 12%, transparent) inset;
-}
-
-.cw-v2-pricing-card__cta.cw-v2-btn--coral:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
+.cw-v2-pricing-card__cta.cw-v2-btn--tier {
+  letter-spacing: 0.01em;
 }
 
 .cw-v2-pricing-card__details {
