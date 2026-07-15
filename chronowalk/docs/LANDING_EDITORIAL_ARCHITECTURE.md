@@ -27,7 +27,7 @@ Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 | 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Phase 8 journey timeline |
 | 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Phase 9 — What stays with you (once) |
 | 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Phase 10 — sharpened Pantheon preview |
-| 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Existing |
+| 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Phase 11 — simplified hierarchy |
 | 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Research prose (no feature list) |
 | 12 | FAQ | `LandingFaqSectionV2.jsx` | `#faq` | Existing |
 | — | Comparison | deeplink `#compare` only | — | Unmounted Phase 9 |
