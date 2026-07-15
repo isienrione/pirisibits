@@ -35,3 +35,33 @@ export const LANDING_CINEMATIC_INTERLUDE = {
   desktopWidth: 1600,
   desktopHeight: 900,
 }
+
+/**
+ * After Rome — warmer reflective crop of the same Rome hero plane.
+ * Distinct object-position from the Act I interlude; editorial memory, not product UI.
+ */
+export const LANDING_AFTER_ROME = {
+  mobileSrc: `${LANDING_IMG}/interlude-mobile.jpg`,
+  desktopSrc: `${LANDING_IMG}/interlude-desktop.jpg`,
+  lqipSrc: `${LANDING_IMG}/interlude-lqip.jpg`,
+  alt: 'Soft evening light over Rome rooftops and stone',
+  mobileWidth: 960,
+  mobileHeight: 1200,
+  desktopWidth: 1600,
+  desktopHeight: 900,
+}
+
+/**
+ * Final cinematic ending — skyward crop; strong dark veil in CSS.
+ * Distinct from After Rome (warm memory) and Act I interlude (arrival).
+ */
+export const LANDING_ENDING = {
+  mobileSrc: `${LANDING_IMG}/interlude-mobile.jpg`,
+  desktopSrc: `${LANDING_IMG}/interlude-desktop.jpg`,
+  lqipSrc: `${LANDING_IMG}/interlude-lqip.jpg`,
+  alt: 'Rome under quiet dusk light — final cinematic frame',
+  mobileWidth: 960,
+  mobileHeight: 1200,
+  desktopWidth: 1600,
+  desktopHeight: 900,
+}

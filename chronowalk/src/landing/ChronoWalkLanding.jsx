@@ -103,9 +103,9 @@ export default function ChronoWalkLanding() {
           <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingWhyChronoWalkSection />
           <LandingTrustProofSection />
+          <LandingAfterRomeSection />
           <LandingFaqSectionV2 />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingAfterRomeSection />
           <LandingFinalCtaSectionV2 onPreview={handlePreview} />
         </LandingAct>
       </main>

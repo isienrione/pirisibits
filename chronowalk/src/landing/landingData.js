@@ -19,6 +19,8 @@ export const LANDING_CTA = {
   tryFree: 'Try the Pantheon free',
   tryFreeSneakPeek: 'Try free sneak peek',
   seeRoutes: 'See Rome routes from €9',
+  tryOneStopFree: 'Try one stop free',
+  exploreRomeRoutes: 'Explore Rome routes',
 }
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
@@ -144,8 +146,8 @@ export const LANDING_SECTION_ORDER = [
   'pricing',
   'why',
   'trust',
-  'faq',
   'after-rome',
+  'faq',
   'final-cta',
 ]
 
@@ -164,7 +166,7 @@ export const LANDING_ACTS = [
   {
     id: 'act-decision',
     label: 'Act III — The Decision',
-    sections: ['pricing', 'why', 'trust', 'faq', 'after-rome', 'final-cta'],
+    sections: ['pricing', 'why', 'trust', 'after-rome', 'faq', 'final-cta'],
   },
 ]
 
@@ -294,12 +296,18 @@ export const LANDING_CONTENT = {
 
   'after-rome': {
     id: 'after-rome',
-    eyebrow: 'After the walk',
-    headline: 'End with something worth keeping.',
+    eyebrow: 'After Rome',
+    headlineLines: ['Months later,', 'you’ll forget the queue.', 'You’ll remember the story.'],
+    /** Accurate: one-time purchase keeps the downloaded route after the trip (see FAQ / pricing). */
+    body: 'Your route remains yours after the trip, so the city can return whenever you do.',
+    linkLabel: 'Keep the stories',
+    linkHref: '#pricing',
+    /** @deprecated Phase 14 — letter card framing replaced by editorial verse. */
+    headline: 'Months later, you’ll forget the queue.',
     previewLabel: 'Your Journey Letter',
     reflection:
-      'When the route is done, ChronoWalk leaves you with a letter for the day — a keepsake of the places you stopped and the scenes you heard, so Rome stays clearer than a folder of photos.',
-    closing: 'The walk is temporary. The way you see the city does not have to be.',
+      'Months later, you’ll forget the queue. You’ll remember the story.',
+    closing: 'Your route remains yours after the trip, so the city can return whenever you do.',
   },
 
   'user-flow': {
@@ -625,88 +633,134 @@ export const LANDING_CONTENT = {
 
   'final-cta': {
     id: 'final-cta',
-    headline: 'Ready to walk Rome?',
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: LANDING_CTA.seeRoutes,
-    footer: 'ChronoWalk · Rome · Self-guided walking journeys',
+    /** Prompt 16 — film-frame closing; minimal copy, no pricing/feature repetition. */
+    headline: 'Rome has waited two thousand years.',
+    bodyLines: [
+      'You do not have to understand it all in one day.',
+      'Begin where you are. Continue at your own pace.',
+    ],
+    primaryCta: LANDING_CTA.tryOneStopFree,
+    secondaryCta: LANDING_CTA.exploreRomeRoutes,
   },
 
   faq: {
     id: 'faq',
     headline: 'Questions before you walk',
-    items: [
+    groups: [
       {
-        q: 'What is ChronoWalk?',
-        a: 'A self-guided walking app for Rome. You follow a route on your phone; stories play when you arrive at each landmark. No tour group, no fixed schedule — wander freely with the history at every stop.',
+        id: 'understanding',
+        label: 'Understanding the product',
+        items: [
+          {
+            id: 'what-is-chronowalk',
+            q: 'What is ChronoWalk?',
+            a: 'A self-guided Rome walk on your phone. Stories open when you reach each stop — no tour group, no fixed timetable.',
+          },
+          {
+            id: 'different-from-podcast',
+            q: 'How is it different from a podcast?',
+            a: 'It is tied to where you stand. Stories and Threshold views match the place in front of you, not a soundtrack you could play anywhere.',
+          },
+          {
+            id: 'different-from-audio-tours',
+            q: 'How is it different from other audio tours?',
+            a: 'One researched journey written for this Rome route — place-triggered stories and viewpoint reconstructions, built for walking outdoors with your eyes up.',
+          },
+          {
+            id: 'group-tour',
+            q: 'Is it a group tour?',
+            a: 'No. You walk alone or with whoever you brought, on your own time.',
+          },
+        ],
       },
       {
-        q: 'How is this different from a podcast?',
-        a: 'ChronoWalk is tied to where you stand. Stories open when you reach each stop, and Threshold reconstructions match the view in front of you — so the place becomes part of the scene, not a soundtrack you could play anywhere.',
+        id: 'using-in-rome',
+        label: 'Using it in Rome',
+        items: [
+          {
+            id: 'offline',
+            q: 'Does it work offline?',
+            a: 'Yes. Download the route before you walk. GPS works best outdoors in open streets and squares.',
+          },
+          {
+            id: 'mobile-data',
+            q: 'Do I need mobile data?',
+            a: 'Not after download. Load it on Wi‑Fi, then walk with offline maps and audio. GPS does not need a data connection.',
+          },
+          {
+            id: 'gps-inaccurate',
+            q: 'What happens if GPS is inaccurate?',
+            a: 'You can start the story manually from the app. Triggers work best in open squares and streets.',
+          },
+          {
+            id: 'pause-continue',
+            q: 'Can I pause and continue later?',
+            a: 'Yes. Pause anytime and pick up again later — one morning or several across the trip.',
+          },
+          {
+            id: 'tickets',
+            q: 'Do I need tickets for every stop?',
+            a: 'No. Much of the walk is streets, piazzas, and open viewpoints. ChronoWalk does not replace tickets where entry is required.',
+          },
+        ],
       },
       {
-        q: 'How is this different from other audio tours?',
-        a: 'One studio-written journey for this Rome route: researched narration, place-triggered stories, and evidence-based reconstructions where we show the past. Built for heads-up walking outdoors — not a checklist of rooms indoors.',
+        id: 'purchase-access',
+        label: 'Purchase and access',
+        items: [
+          {
+            id: 'subscription',
+            q: 'Is it a subscription?',
+            a: 'No. One-time purchase per package.',
+          },
+          {
+            id: 'keep-access',
+            q: 'How long do I keep access?',
+            a: 'The downloaded route stays yours for the trip and after — reopen the stories whenever you like.',
+          },
+          {
+            id: 'share-purchase',
+            q: 'Can two people share one purchase?',
+            a: 'Yes. Share one phone or use two sets of headphones. One purchase covers your device.',
+          },
+          {
+            id: 'phones',
+            q: 'What phones does it work on?',
+            a: 'Modern iPhone or Android in the mobile browser — no App Store download. Location services should be on.',
+          },
+          {
+            id: 'account',
+            q: 'Do I need an account?',
+            a: 'Not for the free Pantheon preview — you can try it without creating one.',
+          },
+        ],
       },
       {
-        q: 'Is this a group tour?',
-        a: 'No. You walk alone or with whoever you brought. Start, pause, and continue on your own time — there is no flag, fixed start, or group pace to keep.',
-      },
-      {
-        q: 'What does the free sneak peek include?',
-        a: 'One full Pantheon chapter — about four minutes of narration at the same stop included in every Rome package. Enough to hear the storytelling, test GPS triggering, and see if the app fits how you like to explore.',
-      },
-      {
-        q: 'Do I need to create an account for the preview?',
-        a: 'No account is required for the free Pantheon preview.',
-      },
-      {
-        q: 'Does it work offline?',
-        a: 'Yes. Download the route and stories before you walk. GPS works best outdoors in open streets and squares.',
-      },
-      {
-        q: 'Do I need mobile data while walking?',
-        a: 'Not after download. Load the package on Wi‑Fi at your hotel; then walk with offline maps and audio. GPS does not require a data connection.',
-      },
-      {
-        q: 'Do I need tickets for every stop?',
-        a: 'ChronoWalk complements Rome\'s open streets, ruins, piazzas, and viewpoints. It does not replace ticketed entry where tickets are required — but much of the experience happens in places you can reach on foot.',
-      },
-      {
-        q: 'How long does the full Rome walk take?',
-        a: 'However long you like. Some travelers finish in a single day; others spread it across mornings and come back when they feel like it. There is no schedule — pause and resume whenever you like.',
-      },
-      {
-        q: 'Can I walk the stops in any order?',
-        a: 'On the Complete package, yes — reorder stops to fit your days. Smaller packages follow a curated route, but you still pause and resume freely.',
-      },
-      {
-        q: 'What is Threshold?',
-        a: 'At selected landmarks, press and hold to compare today\'s ruins with an evidence-based reconstruction matched to your vantage point — not a stock illustration. Interpretive details are noted where historians disagree.',
-      },
-      {
-        q: 'Is the narration AI-generated?',
-        a: 'No. Stories are studio-written and researched for this route. We do not use generic text-to-speech tours.',
-      },
-      {
-        q: 'Is it a subscription?',
-        a: 'No. One-time purchase per package. Download the route and it is yours for the trip and after.',
-      },
-      {
-        q: 'Can two people share one purchase?',
-        a: 'Yes. Many travelers share one phone or use two sets of headphones. One purchase covers your device.',
-      },
-      {
-        q: 'What if GPS is inaccurate?',
-        a: 'GPS works best in open squares and streets. If a trigger is slow, you can start the story manually from the app. We design stops for outdoor vantage points.',
-      },
-      {
-        q: 'What cities are available?',
-        a: 'Rome is available now. ChronoWalk is built city by city — Rome is the first journey.',
-      },
-      {
-        q: 'What phones does it work on?',
-        a: 'ChronoWalk runs in your mobile browser as a progressive web app — no App Store download required. Use a modern iPhone or Android phone with location services enabled.',
+        id: 'content-trust',
+        label: 'Content and trust',
+        items: [
+          {
+            id: 'narration-ai',
+            q: 'Is the narration AI-generated?',
+            a: 'No. Scripts are studio-written and researched for this route — not a generic text-to-speech tour.',
+          },
+          {
+            id: 'reconstructions-researched',
+            q: 'How are reconstructions researched?',
+            a: 'At selected landmarks, Threshold compares today’s view with a reconstruction matched to that vantage. We draw on archaeological and historical sources; captions note what is interpretive.',
+          },
+          {
+            id: 'historians-disagree',
+            q: 'What happens when historians disagree?',
+            a: 'We say so. Gaps and uncertainty are labeled in the experience — we do not fake certainty.',
+          },
+        ],
       },
     ],
   },
+}
+
+/** Flat FAQ Q&A list for schema, tests, and deep-link resolution. */
+export function getLandingFaqItems(faq = LANDING_CONTENT.faq) {
+  return (faq.groups ?? []).flatMap((group) => group.items)
 }

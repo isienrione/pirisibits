@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  getLandingFaqItems,
   LANDING_ACTS,
   LANDING_CONTENT,
   LANDING_LEGACY_DEEPLINK_IDS,
@@ -23,8 +24,8 @@ describe('landing editorial architecture', () => {
       'pricing',
       'why',
       'trust',
-      'faq',
       'after-rome',
+      'faq',
       'final-cta',
     ])
   })
@@ -96,11 +97,11 @@ describe('landing editorial architecture', () => {
       'A route that pauses when you do',
     ])
     expect(LANDING_CONTENT.comparison.rows).toEqual([])
-    expect(LANDING_CONTENT.faq.items.map((item) => item.q)).toEqual(
+    expect(getLandingFaqItems().map((item) => item.q)).toEqual(
       expect.arrayContaining([
-        'How is this different from a podcast?',
-        'How is this different from other audio tours?',
-        'Is this a group tour?',
+        'How is it different from a podcast?',
+        'How is it different from other audio tours?',
+        'Is it a group tour?',
       ]),
     )
   })
@@ -112,5 +113,62 @@ describe('landing editorial architecture', () => {
     expect(section.imageryHref).toBe('/credits')
     expect(LANDING_VERIFIED_REVIEWS).toEqual([])
     expect(section.verifiedReviewsEmptyNote).toMatch(/approved/i)
+  })
+
+  it('frames After Rome as a cinematic memory beat before FAQ', () => {
+    const section = LANDING_CONTENT['after-rome']
+    expect(section.eyebrow).toBe('After Rome')
+    expect(section.headlineLines).toEqual([
+      'Months later,',
+      'you’ll forget the queue.',
+      'You’ll remember the story.',
+    ])
+    expect(section.body).toMatch(/route remains yours/i)
+    expect(section.linkLabel).toBe('Keep the stories')
+    expect(section.linkHref).toBe('#pricing')
+  })
+
+  it('orders the FAQ by buying anxiety groups', () => {
+    const groups = LANDING_CONTENT.faq.groups
+    expect(groups.map((group) => group.label)).toEqual([
+      'Understanding the product',
+      'Using it in Rome',
+      'Purchase and access',
+      'Content and trust',
+    ])
+    const items = getLandingFaqItems()
+    expect(items).toHaveLength(17)
+    expect(items.map((item) => item.id)).toEqual([
+      'what-is-chronowalk',
+      'different-from-podcast',
+      'different-from-audio-tours',
+      'group-tour',
+      'offline',
+      'mobile-data',
+      'gps-inaccurate',
+      'pause-continue',
+      'tickets',
+      'subscription',
+      'keep-access',
+      'share-purchase',
+      'phones',
+      'account',
+      'narration-ai',
+      'reconstructions-researched',
+      'historians-disagree',
+    ])
+  })
+
+  it('closes with a cinematic ending instead of an urgent Final CTA', () => {
+    const section = LANDING_CONTENT['final-cta']
+    expect(section.headline).toBe('Rome has waited two thousand years.')
+    expect(section.bodyLines).toEqual([
+      'You do not have to understand it all in one day.',
+      'Begin where you are. Continue at your own pace.',
+    ])
+    expect(section.primaryCta).toBe('Try one stop free')
+    expect(section.secondaryCta).toBe('Explore Rome routes')
+    expect(section.footer).toBeUndefined()
+    expect(section.verseLines).toBeUndefined()
   })
 })
