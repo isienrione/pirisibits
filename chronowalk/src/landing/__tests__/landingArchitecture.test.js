@@ -41,13 +41,27 @@ describe('landing editorial architecture', () => {
     }
   })
 
-  it('keeps preserved-lower SEO sections available with stable ids', () => {
-    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual(['who-its-for', 'comparison'])
-    expect(LANDING_CONTENT['who-its-for'].id).toBe('who-its-for')
+  it('preserves comparison only as a lower-funnel relic (who-its-for → real-moment)', () => {
+    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual(['comparison'])
     expect(LANDING_CONTENT.comparison.id).toBe('compare')
   })
 
-  it('documents legacy deeplink ids still resolved on the page', () => {
-    expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(['rome-journey', 'letter'])
+  it('exposes legacy deeplink ids for scroll/hash resolution', () => {
+    expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(
+      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for']),
+    )
+  })
+
+  it('maps real-moment to playbook scenarios instead of persona cards', () => {
+    const section = LANDING_CONTENT['real-moment']
+    expect(section.scenarios).toHaveLength(4)
+    expect(section.scenarios.map((s) => s.prompt)).toEqual([
+      'No ticket?',
+      'Free afternoon?',
+      'Love to wander?',
+      'History curious?',
+    ])
+    expect(section.aside).toBeUndefined()
+    expect(section.body).toBeUndefined()
   })
 })

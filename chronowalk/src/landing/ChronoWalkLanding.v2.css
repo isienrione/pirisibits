@@ -2784,13 +2784,90 @@
   }
 }
 
-.cw-v2-real-moment__aside {
-  margin: 1.25rem 0 0;
+/* ——— Real moments (scenarios — not persona cards) ——— */
+.cw-v2-real-moment {
+  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
+}
+
+.cw-v2-real-moment__list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.cw-v2-real-moment__item {
+  position: relative;
+  padding: 1.75rem 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cw-v2-real-moment__seam {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin: 0 auto 1.75rem;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 28%, transparent);
+  grid-column: 1 / -1;
+}
+
+.cw-v2-real-moment__prompt {
+  margin: 0;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.cw-v2-real-moment__lines {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.cw-v2-real-moment__line {
+  margin: 0;
+  max-width: 36rem;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-style: italic;
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  line-height: 1.5;
-  color: var(--v2-gold, var(--gold));
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--v2-soft);
+  text-wrap: pretty;
+}
+
+.cw-v2-real-moment__line--lead {
+  color: var(--v2-bone);
+  font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+}
+
+@media (min-width: 40rem) {
+  .cw-v2-real-moment__list {
+    margin-top: 2.5rem;
+  }
+
+  .cw-v2-real-moment__item {
+    grid-template-columns: minmax(9rem, 12rem) minmax(0, 1fr);
+    gap: 1.25rem 1.75rem;
+    align-items: start;
+    padding: 2rem 0;
+  }
+
+  .cw-v2-real-moment__seam {
+    margin: 0 0 2rem;
+    width: 100%;
+    max-width: 4rem;
+  }
+
+  .cw-v2-real-moment__prompt {
+    padding-top: 0.35em;
+  }
 }
 
 .cw-v2-trust__list {
