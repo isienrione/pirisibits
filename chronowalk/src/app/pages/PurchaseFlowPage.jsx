@@ -61,7 +61,7 @@ export function PurchaseFlowPage() {
     }
   }, [])
 
-  // When Lemon is configured, continue straight into checkout (Begin Rome deep-link).
+  // When Lemon is configured, open checkout (overlay by default; hosted redirects away).
   useEffect(() => {
     if (!checkoutReady) return undefined
     let cancelled = false
@@ -71,6 +71,9 @@ export function PurchaseFlowPage() {
       if (cancelled) return
       if (!result.ok) {
         setCheckoutReady(false)
+      }
+      // Overlay stays on this page — clear busy so Continue can re-open.
+      if (!result.ok || result.mode === 'overlay') {
         setBusy(false)
       }
     })()
@@ -84,6 +87,8 @@ export function PurchaseFlowPage() {
     const result = await openCheckout({ tierId, source: 'purchase_flow' })
     if (!result.ok) {
       setCheckoutReady(false)
+    }
+    if (!result.ok || result.mode === 'overlay') {
       setBusy(false)
     }
   }, [tierId])

@@ -78,7 +78,7 @@ export default function APurchasePending({
 
         <p style={{ ...bodyStyle, color: T.muted, marginTop: 16, maxWidth: 340 }}>
           {checkoutReady
-            ? 'A secure Lemon Squeezy page will open next. After payment, your access link arrives by email.'
+            ? 'Lemon Squeezy checkout opens next (overlay when available). After payment, your access link arrives by email.'
             : 'Payments wait on the Lemon Squeezy store URL. The steps below are ready — live card checkout appears when checkout is configured.'}
         </p>
 
@@ -159,8 +159,8 @@ export default function APurchasePending({
             >
               <p style={{ ...uiStyle, color: T.warmWhite }}>Lemon Squeezy pending</p>
               <p style={{ ...bodyStyle, color: T.muted, margin: '6px 0 0', fontSize: 14 }}>
-                Your selected tour stays here until payment completes. Live card checkout appears when{' '}
-                <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code> is set on Cloudflare Pages —
+                Your selected tour stays here until payment completes. Checkout uses the Roma Eterna Lemon
+                buy link (override with <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code>) —
                 Rome will not unlock without purchase.
               </p>
               <div style={{ marginTop: 16, height: 12, position: 'relative' }}>

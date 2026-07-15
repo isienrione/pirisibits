@@ -21,10 +21,15 @@ Set in **Workers & Pages → your project → Settings → Environment variables
 | `VITE_MAPBOX_TOKEN` | `pk.…` | Required for map |
 | `VITE_MEDIA_BASE` | *(empty)* | Same as former Netlify production |
 | `VITE_BUILD_ID` | *(optional)* | Omit to use `CF_PAGES_COMMIT_SHA` automatically |
-| `VITE_LEMON_CHECKOUT_URL` | Lemon buy link | **Required for live pay.** Without it, package **Begin Rome** opens `/purchase` (buyer steps + restore access). Preview + Production both need this. See `docs/LEMON_SQUEEZY_TRANSACTIONS.md`. |
+| `VITE_LEMON_CHECKOUT_URL` | Roma Eterna Lemon buy URL | Optional override — app defaults to `https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d`. Set on Preview + Production to pin the same link. See `docs/LEMON_SQUEEZY_TRANSACTIONS.md`. |
+| `VITE_LEMON_CHECKOUT_MODE` | `overlay` (default) or `hosted` | Overlay uses lemon.js; hosted does a full-page redirect. |
 | `VITE_ALLOW_DEV_ACCESS` | `true` only on preview | Never on production chronowalk.com |
 
-Set the same `VITE_LEMON_CHECKOUT_URL` on **Preview** deployments if you want branch previews to open Lemon instead of the `/purchase` placeholder.
+Recommended production value:
+
+```bash
+VITE_LEMON_CHECKOUT_URL=https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d
+```
 
 `vite.config.js` resolves the deploy id in this order: `VITE_BUILD_ID` → `CF_PAGES_COMMIT_SHA` (first 7 chars) → `COMMIT_REF` → `GITHUB_SHA` → local `git rev-parse`. That id is baked into `__APP_BUILD_ID__` and the Workbox cache prefix (`chronowalk-<id>` in `/sw.js`).
 

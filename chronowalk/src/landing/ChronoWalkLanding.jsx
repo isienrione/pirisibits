@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getHost } from '../lib/host.js'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
 import LandingSiteHeader from './LandingSiteHeader.jsx'
@@ -22,7 +21,8 @@ import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
-import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
+import { resolveLandingTierCents } from './landingCheckout.js'
+import { openCheckout } from '../lib/checkout.js'
 import { rememberPendingPurchaseTier } from '../lib/pendingPurchase.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import { buildLandingProductSchema, LANDING_DOCUMENT } from './landingSeo.js'
@@ -45,7 +45,7 @@ import './ChronoWalkLanding.v2.css'
  */
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
-  const { cents, checkoutUrl } = useLandingPrice()
+  const { cents } = useLandingPrice()
 
   useEffect(() => {
     ensureLandingExpHero()
@@ -79,29 +79,23 @@ export default function ChronoWalkLanding() {
   }, [])
 
   const handleBeginTier = useCallback(
-    (tierId) => {
+    async (tierId) => {
       trackLandingPricingCta(tierId)
       rememberPendingPurchaseTier(tierId)
 
       const tierCents = resolveLandingTierCents(tierId, cents)
-      const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
-        host: getHost(),
-        abVariantCents: cents,
-      })
+      trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
 
-      if (!url) {
+      const result = await openCheckout({ tierId, source: 'landing' })
+      if (!result.ok) {
         console.warn(
-          '[ChronoWalk landing] Checkout URL unavailable — opening /purchase handoff.',
+          '[ChronoWalk landing] Checkout unavailable — opening /purchase handoff.',
           tierId,
         )
         navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
-        return
       }
-
-      trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
-      window.location.assign(url)
     },
-    [cents, checkoutUrl, navigate],
+    [cents, navigate],
   )
 
   const [actPromise, actExperience, actDecision] = LANDING_ACTS

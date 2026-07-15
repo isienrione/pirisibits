@@ -160,7 +160,7 @@ Keep **landing id → catalog product → begin-flow pace → Lemon `product_id`
 ## 2.3 Lemon Squeezy / Cloudflare — required for live pay
 
 - [ ] Create Lemon product/variant; pass custom `product_id` matching the landing/catalog id.
-- [ ] Set **`VITE_LEMON_CHECKOUT_URL`** on Cloudflare Pages (**Preview + Production**). Without it, Begin Rome opens `/purchase` placeholders — see `docs/LEMON_SQUEEZY_TRANSACTIONS.md` and `docs/CLOUDFLARE_PAGES.md`.
+- [ ] Confirm Roma Eterna checkout URL (baked-in default) or set **`VITE_LEMON_CHECKOUT_URL`** on Cloudflare Pages (**Preview + Production**) — see `docs/LEMON_SQUEEZY_TRANSACTIONS.md` and `docs/CLOUDFLARE_PAGES.md`.
 - [ ] Optional: Supabase `app_config.checkout_url` override (loaded by `src/lib/config.js`).
 - [ ] Document the new product in **`docs/LEMON_SQUEEZY_TRANSACTIONS.md`**.
 
@@ -228,7 +228,7 @@ Field-test GPS remaps only: `src/content/devGeofenceOverrides.santiago.js`.
 3. [ ] Landing routes / monuments / package cards updated if travelers will see them.
 4. [ ] Tests updated and green (`npm test` for touched areas; full suite before merge to `figma`).
 5. [ ] Merge / push **`figma`** (production branch for chronowalk.com).
-6. [ ] If commerce changed: Cloudflare `VITE_LEMON_CHECKOUT_URL` + Lemon product exists.
+6. [ ] If commerce changed: Lemon product URL matches (baked-in or Cloudflare `VITE_LEMON_CHECKOUT_URL`).
 7. [ ] Purge Cloudflare cache / confirm `/sw.js` build id if testers see a stale UI (`docs/CLOUDFLARE_PAGES.md`).
 
 ---
