@@ -44,7 +44,7 @@ Unchanged in structure: Interlude, Monuments trail, FAQ accordion, Act markers, 
 
 ## Remaining concerns
 
-1. **Single Rome plate family** — Hero / interlude / After Rome / ending still share `hero-rome` DNA with crop/filter only. Stronger Rome variety needs new photography (out of polish scope).
+1. **Cinematic variety shipping** — Hero / interlude / After Rome / ending now use four distinct plates under `public/landing/cinematic/` (Forum dusk, Colosseum, Castel, Trevi). Drop dusk masters into `_masters/` + `npm run prepare:landing-cinematic` to swap in blue-hour panoramas without code changes.
 2. **Sticky header still competes** with hero coral in the first viewport — intentional for conversion; worth A/B (below).
 3. **Monument stop posters** carry most mid-page place imagery; how-it-works remains type-led on phone/tablet by design.
 4. **FAQ still teaches** “do not fake certainty” — intentional home for scholarly tone; Threshold disclaimer was shortened instead of removing the FAQ item.

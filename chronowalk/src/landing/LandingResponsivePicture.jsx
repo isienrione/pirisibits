@@ -19,11 +19,17 @@ export function LandingResponsivePicture({
     desktopWebp,
     lqipSrc,
     alt = '',
+    objectPosition,
     mobileWidth = 960,
     mobileHeight = 1200,
     desktopWidth = 1600,
     desktopHeight = 900,
   } = image
+
+  const imgStyle = {
+    ...(lqipSrc ? { backgroundImage: `url(${lqipSrc})`, backgroundSize: 'cover' } : null),
+    ...(objectPosition ? { objectPosition } : null),
+  }
 
   return (
     <picture>
@@ -75,7 +81,7 @@ export function LandingResponsivePicture({
         decoding={decoding}
         fetchPriority={fetchPriority}
         sizes={sizes}
-        style={lqipSrc ? { backgroundImage: `url(${lqipSrc})`, backgroundSize: 'cover' } : undefined}
+        style={Object.keys(imgStyle).length ? imgStyle : undefined}
       />
     </picture>
   )

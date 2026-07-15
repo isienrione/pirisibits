@@ -19,6 +19,7 @@
     "verify-all-waypoints": "bash scripts/verify-all-waypoint-assets.sh",
     "install:modern-photos": "node scripts/install-modern-photos.mjs",
     "install:now-files": "node scripts/install-now-files.mjs",
+    "prepare:landing-cinematic": "node scripts/prepare-landing-cinematic.mjs",
     "process-piazza-navona": "bash scripts/process-waypoint-assets.sh piazza-navona",
     "verify-piazza-navona": "bash scripts/verify-waypoint-assets.sh piazza-navona",
     "process-expansion-waypoints": "bash scripts/process-expansion-waypoints.sh",

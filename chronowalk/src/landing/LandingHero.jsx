@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
-import { LANDING_V2 } from './landingVisualAssets.js'
+import { LANDING_HERO } from './landingVisualAssets.js'
+import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
  * Act I hero — transformation first, function second.
- * Primary CTA keeps landing_cta_preview via parent onPreview handler.
+ * Full-bleed cinematic Rome plate (distinct from interludes / ending).
  */
 export default function LandingHero({ onPreview, onRoutes }) {
   const hero = LANDING_CONTENT.hero
@@ -14,21 +15,15 @@ export default function LandingHero({ onPreview, onRoutes }) {
   return (
     <section id={hero.id} className="cw-v2-hero" aria-labelledby="hero-heading">
       {imageOk ? (
-        <picture>
-          <source type="image/avif" srcSet={LANDING_V2.heroRomeAvif} width={LANDING_V2.heroWidth} height={LANDING_V2.heroHeight} />
-          <source type="image/webp" srcSet={LANDING_V2.heroRomeWebp} width={LANDING_V2.heroWidth} height={LANDING_V2.heroHeight} />
-          <img
-            src={LANDING_V2.heroRome}
-            alt=""
-            aria-hidden="true"
+        <div className="cw-v2-hero__photo-wrap" onErrorCapture={() => setImageOk(false)}>
+          <LandingResponsivePicture
+            image={LANDING_HERO}
             className="cw-v2-hero__photo"
-            width={LANDING_V2.heroWidth}
-            height={LANDING_V2.heroHeight}
-            decoding="async"
+            loading="eager"
             fetchPriority="high"
-            onError={() => setImageOk(false)}
+            sizes="100vw"
           />
-        </picture>
+        </div>
       ) : null}
       <div className="cw-v2-hero__veil" aria-hidden="true" />
 

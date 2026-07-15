@@ -3,6 +3,7 @@ import { colosseumNow, pantheonNow } from '../redesign/images.js'
 
 const COLOSSEUM_EXTERIOR = '/waypoints/colosseum/exterior'
 const LANDING_IMG = '/landing'
+const CINEMATIC = `${LANDING_IMG}/cinematic`
 
 /** Shared landing imagery — keep NOW/THEN coherent across threshold demo + phone mockups. */
 export const LANDING_COLOSSEUM_NOW = colosseumNow
@@ -13,6 +14,7 @@ export const LANDING_FORUM_NOW = mediaUrl('/waypoints/forum-cluster/forum-via-sa
 
 /** Premium landing redesign — static showcase assets from design reference. */
 export const LANDING_V2 = {
+  /** Legacy square plate — hero now prefers LANDING_HERO cinematic set. */
   heroRome: `${LANDING_IMG}/hero-rome.png`,
   heroRomeWebp: `${LANDING_IMG}/hero-rome.webp`,
   heroRomeAvif: `${LANDING_IMG}/hero-rome.avif`,
@@ -25,41 +27,59 @@ export const LANDING_V2 = {
   screenLetter: `${LANDING_IMG}/screen-letter.png`,
 }
 
-function romePlane({ alt }) {
+/**
+ * Responsive Rome plane for interludes / memory / ending.
+ * Drop replacement masters into `public/landing/cinematic/<slot>/` then re-run
+ * `node scripts/prepare-landing-cinematic.mjs` (or overwrite jpg/webp/avif in place).
+ */
+function cinematicPlane(slot, { alt, objectPosition } = {}) {
+  const base = `${CINEMATIC}/${slot}`
   return {
-    mobileSrc: `${LANDING_IMG}/interlude-mobile.jpg`,
-    desktopSrc: `${LANDING_IMG}/interlude-desktop.jpg`,
-    mobileWebp: `${LANDING_IMG}/interlude-mobile.webp`,
-    desktopWebp: `${LANDING_IMG}/interlude-desktop.webp`,
-    mobileAvif: `${LANDING_IMG}/interlude-mobile.avif`,
-    desktopAvif: `${LANDING_IMG}/interlude-desktop.avif`,
-    lqipSrc: `${LANDING_IMG}/interlude-lqip.jpg`,
-    alt,
-    mobileWidth: 960,
-    mobileHeight: 1200,
-    desktopWidth: 1600,
-    desktopHeight: 900,
+    mobileSrc: `${base}/mobile.jpg`,
+    desktopSrc: `${base}/desktop.jpg`,
+    mobileWebp: `${base}/mobile.webp`,
+    desktopWebp: `${base}/desktop.webp`,
+    mobileAvif: `${base}/mobile.avif`,
+    desktopAvif: `${base}/desktop.avif`,
+    lqipSrc: `${base}/lqip.jpg`,
+    alt: alt ?? '',
+    objectPosition,
+    mobileWidth: 1080,
+    mobileHeight: 1350,
+    desktopWidth: 1920,
+    desktopHeight: 1080,
   }
 }
 
 /**
- * First cinematic interlude crops (from hero-rome.png).
- * Spec / remaster notes: docs/LANDING_CINEMATIC_INTERLUDE_ASSET.md
+ * Hero full-bleed — Forum dusk with Colosseum on the horizon.
+ * Replace via `public/landing/cinematic/_masters/hero.jpg` + prepare script.
  */
-export const LANDING_CINEMATIC_INTERLUDE = romePlane({ alt: '' })
-
-/**
- * After Rome — warmer reflective crop of the same Rome hero plane.
- * Distinct object-position from the Act I interlude; editorial memory, not product UI.
- */
-export const LANDING_AFTER_ROME = romePlane({
-  alt: 'Soft evening light over Rome rooftops and stone',
+export const LANDING_HERO = cinematicPlane('hero', {
+  alt: '',
+  objectPosition: 'center 38%',
 })
 
 /**
- * Final cinematic ending — skyward crop; strong dark veil in CSS.
- * Distinct from After Rome (warm memory) and Act I interlude (arrival).
+ * Act I cinematic interlude — Colosseum arrival beat.
  */
-export const LANDING_ENDING = romePlane({
-  alt: 'Rome under quiet dusk light — final cinematic frame',
+export const LANDING_CINEMATIC_INTERLUDE = cinematicPlane('interlude', {
+  alt: '',
+  objectPosition: '42% 40%',
+})
+
+/**
+ * After Rome — Castel Sant’Angelo memory (bridge approach at gold hour).
+ */
+export const LANDING_AFTER_ROME = cinematicPlane('after-rome', {
+  alt: 'Castel Sant’Angelo in warm evening light',
+  objectPosition: 'center 32%',
+})
+
+/**
+ * Final cinematic ending — Trevi (distinct civic close; dusk master preferred).
+ */
+export const LANDING_ENDING = cinematicPlane('ending', {
+  alt: 'Trevi Fountain under open Roman sky',
+  objectPosition: 'center 28%',
 })

@@ -50,12 +50,19 @@
   background-color: var(--v2-obsidian, var(--obsidian));
 }
 
+.cw-cinematic-interlude__media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .cw-cinematic-interlude__img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: 42% 40%;
+  filter: saturate(1.06) contrast(1.06) brightness(0.88);
 }
 
 .cw-cinematic-interlude__veil {
