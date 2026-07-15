@@ -35,8 +35,9 @@ describe('LandingPhoneScreens', () => {
     expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
   })
 
-  it('resolves arrive via LandingStepMockup', () => {
-    render(<LandingStepMockup variant="arrive" />)
-    expect(screen.getByText(/begin chapter/i)).toBeInTheDocument()
+  it('resolves listening via LandingStepMockup for how-it-works step 3', () => {
+    render(<LandingStepMockup variant="listening" />)
+    expect(screen.getByLabelText(/arch of titus chapter/i)).toBeInTheDocument()
+    expect(screen.getByText(/skip ahead/i)).toBeInTheDocument()
   })
 })

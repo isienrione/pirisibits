@@ -726,18 +726,21 @@
   display: none;
   justify-content: center;
   order: 2;
-  margin-top: 0.35rem;
-  margin-bottom: 0.35rem;
-  width: min(100%, 13.5rem);
-  max-width: 13.5rem;
+  margin-top: 0.55rem;
+  margin-bottom: 0.55rem;
+  width: min(100%, 14.5rem);
+  max-width: 14.5rem;
   margin-inline: auto;
+  overflow: visible;
+  padding-inline: 0.35rem; /* room for titanium side buttons */
+  box-sizing: content-box;
 }
 
 /* Path variant always shows the phone screens under each step */
 .cw-v2-user-flow--path .cw-v2-user-flow__device {
   display: flex;
-  width: min(100%, 13.5rem);
-  max-width: 13.5rem;
+  width: min(100%, 14.5rem);
+  max-width: 14.5rem;
 }
 
 .cw-v2-user-flow--path .cw-v2-user-flow__title {
@@ -896,13 +899,13 @@
 
   .cw-v2-user-flow__device {
     display: flex;
-    width: min(100%, 15rem);
-    max-width: 15rem;
+    width: min(100%, 15.5rem);
+    max-width: 15.5rem;
   }
 
   .cw-v2-user-flow--path .cw-v2-user-flow__device {
-    width: min(100%, 15rem);
-    max-width: 15rem;
+    width: min(100%, 15.5rem);
+    max-width: 15.5rem;
   }
 }
 
@@ -1488,6 +1491,7 @@
   width: 100%;
   max-width: 17.25rem;
   margin-inline: auto;
+  overflow: visible;
 }
 
 .cw-v2-live-phone--sm { max-width: 12.75rem; }
@@ -3077,8 +3081,11 @@
     margin-top: 1.35rem;
   }
 
-  .cw-v2-user-flow--essential .cw-v2-user-flow__device {
-    max-width: 7.25rem;
+  /* Keep phones large enough that iPhone chrome + full UI stay readable. */
+  .cw-v2-user-flow--essential .cw-v2-user-flow__device,
+  .cw-v2-user-flow--path .cw-v2-user-flow__device {
+    width: min(100%, 12rem);
+    max-width: 12rem;
   }
 
   .cw-v2-user-flow__title {
