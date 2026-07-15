@@ -217,6 +217,17 @@
   transform: scale(1.02);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .cw-v2-header__cta,
+  .cw-v2-header__cta:hover,
+  .cw-v2-btn,
+  .cw-v2-btn--coral:hover,
+  .cw-v2-btn--outline:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
 .cw-v2-header__cta-label--short {
   display: none;
 }
@@ -259,6 +270,29 @@
   border: none;
   cursor: pointer;
   transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.cw-v2-btn:focus-visible,
+.cw-v2-header__brand:focus-visible,
+.cw-v2-header__link:focus-visible,
+.cw-v2-header__cta:focus-visible,
+.cw-v2-footer__link:focus-visible,
+.cw-sig-threshold__stage-frame:focus-visible,
+.cw-v2-monuments__stop-hit:focus-visible {
+  outline: 2px solid var(--gold, #c9a227);
+  outline-offset: 3px;
+}
+
+.cw-v2-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .cw-v2-btn--block {

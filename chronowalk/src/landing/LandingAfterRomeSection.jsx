@@ -1,5 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_AFTER_ROME } from './landingVisualAssets.js'
+import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
  * Act III — After Rome (Prompt 14).
@@ -18,19 +19,7 @@ export default function LandingAfterRomeSection() {
     >
       <div className="cw-v2-after-rome__stage">
         <div className="cw-v2-after-rome__media" aria-hidden={image.alt ? undefined : true}>
-          <picture>
-            <source media="(min-width: 48rem)" srcSet={image.desktopSrc} width={image.desktopWidth} height={image.desktopHeight} />
-            <img
-              className="cw-v2-after-rome__img"
-              src={image.mobileSrc}
-              width={image.mobileWidth}
-              height={image.mobileHeight}
-              alt={image.alt || ''}
-              loading="lazy"
-              decoding="async"
-              style={image.lqipSrc ? { backgroundImage: `url(${image.lqipSrc})`, backgroundSize: 'cover' } : undefined}
-            />
-          </picture>
+          <LandingResponsivePicture image={image} className="cw-v2-after-rome__img" loading="lazy" />
         </div>
 
         <div className="cw-v2-after-rome__veil" aria-hidden="true" />

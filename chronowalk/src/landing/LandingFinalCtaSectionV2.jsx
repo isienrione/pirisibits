@@ -1,5 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_ENDING } from './landingVisualAssets.js'
+import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
  * Act III — final cinematic CTA (Prompt 16).
@@ -21,28 +22,7 @@ export default function LandingFinalCtaSectionV2({ onPreview }) {
 
       <div className="cw-v2-ending__stage">
         <div className="cw-v2-ending__media" aria-hidden={image.alt ? undefined : true}>
-          <picture>
-            <source
-              media="(min-width: 48rem)"
-              srcSet={image.desktopSrc}
-              width={image.desktopWidth}
-              height={image.desktopHeight}
-            />
-            <img
-              className="cw-v2-ending__img"
-              src={image.mobileSrc}
-              width={image.mobileWidth}
-              height={image.mobileHeight}
-              alt={image.alt || ''}
-              loading="lazy"
-              decoding="async"
-              style={
-                image.lqipSrc
-                  ? { backgroundImage: `url(${image.lqipSrc})`, backgroundSize: 'cover' }
-                  : undefined
-              }
-            />
-          </picture>
+          <LandingResponsivePicture image={image} className="cw-v2-ending__img" loading="lazy" />
         </div>
 
         <div className="cw-v2-ending__veil" aria-hidden="true" />

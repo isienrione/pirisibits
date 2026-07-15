@@ -238,6 +238,8 @@ export default function LandingThresholdSection() {
           <div
             className="cw-sig-threshold__stage-frame"
             tabIndex={0}
+            role="application"
+            aria-label={`${section.holdHint}. ${section.revealLabel} is also available as a button.`}
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
             onBlur={endHold}

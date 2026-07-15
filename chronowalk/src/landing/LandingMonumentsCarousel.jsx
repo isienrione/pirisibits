@@ -179,6 +179,8 @@ function RouteStop({ stop, index, refCallback, onKeyDown, showPhoto }) {
             <img
               src={stop.photo}
               alt=""
+              width={160}
+              height={160}
               className="cw-v2-monuments__photo"
               loading="lazy"
               decoding="async"

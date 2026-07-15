@@ -25,6 +25,11 @@ import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } fro
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
+import {
+  buildLandingProductSchema,
+  LANDING_DOCUMENT,
+  trackLandingViewOnce,
+} from './landingSeo.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 
@@ -38,7 +43,19 @@ export default function ChronoWalkLanding() {
   const { cents, checkoutUrl } = useLandingPrice()
 
   useEffect(() => {
-    track(TRACK_EVENTS.LANDING_VIEW, { source: 'landing' })
+    trackLandingViewOnce(track, TRACK_EVENTS.LANDING_VIEW, { source: 'landing' })
+  }, [])
+
+  useEffect(() => {
+    const previousTitle = document.title
+    document.title = LANDING_DOCUMENT.title
+    const meta = document.querySelector('meta[name="description"]')
+    const previousDescription = meta?.getAttribute('content') ?? null
+    if (meta) meta.setAttribute('content', LANDING_DOCUMENT.description)
+    return () => {
+      document.title = previousTitle
+      if (meta && previousDescription != null) meta.setAttribute('content', previousDescription)
+    }
   }, [])
 
   const handlePreview = useCallback(() => {
@@ -78,9 +95,14 @@ export default function ChronoWalkLanding() {
   )
 
   const [actPromise, actExperience, actDecision] = LANDING_ACTS
+  const productSchema = buildLandingProductSchema()
 
   return (
     <div className="cw-landing cw-landing--premium cw-landing--editorial">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <LandingSiteHeader onPreview={handlePreview} />
       <main>
         <LandingAct

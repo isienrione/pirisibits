@@ -29,17 +29,13 @@ export default function LandingColosseumThreshold({
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerLeave}
-      role={interactive ? 'group' : 'img'}
+      role="img"
       aria-labelledby={labelledBy}
       aria-label={
         labelledBy
           ? undefined
           : 'Colosseum today compared with an evidence-based ancient reconstruction'
       }
-      aria-valuemin={interactive ? 0 : undefined}
-      aria-valuemax={interactive ? 100 : undefined}
-      aria-valuenow={interactive ? progressPct : undefined}
-      aria-valuetext={interactive ? `${progressPct}% past revealed` : undefined}
     >
       <div className="cw-doc-threshold-demo__then cw-threshold-stage__then" aria-hidden="true">
         <img

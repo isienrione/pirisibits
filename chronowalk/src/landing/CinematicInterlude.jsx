@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
+import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
  * Reusable cinematic narrative break — image + minimal copy, no CTA/cards/icons.
@@ -80,16 +81,7 @@ export default function CinematicInterlude({
 
   const headingId = id ? `${id}-heading` : undefined
   const [first, ...rest] = lines
-  const {
-    mobileSrc,
-    desktopSrc,
-    lqipSrc,
-    alt = '',
-    mobileWidth = 960,
-    mobileHeight = 1200,
-    desktopWidth = 1600,
-    desktopHeight = 900,
-  } = image
+  const { lqipSrc } = image
 
   return (
     <section
@@ -109,19 +101,7 @@ export default function CinematicInterlude({
           className="cw-cinematic-interlude__media"
           style={lqipSrc ? { backgroundImage: `url(${lqipSrc})` } : undefined}
         >
-          <picture>
-            <source media="(max-width: 47.99rem)" srcSet={mobileSrc} width={mobileWidth} height={mobileHeight} />
-            <source media="(min-width: 48rem)" srcSet={desktopSrc} width={desktopWidth} height={desktopHeight} />
-            <img
-              src={desktopSrc}
-              alt={alt}
-              width={desktopWidth}
-              height={desktopHeight}
-              loading="lazy"
-              decoding="async"
-              className="cw-cinematic-interlude__img"
-            />
-          </picture>
+          <LandingResponsivePicture image={image} className="cw-cinematic-interlude__img" loading="lazy" />
         </div>
 
         <div className="cw-cinematic-interlude__veil" aria-hidden="true" />

@@ -14,13 +14,21 @@ export default function LandingHero({ onPreview }) {
   return (
     <section id={hero.id} className="cw-v2-hero" aria-labelledby="hero-heading">
       {imageOk ? (
-        <img
-          src={LANDING_V2.heroRome}
-          alt=""
-          aria-hidden="true"
-          className="cw-v2-hero__photo"
-          onError={() => setImageOk(false)}
-        />
+        <picture>
+          <source type="image/avif" srcSet={LANDING_V2.heroRomeAvif} width={LANDING_V2.heroWidth} height={LANDING_V2.heroHeight} />
+          <source type="image/webp" srcSet={LANDING_V2.heroRomeWebp} width={LANDING_V2.heroWidth} height={LANDING_V2.heroHeight} />
+          <img
+            src={LANDING_V2.heroRome}
+            alt=""
+            aria-hidden="true"
+            className="cw-v2-hero__photo"
+            width={LANDING_V2.heroWidth}
+            height={LANDING_V2.heroHeight}
+            decoding="async"
+            fetchPriority="high"
+            onError={() => setImageOk(false)}
+          />
+        </picture>
       ) : null}
       <div className="cw-v2-hero__veil" aria-hidden="true" />
 

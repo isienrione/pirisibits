@@ -59,6 +59,10 @@ Primary live copy lives in `landingData.js`. Voice: intelligent, calm, direct, c
 
 Mobile-first; tablet band `48–63.99rem` is first-class. See `LANDING_RESPONSIVE.md` for viewport matrix and every fix (header deferred to 64rem, pricing container queries, ending 16∶9→21∶9, etc.).
 
+### Production readiness (Phase 20)
+
+See `LANDING_PRODUCTION_READINESS.md` — focus styles, Threshold a11y, AVIF/WebP + hero preload, font loading, Product + FAQ schema, analytics once-guard.
+
 ## Preserved (not redesigned)
 
 - CTA destinations (`/preview`, `#pricing`, checkout)  

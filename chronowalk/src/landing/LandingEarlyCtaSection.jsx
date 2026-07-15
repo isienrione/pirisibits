@@ -8,14 +8,12 @@ export default function LandingEarlyCtaSection({ onPreview }) {
     <section
       id={section.id}
       className="cw-v2-section cw-v2-early-cta cw-v2-early-cta--compact"
-      aria-label={section.primaryCta}
+      aria-labelledby={`${section.id}-heading`}
     >
       <div className="cw-v2-wrap cw-v2-wrap--narrow cw-v2-early-cta__inner">
-        {section.headline ? (
-          <h2 id={`${section.id}-heading`} className="cw-v2-section__title">
-            {section.headline}
-          </h2>
-        ) : null}
+        <h2 id={`${section.id}-heading`} className="cw-v2-sr-only">
+          {section.headline || section.primaryCta}
+        </h2>
         <div className="cw-v2-early-cta__actions">
           {onPreview ? (
             <button type="button" className="cw-v2-btn cw-v2-btn--coral" onClick={onPreview}>
