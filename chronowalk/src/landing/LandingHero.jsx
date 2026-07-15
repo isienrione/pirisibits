@@ -73,7 +73,7 @@ export default function LandingHero({ onPreview, onRoutes }) {
         </div>
 
         <div className="cw-v2-hero__device" aria-hidden="true">
-          <LandingLivePhoneMockup variant="audio" />
+          <LandingLivePhoneMockup variant="listening" size="lg" />
         </div>
       </div>
     </section>

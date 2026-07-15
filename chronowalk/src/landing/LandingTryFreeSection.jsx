@@ -52,7 +52,7 @@ export default function LandingTryFreeSection({ onPreview, onRoutes }) {
           </div>
 
           <figure className="cw-v2-try-free__visual" aria-label="ChronoWalk phone showing the Pantheon audio stop">
-            <LandingLivePhoneMockup variant="audio" />
+            <LandingLivePhoneMockup variant="preview" size="lg" />
             <figcaption className="cw-v2-try-free__caption">{section.card.meta}</figcaption>
           </figure>
         </div>
