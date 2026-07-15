@@ -151,21 +151,27 @@ export const LANDING_SECTION_ORDER = [
   'final-cta',
 ]
 
-/** Act landmarks for composition / a11y (not DOM ids). */
+/** Act landmarks for composition / a11y / navigation (`#act-*`). */
 export const LANDING_ACTS = [
   {
     id: 'act-promise',
     label: 'Act I — The Promise',
+    index: 'I',
+    name: 'The Promise',
     sections: ['hero', 'interlude', 'threshold', 'early-cta'],
   },
   {
     id: 'act-experience',
     label: 'Act II — The Experience',
+    index: 'II',
+    name: 'The Experience',
     sections: ['user-flow', 'real-moment', 'monuments', 'benefits', 'try-free'],
   },
   {
     id: 'act-decision',
     label: 'Act III — The Decision',
+    index: 'III',
+    name: 'The Decision',
     sections: ['pricing', 'why', 'trust', 'after-rome', 'faq', 'final-cta'],
   },
 ]

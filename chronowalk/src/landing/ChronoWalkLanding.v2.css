@@ -3113,10 +3113,90 @@
   }
 }
 
-/* —— Editorial acts (architecture shell) —— */
+/* —— Editorial acts + Gold Seam (Prompt 17) —— */
+
+.cw-gold-seam {
+  display: block;
+  width: min(3.25rem, 22vw);
+  height: 1px;
+  margin-inline: auto;
+  background: var(--gold, #c9a227);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--gold, #c9a227) 16%, transparent);
+  pointer-events: none;
+}
+
+.cw-gold-seam--act {
+  margin-block: clamp(0.35rem, 1.5vw, 0.75rem) 0;
+}
 
 .cw-landing-act {
-  display: contents;
+  position: relative;
+  display: block;
+}
+
+.cw-landing-act__marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding-block: clamp(1.15rem, 3.2vw, 1.75rem) clamp(0.65rem, 1.8vw, 1.1rem);
+  text-align: center;
+  pointer-events: none;
+}
+
+.cw-landing-act__index {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.5625rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--v2-muted, #9a9590) 88%, var(--gold, #c9a227));
+}
+
+.cw-landing-act__seam {
+  display: block;
+  width: 1.75rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--gold, #c9a227) 72%, transparent);
+}
+
+.cw-landing-act__name {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(0.72rem, 1.6vw, 0.82rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--v2-soft, #cfc8bf) 70%, transparent);
+}
+
+/*
+ * Act I — marker floats over the hero veil so the brand-first first viewport
+ * keeps its composition; still present as a quiet chapter cue.
+ */
+.cw-landing-act--act-promise > .cw-landing-act__marker {
+  position: absolute;
+  top: clamp(4.25rem, 10vw, 5.5rem);
+  inset-inline: 0;
+  z-index: 4;
+  padding-block: 0;
+  opacity: 0.62;
+}
+
+.cw-landing-act--act-experience > .cw-landing-act__marker,
+.cw-landing-act--act-decision > .cw-landing-act__marker {
+  background: var(--v2-obsidian, #0b0c10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-gold-seam,
+  .cw-landing-act__seam {
+    box-shadow: none;
+  }
+
+  .cw-landing-act--act-promise > .cw-landing-act__marker {
+    opacity: 0.78;
+  }
 }
 
 /* Invisible targets for legacy hashes (#rome-journey, #letter, …). */

@@ -21,10 +21,9 @@ import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
 import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
-import { ROME_JOURNEY_SECTION_ID } from './landingData.js'
+import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
-import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
@@ -78,18 +77,31 @@ export default function ChronoWalkLanding() {
     [cents, checkoutUrl, navigate],
   )
 
+  const [actPromise, actExperience, actDecision] = LANDING_ACTS
+
   return (
     <div className="cw-landing cw-landing--premium cw-landing--editorial">
       <LandingSiteHeader onPreview={handlePreview} />
       <main>
-        <LandingAct id="act-promise" label="Act I — The Promise">
+        <LandingAct
+          id={actPromise.id}
+          label={actPromise.label}
+          index={actPromise.index}
+          name={actPromise.name}
+        >
           <LandingHero onPreview={handlePreview} />
           <LandingEmotionalInterludeSection />
           <LandingThresholdSection />
           <LandingEarlyCtaSection onPreview={handlePreview} />
         </LandingAct>
 
-        <LandingAct id="act-experience" label="Act II — The Experience">
+        <LandingAct
+          id={actExperience.id}
+          label={actExperience.label}
+          index={actExperience.index}
+          name={actExperience.name}
+          transition
+        >
           <LandingUserFlowSection />
           <LandingRealMomentSection />
           <LandingMonumentsCarousel />
@@ -97,7 +109,13 @@ export default function ChronoWalkLanding() {
           <LandingTryFreeSection onPreview={handlePreview} />
         </LandingAct>
 
-        <LandingAct id="act-decision" label="Act III — The Decision">
+        <LandingAct
+          id={actDecision.id}
+          label={actDecision.label}
+          index={actDecision.index}
+          name={actDecision.name}
+          transition
+        >
           <LandingRomeTiersSection onBeginTier={handleBeginTier} />
           {/* Deep-link / SEO: pricing section is canonical; keep #rome-journey resolving. */}
           <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />

@@ -13,6 +13,15 @@ Prompt 2 / Phase 2: **restructure section order only** — no wholesale copy rew
 
 Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 
+### Act system (Prompt 17)
+
+- Each act is a `role="region"` with `#act-*` for analytics / deep links (`data-landing-act`).
+- Subtle editorial marker (`Act I` + gold hairline + italic name) — **not** an `h2`; H1 remains the hero.
+- **Gold Seam** (`GoldSeam.jsx` / `.cw-gold-seam`) precedes Acts II and III as the only transition device — no full-screen interludes, no scroll-jacking.
+- Act I marker floats quietly over the hero so the first viewport stays brand-first.
+- Act visibility is **not** tracked (no clean existing event; do not invent `landing_act_*`).
+- `prefers-reduced-motion`: seam glow removed.
+
 ## Mount map
 
 | # | Beat | Component | Section id | Status |

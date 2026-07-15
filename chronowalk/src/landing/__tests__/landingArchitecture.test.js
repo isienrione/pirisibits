@@ -171,4 +171,21 @@ describe('landing editorial architecture', () => {
     expect(section.footer).toBeUndefined()
     expect(section.verseLines).toBeUndefined()
   })
+
+  it('defines three narrative acts with navigation ids and non-heading labels', () => {
+    expect(LANDING_ACTS.map((act) => act.id)).toEqual([
+      'act-promise',
+      'act-experience',
+      'act-decision',
+    ])
+    expect(LANDING_ACTS.map((act) => ({ index: act.index, name: act.name }))).toEqual([
+      { index: 'I', name: 'The Promise' },
+      { index: 'II', name: 'The Experience' },
+      { index: 'III', name: 'The Decision' },
+    ])
+    for (const act of LANDING_ACTS) {
+      expect(act.label).toMatch(/^Act /)
+      expect(act.label).toContain(act.name)
+    }
+  })
 })
