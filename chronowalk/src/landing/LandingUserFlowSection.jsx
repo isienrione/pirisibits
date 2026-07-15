@@ -1,18 +1,13 @@
 import { LANDING_CONTENT } from './landingData.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
-/**
- * Act II — How it works in three scannable steps.
- * Phones support the beat; copy leads. Secondary details hide under progressive disclosure.
- */
 export default function LandingUserFlowSection() {
   const section = LANDING_CONTENT['user-flow']
-  const more = section.more
 
   return (
     <section
       id={section.id}
-      className="cw-v2-section cw-v2-section--raised cw-v2-user-flow cw-v2-user-flow--essential"
+      className="cw-v2-section cw-v2-section--raised cw-v2-user-flow"
       aria-labelledby={`${section.id}-heading`}
     >
       <div className="cw-v2-wrap">
@@ -21,46 +16,26 @@ export default function LandingUserFlowSection() {
           <h2 id={`${section.id}-heading`} className="cw-v2-section__title">
             {section.headline}
           </h2>
-          {section.subheadline ? (
-            <p className="cw-v2-section__lead">{section.subheadline}</p>
-          ) : null}
+          <p className="cw-v2-section__lead">{section.subheadline}</p>
         </header>
 
         <ol className="cw-v2-user-flow__track">
           {section.steps.map((step, index) => (
             <li key={step.title} className="cw-v2-user-flow__step">
               {index > 0 ? (
-                <span className="cw-v2-user-flow__seam" aria-hidden="true" />
+                <span className="cw-v2-user-flow__connector" aria-hidden>
+                  →
+                </span>
               ) : null}
               <article className="cw-v2-user-flow__card">
-                <div className="cw-v2-user-flow__device" aria-hidden="true">
-                  <LandingLivePhoneMockup variant={step.mockup} compact />
-                </div>
-                <p className="cw-v2-user-flow__step-num">
-                  <span className="cw-v2-user-flow__step-label">Step</span> {step.step}
-                </p>
+                <LandingLivePhoneMockup variant={step.mockup} compact />
+                <span className="cw-v2-user-flow__step-num">{step.step}</span>
                 <h3 className="cw-v2-user-flow__title">{step.title}</h3>
                 <p className="cw-v2-user-flow__body">{step.body}</p>
               </article>
             </li>
           ))}
         </ol>
-
-        {more ? (
-          <details className="cw-v2-user-flow__more">
-            <summary className="cw-v2-user-flow__more-summary">{more.summary}</summary>
-            <ul className="cw-v2-user-flow__more-list">
-              {more.items.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            {more.thresholdHref ? (
-              <p className="cw-v2-user-flow__more-link">
-                <a href={more.thresholdHref}>{more.thresholdLabel}</a>
-              </p>
-            ) : null}
-          </details>
-        ) : null}
       </div>
     </section>
   )

@@ -41,47 +41,13 @@ describe('landing editorial architecture', () => {
     }
   })
 
-  it('no longer mounts repeated feature matrices as preserved-lower sections', () => {
-    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual([])
+  it('keeps preserved-lower SEO sections available with stable ids', () => {
+    expect(LANDING_PRESERVED_LOWER_SECTIONS).toEqual(['who-its-for', 'comparison'])
+    expect(LANDING_CONTENT['who-its-for'].id).toBe('who-its-for')
+    expect(LANDING_CONTENT.comparison.id).toBe('compare')
   })
 
-  it('exposes legacy deeplink ids for scroll/hash resolution', () => {
-    expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(
-      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for', 'compare']),
-    )
-  })
-
-  it('maps real-moment to playbook scenarios instead of persona cards', () => {
-    const section = LANDING_CONTENT['real-moment']
-    expect(section.scenarios).toHaveLength(4)
-    expect(section.scenarios.map((s) => s.prompt)).toEqual([
-      'No ticket?',
-      'Free afternoon?',
-      'Love to wander?',
-      'History curious?',
-    ])
-    expect(section.aside).toBeUndefined()
-    expect(section.body).toBeUndefined()
-  })
-
-  it('lists benefits once under What stays with you', () => {
-    expect(LANDING_CONTENT.benefits.headline).toBe('What stays with you.')
-    expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
-      'Stories right where you are standing',
-      'Your trip, your pace',
-      'Downloaded once',
-      'Yours to keep',
-    ])
-    expect(LANDING_CONTENT.trust.items).toBeUndefined()
-    expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
-  })
-
-  it('frames the free preview as one stop with clear inclusions', () => {
-    const section = LANDING_CONTENT['try-free']
-    expect(section.headline).toContain('One stop.')
-    expect(section.primaryCta).toBe('Try the Pantheon stop free')
-    expect(section.trustLine).toBe('No account required.')
-    expect(section.included).toMatch(/Pantheon/i)
-    expect(section.notIncluded).toMatch(/Not included/i)
+  it('documents legacy deeplink ids still resolved on the page', () => {
+    expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(['rome-journey', 'letter'])
   })
 })

@@ -23,14 +23,15 @@ Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 | 3 | Threshold | `LandingThresholdSection.jsx` | `#threshold` | Existing (static for now) |
 | 4 | Early CTA | `LandingEarlyCtaSection.jsx` | `#early-cta` | Scaffold |
 | 5 | How it works | `LandingUserFlowSection.jsx` | `#how-it-works` | Existing |
-| 6 | Real-moment | `LandingRealMomentSection.jsx` | `#real-moment` (+ `#who-its-for`) | Phase 7 scenarios |
-| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Phase 8 journey timeline |
-| 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Phase 9 — What stays with you (once) |
-| 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Phase 10 — sharpened Pantheon preview |
-| 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Phase 11 — simplified hierarchy |
-| 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Research prose (no feature list) |
+| 6 | Real-moment | `LandingRealMomentSection.jsx` | `#real-moment` | Scaffold |
+| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Existing |
+| 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Existing |
+| 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Existing |
+| 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Existing |
+| 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Scaffold |
 | 12 | FAQ | `LandingFaqSectionV2.jsx` | `#faq` | Existing |
-| — | Comparison | deeplink `#compare` only | — | Unmounted Phase 9 |
+| — | Audience (preserved lower) | `LandingWhoItsForSection.jsx` | `#who-its-for` | Existing, moved lower |
+| — | Comparison (preserved lower) | `LandingComparisonSection.jsx` | `#compare` | Existing, moved lower |
 | 13 | After Rome | `LandingAfterRomeSection.jsx` | `#after-rome` | Scaffold (`#letter` anchor above) |
 | 14 | Final CTA | `LandingFinalCtaSectionV2.jsx` | `#final-cta` | Existing |
 | 15 | Footer | `LandingSiteFooter.jsx` | — | Existing |
@@ -49,9 +50,7 @@ Legacy hashes: `LANDING_LEGACY_DEEPLINK_IDS`
 - FAQ accordion  
 - Analytics (`landing_view`, `landing_cta_preview`, `landing_cta_begin`, `checkout_open`)  
 - Responsive `cw-v2-*` layouts  
-- `#who-its-for` resolves inside real-moment scenarios (persona cards removed Phase 7)
-- `#compare` deeplink only (comparison feature matrix unmounted Phase 9)
-- Benefits appear once under `#benefits` as **What stays with you** (see `LANDING_FEATURE_CONSOLIDATION.md`)
+- Who-its-for + comparison content (moved lower, not deleted)  
 - Baseline archive under `archive/v3-premium-baseline-2026-07-14/`
 
 ## Next (not this prompt)

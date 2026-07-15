@@ -23,22 +23,18 @@ export const LANDING_CTA = {
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
 export const FREE_PREVIEW = {
-  title: 'The Pantheon stop',
-  meta: 'Free · ~4 minutes',
+  title: 'The Pantheon Sneak Peek',
+  meta: 'Free Preview · 4 minutes',
   copy:
-    'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
+    'Test the cinematic narration, walk the location, and experience exactly how the GPS triggers before spending a single euro.',
 }
 
 /** Tiered Rome journey offerings shown on the landing product showcase. */
 export const ROME_TIERS = [
   {
     id: 'rome-central',
-    name: 'Roma Historica',
-    /** @deprecated use `name` — retained for archive / older UI strings */
     eyebrow: 'Roma Historica',
     tierLabel: 'Central',
-    bestFor: 'Best for a centro afternoon without park tickets.',
-    outcome: 'Walk the living city around the Pantheon with stories that meet you at each stop.',
     price: '€9',
     priceCents: 900,
     priceNote: 'one-time',
@@ -47,50 +43,45 @@ export const ROME_TIERS = [
       'The Pantheon and the living city around it — Trevi, Navona, Campo, Argentina, and Castel Sant\'Angelo. Outside Parco Archeologico del Colosseo.',
     bullets: [
       'Full Pantheon chapters + Threshold (same stop as the free preview)',
-      'Centro storico stops — no park ticket needed',
+      'Studio-written narration · GPS-triggered on arrival',
+      'Download once, walk offline — no park ticket needed',
     ],
-    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
   {
     id: 'rome-essential',
-    name: 'Roma Antica',
     eyebrow: 'Roma Antica',
     tierLabel: 'Ancient',
-    bestFor: 'Best for the Colosseum and Forum in one focused walk.',
-    outcome: 'Hear the ancient core where it happened — arena stones to Senate floor.',
     price: '€12',
     priceCents: 1200,
     priceNote: 'one-time',
     description:
       'The ancient core — Colosseum and Roman Forum — with the full ChronoWalk experience at each stop.',
     bullets: [
-      'Colosseum and Roman Forum stops',
+      'Studio-written narration (not generic audio tours)',
+      'Stories start when you arrive — GPS-triggered',
       'Threshold reconstructions at key landmarks',
+      'Download once, walk offline',
     ],
-    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
   {
     id: 'rome-complete',
-    name: 'Roma Eterna',
     eyebrow: 'Roma Eterna',
     tierLabel: 'Complete',
-    bestFor: 'Best for the full city loop — and your own stop order.',
-    outcome: 'One continuous Rome from the Arena to the Appian Way, at your pace.',
     price: '€17',
     priceCents: 1700,
     priceNote: 'one-time',
-    badge: 'Most popular',
+    badge: 'Most Popular',
     description:
       'The full Rome walk — archaeological core, centro storico, outer loop, and your own stop order.',
     includesLabel: 'Roma Historica + Roma Antica + the full city loop',
-    featuredBullet: 'Choose and re-order your stops (own-pace itinerary)',
+    featuredBullet: '+ Choose and re-order your stops (own-pace itinerary)',
     bullets: [
       'All 22 stops — Colosseum and Forum to the Appian Way',
       'Every Threshold reconstruction on the route',
+      'Pause and resume anytime — one day or spread across the trip',
     ],
-    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
 ]
@@ -162,71 +153,54 @@ export const LANDING_ACTS = [
 /**
  * Existing beats remounted lower in Act III so deep links / SEO copy stay live
  * until trust + After Rome fully replace them. Not part of the primary narrative order.
- * Phase 9 — comparison feature matrix removed; benefits appear once only.
  */
-export const LANDING_PRESERVED_LOWER_SECTIONS = []
+export const LANDING_PRESERVED_LOWER_SECTIONS = ['who-its-for', 'comparison']
 
 /** Legacy hash targets kept resolving while content is relocated. */
-export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for', 'compare']
+export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter']
 
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'Rome · On foot',
-    headline: 'Walk until the city starts talking.',
-    /** Supporting line — place-tied stories under the transformation headline. */
-    accentLine: 'Stories begin when you reach the places where they happened.',
+    eyebrow: 'Rome · Offline audio walks',
+    headline: 'Walk Rome freely — with the history you\'d miss on your own.',
+    accentLine: 'Rome, as it once was.',
     subheadline:
-      'A self-guided Rome experience — cinematic stories tied to the stones in front of you.',
-    primaryCta: 'Try one stop free',
-    secondaryCta: 'Explore Rome routes from €9',
-    /** Purchase objections near CTA; feature depth lives once under `#benefits`. */
-    trustLine: 'No group · No subscription · One-time purchase',
+      'A self-guided audio walk on your phone. Wander at your pace — stories start when you reach each landmark.',
+    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    secondaryCta: LANDING_CTA.seeRoutes,
+    ctaHint: 'Free Pantheon preview · ~4 min',
+    stats: [
+      { value: '22 stops', label: 'Colosseum to Appian Way' },
+      { value: 'Offline', label: 'Download once, walk without signal' },
+      { value: 'One-time', label: 'No subscription' },
+    ],
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },
 
   interlude: {
     id: 'interlude',
-    line1: 'Rome is loud.',
-    line2: "History isn't.",
-    line3: "That's why the story waits until you arrive.",
+    eyebrow: 'Before the route',
+    headline: 'Most of Rome is hiding in plain sight.',
+    body: 'You stand before columns, arches, stones, and empty spaces. You know they mattered. Without the scene behind them, they stay quiet.',
   },
 
   'early-cta': {
     id: 'early-cta',
-    headline: null,
-    subheadline: null,
-    primaryCta: 'Try the Pantheon stop free',
-    secondaryCta: null,
+    headline: 'Hear one stop before you decide.',
+    subheadline: 'A free Pantheon chapter — then the full Rome routes when you are ready.',
+    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    secondaryCta: LANDING_CTA.seeRoutes,
     hint: 'Free Pantheon preview · ~4 min · No account required',
   },
 
   'real-moment': {
     id: 'real-moment',
-    eyebrow: 'Real moments',
-    headline: 'Rome on your terms.',
-    scenarios: [
-      {
-        prompt: 'No ticket?',
-        lines: ['The monument may be sold out.', 'The city isn’t.'],
-      },
-      {
-        prompt: 'Free afternoon?',
-        lines: ['Begin where you are.', 'Pause when Rome distracts you.'],
-      },
-      {
-        prompt: 'Love to wander?',
-        lines: [
-          'Keep the freedom, but skip the inevitable FOMO.',
-          'Lose the feeling that you are missing everything.',
-        ],
-      },
-      {
-        prompt: 'History curious?',
-        lines: ['The stones stop looking like rubble once the story begins.'],
-      },
-    ],
+    eyebrow: 'In the city',
+    headline: 'You arrive. The story opens here.',
+    body: 'Reach the Pantheon, the Forum, or the Colosseum and narration begins where it happened — not as a podcast you could play anywhere, but as a scene tied to the stones in front of you.',
+    aside: 'Keep your eyes up. The phone only needs to know you have arrived.',
   },
 
   trust: {
@@ -235,7 +209,20 @@ export const LANDING_CONTENT = {
     headline: 'Cinematic, but researched.',
     subheadline:
       'Stories are thoroughly researched, reconstructions are evidence-based, and interpretive details are clearly noted. No fake certainty. No generic AI narration.',
-    /** Phase 9 — feature bullets live only under `benefits`; trust is research posture alone. */
+    items: [
+      {
+        title: 'Stories where you stand',
+        body: 'GPS-triggered narration starts when you reach each stop — built for heads-up walking.',
+      },
+      {
+        title: 'Threshold reconstructions',
+        body: 'At selected landmarks, press and hold to compare today’s view with a researched reconstruction of the same vantage.',
+      },
+      {
+        title: 'Yours to keep',
+        body: 'One-time purchase. Download once, walk offline — no subscription and no group timetable.',
+      },
+    ],
   },
 
   'after-rome': {
@@ -251,26 +238,39 @@ export const LANDING_CONTENT = {
   'user-flow': {
     id: 'how-it-works',
     eyebrow: 'How it works',
-    headline: 'Three steps. Then Rome.',
-    subheadline: 'Ready in minutes.',
+    headline: 'Your walk, step by step.',
+    subheadline:
+      'From download to your first story — everything happens on your phone, on your schedule.',
     steps: [
       {
         step: '1',
-        title: 'Choose your Rome',
-        body: 'Pick the route that fits the time you have.',
+        title: 'Download the route',
+        body: 'At your hotel or before you fly. Map, stories, and reconstructions — ready offline.',
         mockup: 'journey',
       },
       {
         step: '2',
-        title: 'Walk freely',
-        body: 'A map that follows your walk.',
+        title: 'Walk between landmarks',
+        body: 'A simple map guides you through Rome. Keep your eyes on the city — GPS handles the rest.',
         mockup: 'map',
       },
       {
         step: '3',
-        title: 'Arrive, listen, reveal',
-        body: 'Open the story when you arrive.',
+        title: 'Stories start on arrival',
+        body: 'Reach the Colosseum, Forum, or Pantheon and the narration opens where it happened.',
         mockup: 'audio',
+      },
+      {
+        step: '4',
+        title: 'See the past in place',
+        body: 'Press and hold at selected ruins to compare today\'s view with ancient Rome.',
+        mockup: 'threshold',
+      },
+      {
+        step: '5',
+        title: 'Pause anytime',
+        body: 'Coffee, tickets, rain — pick up exactly where you left off. One day or seven mornings.',
+        mockup: 'journey',
       },
     ],
   },
@@ -278,37 +278,27 @@ export const LANDING_CONTENT = {
   monuments: {
     id: 'monuments',
     eyebrow: 'The route',
-    headline: 'One city.\nOne continuous story.',
+    headline: '22 places across ancient and living Rome.',
     subheadline:
-      'From the Arena to the Appian Way, each place changes the meaning of the next.',
-    /** Always-on SEO / continuity line — full ordered names stay in the DOM via the trail. */
-    routeName: 'Roma Eterna',
-    expandLabel: 'See every stop on the route',
-    collapseLabel: 'Show the journey highlights',
-    previewAriaLabel: 'Journey highlights across Rome',
-    fullAriaLabel: 'Complete Rome route by chapter',
+      'Colosseum and Forum to Trevi, Navona, Castel Sant\'Angelo, and the Appian Way — each with its own story.',
   },
 
   benefits: {
     id: 'benefits',
-    eyebrow: 'Carry with you',
-    headline: 'What stays with you.',
+    eyebrow: 'What you get',
+    headline: 'A walking guide in your pocket — not a group tour.',
     items: [
       {
-        title: 'Stories right where you are standing',
-        body: 'The narration begins at the place it belongs.',
+        title: 'Stories where you stand',
+        body: 'Narration starts when you reach each stop. Keep your eyes on Rome, not your screen.',
+      },
+      {
+        title: 'Never miss the context',
+        body: 'Studio-written history tied to each place — the facts and scenes you\'d skip without a guide.',
       },
       {
         title: 'Your trip, your pace',
-        body: 'Pause, split the route or return another morning.',
-      },
-      {
-        title: 'Downloaded once',
-        body: 'The journey works without relying on a constant signal.',
-      },
-      {
-        title: 'Yours to keep',
-        body: 'Return to the stories after the trip.',
+        body: 'No flag, no crowd of thirty, no timetable. Pause for espresso and continue when you like.',
       },
     ],
   },
@@ -316,30 +306,19 @@ export const LANDING_CONTENT = {
   'try-free': {
     id: 'try-free',
     eyebrow: 'Try before you buy',
-    headline: 'One stop.\nThe full ChronoWalk feeling.',
+    headline: 'Free sneak peek — one stop, full experience.',
     subheadline:
-      'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
+      'Not the whole app — one Pantheon chapter, enough to hear the narration, feel the GPS trigger, and decide if ChronoWalk is for you.',
     card: FREE_PREVIEW,
-    primaryCta: 'Try the Pantheon stop free',
-    secondaryCta: 'Explore all Rome routes',
-    trustLine: 'No account required.',
-    included: 'Included: one Pantheon chapter (~4 min) — narration, GPS arrival, and Threshold.',
-    notIncluded: 'Not included: the full Rome route or every stop on a paid package.',
+    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    secondaryCta: 'See full Rome routes',
+    trustLine: 'No account required · Same stop included in every Rome package',
   },
 
   threshold: {
     id: 'threshold',
-    eyebrow: 'Threshold',
+    eyebrow: 'What makes it different',
     headline: 'Press and hold. The ruin becomes the room.',
-    headlineLines: ['Press and hold.', 'The ruin becomes the room.'],
-    body: 'At selected landmarks, compare what stands today with an evidence-based reconstruction from the same viewpoint.',
-    support: 'Where historians disagree, we say so.',
-    disclaimer:
-      'Colors and crowd details are interpretive where noted — we do not fake certainty. Gaps in the record are acknowledged in the experience.',
-    holdHint: 'Press and hold',
-    revealLabel: 'Reveal the past',
-    hideLabel: 'Show today',
-    /** @deprecated legacy fields retained for archived components */
     subheadline:
       'At selected landmarks, compare today’s stones with an evidence-based reconstruction of the same view. Colors and crowd details are interpretive where noted — we do not fake certainty.',
     bullets: [
@@ -350,11 +329,6 @@ export const LANDING_CONTENT = {
     holdLabel: 'Hold to reveal',
   },
 
-  /**
-   * @deprecated Phase 7 — persona cards replaced by `real-moment` scenarios.
-   * `#who-its-for` deeplink is hosted inside LandingRealMomentSection.
-   * Content retained for archive / reference only (component renders null).
-   */
   'who-its-for': {
     id: 'who-its-for',
     eyebrow: 'Who it\'s for',
@@ -456,7 +430,8 @@ export const LANDING_CONTENT = {
   pricing: {
     id: 'pricing',
     headline: 'Pick how much of Rome you want.',
-    subheadline: 'One-time purchase per package — yours for the trip and after.',
+    subheadline:
+      'Self-guided audio walking tours. One-time purchase — download the route and it is yours for the trip and after.',
     intro:
       'Every package includes GPS-triggered narration, offline download, and the Pantheon preview stop.',
     footnote:
@@ -468,7 +443,6 @@ export const LANDING_CONTENT = {
     nav: [
       { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
-      { label: 'What stays', href: '#benefits' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
@@ -478,11 +452,11 @@ export const LANDING_CONTENT = {
   },
 
   footer: {
-    tagline: 'Self-guided walking stories for Rome — researched and yours to keep.',
+    tagline:
+      'Self-guided audio walking tours for Rome — researched, studio-written, and yours to keep.',
     nav: [
       { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
-      { label: 'What stays', href: '#benefits' },
       { label: 'Try free', href: '#try-free' },
       { label: 'Pricing', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },

@@ -20,18 +20,3 @@ export const LANDING_V2 = {
   screenListening: `${LANDING_IMG}/screen-listening.png`,
   screenLetter: `${LANDING_IMG}/screen-letter.png`,
 }
-
-/**
- * First cinematic interlude crops (from hero-rome.png).
- * Spec / remaster notes: docs/LANDING_CINEMATIC_INTERLUDE_ASSET.md
- */
-export const LANDING_CINEMATIC_INTERLUDE = {
-  mobileSrc: `${LANDING_IMG}/interlude-mobile.jpg`,
-  desktopSrc: `${LANDING_IMG}/interlude-desktop.jpg`,
-  lqipSrc: `${LANDING_IMG}/interlude-lqip.jpg`,
-  alt: '',
-  mobileWidth: 960,
-  mobileHeight: 1200,
-  desktopWidth: 1600,
-  desktopHeight: 900,
-}

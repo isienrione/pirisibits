@@ -3,10 +3,6 @@ import { LANDING_CONTENT } from './landingData.js'
 import { LANDING_V2 } from './landingVisualAssets.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
-/**
- * Act I hero — transformation first, function second.
- * Primary CTA keeps landing_cta_preview via parent onPreview handler.
- */
 export default function LandingHero({ onPreview }) {
   const hero = LANDING_CONTENT.hero
   const [imageOk, setImageOk] = useState(true)
@@ -22,26 +18,19 @@ export default function LandingHero({ onPreview }) {
           onError={() => setImageOk(false)}
         />
       ) : null}
-      <div className="cw-v2-hero__veil" aria-hidden="true" />
-
       <div className="cw-v2-hero__layout">
         <div className="cw-v2-hero__content">
           <p className="cw-v2-eyebrow cw-v2-eyebrow--hero">
-            <span className="cw-v2-eyebrow__rule" aria-hidden="true" />
+            <span className="cw-v2-eyebrow__rule" aria-hidden />
             {hero.eyebrow}
           </p>
 
           <h1 id="hero-heading" className="cw-v2-hero__headline">
             {hero.headline}
           </h1>
-
-          {/* Gold seam — narrative marker between transformation and place-tied explanation */}
-          <span className="cw-v2-hero__seam" aria-hidden="true" />
-
           {hero.accentLine ? (
-            <p className="cw-v2-hero__support">{hero.accentLine}</p>
+            <p className="cw-v2-hero__accent">{hero.accentLine}</p>
           ) : null}
-
           <p className="cw-v2-hero__sub">{hero.subheadline}</p>
 
           <div className="cw-v2-hero__actions">
@@ -59,12 +48,21 @@ export default function LandingHero({ onPreview }) {
             </a>
           </div>
 
-          {hero.trustLine ? <p className="cw-v2-hero__trust">{hero.trustLine}</p> : null}
+          {hero.ctaHint ? <p className="cw-v2-hero__cta-hint">{hero.ctaHint}</p> : null}
         </div>
 
-        <div className="cw-v2-hero__device" aria-hidden="true">
+        <div className="cw-v2-hero__device">
           <LandingLivePhoneMockup variant="audio" />
         </div>
+
+        <dl className="cw-v2-hero__stats">
+          {hero.stats.map((stat) => (
+            <div key={stat.label} className="cw-v2-hero__stat">
+              <dt className="cw-v2-hero__stat-value">{stat.value}</dt>
+              <dd className="cw-v2-hero__stat-label">{stat.label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   )
