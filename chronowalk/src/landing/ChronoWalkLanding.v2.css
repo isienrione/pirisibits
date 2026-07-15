@@ -2311,18 +2311,94 @@
 }
 
 .cw-v2-interlude {
-  padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  padding-block: clamp(4.5rem, 12vw, 8.5rem);
   text-align: center;
-  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 6%, transparent);
+  background: var(--v2-obsidian);
+  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--v2-bone) 5%, transparent);
 }
 
-.cw-v2-interlude__title {
+.cw-v2-interlude__inner {
+  display: flex;
+  justify-content: center;
+}
+
+.cw-v2-interlude__verse {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-wrap: balance;
+  color: var(--v2-bone);
+}
+
+.cw-v2-interlude__line {
+  display: block;
+  width: 100%;
+}
+
+.cw-v2-interlude__line--loud {
+  font-size: clamp(2rem, 5.5vw, 3.1rem);
+  line-height: 1.15;
+  color: var(--v2-bone);
+}
+
+.cw-v2-interlude__line--quiet {
+  margin-top: 0.55rem;
+  font-size: clamp(1.65rem, 4.2vw, 2.35rem);
   font-style: italic;
-  font-weight: 450;
+  font-weight: 300;
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--v2-muted) 55%, var(--v2-bone));
 }
 
-.cw-v2-interlude__body {
-  margin-inline: auto;
+.cw-v2-interlude__seam {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin: 1.75rem 0 1.6rem;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 30%, transparent);
+}
+
+.cw-v2-interlude__line--turn {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--v2-soft);
+  max-width: 28ch;
+}
+
+@media (max-width: 47.99rem) {
+  .cw-v2-interlude {
+    padding-block: clamp(3.75rem, 14vw, 5.5rem);
+  }
+
+  .cw-v2-interlude__verse {
+    max-width: 16ch;
+  }
+
+  .cw-v2-interlude__seam {
+    margin: 1.4rem 0 1.25rem;
+  }
+
+  .cw-v2-interlude__line--turn {
+    max-width: 22ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-v2-interlude__seam {
+    box-shadow: none;
+  }
 }
 
 .cw-v2-early-cta {

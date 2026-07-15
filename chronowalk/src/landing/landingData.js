@@ -177,9 +177,9 @@ export const LANDING_CONTENT = {
 
   interlude: {
     id: 'interlude',
-    eyebrow: 'Before the route',
-    headline: 'Most of Rome is hiding in plain sight.',
-    body: 'You stand before columns, arches, stones, and empty spaces. You know they mattered. Without the scene behind them, they stay quiet.',
+    line1: 'Rome is loud.',
+    line2: "History isn't.",
+    line3: "That's why the story waits until you arrive.",
   },
 
   'early-cta': {
