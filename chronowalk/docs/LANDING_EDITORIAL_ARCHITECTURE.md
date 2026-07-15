@@ -1,62 +1,61 @@
 # ChronoWalk landing — editorial architecture
 
 Branch: `landing-editorial-restructure`  
-Phase 2: page architecture (structure + scaffolds). Content craft and Threshold interactivity come later.
+Prompt 2 / Phase 2: **restructure section order only** — no wholesale copy rewrite, no component redesign.
 
-## Acts
+## Acts (primary narrative)
 
-| Act | Label | Beats |
+| Act | DOM id | Beats |
 |-----|--------|------|
-| I | The Promise | Hero → Emotional interlude → Threshold → Early CTA |
-| II | The Experience | How it works → Real-moment → Continuous route → Benefits → Free preview |
-| III | The Decision | Pricing → Trust/proof → FAQ → After Rome → Final CTA → Footer |
+| I — The Promise | `#act-promise` | Hero → Emotional interlude → Threshold → Early CTA |
+| II — The Experience | `#act-experience` | How it works → Real-moment → Continuous route → Benefits → Free preview |
+| III — The Decision | `#act-decision` | Pricing → Trust/proof → FAQ → After Rome → Final CTA → Footer |
 
 Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 
 ## Mount map
 
-| # | Beat | Component | Content key | Status |
-|---|------|-----------|-------------|--------|
-| Nav | Navigation | `LandingSiteHeader.jsx` | `header` | Existing |
-| 1 | Hero | `LandingHero.jsx` | `hero` | Existing |
-| 2 | Emotional interlude | `LandingEmotionalInterludeSection.jsx` | `interlude` | New scaffold |
-| 3 | Threshold | `LandingThresholdSection.jsx` | `threshold` | Existing (static visual — interactive demo later) |
-| 4 | Early CTA | `LandingEarlyCtaSection.jsx` | `early-cta` | New scaffold |
-| 5 | How the journey works | `LandingUserFlowSection.jsx` | `user-flow` | Existing |
-| 6 | Real-moment narrative | `LandingRealMomentSection.jsx` | `real-moment` | New scaffold |
-| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `monuments` | Existing |
-| 8 | Essential benefits | `LandingBenefitsSection.jsx` | `benefits` | Existing |
-| 9 | Free preview | `LandingTryFreeSection.jsx` | `try-free` | Existing |
-| 10 | Pricing | `LandingRomeTiersSection.jsx` | `pricing` | Existing |
-| 11 | Selected trust / proof | `LandingTrustProofSection.jsx` | `trust` | New (no fake reviews/metrics) |
-| 12 | FAQ | `LandingFaqSectionV2.jsx` | `faq` | Existing |
-| 13 | After Rome | `LandingAfterRomeSection.jsx` | `after-rome` | New (letter beat, no invented stats) |
-| 14 | Final cinematic CTA | `LandingFinalCtaSectionV2.jsx` | `final-cta` | Existing |
-| 15 | Footer | `LandingSiteFooter.jsx` | `footer` | Existing |
+| # | Beat | Component | Section id | Status |
+|---|------|-----------|------------|--------|
+| Nav | Navigation | `LandingSiteHeader.jsx` | — | Existing |
+| 1 | Hero | `LandingHero.jsx` | `#top` | Existing |
+| 2 | Emotional interlude | `LandingEmotionalInterludeSection.jsx` | `#interlude` | Scaffold |
+| 3 | Threshold | `LandingThresholdSection.jsx` | `#threshold` | Existing (static for now) |
+| 4 | Early CTA | `LandingEarlyCtaSection.jsx` | `#early-cta` | Scaffold |
+| 5 | How it works | `LandingUserFlowSection.jsx` | `#how-it-works` | Existing |
+| 6 | Real-moment | `LandingRealMomentSection.jsx` | `#real-moment` | Scaffold |
+| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Existing |
+| 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Existing |
+| 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Existing |
+| 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Existing |
+| 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Scaffold |
+| 12 | FAQ | `LandingFaqSectionV2.jsx` | `#faq` | Existing |
+| — | Audience (preserved lower) | `LandingWhoItsForSection.jsx` | `#who-its-for` | Existing, moved lower |
+| — | Comparison (preserved lower) | `LandingComparisonSection.jsx` | `#compare` | Existing, moved lower |
+| 13 | After Rome | `LandingAfterRomeSection.jsx` | `#after-rome` | Scaffold (`#letter` anchor above) |
+| 14 | Final CTA | `LandingFinalCtaSectionV2.jsx` | `#final-cta` | Existing |
+| 15 | Footer | `LandingSiteFooter.jsx` | — | Existing |
+
+Also: `#rome-journey` deeplink anchor after pricing (legacy).
 
 Shell: `ChronoWalkLanding.jsx`  
-Act regions: `LandingAct.jsx` (`role="region"`, `display: contents`)  
-Order source of truth: `LANDING_SECTION_ORDER` + `LANDING_ACTS` in `landingData.js`
+Order source of truth: `LANDING_SECTION_ORDER` + `LANDING_ACTS` in `landingData.js`  
+Preserved lower: `LANDING_PRESERVED_LOWER_SECTIONS`  
+Legacy hashes: `LANDING_LEGACY_DEEPLINK_IDS`
 
-## Intentionally demounted (files kept)
+## Preserved (not redesigned)
 
-- `LandingWhoItsForSection` — persona rail; not in three-act outline  
-- `LandingComparisonSection` — full competitor table; replaced by selected trust strip  
-- `LandingStickyCta` — still unused  
-- `LandingJourneyLetterSection` — superseded by `LandingAfterRomeSection` (avoids letter mock stats)
+- CTA destinations (`/preview`, `#pricing`, checkout)  
+- Pricing logic (`useLandingPrice`, `landingCheckout`, `ROME_TIERS`)  
+- FAQ accordion  
+- Analytics (`landing_view`, `landing_cta_preview`, `landing_cta_begin`, `checkout_open`)  
+- Responsive `cw-v2-*` layouts  
+- Who-its-for + comparison content (moved lower, not deleted)  
+- Baseline archive under `archive/v3-premium-baseline-2026-07-14/`
 
-Baseline snapshot remains at `src/landing/archive/v3-premium-baseline-2026-07-14/`.
+## Next (not this prompt)
 
-## Conversion / analytics (unchanged)
-
-- `landing_view` on mount  
-- Preview CTAs → `landing_cta_preview` → `/preview` (header, hero, early CTA, try-free, final)  
-- Tier begin → `landing_cta_begin` + `checkout_open`  
-- Secondary routes still `#pricing`
-
-## Next phases (not this PR slice)
-
-- Editorial copy pass (one idea per section; cut repeated claims)  
-- Restore interactive Threshold or rewrite “Hold to reveal”  
+- Editorial copy pass  
+- Interactive Threshold or honest static rewrite  
 - Hero first-viewport tightening  
-- Mobile sticky CTA / focus-visible / SEO
+- Eventual removal of preserved-lower sections once replacements fully cover SEO intent

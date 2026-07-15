@@ -17,9 +17,12 @@ import LandingTryFreeSection from './LandingTryFreeSection.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingTrustProofSection from './LandingTrustProofSection.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
+import LandingWhoItsForSection from './LandingWhoItsForSection.jsx'
+import LandingComparisonSection from './LandingComparisonSection.jsx'
 import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
+import { ROME_JOURNEY_SECTION_ID } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
@@ -80,14 +83,14 @@ export default function ChronoWalkLanding() {
     <div className="cw-landing cw-landing--premium cw-landing--editorial">
       <LandingSiteHeader onPreview={handlePreview} />
       <main>
-        <LandingAct label="Act I — The Promise">
+        <LandingAct id="act-promise" label="Act I — The Promise">
           <LandingHero onPreview={handlePreview} />
           <LandingEmotionalInterludeSection />
           <LandingThresholdSection />
           <LandingEarlyCtaSection onPreview={handlePreview} />
         </LandingAct>
 
-        <LandingAct label="Act II — The Experience">
+        <LandingAct id="act-experience" label="Act II — The Experience">
           <LandingUserFlowSection />
           <LandingRealMomentSection />
           <LandingMonumentsCarousel />
@@ -95,10 +98,16 @@ export default function ChronoWalkLanding() {
           <LandingTryFreeSection onPreview={handlePreview} />
         </LandingAct>
 
-        <LandingAct label="Act III — The Decision">
+        <LandingAct id="act-decision" label="Act III — The Decision">
           <LandingRomeTiersSection onBeginTier={handleBeginTier} />
+          {/* Deep-link / SEO: pricing section is canonical; keep #rome-journey resolving. */}
+          <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingTrustProofSection />
           <LandingFaqSectionV2 />
+          {/* Preserved lower until trust/proof and After Rome fully replace these beats. */}
+          <LandingWhoItsForSection />
+          <LandingComparisonSection />
+          <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingAfterRomeSection />
           <LandingFinalCtaSectionV2 onPreview={handlePreview} />
         </LandingAct>

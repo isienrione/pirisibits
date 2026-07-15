@@ -134,21 +134,30 @@ export const LANDING_SECTION_ORDER = [
 /** Act landmarks for composition / a11y (not DOM ids). */
 export const LANDING_ACTS = [
   {
-    id: 'act-i',
+    id: 'act-promise',
     label: 'Act I — The Promise',
     sections: ['hero', 'interlude', 'threshold', 'early-cta'],
   },
   {
-    id: 'act-ii',
+    id: 'act-experience',
     label: 'Act II — The Experience',
     sections: ['user-flow', 'real-moment', 'monuments', 'benefits', 'try-free'],
   },
   {
-    id: 'act-iii',
+    id: 'act-decision',
     label: 'Act III — The Decision',
     sections: ['pricing', 'trust', 'faq', 'after-rome', 'final-cta'],
   },
 ]
+
+/**
+ * Existing beats remounted lower in Act III so deep links / SEO copy stay live
+ * until trust + After Rome fully replace them. Not part of the primary narrative order.
+ */
+export const LANDING_PRESERVED_LOWER_SECTIONS = ['who-its-for', 'comparison']
+
+/** Legacy hash targets kept resolving while content is relocated. */
+export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter']
 
 export const LANDING_CONTENT = {
   hero: {
