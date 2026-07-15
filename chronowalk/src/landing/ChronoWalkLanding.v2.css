@@ -1453,12 +1453,12 @@
 
 .cw-v2-live-phone {
   width: 100%;
-  max-width: 17.5rem;
+  max-width: 15.25rem;
   margin-inline: auto;
 }
 
 .cw-v2-live-phone--compact {
-  max-width: 13.5rem;
+  max-width: 12.75rem;
 }
 
 .cw-v2-live-phone .cw-landing-phone {
@@ -1909,19 +1909,19 @@
 
 .cw-landing--premium .cw-landing-phone {
   width: 100%;
-  max-width: 17.5rem;
+  max-width: 15.25rem;
 }
 
 .cw-landing--premium .cw-landing-phone__shell {
-  border-radius: 2.75rem;
-  border: 1px solid var(--v2-border);
-  background: var(--v2-raised);
-  padding: 0.5rem;
-  box-shadow: 0 24px 48px color-mix(in srgb, #000 60%, transparent);
+  border-radius: 2.15rem;
+  border: 1px solid color-mix(in srgb, var(--v2-border) 80%, #000);
+  background: linear-gradient(160deg, #3a3530 0%, #14110e 42%, #0a0908 100%);
+  padding: 0.38rem;
+  box-shadow: 0 22px 44px color-mix(in srgb, #000 58%, transparent);
 }
 
 .cw-landing--premium .cw-landing-phone__screen {
-  border-radius: 2.15rem;
+  border-radius: 1.78rem;
   overflow: hidden;
 }
 
