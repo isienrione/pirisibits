@@ -234,41 +234,38 @@ export const LANDING_CONTENT = {
   'user-flow': {
     id: 'how-it-works',
     eyebrow: 'How it works',
-    headline: 'Your walk, step by step.',
-    subheadline:
-      'From download to your first story — everything happens on your phone, on your schedule.',
+    headline: 'Three steps. Then Rome.',
+    subheadline: 'No group schedule. No complicated setup.',
     steps: [
       {
         step: '1',
-        title: 'Download the route',
-        body: 'At your hotel or before you fly. Map, stories, and reconstructions — ready offline.',
+        title: 'Choose your Rome',
+        body: 'Pick the route that fits the time you have.',
         mockup: 'journey',
       },
       {
         step: '2',
-        title: 'Walk between landmarks',
-        body: 'A simple map guides you through Rome. Keep your eyes on the city — GPS handles the rest.',
+        title: 'Walk freely',
+        body: 'Download once. GPS keeps the route in sync.',
         mockup: 'map',
       },
       {
         step: '3',
-        title: 'Stories start on arrival',
-        body: 'Reach the Colosseum, Forum, or Pantheon and the narration opens where it happened.',
+        title: 'Arrive, listen, reveal',
+        body: 'Open stories and reconstructions where they belong.',
         mockup: 'audio',
       },
-      {
-        step: '4',
-        title: 'See the past in place',
-        body: 'Press and hold at selected ruins to compare today\'s view with ancient Rome.',
-        mockup: 'threshold',
-      },
-      {
-        step: '5',
-        title: 'Pause anytime',
-        body: 'Coffee, tickets, rain — pick up exactly where you left off. One day or seven mornings.',
-        mockup: 'journey',
-      },
     ],
+    /** Progressive disclosure — keeps scan time low; details live elsewhere too. */
+    more: {
+      summary: 'Pause, resume, and Threshold',
+      items: [
+        'Pause anytime and continue later — one morning or several.',
+        'At selected landmarks, press and hold to compare today’s view with the past.',
+      ],
+      thresholdHref: '#threshold',
+      thresholdLabel: 'See the Threshold',
+    },
   },
 
   monuments: {
