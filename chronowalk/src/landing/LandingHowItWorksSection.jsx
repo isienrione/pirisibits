@@ -30,7 +30,7 @@ export default function LandingHowItWorksSection() {
                 </div>
               </div>
               <div className="cw-doc-step-showcase__device">
-                <LandingStepMockup variant={step.mockup} />
+                <LandingStepMockup variant={step.mockup} size="xl" />
               </div>
             </li>
           ))}

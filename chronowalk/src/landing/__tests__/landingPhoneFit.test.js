@@ -21,11 +21,16 @@ describe('landing phone mockup sizing', () => {
     expect(css).toMatch(/\.cw-landing-phone__artboard\s*\{[^}]*position:\s*absolute/s)
   })
 
-  it('keeps how-it-works phones large enough to read as iPhones on mobile', () => {
+  it('keeps how-it-works phones product-scale on mobile (not thumbnail-sized)', () => {
     expect(v2css).not.toMatch(
       /\.cw-v2-user-flow--essential\s+\.cw-v2-user-flow__device\s*\{[^}]*max-width:\s*7\.25rem/s,
     )
-    expect(v2css).toMatch(/max-width:\s*12rem/)
+    expect(v2css).toMatch(/max-width:\s*18rem/)
+    expect(v2css).toMatch(/max-width:\s*22rem/)
+  })
+
+  it('fills the phone screen with marketing stills', () => {
+    expect(css).toMatch(/\.cw-landing-phone__shot\s*\{[^}]*object-fit:\s*cover/s)
   })
 
   it('uses a photo-filled listening mockup for step 3 copy', () => {

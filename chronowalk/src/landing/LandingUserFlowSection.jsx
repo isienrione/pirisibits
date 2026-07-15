@@ -40,7 +40,7 @@ export default function LandingUserFlowSection() {
                   <span className="cw-v2-user-flow__node-ring">{step.step}</span>
                 </div>
                 <div className="cw-v2-user-flow__device" aria-hidden="true">
-                  <LandingLivePhoneMockup variant={step.mockup} size="md" />
+                  <LandingLivePhoneMockup variant={step.mockup} size="xl" />
                 </div>
                 <h3 className="cw-v2-user-flow__title">{step.title}</h3>
                 <p className="cw-v2-user-flow__body">{step.body}</p>

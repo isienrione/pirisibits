@@ -1,3 +1,4 @@
+import LandingPhoneFrame from './LandingPhoneFrame.jsx'
 import { archTitusNow, pantheonNow } from '../redesign/images.js'
 import { T } from '../redesign/tokens.js'
 import {
@@ -11,6 +12,42 @@ const ACT = {
   I: T.actI ?? '#c45a3a',
   II: T.actII ?? '#6f8054',
   III: T.actIII ?? '#d4af37',
+}
+
+/**
+ * Lemon / marketing–grade 390×844 app shots for the How-it-works phones.
+ * Full-bleed into the iPhone frame (no CSS artboard scale).
+ */
+export const HOW_IT_WORKS_SHOTS = {
+  journey: {
+    src: '/landing/phone-screens/journey.jpg',
+    label: 'ChronoWalk route overview',
+  },
+  map: {
+    src: '/landing/phone-screens/walk.jpg',
+    label: 'ChronoWalk walking steps',
+  },
+  listening: {
+    src: '/landing/phone-screens/listen.jpg',
+    label: 'ChronoWalk Arch of Titus chapter',
+  },
+  arrive: {
+    src: '/landing/phone-screens/listen.jpg',
+    label: 'ChronoWalk Arch of Titus chapter',
+  },
+  audio: {
+    src: '/landing/phone-screens/listen.jpg',
+    label: 'ChronoWalk Arch of Titus chapter',
+  },
+}
+
+/** Full-bleed product screenshot inside the realistic iPhone frame. */
+export function ProductShotScreen({ src, label, size = 'lg' }) {
+  return (
+    <LandingPhoneFrame label={label} size={size}>
+      <img className="cw-landing-phone__shot" src={src} alt="" decoding="async" />
+    </LandingPhoneFrame>
+  )
 }
 
 /** Step 1 — route overview (cream “your route” screen). */
@@ -314,7 +351,7 @@ export function AudioPlayerScreen(props) {
   return <ListeningScreen {...props} />
 }
 
-const SCREEN_BY_KEY = {
+const LIVE_SCREEN_BY_KEY = {
   journey: JourneyPickScreen,
   map: MapRouteScreen,
   arrive: ArriveScreen,
@@ -324,7 +361,15 @@ const SCREEN_BY_KEY = {
   threshold: ThresholdRevealScreen,
 }
 
-export function LandingStepMockup({ variant = 'journey', size = 'md' }) {
-  const Screen = SCREEN_BY_KEY[variant] ?? JourneyPickScreen
+/**
+ * How-it-works phones use fixed 390×844 product shots (representative marketing
+ * size). Other call sites can request live HTML screens with `mode="live"`.
+ */
+export function LandingStepMockup({ variant = 'journey', size = 'lg', mode = 'shot' }) {
+  const shot = HOW_IT_WORKS_SHOTS[variant]
+  if (mode === 'shot' && shot) {
+    return <ProductShotScreen src={shot.src} label={shot.label} size={size} />
+  }
+  const Screen = LIVE_SCREEN_BY_KEY[variant] ?? JourneyPickScreen
   return <Screen size={size} />
 }
