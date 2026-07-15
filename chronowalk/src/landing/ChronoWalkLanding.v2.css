@@ -1156,6 +1156,10 @@
   position: relative;
 }
 
+.cw-v2-monuments__track--preview {
+  --route-gap: 0.85rem;
+}
+
 /* Vertical spine (mobile default) */
 .cw-v2-monuments__track::before {
   content: '';
@@ -1176,6 +1180,36 @@
   position: relative;
   z-index: 1;
   min-width: 0;
+}
+
+/* Preview-only: unmarked stops between highlights (index jumps are intentional) */
+.cw-v2-monuments__skip {
+  position: relative;
+  z-index: 1;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+}
+
+.cw-v2-monuments__skip-track {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  width: 1.9rem;
+  padding-block: 0.05rem;
+}
+
+.cw-v2-monuments__skip-dot {
+  width: 0.34rem;
+  height: 0.34rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 48%, transparent);
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  box-shadow: 0 0 0 3px var(--v2-obsidian);
 }
 
 .cw-v2-monuments__stop-hit {
@@ -1347,6 +1381,30 @@
     min-width: 7.25rem;
     max-width: 9rem;
     scroll-snap-align: start;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__skip {
+    flex: 1 1 auto;
+    min-width: 1.25rem;
+    max-width: 6.5rem;
+    align-self: flex-start;
+    justify-content: center;
+    padding-top: 0.72rem;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__skip-track {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+    max-width: 100%;
+    gap: 0.28rem;
+    justify-content: center;
+    padding-inline: 0.2rem;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__skip-dot {
+    width: 0.3rem;
+    height: 0.3rem;
   }
 
   .cw-v2-monuments__track--preview .cw-v2-monuments__stop-hit,

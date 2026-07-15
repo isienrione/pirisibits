@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import { getLandingRouteJourney } from './landingMonuments.js'
 import {
@@ -14,7 +14,7 @@ import {
  */
 export default function LandingMonumentsCarousel() {
   const section = LANDING_CONTENT.monuments
-  const { stops, chapters, previewStops, totalStops } = getLandingRouteJourney()
+  const { stops, chapters, previewStops, previewSegments, totalStops } = getLandingRouteJourney()
   const [expanded, setExpanded] = useState(false)
   const listId = useId()
   const stopRefs = useRef([])
@@ -110,17 +110,31 @@ export default function LandingMonumentsCarousel() {
               className="cw-v2-monuments__track cw-v2-monuments__track--preview"
               aria-label={section.previewAriaLabel}
             >
-              {previewStops.map((stop, index) => (
-                <RouteStop
-                  key={stop.id}
-                  stop={stop}
-                  index={index}
-                  refCallback={(el) => {
-                    stopRefs.current[index] = el
-                  }}
-                  onKeyDown={handleStopKeyDown}
-                  showPhoto
-                />
+              {previewSegments.map(({ stop, skippedAfter }, index) => (
+                <Fragment key={stop.id}>
+                  <RouteStop
+                    stop={stop}
+                    index={index}
+                    refCallback={(el) => {
+                      stopRefs.current[index] = el
+                    }}
+                    onKeyDown={handleStopKeyDown}
+                    showPhoto
+                  />
+                  {skippedAfter > 0 ? (
+                    <li
+                      className="cw-v2-monuments__skip"
+                      aria-hidden="true"
+                      title={`${skippedAfter} more stop${skippedAfter === 1 ? '' : 's'} on the full route`}
+                    >
+                      <span className="cw-v2-monuments__skip-track">
+                        {Array.from({ length: skippedAfter }, (_, dotIndex) => (
+                          <span key={dotIndex} className="cw-v2-monuments__skip-dot" />
+                        ))}
+                      </span>
+                    </li>
+                  ) : null}
+                </Fragment>
               ))}
             </ol>
           )}
