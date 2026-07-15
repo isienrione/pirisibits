@@ -48,9 +48,12 @@ if (import.meta.env.DEV) {
   )
 }
 
-// Apex `/` and `/landing` always serve the marketing site. Purchasers reach
-// setup/resume via /access, /access/confirmed, /begin, and /tour — not via
-// a silent redirect off the public homepage.
+// Apex chronowalk.com must open the marketing site. Send `/` to `/landing`
+// (same page) so owners with cw_access never get silently redirected to /setup.
+function ApexHomeRedirect() {
+  return <Navigate to="/landing" replace />
+}
+
 function PublicLandingRoute() {
   return <LazyLandingPage />
 }
@@ -75,7 +78,7 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Tour unavailable">
       <Routes>
-        <Route path="/" element={<PublicLandingRoute />} />
+        <Route path="/" element={<ApexHomeRedirect />} />
         <Route path="/landing" element={<PublicLandingRoute />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />

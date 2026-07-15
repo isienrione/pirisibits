@@ -1,3 +1,8 @@
+# Apex marketing entry: chronowalk.com → /landing before the SPA boots.
+# Prevents stale clients with the old HomeRoute (cw_access → /setup) from
+# keeping owners off the public landing when they type the bare domain.
+/    /landing   302
+
 # SPA fallback for client-side routes (React Router).
 # Note: Cloudflare Pages still 308-redirects /index.html → / and
 # /offline.html → /offline (Pretty URLs). The service worker in src/pwa/sw.js

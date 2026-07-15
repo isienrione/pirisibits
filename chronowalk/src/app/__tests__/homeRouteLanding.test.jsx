@@ -8,13 +8,23 @@ const routerSource = readFileSync(
   'utf8',
 )
 
+const redirectsSource = readFileSync(
+  join(dirname(fileURLToPath(import.meta.url)), '../../public/_redirects'),
+  'utf8',
+)
+
 describe('AppRouter apex home', () => {
-  it('always serves the marketing landing at / (never /setup via hasAccess)', () => {
-    // chronowalk.com with no path must open the public landing, even when
-    // localStorage still has cw_access from a prior purchase on that device.
-    expect(routerSource).toContain('<Route path="/" element={<PublicLandingRoute />} />')
+  it('sends chronowalk.com / straight to /landing (never /setup via hasAccess)', () => {
+    // Bare domain must open the marketing site. Purchasers reach setup only via
+    // /access and post-purchase routes — not a silent gate on `/`.
+    expect(routerSource).toContain('<Route path="/" element={<ApexHomeRedirect />} />')
     expect(routerSource).toContain('<Route path="/landing" element={<PublicLandingRoute />} />')
+    expect(routerSource).toMatch(/Navigate to="\/landing"/)
     expect(routerSource).not.toMatch(/function HomeRoute/)
     expect(routerSource).not.toMatch(/hasAccess\(\)[\s\S]*Navigate to=.*\/setup/)
+  })
+
+  it('CDN-redirects apex / to /landing ahead of the SPA', () => {
+    expect(redirectsSource).toMatch(/^\/\s+\/landing\s+302/m)
   })
 })
