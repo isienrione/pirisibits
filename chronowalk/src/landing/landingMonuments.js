@@ -86,10 +86,18 @@ export function getLandingRouteJourney() {
 
   const previewStops = LANDING_ROUTE_PREVIEW_IDS.map((id) => byId[id]).filter(Boolean)
 
+  /** Preview beat + how many full-route stops sit after it before the next highlight. */
+  const previewSegments = previewStops.map((stop, index) => {
+    const next = previewStops[index + 1]
+    const skippedAfter = next ? Math.max(0, next.index - stop.index - 1) : 0
+    return { stop, skippedAfter }
+  })
+
   return {
     stops,
     chapters,
     previewStops,
+    previewSegments,
     totalStops: stops.length,
   }
 }

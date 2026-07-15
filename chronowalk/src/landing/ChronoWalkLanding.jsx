@@ -23,6 +23,7 @@ import LandingSiteFooter from './LandingSiteFooter.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
+import { rememberPendingPurchaseTier } from '../lib/pendingPurchase.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import { buildLandingProductSchema, LANDING_DOCUMENT } from './landingSeo.js'
 import {
@@ -80,6 +81,7 @@ export default function ChronoWalkLanding() {
   const handleBeginTier = useCallback(
     (tierId) => {
       trackLandingPricingCta(tierId)
+      rememberPendingPurchaseTier(tierId)
 
       const tierCents = resolveLandingTierCents(tierId, cents)
       const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
@@ -89,17 +91,17 @@ export default function ChronoWalkLanding() {
 
       if (!url) {
         console.warn(
-          '[ChronoWalk landing] Checkout URL unavailable for tier — staying on pricing (access is separate).',
+          '[ChronoWalk landing] Checkout URL unavailable — opening /purchase handoff.',
           tierId,
         )
-        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
         return
       }
 
       trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
       window.location.assign(url)
     },
-    [cents, checkoutUrl],
+    [cents, checkoutUrl, navigate],
   )
 
   const [actPromise, actExperience, actDecision] = LANDING_ACTS

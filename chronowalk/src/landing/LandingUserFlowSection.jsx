@@ -3,7 +3,7 @@ import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
  * Act II — How it works as a sequential path (connected steps).
- * Copy leads; compact phones appear from desktop only.
+ * Copy leads; compact phones sit under each step on all breakpoints.
  */
 export default function LandingUserFlowSection() {
   const section = LANDING_CONTENT['user-flow']
