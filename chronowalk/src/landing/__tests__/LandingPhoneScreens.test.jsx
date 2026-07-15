@@ -36,8 +36,16 @@ describe('LandingPhoneScreens', () => {
   })
 
   it('resolves listening via LandingStepMockup for how-it-works step 3', () => {
-    render(<LandingStepMockup variant="listening" />)
+    const { container } = render(<LandingStepMockup variant="listening" />)
     expect(screen.getByLabelText(/arch of titus chapter/i)).toBeInTheDocument()
+    expect(container.querySelector('.cw-landing-phone__shot')).toBeTruthy()
+    expect(container.querySelector('img.cw-landing-phone__shot')?.getAttribute('src')).toMatch(
+      /phone-screens\/listen\.jpg/,
+    )
+  })
+
+  it('can still render live HTML screens when mode=live', () => {
+    render(<LandingStepMockup variant="listening" mode="live" />)
     expect(screen.getByText(/skip ahead/i)).toBeInTheDocument()
   })
 })

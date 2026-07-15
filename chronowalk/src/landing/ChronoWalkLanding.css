@@ -635,7 +635,7 @@
 .cw-landing-phone {
   --phone-art-w: 390;
   --phone-art-h: 844;
-  --phone-display-w: 15.5rem;
+  --phone-display-w: 17rem;
   width: var(--phone-display-w);
   max-width: 100%;
   margin-inline: auto;
@@ -645,14 +645,16 @@
   overflow: visible;
 }
 
-.cw-landing-phone--sm { --phone-display-w: 12.75rem; }
-.cw-landing-phone--md { --phone-display-w: 15.5rem; }
-.cw-landing-phone--lg { --phone-display-w: 17.25rem; }
+.cw-landing-phone--sm { --phone-display-w: 14rem; }
+.cw-landing-phone--md { --phone-display-w: 17rem; }
+.cw-landing-phone--lg { --phone-display-w: 19.5rem; }
+.cw-landing-phone--xl { --phone-display-w: 22rem; }
 
 .cw-landing-phone__shell {
   position: relative;
   border-radius: 16.5cqw;
-  padding: 2.6cqw;
+  /* Thin titanium rim — more screen, less chunky bezel */
+  padding: 1.85cqw;
   background:
     linear-gradient(145deg, #5c574f 0%, #2a2622 28%, #12100e 62%, #3a352f 100%);
   box-shadow:
@@ -769,6 +771,19 @@
   /* Artboard scale must use the screen width — not the outer shell. */
   container-type: inline-size;
   container-name: phone-screen;
+}
+
+/* Marketing stills fill the screen edge-to-edge (product-shot style). */
+.cw-landing-phone__shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .cw-landing-phone__stage {

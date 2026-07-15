@@ -527,7 +527,7 @@
   z-index: 1;
   display: none;
   justify-content: center;
-  max-width: 17.5rem;
+  max-width: 20rem;
   margin-inline: auto;
   opacity: 1;
 }
@@ -619,7 +619,7 @@
   .cw-v2-hero__device {
     display: flex;
     justify-content: flex-end;
-    max-width: 18rem;
+    max-width: 21rem;
     margin-inline: 0;
     opacity: 1;
   }
@@ -728,19 +728,19 @@
   order: 2;
   margin-top: 0.55rem;
   margin-bottom: 0.55rem;
-  width: min(100%, 14.5rem);
-  max-width: 14.5rem;
+  width: min(100%, 19.5rem);
+  max-width: 19.5rem;
   margin-inline: auto;
   overflow: visible;
-  padding-inline: 0.35rem; /* room for titanium side buttons */
+  padding-inline: 0.45rem; /* room for titanium side buttons */
   box-sizing: content-box;
 }
 
 /* Path variant always shows the phone screens under each step */
 .cw-v2-user-flow--path .cw-v2-user-flow__device {
   display: flex;
-  width: min(100%, 14.5rem);
-  max-width: 14.5rem;
+  width: min(100%, 19.5rem);
+  max-width: 19.5rem;
 }
 
 .cw-v2-user-flow--path .cw-v2-user-flow__title {
@@ -868,44 +868,87 @@
 }
 
 @media (min-width: 64rem) {
-  .cw-v2-user-flow--essential .cw-v2-user-flow__track {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0 1.25rem;
-    align-items: start;
+  /*
+   * How-it-works as product showcases (Lemon-style): one large phone per step,
+   * not three cramped columns — so UI chrome stays readable and representative.
+   */
+  .cw-v2-user-flow--essential .cw-v2-user-flow__track,
+  .cw-v2-user-flow--path .cw-v2-user-flow__track {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.25rem 0;
+    max-width: 56rem;
+    margin-inline: auto;
   }
 
   .cw-v2-user-flow--path .cw-v2-user-flow__step {
     position: relative;
   }
 
-  .cw-v2-user-flow--path .cw-v2-user-flow__path {
-    position: absolute;
-    top: 1.05rem;
-    left: -0.65rem;
-    width: 1.25rem;
-    height: 1px;
-    margin: 0;
+  .cw-v2-user-flow--path .cw-v2-user-flow__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
+    grid-template-areas:
+      'node device'
+      'title device'
+      'body device'
+      '. device';
+    column-gap: 3rem;
+    row-gap: 0.65rem;
+    align-items: center;
+    text-align: left;
   }
 
-  .cw-v2-user-flow--path .cw-v2-user-flow__path-line {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      color-mix(in srgb, var(--gold, #c9a227) 18%, transparent),
-      color-mix(in srgb, var(--gold, #c9a227) 55%, transparent)
-    );
+  .cw-v2-user-flow--path .cw-v2-user-flow__step:nth-child(even) .cw-v2-user-flow__card {
+    grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+    grid-template-areas:
+      'device node'
+      'device title'
+      'device body'
+      'device .';
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__node {
+    grid-area: node;
+    order: unset;
+    margin: 0;
+    justify-self: start;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__device {
+    display: flex;
+    grid-area: device;
+    order: unset;
+    width: min(100%, 22rem);
+    max-width: 22rem;
+    margin: 0;
+    justify-self: center;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__title {
+    grid-area: title;
+    order: unset;
+    margin: 0;
+    justify-self: start;
+    max-width: 18ch;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__body {
+    grid-area: body;
+    order: unset;
+    margin: 0;
+    max-width: 32ch;
+    margin-inline: 0;
+    justify-self: start;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__path {
+    display: none;
   }
 
   .cw-v2-user-flow__device {
     display: flex;
-    width: min(100%, 15.5rem);
-    max-width: 15.5rem;
-  }
-
-  .cw-v2-user-flow--path .cw-v2-user-flow__device {
-    width: min(100%, 15.5rem);
-    max-width: 15.5rem;
+    width: min(100%, 22rem);
+    max-width: 22rem;
   }
 }
 
@@ -1489,15 +1532,16 @@
 
 .cw-v2-live-phone {
   width: 100%;
-  max-width: 17.25rem;
+  max-width: 19.5rem;
   margin-inline: auto;
   overflow: visible;
 }
 
-.cw-v2-live-phone--sm { max-width: 12.75rem; }
-.cw-v2-live-phone--md { max-width: 15.5rem; }
-.cw-v2-live-phone--lg { max-width: 17.25rem; }
-.cw-v2-live-phone--compact { max-width: 12.75rem; }
+.cw-v2-live-phone--sm { max-width: 14rem; }
+.cw-v2-live-phone--md { max-width: 17rem; }
+.cw-v2-live-phone--lg { max-width: 19.5rem; }
+.cw-v2-live-phone--xl { max-width: 22rem; }
+.cw-v2-live-phone--compact { max-width: 14rem; }
 
 .cw-v2-live-phone .cw-landing-phone {
   max-width: none;
@@ -1505,7 +1549,7 @@
 }
 
 .cw-v2-hero__device .cw-v2-live-phone {
-  max-width: 18rem;
+  max-width: 20rem;
 }
 
 @media (min-width: 48rem) {
@@ -3081,11 +3125,11 @@
     margin-top: 1.35rem;
   }
 
-  /* Keep phones large enough that iPhone chrome + full UI stay readable. */
+  /* Product-scale phones on mobile (stacked showcase, Lemon readable size). */
   .cw-v2-user-flow--essential .cw-v2-user-flow__device,
   .cw-v2-user-flow--path .cw-v2-user-flow__device {
-    width: min(100%, 12rem);
-    max-width: 12rem;
+    width: min(100%, 18rem);
+    max-width: 18rem;
   }
 
   .cw-v2-user-flow__title {
