@@ -3,7 +3,7 @@
 Do not change design without measuring whether it helps. This doc is the contract for funnel measurement.
 
 Provider: **PostHog** (`src/lib/track.js`) — no new analytics dependency.  
-Consent: `cw_analytics_consent` — `track()` is a no-op until `initAnalytics()` runs (key present + not declined).
+Consent: `cw_analytics_consent` — **opt-in only** after purchase on `/setup` (“Help improve ChronoWalk”). `initAnalytics()` / `track()` stay off until the traveler enables it (`accepted`). Declining (or continuing without enabling) stores `declined`. There is no consent banner on the landing page.
 
 ## Primary funnel
 

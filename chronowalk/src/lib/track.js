@@ -58,14 +58,15 @@ export function initAnalytics() {
   const key = import.meta.env.VITE_POSTHOG_KEY
   if (!key) return
 
+  // Opt-in only — travelers authorize on /setup after purchase (no landing banner).
   const consent = window.localStorage.getItem(CONSENT_KEY)
-  if (consent === 'declined') return
+  if (consent !== 'accepted') return
 
   posthog.init(key, {
     api_host: 'https://eu.i.posthog.com',
     autocapture: false,
     capture_pageview: true,
-    persistence: consent === 'accepted' ? 'localStorage' : 'memory',
+    persistence: 'localStorage',
   })
 
   initialized = true

@@ -9,16 +9,28 @@ export default function B2MakeItYours({
   downloading: downloadingProp,
   downloadProgress: downloadProgressProp,
   downloadComplete = false,
+  analyticsEnabled = false,
   onInstall,
   onDownload,
+  onAnalyticsChange,
   onContinue,
   onSkip,
 }) {
   const [downloadingLocal, setDownloadingLocal] = useState(false);
   const [dlProgressLocal, setDlProgressLocal]   = useState(0);
+  const [analyticsOn, setAnalyticsOn] = useState(Boolean(analyticsEnabled));
 
   const downloading = downloadingProp ?? downloadingLocal;
   const dlProgress = downloadProgressProp ?? dlProgressLocal;
+
+  useEffect(() => {
+    setAnalyticsOn(Boolean(analyticsEnabled));
+  }, [analyticsEnabled]);
+
+  const setAnalytics = (next) => {
+    setAnalyticsOn(next);
+    onAnalyticsChange?.(next);
+  };
 
   useEffect(() => {
     if (downloadingProp != null) return undefined;
@@ -48,20 +60,20 @@ export default function B2MakeItYours({
       <BottomScrim strength={0.90} />
 
       {/* Content — all type ON the photograph */}
-      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "64px 28px 52px" }}>
+      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "56px 28px 40px", overflowY: "auto" }}>
 
         {/* Small logomark */}
-        <div style={{ marginBottom: 44 }}>
+        <div style={{ marginBottom: 28 }}>
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.5))" }} />
             <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
           </svg>
         </div>
 
-        <h2 style={{ fontFamily: F.display, fontSize: 44, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 10, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
+        <h2 style={{ fontFamily: F.display, fontSize: 40, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, marginBottom: 10, textShadow: "0 2px 24px rgba(0,0,0,0.5)" }}>
           Make it yours.
         </h2>
-        <p style={{ fontSize: 14, color: T.muted, marginBottom: 44, lineHeight: 1.6 }}>Two small things before Rome.</p>
+        <p style={{ fontSize: 14, color: T.muted, marginBottom: 28, lineHeight: 1.6 }}>Three small things before Rome.</p>
 
         {/* ── Row 1 — Home screen ── */}
         <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
@@ -162,6 +174,51 @@ export default function B2MakeItYours({
                 )}
               </svg>
             </div>
+          </div>
+        </div>
+
+        {/* ── Row 3 — Analytics (opt-in) ── */}
+        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 6, lineHeight: 1.4 }}>
+                Help improve ChronoWalk
+              </p>
+              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
+                Anonymous usage only — we count moments, never people, and never sell your data.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={analyticsOn}
+              aria-label={analyticsOn ? 'Disable analytics' : 'Enable analytics'}
+              onClick={() => setAnalytics(!analyticsOn)}
+              style={{
+                flexShrink: 0,
+                width: 52,
+                height: 32,
+                borderRadius: 999,
+                border: 'none',
+                padding: 3,
+                cursor: 'pointer',
+                background: analyticsOn ? T.ember : T.ink800,
+                transition: 'background 160ms ease',
+              }}
+            >
+              <span
+                aria-hidden
+                style={{
+                  display: 'block',
+                  width: 26,
+                  height: 26,
+                  borderRadius: '50%',
+                  background: analyticsOn ? T.obsidian : T.muted,
+                  transform: analyticsOn ? 'translateX(20px)' : 'translateX(0)',
+                  transition: 'transform 160ms ease, background 160ms ease',
+                }}
+              />
+            </button>
           </div>
         </div>
 

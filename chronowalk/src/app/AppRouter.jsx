@@ -1,7 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { env } from '../config/env.js'
-import ConsentBar from '../components/ConsentBar'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
@@ -76,12 +75,7 @@ function AppChrome() {
   // every immersive journey moment, keeping both systems in agreement.
   if (chromeHidden || isImmersiveJourneyState(state)) return null
 
-  return (
-    <>
-      <ConsentBar />
-      <NetworkStatusBanner />
-    </>
-  )
+  return <NetworkStatusBanner />
 }
 
 function AppRoutes() {
