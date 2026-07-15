@@ -1,5 +1,4 @@
-import { archTitusNow, pantheonNow } from '../redesign/images.js'
-import { T } from '../redesign/tokens.js'
+import { archTitusNow, pantheonNow, colosseumNow, treviNow, castelNow } from '../redesign/images.js'
 import {
   LANDING_COLOSSEUM_NOW,
   LANDING_COLOSSEUM_THEN,
@@ -7,69 +6,101 @@ import {
 } from './landingVisualAssets.js'
 import LandingPhoneViewport from './LandingPhoneViewport.jsx'
 
-const ACT = {
-  I: T.actI ?? '#c45a3a',
-  II: T.actII ?? '#6f8054',
-  III: T.actIII ?? '#d4af37',
+/** Native-looking status strip — installed PWA, never Safari URL chrome. */
+function NativeStatusBar({ light = false }) {
+  return (
+    <div
+      className={`cw-landing-screen__status${light ? ' cw-landing-screen__status--light' : ''}`}
+      aria-hidden
+    >
+      <span>9:41</span>
+      <span className="cw-landing-screen__status-icons">
+        <span className="cw-landing-screen__status-signal" />
+        <span className="cw-landing-screen__status-wifi" />
+        <span className="cw-landing-screen__status-battery" />
+      </span>
+    </div>
+  )
 }
 
-/** Step 1 — route overview (cream “your route” screen). */
+/** Product shell tab bar — mirrors ShellTabBar, dark-on-bone. */
+function NativeTabBar({ active = 'tour' }) {
+  const tabs = [
+    { id: 'tour', label: 'My Tour' },
+    { id: 'stops', label: 'Stops' },
+    { id: 'map', label: 'Map' },
+    { id: 'journal', label: 'Journal' },
+  ]
+  return (
+    <nav className="cw-landing-screen__tabbar" aria-hidden>
+      {tabs.map((tab) => (
+        <span
+          key={tab.id}
+          className={`cw-landing-screen__tabbar-item${
+            tab.id === active ? ' cw-landing-screen__tabbar-item--on' : ''
+          }`}
+        >
+          <span className="cw-landing-screen__tabbar-icon" />
+          <span className="cw-landing-screen__tabbar-label">{tab.label}</span>
+        </span>
+      ))}
+    </nav>
+  )
+}
+
+/**
+ * Step 1 — Choose your Rome: landmark timeline (native home-screen PWA look).
+ * Matches the route story, without Safari chrome or landing “Try free” chrome.
+ */
 export function JourneyPickScreen({ size = 'md' }) {
   const stops = [
-    { n: 1, title: 'The Colosseum', color: ACT.I, act: 'ACT I', filled: true },
-    { n: 2, title: 'Colosseum interior', color: ACT.I, act: null, filled: false },
-    { n: 3, title: 'Arch of Titus', color: ACT.II, act: 'ACT II', filled: false },
-    { n: 4, title: 'Basilica of Maxentius', color: ACT.III, act: 'ACT III', filled: false },
-    { n: 5, title: 'Via Sacra', color: ACT.III, act: null, filled: false },
-    { n: 6, title: 'Temple of Vesta', color: ACT.III, act: null, filled: false },
-    { n: 7, title: 'Forum rest', color: ACT.III, act: null, filled: false },
-    { n: 8, title: 'The Rostra', color: ACT.III, act: null, filled: false },
+    { n: 1, title: 'Colosseum', photo: colosseumNow || LANDING_COLOSSEUM_NOW, gapAfter: 1 },
+    { n: 3, title: 'Arch of Titus', photo: archTitusNow, gapAfter: 2 },
+    { n: 14, title: 'Fontana di Trevi', photo: treviNow, gapAfter: 0 },
+    { n: 15, title: 'The Pantheon', photo: pantheonNow || LANDING_PANTHEON_NOW, gapAfter: 3 },
+    { n: 19, title: 'Castel Sant’Angelo', photo: castelNow, gapAfter: 0 },
   ]
 
   return (
-    <LandingPhoneViewport label="ChronoWalk route overview" size={size}>
-      <div className="cw-landing-screen cw-landing-screen--route">
-        <header className="cw-landing-screen__route-header">
-          <p className="cw-landing-screen__route-city">Rome, Italy</p>
-          <h3 className="cw-landing-screen__route-title">18 stops · your route</h3>
+    <LandingPhoneViewport label="ChronoWalk Rome route timeline" size={size}>
+      <div className="cw-landing-screen cw-landing-screen--timeline">
+        <NativeStatusBar />
+
+        <header className="cw-landing-screen__timeline-header">
+          <span className="cw-landing-screen__chip" aria-hidden>
+            ←
+          </span>
+          <p className="cw-landing-screen__timeline-brand">ChronoWalk</p>
+          <span className="cw-landing-screen__chip cw-landing-screen__chip--quiet" aria-hidden>
+            ···
+          </span>
         </header>
 
-        <div className="cw-landing-screen__route-map" aria-hidden>
-          <span className="cw-landing-screen__route-compass">N</span>
-          <span className="cw-landing-screen__route-path" />
-          {stops.map((stop, i) => (
-            <div
-              key={stop.n}
-              className="cw-landing-screen__route-node"
-              style={{
-                top: `${6 + i * 10.5}%`,
-                left: i % 2 === 0 ? '14%' : '52%',
-              }}
-            >
-              {stop.act ? (
-                <span className="cw-landing-screen__route-act" style={{ color: stop.color }}>
-                  {stop.act}
-                </span>
+        <div className="cw-landing-screen__timeline-list">
+          <span className="cw-landing-screen__timeline-seam" aria-hidden />
+          {stops.map((stop) => (
+            <div key={stop.n} className="cw-landing-screen__timeline-block">
+              <div className="cw-landing-screen__timeline-row">
+                <span className="cw-landing-screen__timeline-node">{stop.n}</span>
+                {stop.photo ? (
+                  <img className="cw-landing-screen__timeline-photo" src={stop.photo} alt="" />
+                ) : (
+                  <span className="cw-landing-screen__timeline-photo cw-landing-screen__timeline-photo--empty" />
+                )}
+                <p className="cw-landing-screen__timeline-title">{stop.title}</p>
+              </div>
+              {stop.gapAfter > 0 ? (
+                <div className="cw-landing-screen__timeline-gap" aria-hidden>
+                  {Array.from({ length: Math.min(stop.gapAfter, 4) }, (_, i) => (
+                    <span key={i} className="cw-landing-screen__timeline-dot" />
+                  ))}
+                </div>
               ) : null}
-              <span
-                className={`cw-landing-screen__route-dot${stop.filled ? ' cw-landing-screen__route-dot--filled' : ''}`}
-                style={{
-                  background: stop.filled ? stop.color : '#faf6ef',
-                  borderColor: stop.color,
-                  color: stop.filled ? '#faf6ef' : stop.color,
-                }}
-              >
-                {stop.n}
-              </span>
-              <span className="cw-landing-screen__route-label">{stop.title}</span>
             </div>
           ))}
         </div>
 
-        <p className="cw-landing-screen__route-note">
-          Next you&apos;ll enable location — then the guided tutorial begins at your first stop.
-        </p>
-        <div className="cw-landing-screen__route-cta">Enable location &amp; begin</div>
+        <NativeTabBar active="stops" />
       </div>
     </LandingPhoneViewport>
   )
@@ -86,6 +117,8 @@ export function MapRouteScreen({ size = 'md' }) {
   return (
     <LandingPhoneViewport label="ChronoWalk walking steps" size={size}>
       <div className="cw-landing-screen cw-landing-screen--walk">
+        <NativeStatusBar />
+
         <header className="cw-landing-screen__walk-header">
           <div className="cw-landing-screen__walk-copy">
             <p className="cw-landing-screen__walk-eyebrow">Walking to</p>
@@ -121,12 +154,7 @@ export function MapRouteScreen({ size = 'md' }) {
           <span className="cw-landing-screen__walk-here">I&apos;m here</span>
         </div>
 
-        <nav className="cw-landing-screen__tabbar" aria-hidden>
-          <span className="cw-landing-screen__tabbar-item cw-landing-screen__tabbar-item--on" />
-          <span className="cw-landing-screen__tabbar-item" />
-          <span className="cw-landing-screen__tabbar-item" />
-          <span className="cw-landing-screen__tabbar-item" />
-        </nav>
+        <NativeTabBar active="map" />
       </div>
     </LandingPhoneViewport>
   )
@@ -137,6 +165,8 @@ export function ArriveScreen({ size = 'md' }) {
   return (
     <LandingPhoneViewport label="ChronoWalk arrival — Arch of Titus" size={size}>
       <div className="cw-landing-screen cw-landing-screen--arrived">
+        <NativeStatusBar />
+
         <header className="cw-landing-screen__arrived-top">
           <span className="cw-landing-screen__chip" aria-hidden>
             ←
@@ -154,12 +184,7 @@ export function ArriveScreen({ size = 'md' }) {
           Begin Chapter
         </button>
 
-        <nav className="cw-landing-screen__tabbar" aria-hidden>
-          <span className="cw-landing-screen__tabbar-item cw-landing-screen__tabbar-item--on" />
-          <span className="cw-landing-screen__tabbar-item" />
-          <span className="cw-landing-screen__tabbar-item" />
-          <span className="cw-landing-screen__tabbar-item" />
-        </nav>
+        <NativeTabBar active="map" />
       </div>
     </LandingPhoneViewport>
   )
@@ -174,6 +199,7 @@ export function ListeningScreen({ size = 'md' }) {
         style={{ backgroundImage: `url(${archTitusNow})` }}
       >
         <div className="cw-landing-screen__listen-scrim" aria-hidden />
+        <NativeStatusBar />
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
@@ -237,6 +263,7 @@ export function PreviewScreen({ size = 'md' }) {
         style={{ backgroundImage: `url(${LANDING_PANTHEON_NOW || pantheonNow})` }}
       >
         <div className="cw-landing-screen__listen-scrim" aria-hidden />
+        <NativeStatusBar />
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
@@ -295,6 +322,7 @@ export function ThresholdRevealScreen({ size = 'md' }) {
   return (
     <LandingPhoneViewport label="ChronoWalk Colosseum threshold reveal" size={size}>
       <div className="cw-landing-screen cw-landing-screen--threshold">
+        <NativeStatusBar />
         <div className="cw-landing-screen__threshold-pair" aria-hidden>
           <img src={LANDING_COLOSSEUM_NOW} alt="" className="cw-landing-screen__threshold-now" />
           <img src={LANDING_COLOSSEUM_THEN} alt="" className="cw-landing-screen__threshold-then" />
