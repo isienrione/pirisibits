@@ -57,12 +57,12 @@ Unchanged in structure: Interlude, Monuments trail, FAQ accordion, Act markers, 
 
 | # | Test | A | B | Measure |
 |---|------|---|---|---------|
-| 1 | Hero positioning | *Walk until the city starts talking.* | *Walk Rome freely—with the history you’d miss on your own.* | Preview-start · route-view · checkout-start |
+| 1 | Hero positioning | *Walk until the city starts talking.* **(live)** | *Walk Rome freely—with the history you’d miss on your own.* | Preview-start · route-view · checkout-start |
 | 2 | Early Threshold placement | Immediately after hero/interlude **(live)** | After How It Works | Threshold completion · preview-start · scroll depth · checkout-start |
 | 3 | Primary CTA | *Try one stop free* **(live)** | *Hear the Pantheon free* | Preview-start · preview completion · paid conversion |
 | 4 | Pricing order | Central → Ancient → Complete **(live)** | Complete → Ancient → Central | Product mix · AOV · checkout conversion |
 
-Live hero headline today is still *Stories begin when you arrive.* — replace with A (or A vs B) before reading Test 1 as a clean experiment.
+Hero control is Test 1 **A**. Run A vs B in PostHog before another headline rewrite.
 
 Instrument via existing PostHog events in `LANDING_ANALYTICS.md` — do not change design without measuring.
 

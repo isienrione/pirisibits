@@ -56,11 +56,10 @@ Live order already matches this implementation sequence (Act I Promise → Act I
 
 | | Copy |
 |-|------|
-| **A** | Walk until the city starts talking. |
+| **A (live control)** | Walk until the city starts talking. |
 | **B** | Walk Rome freely—with the history you’d miss on your own. |
 
-**Live today (neither A nor B):** `Stories begin when you arrive.`  
-Ship **A** as the new control, or A/B immediately against each other after replacing the live line — do not leave three headlines in play.
+**Live today:** Variant **A**. Next: measure A against B (PostHog flag) — do not resurrect the retired line *Stories begin when you arrive.*
 
 **Measure:** Preview-start rate · Route-view rate · Checkout-start rate
 

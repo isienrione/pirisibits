@@ -196,7 +196,7 @@ export const LANDING_CONTENT = {
   hero: {
     id: 'top',
     eyebrow: 'ChronoWalk · Rome',
-    headline: 'Stories begin when you arrive.',
+    headline: 'Walk until the city starts talking.',
     /** Place-tied support under the emotional headline. */
     accentLine: 'Walk freely. Keep the context.',
     subheadline:

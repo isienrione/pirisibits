@@ -191,7 +191,7 @@ describe('landing editorial architecture', () => {
   })
 
   it('keeps primary landing copy in ChronoWalk voice after the Phase 18 audit', () => {
-    expect(LANDING_CONTENT.hero.headline).toBe('Stories begin when you arrive.')
+    expect(LANDING_CONTENT.hero.headline).toBe('Walk until the city starts talking.')
     expect(LANDING_CONTENT.hero.eyebrow).toBe('ChronoWalk · Rome')
     expect(LANDING_CONTENT.hero.accentLine).toBe('Walk freely. Keep the context.')
     expect(LANDING_CONTENT.hero.primaryCta).toBe('Try one stop free')
