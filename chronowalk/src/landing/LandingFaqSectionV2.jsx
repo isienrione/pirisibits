@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getLandingFaqItems, LANDING_CONTENT } from './landingData.js'
+import { trackLandingFaqOpen } from './landingAnalytics.js'
 
 function faqDeepLinkId(itemId) {
   return `faq-${itemId}`
@@ -33,7 +34,15 @@ export default function LandingFaqSectionV2() {
   }, [])
 
   function toggle(index) {
-    setOpenIndex((current) => (current === index ? -1 : index))
+    setOpenIndex((current) => {
+      const next = current === index ? -1 : index
+      if (next >= 0) {
+        const item = items[next]
+        const group = groups.find((entry) => entry.items.some((entryItem) => entryItem.id === item.id))
+        trackLandingFaqOpen({ questionId: item.id, groupId: group?.id })
+      }
+      return next
+    })
   }
 
   function focusButton(index) {

@@ -1,8 +1,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
-import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingColosseumThreshold from './LandingColosseumThreshold.jsx'
 import { LANDING_CONTENT } from './landingData.js'
+import {
+  trackLandingThresholdCancelled,
+  trackLandingThresholdComplete,
+  trackLandingThresholdStart,
+} from './landingAnalytics.js'
 
 const REVEAL_MS = 900
 
@@ -31,6 +35,7 @@ export default function LandingThresholdSection() {
   const holdStartRef = useRef(null)
   const completedRef = useRef(false)
   const startedRef = useRef(false)
+  const viaRef = useRef('hold')
   const revealRef = useRef(0)
 
   const setRevealBoth = useCallback((value) => {
@@ -45,29 +50,19 @@ export default function LandingThresholdSection() {
     }
   }, [])
 
-  const trackStart = useCallback(() => {
+  const trackStart = useCallback((via = 'hold') => {
     if (startedRef.current) return
     startedRef.current = true
-    track(TRACK_EVENTS.THRESHOLD_DEMO, {
-      source: 'landing',
-      action: 'start',
-      waypoint_id: 'landing-colosseum',
-    })
+    viaRef.current = via
+    trackLandingThresholdStart({ via })
   }, [])
 
   const trackComplete = useCallback(() => {
     if (completedRef.current) return
     completedRef.current = true
     haptic(12)
-    track(TRACK_EVENTS.THRESHOLD_DEMO, {
-      source: 'landing',
-      action: 'complete',
-      waypoint_id: 'landing-colosseum',
-    })
-    track(TRACK_EVENTS.THRESHOLD_HOLD, {
-      source: 'landing',
-      action: 'complete',
-      waypoint_id: 'landing-colosseum',
+    trackLandingThresholdComplete({
+      via: viaRef.current,
       duration_ms: holdStartRef.current
         ? Math.round(performance.now() - holdStartRef.current)
         : REVEAL_MS,
@@ -75,12 +70,7 @@ export default function LandingThresholdSection() {
   }, [])
 
   const trackCancel = useCallback((heldMs) => {
-    track(TRACK_EVENTS.THRESHOLD_HOLD, {
-      source: 'landing',
-      action: 'cancelled',
-      waypoint_id: 'landing-colosseum',
-      duration_ms: Math.round(heldMs),
-    })
+    trackLandingThresholdCancelled({ duration_ms: heldMs, via: viaRef.current })
   }, [])
 
   const runRevealAnimation = useCallback(
@@ -108,14 +98,15 @@ export default function LandingThresholdSection() {
 
   const beginHold = useCallback(
     (event) => {
-      if (fallbackLatched && revealRef.current >= 0.98) return
+      // Already fully revealed — require Hide / toggle before starting again (avoids duplicate complete).
+      if (revealRef.current >= 0.98) return
       if (event?.pointerType === 'mouse' && event.button != null && event.button !== 0) return
 
       event?.currentTarget?.setPointerCapture?.(event.pointerId)
       holdingRef.current = true
       holdStartRef.current = performance.now()
       completedRef.current = false
-      trackStart()
+      trackStart('hold')
       haptic(8)
 
       if (reducedMotion) {
@@ -127,7 +118,7 @@ export default function LandingThresholdSection() {
 
       runRevealAnimation()
     },
-    [fallbackLatched, reducedMotion, runRevealAnimation, setRevealBoth, trackComplete, trackStart],
+    [reducedMotion, runRevealAnimation, setRevealBoth, trackComplete, trackStart],
   )
 
   const endHold = useCallback(() => {
@@ -149,7 +140,7 @@ export default function LandingThresholdSection() {
   }, [cancelRevealAnimation, setRevealBoth, trackCancel])
 
   const toggleFallback = useCallback(() => {
-    trackStart()
+    trackStart('button')
 
     if (fallbackLatched || revealRef.current >= 0.98) {
       setFallbackLatched(false)

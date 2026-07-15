@@ -1,6 +1,11 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import { getLandingRouteJourney } from './landingMonuments.js'
+import {
+  observeLandingSectionOnce,
+  trackLandingRouteExpand,
+  trackLandingRouteView,
+} from './landingAnalytics.js'
 
 /**
  * Act II — continuous Rome route (not a monument catalog).
@@ -13,6 +18,9 @@ export default function LandingMonumentsCarousel() {
   const [expanded, setExpanded] = useState(false)
   const listId = useId()
   const stopRefs = useRef([])
+  const sectionRef = useRef(null)
+
+  useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingRouteView()), [])
 
   const visibleStops = expanded
     ? chapters.flatMap((chapter) => chapter.stops)
@@ -49,6 +57,7 @@ export default function LandingMonumentsCarousel() {
 
   return (
     <section
+      ref={sectionRef}
       id={section.id}
       className={`cw-v2-section cw-v2-monuments${expanded ? ' cw-v2-monuments--expanded' : ''}`}
       aria-labelledby={`${section.id}-heading`}
@@ -147,7 +156,11 @@ export default function LandingMonumentsCarousel() {
               aria-controls={listId}
               onClick={() => {
                 stopRefs.current = []
-                setExpanded((value) => !value)
+                setExpanded((value) => {
+                  const next = !value
+                  trackLandingRouteExpand({ expanded: next })
+                  return next
+                })
               }}
             >
               {expanded ? section.collapseLabel : section.expandLabel}

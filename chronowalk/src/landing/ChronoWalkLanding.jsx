@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getHost } from '../lib/host.js'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
-import { track, TRACK_EVENTS } from '../lib/track.js'
 import LandingAct from './LandingAct.jsx'
 import LandingSiteHeader from './LandingSiteHeader.jsx'
 import LandingHero from './LandingHero.jsx'
@@ -25,11 +24,15 @@ import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } fro
 import { useLandingPrice } from './useLandingPrice.js'
 import { buildLandingTierCheckoutUrl, resolveLandingTierCents } from './landingCheckout.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
+import { buildLandingProductSchema, LANDING_DOCUMENT } from './landingSeo.js'
 import {
-  buildLandingProductSchema,
-  LANDING_DOCUMENT,
-  trackLandingViewOnce,
-} from './landingSeo.js'
+  LANDING_ANALYTICS_SECTIONS,
+  trackLandingCheckoutOpen,
+  trackLandingPricingCta,
+  trackLandingPreviewCta,
+  trackLandingRoutesCta,
+  trackLandingView,
+} from './landingAnalytics.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 
@@ -43,7 +46,7 @@ export default function ChronoWalkLanding() {
   const { cents, checkoutUrl } = useLandingPrice()
 
   useEffect(() => {
-    trackLandingViewOnce(track, TRACK_EVENTS.LANDING_VIEW, { source: 'landing' })
+    trackLandingView()
   }, [])
 
   useEffect(() => {
@@ -58,16 +61,23 @@ export default function ChronoWalkLanding() {
     }
   }, [])
 
-  const handlePreview = useCallback(() => {
-    track(TRACK_EVENTS.LANDING_CTA_PREVIEW, { source: 'landing', preview: 'pantheon' })
-    const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
-    if (url) primePreviewAudioForNavigation(url)
-    navigate('/preview')
-  }, [navigate])
+  const handlePreview = useCallback(
+    (section = LANDING_ANALYTICS_SECTIONS.HERO) => {
+      trackLandingPreviewCta(section)
+      const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
+      if (url) primePreviewAudioForNavigation(url)
+      navigate('/preview')
+    },
+    [navigate],
+  )
+
+  const handleRoutes = useCallback((section) => {
+    trackLandingRoutesCta(section)
+  }, [])
 
   const handleBeginTier = useCallback(
     (tierId) => {
-      track(TRACK_EVENTS.LANDING_CTA_BEGIN, { source: 'landing', tier: tierId })
+      trackLandingPricingCta(tierId)
 
       const tierCents = resolveLandingTierCents(tierId, cents)
       const url = buildLandingTierCheckoutUrl(checkoutUrl, tierId, {
@@ -84,11 +94,7 @@ export default function ChronoWalkLanding() {
         return
       }
 
-      track(TRACK_EVENTS.CHECKOUT_OPEN, {
-        price_cents: tierCents,
-        source: 'landing',
-        tier: tierId,
-      })
+      trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
       window.location.assign(url)
     },
     [cents, checkoutUrl, navigate],
@@ -103,7 +109,7 @@ export default function ChronoWalkLanding() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingSiteHeader onPreview={handlePreview} />
+      <LandingSiteHeader onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HEADER)} />
       <main>
         <LandingAct
           id={actPromise.id}
@@ -111,10 +117,13 @@ export default function ChronoWalkLanding() {
           index={actPromise.index}
           name={actPromise.name}
         >
-          <LandingHero onPreview={handlePreview} />
+          <LandingHero
+            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
+            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.HERO)}
+          />
           <LandingEmotionalInterludeSection />
           <LandingThresholdSection />
-          <LandingEarlyCtaSection onPreview={handlePreview} />
+          <LandingEarlyCtaSection onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.EARLY_CTA)} />
         </LandingAct>
 
         <LandingAct
@@ -128,7 +137,10 @@ export default function ChronoWalkLanding() {
           <LandingRealMomentSection />
           <LandingMonumentsCarousel />
           <LandingBenefitsSection />
-          <LandingTryFreeSection onPreview={handlePreview} />
+          <LandingTryFreeSection
+            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
+            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
+          />
         </LandingAct>
 
         <LandingAct
@@ -143,10 +155,13 @@ export default function ChronoWalkLanding() {
           <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <LandingWhyChronoWalkSection />
           <LandingTrustProofSection />
-          <LandingAfterRomeSection />
+          <LandingAfterRomeSection onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.AFTER_ROME)} />
           <LandingFaqSectionV2 />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingFinalCtaSectionV2 onPreview={handlePreview} />
+          <LandingFinalCtaSectionV2
+            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+          />
         </LandingAct>
       </main>
       <LandingSiteFooter />

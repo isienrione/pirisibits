@@ -9,7 +9,7 @@ Mobile-first editorial landing: a11y, performance, SEO pass.
 | Focus | Shared `:focus-visible` gold outline for buttons, header, footer, threshold frame, monument stops |
 | Threshold | Named focusable stage (`aria-label`); removed invalid valu* on `role="group"`; keep Reveal/Hide button |
 | Early CTA | Visually hidden `h2` for landmark labelling (`.cw-v2-sr-only`) |
-| Analytics | `trackLandingViewOnce` prevents StrictMode/remount duplicate `landing_view` |
+| Analytics | `trackLandingView()` once-guard (and route/pricing views) — see `LANDING_ANALYTICS.md` |
 | Hero LCP | AVIF/WebP `<picture>`, `fetchPriority="high"`, intrinsic 1024×1024, WebP preload |
 | Images | AVIF/WebP for hero + interlude/after-rome/ending planes via `LandingResponsivePicture` |
 | Fonts | Move Google Fonts from CSS `@import` to non-blocking `<link>` in `index.html` (`display=swap`) |

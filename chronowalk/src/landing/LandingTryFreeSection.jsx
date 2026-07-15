@@ -5,7 +5,7 @@ import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
  * Act II — free Pantheon preview.
  * One mockup, sharp offer framing, same preview handoff + analytics as other CTAs.
  */
-export default function LandingTryFreeSection({ onPreview }) {
+export default function LandingTryFreeSection({ onPreview, onRoutes }) {
   const section = LANDING_CONTENT['try-free']
   const headingId = `${section.id}-heading`
   const scopeId = `${section.id}-scope`
@@ -43,7 +43,7 @@ export default function LandingTryFreeSection({ onPreview }) {
                   {section.primaryCta}
                 </button>
               ) : null}
-              <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline">
+              <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline" onClick={() => onRoutes?.()}>
                 {section.secondaryCta}
               </a>
             </div>

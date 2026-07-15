@@ -1,7 +1,9 @@
+import { useEffect, useRef } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
+import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
 
 function CheckIcon() {
   return (
@@ -25,9 +27,13 @@ function CheckIcon() {
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
   const tiers = section.tiers ?? []
+  const sectionRef = useRef(null)
+
+  useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
 
   return (
     <section
+      ref={sectionRef}
       id={section.id}
       className="cw-v2-section cw-v2-pricing"
       aria-labelledby={`${section.id}-heading`}

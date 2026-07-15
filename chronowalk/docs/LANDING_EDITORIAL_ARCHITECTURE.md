@@ -63,12 +63,16 @@ Mobile-first; tablet band `48–63.99rem` is first-class. See `LANDING_RESPONSIV
 
 See `LANDING_PRODUCTION_READINESS.md` — focus styles, Threshold a11y, AVIF/WebP + hero preload, font loading, Product + FAQ schema, analytics once-guard.
 
+### Analytics (Phase 21)
+
+Do not change design without measuring. Event catalog, primary funnel, and test instructions: `LANDING_ANALYTICS.md`. Helpers: `landingAnalytics.js` (section context, once-guards). Provider remains PostHog via `track()`.
+
 ## Preserved (not redesigned)
 
 - CTA destinations (`/preview`, `#pricing`, checkout)  
 - Pricing logic (`useLandingPrice`, `landingCheckout`, `ROME_TIERS`)  
 - FAQ accordion  
-- Analytics (`landing_view`, `landing_cta_preview`, `landing_cta_begin`, `checkout_open`)  
+- Analytics — PostHog only; see `LANDING_ANALYTICS.md` (`landing_view` → preview/route → pricing → `checkout_open` → `purchase`)  
 - Responsive `cw-v2-*` layouts  
 - `#who-its-for` resolves inside real-moment scenarios (persona cards removed Phase 7)
 - `#compare` resolves inside Why ChronoWalk (comparison matrix removed Phase 12)

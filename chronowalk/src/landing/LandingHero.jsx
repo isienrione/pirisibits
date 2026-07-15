@@ -7,7 +7,7 @@ import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
  * Act I hero — transformation first, function second.
  * Primary CTA keeps landing_cta_preview via parent onPreview handler.
  */
-export default function LandingHero({ onPreview }) {
+export default function LandingHero({ onPreview, onRoutes }) {
   const hero = LANDING_CONTENT.hero
   const [imageOk, setImageOk] = useState(true)
 
@@ -43,7 +43,6 @@ export default function LandingHero({ onPreview }) {
             {hero.headline}
           </h1>
 
-          {/* Gold seam — narrative marker between transformation and place-tied explanation */}
           <span className="cw-v2-hero__seam" aria-hidden="true" />
 
           {hero.accentLine ? (
@@ -62,7 +61,11 @@ export default function LandingHero({ onPreview }) {
                 {hero.primaryCta}
               </a>
             )}
-            <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline cw-v2-btn--block">
+            <a
+              href="#pricing"
+              className="cw-v2-btn cw-v2-btn--outline cw-v2-btn--block"
+              onClick={() => onRoutes?.()}
+            >
               {hero.secondaryCta}
             </a>
           </div>

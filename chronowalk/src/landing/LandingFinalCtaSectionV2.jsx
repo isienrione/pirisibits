@@ -7,7 +7,7 @@ import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
  * Film-frame leave-taking: full-bleed Rome, dark veil, gold seam, quiet CTAs.
  * Primary → /preview (landing_cta_preview); secondary → #pricing.
  */
-export default function LandingFinalCtaSectionV2({ onPreview }) {
+export default function LandingFinalCtaSectionV2({ onPreview, onRoutes }) {
   const section = LANDING_CONTENT['final-cta']
   const image = LANDING_ENDING
   const bodyLines = section.bodyLines ?? (section.body ? [section.body] : [])
@@ -54,7 +54,11 @@ export default function LandingFinalCtaSectionV2({ onPreview }) {
                 {section.primaryCta}
               </button>
             ) : null}
-            <a href="#pricing" className="cw-v2-btn cw-v2-btn--outline cw-v2-ending__cta-secondary">
+            <a
+              href="#pricing"
+              className="cw-v2-btn cw-v2-btn--outline cw-v2-ending__cta-secondary"
+              onClick={() => onRoutes?.()}
+            >
               {section.secondaryCta}
             </a>
           </div>

@@ -6,7 +6,7 @@ import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
  * Act III — After Rome (Prompt 14).
  * Cinematic memory beat before FAQ: purchase → memory, not stats or product UI.
  */
-export default function LandingAfterRomeSection() {
+export default function LandingAfterRomeSection({ onRoutes }) {
   const section = LANDING_CONTENT['after-rome']
   const lines = section.headlineLines ?? [section.headline]
   const image = LANDING_AFTER_ROME
@@ -47,7 +47,7 @@ export default function LandingAfterRomeSection() {
 
           {section.linkHref && section.linkLabel ? (
             <p className="cw-v2-after-rome__link-wrap">
-              <a href={section.linkHref} className="cw-v2-after-rome__link">
+              <a href={section.linkHref} className="cw-v2-after-rome__link" onClick={() => onRoutes?.()}>
                 {section.linkLabel}
               </a>
             </p>

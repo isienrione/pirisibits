@@ -32,6 +32,12 @@ export const TRACK_EVENTS = {
   LANDING_VIEW: 'landing_view',
   LANDING_CTA_BEGIN: 'landing_cta_begin',
   LANDING_CTA_PREVIEW: 'landing_cta_preview',
+  LANDING_CTA_ROUTES: 'landing_cta_routes',
+  LANDING_ROUTE_VIEW: 'landing_route_view',
+  LANDING_ROUTE_EXPAND: 'landing_route_expand',
+  LANDING_PRICING_VIEW: 'landing_pricing_view',
+  LANDING_FAQ_OPEN: 'landing_faq_open',
+  /** @deprecated prefer LANDING_PRICING_VIEW — kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
 }
 

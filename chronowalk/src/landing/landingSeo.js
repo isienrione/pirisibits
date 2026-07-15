@@ -38,18 +38,3 @@ export function buildLandingProductSchema(tiers = ROME_TIERS) {
     })),
   }
 }
-
-let landingViewTracked = false
-
-/** Fire landing_view once per SPA session to avoid StrictMode / remount duplicates. */
-export function trackLandingViewOnce(track, eventName, properties) {
-  if (landingViewTracked) return false
-  landingViewTracked = true
-  track(eventName, properties)
-  return true
-}
-
-/** @internal test helper */
-export function resetLandingViewTrackingForTests() {
-  landingViewTracked = false
-}
