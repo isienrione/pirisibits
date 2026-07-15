@@ -72,7 +72,7 @@ describe('landing editorial architecture', () => {
     expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
       'Stories where you stand',
       'Your pace',
-      'Downloaded once',
+      'Online when you can — offline when you need',
       'Yours to keep',
     ])
     expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
@@ -138,7 +138,7 @@ describe('landing editorial architecture', () => {
       'Content and trust',
     ])
     const items = getLandingFaqItems()
-    expect(items).toHaveLength(17)
+    expect(items).toHaveLength(18)
     expect(items.map((item) => item.id)).toEqual([
       'what-is-chronowalk',
       'different-from-podcast',
@@ -152,6 +152,7 @@ describe('landing editorial architecture', () => {
       'subscription',
       'keep-access',
       'share-purchase',
+      'device-limit',
       'phones',
       'account',
       'narration-ai',

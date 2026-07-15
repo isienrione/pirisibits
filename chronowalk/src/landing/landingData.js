@@ -51,7 +51,7 @@ export const ROME_TIERS = [
       'Full Pantheon chapters + Threshold (same stop as the free preview)',
       'Centro storico stops — no park ticket needed',
     ],
-    expandLabel: 'See every stop and inclusion',
+    expandLabel: 'See stop list & inclusions',
     primaryCta: 'Begin Rome',
   },
   {
@@ -70,7 +70,7 @@ export const ROME_TIERS = [
       'Colosseum and Roman Forum stops',
       'Threshold reconstructions at key landmarks',
     ],
-    expandLabel: 'See every stop and inclusion',
+    expandLabel: 'See stop list & inclusions',
     primaryCta: 'Begin Rome',
   },
   {
@@ -92,7 +92,7 @@ export const ROME_TIERS = [
       'All 22 stops — Colosseum and Forum to the Appian Way',
       'Every Threshold reconstruction on the route',
     ],
-    expandLabel: 'See every stop and inclusion',
+    expandLabel: 'See stop list & inclusions',
     primaryCta: 'Begin Rome',
   },
 ]
@@ -212,8 +212,8 @@ export const LANDING_CONTENT = {
   interlude: {
     id: 'interlude',
     line1: 'Rome is loud.',
-    line2: "History isn't.",
-    line3: 'The story waits until you arrive.',
+    line2: "History isn't always.",
+    line3: 'ChronoWalk helps you catch the silent, hidden parts of the Eternal City.',
   },
 
   'early-cta': {
@@ -231,20 +231,32 @@ export const LANDING_CONTENT = {
     headline: 'Begin where you are.',
     scenarios: [
       {
+        id: 'no-ticket',
         prompt: 'No ticket?',
         lines: ['The monument may be sold out.', 'The city isn’t.'],
+        accent: '#c4a574',
+        imageKey: 'largo-argentina',
       },
       {
+        id: 'free-afternoon',
         prompt: 'Free afternoon?',
         lines: ['Begin where you are.', 'Pause when Rome distracts you.'],
+        accent: '#e07a5f',
+        imageKey: 'pantheon',
       },
       {
+        id: 'wander',
         prompt: 'Love to wander?',
         lines: ['Let the streets choose the order.', 'Nothing on the route rushes you.'],
+        accent: '#7a9e8a',
+        imageKey: 'campo-de-fiori',
       },
       {
+        id: 'history',
         prompt: 'History curious?',
         lines: ['The stones stop looking like rubble once the story begins.'],
+        accent: '#d4a017',
+        imageKey: 'colosseum',
       },
     ],
   },
@@ -259,22 +271,27 @@ export const LANDING_CONTENT = {
       {
         title: 'Uncertainty, labeled',
         body: 'Where the record is thin, we say so. Threshold captions note interpretive details — colors, crowds, conjecture — so the image does not pretend to be a photograph of the past.',
+        icon: 'label',
       },
       {
         title: 'Reconstructions from your viewpoint',
         body: 'At selected landmarks, press and hold to compare today’s stones with a researched reconstruction matched to the vantage in front of you — not a stock illustration.',
+        icon: 'viewpoint',
       },
       {
         title: 'Scripts written for this route',
         body: 'Narration is researched and produced for ChronoWalk’s Rome walk — one studio-written path for this city, not a mash-up of unrelated tours.',
+        icon: 'script',
       },
       {
         title: 'Preview without an account',
         body: 'The Pantheon stop opens free. Paid packages are one-time purchases — no subscription.',
+        icon: 'preview',
       },
       {
         title: 'Tickets stay honest',
         body: 'ChronoWalk does not replace ticketed entry where tickets are required. Much of the walk happens on streets, piazzas, and open viewpoints.',
+        icon: 'ticket',
       },
     ],
     imageryNote:
@@ -371,12 +388,12 @@ export const LANDING_CONTENT = {
         body: 'Pause, split the day, or return tomorrow.',
       },
       {
-        title: 'Downloaded once',
-        body: 'Walk without hunting for signal.',
+        title: 'Online when you can — offline when you need',
+        body: 'The ideal walk uses the live map. Download the tour on hotel Wi‑Fi first if you’ll turn on airplane mode or lose signal.',
       },
       {
         title: 'Yours to keep',
-        body: 'The route stays after the trip.',
+        body: 'The route stays after the trip — one device per purchase, with discounted shared bundles available.',
       },
     ],
   },
@@ -484,9 +501,14 @@ export const LANDING_CONTENT = {
     id: 'pricing',
     headline: 'Pick how much of Rome you want.',
     subheadline: 'One-time purchase — yours for the trip and after.',
-    intro: 'GPS narration, offline download, and the Pantheon preview in every package.',
+    intro:
+      'GPS narration, offline download, and the Pantheon preview in every package. One device per purchase — discounted couple, family, and group bundles add synced sharing.',
     footnote:
-      'Secure checkout · Instant access · Does not replace ticketed entry where tickets are required',
+      'Secure checkout first · Access link arrives by email · Does not replace ticketed entry where tickets are required',
+    accessLinkLabel: 'Already purchased? Enter your access link',
+    accessHref: '/access',
+    metaTimeLabel: 'Est. duration',
+    metaStopsLabel: 'Key stops',
     tiers: ROME_TIERS,
   },
 
@@ -514,6 +536,8 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     credit: 'Made for people on foot · ChronoWalk',
+    accessLinkLabel: 'Already purchased? Enter access',
+    accessHref: '/access',
   },
 
   /** Legacy keys kept for archive components */
@@ -683,12 +707,12 @@ export const LANDING_CONTENT = {
           {
             id: 'offline',
             q: 'Does it work offline?',
-            a: 'Yes. Download the route before you walk. GPS works best outdoors in open streets and squares.',
+            a: 'The ideal Rome walk works online. If you need airplane mode or lose signal, download the tour on your phone over Wi‑Fi first — then maps and audio stay with you. GPS works best outdoors in open streets and squares.',
           },
           {
             id: 'mobile-data',
             q: 'Do I need mobile data?',
-            a: 'Not after download. Load it on Wi‑Fi, then walk with offline maps and audio. GPS does not need a data connection.',
+            a: 'Not after you download. Load the tour on hotel or café Wi‑Fi before you leave, then walk offline. GPS does not need a data connection.',
           },
           {
             id: 'gps-inaccurate',
@@ -724,7 +748,12 @@ export const LANDING_CONTENT = {
           {
             id: 'share-purchase',
             q: 'Can two people share one purchase?',
-            a: 'Yes. Share one phone or use two sets of headphones. One purchase covers your device.',
+            a: 'Each standard purchase unlocks one device. Share headphones on that phone, or choose a discounted couple, family, or group bundle for synced devices on the same walk.',
+          },
+          {
+            id: 'device-limit',
+            q: 'How many devices does one purchase cover?',
+            a: 'One device per standard purchase. Couple, family, and group bundles add shared seats so each phone can walk in sync.',
           },
           {
             id: 'phones',
@@ -745,7 +774,7 @@ export const LANDING_CONTENT = {
           {
             id: 'narration-ai',
             q: 'Is the narration AI-generated?',
-            a: 'No. Scripts are studio-written and researched for this route — not a generic text-to-speech tour.',
+            a: 'No — scripts are researched and studio-written for this Rome route, not an LLM spewing a generic tour. The makers use ordinary tools (some of them AI-assisted) to draft and polish; every line is curated before it reaches you.',
           },
           {
             id: 'reconstructions-researched',

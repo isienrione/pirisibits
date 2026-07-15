@@ -102,7 +102,7 @@
   flex-direction: column;
   align-items: center;
   margin: 0;
-  max-width: 22ch;
+  max-width: 34ch;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -142,22 +142,22 @@
 
 .cw-cinematic-interlude__line--turn {
   font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
-  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-size: clamp(0.98rem, 2.1vw, 1.12rem);
   font-weight: 400;
   font-style: normal;
   line-height: 1.55;
   letter-spacing: 0.01em;
   color: var(--v2-soft);
-  max-width: 28ch;
+  max-width: 36ch;
 }
 
 @media (max-width: 47.99rem) {
   .cw-cinematic-interlude__verse {
-    max-width: 16ch;
+    max-width: 28ch;
   }
 
   .cw-cinematic-interlude__line--turn {
-    max-width: 22ch;
+    max-width: 30ch;
   }
 
   .cw-cinematic-interlude__inner-seam {

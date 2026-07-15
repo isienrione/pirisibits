@@ -39,6 +39,7 @@ export default function LandingColosseumThreshold({
     >
       <div className="cw-doc-threshold-demo__then cw-threshold-stage__then" aria-hidden="true">
         <img
+          className="cw-threshold-stage__img cw-threshold-stage__img--then"
           src={LANDING_COLOSSEUM_THEN}
           alt=""
           width={1280}
@@ -58,6 +59,7 @@ export default function LandingColosseumThreshold({
         aria-hidden="true"
       >
         <img
+          className="cw-threshold-stage__img cw-threshold-stage__img--now"
           src={LANDING_COLOSSEUM_NOW}
           alt=""
           width={941}

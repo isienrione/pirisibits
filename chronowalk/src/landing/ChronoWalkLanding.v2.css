@@ -634,15 +634,51 @@
 }
 
 .cw-v2-user-flow__seam {
+  display: none;
+}
+
+.cw-v2-user-flow__path {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 1.75rem;
+  margin: 0.15rem 0;
+}
+
+.cw-v2-user-flow__path-line {
   display: block;
-  width: 2.25rem;
-  height: 1px;
-  margin: 1.35rem auto;
-  background: color-mix(in srgb, var(--v2-bone) 16%, transparent);
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--gold, #c9a227) 55%, transparent),
+    color-mix(in srgb, var(--gold, #c9a227) 18%, transparent)
+  );
 }
 
 .cw-v2-user-flow__connector {
   display: none;
+}
+
+.cw-v2-user-flow__node {
+  order: 0;
+  margin: 0 0 0.85rem;
+}
+
+.cw-v2-user-flow__node-ring {
+  display: inline-grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold, #c9a227) 55%, transparent);
+  background: color-mix(in srgb, var(--v2-obsidian, #16130f) 88%, var(--gold, #c9a227));
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--gold, #c9a227) 80%, var(--v2-bone));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold, #c9a227) 8%, transparent);
 }
 
 .cw-v2-user-flow__card {
@@ -653,6 +689,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.cw-v2-user-flow--path .cw-v2-user-flow__step-num {
+  display: none;
 }
 
 .cw-v2-user-flow__device {
@@ -784,14 +824,27 @@
     align-items: start;
   }
 
-  .cw-v2-user-flow__seam {
+  .cw-v2-user-flow--path .cw-v2-user-flow__step {
+    position: relative;
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__path {
     position: absolute;
-    top: 4.25rem;
-    left: 0;
-    width: 1px;
-    height: 2.75rem;
+    top: 1.05rem;
+    left: -0.65rem;
+    width: 1.25rem;
+    height: 1px;
     margin: 0;
-    transform: translateX(-0.625rem);
+  }
+
+  .cw-v2-user-flow--path .cw-v2-user-flow__path-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--gold, #c9a227) 18%, transparent),
+      color-mix(in srgb, var(--gold, #c9a227) 55%, transparent)
+    );
   }
 
   .cw-v2-user-flow__device {
@@ -2524,6 +2577,27 @@
   color: var(--tier-accent, var(--gold));
 }
 
+.cw-v2-pricing-card .cw-v2-tier-map {
+  margin: 0.85rem 0 1rem;
+}
+
+.cw-v2-pricing__access {
+  margin: 1.25rem 0 0;
+  text-align: center;
+}
+
+.cw-v2-pricing__access-link {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--gold, #c9a227) 75%, var(--v2-bone));
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.cw-v2-pricing__access-link:hover {
+  color: var(--v2-bone);
+}
+
 .cw-v2-pricing__footnote {
   margin: 2rem 0 0;
   text-align: center;
@@ -2584,6 +2658,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.cw-v2-footer__access {
+  margin: 0.85rem 0 0;
+}
+
+.cw-v2-footer__access-link {
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--gold, #c9a227) 70%, var(--v2-bone));
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.cw-v2-footer__access-link:hover {
+  color: var(--v2-bone);
 }
 
 .cw-v2-footer__tagline {
@@ -3166,12 +3255,26 @@
   z-index: 1;
 }
 
-.cw-threshold-stage img {
+.cw-threshold-stage img,
+.cw-threshold-stage__img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   pointer-events: none;
+}
+
+/* Match amphitheatre mass across landscape THEN vs portrait NOW */
+.cw-threshold-stage__img--then {
+  object-position: 50% 58%;
+  transform: scale(1.08);
+  transform-origin: center 55%;
+}
+
+.cw-threshold-stage__img--now {
+  object-position: 46% 62%;
+  transform: scale(1.12);
+  transform-origin: center 58%;
 }
 
 .cw-threshold-stage__tag {
@@ -3514,6 +3617,58 @@
   padding: 1.75rem 0;
   display: grid;
   gap: 0.75rem;
+  --scenario-accent: var(--gold, #c9a227);
+}
+
+.cw-v2-real-moment__row {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.cw-v2-real-moment__thumb {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+  overflow: hidden;
+  border-radius: 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--scenario-accent) 35%, transparent);
+}
+
+.cw-v2-real-moment__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cw-v2-real-moment__thumb-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--scenario-accent) 28%, transparent),
+    color-mix(in srgb, var(--v2-obsidian) 35%, transparent)
+  );
+  pointer-events: none;
+}
+
+.cw-v2-real-moment__swatch {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--scenario-accent) 40%, var(--v2-obsidian));
+  border: 1px solid color-mix(in srgb, var(--scenario-accent) 45%, transparent);
+}
+
+.cw-v2-real-moment__copy {
+  min-width: 0;
+}
+
+.cw-v2-real-moment__prompt {
+  color: color-mix(in srgb, var(--scenario-accent) 55%, var(--v2-bone));
 }
 
 .cw-v2-real-moment__seam {
@@ -3532,7 +3687,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--v2-muted);
+  color: color-mix(in srgb, var(--scenario-accent, var(--gold, #c9a227)) 48%, var(--v2-bone));
 }
 
 .cw-v2-real-moment__lines {
@@ -3630,6 +3785,32 @@
   height: 1px;
   margin: 0 0 1.2rem;
   background: color-mix(in srgb, var(--v2-bone) 14%, transparent);
+}
+
+
+.cw-v2-trust__item-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 0.45rem;
+}
+
+.cw-v2-trust__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  margin-top: 0.1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold, #c9a227) 40%, transparent);
+  color: color-mix(in srgb, var(--gold, #c9a227) 85%, var(--v2-bone));
+  background: color-mix(in srgb, var(--gold, #c9a227) 10%, transparent);
+}
+
+.cw-v2-trust__icon svg {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .cw-v2-trust__item-title {

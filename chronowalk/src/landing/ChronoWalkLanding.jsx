@@ -89,17 +89,17 @@ export default function ChronoWalkLanding() {
 
       if (!url) {
         console.warn(
-          '[ChronoWalk landing] Checkout URL unavailable — using tier fallback and /access route.',
+          '[ChronoWalk landing] Checkout URL unavailable for tier — staying on pricing (access is separate).',
           tierId,
         )
-        navigate('/access')
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
         return
       }
 
       trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
       window.location.assign(url)
     },
-    [cents, checkoutUrl, navigate],
+    [cents, checkoutUrl],
   )
 
   const [actPromise, actExperience, actDecision] = LANDING_ACTS
