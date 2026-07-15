@@ -38,8 +38,8 @@ Shared feature claims are not re-litigated in every section.
 | Roma Antica bullets | Studio-written · GPS · Download offline stack | Pricing intro · Benefits · FAQ |
 | Roma Eterna bullets | “Pause and resume anytime…” | Benefits · Featured “re-order stops” bullet · FAQ timing |
 | Footer tagline | “studio-written” + audio-tour cliché stack | Trust · FAQ narration |
-| Comparison feature matrix | Unmounted earlier in Phase 9 | FAQ differentiators · `#compare` deeplink |
-| Trust feature bullets | Unmounted earlier in Phase 9 | Benefits · Trust research prose only |
+| Comparison feature matrix | Unmounted earlier; replaced by Why ChronoWalk (Phase 12) | Why + FAQ |
+| Trust feature bullets | Unmounted; research posture in FAQ / Threshold | FAQ · Threshold |
 
 ## Preserved on purpose
 

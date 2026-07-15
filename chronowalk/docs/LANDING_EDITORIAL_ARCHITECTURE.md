@@ -9,7 +9,7 @@ Prompt 2 / Phase 2: **restructure section order only** — no wholesale copy rew
 |-----|--------|------|
 | I — The Promise | `#act-promise` | Hero → Emotional interlude → Threshold → Early CTA |
 | II — The Experience | `#act-experience` | How it works → Real-moment → Continuous route → Benefits → Free preview |
-| III — The Decision | `#act-decision` | Pricing → Trust/proof → FAQ → After Rome → Final CTA → Footer |
+| III — The Decision | `#act-decision` | Pricing → Why ChronoWalk → Trust → FAQ → After Rome → Final CTA → Footer |
 
 Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 
@@ -28,12 +28,12 @@ Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 | 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Phase 9 — What stays with you (once) |
 | 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Phase 10 — sharpened Pantheon preview |
 | 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Phase 11 — simplified hierarchy |
-| 11 | Trust / proof | `LandingTrustProofSection.jsx` | `#trust` | Research prose (no feature list) |
-| 12 | FAQ | `LandingFaqSectionV2.jsx` | `#faq` | Existing |
-| — | Comparison | deeplink `#compare` only | — | Unmounted Phase 9 |
-| 13 | After Rome | `LandingAfterRomeSection.jsx` | `#after-rome` | Scaffold (`#letter` anchor above) |
-| 14 | Final CTA | `LandingFinalCtaSectionV2.jsx` | `#final-cta` | Existing |
-| 15 | Footer | `LandingSiteFooter.jsx` | — | Existing |
+| 11 | Why ChronoWalk | `LandingWhyChronoWalkSection.jsx` | `#why-chronowalk` (+ `#compare`) | Phase 12 — no matrix |
+| 12 | Trust | `LandingTrustProofSection.jsx` | `#trust` | Phase 13 — How we build trust |
+| 13 | FAQ | `LandingFaqSectionV2.jsx` | `#faq` | Objection-handling accordion |
+| 14 | After Rome | `LandingAfterRomeSection.jsx` | `#after-rome` | Scaffold (`#letter` anchor above) |
+| 15 | Final CTA | `LandingFinalCtaSectionV2.jsx` | `#final-cta` | Existing |
+| 16 | Footer | `LandingSiteFooter.jsx` | — | Existing |
 
 Also: `#rome-journey` deeplink anchor after pricing (legacy).
 
@@ -50,7 +50,8 @@ Legacy hashes: `LANDING_LEGACY_DEEPLINK_IDS`
 - Analytics (`landing_view`, `landing_cta_preview`, `landing_cta_begin`, `checkout_open`)  
 - Responsive `cw-v2-*` layouts  
 - `#who-its-for` resolves inside real-moment scenarios (persona cards removed Phase 7)
-- `#compare` deeplink only (comparison feature matrix unmounted Phase 9)
+- `#compare` resolves inside Why ChronoWalk (comparison matrix removed Phase 12)
+- `#trust` is **How we build trust** — product evidence only (see `LANDING_TRUST_PROOF.md`)
 - Benefits appear once under `#benefits` as **What stays with you** (see `LANDING_FEATURE_CONSOLIDATION.md`)
 - Baseline archive under `archive/v3-premium-baseline-2026-07-14/`
 

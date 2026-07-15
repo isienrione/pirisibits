@@ -111,6 +111,14 @@ export function formatLandingLines(lines, vars = {}) {
   return (lines ?? []).map((line) => formatLandingCopy(line, vars))
 }
 
+/**
+ * Approved traveler quotes for the landing trust section.
+ * Keep empty until a quote is explicitly stored AND approved for marketing use.
+ * Shape: { id, quote, attribution, context? }
+ * Do not invent testimonials, ratings, or user counts.
+ */
+export const LANDING_VERIFIED_REVIEWS = []
+
 export const stickyCta = {
   primary: `Begin Rome · ${PRICE_PLACEHOLDER}`,
   secondary: 'Try free story',
@@ -134,6 +142,7 @@ export const LANDING_SECTION_ORDER = [
   'try-free',
   // Act III — The Decision
   'pricing',
+  'why',
   'trust',
   'faq',
   'after-rome',
@@ -155,7 +164,7 @@ export const LANDING_ACTS = [
   {
     id: 'act-decision',
     label: 'Act III — The Decision',
-    sections: ['pricing', 'trust', 'faq', 'after-rome', 'final-cta'],
+    sections: ['pricing', 'why', 'trust', 'faq', 'after-rome', 'final-cta'],
   },
 ]
 
@@ -167,7 +176,13 @@ export const LANDING_ACTS = [
 export const LANDING_PRESERVED_LOWER_SECTIONS = []
 
 /** Legacy hash targets kept resolving while content is relocated. */
-export const LANDING_LEGACY_DEEPLINK_IDS = ['rome-journey', 'letter', 'who-its-for', 'compare']
+export const LANDING_LEGACY_DEEPLINK_IDS = [
+  'rome-journey',
+  'letter',
+  'who-its-for',
+  'compare',
+  'trust',
+]
 
 export const LANDING_CONTENT = {
   hero: {
@@ -231,11 +246,50 @@ export const LANDING_CONTENT = {
 
   trust: {
     id: 'trust',
-    eyebrow: 'Grounded, not generic',
-    headline: 'Cinematic, but researched.',
+    eyebrow: 'How we build trust',
+    headline: 'Honest about what we know — and what we don’t.',
     subheadline:
-      'Stories are thoroughly researched, reconstructions are evidence-based, and interpretive details are clearly noted. No fake certainty. No generic AI narration.',
-    /** Phase 9 — feature bullets live only under `benefits`; trust is research posture alone. */
+      'ChronoWalk is still early. We don’t invent reviews or star ratings. Here’s the product evidence we can stand behind today.',
+    items: [
+      {
+        title: 'Uncertainty, labeled',
+        body: 'Where the record is thin, we say so. Threshold captions note interpretive details — colors, crowds, and conjecture — so the image doesn’t pretend to be a photograph of the past.',
+      },
+      {
+        title: 'Reconstructions from your viewpoint',
+        body: 'At selected landmarks, press and hold to compare today’s stones with a researched reconstruction matched to the vantage in front of you — not a stock illustration.',
+      },
+      {
+        title: 'Scripts written for this route',
+        body: 'Narration is researched and produced for ChronoWalk’s Rome journey — one studio-written path for this city, not a mash-up of unrelated tours.',
+      },
+      {
+        title: 'Try before you buy',
+        body: 'The Pantheon preview needs no account. Paid packages are one-time purchases — no subscription.',
+      },
+      {
+        title: 'Tickets stay honest',
+        body: 'ChronoWalk does not replace ticketed entry where tickets are required. Much of the walk happens on streets, piazzas, and open viewpoints.',
+      },
+    ],
+    imageryNote:
+      'Present-day photographs and reconstruction notes are documented with sources where available.',
+    imageryHref: '/credits',
+    imageryCta: 'Imagery credits',
+    /** Renders only when LANDING_VERIFIED_REVIEWS has approved entries. */
+    verifiedReviewsEmptyNote:
+      'Traveler quotes will appear here when we have approved ones to share — nothing fabricated in the meantime.',
+  },
+
+  why: {
+    id: 'why-chronowalk',
+    eyebrow: 'Why ChronoWalk',
+    headline: 'Freedom to wander.\nThe depth of a great guide.',
+    points: [
+      'Stories tied to the place where they happened',
+      'Evidence-based reconstructions from the viewpoint in front of you',
+      'A route that pauses when you do',
+    ],
   },
 
   'after-rome': {
@@ -384,56 +438,16 @@ export const LANDING_CONTENT = {
     ],
   },
 
+  /**
+   * @deprecated Phase 12 — competitor matrix removed from the live landing.
+   * Objection-handling lives in `why` + FAQ. `#compare` resolves on Why ChronoWalk.
+   */
   comparison: {
     id: 'compare',
     eyebrow: 'Why ChronoWalk',
     headline: 'Freedom to wander — with the depth of a great guide.',
-    columns: [
-      { id: 'chrono', label: 'ChronoWalk', tag: 'Self-guided on your phone', featured: true },
-      { id: 'apps', label: 'Other audio tour apps', tag: 'Downloadable tours' },
-      { id: 'museums', label: 'Museum audioguides', tag: 'Indoor headsets' },
-      { id: 'groups', label: 'Free walking tours', tag: 'Group on the street' },
-    ],
-    rows: [
-      {
-        feature: 'While you walk',
-        chrono: 'Eyes on Rome — stories trigger when you arrive',
-        apps: 'Often screen-first — map, quizzes, or checklists in the sun',
-        museums: 'One building, one fixed path, one collection',
-        groups: 'Follow the guide and the group pace',
-      },
-      {
-        feature: 'The narration',
-        chrono: 'One studio-written journey for this route',
-        apps: 'Uneven quality across authors and cities',
-        museums: 'Room-by-room facts, not a connected city story',
-        groups: 'Depends on the guide that day',
-      },
-      {
-        feature: 'Seeing the past',
-        chrono: 'Press-and-hold reconstructions at the ruin',
-        apps: false,
-        museums: 'Usually labels and display cases only',
-        groups: 'Verbal description only — hard to picture',
-      },
-      {
-        feature: 'Your schedule',
-        chrono: 'Pause anytime — one day or spread across the trip',
-        apps: 'Flexible, but you plan the route yourself',
-        museums: 'Opening hours and ticket windows',
-        groups: 'Fixed start times — rain or shine',
-      },
-      {
-        feature: 'Offline & outdoors',
-        chrono: 'Download once — built for streets, piazzas, and ruins',
-        apps: 'Varies by app; not always offline-ready',
-        museums: 'Indoors only',
-        groups: 'Outdoors, but tied to the group',
-      },
-    ],
-    /** @deprecated v1 two-column layout */
-    problemColumn: 'The Problem with General Apps',
-    solutionColumn: 'The ChronoWalk Experience',
+    columns: [],
+    rows: [],
   },
 
   letter: {
@@ -626,16 +640,16 @@ export const LANDING_CONTENT = {
         a: 'A self-guided walking app for Rome. You follow a route on your phone; stories play when you arrive at each landmark. No tour group, no fixed schedule — wander freely with the history at every stop.',
       },
       {
-        q: 'How is this different from a podcast or YouTube video?',
-        a: 'ChronoWalk is tied to where you stand. Stories trigger by GPS when you reach each stop, and Threshold reconstructions match the view in front of you. It is one curated Rome route — not a generic audio file you could listen to anywhere.',
+        q: 'How is this different from a podcast?',
+        a: 'ChronoWalk is tied to where you stand. Stories open when you reach each stop, and Threshold reconstructions match the view in front of you — so the place becomes part of the scene, not a soundtrack you could play anywhere.',
       },
       {
-        q: 'How is this different from other audio tour apps?',
-        a: 'One studio-written journey for Rome — not a marketplace of uneven tours. No quizzes while you walk. Narration is researched and produced for this route; reconstructions are evidence-based where we show the past.',
+        q: 'How is this different from other audio tours?',
+        a: 'One studio-written journey for this Rome route: researched narration, place-triggered stories, and evidence-based reconstructions where we show the past. Built for heads-up walking outdoors — not a checklist of rooms indoors.',
       },
       {
         q: 'Is this a group tour?',
-        a: 'No. You walk alone or with whoever you brought. Start, pause, and continue on your own time.',
+        a: 'No. You walk alone or with whoever you brought. Start, pause, and continue on your own time — there is no flag, fixed start, or group pace to keep.',
       },
       {
         q: 'What does the free sneak peek include?',

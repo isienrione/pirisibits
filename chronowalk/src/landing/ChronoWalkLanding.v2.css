@@ -3122,6 +3122,180 @@
   }
 }
 
+/* —— Trust / How we build trust (Phase 13) —— */
+
+.cw-v2-trust__layout {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+
+.cw-v2-trust__header {
+  text-align: left;
+  max-width: 36rem;
+}
+
+.cw-v2-trust__title {
+  text-align: left;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.85rem, 4vw, 2.55rem);
+  line-height: 1.15;
+  white-space: pre-line;
+}
+
+.cw-v2-trust__lead {
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.cw-v2-trust__list {
+  list-style: none;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  max-width: 36rem;
+}
+
+.cw-v2-trust__item {
+  padding: 1.2rem 0;
+}
+
+.cw-v2-trust__seam {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin: 0 0 1.2rem;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 28%, transparent);
+}
+
+.cw-v2-trust__item-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--v2-bone);
+}
+
+.cw-v2-trust__item-body {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--v2-soft);
+  text-wrap: pretty;
+}
+
+.cw-v2-trust__imagery {
+  margin: 1.35rem 0 0;
+  max-width: 36rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--v2-muted);
+}
+
+.cw-v2-trust__imagery-link {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.cw-v2-trust__imagery-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.cw-v2-trust__reviews {
+  margin-top: 1.5rem;
+  max-width: 36rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 8%, transparent);
+}
+
+.cw-v2-trust__reviews-pending {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--v2-muted);
+  font-style: italic;
+}
+
+.cw-v2-trust__quotes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.cw-v2-trust__quote blockquote {
+  margin: 0;
+}
+
+.cw-v2-trust__quote p {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--v2-bone);
+}
+
+.cw-v2-trust__quote footer {
+  margin-top: 0.55rem;
+  font-size: 0.8rem;
+  color: var(--v2-muted);
+}
+
+.cw-v2-trust__quote cite {
+  font-style: normal;
+  font-weight: 600;
+}
+
+.cw-v2-trust__quote-context {
+  display: block;
+  margin-top: 0.15rem;
+}
+
+.cw-v2-trust__visual {
+  margin: 0;
+  justify-self: center;
+  max-width: 14.5rem;
+  width: 100%;
+}
+
+.cw-v2-trust__visual .cw-v2-live-phone {
+  width: 100%;
+  max-width: none;
+  margin-inline: auto;
+}
+
+.cw-v2-trust__caption {
+  margin: 0.7rem 0 0;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--v2-muted);
+}
+
+@media (min-width: 48rem) {
+  .cw-v2-trust__layout {
+    grid-template-columns: minmax(0, 1.2fr) minmax(11rem, 0.65fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .cw-v2-trust__visual {
+    justify-self: end;
+    position: sticky;
+    top: 6rem;
+    max-width: 15.5rem;
+  }
+}
+
 .cw-v2-after-rome__closing {
   margin: 1.25rem 0 0;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
@@ -3129,4 +3303,58 @@
   font-size: 1.05rem;
   line-height: 1.55;
   color: var(--v2-gold, var(--gold));
+}
+
+/* —— Why ChronoWalk (Phase 12) —— */
+
+.cw-v2-why__title {
+  white-space: pre-line;
+  text-transform: none;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.85rem, 4vw, 2.55rem);
+  line-height: 1.15;
+}
+
+.cw-v2-why__list {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.cw-v2-why__item {
+  padding: 1.35rem 0;
+}
+
+.cw-v2-why__seam {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  margin: 0 0 1.35rem;
+  background: var(--gold);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--gold) 28%, transparent);
+}
+
+.cw-v2-why__point {
+  margin: 0;
+  max-width: 34rem;
+  margin-inline: auto;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--v2-bone);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+@media (min-width: 48rem) {
+  .cw-v2-why__list {
+    margin-top: 2.35rem;
+  }
+
+  .cw-v2-why__item {
+    padding: 1.5rem 0;
+  }
 }

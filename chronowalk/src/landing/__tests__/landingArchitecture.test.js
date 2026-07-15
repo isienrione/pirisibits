@@ -5,6 +5,7 @@ import {
   LANDING_LEGACY_DEEPLINK_IDS,
   LANDING_PRESERVED_LOWER_SECTIONS,
   LANDING_SECTION_ORDER,
+  LANDING_VERIFIED_REVIEWS,
 } from '../landingData.js'
 
 describe('landing editorial architecture', () => {
@@ -20,6 +21,7 @@ describe('landing editorial architecture', () => {
       'benefits',
       'try-free',
       'pricing',
+      'why',
       'trust',
       'faq',
       'after-rome',
@@ -47,7 +49,7 @@ describe('landing editorial architecture', () => {
 
   it('exposes legacy deeplink ids for scroll/hash resolution', () => {
     expect(LANDING_LEGACY_DEEPLINK_IDS).toEqual(
-      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for', 'compare']),
+      expect.arrayContaining(['rome-journey', 'letter', 'who-its-for', 'compare', 'trust']),
     )
   })
 
@@ -72,7 +74,6 @@ describe('landing editorial architecture', () => {
       'Downloaded once',
       'Yours to keep',
     ])
-    expect(LANDING_CONTENT.trust.items).toBeUndefined()
     expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
   })
 
@@ -83,5 +84,33 @@ describe('landing editorial architecture', () => {
     expect(section.trustLine).toBe('No account required.')
     expect(section.included).toMatch(/Pantheon/i)
     expect(section.notIncluded).toMatch(/Not included/i)
+  })
+
+  it('replaces the competitor matrix with a promise-led Why ChronoWalk beat', () => {
+    const section = LANDING_CONTENT.why
+    expect(section.eyebrow).toBe('Why ChronoWalk')
+    expect(section.headline).toContain('Freedom to wander')
+    expect(section.points).toEqual([
+      'Stories tied to the place where they happened',
+      'Evidence-based reconstructions from the viewpoint in front of you',
+      'A route that pauses when you do',
+    ])
+    expect(LANDING_CONTENT.comparison.rows).toEqual([])
+    expect(LANDING_CONTENT.faq.items.map((item) => item.q)).toEqual(
+      expect.arrayContaining([
+        'How is this different from a podcast?',
+        'How is this different from other audio tours?',
+        'Is this a group tour?',
+      ]),
+    )
+  })
+
+  it('ships How we build trust without fabricated social proof', () => {
+    const section = LANDING_CONTENT.trust
+    expect(section.eyebrow).toBe('How we build trust')
+    expect(section.items.length).toBeGreaterThanOrEqual(4)
+    expect(section.imageryHref).toBe('/credits')
+    expect(LANDING_VERIFIED_REVIEWS).toEqual([])
+    expect(section.verifiedReviewsEmptyNote).toMatch(/approved/i)
   })
 })

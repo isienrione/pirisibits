@@ -1,28 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import LandingComparisonSection from '../LandingComparisonSection.jsx'
+import LandingWhyChronoWalkSection from '../LandingWhyChronoWalkSection.jsx'
 
-describe('LandingComparisonSection', () => {
-  it('renders labeled comparison rows for mobile-friendly reading', () => {
-    render(<LandingComparisonSection />)
-
-    const table = screen.getByRole('table', { name: /freedom to wander/i })
-    const whileYouWalk = within(table).getByRole('rowheader', { name: /while you walk/i })
-    const row = whileYouWalk.closest('[role="row"]')
-    expect(row).toBeTruthy()
-
-    expect(within(row).getByText(/^ChronoWalk$/)).toBeInTheDocument()
-    expect(within(row).getByText(/other audio tour apps/i)).toBeInTheDocument()
-    expect(within(row).getByText(/eyes on rome — stories trigger when you arrive/i)).toBeInTheDocument()
-    expect(
-      within(row).getByText(/often screen-first — map, quizzes, or checklists in the sun/i),
-    ).toBeInTheDocument()
+describe('comparison matrix retirement', () => {
+  it('no longer renders the competitor comparison table', () => {
+    const { container } = render(<LandingComparisonSection />)
+    expect(container).toBeEmptyDOMElement()
+    expect(screen.queryByRole('table')).not.toBeInTheDocument()
   })
 
-  it('keeps column headers for the desktop table layout', () => {
-    render(<LandingComparisonSection />)
+  it('renders Why ChronoWalk as promise-led points without naming rivals', () => {
+    render(<LandingWhyChronoWalkSection />)
 
-    expect(screen.getByRole('columnheader', { name: /ChronoWalk/i })).toBeInTheDocument()
-    expect(screen.getByRole('columnheader', { name: /museum audioguides/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /freedom to wander/i })).toBeInTheDocument()
+    expect(screen.getByText(/stories tied to the place where they happened/i)).toBeInTheDocument()
+    expect(screen.getByText(/evidence-based reconstructions/i)).toBeInTheDocument()
+    expect(screen.getByText(/a route that pauses when you do/i)).toBeInTheDocument()
+    expect(screen.queryByText(/other audio tour apps/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/free walking tours/i)).not.toBeInTheDocument()
   })
 })
