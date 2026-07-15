@@ -3,7 +3,7 @@ import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
  * Act II — How it works in three scannable steps.
- * Phones support the beat; copy leads. Secondary details hide under progressive disclosure.
+ * Copy leads; compact phones appear from desktop only (Phase 22 polish).
  */
 export default function LandingUserFlowSection() {
   const section = LANDING_CONTENT['user-flow']

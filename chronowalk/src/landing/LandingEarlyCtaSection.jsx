@@ -16,11 +16,11 @@ export default function LandingEarlyCtaSection({ onPreview }) {
         </h2>
         <div className="cw-v2-early-cta__actions">
           {onPreview ? (
-            <button type="button" className="cw-v2-btn cw-v2-btn--coral" onClick={onPreview}>
+            <button type="button" className="cw-v2-btn cw-v2-btn--outline cw-v2-early-cta__btn" onClick={onPreview}>
               {section.primaryCta}
             </button>
           ) : (
-            <a href="#try-free" className="cw-v2-btn cw-v2-btn--coral">
+            <a href="#try-free" className="cw-v2-btn cw-v2-btn--outline cw-v2-early-cta__btn">
               {section.primaryCta}
             </a>
           )}

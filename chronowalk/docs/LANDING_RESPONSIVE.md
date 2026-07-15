@@ -23,7 +23,8 @@ Reuse existing rem stops:
 
 - `47.99rem` — phone-only overrides  
 - `48rem` — tablet floor  
-- `56rem` — hero two-column  
+- `56rem` — (legacy) hero two-column — **Phase 22:** deferred to `64rem` with phone device  
+- `64rem` — desktop nav, footer row, how-it-works phones, hero device, try-free visual 
 - `64rem` — desktop nav / denser grids / ultrawide ending  
 
 Plus one intentional **tablet band**: `(min-width: 48rem) and (max-width: 63.99rem)`.

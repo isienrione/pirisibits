@@ -81,16 +81,16 @@ describe('landing editorial architecture', () => {
   it('frames the free preview as one stop with clear inclusions', () => {
     const section = LANDING_CONTENT['try-free']
     expect(section.headline).toContain('One stop.')
-    expect(section.primaryCta).toBe('Try the Pantheon stop free')
-    expect(section.trustLine).toBe('No account required.')
+    expect(section.primaryCta).toBe('Try one stop free')
+    expect(section.trustLine).toBe('No account.')
     expect(section.included).toMatch(/Pantheon/i)
-    expect(section.notIncluded).toMatch(/Not included/i)
+    expect(section.notIncluded).toMatch(/Full packages/i)
   })
 
   it('replaces the competitor matrix with a promise-led Why ChronoWalk beat', () => {
     const section = LANDING_CONTENT.why
     expect(section.eyebrow).toBe('Why ChronoWalk')
-    expect(section.headline).toContain('Walk freely')
+    expect(section.headline).toContain('Tied to the stones')
     expect(section.points).toEqual([
       'Stories tied to the place where they happened',
       'Evidence-based reconstructions from the viewpoint in front of you',
@@ -109,6 +109,7 @@ describe('landing editorial architecture', () => {
   it('ships How we build trust without fabricated social proof', () => {
     const section = LANDING_CONTENT.trust
     expect(section.eyebrow).toBe('How we build trust')
+    expect(section.headline).toBe('Evidence you can check.')
     expect(section.items.length).toBeGreaterThanOrEqual(4)
     expect(section.imageryHref).toBe('/credits')
     expect(LANDING_VERIFIED_REVIEWS).toEqual([])
@@ -167,7 +168,7 @@ describe('landing editorial architecture', () => {
       'Begin where you are. Continue at your own pace.',
     ])
     expect(section.primaryCta).toBe('Try one stop free')
-    expect(section.secondaryCta).toBe('Explore Rome routes')
+    expect(section.secondaryCta).toBe('See packages')
     expect(section.footer).toBeUndefined()
     expect(section.verseLines).toBeUndefined()
   })
@@ -191,7 +192,10 @@ describe('landing editorial architecture', () => {
 
   it('keeps primary landing copy in ChronoWalk voice after the Phase 18 audit', () => {
     expect(LANDING_CONTENT.hero.headline).toBe('Stories begin when you arrive.')
+    expect(LANDING_CONTENT.hero.eyebrow).toBe('ChronoWalk · Rome')
     expect(LANDING_CONTENT.hero.accentLine).toBe('Walk freely. Keep the context.')
+    expect(LANDING_CONTENT.hero.primaryCta).toBe('Try one stop free')
+    expect(LANDING_CONTENT.hero.secondaryCta).toBe('See packages')
     expect(LANDING_CONTENT.threshold.headline).toBe('Press and hold. The ruin becomes the room.')
     expect(LANDING_CONTENT['real-moment'].scenarios[0].lines).toEqual([
       'The monument may be sold out.',

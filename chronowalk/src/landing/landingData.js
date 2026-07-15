@@ -16,11 +16,12 @@ export const LANDING_PREVIEW_AUDIO_FILE = 'w17_ch1.mp3'
 /** Shared CTA labels used across sections. */
 export const LANDING_CTA = {
   begin: 'Begin Rome',
-  tryFree: 'Try the Pantheon free',
+  tryFree: 'Try one stop free',
   tryFreeSneakPeek: 'Try one stop free',
-  seeRoutes: 'See Rome routes from €9',
+  seeRoutes: 'See packages',
   tryOneStopFree: 'Try one stop free',
-  exploreRomeRoutes: 'Explore Rome routes',
+  /** Secondary CTAs that scroll to `#pricing` (packages), not the route map. */
+  exploreRomeRoutes: 'See packages',
 }
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
@@ -194,16 +195,16 @@ export const LANDING_LEGACY_DEEPLINK_IDS = [
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'Rome · On foot',
+    eyebrow: 'ChronoWalk · Rome',
     headline: 'Stories begin when you arrive.',
     /** Place-tied support under the emotional headline. */
     accentLine: 'Walk freely. Keep the context.',
     subheadline:
       'Self-guided Rome walks — narration and Threshold tied to the stones in front of you.',
-    primaryCta: 'Try one stop free',
-    secondaryCta: 'Explore Rome routes',
-    /** Purchase objections near CTA; feature depth lives once under `#benefits`. */
-    trustLine: 'No group · No subscription · One-time purchase',
+    primaryCta: LANDING_CTA.tryOneStopFree,
+    secondaryCta: LANDING_CTA.exploreRomeRoutes,
+    /** Calm purchase cue — feature depth lives once under `#benefits`. */
+    trustLine: 'One purchase. No subscription. Your pace.',
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },
@@ -219,9 +220,9 @@ export const LANDING_CONTENT = {
     id: 'early-cta',
     headline: null,
     subheadline: null,
-    primaryCta: 'Try the Pantheon stop free',
+    primaryCta: LANDING_CTA.tryOneStopFree,
     secondaryCta: null,
-    hint: 'Free Pantheon preview · ~4 min · No account required',
+    hint: 'Pantheon · about four minutes',
   },
 
   'real-moment': {
@@ -239,7 +240,7 @@ export const LANDING_CONTENT = {
       },
       {
         prompt: 'Love to wander?',
-        lines: ['Walk freely. Keep the context.', 'Nothing on the route rushes you.'],
+        lines: ['Let the streets choose the order.', 'Nothing on the route rushes you.'],
       },
       {
         prompt: 'History curious?',
@@ -251,9 +252,9 @@ export const LANDING_CONTENT = {
   trust: {
     id: 'trust',
     eyebrow: 'How we build trust',
-    headline: 'Honest about what we know — and what we don’t.',
+    headline: 'Evidence you can check.',
     subheadline:
-      'ChronoWalk is still early. We don’t invent reviews or star ratings. Here is the evidence we can stand behind today.',
+      'Uncertainty is labeled. Reconstructions match the viewpoint in front of you. Sources live where they belong.',
     items: [
       {
         title: 'Uncertainty, labeled',
@@ -268,8 +269,8 @@ export const LANDING_CONTENT = {
         body: 'Narration is researched and produced for ChronoWalk’s Rome walk — one studio-written path for this city, not a mash-up of unrelated tours.',
       },
       {
-        title: 'Try before you buy',
-        body: 'The Pantheon preview needs no account. Paid packages are one-time purchases — no subscription.',
+        title: 'Preview without an account',
+        body: 'The Pantheon stop opens free. Paid packages are one-time purchases — no subscription.',
       },
       {
         title: 'Tickets stay honest',
@@ -280,15 +281,18 @@ export const LANDING_CONTENT = {
       'Present-day photographs and reconstruction notes are documented with sources where available.',
     imageryHref: '/credits',
     imageryCta: 'Imagery credits',
-    /** Renders only when LANDING_VERIFIED_REVIEWS has approved entries. */
+    /**
+     * Kept for when LANDING_VERIFIED_REVIEWS gains approved entries.
+     * Empty state is not rendered on the live page (Phase 22).
+     */
     verifiedReviewsEmptyNote:
-      'Traveler quotes appear here only when we have approved ones to share — nothing fabricated in the meantime.',
+      'Traveler quotes appear here only when we have approved ones to share.',
   },
 
   why: {
     id: 'why-chronowalk',
     eyebrow: 'Why ChronoWalk',
-    headline: 'Walk freely.\nKeep the context.',
+    headline: 'Tied to the stones.\nYours to keep.',
     points: [
       'Stories tied to the place where they happened',
       'Evidence-based reconstructions from the viewpoint in front of you',
@@ -333,7 +337,7 @@ export const LANDING_CONTENT = {
       {
         step: '3',
         title: 'Arrive, listen, reveal',
-        body: 'Stories begin when you arrive.',
+        body: 'When you arrive, the chapter opens.',
         mockup: 'audio',
       },
     ],
@@ -360,7 +364,7 @@ export const LANDING_CONTENT = {
     items: [
       {
         title: 'Stories where you stand',
-        body: 'Stories begin when you arrive.',
+        body: 'Narration opens at the landmark in front of you.',
       },
       {
         title: 'Your pace',
@@ -379,15 +383,15 @@ export const LANDING_CONTENT = {
 
   'try-free': {
     id: 'try-free',
-    eyebrow: 'Try before you buy',
+    eyebrow: 'Free sample',
     headline: 'One stop.\nBefore you buy.',
     subheadline: FREE_PREVIEW.copy,
     card: FREE_PREVIEW,
-    primaryCta: 'Try the Pantheon stop free',
-    secondaryCta: 'Explore Rome routes',
-    trustLine: 'No account required.',
-    included: 'Included: one Pantheon chapter (~4 min) — narration, GPS arrival, and Threshold.',
-    notIncluded: 'Not included: the full Rome route or every stop on a paid package.',
+    primaryCta: LANDING_CTA.tryOneStopFree,
+    secondaryCta: LANDING_CTA.exploreRomeRoutes,
+    trustLine: 'No account.',
+    included: 'One Pantheon chapter — narration, arrival, and Threshold (~4 min).',
+    notIncluded: 'Full packages open every stop on the route.',
   },
 
   threshold: {
@@ -398,7 +402,7 @@ export const LANDING_CONTENT = {
     body: 'At selected landmarks, compare what stands today with an evidence-based reconstruction from the same viewpoint.',
     support: 'Where historians disagree, we say so.',
     disclaimer:
-      'Colors and crowd details are interpretive where noted — we do not fake certainty. Gaps in the record are acknowledged in the copy.',
+      'Colors and crowd details are interpretive where noted. Gaps in the record appear in the copy.',
     holdHint: 'Press and hold',
     revealLabel: 'Reveal the past',
     hideLabel: 'Show today',
@@ -479,9 +483,8 @@ export const LANDING_CONTENT = {
   pricing: {
     id: 'pricing',
     headline: 'Pick how much of Rome you want.',
-    subheadline: 'One-time purchase per package — yours for the trip and after.',
-    intro:
-      'Every package includes GPS-triggered narration, offline download, and the Pantheon preview stop.',
+    subheadline: 'One-time purchase — yours for the trip and after.',
+    intro: 'GPS narration, offline download, and the Pantheon preview in every package.',
     footnote:
       'Secure checkout · Instant access · Does not replace ticketed entry where tickets are required',
     tiers: ROME_TIERS,
@@ -501,7 +504,7 @@ export const LANDING_CONTENT = {
   },
 
   footer: {
-    tagline: 'Self-guided walking stories for Rome — researched and yours to keep.',
+    tagline: 'Self-guided walks for Rome — researched and yours to keep.',
     nav: [
       { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
@@ -510,7 +513,7 @@ export const LANDING_CONTENT = {
       { label: 'Pricing', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
-    credit: 'Made for people on foot.',
+    credit: 'Made for people on foot · ChronoWalk',
   },
 
   /** Legacy keys kept for archive components */

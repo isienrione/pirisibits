@@ -36,7 +36,7 @@ describe('LandingThresholdSection', () => {
     render(<LandingThresholdSection />)
     expect(screen.getByRole('heading', { level: 2, name: /press and hold/i })).toBeInTheDocument()
     expect(screen.getByText(/where historians disagree/i)).toBeInTheDocument()
-    expect(screen.getByText(/do not fake certainty/i)).toBeInTheDocument()
+    expect(screen.getByText(/interpretive where noted/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /reveal the past/i })).toBeInTheDocument()
   })
 

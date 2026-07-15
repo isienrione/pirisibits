@@ -67,6 +67,10 @@ See `LANDING_PRODUCTION_READINESS.md` — focus styles, Threshold a11y, AVIF/Web
 
 Do not change design without measuring. Event catalog, primary funnel, and test instructions: `LANDING_ANALYTICS.md`. Helpers: `landingAnalytics.js` (section context, once-guards). Provider remains PostHog via `track()`.
 
+### Final polish (Phase 22)
+
+Copy + CSS restraint pass only — no new sections. Report: `LANDING_FINAL_QA.md` (files/sections changed, remaining concerns, A/B tests, readiness scores).
+
 ## Preserved (not redesigned)
 
 - CTA destinations (`/preview`, `#pricing`, checkout)  
@@ -82,7 +86,6 @@ Do not change design without measuring. Event catalog, primary funnel, and test 
 
 ## Next (not this prompt)
 
-- Editorial copy pass  
-- Interactive Threshold or honest static rewrite  
-- Hero first-viewport tightening  
-- Eventual removal of preserved-lower sections once replacements fully cover SEO intent
+- Fresh Rome photography set (hero / interlude / after-rome / ending plates)
+- Optional A/B: sticky header CTA treatment (see `LANDING_FINAL_QA.md`)
+- Eventual removal of preserved-lower archive once replacements fully cover SEO intent
