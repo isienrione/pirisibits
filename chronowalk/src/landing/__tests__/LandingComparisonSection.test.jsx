@@ -13,7 +13,8 @@ describe('comparison matrix retirement', () => {
   it('renders Why ChronoWalk as promise-led points without naming rivals', () => {
     render(<LandingWhyChronoWalkSection />)
 
-    expect(screen.getByRole('heading', { level: 2, name: /freedom to wander/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /walk freely/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /keep the context/i })).toBeInTheDocument()
     expect(screen.getByText(/stories tied to the place where they happened/i)).toBeInTheDocument()
     expect(screen.getByText(/evidence-based reconstructions/i)).toBeInTheDocument()
     expect(screen.getByText(/a route that pauses when you do/i)).toBeInTheDocument()

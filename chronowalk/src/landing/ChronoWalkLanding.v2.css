@@ -17,12 +17,22 @@
   --v2-max: 72rem;
   --v2-narrow: 56rem;
   --v2-pricing: 64rem;
+  /* Phase 19 — sticky clearance (mobile / tablet+desktop) */
+  --v2-header-height: 3.6rem;
+  --v2-header-offset: calc(var(--v2-header-height) + 0.75rem);
 
   min-height: 100dvh;
   background: var(--v2-obsidian);
   color: var(--v2-bone);
   font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
   line-height: 1.65;
+  overflow-x: clip;
+}
+
+@media (min-width: 48rem) {
+  .cw-landing--premium {
+    --v2-header-height: 4.35rem;
+  }
 }
 
 .cw-landing--premium main {
@@ -48,6 +58,8 @@
 
 .cw-v2-wrap--pricing {
   max-width: 72rem;
+  container-type: inline-size;
+  container-name: cw-pricing;
 }
 
 /* —— Typography —— */
@@ -84,8 +96,10 @@
 
 .cw-v2-section__title {
   margin: 0;
+  max-width: 22ch;
+  margin-inline: auto;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(1.85rem, 4.2vw, 2.75rem);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: var(--tracking-brand-header);
@@ -176,20 +190,13 @@
   gap: 2rem;
 }
 
-.cw-v2-header__link {
-  font-size: 0.88rem;
-  color: var(--v2-muted);
-  text-decoration: none;
-  transition: color 160ms ease;
-}
-
-.cw-v2-header__link:hover {
-  color: var(--v2-bone);
-}
-
 .cw-v2-header__cta {
   flex-shrink: 0;
-  padding: 0.5rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.25rem;
   border: none;
   border-radius: 999px;
   background: var(--v2-terracotta);
@@ -214,9 +221,25 @@
   display: none;
 }
 
-@media (min-width: 48rem) {
+.cw-v2-header__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  font-size: 0.88rem;
+  color: var(--v2-muted);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.cw-v2-header__link:hover {
+  color: var(--v2-bone);
+}
+
+/* Full nav from desktop (64rem); tablet keeps brand + CTA to avoid crush. */
+@media (min-width: 64rem) {
   .cw-v2-header__nav {
     display: flex;
+    gap: 1.5rem;
   }
 }
 
@@ -704,7 +727,7 @@
   outline-offset: 3px;
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 64rem) {
   .cw-v2-user-flow--essential .cw-v2-user-flow__track {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0 1.25rem;
@@ -721,12 +744,6 @@
     transform: translateX(-0.625rem);
   }
 
-  .cw-v2-user-flow__device {
-    max-width: 9.5rem;
-  }
-}
-
-@media (min-width: 64rem) {
   .cw-v2-user-flow__device {
     max-width: 10rem;
   }
@@ -881,9 +898,9 @@
 .cw-v2-try-free__caption {
   margin: 0.75rem 0 0;
   text-align: center;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v2-muted);
 }
@@ -1150,7 +1167,8 @@
   appearance: none;
   border: 0;
   background: transparent;
-  padding: 0.35rem 0.15rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.35rem;
   font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
   font-size: 0.82rem;
   font-weight: 600;
@@ -1203,8 +1221,9 @@
 
   .cw-v2-monuments__track--preview .cw-v2-monuments__stop,
   .cw-v2-monuments__chapter .cw-v2-monuments__stop {
-    flex: 1 1 0;
-    min-width: 6.5rem;
+    flex: 0 0 auto;
+    min-width: 7.25rem;
+    max-width: 9rem;
     scroll-snap-align: start;
   }
 
@@ -1225,12 +1244,13 @@
 
   .cw-v2-monuments__track--preview .cw-v2-monuments__photo-wrap,
   .cw-v2-monuments__chapter .cw-v2-monuments__photo-wrap {
-    width: 4.5rem;
+    width: 5rem;
   }
 
   .cw-v2-monuments__track--preview .cw-v2-monuments__stop-title,
   .cw-v2-monuments__chapter .cw-v2-monuments__stop-title {
-    max-width: 8.5rem;
+    max-width: 8.75rem;
+    font-size: 0.78rem;
   }
 
   .cw-v2-monuments__chapters {
@@ -1281,7 +1301,7 @@
 .cw-v2-faq__group-label {
   margin: 0 0 0.25rem;
   font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -1294,7 +1314,7 @@
 
 .cw-v2-faq__item {
   border-bottom: 1px solid color-mix(in srgb, var(--v2-border) 80%, transparent);
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: var(--v2-header-offset, 5.5rem);
 }
 
 .cw-v2-faq__question-wrap {
@@ -1535,7 +1555,7 @@
 
 @media (min-width: 48rem) {
   .cw-v2-ending__stage {
-    aspect-ratio: 21 / 9;
+    aspect-ratio: 16 / 9;
     max-height: min(78svh, 36rem);
   }
 
@@ -1550,6 +1570,13 @@
 
   .cw-v2-ending__gold {
     margin-block: 1.5rem 1.55rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .cw-v2-ending__stage {
+    aspect-ratio: 21 / 9;
+    max-height: min(72svh, 34rem);
   }
 }
 
@@ -2439,17 +2466,18 @@
   color: var(--v2-muted);
 }
 
-/* Mobile: prioritize Roma Eterna for easier comparison */
-@media (max-width: 47.99rem) {
+/* Mobile + tablet portrait: prioritize Roma Eterna in the stack */
+@media (max-width: 63.99rem) {
   .cw-v2-pricing-card--featured {
     order: -1;
   }
 }
 
-@media (min-width: 48rem) {
+/* Avoid awkward 2+1 orphan: three equal columns only when the container is wide enough */
+@container cw-pricing (min-width: 52rem) {
   .cw-v2-pricing__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.35rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
   }
 }
 
@@ -2484,6 +2512,7 @@
 
 .cw-v2-footer__logo {
   align-items: flex-start;
+  max-width: min(100%, 14rem);
 }
 
 .cw-v2-footer__brand {
@@ -2502,10 +2531,13 @@
 .cw-v2-footer__nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 2rem;
+  gap: 0.35rem 1.25rem;
 }
 
 .cw-v2-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   font-size: 0.88rem;
   color: var(--v2-muted);
   text-decoration: none;
@@ -2524,11 +2556,81 @@
   color: var(--v2-muted);
 }
 
-@media (min-width: 48rem) {
+/* Desktop: brand + nav row. Tablet stays stacked for balance. */
+@media (min-width: 64rem) {
   .cw-v2-footer__inner {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+  }
+
+  .cw-v2-footer__logo {
+    max-width: min(100%, 16.25rem);
+  }
+}
+
+/* —— Tablet band (iPad portrait / mid-width) — first-class, not stretched desktop —— */
+
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .cw-v2-section {
+    padding-block: 4.5rem;
+  }
+
+  .cw-v2-wrap {
+    padding-inline: 1.75rem;
+  }
+
+  .cw-v2-section__title {
+    max-width: 18ch;
+    font-size: clamp(1.9rem, 3.6vw, 2.45rem);
+  }
+
+  .cw-v2-hero {
+    min-height: auto;
+    padding: calc(var(--v2-header-offset) + 0.85rem) 0 2.75rem;
+  }
+
+  .cw-v2-hero__headline {
+    max-width: 16ch;
+    font-size: clamp(2.2rem, 4.4vw, 2.85rem);
+  }
+
+  .cw-v2-hero__content {
+    max-width: 34rem;
+  }
+
+  .cw-v2-hero__device {
+    max-width: 12.5rem;
+  }
+
+  .cw-v2-try-free__layout,
+  .cw-v2-trust__layout {
+    gap: 2rem;
+  }
+
+  .cw-v2-try-free__visual,
+  .cw-v2-trust__visual {
+    max-width: 13.25rem;
+  }
+
+  .cw-v2-faq .cw-v2-wrap--narrow {
+    max-width: 38rem;
+  }
+
+  .cw-v2-faq__groups {
+    gap: 1.85rem;
+  }
+
+  .cw-v2-ending__headline {
+    font-size: clamp(1.7rem, 3.4vw, 2.25rem);
+  }
+
+  .cw-v2-after-rome__stage {
+    min-height: clamp(26rem, 58vw, 32rem);
+  }
+
+  .cw-v2-pricing-card__cta {
+    min-height: 2.875rem;
   }
 }
 
@@ -2551,7 +2653,8 @@
   }
 
   .cw-v2-header__cta {
-    padding: 0.45rem 0.85rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.95rem;
     font-size: 0.78rem;
   }
 
@@ -2606,7 +2709,7 @@
     min-height: 100svh;
     min-height: 100dvh;
     max-height: none;
-    padding: 4.5rem 0 1.75rem;
+    padding: calc(var(--v2-header-offset) + 0.5rem) 0 1.75rem;
   }
 
   .cw-v2-hero__layout {
@@ -3176,7 +3279,7 @@
  */
 .cw-landing-act--act-promise > .cw-landing-act__marker {
   position: absolute;
-  top: clamp(4.25rem, 10vw, 5.5rem);
+  top: var(--v2-header-offset, 4.25rem);
   inset-inline: 0;
   z-index: 4;
   padding-block: 0;
@@ -3568,9 +3671,9 @@
 .cw-v2-trust__caption {
   margin: 0.7rem 0 0;
   text-align: center;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--v2-muted);
 }
@@ -3585,7 +3688,7 @@
   .cw-v2-trust__visual {
     justify-self: end;
     position: sticky;
-    top: 6rem;
+    top: var(--v2-header-offset, 6rem);
     max-width: 15.5rem;
   }
 }

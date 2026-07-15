@@ -51,6 +51,14 @@ Order source of truth: `LANDING_SECTION_ORDER` + `LANDING_ACTS` in `landingData.
 Preserved lower: `LANDING_PRESERVED_LOWER_SECTIONS`  
 Legacy hashes: `LANDING_LEGACY_DEEPLINK_IDS`
 
+### Copy voice (Phase 18)
+
+Primary live copy lives in `landingData.js`. Voice: intelligent, calm, direct, curious, cinematic. Prefer short confident lines; emotional headlines vs practical body. Avoid travel-marketing clichés (`discover`, `immersive`, `unforgettable`, `sneak peek`, etc.). Pricing amounts and checkout footnote are factual — CTA/badge phrasing only was normalized.
+
+### Responsive (Phase 19)
+
+Mobile-first; tablet band `48–63.99rem` is first-class. See `LANDING_RESPONSIVE.md` for viewport matrix and every fix (header deferred to 64rem, pricing container queries, ending 16∶9→21∶9, etc.).
+
 ## Preserved (not redesigned)
 
 - CTA destinations (`/preview`, `#pricing`, checkout)  

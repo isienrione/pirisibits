@@ -26,8 +26,8 @@ describe('pricing card hierarchy content', () => {
 
   it('keeps Roma Eterna featured without invented conversion claims', () => {
     const eterna = ROME_TIERS.find((tier) => tier.id === 'rome-complete')
-    expect(eterna.badge).toBe('Most popular')
-    expect(eterna.badge).not.toMatch(/%/)
+    expect(eterna.badge).toBe('Full city loop')
+    expect(eterna.badge).not.toMatch(/%|popular|bestseller/i)
   })
 
   it('exposes stop counts for the simplified meta row', () => {

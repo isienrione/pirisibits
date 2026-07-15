@@ -11,7 +11,7 @@ export default function LandingSiteFooter() {
         <div className="cw-v2-footer__brand-block">
           <ChronoWalkLogo
             className="cw-v2-footer__logo"
-            width={260}
+            width={220}
             variant="dark"
             layout="stacked"
           />

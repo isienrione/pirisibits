@@ -70,8 +70,8 @@ describe('landing editorial architecture', () => {
   it('lists benefits once under What stays with you', () => {
     expect(LANDING_CONTENT.benefits.headline).toBe('What stays with you.')
     expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
-      'Stories right where you are standing',
-      'Your trip, your pace',
+      'Stories where you stand',
+      'Your pace',
       'Downloaded once',
       'Yours to keep',
     ])
@@ -90,7 +90,7 @@ describe('landing editorial architecture', () => {
   it('replaces the competitor matrix with a promise-led Why ChronoWalk beat', () => {
     const section = LANDING_CONTENT.why
     expect(section.eyebrow).toBe('Why ChronoWalk')
-    expect(section.headline).toContain('Freedom to wander')
+    expect(section.headline).toContain('Walk freely')
     expect(section.points).toEqual([
       'Stories tied to the place where they happened',
       'Evidence-based reconstructions from the viewpoint in front of you',
@@ -186,6 +186,29 @@ describe('landing editorial architecture', () => {
     for (const act of LANDING_ACTS) {
       expect(act.label).toMatch(/^Act /)
       expect(act.label).toContain(act.name)
+    }
+  })
+
+  it('keeps primary landing copy in ChronoWalk voice after the Phase 18 audit', () => {
+    expect(LANDING_CONTENT.hero.headline).toBe('Stories begin when you arrive.')
+    expect(LANDING_CONTENT.hero.accentLine).toBe('Walk freely. Keep the context.')
+    expect(LANDING_CONTENT.threshold.headline).toBe('Press and hold. The ruin becomes the room.')
+    expect(LANDING_CONTENT['real-moment'].scenarios[0].lines).toEqual([
+      'The monument may be sold out.',
+      'The city isn’t.',
+    ])
+    const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
+    for (const banned of [
+      'revolutionary',
+      'immersive experience',
+      'unforgettable',
+      'cutting-edge',
+      'seamless',
+      'unlock the magic',
+      'hidden gems',
+      'sneak peek',
+    ]) {
+      expect(joined).not.toContain(banned)
     }
   })
 })
