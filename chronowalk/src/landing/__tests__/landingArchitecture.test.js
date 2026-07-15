@@ -75,4 +75,13 @@ describe('landing editorial architecture', () => {
     expect(LANDING_CONTENT.trust.items).toBeUndefined()
     expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
   })
+
+  it('frames the free preview as one stop with clear inclusions', () => {
+    const section = LANDING_CONTENT['try-free']
+    expect(section.headline).toContain('One stop.')
+    expect(section.primaryCta).toBe('Try the Pantheon stop free')
+    expect(section.trustLine).toBe('No account required.')
+    expect(section.included).toMatch(/Pantheon/i)
+    expect(section.notIncluded).toMatch(/Not included/i)
+  })
 })

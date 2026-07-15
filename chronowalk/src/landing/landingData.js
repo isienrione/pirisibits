@@ -23,18 +23,22 @@ export const LANDING_CTA = {
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
 export const FREE_PREVIEW = {
-  title: 'The Pantheon Sneak Peek',
-  meta: 'Free Preview · 4 minutes',
+  title: 'The Pantheon stop',
+  meta: 'Free · ~4 minutes',
   copy:
-    'Hear one full scene at the Pantheon — the same stop included in every Rome package.',
+    'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
 }
 
 /** Tiered Rome journey offerings shown on the landing product showcase. */
 export const ROME_TIERS = [
   {
     id: 'rome-central',
+    name: 'Roma Historica',
+    /** @deprecated use `name` — retained for archive / older UI strings */
     eyebrow: 'Roma Historica',
     tierLabel: 'Central',
+    bestFor: 'Best for a centro afternoon without park tickets.',
+    outcome: 'Walk the living city around the Pantheon with stories that meet you at each stop.',
     price: '€9',
     priceCents: 900,
     priceNote: 'one-time',
@@ -45,12 +49,16 @@ export const ROME_TIERS = [
       'Full Pantheon chapters + Threshold (same stop as the free preview)',
       'Centro storico stops — no park ticket needed',
     ],
+    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
   {
     id: 'rome-essential',
+    name: 'Roma Antica',
     eyebrow: 'Roma Antica',
     tierLabel: 'Ancient',
+    bestFor: 'Best for the Colosseum and Forum in one focused walk.',
+    outcome: 'Hear the ancient core where it happened — arena stones to Senate floor.',
     price: '€12',
     priceCents: 1200,
     priceNote: 'one-time',
@@ -60,24 +68,29 @@ export const ROME_TIERS = [
       'Colosseum and Roman Forum stops',
       'Threshold reconstructions at key landmarks',
     ],
+    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
   {
     id: 'rome-complete',
+    name: 'Roma Eterna',
     eyebrow: 'Roma Eterna',
     tierLabel: 'Complete',
+    bestFor: 'Best for the full city loop — and your own stop order.',
+    outcome: 'One continuous Rome from the Arena to the Appian Way, at your pace.',
     price: '€17',
     priceCents: 1700,
     priceNote: 'one-time',
-    badge: 'Most Popular',
+    badge: 'Most popular',
     description:
       'The full Rome walk — archaeological core, centro storico, outer loop, and your own stop order.',
     includesLabel: 'Roma Historica + Roma Antica + the full city loop',
-    featuredBullet: '+ Choose and re-order your stops (own-pace itinerary)',
+    featuredBullet: 'Choose and re-order your stops (own-pace itinerary)',
     bullets: [
       'All 22 stops — Colosseum and Forum to the Appian Way',
       'Every Threshold reconstruction on the route',
     ],
+    expandLabel: 'See every stop and inclusion',
     primaryCta: 'Begin Journey',
   },
 ]
@@ -303,13 +316,15 @@ export const LANDING_CONTENT = {
   'try-free': {
     id: 'try-free',
     eyebrow: 'Try before you buy',
-    headline: 'Free sneak peek — one stop, full experience.',
+    headline: 'One stop.\nThe full ChronoWalk feeling.',
     subheadline:
-      'Not the whole app — one Pantheon chapter, enough to hear the storytelling and decide if ChronoWalk fits how you walk.',
+      'Hear the narration, experience the GPS-triggered arrival and try Threshold before choosing a route.',
     card: FREE_PREVIEW,
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: 'See full Rome routes',
-    trustLine: 'No account required · Same stop included in every Rome package',
+    primaryCta: 'Try the Pantheon stop free',
+    secondaryCta: 'Explore all Rome routes',
+    trustLine: 'No account required.',
+    included: 'Included: one Pantheon chapter (~4 min) — narration, GPS arrival, and Threshold.',
+    notIncluded: 'Not included: the full Rome route or every stop on a paid package.',
   },
 
   threshold: {
