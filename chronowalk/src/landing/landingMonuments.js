@@ -5,6 +5,8 @@ import { LANDING_ROUTE_STOPS, LANDING_TIER_ROUTES } from './landingTierRoutes.js
 export const LANDING_ROUTE_PREVIEW_IDS = [
   'colosseum',
   'forum-arch-titus',
+  'forum-temple-vesta',
+  'capitoline-hill',
   'fontana-di-trevi',
   'pantheon',
   'castel-sant-angelo',
