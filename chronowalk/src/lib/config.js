@@ -1,3 +1,5 @@
+import { resolveLemonCheckoutBaseUrl } from './lemonSqueezy.js'
+
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
 
@@ -6,7 +8,7 @@ const FALLBACK_CONFIG = {
   /** Keep disabled so live price stays fixed at the full-bundle amount. */
   ab: { enabled: false, variants: [1799, 1799], split: 0.5 },
   review_url: 'https://www.google.com/maps',
-  checkout_url: import.meta.env.VITE_LEMON_CHECKOUT_URL ?? '',
+  checkout_url: resolveLemonCheckoutBaseUrl('', import.meta.env.VITE_LEMON_CHECKOUT_URL),
 }
 
 let cachedConfig = null
@@ -82,6 +84,10 @@ export async function loadAppConfig() {
 
     cachedConfig = {
       ...merged,
+      checkout_url: resolveLemonCheckoutBaseUrl(
+        merged.checkout_url,
+        import.meta.env.VITE_LEMON_CHECKOUT_URL,
+      ),
       abVariantCents: pickAbVariant(merged),
     }
     return cachedConfig

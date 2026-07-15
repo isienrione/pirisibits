@@ -3,6 +3,8 @@ import {
   buildTierCheckoutUrl,
   getTierById,
   isCheckoutConfigured,
+  LEMON_CHECKOUT_BUY_URL,
+  pickCheckoutBaseUrl,
   TRANSACTION_STEPS,
 } from '../checkout.js'
 
@@ -34,6 +36,11 @@ describe('checkout helpers', () => {
 
   it('returns null when checkout is not configured', () => {
     expect(buildTierCheckoutUrl('', 'rome-complete')).toBeNull()
+  })
+
+  it('falls back to the Roma Eterna store buy URL', () => {
+    expect(pickCheckoutBaseUrl('', '')).toBe(LEMON_CHECKOUT_BUY_URL)
+    expect(LEMON_CHECKOUT_BUY_URL).toContain('1a82bca2-f4a8-4b40-812d-fb7398afb75d')
   })
 
   it('exposes the full transaction step list', () => {

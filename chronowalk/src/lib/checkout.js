@@ -6,10 +6,16 @@ import {
   resolveLandingTierCents,
 } from '../landing/landingCheckout.js'
 import { ROME_TIERS } from '../landing/landingData.js'
+import {
+  LEMON_CHECKOUT_BUY_URL,
+  openLemonOverlay,
+  resolveCheckoutMode,
+  resolveLemonCheckoutBaseUrl,
+} from './lemonSqueezy.js'
 
 const TIER_BY_ID = Object.fromEntries(ROME_TIERS.map((tier) => [tier.id, tier]))
 
-/** True when a Lemon Squeezy checkout base URL is available (env or app_config). */
+/** True when a Lemon Squeezy checkout base URL is available (env, app_config, or baked-in store link). */
 export function isCheckoutConfigured(checkoutUrl) {
   return Boolean(typeof checkoutUrl === 'string' && checkoutUrl.trim())
 }
@@ -18,15 +24,19 @@ export function getTierById(tierId) {
   return TIER_BY_ID[tierId] ?? null
 }
 
+/** @deprecated Prefer resolveLemonCheckoutBaseUrl — kept for tests / call sites. */
+export function pickCheckoutBaseUrl(fromConfig, fromEnv) {
+  return resolveLemonCheckoutBaseUrl(fromConfig, fromEnv)
+}
+
 /**
- * Resolve the live checkout base URL (Supabase app_config wins over env fallback).
+ * Resolve the live checkout base URL (Supabase app_config wins over env, then store default).
  */
 export async function resolveCheckoutBaseUrl() {
   const config = await loadAppConfig()
-  const fromConfig = typeof config?.checkout_url === 'string' ? config.checkout_url.trim() : ''
-  if (fromConfig) return fromConfig
-  const fromEnv = (import.meta.env.VITE_LEMON_CHECKOUT_URL ?? '').trim()
-  return fromEnv || ''
+  const fromConfig = typeof config?.checkout_url === 'string' ? config.checkout_url : ''
+  const fromEnv = import.meta.env.VITE_LEMON_CHECKOUT_URL ?? ''
+  return resolveLemonCheckoutBaseUrl(fromConfig, fromEnv)
 }
 
 /**
@@ -48,10 +58,10 @@ export function buildTierCheckoutUrl(baseUrl, tierId, { host, abVariantCents } =
 }
 
 /**
- * Open Lemon Squeezy checkout in this window.
- * @returns {{ ok: true, url: string } | { ok: false, reason: 'not_configured' }}
+ * Open Lemon Squeezy checkout — overlay by default, hosted redirect as fallback.
+ * @returns {{ ok: true, url: string, mode: 'overlay' | 'hosted' } | { ok: false, reason: 'not_configured' }}
  */
-export async function openCheckout({ tierId, source = 'app' } = {}) {
+export async function openCheckout({ tierId, source = 'app', mode } = {}) {
   const baseUrl = await resolveCheckoutBaseUrl()
   if (!isCheckoutConfigured(baseUrl)) {
     return { ok: false, reason: 'not_configured' }
@@ -77,8 +87,16 @@ export async function openCheckout({ tierId, source = 'app' } = {}) {
     tier: tierId ?? null,
   })
 
+  const preferredMode = mode ?? resolveCheckoutMode()
+  if (preferredMode === 'overlay') {
+    const overlay = await openLemonOverlay(url)
+    if (overlay.ok) {
+      return { ok: true, url, mode: 'overlay' }
+    }
+  }
+
   window.location.assign(url)
-  return { ok: true, url }
+  return { ok: true, url, mode: 'hosted' }
 }
 
 /** Ordered buyer journey steps — used by UI and docs (placeholders until Lemon is live). */
@@ -109,3 +127,5 @@ export const TRANSACTION_STEPS = Object.freeze([
     body: 'Pace, acts, and first steps — then the walk.',
   },
 ])
+
+export { LEMON_CHECKOUT_BUY_URL }

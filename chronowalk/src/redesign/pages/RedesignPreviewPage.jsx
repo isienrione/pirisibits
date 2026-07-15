@@ -4,8 +4,7 @@ import { getWaypoint } from '../../content/manifest.js'
 import { bindAutoplayHtmlAudio } from '../../audio/autoplayHtmlAudio.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { useTourManifest } from '../../hooks/useV2Journey.js'
-import { buildCheckoutUrl, getHost } from '../../lib/host.js'
-import { usePrice } from '../../hooks/usePrice.js'
+import { openCheckout } from '../../lib/checkout.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import {
@@ -21,7 +20,6 @@ import A2PreviewGhostTour from '../screens/A2PreviewGhostTour.jsx'
 export default function RedesignPreviewPage() {
   const navigate = useNavigate()
   const { manifest, loading } = useTourManifest()
-  const { cents, checkoutUrl } = usePrice()
   const audioRef = useRef(null)
   const [phase, setPhase] = useState('story')
   const [playing, setPlaying] = useState(false)
@@ -132,13 +130,9 @@ export default function RedesignPreviewPage() {
     track(TRACK_EVENTS.THRESHOLD_DEMO, { source: 'preview' })
   }
 
-  const handleUnlock = () => {
-    const url = buildCheckoutUrl(checkoutUrl, { host: getHost(), abVariantCents: cents })
-    if (url) {
-      track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents, source: 'preview' })
-      window.location.assign(url)
-      return
-    }
+  const handleUnlock = async () => {
+    const result = await openCheckout({ tierId: 'rome-complete', source: 'preview' })
+    if (result.ok) return
     // Purchase path only — never mix unlock with access-code entry.
     navigate('/landing#pricing')
   }

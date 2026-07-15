@@ -1,42 +1,56 @@
 # Lemon Squeezy transactions — how payments work on ChronoWalk
 
-ChronoWalk is waiting on Lemon Squeezy store confirmation. The **buyer journey is already built** as placeholders. When the checkout URL and webhook secret arrive, flip env vars — no redesign.
+ChronoWalk’s buyer journey is wired for the **Roma Eterna** Lemon product (test mode until Lemon approves live purchase). Flip the store to live when approved — the same checkout URL keeps working.
 
 ## Buyer journey (live once configured)
 
 1. **Landing** (`/landing`) — traveler picks Central / Ancient / Complete  
-2. **Checkout** — Lemon Squeezy hosted payment (`VITE_LEMON_CHECKOUT_URL`)  
+2. **Checkout** — Lemon Squeezy overlay (default) or hosted payment  
 3. **Webhook** — Supabase Edge Function writes `purchases` + emails magic link  
 4. **Unlock** — `/access?token=<uuid>` grants device access (`cw_access`)  
 5. **Ceremony** — optional `/access/confirmed` (“Rome is yours.”)  
 6. **Setup** — `/setup` → `/begin` → walk  
 
-While Lemon is pending, step 2 opens **`/purchase`** instead: calm instructions + tier summary.
+If checkout ever fails to open, step 2 falls back to **`/purchase`**: calm instructions + “Continue to secure checkout”.
 
-**Paywall:** choosing a pack always opens **`/purchase`**. Setup, begin, tour, journey, map, stops, and journal are blocked until `cw_access` is granted. There is no free continue.
+**Paywall:** choosing a pack always opens checkout (or **`/purchase`**). Setup, begin, tour, journey, map, stops, and journal are blocked until `cw_access` is granted. There is no free continue.
 
 **Dev unlock only:** `/purchase?tier=rome-complete&devUnlock=1` shows “simulate paid unlock” (local / `VITE_ALLOW_DEV_ACCESS`). Never the default traveler path.
 
-## What to do when Lemon confirms
+## Store links (Roma Eterna)
 
-### 1. Create products in Lemon Squeezy
-
-Create one checkout (or three variants) aligned to Rome tiers:
-
-| Tier id (`product_id`) | Suggested price |
+| Kind | Value |
 | --- | --- |
-| `rome-central` | €9 |
-| `rome-essential` | €12 |
-| `rome-complete` | €17 (AB may be €14 / €19) |
+| Checkout (hosted) | `https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d` |
+| Checkout overlay | same URL + `?embed=1`, with Lemon.js |
 
-Copy the **share / checkout URL** for the main Complete product (or a single “Rome” product if you use one link + custom metadata).
+Overlay embed Lemon provides:
 
-### 2. Set frontend env
+```html
+<a href="https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d?embed=1" class="lemonsqueezy-button">Buy Chronowalk - Roma Eterna</a>
+<script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+```
 
-Local `.env.local` and Cloudflare Pages (preview + production):
+In-app code uses the same buy URL + `LemonSqueezy.Url.Open()` (`src/lib/lemonSqueezy.js`). Custom query params (`host`, `ab_variant`, `product_id`) are still appended.
+
+## What to do when Lemon confirms live mode
+
+### 1. Products already created
+
+| Tier id (`product_id`) | Suggested price | Notes |
+| --- | --- | --- |
+| `rome-central` | €9 / $12 | Same buy link + `product_id` metadata until separate variants exist |
+| `rome-essential` | €12 / $12 | Same |
+| `rome-complete` | €17 / $17.99 | Roma Eterna — primary checkout UUID above |
+
+### 2. Frontend env (optional override)
+
+Local `.env.local` and Cloudflare Pages (preview + production). The app already defaults to the Roma Eterna URL when unset:
 
 ```bash
-VITE_LEMON_CHECKOUT_URL=https://YOUR_STORE.lemonsqueezy.com/checkout/buy/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+VITE_LEMON_CHECKOUT_URL=https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d
+# overlay (default) | hosted
+# VITE_LEMON_CHECKOUT_MODE=overlay
 ```
 
 Optional: also store the same URL in Supabase `app_config.checkout_url` (JSONB string) so you can rotate without redeploying.
@@ -46,7 +60,7 @@ Optional: also store the same URL in Supabase `app_config.checkout_url` (JSONB s
 | Setting | Value |
 | --- | --- |
 | Success / thank-you redirect | `https://chronowalk.com/access/confirmed` |
-| Button overlay / hosted | Hosted checkout (current code uses full-page `location.assign`) |
+| Button overlay / hosted | **Overlay** by default (`lemon.js`); set `VITE_LEMON_CHECKOUT_MODE=hosted` for full-page `location.assign` |
 | Custom data | Already appended by the app: `host`, `ab_variant`, `product_id` |
 
 ### 4. Deploy the webhook
@@ -73,16 +87,18 @@ Wire your email provider in the TODO inside the function (Resend recommended). E
 
 - `public.purchases` (email, order_id, host, ab_variant, access_token)  
 - `public.validate_access_token(p_token)` for `/access`
+- `app_config.checkout_url` seeded with the Roma Eterna buy link
 
 ### 6. Test a real transaction (test mode)
 
-1. Enable **Test mode** in Lemon Squeezy  
-2. Set `VITE_LEMON_CHECKOUT_URL` to the **test** checkout link  
-3. Open `/landing` → Begin Journey on a tier  
+1. Keep **Test mode** on in Lemon Squeezy until approval  
+2. Confirm the app resolves the Roma Eterna checkout URL (env optional)  
+3. Open `/landing` → Begin Rome on a tier — overlay should open  
 4. Pay with Lemon’s test card  
 5. Confirm webhook logs + a row in `purchases`  
 6. Open the emailed `/access?token=…` link → lands in `/setup`  
-7. Device has `localStorage.cw_access === 'true'`
+7. Device has `localStorage.cw_access === 'true'`  
+8. After Lemon approves: disable Test mode in the Lemon dashboard (same URL)
 
 ### 7. Staging without Lemon (works today)
 
@@ -106,7 +122,7 @@ Visit: `/access?token=dev` (or `local`).
 
 | Route | Role |
 | --- | --- |
-| `/purchase` | Placeholder steps when Lemon URL missing; live “Continue to checkout” when set |
+| `/purchase` | Bridge + auto-open checkout; calm steps if checkout fails |
 | `/purchase?tier=rome-complete` | Same, with tier summary |
 | `/checkout` | Alias → `/purchase` |
 | `/access` | Paste / validate magic token |
@@ -124,8 +140,9 @@ Webhook must persist these onto `purchases` for analytics and support.
 
 ## Checklist before go-live
 
-- [ ] Lemon store approved / live mode  
-- [ ] `VITE_LEMON_CHECKOUT_URL` on Cloudflare production  
+- [ ] Lemon store approved / live mode (leave Test mode)  
+- [ ] Cloudflare has `VITE_LEMON_CHECKOUT_URL` **or** relies on baked-in default  
+- [ ] Overlay works on mobile Safari (or `VITE_LEMON_CHECKOUT_MODE=hosted`)  
 - [ ] Webhook signature verified in production  
 - [ ] Magic-link email delivers in &lt; 1 minute  
 - [ ] Test purchase → `/access` → `/setup` on a clean phone  
@@ -134,8 +151,9 @@ Webhook must persist these onto `purchases` for analytics and support.
 
 ## Related code
 
-- `src/lib/checkout.js` — open / build checkout  
-- `src/redesign/screens/APurchasePending.jsx` — placeholder UI  
+- `src/lib/lemonSqueezy.js` — buy URL, lemon.js loader, overlay open  
+- `src/lib/checkout.js` — resolve URL + open overlay / hosted  
+- `src/redesign/screens/APurchasePending.jsx` — purchase bridge UI  
 - `src/landing/landingCheckout.js` — tier cents + metadata  
 - `src/lib/access.js` — token validation  
-- `src/lib/config.js` — `grantAccess` / `hasAccess`
+- `src/lib/config.js` — `grantAccess` / `hasAccess` / checkout fallback  
