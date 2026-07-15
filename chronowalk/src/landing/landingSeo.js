@@ -30,7 +30,7 @@ export function buildLandingProductSchema(tiers = ROME_TIERS) {
         },
         offers: {
           '@type': 'Offer',
-          priceCurrency: 'EUR',
+          priceCurrency: 'USD',
           price: (tier.priceCents / 100).toFixed(2),
           availability: 'https://schema.org/InStock',
         },

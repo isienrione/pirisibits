@@ -6,22 +6,22 @@ import {
 
 describe('landingCheckout', () => {
   it('uses fixed cents for central tier', () => {
-    expect(resolveLandingTierCents('rome-central', 1700)).toBe(900)
+    expect(resolveLandingTierCents('rome-central', 1799)).toBe(1200)
   })
 
   it('uses fixed cents for essential tier', () => {
-    expect(resolveLandingTierCents('rome-essential', 1700)).toBe(1200)
+    expect(resolveLandingTierCents('rome-essential', 1799)).toBe(1200)
   })
 
   it('uses live AB cents for complete tier', () => {
-    expect(resolveLandingTierCents('rome-complete', 1900)).toBe(1900)
-    expect(resolveLandingTierCents('rome-complete', null)).toBe(1700)
+    expect(resolveLandingTierCents('rome-complete', 1799)).toBe(1799)
+    expect(resolveLandingTierCents('rome-complete', null)).toBe(1799)
   })
 
   it('passes tier identity to checkout url', () => {
     const url = buildLandingTierCheckoutUrl('https://checkout.example/buy', 'rome-essential', {
       host: 'hotelroma1',
-      abVariantCents: 1700,
+      abVariantCents: 1799,
     })
 
     expect(url).toContain('checkout%5Bcustom%5D%5Bproduct_id%5D=rome-essential')

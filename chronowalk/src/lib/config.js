@@ -2,17 +2,28 @@ const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
 
 const FALLBACK_CONFIG = {
-  price: { cents: 1700, currency: 'EUR' },
-  ab: { enabled: true, variants: [1400, 1900], split: 0.5 },
+  price: { cents: 1799, currency: 'USD' },
+  /** Keep disabled so live price stays fixed at the full-bundle amount. */
+  ab: { enabled: false, variants: [1799, 1799], split: 0.5 },
   review_url: 'https://www.google.com/maps',
   checkout_url: import.meta.env.VITE_LEMON_CHECKOUT_URL ?? '',
 }
 
 let cachedConfig = null
 
-function formatPrice(cents, currency = 'EUR') {
+function formatPrice(cents, currency = 'USD') {
   const amount = cents / 100
-  if (currency === 'EUR') return `€${Number.isInteger(amount) ? amount : amount.toFixed(2)}`
+  if (currency === 'EUR') {
+    return `€${Number.isInteger(amount) ? amount : amount.toFixed(2)}`
+  }
+  if (currency === 'USD') {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  }
   return `${currency} ${amount.toFixed(2)}`
 }
 
@@ -88,7 +99,7 @@ export function getAbVariantCents() {
   return pickAbVariant(FALLBACK_CONFIG)
 }
 
-export function formatConfigPrice(cents, currency = 'EUR') {
+export function formatConfigPrice(cents, currency = 'USD') {
   return formatPrice(cents, currency)
 }
 

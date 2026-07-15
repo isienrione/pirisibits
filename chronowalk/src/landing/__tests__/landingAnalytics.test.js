@@ -62,7 +62,7 @@ describe('landing conversion analytics', () => {
 
   it('tracks pricing CTA and checkout by product without sensitive fields', () => {
     trackLandingPricingCta('rome-complete')
-    trackLandingCheckoutOpen({ tierId: 'rome-complete', priceCents: 1700 })
+    trackLandingCheckoutOpen({ tierId: 'rome-complete', priceCents: 1799 })
     const payloads = track.mock.calls.map(([, props]) => props)
     for (const props of payloads) {
       expect(props).not.toHaveProperty('email')
@@ -75,7 +75,7 @@ describe('landing conversion analytics', () => {
     )
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.CHECKOUT_OPEN,
-      expect.objectContaining({ tier: 'rome-complete', price_cents: 1700 }),
+      expect.objectContaining({ tier: 'rome-complete', price_cents: 1799 }),
     )
   })
 

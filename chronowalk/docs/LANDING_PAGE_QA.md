@@ -56,9 +56,9 @@ Tap each button once and note where you end up.
 
 | Check | How to test | Expected result |
 |-------|-------------|-----------------|
-| Live price | Look at purchase buttons and value lines | Price matches app config (e.g. **€17**), not a random hardcoded value in multiple places. |
-| Single fallback | Ask a developer or search code only if needed | Fallback (e.g. €17) is defined **once**, not copied everywhere. |
-| Currency | If product is EUR | Shows **€**, not **$**, unless config explicitly uses another currency. |
+| Live price | Look at purchase buttons and value lines | Price matches app config (e.g. **$17.99**), not a random hardcoded value in multiple places. |
+| Single fallback | Ask a developer or search code only if needed | Fallback (e.g. $17.99 full bundle) is defined **once**, not copied everywhere. |
+| Currency | If product is USD | Shows **$**, not **€**, unless config explicitly uses another currency. |
 | Copy consistency | Scan hero, product card, final CTA, sticky bar | Same price format everywhere on the landing page. |
 
 ---

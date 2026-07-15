@@ -14,7 +14,7 @@ describe('landing SEO helpers', () => {
     expect(schema.itemListElement).toHaveLength(ROME_TIERS.length)
     for (const [index, tier] of ROME_TIERS.entries()) {
       const offer = schema.itemListElement[index].item.offers
-      expect(offer.priceCurrency).toBe('EUR')
+      expect(offer.priceCurrency).toBe('USD')
       expect(offer.price).toBe((tier.priceCents / 100).toFixed(2))
     }
   })

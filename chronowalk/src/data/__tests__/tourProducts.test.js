@@ -9,11 +9,12 @@ describe('tourProducts', () => {
     expect(TOUR_PRODUCTS['heart-of-ancient-rome'].stopIds.length).toBeGreaterThan(8)
   })
 
-  it('prices individual tours at $10 and bundle at $15', () => {
-    expect(TOUR_PRODUCTS['roman-forum'].priceUsd).toBe(10)
-    expect(TOUR_PRODUCTS['heart-of-ancient-rome'].priceUsd).toBe(10)
-    expect(TOUR_PRODUCTS['rome-complete'].priceUsd).toBe(15)
-    expect(TOUR_PRODUCTS['rome-complete'].savingsUsd).toBe(5)
+  it('prices single routes at $12 and the full bundle at $17.99', () => {
+    expect(TOUR_PRODUCTS['rome-central'].priceUsd).toBe(12)
+    expect(TOUR_PRODUCTS['roman-forum'].priceUsd).toBe(12)
+    expect(TOUR_PRODUCTS['heart-of-ancient-rome'].priceUsd).toBe(12)
+    expect(TOUR_PRODUCTS['rome-complete'].priceUsd).toBe(17.99)
+    expect(TOUR_PRODUCTS['rome-complete'].priceCents).toBe(1799)
   })
 
   it('expands bundle to both tour ids', () => {
@@ -24,7 +25,7 @@ describe('tourProducts', () => {
   })
 
   it('defines central rome as the centro loop without the archaeological park', () => {
-    expect(TOUR_PRODUCTS['rome-central'].priceUsd).toBe(9)
+    expect(TOUR_PRODUCTS['rome-central'].priceCents).toBe(1200)
     expect(TOUR_PRODUCTS['rome-central'].stopIds).toEqual([
       'pantheon',
       'spanish-steps',
@@ -44,7 +45,8 @@ describe('tourProducts', () => {
     expect(TOUR_PRODUCT_LIST[3].id).toBe('heart-of-ancient-rome')
   })
 
-  it('formats whole-dollar prices', () => {
-    expect(formatUsd(15)).toBe('$15')
+  it('formats whole-dollar and fractional USD prices', () => {
+    expect(formatUsd(12)).toBe('$12')
+    expect(formatUsd(17.99)).toBe('$17.99')
   })
 })

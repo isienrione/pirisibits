@@ -1,12 +1,12 @@
 /** Scroll target for the Rome journey / purchase section. */
 export const ROME_JOURNEY_SECTION_ID = 'rome-journey'
 
-/** Token replaced at render time with the live price label (e.g. €17). */
+/** Token replaced at render time with the live price label (e.g. $17.99). */
 export const PRICE_PLACEHOLDER = '{price}'
 
-/** Landing-only price fallback — do not duplicate elsewhere. */
-export const LANDING_PRICE_FALLBACK_CENTS = 1700
-export const LANDING_PRICE_FALLBACK_LABEL = '€17'
+/** Landing-only price fallback — full bundle; do not duplicate elsewhere. */
+export const LANDING_PRICE_FALLBACK_CENTS = 1799
+export const LANDING_PRICE_FALLBACK_LABEL = '$17.99'
 
 export const hostBannerPrefix = 'Recommended by'
 
@@ -31,7 +31,7 @@ export const FREE_PREVIEW = {
   copy: 'Narration, GPS arrival, and Threshold — one Pantheon stop before you buy.',
 }
 
-/** Tiered Rome journey offerings shown on the landing product showcase. */
+/** Tiered Rome journey offerings shown on the landing product showcase. Prices in USD. */
 export const ROME_TIERS = [
   {
     id: 'rome-central',
@@ -41,8 +41,8 @@ export const ROME_TIERS = [
     tierLabel: 'Central',
     bestFor: 'Best for a centro afternoon without park tickets.',
     outcome: 'Walk the living city around the Pantheon — stories at each stop.',
-    price: '€9',
-    priceCents: 900,
+    price: '$12',
+    priceCents: 1200,
     priceNote: 'one-time',
     landmarkLine: 'The Pantheon + centro storico',
     description:
@@ -61,7 +61,7 @@ export const ROME_TIERS = [
     tierLabel: 'Ancient',
     bestFor: 'Best for the Colosseum and Forum in one focused walk.',
     outcome: 'Hear the ancient core where it happened — arena to Senate floor.',
-    price: '€12',
+    price: '$12',
     priceCents: 1200,
     priceNote: 'one-time',
     description:
@@ -80,8 +80,8 @@ export const ROME_TIERS = [
     tierLabel: 'Complete',
     bestFor: 'Best for the full city loop — and your own stop order.',
     outcome: 'One continuous Rome from the Arena to the Appian Way, at your pace.',
-    price: '€17',
-    priceCents: 1700,
+    price: '$17.99',
+    priceCents: 1799,
     priceNote: 'one-time',
     badge: 'Full city loop',
     description:

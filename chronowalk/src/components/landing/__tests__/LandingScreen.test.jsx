@@ -9,9 +9,9 @@ const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
 
 vi.mock('../../../hooks/usePrice', () => ({
   usePrice: () => ({
-    label: '€17',
-    cents: 1700,
-    currency: 'EUR',
+    label: '$17.99',
+    cents: 1799,
+    currency: 'USD',
     checkoutUrl: 'https://checkout.example.com/rome',
   }),
 }))
@@ -52,7 +52,7 @@ describe('LandingScreen', () => {
     expect(screen.getByText('Recommended by Hotel Roma')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /walk where rome/i })).toBeInTheDocument()
     expect(screen.getByText(PRODUCT_TRUTH.placesAcrossActsLabel)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /unlock rome — €17/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /unlock rome — \$17\.99/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 
@@ -63,11 +63,11 @@ describe('LandingScreen', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /unlock rome — €17/i }))
+    fireEvent.click(screen.getByRole('button', { name: /unlock rome — \$17\.99/i }))
 
-    expect(trackMock).toHaveBeenCalledWith('checkout_open', { price_cents: 1700 })
+    expect(trackMock).toHaveBeenCalledWith('checkout_open', { price_cents: 1799 })
     expect(window.location.assign).toHaveBeenCalledWith(
-      'https://checkout.example.com/rome?checkout%5Bcustom%5D%5Bhost%5D=hotelroma1&checkout%5Bcustom%5D%5Bab_variant%5D=1700'
+      'https://checkout.example.com/rome?checkout%5Bcustom%5D%5Bhost%5D=hotelroma1&checkout%5Bcustom%5D%5Bab_variant%5D=1799'
     )
   })
 })

@@ -49,8 +49,8 @@ describe('tourProductTruth', () => {
     expect(truth.visitStopsLabel).toBe('18 stops')
     expect(truth.durationLabel).toBe('your pace')
     expect(truth.ownershipLabel).toBe('yours forever')
-    expect(truth.priceFallbackCents).toBe(1700)
-    expect(truth.currency).toBe('EUR')
+    expect(truth.priceFallbackCents).toBe(1799)
+    expect(truth.currency).toBe('USD')
   })
 
   it('uses computed visit stop counts when pace is selected', () => {
