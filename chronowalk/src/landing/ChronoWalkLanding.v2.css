@@ -736,8 +736,10 @@
 /* Path variant always shows the phone screens under each step */
 .cw-v2-user-flow--path .cw-v2-user-flow__device {
   display: flex;
-  width: min(100%, 13.5rem);
-  max-width: 13.5rem;
+  width: min(100%, 15.5rem);
+  max-width: 15.5rem;
+  margin-inline: auto;
+  margin-bottom: 0.85rem;
 }
 
 .cw-v2-user-flow--path .cw-v2-user-flow__title {
@@ -896,13 +898,14 @@
 
   .cw-v2-user-flow__device {
     display: flex;
-    width: min(100%, 15rem);
-    max-width: 15rem;
+    width: min(100%, 16.5rem);
+    max-width: 16.5rem;
+    margin-inline: auto;
   }
 
   .cw-v2-user-flow--path .cw-v2-user-flow__device {
-    width: min(100%, 15rem);
-    max-width: 15rem;
+    width: min(100%, 16.5rem);
+    max-width: 16.5rem;
   }
 }
 
@@ -3078,7 +3081,8 @@
   }
 
   .cw-v2-user-flow--essential .cw-v2-user-flow__device {
-    max-width: 7.25rem;
+    max-width: 14.5rem;
+    width: min(100%, 14.5rem);
   }
 
   .cw-v2-user-flow__title {

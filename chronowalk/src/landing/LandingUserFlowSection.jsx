@@ -27,7 +27,7 @@ export default function LandingUserFlowSection() {
           ) : null}
         </header>
 
-        <ol className="cw-v2-user-flow__track" aria-label="Three steps to walk Rome">
+        <ol className="cw-v2-user-flow__track" aria-label="Rome in three steps">
           {steps.map((step, index) => (
             <li key={step.title} className="cw-v2-user-flow__step">
               {index > 0 ? (

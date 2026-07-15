@@ -336,7 +336,7 @@ export const LANDING_CONTENT = {
   'user-flow': {
     id: 'how-it-works',
     eyebrow: 'How it works',
-    headline: 'Three steps. Then Rome.',
+    headline: 'Rome in three steps',
     subheadline: 'Download once. Walk when you want.',
     steps: [
       {

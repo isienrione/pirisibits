@@ -5,6 +5,7 @@ import { Vignette, BottomScrim } from '../ui/index.js';
 
 export default function B2MakeItYours({
   showIosInstructions = false,
+  needsSafariForInstall = false,
   canInstall = true,
   downloading: downloadingProp,
   downloadProgress: downloadProgressProp,
@@ -59,8 +60,17 @@ export default function B2MakeItYours({
       <Vignette />
       <BottomScrim strength={0.90} />
 
-      {/* Content — all type ON the photograph */}
-      <div style={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", padding: "56px 28px 40px", overflowY: "auto" }}>
+      {/* Content — all type ON the photograph; safe-area for notch / home indicator */}
+      <div style={{
+        position: "relative",
+        zIndex: 10,
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        padding: "max(56px, calc(env(safe-area-inset-top) + 28px)) 28px max(40px, calc(env(safe-area-inset-bottom) + 20px))",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
+      }}>
 
         {/* Small logomark */}
         <div style={{ marginBottom: 28 }}>
@@ -82,15 +92,33 @@ export default function B2MakeItYours({
               <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 6, lineHeight: 1.4 }}>
                 Put Rome on your home screen
               </p>
-              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                {showIosInstructions
-                  ? <>Tap <span style={{ color: `${T.warmWhite}BB` }}>Share</span> — then &quot;Add to Home Screen&quot;</>
-                  : 'Install a home-screen icon for tour day.'}
-              </p>
+              {needsSafariForInstall ? (
+                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
+                  Open this page in <span style={{ color: `${T.warmWhite}BB` }}>Safari</span>, then Share → Add to Home Screen.
+                </p>
+              ) : showIosInstructions ? (
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: 0 }}>
+                    <span style={{ color: `${T.warmWhite}CC`, fontVariantNumeric: 'tabular-nums' }}>1.</span>{' '}
+                    Tap <span style={{ color: `${T.warmWhite}BB` }}>Share</span> in Safari
+                  </p>
+                  <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: 0 }}>
+                    <span style={{ color: `${T.warmWhite}CC`, fontVariantNumeric: 'tabular-nums' }}>2.</span>{' '}
+                    Choose <span style={{ color: `${T.warmWhite}BB` }}>Add to Home Screen</span>
+                  </p>
+                  <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.55, margin: 0 }}>
+                    Opens full-screen — no browser chrome on tour day.
+                  </p>
+                </div>
+              ) : (
+                <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
+                  Install a home-screen icon for tour day.
+                </p>
+              )}
             </div>
             {/* Platform illustration — iOS share-sheet arrow */}
             <div style={{ flexShrink: 0 }}>
-              <svg width="46" height="46" viewBox="0 0 46 46" fill="none">
+              <svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true">
                 {/* Phone body */}
                 <rect x="9" y="4" width="28" height="38" rx="4" stroke={`${T.muted}55`} strokeWidth="1.2" />
                 {/* Share arrow up */}
@@ -232,7 +260,7 @@ export default function B2MakeItYours({
               onClick={() => onInstall?.()}
               style={{ width: '100%', padding: '15px', background: T.ember, color: T.obsidian, borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15, border: 'none', cursor: 'pointer' }}
             >
-              {showIosInstructions ? 'Got it — continue' : 'Add to home screen'}
+              {showIosInstructions ? "I've added it — continue" : 'Add to home screen'}
             </button>
           ) : null}
           <button

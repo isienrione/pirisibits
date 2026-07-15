@@ -131,6 +131,7 @@ function SettingsView({
             installed={pwaInstall.installed}
             canPromptInstall={pwaInstall.canPromptInstall}
             showIosInstructions={pwaInstall.showIosInstructions}
+            needsSafariForInstall={pwaInstall.needsSafariForInstall}
             showInstallOption={pwaInstall.showInstallOption}
             onInstall={() => void pwaInstall.promptInstall()}
           />

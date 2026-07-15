@@ -11,7 +11,8 @@
     <link rel="apple-touch-icon" href="/pwa/icon-512.png?v=emblem2" sizes="512x512" />
     <link rel="shortcut icon" href="/favicon-32.png?v=emblem2" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <!-- maximum-scale / user-scalable: prevent accidental pinch-zoom so the installed PWA feels native on iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="theme-color" content="#16130F" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#16130F" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="ChronoWalk — self-guided Rome walks with place-tied narration and Threshold reconstructions. Try one Pantheon stop free." />

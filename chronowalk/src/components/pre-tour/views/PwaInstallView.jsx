@@ -22,6 +22,7 @@ export function PwaInstallView() {
         installed={pwaInstall.installed}
         canPromptInstall={pwaInstall.canPromptInstall}
         showIosInstructions={pwaInstall.showIosInstructions}
+        needsSafariForInstall={pwaInstall.needsSafariForInstall}
         showInstallOption={pwaInstall.showInstallOption}
         onInstall={() => {
           triggerHaptic(HAPTIC_KIND.SOFT_TAP)
