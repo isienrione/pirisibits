@@ -1,1 +1,5 @@
+# SPA fallback for client-side routes (React Router).
+# Note: Cloudflare Pages still 308-redirects /index.html → / and
+# /offline.html → /offline (Pretty URLs). The service worker in src/pwa/sw.js
+# precaches those canonical paths so navigations do not ERR_FAILED.
 /*    /index.html   200
