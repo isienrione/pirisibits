@@ -31,6 +31,8 @@ Create one checkout (or three variants) aligned to Rome tiers:
 
 Copy the **share / checkout URL** for the main Complete product (or a single “Rome” product if you use one link + custom metadata).
 
+**Product media + Access Guide (brand-aligned):** see `marketing/lemon-squeezy/` — PDF guide, gallery PNGs, and paste-ready copy in `LEMON_PRODUCT_COPY.md`.
+
 ### 2. Set frontend env
 
 Local `.env.local` and Cloudflare Pages (preview + production):
