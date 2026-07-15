@@ -928,41 +928,108 @@
   color: var(--v2-muted);
 }
 
-/* —— Monuments carousel —— */
+/* —— Continuous route journey (Phase 8) —— */
 
-.cw-v2-monuments__track-wrap {
-  margin-top: 2rem;
-  margin-inline: -1.5rem;
-  padding-inline: 1.5rem;
+.cw-v2-monuments__title-block {
+  white-space: pre-line;
+}
+
+.cw-v2-monuments__journey {
+  margin-top: 2.25rem;
+}
+
+.cw-v2-monuments__chapters {
+  display: grid;
+  gap: 2rem;
+}
+
+.cw-v2-monuments__chapter-label {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
 .cw-v2-monuments__track {
+  --route-gap: 1.35rem;
   list-style: none;
   margin: 0;
-  padding: 0 0 0.75rem;
-  display: flex;
-  gap: 0.85rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.cw-v2-monuments__item {
-  flex: 0 0 9.5rem;
-  scroll-snap-align: start;
-}
-
-.cw-v2-monuments__card {
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: var(--route-gap);
+  position: relative;
+}
+
+/* Vertical spine (mobile default) */
+.cw-v2-monuments__track::before {
+  content: '';
+  position: absolute;
+  top: 0.55rem;
+  bottom: 0.55rem;
+  left: 0.95rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--gold) 55%, transparent),
+    color-mix(in srgb, var(--gold) 18%, transparent)
+  );
+  pointer-events: none;
+}
+
+.cw-v2-monuments__stop {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.cw-v2-monuments__stop-hit {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  column-gap: 0.85rem;
+  row-gap: 0.55rem;
+  align-items: center;
+  outline: none;
+}
+
+.cw-v2-monuments__stop--landmark .cw-v2-monuments__stop-hit {
+  grid-template-columns: 2rem 4.25rem minmax(0, 1fr);
+}
+
+.cw-v2-monuments__stop-hit:focus-visible {
+  border-radius: 0.35rem;
+  box-shadow: 0 0 0 2px var(--v2-obsidian), 0 0 0 4px var(--gold);
+}
+
+.cw-v2-monuments__node {
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  background: color-mix(in srgb, var(--v2-obsidian) 88%, var(--gold));
+  box-shadow: 0 0 0 4px var(--v2-obsidian);
+}
+
+.cw-v2-monuments__node-index {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  line-height: 1;
 }
 
 .cw-v2-monuments__photo-wrap {
-  aspect-ratio: 3 / 4;
+  width: 4.25rem;
+  aspect-ratio: 5 / 6;
   overflow: hidden;
-  border-radius: 0.75rem;
-  border: 1px solid var(--v2-border);
+  border-radius: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--v2-bone) 16%, transparent);
   background: var(--v2-raised);
 }
 
@@ -971,15 +1038,151 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: saturate(0.88) contrast(1.04);
 }
 
-.cw-v2-monuments__title {
+.cw-v2-monuments__stop-title {
   margin: 0;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.35;
-  text-align: center;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 500;
+  line-height: 1.3;
   color: var(--v2-bone);
+  text-wrap: pretty;
+}
+
+.cw-v2-monuments__stop:not(.cw-v2-monuments__stop--landmark) .cw-v2-monuments__stop-title {
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--v2-soft);
+}
+
+.cw-v2-monuments__trail {
+  margin: 1.75rem 0 0;
+  max-width: 52rem;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--v2-muted);
+  text-wrap: pretty;
+}
+
+.cw-v2-monuments--expanded .cw-v2-monuments__trail {
+  /* Keep in DOM for SEO; soften once the full timeline is open. */
+  opacity: 0.72;
+}
+
+.cw-v2-monuments__trail-route {
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.cw-v2-monuments__trail-sep {
+  margin-inline: 0.35rem;
+  opacity: 0.7;
+}
+
+.cw-v2-monuments__disclose {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.cw-v2-monuments__toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.35rem 0.15rem;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  cursor: pointer;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+}
+
+.cw-v2-monuments__toggle:hover {
+  color: var(--v2-bone);
+  border-bottom-color: color-mix(in srgb, var(--gold) 70%, transparent);
+}
+
+.cw-v2-monuments__toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+@media (min-width: 48rem) {
+  .cw-v2-monuments__journey {
+    margin-top: 2.75rem;
+  }
+
+  .cw-v2-monuments__track--preview,
+  .cw-v2-monuments__chapter .cw-v2-monuments__track {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cw-v2-monuments__track--preview::before,
+  .cw-v2-monuments__chapter .cw-v2-monuments__track::before {
+    top: 0.95rem;
+    bottom: auto;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--gold) 55%, transparent),
+      color-mix(in srgb, var(--gold) 18%, transparent)
+    );
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__stop,
+  .cw-v2-monuments__chapter .cw-v2-monuments__stop {
+    flex: 1 1 0;
+    min-width: 6.5rem;
+    scroll-snap-align: start;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__stop-hit,
+  .cw-v2-monuments__chapter .cw-v2-monuments__stop-hit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.65rem;
+    padding-inline: 0.45rem;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__stop--landmark .cw-v2-monuments__stop-hit,
+  .cw-v2-monuments__chapter .cw-v2-monuments__stop--landmark .cw-v2-monuments__stop-hit {
+    grid-template-columns: unset;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__photo-wrap,
+  .cw-v2-monuments__chapter .cw-v2-monuments__photo-wrap {
+    width: 4.5rem;
+  }
+
+  .cw-v2-monuments__track--preview .cw-v2-monuments__stop-title,
+  .cw-v2-monuments__chapter .cw-v2-monuments__stop-title {
+    max-width: 8.5rem;
+  }
+
+  .cw-v2-monuments__chapters {
+    gap: 2.35rem;
+  }
 }
 
 /* —— Live in-app phone mockups —— */
@@ -1009,12 +1212,7 @@
 }
 
 @media (min-width: 48rem) {
-  .cw-v2-monuments__item {
-    flex-basis: 10.5rem;
-  }
-
-  .cw-v2-who__track-wrap,
-  .cw-v2-monuments__track-wrap {
+  .cw-v2-who__track-wrap {
     margin-inline: 0;
     padding-inline: 0;
   }
@@ -2294,22 +2492,17 @@
     max-width: 11.5rem;
   }
 
-  .cw-v2-monuments__track-wrap {
-    margin-top: 1.35rem;
-    margin-inline: -1.25rem;
-    padding-inline: 1.25rem;
+  .cw-v2-monuments__journey {
+    margin-top: 1.5rem;
   }
 
-  .cw-v2-monuments__track {
-    gap: 0.7rem;
+  .cw-v2-monuments__photo-wrap {
+    width: 3.75rem;
   }
 
-  .cw-v2-monuments__item {
-    flex-basis: 8.5rem;
-  }
-
-  .cw-v2-monuments__title {
+  .cw-v2-monuments__trail {
     font-size: 0.72rem;
+    margin-top: 1.35rem;
   }
 
   .cw-v2-who__card {

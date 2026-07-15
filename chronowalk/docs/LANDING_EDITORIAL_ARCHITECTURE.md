@@ -24,7 +24,7 @@ Navigation (`LandingSiteHeader`) sits above the acts. Footer sits after Act III.
 | 4 | Early CTA | `LandingEarlyCtaSection.jsx` | `#early-cta` | Scaffold |
 | 5 | How it works | `LandingUserFlowSection.jsx` | `#how-it-works` | Existing |
 | 6 | Real-moment | `LandingRealMomentSection.jsx` | `#real-moment` (+ `#who-its-for`) | Phase 7 scenarios |
-| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Existing |
+| 7 | Continuous route | `LandingMonumentsCarousel.jsx` | `#monuments` | Phase 8 journey timeline |
 | 8 | Benefits | `LandingBenefitsSection.jsx` | `#benefits` | Existing |
 | 9 | Free preview | `LandingTryFreeSection.jsx` | `#try-free` | Existing |
 | 10 | Pricing | `LandingRomeTiersSection.jsx` | `#pricing` | Existing |

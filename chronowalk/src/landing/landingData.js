@@ -290,9 +290,15 @@ export const LANDING_CONTENT = {
   monuments: {
     id: 'monuments',
     eyebrow: 'The route',
-    headline: '22 places across ancient and living Rome.',
+    headline: 'One city.\nOne continuous story.',
     subheadline:
-      'Colosseum and Forum to Trevi, Navona, Castel Sant\'Angelo, and the Appian Way — each with its own story.',
+      'From the Arena to the Appian Way, each place changes the meaning of the next.',
+    /** Always-on SEO / continuity line — full ordered names stay in the DOM via the trail. */
+    routeName: 'Roma Eterna',
+    expandLabel: 'See every stop on the route',
+    collapseLabel: 'Show the journey highlights',
+    previewAriaLabel: 'Journey highlights across Rome',
+    fullAriaLabel: 'Complete Rome route by chapter',
   },
 
   benefits: {
