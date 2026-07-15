@@ -1,9 +1,9 @@
+import { useEffect, useRef } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
 import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
-import { useEffect, useRef } from 'react'
 
 function CheckIcon() {
   return (

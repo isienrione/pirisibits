@@ -280,7 +280,7 @@ export const LANDING_CONTENT = {
       },
       {
         title: 'Scripts written for this route',
-        body: 'Narration is researched and produced for ChronoWalk’s Rome walk — one studio-written path for this city, not a mash-up of unrelated tours.',
+        body: 'Narration is researched and produced for ChronoWalk’s Rome walk — curated for this city, not an LLM-only mash-up of unrelated tours.',
         icon: 'script',
       },
       {
