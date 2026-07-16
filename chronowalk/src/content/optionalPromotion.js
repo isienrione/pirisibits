@@ -5,6 +5,9 @@ const OPTIONAL_PROMOTION_CONFIG = {
   w04: {
     a: { steps: ['t02', 'w04', 't03'], before: 'w06', afterCompleted: 'w03' },
   },
+  enc_circus: {
+    a: { steps: ['enc_circus'], before: 'w14', afterCompleted: 'w13' },
+  },
 }
 
 export function getOptionalWaypointIds(manifest, path) {
@@ -27,15 +30,23 @@ export function buildEffectiveSequence(manifest, path, promotedOptionalIds = [])
   for (const waypointId of promotedOptionalIds) {
     const config = getPromotionConfig(manifest, waypointId, path)
     if (!config) continue
-    if (sequence.includes(waypointId)) continue
 
     const anchorIndex = sequence.indexOf(config.before)
     if (anchorIndex < 0) continue
 
+    const existingIndex = sequence.indexOf(waypointId)
+    if (existingIndex >= 0) {
+      if (existingIndex < anchorIndex) continue
+      sequence = sequence.filter((id) => id !== waypointId)
+    }
+
+    const insertAt = sequence.indexOf(config.before)
+    if (insertAt < 0) continue
+
     sequence = [
-      ...sequence.slice(0, anchorIndex),
+      ...sequence.slice(0, insertAt),
       ...config.steps,
-      ...sequence.slice(anchorIndex),
+      ...sequence.slice(insertAt),
     ]
   }
 

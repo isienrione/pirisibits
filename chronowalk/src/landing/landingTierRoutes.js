@@ -9,12 +9,13 @@ import { CAPITOLINE_HILL } from '../data/capitoline-hill.js'
 import { ROMAN_FORUM_STOP_IDS } from '../data/forumWaypoints.js'
 import { EXPANSION_STOP_META } from '../data/expansionWaypoints.js'
 import { CENTRAL_ROME_TOUR } from '../data/central-rome-tour.js'
+import { ROME_ANTICA_STOP_IDS } from '../data/rome-antica-tour.js'
 
 /** Geo anchors for landing tier route maps (landing-only). */
 export const LANDING_ROUTE_STOPS = {
   colosseum: { title: 'Colosseum', short: 'Colosseum', ...COLOSSEUM },
   'palatine-hill-cluster': {
-    title: 'Palatine Hill',
+    title: 'Palatine Hill terrace',
     short: 'Palatine',
     lat: EXPANSION_STOP_META['palatine-hill-cluster'].lat,
     lng: EXPANSION_STOP_META['palatine-hill-cluster'].lng,
@@ -55,7 +56,7 @@ export const LANDING_ROUTE_STOPS = {
   },
 }
 
-const ESSENTIAL_ROUTE = ['colosseum', ...ROMAN_FORUM_STOP_IDS]
+const ESSENTIAL_ROUTE = ROME_ANTICA_STOP_IDS
 
 const COMPLETE_ROUTE = [
   'colosseum',

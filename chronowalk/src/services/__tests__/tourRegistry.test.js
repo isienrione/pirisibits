@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { CENTRAL_ROME_TOUR } from '../../data/central-rome-tour'
 import { HEART_OF_ANCIENT_ROME_TOUR } from '../../data/heart-of-ancient-rome-tour'
+import { ROME_ANTICA_TOUR } from '../../data/rome-antica-tour'
 import { ROME_CORE_TOUR } from '../../data/rome-core-tour'
 import { ROMAN_FORUM_TOUR } from '../../data/roman-forum-tour'
 import { getTourBounds, getTourById, getTourLegs, listTourIds } from '../tourRegistry'
@@ -8,10 +10,25 @@ describe('tourRegistry', () => {
   it('lists all registered tours', () => {
     expect(listTourIds()).toEqual(
       expect.arrayContaining([
+        CENTRAL_ROME_TOUR.id,
+        ROME_ANTICA_TOUR.id,
         ROME_CORE_TOUR.id,
         ROMAN_FORUM_TOUR.id,
         HEART_OF_ANCIENT_ROME_TOUR.id,
       ])
+    )
+  })
+
+  it('loads Roma Antica with Colosseum, hills, Forum, and Circus', () => {
+    const tour = getTourById('rome-antica')
+    expect(tour?.title).toBe('Roma Antica')
+    expect(tour?.stopIds).toEqual(
+      expect.arrayContaining([
+        'colosseum',
+        'palatine-hill-cluster',
+        'capitoline-hill',
+        'circus-maximus',
+      ]),
     )
   })
 

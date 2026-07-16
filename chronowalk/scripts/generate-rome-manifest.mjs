@@ -165,7 +165,7 @@ const manifest = {
         'w22',
       ],
     },
-    optional_waypoints: { a: ['w04'] },
+    optional_waypoints: { a: ['w04', 'enc_circus'] },
   },
   waypoints: {
     w01: wp('w01', {
@@ -411,6 +411,16 @@ const manifest = {
 }
 
 manifest.durations = mergeDurationMaps(seedDurationsFromTransits(manifest), loadMeasuredDurations())
+
+if (existsSync(outPath)) {
+  const existing = JSON.parse(readFileSync(outPath, 'utf8'))
+  if (existing.product) manifest.product = existing.product
+  for (const [id, waypoint] of Object.entries(existing.waypoints ?? {})) {
+    if (waypoint.display && manifest.waypoints[id]) {
+      manifest.waypoints[id].display = waypoint.display
+    }
+  }
+}
 
 writeFileSync(outPath, `${JSON.stringify(manifest, null, 2)}\n`)
 console.log(`Wrote ${outPath}`)

@@ -4,8 +4,9 @@ export const CENTRAL_ROME_TOUR = {
   productId: 'rome-central',
   title: 'Roma Historica',
   subtitle:
-    'Pantheon → Spanish Steps → Trevi → Navona → Campo → Argentina → Castel',
+    "Trajan's Market → Pantheon → Spanish Steps → Trevi → Navona → Campo → Argentina → Castel",
   stopIds: [
+    'trajan-market',
     'pantheon',
     'spanish-steps',
     'fontana-di-trevi',

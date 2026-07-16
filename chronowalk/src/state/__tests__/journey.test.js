@@ -33,6 +33,7 @@ describe('journey state machine', () => {
 
   it('persists and rehydrates from localStorage', () => {
     beginJourney({ pace: 'classic', waypointIndex: 2 })
+    expect(getJourneySnapshot().context.promotedOptionalIds).toEqual(['w04'])
     transitionJourney(JOURNEY_STATES.APPROACHING, { currentSequenceIndex: 4 })
 
     const raw = localStorage.getItem('cw_journey_v1')
@@ -57,22 +58,26 @@ describe('journey state machine', () => {
     expect(seen).toContain(JOURNEY_STATES.ARRIVED)
   })
 
-  it('promotes optional w04 on path A and rewinds sequence to t02', () => {
+  it('includes Palatine on classic path A by default', () => {
     const manifest = loadRomeManifest()
-    const t02Index = buildEffectiveSequence(manifest, 'a', ['w04']).indexOf('t02')
     beginJourney({ pace: 'classic', path: 'a' })
+    const sequence = buildEffectiveSequence(manifest, 'a', ['w04'])
+
+    expect(getJourneySnapshot().context.promotedOptionalIds).toEqual(['w04'])
+    expect(sequence).toContain('w04')
+  })
+
+  it('routes classic Roma Antica to Circus Maximus after Capitoline', () => {
+    const manifest = loadRomeManifest()
+    beginJourney({ pace: 'classic', path: 'a', promotedOptionalIds: ['w04'] })
     transitionJourney(JOURNEY_STATES.WALKING, {
-      currentSequenceIndex: 4,
-      completedWaypointIds: ['w01', 'w02', 'w03'],
+      completedWaypointIds: ['w01', 'w02', 'w03', 'w04', 'w06', 'w07', 'w08', 'w10', 'w11_12', 'w13'],
       pathLocked: true,
     })
 
-    promoteOptionalWaypoint('w04', manifest)
-
-    const snapshot = getJourneySnapshot()
-    expect(snapshot.context.promotedOptionalIds).toEqual(['w04'])
-    expect(snapshot.context.currentSequenceIndex).toBe(t02Index)
-    expect(snapshot.state).toBe(JOURNEY_STATES.WALKING)
+    const next = completeWaypointAndAdvance('w13', manifest)
+    expect(next.context.promotedOptionalIds).toContain('enc_circus')
+    expect(buildEffectiveSequence(manifest, 'a', next.context.promotedOptionalIds)).toContain('enc_circus')
   })
 
   it('enters day complete after act IV on classic pace', () => {

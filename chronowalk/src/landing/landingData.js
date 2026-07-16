@@ -44,11 +44,11 @@ export const ROME_TIERS = [
     price: '$12',
     priceCents: 1200,
     priceNote: 'one-time',
-    landmarkLine: 'The Pantheon + centro storico',
+    landmarkLine: "Trajan's Market + Pantheon + centro storico",
     description:
-      'The Pantheon and the living city around it — Trevi, Navona, Campo, Argentina, and Castel Sant\'Angelo. Outside Parco Archeologico del Colosseo.',
+      "Trajan's Market and the living city around the Pantheon — Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside Parco Archeologico del Colosseo.",
     bullets: [
-      'Full Pantheon chapters + Threshold (same stop as the free preview)',
+      "Trajan's Market + full Pantheon chapters + Threshold (same stop as the free preview)",
       'Centro storico stops — no park ticket needed',
     ],
     expandLabel: 'See stop list & inclusions',
@@ -65,9 +65,9 @@ export const ROME_TIERS = [
     priceCents: 1200,
     priceNote: 'one-time',
     description:
-      'The ancient core — Colosseum and Roman Forum — with place-tied stories and Threshold at each stop.',
+      'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
     bullets: [
-      'Colosseum and Roman Forum stops',
+      'Colosseum, Palatine terrace, Forum, Capitoline Hill & Circus Maximus',
       'Threshold reconstructions at key landmarks',
     ],
     expandLabel: 'See stop list & inclusions',

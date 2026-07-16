@@ -87,8 +87,9 @@
     {
       "id": "encore",
       "numeral": "Encore",
-      "title": "The Long Road",
+      "title": "The Long Games & the Long Road",
       "waypoints": [
+        "enc_circus",
         "w22"
       ]
     }
@@ -140,6 +141,8 @@
         "w20",
         "t16",
         "w21",
+        "enc_circus",
+        "t22",
         "w22"
       ],
       "b": [
@@ -178,12 +181,15 @@
         "w20",
         "t16",
         "w21",
+        "enc_circus",
+        "t22",
         "w22"
       ]
     },
     "optional_waypoints": {
       "a": [
-        "w04"
+        "w04",
+        "enc_circus"
       ]
     }
   },
@@ -903,6 +909,24 @@
       },
       "transcript": "[quiet]  He moved through the corridor at speed. Eight hundred meters of covered passageway running above the city wall, the Vatican behind him, the Castel ahead — and below, through the stone, the sound of Rome coming apart.\n\n[softly]  The man running was Pope Clement the Seventh. The date was May 6, 1527. Troops of the Holy Roman Emperor had broken into the city — the Swiss Guards died at the door of Saint Peter's holding the line while the Pope moved through the passetto: the elevated corridor connecting the Vatican to this fortress, built across centuries precisely so that this moment would be possible. He reached the battlements... and watched Rome burn. He was besieged for months. The Sack killed tens of thousands. The painters and scholars who had made Rome the centre of Europe fled, and did not come back.\n\n[softly]  Stop at the middle of the bridge — between the angels — and look at the water going under you. [slow]  Hadrian's engineers chose this exact crossing. Every pilgrim, every pope, every prisoner came over the same span you're standing on. [warm]  The corridor the Pope ran through is still there — the roofed passage along the wall to the north. What you cannot see from here is what this building was before it was a fortress.\n\n[matter-of-fact]  Hadrian built it as his tomb. Construction began around 123 AD; he died before it was finished, and his successor consecrated it in 139. A massive drum of concrete, some sixty-four meters across, originally clad in marble, crowned with a garden of cypress trees and a gilded four-horse chariot at the summit. His ashes were placed at the centre, and the emperors who followed were buried here too, one after another, until the line ended and the building was full. [slow]  It stood there. The concrete stayed. The city changed.\n\n[thoughtful]  A military engineer looking at it a century later could see immediately what it was for *now* — the thick walls, the position on the river — and the medieval papacy folded it into the city's defences. Tradition holds that during a plague around 590, Pope Gregory looked up and saw the Archangel Michael above the building, sheathing his sword — a sign the plague was ending. The building was renamed. The angel at the summit has been there in some form ever since; the bronze one you see now is eighteenth-century, and it shows the exact moment of the vision: [slow]  the sword already going back into its scabbard.\n\n[quiet]  The building became a prison. Giordano Bruno was held here during his eight-year trial. He walked out on February 17, 1600 — not free. You were at Campo de' Fiori earlier. [slow]  That is where he walked to. Beatrice Cenci was executed in front of this building in 1599, the year before Bruno... at twenty-two years old. [thoughtful]  It is now a museum. [pause]  Inside: Hadrian's spiral ramp, still ascending through the original concrete. Above it, medieval fortifications. Above those, Renaissance papal apartments with their frescoes. Somewhere below, the cells. [slow]  You can walk from an emperor's tomb to a pope's bedroom in twenty minutes... through the same walls.\n\n[matter-of-fact]  What this building reveals is not Rome's care for the past. It is Rome's habit of finding the thing that is already there and making it useful. The concrete Hadrian poured was still here. [quiet]  That was enough. [slow]  The walls were indifferent to the purposes they held.\n\n[quiet]  And that... is the walk. You began at a fountain that sinks, and you end at a tomb that refused to stay a tomb. [slow]  Everything you passed today survived the same way — by becoming whatever the next century needed. [warm]  Rome doesn't preserve things. [pause]  It keeps them employed. [softly]  Now stay for the light, if it's on. You've earned the view twice over."
     },
+    "enc_circus": {
+      "title": "Circus Maximus floor",
+      "act": "encore",
+      "geofence": {
+        "lat": 41.8859,
+        "lng": 12.4857,
+        "radius_m": 55
+      },
+      "zone": "antiquity",
+      "chapters": [
+        "enc_circus.mp3"
+      ],
+      "inserts": [
+        "ins_window"
+      ],
+      "approachLine": "Walk out onto the grass at the bottom of the valley.",
+      "arrivalLine": "You are where the crowd stood."
+    },
     "w22": {
       "title": "Via Appia Antica",
       "act": "encore",
@@ -1070,6 +1094,12 @@
       "duration_s": 40,
       "title": "→ Castel Sant'Angelo",
       "transcript": "[warm]  This is the last walk of the day, and it's the best one — west, toward the river. When you reach the water, turn right along it and let the light do what it's about to do.  [slow]  Ahead of you, across the Tiber, a round fortress has been standing for nineteen centuries, changing jobs the way the city changes centuries. [quiet]  It started as one man's tomb. It became the place popes ran to. [softly]  Cross the bridge of angels slowly when you reach it. The building has waited a very long time for you specifically... it can wait ten more minutes."
+    },
+    "t22": {
+      "after": "enc_circus",
+      "audio": "t22.mp3",
+      "zone": "antiquity",
+      "duration_s": 120
     },
     "t03": {
       "after": "w04",

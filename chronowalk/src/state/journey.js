@@ -210,6 +210,9 @@ export function beginJourney({
   sequenceIndex = 0,
   customWaypointIds = null,
 } = {}) {
+  const promotedOptionalIds =
+    pace === JOURNEY_PACE.CLASSIC && path === JOURNEY_PATH.A ? ['w04'] : []
+
   return transitionJourney(JOURNEY_STATES.WALKING, {
     pace,
     path,
@@ -217,7 +220,7 @@ export function beginJourney({
     currentSequenceIndex: sequenceIndex,
     completedWaypointIds: [],
     completedTransitIds: [],
-    promotedOptionalIds: [],
+    promotedOptionalIds,
     pathLocked: false,
     pendingResumeCue: null,
     customWaypointIds,
@@ -297,6 +300,15 @@ export function completeWaypointAndAdvance(waypointId, manifest = null) {
 
   if (shouldClassicDayBreak(snapshot.context.pace, waypointId)) {
     return transitionJourney(JOURNEY_STATES.DAY_COMPLETE)
+  }
+
+  if (
+    manifest &&
+    snapshot.context.pace === JOURNEY_PACE.CLASSIC &&
+    waypointId === 'w13' &&
+    !(snapshot.context.promotedOptionalIds ?? []).includes('enc_circus')
+  ) {
+    return promoteOptionalWaypoint('enc_circus', manifest)
   }
 
   if (manifest && isLastTourWaypoint(waypointId, manifest, snapshot.context)) {
