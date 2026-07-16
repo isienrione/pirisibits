@@ -22,28 +22,37 @@ describe('tourTiers', () => {
     ])
   })
 
-  it('defines Roma Antica as Colosseum + Forum', () => {
+  it('defines Roma Antica as Colosseum, Palatine, Forum, Capitoline, and Circus', () => {
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('w01')
+    expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('w04')
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('w13')
+    expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('enc_circus')
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).not.toContain('w14')
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).not.toContain('w17')
   })
 
   it('returns distinct visit stop counts per tier', () => {
     const central = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CENTRAL })
-    const antica = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const antica = getVisitStopIds(manifest, {
+      pace: JOURNEY_PACE.CLASSIC,
+      promotedOptionalIds: ['w04', 'enc_circus'],
+    })
     const eterna = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central).toHaveLength(9)
-    expect(antica).toHaveLength(9)
+    expect(antica).toHaveLength(11)
     expect(eterna.length).toBeGreaterThan(central.length)
     expect(eterna.length).toBeGreaterThan(antica.length)
   })
 
   it('marks the final tier waypoint for tour completion', () => {
-    const anticaContext = { pace: JOURNEY_PACE.CLASSIC, path: 'a' }
-    expect(isLastTourWaypoint('w13', manifest, anticaContext)).toBe(true)
-    expect(isLastTourWaypoint('w06', manifest, anticaContext)).toBe(false)
+    const anticaContext = {
+      pace: JOURNEY_PACE.CLASSIC,
+      path: 'a',
+      promotedOptionalIds: ['w04', 'enc_circus'],
+    }
+    expect(isLastTourWaypoint('enc_circus', manifest, anticaContext)).toBe(true)
+    expect(isLastTourWaypoint('w13', manifest, anticaContext)).toBe(false)
 
     const centralContext = { pace: JOURNEY_PACE.CENTRAL, path: 'a' }
     expect(isLastTourWaypoint('w22', manifest, centralContext)).toBe(true)

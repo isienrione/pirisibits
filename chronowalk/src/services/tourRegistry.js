@@ -1,9 +1,13 @@
+import { CENTRAL_ROME_TOUR } from '../data/central-rome-tour'
 import { HEART_OF_ANCIENT_ROME_TOUR } from '../data/heart-of-ancient-rome-tour'
+import { ROME_ANTICA_TOUR } from '../data/rome-antica-tour'
 import { ROME_CORE_TOUR } from '../data/rome-core-tour'
 import { ROMAN_FORUM_TOUR } from '../data/roman-forum-tour'
 import { getWaypointGeo } from '../data/waypointGeo'
 
 const TOURS = {
+  [CENTRAL_ROME_TOUR.id]: CENTRAL_ROME_TOUR,
+  [ROME_ANTICA_TOUR.id]: ROME_ANTICA_TOUR,
   [ROME_CORE_TOUR.id]: ROME_CORE_TOUR,
   [ROMAN_FORUM_TOUR.id]: ROMAN_FORUM_TOUR,
   [HEART_OF_ANCIENT_ROME_TOUR.id]: HEART_OF_ANCIENT_ROME_TOUR,

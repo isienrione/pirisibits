@@ -55,12 +55,15 @@ describe('tourProductTruth', () => {
 
   it('uses computed visit stop counts when pace is selected', () => {
     const central = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CENTRAL })
-    const antica = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CLASSIC })
+    const antica = getTourProductTruth(manifest, {
+      pace: JOURNEY_PACE.CLASSIC,
+      promotedOptionalIds: ['w04', 'enc_circus'],
+    })
     const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central.visitStopCount).toBe(9)
-    expect(antica.visitStopCount).toBe(9)
-    expect(eterna.visitStopCount).toBe(18)
+    expect(antica.visitStopCount).toBe(11)
+    expect(eterna.visitStopCount).toBe(19)
   })
 
   it('formats places across acts copy', () => {

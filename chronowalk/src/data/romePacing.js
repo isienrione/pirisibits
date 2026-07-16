@@ -34,7 +34,7 @@ export const PACE_OPTIONS = [
     priceLabel: '$12',
     priceCents: 1200,
     description:
-      "Centro storico and the Pantheon — Spanish Steps, Trevi, Navona, Campo de' Fiori, Trajan's Market, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
+      "Trajan's Market and centro storico — Spanish Steps, Trevi, Navona, Campo de' Fiori, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
     includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
     actDots: [null, null, null, 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'pantheon',
@@ -46,8 +46,8 @@ export const PACE_OPTIONS = [
     priceLabel: '$12',
     priceCents: 1200,
     description:
-      'The Colosseum and the full Forum walk — from the Arena through the Arch of Titus and every Forum stop to the Capitoline.',
-    includedSummary: 'Colosseum · Arch of Titus · Roman Forum',
+      'The Colosseum through the Forum — Palatine Hill terrace, Capitoline Hill, and Circus Maximus with place-tied stories at each stop.',
+    includedSummary: 'Colosseum · Palatine · Forum · Capitoline · Circus',
     actDots: ['act1', 'act2', 'act3', null, null, null, null],
     imageKey: 'colosseum',
   },

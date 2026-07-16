@@ -24,9 +24,10 @@ describe('tourProducts', () => {
     ])
   })
 
-  it('defines central rome as the centro loop without the archaeological park', () => {
+  it('defines central rome with Trajan\'s Market and centro storico', () => {
     expect(TOUR_PRODUCTS['rome-central'].priceCents).toBe(1200)
     expect(TOUR_PRODUCTS['rome-central'].stopIds).toEqual([
+      'trajan-market',
       'pantheon',
       'spanish-steps',
       'fontana-di-trevi',
@@ -38,11 +39,26 @@ describe('tourProducts', () => {
     expect(getTourIdsForProduct('rome-central')).toEqual(['central-rome'])
   })
 
+  it('defines Roma Antica with Colosseum, hills, Forum, and Circus', () => {
+    expect(TOUR_PRODUCTS['rome-essential'].stopIds).toEqual(
+      expect.arrayContaining([
+        'colosseum',
+        'palatine-hill-cluster',
+        'capitoline-hill',
+        'circus-maximus',
+        'forum-arch-titus',
+      ]),
+    )
+    expect(TOUR_PRODUCTS['rome-essential'].stopIds).toHaveLength(12)
+    expect(getTourIdsForProduct('rome-essential')).toEqual(['rome-antica'])
+  })
+
   it('lists the bundle before individual tours', () => {
     expect(TOUR_PRODUCT_LIST[0].id).toBe('rome-complete')
     expect(TOUR_PRODUCT_LIST[1].id).toBe('rome-central')
-    expect(TOUR_PRODUCT_LIST[2].id).toBe('roman-forum')
-    expect(TOUR_PRODUCT_LIST[3].id).toBe('heart-of-ancient-rome')
+    expect(TOUR_PRODUCT_LIST[2].id).toBe('rome-essential')
+    expect(TOUR_PRODUCT_LIST[3].id).toBe('roman-forum')
+    expect(TOUR_PRODUCT_LIST[4].id).toBe('heart-of-ancient-rome')
   })
 
   it('formats whole-dollar and fractional USD prices', () => {

@@ -11,9 +11,20 @@ import {
 
 describe('landingTierRoutes', () => {
   it('defines ordered routes for all landing tiers', () => {
-    expect(LANDING_TIER_ROUTES['rome-central']).toHaveLength(7)
-    expect(LANDING_TIER_ROUTES['rome-essential']).toHaveLength(9)
+    expect(LANDING_TIER_ROUTES['rome-central']).toHaveLength(8)
+    expect(LANDING_TIER_ROUTES['rome-essential']).toHaveLength(12)
     expect(LANDING_TIER_ROUTES['rome-complete'].length).toBeGreaterThan(20)
+  })
+
+  it('includes Trajan\'s Market in Roma Historica and ancient hills in Roma Antica', () => {
+    expect(LANDING_TIER_ROUTES['rome-central'][0]).toBe('trajan-market')
+    expect(LANDING_TIER_ROUTES['rome-essential']).toEqual(
+      expect.arrayContaining([
+        'palatine-hill-cluster',
+        'capitoline-hill',
+        'circus-maximus',
+      ]),
+    )
   })
 
   it('resolves geo stops with titles for each tier', () => {

@@ -1,6 +1,7 @@
 import { HEART_OF_ANCIENT_ROME_TOUR } from './heart-of-ancient-rome-tour'
 import { ROMAN_FORUM_TOUR } from './roman-forum-tour'
 import { CENTRAL_ROME_TOUR } from './central-rome-tour'
+import { ROME_ANTICA_TOUR } from './rome-antica-tour'
 
 /**
  * Individual walking tours and the complete Rome bundle.
@@ -11,13 +12,25 @@ export const TOUR_PRODUCTS = {
     id: 'rome-central',
     tourId: CENTRAL_ROME_TOUR.id,
     title: 'Roma Historica',
-    tagline: 'The Pantheon + centro storico',
+    tagline: "Trajan's Market + Pantheon + centro storico",
     description:
-      'The Pantheon and the walk around it — Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant\'Angelo. Outside the Colosseum archaeological park.',
+      "Trajan's Market and the walk around the Pantheon — Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside the Colosseum archaeological park.",
     priceUsd: 12,
     priceCents: 1200,
     stopIds: CENTRAL_ROME_TOUR.stopIds,
-    firstStopTitle: 'The Pantheon',
+    firstStopTitle: "Trajan's Market",
+  },
+  'rome-essential': {
+    id: 'rome-essential',
+    tourId: ROME_ANTICA_TOUR.id,
+    title: 'Roma Antica',
+    tagline: 'Colosseum, Forum, hills & Circus Maximus',
+    description:
+      'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
+    priceUsd: 12,
+    priceCents: 1200,
+    stopIds: ROME_ANTICA_TOUR.stopIds,
+    firstStopTitle: 'Colosseum',
   },
   'roman-forum': {
     id: 'roman-forum',
@@ -60,6 +73,7 @@ export const TOUR_PRODUCTS = {
 export const TOUR_PRODUCT_LIST = [
   TOUR_PRODUCTS['rome-complete'],
   TOUR_PRODUCTS['rome-central'],
+  TOUR_PRODUCTS['rome-essential'],
   TOUR_PRODUCTS['roman-forum'],
   TOUR_PRODUCTS['heart-of-ancient-rome'],
 ]
