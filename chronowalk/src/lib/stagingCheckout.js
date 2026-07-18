@@ -1,9 +1,9 @@
 import { getHost } from './host.js'
-import { getAbVariantCents, grantAccess } from './config.js'
+import { getAbVariantCents } from './config.js'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { track, TRACK_EVENTS } from './track.js'
 import { rememberLocalPurchaseToken } from './access.js'
-import { clearPendingPurchaseTier } from './pendingPurchase.js'
+import { applyPurchaseUnlock } from './pendingPurchase.js'
 
 const STAGING_KEY = 'cw_staging_purchase_v1'
 
@@ -53,9 +53,8 @@ export function completeStagingPurchase({ tierId = null, source = 'staging_check
     /* ignore quota */
   }
 
-  rememberLocalPurchaseToken(token)
-  grantAccess()
-  clearPendingPurchaseTier()
+  rememberLocalPurchaseToken(token, tierId)
+  applyPurchaseUnlock({ token, productId: tierId })
 
   track(TRACK_EVENTS.CHECKOUT_OPEN, {
     price_cents: priceCents,

@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { JOURNEY_PACE, PACE_OPTIONS, getPaceOption, getDefaultPace } from '../data/romePacing.js'
+import { JOURNEY_PACE, getPaceOption, getDefaultPace } from '../data/romePacing.js'
+import {
+  getPaceOptionsForPurchasedTier,
+  paceIdForPurchaseTier,
+  readPurchasedTier,
+} from '../lib/pendingPurchase.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
@@ -19,6 +24,12 @@ function initialBeginStep(isResumable) {
   return 'pace'
 }
 
+function resolveInitialPace(contextPace) {
+  const purchasedPace = paceIdForPurchaseTier(readPurchasedTier())
+  if (purchasedPace) return purchasedPace
+  return contextPace ?? getDefaultPace()
+}
+
 export default function RedesignBeginFlow() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -31,8 +42,13 @@ export default function RedesignBeginFlow() {
     context.currentSequenceIndex,
     context.promotedOptionalIds,
   )
+  const purchasedTier = useMemo(() => readPurchasedTier(), [])
+  const paceOptions = useMemo(
+    () => getPaceOptionsForPurchasedTier(purchasedTier),
+    [purchasedTier],
+  )
   const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
-  const [selectedPace, setSelectedPace] = useState(context.pace ?? getDefaultPace())
+  const [selectedPace, setSelectedPace] = useState(() => resolveInitialPace(context.pace))
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
 
@@ -185,7 +201,7 @@ export default function RedesignBeginFlow() {
   return (
     <div className="redesign-app-shell">
       <B4PaceSelector
-        options={PACE_OPTIONS}
+        options={paceOptions}
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}

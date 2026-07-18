@@ -85,8 +85,11 @@ Wire your email provider in the TODO inside the function (Resend recommended). E
 
 `supabase/v2_app_config.sql` creates:
 
-- `public.purchases` (email, order_id, host, ab_variant, access_token)  
-- `public.validate_access_token(p_token)` for `/access`
+- `public.purchases` (email, order_id, host, ab_variant, product_id, access_token)  
+- `public.validate_access_token(p_token)` for `/access` (boolean)  
+- `public.get_purchase_for_token(p_token)` → `{ ok, product_id }` so unlock opens the purchased pack  
+- `public.journey_progress` + `get_journey_progress` / `upsert_journey_progress` for cross-device resume (`supabase/journey_progress.sql`)  
+- Family invite seats: `supabase/family_walk.sql` (create bundle with purchase `access_token`; claim via `/invite`)
 - `app_config.checkout_url` seeded with the Roma Eterna buy link
 
 ### 6. Test a real transaction (test mode)

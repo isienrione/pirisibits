@@ -16,9 +16,11 @@ import { useV2Journey } from '../hooks/useV2Journey.js'
 import { isImmersiveJourneyState } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
+import { RequireAccess } from '../lib/requireAccess.jsx'
 import {
   LazyAccessConfirmedPage,
   LazyAccessPage,
+  LazyInvitePage,
   LazyPurchaseFlowPage,
   LazyBeginPage,
   LazyCreditsPage,
@@ -38,6 +40,10 @@ import {
   LazyTourPage,
   LazyWelcomePage,
 } from './lazyRoutes.jsx'
+
+function Paid({ children }) {
+  return <RequireAccess>{children}</RequireAccess>
+}
 
 let LazyUxRegressionTester = null
 
@@ -83,23 +89,24 @@ function AppRoutes() {
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
-        <Route path="/setup" element={<LazySetupPage />} />
-        <Route path="/access/confirmed" element={<LazyAccessConfirmedPage />} />
+        <Route path="/setup" element={<Paid><LazySetupPage /></Paid>} />
+        <Route path="/access/confirmed" element={<Paid><LazyAccessConfirmedPage /></Paid>} />
         <Route path="/purchase" element={<LazyPurchaseFlowPage />} />
         <Route path="/checkout" element={<Navigate to="/purchase" replace />} />
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
-        <Route path="/begin" element={<LazyBeginPage />} />
-        <Route path="/tour" element={<LazyTourPage />} />
-        <Route path="/journey" element={<LazyJourneyPage />} />
-        <Route path="/map" element={<LazyMapPage />} />
-        <Route path="/stops" element={<LazyStopsPage />} />
-        <Route path="/journal" element={<LazyJournalPage />} />
-        <Route path="/journal/:waypointId" element={<LazyMemoryDetailPage />} />
-        <Route path="/letter" element={<LazyLetterPage />} />
-        <Route path="/settings" element={<LazySettingsPage />} />
+        <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
+        <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
+        <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
+        <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />
+        <Route path="/stops" element={<Paid><LazyStopsPage /></Paid>} />
+        <Route path="/journal" element={<Paid><LazyJournalPage /></Paid>} />
+        <Route path="/journal/:waypointId" element={<Paid><LazyMemoryDetailPage /></Paid>} />
+        <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />
+        <Route path="/settings" element={<Paid><LazySettingsPage /></Paid>} />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
+        <Route path="/invite" element={<LazyInvitePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />
