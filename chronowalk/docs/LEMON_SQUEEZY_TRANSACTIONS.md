@@ -39,9 +39,9 @@ In-app code uses the same buy URL + `LemonSqueezy.Url.Open()` (`src/lib/lemonSqu
 
 | Tier id (`product_id`) | Suggested price | Notes |
 | --- | --- | --- |
-| `rome-central` | €9 / $12 | Same buy link + `product_id` metadata until separate variants exist |
-| `rome-essential` | €12 / $12 | Same |
-| `rome-complete` | €17 / $17.99 | Roma Eterna — primary checkout UUID above |
+| `rome-central` | €9.99 | Same buy link + `product_id` metadata until separate variants exist |
+| `rome-essential` | €9.99 | Same |
+| `rome-complete` | €14.99 | Roma Eterna — primary checkout UUID above |
 
 ### 2. Frontend env (optional override)
 

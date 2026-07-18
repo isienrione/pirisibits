@@ -69,7 +69,7 @@ function buildRomeTourDetail() {
       'Two thousand years of empire, faith, and genius — restored where you stand, told at your pace.',
     heroImage: destination?.heroImage ?? TOUR_HERO_PHOTO,
     productId: product?.id ?? 'rome-complete',
-    priceUsd: product?.priceUsd ?? 17.99,
+    priceUsd: product?.priceUsd ?? 14.99,
     stops,
     tour: {
       id: HEART_OF_ANCIENT_ROME_TOUR.id,

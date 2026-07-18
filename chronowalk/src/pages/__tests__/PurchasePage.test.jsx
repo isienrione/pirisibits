@@ -41,9 +41,9 @@ describe('PurchasePage', () => {
     expect(screen.getByText(/Full bundle · at your own pace/i)).toBeInTheDocument()
     expect(screen.getByText(/22 places · yours to keep/i)).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
-    expect(screen.getByText('$17.99')).toBeInTheDocument()
+    expect(screen.getByText('€14.99')).toBeInTheDocument()
     expect(screen.getByText('Secure payment')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /pay \$17\.99/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /pay €14\.99/i })).toBeInTheDocument()
   })
 
   it('returns to tour detail on cancel', () => {
@@ -56,7 +56,7 @@ describe('PurchasePage', () => {
   it('confirms purchase and navigates to begin journey', () => {
     renderRomePurchase()
 
-    fireEvent.click(screen.getByRole('button', { name: /pay \$17\.99/i }))
+    fireEvent.click(screen.getByRole('button', { name: /pay €14\.99/i }))
     expect(screen.getByRole('button', { name: /confirming/i })).toBeDisabled()
 
     vi.advanceTimersByTime(450)

@@ -6,8 +6,8 @@ create table if not exists public.app_config (
 );
 
 insert into public.app_config (key, value) values
-  ('price', '{"cents":1700,"currency":"EUR"}'::jsonb),
-  ('ab', '{"enabled":true,"variants":[1400,1900],"split":0.5}'::jsonb),
+  ('price', '{"cents":1499,"currency":"EUR"}'::jsonb),
+  ('ab', '{"enabled":false,"variants":[1499,1499],"split":0.5}'::jsonb),
   ('review_url', '"https://www.google.com/maps"'::jsonb),
   ('checkout_url', '"https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d"'::jsonb)
 on conflict (key) do update set value = excluded.value;

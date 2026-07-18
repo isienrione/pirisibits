@@ -20,17 +20,17 @@ describe('checkout helpers', () => {
   })
 
   it('resolves rome tiers', () => {
-    expect(getTierById('rome-essential')?.priceCents).toBe(1200)
+    expect(getTierById('rome-essential')?.priceCents).toBe(999)
     expect(getTierById('missing')).toBeNull()
   })
 
   it('builds tier checkout urls with custom metadata', () => {
     const url = buildTierCheckoutUrl('https://checkout.example/buy', 'rome-central', {
       host: 'hotelroma1',
-      abVariantCents: 1700,
+      abVariantCents: 1499,
     })
     expect(url).toContain('checkout%5Bcustom%5D%5Bproduct_id%5D=rome-central')
-    expect(url).toContain('checkout%5Bcustom%5D%5Bab_variant%5D=1200')
+    expect(url).toContain('checkout%5Bcustom%5D%5Bab_variant%5D=999')
     expect(url).toContain('checkout%5Bcustom%5D%5Bhost%5D=hotelroma1')
   })
 

@@ -147,8 +147,8 @@ export function getTourProductTruth(manifest, options = {}) {
   const durationLabel = product.durationLabel ?? 'your pace'
   const ownershipLabel = product.ownershipLabel ?? 'yours forever'
   const distanceLabel = product.distanceLabel ?? '—'
-  const priceFallbackCents = product.priceFallbackCents ?? manifest?.price_fallback_cents ?? 1799
-  const currency = product.currency ?? 'USD'
+  const priceFallbackCents = product.priceFallbackCents ?? manifest?.price_fallback_cents ?? 1499
+  const currency = product.currency ?? 'EUR'
 
   return {
     publicPlaceCount,

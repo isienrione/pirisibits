@@ -188,7 +188,7 @@ Keep **landing id → catalog product → begin-flow pace → Lemon `product_id`
 
 # 4) Pricing-only update
 
-Keep every source in sync (USD cents):
+Keep every source in sync (EUR cents):
 
 | Source | File / place |
 |--------|----------------|

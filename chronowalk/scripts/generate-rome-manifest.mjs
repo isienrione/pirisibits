@@ -57,7 +57,7 @@ const manifest = {
   id: 'rome',
   name: 'Rome',
   accent: '--city-rome',
-  price_fallback_cents: 1799,
+  price_fallback_cents: 1499,
   reflections: [
     'You walked where senators argued and emperors passed — and Rome let you in.',
     'The living city opened its piazzas, fountains, and evening light to you.',

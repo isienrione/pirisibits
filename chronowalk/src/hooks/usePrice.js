@@ -4,13 +4,13 @@ import { loadRomeManifest } from '../content/manifest.js'
 
 const ROME_PRICE_FALLBACK = loadRomeManifest().product?.priceFallbackCents
   ?? loadRomeManifest().price_fallback_cents
-  ?? 1799
+  ?? 1499
 
 export function usePrice() {
   const [price, setPrice] = useState({
-    label: formatConfigPrice(ROME_PRICE_FALLBACK, 'USD'),
+    label: formatConfigPrice(ROME_PRICE_FALLBACK, 'EUR'),
     cents: ROME_PRICE_FALLBACK,
-    currency: 'USD',
+    currency: 'EUR',
   })
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export function usePrice() {
     loadAppConfig().then((config) => {
       if (cancelled) return
       const cents = config.abVariantCents ?? config.price.cents
-      const currency = config.price.currency ?? 'USD'
+      const currency = config.price.currency ?? 'EUR'
       setPrice({
         cents,
         currency,
