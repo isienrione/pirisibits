@@ -1,6 +1,6 @@
 /**
  * Process-wide AudioEngine so narration survives in-app tab changes
- * (/journey → /map → /stops). JourneyShell unmounts on those routes; tearing
+ * (/journey → /map → /tour). JourneyShell unmounts on those routes; tearing
  * the engine down with it was stopping HTML audio mid-story.
  */
 import { createAudioEngine } from './AudioEngine.js'

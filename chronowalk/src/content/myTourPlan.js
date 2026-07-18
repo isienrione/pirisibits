@@ -153,7 +153,7 @@ export function primaryCtaLabel(acts, journeyActive) {
     current.numeral === 'Encore' ? 'Encore' : `Act ${current.numeral}`
 
   if (journeyActive) {
-    return `Continue — ${numeralLabel} · ${current.title}`
+    return `Return to walk — ${current.title}`
   }
 
   if (current.stops.every((stop) => stop.status === 'completed')) {

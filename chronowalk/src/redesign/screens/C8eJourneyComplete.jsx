@@ -214,7 +214,7 @@ export default function C8eJourneyComplete({
             cursor: busy ? 'wait' : 'pointer',
           }}
         >
-          Return to My Tour
+          Return to Tour
         </button>
       </div>
     </div>

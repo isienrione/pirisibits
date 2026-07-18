@@ -65,7 +65,7 @@ export default function E1JournalHome({
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             {onAllStopsClick ? (
               <button type="button" onClick={onAllStopsClick} style={{ fontSize: 10, color: T.ember, background: 'none', border: `1px solid ${T.ember}55`, borderRadius: 20, padding: '3px 10px', cursor: 'pointer', fontFamily: F.body }}>
-                All stops
+                Tour stops
               </button>
             ) : null}
             {onSettingsClick ? (

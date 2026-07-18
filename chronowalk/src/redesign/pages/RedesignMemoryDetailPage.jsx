@@ -60,7 +60,7 @@ export default function RedesignMemoryDetailPage() {
       <RedesignRouteShell>
         <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32 }}>
           <p>Stop not found.</p>
-          <button type="button" onClick={() => navigate('/stops')}>Back to all stops</button>
+          <button type="button" onClick={() => navigate('/tour')}>Back to tour</button>
         </div>
       </RedesignRouteShell>
     )
