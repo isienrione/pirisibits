@@ -38,8 +38,13 @@ export function createWaypointAutoplayCoordinator() {
     ensureStarted(waypointId, { isPlaying = () => false } = {}, start) {
       if (!waypointId) return false
 
+      // Already live (e.g. returned to /journey while HTML audio kept playing).
+      if (isPlaying()) {
+        startedWaypointId = waypointId
+        return true
+      }
+
       if (startedWaypointId === waypointId) {
-        if (isPlaying()) return true
         startedWaypointId = null
       }
 

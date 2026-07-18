@@ -364,7 +364,17 @@ export class AudioEngine {
     const waypoint =
       this.manifest.waypointsById?.[waypointId] ??
       this.manifest.waypoints?.[waypointId]
-    if (!waypoint) return
+    if (!waypoint) return false
+
+    // Keep the current session when remounting JourneyShell after a tab switch.
+    if (
+      this.activePlayback?.kind === 'waypoint' &&
+      this.activePlayback?.id === waypointId &&
+      this.session &&
+      !this.session.paused
+    ) {
+      return this.narrationPlaying || Boolean(this.session.element)
+    }
 
     const zone = resolveActiveZone(waypoint, options)
     if (zone) await this.setZone(zone)
@@ -397,6 +407,15 @@ export class AudioEngine {
         : null)
 
     if (!transit) return
+
+    if (
+      this.activePlayback?.kind === 'transit' &&
+      this.activePlayback?.id === transitId &&
+      this.session &&
+      !this.session.paused
+    ) {
+      return
+    }
 
     if (transit.zone) await this.setZone(transit.zone)
 

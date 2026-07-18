@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createAudioEngine } from '../audio/AudioEngine.js'
+import { getSharedAudioEngine } from '../audio/sharedAudioEngine.js'
 import { useV2Journey } from './useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import {
@@ -8,6 +8,18 @@ import {
   writeAudioSpeed,
 } from '../utils/appPreferences.js'
 
+function hydrateFromEngine(engine, setters) {
+  if (!engine) return
+  setters.setNarrationPlaying(engine.isNarrationPlaying())
+  setters.setPlaybackInterrupted(engine.isPlaybackInterrupted())
+  setters.setProgress(engine.getNarrationProgress())
+  setters.setReady(Boolean(engine.context))
+}
+
+/**
+ * Subscribe to the shared AudioEngine. The engine outlives this hook so
+ * in-app tab changes (map / stops / journal) do not stop narration.
+ */
 export function useAudioEngine(manifest) {
   const engineRef = useRef(null)
   const [narrationPlaying, setNarrationPlaying] = useState(false)
@@ -31,36 +43,61 @@ export function useAudioEngine(manifest) {
   useEffect(() => {
     if (!manifest) return undefined
 
-    const engine = createAudioEngine(manifest, { path: context.path })
-    engine.onNarrationChange = setNarrationPlaying
-    engine.onInterruptionChange = setPlaybackInterrupted
-    engine.onProgress = setProgress
-    engine.onNarrationEnded = (ended) =>
+    const engine = getSharedAudioEngine(manifest, { path: context.path })
+    const onEnded = (ended) =>
       setNarrationEnded((prev) => ({
         nonce: prev.nonce + 1,
         kind: ended?.kind ?? null,
         id: ended?.id ?? null,
       }))
+
+    engine.onNarrationChange = setNarrationPlaying
+    engine.onInterruptionChange = setPlaybackInterrupted
+    engine.onProgress = setProgress
+    engine.onNarrationEnded = onEnded
     engine.playbackRate = readAudioSpeed()
-    engine.attachVisibilityListener()
     engineRef.current = engine
 
+    hydrateFromEngine(engine, {
+      setNarrationPlaying,
+      setPlaybackInterrupted,
+      setProgress,
+      setReady,
+    })
+
     engine.init().then(() => {
-      setReady(Boolean(engine.context))
+      if (engineRef.current === engine) {
+        setReady(Boolean(engine.context))
+        hydrateFromEngine(engine, {
+          setNarrationPlaying,
+          setPlaybackInterrupted,
+          setProgress,
+          setReady,
+        })
+      }
     })
 
     return () => {
-      engine.onNarrationChange = null
-      engine.onInterruptionChange = null
-      engine.onProgress = null
-      engine.onNarrationEnded = null
-      engine.detachVisibilityListener()
-      engine.teardown()
-      engineRef.current = null
-      setReady(false)
-      setNarrationPlaying(false)
-      setPlaybackInterrupted(false)
+      // Detach React listeners only — keep the engine (and HTML audio) alive
+      // while the traveler browses map / stops / journal.
+      if (engine.onNarrationChange === setNarrationPlaying) {
+        engine.onNarrationChange = null
+      }
+      if (engine.onInterruptionChange === setPlaybackInterrupted) {
+        engine.onInterruptionChange = null
+      }
+      if (engine.onProgress === setProgress) {
+        engine.onProgress = null
+      }
+      if (engine.onNarrationEnded === onEnded) {
+        engine.onNarrationEnded = null
+      }
+      if (engineRef.current === engine) {
+        engineRef.current = null
+      }
     }
+    // path is applied in the sync effect below; recreate only when manifest identity changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional
   }, [manifest])
 
   // Drive a smooth scrubber/timer while narration is playing.
@@ -74,7 +111,7 @@ export function useAudioEngine(manifest) {
   }, [narrationPlaying])
 
   useEffect(() => {
-    const engine = engineRef.current
+    const engine = engineRef.current ?? (manifest ? getSharedAudioEngine(manifest) : null)
     if (!engine || !manifest) return
 
     engine.setManifest(manifest)
