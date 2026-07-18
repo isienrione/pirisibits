@@ -106,6 +106,18 @@ describe('AudioEngine', () => {
     expect(engine.isNarrationPlaying()).toBe(true);
   });
 
+  it('does not restart an already-playing waypoint session', async () => {
+    await engine.playWaypoint('w01');
+    const firstElement = engine.session.element;
+    createAudio.mockClear();
+
+    const again = await engine.playWaypoint('w01');
+
+    expect(again).toBe(true);
+    expect(createAudio).not.toHaveBeenCalled();
+    expect(engine.session.element).toBe(firstElement);
+  });
+
   it('marks waypoint complete for insert eligibility', () => {
     engine.markWaypointComplete('w01');
     expect(engine.completedWaypointIds.has('w01')).toBe(true);

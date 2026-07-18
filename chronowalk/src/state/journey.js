@@ -233,6 +233,10 @@ export function resetJourney() {
   snapshot = defaultState()
   writeStorage(snapshot)
   emit()
+  // Stop shared narration so a fresh begin doesn't inherit a live session.
+  void import('../audio/sharedAudioEngine.js')
+    .then((mod) => mod.disposeSharedAudioEngine())
+    .catch(() => {})
   return snapshot
 }
 

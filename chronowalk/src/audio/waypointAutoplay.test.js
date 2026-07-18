@@ -52,4 +52,19 @@ describe('createWaypointAutoplayCoordinator', () => {
     expect(started).toBe(true)
     expect(start).toHaveBeenCalledTimes(0)
   })
+
+  it('adopts an in-flight session after remount without restarting', async () => {
+    const coordinator = createWaypointAutoplayCoordinator()
+    const start = vi.fn(async () => true)
+
+    const started = coordinator.ensureStarted(
+      'w01',
+      { isPlaying: () => true },
+      start,
+    )
+
+    expect(started).toBe(true)
+    expect(start).toHaveBeenCalledTimes(0)
+    expect(coordinator.getStartedWaypointId()).toBe('w01')
+  })
 })
