@@ -1,7 +1,8 @@
 import { Navigate } from 'react-router-dom'
 import LandingScreen from '../../components/landing/LandingScreen'
 import { hasAccess } from '../../lib/config'
-import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey'
+import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
+import { getJourneySnapshot, isResumableJourney, JOURNEY_STATES } from '../../state/journey'
 
 export function LandingPage() {
   if (hasAccess()) {
@@ -12,7 +13,15 @@ export function LandingPage() {
       return <Navigate to="/journey" replace />
     }
 
-    return <Navigate to="/begin" replace />
+    return (
+      <Navigate
+        to={getAppHomePath({
+          resumable: isResumableJourney(),
+          entryComplete: isAppEntryComplete(),
+        })}
+        replace
+      />
+    )
   }
 
   return <LandingScreen />

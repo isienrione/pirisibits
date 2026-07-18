@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { claimFamilySeat } from '../../lib/familyWalk.js'
-import { hasAccess } from '../../lib/config.js'
+import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 import { isResumableJourney } from '../../state/journey.js'
 
 function destinationAfterInvite() {
-  return isResumableJourney() ? '/begin' : '/setup'
+  return getAppHomePath({
+    resumable: isResumableJourney(),
+    entryComplete: isAppEntryComplete(),
+  })
 }
 
 export function InvitePage() {
@@ -36,10 +39,6 @@ export function InvitePage() {
       setStatus('error')
       setError(err?.code || err?.message || 'invite_not_found')
     }
-  }
-
-  if (hasAccess() && status !== 'claiming') {
-    // Already unlocked — still allow claiming a seat code, but default home is begin/setup.
   }
 
   return (

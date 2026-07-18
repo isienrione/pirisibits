@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { JOURNEY_PACE, getPaceOption, getDefaultPace } from '../data/romePacing.js'
 import {
   getPaceOptionsForPurchasedTier,
   paceIdForPurchaseTier,
   readPurchasedTier,
 } from '../lib/pendingPurchase.js'
+import { isAppEntryComplete, packTitleForPurchasedTier } from '../lib/appEntry.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
@@ -43,10 +44,13 @@ export default function RedesignBeginFlow() {
     context.promotedOptionalIds,
   )
   const purchasedTier = useMemo(() => readPurchasedTier(), [])
+  const packTitle = useMemo(() => packTitleForPurchasedTier(purchasedTier), [purchasedTier])
   const paceOptions = useMemo(
     () => getPaceOptionsForPurchasedTier(purchasedTier),
     [purchasedTier],
   )
+  const singlePack = paceOptions.length === 1
+  const needsAppEntry = !isAppEntryComplete() && !isResumable
   const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
   const [selectedPace, setSelectedPace] = useState(() => resolveInitialPace(context.pace))
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
@@ -135,6 +139,10 @@ export default function RedesignBeginFlow() {
     advanceAfterPaceSelection()
   }
 
+  if (needsAppEntry) {
+    return <Navigate to="/setup" replace />
+  }
+
   if (stepName === 'mapPreview') {
     return (
       <TourRoutePreviewScreen
@@ -199,12 +207,33 @@ export default function RedesignBeginFlow() {
   }
 
   return (
-    <div className="redesign-app-shell">
+    <div className="redesign-app-shell" data-testid="app-begin-home">
       <B4PaceSelector
         options={paceOptions}
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}
+        eyebrow="YOUR WALK"
+        title={
+          singlePack ? (
+            <>
+              {packTitle}
+              <br />
+              starts here.
+            </>
+          ) : (
+            <>
+              Choose how
+              <br />
+              you walk Rome.
+            </>
+          )
+        }
+        subtitle={
+          singlePack
+            ? 'You left the website. This is ChronoWalk — pick up your unlocked route.'
+            : 'You left the website. ChronoWalk is unlocked on this phone.'
+        }
       />
     </div>
   )

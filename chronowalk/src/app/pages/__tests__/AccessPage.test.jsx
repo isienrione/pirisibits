@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { AccessPage } from '../AccessPage'
 import { ACCESS_KEY } from '../../../lib/config'
+import { markAppEntryComplete, clearAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
 
 const validateMock = vi.fn()
@@ -40,13 +41,23 @@ describe('AccessPage', () => {
   beforeEach(() => {
     localStorage.clear()
     sessionStorage.clear()
+    clearAppEntryComplete()
     transitionJourney(JOURNEY_STATES.IDLE)
     validateMock.mockReset()
     pullMock.mockReset()
     pullMock.mockResolvedValue(null)
   })
 
-  it('sends owners without saved progress into setup', () => {
+  it('sends owners who finished app entry into begin', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
+
+    renderAccessPage()
+
+    expect(screen.getByText('Begin route')).toBeInTheDocument()
+  })
+
+  it('sends new owners into app entry setup', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
 
     renderAccessPage()
@@ -63,13 +74,13 @@ describe('AccessPage', () => {
     expect(screen.getByText('Begin route')).toBeInTheDocument()
   })
 
-  it('grants access, stores tier, and sends first-time purchasers to confirmation', async () => {
+  it('grants access and sends first-time purchasers into app entry', async () => {
     validateMock.mockResolvedValue({ ok: true, source: 'dev', productId: 'rome-essential' })
 
     renderAccessPage('/access?token=dev')
 
     await waitFor(() => {
-      expect(screen.getByText('Confirmed route')).toBeInTheDocument()
+      expect(screen.getByText('Setup route')).toBeInTheDocument()
     })
 
     expect(localStorage.getItem(ACCESS_KEY)).toBe('true')

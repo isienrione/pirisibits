@@ -3,18 +3,20 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import AccessScreen from '../../components/access/AccessScreen'
 import { hasAccess } from '../../lib/config'
 import { readAccessToken } from '../../lib/access.js'
+import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 import { pullJourneyProgress } from '../../lib/journeyCloud.js'
 import { hydrateJourney, isResumableJourney } from '../../state/journey'
 
 /**
- * After a fresh unlock → confirmation (family invite) then setup.
- * Returning owners with progress → resume at /begin.
- * Returning owners without progress → /setup (or /begin if they prefer).
+ * Fresh unlock / returning owners without entry → App Entry (/setup).
+ * Returning owners with progress → /begin resume.
+ * Entry already done → /begin (choose/start walk).
  */
 export function getAccessDestination({ afterUnlock = false } = {}) {
-  if (isResumableJourney()) return '/begin'
-  if (afterUnlock) return '/access/confirmed'
-  return '/setup'
+  return getAppHomePath({
+    resumable: isResumableJourney(),
+    entryComplete: afterUnlock ? false : isAppEntryComplete(),
+  })
 }
 
 export function AccessPage() {

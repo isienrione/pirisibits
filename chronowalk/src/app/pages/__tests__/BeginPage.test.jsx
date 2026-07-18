@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { BeginPage } from '../BeginPage'
 import { ACCESS_KEY } from '../../../lib/config'
+import { markAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, resetJourney, transitionJourney } from '../../../state/journey'
 
 function renderBeginPage() {
@@ -11,6 +12,7 @@ function renderBeginPage() {
       <Routes>
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/landing" element={<div>Landing route</div>} />
+        <Route path="/setup" element={<div>Setup route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
     </MemoryRouter>
@@ -30,18 +32,29 @@ describe('BeginPage', () => {
     expect(screen.getByText('Landing route')).toBeInTheDocument()
   })
 
-  it('starts at pace selection for first-tour purchasers', () => {
+  it('sends unlocked travelers without app entry into setup', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
 
     renderBeginPage()
 
-    expect(screen.getByText(/choose your/i)).toBeInTheDocument()
-    expect(screen.getByText(/rome\./i)).toBeInTheDocument()
+    expect(screen.getByText('Setup route')).toBeInTheDocument()
+  })
+
+  it('starts at app-home pace selection after entry', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
+
+    renderBeginPage()
+
+    expect(screen.getByTestId('app-begin-home')).toBeInTheDocument()
+    expect(screen.getByText(/your walk/i)).toBeInTheDocument()
+    expect(screen.getByText(/you left the website/i)).toBeInTheDocument()
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
   it('shows pace-aware route preview after choosing a pace', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
 
     renderBeginPage()
 
@@ -54,6 +67,7 @@ describe('BeginPage', () => {
 
   it('skips route preview when onboarding was already completed', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
 
     renderBeginPage()
