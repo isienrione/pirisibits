@@ -26,20 +26,62 @@ function createMockContext() {
       start: vi.fn(),
       stop: vi.fn(),
       onended: null,
+      playbackRate: { value: 1 },
     })),
     resume: vi.fn(async () => {}),
     close: vi.fn(async () => {}),
   };
 }
 
+function createMockAudio() {
+  const listeners = new Map();
+
+  const audio = {
+    src: '',
+    currentTime: 0,
+    duration: 12,
+    paused: true,
+    playbackRate: 1,
+    preload: 'auto',
+    playsInline: false,
+    play: vi.fn(async function play() {
+      this.paused = false;
+      for (const fn of listeners.get('play') || []) fn();
+    }),
+    pause: vi.fn(function pause() {
+      this.paused = true;
+      for (const fn of listeners.get('pause') || []) fn();
+    }),
+    load: vi.fn(),
+    removeAttribute: vi.fn(),
+    addEventListener: vi.fn((event, fn) => {
+      const list = listeners.get(event) || [];
+      list.push(fn);
+      listeners.set(event, list);
+    }),
+    removeEventListener: vi.fn((event, fn) => {
+      const list = listeners.get(event) || [];
+      listeners.set(
+        event,
+        list.filter((item) => item !== fn)
+      );
+    }),
+  };
+
+  return audio;
+}
+
 describe('AudioEngine', () => {
   let engine;
+  let createAudio;
 
   beforeEach(() => {
+    createAudio = vi.fn(() => createMockAudio());
     engine = new AudioEngine({
       manifest: loadRomeManifest(),
       createContext: () => createMockContext(),
       loadBuffer: vi.fn(async () => null),
+      createAudio,
     });
     engine.init();
   });
@@ -56,8 +98,12 @@ describe('AudioEngine', () => {
     expect(engine.systemGain).toBeTruthy();
   });
 
-  it('plays waypoint narration plan without throwing', async () => {
-    await expect(engine.playWaypoint('w01')).resolves.toEqual(expect.any(Boolean));
+  it('plays waypoint narration through HTML audio for background playback', async () => {
+    const playing = await engine.playWaypoint('w01');
+    expect(playing).toBe(true);
+    expect(createAudio).toHaveBeenCalled();
+    expect(engine.session?.element?.play).toHaveBeenCalled();
+    expect(engine.isNarrationPlaying()).toBe(true);
   });
 
   it('marks waypoint complete for insert eligibility', () => {
@@ -117,6 +163,7 @@ describe('AudioEngine', () => {
       manifest: loadRomeManifest(),
       createContext: () => ctx,
       loadBuffer,
+      createAudio: () => createMockAudio(),
     });
     cueEngine.init();
 
@@ -160,6 +207,29 @@ describe('AudioEngine', () => {
     expect(interruptedStates.at(-1)).toBe(true);
     expect(engine.isPlaybackInterrupted()).toBe(true);
     expect(engine.interruptedPlayback).toEqual({ kind: 'waypoint', id: 'w01' });
+  });
+
+  it('does not mark interruption when HTML narration kept playing in background', async () => {
+    await engine.playWaypoint('w01');
+    expect(engine.isNarrationPlaying()).toBe(true);
+
+    engine.onPageHidden();
+    await engine.onPageVisible();
+
+    expect(engine.isPlaybackInterrupted()).toBe(false);
+    expect(engine.isNarrationPlaying()).toBe(true);
+  });
+
+  it('pauses narration on hide when background play is disabled', async () => {
+    vi.spyOn(engine, 'isBackgroundPlayEnabled').mockReturnValue(false);
+    await engine.playWaypoint('w01');
+    const element = engine.session.element;
+
+    engine.onPageHidden();
+
+    expect(element.pause).toHaveBeenCalled();
+    expect(engine.session.paused).toBe(true);
+    expect(engine.isNarrationPlaying()).toBe(false);
   });
 
   it('does not mark interruption when narration was not playing before hide', async () => {

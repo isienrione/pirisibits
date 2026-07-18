@@ -6,6 +6,12 @@ import {
   buildWaypointPlan,
   resolveActiveZone,
 } from './buildPlaybackPlan.js'
+import {
+  bindMediaSessionHandlers,
+  clearMediaSession,
+  updateMediaSession,
+} from './mediaSession.js'
+import { readBackgroundPlay } from '../utils/appPreferences.js'
 
 const JOURNEY_WALKING = 'walking'
 
@@ -16,12 +22,14 @@ export class AudioEngine {
     mix = MIX_CONFIG,
     loadBuffer,
     createContext,
+    createAudio,
   } = {}) {
     this.manifest = manifest
     this.path = path
     this.mix = mix
     this.loadBuffer = loadBuffer ?? defaultLoadBuffer
     this.createContext = createContext ?? defaultCreateContext
+    this.createAudio = createAudio ?? defaultCreateAudio
 
     this.completedWaypointIds = new Set()
     this.completedTransitIds = new Set()
@@ -40,6 +48,8 @@ export class AudioEngine {
     this.activeSources = []
 
     // Controllable narration session (play/pause/seek/skip across a plan).
+    // Narration uses an HTMLAudioElement so iOS can keep playing in background
+    // and surface controls in Now Playing / Dynamic Island.
     this.session = null
 
     // User-selected narration speed (see appPreferences STORY_PLAYBACK_SPEEDS).
@@ -63,6 +73,7 @@ export class AudioEngine {
     this.activePlayback = null
     this.interruptedPlayback = null
     this.visibilityListenerAttached = false
+    this.mediaSessionBound = false
   }
 
   handleVisibilityChange = () => {
@@ -87,6 +98,7 @@ export class AudioEngine {
     document.addEventListener('visibilitychange', this.handleVisibilityChange)
     window.addEventListener('focus', this.handleForegroundReturn)
     window.addEventListener('pageshow', this.handleForegroundReturn)
+    this.bindMediaSession()
     this.visibilityListenerAttached = true
   }
 
@@ -96,11 +108,95 @@ export class AudioEngine {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange)
     window.removeEventListener('focus', this.handleForegroundReturn)
     window.removeEventListener('pageshow', this.handleForegroundReturn)
+    this.unbindMediaSession()
     this.visibilityListenerAttached = false
   }
 
+  bindMediaSession() {
+    if (this.mediaSessionBound) return
+    bindMediaSessionHandlers({
+      play: () => {
+        void this.resumeNarration()
+      },
+      pause: () => {
+        this.pauseNarration()
+      },
+      seekbackward: (details) => {
+        const delta = details?.seekOffset || 15
+        void this.skipNarration(-delta)
+      },
+      seekforward: (details) => {
+        const delta = details?.seekOffset || 15
+        void this.skipNarration(delta)
+      },
+      previoustrack: () => {
+        const progress = this.getNarrationProgress()
+        void this.jumpToChapter(Math.max(progress.chapterIndex - 1, 0))
+      },
+      nexttrack: () => {
+        const progress = this.getNarrationProgress()
+        void this.jumpToChapter(progress.chapterIndex + 1)
+      },
+    })
+    this.mediaSessionBound = true
+  }
+
+  unbindMediaSession() {
+    if (!this.mediaSessionBound) return
+    clearMediaSession()
+    this.mediaSessionBound = false
+  }
+
+  syncMediaSession() {
+    if (!this.session) {
+      clearMediaSession()
+      return
+    }
+
+    updateMediaSession({
+      title: this.resolveActiveTitle(),
+      artist: 'ChronoWalk',
+      album: this.manifest?.tour?.title || this.manifest?.meta?.title || 'ChronoWalk',
+      playing: this.narrationPlaying && !this.session.paused,
+      artwork: [{ src: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' }],
+    })
+  }
+
+  resolveActiveTitle() {
+    const active = this.activePlayback
+    if (!active) return 'ChronoWalk'
+
+    if (active.kind === 'waypoint') {
+      const waypoint =
+        this.manifest?.waypointsById?.[active.id] ?? this.manifest?.waypoints?.[active.id]
+      return waypoint?.title || waypoint?.name || active.id
+    }
+
+    const transit =
+      this.manifest?.transits?.find?.((t) => t.id === active.id) ??
+      (this.manifest?.transits?.[active.id]
+        ? { id: active.id, ...this.manifest.transits[active.id] }
+        : null)
+    return transit?.title || transit?.name || 'Walking'
+  }
+
+  isBackgroundPlayEnabled() {
+    return readBackgroundPlay()
+  }
+
+  isNarrationElementPlaying() {
+    const element = this.session?.element
+    return Boolean(element && !element.paused && !this.session?.paused)
+  }
+
   onPageHidden() {
-    this.playingBeforeHidden = this.narrationPlaying
+    this.playingBeforeHidden = this.narrationPlaying || this.isNarrationElementPlaying()
+
+    // Prefer HTML audio continuing in the background (Dynamic Island / lock screen).
+    // Only pause on hide when the user turned Background Play off.
+    if (!this.isBackgroundPlayEnabled() && this.narrationPlaying) {
+      this.pauseNarration()
+    }
   }
 
   async onPageVisible() {
@@ -117,17 +213,33 @@ export class AudioEngine {
       }
     }
 
-    const contextSuspended = this.context?.state === 'suspended'
+    // HTML narration often keeps playing while Chrome is backgrounded — treat
+    // that as healthy, not interrupted.
+    if (this.isNarrationElementPlaying()) {
+      this.setNarrationPlaying(true)
+      this.setPlaybackInterrupted(false)
+      this.syncMediaSession()
+      return false
+    }
+
+    // User (or lock-screen controls) paused intentionally — no resume banner.
+    if (this.session?.paused) {
+      this.setPlaybackInterrupted(false)
+      this.syncMediaSession()
+      return false
+    }
+
     const needsResume =
       this.playingBeforeHidden &&
       Boolean(this.activePlayback) &&
-      (!this.narrationPlaying || contextSuspended)
+      !this.narrationPlaying
 
     if (needsResume) {
       this.interruptedPlayback = { ...this.activePlayback }
     }
 
     this.setPlaybackInterrupted(needsResume)
+    this.syncMediaSession()
     return needsResume
   }
 
@@ -378,19 +490,19 @@ export class AudioEngine {
 
   async playPlan(plan) {
     await this.init()
-    if (!this.context || !plan.length) return false
+    if (!plan.length) return false
 
     const generation = ++this.playbackGeneration
-    this.stopNarrationSources()
+    this.releaseNarrationElement()
     this.session = {
       plan,
       index: 0,
       generation,
-      source: null,
-      buffer: null,
-      startedAt: 0,
+      element: null,
+      duration: 0,
       offset: 0,
       paused: false,
+      cleanup: null,
     }
     await this.startCurrentItem(0)
     return this.narrationPlaying
@@ -398,7 +510,7 @@ export class AudioEngine {
 
   async startCurrentItem(offset = 0) {
     const session = this.session
-    if (!session || session.generation !== this.playbackGeneration || !this.context) return
+    if (!session || session.generation !== this.playbackGeneration) return
 
     const item = session.plan[session.index]
     if (!item) {
@@ -414,40 +526,37 @@ export class AudioEngine {
       return
     }
 
-    const buffer = await this.loadBuffer(url, this.context)
-    // Bail if the session was replaced/stopped while the buffer was loading.
-    if (this.session !== session || session.generation !== this.playbackGeneration || !this.context) {
-      return
-    }
+    this.releaseNarrationElement()
 
-    if (!buffer) {
+    const audio = this.createAudio()
+    if (!audio) {
       session.index += 1
       session.offset = 0
       await this.startCurrentItem(0)
       return
     }
 
-    const source = this.context.createBufferSource()
-    source.buffer = buffer
-    source.playbackRate.value = this.playbackRate || 1
-    source.connect(this.narrationGain)
+    audio.preload = 'auto'
+    try {
+      audio.playsInline = true
+    } catch {
+      // Non-browser test doubles may not support playsInline.
+    }
+    audio.src = url
+    audio.playbackRate = this.playbackRate || 1
 
-    const startOffset = Math.min(Math.max(offset, 0), buffer.duration || 0)
-    session.source = source
-    session.buffer = buffer
+    const startOffset = Math.max(offset, 0)
+    session.element = audio
+    session.duration = 0
     session.offset = startOffset
-    session.startedAt = this.context.currentTime
     session.paused = false
-    this.activeSources.push(source)
 
-    source.onended = () => {
-      this.activeSources = this.activeSources.filter((s) => s !== source)
+    const onEnded = () => {
       const active = this.session
-      // Ignore endings from sources we deliberately detached (pause/seek/stop).
-      if (!active || active.source !== source) return
-      if (active.generation !== this.playbackGeneration || active.paused) return
+      if (!active || active.element !== audio) return
+      if (active.generation !== this.playbackGeneration) return
 
-      active.source = null
+      active.element = null
       active.index += 1
       active.offset = 0
       if (active.index >= active.plan.length) {
@@ -457,60 +566,136 @@ export class AudioEngine {
       }
     }
 
-    source.start(0, startOffset)
-    this.setNarrationPlaying(true)
-    this.emitProgress()
+    const onLoadedMetadata = () => {
+      if (this.session !== session || session.element !== audio) return
+      session.duration = Number.isFinite(audio.duration) ? audio.duration : 0
+      if (startOffset > 0 && session.duration) {
+        try {
+          audio.currentTime = Math.min(startOffset, session.duration)
+        } catch {
+          // Some engines reject seeks before enough data is buffered.
+        }
+      }
+      this.emitProgress()
+    }
+
+    const onPause = () => {
+      if (this.session !== session || session.element !== audio) return
+      // Ignore programmatic pauses during seek/teardown (session.paused already set).
+      if (session.paused) return
+      // Natural end also fires `pause` in some browsers — let onEnded advance.
+      if (audio.ended) return
+      // OS / Dynamic Island may pause without going through pauseNarration().
+      session.offset = audio.currentTime || session.offset
+      session.paused = true
+      this.setNarrationPlaying(false)
+      this.syncMediaSession()
+      this.emitProgress()
+    }
+
+    const onPlay = () => {
+      if (this.session !== session || session.element !== audio) return
+      session.paused = false
+      this.setNarrationPlaying(true)
+      this.setPlaybackInterrupted(false)
+      this.syncMediaSession()
+      this.emitProgress()
+    }
+
+    audio.addEventListener('ended', onEnded)
+    audio.addEventListener('loadedmetadata', onLoadedMetadata)
+    audio.addEventListener('pause', onPause)
+    audio.addEventListener('play', onPlay)
+
+    session.cleanup = () => {
+      audio.removeEventListener('ended', onEnded)
+      audio.removeEventListener('loadedmetadata', onLoadedMetadata)
+      audio.removeEventListener('pause', onPause)
+      audio.removeEventListener('play', onPlay)
+    }
+
+    try {
+      if (startOffset > 0) {
+        audio.currentTime = startOffset
+      }
+    } catch {
+      // Seek after metadata if needed.
+    }
+
+    try {
+      await audio.play()
+      this.setNarrationPlaying(true)
+      this.syncMediaSession()
+      this.emitProgress()
+    } catch {
+      // Autoplay may be blocked until a fresh gesture; keep the session paused.
+      session.paused = true
+      this.setNarrationPlaying(false)
+      this.syncMediaSession()
+      this.emitProgress()
+    }
   }
 
   finishSession() {
     const ended = this.activePlayback
+    this.releaseNarrationElement()
     this.session = null
     this.setNarrationPlaying(false)
     if (!this.playbackInterrupted) {
       this.activePlayback = null
     }
+    clearMediaSession()
     this.emitProgress()
     // Natural completion only — stop()/teardown() clear the session directly and
     // never route through here.
     this.onNarrationEnded?.(ended)
   }
 
-  detachCurrentSource() {
+  releaseNarrationElement() {
     const session = this.session
-    if (!session?.source) return
-    const src = session.source
-    session.source = null
+    if (!session?.element && !session?.cleanup) return
+
+    const audio = session.element
+    session.cleanup?.()
+    session.cleanup = null
+    session.element = null
+
+    if (!audio) return
     try {
-      src.stop()
+      audio.pause()
     } catch {
-      // already stopped
+      // ignore
     }
-    this.activeSources = this.activeSources.filter((s) => s !== src)
+    try {
+      audio.removeAttribute?.('src')
+      audio.src = ''
+      audio.load?.()
+    } catch {
+      // ignore
+    }
   }
 
   getNarrationTime() {
     const session = this.session
     if (!session) return 0
-    if (session.paused || !session.source || !this.context) return session.offset
-    const rate = this.playbackRate || 1
-    return session.offset + Math.max(this.context.currentTime - session.startedAt, 0) * rate
+    if (session.element && !session.paused) {
+      return Number.isFinite(session.element.currentTime)
+        ? session.element.currentTime
+        : session.offset
+    }
+    return session.offset || 0
   }
 
   setPlaybackRate(rate) {
     const next = Number.isFinite(rate) && rate > 0 ? rate : 1
+    this.playbackRate = next
     const session = this.session
-    // Re-anchor a live source so elapsed time stays continuous across the change.
-    if (session?.source && !session.paused && this.context) {
-      session.offset = this.getNarrationTime()
-      session.startedAt = this.context.currentTime
-      this.playbackRate = next
+    if (session?.element) {
       try {
-        session.source.playbackRate.value = next
+        session.element.playbackRate = next
       } catch {
-        // Some engines reject rate changes on a stopped source; ignore.
+        // Some engines reject rate changes; ignore.
       }
-    } else {
-      this.playbackRate = next
     }
     this.emitProgress()
   }
@@ -536,10 +721,14 @@ export class AudioEngine {
     const chapterCount = narrationIndices.length
     const reached = narrationIndices.filter((i) => i <= session.index).length
     const chapterIndex = Math.max(Math.min(reached, chapterCount) - 1, 0)
+    const elementDuration = session.element?.duration
+    const duration =
+      session.duration ||
+      (Number.isFinite(elementDuration) ? elementDuration : 0)
 
     return {
       currentTime: this.getNarrationTime(),
-      duration: session.buffer?.duration ?? 0,
+      duration,
       chapterIndex,
       chapterCount,
       itemIndex: session.index,
@@ -555,11 +744,16 @@ export class AudioEngine {
 
   pauseNarration() {
     const session = this.session
-    if (!session || session.paused || !session.source) return
+    if (!session || session.paused || !session.element) return
     session.offset = this.getNarrationTime()
     session.paused = true
-    this.detachCurrentSource()
+    try {
+      session.element.pause()
+    } catch {
+      // ignore
+    }
     this.setNarrationPlaying(false)
+    this.syncMediaSession()
     this.emitProgress()
   }
 
@@ -574,9 +768,24 @@ export class AudioEngine {
         // Resume may require a fresh user gesture.
       }
     }
-    session.paused = false
-    this.setNarrationPlaying(true)
-    await this.startCurrentItem(session.offset)
+
+    if (!session.element) {
+      session.paused = false
+      await this.startCurrentItem(session.offset)
+      return
+    }
+
+    try {
+      session.paused = false
+      await session.element.play()
+      this.setNarrationPlaying(true)
+      this.setPlaybackInterrupted(false)
+    } catch {
+      session.paused = true
+      this.setNarrationPlaying(false)
+    }
+    this.syncMediaSession()
+    this.emitProgress()
   }
 
   toggleNarration() {
@@ -593,7 +802,9 @@ export class AudioEngine {
     const session = this.session
     if (!session) return
 
-    const duration = session.buffer?.duration ?? 0
+    const duration =
+      session.duration ||
+      (Number.isFinite(session.element?.duration) ? session.element.duration : 0)
     const target = Number.isFinite(seconds) ? seconds : 0
 
     // Cross into adjacent chapters when skipping past the current item's edges.
@@ -607,9 +818,23 @@ export class AudioEngine {
     }
 
     const clamped = Math.min(Math.max(target, 0), duration || 0)
-    const wasPlaying = !session.paused && Boolean(session.source)
-    this.detachCurrentSource()
+    const wasPlaying = !session.paused && Boolean(session.element) && !session.element.paused
     session.offset = clamped
+
+    if (session.element) {
+      try {
+        session.element.currentTime = clamped
+      } catch {
+        // Fall back to reloading the item at the new offset.
+        await this.startCurrentItem(clamped)
+        if (!wasPlaying) this.pauseNarration()
+        return
+      }
+      this.emitProgress()
+      this.syncMediaSession()
+      return
+    }
+
     if (wasPlaying) {
       await this.startCurrentItem(clamped)
     } else {
@@ -626,10 +851,10 @@ export class AudioEngine {
     if (!session) return
     const clampedIndex = Math.min(Math.max(index, 0), session.plan.length - 1)
     const wasPlaying = !session.paused
-    this.detachCurrentSource()
+    this.releaseNarrationElement()
     session.index = clampedIndex
     session.offset = offset
-    session.buffer = null
+    session.duration = 0
     if (wasPlaying) {
       session.paused = false
       await this.startCurrentItem(offset)
@@ -678,22 +903,12 @@ export class AudioEngine {
 
   stopNarration() {
     this.playbackGeneration += 1
-    this.stopNarrationSources()
+    this.releaseNarrationElement()
     this.session = null
     this.setNarrationPlaying(false)
     this.clearActivePlayback()
+    clearMediaSession()
     this.emitProgress()
-  }
-
-  stopNarrationSources() {
-    for (const source of this.activeSources) {
-      try {
-        source.stop()
-      } catch {
-        // already stopped
-      }
-    }
-    this.activeSources = []
   }
 
   startPresence() {
@@ -808,6 +1023,15 @@ export class AudioEngine {
     this.playbackGeneration += 1
     this.playingBeforeHidden = false
 
+    for (const source of this.activeSources) {
+      try {
+        source.stop()
+      } catch {
+        // already stopped
+      }
+    }
+    this.activeSources = []
+
     if (this.bedSource) {
       try {
         this.bedSource.stop()
@@ -850,6 +1074,11 @@ function defaultCreateContext() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext
   if (!AudioContextClass) return null
   return new AudioContextClass()
+}
+
+function defaultCreateAudio() {
+  if (typeof Audio === 'undefined') return null
+  return new Audio()
 }
 
 export function createAudioEngine(manifest, options = {}) {
