@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
-import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, F } from './tokens.js'
 import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
@@ -277,13 +277,13 @@ export default function RedesignMyTourScreen() {
     >
       <div
         style={{
-          padding: 'max(48px, calc(env(safe-area-inset-top) + 12px)) 24px 8px',
+          padding: 'max(40px, calc(env(safe-area-inset-top) + 10px)) 20px 6px',
           flexShrink: 0,
           position: 'relative',
           zIndex: 2,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ChronowalkMark />
             <span
@@ -308,62 +308,70 @@ export default function RedesignMyTourScreen() {
           </button>
         </div>
 
-        <h1
+        <div
           style={{
-            fontFamily: F.display,
-            fontSize: 32,
-            fontWeight: 300,
-            color: T.ink,
-            lineHeight: 1.05,
-            margin: '0 0 6px',
-            letterSpacing: '0.02em',
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            gap: 12,
+            marginBottom: 4,
           }}
         >
-          ROME: ETERNAL CITY
-        </h1>
-        <p style={{ margin: '0 0 10px', fontSize: 13, color: T.muted, lineHeight: 1.4 }}>
-          Your route and every stop — open an act to listen, walk, or open a card.
-        </p>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <Eyebrow color={T.actI} hairline>
-            {paceLabel.toUpperCase()}
-          </Eyebrow>
+          <h1
+            style={{
+              fontFamily: F.display,
+              fontSize: 22,
+              fontWeight: 300,
+              color: T.ink,
+              lineHeight: 1.15,
+              margin: 0,
+              letterSpacing: '0.02em',
+              minWidth: 0,
+            }}
+          >
+            Rome: Eternal City
+          </h1>
           <span
             style={{
               fontSize: 11,
               color: T.muted,
               fontVariantNumeric: 'tabular-nums',
               letterSpacing: '0.06em',
+              flexShrink: 0,
             }}
           >
-            {progress.completed}/{progress.total} stops
+            {progress.completed}/{progress.total}
           </span>
         </div>
-        {context.pace === JOURNEY_PACE.OWN ? (
-          <button
-            type="button"
-            onClick={() => {
-              setPickerSelection(context.customWaypointIds ?? [])
-              setPickerMode(true)
-            }}
-            style={{
-              marginTop: 10,
-              fontSize: 12,
-              color: T.muted,
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              textDecoration: 'underline',
-              textUnderlineOffset: 3,
-            }}
-          >
-            Edit today&apos;s stops
-          </button>
-        ) : null}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <Eyebrow color={T.actI} hairline>
+            {paceLabel.toUpperCase()}
+          </Eyebrow>
+          {context.pace === JOURNEY_PACE.OWN ? (
+            <button
+              type="button"
+              onClick={() => {
+                setPickerSelection(context.customWaypointIds ?? [])
+                setPickerMode(true)
+              }}
+              style={{
+                fontSize: 12,
+                color: T.muted,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                textDecoration: 'underline',
+                textUnderlineOffset: 3,
+              }}
+            >
+              Edit stops
+            </button>
+          ) : null}
+        </div>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', scrollbarWidth: 'none', position: 'relative' }}>
         <div
           style={{
             position: 'absolute',
@@ -378,7 +386,7 @@ export default function RedesignMyTourScreen() {
           }}
         />
 
-        <div style={{ paddingBottom: 16 }}>
+        <div style={{ paddingBottom: 8 }}>
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
             const faded = act.status === 'ahead' || act.locked
@@ -393,8 +401,8 @@ export default function RedesignMyTourScreen() {
                     position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: `14px 20px 14px ${SEAM_X + NODE_R + 14}px`,
-                    gap: 12,
+                    padding: `10px 16px 10px ${SEAM_X + NODE_R + 12}px`,
+                    gap: 10,
                     opacity: act.locked ? 0.38 : faded ? 0.55 : 1,
                     transition: 'opacity 300ms',
                   }}
@@ -403,7 +411,7 @@ export default function RedesignMyTourScreen() {
                     style={{
                       position: 'absolute',
                       left: SEAM_X - NODE_R,
-                      top: 28,
+                      top: 22,
                       width: NODE_R * 2,
                       height: NODE_R * 2,
                       borderRadius: NODE_R,
@@ -428,9 +436,9 @@ export default function RedesignMyTourScreen() {
                       src={photo}
                       alt=""
                       style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
+                        width: 48,
+                        height: 48,
+                        borderRadius: 9,
                         objectFit: 'cover',
                         flexShrink: 0,
                         filter: faded ? 'brightness(0.7) saturate(0.55)' : 'none',
@@ -439,9 +447,9 @@ export default function RedesignMyTourScreen() {
                   ) : (
                     <div
                       style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 10,
+                        width: 48,
+                        height: 48,
+                        borderRadius: 9,
                         background: `${T.muted}22`,
                         flexShrink: 0,
                       }}
@@ -478,20 +486,20 @@ export default function RedesignMyTourScreen() {
                     <p
                       style={{
                         fontFamily: F.display,
-                        fontSize: 22,
+                        fontSize: 18,
                         color: faded ? `${T.ink}85` : T.ink,
                         fontWeight: 300,
-                        lineHeight: 1.1,
-                        margin: '0 0 3px',
+                        lineHeight: 1.15,
+                        margin: '0 0 2px',
                       }}
                     >
                       {act.title}
                     </p>
                     <p
                       style={{
-                        fontSize: 13,
+                        fontSize: 12,
                         color: T.muted,
-                        lineHeight: 1.4,
+                        lineHeight: 1.35,
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
@@ -527,20 +535,20 @@ export default function RedesignMyTourScreen() {
                         <div
                           key={stop.id}
                           style={{
-                            padding: `8px 20px 12px ${SEAM_X + NODE_R + 14}px`,
+                            padding: `6px 16px 10px ${SEAM_X + NODE_R + 12}px`,
                             opacity: stopFaded ? 0.55 : 1,
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <div style={{ width: 56, flexShrink: 0 }} />
+                            <div style={{ width: 48, flexShrink: 0 }} />
                             {stopPhoto ? (
                               <img
                                 src={stopPhoto}
                                 alt=""
                                 style={{
-                                  width: 36,
-                                  height: 36,
-                                  borderRadius: 8,
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 7,
                                   objectFit: 'cover',
                                   flexShrink: 0,
                                   filter: stopFaded ? 'saturate(0.5)' : 'none',
@@ -573,8 +581,8 @@ export default function RedesignMyTourScreen() {
                                 gap: 8,
                                 flexWrap: 'wrap',
                                 justifyContent: 'flex-end',
-                                marginTop: 8,
-                                paddingLeft: 66,
+                                marginTop: 6,
+                                paddingLeft: 58,
                               }}
                             >
                               <button
@@ -638,8 +646,10 @@ export default function RedesignMyTourScreen() {
       <div
         style={{
           flexShrink: 0,
-          padding: `16px 24px ${SHELL_TAB_BAR_INSET}`,
-          background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 18%)`,
+          // Companion frame already reserves the tab bar via --wc-shell-tab-inset.
+          // Do not add SHELL_TAB_BAR_INSET again or a large empty band appears above the tabs.
+          padding: '10px 20px 10px',
+          background: `linear-gradient(to bottom, ${T.bone}00 0%, ${T.bone} 28%)`,
           borderTop: `1px solid ${T.ink800}18`,
           position: 'relative',
           zIndex: 5,
@@ -650,27 +660,27 @@ export default function RedesignMyTourScreen() {
           onClick={handlePrimaryCta}
           style={{
             width: '100%',
-            padding: '15px',
+            padding: '12px',
             background: ctaColor,
             color: T.warmWhite,
             borderRadius: 12,
             fontFamily: F.body,
             fontWeight: 600,
-            fontSize: 15,
+            fontSize: 14,
             border: 'none',
             cursor: 'pointer',
-            marginBottom: 8,
-            boxShadow: `0 0 22px ${ctaColor}50`,
+            marginBottom: 6,
+            boxShadow: `0 0 18px ${ctaColor}45`,
           }}
         >
           {ctaLabel}
         </button>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 36 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 28 }}>
           <button
             type="button"
             onClick={() => setSheetOpen(true)}
             style={{
-              fontSize: 13,
+              fontSize: 12,
               color: T.muted,
               background: 'none',
               border: 'none',
@@ -685,7 +695,7 @@ export default function RedesignMyTourScreen() {
             disabled={geoBusy}
             onClick={handleStartFromHere}
             style={{
-              fontSize: 13,
+              fontSize: 12,
               color: geoBusy ? `${T.muted}88` : T.muted,
               background: 'none',
               border: 'none',
