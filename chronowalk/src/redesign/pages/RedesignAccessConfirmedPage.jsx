@@ -1,22 +1,18 @@
-import { useNavigate } from 'react-router-dom'
-import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey.js'
-import RedesignRouteShell from '../RedesignRouteShell.jsx'
-import A3AccessConfirmed from '../screens/A3AccessConfirmed.jsx'
+import { Navigate } from 'react-router-dom'
+import { getJourneySnapshot, JOURNEY_STATES, isResumableJourney } from '../../state/journey.js'
+import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 
+/**
+ * Legacy /access/confirmed — send travelers into App Entry or resume.
+ * The cinematic threshold now lives on /setup.
+ */
 export default function RedesignAccessConfirmedPage() {
-  const navigate = useNavigate()
+  const { state } = getJourneySnapshot()
+  const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
+  const path = getAppHomePath({
+    resumable: inProgress || isResumableJourney(),
+    entryComplete: isAppEntryComplete(),
+  })
 
-  const handleContinue = () => {
-    const { state } = getJourneySnapshot()
-    const inProgress = state !== JOURNEY_STATES.IDLE && state !== JOURNEY_STATES.COMPLETE
-    navigate(inProgress ? '/journey' : '/setup', { replace: true })
-  }
-
-  return (
-    <RedesignRouteShell>
-      <div className="redesign-app-shell">
-        <A3AccessConfirmed onContinue={handleContinue} />
-      </div>
-    </RedesignRouteShell>
-  )
+  return <Navigate to={path} replace />
 }

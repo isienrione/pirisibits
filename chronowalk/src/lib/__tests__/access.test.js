@@ -33,18 +33,33 @@ describe('access', () => {
   it('validates dev tokens without calling Supabase', async () => {
     const result = await validateAccessToken('dev')
 
-    expect(result).toEqual({ ok: true, source: 'dev' })
+    expect(result).toEqual({ ok: true, source: 'dev', productId: null })
     expect(rpcMock).not.toHaveBeenCalled()
   })
 
-  it('validates purchase tokens through Supabase RPC', async () => {
-    rpcMock.mockResolvedValue({ data: true, error: null })
+  it('validates purchase tokens through get_purchase_for_token when available', async () => {
+    rpcMock.mockResolvedValue({
+      data: { ok: true, product_id: 'rome-essential' },
+      error: null,
+    })
 
     const token = '550e8400-e29b-41d4-a716-446655440000'
     const result = await validateAccessToken(token)
 
-    expect(rpcMock).toHaveBeenCalledWith('validate_access_token', { p_token: token })
-    expect(result).toEqual({ ok: true, source: 'supabase' })
+    expect(rpcMock).toHaveBeenCalledWith('get_purchase_for_token', { p_token: token })
+    expect(result).toEqual({ ok: true, source: 'supabase', productId: 'rome-essential' })
+  })
+
+  it('falls back to boolean validate_access_token RPC', async () => {
+    rpcMock
+      .mockResolvedValueOnce({ data: null, error: { message: 'function missing' } })
+      .mockResolvedValueOnce({ data: true, error: null })
+
+    const token = '550e8400-e29b-41d4-a716-446655440000'
+    const result = await validateAccessToken(token)
+
+    expect(rpcMock).toHaveBeenNthCalledWith(2, 'validate_access_token', { p_token: token })
+    expect(result).toEqual({ ok: true, source: 'supabase', productId: null })
   })
 
   it('returns not_configured when Supabase is unavailable', async () => {

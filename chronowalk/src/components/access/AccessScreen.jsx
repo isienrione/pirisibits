@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
-import { grantAccess } from '../../lib/config'
+import { applyPurchaseUnlock } from '../../lib/pendingPurchase.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 function AccessShell({ children }) {
@@ -62,10 +62,16 @@ export default function AccessScreen({ onValidated }) {
       if (cancelled) return
 
       if (result.ok) {
-        grantAccess()
-        track(TRACK_EVENTS.PURCHASE, { source: result.source ?? 'token' })
+        const unlock = applyPurchaseUnlock({
+          token,
+          productId: result.productId ?? null,
+        })
+        track(TRACK_EVENTS.PURCHASE, {
+          source: result.source ?? 'token',
+          tier: unlock.tier,
+        })
         setStatus('success')
-        onValidated?.()
+        onValidated?.({ token, productId: unlock.tier })
         return
       }
 
@@ -120,7 +126,7 @@ export default function AccessScreen({ onValidated }) {
         <StatusMessage
           tone="success"
           title="Rome is ready."
-          body="Opening Rome for you…"
+          body="Opening your tour…"
         />
       ) : null}
 
@@ -203,6 +209,12 @@ export default function AccessScreen({ onValidated }) {
       ) : null}
 
       <p style={{ marginTop: 28, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
+        Joining a partner or family?{' '}
+        <Link to="/invite" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+          Enter an invite code
+        </Link>
+      </p>
+      <p style={{ marginTop: 12, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
         Haven&apos;t purchased yet?{' '}
         <Link to="/landing#pricing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
           See Rome packages

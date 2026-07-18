@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom'
 import WelcomeFlow from '../../components/welcome/WelcomeFlow'
 import { hasAccess } from '../../lib/config'
-import { getJourneySnapshot } from '../../state/journey'
-import { JOURNEY_STATES } from '../../state/journey'
+import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
+import { getJourneySnapshot, isResumableJourney, JOURNEY_STATES } from '../../state/journey'
 
 export function WelcomePage() {
   if (hasAccess()) {
@@ -13,7 +13,15 @@ export function WelcomePage() {
       return <Navigate to="/journey" replace />
     }
 
-    return <Navigate to="/begin" replace />
+    return (
+      <Navigate
+        to={getAppHomePath({
+          resumable: isResumableJourney(),
+          entryComplete: isAppEntryComplete(),
+        })}
+        replace
+      />
+    )
   }
 
   return <WelcomeFlow />

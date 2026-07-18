@@ -3,14 +3,15 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { WelcomePage } from '../WelcomePage'
 import { ACCESS_KEY } from '../../../lib/config'
-import { JOURNEY_STATES } from '../../../state/journey'
-import { transitionJourney } from '../../../state/journey'
+import { markAppEntryComplete } from '../../../lib/appEntry.js'
+import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
 
 function renderWelcomePage(initialPath = '/welcome') {
   return render(
     <MemoryRouter initialEntries={[initialPath]}>
       <Routes>
         <Route path="/welcome" element={<WelcomePage />} />
+        <Route path="/setup" element={<div>Setup route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
@@ -30,8 +31,17 @@ describe('WelcomePage', () => {
     expect(screen.getByText('ChronoWalk')).toBeInTheDocument()
   })
 
-  it('redirects purchasers without an active journey to begin', () => {
+  it('redirects new purchasers into app entry setup', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
+
+    renderWelcomePage()
+
+    expect(screen.getByText('Setup route')).toBeInTheDocument()
+  })
+
+  it('redirects purchasers who finished app entry to begin', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
 
     renderWelcomePage()
 

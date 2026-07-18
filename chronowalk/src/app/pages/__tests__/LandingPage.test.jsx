@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { LandingPage } from '../LandingPage'
 import { ACCESS_KEY } from '../../../lib/config'
+import { markAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
 
 function renderLandingPage() {
@@ -10,6 +11,7 @@ function renderLandingPage() {
     <MemoryRouter initialEntries={['/landing']}>
       <Routes>
         <Route path="/landing" element={<LandingPage />} />
+        <Route path="/setup" element={<div>Setup route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
@@ -29,8 +31,17 @@ describe('LandingPage', () => {
     expect(screen.getByRole('heading', { name: /walk where rome/i })).toBeInTheDocument()
   })
 
-  it('redirects purchasers without an active journey to begin', () => {
+  it('redirects new purchasers into app entry setup', () => {
     localStorage.setItem(ACCESS_KEY, 'true')
+
+    renderLandingPage()
+
+    expect(screen.getByText('Setup route')).toBeInTheDocument()
+  })
+
+  it('redirects purchasers who finished app entry to begin', () => {
+    localStorage.setItem(ACCESS_KEY, 'true')
+    markAppEntryComplete()
 
     renderLandingPage()
 

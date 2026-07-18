@@ -1,22 +1,22 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
-import B2MakeItYours from '../B2MakeItYours.jsx'
+import AppEntryPrepare from '../AppEntryPrepare.jsx'
 
-describe('B2MakeItYours analytics row', () => {
-  it('offers analytics opt-in with privacy copy', () => {
+describe('AppEntryPrepare', () => {
+  it('offers offline download and analytics opt-in inside the app', () => {
     const onAnalyticsChange = vi.fn()
     render(
-      <B2MakeItYours
-        canInstall={false}
+      <AppEntryPrepare
         analyticsEnabled={false}
         onAnalyticsChange={onAnalyticsChange}
         onContinue={vi.fn()}
       />,
     )
 
-    expect(screen.getByText(/three small things before rome/i)).toBeInTheDocument()
+    expect(screen.getByTestId('app-entry-prepare')).toBeInTheDocument()
+    expect(screen.getByText(/inside chronowalk/i)).toBeInTheDocument()
+    expect(screen.getByText(/prepare for the streets/i)).toBeInTheDocument()
     expect(screen.getByText(/help improve chronowalk/i)).toBeInTheDocument()
-    expect(screen.getByText(/never sell your data/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('switch', { name: /enable analytics/i }))
     expect(onAnalyticsChange).toHaveBeenCalledWith(true)

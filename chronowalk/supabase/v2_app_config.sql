@@ -19,9 +19,13 @@ create table if not exists public.purchases (
   order_id text not null unique,
   host text,
   ab_variant integer,
+  product_id text,
   access_token uuid not null default gen_random_uuid(),
   created_at timestamptz not null default now()
 );
+
+alter table public.purchases
+  add column if not exists product_id text;
 
 create index if not exists purchases_access_token_idx on public.purchases (access_token);
 create index if not exists purchases_email_idx on public.purchases (email);

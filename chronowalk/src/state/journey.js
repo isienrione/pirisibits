@@ -4,6 +4,7 @@ import { isLastTourWaypoint } from '../content/myTourPlan.js'
 import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
+import { scheduleJourneyCloudPush } from '../lib/journeyCloud.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -127,6 +128,7 @@ function readStorage() {
 function writeStorage(next) {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  scheduleJourneyCloudPush(next)
 }
 
 let snapshot = readStorage()
@@ -170,6 +172,37 @@ export function isResumableJourney(journeySnapshot = snapshot) {
 
   const { currentSequenceIndex = 0, completedWaypointIds = [] } = journeySnapshot.context
   return currentSequenceIndex > 0 || completedWaypointIds.length > 0
+}
+
+/**
+ * Hydrate local journey from a cloud snapshot when returning on a new device.
+ * Keeps the newer of local vs remote when both are resumable.
+ */
+export function hydrateJourney(remoteSnapshot) {
+  if (!remoteSnapshot?.state || !remoteSnapshot?.context) return snapshot
+
+  const remote = {
+    state: migratePersistedJourneyState(remoteSnapshot.state),
+    context: {
+      ...defaultContext(),
+      ...remoteSnapshot.context,
+    },
+  }
+
+  if (!isResumableJourney(remote)) return snapshot
+
+  if (isResumableJourney(snapshot)) {
+    const localTs = snapshot.context.lastActiveAt ?? 0
+    const remoteTs = remote.context.lastActiveAt ?? 0
+    if (localTs >= remoteTs) return snapshot
+  }
+
+  snapshot = remote
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot))
+  }
+  emit()
+  return snapshot
 }
 
 export function resumeJourney(now = Date.now()) {

@@ -39,6 +39,15 @@ export default function B4PaceSelector({
   selectedPace,
   onSelectPace,
   onContinue,
+  eyebrow = 'BEFORE YOU BEGIN',
+  title = (
+    <>
+      Choose your
+      <br />
+      Rome.
+    </>
+  ),
+  subtitle = null,
 }) {
   const { navigate } = useContext(RedesignNavCtx)
   const [selected, setSelected] = useState(null)
@@ -126,22 +135,33 @@ export default function B4PaceSelector({
           />
         </div>
 
-        <Eyebrow color={T.ember}>BEFORE YOU BEGIN</Eyebrow>
+        <Eyebrow color={T.ember}>{eyebrow}</Eyebrow>
         <h2
           style={{
             fontFamily: F.display,
-            fontSize: 44,
+            fontSize: 40,
             color: T.warmWhite,
             fontWeight: 300,
             lineHeight: 1.05,
-            margin: '10px 0 16px',
+            margin: '10px 0 10px',
             flexShrink: 0,
           }}
         >
-          Choose your
-          <br />
-          Rome.
+          {title}
         </h2>
+        {subtitle ? (
+          <p
+            style={{
+              margin: '0 0 14px',
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: T.muted,
+              flexShrink: 0,
+            }}
+          >
+            {subtitle}
+          </p>
+        ) : null}
 
         <div
           style={{

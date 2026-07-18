@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getDeviceId } from '../lib/deviceId.js'
+import { readAccessToken } from '../lib/access.js'
 import {
   canResumeForAll,
   createFamilyBundle,
@@ -92,7 +93,11 @@ export function useFamilyWalk() {
   const setupBundle = useCallback(
     (tier, ownerName) =>
       run(async () => {
-        const next = await createFamilyBundle({ tier, ownerName })
+        const next = await createFamilyBundle({
+          tier,
+          ownerName,
+          accessToken: readAccessToken(),
+        })
         setBundle(next)
         return next
       }),
