@@ -42,7 +42,7 @@ describe('TourDetailPage', () => {
     expect(screen.getByRole('heading', { level: 2, name: /timeline/i })).toBeInTheDocument()
     expect(screen.getByText('Colosseum — opening story')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /purchase journey/i })).toBeInTheDocument()
-    expect(screen.getByText('$17.99')).toBeInTheDocument()
+    expect(screen.getByText('€14.99')).toBeInTheDocument()
   })
 
   it('highlights a timeline stop when tapped', () => {

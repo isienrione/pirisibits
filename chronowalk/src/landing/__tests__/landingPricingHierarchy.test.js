@@ -5,9 +5,9 @@ import { getLandingTierStats } from '../landingTierStats.js'
 describe('pricing card hierarchy content', () => {
   it('keeps product ids, prices, and checkout cents unchanged', () => {
     expect(ROME_TIERS.map((tier) => ({ id: tier.id, price: tier.price, cents: tier.priceCents }))).toEqual([
-      { id: 'rome-central', price: '$12', cents: 1200 },
-      { id: 'rome-essential', price: '$12', cents: 1200 },
-      { id: 'rome-complete', price: '$17.99', cents: 1799 },
+      { id: 'rome-central', price: '€9.99', cents: 999 },
+      { id: 'rome-essential', price: '€9.99', cents: 999 },
+      { id: 'rome-complete', price: '€14.99', cents: 1499 },
     ])
   })
 

@@ -9,12 +9,12 @@ describe('tourProducts', () => {
     expect(TOUR_PRODUCTS['heart-of-ancient-rome'].stopIds.length).toBeGreaterThan(8)
   })
 
-  it('prices single routes at $12 and the full bundle at $17.99', () => {
-    expect(TOUR_PRODUCTS['rome-central'].priceUsd).toBe(12)
-    expect(TOUR_PRODUCTS['roman-forum'].priceUsd).toBe(12)
-    expect(TOUR_PRODUCTS['heart-of-ancient-rome'].priceUsd).toBe(12)
-    expect(TOUR_PRODUCTS['rome-complete'].priceUsd).toBe(17.99)
-    expect(TOUR_PRODUCTS['rome-complete'].priceCents).toBe(1799)
+  it('prices single routes at €9.99 and the full bundle at €14.99', () => {
+    expect(TOUR_PRODUCTS['rome-central'].priceUsd).toBe(9.99)
+    expect(TOUR_PRODUCTS['roman-forum'].priceUsd).toBe(9.99)
+    expect(TOUR_PRODUCTS['heart-of-ancient-rome'].priceUsd).toBe(9.99)
+    expect(TOUR_PRODUCTS['rome-complete'].priceUsd).toBe(14.99)
+    expect(TOUR_PRODUCTS['rome-complete'].priceCents).toBe(1499)
   })
 
   it('expands bundle to both tour ids', () => {
@@ -25,7 +25,7 @@ describe('tourProducts', () => {
   })
 
   it('defines central rome with Trajan\'s Market and centro storico', () => {
-    expect(TOUR_PRODUCTS['rome-central'].priceCents).toBe(1200)
+    expect(TOUR_PRODUCTS['rome-central'].priceCents).toBe(999)
     expect(TOUR_PRODUCTS['rome-central'].stopIds).toEqual([
       'trajan-market',
       'pantheon',
@@ -61,8 +61,8 @@ describe('tourProducts', () => {
     expect(TOUR_PRODUCT_LIST[4].id).toBe('heart-of-ancient-rome')
   })
 
-  it('formats whole-dollar and fractional USD prices', () => {
-    expect(formatUsd(12)).toBe('$12')
-    expect(formatUsd(17.99)).toBe('$17.99')
+  it('formats whole-euro and fractional EUR prices', () => {
+    expect(formatUsd(10)).toBe('€10')
+    expect(formatUsd(14.99)).toBe('€14.99')
   })
 })

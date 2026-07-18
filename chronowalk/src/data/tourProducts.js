@@ -5,7 +5,8 @@ import { ROME_ANTICA_TOUR } from './rome-antica-tour'
 
 /**
  * Individual walking tours and the complete Rome bundle.
- * Canonical USD scheme: Central $12 · Antica-class singles $12 · Full bundle $17.99.
+ * Canonical EUR scheme: Central €9.99 · Antica-class singles €9.99 · Full bundle €14.99.
+ * `priceUsd` holds the numeric amount (legacy field name; currency is EUR).
  */
 export const TOUR_PRODUCTS = {
   'rome-central': {
@@ -15,8 +16,8 @@ export const TOUR_PRODUCTS = {
     tagline: "Trajan's Market + Pantheon + centro storico",
     description:
       "Trajan's Market and the walk around the Pantheon — Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside the Colosseum archaeological park.",
-    priceUsd: 12,
-    priceCents: 1200,
+    priceUsd: 9.99,
+    priceCents: 999,
     stopIds: CENTRAL_ROME_TOUR.stopIds,
     firstStopTitle: "Trajan's Market",
   },
@@ -27,8 +28,8 @@ export const TOUR_PRODUCTS = {
     tagline: 'Colosseum, Forum, hills & Circus Maximus',
     description:
       'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
-    priceUsd: 12,
-    priceCents: 1200,
+    priceUsd: 9.99,
+    priceCents: 999,
     stopIds: ROME_ANTICA_TOUR.stopIds,
     firstStopTitle: 'Colosseum',
   },
@@ -39,8 +40,8 @@ export const TOUR_PRODUCTS = {
     tagline: 'Every stop in the Forum cluster',
     description:
       'Walk the Forum floor — Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of Saturn, Curia Julia, and Arch of Septimius Severus. All eight forum-cluster landmarks with matched before/after reveals.',
-    priceUsd: 12,
-    priceCents: 1200,
+    priceUsd: 9.99,
+    priceCents: 999,
     stopIds: ROMAN_FORUM_TOUR.stopIds,
     firstStopTitle: 'Arch of Titus',
   },
@@ -51,8 +52,8 @@ export const TOUR_PRODUCTS = {
     tagline: 'Colosseum, Capitoline & the city loop',
     description:
       'The grand city loop — Colosseum, Palatine Hill, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, Circus Maximus, and the Appian Way.',
-    priceUsd: 12,
-    priceCents: 1200,
+    priceUsd: 9.99,
+    priceCents: 999,
     stopIds: HEART_OF_ANCIENT_ROME_TOUR.stopIds,
     firstStopTitle: 'Colosseum',
   },
@@ -62,9 +63,9 @@ export const TOUR_PRODUCTS = {
     tagline: 'Full bundle · at your own pace',
     description:
       'Unlock every ChronoWalk Rome route — archaeological core, centro storico, and the full city loop to the Appian Way.',
-    priceUsd: 17.99,
-    priceCents: 1799,
-    savingsUsd: 6.01,
+    priceUsd: 14.99,
+    priceCents: 1499,
+    savingsUsd: 4.99,
     badge: 'Best value',
     includesProductIds: ['roman-forum', 'heart-of-ancient-rome'],
   },
@@ -98,10 +99,9 @@ export const getTourIdsForProduct = (productId) => {
   return product.tourId ? [product.tourId] : []
 }
 
-export const formatUsd = (amount) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
+/** Format a tour price amount in euros (legacy export name `formatUsd`). */
+export const formatUsd = (amount) => {
+  const value = Number(amount)
+  if (!Number.isFinite(value)) return '€—'
+  return `€${Number.isInteger(value) ? value : value.toFixed(2)}`
+}

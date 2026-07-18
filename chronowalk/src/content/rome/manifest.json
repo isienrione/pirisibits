@@ -3,7 +3,7 @@
   "id": "rome",
   "name": "Rome",
   "accent": "--city-rome",
-  "price_fallback_cents": 1799,
+  "price_fallback_cents": 1499,
   "product": {
     "publicPlaceCount": 22,
     "visitStopCount": 18,
@@ -13,8 +13,8 @@
     "durationLabel": "your pace",
     "ownershipLabel": "yours forever",
     "distanceLabel": "~8 km walking",
-    "priceFallbackCents": 1799,
-    "currency": "USD"
+    "priceFallbackCents": 1499,
+    "currency": "EUR"
   },
   "reflections": [
     "You walked where senators argued and emperors passed — and Rome let you in.",

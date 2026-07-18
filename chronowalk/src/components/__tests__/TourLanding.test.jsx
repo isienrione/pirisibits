@@ -55,7 +55,7 @@ describe('TourLanding pre-tour screen stack', () => {
     fireEvent.click(screen.getByRole('button', { name: /browse tours & pricing/i }))
     fireEvent.click(screen.getByRole('heading', { name: /roma eterna/i }))
 
-    expect(screen.getByRole('button', { name: /purchase \$17\.99/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /purchase €14\.99/i })).toBeInTheDocument()
     expect(screen.getByText(/included landmarks/i)).toBeInTheDocument()
   })
 

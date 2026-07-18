@@ -15,12 +15,12 @@ describe('romePacing', () => {
       id: JOURNEY_PACE.HEROIC,
       title: 'Roma Eterna',
       badge: 'Most loved',
-      priceLabel: '$17.99',
+      priceLabel: '€14.99',
     })
     expect(getDefaultPace()).toBe(JOURNEY_PACE.HEROIC)
     expect(getPaceOption(JOURNEY_PACE.CLASSIC).title).toBe('Roma Antica')
     expect(getPaceOption(JOURNEY_PACE.CENTRAL).title).toBe('Roma Centrale')
-    expect(getPaceOption(JOURNEY_PACE.OWN).priceLabel).toBe('$17.99')
+    expect(getPaceOption(JOURNEY_PACE.OWN).priceLabel).toBe('€14.99')
   })
 
   it('maps waypoints to six acts plus encore', () => {

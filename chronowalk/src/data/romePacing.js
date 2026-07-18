@@ -18,8 +18,8 @@ export const PACE_OPTIONS = [
     id: JOURNEY_PACE.HEROIC,
     title: 'Roma Eterna',
     badge: 'Most loved',
-    priceLabel: '$17.99',
-    priceCents: 1799,
+    priceLabel: '€14.99',
+    priceCents: 1499,
     description:
       "The complete Rome — Colosseum, the Roman Forum, Circus Maximus, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
     includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
@@ -31,8 +31,8 @@ export const PACE_OPTIONS = [
     id: JOURNEY_PACE.CENTRAL,
     title: 'Roma Centrale',
     badge: null,
-    priceLabel: '$12',
-    priceCents: 1200,
+    priceLabel: '€9.99',
+    priceCents: 999,
     description:
       "Trajan's Market and centro storico — Spanish Steps, Trevi, Navona, Campo de' Fiori, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
     includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
@@ -43,8 +43,8 @@ export const PACE_OPTIONS = [
     id: JOURNEY_PACE.CLASSIC,
     title: 'Roma Antica',
     badge: null,
-    priceLabel: '$12',
-    priceCents: 1200,
+    priceLabel: '€9.99',
+    priceCents: 999,
     description:
       'The Colosseum through the Forum — Palatine Hill terrace, Capitoline Hill, and Circus Maximus with place-tied stories at each stop.',
     includedSummary: 'Colosseum · Palatine · Forum · Capitoline · Circus',
@@ -55,8 +55,8 @@ export const PACE_OPTIONS = [
     id: JOURNEY_PACE.OWN,
     title: 'At your own pace',
     badge: null,
-    priceLabel: '$17.99',
-    priceCents: 1799,
+    priceLabel: '€14.99',
+    priceCents: 1499,
     description:
       'Pick any stops you like — one morning or many. Build your own route through every landmark in the catalog.',
     includedSummary: 'Any act · any order · your itinerary',

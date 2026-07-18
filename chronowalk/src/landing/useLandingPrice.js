@@ -7,7 +7,7 @@ export function useLandingPrice() {
   const [price, setPrice] = useState({
     label: LANDING_PRICE_FALLBACK_LABEL,
     cents: LANDING_PRICE_FALLBACK_CENTS,
-    currency: 'USD',
+    currency: 'EUR',
     checkoutUrl: '',
   })
 
@@ -17,7 +17,7 @@ export function useLandingPrice() {
     loadAppConfig().then((config) => {
       if (cancelled) return
       const cents = config.abVariantCents ?? config.price.cents
-      const currency = config.price.currency ?? 'USD'
+      const currency = config.price.currency ?? 'EUR'
       setPrice({
         cents,
         currency,
