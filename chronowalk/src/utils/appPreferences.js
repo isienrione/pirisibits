@@ -4,6 +4,7 @@ const DEBUG_MAP_KEY = 'chronowalk-debug-map'
 const PLAYER_ICONS_KEY = 'chronowalk-player-icons'
 const NOTIFICATIONS_KEY = 'chronowalk:notifications'
 const HAPTICS_KEY = 'chronowalk:haptics-enabled'
+const APP_PREFS_KEY = 'cw_app_prefs_v1'
 
 export const STORY_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.25, 1.5, 2]
 export const PREFERENCES_CHANGED_EVENT = 'chronowalk:preferences-changed'
@@ -102,4 +103,17 @@ export const writeHapticsEnabled = (enabled) => {
 
 export function formatPlaybackSpeed(speed) {
   return Number.isInteger(speed) ? `${speed}×` : `${speed}×`
+}
+
+/** Keep narration alive when the browser is backgrounded / screen locks (default on). */
+export const readBackgroundPlay = () => {
+  if (typeof window === 'undefined') return true
+  try {
+    const raw = window.localStorage.getItem(APP_PREFS_KEY)
+    if (!raw) return true
+    const stored = JSON.parse(raw)
+    return stored.backgroundPlay !== false
+  } catch {
+    return true
+  }
 }
