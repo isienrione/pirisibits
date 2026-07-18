@@ -45,10 +45,9 @@ export const UX_ROUTE_TARGETS = [
   { id: 'access', label: 'Access', path: '/access' },
   { id: 'setup', label: 'Setup', path: '/setup' },
   { id: 'begin', label: 'Begin', path: '/begin' },
-  { id: 'tour', label: 'My Tour', path: '/tour' },
-  { id: 'journey', label: 'Journey', path: '/journey' },
+  { id: 'tour', label: 'Tour', path: '/tour' },
+  { id: 'journey', label: 'Walk', path: '/journey' },
   { id: 'map', label: 'Map', path: '/map' },
-  { id: 'stops', label: 'Stops', path: '/stops' },
   { id: 'journal', label: 'Journal', path: '/journal' },
   { id: 'letter', label: 'Letter', path: '/letter' },
 ]

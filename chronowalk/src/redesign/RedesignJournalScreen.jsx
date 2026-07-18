@@ -95,7 +95,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
       onStartWalk={() => navigate(state === JOURNEY_STATES.IDLE ? '/begin' : '/journey')}
       onCardClick={(waypointId) => navigate(`/journal/${waypointId}`)}
       onLetterClick={() => navigate('/letter')}
-      onAllStopsClick={() => navigate('/stops')}
+      onAllStopsClick={() => navigate('/tour')}
       onSettingsClick={openSettings}
     />
   )

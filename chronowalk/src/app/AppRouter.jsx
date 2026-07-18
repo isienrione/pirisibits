@@ -36,7 +36,6 @@ import {
   LazyPreviewPage,
   LazySettingsPage,
   LazySetupPage,
-  LazyStopsPage,
   LazyTourPage,
   LazyWelcomePage,
 } from './lazyRoutes.jsx'
@@ -99,7 +98,7 @@ function AppRoutes() {
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
         <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />
-        <Route path="/stops" element={<Paid><LazyStopsPage /></Paid>} />
+        <Route path="/stops" element={<Paid><Navigate to="/tour" replace /></Paid>} />
         <Route path="/journal" element={<Paid><LazyJournalPage /></Paid>} />
         <Route path="/journal/:waypointId" element={<Paid><LazyMemoryDetailPage /></Paid>} />
         <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />

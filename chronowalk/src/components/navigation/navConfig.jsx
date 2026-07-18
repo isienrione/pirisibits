@@ -1,4 +1,5 @@
 export const NAV_TABS = {
+  WALK: 'walk',
   TOUR: 'tour',
   MAP: 'map',
   STOPS: 'stops',
@@ -10,6 +11,16 @@ export const NAV_TABS = {
 const iconClass = 'h-5 w-5 shrink-0'
 
 export const NAV_ITEMS = [
+  {
+    id: NAV_TABS.WALK,
+    label: 'Walk',
+    Icon: () => (
+      <svg className={iconClass} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.75" />
+        <path d="M10 8.5v7l6-3.5-6-3.5Z" fill="currentColor" />
+      </svg>
+    ),
+  },
   {
     id: NAV_TABS.TOUR,
     label: 'Tour',

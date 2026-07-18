@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
-import { getShellTabs, SHELL_COMPANION_PATHS } from './config.js'
+import { getShellTabs, isShellTabActive, SHELL_COMPANION_PATHS } from './config.js'
 
 export default function ShellTabBar() {
   const { chromeHidden } = useThresholdChrome()
@@ -36,13 +36,14 @@ export default function ShellTabBar() {
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-1">
         {tabs.map((tab) => {
-          const active = location.pathname === tab.to
+          const active = isShellTabActive(tab.to, location.pathname)
           const Icon = tab.Icon
 
           return (
             <li key={tab.id} className="flex-1">
               <Link
                 to={tab.to}
+                aria-current={active ? 'page' : undefined}
                 className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
                   active ? 'text-ember' : 'text-muted'
                 }`}

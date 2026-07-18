@@ -449,7 +449,7 @@ export default function MapScreen({ variant = 'legacy' }) {
             }}
           >
             <Link
-              to="/stops"
+              to="/tour"
               style={{
                 padding: '10px 14px',
                 borderRadius: 999,
@@ -461,7 +461,7 @@ export default function MapScreen({ variant = 'legacy' }) {
                 border: '1px solid color-mix(in srgb, var(--warm-white) 12%, transparent)',
               }}
             >
-              All stops
+              Tour stops
             </Link>
 
             <Link

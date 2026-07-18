@@ -191,6 +191,20 @@ export default function RedesignMyTourScreen() {
     navigate('/journey')
   }
 
+  const walkToStop = (waypointId, targetState = null, storyView = null) => {
+    if (!manifest || !waypointId) return
+    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+      targetState,
+      storyView,
+    })
+    if (jumped) navigate('/journey')
+  }
+
+  const openStopCard = (waypointId) => {
+    if (!waypointId) return
+    navigate(`/journal/${waypointId}`)
+  }
+
   if (loading) {
     return (
       <div
@@ -307,6 +321,9 @@ export default function RedesignMyTourScreen() {
         >
           ROME: ETERNAL CITY
         </h1>
+        <p style={{ margin: '0 0 10px', fontSize: 13, color: T.muted, lineHeight: 1.4 }}>
+          Your route and every stop — open an act to listen, walk, or open a card.
+        </p>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <Eyebrow color={T.actI} hairline>
             {paceLabel.toUpperCase()}
@@ -510,45 +527,103 @@ export default function RedesignMyTourScreen() {
                         <div
                           key={stop.id}
                           style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10,
-                            padding: `8px 20px 8px ${SEAM_X + NODE_R + 14}px`,
-                            opacity: stopFaded ? 0.5 : 1,
+                            padding: `8px 20px 12px ${SEAM_X + NODE_R + 14}px`,
+                            opacity: stopFaded ? 0.55 : 1,
                           }}
                         >
-                          <div style={{ width: 56, flexShrink: 0 }} />
-                          {stopPhoto ? (
-                            <img
-                              src={stopPhoto}
-                              alt=""
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <div style={{ width: 56, flexShrink: 0 }} />
+                            {stopPhoto ? (
+                              <img
+                                src={stopPhoto}
+                                alt=""
+                                style={{
+                                  width: 36,
+                                  height: 36,
+                                  borderRadius: 8,
+                                  objectFit: 'cover',
+                                  flexShrink: 0,
+                                  filter: stopFaded ? 'saturate(0.5)' : 'none',
+                                }}
+                              />
+                            ) : null}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <p
+                                style={{
+                                  margin: 0,
+                                  fontSize: 14,
+                                  fontWeight: stop.status === 'current' ? 600 : 400,
+                                  color: stopFaded ? T.muted : T.ink,
+                                  lineHeight: 1.25,
+                                }}
+                              >
+                                {titleForWaypoint(stop.waypoint)}
+                              </p>
+                            </div>
+                            {stop.status === 'completed' ? (
+                              <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>DONE</span>
+                            ) : stop.status === 'current' ? (
+                              <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>NOW</span>
+                            ) : null}
+                          </div>
+                          {!act.locked ? (
+                            <div
                               style={{
-                                width: 36,
-                                height: 36,
-                                borderRadius: 8,
-                                objectFit: 'cover',
-                                flexShrink: 0,
-                                filter: stopFaded ? 'saturate(0.5)' : 'none',
-                              }}
-                            />
-                          ) : null}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <p
-                              style={{
-                                margin: 0,
-                                fontSize: 14,
-                                fontWeight: stop.status === 'current' ? 600 : 400,
-                                color: stopFaded ? T.muted : T.ink,
-                                lineHeight: 1.25,
+                                display: 'flex',
+                                gap: 8,
+                                flexWrap: 'wrap',
+                                justifyContent: 'flex-end',
+                                marginTop: 8,
+                                paddingLeft: 66,
                               }}
                             >
-                              {titleForWaypoint(stop.waypoint)}
-                            </p>
-                          </div>
-                          {stop.status === 'completed' ? (
-                            <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>DONE</span>
-                          ) : stop.status === 'current' ? (
-                            <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>NOW</span>
+                              <button
+                                type="button"
+                                onClick={() => walkToStop(stop.id, JOURNEY_STATES.STORY, 'chapters')}
+                                style={{
+                                  fontSize: 11,
+                                  color: T.ink,
+                                  background: 'none',
+                                  border: `1px solid ${T.muted}40`,
+                                  borderRadius: 8,
+                                  padding: '6px 8px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                Listen here
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => openStopCard(stop.id)}
+                                style={{
+                                  fontSize: 11,
+                                  color: T.ink,
+                                  background: 'none',
+                                  border: `1px solid ${T.muted}40`,
+                                  borderRadius: 8,
+                                  padding: '6px 8px',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                Open card
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => walkToStop(stop.id)}
+                                style={{
+                                  fontSize: 11,
+                                  color: T.obsidian,
+                                  background: T.ember,
+                                  border: 'none',
+                                  borderRadius: 8,
+                                  padding: '6px 8px',
+                                  cursor: 'pointer',
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Walk here
+                              </button>
+                            </div>
                           ) : null}
                         </div>
                       )
