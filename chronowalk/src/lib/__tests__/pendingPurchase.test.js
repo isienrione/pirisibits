@@ -7,6 +7,7 @@ import {
   paceIdForPurchaseTier,
   readPurchasedTier,
   rememberPendingPurchaseTier,
+  shouldShowPaceModePicker,
   writePurchasedTier,
 } from '../pendingPurchase.js'
 import { JOURNEY_PACE } from '../../data/romePacing.js'
@@ -30,8 +31,13 @@ describe('pendingPurchase', () => {
     ])
     expect(getPaceOptionsForPurchasedTier('rome-complete').map((o) => o.id)).toEqual([
       JOURNEY_PACE.HEROIC,
+      JOURNEY_PACE.CENTRAL,
+      JOURNEY_PACE.CLASSIC,
       JOURNEY_PACE.OWN,
     ])
+    expect(shouldShowPaceModePicker('rome-complete')).toBe(true)
+    expect(shouldShowPaceModePicker('rome-central')).toBe(false)
+    expect(shouldShowPaceModePicker('rome-essential')).toBe(false)
   })
 
   it('applies unlock from product id and remembers token', () => {

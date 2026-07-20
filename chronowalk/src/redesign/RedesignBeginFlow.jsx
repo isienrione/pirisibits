@@ -5,8 +5,9 @@ import {
   getPaceOptionsForPurchasedTier,
   paceIdForPurchaseTier,
   readPurchasedTier,
+  shouldShowPaceModePicker,
 } from '../lib/pendingPurchase.js'
-import { isAppEntryComplete, packTitleForPurchasedTier } from '../lib/appEntry.js'
+import { isAppEntryComplete } from '../lib/appEntry.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
@@ -20,9 +21,17 @@ import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
 
-function initialBeginStep(isResumable) {
+const ETERNA_MODE_SUBTITLE =
+  'Roma Eterna includes every route mode. Start with the full walk, just the centro storico, just the Colosseum and Forum, or hand-pick stops to match your day. Colored dots show which acts sit in each tour — choose one to continue.'
+
+const ETERNA_MODE_FOOTER =
+  'You can change your mind later. Nothing expires.'
+
+function initialBeginStep(isResumable, showModePicker, showRoutePreview) {
   if (isResumable) return 'resume'
-  return 'pace'
+  if (showModePicker) return 'pace'
+  // Single-pack buyers skip the mode picker and go straight to map / location.
+  return showRoutePreview ? 'mapPreview' : 'location'
 }
 
 function resolveInitialPace(contextPace) {
@@ -44,14 +53,16 @@ export default function RedesignBeginFlow() {
     context.promotedOptionalIds,
   )
   const purchasedTier = useMemo(() => readPurchasedTier(), [])
-  const packTitle = useMemo(() => packTitleForPurchasedTier(purchasedTier), [purchasedTier])
+  const showModePicker = shouldShowPaceModePicker(purchasedTier)
   const paceOptions = useMemo(
     () => getPaceOptionsForPurchasedTier(purchasedTier),
     [purchasedTier],
   )
-  const singlePack = paceOptions.length === 1
   const needsAppEntry = !isAppEntryComplete() && !isResumable
-  const [stepName, setStepName] = useState(() => initialBeginStep(isResumable))
+  const showRoutePreview = shouldShowTourRoutePreview(context)
+  const [stepName, setStepName] = useState(() =>
+    initialBeginStep(isResumable, showModePicker, showRoutePreview),
+  )
   const [selectedPace, setSelectedPace] = useState(() => resolveInitialPace(context.pace))
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
@@ -65,7 +76,18 @@ export default function RedesignBeginFlow() {
     [context, selectedPace, ownPaceStops],
   )
 
-  const showRoutePreview = shouldShowTourRoutePreview(context)
+  // Single-pack / non-Eterna: lock the purchased route and skip the picker.
+  useEffect(() => {
+    if (showModePicker || isResumable) return
+    setJourneyPace(selectedPace)
+  }, [showModePicker, isResumable, selectedPace, setJourneyPace])
+
+  // If we landed on 'pace' without Eterna (e.g. start fresh from resume), skip ahead.
+  useEffect(() => {
+    if (stepName !== 'pace' || showModePicker) return
+    setJourneyPace(selectedPace)
+    setStepName(showRoutePreview ? 'mapPreview' : 'location')
+  }, [stepName, showModePicker, selectedPace, showRoutePreview, setJourneyPace])
 
   useEffect(() => {
     const { replay, fresh } = applyReplayOnboardingFromSearch(searchParams.toString())
@@ -73,11 +95,11 @@ export default function RedesignBeginFlow() {
 
     if (fresh) {
       reset()
-      setStepName('pace')
+      setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
     } else if (isResumable) {
       setStepName('resume')
     } else {
-      setStepName('pace')
+      setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
     }
 
     if (searchParams.has('replayOnboarding') || searchParams.has('fresh')) {
@@ -171,7 +193,7 @@ export default function RedesignBeginFlow() {
           }}
           onStartFresh={() => {
             reset()
-            setStepName('pace')
+            setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
           }}
         />
       </div>
@@ -213,27 +235,17 @@ export default function RedesignBeginFlow() {
         selectedPace={selectedPace}
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}
+        showPrices={false}
         eyebrow="YOUR WALK"
         title={
-          singlePack ? (
-            <>
-              {packTitle}
-              <br />
-              starts here.
-            </>
-          ) : (
-            <>
-              Choose how
-              <br />
-              you walk Rome.
-            </>
-          )
+          <>
+            Choose how
+            <br />
+            you walk Rome.
+          </>
         }
-        subtitle={
-          singlePack
-            ? 'You left the website. This is ChronoWalk — pick up your unlocked route.'
-            : 'You left the website. ChronoWalk is unlocked on this phone.'
-        }
+        subtitle={ETERNA_MODE_SUBTITLE}
+        footerNote={ETERNA_MODE_FOOTER}
       />
     </div>
   )
