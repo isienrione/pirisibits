@@ -14,22 +14,21 @@ Production is deployed from the **`figma`** branch to **chronowalk.com** via Clo
 
 ## Environment variables
 
-Set in **Workers & Pages → your project → Settings → Environment variables** (Production):
+Set in **Workers & Pages → your project → Settings → Environment variables** (Production + Preview as needed).
 
 | Variable | Value | Notes |
 |----------|--------|--------|
 | `VITE_MAPBOX_TOKEN` | `pk.…` | Required for map |
 | `VITE_MEDIA_BASE` | *(empty)* | Same as former Netlify production |
 | `VITE_BUILD_ID` | *(optional)* | Omit to use `CF_PAGES_COMMIT_SHA` automatically |
-| `VITE_LEMON_CHECKOUT_URL` | Roma Eterna Lemon buy URL | Optional override — app defaults to `https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d`. Set on Preview + Production to pin the same link. See `docs/LEMON_SQUEEZY_TRANSACTIONS.md`. |
-| `VITE_LEMON_CHECKOUT_MODE` | `overlay` (default) or `hosted` | Overlay uses lemon.js; hosted does a full-page redirect. |
+| `VITE_PADDLE_ENV` | `sandbox` or `production` | Must match the client token / price ids |
+| `VITE_PADDLE_CLIENT_TOKEN` | `test_…` / `live_…` | Paddle → Authentication → Client-side tokens |
+| `VITE_PADDLE_PRICE_ROME_CENTRAL` | `pri_…` | One-time price from catalog seed |
+| `VITE_PADDLE_PRICE_ROME_ESSENTIAL` | `pri_…` | One-time price from catalog seed |
+| `VITE_PADDLE_PRICE_ROME_COMPLETE` | `pri_…` | One-time price from catalog seed |
 | `VITE_ALLOW_DEV_ACCESS` | `true` only on preview | Never on production chronowalk.com |
 
-Recommended production value:
-
-```bash
-VITE_LEMON_CHECKOUT_URL=https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d
-```
+Full commerce wiring: [`docs/PADDLE_SETUP.md`](./PADDLE_SETUP.md). Redeploy after changing any `VITE_*` value (baked in at build time).
 
 `vite.config.js` resolves the deploy id in this order: `VITE_BUILD_ID` → `CF_PAGES_COMMIT_SHA` (first 7 chars) → `COMMIT_REF` → `GITHUB_SHA` → local `git rev-parse`. That id is baked into `__APP_BUILD_ID__` and the Workbox cache prefix (`chronowalk-<id>` in `/sw.js`).
 
