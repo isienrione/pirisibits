@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { getTourProductTruth } from '../../../content/tourProductTruth.js'
 import { loadRomeManifest } from '../../../content/manifest.js'
@@ -7,13 +7,22 @@ import LandingScreen from '../LandingScreen'
 
 const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
 
+const openCheckoutMock = vi.hoisted(() =>
+  vi.fn(async () => ({ ok: true, mode: 'overlay', priceId: 'pri_test' })),
+)
+
 vi.mock('../../../hooks/usePrice', () => ({
   usePrice: () => ({
     label: '€14.99',
     cents: 1499,
     currency: 'EUR',
-    checkoutUrl: 'https://checkout.example.com/rome',
+    checkoutUrl: '',
+    checkoutReady: true,
   }),
+}))
+
+vi.mock('../../../lib/checkout.js', () => ({
+  openCheckout: (...args) => openCheckoutMock(...args),
 }))
 
 const trackMock = vi.fn()
@@ -28,18 +37,12 @@ vi.mock('../../../lib/track', () => ({
 vi.mock('../../../lib/host', () => ({
   getHost: () => 'hotelroma1',
   getHostLabel: () => 'Hotel Roma',
-  buildCheckoutUrl: (baseUrl, { host, abVariantCents }) => {
-    const url = new URL(baseUrl)
-    if (host) url.searchParams.set('checkout[custom][host]', host)
-    if (abVariantCents) url.searchParams.set('checkout[custom][ab_variant]', String(abVariantCents))
-    return url.toString()
-  },
 }))
 
 describe('LandingScreen', () => {
   beforeEach(() => {
     trackMock.mockClear()
-    vi.stubGlobal('location', { ...window.location, assign: vi.fn() })
+    openCheckoutMock.mockClear()
   })
 
   it('renders the conversion hierarchy and host attribution', () => {
@@ -56,7 +59,7 @@ describe('LandingScreen', () => {
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 
-  it('opens checkout with host and price metadata', () => {
+  it('opens Paddle checkout for the complete pack', async () => {
     render(
       <MemoryRouter>
         <LandingScreen />
@@ -65,9 +68,11 @@ describe('LandingScreen', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /unlock rome — €14\.99/i }))
 
-    expect(trackMock).toHaveBeenCalledWith('checkout_open', { price_cents: 1499 })
-    expect(window.location.assign).toHaveBeenCalledWith(
-      'https://checkout.example.com/rome?checkout%5Bcustom%5D%5Bhost%5D=hotelroma1&checkout%5Bcustom%5D%5Bab_variant%5D=1499'
-    )
+    await waitFor(() => {
+      expect(openCheckoutMock).toHaveBeenCalledWith({
+        tierId: 'rome-complete',
+        source: 'legacy_landing',
+      })
+    })
   })
 })

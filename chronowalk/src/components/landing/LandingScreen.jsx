@@ -4,7 +4,8 @@ import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { usePrice } from '../../hooks/usePrice'
-import { buildCheckoutUrl, getHost, getHostLabel } from '../../lib/host'
+import { getHostLabel } from '../../lib/host'
+import { openCheckout } from '../../lib/checkout.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
@@ -66,20 +67,15 @@ function FeatureRow() {
 }
 
 export default function LandingScreen() {
-  const { label, cents, checkoutUrl } = usePrice()
+  const { label, cents, checkoutReady } = usePrice()
   const hostLabel = getHostLabel()
-  const checkoutReady = Boolean(checkoutUrl)
 
-  const handlePurchase = () => {
-    const url = buildCheckoutUrl(checkoutUrl, {
-      host: getHost(),
-      abVariantCents: cents,
-    })
-
-    if (!url) return
-
-    track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents })
-    window.location.assign(url)
+  const handlePurchase = async () => {
+    if (!checkoutReady) return
+    const result = await openCheckout({ tierId: 'rome-complete', source: 'legacy_landing' })
+    if (!result.ok) {
+      track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents, failed: true })
+    }
   }
 
   return (
@@ -247,8 +243,8 @@ export default function LandingScreen() {
               textAlign: 'center',
             }}
           >
-            Checkout is not configured yet. Set <code>VITE_LEMON_CHECKOUT_URL</code> in{' '}
-            <code>.env.local</code>.
+            Checkout is not configured yet. Set <code>VITE_PADDLE_CLIENT_TOKEN</code> and price ids in{' '}
+            <code>.env.local</code> (see <code>docs/PADDLE_SETUP.md</code>).
           </p>
         ) : null}
 

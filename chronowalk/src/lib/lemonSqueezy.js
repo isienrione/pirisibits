@@ -1,6 +1,8 @@
 /**
- * Lemon Squeezy commerce — ChronoWalk Roma Eterna checkout.
- * Store: chronowalk.lemonsqueezy.com (test mode until Lemon approves live purchase).
+ * @deprecated Lemon Squeezy commerce — superseded by Paddle (`src/lib/paddle.js`).
+ * Kept for reference / archived tests. `openCheckout` no longer calls this module.
+ *
+ * Store: chronowalk.lemonsqueezy.com (historical).
  */
 
 /** Hosted / overlay buy URL for Roma Eterna (rome-complete product). */

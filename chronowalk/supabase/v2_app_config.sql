@@ -9,10 +9,12 @@ insert into public.app_config (key, value) values
   ('price', '{"cents":1499,"currency":"EUR"}'::jsonb),
   ('ab', '{"enabled":false,"variants":[1499,1499],"split":0.5}'::jsonb),
   ('review_url', '"https://www.google.com/maps"'::jsonb),
-  ('checkout_url', '"https://chronowalk.lemonsqueezy.com/checkout/buy/1a82bca2-f4a8-4b40-812d-fb7398afb75d"'::jsonb)
+  -- Legacy Lemon URL cleared; Paddle uses client token + price ids (env or paddle_prices).
+  ('checkout_url', '""'::jsonb),
+  ('paddle_prices', '{}'::jsonb)
 on conflict (key) do update set value = excluded.value;
 
--- Purchases table for Lemon Squeezy webhook (M9)
+-- Purchases table for commerce webhook (Paddle transaction.id → order_id)
 create table if not exists public.purchases (
   id uuid primary key default gen_random_uuid(),
   email text not null,

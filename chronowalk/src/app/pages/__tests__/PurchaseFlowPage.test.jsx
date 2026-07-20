@@ -8,7 +8,7 @@ vi.mock('../../../lib/checkout.js', async (importOriginal) => {
   const actual = await importOriginal()
   return {
     ...actual,
-    resolveCheckoutBaseUrl: vi.fn(async () => ''),
+    resolveCheckoutReady: vi.fn(async () => false),
     openCheckout: vi.fn(),
   }
 })
@@ -38,8 +38,8 @@ describe('PurchaseFlowPage', () => {
     localStorage.clear()
     sessionStorage.clear()
     stagingAllowedMock.mockReturnValue(false)
-    const { resolveCheckoutBaseUrl } = await import('../../../lib/checkout.js')
-    resolveCheckoutBaseUrl.mockResolvedValue('')
+    const { resolveCheckoutReady } = await import('../../../lib/checkout.js')
+    resolveCheckoutReady.mockResolvedValue(false)
   })
 
   it('blocks free unlock — no staging CTA without ?devUnlock=1', async () => {
@@ -57,10 +57,10 @@ describe('PurchaseFlowPage', () => {
     expect(screen.queryByRole('button', { name: /complete staging purchase/i })).not.toBeInTheDocument()
   })
 
-  it('auto-opens Lemon checkout when configured', async () => {
-    const { resolveCheckoutBaseUrl, openCheckout } = await import('../../../lib/checkout.js')
-    resolveCheckoutBaseUrl.mockResolvedValue('https://checkout.example/buy')
-    openCheckout.mockResolvedValue({ ok: true, url: 'https://checkout.example/buy' })
+  it('auto-opens Paddle checkout when configured', async () => {
+    const { resolveCheckoutReady, openCheckout } = await import('../../../lib/checkout.js')
+    resolveCheckoutReady.mockResolvedValue(true)
+    openCheckout.mockResolvedValue({ ok: true, mode: 'overlay', priceId: 'pri_test' })
 
     render(
       <MemoryRouter initialEntries={['/purchase?tier=rome-central']}>

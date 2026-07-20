@@ -1,82 +1,77 @@
-import { buildCheckoutUrl, getHost } from './host.js'
+import { getHost } from './host.js'
 import { getAbVariantCents, loadAppConfig } from './config.js'
 import { track, TRACK_EVENTS } from './track.js'
-import {
-  buildLandingTierCheckoutUrl,
-  resolveLandingTierCents,
-} from '../landing/landingCheckout.js'
+import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { ROME_TIERS } from '../landing/landingData.js'
 import {
-  LEMON_CHECKOUT_BUY_URL,
-  openLemonOverlay,
+  buildPaddleCustomData,
+  isPaddleCheckoutReady,
+  openPaddleCheckout,
   resolveCheckoutMode,
-  resolveLemonCheckoutBaseUrl,
-} from './lemonSqueezy.js'
+  resolvePaddlePriceId,
+} from './paddle.js'
 
 const TIER_BY_ID = Object.fromEntries(ROME_TIERS.map((tier) => [tier.id, tier]))
 
-/** True when a Lemon Squeezy checkout base URL is available (env, app_config, or baked-in store link). */
-export function isCheckoutConfigured(checkoutUrl) {
-  return Boolean(typeof checkoutUrl === 'string' && checkoutUrl.trim())
+/**
+ * True when Paddle is ready (client token + price id).
+ * Accepts an optional boolean for callers that already resolved readiness,
+ * or ignores legacy URL strings (always false for empty).
+ */
+export function isCheckoutConfigured(value) {
+  if (typeof value === 'boolean') return value
+  if (typeof value === 'string') return false
+  return isPaddleCheckoutReady()
 }
 
 export function getTierById(tierId) {
   return TIER_BY_ID[tierId] ?? null
 }
 
-/** @deprecated Prefer resolveLemonCheckoutBaseUrl — kept for tests / call sites. */
-export function pickCheckoutBaseUrl(fromConfig, fromEnv) {
-  return resolveLemonCheckoutBaseUrl(fromConfig, fromEnv)
-}
-
 /**
- * Resolve the live checkout base URL (Supabase app_config wins over env, then store default).
+ * Resolve whether checkout can open (loads app_config for optional paddle_prices).
+ * @returns {Promise<boolean>}
  */
-export async function resolveCheckoutBaseUrl() {
+export async function resolveCheckoutReady() {
   const config = await loadAppConfig()
-  const fromConfig = typeof config?.checkout_url === 'string' ? config.checkout_url : ''
-  const fromEnv = import.meta.env.VITE_LEMON_CHECKOUT_URL ?? ''
-  return resolveLemonCheckoutBaseUrl(fromConfig, fromEnv)
+  return isPaddleCheckoutReady(undefined, config?.paddle_prices)
+}
+
+/** @deprecated Prefer resolveCheckoutReady — Lemon URL resolution removed. */
+export async function resolveCheckoutBaseUrl() {
+  const ready = await resolveCheckoutReady()
+  return ready ? 'paddle' : ''
+}
+
+/** @deprecated Lemon URL picker — no-op for Paddle (returns empty). */
+export function pickCheckoutBaseUrl() {
+  return ''
 }
 
 /**
- * Build a Lemon Squeezy checkout URL for an optional Rome tier.
- * Returns null when checkout is not configured yet.
+ * @deprecated Lemon URL builder — Paddle uses price ids + customData.
+ * Kept so older tests / call sites fail soft instead of throwing.
  */
-export function buildTierCheckoutUrl(baseUrl, tierId, { host, abVariantCents } = {}) {
-  if (!isCheckoutConfigured(baseUrl)) return null
-
-  if (tierId && TIER_BY_ID[tierId]) {
-    return buildLandingTierCheckoutUrl(baseUrl, tierId, { host, abVariantCents })
-  }
-
-  return buildCheckoutUrl(baseUrl, {
-    host,
-    abVariantCents,
-    productId: tierId || undefined,
-  })
+export function buildTierCheckoutUrl() {
+  return null
 }
 
 /**
- * Open Lemon Squeezy checkout — overlay by default, hosted redirect as fallback.
- * @returns {{ ok: true, url: string, mode: 'overlay' | 'hosted' } | { ok: false, reason: 'not_configured' }}
+ * Open Paddle checkout — overlay by default.
+ * @returns {Promise<
+ *   | { ok: true, mode: 'overlay' | 'hosted', priceId: string }
+ *   | { ok: false, reason: 'not_configured' | string }
+ * >}
  */
-export async function openCheckout({ tierId, source = 'app', mode } = {}) {
-  const baseUrl = await resolveCheckoutBaseUrl()
-  if (!isCheckoutConfigured(baseUrl)) {
+export async function openCheckout({ tierId, source = 'app', mode, email } = {}) {
+  const config = await loadAppConfig()
+  const priceId = resolvePaddlePriceId(tierId, config?.paddle_prices)
+
+  if (!isPaddleCheckoutReady(tierId, config?.paddle_prices) || !priceId) {
     return { ok: false, reason: 'not_configured' }
   }
 
   const abVariantCents = getAbVariantCents()
-  const url = buildTierCheckoutUrl(baseUrl, tierId, {
-    host: getHost(),
-    abVariantCents,
-  })
-
-  if (!url) {
-    return { ok: false, reason: 'not_configured' }
-  }
-
   const tierCents = tierId
     ? resolveLandingTierCents(tierId, abVariantCents)
     : abVariantCents
@@ -87,19 +82,21 @@ export async function openCheckout({ tierId, source = 'app', mode } = {}) {
     tier: tierId ?? null,
   })
 
-  const preferredMode = mode ?? resolveCheckoutMode()
-  if (preferredMode === 'overlay') {
-    const overlay = await openLemonOverlay(url)
-    if (overlay.ok) {
-      return { ok: true, url, mode: 'overlay' }
-    }
-  }
+  const customData = buildPaddleCustomData({
+    host: getHost(),
+    abVariantCents: tierCents,
+    productId: tierId || undefined,
+  })
 
-  window.location.assign(url)
-  return { ok: true, url, mode: 'hosted' }
+  const preferredMode = mode ?? resolveCheckoutMode()
+  // Overlay is the supported path; "hosted" still opens Paddle overlay
+  // (Paddle Billing does not use Lemon-style buy URLs).
+  void preferredMode
+
+  return openPaddleCheckout({ priceId, customData, email })
 }
 
-/** Ordered buyer journey steps — used by UI and docs (placeholders until Lemon is live). */
+/** Ordered buyer journey steps — used by UI and docs. */
 export const TRANSACTION_STEPS = Object.freeze([
   {
     id: 'choose',
@@ -109,7 +106,7 @@ export const TRANSACTION_STEPS = Object.freeze([
   {
     id: 'checkout',
     title: 'Pay securely',
-    body: 'Lemon Squeezy opens for card payment. ChronoWalk never sees your card details.',
+    body: 'Paddle opens for card payment. ChronoWalk never sees your card details.',
   },
   {
     id: 'confirm',
@@ -127,5 +124,3 @@ export const TRANSACTION_STEPS = Object.freeze([
     body: 'Pace, acts, and first steps — then the walk.',
   },
 ])
-
-export { LEMON_CHECKOUT_BUY_URL }

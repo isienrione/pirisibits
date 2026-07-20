@@ -1,6 +1,9 @@
-# Lemon Squeezy transactions — how payments work on ChronoWalk
+# Lemon Squeezy transactions — **superseded by Paddle**
 
-ChronoWalk’s buyer journey is wired for the **Roma Eterna** Lemon product (test mode until Lemon approves live purchase). Flip the store to live when approved — the same checkout URL keeps working.
+> **Migration (2026-07):** Checkout now uses **Paddle Billing**. See [`docs/PADDLE_SETUP.md`](./PADDLE_SETUP.md).
+> This document is kept for historical Lemon wiring. `openCheckout` no longer opens Lemon.
+
+ChronoWalk’s buyer journey was originally wired for the **Roma Eterna** Lemon product.
 
 ## Buyer journey (live once configured)
 

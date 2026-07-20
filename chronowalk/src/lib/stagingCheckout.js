@@ -27,7 +27,7 @@ function randomUuid() {
 }
 
 /**
- * Simulate a successful Lemon purchase on this device:
+ * Simulate a successful Paddle purchase on this device:
  * mint a UUID token, persist it for /access validation, grant access, analytics.
  */
 export function completeStagingPurchase({ tierId = null, source = 'staging_checkout' } = {}) {

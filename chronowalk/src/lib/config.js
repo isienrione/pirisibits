@@ -1,4 +1,4 @@
-import { resolveLemonCheckoutBaseUrl } from './lemonSqueezy.js'
+import { isPaddleCheckoutReady } from './paddle.js'
 
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
@@ -8,7 +8,10 @@ const FALLBACK_CONFIG = {
   /** Keep disabled so live price stays fixed at the full-bundle amount. */
   ab: { enabled: false, variants: [1499, 1499], split: 0.5 },
   review_url: 'https://www.google.com/maps',
-  checkout_url: resolveLemonCheckoutBaseUrl('', import.meta.env.VITE_LEMON_CHECKOUT_URL),
+  /** Legacy Lemon field — unused by Paddle overlay; kept for older rows. */
+  checkout_url: '',
+  /** Optional map of tier id → Paddle price id (`pri_…`), overrides env. */
+  paddle_prices: {},
 }
 
 let cachedConfig = null
@@ -58,6 +61,7 @@ export async function loadAppConfig() {
   if (!url || !key) {
     cachedConfig = {
       ...FALLBACK_CONFIG,
+      checkout_ready: isPaddleCheckoutReady(undefined, FALLBACK_CONFIG.paddle_prices),
       abVariantCents: pickAbVariant(FALLBACK_CONFIG),
     }
     return cachedConfig
@@ -84,16 +88,20 @@ export async function loadAppConfig() {
 
     cachedConfig = {
       ...merged,
-      checkout_url: resolveLemonCheckoutBaseUrl(
-        merged.checkout_url,
-        import.meta.env.VITE_LEMON_CHECKOUT_URL,
-      ),
+      checkout_url:
+        typeof merged.checkout_url === 'string' ? merged.checkout_url : '',
+      paddle_prices:
+        merged.paddle_prices && typeof merged.paddle_prices === 'object'
+          ? merged.paddle_prices
+          : {},
+      checkout_ready: isPaddleCheckoutReady(undefined, merged.paddle_prices),
       abVariantCents: pickAbVariant(merged),
     }
     return cachedConfig
   } catch {
     cachedConfig = {
       ...FALLBACK_CONFIG,
+      checkout_ready: isPaddleCheckoutReady(undefined, FALLBACK_CONFIG.paddle_prices),
       abVariantCents: pickAbVariant(FALLBACK_CONFIG),
     }
     return cachedConfig
