@@ -41,7 +41,7 @@ function displayTitle(size) {
 }
 
 /**
- * Purchase flow surface while Lemon Squeezy is pending — or the calm bridge
+ * Purchase flow surface while Paddle credentials are pending — or the calm bridge
  * before opening a configured checkout. No decoration; editorial instructions only.
  */
 export default function APurchasePending({
@@ -78,8 +78,8 @@ export default function APurchasePending({
 
         <p style={{ ...bodyStyle, color: T.muted, marginTop: 16, maxWidth: 340 }}>
           {checkoutReady
-            ? 'Lemon Squeezy checkout opens next (overlay when available). After payment, your access link arrives by email.'
-            : 'Payments wait on the Lemon Squeezy store URL. The steps below are ready — live card checkout appears when checkout is configured.'}
+            ? 'Paddle checkout opens next. After payment, your access link arrives by email.'
+            : 'Payments wait on Paddle credentials (client token + price ids). The steps below are ready — live card checkout appears when checkout is configured.'}
         </p>
 
         {(tierLabel || priceLabel) && (
@@ -157,11 +157,13 @@ export default function APurchasePending({
                 overflow: 'hidden',
               }}
             >
-              <p style={{ ...uiStyle, color: T.warmWhite }}>Lemon Squeezy pending</p>
+              <p style={{ ...uiStyle, color: T.warmWhite }}>Paddle setup pending</p>
               <p style={{ ...bodyStyle, color: T.muted, margin: '6px 0 0', fontSize: 14 }}>
-                Your selected tour stays here until payment completes. Checkout uses the Roma Eterna Lemon
-                buy link (override with <code style={{ color: T.ember }}>VITE_LEMON_CHECKOUT_URL</code>) —
-                Rome will not unlock without purchase.
+                Your selected tour stays here until payment completes. Set{' '}
+                <code style={{ color: T.ember }}>VITE_PADDLE_CLIENT_TOKEN</code> and{' '}
+                <code style={{ color: T.ember }}>VITE_PADDLE_PRICE_ROME_*</code> (see{' '}
+                <code style={{ color: T.ember }}>docs/PADDLE_SETUP.md</code>) — Rome will not unlock
+                without purchase.
               </p>
               <div style={{ marginTop: 16, height: 12, position: 'relative' }}>
                 <Seam variant="horizontal" style={{ position: 'relative', left: 0, right: 0 }} />

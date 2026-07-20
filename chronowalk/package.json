@@ -35,9 +35,11 @@
     "check:content:local": "node scripts/check-content.mjs --skip-remote",
     "check:content:strict": "node scripts/check-content.mjs --require-full-durations",
     "check:content:local:strict": "node scripts/check-content.mjs --skip-remote --require-full-durations",
+    "seed:paddle-catalog": "node scripts/seed-paddle-catalog.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
     "lucide-react": "^0.511.0",
@@ -50,6 +52,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@paddle/paddle-node-sdk": "^3.8.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.14",

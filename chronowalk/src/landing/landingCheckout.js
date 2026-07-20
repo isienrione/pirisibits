@@ -1,4 +1,5 @@
 import { buildCheckoutUrl } from '../lib/host.js'
+import { buildPaddleCustomData } from '../lib/paddle.js'
 import { ROME_TIERS } from './landingData.js'
 
 const TIER_BY_ID = Object.fromEntries(ROME_TIERS.map((tier) => [tier.id, tier]))
@@ -12,7 +13,22 @@ export function resolveLandingTierCents(tierId, liveCents) {
   return tier.priceCents ?? liveCents
 }
 
-/** Build checkout URL with tier identity for Lemon Squeezy custom metadata. */
+/**
+ * Build Paddle customData for a landing tier (preferred path).
+ */
+export function buildLandingTierCustomData(tierId, { host, abVariantCents } = {}) {
+  const tierCents = resolveLandingTierCents(tierId, abVariantCents)
+  return buildPaddleCustomData({
+    host,
+    abVariantCents: tierCents,
+    productId: tierId,
+  })
+}
+
+/**
+ * @deprecated Lemon URL helper — prefer {@link buildLandingTierCustomData}.
+ * Kept for archive tests that still exercise query-param metadata.
+ */
 export function buildLandingTierCheckoutUrl(baseUrl, tierId, { host, abVariantCents } = {}) {
   const tierCents = resolveLandingTierCents(tierId, abVariantCents)
 

@@ -4,9 +4,8 @@ import APurchasePending from '../../redesign/screens/APurchasePending.jsx'
 import RedesignRouteShell from '../../redesign/RedesignRouteShell.jsx'
 import {
   getTierById,
-  isCheckoutConfigured,
   openCheckout,
-  resolveCheckoutBaseUrl,
+  resolveCheckoutReady,
 } from '../../lib/checkout.js'
 import {
   completeStagingPurchase,
@@ -20,7 +19,7 @@ import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandoff.js'
 
 /**
- * /purchase — paywall. Lemon when configured; otherwise blocked until Lemon is live.
+ * /purchase — paywall. Paddle when configured; otherwise blocked until credentials exist.
  * Staging unlock only with ?devUnlock=1 (never the default pack → walk path).
  */
 export function PurchaseFlowPage() {
@@ -53,15 +52,15 @@ export function PurchaseFlowPage() {
 
   useEffect(() => {
     let cancelled = false
-    resolveCheckoutBaseUrl().then((url) => {
-      if (!cancelled) setCheckoutReady(isCheckoutConfigured(url))
+    resolveCheckoutReady().then((ready) => {
+      if (!cancelled) setCheckoutReady(ready)
     })
     return () => {
       cancelled = true
     }
   }, [])
 
-  // When Lemon is configured, open checkout (overlay by default; hosted redirects away).
+  // When Paddle is configured, open checkout (overlay).
   useEffect(() => {
     if (!checkoutReady) return undefined
     let cancelled = false

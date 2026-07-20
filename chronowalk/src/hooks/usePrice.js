@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { formatConfigPrice, loadAppConfig } from '../lib/config'
 import { loadRomeManifest } from '../content/manifest.js'
+import { isPaddleCheckoutReady } from '../lib/paddle.js'
 
 const ROME_PRICE_FALLBACK = loadRomeManifest().product?.priceFallbackCents
   ?? loadRomeManifest().price_fallback_cents
@@ -11,6 +12,8 @@ export function usePrice() {
     label: formatConfigPrice(ROME_PRICE_FALLBACK, 'EUR'),
     cents: ROME_PRICE_FALLBACK,
     currency: 'EUR',
+    checkoutUrl: '',
+    checkoutReady: isPaddleCheckoutReady(),
   })
 
   useEffect(() => {
@@ -24,7 +27,11 @@ export function usePrice() {
         cents,
         currency,
         label: formatConfigPrice(cents, currency),
-        checkoutUrl: config.checkout_url,
+        checkoutUrl: config.checkout_url ?? '',
+        checkoutReady:
+          typeof config.checkout_ready === 'boolean'
+            ? config.checkout_ready
+            : isPaddleCheckoutReady(undefined, config.paddle_prices),
       })
     })
 

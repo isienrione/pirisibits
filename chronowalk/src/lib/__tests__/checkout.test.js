@@ -1,22 +1,27 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import {
-  buildTierCheckoutUrl,
   getTierById,
   isCheckoutConfigured,
-  LEMON_CHECKOUT_BUY_URL,
   pickCheckoutBaseUrl,
   TRANSACTION_STEPS,
 } from '../checkout.js'
+import {
+  buildPaddleCustomData,
+  isPaddleCheckoutReady,
+  resolvePaddlePriceId,
+  __resetPaddleForTests,
+} from '../paddle.js'
 
-describe('checkout helpers', () => {
+describe('checkout helpers (Paddle)', () => {
   beforeEach(() => {
     vi.unstubAllEnvs()
+    __resetPaddleForTests()
   })
 
-  it('detects configured checkout urls', () => {
-    expect(isCheckoutConfigured('')).toBe(false)
-    expect(isCheckoutConfigured('   ')).toBe(false)
-    expect(isCheckoutConfigured('https://store.lemonsqueezy.com/checkout/buy/abc')).toBe(true)
+  it('detects configured checkout from Paddle env', () => {
+    expect(isCheckoutConfigured()).toBe(false)
+    expect(isCheckoutConfigured('https://store.lemonsqueezy.com/checkout/buy/abc')).toBe(false)
+    expect(isCheckoutConfigured(true)).toBe(true)
   })
 
   it('resolves rome tiers', () => {
@@ -24,23 +29,38 @@ describe('checkout helpers', () => {
     expect(getTierById('missing')).toBeNull()
   })
 
-  it('builds tier checkout urls with custom metadata', () => {
-    const url = buildTierCheckoutUrl('https://checkout.example/buy', 'rome-central', {
+  it('builds paddle custom data for tiers', () => {
+    const data = buildPaddleCustomData({
       host: 'hotelroma1',
-      abVariantCents: 1499,
+      abVariantCents: 999,
+      productId: 'rome-central',
     })
-    expect(url).toContain('checkout%5Bcustom%5D%5Bproduct_id%5D=rome-central')
-    expect(url).toContain('checkout%5Bcustom%5D%5Bab_variant%5D=999')
-    expect(url).toContain('checkout%5Bcustom%5D%5Bhost%5D=hotelroma1')
+    expect(data).toEqual({
+      product_id: 'rome-central',
+      host: 'hotelroma1',
+      ab_variant: '999',
+    })
   })
 
-  it('returns null when checkout is not configured', () => {
-    expect(buildTierCheckoutUrl('', 'rome-complete')).toBeNull()
+  it('resolves price ids from env', () => {
+    vi.stubEnv('VITE_PADDLE_CLIENT_TOKEN', 'test_token')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_COMPLETE', 'pri_complete')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_CENTRAL', 'pri_central')
+    expect(resolvePaddlePriceId('rome-central')).toBe('pri_central')
+    expect(resolvePaddlePriceId('rome-complete')).toBe('pri_complete')
+    expect(isPaddleCheckoutReady('rome-central')).toBe(true)
   })
 
-  it('falls back to the Roma Eterna store buy URL', () => {
-    expect(pickCheckoutBaseUrl('', '')).toBe(LEMON_CHECKOUT_BUY_URL)
-    expect(LEMON_CHECKOUT_BUY_URL).toContain('1a82bca2-f4a8-4b40-812d-fb7398afb75d')
+  it('prefers app_config paddle_prices over env', () => {
+    vi.stubEnv('VITE_PADDLE_CLIENT_TOKEN', 'test_token')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_COMPLETE', 'pri_env')
+    expect(
+      resolvePaddlePriceId('rome-complete', { 'rome-complete': 'pri_config' }),
+    ).toBe('pri_config')
+  })
+
+  it('no longer falls back to a Lemon buy URL', () => {
+    expect(pickCheckoutBaseUrl('', '')).toBe('')
   })
 
   it('exposes the full transaction step list', () => {
@@ -51,5 +71,6 @@ describe('checkout helpers', () => {
       'unlock',
       'setup',
     ])
+    expect(TRANSACTION_STEPS.find((s) => s.id === 'checkout')?.body).toMatch(/Paddle/)
   })
 })

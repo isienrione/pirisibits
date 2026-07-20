@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { formatConfigPrice, loadAppConfig } from '../lib/config.js'
+import { isPaddleCheckoutReady } from '../lib/paddle.js'
 import { LANDING_PRICE_FALLBACK_CENTS, LANDING_PRICE_FALLBACK_LABEL } from './landingData.js'
 
 /** Landing-only price hook — avoids importing the full Rome manifest at module scope. */
@@ -9,6 +10,7 @@ export function useLandingPrice() {
     cents: LANDING_PRICE_FALLBACK_CENTS,
     currency: 'EUR',
     checkoutUrl: '',
+    checkoutReady: isPaddleCheckoutReady(),
   })
 
   useEffect(() => {
@@ -22,7 +24,11 @@ export function useLandingPrice() {
         cents,
         currency,
         label: formatConfigPrice(cents, currency),
-        checkoutUrl: config.checkout_url,
+        checkoutUrl: config.checkout_url ?? '',
+        checkoutReady:
+          typeof config.checkout_ready === 'boolean'
+            ? config.checkout_ready
+            : isPaddleCheckoutReady(undefined, config.paddle_prices),
       })
     })
 
