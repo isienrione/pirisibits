@@ -65,6 +65,32 @@ function customerEmail(transaction) {
   )
 }
 
+function customerIdOf(transaction) {
+  return (
+    transaction?.customerId ||
+    transaction?.customer_id ||
+    transaction?.customer?.id ||
+    null
+  )
+}
+
+/** Webhook payloads often only include customer_id — look up email via API. */
+async function resolveCustomerEmail(paddle, transaction) {
+  const direct = customerEmail(transaction)
+  if (direct) return String(direct)
+
+  const customerId = customerIdOf(transaction)
+  if (!customerId) return null
+
+  try {
+    const customer = await paddle.customers.get(customerId)
+    return customer?.email ? String(customer.email) : null
+  } catch (err) {
+    console.error('[paddle-webhook] customers.get failed', customerId, err)
+    return null
+  }
+}
+
 async function upsertPurchase(supabase, { email, orderId, productId, host, abVariant }) {
   const { data, error } = await supabase
     .from('purchases')
@@ -127,21 +153,14 @@ async function sendAccessEmail({ email, accessToken, productId }) {
   return { sent: true, link }
 }
 
-async function handleTransactionCompleted(eventData) {
+async function handleTransactionCompleted(paddle, eventData) {
   const transaction = eventData?.data ?? eventData
   const orderId = transaction?.id
   if (!orderId) throw new Error('transaction missing id')
 
-  // Prefer email on the transaction; fall back to nested customer fields.
-  let email = customerEmail(transaction)
-  if (!email && transaction?.customerId) {
-    // customer may only be an id on some payloads — email comes later via customer.created
-    email = transaction?.customer?.email ?? null
-  }
+  const email = await resolveCustomerEmail(paddle, transaction)
   if (!email) {
     console.warn('[paddle-webhook] no email on transaction', orderId)
-    // Still acknowledge — Paddle may send customer.created separately; we need email to unlock.
-    // Retry by returning non-2xx only if we expect email on this event.
     throw new Error('transaction.completed missing customer email')
   }
 
@@ -191,8 +210,9 @@ Deno.serve(async (req) => {
     const eventType = eventData?.eventType ?? eventData?.event_type
 
     if (eventType === 'transaction.completed') {
-      await handleTransactionCompleted(eventData)
+      await handleTransactionCompleted(paddle, eventData)
     } else {
+      // Other subscribed events are acknowledged so Paddle stops retrying.
       console.log('[paddle-webhook] ignored event', eventType)
     }
 
