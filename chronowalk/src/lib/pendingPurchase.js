@@ -67,8 +67,17 @@ export function paceIdForPurchaseTier(tierId) {
 }
 
 /**
+ * True when the buyer unlocked Roma Eterna — they may choose any route mode.
+ * Single packs skip the mode picker and start their locked route.
+ */
+export function shouldShowPaceModePicker(tierId) {
+  return tierId === 'rome-complete'
+}
+
+/**
  * Pace options unlocked by a purchased product.
- * Single packs lock to their route; Roma Eterna unlocks full + own-pace.
+ * Single packs lock to their route; Roma Eterna unlocks every mode
+ * (full walk, centro, ancient core, or hand-picked stops).
  */
 export function getPaceOptionsForPurchasedTier(tierId) {
   if (!tierId) return PACE_OPTIONS
@@ -79,9 +88,7 @@ export function getPaceOptionsForPurchasedTier(tierId) {
     case 'rome-essential':
       return PACE_OPTIONS.filter((opt) => opt.id === JOURNEY_PACE.CLASSIC)
     case 'rome-complete':
-      return PACE_OPTIONS.filter(
-        (opt) => opt.id === JOURNEY_PACE.HEROIC || opt.id === JOURNEY_PACE.OWN,
-      )
+      return PACE_OPTIONS
     default:
       return PACE_OPTIONS
   }

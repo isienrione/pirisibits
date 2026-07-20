@@ -39,6 +39,7 @@ export default function B4PaceSelector({
   selectedPace,
   onSelectPace,
   onContinue,
+  showPrices = true,
   eyebrow = 'BEFORE YOU BEGIN',
   title = (
     <>
@@ -48,6 +49,7 @@ export default function B4PaceSelector({
     </>
   ),
   subtitle = null,
+  footerNote = 'You can change your mind at any time. Nothing expires. Nothing is skipped forever.',
 }) {
   const { navigate } = useContext(RedesignNavCtx)
   const [selected, setSelected] = useState(null)
@@ -153,10 +155,11 @@ export default function B4PaceSelector({
           <p
             style={{
               margin: '0 0 14px',
-              fontSize: 14,
-              lineHeight: 1.5,
+              fontSize: 13,
+              lineHeight: 1.55,
               color: T.muted,
               flexShrink: 0,
+              maxWidth: 360,
             }}
           >
             {subtitle}
@@ -251,7 +254,7 @@ export default function B4PaceSelector({
                       {opt.title}
                     </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-                      {opt.priceLabel ? (
+                      {showPrices && opt.priceLabel ? (
                         <span
                           style={{
                             fontSize: 13,
@@ -320,18 +323,20 @@ export default function B4PaceSelector({
           ))}
         </div>
 
-        <p
-          style={{
-            fontSize: 13,
-            color: T.muted,
-            lineHeight: 1.7,
-            textAlign: 'center',
-            margin: '14px 0 10px',
-            flexShrink: 0,
-          }}
-        >
-          You can change your mind at any time. Nothing expires. Nothing is skipped forever.
-        </p>
+        {footerNote ? (
+          <p
+            style={{
+              fontSize: 13,
+              color: T.muted,
+              lineHeight: 1.7,
+              textAlign: 'center',
+              margin: '14px 0 10px',
+              flexShrink: 0,
+            }}
+          >
+            {footerNote}
+          </p>
+        ) : null}
 
         <button
           type="button"
