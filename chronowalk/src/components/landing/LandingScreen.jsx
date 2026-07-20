@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Threshold from '../Threshold'
 import { THRESHOLD_DEMO_WAYPOINT } from '../../data/thresholdDemo'
@@ -7,6 +8,7 @@ import { usePrice } from '../../hooks/usePrice'
 import { getHostLabel } from '../../lib/host'
 import { openCheckout } from '../../lib/checkout.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
+import CheckoutConsentDialog from '../legal/CheckoutConsentDialog.jsx'
 
 const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
 
@@ -69,10 +71,19 @@ function FeatureRow() {
 export default function LandingScreen() {
   const { label, cents, checkoutReady } = usePrice()
   const hostLabel = getHostLabel()
+  const [consentOpen, setConsentOpen] = useState(false)
+  const [checkoutBusy, setCheckoutBusy] = useState(false)
 
-  const handlePurchase = async () => {
+  const handlePurchase = () => {
     if (!checkoutReady) return
+    setConsentOpen(true)
+  }
+
+  const handleConsentConfirm = async () => {
+    setCheckoutBusy(true)
     const result = await openCheckout({ tierId: 'rome-complete', source: 'legacy_landing' })
+    setCheckoutBusy(false)
+    setConsentOpen(false)
     if (!result.ok) {
       track(TRACK_EVENTS.CHECKOUT_OPEN, { price_cents: cents, failed: true })
     }
@@ -274,6 +285,16 @@ export default function LandingScreen() {
           Location is used only while your tour is active. You can pause anytime.
         </p>
       </section>
+      <CheckoutConsentDialog
+        open={consentOpen}
+        tierLabel="Roma Eterna"
+        priceLabel={label}
+        busy={checkoutBusy}
+        onConfirm={handleConsentConfirm}
+        onCancel={() => {
+          if (!checkoutBusy) setConsentOpen(false)
+        }}
+      />
     </div>
   )
 }

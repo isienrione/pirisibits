@@ -43,7 +43,7 @@ export const ROME_TIERS = [
     outcome: 'Walk the living city around the Pantheon — stories at each stop.',
     price: '€9.99',
     priceCents: 999,
-    priceNote: 'one-time',
+    priceNote: 'one-time · taxes included where applicable',
     landmarkLine: "Trajan's Market + Pantheon + centro storico",
     description:
       "Trajan's Market and the living city around the Pantheon — Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside Parco Archeologico del Colosseo.",
@@ -63,7 +63,7 @@ export const ROME_TIERS = [
     outcome: 'Hear the ancient core where it happened — arena to Senate floor.',
     price: '€9.99',
     priceCents: 999,
-    priceNote: 'one-time',
+    priceNote: 'one-time · taxes included where applicable',
     description:
       'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
     bullets: [
@@ -82,7 +82,7 @@ export const ROME_TIERS = [
     outcome: 'One continuous Rome from the Arena to the Appian Way, at your pace.',
     price: '€14.99',
     priceCents: 1499,
-    priceNote: 'one-time',
+    priceNote: 'one-time · taxes included where applicable',
     badge: 'Full city loop',
     description:
       'The full Rome walk — archaeological core, centro storico, outer loop, and your own stop order.',
@@ -505,7 +505,7 @@ export const LANDING_CONTENT = {
     intro:
       'GPS narration, offline download, and the Pantheon preview in every package. One device per purchase — discounted couple, family, and group bundles add synced sharing.',
     footnote:
-      'Secure checkout first · Access link arrives by email · Does not replace ticketed entry where tickets are required',
+      'Secure checkout first · Access link arrives by email · Taxes included where applicable · Does not replace ticketed entry where tickets are required',
     accessLinkLabel: 'Already purchased? Enter your access link',
     accessHref: '/access',
     metaTimeLabel: 'Est. duration',

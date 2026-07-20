@@ -38,6 +38,10 @@ import {
   LazySetupPage,
   LazyTourPage,
   LazyWelcomePage,
+  LazyLegalTermsPage,
+  LazyLegalPrivacyPage,
+  LazyLegalRefundPage,
+  LazyContactPage,
 } from './lazyRoutes.jsx'
 
 function Paid({ children }) {
@@ -106,6 +110,10 @@ function AppRoutes() {
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
         <Route path="/invite" element={<LazyInvitePage />} />
+        <Route path="/legal/terms" element={<LazyLegalTermsPage />} />
+        <Route path="/legal/privacy" element={<LazyLegalPrivacyPage />} />
+        <Route path="/legal/refund" element={<LazyLegalRefundPage />} />
+        <Route path="/contact" element={<LazyContactPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <JourneyThresholdLayer />

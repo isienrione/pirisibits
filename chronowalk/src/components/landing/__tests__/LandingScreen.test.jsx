@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { getTourProductTruth } from '../../../content/tourProductTruth.js'
 import { loadRomeManifest } from '../../../content/manifest.js'
+import { IMMEDIATE_ACCESS_CONSENT_LABEL } from '../../legal/immediateAccessConsent.js'
 import LandingScreen from '../LandingScreen'
 
 const PRODUCT_TRUTH = getTourProductTruth(loadRomeManifest())
@@ -59,7 +60,7 @@ describe('LandingScreen', () => {
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 
-  it('opens Paddle checkout for the complete pack', async () => {
+  it('opens Paddle checkout only after immediate-access consent', async () => {
     render(
       <MemoryRouter>
         <LandingScreen />
@@ -67,6 +68,15 @@ describe('LandingScreen', () => {
     )
 
     fireEvent.click(screen.getByRole('button', { name: /unlock rome — €14\.99/i }))
+
+    const continueBtn = await screen.findByRole('button', { name: /continue to secure checkout/i })
+    expect(continueBtn).toBeDisabled()
+    expect(openCheckoutMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByLabelText(IMMEDIATE_ACCESS_CONSENT_LABEL))
+    expect(screen.getByRole('button', { name: /continue to secure checkout/i })).toBeEnabled()
+
+    fireEvent.click(screen.getByRole('button', { name: /continue to secure checkout/i }))
 
     await waitFor(() => {
       expect(openCheckoutMock).toHaveBeenCalledWith({

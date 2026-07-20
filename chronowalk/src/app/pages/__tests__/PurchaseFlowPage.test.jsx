@@ -1,8 +1,9 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { PurchaseFlowPage } from '../PurchaseFlowPage'
 import { ACCESS_KEY } from '../../../lib/config.js'
+import { IMMEDIATE_ACCESS_CONSENT_LABEL } from '../../../components/legal/immediateAccessConsent.js'
 
 vi.mock('../../../lib/checkout.js', async (importOriginal) => {
   const actual = await importOriginal()
@@ -57,7 +58,7 @@ describe('PurchaseFlowPage', () => {
     expect(screen.queryByRole('button', { name: /complete staging purchase/i })).not.toBeInTheDocument()
   })
 
-  it('auto-opens Paddle checkout when configured', async () => {
+  it('does not auto-open Paddle checkout — requires immediate-access consent first', async () => {
     const { resolveCheckoutReady, openCheckout } = await import('../../../lib/checkout.js')
     resolveCheckoutReady.mockResolvedValue(true)
     openCheckout.mockResolvedValue({ ok: true, mode: 'overlay', priceId: 'pri_test' })
@@ -70,10 +71,18 @@ describe('PurchaseFlowPage', () => {
       </MemoryRouter>,
     )
 
+    const continueBtn = await screen.findByRole('button', { name: /continue to secure checkout/i })
+    expect(continueBtn).toBeDisabled()
+    expect(openCheckout).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByLabelText(IMMEDIATE_ACCESS_CONSENT_LABEL))
+    expect(screen.getByRole('button', { name: /continue to secure checkout/i })).toBeEnabled()
+
+    fireEvent.click(screen.getByRole('button', { name: /continue to secure checkout/i }))
     await waitFor(() => {
       expect(openCheckout).toHaveBeenCalledWith({
         tierId: 'rome-central',
-        source: 'purchase_flow_auto',
+        source: 'purchase_flow',
       })
     })
   })

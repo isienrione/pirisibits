@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom'
 import { T, F } from '../tokens.js'
 import { PrimaryButton, GhostButton, Seam } from '../ui/index.js'
 import { TRANSACTION_STEPS } from '../../lib/checkout.js'
+import ImmediateAccessConsent from '../../components/legal/ImmediateAccessConsent.jsx'
+import { TAX_INCLUSIVE_NOTE } from '../../components/legal/immediateAccessConsent.js'
+import '../../components/legal/legal.css'
 
 const metaStyle = {
   fontFamily: F.body,
@@ -49,12 +52,15 @@ export default function APurchasePending({
   checkoutReady = false,
   stagingAllowed = false,
   busy = false,
+  immediateAccessConsent = false,
+  onImmediateAccessConsentChange,
   onContinueCheckout,
   onStagingCheckout,
   onPreview,
 }) {
   const priceLabel = tier?.price ?? null
   const tierLabel = tier?.tierLabel ?? tier?.eyebrow ?? tier?.name ?? null
+  const checkoutEnabled = checkoutReady && immediateAccessConsent && !busy
 
   return (
     <main
@@ -97,6 +103,9 @@ export default function APurchasePending({
             {priceLabel ? (
               <p style={{ ...displayTitle(28), color: T.warmWhite, marginTop: 6 }}>{priceLabel}</p>
             ) : null}
+            <p style={{ ...bodyStyle, color: T.muted, marginTop: 6, fontSize: 13 }}>
+              {TAX_INCLUSIVE_NOTE}
+            </p>
             {tier?.description ? (
               <p style={{ ...bodyStyle, color: T.muted, marginTop: 12, fontSize: 14 }}>{tier.description}</p>
             ) : null}
@@ -142,9 +151,21 @@ export default function APurchasePending({
 
         <div style={{ marginTop: 40, display: 'flex', flexDirection: 'column', gap: 16 }}>
           {checkoutReady ? (
-            <PrimaryButton onClick={onContinueCheckout} disabled={busy} color={T.ember}>
-              Continue to secure checkout
-            </PrimaryButton>
+            <>
+              <ImmediateAccessConsent
+                id="purchase-immediate-access-consent"
+                checked={immediateAccessConsent}
+                onChange={onImmediateAccessConsentChange}
+                dark
+              />
+              <PrimaryButton
+                onClick={onContinueCheckout}
+                disabled={!checkoutEnabled}
+                color={T.ember}
+              >
+                Continue to secure checkout
+              </PrimaryButton>
+            </>
           ) : (
             <div
               role="status"

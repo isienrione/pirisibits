@@ -21,6 +21,7 @@ import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandof
 /**
  * /purchase — paywall. Paddle when configured; otherwise blocked until credentials exist.
  * Staging unlock only with ?devUnlock=1 (never the default pack → walk path).
+ * Checkout opens only after the immediate-access consent checkbox is checked.
  */
 export function PurchaseFlowPage() {
   const navigate = useNavigate()
@@ -32,6 +33,7 @@ export function PurchaseFlowPage() {
 
   const [checkoutReady, setCheckoutReady] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [immediateAccessConsent, setImmediateAccessConsent] = useState(false)
 
   useEffect(() => {
     if (hasAccess()) {
@@ -60,28 +62,8 @@ export function PurchaseFlowPage() {
     }
   }, [])
 
-  // When Paddle is configured, open checkout (overlay).
-  useEffect(() => {
-    if (!checkoutReady) return undefined
-    let cancelled = false
-    ;(async () => {
-      setBusy(true)
-      const result = await openCheckout({ tierId, source: 'purchase_flow_auto' })
-      if (cancelled) return
-      if (!result.ok) {
-        setCheckoutReady(false)
-      }
-      // Overlay stays on this page — clear busy so Continue can re-open.
-      if (!result.ok || result.mode === 'overlay') {
-        setBusy(false)
-      }
-    })()
-    return () => {
-      cancelled = true
-    }
-  }, [checkoutReady, tierId])
-
   const handleCheckout = useCallback(async () => {
+    if (!immediateAccessConsent) return
     setBusy(true)
     const result = await openCheckout({ tierId, source: 'purchase_flow' })
     if (!result.ok) {
@@ -90,7 +72,7 @@ export function PurchaseFlowPage() {
     if (!result.ok || result.mode === 'overlay') {
       setBusy(false)
     }
-  }, [tierId])
+  }, [immediateAccessConsent, tierId])
 
   const handleStagingCheckout = useCallback(() => {
     setBusy(true)
@@ -117,6 +99,8 @@ export function PurchaseFlowPage() {
           checkoutReady={checkoutReady}
           stagingAllowed={allowDevUnlock}
           busy={busy}
+          immediateAccessConsent={immediateAccessConsent}
+          onImmediateAccessConsentChange={setImmediateAccessConsent}
           onContinueCheckout={handleCheckout}
           onStagingCheckout={allowDevUnlock ? handleStagingCheckout : undefined}
           onPreview={handlePreview}

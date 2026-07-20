@@ -1,8 +1,34 @@
 import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
+import '../components/legal/legal.css'
 
-export default function LandingSiteFooter() {
+const SUPPORT_EMAIL_DISPLAY = '[support@chronowalk.com]'
+const SUPPORT_EMAIL_HREF = 'support@chronowalk.com'
+
+const LEGAL_LINKS = [
+  { label: 'Terms of Service', to: '/legal/terms' },
+  { label: 'Privacy Policy', to: '/legal/privacy' },
+  { label: 'Refund Policy', to: '/legal/refund' },
+  { label: 'Contact', to: '/contact' },
+]
+
+function resolveFooterHref(href, landingPrefix) {
+  if (!landingPrefix) return href
+  if (href.startsWith('#')) return `${landingPrefix}${href}`
+  return href
+}
+
+/**
+ * Site footer — landing anchors + Legal cluster required for Paddle review.
+ * @param {{ pricingHref?: string, landingPrefix?: string }} props
+ *   pricingHref — `#pricing` on landing; `/landing#pricing` on standalone pages.
+ *   landingPrefix — when set (e.g. `/landing`), section anchors point at the marketing page.
+ */
+export default function LandingSiteFooter({
+  pricingHref = '#pricing',
+  landingPrefix = '',
+}) {
   const { tagline, nav, credit, accessHref, accessLinkLabel } = LANDING_CONTENT.footer
   const year = new Date().getFullYear()
 
@@ -24,11 +50,19 @@ export default function LandingSiteFooter() {
               </Link>
             </p>
           ) : null}
+          <p className="cw-v2-footer__support">
+            Support:{' '}
+            <a href={`mailto:${SUPPORT_EMAIL_HREF}`}>{SUPPORT_EMAIL_DISPLAY}</a>
+          </p>
         </div>
 
         <nav className="cw-v2-footer__nav" aria-label="Footer">
           {nav.map((item) => (
-            <a key={item.href} href={item.href} className="cw-v2-footer__link">
+            <a
+              key={item.href}
+              href={resolveFooterHref(item.href, landingPrefix)}
+              className="cw-v2-footer__link"
+            >
               {item.label}
             </a>
           ))}
@@ -36,7 +70,30 @@ export default function LandingSiteFooter() {
       </div>
 
       <div className="cw-v2-footer__legal">
-        © {year} ChronoWalk. {credit}
+        <nav className="cw-v2-footer__legal-nav" aria-label="Legal">
+          <p className="cw-v2-footer__legal-nav-label">Legal</p>
+          {LEGAL_LINKS.map((item, index) => (
+            <span key={item.to} style={{ display: 'contents' }}>
+              {index > 0 ? (
+                <span className="cw-v2-footer__legal-sep" aria-hidden="true">
+                  ·
+                </span>
+              ) : null}
+              <Link to={item.to} className="cw-v2-footer__legal-link">
+                {item.label}
+              </Link>
+            </span>
+          ))}
+          <span className="cw-v2-footer__legal-sep" aria-hidden="true">
+            ·
+          </span>
+          <a href={pricingHref} className="cw-v2-footer__legal-link">
+            Pricing
+          </a>
+        </nav>
+        <p style={{ margin: '1.25rem 0 0' }}>
+          © {year} ChronoWalk. {credit}
+        </p>
       </div>
     </footer>
   )

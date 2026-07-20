@@ -136,3 +136,23 @@ export const LazyPurchaseFlowPage = lazyRoute(
   () => import('./pages/PurchaseFlowPage.jsx').then((m) => ({ default: m.PurchaseFlowPage })),
   'purchase',
 )
+
+export const LazyLegalTermsPage = lazyRoute(
+  () => import('./pages/legal/LegalTermsPage.jsx'),
+  'legal terms',
+)
+
+export const LazyLegalPrivacyPage = lazyRoute(
+  () => import('./pages/legal/LegalPrivacyPage.jsx'),
+  'legal privacy',
+)
+
+export const LazyLegalRefundPage = lazyRoute(
+  () => import('./pages/legal/LegalRefundPage.jsx'),
+  'legal refund',
+)
+
+export const LazyContactPage = lazyRoute(
+  () => import('./pages/ContactPage.jsx'),
+  'contact',
+)

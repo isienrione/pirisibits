@@ -1,0 +1,403 @@
+/**
+ * Legal / contact long-form reading surfaces.
+ * Daylight: bone background, obsidian ink. Reuses Gold Seam motif via .cw-gold-seam.
+ */
+
+.cw-legal-page {
+  /* Landing footer token aliases when this shell hosts LandingSiteFooter */
+  --v2-obsidian: var(--obsidian);
+  --v2-raised: var(--charcoal);
+  --v2-ink: var(--charcoal);
+  --v2-bone: var(--bone);
+  --v2-muted: var(--muted);
+  --v2-max: 72rem;
+  --v2-ember: var(--ember);
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bone);
+  color: var(--obsidian);
+  font-family: var(--font-ui);
+}
+
+.cw-legal-page .cw-v2-footer {
+  margin-top: auto;
+}
+
+.cw-legal-page__main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem 3rem;
+}
+
+.cw-legal-page__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ember);
+  text-decoration: none;
+}
+
+.cw-legal-page__back:hover {
+  color: var(--ember-deep);
+}
+
+.cw-legal-doc {
+  line-height: 1.7;
+  font-size: var(--fs-body, 1.0625rem);
+  color: var(--ink-900);
+}
+
+.cw-legal-doc > *:first-child {
+  margin-top: 0;
+}
+
+.cw-legal-doc h1 {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--obsidian);
+}
+
+.cw-legal-doc h2 {
+  margin: 2.25rem 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3.5vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--obsidian);
+}
+
+.cw-legal-doc h3 {
+  margin: 1.5rem 0 0.65rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--obsidian);
+}
+
+.cw-legal-doc p {
+  margin: 0 0 1rem;
+}
+
+.cw-legal-doc strong {
+  font-weight: 600;
+  color: var(--obsidian);
+}
+
+.cw-legal-doc a {
+  color: var(--ember-deep);
+  text-underline-offset: 0.15em;
+}
+
+.cw-legal-doc ul,
+.cw-legal-doc ol {
+  margin: 0 0 1rem;
+  padding-left: 1.35rem;
+}
+
+.cw-legal-doc li {
+  margin: 0.35rem 0;
+}
+
+.cw-legal-doc li > ul,
+.cw-legal-doc li > ol {
+  margin: 0.25rem 0 0.35rem;
+}
+
+.cw-legal-doc hr {
+  border: 0;
+  height: 1px;
+  margin: 1.75rem 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--ember) 75%, transparent),
+    transparent
+  );
+  box-shadow: var(--seam-glow);
+}
+
+.cw-legal-doc blockquote {
+  margin: 1rem 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 2px solid var(--ember);
+  background: color-mix(in srgb, var(--ember) 8%, var(--bone));
+  color: var(--ink-900);
+}
+
+.cw-legal-doc blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.cw-legal-doc__table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 0 0 1.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cw-legal-doc table {
+  width: 100%;
+  min-width: 28rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.cw-legal-doc th,
+.cw-legal-doc td {
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid color-mix(in srgb, var(--obsidian) 14%, var(--bone));
+}
+
+.cw-legal-doc th {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--obsidian) 6%, var(--bone));
+  color: var(--obsidian);
+}
+
+.cw-legal-doc td {
+  background: var(--bone);
+}
+
+.cw-legal-contact__card {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--obsidian) 14%, var(--bone));
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--obsidian) 3%, var(--bone));
+}
+
+.cw-legal-contact__row {
+  margin: 0 0 1rem;
+}
+
+.cw-legal-contact__row:last-child {
+  margin-bottom: 0;
+}
+
+.cw-legal-contact__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cw-legal-contact__value {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--obsidian);
+}
+
+.cw-legal-contact__value a {
+  color: var(--ember-deep);
+}
+
+/* —— Site footer legal cluster —— */
+
+.cw-v2-footer__legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0;
+  margin: 1.25rem 0 0;
+}
+
+.cw-v2-footer__legal-nav-label {
+  width: 100%;
+  margin: 0 0 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--v2-muted, var(--muted));
+}
+
+.cw-v2-footer__legal-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  font-size: 0.88rem;
+  color: var(--v2-muted, var(--muted));
+  text-decoration: none;
+}
+
+.cw-v2-footer__legal-link:hover {
+  color: var(--v2-bone, var(--bone));
+}
+
+.cw-v2-footer__legal-sep {
+  margin: 0 0.55rem;
+  color: color-mix(in srgb, var(--v2-muted, var(--muted)) 70%, transparent);
+  user-select: none;
+}
+
+.cw-v2-footer__support {
+  margin: 0.85rem 0 0;
+  font-size: 0.85rem;
+  color: var(--v2-muted, var(--muted));
+}
+
+.cw-v2-footer__support a {
+  color: color-mix(in srgb, var(--ember) 80%, var(--v2-bone, var(--bone)));
+  text-underline-offset: 0.15em;
+}
+
+/* —— Immediate-access consent —— */
+
+.cw-consent {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin: 0;
+  text-align: left;
+}
+
+.cw-consent__input {
+  flex-shrink: 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  accent-color: var(--ember);
+  cursor: pointer;
+}
+
+.cw-consent__label {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cw-consent-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: end center;
+  padding: 0;
+  background: color-mix(in srgb, var(--obsidian) 55%, transparent);
+}
+
+.cw-consent-dialog__panel {
+  width: min(100%, 28rem);
+  max-height: min(90dvh, 36rem);
+  overflow: auto;
+  margin: 0;
+  padding: 1.5rem 1.25rem max(1.5rem, env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  background: var(--obsidian);
+  color: var(--bone);
+  box-shadow: var(--shadow-sheet);
+}
+
+@media (min-width: 40rem) {
+  .cw-consent-dialog {
+    place-items: center;
+    padding: 1.5rem;
+  }
+
+  .cw-consent-dialog__panel {
+    border-radius: var(--radius-sheet);
+    padding-bottom: 1.5rem;
+  }
+}
+
+.cw-consent-dialog__eyebrow {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+.cw-consent-dialog__title {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--bone);
+}
+
+.cw-consent-dialog__price {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--bone);
+}
+
+.cw-consent-dialog__tax {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.cw-consent-dialog__body {
+  margin: 1rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.cw-consent-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+}
+
+.cw-consent-dialog__primary,
+.cw-consent-dialog__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cw-consent-dialog__primary {
+  border: 0;
+  background: var(--ember);
+  color: var(--ink-on-fill);
+}
+
+.cw-consent-dialog__primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cw-consent-dialog__secondary {
+  border: 1px solid color-mix(in srgb, var(--bone) 22%, transparent);
+  background: transparent;
+  color: var(--muted);
+}
+
+.cw-consent--on-dark .cw-consent__label {
+  color: var(--bone);
+}

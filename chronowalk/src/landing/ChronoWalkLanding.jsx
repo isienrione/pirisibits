@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
@@ -19,10 +19,11 @@ import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
 import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
 import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
+import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { resolveLandingTierCents } from './landingCheckout.js'
-import { openCheckout } from '../lib/checkout.js'
+import { getTierById, openCheckout } from '../lib/checkout.js'
 import { rememberPendingPurchaseTier } from '../lib/pendingPurchase.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
 import { buildLandingProductSchema, LANDING_DOCUMENT } from './landingSeo.js'
@@ -46,6 +47,12 @@ import './ChronoWalkLanding.v2.css'
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
   const { cents } = useLandingPrice()
+  const [pendingTierId, setPendingTierId] = useState(null)
+  const [checkoutBusy, setCheckoutBusy] = useState(false)
+  const pendingTier = useMemo(
+    () => (pendingTierId ? getTierById(pendingTierId) : null),
+    [pendingTierId],
+  )
 
   useEffect(() => {
     ensureLandingExpHero()
@@ -78,25 +85,40 @@ export default function ChronoWalkLanding() {
     trackLandingRoutesCta(section)
   }, [])
 
-  const handleBeginTier = useCallback(
-    async (tierId) => {
-      trackLandingPricingCta(tierId)
-      rememberPendingPurchaseTier(tierId)
+  const handleBeginTier = useCallback((tierId) => {
+    trackLandingPricingCta(tierId)
+    rememberPendingPurchaseTier(tierId)
+    setPendingTierId(tierId)
+  }, [])
 
-      const tierCents = resolveLandingTierCents(tierId, cents)
-      trackLandingCheckoutOpen({ tierId, priceCents: tierCents })
+  const handleConsentCancel = useCallback(() => {
+    if (checkoutBusy) return
+    setPendingTierId(null)
+  }, [checkoutBusy])
 
-      const result = await openCheckout({ tierId, source: 'landing' })
-      if (!result.ok) {
-        console.warn(
-          '[ChronoWalk landing] Checkout unavailable — opening /purchase handoff.',
-          tierId,
-        )
-        navigate(`/purchase?tier=${encodeURIComponent(tierId)}`)
-      }
-    },
-    [cents, navigate],
-  )
+  const handleConsentConfirm = useCallback(async () => {
+    if (!pendingTierId) return
+    setCheckoutBusy(true)
+
+    const tierCents = resolveLandingTierCents(pendingTierId, cents)
+    trackLandingCheckoutOpen({ tierId: pendingTierId, priceCents: tierCents })
+
+    const result = await openCheckout({ tierId: pendingTierId, source: 'landing' })
+    if (!result.ok) {
+      console.warn(
+        '[ChronoWalk landing] Checkout unavailable — opening /purchase handoff.',
+        pendingTierId,
+      )
+      const tier = pendingTierId
+      setPendingTierId(null)
+      setCheckoutBusy(false)
+      navigate(`/purchase?tier=${encodeURIComponent(tier)}`)
+      return
+    }
+
+    setPendingTierId(null)
+    setCheckoutBusy(false)
+  }, [cents, navigate, pendingTierId])
 
   const [actPromise, actExperience, actDecision] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
@@ -163,6 +185,14 @@ export default function ChronoWalkLanding() {
         </LandingAct>
       </main>
       <LandingSiteFooter />
+      <CheckoutConsentDialog
+        open={Boolean(pendingTierId)}
+        tierLabel={pendingTier?.name ?? pendingTier?.eyebrow ?? null}
+        priceLabel={pendingTier?.price ?? null}
+        busy={checkoutBusy}
+        onConfirm={handleConsentConfirm}
+        onCancel={handleConsentCancel}
+      />
     </div>
   )
 }
