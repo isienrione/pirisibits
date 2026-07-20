@@ -3,8 +3,7 @@ import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 import '../components/legal/legal.css'
 
-const SUPPORT_EMAIL_DISPLAY = '[support@chronowalk.com]'
-const SUPPORT_EMAIL_HREF = 'support@chronowalk.com'
+const SUPPORT_EMAIL = 'support@chronowalk.com'
 
 const LEGAL_LINKS = [
   { label: 'Terms of Service', to: '/legal/terms' },
@@ -52,7 +51,7 @@ export default function LandingSiteFooter({
           ) : null}
           <p className="cw-v2-footer__support">
             Support:{' '}
-            <a href={`mailto:${SUPPORT_EMAIL_HREF}`}>{SUPPORT_EMAIL_DISPLAY}</a>
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </p>
         </div>
 

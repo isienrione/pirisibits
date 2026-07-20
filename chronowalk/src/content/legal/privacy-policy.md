@@ -1,7 +1,7 @@
 # Privacy Policy
 
-**Effective date:** [DATE]
-**Last updated:** [DATE]
+**Effective date:** 20 July 2026
+**Last updated:** 20 July 2026
 
 This Privacy Policy explains how ChronoWalk collects, uses, shares, and protects your personal data when you use our website and Progressive Web App (the "**Service**"), and what rights you have.
 
@@ -13,8 +13,8 @@ Because we offer experiences to visitors in Europe and elsewhere, this policy is
 
 The **data controller** for personal data processed through ChronoWalk is:
 
-**[LEGAL NAME]**, based in Chile ("**ChronoWalk**", "**we**", "**us**").
-Contact for privacy matters: **[support@chronowalk.com]**
+**Chronowalk**, based in Chile ("**ChronoWalk**", "**we**", "**us**").
+Contact for privacy matters: **support@chronowalk.com**
 
 **Payments are separate.** Our reseller **Paddle.com acts as Merchant of Record** and is an **independent controller** of the payment and billing data you provide at checkout. Paddle's handling of that data is governed by **Paddle's Privacy Notice** (paddle.com). We never see or store your full card details.
 
@@ -58,9 +58,7 @@ Where we rely on **legitimate interests**, we balance our interests against your
 The Service uses cookies and similar technologies:
 
 - **Strictly necessary** cookies/storage make the Service work (for example, delivering your purchased content). These do not require consent.
-- **Analytics** technologies help us understand usage. We may use tools such as **[Google Analytics]**, **[PostHog]**, and **[Microsoft Clarity]**.
-
-> For your review: only list the analytics tools you **actually** use — an inaccurate list is itself a GDPR problem. Delete any you're not running.
+- **Analytics** technologies help us understand usage. We use **PostHog**.
 
 Where required by law (including the EU/UK), we will ask for your **consent** before setting non-essential analytics cookies, and you can withdraw consent at any time via your browser settings or our cookie controls. You can also disable cookies in your browser, though some features may not work properly.
 
@@ -82,7 +80,7 @@ Location is central to how ChronoWalk works, so we want to be clear:
 We share personal data only as needed:
 
 - **Paddle** — as Merchant of Record, for payment processing, tax, and fraud prevention (Paddle is an independent controller).
-- **Service providers (processors)** acting on our instructions — for example, **[hosting/infrastructure]**, **[email/support provider]**, and the **analytics providers** listed above. They may only use the data to provide services to us.
+- **Service providers (processors)** acting on our instructions — for example, **Cloudflare Pages** and **Supabase** (hosting/infrastructure), **Resend** (transactional email), and the **analytics providers** listed above. They may only use the data to provide services to us.
 - **Authorities or third parties** where required by law, to enforce our Terms, or to protect rights, safety, and security.
 - **A successor** in the event of a merger, acquisition, or asset sale, subject to this policy.
 
@@ -119,7 +117,7 @@ Depending on where you live, you may have the right to:
 - **data portability** — receive your data in a portable format;
 - **withdraw consent** at any time, without affecting processing already carried out.
 
-To exercise any right, contact **[support@chronowalk.com]**. We will respond within the time limits required by law (generally one month under the GDPR). You also have the right to **lodge a complaint with your local data-protection authority** (for EU users, the supervisory authority in your country; for the UK, the ICO). We'd appreciate the chance to resolve concerns first.
+To exercise any right, contact **support@chronowalk.com**. We will respond within the time limits required by law (generally one month under the GDPR). You also have the right to **lodge a complaint with your local data-protection authority** (for EU users, the supervisory authority in your country; for the UK, the ICO). We'd appreciate the chance to resolve concerns first.
 
 ---
 
@@ -145,4 +143,4 @@ We may update this Privacy Policy from time to time. We will update the "Last up
 
 For any privacy question or to exercise your rights:
 
-**[support@chronowalk.com]**
+**support@chronowalk.com**

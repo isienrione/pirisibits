@@ -2,13 +2,12 @@ import { useEffect } from 'react'
 import GoldSeam from '../../landing/GoldSeam.jsx'
 import LegalPageShell from '../../components/legal/LegalPageShell.jsx'
 
-const SUPPORT_EMAIL_PLACEHOLDER = '[support@chronowalk.com]'
-const RESPONSE_TIME_PLACEHOLDER = '[within X business days]'
-const LEGAL_NAME_PLACEHOLDER = '[LEGAL NAME]'
+const SUPPORT_EMAIL = 'support@chronowalk.com'
+const RESPONSE_TIME = 'within 3 business days'
+const LEGAL_NAME = 'Chronowalk'
 
 /**
  * Buyer-support visibility page (Paddle requirement).
- * Placeholders intentionally left for the seller to fill.
  */
 export default function ContactPage() {
   useEffect(() => {
@@ -18,8 +17,6 @@ export default function ContactPage() {
       document.title = previous
     }
   }, [])
-
-  const mailto = SUPPORT_EMAIL_PLACEHOLDER.replace(/^\[/, '').replace(/\]$/, '')
 
   return (
     <LegalPageShell>
@@ -38,19 +35,19 @@ export default function ContactPage() {
           <div className="cw-legal-contact__row">
             <span className="cw-legal-contact__label">Support email</span>
             <p className="cw-legal-contact__value">
-              <a href={`mailto:${mailto}`}>{SUPPORT_EMAIL_PLACEHOLDER}</a>
+              <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
             </p>
           </div>
 
           <div className="cw-legal-contact__row">
             <span className="cw-legal-contact__label">Expected response time</span>
-            <p className="cw-legal-contact__value">{RESPONSE_TIME_PLACEHOLDER}</p>
+            <p className="cw-legal-contact__value">{RESPONSE_TIME}</p>
           </div>
 
           <div className="cw-legal-contact__row">
             <span className="cw-legal-contact__label">Seller legal name</span>
             <p className="cw-legal-contact__value">
-              {LEGAL_NAME_PLACEHOLDER}
+              {LEGAL_NAME}
               <br />
               Chile
             </p>

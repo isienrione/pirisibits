@@ -1,7 +1,7 @@
 # Refund Policy
 
-**Effective date:** [DATE]
-**Last updated:** [DATE]
+**Effective date:** 20 July 2026
+**Last updated:** 20 July 2026
 
 ChronoWalk sells digital, self-guided historical walking experiences. This policy explains when refunds are available and how to request one. It sits alongside — and does not override — your mandatory statutory consumer rights or **Paddle's Refund Policy** (see Section 6).
 
@@ -18,8 +18,6 @@ Each ChronoWalk experience is **digital content** delivered immediately after pu
 If you are a consumer in the EU, EEA, or UK, you normally have a 14-day "cooling-off" right to withdraw from a purchase of digital content.
 
 For digital content that is supplied **immediately**, this right can be lost once supply has begun — but only if, at checkout, you **expressly consent** to immediate access **and acknowledge that you therefore lose your right of withdrawal**. By starting a ChronoWalk experience after purchase, you confirm that consent and acknowledgement.
-
-> Important for your checkout, not just this page: to actually rely on the above, your purchase flow (via Paddle) must capture that explicit consent + acknowledgement **before** access begins. If it doesn't, the withdrawal right can still apply. Confirm this checkbox/notice is present in your Paddle checkout.
 
 This does not affect your other statutory rights if the content is faulty or not as described.
 
@@ -56,7 +54,7 @@ We assess requests reasonably and in good faith, and always subject to your lega
 
 You can request a refund through **Paddle**, our Merchant of Record, or by contacting us and we'll help:
 
-**[support@chronowalk.com]**
+**support@chronowalk.com**
 
 To help us resolve it quickly, please include:
 
@@ -82,4 +80,4 @@ You can find Paddle's Buyer Terms and Refund Policy at paddle.com, and manage or
 
 Questions about a purchase or refund:
 
-**[support@chronowalk.com]**
+**support@chronowalk.com**

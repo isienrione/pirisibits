@@ -1,7 +1,7 @@
 # Terms of Service
 
-**Effective date:** [DATE]
-**Last updated:** [DATE]
+**Effective date:** 20 July 2026
+**Last updated:** 20 July 2026
 
 These Terms of Service ("**Terms**") govern your access to and use of ChronoWalk, including our website and Progressive Web App (the "**Service**"). Please read them carefully. By accessing or using the Service, or by completing a purchase, you agree to be bound by these Terms. If you do not agree, do not use the Service.
 
@@ -9,12 +9,10 @@ These Terms of Service ("**Terms**") govern your access to and use of ChronoWalk
 
 ## 1. Who we are
 
-ChronoWalk is operated by **[LEGAL NAME — e.g. your full legal name as sole proprietor, or registered entity name]** ("**ChronoWalk**", "**we**", "**our**", or "**us**"), based in Chile.
+ChronoWalk is operated by **Chronowalk** ("**ChronoWalk**", "**we**", "**our**", or "**us**"), based in Chile.
 
-- **Contact / support:** [support@chronowalk.com]
-- **Website:** [https://chronowalk.com]
-
-> Note for your review: Paddle requires the **legal name of the sole proprietor or company** to appear in the Terms — not just the brand "ChronoWalk." If you trade as a natural person (persona natural con RUT), put your full legal name here. If you have an SpA/EIRL, use the registered name and, ideally, the RUT.
+- **Contact / support:** support@chronowalk.com
+- **Website:** https://chronowalk.com
 
 ---
 
@@ -143,4 +141,4 @@ However, **if you are a consumer, you keep the benefit of any mandatory consumer
 
 Questions about these Terms or the Service:
 
-**[support@chronowalk.com]**
+**support@chronowalk.com**
