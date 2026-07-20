@@ -2,6 +2,8 @@ import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
 
 /**
  * Turn-by-turn steps for the walking companion (redesign dark theme).
+ * `variant="timeline"` — compact "Next turns" list under the map (mock layout).
+ * `variant="full"` — detailed steps tab.
  */
 export default function WalkingCompanionStepsPanel({
   steps = [],
@@ -10,6 +12,8 @@ export default function WalkingCompanionStepsPanel({
   error = null,
   destinationTitle = 'Destination',
   onRetry,
+  variant = 'full',
+  maxVisible = null,
 }) {
   if (loading) {
     return (
@@ -40,6 +44,44 @@ export default function WalkingCompanionStepsPanel({
     return (
       <div className="cw-walking-directions" data-testid="walking-directions-steps">
         <p className="cw-walking-directions__status">Directions will appear once GPS is ready.</p>
+      </div>
+    )
+  }
+
+  if (variant === 'timeline') {
+    const start = Math.max(0, currentStepIndex)
+    const visible = typeof maxVisible === 'number' ? steps.slice(start, start + maxVisible) : steps.slice(start)
+
+    return (
+      <div
+        className="cw-walking-directions cw-walking-directions--timeline"
+        data-testid="walking-directions-steps"
+      >
+        <div className="cw-walking-directions__timeline-head">
+          <p className="cw-walking-directions__eyebrow">Next turns</p>
+        </div>
+        <ol className="cw-walking-directions__timeline" aria-label={`Next turns to ${destinationTitle}`}>
+          {visible.map((step, offset) => {
+            const index = start + offset
+            const isCurrent = index === currentStepIndex
+            return (
+              <li
+                key={`${step.instruction}-${index}`}
+                className={`cw-walking-directions__timeline-item${isCurrent ? ' cw-walking-directions__timeline-item--current' : ''}`}
+              >
+                <span className="cw-walking-directions__timeline-dot" aria-hidden />
+                <div className="cw-walking-directions__timeline-body">
+                  <p className="cw-walking-directions__timeline-text">{step.instruction}</p>
+                  {step.distanceM > 0 ? (
+                    <p className="cw-walking-directions__timeline-distance">
+                      {formatStepDistance(step.distanceM)}
+                    </p>
+                  ) : null}
+                </div>
+              </li>
+            )
+          })}
+        </ol>
       </div>
     )
   }

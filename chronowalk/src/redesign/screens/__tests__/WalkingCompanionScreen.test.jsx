@@ -25,7 +25,26 @@ describe('WalkingCompanionScreen', () => {
     return <div data-testid="walking-map" data-directions={Boolean(props.directionsGeometry)}>Map</div>
   }
 
-  it('toggles between map and step-by-step directions', () => {
+  it('shows map with next turns and wires directions onto the map', () => {
+    render(
+      <WalkingCompanionScreen
+        title="Arch of Titus"
+        distanceM={335}
+        userPosition={{ lat: 41.889, lng: 12.491 }}
+        destination={{ lat: 41.8902, lng: 12.4922 }}
+        map={<MockMap />}
+        onBeginChapter={vi.fn()}
+      />
+    )
+
+    expect(screen.getByTestId('walking-map')).toBeInTheDocument()
+    expect(screen.getByTestId('walking-map')).toHaveAttribute('data-directions', 'true')
+    expect(screen.getByTestId('walking-directions-steps')).toBeInTheDocument()
+    expect(screen.getByText('Next turns')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /open the arch of titus story/i })).toBeInTheDocument()
+  })
+
+  it('toggles to the full steps list', () => {
     render(
       <WalkingCompanionScreen
         title="Colosseum interior"
@@ -36,31 +55,29 @@ describe('WalkingCompanionScreen', () => {
       />
     )
 
-    expect(screen.getByTestId('walking-map')).toBeInTheDocument()
-    expect(screen.queryByTestId('walking-directions-steps')).not.toBeInTheDocument()
-
     fireEvent.click(screen.getByRole('tab', { name: 'Steps' }))
 
     expect(screen.queryByTestId('walking-map')).not.toBeInTheDocument()
-    expect(screen.getByTestId('walking-directions-steps')).toBeInTheDocument()
     expect(screen.getByText('Step 1 of 2')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('tab', { name: 'Map' }))
 
     expect(screen.getByTestId('walking-map')).toBeInTheDocument()
-    expect(screen.queryByTestId('walking-directions-steps')).not.toBeInTheDocument()
+    expect(screen.getByText('Next turns')).toBeInTheDocument()
   })
 
-  it('hides the route toggle after arrival', () => {
+  it('hides the route toggle after arrival but keeps the story CTA', () => {
     render(
       <WalkingCompanionScreen
         title="Colosseum interior"
         arrived
         map={<div data-testid="walking-map">Map</div>}
+        onBeginChapter={vi.fn()}
       />
     )
 
     expect(screen.queryByRole('tab', { name: 'Steps' })).not.toBeInTheDocument()
     expect(screen.getByText('You have arrived')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /open the colosseum interior story/i })).toBeInTheDocument()
   })
 })

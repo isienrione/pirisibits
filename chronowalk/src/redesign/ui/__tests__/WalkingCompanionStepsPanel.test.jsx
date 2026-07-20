@@ -35,4 +35,20 @@ describe('WalkingCompanionStepsPanel', () => {
     expect(screen.getAllByText('Turn right toward the Colosseum').length).toBeGreaterThan(0)
     expect(screen.getByRole('list', { name: /steps to colosseum interior/i })).toBeInTheDocument()
   })
+
+  it('renders a compact Next turns timeline under the map', () => {
+    render(
+      <WalkingCompanionStepsPanel
+        steps={steps}
+        currentStepIndex={0}
+        destinationTitle="Arch of Titus"
+        variant="timeline"
+        maxVisible={4}
+      />
+    )
+
+    expect(screen.getByText('Next turns')).toBeInTheDocument()
+    expect(screen.getByRole('list', { name: /next turns to arch of titus/i })).toBeInTheDocument()
+    expect(screen.getByText('Head north on Via dei Fori Imperiali')).toBeInTheDocument()
+  })
 })

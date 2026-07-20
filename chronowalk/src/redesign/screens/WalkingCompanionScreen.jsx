@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -56,7 +56,7 @@ export default function WalkingCompanionScreen({
   continueLabel = 'Continue walking →',
   onPause,
   extraBottomInset = 0,
-  beginChapterLabel = 'Begin Chapter',
+  beginChapterLabel = null,
   testId = 'walking-companion-screen',
   walkingUiRev,
 }) {
@@ -67,6 +67,7 @@ export default function WalkingCompanionScreen({
   const approachCueRef = useRef(null)
 
   const showArrivedUI = arrived || userConfirmedArrival
+  const storyCtaLabel = beginChapterLabel || `Open the ${title} story →`
 
   const { directions, loading: directionsLoading, error: directionsError, retry: retryDirections } =
     useWalkingDirections({
@@ -87,6 +88,15 @@ export default function WalkingCompanionScreen({
       }),
     [userPosition, directions?.steps, directions?.geometry, directions?.distanceM],
   )
+
+  const mapWithDirections = useMemo(() => {
+    if (!isValidElement(map)) return map
+    const geometry = directions?.geometry ?? null
+    return cloneElement(map, {
+      directionsGeometry: geometry,
+      directionsModeActive: Boolean(geometry?.length),
+    })
+  }, [map, directions?.geometry])
 
   useEffect(() => {
     if (arrived) setUserConfirmedArrival(true)
@@ -174,6 +184,11 @@ export default function WalkingCompanionScreen({
   const beginChapterTestId =
     mode === 'transit' ? 'transit-arrive-destination' : 'walking-begin-chapter'
 
+  const openStory = () => {
+    onPrimeAudio?.()
+    onBeginChapter?.()
+  }
+
   return (
     <div
       className={`cw-walking-companion cw-walking-companion--${phase}`}
@@ -197,7 +212,6 @@ export default function WalkingCompanionScreen({
           </div>
         ) : (
           <>
-            <p className="cw-walking-companion__act">ACT {actNumeral}</p>
             <p className="cw-walking-companion__eyebrow">Walking to</p>
 
             <div className="cw-walking-companion__title-row">
@@ -235,7 +249,7 @@ export default function WalkingCompanionScreen({
         ) : null}
       </header>
 
-      <div className="cw-walking-companion__map-wrap">
+      <div className="cw-walking-companion__body">
         {!showArrivedUI ? (
           <div className="cw-walking-companion__view-toggle" role="tablist" aria-label="Route view">
             <button
@@ -259,17 +273,19 @@ export default function WalkingCompanionScreen({
           </div>
         ) : null}
 
-        <div className="cw-walking-companion__hero-stack">
-          {showArrivedUI ? (
-            <div
-              className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived cw-walking-companion__hero-layer--visible"
-            >
-              {photo ? (
-                <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
-              ) : null}
-              <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
+        {showArrivedUI ? (
+          <div className="cw-walking-companion__map-wrap cw-walking-companion__map-wrap--arrived">
+            <div className="cw-walking-companion__hero-stack">
+              <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--arrived cw-walking-companion__hero-layer--visible">
+                {photo ? (
+                  <img className="cw-walking-companion__arrived-photo" src={photo} alt="" />
+                ) : null}
+                <div className="cw-walking-companion__arrived-photo-scrim" aria-hidden />
+              </div>
             </div>
-          ) : routeView === 'steps' ? (
+          </div>
+        ) : routeView === 'steps' ? (
+          <div className="cw-walking-companion__steps-pane">
             <WalkingCompanionStepsPanel
               steps={directions?.steps ?? []}
               currentStepIndex={walkingStepProgress.currentStepIndex}
@@ -277,13 +293,32 @@ export default function WalkingCompanionScreen({
               error={directionsError}
               destinationTitle={title}
               onRetry={retryDirections}
+              variant="full"
             />
-          ) : (
-            <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
-              {map}
+          </div>
+        ) : (
+          <>
+            <div className="cw-walking-companion__map-wrap">
+              <div className="cw-walking-companion__hero-stack">
+                <div className="cw-walking-companion__hero-layer cw-walking-companion__hero-layer--visible">
+                  {mapWithDirections}
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+            <div className="cw-walking-companion__next-turns">
+              <WalkingCompanionStepsPanel
+                steps={directions?.steps ?? []}
+                currentStepIndex={walkingStepProgress.currentStepIndex}
+                loading={directionsLoading}
+                error={directionsError}
+                destinationTitle={title}
+                onRetry={retryDirections}
+                variant="timeline"
+                maxVisible={4}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       <TransitNarrationSheet
@@ -321,23 +356,7 @@ export default function WalkingCompanionScreen({
           className="cw-walking-companion__mini-audio"
         />
 
-        {showArrivedUI ? (
-          <div className="cw-walking-companion__dock cw-walking-companion__dock--arrived">
-            {onBeginChapter ? (
-              <button
-                type="button"
-                data-testid={beginChapterTestId}
-                className="cw-walking-companion__begin-chapter cw-wc-pressable"
-                onClick={() => {
-                  onPrimeAudio?.()
-                  onBeginChapter?.()
-                }}
-              >
-                {beginChapterLabel}
-              </button>
-            ) : null}
-          </div>
-        ) : (
+        {!showArrivedUI ? (
           <div className="cw-walking-companion__dock">
             {onPause ? (
               <button type="button" className="cw-walking-companion__dock-btn cw-wc-pressable" onClick={onPause}>
@@ -359,13 +378,24 @@ export default function WalkingCompanionScreen({
             <button
               type="button"
               data-testid={mode === 'transit' ? 'transit-im-here' : 'manual-arrive'}
-              className="cw-walking-companion__dock-btn cw-walking-companion__dock-btn--primary cw-wc-pressable"
+              className="cw-walking-companion__dock-btn cw-walking-companion__dock-btn--here cw-wc-pressable"
               onClick={() => setUserConfirmedArrival(true)}
             >
               I'm here
             </button>
           </div>
-        )}
+        ) : null}
+
+        {onBeginChapter ? (
+          <button
+            type="button"
+            data-testid={beginChapterTestId}
+            className="cw-walking-companion__begin-chapter cw-wc-pressable"
+            onClick={openStory}
+          >
+            {storyCtaLabel}
+          </button>
+        ) : null}
       </footer>
     </div>
   )
