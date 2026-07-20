@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { isDebugGeo } from '../../../config/env'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, Button, EditorialTitle, GlassPanel } from '../../ui'
+import { Button, EditorialTitle } from '../../ui'
 
 function requestLocationAccess() {
   if (isDebugGeo() || !navigator.geolocation) {
@@ -29,7 +29,7 @@ export function PermissionsView({ onContinue }) {
   }
 
   return (
-    <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8" grain>
+    <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
       <EditorialTitle
         eyebrow="Before you walk"
         size="md"
@@ -38,18 +38,18 @@ export function PermissionsView({ onContinue }) {
         Enable location for GPS guidance
       </EditorialTitle>
 
-      <ul className="mt-6 space-y-3 text-sm text-soft-slate">
+      <ul className="mt-6 space-y-3 text-sm text-muted">
         <li>Arrival stories unlock when you reach each stop</li>
         <li>Walking directions stay in sync with your position</li>
         <li>You can change this anytime in Settings</li>
       </ul>
 
       <div className="mt-8 flex flex-col gap-3">
-        <BronzeButton size="lg" fullWidth disabled={busy} onClick={handleEnable}>
+        <Button size="lg" fullWidth disabled={busy} onClick={handleEnable}>
           {busy ? 'Requesting access…' : 'Enable location & continue'}
-        </BronzeButton>
+        </Button>
         <Button
-          variant="text"
+          variant="ghost"
           fullWidth
           onClick={() => {
             triggerHaptic(HAPTIC_KIND.SOFT_TAP)
@@ -59,7 +59,7 @@ export function PermissionsView({ onContinue }) {
           Continue without enabling
         </Button>
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 

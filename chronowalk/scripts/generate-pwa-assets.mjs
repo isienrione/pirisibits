@@ -5,50 +5,68 @@ import sharp from 'sharp'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const outputDir = join(root, 'public', 'pwa')
+const publicDir = join(root, 'public')
+const emblemPath = join(publicDir, 'brand', 'emblem-dark.png')
 
-const iconSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
-  <rect width="512" height="512" rx="112" fill="#FFFDF8"/>
-  <circle cx="256" cy="256" r="188" fill="#F4E7D0"/>
-  <circle cx="256" cy="256" r="148" fill="#C8643C" opacity="0.14"/>
-  <path
-    d="M156 318c0-72 44-118 100-118 38 0 68 18 86 48l-36 24c-12-18-28-28-50-28-42 0-68 34-68 74s26 74 68 74c24 0 42-10 56-30l36 22c-22 36-56 56-98 56-58 0-104-44-104-122Z"
-    fill="#C8643C"
-  />
-  <path
-    d="M286 200h44v168h-44V200Z"
-    fill="#D9A441"
-  />
-  <circle cx="360" cy="344" r="18" fill="#7A8B5A"/>
-</svg>`
+/** App shell / PWA background — matches theme-color in index.html */
+const OBSIDIAN = { r: 22, g: 19, b: 15, alpha: 1 }
 
-const maskableIconSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
-  <rect width="512" height="512" fill="#FFFDF8"/>
-  <circle cx="256" cy="256" r="156" fill="#F4E7D0"/>
-  <path
-    d="M176 318c0-58 36-94 82-94 32 0 56 14 70 38l-30 20c-10-14-24-22-42-22-34 0-56 28-56 62s22 62 56 62c20 0 34-8 46-24l30 18c-18 30-46 46-80 46-48 0-86-36-86-100Z"
-    fill="#C8643C"
-  />
-  <path d="M286 214h36v136h-36V214Z" fill="#D9A441"/>
-  <circle cx="344" cy="334" r="14" fill="#7A8B5A"/>
-</svg>`
+async function emblemOnCanvas(size, emblemScale = 0.86) {
+  const emblemSize = Math.round(size * emblemScale)
+  const offset = Math.round((size - emblemSize) / 2)
 
-async function writePng(buffer, filename, width, height) {
-  await sharp(buffer)
-    .resize(width, height)
-    .png({ compressionLevel: 9 })
-    .toFile(join(outputDir, filename))
+  const emblem = await sharp(emblemPath)
+    .resize(emblemSize, emblemSize, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toBuffer()
+
+  return sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: OBSIDIAN,
+    },
+  }).composite([{ input: emblem, left: offset, top: offset }])
+}
+
+async function writePng(pipeline, filepath) {
+  await pipeline.png({ compressionLevel: 9 }).toFile(filepath)
 }
 
 async function main() {
   await mkdir(outputDir, { recursive: true })
 
-  await writePng(Buffer.from(iconSvg), 'icon-192.png', 192, 192)
-  await writePng(Buffer.from(iconSvg), 'icon-512.png', 512, 512)
-  await writePng(Buffer.from(maskableIconSvg), 'icon-maskable-512.png', 512, 512)
+  const sizes = [
+    { file: join(outputDir, 'icon-192.png'), size: 192, scale: 0.86 },
+    { file: join(outputDir, 'icon-512.png'), size: 512, scale: 0.86 },
+    { file: join(outputDir, 'apple-touch-icon.png'), size: 180, scale: 0.86 },
+    { file: join(publicDir, 'favicon-32.png'), size: 32, scale: 0.9 },
+    { file: join(publicDir, 'favicon-16.png'), size: 16, scale: 0.9 },
+  ]
 
-  const heroPath = join(root, 'public', 'tour-hero.jpg')
+  for (const { file, size, scale } of sizes) {
+    await writePng(await emblemOnCanvas(size, scale), file)
+  }
+
+  // Maskable safe zone — emblem ~65% so Android adaptive icons do not crop the seam
+  await writePng(await emblemOnCanvas(512, 0.65), join(outputDir, 'icon-maskable-512.png'))
+
+  const favicon32 = await (await emblemOnCanvas(32, 0.9)).png().toBuffer()
+  const faviconDataUri = `data:image/png;base64,${favicon32.toString('base64')}`
+  await writeFile(
+    join(publicDir, 'favicon.svg'),
+    `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="6" fill="#16130F"/>
+  <image href="${faviconDataUri}" width="32" height="32" preserveAspectRatio="xMidYMid meet"/>
+</svg>
+`,
+  )
+
+  const heroPath = join(publicDir, 'tour-hero.jpg')
 
   await sharp(heroPath)
     .resize(540, 720, { fit: 'cover', position: 'centre' })
@@ -60,7 +78,7 @@ async function main() {
     .jpeg({ quality: 82, mozjpeg: true })
     .toFile(join(outputDir, 'screenshot-wide.jpg'))
 
-  console.log('Generated PWA icons and screenshots in public/pwa/')
+  console.log('Generated official brand PWA icons from public/brand/emblem-dark.png')
 }
 
 main().catch((error) => {

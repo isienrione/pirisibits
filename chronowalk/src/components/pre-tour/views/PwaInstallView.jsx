@@ -1,6 +1,6 @@
 import { usePwaInstall } from '../../../hooks/usePwaInstall'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { EditorialTitle, GlassPanel } from '../../ui'
+import { EditorialTitle } from '../../ui'
 import PwaInstallPanel from '../../PwaInstallPanel'
 
 export function PwaInstallView() {
@@ -8,7 +8,7 @@ export function PwaInstallView() {
 
   return (
     <div className="space-y-6">
-      <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8" grain>
+      <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
         <EditorialTitle
           eyebrow="Install"
           size="md"
@@ -16,7 +16,7 @@ export function PwaInstallView() {
         >
           Walk with ChronoWalk offline-ready
         </EditorialTitle>
-      </GlassPanel>
+      </div>
 
       <PwaInstallPanel
         installed={pwaInstall.installed}

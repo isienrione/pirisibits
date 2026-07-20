@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import tourHeroFallback from '../assets/tour-hero.svg'
 import { getWaypointGeo } from '../data/waypointGeo'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
-import { BronzeButton, Button, GlassPanel, EditorialTitle, cn } from './ui'
+import { Button, EditorialTitle, cn } from './ui'
 import OfflineDownloadPanel from './offline/OfflineDownloadPanel'
 
 const APP_NAME = 'ChronoWalk'
@@ -12,8 +12,8 @@ const VALUE_PROPOSITION =
   'Walk through Rome with place-aware audio, guided stories, and visual reconstructions of the ancient city.'
 
 const TOUR_STATS = [
-  { id: 'gps', label: 'GPS guided', accent: 'text-gold' },
-  { id: 'audio', label: 'Audio stories', accent: 'text-bronze' },
+  { id: 'gps', label: 'GPS guided', accent: 'text-ember' },
+  { id: 'audio', label: 'Audio stories', accent: 'text-ember' },
   { id: 'reveals', label: 'Historical reveals', accent: 'text-sky-blue' },
 ]
 
@@ -21,8 +21,8 @@ function StatPill({ label, accent }) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full border border-parchment/80 bg-ivory/80 px-3 py-1.5',
-        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-deep-slate shadow-sm backdrop-blur-sm'
+        'inline-flex items-center rounded-full border border-ink800 bg-bone px-3 py-1.5',
+        'text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-ink900 shadow-card'
       )}
     >
       <span className={cn('mr-1.5 h-1.5 w-1.5 rounded-full bg-current', accent)} aria-hidden="true" />
@@ -37,12 +37,12 @@ function PreviewStopsList({ stops }) {
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-ink800/70 bg-ink900/80 px-3 py-2.5"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-parchment text-xs font-bold text-deep-slate">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink800 text-xs font-bold text-ink900">
             {index + 1}
           </span>
-          <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
+          <span className="text-sm font-medium text-ink900">{stop.title}</span>
         </li>
       ))}
     </ol>
@@ -73,29 +73,29 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
     const title = getWaypointGeo(singleWaypointId)?.title ?? singleWaypointId
 
     return (
-      <div className="relative min-h-screen bg-gradient-to-b from-ivory via-parchment/50 to-limestone/30">
+      <div className="relative min-h-screen bg-bone">
         <div className="mx-auto flex min-h-screen max-w-lg flex-col justify-end px-4 pb-safe pt-safe sm:px-6">
-          <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8">
-            <p className="text-eyebrow uppercase text-bronze">{APP_NAME}</p>
-            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-deep-slate">
+          <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
+            <p className="text-eyebrow uppercase text-ember">{APP_NAME}</p>
+            <h1 className="mt-2 font-display text-3xl font-semibold leading-tight text-ink900">
               Debug: {title}
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-soft-slate">
+            <p className="mt-3 text-sm leading-relaxed text-muted">
               Single-stop test mode. Add{' '}
-              <span className="font-medium text-deep-slate">?debugGeo=true</span> to fake GPS at this
+              <span className="font-medium text-ink900">?debugGeo=true</span> to fake GPS at this
               landmark.
             </p>
-            <BronzeButton size="lg" fullWidth className="mt-6" onClick={onStartTour}>
+            <Button size="lg" fullWidth className="mt-6" onClick={onStartTour}>
               Start Tour
-            </BronzeButton>
-          </GlassPanel>
+            </Button>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-ivory paper-texture">
+    <div className="relative min-h-screen overflow-x-hidden bg-bone">
       <div className="absolute inset-x-0 top-0 h-[min(72vh,42rem)] sm:h-[min(76vh,44rem)]">
         <img
           src={heroSrc}
@@ -105,11 +105,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           onError={handleHeroError}
         />
         <div
-          className="absolute inset-0 bg-gradient-to-b from-warm-white/10 via-warm-white/35 to-warm-white"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--bone)_72%,transparent)]"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-deep-slate/50 via-deep-slate/5 to-transparent"
+          className="absolute inset-0 bg-[color-mix(in_srgb,var(--ink)_45%,transparent)]"
           aria-hidden="true"
         />
       </div>
@@ -117,7 +117,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
       <div className="relative mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 pb-safe pt-safe sm:px-6 lg:max-w-3xl">
         <div className="h-[min(46vh,20rem)] shrink-0 sm:h-[min(50vh,24rem)]" aria-hidden="true" />
 
-        <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8 lg:p-10" grain>
+        <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8 lg:p-10">
           <EditorialTitle eyebrow={APP_NAME} size="lg" subtitle={VALUE_PROPOSITION}>
             {tour.title}
           </EditorialTitle>
@@ -128,18 +128,18 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
             ))}
           </div>
 
-          <p className="mt-4 text-sm text-soft-slate">
-            <span className="font-semibold text-deep-slate">{stops.length} stops</span>
-            <span className="text-limestone"> · </span>
-            <span className="text-soft-slate">{tour.subtitle}</span>
+          <p className="mt-4 text-sm text-muted">
+            <span className="font-semibold text-ink900">{stops.length} stops</span>
+            <span className="text-muted"> · </span>
+            <span className="text-muted">{tour.subtitle}</span>
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <BronzeButton size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
+            <Button size="lg" fullWidth className="sm:flex-1" onClick={onStartTour}>
               Start Tour
-            </BronzeButton>
+            </Button>
             <Button
-              variant="secondary"
+              variant="quiet"
               size="lg"
               fullWidth
               className="sm:flex-1"
@@ -156,8 +156,8 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </div>
 
           {previewOpen ? (
-            <div className="mt-2 border-t border-parchment/70 pt-4">
-              <p className="text-eyebrow uppercase text-bronze">Your route</p>
+            <div className="mt-2 border-t border-ink800/70 pt-4">
+              <p className="text-eyebrow uppercase text-ember">Your route</p>
               <PreviewStopsList stops={stops} />
             </div>
           ) : null}
@@ -166,11 +166,11 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
             <OfflineDownloadPanel tour={tour} compact />
           </div>
 
-          <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-soft-slate/90 sm:text-xs">
+          <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-muted/90 sm:text-xs">
             Your tour begins at the Colosseum — walk there to unlock your first story. Location is
             used only to guide you between stops.
           </p>
-        </GlassPanel>
+        </div>
 
         <div className="h-6 shrink-0 sm:h-8" aria-hidden="true" />
       </div>

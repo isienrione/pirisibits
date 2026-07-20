@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { getWaypointGeo } from '../../../data/waypointGeo'
 import { formatUsd, getTourProduct } from '../../../data/tourProducts'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, Button, EditorialTitle, GlassPanel } from '../../ui'
+import { Button, EditorialTitle } from '../../ui'
 import { getProductStopCount, isProductUnlocked } from '../catalogUtils'
 
 function ProductStopPreview({ stopIds }) {
@@ -20,12 +20,12 @@ function ProductStopPreview({ stopIds }) {
       {stops.map((stop, index) => (
         <li
           key={stop.id}
-          className="flex items-center gap-3 rounded-2xl border border-parchment/70 bg-ivory/80 px-3 py-2.5"
+          className="flex items-center gap-3 rounded-2xl border border-ink800/70 bg-ink900/80 px-3 py-2.5"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-parchment text-xs font-bold text-deep-slate">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink800 text-xs font-bold text-ink900">
             {index + 1}
           </span>
-          <span className="text-sm font-medium text-deep-slate">{stop.title}</span>
+          <span className="text-sm font-medium text-ink900">{stop.title}</span>
         </li>
       ))}
     </ol>
@@ -43,7 +43,7 @@ export function TourDetailView({
   const product = getTourProduct(productId)
   if (!product) {
     return (
-      <p className="text-sm text-soft-slate">This tour is no longer available.</p>
+      <p className="text-sm text-muted">This tour is no longer available.</p>
     )
   }
 
@@ -60,9 +60,9 @@ export function TourDetailView({
   }
 
   return (
-    <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8" grain>
+    <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
       {product.badge ? (
-        <span className="inline-flex rounded-full bg-gold/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold">
+        <span className="inline-flex rounded-full bg-ember/15 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-ember">
           {product.badge}
         </span>
       ) : null}
@@ -76,18 +76,18 @@ export function TourDetailView({
         {product.title}
       </EditorialTitle>
 
-      <p className="mt-4 text-sm text-soft-slate">
-        <span className="font-semibold text-deep-slate">{stopCount} stops</span>
+      <p className="mt-4 text-sm text-muted">
+        <span className="font-semibold text-ink900">{stopCount} stops</span>
         {product.firstStopTitle ? (
           <>
-            <span className="text-limestone"> · </span>
+            <span className="text-muted"> · </span>
             <span>Starts at {product.firstStopTitle}</span>
           </>
         ) : null}
       </p>
 
-      <section className="mt-6 border-t border-parchment/80 pt-6" aria-label="Tour stops">
-        <p className="text-eyebrow uppercase text-bronze">Included landmarks</p>
+      <section className="mt-6 border-t border-ink800/80 pt-6" aria-label="Tour stops">
+        <p className="text-eyebrow uppercase text-ember">Included landmarks</p>
         {isBundle ? (
           <div className="mt-4 space-y-4">
             {product.includesProductIds.map((childId) => {
@@ -96,9 +96,9 @@ export function TourDetailView({
               return (
                 <div
                   key={childId}
-                  className="rounded-2xl border border-parchment/70 bg-parchment/20 px-4 py-4"
+                  className="rounded-2xl border border-ink800/70 bg-ink800/20 px-4 py-4"
                 >
-                  <h3 className="font-display text-lg font-semibold text-deep-slate">{child.title}</h3>
+                  <h3 className="font-display text-lg font-semibold text-ink900">{child.title}</h3>
                   <ProductStopPreview stopIds={child.stopIds} />
                 </div>
               )
@@ -109,39 +109,39 @@ export function TourDetailView({
         )}
       </section>
 
-      <section className="mt-8 border-t border-parchment/80 pt-6" aria-label="What's included">
-        <p className="text-eyebrow uppercase text-bronze">Included</p>
-        <ul className="mt-3 space-y-2 text-sm text-soft-slate">
+      <section className="mt-8 border-t border-ink800/80 pt-6" aria-label="What's included">
+        <p className="text-eyebrow uppercase text-ember">Included</p>
+        <ul className="mt-3 space-y-2 text-sm text-muted">
           <li>GPS-guided walking between landmarks</li>
           <li>Place-aware audio stories on arrival</li>
           <li>Then-and-now visual reconstructions</li>
         </ul>
       </section>
 
-      <div className="mt-8 space-y-3 border-t border-parchment/80 pt-6">
+      <div className="mt-8 space-y-3 border-t border-ink800/80 pt-6">
         {unlocked ? (
-          <BronzeButton size="lg" fullWidth onClick={() => onBeginJourney(product.id)}>
+          <Button size="lg" fullWidth onClick={() => onBeginJourney(product.id)}>
             Begin journey
-          </BronzeButton>
+          </Button>
         ) : (
           <>
             <div className="flex items-end justify-between gap-3">
               <div>
-                <p className="font-display text-3xl font-semibold text-deep-slate">
+                <p className="font-display text-3xl font-semibold text-ink900">
                   {formatUsd(product.priceUsd)}
                 </p>
                 {product.savingsUsd ? (
-                  <p className="text-xs text-gold">
+                  <p className="text-xs text-ember">
                     Save {formatUsd(product.savingsUsd)} vs buying separately
                   </p>
                 ) : null}
               </div>
             </div>
-            <BronzeButton size="lg" fullWidth onClick={handlePurchase}>
+            <Button size="lg" fullWidth onClick={handlePurchase}>
               Purchase {formatUsd(product.priceUsd)}
-            </BronzeButton>
+            </Button>
             <Button
-              variant="secondary"
+              variant="quiet"
               size="lg"
               fullWidth
               onClick={() => {
@@ -154,7 +154,7 @@ export function TourDetailView({
           </>
         )}
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 

@@ -1,8 +1,21 @@
 import { HEART_OF_ANCIENT_ROME_TOUR } from './heart-of-ancient-rome-tour'
 import { ROMAN_FORUM_TOUR } from './roman-forum-tour'
+import { CENTRAL_ROME_TOUR } from './central-rome-tour'
 
 /** Individual walking tours and the complete Rome bundle. Prices in USD. */
 export const TOUR_PRODUCTS = {
+  'rome-central': {
+    id: 'rome-central',
+    tourId: CENTRAL_ROME_TOUR.id,
+    title: 'Roma Historica',
+    tagline: 'The Pantheon + centro storico',
+    description:
+      'The Pantheon and the walk around it — Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant\'Angelo. Outside the Colosseum archaeological park.',
+    priceUsd: 9,
+    priceCents: 900,
+    stopIds: CENTRAL_ROME_TOUR.stopIds,
+    firstStopTitle: 'The Pantheon',
+  },
   'roman-forum': {
     id: 'roman-forum',
     tourId: ROMAN_FORUM_TOUR.id,
@@ -29,10 +42,10 @@ export const TOUR_PRODUCTS = {
   },
   'rome-complete': {
     id: 'rome-complete',
-    title: 'Complete Rome',
+    title: 'Roma Eterna',
     tagline: 'Forum cluster + city loop',
     description:
-      'Unlock both ChronoWalk Rome routes — all eight Forum cluster stops plus the full city loop from the Colosseum to the Appian Way.',
+      'Unlock every ChronoWalk Rome route — archaeological core, centro storico, and the full city loop to the Appian Way.',
     priceUsd: 15,
     priceCents: 1500,
     savingsUsd: 5,
@@ -43,6 +56,7 @@ export const TOUR_PRODUCTS = {
 
 export const TOUR_PRODUCT_LIST = [
   TOUR_PRODUCTS['rome-complete'],
+  TOUR_PRODUCTS['rome-central'],
   TOUR_PRODUCTS['roman-forum'],
   TOUR_PRODUCTS['heart-of-ancient-rome'],
 ]

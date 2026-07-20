@@ -1,5 +1,5 @@
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
-import { BronzeButton, Button, EditorialTitle, GlassPanel } from '../../ui'
+import { Button, EditorialTitle } from '../../ui'
 
 const APP_NAME = 'ChronoWalk'
 
@@ -23,30 +23,30 @@ const PILLARS = [
 
 export function WelcomeView({ onBrowseTours, onTryFreePreview, onPwaInstall }) {
   return (
-    <GlassPanel className="rounded-3xl p-6 shadow-plaque-lg sm:p-8" grain>
+    <div className="bg-ink900 rounded-card rounded-3xl p-6  sm:p-8">
       <EditorialTitle
         eyebrow={APP_NAME}
         size="lg"
         subtitle="Walk the city on your own schedule with ChronoWalk as your expert companion — always ready with layered stories, historical context, and the kind of fun knowledge that makes every ruin feel alive."
       >
         A detailed, entertaining self-guided audio tour of{' '}
-        <span className="font-display italic text-bronze">Rome</span>
+        <span className="font-display italic text-ember">Rome</span>
       </EditorialTitle>
 
       <ul className="mt-6 space-y-4">
         {PILLARS.map((pillar) => (
           <li
             key={pillar.id}
-            className="rounded-2xl border border-parchment/70 bg-parchment/25 px-4 py-3.5"
+            className="rounded-2xl border border-ink800/70 bg-ink800/25 px-4 py-3.5"
           >
-            <p className="text-sm font-semibold text-deep-slate">{pillar.title}</p>
-            <p className="mt-1.5 text-sm leading-relaxed text-soft-slate">{pillar.body}</p>
+            <p className="text-sm font-semibold text-ink900">{pillar.title}</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{pillar.body}</p>
           </li>
         ))}
       </ul>
 
       <div className="mt-8 flex flex-col gap-4">
-        <BronzeButton
+        <Button
           size="lg"
           fullWidth
           onClick={() => {
@@ -55,9 +55,9 @@ export function WelcomeView({ onBrowseTours, onTryFreePreview, onPwaInstall }) {
           }}
         >
           Browse tours &amp; pricing
-        </BronzeButton>
+        </Button>
         <Button
-          variant="secondary"
+          variant="quiet"
           size="lg"
           fullWidth
           onClick={() => {
@@ -68,7 +68,7 @@ export function WelcomeView({ onBrowseTours, onTryFreePreview, onPwaInstall }) {
           Try for free
         </Button>
         <Button
-          variant="text"
+          variant="ghost"
           fullWidth
           onClick={() => {
             triggerHaptic(HAPTIC_KIND.SOFT_TAP)
@@ -78,7 +78,7 @@ export function WelcomeView({ onBrowseTours, onTryFreePreview, onPwaInstall }) {
           Add to home screen
         </Button>
       </div>
-    </GlassPanel>
+    </div>
   )
 }
 

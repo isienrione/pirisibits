@@ -1,5 +1,5 @@
 import { DEFAULT_CALIBRATION } from '../utils/calibrationStorage';
-import { Button, GlassPanel, SectionHeader } from './ui';
+import { Button, SectionHeader } from './ui';
 
 const OFFSET_MIN = -120;
 const OFFSET_MAX = 120;
@@ -17,7 +17,7 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
   };
 
   return (
-    <GlassPanel className="mt-4 border-bronze/25 bg-parchment/30 p-4">
+    <div className="bg-ink900 rounded-card mt-4 border-ember/25 bg-ink800/30 p-4">
       <SectionHeader
         className="mb-4"
         eyebrow="Ghost alignment"
@@ -25,10 +25,10 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
       />
 
       <div className="space-y-4">
-        <label className="block text-xs text-soft-slate">
+        <label className="block text-xs text-muted">
           <span className="mb-2 flex items-center justify-between">
             <span>Horizontal offset</span>
-            <span className="font-mono text-bronze">{values.offsetX}px</span>
+            <span className="font-mono text-ember">{values.offsetX}px</span>
           </span>
           <input
             type="range"
@@ -41,10 +41,10 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
           />
         </label>
 
-        <label className="block text-xs text-soft-slate">
+        <label className="block text-xs text-muted">
           <span className="mb-2 flex items-center justify-between">
             <span>Vertical offset</span>
-            <span className="font-mono text-bronze">{values.offsetY}px</span>
+            <span className="font-mono text-ember">{values.offsetY}px</span>
           </span>
           <input
             type="range"
@@ -57,10 +57,10 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
           />
         </label>
 
-        <label className="block text-xs text-soft-slate">
+        <label className="block text-xs text-muted">
           <span className="mb-2 flex items-center justify-between">
             <span>Rotation</span>
-            <span className="font-mono text-bronze">{values.rotate}°</span>
+            <span className="font-mono text-ember">{values.rotate}°</span>
           </span>
           <input
             type="range"
@@ -78,11 +78,11 @@ const CalibrationOverlay = ({ calibration, onChange, onLock, onReset }) => {
         <Button className="flex-1 rounded-full" onClick={onLock}>
           Lock alignment
         </Button>
-        <Button variant="secondary" className="rounded-full" onClick={onReset}>
+        <Button variant="quiet" className="rounded-full" onClick={onReset}>
           Reset
         </Button>
       </div>
-    </GlassPanel>
+    </div>
   );
 };
 

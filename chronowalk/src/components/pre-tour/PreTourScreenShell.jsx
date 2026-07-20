@@ -30,7 +30,7 @@ export function PreTourScreenShell({
   const heroSrc = heroSrcProp ?? tourHeroPhoto
 
   return (
-    <div className={cn('relative min-h-screen overflow-x-hidden bg-ivory paper-texture', className)}>
+    <div className={cn('relative min-h-screen overflow-x-hidden bg-bone', className)}>
       {showHero ? (
         <div className="absolute inset-x-0 top-0 h-[min(42vh,22rem)] sm:h-[min(46vh,24rem)]">
           <img
@@ -41,11 +41,11 @@ export function PreTourScreenShell({
             onError={() => onHeroError?.(tourHeroFallback)}
           />
           <div
-            className="absolute inset-0 bg-gradient-to-b from-ivory/10 via-ivory/40 to-ivory"
+            className="absolute inset-0 bg-[color-mix(in_srgb,var(--bone)_72%,transparent)]"
             aria-hidden="true"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-obsidian/35 via-transparent to-transparent"
+            className="absolute inset-0 bg-[color-mix(in_srgb,var(--obsidian)_35%,transparent)]"
             aria-hidden="true"
           />
         </div>

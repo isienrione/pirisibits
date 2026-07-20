@@ -548,10 +548,10 @@ function App() {
     Boolean(discoveredWaypoint) && !activeWaypoint && !cardDismissed
 
   return (
-    <div className="relative h-screen w-full bg-warm-white lg:pl-[5.5rem]">
+    <div className="relative h-screen w-full bg-bone lg:pl-[5.5rem]">
       <a
         href="#main-tour-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[500] focus:rounded-xl focus:bg-warm-white focus:px-4 focus:py-2 focus:shadow-glass-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[500] focus:rounded-xl focus:bg-bone focus:px-4 focus:py-2 focus:shadow-card"
       >
         Skip to tour content
       </a>

@@ -3,20 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/pwa/icon-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#F7F3EC" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/pwa/apple-touch-icon.png" sizes="180x180" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#16130F" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16130F" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="ChronoWalk — GPS-guided walking tours of Rome with place-aware audio and historical reveals." />
+    <meta name="format-detection" content="telephone=no" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="ChronoWalk" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>ChronoWalk</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #16130f;
+        color: #f5efe3;
+      }
+    </style>
+    <script>
+      ;(function () {
+        var key = 'cw-boot-reload'
+        window.addEventListener(
+          'error',
+          function (event) {
+            var target = event.target
+            if (!target || target.tagName !== 'SCRIPT' || !target.src || sessionStorage.getItem(key)) return
+            sessionStorage.setItem(key, '1')
+            var reload = function () {
+              window.location.reload()
+            }
+            var jobs = []
+            if ('caches' in window) {
+              jobs.push(
+                caches.keys().then(function (names) {
+                  return Promise.all(names.map(function (name) { return caches.delete(name) }))
+                }),
+              )
+            }
+            if ('serviceWorker' in navigator) {
+              jobs.push(
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(regs.map(function (reg) { return reg.unregister() }))
+                }),
+              )
+            }
+            Promise.all(jobs).then(reload).catch(reload)
+          },
+          true,
+        )
+      })()
+    </script>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="margin: 0; background: #16130f; color: #f5efe3">
+    <div id="root">
+      <p
+        id="cw-boot-hint"
+        style="
+          margin: 0;
+          padding: 2.5rem 1.5rem;
+          font: 500 1rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          text-align: center;
+        "
+      >
+        Loading ChronoWalk…
+      </p>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      ;(function () {
+        var hint = document.getElementById('cw-boot-hint')
+        window.setTimeout(function () {
+          if (!hint || !document.getElementById('cw-boot-hint')) return
+          hint.textContent =
+            'ChronoWalk is taking longer than usual. Try refreshing, or open this page in a private tab.'
+        }, 12000)
+      })()
+    </script>
   </body>
 </html>

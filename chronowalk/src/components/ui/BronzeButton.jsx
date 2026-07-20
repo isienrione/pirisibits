@@ -10,7 +10,7 @@ export function BronzeButton({ className, variant = 'primary', ...props }) {
       variant={variant}
       className={cn(
         variant === 'primary' &&
-          'border border-bronze/30 bg-gradient-to-b from-bronze via-bronze to-[#8f6324] text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-[#8f6324]/95 active:from-[#8f6324] active:to-bronze/90',
+          'border border-bronze/30 bg-gradient-to-b from-bronze via-bronze to-bronze-dark text-ivory shadow-bronze-cta hover:from-bronze/95 hover:to-bronze-dark/95 active:from-bronze-dark active:to-bronze/90',
         className
       )}
       {...props}

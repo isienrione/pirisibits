@@ -75,10 +75,7 @@ export function BottomSheet({
       )}
     >
       <div
-        className={cn(
-          'mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-sheet border border-parchment/70',
-          'bg-gradient-to-b from-ivory via-ivory to-parchment/90 shadow-sheet-up paper-texture'
-        )}
+        className="mx-auto flex max-h-[min(92dvh,92vh)] flex-col rounded-t-[var(--r-sheet)] border border-ink800 bg-bone shadow-sheet"
       >
         <div className="flex shrink-0 items-center justify-center px-5 pt-2">
           <button
@@ -90,13 +87,13 @@ export function BottomSheet({
             )}
             aria-label={handleLabel}
           >
-            <span className="h-1.5 w-14 rounded-full bg-limestone/80 transition hover:bg-limestone" />
+            <span className="h-1.5 w-14 rounded-full bg-ink800 transition hover:bg-border-daylight" />
           </button>
         </div>
 
         <div
           className={cn(
-            'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-safe',
+            'min-h-0 flex-1 overflow-y-auto overscroll-contain pb-safe text-ink900',
             flush ? 'pt-0' : 'px-6 pt-2',
             contentClassName
           )}

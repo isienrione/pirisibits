@@ -10,8 +10,8 @@ export function LoadingPanel({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center bg-gradient-to-b from-ivory via-parchment/20 to-limestone/10 text-deep-slate',
-        fullScreen ? 'h-screen w-full' : 'min-h-[12rem] w-full rounded-3xl',
+        'flex flex-col items-center justify-center bg-obsidian text-bone',
+        fullScreen ? 'h-screen w-full' : 'min-h-[12rem] w-full rounded-card',
         className
       )}
       role="status"
@@ -20,7 +20,7 @@ export function LoadingPanel({
     >
       <LoadingSpinner />
       <p className="mt-4 text-sm font-semibold">{label}</p>
-      {hint ? <p className="mt-1 max-w-xs text-center text-xs text-soft-slate">{hint}</p> : null}
+      {hint ? <p className="mt-1 max-w-xs text-center text-xs text-muted">{hint}</p> : null}
     </div>
   )
 }

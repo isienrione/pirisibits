@@ -1,0 +1,152 @@
+/** Rome journey pacing — tiered tour products (replaces the old two-day split). */
+
+export const JOURNEY_PACE = {
+  CENTRAL: 'central',
+  CLASSIC: 'classic',
+  HEROIC: 'heroic',
+  OWN: 'own',
+}
+
+export const PACE_ORIENTATION =
+  'You can change your mind at any time. Nothing expires. Nothing is skipped forever.'
+
+/** Seven act slots for tier cards — null means the act is not in this tour. */
+export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore']
+
+export const PACE_OPTIONS = [
+  {
+    id: JOURNEY_PACE.HEROIC,
+    title: 'Roma Eterna',
+    badge: 'Most loved',
+    priceLabel: '$17.99',
+    priceCents: 1799,
+    description:
+      "The complete Rome — Colosseum, the Roman Forum, Circus Maximus, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
+    includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
+    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'capitoline',
+    default: true,
+  },
+  {
+    id: JOURNEY_PACE.CENTRAL,
+    title: 'Roma Centrale',
+    badge: null,
+    priceLabel: '$12',
+    priceCents: 1200,
+    description:
+      "Centro storico and the Pantheon — Spanish Steps, Trevi, Navona, Campo de' Fiori, Trajan's Market, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
+    includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
+    actDots: [null, null, null, 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'pantheon',
+  },
+  {
+    id: JOURNEY_PACE.CLASSIC,
+    title: 'Roma Antica',
+    badge: null,
+    priceLabel: '$12',
+    priceCents: 1200,
+    description:
+      'The Colosseum and the full Forum walk — from the Arena through the Arch of Titus and every Forum stop to the Capitoline.',
+    includedSummary: 'Colosseum · Arch of Titus · Roman Forum',
+    actDots: ['act1', 'act2', 'act3', null, null, null, null],
+    imageKey: 'colosseum',
+  },
+  {
+    id: JOURNEY_PACE.OWN,
+    title: 'At your own pace',
+    badge: null,
+    priceLabel: '$17.99',
+    priceCents: 1799,
+    description:
+      'Pick any stops you like — one morning or many. Build your own route through every landmark in the catalog.',
+    includedSummary: 'Any act · any order · your itinerary',
+    actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
+    imageKey: 'trajan',
+  },
+]
+
+export const ROME_ACTS = [
+  {
+    id: 'act1',
+    numeral: 'I',
+    title: 'The Arena',
+    waypoints: ['w01', 'w02'],
+    entry: 'The Colosseum',
+    promise: 'Where the crowd roar still lives in the stone.',
+  },
+  {
+    id: 'act2',
+    numeral: 'II',
+    title: 'The Gate & the Hill',
+    waypoints: ['w03', 'w04'],
+    entry: 'Arch of Titus',
+    promise: 'Two doors into ancient Rome — you choose at the piazza.',
+  },
+  {
+    id: 'act3',
+    numeral: 'III',
+    title: 'The Forum',
+    waypoints: ['w06', 'w07', 'w08', 'pause', 'w10', 'w11_12', 'w13'],
+    entry: 'Basilica of Maxentius',
+    promise: 'Nine stops, one drained swamp, the centre of the world.',
+  },
+  {
+    id: 'act4',
+    numeral: 'IV',
+    title: 'The Market',
+    waypoints: ['w14'],
+    entry: "Trajan's Market",
+    promise: 'Rome’s vertical city, still legible in brick.',
+  },
+  {
+    id: 'act5',
+    numeral: 'V',
+    title: 'The Living City',
+    waypoints: ['w15', 'w16', 'w17', 'w18', 'w19', 'w20'],
+    entry: 'Spanish Steps',
+    promise: 'Fountains, piazzas, and the water that follows you.',
+  },
+  {
+    id: 'act6',
+    numeral: 'VI',
+    title: 'The River',
+    waypoints: ['w21'],
+    entry: 'Castel Sant’Angelo',
+    promise: 'A tomb that refused to stay a tomb.',
+  },
+  {
+    id: 'encore',
+    numeral: 'Encore',
+    title: 'The Long Road',
+    waypoints: ['w22'],
+    entry: 'Via Appia Antica',
+    promise: 'Walk where legions and merchants left Rome.',
+  },
+]
+
+export const JOURNEY_PATH = {
+  A: 'a',
+  B: 'b',
+}
+
+export function getPaceOption(paceId) {
+  return PACE_OPTIONS.find((option) => option.id === paceId) ?? PACE_OPTIONS[0]
+}
+
+export function getDefaultPace() {
+  return PACE_OPTIONS.find((option) => option.default)?.id ?? JOURNEY_PACE.HEROIC
+}
+
+export function getActForWaypoint(waypointId) {
+  return ROME_ACTS.find((act) => act.waypoints.includes(waypointId)) ?? null
+}
+
+export function getActSummaries() {
+  return ROME_ACTS.map((act) => ({
+    id: act.id,
+    label: `${act.numeral} · ${act.title}`,
+    stopCount: act.waypoints.filter((waypointId) => waypointId !== 'pause').length,
+    entry: act.entry,
+    promise: act.promise,
+  }))
+}
