@@ -2,10 +2,10 @@ import { LANDING_CONTENT } from './landingData.js'
 import { mediaUrl } from '../lib/mediaUrl.js'
 
 const SCENARIO_IMAGES = {
-  'largo-argentina': '/waypoints/largo-argentina/modern-poster.jpg',
-  pantheon: '/waypoints/pantheon/modern-poster.jpg',
-  'campo-de-fiori': '/waypoints/campo-de-fiori/modern-poster.jpg',
-  colosseum: '/waypoints/colosseum/exterior/modern-poster.jpg',
+  street: '/landing/real-moment/street.jpg',
+  pantheon: '/landing/real-moment/pantheon.jpg',
+  wander: '/landing/real-moment/wander.jpg',
+  forum: '/landing/real-moment/forum.jpg',
 }
 
 /**
@@ -48,7 +48,7 @@ export default function LandingRealMomentSection() {
                       <img
                         src={mediaUrl(src)}
                         alt=""
-                        width={160}
+                        width={120}
                         height={160}
                         loading="lazy"
                         decoding="async"

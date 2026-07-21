@@ -3804,15 +3804,16 @@
 
 .cw-v2-real-moment__row {
   display: grid;
-  grid-template-columns: 4.5rem minmax(0, 1fr);
+  grid-template-columns: 4.75rem minmax(0, 1fr);
   gap: 1rem;
   align-items: start;
 }
 
 .cw-v2-real-moment__thumb {
   position: relative;
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 4.75rem;
+  aspect-ratio: 3 / 4;
+  height: auto;
   overflow: hidden;
   border-radius: 0.35rem;
   border: 1px solid color-mix(in srgb, var(--scenario-accent) 35%, transparent);
@@ -3823,7 +3824,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 30%;
 }
 
 .cw-v2-real-moment__thumb-tint {
@@ -3838,8 +3839,8 @@
 }
 
 .cw-v2-real-moment__swatch {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 4.75rem;
+  aspect-ratio: 3 / 4;
   border-radius: 0.35rem;
   background: color-mix(in srgb, var(--scenario-accent) 40%, var(--v2-obsidian));
   border: 1px solid color-mix(in srgb, var(--scenario-accent) 45%, transparent);
@@ -3900,6 +3901,16 @@
     gap: 1.25rem 1.75rem;
     align-items: start;
     padding: 2rem 0;
+  }
+
+  .cw-v2-real-moment__row {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  .cw-v2-real-moment__thumb,
+  .cw-v2-real-moment__swatch {
+    width: 6.5rem;
   }
 
   .cw-v2-real-moment__seam {
