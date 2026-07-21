@@ -9,8 +9,8 @@ import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
 import {
-  hasCrossedThreshold,
-  markThresholdCrossed,
+  hasCrossedThresholdAtWaypoint,
+  markThresholdCrossedAtWaypoint,
 } from '../../utils/thresholdWaypointReveal.js'
 
 const DEFAULT_SPEEDS = [0.8, 1, 1.2]
@@ -91,7 +91,7 @@ export default function C6ImmersivePlayer({
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
   const forceHint = forceDiegeticHint || forceRevealInvite
-  const alreadyCrossed = !forceHint && hasCrossedThreshold()
+  const alreadyCrossed = !forceHint && hasCrossedThresholdAtWaypoint(waypointId)
   const autoPeek = hasReconstruction && !suppressAutoRevealInvite && (forceHint || !alreadyCrossed)
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
@@ -146,7 +146,7 @@ export default function C6ImmersivePlayer({
       return undefined
     }
 
-    const crossed = !forceHint && hasCrossedThreshold()
+    const crossed = !forceHint && hasCrossedThresholdAtWaypoint(waypointId)
     if (forceHint || !crossed) {
       setHintMode('full')
       return undefined
@@ -172,13 +172,13 @@ export default function C6ImmersivePlayer({
   }, [forceHint, hasReconstruction, suppressAutoRevealInvite, waypointId])
 
   const dismissDiegeticHint = useCallback(() => {
-    markThresholdCrossed()
+    markThresholdCrossedAtWaypoint(waypointId)
     setHintFading(true)
     window.setTimeout(() => {
       setHintMode('hidden')
       setHintFading(false)
     }, 380)
-  }, [])
+  }, [waypointId])
 
   const handleRevealHoldStart = useCallback(() => {
     if (!hasReconstruction) return
@@ -193,11 +193,11 @@ export default function C6ImmersivePlayer({
       const latched = Boolean(detail?.latched)
       setRevealLatched(latched)
       if (latched || detail?.via === 'pill') {
-        markThresholdCrossed()
+        markThresholdCrossedAtWaypoint(waypointId)
         if (hintMode !== 'hidden') dismissDiegeticHint()
       }
     },
-    [dismissDiegeticHint, hintMode],
+    [dismissDiegeticHint, hintMode, waypointId],
   )
 
   useEffect(() => {

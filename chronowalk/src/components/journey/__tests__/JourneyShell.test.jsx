@@ -269,9 +269,10 @@ describe('JourneyShell', () => {
     expect(await screen.findByTestId('story-continue')).toBeInTheDocument()
   })
 
-  it('suppresses the full hint after the first successful threshold cross', async () => {
+  it('suppresses the full hint after the first successful threshold cross at this stop', async () => {
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
     localStorage.setItem('chronowalk.hasCrossedThreshold', 'true')
+    localStorage.setItem('chronowalk.threshold_crossed.w01', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
@@ -282,6 +283,28 @@ describe('JourneyShell', () => {
     expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
     expect(screen.getByTestId('threshold-era-then')).toBeInTheDocument()
     expect(screen.getByTestId('threshold-era-today')).toBeInTheDocument()
+  })
+
+  it('shows full threshold hint at Arch of Titus on path B after crossing at Palatine', async () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
+    localStorage.setItem('chronowalk.hasCrossedThreshold', 'true')
+    localStorage.setItem('chronowalk.threshold_crossed.w04', 'true')
+
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'b', [])
+    const w03Index = seq.indexOf('w03')
+    expect(w03Index).toBeGreaterThan(seq.indexOf('w04'))
+
+    beginJourney({ pace: 'classic', path: 'b', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: w03Index,
+      completedWaypointIds: seq.slice(0, w03Index).filter((id) => id.startsWith('w')),
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('threshold-diegetic-hint')).toBeInTheDocument()
+    expect(screen.getByText(/hold to reveal ancient rome/i)).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-era-then')).toBeInTheDocument()
   })
 
   it('advances from transit when continue walking is tapped', async () => {

@@ -2,7 +2,9 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import {
   CROSSED_KEY,
   hasCrossedThreshold,
+  hasCrossedThresholdAtWaypoint,
   markThresholdCrossed,
+  markThresholdCrossedAtWaypoint,
   hasSeenThresholdRevealTutorial,
   markThresholdRevealTutorialSeen,
 } from '../thresholdWaypointReveal'
@@ -29,5 +31,14 @@ describe('thresholdWaypointReveal / hasCrossedThreshold', () => {
     markThresholdRevealTutorialSeen()
     expect(hasSeenThresholdRevealTutorial()).toBe(true)
     expect(hasCrossedThreshold()).toBe(true)
+  })
+
+  it('tracks threshold crosses per waypoint for later stops on path B', () => {
+    markThresholdCrossedAtWaypoint('w04')
+    expect(hasCrossedThreshold()).toBe(true)
+    expect(hasCrossedThresholdAtWaypoint('w04')).toBe(true)
+    expect(hasCrossedThresholdAtWaypoint('w03')).toBe(false)
+    markThresholdCrossedAtWaypoint('w03')
+    expect(hasCrossedThresholdAtWaypoint('w03')).toBe(true)
   })
 })

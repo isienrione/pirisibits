@@ -38,4 +38,11 @@ describe('waypointImmersiveProps', () => {
       '/waypoints/colosseum/exterior/ancient-reconstruction.mp4',
     )
   })
+
+  it('infers forum-cluster ancient loop path without truncating the stop folder', () => {
+    const waypoint = getWaypoint(manifest, 'w03')
+    expect(inferredReconstructionLoopPath(waypoint)).toBe(
+      '/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4',
+    )
+  })
 })
