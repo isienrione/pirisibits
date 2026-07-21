@@ -1,27 +1,23 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v3
- * If Supabase logs do NOT show this build id on each request, the old function
- * is still deployed — paste this file and Redeploy in the dashboard.
+ * WEBHOOK_BUILD: 2026-07-21-v4
+ * Paste this ENTIRE file into Supabase Edge Function `paddle-webhook` and Deploy.
+ * Logs MUST show build "2026-07-21-v4" — if not, redeploy did not take.
  *
- * Deploy:
- *   supabase functions deploy paddle-webhook
- *   supabase secrets set PADDLE_API_KEY=... PADDLE_NOTIFICATION_WEBHOOK_SECRET=... \
- *     PADDLE_ENV=production SITE_URL=https://chronowalk.com \
- *     RESEND_API_KEY=re_... RESEND_FROM="ChronoWalk <hello@chronowalk.com>"
- *
- * Paddle notification URL:
- *   https://<PROJECT_REF>.supabase.co/functions/v1/paddle-webhook
- * Events: transaction.completed (minimum)
- *
- * Required for buyer unlock email: RESEND_API_KEY (+ verified RESEND_FROM domain).
+ * Required secrets:
+ *   PADDLE_API_KEY=pdl_live_apikey_...   (NOT pdl_sdbx_)
+ *   PADDLE_ENV=production                (optional if key is live — key wins)
+ *   PADDLE_NOTIFICATION_WEBHOOK_SECRET=pdl_ntfset_...
+ *   RESEND_API_KEY=re_...
+ *   RESEND_FROM=ChronoWalk <hello@chronowalk.com>
+ *   SITE_URL=https://chronowalk.com
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
 
-const WEBHOOK_BUILD = '2026-07-21-v3'
+const WEBHOOK_BUILD = '2026-07-21-v4'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,35 +25,55 @@ const corsHeaders = {
     'authorization, x-client-info, apikey, content-type, paddle-signature',
 }
 
-function getPaddle() {
+/** Prefer the API key's mode over PADDLE_ENV — wrong env was silently breaking email lookup. */
+function resolvePaddleMode() {
   const apiKey = Deno.env.get('PADDLE_API_KEY') ?? ''
   if (!apiKey) throw new Error('PADDLE_API_KEY is not set')
-  const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
-  const production = envName === 'production' || envName === 'live'
-  if (production && apiKey.includes('sdbx')) {
+
+  const envName = (Deno.env.get('PADDLE_ENV') ?? '').toLowerCase()
+  const envSaysLive = envName === 'production' || envName === 'live'
+  const envSaysSandbox = envName === 'sandbox' || envName === 'test'
+  const keyIsLive = apiKey.includes('live') || apiKey.startsWith('pdl_live_')
+  const keyIsSandbox = apiKey.includes('sdbx') || apiKey.startsWith('pdl_sdbx_')
+
+  if (keyIsLive && keyIsSandbox) {
+    throw new Error('PADDLE_API_KEY looks both live and sandbox — check the secret value')
+  }
+  if (keyIsSandbox && envSaysLive) {
     throw new Error(
-      'PADDLE_API_KEY is a sandbox key while PADDLE_ENV=production — update Supabase secrets to the live pdl_live_apikey_… key',
+      'PADDLE_API_KEY is sandbox (pdl_sdbx_…) but PADDLE_ENV=production. Set the live pdl_live_apikey_… secret.',
     )
   }
-  if (!production && apiKey.includes('live')) {
+
+  // Key wins when it clearly indicates mode.
+  const production = keyIsLive ? true : keyIsSandbox ? false : envSaysLive || !envSaysSandbox
+
+  if (keyIsLive && envSaysSandbox) {
     console.warn(
-      '[paddle-webhook] PADDLE_API_KEY looks live while PADDLE_ENV=sandbox',
+      '[paddle-webhook] PADDLE_ENV=sandbox but API key is live — using production API (key wins)',
+      { build: WEBHOOK_BUILD },
     )
   }
-  const environment = production ? Environment.production : Environment.sandbox
-  return new Paddle(apiKey, { environment })
-}
 
-function paddleApiBase() {
-  const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
-  return envName === 'production' || envName === 'live'
-    ? 'https://api.paddle.com'
-    : 'https://sandbox-api.paddle.com'
-}
-
-function paddleAuthHeaders() {
   return {
-    Authorization: `Bearer ${Deno.env.get('PADDLE_API_KEY') ?? ''}`,
+    apiKey,
+    production,
+    apiBase: production ? 'https://api.paddle.com' : 'https://sandbox-api.paddle.com',
+    keyKind: keyIsLive ? 'live' : keyIsSandbox ? 'sandbox' : 'unknown',
+    envName: envName || '(unset)',
+  }
+}
+
+function getPaddle() {
+  const mode = resolvePaddleMode()
+  return new Paddle(mode.apiKey, {
+    environment: mode.production ? Environment.production : Environment.sandbox,
+  })
+}
+
+function paddleAuthHeaders(apiKey) {
+  return {
+    Authorization: `Bearer ${apiKey}`,
     'Paddle-Version': '1',
   }
 }
@@ -103,8 +119,8 @@ function customerIdOf(transaction) {
   )
 }
 
-async function fetchJson(url) {
-  const res = await fetch(url, { headers: paddleAuthHeaders() })
+async function fetchJson(url, apiKey) {
+  const res = await fetch(url, { headers: paddleAuthHeaders(apiKey) })
   const text = await res.text()
   let json = null
   try {
@@ -112,84 +128,97 @@ async function fetchJson(url) {
   } catch {
     json = { raw: text }
   }
-  return { ok: res.ok, status: res.status, json }
+  return { ok: res.ok, status: res.status, json, url }
 }
 
 /**
- * Webhook payloads usually only include customer_id — never the email.
- * Resolve email via Paddle API (transaction?include=customer, then customers.get).
+ * Webhook payloads almost never include email — only customer_id.
+ * Look it up via Paddle API. On failure, throw the REAL API error (do not hide it).
  */
-async function resolveCustomerEmail(paddle, transaction) {
+async function resolveCustomerEmail(paddle, transaction, mode) {
+  const errors = []
   const direct = customerEmail(transaction)
   if (direct) {
-    console.log('[paddle-webhook] email from webhook payload')
+    console.log('[paddle-webhook] email from webhook payload', { build: WEBHOOK_BUILD })
     return String(direct)
   }
 
   const orderId = transaction?.id
   const customerId = customerIdOf(transaction)
 
-  // 1) Re-fetch transaction with customer included
   if (orderId) {
-    const { ok, status, json } = await fetchJson(
-      `${paddleApiBase()}/transactions/${encodeURIComponent(orderId)}?include=customer`,
-    )
+    const url = `${mode.apiBase}/transactions/${encodeURIComponent(orderId)}?include=customer`
+    const { ok, status, json } = await fetchJson(url, mode.apiKey)
     if (ok) {
       const email = json?.data?.customer?.email
       if (email) {
-        console.log('[paddle-webhook] email from transactions?include=customer')
+        console.log('[paddle-webhook] email from transactions?include=customer', {
+          build: WEBHOOK_BUILD,
+          orderId,
+        })
         return String(email)
       }
-      console.warn(
-        '[paddle-webhook] transactions?include=customer ok but no email',
-        orderId,
-        json?.data?.customer_id ?? json?.data?.customerId ?? null,
+      errors.push(
+        `transactions?include=customer returned 200 but no customer.email (customer_id=${
+          json?.data?.customer_id ?? 'null'
+        })`,
       )
     } else {
-      console.error(
-        '[paddle-webhook] transactions.get?include=customer failed',
-        orderId,
-        status,
-        JSON.stringify(json)?.slice(0, 500),
-      )
+      const detail = JSON.stringify(json?.error ?? json)?.slice(0, 400)
+      errors.push(`GET ${url} -> ${status} ${detail}`)
     }
+  } else {
+    errors.push('transaction id missing on webhook payload')
   }
 
-  // 2) GET /customers/{id} via raw fetch (clearer errors than SDK)
   if (customerId) {
-    const { ok, status, json } = await fetchJson(
-      `${paddleApiBase()}/customers/${encodeURIComponent(customerId)}`,
-    )
+    const url = `${mode.apiBase}/customers/${encodeURIComponent(customerId)}`
+    const { ok, status, json } = await fetchJson(url, mode.apiKey)
     if (ok) {
       const email = json?.data?.email
       if (email) {
-        console.log('[paddle-webhook] email from customers.get (fetch)')
+        console.log('[paddle-webhook] email from customers.get', {
+          build: WEBHOOK_BUILD,
+          customerId,
+        })
         return String(email)
       }
+      errors.push(`customers.get returned 200 but no email for ${customerId}`)
     } else {
-      console.error(
-        '[paddle-webhook] customers.get (fetch) failed',
-        customerId,
-        status,
-        JSON.stringify(json)?.slice(0, 500),
-      )
+      const detail = JSON.stringify(json?.error ?? json)?.slice(0, 400)
+      errors.push(`GET ${url} -> ${status} ${detail}`)
     }
 
-    // 3) SDK fallback
     try {
       const customer = await paddle.customers.get(customerId)
       if (customer?.email) {
-        console.log('[paddle-webhook] email from customers.get (sdk)')
+        console.log('[paddle-webhook] email from customers.get (sdk)', {
+          build: WEBHOOK_BUILD,
+          customerId,
+        })
         return String(customer.email)
       }
+      errors.push(`sdk customers.get returned no email for ${customerId}`)
     } catch (err) {
-      console.error('[paddle-webhook] customers.get (sdk) failed', customerId, err)
+      errors.push(
+        `sdk customers.get failed: ${err instanceof Error ? err.message : String(err)}`,
+      )
     }
   } else {
-    console.warn('[paddle-webhook] transaction has no customer_id', orderId)
+    errors.push('customer_id missing on webhook payload')
   }
 
-  return null
+  throw new Error(
+    [
+      `could not resolve buyer email (${WEBHOOK_BUILD})`,
+      `key=${mode.keyKind}`,
+      `PADDLE_ENV=${mode.envName}`,
+      `apiBase=${mode.apiBase}`,
+      `orderId=${orderId ?? 'null'}`,
+      `customerId=${customerId ?? 'null'}`,
+      ...errors,
+    ].join(' | '),
+  )
 }
 
 async function upsertPurchase(supabase, { email, orderId, productId, host, abVariant }) {
@@ -261,11 +290,11 @@ async function sendAccessEmail({ email, accessToken, productId }) {
     const body = await res.text()
     throw new Error(`Resend failed: ${res.status} ${body}`)
   }
-  console.log('[paddle-webhook] access email sent', email, productId ?? '')
+  console.log('[paddle-webhook] access email sent', { build: WEBHOOK_BUILD, email, productId })
   return { sent: true, link }
 }
 
-async function handleTransactionCompleted(paddle, eventData) {
+async function handleTransactionCompleted(paddle, eventData, mode) {
   const transaction = eventData?.data ?? eventData
   const orderId = transaction?.id
   if (!orderId) throw new Error('transaction missing id')
@@ -274,22 +303,12 @@ async function handleTransactionCompleted(paddle, eventData) {
     build: WEBHOOK_BUILD,
     orderId,
     customerId: customerIdOf(transaction),
-    apiKeyPrefix: String(Deno.env.get('PADDLE_API_KEY') ?? '').slice(0, 12),
-    paddleEnv: Deno.env.get('PADDLE_ENV') ?? 'sandbox',
+    keyKind: mode.keyKind,
+    paddleEnv: mode.envName,
+    apiBase: mode.apiBase,
   })
 
-  const email = await resolveCustomerEmail(paddle, transaction)
-  if (!email) {
-    console.error('[paddle-webhook] could not resolve customer email', {
-      build: WEBHOOK_BUILD,
-      orderId,
-      customerId: customerIdOf(transaction),
-      hint: 'Set Supabase secret PADDLE_API_KEY to live pdl_live_apikey_… and Redeploy this function',
-    })
-    throw new Error(
-      `transaction.completed missing customer email (${WEBHOOK_BUILD}) order=${orderId}`,
-    )
-  }
+  const email = await resolveCustomerEmail(paddle, transaction, mode)
 
   const custom = readCustomData(transaction)
   const supabase = getSupabaseAdmin()
@@ -320,6 +339,7 @@ async function handleTransactionCompleted(paddle, eventData) {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[paddle-webhook] access email failed after purchase save', {
+      build: WEBHOOK_BUILD,
       orderId: row.order_id,
       email: row.email,
       accessToken: row.access_token,
@@ -355,14 +375,14 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const mode = resolvePaddleMode()
     const paddle = getPaddle()
     const eventData = await paddle.webhooks.unmarshal(rawBody, secret, signature)
     const eventType = eventData?.eventType ?? eventData?.event_type
 
     if (eventType === 'transaction.completed') {
-      await handleTransactionCompleted(paddle, eventData)
+      await handleTransactionCompleted(paddle, eventData, mode)
     } else {
-      // Other subscribed events are acknowledged so Paddle stops retrying.
       console.log('[paddle-webhook] ignored event', eventType, { build: WEBHOOK_BUILD })
     }
 
@@ -372,7 +392,7 @@ Deno.serve(async (req) => {
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('[paddle-webhook]', { build: WEBHOOK_BUILD, message }, err)
+    console.error('[paddle-webhook] failed', { build: WEBHOOK_BUILD, message }, err)
     return new Response(JSON.stringify({ error: message, build: WEBHOOK_BUILD }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
