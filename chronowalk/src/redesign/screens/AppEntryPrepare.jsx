@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { T, F } from '../tokens.js'
 import { spanishSteps } from '../images.js'
 import { Vignette, BottomScrim } from '../ui/index.js'
+import HomeScreenInstallOption from '../ui/HomeScreenInstallOption.jsx'
 
 /**
- * In-app prepare step: offline download + optional analytics.
+ * In-app prepare step: offline download, home-screen install, optional analytics.
  * Shown after the threshold — not marketing, not the walk yet.
  */
 export default function AppEntryPrepare({
@@ -12,7 +13,11 @@ export default function AppEntryPrepare({
   downloadProgress = 0,
   downloadComplete = false,
   analyticsEnabled = false,
+  installed = false,
+  canPromptInstall = false,
+  showIosInstructions = false,
   onDownload,
+  onInstall,
   onAnalyticsChange,
   onContinue,
 }) {
@@ -177,6 +182,13 @@ export default function AppEntryPrepare({
             </button>
           </div>
         </div>
+
+        <HomeScreenInstallOption
+          installed={installed}
+          canPromptInstall={canPromptInstall}
+          showIosInstructions={showIosInstructions}
+          onInstall={onInstall}
+        />
 
         <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
