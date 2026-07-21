@@ -5,7 +5,8 @@ import WalkingCompanionScreen from '../WalkingCompanionScreen.jsx'
 vi.mock('../../../hooks/useWalkingDirections.js', () => ({
   useWalkingDirections: () => ({
     directions: {
-      distanceM: 320,
+      distanceM: 335,
+      durationSec: 240,
       steps: [
         { instruction: 'Head north on Via dei Fori Imperiali', distanceM: 180, type: 'depart' },
         { instruction: 'Turn right toward the Colosseum', distanceM: 140, type: 'turn' },
@@ -45,6 +46,7 @@ describe('WalkingCompanionScreen', () => {
     expect(screen.getByTestId('walking-map')).toHaveAttribute('data-directions', 'true')
     expect(screen.getByTestId('next-turns-card')).toBeInTheDocument()
     expect(screen.getByText('Next turns')).toBeInTheDocument()
+    expect(screen.getByTestId('walking-distance-meta')).toHaveTextContent('335 m · 4 min')
     expect(screen.getByRole('button', { name: /open the arch of titus story/i })).toBeInTheDocument()
   })
 

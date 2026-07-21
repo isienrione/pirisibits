@@ -1379,12 +1379,21 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__distance {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 15px;
   line-height: 1.45;
   font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--wc-accent, #e8a13c) 70%, #f5efe3);
+  color: color-mix(in srgb, var(--wc-accent, #e8a13c) 70%, var(--wc-warm-white));
   letter-spacing: 0.01em;
   transition: opacity 0.32s var(--wc-ease);
+}
+
+.cw-walking-companion__distance-icon {
+  flex-shrink: 0;
+  color: color-mix(in srgb, var(--wc-accent, #e8a13c) 88%, var(--wc-warm-white));
+  opacity: 0.92;
 }
 
 .cw-walking-companion__cue {
@@ -1394,6 +1403,90 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   font-weight: 400;
   letter-spacing: 0.005em;
   max-width: 26em;
+}
+
+/* Walking map chrome — compass + recenter (token-driven) */
+
+.cw-walk-map-chrome {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.cw-walk-map-chrome__compass {
+  pointer-events: none;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--wc-border, rgba(245, 239, 227, 0.12));
+  background: color-mix(in srgb, var(--wc-card, rgba(28, 26, 24, 0.82)) 92%, transparent);
+  box-shadow: var(--wc-shadow, 0 10px 28px rgba(0, 0, 0, 0.28));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.cw-walk-map-chrome__compass-dial {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  transform-origin: center center;
+  transition: transform 0.12s linear;
+}
+
+.cw-walk-map-chrome__compass-n {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--wc-accent, #e4552e);
+  line-height: 1;
+}
+
+.cw-walk-map-chrome__compass-needle {
+  width: 2px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    var(--wc-accent, #e4552e) 0 52%,
+    color-mix(in srgb, var(--wc-warm-white, #f5efe3) 70%, transparent) 52% 100%
+  );
+  box-shadow: 0 0 6px color-mix(in srgb, var(--wc-accent, #e4552e) 35%, transparent);
+}
+
+.cw-walk-map-chrome__recenter {
+  pointer-events: auto;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--wc-accent, #e8a13c) 32%, var(--wc-border, rgba(245, 239, 227, 0.12)));
+  background: color-mix(in srgb, var(--wc-card, rgba(28, 26, 24, 0.88)) 94%, transparent);
+  color: var(--wc-warm-white, #f5efe3);
+  box-shadow: var(--wc-shadow, 0 10px 28px rgba(0, 0, 0, 0.28));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.cw-walk-map-chrome__recenter:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--wc-accent, #e4552e) 50%, transparent);
+  outline-offset: 2px;
 }
 
 .cw-walking-companion__gps-note {

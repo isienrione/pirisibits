@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { LocateFixed } from 'lucide-react'
 import {
   applyWalkingCompanionCamera,
   collectWalkingCompanionBoundsPoints,
@@ -23,6 +22,7 @@ import {
   createLegOriginMarkerElement,
   createUserMarkerElement,
 } from '../map/mapMarkers.js'
+import WalkingMapChrome from '../redesign/ui/WalkingMapChrome.jsx'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -299,6 +299,7 @@ function TourMapboxView({
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const [legRouteCoordinates, setLegRouteCoordinates] = useState(null)
+  const [mapBearing, setMapBearing] = useState(0)
   const walkingCameraPinRef = useRef(null)
   const debugGeo = isDebugGeo()
   const showDebugOverlay =
@@ -875,6 +876,23 @@ function TourMapboxView({
   }, [activeTargetId, frameWalkingCompanion])
 
   useEffect(() => {
+    if (!walkingCompanionUI || !mapLoaded || !map.current) return undefined
+
+    const syncBearing = () => {
+      setMapBearing(map.current?.getBearing?.() ?? 0)
+    }
+
+    syncBearing()
+    map.current.on('rotate', syncBearing)
+    map.current.on('rotateend', syncBearing)
+
+    return () => {
+      map.current?.off('rotate', syncBearing)
+      map.current?.off('rotateend', syncBearing)
+    }
+  }, [walkingCompanionUI, mapLoaded])
+
+  useEffect(() => {
     if (!map.current || !mapLoaded || !walkingCompanionUI) return
     if (map.current.getLayer('tour-route-line')) {
       map.current.setPaintProperty('tour-route-line', 'line-opacity', 0.1)
@@ -905,16 +923,11 @@ function TourMapboxView({
         </div>
       ) : null}
       <MapArrivalPulse point={pulsePoint} active={arrivalPulseActive} />
-      {walkingCompanionUI && mapLoaded ? (
-        <button
-          type="button"
-          className="absolute bottom-4 right-4 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-[rgba(245,239,227,0.12)] bg-[rgba(28,26,24,0.82)] text-[#F5EFE3] shadow-lg backdrop-blur-md"
-          onClick={handleRecenter}
-          aria-label="Recenter map"
-        >
-          <LocateFixed size={16} strokeWidth={2} />
-        </button>
-      ) : null}
+      <WalkingMapChrome
+        visible={walkingCompanionUI && mapLoaded}
+        bearing={mapBearing}
+        onRecenter={handleRecenter}
+      />
       {showDebugOverlay ? (
         <MapDebugOverlay
           debugGeo={debugGeo}
