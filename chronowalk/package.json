@@ -35,6 +35,7 @@
     "check:content:local": "node scripts/check-content.mjs --skip-remote",
     "check:content:strict": "node scripts/check-content.mjs --require-full-durations",
     "check:content:local:strict": "node scripts/check-content.mjs --skip-remote --require-full-durations",
+    "check:sensitive-data": "node scripts/check-no-sensitive-data.mjs",
     "seed:paddle-catalog": "node scripts/seed-paddle-catalog.mjs",
     "test:watch": "vitest"
   },

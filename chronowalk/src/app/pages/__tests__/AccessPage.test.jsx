@@ -2,9 +2,10 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { AccessPage } from '../AccessPage'
-import { ACCESS_KEY } from '../../../lib/config'
 import { markAppEntryComplete, clearAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
+import { grantTestAccess } from '../../../test/grantTestAccess.js'
+import { hasValidLocalAccess } from '../../../lib/accessSession.js'
 
 const validateMock = vi.fn()
 const pullMock = vi.fn()
@@ -49,7 +50,7 @@ describe('AccessPage', () => {
   })
 
   it('sends owners who finished app entry into begin', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     markAppEntryComplete()
 
     renderAccessPage()
@@ -58,7 +59,7 @@ describe('AccessPage', () => {
   })
 
   it('sends new owners into app entry setup', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
 
     renderAccessPage()
 
@@ -66,7 +67,7 @@ describe('AccessPage', () => {
   })
 
   it('offers resume to owners with a real in-progress journey', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 3 })
 
     renderAccessPage()
@@ -75,7 +76,16 @@ describe('AccessPage', () => {
   })
 
   it('grants access and sends first-time purchasers into app entry', async () => {
-    validateMock.mockResolvedValue({ ok: true, source: 'dev', productId: 'rome-essential' })
+    validateMock.mockResolvedValue({
+      ok: true,
+      source: 'dev',
+      productId: 'rome-essential',
+      purchasedProductId: 'rome-essential',
+      contentProductId: 'rome-essential',
+      seatLimit: 1,
+      role: 'solo',
+      deviceCredential: 'dev-credential-dev',
+    })
 
     renderAccessPage('/access?token=dev')
 
@@ -83,12 +93,44 @@ describe('AccessPage', () => {
       expect(screen.getByText('Setup route')).toBeInTheDocument()
     })
 
-    expect(localStorage.getItem(ACCESS_KEY)).toBe('true')
+    expect(hasValidLocalAccess()).toBe(true)
     expect(localStorage.getItem('cw_purchased_tier_v1')).toBe('rome-essential')
   })
 
+  it('always validates a token URL even when unrelated local access exists', async () => {
+    grantTestAccess({ credential: 'unrelated-local-credential-aaaaaaaaaaaaaaaa' })
+    expect(hasValidLocalAccess()).toBe(true)
+
+    validateMock.mockResolvedValue({ ok: false, reason: 'invalid' })
+
+    renderAccessPage('/access?token=00000000-0000-4000-8000-000000000000')
+
+    expect(await screen.findByText(/this link is not valid/i)).toBeInTheDocument()
+    expect(validateMock).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000000')
+  })
+
   it('hydrates cloud progress before routing to resume', async () => {
-    validateMock.mockResolvedValue({ ok: true, source: 'staging', productId: 'rome-complete' })
+    validateMock.mockImplementation(async () => {
+      grantTestAccess({
+        credential: 'hydrated-device-credential-bbbbbbbbbbbbbbbb',
+        purchasedProductId: 'rome-complete',
+        contentProductId: 'rome-complete',
+      })
+      transitionJourney(JOURNEY_STATES.WALKING, {
+        currentSequenceIndex: 5,
+        completedWaypointIds: ['w01'],
+      })
+      return {
+        ok: true,
+        source: 'supabase',
+        productId: 'rome-complete',
+        purchasedProductId: 'rome-complete',
+        contentProductId: 'rome-complete',
+        seatLimit: 1,
+        role: 'solo',
+        deviceCredential: 'hydrated-device-credential-bbbbbbbbbbbbbbbb',
+      }
+    })
     pullMock.mockResolvedValue({
       state: JOURNEY_STATES.WALKING,
       context: {
@@ -98,7 +140,7 @@ describe('AccessPage', () => {
       },
     })
 
-    renderAccessPage('/access?token=550e8400-e29b-41d4-a716-446655440000')
+    renderAccessPage('/access?token=00000000-0000-4000-8000-000000000000')
 
     await waitFor(() => {
       expect(screen.getByText('Begin route')).toBeInTheDocument()
@@ -111,6 +153,6 @@ describe('AccessPage', () => {
     renderAccessPage('/access?token=bad-token')
 
     expect(await screen.findByText(/this link is not valid/i)).toBeInTheDocument()
-    expect(localStorage.getItem(ACCESS_KEY)).toBeNull()
+    expect(hasValidLocalAccess()).toBe(false)
   })
 })

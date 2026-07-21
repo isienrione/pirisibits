@@ -1,7 +1,9 @@
 import { PACE_OPTIONS, JOURNEY_PACE } from '../data/romePacing.js'
 import { purchaseTourProduct } from '../services/tourEntitlements.js'
-import { grantAccess } from './config.js'
-import { rememberAccessToken } from './access.js'
+import {
+  writeAccessEntitlement,
+  writeDeviceCredential,
+} from './accessSession.js'
 
 const PENDING_TIER_KEY = 'cw_pending_purchase_tier_v1'
 const PURCHASED_TIER_KEY = 'cw_purchased_tier_v1'
@@ -60,6 +62,8 @@ export function paceIdForPurchaseTier(tierId) {
     case 'rome-essential':
       return JOURNEY_PACE.CLASSIC
     case 'rome-complete':
+    case 'rome-couple':
+    case 'rome-family':
       return JOURNEY_PACE.HEROIC
     default:
       return null
@@ -67,17 +71,20 @@ export function paceIdForPurchaseTier(tierId) {
 }
 
 /**
- * True when the buyer unlocked Roma Eterna — they may choose any route mode.
+ * True when the buyer unlocked Roma Eterna content — they may choose any route mode.
  * Single packs skip the mode picker and start their locked route.
  */
 export function shouldShowPaceModePicker(tierId) {
-  return tierId === 'rome-complete'
+  return (
+    tierId === 'rome-complete' ||
+    tierId === 'rome-couple' ||
+    tierId === 'rome-family'
+  )
 }
 
 /**
  * Pace options unlocked by a purchased product.
- * Single packs lock to their route; Roma Eterna unlocks every mode
- * (full walk, centro, ancient core, or hand-picked stops).
+ * Bundle SKUs unlock Roma Eterna content (21 stops) without duplicating stop lists.
  */
 export function getPaceOptionsForPurchasedTier(tierId) {
   if (!tierId) return PACE_OPTIONS
@@ -88,6 +95,8 @@ export function getPaceOptionsForPurchasedTier(tierId) {
     case 'rome-essential':
       return PACE_OPTIONS.filter((opt) => opt.id === JOURNEY_PACE.CLASSIC)
     case 'rome-complete':
+    case 'rome-couple':
+    case 'rome-family':
       return PACE_OPTIONS
     default:
       return PACE_OPTIONS
@@ -95,16 +104,44 @@ export function getPaceOptionsForPurchasedTier(tierId) {
 }
 
 /**
- * After a valid purchase token: grant access, remember token + tier, unlock tours.
- * @param {{ token?: string|null, productId?: string|null }} opts
+ * After a successful claim redeem / device validation: persist credential + entitlement.
+ * @param {{
+ *   token?: string|null,
+ *   productId?: string|null,
+ *   purchasedProductId?: string|null,
+ *   contentProductId?: string|null,
+ *   seatLimit?: number|null,
+ *   role?: string|null,
+ *   bundleStatus?: string|null,
+ *   offlineLeaseExpiresAt?: string|number|null,
+ * }} opts
  */
-export function applyPurchaseUnlock({ token = null, productId = null } = {}) {
-  grantAccess()
+export function applyPurchaseUnlock({
+  token = null,
+  productId = null,
+  purchasedProductId = null,
+  contentProductId = null,
+  seatLimit = null,
+  role = null,
+  bundleStatus = null,
+  offlineLeaseExpiresAt = null,
+} = {}) {
+  if (token) writeDeviceCredential(token)
 
-  if (token) rememberAccessToken(token)
+  const purchased = purchasedProductId || productId
+  const content = contentProductId || productId
 
-  if (productId) {
-    writePurchasedTier(productId)
+  writeAccessEntitlement({
+    purchasedProductId: purchased,
+    contentProductId: content,
+    seatLimit,
+    role,
+    bundleStatus,
+    offlineLeaseExpiresAt,
+  })
+
+  if (content || purchased) {
+    writePurchasedTier(content || purchased)
     dismissPendingPurchaseTier()
   } else {
     clearPendingPurchaseTier()

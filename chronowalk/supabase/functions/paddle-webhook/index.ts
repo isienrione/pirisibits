@@ -1,7 +1,7 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v7
+ * WEBHOOK_BUILD: 2026-07-21-v8-claims
  *
  * WHY v5: transaction.completed payloads do NOT include buyer email (only customer_id).
  * customer.created payloads DO include email — cache customer_id → email, fulfill on completed.
@@ -9,13 +9,13 @@
  *
  * Paste this ONE file into Supabase → Edge Functions → paddle-webhook → Deploy.
  * Do NOT create a new function — replace the existing paddle-webhook body.
- * Logs / JSON MUST contain "2026-07-21-v7".
+ * Logs / JSON MUST contain "2026-07-21-v8-claims".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
 
-const WEBHOOK_BUILD = '2026-07-21-v7'
+const WEBHOOK_BUILD = '2026-07-21-v8-claims'
 
 /* ---- branded access email template (inlined for single-file Supabase paste) ---- */
 /**
@@ -27,6 +27,8 @@ const PACK_LABELS = {
   'rome-central': 'Roma Historica',
   'rome-essential': 'Roma Antica',
   'rome-complete': 'Roma Eterna',
+  'rome-couple': 'Couple Bundle',
+  'rome-family': 'Family Bundle',
 }
 
 function escapeHtml(value) {
@@ -243,8 +245,63 @@ function siteUrl() {
   return (Deno.env.get('SITE_URL') ?? 'https://chronowalk.com').replace(/\/$/, '')
 }
 
-function buildAccessLink(accessToken) {
-  return `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
+function buildAccessLink(claim) {
+  return `${siteUrl()}/access?token=${encodeURIComponent(claim)}`
+}
+
+function maskEmail(email) {
+  const raw = String(email ?? '').toLowerCase()
+  const at = raw.indexOf('@')
+  if (at <= 0) return '[redacted-email]'
+  return `${raw[0]}***@${raw.slice(at + 1, at + 2)}***`
+}
+
+function maskId(id) {
+  const raw = String(id ?? '')
+  if (raw.length <= 10) return `${raw.slice(0, 4)}…`
+  return `${raw.slice(0, 8)}…${raw.slice(-4)}`
+}
+
+/** Fail closed: entitlement only from verified Paddle price_id catalog. */
+async function resolveEntitlementFromPriceId(supabase, priceId) {
+  if (!priceId) return null
+  const { data, error } = await supabase.rpc('resolve_entitlement_from_price_id', {
+    p_price_id: String(priceId),
+  })
+  if (error) throw new Error(`price catalog lookup failed: ${error.message}`)
+  const row = Array.isArray(data) ? data[0] : data
+  if (!row?.product_id || !row?.content_product_id || !row?.seat_limit) return null
+  return {
+    productId: String(row.product_id),
+    contentProductId: String(row.content_product_id),
+    seatLimit: Number(row.seat_limit),
+  }
+}
+
+function firstPriceIdFromTransaction(data) {
+  const items = data?.items ?? data?.details?.line_items ?? []
+  if (!Array.isArray(items)) return null
+  for (const item of items) {
+    const priceId = item?.price?.id ?? item?.price_id ?? item?.priceId
+    if (priceId) return String(priceId)
+  }
+  return null
+}
+
+async function recordWebhookEvent(supabase, envelope, eventType) {
+  const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
+  const { data, error } = await supabase.rpc('record_paddle_webhook_event', {
+    p_event_id: eventId ? String(eventId) : null,
+    p_event_type: eventType ? String(eventType) : 'unknown',
+    p_occurred_at: envelope?.occurred_at ?? null,
+    p_payload: {
+      event_type: eventType,
+      data_id: envelope?.data?.id ?? null,
+      // Minimal payload — never store full customer PII blobs in inbox when avoidable.
+    },
+  })
+  if (error) throw new Error(`webhook inbox failed: ${error.message}`)
+  return data
 }
 
 /** Prefer raw webhook JSON — SDK entities strip nested fields and never have email on txns. */
@@ -386,7 +443,19 @@ async function resolveBuyerEmail(supabase, mode, data) {
   )
 }
 
-async function upsertPurchase(supabase, { email, orderId, productId, host, abVariant }) {
+async function upsertPurchase(supabase, {
+  email,
+  orderId,
+  productId,
+  contentProductId,
+  seatLimit,
+  priceId,
+  paddleCustomerId,
+  currencyCode,
+  amountCents,
+  host,
+  abVariant,
+}) {
   const { data, error } = await supabase
     .from('purchases')
     .upsert(
@@ -394,27 +463,72 @@ async function upsertPurchase(supabase, { email, orderId, productId, host, abVar
         email,
         order_id: orderId,
         product_id: productId,
+        content_product_id: contentProductId,
+        seat_limit: seatLimit,
+        price_id: priceId,
+        paddle_customer_id: paddleCustomerId,
+        currency_code: currencyCode,
+        amount_cents: amountCents,
+        status: 'active',
         host,
         ab_variant: Number.isFinite(abVariant) ? abVariant : null,
+        fulfilled_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
       { onConflict: 'order_id' },
     )
-    .select('access_token, email, product_id, order_id')
+    .select('id, email, product_id, content_product_id, seat_limit, order_id, status')
     .single()
 
   if (error) throw new Error(`purchases upsert failed: ${error.message}`)
-  if (!data?.access_token) throw new Error('purchases upsert returned no access_token')
+  if (!data?.id) throw new Error('purchases upsert returned no id')
   return data
 }
 
-async function sendAccessEmail({ email, accessToken, productId }) {
-  const link = buildAccessLink(accessToken)
+async function ensureBundleIfNeeded(supabase, purchase) {
+  if (!['rome-couple', 'rome-family'].includes(purchase.product_id)) return null
+  const { data, error } = await supabase.rpc('ensure_paid_bundle', {
+    p_purchase_id: purchase.id,
+  })
+  if (error) throw new Error(`ensure_paid_bundle failed: ${error.message}`)
+  return data
+}
+
+async function issueClaimAndEnqueueOutbox(supabase, purchase) {
+  const { data: claim, error: claimError } = await supabase.rpc('issue_purchase_claim', {
+    p_purchase_id: purchase.id,
+    p_purpose: 'initial',
+  })
+  if (claimError) throw new Error(`issue_purchase_claim failed: ${claimError.message}`)
+  if (!claim || typeof claim !== 'string') throw new Error('issue_purchase_claim returned no claim')
+
+  const { error: outboxError } = await supabase.from('fulfillment_outbox').upsert(
+    {
+      purchase_id: purchase.id,
+      order_id: purchase.order_id,
+      status: 'pending',
+      attempts: 0,
+      next_attempt_at: new Date().toISOString(),
+    },
+    { onConflict: 'purchase_id' },
+  )
+  if (outboxError) throw new Error(`fulfillment_outbox upsert failed: ${outboxError.message}`)
+
+  // Raw claim exists only in memory for this send attempt — never persist to outbox.
+  return String(claim)
+}
+
+async function sendAccessEmail({ email, claim, productId }) {
+  const link = buildAccessLink(claim)
   const resendKey = Deno.env.get('RESEND_API_KEY')
   const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <hello@chronowalk.com>'
   const base = siteUrl()
 
   if (!resendKey) {
-    console.error('[paddle-webhook] RESEND_API_KEY unset', { email, link })
+    console.error('[paddle-webhook] RESEND_API_KEY unset', {
+      email: maskEmail(email),
+      productId,
+    })
     throw new Error('RESEND_API_KEY is not set')
   }
 
@@ -429,21 +543,28 @@ async function sendAccessEmail({ email, accessToken, productId }) {
       to: [email],
       subject: accessEmailSubject(),
       html: buildAccessEmailHtml({
-        accessToken,
+        accessToken: claim,
         accessLink: link,
         productId,
         siteUrl: base,
       }),
       text: buildAccessEmailText({
-        accessToken,
+        accessToken: claim,
         accessLink: link,
         productId,
       }),
     }),
   })
 
-  if (!res.ok) throw new Error(`Resend failed: ${res.status} ${await res.text()}`)
-  console.log('[paddle-webhook] access email sent', { build: WEBHOOK_BUILD, email, productId })
+  if (!res.ok) throw new Error(`Resend failed: ${res.status}`)
+  const json = await res.json().catch(() => ({}))
+  console.log('[paddle-webhook] access email sent', {
+    build: WEBHOOK_BUILD,
+    email: maskEmail(email),
+    productId,
+    resendId: json?.id ?? null,
+  })
+  return json?.id ?? null
 }
 
 async function handleCustomerEvent(supabase, data) {
@@ -467,47 +588,90 @@ async function handleTransactionCompleted(supabase, mode, data) {
 
   const resolved = await resolveBuyerEmail(supabase, mode, data)
   const custom = readCustomData(data)
+  // Never trust custom_data.product_id for entitlement.
+  void custom.product_id
+
+  const priceId = firstPriceIdFromTransaction(data)
+  const entitlement = await resolveEntitlementFromPriceId(supabase, priceId)
+  if (!entitlement) {
+    throw new Error(
+      `unknown or unmapped price_id (${WEBHOOK_BUILD}) priceId=${priceId ?? 'null'} — fail closed`,
+    )
+  }
+
+  const totals = data?.details?.totals ?? data?.totals ?? {}
+  const amountCents = totals?.total != null ? Number(totals.total) : null
+  const currencyCode = data?.currency_code ?? totals?.currency_code ?? null
 
   console.log('[paddle-webhook] fulfilling transaction.completed', {
     build: WEBHOOK_BUILD,
-    orderId,
-    email: resolved.email,
+    orderId: maskId(orderId),
+    email: maskEmail(resolved.email),
     source: resolved.source,
-    customerId: data?.customer_id ?? null,
+    priceId,
+    productId: entitlement.productId,
+    contentProductId: entitlement.contentProductId,
+    seatLimit: entitlement.seatLimit,
   })
 
   const row = await upsertPurchase(supabase, {
     email: resolved.email,
     orderId: String(orderId),
-    productId: custom.product_id,
+    productId: entitlement.productId,
+    contentProductId: entitlement.contentProductId,
+    seatLimit: entitlement.seatLimit,
+    priceId,
+    paddleCustomerId: data?.customer_id ? String(data.customer_id) : null,
+    currencyCode: currencyCode ? String(currencyCode) : null,
+    amountCents: Number.isFinite(amountCents) ? amountCents : null,
     host: custom.host,
     abVariant: custom.ab_variant,
   })
 
+  await ensureBundleIfNeeded(supabase, row)
+
   console.log('[paddle-webhook] purchase upserted', {
     build: WEBHOOK_BUILD,
-    orderId: row.order_id,
-    email: row.email,
+    orderId: maskId(row.order_id),
+    email: maskEmail(row.email),
     productId: row.product_id,
-    accessToken: row.access_token,
+    contentProductId: row.content_product_id,
+    seatLimit: row.seat_limit,
   })
 
   try {
-    await sendAccessEmail({
+    const claim = await issueClaimAndEnqueueOutbox(supabase, row)
+    const resendId = await sendAccessEmail({
       email: row.email,
-      accessToken: row.access_token,
+      claim,
       productId: row.product_id,
     })
+    await supabase
+      .from('fulfillment_outbox')
+      .update({
+        status: 'sent',
+        sent_at: new Date().toISOString(),
+        resend_email_id: resendId,
+        attempts: 1,
+      })
+      .eq('purchase_id', row.id)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
-    console.error('[paddle-webhook] access email failed after purchase save', {
+    console.error('[paddle-webhook] claim/outbox email failed after purchase save', {
       build: WEBHOOK_BUILD,
-      orderId: row.order_id,
-      email: row.email,
-      accessToken: row.access_token,
-      link: buildAccessLink(row.access_token),
+      orderId: maskId(row.order_id),
+      email: maskEmail(row.email),
       message,
     })
+    await supabase
+      .from('fulfillment_outbox')
+      .update({
+        status: 'failed',
+        last_error: message.slice(0, 500),
+        attempts: 1,
+        next_attempt_at: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      })
+      .eq('purchase_id', row.id)
   }
 }
 
@@ -542,8 +706,23 @@ Deno.serve(async (req) => {
     // Verify signature (throws if invalid). We still fulfill from raw JSON.
     await paddle.webhooks.unmarshal(rawBody, secret, signature)
 
-    const { eventType, data } = readPayload(rawBody)
+    const { envelope, eventType, data } = readPayload(rawBody)
     const supabase = getSupabaseAdmin()
+
+    const inbox = await recordWebhookEvent(supabase, envelope, eventType)
+    if (inbox?.duplicate) {
+      console.log('[paddle-webhook] duplicate event ignored', {
+        build: WEBHOOK_BUILD,
+        eventType,
+      })
+      return new Response(
+        JSON.stringify({ received: true, duplicate: true, build: WEBHOOK_BUILD }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
+    }
 
     if (eventType === 'customer.created' || eventType === 'customer.updated') {
       await handleCustomerEvent(supabase, data)

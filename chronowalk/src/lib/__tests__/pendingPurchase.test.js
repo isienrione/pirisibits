@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ACCESS_KEY } from '../config.js'
-import { ACCESS_TOKEN_KEY } from '../access.js'
+import { DEVICE_CREDENTIAL_KEY, hasValidLocalAccess } from '../accessSession.js'
 import {
   applyPurchaseUnlock,
   getPaceOptionsForPurchasedTier,
@@ -40,20 +40,21 @@ describe('pendingPurchase', () => {
     expect(shouldShowPaceModePicker('rome-essential')).toBe(false)
   })
 
-  it('applies unlock from product id and remembers token', () => {
-    const token = '550e8400-e29b-41d4-a716-446655440000'
+  it('applies unlock from product id and remembers device credential', () => {
+    const token = 'test-device-credential-000000000000000000000000'
     const result = applyPurchaseUnlock({ token, productId: 'rome-essential' })
 
     expect(result.tier).toBe('rome-essential')
     expect(localStorage.getItem(ACCESS_KEY)).toBe('true')
-    expect(localStorage.getItem(ACCESS_TOKEN_KEY)).toBe(token)
+    expect(localStorage.getItem(DEVICE_CREDENTIAL_KEY)).toBe(token)
+    expect(hasValidLocalAccess()).toBe(true)
     expect(readPurchasedTier()).toBe('rome-essential')
     expect(readOwnedTourIds()).toContain('rome-antica')
   })
 
   it('promotes pending tier when product id is absent', () => {
     rememberPendingPurchaseTier('rome-central')
-    applyPurchaseUnlock({ token: '550e8400-e29b-41d4-a716-446655440000' })
+    applyPurchaseUnlock({ token: 'test-device-credential-000000000000000000000000' })
     expect(readPurchasedTier()).toBe('rome-central')
   })
 
