@@ -28,8 +28,9 @@ describe('AppEntryPrepare', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /add icon to home screen/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
-    expect(screen.getByTestId('a2hs-howto-demo')).toBeInTheDocument()
-    expect(screen.getByText(/on iphone \(safari\)/i)).toBeInTheDocument()
+    expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
+    expect(screen.getByText(/iphone — use safari only/i)).toBeInTheDocument()
+    expect(screen.getByTestId('a2hs-ios-chrome-warning')).toBeInTheDocument()
   })
 
   it('shows installed state when already on the home screen', () => {
