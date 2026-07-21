@@ -109,10 +109,12 @@ supabase secrets set \
 supabase functions deploy paddle-webhook
 ```
 
-**Critical:** `PADDLE_API_KEY` must be the **live** key (`pdl_live_…`), not sandbox (`pdl_sdbx_…`).  
-Paddle webhook payloads do **not** include the buyer email — the function looks it up via the API. A sandbox key under `PADDLE_ENV=production` causes `transaction.completed missing customer email` and notifications stuck in `queued_for_retry`.
+**Critical:** `transaction.completed` webhooks include `customer_id` but **not** the buyer email.  
+ChronoWalk caches email from `customer.created` / `customer.updated` into `public.paddle_customers`, then fulfills on `transaction.completed`. Run `scripts/paddle-customers-migration.sql` once.
 
-After deploy, logs must show `build: 2026-07-21-v3` (or newer). If the error stack points at older line numbers without that build id, the dashboard is still running a stale paste — open `supabase/functions/paddle-webhook/index.ts`, replace the entire function body, **Deploy**.
+`PADDLE_API_KEY` should still be the **live** key (`pdl_live_…`) as an API fallback. After deploy, logs / error JSON must show `build: 2026-07-21-v5`.
+
+After deploy, logs must show `build: 2026-07-21-v5` (or newer). If the error stack points at older line numbers without that build id, the dashboard is still running a stale paste — open `supabase/functions/paddle-webhook/index.ts`, replace the entire function body, **Deploy**.
 
 Recover a missing email for a completed transaction:
 
