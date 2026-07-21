@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getDebugGeoPlacement, isDebugGeo, isDevPanelEnabled } from '../../config/env.js'
+import { getDebugGeoPlacement, isDebugGeo, isDevPanelEnabled, isSimulateRome, isSimulateRomeTrack } from '../../config/env.js'
 import { setDevSimulateGps } from '../dev/devTools.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
@@ -159,7 +159,11 @@ export default function V2FieldTestPanel() {
       </div>
 
       <p style={{ margin: '0 0 8px' }}>
-        GPS: {isDebugGeo() ? `simulated (${getDebugGeoPlacement()})` : 'live'}
+        GPS: {isSimulateRome()
+          ? `simulated (rome${isSimulateRomeTrack() ? '-track' : ''})`
+          : isDebugGeo()
+            ? `simulated (${getDebugGeoPlacement()})`
+            : 'live'}
         <br />
         Stop: {activeLabel}
         <br />

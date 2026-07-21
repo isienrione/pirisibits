@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LOCATION_STATUS } from './useGeoLocation.js'
 import { movedEnough, resolveCompanionMode } from '../content/companionGuidance.js'
+import { isSimulateRome } from '../config/env.js'
 
 export function useWalkingCompanion({
   position,
@@ -8,6 +9,7 @@ export function useWalkingCompanion({
   geofenceRadiusM = 40,
   locationStatus,
   enabled = true,
+  suppressOffRoute = isSimulateRome(),
 }) {
   const [stationaryMs, setStationaryMs] = useState(0)
   const anchorRef = useRef({ position: null, since: Date.now() })
@@ -43,6 +45,7 @@ export function useWalkingCompanion({
     geofenceRadiusM,
     locationStatus,
     stationaryMs,
+    suppressOffRoute,
   })
 
   return { mode, stationaryMs }

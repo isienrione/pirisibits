@@ -1,11 +1,18 @@
 export const WALKING_COMPANION_MIN_ZOOM = 15.5
-export const WALKING_COMPANION_MAX_ZOOM = 16.75
+export const WALKING_COMPANION_MAX_ZOOM = 16.5
 
+/** Tilted hero-walk camera — composed 3D look over satellite. */
+export const WALKING_COMPANION_PITCH = 45
+
+/**
+ * Generous padding so fitBounds keeps user + destination on-screen when pitched.
+ * Bottom is larger because pitch foreshortens the near edge of the viewport.
+ */
 export const WALKING_COMPANION_MAP_PADDING = {
-  top: 48,
-  bottom: 56,
-  left: 40,
-  right: 40,
+  top: 72,
+  bottom: 110,
+  left: 56,
+  right: 56,
 }
 
 /** Rough Rome tour footprint — reject stray GPS / bad geometry for camera framing. */
@@ -16,8 +23,9 @@ export const ROME_CAMERA_BOUNDS = {
   maxLng: 12.54,
 }
 
-const MIN_BOUNDS_SPAN_DEG = 0.0012
+const MIN_BOUNDS_SPAN_DEG = 0.0018
 const MAX_USER_DEST_DISTANCE_M = 3500
+const MAX_ROUTE_SAMPLES = 28
 
 function isValidLngLat([lng, lat]) {
   return (
@@ -40,14 +48,25 @@ function haversineMeters(a, b) {
   return Math.hypot(latDiff, lngDiff)
 }
 
-function sampleRouteEndpoints(routeCoordinates = []) {
+/**
+ * Sample route geometry densely enough for fitBounds (not just endpoints),
+ * so the full walking path stays in frame.
+ */
+export function sampleRouteCoordinates(routeCoordinates = [], maxSamples = MAX_ROUTE_SAMPLES) {
   if (!routeCoordinates.length) return []
   if (routeCoordinates.length === 1) return [routeCoordinates[0]]
-  const mid = routeCoordinates[Math.floor(routeCoordinates.length / 2)]
-  return [routeCoordinates[0], mid, routeCoordinates[routeCoordinates.length - 1]]
+  if (routeCoordinates.length <= maxSamples) return [...routeCoordinates]
+
+  const samples = []
+  const last = routeCoordinates.length - 1
+  for (let i = 0; i < maxSamples; i += 1) {
+    const index = Math.round((i / (maxSamples - 1)) * last)
+    samples.push(routeCoordinates[index])
+  }
+  return samples
 }
 
-/** Collect lng/lat pairs for a tight walking-card camera frame. */
+/** Collect lng/lat pairs for a walking-card camera frame (user + destination + route). */
 export function collectWalkingCompanionBoundsPoints({
   userPos = null,
   destination = null,
@@ -73,7 +92,7 @@ export function collectWalkingCompanionBoundsPoints({
   pushPoint(destination)
   pushPoint(previousStop)
 
-  for (const coordinate of sampleRouteEndpoints(routeCoordinates)) {
+  for (const coordinate of sampleRouteCoordinates(routeCoordinates)) {
     if (!Array.isArray(coordinate) || coordinate.length < 2) continue
     points.push([coordinate[0], coordinate[1]])
   }
@@ -101,14 +120,19 @@ export function expandBoundsMinimumSpan(bounds, minSpanDeg = MIN_BOUNDS_SPAN_DEG
 }
 
 /**
- * Frame the walking companion map on the active leg.
+ * Frame the walking companion map on the active leg with a tilted camera.
  * Uses fitBounds (never jumpTo/setZoom) so Mapbox tiles keep rendering on mobile Safari.
+ * Pitch is applied via fitBounds options so recenter restores the composed view.
  */
 export function applyWalkingCompanionCamera(
   map,
   mapboxgl,
   points,
-  { padding = WALKING_COMPANION_MAP_PADDING } = {},
+  {
+    padding = WALKING_COMPANION_MAP_PADDING,
+    pitch = WALKING_COMPANION_PITCH,
+    duration = 0,
+  } = {},
 ) {
   if (!map || !mapboxgl?.LngLatBounds || !points?.length) return false
   if (!map.isStyleLoaded()) return false
@@ -122,8 +146,10 @@ export function applyWalkingCompanionCamera(
 
   map.fitBounds(bounds, {
     padding,
+    pitch,
+    bearing: map.getBearing?.() ?? 0,
     maxZoom: WALKING_COMPANION_MAX_ZOOM,
-    duration: 0,
+    duration,
     essential: true,
   })
 

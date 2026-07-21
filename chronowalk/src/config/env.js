@@ -23,8 +23,38 @@ export const getDebugGeoParam = () => {
   return null
 }
 
+/**
+ * Dev-only Rome GPS simulation for QA outside the city.
+ * Active via `?simulate=rome` / `?simulate=rome-track` or `VITE_SIMULATE_LOCATION=rome`.
+ * Always a no-op in production builds so live travelers never get a fake position.
+ */
+export const getSimulateLocationParam = () => {
+  if (import.meta.env.PROD) return null
+
+  if (typeof window !== 'undefined') {
+    const param = new URLSearchParams(window.location.search).get('simulate')
+    if (param !== null) return String(param).trim().toLowerCase()
+  }
+
+  const fromEnv = import.meta.env.VITE_SIMULATE_LOCATION
+  if (fromEnv) return String(fromEnv).trim().toLowerCase()
+  return null
+}
+
+/** True when Rome location simulation is active (dev/preview only). */
+export const isSimulateRome = () => {
+  const value = getSimulateLocationParam()
+  if (!value) return false
+  return value === 'rome' || value === 'rome-track' || value === 'true' || value === '1'
+}
+
+/** Prefer a short animated track along Via dei Fori Imperiali when requested. */
+export const isSimulateRomeTrack = () => getSimulateLocationParam() === 'rome-track'
+
 /** Runtime debug geo: URL param (?debugGeo or ?geo_debug) overrides build-time env. */
 export const isDebugGeo = () => {
+  if (isSimulateRome()) return true
+
   const param = getDebugGeoParam()
   if (param === null) return false
   const normalized = String(param).trim().toLowerCase()
@@ -39,9 +69,11 @@ export const isDebugGeo = () => {
  * - arrived (default): inside geofence — triggers arrival cards
  * - approaching: just outside geofence
  * - walking: farther away — walking / map UI
+ * - rome: fixed Colosseum-approach origin (from ?simulate=rome)
  */
 export const getDebugGeoPlacement = () => {
   if (!isDebugGeo()) return null
+  if (isSimulateRome()) return 'rome'
   const normalized = String(getDebugGeoParam() ?? 'true')
     .trim()
     .toLowerCase()
@@ -177,8 +209,9 @@ export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
  */
 export const env = {
   mapboxToken: import.meta.env.VITE_MAPBOX_TOKEN,
+  /** Full-screen MAP tab style. Defaults to Mapbox Standard (night config applied in TourMap). */
   mapboxStyleUrl:
-    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/light-v11',
+    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/standard',
   get debugGeo() {
     return isDebugGeo()
   },

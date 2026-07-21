@@ -1,15 +1,20 @@
-import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2 } from 'lucide-react'
+import { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { CheckCircle2, Footprints } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
+import { buildGoogleMapsDirectionsUrl } from '../../utils/walkingDirections.js'
 import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
 import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
+import NextTurnsCard from '../ui/NextTurnsCard.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
-import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
+import {
+  formatDistanceLine,
+  resolveWalkChromeDistanceCopy,
+} from '../lib/walkingCompanionFormat.js'
 import {
   isWithinApproachDistance,
   resolveWalkingCompanionPhase,
@@ -78,6 +83,15 @@ export default function WalkingCompanionScreen({
       enabled: !showArrivedUI && Boolean(destination),
     })
 
+  const externalMapsUrl = useMemo(
+    () => buildGoogleMapsDirectionsUrl(userPosition, destination),
+    [userPosition, destination],
+  )
+
+  const handleOpenExternalMaps = useCallback((url) => {
+    if (url) window.open(url, '_blank', 'noopener,noreferrer')
+  }, [])
+
   const walkingStepProgress = useMemo(
     () =>
       resolveWalkingStepProgress({
@@ -92,9 +106,10 @@ export default function WalkingCompanionScreen({
   const mapWithDirections = useMemo(() => {
     if (!isValidElement(map)) return map
     const geometry = directions?.geometry ?? null
+    const hasRoute = Boolean(geometry?.coordinates?.length)
     return cloneElement(map, {
       directionsGeometry: geometry,
-      directionsModeActive: Boolean(geometry?.length),
+      directionsModeActive: hasRoute,
     })
   }, [map, directions?.geometry])
 
@@ -126,15 +141,18 @@ export default function WalkingCompanionScreen({
     near,
   })
 
-  const distanceCopy = resolveWalkingDistanceCopy(
-    distanceM,
+  const distanceCopy = resolveWalkChromeDistanceCopy({
+    liveDistanceM: distanceM,
     estimatedDistanceM,
+    directionsDistanceM: directions?.distanceM,
+    directionsDurationSec: directions?.durationSec,
     locationStatus,
-  )
+    resolveWalkingDistanceCopy,
+  })
   const distanceLine = formatDistanceLine(distanceCopy)
   const showGpsHelp = !showArrivedUI && distanceCopy.gpsBlocked
   const subtitleKey = showArrivedUI ? 'arrived' : approaching ? 'near' : 'walking'
-  const subtitleText = approaching ? approachCue : distanceLine
+  const showDistanceMeta = !showArrivedUI && !approaching
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
@@ -222,17 +240,33 @@ export default function WalkingCompanionScreen({
             </div>
 
             <div className="cw-walking-companion__subtitle" aria-live="polite">
-              <p
-                key={subtitleKey}
-                className={
-                  approaching
-                    ? 'cw-walking-companion__cue'
-                    : 'cw-walking-companion__distance'
-                }
-                data-testid={approaching ? 'walking-approach-cue' : undefined}
-              >
-                {subtitleText}
-              </p>
+              {showDistanceMeta ? (
+                <p
+                  key={subtitleKey}
+                  className="cw-walking-companion__distance"
+                  data-testid="walking-distance-meta"
+                >
+                  <Footprints
+                    className="cw-walking-companion__distance-icon"
+                    size={15}
+                    strokeWidth={2}
+                    aria-hidden
+                  />
+                  <span>{distanceLine}</span>
+                </p>
+              ) : (
+                <p
+                  key={subtitleKey}
+                  className={
+                    approaching
+                      ? 'cw-walking-companion__cue'
+                      : 'cw-walking-companion__distance'
+                  }
+                  data-testid={approaching ? 'walking-approach-cue' : undefined}
+                >
+                  {approaching ? approachCue : distanceLine}
+                </p>
+              )}
             </div>
           </>
         )}
@@ -293,6 +327,8 @@ export default function WalkingCompanionScreen({
               error={directionsError}
               destinationTitle={title}
               onRetry={retryDirections}
+              externalMapsUrl={externalMapsUrl}
+              onOpenExternalMaps={handleOpenExternalMaps}
               variant="full"
             />
           </div>
@@ -306,14 +342,16 @@ export default function WalkingCompanionScreen({
               </div>
             </div>
             <div className="cw-walking-companion__next-turns">
-              <WalkingCompanionStepsPanel
+              <NextTurnsCard
                 steps={directions?.steps ?? []}
                 currentStepIndex={walkingStepProgress.currentStepIndex}
                 loading={directionsLoading}
                 error={directionsError}
                 destinationTitle={title}
+                destinationPhoto={photo}
                 onRetry={retryDirections}
-                variant="timeline"
+                externalMapsUrl={externalMapsUrl}
+                onOpenExternalMaps={handleOpenExternalMaps}
                 maxVisible={4}
               />
             </div>

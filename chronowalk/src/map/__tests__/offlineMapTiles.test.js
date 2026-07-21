@@ -39,7 +39,7 @@ describe('offlineMapTiles', () => {
 
   it('lists style and vector tile URLs for Rome', () => {
     const urls = listRomeMapTileUrls(manifest, { token, zoomMin: 14, zoomMax: 14 })
-    expect(urls[0]).toContain('styles/v1/mapbox/light-v11')
+    expect(urls[0]).toContain('styles/v1/mapbox/standard')
     expect(urls.some((url) => url.includes('.vector.pbf'))).toBe(true)
     expect(urls.length).toBeGreaterThan(1)
   })
