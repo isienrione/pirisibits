@@ -45,6 +45,18 @@ describe('companionGuidance', () => {
     ).toBe(COMPANION_MODES.OFF_ROUTE)
   })
 
+  it('does not flag off-route while Rome location simulation is active', () => {
+    expect(
+      resolveCompanionMode({
+        distance: 1500,
+        geofenceRadiusM: 40,
+        locationStatus: LOCATION_STATUS.GRANTED,
+        stationaryMs: 0,
+        suppressOffRoute: true,
+      })
+    ).toBe(COMPANION_MODES.NORMAL)
+  })
+
   it('detects meaningful movement for stationary tracking', () => {
     const origin = { lat: 41.89, lng: 12.49 }
     expect(movedEnough(origin, { lat: 41.89, lng: 12.49 })).toBe(false)

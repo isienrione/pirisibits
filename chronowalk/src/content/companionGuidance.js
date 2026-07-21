@@ -31,12 +31,14 @@ export function resolveCompanionMode({
   geofenceRadiusM = 40,
   locationStatus,
   stationaryMs = 0,
+  /** Dev Rome GPS simulation — never treat fixed QA coords as off-route. */
+  suppressOffRoute = false,
 }) {
   if (locationStatus !== LOCATION_STATUS.GRANTED || distance == null) {
     return COMPANION_MODES.NORMAL
   }
 
-  if (distance > resolveOffRouteThresholdM(geofenceRadiusM)) {
+  if (!suppressOffRoute && distance > resolveOffRouteThresholdM(geofenceRadiusM)) {
     return COMPANION_MODES.OFF_ROUTE
   }
 
