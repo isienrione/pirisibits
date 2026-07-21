@@ -17,6 +17,11 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { Environment, Paddle } from '@paddle/paddle-node-sdk'
+import {
+  accessEmailSubject,
+  buildAccessEmailHtml,
+  buildAccessEmailText,
+} from './access-email-template.mjs'
 
 const apiKey = process.env.PADDLE_API_KEY
 const supabaseUrl = process.env.SUPABASE_URL
@@ -131,7 +136,7 @@ async function main() {
 
   if (error) throw error
 
-  const link = `${siteUrl()}/access?token=${encodeURIComponent(row.access_token)}`
+  const link = `${siteUrl}/access?token=${encodeURIComponent(row.access_token)}`
   console.log('Purchase row ready:')
   console.log('  email:', row.email)
   console.log('  order:', row.order_id)
@@ -153,22 +158,18 @@ async function main() {
     body: JSON.stringify({
       from,
       to: [row.email],
-      subject: 'Your ChronoWalk Rome access link',
-      text: [
-        'Rome is yours.',
-        '',
-        'Open this personal link on your phone to unlock ChronoWalk:',
-        link,
-        '',
-        'Or go to chronowalk.com/access and paste this access code:',
-        String(row.access_token),
-        '',
-        row.product_id ? `Pack: ${row.product_id}` : '',
-        '',
-        'Keep this email — you can restore access anytime at chronowalk.com/access',
-      ]
-        .filter(Boolean)
-        .join('\n'),
+      subject: accessEmailSubject(),
+      html: buildAccessEmailHtml({
+        accessToken: row.access_token,
+        accessLink: link,
+        productId: row.product_id,
+        siteUrl,
+      }),
+      text: buildAccessEmailText({
+        accessToken: row.access_token,
+        accessLink: link,
+        productId: row.product_id,
+      }),
     }),
   })
 

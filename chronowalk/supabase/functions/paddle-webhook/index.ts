@@ -1,23 +1,27 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v5
+ * WEBHOOK_BUILD: 2026-07-21-v6
  *
  * WHY v5: transaction.completed payloads do NOT include buyer email (only customer_id).
- * customer.created payloads DO include email — and Paddle already delivers those to this
- * endpoint. We cache customer_id → email, then fulfill on transaction.completed.
- * This does not depend on a follow-up Paddle Customers API read.
+ * customer.created payloads DO include email — cache customer_id → email, fulfill on completed.
+ * WHY v6: branded HTML access email (black / gold / amber welcome).
  *
- * Paste this ENTIRE file into Supabase → Edge Functions → paddle-webhook → Deploy.
- * Logs / JSON error body MUST contain "2026-07-21-v5".
- *
- * Also run once in SQL Editor: scripts/paddle-customers-migration.sql
+ * Paste BOTH files into Supabase → Edge Functions → paddle-webhook:
+ *   - index.ts
+ *   - accessEmailHtml.ts
+ * Then Deploy. Logs / JSON MUST contain "2026-07-21-v6".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
+import {
+  accessEmailSubject,
+  buildAccessEmailHtml,
+  buildAccessEmailText,
+} from './accessEmailHtml.ts'
 
-const WEBHOOK_BUILD = '2026-07-21-v5'
+const WEBHOOK_BUILD = '2026-07-21-v6'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -234,6 +238,7 @@ async function sendAccessEmail({ email, accessToken, productId }) {
   const link = buildAccessLink(accessToken)
   const resendKey = Deno.env.get('RESEND_API_KEY')
   const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <hello@chronowalk.com>'
+  const base = siteUrl()
 
   if (!resendKey) {
     console.error('[paddle-webhook] RESEND_API_KEY unset', { email, link })
@@ -249,22 +254,18 @@ async function sendAccessEmail({ email, accessToken, productId }) {
     body: JSON.stringify({
       from,
       to: [email],
-      subject: 'Your ChronoWalk Rome access link',
-      text: [
-        'Rome is yours.',
-        '',
-        'Open this personal link on your phone to unlock ChronoWalk:',
-        link,
-        '',
-        'Or go to chronowalk.com/access and paste this access code:',
-        String(accessToken),
-        '',
-        productId ? `Pack: ${productId}` : null,
-        '',
-        'Keep this email — you can restore access anytime at chronowalk.com/access',
-      ]
-        .filter(Boolean)
-        .join('\n'),
+      subject: accessEmailSubject(),
+      html: buildAccessEmailHtml({
+        accessToken,
+        accessLink: link,
+        productId,
+        siteUrl: base,
+      }),
+      text: buildAccessEmailText({
+        accessToken,
+        accessLink: link,
+        productId,
+      }),
     }),
   })
 
