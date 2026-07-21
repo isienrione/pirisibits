@@ -32,9 +32,9 @@ describe('getLandingRouteJourney', () => {
     expect(previewStops.map((stop) => stop.id)).toEqual(LANDING_ROUTE_PREVIEW_IDS)
     expect(previewStops.every((stop) => stop.featured)).toBe(true)
     expect(previewSegments.map((segment) => segment.stop.id)).toEqual(LANDING_ROUTE_PREVIEW_IDS)
-    // Highlights: Colosseum → Titus → Vesta → Capitoline → Trevi → Pantheon → Castel → Appian
-    // Gap after Titus no longer jumps straight to Trevi (10 skips); Vesta + Capitoline break it up.
-    expect(previewSegments.map((segment) => segment.skippedAfter)).toEqual([1, 2, 4, 2, 0, 3, 1, 0])
+    // Highlights: Colosseum → Via Sacra → Vesta → Capitoline → Trevi → Pantheon → Castel → Appian
+    // Forum beat uses Via Sacra (not Titus) so Pantheon stays the living-city hero on the landing.
+    expect(previewSegments.map((segment) => segment.skippedAfter)).toEqual([3, 0, 4, 2, 0, 3, 1, 0])
     expect(
       previewSegments.reduce((sum, segment) => sum + 1 + segment.skippedAfter, 0),
     ).toBe(totalStops)
