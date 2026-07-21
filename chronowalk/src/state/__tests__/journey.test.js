@@ -86,6 +86,73 @@ describe('journey state machine', () => {
     )
   })
 
+  it('classic Path B completes at Capitoline instead of looping', () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'b', [])
+    const w13Index = seq.indexOf('w13')
+
+    beginJourney({ pace: 'classic', path: 'b' })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      path: 'b',
+      pathLocked: true,
+      currentSequenceIndex: w13Index,
+      completedWaypointIds: [],
+    })
+
+    const first = completeWaypointAndAdvance('w13', manifest)
+    expect(first.state).toBe(JOURNEY_STATES.COMPLETE)
+    expect(first.context.promotedOptionalIds ?? []).not.toContain('enc_circus')
+
+    // Re-fire continue while still indexed on Capitoline — must stay complete, not replay.
+    transitionJourney(JOURNEY_STATES.STORY, {
+      path: 'b',
+      pathLocked: true,
+      currentSequenceIndex: w13Index,
+      completedWaypointIds: ['w13'],
+    })
+    const second = completeWaypointAndAdvance('w13', manifest)
+    expect(second.state).toBe(JOURNEY_STATES.COMPLETE)
+  })
+
+  it('heroic Path B advances past Capitoline toward Via Appia (via t10)', () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'b', [])
+    const w13Index = seq.indexOf('w13')
+
+    beginJourney({ pace: 'heroic', path: 'b' })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      path: 'b',
+      pathLocked: true,
+      currentSequenceIndex: w13Index,
+      completedWaypointIds: [],
+    })
+
+    const first = completeWaypointAndAdvance('w13', manifest)
+    expect(first.state).toBe(JOURNEY_STATES.WALKING)
+    expect(seq[first.context.currentSequenceIndex]).toBe('t10')
+
+    // Stale second complete while still on w13 must advance, not loop the story.
+    transitionJourney(JOURNEY_STATES.STORY, {
+      path: 'b',
+      pathLocked: true,
+      currentSequenceIndex: w13Index,
+      completedWaypointIds: ['w13'],
+    })
+    const second = completeWaypointAndAdvance('w13', manifest)
+    expect(second.state).toBe(JOURNEY_STATES.WALKING)
+    expect(seq[second.context.currentSequenceIndex]).toBe('t10')
+    expect(seq.slice(seq.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
+  })
+
+  it('does not promote optional waypoints that have no insert steps on the path', () => {
+    const manifest = loadRomeManifest()
+    beginJourney({ pace: 'classic', path: 'b' })
+    const before = getJourneySnapshot()
+    const next = promoteOptionalWaypoint('enc_circus', manifest)
+    expect(next).toEqual(before)
+    expect(next.context.promotedOptionalIds ?? []).not.toContain('enc_circus')
+  })
+
   it('enters day complete after act IV on classic pace', () => {
     const manifest = loadRomeManifest()
     const w14Index = buildEffectiveSequence(manifest, 'a', []).indexOf('w14')

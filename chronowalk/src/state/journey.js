@@ -344,8 +344,17 @@ export function completeWaypointAndAdvance(waypointId, manifest = null) {
   }
 
   // Threshold or story completion can fire twice (e.g. back → arrived → threshold
-  // again). Never skip the next transit/waypoint by advancing the index twice.
+  // again). Never skip the next transit/waypoint by advancing the index twice —
+  // unless we are still indexed on this completed stop (failed promote / stale
+  // resume), in which case advance once so Path B cannot loop Capitoline forever.
   if (alreadyComplete) {
+    if (manifest) {
+      const { path, promotedOptionalIds = [], currentSequenceIndex } = snapshot.context
+      const sequence = buildEffectiveSequence(manifest, path, promotedOptionalIds)
+      if (sequence[currentSequenceIndex] === waypointId) {
+        return advanceSequenceIndex(manifest)
+      }
+    }
     return markJourneyCompleteIfPastEnd(manifest, transitionJourney(JOURNEY_STATES.WALKING))
   }
 
@@ -371,8 +380,12 @@ export function promoteOptionalWaypoint(waypointId, manifest) {
   const { path, promotedOptionalIds = [], currentSequenceIndex } = snapshot.context
   if (promotedOptionalIds.includes(waypointId)) return snapshot
 
-  const newPromoted = [...promotedOptionalIds, waypointId]
   const inserts = getPromotionInsertSteps(manifest, waypointId, path)
+  // No insert steps for this path (e.g. Path B has no optional enc_circus) — do
+  // not orphan a promoted id or leave the traveler on the same stop forever.
+  if (!inserts.length) return snapshot
+
+  const newPromoted = [...promotedOptionalIds, waypointId]
   const newEffective = buildEffectiveSequence(manifest, path, newPromoted)
   const firstInsertId = inserts[0]
   const newIndex = firstInsertId ? newEffective.indexOf(firstInsertId) : currentSequenceIndex
