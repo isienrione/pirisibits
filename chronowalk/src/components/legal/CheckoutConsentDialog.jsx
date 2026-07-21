@@ -1,5 +1,4 @@
-import { useEffect, useId, useState } from 'react'
-import ImmediateAccessConsent from './ImmediateAccessConsent.jsx'
+import { useEffect } from 'react'
 import { TAX_INCLUSIVE_NOTE } from './immediateAccessConsent.js'
 import './legal.css'
 
@@ -10,9 +9,6 @@ function CheckoutConsentDialogPanel({
   onConfirm,
   onCancel,
 }) {
-  const [consented, setConsented] = useState(false)
-  const consentId = useId()
-
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.key === 'Escape' && !busy) onCancel?.()
@@ -48,23 +44,15 @@ function CheckoutConsentDialogPanel({
           <p className="cw-consent-dialog__tax">{TAX_INCLUSIVE_NOTE}</p>
         )}
         <p className="cw-consent-dialog__body">
-          Access is granted immediately after payment. Confirm below to proceed to Paddle checkout.
+          You’ll go to Paddle’s secure checkout next. After payment, your access link
+          arrives by email so you can start walking right away.
         </p>
-
-        <div style={{ marginTop: '1.15rem' }}>
-          <ImmediateAccessConsent
-            id={consentId}
-            checked={consented}
-            onChange={setConsented}
-            dark
-          />
-        </div>
 
         <div className="cw-consent-dialog__actions">
           <button
             type="button"
             className="cw-consent-dialog__primary"
-            disabled={!consented || busy}
+            disabled={busy}
             onClick={() => onConfirm?.()}
           >
             {busy ? 'Opening checkout…' : 'Continue to secure checkout'}
@@ -84,8 +72,8 @@ function CheckoutConsentDialogPanel({
 }
 
 /**
- * Modal gate before Paddle checkout. Primary CTA stays disabled until consent is checked.
- * Remounts on each open so the checkbox never stays pre-checked.
+ * Confirm modal before Paddle checkout (no withdrawal-waiver checkbox —
+ * that notice lives in the post-purchase access email + refund policy).
  */
 export default function CheckoutConsentDialog({
   open,

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { T, F } from '../tokens.js'
 import { PrimaryButton, GhostButton, Seam } from '../ui/index.js'
 import { TRANSACTION_STEPS } from '../../lib/checkout.js'
-import ImmediateAccessConsent from '../../components/legal/ImmediateAccessConsent.jsx'
 import { TAX_INCLUSIVE_NOTE } from '../../components/legal/immediateAccessConsent.js'
 import '../../components/legal/legal.css'
 
@@ -52,15 +51,13 @@ export default function APurchasePending({
   checkoutReady = false,
   stagingAllowed = false,
   busy = false,
-  immediateAccessConsent = false,
-  onImmediateAccessConsentChange,
   onContinueCheckout,
   onStagingCheckout,
   onPreview,
 }) {
   const priceLabel = tier?.price ?? null
   const tierLabel = tier?.tierLabel ?? tier?.eyebrow ?? tier?.name ?? null
-  const checkoutEnabled = checkoutReady && immediateAccessConsent && !busy
+  const checkoutEnabled = checkoutReady && !busy
 
   return (
     <main
@@ -151,21 +148,13 @@ export default function APurchasePending({
 
         <div style={{ marginTop: 40, display: 'flex', flexDirection: 'column', gap: 16 }}>
           {checkoutReady ? (
-            <>
-              <ImmediateAccessConsent
-                id="purchase-immediate-access-consent"
-                checked={immediateAccessConsent}
-                onChange={onImmediateAccessConsentChange}
-                dark
-              />
-              <PrimaryButton
-                onClick={onContinueCheckout}
-                disabled={!checkoutEnabled}
-                color={T.ember}
-              >
-                Continue to secure checkout
-              </PrimaryButton>
-            </>
+            <PrimaryButton
+              onClick={onContinueCheckout}
+              disabled={!checkoutEnabled}
+              color={T.ember}
+            >
+              Continue to secure checkout
+            </PrimaryButton>
           ) : (
             <div
               role="status"

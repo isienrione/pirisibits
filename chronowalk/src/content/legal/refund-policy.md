@@ -17,7 +17,7 @@ Each ChronoWalk experience is **digital content** delivered immediately after pu
 
 If you are a consumer in the EU, EEA, or UK, you normally have a 14-day "cooling-off" right to withdraw from a purchase of digital content.
 
-For digital content that is supplied **immediately**, this right can be lost once supply has begun — but only if, at checkout, you **expressly consent** to immediate access **and acknowledge that you therefore lose your right of withdrawal**. By starting a ChronoWalk experience after purchase, you confirm that consent and acknowledgement.
+For digital content that is supplied **immediately**, this right can be lost once supply has begun. ChronoWalk delivers access by email right after payment. **Opening your access link or entering your access code** starts supply — and, where the law allows, means you lose the cooling-off / withdrawal right for that purchase. We also note this in your access email.
 
 This does not affect your other statutory rights if the content is faulty or not as described.
 

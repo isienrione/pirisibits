@@ -1,7 +1,7 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v6
+ * WEBHOOK_BUILD: 2026-07-21-v7
  *
  * WHY v5: transaction.completed payloads do NOT include buyer email (only customer_id).
  * customer.created payloads DO include email — cache customer_id → email, fulfill on completed.
@@ -9,13 +9,13 @@
  *
  * Paste this ONE file into Supabase → Edge Functions → paddle-webhook → Deploy.
  * Do NOT create a new function — replace the existing paddle-webhook body.
- * Logs / JSON MUST contain "2026-07-21-v6".
+ * Logs / JSON MUST contain "2026-07-21-v7".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
 
-const WEBHOOK_BUILD = '2026-07-21-v6'
+const WEBHOOK_BUILD = '2026-07-21-v7'
 
 /* ---- branded access email template (inlined for single-file Supabase paste) ---- */
 /**
@@ -69,9 +69,12 @@ function buildAccessEmailText({ accessToken, accessLink, productId }) {
     'WALK · LISTEN · TIME TRAVEL',
     '',
     'Keep this email — you can restore access anytime at chronowalk.com/access',
+    '',
+    'EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described. Details: https://chronowalk.com/legal/refund',
   ]
     .filter((line) => line != null)
-    .join('\n')
+    .join('
+')
 }
 
 /**
@@ -173,6 +176,10 @@ function buildAccessEmailHtml({
               <img src="${escapeHtml(emblem)}" width="36" height="36" alt="" style="display:inline-block;width:36px;height:36px;border:0;opacity:0.9;" />
               <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.5;color:#8a8274;">
                 Keep this email — you can restore access anytime at chronowalk.com/access
+              </p>
+              <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:1.55;color:#6e675c;text-align:left;">
+                EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described.
+                <a href="${escapeHtml(base)}/legal/refund" style="color:#c9a227;text-decoration:underline;">Refund policy</a>
               </p>
             </td>
           </tr>
