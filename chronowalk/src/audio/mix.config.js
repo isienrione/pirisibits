@@ -2,8 +2,10 @@
 
 export const MIX_CONFIG = {
   bed: {
+    // Walking / silence between stops — audible fill-in for continuity.
     idleDb: -24,
-    duckedDb: -26,
+    // Under voice narration — faint background only (≈18 dB below idle).
+    duckedDb: -42,
     crossfadeMs: 2000,
   },
   narration: {

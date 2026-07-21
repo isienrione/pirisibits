@@ -28,7 +28,10 @@ describe('buildPlaybackPlan', () => {
   });
 
   it('resolves zone from waypoint', () => {
-    expect(resolveActiveZone(getWaypoint(manifest, 'w02'))).toBe('underworld');
+    expect(resolveActiveZone(getWaypoint(manifest, 'w01'))).toBe('antiquity');
+    expect(resolveActiveZone(getWaypoint(manifest, 'w02'))).toBe('antiquity');
+    expect(resolveActiveZone(getWaypoint(manifest, 'w04'))).toBe('antiquity');
     expect(resolveActiveZone(getWaypoint(manifest, 'w15'))).toBe('centro');
   });
 });
+

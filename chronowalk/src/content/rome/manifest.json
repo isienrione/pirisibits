@@ -204,7 +204,7 @@
         "lng": 12.4922,
         "radius_m": 45
       },
-      "zone": "centro",
+      "zone": "antiquity",
       "chapters": [
         {
           "file": "w01.mp3",
@@ -239,7 +239,7 @@
         "lng": 12.4924,
         "radius_m": 40
       },
-      "zone": "underworld",
+      "zone": "antiquity",
       "chapters": [
         {
           "file": "w02_ch1.mp3",
