@@ -65,9 +65,9 @@ export const ROME_TIERS = [
     priceCents: 999,
     priceNote: 'one-time · taxes included where applicable',
     description:
-      'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
+      'The ancient core — Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Roman Forum, and Capitoline Hill — with place-tied stories and Threshold at each stop.',
     bullets: [
-      'Colosseum, Palatine terrace, Forum, Capitoline Hill & Circus Maximus',
+      'Colosseum, Palatine terrace, Circus Maximus View, Forum & Capitoline Hill',
       'Threshold reconstructions at key landmarks',
     ],
     expandLabel: 'See stop list & inclusions',

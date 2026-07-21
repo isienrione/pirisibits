@@ -11,8 +11,19 @@ describe('optional waypoint promotion', () => {
   const manifest = loadRomeManifest()
 
   it('lists path A optional waypoints from manifest', () => {
-    expect(getOptionalWaypointIds(manifest, 'a')).toEqual(['w04', 'enc_circus'])
+    expect(getOptionalWaypointIds(manifest, 'a')).toEqual(['w04'])
     expect(getOptionalWaypointIds(manifest, 'b')).toEqual([])
+  })
+
+  it('places Circus Maximus View on path B after Palatine, not in the encore', () => {
+    const pathA = buildEffectiveSequence(manifest, 'a', [])
+    const pathB = buildEffectiveSequence(manifest, 'b', [])
+    const viewIndex = pathB.indexOf('enc_circus')
+    expect(viewIndex).toBeGreaterThanOrEqual(0)
+    expect(pathB[viewIndex - 1]).toBe('w04')
+    expect(pathB.slice(-2)).toEqual(['t22', 'w22'])
+    expect(pathA).not.toContain('enc_circus')
+    expect(pathA.slice(-2)).toEqual(['t22', 'w22'])
   })
 
   it('inserts promoted w04 steps before w06 on path A', () => {
@@ -65,15 +76,6 @@ describe('optional waypoint promotion', () => {
         currentSequenceIndex: 10,
       })
     ).toBe(false)
-  })
-
-  it('inserts promoted enc_circus before w14 after Capitoline on path A', () => {
-    const sequence = buildEffectiveSequence(manifest, 'a', ['enc_circus'])
-    const w13Index = sequence.indexOf('w13')
-    const w14Index = sequence.indexOf('w14')
-
-    expect(sequence.slice(w13Index + 1, w14Index)).toEqual(['t10', 'enc_circus'])
-    expect(getPromotionInsertSteps(manifest, 'enc_circus', 'a')).toEqual(['enc_circus'])
   })
 
   it('blocks promotion when w04 was already promoted', () => {

@@ -61,6 +61,7 @@ const ESSENTIAL_ROUTE = ROME_ANTICA_STOP_IDS
 const COMPLETE_ROUTE = [
   'colosseum',
   'palatine-hill-cluster',
+  'circus-maximus',
   ...ROMAN_FORUM_STOP_IDS,
   'capitoline-hill',
   'trajan-market',
@@ -71,7 +72,6 @@ const COMPLETE_ROUTE = [
   'campo-de-fiori',
   'largo-argentina',
   'castel-sant-angelo',
-  'circus-maximus',
   'appian-way',
 ]
 

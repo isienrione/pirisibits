@@ -4,9 +4,9 @@ import { ROMAN_FORUM_STOP_IDS } from './forumWaypoints.js'
 export const ROME_ANTICA_STOP_IDS = [
   'colosseum',
   'palatine-hill-cluster',
+  'circus-maximus',
   ...ROMAN_FORUM_STOP_IDS,
   'capitoline-hill',
-  'circus-maximus',
 ]
 
 /** Roma Antica — ancient core (landing id `rome-essential`). */
@@ -15,7 +15,7 @@ export const ROME_ANTICA_TOUR = {
   productId: 'rome-essential',
   title: 'Roma Antica',
   subtitle:
-    'Colosseum → Palatine terrace → Forum → Capitoline Hill → Circus Maximus',
+    'Colosseum → Palatine terrace → Circus Maximus View → Forum → Capitoline Hill',
   stopIds: ROME_ANTICA_STOP_IDS,
   mapZoom: 16,
 }

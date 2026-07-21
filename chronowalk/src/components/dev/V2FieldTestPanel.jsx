@@ -13,6 +13,7 @@ const STAGING_WAYPOINTS = [
   { label: 'Colosseum', id: 'colosseum' },
   { label: 'Pantheon', id: 'pantheon' },
   { label: 'Pantheon interior', id: 'pantheon-interior' },
+  { label: 'Circus Maximus View', id: 'circus-maximus-view' },
   { label: 'Navona', id: 'piazza-navona' },
   { label: 'Capitoline', id: 'capitoline-hill' },
   { label: 'Trevi', id: 'fontana-di-trevi' },

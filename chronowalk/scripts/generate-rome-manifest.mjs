@@ -38,7 +38,7 @@ const geo = {
   w20: { lat: 41.89528, lng: 12.47694, radius_m: 40, name: 'Largo di Torre Argentina' },
   w21: { lat: 41.90306, lng: 12.46627, radius_m: 45, name: "Castel Sant'Angelo" },
   w22: { lat: 41.85655, lng: 12.51185, radius_m: 60, name: 'Via Appia Antica' },
-  enc_circus: { lat: 41.8859, lng: 12.4857, radius_m: 55, name: 'Circus Maximus floor' },
+  enc_circus: { lat: 41.8859, lng: 12.4857, radius_m: 55, name: 'Circus Maximus View' },
   pause: { lat: 41.8919, lng: 12.4865, radius_m: 80, name: 'Forum rest' },
 }
 
@@ -67,7 +67,7 @@ const manifest = {
   ],
   acts: [
     { id: 'act1', numeral: 'I', title: 'The Arena', waypoints: ['w01', 'w02'] },
-    { id: 'act2', numeral: 'II', title: 'The Gate & the Hill', waypoints: ['w03', 'w04'] },
+    { id: 'act2', numeral: 'II', title: 'The Gate & the Hill', waypoints: ['w03', 'w04', 'enc_circus'] },
     {
       id: 'act3',
       numeral: 'III',
@@ -82,18 +82,19 @@ const manifest = {
       waypoints: ['w15', 'w16', 'w17', 'w23', 'w18', 'w19', 'w20'],
     },
     { id: 'act6', numeral: 'VI', title: 'The River', waypoints: ['w21'] },
-    { id: 'encore', numeral: 'Encore', title: 'The Long Games & the Long Road', waypoints: ['enc_circus', 'w22'] },
+    { id: 'encore', numeral: 'Encore', title: 'The Long Road', waypoints: ['w22'] },
   ],
   journey: {
     paths: ['a', 'b'],
     default_path: 'a',
-    path_reorder: { b: ['w04', 'w03'] },
+    path_reorder: { b: ['w04', 'enc_circus', 'w03'] },
     sequences: {
       a: [
         'w01',
         'w02',
         't01',
         'w03',
+        't04',
         'w06',
         't05',
         'w07',
@@ -123,7 +124,6 @@ const manifest = {
         'w20',
         't16',
         'w21',
-        'enc_circus',
         't22',
         'w22',
       ],
@@ -132,8 +132,10 @@ const manifest = {
         'w02',
         't01',
         'w04',
-        't02',
+        'enc_circus',
+        't03',
         'w03',
+        't04',
         'w06',
         't05',
         'w07',
@@ -163,12 +165,11 @@ const manifest = {
         'w20',
         't16',
         'w21',
-        'enc_circus',
         't22',
         'w22',
       ],
     },
-    optional_waypoints: { a: ['w04', 'enc_circus'] },
+    optional_waypoints: { a: ['w04'] },
   },
   waypoints: {
     w01: wp('w01', {
@@ -344,12 +345,19 @@ const manifest = {
       arrivalLine: 'Emperor, fortress, refuge — one stone silhouette.',
     }),
     enc_circus: wp('enc_circus', {
-      act: 'encore',
+      act: 'act2',
       zone: 'antiquity',
       chapters: ['enc_circus.mp3'],
       inserts: ['ins_window'],
-      approachLine: 'Walk out onto the grass at the bottom of the valley.',
-      arrivalLine: 'You are where the crowd stood.',
+      photo: '/waypoints/circus-maximus/modern-poster.jpg',
+      reconstruction: {
+        now: '/waypoints/circus-maximus/modern-poster.jpg',
+        then: '/waypoints/circus-maximus/modern-poster.jpg',
+        loop: '/waypoints/circus-maximus/ancient-reconstruction.mp4',
+        caption: 'Interpretive reconstruction informed by archaeology and scholarship.',
+      },
+      approachLine: 'The long green oval opens below the Palatine.',
+      arrivalLine: 'Look across the valley — this is the Circus Maximus.',
     }),
     w22: wp('w22', {
       act: 'encore',
@@ -388,7 +396,7 @@ const manifest = {
       note: 'Campo → Largo',
     },
     t16: { after: 'w20', audio: 't16.mp3', zone: 'river', duration_s: 40 },
-    t22: { after: 'enc_circus', audio: 't22.mp3', zone: 'antiquity', duration_s: 120 },
+    t22: { after: 'w21', audio: 't22.mp3', zone: 'antiquity', duration_s: 120 },
     t03: {
       after: 'w04',
       zone: 'antiquity',

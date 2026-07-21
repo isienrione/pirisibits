@@ -24,7 +24,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
       label: "Path B — The Emperor's Approach",
       chip: 'The full hill',
       chipStyle: { border: `1px solid ${hairline}`, color: T.warmWhite, background: 'transparent' },
-      body: "Past Constantine's arch, up the Palatine the way power went — palace, the Circus from the emperor's railing, then descend into the Forum from above.",
+      body: "Past Constantine's arch, up the Palatine the way power went — palace, Circus Maximus View, then descend into the Forum from above.",
       cta: "Take The Emperor's Approach",
     },
   ]
