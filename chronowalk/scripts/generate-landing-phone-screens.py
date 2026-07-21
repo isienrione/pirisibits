@@ -15,7 +15,7 @@ FONT_DIRS = [
     Path("/tmp/lemon-fonts"),
     Path("/usr/share/fonts/truetype/dejavu"),
 ]
-PHOTO = ROOT / "public/waypoints/forum-cluster/forum-arch-titus/modern-exterior.jpg"
+PHOTO = ROOT / "public/waypoints/pantheon/modern-exterior.jpg"
 
 W, H = 780, 1688
 OBSIDIAN = (11, 11, 13)
@@ -104,8 +104,8 @@ def make_walk() -> Path:
     im = Image.new("RGB", (W, H), OBSIDIAN)
     d = ImageDraw.Draw(im)
     d.text((48, 88), "Walking to", font=ui(26), fill=MUTED)
-    d.text((48, 130), "Arch of Titus", font=ui(46, "700"), fill=BONE)
-    d.text((48, 196), "335 m · 4 min", font=ui(26), fill=MUTED)
+    d.text((48, 130), "The Pantheon", font=ui(46, "700"), fill=BONE)
+    d.text((48, 196), "280 m · 4 min", font=ui(26), fill=MUTED)
     thumb = load_photo((120, 120))
     mask = Image.new("L", (120, 120), 0)
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, 120, 120), 24, fill=255)
@@ -116,9 +116,9 @@ def make_walk() -> Path:
     d.text((W // 2 + 80, 272), "Steps", font=ui(28, "700"), fill=BONE)
     y = 370
     for n, title, dist in [
-        ("1", "Start walking toward Arch of Titus", "92 m"),
-        ("2", "Turn right onto Colosseo.", "9 m"),
-        ("3", "Turn left onto Piazza del Colosseo", "44 m"),
+        ("1", "Continue along Via del Seminario", "120 m"),
+        ("2", "Cross Piazza della Rotonda", "90 m"),
+        ("3", "The Pantheon portico is ahead", "70 m"),
     ]:
         round_rect(d, (48, y, W - 48, y + 150), 28, fill=(28, 28, 32))
         d.ellipse((72, y + 48, 126, y + 102), outline=MUTED, width=3)
@@ -149,12 +149,12 @@ def make_listen() -> Path:
         )
     im.paste(grad, (0, 0), grad)
     d = ImageDraw.Draw(im)
-    d.text((48, 80), "Act II — The Gate & the Hill", font=ui(26, "500"), fill=GOLD)
-    d.text((48, int(H * 0.30)), "Arch of Titus", font=ui(50, "700"), fill=BONE)
+    d.text((48, 80), "Free preview · Pantheon", font=ui(26, "500"), fill=GOLD)
+    d.text((48, int(H * 0.30)), "The Pantheon", font=ui(50, "700"), fill=BONE)
     d.text(
         (48, int(H * 0.30) + 70),
-        "Stand where triumph entered the city.",
-        font=ui(28),
+        "Two thousand years of sky through one opening.",
+        font=ui(26),
         fill=SOFT,
     )
     round_rect(d, (W // 2 - 190, int(H * 0.47), W // 2 + 190, int(H * 0.47) + 68), 34, fill=(18, 16, 14))
@@ -163,20 +163,20 @@ def make_listen() -> Path:
     d.rectangle((0, panel_y, W, H), fill=(22, 22, 26))
     d.text((64, panel_y + 40), "Audio", font=ui(30, "700"), fill=BONE)
     d.text((200, panel_y + 40), "Read instead", font=ui(28), fill=MUTED)
-    d.text((64, panel_y + 100), "Chapter 1 of 3 · Arch of Titus I", font=ui(24), fill=MUTED)
+    d.text((64, panel_y + 100), "Chapter 1 of 4 · The Pantheon — Exterior", font=ui(24), fill=MUTED)
     random.seed(3)
     wx0, wy = 64, panel_y + 160
     for i in range(48):
         bar_h = random.randint(20, 90)
         color = GOLD if i < 6 else (70, 70, 75)
         d.rectangle((wx0 + i * 13, wy + 50 - bar_h // 2, wx0 + i * 13 + 6, wy + 50 + bar_h // 2), fill=color)
-    d.text((64, panel_y + 250), "0:01", font=ui(22), fill=MUTED)
-    d.text((W - 120, panel_y + 250), "2:51", font=ui(22), fill=MUTED)
+    d.text((64, panel_y + 250), "0:03", font=ui(22), fill=MUTED)
+    d.text((W - 120, panel_y + 250), "3:57", font=ui(22), fill=MUTED)
     cx, cy = W // 2, panel_y + 380
     d.ellipse((cx - 56, cy - 56, cx + 56, cy + 56), fill=OLIVE)
     d.polygon([(cx - 14, cy - 24), (cx - 14, cy + 24), (cx + 28, cy)], fill=OBSIDIAN)
     round_rect(d, (120, H - 140, W - 120, H - 70), 40, fill=CHARCOAL)
-    d.text((W // 2 - 100, H - 118), "Skip ahead →", font=ui(28), fill=BONE)
+    d.text((W // 2 - 100, H - 118), "See the full tour →", font=ui(28), fill=BONE)
     path = OUT / "listen.jpg"
     im.save(path, "JPEG", quality=92, optimize=True)
     return path

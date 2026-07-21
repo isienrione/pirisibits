@@ -25,10 +25,10 @@ describe('LandingPhoneScreens', () => {
     expect(screen.getByRole('button', { name: /begin chapter/i })).toBeInTheDocument()
   })
 
-  it('renders Arch of Titus listening and Pantheon preview variants', () => {
+  it('renders Pantheon listening and free-preview variants', () => {
     const { rerender } = render(<ListeningScreen />)
-    expect(screen.getByLabelText(/arch of titus chapter/i)).toBeInTheDocument()
-    expect(screen.getByText(/skip ahead/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/pantheon chapter/i)).toBeInTheDocument()
+    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
 
     rerender(<PreviewScreen />)
     expect(screen.getByText(/free preview · pantheon/i)).toBeInTheDocument()
@@ -37,7 +37,7 @@ describe('LandingPhoneScreens', () => {
 
   it('resolves listening via LandingStepMockup for how-it-works step 3', () => {
     const { container } = render(<LandingStepMockup variant="listening" />)
-    expect(screen.getByLabelText(/arch of titus chapter/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/pantheon chapter/i)).toBeInTheDocument()
     expect(container.querySelector('.cw-landing-phone__shot')).toBeTruthy()
     expect(container.querySelector('img.cw-landing-phone__shot')?.getAttribute('src')).toMatch(
       /phone-screens\/listen\.jpg/,
@@ -46,6 +46,6 @@ describe('LandingPhoneScreens', () => {
 
   it('can still render live HTML screens when mode=live', () => {
     render(<LandingStepMockup variant="listening" mode="live" />)
-    expect(screen.getByText(/skip ahead/i)).toBeInTheDocument()
+    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
   })
 })

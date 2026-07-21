@@ -1,5 +1,5 @@
 import LandingPhoneFrame from './LandingPhoneFrame.jsx'
-import { archTitusNow, pantheonNow } from '../redesign/images.js'
+import { pantheonNow } from '../redesign/images.js'
 import { T } from '../redesign/tokens.js'
 import {
   LANDING_COLOSSEUM_NOW,
@@ -17,6 +17,7 @@ const ACT = {
 /**
  * Lemon / marketing–grade 390×844 app shots for the How-it-works phones.
  * Full-bleed into the iPhone frame (no CSS artboard scale).
+ * Hero / walk / listen stills feature the Pantheon free-preview stop.
  */
 export const HOW_IT_WORKS_SHOTS = {
   journey: {
@@ -25,19 +26,19 @@ export const HOW_IT_WORKS_SHOTS = {
   },
   map: {
     src: '/landing/phone-screens/walk.jpg',
-    label: 'ChronoWalk walking steps',
+    label: 'ChronoWalk walking steps — Pantheon',
   },
   listening: {
     src: '/landing/phone-screens/listen.jpg',
-    label: 'ChronoWalk Arch of Titus chapter',
+    label: 'ChronoWalk Pantheon chapter',
   },
   arrive: {
     src: '/landing/phone-screens/listen.jpg',
-    label: 'ChronoWalk Arch of Titus chapter',
+    label: 'ChronoWalk Pantheon chapter',
   },
   audio: {
     src: '/landing/phone-screens/listen.jpg',
-    label: 'ChronoWalk Arch of Titus chapter',
+    label: 'ChronoWalk Pantheon chapter',
   },
 }
 
@@ -115,21 +116,21 @@ export function JourneyPickScreen({ size = 'md' }) {
 /** Step 2 — walking companion steps view. */
 export function MapRouteScreen({ size = 'md' }) {
   const steps = [
-    { n: 1, text: 'Start walking toward Arch of Titus', dist: '92 m' },
-    { n: 2, text: 'Turn right onto Colosseo.', dist: '9 m' },
-    { n: 3, text: 'Turn left onto Piazza del Colosseo.', dist: '44 m' },
+    { n: 1, text: 'Continue along Via del Seminario', dist: '120 m' },
+    { n: 2, text: 'Cross Piazza della Rotonda', dist: '90 m' },
+    { n: 3, text: 'The Pantheon portico is ahead', dist: '70 m' },
   ]
 
   return (
-    <LandingPhoneViewport label="ChronoWalk walking steps" size={size}>
+    <LandingPhoneViewport label="ChronoWalk walking steps — Pantheon" size={size}>
       <div className="cw-landing-screen cw-landing-screen--walk">
         <header className="cw-landing-screen__walk-header">
           <div className="cw-landing-screen__walk-copy">
             <p className="cw-landing-screen__walk-eyebrow">Walking to</p>
-            <h3 className="cw-landing-screen__walk-title">Arch of Titus</h3>
-            <p className="cw-landing-screen__walk-meta">335 m · 4 min</p>
+            <h3 className="cw-landing-screen__walk-title">The Pantheon</h3>
+            <p className="cw-landing-screen__walk-meta">280 m · 4 min</p>
           </div>
-          <img className="cw-landing-screen__walk-thumb" src={archTitusNow} alt="" />
+          <img className="cw-landing-screen__walk-thumb" src={LANDING_PANTHEON_NOW || pantheonNow} alt="" />
         </header>
 
         <div className="cw-landing-screen__walk-tabs" aria-hidden>
@@ -138,7 +139,7 @@ export function MapRouteScreen({ size = 'md' }) {
         </div>
 
         <p className="cw-landing-screen__walk-then">
-          <span>Then</span> Arrive at Clivus Palatino
+          <span>Then</span> Arrive at Piazza della Rotonda
         </p>
 
         <div className="cw-landing-screen__walk-list">
@@ -172,7 +173,7 @@ export function MapRouteScreen({ size = 'md' }) {
 /** Arrival UI — “You have arrived” + Begin Chapter (real product). */
 export function ArriveScreen({ size = 'md' }) {
   return (
-    <LandingPhoneViewport label="ChronoWalk arrival — Arch of Titus" size={size}>
+    <LandingPhoneViewport label="ChronoWalk arrival — The Pantheon" size={size}>
       <div className="cw-landing-screen cw-landing-screen--arrived">
         <header className="cw-landing-screen__arrived-top">
           <span className="cw-landing-screen__chip" aria-hidden>
@@ -181,10 +182,14 @@ export function ArriveScreen({ size = 'md' }) {
         </header>
 
         <p className="cw-landing-screen__arrived-label">You have arrived</p>
-        <h3 className="cw-landing-screen__arrived-title">Arch of Titus</h3>
+        <h3 className="cw-landing-screen__arrived-title">The Pantheon</h3>
 
         <div className="cw-landing-screen__arrived-photo-wrap">
-          <img className="cw-landing-screen__arrived-photo" src={archTitusNow} alt="" />
+          <img
+            className="cw-landing-screen__arrived-photo"
+            src={LANDING_PANTHEON_NOW || pantheonNow}
+            alt=""
+          />
         </div>
 
         <button type="button" className="cw-landing-screen__arrived-cta" tabIndex={-1}>
@@ -202,25 +207,25 @@ export function ArriveScreen({ size = 'md' }) {
   )
 }
 
-/** Immersive listening — Arch of Titus chapter. */
+/** Immersive listening — Pantheon free-preview chapter (hero + how-it-works). */
 export function ListeningScreen({ size = 'md' }) {
   return (
-    <LandingPhoneViewport label="ChronoWalk Arch of Titus chapter" size={size}>
+    <LandingPhoneViewport label="ChronoWalk Pantheon chapter" size={size}>
       <div
         className="cw-landing-screen cw-landing-screen--listen"
-        style={{ backgroundImage: `url(${archTitusNow})` }}
+        style={{ backgroundImage: `url(${LANDING_PANTHEON_NOW || pantheonNow})` }}
       >
         <div className="cw-landing-screen__listen-scrim" aria-hidden />
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
-          <span className="cw-landing-screen__listen-act">Act II — The Gate &amp; the Hill</span>
+          <span className="cw-landing-screen__listen-act">Free preview · Pantheon</span>
           <span className="cw-landing-screen__chip">?</span>
         </header>
 
         <div className="cw-landing-screen__listen-hero">
-          <h3>Arch of Titus</h3>
-          <p>Stand where triumph entered the city.</p>
+          <h3>The Pantheon</h3>
+          <p>Two thousand years of sky through one opening.</p>
           <span className="cw-landing-screen__hold-pill">Press &amp; hold to reveal</span>
         </div>
 
@@ -231,10 +236,10 @@ export function ListeningScreen({ size = 'md' }) {
           </div>
 
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 3 · Arch of Titus I — The Long Way Around
+            Chapter 1 of 4 · The Pantheon — Exterior (~4:00)
           </p>
           <p className="cw-landing-screen__listen-note">
-            Evidence-based reconstruction · relief details simplified for clarity
+            Evidence-based reconstruction · portico bronze finish is informed conjecture
           </p>
 
           <div className="cw-landing-screen__listen-wave" aria-hidden>
@@ -248,8 +253,8 @@ export function ListeningScreen({ size = 'md' }) {
           </div>
 
           <div className="cw-landing-screen__listen-times" aria-hidden>
-            <span>0:01</span>
-            <span>2:51</span>
+            <span>0:03</span>
+            <span>3:57</span>
           </div>
 
           <div className="cw-landing-screen__listen-transport" aria-hidden>
@@ -258,7 +263,7 @@ export function ListeningScreen({ size = 'md' }) {
             <span className="cw-landing-screen__listen-skip" />
           </div>
 
-          <div className="cw-landing-screen__listen-cta">Skip ahead →</div>
+          <div className="cw-landing-screen__listen-cta">See the full tour →</div>
         </div>
       </div>
     </LandingPhoneViewport>
