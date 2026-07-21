@@ -125,7 +125,7 @@ function buildAccessLink(accessToken) {
 async function sendAccessEmail({ email, accessToken, productId }) {
   const link = buildAccessLink(accessToken)
   const resendKey = Deno.env.get('RESEND_API_KEY')
-  const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <access@chronowalk.com>'
+  const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <hello@chronowalk.com>'
 
   if (!resendKey) {
     const msg = `[paddle-webhook] RESEND_API_KEY unset — cannot email access link for ${email}: ${link}`
