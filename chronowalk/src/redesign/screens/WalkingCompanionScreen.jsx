@@ -1,9 +1,10 @@
-import { cloneElement, isValidElement, useEffect, useMemo, useRef, useState } from 'react'
+import { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
 import { resolveWalkingStepProgress } from '../../utils/walkingStepProgress.js'
+import { buildGoogleMapsDirectionsUrl } from '../../utils/walkingDirections.js'
 import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
@@ -77,6 +78,15 @@ export default function WalkingCompanionScreen({
       destinationName: title,
       enabled: !showArrivedUI && Boolean(destination),
     })
+
+  const externalMapsUrl = useMemo(
+    () => buildGoogleMapsDirectionsUrl(userPosition, destination),
+    [userPosition, destination],
+  )
+
+  const handleOpenExternalMaps = useCallback((url) => {
+    if (url) window.open(url, '_blank', 'noopener,noreferrer')
+  }, [])
 
   const walkingStepProgress = useMemo(
     () =>
@@ -293,6 +303,8 @@ export default function WalkingCompanionScreen({
               error={directionsError}
               destinationTitle={title}
               onRetry={retryDirections}
+              externalMapsUrl={externalMapsUrl}
+              onOpenExternalMaps={handleOpenExternalMaps}
               variant="full"
             />
           </div>
@@ -313,6 +325,8 @@ export default function WalkingCompanionScreen({
                 error={directionsError}
                 destinationTitle={title}
                 onRetry={retryDirections}
+                externalMapsUrl={externalMapsUrl}
+                onOpenExternalMaps={handleOpenExternalMaps}
                 variant="timeline"
                 maxVisible={4}
               />

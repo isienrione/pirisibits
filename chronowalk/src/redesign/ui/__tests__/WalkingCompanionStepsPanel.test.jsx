@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import WalkingCompanionStepsPanel from '../WalkingCompanionStepsPanel.jsx'
 
 const steps = [
@@ -50,5 +50,26 @@ describe('WalkingCompanionStepsPanel', () => {
     expect(screen.getByText('Next turns')).toBeInTheDocument()
     expect(screen.getByRole('list', { name: /next turns to arch of titus/i })).toBeInTheDocument()
     expect(screen.getByText('Head north on Via dei Fori Imperiali')).toBeInTheDocument()
+  })
+
+  it('offers retry and Google Maps when routing fails', () => {
+    const onRetry = vi.fn()
+    const onOpenExternalMaps = vi.fn()
+
+    render(
+      <WalkingCompanionStepsPanel
+        error="Could not load walking directions. Try again or open Google Maps."
+        destinationTitle="Pantheon"
+        onRetry={onRetry}
+        externalMapsUrl="https://www.google.com/maps/dir/?api=1&destination=41.9,12.4&travelmode=walking"
+        onOpenExternalMaps={onOpenExternalMaps}
+      />
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /try again/i }))
+    expect(onRetry).toHaveBeenCalledTimes(1)
+
+    fireEvent.click(screen.getByRole('button', { name: /open in google maps/i }))
+    expect(onOpenExternalMaps).toHaveBeenCalledTimes(1)
   })
 })

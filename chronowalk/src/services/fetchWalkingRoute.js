@@ -65,6 +65,7 @@ function parseMapboxRoute(route, { destinationTitle = null } = {}) {
 function buildDirectionsUrl(from, to, accessToken, options = {}) {
   const coordinates = `${from.lng},${from.lat};${to.lng},${to.lat}`
   const params = new URLSearchParams({
+    // Mapbox Directions uses `geometries` (plural) for the response shape.
     geometries: 'geojson',
     overview: 'full',
     steps: 'true',
@@ -80,8 +81,13 @@ function buildDirectionsUrl(from, to, accessToken, options = {}) {
     params.set('waypoint_names', `;${options.destinationName.slice(0, 120)}`)
   }
 
+  // Profile path segment: mapbox/walking — required for pedestrian routing.
   return `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?${params.toString()}`
 }
+
+/** Exposed for tests — confirms walking profile + steps + geojson geometry. */
+export const buildWalkingDirectionsUrl = buildDirectionsUrl
+
 
 /** Walking directions with turn-by-turn steps for in-app guidance. */
 export const fetchWalkingDirections = async (from, to, accessToken, options = {}) => {

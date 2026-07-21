@@ -1719,8 +1719,16 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   color: color-mix(in srgb, var(--wc-accent, #e4552e) 80%, var(--wc-warm-white));
 }
 
-.cw-walking-directions__retry {
+.cw-walking-directions__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 14px;
+}
+
+.cw-walking-directions__retry,
+.cw-walking-directions__maps {
+  margin-top: 0;
   border: 1px solid color-mix(in srgb, var(--wc-accent, #e4552e) 35%, transparent);
   border-radius: 10px;
   padding: 10px 14px;
@@ -1730,6 +1738,10 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   color: var(--wc-warm-white);
   background: rgba(245, 239, 227, 0.06);
   cursor: pointer;
+}
+
+.cw-walking-directions__maps {
+  border-color: color-mix(in srgb, var(--wc-gold, #c9a227) 40%, transparent);
 }
 
 .cw-walking-companion__hero-layer {
