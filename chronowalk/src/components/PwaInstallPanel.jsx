@@ -43,9 +43,9 @@ export function PwaInstallPanel({
             </p>
           ) : showIosInstructions ? (
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              In Safari, tap <span className="font-semibold text-ink900">Share</span> at the bottom,
-              then choose <span className="font-semibold text-ink900">Add to Home Screen</span>.
-              The ChronoWalk icon will sit alongside your other apps.
+              In Safari or Chrome, tap <span className="font-semibold text-ink900">Share</span>, then
+              choose <span className="font-semibold text-ink900">Add to Home Screen</span>. The
+              ChronoWalk icon will sit alongside your other apps.
             </p>
           ) : (
             <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -67,14 +67,15 @@ export function PwaInstallPanel({
 
           {!installed && showIosInstructions && !canPromptInstall ? (
             <p className="mt-3 text-xs leading-relaxed text-muted/90">
-              Tip: use Safari — Chrome on iPhone cannot add PWAs to the home screen.
+              Tip: if you opened this from Instagram or another app, switch to Safari or Chrome —
+              in-app browsers often hide Add to Home Screen.
             </p>
           ) : null}
 
           {!installed && !canPromptInstall && !showIosInstructions ? (
             <p className="mt-3 text-xs leading-relaxed text-muted/90">
               On Android Chrome, use your browser menu → Install app or Add to Home Screen. On
-              iPhone, open this page in Safari and use Share → Add to Home Screen.
+              iPhone, open this page in Safari or Chrome and use Share → Add to Home Screen.
             </p>
           ) : null}
         </div>
