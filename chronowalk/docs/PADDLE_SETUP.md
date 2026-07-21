@@ -87,9 +87,25 @@ supabase secrets set \
   PADDLE_NOTIFICATION_WEBHOOK_SECRET=pdl_ntfset_... \
   PADDLE_ENV=sandbox \
   SITE_URL=https://chronowalk.com \
-  RESEND_API_KEY=re_...   # optional until email is wired
+  RESEND_API_KEY=re_...   # required in production — sends /access unlock email
+  # RESEND_FROM='ChronoWalk <access@chronowalk.com>'  # verified Resend domain
 
 supabase functions deploy paddle-webhook
+```
+
+Without `RESEND_API_KEY`, live `transaction.completed` fails and buyers never receive their unlock link.
+
+Recover a missing email for a completed transaction:
+
+```bash
+export PADDLE_API_KEY=pdl_live_apikey_...
+export PADDLE_ENV=production
+export SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY=...
+export RESEND_API_KEY=re_...
+node scripts/resend-purchase-access.mjs txn_01...
+# or:
+node scripts/resend-purchase-access.mjs --email buyer@example.com
 ```
 
 In Paddle → **Developer tools → Notifications** → New destination:
