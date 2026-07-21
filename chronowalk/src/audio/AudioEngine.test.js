@@ -4,15 +4,22 @@ import { buildWaypointPlan } from './buildPlaybackPlan.js';
 import { AudioEngine } from './AudioEngine.js';
 
 function createMockContext() {
-  const gainNode = () => ({
-    gain: {
+  const gainNode = () => {
+    const gain = {
       value: 0,
-      setValueAtTime: vi.fn(),
+      setValueAtTime: vi.fn(function setValueAtTime(v) {
+        this.value = v
+      }),
       cancelScheduledValues: vi.fn(),
-      linearRampToValueAtTime: vi.fn(),
-    },
-    connect: vi.fn(),
-  });
+      linearRampToValueAtTime: vi.fn(function linearRampToValueAtTime(v) {
+        this.value = v
+      }),
+    }
+    return {
+      gain,
+      connect: vi.fn(),
+    }
+  }
 
   return {
     state: 'running',
@@ -281,6 +288,9 @@ describe('AudioEngine', () => {
     const fakeBuffer = { duration: 1 };
     engine.loadBuffer = vi.fn(async () => fakeBuffer);
 
+    await engine.playWaypoint('w01');
+    expect(engine.currentBedKey).toBe('antiquity');
+
     await engine.playWaypoint('w14');
     expect(engine.currentBedKey).toBe('antiquity');
 
@@ -290,7 +300,25 @@ describe('AudioEngine', () => {
     await engine.playWaypoint('w21');
     expect(engine.currentBedKey).toBe('river');
   });
+
+  it('ducks the bed far under voice, then restores idle level when silent', async () => {
+    const fakeBuffer = { duration: 1 };
+    engine.loadBuffer = vi.fn(async () => fakeBuffer);
+    await engine.playWaypoint('w01');
+
+    const idleGain = 10 ** (engine.mix.bed.idleDb / 20);
+    const duckedGain = 10 ** (engine.mix.bed.duckedDb / 20);
+    expect(duckedGain / idleGain).toBeLessThan(0.2);
+
+    engine.setNarrationPlaying(true);
+    // linearRamp target is the last scheduled value on the gain param in this mock
+    expect(engine.bedGain.gain.value).toBeCloseTo(duckedGain, 5);
+
+    engine.setNarrationPlaying(false);
+    expect(engine.bedGain.gain.value).toBeCloseTo(idleGain, 5);
+  });
 });
+
 
 function manifestFromEngine(engine) {
   return engine.manifest;

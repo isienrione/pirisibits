@@ -913,7 +913,8 @@ export class AudioEngine {
     }
 
     const now = this.context.currentTime
-    const fadeSec = 0.15
+    // Slightly longer than a hard cut so walking↔voice feels continuous.
+    const fadeSec = 0.35
     const target = playing
       ? dbToGain(this.mix.bed.duckedDb)
       : dbToGain(this.mix.bed.idleDb)

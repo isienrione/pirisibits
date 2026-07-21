@@ -174,7 +174,7 @@ const manifest = {
   waypoints: {
     w01: wp('w01', {
       act: 'act1',
-      zone: 'centro',
+      zone: 'antiquity',
       chapters: ['w01.mp3'],
       inserts: [],
       photo: '/rome/img/w01_hero.avif',
@@ -189,7 +189,7 @@ const manifest = {
     }),
     w02: wp('w02', {
       act: 'act1',
-      zone: 'underworld',
+      zone: 'antiquity',
       chapters: ['w02_ch1.mp3', 'w02_ch2.mp3'],
       inserts: ['ins_whopaid'],
       approachLine: 'Step inside — the floor you expect is not the floor that was.',
