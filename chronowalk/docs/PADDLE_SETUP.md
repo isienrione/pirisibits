@@ -95,6 +95,25 @@ supabase functions deploy paddle-webhook
 
 Without `RESEND_API_KEY`, live `transaction.completed` fails and buyers never receive their unlock link.
 
+### Live production secrets (required)
+
+```bash
+supabase secrets set \
+  PADDLE_ENV=production \
+  PADDLE_API_KEY=pdl_live_apikey_... \
+  PADDLE_NOTIFICATION_WEBHOOK_SECRET=pdl_ntfset_01ky10q12t00xky3j77h2n3w1p_... \
+  SITE_URL=https://chronowalk.com \
+  RESEND_API_KEY=re_... \
+  RESEND_FROM='ChronoWalk <hello@chronowalk.com>'
+
+supabase functions deploy paddle-webhook
+```
+
+**Critical:** `PADDLE_API_KEY` must be the **live** key (`pdl_live_…`), not sandbox (`pdl_sdbx_…`).  
+Paddle webhook payloads do **not** include the buyer email — the function looks it up via the API. A sandbox key under `PADDLE_ENV=production` causes `transaction.completed missing customer email` and notifications stuck in `queued_for_retry`.
+
+After deploy, logs must show `build: 2026-07-21-v3` (or newer). If the error stack points at older line numbers without that build id, the dashboard is still running a stale paste — open `supabase/functions/paddle-webhook/index.ts`, replace the entire function body, **Deploy**.
+
 Recover a missing email for a completed transaction:
 
 ```bash
