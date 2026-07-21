@@ -266,7 +266,7 @@ describe('AudioEngine', () => {
   });
 
   it('can force-play the next chapter when jumping while paused', async () => {
-    await engine.playWaypoint('w17');
+    await engine.playWaypoint('w23');
     engine.pauseNarration();
     expect(engine.session.paused).toBe(true);
 

@@ -41,12 +41,12 @@ describe('tourProductTruth', () => {
   it('exposes canonical marketing and in-app counts from manifest product metadata', () => {
     const truth = getTourProductTruth(manifest)
 
-    expect(truth.publicPlaceCount).toBe(22)
-    expect(truth.visitStopCount).toBe(18)
+    expect(truth.publicPlaceCount).toBe(23)
+    expect(truth.visitStopCount).toBe(19)
     expect(truth.classicVisitStopCount).toBe(17)
-    expect(truth.storyStopCount).toBe(18)
-    expect(truth.publicPlacesLabel).toBe('22 places')
-    expect(truth.visitStopsLabel).toBe('18 stops')
+    expect(truth.storyStopCount).toBe(19)
+    expect(truth.publicPlacesLabel).toBe('23 places')
+    expect(truth.visitStopsLabel).toBe('19 stops')
     expect(truth.durationLabel).toBe('your pace')
     expect(truth.ownershipLabel).toBe('yours forever')
     expect(truth.priceFallbackCents).toBe(1499)
@@ -61,13 +61,13 @@ describe('tourProductTruth', () => {
     })
     const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
-    expect(central.visitStopCount).toBe(9)
+    expect(central.visitStopCount).toBe(10)
     expect(antica.visitStopCount).toBe(11)
-    expect(eterna.visitStopCount).toBe(19)
+    expect(eterna.visitStopCount).toBe(20)
   })
 
   it('formats places across acts copy', () => {
-    expect(formatPlacesAcrossActs(22, 6)).toBe('22 places across 6 acts')
+    expect(formatPlacesAcrossActs(23, 6)).toBe('23 places across 6 acts')
   })
 
   it('includes optional w04 in catalog landmarks', () => {

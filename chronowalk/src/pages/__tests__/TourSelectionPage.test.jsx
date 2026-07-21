@@ -32,7 +32,7 @@ describe('TourSelectionPage', () => {
     expect(screen.getByRole('button', { name: /pompeii/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /athens/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /paris/i })).toBeInTheDocument()
-    expect(screen.getByText('22 places')).toBeInTheDocument()
+    expect(screen.getByText('23 places')).toBeInTheDocument()
     expect(screen.getByText('The eternal city')).toBeInTheDocument()
   })
 

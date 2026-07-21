@@ -31,6 +31,11 @@ export const MODERN_PHOTO_PATHS = {
     exterior: `${WP}/pantheon/modern-exterior.jpg`,
     poster: `${WP}/pantheon/modern-poster.jpg`,
   },
+  // Temporary: reuse exterior media until interior stills/reconstructions ship.
+  'pantheon-interior': {
+    exterior: `${WP}/pantheon/modern-exterior.jpg`,
+    poster: `${WP}/pantheon/modern-poster.jpg`,
+  },
   'fontana-di-trevi': {
     exterior: `${WP}/fontana-di-trevi/modern-exterior.jpg`,
     poster: `${WP}/fontana-di-trevi/modern-poster.jpg`,

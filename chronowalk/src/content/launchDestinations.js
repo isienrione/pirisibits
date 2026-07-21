@@ -16,7 +16,7 @@ export const LAUNCH_DESTINATIONS = [
     id: 'rome',
     city: 'Rome',
     subtitle: 'The eternal city',
-    placeCount: 22,
+    placeCount: 23,
     description:
       'Emperors, temples, and triumphs — restored on the streets where history was made.',
     heroImage: tourHeroPhoto,

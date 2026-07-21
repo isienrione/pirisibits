@@ -8,6 +8,7 @@ export const TOUR_TIER_WAYPOINTS = {
     'w15',
     'w16',
     'w17',
+    'w23',
     'w18',
     'w19',
     'w20',

@@ -27,7 +27,7 @@ describe('LandingPage', () => {
     expect(screen.getByText(/Walk the eternal city as it stood under emperors/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /begin your journey/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try the free preview/i })).toBeInTheDocument()
-    expect(screen.getByText('22 places')).toBeInTheDocument()
+    expect(screen.getByText('23 places')).toBeInTheDocument()
     expect(screen.getByText('Self-paced')).toBeInTheDocument()
     expect(screen.getByText('Works offline')).toBeInTheDocument()
     expect(screen.getByText('Hear the Pantheon')).toBeInTheDocument()

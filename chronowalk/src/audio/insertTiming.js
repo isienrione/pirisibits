@@ -7,7 +7,7 @@ export const INSERT_AFTER_CHAPTER = {
   w03: { 0: ['ins_jerusalem'] },
   w06: { 0: ['ins_constantine'] },
   w16: { 0: ['ins_water_trevi'] },
-  w17: { 3: ['ins_agrippa'] },
+  w23: { 2: ['ins_agrippa'] },
   w19: { 0: ['ins_fire'] },
 }
 
