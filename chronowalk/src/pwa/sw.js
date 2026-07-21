@@ -78,9 +78,12 @@ registerRoute(
   ({ sameOrigin, request, url }) =>
     sameOrigin &&
     request.destination !== 'document' &&
+    // Landing marketing stills change with deploys — never CacheFirst them.
+    !url.pathname.startsWith('/landing/') &&
     /\.(?:png|jpg|jpeg|svg|gif|webp|mp3|mp4|woff2?)$/i.test(url.pathname),
   new CacheFirst({
-    cacheName: 'chronowalk-media-v2',
+    // Bump when media strategy changes so stale runtime caches are abandoned.
+    cacheName: 'chronowalk-media-v3',
     plugins: [
       new ExpirationPlugin({
         maxEntries: 200,

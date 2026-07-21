@@ -40,7 +40,7 @@ describe('LandingPhoneScreens', () => {
     expect(screen.getByLabelText(/pantheon chapter/i)).toBeInTheDocument()
     expect(container.querySelector('.cw-landing-phone__shot')).toBeTruthy()
     expect(container.querySelector('img.cw-landing-phone__shot')?.getAttribute('src')).toMatch(
-      /phone-screens\/listen\.jpg/,
+      /phone-screens\/listen-pantheon\.jpg/,
     )
   })
 

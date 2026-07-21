@@ -130,7 +130,7 @@ def make_walk() -> Path:
     d.text((W - 220, H - 220), "I'm here", font=ui(26), fill=MUTED)
     for i, x in enumerate([120, 280, 440, 600]):
         round_rect(d, (x, H - 90, x + 90, H - 70), 8, fill=GOLD if i == 0 else (50, 50, 55))
-    path = OUT / "walk.jpg"
+    path = OUT / "walk-pantheon.jpg"
     im.save(path, "JPEG", quality=92, optimize=True)
     return path
 
@@ -177,7 +177,7 @@ def make_listen() -> Path:
     d.polygon([(cx - 14, cy - 24), (cx - 14, cy + 24), (cx + 28, cy)], fill=OBSIDIAN)
     round_rect(d, (120, H - 140, W - 120, H - 70), 40, fill=CHARCOAL)
     d.text((W // 2 - 100, H - 118), "See the full tour →", font=ui(28), fill=BONE)
-    path = OUT / "listen.jpg"
+    path = OUT / "listen-pantheon.jpg"
     im.save(path, "JPEG", quality=92, optimize=True)
     return path
 
