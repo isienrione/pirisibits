@@ -6,7 +6,7 @@ describe('HomeScreenInstallOption', () => {
   it('shows iPhone Safari Share-first how-to with the real ChronoWalk logo', () => {
     render(<HomeScreenInstallOption showIosInstructions />)
 
-    fireEvent.click(screen.getByRole('button', { name: /add icon to home screen/i }))
+    fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
     expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
     expect(screen.getByText(/iphone — use safari only/i)).toBeInTheDocument()
@@ -25,7 +25,7 @@ describe('HomeScreenInstallOption', () => {
       <HomeScreenInstallOption canPromptInstall onInstall={onInstall} />,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /add icon to home screen/i }))
+    fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     fireEvent.click(screen.getByRole('tab', { name: /android · chrome/i }))
 
     expect(screen.getByTestId('a2hs-howto-demo-android')).toBeInTheDocument()

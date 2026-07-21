@@ -223,10 +223,10 @@ export default function HomeScreenInstallOption({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
-              On your Home Screen
+              Ready as a mobile app
             </p>
             <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-              ChronoWalk opens full-screen from the icon — no browser chrome.
+              Open ChronoWalk from your Home Screen — full-screen, no browser.
             </p>
           </div>
           <span
@@ -281,15 +281,19 @@ export default function HomeScreenInstallOption({
           }}
         >
           <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
-            Add icon to Home Screen
+            Use as a mobile app
           </p>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>
-            Open ChronoWalk like an app on tour day.
+            Add ChronoWalk to your Home Screen so you open it like a regular app — not from the browser.
           </p>
         </button>
         <button
           type="button"
-          aria-label={canPromptInstall ? 'Add ChronoWalk to Home Screen' : 'Show how to add to Home Screen'}
+          aria-label={
+            canPromptInstall
+              ? 'Install ChronoWalk as a mobile app'
+              : 'Show how to use ChronoWalk as a mobile app'
+          }
           onClick={() => void handlePrimary()}
           style={{
             flexShrink: 0,
