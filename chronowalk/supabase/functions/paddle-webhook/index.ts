@@ -73,8 +73,7 @@ function buildAccessEmailText({ accessToken, accessLink, productId }) {
     'EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described. Details: https://chronowalk.com/legal/refund',
   ]
     .filter((line) => line != null)
-    .join('
-')
+    .join('\n')
 }
 
 /**
