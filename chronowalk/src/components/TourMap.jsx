@@ -4,6 +4,7 @@ import {
   applyWalkingCompanionCamera,
   collectWalkingCompanionBoundsPoints,
   WALKING_COMPANION_MIN_ZOOM,
+  WALKING_COMPANION_PITCH,
 } from '../utils/walkingCompanionMapCamera.js'
 import { loadMapboxRuntime } from '../map/mapboxLoader.js'
 import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
@@ -16,6 +17,7 @@ import {
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isDevPanelEnabled, isMapboxConfigured } from '../config/env'
 import { resolveTourMapStyleOptions, isMapboxStandardStyle } from '../map/mapStyles.js'
+import { addGlowingRouteLayers, applyWalkingRoutePaint, ROUTE_LINE_COLOR } from '../map/routeLineLayers.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -33,7 +35,7 @@ const MAP_COLORS = {
   current: hex.ember,
   pending: hex.inkMuted,
   tourRoute: hex.cityRome,
-  activeLeg: hex.cityRome,
+  activeLeg: ROUTE_LINE_COLOR,
 }
 
 /**
@@ -54,6 +56,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
   const lineSlot = useStandardSlots ? { slot: 'middle' } : {}
   const fillEmissive = useStandardSlots ? STANDARD_FILL_EMISSIVE : {}
   const lineEmissive = useStandardSlots ? STANDARD_LINE_EMISSIVE : {}
+  const routeSlot = useStandardSlots ? 'middle' : null
 
   if (!map.getSource('waypoint-zones')) {
     map.addSource('waypoint-zones', {
@@ -116,6 +119,10 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       type: 'line',
       source: 'tour-route',
       ...lineSlot,
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round',
+      },
       paint: {
         'line-color': MAP_COLORS.tourRoute,
         'line-width': minimalUI ? 3 : 4,
@@ -130,18 +137,16 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       data: { type: 'FeatureCollection', features: [] },
     })
 
-    map.addLayer({
-      id: 'active-leg-route-line',
-      type: 'line',
-      source: 'active-leg-route',
-      ...lineSlot,
-      paint: {
-        'line-color': walkingCompanionUI ? '#E4552E' : MAP_COLORS.activeLeg,
-        'line-width': walkingCompanionUI ? 4 : 5,
-        'line-opacity': walkingCompanionUI ? 0.92 : 0.95,
-        ...(walkingCompanionUI ? { 'line-dasharray': [2, 2.2] } : {}),
-        ...lineEmissive,
-      },
+    addGlowingRouteLayers(map, {
+      sourceId: 'active-leg-route',
+      glowLayerId: 'active-leg-route-glow',
+      lineLayerId: 'active-leg-route-line',
+      slot: routeSlot,
+      glowWidth: walkingCompanionUI ? 16 : 12,
+      glowBlur: walkingCompanionUI ? 10 : 6,
+      glowOpacity: walkingCompanionUI ? 0.36 : 0.28,
+      lineWidth: walkingCompanionUI ? 4.5 : 5,
+      dashed: true,
     })
 
     map.addSource('directions-nav-route', {
@@ -149,17 +154,16 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       data: { type: 'FeatureCollection', features: [] },
     })
 
-    map.addLayer({
-      id: 'directions-nav-route-line',
-      type: 'line',
-      source: 'directions-nav-route',
-      ...lineSlot,
-      paint: {
-        'line-color': MAP_COLORS.activeLeg,
-        'line-width': 6,
-        'line-opacity': 1,
-        ...lineEmissive,
-      },
+    addGlowingRouteLayers(map, {
+      sourceId: 'directions-nav-route',
+      glowLayerId: 'directions-nav-route-glow',
+      lineLayerId: 'directions-nav-route-line',
+      slot: routeSlot,
+      glowWidth: 16,
+      glowBlur: 10,
+      glowOpacity: 0.36,
+      lineWidth: 5,
+      dashed: true,
     })
   } else {
     map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(geofenceStops))
@@ -348,26 +352,34 @@ function TourMapboxView({
   const activeTarget = stops.find((stop) => stop.id === activeTargetId)
 
   const frameWalkingCompanion = useCallback(
-    ({ includeUser = false } = {}) => {
+    ({ includeUser = true, duration = 0 } = {}) => {
       if (!walkingCompanionUI || !map.current || !mapLoaded || !mapboxglRef.current) return false
 
       const previousStop = activeLeg
         ? stops.find((stop) => stop.id === activeLeg.fromId)?.landmark ?? null
         : null
 
+      const routeCoordinates =
+        directionsGeometry?.coordinates?.length > 0
+          ? directionsGeometry.coordinates
+          : legRouteCoordinates ?? []
+
       const points = collectWalkingCompanionBoundsPoints({
         userPos,
         destination: activeTarget?.landmark ?? null,
         previousStop,
-        routeCoordinates: legRouteCoordinates ?? [],
+        routeCoordinates,
         includeUser,
       })
 
-      return applyWalkingCompanionCamera(map.current, mapboxglRef.current, points)
+      return applyWalkingCompanionCamera(map.current, mapboxglRef.current, points, {
+        duration,
+      })
     },
     [
       activeLeg,
       activeTarget?.landmark,
+      directionsGeometry?.coordinates,
       legRouteCoordinates,
       mapLoaded,
       stops,
@@ -458,6 +470,7 @@ function TourMapboxView({
           ...(styleOptions.config ? { config: styleOptions.config } : {}),
           center: [center.lng, center.lat],
           zoom: walkingCompanionUI ? WALKING_COMPANION_MIN_ZOOM : tour?.mapZoom ?? 14,
+          pitch: walkingCompanionUI ? WALKING_COMPANION_PITCH : 0,
           transformRequest: createMapboxTransformRequest(),
         })
       } catch (error) {
@@ -644,6 +657,11 @@ function TourMapboxView({
         return
       }
 
+      // Live GPS→destination geometry from WalkingCompanionScreen owns the hero route.
+      if (walkingCompanionUI && directionsGeometry?.coordinates?.length) {
+        return
+      }
+
       if (activeLeg && (transitLegActive || walkingCompanionUI)) {
         const fromStop = stops.find((stop) => stop.id === activeLeg.fromId)
         const toStop = stops.find((stop) => stop.id === activeLeg.toId)
@@ -685,17 +703,40 @@ function TourMapboxView({
     return () => {
       cancelled = true
     }
-  }, [tour, stops, activeLeg, transitLegActive, mapLoaded, directionsModeActive, walkingCompanionUI])
+  }, [
+    tour,
+    stops,
+    activeLeg,
+    transitLegActive,
+    mapLoaded,
+    directionsModeActive,
+    walkingCompanionUI,
+    directionsGeometry,
+  ])
 
   useEffect(() => {
     if (!walkingCompanionUI || !mapLoaded || !map.current) return
-    if (!legRouteCoordinates?.length) return
+
+    // Prefer live Directions geometry from the walking companion (GPS → stop).
+    if (directionsGeometry?.coordinates?.length) {
+      map.current.getSource('active-leg-route')?.setData({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry: directionsGeometry, properties: {} }],
+      })
+      setLegRouteCoordinates(directionsGeometry.coordinates)
+      return
+    }
+  }, [walkingCompanionUI, mapLoaded, directionsGeometry])
+
+  useEffect(() => {
+    if (!walkingCompanionUI || !mapLoaded || !map.current) return
+    if (!legRouteCoordinates?.length && !directionsGeometry?.coordinates?.length) return
 
     const pinKey = `${activeTargetId}:leg`
     if (walkingCameraPinRef.current === pinKey) return
 
     const frame = () => {
-      const framed = frameWalkingCompanion({ includeUser: false })
+      const framed = frameWalkingCompanion({ includeUser: true, duration: 0 })
       if (framed) {
         walkingCameraPinRef.current = pinKey
       }
@@ -710,7 +751,14 @@ function TourMapboxView({
     return () => {
       map.current?.off('idle', frame)
     }
-  }, [walkingCompanionUI, mapLoaded, activeTargetId, legRouteCoordinates, frameWalkingCompanion])
+  }, [
+    walkingCompanionUI,
+    mapLoaded,
+    activeTargetId,
+    legRouteCoordinates,
+    directionsGeometry?.coordinates,
+    frameWalkingCompanion,
+  ])
 
   useEffect(() => {
     if (!map.current || !mapLoaded) return
@@ -725,6 +773,9 @@ function TourMapboxView({
     if (!directionsModeActive || !map.current || !mapLoaded) {
       return
     }
+
+    // Walking hero paints Directions onto active-leg-route (glow stack) separately.
+    if (walkingCompanionUI) return
 
     const navSource = map.current.getSource('directions-nav-route')
     if (!navSource) return
@@ -846,6 +897,8 @@ function TourMapboxView({
 
   useEffect(() => {
     if (!focusTarget?.lng || !focusTarget?.lat || !map.current || !mapLoaded) return
+    // Walking hero recenter uses pitched fitBounds — never flatten via flyTo.
+    if (walkingCompanionUI) return
 
     map.current.flyTo({
       center: [focusTarget.lng, focusTarget.lat],
@@ -853,11 +906,11 @@ function TourMapboxView({
       duration: 900,
       essential: true,
     })
-  }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded])
+  }, [focusTarget?.lng, focusTarget?.lat, focusTarget?.key, mapLoaded, walkingCompanionUI])
 
   const handleRecenter = useCallback(() => {
     walkingCameraPinRef.current = null
-    const framed = frameWalkingCompanion({ includeUser: true })
+    const framed = frameWalkingCompanion({ includeUser: true, duration: 700 })
     if (framed) {
       walkingCameraPinRef.current = `${activeTargetId}:user`
     }
@@ -868,10 +921,14 @@ function TourMapboxView({
     if (map.current.getLayer('tour-route-line')) {
       map.current.setPaintProperty('tour-route-line', 'line-opacity', 0.1)
     }
-    if (map.current.getLayer('active-leg-route-line')) {
-      map.current.setPaintProperty('active-leg-route-line', 'line-color', '#E4552E')
-      map.current.setPaintProperty('active-leg-route-line', 'line-dasharray', [2, 2.2])
-    }
+    applyWalkingRoutePaint(map.current, {
+      glowLayerId: 'active-leg-route-glow',
+      lineLayerId: 'active-leg-route-line',
+    })
+    applyWalkingRoutePaint(map.current, {
+      glowLayerId: 'directions-nav-route-glow',
+      lineLayerId: 'directions-nav-route-line',
+    })
   }, [mapLoaded, walkingCompanionUI])
 
   const activeTitle = activeTarget?.title ?? 'waypoint'

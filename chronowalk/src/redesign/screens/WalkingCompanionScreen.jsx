@@ -102,9 +102,10 @@ export default function WalkingCompanionScreen({
   const mapWithDirections = useMemo(() => {
     if (!isValidElement(map)) return map
     const geometry = directions?.geometry ?? null
+    const hasRoute = Boolean(geometry?.coordinates?.length)
     return cloneElement(map, {
       directionsGeometry: geometry,
-      directionsModeActive: Boolean(geometry?.length),
+      directionsModeActive: hasRoute,
     })
   }, [map, directions?.geometry])
 
