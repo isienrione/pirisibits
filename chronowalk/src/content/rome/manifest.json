@@ -340,6 +340,7 @@
         {
           "file": "forum_intro_above.mp3",
           "title": "The Forum from the Emperor's Railing (PATH B · ~2:50)",
+          "paths": ["b"],
           "transcript": "[warm]  Put both hands on the railing and look down. Edge to edge — that whole basin below you is the Roman Forum. And here is the secret of this view: down there, the Forum is a maze you're inside. [slow]  From up here... it's a map. You're seeing it the way the people who lived on this hill saw it — which is to say, the way its owners did.\n\n[matter-of-fact]  And the first thing the map tells you is what no postcard admits. That valley was a swamp. Low ground between hills, flooding on a schedule, until Rome solved it the way Rome solved most things — with engineering and stubbornness. A great covered sewer, the Cloaca Maxima, laid the length of the valley... [quiet]  and it is still down there. Still draining. It has worked without interruption for some twenty-five centuries. [slow]  The centre of the world is a drained marsh, kept dry by a sewer older than the Republic.\n\n[warm]  Once the ground was dry, everything followed the crowd. The market came first — flat ground is where markets go. The law courts followed the market, because markets create disputes. The temples followed the courts, because legal acts needed the gods as witnesses. The speaking platform went where the most people could hear it. [wry]  Nothing was planned. The Forum's apparent order is just ten centuries of buildings chasing an audience.\n\n[quiet]  And what you're looking at is the skeleton. When this valley worked, every surface below you wore marble — white, purple, Egyptian granite. What remains is what fifteen centuries of very patient thieves could not carry. [slow]  The marble went by the cartload. The bones stayed.\n\n[warm]  Fix the map in your mind — the arch at the near end, the eight columns at the far one. [slow]  Because now we go down into the maze you've just memorized... and it starts at that white arch."
         }
       ],
@@ -925,7 +926,21 @@
         "ins_window"
       ],
       "approachLine": "Walk out onto the grass at the bottom of the valley.",
-      "arrivalLine": "You are where the crowd stood."
+      "arrivalLine": "You are where the crowd stood.",
+      "now_image": {
+        "file": "modern-poster.jpg",
+        "source": "commissioned",
+        "license": null,
+        "credit": "ChronoWalk production photography",
+        "source_url": null
+      },
+      "photo": "/waypoints/circus-maximus/modern-poster.jpg",
+      "reconstruction": {
+        "now": "/waypoints/circus-maximus/modern-poster.jpg",
+        "then": "/waypoints/circus-maximus/modern-poster.jpg",
+        "loop": "/waypoints/circus-maximus/ancient-reconstruction.mp4",
+        "caption": "Interpretive reconstruction informed by archaeology and scholarship."
+      }
     },
     "w22": {
       "title": "Via Appia Antica",

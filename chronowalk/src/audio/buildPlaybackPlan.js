@@ -1,5 +1,5 @@
 import { AUDIO_CATEGORIES } from '../content/audioPaths.js'
-import { chapterFile } from '../content/chapterMeta.js'
+import { chapterFile, chapterIncluded } from '../content/chapterMeta.js'
 import { isInsertEligible } from './insertEligibility.js'
 import { INSERT_AFTER_CHAPTER, INSERT_ON_TRANSIT_START } from './insertTiming.js'
 
@@ -52,6 +52,7 @@ export function buildWaypointPlan(manifest, waypointId, path, context) {
   const chapterInserts = INSERT_AFTER_CHAPTER[waypointId] ?? {}
 
   waypoint.chapters.forEach((chapter, index) => {
+    if (!chapterIncluded(chapter, path)) return
     const file = chapterFile(chapter)
     if (file) plan.push(narrationItem(file))
     plan.push(...eligibleInserts(manifest, chapterInserts[index], context))

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { loadRomeManifest, getWaypoint } from '../content/manifest.js';
+import { buildImmersivePlayerProps } from '../redesign/lib/waypointImmersiveProps.js';
 import {
   buildTransitPlan,
   buildWaypointPlan,
@@ -20,6 +21,27 @@ describe('buildPlaybackPlan', () => {
   it('uses path outro variant for w03 path b', () => {
     const plan = buildWaypointPlan(manifest, 'w03', 'b', {});
     expect(plan.at(-1)?.file).toBe('w03_outro_b.mp3');
+  });
+
+  it('builds w03 immersive threshold props on path b', () => {
+    const waypoint = getWaypoint(manifest, 'w03');
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      audio: { audioAvailable: true },
+    });
+    expect(props.hasReconstruction).toBe(true);
+    expect(props.thenLoop).toBe(
+      '/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4',
+    );
+  });
+
+  it('plays Palatine forum intro only on path b', () => {
+    const pathA = buildWaypointPlan(manifest, 'w04', 'a', {}).map((item) => item.file);
+    const pathB = buildWaypointPlan(manifest, 'w04', 'b', {}).map((item) => item.file);
+    expect(pathA).toEqual(['w04_ch1.mp3', 'w04_ch2.mp3']);
+    expect(pathB).toEqual(['w04_ch1.mp3', 'w04_ch2.mp3', 'forum_intro_above.mp3']);
   });
 
   it('builds transit with variant for t01 path b', () => {

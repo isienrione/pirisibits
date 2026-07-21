@@ -21,10 +21,20 @@ function writeFlag(key) {
   }
 }
 
+function waypointCrossedKey(waypointId) {
+  return `chronowalk.threshold_crossed.${waypointId}`
+}
+
 /** True after the traveler has successfully held to cross a threshold at least once. */
 export function hasCrossedThreshold() {
   if (readFlag(CROSSED_KEY)) return true
   return LEGACY_KEYS.some((key) => readFlag(key))
+}
+
+/** True after the traveler has crossed the threshold at this specific stop. */
+export function hasCrossedThresholdAtWaypoint(waypointId) {
+  if (!waypointId) return hasCrossedThreshold()
+  return readFlag(waypointCrossedKey(waypointId))
 }
 
 /** Persist that the hold gesture has been learned. */
@@ -32,6 +42,12 @@ export function markThresholdCrossed() {
   writeFlag(CROSSED_KEY)
   // Keep legacy keys in sync so older code paths stay coherent.
   for (const key of LEGACY_KEYS) writeFlag(key)
+}
+
+/** Persist a successful cross for this stop (and the global learned flag). */
+export function markThresholdCrossedAtWaypoint(waypointId) {
+  markThresholdCrossed()
+  if (waypointId) writeFlag(waypointCrossedKey(waypointId))
 }
 
 /** @deprecated Use hasCrossedThreshold */

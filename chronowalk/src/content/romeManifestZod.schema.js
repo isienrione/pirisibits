@@ -25,6 +25,7 @@ const chapterSchema = z.union([
     file: z.string(),
     title: z.string().optional(),
     transcript: z.string().optional(),
+    paths: z.array(z.enum(['a', 'b'])).optional(),
   }),
 ])
 

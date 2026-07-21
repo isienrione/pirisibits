@@ -21,6 +21,18 @@ export function chapterTranscript(chapter) {
   return chapter.transcript ?? null
 }
 
+/** True when a chapter belongs on the active journey path (omit when chapter.paths is set). */
+export function chapterIncluded(chapter, path = 'a') {
+  if (!chapter || typeof chapter === 'string') return true
+  const paths = chapter.paths
+  if (!paths?.length) return true
+  return paths.includes(path)
+}
+
+export function filterChaptersForPath(chapters, path = 'a') {
+  return (chapters ?? []).filter((chapter) => chapterIncluded(chapter, path))
+}
+
 export function chapterAtIndex(chapters, index, fallbackTitle = 'Chapter') {
   const chapter = chapters?.[index]
   const numberedFallback = `${fallbackTitle} ${index + 1}`
