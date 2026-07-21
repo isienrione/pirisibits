@@ -264,6 +264,21 @@ describe('AudioEngine', () => {
     expect(playWaypoint).toHaveBeenCalledWith('w01');
     expect(engine.isPlaybackInterrupted()).toBe(false);
   });
+
+  it('keeps Pantheon exterior bed for chapter 1, then swaps to interior', async () => {
+    const fakeBuffer = { duration: 1 };
+    engine.loadBuffer = vi.fn(async () => fakeBuffer);
+    const pantheon = engine.manifest.waypointsById.w17 ?? engine.manifest.waypoints.w17;
+
+    await engine.playWaypoint('w17');
+    expect(engine.currentBedKey).toBe(pantheon.zone);
+
+    await engine.jumpToChapter(1);
+    expect(engine.currentBedKey).toBe('pantheon_interior');
+
+    await engine.jumpToChapter(0);
+    expect(engine.currentBedKey).toBe(pantheon.zone);
+  });
 });
 
 function manifestFromEngine(engine) {

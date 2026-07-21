@@ -157,8 +157,8 @@ export function useAudioEngine(manifest) {
     engineRef.current?.primeForGesture()
   }, [])
 
-  const playWaypoint = useCallback(async (waypointId, options) => {
-    return (await engineRef.current?.playWaypoint(waypointId, options)) ?? false
+  const playWaypoint = useCallback(async (waypointId) => {
+    return (await engineRef.current?.playWaypoint(waypointId)) ?? false
   }, [])
 
   const playTransit = useCallback(async (transitId) => {
