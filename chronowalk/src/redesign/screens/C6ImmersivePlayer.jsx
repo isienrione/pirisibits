@@ -3,18 +3,18 @@ import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
-import ThresholdRevealInvite from '../ui/ThresholdRevealInvite.jsx'
-import ThresholdHoldHint from '../ui/ThresholdHoldHint.jsx'
+import ThresholdDiegeticHint from '../ui/ThresholdDiegeticHint.jsx'
 import KaraokeTranscript from '../ui/KaraokeTranscript.jsx'
 import C7Threshold from './C7Threshold.jsx'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { useAppPreferences, transcriptFontSizePx } from '../../hooks/useAppPreferences.js'
 import {
-  hasSeenThresholdRevealTutorial,
-  markThresholdRevealTutorialSeen,
+  hasCrossedThreshold,
+  markThresholdCrossed,
 } from '../../utils/thresholdWaypointReveal.js'
 
 const DEFAULT_SPEEDS = [0.8, 1, 1.2]
+const BRIEF_RING_MS = 1500
 
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
@@ -70,6 +70,9 @@ export default function C6ImmersivePlayer({
   onThresholdCross,
   onOpenThreshold,
   onViewImages,
+  /** Force the first-run ring + text even if the traveler has crossed before (QA / free preview). */
+  forceDiegeticHint = false,
+  /** @deprecated Prefer forceDiegeticHint */
   forceRevealInvite = false,
   suppressAutoRevealInvite = false,
 }) {
@@ -78,18 +81,23 @@ export default function C6ImmersivePlayer({
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
   const [dragProgress, setDragProgress] = useState(null)
   const [showAudioNotice, setShowAudioNotice] = useState(false)
-  const [autoRevealInvite, setAutoRevealInvite] = useState(false)
-  const [promptedRevealInvite, setPromptedRevealInvite] = useState(false)
   const [focusReveal, setFocusReveal] = useState(false)
   const [revealLatched, setRevealLatched] = useState(false)
+  /** 'full' = ring + text · 'ring' = brief fading ring · 'hidden' */
+  const [hintMode, setHintMode] = useState('hidden')
+  const [hintFading, setHintFading] = useState(false)
   const seekTrackRef = useRef(null)
+  const briefRingTimerRef = useRef(null)
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
+
+  const forceHint = forceDiegeticHint || forceRevealInvite
+  const alreadyCrossed = !forceHint && hasCrossedThreshold()
+  const autoPeek = hasReconstruction && !suppressAutoRevealInvite && (forceHint || !alreadyCrossed)
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
   const canSeek = typeof onSeek === 'function' && duration > 0 && audioAvailable
   const displayTime = dragProgress != null ? dragProgress * duration : currentTime
-  const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
 
   const seekFromClientX = (clientX) => {
     const el = seekTrackRef.current
@@ -124,48 +132,73 @@ export default function C6ImmersivePlayer({
   }, [initialTab])
 
   useEffect(() => {
-    const showInvite =
-      hasReconstruction &&
-      !suppressAutoRevealInvite &&
-      (forceRevealInvite || !hasSeenThresholdRevealTutorial())
-    setAutoRevealInvite(showInvite)
-    setPromptedRevealInvite(false)
+    if (briefRingTimerRef.current != null) {
+      window.clearTimeout(briefRingTimerRef.current)
+      briefRingTimerRef.current = null
+    }
+
     setFocusReveal(false)
     setRevealLatched(false)
-  }, [forceRevealInvite, hasReconstruction, suppressAutoRevealInvite, waypointId])
+    setHintFading(false)
 
-  const dismissRevealInvite = useCallback(() => {
-    if (autoRevealInvite) markThresholdRevealTutorialSeen()
-    setAutoRevealInvite(false)
-    setPromptedRevealInvite(false)
-  }, [autoRevealInvite])
-
-  const handleThresholdHelp = useCallback(() => {
-    if (autoRevealInvite && !promptedRevealInvite) {
-      setPromptedRevealInvite(true)
-      return
+    if (!hasReconstruction || suppressAutoRevealInvite) {
+      setHintMode('hidden')
+      return undefined
     }
-    setPromptedRevealInvite((prev) => !prev)
-  }, [autoRevealInvite, promptedRevealInvite])
+
+    const crossed = !forceHint && hasCrossedThreshold()
+    if (forceHint || !crossed) {
+      setHintMode('full')
+      return undefined
+    }
+
+    // Later thresholds: brief fading ring only (or nothing if storage failed → still ring).
+    setHintMode('ring')
+    briefRingTimerRef.current = window.setTimeout(() => {
+      setHintFading(true)
+      briefRingTimerRef.current = window.setTimeout(() => {
+        setHintMode('hidden')
+        setHintFading(false)
+        briefRingTimerRef.current = null
+      }, 420)
+    }, BRIEF_RING_MS)
+
+    return () => {
+      if (briefRingTimerRef.current != null) {
+        window.clearTimeout(briefRingTimerRef.current)
+        briefRingTimerRef.current = null
+      }
+    }
+  }, [forceHint, hasReconstruction, suppressAutoRevealInvite, waypointId])
+
+  const dismissDiegeticHint = useCallback(() => {
+    markThresholdCrossed()
+    setHintFading(true)
+    window.setTimeout(() => {
+      setHintMode('hidden')
+      setHintFading(false)
+    }, 380)
+  }, [])
 
   const handleRevealHoldStart = useCallback(() => {
     if (!hasReconstruction) return
-
     setRevealLatched(false)
-
-    if (autoRevealInvite || promptedRevealInvite) {
-      markThresholdRevealTutorialSeen()
-      setAutoRevealInvite(false)
-      setPromptedRevealInvite(false)
-    }
-
     setFocusReveal(true)
-  }, [autoRevealInvite, hasReconstruction, promptedRevealInvite])
+    if (hintMode !== 'hidden') dismissDiegeticHint()
+  }, [dismissDiegeticHint, hasReconstruction, hintMode])
 
-  const handleRevealHoldEnd = useCallback((detail) => {
-    setFocusReveal(false)
-    setRevealLatched(Boolean(detail?.latched))
-  }, [])
+  const handleRevealHoldEnd = useCallback(
+    (detail) => {
+      setFocusReveal(false)
+      const latched = Boolean(detail?.latched)
+      setRevealLatched(latched)
+      if (latched || detail?.via === 'pill') {
+        markThresholdCrossed()
+        if (hintMode !== 'hidden') dismissDiegeticHint()
+      }
+    },
+    [dismissDiegeticHint, hintMode],
+  )
 
   useEffect(() => {
     if (audioAvailable) {
@@ -188,14 +221,12 @@ export default function C6ImmersivePlayer({
     continueLabel ??
     (storyEnded || !narrationPlaying ? 'Continue walking →' : 'Skip ahead →')
   const chromeHidden = focusReveal
-  const showRevealInvite =
-    hasReconstruction && !chromeHidden && (autoRevealInvite || promptedRevealInvite)
-  const showHoldHint =
-    hasReconstruction && !chromeHidden && !revealLatched && !showRevealInvite
-  const revealInviteInteractive = promptedRevealInvite
+  const showDiegeticHint =
+    hasReconstruction && !chromeHidden && !revealLatched && hintMode !== 'hidden'
 
   const tabBar = (
     <div
+      className="cw-waypoint-immersive__mode-tabs"
       style={{
         display: 'flex',
         gap: 24,
@@ -204,7 +235,7 @@ export default function C6ImmersivePlayer({
         flexShrink: 0,
       }}
     >
-      {[['audio', 'audio'], ['transcript', 'Read instead']].map(([t, label]) => (
+      {[['audio', 'Audio'], ['transcript', 'Read instead']].map(([t, label]) => (
         <button
           key={t}
           type="button"
@@ -414,6 +445,7 @@ export default function C6ImmersivePlayer({
         nowAmbienceUrl={nowAmbienceUrl}
         thenSoundscapeUrl={thenSoundscapeUrl}
         hideUi={chromeHidden}
+        autoPeek={autoPeek}
         onHoldStart={handleRevealHoldStart}
         onHoldEnd={handleRevealHoldEnd}
         onCrossed={onThresholdCross}
@@ -454,12 +486,11 @@ export default function C6ImmersivePlayer({
       <div className="cw-waypoint-immersive__hero">
         {heroLayer}
 
-        {showRevealInvite ? (
-          <ThresholdRevealInvite
+        {showDiegeticHint ? (
+          <ThresholdDiegeticHint
             thenLabel={thenLabel}
-            accent={accent}
-            interactive={revealInviteInteractive}
-            onDismiss={dismissRevealInvite}
+            showText={hintMode === 'full'}
+            fading={hintFading}
           />
         ) : null}
 
@@ -503,34 +534,6 @@ export default function C6ImmersivePlayer({
           >
             <ChevronLeft size={17} /> Back
           </button>
-          {hasReconstruction ? (
-            <button
-              type="button"
-              data-testid="threshold-help"
-              aria-label="How to cross the threshold"
-              onClick={handleThresholdHelp}
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 14,
-                border: `1px solid rgba(245,240,232,0.35)`,
-                background: 'rgba(11,11,13,0.55)',
-                backdropFilter: 'blur(8px)',
-                color: T.warmWhite,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontFamily: F.body,
-                fontSize: 15,
-                fontWeight: 600,
-                lineHeight: 1,
-                pointerEvents: 'auto',
-              }}
-            >
-              ?
-            </button>
-          ) : null}
         </div>
 
         <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">
@@ -559,9 +562,6 @@ export default function C6ImmersivePlayer({
           >
             {subtitle}
           </p>
-          {showHoldHint ? (
-            <ThresholdHoldHint className="cw-threshold-hold-hint--under-title" />
-          ) : null}
         </div>
       </div>
 
