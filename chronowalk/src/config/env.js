@@ -209,8 +209,9 @@ export const getTourWaypointId = () => getSingleWaypointId() || 'colosseum'
  */
 export const env = {
   mapboxToken: import.meta.env.VITE_MAPBOX_TOKEN,
+  /** Full-screen MAP tab style. Defaults to Mapbox Standard (night config applied in TourMap). */
   mapboxStyleUrl:
-    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/light-v11',
+    import.meta.env.VITE_MAPBOX_STYLE_URL || 'mapbox://styles/mapbox/standard',
   get debugGeo() {
     return isDebugGeo()
   },

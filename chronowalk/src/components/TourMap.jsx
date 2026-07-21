@@ -15,6 +15,7 @@ import {
 } from '../services/fetchWalkingRoute'
 import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isDevPanelEnabled, isMapboxConfigured } from '../config/env'
+import { resolveTourMapStyleOptions, isMapboxStandardStyle } from '../map/mapStyles.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -35,12 +36,24 @@ const MAP_COLORS = {
   activeLeg: hex.cityRome,
 }
 
-const MAP_STYLE = env.mapboxStyleUrl
+/**
+ * Custom overlay paint for Mapbox Standard 3D lighting.
+ * Without emissive strength, route lines can look flat/washed under dusk/night presets.
+ * @see https://docs.mapbox.com/mapbox-gl-js/guides/migrate-to-v3/
+ */
+const STANDARD_LINE_EMISSIVE = { 'line-emissive-strength': 0.8 }
+const STANDARD_FILL_EMISSIVE = { 'fill-emissive-strength': 0.35 }
 
-function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId }) {
+function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId, useStandardSlots }) {
   const geofenceStops = minimalUI
     ? stops.filter((stop) => stop.id === activeTargetId)
     : stops
+
+  // Standard styles place custom data via slots (bottom / middle / top).
+  const fillSlot = useStandardSlots ? { slot: 'bottom' } : {}
+  const lineSlot = useStandardSlots ? { slot: 'middle' } : {}
+  const fillEmissive = useStandardSlots ? STANDARD_FILL_EMISSIVE : {}
+  const lineEmissive = useStandardSlots ? STANDARD_LINE_EMISSIVE : {}
 
   if (!map.getSource('waypoint-zones')) {
     map.addSource('waypoint-zones', {
@@ -52,6 +65,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       id: 'waypoint-zones-fill',
       type: 'fill',
       source: 'waypoint-zones',
+      ...fillSlot,
       paint: {
         'fill-color': [
           'match',
@@ -65,6 +79,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
           MAP_COLORS.pending,
         ],
         'fill-opacity': minimalUI ? 0.08 : 0.14,
+        ...fillEmissive,
       },
     })
 
@@ -72,6 +87,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       id: 'waypoint-zones-outline',
       type: 'line',
       source: 'waypoint-zones',
+      ...lineSlot,
       paint: {
         'line-color': [
           'match',
@@ -86,6 +102,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
         ],
         'line-width': minimalUI ? 1.5 : 2,
         'line-opacity': minimalUI ? 0.35 : 0.65,
+        ...lineEmissive,
       },
     })
 
@@ -98,11 +115,13 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       id: 'tour-route-line',
       type: 'line',
       source: 'tour-route',
+      ...lineSlot,
       paint: {
         'line-color': MAP_COLORS.tourRoute,
         'line-width': minimalUI ? 3 : 4,
         'line-opacity': minimalUI ? 0.28 : 0.55,
         'line-dasharray': [1.2, 1.4],
+        ...lineEmissive,
       },
     })
 
@@ -115,11 +134,13 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       id: 'active-leg-route-line',
       type: 'line',
       source: 'active-leg-route',
+      ...lineSlot,
       paint: {
         'line-color': walkingCompanionUI ? '#E4552E' : MAP_COLORS.activeLeg,
         'line-width': walkingCompanionUI ? 4 : 5,
         'line-opacity': walkingCompanionUI ? 0.92 : 0.95,
         ...(walkingCompanionUI ? { 'line-dasharray': [2, 2.2] } : {}),
+        ...lineEmissive,
       },
     })
 
@@ -132,10 +153,12 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       id: 'directions-nav-route-line',
       type: 'line',
       source: 'directions-nav-route',
+      ...lineSlot,
       paint: {
         'line-color': MAP_COLORS.activeLeg,
         'line-width': 6,
         'line-opacity': 1,
+        ...lineEmissive,
       },
     })
   } else {
@@ -390,6 +413,8 @@ function TourMapboxView({
       }
     }
 
+    const styleOptions = resolveTourMapStyleOptions({ walkingCompanionUI })
+
     const markMapReady = () => {
       if (cancelled || !map.current) return
 
@@ -401,7 +426,15 @@ function TourMapboxView({
       }
 
       try {
-        setupMapLayers(map.current, { stops, tour, bounds, minimalUI, walkingCompanionUI, activeTargetId })
+        setupMapLayers(map.current, {
+          stops,
+          tour,
+          bounds,
+          minimalUI,
+          walkingCompanionUI,
+          activeTargetId,
+          useStandardSlots: isMapboxStandardStyle(styleOptions.style),
+        })
       } catch (error) {
         console.error('Map layer setup failed:', error)
         onMapFailureRef.current?.()
@@ -421,7 +454,8 @@ function TourMapboxView({
       try {
         map.current = new mapboxgl.Map({
           container: mapContainer.current,
-          style: MAP_STYLE,
+          style: styleOptions.style,
+          ...(styleOptions.config ? { config: styleOptions.config } : {}),
           center: [center.lng, center.lat],
           zoom: walkingCompanionUI ? WALKING_COMPANION_MIN_ZOOM : tour?.mapZoom ?? 14,
           transformRequest: createMapboxTransformRequest(),
@@ -431,6 +465,19 @@ function TourMapboxView({
         onMapFailureRef.current?.()
         return
       }
+
+      // Keep basemap lightPreset in sync if style reloads (Standard styles).
+      map.current.on('style.load', () => {
+        const basemap = styleOptions.config?.basemap
+        if (!basemap || typeof map.current?.setConfigProperty !== 'function') return
+        try {
+          for (const [key, value] of Object.entries(basemap)) {
+            map.current.setConfigProperty('basemap', key, value)
+          }
+        } catch (error) {
+          console.warn('Mapbox basemap config apply failed:', error)
+        }
+      })
 
       map.current.on('error', (event) => {
         const status = event?.error?.status

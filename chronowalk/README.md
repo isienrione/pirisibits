@@ -101,7 +101,7 @@ Production deploys via **Cloudflare Pages** from the `figma` branch — see [`do
 
 4. Restart `npm run dev`
 
-The map uses the **light** Mapbox style (`light-v11`) with dashed terracotta tour routes and solid terracotta active walking legs. Walking paths are fetched via the Mapbox Directions API when you transit between stops.
+The Walking-to hero map uses **Mapbox Standard Satellite** (`standard-satellite`, dusk light). The full-screen MAP tab uses **Mapbox Standard** vector (`standard`, night light + ChronoWalk bronze/ember road accents) to avoid satellite tile cost on every screen. Tour routes stay terracotta/orange — never Mapbox default blue. Walking paths are fetched via the Mapbox Directions API when you transit between stops.
 
 If the token is missing or invalid, the app shows a clear setup or recovery message instead of a blank screen.
 
