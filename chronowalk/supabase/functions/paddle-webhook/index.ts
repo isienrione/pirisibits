@@ -5,7 +5,7 @@
  *   supabase functions deploy paddle-webhook
  *   supabase secrets set PADDLE_API_KEY=... PADDLE_NOTIFICATION_WEBHOOK_SECRET=... \
  *     PADDLE_ENV=production SITE_URL=https://chronowalk.com \
- *     RESEND_API_KEY=re_... RESEND_FROM="ChronoWalk <access@chronowalk.com>"
+ *     RESEND_API_KEY=re_... RESEND_FROM="ChronoWalk <hello@chronowalk.com>"
  *
  * Paddle notification URL:
  *   https://<PROJECT_REF>.supabase.co/functions/v1/paddle-webhook
@@ -27,11 +27,26 @@ function getPaddle() {
   const apiKey = Deno.env.get('PADDLE_API_KEY') ?? ''
   if (!apiKey) throw new Error('PADDLE_API_KEY is not set')
   const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
-  const environment =
-    envName === 'production' || envName === 'live'
-      ? Environment.production
-      : Environment.sandbox
+  const production = envName === 'production' || envName === 'live'
+  if (production && apiKey.includes('sdbx')) {
+    throw new Error(
+      'PADDLE_API_KEY is a sandbox key while PADDLE_ENV=production — update Supabase secrets to the live pdl_live_apikey_… key',
+    )
+  }
+  if (!production && apiKey.includes('live')) {
+    console.warn(
+      '[paddle-webhook] PADDLE_API_KEY looks live while PADDLE_ENV=sandbox',
+    )
+  }
+  const environment = production ? Environment.production : Environment.sandbox
   return new Paddle(apiKey, { environment })
+}
+
+function paddleApiBase() {
+  const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
+  return envName === 'production' || envName === 'live'
+    ? 'https://api.paddle.com'
+    : 'https://sandbox-api.paddle.com'
 }
 
 function getSupabaseAdmin() {
@@ -79,6 +94,38 @@ function customerIdOf(transaction) {
 async function resolveCustomerEmail(paddle, transaction) {
   const direct = customerEmail(transaction)
   if (direct) return String(direct)
+
+  const orderId = transaction?.id
+  // Preferred: re-fetch transaction with customer included (one permission path).
+  if (orderId) {
+    try {
+      const apiKey = Deno.env.get('PADDLE_API_KEY') ?? ''
+      const res = await fetch(
+        `${paddleApiBase()}/transactions/${encodeURIComponent(orderId)}?include=customer`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            'Paddle-Version': '1',
+          },
+        },
+      )
+      if (res.ok) {
+        const json = await res.json()
+        const email = json?.data?.customer?.email
+        if (email) return String(email)
+      } else {
+        const body = await res.text()
+        console.error(
+          '[paddle-webhook] transactions.get?include=customer failed',
+          orderId,
+          res.status,
+          body,
+        )
+      }
+    } catch (err) {
+      console.error('[paddle-webhook] transactions include=customer failed', orderId, err)
+    }
+  }
 
   const customerId = customerIdOf(transaction)
   if (!customerId) return null
