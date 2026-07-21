@@ -10,4 +10,4 @@ Looping zone beds played live by `AudioEngine` — never baked into narration.
 | `bed_underworld.mp3` | `underworld` | Colosseum hypogeum (`w02`) *(file still missing)* |
 | `bed_pantheon_interior.mp3` | `pantheon_interior` | Pantheon interior chapters *(file still missing)* |
 
-`bed_antiquity.mp3` and `bed_river.mp3` here are **temporary stand-ins** (soft noise loops) so zone crossfades can be field-tested. Replace with the Freesound-layered masters from the Sound Production Plan when ready — same filenames, 60–90 s seamless loops, ~−24 dB normalize target.
+`bed_antiquity.mp3` and `bed_river.mp3` are **loop stand-ins** for field-testing zone crossfades. Normalize each file to roughly **−12 to −9 dB mean** (peak near −1 dBFS) before the engine applies its mix gain (`idleDb` ≈ −24 dB under narration-free walking, `duckedDb` ≈ −26 dB under voice). Replace with Freesound-layered masters when ready — same filenames, 60–90 s seamless loops.

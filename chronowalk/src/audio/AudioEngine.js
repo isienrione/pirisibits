@@ -468,6 +468,14 @@ export class AudioEngine {
   async crossfadeBed(url, zone) {
     if (!url || !this.context) return
 
+    if (this.context.state === 'suspended' && this.context.resume) {
+      try {
+        await this.context.resume()
+      } catch {
+        // Resume may require a fresh user gesture on some mobile browsers.
+      }
+    }
+
     const buffer = await this.loadBuffer(url, this.context)
     if (!buffer) return
 
