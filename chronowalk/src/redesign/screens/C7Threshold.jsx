@@ -24,6 +24,7 @@ export default function C7Threshold({
   framed = false,
   reserveCtaSpace = false,
   active = true,
+  autoPeek = false,
 }) {
   const waypoint = {
     id: waypointId,
@@ -48,6 +49,7 @@ export default function C7Threshold({
       onHoldStart={onHoldStart}
       onHoldEnd={onHoldEnd}
       hideUi={hideUi}
+      autoPeek={autoPeek}
       onFullyRevealed={onCrossed}
     />
   )

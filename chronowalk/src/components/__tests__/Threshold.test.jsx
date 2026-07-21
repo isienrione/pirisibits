@@ -124,13 +124,29 @@ describe('Threshold', () => {
     expect(screen.getByText('Evidence-based reconstruction')).toBeInTheDocument()
   })
 
-  it('hides era pills and source badges in immersive embedded mode', () => {
+  it('shows tappable era pills as a fallback in immersive embedded mode', () => {
     renderThreshold({ embedded: true, immersive: true, thenLabel: 'ANCIENT ROME' })
 
-    expect(screen.queryByText('Today')).not.toBeInTheDocument()
-    expect(screen.queryByText('ANCIENT ROME')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threshold-era-then')).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-era-today')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /show ancient rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /show today/i })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /about this reconstruction/i })).not.toBeInTheDocument()
     expect(screen.queryByTestId('threshold-hold-hint')).not.toBeInTheDocument()
+  })
+
+  it('latches to Ancient via the era pill fallback', () => {
+    const onHoldEnd = vi.fn()
+    renderThreshold({
+      embedded: true,
+      immersive: true,
+      thenLabel: 'ANCIENT ROME',
+      onHoldEnd,
+    })
+
+    fireEvent.click(screen.getByTestId('threshold-era-then'))
+    expect(screen.getByText('Tap to return to today')).toBeInTheDocument()
+    expect(onHoldEnd).toHaveBeenCalledWith(expect.objectContaining({ latched: true, via: 'pill' }))
   })
 
   it('calls onDismiss from journey controls', () => {
