@@ -25,19 +25,20 @@ export const HOW_IT_WORKS_SHOTS = {
     label: 'ChronoWalk route overview',
   },
   map: {
-    src: '/landing/phone-screens/walk.jpg',
+    /** Filename includes landmark so SW CacheFirst cannot serve a prior Titus still. */
+    src: '/landing/phone-screens/walk-pantheon.jpg',
     label: 'ChronoWalk walking steps — Pantheon',
   },
   listening: {
-    src: '/landing/phone-screens/listen.jpg',
+    src: '/landing/phone-screens/listen-pantheon.jpg',
     label: 'ChronoWalk Pantheon chapter',
   },
   arrive: {
-    src: '/landing/phone-screens/listen.jpg',
+    src: '/landing/phone-screens/listen-pantheon.jpg',
     label: 'ChronoWalk Pantheon chapter',
   },
   audio: {
-    src: '/landing/phone-screens/listen.jpg',
+    src: '/landing/phone-screens/listen-pantheon.jpg',
     label: 'ChronoWalk Pantheon chapter',
   },
 }
