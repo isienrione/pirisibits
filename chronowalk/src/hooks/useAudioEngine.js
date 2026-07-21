@@ -213,8 +213,8 @@ export function useAudioEngine(manifest) {
     void engineRef.current?.skipNarration(deltaSeconds)
   }, [])
 
-  const jumpToChapter = useCallback((chapterIndex) => {
-    void engineRef.current?.jumpToChapter(chapterIndex)
+  const jumpToChapter = useCallback((chapterIndex, options) => {
+    void engineRef.current?.jumpToChapter(chapterIndex, options)
   }, [])
 
   const setPath = useCallback((path) => {

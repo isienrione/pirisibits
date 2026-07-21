@@ -865,16 +865,17 @@ export class AudioEngine {
     return this.seekNarration(this.getNarrationTime() + deltaSeconds)
   }
 
-  async jumpToItem(index, offset = 0) {
+  async jumpToItem(index, offset = 0, { play } = {}) {
     const session = this.session
     if (!session) return
     const clampedIndex = Math.min(Math.max(index, 0), session.plan.length - 1)
     const wasPlaying = !session.paused
+    const shouldPlay = play ?? wasPlaying
     this.releaseNarrationElement()
     session.index = clampedIndex
     session.offset = offset
     session.duration = 0
-    if (wasPlaying) {
+    if (shouldPlay) {
       session.paused = false
       await this.startCurrentItem(offset)
     } else {
@@ -883,7 +884,7 @@ export class AudioEngine {
     }
   }
 
-  async jumpToChapter(chapterIndex) {
+  async jumpToChapter(chapterIndex, options = {}) {
     const session = this.session
     if (!session) return
     const narrationIndices = session.plan
@@ -891,7 +892,7 @@ export class AudioEngine {
       .filter((i) => i >= 0)
     const target = narrationIndices[chapterIndex]
     if (target === undefined) return
-    await this.jumpToItem(target, 0)
+    await this.jumpToItem(target, 0, options)
   }
 
   setNarrationPlaying(playing) {

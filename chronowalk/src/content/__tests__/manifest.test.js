@@ -34,8 +34,41 @@ describe('rome content manifest', () => {
     const paths = collectManifestAudioPaths(manifest)
     expect(paths).toContain('/rome/audio/narration/w01.mp3')
     expect(paths).toContain('/rome/audio/beds/bed_antiquity.mp3')
+    expect(paths).toContain('/rome/audio/beds/bed_river.mp3')
     expect(paths).toContain('/rome/audio/inserts/ins_fire.mp3')
     expect(paths).toContain('/rome/audio/system/sfx_presence.mp3')
     expect(paths.length).toBeGreaterThan(60)
+  })
+
+  it('assigns antiquity and river beds per the sound production plan', () => {
+    const manifest = parseRomeManifest(rawManifest)
+    const { waypoints, transits } = manifest
+
+    // antiquity: Palatine → Forum → Trajan (+ Circus / Appia encore)
+    for (const id of [
+      'w03',
+      'w04',
+      'w06',
+      'w07',
+      'w08',
+      'pause',
+      'w10',
+      'w11_12',
+      'w13',
+      'w14',
+      'enc_circus',
+      'w22',
+    ]) {
+      expect(waypoints[id].zone, id).toBe('antiquity')
+    }
+
+    // river: Castel approach + finale
+    expect(waypoints.w21.zone).toBe('river')
+    expect(transits.t16.zone).toBe('river')
+
+    // living city should not steal the antiquity bed
+    for (const id of ['w15', 'w16', 'w17', 'w18', 'w19', 'w20']) {
+      expect(waypoints[id].zone, id).toBe('centro')
+    }
   })
 })

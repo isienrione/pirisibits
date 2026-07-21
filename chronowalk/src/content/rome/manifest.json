@@ -617,7 +617,7 @@
         "lng": 12.48595,
         "radius_m": 45
       },
-      "zone": "centro",
+      "zone": "antiquity",
       "chapters": [
         {
           "file": "w14.mp3",
@@ -685,7 +685,7 @@
         "lng": 12.48331,
         "radius_m": 35
       },
-      "zone": "antiquity",
+      "zone": "centro",
       "chapters": [
         {
           "file": "w16.mp3",
@@ -722,7 +722,7 @@
         "lng": 12.47687,
         "radius_m": 40
       },
-      "zone": "antiquity",
+      "zone": "centro",
       "chapters": [
         {
           "file": "w17_ch1.mp3",
@@ -775,7 +775,7 @@
         "lng": 12.47306,
         "radius_m": 45
       },
-      "zone": "antiquity",
+      "zone": "centro",
       "chapters": [
         {
           "file": "w18.mp3",
@@ -809,7 +809,7 @@
         "lng": 12.47223,
         "radius_m": 40
       },
-      "zone": "antiquity",
+      "zone": "centro",
       "chapters": [
         {
           "file": "w19.mp3",
@@ -846,7 +846,7 @@
         "lng": 12.47694,
         "radius_m": 40
       },
-      "zone": "antiquity",
+      "zone": "centro",
       "chapters": [
         {
           "file": "w20.mp3",

@@ -264,6 +264,32 @@ describe('AudioEngine', () => {
     expect(playWaypoint).toHaveBeenCalledWith('w01');
     expect(engine.isPlaybackInterrupted()).toBe(false);
   });
+
+  it('can force-play the next chapter when jumping while paused', async () => {
+    await engine.playWaypoint('w17');
+    engine.pauseNarration();
+    expect(engine.session.paused).toBe(true);
+
+    await engine.jumpToChapter(1, { play: true });
+
+    expect(engine.session.index).toBe(1);
+    expect(engine.session.paused).toBe(false);
+    expect(engine.isNarrationPlaying()).toBe(true);
+  });
+
+  it('crossfades antiquity and river beds for their production-plan zones', async () => {
+    const fakeBuffer = { duration: 1 };
+    engine.loadBuffer = vi.fn(async () => fakeBuffer);
+
+    await engine.playWaypoint('w14');
+    expect(engine.currentBedKey).toBe('antiquity');
+
+    await engine.playTransit('t16');
+    expect(engine.currentBedKey).toBe('river');
+
+    await engine.playWaypoint('w21');
+    expect(engine.currentBedKey).toBe('river');
+  });
 });
 
 function manifestFromEngine(engine) {
