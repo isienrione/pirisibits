@@ -130,12 +130,7 @@ async function sendAccessEmail({ email, accessToken, productId }) {
   if (!resendKey) {
     const msg = `[paddle-webhook] RESEND_API_KEY unset — cannot email access link for ${email}: ${link}`
     console.error(msg)
-    // In production, fail so Paddle retries and the gap is visible in Notifications.
-    if (isProductionPaddle()) {
-      throw new Error('RESEND_API_KEY is not set — buyer will not receive unlock email')
-    }
-    console.warn(msg)
-    return { sent: false, link }
+    throw new Error('RESEND_API_KEY is not set — buyer will not receive unlock email')
   }
 
   const packLine = productId ? `Pack: ${productId}` : null
@@ -203,11 +198,24 @@ async function handleTransactionCompleted(paddle, eventData) {
     accessToken: row.access_token,
   })
 
-  await sendAccessEmail({
-    email: row.email,
-    accessToken: row.access_token,
-    productId: row.product_id,
-  })
+  // Persist first. If email fails, still acknowledge the webhook so Paddle stops
+  // retrying and the buyer can be unlocked from `purchases.access_token`.
+  try {
+    await sendAccessEmail({
+      email: row.email,
+      accessToken: row.access_token,
+      productId: row.product_id,
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[paddle-webhook] access email failed after purchase save', {
+      orderId: row.order_id,
+      email: row.email,
+      accessToken: row.access_token,
+      link: buildAccessLink(row.access_token),
+      message,
+    })
+  }
 }
 
 Deno.serve(async (req) => {
