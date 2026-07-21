@@ -4,13 +4,14 @@
  * Deploy:
  *   supabase functions deploy paddle-webhook
  *   supabase secrets set PADDLE_API_KEY=... PADDLE_NOTIFICATION_WEBHOOK_SECRET=... \
- *     SITE_URL=https://chronowalk.com SUPABASE_SERVICE_ROLE_KEY=...
+ *     PADDLE_ENV=production SITE_URL=https://chronowalk.com \
+ *     RESEND_API_KEY=re_... RESEND_FROM="ChronoWalk <access@chronowalk.com>"
  *
  * Paddle notification URL:
  *   https://<PROJECT_REF>.supabase.co/functions/v1/paddle-webhook
  * Events: transaction.completed (minimum)
  *
- * Email: wire RESEND_API_KEY (or another provider) in sendAccessEmail below.
+ * Required for buyer unlock email: RESEND_API_KEY (+ verified RESEND_FROM domain).
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
@@ -45,6 +46,11 @@ function getSupabaseAdmin() {
 
 function siteUrl() {
   return (Deno.env.get('SITE_URL') ?? 'https://chronowalk.com').replace(/\/$/, '')
+}
+
+function isProductionPaddle() {
+  const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
+  return envName === 'production' || envName === 'live'
 }
 
 function readCustomData(transaction) {
@@ -104,23 +110,35 @@ async function upsertPurchase(supabase, { email, orderId, productId, host, abVar
       },
       { onConflict: 'order_id' },
     )
-    .select('access_token, email, product_id')
+    .select('access_token, email, product_id, order_id')
     .single()
 
-  if (error) throw error
+  if (error) throw new Error(`purchases upsert failed: ${error.message}`)
+  if (!data?.access_token) throw new Error('purchases upsert returned no access_token')
   return data
 }
 
+function buildAccessLink(accessToken) {
+  return `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
+}
+
 async function sendAccessEmail({ email, accessToken, productId }) {
-  const link = `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
+  const link = buildAccessLink(accessToken)
   const resendKey = Deno.env.get('RESEND_API_KEY')
   const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <access@chronowalk.com>'
 
   if (!resendKey) {
-    console.warn('[paddle-webhook] RESEND_API_KEY unset — access link:', link)
+    const msg = `[paddle-webhook] RESEND_API_KEY unset — cannot email access link for ${email}: ${link}`
+    console.error(msg)
+    // In production, fail so Paddle retries and the gap is visible in Notifications.
+    if (isProductionPaddle()) {
+      throw new Error('RESEND_API_KEY is not set — buyer will not receive unlock email')
+    }
+    console.warn(msg)
     return { sent: false, link }
   }
 
+  const packLine = productId ? `Pack: ${productId}` : null
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -137,7 +155,10 @@ async function sendAccessEmail({ email, accessToken, productId }) {
         'Open this personal link on your phone to unlock ChronoWalk:',
         link,
         '',
-        productId ? `Pack: ${productId}` : '',
+        'Or go to chronowalk.com/access and paste this access code:',
+        String(accessToken),
+        '',
+        packLine,
         '',
         'Keep this email — you can restore access anytime at chronowalk.com/access',
       ]
@@ -150,6 +171,7 @@ async function sendAccessEmail({ email, accessToken, productId }) {
     const body = await res.text()
     throw new Error(`Resend failed: ${res.status} ${body}`)
   }
+  console.log('[paddle-webhook] access email sent', email, productId ?? '')
   return { sent: true, link }
 }
 
@@ -172,6 +194,13 @@ async function handleTransactionCompleted(paddle, eventData) {
     productId: custom.product_id,
     host: custom.host,
     abVariant: custom.ab_variant,
+  })
+
+  console.log('[paddle-webhook] purchase upserted', {
+    orderId: row.order_id,
+    email: row.email,
+    productId: row.product_id,
+    accessToken: row.access_token,
   })
 
   await sendAccessEmail({
@@ -221,8 +250,9 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (err) {
-    console.error('[paddle-webhook]', err)
-    return new Response(JSON.stringify({ error: 'Internal error' }), {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[paddle-webhook]', message, err)
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
