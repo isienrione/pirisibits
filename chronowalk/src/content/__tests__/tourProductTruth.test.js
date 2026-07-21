@@ -42,11 +42,11 @@ describe('tourProductTruth', () => {
     const truth = getTourProductTruth(manifest)
 
     expect(truth.publicPlaceCount).toBe(23)
-    expect(truth.visitStopCount).toBe(19)
-    expect(truth.classicVisitStopCount).toBe(17)
-    expect(truth.storyStopCount).toBe(19)
+    expect(truth.visitStopCount).toBe(18)
+    expect(truth.classicVisitStopCount).toBe(16)
+    expect(truth.storyStopCount).toBe(18)
     expect(truth.publicPlacesLabel).toBe('23 places')
-    expect(truth.visitStopsLabel).toBe('19 stops')
+    expect(truth.visitStopsLabel).toBe('18 stops')
     expect(truth.durationLabel).toBe('your pace')
     expect(truth.ownershipLabel).toBe('yours forever')
     expect(truth.priceFallbackCents).toBe(1499)
@@ -57,13 +57,13 @@ describe('tourProductTruth', () => {
     const central = getTourProductTruth(manifest, { pace: JOURNEY_PACE.CENTRAL })
     const antica = getTourProductTruth(manifest, {
       pace: JOURNEY_PACE.CLASSIC,
-      promotedOptionalIds: ['w04', 'enc_circus'],
+      path: 'b',
     })
     const eterna = getTourProductTruth(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central.visitStopCount).toBe(10)
     expect(antica.visitStopCount).toBe(11)
-    expect(eterna.visitStopCount).toBe(20)
+    expect(eterna.visitStopCount).toBe(19)
   })
 
   it('formats places across acts copy', () => {

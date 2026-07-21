@@ -195,6 +195,17 @@ describe('JourneyShell', () => {
     expect(getWaypoint(manifest, 'w23')?.chapters).toHaveLength(3)
   })
 
+  it('places Circus Maximus View on Path B after Palatine; encore is Via Appia only', () => {
+    const manifest = loadRomeManifest()
+    const pathA = buildEffectiveSequence(manifest, 'a', [])
+    const pathB = buildEffectiveSequence(manifest, 'b', [])
+    expect(getWaypoint(manifest, 'enc_circus')?.title).toMatch(/circus maximus view/i)
+    expect(pathB.indexOf('enc_circus')).toBe(pathB.indexOf('w04') + 1)
+    expect(pathB.slice(pathB.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
+    expect(pathA).not.toContain('enc_circus')
+    expect(pathA.slice(pathA.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
+  })
+
   it('keeps Next chapter on Pantheon interior until the last chapter', async () => {
     const manifest = loadRomeManifest()
     const seq = buildEffectiveSequence(manifest, 'a', [])

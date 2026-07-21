@@ -27,6 +27,6 @@ describe('RedesignJourneyWelcome', () => {
 
     render(<RedesignJourneyWelcome onUnlock={() => {}} />)
 
-    expect(screen.getByText(/20 stops/i)).toBeInTheDocument()
+    expect(screen.getByText(/19 stops/i)).toBeInTheDocument()
   })
 })

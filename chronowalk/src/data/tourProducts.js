@@ -25,9 +25,9 @@ export const TOUR_PRODUCTS = {
     id: 'rome-essential',
     tourId: ROME_ANTICA_TOUR.id,
     title: 'Roma Antica',
-    tagline: 'Colosseum, Forum, hills & Circus Maximus',
+    tagline: 'Colosseum, Forum, hills & Circus Maximus View',
     description:
-      'The ancient core — Colosseum, Palatine Hill terrace, Roman Forum, Capitoline Hill, and Circus Maximus — with place-tied stories and Threshold at each stop.',
+      'The ancient core — Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Roman Forum, and Capitoline Hill — with place-tied stories and Threshold at each stop.',
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: ROME_ANTICA_TOUR.stopIds,
@@ -51,7 +51,7 @@ export const TOUR_PRODUCTS = {
     title: 'Heart of Ancient Rome',
     tagline: 'Colosseum, Capitoline & the city loop',
     description:
-      'The grand city loop — Colosseum, Palatine Hill, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, Circus Maximus, and the Appian Way.',
+      'The grand city loop — Colosseum, Palatine Hill, Circus Maximus View, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, and the Appian Way.',
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: HEART_OF_ANCIENT_ROME_TOUR.stopIds,

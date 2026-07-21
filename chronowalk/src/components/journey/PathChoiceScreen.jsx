@@ -10,7 +10,7 @@ const PATH_OPTIONS = [
   {
     id: JOURNEY_PATH.B,
     title: 'Up the Palatine',
-    description: 'Climb the emperors’ hill before the Forum opens below.',
+    description: 'Palatine, Circus Maximus View, then down into the Forum from above.',
   },
 ]
 

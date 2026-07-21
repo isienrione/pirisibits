@@ -21,7 +21,7 @@ export const PACE_OPTIONS = [
     priceLabel: '€14.99',
     priceCents: 1499,
     description:
-      "The complete Rome — Colosseum, the Roman Forum, Circus Maximus, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
+      "The complete Rome — Colosseum, Forum, Circus Maximus View on Path B, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
     includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
     actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'capitoline',
@@ -46,8 +46,8 @@ export const PACE_OPTIONS = [
     priceLabel: '€9.99',
     priceCents: 999,
     description:
-      'The Colosseum through the Forum — Palatine Hill terrace, Capitoline Hill, and Circus Maximus with place-tied stories at each stop.',
-    includedSummary: 'Colosseum · Palatine · Forum · Capitoline · Circus',
+      'The Colosseum through the Forum — Palatine Hill terrace, Circus Maximus View on Path B, and Capitoline Hill with place-tied stories at each stop.',
+    includedSummary: 'Colosseum · Palatine · Circus View · Forum · Capitoline',
     actDots: ['act1', 'act2', 'act3', null, null, null, null],
     imageKey: 'colosseum',
   },
@@ -78,7 +78,7 @@ export const ROME_ACTS = [
     id: 'act2',
     numeral: 'II',
     title: 'The Gate & the Hill',
-    waypoints: ['w03', 'w04'],
+    waypoints: ['w03', 'w04', 'enc_circus'],
     entry: 'Arch of Titus',
     promise: 'Two doors into ancient Rome — you choose at the piazza.',
   },

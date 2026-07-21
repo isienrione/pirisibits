@@ -44,7 +44,7 @@ describe('rome content manifest', () => {
     const manifest = parseRomeManifest(rawManifest)
     const { waypoints, transits } = manifest
 
-    // antiquity: Palatine → Forum → Trajan (+ Circus / Appia encore)
+    // antiquity: Palatine → Circus View → Forum → Trajan (+ Appia encore)
     for (const id of [
       'w03',
       'w04',

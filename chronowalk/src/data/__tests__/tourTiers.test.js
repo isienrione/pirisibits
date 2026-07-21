@@ -34,26 +34,27 @@ describe('tourTiers', () => {
 
   it('returns distinct visit stop counts per tier', () => {
     const central = getVisitStopIds(manifest, { pace: JOURNEY_PACE.CENTRAL })
-    const antica = getVisitStopIds(manifest, {
+    const anticaPathB = getVisitStopIds(manifest, {
       pace: JOURNEY_PACE.CLASSIC,
-      promotedOptionalIds: ['w04', 'enc_circus'],
+      path: 'b',
     })
     const eterna = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central).toHaveLength(10)
-    expect(antica).toHaveLength(11)
+    expect(anticaPathB).toHaveLength(11)
+    expect(anticaPathB).toContain('enc_circus')
     expect(eterna.length).toBeGreaterThan(central.length)
-    expect(eterna.length).toBeGreaterThan(antica.length)
+    expect(eterna.length).toBeGreaterThan(anticaPathB.length)
   })
 
   it('marks the final tier waypoint for tour completion', () => {
     const anticaContext = {
       pace: JOURNEY_PACE.CLASSIC,
-      path: 'a',
-      promotedOptionalIds: ['w04', 'enc_circus'],
+      path: 'b',
+      promotedOptionalIds: [],
     }
-    expect(isLastTourWaypoint('enc_circus', manifest, anticaContext)).toBe(true)
-    expect(isLastTourWaypoint('w13', manifest, anticaContext)).toBe(false)
+    expect(isLastTourWaypoint('w13', manifest, anticaContext)).toBe(true)
+    expect(isLastTourWaypoint('enc_circus', manifest, anticaContext)).toBe(false)
 
     const centralContext = { pace: JOURNEY_PACE.CENTRAL, path: 'a' }
     expect(isLastTourWaypoint('w22', manifest, centralContext)).toBe(true)

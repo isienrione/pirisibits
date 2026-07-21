@@ -5,9 +5,6 @@ const OPTIONAL_PROMOTION_CONFIG = {
   w04: {
     a: { steps: ['t02', 'w04', 't03'], before: 'w06', afterCompleted: 'w03' },
   },
-  enc_circus: {
-    a: { steps: ['enc_circus'], before: 'w14', afterCompleted: 'w13' },
-  },
 }
 
 export function getOptionalWaypointIds(manifest, path) {

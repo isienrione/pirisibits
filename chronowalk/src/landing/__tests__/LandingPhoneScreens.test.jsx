@@ -15,7 +15,7 @@ describe('LandingPhoneScreens', () => {
     expect(container.querySelector('.cw-landing-phone__island')).toBeTruthy()
     expect(container.querySelector('.cw-landing-phone__btn--power')).toBeTruthy()
     expect(screen.getByLabelText(/route overview/i)).toBeInTheDocument()
-    expect(screen.getByText(/19 stops · your route/i)).toBeInTheDocument()
+    expect(screen.getByText(/18 stops · your route/i)).toBeInTheDocument()
     expect(screen.getByText(/enable location & begin/i)).toBeInTheDocument()
   })
 

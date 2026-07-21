@@ -67,17 +67,23 @@ describe('journey state machine', () => {
     expect(sequence).toContain('w04')
   })
 
-  it('routes classic Roma Antica to Circus Maximus after Capitoline', () => {
+  it('places Circus Maximus View on Path B after Palatine, not after Capitoline', () => {
     const manifest = loadRomeManifest()
-    beginJourney({ pace: 'classic', path: 'a', promotedOptionalIds: ['w04'] })
+    const pathB = buildEffectiveSequence(manifest, 'b', [])
+    expect(pathB.indexOf('enc_circus')).toBe(pathB.indexOf('w04') + 1)
+    expect(pathB.slice(pathB.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
+
+    beginJourney({ pace: 'classic', path: 'a' })
     transitionJourney(JOURNEY_STATES.WALKING, {
       completedWaypointIds: ['w01', 'w02', 'w03', 'w04', 'w06', 'w07', 'w08', 'w10', 'w11_12', 'w13'],
       pathLocked: true,
     })
 
     const next = completeWaypointAndAdvance('w13', manifest)
-    expect(next.context.promotedOptionalIds).toContain('enc_circus')
-    expect(buildEffectiveSequence(manifest, 'a', next.context.promotedOptionalIds)).toContain('enc_circus')
+    expect(next.context.promotedOptionalIds ?? []).not.toContain('enc_circus')
+    expect(buildEffectiveSequence(manifest, 'a', next.context.promotedOptionalIds ?? [])).not.toContain(
+      'enc_circus'
+    )
   })
 
   it('enters day complete after act IV on classic pace', () => {
