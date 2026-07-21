@@ -8,8 +8,9 @@ dist-ssr
 .env.*
 !.env.example
 *.local
-# Paddle MCP keys — keep template as mcp.json.example only
+# Paddle MCP keys / live migration secrets — keep templates only in git
 .cursor/mcp.json
+.cursor/paddle-live-migration.json
 
 # Local working/source folders — raw assets, docs, and exports.
 # These are NOT part of the deployed Vite app (build root is chronowalk/)

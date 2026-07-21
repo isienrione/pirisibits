@@ -154,14 +154,60 @@ Webhook persists these onto `public.purchases`.
 
 ## Go-live checklist
 
-- [ ] Sandbox catalog seeded; price ids in Cloudflare  
-- [ ] Overlay works on mobile Safari  
-- [ ] Webhook verifies signature; `purchases` row appears  
-- [ ] Magic-link email delivers  
-- [ ] Live Paddle account: new catalog + client token + notification destination  
-- [ ] Domain approved for checkout  
-- [ ] `VITE_PADDLE_ENV=production` + live `pri_` ids  
+- [x] Sandbox catalog seeded; price ids in Cloudflare  
+- [x] Overlay works on mobile Safari  
+- [x] Webhook verifies signature; `purchases` row appears  
+- [ ] Magic-link email delivers (confirm Resend on production)  
+- [x] Live Paddle catalog + client token + notification destination created  
+- [ ] Domain approved for checkout (**Checkout → Website approval** → `chronowalk.com`)  
+- [ ] Default payment link set to `https://chronowalk.com/landing`  
+- [ ] Bank / payout details added  
+- [ ] Flip Cloudflare + Supabase **together** to live (see below)  
 - [ ] `VITE_ALLOW_DEV_ACCESS` unset on production  
+
+### Live catalog mapping (sandbox → live)
+
+| Tier | Sandbox price | Live price | EUR |
+|------|---------------|------------|-----|
+| Roma Historica (`rome-central`) | `pri_01kxz5as6gyv8st6xf4hjt7qsz` | `pri_01ky10q0fg5vsstzmqtdepj2f0` | 9.99 |
+| Roma Antica (`rome-essential`) | `pri_01kxz5asb06w5a5k5qt0rtqz4n` | `pri_01ky10q0m46g8n9zfv9zkk7nj2` | 9.99 |
+| Roma Eterna (`rome-complete`) | `pri_01kxz5asfh7fjkejft3q8ga1db` | `pri_01ky10q0sv6tqcv3s6r5s84a4j` | 14.99 |
+
+Live webhook destination (created, do not recreate — recreating rotates the secret):
+
+`https://ajxkfneisgifapyvalue.supabase.co/functions/v1/paddle-webhook`
+
+Local secret mapping file (gitignored): `.cursor/paddle-live-migration.json`
+
+### Flip to live (only after domain approval)
+
+Keep production on **sandbox** until Paddle approves `chronowalk.com`. Then update **both** in one cutover:
+
+**Cloudflare Pages env**
+
+```bash
+VITE_PADDLE_ENV=production
+VITE_PADDLE_CLIENT_TOKEN=live_…
+VITE_PADDLE_PRICE_ROME_CENTRAL=pri_01ky10q0fg5vsstzmqtdepj2f0
+VITE_PADDLE_PRICE_ROME_ESSENTIAL=pri_01ky10q0m46g8n9zfv9zkk7nj2
+VITE_PADDLE_PRICE_ROME_COMPLETE=pri_01ky10q0sv6tqcv3s6r5s84a4j
+```
+
+**Supabase Edge Function secrets**
+
+```bash
+PADDLE_ENV=production
+PADDLE_API_KEY=pdl_live_apikey_…
+PADDLE_NOTIFICATION_WEBHOOK_SECRET=pdl_ntfset_…   # from live destination; cannot be re-read
+SITE_URL=https://chronowalk.com
+```
+
+Redeploy the Cloudflare site after changing `VITE_*` values (they bake at build time).
+
+### Webhook IP allowlist note
+
+Paddle publishes live egress IPs at `https://api.paddle.com/ips` (`data.ipv4_cidrs`).  
+Supabase Edge Functions do not expose a simple per-function IP allowlist UI; ChronoWalk already **verifies `Paddle-Signature`** in `paddle-webhook`, which is the required integrity check. Prefer signature verification over hard-coded IP lists.
 
 ## Related code
 
