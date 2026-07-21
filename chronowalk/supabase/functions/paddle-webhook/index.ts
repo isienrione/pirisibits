@@ -48,11 +48,6 @@ function siteUrl() {
   return (Deno.env.get('SITE_URL') ?? 'https://chronowalk.com').replace(/\/$/, '')
 }
 
-function isProductionPaddle() {
-  const envName = (Deno.env.get('PADDLE_ENV') ?? 'sandbox').toLowerCase()
-  return envName === 'production' || envName === 'live'
-}
-
 function readCustomData(transaction) {
   const raw = transaction?.customData ?? transaction?.custom_data ?? {}
   const data = raw && typeof raw === 'object' ? raw : {}
