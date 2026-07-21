@@ -13,7 +13,7 @@ describe('applyDevGeofenceOverrides', () => {
         waypoints: {
           w06: { title: 'Basilica', geofence: { lat: 41.89, lng: 12.48, radius_m: 40 } },
           pause: { title: 'Forum rest', geofence: { lat: 41.89, lng: 12.48, radius_m: 80 } },
-          w11_12: { title: 'Heart of the Forum', geofence: { lat: 41.89, lng: 12.48, radius_m: 40 } },
+          w11_12: { title: 'Arch of Septimius Severus', geofence: { lat: 41.89, lng: 12.48, radius_m: 40 } },
           w99: { title: 'Other', geofence: { lat: 1, lng: 2, radius_m: 30 } },
         },
       },

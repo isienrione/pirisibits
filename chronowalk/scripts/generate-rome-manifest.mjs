@@ -26,7 +26,7 @@ const geo = {
   w07: { lat: 41.89255, lng: 12.48535, radius_m: 40, name: 'Via Sacra' },
   w08: { lat: 41.89182, lng: 12.48715, radius_m: 35, name: 'Temple of Vesta' },
   w10: { lat: 41.89282, lng: 12.48518, radius_m: 35, name: 'The Rostra' },
-  w11_12: { lat: 41.89301, lng: 12.48442, radius_m: 40, name: 'Heart of the Forum' },
+  w11_12: { lat: 41.89301, lng: 12.48442, radius_m: 40, name: 'Arch of Septimius Severus' },
   w13: { lat: 41.89324, lng: 12.48275, radius_m: 45, name: 'Capitoline Hill' },
   w14: { lat: 41.8956, lng: 12.48595, radius_m: 45, name: "Trajan's Market" },
   w15: { lat: 41.90597, lng: 12.48259, radius_m: 40, name: 'Spanish Steps' },
