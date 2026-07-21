@@ -827,7 +827,7 @@ function TourMapboxView({
         .setLngLat([markerLng, markerLat])
         .addTo(map.current)
     }
-  }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng])
+  }, [userPos, mapLoaded, debugGeo, activeTarget?.landmark?.lat, activeTarget?.landmark?.lng, minimalUI, walkingCompanionUI])
 
   useEffect(() => {
     const landmark = activeTarget?.landmark
