@@ -18,6 +18,11 @@ import { getTourBounds } from '../services/tourRegistry'
 import { env, isDebugGeo, isDebugMap, isDevPanelEnabled, isMapboxConfigured } from '../config/env'
 import { resolveTourMapStyleOptions, isMapboxStandardStyle } from '../map/mapStyles.js'
 import { addGlowingRouteLayers, applyWalkingRoutePaint, ROUTE_LINE_COLOR } from '../map/routeLineLayers.js'
+import {
+  createLandmarkMarkerElement,
+  createLegOriginMarkerElement,
+  createUserMarkerElement,
+} from '../map/mapMarkers.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import {
   cacheLegDirections,
@@ -178,57 +183,6 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       { padding: minimalUI ? 72 : 56, maxZoom: minimalUI ? 14 : 15, duration: 0 }
     )
   }
-}
-
-const createLandmarkMarkerElement = (title, status, onPress, { showLabel = true } = {}) => {
-  const el = document.createElement('div')
-  el.className = 'flex flex-col items-center'
-  if (onPress) {
-    el.style.cursor = 'pointer'
-    el.addEventListener('click', (event) => {
-      event.stopPropagation()
-      onPress()
-    })
-  }
-
-  const dotClass =
-    status === 'completed'
-      ? 'bg-acthill'
-      : status === 'current'
-        ? 'bg-ember ring-2 ring-sand'
-        : status === 'locked'
-          ? 'bg-muted opacity-60'
-          : 'bg-muted opacity-80'
-
-  const dotSize = showLabel ? 'h-6 w-6' : 'h-3 w-3'
-  const labelHtml = showLabel
-    ? `<span class="mt-1 max-w-[5.5rem] truncate rounded bg-bone/95 px-2 py-0.5 text-center text-[0.65rem] font-semibold text-ink900 shadow-sm">${title}</span>`
-    : ''
-
-  el.innerHTML = `
-    <div class="flex ${dotSize} items-center justify-center rounded-full border-2 border-warm-white ${dotClass} shadow-md"></div>
-    ${labelHtml}
-  `
-  return el
-}
-
-const createLegOriginMarkerElement = () => {
-  const el = document.createElement('div')
-  el.className = 'flex flex-col items-center'
-  el.setAttribute('aria-hidden', 'true')
-  el.innerHTML = `
-    <div class="flex h-4 w-4 items-center justify-center rounded-full border-2 border-warm-white bg-acthill shadow-md"></div>
-  `
-  return el
-}
-
-const createUserMarkerElement = (minimalUI = false) => {
-  const el = document.createElement('div')
-  el.className = 'flex flex-col items-center'
-  el.innerHTML = minimalUI
-    ? `<div class="flex h-5 w-5 items-center justify-center rounded-full border-[3px] border-warm-white bg-sky-blue shadow-lg"></div>`
-    : `<div class="flex h-8 w-8 items-center justify-center rounded-full border-4 border-warm-white bg-sky-blue text-xs font-bold text-warmwhite shadow-lg">You</div>`
-  return el
 }
 
 const stopsToFeatureCollection = (stops) => ({
@@ -590,7 +544,11 @@ function TourMapboxView({
         const marker = new mapboxgl.Marker({
           element: isLegOrigin
             ? createLegOriginMarkerElement()
-            : createLandmarkMarkerElement(stop.title, stop.status, null, { showLabel: false }),
+            : createLandmarkMarkerElement(stop.title, stop.status, null, {
+                showLabel: true,
+                stopId: stop.id,
+                compact: true,
+              }),
           anchor: isLegOrigin ? 'center' : 'bottom',
         })
           .setLngLat([stop.landmark.lng, stop.landmark.lat])
@@ -606,7 +564,7 @@ function TourMapboxView({
           stop.title,
           stop.status,
           onStopSelect ? () => onStopSelect(stop.id) : null,
-          { showLabel },
+          { showLabel, stopId: stop.id },
         ),
         anchor: 'bottom',
       })
@@ -863,8 +821,8 @@ function TourMapboxView({
       userMarker.current.setLngLat([markerLng, markerLat])
     } else {
       userMarker.current = new mapboxgl.Marker({
-        element: createUserMarkerElement(minimalUI),
-        anchor: 'bottom',
+        element: createUserMarkerElement({ minimalUI: minimalUI || walkingCompanionUI }),
+        anchor: 'center',
       })
         .setLngLat([markerLng, markerLat])
         .addTo(map.current)
