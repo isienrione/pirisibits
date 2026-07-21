@@ -61,7 +61,9 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
   const lineSlot = useStandardSlots ? { slot: 'middle' } : {}
   const fillEmissive = useStandardSlots ? STANDARD_FILL_EMISSIVE : {}
   const lineEmissive = useStandardSlots ? STANDARD_LINE_EMISSIVE : {}
-  const routeSlot = useStandardSlots ? 'middle' : null
+  // Walking hero: float the glow stack in `top` so the bloom isn’t crushed
+  // under Standard Satellite trees/buildings. MAP tab keeps `middle`.
+  const routeSlot = useStandardSlots ? (walkingCompanionUI ? 'top' : 'middle') : null
 
   if (!map.getSource('waypoint-zones')) {
     map.addSource('waypoint-zones', {
@@ -145,13 +147,17 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
     addGlowingRouteLayers(map, {
       sourceId: 'active-leg-route',
       glowLayerId: 'active-leg-route-glow',
+      casingLayerId: 'active-leg-route-casing',
       lineLayerId: 'active-leg-route-line',
       slot: routeSlot,
-      glowWidth: walkingCompanionUI ? 16 : 12,
-      glowBlur: walkingCompanionUI ? 10 : 6,
-      glowOpacity: walkingCompanionUI ? 0.36 : 0.28,
-      lineWidth: walkingCompanionUI ? 4.5 : 5,
-      dashed: true,
+      glowWidth: walkingCompanionUI ? 28 : 18,
+      glowBlur: walkingCompanionUI ? 3.25 : 2.5,
+      glowOpacity: walkingCompanionUI ? 0.68 : 0.45,
+      casingWidth: walkingCompanionUI ? 12 : 9,
+      casingOpacity: walkingCompanionUI ? 0.6 : 0.4,
+      lineWidth: walkingCompanionUI ? 4 : 3.5,
+      // Solid core on the walk hero — dashed reads as a flat schematic stroke.
+      dashed: !walkingCompanionUI,
     })
 
     map.addSource('directions-nav-route', {
@@ -162,13 +168,16 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
     addGlowingRouteLayers(map, {
       sourceId: 'directions-nav-route',
       glowLayerId: 'directions-nav-route-glow',
+      casingLayerId: 'directions-nav-route-casing',
       lineLayerId: 'directions-nav-route-line',
       slot: routeSlot,
-      glowWidth: 16,
-      glowBlur: 10,
-      glowOpacity: 0.36,
-      lineWidth: 5,
-      dashed: true,
+      glowWidth: 28,
+      glowBlur: 3.25,
+      glowOpacity: 0.68,
+      casingWidth: 12,
+      casingOpacity: 0.6,
+      lineWidth: 4,
+      dashed: false,
     })
   } else {
     map.getSource('waypoint-zones')?.setData(stopsToFeatureCollection(geofenceStops))
@@ -899,11 +908,15 @@ function TourMapboxView({
     }
     applyWalkingRoutePaint(map.current, {
       glowLayerId: 'active-leg-route-glow',
+      casingLayerId: 'active-leg-route-casing',
       lineLayerId: 'active-leg-route-line',
+      dashed: false,
     })
     applyWalkingRoutePaint(map.current, {
       glowLayerId: 'directions-nav-route-glow',
+      casingLayerId: 'directions-nav-route-casing',
       lineLayerId: 'directions-nav-route-line',
+      dashed: false,
     })
   }, [mapLoaded, walkingCompanionUI])
 
