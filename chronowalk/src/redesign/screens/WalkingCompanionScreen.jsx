@@ -9,6 +9,7 @@ import { pantheonNow } from '../images.js'
 import FloatingTransitAudioPlayer from '../ui/FloatingTransitAudioPlayer.jsx'
 import TransitNarrationSheet from '../ui/TransitNarrationSheet.jsx'
 import WalkingCompanionStepsPanel from '../ui/WalkingCompanionStepsPanel.jsx'
+import NextTurnsCard from '../ui/NextTurnsCard.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import { formatDistanceLine } from '../lib/walkingCompanionFormat.js'
 import {
@@ -319,16 +320,16 @@ export default function WalkingCompanionScreen({
               </div>
             </div>
             <div className="cw-walking-companion__next-turns">
-              <WalkingCompanionStepsPanel
+              <NextTurnsCard
                 steps={directions?.steps ?? []}
                 currentStepIndex={walkingStepProgress.currentStepIndex}
                 loading={directionsLoading}
                 error={directionsError}
                 destinationTitle={title}
+                destinationPhoto={photo}
                 onRetry={retryDirections}
                 externalMapsUrl={externalMapsUrl}
                 onOpenExternalMaps={handleOpenExternalMaps}
-                variant="timeline"
                 maxVisible={4}
               />
             </div>

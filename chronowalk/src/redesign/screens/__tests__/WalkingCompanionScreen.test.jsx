@@ -10,13 +10,17 @@ vi.mock('../../../hooks/useWalkingDirections.js', () => ({
         { instruction: 'Head north on Via dei Fori Imperiali', distanceM: 180, type: 'depart' },
         { instruction: 'Turn right toward the Colosseum', distanceM: 140, type: 'turn' },
       ],
-      geometry: [
-        [12.4922, 41.8902],
-        [12.493, 41.891],
-      ],
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          [12.4922, 41.8902],
+          [12.493, 41.891],
+        ],
+      },
     },
     loading: false,
     error: null,
+    retry: vi.fn(),
   }),
 }))
 
@@ -39,7 +43,7 @@ describe('WalkingCompanionScreen', () => {
 
     expect(screen.getByTestId('walking-map')).toBeInTheDocument()
     expect(screen.getByTestId('walking-map')).toHaveAttribute('data-directions', 'true')
-    expect(screen.getByTestId('walking-directions-steps')).toBeInTheDocument()
+    expect(screen.getByTestId('next-turns-card')).toBeInTheDocument()
     expect(screen.getByText('Next turns')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /open the arch of titus story/i })).toBeInTheDocument()
   })
