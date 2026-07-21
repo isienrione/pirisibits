@@ -1,6 +1,5 @@
--- ChronoWalk: unlock stuck live test purchases (webhook email resolution failed)
--- Paste into Supabase → SQL Editor → Run
--- Safe to re-run (upserts on order_id). Use the returned access_token links.
+-- Prefer scripts/paddle-customers-migration.sql (creates cache table + unlocks).
+-- This file remains as a purchases-only unlock fallback.
 
 INSERT INTO public.purchases (email, order_id, product_id, access_token)
 VALUES

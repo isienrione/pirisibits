@@ -1,23 +1,23 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v4
- * Paste this ENTIRE file into Supabase Edge Function `paddle-webhook` and Deploy.
- * Logs MUST show build "2026-07-21-v4" — if not, redeploy did not take.
+ * WEBHOOK_BUILD: 2026-07-21-v5
  *
- * Required secrets:
- *   PADDLE_API_KEY=pdl_live_apikey_...   (NOT pdl_sdbx_)
- *   PADDLE_ENV=production                (optional if key is live — key wins)
- *   PADDLE_NOTIFICATION_WEBHOOK_SECRET=pdl_ntfset_...
- *   RESEND_API_KEY=re_...
- *   RESEND_FROM=ChronoWalk <hello@chronowalk.com>
- *   SITE_URL=https://chronowalk.com
+ * WHY v5: transaction.completed payloads do NOT include buyer email (only customer_id).
+ * customer.created payloads DO include email — and Paddle already delivers those to this
+ * endpoint. We cache customer_id → email, then fulfill on transaction.completed.
+ * This does not depend on a follow-up Paddle Customers API read.
+ *
+ * Paste this ENTIRE file into Supabase → Edge Functions → paddle-webhook → Deploy.
+ * Logs / JSON error body MUST contain "2026-07-21-v5".
+ *
+ * Also run once in SQL Editor: scripts/paddle-customers-migration.sql
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
 
-const WEBHOOK_BUILD = '2026-07-21-v4'
+const WEBHOOK_BUILD = '2026-07-21-v5'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,36 +25,17 @@ const corsHeaders = {
     'authorization, x-client-info, apikey, content-type, paddle-signature',
 }
 
-/** Prefer the API key's mode over PADDLE_ENV — wrong env was silently breaking email lookup. */
 function resolvePaddleMode() {
   const apiKey = Deno.env.get('PADDLE_API_KEY') ?? ''
   if (!apiKey) throw new Error('PADDLE_API_KEY is not set')
-
   const envName = (Deno.env.get('PADDLE_ENV') ?? '').toLowerCase()
-  const envSaysLive = envName === 'production' || envName === 'live'
-  const envSaysSandbox = envName === 'sandbox' || envName === 'test'
   const keyIsLive = apiKey.includes('live') || apiKey.startsWith('pdl_live_')
   const keyIsSandbox = apiKey.includes('sdbx') || apiKey.startsWith('pdl_sdbx_')
-
-  if (keyIsLive && keyIsSandbox) {
-    throw new Error('PADDLE_API_KEY looks both live and sandbox — check the secret value')
-  }
-  if (keyIsSandbox && envSaysLive) {
-    throw new Error(
-      'PADDLE_API_KEY is sandbox (pdl_sdbx_…) but PADDLE_ENV=production. Set the live pdl_live_apikey_… secret.',
-    )
-  }
-
-  // Key wins when it clearly indicates mode.
-  const production = keyIsLive ? true : keyIsSandbox ? false : envSaysLive || !envSaysSandbox
-
-  if (keyIsLive && envSaysSandbox) {
-    console.warn(
-      '[paddle-webhook] PADDLE_ENV=sandbox but API key is live — using production API (key wins)',
-      { build: WEBHOOK_BUILD },
-    )
-  }
-
+  const production = keyIsLive
+    ? true
+    : keyIsSandbox
+      ? false
+      : envName === 'production' || envName === 'live'
   return {
     apiKey,
     production,
@@ -71,13 +52,6 @@ function getPaddle() {
   })
 }
 
-function paddleAuthHeaders(apiKey) {
-  return {
-    Authorization: `Bearer ${apiKey}`,
-    'Paddle-Version': '1',
-  }
-}
-
 function getSupabaseAdmin() {
   const url = Deno.env.get('SUPABASE_URL') ?? Deno.env.get('SB_URL') ?? ''
   const key =
@@ -92,131 +66,145 @@ function siteUrl() {
   return (Deno.env.get('SITE_URL') ?? 'https://chronowalk.com').replace(/\/$/, '')
 }
 
-function readCustomData(transaction) {
-  const raw = transaction?.customData ?? transaction?.custom_data ?? {}
-  const data = raw && typeof raw === 'object' ? raw : {}
+function buildAccessLink(accessToken) {
+  return `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
+}
+
+/** Prefer raw webhook JSON — SDK entities strip nested fields and never have email on txns. */
+function readPayload(rawBody) {
+  const envelope = JSON.parse(rawBody)
+  const data = envelope?.data && typeof envelope.data === 'object' ? envelope.data : {}
   return {
-    product_id: data.product_id ? String(data.product_id) : null,
-    host: data.host ? String(data.host) : null,
-    ab_variant: data.ab_variant != null ? Number(data.ab_variant) : null,
+    envelope,
+    eventType: envelope?.event_type ?? envelope?.eventType ?? null,
+    data,
   }
 }
 
-function customerEmail(transaction) {
-  return (
-    transaction?.customer?.email ||
-    transaction?.details?.totals?.customer?.email ||
-    null
-  )
-}
-
-function customerIdOf(transaction) {
-  return (
-    transaction?.customerId ||
-    transaction?.customer_id ||
-    transaction?.customer?.id ||
-    null
-  )
-}
-
-async function fetchJson(url, apiKey) {
-  const res = await fetch(url, { headers: paddleAuthHeaders(apiKey) })
-  const text = await res.text()
-  let json = null
-  try {
-    json = text ? JSON.parse(text) : null
-  } catch {
-    json = { raw: text }
+function readCustomData(data) {
+  const raw = data?.custom_data ?? data?.customData ?? {}
+  const custom = raw && typeof raw === 'object' ? raw : {}
+  return {
+    product_id: custom.product_id ? String(custom.product_id) : null,
+    host: custom.host ? String(custom.host) : null,
+    ab_variant: custom.ab_variant != null ? Number(custom.ab_variant) : null,
   }
-  return { ok: res.ok, status: res.status, json, url }
 }
 
-/**
- * Webhook payloads almost never include email — only customer_id.
- * Look it up via Paddle API. On failure, throw the REAL API error (do not hide it).
- */
-async function resolveCustomerEmail(paddle, transaction, mode) {
-  const errors = []
-  const direct = customerEmail(transaction)
-  if (direct) {
-    console.log('[paddle-webhook] email from webhook payload', { build: WEBHOOK_BUILD })
-    return String(direct)
-  }
+async function upsertPaddleCustomer(supabase, { customerId, email }) {
+  if (!customerId || !email) return null
+  const { data, error } = await supabase
+    .from('paddle_customers')
+    .upsert(
+      {
+        customer_id: String(customerId),
+        email: String(email).toLowerCase(),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: 'customer_id' },
+    )
+    .select('customer_id, email')
+    .single()
+  if (error) throw new Error(`paddle_customers upsert failed: ${error.message}`)
+  return data
+}
 
-  const orderId = transaction?.id
-  const customerId = customerIdOf(transaction)
+async function emailFromCache(supabase, customerId) {
+  if (!customerId) return null
+  const { data, error } = await supabase
+    .from('paddle_customers')
+    .select('email')
+    .eq('customer_id', String(customerId))
+    .maybeSingle()
+  if (error) {
+    console.error('[paddle-webhook] paddle_customers lookup failed', error.message)
+    return null
+  }
+  return data?.email ? String(data.email) : null
+}
+
+async function emailFromPaddleApi(mode, { orderId, customerId }) {
+  const headers = {
+    Authorization: `Bearer ${mode.apiKey}`,
+    'Paddle-Version': '1',
+  }
+  const attempts = []
 
   if (orderId) {
     const url = `${mode.apiBase}/transactions/${encodeURIComponent(orderId)}?include=customer`
-    const { ok, status, json } = await fetchJson(url, mode.apiKey)
-    if (ok) {
-      const email = json?.data?.customer?.email
-      if (email) {
-        console.log('[paddle-webhook] email from transactions?include=customer', {
-          build: WEBHOOK_BUILD,
-          orderId,
-        })
-        return String(email)
+    const res = await fetch(url, { headers })
+    const text = await res.text()
+    attempts.push(`txn ${res.status}`)
+    if (res.ok) {
+      try {
+        const email = JSON.parse(text)?.data?.customer?.email
+        if (email) return { email: String(email), attempts }
+      } catch {
+        /* ignore */
       }
-      errors.push(
-        `transactions?include=customer returned 200 but no customer.email (customer_id=${
-          json?.data?.customer_id ?? 'null'
-        })`,
-      )
-    } else {
-      const detail = JSON.stringify(json?.error ?? json)?.slice(0, 400)
-      errors.push(`GET ${url} -> ${status} ${detail}`)
     }
-  } else {
-    errors.push('transaction id missing on webhook payload')
   }
 
   if (customerId) {
     const url = `${mode.apiBase}/customers/${encodeURIComponent(customerId)}`
-    const { ok, status, json } = await fetchJson(url, mode.apiKey)
-    if (ok) {
-      const email = json?.data?.email
-      if (email) {
-        console.log('[paddle-webhook] email from customers.get', {
-          build: WEBHOOK_BUILD,
-          customerId,
-        })
-        return String(email)
+    const res = await fetch(url, { headers })
+    const text = await res.text()
+    attempts.push(`ctm ${res.status}`)
+    if (res.ok) {
+      try {
+        const email = JSON.parse(text)?.data?.email
+        if (email) return { email: String(email), attempts }
+      } catch {
+        /* ignore */
       }
-      errors.push(`customers.get returned 200 but no email for ${customerId}`)
-    } else {
-      const detail = JSON.stringify(json?.error ?? json)?.slice(0, 400)
-      errors.push(`GET ${url} -> ${status} ${detail}`)
     }
+  }
 
-    try {
-      const customer = await paddle.customers.get(customerId)
-      if (customer?.email) {
-        console.log('[paddle-webhook] email from customers.get (sdk)', {
-          build: WEBHOOK_BUILD,
-          customerId,
-        })
-        return String(customer.email)
+  return { email: null, attempts }
+}
+
+async function resolveBuyerEmail(supabase, mode, data) {
+  const orderId = data?.id ? String(data.id) : null
+  const customerId = data?.customer_id ?? data?.customerId ?? data?.customer?.id ?? null
+  const direct =
+    data?.customer?.email ??
+    data?.email ??
+    null
+
+  if (direct) {
+    if (customerId) {
+      try {
+        await upsertPaddleCustomer(supabase, { customerId, email: direct })
+      } catch (err) {
+        console.warn('[paddle-webhook] cache direct email failed', err)
       }
-      errors.push(`sdk customers.get returned no email for ${customerId}`)
-    } catch (err) {
-      errors.push(
-        `sdk customers.get failed: ${err instanceof Error ? err.message : String(err)}`,
-      )
     }
-  } else {
-    errors.push('customer_id missing on webhook payload')
+    return { email: String(direct).toLowerCase(), source: 'payload' }
+  }
+
+  const cached = await emailFromCache(supabase, customerId)
+  if (cached) return { email: cached.toLowerCase(), source: 'paddle_customers' }
+
+  const api = await emailFromPaddleApi(mode, { orderId, customerId })
+  if (api.email) {
+    if (customerId) {
+      try {
+        await upsertPaddleCustomer(supabase, { customerId, email: api.email })
+      } catch (err) {
+        console.warn('[paddle-webhook] cache api email failed', err)
+      }
+    }
+    return { email: api.email.toLowerCase(), source: `api:${api.attempts.join(',')}` }
   }
 
   throw new Error(
     [
-      `could not resolve buyer email (${WEBHOOK_BUILD})`,
-      `key=${mode.keyKind}`,
-      `PADDLE_ENV=${mode.envName}`,
-      `apiBase=${mode.apiBase}`,
-      `orderId=${orderId ?? 'null'}`,
-      `customerId=${customerId ?? 'null'}`,
-      ...errors,
+      `buyer email unresolved (${WEBHOOK_BUILD})`,
+      `orderId=${orderId}`,
+      `customerId=${customerId}`,
+      `cache=miss`,
+      `api=[${api.attempts.join(', ') || 'skipped'}]`,
+      'Fix: ensure customer.created is stored (run paddle-customers migration) or API can read customers',
     ].join(' | '),
   )
 }
@@ -242,22 +230,16 @@ async function upsertPurchase(supabase, { email, orderId, productId, host, abVar
   return data
 }
 
-function buildAccessLink(accessToken) {
-  return `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
-}
-
 async function sendAccessEmail({ email, accessToken, productId }) {
   const link = buildAccessLink(accessToken)
   const resendKey = Deno.env.get('RESEND_API_KEY')
   const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <hello@chronowalk.com>'
 
   if (!resendKey) {
-    const msg = `[paddle-webhook] RESEND_API_KEY unset — cannot email access link for ${email}: ${link}`
-    console.error(msg)
-    throw new Error('RESEND_API_KEY is not set — buyer will not receive unlock email')
+    console.error('[paddle-webhook] RESEND_API_KEY unset', { email, link })
+    throw new Error('RESEND_API_KEY is not set')
   }
 
-  const packLine = productId ? `Pack: ${productId}` : null
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -277,7 +259,7 @@ async function sendAccessEmail({ email, accessToken, productId }) {
         'Or go to chronowalk.com/access and paste this access code:',
         String(accessToken),
         '',
-        packLine,
+        productId ? `Pack: ${productId}` : null,
         '',
         'Keep this email — you can restore access anytime at chronowalk.com/access',
       ]
@@ -286,35 +268,43 @@ async function sendAccessEmail({ email, accessToken, productId }) {
     }),
   })
 
-  if (!res.ok) {
-    const body = await res.text()
-    throw new Error(`Resend failed: ${res.status} ${body}`)
-  }
+  if (!res.ok) throw new Error(`Resend failed: ${res.status} ${await res.text()}`)
   console.log('[paddle-webhook] access email sent', { build: WEBHOOK_BUILD, email, productId })
-  return { sent: true, link }
 }
 
-async function handleTransactionCompleted(paddle, eventData, mode) {
-  const transaction = eventData?.data ?? eventData
-  const orderId = transaction?.id
+async function handleCustomerEvent(supabase, data) {
+  const customerId = data?.id
+  const email = data?.email
+  if (!customerId || !email) {
+    console.warn('[paddle-webhook] customer event missing id/email', {
+      build: WEBHOOK_BUILD,
+      customerId,
+      hasEmail: Boolean(email),
+    })
+    return
+  }
+  const row = await upsertPaddleCustomer(supabase, { customerId, email })
+  console.log('[paddle-webhook] customer cached', { build: WEBHOOK_BUILD, ...row })
+}
+
+async function handleTransactionCompleted(supabase, mode, data) {
+  const orderId = data?.id
   if (!orderId) throw new Error('transaction missing id')
 
-  console.log('[paddle-webhook] handling transaction.completed', {
+  const resolved = await resolveBuyerEmail(supabase, mode, data)
+  const custom = readCustomData(data)
+
+  console.log('[paddle-webhook] fulfilling transaction.completed', {
     build: WEBHOOK_BUILD,
     orderId,
-    customerId: customerIdOf(transaction),
-    keyKind: mode.keyKind,
-    paddleEnv: mode.envName,
-    apiBase: mode.apiBase,
+    email: resolved.email,
+    source: resolved.source,
+    customerId: data?.customer_id ?? null,
   })
 
-  const email = await resolveCustomerEmail(paddle, transaction, mode)
-
-  const custom = readCustomData(transaction)
-  const supabase = getSupabaseAdmin()
   const row = await upsertPurchase(supabase, {
-    email: String(email).toLowerCase(),
-    orderId,
+    email: resolved.email,
+    orderId: String(orderId),
     productId: custom.product_id,
     host: custom.host,
     abVariant: custom.ab_variant,
@@ -328,8 +318,6 @@ async function handleTransactionCompleted(paddle, eventData, mode) {
     accessToken: row.access_token,
   })
 
-  // Persist first. If email fails, still acknowledge the webhook so Paddle stops
-  // retrying and the buyer can be unlocked from `purchases.access_token`.
   try {
     await sendAccessEmail({
       email: row.email,
@@ -355,20 +343,20 @@ Deno.serve(async (req) => {
   }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+    return new Response(JSON.stringify({ error: 'Method not allowed', build: WEBHOOK_BUILD }), {
       status: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
-  console.log('[paddle-webhook] request', { build: WEBHOOK_BUILD, method: req.method })
-
   const signature = req.headers.get('paddle-signature') ?? ''
   const rawBody = await req.text()
   const secret = Deno.env.get('PADDLE_NOTIFICATION_WEBHOOK_SECRET') ?? ''
 
+  console.log('[paddle-webhook] request', { build: WEBHOOK_BUILD })
+
   if (!signature || !rawBody) {
-    return new Response(JSON.stringify({ error: 'Missing signature or body' }), {
+    return new Response(JSON.stringify({ error: 'Missing signature or body', build: WEBHOOK_BUILD }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
@@ -377,13 +365,18 @@ Deno.serve(async (req) => {
   try {
     const mode = resolvePaddleMode()
     const paddle = getPaddle()
-    const eventData = await paddle.webhooks.unmarshal(rawBody, secret, signature)
-    const eventType = eventData?.eventType ?? eventData?.event_type
+    // Verify signature (throws if invalid). We still fulfill from raw JSON.
+    await paddle.webhooks.unmarshal(rawBody, secret, signature)
 
-    if (eventType === 'transaction.completed') {
-      await handleTransactionCompleted(paddle, eventData, mode)
+    const { eventType, data } = readPayload(rawBody)
+    const supabase = getSupabaseAdmin()
+
+    if (eventType === 'customer.created' || eventType === 'customer.updated') {
+      await handleCustomerEvent(supabase, data)
+    } else if (eventType === 'transaction.completed') {
+      await handleTransactionCompleted(supabase, mode, data)
     } else {
-      console.log('[paddle-webhook] ignored event', eventType, { build: WEBHOOK_BUILD })
+      console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
     }
 
     return new Response(JSON.stringify({ received: true, build: WEBHOOK_BUILD }), {
