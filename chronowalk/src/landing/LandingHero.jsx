@@ -73,7 +73,8 @@ export default function LandingHero({ onPreview, onRoutes }) {
         </div>
 
         <div className="cw-v2-hero__device" aria-hidden="true">
-          <LandingLivePhoneMockup variant="listening" size="xl" />
+          {/* Live HTML so the Pantheon plate matches the free-preview exterior still. */}
+          <LandingLivePhoneMockup variant="listening" size="xl" mode="live" />
         </div>
       </div>
     </section>

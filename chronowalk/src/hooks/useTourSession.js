@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AUDIO_MODES, audioOrchestrator } from '../audio/AudioOrchestrator'
 import { ARRIVAL_AUDIO_PREFETCH_RADIUS_M } from '../data/colosseum'
-import { getDebugStopId, isDebugGeo, shouldResetTour } from '../config/env'
+import { getDebugStopId, isDebugGeo, isSimulateRome, shouldResetTour } from '../config/env'
+import { SIMULATED_ROME_ORIGIN } from '../dev/romeLocationSimulation.js'
 import { useGeoLocation, JOURNEY_STATE } from './useGeoLocation'
 import { fetchTourWaypoints } from '../offline/offlineWaypointLoader'
 import { getTourLeg, getTourLegs } from '../services/tourRegistry'
@@ -103,12 +104,16 @@ export const useTourSession = ({
   const hasArrivedAtTarget =
     Boolean(targetStopId) && effectiveProgress.arrivedStopIds.includes(targetStopId)
 
+  const simulateRome = isSimulateRome()
+
   const debugPosition = useMemo(() => {
+    if (simulateRome) return { ...SIMULATED_ROME_ORIGIN }
     if (debugOverridePosition) return debugOverridePosition
     if (effectiveProgress.transitLegActive) return null
     if (hasArrivedAtTarget && targetGeo?.debugPosition) return targetGeo.debugPosition
     return null
   }, [
+    simulateRome,
     debugOverridePosition,
     effectiveProgress.transitLegActive,
     hasArrivedAtTarget,
@@ -116,6 +121,7 @@ export const useTourSession = ({
   ])
 
   const simulateAtTarget =
+    !simulateRome &&
     debugMode &&
     hasArrivedAtTarget &&
     !effectiveProgress.transitLegActive &&
@@ -123,6 +129,7 @@ export const useTourSession = ({
 
   const { position, state, distance, locationStatus, retryLocation } = useGeoLocation({
     target: targetGeo?.landmark,
+    debugMode: debugMode || simulateRome,
     debugPosition,
     simulateAtTarget,
     geofenceThresholdM: targetGeo?.geofenceThresholdM ?? 30,

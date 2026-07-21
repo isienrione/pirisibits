@@ -64,4 +64,28 @@ describe('DirectionsNavHud', () => {
     expect(screen.getByText('Head north on Via dei Fori Imperiali')).toBeInTheDocument()
     expect(screen.getByText('Turn right toward the Colosseum')).toBeInTheDocument()
   })
+
+  it('opens Google Maps from the error card without a parent handler', () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
+
+    render(
+      <DirectionsNavHud
+        destinationTitle="Pantheon"
+        directions={null}
+        loading={false}
+        error="Could not load walking directions. Try again or open Google Maps."
+        routingOrigin={{ lat: 41.891275, lng: 12.491202 }}
+        routingDestination={{ lat: 41.8986, lng: 12.4768 }}
+        onClose={vi.fn()}
+        onRetry={vi.fn()}
+      />
+    )
+
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /open in google maps/i }))
+
+    expect(openSpy).toHaveBeenCalled()
+    expect(String(openSpy.mock.calls[0][0])).toContain('google.com/maps/dir')
+    openSpy.mockRestore()
+  })
 })

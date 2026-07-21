@@ -70,6 +70,7 @@ function DirectionsNavHud({
   routingDestination,
   onClose,
   onRecenter,
+  onRetry,
   onOpenExternalMaps,
   hasBottomNav = false,
 }) {
@@ -155,7 +156,14 @@ function DirectionsNavHud({
               {loading ? (
                 <LoadingPanel label="Loading walking directions…" className="mt-4 min-h-[4.5rem]" />
               ) : error ? (
-                <p className="mt-3 text-sm leading-relaxed text-muted">{error}</p>
+                <div className="mt-3 space-y-3">
+                  <p className="text-sm leading-relaxed text-muted">{error}</p>
+                  {onRetry ? (
+                    <Button variant="ghost" fullWidth onClick={onRetry}>
+                      Try again
+                    </Button>
+                  ) : null}
+                </div>
               ) : (
                 <>
                   <div className="mt-2 flex items-center gap-2 text-sm text-muted">
@@ -191,7 +199,10 @@ function DirectionsNavHud({
               {error && mapsUrl ? (
                 <Button
                   fullWidth
-                  onClick={() => onOpenExternalMaps?.(mapsUrl)}
+                  onClick={() => {
+                    if (onOpenExternalMaps) onOpenExternalMaps(mapsUrl)
+                    else window.open(mapsUrl, '_blank', 'noopener,noreferrer')
+                  }}
                 >
                   Open in Google Maps
                 </Button>

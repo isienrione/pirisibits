@@ -1,0 +1,200 @@
+/* ChronoWalk map HTML markers — satellite-legible pills + gold user pulse */
+
+.cw-map-marker {
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Landmark pill ─────────────────────────────────────────────── */
+
+.cw-map-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: min(11.5rem, 46vw);
+  padding: 5px 10px 5px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  background: linear-gradient(180deg, rgba(28, 26, 24, 0.94), rgba(11, 11, 13, 0.92));
+  box-shadow:
+    0 1px 0 rgba(255, 253, 248, 0.08) inset,
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.35);
+  color: #f5efe3;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: translateY(-2px);
+}
+
+.cw-map-pill--compact {
+  padding: 4px 8px 4px 5px;
+  gap: 5px;
+  max-width: min(9.5rem, 42vw);
+}
+
+.cw-map-pill--icon-only {
+  padding: 6px;
+  gap: 0;
+}
+
+.cw-map-pill--current {
+  border-color: rgba(232, 161, 60, 0.7);
+  box-shadow:
+    0 1px 0 rgba(255, 253, 248, 0.1) inset,
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(232, 161, 60, 0.28);
+}
+
+.cw-map-pill--completed {
+  border-color: rgba(79, 122, 106, 0.65);
+}
+
+.cw-map-pill--locked {
+  opacity: 0.72;
+  border-color: rgba(107, 99, 88, 0.45);
+}
+
+.cw-map-pill__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(232, 161, 60, 0.16);
+  color: #e8a13c;
+}
+
+.cw-map-pill--completed .cw-map-pill__icon {
+  background: rgba(79, 122, 106, 0.22);
+  color: #8eb5a6;
+}
+
+.cw-map-pill--locked .cw-map-pill__icon {
+  background: rgba(107, 99, 88, 0.25);
+  color: #b9af9c;
+}
+
+.cw-map-pill__glyph {
+  display: block;
+}
+
+.cw-map-pill__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: #faf6ef;
+  /* Scrim/shadow so type stays legible over bright satellite tiles */
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 8px rgba(0, 0, 0, 0.55);
+}
+
+/* ── Leg origin ────────────────────────────────────────────────── */
+
+.cw-map-origin {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+
+.cw-map-origin__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid #faf6ef;
+  background: #4f7a6a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+/* ── User location — gold pulsing geofence glow ────────────────── */
+
+.cw-map-user {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.cw-map-user--minimal {
+  width: 36px;
+  height: 36px;
+}
+
+.cw-map-user__core {
+  position: relative;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #f3d98a, #d4af37 55%, #8f6324);
+  border: 2px solid #faf6ef;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 2px 10px rgba(0, 0, 0, 0.45),
+    0 0 12px rgba(212, 175, 55, 0.55);
+}
+
+.cw-map-user--minimal .cw-map-user__core {
+  width: 11px;
+  height: 11px;
+}
+
+.cw-map-user__ring {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 999px;
+  border: 2px solid rgba(212, 175, 55, 0.7);
+  background: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
+  animation: cw-map-user-pulse 2.2s cubic-bezier(0.22, 0.8, 0.36, 1) infinite;
+}
+
+.cw-map-user__ring--inner {
+  animation-delay: 0.55s;
+  border-color: rgba(232, 161, 60, 0.65);
+}
+
+.cw-map-user--minimal .cw-map-user__ring {
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+}
+
+@keyframes cw-map-user-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(3.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(3.1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-map-user__ring {
+    animation: none;
+    transform: scale(2.1);
+    opacity: 0.35;
+  }
+
+  .cw-map-user__ring--inner {
+    transform: scale(1.45);
+    opacity: 0.5;
+  }
+}

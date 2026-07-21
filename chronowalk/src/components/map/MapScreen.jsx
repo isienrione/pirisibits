@@ -246,6 +246,7 @@ export default function MapScreen({ variant = 'legacy' }) {
     error: directionsError,
     routingOrigin,
     routingDestination,
+    retry: retryDirections,
   } = useWalkingDirections({
     origin: geo.position,
     destination: directionsDestination,
@@ -557,6 +558,10 @@ export default function MapScreen({ variant = 'legacy' }) {
           routingDestination={routingDestination}
           onClose={() => setDirectionsOpen(false)}
           onRecenter={handleRecenter}
+          onRetry={retryDirections}
+          onOpenExternalMaps={(url) => {
+            if (url) window.open(url, '_blank', 'noopener,noreferrer')
+          }}
           hasBottomNav={false}
         />
       ) : null}

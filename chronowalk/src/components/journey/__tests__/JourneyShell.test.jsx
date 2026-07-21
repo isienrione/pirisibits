@@ -218,31 +218,34 @@ describe('JourneyShell', () => {
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(pantheonIndex)
   })
 
-  it('shows first-tour onboarding cards instead of auto threshold invite during story', async () => {
+  it('shows first-tour onboarding cards instead of diegetic threshold hint during story', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
     expect(screen.getByText(/Play and pause narration/i)).toBeInTheDocument()
-    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-diegetic-hint')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
     expect(screen.getByTestId('story-continue')).toBeInTheDocument()
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
     expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
-    expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-hold-hint')).not.toBeInTheDocument()
   })
 
-  it('shows inline threshold invite after first-tour onboarding is complete', async () => {
+  it('shows diegetic threshold hint after first-tour onboarding is complete', async () => {
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('reveal-invite')).toBeInTheDocument()
-    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
-    expect(screen.getByText(/are you ready to see how this would have looked/i)).toBeInTheDocument()
+    expect(await screen.findByTestId('threshold-diegetic-hint')).toBeInTheDocument()
+    expect(screen.getByText(/hold to reveal ancient rome/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
+    expect(screen.queryByText(/are you ready to see how this would have looked/i)).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: /read instead/i })).toBeInTheDocument()
     expect(screen.getByTestId('story-continue')).toBeInTheDocument()
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
@@ -264,22 +267,21 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('story-continue')).toBeInTheDocument()
-    expect(screen.getByTestId('threshold-help')).toBeInTheDocument()
   })
 
-  it('shows threshold help but not auto invite after the first tutorial', async () => {
-    localStorage.setItem('cw_threshold_reveal_tutorial_seen', 'true')
+  it('suppresses the full hint after the first successful threshold cross', async () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
+    localStorage.setItem('chronowalk.hasCrossedThreshold', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByTestId('threshold-help')).toBeInTheDocument()
+    expect(await screen.findByTestId('threshold-diegetic-hint')).toBeInTheDocument()
+    expect(screen.queryByText(/hold to reveal/i)).not.toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
-    expect(screen.getByTestId('threshold-hold-hint')).toBeInTheDocument()
-    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
-
-    fireEvent.click(screen.getByTestId('threshold-help'))
-    expect(screen.getByTestId('reveal-invite')).toBeInTheDocument()
+    expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threshold-era-then')).toBeInTheDocument()
+    expect(screen.getByTestId('threshold-era-today')).toBeInTheDocument()
   })
 
   it('advances from transit when continue walking is tapped', async () => {

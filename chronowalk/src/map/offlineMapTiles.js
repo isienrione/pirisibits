@@ -2,7 +2,7 @@ import { env } from '../config/env.js'
 import { getManifestTourBounds, getManifestWaypointIds } from '../content/mapStops.js'
 
 export const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v1'
-export const DEFAULT_MAP_STYLE_PATH = 'mapbox/light-v11'
+export const DEFAULT_MAP_STYLE_PATH = 'mapbox/standard'
 export const DEFAULT_MAP_TILESET = 'mapbox.mapbox-streets-v8'
 export const DEFAULT_MAP_ZOOM_MIN = 14
 export const DEFAULT_MAP_ZOOM_MAX = 16

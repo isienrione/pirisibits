@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   WALKING_COMPANION_MAX_ZOOM,
+  WALKING_COMPANION_PITCH,
   applyWalkingCompanionCamera,
   collectWalkingCompanionBoundsPoints,
   expandBoundsMinimumSpan,
+  sampleRouteCoordinates,
 } from '../walkingCompanionMapCamera'
 
 describe('walkingCompanionMapCamera', () => {
@@ -18,7 +20,7 @@ describe('walkingCompanionMapCamera', () => {
       ],
     })
 
-    expect(points).toHaveLength(6)
+    expect(points).toHaveLength(5)
   })
 
   it('ignores invalid coordinates', () => {
@@ -40,26 +42,32 @@ describe('walkingCompanionMapCamera', () => {
     expect(points).toEqual([[12.492, 41.891]])
   })
 
-  it('samples only route endpoints instead of every coordinate', () => {
+  it('samples the full route path for framing, not only endpoints', () => {
+    const routeCoordinates = Array.from({ length: 40 }, (_, i) => [
+      12.49 + i * 0.00005,
+      41.89 + i * 0.00004,
+    ])
+
+    const samples = sampleRouteCoordinates(routeCoordinates, 10)
+    expect(samples).toHaveLength(10)
+    expect(samples[0]).toEqual(routeCoordinates[0])
+    expect(samples[samples.length - 1]).toEqual(routeCoordinates[routeCoordinates.length - 1])
+
     const points = collectWalkingCompanionBoundsPoints({
       destination: { lat: 41.891, lng: 12.492 },
-      routeCoordinates: [
-        [12.49, 41.89],
-        [12.4905, 41.8905],
-        [12.491, 41.891],
-        [12.4915, 41.8915],
-        [12.492, 41.892],
-      ],
+      routeCoordinates,
     })
 
-    expect(points).toHaveLength(4)
+    // destination + densely sampled route (capped)
+    expect(points.length).toBeGreaterThan(10)
   })
 
-  it('uses fitBounds for any valid point set', () => {
+  it('uses fitBounds with pitch for the tilted hero walk camera', () => {
     const fitBounds = vi.fn()
     const map = {
       fitBounds,
       isStyleLoaded: () => true,
+      getBearing: () => 12,
     }
     const mapboxgl = {
       LngLatBounds: class {
@@ -80,13 +88,15 @@ describe('walkingCompanionMapCamera', () => {
       },
     }
 
-    applyWalkingCompanionCamera(map, mapboxgl, [[12.492, 41.891]])
+    applyWalkingCompanionCamera(map, mapboxgl, [[12.492, 41.891]], { duration: 700 })
 
     expect(fitBounds).toHaveBeenCalledWith(
       expect.any(Object),
       expect.objectContaining({
         maxZoom: WALKING_COMPANION_MAX_ZOOM,
-        duration: 0,
+        pitch: WALKING_COMPANION_PITCH,
+        bearing: 12,
+        duration: 700,
       }),
     )
   })
