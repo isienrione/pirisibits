@@ -4,7 +4,6 @@ import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl } from './aud
 import {
   buildTransitPlan,
   buildWaypointPlan,
-  narrationChapterIndexForPlanIndex,
   resolveActiveZone,
 } from './buildPlaybackPlan.js'
 import {
@@ -361,7 +360,7 @@ export class AudioEngine {
     }
   }
 
-  async playWaypoint(waypointId) {
+  async playWaypoint(waypointId, options = {}) {
     const waypoint =
       this.manifest.waypointsById?.[waypointId] ??
       this.manifest.waypoints?.[waypointId]
@@ -377,6 +376,9 @@ export class AudioEngine {
       return this.narrationPlaying || Boolean(this.session.element)
     }
 
+    const zone = resolveActiveZone(waypoint, options)
+    if (zone) await this.setZone(zone)
+
     const plan = buildWaypointPlan(
       this.manifest,
       waypointId,
@@ -385,7 +387,6 @@ export class AudioEngine {
     )
 
     this.activePlayback = { kind: 'waypoint', id: waypointId }
-    await this.syncZoneForActivePlayback(0, plan)
     return this.playPlan(plan)
   }
 
@@ -464,25 +465,6 @@ export class AudioEngine {
     await this.crossfadeBed(url, zone)
   }
 
-  /**
-   * Keep ambient bed in sync with the active waypoint chapter.
-   * Pantheon (and any stop with interior_zone) stays on the exterior bed for
-   * chapter 0, then crossfades to interior_zone for chapters 1+.
-   */
-  async syncZoneForActivePlayback(planIndex = 0, plan = this.session?.plan) {
-    const playback = this.activePlayback
-    if (!playback || playback.kind !== 'waypoint') return
-
-    const waypoint =
-      this.manifest.waypointsById?.[playback.id] ??
-      this.manifest.waypoints?.[playback.id]
-    if (!waypoint) return
-
-    const chapterIndex = narrationChapterIndexForPlanIndex(plan, planIndex)
-    const zone = resolveActiveZone(waypoint, { chapterIndex })
-    if (zone) await this.setZone(zone)
-  }
-
   async crossfadeBed(url, zone) {
     if (!url || !this.context) return
 
@@ -554,8 +536,6 @@ export class AudioEngine {
       this.finishSession()
       return
     }
-
-    await this.syncZoneForActivePlayback(session.index, session.plan)
 
     const url = resolvePlanItemUrl(item)
     if (!url) {
@@ -885,17 +865,17 @@ export class AudioEngine {
     return this.seekNarration(this.getNarrationTime() + deltaSeconds)
   }
 
-  async jumpToItem(index, offset = 0) {
+  async jumpToItem(index, offset = 0, { play } = {}) {
     const session = this.session
     if (!session) return
     const clampedIndex = Math.min(Math.max(index, 0), session.plan.length - 1)
     const wasPlaying = !session.paused
+    const shouldPlay = play ?? wasPlaying
     this.releaseNarrationElement()
     session.index = clampedIndex
     session.offset = offset
     session.duration = 0
-    await this.syncZoneForActivePlayback(clampedIndex, session.plan)
-    if (wasPlaying) {
+    if (shouldPlay) {
       session.paused = false
       await this.startCurrentItem(offset)
     } else {
@@ -904,7 +884,7 @@ export class AudioEngine {
     }
   }
 
-  async jumpToChapter(chapterIndex) {
+  async jumpToChapter(chapterIndex, options = {}) {
     const session = this.session
     if (!session) return
     const narrationIndices = session.plan
@@ -912,7 +892,7 @@ export class AudioEngine {
       .filter((i) => i >= 0)
     const target = narrationIndices[chapterIndex]
     if (target === undefined) return
-    await this.jumpToItem(target, 0)
+    await this.jumpToItem(target, 0, options)
   }
 
   setNarrationPlaying(playing) {

@@ -87,26 +87,9 @@ export function buildTransitPlan(manifest, transitId, path, context) {
   return plan
 }
 
-/**
- * Resolve ambient bed zone for a stop/transit.
- * Stops with `interior_zone` (Pantheon) keep the exterior bed for chapter 0,
- * then swap to the interior bed for every later chapter on the same stop.
- */
 export function resolveActiveZone(waypointOrTransit, options = {}) {
-  const chapterIndex = Number.isFinite(options.chapterIndex) ? options.chapterIndex : 0
-  if (waypointOrTransit?.interior_zone && chapterIndex > 0) {
+  if (options.pantheonInterior && waypointOrTransit?.interior_zone) {
     return waypointOrTransit.interior_zone
   }
   return waypointOrTransit?.zone ?? null
-}
-
-/** Narration chapter index for a plan position (inserts do not advance the chapter). */
-export function narrationChapterIndexForPlanIndex(plan, planIndex) {
-  if (!Array.isArray(plan) || plan.length === 0) return 0
-  const index = Math.min(Math.max(planIndex ?? 0, 0), plan.length - 1)
-  let chapterIndex = -1
-  for (let i = 0; i <= index; i += 1) {
-    if (plan[i]?.type === 'narration') chapterIndex += 1
-  }
-  return Math.max(chapterIndex, 0)
 }

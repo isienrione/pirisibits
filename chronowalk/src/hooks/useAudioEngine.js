@@ -157,8 +157,8 @@ export function useAudioEngine(manifest) {
     engineRef.current?.primeForGesture()
   }, [])
 
-  const playWaypoint = useCallback(async (waypointId) => {
-    return (await engineRef.current?.playWaypoint(waypointId)) ?? false
+  const playWaypoint = useCallback(async (waypointId, options) => {
+    return (await engineRef.current?.playWaypoint(waypointId, options)) ?? false
   }, [])
 
   const playTransit = useCallback(async (transitId) => {
@@ -213,8 +213,8 @@ export function useAudioEngine(manifest) {
     void engineRef.current?.skipNarration(deltaSeconds)
   }, [])
 
-  const jumpToChapter = useCallback((chapterIndex) => {
-    void engineRef.current?.jumpToChapter(chapterIndex)
+  const jumpToChapter = useCallback((chapterIndex, options) => {
+    void engineRef.current?.jumpToChapter(chapterIndex, options)
   }, [])
 
   const setPath = useCallback((path) => {

@@ -265,19 +265,16 @@ describe('AudioEngine', () => {
     expect(engine.isPlaybackInterrupted()).toBe(false);
   });
 
-  it('keeps Pantheon exterior bed for chapter 1, then swaps to interior', async () => {
-    const fakeBuffer = { duration: 1 };
-    engine.loadBuffer = vi.fn(async () => fakeBuffer);
-    const pantheon = engine.manifest.waypointsById.w17 ?? engine.manifest.waypoints.w17;
-
+  it('can force-play the next chapter when jumping while paused', async () => {
     await engine.playWaypoint('w17');
-    expect(engine.currentBedKey).toBe(pantheon.zone);
+    engine.pauseNarration();
+    expect(engine.session.paused).toBe(true);
 
-    await engine.jumpToChapter(1);
-    expect(engine.currentBedKey).toBe('pantheon_interior');
+    await engine.jumpToChapter(1, { play: true });
 
-    await engine.jumpToChapter(0);
-    expect(engine.currentBedKey).toBe(pantheon.zone);
+    expect(engine.session.index).toBe(1);
+    expect(engine.session.paused).toBe(false);
+    expect(engine.isNarrationPlaying()).toBe(true);
   });
 });
 

@@ -17,10 +17,21 @@ import { buildEffectiveSequence } from '../../../content/optionalPromotion.js'
 const playWaypointMock = vi.fn().mockResolvedValue(true)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
 const unlockMock = vi.fn().mockResolvedValue(true)
+const jumpToChapterMock = vi.fn()
 
 const audioMock = vi.hoisted(() => ({
   narrationPlaying: false,
   ready: true,
+  progress: {
+    currentTime: 0,
+    duration: 0,
+    chapterIndex: 0,
+    chapterCount: 0,
+    itemIndex: 0,
+    itemCount: 0,
+    playing: false,
+    paused: false,
+  },
 }))
 
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
@@ -30,15 +41,8 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
       return audioMock.narrationPlaying
     },
     playbackInterrupted: false,
-    progress: {
-      currentTime: 0,
-      duration: 0,
-      chapterIndex: 0,
-      chapterCount: 0,
-      itemIndex: 0,
-      itemCount: 0,
-      playing: false,
-      paused: false,
+    get progress() {
+      return audioMock.progress
     },
     playbackRate: 1,
     setPlaybackRate: vi.fn(),
@@ -58,7 +62,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     toggleNarration: vi.fn(),
     seekNarration: vi.fn(),
     skipNarration: vi.fn(),
-    jumpToChapter: vi.fn(),
+    jumpToChapter: jumpToChapterMock,
     setPath: vi.fn(),
   }),
 }))
@@ -117,9 +121,20 @@ describe('JourneyShell', () => {
     resetJourney()
     audioMock.narrationPlaying = false
     audioMock.ready = true
+    audioMock.progress = {
+      currentTime: 0,
+      duration: 0,
+      chapterIndex: 0,
+      chapterCount: 0,
+      itemIndex: 0,
+      itemCount: 0,
+      playing: false,
+      paused: false,
+    }
     playWaypointMock.mockClear()
     playTransitMock.mockClear()
     unlockMock.mockClear()
+    jumpToChapterMock.mockClear()
   })
 
   it('redirects idle travelers to begin', () => {
@@ -166,6 +181,41 @@ describe('JourneyShell', () => {
     expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps Pantheon interior chapters on the same stop after exterior', async () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const pantheonIndex = seq.indexOf('w17')
+    expect(pantheonIndex).toBeGreaterThanOrEqual(0)
+
+    audioMock.narrationPlaying = true
+    audioMock.progress = {
+      currentTime: 10,
+      duration: 120,
+      chapterIndex: 0,
+      chapterCount: 4,
+      itemIndex: 0,
+      itemCount: 4,
+      playing: true,
+      paused: false,
+    }
+
+    beginJourney({ pace: 'heroic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: pantheonIndex,
+      completedWaypointIds: seq.slice(0, pantheonIndex).filter((id) => id.startsWith('w')),
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByRole('heading', { name: /the pantheon/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /next chapter/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('story-continue'))
+
+    expect(jumpToChapterMock).toHaveBeenCalledWith(1, { play: true })
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(pantheonIndex)
   })
 
   it('shows first-tour onboarding cards instead of auto threshold invite during story', async () => {

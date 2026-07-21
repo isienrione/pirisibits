@@ -572,6 +572,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   // Fallback when the engine ends playback but the ended event is missed (mobile
   // backgrounding, buffer edge cases, insert tails, or races with step changes).
+  // Only treat "near end" on the *last* plan item — mid-stop chapters (e.g. Pantheon
+  // exterior → interior) must keep playing the remaining narration.
   useEffect(() => {
     if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
     if (step.record?.scripted_rest || storyEnded) return
@@ -579,12 +581,16 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
     const duration = audio.progress?.duration ?? 0
     const current = audio.progress?.currentTime ?? 0
-    const nearEnd = duration > 0 ? current >= duration * 0.85 : false
+    const itemIndex = audio.progress?.itemIndex ?? 0
+    const itemCount = audio.progress?.itemCount ?? 0
+    const onLastPlanItem = itemCount > 0 && itemIndex >= itemCount - 1
+    const nearEnd =
+      onLastPlanItem && duration > 0 ? current >= duration * 0.85 : false
     const sessionDrained =
       storyPlaybackSeenRef.current &&
       duration === 0 &&
       current === 0 &&
-      (audio.progress?.itemCount ?? 0) === 0
+      itemCount === 0
 
     if (!nearEnd && !sessionDrained) return
 
@@ -594,6 +600,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     audio.progress?.currentTime,
     audio.progress?.duration,
     audio.progress?.itemCount,
+    audio.progress?.itemIndex,
     markStoryEnded,
     state,
     step?.id,
@@ -893,6 +900,27 @@ export default function JourneyShell({ variant = 'legacy' }) {
       track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
     }
   }, [audio, completeWaypointAndAdvance, context, manifest, state, step])
+
+  // Multi-chapter stops (Pantheon exterior → interior chapters) stay on the same
+  // stop: the continuity control advances to the next chapter until the last one.
+  const handleStoryContinue = useCallback(() => {
+    if (!step?.record || step.type !== 'waypoint') return
+    if (state !== JOURNEY_STATES.STORY) return
+
+    const chapterIndex = audio.progress?.chapterIndex ?? 0
+    const chapterCount = Math.max(
+      audio.progress?.chapterCount ?? 0,
+      step.record.chapters?.length ?? 0,
+    )
+    const hasMoreChapters = chapterCount > 1 && chapterIndex < chapterCount - 1
+
+    if (!storyEnded && hasMoreChapters) {
+      audio.jumpToChapter(chapterIndex + 1, { play: true })
+      return
+    }
+
+    handleStoryComplete()
+  }, [audio, handleStoryComplete, state, step, storyEnded])
 
   const handleContinueClassicDay = useCallback(() => {
     playedStepRef.current = null
@@ -1201,6 +1229,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
       const activeChapterIndex = audio.progress?.chapterCount
         ? audio.progress.chapterIndex
         : 0
+      const chapterCount = audio.progress?.chapterCount || Math.max(chapters.length, 1)
+      const hasMoreChapters =
+        !storyEnded && chapterCount > 1 && activeChapterIndex < chapterCount - 1
       const audioAvailable =
         audio.narrationPlaying ||
         (audio.progress?.itemCount ?? 0) > 0 ||
@@ -1221,11 +1252,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
           currentTime: audio.progress?.currentTime ?? 0,
           duration: audio.progress?.duration ?? 0,
           playbackRate: audio.playbackRate,
-          chapterCount: audio.progress?.chapterCount || Math.max(chapters.length, 1),
+          chapterCount,
           audioAvailable,
         },
-        continueLabel:
-          storyEnded || !audio.narrationPlaying ? 'Continue walking →' : 'Skip ahead →',
+        continueLabel: hasMoreChapters
+          ? 'Next chapter →'
+          : storyEnded || !audio.narrationPlaying
+            ? 'Continue walking →'
+            : 'Skip ahead →',
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
@@ -1243,7 +1277,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           },
           onSelectChapter: (i) => audio.jumpToChapter(i),
           onOpenTranscript: () => track(TRACK_EVENTS.TRANSCRIPT_OPEN, { waypoint_id: step.id }),
-          onStoryComplete: handleStoryComplete,
+          onStoryComplete: handleStoryContinue,
           onThresholdCross: () =>
             track(TRACK_EVENTS.THRESHOLD_HOLD, { waypoint_id: step.id, inline: true }),
           onBack: () => {
