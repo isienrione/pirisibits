@@ -140,7 +140,19 @@ function eraPillStyle(active) {
     color: active ? 'var(--warm-white)' : 'color-mix(in srgb, var(--muted-warm) 80%, transparent)',
     border: `1px solid ${active ? 'color-mix(in srgb, var(--ember) 33%, transparent)' : 'color-mix(in srgb, var(--muted-warm) 20%, transparent)'}`,
     backdropFilter: 'blur(6px)',
-    pointerEvents: 'none',
+    pointerEvents: 'auto',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-ui, "DM Sans", system-ui, sans-serif)',
+  }
+}
+
+function fireHoldHaptic() {
+  try {
+    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      navigator.vibrate(12)
+    }
+  } catch {
+    /* unsupported / blocked */
   }
 }
 
@@ -163,6 +175,8 @@ export default function Threshold({
   onHoldEnd = null,
   onFullyRevealed = null,
   hideUi = false,
+  /** First-threshold auto-peek: briefly show Ancient ~30%, then recede. */
+  autoPeek = false,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -175,6 +189,8 @@ export default function Threshold({
   const holdCommittedRef = useRef(false)
   const holdCommitTimerRef = useRef(null)
   const rootRef = useRef(null)
+  const peekRanRef = useRef(false)
+  const peekCancelRef = useRef(false)
 
   const [reveal, setReveal] = useState(0)
   const revealRef = useRef(0)
@@ -182,7 +198,9 @@ export default function Threshold({
   const [latchedToThen, setLatchedToThen] = useState(false)
   const latchedRef = useRef(false)
   const [videoPlaying, setVideoPlaying] = useState(false)
+  // Non-immersive keeps the legacy bottom hint; immersive uses C6 diegetic overlay.
   const showHoldHint = !hideUi && !holding && !latchedToThen && !immersive
+  const showEraPills = !hideUi && embedded && !holding
 
   useHideThresholdChrome(holding)
 
@@ -289,6 +307,7 @@ export default function Threshold({
   )
 
   const latchToThen = useCallback(() => {
+    peekCancelRef.current = true
     latchedRef.current = true
     setLatchedToThen(true)
     cancelAnimation()
@@ -297,6 +316,20 @@ export default function Threshold({
     setVideoPlaying(true)
     notifyFullyRevealed()
   }, [cancelAnimation, notifyFullyRevealed])
+
+  const releaseToNow = useCallback(() => {
+    peekCancelRef.current = true
+    latchedRef.current = false
+    holdCommittedRef.current = false
+    clearHoldCommitTimer()
+    setLatchedToThen(false)
+    setHolding(false)
+    setVideoPlaying(false)
+    cancelAnimation()
+    setReveal(0)
+    revealRef.current = 0
+    audioRef.current?.rampToNow(reducedMotion ? 200 : THRESHOLD_RELEASE_MS)
+  }, [cancelAnimation, clearHoldCommitTimer, reducedMotion])
 
   const commitHoldToReveal = useCallback(() => {
     if (!holdSessionRef.current || latchedRef.current || holdCommittedRef.current) return
@@ -307,6 +340,61 @@ export default function Threshold({
     audioRef.current?.rampToThen(THRESHOLD_HOLD_COMMIT_FINISH_MS)
   }, [animateReveal, cancelAnimation])
 
+  const handleEraPill = useCallback(
+    (era) => {
+      if (!active) return
+      if (era === 'then') {
+        if (latchedRef.current) return
+        latchToThen()
+        audioRef.current?.rampToThen(reducedMotion ? 200 : 480)
+        onHoldEnd?.({ reveal: 1, latched: true, via: 'pill' })
+        return
+      }
+      if (!latchedRef.current && revealRef.current < 0.02) return
+      releaseToNow()
+      onHoldEnd?.({ reveal: 0, latched: false, via: 'pill' })
+    },
+    [active, latchToThen, onHoldEnd, reducedMotion, releaseToNow],
+  )
+
+  // Optional first-visit auto-peek — teach by showing, not telling.
+  useEffect(() => {
+    if (!autoPeek || !active || !reconstruction || reducedMotion) return undefined
+    if (peekRanRef.current) return undefined
+    peekRanRef.current = true
+    peekCancelRef.current = false
+
+    let cancelled = false
+    const timers = []
+
+    const schedule = (fn, ms) => {
+      const id = window.setTimeout(fn, ms)
+      timers.push(id)
+      return id
+    }
+
+    schedule(() => {
+      if (cancelled || peekCancelRef.current || holdSessionRef.current || latchedRef.current) return
+      setVideoPlaying(true)
+      animateReveal(0, 0.3, 520)
+      audioRef.current?.rampToThen(520)
+    }, 420)
+
+    schedule(() => {
+      if (cancelled || peekCancelRef.current || holdSessionRef.current || latchedRef.current) return
+      animateReveal(revealRef.current, 0, 700, () => {
+        if (!holdSessionRef.current && !latchedRef.current) setVideoPlaying(false)
+      })
+      audioRef.current?.rampToNow(700)
+    }, 420 + 520 + 1200)
+
+    return () => {
+      cancelled = true
+      peekCancelRef.current = true
+      timers.forEach((id) => window.clearTimeout(id))
+    }
+  }, [active, animateReveal, autoPeek, reconstruction, reducedMotion])
+
   const handlePointerDown = useCallback(
     (event) => {
       if (!active) return
@@ -314,18 +402,10 @@ export default function Threshold({
 
       event.preventDefault()
       window.getSelection?.()?.removeAllRanges?.()
+      peekCancelRef.current = true
 
       if (latchedRef.current) {
-        latchedRef.current = false
-        holdCommittedRef.current = false
-        clearHoldCommitTimer()
-        setLatchedToThen(false)
-        setHolding(false)
-        setVideoPlaying(false)
-        cancelAnimation()
-        setReveal(0)
-        revealRef.current = 0
-        audioRef.current?.rampToNow(reducedMotion ? 200 : THRESHOLD_RELEASE_MS)
+        releaseToNow()
         return
       }
 
@@ -343,6 +423,7 @@ export default function Threshold({
       setHolding(true)
       setVideoPlaying(true)
 
+      fireHoldHaptic()
       onHoldStart?.()
 
       if (reducedMotion) {
@@ -363,12 +444,12 @@ export default function Threshold({
     [
       active,
       animateReveal,
-      cancelAnimation,
       clearHoldCommitTimer,
       commitHoldToReveal,
       notifyFullyRevealed,
       onHoldStart,
       reducedMotion,
+      releaseToNow,
     ],
   )
 
@@ -653,13 +734,33 @@ export default function Threshold({
             {thenLabel}
           </div>
         </>
-      ) : !hideUi && embedded && !immersive ? (
+      ) : !hideUi && embedded && showEraPills ? (
         <>
-          <div style={{ position: 'absolute', bottom: embedded ? 14 : 14, left: 14, zIndex: 3, pointerEvents: 'none' }}>
-            <span style={eraPillStyle(reveal > 0.2)}>{thenLabel}</span>
+          <div style={{ position: 'absolute', bottom: immersive ? 18 : 14, left: 14, zIndex: 5 }}>
+            <button
+              type="button"
+              data-testid="threshold-era-then"
+              aria-label={`Show ${thenLabel}`}
+              aria-pressed={latchedToThen || reveal > 0.5}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => handleEraPill('then')}
+              style={eraPillStyle(latchedToThen || reveal > 0.5)}
+            >
+              {thenLabel}
+            </button>
           </div>
-          <div style={{ position: 'absolute', bottom: embedded ? 14 : 14, right: 14, zIndex: 3, pointerEvents: 'none' }}>
-            <span style={eraPillStyle(reveal < 0.8)}>Today</span>
+          <div style={{ position: 'absolute', bottom: immersive ? 18 : 14, right: 14, zIndex: 5 }}>
+            <button
+              type="button"
+              data-testid="threshold-era-today"
+              aria-label="Show today"
+              aria-pressed={!latchedToThen && reveal < 0.5}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={() => handleEraPill('today')}
+              style={eraPillStyle(!latchedToThen && reveal < 0.5)}
+            >
+              Today
+            </button>
           </div>
         </>
       ) : null}

@@ -52,7 +52,7 @@ export default function A2FreePreviewStory({
       <C6ImmersivePlayer
         {...playerProps}
         actLabel={eyebrowLabel}
-        forceRevealInvite
+        forceDiegeticHint
       />
     </div>
   )
