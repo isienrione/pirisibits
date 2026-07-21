@@ -88,7 +88,11 @@ export default function RedesignSetupPage() {
             downloadProgress={downloadProgress}
             downloadComplete={offline.isReady}
             analyticsEnabled={analyticsEnabled}
+            installed={installed}
+            canPromptInstall={canPromptInstall}
+            showIosInstructions={showIosInstructions || showIosHelp}
             onDownload={handleDownload}
+            onInstall={handleInstall}
             onAnalyticsChange={handleAnalyticsChange}
             onContinue={() => setStep('family')}
           />
