@@ -201,6 +201,35 @@
   animation: cwDiegeticCorePulse 2.4s ease-in-out infinite 0.08s;
 }
 
+/* First-instruction only: finger pressing into the ring. */
+.cw-diegetic-hint__finger {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  z-index: 2;
+  transform: translate(-50%, -38%);
+  animation: cwDiegeticFingerPress 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.cw-diegetic-hint__finger-svg {
+  display: block;
+  overflow: visible;
+}
+
+.cw-diegetic-hint__finger-path {
+  fill: color-mix(in srgb, var(--warm-white, #faf6ef) 88%, var(--ember, #d4af37));
+  stroke: color-mix(in srgb, var(--ember, #d4af37) 85%, transparent);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+}
+
+.cw-diegetic-hint__finger-glow {
+  fill: color-mix(in srgb, var(--ember, #d4af37) 55%, transparent);
+  opacity: 0.55;
+  animation: cwDiegeticFingerGlow 2.4s ease-in-out infinite;
+}
+
 .cw-diegetic-hint__line {
   margin: 0;
   max-width: 220px;
@@ -224,7 +253,9 @@
 
 .cw-diegetic-hint--reduced .cw-diegetic-hint__ring-outer,
 .cw-diegetic-hint--reduced .cw-diegetic-hint__ring-mid,
-.cw-diegetic-hint--reduced .cw-diegetic-hint__ring-core {
+.cw-diegetic-hint--reduced .cw-diegetic-hint__ring-core,
+.cw-diegetic-hint--reduced .cw-diegetic-hint__finger,
+.cw-diegetic-hint--reduced .cw-diegetic-hint__finger-glow {
   animation: none;
 }
 
@@ -252,10 +283,45 @@
   }
 }
 
+@keyframes cwDiegeticFingerPress {
+  0%,
+  12% {
+    transform: translate(-50%, -48%) scale(1);
+    opacity: 0.85;
+  }
+  38%,
+  58% {
+    transform: translate(-50%, -28%) scale(0.94);
+    opacity: 1;
+  }
+  78%,
+  100% {
+    transform: translate(-50%, -48%) scale(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes cwDiegeticFingerGlow {
+  0%,
+  12% {
+    opacity: 0.18;
+  }
+  38%,
+  58% {
+    opacity: 0.72;
+  }
+  78%,
+  100% {
+    opacity: 0.18;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cw-diegetic-hint__ring-outer,
   .cw-diegetic-hint__ring-mid,
-  .cw-diegetic-hint__ring-core {
+  .cw-diegetic-hint__ring-core,
+  .cw-diegetic-hint__finger,
+  .cw-diegetic-hint__finger-glow {
     animation: none;
   }
 }
