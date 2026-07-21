@@ -9,11 +9,11 @@ describe('HomeScreenInstallOption', () => {
     fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
     expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
-    expect(screen.getByText(/iphone — use safari only/i)).toBeInTheDocument()
+    expect(screen.getByText(/iphone — safari or chrome/i)).toBeInTheDocument()
     expect(
       screen.getByText((_, el) => el?.tagName === 'LI' && /Share/.test(el.textContent || '')),
     ).toBeInTheDocument()
-    expect(screen.getByTestId('a2hs-ios-chrome-warning')).toHaveTextContent(/chrome on iphone cannot/i)
+    expect(screen.getByTestId('a2hs-ios-inapp-warning')).toHaveTextContent(/in-app browsers often hide/i)
 
     const logos = document.querySelectorAll(`img[src="${CHRONOWALK_HOME_ICON}"]`)
     expect(logos.length).toBeGreaterThan(0)

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { isIosSafari, isStandaloneMode } from '../utils/pwaInstall'
+import { isIosDevice, isStandaloneMode } from '../utils/pwaInstall'
 
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
@@ -55,7 +55,7 @@ export function usePwaInstall() {
   }, [deferredPrompt])
 
   const canPromptInstall = Boolean(deferredPrompt)
-  const showIosInstructions = !installed && isIosSafari()
+  const showIosInstructions = !installed && isIosDevice()
   const showInstallOption = !installed
 
   return {

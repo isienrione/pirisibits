@@ -30,7 +30,7 @@ describe('PwaInstallPanel', () => {
       />
     )
 
-    expect(screen.getByText(/add to home screen/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/add to home screen/i).length).toBeGreaterThan(0)
     expect(screen.queryByRole('button', { name: /add to home screen/i })).not.toBeInTheDocument()
   })
 

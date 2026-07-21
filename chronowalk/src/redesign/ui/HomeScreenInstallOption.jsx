@@ -21,10 +21,10 @@ function ChronoWalkAppIcon({ className = '', size = 34, alt = 'ChronoWalk' }) {
 }
 
 /**
- * Animated iPhone Safari how-to:
- * Share (bottom bar) → Add to Home Screen → confirm with ChronoWalk logo → home icon.
+ * Animated iPhone how-to (Safari or Chrome):
+ * Share → Add to Home Screen → confirm with ChronoWalk logo → home icon.
  */
-function IosSafariHowToDemo() {
+function IosHowToDemo() {
   const reducedMotion = useReducedMotion()
 
   return (
@@ -35,25 +35,19 @@ function IosSafariHowToDemo() {
     >
       <div className="cw-a2hs-demo__phone">
         <div className="cw-a2hs-demo__screen">
-          {/* 1 — Safari page + Share in the bottom bar */}
+          {/* 1 — Safari or Chrome + Share */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--1">
-            <div className="cw-a2hs-demo__page">
-              <div className="cw-a2hs-demo__safari-top">
-                <span className="cw-a2hs-demo__url">chronowalk.com</span>
-              </div>
-              <div className="cw-a2hs-demo__page-body">
-                <ChronoWalkAppIcon className="cw-a2hs-demo__page-logo" size={28} alt="" />
-                <span className="cw-a2hs-demo__page-title">ChronoWalk</span>
-              </div>
-            </div>
-            <div className="cw-a2hs-demo__safari-bar">
-              <span className="cw-a2hs-demo__bar-ghost" />
+            <div className="cw-a2hs-demo__chrome-bar">
+              <span className="cw-a2hs-demo__url">chronowalk.com</span>
               <span className="cw-a2hs-demo__share-hit" title="Share">
-                <Share size={15} strokeWidth={2.25} />
+                <Share size={14} strokeWidth={2.25} />
               </span>
-              <span className="cw-a2hs-demo__bar-ghost" />
             </div>
-            <p className="cw-a2hs-demo__caption">1 · Tap Share in Safari</p>
+            <div className="cw-a2hs-demo__page-body cw-a2hs-demo__page-body--chrome">
+              <ChronoWalkAppIcon className="cw-a2hs-demo__page-logo" size={28} alt="" />
+              <span className="cw-a2hs-demo__page-title">ChronoWalk</span>
+            </div>
+            <p className="cw-a2hs-demo__caption">1 · Tap Share</p>
           </div>
 
           {/* 2 — Share sheet → Add to Home Screen */}
@@ -328,7 +322,7 @@ export default function HomeScreenInstallOption({
               className={`cw-a2hs-capsule__tab${platform === 'ios' ? ' cw-a2hs-capsule__tab--active' : ''}`}
               onClick={() => setPlatform('ios')}
             >
-              iPhone · Safari
+              iPhone · Safari or Chrome
             </button>
             <button
               type="button"
@@ -341,18 +335,20 @@ export default function HomeScreenInstallOption({
             </button>
           </div>
 
-          {platform === 'ios' ? <IosSafariHowToDemo /> : <AndroidChromeHowToDemo />}
+          {platform === 'ios' ? <IosHowToDemo /> : <AndroidChromeHowToDemo />}
 
           <div className="cw-a2hs-capsule__copy">
             {platform === 'ios' ? (
               <>
-                <p className="cw-a2hs-capsule__title">iPhone — use Safari only</p>
+                <p className="cw-a2hs-capsule__title">iPhone — Safari or Chrome</p>
                 <ol className="cw-a2hs-capsule__steps">
                   <li>
-                    Open this page in <strong>Safari</strong> (not Chrome, not Instagram’s browser)
+                    Open this page in <strong>Safari</strong> or <strong>Chrome</strong> on your
+                    iPhone (not Instagram, Facebook, or other in-app browsers)
                   </li>
                   <li>
-                    Tap the <strong>Share</strong> button at the bottom of Safari
+                    Tap <strong>Share</strong> — at the bottom in Safari, or next to the address bar
+                    in Chrome
                   </li>
                   <li>
                     Scroll and tap <strong>Add to Home Screen</strong>
@@ -362,9 +358,9 @@ export default function HomeScreenInstallOption({
                   </li>
                   <li>On your Home Screen, open the ChronoWalk icon (not the website)</li>
                 </ol>
-                <p className="cw-a2hs-capsule__warn" data-testid="a2hs-ios-chrome-warning">
-                  Chrome on iPhone cannot add ChronoWalk to the Home Screen. Switch to Safari and
-                  follow the steps above.
+                <p className="cw-a2hs-capsule__warn" data-testid="a2hs-ios-inapp-warning">
+                  In-app browsers often hide Add to Home Screen. If you don’t see it, open
+                  chronowalk.com in Safari or Chrome first.
                 </p>
               </>
             ) : (
@@ -401,8 +397,8 @@ export default function HomeScreenInstallOption({
                   </p>
                 )}
                 <p className="cw-a2hs-capsule__warn">
-                  On iPhone, Chrome cannot install the app — use the <strong>iPhone · Safari</strong>{' '}
-                  tab instead.
+                  On iPhone, use the <strong>iPhone · Safari or Chrome</strong> tab — Share works in
+                  both browsers.
                 </p>
               </>
             )}
