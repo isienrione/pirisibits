@@ -643,7 +643,7 @@ export const LANDING_CONTENT = {
     headline: 'Your first city: Rome.',
     productTitle: 'ChronoWalk Rome',
     routeStops: ['Colosseum', 'Roman Forum', 'The Pantheon', 'Trevi Fountain', 'Spanish Steps'],
-    highlightBullets: ['22 places', 'Your pace', 'Offline-ready'],
+    highlightBullets: ['23 places', 'Your pace', 'Offline-ready'],
     bullets: ROME_TIERS[1].bullets,
     tiers: ROME_TIERS,
     priceLine: `${PRICE_PLACEHOLDER} · one purchase · yours to walk whenever`,

@@ -12,6 +12,7 @@ const PANEL_OPEN_KEY = 'cw_v2_field_panel_open'
 const STAGING_WAYPOINTS = [
   { label: 'Colosseum', id: 'colosseum' },
   { label: 'Pantheon', id: 'pantheon' },
+  { label: 'Pantheon interior', id: 'pantheon-interior' },
   { label: 'Navona', id: 'piazza-navona' },
   { label: 'Capitoline', id: 'capitoline-hill' },
   { label: 'Trevi', id: 'fontana-di-trevi' },

@@ -11,7 +11,7 @@ import {
   completeStoryAfterThreshold,
   JOURNEY_STATES,
 } from '../../../state/journey.js'
-import { loadRomeManifest } from '../../../content/manifest.js'
+import { getWaypoint, loadRomeManifest } from '../../../content/manifest.js'
 import { buildEffectiveSequence } from '../../../content/optionalPromotion.js'
 
 const playWaypointMock = vi.fn().mockResolvedValue(true)
@@ -183,39 +183,51 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
-  it('keeps Pantheon interior chapters on the same stop after exterior', async () => {
+  it('places Pantheon interior immediately after exterior with no transit between', () => {
     const manifest = loadRomeManifest()
     const seq = buildEffectiveSequence(manifest, 'a', [])
-    const pantheonIndex = seq.indexOf('w17')
-    expect(pantheonIndex).toBeGreaterThanOrEqual(0)
+    const exteriorIndex = seq.indexOf('w17')
+    const interiorIndex = seq.indexOf('w23')
+    expect(exteriorIndex).toBeGreaterThanOrEqual(0)
+    expect(interiorIndex).toBe(exteriorIndex + 1)
+    expect(seq[interiorIndex]).toBe('w23')
+    expect(getWaypoint(manifest, 'w17')?.chapters).toHaveLength(1)
+    expect(getWaypoint(manifest, 'w23')?.chapters).toHaveLength(3)
+  })
+
+  it('keeps Next chapter on Pantheon interior until the last chapter', async () => {
+    const manifest = loadRomeManifest()
+    const seq = buildEffectiveSequence(manifest, 'a', [])
+    const interiorIndex = seq.indexOf('w23')
+    expect(interiorIndex).toBeGreaterThanOrEqual(0)
 
     audioMock.narrationPlaying = true
     audioMock.progress = {
       currentTime: 10,
       duration: 120,
       chapterIndex: 0,
-      chapterCount: 4,
+      chapterCount: 3,
       itemIndex: 0,
-      itemCount: 4,
+      itemCount: 3,
       playing: true,
       paused: false,
     }
 
     beginJourney({ pace: 'heroic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.STORY, {
-      currentSequenceIndex: pantheonIndex,
-      completedWaypointIds: seq.slice(0, pantheonIndex).filter((id) => id.startsWith('w')),
+      currentSequenceIndex: interiorIndex,
+      completedWaypointIds: seq.slice(0, interiorIndex).filter((id) => id.startsWith('w')),
     })
     renderShell({ variant: 'redesign' })
 
-    expect(await screen.findByRole('heading', { name: /the pantheon/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /pantheon interior/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /next chapter/i })).toBeInTheDocument()
 
     fireEvent.click(screen.getByTestId('story-continue'))
 
     expect(jumpToChapterMock).toHaveBeenCalledWith(1, { play: true })
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
-    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(pantheonIndex)
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(interiorIndex)
   })
 
   it('shows first-tour onboarding cards instead of diegetic threshold hint during story', async () => {

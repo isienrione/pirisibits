@@ -70,7 +70,7 @@ export function JourneyPickScreen({ size = 'md' }) {
       <div className="cw-landing-screen cw-landing-screen--route">
         <header className="cw-landing-screen__route-header">
           <p className="cw-landing-screen__route-city">Rome, Italy</p>
-          <h3 className="cw-landing-screen__route-title">18 stops · your route</h3>
+          <h3 className="cw-landing-screen__route-title">19 stops · your route</h3>
         </header>
 
         <div className="cw-landing-screen__route-map" aria-hidden>
@@ -237,7 +237,7 @@ export function ListeningScreen({ size = 'md' }) {
           </div>
 
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 4 · The Pantheon — Exterior (~4:00)
+            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
           </p>
           <p className="cw-landing-screen__listen-note">
             Evidence-based reconstruction · portico bronze finish is informed conjecture
@@ -302,7 +302,7 @@ export function PreviewScreen({ size = 'md' }) {
           </div>
 
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 4 · The Pantheon — Exterior (~4:00)
+            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
           </p>
 
           <div className="cw-landing-screen__listen-wave cw-landing-screen__listen-wave--ember" aria-hidden>

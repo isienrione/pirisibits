@@ -24,6 +24,8 @@ const SLUG_ALIASES = {
   'fontana-di-trevi': 'w16',
   trevi: 'w16',
   pantheon: 'w17',
+  'pantheon-exterior': 'w17',
+  'pantheon-interior': 'w23',
   'piazza-navona': 'w18',
   navona: 'w18',
   'campo-de-fiori': 'w19',

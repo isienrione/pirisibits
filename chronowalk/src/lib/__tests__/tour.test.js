@@ -7,7 +7,8 @@ describe('tour manifest loader', () => {
 
     expect(manifest.acts).toHaveLength(7)
     expect(manifest.waypoints.length).toBeGreaterThan(15)
-    expect(getWaypoint(manifest, 'w17')?.chapters).toHaveLength(4)
+    expect(getWaypoint(manifest, 'w17')?.chapters).toHaveLength(1)
+    expect(getWaypoint(manifest, 'w23')?.chapters).toHaveLength(3)
   })
 
   it('exposes path-specific traversal sequences', async () => {

@@ -102,7 +102,7 @@ export const ROME_ACTS = [
     id: 'act5',
     numeral: 'V',
     title: 'The Living City',
-    waypoints: ['w15', 'w16', 'w17', 'w18', 'w19', 'w20'],
+    waypoints: ['w15', 'w16', 'w17', 'w23', 'w18', 'w19', 'w20'],
     entry: 'Spanish Steps',
     promise: 'Fountains, piazzas, and the water that follows you.',
   },

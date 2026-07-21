@@ -14,6 +14,7 @@ describe('tourTiers', () => {
       'w15',
       'w16',
       'w17',
+      'w23',
       'w18',
       'w19',
       'w20',
@@ -39,7 +40,7 @@ describe('tourTiers', () => {
     })
     const eterna = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
 
-    expect(central).toHaveLength(9)
+    expect(central).toHaveLength(10)
     expect(antica).toHaveLength(11)
     expect(eterna.length).toBeGreaterThan(central.length)
     expect(eterna.length).toBeGreaterThan(antica.length)

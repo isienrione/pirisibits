@@ -70,5 +70,16 @@ describe('rome content manifest', () => {
     for (const id of ['w15', 'w16', 'w17', 'w18', 'w19', 'w20']) {
       expect(waypoints[id].zone, id).toBe('centro')
     }
+
+    // Pantheon interior is its own stop (Colosseum exterior→interior pattern)
+    expect(waypoints.w17.chapters).toHaveLength(1)
+    expect(waypoints.w23.zone).toBe('pantheon_interior')
+    expect(waypoints.w23.chapters.map((ch) => ch.file ?? ch)).toEqual([
+      'w17_ch2.mp3',
+      'w17_ch3.mp3',
+      'w17_ch4.mp3',
+    ])
+    expect(transits.t13.after).toBe('w23')
   })
 })
+
