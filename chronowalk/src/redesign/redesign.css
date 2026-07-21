@@ -201,33 +201,43 @@
   animation: cwDiegeticCorePulse 2.4s ease-in-out infinite 0.08s;
 }
 
-/* First-instruction only: finger pressing into the ring. */
+/* First-instruction only: hand with index finger pressing into the ring. */
 .cw-diegetic-hint__finger {
   position: absolute;
   left: 50%;
-  top: 42%;
+  top: 50%;
   z-index: 2;
-  transform: translate(-50%, -38%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-42%, -58%);
   animation: cwDiegeticFingerPress 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
-}
-
-.cw-diegetic-hint__finger-svg {
-  display: block;
-  overflow: visible;
-}
-
-.cw-diegetic-hint__finger-path {
-  fill: color-mix(in srgb, var(--warm-white, #faf6ef) 88%, var(--ember, #d4af37));
-  stroke: color-mix(in srgb, var(--ember, #d4af37) 85%, transparent);
-  stroke-width: 1.25;
-  stroke-linejoin: round;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
 }
 
 .cw-diegetic-hint__finger-glow {
-  fill: color-mix(in srgb, var(--ember, #d4af37) 55%, transparent);
-  opacity: 0.55;
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 22px;
+  height: 10px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ember, #d4af37) 55%, transparent);
+  transform: translate(-50%, 0);
   animation: cwDiegeticFingerGlow 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.cw-diegetic-hint__finger-icon {
+  position: relative;
+  z-index: 1;
+  color: color-mix(in srgb, var(--warm-white, #faf6ef) 92%, var(--ember, #d4af37));
+  /* Lucide Pointer reads as a hand; tip aims into the ring center. */
+  transform: rotate(28deg);
+  stroke: color-mix(in srgb, var(--ember, #d4af37) 90%, transparent);
+  fill: color-mix(in srgb, var(--obsidian, #0b0b0d) 35%, transparent);
 }
 
 .cw-diegetic-hint__line {
@@ -286,18 +296,18 @@
 @keyframes cwDiegeticFingerPress {
   0%,
   12% {
-    transform: translate(-50%, -48%) scale(1);
-    opacity: 0.85;
+    transform: translate(-42%, -68%) scale(1);
+    opacity: 0.9;
   }
   38%,
   58% {
-    transform: translate(-50%, -28%) scale(0.94);
+    transform: translate(-38%, -48%) scale(0.94);
     opacity: 1;
   }
   78%,
   100% {
-    transform: translate(-50%, -48%) scale(1);
-    opacity: 0.85;
+    transform: translate(-42%, -68%) scale(1);
+    opacity: 0.9;
   }
 }
 
