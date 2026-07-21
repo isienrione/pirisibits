@@ -276,6 +276,20 @@ describe('AudioEngine', () => {
     expect(engine.session.paused).toBe(false);
     expect(engine.isNarrationPlaying()).toBe(true);
   });
+
+  it('crossfades antiquity and river beds for their production-plan zones', async () => {
+    const fakeBuffer = { duration: 1 };
+    engine.loadBuffer = vi.fn(async () => fakeBuffer);
+
+    await engine.playWaypoint('w14');
+    expect(engine.currentBedKey).toBe('antiquity');
+
+    await engine.playTransit('t16');
+    expect(engine.currentBedKey).toBe('river');
+
+    await engine.playWaypoint('w21');
+    expect(engine.currentBedKey).toBe('river');
+  });
 });
 
 function manifestFromEngine(engine) {

@@ -257,9 +257,11 @@ const manifest = {
       approachLine: 'Climb toward the hill where Rome\'s gods watched over the city.',
       arrivalLine: 'The Capitoline — heart of public faith.',
     }),
+    // Beds (production plan): antiquity = Palatine→Forum→Trajan (+ Circus/Appia encore);
+    // centro = Steps→Trevi→Navona→Largo (+ Pantheon exterior); river = Castel approach+finale.
     w14: wp('w14', {
       act: 'act4',
-      zone: 'centro',
+      zone: 'antiquity',
       chapters: ['w14.mp3'],
       approachLine: 'Brick arcades stack ahead — Rome\'s great market hall.',
       arrivalLine: 'Shops and offices once hummed in these halls.',
@@ -273,6 +275,7 @@ const manifest = {
     }),
     w16: wp('w16', {
       act: 'act5',
+      zone: 'centro',
       chapters: ['w16.mp3'],
       inserts: ['ins_water_trevi'],
       approachLine: 'You\'ll hear the fountain before you see it.',
@@ -280,6 +283,7 @@ const manifest = {
     }),
     w17: wp('w17', {
       act: 'act5',
+      zone: 'centro',
       chapters: ['w17_ch1.mp3', 'w17_ch2.mp3', 'w17_ch3.mp3', 'w17_ch4.mp3'],
       inserts: ['ins_agrippa'],
       interior_zone: 'pantheon_interior',
@@ -294,12 +298,14 @@ const manifest = {
     }),
     w18: wp('w18', {
       act: 'act5',
+      zone: 'centro',
       chapters: ['w18.mp3'],
       approachLine: 'Bernini\'s fountain plays ahead — the stadium shape beneath your feet.',
       arrivalLine: 'A racetrack turned piazza — Rome\'s living room.',
     }),
     w19: wp('w19', {
       act: 'act5',
+      zone: 'centro',
       chapters: ['w19.mp3'],
       inserts: ['ins_fire'],
       approachLine: 'The market square opens — morning or evening, always alive.',
@@ -307,6 +313,7 @@ const manifest = {
     }),
     w20: wp('w20', {
       act: 'act5',
+      zone: 'centro',
       chapters: ['w20.mp3'],
       approachLine: 'Sacred ruins below street level — cats and columns.',
       arrivalLine: 'This is where Caesar died.',
@@ -321,6 +328,7 @@ const manifest = {
     }),
     enc_circus: wp('enc_circus', {
       act: 'encore',
+      zone: 'antiquity',
       chapters: ['enc_circus.mp3'],
       inserts: ['ins_window'],
       approachLine: 'Walk out onto the grass at the bottom of the valley.',
@@ -328,6 +336,7 @@ const manifest = {
     }),
     w22: wp('w22', {
       act: 'encore',
+      zone: 'antiquity',
       chapters: ['w22.mp3'],
       approachLine: 'The basalt stones stretch south — the queen of roads.',
       arrivalLine: 'Walk where legions and merchants left Rome.',
