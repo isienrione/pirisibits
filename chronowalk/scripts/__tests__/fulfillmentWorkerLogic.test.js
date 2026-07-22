@@ -140,6 +140,14 @@ describe('fulfillment worker logic', () => {
   })
 })
 
+describe('operator restore CLI', () => {
+  it('defaults to dry-run', async () => {
+    const { parseRestoreArgs } = await import('../restore-purchase-access.mjs')
+    expect(parseRestoreArgs(['node', 'x', 'txn_EXAMPLE01']).execute).toBe(false)
+    expect(parseRestoreArgs(['node', 'x', 'txn_EXAMPLE01', '--execute']).execute).toBe(true)
+  })
+})
+
 describe('operator CLIs', () => {
   it('retry defaults to dry-run and masks audit rows', () => {
     expect(parseRetryArgs(['node', 'x', 'txn_EXAMPLE01']).execute).toBe(false)

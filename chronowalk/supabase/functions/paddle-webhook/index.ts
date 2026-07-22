@@ -1,15 +1,16 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-22-v10-outbox
+ * WEBHOOK_BUILD: 2026-07-22-v11-adjustments
  *
  * Entitlement is derived only from data.items[].price.id via server secrets
  * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
  * Successful entitlement does not depend on Resend during the Paddle request.
  * Email delivery is enqueued to fulfillment_outbox for process-fulfillment-outbox.
+ * Adjustments: refunds/credits/chargebacks via apply_paddle_adjustment.
  *
  * Deploy the paddle-webhook function directory (index + local modules).
- * Logs / JSON MUST contain "2026-07-22-v10-outbox".
+ * Logs / JSON MUST contain "2026-07-22-v11-adjustments".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
@@ -18,15 +19,18 @@ import { encryptClaimSecret } from '../_shared/claimCrypto.js'
 import {
   buildServerPriceMap,
   isDuplicateWebhookInbox,
+  isTerminalPurchaseStatus,
   isValidEmail,
   maskEmail,
   maskId,
   paddlePayloadEmailCandidate,
+  readAdjustmentPayload,
+  resolveAdjustmentEffect,
   resolveLaunchEntitlementFromTransaction,
   shouldIgnoreOutOfOrderEvent,
 } from './fulfillmentLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-22-v10-outbox'
+const WEBHOOK_BUILD = '2026-07-22-v11-adjustments'
 
 function readServerPriceEnv() {
   return {
@@ -398,6 +402,15 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
     .eq('order_id', String(orderId))
     .maybeSingle()
 
+  if (existing && isTerminalPurchaseStatus(existing.status)) {
+    console.log('[paddle-webhook] skip fulfill — purchase inactive', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      status: existing.status,
+    })
+    return { ok: true, ignored: true, reason: 'purchase_inactive' }
+  }
+
   if (
     existing &&
     shouldIgnoreOutOfOrderEvent(occurredAt, existing.last_event_occurred_at)
@@ -500,6 +513,67 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
   return { ok: true, purchaseId: row.id }
 }
 
+async function handleAdjustmentEvent(supabase, data, envelope) {
+  const fields = readAdjustmentPayload(data)
+  if (!fields.adjustmentId) {
+    await markOperatorReview(supabase, envelope, 'missing_adjustment_id')
+    return { ok: false, reason: 'missing_adjustment_id' }
+  }
+  if (!fields.transactionId) {
+    await markOperatorReview(supabase, envelope, 'missing_transaction_id')
+    return { ok: false, reason: 'missing_transaction_id' }
+  }
+
+  const decision = resolveAdjustmentEffect(fields)
+  const occurredAt = envelope?.occurred_at ?? data?.updated_at ?? data?.created_at ?? null
+
+  // Sanitized raw — never store full customer payloads with PII beyond Paddle ids.
+  const rawSafe = {
+    id: fields.adjustmentId,
+    transaction_id: fields.transactionId,
+    action: fields.action,
+    status: fields.status,
+    type: fields.type,
+    reason: fields.reason ? String(fields.reason).slice(0, 200) : null,
+  }
+
+  const { data: result, error } = await supabase.rpc('apply_paddle_adjustment', {
+    p_adjustment_id: fields.adjustmentId,
+    p_transaction_id: String(fields.transactionId),
+    p_action: fields.action,
+    p_status: fields.status,
+    p_type: fields.type,
+    p_occurred_at: occurredAt,
+    p_effect: decision.effect,
+    p_revoke: Boolean(decision.revoke),
+    p_purchase_status: decision.purchaseStatus,
+    p_operator_review: Boolean(decision.operatorReview),
+    p_reason: decision.reason,
+    p_raw: rawSafe,
+  })
+
+  if (error) throw new Error(`apply_paddle_adjustment failed: ${error.message}`)
+
+  if (result?.reason === 'unknown_transaction' || decision.operatorReview) {
+    await markOperatorReview(supabase, envelope, result?.reason ?? decision.reason)
+  }
+
+  console.log('[paddle-webhook] adjustment processed', {
+    build: WEBHOOK_BUILD,
+    adjustmentId: maskId(fields.adjustmentId),
+    orderId: maskId(fields.transactionId),
+    action: fields.action,
+    status: fields.status,
+    type: fields.type,
+    effect: decision.effect,
+    applied: Boolean(result?.applied),
+    reason: result?.reason ?? decision.reason,
+    purchaseStatus: result?.purchase_status ?? null,
+  })
+
+  return { ok: true, ...result, decision }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -554,6 +628,8 @@ Deno.serve(async (req) => {
       await handleCustomerEvent(supabase, data)
     } else if (eventType === 'transaction.completed') {
       await handleTransactionCompleted(supabase, mode, data, envelope)
+    } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
+      await handleAdjustmentEvent(supabase, data, envelope)
     } else {
       console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
     }

@@ -207,6 +207,133 @@ export function shouldIgnoreOutOfOrderEvent(incomingOccurredAt, storedOccurredAt
   return incoming < stored
 }
 
+export const TERMINAL_PURCHASE_STATUSES = Object.freeze(['refunded', 'disputed', 'revoked'])
+
+export function isTerminalPurchaseStatus(status) {
+  return TERMINAL_PURCHASE_STATUSES.includes(String(status ?? ''))
+}
+
+const REVERSAL_ACTIONS = new Set([
+  'chargeback_reverse',
+  'chargeback_warning_reverse',
+  'credit_reverse',
+])
+
+const DISPUTE_ACTIONS = new Set(['chargeback', 'chargeback_warning'])
+
+/**
+ * Resolve launch business effect for a Paddle adjustment entity.
+ * Does not restore access on reversals — operator must issue a fresh claim.
+ *
+ * @param {{ action?: string, status?: string, type?: string }} data
+ */
+export function resolveAdjustmentEffect(data = {}) {
+  const action = String(data.action ?? '').toLowerCase()
+  const status = String(data.status ?? '').toLowerCase()
+  const type = String(data.type ?? '').toLowerCase()
+
+  if (!action) {
+    return {
+      ok: false,
+      effect: 'record_only',
+      revoke: false,
+      purchaseStatus: null,
+      operatorReview: true,
+      reason: 'missing_action',
+    }
+  }
+
+  if (REVERSAL_ACTIONS.has(action)) {
+    return {
+      ok: true,
+      effect: 'record_only',
+      revoke: false,
+      purchaseStatus: null,
+      operatorReview: true,
+      reason: 'reversal_requires_operator',
+    }
+  }
+
+  if (DISPUTE_ACTIONS.has(action)) {
+    return {
+      ok: true,
+      effect: 'dispute',
+      revoke: true,
+      purchaseStatus: 'disputed',
+      operatorReview: false,
+      reason: action,
+    }
+  }
+
+  // Partial refund/credit: never auto-revoke the whole product.
+  if (type === 'partial') {
+    return {
+      ok: true,
+      effect: 'record_only',
+      revoke: false,
+      purchaseStatus: null,
+      operatorReview: true,
+      reason: 'partial_operator_review',
+    }
+  }
+
+  if ((action === 'refund' || action === 'credit') && (type === 'full' || type === '')) {
+    if (status === 'pending_approval' || status === 'pending') {
+      return {
+        ok: true,
+        effect: 'record_only',
+        revoke: false,
+        purchaseStatus: null,
+        operatorReview: false,
+        reason: 'pending_keep_access',
+      }
+    }
+    if (status === 'rejected') {
+      return {
+        ok: true,
+        effect: 'record_only',
+        revoke: false,
+        purchaseStatus: null,
+        operatorReview: false,
+        reason: 'rejected_retain_active',
+      }
+    }
+    if (status === 'approved') {
+      return {
+        ok: true,
+        effect: 'refund',
+        revoke: true,
+        purchaseStatus: 'refunded',
+        operatorReview: false,
+        reason: action === 'credit' ? 'full_credit_approved' : 'full_refund_approved',
+      }
+    }
+  }
+
+  return {
+    ok: true,
+    effect: 'record_only',
+    revoke: false,
+    purchaseStatus: null,
+    operatorReview: true,
+    reason: 'unknown_adjustment',
+  }
+}
+
+/**
+ * Normalize adjustment payload fields from Paddle webhook data.
+ */
+export function readAdjustmentPayload(data = {}) {
+  return {
+    adjustmentId: data.id ? String(data.id) : null,
+    transactionId: data.transaction_id ?? data.transactionId ?? null,
+    action: data.action ?? null,
+    status: data.status ?? null,
+    type: data.type ?? null,
+    reason: data.reason ?? null,
+  }
+}
+
 export function catalogSkuOrNull(productId) {
   return LAUNCH_CATALOG_BY_ID[productId] ? productId : null
 }

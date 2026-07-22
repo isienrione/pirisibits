@@ -57,9 +57,15 @@ node scripts/audit-fulfillment-outbox.mjs --status=fulfillment_failed --limit=50
 # Requeue by order id (dry-run default)
 node scripts/retry-fulfillment-outbox.mjs txn_01…
 node scripts/retry-fulfillment-outbox.mjs txn_01… --execute
+
+# Explicit restore after refund/dispute review (fresh claim only; dry-run default)
+node scripts/restore-purchase-access.mjs txn_01…
+node scripts/restore-purchase-access.mjs txn_01… --execute
 ```
 
 Requeue **never** mints a new claim and **never** prints the access link. It only works when encrypted claim ciphertext is still present.
+
+Restore **never** reactivates a consumed code: it revokes old claims/credentials, rotates bundle seats, mints `operator_recovery`, and enqueues a new outbox email.
 
 ## Idempotency
 

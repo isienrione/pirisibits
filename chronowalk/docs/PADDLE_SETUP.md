@@ -132,8 +132,13 @@ node scripts/resend-purchase-access.mjs --email buyer@example.com
 In Paddle → **Developer tools → Notifications** → New destination:
 
 - URL: `https://<PROJECT_REF>.supabase.co/functions/v1/paddle-webhook`  
-- Events: **`transaction.completed`** (minimum)  
+- Events (required):
+  - **`transaction.completed`** — grant entitlement + enqueue access email
+  - **`customer.created`** / **`customer.updated`** — cache buyer email (`paddle_customers`)
+  - **`adjustment.created`** / **`adjustment.updated`** — refunds, credits, chargebacks (pending keeps access; approved full refund/credit → `refunded`; chargeback → `disputed`)
 - Copy the destination secret → `PADDLE_NOTIFICATION_WEBHOOK_SECRET`
+
+Do **not** omit `adjustment.updated`: live refunds often start as `pending_approval` and only flip to `approved` / `rejected` on update.
 
 ### 7. Sandbox test card
 
