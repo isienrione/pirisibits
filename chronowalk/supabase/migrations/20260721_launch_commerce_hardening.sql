@@ -175,26 +175,40 @@ alter table public.purchases add column if not exists revoked_at timestamptz;
 alter table public.purchases add column if not exists updated_at timestamptz;
 alter table public.purchases add column if not exists revoked_reason text;
 
--- Defaults / backfill for existing rows (preserve product_id SKU)
+-- Defaults / backfill for existing rows (preserve product_id SKU).
+-- PostgreSQL rejects referencing the UPDATE target alias inside FROM
+-- set-returning functions (42P10). Compute entitlements in a CTE first.
+with entitlement_backfill as (
+  select
+    p.id as purchase_id,
+    coalesce(p.seat_limit, coalesce(e.seat_limit, 1)) as seat_limit,
+    coalesce(
+      p.content_product_id,
+      e.content_product_id,
+      case
+        when p.product_id in ('rome-couple', 'rome-family') then 'rome-complete'
+        else p.product_id
+      end
+    ) as content_product_id,
+    coalesce(p.status, 'active') as status,
+    coalesce(p.updated_at, p.created_at, now()) as updated_at,
+    coalesce(p.fulfilled_at, p.created_at) as fulfilled_at
+  from public.purchases p
+  cross join lateral public.launch_sku_entitlement(p.product_id) e
+  where p.seat_limit is null
+     or p.content_product_id is null
+     or p.status is null
+     or p.updated_at is null
+)
 update public.purchases p
 set
-  seat_limit = coalesce(p.seat_limit, coalesce(e.seat_limit, 1)),
-  content_product_id = coalesce(
-    p.content_product_id,
-    e.content_product_id,
-    case
-      when p.product_id in ('rome-couple', 'rome-family') then 'rome-complete'
-      else p.product_id
-    end
-  ),
-  status = coalesce(p.status, 'active'),
-  updated_at = coalesce(p.updated_at, p.created_at, now()),
-  fulfilled_at = coalesce(p.fulfilled_at, p.created_at)
-from public.launch_sku_entitlement(p.product_id) e
-where p.seat_limit is null
-   or p.content_product_id is null
-   or p.status is null
-   or p.updated_at is null;
+  seat_limit = b.seat_limit,
+  content_product_id = b.content_product_id,
+  status = b.status,
+  updated_at = b.updated_at,
+  fulfilled_at = b.fulfilled_at
+from entitlement_backfill b
+where p.id = b.purchase_id;
 
 update public.purchases
 set
