@@ -12,7 +12,9 @@
    Synthetic contract checks inside a rolled-back transaction. All `OK` notices must appear.
 4. **SQL Editor** — run `supabase/migrations/20260721_paddle_price_fulfillment.sql`  
    Adds outbox claim ciphertext + `last_event_occurred_at` for out-of-order protection.
-5. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
+5. **SQL Editor** — run `supabase/migrations/20260722_fulfillment_outbox_worker.sql`  
+   Outbox claim/retry RPCs, `fulfillment_failed`, Resend webhook inbox. Then run `20260722_fulfillment_outbox_worker_verify.sql` (rolled back).
+6. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
    ```bash
    export PADDLE_API_KEY=…   # never commit
    export PADDLE_ENV=sandbox
@@ -20,10 +22,12 @@
    node scripts/seed-paddle-catalog.mjs --execute --env=sandbox
    ```
    Paste the five printed `pri_…` into Cloudflare Pages (`VITE_PADDLE_PRICE_*`) and Supabase Edge secrets (`PADDLE_PRICE_*`). Also set `CLAIM_ENCRYPTION_KEY` (32-byte base64).
-6. **Edge Functions → `paddle-webhook`** — redeploy the function directory (build `2026-07-21-v9-price-map`).  
-   Startup must load all five `PADDLE_PRICE_*` secrets without duplicates. Entitlement is derived only from `data.items[].price.id`.
-7. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → async email worker → `/access?token=` redeems once.
-8. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, or `walk_sessions`.
+7. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
+   - `paddle-webhook` build `2026-07-22-v10-outbox` (no Resend inline)
+   - `process-fulfillment-outbox` + cron every minute with `FULFILLMENT_CRON_SECRET`
+   - `resend-webhook` with `RESEND_WEBHOOK_SECRET` (Svix)
+8. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → cron worker sends email → Resend `email.delivered` → `/access?token=` redeems once (second redeem fails).
+9. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, `fulfillment_outbox`, or `walk_sessions`.
 
 ## Do not run
 

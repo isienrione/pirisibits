@@ -39,6 +39,8 @@
     "generate:commerce": "node scripts/generate-commerce-consumers.mjs",
     "check:commerce-drift": "node scripts/generate-commerce-consumers.mjs --check",
     "seed:paddle-catalog": "node scripts/seed-paddle-catalog.mjs",
+    "fulfillment:audit": "node scripts/audit-fulfillment-outbox.mjs",
+    "fulfillment:retry": "node scripts/retry-fulfillment-outbox.mjs",
     "test:watch": "vitest",
     "pretest": "npm run check:commerce-drift"
   },

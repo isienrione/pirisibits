@@ -1,18 +1,20 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v9-price-map
+ * WEBHOOK_BUILD: 2026-07-22-v10-outbox
  *
  * Entitlement is derived only from data.items[].price.id via server secrets
  * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
  * Successful entitlement does not depend on Resend during the Paddle request.
+ * Email delivery is enqueued to fulfillment_outbox for process-fulfillment-outbox.
  *
  * Deploy the paddle-webhook function directory (index + local modules).
- * Logs / JSON MUST contain "2026-07-21-v9-price-map".
+ * Logs / JSON MUST contain "2026-07-22-v10-outbox".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
+import { encryptClaimSecret } from '../_shared/claimCrypto.js'
 import {
   buildServerPriceMap,
   isDuplicateWebhookInbox,
@@ -24,7 +26,7 @@ import {
   shouldIgnoreOutOfOrderEvent,
 } from './fulfillmentLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-21-v9-price-map'
+const WEBHOOK_BUILD = '2026-07-22-v10-outbox'
 
 function readServerPriceEnv() {
   return {
@@ -92,24 +94,6 @@ function getSupabaseAdmin() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-
-async function encryptClaimSecret(rawClaim) {
-  const keyB64 = Deno.env.get('CLAIM_ENCRYPTION_KEY') ?? ''
-  if (!keyB64) return null
-  const keyBytes = Uint8Array.from(atob(keyB64), (c) => c.charCodeAt(0))
-  if (keyBytes.byteLength !== 32) return null
-  const iv = crypto.getRandomValues(new Uint8Array(12))
-  const key = await crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['encrypt'])
-  const cipher = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    new TextEncoder().encode(rawClaim),
-  )
-  const packed = new Uint8Array(iv.byteLength + cipher.byteLength)
-  packed.set(iv, 0)
-  packed.set(new Uint8Array(cipher), iv.byteLength)
-  return btoa(String.fromCharCode(...packed))
-}
 
 async function recordWebhookEvent(supabase, envelope, eventType, { operatorReview = false } = {}) {
   const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
@@ -354,23 +338,37 @@ async function markOperatorReview(supabase, envelope, reason) {
 }
 
 async function enqueueFulfillmentOnly(supabase, purchase, rawClaim) {
-  const encrypted = await encryptClaimSecret(rawClaim)
+  const keyB64 = Deno.env.get('CLAIM_ENCRYPTION_KEY') ?? ''
+  const encrypted = rawClaim ? await encryptClaimSecret(rawClaim, keyB64) : null
   const claimExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  const { data: existing } = await supabase
+    .from('fulfillment_outbox')
+    .select('id, status, encrypted_claim, attempts')
+    .eq('purchase_id', purchase.id)
+    .maybeSingle()
+
+  // Never overwrite ciphertext or reset a sent/delivered job on Paddle replay.
+  if (existing?.encrypted_claim || ['sent', 'delivered', 'sending'].includes(existing?.status)) {
+    return { reused: true, status: existing.status }
+  }
+
   const { error } = await supabase.from('fulfillment_outbox').upsert(
     {
       purchase_id: purchase.id,
       order_id: purchase.order_id,
       status: 'pending',
-      attempts: 0,
+      attempts: existing?.attempts ?? 0,
       next_attempt_at: new Date().toISOString(),
-      encrypted_claim: encrypted,
+      encrypted_claim: encrypted ?? existing?.encrypted_claim ?? null,
       claim_expires_at: claimExpiresAt,
-      last_error: encrypted ? null : 'claim_encryption_unavailable',
+      last_error: encrypted || existing?.encrypted_claim ? null : 'claim_encryption_unavailable',
+      updated_at: new Date().toISOString(),
     },
     { onConflict: 'purchase_id' },
   )
   if (error) throw new Error(`fulfillment_outbox upsert failed: ${error.message}`)
-  // Raw claim must not remain in DB plaintext — only ciphertext (when key present).
+  return { reused: false, status: 'pending' }
 }
 
 async function handleTransactionCompleted(supabase, mode, data, envelope) {
@@ -465,17 +463,29 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
   // Bundle + seats are created only for paid couple/family SKUs (server-derived).
   await ensureBundleIfNeeded(supabase, row)
 
-  // Issue claim + enqueue outbox atomically relative to purchase success.
-  // Email delivery is async — entitlement must not depend on Resend here.
-  const { data: claim, error: claimError } = await supabase.rpc('issue_purchase_claim', {
-    p_purchase_id: row.id,
-    p_purpose: 'initial',
-  })
-  if (claimError || !claim) {
+  // At most one active initial claim. Replays reuse outbox ciphertext — never mint extras.
+  // Email delivery is async via process-fulfillment-outbox — no Resend here.
+  const { data: claimResult, error: claimError } = await supabase.rpc(
+    'ensure_initial_purchase_claim',
+    { p_purchase_id: row.id },
+  )
+  if (claimError || !claimResult?.ok) {
     await markOperatorReview(supabase, envelope, 'claim_issue_failed')
     return { ok: false, reason: 'claim_issue_failed' }
   }
-  await enqueueFulfillmentOnly(supabase, row, String(claim))
+
+  const rawClaim = claimResult.issued ? String(claimResult.claim) : null
+  if (claimResult.issued && !rawClaim) {
+    await markOperatorReview(supabase, envelope, 'claim_issue_failed')
+    return { ok: false, reason: 'claim_issue_failed' }
+  }
+
+  if (!claimResult.issued && !claimResult.has_encrypted_outbox) {
+    // Active claim exists but ciphertext missing — cannot email without minting a second claim.
+    await markOperatorReview(supabase, envelope, 'claim_ciphertext_missing')
+  }
+
+  const outbox = await enqueueFulfillmentOnly(supabase, row, rawClaim)
 
   console.log('[paddle-webhook] purchase entitled + fulfillment enqueued', {
     build: WEBHOOK_BUILD,
@@ -483,6 +493,8 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
     productId: row.product_id,
     contentProductId: row.content_product_id,
     seatLimit: row.seat_limit,
+    claimIssued: Boolean(claimResult.issued),
+    outboxReused: Boolean(outbox?.reused),
   })
 
   return { ok: true, purchaseId: row.id }

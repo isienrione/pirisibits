@@ -5,8 +5,8 @@
  * or magic links. Masks email and order id in console output.
  *
  * Legacy reusable bearer tokens (purchases.access_token) must NOT be emailed.
- * `--execute` email send is gated until the one-time claim / outbox path lands
- * (Prompts 2–4). Until then, `--execute` refuses closed.
+ * For durable outbox requeue, use scripts/retry-fulfillment-outbox.mjs instead.
+ * `--execute` on this script still refuses legacy bearer sends.
  *
  * Entitlement (`product_id`) is never overwritten from client-controlled
  * Paddle `custom_data.product_id`. Stored product_id is preserved as-is.
