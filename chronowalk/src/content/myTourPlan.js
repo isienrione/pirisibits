@@ -242,8 +242,10 @@ export function needsOwnPaceSelection(context) {
 export function buildPreviewTourActs(manifest, previewWaypointId = 'w17') {
   if (!manifest?.acts) return []
 
+  // Preview ghost catalog spans the full Eterna set so the free Pantheon sample
+  // (w17) is present even though Classic/Antica tiers omit centro stops.
   const context = {
-    pace: JOURNEY_PACE.CLASSIC,
+    pace: JOURNEY_PACE.HEROIC,
     path: manifest.journey?.default_path ?? 'a',
   }
   const tourWaypointIds = new Set(getTourWaypointIds(manifest, context))

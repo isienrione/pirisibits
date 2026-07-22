@@ -44,7 +44,10 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
   const fallback =
     isDebugGeo() && placement === 'arrived' ? JOURNEY_STATES.ARRIVED : JOURNEY_STATES.WALKING
 
-  const resolvedState = normalizeRedesignJourneyState(targetState ?? fallback)
+  const resolvedState =
+    targetState === JOURNEY_STATES.THRESHOLD
+      ? JOURNEY_STATES.THRESHOLD
+      : normalizeRedesignJourneyState(targetState ?? fallback)
 
   transitionJourney(resolvedState)
 

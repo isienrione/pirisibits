@@ -102,7 +102,16 @@ function renderShell(props = {}) {
   )
 }
 
-const PAUSE_SEQUENCE_INDEX = 10
+/** Classic Path A auto-promotes Palatine (w04) — indexes must match beginJourney. */
+function classicPathASequence(manifest = loadRomeManifest()) {
+  return buildEffectiveSequence(manifest, 'a', ['w04'])
+}
+
+function sequenceIndexOf(stepId, manifest = loadRomeManifest()) {
+  const index = classicPathASequence(manifest).indexOf(stepId)
+  expect(index).toBeGreaterThanOrEqual(0)
+  return index
+}
 
 function openTransitFullPlayer(screen) {
   fireEvent.click(
@@ -112,7 +121,7 @@ function openTransitFullPlayer(screen) {
 
 describe('JourneyShell', () => {
   beforeEach(() => {
-    global.ResizeObserver = class {
+    globalThis.ResizeObserver = class {
       observe() {}
       unobserve() {}
       disconnect() {}
@@ -277,10 +286,8 @@ describe('JourneyShell', () => {
   })
 
   it.each(['w06', 'w07', 'w08'])('shows continuity button during %s forum story', async (waypointId) => {
-    const manifest = loadRomeManifest()
-    const seq = buildEffectiveSequence(manifest, 'a', [])
-    const index = seq.indexOf(waypointId)
-    expect(index).toBeGreaterThanOrEqual(0)
+    const seq = classicPathASequence()
+    const index = sequenceIndexOf(waypointId)
 
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.STORY, {
@@ -308,9 +315,7 @@ describe('JourneyShell', () => {
   })
 
   it('advances from transit when continue walking is tapped', async () => {
-    const manifest = loadRomeManifest()
-    const t04Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t04')
-    expect(t04Index).toBeGreaterThanOrEqual(0)
+    const t04Index = sequenceIndexOf('t04')
 
     audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
@@ -326,9 +331,7 @@ describe('JourneyShell', () => {
   })
 
   it('shows t06 Temple of Vesta transit narration panel and script', async () => {
-    const manifest = loadRomeManifest()
-    const t06Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t06')
-    expect(t06Index).toBeGreaterThanOrEqual(0)
+    const t06Index = sequenceIndexOf('t06')
 
     audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
@@ -345,10 +348,8 @@ describe('JourneyShell', () => {
   })
 
   it('starts t06 transit narration after completing w07 story', async () => {
-    const manifest = loadRomeManifest()
-    const seq = buildEffectiveSequence(manifest, 'a', [])
-    const w07Index = seq.indexOf('w07')
-    expect(w07Index).toBeGreaterThanOrEqual(0)
+    const seq = classicPathASequence()
+    const w07Index = sequenceIndexOf('w07')
     expect(seq[w07Index + 1]).toBe('t06')
 
     audioMock.narrationPlaying = true
@@ -369,9 +370,7 @@ describe('JourneyShell', () => {
   })
 
   it('renders unified transit shell for t15 en route to Trevi', async () => {
-    const manifest = loadRomeManifest()
-    const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
-    expect(t15Index).toBeGreaterThanOrEqual(0)
+    const t15Index = sequenceIndexOf('t15')
 
     audioMock.narrationPlaying = true
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
@@ -385,9 +384,7 @@ describe('JourneyShell', () => {
   })
 
   it('t15 Trevi arrival begins w16 story from transit screen', async () => {
-    const manifest = loadRomeManifest()
-    const t15Index = buildEffectiveSequence(manifest, 'a', []).indexOf('t15')
-    expect(t15Index).toBeGreaterThanOrEqual(0)
+    const t15Index = sequenceIndexOf('t15')
 
     beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
     transitionJourney(JOURNEY_STATES.WALKING, {
@@ -428,11 +425,8 @@ describe('JourneyShell', () => {
   })
 
   it('does not auto-play t01 after w02 threshold until path is chosen', async () => {
-    const manifest = loadRomeManifest()
-    const seq = buildEffectiveSequence(manifest, 'a', [])
-    const w02Index = seq.indexOf('w02')
-    const t01Index = seq.indexOf('t01')
-    expect(w02Index).toBeGreaterThanOrEqual(0)
+    const seq = classicPathASequence()
+    const w02Index = sequenceIndexOf('w02')
     expect(seq[w02Index + 1]).toBe('t01')
 
     beginJourney({ pace: 'classic', path: 'a', pathLocked: false })
@@ -460,8 +454,9 @@ describe('JourneyShell', () => {
   })
 
   it('shows scripted rest arrival copy at the Forum pause stop', async () => {
+    const pauseIndex = sequenceIndexOf('pause')
     beginJourney({ pace: 'classic' })
-    transitionJourney(JOURNEY_STATES.ARRIVED, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+    transitionJourney(JOURNEY_STATES.ARRIVED, { currentSequenceIndex: pauseIndex })
     renderShell()
 
     expect(await screen.findByRole('heading', { name: /forum rest/i })).toBeInTheDocument()
@@ -470,8 +465,9 @@ describe('JourneyShell', () => {
 
   it('enters scripted rest after pause narration ends', async () => {
     audioMock.narrationPlaying = true
+    const pauseIndex = sequenceIndexOf('pause')
     beginJourney({ pace: 'classic' })
-    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: pauseIndex })
 
     const view = renderShell()
     expect(await screen.findByText(/listen/i)).toBeInTheDocument()
@@ -508,8 +504,9 @@ describe('JourneyShell', () => {
   })
 
   it('resumes scripted Forum rest and advances to transit', async () => {
+    const pauseIndex = sequenceIndexOf('pause')
     beginJourney({ pace: 'classic' })
-    transitionJourney(JOURNEY_STATES.PAUSED, { currentSequenceIndex: PAUSE_SEQUENCE_INDEX })
+    transitionJourney(JOURNEY_STATES.PAUSED, { currentSequenceIndex: pauseIndex })
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('pause-screen')).toBeInTheDocument()
@@ -517,7 +514,7 @@ describe('JourneyShell', () => {
 
     const snap = getJourneySnapshot()
     expect(snap.state).toBe(JOURNEY_STATES.WALKING)
-    expect(snap.context.currentSequenceIndex).toBe(PAUSE_SEQUENCE_INDEX + 1)
+    expect(snap.context.currentSequenceIndex).toBe(pauseIndex + 1)
     expect(snap.context.completedWaypointIds).toContain('pause')
   })
 
