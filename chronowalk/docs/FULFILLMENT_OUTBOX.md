@@ -4,11 +4,30 @@ Paid-access email is **not** sent inside the Paddle webhook. The webhook commits
 
 ## Flow
 
-1. `paddle-webhook` (`transaction.completed`) → purchase + `ensure_initial_purchase_claim` + encrypted outbox row (`pending`).
+1. `paddle-webhook` (`transaction.completed`) → purchase + `ensure_initial_purchase_claim` + encrypted outbox row (`pending`) with a fresh `email_generation_id`.
 2. Supabase cron → `process-fulfillment-outbox` (Bearer `FULFILLMENT_CRON_SECRET`).
-3. Worker claims due rows (`FOR UPDATE SKIP LOCKED`), decrypts the claim, sends Resend with `Idempotency-Key: purchase-access/<order_id>`.
-4. Resend webhook (`resend-webhook`) updates `delivered` / bounce / failure using Svix event id dedupe.
+3. Worker claims due rows (`FOR UPDATE SKIP LOCKED`), decrypts the claim, sends Resend with  
+   `Idempotency-Key: purchase-access/<order_id>/<email_generation_id>`.
+4. Resend webhook (`resend-webhook`) updates `delivered` / bounce / failure using Svix event id dedupe, correlated to the current generation via `resend_email_id`.
 5. Ciphertext is wiped on delivery, claim consume/revoke, or expiry.
+
+## Email generation id
+
+Each newly minted claim email generation gets a distinct, non-secret `fulfillment_outbox.email_generation_id` (uuid).
+
+| Event | Generation behavior |
+|---|---|
+| Initial purchase enqueue | New uuid (DB default or worker insert) |
+| Worker retry of same claim | **Preserved** — same Resend idempotency key |
+| Operator restore (`operator_recovery`) | **Rotated** + prior email lifecycle cleared |
+| Operator requeue `--rotate-generation` | **Rotated** + lifecycle cleared; **ciphertext kept** |
+| Ordinary operator requeue | **Preserved** |
+
+Lifecycle fields cleared on a fresh generation: `sent_at`, `delivered_at`, `resend_email_id`, `last_provider_status`, locks, and prior failure provider state as applicable.
+
+Migration: `supabase/migrations/20260723_fulfillment_email_generation.sql`  
+Verify (rolled back): `…_email_generation_verify.sql`  
+Legacy rows are backfilled with `email_generation_id = id`.
 
 ## Retry policy
 
@@ -54,9 +73,13 @@ Use Supabase Dashboard → Edge Functions → Schedules (or `pg_cron` + `net.htt
 node scripts/audit-fulfillment-outbox.mjs
 node scripts/audit-fulfillment-outbox.mjs --status=fulfillment_failed --limit=50
 
-# Requeue by order id (dry-run default)
+# Requeue by order id (dry-run default) — same generation, keeps ciphertext
 node scripts/retry-fulfillment-outbox.mjs txn_01…
 node scripts/retry-fulfillment-outbox.mjs txn_01… --execute
+
+# Requeue with a new Resend idempotency generation (keep existing encrypted claim)
+# Use after http_409 / stale sent+delivered lifecycle on an unexpired recovery claim
+node scripts/retry-fulfillment-outbox.mjs txn_01… --rotate-generation --execute
 
 # Explicit restore after refund/dispute review (fresh claim only; dry-run default)
 node scripts/restore-purchase-access.mjs txn_01…
@@ -65,11 +88,14 @@ node scripts/restore-purchase-access.mjs txn_01… --execute
 
 Requeue **never** mints a new claim and **never** prints the access link. It only works when encrypted claim ciphertext is still present.
 
-Restore **never** reactivates a consumed code: it revokes old claims/credentials, rotates bundle seats, mints `operator_recovery`, and enqueues a new outbox email.
+`--rotate-generation` is the safe fix when Resend already accepted an earlier `Idempotency-Key` for the same order (for example operator recovery that collided with the initial purchase email before generation ids existed). It clears prior email lifecycle fields and assigns a new `email_generation_id` without minting another claim.
+
+Restore **never** reactivates a consumed code: it revokes old claims/credentials, rotates bundle seats, mints `operator_recovery`, and enqueues a new outbox email with a **new** `email_generation_id` and cleared lifecycle fields.
 
 ## Idempotency
 
 - Paddle `event_id` → inbox dedupe (no second entitlement path).
 - `ensure_initial_purchase_claim` → at most one active initial claim.
-- Resend `Idempotency-Key: purchase-access/<order_id>` → provider-side send dedupe.
+- Resend `Idempotency-Key: purchase-access/<order_id>/<email_generation_id>` → provider-side send dedupe per generation.
 - Svix `svix-id` → delivery event dedupe.
+- Resend webhooks match `fulfillment_outbox.resend_email_id`. Fresh generations clear that id, so late events from an older email cannot mutate the current recovery generation.

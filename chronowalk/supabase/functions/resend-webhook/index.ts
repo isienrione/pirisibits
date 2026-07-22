@@ -2,13 +2,13 @@
  * Signed Resend webhook — delivery / bounce / complaint updates for outbox rows.
  * Deduplicates on Svix event id. Never logs email, tokens, or full payloads.
  *
- * BUILD: 2026-07-22-v1-resend-webhook
+ * BUILD: 2026-07-23-v2-email-generation
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { maskId, verifySvixSignature } from '../_shared/fulfillmentWorkerLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-22-v1-resend-webhook'
+const WEBHOOK_BUILD = '2026-07-23-v2-email-generation'
 
 const HANDLED = new Set([
   'email.delivered',

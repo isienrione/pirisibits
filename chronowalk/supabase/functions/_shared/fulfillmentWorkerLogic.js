@@ -38,8 +38,97 @@ export function classifyResendResponse({ status, timedOut = false, networkError 
   return { kind: 'transient', reason: `http_${code}` }
 }
 
-export function resendIdempotencyKey(orderId) {
-  return `purchase-access/${String(orderId ?? '').trim()}`
+/**
+ * Stable Resend Idempotency-Key for one fulfillment email generation.
+ * Format: purchase-access/<order_id>/<email_generation_id>
+ * - Same generation → same key across worker retries
+ * - Fresh claim / operator recovery → new email_generation_id → new key
+ * - Never includes claim secrets, links, emails, or ciphertext
+ *
+ * Legacy rows without a generation id fall back to order-only key (migration
+ * backfills email_generation_id = outbox.id so this path is rare).
+ */
+export function resendIdempotencyKey(orderId, emailGenerationId) {
+  const order = String(orderId ?? '').trim()
+  const gen = String(emailGenerationId ?? '').trim()
+  if (!gen) return `purchase-access/${order}`
+  return `purchase-access/${order}/${gen}`
+}
+
+/** Secret-safe uuid for a newly minted fulfillment email generation. */
+export function newEmailGenerationId(randomUuid = () => crypto.randomUUID()) {
+  return String(randomUuid())
+}
+
+/**
+ * Fields to set when minting a fresh claim email generation (initial enqueue
+ * after wipe, or operator recovery). Rotates generation and clears prior
+ * email lifecycle so Resend idempotency and webhooks cannot collide.
+ */
+export function freshFulfillmentGenerationFields({
+  reason = 'fresh_generation',
+  attempts = 0,
+  nowIso = new Date().toISOString(),
+  generationId = null,
+} = {}) {
+  return {
+    email_generation_id: generationId ?? newEmailGenerationId(),
+    status: 'pending',
+    attempts,
+    next_attempt_at: nowIso,
+    sent_at: null,
+    delivered_at: null,
+    resend_email_id: null,
+    last_provider_status: null,
+    locked_at: null,
+    locked_by: null,
+    last_error: reason,
+    updated_at: nowIso,
+  }
+}
+
+/**
+ * Decide whether a Resend provider event may mutate the current outbox row.
+ * Correlate by provider email id; refuse terminal mutations while awaiting send.
+ */
+export function shouldApplyResendEventToOutbox({
+  outboxResendEmailId,
+  eventResendEmailId,
+  outboxStatus,
+  eventType,
+}) {
+  const providerId = String(eventResendEmailId ?? '').trim()
+  const currentId = String(outboxResendEmailId ?? '').trim()
+  if (!providerId) return { apply: false, reason: 'missing_provider_id' }
+  if (!currentId) return { apply: false, reason: 'missing_outbox' }
+  if (providerId !== currentId) return { apply: false, reason: 'provider_id_mismatch' }
+
+  const status = String(outboxStatus ?? '')
+  if (['pending', 'failed', 'cancelled'].includes(status)) {
+    return { apply: false, reason: 'stale_or_pre_send_generation' }
+  }
+
+  switch (eventType) {
+    case 'email.delivered':
+      if (!['sent', 'sending', 'delivered'].includes(status)) {
+        return { apply: false, reason: 'status_not_applicable' }
+      }
+      return { apply: true, reason: 'delivered' }
+    case 'email.delivery_delayed':
+      if (!['sent', 'sending'].includes(status)) {
+        return { apply: false, reason: 'status_not_applicable' }
+      }
+      return { apply: true, reason: 'delivery_delayed' }
+    case 'email.bounced':
+    case 'email.complained':
+    case 'email.failed':
+      if (!['sent', 'sending', 'delivered'].includes(status)) {
+        return { apply: false, reason: 'status_not_applicable' }
+      }
+      return { apply: true, reason: eventType }
+    default:
+      return { apply: false, reason: 'ignored_event' }
+  }
 }
 
 /**

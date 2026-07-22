@@ -60,7 +60,13 @@ describe('access email template — five SKUs', () => {
     }
   })
 
-  it('uses stable Resend idempotency key', () => {
+  it('uses generation-scoped Resend idempotency key', () => {
+    const gen = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'
+    expect(resendIdempotencyKey('txn_EXAMPLE01', gen)).toBe(
+      `purchase-access/txn_EXAMPLE01/${gen}`,
+    )
     expect(resendIdempotencyKey('txn_EXAMPLE01')).toBe('purchase-access/txn_EXAMPLE01')
+    expect(resendIdempotencyKey('txn_EXAMPLE01', gen)).not.toContain('claim_')
+    expect(resendIdempotencyKey('txn_EXAMPLE01', gen)).not.toMatch(/access\?token/)
   })
 })

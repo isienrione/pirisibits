@@ -4,7 +4,7 @@
  * Auth: FULFILLMENT_CRON_SECRET via Authorization: Bearer … or X-Fulfillment-Cron-Secret.
  * Claims due rows with SKIP LOCKED, sends access email, never logs secrets.
  *
- * BUILD: 2026-07-22-v1-outbox-worker
+ * BUILD: 2026-07-23-v2-email-generation
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
@@ -23,7 +23,7 @@ import {
   resendIdempotencyKey,
 } from '../_shared/fulfillmentWorkerLogic.js'
 
-const WORKER_BUILD = '2026-07-22-v1-outbox-worker'
+const WORKER_BUILD = '2026-07-23-v2-email-generation'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -48,6 +48,7 @@ function siteUrl() {
 async function sendResendAccessEmail({
   to,
   orderId,
+  emailGenerationId,
   productId,
   seatLimit,
   claim,
@@ -82,6 +83,10 @@ async function sendResendAccessEmail({
     }),
   }
 
+  // Prefer generation id; legacy fallback uses outbox row id (migration backfill).
+  const generationKey = emailGenerationId
+  const idempotencyKey = resendIdempotencyKey(orderId, generationKey)
+
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 20_000)
   try {
@@ -90,7 +95,7 @@ async function sendResendAccessEmail({
       headers: {
         Authorization: `Bearer ${resendKey}`,
         'Content-Type': 'application/json',
-        'Idempotency-Key': resendIdempotencyKey(orderId),
+        'Idempotency-Key': idempotencyKey,
       },
       body: JSON.stringify(body),
       signal: controller.signal,
@@ -160,9 +165,11 @@ async function processOne(supabase, row, claimKey) {
     return { orderId, result: 'permanent', reason: 'purchase_unavailable' }
   }
 
+  const emailGenerationId = row.email_generation_id ?? row.id
   const send = await sendResendAccessEmail({
     to: purchase.email,
     orderId,
+    emailGenerationId,
     productId: purchase.product_id,
     seatLimit: purchase.seat_limit,
     claim,
@@ -181,6 +188,8 @@ async function processOne(supabase, row, claimKey) {
       productId: purchase.product_id,
       attempts: row.attempts,
       hasResendId: Boolean(send.emailId),
+      // Generation uuid is non-secret; log only that it was present (not the key).
+      hasEmailGenerationId: Boolean(emailGenerationId),
     })
     return { orderId, result: 'sent' }
   }

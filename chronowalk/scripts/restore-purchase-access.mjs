@@ -22,7 +22,11 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { encryptClaimSecret } from './lib/claimCrypto.mjs'
-import { maskEmail, maskOrderId } from './lib/fulfillmentWorkerLogic.mjs'
+import {
+  freshFulfillmentGenerationFields,
+  maskEmail,
+  maskOrderId,
+} from './lib/fulfillmentWorkerLogic.mjs'
 
 export function parseRestoreArgs(argv) {
   const args = argv.slice(2)
@@ -38,22 +42,19 @@ export async function enqueueRestoredClaim(supabase, { purchaseId, orderId, rawC
     return { ok: false, reason: 'claim_encryption_unavailable' }
   }
   const claimExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+  const generation = freshFulfillmentGenerationFields({ reason: 'operator_restore' })
   const { error } = await supabase.from('fulfillment_outbox').upsert(
     {
       purchase_id: purchaseId,
       order_id: orderId,
-      status: 'pending',
-      attempts: 0,
-      next_attempt_at: new Date().toISOString(),
       encrypted_claim: encrypted,
       claim_expires_at: claimExpiresAt,
-      last_error: 'operator_restore',
-      updated_at: new Date().toISOString(),
+      ...generation,
     },
     { onConflict: 'purchase_id' },
   )
   if (error) return { ok: false, reason: error.message }
-  return { ok: true }
+  return { ok: true, emailGenerationId: generation.email_generation_id }
 }
 
 async function main() {
