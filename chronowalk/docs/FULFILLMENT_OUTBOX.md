@@ -6,7 +6,7 @@ Paid-access email is **not** sent inside the Paddle webhook. The webhook commits
 
 1. `paddle-webhook` (`transaction.completed`) → purchase + `ensure_initial_purchase_claim` + encrypted outbox row (`pending`) with a fresh `email_generation_id`.
 2. Supabase cron → `process-fulfillment-outbox` (Bearer `FULFILLMENT_CRON_SECRET`).
-3. Worker claims due rows (`FOR UPDATE SKIP LOCKED`), decrypts the claim, sends Resend with  
+3. Worker claims due rows (`FOR UPDATE SKIP LOCKED`), decrypts the claim, sends Resend with
    `Idempotency-Key: purchase-access/<order_id>/<email_generation_id>`.
 4. Resend webhook (`resend-webhook`) updates `delivered` / bounce / failure using Svix event id dedupe, correlated to the current generation via `resend_email_id`.
 5. Ciphertext is wiped on delivery, claim consume/revoke, or expiry.
@@ -25,8 +25,8 @@ Each newly minted claim email generation gets a distinct, non-secret `fulfillmen
 
 Lifecycle fields cleared on a fresh generation: `sent_at`, `delivered_at`, `resend_email_id`, `last_provider_status`, locks, and prior failure provider state as applicable.
 
-Migration: `supabase/migrations/20260723_fulfillment_email_generation.sql`  
-Verify (rolled back): `…_email_generation_verify.sql`  
+Migration: `supabase/migrations/20260723_fulfillment_email_generation.sql`
+Verify (rolled back): `…_email_generation_verify.sql`
 Legacy rows are backfilled with `email_generation_id = id`.
 
 ## Retry policy
