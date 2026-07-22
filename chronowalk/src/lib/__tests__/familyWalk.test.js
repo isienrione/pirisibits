@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { localFamilyStore } from '../familyLocalStore.js'
-import { canResumeForAll, isLeader } from '../familyWalk.js'
+import {
+  buildInviteShareUrl,
+  canResumeForAll,
+  createFamilyBundle,
+  isLeader,
+} from '../familyWalk.js'
 
 describe('familyLocalStore', () => {
   beforeEach(() => {
@@ -128,5 +133,16 @@ describe('familyLocalStore', () => {
     expect(ignored.syncEnabled).toBe(false)
     expect(ignored.playing).toBe(true)
     expect(ignored.paused).toBe(false)
+  })
+})
+
+describe('familyWalk production guards', () => {
+  it('refuses client-side bundle minting', async () => {
+    await expect(createFamilyBundle()).rejects.toMatchObject({ code: 'retired' })
+  })
+
+  it('builds invite share links without inventing a host', () => {
+    const url = buildInviteShareUrl('RAWSECRET')
+    expect(url).toMatch(/\/invite\?code=RAWSECRET$/)
   })
 })

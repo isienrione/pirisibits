@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getDeviceId } from '../lib/deviceId.js'
-import { readAccessToken } from '../lib/access.js'
+import { readAccessEntitlement } from '../lib/accessSession.js'
+import { isBundleSku } from '../lib/launchSkus.js'
 import {
   canResumeForAll,
-  createFamilyBundle,
+  createBundleInvite,
   createWalkSession,
   claimFamilySeat,
   isLeader,
   joinWalkSession,
   refreshFamilyBundle,
+  revokeBundleSeat,
   subscribeWalkSession,
   updateWalkSessionState,
 } from '../lib/familyWalk.js'
@@ -35,10 +37,8 @@ function writeCachedSession(session) {
 /**
  * Family bundle membership + shared walk session controls.
  *
- * Toggles:
- * - syncEnabled: when off, each phone is fully autonomous mid-tour
- * - resumePolicy: 'leader' (only leader resumes for all) | 'anyone'
- * Anyone may always request a shared pause while sync is on.
+ * Bundles are purchase-minted only. This hook never creates a paid SKU or
+ * lets the client choose seat_limit / content entitlement.
  */
 export function useFamilyWalk() {
   const deviceId = useMemo(() => getDeviceId(), [])
@@ -46,6 +46,8 @@ export function useFamilyWalk() {
   const [session, setSession] = useState(() => readCachedSession())
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+  /** One-time invite secrets keyed by seat id — never logged / never analytics. */
+  const [latestInvites, setLatestInvites] = useState({})
   const applyingRemoteRef = useRef(false)
   const lastUpdatedRef = useRef(session?.updatedAt ?? null)
 
@@ -90,26 +92,51 @@ export function useFamilyWalk() {
     }
   }, [])
 
-  const setupBundle = useCallback(
-    (tier, ownerName) =>
-      run(async () => {
-        const next = await createFamilyBundle({
-          tier,
-          ownerName,
-          accessToken: readAccessToken(),
-        })
-        setBundle(next)
-        return next
-      }),
-    [run],
-  )
+  /** @deprecated Bundles are created by verified purchase only. */
+  const setupBundle = useCallback(() => {
+    const err = new Error('Bundles are created by a verified Couple/Family purchase only')
+    err.code = 'retired'
+    setError('retired')
+    return Promise.reject(err)
+  }, [])
 
   const redeemInvite = useCallback(
     (inviteCode, displayName) =>
       run(async () => {
         const next = await claimFamilySeat({ inviteCode, displayName })
-        setBundle(next)
-        return next
+        const refreshed = await refreshFamilyBundle()
+        setBundle(refreshed ?? next)
+        return refreshed ?? next
+      }),
+    [run],
+  )
+
+  const createInvite = useCallback(
+    (seatId = null) =>
+      run(async () => {
+        const created = await createBundleInvite({ seatId })
+        const refreshed = await refreshFamilyBundle()
+        if (refreshed) setBundle(refreshed)
+        if (created?.seatId && created?.invite) {
+          setLatestInvites((prev) => ({ ...prev, [created.seatId]: created.invite }))
+        }
+        return created
+      }),
+    [run],
+  )
+
+  const revokeSeat = useCallback(
+    (seatId) =>
+      run(async () => {
+        const result = await revokeBundleSeat({ seatId })
+        setLatestInvites((prev) => {
+          const next = { ...prev }
+          delete next[seatId]
+          return next
+        })
+        const refreshed = await refreshFamilyBundle()
+        if (refreshed) setBundle(refreshed)
+        return result
       }),
     [run],
   )
@@ -117,13 +144,13 @@ export function useFamilyWalk() {
   const startSharedWalk = useCallback(
     (resumePolicy = 'leader') =>
       run(async () => {
-        if (!bundle?.id) throw new Error('no_bundle')
-        const next = await createWalkSession({ bundleId: bundle.id, resumePolicy })
+        if (!bundle?.id && !bundle?.bundleId) throw new Error('no_bundle')
+        const next = await createWalkSession({ resumePolicy })
         lastUpdatedRef.current = next.updatedAt
         setSession(next)
         return next
       }),
-    [bundle?.id, run],
+    [bundle?.bundleId, bundle?.id, run],
   )
 
   const joinSharedWalk = useCallback(
@@ -150,7 +177,7 @@ export function useFamilyWalk() {
       setSession(next)
       return next
     },
-    [session?.id],
+    [session],
   )
 
   const setSyncEnabled = useCallback(
@@ -206,6 +233,25 @@ export function useFamilyWalk() {
     [patchSession],
   )
 
+  const refreshBundle = useCallback(
+    () =>
+      refreshFamilyBundle().then((next) => {
+        setBundle(next)
+        return next
+      }),
+    [],
+  )
+
+  const entitlement = readAccessEntitlement()
+  const purchasedProductId = bundle?.purchasedProductId ?? entitlement?.purchasedProductId ?? null
+  const hasBundleAccess = Boolean(
+    bundle || (entitlement && isBundleSku(entitlement.purchasedProductId)),
+  )
+  const isOrganizer = Boolean(bundle?.isOwner || bundle?.role === 'owner')
+  const isMember = Boolean(
+    bundle?.role === 'member' || (!bundle?.isOwner && entitlement?.role === 'member'),
+  )
+
   const leader = isLeader(session, deviceId)
   const syncOn = Boolean(session?.syncEnabled)
   const resumeAllowed = canResumeForAll(session, deviceId)
@@ -221,7 +267,14 @@ export function useFamilyWalk() {
     syncEnabled: syncOn,
     resumePolicy: session?.resumePolicy ?? 'leader',
     canResumeForAll: resumeAllowed,
+    hasBundleAccess,
+    isOrganizer,
+    isMember,
+    purchasedProductId,
+    latestInvites,
     setupBundle,
+    createInvite,
+    revokeSeat,
     redeemInvite,
     startSharedWalk,
     joinSharedWalk,
@@ -233,10 +286,6 @@ export function useFamilyWalk() {
     publishSeek,
     publishClock,
     applyingRemoteRef,
-    refreshBundle: () =>
-      refreshFamilyBundle().then((next) => {
-        setBundle(next)
-        return next
-      }),
+    refreshBundle,
   }
 }

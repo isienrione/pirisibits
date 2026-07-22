@@ -11,7 +11,10 @@ import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { SETTINGS_LINKS } from '../../content/launchSettings.js'
 import { WALKING_UI_REVISION } from '../../content/walkingUiRevision.js'
 import { pwaController } from '../../pwa/pwaController.js'
-import FamilyWalkPanel from './FamilyWalkPanel.jsx'
+import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
+import { isBundleSku } from '../../lib/launchSkus.js'
+import { readAccessEntitlement } from '../../lib/accessSession.js'
+import { bundleMetaForProductId } from '../../lib/familyWalk.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -101,11 +104,12 @@ function Toggle({ on, onToggle, label }) {
   )
 }
 
-function ActionRow({ label, onClick, detail }) {
+function ActionRow({ label, onClick, detail, subtitle, testId }) {
   return (
     <>
       <button
         type="button"
+        data-testid={testId}
         onClick={onClick}
         style={{
           width: '100%',
@@ -118,12 +122,20 @@ function ActionRow({ label, onClick, detail }) {
           border: 'none',
           cursor: 'pointer',
           textAlign: 'left',
+          minHeight: 44,
         }}
       >
-        <span style={{ fontSize: 17, color: T.ink, fontFamily: F.body }}>{label}</span>
+        <span style={{ display: 'grid', gap: 2 }}>
+          <span style={{ fontSize: 17, color: T.ink, fontFamily: F.body }}>{label}</span>
+          {subtitle ? (
+            <span style={{ fontSize: 13, color: T.muted, fontFamily: F.body, lineHeight: 1.35 }}>
+              {subtitle}
+            </span>
+          ) : null}
+        </span>
         <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: T.muted, fontSize: 13, fontFamily: F.body }}>
           {detail ? <span>{detail}</span> : null}
-          <ChevronRight size={16} />
+          <ChevronRight size={16} aria-hidden />
         </span>
       </button>
       <Hairline />
@@ -141,6 +153,24 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const navigate = useNavigate()
   const { prefs, setPref } = useAppPreferences()
   const offline = useOfflineAudio()
+  const family = useOptionalFamilyWalk()
+  const entitlement = readAccessEntitlement()
+  const purchasedProductId =
+    family?.purchasedProductId ||
+    family?.bundle?.purchasedProductId ||
+    entitlement?.purchasedProductId ||
+    null
+  const showWalkTogether =
+    Boolean(family?.hasBundleAccess) || isBundleSku(purchasedProductId)
+  const walkMeta = bundleMetaForProductId(purchasedProductId)
+  const walkSubtitle =
+    family?.isOrganizer || entitlement?.role === 'owner'
+      ? 'Invite people and manage your shared tour'
+      : family?.isMember || entitlement?.role === 'member'
+        ? 'View your shared tour'
+        : walkMeta
+          ? 'Invite people and manage your shared tour'
+          : 'Manage your shared tour'
 
   if (!open) return null
 
@@ -158,6 +188,11 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const handleRestore = () => {
     onClose()
     navigate('/access')
+  }
+
+  const handleWalkTogether = () => {
+    onClose()
+    navigate('/walk-together')
   }
 
   const handleHelp = () => {
@@ -258,9 +293,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
           />
           <Hairline />
 
-          <FamilyWalkPanel />
-
-          <Hairline />
+          {showWalkTogether ? (
+            <ActionRow
+              label="Walk together"
+              subtitle={walkSubtitle}
+              detail={walkMeta?.label ?? null}
+              testId="settings-walk-together"
+              onClick={handleWalkTogether}
+            />
+          ) : null}
 
           <ActionRow
             label="Download today for offline"
@@ -291,10 +332,10 @@ export default function SettingsBottomSheet({ open, onClose }) {
             }}
           >
             ChronoWalk · Rome · made to disappear.
-            {typeof __APP_BUILD_ID__ !== 'undefined' ? (
+            {typeof globalThis.__APP_BUILD_ID__ !== 'undefined' ? (
               <>
                 <br />
-                Build {__APP_BUILD_ID__} · Walking UI {WALKING_UI_REVISION}
+                Build {globalThis.__APP_BUILD_ID__} · Walking UI {WALKING_UI_REVISION}
               </>
             ) : null}
           </p>
