@@ -15,7 +15,7 @@ describe('durationManifest', () => {
     const seeds = seedDurationsFromTransits(manifest)
     expect(seeds['t02.mp3']).toBe(25)
     expect(seeds['t01_fork_a.mp3']).toBe(70)
-    expect(seeds['t03_a.mp3']).toBe(30)
+    expect(seeds['t03_b.mp3']).toBe(30)
   })
 
   it('builds filename-keyed duration maps', () => {

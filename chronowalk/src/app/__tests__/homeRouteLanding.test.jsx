@@ -9,7 +9,7 @@ const routerSource = readFileSync(
 )
 
 const redirectsSource = readFileSync(
-  join(dirname(fileURLToPath(import.meta.url)), '../../public/_redirects'),
+  join(dirname(fileURLToPath(import.meta.url)), '../../../public/_redirects'),
   'utf8',
 )
 

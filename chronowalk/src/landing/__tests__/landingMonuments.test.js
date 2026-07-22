@@ -33,7 +33,14 @@ describe('getLandingRouteJourney', () => {
     expect(previewStops.every((stop) => stop.featured)).toBe(true)
     expect(previewSegments.map((segment) => segment.stop.id)).toEqual(LANDING_ROUTE_PREVIEW_IDS)
     // Highlights: Colosseum → Via Sacra → Vesta → Capitoline → Trevi → Pantheon → Castel → Appian
-    // Forum beat uses Via Sacra (not Titus) so Pantheon stays the living-city hero on the landing.
+    // Circus Maximus sits on Path B before Appian (not early in the route).
+    expect(stops.map((stop) => stop.id)).toHaveLength(21)
+    expect(new Set(stops.map((stop) => stop.id)).size).toBe(21)
+    expect(stops.map((stop) => stop.id).indexOf('circus-maximus')).toBeGreaterThan(
+      stops.map((stop) => stop.id).indexOf('castel-sant-angelo'),
+    )
+    expect(stops.map((stop) => stop.id).at(-2)).toBe('circus-maximus')
+    expect(stops.map((stop) => stop.id).at(-1)).toBe('appian-way')
     expect(previewSegments.map((segment) => segment.skippedAfter)).toEqual([3, 0, 4, 2, 0, 3, 1, 0])
     expect(
       previewSegments.reduce((sum, segment) => sum + 1 + segment.skippedAfter, 0),
