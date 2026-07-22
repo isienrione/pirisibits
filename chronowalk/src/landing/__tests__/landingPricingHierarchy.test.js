@@ -60,4 +60,29 @@ describe('pricing card hierarchy content', () => {
       expect(bundle).not.toHaveProperty('contentProductId')
     }
   })
+
+  it('assigns five distinct package accent tokens in the landing CSS', async () => {
+    const { readFile } = await import('node:fs/promises')
+    const { join, dirname } = await import('node:path')
+    const { fileURLToPath } = await import('node:url')
+    const here = dirname(fileURLToPath(import.meta.url))
+    const css = await readFile(join(here, '../ChronoWalkLanding.v2.css'), 'utf8')
+
+    const accents = {
+      historica: css.match(/--v2-package-historica:\s*([^;]+);/)?.[1]?.trim(),
+      antica: css.match(/--v2-package-antica:\s*([^;]+);/)?.[1]?.trim(),
+      eterna: css.match(/--v2-package-eterna:\s*([^;]+);/)?.[1]?.trim(),
+      couple: css.match(/--v2-package-couple:\s*([^;]+);/)?.[1]?.trim(),
+      family: css.match(/--v2-package-family:\s*([^;]+);/)?.[1]?.trim(),
+    }
+
+    expect(accents).toEqual({
+      historica: 'var(--v2-silver)',
+      antica: 'var(--olive, #6b7a52)',
+      eterna: 'var(--ember, #e8a13c)',
+      couple: 'var(--act-arena, #e4552e)',
+      family: 'var(--verdigris, var(--act-market, #4e9b8f))',
+    })
+    expect(new Set(Object.values(accents)).size).toBe(5)
+  })
 })
