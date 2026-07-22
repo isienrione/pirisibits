@@ -1,5 +1,9 @@
--- ChronoWalk Family Walk (Couple / Family bundle + synced audio sessions)
--- Run in Supabase SQL editor after v2_app_config.sql
+-- ChronoWalk Family Walk — RETIRED insecure grant path.
+-- DO NOT run this file on new or production environments.
+-- Use supabase/migrations/20260721_launch_commerce_hardening.sql instead:
+--   - bundles only from verified rome-couple / rome-family purchases
+--   - hashed one-time invites + seat-scoped device credentials
+--   - anon create_family_bundle / device-id session RPCs are revoked
 
 -- ── Bundles & seats ──────────────────────────────────────────────────────────
 

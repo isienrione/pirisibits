@@ -1,4 +1,8 @@
 -- ChronoWalk v2 app configuration (run in Supabase SQL editor)
+-- DEPRECATED for new environments: prefer
+--   supabase/migrations/20260721_launch_commerce_hardening.sql
+-- which extends purchases, retires legacy bearer RPCs, and hardens access.
+-- Keep this file only for historical bootstrap of app_config + base purchases.
 
 create table if not exists public.app_config (
   key text primary key,

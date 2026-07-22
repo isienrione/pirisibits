@@ -1,9 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  getDebugGeoPlacement,
   getDebugStopId,
   getDevGeofencesMode,
   getSingleWaypointId,
   getTourId,
+  isDebugGeo,
   isDebugMap,
   isDevGeofencesSantiago,
   isDevPanelEnabled,
@@ -15,14 +17,36 @@ import {
   syncDevGeofencesModeFromUrl,
 } from '../../content/devGeofenceTools'
 
+const ORIGINAL_HREF = window.location.href
+
 const setSearch = (search) => {
   window.history.replaceState({}, '', search || '/')
 }
 
+/** Neutralize local Vite debug leakage for deterministic defaults. */
+function stubNeutralDebugEnv() {
+  vi.stubEnv('VITE_DEBUG_MAP', '')
+  vi.stubEnv('VITE_DEBUG', '')
+  vi.stubEnv('VITE_DEBUG_GEO', '')
+  vi.stubEnv('VITE_DEBUG_GEO_PLACEMENT', '')
+  vi.stubEnv('VITE_SIMULATE_LOCATION', '')
+  vi.stubEnv('VITE_SIMULATE_ROME', '')
+  vi.stubEnv('VITE_DEV_GEOFENCES', '')
+}
+
 describe('env URL params', () => {
-  afterEach(() => {
-    setSearch('')
+  beforeEach(() => {
+    stubNeutralDebugEnv()
+    setSearch('/')
     clearDevGeofencesMode()
+  })
+
+  afterEach(() => {
+    setSearch('/')
+    window.history.replaceState({}, '', ORIGINAL_HREF)
+    clearDevGeofencesMode()
+    window.sessionStorage.removeItem(DEV_GEOFENCES_MODE_KEY)
+    vi.unstubAllEnvs()
   })
 
   it('defaults to no tour until selected on the landing screen', () => {
@@ -98,6 +122,32 @@ describe('env URL params', () => {
   it('enables map debug overlays while Santiago dev geofences are active', () => {
     setSearch('/journey?devGeofences=santiago')
     syncDevGeofencesModeFromUrl()
+    expect(isDebugMap()).toBe(true)
+  })
+
+  it('does not let local Vite debug env contaminate default expectations', () => {
+    vi.stubEnv('VITE_DEBUG_MAP', 'true')
+    vi.stubEnv('VITE_DEBUG', 'true')
+    vi.stubEnv('VITE_DEBUG_GEO', 'true')
+    vi.stubEnv('VITE_DEBUG_GEO_PLACEMENT', 'arrived')
+    setSearch('/')
+    expect(isDebugMap()).toBe(true)
+    expect(isDebugGeo()).toBe(true)
+    expect(getDebugGeoPlacement()).toBe('arrived')
+
+    // Restore neutral stubs — same as beforeEach — so defaults win again.
+    stubNeutralDebugEnv()
+    setSearch('/')
+    clearDevGeofencesMode()
+    expect(isDebugMap()).toBe(false)
+    expect(isDebugGeo()).toBe(false)
+    expect(getDebugGeoPlacement()).toBeNull()
+  })
+
+  it('honors VITE_DEBUG_MAP in development when explicitly enabled', () => {
+    vi.stubEnv('PROD', false)
+    vi.stubEnv('VITE_DEBUG_MAP', 'true')
+    setSearch('/')
     expect(isDebugMap()).toBe(true)
   })
 })

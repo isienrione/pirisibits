@@ -12,6 +12,17 @@ dist-ssr
 .cursor/mcp.json
 .cursor/paddle-live-migration.json
 
+# Private incident / recovery SQL and local customer exports (never commit).
+# Do not use these patterns for normal supabase/*.sql schema migrations.
+*.local.sql
+*.private.sql
+.secrets/
+**/customer-export*.csv
+**/customers-export*.csv
+**/paddle-customers-export*.csv
+**/purchases-export*.csv
+scripts/incident/
+
 # Local working/source folders — raw assets, docs, and exports.
 # These are NOT part of the deployed Vite app (build root is chronowalk/)
 # and include large binaries (e.g. Chronowalk2/waypoints.zip, raw AUDIO/PHOTOGRAPHY).

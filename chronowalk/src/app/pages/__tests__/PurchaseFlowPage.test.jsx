@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { PurchaseFlowPage } from '../PurchaseFlowPage'
-import { ACCESS_KEY } from '../../../lib/config.js'
+import { grantTestAccess } from '../../../test/grantTestAccess.js'
 
 vi.mock('../../../lib/checkout.js', async (importOriginal) => {
   const actual = await importOriginal()
@@ -98,7 +98,7 @@ describe('PurchaseFlowPage', () => {
   })
 
   it('sends already-unlocked visitors to setup', async () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
 
     render(
       <MemoryRouter initialEntries={['/purchase']}>

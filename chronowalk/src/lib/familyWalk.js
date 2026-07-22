@@ -1,9 +1,15 @@
 import { supabase, isSupabaseConfigured } from './supabase.js'
 import { getDeviceId } from './deviceId.js'
 import { localFamilyStore } from './familyLocalStore.js'
-import { grantAccess } from './config.js'
+import { readDeviceCredential, writeDeviceCredential } from './accessSession.js'
+import { applyPurchaseUnlock } from './pendingPurchase.js'
 
 const MEMBERSHIP_KEY = 'cw_family_membership_v1'
+
+function allowsLocalFamilyDevStore() {
+  // Local store may exercise UI in DEV only — never grants production access.
+  return import.meta.env.DEV || import.meta.env.VITE_ALLOW_DEV_ACCESS === 'true'
+}
 
 function readMembership() {
   try {
@@ -22,8 +28,8 @@ function writeMembership(bundle) {
   localStorage.setItem(
     MEMBERSHIP_KEY,
     JSON.stringify({
-      bundleId: bundle.id,
-      tier: bundle.tier,
+      bundleId: bundle.id ?? bundle.bundleId,
+      tier: bundle.tier ?? bundle.purchased_product_id,
       cachedAt: Date.now(),
     }),
   )
@@ -43,7 +49,9 @@ function rpcError(error) {
             ? 'session_not_found'
             : message.includes('token_not_found')
               ? 'token_not_found'
-              : 'unknown'
+              : message.includes('retired')
+                ? 'retired'
+                : 'unknown'
   const err = new Error(message)
   err.code = code
   return err
@@ -53,67 +61,86 @@ async function tryRpc(name, args) {
   if (!isSupabaseConfigured()) return { ok: false, reason: 'not_configured' }
   const { data, error } = await supabase.rpc(name, args)
   if (error) return { ok: false, reason: 'rpc', error }
+  if (data && typeof data === 'object' && data.ok === false) {
+    return { ok: false, reason: data.reason ?? 'rejected', data }
+  }
   return { ok: true, data }
 }
 
 export const FAMILY_TIERS = {
-  couple: { id: 'couple', label: 'Couple', seats: 2, blurb: 'You + one walker' },
-  family: { id: 'family', label: 'Family', seats: 4, blurb: 'Up to four walkers' },
+  couple: { id: 'couple', label: 'Couple', seats: 2, blurb: 'You + one walker', productId: 'rome-couple' },
+  family: { id: 'family', label: 'Family', seats: 4, blurb: 'Up to four walkers', productId: 'rome-family' },
 }
 
-export async function createFamilyBundle({ tier, ownerName = 'Leader', accessToken = null }) {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('create_family_bundle', {
-    p_access_token: accessToken || '00000000-0000-4000-8000-000000000000',
-    p_tier: tier,
-    p_device_id: deviceId,
-    p_owner_name: ownerName,
-  })
+/**
+ * Bundles are created only by the verified webhook/service role for paid
+ * rome-couple / rome-family purchases. Client cannot choose a tier to mint access.
+ */
+export async function createFamilyBundle() {
+  const err = new Error('Bundles are created by a verified Couple/Family purchase only')
+  err.code = 'retired'
+  throw err
+}
 
-  if (remote.ok && remote.data) {
-    writeMembership(remote.data)
-    grantAccess()
-    return remote.data
+export async function createBundleInvite({ seatId = null } = {}) {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
   }
-
-  // Local / DEV path — works without Supabase (and when token RPC rejects)
-  const bundle = localFamilyStore.createBundle({ tier, deviceId, ownerName })
-  writeMembership(bundle)
-  grantAccess()
-  return bundle
+  const remote = await tryRpc('create_bundle_invite', {
+    p_credential: credential,
+    p_seat_id: seatId,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  throw rpcError(remote.error ?? new Error(remote.reason ?? 'invite_failed'))
 }
 
 export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('claim_family_seat', {
-    p_invite_code: String(inviteCode).trim().toUpperCase(),
-    p_device_id: deviceId,
+  const deviceBinding = getDeviceId()
+  const remote = await tryRpc('redeem_bundle_invite', {
+    p_invite: String(inviteCode).trim(),
+    p_device_binding: deviceBinding,
     p_display_name: displayName,
   })
 
-  if (remote.ok && remote.data) {
-    writeMembership(remote.data)
-    grantAccess()
+  if (remote.ok && remote.data?.device_credential) {
+    writeDeviceCredential(remote.data.device_credential)
+    applyPurchaseUnlock({
+      purchasedProductId: remote.data.purchased_product_id,
+      contentProductId: remote.data.content_product_id,
+      seatLimit: remote.data.seat_limit,
+      role: remote.data.role,
+      bundleStatus: remote.data.bundle_status,
+      offlineLeaseExpiresAt: remote.data.offline_lease_expires_at,
+    })
+    writeMembership({
+      id: remote.data.bundleId,
+      purchased_product_id: remote.data.purchased_product_id,
+    })
     return remote.data
   }
 
   if (remote.reason === 'rpc' && remote.error) {
-    // Prefer structured local failure only when not configured; if RPC failed for
-    // a known business reason, rethrow.
-    const msg = remote.error.message ?? ''
-    if (
-      msg.includes('invite_not_found') ||
-      msg.includes('invite_already_claimed') ||
-      msg.includes('invite_revoked')
-    ) {
-      throw rpcError(remote.error)
-    }
+    throw rpcError(remote.error)
+  }
+
+  // No production local-store fallback may claim a seat or grantAccess.
+  if (!allowsLocalFamilyDevStore()) {
+    const err = new Error(remote.reason ?? 'invite_not_found')
+    err.code = remote.reason ?? 'invite_not_found'
+    throw err
   }
 
   try {
-    const bundle = localFamilyStore.claimSeat({ inviteCode, deviceId, displayName })
+    const bundle = localFamilyStore.claimSeat({
+      inviteCode,
+      deviceId: deviceBinding,
+      displayName,
+    })
     writeMembership(bundle)
-    grantAccess()
     return bundle
   } catch (error) {
     throw rpcError(error)
@@ -121,13 +148,18 @@ export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
 }
 
 export async function refreshFamilyBundle() {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('get_bundle_for_device', { p_device_id: deviceId })
-  if (remote.ok && remote.data) {
+  const credential = readDeviceCredential()
+  if (!credential) return null
+  const remote = await tryRpc('get_organizer_bundle_status', {
+    p_credential: credential,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok !== false) {
     writeMembership(remote.data)
     return remote.data
   }
-  const local = localFamilyStore.getBundleForDevice(deviceId)
+  if (!allowsLocalFamilyDevStore()) return null
+  const local = localFamilyStore.getBundleForDevice(getDeviceId())
   if (local) writeMembership(local)
   return local
 }
@@ -136,114 +168,116 @@ export function getCachedFamilyMembership() {
   return readMembership()
 }
 
-export async function createWalkSession({ bundleId, resumePolicy = 'leader' }) {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('create_walk_session', {
-    p_bundle_id: bundleId,
-    p_device_id: deviceId,
+export async function createWalkSession({ resumePolicy = 'leader' } = {}) {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
+  }
+  const remote = await tryRpc('create_walk_session_for_credential', {
+    p_credential: credential,
     p_resume_policy: resumePolicy,
+    p_device_binding: getDeviceId(),
   })
-  if (remote.ok && remote.data) return remote.data
+  if (remote.ok && remote.data?.ok !== false) return remote.data
 
-  return localFamilyStore.createWalkSession({ bundleId, deviceId, resumePolicy })
+  if (!allowsLocalFamilyDevStore()) {
+    throw rpcError(remote.error ?? new Error(remote.reason ?? 'session_failed'))
+  }
+  const membership = readMembership()
+  return localFamilyStore.createWalkSession({
+    bundleId: membership?.bundleId,
+    deviceId: getDeviceId(),
+    resumePolicy,
+  })
 }
 
 export async function joinWalkSession({ joinCode }) {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('join_walk_session', {
-    p_join_code: String(joinCode).trim().toUpperCase(),
-    p_device_id: deviceId,
-  })
-  if (remote.ok && remote.data) return remote.data
-  if (remote.reason === 'rpc' && remote.error) {
-    const msg = remote.error.message ?? ''
-    if (msg.includes('session_not_found') || msg.includes('not_a_member')) {
-      throw rpcError(remote.error)
-    }
-  }
-  try {
-    return localFamilyStore.joinWalkSession({ joinCode, deviceId })
-  } catch (error) {
-    throw rpcError(error)
-  }
+  // Join by code is retired without seat credential; members already have seat access.
+  void joinCode
+  const err = new Error('Join with a seat invite instead of a public walk code')
+  err.code = 'retired'
+  throw err
 }
 
 export async function getWalkSession(sessionId) {
-  const remote = await tryRpc('get_walk_session', { p_session_id: sessionId })
-  if (remote.ok && remote.data) return remote.data
+  const credential = readDeviceCredential()
+  if (!credential) return null
+  const remote = await tryRpc('get_walk_session_for_credential', {
+    p_credential: credential,
+    p_session_id: sessionId,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  if (!allowsLocalFamilyDevStore()) return null
   return localFamilyStore.getWalkSession(sessionId)
 }
 
 export async function updateWalkSessionState(sessionId, patch) {
-  const deviceId = getDeviceId()
-  const remote = await tryRpc('update_walk_session_state', {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
+  }
+  const remote = await tryRpc('update_walk_session_for_credential', {
+    p_credential: credential,
     p_session_id: sessionId,
-    p_device_id: deviceId,
     p_patch: patch,
+    p_device_binding: getDeviceId(),
   })
-  if (remote.ok && remote.data) return remote.data
-  if (remote.reason === 'rpc' && remote.error) {
-    const msg = remote.error.message ?? ''
-    if (msg.includes('resume_leader_only') || msg.includes('session_not_found')) {
-      throw rpcError(remote.error)
-    }
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  if (remote.data?.reason === 'resume_leader_only') {
+    throw rpcError(new Error('resume_leader_only'))
+  }
+  if (!allowsLocalFamilyDevStore()) {
+    throw rpcError(remote.error ?? new Error(remote.reason ?? 'session_failed'))
   }
   try {
-    return localFamilyStore.updateWalkSessionState({ sessionId, deviceId, patch })
+    return localFamilyStore.updateWalkSessionState({
+      sessionId,
+      deviceId: getDeviceId(),
+      patch,
+    })
   } catch (error) {
     throw rpcError(error)
   }
 }
 
 export function subscribeWalkSession(sessionId, onUpdate) {
-  if (isSupabaseConfigured() && supabase) {
-    const channel = supabase
-      .channel(`walk_session:${sessionId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'walk_sessions',
-          filter: `id=eq.${sessionId}`,
-        },
-        async () => {
-          const next = await getWalkSession(sessionId)
-          if (next) onUpdate(next)
-        },
-      )
-      .subscribe()
+  // Direct anon Realtime on walk_sessions is disabled (credential bypass risk).
+  // Poll via credential-authorized RPC instead.
+  const poll = setInterval(async () => {
+    const next = await getWalkSession(sessionId)
+    if (next) onUpdate(next)
+  }, 2500)
 
+  if (allowsLocalFamilyDevStore()) {
     const localUnsub = localFamilyStore.subscribe(async () => {
       const next = await getWalkSession(sessionId)
       if (next) onUpdate(next)
     })
-
-    // Lightweight poll backup (Realtime may be delayed / disabled)
-    const poll = setInterval(async () => {
-      const next = await getWalkSession(sessionId)
-      if (next) onUpdate(next)
-    }, 2500)
-
     return () => {
       clearInterval(poll)
       localUnsub()
-      void supabase.removeChannel(channel)
     }
   }
 
-  return localFamilyStore.subscribe(async () => {
-    const next = await getWalkSession(sessionId)
-    if (next) onUpdate(next)
-  })
+  return () => clearInterval(poll)
 }
 
-export function isLeader(session, deviceId = getDeviceId()) {
-  return Boolean(session && session.leaderDeviceId === deviceId)
+export function isLeader(session, id = null) {
+  if (!session) return false
+  if (session.leaderSeatId) {
+    return Boolean(id && session.leaderSeatId === id)
+  }
+  // Legacy local-store shape uses device ids
+  return Boolean(session.leaderDeviceId && session.leaderDeviceId === (id ?? getDeviceId()))
 }
 
-export function canResumeForAll(session, deviceId = getDeviceId()) {
-  if (!session?.syncEnabled) return true // autonomous
+export function canResumeForAll(session, id = null) {
+  if (!session?.syncEnabled) return true
   if (session.resumePolicy === 'anyone') return true
-  return isLeader(session, deviceId)
+  return isLeader(session, id)
 }

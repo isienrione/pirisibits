@@ -12,6 +12,7 @@ import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
+import { useAccessRevalidation } from '../hooks/useAccessRevalidation.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { isImmersiveJourneyState } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
@@ -131,6 +132,11 @@ function AppRoutes() {
   )
 }
 
+function AccessRevalidationBootstrap() {
+  useAccessRevalidation()
+  return null
+}
+
 function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
@@ -173,6 +179,7 @@ function AppRouter() {
       <BrowserRouter>
         <SettingsSheetProvider>
           <FamilyWalkProvider>
+            <AccessRevalidationBootstrap />
             <AppRoutes />
           </FamilyWalkProvider>
         </SettingsSheetProvider>

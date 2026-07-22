@@ -1,27 +1,35 @@
 /**
- * Recover / resend ChronoWalk access email for a completed Paddle transaction.
+ * Recover / inspect ChronoWalk purchase rows for a completed Paddle transaction.
+ *
+ * Dry-run by default: never prints full emails, access tokens, device credentials,
+ * or magic links. Masks email and order id in console output.
+ *
+ * Legacy reusable bearer tokens (purchases.access_token) must NOT be emailed.
+ * For durable outbox requeue, use scripts/retry-fulfillment-outbox.mjs instead.
+ * `--execute` on this script still refuses legacy bearer sends.
+ *
+ * Entitlement (`product_id`) is never overwritten from client-controlled
+ * Paddle `custom_data.product_id`. Stored product_id is preserved as-is.
  *
  * Usage:
  *   export PADDLE_API_KEY=pdl_live_apikey_...
  *   export PADDLE_ENV=production
  *   export SUPABASE_URL=https://YOUR_PROJECT.supabase.co
  *   export SUPABASE_SERVICE_ROLE_KEY=...
- *   export RESEND_API_KEY=re_...
- *   # optional:
+ *   # optional later:
+ *   # export RESEND_API_KEY=re_...
  *   # export RESEND_FROM='ChronoWalk <access@chronowalk.com>'
  *   # export SITE_URL=https://chronowalk.com
  *
  *   node scripts/resend-purchase-access.mjs txn_01...
- *   node scripts/resend-purchase-access.mjs --email buyer@example.com
+ *   node scripts/resend-purchase-access.mjs --email buyer@example.invalid
+ *   node scripts/resend-purchase-access.mjs txn_01... --execute   # refused until claim path
  */
 
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { Environment, Paddle } from '@paddle/paddle-node-sdk'
-import {
-  accessEmailSubject,
-  buildAccessEmailHtml,
-  buildAccessEmailText,
-} from './access-email-template.mjs'
 
 const apiKey = process.env.PADDLE_API_KEY
 const supabaseUrl = process.env.SUPABASE_URL
@@ -31,75 +39,152 @@ const siteUrl = (process.env.SITE_URL ?? 'https://chronowalk.com').replace(/\/$/
 const from = process.env.RESEND_FROM ?? 'ChronoWalk <access@chronowalk.com>'
 const envName = String(process.env.PADDLE_ENV ?? 'production').toLowerCase()
 
-if (!apiKey || !supabaseUrl || !serviceKey) {
-  console.error('Need PADDLE_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY')
-  process.exit(1)
+/** @param {string | null | undefined} email */
+export function maskEmail(email) {
+  const raw = String(email ?? '').trim().toLowerCase()
+  const at = raw.indexOf('@')
+  if (at <= 0) return '[redacted-email]'
+  const local = raw.slice(0, at)
+  const domain = raw.slice(at + 1)
+  const localMask =
+    local.length <= 1 ? '*' : `${local[0]}${'*'.repeat(Math.min(local.length - 1, 6))}`
+  const domainParts = domain.split('.')
+  const domainMask = domainParts
+    .map((part, i) => {
+      if (!part) return part
+      if (i === domainParts.length - 1) return part
+      return part.length <= 1 ? '*' : `${part[0]}***`
+    })
+    .join('.')
+  return `${localMask}@${domainMask}`
 }
 
-const paddle = new Paddle(apiKey, {
-  environment:
-    envName === 'sandbox' ? Environment.sandbox : Environment.production,
-})
-const supabase = createClient(supabaseUrl, serviceKey, {
-  auth: { persistSession: false },
-})
-
-async function findTransactionId(arg) {
-  if (!arg) return null
-  if (arg.startsWith('txn_')) return arg
-  if (arg === '--email' || arg.startsWith('--')) return null
-  return arg.startsWith('txn_') ? arg : null
+/** @param {string | null | undefined} orderId */
+export function maskOrderId(orderId) {
+  const raw = String(orderId ?? '').trim()
+  if (!raw) return '[redacted-order]'
+  if (raw.length <= 10) return `${raw.slice(0, 4)}…`
+  return `${raw.slice(0, 8)}…${raw.slice(-4)}`
 }
 
-async function latestCompletedForEmail(email) {
-  const list = await paddle.transactions.list({ perPage: 50 }).next()
-  const rows = list ?? []
-  // SDK pagination differs by version — also try raw fetch fallback shape
-  const items = Array.isArray(rows) ? rows : rows?.data ?? []
-  const needle = email.toLowerCase()
-  for (const t of items) {
+function parseArgs(argv) {
+  const args = argv.slice(2)
+  const execute = args.includes('--execute')
+  const emailFlag = args.indexOf('--email')
+  const emailArg = emailFlag >= 0 ? args[emailFlag + 1] : null
+  const transactionId = args.find((a) => a.startsWith('txn_')) ?? null
+  return { execute, emailArg, transactionId }
+}
+
+async function resolveTransactionId({ transactionId, emailArg, envName: paddleEnv, apiKey: key }) {
+  if (transactionId) return transactionId
+  if (!emailArg) return null
+
+  const host =
+    paddleEnv === 'sandbox' ? 'sandbox-api.paddle.com' : 'api.paddle.com'
+  const res = await fetch(
+    `https://${host}/transactions?per_page=50&order_by=created_at[DESC]`,
+    {
+      headers: {
+        Authorization: `Bearer ${key}`,
+        'Paddle-Version': '1',
+      },
+    },
+  )
+  const json = await res.json()
+  if (!res.ok) throw new Error('Paddle transactions list failed')
+  for (const t of json.data ?? []) {
     if (t.status !== 'completed') continue
-    const customerId = t.customerId ?? t.customer_id
-    if (!customerId) continue
-    const customer = await paddle.customers.get(customerId)
-    if (String(customer?.email ?? '').toLowerCase() === needle) return t.id
+    const cRes = await fetch(`https://${host}/customers/${t.customer_id}`, {
+      headers: { Authorization: `Bearer ${key}`, 'Paddle-Version': '1' },
+    })
+    const cJson = await cRes.json()
+    if (
+      String(cJson?.data?.email ?? '')
+        .toLowerCase() === emailArg.toLowerCase()
+    ) {
+      return t.id
+    }
   }
   return null
 }
 
-async function main() {
-  const args = process.argv.slice(2)
-  let transactionId = args.find((a) => a.startsWith('txn_'))
-  const emailFlag = args.indexOf('--email')
-  const emailArg = emailFlag >= 0 ? args[emailFlag + 1] : null
+/**
+ * Upsert purchase row without trusting custom_data.product_id.
+ * Preserves any existing product_id / access_token; does not log secrets.
+ */
+export async function upsertPurchasePreservingEntitlement(supabase, {
+  email,
+  orderId,
+  host,
+  abVariant,
+}) {
+  const { data: existing, error: lookupError } = await supabase
+    .from('purchases')
+    .select('access_token, email, product_id, order_id')
+    .eq('order_id', orderId)
+    .maybeSingle()
 
-  if (!transactionId && emailArg) {
-    // Prefer API list via fetch for compatibility
-    const host =
-      envName === 'sandbox' ? 'sandbox-api.paddle.com' : 'api.paddle.com'
-    const res = await fetch(`https://${host}/transactions?per_page=50&order_by=created_at[DESC]`, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Paddle-Version': '1',
-      },
-    })
-    const json = await res.json()
-    if (!res.ok) throw new Error(JSON.stringify(json))
-    for (const t of json.data ?? []) {
-      if (t.status !== 'completed') continue
-      const cRes = await fetch(`https://${host}/customers/${t.customer_id}`, {
-        headers: { Authorization: `Bearer ${apiKey}`, 'Paddle-Version': '1' },
-      })
-      const cJson = await cRes.json()
-      if (String(cJson?.data?.email ?? '').toLowerCase() === emailArg.toLowerCase()) {
-        transactionId = t.id
-        break
-      }
-    }
+  if (lookupError) throw lookupError
+
+  const payload = {
+    email,
+    order_id: orderId,
+    // Never take entitlement from client-controlled custom_data.
+    product_id: existing?.product_id ?? null,
+    host: host ?? null,
+    ab_variant: abVariant,
   }
 
+  const { data: row, error } = await supabase
+    .from('purchases')
+    .upsert(payload, { onConflict: 'order_id' })
+    .select('access_token, email, product_id, order_id')
+    .single()
+
+  if (error) throw error
+  return { row, preservedProductId: existing?.product_id ?? null }
+}
+
+export function refuseLegacyBearerSend() {
+  return {
+    ok: false,
+    reason: 'legacy_bearer_send_disabled',
+    message:
+      'Refusing to email a reusable legacy access_token. One-time claim/outbox path is required before --execute can send mail.',
+  }
+}
+
+async function main() {
+  if (!apiKey || !supabaseUrl || !serviceKey) {
+    console.error('Need PADDLE_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY')
+    process.exit(1)
+  }
+
+  const { execute, emailArg, transactionId: txnArg } = parseArgs(process.argv)
+
+  // Keep SDK constructed for future claim-path work; dry-run may only need fetch.
+  void new Paddle(apiKey, {
+    environment:
+      envName === 'sandbox' ? Environment.sandbox : Environment.production,
+  })
+
+  const supabase = createClient(supabaseUrl, serviceKey, {
+    auth: { persistSession: false },
+  })
+
+  const transactionId = await resolveTransactionId({
+    transactionId: txnArg,
+    emailArg,
+    envName,
+    apiKey,
+  })
+
   if (!transactionId) {
-    console.error('Usage: node scripts/resend-purchase-access.mjs txn_... | --email buyer@example.com')
+    console.error(
+      'Usage: node scripts/resend-purchase-access.mjs txn_... | --email buyer@example.invalid [--execute]',
+    )
+    console.error('Dry-run is the default. --execute is refused until claim/outbox exists.')
     process.exit(1)
   }
 
@@ -108,7 +193,7 @@ async function main() {
     headers: { Authorization: `Bearer ${apiKey}`, 'Paddle-Version': '1' },
   })
   const tJson = await tRes.json()
-  if (!tRes.ok) throw new Error(JSON.stringify(tJson))
+  if (!tRes.ok) throw new Error('Paddle transaction fetch failed')
   const transaction = tJson.data
 
   const cRes = await fetch(`https://${host}/customers/${transaction.customer_id}`, {
@@ -118,68 +203,46 @@ async function main() {
   const email = String(cJson?.data?.email ?? '').toLowerCase()
   if (!email) throw new Error('No customer email on transaction')
 
+  // Inspect custom_data for host / ab only — never for product entitlement.
   const custom = transaction.custom_data ?? {}
-  const { data: row, error } = await supabase
-    .from('purchases')
-    .upsert(
-      {
-        email,
-        order_id: transaction.id,
-        product_id: custom.product_id ? String(custom.product_id) : null,
-        host: custom.host ? String(custom.host) : null,
-        ab_variant: custom.ab_variant != null ? Number(custom.ab_variant) : null,
-      },
-      { onConflict: 'order_id' },
-    )
-    .select('access_token, email, product_id, order_id')
-    .single()
+  void custom.product_id
 
-  if (error) throw error
+  const { row } = await upsertPurchasePreservingEntitlement(supabase, {
+    email,
+    orderId: transaction.id,
+    host: custom.host ? String(custom.host) : null,
+    abVariant: custom.ab_variant != null ? Number(custom.ab_variant) : null,
+  })
 
-  const link = `${siteUrl}/access?token=${encodeURIComponent(row.access_token)}`
-  console.log('Purchase row ready:')
-  console.log('  email:', row.email)
-  console.log('  order:', row.order_id)
-  console.log('  pack:', row.product_id)
-  console.log('  access_token:', row.access_token)
-  console.log('  link:', link)
+  const hasLegacyToken = Boolean(row.access_token)
+  console.log('Purchase row ready (secrets redacted):')
+  console.log('  email:', maskEmail(row.email))
+  console.log('  order:', maskOrderId(row.order_id))
+  console.log('  pack:', row.product_id ?? '(unset — not derived from custom_data)')
+  console.log('  legacy_access_token:', hasLegacyToken ? '[present — not printed]' : '(none)')
+  console.log('  magic_link:', '[redacted — never printed]')
+  console.log(`  site: ${siteUrl}`)
+  console.log('  mode:', execute ? 'execute' : 'dry-run')
 
-  if (!resendKey) {
-    console.warn('RESEND_API_KEY unset — not emailing. Share the link/token above manually.')
+  if (!execute) {
+    console.log('Dry-run complete. Pass --execute only after the one-time claim/outbox path exists.')
     return
   }
 
-  const mailRes = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to: [row.email],
-      subject: accessEmailSubject(),
-      html: buildAccessEmailHtml({
-        accessToken: row.access_token,
-        accessLink: link,
-        productId: row.product_id,
-        siteUrl,
-      }),
-      text: buildAccessEmailText({
-        accessToken: row.access_token,
-        accessLink: link,
-        productId: row.product_id,
-      }),
-    }),
-  })
-
-  if (!mailRes.ok) {
-    throw new Error(`Resend failed: ${mailRes.status} ${await mailRes.text()}`)
+  const refusal = refuseLegacyBearerSend()
+  console.error(refusal.message)
+  if (resendKey) {
+    console.error('RESEND_API_KEY is set but send is disabled for legacy bearer tokens.')
   }
-  console.log('Access email sent via Resend.')
+  void from
+  process.exit(2)
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+const thisFile = fileURLToPath(import.meta.url)
+const invokedAs = process.argv[1] ? resolve(process.argv[1]) : null
+if (invokedAs && thisFile === invokedAs) {
+  main().catch((err) => {
+    console.error(err instanceof Error ? err.message : err)
+    process.exit(1)
+  })
+}

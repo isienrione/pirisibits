@@ -210,6 +210,13 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.js',
+    // Legacy sibling tree must not run as part of the ChronoWalk suite.
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/Chronowalk2/**',
+      '**/Desarrollo preliminar/**',
+    ],
     alias: {
       'virtual:pwa-register': pwaRegisterMock,
     },

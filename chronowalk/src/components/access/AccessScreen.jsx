@@ -42,40 +42,55 @@ function StatusMessage({ title, body, tone = 'muted' }) {
   )
 }
 
-export default function AccessScreen({ onValidated }) {
+export default function AccessScreen({ onValidated, forceValidateToken = null }) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const token = parseAccessToken(`?${searchParams.toString()}`)
-  const [status, setStatus] = useState(token ? 'validating' : 'idle')
+  const token = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
   const [manualToken, setManualToken] = useState('')
+  // Async claim outcome only — idle/validating are derived from token presence.
+  const [outcome, setOutcome] = useState(null)
+  const [outcomeForToken, setOutcomeForToken] = useState(token)
+
+  // When the claim token identity changes, clear the prior outcome during render
+  // (React-recommended prop→state sync) instead of syncing inside an effect.
+  if (outcomeForToken !== token) {
+    setOutcomeForToken(token)
+    setOutcome(null)
+  }
+
+  const status = !token ? 'idle' : outcome == null ? 'validating' : outcome
 
   useEffect(() => {
-    if (!token) {
-      setStatus('idle')
-      return undefined
-    }
+    if (!token) return undefined
 
     let cancelled = false
-    setStatus('validating')
 
+    // Always validate the presented URL/manual claim — unrelated local cw_access
+    // state must never short-circuit an invalid/rotated token.
     validateAccessToken(token).then((result) => {
       if (cancelled) return
 
       if (result.ok) {
         const unlock = applyPurchaseUnlock({
-          token,
+          // Redeem persists the credential; keep apply resilient for mocks/tests.
+          token: result.deviceCredential ?? null,
           productId: result.productId ?? null,
+          purchasedProductId: result.purchasedProductId ?? null,
+          contentProductId: result.contentProductId ?? null,
+          seatLimit: result.seatLimit ?? null,
+          role: result.role ?? null,
+          bundleStatus: result.bundleStatus ?? null,
         })
         track(TRACK_EVENTS.PURCHASE, {
           source: result.source ?? 'token',
           tier: unlock.tier,
         })
-        setStatus('success')
+        setOutcome('success')
         onValidated?.({ token, productId: unlock.tier })
         return
       }
 
-      setStatus('error')
+      setOutcome('error')
     })
 
     return () => {

@@ -89,11 +89,73 @@ export const ROME_TIERS = [
     includesLabel: 'Roma Historica + Roma Antica + the full city loop',
     featuredBullet: 'Choose and re-order your stops (own-pace itinerary)',
     bullets: [
-      'All 22 stops — Colosseum and Forum to the Appian Way',
+      'All 21 stops — Colosseum and Forum to the Appian Way',
       'Every Threshold reconstruction on the route',
     ],
     expandLabel: 'See stop list & inclusions',
     primaryCta: 'Choose Roma Eterna',
+  },
+]
+
+/**
+ * Shared-experience Couple / Family offers — full Roma Eterna content per seat.
+ * Seat limits and content_product_id remain server-authoritative (catalog).
+ */
+export const ROME_BUNDLES = [
+  {
+    id: 'rome-couple',
+    name: 'Couple Bundle',
+    bestFor: 'Best for two people walking Rome on their own devices.',
+    outcome: 'Walk the same story together — shared tour syncing keeps progress connected.',
+    price: '€25',
+    priceCents: 2500,
+    priceNote: 'one-time · taxes included where applicable',
+    badge: 'Save €4.98',
+    seatLabel: 'Two people/devices',
+    seatDetail: 'Two seats total, including the purchaser',
+    contentTitle: 'Complete Roma Eterna',
+    contentStops: 'All 21 stops',
+    contentLoop: 'Full city loop',
+    contentLine: 'Full Roma Eterna · 21 stops',
+    perPerson: '€12.50 per person',
+    savingsLine: 'Save €4.98 compared with two separate €14.99 Roma Eterna purchases',
+    description:
+      'Two seats for the complete 21-stop Roma Eterna experience — each on their own device, with shared-tour syncing for walking together.',
+    bullets: [
+      'Complete Roma Eterna for every redeemed seat — not a shortened route',
+      'Shared tour syncing — walk the same story together',
+      'Keep your shared tour progress connected across each person’s device',
+      'A smoother shared experience while you walk Rome together',
+    ],
+    primaryCta: 'Choose Couple Bundle',
+  },
+  {
+    id: 'rome-family',
+    name: 'Family Bundle',
+    bestFor: 'Best for up to four people sharing one Rome walk.',
+    outcome: 'Everyone gets the full city loop — shared tour syncing for a smoother walk together.',
+    price: '€35',
+    priceCents: 3500,
+    priceNote: 'one-time · taxes included where applicable',
+    badge: 'Save up to €24.96',
+    seatLabel: 'Up to four people/devices',
+    seatDetail: 'Up to four seats total, including the purchaser',
+    contentTitle: 'Complete Roma Eterna',
+    contentStops: 'All 21 stops',
+    contentLoop: 'Full city loop',
+    contentLine: 'Full Roma Eterna · 21 stops',
+    perPerson: 'As little as €8.75 per person when four seats are used',
+    savingsLine:
+      'Save up to €24.96 compared with four separate €14.99 Roma Eterna purchases',
+    description:
+      'Up to four seats for the complete 21-stop Roma Eterna experience — each on their own device, with shared-tour syncing for walking together.',
+    bullets: [
+      'Complete Roma Eterna for every redeemed seat — not a shortened route',
+      'Shared tour syncing — walk the same story together',
+      'Keep your shared tour progress connected across each person’s device',
+      'A smoother shared experience while you walk Rome together',
+    ],
+    primaryCta: 'Choose Family Bundle',
   },
 ]
 
@@ -503,7 +565,7 @@ export const LANDING_CONTENT = {
     headline: 'Pick how much of Rome you want.',
     subheadline: 'One-time purchase — yours for the trip and after.',
     intro:
-      'GPS narration, offline download, and the Pantheon preview in every package. One device per purchase — discounted couple, family, and group bundles add synced sharing.',
+      'GPS narration, offline download, and the Pantheon preview in every package. Standard purchases unlock one device. Couple and Family Bundles add seats for walking together with shared-tour syncing.',
     footnote:
       'Secure checkout first · Access link arrives by email · Taxes included where applicable · Does not replace ticketed entry where tickets are required',
     accessLinkLabel: 'Already purchased? Enter your access link',
@@ -511,6 +573,13 @@ export const LANDING_CONTENT = {
     metaTimeLabel: 'Est. duration',
     metaStopsLabel: 'Key stops',
     tiers: ROME_TIERS,
+    sharedExperience: {
+      id: 'shared-experience',
+      headline: 'Rome is better shared',
+      lead:
+        'Every Couple and Family Bundle includes the complete 21-stop Roma Eterna experience for each included person, with shared-tour syncing for a smoother walk together.',
+      bundles: ROME_BUNDLES,
+    },
   },
 
   header: {
@@ -749,12 +818,12 @@ export const LANDING_CONTENT = {
           {
             id: 'share-purchase',
             q: 'Can two people share one purchase?',
-            a: 'Each standard purchase unlocks one device. Share headphones on that phone, or choose a discounted couple, family, or group bundle for synced devices on the same walk.',
+            a: 'Each standard purchase unlocks one device. Share headphones on that phone, or choose a Couple or Family Bundle — every included seat gets the complete 21-stop Roma Eterna experience on its own device, with shared-tour syncing for walking together.',
           },
           {
             id: 'device-limit',
             q: 'How many devices does one purchase cover?',
-            a: 'One device per standard purchase. Couple, family, and group bundles add shared seats so each phone can walk in sync.',
+            a: 'One device per standard purchase. The Couple Bundle includes two seats/devices; the Family Bundle includes up to four. Each redeemed seat receives the full Roma Eterna content — not a shared access token across phones.',
           },
           {
             id: 'phones',

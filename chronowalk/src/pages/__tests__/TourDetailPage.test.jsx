@@ -48,9 +48,11 @@ describe('TourDetailPage', () => {
   it('highlights a timeline stop when tapped', () => {
     renderRomeDetail()
 
-    const pantheon = screen.getByRole('button', { name: /pantheon/i })
+    // Accessible name includes the stop number prefix (e.g. "13The Pantheon").
+    const pantheon = screen.getByRole('button', { name: /The Pantheon/i })
     fireEvent.click(pantheon)
     expect(pantheon.className).toMatch(/border-bronze/)
+    expect(screen.getByRole('button', { name: /Pantheon interior/i })).toBeInTheDocument()
   })
 
   it('navigates back to tour selection', () => {

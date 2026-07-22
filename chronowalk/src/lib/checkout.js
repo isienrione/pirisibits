@@ -2,16 +2,20 @@ import { getHost } from './host.js'
 import { getAbVariantCents, loadAppConfig } from './config.js'
 import { track, TRACK_EVENTS } from './track.js'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
-import { ROME_TIERS } from '../landing/landingData.js'
+import { ROME_BUNDLES, ROME_TIERS } from '../landing/landingData.js'
 import {
+  assertPublicPriceConfig,
   buildPaddleCustomData,
+  isCanonicalCheckoutProduct,
   isPaddleCheckoutReady,
   openPaddleCheckout,
   resolveCheckoutMode,
   resolvePaddlePriceId,
 } from './paddle.js'
 
-const TIER_BY_ID = Object.fromEntries(ROME_TIERS.map((tier) => [tier.id, tier]))
+const TIER_BY_ID = Object.fromEntries(
+  [...ROME_TIERS, ...ROME_BUNDLES].map((offer) => [offer.id, offer]),
+)
 
 /**
  * True when Paddle is ready (client token + price id).
@@ -63,8 +67,21 @@ export function buildTierCheckoutUrl() {
  *   | { ok: false, reason: 'not_configured' | string }
  * >}
  */
-export async function openCheckout({ tierId, source = 'app', mode, email } = {}) {
+export async function openCheckout({ tierId, source = 'app', mode, email, consentVersion } = {}) {
   const config = await loadAppConfig()
+
+  if (tierId && !isCanonicalCheckoutProduct(tierId)) {
+    return { ok: false, reason: 'invalid_product' }
+  }
+
+  const priceConfig = assertPublicPriceConfig({
+    paddlePricesFromConfig: config?.paddle_prices,
+    bundlesEnabled: true,
+  })
+  if (!priceConfig.ok) {
+    return { ok: false, reason: priceConfig.reason }
+  }
+
   const priceId = resolvePaddlePriceId(tierId, config?.paddle_prices)
 
   if (!isPaddleCheckoutReady(tierId, config?.paddle_prices) || !priceId) {
@@ -82,10 +99,12 @@ export async function openCheckout({ tierId, source = 'app', mode, email } = {})
     tier: tierId ?? null,
   })
 
+  // custom_data is attribution only — webhook derives entitlement from price.id.
   const customData = buildPaddleCustomData({
     host: getHost(),
     abVariantCents: tierCents,
     productId: tierId || undefined,
+    consentVersion,
   })
 
   const preferredMode = mode ?? resolveCheckoutMode()
@@ -101,7 +120,7 @@ export const TRANSACTION_STEPS = Object.freeze([
   {
     id: 'choose',
     title: 'Choose Rome',
-    body: 'Pick Central, Ancient, or Complete on the landing page.',
+    body: 'Pick a Rome pack or Couple/Family bundle on the landing page.',
   },
   {
     id: 'checkout',

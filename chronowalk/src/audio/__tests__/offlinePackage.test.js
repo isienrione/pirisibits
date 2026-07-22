@@ -26,8 +26,13 @@ describe('offlinePackage', () => {
 
   it('lists manifest media paths for threshold reconstructions', () => {
     const paths = listRomeMediaManifestPaths(manifest)
-    expect(paths).toContain('/rome/video/w01_then_loop.mp4')
-    expect(paths.length).toBe(10)
+    expect(paths).toContain('/waypoints/colosseum/exterior/modern-poster.jpg')
+    expect(paths).toContain('/waypoints/colosseum/exterior/ancient-reconstruction.mp4')
+    expect(paths).toContain('/waypoints/spanish-steps/modern-poster.jpg')
+    expect(paths).toContain('/waypoints/spanish-steps/ancient-reconstruction.mp4')
+    // Every shipping reconstruction asset is listed exactly once for offline pack.
+    expect(paths.length).toBe(new Set(paths).size)
+    expect(paths.length).toBeGreaterThanOrEqual(20)
   })
 
   it('estimates download size from file count', () => {

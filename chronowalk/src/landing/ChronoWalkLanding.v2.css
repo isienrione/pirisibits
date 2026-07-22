@@ -15,11 +15,13 @@
   --v2-coral: var(--v2-terracotta);
   --v2-bronze: var(--bronze);
   --v2-olive: var(--olive);
-  /* Package accents — aligned with Lemon Squeezy product cards */
+  /* Package accents — five distinct brand hues (stone / olive / ember / terracotta / verdigris) */
   --v2-silver: #c5c0b6;
   --v2-package-historica: var(--v2-silver);
-  --v2-package-antica: #6f8054;
+  --v2-package-antica: var(--olive, #6b7a52);
   --v2-package-eterna: var(--ember, #e8a13c);
+  --v2-package-couple: var(--act-arena, #e4552e);
+  --v2-package-family: var(--verdigris, var(--act-market, #4e9b8f));
   --v2-max: 72rem;
   --v2-narrow: 56rem;
   --v2-pricing: 64rem;
@@ -2412,6 +2414,18 @@
   --tier-cta-ink: var(--v2-obsidian);
 }
 
+.cw-v2-pricing-card--rome-couple {
+  --tier-accent: var(--v2-package-couple);
+  --tier-cta-ink: #faf6ef;
+  border-color: color-mix(in srgb, var(--v2-package-couple) 42%, var(--v2-border));
+}
+
+.cw-v2-pricing-card--rome-family {
+  --tier-accent: var(--v2-package-family);
+  --tier-cta-ink: #faf6ef;
+  border-color: color-mix(in srgb, var(--v2-package-family) 40%, var(--v2-border));
+}
+
 .cw-v2-pricing-card::before {
   content: '';
   position: absolute;
@@ -2447,6 +2461,12 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.cw-v2-pricing-card__ribbon--savings {
+  letter-spacing: 0.08em;
+  background: color-mix(in srgb, var(--tier-accent) 88%, var(--v2-bone));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tier-accent) 35%, transparent);
 }
 
 .cw-v2-pricing-card__name {
@@ -2757,6 +2777,113 @@
   color: var(--v2-bone);
 }
 
+.cw-v2-pricing__shared {
+  margin-top: 3.25rem;
+  padding-top: 2.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--v2-bone) 10%, transparent);
+}
+
+.cw-v2-pricing__shared-header {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cw-v2-pricing__shared-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--v2-bone);
+}
+
+.cw-v2-pricing__shared-lead {
+  margin: 0.85rem 0 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--v2-soft);
+  text-wrap: pretty;
+}
+
+.cw-v2-pricing__shared-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+  align-items: stretch;
+}
+
+.cw-v2-pricing-card--bundle {
+  padding-top: 1.75rem;
+}
+
+.cw-v2-pricing-card__meta--bundle {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 28rem) {
+  .cw-v2-pricing-card__meta--bundle {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cw-v2-pricing-card__content-callout {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--tier-accent) 38%, var(--v2-border));
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--tier-accent) 14%, transparent),
+      color-mix(in srgb, var(--v2-obsidian) 55%, transparent)
+    ),
+    var(--v2-obsidian);
+}
+
+.cw-v2-pricing-card__content-title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.15rem;
+  font-weight: 560;
+  color: var(--tier-accent);
+}
+
+.cw-v2-pricing-card__content-stops,
+.cw-v2-pricing-card__content-loop {
+  margin: 0.3rem 0 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--v2-bone);
+}
+
+.cw-v2-pricing-card__per-person {
+  margin: 0.95rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--tier-accent) 72%, var(--v2-bone));
+}
+
+.cw-v2-pricing-card__savings-line {
+  margin: 0.35rem 0 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--v2-muted);
+  text-wrap: pretty;
+}
+
+.cw-v2-pricing-card--bundle .cw-v2-pricing-card__list--inclusions {
+  margin-top: 0.85rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+.cw-v2-pricing-card--bundle .cw-v2-pricing-card__cta {
+  margin-top: auto;
+  padding-top: 1.15rem;
+}
+
 .cw-v2-pricing__footnote {
   margin: 2rem 0 0;
   text-align: center;
@@ -2777,12 +2904,20 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.25rem;
   }
+
+  .cw-v2-pricing__shared-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 64rem) {
   .cw-v2-pricing__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.25rem;
+  }
+
+  .cw-v2-pricing__shared-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
