@@ -121,7 +121,7 @@ function openTransitFullPlayer(screen) {
 
 describe('JourneyShell', () => {
   beforeEach(() => {
-    global.ResizeObserver = class {
+    globalThis.ResizeObserver = class {
       observe() {}
       unobserve() {}
       disconnect() {}
