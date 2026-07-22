@@ -307,9 +307,10 @@ describe('Walk together settings + management', () => {
 })
 
 describe('invite link helpers', () => {
-  it('builds invite URLs from the site origin helper', () => {
-    const url = buildInviteShareUrl('ABC123SECRET')
-    expect(url).toMatch(/\/invite\?code=ABC123SECRET$/)
+  it('builds invite URLs from the site origin helper in canonical lowercase', () => {
+    const url = buildInviteShareUrl('abc123secret')
+    expect(url).toMatch(/\/invite\?code=abc123secret$/)
+    expect(buildInviteShareUrl('ABC123SECRET')).toMatch(/\/invite\?code=abc123secret$/)
     expect(url).not.toContain('undefined')
   })
 

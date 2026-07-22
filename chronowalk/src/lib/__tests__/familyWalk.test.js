@@ -5,6 +5,7 @@ import {
   canResumeForAll,
   createFamilyBundle,
   isLeader,
+  normalizeBundleInviteCode,
 } from '../familyWalk.js'
 
 describe('familyLocalStore', () => {
@@ -142,7 +143,17 @@ describe('familyWalk production guards', () => {
   })
 
   it('builds invite share links without inventing a host', () => {
-    const url = buildInviteShareUrl('RAWSECRET')
-    expect(url).toMatch(/\/invite\?code=RAWSECRET$/)
+    const url = buildInviteShareUrl('rawsecret')
+    expect(url).toMatch(/\/invite\?code=rawsecret$/)
+  })
+
+  it('canonicalizes bundle invites as trim + lowercase', () => {
+    const lower = 'a1b2c3d4e5f6789012345678abcdef01'
+    expect(normalizeBundleInviteCode(`  ${lower.toUpperCase()}  `)).toBe(lower)
+    expect(normalizeBundleInviteCode(lower)).toBe(lower)
+    expect(buildInviteShareUrl(`  ${lower.toUpperCase()}  `)).toMatch(
+      new RegExp(`/invite\\?code=${lower}$`),
+    )
+    expect(buildInviteShareUrl(lower.toUpperCase())).not.toContain(lower.toUpperCase())
   })
 })
