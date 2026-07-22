@@ -9,10 +9,12 @@ import {
   assertLocalPsqlAvailable,
   dropDisposableDatabase,
   findInvalidUpdateTargetFunctionRefs,
+  findUnqualifiedPgcryptoCalls,
   listMigrationSqlFiles,
   queryTuples,
   recreateDisposableDatabase,
   scanMigrationFiles,
+  scanMigrationsForUnqualifiedPgcrypto,
   seedLegacyPurchasesSql,
   verificationMigrationsRollBack,
 } from '../lib/launchCommerceMigrationHarness.mjs'
@@ -76,6 +78,77 @@ where p.id = b.purchase_id;
     for (const report of reports) {
       expect(report, report.name).toMatchObject({ hasBegin: true, hasRollback: true, ok: true })
     }
+  })
+
+  it('flags unqualified pgcrypto helpers that depend on search_path', () => {
+    const bad = `
+create function public.bad_rate_limit(p_invite text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  return encode(digest(trim(p_invite), 'sha256'), 'hex');
+end;
+$$;
+`
+    const findings = findUnqualifiedPgcryptoCalls(bad, 'fixture.sql')
+    expect(findings.some((f) => f.fn === 'digest')).toBe(true)
+    expect(scanMigrationsForUnqualifiedPgcrypto()).toEqual([])
+  })
+})
+
+describe('Supabase-like extensions.pgcrypto resolution', () => {
+  it('fails unqualified digest under search_path=public and succeeds with extensions.digest', () => {
+    assertLocalPsqlAvailable()
+    const db = track('cw_mig_pgcrypto_schema')
+    const schema = queryTuples(
+      db,
+      `select n.nspname from pg_extension e
+       join pg_namespace n on n.oid = e.extnamespace
+       where e.extname = 'pgcrypto'`,
+    )
+    expect(schema).toEqual([['extensions']])
+
+    // Old redeem_bundle_invite pattern: unqualified digest + search_path=public.
+    expect(() =>
+      applySql(
+        db,
+        `
+create or replace function public._test_unqualified_digest(p_invite text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  return encode(digest(convert_to(trim(p_invite), 'utf8'), 'sha256'), 'hex');
+end;
+$$;
+select public._test_unqualified_digest('invite-token-example');
+`,
+      ),
+    ).toThrow(/digest/i)
+
+    expect(() =>
+      applySql(
+        db,
+        `
+create or replace function public._test_qualified_digest(p_invite text)
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  return encode(extensions.digest(convert_to(trim(p_invite), 'utf8'), 'sha256'), 'hex');
+end;
+$$;
+select public._test_qualified_digest('invite-token-example');
+`,
+      ),
+    ).not.toThrow()
   })
 })
 

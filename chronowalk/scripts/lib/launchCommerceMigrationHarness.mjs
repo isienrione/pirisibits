@@ -142,8 +142,9 @@ CREATE DATABASE ${dbName};
   if (drop.status !== 0) {
     throw new Error(`failed to recreate ${dbName}: ${drop.stderr || drop.stdout}`)
   }
-  // Minimal Supabase-compatible roles so RLS policies and grants apply locally.
-  const roles = runPsql({
+  // Model hosted Supabase: roles + pgcrypto living only in `extensions`
+  // (not on the default public search_path).
+  const bootstrap = runPsql({
     database: dbName,
     sql: `
 DO $$
@@ -158,10 +159,17 @@ BEGIN
     CREATE ROLE service_role NOLOGIN BYPASSRLS;
   END IF;
 END $$;
+
+CREATE SCHEMA IF NOT EXISTS extensions;
+DROP EXTENSION IF EXISTS pgcrypto;
+CREATE EXTENSION pgcrypto WITH SCHEMA extensions;
+-- Keep session search_path free of extensions so unqualified digest()/hmac()
+-- fail the same way they do on hosted Supabase SECURITY DEFINER RPCs.
+SELECT set_config('search_path', 'public, pg_catalog', false);
 `,
   })
-  if (roles.status !== 0) {
-    throw new Error(`failed to seed roles in ${dbName}: ${roles.stderr || roles.stdout}`)
+  if (bootstrap.status !== 0) {
+    throw new Error(`failed to bootstrap ${dbName}: ${bootstrap.stderr || bootstrap.stdout}`)
   }
 }
 
@@ -238,9 +246,8 @@ export function queryTuples(database, sql) {
     .map((line) => line.split('|'))
 }
 
-/** Minimal pre-hardening purchases table. */
+/** Minimal pre-hardening purchases table (pgcrypto already in extensions). */
 export const LEGACY_PURCHASES_SCHEMA = `
-create extension if not exists pgcrypto;
 create table public.purchases (
   id uuid primary key default gen_random_uuid(),
   email text not null,
@@ -252,6 +259,54 @@ create table public.purchases (
   created_at timestamptz not null default now()
 );
 `
+
+const PGCRYPTO_CALLEES = ['digest', 'hmac', 'crypt', 'gen_salt', 'gen_random_bytes']
+
+/**
+ * Find unqualified pgcrypto calls in SQL whose resolution depends on search_path.
+ * Allows `extensions.<fn>(...)` and skips comments.
+ */
+export function findUnqualifiedPgcryptoCalls(sql, fileLabel = 'sql') {
+  const findings = []
+  const lines = sql.split('\n')
+  let inBlockComment = false
+  for (let i = 0; i < lines.length; i += 1) {
+    let line = lines[i]
+    if (inBlockComment) {
+      const end = line.indexOf('*/')
+      if (end === -1) continue
+      line = line.slice(end + 2)
+      inBlockComment = false
+    }
+    while (line.includes('/*')) {
+      const start = line.indexOf('/*')
+      const end = line.indexOf('*/', start + 2)
+      if (end === -1) {
+        line = line.slice(0, start)
+        inBlockComment = true
+        break
+      }
+      line = `${line.slice(0, start)}${line.slice(end + 2)}`
+    }
+    const code = line.replace(/--.*$/, '')
+    for (const fn of PGCRYPTO_CALLEES) {
+      const re = new RegExp(String.raw`(^|[^.\w])${fn}\s*\(`, 'gi')
+      if (re.test(code)) {
+        findings.push({ file: fileLabel, line: i + 1, fn, excerpt: code.trim().slice(0, 160) })
+      }
+    }
+  }
+  return findings
+}
+
+export function scanMigrationsForUnqualifiedPgcrypto(files = listMigrationSqlFiles()) {
+  const findings = []
+  for (const path of files) {
+    const name = path.split(/[/\\]/).at(-1)
+    findings.push(...findUnqualifiedPgcryptoCalls(readFileSync(path, 'utf8'), name))
+  }
+  return findings
+}
 
 export function seedLegacyPurchasesSql() {
   const skuRows = Object.keys(EXPECTED_ENTITLEMENTS)
