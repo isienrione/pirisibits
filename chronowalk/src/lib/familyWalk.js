@@ -92,6 +92,7 @@ export async function createBundleInvite({ seatId = null } = {}) {
   const remote = await tryRpc('create_bundle_invite', {
     p_credential: credential,
     p_seat_id: seatId,
+    p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
   throw rpcError(remote.error ?? new Error(remote.reason ?? 'invite_failed'))
@@ -149,7 +150,10 @@ export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
 export async function refreshFamilyBundle() {
   const credential = readDeviceCredential()
   if (!credential) return null
-  const remote = await tryRpc('get_organizer_bundle_status', { p_credential: credential })
+  const remote = await tryRpc('get_organizer_bundle_status', {
+    p_credential: credential,
+    p_device_binding: getDeviceId(),
+  })
   if (remote.ok && remote.data?.ok !== false) {
     writeMembership(remote.data)
     return remote.data
@@ -174,6 +178,7 @@ export async function createWalkSession({ resumePolicy = 'leader' } = {}) {
   const remote = await tryRpc('create_walk_session_for_credential', {
     p_credential: credential,
     p_resume_policy: resumePolicy,
+    p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
 
@@ -202,6 +207,7 @@ export async function getWalkSession(sessionId) {
   const remote = await tryRpc('get_walk_session_for_credential', {
     p_credential: credential,
     p_session_id: sessionId,
+    p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
   if (!allowsLocalFamilyDevStore()) return null
@@ -219,6 +225,7 @@ export async function updateWalkSessionState(sessionId, patch) {
     p_credential: credential,
     p_session_id: sessionId,
     p_patch: patch,
+    p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
   if (remote.data?.reason === 'resume_leader_only') {

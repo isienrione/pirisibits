@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase.js'
 import { readAccessToken } from './access.js'
+import { getDeviceId } from './deviceId.js'
 
 const PUSH_DEBOUNCE_MS = 1200
 let pushTimer = null
@@ -15,6 +16,7 @@ export async function pullJourneyProgress(token = readAccessToken()) {
   try {
     const { data, error } = await supabase.rpc('get_journey_progress', {
       p_token: token,
+      p_device_binding: getDeviceId(),
     })
     if (error || !data) return null
 
@@ -34,6 +36,7 @@ export async function pushJourneyProgress(snapshot, token = readAccessToken()) {
     const { error } = await supabase.rpc('upsert_journey_progress', {
       p_token: token,
       p_snapshot: snapshot,
+      p_device_binding: getDeviceId(),
     })
     if (error) return { ok: false, reason: error.message }
     lastPushedJson = JSON.stringify(snapshot)

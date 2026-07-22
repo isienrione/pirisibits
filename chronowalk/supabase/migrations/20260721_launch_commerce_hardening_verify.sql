@@ -227,7 +227,7 @@ begin
     raise exception 'couple content must be rome-complete';
   end if;
 
-  v_result := public.create_bundle_invite(v_cred, null, interval '1 hour');
+  v_result := public.create_bundle_invite(v_cred, null, interval '1 hour', 'owner-bind');
   if v_result->>'ok' <> 'true' then raise exception 'invite create failed: %', v_result; end if;
   v_invite := v_result->>'invite';
   v_seat_id := (v_result->>'seat_id')::uuid;
@@ -239,7 +239,7 @@ begin
   v_result_b := public.redeem_bundle_invite(v_invite, 'other-bind', 'Other');
   if v_result_b->>'ok' <> 'false' then raise exception 'invite replay must fail'; end if;
 
-  v_session := public.create_walk_session_for_credential(v_member_cred, 'leader');
+  v_session := public.create_walk_session_for_credential(v_member_cred, 'leader', 'member-bind');
   if v_session->>'ok' <> 'true' then raise exception 'member session create failed'; end if;
 
   -- guessed device-id legacy RPC retired
@@ -251,11 +251,11 @@ begin
   end if;
 
   -- revoke seat → cannot validate/mutate
-  perform public.revoke_bundle_seat(v_cred, v_seat_id);
+  perform public.revoke_bundle_seat(v_cred, v_seat_id, 'owner-bind');
   v_result := public.validate_device_access(v_member_cred, 'member-bind');
   if v_result->>'ok' <> 'false' then raise exception 'revoked seat must fail validate'; end if;
   v_result := public.update_walk_session_for_credential(
-    v_member_cred, (v_session->>'id')::uuid, '{"event":"pause"}'::jsonb
+    v_member_cred, (v_session->>'id')::uuid, '{"event":"pause"}'::jsonb, 'member-bind'
   );
   if v_result->>'ok' <> 'false' then raise exception 'revoked seat must not mutate session'; end if;
 

@@ -3,6 +3,7 @@ import {
   EXPECTED_ENTITLEMENTS,
   HARDENING_SQL,
   LEGACY_PURCHASES_SCHEMA,
+  VERIFY_SQL,
   applySql,
   applySqlFile,
   assertLocalPsqlAvailable,
@@ -176,34 +177,14 @@ insert into public.purchases (
     expect(rows).toEqual([['rome-complete', '1', 'active']])
   })
 
-  it('keeps verification migrations transactional so synthetic data rolls back', () => {
-    const reports = verificationMigrationsRollBack()
-    expect(reports.every((r) => r.ok)).toBe(true)
+  it('passes the exact hardening verify script and rolls back synthetic rows', () => {
     assertLocalPsqlAvailable()
-    const db = track('cw_mig_verify_rollback')
+    const db = track('cw_mig_verify_full')
     applySqlFile(db, HARDENING_SQL)
     const before = Number(
       queryTuples(db, `select count(*) from public.purchases`)[0][0],
     )
-    // Prove begin/rollback leaves durable tables untouched for synthetic inserts.
-    applySql(
-      db,
-      `
-begin;
-insert into public.purchases (
-  email, order_id, product_id, content_product_id, seat_limit, status, fulfilled_at
-) values (
-  'buyer@example.invalid',
-  'txn_VERIFY_ROLLBACK_ONLY',
-  'rome-complete',
-  'rome-complete',
-  1,
-  'active',
-  now()
-);
-rollback;
-`,
-    )
+    expect(() => applySqlFile(db, VERIFY_SQL)).not.toThrow()
     const after = Number(
       queryTuples(db, `select count(*) from public.purchases`)[0][0],
     )

@@ -9,6 +9,10 @@ vi.mock('../supabase.js', () => ({
   },
 }))
 
+vi.mock('../deviceId.js', () => ({
+  getDeviceId: () => 'test-device-binding',
+}))
+
 describe('journeyCloud', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -32,6 +36,7 @@ describe('journeyCloud', () => {
 
     expect(rpcMock).toHaveBeenCalledWith('get_journey_progress', {
       p_token: '550e8400-e29b-41d4-a716-446655440000',
+      p_device_binding: 'test-device-binding',
     })
     expect(snapshot.state).toBe('walking')
     expect(snapshot.context.currentSequenceIndex).toBe(4)
@@ -50,6 +55,7 @@ describe('journeyCloud', () => {
     expect(rpcMock).toHaveBeenCalledWith('upsert_journey_progress', {
       p_token: '550e8400-e29b-41d4-a716-446655440000',
       p_snapshot: { state: 'walking', context: { currentSequenceIndex: 2 } },
+      p_device_binding: 'test-device-binding',
     })
   })
 })

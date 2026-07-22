@@ -1344,7 +1344,13 @@ begin
 end;
 $$;
 
-create or replace function public.get_organizer_bundle_status(p_credential text)
+drop function if exists public.get_organizer_bundle_status(text);
+drop function if exists public.get_organizer_bundle_status(text, text);
+
+create or replace function public.get_organizer_bundle_status(
+  p_credential text,
+  p_device_binding text default null
+)
 returns jsonb
 language plpgsql
 security definer
@@ -1357,7 +1363,7 @@ declare
   v_bundle public.family_bundles%rowtype;
   v_seats jsonb;
 begin
-  v_access := public.validate_device_access(p_credential, null);
+  v_access := public.validate_device_access(p_credential, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
@@ -1396,10 +1402,14 @@ begin
 end;
 $$;
 
+drop function if exists public.create_bundle_invite(text, uuid, interval);
+drop function if exists public.create_bundle_invite(text, uuid, interval, text);
+
 create or replace function public.create_bundle_invite(
   p_credential text,
   p_seat_id uuid default null,
-  p_ttl interval default interval '48 hours'
+  p_ttl interval default interval '48 hours',
+  p_device_binding text default null
 )
 returns jsonb
 language plpgsql
@@ -1416,7 +1426,7 @@ declare
   v_invite_hash text;
   v_expires timestamptz;
 begin
-  v_access := public.validate_device_access(p_credential, null);
+  v_access := public.validate_device_access(p_credential, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
@@ -1603,9 +1613,13 @@ begin
 end;
 $$;
 
+drop function if exists public.revoke_bundle_seat(text, uuid);
+drop function if exists public.revoke_bundle_seat(text, uuid, text);
+
 create or replace function public.revoke_bundle_seat(
   p_credential text,
-  p_seat_id uuid
+  p_seat_id uuid,
+  p_device_binding text default null
 )
 returns jsonb
 language plpgsql
@@ -1619,7 +1633,7 @@ declare
   v_bundle public.family_bundles%rowtype;
   v_seat public.family_seats%rowtype;
 begin
-  v_access := public.validate_device_access(p_credential, null);
+  v_access := public.validate_device_access(p_credential, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
@@ -1658,7 +1672,14 @@ begin
 end;
 $$;
 
-create or replace function public.upsert_journey_progress(p_token text, p_snapshot jsonb)
+drop function if exists public.upsert_journey_progress(text, jsonb);
+drop function if exists public.upsert_journey_progress(text, jsonb, text);
+
+create or replace function public.upsert_journey_progress(
+  p_token text,
+  p_snapshot jsonb,
+  p_device_binding text default null
+)
 returns jsonb
 language plpgsql
 security definer
@@ -1670,7 +1691,7 @@ declare
   v_cred public.access_credentials%rowtype;
 begin
   -- p_token is the device credential (never a one-time claim)
-  v_access := public.validate_device_access(p_token, null);
+  v_access := public.validate_device_access(p_token, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
@@ -1718,7 +1739,13 @@ exception when others then
 end;
 $$;
 
-create or replace function public.get_journey_progress(p_token text)
+drop function if exists public.get_journey_progress(text);
+drop function if exists public.get_journey_progress(text, text);
+
+create or replace function public.get_journey_progress(
+  p_token text,
+  p_device_binding text default null
+)
 returns jsonb
 language plpgsql
 security definer
@@ -1731,7 +1758,7 @@ declare
   v_cred public.access_credentials%rowtype;
   v_row public.journey_progress%rowtype;
 begin
-  v_access := public.validate_device_access(p_token, null);
+  v_access := public.validate_device_access(p_token, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return null;
   end if;
@@ -1757,7 +1784,13 @@ end;
 $$;
 
 -- Credential-authorized walk sessions (no device-id-only auth)
-create or replace function public._cw_active_seat_for_credential(p_credential text)
+drop function if exists public._cw_active_seat_for_credential(text);
+drop function if exists public._cw_active_seat_for_credential(text, text);
+
+create or replace function public._cw_active_seat_for_credential(
+  p_credential text,
+  p_device_binding text default null
+)
 returns table (
   credential_id uuid,
   purchase_id uuid,
@@ -1776,7 +1809,7 @@ declare
   v_seat public.family_seats%rowtype;
   v_bundle public.family_bundles%rowtype;
 begin
-  v_access := public.validate_device_access(p_credential, null);
+  v_access := public.validate_device_access(p_credential, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return;
   end if;
@@ -1801,9 +1834,13 @@ begin
 end;
 $$;
 
+drop function if exists public.create_walk_session_for_credential(text, text);
+drop function if exists public.create_walk_session_for_credential(text, text, text);
+
 create or replace function public.create_walk_session_for_credential(
   p_credential text,
-  p_resume_policy text default 'leader'
+  p_resume_policy text default 'leader',
+  p_device_binding text default null
 )
 returns jsonb
 language plpgsql
@@ -1816,7 +1853,7 @@ declare
   v_code text;
   v_policy text;
 begin
-  select * into v_auth from public._cw_active_seat_for_credential(p_credential) limit 1;
+  select * into v_auth from public._cw_active_seat_for_credential(p_credential, p_device_binding) limit 1;
   if v_auth.seat_id is null then
     return jsonb_build_object('ok', false, 'reason', 'not_a_member');
   end if;
@@ -1861,9 +1898,13 @@ begin
 end;
 $$;
 
+drop function if exists public.get_walk_session_for_credential(text, uuid);
+drop function if exists public.get_walk_session_for_credential(text, uuid, text);
+
 create or replace function public.get_walk_session_for_credential(
   p_credential text,
-  p_session_id uuid
+  p_session_id uuid,
+  p_device_binding text default null
 )
 returns jsonb
 language plpgsql
@@ -1874,7 +1915,7 @@ declare
   v_auth record;
   v_session public.walk_sessions%rowtype;
 begin
-  select * into v_auth from public._cw_active_seat_for_credential(p_credential) limit 1;
+  select * into v_auth from public._cw_active_seat_for_credential(p_credential, p_device_binding) limit 1;
   if v_auth.seat_id is null then
     return jsonb_build_object('ok', false, 'reason', 'not_a_member');
   end if;
@@ -1911,10 +1952,14 @@ begin
 end;
 $$;
 
+drop function if exists public.update_walk_session_for_credential(text, uuid, jsonb);
+drop function if exists public.update_walk_session_for_credential(text, uuid, jsonb, text);
+
 create or replace function public.update_walk_session_for_credential(
   p_credential text,
   p_session_id uuid,
-  p_patch jsonb
+  p_patch jsonb,
+  p_device_binding text default null
 )
 returns jsonb
 language plpgsql
@@ -1926,7 +1971,7 @@ declare
   v_session public.walk_sessions%rowtype;
   v_is_leader boolean;
 begin
-  select * into v_auth from public._cw_active_seat_for_credential(p_credential) limit 1;
+  select * into v_auth from public._cw_active_seat_for_credential(p_credential, p_device_binding) limit 1;
   if v_auth.seat_id is null then
     return jsonb_build_object('ok', false, 'reason', 'not_a_member');
   end if;
@@ -2013,7 +2058,7 @@ begin
     updated_at = v_session.updated_at
   where id = p_session_id;
 
-  return public.get_walk_session_for_credential(p_credential, p_session_id);
+  return public.get_walk_session_for_credential(p_credential, p_session_id, p_device_binding);
 end;
 $$;
 
@@ -2111,7 +2156,11 @@ as $$
 $$;
 
 -- Fix journey upsert to avoid partial-index ON CONFLICT inference issues
-create or replace function public.upsert_journey_progress(p_token text, p_snapshot jsonb)
+create or replace function public.upsert_journey_progress(
+  p_token text,
+  p_snapshot jsonb,
+  p_device_binding text default null
+)
 returns jsonb
 language plpgsql
 security definer
@@ -2123,7 +2172,7 @@ declare
   v_cred public.access_credentials%rowtype;
   v_existing uuid;
 begin
-  v_access := public.validate_device_access(p_token, null);
+  v_access := public.validate_device_access(p_token, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
@@ -2160,7 +2209,10 @@ begin
 end;
 $$;
 
-create or replace function public.get_journey_progress(p_token text)
+create or replace function public.get_journey_progress(
+  p_token text,
+  p_device_binding text default null
+)
 returns jsonb
 language plpgsql
 security definer
@@ -2172,7 +2224,7 @@ declare
   v_cred public.access_credentials%rowtype;
   v_row public.journey_progress%rowtype;
 begin
-  v_access := public.validate_device_access(p_token, null);
+  v_access := public.validate_device_access(p_token, p_device_binding);
   if coalesce((v_access->>'ok')::boolean, false) is not true then
     return null;
   end if;
@@ -2211,15 +2263,15 @@ grant execute on function public.validate_access_token(text) to anon;
 grant execute on function public.get_purchase_for_token(text) to anon;
 grant execute on function public.redeem_purchase_claim(text, text) to anon;
 grant execute on function public.validate_device_access(text, text) to anon;
-grant execute on function public.get_organizer_bundle_status(text) to anon;
-grant execute on function public.create_bundle_invite(text, uuid, interval) to anon;
+grant execute on function public.get_organizer_bundle_status(text, text) to anon;
+grant execute on function public.create_bundle_invite(text, uuid, interval, text) to anon;
 grant execute on function public.redeem_bundle_invite(text, text, text) to anon;
-grant execute on function public.revoke_bundle_seat(text, uuid) to anon;
-grant execute on function public.upsert_journey_progress(text, jsonb) to anon;
-grant execute on function public.get_journey_progress(text) to anon;
-grant execute on function public.create_walk_session_for_credential(text, text) to anon;
-grant execute on function public.get_walk_session_for_credential(text, uuid) to anon;
-grant execute on function public.update_walk_session_for_credential(text, uuid, jsonb) to anon;
+grant execute on function public.revoke_bundle_seat(text, uuid, text) to anon;
+grant execute on function public.upsert_journey_progress(text, jsonb, text) to anon;
+grant execute on function public.get_journey_progress(text, text) to anon;
+grant execute on function public.create_walk_session_for_credential(text, text, text) to anon;
+grant execute on function public.get_walk_session_for_credential(text, uuid, text) to anon;
+grant execute on function public.update_walk_session_for_credential(text, uuid, jsonb, text) to anon;
 
 -- Inbox helper: reject duplicate event IDs safely
 create or replace function public.record_paddle_webhook_event(
