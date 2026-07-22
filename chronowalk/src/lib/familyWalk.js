@@ -21,9 +21,17 @@ export function getPublicSiteOrigin() {
   return configured || window.location.origin
 }
 
+/**
+ * Canonical bundle-invite form (matches DB `_cw_normalize_bundle_invite`).
+ * Existing secrets are lowercase hex — trim + lowercase only.
+ */
+export function normalizeBundleInviteCode(inviteCode) {
+  return String(inviteCode ?? '').trim().toLowerCase()
+}
+
 /** Build `/invite?code=` share URL from the configured site origin. */
 export function buildInviteShareUrl(inviteCode) {
-  const code = String(inviteCode ?? '').trim()
+  const code = normalizeBundleInviteCode(inviteCode)
   if (!code) return null
   const origin = getPublicSiteOrigin()
   if (!origin) return null
@@ -246,7 +254,8 @@ export async function revokeBundleSeat({ seatId }) {
 export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
   const deviceBinding = getDeviceId()
   const remote = await tryRpc('redeem_bundle_invite', {
-    p_invite: String(inviteCode).trim(),
+    // Client normalize is defense in depth; DB remains authoritative.
+    p_invite: normalizeBundleInviteCode(inviteCode),
     p_device_binding: deviceBinding,
     p_display_name: displayName,
   })

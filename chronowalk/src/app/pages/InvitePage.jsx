@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { claimFamilySeat } from '../../lib/familyWalk.js'
+import { claimFamilySeat, normalizeBundleInviteCode } from '../../lib/familyWalk.js'
 import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 import { isResumableJourney } from '../../state/journey.js'
 
@@ -14,7 +14,9 @@ function destinationAfterInvite() {
 export function InvitePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const codeFromUrl = (searchParams.get('code') ?? '').trim().toUpperCase()
+  // Preserve URL secret as-is (trim only). Never destructively uppercase —
+  // secrets are lowercase hex; CSS may style the field as uppercase visually.
+  const codeFromUrl = (searchParams.get('code') ?? '').trim()
   const [code, setCode] = useState(codeFromUrl)
   const [name, setName] = useState('')
   const [status, setStatus] = useState(codeFromUrl ? 'ready' : 'idle')
@@ -26,7 +28,7 @@ export function InvitePage() {
 
   const redeem = async (event) => {
     event?.preventDefault?.()
-    const inviteCode = code.trim().toUpperCase()
+    const inviteCode = normalizeBundleInviteCode(code)
     if (!inviteCode) return
 
     setStatus('claiming')
@@ -100,9 +102,12 @@ export function InvitePage() {
             </span>
             <input
               value={code}
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="ABCD12"
+              onChange={(e) => setCode(e.target.value)}
+              placeholder="paste invite code"
               autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               style={{
                 padding: '14px 16px',
                 borderRadius: 'var(--r-card)',
@@ -111,6 +116,7 @@ export function InvitePage() {
                 color: 'var(--warm-white)',
                 fontSize: 'var(--fs-secondary)',
                 letterSpacing: '0.12em',
+                // Visual only — does not mutate React state / submitted secret.
                 textTransform: 'uppercase',
               }}
             />
@@ -146,7 +152,7 @@ export function InvitePage() {
             <p style={{ margin: 0, color: 'var(--ember)', fontSize: 'var(--fs-secondary)' }}>
               {error === 'invite_already_claimed'
                 ? 'That code was already used.'
-                : error === 'invite_not_found'
+                : error === 'invite_not_found' || error === 'invalid'
                   ? 'We could not find that invite code.'
                   : 'Could not join with that code. Try again.'}
             </p>
