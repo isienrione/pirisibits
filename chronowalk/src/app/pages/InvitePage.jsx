@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { claimFamilySeat, normalizeBundleInviteCode } from '../../lib/familyWalk.js'
 import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
@@ -11,20 +11,12 @@ function destinationAfterInvite() {
   })
 }
 
-export function InvitePage() {
+function InviteForm({ initialCode }) {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  // Preserve URL secret as-is (trim only). Never destructively uppercase —
-  // secrets are lowercase hex; CSS may style the field as uppercase visually.
-  const codeFromUrl = (searchParams.get('code') ?? '').trim()
-  const [code, setCode] = useState(codeFromUrl)
+  const [code, setCode] = useState(initialCode)
   const [name, setName] = useState('')
-  const [status, setStatus] = useState(codeFromUrl ? 'ready' : 'idle')
+  const [status, setStatus] = useState(initialCode ? 'ready' : 'idle')
   const [error, setError] = useState(null)
-
-  useEffect(() => {
-    if (codeFromUrl) setCode(codeFromUrl)
-  }, [codeFromUrl])
 
   const redeem = async (event) => {
     event?.preventDefault?.()
@@ -187,4 +179,13 @@ export function InvitePage() {
       </div>
     </main>
   )
+}
+
+export function InvitePage() {
+  const [searchParams] = useSearchParams()
+  // Preserve URL secret as-is (trim only). Never destructively uppercase —
+  // secrets are lowercase hex; CSS may style the field as uppercase visually.
+  // Remount when the query code changes so URL loads stay non-destructive.
+  const codeFromUrl = (searchParams.get('code') ?? '').trim()
+  return <InviteForm key={codeFromUrl || 'manual'} initialCode={codeFromUrl} />
 }
