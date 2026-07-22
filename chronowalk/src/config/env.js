@@ -7,10 +7,27 @@ const parseBooleanEnv = (value) => {
   return normalized === 'true' || normalized === '1' || normalized === 'yes'
 }
 
+/** Production builds must never honor simulation / debug-geo placement inputs. */
+const isProductionRuntime = () => Boolean(import.meta.env.PROD)
+
 const DEBUG_GEO_PARAM_KEYS = ['debugGeo', 'geo_debug']
+
+function normalizePlacementToken(value) {
+  const normalized = String(value ?? '')
+    .trim()
+    .toLowerCase()
+  if (!normalized) return null
+  if (['walking', 'transit'].includes(normalized)) return 'walking'
+  if (['approach', 'approaching', 'near'].includes(normalized)) return 'approaching'
+  if (['arrived', 'inside'].includes(normalized)) return 'arrived'
+  return null
+}
 
 /** Raw debug-geo URL/build value (true, walking, approaching, etc.). */
 export const getDebugGeoParam = () => {
+  // Fail closed in production — query and Vite env must not fake GPS placement.
+  if (isProductionRuntime()) return null
+
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search)
     for (const key of DEBUG_GEO_PARAM_KEYS) {
@@ -29,14 +46,15 @@ export const getDebugGeoParam = () => {
  * Always a no-op in production builds so live travelers never get a fake position.
  */
 export const getSimulateLocationParam = () => {
-  if (import.meta.env.PROD) return null
+  if (isProductionRuntime()) return null
 
   if (typeof window !== 'undefined') {
     const param = new URLSearchParams(window.location.search).get('simulate')
     if (param !== null) return String(param).trim().toLowerCase()
   }
 
-  const fromEnv = import.meta.env.VITE_SIMULATE_LOCATION
+  const fromEnv =
+    import.meta.env.VITE_SIMULATE_LOCATION || import.meta.env.VITE_SIMULATE_ROME
   if (fromEnv) return String(fromEnv).trim().toLowerCase()
   return null
 }
@@ -65,20 +83,26 @@ export const isDebugGeo = () => {
 }
 
 /**
- * Simulated GPS placement while debug geo is active.
+ * Simulated GPS placement while debug geo is active (dev/preview only).
  * - arrived (default): inside geofence — triggers arrival cards
  * - approaching: just outside geofence
  * - walking: farther away — walking / map UI
  * - rome: fixed Colosseum-approach origin (from ?simulate=rome)
+ *
+ * Sources (non-production only): URL debugGeo value, then
+ * `VITE_DEBUG_GEO_PLACEMENT`, then default `arrived`.
  */
 export const getDebugGeoPlacement = () => {
+  if (isProductionRuntime()) return null
   if (!isDebugGeo()) return null
   if (isSimulateRome()) return 'rome'
-  const normalized = String(getDebugGeoParam() ?? 'true')
-    .trim()
-    .toLowerCase()
-  if (['walking', 'transit'].includes(normalized)) return 'walking'
-  if (['approach', 'approaching', 'near'].includes(normalized)) return 'approaching'
+
+  const fromParam = normalizePlacementToken(getDebugGeoParam())
+  if (fromParam) return fromParam
+
+  const fromEnv = normalizePlacementToken(import.meta.env.VITE_DEBUG_GEO_PLACEMENT)
+  if (fromEnv) return fromEnv
+
   return 'arrived'
 }
 
@@ -167,7 +191,8 @@ export const isDebugMedia = () => {
 
 /**
  * Map debug overlays (GPS state, geofence, journey labels).
- * Enabled via ?debugMap=true, ?debug=true, VITE_DEBUG_MAP, or while ?debugGeo=true.
+ * Enabled via ?debugMap=true, ?debug=true, VITE_DEBUG_MAP / VITE_DEBUG,
+ * or while debug geo / Santiago remaps are active.
  */
 export const isDebugMap = () => {
   if (isDebugGeo()) return true
@@ -181,7 +206,10 @@ export const isDebugMap = () => {
     if (debug !== null) return parseBooleanEnv(debug)
   }
 
-  return parseBooleanEnv(import.meta.env.VITE_DEBUG_MAP)
+  return (
+    parseBooleanEnv(import.meta.env.VITE_DEBUG_MAP) ||
+    parseBooleanEnv(import.meta.env.VITE_DEBUG)
+  )
 }
 
 /**
