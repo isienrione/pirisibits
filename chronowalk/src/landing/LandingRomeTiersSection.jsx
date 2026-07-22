@@ -21,11 +21,14 @@ function CheckIcon() {
 
 /**
  * Act III — pricing. Map stays visible; stop list + inclusions fold open.
+ * Couple/Family bundles follow the route cards as a shared-experience block.
  * Checkout stays in `onBeginTier` (purchase path, not access-code).
  */
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
   const tiers = section.tiers ?? []
+  const shared = section.sharedExperience
+  const bundles = shared?.bundles ?? []
   const sectionRef = useRef(null)
   const timeLabel = section.metaTimeLabel ?? 'Est. duration'
   const stopsLabel = section.metaStopsLabel ?? 'Key stops'
@@ -146,6 +149,91 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
             )
           })}
         </div>
+
+        {shared && bundles.length > 0 ? (
+          <div
+            className="cw-v2-pricing__shared"
+            id={shared.id}
+            aria-labelledby={`${shared.id}-heading`}
+          >
+            <header className="cw-v2-pricing__shared-header">
+              <h3 id={`${shared.id}-heading`} className="cw-v2-pricing__shared-title">
+                {shared.headline}
+              </h3>
+              <p className="cw-v2-pricing__shared-lead">{shared.lead}</p>
+            </header>
+
+            <div className="cw-v2-pricing__shared-grid">
+              {bundles.map((bundle) => (
+                <article
+                  key={bundle.id}
+                  className={`cw-v2-pricing-card cw-v2-pricing-card--bundle cw-v2-pricing-card--${bundle.id}`}
+                  aria-labelledby={`pricing-name-${bundle.id}`}
+                >
+                  {bundle.badge ? (
+                    <span className="cw-v2-pricing-card__ribbon cw-v2-pricing-card__ribbon--savings">
+                      {bundle.badge}
+                    </span>
+                  ) : null}
+
+                  <h4 id={`pricing-name-${bundle.id}`} className="cw-v2-pricing-card__name">
+                    {bundle.name}
+                  </h4>
+                  <p className="cw-v2-pricing-card__best-for">{bundle.bestFor}</p>
+
+                  <div className="cw-v2-pricing-card__price-row">
+                    <span className="cw-v2-pricing-card__price">{bundle.price}</span>
+                    <span className="cw-v2-pricing-card__note">{bundle.priceNote}</span>
+                  </div>
+
+                  <dl
+                    className="cw-v2-pricing-card__meta cw-v2-pricing-card__meta--bundle"
+                    aria-label={`${bundle.name} allowance`}
+                  >
+                    <div className="cw-v2-pricing-card__meta-item">
+                      <dt>People / devices</dt>
+                      <dd>{bundle.seatLabel}</dd>
+                    </div>
+                    <div className="cw-v2-pricing-card__meta-item">
+                      <dt>Included tour</dt>
+                      <dd>{bundle.contentLine}</dd>
+                    </div>
+                  </dl>
+
+                  <div
+                    className="cw-v2-pricing-card__content-callout"
+                    aria-label={`${bundle.name} content entitlement`}
+                  >
+                    <p className="cw-v2-pricing-card__content-title">{bundle.contentTitle}</p>
+                    <p className="cw-v2-pricing-card__content-stops">{bundle.contentStops}</p>
+                    <p className="cw-v2-pricing-card__content-loop">{bundle.contentLoop}</p>
+                  </div>
+
+                  <p className="cw-v2-pricing-card__per-person">{bundle.perPerson}</p>
+                  <p className="cw-v2-pricing-card__savings-line">{bundle.savingsLine}</p>
+                  <p className="cw-v2-pricing-card__outcome">{bundle.outcome}</p>
+
+                  <ul className="cw-v2-pricing-card__list cw-v2-pricing-card__list--inclusions">
+                    {bundle.bullets.map((item) => (
+                      <li key={item} className="cw-v2-pricing-card__item">
+                        <CheckIcon />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button
+                    type="button"
+                    className="cw-v2-btn cw-v2-btn--tier cw-v2-btn--block cw-v2-pricing-card__cta"
+                    onClick={() => onBeginTier(bundle.id)}
+                  >
+                    {bundle.primaryCta}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         {section.footnote ? <p className="cw-v2-pricing__footnote">{section.footnote}</p> : null}
 
