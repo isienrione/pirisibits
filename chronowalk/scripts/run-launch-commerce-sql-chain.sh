@@ -25,6 +25,12 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN BYPASSRLS; END IF;
 END $$;
+
+-- Hosted Supabase model: pgcrypto lives in `extensions`, not on default search_path.
+CREATE SCHEMA IF NOT EXISTS extensions;
+DROP EXTENSION IF EXISTS pgcrypto;
+CREATE EXTENSION pgcrypto WITH SCHEMA extensions;
+SELECT set_config('search_path', 'public, pg_catalog', false);
 SQL
 
 apply() {

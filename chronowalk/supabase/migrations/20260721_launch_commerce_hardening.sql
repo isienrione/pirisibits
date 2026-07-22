@@ -7,7 +7,11 @@
 --
 -- Does NOT run the retired family_walk.sql grant path. Old anon RPCs are revoked/replaced.
 
-create extension if not exists pgcrypto;
+-- Hosted Supabase installs pgcrypto in `extensions`, not `public`.
+-- Always create/use that schema so SECURITY DEFINER functions with a
+-- restricted search_path can resolve crypto helpers reliably.
+create schema if not exists extensions;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- 0) Crypto pepper (service-only; never returned)
@@ -31,7 +35,7 @@ create policy "_access_pepper service only"
 revoke all on table public._access_pepper from anon, authenticated;
 
 insert into public._access_pepper (id, pepper)
-select 1, encode(gen_random_bytes(32), 'hex')
+select 1, encode(extensions.gen_random_bytes(32), 'hex')
 where not exists (select 1 from public._access_pepper where id = 1);
 
 create or replace function public._cw_hash_secret(p_raw text)
@@ -52,7 +56,7 @@ begin
     raise exception 'access pepper missing';
   end if;
   return encode(
-    hmac(convert_to(p_raw, 'utf8'), convert_to(v_pepper, 'utf8'), 'sha256'),
+    extensions.hmac(convert_to(p_raw, 'utf8'), convert_to(v_pepper, 'utf8'), 'sha256'),
     'hex'
   );
 end;
@@ -68,7 +72,7 @@ volatile
 security definer
 set search_path = public, extensions
 as $$
-  select encode(gen_random_bytes(greatest(coalesce(p_bytes, 32), 16)), 'hex');
+  select encode(extensions.gen_random_bytes(greatest(coalesce(p_bytes, 32), 16)), 'hex');
 $$;
 
 revoke all on function public._cw_new_secret(int) from public, anon, authenticated;
@@ -1528,7 +1532,12 @@ begin
     return jsonb_build_object('ok', false, 'reason', 'invalid');
   end if;
 
-  v_bucket := 'invite:' || left(encode(digest(trim(p_invite), 'sha256'), 'hex'), 16);
+  -- Schema-qualify: hosted Supabase keeps pgcrypto in `extensions`, and this
+  -- SECURITY DEFINER function uses search_path = public only.
+  v_bucket := 'invite:' || left(
+    encode(extensions.digest(convert_to(trim(p_invite), 'utf8'), 'sha256'), 'hex'),
+    16
+  );
   if not public._cw_rate_limit(v_bucket, 10, interval '10 minutes') then
     return jsonb_build_object('ok', false, 'reason', 'rate_limited');
   end if;
@@ -1865,7 +1874,7 @@ begin
   where bundle_id = v_auth.bundle_id and status = 'active' and expires_at > now();
 
   loop
-    v_code := upper(substr(encode(gen_random_bytes(8), 'hex'), 1, 5));
+    v_code := upper(substr(encode(extensions.gen_random_bytes(8), 'hex'), 1, 5));
     exit when not exists (
       select 1 from public.walk_sessions
       where join_code = v_code and status = 'active' and expires_at > now()
