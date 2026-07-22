@@ -37,6 +37,7 @@ import {
   LazyPreviewPage,
   LazySettingsPage,
   LazySetupPage,
+  LazyWalkTogetherPage,
   LazyTourPage,
   LazyWelcomePage,
   LazyLegalTermsPage,
@@ -108,6 +109,7 @@ function AppRoutes() {
         <Route path="/journal/:waypointId" element={<Paid><LazyMemoryDetailPage /></Paid>} />
         <Route path="/letter" element={<Paid><LazyLetterPage /></Paid>} />
         <Route path="/settings" element={<Paid><LazySettingsPage /></Paid>} />
+        <Route path="/walk-together" element={<Paid><LazyWalkTogetherPage /></Paid>} />
         <Route path="/credits" element={<LazyCreditsPage />} />
         <Route path="/access" element={<LazyAccessPage />} />
         <Route path="/invite" element={<LazyInvitePage />} />

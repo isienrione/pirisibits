@@ -39,6 +39,10 @@ export function packTitleForPurchasedTier(tierId = readPurchasedTier()) {
       return 'Roma Antica'
     case 'rome-complete':
       return 'Roma Eterna'
+    case 'rome-couple':
+      return 'Couple Bundle'
+    case 'rome-family':
+      return 'Family Bundle'
     default:
       return 'ChronoWalk Rome'
   }
@@ -52,6 +56,10 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
       return 'Colosseum, Forum, hills, and Circus Maximus.'
     case 'rome-complete':
       return 'The full Rome walk — archaeological core to the Appian Way.'
+    case 'rome-couple':
+      return 'Complete Roma Eterna for two devices, with shared tour progress.'
+    case 'rome-family':
+      return 'Complete Roma Eterna for up to four devices, with shared tour progress.'
     default:
       return 'Your self-guided Rome walk is unlocked on this phone.'
   }

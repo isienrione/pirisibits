@@ -32,6 +32,7 @@ const SCREEN_ROUTES = {
   G1: '/settings',
   G2: '/credits',
   G3: '/settings',
+  G4: '/walk-together',
 }
 
 export default function RedesignRouteShell({ children }) {

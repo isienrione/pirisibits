@@ -4,6 +4,15 @@ import { MemoryRouter } from 'react-router-dom'
 import SettingsBottomSheet from '../SettingsBottomSheet.jsx'
 import { writeAudioSpeed } from '../../../utils/appPreferences.js'
 import { FamilyWalkProvider } from '../../context/FamilyWalkContext.jsx'
+import { writeAccessEntitlement, writeDeviceCredential } from '../../../lib/accessSession.js'
+
+vi.mock('../../../lib/familyWalk.js', async () => {
+  const actual = await vi.importActual('../../../lib/familyWalk.js')
+  return {
+    ...actual,
+    refreshFamilyBundle: vi.fn(async () => null),
+  }
+})
 
 vi.mock('../../../hooks/useOfflineAudio.js', () => ({
   useOfflineAudio: () => ({
@@ -53,8 +62,25 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
-    expect(screen.getByTestId('family-walk-panel')).toBeInTheDocument()
+    expect(screen.queryByTestId('family-walk-panel')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('settings-walk-together')).not.toBeInTheDocument()
     expect(screen.getByText(/ChronoWalk · Rome · made to disappear/)).toBeInTheDocument()
+  })
+
+  it('surfaces Walk together for a verified bundle entitlement', () => {
+    writeDeviceCredential('bundle-credential-abcdefghij')
+    writeAccessEntitlement({
+      purchasedProductId: 'rome-couple',
+      contentProductId: 'rome-complete',
+      seatLimit: 2,
+      role: 'owner',
+      bundleStatus: 'active',
+      offlineLeaseExpiresAt: Date.now() + 60_000,
+    })
+    renderSheet()
+    expect(screen.getByTestId('settings-walk-together')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('settings-walk-together'))
+    expect(mockNavigate).toHaveBeenCalledWith('/walk-together')
   })
 
   it('persists audio speed selection', () => {

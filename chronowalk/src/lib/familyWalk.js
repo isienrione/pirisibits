@@ -1,10 +1,111 @@
 import { supabase, isSupabaseConfigured } from './supabase.js'
 import { getDeviceId } from './deviceId.js'
 import { localFamilyStore } from './familyLocalStore.js'
-import { readDeviceCredential, writeDeviceCredential } from './accessSession.js'
+import {
+  readAccessEntitlement,
+  readDeviceCredential,
+  writeAccessEntitlement,
+  writeDeviceCredential,
+} from './accessSession.js'
 import { applyPurchaseUnlock } from './pendingPurchase.js'
+import { isBundleSku } from './launchSkus.js'
 
 const MEMBERSHIP_KEY = 'cw_family_membership_v1'
+
+/** Public site origin for invite deep links — never hardcode a wrong host. */
+export function getPublicSiteOrigin() {
+  if (typeof window === 'undefined') {
+    return String(import.meta.env.VITE_SITE_URL ?? '').trim().replace(/\/$/, '')
+  }
+  const configured = String(import.meta.env.VITE_SITE_URL ?? '').trim().replace(/\/$/, '')
+  return configured || window.location.origin
+}
+
+/** Build `/invite?code=` share URL from the configured site origin. */
+export function buildInviteShareUrl(inviteCode) {
+  const code = String(inviteCode ?? '').trim()
+  if (!code) return null
+  const origin = getPublicSiteOrigin()
+  if (!origin) return null
+  return `${origin}/invite?code=${encodeURIComponent(code)}`
+}
+
+export function bundleMetaForProductId(productId) {
+  if (productId === 'rome-couple') {
+    return {
+      productId: 'rome-couple',
+      label: 'Couple Bundle',
+      seatLimit: 2,
+      contentProductId: 'rome-complete',
+      stopCount: 21,
+    }
+  }
+  if (productId === 'rome-family') {
+    return {
+      productId: 'rome-family',
+      label: 'Family Bundle',
+      seatLimit: 4,
+      contentProductId: 'rome-complete',
+      stopCount: 21,
+    }
+  }
+  return null
+}
+
+function normalizeBundleView(raw, { isOwner = false } = {}) {
+  if (!raw || typeof raw !== 'object') return null
+  const purchasedProductId = raw.purchased_product_id ?? raw.purchasedProductId ?? raw.tier ?? null
+  const contentProductId = raw.content_product_id ?? raw.contentProductId ?? 'rome-complete'
+  const seatLimit = Number(raw.seat_limit ?? raw.seatLimit ?? 0) || null
+  const role = raw.role ?? (isOwner ? 'owner' : null)
+  const seats = Array.isArray(raw.seats)
+    ? raw.seats.map((seat) => ({
+        id: seat.id,
+        label: seat.label ?? null,
+        role: seat.role ?? null,
+        status: seat.status ?? null,
+        claimedAt: seat.claimedAt ?? seat.claimed_at ?? null,
+        // Invite secrets are one-time; never invent codes from status refresh.
+        inviteCode: seat.inviteCode ?? null,
+      }))
+    : null
+
+  return {
+    ok: true,
+    id: raw.bundleId ?? raw.bundle_id ?? raw.id ?? null,
+    bundleId: raw.bundleId ?? raw.bundle_id ?? raw.id ?? null,
+    purchasedProductId,
+    contentProductId,
+    seatLimit,
+    role,
+    isOwner: role === 'owner' || Boolean(isOwner || raw.isOwner),
+    bundleStatus: raw.bundle_status ?? raw.bundleStatus ?? null,
+    seats,
+    // Legacy alias used by older UI — maps from server product id only.
+    tier:
+      purchasedProductId === 'rome-couple'
+        ? 'couple'
+        : purchasedProductId === 'rome-family'
+          ? 'family'
+          : raw.tier ?? null,
+  }
+}
+
+function memberViewFromAccess(access) {
+  const purchasedProductId = access?.purchased_product_id ?? access?.purchasedProductId ?? null
+  if (!isBundleSku(purchasedProductId)) return null
+  return normalizeBundleView(
+    {
+      purchased_product_id: purchasedProductId,
+      content_product_id: access.content_product_id ?? access.contentProductId ?? 'rome-complete',
+      seat_limit: access.seat_limit ?? access.seatLimit,
+      role: access.role ?? 'member',
+      bundle_status: access.bundle_status ?? access.bundleStatus ?? 'active',
+      seats: null,
+    },
+    { isOwner: access.role === 'owner' },
+  )
+}
 
 function allowsLocalFamilyDevStore() {
   // Local store may exercise UI in DEV only — never grants production access.
@@ -45,13 +146,19 @@ function rpcError(error) {
         ? 'invite_not_found'
         : message.includes('not_a_member')
           ? 'not_a_member'
-          : message.includes('session_not_found')
-            ? 'session_not_found'
-            : message.includes('token_not_found')
-              ? 'token_not_found'
-              : message.includes('retired')
-                ? 'retired'
-                : 'unknown'
+          : message.includes('not_owner')
+            ? 'not_owner'
+            : message.includes('no_seat')
+              ? 'no_seat'
+              : message.includes('missing_credential')
+                ? 'missing_credential'
+                : message.includes('session_not_found')
+                  ? 'session_not_found'
+                  : message.includes('token_not_found')
+                    ? 'token_not_found'
+                    : message.includes('retired')
+                      ? 'retired'
+                      : 'unknown'
   const err = new Error(message)
   err.code = code
   return err
@@ -94,8 +201,46 @@ export async function createBundleInvite({ seatId = null } = {}) {
     p_seat_id: seatId,
     p_device_binding: getDeviceId(),
   })
-  if (remote.ok && remote.data?.ok !== false) return remote.data
+  if (remote.ok && remote.data?.ok === false) {
+    const err = new Error(remote.data.reason ?? 'invite_failed')
+    err.code = remote.data.reason ?? 'invite_failed'
+    throw err
+  }
+  if (remote.ok && remote.data?.invite) {
+    return {
+      ok: true,
+      invite: remote.data.invite,
+      seatId: remote.data.seat_id ?? remote.data.seatId ?? seatId,
+      expiresAt: remote.data.expires_at ?? remote.data.expiresAt ?? null,
+    }
+  }
   throw rpcError(remote.error ?? new Error(remote.reason ?? 'invite_failed'))
+}
+
+export async function revokeBundleSeat({ seatId }) {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
+  }
+  if (!seatId) {
+    const err = new Error('invalid')
+    err.code = 'invalid'
+    throw err
+  }
+  const remote = await tryRpc('revoke_bundle_seat', {
+    p_credential: credential,
+    p_seat_id: seatId,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok === false) {
+    const err = new Error(remote.data.reason ?? 'revoke_failed')
+    err.code = remote.data.reason ?? 'revoke_failed'
+    throw err
+  }
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  throw rpcError(remote.error ?? new Error(remote.reason ?? 'revoke_failed'))
 }
 
 export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
@@ -147,21 +292,71 @@ export async function claimFamilySeat({ inviteCode, displayName = 'Walker' }) {
   }
 }
 
+/**
+ * Refresh shared-bundle view from the server.
+ * Organizers get seat inventory; members get entitlement-only view.
+ * Solo purchases and invalid credentials fail closed (null).
+ * Never falls back to the local family store outside DEV.
+ */
 export async function refreshFamilyBundle() {
   const credential = readDeviceCredential()
   if (!credential) return null
+
   const remote = await tryRpc('get_organizer_bundle_status', {
     p_credential: credential,
     p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) {
-    writeMembership(remote.data)
-    return remote.data
+    const view = normalizeBundleView(remote.data, { isOwner: true })
+    writeMembership(view)
+    writeAccessEntitlement({
+      purchasedProductId: view.purchasedProductId,
+      contentProductId: view.contentProductId,
+      seatLimit: view.seatLimit,
+      role: 'owner',
+      bundleStatus: view.bundleStatus,
+    })
+    return view
   }
+
+  if (remote.ok && remote.data?.reason === 'not_owner') {
+    const access = await tryRpc('validate_device_access', {
+      p_credential: credential,
+      p_device_binding: getDeviceId(),
+    })
+    if (access.ok && access.data?.ok !== false) {
+      writeAccessEntitlement({
+        purchasedProductId: access.data.purchased_product_id,
+        contentProductId: access.data.content_product_id,
+        seatLimit: access.data.seat_limit,
+        role: access.data.role,
+        bundleStatus: access.data.bundle_status,
+        offlineLeaseExpiresAt: access.data.offline_lease_expires_at,
+      })
+      const memberView = memberViewFromAccess(access.data)
+      if (memberView) writeMembership(memberView)
+      return memberView
+    }
+    return null
+  }
+
+  if (remote.ok && (remote.data?.reason === 'invalid' || remote.reason === 'rejected')) {
+    return null
+  }
+
+  // Network / not configured: use cached entitlement for members only; never mint seats.
+  const entitlement = readAccessEntitlement()
+  if (entitlement && isBundleSku(entitlement.purchasedProductId)) {
+    return memberViewFromAccess(entitlement)
+  }
+
   if (!allowsLocalFamilyDevStore()) return null
   const local = localFamilyStore.getBundleForDevice(getDeviceId())
-  if (local) writeMembership(local)
-  return local
+  if (local) {
+    writeMembership(local)
+    return normalizeBundleView(local, { isOwner: Boolean(local.isOwner) })
+  }
+  return null
 }
 
 export function getCachedFamilyMembership() {
