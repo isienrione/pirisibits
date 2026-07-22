@@ -1,7 +1,7 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-22-v11-adjustments
+ * WEBHOOK_BUILD: 2026-07-23-v12-email-generation
  *
  * Entitlement is derived only from data.items[].price.id via server secrets
  * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
@@ -10,12 +10,13 @@
  * Adjustments: refunds/credits/chargebacks via apply_paddle_adjustment.
  *
  * Deploy the paddle-webhook function directory (index + local modules).
- * Logs / JSON MUST contain "2026-07-22-v11-adjustments".
+ * Logs / JSON MUST contain "2026-07-23-v12-email-generation".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
 import { encryptClaimSecret } from '../_shared/claimCrypto.js'
+import { freshFulfillmentGenerationFields } from '../_shared/fulfillmentWorkerLogic.js'
 import {
   buildServerPriceMap,
   isDuplicateWebhookInbox,
@@ -30,7 +31,7 @@ import {
   shouldIgnoreOutOfOrderEvent,
 } from './fulfillmentLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-22-v11-adjustments'
+const WEBHOOK_BUILD = '2026-07-23-v12-email-generation'
 
 function readServerPriceEnv() {
   return {
@@ -348,7 +349,7 @@ async function enqueueFulfillmentOnly(supabase, purchase, rawClaim) {
 
   const { data: existing } = await supabase
     .from('fulfillment_outbox')
-    .select('id, status, encrypted_claim, attempts')
+    .select('id, status, encrypted_claim, attempts, email_generation_id')
     .eq('purchase_id', purchase.id)
     .maybeSingle()
 
@@ -357,17 +358,23 @@ async function enqueueFulfillmentOnly(supabase, purchase, rawClaim) {
     return { reused: true, status: existing.status }
   }
 
+  // Fresh enqueue (or re-enqueue after wiped ciphertext): new email generation.
+  const generation = freshFulfillmentGenerationFields({
+    reason: encrypted || existing?.encrypted_claim ? null : 'claim_encryption_unavailable',
+    attempts: existing?.attempts ?? 0,
+  })
+  // When encryption succeeds, clear last_error (fresh generation helper sets a reason).
+  if (encrypted || existing?.encrypted_claim) {
+    generation.last_error = null
+  }
+
   const { error } = await supabase.from('fulfillment_outbox').upsert(
     {
       purchase_id: purchase.id,
       order_id: purchase.order_id,
-      status: 'pending',
-      attempts: existing?.attempts ?? 0,
-      next_attempt_at: new Date().toISOString(),
       encrypted_claim: encrypted ?? existing?.encrypted_claim ?? null,
       claim_expires_at: claimExpiresAt,
-      last_error: encrypted || existing?.encrypted_claim ? null : 'claim_encryption_unavailable',
-      updated_at: new Date().toISOString(),
+      ...generation,
     },
     { onConflict: 'purchase_id' },
   )

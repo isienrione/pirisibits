@@ -9,6 +9,8 @@
  *   export SUPABASE_SERVICE_ROLE_KEY=…
  *   node scripts/retry-fulfillment-outbox.mjs txn_01…
  *   node scripts/retry-fulfillment-outbox.mjs txn_01… --execute
+ *   # After Resend http_409 / stale lifecycle on a still-valid encrypted claim:
+ *   node scripts/retry-fulfillment-outbox.mjs txn_01… --rotate-generation --execute
  */
 
 import { resolve } from 'node:path'
@@ -19,8 +21,9 @@ import { ageSeconds, maskEmail, maskOrderId } from './lib/fulfillmentWorkerLogic
 export function parseRetryArgs(argv) {
   const args = argv.slice(2)
   const execute = args.includes('--execute')
+  const rotateGeneration = args.includes('--rotate-generation')
   const orderId = args.find((a) => a.startsWith('txn_')) ?? null
-  return { execute, orderId }
+  return { execute, rotateGeneration, orderId }
 }
 
 export function formatOutboxAuditRow(row, nowMs = Date.now()) {
@@ -36,6 +39,9 @@ export function formatOutboxAuditRow(row, nowMs = Date.now()) {
     nextAttemptAt: row.next_attempt_at ?? null,
     hasCiphertext: Boolean(row.encrypted_claim),
     hasResendId: Boolean(row.resend_email_id),
+    hasEmailGenerationId: Boolean(row.email_generation_id),
+    hasSentAt: Boolean(row.sent_at),
+    hasDeliveredAt: Boolean(row.delivered_at),
     lastError: row.last_error ? String(row.last_error).slice(0, 80) : null,
   }
 }
@@ -44,7 +50,7 @@ export async function loadOutboxByOrder(supabase, orderId) {
   const { data: outbox, error } = await supabase
     .from('fulfillment_outbox')
     .select(
-      'id, purchase_id, order_id, status, attempts, max_attempts, next_attempt_at, created_at, encrypted_claim, resend_email_id, last_error, claim_expires_at',
+      'id, purchase_id, order_id, status, attempts, max_attempts, next_attempt_at, created_at, encrypted_claim, resend_email_id, email_generation_id, sent_at, delivered_at, last_error, claim_expires_at',
     )
     .eq('order_id', orderId)
     .maybeSingle()
@@ -67,9 +73,11 @@ export async function loadOutboxByOrder(supabase, orderId) {
 }
 
 async function main() {
-  const { execute, orderId } = parseRetryArgs(process.argv)
+  const { execute, rotateGeneration, orderId } = parseRetryArgs(process.argv)
   if (!orderId) {
-    console.error('Usage: node scripts/retry-fulfillment-outbox.mjs txn_… [--execute]')
+    console.error(
+      'Usage: node scripts/retry-fulfillment-outbox.mjs txn_… [--rotate-generation] [--execute]',
+    )
     process.exit(1)
   }
 
@@ -93,7 +101,13 @@ async function main() {
     console.log(`  ${k}:`, v)
   }
   console.log('  mode:', execute ? 'execute' : 'dry-run')
+  console.log('  rotateGeneration:', rotateGeneration)
   console.log('  access_link: [never printed]')
+  if (rotateGeneration) {
+    console.log(
+      '  note: --rotate-generation keeps encrypted_claim, clears prior email lifecycle, and mints a new Resend idempotency generation (does not mint a new claim)',
+    )
+  }
 
   if (!execute) {
     console.log('Dry-run complete. Pass --execute to requeue (does not mint a new claim).')
@@ -102,6 +116,7 @@ async function main() {
 
   const { data, error } = await supabase.rpc('operator_requeue_fulfillment', {
     p_order_id: orderId,
+    p_rotate_generation: rotateGeneration,
   })
   if (error) {
     console.error('Requeue failed:', error.message)
@@ -115,6 +130,8 @@ async function main() {
     order: maskOrderId(orderId),
     outboxStatus: data.outbox_status,
     hasEncryptedClaim: data.has_encrypted_claim,
+    rotatedGeneration: Boolean(data.rotated_generation),
+    hasEmailGenerationId: Boolean(data.email_generation_id),
   })
 }
 
