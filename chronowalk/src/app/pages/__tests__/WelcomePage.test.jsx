@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { WelcomePage } from '../WelcomePage'
-import { ACCESS_KEY } from '../../../lib/config'
+import { grantTestAccess } from '../../../test/grantTestAccess.js'
 import { markAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
 
@@ -32,7 +32,7 @@ describe('WelcomePage', () => {
   })
 
   it('redirects new purchasers into app entry setup', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
 
     renderWelcomePage()
 
@@ -40,7 +40,7 @@ describe('WelcomePage', () => {
   })
 
   it('redirects purchasers who finished app entry to begin', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     markAppEntryComplete()
 
     renderWelcomePage()
@@ -49,7 +49,7 @@ describe('WelcomePage', () => {
   })
 
   it('redirects purchasers with an in-progress journey to journey', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     transitionJourney(JOURNEY_STATES.WALKING)
 
     renderWelcomePage()

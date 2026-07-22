@@ -29,26 +29,35 @@ describe('checkout helpers (Paddle)', () => {
     expect(getTierById('missing')).toBeNull()
   })
 
-  it('builds paddle custom data for tiers', () => {
+  it('builds paddle custom data for attribution only (not entitlement)', () => {
     const data = buildPaddleCustomData({
       host: 'hotelroma1',
       abVariantCents: 999,
       productId: 'rome-central',
+      consentVersion: '2026-07-21',
     })
+    // product_id may be sent for analytics — webhook must ignore it for access.
     expect(data).toEqual({
       product_id: 'rome-central',
       host: 'hotelroma1',
       ab_variant: '999',
+      consent_version: '2026-07-21',
     })
   })
 
-  it('resolves price ids from env', () => {
+  it('resolves all five price ids from env', () => {
     vi.stubEnv('VITE_PADDLE_CLIENT_TOKEN', 'test_token')
     vi.stubEnv('VITE_PADDLE_PRICE_ROME_COMPLETE', 'pri_complete')
     vi.stubEnv('VITE_PADDLE_PRICE_ROME_CENTRAL', 'pri_central')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_ESSENTIAL', 'pri_essential')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_COUPLE', 'pri_couple')
+    vi.stubEnv('VITE_PADDLE_PRICE_ROME_FAMILY', 'pri_family')
     expect(resolvePaddlePriceId('rome-central')).toBe('pri_central')
     expect(resolvePaddlePriceId('rome-complete')).toBe('pri_complete')
+    expect(resolvePaddlePriceId('rome-couple')).toBe('pri_couple')
+    expect(resolvePaddlePriceId('rome-family')).toBe('pri_family')
     expect(isPaddleCheckoutReady('rome-central')).toBe(true)
+    expect(isPaddleCheckoutReady('rome-couple')).toBe(true)
   })
 
   it('prefers app_config paddle_prices over env', () => {

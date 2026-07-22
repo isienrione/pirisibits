@@ -1,4 +1,7 @@
--- Cloud journey resume — run in Supabase SQL editor after v2_app_config.sql
+-- Cloud journey resume — legacy shape keyed by purchases.access_token.
+-- DEPRECATED: do not run on new environments. Use
+--   supabase/migrations/20260721_launch_commerce_hardening.sql
+-- which creates subject-isolated journey_progress (credential / seat).
 
 alter table public.purchases
   add column if not exists product_id text;

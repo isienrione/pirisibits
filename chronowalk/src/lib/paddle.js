@@ -1,16 +1,25 @@
 /**
  * Paddle Billing commerce — ChronoWalk Rome packs (one-time prices).
  * Overlay checkout via @paddle/paddle-js; unlock still comes from the webhook.
+ *
+ * custom_data.product_id is attribution/debug only — it never authorizes access.
+ * Entitlement is derived server-side from the paid Paddle price id.
  */
 
 import { initializePaddle } from '@paddle/paddle-js'
+import {
+  LAUNCH_CATALOG_BY_ID,
+  LAUNCH_CATALOG_PRODUCTS,
+} from './generated/launchCatalog.gen.js'
 
 /** Tier id → Vite env key for the Paddle price id (`pri_…`). */
-export const PADDLE_PRICE_ENV_KEYS = Object.freeze({
-  'rome-central': 'VITE_PADDLE_PRICE_ROME_CENTRAL',
-  'rome-essential': 'VITE_PADDLE_PRICE_ROME_ESSENTIAL',
-  'rome-complete': 'VITE_PADDLE_PRICE_ROME_COMPLETE',
-})
+export const PADDLE_PRICE_ENV_KEYS = Object.freeze(
+  Object.fromEntries(LAUNCH_CATALOG_PRODUCTS.map((p) => [p.productId, p.clientEnvKey])),
+)
+
+export const CANONICAL_CHECKOUT_PRODUCT_IDS = Object.freeze(
+  LAUNCH_CATALOG_PRODUCTS.map((p) => p.productId),
+)
 
 const DEFAULT_TIER = 'rome-complete'
 
@@ -39,6 +48,10 @@ export function resolveCheckoutMode() {
   return mode === 'hosted' ? 'hosted' : 'overlay'
 }
 
+export function isCanonicalCheckoutProduct(productId) {
+  return Boolean(productId && PADDLE_PRICE_ENV_KEYS[productId])
+}
+
 /**
  * Resolve a Paddle price id for a Rome tier.
  * Optional `fromConfig` map (from Supabase app_config.paddle_prices) wins over env.
@@ -57,21 +70,79 @@ export function resolvePaddlePriceId(tierId, fromConfig) {
   return fromEnv || null
 }
 
+/**
+ * Production fail-closed check when bundle SKUs are offered publicly.
+ * Bundles enabled + missing/duplicate public bundle price IDs → not ready.
+ */
+export function assertPublicPriceConfig({
+  environment = getPaddleEnvironment(),
+  paddlePricesFromConfig,
+  bundlesEnabled = true,
+} = {}) {
+  const resolved = {}
+  for (const productId of CANONICAL_CHECKOUT_PRODUCT_IDS) {
+    resolved[productId] = resolvePaddlePriceId(productId, paddlePricesFromConfig)
+  }
+
+  const duplicates = new Map()
+  for (const [sku, priceId] of Object.entries(resolved)) {
+    if (!priceId) continue
+    if (duplicates.has(priceId)) {
+      return {
+        ok: false,
+        reason: 'duplicate_public_price',
+        message: `Price id for ${duplicates.get(priceId)} duplicates ${sku}`,
+      }
+    }
+    duplicates.set(priceId, sku)
+  }
+
+  if (environment === 'production' && bundlesEnabled) {
+    if (!resolved['rome-couple'] || !resolved['rome-family']) {
+      return {
+        ok: false,
+        reason: 'missing_bundle_price',
+        message: 'Production bundles require VITE_PADDLE_PRICE_ROME_COUPLE and _FAMILY',
+      }
+    }
+  }
+
+  return { ok: true, resolved }
+}
+
 /** True when client token + at least the default (or given) tier price id exist. */
 export function isPaddleCheckoutReady(tierId, paddlePricesFromConfig) {
   if (!getPaddleClientToken()) return false
+  const configCheck = assertPublicPriceConfig({
+    paddlePricesFromConfig,
+    bundlesEnabled: true,
+  })
+  if (!configCheck.ok && getPaddleEnvironment() === 'production') return false
+  if (tierId && !isCanonicalCheckoutProduct(tierId)) return false
   return Boolean(resolvePaddlePriceId(tierId, paddlePricesFromConfig))
 }
 
-/** Build Paddle `customData` (string values only). */
-export function buildPaddleCustomData({ host, abVariantCents, productId } = {}) {
+/**
+ * Build Paddle `customData` (string values only).
+ * product_id / host / experiment / consent are attribution only — not entitlement authority.
+ */
+export function buildPaddleCustomData({
+  host,
+  abVariantCents,
+  productId,
+  consentVersion,
+} = {}) {
   /** @type {Record<string, string>} */
   const data = {}
-  if (productId) data.product_id = String(productId)
+  // Attribution/debug only — webhook ignores this for access.
+  if (productId && isCanonicalCheckoutProduct(productId)) {
+    data.product_id = String(productId)
+  }
   if (host) data.host = String(host)
   if (abVariantCents != null && abVariantCents !== '') {
     data.ab_variant = String(abVariantCents)
   }
+  if (consentVersion) data.consent_version = String(consentVersion)
   return data
 }
 
@@ -112,8 +183,8 @@ export function ensurePaddle() {
 }
 
 /**
- * Open Paddle overlay checkout for a price id.
- * @returns {Promise<{ ok: true, mode: 'overlay', priceId: string } | { ok: false, reason: string }>}
+ * Open Paddle overlay checkout for a canonical product (quantity always 1).
+ * Buyer cannot choose content_product_id or seat_limit.
  */
 export async function openPaddleCheckout({
   priceId,
@@ -146,7 +217,7 @@ export async function openPaddleCheckout({
   }
 
   paddle.Checkout.open(options)
-  return { ok: true, mode: 'overlay', priceId }
+  return { ok: true, mode: 'overlay', priceId, quantity: 1 }
 }
 
 /** Test helper — reset singleton between vitest cases. */
@@ -154,3 +225,5 @@ export function __resetPaddleForTests() {
   paddleSingleton = undefined
   paddleInitPromise = null
 }
+
+export { LAUNCH_CATALOG_BY_ID, LAUNCH_CATALOG_PRODUCTS }

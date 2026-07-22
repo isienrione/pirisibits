@@ -1,4 +1,9 @@
 import { isPaddleCheckoutReady } from './paddle.js'
+import {
+  clearLocalAccessState,
+  hasValidLocalAccess,
+  writeAccessEntitlement,
+} from './accessSession.js'
 
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
@@ -117,19 +122,36 @@ export function formatConfigPrice(cents, currency = 'EUR') {
   return formatPrice(cents, currency)
 }
 
+/**
+ * Local gate for paid routes: requires a stored device credential and a
+ * non-expired offline lease / entitlement — never a bare cw_access boolean.
+ */
 export function hasAccess() {
-  if (typeof window === 'undefined') return false
-  return window.localStorage.getItem(ACCESS_KEY) === 'true'
+  return hasValidLocalAccess()
 }
 
+/** @deprecated Prefer applyPurchaseUnlock / redeemPurchaseClaim persistence. */
 export function grantAccess() {
   if (typeof window === 'undefined') return
-  window.localStorage.setItem(ACCESS_KEY, 'true')
+  // Compatibility for DEV presets only — still requires an entitlement write.
+  writeAccessEntitlement({
+    purchasedProductId: 'rome-complete',
+    contentProductId: 'rome-complete',
+    seatLimit: 1,
+    role: 'solo',
+    bundleStatus: null,
+  })
+  try {
+    if (!window.localStorage.getItem('cw_device_credential_v1')) {
+      window.localStorage.setItem('cw_device_credential_v1', 'dev-credential-local')
+    }
+  } catch {
+    /* ignore */
+  }
 }
 
 export function revokeAccess() {
-  if (typeof window === 'undefined') return
-  window.localStorage.removeItem(ACCESS_KEY)
+  clearLocalAccessState()
 }
 
 export { ACCESS_KEY, AB_KEY }

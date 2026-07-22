@@ -1,200 +1,59 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-21-v7
+ * WEBHOOK_BUILD: 2026-07-22-v11-adjustments
  *
- * WHY v5: transaction.completed payloads do NOT include buyer email (only customer_id).
- * customer.created payloads DO include email — cache customer_id → email, fulfill on completed.
- * WHY v6: branded HTML access email (black / gold / amber welcome).
+ * Entitlement is derived only from data.items[].price.id via server secrets
+ * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
+ * Successful entitlement does not depend on Resend during the Paddle request.
+ * Email delivery is enqueued to fulfillment_outbox for process-fulfillment-outbox.
+ * Adjustments: refunds/credits/chargebacks via apply_paddle_adjustment.
  *
- * Paste this ONE file into Supabase → Edge Functions → paddle-webhook → Deploy.
- * Do NOT create a new function — replace the existing paddle-webhook body.
- * Logs / JSON MUST contain "2026-07-21-v7".
+ * Deploy the paddle-webhook function directory (index + local modules).
+ * Logs / JSON MUST contain "2026-07-22-v11-adjustments".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import { Environment, Paddle } from 'npm:@paddle/paddle-node-sdk@3.8.0'
+import { encryptClaimSecret } from '../_shared/claimCrypto.js'
+import {
+  buildServerPriceMap,
+  isDuplicateWebhookInbox,
+  isTerminalPurchaseStatus,
+  isValidEmail,
+  maskEmail,
+  maskId,
+  paddlePayloadEmailCandidate,
+  readAdjustmentPayload,
+  resolveAdjustmentEffect,
+  resolveLaunchEntitlementFromTransaction,
+  shouldIgnoreOutOfOrderEvent,
+} from './fulfillmentLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-21-v7'
+const WEBHOOK_BUILD = '2026-07-22-v11-adjustments'
 
-/* ---- branded access email template (inlined for single-file Supabase paste) ---- */
-/**
- * ChronoWalk purchase unlock email — HTML + plaintext.
- * Visual language matches the black / gold / amber welcome mockup.
- */
-
-const PACK_LABELS = {
-  'rome-central': 'Roma Historica',
-  'rome-essential': 'Roma Antica',
-  'rome-complete': 'Roma Eterna',
+function readServerPriceEnv() {
+  return {
+    PADDLE_PRICE_ROME_CENTRAL: Deno.env.get('PADDLE_PRICE_ROME_CENTRAL'),
+    PADDLE_PRICE_ROME_ESSENTIAL: Deno.env.get('PADDLE_PRICE_ROME_ESSENTIAL'),
+    PADDLE_PRICE_ROME_COMPLETE: Deno.env.get('PADDLE_PRICE_ROME_COMPLETE'),
+    PADDLE_PRICE_ROME_COUPLE: Deno.env.get('PADDLE_PRICE_ROME_COUPLE'),
+    PADDLE_PRICE_ROME_FAMILY: Deno.env.get('PADDLE_PRICE_ROME_FAMILY'),
+  }
 }
 
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+const PRICE_MAP_RESULT = buildServerPriceMap(readServerPriceEnv())
+if (!PRICE_MAP_RESULT.ok) {
+  console.error('[paddle-webhook] price map invalid at startup', {
+    build: WEBHOOK_BUILD,
+    reason: PRICE_MAP_RESULT.reason,
+    message: PRICE_MAP_RESULT.message,
+  })
 }
+const SERVER_PRICE_MAP = PRICE_MAP_RESULT.ok ? PRICE_MAP_RESULT.map : new Map()
 
-function packLabel(productId) {
-  if (!productId) return null
-  return PACK_LABELS[String(productId)] ?? String(productId)
-}
+/* Access email HTML lives in accessEmailHtml.ts / fulfillment worker — not sent during the Paddle webhook request. */
 
-/** Format UUID for the code box: readable chunks. */
-function formatAccessCodeDisplay(accessToken) {
-  const raw = String(accessToken ?? '').trim()
-  if (!raw) return ''
-  // Keep hyphens; wrap visually via CSS letter-spacing / word-break in HTML.
-  return raw.toLowerCase()
-}
-
-function buildAccessEmailText({ accessToken, accessLink, productId }) {
-  const pack = packLabel(productId)
-  return [
-    'WELCOME TO CHRONOWALK',
-    '',
-    'Your Rome experience is ready.',
-    '',
-    'Thank you so much for choosing Chronowalk. Open your personal link below to unlock your walk, save your progress, and keep your memories with you.',
-    '',
-    accessLink,
-    '',
-    'Or go to chronowalk.com/access and paste this access code:',
-    String(accessToken),
-    '',
-    pack ? `Pack: ${pack}` : null,
-    '',
-    'WALK · LISTEN · TIME TRAVEL',
-    '',
-    'Keep this email — you can restore access anytime at chronowalk.com/access',
-    '',
-    'EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described. Details: https://chronowalk.com/legal/refund',
-  ]
-    .filter((line) => line != null)
-    .join('\n')
-}
-
-/**
- * @param {{ accessToken: string, accessLink: string, productId?: string | null, siteUrl?: string }} opts
- */
-function buildAccessEmailHtml({
-  accessToken,
-  accessLink,
-  productId,
-  siteUrl = 'https://chronowalk.com',
-}) {
-  const base = String(siteUrl).replace(/\/$/, '')
-  const emblem = `${base}/brand/emblem-dark.png`
-  const lockup = `${base}/brand/lockup-horizontal-dark.png`
-  const code = escapeHtml(formatAccessCodeDisplay(accessToken))
-  const link = escapeHtml(accessLink)
-  const pack = packLabel(productId)
-  const packLine = pack
-    ? `<p style="margin:0 0 28px;font-family:Georgia,'Times New Roman',serif;font-size:14px;line-height:1.5;color:#c4a35a;">Pack: ${escapeHtml(pack)}</p>`
-    : ''
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
-  <meta name="supported-color-schemes" content="dark" />
-  <title>Your ChronoWalk Rome access</title>
-</head>
-<body style="margin:0;padding:0;background-color:#050505;color:#f5f0e6;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
-    Your Rome experience is ready — open your ChronoWalk access link.
-  </div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#050505;margin:0;padding:0;">
-    <tr>
-      <td align="center" style="padding:32px 16px;">
-        <table role="presentation" width="560" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:560px;background-color:#0b0b0d;border:1px solid #2a2418;">
-          <tr>
-            <td style="padding:36px 36px 12px;">
-              <img src="${escapeHtml(lockup)}" width="220" alt="ChronoWalk" style="display:block;width:220px;max-width:70%;height:auto;border:0;" />
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 36px 0;">
-              <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:#c9a227;">
-                Welcome to ChronoWalk
-              </p>
-              <h1 style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:1.2;font-weight:400;color:#faf6ef;">
-                Your Rome experience is ready.
-              </h1>
-              <p style="margin:0 0 28px;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.65;color:#c4a35a;">
-                Thank you so much for choosing Chronowalk. Use the access code below to securely open your walk, save your progress, and keep your memories with you.
-              </p>
-              ${packLine}
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 36px 28px;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #c9a227;background-color:#12110e;">
-                <tr>
-                  <td style="padding:22px 20px;text-align:center;">
-                    <p style="margin:0 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#c9a227;">
-                      Access code
-                    </p>
-                    <p style="margin:0 0 14px;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.45;letter-spacing:0.04em;color:#faf6ef;word-break:break-all;">
-                      ${code}
-                    </p>
-                    <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#b9af9c;">
-                      &#128274; Use at <a href="${escapeHtml(base)}/access" style="color:#c9a227;text-decoration:underline;">chronowalk.com/access</a>
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 36px 36px;" align="center">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td align="center" bgcolor="#e07a2f" style="border-radius:10px;background:linear-gradient(180deg,#f0a04b 0%,#e07a2f 55%,#c45f1c 100%);">
-                    <a href="${link}" style="display:inline-block;padding:16px 28px;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.2;color:#0b0b0d;text-decoration:none;font-weight:600;">
-                      Begin Your Chronowalk&nbsp;&rarr;
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:#8a8274;">
-                Button not working? Paste this link into your browser:<br />
-                <a href="${link}" style="color:#c9a227;word-break:break-all;">${link}</a>
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 36px 40px;text-align:center;border-top:1px solid #2a2418;">
-              <p style="margin:24px 0 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:#faf6ef;">
-                Walk &bull; Listen &bull; Time Travel
-              </p>
-              <img src="${escapeHtml(emblem)}" width="36" height="36" alt="" style="display:inline-block;width:36px;height:36px;border:0;opacity:0.9;" />
-              <p style="margin:16px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.5;color:#8a8274;">
-                Keep this email — you can restore access anytime at chronowalk.com/access
-              </p>
-              <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:1.55;color:#6e675c;text-align:left;">
-                EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described.
-                <a href="${escapeHtml(base)}/legal/refund" style="color:#c9a227;text-decoration:underline;">Refund policy</a>
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`
-}
-
-function accessEmailSubject() {
-  return 'Your ChronoWalk Rome access link'
-}
-
-/* ---- end email template ---- */
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -239,12 +98,27 @@ function getSupabaseAdmin() {
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
-function siteUrl() {
-  return (Deno.env.get('SITE_URL') ?? 'https://chronowalk.com').replace(/\/$/, '')
-}
 
-function buildAccessLink(accessToken) {
-  return `${siteUrl()}/access?token=${encodeURIComponent(accessToken)}`
+async function recordWebhookEvent(supabase, envelope, eventType, { operatorReview = false } = {}) {
+  const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
+  const { data, error } = await supabase.rpc('record_paddle_webhook_event', {
+    p_event_id: eventId ? String(eventId) : null,
+    p_event_type: eventType ? String(eventType) : 'unknown',
+    p_occurred_at: envelope?.occurred_at ?? null,
+    p_payload: {
+      event_type: eventType,
+      data_id: envelope?.data?.id ?? null,
+      operator_review: operatorReview,
+    },
+  })
+  if (error) throw new Error(`webhook inbox failed: ${error.message}`)
+  if (operatorReview && eventId) {
+    await supabase
+      .from('paddle_webhook_events')
+      .update({ operator_review: true, status: 'failed', last_error: 'operator_review' })
+      .eq('event_id', String(eventId))
+  }
+  return data
 }
 
 /** Prefer raw webhook JSON — SDK entities strip nested fields and never have email on txns. */
@@ -255,16 +129,6 @@ function readPayload(rawBody) {
     envelope,
     eventType: envelope?.event_type ?? envelope?.eventType ?? null,
     data,
-  }
-}
-
-function readCustomData(data) {
-  const raw = data?.custom_data ?? data?.customData ?? {}
-  const custom = raw && typeof raw === 'object' ? raw : {}
-  return {
-    product_id: custom.product_id ? String(custom.product_id) : null,
-    host: custom.host ? String(custom.host) : null,
-    ab_variant: custom.ab_variant != null ? Number(custom.ab_variant) : null,
   }
 }
 
@@ -343,10 +207,8 @@ async function emailFromPaddleApi(mode, { orderId, customerId }) {
 async function resolveBuyerEmail(supabase, mode, data) {
   const orderId = data?.id ? String(data.id) : null
   const customerId = data?.customer_id ?? data?.customerId ?? data?.customer?.id ?? null
-  const direct =
-    data?.customer?.email ??
-    data?.email ??
-    null
+  // Never use custom_data / browser fields as authoritative buyer email.
+  const direct = paddlePayloadEmailCandidate(data)
 
   if (direct) {
     if (customerId) {
@@ -356,37 +218,51 @@ async function resolveBuyerEmail(supabase, mode, data) {
         console.warn('[paddle-webhook] cache direct email failed', err)
       }
     }
-    return { email: String(direct).toLowerCase(), source: 'payload' }
+    return { email: direct, source: 'payload' }
   }
 
   const cached = await emailFromCache(supabase, customerId)
-  if (cached) return { email: cached.toLowerCase(), source: 'paddle_customers' }
+  if (cached && isValidEmail(cached)) {
+    return { email: cached.toLowerCase(), source: 'paddle_customers' }
+  }
 
   const api = await emailFromPaddleApi(mode, { orderId, customerId })
-  if (api.email) {
+  if (api.email && isValidEmail(api.email)) {
+    const email = String(api.email).trim().toLowerCase()
     if (customerId) {
       try {
-        await upsertPaddleCustomer(supabase, { customerId, email: api.email })
+        await upsertPaddleCustomer(supabase, { customerId, email })
       } catch (err) {
         console.warn('[paddle-webhook] cache api email failed', err)
       }
     }
-    return { email: api.email.toLowerCase(), source: `api:${api.attempts.join(',')}` }
+    return { email, source: `api:${api.attempts.join(',')}` }
   }
 
   throw new Error(
     [
       `buyer email unresolved (${WEBHOOK_BUILD})`,
-      `orderId=${orderId}`,
-      `customerId=${customerId}`,
-      `cache=miss`,
+      `orderId=${orderId ? maskId(orderId) : 'null'}`,
+      `customerId=${customerId ? maskId(customerId) : 'null'}`,
+      'cache=miss',
       `api=[${api.attempts.join(', ') || 'skipped'}]`,
-      'Fix: ensure customer.created is stored (run paddle-customers migration) or API can read customers',
     ].join(' | '),
   )
 }
 
-async function upsertPurchase(supabase, { email, orderId, productId, host, abVariant }) {
+async function upsertPurchase(supabase, {
+  email,
+  orderId,
+  productId,
+  contentProductId,
+  seatLimit,
+  priceId,
+  paddleCustomerId,
+  currencyCode,
+  amountCents,
+  host,
+  abVariant,
+}) {
   const { data, error } = await supabase
     .from('purchases')
     .upsert(
@@ -394,57 +270,38 @@ async function upsertPurchase(supabase, { email, orderId, productId, host, abVar
         email,
         order_id: orderId,
         product_id: productId,
+        content_product_id: contentProductId,
+        seat_limit: seatLimit,
+        price_id: priceId,
+        paddle_customer_id: paddleCustomerId,
+        currency_code: currencyCode,
+        amount_cents: amountCents,
+        status: 'active',
         host,
         ab_variant: Number.isFinite(abVariant) ? abVariant : null,
+        fulfilled_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
       { onConflict: 'order_id' },
     )
-    .select('access_token, email, product_id, order_id')
+    .select('id, email, product_id, content_product_id, seat_limit, order_id, status')
     .single()
 
   if (error) throw new Error(`purchases upsert failed: ${error.message}`)
-  if (!data?.access_token) throw new Error('purchases upsert returned no access_token')
+  if (!data?.id) throw new Error('purchases upsert returned no id')
   return data
 }
 
-async function sendAccessEmail({ email, accessToken, productId }) {
-  const link = buildAccessLink(accessToken)
-  const resendKey = Deno.env.get('RESEND_API_KEY')
-  const from = Deno.env.get('RESEND_FROM') ?? 'ChronoWalk <hello@chronowalk.com>'
-  const base = siteUrl()
-
-  if (!resendKey) {
-    console.error('[paddle-webhook] RESEND_API_KEY unset', { email, link })
-    throw new Error('RESEND_API_KEY is not set')
-  }
-
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${resendKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to: [email],
-      subject: accessEmailSubject(),
-      html: buildAccessEmailHtml({
-        accessToken,
-        accessLink: link,
-        productId,
-        siteUrl: base,
-      }),
-      text: buildAccessEmailText({
-        accessToken,
-        accessLink: link,
-        productId,
-      }),
-    }),
+async function ensureBundleIfNeeded(supabase, purchase) {
+  if (!['rome-couple', 'rome-family'].includes(purchase.product_id)) return null
+  const { data, error } = await supabase.rpc('ensure_paid_bundle', {
+    p_purchase_id: purchase.id,
   })
-
-  if (!res.ok) throw new Error(`Resend failed: ${res.status} ${await res.text()}`)
-  console.log('[paddle-webhook] access email sent', { build: WEBHOOK_BUILD, email, productId })
+  if (error) throw new Error(`ensure_paid_bundle failed: ${error.message}`)
+  return data
 }
+
+
 
 async function handleCustomerEvent(supabase, data) {
   const customerId = data?.id
@@ -457,58 +314,264 @@ async function handleCustomerEvent(supabase, data) {
     })
     return
   }
-  const row = await upsertPaddleCustomer(supabase, { customerId, email })
-  console.log('[paddle-webhook] customer cached', { build: WEBHOOK_BUILD, ...row })
+  await upsertPaddleCustomer(supabase, { customerId, email })
+  console.log('[paddle-webhook] customer cached', {
+    build: WEBHOOK_BUILD,
+    customerId: maskId(customerId),
+  })
 }
 
-async function handleTransactionCompleted(supabase, mode, data) {
-  const orderId = data?.id
-  if (!orderId) throw new Error('transaction missing id')
+async function markOperatorReview(supabase, envelope, reason) {
+  const eventId = envelope?.event_id ?? null
+  console.warn('[paddle-webhook] operator review', {
+    build: WEBHOOK_BUILD,
+    reason,
+    eventId: eventId ? maskId(eventId) : null,
+    orderId: envelope?.data?.id ? maskId(envelope.data.id) : null,
+  })
+  if (eventId) {
+    await supabase
+      .from('paddle_webhook_events')
+      .update({
+        operator_review: true,
+        status: 'failed',
+        last_error: String(reason).slice(0, 200),
+      })
+      .eq('event_id', String(eventId))
+  }
+}
 
-  const resolved = await resolveBuyerEmail(supabase, mode, data)
-  const custom = readCustomData(data)
+async function enqueueFulfillmentOnly(supabase, purchase, rawClaim) {
+  const keyB64 = Deno.env.get('CLAIM_ENCRYPTION_KEY') ?? ''
+  const encrypted = rawClaim ? await encryptClaimSecret(rawClaim, keyB64) : null
+  const claimExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
+  const { data: existing } = await supabase
+    .from('fulfillment_outbox')
+    .select('id, status, encrypted_claim, attempts')
+    .eq('purchase_id', purchase.id)
+    .maybeSingle()
+
+  // Never overwrite ciphertext or reset a sent/delivered job on Paddle replay.
+  if (existing?.encrypted_claim || ['sent', 'delivered', 'sending'].includes(existing?.status)) {
+    return { reused: true, status: existing.status }
+  }
+
+  const { error } = await supabase.from('fulfillment_outbox').upsert(
+    {
+      purchase_id: purchase.id,
+      order_id: purchase.order_id,
+      status: 'pending',
+      attempts: existing?.attempts ?? 0,
+      next_attempt_at: new Date().toISOString(),
+      encrypted_claim: encrypted ?? existing?.encrypted_claim ?? null,
+      claim_expires_at: claimExpiresAt,
+      last_error: encrypted || existing?.encrypted_claim ? null : 'claim_encryption_unavailable',
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'purchase_id' },
+  )
+  if (error) throw new Error(`fulfillment_outbox upsert failed: ${error.message}`)
+  return { reused: false, status: 'pending' }
+}
+
+async function handleTransactionCompleted(supabase, mode, data, envelope) {
+  if (!PRICE_MAP_RESULT.ok || SERVER_PRICE_MAP.size === 0) {
+    await markOperatorReview(supabase, envelope, 'price_map_invalid')
+    return { ok: false, reason: 'price_map_invalid' }
+  }
+
+  const resolvedEntitlement = resolveLaunchEntitlementFromTransaction(data, SERVER_PRICE_MAP)
+  if (!resolvedEntitlement.ok) {
+    if (resolvedEntitlement.operatorReview) {
+      await markOperatorReview(supabase, envelope, resolvedEntitlement.reason)
+    }
+    return resolvedEntitlement
+  }
+
+  const orderId = data?.id
+  if (!orderId) {
+    await markOperatorReview(supabase, envelope, 'missing_order_id')
+    return { ok: false, reason: 'missing_order_id' }
+  }
+
+  const occurredAt = envelope?.occurred_at ?? null
+  const { data: existing } = await supabase
+    .from('purchases')
+    .select('id, status, last_event_occurred_at')
+    .eq('order_id', String(orderId))
+    .maybeSingle()
+
+  if (existing && isTerminalPurchaseStatus(existing.status)) {
+    console.log('[paddle-webhook] skip fulfill — purchase inactive', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      status: existing.status,
+    })
+    return { ok: true, ignored: true, reason: 'purchase_inactive' }
+  }
+
+  if (
+    existing &&
+    shouldIgnoreOutOfOrderEvent(occurredAt, existing.last_event_occurred_at)
+  ) {
+    console.log('[paddle-webhook] ignoring older event', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+    })
+    return { ok: true, ignored: true, reason: 'out_of_order' }
+  }
+
+  let resolvedEmail
+  try {
+    resolvedEmail = await resolveBuyerEmail(supabase, mode, data)
+  } catch {
+    await markOperatorReview(supabase, envelope, 'email_unresolved')
+    return { ok: false, reason: 'email_unresolved' }
+  }
+
+  if (resolvedEntitlement.attributionMismatch) {
+    console.warn('[paddle-webhook] custom_data product mismatch (using server SKU)', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      claimed: resolvedEntitlement.attributionMismatch.claimed,
+      derived: resolvedEntitlement.attributionMismatch.derived,
+    })
+  }
 
   console.log('[paddle-webhook] fulfilling transaction.completed', {
     build: WEBHOOK_BUILD,
-    orderId,
-    email: resolved.email,
-    source: resolved.source,
-    customerId: data?.customer_id ?? null,
+    orderId: maskId(orderId),
+    email: maskEmail(resolvedEmail.email),
+    source: resolvedEmail.source,
+    priceId: resolvedEntitlement.priceId,
+    productId: resolvedEntitlement.productId,
+    contentProductId: resolvedEntitlement.contentProductId,
+    seatLimit: resolvedEntitlement.seatLimit,
   })
 
   const row = await upsertPurchase(supabase, {
-    email: resolved.email,
+    email: resolvedEmail.email,
     orderId: String(orderId),
-    productId: custom.product_id,
-    host: custom.host,
-    abVariant: custom.ab_variant,
+    productId: resolvedEntitlement.productId,
+    contentProductId: resolvedEntitlement.contentProductId,
+    seatLimit: resolvedEntitlement.seatLimit,
+    priceId: resolvedEntitlement.priceId,
+    paddleCustomerId: data?.customer_id ? String(data.customer_id) : null,
+    currencyCode: resolvedEntitlement.currencyCode,
+    amountCents: resolvedEntitlement.amountCents,
+    host: resolvedEntitlement.custom.host,
+    abVariant: resolvedEntitlement.custom.ab_variant,
   })
 
-  console.log('[paddle-webhook] purchase upserted', {
-    build: WEBHOOK_BUILD,
-    orderId: row.order_id,
-    email: row.email,
-    productId: row.product_id,
-    accessToken: row.access_token,
-  })
+  await supabase
+    .from('purchases')
+    .update({
+      last_event_occurred_at: occurredAt,
+      consent_version: resolvedEntitlement.custom.consent_version,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', row.id)
 
-  try {
-    await sendAccessEmail({
-      email: row.email,
-      accessToken: row.access_token,
-      productId: row.product_id,
-    })
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    console.error('[paddle-webhook] access email failed after purchase save', {
-      build: WEBHOOK_BUILD,
-      orderId: row.order_id,
-      email: row.email,
-      accessToken: row.access_token,
-      link: buildAccessLink(row.access_token),
-      message,
-    })
+  // Bundle + seats are created only for paid couple/family SKUs (server-derived).
+  await ensureBundleIfNeeded(supabase, row)
+
+  // At most one active initial claim. Replays reuse outbox ciphertext — never mint extras.
+  // Email delivery is async via process-fulfillment-outbox — no Resend here.
+  const { data: claimResult, error: claimError } = await supabase.rpc(
+    'ensure_initial_purchase_claim',
+    { p_purchase_id: row.id },
+  )
+  if (claimError || !claimResult?.ok) {
+    await markOperatorReview(supabase, envelope, 'claim_issue_failed')
+    return { ok: false, reason: 'claim_issue_failed' }
   }
+
+  const rawClaim = claimResult.issued ? String(claimResult.claim) : null
+  if (claimResult.issued && !rawClaim) {
+    await markOperatorReview(supabase, envelope, 'claim_issue_failed')
+    return { ok: false, reason: 'claim_issue_failed' }
+  }
+
+  if (!claimResult.issued && !claimResult.has_encrypted_outbox) {
+    // Active claim exists but ciphertext missing — cannot email without minting a second claim.
+    await markOperatorReview(supabase, envelope, 'claim_ciphertext_missing')
+  }
+
+  const outbox = await enqueueFulfillmentOnly(supabase, row, rawClaim)
+
+  console.log('[paddle-webhook] purchase entitled + fulfillment enqueued', {
+    build: WEBHOOK_BUILD,
+    orderId: maskId(row.order_id),
+    productId: row.product_id,
+    contentProductId: row.content_product_id,
+    seatLimit: row.seat_limit,
+    claimIssued: Boolean(claimResult.issued),
+    outboxReused: Boolean(outbox?.reused),
+  })
+
+  return { ok: true, purchaseId: row.id }
+}
+
+async function handleAdjustmentEvent(supabase, data, envelope) {
+  const fields = readAdjustmentPayload(data)
+  if (!fields.adjustmentId) {
+    await markOperatorReview(supabase, envelope, 'missing_adjustment_id')
+    return { ok: false, reason: 'missing_adjustment_id' }
+  }
+  if (!fields.transactionId) {
+    await markOperatorReview(supabase, envelope, 'missing_transaction_id')
+    return { ok: false, reason: 'missing_transaction_id' }
+  }
+
+  const decision = resolveAdjustmentEffect(fields)
+  const occurredAt = envelope?.occurred_at ?? data?.updated_at ?? data?.created_at ?? null
+
+  // Sanitized raw — never store full customer payloads with PII beyond Paddle ids.
+  const rawSafe = {
+    id: fields.adjustmentId,
+    transaction_id: fields.transactionId,
+    action: fields.action,
+    status: fields.status,
+    type: fields.type,
+    reason: fields.reason ? String(fields.reason).slice(0, 200) : null,
+  }
+
+  const { data: result, error } = await supabase.rpc('apply_paddle_adjustment', {
+    p_adjustment_id: fields.adjustmentId,
+    p_transaction_id: String(fields.transactionId),
+    p_action: fields.action,
+    p_status: fields.status,
+    p_type: fields.type,
+    p_occurred_at: occurredAt,
+    p_effect: decision.effect,
+    p_revoke: Boolean(decision.revoke),
+    p_purchase_status: decision.purchaseStatus,
+    p_operator_review: Boolean(decision.operatorReview),
+    p_reason: decision.reason,
+    p_raw: rawSafe,
+  })
+
+  if (error) throw new Error(`apply_paddle_adjustment failed: ${error.message}`)
+
+  if (result?.reason === 'unknown_transaction' || decision.operatorReview) {
+    await markOperatorReview(supabase, envelope, result?.reason ?? decision.reason)
+  }
+
+  console.log('[paddle-webhook] adjustment processed', {
+    build: WEBHOOK_BUILD,
+    adjustmentId: maskId(fields.adjustmentId),
+    orderId: maskId(fields.transactionId),
+    action: fields.action,
+    status: fields.status,
+    type: fields.type,
+    effect: decision.effect,
+    applied: Boolean(result?.applied),
+    reason: result?.reason ?? decision.reason,
+    purchaseStatus: result?.purchase_status ?? null,
+  })
+
+  return { ok: true, ...result, decision }
 }
 
 Deno.serve(async (req) => {
@@ -542,13 +605,31 @@ Deno.serve(async (req) => {
     // Verify signature (throws if invalid). We still fulfill from raw JSON.
     await paddle.webhooks.unmarshal(rawBody, secret, signature)
 
-    const { eventType, data } = readPayload(rawBody)
+    const { envelope, eventType, data } = readPayload(rawBody)
     const supabase = getSupabaseAdmin()
+
+    const inbox = await recordWebhookEvent(supabase, envelope, eventType)
+    if (isDuplicateWebhookInbox(inbox)) {
+      console.log('[paddle-webhook] duplicate event ignored', {
+        build: WEBHOOK_BUILD,
+        eventType,
+        eventId: envelope?.event_id ? maskId(envelope.event_id) : null,
+      })
+      return new Response(
+        JSON.stringify({ received: true, duplicate: true, build: WEBHOOK_BUILD }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        },
+      )
+    }
 
     if (eventType === 'customer.created' || eventType === 'customer.updated') {
       await handleCustomerEvent(supabase, data)
     } else if (eventType === 'transaction.completed') {
-      await handleTransactionCompleted(supabase, mode, data)
+      await handleTransactionCompleted(supabase, mode, data, envelope)
+    } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
+      await handleAdjustmentEvent(supabase, data, envelope)
     } else {
       console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
     }

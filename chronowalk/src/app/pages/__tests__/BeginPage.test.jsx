@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { BeginPage } from '../BeginPage'
-import { ACCESS_KEY } from '../../../lib/config'
+import { grantTestAccess } from '../../../test/grantTestAccess.js'
 import { markAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, resetJourney, transitionJourney } from '../../../state/journey'
 
@@ -33,7 +33,7 @@ describe('BeginPage', () => {
   })
 
   it('sends unlocked travelers without app entry into setup', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
 
     renderBeginPage()
 
@@ -41,19 +41,19 @@ describe('BeginPage', () => {
   })
 
   it('starts at app-home pace selection after entry', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     markAppEntryComplete()
 
     renderBeginPage()
 
     expect(screen.getByTestId('app-begin-home')).toBeInTheDocument()
     expect(screen.getByText(/your walk/i)).toBeInTheDocument()
-    expect(screen.getByText(/you left the website/i)).toBeInTheDocument()
+    expect(screen.getByText(/choose how/i)).toBeInTheDocument()
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
   it('shows pace-aware route preview after choosing a pace', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     markAppEntryComplete()
 
     renderBeginPage()
@@ -66,7 +66,7 @@ describe('BeginPage', () => {
   })
 
   it('skips route preview when onboarding was already completed', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     markAppEntryComplete()
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
 
@@ -80,7 +80,7 @@ describe('BeginPage', () => {
   })
 
   it('shows resume prompt for purchasers with an in-progress journey', () => {
-    localStorage.setItem(ACCESS_KEY, 'true')
+    grantTestAccess()
     transitionJourney(JOURNEY_STATES.WALKING, {
       currentSequenceIndex: 2,
       completedWaypointIds: ['w01'],
