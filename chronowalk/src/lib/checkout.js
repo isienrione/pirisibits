@@ -2,7 +2,7 @@ import { getHost } from './host.js'
 import { getAbVariantCents, loadAppConfig } from './config.js'
 import { track, TRACK_EVENTS } from './track.js'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
-import { ROME_TIERS } from '../landing/landingData.js'
+import { ROME_BUNDLES, ROME_TIERS } from '../landing/landingData.js'
 import {
   assertPublicPriceConfig,
   buildPaddleCustomData,
@@ -13,7 +13,9 @@ import {
   resolvePaddlePriceId,
 } from './paddle.js'
 
-const TIER_BY_ID = Object.fromEntries(ROME_TIERS.map((tier) => [tier.id, tier]))
+const TIER_BY_ID = Object.fromEntries(
+  [...ROME_TIERS, ...ROME_BUNDLES].map((offer) => [offer.id, offer]),
+)
 
 /**
  * True when Paddle is ready (client token + price id).

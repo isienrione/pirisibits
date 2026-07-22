@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ROME_TIERS } from '../landingData.js'
+import { ROME_BUNDLES, ROME_TIERS } from '../landingData.js'
 import { getLandingTierStats } from '../landingTierStats.js'
 
 describe('pricing card hierarchy content', () => {
@@ -28,6 +28,7 @@ describe('pricing card hierarchy content', () => {
     const eterna = ROME_TIERS.find((tier) => tier.id === 'rome-complete')
     expect(eterna.badge).toBe('Full city loop')
     expect(eterna.badge).not.toMatch(/%|popular|bestseller/i)
+    expect(eterna.bullets[0]).toMatch(/All 21 stops/)
   })
 
   it('names each purchase CTA after its package', () => {
@@ -39,10 +40,24 @@ describe('pricing card hierarchy content', () => {
   })
 
   it('exposes stop counts for the simplified meta row', () => {
-    for (const tier of ROME_TIERS) {
-      const stats = getLandingTierStats(tier.id)
-      expect(stats.stopCount).toBeGreaterThan(0)
-      expect(stats.routeTimeLabel).toMatch(/^~/)
+    expect(getLandingTierStats('rome-central').stopCount).toBe(8)
+    expect(getLandingTierStats('rome-essential').stopCount).toBe(12)
+    expect(getLandingTierStats('rome-complete').stopCount).toBe(21)
+  })
+
+  it('defines Couple and Family bundles without a group offer', () => {
+    expect(ROME_BUNDLES.map((bundle) => bundle.id)).toEqual(['rome-couple', 'rome-family'])
+    expect(ROME_BUNDLES.map((bundle) => bundle.primaryCta)).toEqual([
+      'Choose Couple Bundle',
+      'Choose Family Bundle',
+    ])
+    for (const bundle of ROME_BUNDLES) {
+      expect(bundle.contentStops).toBe('All 21 stops')
+      expect(bundle.contentTitle).toBe('Complete Roma Eterna')
+      expect(bundle.contentLoop).toBe('Full city loop')
+      expect(JSON.stringify(bundle)).not.toMatch(/group bundle/i)
+      expect(bundle).not.toHaveProperty('seatLimit')
+      expect(bundle).not.toHaveProperty('contentProductId')
     }
   })
 })
