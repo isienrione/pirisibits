@@ -128,6 +128,24 @@ describe('Walk together settings + management', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/walk-together')
   })
 
+  it('lets a verified organizer open Walk together from Settings for seat management', async () => {
+    seedOrganizer({ productId: 'rome-couple', seatLimit: 2 })
+    refreshFamilyBundle.mockResolvedValue(organizerView({ productId: 'rome-couple', seatLimit: 2 }))
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <SettingsBottomSheet open onClose={vi.fn()} />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    const entry = await screen.findByTestId('settings-walk-together')
+    expect(entry).toHaveTextContent(/Invite people and manage your shared tour/i)
+    fireEvent.click(entry)
+    expect(mockNavigate).toHaveBeenCalledWith('/walk-together')
+  })
+
   it('hides Walk together for solo purchases and keeps the tier selector out of Settings', async () => {
     writeDeviceCredential('solo-credential-abcdefghijkl')
     writeAccessEntitlement({

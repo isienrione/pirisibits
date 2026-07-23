@@ -79,6 +79,16 @@ vi.mock('../../../hooks/useJourneyGeo.js', () => ({
   }),
 }))
 
+vi.mock('../../../hooks/useOfflineAudio.js', () => ({
+  useOfflineAudio: () => ({
+    isReady: false,
+    isDownloading: false,
+    progress: null,
+    error: null,
+    startDownload: vi.fn(),
+  }),
+}))
+
 vi.mock('../../../lib/track.js', () => ({
   track: vi.fn(),
   TRACK_EVENTS: {
@@ -190,6 +200,45 @@ describe('JourneyShell', () => {
     expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('exposes a visible Settings control on the active immersive player', async () => {
+    audioMock.narrationPlaying = true
+    audioMock.progress = {
+      currentTime: 42,
+      duration: 120,
+      chapterIndex: 0,
+      chapterCount: 3,
+      itemIndex: 0,
+      itemCount: 3,
+      playing: true,
+      paused: false,
+    }
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    const settingsBtn = await screen.findByRole('button', { name: 'Open settings' })
+    expect(settingsBtn).toHaveAttribute('data-testid', 'journey-open-settings')
+    expect(settingsBtn).toHaveStyle({ minWidth: '44px', minHeight: '44px' })
+    const playCallsBeforeSettings = playWaypointMock.mock.calls.length
+
+    fireEvent.click(settingsBtn)
+    expect(await screen.findByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
+
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(0)
+    expect(audioMock.narrationPlaying).toBe(true)
+    expect(audioMock.progress.currentTime).toBe(42)
+    expect(playWaypointMock).toHaveBeenCalledTimes(playCallsBeforeSettings)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }))
+    await screen.findByRole('heading', { name: /the colosseum/i })
+    expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(audioMock.narrationPlaying).toBe(true)
+    expect(audioMock.progress.currentTime).toBe(42)
+    expect(playWaypointMock).toHaveBeenCalledTimes(playCallsBeforeSettings)
   })
 
   it('places Pantheon interior immediately after exterior with no transit between', () => {

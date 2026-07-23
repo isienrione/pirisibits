@@ -2013,6 +2013,34 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
     max(20px, env(safe-area-inset-left));
 }
 
+.cw-walking-companion__chrome-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* Leave the far-right edge clear for the DEV QA badge. */
+  padding-right: 44px;
+  margin: 0 0 4px;
+  min-height: 44px;
+}
+
+.cw-walking-companion__settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  color: var(--wc-warm-white);
+  background: rgba(17, 16, 15, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
 .cw-walking-companion__act {
   margin: 0 0 8px;
   font-size: 10px;

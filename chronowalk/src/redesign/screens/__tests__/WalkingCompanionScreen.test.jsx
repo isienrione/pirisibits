@@ -72,13 +72,31 @@ describe('WalkingCompanionScreen', () => {
     expect(screen.getByText('Next turns')).toBeInTheDocument()
   })
 
+  it('shows an accessible Settings control when onOpenSettings is provided', () => {
+    const onOpenSettings = vi.fn()
+    render(
+      <WalkingCompanionScreen
+        title="Arch of Titus"
+        distanceM={200}
+        userPosition={{ lat: 41.889, lng: 12.491 }}
+        destination={{ lat: 41.8902, lng: 12.4922 }}
+        map={<MockMap />}
+        onOpenSettings={onOpenSettings}
+      />,
+    )
+
+    const settingsBtn = screen.getByRole('button', { name: 'Open settings' })
+    expect(settingsBtn).toHaveAttribute('data-testid', 'walking-open-settings')
+    fireEvent.click(settingsBtn)
+    expect(onOpenSettings).toHaveBeenCalledTimes(1)
+  })
+
   it('hides the route toggle after arrival but keeps the story CTA', () => {
     render(
       <WalkingCompanionScreen
         title="Colosseum interior"
         arrived
-        map={<div data-testid="walking-map">Map</div>}
-        onBeginChapter={vi.fn()}
+        map={<div data-testid="walking-map">Map</div>}        onBeginChapter={vi.fn()}
       />
     )
 

@@ -167,10 +167,12 @@ export default function WalkTogetherPanel({
           <button
             type="button"
             onClick={() => onContinue?.()}
+            data-testid="walk-together-continue"
             style={{
               width: '100%',
               marginTop: 18,
               padding: '14px',
+              minHeight: 44,
               border: 'none',
               borderRadius: 999,
               background: T.ember,
@@ -435,6 +437,7 @@ export default function WalkTogetherPanel({
         <button
           type="button"
           onClick={() => onContinue?.()}
+          data-testid="walk-together-continue"
           style={{
             ...primaryBtn(isEntry, false),
             marginTop: 20,
