@@ -118,7 +118,7 @@ describe('RedesignWalkTogetherPage navigation', () => {
     expect(screen.getAllByRole('button', { name: /Create invitation/i }).length).toBeGreaterThan(0)
 
     const continueBtn = screen.getByTestId('walk-together-continue')
-    expect(continueBtn).toHaveStyle({ minHeight: '44px' })
+    expect(Number.parseInt(continueBtn.style.minHeight, 10)).toBeGreaterThanOrEqual(44)
 
     fireEvent.click(continueBtn)
     expect(mockNavigate).toHaveBeenCalledWith('/journey')
@@ -145,8 +145,12 @@ describe('RedesignWalkTogetherPage navigation', () => {
     renderPage('/walk-together')
 
     expect(await screen.findByText(/You belong to a shared Couple\/Family walk/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /You’re walking together|You're walking together/i }),
+    ).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Create invitation/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Revoke seat/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('switch', { name: 'Only leader resumes' })).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue to your walk' }))
     expect(mockNavigate).toHaveBeenCalledWith('/journey')

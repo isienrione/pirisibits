@@ -6,6 +6,8 @@ import { writeAccessEntitlement, writeDeviceCredential } from '../../../lib/acce
 const refreshFamilyBundle = vi.fn()
 const createBundleInvite = vi.fn()
 const revokeBundleSeat = vi.fn()
+const createWalkSession = vi.fn()
+const updateWalkSessionState = vi.fn()
 
 vi.mock('../../../lib/familyWalk.js', async () => {
   const actual = await vi.importActual('../../../lib/familyWalk.js')
@@ -14,6 +16,10 @@ vi.mock('../../../lib/familyWalk.js', async () => {
     refreshFamilyBundle: (...args) => refreshFamilyBundle(...args),
     createBundleInvite: (...args) => createBundleInvite(...args),
     revokeBundleSeat: (...args) => revokeBundleSeat(...args),
+    createWalkSession: (...args) => createWalkSession(...args),
+    updateWalkSessionState: (...args) => updateWalkSessionState(...args),
+    subscribeWalkSession: () => () => {},
+    discoverActiveWalkSession: async () => null,
   }
 })
 
@@ -107,6 +113,8 @@ describe('Walk together settings + management', () => {
     refreshFamilyBundle.mockReset()
     createBundleInvite.mockReset()
     revokeBundleSeat.mockReset()
+    createWalkSession.mockReset()
+    updateWalkSessionState.mockReset()
   })
 
   it('shows Walk together in Settings for a verified Family organizer after onboarding', async () => {
@@ -186,9 +194,14 @@ describe('Walk together settings + management', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('Couple Bundle')).toBeInTheDocument()
+    const panel = await screen.findByTestId('walk-together-panel')
+    expect(panel).toHaveAttribute('data-bundle', 'couple')
+    expect(screen.getByRole('heading', { name: 'Couple Bundle' })).toBeInTheDocument()
     expect(screen.getByText(/Complete Roma Eterna · All 21 stops/i)).toBeInTheDocument()
-    expect(screen.getByText(/1\/2 seats in use/i)).toBeInTheDocument()
+    expect(screen.getByText('1 of 2 travelers joined')).toBeInTheDocument()
+    expect(screen.getByText('1/2 seats in use')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Your walking party' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Shared walk controls' })).toBeInTheDocument()
     expect(screen.queryByText(/Create couple\/family bundle/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /^Couple$/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /^Family$/i })).not.toBeInTheDocument()
@@ -206,9 +219,60 @@ describe('Walk together settings + management', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('Family Bundle')).toBeInTheDocument()
-    expect(screen.getByText(/1\/4 seats in use/i)).toBeInTheDocument()
+    const panel = await screen.findByTestId('walk-together-panel')
+    expect(panel).toHaveAttribute('data-bundle', 'family')
+    expect(screen.getByRole('heading', { name: 'Family Bundle' })).toBeInTheDocument()
+    expect(screen.getByText('1 of 4 travelers joined')).toBeInTheDocument()
+    expect(screen.getByText('1/4 seats in use')).toBeInTheDocument()
+    expect(screen.getByLabelText('1 of 4 travelers joined').querySelectorAll('li')).toHaveLength(4)
     expect(screen.getAllByRole('button', { name: /Create invitation/i }).length).toBe(3)
+  })
+
+  it('orders seats and renders claimed, invitation-ready, and open states distinctly', async () => {
+    seedOrganizer({ productId: 'rome-family', seatLimit: 4 })
+    refreshFamilyBundle.mockResolvedValue({
+      ...organizerView({ productId: 'rome-family', seatLimit: 4 }),
+      seats: [
+        { id: 'seat-owner', label: 'Owner', role: 'owner', status: 'claimed', claimedAt: '2026-07-01' },
+        { id: 'seat-member-2', label: 'Seat 2', role: 'member', status: 'open', claimedAt: null },
+        {
+          id: 'seat-member-3',
+          label: 'Seat 3',
+          role: 'member',
+          status: 'claimed',
+          claimedAt: '2026-07-02',
+        },
+        { id: 'seat-member-4', label: 'Seat 4', role: 'member', status: 'open', claimedAt: null },
+      ],
+    })
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <WalkTogetherPanel />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByTestId('walk-together-seat-seat-owner')).toHaveAttribute(
+      'data-seat-status',
+      'organizer',
+    )
+    expect(screen.getByTestId('walk-together-seat-seat-member-3')).toHaveAttribute(
+      'data-seat-status',
+      'claimed',
+    )
+    expect(screen.getByTestId('walk-together-seat-seat-member-2')).toHaveAttribute(
+      'data-seat-status',
+      'open',
+    )
+    expect(screen.getByText('Organizer')).toBeInTheDocument()
+    expect(screen.getByText('Joined on a device')).toBeInTheDocument()
+    expect(screen.getAllByText('Open seat').length).toBeGreaterThanOrEqual(1)
+
+    const seatButtons = screen.getAllByTestId(/walk-together-seat-/)
+    expect(seatButtons[0]).toHaveAttribute('data-testid', 'walk-together-seat-seat-owner')
+    expect(seatButtons[1]).toHaveAttribute('data-testid', 'walk-together-seat-seat-member-3')
   })
 
   it('lets an organizer create an invitation only for an open seat', async () => {
@@ -260,10 +324,107 @@ describe('Walk together settings + management', () => {
     )
 
     expect(await screen.findByText(/You belong to a shared Couple\/Family walk/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /You’re walking together|You're walking together/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Your walking party' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Shared walk controls' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Create invitation/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Revoke seat/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('switch', { name: 'Shared tour syncing' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('switch', { name: 'Only leader resumes' })).not.toBeInTheDocument()
     expect(createBundleInvite).not.toHaveBeenCalled()
     expect(revokeBundleSeat).not.toHaveBeenCalled()
+  })
+
+  it('keeps invitation copy/share and revoke handlers wired for organizers', async () => {
+    seedOrganizer({ productId: 'rome-couple', seatLimit: 2 })
+    refreshFamilyBundle.mockResolvedValue(organizerView({ productId: 'rome-couple', seatLimit: 2 }))
+    createBundleInvite.mockResolvedValue({
+      ok: true,
+      invite: 'INVITESECRET123456',
+      seatId: 'seat-member-2',
+      expiresAt: '2026-07-23T00:00:00Z',
+    })
+    revokeBundleSeat.mockResolvedValue({
+      ok: true,
+      ...organizerView({ productId: 'rome-couple', seatLimit: 2 }),
+      seats: [
+        { id: 'seat-owner', label: 'Owner', role: 'owner', status: 'claimed', claimedAt: '2026-07-01' },
+        { id: 'seat-member-2', label: 'Seat 2', role: 'member', status: 'revoked', claimedAt: null },
+      ],
+    })
+
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.assign(navigator, { clipboard: { writeText } })
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <WalkTogetherPanel />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(await screen.findByRole('button', { name: /Create invitation/i }))
+    expect(await screen.findByTestId('walk-together-invite-code')).toHaveTextContent(
+      'INVITESECRET123456',
+    )
+    expect(screen.getByTestId('walk-together-seat-seat-member-2')).toHaveAttribute(
+      'data-seat-status',
+      'invite-ready',
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /Copy invitation link/i }))
+    await waitFor(() => expect(writeText).toHaveBeenCalled())
+    expect(screen.getByText(/Invite link copied/i)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /Revoke seat for Walker 2/i }))
+    await waitFor(() => expect(revokeBundleSeat).toHaveBeenCalled())
+    expect(revokeBundleSeat).toHaveBeenCalledWith({ seatId: 'seat-member-2' })
+  })
+
+  it('wires shared-walk sync switches without exposing them as a dashboard', async () => {
+    seedOrganizer({ productId: 'rome-family', seatLimit: 4 })
+    refreshFamilyBundle.mockResolvedValue(organizerView({ productId: 'rome-family', seatLimit: 4 }))
+    createWalkSession.mockResolvedValue({
+      id: 'session-1',
+      joinCode: 'JOIN12',
+      syncEnabled: true,
+      resumePolicy: 'leader',
+      leaderSeatId: 'seat-owner',
+      updatedAt: '2026-07-23T00:00:00Z',
+    })
+    updateWalkSessionState.mockImplementation(async (_id, patch) => ({
+      id: 'session-1',
+      joinCode: 'JOIN12',
+      syncEnabled: patch.syncEnabled ?? true,
+      resumePolicy: patch.resumePolicy ?? 'leader',
+      leaderSeatId: 'seat-owner',
+      updatedAt: '2026-07-23T00:00:01Z',
+    }))
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <WalkTogetherPanel />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(await screen.findByRole('button', { name: /Start shared tour syncing/i }))
+    await waitFor(() => expect(createWalkSession).toHaveBeenCalled())
+    expect(await screen.findByTestId('walk-together-session')).toBeInTheDocument()
+
+    const syncSwitch = screen.getByRole('switch', { name: 'Shared tour syncing' })
+    const resumeSwitch = screen.getByRole('switch', { name: 'Only leader resumes' })
+    expect(syncSwitch).toHaveAttribute('aria-checked', 'true')
+    expect(resumeSwitch).toHaveAttribute('aria-checked', 'true')
+
+    fireEvent.click(syncSwitch)
+    await waitFor(() => expect(updateWalkSessionState).toHaveBeenCalled())
+    expect(updateWalkSessionState).toHaveBeenCalledWith(
+      'session-1',
+      expect.objectContaining({ syncEnabled: false }),
+    )
   })
 
   it('fails closed when credential is missing', async () => {
