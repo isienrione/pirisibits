@@ -1,3 +1,4 @@
+import { getJourneySnapshot, JOURNEY_STATES } from '../state/journey.js'
 import { readPurchasedTier } from './pendingPurchase.js'
 
 const APP_ENTRY_DONE_KEY = 'cw_app_entry_done_v1'
@@ -39,6 +40,10 @@ export function packTitleForPurchasedTier(tierId = readPurchasedTier()) {
       return 'Roma Antica'
     case 'rome-complete':
       return 'Roma Eterna'
+    case 'rome-couple':
+      return 'Couple Bundle'
+    case 'rome-family':
+      return 'Family Bundle'
     default:
       return 'ChronoWalk Rome'
   }
@@ -52,6 +57,10 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
       return 'Colosseum, Forum, hills, and Circus Maximus.'
     case 'rome-complete':
       return 'The full Rome walk — archaeological core to the Appian Way.'
+    case 'rome-couple':
+      return 'Complete Roma Eterna for two devices, with shared tour progress.'
+    case 'rome-family':
+      return 'Complete Roma Eterna for up to four devices, with shared tour progress.'
     default:
       return 'Your self-guided Rome walk is unlocked on this phone.'
   }
@@ -68,4 +77,25 @@ export function getAppHomePath({
   if (resumable) return '/begin'
   if (!entryComplete) return '/setup'
   return '/begin'
+}
+
+/**
+ * Return path into the traveler's current walk without resetting stop, pace, or path.
+ * Active journeys resume from persisted journey state on `/journey`.
+ *
+ * @param {{ journeySnapshot?: { state?: string } | null, entryComplete?: boolean }} [opts]
+ */
+export function getActiveWalkPath({
+  journeySnapshot = typeof window === 'undefined' ? null : getJourneySnapshot(),
+  entryComplete = isAppEntryComplete(),
+} = {}) {
+  const state = journeySnapshot?.state
+  if (
+    state &&
+    state !== JOURNEY_STATES.IDLE &&
+    state !== JOURNEY_STATES.COMPLETE
+  ) {
+    return '/journey'
+  }
+  return getAppHomePath({ resumable: false, entryComplete })
 }

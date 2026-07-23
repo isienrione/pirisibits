@@ -152,6 +152,7 @@ describe('paddle-webhook fulfillmentLogic', () => {
   it('treats duplicate inbox results as no-op and keeps fixed bundle seats', () => {
     expect(isDuplicateWebhookInbox({ duplicate: true })).toBe(true)
     expect(isDuplicateWebhookInbox({ duplicate: false })).toBe(false)
+    expect(isDuplicateWebhookInbox({ duplicate: false, reclaim: true })).toBe(false)
     expect(fixedSeatLimitForSku('rome-couple')).toBe(2)
     expect(fixedSeatLimitForSku('rome-family')).toBe(4)
     // Duplicate bundle events must not invent a client seat count — only catalog limits.

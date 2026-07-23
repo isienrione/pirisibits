@@ -6,10 +6,10 @@ import {
   VERIFY_SQL,
   applySql,
   applySqlFile,
-  assertLocalPsqlAvailable,
   dropDisposableDatabase,
   findInvalidUpdateTargetFunctionRefs,
   findUnqualifiedPgcryptoCalls,
+  isLocalPsqlAvailable,
   listMigrationSqlFiles,
   queryTuples,
   recreateDisposableDatabase,
@@ -23,6 +23,25 @@ const FRESH_DB = 'cw_mig_fresh'
 const LEGACY_DB = 'cw_mig_legacy'
 const RERUN_DB = 'cw_mig_rerun'
 const created = []
+
+const HAS_PSQL = isLocalPsqlAvailable()
+const REQUIRE_PSQL =
+  process.env.CW_REQUIRE_PSQL === '1' || process.env.CW_REQUIRE_PSQL === 'true'
+
+if (REQUIRE_PSQL && !HAS_PSQL) {
+  throw new Error(
+    'CW_REQUIRE_PSQL is set but `psql` is not on PATH. ' +
+      'Install PostgreSQL client tools before `npm run test:sql`, ' +
+      'or unset CW_REQUIRE_PSQL to allow portable `npm test` skips.',
+  )
+}
+
+if (!HAS_PSQL && !REQUIRE_PSQL) {
+  process.stderr.write(
+    '[launchCommerceMigrationFresh] Skipping disposable PostgreSQL suites: `psql` not on PATH. ' +
+      'Static SQL guards still run. Strict SQL regression: `npm run test:sql`.\n',
+  )
+}
 
 function track(dbName) {
   created.push(dbName)
@@ -99,9 +118,8 @@ $$;
   })
 })
 
-describe('Supabase-like extensions.pgcrypto resolution', () => {
+describe.skipIf(!HAS_PSQL)('Supabase-like extensions.pgcrypto resolution', () => {
   it('fails unqualified digest under search_path=public and succeeds with extensions.digest', () => {
-    assertLocalPsqlAvailable()
     const db = track('cw_mig_pgcrypto_schema')
     const schema = queryTuples(
       db,
@@ -152,9 +170,10 @@ select public._test_qualified_digest('invite-token-example');
   })
 })
 
-describe('launch commerce hardening migration on disposable local Postgres', () => {
+describe.skipIf(!HAS_PSQL)(
+  'launch commerce hardening migration on disposable local Postgres',
+  () => {
   it('applies on a completely empty fresh database', () => {
-    assertLocalPsqlAvailable()
     const db = track(FRESH_DB)
     expect(() => applySqlFile(db, HARDENING_SQL)).not.toThrow()
     const tables = queryTuples(
@@ -166,7 +185,6 @@ describe('launch commerce hardening migration on disposable local Postgres', () 
   })
 
   it('backfills entitlements from a legacy purchases table and preserves non-null values', () => {
-    assertLocalPsqlAvailable()
     const db = track(LEGACY_DB)
     applySql(db, LEGACY_PURCHASES_SCHEMA)
     applySql(db, seedLegacyPurchasesSql())
@@ -222,7 +240,6 @@ insert into public.purchases (
   })
 
   it('is idempotent when re-applied on an already-hardened database', () => {
-    assertLocalPsqlAvailable()
     const db = track(RERUN_DB)
     applySqlFile(db, HARDENING_SQL)
     applySql(
@@ -251,7 +268,6 @@ insert into public.purchases (
   })
 
   it('passes the exact hardening verify script and rolls back synthetic rows', () => {
-    assertLocalPsqlAvailable()
     const db = track('cw_mig_verify_full')
     applySqlFile(db, HARDENING_SQL)
     const before = Number(
@@ -263,4 +279,5 @@ insert into public.purchases (
     )
     expect(after).toBe(before)
   })
-})
+},
+)

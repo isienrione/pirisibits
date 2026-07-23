@@ -20,7 +20,7 @@ import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
-import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
+import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { getDistance } from '../utils/distance.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
@@ -52,6 +52,7 @@ function ChronowalkMark() {
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
   const { openSettings } = useSettingsSheet()
+  const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { state, context, begin, setCustomWaypointIds } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -175,8 +176,9 @@ export default function RedesignMyTourScreen() {
       }
     }
 
-    jumpToWaypointInJourney(manifest, nearestId, context, state)
-    navigate('/journey')
+    void requestJumpToWaypoint(manifest, nearestId, context, state).then((jumped) => {
+      if (jumped) navigate('/journey')
+    })
   }
 
   const handleOwnPaceConfirm = () => {
@@ -186,18 +188,22 @@ export default function RedesignMyTourScreen() {
 
   const handleTakeMeThere = (waypointId) => {
     if (!manifest) return
-    jumpToWaypointInJourney(manifest, waypointId, context, state)
-    setSheetOpen(false)
-    navigate('/journey')
+    void requestJumpToWaypoint(manifest, waypointId, context, state).then((jumped) => {
+      if (jumped) {
+        setSheetOpen(false)
+        navigate('/journey')
+      }
+    })
   }
 
   const walkToStop = (waypointId, targetState = null, storyView = null) => {
     if (!manifest || !waypointId) return
-    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+    void requestJumpToWaypoint(manifest, waypointId, context, state, {
       targetState,
       storyView,
+    }).then((jumped) => {
+      if (jumped) navigate('/journey')
     })
-    if (jumped) navigate('/journey')
   }
 
   const openStopCard = (waypointId) => {

@@ -71,12 +71,17 @@ function serializeBundle(bundle, deviceId) {
   }
 }
 
-function serializeSession(session) {
+function serializeSession(session, deviceId = null) {
+  const independent = Array.isArray(session.independentDeviceIds)
+    ? session.independentDeviceIds
+    : []
   return {
     id: session.id,
     bundleId: session.bundleId,
     joinCode: session.joinCode,
     leaderDeviceId: session.leaderDeviceId,
+    leaderSeatId: session.leaderSeatId ?? null,
+    mySeatId: session.mySeatId ?? null,
     syncEnabled: session.syncEnabled,
     resumePolicy: session.resumePolicy,
     waypointId: session.waypointId,
@@ -86,8 +91,12 @@ function serializeSession(session) {
     playing: session.playing,
     paused: session.paused,
     pauseSourceDeviceId: session.pauseSourceDeviceId,
+    pauseSourceSeatId: session.pauseSourceSeatId ?? null,
     updatedAt: session.updatedAt,
     expiresAt: session.expiresAt,
+    status: session.status ?? 'active',
+    syncParticipation:
+      deviceId && independent.includes(deviceId) ? 'independent' : 'synced',
   }
 }
 
@@ -193,11 +202,13 @@ export const localFamilyStore = {
       playing: false,
       paused: true,
       pauseSourceDeviceId: null,
+      independentDeviceIds: [],
       updatedAt: new Date(now).toISOString(),
       expiresAt: new Date(now + 18 * 60 * 60 * 1000).toISOString(),
+      status: 'active',
     }
     writeJson(SESSION_KEY, session)
-    return serializeSession(session)
+    return serializeSession(session, deviceId)
   },
 
   joinWalkSession({ joinCode, deviceId }) {
@@ -224,13 +235,70 @@ export const localFamilyStore = {
       err.code = 'not_a_member'
       throw err
     }
-    return serializeSession(session)
+    return serializeSession(session, deviceId)
   },
 
-  getWalkSession(sessionId) {
+  getWalkSession(sessionId, deviceId = null) {
     const session = readJson(SESSION_KEY, null)
     if (!session || session.id !== sessionId) return null
-    return serializeSession(session)
+    return serializeSession(session, deviceId)
+  },
+
+  getActiveWalkSessionForBundle(bundleId, deviceId = null) {
+    const session = readJson(SESSION_KEY, null)
+    if (!session || session.bundleId !== bundleId) return null
+    if (new Date(session.expiresAt).getTime() <= Date.now()) return null
+    return serializeSession(session, deviceId)
+  },
+
+  detachWalkSession({ deviceId }) {
+    const session = readJson(SESSION_KEY, null)
+    if (!session) {
+      const err = new Error('no_active_session')
+      err.code = 'no_active_session'
+      throw err
+    }
+    const bundle = readJson(BUNDLE_KEY, null)
+    const mine = bundle?.seats.some((s) => s.claimedDeviceId === deviceId && s.status === 'claimed')
+    if (!mine) {
+      const err = new Error('not_a_member')
+      err.code = 'not_a_member'
+      throw err
+    }
+    if (session.leaderDeviceId === deviceId) {
+      const err = new Error('leader_cannot_detach')
+      err.code = 'leader_cannot_detach'
+      throw err
+    }
+    const independent = Array.isArray(session.independentDeviceIds)
+      ? session.independentDeviceIds
+      : []
+    if (!independent.includes(deviceId)) {
+      session.independentDeviceIds = [...independent, deviceId]
+      session.updatedAt = new Date().toISOString()
+      writeJson(SESSION_KEY, session)
+    }
+    return serializeSession(session, deviceId)
+  },
+
+  rejoinWalkSession({ deviceId }) {
+    const session = readJson(SESSION_KEY, null)
+    if (!session) {
+      const err = new Error('no_active_session')
+      err.code = 'no_active_session'
+      throw err
+    }
+    const bundle = readJson(BUNDLE_KEY, null)
+    const mine = bundle?.seats.some((s) => s.claimedDeviceId === deviceId && s.status === 'claimed')
+    if (!mine) {
+      const err = new Error('not_a_member')
+      err.code = 'not_a_member'
+      throw err
+    }
+    session.independentDeviceIds = (session.independentDeviceIds || []).filter((id) => id !== deviceId)
+    session.updatedAt = new Date().toISOString()
+    writeJson(SESSION_KEY, session)
+    return serializeSession(session, deviceId)
   },
 
   updateWalkSessionState({ sessionId, deviceId, patch }) {
@@ -308,7 +376,7 @@ export const localFamilyStore = {
 
     session.updatedAt = new Date().toISOString()
     writeJson(SESSION_KEY, session)
-    return serializeSession(session)
+    return serializeSession(session, deviceId)
   },
 
   /** Subscribe to local session mutations (BroadcastChannel + storage). */

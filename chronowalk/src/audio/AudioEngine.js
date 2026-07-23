@@ -786,7 +786,7 @@ export class AudioEngine {
 
   async resumeNarration() {
     const session = this.session
-    if (!session || !session.paused) return
+    if (!session || !session.paused) return true
     await this.init()
     if (this.context?.state === 'suspended' && this.context.resume) {
       try {
@@ -799,7 +799,7 @@ export class AudioEngine {
     if (!session.element) {
       session.paused = false
       await this.startCurrentItem(session.offset)
-      return
+      return true
     }
 
     try {
@@ -807,12 +807,16 @@ export class AudioEngine {
       await session.element.play()
       this.setNarrationPlaying(true)
       this.setPlaybackInterrupted(false)
+      this.syncMediaSession()
+      this.emitProgress()
+      return true
     } catch {
       session.paused = true
       this.setNarrationPlaying(false)
+      this.syncMediaSession()
+      this.emitProgress()
+      return false
     }
-    this.syncMediaSession()
-    this.emitProgress()
   }
 
   toggleNarration() {

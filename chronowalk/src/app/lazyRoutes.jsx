@@ -117,6 +117,11 @@ export const LazySettingsPage = lazyRoute(
   'settings',
 )
 
+export const LazyWalkTogetherPage = lazyRoute(
+  () => import('../redesign/pages/RedesignWalkTogetherPage.jsx'),
+  'walk together',
+)
+
 export const LazyCreditsPage = lazyRoute(
   () => import('../redesign/pages/RedesignCreditsPage.jsx'),
   'credits',

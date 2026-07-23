@@ -101,8 +101,15 @@ export function accessEmailSubject(productId) {
   return pack ? `Your ChronoWalk access — ${pack}` : 'Your ChronoWalk Rome access link'
 }
 
-export function resendIdempotencyKey(orderId) {
-  return `purchase-access/${String(orderId ?? '').trim()}`
+/**
+ * @param {string} orderId
+ * @param {string} [emailGenerationId]
+ */
+export function resendIdempotencyKey(orderId, emailGenerationId) {
+  const order = String(orderId ?? '').trim()
+  const gen = String(emailGenerationId ?? '').trim()
+  if (!gen) return `purchase-access/${order}`
+  return `purchase-access/${order}/${gen}`
 }
 
 /**

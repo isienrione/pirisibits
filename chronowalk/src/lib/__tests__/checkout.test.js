@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getTierById,
   isCheckoutConfigured,
@@ -8,12 +8,45 @@ import {
 import {
   buildPaddleCustomData,
   isPaddleCheckoutReady,
+  PADDLE_PRICE_ENV_KEYS,
   resolvePaddlePriceId,
   __resetPaddleForTests,
 } from '../paddle.js'
 
+const PADDLE_ENV_KEYS = [
+  'VITE_PADDLE_CLIENT_TOKEN',
+  'VITE_PADDLE_ENV',
+  'VITE_PADDLE_PRICE_ROME_CENTRAL',
+  'VITE_PADDLE_PRICE_ROME_ESSENTIAL',
+  'VITE_PADDLE_PRICE_ROME_COMPLETE',
+  'VITE_PADDLE_PRICE_ROME_COUPLE',
+  'VITE_PADDLE_PRICE_ROME_FAMILY',
+]
+
+function stubPaddleEnvCleared() {
+  for (const key of PADDLE_ENV_KEYS) {
+    vi.stubEnv(key, '')
+  }
+}
+
+function stubPaddleEnvPopulated() {
+  vi.stubEnv('VITE_PADDLE_CLIENT_TOKEN', 'test_client_token')
+  vi.stubEnv('VITE_PADDLE_ENV', 'sandbox')
+  vi.stubEnv('VITE_PADDLE_PRICE_ROME_CENTRAL', 'pri_central_live')
+  vi.stubEnv('VITE_PADDLE_PRICE_ROME_ESSENTIAL', 'pri_essential_live')
+  vi.stubEnv('VITE_PADDLE_PRICE_ROME_COMPLETE', 'pri_complete_live')
+  vi.stubEnv('VITE_PADDLE_PRICE_ROME_COUPLE', 'pri_couple_live')
+  vi.stubEnv('VITE_PADDLE_PRICE_ROME_FAMILY', 'pri_family_live')
+}
+
 describe('checkout helpers (Paddle)', () => {
   beforeEach(() => {
+    vi.unstubAllEnvs()
+    __resetPaddleForTests()
+    stubPaddleEnvCleared()
+  })
+
+  afterEach(() => {
     vi.unstubAllEnvs()
     __resetPaddleForTests()
   })
@@ -22,6 +55,17 @@ describe('checkout helpers (Paddle)', () => {
     expect(isCheckoutConfigured()).toBe(false)
     expect(isCheckoutConfigured('https://store.lemonsqueezy.com/checkout/buy/abc')).toBe(false)
     expect(isCheckoutConfigured(true)).toBe(true)
+  })
+
+  it('stays hermetic when ambient Paddle env is fully populated', () => {
+    stubPaddleEnvPopulated()
+    // Explicit boolean still wins; ambient must not break the false/URL contracts.
+    expect(isCheckoutConfigured(false)).toBe(false)
+    expect(isCheckoutConfigured('https://store.lemonsqueezy.com/checkout/buy/abc')).toBe(false)
+    expect(isCheckoutConfigured(true)).toBe(true)
+    // Cleared ambient for the unconfigured probe.
+    stubPaddleEnvCleared()
+    expect(isCheckoutConfigured()).toBe(false)
   })
 
   it('resolves rome tiers and Couple/Family bundles', () => {
@@ -70,6 +114,18 @@ describe('checkout helpers (Paddle)', () => {
     expect(
       resolvePaddlePriceId('rome-complete', { 'rome-complete': 'pri_config' }),
     ).toBe('pri_config')
+  })
+
+  it('does not fill explicit env bags from ambient import.meta.env', () => {
+    stubPaddleEnvPopulated()
+    expect(
+      resolvePaddlePriceId('rome-couple', null, {
+        env: {
+          VITE_PADDLE_PRICE_ROME_COMPLETE: 'pri_only_complete',
+        },
+      }),
+    ).toBeNull()
+    expect(Object.values(PADDLE_PRICE_ENV_KEYS)).toContain('VITE_PADDLE_PRICE_ROME_COUPLE')
   })
 
   it('no longer falls back to a Lemon buy URL', () => {

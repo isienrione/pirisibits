@@ -1,126 +1,194 @@
-import { useState } from 'react'
-import { T, F } from '../tokens.js'
-import { FAMILY_TIERS } from '../../lib/familyWalk.js'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { isBundleSku } from '../../lib/launchSkus.js'
+import { readAccessEntitlement, readDeviceCredential } from '../../lib/accessSession.js'
 import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
+import WalkTogetherPanel from '../ui/WalkTogetherPanel.jsx'
+import { T, F } from '../tokens.js'
+import { APP_ENTRY_FAMILY_PHASE } from './appEntryFamilyPhase.js'
 
-/** Optional couple/family invite codes during app entry. */
+function classifyResolvedBundle(bundle) {
+  if (bundle?.role === 'owner' || bundle?.isOwner) {
+    // Organizer invite UI needs server seat inventory — incomplete views are not ready.
+    if (!Array.isArray(bundle.seats)) return null
+    return APP_ENTRY_FAMILY_PHASE.ORGANIZER
+  }
+  if (bundle?.role === 'member') {
+    return APP_ENTRY_FAMILY_PHASE.MEMBER
+  }
+  if (bundle && isBundleSku(bundle.purchasedProductId) && !bundle.isOwner) {
+    return APP_ENTRY_FAMILY_PHASE.MEMBER
+  }
+  return null
+}
+
+/**
+ * Optional Couple/Family invite step during app entry.
+ * Bundle type and seats come from the verified purchase — no client tier selector.
+ *
+ * Organizers see Walk together management. Verified members and solo buyers skip
+ * once via an effect (never during render).
+ */
 export default function AppEntryFamily({ onSkip }) {
   const family = useOptionalFamilyWalk()
-  const [tier, setTier] = useState('couple')
-  const [name, setName] = useState('')
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState(null)
-  const [bundle, setBundle] = useState(null)
+  const refreshBundle = family?.refreshBundle
+  const [phase, setPhase] = useState(APP_ENTRY_FAMILY_PHASE.RESOLVING)
+  const [resolveError, setResolveError] = useState(null)
+  const [retryToken, setRetryToken] = useState(0)
+  const finishedRef = useRef(false)
 
-  if (!family) {
+  const finishOnce = useCallback(() => {
+    if (finishedRef.current) return
+    finishedRef.current = true
     onSkip?.()
+  }, [onSkip])
+
+  const resolveEntry = useCallback(async () => {
+    setResolveError(null)
+
+    if (typeof refreshBundle !== 'function') {
+      // Outside provider: nothing to manage — advance safely.
+      return APP_ENTRY_FAMILY_PHASE.SOLO
+    }
+
+    const credential = readDeviceCredential()
+    if (!credential) {
+      const entitlement = readAccessEntitlement()
+      if (isBundleSku(entitlement?.purchasedProductId)) {
+        return APP_ENTRY_FAMILY_PHASE.ERROR
+      }
+      return APP_ENTRY_FAMILY_PHASE.SOLO
+    }
+
+    try {
+      const next = await refreshBundle()
+      const fromBundle = classifyResolvedBundle(next)
+      if (fromBundle) return fromBundle
+
+      const entitlement = readAccessEntitlement()
+      if (isBundleSku(entitlement?.purchasedProductId)) {
+        // Bundle SKU on device but server did not return an organizer/member view.
+        if (entitlement.role === 'member') return APP_ENTRY_FAMILY_PHASE.MEMBER
+        if (entitlement.role === 'owner') return APP_ENTRY_FAMILY_PHASE.ERROR
+        return APP_ENTRY_FAMILY_PHASE.ERROR
+      }
+
+      return APP_ENTRY_FAMILY_PHASE.SOLO
+    } catch (err) {
+      const entitlement = readAccessEntitlement()
+      if (isBundleSku(entitlement?.purchasedProductId)) {
+        setResolveError(err?.message || 'bundle_load_failed')
+        return APP_ENTRY_FAMILY_PHASE.ERROR
+      }
+      return APP_ENTRY_FAMILY_PHASE.SOLO
+    }
+  }, [refreshBundle])
+
+  useEffect(() => {
+    let cancelled = false
+
+    void (async () => {
+      const nextPhase = await resolveEntry()
+      if (cancelled) return
+      setPhase(nextPhase)
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [resolveEntry, retryToken])
+
+  // Members / solo / invalid: advance exactly once after resolve — never during render.
+  useEffect(() => {
+    if (
+      phase === APP_ENTRY_FAMILY_PHASE.MEMBER ||
+      phase === APP_ENTRY_FAMILY_PHASE.SOLO ||
+      phase === APP_ENTRY_FAMILY_PHASE.INVALID
+    ) {
+      finishOnce()
+    }
+  }, [phase, finishOnce])
+
+  if (
+    phase === APP_ENTRY_FAMILY_PHASE.MEMBER ||
+    phase === APP_ENTRY_FAMILY_PHASE.SOLO ||
+    phase === APP_ENTRY_FAMILY_PHASE.INVALID
+  ) {
     return null
   }
 
-  const openInvites = (bundle?.seats ?? []).filter((s) => s.status === 'open')
-
-  const create = async () => {
-    setBusy(true)
-    setError(null)
-    try {
-      const next = await family.setupBundle(tier, name.trim() || 'Leader')
-      setBundle(next)
-    } catch (err) {
-      setError(err?.code || err?.message || 'unknown')
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  if (bundle) {
+  if (phase === APP_ENTRY_FAMILY_PHASE.RESOLVING) {
     return (
       <div
         data-testid="app-entry-family"
-        style={{
-          height: '100%',
-          padding: '48px 24px 32px',
-          fontFamily: F.body,
-          color: T.warmWhite,
-          background: T.obsidian,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        data-phase="resolving"
+        style={shellStyle}
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
       >
-        <p
-          style={{
-            margin: 0,
-            fontSize: 12,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: T.muted,
-          }}
-        >
-          Invite codes
-        </p>
+        <p style={{ margin: 0, color: T.muted, fontSize: 14 }}>Loading your bundle…</p>
+      </div>
+    )
+  }
+
+  if (phase === APP_ENTRY_FAMILY_PHASE.ERROR) {
+    return (
+      <div
+        data-testid="app-entry-family"
+        data-phase="error"
+        style={shellStyle}
+        role="alert"
+      >
         <h1
           style={{
-            margin: '10px 0 0',
+            margin: 0,
             fontFamily: F.display,
             fontSize: 28,
             fontWeight: 500,
           }}
         >
-          Share these with your walkers.
+          Couldn’t load your walking party
         </h1>
         <p style={{ marginTop: 12, fontSize: 15, lineHeight: 1.5, color: T.muted }}>
-          Each code unlocks the tour on one phone at chronowalk.com/invite.
+          Check your connection and try again. You can continue into the tour and invite people
+          later from Settings → Walk together.
         </p>
-        <ul style={{ listStyle: 'none', padding: 0, margin: '24px 0', display: 'grid', gap: 10 }}>
-          {openInvites.map((seat) => (
-            <li
-              key={seat.inviteCode || seat.id}
-              style={{
-                padding: '14px 16px',
-                borderRadius: 12,
-                background: `${T.warmWhite}10`,
-                border: `1px solid ${T.warmWhite}18`,
-                fontSize: 20,
-                letterSpacing: '0.18em',
-                textAlign: 'center',
-              }}
-            >
-              {seat.inviteCode}
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          onClick={() => onSkip?.()}
-          style={{
-            width: '100%',
-            marginTop: 'auto',
-            padding: '14px',
-            border: 'none',
-            borderRadius: 999,
-            background: T.ember,
-            color: T.obsidian,
-            fontWeight: 600,
-            fontSize: 16,
-            cursor: 'pointer',
-          }}
-        >
-          Continue to your walk
-        </button>
+        {resolveError ? (
+          <p style={{ marginTop: 8, fontSize: 13, color: T.muted }}>{String(resolveError)}</p>
+        ) : null}
+        <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button
+            type="button"
+            data-testid="app-entry-family-retry"
+            onClick={() => {
+              setPhase(APP_ENTRY_FAMILY_PHASE.RESOLVING)
+              setRetryToken((value) => value + 1)
+            }}
+            style={primaryButtonStyle}
+          >
+            Retry
+          </button>
+          <button
+            type="button"
+            data-testid="app-entry-family-continue-without"
+            onClick={finishOnce}
+            style={secondaryButtonStyle}
+          >
+            Continue without inviting
+          </button>
+        </div>
       </div>
     )
   }
 
+  // Verified organizer — show invite management (no client tier selector).
   return (
     <div
       data-testid="app-entry-family"
+      data-phase="organizer"
       style={{
-        height: '100%',
-        padding: '48px 24px 32px',
-        fontFamily: F.body,
-        color: T.warmWhite,
-        background: T.obsidian,
-        display: 'flex',
-        flexDirection: 'column',
+        ...shellStyle,
+        overflowY: 'auto',
       }}
     >
       <p
@@ -142,102 +210,55 @@ export default function AppEntryFamily({ onSkip }) {
           fontWeight: 500,
         }}
       >
-        Invite your partner or family.
+        Invite someone to your shared tour.
       </h1>
       <p style={{ marginTop: 12, fontSize: 15, lineHeight: 1.5, color: T.muted }}>
-        Create invite codes now, or skip and do it later from Settings.
+        Create invitations now, or skip and manage them later from Settings → Walk together.
       </p>
 
-      <div style={{ display: 'flex', gap: 8, marginTop: 24 }}>
-        {Object.values(FAMILY_TIERS).map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            onClick={() => setTier(option.id)}
-            style={{
-              flex: 1,
-              padding: '12px 8px',
-              borderRadius: 12,
-              border: `1.5px solid ${tier === option.id ? T.ember : `${T.warmWhite}22`}`,
-              background: tier === option.id ? `${T.ember}22` : 'transparent',
-              color: T.warmWhite,
-              cursor: 'pointer',
-            }}
-          >
-            <div style={{ fontWeight: 600 }}>{option.label}</div>
-            <div style={{ fontSize: 12, color: T.muted, marginTop: 4 }}>{option.blurb}</div>
-          </button>
-        ))}
+      <div style={{ marginTop: 24, flex: 1 }}>
+        <WalkTogetherPanel variant="entry" showContinue onContinue={finishOnce} />
       </div>
 
-      <label style={{ display: 'grid', gap: 8, marginTop: 18 }}>
-        <span
-          style={{
-            fontSize: 12,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: T.muted,
-          }}
-        >
-          Your name
-        </span>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Alex"
-          style={{
-            padding: '12px 14px',
-            borderRadius: 10,
-            border: `1px solid ${T.warmWhite}22`,
-            background: `${T.ink}88`,
-            color: T.warmWhite,
-            fontSize: 15,
-          }}
-        />
-      </label>
-
-      {error ? (
-        <p style={{ color: 'var(--ember)', fontSize: 14, marginTop: 12 }}>
-          Could not create invites. You can try again from Settings.
-        </p>
-      ) : null}
-
-      <div style={{ marginTop: 'auto', display: 'grid', gap: 10, paddingTop: 24 }}>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void create()}
-          style={{
-            width: '100%',
-            padding: '14px',
-            border: 'none',
-            borderRadius: 999,
-            background: T.ember,
-            color: T.obsidian,
-            fontWeight: 600,
-            fontSize: 16,
-            cursor: 'pointer',
-            opacity: busy ? 0.6 : 1,
-          }}
-        >
-          {busy ? 'Creating…' : 'Create invite codes'}
-        </button>
-        <button
-          type="button"
-          onClick={() => onSkip?.()}
-          style={{
-            width: '100%',
-            padding: '12px',
-            border: 'none',
-            background: 'transparent',
-            color: T.muted,
-            fontSize: 14,
-            cursor: 'pointer',
-          }}
-        >
-          Skip for now
-        </button>
-      </div>
+      <button type="button" onClick={finishOnce} style={secondaryButtonStyle}>
+        Skip for now
+      </button>
     </div>
   )
+}
+
+const shellStyle = {
+  height: '100%',
+  padding: '48px 24px 32px',
+  fontFamily: F.body,
+  color: T.warmWhite,
+  background: T.obsidian,
+  display: 'flex',
+  flexDirection: 'column',
+}
+
+const primaryButtonStyle = {
+  width: '100%',
+  minHeight: 48,
+  border: 'none',
+  borderRadius: 12,
+  background: T.ember,
+  color: T.obsidian,
+  fontSize: 15,
+  fontWeight: 700,
+  cursor: 'pointer',
+  fontFamily: F.body,
+}
+
+const secondaryButtonStyle = {
+  width: '100%',
+  marginTop: 16,
+  padding: '12px',
+  minHeight: 44,
+  border: 'none',
+  background: 'transparent',
+  color: T.muted,
+  fontSize: 14,
+  cursor: 'pointer',
+  fontFamily: F.body,
 }

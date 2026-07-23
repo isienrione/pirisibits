@@ -66,6 +66,16 @@ npm run preview
 npm test
 ```
 
+Portable by default: if local `psql` is missing, disposable Postgres migration suites are skipped (not reported as passed). Static SQL guards still run. For strict SQL regression (requires `psql`):
+
+```bash
+npm run test:sql
+# optional full chain against disposable local Postgres:
+npm run test:sql-chain
+```
+
+See [`docs/LAUNCH_COMMERCE_APPLY_ORDER.md`](docs/LAUNCH_COMMERCE_APPLY_ORDER.md) for the distinction.
+
 **Lint:**
 
 ```bash

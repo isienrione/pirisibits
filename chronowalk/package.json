@@ -10,6 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "npm run check:design && vitest run",
+    "test:sql": "CW_REQUIRE_PSQL=1 vitest run scripts/__tests__/launchCommerceMigrationFresh.test.js",
+    "test:sql-chain": "bash scripts/run-launch-commerce-sql-chain.sh",
     "check:design": "node scripts/check-design.mjs",
     "fetch:rome-landing-basemap": "node scripts/fetch-rome-landing-basemap.mjs",
     "process-pantheon": "bash scripts/process-pantheon-assets.sh",

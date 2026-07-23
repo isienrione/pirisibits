@@ -10,16 +10,26 @@ export default function WalkSyncBar({
   resumePolicy,
   canResumeForAll,
   narrationPlaying,
+  pendingGroupResume = false,
+  walkingIndependently = false,
   onToggleSync,
   onPauseAll,
   onResumeAll,
+  onResumeWithGroup = null,
   statusMessage = null,
 }) {
   if (!joinCode) return null
 
+  const modeLabel = walkingIndependently
+    ? 'Walking independently'
+    : syncEnabled
+      ? 'Synced walk'
+      : 'Autonomous'
+
   return (
     <div
       data-testid="walk-sync-bar"
+      data-walking-independently={walkingIndependently ? 'true' : 'false'}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -45,41 +55,66 @@ export default function WalkSyncBar({
               color: `${T.warmWhite}70`,
             }}
           >
-            {syncEnabled ? 'Synced walk' : 'Autonomous'} · {joinCode}
+            {modeLabel}
+            {walkingIndependently ? '' : ` · ${joinCode}`}
           </p>
           <p style={{ margin: '3px 0 0', fontSize: 12, color: `${T.warmWhite}85` }}>
-            {isLeader ? 'Leader' : 'Follower'}
-            {syncEnabled
-              ? resumePolicy === 'leader'
-                ? ' · only leader resumes'
-                : ' · anyone can resume'
-              : ' · sync off'}
+            {walkingIndependently
+              ? 'Shared syncing paused on this phone'
+              : `${isLeader ? 'Leader' : 'Follower'}${
+                  syncEnabled
+                    ? resumePolicy === 'leader'
+                      ? ' · only leader resumes'
+                      : ' · anyone can resume'
+                    : ' · sync off'
+                }`}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onToggleSync}
-          aria-pressed={syncEnabled}
-          style={{
-            flexShrink: 0,
-            minHeight: 36,
-            padding: '6px 12px',
-            borderRadius: 999,
-            border: `1px solid ${T.warmWhite}22`,
-            background: syncEnabled ? `${T.ember}35` : 'transparent',
-            color: T.warmWhite,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: 'pointer',
-          }}
-        >
-          Sync {syncEnabled ? 'on' : 'off'}
-        </button>
+        {walkingIndependently || !isLeader ? null : (
+          <button
+            type="button"
+            onClick={onToggleSync}
+            aria-pressed={syncEnabled}
+            style={{
+              flexShrink: 0,
+              minHeight: 36,
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: `1px solid ${T.warmWhite}22`,
+              background: syncEnabled ? `${T.ember}35` : 'transparent',
+              color: T.warmWhite,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Sync {syncEnabled ? 'on' : 'off'}
+          </button>
+        )}
       </div>
 
-      {syncEnabled ? (
+      {syncEnabled && !walkingIndependently ? (
         <div style={{ display: 'flex', gap: 8 }}>
-          {narrationPlaying ? (
+          {pendingGroupResume && !isLeader ? (
+            <button
+              type="button"
+              data-testid="sync-resume-with-group"
+              onClick={() => void onResumeWithGroup?.()}
+              style={{
+                flex: 1,
+                minHeight: 44,
+                borderRadius: 12,
+                border: 'none',
+                background: T.ember,
+                color: T.obsidian,
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: 'pointer',
+              }}
+            >
+              Resume with group
+            </button>
+          ) : narrationPlaying ? (
             <button
               type="button"
               data-testid="sync-pause-all"
@@ -120,6 +155,12 @@ export default function WalkSyncBar({
             </button>
           )}
         </div>
+      ) : null}
+
+      {pendingGroupResume && !isLeader ? (
+        <p style={{ margin: 0, fontSize: 12, color: `${T.warmWhite}75` }}>
+          Group resumed — tap to continue audio on this phone (browser autoplay limit).
+        </p>
       ) : null}
 
       {statusMessage ? (
