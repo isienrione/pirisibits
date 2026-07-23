@@ -10,9 +10,11 @@ export default function WalkSyncBar({
   resumePolicy,
   canResumeForAll,
   narrationPlaying,
+  pendingGroupResume = false,
   onToggleSync,
   onPauseAll,
   onResumeAll,
+  onResumeWithGroup = null,
   statusMessage = null,
 }) {
   if (!joinCode) return null
@@ -79,7 +81,26 @@ export default function WalkSyncBar({
 
       {syncEnabled ? (
         <div style={{ display: 'flex', gap: 8 }}>
-          {narrationPlaying ? (
+          {pendingGroupResume && !isLeader ? (
+            <button
+              type="button"
+              data-testid="sync-resume-with-group"
+              onClick={() => void onResumeWithGroup?.()}
+              style={{
+                flex: 1,
+                minHeight: 44,
+                borderRadius: 12,
+                border: 'none',
+                background: T.ember,
+                color: T.obsidian,
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: 'pointer',
+              }}
+            >
+              Resume with group
+            </button>
+          ) : narrationPlaying ? (
             <button
               type="button"
               data-testid="sync-pause-all"
@@ -120,6 +141,12 @@ export default function WalkSyncBar({
             </button>
           )}
         </div>
+      ) : null}
+
+      {pendingGroupResume && !isLeader ? (
+        <p style={{ margin: 0, fontSize: 12, color: `${T.warmWhite}75` }}>
+          Group resumed — tap to continue audio on this phone (browser autoplay limit).
+        </p>
       ) : null}
 
       {statusMessage ? (

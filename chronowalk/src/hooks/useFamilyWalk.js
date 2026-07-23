@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { getDeviceId } from '../lib/deviceId.js'
-import { readAccessEntitlement } from '../lib/accessSession.js'
+import { readAccessEntitlement, readDeviceCredential } from '../lib/accessSession.js'
 import { isBundleSku } from '../lib/launchSkus.js'
 import {
   canResumeForAll,
   createBundleInvite,
   createWalkSession,
   claimFamilySeat,
+  discoverActiveWalkSession,
   isLeader,
   joinWalkSession,
   refreshFamilyBundle,
   revokeBundleSeat,
+  shouldAcceptRemoteSession,
   subscribeWalkSession,
   updateWalkSessionState,
 } from '../lib/familyWalk.js'
@@ -39,6 +41,9 @@ function writeCachedSession(session) {
  *
  * Bundles are purchase-minted only. This hook never creates a paid SKU or
  * lets the client choose seat_limit / content entitlement.
+ *
+ * Members discover organizer-created sessions via credential-authorized RPC
+ * even when this device has no cached session id.
  */
 export function useFamilyWalk() {
   const deviceId = useMemo(() => getDeviceId(), [])
@@ -50,12 +55,41 @@ export function useFamilyWalk() {
   const [latestInvites, setLatestInvites] = useState({})
   const applyingRemoteRef = useRef(false)
   const lastUpdatedRef = useRef(session?.updatedAt ?? null)
+  const sessionRef = useRef(session)
+
+  useEffect(() => {
+    sessionRef.current = session
+  }, [session])
+
+  const markApplyingRemote = useCallback((active) => {
+    applyingRemoteRef.current = Boolean(active)
+  }, [])
+
+  const isApplyingRemote = useCallback(() => applyingRemoteRef.current, [])
+
+  const adoptSession = useCallback((next) => {
+    if (!next?.id) return false
+    const current = sessionRef.current
+    if (!shouldAcceptRemoteSession(current, next)) return false
+    if (next.updatedAt && next.updatedAt === lastUpdatedRef.current && next.id === current?.id) {
+      return false
+    }
+    lastUpdatedRef.current = next.updatedAt ?? null
+    setSession(next)
+    return true
+  }, [])
 
   useEffect(() => {
     let cancelled = false
     refreshFamilyBundle()
-      .then((next) => {
-        if (!cancelled) setBundle(next)
+      .then(async (next) => {
+        if (cancelled) return
+        setBundle(next)
+        // After boot / reload: discover an organizer session if we have bundle access.
+        if (next || readDeviceCredential()) {
+          const discovered = await discoverActiveWalkSession()
+          if (!cancelled && discovered) adoptSession(discovered)
+        }
       })
       .catch(() => {
         if (!cancelled) setBundle(null)
@@ -63,21 +97,37 @@ export function useFamilyWalk() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [adoptSession])
 
   useEffect(() => {
     writeCachedSession(session)
   }, [session])
 
+  const entitlement = readAccessEntitlement()
+  const purchasedProductId = bundle?.purchasedProductId ?? entitlement?.purchasedProductId ?? null
+  const hasBundleAccess = Boolean(
+    bundle || (entitlement && isBundleSku(entitlement.purchasedProductId)),
+  )
+
   useEffect(() => {
-    if (!session?.id) return undefined
-    return subscribeWalkSession(session.id, (next) => {
-      if (!next) return
-      if (next.updatedAt && next.updatedAt === lastUpdatedRef.current) return
-      lastUpdatedRef.current = next.updatedAt
-      setSession(next)
-    })
-  }, [session?.id])
+    if (!hasBundleAccess && !session?.id) return undefined
+    // Poll known session, or discover when this device has no cached id yet.
+    return subscribeWalkSession(
+      session?.id ?? null,
+      (next) => {
+        if (!next) {
+          if (sessionRef.current?.id) {
+            lastUpdatedRef.current = null
+            setSession(null)
+            writeCachedSession(null)
+          }
+          return
+        }
+        adoptSession(next)
+      },
+      { discover: !session?.id && hasBundleAccess },
+    )
+  }, [session?.id, hasBundleAccess, adoptSession])
 
   const run = useCallback(async (fn) => {
     setBusy(true)
@@ -106,9 +156,11 @@ export function useFamilyWalk() {
         const next = await claimFamilySeat({ inviteCode, displayName })
         const refreshed = await refreshFamilyBundle()
         setBundle(refreshed ?? next)
+        const discovered = await discoverActiveWalkSession()
+        if (discovered) adoptSession(discovered)
         return refreshed ?? next
       }),
-    [run],
+    [adoptSession, run],
   )
 
   const createInvite = useCallback(
@@ -146,38 +198,40 @@ export function useFamilyWalk() {
       run(async () => {
         if (!bundle?.id && !bundle?.bundleId) throw new Error('no_bundle')
         const next = await createWalkSession({ resumePolicy })
-        lastUpdatedRef.current = next.updatedAt
-        setSession(next)
+        adoptSession(next)
         return next
       }),
-    [bundle?.bundleId, bundle?.id, run],
+    [adoptSession, bundle?.bundleId, bundle?.id, run],
   )
 
   const joinSharedWalk = useCallback(
     (joinCode) =>
       run(async () => {
         const next = await joinWalkSession({ joinCode })
-        lastUpdatedRef.current = next.updatedAt
-        setSession(next)
+        adoptSession(next)
         return next
       }),
-    [run],
+    [adoptSession, run],
   )
 
   const leaveSharedWalk = useCallback(() => {
     setSession(null)
+    lastUpdatedRef.current = null
     writeCachedSession(null)
   }, [])
 
   const patchSession = useCallback(
     async (patch) => {
-      if (!session?.id) return null
-      const next = await updateWalkSessionState(session.id, patch)
-      lastUpdatedRef.current = next.updatedAt
-      setSession(next)
+      const current = sessionRef.current
+      if (!current?.id) return null
+      const next = await updateWalkSessionState(current.id, {
+        ...patch,
+        expectedUpdatedAt: current.updatedAt,
+      })
+      adoptSession(next)
       return next
     },
-    [session],
+    [adoptSession],
   )
 
   const setSyncEnabled = useCallback(
@@ -201,7 +255,7 @@ export function useFamilyWalk() {
 
   const publishResume = useCallback(
     async (positionSeconds) => {
-      if (!canResumeForAll(session, deviceId)) {
+      if (!canResumeForAll(sessionRef.current, deviceId)) {
         const err = new Error('resume_leader_only')
         err.code = 'resume_leader_only'
         throw err
@@ -211,7 +265,7 @@ export function useFamilyWalk() {
         positionSeconds,
       })
     },
-    [deviceId, patchSession, session],
+    [deviceId, patchSession],
   )
 
   const publishSeek = useCallback(
@@ -235,26 +289,32 @@ export function useFamilyWalk() {
 
   const refreshBundle = useCallback(
     () =>
-      refreshFamilyBundle().then((next) => {
+      refreshFamilyBundle().then(async (next) => {
         setBundle(next)
+        const discovered = await discoverActiveWalkSession()
+        if (discovered) adoptSession(discovered)
         return next
       }),
-    [],
+    [adoptSession],
   )
 
-  const entitlement = readAccessEntitlement()
-  const purchasedProductId = bundle?.purchasedProductId ?? entitlement?.purchasedProductId ?? null
-  const hasBundleAccess = Boolean(
-    bundle || (entitlement && isBundleSku(entitlement.purchasedProductId)),
-  )
+  const refreshSharedSession = useCallback(async () => {
+    const discovered = await discoverActiveWalkSession()
+    if (discovered) {
+      adoptSession(discovered)
+      return discovered
+    }
+    return null
+  }, [adoptSession])
+
   const isOrganizer = Boolean(bundle?.isOwner || bundle?.role === 'owner')
   const isMember = Boolean(
     bundle?.role === 'member' || (!bundle?.isOwner && entitlement?.role === 'member'),
   )
 
-  const leader = isLeader(session, deviceId)
+  const leader = isLeader(session, session?.mySeatId ?? deviceId)
   const syncOn = Boolean(session?.syncEnabled)
-  const resumeAllowed = canResumeForAll(session, deviceId)
+  const resumeAllowed = canResumeForAll(session, session?.mySeatId ?? deviceId)
 
   return {
     deviceId,
@@ -285,7 +345,9 @@ export function useFamilyWalk() {
     publishResume,
     publishSeek,
     publishClock,
-    applyingRemoteRef,
+    markApplyingRemote,
+    isApplyingRemote,
     refreshBundle,
+    refreshSharedSession,
   }
 }

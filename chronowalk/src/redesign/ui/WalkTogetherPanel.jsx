@@ -81,18 +81,21 @@ export default function WalkTogetherPanel({
   const [statusNote, setStatusNote] = useState(null)
   const [inviteBusy, setInviteBusy] = useState(false)
   const refreshBundle = family?.refreshBundle
+  const refreshSharedSession = family?.refreshSharedSession
 
-  // Refresh once when the panel mounts (provider also refreshes on boot).
+  // Refresh seats + discover active shared session when the panel opens.
   useEffect(() => {
-    if (!refreshBundle) return undefined
+    if (!refreshBundle && !refreshSharedSession) return undefined
     let cancelled = false
-    void refreshBundle().finally(() => {
+    void (async () => {
+      if (refreshBundle) await refreshBundle()
+      else if (refreshSharedSession) await refreshSharedSession()
       void cancelled
-    })
+    })()
     return () => {
       cancelled = true
     }
-  }, [refreshBundle])
+  }, [refreshBundle, refreshSharedSession])
 
   if (!family) return null
 
