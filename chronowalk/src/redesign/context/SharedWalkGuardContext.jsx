@@ -45,6 +45,8 @@ function currentJourneyStepId(manifest) {
  * Centralized follower stop-navigation guard.
  * Warns before a synced follower leaves the group's waypoint; detach is server-authoritative.
  */
+// Hooks are co-exported with the provider (same pattern as FamilyWalkContext).
+/* eslint-disable react-refresh/only-export-components */
 export function SharedWalkGuardProvider({ children }) {
   const family = useOptionalFamilyWalk()
   const [dialog, setDialog] = useState(null)
@@ -251,3 +253,4 @@ export function useSharedWalkGuard() {
 export function useOptionalSharedWalkGuard() {
   return useContext(SharedWalkGuardCtx)
 }
+/* eslint-enable react-refresh/only-export-components */

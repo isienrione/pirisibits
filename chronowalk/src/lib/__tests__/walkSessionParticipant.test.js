@@ -34,7 +34,7 @@ describe('walk session participant detach/rejoin (local store)', () => {
   }
 
   it('detaches only the follower while leader and session stay active', () => {
-    const { bundle, sessionId } = setupCoupleWithSession()
+    const { sessionId } = setupCoupleWithSession()
 
     expect(() =>
       localFamilyStore.detachWalkSession({ deviceId: 'leader' }),
