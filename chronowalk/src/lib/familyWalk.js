@@ -146,27 +146,27 @@ function writeMembership(bundle) {
 
 function rpcError(error) {
   const message = error?.message ?? String(error)
-  const code = message.includes('resume_leader_only')
-    ? 'resume_leader_only'
-    : message.includes('invite_already_claimed')
-      ? 'invite_already_claimed'
-      : message.includes('invite_not_found')
-        ? 'invite_not_found'
-        : message.includes('not_a_member')
-          ? 'not_a_member'
-          : message.includes('not_owner')
-            ? 'not_owner'
-            : message.includes('no_seat')
-              ? 'no_seat'
-              : message.includes('missing_credential')
-                ? 'missing_credential'
-                : message.includes('session_not_found')
-                  ? 'session_not_found'
-                  : message.includes('token_not_found')
-                    ? 'token_not_found'
-                    : message.includes('retired')
-                      ? 'retired'
-                      : 'unknown'
+  const known = [
+    'resume_leader_only',
+    'invite_already_claimed',
+    'invite_not_found',
+    'not_a_member',
+    'not_owner',
+    'no_seat',
+    'missing_credential',
+    'session_not_found',
+    'no_active_session',
+    'leader_cannot_detach',
+    'token_not_found',
+    'retired',
+    'detach_failed',
+    'rejoin_failed',
+  ]
+  const fromError = typeof error?.code === 'string' ? error.code : null
+  const code =
+    (fromError && known.includes(fromError) ? fromError : null) ||
+    known.find((item) => message.includes(item)) ||
+    'unknown'
   const err = new Error(message)
   err.code = code
   return err
@@ -395,7 +395,9 @@ export async function discoverActiveWalkSession() {
   if (!allowsLocalFamilyDevStore()) return null
   const membership = readMembership()
   if (!membership?.bundleId) return null
-  return localFamilyStore.getActiveWalkSessionForBundle?.(membership.bundleId) ?? null
+  return (
+    localFamilyStore.getActiveWalkSessionForBundle?.(membership.bundleId, getDeviceId()) ?? null
+  )
 }
 
 export async function createWalkSession({ resumePolicy = 'leader' } = {}) {
@@ -443,7 +445,47 @@ export async function getWalkSession(sessionId) {
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
   if (!allowsLocalFamilyDevStore()) return null
-  return localFamilyStore.getWalkSession(sessionId)
+  return localFamilyStore.getWalkSession(sessionId, getDeviceId())
+}
+
+export async function detachWalkSession() {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
+  }
+  const remote = await tryRpc('detach_walk_session_for_credential', {
+    p_credential: credential,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  if (!allowsLocalFamilyDevStore()) {
+    throw rpcError(
+      remote.error ?? new Error(remote.data?.reason ?? remote.reason ?? 'detach_failed'),
+    )
+  }
+  return localFamilyStore.detachWalkSession({ deviceId: getDeviceId() })
+}
+
+export async function rejoinWalkSession() {
+  const credential = readDeviceCredential()
+  if (!credential) {
+    const err = new Error('missing_credential')
+    err.code = 'missing_credential'
+    throw err
+  }
+  const remote = await tryRpc('rejoin_walk_session_for_credential', {
+    p_credential: credential,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.ok !== false) return remote.data
+  if (!allowsLocalFamilyDevStore()) {
+    throw rpcError(
+      remote.error ?? new Error(remote.data?.reason ?? remote.reason ?? 'rejoin_failed'),
+    )
+  }
+  return localFamilyStore.rejoinWalkSession({ deviceId: getDeviceId() })
 }
 
 export async function updateWalkSessionState(sessionId, patch) {
@@ -525,6 +567,14 @@ export function subscribeWalkSession(sessionId, onUpdate, { discover = false } =
     stopped = true
     clearInterval(poll)
   }
+}
+
+export function isWalkingIndependently(session) {
+  return Boolean(session?.id && session.syncParticipation === 'independent')
+}
+
+export function isActivelySynced(session) {
+  return Boolean(session?.id && session.syncEnabled && !isWalkingIndependently(session))
 }
 
 export function isLeader(session, id = null) {

@@ -5,6 +5,7 @@ import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
 import { useSyncedAudioControls } from '../../hooks/useSyncedAudioControls.js'
+import { useSharedWalkGuard } from '../../redesign/context/SharedWalkGuardContext.jsx'
 import { createWaypointAutoplayCoordinator } from '../../audio/waypointAutoplay.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
@@ -117,6 +118,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       beginWaypointStoryRef.current?.(waypointId, 'family_sync')
     },
   })
+  const { requestAdvanceToWaypoint } = useSharedWalkGuard()
   const [syncStatus, setSyncStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
@@ -733,15 +735,28 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const transitId = step.id
     const waypointId = step.targetWaypoint.id
 
-    audio.stopNarration()
-    audio.endTransit()
-    completeTransit(transitId)
-    playedStepRef.current = null
-    waypointAutoplayRef.current.clearStarted()
-    setDockSnapshot(null)
-    advanceSequence(manifest)
-    beginWaypointStory(waypointId, 'transit_manual')
-  }, [advanceSequence, audio, beginWaypointStory, completeTransit, manifest, step])
+    const runArrival = () => {
+      audio.stopNarration()
+      audio.endTransit()
+      completeTransit(transitId)
+      playedStepRef.current = null
+      waypointAutoplayRef.current.clearStarted()
+      setDockSnapshot(null)
+      advanceSequence(manifest)
+      beginWaypointStory(waypointId, 'transit_manual')
+      return true
+    }
+
+    void requestAdvanceToWaypoint(waypointId, runArrival)
+  }, [
+    advanceSequence,
+    audio,
+    beginWaypointStory,
+    completeTransit,
+    manifest,
+    requestAdvanceToWaypoint,
+    step,
+  ])
 
   useEffect(() => {
     arriveRef.current = arriveAtWaypoint
@@ -890,27 +905,48 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (!step?.record || step.type !== 'waypoint') return
     if (state !== JOURNEY_STATES.STORY) return
 
-    if (isOnFirstTourStop(context, step, manifest)) {
-      markTourOnboardingComplete()
+    const runComplete = () => {
+      if (isOnFirstTourStop(context, step, manifest)) {
+        markTourOnboardingComplete()
+      }
+
+      audio.stopNarration()
+
+      if (storyCompleteTrackedRef.current !== step.id) {
+        storyCompleteTrackedRef.current = step.id
+        track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
+      }
+      waypointAutoplayRef.current.clearStarted(step.id)
+      playedStepRef.current = null
+      setStoryEnded(false)
+      setDockSnapshot(null)
+
+      const next = completeWaypointAndAdvance(step.id, manifest)
+      if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
+        track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
+      }
+      return true
     }
 
-    audio.stopNarration()
-
-    // Avoid double-counting if the audio already ended and fired story_complete.
-    if (storyCompleteTrackedRef.current !== step.id) {
-      storyCompleteTrackedRef.current = step.id
-      track(TRACK_EVENTS.STORY_COMPLETE, { waypoint_id: step.id })
-    }
-    waypointAutoplayRef.current.clearStarted(step.id)
-    playedStepRef.current = null
-    setStoryEnded(false)
-    setDockSnapshot(null)
-
-    const next = completeWaypointAndAdvance(step.id, manifest)
-    if (next.state === JOURNEY_STATES.DAY_COMPLETE) {
-      track(TRACK_EVENTS.DAY_COMPLETE, { waypoint_id: step.id })
-    }
-  }, [audio, completeWaypointAndAdvance, context, manifest, state, step])
+    const nextStepId =
+      (manifest &&
+        getStepIdAtIndex(
+          manifest,
+          context.path,
+          context.currentSequenceIndex + 1,
+          context.promotedOptionalIds,
+        )) ||
+      `after:${step.id}`
+    void requestAdvanceToWaypoint(nextStepId, runComplete)
+  }, [
+    audio,
+    completeWaypointAndAdvance,
+    context,
+    manifest,
+    requestAdvanceToWaypoint,
+    state,
+    step,
+  ])
 
   // Multi-chapter stops (Pantheon exterior → interior chapters) stay on the same
   // stop: the continuity control advances to the next chapter until the last one.
@@ -944,28 +980,72 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const transitId = step?.type === 'transit' ? step.id : null
     if (!transitId) return
 
-    audio.stopNarration()
-    audio.endTransit()
-    completeTransit(transitId)
-    playedStepRef.current = null
-    waypointAutoplayRef.current.clearStarted()
-    arrivedWaypointRef.current = null
-    setDockSnapshot(null)
-    advanceSequence(manifest)
-    track(TRACK_EVENTS.RESUME, { transit_id: transitId, advance: true })
-  }, [advanceSequence, audio, completeTransit, manifest, step?.id, step?.type])
+    const runAdvance = () => {
+      audio.stopNarration()
+      audio.endTransit()
+      completeTransit(transitId)
+      playedStepRef.current = null
+      waypointAutoplayRef.current.clearStarted()
+      arrivedWaypointRef.current = null
+      setDockSnapshot(null)
+      advanceSequence(manifest)
+      track(TRACK_EVENTS.RESUME, { transit_id: transitId, advance: true })
+      return true
+    }
+
+    const nextStepId =
+      (manifest &&
+        getStepIdAtIndex(
+          manifest,
+          context.path,
+          context.currentSequenceIndex + 1,
+          context.promotedOptionalIds,
+        )) ||
+      `after:${transitId}`
+    void requestAdvanceToWaypoint(nextStepId, runAdvance)
+  }, [
+    advanceSequence,
+    audio,
+    completeTransit,
+    context,
+    manifest,
+    requestAdvanceToWaypoint,
+    step?.id,
+    step?.type,
+  ])
 
   const handleResumeFromRest = useCallback(() => {
     if (!step?.record?.scripted_rest || step.type !== 'waypoint') return
 
-    completeWaypoint(step.id)
-    track(TRACK_EVENTS.RESUME, { waypoint_id: step.id, scripted: true })
-    waypointAutoplayRef.current.clearStarted()
-    playedStepRef.current = null
-    scriptedRestNarrationStartedRef.current = null
-    scriptedRestEnteredRef.current = null
-    advanceSequence(manifest)
-  }, [advanceSequence, completeWaypoint, manifest, step])
+    const runResume = () => {
+      completeWaypoint(step.id)
+      track(TRACK_EVENTS.RESUME, { waypoint_id: step.id, scripted: true })
+      waypointAutoplayRef.current.clearStarted()
+      playedStepRef.current = null
+      scriptedRestNarrationStartedRef.current = null
+      scriptedRestEnteredRef.current = null
+      advanceSequence(manifest)
+      return true
+    }
+
+    const nextStepId =
+      (manifest &&
+        getStepIdAtIndex(
+          manifest,
+          context.path,
+          context.currentSequenceIndex + 1,
+          context.promotedOptionalIds,
+        )) ||
+      `after:${step.id}`
+    void requestAdvanceToWaypoint(nextStepId, runResume)
+  }, [
+    advanceSequence,
+    completeWaypoint,
+    context,
+    manifest,
+    requestAdvanceToWaypoint,
+    step,
+  ])
 
   const handleOpenThreshold = () => {
     if (variant === 'redesign') return
@@ -1326,7 +1406,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
                   canResumeForAll={syncAudio.canResumeForAll}
                   narrationPlaying={audio.narrationPlaying}
                   pendingGroupResume={syncAudio.pendingGroupResume}
-                  onToggleSync={() => void syncAudio.family?.setSyncEnabled(!syncAudio.syncEnabled)}
+                  walkingIndependently={Boolean(syncAudio.family?.isWalkingIndependently)}
+                  onToggleSync={() =>
+                    void syncAudio.family?.setSyncEnabled(!syncAudio.family?.session?.syncEnabled)
+                  }
                   onPauseAll={() => void syncAudio.pauseForEveryone()}
                   onResumeAll={() => {
                     void syncAudio.resumeForEveryone().catch((err) => {

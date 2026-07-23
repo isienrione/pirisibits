@@ -7,10 +7,14 @@ import {
   createBundleInvite,
   createWalkSession,
   claimFamilySeat,
+  detachWalkSession,
   discoverActiveWalkSession,
+  isActivelySynced,
   isLeader,
+  isWalkingIndependently,
   joinWalkSession,
   refreshFamilyBundle,
+  rejoinWalkSession,
   revokeBundleSeat,
   shouldAcceptRemoteSession,
   subscribeWalkSession,
@@ -220,6 +224,36 @@ export function useFamilyWalk() {
     writeCachedSession(null)
   }, [])
 
+  const forceAdoptSession = useCallback((next) => {
+    if (!next?.id) return false
+    lastUpdatedRef.current = next.updatedAt ?? null
+    sessionRef.current = next
+    setSession(next)
+    writeCachedSession(next)
+    return true
+  }, [])
+
+  const detachFromSharedWalk = useCallback(
+    () =>
+      run(async () => {
+        const next = await detachWalkSession()
+        // Detach/rejoin must win over stale poll ordering so participation is authoritative.
+        if (next?.id) forceAdoptSession(next)
+        return next
+      }),
+    [forceAdoptSession, run],
+  )
+
+  const rejoinSharedWalk = useCallback(
+    () =>
+      run(async () => {
+        const next = await rejoinWalkSession()
+        if (next?.id) forceAdoptSession(next)
+        return next
+      }),
+    [forceAdoptSession, run],
+  )
+
   const patchSession = useCallback(
     async (patch) => {
       const current = sessionRef.current
@@ -313,7 +347,9 @@ export function useFamilyWalk() {
   )
 
   const leader = isLeader(session, session?.mySeatId ?? deviceId)
-  const syncOn = Boolean(session?.syncEnabled)
+  const walkingIndependently = isWalkingIndependently(session)
+  const activelySynced = isActivelySynced(session)
+  const syncOn = activelySynced
   const resumeAllowed = canResumeForAll(session, session?.mySeatId ?? deviceId)
 
   return {
@@ -324,6 +360,8 @@ export function useFamilyWalk() {
     error,
     clearError: () => setError(null),
     isLeader: leader,
+    isWalkingIndependently: walkingIndependently,
+    isActivelySynced: activelySynced,
     syncEnabled: syncOn,
     resumePolicy: session?.resumePolicy ?? 'leader',
     canResumeForAll: resumeAllowed,
@@ -339,6 +377,8 @@ export function useFamilyWalk() {
     startSharedWalk,
     joinSharedWalk,
     leaveSharedWalk,
+    detachFromSharedWalk,
+    rejoinSharedWalk,
     setSyncEnabled,
     setResumePolicy,
     publishPause,

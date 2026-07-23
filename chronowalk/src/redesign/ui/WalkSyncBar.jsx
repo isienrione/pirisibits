@@ -11,6 +11,7 @@ export default function WalkSyncBar({
   canResumeForAll,
   narrationPlaying,
   pendingGroupResume = false,
+  walkingIndependently = false,
   onToggleSync,
   onPauseAll,
   onResumeAll,
@@ -19,9 +20,16 @@ export default function WalkSyncBar({
 }) {
   if (!joinCode) return null
 
+  const modeLabel = walkingIndependently
+    ? 'Walking independently'
+    : syncEnabled
+      ? 'Synced walk'
+      : 'Autonomous'
+
   return (
     <div
       data-testid="walk-sync-bar"
+      data-walking-independently={walkingIndependently ? 'true' : 'false'}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -47,39 +55,45 @@ export default function WalkSyncBar({
               color: `${T.warmWhite}70`,
             }}
           >
-            {syncEnabled ? 'Synced walk' : 'Autonomous'} · {joinCode}
+            {modeLabel}
+            {walkingIndependently ? '' : ` · ${joinCode}`}
           </p>
           <p style={{ margin: '3px 0 0', fontSize: 12, color: `${T.warmWhite}85` }}>
-            {isLeader ? 'Leader' : 'Follower'}
-            {syncEnabled
-              ? resumePolicy === 'leader'
-                ? ' · only leader resumes'
-                : ' · anyone can resume'
-              : ' · sync off'}
+            {walkingIndependently
+              ? 'Shared syncing paused on this phone'
+              : `${isLeader ? 'Leader' : 'Follower'}${
+                  syncEnabled
+                    ? resumePolicy === 'leader'
+                      ? ' · only leader resumes'
+                      : ' · anyone can resume'
+                    : ' · sync off'
+                }`}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onToggleSync}
-          aria-pressed={syncEnabled}
-          style={{
-            flexShrink: 0,
-            minHeight: 36,
-            padding: '6px 12px',
-            borderRadius: 999,
-            border: `1px solid ${T.warmWhite}22`,
-            background: syncEnabled ? `${T.ember}35` : 'transparent',
-            color: T.warmWhite,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: 'pointer',
-          }}
-        >
-          Sync {syncEnabled ? 'on' : 'off'}
-        </button>
+        {walkingIndependently || !isLeader ? null : (
+          <button
+            type="button"
+            onClick={onToggleSync}
+            aria-pressed={syncEnabled}
+            style={{
+              flexShrink: 0,
+              minHeight: 36,
+              padding: '6px 12px',
+              borderRadius: 999,
+              border: `1px solid ${T.warmWhite}22`,
+              background: syncEnabled ? `${T.ember}35` : 'transparent',
+              color: T.warmWhite,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Sync {syncEnabled ? 'on' : 'off'}
+          </button>
+        )}
       </div>
 
-      {syncEnabled ? (
+      {syncEnabled && !walkingIndependently ? (
         <div style={{ display: 'flex', gap: 8 }}>
           {pendingGroupResume && !isLeader ? (
             <button

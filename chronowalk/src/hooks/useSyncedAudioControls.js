@@ -21,7 +21,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
   const localApplyingRef = useRef(false)
   const [pendingGroupResume, setPendingGroupResume] = useState(false)
 
-  const syncOn = Boolean(family?.session && family.syncEnabled)
+  const syncOn = Boolean(family?.session && family.syncEnabled && !family.isWalkingIndependently)
   const isLeader = Boolean(family?.isLeader)
   const markApplyingRemote = family?.markApplyingRemote
   const isApplyingRemote = family?.isApplyingRemote
