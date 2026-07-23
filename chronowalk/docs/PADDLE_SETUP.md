@@ -135,10 +135,19 @@ In Paddle → **Developer tools → Notifications** → New destination:
 - Events (required):
   - **`transaction.completed`** — grant entitlement + enqueue access email
   - **`customer.created`** / **`customer.updated`** — cache buyer email (`paddle_customers`)
-  - **`adjustment.created`** / **`adjustment.updated`** — refunds, credits, chargebacks (pending keeps access; approved full refund/credit → `refunded`; chargeback → `disputed`)
+  - **`adjustment.created`** / **`adjustment.updated`** — refunds, credits, chargebacks (pending keeps access; approved top-level **full** refund/credit → `refunded`; approved top-level **partial** that is proven to cover every original transaction item as `full` with equal integer totals/currency → `refunded`; genuine partials → operator review / retain access; chargeback → `disputed`)
 - Copy the destination secret → `PADDLE_NOTIFICATION_WEBHOOK_SECRET`
 
 Do **not** omit `adjustment.updated`: live refunds often start as `pending_approval` and only flip to `approved` / `rejected` on update.
+
+#### Effective-full refund recovery (failed webhook replay)
+
+If an approved dashboard “Full refund” arrived as top-level `type: partial` and the inbox row is `failed` / `partial_operator_review`:
+
+1. Apply `20260727_webhook_failed_reclaim.sql` and redeploy `paddle-webhook` (`2026-07-27-v13-effective-full-refund`).
+2. In Paddle → Notifications, **replay** the same `adjustment.updated` notification (same event id).
+3. ChronoWalk reclaims the failed inbox row, verifies item coverage + totals against the Paddle transaction, then revokes purchase credentials / bundle seats.
+4. Do **not** issue another refund or remint access.
 
 ### 7. Sandbox test card
 

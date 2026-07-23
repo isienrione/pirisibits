@@ -1,16 +1,17 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-23-v12-email-generation
+ * WEBHOOK_BUILD: 2026-07-27-v13-effective-full-refund
  *
  * Entitlement is derived only from data.items[].price.id via server secrets
  * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
  * Successful entitlement does not depend on Resend during the Paddle request.
  * Email delivery is enqueued to fulfillment_outbox for process-fulfillment-outbox.
  * Adjustments: refunds/credits/chargebacks via apply_paddle_adjustment.
+ * Effective-full: top-level partial with every original item fully covered + equal totals.
  *
  * Deploy the paddle-webhook function directory (index + local modules).
- * Logs / JSON MUST contain "2026-07-23-v12-email-generation".
+ * Logs / JSON MUST contain "2026-07-27-v13-effective-full-refund".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
@@ -25,13 +26,14 @@ import {
   maskEmail,
   maskId,
   paddlePayloadEmailCandidate,
+  proveEffectiveFullRefundCoverage,
   readAdjustmentPayload,
   resolveAdjustmentEffect,
   resolveLaunchEntitlementFromTransaction,
   shouldIgnoreOutOfOrderEvent,
 } from './fulfillmentLogic.js'
 
-const WEBHOOK_BUILD = '2026-07-23-v12-email-generation'
+const WEBHOOK_BUILD = '2026-07-27-v13-effective-full-refund'
 
 function readServerPriceEnv() {
   return {
@@ -114,10 +116,24 @@ async function recordWebhookEvent(supabase, envelope, eventType, { operatorRevie
   })
   if (error) throw new Error(`webhook inbox failed: ${error.message}`)
   if (operatorReview && eventId) {
-    await supabase
-      .from('paddle_webhook_events')
-      .update({ operator_review: true, status: 'failed', last_error: 'operator_review' })
-      .eq('event_id', String(eventId))
+    await completeWebhookEvent(supabase, eventId, false, 'operator_review')
+  }
+  return data
+}
+
+async function completeWebhookEvent(supabase, eventId, ok, errorReason = null) {
+  if (!eventId) return null
+  const { data, error } = await supabase.rpc('complete_paddle_webhook_event', {
+    p_event_id: String(eventId),
+    p_ok: Boolean(ok),
+    p_error: errorReason ? String(errorReason).slice(0, 200) : null,
+  })
+  if (error) {
+    console.warn('[paddle-webhook] complete event failed', {
+      build: WEBHOOK_BUILD,
+      eventId: maskId(eventId),
+      message: error.message,
+    })
   }
   return data
 }
@@ -331,15 +347,84 @@ async function markOperatorReview(supabase, envelope, reason) {
     orderId: envelope?.data?.id ? maskId(envelope.data.id) : null,
   })
   if (eventId) {
-    await supabase
-      .from('paddle_webhook_events')
-      .update({
-        operator_review: true,
-        status: 'failed',
-        last_error: String(reason).slice(0, 200),
-      })
-      .eq('event_id', String(eventId))
+    await completeWebhookEvent(supabase, eventId, false, reason)
   }
+}
+
+async function fetchPaddleEntity(mode, path) {
+  const headers = {
+    Authorization: `Bearer ${mode.apiKey}`,
+    'Paddle-Version': '1',
+  }
+  const res = await fetch(`${mode.apiBase}${path}`, { headers })
+  const text = await res.text()
+  if (!res.ok) {
+    return { ok: false, status: res.status, data: null }
+  }
+  try {
+    const parsed = JSON.parse(text)
+    return { ok: true, status: res.status, data: parsed?.data ?? null }
+  } catch {
+    return { ok: false, status: res.status, data: null }
+  }
+}
+
+/**
+ * For approved top-level partial refunds/credits, prove the adjustment covers the
+ * entire original transaction (every line item type=full + equal totals/currency).
+ */
+async function resolveAdjustmentDecision(mode, data) {
+  const fields = readAdjustmentPayload(data)
+  let decision = resolveAdjustmentEffect(fields)
+  if (!decision.needsCoverageCheck) {
+    return { fields, decision }
+  }
+
+  const transactionId = fields.transactionId ? String(fields.transactionId) : null
+  const adjustmentId = fields.adjustmentId ? String(fields.adjustmentId) : null
+  if (!transactionId || !adjustmentId) {
+    return {
+      fields,
+      decision: resolveAdjustmentEffect(fields, {
+        proven: false,
+        reason: 'missing_paddle_verification',
+      }),
+    }
+  }
+
+  const txnResult = await fetchPaddleEntity(
+    mode,
+    `/transactions/${encodeURIComponent(transactionId)}`,
+  )
+  if (!txnResult.ok || !txnResult.data) {
+    return {
+      fields,
+      decision: resolveAdjustmentEffect(fields, {
+        proven: false,
+        reason: 'missing_paddle_verification',
+      }),
+    }
+  }
+
+  let adjustmentEntity = data
+  // Prefer API adjustment when webhook omitted items/totals.
+  if (!Array.isArray(fields.items) || fields.items.length === 0 || !fields.totalsTotal) {
+    const adjResult = await fetchPaddleEntity(
+      mode,
+      `/adjustments/${encodeURIComponent(adjustmentId)}`,
+    )
+    if (adjResult.ok && adjResult.data) {
+      adjustmentEntity = adjResult.data
+    }
+  }
+
+  const adjustment = readAdjustmentPayload(adjustmentEntity)
+  const coverage = proveEffectiveFullRefundCoverage({
+    adjustment,
+    transaction: txnResult.data,
+  })
+  decision = resolveAdjustmentEffect(adjustment, coverage)
+  return { fields: adjustment, decision }
 }
 
 async function enqueueFulfillmentOnly(supabase, purchase, rawClaim) {
@@ -520,8 +605,8 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
   return { ok: true, purchaseId: row.id }
 }
 
-async function handleAdjustmentEvent(supabase, data, envelope) {
-  const fields = readAdjustmentPayload(data)
+async function handleAdjustmentEvent(supabase, mode, data, envelope) {
+  const { fields, decision } = await resolveAdjustmentDecision(mode, data)
   if (!fields.adjustmentId) {
     await markOperatorReview(supabase, envelope, 'missing_adjustment_id')
     return { ok: false, reason: 'missing_adjustment_id' }
@@ -531,7 +616,6 @@ async function handleAdjustmentEvent(supabase, data, envelope) {
     return { ok: false, reason: 'missing_transaction_id' }
   }
 
-  const decision = resolveAdjustmentEffect(fields)
   const occurredAt = envelope?.occurred_at ?? data?.updated_at ?? data?.created_at ?? null
 
   // Sanitized raw — never store full customer payloads with PII beyond Paddle ids.
@@ -541,7 +625,11 @@ async function handleAdjustmentEvent(supabase, data, envelope) {
     action: fields.action,
     status: fields.status,
     type: fields.type,
+    currency_code: fields.currencyCode ?? null,
+    totals_total: fields.totalsTotal ?? null,
+    item_count: Array.isArray(fields.items) ? fields.items.length : 0,
     reason: fields.reason ? String(fields.reason).slice(0, 200) : null,
+    decision_reason: decision.reason ? String(decision.reason).slice(0, 200) : null,
   }
 
   const { data: result, error } = await supabase.rpc('apply_paddle_adjustment', {
@@ -621,6 +709,7 @@ Deno.serve(async (req) => {
         build: WEBHOOK_BUILD,
         eventType,
         eventId: envelope?.event_id ? maskId(envelope.event_id) : null,
+        status: inbox?.status ?? null,
       })
       return new Response(
         JSON.stringify({ received: true, duplicate: true, build: WEBHOOK_BUILD }),
@@ -631,14 +720,51 @@ Deno.serve(async (req) => {
       )
     }
 
-    if (eventType === 'customer.created' || eventType === 'customer.updated') {
-      await handleCustomerEvent(supabase, data)
-    } else if (eventType === 'transaction.completed') {
-      await handleTransactionCompleted(supabase, mode, data, envelope)
-    } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
-      await handleAdjustmentEvent(supabase, data, envelope)
-    } else {
-      console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
+    if (inbox?.reclaim) {
+      console.log('[paddle-webhook] failed event reclaimed for retry', {
+        build: WEBHOOK_BUILD,
+        eventType,
+        eventId: envelope?.event_id ? maskId(envelope.event_id) : null,
+      })
+    }
+
+    let handlerFailed = false
+    let handlerReason = null
+    try {
+      if (eventType === 'customer.created' || eventType === 'customer.updated') {
+        await handleCustomerEvent(supabase, data)
+      } else if (eventType === 'transaction.completed') {
+        const result = await handleTransactionCompleted(supabase, mode, data, envelope)
+        if (result && result.ok === false) {
+          handlerFailed = true
+          handlerReason = result.reason ?? 'handler_failed'
+        }
+      } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
+        const result = await handleAdjustmentEvent(supabase, mode, data, envelope)
+        if (result && result.ok === false) {
+          handlerFailed = true
+          handlerReason = result.reason ?? 'handler_failed'
+        } else if (result?.decision?.operatorReview || result?.operator_review) {
+          handlerFailed = true
+          handlerReason = result?.decision?.reason ?? result?.reason ?? 'operator_review'
+        }
+      } else {
+        console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
+      }
+    } catch (handlerErr) {
+      handlerFailed = true
+      handlerReason = handlerErr instanceof Error ? handlerErr.message : String(handlerErr)
+      throw handlerErr
+    } finally {
+      const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
+      if (eventId) {
+        if (handlerFailed) {
+          // Idempotent with markOperatorReview — keeps failed reclaimable.
+          await completeWebhookEvent(supabase, eventId, false, handlerReason ?? 'failed')
+        } else {
+          await completeWebhookEvent(supabase, eventId, true, null)
+        }
+      }
     }
 
     return new Response(JSON.stringify({ received: true, build: WEBHOOK_BUILD }), {

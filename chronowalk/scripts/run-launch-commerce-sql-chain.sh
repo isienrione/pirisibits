@@ -53,6 +53,8 @@ apply supabase/migrations/20260725_walk_session_discovery.sql
 apply supabase/migrations/20260725_walk_session_discovery_verify.sql
 apply supabase/migrations/20260726_walk_session_participant.sql
 apply supabase/migrations/20260726_walk_session_participant_verify.sql
+apply supabase/migrations/20260727_webhook_failed_reclaim.sql
+apply supabase/migrations/20260727_webhook_failed_reclaim_verify.sql
 
 # Confirm synthetic verify rows did not survive rollbacks
 REMAINING="$(psql_cmd -d "$DB" -At -c "select count(*) from public.purchases where email like '%@example.invalid';")"
