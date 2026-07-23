@@ -109,7 +109,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     return context.completedWaypointIds.filter((id) => isVisitStop(getWaypoint(manifest, id))).length
   }, [context.completedWaypointIds, manifest])
   const audio = useAudioEngine(manifest)
-  const syncAudio = useSyncedAudioControls(audio)
+  const beginWaypointStoryRef = useRef(null)
+  const syncAudio = useSyncedAudioControls(audio, {
+    currentWaypointId: step?.id ?? null,
+    onRemoteWaypoint: (waypointId) => {
+      if (!waypointId) return
+      beginWaypointStoryRef.current?.(waypointId, 'family_sync')
+    },
+  })
   const [syncStatus, setSyncStatus] = useState(null)
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
@@ -695,6 +702,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     },
     [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
   )
+  beginWaypointStoryRef.current = beginWaypointStory
 
   const arriveAtWaypoint = useCallback(
     (source) => {
@@ -1313,6 +1321,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
                   resumePolicy={syncAudio.resumePolicy}
                   canResumeForAll={syncAudio.canResumeForAll}
                   narrationPlaying={audio.narrationPlaying}
+                  pendingGroupResume={syncAudio.pendingGroupResume}
                   onToggleSync={() => void syncAudio.family?.setSyncEnabled(!syncAudio.syncEnabled)}
                   onPauseAll={() => void syncAudio.pauseForEveryone()}
                   onResumeAll={() => {
@@ -1322,6 +1331,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
                       }
                     })
                   }}
+                  onResumeWithGroup={() => void syncAudio.resumeWithGroup()}
                   statusMessage={syncStatus}
                 />
               </div>

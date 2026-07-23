@@ -233,6 +233,13 @@ export const localFamilyStore = {
     return serializeSession(session)
   },
 
+  getActiveWalkSessionForBundle(bundleId) {
+    const session = readJson(SESSION_KEY, null)
+    if (!session || session.bundleId !== bundleId) return null
+    if (new Date(session.expiresAt).getTime() <= Date.now()) return null
+    return serializeSession(session)
+  },
+
   updateWalkSessionState({ sessionId, deviceId, patch }) {
     const session = readJson(SESSION_KEY, null)
     if (!session || session.id !== sessionId) {

@@ -197,8 +197,8 @@ export function useAudioEngine(manifest) {
     engineRef.current?.pauseNarration()
   }, [])
 
-  const resumeNarration = useCallback(() => {
-    void engineRef.current?.resumeNarration()
+  const resumeNarration = useCallback(async () => {
+    return engineRef.current?.resumeNarration()
   }, [])
 
   const toggleNarration = useCallback(() => {

@@ -372,6 +372,32 @@ export function getCachedFamilyMembership() {
   return readMembership()
 }
 
+export async function discoverActiveWalkSession() {
+  const credential = readDeviceCredential()
+  if (!credential) return null
+  const remote = await tryRpc('get_active_walk_session_for_credential', {
+    p_credential: credential,
+    p_device_binding: getDeviceId(),
+  })
+  if (remote.ok && remote.data?.id) {
+    return remote.data
+  }
+  if (
+    remote.reason === 'no_active_session' ||
+    remote.reason === 'not_a_member' ||
+    remote.reason === 'invalid' ||
+    remote.data?.reason === 'no_active_session' ||
+    remote.data?.reason === 'not_a_member' ||
+    remote.data?.reason === 'invalid'
+  ) {
+    return null
+  }
+  if (!allowsLocalFamilyDevStore()) return null
+  const membership = readMembership()
+  if (!membership?.bundleId) return null
+  return localFamilyStore.getActiveWalkSessionForBundle?.(membership.bundleId) ?? null
+}
+
 export async function createWalkSession({ resumePolicy = 'leader' } = {}) {
   const credential = readDeviceCredential()
   if (!credential) {
@@ -387,7 +413,9 @@ export async function createWalkSession({ resumePolicy = 'leader' } = {}) {
   if (remote.ok && remote.data?.ok !== false) return remote.data
 
   if (!allowsLocalFamilyDevStore()) {
-    throw rpcError(remote.error ?? new Error(remote.reason ?? 'session_failed'))
+    throw rpcError(
+      remote.error ?? new Error(remote.data?.reason ?? remote.reason ?? 'session_failed'),
+    )
   }
   const membership = readMembership()
   return localFamilyStore.createWalkSession({
@@ -432,11 +460,20 @@ export async function updateWalkSessionState(sessionId, patch) {
     p_device_binding: getDeviceId(),
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
-  if (remote.data?.reason === 'resume_leader_only') {
+  if (remote.reason === 'stale_update' && remote.data?.id) {
+    // Server kept newer state — return it so the client converges.
+    return { ...remote.data, ok: true }
+  }
+  if (remote.data?.reason === 'stale_update' && remote.data?.id) {
+    return { ...remote.data, ok: true }
+  }
+  if (remote.reason === 'resume_leader_only' || remote.data?.reason === 'resume_leader_only') {
     throw rpcError(new Error('resume_leader_only'))
   }
   if (!allowsLocalFamilyDevStore()) {
-    throw rpcError(remote.error ?? new Error(remote.reason ?? 'session_failed'))
+    throw rpcError(
+      remote.error ?? new Error(remote.data?.reason ?? remote.reason ?? 'session_failed'),
+    )
   }
   try {
     return localFamilyStore.updateWalkSessionState({
@@ -449,35 +486,76 @@ export async function updateWalkSessionState(sessionId, patch) {
   }
 }
 
-export function subscribeWalkSession(sessionId, onUpdate) {
-  // Direct anon Realtime on walk_sessions is disabled (credential bypass risk).
-  // Poll via credential-authorized RPC instead.
-  const poll = setInterval(async () => {
-    const next = await getWalkSession(sessionId)
-    if (next) onUpdate(next)
+/**
+ * Poll an existing session, or discover one when the device has no cached id.
+ * Cleans up on unmount / stop.
+ */
+export function subscribeWalkSession(sessionId, onUpdate, { discover = false } = {}) {
+  let stopped = false
+  const tick = async () => {
+    if (stopped) return
+    let next = null
+    if (sessionId) {
+      next = await getWalkSession(sessionId)
+      if (!stopped) onUpdate(next)
+      return
+    }
+    if (discover) {
+      next = await discoverActiveWalkSession()
+      if (!stopped && next) onUpdate(next)
+    }
+  }
+
+  void tick()
+  const poll = setInterval(() => {
+    void tick()
   }, 2500)
 
   if (allowsLocalFamilyDevStore()) {
-    const localUnsub = localFamilyStore.subscribe(async () => {
-      const next = await getWalkSession(sessionId)
-      if (next) onUpdate(next)
+    const localUnsub = localFamilyStore.subscribe(() => {
+      void tick()
     })
     return () => {
+      stopped = true
       clearInterval(poll)
       localUnsub()
     }
   }
 
-  return () => clearInterval(poll)
+  return () => {
+    stopped = true
+    clearInterval(poll)
+  }
 }
 
 export function isLeader(session, id = null) {
   if (!session) return false
+  // Server payloads include mySeatId — prefer seat comparison (authoritative).
+  if (session.leaderSeatId && session.mySeatId) {
+    return session.leaderSeatId === session.mySeatId
+  }
   if (session.leaderSeatId) {
     return Boolean(id && session.leaderSeatId === id)
   }
   // Legacy local-store shape uses device ids
   return Boolean(session.leaderDeviceId && session.leaderDeviceId === (id ?? getDeviceId()))
+}
+
+/**
+ * Accept a polled/remote session only when it is the same generation or newer.
+ * Prevents out-of-order responses from overwriting fresher local state.
+ */
+export function shouldAcceptRemoteSession(localSession, remoteSession) {
+  if (!remoteSession?.id) return false
+  if (localSession?.id && remoteSession.id !== localSession.id) {
+    // Different session id — accept (organizer restarted).
+    return true
+  }
+  if (!localSession?.updatedAt || !remoteSession.updatedAt) return true
+  const localTs = Date.parse(localSession.updatedAt)
+  const remoteTs = Date.parse(remoteSession.updatedAt)
+  if (!Number.isFinite(localTs) || !Number.isFinite(remoteTs)) return true
+  return remoteTs >= localTs
 }
 
 export function canResumeForAll(session, id = null) {

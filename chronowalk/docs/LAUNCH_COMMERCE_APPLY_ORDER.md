@@ -20,7 +20,9 @@
    Adjustment idempotency + `apply_paddle_adjustment` / `operator_restore_purchase_access`. Then run `20260722_paddle_adjustments_verify.sql` (rolled back).
 8. **SQL Editor** — run `supabase/migrations/20260724_bundle_invite_canonical.sql`
    Canonicalizes bundle invites (`trim` + lowercase) inside `redeem_bundle_invite` before rate-limit bucketing and hashing. Then run `20260724_bundle_invite_canonical_verify.sql` (rolled back). Existing unconsumed lowercase-hashed invites become redeemable from upper/mixed-case clients without reminting.
-9. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
+9. **SQL Editor** — run `supabase/migrations/20260725_walk_session_discovery.sql`
+   Adds `get_active_walk_session_for_credential` so Couple/Family members discover the organizer’s active shared session using only device credential + binding. Hardens create (owner-only), emits `mySeatId`, rejects stale `expectedUpdatedAt` patches. Then run `20260725_walk_session_discovery_verify.sql` (rolled back). Existing active Sandbox sessions remain discoverable — no remint required.
+10. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
    ```bash
    export PADDLE_API_KEY=…   # never commit
    export PADDLE_ENV=sandbox
@@ -28,17 +30,17 @@
    node scripts/seed-paddle-catalog.mjs --execute --env=sandbox
    ```
    Paste the five printed `pri_…` into Cloudflare Pages (`VITE_PADDLE_PRICE_*`) and Supabase Edge secrets (`PADDLE_PRICE_*`). Also set `CLAIM_ENCRYPTION_KEY` (32-byte base64).
-10. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
+11. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
    - `paddle-webhook` build `2026-07-23-v12-email-generation` (no Resend inline; handles `adjustment.*`; fresh `email_generation_id` on enqueue)
    - `process-fulfillment-outbox` build `2026-07-23-v2-email-generation` + cron every minute with `FULFILLMENT_CRON_SECRET`
    - `resend-webhook` build `2026-07-23-v2-email-generation` with `RESEND_WEBHOOK_SECRET` (Svix)
-11. **Paddle notification destination** — subscribe to `transaction.completed`, `customer.created`, `customer.updated`, **`adjustment.created`**, and **`adjustment.updated`** (see `docs/PADDLE_SETUP.md`).
-12. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → cron worker sends email → Resend `email.delivered` → `/access?token=` redeems once (second redeem fails). Optional: simulator adjustment pending→approved → purchase `refunded` and device validate fails. Also confirm Couple/Family invite links redeem regardless of invite-code letter case.
-13. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, `fulfillment_outbox`, `purchase_adjustments`, or `walk_sessions`.
+12. **Paddle notification destination** — subscribe to `transaction.completed`, `customer.created`, `customer.updated`, **`adjustment.created`**, and **`adjustment.updated`** (see `docs/PADDLE_SETUP.md`).
+13. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → cron worker sends email → Resend `email.delivered` → `/access?token=` redeems once (second redeem fails). Optional: simulator adjustment pending→approved → purchase `refunded` and device validate fails. Also confirm Couple/Family invite links redeem regardless of invite-code letter case. Confirm Seat 2 discovers “Start shared tour syncing” from the organizer and observes Pause/Resume for everyone (or “Resume with group” when autoplay blocks).
+14. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, `fulfillment_outbox`, `purchase_adjustments`, or `walk_sessions`.
 
 ### Existing Sandbox recovery stuck on `http_409`
 
-After step 6 (migration) and step 10 (redeploy worker + resend-webhook), requeue the **existing encrypted claim** without minting another:
+After step 6 (migration) and step 11 (redeploy worker + resend-webhook), requeue the **existing encrypted claim** without minting another:
 
 ```bash
 node scripts/retry-fulfillment-outbox.mjs <order_id> --rotate-generation --execute
