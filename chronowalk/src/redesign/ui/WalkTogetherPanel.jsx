@@ -279,14 +279,14 @@ export default function WalkTogetherPanel({
         '--wt-ink': isEntry ? T.warmWhite : T.ink,
         '--wt-muted': isEntry
           ? `color-mix(in srgb, ${T.warmWhite} 78%, ${T.muted})`
-          : `color-mix(in srgb, ${T.ink} 70%, ${T.limestone})`,
+          : `color-mix(in srgb, ${T.ink} 72%, ${T.muted})`,
         '--wt-surface': isEntry ? `${T.warmWhite}0F` : T.warmWhite,
         '--wt-panel': isEntry
           ? `${T.warmWhite}12`
           : `color-mix(in srgb, ${accent} 8%, ${T.bone})`,
         '--wt-border': isEntry
           ? `${T.warmWhite}22`
-          : `color-mix(in srgb, ${T.ink} 14%, ${T.limestone})`,
+          : `color-mix(in srgb, ${T.ink} 16%, ${T.muted})`,
         '--wt-error': isEntry ? T.actIII : T.terracotta,
       }}
     >
