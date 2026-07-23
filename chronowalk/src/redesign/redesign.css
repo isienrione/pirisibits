@@ -3600,12 +3600,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   margin: 12px 0 0;
   font-size: 13px;
   line-height: 1.5;
-  color: #b14a3a;
+  color: var(--wt-error, #e4552e);
   cursor: pointer;
-}
-
-.cw-walk-together--entry .cw-walk-together__error {
-  color: #e8a13c;
 }
 
 .cw-walk-together__switch {

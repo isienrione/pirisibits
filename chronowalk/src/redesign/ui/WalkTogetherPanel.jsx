@@ -287,6 +287,7 @@ export default function WalkTogetherPanel({
         '--wt-border': isEntry
           ? `${T.warmWhite}22`
           : `color-mix(in srgb, ${T.ink} 14%, ${T.limestone})`,
+        '--wt-error': isEntry ? T.actIII : T.terracotta,
       }}
     >
       <header className="cw-walk-together__header">
