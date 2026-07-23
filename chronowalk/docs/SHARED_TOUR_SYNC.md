@@ -24,10 +24,22 @@ Existing active Sandbox sessions remain discoverable after the migration (no rem
 
 Remote **pause** pauses member narration when permitted. Remote **resume** may be blocked by mobile autoplay; the member sees synchronized “group resumed” state and an explicit **Resume with group** control. Do not claim exact synced audio playback.
 
+## Participant detach / rejoin (independent walking)
+
+After `20260726_walk_session_participant.sql`, each seat has per-session `syncParticipation`:
+
+- `synced` (default when no participant row) — receives shared pause/resume/stop updates
+- `independent` — keeps seat + Roma Eterna access; ignores shared transport/stop updates on that device
+
+Followers may leave the group’s current stop only after an in-app confirmation. Confirming calls `detach_walk_session_for_credential` (credential + device binding only) before navigating. Leaders cannot detach via this RPC. Detach does **not** end the session, revoke the seat, or remint invites.
+
+`get_active_walk_session_for_credential` returns `syncParticipation` so reload cannot silently re-sync a detached follower. Rejoin uses `rejoin_walk_session_for_credential` on the same active session (no second session) and jumps to the leader’s current `waypointId`.
+
 ## Security
 
 - Server derives membership from credential + device binding only.
 - Solo / invalid / revoked / wrong-binding / other-bundle → fail closed.
 - Create session is **owner-only**; members discover.
 - Leader-only: `syncEnabled`, `resumePolicy`, `clock` patches; resume when policy is `leader`.
+- Follower detach/rejoin affects only that seat’s participation; cannot end or modify the group session.
 - Seat limits unchanged: Couple 2, Family 4.

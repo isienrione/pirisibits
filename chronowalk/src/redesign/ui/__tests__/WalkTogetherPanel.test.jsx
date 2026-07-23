@@ -8,6 +8,9 @@ const createBundleInvite = vi.fn()
 const revokeBundleSeat = vi.fn()
 const createWalkSession = vi.fn()
 const updateWalkSessionState = vi.fn()
+const discoverActiveWalkSession = vi.fn(async () => null)
+const detachWalkSession = vi.fn()
+const rejoinWalkSession = vi.fn()
 
 vi.mock('../../../lib/familyWalk.js', async () => {
   const actual = await vi.importActual('../../../lib/familyWalk.js')
@@ -19,7 +22,9 @@ vi.mock('../../../lib/familyWalk.js', async () => {
     createWalkSession: (...args) => createWalkSession(...args),
     updateWalkSessionState: (...args) => updateWalkSessionState(...args),
     subscribeWalkSession: () => () => {},
-    discoverActiveWalkSession: async () => null,
+    discoverActiveWalkSession: (...args) => discoverActiveWalkSession(...args),
+    detachWalkSession: (...args) => detachWalkSession(...args),
+    rejoinWalkSession: (...args) => rejoinWalkSession(...args),
   }
 })
 
@@ -46,6 +51,7 @@ import SettingsBottomSheet from '../SettingsBottomSheet.jsx'
 import WalkTogetherPanel from '../WalkTogetherPanel.jsx'
 import AppEntryFamily from '../../screens/AppEntryFamily.jsx'
 import { FamilyWalkProvider } from '../../context/FamilyWalkContext.jsx'
+import { SharedWalkGuardProvider } from '../../context/SharedWalkGuardContext.jsx'
 import {
   buildInviteShareUrl,
   bundleMetaForProductId,
@@ -115,6 +121,10 @@ describe('Walk together settings + management', () => {
     revokeBundleSeat.mockReset()
     createWalkSession.mockReset()
     updateWalkSessionState.mockReset()
+    discoverActiveWalkSession.mockReset()
+    discoverActiveWalkSession.mockResolvedValue(null)
+    detachWalkSession.mockReset()
+    rejoinWalkSession.mockReset()
   })
 
   it('shows Walk together in Settings for a verified Family organizer after onboarding', async () => {
@@ -451,6 +461,60 @@ describe('Walk together settings + management', () => {
     expect(screen.queryByRole('switch', { name: 'Only leader resumes' })).not.toBeInTheDocument()
     expect(createBundleInvite).not.toHaveBeenCalled()
     expect(revokeBundleSeat).not.toHaveBeenCalled()
+  })
+
+  it('shows Walking independently and rejoin for a detached member', async () => {
+    seedMember({ productId: 'rome-couple', seatLimit: 2 })
+    refreshFamilyBundle.mockResolvedValue({
+      ok: true,
+      purchasedProductId: 'rome-couple',
+      contentProductId: 'rome-complete',
+      seatLimit: 2,
+      role: 'member',
+      isOwner: false,
+      bundleStatus: 'active',
+      seats: null,
+    })
+    discoverActiveWalkSession.mockResolvedValue({
+      id: 'session-1',
+      joinCode: 'JOIN12',
+      syncEnabled: true,
+      syncParticipation: 'independent',
+      waypointId: 'w01',
+      resumePolicy: 'leader',
+      leaderSeatId: 'seat-owner',
+      mySeatId: 'seat-member',
+      updatedAt: '2026-07-23T00:00:00Z',
+      status: 'active',
+    })
+    rejoinWalkSession.mockResolvedValue({
+      id: 'session-1',
+      joinCode: 'JOIN12',
+      syncEnabled: true,
+      syncParticipation: 'synced',
+      waypointId: 'w01',
+      resumePolicy: 'leader',
+      leaderSeatId: 'seat-owner',
+      mySeatId: 'seat-member',
+      updatedAt: '2026-07-23T00:00:01Z',
+      status: 'active',
+    })
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <SharedWalkGuardProvider>
+            <WalkTogetherPanel />
+          </SharedWalkGuardProvider>
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    const status = await screen.findByTestId('walk-together-member-status')
+    expect(status).toHaveAttribute('data-walking-independently', 'true')
+    expect(screen.getByText('Walking independently')).toBeInTheDocument()
+    expect(screen.getByTestId('walk-together-rejoin')).toBeInTheDocument()
+    expect(screen.queryByText(/Synced walk/i)).not.toBeInTheDocument()
   })
 
   it('keeps invitation copy/share and revoke handlers wired for organizers', async () => {

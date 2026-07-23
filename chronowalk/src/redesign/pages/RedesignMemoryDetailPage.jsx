@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getAct, getWaypoint } from '../../content/manifest.js'
-import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../../state/journey.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
+import { useSharedWalkGuard } from '../context/SharedWalkGuardContext.jsx'
 import {
   accentForWaypoint,
   honestyCaptionForWaypoint,
@@ -21,6 +21,7 @@ import E2MemoryDetail from '../screens/E2MemoryDetail.jsx'
 export default function RedesignMemoryDetailPage() {
   const navigate = useNavigate()
   const { waypointId } = useParams()
+  const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
@@ -36,11 +37,12 @@ export default function RedesignMemoryDetailPage() {
 
   const goToStopExperience = (targetState, storyView = null) => {
     if (!manifest || !waypointId) return
-    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+    void requestJumpToWaypoint(manifest, waypointId, context, state, {
       targetState,
       storyView,
+    }).then((jumped) => {
+      if (jumped) navigate('/journey')
     })
-    if (jumped) navigate('/journey')
   }
 
   const handleWalkToStop = () => {

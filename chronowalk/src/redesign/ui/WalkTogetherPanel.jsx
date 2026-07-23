@@ -5,7 +5,9 @@ import {
   bundleMetaForProductId,
 } from '../../lib/familyWalk.js'
 import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
+import { useSharedWalkGuard } from '../context/SharedWalkGuardContext.jsx'
 import { buildWalkTogetherPresentationSeats } from '../lib/walkTogetherPresentation.js'
+import { getWaypoint, loadRomeManifest } from '../../content/manifest.js'
 
 /** Couple terracotta / Family verdigris — from established tokens only. */
 function accentForProductId(productId) {
@@ -126,6 +128,7 @@ export default function WalkTogetherPanel({
   showContinue = false,
 }) {
   const family = useOptionalFamilyWalk()
+  const { requestRejoinSharedWalk } = useSharedWalkGuard()
   const [statusNote, setStatusNote] = useState(null)
   const [inviteBusy, setInviteBusy] = useState(false)
   const refreshBundle = family?.refreshBundle
@@ -162,10 +165,17 @@ export default function WalkTogetherPanel({
     leaveSharedWalk,
     setSyncEnabled,
     setResumePolicy,
-    syncEnabled,
     resumePolicy,
     isLeader,
+    isWalkingIndependently,
   } = family
+
+  const sessionSyncEnabled = Boolean(session?.syncEnabled)
+  const groupStopTitle = (() => {
+    if (!session?.waypointId) return null
+    const waypoint = getWaypoint(loadRomeManifest(), session.waypointId)
+    return waypoint?.title ?? waypoint?.name ?? session.waypointId
+  })()
 
   const meta = bundleMetaForProductId(bundle?.purchasedProductId)
   const seatLimit = bundle?.seatLimit ?? meta?.seatLimit ?? null
@@ -478,8 +488,8 @@ export default function WalkTogetherPanel({
                     </p>
                   </div>
                   <Toggle
-                    on={syncEnabled}
-                    onToggle={() => void setSyncEnabled(!syncEnabled)}
+                    on={sessionSyncEnabled}
+                    onToggle={() => void setSyncEnabled(!sessionSyncEnabled)}
                     label="Shared tour syncing"
                     accent={accent}
                   />
@@ -517,18 +527,44 @@ export default function WalkTogetherPanel({
           <h3 id="walk-together-member-heading" className="cw-walk-together__section-title">
             You’re walking together
           </h3>
-          <div className="cw-walk-together__member-card">
+          <div
+            className="cw-walk-together__member-card"
+            data-testid="walk-together-member-status"
+            data-walking-independently={isWalkingIndependently ? 'true' : 'false'}
+          >
             <p className="cw-walk-together__member-copy">
               You belong to a shared Couple/Family walk with shared tour progress. Full Roma Eterna ·
               21 stops on this device.
             </p>
             <p className="cw-walk-together__seat-status">
-              {isLeader ? 'Leading the shared tour' : 'Following your walking party'}
+              {isWalkingIndependently
+                ? 'Walking independently'
+                : isLeader
+                  ? 'Leading the shared tour'
+                  : 'Following your walking party'}
             </p>
             {session ? (
-              <p className="cw-walk-together__hint">
-                Shared tour active {isLeader ? '· you lead' : '· following'}
-              </p>
+              <>
+                <p className="cw-walk-together__hint">
+                  {isWalkingIndependently
+                    ? groupStopTitle
+                      ? `Your group’s shared walk is still active at ${groupStopTitle}.`
+                      : 'Your group’s shared walk is still active.'
+                    : `Shared tour active ${isLeader ? '· you lead' : '· following'}`}
+                </p>
+                {isWalkingIndependently ? (
+                  <button
+                    type="button"
+                    data-testid="walk-together-rejoin"
+                    disabled={working}
+                    onClick={() => void requestRejoinSharedWalk()}
+                    className="cw-walk-together__btn cw-walk-together__btn--accent"
+                    style={{ background: accent, color: T.obsidian, marginTop: 4 }}
+                  >
+                    Rejoin shared walk
+                  </button>
+                ) : null}
+              </>
             ) : (
               <p className="cw-walk-together__hint">
                 No active shared tour session on this phone yet. When your organizer starts one, your

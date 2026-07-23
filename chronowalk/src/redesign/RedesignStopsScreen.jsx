@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { buildJournalTimeline } from '../content/journalTimeline.js'
 import { getTourProductTruth } from '../content/tourProductTruth.js'
 import { getWaypoint } from '../content/manifest.js'
-import { jumpToWaypointInJourney } from '../lib/jumpToWaypoint.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
+import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
@@ -34,6 +34,7 @@ function nodeStatusForStop(status) {
 
 export default function RedesignStopsScreen() {
   const navigate = useNavigate()
+  const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
@@ -86,11 +87,12 @@ export default function RedesignStopsScreen() {
 
   const walkToStop = (waypointId, targetState = null, storyView = null) => {
     if (!manifest) return
-    const jumped = jumpToWaypointInJourney(manifest, waypointId, context, state, {
+    void requestJumpToWaypoint(manifest, waypointId, context, state, {
       targetState,
       storyView,
+    }).then((jumped) => {
+      if (jumped) navigate('/journey')
     })
-    if (jumped) navigate('/journey')
   }
 
   if (loading) {

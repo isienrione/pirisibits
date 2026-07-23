@@ -11,6 +11,7 @@ import { initAnalytics } from '../lib/track'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
+import { SharedWalkGuardProvider } from '../redesign/context/SharedWalkGuardContext.jsx'
 import { useTourDebugBootstrap } from '../hooks/useTourDebugBootstrap.js'
 import { useAccessRevalidation } from '../hooks/useAccessRevalidation.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
@@ -181,8 +182,10 @@ function AppRouter() {
       <BrowserRouter>
         <SettingsSheetProvider>
           <FamilyWalkProvider>
-            <AccessRevalidationBootstrap />
-            <AppRoutes />
+            <SharedWalkGuardProvider>
+              <AccessRevalidationBootstrap />
+              <AppRoutes />
+            </SharedWalkGuardProvider>
           </FamilyWalkProvider>
         </SettingsSheetProvider>
       </BrowserRouter>
