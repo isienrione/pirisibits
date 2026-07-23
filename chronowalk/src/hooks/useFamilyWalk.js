@@ -323,10 +323,14 @@ export function useFamilyWalk() {
 
   const refreshBundle = useCallback(
     () =>
-      refreshFamilyBundle().then(async (next) => {
+      refreshFamilyBundle().then((next) => {
         setBundle(next)
-        const discovered = await discoverActiveWalkSession()
-        if (discovered) adoptSession(discovered)
+        // Session discovery must not block bundle/invite UI (app-entry hang).
+        void discoverActiveWalkSession()
+          .then((discovered) => {
+            if (discovered) adoptSession(discovered)
+          })
+          .catch(() => null)
         return next
       }),
     [adoptSession],
