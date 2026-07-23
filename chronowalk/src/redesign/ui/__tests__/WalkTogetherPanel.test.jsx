@@ -270,9 +270,127 @@ describe('Walk together settings + management', () => {
     expect(screen.getByText('Joined on a device')).toBeInTheDocument()
     expect(screen.getAllByText('Open seat').length).toBeGreaterThanOrEqual(1)
 
-    const seatButtons = screen.getAllByTestId(/walk-together-seat-/)
-    expect(seatButtons[0]).toHaveAttribute('data-testid', 'walk-together-seat-seat-owner')
-    expect(seatButtons[1]).toHaveAttribute('data-testid', 'walk-together-seat-seat-member-3')
+    // Stable presentation: organizer first, then original server order among members.
+    const seatRows = screen.getAllByTestId(/walk-together-seat-/)
+    expect(seatRows.map((row) => row.getAttribute('data-testid'))).toEqual([
+      'walk-together-seat-seat-owner',
+      'walk-together-seat-seat-member-2',
+      'walk-together-seat-seat-member-3',
+      'walk-together-seat-seat-member-4',
+    ])
+    expect(seatRows.map((row) => row.getAttribute('data-presentation-number'))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+    ])
+  })
+
+  it('shows organizer as presentation 1 when the server owner seat sorts last', async () => {
+    seedOrganizer({ productId: 'rome-family', seatLimit: 4 })
+    refreshFamilyBundle.mockResolvedValue({
+      ...organizerView({ productId: 'rome-family', seatLimit: 4 }),
+      seats: [
+        {
+          id: 'seat-member-claimed',
+          label: 'Internal seat 1',
+          role: 'member',
+          status: 'claimed',
+          claimedAt: '2026-07-02',
+        },
+        {
+          id: 'seat-member-open-a',
+          label: 'Internal seat 2',
+          role: 'member',
+          status: 'open',
+          claimedAt: null,
+        },
+        {
+          id: 'seat-member-open-b',
+          label: 'Internal seat 3',
+          role: 'member',
+          status: 'open',
+          claimedAt: null,
+        },
+        {
+          id: 'seat-owner-internal-4',
+          label: 'Internal seat 4',
+          role: 'owner',
+          status: 'claimed',
+          claimedAt: '2026-07-01',
+        },
+      ],
+    })
+    createBundleInvite.mockResolvedValue({
+      ok: true,
+      invite: 'INVITEFOROPENA123',
+      seatId: 'seat-member-open-a',
+      expiresAt: '2026-07-23T00:00:00Z',
+    })
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <WalkTogetherPanel />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    const rows = await screen.findAllByTestId(/walk-together-seat-/)
+    expect(rows.map((row) => row.getAttribute('data-seat-id'))).toEqual([
+      'seat-owner-internal-4',
+      'seat-member-claimed',
+      'seat-member-open-a',
+      'seat-member-open-b',
+    ])
+    expect(rows.map((row) => row.getAttribute('data-presentation-number'))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+    ])
+    expect(screen.getByText('You')).toBeInTheDocument()
+    expect(screen.getByText('Walker 2')).toBeInTheDocument()
+    expect(screen.getByText('Walker 3')).toBeInTheDocument()
+    expect(screen.getByText('Walker 4')).toBeInTheDocument()
+    expect(screen.getByText('2 of 4 travelers joined')).toBeInTheDocument()
+    expect(screen.getByText('2/4 seats in use')).toBeInTheDocument()
+
+    // Actions still use the original seat id, not presentation number 3.
+    const inviteButtons = screen.getAllByRole('button', { name: /Create invitation/i })
+    expect(inviteButtons).toHaveLength(2)
+    fireEvent.click(inviteButtons[0])
+    await waitFor(() => expect(createBundleInvite).toHaveBeenCalled())
+    expect(createBundleInvite).toHaveBeenCalledWith({ seatId: 'seat-member-open-a' })
+    expect(createBundleInvite).not.toHaveBeenCalledWith({ seatId: 3 })
+    expect(createBundleInvite).not.toHaveBeenCalledWith({ seatId: '3' })
+  })
+
+  it('shows Couple organizer as 1 and member seat as Walker 2 even when owner sorts last', async () => {
+    seedOrganizer({ productId: 'rome-couple', seatLimit: 2 })
+    refreshFamilyBundle.mockResolvedValue({
+      ...organizerView({ productId: 'rome-couple', seatLimit: 2 }),
+      seats: [
+        { id: 'seat-member-2', label: 'Seat 2', role: 'member', status: 'open', claimedAt: null },
+        { id: 'seat-owner', label: 'Owner', role: 'owner', status: 'claimed', claimedAt: '2026-07-01' },
+      ],
+    })
+
+    render(
+      <MemoryRouter>
+        <FamilyWalkProvider>
+          <WalkTogetherPanel />
+        </FamilyWalkProvider>
+      </MemoryRouter>,
+    )
+
+    const rows = await screen.findAllByTestId(/walk-together-seat-/)
+    expect(rows.map((row) => row.getAttribute('data-presentation-number'))).toEqual(['1', '2'])
+    expect(rows[0]).toHaveAttribute('data-seat-id', 'seat-owner')
+    expect(rows[1]).toHaveAttribute('data-seat-id', 'seat-member-2')
+    expect(screen.getByText('You')).toBeInTheDocument()
+    expect(screen.getByText('Walker 2')).toBeInTheDocument()
+    expect(screen.getByText('1 of 2 travelers joined')).toBeInTheDocument()
   })
 
   it('lets an organizer create an invitation only for an open seat', async () => {
