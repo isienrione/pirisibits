@@ -25,7 +25,7 @@ export default function RedesignWalkTogetherPage() {
   return (
     <RedesignRouteShell>
       <div
-        className="redesign-app-shell cw-grain"
+        className="redesign-app-shell cw-grain cw-walk-together-page"
         data-testid="walk-together-page"
         style={{
           minHeight: '100dvh',
@@ -33,38 +33,48 @@ export default function RedesignWalkTogetherPage() {
           color: T.ink,
           fontFamily: F.body,
           padding:
-            'max(16px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom))',
+            'max(16px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left))',
         }}
       >
-        <button
-          type="button"
-          onClick={handleBackToSettings}
-          aria-label="Back to Settings"
-          data-testid="walk-together-back-settings"
+        <div
+          className="cw-walk-together-page__column"
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: T.ink,
-            fontFamily: F.body,
-            fontSize: 14,
-            fontWeight: 500,
-            padding: '8px 0',
-            minHeight: 44,
+            width: '100%',
+            maxWidth: 840,
+            margin: '0 auto',
           }}
         >
-          <ChevronLeft size={16} aria-hidden /> Back to Settings
-        </button>
+          <button
+            type="button"
+            onClick={handleBackToSettings}
+            aria-label="Back to Settings"
+            data-testid="walk-together-back-settings"
+            className="cw-walk-together-page__back"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: T.ink,
+              fontFamily: F.body,
+              fontSize: 14,
+              fontWeight: 600,
+              padding: '8px 0',
+              minHeight: 44,
+            }}
+          >
+            <ChevronLeft size={16} aria-hidden /> Back to Settings
+          </button>
 
-        <div style={{ marginTop: 8, maxWidth: 520 }}>
-          <WalkTogetherPanel
-            variant="settings"
-            showContinue
-            onContinue={handleContinueToWalk}
-          />
+          <div style={{ marginTop: 10 }}>
+            <WalkTogetherPanel
+              variant="settings"
+              showContinue
+              onContinue={handleContinueToWalk}
+            />
+          </div>
         </div>
       </div>
     </RedesignRouteShell>
