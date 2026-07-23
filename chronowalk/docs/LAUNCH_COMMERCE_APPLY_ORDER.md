@@ -2,6 +2,16 @@
 
 **Do not apply from an agent session to production.**
 
+## Local test vs strict SQL validation
+
+| Command | Requires `psql`? | What runs |
+|---------|------------------|-----------|
+| `npm test` | No | Design check + full Vitest suite. Disposable Postgres migration suites are **skipped** (not passed) when `psql` is missing; static SQL guards still run. |
+| `npm run test:sql` | **Yes** (`CW_REQUIRE_PSQL=1`) | Vitest disposable migration / pgcrypto regression file only. **Fails clearly** if `psql` is absent. |
+| `npm run test:sql-chain` | **Yes** | Full launch-commerce SQL chain against a disposable local Postgres DB (`scripts/run-launch-commerce-sql-chain.sh`). Never points at remote Supabase. |
+
+CI and full commerce launch validation should run **`npm run test:sql`** (and/or `test:sql-chain`) in an environment that has PostgreSQL client tools — do not rely on portable `npm test` skips alone for SQL correctness.
+
 ## Non-production / staging apply order
 
 1. **Supabase → SQL Editor** — run `scripts/paddle-customers-migration.sql`

@@ -54,9 +54,13 @@ export function isCanonicalCheckoutProduct(productId) {
 
 /**
  * Resolve a Paddle price id for a Rome tier.
- * Optional `fromConfig` map (from Supabase app_config.paddle_prices) wins over env.
+ * Optional `fromConfig` map (from Supabase app_config.paddle_prices) wins over env
+ * per key; missing keys still read ambient import.meta.env unless `env` is provided.
+ *
+ * When `options.env` is passed (including `{}`), that bag is the only ambient source —
+ * never merge missing fields from import.meta.env. Used by hermetic tests.
  */
-export function resolvePaddlePriceId(tierId, fromConfig) {
+export function resolvePaddlePriceId(tierId, fromConfig, options = {}) {
   const id = tierId && PADDLE_PRICE_ENV_KEYS[tierId] ? tierId : DEFAULT_TIER
   const configMap =
     fromConfig && typeof fromConfig === 'object' && !Array.isArray(fromConfig)
@@ -66,22 +70,39 @@ export function resolvePaddlePriceId(tierId, fromConfig) {
   if (typeof fromCfg === 'string' && fromCfg.trim()) return fromCfg.trim()
 
   const envKey = PADDLE_PRICE_ENV_KEYS[id]
-  const fromEnv = envKey ? String(import.meta.env[envKey] ?? '').trim() : ''
+  if (!envKey) return null
+
+  if (Object.prototype.hasOwnProperty.call(options, 'env')) {
+    const bag = options.env && typeof options.env === 'object' ? options.env : {}
+    return String(bag[envKey] ?? '').trim() || null
+  }
+
+  const fromEnv = String(import.meta.env[envKey] ?? '').trim()
   return fromEnv || null
 }
 
 /**
  * Production fail-closed check when bundle SKUs are offered publicly.
  * Bundles enabled + missing/duplicate public bundle price IDs → not ready.
+ *
+ * Pass `env` (including `{}`) to make ambient price lookup authoritative for the
+ * call — missing keys are not filled from import.meta.env. Omit `env` for normal
+ * runtime resolution from Vite env.
  */
-export function assertPublicPriceConfig({
-  environment = getPaddleEnvironment(),
-  paddlePricesFromConfig,
-  bundlesEnabled = true,
-} = {}) {
+export function assertPublicPriceConfig(options = {}) {
+  const {
+    environment = getPaddleEnvironment(),
+    paddlePricesFromConfig,
+    bundlesEnabled = true,
+    env,
+  } = options
+  const resolveOpts = Object.prototype.hasOwnProperty.call(options, 'env')
+    ? { env: env ?? {} }
+    : {}
+
   const resolved = {}
   for (const productId of CANONICAL_CHECKOUT_PRODUCT_IDS) {
-    resolved[productId] = resolvePaddlePriceId(productId, paddlePricesFromConfig)
+    resolved[productId] = resolvePaddlePriceId(productId, paddlePricesFromConfig, resolveOpts)
   }
 
   const duplicates = new Map()

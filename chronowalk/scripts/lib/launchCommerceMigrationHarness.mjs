@@ -94,9 +94,23 @@ function psqlAvailable() {
   return spawnSync('which', ['psql'], { encoding: 'utf8' }).status === 0
 }
 
+/** True when local `psql` is on PATH (disposable migration suites). */
+export function isLocalPsqlAvailable() {
+  return psqlAvailable()
+}
+
+/**
+ * Strict gate for disposable Postgres work.
+ * Used by recreate/apply helpers and by `npm run test:sql` (CW_REQUIRE_PSQL=1).
+ * Portable `npm test` skips those suites via `describe.skipIf` instead of throwing.
+ */
 export function assertLocalPsqlAvailable() {
   if (!psqlAvailable()) {
-    throw new Error('psql is required for disposable local migration regression tests')
+    throw new Error(
+      'psql is required for disposable local migration regression tests. ' +
+        'Install PostgreSQL client tools, or use portable `npm test` (skips disposable SQL). ' +
+        'Strict SQL chain: `npm run test:sql` (sets CW_REQUIRE_PSQL=1).',
+    )
   }
 }
 
