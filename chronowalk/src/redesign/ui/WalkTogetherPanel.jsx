@@ -5,6 +5,7 @@ import {
   bundleMetaForProductId,
 } from '../../lib/familyWalk.js'
 import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
+import { buildWalkTogetherPresentationSeats } from '../lib/walkTogetherPresentation.js'
 
 /** Couple terracotta / Family verdigris — from established tokens only. */
 function accentForProductId(productId) {
@@ -61,25 +62,12 @@ async function shareInvite({ invite, url }) {
   return copyText(url || invite)
 }
 
-function seatRank(seat, invite) {
-  if (seat.role === 'owner') return 0
-  if (seat.status === 'claimed') return 1
-  if (invite) return 2
-  if (seat.status === 'revoked') return 3
-  return 4
-}
-
 function seatStatusLabel(seat, invite, isOwnerSeat) {
   if (isOwnerSeat) return 'Organizer'
   if (seat.status === 'claimed') return 'Joined on a device'
   if (seat.status === 'revoked' && !invite) return 'Seat revoked — create a new invitation'
   if (invite) return 'Invitation ready'
   return 'Open seat'
-}
-
-function seatTitle(seat, seatIndex) {
-  if (seat.role === 'owner') return 'You'
-  return `Walker ${seatIndex + 1}`
 }
 
 function humanErrorMessage(error) {
@@ -197,11 +185,7 @@ export default function WalkTogetherPanel({
         ? 'family'
         : 'bundle'
 
-  const orderedSeats = [...seats].sort((a, b) => {
-    const inviteA = latestInvites?.[a.id] ?? a.inviteCode ?? null
-    const inviteB = latestInvites?.[b.id] ?? b.inviteCode ?? null
-    return seatRank(a, inviteA) - seatRank(b, inviteB)
-  })
+  const presentedSeats = buildWalkTogetherPresentationSeats(seats)
 
   const handleCreateInvite = async (seatId = null) => {
     setStatusNote(null)
@@ -335,22 +319,24 @@ export default function WalkTogetherPanel({
             </h3>
 
             <ul className="cw-walk-together__seats">
-              {orderedSeats.map((seat) => {
-                const seatIndex = seats.findIndex((item) => item.id === seat.id)
+              {presentedSeats.map(({ seat, presentationNumber, displayName, isOrganizerSeat }) => {
                 const invite = latestInvites?.[seat.id] ?? seat.inviteCode ?? null
-                const isOwnerSeat = seat.role === 'owner'
+                // Permissions from verified seat role — never from presentationNumber.
                 const canInvite =
-                  !isOwnerSeat && (seat.status === 'open' || seat.status === 'revoked')
-                const canRevoke = !isOwnerSeat && (seat.status === 'claimed' || Boolean(invite))
-                const status = seatStatusLabel(seat, invite, isOwnerSeat)
+                  !isOrganizerSeat && (seat.status === 'open' || seat.status === 'revoked')
+                const canRevoke =
+                  !isOrganizerSeat && (seat.status === 'claimed' || Boolean(invite))
+                const status = seatStatusLabel(seat, invite, isOrganizerSeat)
                 const inactive = seat.status === 'revoked' && !invite
 
                 return (
                   <li
                     key={seat.id}
                     data-testid={`walk-together-seat-${seat.id}`}
+                    data-seat-id={seat.id}
+                    data-presentation-number={presentationNumber}
                     data-seat-status={
-                      isOwnerSeat
+                      isOrganizerSeat
                         ? 'organizer'
                         : invite
                           ? 'invite-ready'
@@ -371,16 +357,17 @@ export default function WalkTogetherPanel({
                         className="cw-walk-together__avatar"
                         style={{
                           borderColor: accent,
-                          color: isOwnerSeat || seat.status === 'claimed' ? T.obsidian : accent,
+                          color:
+                            isOrganizerSeat || seat.status === 'claimed' ? T.obsidian : accent,
                           background:
-                            isOwnerSeat || seat.status === 'claimed' ? accent : 'transparent',
+                            isOrganizerSeat || seat.status === 'claimed' ? accent : 'transparent',
                         }}
                         aria-hidden
                       >
-                        {seatIndex >= 0 ? seatIndex + 1 : '·'}
+                        {presentationNumber}
                       </span>
                       <div className="cw-walk-together__seat-copy">
-                        <p className="cw-walk-together__seat-name">{seatTitle(seat, seatIndex)}</p>
+                        <p className="cw-walk-together__seat-name">{displayName}</p>
                         <p className="cw-walk-together__seat-status">{status}</p>
                       </div>
                     </div>
@@ -398,7 +385,7 @@ export default function WalkTogetherPanel({
                             type="button"
                             onClick={() => void handleCopy(invite)}
                             className="cw-walk-together__btn cw-walk-together__btn--secondary"
-                            aria-label={`Copy invitation link for ${seatTitle(seat, seatIndex)}`}
+                            aria-label={`Copy invitation link for ${displayName}`}
                           >
                             Copy link
                           </button>
@@ -406,7 +393,7 @@ export default function WalkTogetherPanel({
                             type="button"
                             onClick={() => void handleShare(invite)}
                             className="cw-walk-together__btn cw-walk-together__btn--secondary"
-                            aria-label={`Share invitation for ${seatTitle(seat, seatIndex)}`}
+                            aria-label={`Share invitation for ${displayName}`}
                           >
                             Share
                           </button>
@@ -421,7 +408,10 @@ export default function WalkTogetherPanel({
                           disabled={working}
                           onClick={() => void handleCreateInvite(seat.id)}
                           className="cw-walk-together__btn cw-walk-together__btn--quiet"
-                          style={{ borderColor: `${accent}66`, color: isEntry ? T.warmWhite : T.ink }}
+                          style={{
+                            borderColor: `${accent}66`,
+                            color: isEntry ? T.warmWhite : T.ink,
+                          }}
                         >
                           {working ? 'Working…' : 'Create invitation'}
                         </button>
@@ -432,7 +422,7 @@ export default function WalkTogetherPanel({
                           disabled={working}
                           onClick={() => void revokeSeat(seat.id)}
                           className="cw-walk-together__btn cw-walk-together__btn--tertiary"
-                          aria-label={`Revoke seat for ${seatTitle(seat, seatIndex)}`}
+                          aria-label={`Revoke seat for ${displayName}`}
                         >
                           Revoke seat
                         </button>
