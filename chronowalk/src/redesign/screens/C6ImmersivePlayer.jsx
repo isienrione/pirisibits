@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Play, Pause, SkipBack, SkipForward, ChevronLeft } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
@@ -67,6 +67,7 @@ export default function C6ImmersivePlayer({
   onStoryComplete,
   continueLabel = null,
   onBack,
+  onOpenSettings = null,
   onThresholdCross,
   onOpenThreshold,
   onViewImages,
@@ -505,11 +506,13 @@ export default function C6ImmersivePlayer({
             position: 'absolute',
             top: 'max(12px, env(safe-area-inset-top))',
             left: 16,
-            right: 16,
+            // Keep the right edge clear for the DEV QA badge (fixed top-right).
+            right: 64,
             zIndex: 12,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            gap: 8,
             pointerEvents: 'none',
           }}
         >
@@ -520,6 +523,7 @@ export default function C6ImmersivePlayer({
               display: 'flex',
               alignItems: 'center',
               gap: 2,
+              minHeight: 44,
               color: T.warmWhite,
               background: 'rgba(11,11,13,0.45)',
               backdropFilter: 'blur(8px)',
@@ -532,8 +536,36 @@ export default function C6ImmersivePlayer({
               pointerEvents: 'auto',
             }}
           >
-            <ChevronLeft size={17} /> Back
+            <ChevronLeft size={17} aria-hidden /> Back
           </button>
+          {typeof onOpenSettings === 'function' ? (
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              aria-label="Open settings"
+              data-testid="journey-open-settings"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 44,
+                height: 44,
+                minWidth: 44,
+                minHeight: 44,
+                color: T.warmWhite,
+                background: 'rgba(11,11,13,0.45)',
+                backdropFilter: 'blur(8px)',
+                border: 'none',
+                borderRadius: 999,
+                cursor: 'pointer',
+                pointerEvents: 'auto',
+                flexShrink: 0,
+                marginRight: 'max(0px, calc(env(safe-area-inset-right) - 8px))',
+              }}
+            >
+              <Settings size={18} aria-hidden />
+            </button>
+          ) : null}
         </div>
 
         <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">

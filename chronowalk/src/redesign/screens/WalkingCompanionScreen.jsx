@@ -1,5 +1,5 @@
 import { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2, Footprints } from 'lucide-react'
+import { CheckCircle2, Footprints, Settings } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { useWalkingDirections } from '../../hooks/useWalkingDirections.js'
@@ -60,6 +60,7 @@ export default function WalkingCompanionScreen({
   onContinue,
   continueLabel = 'Continue walking →',
   onPause,
+  onOpenSettings = null,
   extraBottomInset = 0,
   beginChapterLabel = null,
   testId = 'walking-companion-screen',
@@ -220,6 +221,19 @@ export default function WalkingCompanionScreen({
       }}
     >
       <header className="cw-walking-companion__header">
+        {typeof onOpenSettings === 'function' ? (
+          <div className="cw-walking-companion__chrome-row">
+            <button
+              type="button"
+              className="cw-walking-companion__settings cw-wc-pressable"
+              onClick={onOpenSettings}
+              aria-label="Open settings"
+              data-testid="walking-open-settings"
+            >
+              <Settings size={18} aria-hidden />
+            </button>
+          </div>
+        ) : null}
         {showArrivedUI ? (
           <div className="cw-walking-companion__arrived-copy">
             <div className="cw-walking-companion__arrived-badge" aria-hidden>

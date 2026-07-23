@@ -1305,6 +1305,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           <div style={{ position: 'relative', height: '100%' }}>
             <C6ImmersivePlayer
               {...playerProps}
+              onOpenSettings={openSettings}
               suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
             />
             {syncAudio.joinCode ? (
