@@ -24,7 +24,9 @@
    Adds `get_active_walk_session_for_credential` so Couple/Family members discover the organizer’s active shared session using only device credential + binding. Hardens create (owner-only), emits `mySeatId`, rejects stale `expectedUpdatedAt` patches. Then run `20260725_walk_session_discovery_verify.sql` (rolled back). Existing active Sandbox sessions remain discoverable — no remint required.
 10. **SQL Editor** — run `supabase/migrations/20260726_walk_session_participant.sql`
    Adds `walk_session_participants` + `detach_walk_session_for_credential` / `rejoin_walk_session_for_credential` so a follower can walk independently without ending the group session. Payload includes `syncParticipation`. Then run `20260726_walk_session_participant_verify.sql` (rolled back). Existing active Sandbox sessions stay valid (missing participant rows mean `synced`).
-11. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
+11. **SQL Editor** — run `supabase/migrations/20260727_webhook_failed_reclaim.sql`
+   Allows Paddle to replay a previously **failed** webhook event (operator review) so ChronoWalk can reclassify effective-full item refunds. Adds `complete_paddle_webhook_event`. Processed/processing events stay duplicates. Then run `20260727_webhook_failed_reclaim_verify.sql` (rolled back).
+12. **Local operator (not Cursor)** — dry-run then execute the catalog seed:
    ```bash
    export PADDLE_API_KEY=…   # never commit
    export PADDLE_ENV=sandbox
@@ -32,17 +34,17 @@
    node scripts/seed-paddle-catalog.mjs --execute --env=sandbox
    ```
    Paste the five printed `pri_…` into Cloudflare Pages (`VITE_PADDLE_PRICE_*`) and Supabase Edge secrets (`PADDLE_PRICE_*`). Also set `CLAIM_ENCRYPTION_KEY` (32-byte base64).
-12. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
-   - `paddle-webhook` build `2026-07-23-v12-email-generation` (no Resend inline; handles `adjustment.*`; fresh `email_generation_id` on enqueue)
+13. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
+   - `paddle-webhook` build `2026-07-27-v13-effective-full-refund` (no Resend inline; handles `adjustment.*`; effective-full partial coverage; failed-event reclaim)
    - `process-fulfillment-outbox` build `2026-07-23-v2-email-generation` + cron every minute with `FULFILLMENT_CRON_SECRET`
    - `resend-webhook` build `2026-07-23-v2-email-generation` with `RESEND_WEBHOOK_SECRET` (Svix)
-13. **Paddle notification destination** — subscribe to `transaction.completed`, `customer.created`, `customer.updated`, **`adjustment.created`**, and **`adjustment.updated`** (see `docs/PADDLE_SETUP.md`).
-14. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → cron worker sends email → Resend `email.delivered` → `/access?token=` redeems once (second redeem fails). Optional: simulator adjustment pending→approved → purchase `refunded` and device validate fails. Also confirm Couple/Family invite links redeem regardless of invite-code letter case. Confirm Seat 2 discovers “Start shared tour syncing” from the organizer and observes Pause/Resume for everyone (or “Resume with group” when autoplay blocks). Confirm a follower leaving the group stop is warned, can walk independently, and can rejoin without a second session.
-15. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, `fulfillment_outbox`, `purchase_adjustments`, `walk_sessions`, or `walk_session_participants`.
+14. **Paddle notification destination** — subscribe to `transaction.completed`, `customer.created`, `customer.updated`, **`adjustment.created`**, and **`adjustment.updated`** (see `docs/PADDLE_SETUP.md`).
+15. **Smoke** — sandbox purchase: inbox → purchase + claim hash + pending outbox (+ bundle/seats for couple/family) → cron worker sends email → Resend `email.delivered` → `/access?token=` redeems once (second redeem fails). Optional: simulator adjustment pending→approved → purchase `refunded` and device validate fails. Also confirm Couple/Family invite links redeem regardless of invite-code letter case. Confirm Seat 2 discovers “Start shared tour syncing” from the organizer and observes Pause/Resume for everyone (or “Resume with group” when autoplay blocks). Confirm a follower leaving the group stop is warned, can walk independently, and can rejoin without a second session. After an approved dashboard “Full refund” that arrives as top-level `partial` with full item coverage, confirm purchase/`credentials`/bundle revoke on replay of the failed webhook if needed.
+16. **Confirm** — anon cannot `select` from `purchases`, `purchase_claim_tokens`, `access_credentials`, `family_*`, `fulfillment_outbox`, `purchase_adjustments`, `walk_sessions`, or `walk_session_participants`.
 
 ### Existing Sandbox recovery stuck on `http_409`
 
-After step 6 (migration) and step 12 (redeploy worker + resend-webhook), requeue the **existing encrypted claim** without minting another:
+After step 6 (migration) and step 13 (redeploy worker + resend-webhook), requeue the **existing encrypted claim** without minting another:
 
 ```bash
 node scripts/retry-fulfillment-outbox.mjs <order_id> --rotate-generation --execute
