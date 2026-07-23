@@ -37,10 +37,9 @@ if (REQUIRE_PSQL && !HAS_PSQL) {
 }
 
 if (!HAS_PSQL && !REQUIRE_PSQL) {
-  // eslint-disable-next-line no-console -- intentional skip diagnostic for local portability
-  console.warn(
+  process.stderr.write(
     '[launchCommerceMigrationFresh] Skipping disposable PostgreSQL suites: `psql` not on PATH. ' +
-      'Static SQL guards still run. Strict SQL regression: `npm run test:sql`.',
+      'Static SQL guards still run. Strict SQL regression: `npm run test:sql`.\n',
   )
 }
 
