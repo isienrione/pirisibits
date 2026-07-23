@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
@@ -29,8 +29,11 @@ export default function RedesignSetupPage() {
   const [analyticsEnabled, setAnalyticsEnabled] = useState(
     () => getAnalyticsConsent() === 'accepted',
   )
+  const finishedEntryRef = useRef(false)
 
   const finishEntry = useCallback(() => {
+    if (finishedEntryRef.current) return
+    finishedEntryRef.current = true
     if (getAnalyticsConsent() == null) {
       setAnalyticsConsent(false)
       setAnalyticsEnabled(false)
