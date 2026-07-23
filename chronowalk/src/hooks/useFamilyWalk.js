@@ -56,7 +56,16 @@ export function useFamilyWalk() {
   const applyingRemoteRef = useRef(false)
   const lastUpdatedRef = useRef(session?.updatedAt ?? null)
   const sessionRef = useRef(session)
-  sessionRef.current = session
+
+  useEffect(() => {
+    sessionRef.current = session
+  }, [session])
+
+  const markApplyingRemote = useCallback((active) => {
+    applyingRemoteRef.current = Boolean(active)
+  }, [])
+
+  const isApplyingRemote = useCallback(() => applyingRemoteRef.current, [])
 
   const adoptSession = useCallback((next) => {
     if (!next?.id) return false
@@ -336,7 +345,8 @@ export function useFamilyWalk() {
     publishResume,
     publishSeek,
     publishClock,
-    applyingRemoteRef,
+    markApplyingRemote,
+    isApplyingRemote,
     refreshBundle,
     refreshSharedSession,
   }

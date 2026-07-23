@@ -247,6 +247,6 @@ export function useAudioEngine(manifest) {
     skipNarration,
     jumpToChapter,
     setPath,
-    engine: engineRef.current,
+    getEngine: () => engineRef.current,
   }
 }

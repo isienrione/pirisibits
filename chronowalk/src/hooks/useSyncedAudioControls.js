@@ -18,19 +18,29 @@ export function useSyncedAudioControls(audio, opts = {}) {
   const family = useOptionalFamilyWalk()
   const lastAppliedRef = useRef(null)
   const lastWaypointRef = useRef(null)
+  const localApplyingRef = useRef(false)
   const [pendingGroupResume, setPendingGroupResume] = useState(false)
 
   const syncOn = Boolean(family?.session && family.syncEnabled)
-  const applyingRemoteRef = family?.applyingRemoteRef
   const isLeader = Boolean(family?.isLeader)
+  const markApplyingRemote = family?.markApplyingRemote
+  const isApplyingRemote = family?.isApplyingRemote
+
+  const setApplying = useCallback(
+    (active) => {
+      localApplyingRef.current = Boolean(active)
+      markApplyingRemote?.(active)
+    },
+    [markApplyingRemote],
+  )
 
   // Apply remote session transport when sync is on
   useEffect(() => {
-    if (!family?.session || !syncOn || !audio) return
+    if (!family?.session || !syncOn || !audio) return undefined
 
     const session = family.session
     const key = `${session.updatedAt}|${session.paused}|${session.playing}|${session.positionSeconds}|${session.chapterIndex}|${session.waypointId ?? ''}`
-    if (key === lastAppliedRef.current) return
+    if (key === lastAppliedRef.current) return undefined
 
     // Ignore echoes of our own pause (seat-id aware)
     if (
@@ -40,12 +50,12 @@ export function useSyncedAudioControls(audio, opts = {}) {
       session.paused
     ) {
       lastAppliedRef.current = key
-      setPendingGroupResume(false)
-      return
+      return undefined
     }
 
     lastAppliedRef.current = key
-    if (applyingRemoteRef) applyingRemoteRef.current = true
+    let cancelled = false
+    setApplying(true)
 
     const apply = async () => {
       try {
@@ -82,35 +92,35 @@ export function useSyncedAudioControls(audio, opts = {}) {
 
         if (session.paused || !session.playing) {
           if (audio.narrationPlaying) audio.pauseNarration?.()
-          setPendingGroupResume(false)
+          if (!cancelled) setPendingGroupResume(false)
         } else if (session.playing) {
           if (!audio.narrationPlaying) {
             const ok = await Promise.resolve(audio.resumeNarration?.())
-            // false / undefined-after-block → browser-safe prompt
-            if (ok === false) {
-              setPendingGroupResume(true)
-            } else {
-              setPendingGroupResume(false)
+            if (!cancelled) {
+              setPendingGroupResume(ok === false)
             }
-          } else {
+          } else if (!cancelled) {
             setPendingGroupResume(false)
           }
         }
       } finally {
         window.setTimeout(() => {
-          if (applyingRemoteRef) applyingRemoteRef.current = false
+          if (!cancelled) setApplying(false)
         }, 80)
       }
     }
 
     void apply()
+    return () => {
+      cancelled = true
+    }
   }, [
     audio,
-    applyingRemoteRef,
     family?.session,
     syncOn,
     isLeader,
     onRemoteWaypoint,
+    setApplying,
     family?.session?.updatedAt,
     family?.session?.paused,
     family?.session?.playing,
@@ -126,7 +136,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
   useEffect(() => {
     if (!family?.session || !syncOn || !family.isLeader || !audio?.narrationPlaying) return undefined
     const id = window.setInterval(() => {
-      if (applyingRemoteRef?.current) return
+      if (localApplyingRef.current || isApplyingRemote?.()) return
       void family.publishClock({
         waypointId: currentWaypointId ?? null,
         chapterIndex: audio.progress?.chapterIndex ?? 0,
@@ -139,20 +149,20 @@ export function useSyncedAudioControls(audio, opts = {}) {
     return () => window.clearInterval(id)
   }, [
     audio,
-    applyingRemoteRef,
     currentWaypointId,
     family,
     family?.isLeader,
     family?.session,
     audio?.narrationPlaying,
     syncOn,
+    isApplyingRemote,
   ])
 
   // When leader changes stop while syncing, publish immediately.
   useEffect(() => {
     if (!family?.session || !syncOn || !family.isLeader || !currentWaypointId) return
     if (family.session.waypointId === currentWaypointId) return
-    if (applyingRemoteRef?.current) return
+    if (localApplyingRef.current || isApplyingRemote?.()) return
     void family.publishClock({
       waypointId: currentWaypointId,
       chapterIndex: audio?.progress?.chapterIndex ?? 0,
@@ -166,13 +176,13 @@ export function useSyncedAudioControls(audio, opts = {}) {
     audio?.playbackRate,
     audio?.progress?.chapterIndex,
     audio?.progress?.currentTime,
-    applyingRemoteRef,
     currentWaypointId,
     family,
     family?.isLeader,
     family?.session,
     family?.session?.waypointId,
     syncOn,
+    isApplyingRemote,
   ])
 
   const pauseForEveryone = useCallback(async () => {
@@ -196,11 +206,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
     }
     const position = audio?.progress?.currentTime ?? 0
     const ok = await Promise.resolve(audio?.resumeNarration?.())
-    if (ok === false) {
-      setPendingGroupResume(true)
-    } else {
-      setPendingGroupResume(false)
-    }
+    setPendingGroupResume(ok === false)
     if (syncOn && family) {
       await family.publishResume(position)
     }
@@ -213,14 +219,14 @@ export function useSyncedAudioControls(audio, opts = {}) {
     return ok !== false
   }, [audio])
 
-  const toggleSyncedPlayback = useCallback(async () => {
-    if (applyingRemoteRef?.current) return
+  const toggleSyncedPlayback = async () => {
+    if (localApplyingRef.current || isApplyingRemote?.()) return
     if (audio?.narrationPlaying) {
       await pauseForEveryone()
       return
     }
     await resumeForEveryone()
-  }, [audio?.narrationPlaying, applyingRemoteRef, pauseForEveryone, resumeForEveryone])
+  }
 
   const seekSynced = useCallback(
     async (seconds) => {

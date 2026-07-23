@@ -702,7 +702,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
     },
     [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
   )
-  beginWaypointStoryRef.current = beginWaypointStory
+
+  useEffect(() => {
+    beginWaypointStoryRef.current = beginWaypointStory
+  }, [beginWaypointStory])
 
   const arriveAtWaypoint = useCallback(
     (source) => {

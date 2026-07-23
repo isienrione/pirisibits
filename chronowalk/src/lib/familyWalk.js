@@ -494,14 +494,13 @@ export function subscribeWalkSession(sessionId, onUpdate, { discover = false } =
   let stopped = false
   const tick = async () => {
     if (stopped) return
-    let next = null
     if (sessionId) {
-      next = await getWalkSession(sessionId)
+      const next = await getWalkSession(sessionId)
       if (!stopped) onUpdate(next)
       return
     }
     if (discover) {
-      next = await discoverActiveWalkSession()
+      const next = await discoverActiveWalkSession()
       if (!stopped && next) onUpdate(next)
     }
   }
