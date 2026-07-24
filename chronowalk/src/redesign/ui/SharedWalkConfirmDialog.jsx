@@ -1,9 +1,11 @@
 import { useEffect, useId } from 'react'
+import { createPortal } from 'react-dom'
 import { T, F } from '../tokens.js'
 
 /**
  * Accessible confirmation dialog for shared-walk leave / rejoin.
  * Escape and backdrop dismiss safely without confirming.
+ * Portaled + high z-index so immersive focus mode (z-index 200) cannot hide it.
  */
 export default function SharedWalkConfirmDialog({
   open,
@@ -19,6 +21,7 @@ export default function SharedWalkConfirmDialog({
   const titleId = useId()
   const descriptionId = useId()
   const errorId = useId()
+  const showConfirm = Boolean(confirmLabel)
 
   useEffect(() => {
     if (!open) return undefined
@@ -34,15 +37,16 @@ export default function SharedWalkConfirmDialog({
     }
   }, [busy, open, onCancel])
 
-  if (!open) return null
+  if (!open || typeof document === 'undefined') return null
 
-  return (
+  return createPortal(
     <div
       className="cw-grain"
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 120,
+        // Above immersive focus hero (z-index 200) and journey chrome.
+        zIndex: 400,
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'center',
@@ -141,27 +145,30 @@ export default function SharedWalkConfirmDialog({
           >
             {cancelLabel}
           </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onConfirm}
-            style={{
-              minHeight: 48,
-              borderRadius: 12,
-              border: 'none',
-              background: T.ink,
-              color: T.warmWhite,
-              fontFamily: F.body,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: busy ? 'wait' : 'pointer',
-              opacity: busy ? 0.7 : 1,
-            }}
-          >
-            {busy ? 'Working…' : confirmLabel}
-          </button>
+          {showConfirm ? (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onConfirm}
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                border: 'none',
+                background: T.ink,
+                color: T.warmWhite,
+                fontFamily: F.body,
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: busy ? 'wait' : 'pointer',
+                opacity: busy ? 0.7 : 1,
+              }}
+            >
+              {busy ? 'Working…' : confirmLabel}
+            </button>
+          ) : null}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

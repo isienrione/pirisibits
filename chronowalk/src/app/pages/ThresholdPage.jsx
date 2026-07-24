@@ -5,10 +5,12 @@ import { JOURNEY_STATES } from '../../state/journey'
 import { loadRomeManifest } from '../../content/manifest.js'
 import { resolveWaypointMedia } from '../../lib/tour'
 import { resolveThresholdAmbienceUrls } from '../../content/thresholdAmbience.js'
+import { useSharedWalkGuard } from '../../redesign/context/SharedWalkGuardContext.jsx'
 import RedesignThresholdOverlay from '../../redesign/ui/RedesignThresholdOverlay.jsx'
 
 export function JourneyThresholdLayer() {
   const { state, context, completeStoryAfterThreshold } = useV2Journey()
+  const { requestAdvanceToWaypoint } = useSharedWalkGuard()
   const manifest = useMemo(() => loadRomeManifest(), [])
   const step = useJourneyStep(
     manifest,
@@ -26,7 +28,10 @@ export function JourneyThresholdLayer() {
   const { nowAmbienceUrl, thenSoundscapeUrl } = resolveThresholdAmbienceUrls(manifest)
 
   const handleComplete = () => {
-    completeStoryAfterThreshold(waypoint.id, manifest)
+    void requestAdvanceToWaypoint(waypoint.id, () => {
+      completeStoryAfterThreshold(waypoint.id, manifest)
+      return true
+    })
   }
 
   return (

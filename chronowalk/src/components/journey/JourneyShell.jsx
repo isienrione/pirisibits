@@ -434,19 +434,25 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const handleOptionalPromote = useCallback(
     (waypointId) => {
-      if (!manifest) return
-      promoteOptional(waypointId, manifest)
-      const inserts = getPromotionInsertSteps(manifest, waypointId, context.path)
-      const transitId = inserts[0]
-      if (transitId) {
-        playedStepRef.current = null
-        waypointAutoplayRef.current.clearStarted()
-        audio.playTransit(transitId)
-        playedStepRef.current = transitId
+      if (!manifest || !waypointId) return
+
+      const runPromote = () => {
+        promoteOptional(waypointId, manifest)
+        const inserts = getPromotionInsertSteps(manifest, waypointId, context.path)
+        const transitId = inserts[0]
+        if (transitId) {
+          playedStepRef.current = null
+          waypointAutoplayRef.current.clearStarted()
+          audio.playTransit(transitId)
+          playedStepRef.current = transitId
+        }
+        track(TRACK_EVENTS.OPTIONAL_WAYPOINT_PROMOTED, { waypoint_id: waypointId })
+        return true
       }
-      track(TRACK_EVENTS.OPTIONAL_WAYPOINT_PROMOTED, { waypoint_id: waypointId })
+
+      void requestAdvanceToWaypoint(waypointId, runPromote)
     },
-    [audio, context.path, manifest, promoteOptional]
+    [audio, context.path, manifest, promoteOptional, requestAdvanceToWaypoint],
   )
 
   useOptionalPromotion(manifest, context, {
@@ -970,11 +976,33 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [audio, handleStoryComplete, state, step, storyEnded])
 
   const handleContinueClassicDay = useCallback(() => {
-    playedStepRef.current = null
-    waypointAutoplayRef.current.clearStarted()
-    continueFromDayComplete(manifest)
-    track(TRACK_EVENTS.RESUME, { day_break: true })
-  }, [continueFromDayComplete, manifest])
+    const nextStepId =
+      (manifest &&
+        getStepIdAtIndex(
+          manifest,
+          context.path,
+          context.currentSequenceIndex + 1,
+          context.promotedOptionalIds,
+        )) ||
+      'day-break-next'
+
+    const runDayContinue = () => {
+      playedStepRef.current = null
+      waypointAutoplayRef.current.clearStarted()
+      continueFromDayComplete(manifest)
+      track(TRACK_EVENTS.RESUME, { day_break: true })
+      return true
+    }
+
+    void requestAdvanceToWaypoint(nextStepId, runDayContinue)
+  }, [
+    continueFromDayComplete,
+    context.currentSequenceIndex,
+    context.path,
+    context.promotedOptionalIds,
+    manifest,
+    requestAdvanceToWaypoint,
+  ])
 
   const handleTransitContinue = useCallback(() => {
     const transitId = step?.type === 'transit' ? step.id : null

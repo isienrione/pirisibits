@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { SharedWalkGuardProvider, useSharedWalkGuard } from '../SharedWalkGuardContext.jsx'
 
 const jumpToWaypointInJourney = vi.fn(() => true)
+const getStepIdAtIndex = vi.fn(() => 'w01')
 
 vi.mock('../../../lib/jumpToWaypoint.js', () => ({
   jumpToWaypointInJourney: (...args) => jumpToWaypointInJourney(...args),
@@ -22,6 +23,7 @@ vi.mock('../../../content/manifest.js', async () => {
         { id: 'w02', title: 'Ara Pacis' },
       ],
       transits: [],
+      journey: { sequences: { a: ['w01', 'w02', 't01'] } },
     }),
     getWaypoint: (_m, id) =>
       id === 'w01'
@@ -29,6 +31,7 @@ vi.mock('../../../content/manifest.js', async () => {
         : id === 'w02'
           ? { id: 'w02', title: 'Ara Pacis' }
           : null,
+    getStepIdAtIndex: (...args) => getStepIdAtIndex(...args),
   }
 })
 
@@ -37,7 +40,7 @@ vi.mock('../../../state/journey.js', async () => {
   return {
     ...actual,
     getJourneySnapshot: () => ({
-      state: 'walking',
+      state: 'story',
       context: {
         path: 'a',
         currentSequenceIndex: 0,
@@ -77,12 +80,30 @@ function Probe({ onReady }) {
       </button>
       <button
         type="button"
+        data-testid="advance-other"
+        onClick={() =>
+          void guard
+            .requestAdvanceToWaypoint('w02', () => {
+              onReady?.('advanced')
+              return true
+            })
+            .then((ok) => {
+              if (ok !== true) onReady?.(ok)
+            })
+        }
+      >
+        Advance other
+      </button>
+      <button
+        type="button"
         data-testid="rejoin"
         onClick={() => void guard.requestRejoinSharedWalk().then((next) => onReady?.(next))}
       >
         Rejoin
       </button>
       <span data-testid="guard-flag">{String(guard.shouldGuardStopChange('w02'))}</span>
+      <span data-testid="guard-same">{String(guard.shouldGuardStopChange('w01'))}</span>
+      <span data-testid="unresolved">{String(guard.isFollowerSessionUnresolved)}</span>
     </div>
   )
 }
@@ -95,26 +116,50 @@ function mount(onReady = vi.fn()) {
   )
 }
 
+function syncedFollower(overrides = {}) {
+  return {
+    isLeader: false,
+    isOrganizer: false,
+    isMember: true,
+    hasBundleAccess: true,
+    busy: false,
+    isWalkingIndependently: false,
+    syncEnabled: true,
+    session: {
+      id: 's1',
+      waypointId: 'w01',
+      syncEnabled: true,
+      syncParticipation: 'synced',
+      mySeatId: 'seat-2',
+      leaderSeatId: 'seat-1',
+    },
+    detachFromSharedWalk: vi.fn(async () => ({
+      id: 's1',
+      waypointId: 'w01',
+      syncParticipation: 'independent',
+      mySeatId: 'seat-2',
+      leaderSeatId: 'seat-1',
+    })),
+    rejoinSharedWalk: vi.fn(),
+    ...overrides,
+  }
+}
+
 describe('SharedWalkGuardContext', () => {
   beforeEach(() => {
     jumpToWaypointInJourney.mockClear()
     jumpToWaypointInJourney.mockReturnValue(true)
+    getStepIdAtIndex.mockClear()
+    getStepIdAtIndex.mockReturnValue('w01')
     familyState.current = null
   })
 
   it('does not warn when destination matches the group stop', async () => {
     const onReady = vi.fn()
-    familyState.current = {
-      isLeader: false,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true, syncParticipation: 'synced' },
-      detachFromSharedWalk: vi.fn(),
-      rejoinSharedWalk: vi.fn(),
-    }
+    familyState.current = syncedFollower()
     mount(onReady)
-    // Different stop would be guarded; same-stop jump below must not warn.
     expect(screen.getByTestId('guard-flag')).toHaveTextContent('true')
+    expect(screen.getByTestId('guard-same')).toHaveTextContent('false')
     fireEvent.click(screen.getByTestId('jump-same'))
     await waitFor(() => expect(onReady).toHaveBeenCalledWith(true))
     expect(jumpToWaypointInJourney).toHaveBeenCalled()
@@ -124,13 +169,19 @@ describe('SharedWalkGuardContext', () => {
 
   it('does not warn for the leader', async () => {
     const onReady = vi.fn()
-    familyState.current = {
+    familyState.current = syncedFollower({
       isLeader: true,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true },
-      detachFromSharedWalk: vi.fn(),
-    }
+      isOrganizer: true,
+      isMember: false,
+      session: {
+        id: 's1',
+        waypointId: 'w01',
+        syncEnabled: true,
+        syncParticipation: 'synced',
+        mySeatId: 'seat-1',
+        leaderSeatId: 'seat-1',
+      },
+    })
     mount(onReady)
     fireEvent.click(screen.getByTestId('jump-other'))
     await waitFor(() => expect(onReady).toHaveBeenCalledWith(true))
@@ -140,8 +191,7 @@ describe('SharedWalkGuardContext', () => {
 
   it('does not warn when already walking independently', async () => {
     const onReady = vi.fn()
-    familyState.current = {
-      isLeader: false,
+    familyState.current = syncedFollower({
       isWalkingIndependently: true,
       syncEnabled: false,
       session: {
@@ -149,9 +199,10 @@ describe('SharedWalkGuardContext', () => {
         waypointId: 'w01',
         syncEnabled: true,
         syncParticipation: 'independent',
+        mySeatId: 'seat-2',
+        leaderSeatId: 'seat-1',
       },
-      detachFromSharedWalk: vi.fn(),
-    }
+    })
     mount(onReady)
     fireEvent.click(screen.getByTestId('jump-other'))
     await waitFor(() => expect(onReady).toHaveBeenCalledWith(true))
@@ -159,18 +210,7 @@ describe('SharedWalkGuardContext', () => {
   })
 
   it('warns when a synced follower selects a different stop', async () => {
-    familyState.current = {
-      isLeader: false,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true, syncParticipation: 'synced' },
-      detachFromSharedWalk: vi.fn(async () => ({
-        id: 's1',
-        waypointId: 'w01',
-        syncParticipation: 'independent',
-      })),
-      rejoinSharedWalk: vi.fn(),
-    }
+    familyState.current = syncedFollower()
     mount()
     fireEvent.click(screen.getByTestId('jump-other'))
     expect(await screen.findByRole('alertdialog')).toBeInTheDocument()
@@ -180,15 +220,41 @@ describe('SharedWalkGuardContext', () => {
     expect(jumpToWaypointInJourney).not.toHaveBeenCalled()
   })
 
+  it('JourneyShell-style advance warns before navigation when follower leaves group stop', async () => {
+    const onReady = vi.fn()
+    familyState.current = syncedFollower()
+    mount(onReady)
+    fireEvent.click(screen.getByTestId('advance-other'))
+    expect(await screen.findByRole('alertdialog')).toBeInTheDocument()
+    expect(screen.getByText('Leave the shared walk?')).toBeInTheDocument()
+    expect(onReady).not.toHaveBeenCalledWith('advanced')
+    expect(familyState.current.detachFromSharedWalk).not.toHaveBeenCalled()
+  })
+
+  it('fail-closes when session waypointId is still null (local stop fallback)', async () => {
+    // Production race: pause/resume works before leader clock publishes waypointId.
+    // Path A is w01→w02 consecutive — Continue must still warn.
+    getStepIdAtIndex.mockReturnValue('w01')
+    familyState.current = syncedFollower({
+      session: {
+        id: 's1',
+        waypointId: null,
+        syncEnabled: true,
+        syncParticipation: 'synced',
+        mySeatId: 'seat-2',
+        leaderSeatId: 'seat-1',
+      },
+    })
+    mount()
+    expect(screen.getByTestId('guard-flag')).toHaveTextContent('true')
+    fireEvent.click(screen.getByTestId('advance-other'))
+    expect(await screen.findByRole('alertdialog')).toBeInTheDocument()
+    expect(screen.getByText('Leave the shared walk?')).toBeInTheDocument()
+  })
+
   it('Stay with group closes without navigating or detaching', async () => {
     const onReady = vi.fn()
-    familyState.current = {
-      isLeader: false,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true, syncParticipation: 'synced' },
-      detachFromSharedWalk: vi.fn(),
-    }
+    familyState.current = syncedFollower()
     mount(onReady)
     fireEvent.click(screen.getByTestId('jump-other'))
     fireEvent.click(await screen.findByRole('button', { name: 'Stay with group' }))
@@ -199,17 +265,13 @@ describe('SharedWalkGuardContext', () => {
   })
 
   it('failed detach does not navigate', async () => {
-    familyState.current = {
-      isLeader: false,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true, syncParticipation: 'synced' },
+    familyState.current = syncedFollower({
       detachFromSharedWalk: vi.fn(async () => {
         const err = new Error('detach_failed')
         err.code = 'detach_failed'
         throw err
       }),
-    }
+    })
     mount()
     fireEvent.click(screen.getByTestId('jump-other'))
     fireEvent.click(await screen.findByRole('button', { name: 'Continue on my own' }))
@@ -224,14 +286,10 @@ describe('SharedWalkGuardContext', () => {
       id: 's1',
       waypointId: 'w01',
       syncParticipation: 'independent',
+      mySeatId: 'seat-2',
+      leaderSeatId: 'seat-1',
     }))
-    familyState.current = {
-      isLeader: false,
-      isWalkingIndependently: false,
-      syncEnabled: true,
-      session: { id: 's1', waypointId: 'w01', syncEnabled: true, syncParticipation: 'synced' },
-      detachFromSharedWalk,
-    }
+    familyState.current = syncedFollower({ detachFromSharedWalk })
     mount(onReady)
     fireEvent.click(screen.getByTestId('jump-other'))
     fireEvent.click(await screen.findByRole('button', { name: 'Continue on my own' }))
@@ -243,14 +301,58 @@ describe('SharedWalkGuardContext', () => {
     )
   })
 
+  it('advance Continue on my own detaches only then runs execute', async () => {
+    const onReady = vi.fn()
+    const detachFromSharedWalk = vi.fn(async () => ({
+      id: 's1',
+      waypointId: 'w01',
+      syncParticipation: 'independent',
+      mySeatId: 'seat-2',
+      leaderSeatId: 'seat-1',
+    }))
+    familyState.current = syncedFollower({ detachFromSharedWalk })
+    mount(onReady)
+    fireEvent.click(screen.getByTestId('advance-other'))
+    fireEvent.click(await screen.findByRole('button', { name: 'Continue on my own' }))
+    await waitFor(() => expect(detachFromSharedWalk).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(onReady).toHaveBeenCalledWith('advanced'))
+    expect(detachFromSharedWalk.mock.invocationCallOrder[0]).toBeLessThan(
+      onReady.mock.invocationCallOrder.find((n, i) => onReady.mock.calls[i]?.[0] === 'advanced') ??
+        Infinity,
+    )
+  })
+
+  it('blocks follower navigation while session/role is still resolving', async () => {
+    const onReady = vi.fn()
+    familyState.current = {
+      isLeader: false,
+      isOrganizer: false,
+      isMember: true,
+      hasBundleAccess: true,
+      busy: true,
+      isWalkingIndependently: false,
+      syncEnabled: false,
+      session: null,
+      detachFromSharedWalk: vi.fn(),
+    }
+    mount(onReady)
+    expect(screen.getByTestId('unresolved')).toHaveTextContent('true')
+    fireEvent.click(screen.getByTestId('advance-other'))
+    expect(await screen.findByRole('alertdialog')).toBeInTheDocument()
+    expect(screen.getByText('Checking shared walk…')).toBeInTheDocument()
+    expect(onReady).not.toHaveBeenCalledWith('advanced')
+    fireEvent.click(screen.getByRole('button', { name: 'Stay here' }))
+    await waitFor(() => expect(onReady).toHaveBeenCalledWith(false))
+    expect(familyState.current.detachFromSharedWalk).not.toHaveBeenCalled()
+  })
+
   it('rejoin confirmation names the leader stop when diverged', async () => {
     const rejoinSharedWalk = vi.fn(async () => ({
       id: 's1',
       waypointId: 'w01',
       syncParticipation: 'synced',
     }))
-    familyState.current = {
-      isLeader: false,
+    familyState.current = syncedFollower({
       isWalkingIndependently: true,
       syncEnabled: false,
       session: {
@@ -258,15 +360,13 @@ describe('SharedWalkGuardContext', () => {
         waypointId: 'w01',
         syncEnabled: true,
         syncParticipation: 'independent',
+        mySeatId: 'seat-2',
+        leaderSeatId: 'seat-1',
       },
       rejoinSharedWalk,
-      detachFromSharedWalk: vi.fn(),
-    }
-
-    // Local stop mocked as sequence index 0 → treat as different from leader for dialog:
-    // getJourneySnapshot returns index 0; getStepIdAtIndex from real manifest may not be w02.
-    // Force guard by making leader stop differ and local stop resolve differently via mock already.
-    // With empty path sequence, currentJourneyStepId may be null → alreadyWithGroup is false when leaderStop set.
+    })
+    // Local stop differs from leader stop so rejoin confirms.
+    getStepIdAtIndex.mockReturnValue('w02')
     mount()
     fireEvent.click(screen.getByTestId('rejoin'))
     expect(await screen.findByRole('alertdialog')).toBeInTheDocument()
@@ -285,8 +385,7 @@ describe('SharedWalkGuardContext', () => {
       waypointId: 'w01',
       syncParticipation: 'synced',
     }))
-    familyState.current = {
-      isLeader: false,
+    familyState.current = syncedFollower({
       isWalkingIndependently: true,
       syncEnabled: false,
       session: {
@@ -294,9 +393,12 @@ describe('SharedWalkGuardContext', () => {
         waypointId: 'w01',
         syncEnabled: true,
         syncParticipation: 'independent',
+        mySeatId: 'seat-2',
+        leaderSeatId: 'seat-1',
       },
       rejoinSharedWalk,
-    }
+    })
+    getStepIdAtIndex.mockReturnValue('w02')
     mount(onReady)
     fireEvent.click(screen.getByTestId('rejoin'))
     fireEvent.click(await screen.findByRole('button', { name: 'Rejoin group' }))
