@@ -31,6 +31,7 @@ import {
 
 // Defined by Vite (`define.__APP_BUILD_ID__`). Keep as a string concat so the
 // built sw.js still contains a literal `chronowalk-<id>` for ensureFreshBuild.
+/* global __APP_BUILD_ID__ */
 const BUILD_PREFIX = 'chronowalk-' + __APP_BUILD_ID__
 setCacheNameDetails({ prefix: BUILD_PREFIX })
 
