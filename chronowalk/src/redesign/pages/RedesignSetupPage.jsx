@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
-import { getAnalyticsConsent, setAnalyticsConsent } from '../../lib/track.js'
+import { getAnalyticsConsent, setAnalyticsConsent, track, TRACK_EVENTS } from '../../lib/track.js'
 import {
   isAppEntryComplete,
   markAppEntryComplete,
@@ -38,9 +38,10 @@ export default function RedesignSetupPage() {
       setAnalyticsConsent(false)
       setAnalyticsEnabled(false)
     }
+    track(TRACK_EVENTS.SETUP_COMPLETE, { tier: purchasedTier ?? null })
     markAppEntryComplete()
     navigate('/begin', { replace: true })
-  }, [navigate])
+  }, [navigate, purchasedTier])
 
   const handleInstall = async () => {
     if (showIosInstructions) {

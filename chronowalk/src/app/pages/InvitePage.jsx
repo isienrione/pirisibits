@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { claimFamilySeat, normalizeBundleInviteCode } from '../../lib/familyWalk.js'
 import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 import { isResumableJourney } from '../../state/journey.js'
+import { track, TRACK_EVENTS } from '../../lib/track.js'
 
 function destinationAfterInvite() {
   return getAppHomePath({
@@ -27,11 +28,14 @@ function InviteForm({ initialCode }) {
     setError(null)
     try {
       await claimFamilySeat({ inviteCode, displayName: name.trim() || 'Walker' })
+      track(TRACK_EVENTS.INVITE_REDEEMED)
       setStatus('success')
       navigate(destinationAfterInvite(), { replace: true })
     } catch (err) {
+      const reason = err?.code || err?.message || 'invite_not_found'
+      track(TRACK_EVENTS.INVITE_ERROR, { reason })
       setStatus('error')
-      setError(err?.code || err?.message || 'invite_not_found')
+      setError(reason)
     }
   }
 
