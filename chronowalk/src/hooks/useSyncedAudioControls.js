@@ -159,6 +159,8 @@ export function useSyncedAudioControls(audio, opts = {}) {
   ])
 
   // When leader changes stop while syncing, publish immediately.
+  // Also runs when a brand-new session still has null waypointId so followers
+  // inherit the group stop before Continue can race a fail-open guard.
   useEffect(() => {
     if (!family?.session || !syncOn || !family.isLeader || !currentWaypointId) return
     if (family.session.waypointId === currentWaypointId) return
@@ -180,6 +182,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
     family,
     family?.isLeader,
     family?.session,
+    family?.session?.id,
     family?.session?.waypointId,
     syncOn,
     isApplyingRemote,

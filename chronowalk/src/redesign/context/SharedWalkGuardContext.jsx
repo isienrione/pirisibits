@@ -42,6 +42,17 @@ function currentJourneyStepId(manifest) {
 }
 
 /**
+ * Shared-session group stop for leave detection.
+ * Prefer the leader-published session waypoint; when it has not landed yet
+ * (common right after session create — pause/resume can still work), fall back
+ * to this device's current journey step so Continue cannot fail-open.
+ */
+function resolveGroupStopId(session, manifest) {
+  if (session?.waypointId) return session.waypointId
+  return currentJourneyStepId(manifest)
+}
+
+/**
  * Centralized follower stop-navigation guard.
  * Warns before a synced follower leaves the group's waypoint; detach is server-authoritative.
  */
@@ -61,31 +72,79 @@ export function SharedWalkGuardProvider({ children }) {
     setBusy(false)
   }, [])
 
+  /**
+   * True while a known non-leader bundle member may still be attaching to an
+   * active shared session — must not silently allow waypoint changes.
+   */
+  const isFollowerSessionUnresolved = useCallback(() => {
+    if (!family) return false
+    if (family.isLeader || family.isOrganizer) return false
+    if (family.isWalkingIndependently) return false
+    const maybeMember = Boolean(family.isMember || family.hasBundleAccess)
+    if (!maybeMember) return false
+    // Discovery / RPC in flight before a session object exists.
+    if (family.busy && !family.session?.id) return true
+    // Session present but participation not yet authoritative.
+    if (
+      family.session?.id &&
+      family.session.syncParticipation == null &&
+      (family.busy || family.syncEnabled == null)
+    ) {
+      return true
+    }
+    return false
+  }, [family])
+
   const shouldGuardStopChange = useCallback(
     (destinationWaypointId) => {
+      if (!destinationWaypointId) return false
+      if (isFollowerSessionUnresolved()) return true
+
       const session = family?.session
       if (!session?.id) return false
       if (family?.isLeader) return false
       if (family?.isWalkingIndependently) return false
       if (!family?.syncEnabled) return false
-      if (!destinationWaypointId) return false
-      const groupStop = session.waypointId
-      if (!groupStop) return false
+
+      const manifest = loadRomeManifest()
+      const groupStop = resolveGroupStopId(session, manifest)
+      // Synced follower with unknown group stop — fail closed (never silent advance).
+      if (!groupStop) return true
       return destinationWaypointId !== groupStop
     },
-    [family?.isLeader, family?.isWalkingIndependently, family?.session, family?.syncEnabled],
+    [
+      family?.isLeader,
+      family?.isWalkingIndependently,
+      family?.session,
+      family?.syncEnabled,
+      isFollowerSessionUnresolved,
+    ],
   )
 
   const runGuarded = useCallback(
     async ({ destinationWaypointId, execute }) => {
       if (typeof execute !== 'function') return false
 
+      if (isFollowerSessionUnresolved()) {
+        return await new Promise((resolve) => {
+          pendingRef.current = { execute: null, resolve, mode: 'resolving' }
+          setActionError(null)
+          setDialog({
+            title: 'Checking shared walk…',
+            message:
+              'Your shared session is still connecting. Stay on this stop for a moment, then try again.',
+            cancelLabel: 'Stay here',
+            confirmLabel: null,
+          })
+        })
+      }
+
       if (!shouldGuardStopChange(destinationWaypointId)) {
         return Boolean(execute())
       }
 
       const manifest = loadRomeManifest()
-      const groupStop = family?.session?.waypointId
+      const groupStop = resolveGroupStopId(family?.session, manifest)
       return await new Promise((resolve) => {
         pendingRef.current = { execute, resolve, mode: 'leave' }
         setActionError(null)
@@ -97,7 +156,7 @@ export function SharedWalkGuardProvider({ children }) {
         })
       })
     },
-    [family?.session?.waypointId, shouldGuardStopChange],
+    [family?.session, isFollowerSessionUnresolved, shouldGuardStopChange],
   )
 
   const requestJumpToWaypoint = useCallback(
@@ -171,6 +230,12 @@ export function SharedWalkGuardProvider({ children }) {
       return
     }
 
+    if (pending.mode === 'resolving') {
+      closeDialog()
+      pending.resolve?.(false)
+      return
+    }
+
     setBusy(true)
     setActionError(null)
     try {
@@ -207,9 +272,11 @@ export function SharedWalkGuardProvider({ children }) {
       requestAdvanceToWaypoint,
       requestRejoinSharedWalk,
       isWalkingIndependently: Boolean(family?.isWalkingIndependently),
+      isFollowerSessionUnresolved: isFollowerSessionUnresolved(),
     }),
     [
       family?.isWalkingIndependently,
+      isFollowerSessionUnresolved,
       requestAdvanceToWaypoint,
       requestJumpToWaypoint,
       requestRejoinSharedWalk,
@@ -245,6 +312,7 @@ export function useSharedWalkGuard() {
       requestAdvanceToWaypoint: async (_destinationWaypointId, execute) => Boolean(execute?.()),
       requestRejoinSharedWalk: async () => null,
       isWalkingIndependently: false,
+      isFollowerSessionUnresolved: false,
     }
   }
   return ctx
