@@ -1,13 +1,16 @@
 /* ChronoWalk service worker
  *
  * Cloudflare Pages SPA fallback (`/* → /index.html 200`) returns HTML for
- * missing paths. If that HTML is ever cached under a hashed `/assets/*.js`
- * URL, dynamic `import()` fails with:
+ * missing paths — including missing hashed `/assets/*.js` URLs. If that HTML
+ * is cached under a module key, dynamic `import()` fails with:
  *   TypeError: Failed to fetch dynamically imported module
- * even while a direct network fetch of the same URL returns real JavaScript.
+ * even while a direct network fetch of a live asset returns real JavaScript.
+ *
+ * Apex `/` → `/landing` (302). Workbox cannot precache `/` (redirects fail
+ * install). The SPA shell is therefore precached at `/landing` (HTTP 200).
  *
  * Rules:
- * 1. Never serve the SPA/app-shell HTML for script, style, worker, or /assets/*.
+ * 1. Never serve/cache the SPA HTML for script, style, worker, or /assets/*.
  * 2. Navigation fallback only for genuine document navigations.
  * 3. Reject / scrub HTML responses stored under asset URLs.
  * 4. Hashed assets: cache only non-HTML 200 responses; miss → network.
@@ -28,6 +31,7 @@ import {
   isHtmlResponse,
   shouldDenyNavigationFallback,
 } from './swAssetGuards.js'
+import { APP_SHELL_PRECACHE_URL } from './cloudflarePrecacheUrls.js'
 
 // Defined by Vite (`define.__APP_BUILD_ID__`). Keep as a string concat so the
 // built sw.js still contains a literal `chronowalk-<id>` for ensureFreshBuild.
@@ -142,7 +146,7 @@ const navigationNetworkFirst = new NetworkFirst({
   ],
 })
 
-const cachedAppShell = createHandlerBoundToURL('/')
+const cachedAppShell = createHandlerBoundToURL(APP_SHELL_PRECACHE_URL)
 
 async function handleNavigation(params) {
   const { request, url } = params

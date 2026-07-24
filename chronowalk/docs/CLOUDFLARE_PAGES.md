@@ -37,22 +37,39 @@ Full commerce wiring: [`docs/PADDLE_SETUP.md`](./PADDLE_SETUP.md). Redeploy afte
 Cloudflare Pages reads `public/_redirects`:
 
 ```
-/*    /index.html   200
+/    /landing   302
+/*   /index.html   200
 ```
 
-### Pretty URLs warning (PWA)
+- Apex `/` always redirects to `/landing`.
+- `/landing`, `/walk-together`, and other React Router document routes are served the SPA shell via the catch-all rewrite (HTTP 200 `text/html`).
+- **Do not** add `/assets/* … 404` rules. Deploy `8a799eb` proved that pattern can break SPA fallback on Cloudflare Pages (`/landing` → 404) and prevent Workbox from installing.
 
-Cloudflare Pages also **redirects** `/index.html` → `/` and `/offline.html` → `/offline` (308). Workbox must therefore precache those canonical paths and prefer the network for navigations. The custom service worker in `src/pwa/sw.js` does this.
+Missing hashed `/assets/*.js` files may still receive `index.html` from the catch-all. The service worker rejects/`scrub`s `text/html` under asset and module requests so that HTML is never evaluated as JavaScript.
+
+### Pretty URLs + Workbox precache
+
+Cloudflare Pages also **redirects** `/index.html` → `/` (308). Combined with apex `/` → `/landing` (302), **`/` is not a valid Workbox precache URL** (install fails with `bad-precaching-response` on redirects / 404s).
+
+The build maps `index.html` → **`/landing`** (stable HTTP 200) via `src/pwa/cloudflarePrecacheUrls.js`. Offline navigation falls back with `createHandlerBoundToURL('/landing')`.
+
+Operator check after `npm run build`:
+
+```bash
+node scripts/verify-pwa-routing.mjs
+# optional read-only live probes:
+VERIFY_LIVE=1 node scripts/verify-pwa-routing.mjs
+```
 
 If a phone shows **This site can’t be reached / ERR_FAILED** for `chronowalk.com` while desktop curls still get HTTP 200, a stale/broken service worker is almost always the cause:
 
 1. Open a **Private / Incognito** tab to confirm the live site loads.
 2. Clear site data for `chronowalk.com` (Chrome: Site settings → Clear & reset).
 3. Or wait for a fresh deploy: browsers fetch `/sw.js` outside the old SW and auto-activate the fixed worker (`skipWaiting` + `clientsClaim`).
-
+4. Settings → **Refresh app** / error-boundary **Try again** runs one controlled cache+SW recovery without clearing credentials.
 ## Cache headers
 
-`public/_headers` ships with the build and tells Cloudflare **not** to edge-cache the app shell or service worker (`/`, `/index.html`, `/sw.js`, workbox bundles). Hashed files under `/assets/` stay long-lived via content hashes.
+`public/_headers` ships with the build and tells Cloudflare **not** to edge-cache the app shell or service worker (`/`, `/landing`, `/index.html`, `/sw.js`, workbox bundles). Hashed files under `/assets/` stay long-lived via content hashes.
 
 If testers still see an old UI after a deploy:
 
