@@ -8,6 +8,7 @@ import {
 } from '../offline/tourPackage'
 import { TOUR_PACKAGE_STATUS } from '../offline/offlineStorage'
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics'
+import { track, TRACK_EVENTS } from '../lib/track'
 
 export function formatOfflineUpdatedAt(timestamp) {
   if (!timestamp) return null
@@ -59,14 +60,20 @@ export function useOfflineDownload(tour) {
     setError(null)
     setIsDownloading(true)
     triggerHaptic(HAPTIC_KIND.SELECTION)
+    track(TRACK_EVENTS.OFFLINE_DOWNLOAD_START, { tour_id: tourId })
 
     try {
       await downloadTour(tourId, {
         onProgress: setProgress,
       })
       triggerHaptic(HAPTIC_KIND.SOFT_TAP)
+      track(TRACK_EVENTS.OFFLINE_DOWNLOAD_COMPLETE, { tour_id: tourId })
       await refresh()
     } catch (downloadError) {
+      track(TRACK_EVENTS.OFFLINE_DOWNLOAD_ERROR, {
+        tour_id: tourId,
+        reason: downloadError?.message ?? 'unknown',
+      })
       setError(downloadError?.message ?? 'Download failed. Try again on a stable connection.')
     } finally {
       setIsDownloading(false)
@@ -82,6 +89,7 @@ export function useOfflineDownload(tour) {
 
     try {
       await deleteTour(tourId)
+      track(TRACK_EVENTS.OFFLINE_DOWNLOAD_REMOVED, { tour_id: tourId })
       await refresh()
     } catch (deleteError) {
       setError(deleteError?.message ?? 'Could not remove the offline download.')

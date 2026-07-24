@@ -40,6 +40,15 @@ export const TRACK_EVENTS = {
   LANDING_FAQ_OPEN: 'landing_faq_open',
   /** @deprecated prefer LANDING_PRICING_VIEW — kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
+  ACCESS_ERROR: 'access_error',
+  OFFLINE_DOWNLOAD_START: 'offline_download_start',
+  OFFLINE_DOWNLOAD_COMPLETE: 'offline_download_complete',
+  OFFLINE_DOWNLOAD_ERROR: 'offline_download_error',
+  OFFLINE_DOWNLOAD_REMOVED: 'offline_download_removed',
+  INVITE_REDEEMED: 'invite_redeemed',
+  INVITE_ERROR: 'invite_error',
+  JOURNEY_COMPLETE_VIEWED: 'journey_complete_viewed',
+  SETUP_COMPLETE: 'setup_complete',
 }
 
 function baseProps(extra = {}) {
@@ -96,4 +105,18 @@ export function getAnalyticsConsent() {
 export function track(event, properties = {}) {
   if (!initialized) return
   posthog.capture(event, baseProps(properties))
+}
+
+/**
+ * Identify the current device as a purchaser.
+ * Call after a successful purchase or access redemption.
+ * @param {string} deviceId
+ * @param {{ tier?: string | null, role?: string | null }} personProps
+ */
+export function identifyPurchaser(deviceId, { tier = null, role = null } = {}) {
+  if (!initialized || !deviceId) return
+  posthog.identify(deviceId, {
+    ...(tier ? { purchased_tier: tier } : {}),
+    ...(role ? { role } : {}),
+  })
 }

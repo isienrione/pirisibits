@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { appiaNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
+import { track, TRACK_EVENTS } from '../../lib/track.js'
 
 export default function C8eJourneyComplete({
   headline = 'You walked Ancient Rome.',
@@ -14,6 +15,12 @@ export default function C8eJourneyComplete({
   onReturnTour,
 }) {
   const [revealed, setRevealed] = useState(false)
+  const stopCountRef = useRef(stopCount)
+  stopCountRef.current = stopCount
+
+  useEffect(() => {
+    track(TRACK_EVENTS.JOURNEY_COMPLETE_VIEWED, { stop_count: stopCountRef.current })
+  }, [])
 
   useEffect(() => {
     const timer = setTimeout(() => setRevealed(true), 180)

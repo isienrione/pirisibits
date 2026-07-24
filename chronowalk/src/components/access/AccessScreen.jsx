@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { applyPurchaseUnlock } from '../../lib/pendingPurchase.js'
-import { track, TRACK_EVENTS } from '../../lib/track'
+import { track, TRACK_EVENTS, identifyPurchaser } from '../../lib/track'
+import { getDeviceId } from '../../lib/deviceId'
 
 function AccessShell({ children }) {
   return (
@@ -85,11 +86,13 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
           source: result.source ?? 'token',
           tier: unlock.tier,
         })
+        identifyPurchaser(getDeviceId(), { tier: unlock.tier, role: result.role ?? null })
         setOutcome('success')
         onValidated?.({ token, productId: unlock.tier })
         return
       }
 
+      track(TRACK_EVENTS.ACCESS_ERROR, { reason: result.reason ?? 'unknown' })
       setOutcome('error')
     })
 

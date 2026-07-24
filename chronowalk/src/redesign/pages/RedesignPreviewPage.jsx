@@ -154,6 +154,7 @@ export default function RedesignPreviewPage() {
   }
 
   const handleStoryComplete = () => {
+    track(TRACK_EVENTS.PREVIEW_COMPLETE, { source: 'preview', waypoint_id: waypoint?.id ?? 'w17' })
     setPhase('tour')
   }
 
