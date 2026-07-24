@@ -13,7 +13,11 @@
 # Site configuration → Build & deploy → Continuous deployment → Production branch = figma
 [context.production.environment]
   VITE_MEDIA_BASE = ""
+  # PostHog analytics (EU cloud) — project token read via import.meta.env.VITE_POSTHOG_KEY in src/lib/track.js
+  VITE_POSTHOG_KEY = "phc_pf64jGmQ92vntkjj964Wf8GzxMgf3z2hRKQ4D6FzcMsf"
 
 # Figma branch preview builds (same media base as production)
 [context.figma.environment]
   VITE_MEDIA_BASE = ""
+  # PostHog analytics (EU cloud) — production deploys the figma branch, so the key must be present here too
+  VITE_POSTHOG_KEY = "phc_pf64jGmQ92vntkjj964Wf8GzxMgf3z2hRKQ4D6FzcMsf"
