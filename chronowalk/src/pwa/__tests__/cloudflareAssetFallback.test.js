@@ -1,36 +1,52 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..')
 
-describe('Cloudflare SPA + asset caching headers', () => {
-  it('serves a real 404 for missing /assets/* instead of SPA index.html', () => {
+function redirectLines(source) {
+  return source
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+}
+
+describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
+  it('preserves / → /landing 302 and SPA fallback without an assets 404 rule', () => {
     const redirects = readFileSync(join(ROOT, 'public/_redirects'), 'utf8')
-    expect(redirects).toMatch(/\/assets\/\*\s+\/404\.html\s+404/)
-    const lines = redirects
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#'))
-    const assetsIdx = lines.findIndex((line) => line.startsWith('/assets/*'))
-    const spaIdx = lines.findIndex((line) => /^\/\*\s+/.test(line))
-    expect(assetsIdx).toBeGreaterThanOrEqual(0)
-    expect(spaIdx).toBeGreaterThan(assetsIdx)
+    const lines = redirectLines(redirects)
+
+    expect(lines.some((line) => /^\/\s+\/landing\s+302$/.test(line))).toBe(true)
+    expect(lines.some((line) => /^\/\*\s+\/index\.html\s+200$/.test(line))).toBe(true)
+    // The 8a799eb rule that broke /landing in production must stay gone.
+    expect(lines.some((line) => line.startsWith('/assets/*'))).toBe(false)
+    expect(existsSync(join(ROOT, 'public/404.html'))).toBe(false)
+
+    // Document routes are covered by the catch-all SPA rewrite (not listed
+    // individually); ensure no rule shadows /landing with a 404.
+    expect(redirects).not.toMatch(/\/landing\s+[^\n]*\s+404/)
+    expect(redirects).not.toMatch(/\/walk-together\s+[^\n]*\s+404/)
   })
 
-  it('keeps index.html and sw.js revalidating; hashes assets as immutable', () => {
+  it('keeps index.html / landing / sw.js revalidating; hashes assets as immutable', () => {
     const headers = readFileSync(join(ROOT, 'public/_headers'), 'utf8')
     expect(headers).toMatch(/\/sw\.js[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/index\.html[\s\S]*?no-cache/)
+    expect(headers).toMatch(/\/landing[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/assets\/\*[\s\S]*?immutable/)
+    expect(headers).not.toMatch(/\/404\.html/)
   })
 
-  it('service worker source rejects HTML for asset/module routes', () => {
+  it('service worker source rejects HTML for asset/module routes and binds shell to /landing', () => {
     const sw = readFileSync(join(ROOT, 'src/pwa/sw.js'), 'utf8')
     expect(sw).toContain('isAssetOrModuleRequest')
     expect(sw).toContain('rejectHtmlAssetPlugin')
     expect(sw).toContain('scrubHtmlPoisonedCaches')
     expect(sw).toContain("BUILD_PREFIX + '-assets'")
+    expect(sw).toContain('APP_SHELL_PRECACHE_URL')
+    expect(sw).toContain("createHandlerBoundToURL(APP_SHELL_PRECACHE_URL)")
+    // Must not bind the offline shell to apex `/` (302 in production).
+    expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
   })
 })
