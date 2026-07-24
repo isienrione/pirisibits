@@ -21,6 +21,7 @@ vi.mock('../../lib/track.js', async (importOriginal) => {
   return {
     ...actual,
     track: vi.fn(),
+    isAnalyticsReady: () => true,
   }
 })
 

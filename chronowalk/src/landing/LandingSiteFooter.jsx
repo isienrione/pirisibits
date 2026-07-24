@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
+import AnalyticsPreferencesControl from '../components/analytics/AnalyticsPreferencesControl.jsx'
 import { LANDING_CONTENT } from './landingData.js'
 import '../components/legal/legal.css'
 
@@ -90,6 +91,9 @@ export default function LandingSiteFooter({
             Pricing
           </a>
         </nav>
+        <div className="cw-v2-footer__privacy-choices">
+          <AnalyticsPreferencesControl variant="footer" />
+        </div>
         <p style={{ margin: '1.25rem 0 0' }}>
           © {year} ChronoWalk. {credit}
         </p>

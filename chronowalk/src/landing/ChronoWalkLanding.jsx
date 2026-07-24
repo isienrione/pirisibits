@@ -35,6 +35,7 @@ import {
   trackLandingRoutesCta,
   trackLandingView,
 } from './landingAnalytics.js'
+import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
@@ -57,6 +58,11 @@ export default function ChronoWalkLanding() {
   useEffect(() => {
     ensureLandingExpHero()
     trackLandingView()
+    return subscribeAnalyticsConsent((value) => {
+      if (value === ANALYTICS_CONSENT.ACCEPTED) {
+        trackLandingView()
+      }
+    })
   }, [])
 
   useEffect(() => {
