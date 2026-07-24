@@ -1,19 +1,13 @@
 /**
- * Landing conversion analytics (Prompt 21).
+ * Landing conversion analytics.
  * Provider remains PostHog via `track()` — consent, init, and base props unchanged.
- *
- * Primary funnel:
- *   landing_view
- *   → landing_cta_preview | landing_route_view
- *   → landing_pricing_view / landing_cta_begin
- *   → checkout_open
- *   → purchase
  *
  * Never send emails, names, payment details, or free-text answers.
  */
 
 import { isAnalyticsReady, track, TRACK_EVENTS } from '../lib/track.js'
 import { ensureLandingExpHero, peekLandingExpHero } from './landingExperiments.js'
+import { peekLandingAttribution } from './landingModes.js'
 
 /** Allowed section ids for CTA context (keep short + stable). */
 export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
@@ -21,11 +15,15 @@ export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
   HEADER: 'header',
   EARLY_CTA: 'early-cta',
   THRESHOLD: 'threshold',
+  AUDIO: 'audio',
+  SITUATIONS: 'situations',
   MONUMENTS: 'monuments',
   TRY_FREE: 'try-free',
   PRICING: 'pricing',
+  WALK_TOGETHER: 'walk-together',
   FAQ: 'faq',
   FINAL_CTA: 'final-cta',
+  STICKY: 'sticky',
   AFTER_ROME: 'after-rome',
 })
 
@@ -33,13 +31,17 @@ const onceFlags = {
   view: false,
   routeView: false,
   pricingView: false,
+  stickyImpression: false,
 }
 
 function landingProps(extra = {}) {
   const exp = peekLandingExpHero() ?? ensureLandingExpHero()
+  const attribution = peekLandingAttribution()
   return {
     source: 'landing',
     landing_exp_hero: exp,
+    ...(attribution?.src ? { src: attribution.src } : {}),
+    ...(attribution?.host_id ? { host_id: attribution.host_id } : {}),
     ...extra,
   }
 }
@@ -49,29 +51,34 @@ export function resetLandingAnalyticsForTests() {
   onceFlags.view = false
   onceFlags.routeView = false
   onceFlags.pricingView = false
+  onceFlags.stickyImpression = false
 }
 
-export function trackLandingView() {
+export function trackLandingView(extra = {}) {
   if (onceFlags.view) return false
   // Do not consume the once-flag before consent — otherwise accepting later
   // would permanently skip the first landing_view.
   if (!isAnalyticsReady()) return false
   onceFlags.view = true
-  track(TRACK_EVENTS.LANDING_VIEW, landingProps())
+  track(TRACK_EVENTS.LANDING_VIEW, landingProps(extra))
   return true
 }
 
 /**
  * Free preview CTA → /preview (also leads to preview_start on the preview page).
  * @param {string} section
+ * @param {Record<string, unknown>} [extra]
  */
-export function trackLandingPreviewCta(section) {
+export function trackLandingPreviewCta(section, extra = {}) {
   track(
     TRACK_EVENTS.LANDING_CTA_PREVIEW,
     landingProps({
       section,
       preview: 'pantheon',
       cta: 'preview',
+      cta_location: section,
+      cta_action: 'preview',
+      ...extra,
     }),
   )
 }
@@ -87,6 +94,8 @@ export function trackLandingRoutesCta(section) {
       section,
       cta: 'routes',
       target: 'pricing',
+      cta_location: section,
+      cta_action: 'routes',
     }),
   )
 }
@@ -100,6 +109,7 @@ export function trackLandingThresholdStart({ via = 'hold' } = {}) {
       action: 'start',
       via,
       waypoint_id: 'landing-colosseum',
+      threshold_engaged: true,
     }),
   )
 }
@@ -113,6 +123,7 @@ export function trackLandingThresholdComplete({ via = 'hold', duration_ms } = {}
       action: 'complete',
       via,
       waypoint_id: 'landing-colosseum',
+      threshold_engaged: true,
     }),
   )
   track(
@@ -173,6 +184,7 @@ export function trackLandingPricingView() {
     TRACK_EVENTS.LANDING_PRICING_VIEW,
     landingProps({
       section: LANDING_ANALYTICS_SECTIONS.PRICING,
+      pricing_viewed: true,
     }),
   )
   return true
@@ -181,29 +193,36 @@ export function trackLandingPricingView() {
 /**
  * Pricing card purchase CTA — product intent before checkout handoff.
  * @param {string} tierId
+ * @param {Record<string, unknown>} [extra]
  */
-export function trackLandingPricingCta(tierId) {
+export function trackLandingPricingCta(tierId, extra = {}) {
   track(
     TRACK_EVENTS.LANDING_CTA_BEGIN,
     landingProps({
-      section: LANDING_ANALYTICS_SECTIONS.PRICING,
+      section: extra.cta_location || LANDING_ANALYTICS_SECTIONS.PRICING,
       tier: tierId,
+      sku: tierId,
       cta: 'begin',
+      cta_action: 'purchase',
+      ...extra,
     }),
   )
 }
 
 /**
  * Checkout URL assigned / navigation started.
- * @param {{ tierId: string, priceCents: number }} opts
+ * @param {{ tierId: string, priceCents: number } & Record<string, unknown>} opts
  */
-export function trackLandingCheckoutOpen({ tierId, priceCents }) {
+export function trackLandingCheckoutOpen({ tierId, priceCents, ...extra } = {}) {
   track(
     TRACK_EVENTS.CHECKOUT_OPEN,
     landingProps({
-      section: LANDING_ANALYTICS_SECTIONS.PRICING,
+      section: extra.cta_location || LANDING_ANALYTICS_SECTIONS.PRICING,
       tier: tierId,
+      sku: tierId,
       price_cents: priceCents,
+      cta_action: 'checkout',
+      ...extra,
     }),
   )
 }
@@ -219,6 +238,33 @@ export function trackLandingFaqOpen({ questionId, groupId }) {
       section: LANDING_ANALYTICS_SECTIONS.FAQ,
       question_id: questionId,
       ...(groupId ? { group_id: groupId } : {}),
+    }),
+  )
+}
+
+export function trackLandingStickyImpression(extra = {}) {
+  if (onceFlags.stickyImpression) return false
+  if (!isAnalyticsReady()) return false
+  onceFlags.stickyImpression = true
+  track(
+    TRACK_EVENTS.LANDING_CTA_BEGIN,
+    landingProps({
+      section: LANDING_ANALYTICS_SECTIONS.STICKY,
+      cta_location: 'sticky',
+      cta_action: 'impression',
+      ...extra,
+    }),
+  )
+  return true
+}
+
+export function trackLandingStickyClick(extra = {}) {
+  track(
+    TRACK_EVENTS.LANDING_CTA_BEGIN,
+    landingProps({
+      section: LANDING_ANALYTICS_SECTIONS.STICKY,
+      cta_location: 'sticky',
+      ...extra,
     }),
   )
 }

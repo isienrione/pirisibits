@@ -1,6 +1,7 @@
 /**
  * Landing post-launch experiments (see docs/LANDING_POST_LAUNCH_AB.md).
- * Test 1 — hero headline positioning. Sticky per browser; URL override for QA.
+ * Test 1 — hero *support-line* variants (H1 stays clarity-first in rebuild).
+ * Sticky per browser; URL override for QA via `?landing_exp_hero=a|b`.
  *
  * Do not reuse `ab_variant` (price AB cents in config/track).
  */
@@ -8,15 +9,15 @@
 export const LANDING_EXP_HERO_KEY = 'cw_landing_exp_hero'
 export const LANDING_EXP_HERO_PARAM = 'landing_exp_hero'
 
-/** Test 1 copy — headline only (accent / sub / CTAs stay shared). */
+/** Support-line experiment — headline constants retained for analytics continuity. */
 export const LANDING_EXP_HERO_COPY = Object.freeze({
   a: {
     id: 'a',
-    headline: 'Walk until the city starts talking.',
+    headline: 'See what stood here. Hear what happened. Keep walking.',
   },
   b: {
     id: 'b',
-    headline: 'Walk Rome freely—with the history you’d miss on your own.',
+    headline: 'See what stood here. Hear what happened. Keep walking.',
   },
 })
 

@@ -15,7 +15,7 @@ export default function RebuildHero({ mode, host, onPrimary, onSecondary, suppor
       <div className="cw-rb-wrap cw-rb-hero__layout">
         <div className="cw-rb-hero__copy">
           {host?.label ? (
-            <p className="cw-rb-hero__host">Prepared for {host.label}</p>
+            <p className="cw-rb-hero__host">Recommended by {host.label}</p>
           ) : null}
 
           <p className="cw-rb-eyebrow">{copy.eyebrow}</p>

@@ -1,10 +1,10 @@
 import { ROME_TIERS } from './landingData.js'
 
-/** Document title / description for the editorial landing (Prompt 20). */
+/** Document title / description for the product-led landing. */
 export const LANDING_DOCUMENT = {
-  title: 'ChronoWalk · Self-guided Rome walks',
+  title: 'ChronoWalk Rome — Self-Guided Audio Walk with Then vs Now Reconstructions',
   description:
-    'Self-guided Rome walks with place-tied narration and Threshold reconstructions. Try one Pantheon stop free — one-time purchase, no subscription.',
+    'Explore 21 Rome landmarks with place-tied audio, interactive Then vs Now reconstructions and a flexible walk that remembers your progress. Opens in your browser.',
 }
 
 /**

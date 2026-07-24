@@ -70,7 +70,7 @@ export function JourneyPickScreen({ size = 'md' }) {
       <div className="cw-landing-screen cw-landing-screen--route">
         <header className="cw-landing-screen__route-header">
           <p className="cw-landing-screen__route-city">Rome, Italy</p>
-          <h3 className="cw-landing-screen__route-title">18 stops · your route</h3>
+          <h3 className="cw-landing-screen__route-title">21 stops · your route</h3>
         </header>
 
         <div className="cw-landing-screen__route-map" aria-hidden>

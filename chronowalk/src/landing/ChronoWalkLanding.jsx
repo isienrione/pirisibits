@@ -1,26 +1,32 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
-import LandingAct from './LandingAct.jsx'
-import LandingSiteHeader from './LandingSiteHeader.jsx'
-import LandingHero from './LandingHero.jsx'
-import LandingEmotionalInterludeSection from './LandingEmotionalInterludeSection.jsx'
-import LandingThresholdSection from './LandingThresholdSection.jsx'
-import LandingEarlyCtaSection from './LandingEarlyCtaSection.jsx'
-import LandingUserFlowSection from './LandingUserFlowSection.jsx'
-import LandingRealMomentSection from './LandingRealMomentSection.jsx'
-import LandingMonumentsCarousel from './LandingMonumentsCarousel.jsx'
-import LandingBenefitsSection from './LandingBenefitsSection.jsx'
-import LandingTryFreeSection from './LandingTryFreeSection.jsx'
-import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
-import LandingWhyChronoWalkSection from './LandingWhyChronoWalkSection.jsx'
-import LandingTrustProofSection from './LandingTrustProofSection.jsx'
-import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
-import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
-import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
+import RebuildHeader from './rebuild/RebuildHeader.jsx'
+import RebuildTrustStrip from './rebuild/RebuildTrustStrip.jsx'
+import RebuildHero from './rebuild/RebuildHero.jsx'
+import RebuildThreshold from './rebuild/RebuildThreshold.jsx'
+import RebuildAudioProof from './rebuild/RebuildAudioProof.jsx'
+import RebuildSituations from './rebuild/RebuildSituations.jsx'
+import RebuildPricing from './rebuild/RebuildPricing.jsx'
+import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
+import RebuildAdaptiveWalk from './rebuild/RebuildAdaptiveWalk.jsx'
+import RebuildCuratedCertainty from './rebuild/RebuildCuratedCertainty.jsx'
+import RebuildRouteProof from './rebuild/RebuildRouteProof.jsx'
+import RebuildDifference from './rebuild/RebuildDifference.jsx'
+import RebuildFaq from './rebuild/RebuildFaq.jsx'
+import RebuildFinalCta from './rebuild/RebuildFinalCta.jsx'
+import RebuildStickyBar from './rebuild/RebuildStickyBar.jsx'
+import { scrollToLandingId } from './rebuild/scrollToId.js'
+import './rebuild/rebuild.css'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
-import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
+import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
+import { LANDING_PRODUCT } from './landingProduct.js'
+import { REBUILD_HERO_SUPPORT_EXP } from './rebuildCopy.js'
+import {
+  persistLandingAttribution,
+  readLandingModeFromWindow,
+} from './landingModes.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { resolveLandingTierCents } from './landingCheckout.js'
 import { getTierById, openCheckout } from '../lib/checkout.js'
@@ -32,38 +38,53 @@ import {
   trackLandingCheckoutOpen,
   trackLandingPricingCta,
   trackLandingPreviewCta,
-  trackLandingRoutesCta,
+  trackLandingStickyClick,
+  trackLandingStickyImpression,
   trackLandingView,
 } from './landingAnalytics.js'
 import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
-import './ChronoWalkLanding.css'
-import './ChronoWalkLanding.v2.css'
 
 /**
- * Premium landing — editorial three-act architecture.
- * Act I Promise → Act II Experience → Act III Decision.
- * Baseline preserved in archive/v3-premium-baseline-2026-07-14/.
+ * ChronoWalk landing — product-led rebuild.
+ * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
   const { cents } = useLandingPrice()
+  const [{ src, mode, host }] = useState(() => readLandingModeFromWindow())
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
+  const [stickyVisible, setStickyVisible] = useState(false)
+  const [audioActive, setAudioActive] = useState(false)
+  const [geoPreviewFirst, setGeoPreviewFirst] = useState(mode.primaryAction === 'preview')
+  const [supportLine] = useState(() => {
+    const exp = ensureLandingExpHero()
+    return REBUILD_HERO_SUPPORT_EXP[exp] ?? REBUILD_HERO_SUPPORT_EXP.a
+  })
+
   const pendingTier = useMemo(
     () => (pendingTierId ? getTierById(pendingTierId) : null),
     [pendingTierId],
   )
 
   useEffect(() => {
-    ensureLandingExpHero()
-    trackLandingView()
+    persistLandingAttribution({ src, hostId: host?.id ?? null })
+    trackLandingView({
+      landing_mode: mode.id,
+      src,
+      host_id: host?.id ?? null,
+    })
     return subscribeAnalyticsConsent((value) => {
       if (value === ANALYTICS_CONSENT.ACCEPTED) {
-        trackLandingView()
+        trackLandingView({
+          landing_mode: mode.id,
+          src,
+          host_id: host?.id ?? null,
+        })
       }
     })
-  }, [])
+  }, [host?.id, mode.id, src])
 
   useEffect(() => {
     const previousTitle = document.title
@@ -71,31 +92,103 @@ export default function ChronoWalkLanding() {
     const meta = document.querySelector('meta[name="description"]')
     const previousDescription = meta?.getAttribute('content') ?? null
     if (meta) meta.setAttribute('content', LANDING_DOCUMENT.description)
+    const canonical = document.head.querySelector('link[rel="canonical"]')
+    const previousCanonical = canonical?.getAttribute('href') ?? null
+    if (canonical) canonical.setAttribute('href', 'https://chronowalk.com/landing')
     return () => {
       document.title = previousTitle
       if (meta && previousDescription != null) meta.setAttribute('content', previousDescription)
+      if (canonical && previousCanonical != null) canonical.setAttribute('href', previousCanonical)
     }
   }, [])
 
-  const handlePreview = useCallback(
+  useEffect(() => {
+    const hero = document.getElementById('hero')
+    if (!hero || typeof IntersectionObserver !== 'function') return undefined
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const pastHero = Boolean(entry) && !entry.isIntersecting && entry.boundingClientRect.top < 0
+        setStickyVisible(pastHero)
+      },
+      { threshold: 0 },
+    )
+    io.observe(hero)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (stickyVisible) {
+      trackLandingStickyImpression({ landing_mode: mode.id, src })
+    }
+  }, [stickyVisible, mode.id, src])
+
+  const openPreview = useCallback(
     (section = LANDING_ANALYTICS_SECTIONS.HERO) => {
-      trackLandingPreviewCta(section)
+      trackLandingPreviewCta(section, {
+        landing_mode: mode.id,
+        src,
+        cta_location: section,
+        cta_action: 'preview',
+      })
+      if (mode.id === 'geo') setGeoPreviewFirst(false)
       const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
       if (url) primePreviewAudioForNavigation(url)
       navigate('/preview')
     },
-    [navigate],
+    [mode.id, navigate, src],
   )
 
-  const handleRoutes = useCallback((section) => {
-    trackLandingRoutesCta(section)
-  }, [])
+  const handleBeginTier = useCallback(
+    (tierId, section = LANDING_ANALYTICS_SECTIONS.PRICING) => {
+      trackLandingPricingCta(tierId, {
+        landing_mode: mode.id,
+        src,
+        cta_location: section,
+        cta_action: 'purchase',
+        sku: tierId,
+      })
+      rememberPendingPurchaseTier(tierId)
+      setPendingTierId(tierId)
+    },
+    [mode.id, src],
+  )
 
-  const handleBeginTier = useCallback((tierId) => {
-    trackLandingPricingCta(tierId)
-    rememberPendingPurchaseTier(tierId)
-    setPendingTierId(tierId)
-  }, [])
+  const handleHeroPrimary = useCallback(() => {
+    if (mode.primaryAction === 'preview') {
+      openPreview(LANDING_ANALYTICS_SECTIONS.HERO)
+      return
+    }
+    handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.HERO)
+  }, [handleBeginTier, mode.primaryAction, openPreview])
+
+  const handleHeroSecondary = useCallback(() => {
+    if (mode.primaryAction === 'preview') {
+      scrollToLandingId('pricing')
+      return
+    }
+    openPreview(LANDING_ANALYTICS_SECTIONS.HERO)
+  }, [mode.primaryAction, openPreview])
+
+  const handleSituation = useCallback(
+    (action) => {
+      if (action === 'preview') {
+        openPreview(LANDING_ANALYTICS_SECTIONS.SITUATIONS)
+        return
+      }
+      if (action === 'pricing') {
+        scrollToLandingId('pricing')
+        return
+      }
+      if (action === 'adaptive') {
+        scrollToLandingId('adaptive-walk')
+        return
+      }
+      if (action === 'walk-together') {
+        scrollToLandingId('walk-together')
+      }
+    },
+    [openPreview],
+  )
 
   const handleConsentCancel = useCallback(() => {
     if (checkoutBusy) return
@@ -107,14 +200,20 @@ export default function ChronoWalkLanding() {
     setCheckoutBusy(true)
 
     const tierCents = resolveLandingTierCents(pendingTierId, cents)
-    trackLandingCheckoutOpen({ tierId: pendingTierId, priceCents: tierCents })
+    trackLandingCheckoutOpen({
+      tierId: pendingTierId,
+      priceCents: tierCents,
+      landing_mode: mode.id,
+      src,
+      cta_location: 'checkout_dialog',
+      sku: pendingTierId,
+    })
 
-    const result = await openCheckout({ tierId: pendingTierId, source: 'landing' })
+    const result = await openCheckout({
+      tierId: pendingTierId,
+      source: 'landing',
+    })
     if (!result.ok) {
-      console.warn(
-        '[ChronoWalk landing] Checkout unavailable — opening /purchase handoff.',
-        pendingTierId,
-      )
       const tier = pendingTierId
       setPendingTierId(null)
       setCheckoutBusy(false)
@@ -124,73 +223,78 @@ export default function ChronoWalkLanding() {
 
     setPendingTierId(null)
     setCheckoutBusy(false)
-  }, [cents, navigate, pendingTierId])
+  }, [cents, mode.id, navigate, pendingTierId, src])
 
-  const [actPromise, actExperience, actDecision] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
+  const sunlightClass = mode.sunlightContrast ? ' cw-rb--sunlight' : ''
 
   return (
-    <div className="cw-landing cw-landing--premium cw-landing--editorial">
+    <div id="top" className={`cw-rb${sunlightClass}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingSiteHeader onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HEADER)} />
+      <RebuildHeader />
+      <RebuildTrustStrip />
       <main>
-        <LandingAct
-          id={actPromise.id}
-          label={actPromise.label}
-          index={actPromise.index}
-          name={actPromise.name}
-        >
-          <LandingHero
-            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.HERO)}
+        <RebuildHero
+          mode={mode}
+          host={host}
+          supportLine={supportLine}
+          onPrimary={handleHeroPrimary}
+          onSecondary={handleHeroSecondary}
+        />
+        <RebuildThreshold />
+        <RebuildAudioProof
+          onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.AUDIO)}
+          onPlayingChange={setAudioActive}
+        />
+        {mode.showSituationSelector ? <RebuildSituations onAction={handleSituation} /> : null}
+        <RebuildPricing onBeginTier={handleBeginTier} />
+        {mode.showWalkTogether ? (
+          <RebuildWalkTogether
+            onBeginTier={(tierId) =>
+              handleBeginTier(tierId, LANDING_ANALYTICS_SECTIONS.WALK_TOGETHER)
+            }
           />
-          <LandingEmotionalInterludeSection />
-          <LandingThresholdSection />
-          <LandingEarlyCtaSection onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.EARLY_CTA)} />
-        </LandingAct>
-
-        <LandingAct
-          id={actExperience.id}
-          label={actExperience.label}
-          index={actExperience.index}
-          name={actExperience.name}
-          transition
-        >
-          <LandingUserFlowSection />
-          <LandingRealMomentSection />
-          <LandingMonumentsCarousel />
-          <LandingBenefitsSection />
-          <LandingTryFreeSection
-            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
-          />
-        </LandingAct>
-
-        <LandingAct
-          id={actDecision.id}
-          label={actDecision.label}
-          index={actDecision.index}
-          name={actDecision.name}
-          transition
-        >
-          <LandingRomeTiersSection onBeginTier={handleBeginTier} />
-          {/* Deep-link / SEO: pricing section is canonical; keep #rome-journey resolving. */}
-          <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingWhyChronoWalkSection />
-          <LandingTrustProofSection />
-          <LandingAfterRomeSection onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.AFTER_ROME)} />
-          <LandingFaqSectionV2 />
-          <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingFinalCtaSectionV2
-            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
-          />
-        </LandingAct>
+        ) : null}
+        <RebuildAdaptiveWalk />
+        {mode.showCuratedCertainty ? <RebuildCuratedCertainty /> : null}
+        {mode.showRoutePreview ? <RebuildRouteProof /> : null}
+        {mode.showDifferenceTable ? <RebuildDifference /> : null}
+        <RebuildFaq />
+        <RebuildFinalCta
+          onPrimary={() => handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+          onSecondary={() => openPreview(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+        />
+        {/* Legacy deep-link anchors */}
+        <div id="rome-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        <div id="try-free" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        <div id="letter" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       </main>
-      <LandingSiteFooter />
+      <LandingSiteFooter pricingHref="#pricing" landingPrefix="" />
+      <RebuildStickyBar
+        visible={stickyVisible}
+        mode={mode}
+        previewFirst={geoPreviewFirst}
+        audioActive={audioActive}
+        onPurchase={() => {
+          trackLandingStickyClick({
+            landing_mode: mode.id,
+            src,
+            cta_action: 'purchase',
+          })
+          handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.STICKY)
+        }}
+        onPreview={() => {
+          trackLandingStickyClick({
+            landing_mode: mode.id,
+            src,
+            cta_action: 'preview',
+          })
+          openPreview(LANDING_ANALYTICS_SECTIONS.STICKY)
+        }}
+      />
       <CheckoutConsentDialog
         open={Boolean(pendingTierId)}
         tierLabel={pendingTier?.name ?? pendingTier?.eyebrow ?? null}

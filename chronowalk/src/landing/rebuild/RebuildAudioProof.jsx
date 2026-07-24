@@ -11,10 +11,10 @@ function formatDuration(seconds) {
 }
 
 /**
- * Warm ivory audio proof — lazy src, no autoplay.
- * @param {{ onPreview?: () => void }} props
+ * Warm daylight audio proof — lazy src, no autoplay.
+ * @param {{ onPreview?: () => void, onPlayingChange?: (playing: boolean) => void }} props
  */
-export default function RebuildAudioProof({ onPreview }) {
+export default function RebuildAudioProof({ onPreview, onPlayingChange }) {
   const copy = REBUILD_AUDIO
   const audioRef = useRef(null)
   const srcReadyRef = useRef(false)
@@ -22,6 +22,14 @@ export default function RebuildAudioProof({ onPreview }) {
   const [durationLabel, setDurationLabel] = useState(null)
   const reactId = useId()
   const transcriptId = `${reactId}-transcript`
+
+  const setPlayingBoth = useCallback(
+    (next) => {
+      setPlaying(next)
+      onPlayingChange?.(next)
+    },
+    [onPlayingChange],
+  )
 
   const ensureSrc = useCallback(() => {
     const audio = audioRef.current
@@ -41,23 +49,23 @@ export default function RebuildAudioProof({ onPreview }) {
     try {
       if (audio.paused) {
         await audio.play()
-        setPlaying(true)
+        setPlayingBoth(true)
       } else {
         audio.pause()
-        setPlaying(false)
+        setPlayingBoth(false)
       }
     } catch {
-      setPlaying(false)
+      setPlayingBoth(false)
     }
-  }, [ensureSrc])
+  }, [ensureSrc, setPlayingBoth])
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return undefined
 
-    const onEnded = () => setPlaying(false)
-    const onPause = () => setPlaying(false)
-    const onPlay = () => setPlaying(true)
+    const onEnded = () => setPlayingBoth(false)
+    const onPause = () => setPlayingBoth(false)
+    const onPlay = () => setPlayingBoth(true)
     const onMeta = () => {
       const label = formatDuration(audio.duration)
       if (label) setDurationLabel(label)
@@ -69,13 +77,16 @@ export default function RebuildAudioProof({ onPreview }) {
     audio.addEventListener('loadedmetadata', onMeta)
 
     return () => {
+      audio.pause()
+      audio.removeAttribute('src')
+      audio.load()
+      onPlayingChange?.(false)
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('play', onPlay)
       audio.removeEventListener('loadedmetadata', onMeta)
     }
-  }, [])
-
+  }, [onPlayingChange, setPlayingBoth])
   return (
     <section
       id={copy.id}

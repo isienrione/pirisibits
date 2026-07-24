@@ -28,13 +28,12 @@ export default function RebuildStickyBar({
   // Geo: preview-first until parent clears previewFirst.
   const showPreviewPrimary = modeId === 'geo' && previewFirst
 
-  const primaryLabel = showPreviewPrimary
-    ? 'Try Pantheon free'
-    : `Unlock Rome · ${priceLabel}`.trim()
+  const stopCount = LANDING_PRODUCT.eterna?.stopCount ?? 21
+  const metaLabel = showPreviewPrimary
+    ? 'Free Pantheon chapter'
+    : `Roma Eterna · ${stopCount} stops · ${priceLabel}`.trim()
 
-  const secondaryLabel = showPreviewPrimary
-    ? `See full walk · ${priceLabel}`.trim()
-    : 'Try Pantheon free'
+  const primaryLabel = showPreviewPrimary ? 'Try free' : 'Unlock'
 
   return (
     <aside
@@ -43,19 +42,13 @@ export default function RebuildStickyBar({
       aria-label="Quick actions"
     >
       <div className="cw-rb-sticky__inner">
+        <p className="cw-rb-sticky__meta">{metaLabel}</p>
         <button
           type="button"
           className="cw-rb-btn cw-rb-btn--primary cw-rb-sticky__primary"
           onClick={showPreviewPrimary ? onPreview : onPurchase}
         >
           {primaryLabel}
-        </button>
-        <button
-          type="button"
-          className="cw-rb-btn cw-rb-btn--ghost cw-rb-sticky__secondary"
-          onClick={showPreviewPrimary ? onPurchase : onPreview}
-        >
-          {secondaryLabel}
         </button>
       </div>
     </aside>
