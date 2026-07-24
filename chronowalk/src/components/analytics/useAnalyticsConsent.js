@@ -13,7 +13,6 @@ export function useAnalyticsConsent() {
   const [consent, setConsent] = useState(() => getAnalyticsConsent())
 
   useEffect(() => {
-    setConsent(getAnalyticsConsent())
     return subscribeAnalyticsConsent((value) => {
       setConsent(value)
     })
