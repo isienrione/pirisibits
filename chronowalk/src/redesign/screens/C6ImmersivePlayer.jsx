@@ -71,6 +71,8 @@ export default function C6ImmersivePlayer({
   onThresholdCross,
   onOpenThreshold,
   onViewImages,
+  /** Shared-walk HUD rendered above the next-step CTA (in flow, not as an overlay). */
+  syncSlot = null,
   /** Force the first-run ring + text even if the traveler has crossed before (QA / free preview). */
   forceDiegeticHint = false,
   /** @deprecated Prefer forceDiegeticHint */
@@ -218,6 +220,7 @@ export default function C6ImmersivePlayer({
   const reading = tab === 'transcript'
   const subtitle = tagline ?? chapterTitle
   const showContinuity = Boolean(onStoryComplete)
+  const showActionStack = showContinuity || Boolean(syncSlot)
   const continuityLabel =
     continueLabel ??
     (storyEnded || !narrationPlaying ? 'Continue walking →' : 'Skip ahead →')
@@ -472,226 +475,247 @@ export default function C6ImmersivePlayer({
         chromeHidden ? 'cw-waypoint-immersive--focus' : '',
         reading ? 'cw-waypoint-immersive--reading' : '',
         showContinuity ? 'cw-waypoint-immersive--with-continuity' : '',
+        showActionStack ? 'cw-waypoint-immersive--with-action-stack' : '',
+        syncSlot ? 'cw-waypoint-immersive--with-sync' : '',
       ]
         .filter(Boolean)
         .join(' ')}
+      data-testid="waypoint-immersive"
       style={{
         background: T.obsidian,
         height: '100%',
+        maxHeight: '100%',
         fontFamily: F.body,
         position: 'relative',
         overflow: 'hidden',
         minHeight: 0,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
-      <div className="cw-waypoint-immersive__hero">
-        {heroLayer}
+      <div className="cw-waypoint-immersive__stage" data-testid="immersive-stage">
+        <div className="cw-waypoint-immersive__hero">
+          {heroLayer}
 
-        {showDiegeticHint ? (
-          <ThresholdDiegeticHint
-            thenLabel={thenLabel}
-            showText={hintMode === 'full'}
-            fading={hintFading}
-          />
-        ) : null}
+          {showDiegeticHint ? (
+            <ThresholdDiegeticHint
+              thenLabel={thenLabel}
+              showText={hintMode === 'full'}
+              fading={hintFading}
+            />
+          ) : null}
 
-        <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
-        <div className="cw-waypoint-immersive__chrome">
-          <Vignette />
-        </div>
+          <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />
+          <div className="cw-waypoint-immersive__chrome">
+            <Vignette />
+          </div>
 
-        <div
-          className="cw-waypoint-immersive__topbar cw-waypoint-immersive__chrome"
-          style={{
-            position: 'absolute',
-            top: 'max(12px, env(safe-area-inset-top))',
-            left: 16,
-            // Keep the right edge clear for the DEV QA badge (fixed top-right).
-            right: 64,
-            zIndex: 12,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 8,
-            pointerEvents: 'none',
-          }}
-        >
-          <button
-            type="button"
-            onClick={onBack}
+          <div
+            className="cw-waypoint-immersive__topbar cw-waypoint-immersive__chrome"
             style={{
+              position: 'absolute',
+              top: 'max(12px, env(safe-area-inset-top))',
+              left: 16,
+              // Keep the right edge clear for the DEV QA badge (fixed top-right).
+              right: 64,
+              zIndex: 12,
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
-              minHeight: 44,
-              color: T.warmWhite,
-              background: 'rgba(11,11,13,0.45)',
-              backdropFilter: 'blur(8px)',
-              border: 'none',
-              borderRadius: 999,
-              padding: '6px 10px 6px 6px',
-              cursor: 'pointer',
-              fontFamily: F.body,
-              fontSize: 13,
-              pointerEvents: 'auto',
+              justifyContent: 'space-between',
+              gap: 8,
+              pointerEvents: 'none',
             }}
           >
-            <ChevronLeft size={17} aria-hidden /> Back
-          </button>
-          {typeof onOpenSettings === 'function' ? (
             <button
               type="button"
-              onClick={onOpenSettings}
-              aria-label="Open settings"
-              data-testid="journey-open-settings"
+              onClick={onBack}
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                width: 44,
-                height: 44,
-                minWidth: 44,
+                gap: 2,
                 minHeight: 44,
                 color: T.warmWhite,
                 background: 'rgba(11,11,13,0.45)',
                 backdropFilter: 'blur(8px)',
                 border: 'none',
                 borderRadius: 999,
+                padding: '6px 10px 6px 6px',
                 cursor: 'pointer',
+                fontFamily: F.body,
+                fontSize: 13,
                 pointerEvents: 'auto',
-                flexShrink: 0,
-                marginRight: 'max(0px, calc(env(safe-area-inset-right) - 8px))',
               }}
             >
-              <Settings size={18} aria-hidden />
+              <ChevronLeft size={17} aria-hidden /> Back
             </button>
-          ) : null}
+            {typeof onOpenSettings === 'function' ? (
+              <button
+                type="button"
+                onClick={onOpenSettings}
+                aria-label="Open settings"
+                data-testid="journey-open-settings"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 44,
+                  height: 44,
+                  minWidth: 44,
+                  minHeight: 44,
+                  color: T.warmWhite,
+                  background: 'rgba(11,11,13,0.45)',
+                  backdropFilter: 'blur(8px)',
+                  border: 'none',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  pointerEvents: 'auto',
+                  flexShrink: 0,
+                  marginRight: 'max(0px, calc(env(safe-area-inset-right) - 8px))',
+                }}
+              >
+                <Settings size={18} aria-hidden />
+              </button>
+            ) : null}
+          </div>
+
+          <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">
+            <Eyebrow color={accent}>{actLabel}</Eyebrow>
+            <h2
+              style={{
+                fontFamily: F.display,
+                fontSize: 34,
+                color: T.warmWhite,
+                fontWeight: 300,
+                lineHeight: 1.05,
+                margin: '8px 0 4px',
+              }}
+            >
+              {title}
+            </h2>
+            <p
+              style={{
+                fontFamily: F.display,
+                fontSize: 14,
+                color: 'rgba(245,240,232,0.82)',
+                fontStyle: 'italic',
+                margin: 0,
+                lineHeight: 1.45,
+              }}
+            >
+              {subtitle}
+            </p>
+          </div>
         </div>
 
-        <div className="cw-waypoint-immersive__hero-title cw-waypoint-immersive__chrome">
-          <Eyebrow color={accent}>{actLabel}</Eyebrow>
-          <h2
-            style={{
-              fontFamily: F.display,
-              fontSize: 34,
-              color: T.warmWhite,
-              fontWeight: 300,
-              lineHeight: 1.05,
-              margin: '8px 0 4px',
-            }}
-          >
-            {title}
-          </h2>
-          <p
-            style={{
-              fontFamily: F.display,
-              fontSize: 14,
-              color: 'rgba(245,240,232,0.82)',
-              fontStyle: 'italic',
-              margin: 0,
-              lineHeight: 1.45,
-            }}
-          >
-            {subtitle}
-          </p>
-        </div>
-      </div>
-
-      {reading ? (
-        <div className="cw-waypoint-immersive__read-layer cw-waypoint-immersive__chrome">
-          <div className="cw-waypoint-immersive__read-tabs">{tabBar}</div>
-          <div className="cw-waypoint-immersive__read-body">
-            <div className="cw-waypoint-immersive__read-scroll">
-              {transcriptAvailable && transcript ? (
-                <KaraokeTranscript
-                  transcript={transcript}
-                  currentTime={currentTime}
-                  duration={duration}
-                  playing={narrationPlaying}
-                  accent={accent}
-                  fontSize={transcriptFontSize + 2}
-                  readingMode
-                  testId="story-karaoke-transcript"
-                />
-              ) : (
-                <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
-                  {import.meta.env.DEV
-                    ? 'No written transcript is wired for this stop yet (development).'
-                    : 'A written transcript for this stop is coming soon.'}
-                </p>
-              )}
+        {reading ? (
+          <div className="cw-waypoint-immersive__read-layer cw-waypoint-immersive__chrome">
+            <div className="cw-waypoint-immersive__read-tabs">{tabBar}</div>
+            <div className="cw-waypoint-immersive__read-body">
+              <div className="cw-waypoint-immersive__read-scroll">
+                {transcriptAvailable && transcript ? (
+                  <KaraokeTranscript
+                    transcript={transcript}
+                    currentTime={currentTime}
+                    duration={duration}
+                    playing={narrationPlaying}
+                    accent={accent}
+                    fontSize={transcriptFontSize + 2}
+                    readingMode
+                    testId="story-karaoke-transcript"
+                  />
+                ) : (
+                  <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
+                    {import.meta.env.DEV
+                      ? 'No written transcript is wired for this stop yet (development).'
+                      : 'A written transcript for this stop is coming soon.'}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="cw-waypoint-immersive__read-footer">
+              {audioPlayerBlock(true)}
             </div>
           </div>
-          <div className="cw-waypoint-immersive__read-footer">
-            {audioPlayerBlock(true)}
-          </div>
-        </div>
-      ) : (
-      <div
-        className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity cw-waypoint-immersive__panel--preview-flow' : ''}`}
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          padding: showContinuity
-            ? '8px 24px 10px'
-            : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
-        }}
-      >
-        {showContinuity ? (
-          <>
-            {tabBar}
-            {chapterMeta}
-            {sourceNoteInline}
-            {audioPlayerBlock(true)}
-          </>
         ) : (
-          <>
-            {audioPlayerBlock(false)}
-
-            {showAudioNotice ? (
-              <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
-                {import.meta.env.DEV
-                  ? 'Narration audio is unavailable in this development build.'
-                  : 'Narration is preparing — check your connection.'}
-              </p>
-            ) : null}
-
-            {tabBar}
-            {chapterMeta}
-          </>
-        )}
-      </div>
-      )}
-
-      {sourceNote && hasReconstruction && !showContinuity ? (
-        <p className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome" aria-label="Reconstruction source">
-          {sourceNote}
-        </p>
-      ) : null}
-
-      {showContinuity ? (
-        <div className="cw-waypoint-immersive__continuity">
-          <button
-            type="button"
-            data-testid="story-continue"
-            className="cw-wc-pressable"
-            onClick={onStoryComplete}
+          <div
+            className={`cw-waypoint-immersive__panel cw-waypoint-immersive__chrome${showContinuity ? ' cw-waypoint-immersive__panel--with-continuity cw-waypoint-immersive__panel--preview-flow' : ''}`}
             style={{
-              width: '100%',
-              padding: '14px',
-              borderRadius: 12,
-              border: 'none',
-              background: T.terracotta,
-              color: T.obsidian,
-              fontFamily: F.body,
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+              display: 'flex',
+              flexDirection: 'column',
+              padding: showContinuity
+                ? '8px 24px 10px'
+                : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
             }}
           >
-            {continuityLabel}
-          </button>
+            {showContinuity ? (
+              <>
+                {tabBar}
+                {chapterMeta}
+                {sourceNoteInline}
+                {audioPlayerBlock(true)}
+              </>
+            ) : (
+              <>
+                {audioPlayerBlock(false)}
+
+                {showAudioNotice ? (
+                  <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
+                    {import.meta.env.DEV
+                      ? 'Narration audio is unavailable in this development build.'
+                      : 'Narration is preparing — check your connection.'}
+                  </p>
+                ) : null}
+
+                {tabBar}
+                {chapterMeta}
+              </>
+            )}
+          </div>
+        )}
+
+        {sourceNote && hasReconstruction && !showContinuity ? (
+          <p className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome" aria-label="Reconstruction source">
+            {sourceNote}
+          </p>
+        ) : null}
+      </div>
+
+      {showActionStack ? (
+        <div
+          className="cw-waypoint-immersive__action-stack"
+          data-testid="immersive-action-stack"
+        >
+          {syncSlot ? (
+            <div className="cw-waypoint-immersive__sync-slot" data-testid="immersive-sync-slot">
+              {syncSlot}
+            </div>
+          ) : null}
+          {showContinuity ? (
+            <div className="cw-waypoint-immersive__continuity">
+              <button
+                type="button"
+                data-testid="story-continue"
+                className="cw-wc-pressable"
+                onClick={onStoryComplete}
+                style={{
+                  width: '100%',
+                  minHeight: 44,
+                  padding: '14px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: T.terracotta,
+                  color: T.obsidian,
+                  fontFamily: F.body,
+                  fontSize: 15,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  boxShadow: '0 0 24px rgba(232,161,60,0.4)',
+                }}
+              >
+                {continuityLabel}
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

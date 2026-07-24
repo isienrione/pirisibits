@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
 import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
@@ -314,6 +314,19 @@ describe('JourneyShell', () => {
     expect(screen.queryByTestId('story-open-threshold')).not.toBeInTheDocument()
     expect(screen.queryByTestId('story-footer')).not.toBeInTheDocument()
     expect(screen.queryByTestId('threshold-hold-hint')).not.toBeInTheDocument()
+  })
+
+  it('places the solo next-step CTA in the in-flow action stack above shell chrome', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    const stack = await screen.findByTestId('immersive-action-stack')
+    const cta = within(stack).getByTestId('story-continue')
+    expect(cta).toBeVisible()
+    expect(screen.queryByTestId('immersive-sync-slot')).not.toBeInTheDocument()
+    expect(stack.className).toContain('cw-waypoint-immersive__action-stack')
+    expect(cta).toHaveStyle({ minHeight: '44px' })
   })
 
   it('shows diegetic threshold hint after first-tour onboarding is complete', async () => {

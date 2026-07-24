@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
 import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
@@ -298,5 +298,79 @@ describe('JourneyShell shared-walk Continue guard', () => {
     )
     expect(screen.queryByText('Leave the shared walk?')).not.toBeInTheDocument()
     expect(familyState.current.detachFromSharedWalk).not.toHaveBeenCalled()
+  })
+
+  it('keeps follower Waiting-for-leader WalkSyncBar above the eligible next-step CTA', async () => {
+    familyState.current = syncedFollower()
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderGuardedShell()
+
+    expect(await screen.findByTestId('immersive-action-stack')).toBeInTheDocument()
+    const stack = screen.getByTestId('immersive-action-stack')
+    const sync = within(stack).getByTestId('walk-sync-bar')
+    const cta = within(stack).getByTestId('story-continue')
+    expect(within(sync).getByTestId('sync-resume-all')).toHaveTextContent(/waiting for leader/i)
+    expect(sync.compareDocumentPosition(cta) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(stack.className).toContain('cw-waypoint-immersive__action-stack')
+    expect(screen.getByTestId('waypoint-immersive').lastElementChild).toBe(stack)
+  })
+
+  it('keeps organizer WalkSyncBar and next-step CTA in separate in-flow regions', async () => {
+    familyState.current = syncedFollower({
+      isLeader: true,
+      isOrganizer: true,
+      isMember: false,
+      canResumeForAll: true,
+      session: {
+        id: 's1',
+        joinCode: 'ABCDE',
+        waypointId: 'w01',
+        syncEnabled: true,
+        syncParticipation: 'synced',
+        mySeatId: 'seat-1',
+        leaderSeatId: 'seat-1',
+        resumePolicy: 'leader',
+        updatedAt: new Date().toISOString(),
+      },
+    })
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderGuardedShell()
+
+    const stack = await screen.findByTestId('immersive-action-stack')
+    expect(within(stack).getByTestId('walk-sync-bar')).toBeInTheDocument()
+    expect(within(stack).getByTestId('story-continue')).toBeInTheDocument()
+    expect(within(stack).getByRole('button', { name: /sync on/i })).toBeInTheDocument()
+  })
+
+  it('routes independent follower Continue through the shared-walk leave guard', async () => {
+    familyState.current = syncedFollower({
+      isWalkingIndependently: true,
+      syncEnabled: false,
+      isActivelySynced: false,
+      session: {
+        id: 's1',
+        joinCode: 'ABCDE',
+        waypointId: 'w01',
+        syncEnabled: true,
+        syncParticipation: 'independent',
+        mySeatId: 'seat-2',
+        leaderSeatId: 'seat-1',
+        resumePolicy: 'leader',
+        updatedAt: new Date().toISOString(),
+      },
+    })
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderGuardedShell()
+
+    await screen.findByRole('heading', { name: /the colosseum/i })
+    expect(screen.getByTestId('walk-sync-bar')).toHaveAttribute('data-walking-independently', 'true')
+    fireEvent.click(screen.getByTestId('story-continue'))
+    // Independent walkers already left the shared stop path — guard should not block.
+    await waitFor(() =>
+      expect(getJourneySnapshot().context.currentSequenceIndex).toBeGreaterThan(0),
+    )
   })
 })
