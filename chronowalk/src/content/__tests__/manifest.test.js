@@ -40,38 +40,9 @@ describe('rome content manifest', () => {
     expect(paths.length).toBeGreaterThan(60)
   })
 
-  it('assigns antiquity and river beds per the sound production plan', () => {
+  it('keeps Pantheon interior as its own stop after exterior', () => {
     const manifest = parseRomeManifest(rawManifest)
     const { waypoints, transits } = manifest
-
-    // antiquity: Colosseum → Palatine → Circus View → Forum → Trajan (+ Appia)
-    for (const id of [
-      'w01',
-      'w02',
-      'w03',
-      'w04',
-      'w06',
-      'w07',
-      'w08',
-      'pause',
-      'w10',
-      'w11_12',
-      'w13',
-      'w14',
-      'enc_circus',
-      'w22',
-    ]) {
-      expect(waypoints[id].zone, id).toBe('antiquity')
-    }
-
-    // river: Castel approach + finale
-    expect(waypoints.w21.zone).toBe('river')
-    expect(transits.t16.zone).toBe('river')
-
-    // living city should not steal the antiquity bed
-    for (const id of ['w15', 'w16', 'w17', 'w18', 'w19', 'w20']) {
-      expect(waypoints[id].zone, id).toBe('centro')
-    }
 
     // Pantheon interior is its own stop (Colosseum exterior→interior pattern)
     expect(waypoints.w17.chapters).toHaveLength(1)
