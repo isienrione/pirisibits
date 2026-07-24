@@ -3,7 +3,14 @@
 # keeping owners off the public landing when they type the bare domain.
 /    /landing   302
 
-# SPA fallback for client-side routes (React Router).
+# Hashed Vite build assets must NEVER SPA-fallback to index.html.
+# Cloudflare `/* → /index.html 200` would otherwise return text/html for a
+# missing /assets/*.js URL; Workbox can cache that HTML under the JS key and
+# dynamic import() then fails with "Failed to fetch dynamically imported module"
+# even though a fresh network fetch of a real asset returns application/javascript.
+/assets/*   /404.html   404
+
+# SPA fallback for client-side routes (React Router) only — after /assets/*.
 # Note: Cloudflare Pages still 308-redirects /index.html → / and
 # /offline.html → /offline (Pretty URLs). The service worker in src/pwa/sw.js
 # precaches those canonical paths so navigations do not ERR_FAILED.
