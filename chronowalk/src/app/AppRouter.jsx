@@ -46,6 +46,7 @@ import {
   LazyLegalRefundPage,
   LazyContactPage,
 } from './lazyRoutes.jsx'
+import { DocumentSeo } from '../seo/useDocumentSeo.js'
 
 function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
@@ -184,6 +185,7 @@ function AppRouter() {
           <FamilyWalkProvider>
             <SharedWalkGuardProvider>
               <AccessRevalidationBootstrap />
+              <DocumentSeo />
               <AppRoutes />
             </SharedWalkGuardProvider>
           </FamilyWalkProvider>

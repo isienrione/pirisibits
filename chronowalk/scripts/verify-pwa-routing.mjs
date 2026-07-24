@@ -16,6 +16,11 @@ import {
   isUnsafePrecacheUrl,
   mapManifestToCloudflareCanonical,
 } from '../src/pwa/cloudflarePrecacheUrls.js'
+import {
+  INDEXABLE_PUBLIC_PATHS,
+  PRODUCTION_ORIGIN,
+  toAbsoluteUrl,
+} from '../src/seo/siteRoutes.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const errors = []
@@ -72,6 +77,12 @@ function checkBuiltSw(swSource) {
   } else {
     ok('dist/sw.js includes response status validation')
   }
+
+  if (/"url":"\/robots\.txt"/.test(swSource) || /"url":"\/sitemap\.xml"/.test(swSource)) {
+    fail('dist/sw.js should not precache robots.txt / sitemap.xml into the offline shell')
+  } else {
+    ok('dist/sw.js does not precache robots.txt / sitemap.xml')
+  }
 }
 
 function checkManifestTransformUnit() {
@@ -84,6 +95,68 @@ function checkManifestTransformUnit() {
   } else {
     ok('manifest transform maps index.html → /landing only')
   }
+}
+
+function looksLikeHtml(body) {
+  return /^\s*<!doctype\s+html/i.test(body) || /^\s*<html[\s>]/i.test(body)
+}
+
+function checkSeoStaticFiles() {
+  const publicRobots = join(ROOT, 'public/robots.txt')
+  const publicSitemap = join(ROOT, 'public/sitemap.xml')
+
+  if (!existsSync(publicRobots)) {
+    fail('public/robots.txt missing')
+  } else {
+    const robots = readFileSync(publicRobots, 'utf8')
+    if (looksLikeHtml(robots)) fail('public/robots.txt looks like HTML')
+    else if (!/^User-agent:\s*\*/m.test(robots)) fail('public/robots.txt missing User-agent: *')
+    else if (!/^Sitemap:\s*https:\/\/chronowalk\.com\/sitemap\.xml$/m.test(robots)) {
+      fail('public/robots.txt missing production Sitemap line')
+    } else ok('public/robots.txt present (plain-text robots syntax)')
+  }
+
+  if (!existsSync(publicSitemap)) {
+    fail('public/sitemap.xml missing')
+  } else {
+    const sitemap = readFileSync(publicSitemap, 'utf8')
+    if (looksLikeHtml(sitemap)) fail('public/sitemap.xml looks like HTML')
+    else if (!sitemap.includes('<urlset') || !sitemap.includes('</urlset>')) {
+      fail('public/sitemap.xml missing urlset')
+    } else {
+      const locs = [...sitemap.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((m) => m[1].trim())
+      const expected = INDEXABLE_PUBLIC_PATHS.map(toAbsoluteUrl)
+      const missing = expected.filter((url) => !locs.includes(url))
+      const extra = locs.filter((url) => !expected.includes(url))
+      if (missing.length || extra.length) {
+        fail(
+          `public/sitemap.xml locs mismatch (missing=${missing.join(',') || '—'} extra=${extra.join(',') || '—'})`,
+        )
+      } else if (locs.some((url) => !url.startsWith(`${PRODUCTION_ORIGIN}/`))) {
+        fail('public/sitemap.xml contains non-production URLs')
+      } else ok('public/sitemap.xml present with indexable public URLs only')
+    }
+  }
+
+  for (const name of ['robots.txt', 'sitemap.xml']) {
+    const distPath = join(ROOT, 'dist', name)
+    if (!existsSync(distPath)) {
+      console.warn(`WARN: dist/${name} missing — run npm run build first for full checks`)
+      continue
+    }
+    const body = readFileSync(distPath, 'utf8')
+    if (looksLikeHtml(body)) fail(`dist/${name} begins with HTML (SPA shell leak)`)
+    else ok(`dist/${name} present and not HTML`)
+  }
+
+  const headers = readFileSync(join(ROOT, 'public/_headers'), 'utf8')
+  if (!/\/robots\.txt[\s\S]*?Content-Type:\s*text\/plain/.test(headers)) {
+    fail('public/_headers missing robots.txt text/plain Content-Type')
+  } else ok('public/_headers: robots.txt → text/plain')
+
+  if (!/\/sitemap\.xml[\s\S]*?Content-Type:\s*application\/xml/.test(headers)) {
+    fail('public/_headers missing sitemap.xml application/xml Content-Type')
+  } else ok('public/_headers: sitemap.xml → application/xml')
 }
 
 async function probeLive() {
@@ -119,6 +192,38 @@ async function probeLive() {
     }
   }
 
+  const robotsRes = await fetchHead('/robots.txt')
+  const robotsCt = robotsRes.headers.get('content-type') || ''
+  const robotsBody = await robotsRes.text()
+  if (
+    robotsRes.status !== 200 ||
+    /html/i.test(robotsCt) ||
+    looksLikeHtml(robotsBody) ||
+    !/User-agent:/i.test(robotsBody)
+  ) {
+    fail(
+      `live ${base}/robots.txt expected 200 non-HTML plain robots, got ${robotsRes.status} ${robotsCt}`,
+    )
+  } else {
+    ok(`live ${base}/robots.txt → 200 ${robotsCt || 'text/plain'}`)
+  }
+
+  const sitemapRes = await fetchHead('/sitemap.xml')
+  const sitemapCt = sitemapRes.headers.get('content-type') || ''
+  const sitemapBody = await sitemapRes.text()
+  if (
+    sitemapRes.status !== 200 ||
+    !/(application|text)\/xml/i.test(sitemapCt) ||
+    looksLikeHtml(sitemapBody) ||
+    !/<urlset/i.test(sitemapBody)
+  ) {
+    fail(
+      `live ${base}/sitemap.xml expected 200 XML, got ${sitemapRes.status} ${sitemapCt}`,
+    )
+  } else {
+    ok(`live ${base}/sitemap.xml → 200 ${sitemapCt}`)
+  }
+
   // Discover a real hashed chunk from the landing document.
   const landing = await fetch(`${base}/landing`, { redirect: 'follow' })
   const html = await landing.text()
@@ -137,6 +242,7 @@ async function probeLive() {
 }
 
 checkManifestTransformUnit()
+checkSeoStaticFiles()
 
 const publicRedirects = join(ROOT, 'public/_redirects')
 checkRedirects(readFileSync(publicRedirects, 'utf8'), 'public/_redirects')

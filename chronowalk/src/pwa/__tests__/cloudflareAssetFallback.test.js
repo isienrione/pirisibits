@@ -35,6 +35,8 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(headers).toMatch(/\/index\.html[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/landing[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/assets\/\*[\s\S]*?immutable/)
+    expect(headers).toMatch(/\/robots\.txt[\s\S]*?Content-Type:\s*text\/plain/)
+    expect(headers).toMatch(/\/sitemap\.xml[\s\S]*?Content-Type:\s*application\/xml/)
     expect(headers).not.toMatch(/\/404\.html/)
   })
 

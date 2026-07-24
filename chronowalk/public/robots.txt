@@ -1,0 +1,31 @@
+# ChronoWalk production crawler guidance.
+# Not a security boundary — access still requires credentials / entitlements.
+User-agent: *
+Allow: /landing
+Allow: /legal/
+Allow: /contact
+
+# Credential redemption, invitations, and paid app shell
+Disallow: /access
+Disallow: /invite
+Disallow: /setup
+Disallow: /begin
+Disallow: /tour
+Disallow: /journey
+Disallow: /map
+Disallow: /stops
+Disallow: /journal
+Disallow: /letter
+Disallow: /settings
+Disallow: /walk-together
+
+# Checkout / transactional handoffs (including legacy /checkout → /purchase)
+Disallow: /purchase
+Disallow: /checkout
+Disallow: /no-ticket
+Disallow: /welcome
+
+# Internal previews / debug surfaces
+Disallow: /preview
+
+Sitemap: https://chronowalk.com/sitemap.xml
