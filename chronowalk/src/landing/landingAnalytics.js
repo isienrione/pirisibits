@@ -12,7 +12,7 @@
  * Never send emails, names, payment details, or free-text answers.
  */
 
-import { track, TRACK_EVENTS } from '../lib/track.js'
+import { isAnalyticsReady, track, TRACK_EVENTS } from '../lib/track.js'
 import { ensureLandingExpHero, peekLandingExpHero } from './landingExperiments.js'
 
 /** Allowed section ids for CTA context (keep short + stable). */
@@ -53,6 +53,9 @@ export function resetLandingAnalyticsForTests() {
 
 export function trackLandingView() {
   if (onceFlags.view) return false
+  // Do not consume the once-flag before consent — otherwise accepting later
+  // would permanently skip the first landing_view.
+  if (!isAnalyticsReady()) return false
   onceFlags.view = true
   track(TRACK_EVENTS.LANDING_VIEW, landingProps())
   return true

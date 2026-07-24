@@ -3004,6 +3004,10 @@
   color: var(--v2-muted);
 }
 
+.cw-v2-footer__privacy-choices {
+  margin-top: 1rem;
+}
+
 /* Desktop: brand + nav row. Tablet stays stacked for balance. */
 @media (min-width: 64rem) {
   .cw-v2-footer__inner {

@@ -8,6 +8,7 @@ import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
+import AnalyticsConsentBanner from '../components/analytics/AnalyticsConsentBanner.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
@@ -142,6 +143,10 @@ function AccessRevalidationBootstrap() {
 }
 
 function AppRouter() {
+  // Sync init for already-accepted travelers so child effects (e.g. landing_view)
+  // see a ready analytics client. No-ops without consent or key.
+  initAnalytics()
+
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
@@ -187,6 +192,7 @@ function AppRouter() {
               <AccessRevalidationBootstrap />
               <DocumentSeo />
               <AppRoutes />
+              <AnalyticsConsentBanner />
             </SharedWalkGuardProvider>
           </FamilyWalkProvider>
         </SettingsSheetProvider>

@@ -5,7 +5,15 @@ import { peekLandingExpHero } from '../landing/landingExperiments.js'
 
 const CONSENT_KEY = 'cw_analytics_consent'
 
+export const ANALYTICS_CONSENT = Object.freeze({
+  ACCEPTED: 'accepted',
+  DECLINED: 'declined',
+})
+
 let initialized = false
+
+/** @type {Set<(value: string | null) => void>} */
+const consentListeners = new Set()
 
 export const TRACK_EVENTS = {
   QR_SCAN: 'qr_scan',
@@ -52,48 +60,113 @@ function baseProps(extra = {}) {
   }
 }
 
+function notifyConsentListeners(value) {
+  for (const listener of consentListeners) {
+    try {
+      listener(value)
+    } catch {
+      // Consent UI must never break navigation / checkout.
+    }
+  }
+}
+
+/** True only after PostHog has successfully initialized under accepted consent. */
+export function isAnalyticsReady() {
+  return initialized
+}
+
+/**
+ * Subscribe to consent changes (`accepted` | `declined`).
+ * @param {(value: string) => void} listener
+ * @returns {() => void} unsubscribe
+ */
+export function subscribeAnalyticsConsent(listener) {
+  consentListeners.add(listener)
+  return () => {
+    consentListeners.delete(listener)
+  }
+}
+
+/**
+ * Opt-in only. Never initializes without explicit `accepted` consent.
+ * Safe when the key is missing or PostHog throws / is blocked.
+ */
 export function initAnalytics() {
   if (initialized || typeof window === 'undefined') return
 
   const key = import.meta.env.VITE_POSTHOG_KEY
   if (!key) return
 
-  // Opt-in only — travelers authorize on /setup after purchase (no landing banner).
   const consent = window.localStorage.getItem(CONSENT_KEY)
-  if (consent !== 'accepted') return
+  if (consent !== ANALYTICS_CONSENT.ACCEPTED) return
 
-  posthog.init(key, {
-    api_host: 'https://eu.i.posthog.com',
-    autocapture: false,
-    capture_pageview: true,
-    persistence: 'localStorage',
-  })
+  try {
+    posthog.init(key, {
+      api_host: 'https://eu.i.posthog.com',
+      autocapture: false,
+      // SPA: custom ChronoWalk events only — avoid automatic $pageview duplicates
+      // on history changes; landing_view / journey events are explicit.
+      capture_pageview: false,
+      disable_session_recording: true,
+      persistence: 'localStorage',
+    })
+    initialized = true
 
-  initialized = true
-
-  if (new URLSearchParams(window.location.search).has('h')) {
-    track(TRACK_EVENTS.QR_SCAN)
+    if (new URLSearchParams(window.location.search).has('h')) {
+      track(TRACK_EVENTS.QR_SCAN)
+    }
+  } catch {
+    initialized = false
   }
 }
 
 export function setAnalyticsConsent(accepted) {
   if (typeof window === 'undefined') return
-  window.localStorage.setItem(CONSENT_KEY, accepted ? 'accepted' : 'declined')
 
-  if (!accepted && initialized) {
-    posthog.opt_out_capturing()
-  } else if (accepted) {
-    initAnalytics()
-    if (initialized) posthog.opt_in_capturing()
+  const value = accepted ? ANALYTICS_CONSENT.ACCEPTED : ANALYTICS_CONSENT.DECLINED
+  window.localStorage.setItem(CONSENT_KEY, value)
+
+  if (!accepted) {
+    if (initialized) {
+      try {
+        posthog.opt_out_capturing()
+      } catch {
+        // Ignore opt-out failures; local decline still blocks track().
+      }
+    }
+    notifyConsentListeners(value)
+    return
   }
+
+  initAnalytics()
+  if (initialized) {
+    try {
+      posthog.opt_in_capturing()
+    } catch {
+      // Capture stays gated by initialized + opt-in best-effort.
+    }
+  }
+  notifyConsentListeners(value)
 }
 
+/**
+ * @returns {'accepted' | 'declined' | null}
+ */
 export function getAnalyticsConsent() {
   if (typeof window === 'undefined') return null
-  return window.localStorage.getItem(CONSENT_KEY)
+  const value = window.localStorage.getItem(CONSENT_KEY)
+  if (value === ANALYTICS_CONSENT.ACCEPTED || value === ANALYTICS_CONSENT.DECLINED) {
+    return value
+  }
+  return null
 }
 
 export function track(event, properties = {}) {
-  if (!initialized) return
-  posthog.capture(event, baseProps(properties))
+  if (!initialized) return false
+  try {
+    posthog.capture(event, baseProps(properties))
+    return true
+  } catch {
+    return false
+  }
 }

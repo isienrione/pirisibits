@@ -15,6 +15,7 @@ import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
 import { isBundleSku } from '../../lib/launchSkus.js'
 import { readAccessEntitlement } from '../../lib/accessSession.js'
 import { bundleMetaForProductId } from '../../lib/familyWalk.js'
+import AnalyticsPreferencesControl from '../../components/analytics/AnalyticsPreferencesControl.jsx'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -311,6 +312,8 @@ export default function SettingsBottomSheet({ open, onClose }) {
           <ActionRow label="Restore purchase" onClick={handleRestore} />
           <ActionRow label="Help" onClick={handleHelp} />
           <ActionRow label="About" onClick={handleAbout} />
+          <AnalyticsPreferencesControl variant="settings" />
+          <Hairline />
           <ActionRow
             label="Refresh app"
             detail="Get the latest version"

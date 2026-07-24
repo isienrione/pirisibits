@@ -91,6 +91,9 @@ vi.mock('../../../hooks/useOfflineAudio.js', () => ({
 
 vi.mock('../../../lib/track.js', () => ({
   track: vi.fn(),
+  getAnalyticsConsent: vi.fn(() => null),
+  setAnalyticsConsent: vi.fn(),
+  subscribeAnalyticsConsent: vi.fn(() => () => {}),
   TRACK_EVENTS: {
     WAYPOINT_ARRIVED: 'waypoint_arrived',
     STORY_COMPLETE: 'story_complete',

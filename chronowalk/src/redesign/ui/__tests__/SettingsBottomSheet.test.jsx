@@ -62,6 +62,8 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
+    expect(screen.getByTestId('analytics-preferences')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /analytics preferences/i })).toBeInTheDocument()
     expect(screen.queryByTestId('family-walk-panel')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-walk-together')).not.toBeInTheDocument()
     expect(screen.getByText(/ChronoWalk · Rome · made to disappear/)).toBeInTheDocument()
