@@ -60,9 +60,11 @@ export default defineConfig({
     react(),
     walkingUiRevisionPlugin(),
     VitePWA({
-      // Custom SW: Cloudflare Pretty URLs 308 `/index.html` → `/`, which breaks
-      // Workbox's default navigateFallback and shows Chrome ERR_FAILED for every
-      // document navigation on phones that already have the SW controlling.
+      // Custom SW (injectManifest):
+      // - Cloudflare Pretty URLs 308 `/index.html` → `/` (precache canonical `/`).
+      // - Cloudflare SPA `/* → /index.html 200` must NOT apply to `/assets/*`
+      //   (see public/_redirects) or Workbox can cache HTML under JS URLs and
+      //   break dynamic import() while "Bypass for network" still works.
       strategies: 'injectManifest',
       srcDir: 'src/pwa',
       filename: 'sw.js',

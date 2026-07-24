@@ -1,28 +1,42 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { recoverDynamicImport } from '../lazyWithRecovery'
+
+const recoverStaleClient = vi.fn(async () => ({ recovered: true, reloading: true }))
+
+vi.mock('../../pwa/staleChunkRecovery.js', async () => {
+  const actual = await vi.importActual('../../pwa/staleChunkRecovery.js')
+  return {
+    ...actual,
+    recoverStaleClient: (...args) => recoverStaleClient(...args),
+  }
+})
 
 describe('recoverDynamicImport', () => {
   beforeEach(() => {
     sessionStorage.clear()
-    vi.stubGlobal('location', { reload: vi.fn() })
+    recoverStaleClient.mockReset()
+    recoverStaleClient.mockImplementation(async () => {
+      sessionStorage.setItem('cw-chunk-reload', '1')
+      return { recovered: true, reloading: true }
+    })
   })
 
   afterEach(() => {
-    vi.unstubAllGlobals()
+    sessionStorage.clear()
   })
 
-  it('reloads once when a dynamic import fails with a chunk error', () => {
+  it('triggers one stale-client recovery when a dynamic import fails', () => {
     const result = recoverDynamicImport(
       new TypeError('Failed to fetch dynamically imported module'),
-      'test view'
+      'test view',
     )
 
     expect(result).toEqual({ reloading: true })
-    expect(window.location.reload).toHaveBeenCalledTimes(1)
+    expect(recoverStaleClient).toHaveBeenCalledTimes(1)
     expect(sessionStorage.getItem('cw-chunk-reload')).toBe('1')
   })
 
-  it('does not reload again if the guard is already set', () => {
+  it('does not recover again if the guard is already set', () => {
     sessionStorage.setItem('cw-chunk-reload', '1')
     const error = new TypeError('Failed to fetch dynamically imported module')
 
@@ -30,7 +44,7 @@ describe('recoverDynamicImport', () => {
 
     expect(result.reloading).toBe(false)
     expect(result.error).toBe(error)
-    expect(window.location.reload).not.toHaveBeenCalled()
+    expect(recoverStaleClient).not.toHaveBeenCalled()
     expect(sessionStorage.getItem('cw-chunk-reload')).toBeNull()
   })
 })
