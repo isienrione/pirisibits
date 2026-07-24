@@ -1410,47 +1410,39 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
       return withInterruptionBanner(
         wrapWithFirstStopOnboarding(
-          <div style={{ position: 'relative', height: '100%' }}>
+          <div style={{ position: 'relative', height: '100%', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             <C6ImmersivePlayer
               {...playerProps}
               onOpenSettings={openSettings}
               suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
+              syncSlot={
+                syncAudio.joinCode ? (
+                  <WalkSyncBar
+                    syncEnabled={syncAudio.syncEnabled}
+                    joinCode={syncAudio.joinCode}
+                    isLeader={syncAudio.isLeader}
+                    resumePolicy={syncAudio.resumePolicy}
+                    canResumeForAll={syncAudio.canResumeForAll}
+                    narrationPlaying={audio.narrationPlaying}
+                    pendingGroupResume={syncAudio.pendingGroupResume}
+                    walkingIndependently={Boolean(syncAudio.family?.isWalkingIndependently)}
+                    onToggleSync={() =>
+                      void syncAudio.family?.setSyncEnabled(!syncAudio.family?.session?.syncEnabled)
+                    }
+                    onPauseAll={() => void syncAudio.pauseForEveryone()}
+                    onResumeAll={() => {
+                      void syncAudio.resumeForEveryone().catch((err) => {
+                        if (err?.code === 'resume_leader_only') {
+                          setSyncStatus('Only the leader can resume for everyone.')
+                        }
+                      })
+                    }}
+                    onResumeWithGroup={() => void syncAudio.resumeWithGroup()}
+                    statusMessage={syncStatus}
+                  />
+                ) : null
+              }
             />
-            {syncAudio.joinCode ? (
-              <div
-                style={{
-                  position: 'absolute',
-                  left: 12,
-                  right: 12,
-                  bottom: dockActive ? 96 : 'max(16px, env(safe-area-inset-bottom))',
-                  zIndex: 30,
-                }}
-              >
-                <WalkSyncBar
-                  syncEnabled={syncAudio.syncEnabled}
-                  joinCode={syncAudio.joinCode}
-                  isLeader={syncAudio.isLeader}
-                  resumePolicy={syncAudio.resumePolicy}
-                  canResumeForAll={syncAudio.canResumeForAll}
-                  narrationPlaying={audio.narrationPlaying}
-                  pendingGroupResume={syncAudio.pendingGroupResume}
-                  walkingIndependently={Boolean(syncAudio.family?.isWalkingIndependently)}
-                  onToggleSync={() =>
-                    void syncAudio.family?.setSyncEnabled(!syncAudio.family?.session?.syncEnabled)
-                  }
-                  onPauseAll={() => void syncAudio.pauseForEveryone()}
-                  onResumeAll={() => {
-                    void syncAudio.resumeForEveryone().catch((err) => {
-                      if (err?.code === 'resume_leader_only') {
-                        setSyncStatus('Only the leader can resume for everyone.')
-                      }
-                    })
-                  }}
-                  onResumeWithGroup={() => void syncAudio.resumeWithGroup()}
-                  statusMessage={syncStatus}
-                />
-              </div>
-            ) : null}
           </div>,
           {
             hasReconstruction: Boolean(playerProps.hasReconstruction),
