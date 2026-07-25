@@ -89,7 +89,8 @@ export default function ChronoWalkLogo({
   size,
   color: _legacyColor,
 }) {
-  const stacked = layout === 'stacked' || width < 240
+  // Honor an explicit horizontal layout even at compact widths (landing chrome).
+  const stacked = layout === 'stacked' || (layout !== 'horizontal' && width < 240)
 
   if (size != null) {
     return <EmblemImage variant={variant} size={size} className={className} />

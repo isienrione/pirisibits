@@ -1,7 +1,7 @@
 import { REBUILD_FINAL } from '../rebuildCopy.js'
 
 /**
- * Dark compact final CTA.
+ * Compact final CTA.
  * @param {{ onPrimary?: () => void, onSecondary?: () => void }} props
  */
 export default function RebuildFinalCta({ onPrimary, onSecondary }) {
@@ -19,24 +19,18 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
           {copy.headline}
         </h2>
         <p className="cw-rb-lead">{copy.support}</p>
-
-        <div className="cw-rb-actions cw-rb-final__actions">
+        <div className="cw-rb-final__actions">
           <button
             type="button"
-            className="cw-rb-btn cw-rb-btn--primary"
+            className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
             onClick={onPrimary}
           >
             {copy.primaryCta}
           </button>
-          <button
-            type="button"
-            className="cw-rb-btn cw-rb-btn--ghost"
-            onClick={onSecondary}
-          >
+          <button type="button" className="cw-rb-btn cw-rb-btn--ghost" onClick={onSecondary}>
             {copy.secondaryCta}
           </button>
         </div>
-
         <p className="cw-rb-final__reassurance">{copy.reassurance}</p>
       </div>
     </section>

@@ -1,50 +1,51 @@
 import { LANDING_PRODUCT } from '../landingProduct.js'
 
 /**
- * Mobile sticky CTA — purchase only, never while competing sections are in view.
+ * Compact contextual sticky CTA.
  *
  * @param {{
  *   visible?: boolean,
+ *   suppressed?: boolean,
  *   mode?: { id?: string },
  *   previewFirst?: boolean,
  *   onPurchase?: () => void,
  *   onPreview?: () => void,
- *   suppressed?: boolean,
  * }} props
  */
 export default function RebuildStickyBar({
   visible = false,
+  suppressed = false,
   mode,
   previewFirst = false,
   onPurchase,
   onPreview,
-  suppressed = false,
 }) {
   const modeId = mode?.id === 'geo' || mode?.id === 'qr' ? mode.id : 'organic'
-  const priceLabel = LANDING_PRODUCT.eterna?.priceLabel ?? ''
+  const eterna = LANDING_PRODUCT.eterna
   const show = Boolean(visible) && !suppressed
-
   const showPreviewPrimary = modeId === 'geo' && previewFirst
-  const stopCount = LANDING_PRODUCT.eterna?.stopCount ?? 21
-  const metaLabel = showPreviewPrimary
-    ? 'Free Pantheon chapter'
-    : `Roma Eterna · ${stopCount} stops · ${priceLabel}`.trim()
-  const primaryLabel = showPreviewPrimary ? 'Try free' : 'Unlock'
 
   return (
     <aside
       className={`cw-rb-sticky${show ? ' cw-rb-sticky--visible' : ''}`}
       aria-hidden={!show}
-      aria-label="Quick actions"
+      aria-label="Quick purchase"
     >
       <div className="cw-rb-sticky__inner">
-        <p className="cw-rb-sticky__meta">{metaLabel}</p>
+        <div className="cw-rb-sticky__copy">
+          <p className="cw-rb-sticky__title">
+            {showPreviewPrimary ? 'Free Pantheon stop' : `Roma Eterna · ${eterna?.priceLabel ?? ''}`}
+          </p>
+          <p className="cw-rb-sticky__sub">
+            {showPreviewPrimary ? 'No purchase required' : `${eterna?.stopCount ?? 21} stops`}
+          </p>
+        </div>
         <button
           type="button"
-          className="cw-rb-btn cw-rb-btn--primary cw-rb-sticky__primary"
+          className="cw-rb-btn cw-rb-btn--primary cw-rb-sticky__btn"
           onClick={showPreviewPrimary ? onPreview : onPurchase}
         >
-          {primaryLabel}
+          {showPreviewPrimary ? 'Try free' : 'Unlock'}
         </button>
       </div>
     </aside>

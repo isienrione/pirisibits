@@ -46,7 +46,7 @@ describe('landing rebuild architecture', () => {
 
   it('keeps Threshold brand line with plain explanation', () => {
     expect(REBUILD_THRESHOLD.headline).toBe('The ruin becomes the room.')
-    expect(REBUILD_THRESHOLD.methodology).toMatch(/Evidence-based/i)
+    expect(REBUILD_THRESHOLD.methodology).toMatch(/uncertain/i)
     expect(REBUILD_THRESHOLD.tapAlternative).toMatch(/Tap to reveal/i)
   })
 
@@ -68,7 +68,7 @@ describe('landing rebuild architecture', () => {
 
   it('ships honest differentiation and FAQ without fabricated reviews', () => {
     expect(REBUILD_DIFFERENCE.rows.length).toBeGreaterThanOrEqual(3)
-    expect(REBUILD_FAQ.items.length).toBeGreaterThanOrEqual(12)
+    expect(REBUILD_FAQ.items.length).toBe(8)
     expect(LANDING_VERIFIED_REVIEWS).toEqual([])
     const banned = ['100% offline', 'no data needed', 'hollywood', 'most popular']
     const blob = `${JSON.stringify(REBUILD_FAQ)}${JSON.stringify(REBUILD_DIFFERENCE)}`.toLowerCase()

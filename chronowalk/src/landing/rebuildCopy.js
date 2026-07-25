@@ -1,5 +1,5 @@
 /**
- * Rebuild landing copy — clarity-first, product-led.
+ * Compact six-block landing copy — clarity-first, product-led.
  * Product counts/prices come from landingProduct.js at render time.
  */
 import {
@@ -15,40 +15,44 @@ const antica = LANDING_PRODUCT.antica
 const couple = LANDING_PRODUCT.couple
 const family = LANDING_PRODUCT.family
 
-export const REBUILD_TRUST_STRIP = [
-  'Opens in your browser',
-  'Download before walking',
-  'No subscription',
-]
+export const REBUILD_TRUST_STRIP =
+  'Opens in your browser · Works offline after preparation · No subscription'
 
 export const REBUILD_HERO = {
   organic: {
-    eyebrow: 'A self-guided audio walk of Rome',
+    eyebrow: 'Self-guided audio walk of Rome',
+    headlineLines: ['See what stood here.', 'Hear what happened.', 'Keep walking.'],
     headline: 'See what stood here. Hear what happened. Keep walking.',
-    support: 'ChronoWalk shows what’s nearby, brings each place to life and remembers where you left off.',
-    definition: `${eterna.stopCount} Rome landmarks · Audio and Then vs Now reconstructions · Opens in your browser`,
+    support:
+      'ChronoWalk brings Rome’s landmarks to life with place-tied audio, Then vs Now reconstructions and a route you can follow flexibly.',
+    definition: `${eterna.stopCount} stops · Opens in your browser · ${eterna.priceLabel} once`,
     primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
-    secondaryCta: 'Try the Pantheon stop free',
-    reassurance: 'One-time purchase · Opens in your browser · Start at any stop',
+    secondaryCta: 'Try the complete Pantheon stop free',
+    reassurance: '',
+    thresholdHint: 'Press and hold to reveal Then vs Now',
   },
   geo: {
-    eyebrow: 'Your Rome guide, right where you are',
+    eyebrow: 'Self-guided audio walk of Rome',
+    headlineLines: ['Standing in front of history?', 'See what was here.'],
     headline: 'Standing in front of history? See what was here.',
     support:
       'Find the story tied to the place around you, reveal Then and Now, and continue from whichever stop suits your day.',
-    definition: `${eterna.stopCount} Rome landmarks · Audio and Then vs Now · Opens in your browser`,
+    definition: `${eterna.stopCount} stops · Opens in your browser · ${eterna.priceLabel} once`,
     primaryCta: 'Try the Pantheon stop free',
     secondaryCta: `See the complete Rome walk · ${eterna.priceLabel}`,
     reassurance: 'One complete free chapter · No purchase required',
+    thresholdHint: 'Press and hold to reveal Then vs Now',
   },
   qr: {
-    eyebrow: 'A self-guided audio walk of Rome',
+    eyebrow: 'Self-guided audio walk of Rome',
+    headlineLines: ['See what stood here.', 'Hear what happened.', 'Keep walking.'],
     headline: 'See what stood here. Hear what happened. Keep walking.',
     support: 'Buy tonight. Open it tomorrow from any included stop.',
-    definition: `${eterna.stopCount} Rome landmarks · Audio and Then vs Now reconstructions · Opens in your browser`,
-    primaryCta: `Unlock the complete Rome walk · ${eterna.priceLabel}`,
-    secondaryCta: 'Try the Pantheon stop free',
-    reassurance: 'One-time purchase · Opens in your browser · Start at any stop',
+    definition: `${eterna.stopCount} stops · Opens in your browser · ${eterna.priceLabel} once`,
+    primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
+    secondaryCta: 'Try the complete Pantheon stop free',
+    reassurance: '',
+    thresholdHint: 'Press and hold to reveal Then vs Now',
   },
 }
 
@@ -62,10 +66,41 @@ export const REBUILD_THRESHOLD = {
   eyebrow: 'Then vs Now',
   headline: 'The ruin becomes the room.',
   explanation:
-    'Compare what survives today with an evidence-based reconstruction from the same viewpoint.',
+    'Press and hold to compare what survives with an evidence-based reconstruction from the same viewpoint.',
   instruction: 'Press and hold to reveal ancient Rome',
   tapAlternative: 'Or tap to reveal',
-  methodology: 'Evidence-based reconstruction. Where the evidence is uncertain, ChronoWalk tells you.',
+  methodology: 'Where the evidence is uncertain, ChronoWalk tells you.',
+}
+
+export const REBUILD_PROOF = {
+  id: 'product-proof',
+  headline: 'Everything follows where you are.',
+  support: 'Reveal the past, hear the story and continue without losing your place.',
+  tabs: [
+    {
+      id: 'reveal',
+      label: 'Reveal the past',
+      title: 'The ruin becomes the room.',
+      body: 'Press and hold to compare what survives with an evidence-based reconstruction from the same viewpoint.',
+      methodology: 'Where the evidence is uncertain, ChronoWalk tells you.',
+    },
+    {
+      id: 'hear',
+      label: 'Hear the story',
+      title: 'Notice what others walk past.',
+      body: 'Each chapter points to the doorway, inscription, column or empty space in front of you.',
+      playerLabel: 'Pantheon opening',
+      teaserFile: 'w17_ch1.mp3',
+      transcript:
+        'You’re standing before the Pantheon. Look up at the porch—the columns, the pediment, the weight of the stone. The story begins with what you can still see.',
+    },
+    {
+      id: 'place',
+      label: 'Keep your place',
+      title: 'Pause for lunch, change direction or return later.',
+      body: 'ChronoWalk remembers your completed stops and helps you see what comes next.',
+    },
+  ],
 }
 
 export const REBUILD_AUDIO = {
@@ -77,40 +112,28 @@ export const REBUILD_AUDIO = {
   wantComplete: 'Want the complete experience?',
   previewCta: 'Try the complete Pantheon stop free',
   previewNote: `One complete chapter, ${LANDING_PRODUCT.previewLabel}. No purchase required.`,
-  /** Prefer a short Pantheon opening beat already used for preview handoff. */
   teaserFile: 'w17_ch1.mp3',
   transcript:
     'You’re standing before the Pantheon. Look up at the porch—the columns, the pediment, the weight of the stone. The story begins with what you can still see.',
+}
+
+export const REBUILD_PANTHEON = {
+  id: 'pantheon-preview',
+  label: 'Free complete stop',
+  headline: 'Experience the Pantheon before you buy',
+  body: `A complete four-minute chapter with place-tied audio and Then vs Now.`,
+  cta: 'Start the free Pantheon stop',
+  reassurance: 'No purchase required',
 }
 
 export const REBUILD_SITUATIONS = {
   id: 'situations',
   headline: 'What kind of Rome day are you having?',
   items: [
-    {
-      id: 'at-monument',
-      title: 'I’m already at a monument',
-      support: 'Start with a free stop now',
-      action: 'preview',
-    },
-    {
-      id: 'planning',
-      title: 'I’m planning tomorrow',
-      support: `See the complete ${eterna.stopCount}-stop walk`,
-      action: 'pricing',
-    },
-    {
-      id: 'no-tickets',
-      title: 'I couldn’t get entrance tickets',
-      support: 'Discover the stories Rome still reveals outside',
-      action: 'adaptive',
-    },
-    {
-      id: 'with-people',
-      title: 'I’m walking with other people',
-      support: 'Compare Couple and Family passes',
-      action: 'walk-together',
-    },
+    { id: 'at-monument', title: 'Already in Rome', support: '', action: 'preview' },
+    { id: 'planning', title: 'Planning tomorrow', support: '', action: 'pricing' },
+    { id: 'no-tickets', title: 'No entrance tickets', support: '', action: 'route' },
+    { id: 'with-people', title: 'Walking together', support: '', action: 'walk-together' },
   ],
   ticketNote:
     'No entrance ticket is required to begin the walk. Many ChronoWalk stories unfold in Rome’s streets and public spaces.',
@@ -118,22 +141,20 @@ export const REBUILD_SITUATIONS = {
 
 export const REBUILD_PRICING = {
   id: 'pricing',
-  headline: 'Choose how much of Rome you want.',
+  headline: 'Choose your Rome walk.',
   subhead: 'One-time access. No subscription.',
   eternaLabel: 'The complete Rome walk',
   eternaName: eterna.name,
+  eternaBlurb: 'From the Colosseum to the Pantheon and Appian Way.',
   eternaBullets: [
-    `All ${eterna.stopCount} stops — Historica and Antica included`,
-    'Appian Way included',
-    'Complete available Then vs Now access',
-    'Narration and reading mode',
-    'Prepare/download for offline walking',
+    'All Roma Historica and Roma Antica stops',
+    'Audio and available Then vs Now reconstructions',
     'Start at any included stop',
-    'Saved progress on your device',
+    'Prepare for offline walking and keep your progress',
   ],
   eternaCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
   valueCompare: `The complete walk costs only ${eternaUpgradeDeltaLabel()} more than one shorter route.`,
-  checkoutNote: CHECKOUT_REASSURANCE,
+  checkoutNote: 'Secure checkout by Paddle · Access delivered by email',
   taxNote: TAX_NOTE,
   shortHeading: 'Only exploring one part of Rome?',
   shortRoutes: [
@@ -144,6 +165,7 @@ export const REBUILD_PRICING = {
       price: historica.priceLabel,
       blurb: 'Centro afternoon around the Pantheon — streets and public spaces.',
       cta: `Choose ${historica.name}`,
+      thumbStopId: 'pantheon',
     },
     {
       id: antica.id,
@@ -152,7 +174,15 @@ export const REBUILD_PRICING = {
       price: antica.priceLabel,
       blurb: 'Ancient core — Colosseum, Forum, Capitoline, and related stops.',
       cta: `Choose ${antica.name}`,
+      thumbStopId: 'colosseum',
     },
+  ],
+  togetherHeading: 'Walking together?',
+  togetherBody: 'Everyone joins from their own phone using an invitation link.',
+  togetherBenefits: [
+    'One purchase, multiple seats',
+    'Each person uses their own phone',
+    'Shared walk progress',
   ],
 }
 
@@ -168,17 +198,17 @@ export const REBUILD_WALK_TOGETHER = {
   ],
   couple: {
     id: couple.id,
-    label: `Walk together · ${couple.seatLimit} people · ${couple.priceLabel}`,
-    seats: `${couple.seatLimit} people/devices`,
+    label: `Couple · ${couple.seatLimit} people · ${couple.priceLabel}`,
+    seats: `${couple.seatLimit} people`,
     price: couple.priceLabel,
-    detail: `${couple.seatLimit} people/devices · Full ${eterna.name} (${eterna.stopCount} stops)`,
+    detail: `${couple.seatLimit} people · Full ${eterna.name}`,
   },
   family: {
     id: family.id,
-    label: `Walk together · Up to ${family.seatLimit} people · ${family.priceLabel}`,
-    seats: `Up to ${family.seatLimit} people/devices`,
+    label: `Family · Up to ${family.seatLimit} people · ${family.priceLabel}`,
+    seats: `Up to ${family.seatLimit} people`,
     price: family.priceLabel,
-    detail: `Up to ${family.seatLimit} people/devices · Full ${eterna.name} (${eterna.stopCount} stops)`,
+    detail: `Up to ${family.seatLimit} people · Full ${eterna.name}`,
   },
   changes: [
     'Multiple seats on one purchase',
@@ -194,23 +224,7 @@ export const REBUILD_ADAPTIVE = {
   id: 'adaptive-walk',
   headline: 'A Rome guide that moves with you.',
   promise: 'Start anywhere. Wander freely. Never lose your place.',
-  steps: [
-    {
-      title: 'Start where you are',
-      copy: 'See the included stops around you and begin with whichever one suits your day.',
-      screen: 'map',
-    },
-    {
-      title: 'The story belongs to the place',
-      copy: 'When you reach a stop, ChronoWalk connects the narration and reconstruction to what is in front of you.',
-      screen: 'listening',
-    },
-    {
-      title: 'Stop and return whenever you want',
-      copy: 'Pause for lunch, change direction or return later. Your completed stops and place in the journey are saved.',
-      screen: 'journey',
-    },
-  ],
+  steps: [],
   locationNote:
     'With your permission, ChronoWalk uses your location to show what’s nearby and help you continue.',
 }
@@ -218,17 +232,29 @@ export const REBUILD_ADAPTIVE = {
 export const REBUILD_CURATED = {
   id: 'curated-certainty',
   headline: 'The certainty of a planned tour. The freedom of walking alone.',
-  body: 'ChronoWalk brings together the essential places, the route between them and the story that connects them. Follow the suggested journey, choose another stop or let Rome interrupt your plans.',
+  body: 'ChronoWalk brings together the essential places, the route between them and the story that connects them.',
   secondary: 'Rome is already planned. Your day doesn’t have to be.',
 }
 
 export const REBUILD_ROUTE = {
   id: 'route-proof',
-  headline: 'One city. One continuous story.',
-  subhead: 'From the Arena to the Appian Way, each place changes the meaning of the next.',
+  headline: 'A planned route that never traps you.',
+  subhead: 'Follow the suggested journey, begin with another nearby stop or pause and return later.',
   stopsLabel: `${eterna.stopCount} stops included`,
-  expandLabel: 'See all included stops',
+  expandLabel: 'See all 21 stops',
   collapseLabel: 'Hide stop list',
+  behaviors: [
+    'Start anywhere',
+    'Pause when Rome distracts you',
+    'Continue where you left off',
+  ],
+  featuredLabels: {
+    colosseum: 'Arena',
+    'forum-via-sacra': 'Forum',
+    'capitoline-hill': 'Capitoline',
+    pantheon: 'Living city',
+    'appian-way': 'Appian Way',
+  },
 }
 
 export const REBUILD_DIFFERENCE = {
@@ -260,35 +286,27 @@ export const REBUILD_FAQ = {
   items: [
     {
       q: 'What exactly is ChronoWalk?',
-      a: 'A self-guided audio walk of Rome that opens in your browser. Place-tied narration, Then vs Now reconstructions, and a flexible route that remembers your progress.',
+      a: 'A self-guided audio walk of Rome that opens in your browser—place-tied narration, Then vs Now reconstructions, and a flexible route that remembers your progress.',
     },
     {
       q: 'Do I need to install an app?',
-      a: 'No App Store install is required. ChronoWalk opens in your mobile browser and can be added to your home screen like a web app.',
+      a: 'No App Store install is required. ChronoWalk opens in your mobile browser and can be added to your home screen.',
     },
     {
-      q: 'Does it work offline?',
+      q: 'Can I use it offline?',
       a: 'Opening and downloading need a connection. After you prepare the tour, downloaded content can be used while you walk offline.',
-    },
-    {
-      q: 'When does it use location?',
-      a: 'Only with your permission, while you use a walking experience—to show nearby stops and help confirm when you have arrived.',
     },
     {
       q: 'Can I start at any stop?',
       a: 'Yes. Begin with whichever included stop suits your day, then continue in a suggested order or choose another nearby stop.',
     },
     {
-      q: 'Can I pause and continue another day?',
+      q: 'Can I pause and continue later?',
       a: 'Yes. Completed stops and your place in the journey are saved on your device so you can return later.',
     },
     {
       q: 'Do I need entrance tickets?',
-      a: 'No entrance ticket is required to begin the walk. Many stories unfold in streets and public spaces. Some landmarks may have separate ticketed interiors you can visit on your own.',
-    },
-    {
-      q: 'What does the free Pantheon preview include?',
-      a: `One complete Pantheon chapter (${LANDING_PRODUCT.previewLabel}) with narration and Threshold—no purchase required.`,
+      a: 'No entrance ticket is required to begin. Many stories unfold in streets and public spaces. Some landmarks may have separate ticketed interiors.',
     },
     {
       q: `What is included in ${eterna.name}?`,
@@ -298,26 +316,12 @@ export const REBUILD_FAQ = {
       q: 'How do Couple and Family passes work?',
       a: 'You purchase seats for the complete Rome walk. Each person claims a seat with an invitation link and follows shared tour progress on their own phone.',
     },
-    {
-      q: 'Is this a subscription?',
-      a: 'No. ChronoWalk Rome packages are one-time purchases.',
-    },
-    {
-      q: 'How is access delivered?',
-      a: 'After checkout, access is delivered by email so you can open ChronoWalk and begin.',
-    },
-    {
-      q: 'What happens if audio playback is interrupted?',
-      a: 'You can resume from the player. Your progress in the journey remains saved so you do not lose your place.',
-    },
-    {
-      q: 'Which devices and browsers are supported?',
-      a: 'Modern mobile browsers (Safari and Chrome recommended). A stable connection helps the first open and download.',
-    },
-    {
-      q: 'Refunds and support?',
-      a: 'See our Refund Policy and Contact page for current support details. Email support@chronowalk.com.',
-    },
+  ],
+  legalLinks: [
+    { href: '/legal/refund', label: 'Refunds' },
+    { href: '/legal/privacy', label: 'Privacy' },
+    { href: '/legal/terms', label: 'Terms' },
+    { href: '/contact', label: 'Support' },
   ],
 }
 
@@ -327,29 +331,28 @@ export const REBUILD_FINAL = {
   support: 'See what stood here, hear what happened and continue at your own pace.',
   primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
   secondaryCta: 'Try the Pantheon stop free',
-  reassurance: 'Opens in your browser · One-time purchase · Download before walking',
+  reassurance: 'Opens in your browser · One-time purchase · Prepare before walking',
 }
 
 export const REBUILD_PROPOSITIONS = {
   guide: {
     primary: 'Start anywhere. Wander freely. Never lose your place.',
     support:
-      'With your permission, ChronoWalk uses your location to show what’s nearby and help you continue. Pause for lunch, change direction or return later—your progress is saved so you can see where you left off and what comes next.',
+      'With your permission, ChronoWalk uses your location to show what’s nearby and help you continue.',
   },
   past: {
     primary: 'See what is here. Reveal what was here.',
-    support:
-      'Compare what survives today with an evidence-based reconstruction from the same viewpoint, so the fragments in front of you finally make sense.',
+    support: REBUILD_THRESHOLD.explanation,
     brand: 'The ruin becomes the room.',
   },
   story: {
     primary: 'Hear what happened here. Notice what others walk past.',
-    support:
-      'Each chapter is tied to the view around you, pointing out the doorway, inscription, column or empty space that makes the story real.',
+    support: REBUILD_PROOF.tabs[1].body,
   },
   work: {
     primary: 'The certainty of a planned tour. The freedom of walking alone.',
-    support:
-      'ChronoWalk brings together the essential places, the route between them and the story that connects them. Start anywhere, change the order and stop whenever you want.',
+    support: REBUILD_ROUTE.subhead,
   },
 }
+
+export { CHECKOUT_REASSURANCE, TAX_NOTE }

@@ -44,14 +44,19 @@ describe('ChronoWalkLanding rebuild', () => {
     cleanup()
   })
 
-  it('renders the product-led hierarchy with Roma Eterna recommendation', () => {
+  it('renders the six-block product-led hierarchy', () => {
     renderLanding()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/See what stood here/i)
-    expect(screen.getByRole('heading', { name: /ruin becomes the room/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Hear what happened here/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Choose how much of Rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Everything follows where you are/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Experience the Pantheon before you buy/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Choose your Rome walk/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /planned route that never traps you/i })).toBeInTheDocument()
     expect(screen.getAllByText(/The complete Rome walk/i).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('button', { name: new RegExp(`Unlock all ${LANDING_PRODUCT.eterna.stopCount}`) }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', {
+        name: new RegExp(`Unlock all ${LANDING_PRODUCT.eterna.stopCount}`),
+      }).length,
+    ).toBeGreaterThan(0)
     expect(screen.queryByText(/Most Popular/i)).not.toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/\b18 stops\b|\b22 stops\b/)
   })
@@ -59,7 +64,7 @@ describe('ChronoWalkLanding rebuild', () => {
   it('uses purchase-first hero CTAs in organic mode', () => {
     renderLanding()
     expect(screen.getAllByRole('button', { name: /Unlock all 21 stops/i }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('button', { name: /Try the Pantheon stop free/i }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('button', { name: /Try the complete Pantheon stop free/i }).length).toBeGreaterThan(0)
   })
 
   it('switches geo mode to preview-first primary CTA and omits planning sections', () => {
@@ -67,7 +72,7 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Standing in front of history/i)
     expect(screen.getAllByRole('button', { name: /Try the Pantheon stop free/i }).length).toBeGreaterThan(0)
     expect(screen.queryByRole('heading', { name: /What kind of Rome day/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: /Share the walk/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /planned route that never traps you/i })).not.toBeInTheDocument()
   })
 
   it('never injects raw host query text', () => {
@@ -81,15 +86,22 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByText(/Recommended by your host/i)).toBeInTheDocument()
   })
 
-  it('keeps a compact overlay header without a glowing Try free CTA', () => {
+  it('keeps a compact header brand unit without a glowing Try free CTA', () => {
     renderLanding()
     expect(document.querySelector('.cw-rb-header')).toBeTruthy()
-    expect(screen.getByText('ChronoWalk', { selector: '.cw-rb-hero__brand' })).toBeInTheDocument()
+    expect(document.querySelector('.cw-rb-header__trust')).toBeTruthy()
     expect(screen.queryByRole('button', { name: /^Try free$/i })).not.toBeInTheDocument()
   })
 
   it('omits survey-style situation cards on the film landing', () => {
     renderLanding()
     expect(screen.queryByRole('heading', { name: /What kind of Rome day/i })).not.toBeInTheDocument()
+  })
+
+  it('exposes product-proof tabs', () => {
+    renderLanding()
+    expect(screen.getByRole('tab', { name: /Reveal the past/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Hear the story/i })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: /Keep your place/i })).toBeInTheDocument()
   })
 })

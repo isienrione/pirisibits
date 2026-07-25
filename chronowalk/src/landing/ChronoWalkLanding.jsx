@@ -3,12 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import RebuildHeader from './rebuild/RebuildHeader.jsx'
 import RebuildHero from './rebuild/RebuildHero.jsx'
-import RebuildThreshold from './rebuild/RebuildThreshold.jsx'
-import RebuildAudioProof from './rebuild/RebuildAudioProof.jsx'
+import RebuildProductProof from './rebuild/RebuildProductProof.jsx'
+import RebuildPantheonPreview from './rebuild/RebuildPantheonPreview.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
-import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
-import RebuildAdaptiveWalk from './rebuild/RebuildAdaptiveWalk.jsx'
-import RebuildRouteProof from './rebuild/RebuildRouteProof.jsx'
+import RebuildRouteFlex from './rebuild/RebuildRouteFlex.jsx'
 import RebuildFaq from './rebuild/RebuildFaq.jsx'
 import RebuildFinalCta from './rebuild/RebuildFinalCta.jsx'
 import RebuildStickyBar from './rebuild/RebuildStickyBar.jsx'
@@ -42,7 +40,7 @@ import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
 
 /**
- * ChronoWalk landing — product-led rebuild.
+ * ChronoWalk landing — six-block premium mobile sales experience.
  * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
@@ -53,10 +51,13 @@ export default function ChronoWalkLanding() {
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const [stickyVisible, setStickyVisible] = useState(false)
   const [stickySuppressed, setStickySuppressed] = useState(false)
+  const [consentBlocking, setConsentBlocking] = useState(false)
+  const [audioActive, setAudioActive] = useState(false)
   const [geoPreviewFirst, setGeoPreviewFirst] = useState(mode.primaryAction === 'preview')
+  // Keep hero experiment assignment for analytics, but use the compact redesign support line.
   const [supportLine] = useState(() => {
-    const exp = ensureLandingExpHero()
-    return REBUILD_HERO_SUPPORT_EXP[exp] ?? REBUILD_HERO_SUPPORT_EXP.a
+    ensureLandingExpHero()
+    return REBUILD_HERO_SUPPORT_EXP.a
   })
 
   const pendingTier = useMemo(
@@ -99,16 +100,15 @@ export default function ChronoWalkLanding() {
   }, [])
 
   useEffect(() => {
-    const hero = document.getElementById('hero')
-    if (!hero || typeof IntersectionObserver !== 'function') return undefined
+    const cta = document.getElementById('hero-primary-cta')
+    if (!cta || typeof IntersectionObserver !== 'function') return undefined
     const io = new IntersectionObserver(
       ([entry]) => {
-        const pastHero = Boolean(entry) && !entry.isIntersecting && entry.boundingClientRect.top < 0
-        setStickyVisible(pastHero)
+        setStickyVisible(Boolean(entry) && !entry.isIntersecting)
       },
       { threshold: 0 },
     )
-    io.observe(hero)
+    io.observe(cta)
     return () => io.disconnect()
   }, [])
 
@@ -120,7 +120,7 @@ export default function ChronoWalkLanding() {
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.28) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.22) {
             visible.add(entry.target)
           } else {
             visible.delete(entry.target)
@@ -128,17 +128,30 @@ export default function ChronoWalkLanding() {
         }
         setStickySuppressed(visible.size > 0)
       },
-      { threshold: [0, 0.28, 0.55] },
+      { threshold: [0, 0.22, 0.5] },
     )
     for (const node of nodes) io.observe(node)
     return () => io.disconnect()
   }, [])
 
   useEffect(() => {
-    if (stickyVisible && !stickySuppressed) {
+    if (typeof MutationObserver !== 'function') return undefined
+    const syncConsent = () => {
+      setConsentBlocking(Boolean(document.querySelector('[data-testid="analytics-consent-banner"]')))
+    }
+    syncConsent()
+    const mo = new MutationObserver(syncConsent)
+    mo.observe(document.body, { childList: true, subtree: true })
+    return () => mo.disconnect()
+  }, [])
+
+  const stickyBlocked = stickySuppressed || audioActive || consentBlocking || Boolean(pendingTierId)
+
+  useEffect(() => {
+    if (stickyVisible && !stickyBlocked) {
       trackLandingStickyImpression({ landing_mode: mode.id, src })
     }
-  }, [stickyVisible, stickySuppressed, mode.id, src])
+  }, [stickyVisible, stickyBlocked, mode.id, src])
 
   const openPreview = useCallback(
     (section = LANDING_ANALYTICS_SECTIONS.HERO) => {
@@ -224,9 +237,10 @@ export default function ChronoWalkLanding() {
 
   const productSchema = buildLandingProductSchema()
   const sunlightClass = mode.sunlightContrast ? ' cw-rb--sunlight' : ''
+  const stickyPad = stickyVisible && !stickyBlocked ? ' cw-rb--sticky-pad' : ''
 
   return (
-    <div id="top" className={`cw-rb${sunlightClass}`}>
+    <div id="top" className={`cw-rb${sunlightClass}${stickyPad}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
@@ -240,35 +254,30 @@ export default function ChronoWalkLanding() {
           onPrimary={handleHeroPrimary}
           onSecondary={handleHeroSecondary}
         />
-        <RebuildThreshold />
-        <RebuildAudioProof
-          onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.AUDIO)}
+        <RebuildProductProof onPlayingChange={setAudioActive} />
+        <RebuildPantheonPreview
+          onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
         />
-        <RebuildPricing onBeginTier={handleBeginTier} />
-        {mode.showWalkTogether ? (
-          <RebuildWalkTogether
-            onBeginTier={(tierId) =>
-              handleBeginTier(tierId, LANDING_ANALYTICS_SECTIONS.WALK_TOGETHER)
-            }
-          />
-        ) : null}
-        <RebuildAdaptiveWalk />
-        {mode.showRoutePreview ? <RebuildRouteProof /> : null}
+        <RebuildPricing
+          onBeginTier={handleBeginTier}
+          showWalkTogether={mode.showWalkTogether}
+        />
+        {mode.showRoutePreview ? <RebuildRouteFlex /> : null}
         <RebuildFaq />
         <RebuildFinalCta
-          onPrimary={() => handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+          onPrimary={() =>
+            handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.FINAL_CTA)
+          }
           onSecondary={() => openPreview(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
         />
-        {/* Legacy deep-link anchors */}
         <div id="rome-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
-        <div id="try-free" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="letter" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="situations" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       </main>
-      <LandingSiteFooter pricingHref="#pricing" landingPrefix="" />
+      <LandingSiteFooter pricingHref="#pricing" landingPrefix="" compact />
       <RebuildStickyBar
         visible={stickyVisible}
-        suppressed={stickySuppressed || Boolean(pendingTierId)}
+        suppressed={stickyBlocked}
         mode={mode}
         previewFirst={geoPreviewFirst}
         onPurchase={() => {
