@@ -12,6 +12,7 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
       id={copy.id}
       className="cw-rb-final cw-rb-surface--dark"
       aria-labelledby="final-cta-heading"
+      data-rb-compete-cta="true"
     >
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
         <h2 id="final-cta-heading" className="cw-rb-title">
@@ -19,7 +20,7 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
         </h2>
         <p className="cw-rb-lead">{copy.support}</p>
 
-        <div className="cw-rb-actions">
+        <div className="cw-rb-actions cw-rb-final__actions">
           <button
             type="button"
             className="cw-rb-btn cw-rb-btn--primary"
@@ -29,7 +30,7 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
           </button>
           <button
             type="button"
-            className="cw-rb-btn cw-rb-btn--secondary"
+            className="cw-rb-btn cw-rb-btn--ghost"
             onClick={onSecondary}
           >
             {copy.secondaryCta}

@@ -59,7 +59,7 @@ describe('ChronoWalkLanding rebuild', () => {
   it('uses purchase-first hero CTAs in organic mode', () => {
     renderLanding()
     expect(screen.getAllByRole('button', { name: /Unlock all 21 stops/i }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('button', { name: /Try the complete Pantheon stop free/i }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('button', { name: /Try the Pantheon stop free/i }).length).toBeGreaterThan(0)
   })
 
   it('switches geo mode to preview-first primary CTA and omits planning sections', () => {
@@ -81,9 +81,15 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByText(/Recommended by your host/i)).toBeInTheDocument()
   })
 
-  it('keeps a compact header without a glowing Try free CTA', () => {
+  it('keeps a compact overlay header without a glowing Try free CTA', () => {
     renderLanding()
     expect(document.querySelector('.cw-rb-header')).toBeTruthy()
+    expect(screen.getByText('ChronoWalk', { selector: '.cw-rb-hero__brand' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /^Try free$/i })).not.toBeInTheDocument()
+  })
+
+  it('omits survey-style situation cards on the film landing', () => {
+    renderLanding()
+    expect(screen.queryByRole('heading', { name: /What kind of Rome day/i })).not.toBeInTheDocument()
   })
 })

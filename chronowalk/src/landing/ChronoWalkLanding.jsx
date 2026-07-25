@@ -2,17 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import RebuildHeader from './rebuild/RebuildHeader.jsx'
-import RebuildTrustStrip from './rebuild/RebuildTrustStrip.jsx'
 import RebuildHero from './rebuild/RebuildHero.jsx'
 import RebuildThreshold from './rebuild/RebuildThreshold.jsx'
 import RebuildAudioProof from './rebuild/RebuildAudioProof.jsx'
-import RebuildSituations from './rebuild/RebuildSituations.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
 import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
 import RebuildAdaptiveWalk from './rebuild/RebuildAdaptiveWalk.jsx'
-import RebuildCuratedCertainty from './rebuild/RebuildCuratedCertainty.jsx'
 import RebuildRouteProof from './rebuild/RebuildRouteProof.jsx'
-import RebuildDifference from './rebuild/RebuildDifference.jsx'
 import RebuildFaq from './rebuild/RebuildFaq.jsx'
 import RebuildFinalCta from './rebuild/RebuildFinalCta.jsx'
 import RebuildStickyBar from './rebuild/RebuildStickyBar.jsx'
@@ -56,7 +52,7 @@ export default function ChronoWalkLanding() {
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const [stickyVisible, setStickyVisible] = useState(false)
-  const [audioActive, setAudioActive] = useState(false)
+  const [stickySuppressed, setStickySuppressed] = useState(false)
   const [geoPreviewFirst, setGeoPreviewFirst] = useState(mode.primaryAction === 'preview')
   const [supportLine] = useState(() => {
     const exp = ensureLandingExpHero()
@@ -117,10 +113,32 @@ export default function ChronoWalkLanding() {
   }, [])
 
   useEffect(() => {
-    if (stickyVisible) {
+    if (typeof IntersectionObserver !== 'function') return undefined
+    const nodes = Array.from(document.querySelectorAll('[data-rb-compete-cta="true"]'))
+    if (!nodes.length) return undefined
+    const visible = new Set()
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.28) {
+            visible.add(entry.target)
+          } else {
+            visible.delete(entry.target)
+          }
+        }
+        setStickySuppressed(visible.size > 0)
+      },
+      { threshold: [0, 0.28, 0.55] },
+    )
+    for (const node of nodes) io.observe(node)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (stickyVisible && !stickySuppressed) {
       trackLandingStickyImpression({ landing_mode: mode.id, src })
     }
-  }, [stickyVisible, mode.id, src])
+  }, [stickyVisible, stickySuppressed, mode.id, src])
 
   const openPreview = useCallback(
     (section = LANDING_ANALYTICS_SECTIONS.HERO) => {
@@ -169,27 +187,6 @@ export default function ChronoWalkLanding() {
     openPreview(LANDING_ANALYTICS_SECTIONS.HERO)
   }, [mode.primaryAction, openPreview])
 
-  const handleSituation = useCallback(
-    (action) => {
-      if (action === 'preview') {
-        openPreview(LANDING_ANALYTICS_SECTIONS.SITUATIONS)
-        return
-      }
-      if (action === 'pricing') {
-        scrollToLandingId('pricing')
-        return
-      }
-      if (action === 'adaptive') {
-        scrollToLandingId('adaptive-walk')
-        return
-      }
-      if (action === 'walk-together') {
-        scrollToLandingId('walk-together')
-      }
-    },
-    [openPreview],
-  )
-
   const handleConsentCancel = useCallback(() => {
     if (checkoutBusy) return
     setPendingTierId(null)
@@ -235,7 +232,6 @@ export default function ChronoWalkLanding() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
       <RebuildHeader />
-      <RebuildTrustStrip />
       <main>
         <RebuildHero
           mode={mode}
@@ -247,9 +243,7 @@ export default function ChronoWalkLanding() {
         <RebuildThreshold />
         <RebuildAudioProof
           onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.AUDIO)}
-          onPlayingChange={setAudioActive}
         />
-        {mode.showSituationSelector ? <RebuildSituations onAction={handleSituation} /> : null}
         <RebuildPricing onBeginTier={handleBeginTier} />
         {mode.showWalkTogether ? (
           <RebuildWalkTogether
@@ -259,9 +253,7 @@ export default function ChronoWalkLanding() {
           />
         ) : null}
         <RebuildAdaptiveWalk />
-        {mode.showCuratedCertainty ? <RebuildCuratedCertainty /> : null}
         {mode.showRoutePreview ? <RebuildRouteProof /> : null}
-        {mode.showDifferenceTable ? <RebuildDifference /> : null}
         <RebuildFaq />
         <RebuildFinalCta
           onPrimary={() => handleBeginTier(LANDING_PRODUCT.eterna.id, LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
@@ -271,13 +263,14 @@ export default function ChronoWalkLanding() {
         <div id="rome-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="try-free" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="letter" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        <div id="situations" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       </main>
       <LandingSiteFooter pricingHref="#pricing" landingPrefix="" />
       <RebuildStickyBar
         visible={stickyVisible}
+        suppressed={stickySuppressed || Boolean(pendingTierId)}
         mode={mode}
         previewFirst={geoPreviewFirst}
-        audioActive={audioActive}
         onPurchase={() => {
           trackLandingStickyClick({
             landing_mode: mode.id,

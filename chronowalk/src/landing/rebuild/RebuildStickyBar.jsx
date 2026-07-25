@@ -1,8 +1,7 @@
 import { LANDING_PRODUCT } from '../landingProduct.js'
 
 /**
- * Mobile-only sticky CTA bar.
- * Geo starts preview-first until previewFirst is false.
+ * Mobile sticky CTA — purchase only, never while competing sections are in view.
  *
  * @param {{
  *   visible?: boolean,
@@ -10,7 +9,7 @@ import { LANDING_PRODUCT } from '../landingProduct.js'
  *   previewFirst?: boolean,
  *   onPurchase?: () => void,
  *   onPreview?: () => void,
- *   audioActive?: boolean,
+ *   suppressed?: boolean,
  * }} props
  */
 export default function RebuildStickyBar({
@@ -19,20 +18,17 @@ export default function RebuildStickyBar({
   previewFirst = false,
   onPurchase,
   onPreview,
-  audioActive = false,
+  suppressed = false,
 }) {
   const modeId = mode?.id === 'geo' || mode?.id === 'qr' ? mode.id : 'organic'
   const priceLabel = LANDING_PRODUCT.eterna?.priceLabel ?? ''
-  const show = Boolean(visible) && !audioActive
+  const show = Boolean(visible) && !suppressed
 
-  // Geo: preview-first until parent clears previewFirst.
   const showPreviewPrimary = modeId === 'geo' && previewFirst
-
   const stopCount = LANDING_PRODUCT.eterna?.stopCount ?? 21
   const metaLabel = showPreviewPrimary
     ? 'Free Pantheon chapter'
     : `Roma Eterna · ${stopCount} stops · ${priceLabel}`.trim()
-
   const primaryLabel = showPreviewPrimary ? 'Try free' : 'Unlock'
 
   return (

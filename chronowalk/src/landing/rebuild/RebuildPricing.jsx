@@ -23,6 +23,7 @@ export default function RebuildPricing({ onBeginTier }) {
       id="pricing"
       className="cw-rb-section cw-rb-pricing cw-rb-surface--light"
       aria-labelledby="pricing-heading"
+      data-rb-compete-cta="true"
     >
       <div className="cw-rb-wrap">
         <header>

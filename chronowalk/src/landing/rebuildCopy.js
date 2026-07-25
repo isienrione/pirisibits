@@ -28,8 +28,8 @@ export const REBUILD_HERO = {
     support: 'ChronoWalk shows what’s nearby, brings each place to life and remembers where you left off.',
     definition: `${eterna.stopCount} Rome landmarks · Audio and Then vs Now reconstructions · Opens in your browser`,
     primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
-    secondaryCta: 'Try the complete Pantheon stop free',
-    reassurance: 'One-time purchase · Download before walking · Start at any stop',
+    secondaryCta: 'Try the Pantheon stop free',
+    reassurance: 'One-time purchase · Opens in your browser · Start at any stop',
   },
   geo: {
     eyebrow: 'Your Rome guide, right where you are',
@@ -48,7 +48,7 @@ export const REBUILD_HERO = {
     definition: `${eterna.stopCount} Rome landmarks · Audio and Then vs Now reconstructions · Opens in your browser`,
     primaryCta: `Unlock the complete Rome walk · ${eterna.priceLabel}`,
     secondaryCta: 'Try the Pantheon stop free',
-    reassurance: 'One-time purchase · Download before walking · Start at any stop',
+    reassurance: 'One-time purchase · Opens in your browser · Start at any stop',
   },
 }
 
@@ -62,9 +62,9 @@ export const REBUILD_THRESHOLD = {
   eyebrow: 'Then vs Now',
   headline: 'The ruin becomes the room.',
   explanation:
-    'Press and hold to compare what survives today with an evidence-based reconstruction from the same viewpoint.',
+    'Compare what survives today with an evidence-based reconstruction from the same viewpoint.',
   instruction: 'Press and hold to reveal ancient Rome',
-  tapAlternative: 'Tap to reveal',
+  tapAlternative: 'Or tap to reveal',
   methodology: 'Evidence-based reconstruction. Where the evidence is uncertain, ChronoWalk tells you.',
 }
 

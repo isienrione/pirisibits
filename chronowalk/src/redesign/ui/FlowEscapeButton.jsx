@@ -9,10 +9,24 @@ function homePath() {
   return hasAccess() ? '/tour' : '/landing'
 }
 
+function isPublicMarketingPath(pathname) {
+  if (pathname === '/landing') return true
+  if (pathname === '/contact' || pathname === '/credits' || pathname === '/access' || pathname === '/invite') {
+    return true
+  }
+  if (pathname.startsWith('/legal/')) return true
+  return false
+}
+
 export default function FlowEscapeButton() {
   const navigate = useNavigate()
   const location = useLocation()
   const { state: journeyState, transition } = useV2Journey()
+
+  // Marketing pages have their own chrome — never overlay a Back control on the logo.
+  if (isPublicMarketingPath(location.pathname)) {
+    return null
+  }
 
   // Threshold is a one-way crossing — the global back control sent travellers to
   // Arrived and trapped them in a story → threshold loop.

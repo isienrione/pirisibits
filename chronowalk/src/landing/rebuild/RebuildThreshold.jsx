@@ -21,7 +21,7 @@ function haptic(pattern) {
 }
 
 /**
- * Rebuild Threshold — press-and-hold (with tap alternative) Then vs Now reveal.
+ * Threshold — one instruction, press-and-hold with quiet tap fallback.
  */
 export default function RebuildThreshold() {
   const copy = REBUILD_THRESHOLD
@@ -208,15 +208,15 @@ export default function RebuildThreshold() {
       id="threshold"
       className="cw-rb-section cw-rb-threshold cw-rb-surface--dark"
       aria-labelledby="threshold-heading"
+      data-rb-compete-cta="true"
     >
       <div className="cw-rb-wrap cw-rb-threshold__layout">
-        <header>
+        <header className="cw-rb-threshold__copy">
           <p className="cw-rb-eyebrow">{copy.eyebrow}</p>
           <h2 id="threshold-heading" className="cw-rb-title">
             {copy.headline}
           </h2>
-          <p className="cw-rb-lead">{copy.explanation}</p>
-          <p className="cw-rb-threshold__methodology">{copy.methodology}</p>
+          <p className="cw-rb-threshold__instruction">{copy.instruction}</p>
         </header>
 
         <div className="cw-rb-threshold__stage-wrap">
@@ -224,7 +224,7 @@ export default function RebuildThreshold() {
             className="cw-rb-threshold__stage-frame"
             tabIndex={0}
             role="application"
-            aria-label={`${copy.instruction}. ${copy.tapAlternative} is also available as a button.`}
+            aria-label={`${copy.instruction}. ${copy.tapAlternative} is also available.`}
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
             onBlur={endHold}
@@ -233,7 +233,7 @@ export default function RebuildThreshold() {
             <LandingColosseumThreshold
               reveal={reveal}
               interactive
-              showProgress
+              showProgress={false}
               hint={copy.instruction}
               onPointerDown={beginHold}
               onPointerUp={endHold}
@@ -244,20 +244,18 @@ export default function RebuildThreshold() {
             />
           </div>
 
-          <p id={statusId} className="cw-rb-threshold__status" aria-live="polite">
+          <p id={statusId} className="cw-rb-sr-only" aria-live="polite">
             {statusText}
           </p>
 
-          <div className="cw-rb-threshold__controls">
-            <button
-              type="button"
-              className="cw-rb-btn cw-rb-btn--secondary"
-              onClick={toggleFallback}
-              aria-pressed={revealed || fallbackLatched}
-            >
-              {revealed || fallbackLatched ? 'Hide reconstruction' : copy.tapAlternative}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="cw-rb-btn cw-rb-btn--ghost cw-rb-threshold__tap"
+            onClick={toggleFallback}
+            aria-pressed={revealed || fallbackLatched}
+          >
+            {revealed || fallbackLatched ? 'Hide reconstruction' : copy.tapAlternative}
+          </button>
         </div>
       </div>
     </section>

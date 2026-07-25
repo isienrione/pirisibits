@@ -1,8 +1,8 @@
 import { REBUILD_HERO } from '../rebuildCopy.js'
-import { LANDING_COLOSSEUM_NOW } from '../landingVisualAssets.js'
+import { LANDING_COLOSSEUM_NOW, LANDING_COLOSSEUM_THEN } from '../landingVisualAssets.js'
 
 /**
- * Rebuild hero — clarity-first copy + Threshold seam still.
+ * Full-bleed product hero — Colosseum Today/Then plane + brand + one CTA path.
  * @param {{ mode: { id: string }, host?: { label?: string } | null, onPrimary?: () => void, onSecondary?: () => void, supportLine?: string }} props
  */
 export default function RebuildHero({ mode, host, onPrimary, onSecondary, supportLine }) {
@@ -12,54 +12,61 @@ export default function RebuildHero({ mode, host, onPrimary, onSecondary, suppor
 
   return (
     <section id="hero" className="cw-rb-hero" aria-labelledby="rebuild-hero-heading">
-      <div className="cw-rb-wrap cw-rb-hero__layout">
-        <div className="cw-rb-hero__copy">
-          {host?.label ? (
-            <p className="cw-rb-hero__host">Recommended by {host.label}</p>
-          ) : null}
+      <div className="cw-rb-hero__plane" aria-hidden="true">
+        <img
+          className="cw-rb-hero__plane-img cw-rb-hero__plane-img--then"
+          src={LANDING_COLOSSEUM_THEN}
+          alt=""
+          width={960}
+          height={1280}
+          loading="eager"
+          decoding="async"
+        />
+        <img
+          className="cw-rb-hero__plane-img cw-rb-hero__plane-img--now"
+          src={LANDING_COLOSSEUM_NOW}
+          alt=""
+          width={960}
+          height={1280}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
+        <span className="cw-rb-hero__seam" />
+        <span className="cw-rb-hero__scrim" />
+      </div>
 
-          <p className="cw-rb-eyebrow">{copy.eyebrow}</p>
+      <div className="cw-rb-wrap cw-rb-hero__content">
+        <p className="cw-rb-hero__brand">ChronoWalk</p>
 
-          <h1 id="rebuild-hero-heading" className="cw-rb-hero__headline">
-            {copy.headline}
-          </h1>
+        {host?.label ? (
+          <p className="cw-rb-hero__host">Recommended by {host.label}</p>
+        ) : null}
 
-          <p className="cw-rb-hero__support">{support}</p>
+        <h1 id="rebuild-hero-heading" className="cw-rb-hero__headline">
+          {copy.headline}
+        </h1>
 
-          <p className="cw-rb-hero__definition">{copy.definition}</p>
+        <p className="cw-rb-hero__support">{support}</p>
 
-          <div className="cw-rb-actions">
-            <button
-              type="button"
-              className="cw-rb-btn cw-rb-btn--primary"
-              onClick={onPrimary}
-            >
-              {copy.primaryCta}
-            </button>
-            <button
-              type="button"
-              className="cw-rb-btn cw-rb-btn--secondary"
-              onClick={onSecondary}
-            >
-              {copy.secondaryCta}
-            </button>
-          </div>
-
-          <p className="cw-rb-hero__reassurance">{copy.reassurance}</p>
+        <div className="cw-rb-hero__cta">
+          <button
+            type="button"
+            className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+            onClick={onPrimary}
+          >
+            {copy.primaryCta}
+          </button>
+          <button
+            type="button"
+            className="cw-rb-btn cw-rb-btn--ghost cw-rb-hero__secondary"
+            onClick={onSecondary}
+          >
+            {copy.secondaryCta}
+          </button>
         </div>
 
-        <figure className="cw-rb-hero__visual">
-          <img
-            src={LANDING_COLOSSEUM_NOW}
-            alt="Colosseum today — Threshold Then vs Now seam"
-            width={960}
-            height={1280}
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
-          <span className="cw-rb-hero__seam" aria-hidden="true" />
-        </figure>
+        <p className="cw-rb-hero__reassurance">{copy.reassurance}</p>
       </div>
     </section>
   )

@@ -7,7 +7,7 @@ const SCREEN_SRC = {
 }
 
 /**
- * Adaptive walk — three steps with phone-screen crops.
+ * Adaptive walk — three cropped product moments (not full-height phone stacks).
  */
 export default function RebuildAdaptiveWalk() {
   const copy = REBUILD_ADAPTIVE
@@ -38,12 +38,12 @@ export default function RebuildAdaptiveWalk() {
                   <h3 className="cw-rb-adaptive__step-title">{step.title}</h3>
                   <p className="cw-rb-adaptive__step-copy">{step.copy}</p>
                 </div>
-                <figure className="cw-rb-adaptive__screen">
+                <figure className={`cw-rb-adaptive__moment cw-rb-adaptive__moment--${step.screen}`}>
                   <img
                     src={src}
                     alt=""
                     width={720}
-                    height={1280}
+                    height={480}
                     loading="lazy"
                     decoding="async"
                   />

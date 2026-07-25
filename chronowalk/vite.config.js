@@ -179,6 +179,12 @@ export default defineConfig({
     host: true,
     port: 5173,
   },
+  preview: {
+    host: true,
+    port: 4173,
+    // Temporary tunnels (localtunnel / cloudflared) send custom Host headers.
+    allowedHosts: true,
+  },
   build: {
     modulePreload: {
       polyfill: false,

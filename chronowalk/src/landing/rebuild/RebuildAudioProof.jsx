@@ -92,6 +92,7 @@ export default function RebuildAudioProof({ onPreview, onPlayingChange }) {
       id={copy.id}
       className="cw-rb-section cw-rb-audio cw-rb-surface--light"
       aria-labelledby="audio-proof-heading"
+      data-rb-compete-cta="true"
     >
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
         <header>
