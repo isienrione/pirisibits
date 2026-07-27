@@ -16,6 +16,10 @@ describe('collectManifestMediaPaths', () => {
     expect(paths).toContain('/waypoints/via-appia/modern-poster.jpg')
     expect(paths).toContain('/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4')
     expect(paths).toContain('/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.mp4')
+    expect(paths).toContain('/waypoints/pantheon/interior/interior-oculus.jpg')
+    expect(paths).toContain('/waypoints/pantheon/interior/interior-tomb-vittorio-emanuele.jpg')
+    // Exterior Pantheon still ships its reconstruction loop; interior no longer references it.
+    expect(paths).toContain('/waypoints/pantheon/ancient-reconstruction.mp4')
     expect(paths.length).toBe(new Set(paths).size)
     expect(paths.length).toBeGreaterThanOrEqual(20)
   })

@@ -86,6 +86,11 @@ export function resolveWaypointReconstruction(waypoint, chapterIndex = 0) {
 }
 
 export function photoForWaypoint(waypoint, chapterIndex = 0) {
+  const chapter = waypoint?.chapters?.[chapterIndex]
+  if (chapter && typeof chapter === 'object' && chapter.photo) {
+    return resolvePhotoUrl(chapter.photo)
+  }
+
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   if (reconstruction?.now) return resolvePhotoUrl(reconstruction.now)
   if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
@@ -148,6 +153,7 @@ export function inferredReconstructionLoopPath(waypoint) {
 /** True when the unified immersive player should embed then/now threshold. */
 export function hasImmersiveThreshold(waypoint) {
   if (!waypoint || waypoint.scripted_rest) return false
+  if (waypoint.threshold === false) return false
   if (waypoint.reconstruction) return true
   return Boolean(legacyStopIdFromWaypoint(waypoint))
 }
@@ -171,6 +177,7 @@ export function thenLabelForWaypoint(waypoint, chapterIndex = 0) {
 
 export function honestyCaptionForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  if (!reconstruction) return null
   return (
     reconstruction?.caption ??
     reconstruction?.honesty ??
@@ -184,6 +191,10 @@ export function reconstructionSourceNoteForWaypoint(waypoint, chapterIndex = 0) 
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   const reconstructionCaption = reconstruction?.caption ?? reconstruction?.honesty ?? null
   if (reconstructionCaption) parts.push(reconstructionCaption)
+  if (!reconstruction && waypoint?.now_image?.credit) {
+    const license = waypoint.now_image.license ? ` (${waypoint.now_image.license})` : ''
+    parts.push(`Photo: ${waypoint.now_image.credit}${license}`)
+  }
   if (waypoint?.now_image?.source === 'ai_generated') {
     parts.push('Present-day view: AI-assisted rendering.')
   }

@@ -23,7 +23,9 @@ export function collectManifestMediaPaths(manifest) {
     }
 
     for (const chapter of waypoint.chapters ?? []) {
-      if (!chapter || typeof chapter === 'string' || !chapter.reconstruction) continue
+      if (!chapter || typeof chapter === 'string') continue
+      add(chapter.photo)
+      if (!chapter.reconstruction) continue
       add(chapter.reconstruction.now)
       add(chapter.reconstruction.then)
       add(chapter.reconstruction.loop)

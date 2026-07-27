@@ -9,9 +9,9 @@ import {
 describe('waypointImmersiveProps', () => {
   const manifest = loadRomeManifest()
 
-  it('enables immersive threshold for every visit stop except scripted rest', () => {
+  it('enables immersive threshold for visit stops except scripted rest and static-photo stops', () => {
     for (const waypoint of manifest.waypoints) {
-      if (waypoint.scripted_rest) {
+      if (waypoint.scripted_rest || waypoint.threshold === false) {
         expect(hasImmersiveThreshold(waypoint)).toBe(false)
       } else {
         expect(hasImmersiveThreshold(waypoint)).toBe(true)
@@ -49,6 +49,33 @@ describe('waypointImmersiveProps', () => {
     )
     expect(waypoint.reconstruction.then).toBe(
       '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.jpg',
+    )
+  })
+
+  it('uses static Pantheon interior photos with no threshold on w23', () => {
+    const waypoint = getWaypoint(manifest, 'w23')
+    expect(waypoint.threshold).toBe(false)
+    expect(waypoint.reconstruction).toBeUndefined()
+    expect(hasImmersiveThreshold(waypoint)).toBe(false)
+
+    const domeProps = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w23',
+      manifest,
+      chapterIndex: 0,
+    })
+    const tombProps = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w23',
+      manifest,
+      chapterIndex: 2,
+    })
+
+    expect(domeProps.hasReconstruction).toBe(false)
+    expect(domeProps.thenLoop).toBeNull()
+    expect(domeProps.photo).toContain('/waypoints/pantheon/interior/interior-oculus.jpg')
+    expect(tombProps.photo).toContain(
+      '/waypoints/pantheon/interior/interior-tomb-vittorio-emanuele.jpg',
     )
   })
 
