@@ -1,9 +1,8 @@
-import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
-import { REBUILD_HERO, REBUILD_TRUST_CHIPS } from '../rebuildCopy.js'
+import { REBUILD_HERO, REBUILD_HERO_TRUST_CHIPS } from '../rebuildCopy.js'
 import RebuildProductPhone from './RebuildProductPhone.jsx'
 
 /**
- * Product-first hero — copy + live ChronoWalk phone.
+ * App Store–style hero: phone dominates, then headline, then CTA.
  * @param {{
  *   mode?: { id?: string }
  *   host?: { label?: string } | null
@@ -29,16 +28,13 @@ export default function RebuildHero({
   return (
     <section id="hero" className="cw-rb-hero" aria-labelledby="rebuild-hero-heading">
       <div className="cw-rb-wrap cw-rb-hero__inner">
+        {host?.label ? (
+          <p className="cw-rb-hero__host">Recommended by {host.label}</p>
+        ) : null}
+
+        <RebuildProductPhone className="cw-rb-hero__phone" onPlayingChange={onPlayingChange} />
+
         <div className="cw-rb-hero__copy">
-          <a href="#top" className="cw-rb-hero__brand" aria-label="ChronoWalk home">
-            <ChronoWalkLogo size={28} variant="light" className="cw-rb-hero__emblem" />
-            <span className="cw-rb-hero__name">ChronoWalk</span>
-          </a>
-
-          {host?.label ? (
-            <p className="cw-rb-hero__host">Recommended by {host.label}</p>
-          ) : null}
-
           <h1 id="rebuild-hero-heading" className="cw-rb-hero__headline">
             {lines.map((line) => (
               <span key={line} className="cw-rb-hero__line">
@@ -46,17 +42,8 @@ export default function RebuildHero({
               </span>
             ))}
           </h1>
-
           <p className="cw-rb-hero__support">{support}</p>
-
-          <ul className="cw-rb-hero__trust" aria-label="Product trust">
-            {REBUILD_TRUST_CHIPS.map((chip) => (
-              <li key={chip}>{chip}</li>
-            ))}
-          </ul>
         </div>
-
-        <RebuildProductPhone onPlayingChange={onPlayingChange} />
 
         <div className="cw-rb-hero__cta">
           <button
@@ -75,6 +62,12 @@ export default function RebuildHero({
             {copy.secondaryCta}
           </button>
         </div>
+
+        <ul className="cw-rb-hero__trust" aria-label="Product trust">
+          {REBUILD_HERO_TRUST_CHIPS.map((chip) => (
+            <li key={chip}>{chip}</li>
+          ))}
+        </ul>
       </div>
     </section>
   )

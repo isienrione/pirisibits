@@ -14,7 +14,7 @@
 .cw-landing-phone--sm { --phone-display-w: 14rem; }
 .cw-landing-phone--md { --phone-display-w: 17rem; }
 .cw-landing-phone--lg { --phone-display-w: 19.5rem; }
-.cw-landing-phone--xl { --phone-display-w: 22rem; }
+.cw-landing-phone--xl { --phone-display-w: 25.2rem; }
 
 .cw-landing-phone__shell {
   position: relative;

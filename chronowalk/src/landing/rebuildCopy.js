@@ -21,6 +21,9 @@ export const REBUILD_TRUST_CHIPS = [
   'Paddle checkout',
 ]
 
+/** Above-the-fold hero chips — keep secondary to the phone. */
+export const REBUILD_HERO_TRUST_CHIPS = ['Opens in your browser', 'No subscription']
+
 export const REBUILD_TRUST_STRIP = REBUILD_TRUST_CHIPS.join(' · ')
 
 export const REBUILD_HERO = {
