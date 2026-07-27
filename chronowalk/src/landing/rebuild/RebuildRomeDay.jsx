@@ -1,181 +1,95 @@
-import { useId, useMemo } from 'react'
-import {
-  buildRoutePathD,
-  getLandingTierMapBounds,
-  getLandingTierRouteStops,
-  getLandingTierTiberPath,
-  projectRouteStops,
-} from '../landingTierRoutes.js'
+import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from '../../hooks/useReducedMotion.js'
 import { REBUILD_ROME_DAY } from '../rebuildCopy.js'
+import RomeDayAtlas from './RomeDayAtlas.jsx'
+import RomeDayWalkPhone from './RomeDayWalkPhone.jsx'
 
-const MAP_W = 360
-const MAP_H = 520
-
-/** Soft label offsets so names breathe around dense centro stops. */
-const LABEL_NUDGE = {
-  colosseum: { dx: 14, dy: 4, anchor: 'start' },
-  'palatine-hill-cluster': { dx: -12, dy: 16, anchor: 'end' },
-  'forum-via-sacra': { dx: 12, dy: -10, anchor: 'start' },
-  'capitoline-hill': { dx: -14, dy: -8, anchor: 'end' },
-  pantheon: { dx: 14, dy: 2, anchor: 'start' },
-  'piazza-navona': { dx: -14, dy: 12, anchor: 'end' },
-  'fontana-di-trevi': { dx: 14, dy: -6, anchor: 'start' },
-  'spanish-steps': { dx: 12, dy: -10, anchor: 'start' },
-  'circus-maximus': { dx: -10, dy: 14, anchor: 'end' },
-  'appian-way': { dx: 0, dy: 18, anchor: 'middle' },
-}
-
-function MonumentGlyph({ kind }) {
+function MomentIcon({ kind }) {
   switch (kind) {
     case 'colosseum':
       return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <ellipse cx="0" cy="1" rx="7" ry="4.2" />
-          <ellipse cx="0" cy="1" rx="4.2" ry="2.4" />
-          <path d="M-5.2 -1.2v4.2M0 -1.8v5M5.2 -1.2v4.2" />
-        </g>
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <ellipse cx="20" cy="22" rx="14" ry="8" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <ellipse cx="20" cy="22" rx="8" ry="4.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+          <path d="M10 18v8M15 16.5v11M20 15.5v12M25 16.5v11M30 18v8" fill="none" stroke="currentColor" strokeWidth="1.3" />
+        </svg>
+      )
+    case 'lunch':
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M8 28h24" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M12 28c0-8 4-14 8-14s8 6 8 14" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="20" cy="20" r="3" fill="currentColor" opacity="0.35" />
+        </svg>
+      )
+    case 'museum':
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M6 30h28M8 30V16l12-8 12 8v14" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M14 30v-8h4v8M22 30v-8h4v8" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      )
+    case 'coffee':
+      return (
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M11 14h14v12a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5V14z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M25 18h3a3.5 3.5 0 0 1 0 7h-3" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M15 10c1 1.5 1 3 0 4M19 10c1 1.5 1 3 0 4" fill="none" stroke="currentColor" strokeWidth="1.3" />
+        </svg>
       )
     case 'pantheon':
       return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-6 3.5h12" />
-          <path d="M-5 3.5V1.2h10V3.5" />
-          <path d="M-4 1.2C-4 -2.8 4 -2.8 4 1.2" />
-          <circle cx="0" cy="-0.2" r="0.7" fill="currentColor" stroke="none" />
-        </g>
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M7 30h26M9 30V22h22v8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M11 22C11 12 29 12 29 22" fill="none" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="20" cy="18" r="1.4" fill="currentColor" />
+        </svg>
       )
-    case 'forum':
+    case 'night':
       return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-5.5 3.5 0 -3.5 5.5 3.5Z" />
-          <path d="M-2.5 3.5v-3h5v3" />
-        </g>
-      )
-    case 'trevi':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-6 2.5h12" />
-          <path d="M-4.5 2.5V0h9v2.5" />
-          <path d="M-2 0c0-2.5 4-2.5 4 0" />
-          <circle cx="0" cy="3.4" r="1.1" />
-        </g>
-      )
-    case 'steps':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-5.5 3.5h11M-4 1.5h8M-2.5 -.5h5M-1 -2.5h2" />
-        </g>
-      )
-    case 'navona':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <ellipse cx="0" cy="0.5" rx="5.5" ry="7" />
-          <circle cx="0" cy="0.5" r="1.4" />
-        </g>
-      )
-    case 'circus':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <rect x="-7" y="-2.2" width="14" height="4.4" rx="2.2" />
-          <path d="M-4 0h8" />
-        </g>
-      )
-    case 'appian':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-1 -5.5v11M-4 -2h6M-3.2 1h4.8M-2.4 4h3.2" />
-        </g>
-      )
-    case 'hill':
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <path d="M-6.5 3.2 0 -3.5 6.5 3.2Z" />
-          <path d="M-2.5 3.2 0 -.2 2.5 3.2" />
-        </g>
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path
+            d="M24 10a10 10 0 1 0 6 18 12 12 0 1 1-6-18z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          />
+          <circle cx="12" cy="14" r="1" fill="currentColor" opacity="0.55" />
+          <circle cx="16" cy="11" r="0.7" fill="currentColor" opacity="0.45" />
+        </svg>
       )
     default:
-      return (
-        <g fill="none" stroke="currentColor" strokeWidth="1.1">
-          <circle cx="0" cy="0" r="4.5" />
-          <circle cx="0" cy="0" r="1.2" fill="currentColor" stroke="none" />
-        </g>
-      )
+      return null
   }
-}
-
-function glyphForStop(id) {
-  if (id === 'colosseum') return 'colosseum'
-  if (id === 'pantheon') return 'pantheon'
-  if (id.includes('forum') || id === 'capitoline-hill') return 'forum'
-  if (id === 'fontana-di-trevi') return 'trevi'
-  if (id === 'spanish-steps') return 'steps'
-  if (id === 'piazza-navona') return 'navona'
-  if (id === 'circus-maximus') return 'circus'
-  if (id === 'appian-way') return 'appian'
-  if (id.includes('palatine') || id.includes('hill')) return 'hill'
-  return 'default'
-}
-
-function smoothRoutePath(points) {
-  if (points.length < 2) return ''
-  if (points.length === 2) return buildRoutePathD(points)
-  let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`
-  for (let i = 1; i < points.length - 1; i += 1) {
-    const curr = points[i]
-    const next = points[i + 1]
-    const mx = (curr.x + next.x) / 2
-    const my = (curr.y + next.y) / 2
-    d += ` Q ${curr.x.toFixed(2)} ${curr.y.toFixed(2)} ${mx.toFixed(2)} ${my.toFixed(2)}`
-  }
-  const last = points[points.length - 1]
-  d += ` T ${last.x.toFixed(2)} ${last.y.toFixed(2)}`
-  return d
 }
 
 /**
- * Section 4 — editorial illustrated Rome day map.
- * Aspiration over navigation: city-guide paper, gold walk, monument marks.
+ * Section — Rome becomes one continuous story.
+ * Narrative scroll: editorial atlas → flexible day → live navigation → GPS moments.
  */
 export default function RebuildRomeDay() {
   const copy = REBUILD_ROME_DAY
-  const uid = useId().replace(/:/g, '')
-  const bounds = getLandingTierMapBounds('rome-complete')
-  const allStops = getLandingTierRouteStops('rome-complete')
+  const morphRef = useRef(null)
+  const reducedMotion = useReducedMotion()
+  const [morphStage, setMorphStage] = useState(0)
 
-  const { projected, routePath, tiberPath, highlights, faintRoads } = useMemo(() => {
-    const projectedStops = projectRouteStops(allStops, {
-      width: MAP_W,
-      height: MAP_H,
-      padding: 42,
-      bounds,
-    })
-    const highlightSet = new Set(copy.highlights)
-    const marked = projectedStops
-      .filter((stop) => highlightSet.has(stop.id))
-      .sort((a, b) => a.index - b.index)
+  useEffect(() => {
+    const node = morphRef.current
+    if (!node || typeof IntersectionObserver !== 'function') return undefined
 
-    const roads = [
-      [marked[0], marked[1], marked[3]].filter(Boolean),
-      [marked[3], marked[4], marked[5], marked[6]].filter(Boolean),
-      [marked[6], marked[7]].filter(Boolean),
-      [marked[1], marked[8], marked[9]].filter(Boolean),
-    ]
-      .map((pts) => buildRoutePathD(pts))
-      .filter(Boolean)
-
-    return {
-      projected: projectedStops,
-      routePath: smoothRoutePath(projectedStops),
-      tiberPath: getLandingTierTiberPath({
-        width: MAP_W,
-        height: MAP_H,
-        padding: 42,
-        bounds,
-      }),
-      highlights: marked,
-      faintRoads: roads,
-    }
-  }, [allStops, bounds, copy.highlights])
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return
+        const ratio = entry.intersectionRatio
+        if (ratio > 0.55) setMorphStage(2)
+        else if (ratio > 0.22) setMorphStage(1)
+        else if (entry.isIntersecting) setMorphStage(0)
+      },
+      { threshold: [0, 0.22, 0.4, 0.55, 0.75] },
+    )
+    io.observe(node)
+    return () => io.disconnect()
+  }, [])
 
   return (
     <section
@@ -187,213 +101,104 @@ export default function RebuildRomeDay() {
       <div id="route-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div id="adaptive-walk" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
 
+      {/* Part 1 — headline */}
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
         <header className="cw-rb-rome-day__intro">
           <h2 id="rome-day-heading" className="cw-rb-title">
             {copy.headline}
           </h2>
-          {copy.body ? <p className="cw-rb-lead">{copy.body}</p> : null}
+          {copy.subhead ? <p className="cw-rb-lead">{copy.subhead}</p> : null}
         </header>
+      </div>
 
-        <figure className="cw-rb-rome-day__map" aria-label="Illustrated ChronoWalk route through Rome">
-          <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} role="img" aria-hidden="true">
-            <defs>
-              <linearGradient id={`${uid}-paper`} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--rb-day)" />
-                <stop offset="55%" stopColor="var(--rb-sheet)" />
-                <stop offset="100%" stopColor="var(--rb-stone)" />
-              </linearGradient>
-              <linearGradient id={`${uid}-route`} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--rb-gold)" />
-                <stop offset="100%" stopColor="var(--rb-terracotta)" />
-              </linearGradient>
-              <linearGradient id={`${uid}-river`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#4e7d9b" stopOpacity="0.28" />
-                <stop offset="100%" stopColor="#4e7d9b" stopOpacity="0.16" />
-              </linearGradient>
-              <filter id={`${uid}-soft`} x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="1.2" stdDeviation="1.4" floodColor="#211c15" floodOpacity="0.14" />
-              </filter>
-              <filter id={`${uid}-pin`} x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="1" stdDeviation="1.1" floodColor="#211c15" floodOpacity="0.22" />
-              </filter>
-              <pattern id={`${uid}-grain`} width="48" height="48" patternUnits="userSpaceOnUse">
-                <circle cx="4" cy="9" r="0.6" fill="#211c15" opacity="0.035" />
-                <circle cx="22" cy="18" r="0.5" fill="#211c15" opacity="0.03" />
-                <circle cx="38" cy="7" r="0.55" fill="#211c15" opacity="0.028" />
-                <circle cx="14" cy="34" r="0.45" fill="#211c15" opacity="0.03" />
-                <circle cx="31" cy="40" r="0.5" fill="#211c15" opacity="0.025" />
-              </pattern>
-            </defs>
+      {/* Part 2 — master atlas */}
+      <div className="cw-rb-wrap cw-rb-rome-day__atlas-wrap">
+        <RomeDayAtlas highlights={copy.highlights} />
+      </div>
 
-            <rect width={MAP_W} height={MAP_H} rx="28" fill={`url(#${uid}-paper)`} />
-            <rect width={MAP_W} height={MAP_H} rx="28" fill={`url(#${uid}-grain)`} />
+      {/* Part 3 — flexible day timeline */}
+      <div className="cw-rb-wrap">
+        <div className="cw-rb-rome-day__timeline" aria-label="A flexible day with ChronoWalk">
+          {copy.moments.map((moment, index) => (
+            <div key={moment.id} className="cw-rb-rome-day__moment">
+              <div className="cw-rb-rome-day__moment-icon" aria-hidden="true">
+                <MomentIcon kind={moment.icon} />
+              </div>
+              <p className="cw-rb-rome-day__moment-label">{moment.label}</p>
+              {index < copy.moments.length - 1 ? (
+                <span className="cw-rb-rome-day__moment-arrow" aria-hidden="true" />
+              ) : null}
+            </div>
+          ))}
+        </div>
+        <p className="cw-rb-rome-day__resume">{copy.resume}</p>
+      </div>
 
-            {/* Terrain washes */}
-            <ellipse cx="268" cy="118" rx="78" ry="54" fill="#b9af9c" opacity="0.16" />
-            <ellipse cx="96" cy="210" rx="70" ry="48" fill="#b9af9c" opacity="0.12" />
-            <ellipse cx="210" cy="360" rx="92" ry="60" fill="#6b7a52" opacity="0.08" />
-            <ellipse cx="72" cy="420" rx="64" ry="46" fill="#b9af9c" opacity="0.11" />
+      {/* Part 4 — atlas morphs into real navigation */}
+      <div
+        ref={morphRef}
+        className={`cw-rb-rome-day__morph${reducedMotion ? ' is-static' : ''} is-stage-${morphStage}`}
+      >
+        <div className="cw-rb-wrap cw-rb-rome-day__morph-inner">
+          <header className="cw-rb-rome-day__morph-intro">
+            <h3 className="cw-rb-rome-day__morph-title">{copy.appHeadline}</h3>
+            <p className="cw-rb-lead">{copy.appBody}</p>
+          </header>
 
-            {/* Tiber */}
-            <path
-              d={tiberPath}
-              fill="none"
-              stroke={`url(#${uid}-river)`}
-              strokeWidth="18"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d={tiberPath}
-              fill="none"
-              stroke="#4e7d9b"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.22"
-            />
-
-            {/* Minimal streets */}
-            {faintRoads.map((d) => (
-              <path
-                key={d}
-                d={d}
-                fill="none"
-                stroke="#211c15"
-                strokeWidth="1.1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.07"
+          <div className="cw-rb-rome-day__morph-stage">
+            <div className="cw-rb-rome-day__morph-atlas" aria-hidden={morphStage >= 2}>
+              <RomeDayAtlas
+                highlights={copy.highlights}
+                className="cw-rb-rome-day__atlas--mini"
+                animate={false}
               />
-            ))}
+            </div>
+            <div className="cw-rb-rome-day__morph-phone">
+              <RomeDayWalkPhone size="lg" />
+            </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Gold walking route */}
-            <path
-              d={routePath}
-              fill="none"
-              stroke={`url(#${uid}-route)`}
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.92"
-              filter={`url(#${uid}-soft)`}
-            />
-
-            {/* Quiet secondary stops */}
-            {projected.map((stop) =>
-              copy.highlights.includes(stop.id) ? null : (
-                <circle
-                  key={stop.id}
-                  cx={stop.x}
-                  cy={stop.y}
-                  r="2"
-                  fill="#b9af9c"
-                  opacity="0.45"
-                />
-              ),
-            )}
-
-            {/* Landmark glyphs + elegant numbered stops */}
-            {highlights.map((stop, index) => {
-              const nudge = LABEL_NUDGE[stop.id] ?? { dx: 12, dy: 4, anchor: 'start' }
-              const glyph = glyphForStop(stop.id)
-              const labelX = stop.x + nudge.dx
-              const labelY = stop.y + nudge.dy
-              return (
-                <g key={stop.id} className="cw-rb-rome-day__stop">
-                  <g
-                    transform={`translate(${stop.x + (nudge.anchor === 'end' ? -18 : nudge.anchor === 'middle' ? 0 : 18)} ${stop.y - 22})`}
-                    className="cw-rb-rome-day__glyph"
-                    color="#8b8638"
-                    opacity="0.72"
-                  >
-                    <MonumentGlyph kind={glyph} />
-                  </g>
-                  <circle
-                    cx={stop.x}
-                    cy={stop.y}
-                    r="11"
-                    fill="#faf6ef"
-                    stroke="#d4af37"
-                    strokeWidth="1.4"
-                    filter={`url(#${uid}-pin)`}
-                  />
-                  <circle cx={stop.x} cy={stop.y} r="8.2" fill="#211c15" />
-                  <text
-                    x={stop.x}
-                    y={stop.y + 3.4}
-                    textAnchor="middle"
-                    fill="#faf6ef"
-                    fontSize="8.5"
-                    fontFamily="DM Sans, system-ui, sans-serif"
-                    fontWeight="700"
-                  >
-                    {index + 1}
-                  </text>
-                  <text
-                    x={labelX}
-                    y={labelY}
-                    textAnchor={nudge.anchor}
-                    fill="#211c15"
-                    fontSize="11"
-                    fontFamily="Fraunces, Georgia, serif"
-                    fontWeight="500"
-                  >
-                    {stop.short}
-                  </text>
-                </g>
-              )
-            })}
-
-            {/* Cartouche */}
-            <g transform="translate(28 34)">
-              <text
-                x="0"
-                y="0"
-                fill="#211c15"
-                fontSize="9"
-                letterSpacing="0.22em"
-                fontFamily="DM Sans, system-ui, sans-serif"
-                fontWeight="650"
-                opacity="0.55"
-              >
-                ROME
-              </text>
-              <text
-                x="0"
-                y="16"
-                fill="#211c15"
-                fontSize="13"
-                fontFamily="Fraunces, Georgia, serif"
-                fontWeight="500"
-              >
-                A day among ruins
-              </text>
-            </g>
-
-            {/* Compass */}
-            <g transform="translate(318 46)" opacity="0.55">
-              <circle cx="0" cy="0" r="11" fill="none" stroke="#211c15" strokeWidth="0.8" />
-              <path d="M0 -7 L2.2 1.5 L0 0 L-2.2 1.5 Z" fill="#d4af37" />
-              <text
-                x="0"
-                y="18"
-                textAnchor="middle"
-                fill="#211c15"
-                fontSize="7"
-                fontFamily="DM Sans, system-ui, sans-serif"
-                letterSpacing="0.12em"
-              >
-                N
-              </text>
-            </g>
-          </svg>
-        </figure>
-
-        {copy.scenarios?.length ? (
-          <p className="cw-rb-rome-day__aside">{copy.scenarios.slice(0, 3).join(' · ')}</p>
-        ) : null}
+      {/* Part 5 — live GPS moments */}
+      <div className="cw-rb-wrap">
+        <h3 className="cw-rb-rome-day__gps-heading">{copy.gpsHeadline}</h3>
+        <div className="cw-rb-rome-day__gps-rail" role="list">
+          {copy.gpsCards.map((card) => (
+            <article key={card.id} className="cw-rb-rome-day__gps-card" role="listitem">
+              <div className={`cw-rb-rome-day__gps-shot cw-rb-rome-day__gps-shot--${card.id}`}>
+                {card.id === 'approach' ? (
+                  <>
+                    <p className="cw-rb-rome-day__gps-eyebrow">GPS</p>
+                    <p className="cw-rb-rome-day__gps-shot-title">{card.shotTitle}</p>
+                    <p className="cw-rb-rome-day__gps-shot-meta">{card.shotMeta}</p>
+                    <span className="cw-rb-rome-day__gps-cta">{card.cta}</span>
+                  </>
+                ) : null}
+                {card.id === 'threshold' ? (
+                  <>
+                    <div className="cw-rb-rome-day__gps-split">
+                      <img src={card.nowSrc} alt="" decoding="async" />
+                      <img src={card.thenSrc} alt="" decoding="async" />
+                    </div>
+                    <span className="cw-rb-rome-day__gps-hold">{card.cta}</span>
+                  </>
+                ) : null}
+                {card.id === 'story' ? (
+                  <>
+                    <img className="cw-rb-rome-day__gps-story-img" src={card.shotSrc} alt="" decoding="async" />
+                    <div className="cw-rb-rome-day__gps-story-scrim">
+                      <p className="cw-rb-rome-day__gps-shot-title">{card.shotTitle}</p>
+                      <p className="cw-rb-rome-day__gps-shot-meta">{card.shotMeta}</p>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+              <h4 className="cw-rb-rome-day__gps-card-title">{card.title}</h4>
+              <p className="cw-rb-rome-day__gps-card-body">{card.body}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )
