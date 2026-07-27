@@ -109,6 +109,10 @@ export function inferredReconstructionLoopPath(waypoint) {
   const nested = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/(?:exterior|interior)\/)/)
   if (nested) return `${nested[1]}ancient-reconstruction.mp4`
 
+  // Forum cluster stops live one level deeper: /waypoints/forum-cluster/<stop>/
+  const forum = photo.match(/^(\/waypoints\/forum-cluster\/[^/]+\/)/)
+  if (forum) return `${forum[1]}ancient-reconstruction.mp4`
+
   const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
   if (flat) return `${flat[1]}ancient-reconstruction.mp4`
 

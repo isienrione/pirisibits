@@ -68,6 +68,7 @@ const FORUM_STOP_META = {
     lng: 12.48442,
     viewpoint: { lat: 41.89275, lng: 12.48455, heading: 340, pitch: 17 },
     subtitle: 'A triple arch celebrating victories on the eastern frontier — gilded and intact.',
+    mediaCacheVersion: 2,
   },
 }
 
@@ -79,7 +80,7 @@ const buildForumWaypoint = (id) => {
     id,
     title: meta.title,
     ship_assets: false,
-    media_cache_version: 1,
+    media_cache_version: meta.mediaCacheVersion ?? 1,
     arrival_headline: `You've reached ${meta.title}!`,
     arrival_subtitle: meta.subtitle,
     immersive_orientation_hint: `Stand facing ${meta.title} from the Forum floor, then begin the immersive view.`,

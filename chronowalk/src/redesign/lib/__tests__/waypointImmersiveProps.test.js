@@ -38,4 +38,17 @@ describe('waypointImmersiveProps', () => {
       '/waypoints/colosseum/exterior/ancient-reconstruction.mp4',
     )
   })
+
+  it('infers ancient loop path for forum-cluster Severus stop', () => {
+    const waypoint = getWaypoint(manifest, 'w11_12')
+    expect(inferredReconstructionLoopPath(waypoint)).toBe(
+      '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4',
+    )
+    expect(waypoint.reconstruction.loop).toBe(
+      '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4',
+    )
+    expect(waypoint.reconstruction.then).toBe(
+      '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.jpg',
+    )
+  })
 })
