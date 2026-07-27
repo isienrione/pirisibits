@@ -5,6 +5,7 @@ import {
   LANDING_COLOSSEUM_NOW,
   LANDING_COLOSSEUM_THEN,
   LANDING_PANTHEON_NOW,
+  LANDING_PANTHEON_THEN,
 } from './landingVisualAssets.js'
 import LandingPhoneViewport from './LandingPhoneViewport.jsx'
 
@@ -357,6 +358,111 @@ export function AudioPlayerScreen(props) {
   return <ListeningScreen {...props} />
 }
 
+/**
+ * Pantheon free-preview story for the sticky phone — tour → hold → reconstruct.
+ * `phase`: 0 tour UI · 1 hold pulse · 2 revealed reconstruction.
+ */
+export function PantheonStoryScreen({ size = 'lg', phase = 0 }) {
+  const revealed = phase >= 2
+  const holding = phase >= 1
+  const nowSrc = LANDING_PANTHEON_NOW || pantheonNow
+  const thenSrc = LANDING_PANTHEON_THEN
+
+  return (
+    <LandingPhoneFrame label="ChronoWalk Pantheon free preview" size={size}>
+      <div className="cw-landing-screen cw-landing-screen--pantheon-story">
+        <div className="cw-landing-screen__pantheon-pair" aria-hidden>
+          <img
+            className={`cw-landing-screen__pantheon-now${holding ? ' is-holding' : ''}${revealed ? ' is-revealed' : ''}`}
+            src={nowSrc}
+            alt=""
+            decoding="async"
+          />
+          <img
+            className={`cw-landing-screen__pantheon-then${revealed ? ' is-revealed' : ''}`}
+            src={thenSrc}
+            alt=""
+            decoding="async"
+          />
+        </div>
+        <div className="cw-landing-screen__listen-scrim" aria-hidden />
+
+        <header className="cw-landing-screen__listen-top">
+          <span className="cw-landing-screen__chip">←</span>
+          <span className="cw-landing-screen__preview-badge">Free preview · Pantheon</span>
+          <span className="cw-landing-screen__chip">?</span>
+        </header>
+
+        <div className="cw-landing-screen__listen-hero">
+          <h3>The Pantheon</h3>
+          <p>Two thousand years of sky through one opening.</p>
+          <span
+            className={`cw-landing-screen__hold-pill${holding ? ' is-active' : ''}${revealed ? ' is-done' : ''}`}
+          >
+            {revealed ? 'Revealed · ancient Rome' : 'Press & Hold to Reveal'}
+          </span>
+        </div>
+
+        <div
+          className={`cw-landing-screen__listen-panel${phase >= 1 ? ' is-soft' : ''}`}
+          aria-hidden={revealed}
+        >
+          <div className="cw-landing-screen__listen-tabs">
+            <span className="cw-landing-screen__listen-tab--on cw-landing-screen__listen-tab--ember">
+              Audio
+            </span>
+            <span>Read instead</span>
+          </div>
+          <p className="cw-landing-screen__listen-chapter">
+            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
+          </p>
+          <div className="cw-landing-screen__listen-wave cw-landing-screen__listen-wave--ember">
+            {Array.from({ length: 28 }, (_, i) => (
+              <span
+                key={i}
+                className={i < 6 ? 'is-played' : undefined}
+                style={{ height: `${20 + ((i * 19) % 64)}%` }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </LandingPhoneFrame>
+  )
+}
+
+/**
+ * Walking companion story — Map → Steps → Resume → Continue.
+ * Uses the real walk product shot with live overlays for phase beats.
+ */
+export function WalkStoryScreen({ size = 'lg', phase = 0 }) {
+  const modes = ['map', 'steps', 'resume', 'continue']
+  const mode = modes[Math.min(phase, modes.length - 1)] ?? 'steps'
+  const shot = HOW_IT_WORKS_SHOTS.map
+
+  return (
+    <LandingPhoneFrame label="ChronoWalk walking navigation" size={size}>
+      <div className={`cw-landing-screen cw-landing-screen--walk-story cw-landing-screen--walk-story-${mode}`}>
+        <img className="cw-landing-phone__shot" src={shot.src} alt="" decoding="async" />
+        <div className="cw-landing-screen__walk-story-overlay" aria-hidden>
+          {mode === 'map' ? <span className="cw-landing-screen__walk-chip">Map</span> : null}
+          {mode === 'steps' ? <span className="cw-landing-screen__walk-chip">Steps</span> : null}
+          {mode === 'resume' ? (
+            <span className="cw-landing-screen__walk-chip cw-landing-screen__walk-chip--pause">
+              Paused · Resume later
+            </span>
+          ) : null}
+          {mode === 'continue' ? (
+            <span className="cw-landing-screen__walk-chip cw-landing-screen__walk-chip--go">
+              Continue walking
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </LandingPhoneFrame>
+  )
+}
+
 const LIVE_SCREEN_BY_KEY = {
   journey: JourneyPickScreen,
   map: MapRouteScreen,
@@ -365,13 +471,26 @@ const LIVE_SCREEN_BY_KEY = {
   listening: ListeningScreen,
   preview: PreviewScreen,
   threshold: ThresholdRevealScreen,
+  pantheon: PantheonStoryScreen,
+  walk: WalkStoryScreen,
 }
 
 /**
  * How-it-works phones use fixed 390×844 product shots (representative marketing
  * size). Other call sites can request live HTML screens with `mode="live"`.
  */
-export function LandingStepMockup({ variant = 'journey', size = 'lg', mode = 'shot' }) {
+export function LandingStepMockup({
+  variant = 'journey',
+  size = 'lg',
+  mode = 'shot',
+  phase = 0,
+}) {
+  if (variant === 'pantheon') {
+    return <PantheonStoryScreen size={size} phase={phase} />
+  }
+  if (variant === 'walk') {
+    return <WalkStoryScreen size={size} phase={phase} />
+  }
   const shot = HOW_IT_WORKS_SHOTS[variant]
   if (mode === 'shot' && shot) {
     return <ProductShotScreen src={shot.src} label={shot.label} size={size} />

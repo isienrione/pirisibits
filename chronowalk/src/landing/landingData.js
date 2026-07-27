@@ -16,12 +16,15 @@ export const LANDING_PREVIEW_AUDIO_FILE = 'w17_ch1.mp3'
 /** Shared CTA labels used across sections. */
 export const LANDING_CTA = {
   begin: 'Begin Rome',
-  tryFree: 'Try one stop free',
-  tryFreeSneakPeek: 'Try one stop free',
+  /** Primary purchase-path CTA on the product-story hero. */
+  unlockRome: 'Unlock Rome',
+  tryFree: 'Try Pantheon Free',
+  tryFreeSneakPeek: 'Try Pantheon Free',
   seeRoutes: 'See packages',
-  tryOneStopFree: 'Try one stop free',
+  tryOneStopFree: 'Try Pantheon Free',
   /** Secondary CTAs that scroll to `#pricing` (packages), not the route map. */
   exploreRomeRoutes: 'See packages',
+  reviews: '★★★★★ Reviews',
 }
 
 /** Explicit free-preview product block — Pantheon sample before purchase. */
@@ -189,52 +192,42 @@ export const stickyCta = {
 }
 
 /**
- * Editorial architecture — Act I Promise → Act II Experience → Act III Decision.
- * Keys match LANDING_CONTENT; see docs/LANDING_EDITORIAL_ARCHITECTURE.md.
+ * Product-story architecture (Landing V4).
+ * Intro compresses into nav · sticky phone demo · capability sections.
+ * Keys match LANDING_CONTENT.
  */
 export const LANDING_SECTION_ORDER = [
-  // Act I — The Promise
   'hero',
-  'interlude',
-  'threshold',
-  'early-cta',
-  // Act II — The Experience
-  'user-flow',
-  'real-moment',
+  'product-demo',
   'monuments',
-  'benefits',
-  'try-free',
-  // Act III — The Decision
+  'personas',
   'pricing',
-  'why',
   'trust',
-  'after-rome',
   'faq',
-  'final-cta',
 ]
 
-/** Act landmarks for composition / a11y / navigation (`#act-*`). */
+/** Narrative acts for composition / a11y / navigation (`#act-*`). */
 export const LANDING_ACTS = [
   {
-    id: 'act-promise',
-    label: 'Act I — The Promise',
+    id: 'act-open',
+    label: 'Act I — The Open',
     index: 'I',
-    name: 'The Promise',
-    sections: ['hero', 'interlude', 'threshold', 'early-cta'],
+    name: 'The Open',
+    sections: ['hero', 'product-demo'],
   },
   {
-    id: 'act-experience',
-    label: 'Act II — The Experience',
+    id: 'act-walk',
+    label: 'Act II — The Walk',
     index: 'II',
-    name: 'The Experience',
-    sections: ['user-flow', 'real-moment', 'monuments', 'benefits', 'try-free'],
+    name: 'The Walk',
+    sections: ['monuments', 'personas'],
   },
   {
-    id: 'act-decision',
-    label: 'Act III — The Decision',
+    id: 'act-choose',
+    label: 'Act III — The Choice',
     index: 'III',
-    name: 'The Decision',
-    sections: ['pricing', 'why', 'trust', 'after-rome', 'faq', 'final-cta'],
+    name: 'The Choice',
+    sections: ['pricing', 'trust', 'faq'],
   },
 ]
 
@@ -257,18 +250,109 @@ export const LANDING_LEGACY_DEEPLINK_IDS = [
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'ChronoWalk · Rome',
-    headline: 'Walk until the city starts talking.',
+    eyebrow: 'ChronoWalk',
+    headline: 'Rome in your pocket.',
     /** Mirrored by LANDING_EXP_HERO_COPY.a — live headline may be A/B via landingExperiments. */
-    accentLine: 'Walk freely. Keep the context.',
+    accentLine: 'The phone knows where you stand.',
     subheadline:
-      'Self-guided Rome walks — narration and Threshold tied to the stones in front of you.',
-    primaryCta: LANDING_CTA.tryOneStopFree,
-    secondaryCta: LANDING_CTA.exploreRomeRoutes,
-    /** Calm purchase cue — feature depth lives once under `#benefits`. */
+      'Self-guided walks with GPS narration and Threshold — tied to the stones in front of you.',
+    primaryCta: LANDING_CTA.unlockRome,
+    secondaryCta: LANDING_CTA.tryFree,
+    reviewsCta: LANDING_CTA.reviews,
+    reviewsHref: '#trust',
+    primaryHref: '#pricing',
+    /** Calm purchase cue — depth lives in the sticky phone story. */
     trustLine: 'One purchase. No subscription. Your pace.',
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
+  },
+
+  'product-demo': {
+    id: 'how-it-works',
+    eyebrow: 'The product',
+    headline: 'How does ChronoWalk work?',
+    subheadline: 'Scroll. Watch the phone. One idea at a time.',
+    chapters: [
+      {
+        id: 'choose',
+        title: 'Choose your walk.',
+        body: 'Pick Roma Eterna for the full city loop, or a shorter route when time is tight. Begin anywhere — the route flexes around you.',
+        phone: 'journey',
+        beats: ['Roma Eterna', 'Shorter routes', 'Begin anywhere'],
+      },
+      {
+        id: 'arrive',
+        title: 'When you arrive, the story opens.',
+        body: 'ChronoWalk knows where you are and opens the correct chapter. Press & hold to reveal the past — an evidence-based reconstruction from your viewpoint.',
+        phone: 'pantheon',
+        beats: ['Tour', 'Pantheon', 'Press & Hold', 'Reveal'],
+        emotional: true,
+      },
+      {
+        id: 'listen',
+        title: 'Evidence-based narration.',
+        body: 'Professional audio at the landmark. Read instead when you prefer. Download once — walk offline when signal fades.',
+        phone: 'audio',
+        beats: ['Waveform', 'Read instead', 'Offline'],
+      },
+      {
+        id: 'walk',
+        title: 'ChronoWalk always knows where you are.',
+        body: 'Clear directions, distance, and the nearest stop. Pause. Resume later. Flexible route. GPS guidance that stays calm.',
+        phone: 'walk',
+        beats: ['Map', 'Steps', 'Resume', 'Continue'],
+      },
+    ],
+  },
+
+  personas: {
+    id: 'who-its-for',
+    eyebrow: 'Situations',
+    headline: 'Built for the Rome you actually get.',
+    subheadline: 'Not demographics — moments.',
+    items: [
+      {
+        id: 'no-tickets',
+        headline: "Didn't get Colosseum tickets?",
+        body: 'The city still has stories. Walk the façades, squares, and viewpoints you can reach on foot.',
+        imageKey: 'street',
+        cta: 'See packages',
+        href: '#pricing',
+      },
+      {
+        id: 'rigid',
+        headline: 'Hate rigid tour schedules?',
+        body: 'No flag. No crowd of thirty. Pause for coffee, split the day, continue tomorrow.',
+        imageKey: 'wander',
+        cta: 'See packages',
+        href: '#pricing',
+      },
+      {
+        id: 'history',
+        headline: 'Love history but wander freely?',
+        body: 'Hear the scenes tied to the stones in front of you — without surrendering the day to a group.',
+        imageKey: 'forum',
+        cta: 'Try Pantheon Free',
+        href: '#how-it-works',
+        preview: true,
+      },
+      {
+        id: 'itineraries',
+        headline: 'Too many Rome itineraries online?',
+        body: 'Close the tabs. One curated walk. Trust the day is worth taking.',
+        imageKey: 'pantheon',
+        cta: 'See packages',
+        href: '#pricing',
+      },
+      {
+        id: 'guides',
+        headline: 'Want guided tours without paying €70?',
+        body: 'A private guide for ancient Rome, in your pocket — one-time purchase, yours to keep.',
+        imageKey: 'street',
+        cta: 'Unlock Rome',
+        href: '#pricing',
+      },
+    ],
   },
 
   interlude: {
@@ -325,10 +409,42 @@ export const LANDING_CONTENT = {
 
   trust: {
     id: 'trust',
-    eyebrow: 'How we build trust',
-    headline: 'Evidence you can check.',
-    subheadline:
-      'Uncertainty is labeled. Reconstructions match the viewpoint in front of you. Sources live where they belong.',
+    eyebrow: 'What you get',
+    headline: 'Quiet confidence.',
+    subheadline: 'The essentials — expand a row if you want the detail.',
+    checklist: [
+      {
+        id: 'browser',
+        title: 'Works in browser',
+        body: 'Open ChronoWalk on your phone — no app store required. Add to Home Screen when you want the fuller feel.',
+      },
+      {
+        id: 'offline',
+        title: 'Offline',
+        body: 'Download the tour on hotel Wi‑Fi first. Walk with airplane mode or spotty signal when you need to.',
+      },
+      {
+        id: 'one-time',
+        title: 'One-time purchase',
+        body: 'No subscription. Your route stays after the trip — one device per standard purchase.',
+      },
+      {
+        id: 'gps',
+        title: 'GPS aware',
+        body: 'Arrival opens the right chapter. Directions, distance, and nearest stop stay with you between landmarks.',
+      },
+      {
+        id: 'evidence',
+        title: 'Evidence-based',
+        body: 'Narration and Threshold reconstructions are researched for this route. Where the record is thin, we say so.',
+      },
+      {
+        id: 'progress',
+        title: 'Saved progress',
+        body: 'Pause mid-walk. Resume later. Couple and Family Bundles keep shared-tour progress connected.',
+      },
+    ],
+    /** Retained for archive / deep content — checklist is the live surface. */
     items: [
       {
         title: 'Uncertainty, labeled',
@@ -425,10 +541,9 @@ export const LANDING_CONTENT = {
 
   monuments: {
     id: 'monuments',
-    eyebrow: 'The route',
-    headline: 'One city.\nOne continuous story.',
-    subheadline:
-      'From the Arena to the Appian Way, each place changes the meaning of the next.',
+    eyebrow: 'The stops',
+    headline: 'Rome, stop by stop.',
+    subheadline: 'Swipe through the places that shape the walk.',
     /** Always-on SEO / continuity line — full ordered names stay in the DOM via the trail. */
     routeName: 'Roma Eterna',
     expandLabel: 'See every stop on the route',
@@ -584,25 +699,21 @@ export const LANDING_CONTENT = {
 
   header: {
     nav: [
-      { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
-      { label: 'What stays', href: '#benefits' },
-      { label: 'Try free', href: '#try-free' },
-      { label: 'Pricing', href: '#pricing' },
+      { label: 'Stops', href: '#monuments' },
+      { label: 'Tours', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
-    cta: LANDING_CTA.tryOneStopFree,
+    cta: LANDING_CTA.tryFree,
     ctaShort: 'Try free',
   },
 
   footer: {
     tagline: 'Self-guided walks for Rome — researched and yours to keep.',
     nav: [
-      { label: 'Threshold', href: '#threshold' },
       { label: 'How it works', href: '#how-it-works' },
-      { label: 'What stays', href: '#benefits' },
-      { label: 'Try free', href: '#try-free' },
-      { label: 'Pricing', href: '#pricing' },
+      { label: 'Stops', href: '#monuments' },
+      { label: 'Tours', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
     credit: 'Made for people on foot · ChronoWalk',

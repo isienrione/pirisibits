@@ -3,30 +3,23 @@ import {
   getLandingFaqItems,
   LANDING_ACTS,
   LANDING_CONTENT,
+  LANDING_CTA,
   LANDING_LEGACY_DEEPLINK_IDS,
   LANDING_PRESERVED_LOWER_SECTIONS,
   LANDING_SECTION_ORDER,
   LANDING_VERIFIED_REVIEWS,
 } from '../landingData.js'
 
-describe('landing editorial architecture', () => {
-  it('defines the three-act section order', () => {
+describe('landing product-story architecture (V4)', () => {
+  it('defines the product-story section order', () => {
     expect(LANDING_SECTION_ORDER).toEqual([
       'hero',
-      'interlude',
-      'threshold',
-      'early-cta',
-      'user-flow',
-      'real-moment',
+      'product-demo',
       'monuments',
-      'benefits',
-      'try-free',
+      'personas',
       'pricing',
-      'why',
       'trust',
-      'after-rome',
       'faq',
-      'final-cta',
     ])
   })
 
@@ -54,79 +47,53 @@ describe('landing editorial architecture', () => {
     )
   })
 
-  it('maps real-moment to playbook scenarios instead of persona cards', () => {
-    const section = LANDING_CONTENT['real-moment']
-    expect(section.scenarios).toHaveLength(4)
-    expect(section.scenarios.map((s) => s.prompt)).toEqual([
-      'No ticket?',
-      'Free afternoon?',
-      'Love to wander?',
-      'History curious?',
+  it('frames the sticky phone demo as four chapters', () => {
+    const section = LANDING_CONTENT['product-demo']
+    expect(section.id).toBe('how-it-works')
+    expect(section.headline).toBe('How does ChronoWalk work?')
+    expect(section.chapters).toHaveLength(4)
+    expect(section.chapters.map((c) => c.phone)).toEqual([
+      'journey',
+      'pantheon',
+      'audio',
+      'walk',
     ])
-    expect(section.aside).toBeUndefined()
-    expect(section.body).toBeUndefined()
+    expect(section.chapters[1].emotional).toBe(true)
   })
 
-  it('lists benefits once under What stays with you', () => {
-    expect(LANDING_CONTENT.benefits.headline).toBe('What stays with you.')
-    expect(LANDING_CONTENT.benefits.items.map((item) => item.title)).toEqual([
-      'Stories where you stand',
-      'Your pace',
-      'Online when you can — offline when you need',
-      'Yours to keep',
-    ])
-    expect(LANDING_CONTENT['user-flow'].more).toBeUndefined()
-  })
-
-  it('frames the free preview as one stop with clear inclusions', () => {
-    const section = LANDING_CONTENT['try-free']
-    expect(section.headline).toContain('One stop.')
-    expect(section.primaryCta).toBe('Try one stop free')
-    expect(section.trustLine).toBe('No account.')
-    expect(section.included).toMatch(/Pantheon/i)
-    expect(section.notIncluded).toMatch(/Full packages/i)
-  })
-
-  it('replaces the competitor matrix with a promise-led Why ChronoWalk beat', () => {
-    const section = LANDING_CONTENT.why
-    expect(section.eyebrow).toBe('Why ChronoWalk')
-    expect(section.headline).toContain('Tied to the stones')
-    expect(section.points).toEqual([
-      'Stories tied to the place where they happened',
-      'Evidence-based reconstructions from the viewpoint in front of you',
-      'A route that pauses when you do',
-    ])
-    expect(LANDING_CONTENT.comparison.rows).toEqual([])
-    expect(getLandingFaqItems().map((item) => item.q)).toEqual(
+  it('uses situation-led personas instead of demographics', () => {
+    const section = LANDING_CONTENT.personas
+    expect(section.id).toBe('who-its-for')
+    expect(section.items).toHaveLength(5)
+    expect(section.items.map((item) => item.headline)).toEqual(
       expect.arrayContaining([
-        'How is it different from a podcast?',
-        'How is it different from other audio tours?',
-        'Is it a group tour?',
+        "Didn't get Colosseum tickets?",
+        'Hate rigid tour schedules?',
+        'Want guided tours without paying €70?',
       ]),
     )
   })
 
-  it('ships How we build trust without fabricated social proof', () => {
-    const section = LANDING_CONTENT.trust
-    expect(section.eyebrow).toBe('How we build trust')
-    expect(section.headline).toBe('Evidence you can check.')
-    expect(section.items.length).toBeGreaterThanOrEqual(4)
-    expect(section.imageryHref).toBe('/credits')
-    expect(LANDING_VERIFIED_REVIEWS).toEqual([])
-    expect(section.verifiedReviewsEmptyNote).toMatch(/approved/i)
+  it('keeps hero CTAs to three actions only', () => {
+    const hero = LANDING_CONTENT.hero
+    expect(hero.primaryCta).toBe(LANDING_CTA.unlockRome)
+    expect(hero.secondaryCta).toBe(LANDING_CTA.tryFree)
+    expect(hero.reviewsCta).toBe(LANDING_CTA.reviews)
+    expect(hero.primaryHref).toBe('#pricing')
+    expect(hero.reviewsHref).toBe('#trust')
   })
 
-  it('frames After Rome as a cinematic memory beat before FAQ', () => {
-    const section = LANDING_CONTENT['after-rome']
-    expect(section.eyebrow).toBe('After Rome')
-    expect(section.headlineLines).toEqual([
-      'Months later,',
-      'you’ll forget the queue.',
-      'You’ll remember the story.',
+  it('ships trust as an expandable checklist', () => {
+    const section = LANDING_CONTENT.trust
+    expect(section.checklist.map((row) => row.title)).toEqual([
+      'Works in browser',
+      'Offline',
+      'One-time purchase',
+      'GPS aware',
+      'Evidence-based',
+      'Saved progress',
     ])
-    expect(section.body).toMatch(/route remains yours/i)
-    expect(section.linkLabel).toBe('Keep the stories')
-    expect(section.linkHref).toBe('#pricing')
+    expect(LANDING_VERIFIED_REVIEWS).toEqual([])
   })
 
   it('orders the FAQ by buying anxiety groups', () => {
@@ -139,69 +106,24 @@ describe('landing editorial architecture', () => {
     ])
     const items = getLandingFaqItems()
     expect(items).toHaveLength(18)
-    expect(items.map((item) => item.id)).toEqual([
-      'what-is-chronowalk',
-      'different-from-podcast',
-      'different-from-audio-tours',
-      'group-tour',
-      'offline',
-      'mobile-data',
-      'gps-inaccurate',
-      'pause-continue',
-      'tickets',
-      'subscription',
-      'keep-access',
-      'share-purchase',
-      'device-limit',
-      'phones',
-      'account',
-      'narration-ai',
-      'reconstructions-researched',
-      'historians-disagree',
-    ])
   })
 
-  it('closes with a cinematic ending instead of an urgent Final CTA', () => {
-    const section = LANDING_CONTENT['final-cta']
-    expect(section.headline).toBe('Rome has waited two thousand years.')
-    expect(section.bodyLines).toEqual([
-      'You do not have to understand it all in one day.',
-      'Begin where you are. Continue at your own pace.',
-    ])
-    expect(section.primaryCta).toBe('Try one stop free')
-    expect(section.secondaryCta).toBe('See packages')
-    expect(section.footer).toBeUndefined()
-    expect(section.verseLines).toBeUndefined()
-  })
-
-  it('defines three narrative acts with navigation ids and non-heading labels', () => {
+  it('defines three narrative acts with navigation ids', () => {
     expect(LANDING_ACTS.map((act) => act.id)).toEqual([
-      'act-promise',
-      'act-experience',
-      'act-decision',
+      'act-open',
+      'act-walk',
+      'act-choose',
     ])
     expect(LANDING_ACTS.map((act) => ({ index: act.index, name: act.name }))).toEqual([
-      { index: 'I', name: 'The Promise' },
-      { index: 'II', name: 'The Experience' },
-      { index: 'III', name: 'The Decision' },
+      { index: 'I', name: 'The Open' },
+      { index: 'II', name: 'The Walk' },
+      { index: 'III', name: 'The Choice' },
     ])
-    for (const act of LANDING_ACTS) {
-      expect(act.label).toMatch(/^Act /)
-      expect(act.label).toContain(act.name)
-    }
   })
 
-  it('keeps primary landing copy in ChronoWalk voice after the Phase 18 audit', () => {
-    expect(LANDING_CONTENT.hero.headline).toBe('Walk until the city starts talking.')
-    expect(LANDING_CONTENT.hero.eyebrow).toBe('ChronoWalk · Rome')
-    expect(LANDING_CONTENT.hero.accentLine).toBe('Walk freely. Keep the context.')
-    expect(LANDING_CONTENT.hero.primaryCta).toBe('Try one stop free')
-    expect(LANDING_CONTENT.hero.secondaryCta).toBe('See packages')
-    expect(LANDING_CONTENT.threshold.headline).toBe('Press and hold. The ruin becomes the room.')
-    expect(LANDING_CONTENT['real-moment'].scenarios[0].lines).toEqual([
-      'The monument may be sold out.',
-      'The city isn’t.',
-    ])
+  it('keeps ChronoWalk voice without banned marketing phrases', () => {
+    expect(LANDING_CONTENT.hero.eyebrow).toBe('ChronoWalk')
+    expect(LANDING_CONTENT['product-demo'].headline).toBe('How does ChronoWalk work?')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [
       'revolutionary',

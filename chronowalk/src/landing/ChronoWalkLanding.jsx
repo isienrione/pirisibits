@@ -2,22 +2,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
-import LandingSiteHeader from './LandingSiteHeader.jsx'
-import LandingHero from './LandingHero.jsx'
-import LandingEmotionalInterludeSection from './LandingEmotionalInterludeSection.jsx'
-import LandingThresholdSection from './LandingThresholdSection.jsx'
-import LandingEarlyCtaSection from './LandingEarlyCtaSection.jsx'
-import LandingUserFlowSection from './LandingUserFlowSection.jsx'
-import LandingRealMomentSection from './LandingRealMomentSection.jsx'
-import LandingMonumentsCarousel from './LandingMonumentsCarousel.jsx'
-import LandingBenefitsSection from './LandingBenefitsSection.jsx'
-import LandingTryFreeSection from './LandingTryFreeSection.jsx'
+import LandingIntroNav from './v4/LandingIntroNav.jsx'
+import LandingProductHero from './v4/LandingProductHero.jsx'
+import LandingProductDemo from './v4/LandingProductDemo.jsx'
+import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
+import LandingPersonas from './v4/LandingPersonas.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
-import LandingWhyChronoWalkSection from './LandingWhyChronoWalkSection.jsx'
-import LandingTrustProofSection from './LandingTrustProofSection.jsx'
+import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
-import LandingAfterRomeSection from './LandingAfterRomeSection.jsx'
-import LandingFinalCtaSectionV2 from './LandingFinalCtaSectionV2.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
@@ -39,11 +31,11 @@ import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
+import './ChronoWalkLanding.v4.css'
 
 /**
- * Premium landing — editorial three-act architecture.
- * Act I Promise → Act II Experience → Act III Decision.
- * Baseline preserved in archive/v3-premium-baseline-2026-07-14/.
+ * ChronoWalk Landing V4 — Apple-style product presentation.
+ * Sticky phone is the protagonist. Commerce / FAQ / SEO handlers preserved.
  */
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
@@ -126,68 +118,64 @@ export default function ChronoWalkLanding() {
     setCheckoutBusy(false)
   }, [cents, navigate, pendingTierId])
 
-  const [actPromise, actExperience, actDecision] = LANDING_ACTS
+  const [actOpen, actWalk, actChoose] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
 
   return (
-    <div className="cw-landing cw-landing--premium cw-landing--editorial">
+    <div className="cw-landing cw-landing--premium cw-landing--v4">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingSiteHeader onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HEADER)} />
+      <LandingIntroNav onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HEADER)} />
       <main>
         <LandingAct
-          id={actPromise.id}
-          label={actPromise.label}
-          index={actPromise.index}
-          name={actPromise.name}
+          id={actOpen.id}
+          label={actOpen.label}
+          index={actOpen.index}
+          name={actOpen.name}
         >
-          <LandingHero
+          <LandingProductHero
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.HERO)}
+            onUnlock={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.HERO)}
           />
-          <LandingEmotionalInterludeSection />
-          <LandingThresholdSection />
-          <LandingEarlyCtaSection onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.EARLY_CTA)} />
+          <LandingProductDemo />
         </LandingAct>
 
         <LandingAct
-          id={actExperience.id}
-          label={actExperience.label}
-          index={actExperience.index}
-          name={actExperience.name}
-          transition
+          id={actWalk.id}
+          label={actWalk.label}
+          index={actWalk.index}
+          name={actWalk.name}
         >
-          <LandingUserFlowSection />
-          <LandingRealMomentSection />
-          <LandingMonumentsCarousel />
-          <LandingBenefitsSection />
-          <LandingTryFreeSection
+          <LandingStopCarousel />
+          <LandingPersonas
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
           />
         </LandingAct>
 
         <LandingAct
-          id={actDecision.id}
-          label={actDecision.label}
-          index={actDecision.index}
-          name={actDecision.name}
-          transition
+          id={actChoose.id}
+          label={actChoose.label}
+          index={actChoose.index}
+          name={actChoose.name}
         >
           <LandingRomeTiersSection onBeginTier={handleBeginTier} />
           {/* Deep-link / SEO: pricing section is canonical; keep #rome-journey resolving. */}
-          <div id={ROME_JOURNEY_SECTION_ID} className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingWhyChronoWalkSection />
-          <LandingTrustProofSection />
-          <LandingAfterRomeSection onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.AFTER_ROME)} />
-          <LandingFaqSectionV2 />
-          <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          <LandingFinalCtaSectionV2
-            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
-            onRoutes={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)}
+          <div
+            id={ROME_JOURNEY_SECTION_ID}
+            className="cw-landing-deeplink-anchor"
+            tabIndex={-1}
+            aria-hidden="true"
           />
+          <LandingTrustChecklist />
+          {/* Legacy anchors preserved for existing hashes / SEO. */}
+          <div id="threshold" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <div id="benefits" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <div id="try-free" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <div id="compare" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <LandingFaqSectionV2 />
         </LandingAct>
       </main>
       <LandingSiteFooter />

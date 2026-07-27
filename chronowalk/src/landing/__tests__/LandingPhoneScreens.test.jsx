@@ -5,6 +5,8 @@ import {
   JourneyPickScreen,
   ListeningScreen,
   PreviewScreen,
+  PantheonStoryScreen,
+  WalkStoryScreen,
   LandingStepMockup,
 } from '../LandingPhoneScreens.jsx'
 
@@ -47,5 +49,22 @@ describe('LandingPhoneScreens', () => {
   it('can still render live HTML screens when mode=live', () => {
     render(<LandingStepMockup variant="listening" mode="live" />)
     expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+  })
+
+  it('renders Pantheon story reveal phases for the sticky phone', () => {
+    const { rerender, container } = render(<PantheonStoryScreen phase={0} />)
+    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
+    expect(container.querySelector('.cw-landing-screen__pantheon-then')).toBeTruthy()
+
+    rerender(<PantheonStoryScreen phase={2} />)
+    expect(screen.getByText(/revealed · ancient rome/i)).toBeInTheDocument()
+    expect(container.querySelector('.cw-landing-screen__pantheon-then.is-revealed')).toBeTruthy()
+  })
+
+  it('renders walk story overlays for map/steps/resume/continue', () => {
+    const { rerender } = render(<WalkStoryScreen phase={0} />)
+    expect(screen.getByText(/^map$/i)).toBeInTheDocument()
+    rerender(<WalkStoryScreen phase={2} />)
+    expect(screen.getByText(/paused · resume later/i)).toBeInTheDocument()
   })
 })

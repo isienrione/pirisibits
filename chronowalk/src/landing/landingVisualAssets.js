@@ -15,6 +15,8 @@ export const LANDING_COLOSSEUM_THEN_LOOP = mediaUrl(`${COLOSSEUM_EXTERIOR}/ancie
 /** Waypoint poster — used where a live “today” still is needed outside Threshold. */
 export const LANDING_COLOSSEUM_NOW_WAYPOINT = colosseumNow
 export const LANDING_PANTHEON_NOW = pantheonNow
+/** Evidence-based Pantheon reconstruction — sticky-phone Threshold reveal. */
+export const LANDING_PANTHEON_THEN = mediaUrl('/waypoints/pantheon/ancient-reconstruction.jpg')
 export const LANDING_FORUM_NOW = mediaUrl('/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg')
 
 /** Premium landing redesign — static showcase assets from design reference. */
