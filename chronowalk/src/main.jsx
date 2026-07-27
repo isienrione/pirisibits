@@ -5,6 +5,7 @@ import './design/tokens.css'
 import './redesign/redesign.css'
 import './index.css'
 import AppRouter from './app/AppRouter.jsx'
+import { bootstrapNativeShell } from './native/bootstrapNativeShell.js'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
@@ -13,6 +14,7 @@ import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
+  void bootstrapNativeShell()
 
   const motionQuery =
     typeof window.matchMedia === 'function'

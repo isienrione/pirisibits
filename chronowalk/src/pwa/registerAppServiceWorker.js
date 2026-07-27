@@ -1,3 +1,4 @@
+import { isNativeApp } from '../utils/nativePlatform.js'
 import {
   broadcastForceReload,
   hardReload,
@@ -9,20 +10,25 @@ import {
   unregisterAllServiceWorkers,
 } from './pwaCacheUtils.js'
 
+function createNoopController() {
+  return {
+    applyUpdate: () => {},
+    onNeedRefresh: () => () => {},
+    checkForAppUpdate: async () => {
+      if (typeof window !== 'undefined') window.location.reload()
+    },
+  }
+}
+
 /**
  * Registers the Workbox service worker in production and exposes update hooks.
  * iOS standalone PWAs often keep stale JS until the page reloads after a new SW activates.
  * Chrome installed PWAs can keep an old controller until caches are cleared and all tabs reload.
+ * Capacitor native shells skip SW registration — assets are bundled via `cap sync`.
  */
 export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.PROD } = {}) {
-  if (!isProd || typeof registerSW !== 'function') {
-    return {
-      applyUpdate: () => {},
-      onNeedRefresh: () => () => {},
-      checkForAppUpdate: async () => {
-        window.location.reload()
-      },
-    }
+  if (!isProd || typeof registerSW !== 'function' || isNativeApp()) {
+    return createNoopController()
   }
 
   const listeners = new Set()
