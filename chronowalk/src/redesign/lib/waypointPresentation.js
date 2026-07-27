@@ -65,21 +65,46 @@ export function resolvePhotoUrl(path) {
   return mediaUrl(path) ?? path
 }
 
-export function photoForWaypoint(waypoint) {
-  if (waypoint?.reconstruction?.now) return resolvePhotoUrl(waypoint.reconstruction.now)
+/** Merge waypoint reconstruction with an optional chapter-level override. */
+export function resolveWaypointReconstruction(waypoint, chapterIndex = 0) {
+  const chapter = waypoint?.chapters?.[chapterIndex]
+  const chapterRec =
+    chapter && typeof chapter === 'object' && chapter.reconstruction
+      ? chapter.reconstruction
+      : null
+  const base = waypoint?.reconstruction ?? null
+  if (!chapterRec && !base) return null
+
+  return {
+    now: chapterRec?.now ?? base?.now ?? null,
+    then: chapterRec?.then ?? base?.then ?? null,
+    loop: chapterRec?.loop ?? base?.loop ?? null,
+    caption: chapterRec?.caption ?? base?.caption ?? null,
+    era: chapterRec?.era ?? base?.era ?? null,
+    honesty: chapterRec?.honesty ?? base?.honesty ?? null,
+  }
+}
+
+export function photoForWaypoint(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  if (reconstruction?.now) return resolvePhotoUrl(reconstruction.now)
   if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (stopId) return getNowPhotoUrl(stopId)
   return getNowPhotoUrl('colosseum')
 }
 
-export function thenPhotoForWaypoint(waypoint) {
-  if (waypoint?.reconstruction?.loop) {
-    return resolvePhotoUrl(waypoint.reconstruction.now ?? waypoint.photo)
+export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+
+  if (reconstruction?.loop) {
+    // Prefer the ancient still as the video poster when available.
+    if (reconstruction.then) return resolvePhotoUrl(reconstruction.then)
+    return resolvePhotoUrl(reconstruction.now ?? waypoint?.photo)
   }
 
-  if (waypoint?.reconstruction?.then) {
-    return resolvePhotoUrl(waypoint.reconstruction.then)
+  if (reconstruction?.then) {
+    return resolvePhotoUrl(reconstruction.then)
   }
 
   if (waypoint?.id) {
@@ -92,11 +117,12 @@ export function thenPhotoForWaypoint(waypoint) {
     return getModernExteriorUrl(stopId)
   }
 
-  return photoForWaypoint(waypoint)
+  return photoForWaypoint(waypoint, chapterIndex)
 }
 
-export function thenLoopForWaypoint(waypoint) {
-  const loop = waypoint?.reconstruction?.loop ?? inferredReconstructionLoopPath(waypoint)
+export function thenLoopForWaypoint(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  const loop = reconstruction?.loop ?? inferredReconstructionLoopPath(waypoint)
   if (!loop) return null
   return resolvePhotoUrl(loop)
 }
@@ -127,9 +153,10 @@ export function hasImmersiveThreshold(waypoint) {
 }
 
 /** True when THEN uses a dedicated reconstruction asset (not poster fallback). */
-export function hasDistinctThenPhoto(waypoint) {
-  if (waypoint?.reconstruction?.loop) return true
-  if (waypoint?.reconstruction?.then) return true
+export function hasDistinctThenPhoto(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  if (reconstruction?.loop) return true
+  if (reconstruction?.then) return true
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (!stopId) return false
   const nowPath = waypoint?.photo ?? getModernPosterUrl(stopId)
@@ -137,23 +164,25 @@ export function hasDistinctThenPhoto(waypoint) {
   return nowPath !== thenPath
 }
 
-export function thenLabelForWaypoint(waypoint) {
-  return waypoint?.reconstruction?.era ?? waypoint?.era ?? 'ANCIENT ROME'
+export function thenLabelForWaypoint(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  return reconstruction?.era ?? waypoint?.era ?? 'ANCIENT ROME'
 }
 
-export function honestyCaptionForWaypoint(waypoint) {
+export function honestyCaptionForWaypoint(waypoint, chapterIndex = 0) {
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   return (
-    waypoint?.reconstruction?.caption ??
-    waypoint?.reconstruction?.honesty ??
+    reconstruction?.caption ??
+    reconstruction?.honesty ??
     'Interpretive reconstruction informed by archaeology and scholarship.'
   )
 }
 
 /** Tiny footer copy for reconstruction / present-day image sourcing. */
-export function reconstructionSourceNoteForWaypoint(waypoint) {
+export function reconstructionSourceNoteForWaypoint(waypoint, chapterIndex = 0) {
   const parts = []
-  const reconstructionCaption =
-    waypoint?.reconstruction?.caption ?? waypoint?.reconstruction?.honesty ?? null
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  const reconstructionCaption = reconstruction?.caption ?? reconstruction?.honesty ?? null
   if (reconstructionCaption) parts.push(reconstructionCaption)
   if (waypoint?.now_image?.source === 'ai_generated') {
     parts.push('Present-day view: AI-assisted rendering.')

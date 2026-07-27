@@ -25,6 +25,8 @@ const chapterSchema = z.union([
     file: z.string(),
     title: z.string().optional(),
     transcript: z.string().optional(),
+    /** Optional override for combined stops (e.g. Severus + Curia). */
+    reconstruction: reconstructionSchema.optional(),
   }),
 ])
 

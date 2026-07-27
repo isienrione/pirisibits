@@ -61,6 +61,7 @@ const FORUM_STOP_META = {
     lng: 12.48528,
     viewpoint: { lat: 41.89205, lng: 12.48505, heading: 55, pitch: 18 },
     subtitle: 'The Senate house — marble doors and the chamber where Rome decided its fate.',
+    mediaCacheVersion: 2,
   },
   'forum-arch-severus': {
     title: 'Arch of Septimius Severus',

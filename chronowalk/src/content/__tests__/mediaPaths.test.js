@@ -14,6 +14,8 @@ describe('collectManifestMediaPaths', () => {
     expect(paths).toContain('/waypoints/spanish-steps/modern-poster.jpg')
     expect(paths).toContain('/waypoints/spanish-steps/ancient-reconstruction.mp4')
     expect(paths).toContain('/waypoints/via-appia/modern-poster.jpg')
+    expect(paths).toContain('/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4')
+    expect(paths).toContain('/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.mp4')
     expect(paths.length).toBe(new Set(paths).size)
     expect(paths.length).toBeGreaterThanOrEqual(20)
   })

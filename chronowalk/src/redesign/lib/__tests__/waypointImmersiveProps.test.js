@@ -51,4 +51,31 @@ describe('waypointImmersiveProps', () => {
       '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.jpg',
     )
   })
+
+  it('uses Curia reconstruction media for the Curia chapter on w11_12', () => {
+    const waypoint = getWaypoint(manifest, 'w11_12')
+    const severusProps = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w11_12',
+      manifest,
+      chapterIndex: 0,
+    })
+    const curiaProps = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w11_12',
+      manifest,
+      chapterIndex: 1,
+    })
+
+    expect(severusProps.thenLoop).toContain(
+      '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4',
+    )
+    expect(curiaProps.thenLoop).toContain(
+      '/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.mp4',
+    )
+    expect(curiaProps.photo).toContain('/waypoints/forum-cluster/forum-curia-julia/modern-poster.jpg')
+    expect(curiaProps.thenPhoto).toContain(
+      '/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.jpg',
+    )
+  })
 })
