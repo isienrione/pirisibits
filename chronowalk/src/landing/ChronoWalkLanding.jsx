@@ -4,16 +4,18 @@ import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import RebuildHeader from './rebuild/RebuildHeader.jsx'
 import RebuildHero from './rebuild/RebuildHero.jsx'
 import RebuildPromise from './rebuild/RebuildPromise.jsx'
-import RebuildExperience from './rebuild/RebuildExperience.jsx'
-import RebuildJourney from './rebuild/RebuildJourney.jsx'
+import RebuildHearRome from './rebuild/RebuildHearRome.jsx'
+import RebuildRomeDay from './rebuild/RebuildRomeDay.jsx'
 import RebuildPantheonPreview from './rebuild/RebuildPantheonPreview.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
 import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
+import RebuildTrust from './rebuild/RebuildTrust.jsx'
 import RebuildFaq from './rebuild/RebuildFaq.jsx'
 import RebuildFinalCta from './rebuild/RebuildFinalCta.jsx'
 import RebuildStickyBar from './rebuild/RebuildStickyBar.jsx'
 import { scrollToLandingId } from './rebuild/scrollToId.js'
 import './rebuild/rebuild.css'
+import './rebuild/rebuild-phone.css'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import { LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
@@ -42,9 +44,9 @@ import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
 
 /**
- * ChronoWalk landing — one idea per scroll (Passes 2–6).
- * Hero → Ruin→Room → Experience → Journey → Pantheon →
- * Pricing → Couple/Family → FAQ → Final.
+ * ChronoWalk landing v4 — product-first experience.
+ * Hero phone → Promise → Hear Rome → One day map → Pantheon →
+ * Pricing → Couple/Family → Trust → FAQ → Final.
  * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
@@ -257,10 +259,11 @@ export default function ChronoWalkLanding() {
           supportLine={supportLine}
           onPrimary={handleHeroPrimary}
           onSecondary={handleHeroSecondary}
+          onPlayingChange={setAudioActive}
         />
         <RebuildPromise />
-        <RebuildExperience onPlayingChange={setAudioActive} />
-        {mode.showRoutePreview ? <RebuildJourney /> : null}
+        <RebuildHearRome onPlayingChange={setAudioActive} />
+        {mode.showRoutePreview ? <RebuildRomeDay /> : null}
         <RebuildPantheonPreview
           onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
         />
@@ -274,6 +277,7 @@ export default function ChronoWalkLanding() {
         ) : (
           <div id="walk-together" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         )}
+        <RebuildTrust />
         <RebuildFaq />
         <RebuildFinalCta
           onPrimary={() =>
@@ -284,8 +288,12 @@ export default function ChronoWalkLanding() {
         <div id="rome-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="letter" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="situations" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        <div id="threshold" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        <div id="product-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         {!mode.showRoutePreview ? (
           <>
+            <div id="rome-day" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+            <div id="flexible-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
             <div id="route-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
             <div id="adaptive-walk" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
           </>

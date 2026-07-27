@@ -1,7 +1,8 @@
+import { LANDING_COLOSSEUM_NOW } from '../landingVisualAssets.js'
 import { REBUILD_FINAL } from '../rebuildCopy.js'
 
 /**
- * Emotional final CTA — want to walk, not a sales pitch.
+ * Emotional final CTA with editorial photograph.
  * @param {{ onPrimary?: () => void, onSecondary?: () => void }} props
  */
 export default function RebuildFinalCta({ onPrimary, onSecondary }) {
@@ -10,11 +11,21 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
   return (
     <section
       id={copy.id}
-      className="cw-rb-final cw-rb-surface--dark"
+      className="cw-rb-final"
       aria-labelledby="final-cta-heading"
       data-rb-compete-cta="true"
     >
-      <div className="cw-rb-wrap cw-rb-wrap--narrow">
+      <figure className="cw-rb-final__media">
+        <img
+          src={LANDING_COLOSSEUM_NOW}
+          alt=""
+          width={1400}
+          height={900}
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div className="cw-rb-wrap cw-rb-wrap--narrow cw-rb-final__copy">
         <h2 id="final-cta-heading" className="cw-rb-title">
           {copy.headline}
         </h2>

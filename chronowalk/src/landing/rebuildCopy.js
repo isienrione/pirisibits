@@ -1,5 +1,5 @@
 /**
- * Editorial landing copy — one idea per section. Prefer deletion.
+ * Landing v4 — product-first editorial copy. Prefer demonstration over explanation.
  */
 import {
   CHECKOUT_REASSURANCE,
@@ -25,29 +25,29 @@ export const REBUILD_TRUST_STRIP = REBUILD_TRUST_CHIPS.join(' · ')
 
 export const REBUILD_HERO = {
   organic: {
-    eyebrow: 'Self-guided audio walk of Rome',
-    headlineLines: ['See what stood here.', 'Hear what happened.', 'Keep walking.'],
-    headline: 'See what stood here. Hear what happened. Keep walking.',
-    support: 'Audio and Then vs Now, tied to where you stand.',
+    eyebrow: 'ChronoWalk',
+    headlineLines: ['See what stood here.', 'Hear what happened.'],
+    headline: 'See what stood here. Hear what happened.',
+    support: 'Rome, unlocked from where you stand.',
     definition: `${eterna.stopCount} stops · ${eterna.priceLabel} once`,
     primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
     secondaryCta: 'Try the Pantheon stop free',
     reassurance: '',
   },
   geo: {
-    eyebrow: 'Self-guided audio walk of Rome',
+    eyebrow: 'ChronoWalk',
     headlineLines: ['Standing in front of history?', 'See what was here.'],
     headline: 'Standing in front of history? See what was here.',
-    support: 'Reveal Then and Now. Hear the place. Continue freely.',
+    support: 'Reveal Then and Now. Hear the place.',
     definition: `${eterna.stopCount} stops · ${eterna.priceLabel} once`,
     primaryCta: 'Try the Pantheon stop free',
     secondaryCta: `See the complete Rome walk · ${eterna.priceLabel}`,
     reassurance: '',
   },
   qr: {
-    eyebrow: 'Self-guided audio walk of Rome',
-    headlineLines: ['See what stood here.', 'Hear what happened.', 'Keep walking.'],
-    headline: 'See what stood here. Hear what happened. Keep walking.',
+    eyebrow: 'ChronoWalk',
+    headlineLines: ['See what stood here.', 'Hear what happened.'],
+    headline: 'See what stood here. Hear what happened.',
     support: 'Buy tonight. Open tomorrow from any stop.',
     definition: `${eterna.stopCount} stops · ${eterna.priceLabel} once`,
     primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
@@ -64,30 +64,36 @@ export const REBUILD_HERO_SUPPORT_EXP = Object.freeze({
 export const REBUILD_PROMISE = {
   id: 'promise',
   headline: 'The ruin becomes the room.',
-  body: '',
+  body: 'Fragments turn into a place you can finally feel.',
+}
+
+export const REBUILD_HEAR = {
+  id: 'hear-rome',
+  headline: 'Hear Rome.',
+  body: 'Narration tied to what is in front of you.',
+  transcript:
+    'You’re standing before the Pantheon. Look up at the porch—the columns, the pediment, the weight of the stone.',
 }
 
 export const REBUILD_EXPERIENCE = {
   id: 'experience',
-  thresholdHint: 'Press and hold',
+  thresholdHint: 'Drag the seam',
   tapAlternative: 'Or tap to reveal',
   playerLabel: 'Hear what happened here',
   teaserFile: 'w17_ch1.mp3',
-  transcript:
-    'You’re standing before the Pantheon. Look up at the porch—the columns, the pediment, the weight of the stone.',
+  transcript: REBUILD_HEAR.transcript,
   confidence: 'Where evidence is uncertain, ChronoWalk tells you.',
 }
 
 export const REBUILD_THRESHOLD = {
   eyebrow: 'Then vs Now',
   headline: 'The ruin becomes the room.',
-  explanation: 'Press and hold to compare Then and Now.',
-  instruction: 'Press and hold',
+  explanation: 'Drag the seam to compare Then and Now.',
+  instruction: 'Drag the seam',
   tapAlternative: 'Or tap to reveal',
   methodology: 'Where evidence is uncertain, ChronoWalk tells you.',
 }
 
-/** Legacy stub — proof is now RebuildExperience. */
 export const REBUILD_PROOF = {
   id: 'product-proof',
   headline: '',
@@ -98,21 +104,46 @@ export const REBUILD_PROOF = {
 
 export const REBUILD_AUDIO = {
   id: 'audio-proof',
-  headline: '',
-  body: '',
-  playerLabel: REBUILD_EXPERIENCE.playerLabel,
+  headline: REBUILD_HEAR.headline,
+  body: REBUILD_HEAR.body,
+  playerLabel: 'Hear what happened here',
   headphones: '',
   wantComplete: '',
   previewCta: 'Try the Pantheon free',
   previewNote: '',
-  teaserFile: REBUILD_EXPERIENCE.teaserFile,
-  transcript: REBUILD_EXPERIENCE.transcript,
+  teaserFile: 'w17_ch1.mp3',
+  transcript: REBUILD_HEAR.transcript,
+}
+
+export const REBUILD_ROME_DAY = {
+  id: 'rome-day',
+  headline: 'Rome becomes one continuous story.',
+  body: 'Begin anywhere. Wander freely. ChronoWalk always knows where to continue.',
+  scenarios: [
+    'Start at the Colosseum',
+    'Pause for lunch',
+    'Visit another attraction',
+    'Return later',
+    'Continue instantly',
+  ],
+  highlights: [
+    'colosseum',
+    'forum-via-sacra',
+    'palatine-hill-cluster',
+    'capitoline-hill',
+    'pantheon',
+    'piazza-navona',
+    'fontana-di-trevi',
+    'spanish-steps',
+    'circus-maximus',
+    'appian-way',
+  ],
 }
 
 export const REBUILD_JOURNEY = {
   id: 'flexible-journey',
-  headline: 'Start anywhere. Return anytime.',
-  body: 'Your place stays saved when Rome interrupts your day.',
+  headline: REBUILD_ROME_DAY.headline,
+  body: REBUILD_ROME_DAY.body,
 }
 
 export const REBUILD_PANTHEON = {
@@ -120,7 +151,7 @@ export const REBUILD_PANTHEON = {
   label: 'Free',
   badge: 'Complete stop',
   headline: 'Try the Pantheon free',
-  body: '',
+  body: 'No purchase required.',
   cta: 'Start free',
   reassurance: 'No purchase required',
 }
@@ -143,7 +174,6 @@ export const REBUILD_PRICING = {
     `All ${eterna.stopCount} stops`,
     'Audio and Then vs Now',
     'Start at any stop',
-    'Offline prep · saved progress',
   ],
   eternaCta: `Unlock all ${eterna.stopCount} · ${eterna.priceLabel}`,
   valueCompare: `Only ${eternaUpgradeDeltaLabel()} more than a shorter route.`,
@@ -199,10 +229,23 @@ export const REBUILD_WALK_TOGETHER = {
   syncNote: 'Shared progress stays connected. Exact audio sync is not guaranteed.',
 }
 
+export const REBUILD_TRUST = {
+  id: 'trust',
+  headline: 'Built for walking Rome.',
+  cards: [
+    { title: 'Works in browser', body: 'No app install.' },
+    { title: 'Offline after download', body: 'Prepare on Wi‑Fi, then walk.' },
+    { title: 'One-time purchase', body: 'No subscription.' },
+    { title: 'Secure checkout', body: 'Paddle.' },
+    { title: 'Real historians', body: 'Evidence-based reconstructions.' },
+    { title: 'Saved progress', body: 'Pause and return anytime.' },
+  ],
+}
+
 export const REBUILD_ADAPTIVE = {
   id: 'adaptive-walk',
-  headline: REBUILD_JOURNEY.headline,
-  promise: REBUILD_JOURNEY.body,
+  headline: REBUILD_ROME_DAY.headline,
+  promise: REBUILD_ROME_DAY.body,
   steps: [],
   locationNote: '',
 }
@@ -216,8 +259,8 @@ export const REBUILD_CURATED = {
 
 export const REBUILD_ROUTE = {
   id: 'route-proof',
-  headline: REBUILD_JOURNEY.headline,
-  subhead: REBUILD_JOURNEY.body,
+  headline: REBUILD_ROME_DAY.headline,
+  subhead: REBUILD_ROME_DAY.body,
   stopsLabel: `${eterna.stopCount} stops`,
   expandLabel: `See all ${eterna.stopCount} stops`,
   collapseLabel: 'Hide list',
@@ -293,8 +336,8 @@ export const REBUILD_FINAL = {
 
 export const REBUILD_PROPOSITIONS = {
   guide: {
-    primary: REBUILD_JOURNEY.headline,
-    support: REBUILD_JOURNEY.body,
+    primary: REBUILD_ROME_DAY.headline,
+    support: REBUILD_ROME_DAY.body,
   },
   past: {
     primary: 'See what is here. Reveal what was here.',
@@ -306,8 +349,8 @@ export const REBUILD_PROPOSITIONS = {
     support: '',
   },
   work: {
-    primary: REBUILD_JOURNEY.headline,
-    support: REBUILD_JOURNEY.body,
+    primary: REBUILD_ROME_DAY.headline,
+    support: REBUILD_ROME_DAY.body,
   },
 }
 

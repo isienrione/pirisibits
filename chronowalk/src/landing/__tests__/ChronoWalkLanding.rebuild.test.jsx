@@ -44,18 +44,23 @@ describe('ChronoWalkLanding rebuild', () => {
     cleanup()
   })
 
-  it('renders the ten-section story hierarchy', () => {
+  it('renders the product-first v4 hierarchy', () => {
     renderLanding()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/See what stood here/i)
     expect(screen.getByRole('heading', { name: /ruin becomes the room/i })).toBeInTheDocument()
-    expect(screen.getByLabelText(/Try ChronoWalk/i)).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Start anywhere/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /^Hear Rome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /continuous story/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Try the Pantheon free/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Choose your Rome walk/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Share the walk/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Built for walking Rome/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Before you walk/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Rome is already around you/i })).toBeInTheDocument()
-    expect(screen.getAllByText(/The complete Rome walk/i).length).toBeGreaterThan(0)
+    expect(screen.getByLabelText(/ChronoWalk at the Pantheon/i)).toBeInTheDocument()
+    expect(screen.getByText(/^Walk$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^Tour$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^Map$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^Journal$/i)).toBeInTheDocument()
     expect(
       screen.getAllByRole('button', {
         name: new RegExp(`Unlock all ${LANDING_PRODUCT.eterna.stopCount}`),
@@ -63,7 +68,6 @@ describe('ChronoWalkLanding rebuild', () => {
     ).toBeGreaterThan(0)
     expect(screen.queryByText(/Most Popular/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Everything follows where you are/i)).not.toBeInTheDocument()
-    expect(screen.queryByText(/Lunch/i)).not.toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/\b18 stops\b|\b22 stops\b/)
   })
 
@@ -78,7 +82,7 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Standing in front of history/i)
     expect(screen.getAllByRole('button', { name: /Try the Pantheon stop free/i }).length).toBeGreaterThan(0)
     expect(screen.queryByRole('heading', { name: /Choose your Rome walk/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: /Start anywhere/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /continuous story/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /Share the walk/i })).not.toBeInTheDocument()
   })
 
@@ -93,11 +97,10 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByText(/Recommended by your host/i)).toBeInTheDocument()
   })
 
-  it('keeps a compact header brand unit with trust chips', () => {
+  it('keeps a compact header brand unit', () => {
     renderLanding()
     expect(document.querySelector('.cw-rb-header')).toBeTruthy()
     expect(document.querySelector('.cw-rb-header__trust')).toBeTruthy()
-    expect(document.querySelector('.cw-rb-header__chips')).toBeTruthy()
     expect(screen.queryByRole('button', { name: /^Try free$/i })).not.toBeInTheDocument()
   })
 
@@ -106,13 +109,10 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.queryByRole('heading', { name: /What kind of Rome day/i })).not.toBeInTheDocument()
   })
 
-  it('ships one connected experience demo without proof tabs', () => {
+  it('ships an interactive product phone instead of proof tabs', () => {
     renderLanding()
     expect(screen.queryByRole('tab')).not.toBeInTheDocument()
-    expect(document.getElementById('experience')).toBeTruthy()
-    expect(document.getElementById('then-vs-now')).toBeTruthy()
-    expect(document.getElementById('audio-demo')).toBeTruthy()
-    expect(screen.getByText(/Hear what happened here/i)).toBeInTheDocument()
-    expect(screen.getByText(/Where evidence is uncertain/i)).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: /Then versus Now/i })).toBeInTheDocument()
+    expect(screen.getAllByLabelText(/Play narration|Pause narration/i).length).toBeGreaterThan(0)
   })
 })

@@ -1,0 +1,216 @@
+.cw-landing-phone {
+  --phone-art-w: 390;
+  --phone-art-h: 844;
+  --phone-display-w: 17rem;
+  width: var(--phone-display-w);
+  max-width: 100%;
+  margin-inline: auto;
+  container-type: inline-size;
+  container-name: phone;
+  /* Side buttons sit outside the shell; keep them visible in parents. */
+  overflow: visible;
+}
+
+.cw-landing-phone--sm { --phone-display-w: 14rem; }
+.cw-landing-phone--md { --phone-display-w: 17rem; }
+.cw-landing-phone--lg { --phone-display-w: 19.5rem; }
+.cw-landing-phone--xl { --phone-display-w: 22rem; }
+
+.cw-landing-phone__shell {
+  position: relative;
+  border-radius: 16.5cqw;
+  /* Thin titanium rim — more screen, less chunky bezel */
+  padding: 1.85cqw;
+  background:
+    linear-gradient(145deg, #5c574f 0%, #2a2622 28%, #12100e 62%, #3a352f 100%);
+  box-shadow:
+    0 1.75rem 3.5rem rgba(0, 0, 0, 0.45),
+    0 0.35rem 0.85rem rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+}
+
+.cw-landing-phone__btn {
+  position: absolute;
+  background: linear-gradient(90deg, #1a1714, #3d3832 45%, #161310);
+  border-radius: 0.8cqw;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  z-index: 4;
+}
+
+.cw-landing-phone__btn--silent {
+  left: -0.7cqw;
+  top: 40cqw;
+  width: 1cqw;
+  height: 6.8cqw;
+}
+
+.cw-landing-phone__btn--vol-up {
+  left: -0.7cqw;
+  top: 52.5cqw;
+  width: 1cqw;
+  height: 10cqw;
+}
+
+.cw-landing-phone__btn--vol-down {
+  left: -0.7cqw;
+  top: 65cqw;
+  width: 1cqw;
+  height: 10cqw;
+}
+
+.cw-landing-phone__btn--power {
+  right: -0.7cqw;
+  top: 55.5cqw;
+  width: 1cqw;
+  height: 15.2cqw;
+}
+
+.cw-landing-phone__bezel {
+  position: relative;
+  border-radius: 13.6cqw;
+  overflow: hidden;
+  background: #050403;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.cw-landing-phone__island {
+  position: absolute;
+  z-index: 5;
+  top: 4.6cqw;
+  left: 50%;
+  width: 36cqw;
+  height: 6.8cqw;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #050403;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 0 0.5px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+.cw-landing-phone__island-lens {
+  position: absolute;
+  top: 50%;
+  right: 2.7cqw;
+  width: 3.1cqw;
+  height: 3.1cqw;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background:
+    radial-gradient(circle at 35% 35%, #4a6a88, #0b1018 68%),
+    #0b1018;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.cw-landing-phone__island-mic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.4cqw;
+  height: 1.4cqw;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: #1a1a1f;
+}
+
+.cw-landing-phone__home {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 2.4cqw;
+  width: 40cqw;
+  height: 1.4cqw;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: rgba(250, 246, 239, 0.55);
+  pointer-events: none;
+}
+
+.cw-landing-phone__screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 13.2cqw;
+  background: #0b0b0d;
+  aspect-ratio: 390 / 844;
+  /* Artboard scale must use the screen width — not the outer shell. */
+  container-type: inline-size;
+  container-name: phone-screen;
+}
+
+/* Marketing stills fill the screen edge-to-edge (product-shot style). */
+.cw-landing-phone__shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.cw-landing-phone__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cw-landing-phone__artboard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 390px;
+  height: 844px;
+  transform: scale(calc(100cqw / 390));
+  transform-origin: top left;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cw-landing-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  box-sizing: border-box;
+}
+
+.cw-landing-screen__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 246, 239, 0.18);
+  background: rgba(12, 12, 14, 0.45);
+  color: #faf6ef;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.cw-landing-screen__tabbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-top: auto;
+  padding: 0.75rem 1.25rem 1.35rem;
+}
+
+.cw-landing-screen__tabbar-item {
+  height: 1.35rem;
+  border-radius: 0.35rem;
+  background: rgba(250, 246, 239, 0.18);
+}
+
+.cw-landing-screen__tabbar-item--on {
+  background: rgba(250, 246, 239, 0.55);
+}
+
+/* Route overview */
