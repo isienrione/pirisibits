@@ -44,7 +44,7 @@ describe('ChronoWalkLanding rebuild', () => {
     cleanup()
   })
 
-  it('renders the product-first v4 hierarchy', () => {
+  it('renders the product-first v4 hierarchy', async () => {
     renderLanding()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/See what stood here/i)
     expect(screen.getByRole('heading', { name: /ruin becomes the room/i })).toBeInTheDocument()
@@ -57,10 +57,10 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.getByRole('heading', { name: /Before you walk/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Rome is already around you/i })).toBeInTheDocument()
     expect(screen.getByLabelText(/ChronoWalk at the Pantheon/i)).toBeInTheDocument()
-    expect(screen.getByText(/^Walk$/i)).toBeInTheDocument()
-    expect(screen.getByText(/^Tour$/i)).toBeInTheDocument()
-    expect(screen.getByText(/^Map$/i)).toBeInTheDocument()
-    expect(screen.getByText(/^Journal$/i)).toBeInTheDocument()
+    expect(await screen.findByText(/FREE PREVIEW/i)).toBeInTheDocument()
+    expect(screen.getByText(/^The Pantheon$/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Audio$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Read instead/i })).toBeInTheDocument()
     expect(
       screen.getAllByRole('button', {
         name: new RegExp(`Unlock all ${LANDING_PRODUCT.eterna.stopCount}`),
@@ -114,10 +114,11 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(screen.queryByRole('heading', { name: /What kind of Rome day/i })).not.toBeInTheDocument()
   })
 
-  it('ships an interactive product phone instead of proof tabs', () => {
+  it('ships the real Pantheon free-preview player in the hero phone', async () => {
     renderLanding()
     expect(screen.queryByRole('tab')).not.toBeInTheDocument()
-    expect(screen.getByRole('slider', { name: /Then versus Now/i })).toBeInTheDocument()
-    expect(screen.getAllByLabelText(/Play narration|Pause narration/i).length).toBeGreaterThan(0)
+    expect(await screen.findByTestId('waypoint-immersive')).toBeInTheDocument()
+    expect(screen.getByLabelText(/Press and hold to cross/i)).toBeInTheDocument()
+    expect(screen.getAllByLabelText(/Play narration|Pause narration|Play|Pause/i).length).toBeGreaterThan(0)
   })
 })

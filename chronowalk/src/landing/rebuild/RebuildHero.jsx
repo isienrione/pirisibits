@@ -1,9 +1,10 @@
-import { REBUILD_HERO } from '../rebuildCopy.js'
+import { REBUILD_HERO, REBUILD_HERO_TRUST_CHIPS } from '../rebuildCopy.js'
 import RebuildProductPhone from './RebuildProductPhone.jsx'
 
 /**
- * Product-first hero. Phone is the excitement; chrome stays quiet.
- * Act I CTA — curiosity.
+ * Hero 2.0 — real Pantheon product as the centerpiece.
+ * Hierarchy: headline → phone → CTAs → quiet trust.
+ *
  * @param {{
  *   mode?: { id?: string }
  *   host?: { label?: string } | null
@@ -33,8 +34,6 @@ export default function RebuildHero({
           <p className="cw-rb-hero__host">Recommended by {host.label}</p>
         ) : null}
 
-        <RebuildProductPhone className="cw-rb-hero__phone" onPlayingChange={onPlayingChange} />
-
         <div className="cw-rb-hero__copy">
           <h1 id="rebuild-hero-heading" className="cw-rb-hero__headline">
             {lines.map((line) => (
@@ -45,6 +44,12 @@ export default function RebuildHero({
           </h1>
           {support ? <p className="cw-rb-hero__support">{support}</p> : null}
         </div>
+
+        <RebuildProductPhone
+          className="cw-rb-hero__phone"
+          onPlayingChange={onPlayingChange}
+          onContinue={onPrimary}
+        />
 
         <div className="cw-rb-hero__cta">
           <button
@@ -63,6 +68,10 @@ export default function RebuildHero({
             {copy.secondaryCta}
           </button>
         </div>
+
+        <p className="cw-rb-hero__trust" aria-label="Product trust">
+          {REBUILD_HERO_TRUST_CHIPS.join(' · ')}
+        </p>
       </div>
     </section>
   )

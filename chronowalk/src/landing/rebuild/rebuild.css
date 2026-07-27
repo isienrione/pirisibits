@@ -372,24 +372,31 @@
 .cw-rb-hero {
   background: var(--rb-day);
   color: var(--rb-ink);
-  padding: 1rem 0 3.5rem;
+  padding: 1.25rem 0 3.75rem;
 }
 
 .cw-rb-hero__inner {
   display: grid;
-  gap: 1.35rem;
+  gap: 1.5rem;
   justify-items: center;
   text-align: center;
 }
 
 .cw-rb-hero__phone {
-  width: min(100%, 24.5rem);
-  margin-top: 0.5rem;
+  width: min(100%, 30.25rem);
+  margin-top: 0.15rem;
+  perspective: 1200px;
+}
+
+.cw-rb-hero__phone .cw-landing-phone__shell {
+  transform: rotateX(1.5deg) rotateY(-2.5deg);
+  transform-style: preserve-3d;
 }
 
 .cw-rb-hero__copy {
   width: min(100%, 22rem);
-  margin-top: 0.35rem;
+  margin-top: 0.15rem;
+  order: -1;
 }
 
 .cw-rb-hero__brand {
@@ -400,7 +407,7 @@
   margin: 0;
   font-size: 0.8rem;
   color: var(--rb-muted);
-  order: -1;
+  order: -2;
 }
 
 .cw-rb-hero__headline {
@@ -425,7 +432,13 @@
 }
 
 .cw-rb-hero__trust {
-  display: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  max-width: 22rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--rb-muted);
+  letter-spacing: 0.01em;
 }
 
 .cw-rb-hero__proof {
@@ -435,7 +448,7 @@
 .cw-rb-hero__cta {
   display: grid;
   gap: 0.45rem;
-  margin-top: 0.35rem;
+  margin-top: 0.15rem;
   width: min(100%, 20rem);
 }
 
@@ -460,18 +473,37 @@
 
 @media (min-width: 64rem) {
   .cw-rb-hero {
-    padding: 1.5rem 0 4.5rem;
+    padding: 1.75rem 0 5rem;
   }
 
   .cw-rb-hero__inner {
-    max-width: 42rem;
+    max-width: 44rem;
     margin-inline: auto;
-    gap: 1.6rem;
+    gap: 1.75rem;
   }
 
   .cw-rb-hero__phone {
-    width: min(100%, 25.5rem);
+    width: min(100%, 31rem);
   }
+}
+
+/* Real Pantheon app inside the phone artboard */
+.cw-rb-product-phone-wrap--hero {
+  width: min(100%, 30.25rem);
+  margin-inline: auto;
+  filter: drop-shadow(0 28px 48px color-mix(in srgb, var(--rb-ink) 18%, transparent));
+}
+
+.cw-rb-product-phone__app,
+.cw-rb-product-phone__boot {
+  width: 100%;
+  height: 100%;
+  background: #0b0b0c;
+}
+
+.cw-rb-product-phone__app {
+  position: relative;
+  overflow: hidden;
 }
 
 /* —— Editorial photography rhythm —— */
@@ -1766,6 +1798,10 @@
 
 .cw-rb-product-phone-wrap .cw-landing-phone--xl {
   --phone-display-w: min(24.5rem, 90vw);
+}
+
+.cw-rb-product-phone-wrap .cw-landing-phone--hero {
+  --phone-display-w: min(30.25rem, 92vw);
 }
 
 .cw-rb-product-phone {
