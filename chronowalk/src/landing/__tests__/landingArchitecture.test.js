@@ -36,12 +36,15 @@ describe('landing rebuild architecture', () => {
     expect(ROME_TIERS.find((t) => t.id === 'rome-complete').bullets[0]).toMatch(/All 21 stops/)
   })
 
-  it('defines clarity-first hero copy without equal CTA prominence language', () => {
+  it('paces CTAs like a film: curiosity → commitment → urgency', () => {
     expect(REBUILD_HERO.organic.headline).toMatch(/See what stood here/i)
-    expect(REBUILD_HERO.organic.primaryCta).toMatch(/Unlock all 21 stops/i)
-    expect(REBUILD_HERO.organic.secondaryCta).toMatch(/Pantheon/i)
+    expect(REBUILD_HERO.organic.primaryCta).toMatch(/Pantheon/i)
+    expect(REBUILD_HERO.organic.secondaryCta).toMatch(/complete Rome walk/i)
     expect(REBUILD_HERO.geo.primaryCta).toMatch(/Pantheon/i)
     expect(REBUILD_HERO.qr.support).toMatch(/Buy tonight/i)
+    expect(REBUILD_PRICING.eternaCta).toMatch(/Unlock all 21/i)
+    expect(LANDING_MODES.organic.primaryAction).toBe('preview')
+    expect(LANDING_MODES.qr.primaryAction).toBe('preview')
   })
 
   it('keeps Threshold brand line with plain explanation', () => {

@@ -51,7 +51,7 @@ export default function RebuildWalkTogether({ onBeginTier }) {
               ) : null}
               <button
                 type="button"
-                className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+                className="cw-rb-btn cw-rb-btn--secondary cw-rb-btn--block"
                 onClick={() => onBeginTier?.(plan.id, 'walk-together')}
               >
                 {plan.label}

@@ -71,10 +71,15 @@ describe('ChronoWalkLanding rebuild', () => {
     expect(document.body.textContent).not.toMatch(/\b18 stops\b|\b22 stops\b/)
   })
 
-  it('uses purchase-first hero CTAs in organic mode', () => {
+  it('uses curiosity-first hero CTAs in organic mode', () => {
     renderLanding()
+    const heroPrimary = document.getElementById('hero-primary-cta')
+    expect(heroPrimary).toHaveTextContent(/Try the Pantheon stop free/i)
+    expect(heroPrimary).toHaveClass('cw-rb-btn--curiosity')
+    expect(screen.getAllByRole('button', { name: /See the complete Rome walk/i }).length).toBeGreaterThan(0)
     expect(screen.getAllByRole('button', { name: /Unlock all 21 stops/i }).length).toBeGreaterThan(0)
-    expect(screen.getAllByRole('button', { name: /Try the Pantheon stop free/i }).length).toBeGreaterThan(0)
+    expect(document.querySelector('.cw-rb-btn--urgency')).toBeTruthy()
+    expect(document.querySelector('.cw-rb-pricing .cw-rb-btn--commit')).toBeTruthy()
   })
 
   it('switches geo mode to preview-first primary CTA and omits planning sections', () => {

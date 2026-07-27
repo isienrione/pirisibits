@@ -38,7 +38,7 @@ export default function RebuildPantheonPreview({ onPreview }) {
             </h2>
             <button
               type="button"
-              className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block cw-rb-pantheon__cta"
+              className="cw-rb-btn cw-rb-btn--soft cw-rb-btn--block cw-rb-pantheon__cta"
               onClick={onPreview}
             >
               {copy.cta}

@@ -206,10 +206,91 @@
   background: color-mix(in srgb, var(--rb-terracotta) 92%, #fff 8%);
 }
 
+/** Act I — curiosity: invite, don’t shout. */
+.cw-rb-btn--curiosity {
+  background: color-mix(in srgb, #fff 55%, var(--rb-day));
+  color: var(--rb-ink);
+  border-color: color-mix(in srgb, var(--rb-ink) 18%, transparent);
+  font-weight: 600;
+  min-height: 3rem;
+  box-shadow: 0 1px 0 color-mix(in srgb, #fff 70%, transparent) inset;
+}
+
+.cw-rb-btn--curiosity:hover {
+  border-color: color-mix(in srgb, var(--rb-terracotta) 45%, transparent);
+  color: color-mix(in srgb, var(--rb-ink) 85%, var(--rb-terracotta));
+}
+
+/** Soft mid-beat (free stop) — warmer than curiosity, quieter than commit. */
+.cw-rb-btn--soft {
+  background: color-mix(in srgb, var(--rb-terracotta) 12%, var(--rb-day));
+  color: color-mix(in srgb, var(--rb-ink) 82%, var(--rb-terracotta));
+  border-color: color-mix(in srgb, var(--rb-terracotta) 38%, transparent);
+  font-weight: 650;
+  min-height: 3.25rem;
+}
+
+.cw-rb-btn--soft:hover {
+  background: color-mix(in srgb, var(--rb-terracotta) 18%, var(--rb-day));
+}
+
+/** Act II — commitment: the purchase ask. */
+.cw-rb-btn--commit {
+  background: var(--rb-terracotta);
+  color: var(--rb-bone);
+  border-color: color-mix(in srgb, var(--rb-terracotta) 80%, #000);
+  font-weight: 700;
+  min-height: 3.5rem;
+  font-size: 1.02rem;
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--rb-terracotta) 22%, transparent);
+}
+
+.cw-rb-btn--commit:hover {
+  background: color-mix(in srgb, var(--rb-terracotta) 92%, #fff 8%);
+}
+
+/** Act III — urgency: loudest beat on the page. */
+.cw-rb-btn--urgency {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--rb-terracotta) 88%, var(--rb-gold) 12%) 0%,
+    var(--rb-terracotta) 100%
+  );
+  color: var(--rb-bone);
+  border-color: color-mix(in srgb, var(--rb-gold) 42%, var(--rb-terracotta));
+  font-weight: 750;
+  min-height: 3.85rem;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--rb-gold) 28%, transparent),
+    0 14px 32px color-mix(in srgb, var(--rb-terracotta) 35%, transparent);
+}
+
+.cw-rb-btn--urgency:hover {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--rb-terracotta) 78%, var(--rb-gold) 22%) 0%,
+    color-mix(in srgb, var(--rb-terracotta) 94%, #fff 6%) 100%
+  );
+}
+
 .cw-rb-btn--secondary {
   background: transparent;
   color: inherit;
   border-color: color-mix(in srgb, currentColor 28%, transparent);
+}
+
+.cw-rb-together .cw-rb-btn--secondary {
+  color: var(--rb-bone);
+  border-color: color-mix(in srgb, var(--rb-gold) 35%, transparent);
+  min-height: 3rem;
+  font-weight: 600;
+}
+
+.cw-rb-together .cw-rb-btn--secondary:hover {
+  border-color: color-mix(in srgb, var(--rb-gold) 55%, transparent);
+  background: color-mix(in srgb, var(--rb-bone) 6%, transparent);
 }
 
 .cw-rb-btn--ghost {
@@ -388,14 +469,17 @@
   width: min(100%, 22rem);
 }
 
-.cw-rb-hero__cta .cw-rb-btn--primary {
-  min-height: 3.15rem;
+.cw-rb-hero__cta .cw-rb-btn--curiosity {
+  min-height: 2.95rem;
+  font-size: 0.95rem;
 }
 
 .cw-rb-hero__secondary {
   justify-self: center;
   color: var(--rb-muted-ink);
   min-height: 2.4rem;
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 .cw-rb-hero__reassurance {
@@ -1027,8 +1111,8 @@
 }
 
 .cw-rb-pantheon__cta {
-  min-height: 3.5rem;
-  font-size: 1.02rem;
+  min-height: 3.35rem;
+  font-size: 1rem;
 }
 
 .cw-rb-pantheon__note {
@@ -1140,9 +1224,9 @@
   background: var(--rb-gold);
 }
 
-.cw-rb-pricing__featured .cw-rb-btn--primary {
-  min-height: 3.5rem;
-  font-size: 1.02rem;
+.cw-rb-pricing__featured .cw-rb-btn--commit {
+  min-height: 3.55rem;
+  font-size: 1.04rem;
 }
 
 .cw-rb-pricing__value {
@@ -1536,14 +1620,33 @@
 
 .cw-rb-final__actions {
   display: grid;
-  gap: 0.2rem;
-  margin-top: 1.25rem;
+  gap: 0.35rem;
+  margin-top: 1.35rem;
   max-width: 22rem;
   margin-inline: auto;
 }
 
+.cw-rb-final__actions .cw-rb-btn--urgency {
+  animation: cw-rb-urgency-pulse 2.8s var(--rb-ease) infinite;
+}
+
 .cw-rb-final__actions .cw-rb-btn--ghost {
   color: var(--rb-muted-light);
+  font-size: 0.88rem;
+}
+
+@keyframes cw-rb-urgency-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--rb-gold) 28%, transparent),
+      0 14px 32px color-mix(in srgb, var(--rb-terracotta) 35%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--rb-gold) 48%, transparent),
+      0 16px 36px color-mix(in srgb, var(--rb-terracotta) 42%, transparent);
+  }
 }
 
 .cw-rb-final__reassurance {
@@ -2284,14 +2387,33 @@
 
 .cw-rb-final__actions {
   display: grid;
-  gap: 0.2rem;
-  margin-top: 1.25rem;
+  gap: 0.35rem;
+  margin-top: 1.35rem;
   max-width: 22rem;
   margin-inline: auto;
 }
 
+.cw-rb-final__actions .cw-rb-btn--urgency {
+  animation: cw-rb-urgency-pulse 2.8s var(--rb-ease) infinite;
+}
+
 .cw-rb-final__actions .cw-rb-btn--ghost {
   color: var(--rb-muted-light);
+  font-size: 0.88rem;
+}
+
+@keyframes cw-rb-urgency-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--rb-gold) 28%, transparent),
+      0 14px 32px color-mix(in srgb, var(--rb-terracotta) 35%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--rb-gold) 48%, transparent),
+      0 16px 36px color-mix(in srgb, var(--rb-terracotta) 42%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

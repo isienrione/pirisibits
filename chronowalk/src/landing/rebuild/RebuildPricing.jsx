@@ -54,7 +54,7 @@ export default function RebuildPricing({ onBeginTier }) {
           ) : null}
           <button
             type="button"
-            className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+            className="cw-rb-btn cw-rb-btn--commit cw-rb-btn--block"
             onClick={() => onBeginTier?.(eterna?.id ?? 'rome-complete')}
           >
             {copy.eternaCta}

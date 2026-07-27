@@ -42,7 +42,7 @@ export default function RebuildStickyBar({
         </div>
         <button
           type="button"
-          className="cw-rb-btn cw-rb-btn--primary cw-rb-sticky__btn"
+          className="cw-rb-btn cw-rb-btn--commit cw-rb-sticky__btn"
           onClick={showPreviewPrimary ? onPreview : onPurchase}
         >
           {showPreviewPrimary ? 'Try free' : 'Unlock'}

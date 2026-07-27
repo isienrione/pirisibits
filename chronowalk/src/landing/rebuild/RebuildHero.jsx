@@ -3,6 +3,7 @@ import RebuildProductPhone from './RebuildProductPhone.jsx'
 
 /**
  * App Store–style hero: phone dominates, then headline, then CTA.
+ * Act I CTA — curiosity (quiet). Commitment and urgency come later.
  * @param {{
  *   mode?: { id?: string }
  *   host?: { label?: string } | null
@@ -49,7 +50,7 @@ export default function RebuildHero({
           <button
             id="hero-primary-cta"
             type="button"
-            className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+            className="cw-rb-btn cw-rb-btn--curiosity cw-rb-btn--block"
             onClick={onPrimary}
           >
             {copy.primaryCta}

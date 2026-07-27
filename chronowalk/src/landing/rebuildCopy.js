@@ -33,8 +33,9 @@ export const REBUILD_HERO = {
     headline: 'See what stood here. Hear what happened.',
     support: '',
     definition: `${eterna.stopCount} stops · ${eterna.priceLabel} once`,
-    primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
-    secondaryCta: 'Try the Pantheon stop free',
+    /** Act I — curiosity (quiet). */
+    primaryCta: 'Try the Pantheon stop free',
+    secondaryCta: `See the complete Rome walk · ${eterna.priceLabel}`,
     reassurance: '',
   },
   geo: {
@@ -53,8 +54,8 @@ export const REBUILD_HERO = {
     headline: 'See what stood here. Hear what happened.',
     support: 'Buy tonight. Open tomorrow from any stop.',
     definition: `${eterna.stopCount} stops · ${eterna.priceLabel} once`,
-    primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
-    secondaryCta: 'Try the Pantheon stop free',
+    primaryCta: 'Try the Pantheon stop free',
+    secondaryCta: `See the complete Rome walk · ${eterna.priceLabel}`,
     reassurance: '',
   },
 }
@@ -157,6 +158,7 @@ export const REBUILD_PANTHEON = {
   badge: 'Complete stop',
   headline: 'Try the Pantheon free',
   body: '',
+  /** Soft mid-beat — still curiosity, not the purchase ask. */
   cta: 'Start free',
   reassurance: '',
 }
@@ -329,9 +331,10 @@ export const REBUILD_FAQ = {
 export const REBUILD_FINAL = {
   id: 'final-cta',
   headline: 'Rome is already around you.',
-  support: '',
+  support: 'Open it on the street. Keep it forever.',
+  /** Act III — urgency (loudest). */
   primaryCta: `Unlock all ${eterna.stopCount} stops · ${eterna.priceLabel}`,
-  secondaryCta: 'Try the Pantheon stop free',
+  secondaryCta: 'Or try the Pantheon free',
   reassurance: '',
 }
 

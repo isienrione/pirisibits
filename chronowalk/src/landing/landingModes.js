@@ -18,7 +18,7 @@ export const LANDING_KNOWN_HOSTS = Object.freeze({
 export const LANDING_MODES = Object.freeze({
   organic: {
     id: LANDING_MODE_IDS.ORGANIC,
-    primaryAction: 'purchase',
+    primaryAction: 'preview',
     compact: false,
     showPlanningNarrative: true,
     // Survey-style situation cards hurt conversion — keep off in the film landing.
@@ -47,7 +47,7 @@ export const LANDING_MODES = Object.freeze({
   },
   qr: {
     id: LANDING_MODE_IDS.QR,
-    primaryAction: 'purchase',
+    primaryAction: 'preview',
     compact: false,
     showPlanningNarrative: true,
     showSituationSelector: false,

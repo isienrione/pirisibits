@@ -49,7 +49,7 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
         <div className="cw-rb-final__actions">
           <button
             type="button"
-            className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+            className="cw-rb-btn cw-rb-btn--urgency cw-rb-btn--block"
             onClick={onPrimary}
           >
             {copy.primaryCta}

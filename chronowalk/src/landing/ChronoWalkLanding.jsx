@@ -49,6 +49,7 @@ import { ensureLandingExpHero } from './landingExperiments.js'
  * Hero phone → Promise (detail) → Hear Rome (hands) → One day map →
  * Street beat → Pantheon (monument) → Pricing → Couple/Family (travellers) →
  * Trust → FAQ → Final (drama).
+ * CTA pacing: curiosity (hero) → commitment (pricing) → urgency (final).
  * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
