@@ -419,6 +419,142 @@
   }
 }
 
+/* —— Editorial photography rhythm —— */
+
+.cw-rb-photo {
+  margin: 0;
+  overflow: hidden;
+  background: var(--rb-stone);
+}
+
+.cw-rb-photo img,
+.cw-rb-photo picture,
+.cw-rb-photo picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cw-rb-photo--detail {
+  border-radius: var(--rb-radius-media);
+  aspect-ratio: 3 / 4;
+  max-height: 17.5rem;
+  max-width: 16rem;
+  margin-inline: auto;
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--rb-ink) 8%, transparent);
+}
+
+.cw-rb-photo--detail img {
+  object-position: center 42%;
+}
+
+.cw-rb-photo--life {
+  border-radius: var(--rb-radius-media);
+  aspect-ratio: 1 / 1;
+  max-height: 15.5rem;
+  max-width: 15.5rem;
+  margin: 0 auto 1.1rem;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--rb-ink) 7%, transparent);
+}
+
+.cw-rb-photo--life img {
+  object-position: center 28%;
+}
+
+.cw-rb-photo--street {
+  border-radius: var(--rb-radius-media);
+  aspect-ratio: 3 / 4;
+  max-height: 19rem;
+  box-shadow: 0 14px 32px color-mix(in srgb, var(--rb-ink) 8%, transparent);
+}
+
+.cw-rb-photo--street img {
+  object-position: center 40%;
+}
+
+.cw-rb-photo--texture {
+  border-radius: calc(var(--rb-radius-media) * 0.85);
+  aspect-ratio: 16 / 9;
+  max-height: 8.5rem;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--rb-ink) 6%, transparent);
+}
+
+.cw-rb-photo--texture img {
+  object-position: center 72%;
+  filter: saturate(0.92) contrast(1.04);
+}
+
+.cw-rb-photo--travellers {
+  border-radius: var(--rb-radius-media);
+  aspect-ratio: 3 / 4;
+  max-height: 16.5rem;
+  max-width: 14.5rem;
+  margin: 0 auto 1.15rem;
+  box-shadow: 0 16px 36px color-mix(in srgb, #000 35%, transparent);
+}
+
+.cw-rb-photo--travellers img {
+  object-position: center 35%;
+}
+
+.cw-rb-photo--monument {
+  aspect-ratio: 5 / 4;
+  max-height: 12.5rem;
+}
+
+.cw-rb-photo--monument img {
+  object-position: center 30%;
+}
+
+.cw-rb-photo--drama {
+  aspect-ratio: 4 / 5;
+  max-height: 16rem;
+  background: #000;
+}
+
+.cw-rb-photo--drama img {
+  object-position: center 28%;
+  opacity: 0.9;
+}
+
+.cw-rb-street {
+  padding-top: clamp(0.85rem, 2.5vw, 1.35rem);
+  padding-bottom: clamp(0.85rem, 2.5vw, 1.35rem);
+  background: var(--rb-day);
+}
+
+.cw-rb-street__stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 40rem) {
+  .cw-rb-street__stack {
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: end;
+    gap: 1rem;
+  }
+
+  .cw-rb-photo--street {
+    max-height: 22rem;
+  }
+
+  .cw-rb-photo--texture {
+    max-height: 11rem;
+    aspect-ratio: 4 / 5;
+  }
+
+  .cw-rb-photo--texture img {
+    object-position: center 65%;
+  }
+
+  .cw-rb-photo--drama {
+    aspect-ratio: 16 / 9;
+    max-height: 18rem;
+  }
+}
+
 /* —— Promise (screen 2) —— */
 
 .cw-rb-promise {
@@ -427,21 +563,7 @@
 }
 
 .cw-rb-promise__media {
-  margin: 0 0 1rem;
-  border-radius: var(--rb-radius-media);
-  overflow: hidden;
-  aspect-ratio: 16 / 10;
-  max-height: 14rem;
-  background: var(--rb-stone);
-  box-shadow: 0 12px 30px color-mix(in srgb, var(--rb-ink) 8%, transparent);
-}
-
-.cw-rb-promise__media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 45%;
+  margin: 0 auto 1rem;
 }
 
 .cw-rb-promise__title {
@@ -856,8 +978,6 @@
 
 .cw-rb-pantheon__media {
   margin: 0;
-  aspect-ratio: 16 / 9;
-  max-height: 11rem;
   overflow: hidden;
   background: var(--rb-charcoal);
 }
@@ -866,7 +986,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 35%;
   display: block;
 }
 
@@ -928,6 +1047,7 @@
 
   .cw-rb-pantheon__media {
     aspect-ratio: auto;
+    max-height: none;
     min-height: 100%;
   }
 
@@ -1112,6 +1232,10 @@
   background:
     radial-gradient(ellipse 70% 50% at 20% 0%, color-mix(in srgb, var(--rb-gold) 10%, transparent), transparent 55%),
     var(--rb-obsidian);
+}
+
+.cw-rb-together__media {
+  margin-bottom: 1.15rem;
 }
 
 .cw-rb-together .cw-rb-lead {
@@ -1971,6 +2095,10 @@
   max-width: 24rem;
 }
 
+.cw-rb-hear__media {
+  margin-bottom: 1.1rem;
+}
+
 .cw-rb-hear__player {
   margin-top: 1.1rem;
   display: flex;
@@ -2132,8 +2260,6 @@
 
 .cw-rb-final__media {
   margin: 0 0 1.35rem;
-  aspect-ratio: 16 / 9;
-  max-height: 14rem;
   overflow: hidden;
   background: #000;
 }
@@ -2142,9 +2268,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 40%;
   display: block;
-  opacity: 0.88;
 }
 
 .cw-rb-final__copy .cw-rb-title {

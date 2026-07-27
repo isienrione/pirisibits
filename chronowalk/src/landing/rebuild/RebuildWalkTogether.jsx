@@ -1,3 +1,4 @@
+import { LANDING_EDITORIAL } from '../landingVisualAssets.js'
 import { REBUILD_WALK_TOGETHER } from '../rebuildCopy.js'
 
 /**
@@ -19,6 +20,16 @@ export default function RebuildWalkTogether({ onBeginTier }) {
       data-rb-compete-cta="true"
     >
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
+        <figure className="cw-rb-photo cw-rb-photo--travellers cw-rb-together__media">
+          <img
+            src={LANDING_EDITORIAL.travellers}
+            alt=""
+            width={1080}
+            height={1620}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
         <p className="cw-rb-eyebrow">{copy.eyebrow}</p>
         <h2 id="walk-together-heading" className="cw-rb-title">
           {copy.headline}

@@ -137,6 +137,14 @@ export const REBUILD_ROME_DAY = {
   ],
 }
 
+/** Photo-only atmosphere — street + archaeological texture. */
+export const REBUILD_STREET = {
+  id: 'street-beat',
+  ariaLabel: 'Rome street and ruin atmosphere',
+  headline: '',
+  body: '',
+}
+
 export const REBUILD_JOURNEY = {
   id: 'flexible-journey',
   headline: REBUILD_ROME_DAY.headline,

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
+import { LANDING_EDITORIAL } from '../landingVisualAssets.js'
 import { REBUILD_HEAR } from '../rebuildCopy.js'
 
 function formatTime(seconds) {
@@ -90,6 +91,16 @@ export default function RebuildHearRome({ onPlayingChange }) {
       <div id="audio-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div id="experience" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
+        <figure className="cw-rb-photo cw-rb-photo--life cw-rb-hear__media">
+          <img
+            src={LANDING_EDITORIAL.handsPhone}
+            alt=""
+            width={1024}
+            height={1024}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
         <h2 id="hear-heading" className="cw-rb-title">
           {copy.headline}
         </h2>

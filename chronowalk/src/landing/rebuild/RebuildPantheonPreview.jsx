@@ -1,4 +1,4 @@
-import { LANDING_PANTHEON_NOW } from '../landingVisualAssets.js'
+import { LANDING_EDITORIAL } from '../landingVisualAssets.js'
 import { REBUILD_PANTHEON } from '../rebuildCopy.js'
 
 /**
@@ -18,9 +18,9 @@ export default function RebuildPantheonPreview({ onPreview }) {
       <div id="try-free" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div className="cw-rb-wrap">
         <article className="cw-rb-pantheon__card">
-          <figure className="cw-rb-pantheon__media">
+          <figure className="cw-rb-photo cw-rb-photo--monument cw-rb-pantheon__media">
             <img
-              src={LANDING_PANTHEON_NOW}
+              src={LANDING_EDITORIAL.pantheon}
               alt="The Pantheon in Rome"
               width={960}
               height={720}

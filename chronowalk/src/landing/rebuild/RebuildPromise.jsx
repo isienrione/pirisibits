@@ -1,7 +1,7 @@
-import { LANDING_FORUM_NOW } from '../landingVisualAssets.js'
+import { LANDING_EDITORIAL } from '../landingVisualAssets.js'
 import { REBUILD_PROMISE } from '../rebuildCopy.js'
 
-/** Section 2 — emotion only. */
+/** Section 2 — emotion + close architectural detail. */
 export default function RebuildPromise() {
   const copy = REBUILD_PROMISE
 
@@ -12,12 +12,12 @@ export default function RebuildPromise() {
       aria-labelledby="promise-heading"
     >
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
-        <figure className="cw-rb-promise__media">
+        <figure className="cw-rb-photo cw-rb-photo--detail cw-rb-promise__media">
           <img
-            src={LANDING_FORUM_NOW}
+            src={LANDING_EDITORIAL.archDetail}
             alt=""
-            width={1200}
-            height={800}
+            width={960}
+            height={1280}
             loading="eager"
             decoding="async"
           />

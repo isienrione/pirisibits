@@ -6,6 +6,7 @@ import RebuildHero from './rebuild/RebuildHero.jsx'
 import RebuildPromise from './rebuild/RebuildPromise.jsx'
 import RebuildHearRome from './rebuild/RebuildHearRome.jsx'
 import RebuildRomeDay from './rebuild/RebuildRomeDay.jsx'
+import RebuildStreetBeat from './rebuild/RebuildStreetBeat.jsx'
 import RebuildPantheonPreview from './rebuild/RebuildPantheonPreview.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
 import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
@@ -45,8 +46,9 @@ import { ensureLandingExpHero } from './landingExperiments.js'
 
 /**
  * ChronoWalk landing v4 — product-first experience.
- * Hero phone → Promise → Hear Rome → One day map → Pantheon →
- * Pricing → Couple/Family → Trust → FAQ → Final.
+ * Hero phone → Promise (detail) → Hear Rome (hands) → One day map →
+ * Street beat → Pantheon (monument) → Pricing → Couple/Family (travellers) →
+ * Trust → FAQ → Final (drama).
  * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
@@ -264,6 +266,7 @@ export default function ChronoWalkLanding() {
         <RebuildPromise />
         <RebuildHearRome onPlayingChange={setAudioActive} />
         {mode.showRoutePreview ? <RebuildRomeDay /> : null}
+        <RebuildStreetBeat />
         <RebuildPantheonPreview
           onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
         />
