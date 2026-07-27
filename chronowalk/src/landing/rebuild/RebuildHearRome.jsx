@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
-import { LANDING_EDITORIAL } from '../landingVisualAssets.js'
+import { ProductShotScreen } from '../LandingPhoneScreens.jsx'
 import { REBUILD_HEAR } from '../rebuildCopy.js'
 
 function formatTime(seconds) {
@@ -12,8 +12,8 @@ function formatTime(seconds) {
 }
 
 /**
- * Section 3 — Hear Rome. Continue the product experience with audio + transcript.
- * @param {{ onPlayingChange?: (playing: boolean) => void }} props
+ * Section 3 — Hear Rome.
+ * Shows the real Pantheon audio screen; play control drives the actual preview track.
  */
 export default function RebuildHearRome({ onPlayingChange }) {
   const copy = REBUILD_HEAR
@@ -91,36 +91,28 @@ export default function RebuildHearRome({ onPlayingChange }) {
       <div id="audio-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div id="experience" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
       <div className="cw-rb-wrap cw-rb-wrap--narrow">
-        <figure className="cw-rb-photo cw-rb-photo--life cw-rb-hear__media">
-          <img
-            src={LANDING_EDITORIAL.handsPhone}
-            alt=""
-            width={1024}
-            height={1024}
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
         <h2 id="hear-heading" className="cw-rb-title">
           {copy.headline}
         </h2>
         {copy.body ? <p className="cw-rb-lead">{copy.body}</p> : null}
 
-        <div className="cw-rb-hear__player" data-rb-compete-cta="true">
+        <div className="cw-rb-hear__phone" data-rb-compete-cta="true">
+          <ProductShotScreen
+            src="/landing/phone-screens/listen-pantheon.jpg"
+            label="ChronoWalk Pantheon audio player"
+            size="lg"
+          />
           <button
             type="button"
             className="cw-rb-hear__play"
             onClick={togglePlay}
             aria-label={playing ? 'Pause narration' : 'Play narration'}
           >
-            {playing ? 'Pause' : 'Play'}
-          </button>
-          <div>
-            <p className="cw-rb-hear__label">The Pantheon — Exterior</p>
-            <p className="cw-rb-hear__time">
+            {playing ? 'Pause narration' : 'Play narration'}
+            <span className="cw-rb-hear__time">
               {formatTime(elapsed)} / {duration ? formatTime(duration) : '3:57'}
-            </p>
-          </div>
+            </span>
+          </button>
           <audio ref={audioRef} preload="none" playsInline />
         </div>
 

@@ -24,8 +24,8 @@ export const LANDING_FORUM_NOW = mediaUrl('/waypoints/forum-cluster/forum-via-sa
 export const LANDING_EDITORIAL = Object.freeze({
   /** Close architectural detail (Colosseum stone / arches). */
   archDetail: LANDING_COLOSSEUM_NOW,
-  /** Hands / earphones / phone in use. */
-  handsPhone: `${LANDING_IMG}/lifestyle-couple.png`,
+  /** Editorial walk — discovery on the street (not posed tourism). */
+  handsPhone: `${LANDING_IMG}/real-moment/street.jpg`,
   /** Street atmosphere — travellers in the city. */
   street: `${LANDING_IMG}/real-moment/street.jpg`,
   /** Travellers walking with the product nearby. */
