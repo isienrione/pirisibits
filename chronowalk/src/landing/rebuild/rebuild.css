@@ -2018,15 +2018,33 @@
   max-width: 28rem;
 }
 
-/* —— One day in Rome —— */
+/* —— One day in Rome (editorial city guide) —— */
+
+.cw-rb-rome-day {
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%, color-mix(in srgb, var(--rb-gold) 7%, transparent), transparent 60%),
+    var(--rb-day);
+}
+
+.cw-rb-rome-day__intro {
+  max-width: 28rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.cw-rb-rome-day__intro .cw-rb-lead {
+  margin-inline: auto;
+}
 
 .cw-rb-rome-day__map {
-  margin: 1.15rem 0 0;
-  border-radius: var(--rb-radius-media);
+  margin: 1.5rem 0 0;
+  border-radius: 1.6rem;
   overflow: hidden;
   background: var(--rb-sheet);
-  border: 1px solid var(--rb-border-light);
-  box-shadow: 0 10px 28px color-mix(in srgb, var(--rb-ink) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rb-ink) 8%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 55%, transparent) inset,
+    0 18px 40px color-mix(in srgb, var(--rb-ink) 8%, transparent);
 }
 
 .cw-rb-rome-day__map svg {
@@ -2035,54 +2053,23 @@
   height: auto;
 }
 
-.cw-rb-rome-day__flow {
-  margin: 1.1rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.35rem;
+.cw-rb-rome-day__glyph {
+  pointer-events: none;
 }
 
-.cw-rb-rome-day__flow li {
-  position: relative;
-  padding: 0.55rem 0.75rem 0.55rem 1.85rem;
-  border-radius: 0.85rem;
-  background: color-mix(in srgb, #fff 45%, var(--rb-day));
-  border: 1px solid var(--rb-border-light);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.cw-rb-rome-day__flow li::before {
-  content: '';
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  transform: translateY(-50%);
-  background: var(--rb-terracotta);
-}
-
-.cw-rb-rome-day__signals {
-  margin: 0.9rem 0 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.cw-rb-rome-day__signals li {
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid var(--rb-border-light);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.cw-rb-rome-day__aside {
+  margin: 1.15rem auto 0;
+  max-width: 24rem;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: var(--rb-muted-ink);
-  background: color-mix(in srgb, #fff 40%, transparent);
+  letter-spacing: 0.01em;
+}
+
+.cw-rb-rome-day__flow,
+.cw-rb-rome-day__signals {
+  display: none;
 }
 
 /* —— Trust cards —— */

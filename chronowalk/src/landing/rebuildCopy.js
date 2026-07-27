@@ -125,9 +125,7 @@ export const REBUILD_ROME_DAY = {
   scenarios: [
     'Start at the Colosseum',
     'Pause for lunch',
-    'Visit another attraction',
     'Return later',
-    'Continue instantly',
   ],
   highlights: [
     'colosseum',
