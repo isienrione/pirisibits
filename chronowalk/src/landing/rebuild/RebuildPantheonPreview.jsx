@@ -43,7 +43,7 @@ export default function RebuildPantheonPreview({ onPreview }) {
             >
               {copy.cta}
             </button>
-            <p className="cw-rb-pantheon__note">{copy.reassurance}</p>
+            {copy.reassurance ? <p className="cw-rb-pantheon__note">{copy.reassurance}</p> : null}
           </div>
         </article>
       </div>

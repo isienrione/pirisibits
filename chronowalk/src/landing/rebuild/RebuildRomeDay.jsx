@@ -192,7 +192,7 @@ export default function RebuildRomeDay() {
           <h2 id="rome-day-heading" className="cw-rb-title">
             {copy.headline}
           </h2>
-          <p className="cw-rb-lead">{copy.body}</p>
+          {copy.body ? <p className="cw-rb-lead">{copy.body}</p> : null}
         </header>
 
         <figure className="cw-rb-rome-day__map" aria-label="Illustrated ChronoWalk route through Rome">
@@ -391,9 +391,9 @@ export default function RebuildRomeDay() {
           </svg>
         </figure>
 
-        <p className="cw-rb-rome-day__aside">
-          {copy.scenarios.slice(0, 3).join(' · ')}
-        </p>
+        {copy.scenarios?.length ? (
+          <p className="cw-rb-rome-day__aside">{copy.scenarios.slice(0, 3).join(' · ')}</p>
+        ) : null}
       </div>
     </section>
   )

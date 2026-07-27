@@ -93,7 +93,7 @@ export default function RebuildHearRome({ onPlayingChange }) {
         <h2 id="hear-heading" className="cw-rb-title">
           {copy.headline}
         </h2>
-        <p className="cw-rb-lead">{copy.body}</p>
+        {copy.body ? <p className="cw-rb-lead">{copy.body}</p> : null}
 
         <div className="cw-rb-hear__player" data-rb-compete-cta="true">
           <button
@@ -113,7 +113,9 @@ export default function RebuildHearRome({ onPlayingChange }) {
           <audio ref={audioRef} preload="none" playsInline />
         </div>
 
-        <blockquote className="cw-rb-hear__transcript">{copy.transcript}</blockquote>
+        {copy.transcript ? (
+          <blockquote className="cw-rb-hear__transcript">{copy.transcript}</blockquote>
+        ) : null}
       </div>
     </section>
   )

@@ -23,7 +23,7 @@ export default function RebuildWalkTogether({ onBeginTier }) {
         <h2 id="walk-together-heading" className="cw-rb-title">
           {copy.headline}
         </h2>
-        <p className="cw-rb-lead">{copy.body}</p>
+        {copy.body ? <p className="cw-rb-lead">{copy.body}</p> : null}
 
         <div className="cw-rb-together__grid">
           {plans.map((plan) => (
@@ -31,11 +31,13 @@ export default function RebuildWalkTogether({ onBeginTier }) {
               <p className="cw-rb-together__name">{plan.name}</p>
               <p className="cw-rb-together__price">{plan.price}</p>
               <p className="cw-rb-together__detail">{plan.detail}</p>
-              <ul className="cw-rb-check-list cw-rb-check-list--on-dark">
-                {copy.changes.map((item) => (
-                  <li key={`${plan.id}-${item}`}>{item}</li>
-                ))}
-              </ul>
+              {copy.changes?.length ? (
+                <ul className="cw-rb-check-list cw-rb-check-list--on-dark">
+                  {copy.changes.map((item) => (
+                    <li key={`${plan.id}-${item}`}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
               <button
                 type="button"
                 className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
@@ -47,7 +49,7 @@ export default function RebuildWalkTogether({ onBeginTier }) {
           ))}
         </div>
 
-        <p className="cw-rb-together__sync">{copy.syncNote}</p>
+        {copy.syncNote ? <p className="cw-rb-together__sync">{copy.syncNote}</p> : null}
       </div>
     </section>
   )

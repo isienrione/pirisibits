@@ -42,7 +42,7 @@ export default function RebuildHero({
               </span>
             ))}
           </h1>
-          <p className="cw-rb-hero__support">{support}</p>
+          {support ? <p className="cw-rb-hero__support">{support}</p> : null}
         </div>
 
         <div className="cw-rb-hero__cta">

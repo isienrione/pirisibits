@@ -33,7 +33,7 @@ export default function RebuildPricing({ onBeginTier }) {
           <h2 id="pricing-heading" className="cw-rb-title">
             {copy.headline}
           </h2>
-          <p className="cw-rb-lead">{copy.subhead}</p>
+          {copy.subhead ? <p className="cw-rb-lead">{copy.subhead}</p> : null}
         </header>
 
         <article className="cw-rb-pricing__featured" aria-labelledby="pricing-eterna-name">
@@ -44,12 +44,14 @@ export default function RebuildPricing({ onBeginTier }) {
           <p className="cw-rb-pricing__meta">
             {eterna?.stopCount} stops · {eterna?.priceLabel} once
           </p>
-          <p className="cw-rb-pricing__blurb">{copy.eternaBlurb}</p>
-          <ul className="cw-rb-check-list">
-            {copy.eternaBullets.map((bullet) => (
-              <li key={bullet}>{bullet}</li>
-            ))}
-          </ul>
+          {copy.eternaBlurb ? <p className="cw-rb-pricing__blurb">{copy.eternaBlurb}</p> : null}
+          {copy.eternaBullets?.length ? (
+            <ul className="cw-rb-check-list">
+              {copy.eternaBullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+          ) : null}
           <button
             type="button"
             className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
@@ -57,7 +59,7 @@ export default function RebuildPricing({ onBeginTier }) {
           >
             {copy.eternaCta}
           </button>
-          <p className="cw-rb-pricing__value">{copy.valueCompare}</p>
+          {copy.valueCompare ? <p className="cw-rb-pricing__value">{copy.valueCompare}</p> : null}
         </article>
 
         <p className="cw-rb-pricing__short-heading">{copy.shortHeading}</p>

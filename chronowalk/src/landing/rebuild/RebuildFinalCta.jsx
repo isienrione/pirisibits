@@ -29,7 +29,7 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
         <h2 id="final-cta-heading" className="cw-rb-title">
           {copy.headline}
         </h2>
-        <p className="cw-rb-lead">{copy.support}</p>
+        {copy.support ? <p className="cw-rb-lead">{copy.support}</p> : null}
         <div className="cw-rb-final__actions">
           <button
             type="button"

@@ -18,7 +18,7 @@ export default function RebuildTrust() {
           {copy.cards.map((card) => (
             <li key={card.title} className="cw-rb-trust-cards__card">
               <h3>{card.title}</h3>
-              <p>{card.body}</p>
+              {card.body ? <p>{card.body}</p> : null}
             </li>
           ))}
         </ul>

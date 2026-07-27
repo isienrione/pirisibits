@@ -2089,7 +2089,9 @@
   border: 1px solid var(--rb-border-light);
   background: color-mix(in srgb, #fff 58%, var(--rb-day));
   box-shadow: 0 6px 18px color-mix(in srgb, var(--rb-ink) 4%, transparent);
-  max-height: 8.5rem;
+  display: flex;
+  align-items: center;
+  min-height: 4.25rem;
 }
 
 .cw-rb-trust-cards__card h3 {
