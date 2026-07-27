@@ -46,7 +46,7 @@ describe('landing rebuild architecture', () => {
 
   it('keeps Threshold brand line with plain explanation', () => {
     expect(REBUILD_THRESHOLD.headline).toBe('The ruin becomes the room.')
-    expect(REBUILD_THRESHOLD.methodology).toMatch(/uncertain/i)
+    expect(REBUILD_THRESHOLD.methodology).toMatch(/uncertain|Evidence/i)
     expect(REBUILD_THRESHOLD.tapAlternative).toMatch(/Tap to reveal/i)
   })
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import RebuildHeader from './rebuild/RebuildHeader.jsx'
 import RebuildHero from './rebuild/RebuildHero.jsx'
+import RebuildPromise from './rebuild/RebuildPromise.jsx'
 import RebuildProductProof from './rebuild/RebuildProductProof.jsx'
 import RebuildPantheonPreview from './rebuild/RebuildPantheonPreview.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
@@ -254,6 +255,7 @@ export default function ChronoWalkLanding() {
           onPrimary={handleHeroPrimary}
           onSecondary={handleHeroSecondary}
         />
+        <RebuildPromise />
         <RebuildProductProof onPlayingChange={setAudioActive} />
         <RebuildPantheonPreview
           onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}

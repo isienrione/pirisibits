@@ -1,8 +1,7 @@
 import { REBUILD_HERO } from '../rebuildCopy.js'
-import ThresholdStage from './ThresholdStage.jsx'
 
 /**
- * Product-led hero — copy + Threshold demonstration in one viewport.
+ * CRO hero — one viewport: promise, price, purchase. No competing media.
  * @param {{ mode: { id: string }, host?: { label?: string } | null, onPrimary?: () => void, onSecondary?: () => void, supportLine?: string }} props
  */
 export default function RebuildHero({ mode, host, onPrimary, onSecondary, supportLine }) {
@@ -53,16 +52,6 @@ export default function RebuildHero({ mode, host, onPrimary, onSecondary, suppor
           {copy.reassurance ? (
             <p className="cw-rb-hero__reassurance">{copy.reassurance}</p>
           ) : null}
-        </div>
-
-        <div className="cw-rb-hero__demo" aria-label="Then versus Now demonstration">
-          <ThresholdStage
-            hint={copy.thresholdHint}
-            showTap={false}
-            showProgress
-            track={false}
-            className="cw-rb-hero__thstage"
-          />
         </div>
       </div>
     </section>

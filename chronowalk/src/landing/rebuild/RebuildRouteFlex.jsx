@@ -1,14 +1,22 @@
 import { useId, useState } from 'react'
+import { getModernPosterUrl } from '../../content/modernPhotoRegistry.js'
 import { REBUILD_ROUTE } from '../rebuildCopy.js'
-import { getCompleteStopTitles, getFeaturedRouteStops, LANDING_PRODUCT } from '../landingProduct.js'
+import { getCompleteStopTitles, LANDING_PRODUCT } from '../landingProduct.js'
 import { trackLandingRouteExpand } from '../landingAnalytics.js'
 
+const STORY_MEDIA = {
+  start: 'colosseum',
+  lunch: 'forum-via-sacra',
+  shopping: 'fontana-di-trevi',
+  resume: 'pantheon',
+  finish: 'appian-way',
+}
+
 /**
- * Route + flexibility proof — horizontal landmark strip + behaviors + disclosure.
+ * Route flexibility — visual day story (no horizontal discovery required).
  */
 export default function RebuildRouteFlex() {
   const copy = REBUILD_ROUTE
-  const featured = getFeaturedRouteStops()
   const allTitles = getCompleteStopTitles()
   const [expanded, setExpanded] = useState(false)
   const listId = useId()
@@ -37,34 +45,39 @@ export default function RebuildRouteFlex() {
           <p className="cw-rb-lead">{copy.subhead}</p>
         </header>
 
-        <div className="cw-rb-route__scroller" role="list" aria-label="Featured landmarks">
-          {featured.map((stop, index) => (
-            <article key={stop.id} className="cw-rb-route__card" role="listitem">
-              <figure className="cw-rb-route__card-media">
-                {stop.photo ? (
-                  <img
-                    src={stop.photo}
-                    alt=""
-                    width={280}
-                    height={200}
-                    loading="lazy"
-                    decoding="async"
-                  />
+        <ol className="cw-rb-route__story" aria-label="A flexible Rome day">
+          {copy.story.map((step, index) => {
+            const stopId = STORY_MEDIA[step.id]
+            const photo = stopId ? getModernPosterUrl(stopId) : null
+            return (
+              <li key={step.id} className="cw-rb-route__story-step">
+                {index > 0 ? (
+                  <span className="cw-rb-route__story-arrow" aria-hidden="true">
+                    ↓
+                  </span>
                 ) : null}
-              </figure>
-              <p className="cw-rb-route__card-label">
-                {copy.featuredLabels?.[stop.id] ?? `Stop ${index + 1}`}
-              </p>
-              <h3 className="cw-rb-route__card-title">{stop.title}</h3>
-            </article>
-          ))}
-        </div>
-
-        <ul className="cw-rb-route__behaviors" aria-label="How the walk adapts">
-          {copy.behaviors.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+                <div className="cw-rb-route__story-card">
+                  {photo ? (
+                    <figure className="cw-rb-route__story-media">
+                      <img
+                        src={photo}
+                        alt=""
+                        width={160}
+                        height={120}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </figure>
+                  ) : null}
+                  <div>
+                    <p className="cw-rb-route__story-label">{step.label}</p>
+                    <p className="cw-rb-route__story-detail">{step.detail}</p>
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
 
         <div className="cw-rb-route__all">
           <button

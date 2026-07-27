@@ -2,7 +2,7 @@ import { LANDING_PANTHEON_NOW } from '../landingVisualAssets.js'
 import { REBUILD_PANTHEON } from '../rebuildCopy.js'
 
 /**
- * Compact free Pantheon stop card.
+ * Free Pantheon stop — CTA-dominant, copy-light.
  * @param {{ onPreview?: () => void }} props
  */
 export default function RebuildPantheonPreview({ onPreview }) {
@@ -29,14 +29,16 @@ export default function RebuildPantheonPreview({ onPreview }) {
             />
           </figure>
           <div className="cw-rb-pantheon__body">
-            <p className="cw-rb-eyebrow">{copy.label}</p>
+            <div className="cw-rb-pantheon__badges">
+              <p className="cw-rb-pantheon__free">{copy.label}</p>
+              <p className="cw-rb-pantheon__complete">{copy.badge}</p>
+            </div>
             <h2 id="pantheon-preview-heading" className="cw-rb-pantheon__title">
               {copy.headline}
             </h2>
-            <p className="cw-rb-pantheon__text">{copy.body}</p>
             <button
               type="button"
-              className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block"
+              className="cw-rb-btn cw-rb-btn--primary cw-rb-btn--block cw-rb-pantheon__cta"
               onClick={onPreview}
             >
               {copy.cta}
