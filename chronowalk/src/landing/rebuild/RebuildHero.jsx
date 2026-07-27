@@ -1,9 +1,9 @@
-import { REBUILD_HERO, REBUILD_HERO_TRUST_CHIPS } from '../rebuildCopy.js'
+import { REBUILD_HERO } from '../rebuildCopy.js'
 import RebuildProductPhone from './RebuildProductPhone.jsx'
 
 /**
- * App Store–style hero: phone dominates, then headline, then CTA.
- * Act I CTA — curiosity (quiet). Commitment and urgency come later.
+ * Product-first hero. Phone is the excitement; chrome stays quiet.
+ * Act I CTA — curiosity.
  * @param {{
  *   mode?: { id?: string }
  *   host?: { label?: string } | null
@@ -63,12 +63,6 @@ export default function RebuildHero({
             {copy.secondaryCta}
           </button>
         </div>
-
-        <ul className="cw-rb-hero__trust" aria-label="Product trust">
-          {REBUILD_HERO_TRUST_CHIPS.map((chip) => (
-            <li key={chip}>{chip}</li>
-          ))}
-        </ul>
       </div>
     </section>
   )

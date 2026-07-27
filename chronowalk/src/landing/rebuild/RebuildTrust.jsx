@@ -1,6 +1,6 @@
 import { REBUILD_TRUST } from '../rebuildCopy.js'
 
-/** Section 7 — elegant trust cards. */
+/** Trust — plain list, no card chrome. */
 export default function RebuildTrust() {
   const copy = REBUILD_TRUST
 
