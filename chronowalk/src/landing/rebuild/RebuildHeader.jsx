@@ -1,9 +1,8 @@
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
-import { REBUILD_TRUST_STRIP } from '../rebuildCopy.js'
+import { REBUILD_TRUST_CHIPS } from '../rebuildCopy.js'
 
 /**
- * Compact sticky brand bar + non-sticky trust line.
- * Emblem + wordmark are a single horizontal unit (never stacked).
+ * Compact brand bar + trust chips.
  */
 export default function RebuildHeader() {
   return (
@@ -16,7 +15,11 @@ export default function RebuildHeader() {
           </a>
         </div>
       </div>
-      <p className="cw-rb-header__trust">{REBUILD_TRUST_STRIP}</p>
+      <ul className="cw-rb-header__trust cw-rb-header__chips" aria-label="Product trust">
+        {REBUILD_TRUST_CHIPS.map((chip) => (
+          <li key={chip}>{chip}</li>
+        ))}
+      </ul>
     </header>
   )
 }

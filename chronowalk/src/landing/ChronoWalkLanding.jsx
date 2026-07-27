@@ -4,10 +4,11 @@ import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import RebuildHeader from './rebuild/RebuildHeader.jsx'
 import RebuildHero from './rebuild/RebuildHero.jsx'
 import RebuildPromise from './rebuild/RebuildPromise.jsx'
-import RebuildProductProof from './rebuild/RebuildProductProof.jsx'
+import RebuildExperience from './rebuild/RebuildExperience.jsx'
+import RebuildJourney from './rebuild/RebuildJourney.jsx'
 import RebuildPantheonPreview from './rebuild/RebuildPantheonPreview.jsx'
 import RebuildPricing from './rebuild/RebuildPricing.jsx'
-import RebuildRouteFlex from './rebuild/RebuildRouteFlex.jsx'
+import RebuildWalkTogether from './rebuild/RebuildWalkTogether.jsx'
 import RebuildFaq from './rebuild/RebuildFaq.jsx'
 import RebuildFinalCta from './rebuild/RebuildFinalCta.jsx'
 import RebuildStickyBar from './rebuild/RebuildStickyBar.jsx'
@@ -41,7 +42,9 @@ import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
 
 /**
- * ChronoWalk landing — six-block premium mobile sales experience.
+ * ChronoWalk landing — one idea per scroll (Passes 2–6).
+ * Hero → Ruin→Room → Experience → Journey → Pantheon →
+ * Pricing → Couple/Family → FAQ → Final.
  * Source modes (organic / geo / qr) change presentation only.
  */
 export default function ChronoWalkLanding() {
@@ -256,15 +259,21 @@ export default function ChronoWalkLanding() {
           onSecondary={handleHeroSecondary}
         />
         <RebuildPromise />
-        <RebuildProductProof onPlayingChange={setAudioActive} />
+        <RebuildExperience onPlayingChange={setAudioActive} />
+        {mode.showRoutePreview ? <RebuildJourney /> : null}
         <RebuildPantheonPreview
           onPreview={() => openPreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
         />
-        <RebuildPricing
-          onBeginTier={handleBeginTier}
-          showWalkTogether={mode.showWalkTogether}
-        />
-        {mode.showRoutePreview ? <RebuildRouteFlex /> : null}
+        {mode.showPlanningNarrative ? (
+          <RebuildPricing onBeginTier={handleBeginTier} />
+        ) : (
+          <div id="pricing" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        )}
+        {mode.showWalkTogether ? (
+          <RebuildWalkTogether onBeginTier={handleBeginTier} />
+        ) : (
+          <div id="walk-together" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        )}
         <RebuildFaq />
         <RebuildFinalCta
           onPrimary={() =>
@@ -275,6 +284,12 @@ export default function ChronoWalkLanding() {
         <div id="rome-journey" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="letter" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
         <div id="situations" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+        {!mode.showRoutePreview ? (
+          <>
+            <div id="route-proof" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+            <div id="adaptive-walk" className="cw-rb-sr-only" tabIndex={-1} aria-hidden="true" />
+          </>
+        ) : null}
       </main>
       <LandingSiteFooter pricingHref="#pricing" landingPrefix="" compact />
       <RebuildStickyBar

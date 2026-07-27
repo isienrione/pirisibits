@@ -2,7 +2,7 @@ import { LANDING_FORUM_NOW } from '../landingVisualAssets.js'
 import { REBUILD_PROMISE } from '../rebuildCopy.js'
 
 /**
- * Screen 2 — one idea: product promise. Large image + short headline + one sentence.
+ * Screen 2 — brand line only. One idea: the ruin becomes the room.
  */
 export default function RebuildPromise() {
   const copy = REBUILD_PROMISE
@@ -18,8 +18,8 @@ export default function RebuildPromise() {
           <img
             src={LANDING_FORUM_NOW}
             alt=""
-            width={1200}
-            height={900}
+            width={960}
+            height={640}
             loading="eager"
             decoding="async"
           />
@@ -27,7 +27,6 @@ export default function RebuildPromise() {
         <h2 id="promise-heading" className="cw-rb-title cw-rb-promise__title">
           {copy.headline}
         </h2>
-        <p className="cw-rb-promise__body">{copy.body}</p>
       </div>
     </section>
   )

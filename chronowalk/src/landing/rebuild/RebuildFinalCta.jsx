@@ -1,7 +1,7 @@
 import { REBUILD_FINAL } from '../rebuildCopy.js'
 
 /**
- * Compact final CTA.
+ * Emotional final CTA — want to walk, not a sales pitch.
  * @param {{ onPrimary?: () => void, onSecondary?: () => void }} props
  */
 export default function RebuildFinalCta({ onPrimary, onSecondary }) {
@@ -31,7 +31,6 @@ export default function RebuildFinalCta({ onPrimary, onSecondary }) {
             {copy.secondaryCta}
           </button>
         </div>
-        <p className="cw-rb-final__reassurance">{copy.reassurance}</p>
       </div>
     </section>
   )
