@@ -17,6 +17,25 @@ export const LANDING_COLOSSEUM_NOW_WAYPOINT = colosseumNow
 export const LANDING_PANTHEON_NOW = pantheonNow
 export const LANDING_FORUM_NOW = mediaUrl('/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg')
 
+/**
+ * Editorial photography rhythm — alternate scale & subject across the landing.
+ * Prefer these over repeating wide monument posters.
+ */
+export const LANDING_EDITORIAL = Object.freeze({
+  /** Close architectural detail (Colosseum stone / arches). */
+  archDetail: LANDING_COLOSSEUM_NOW,
+  /** Editorial walk — discovery on the street (not posed tourism). */
+  handsPhone: `${LANDING_IMG}/real-moment/street.jpg`,
+  /** Street atmosphere — travellers in the city. */
+  street: `${LANDING_IMG}/real-moment/street.jpg`,
+  /** Travellers walking with the product nearby. */
+  travellers: `${LANDING_IMG}/real-moment/wander.jpg`,
+  /** Small archaeological texture (Forum overlook / ruins grain). */
+  archaeology: `${LANDING_IMG}/real-moment/forum.jpg`,
+  /** Intimate Pantheon porch still (product CTA). */
+  pantheon: pantheonNow,
+})
+
 /** Premium landing redesign — static showcase assets from design reference. */
 export const LANDING_V2 = {
   /** Legacy square plate — hero now prefers LANDING_HERO cinematic set. */

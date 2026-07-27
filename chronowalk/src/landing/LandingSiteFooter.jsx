@@ -28,19 +28,21 @@ function resolveFooterHref(href, landingPrefix) {
 export default function LandingSiteFooter({
   pricingHref = '#pricing',
   landingPrefix = '',
+  compact = false,
 }) {
   const { tagline, nav, credit, accessHref, accessLinkLabel } = LANDING_CONTENT.footer
   const year = new Date().getFullYear()
 
   return (
-    <footer className="cw-v2-footer">
+    <footer className={`cw-v2-footer${compact ? ' cw-v2-footer--compact' : ''}`}>
       <div className="cw-v2-footer__inner">
         <div className="cw-v2-footer__brand-block">
           <ChronoWalkLogo
             className="cw-v2-footer__logo"
-            width={220}
+            width={compact ? 168 : 220}
             variant="dark"
-            layout="stacked"
+            layout={compact ? 'horizontal' : 'stacked'}
+            hideTagline={compact}
           />
           <p className="cw-v2-footer__tagline">{tagline}</p>
           {accessHref ? (
