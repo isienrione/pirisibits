@@ -126,6 +126,8 @@ export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
 }
 
 export function thenLoopForWaypoint(waypoint, chapterIndex = 0) {
+  if (!hasImmersiveThreshold(waypoint)) return null
+
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   const loop = reconstruction?.loop ?? inferredReconstructionLoopPath(waypoint)
   if (!loop) return null
