@@ -52,11 +52,17 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.id).toBe('how-it-works')
     expect(section.headline).toBe('How does ChronoWalk work?')
     expect(section.chapters).toHaveLength(4)
-    expect(section.chapters.map((c) => c.phone)).toEqual([
-      'journey',
-      'pantheon',
-      'audio',
+    expect(section.chapters.map((c) => c.id)).toEqual([
+      'choose',
+      'arrive',
+      'listen',
       'walk',
+    ])
+    expect(section.chapters.map((c) => c.component)).toEqual([
+      'B4PaceSelector',
+      'A2FreePreviewStory',
+      'A2FreePreviewStory',
+      'C2Walking',
     ])
     expect(section.chapters[1].emotional).toBe(true)
   })

@@ -16,6 +16,7 @@ export default function A2FreePreviewStory({
   duration = 0,
   storyEnded = false,
   continueLabel = 'See the full tour →',
+  initialTab = 'audio',
   onTogglePlay,
   onSkipBack,
   onSkipForward,
@@ -29,6 +30,7 @@ export default function A2FreePreviewStory({
     waypointId,
     manifest,
     storyEnded,
+    initialTab,
     audio: {
       narrationPlaying,
       currentTime,

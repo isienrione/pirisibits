@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LANDING_CONTENT } from '../landingData.js'
-import { LandingStepMockup } from '../LandingPhoneScreens.jsx'
 import { observeLandingSectionOnce, trackLandingRouteView } from '../landingAnalytics.js'
+import LandingProductPhoneHost from './LandingProductPhoneHost.jsx'
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(false)
@@ -15,20 +15,9 @@ function useReducedMotion() {
   return reduced
 }
 
-function resolvePhone(chapter, subPhase) {
-  const phoneVariant = chapter?.phone ?? 'journey'
-  const phoneMode = phoneVariant === 'journey' || phoneVariant === 'audio' ? 'shot' : 'live'
-  return {
-    variant: phoneVariant === 'audio' ? 'listening' : phoneVariant,
-    mode: phoneMode,
-    phase: subPhase,
-    caption: chapter?.beats?.[subPhase] ?? chapter?.title,
-  }
-}
-
 /**
- * Sticky-phone product film.
- * Phone stays fixed; chapter copy scrolls; only phone content changes.
+ * Sticky-phone product film powered by real application screens.
+ * Phone stays fixed; chapter copy scrolls; component state transitions.
  */
 export default function LandingProductDemo() {
   const section = LANDING_CONTENT['product-demo']
@@ -91,7 +80,6 @@ export default function LandingProductDemo() {
   }, [active, chapters, reducedMotion])
 
   const chapter = chapters[active] ?? chapters[0]
-  const phone = resolvePhone(chapter, subPhase)
 
   return (
     <section
@@ -111,16 +99,11 @@ export default function LandingProductDemo() {
       <div className="cw-v4-demo__stage">
         <div className="cw-v4-demo__phone-rail">
           <div className="cw-v4-demo__phone-sticky">
-            <div className={`cw-v4-demo__phone cw-v4-demo__phone--${chapter?.phone ?? 'journey'}`}>
-              <LandingStepMockup
-                variant={phone.variant}
-                size="xl"
-                mode={phone.mode}
-                phase={phone.phase}
-              />
+            <div className={`cw-v4-demo__phone cw-v4-demo__phone--${chapter?.id ?? 'choose'}`}>
+              <LandingProductPhoneHost chapterId={chapter?.id ?? 'choose'} phase={subPhase} />
             </div>
             <p className="cw-v4-demo__phone-caption" aria-live="polite">
-              {phone.caption}
+              {chapter?.beats?.[subPhase] ?? chapter?.title}
             </p>
           </div>
         </div>

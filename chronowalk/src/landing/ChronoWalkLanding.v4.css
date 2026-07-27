@@ -461,6 +461,7 @@
 
 .cw-v4-demo__phone {
   width: min(72vw, 20rem);
+  max-height: 70vh;
   transition: opacity 0.55s ease, transform 0.55s ease;
 }
 
@@ -468,14 +469,37 @@
   --phone-display-w: min(72vw, 20rem);
 }
 
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone {
-  height: min(70vh, 38rem);
+/* Real product UI must receive pointer events (Threshold hold). */
+.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__artboard {
+  pointer-events: auto;
 }
 
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__shell,
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__bezel,
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__screen {
+.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__shot {
+  pointer-events: none;
+}
+
+.cw-v4-phone-app {
+  width: 100%;
   height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: #0b0b0d;
+}
+
+.cw-v4-demo-walk-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: #0b0b0d;
+}
+
+.cw-v4-demo-walk-map__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .cw-v4-demo__phone-caption {
@@ -574,6 +598,7 @@
 
   .cw-v4-demo__phone {
     width: 22rem;
+    max-height: none;
   }
 
   .cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone--xl {
@@ -902,6 +927,20 @@
   border: 1px solid rgba(196, 165, 116, 0.35);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   transform: none;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__route-illustration {
+  margin: 0.85rem 0 1.1rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #111014;
+  border: 1px solid rgba(243, 238, 230, 0.08);
+  min-height: 14rem;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__route-illustration .cw-route-illustration {
+  width: 100%;
+  min-height: 14rem;
 }
 
 .cw-landing--v4 .cw-v2-pricing-card--rome-central,
