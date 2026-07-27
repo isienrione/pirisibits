@@ -18,6 +18,11 @@ const TEASER_FILE = 'w17_ch1.mp3'
 const TRANSCRIPT =
   'You’re standing before the Pantheon. Look up at the porch—the columns, the pediment, the weight of the stone.'
 
+/** Calm continuous product demo — one full breath of the app. */
+const DEMO_LOOP_MS = 9000
+const DEMO_AUDIO_SPAN_S = 42
+const DEMO_DURATION_LABEL = '3:57'
+
 function formatTime(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
   const total = Math.floor(seconds)
@@ -26,12 +31,56 @@ function formatTime(seconds) {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2
+}
+
 function buildWaveBars(count = 36) {
   return Array.from({ length: count }, (_, i) => 18 + ((i * 17) % 62))
 }
 
 /**
- * Interactive ChronoWalk product phone — Threshold seam + audio + real shell nav.
+ * Sample the demo timeline (0–1) into visual state.
+ * Designed to feel like the product waking — not a marketing sting.
+ */
+function sampleDemo(phase) {
+  // 0.00–0.08 settle
+  // 0.08–0.48 seam opens + audio breathes
+  // 0.48–0.62 hold reconstruction
+  // 0.62–0.88 soft return
+  // 0.88–1.00 quiet reset
+  let reveal
+  if (phase < 0.08) {
+    reveal = 0.14 + (phase / 0.08) * 0.04
+  } else if (phase < 0.48) {
+    const t = easeInOutCubic((phase - 0.08) / 0.4)
+    reveal = 0.18 + t * 0.7
+  } else if (phase < 0.62) {
+    reveal = 0.88
+  } else if (phase < 0.88) {
+    const t = easeInOutCubic((phase - 0.62) / 0.26)
+    reveal = 0.88 - t * 0.68
+  } else {
+    const t = (phase - 0.88) / 0.12
+    reveal = 0.2 - t * 0.06
+  }
+
+  const audioPhase = Math.min(1, Math.max(0, (phase - 0.06) / 0.82))
+  const demoElapsed = audioPhase * DEMO_AUDIO_SPAN_S
+  const demoPlaying = phase > 0.07 && phase < 0.9
+  const uiGlow = phase > 0.12 && phase < 0.85 ? 0.35 + reveal * 0.4 : 0.15
+
+  return {
+    reveal: Math.min(0.92, Math.max(0.08, reveal)),
+    demoElapsed,
+    demoPlaying,
+    uiGlow,
+    thenEmphasis: reveal > 0.45,
+  }
+}
+
+/**
+ * Interactive ChronoWalk product phone with a continuous calm demo loop.
  * @param {{
  *   onPlayingChange?: (playing: boolean) => void
  *   autoAnimate?: boolean
@@ -47,13 +96,20 @@ export default function RebuildProductPhone({
 }) {
   const reducedMotion = useReducedMotion()
   const stageRef = useRef(null)
+  const rootRef = useRef(null)
   const audioRef = useRef(null)
   const srcReadyRef = useRef(false)
   const draggingRef = useRef(false)
   const userLockedRef = useRef(false)
+  const realAudioRef = useRef(false)
   const bars = useMemo(() => buildWaveBars(), [])
 
-  const [reveal, setReveal] = useState(reducedMotion ? 0.42 : 0.18)
+  const [inView, setInView] = useState(true)
+  const [reveal, setReveal] = useState(0.16)
+  const [demoElapsed, setDemoElapsed] = useState(0)
+  const [demoPlaying, setDemoPlaying] = useState(true)
+  const [thenEmphasis, setThenEmphasis] = useState(false)
+  const [uiGlow, setUiGlow] = useState(0.2)
   const [playing, setPlaying] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -67,13 +123,29 @@ export default function RebuildProductPhone({
   )
 
   useEffect(() => {
+    const node = rootRef.current
+    if (!node || typeof IntersectionObserver !== 'function') return undefined
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(Boolean(entry?.isIntersecting && entry.intersectionRatio > 0.2)),
+      { threshold: [0, 0.2, 0.5] },
+    )
+    io.observe(node)
+    return () => io.disconnect()
+  }, [])
+
+  useEffect(() => {
     const audio = audioRef.current
     if (!audio) return undefined
-    const onPlay = () => setPlayingBoth(true)
+    const onPlay = () => {
+      realAudioRef.current = true
+      userLockedRef.current = true
+      setPlayingBoth(true)
+    }
     const onPause = () => setPlayingBoth(false)
     const onEnded = () => {
       setPlayingBoth(false)
       setElapsed(0)
+      realAudioRef.current = false
     }
     const onTime = () => setElapsed(audio.currentTime || 0)
     const onMeta = () => {
@@ -97,22 +169,59 @@ export default function RebuildProductPhone({
     }
   }, [onPlayingChange, setPlayingBoth])
 
-  // Idle seam animation — premium, not flashy.
+  // Continuous product demo — seam, reconstruction, waveform, playhead.
   useEffect(() => {
-    if (!autoAnimate || reducedMotion || userLockedRef.current) return undefined
+    if (!autoAnimate || reducedMotion || !inView) {
+      if (reducedMotion) {
+        const still = sampleDemo(0.5)
+        setReveal(still.reveal)
+        setDemoElapsed(still.demoElapsed)
+        setDemoPlaying(false)
+        setThenEmphasis(still.thenEmphasis)
+        setUiGlow(0.25)
+      }
+      return undefined
+    }
+
     let raf = 0
     const start = performance.now()
+    let pausedForUser = false
+
     const tick = (now) => {
-      if (draggingRef.current || userLockedRef.current) return
-      const t = (now - start) / 1000
-      // Slow breathe between ~12% and ~72%
-      const next = 0.42 + Math.sin(t * 0.35) * 0.3
-      setReveal(Math.min(0.78, Math.max(0.12, next)))
+      if (draggingRef.current || userLockedRef.current || realAudioRef.current) {
+        if (!pausedForUser) {
+          pausedForUser = true
+          setDemoPlaying(false)
+        }
+        raf = requestAnimationFrame(tick)
+        return
+      }
+      pausedForUser = false
+      const phase = ((now - start) % DEMO_LOOP_MS) / DEMO_LOOP_MS
+      const sample = sampleDemo(phase)
+      setReveal(sample.reveal)
+      setDemoElapsed(sample.demoElapsed)
+      setDemoPlaying(sample.demoPlaying)
+      setThenEmphasis(sample.thenEmphasis)
+      setUiGlow(sample.uiGlow)
       raf = requestAnimationFrame(tick)
     }
+
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [autoAnimate, reducedMotion])
+  }, [autoAnimate, inView, reducedMotion])
+
+  // Soft resume after the traveler stops interacting.
+  useEffect(() => {
+    if (playing || realAudioRef.current) return undefined
+    if (!userLockedRef.current) return undefined
+    const timer = window.setTimeout(() => {
+      if (!draggingRef.current && !realAudioRef.current && !playing) {
+        userLockedRef.current = false
+      }
+    }, 4500)
+    return () => window.clearTimeout(timer)
+  }, [playing, reveal])
 
   const setRevealFromClientX = useCallback((clientX) => {
     const node = stageRef.current
@@ -121,6 +230,7 @@ export default function RebuildProductPhone({
     if (rect.width <= 0) return
     const next = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width))
     setReveal(next)
+    setThenEmphasis(next > 0.45)
   }, [])
 
   const onPointerDown = useCallback(
@@ -158,6 +268,7 @@ export default function RebuildProductPhone({
   const togglePlay = useCallback(async () => {
     const audio = audioRef.current
     if (!audio) return
+    userLockedRef.current = true
     if (!srcReadyRef.current) {
       const url = resolvePreviewUrl(TEASER_FILE)
       if (!url) return
@@ -169,14 +280,23 @@ export default function RebuildProductPhone({
         await audio.play()
       } catch {
         setPlayingBoth(false)
+        realAudioRef.current = false
       }
     } else {
       audio.pause()
+      realAudioRef.current = false
     }
   }, [setPlayingBoth])
 
-  const progress = duration > 0 ? Math.min(1, elapsed / duration) : playing ? 0.18 : 0.08
+  const showPlaying = playing || demoPlaying
+  const displayElapsed = playing ? elapsed : demoElapsed
+  const progress = playing
+    ? duration > 0
+      ? Math.min(1, elapsed / duration)
+      : 0
+    : Math.min(1, demoElapsed / DEMO_AUDIO_SPAN_S)
   const playedBars = Math.round(progress * bars.length)
+  const revealPct = Math.round(reveal * 100)
 
   const tabs = useMemo(() => {
     const icons = Object.fromEntries(NAV_ITEMS.map((item) => [item.id, item.Icon]))
@@ -188,12 +308,16 @@ export default function RebuildProductPhone({
     }))
   }, [])
 
-  const revealPct = Math.round(reveal * 100)
-
   return (
-    <div className={`cw-rb-product-phone-wrap ${className}`.trim()}>
+    <div ref={rootRef} className={`cw-rb-product-phone-wrap ${className}`.trim()}>
       <RebuildPhoneChrome label="ChronoWalk at the Pantheon" size="xl">
-        <div className="cw-rb-product-phone" data-playing={playing ? 'true' : 'false'}>
+        <div
+          className="cw-rb-product-phone"
+          data-playing={showPlaying ? 'true' : 'false'}
+          data-demo={autoAnimate && !reducedMotion ? 'true' : 'false'}
+          data-then={thenEmphasis ? 'true' : 'false'}
+          style={{ '--rb-phone-glow': String(uiGlow) }}
+        >
           <header className="cw-rb-product-phone__status">
             <div className="cw-rb-product-phone__place">
               <span className="cw-rb-product-phone__gps" aria-hidden="true" />
@@ -209,7 +333,7 @@ export default function RebuildProductPhone({
               <li className="is-offline" title="Offline ready">
                 <span />
               </li>
-              <li className="is-audio" title="Headphones">
+              <li className={`is-audio${showPlaying ? ' is-active' : ''}`} title="Headphones">
                 <span />
               </li>
               <li className="is-saved" title="Progress saved">
@@ -262,20 +386,27 @@ export default function RebuildProductPhone({
               style={{ left: `${revealPct}%` }}
               aria-hidden="true"
             />
+            <div
+              className="cw-rb-product-phone__progress"
+              aria-hidden="true"
+              style={{ '--threshold-progress': `${revealPct}%` }}
+            >
+              <span />
+            </div>
             <div className="cw-rb-product-phone__labels" aria-hidden="true">
               <span>Now</span>
-              <span>Then</span>
+              <span className={thenEmphasis ? 'is-on' : undefined}>Then</span>
             </div>
           </div>
 
           <div className={`cw-rb-product-phone__audio${compactAudio ? ' is-compact' : ''}`}>
             <button
               type="button"
-              className="cw-rb-product-phone__play"
+              className={`cw-rb-product-phone__play${showPlaying ? ' is-on' : ''}`}
               onClick={togglePlay}
               aria-label={playing ? 'Pause narration' : 'Play narration'}
             >
-              {playing ? (
+              {showPlaying ? (
                 <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
                   <rect x="3" y="2" width="3.5" height="12" rx="0.5" fill="currentColor" />
                   <rect x="9.5" y="2" width="3.5" height="12" rx="0.5" fill="currentColor" />
@@ -286,19 +417,32 @@ export default function RebuildProductPhone({
                 </svg>
               )}
             </button>
-            <div className="cw-rb-product-phone__wave" aria-hidden="true">
-              {bars.map((height, index) => (
-                <span
-                  key={index}
-                  className={index < playedBars ? 'is-played' : undefined}
-                  style={{ height: `${height}%` }}
-                />
-              ))}
+            <div className="cw-rb-product-phone__transport">
+              <div className="cw-rb-product-phone__wave" aria-hidden="true">
+                {bars.map((height, index) => (
+                  <span
+                    key={index}
+                    className={index < playedBars ? 'is-played' : undefined}
+                    style={{
+                      height: `${height}%`,
+                      animationDelay: `${(index % 8) * 70}ms`,
+                    }}
+                  />
+                ))}
+              </div>
+              <div
+                className="cw-rb-product-phone__scrub"
+                aria-hidden="true"
+                style={{ '--playhead': `${Math.round(progress * 100)}%` }}
+              >
+                <span className="cw-rb-product-phone__scrub-fill" />
+                <span className="cw-rb-product-phone__scrub-knob" />
+              </div>
             </div>
             <p className="cw-rb-product-phone__time">
-              {formatTime(elapsed)}
+              {formatTime(displayElapsed)}
               <span>/</span>
-              {duration ? formatTime(duration) : '3:57'}
+              {duration ? formatTime(duration) : DEMO_DURATION_LABEL}
             </p>
           </div>
 

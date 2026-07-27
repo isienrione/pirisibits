@@ -1601,10 +1601,15 @@
   gap: 0.45rem;
   padding: 2.35rem 0.65rem 0.45rem;
   background:
-    radial-gradient(ellipse 80% 40% at 50% 0%, color-mix(in srgb, var(--rb-gold) 12%, transparent), transparent 55%),
+    radial-gradient(
+      ellipse 80% 40% at 50% 0%,
+      color-mix(in srgb, var(--rb-gold) calc(var(--rb-phone-glow, 0.2) * 18%), transparent),
+      transparent 55%
+    ),
     linear-gradient(180deg, #14110e 0%, #090a0c 100%);
   color: var(--rb-bone);
   font-family: var(--rb-font-ui);
+  transition: background 600ms var(--rb-ease);
 }
 
 .cw-rb-product-phone__status {
@@ -1628,12 +1633,16 @@
   border-radius: 50%;
   background: #6fbf73;
   box-shadow: 0 0 0 0 color-mix(in srgb, #6fbf73 55%, transparent);
-  animation: cw-rb-gps-pulse 2.4s var(--rb-ease) infinite;
+  animation: cw-rb-gps-pulse 2.8s ease-in-out infinite;
+}
+
+.cw-rb-product-phone[data-demo='true'] .cw-rb-product-phone__gps {
+  animation-duration: 2.6s;
 }
 
 @keyframes cw-rb-gps-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, #6fbf73 50%, transparent); }
-  50% { box-shadow: 0 0 0 0.45rem transparent; }
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, #6fbf73 45%, transparent); opacity: 1; }
+  50% { box-shadow: 0 0 0 0.4rem transparent; opacity: 0.82; }
 }
 
 .cw-rb-product-phone__loc {
@@ -1686,10 +1695,12 @@
   background: color-mix(in srgb, var(--rb-bone) 70%, transparent);
 }
 
-.cw-rb-product-phone__signals .is-audio span {
-  width: 0.55rem;
-  height: 0.28rem;
-  border-radius: 999px;
+.cw-rb-product-phone__signals .is-audio.is-active {
+  border-color: color-mix(in srgb, var(--rb-terracotta) 45%, transparent);
+}
+
+.cw-rb-product-phone__signals .is-audio.is-active span {
+  background: var(--rb-terracotta);
 }
 
 .cw-rb-product-phone__threshold {
@@ -1718,6 +1729,10 @@
   object-position: center 35%;
 }
 
+.cw-rb-product-phone[data-then='true'] .cw-rb-product-phone__then {
+  filter: saturate(1.05) contrast(1.03);
+}
+
 .cw-rb-product-phone__seam {
   position: absolute;
   top: 0;
@@ -1727,6 +1742,13 @@
   background: var(--rb-gold);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--rb-gold) 35%, transparent);
   pointer-events: none;
+  transition: box-shadow 400ms var(--rb-ease);
+}
+
+.cw-rb-product-phone[data-demo='true'] .cw-rb-product-phone__seam {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--rb-gold) 30%, transparent),
+    0 0 12px color-mix(in srgb, var(--rb-gold) 28%, transparent);
 }
 
 .cw-rb-product-phone__seam::after {
@@ -1742,19 +1764,44 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--rb-obsidian) 55%, transparent);
 }
 
+.cw-rb-product-phone__progress {
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 1.55rem;
+  height: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--rb-bone) 18%, transparent);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cw-rb-product-phone__progress span {
+  display: block;
+  height: 100%;
+  width: var(--threshold-progress, 0%);
+  border-radius: inherit;
+  background: var(--rb-gold);
+  transition: width 80ms linear;
+}
+
 .cw-rb-product-phone__labels {
   position: absolute;
   left: 0.55rem;
   right: 0.55rem;
-  bottom: 0.55rem;
+  bottom: 0.45rem;
   display: flex;
   justify-content: space-between;
   font-size: 0.58rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--rb-bone) 88%, transparent);
+  color: color-mix(in srgb, var(--rb-bone) 72%, transparent);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
   pointer-events: none;
+}
+
+.cw-rb-product-phone__labels .is-on {
+  color: var(--rb-gold);
 }
 
 .cw-rb-product-phone__audio {
@@ -1766,6 +1813,14 @@
   border-radius: 0.85rem;
   border: 1px solid var(--rb-border-dark);
   background: color-mix(in srgb, var(--rb-bone) 6%, transparent);
+  transition:
+    border-color 500ms var(--rb-ease),
+    background 500ms var(--rb-ease);
+}
+
+.cw-rb-product-phone[data-playing='true'] .cw-rb-product-phone__audio {
+  border-color: color-mix(in srgb, var(--rb-terracotta) 28%, transparent);
+  background: color-mix(in srgb, var(--rb-terracotta) 8%, transparent);
 }
 
 .cw-rb-product-phone__play {
@@ -1779,13 +1834,27 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition:
+    background 400ms var(--rb-ease),
+    transform 400ms var(--rb-ease);
+}
+
+.cw-rb-product-phone__play.is-on {
+  background: color-mix(in srgb, var(--rb-terracotta) 42%, transparent);
+  transform: scale(1.03);
+}
+
+.cw-rb-product-phone__transport {
+  min-width: 0;
+  display: grid;
+  gap: 0.28rem;
 }
 
 .cw-rb-product-phone__wave {
   display: flex;
   align-items: flex-end;
   gap: 0.12rem;
-  height: 1.45rem;
+  height: 1.25rem;
 }
 
 .cw-rb-product-phone__wave span {
@@ -1793,6 +1862,7 @@
   min-width: 0.12rem;
   border-radius: 999px;
   background: color-mix(in srgb, var(--rb-bone) 28%, transparent);
+  transform-origin: center bottom;
 }
 
 .cw-rb-product-phone__wave span.is-played {
@@ -1800,12 +1870,39 @@
 }
 
 .cw-rb-product-phone[data-playing='true'] .cw-rb-product-phone__wave span.is-played {
-  animation: cw-rb-wave 900ms ease-in-out infinite alternate;
+  animation: cw-rb-wave 1.15s ease-in-out infinite alternate;
 }
 
 @keyframes cw-rb-wave {
-  from { transform: scaleY(0.85); }
-  to { transform: scaleY(1.15); }
+  from { transform: scaleY(0.88); }
+  to { transform: scaleY(1.12); }
+}
+
+.cw-rb-product-phone__scrub {
+  position: relative;
+  height: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--rb-bone) 16%, transparent);
+}
+
+.cw-rb-product-phone__scrub-fill {
+  display: block;
+  height: 100%;
+  width: var(--playhead, 0%);
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--rb-terracotta) 85%, var(--rb-gold));
+}
+
+.cw-rb-product-phone__scrub-knob {
+  position: absolute;
+  top: 50%;
+  left: var(--playhead, 0%);
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--rb-bone);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--rb-terracotta) 55%, transparent);
 }
 
 .cw-rb-product-phone__time {
@@ -1813,6 +1910,7 @@
   font-size: 0.58rem;
   color: var(--rb-muted);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .cw-rb-product-phone__time span {
@@ -2084,8 +2182,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cw-rb-btn,
+  .cw-rb-sticky,
   .cw-rb-product-phone__gps,
-  .cw-rb-product-phone__wave span {
+  .cw-rb-product-phone__wave span,
+  .cw-rb-product-phone__play,
+  .cw-rb-product-phone__audio {
     animation: none !important;
+    transition: none !important;
   }
 }
