@@ -280,7 +280,7 @@ export const LANDING_CONTENT = {
     secondaryCta: LANDING_CTA.chooseTour,
     secondaryHref: '#pricing',
     getAppCta: LANDING_CTA.getApp,
-    getAppHref: '#get-app',
+    getAppHref: '#pricing',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',

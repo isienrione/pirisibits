@@ -125,12 +125,12 @@ export default function ChronoWalkLanding() {
   }, [])
 
   const handleGetApp = useCallback(() => {
-    const target = document.getElementById('get-app')
+    const target = document.getElementById('pricing')
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       return
     }
-    window.location.hash = 'get-app'
+    window.location.hash = 'pricing'
   }, [])
 
   const [actOpen, actWalk, actChoose] = LANDING_ACTS
@@ -155,7 +155,7 @@ export default function ChronoWalkLanding() {
             onChooseTour={handleChooseTour}
             onGetApp={handleGetApp}
           />
-          <LandingGetAppSection />
+          <LandingGetAppSection onChooseTour={handleChooseTour} />
         </LandingAct>
 
         <LandingAct

@@ -1,29 +1,41 @@
 import { useEffect, useRef, useState } from 'react'
-import { LANDING_CONTENT, LANDING_HERO_REVIEWS } from '../landingData.js'
+import { LANDING_CONTENT } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
-import {
-  getLandingReviewsVisible,
-  syncLandingReviewFlagsFromUrl,
-} from '../landingReviewsVisibility.js'
 
 const SLIDE_MS = 8000
 const FADE_MS = 900
 
-function StarRow({ rating = 4.9 }) {
-  return (
-    <span className="cw-v4-reviews__stars" aria-label={`${rating} out of 5 stars`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} aria-hidden>
-          ★
-        </span>
-      ))}
-      <span className="cw-v4-reviews__score">{rating.toFixed(1)}</span>
-    </span>
-  )
-}
+/** Approximate click targets over the Choose your walk marketing frame. */
+const PACKAGE_HOTSPOTS = [
+  {
+    id: 'rome-complete',
+    label: 'Roma Eterna package',
+    style: { left: '7%', top: '24%', width: '28%', height: '34%' },
+  },
+  {
+    id: 'rome-essential',
+    label: 'Roma Antica package',
+    style: { left: '36%', top: '24%', width: '28%', height: '34%' },
+  },
+  {
+    id: 'rome-central',
+    label: 'Roma Historica package',
+    style: { left: '65%', top: '24%', width: '28%', height: '34%' },
+  },
+  {
+    id: 'rome-couple',
+    label: 'Couple package',
+    style: { left: '7%', top: '60%', width: '42%', height: '18%' },
+  },
+  {
+    id: 'rome-family',
+    label: 'Family package',
+    style: { left: '51%', top: '60%', width: '42%', height: '18%' },
+  },
+]
 
 function HeroLead({ text, highlight }) {
   if (!highlight || !text.includes(highlight)) {
@@ -41,18 +53,28 @@ function HeroLead({ text, highlight }) {
   )
 }
 
+function scrollToPricingTarget(id) {
+  const target =
+    document.getElementById(id) ||
+    document.getElementById(`pricing-name-${id}`) ||
+    document.getElementById('pricing')
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    return
+  }
+  window.location.hash = id ? `#${id}` : '#pricing'
+}
+
 /**
  * Rome-sky hero with a mild fade slideshow of the exported marketing frames.
  * Slide 0 = current primary hero; secondary slides are portrait story frames.
  */
 export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }) {
   const section = LANDING_CONTENT.hero
-  const reviews = LANDING_HERO_REVIEWS
   const storySlides = HERO_SLIDESHOW_SLIDES
   const total = 1 + storySlides.length
   const [index, setIndex] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const [reviewsVisible, setReviewsVisible] = useState(true)
   const [paused, setPaused] = useState(false)
   const touchStartX = useRef(null)
 
@@ -62,20 +84,6 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
     sync()
     mq?.addEventListener?.('change', sync)
     return () => mq?.removeEventListener?.('change', sync)
-  }, [])
-
-  useEffect(() => {
-    syncLandingReviewFlagsFromUrl()
-    setReviewsVisible(getLandingReviewsVisible())
-    const onChange = (event) => {
-      if (typeof event?.detail?.visible === 'boolean') {
-        setReviewsVisible(event.detail.visible)
-      } else {
-        setReviewsVisible(getLandingReviewsVisible())
-      }
-    }
-    window.addEventListener('cw-landing-reviews-change', onChange)
-    return () => window.removeEventListener('cw-landing-reviews-change', onChange)
   }, [])
 
   useEffect(() => {
@@ -102,6 +110,8 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   const goNext = () => goTo(index + 1)
 
   const interactive = index === 0
+  const packagesSlideIndex = storySlides.findIndex((slide) => slide.id === 'choose-your-walk')
+  const packagesActive = packagesSlideIndex >= 0 && index === packagesSlideIndex + 1
 
   return (
     <section
@@ -166,33 +176,25 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                 {section.primaryCta}
               </button>
 
-              <button
-                type="button"
-                className="cw-v4-btn cw-v4-btn--ghost cw-v4-btn--getapp"
-                onClick={() => onGetApp?.()}
+              <a
+                href={section.getAppHref ?? '#pricing'}
+                className="cw-v4-btn cw-v4-btn--getapp"
                 tabIndex={interactive ? 0 : -1}
+                onClick={(event) => {
+                  if (!onGetApp && !onChooseTour) return
+                  event.preventDefault()
+                  ;(onGetApp || onChooseTour)?.()
+                }}
               >
                 {section.getAppCta}
-              </button>
+              </a>
             </div>
-
-            {reviewsVisible && reviews ? (
-              <aside className="cw-v4-reviews" aria-label="Traveler reviews">
-                <StarRow rating={reviews.rating} />
-                <p className="cw-v4-reviews__quote">{reviews.quote}</p>
-                {reviews.attribution ? (
-                  <p className="cw-v4-reviews__attr">{reviews.attribution}</p>
-                ) : null}
-                <a href={reviews.seeMoreHref ?? '#trust'} className="cw-v4-reviews__more">
-                  {reviews.seeMoreLabel ?? 'See more'}
-                </a>
-              </aside>
-            ) : null}
           </div>
         </div>
 
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
+          const isPackages = slide.id === 'choose-your-walk'
           return (
             <div
               key={slide.id}
@@ -200,13 +202,34 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
               aria-hidden={!active}
               inert={active ? undefined : true}
             >
-              <img
-                className="cw-v4-hero__art"
-                src={slide.src}
-                alt={slide.title}
-                decoding="async"
-                loading={slideIndex < 2 ? 'eager' : 'lazy'}
-              />
+              <div className={`cw-v4-hero__art-frame${isPackages ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
+                <img
+                  className="cw-v4-hero__art"
+                  src={slide.src}
+                  alt={slide.title}
+                  decoding="async"
+                  loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                />
+                {isPackages ? (
+                  <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
+                    {PACKAGE_HOTSPOTS.map((spot) => (
+                      <a
+                        key={spot.id}
+                        href={`#${spot.id}`}
+                        className="cw-v4-hero__hotspot"
+                        style={spot.style}
+                        aria-label={spot.label}
+                        tabIndex={active ? 0 : -1}
+                        onClick={(event) => {
+                          event.preventDefault()
+                          setPaused(true)
+                          scrollToPricingTarget(spot.id)
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : null}
+              </div>
             </div>
           )
         })}

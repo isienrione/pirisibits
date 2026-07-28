@@ -72,6 +72,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
             return (
               <article
                 key={tier.id}
+                id={tier.id}
                 className={`cw-v2-pricing-card cw-v2-pricing-card--${tier.id}${isFeatured ? ' cw-v2-pricing-card--featured' : ''}`}
                 aria-labelledby={`pricing-name-${tier.id}`}
               >
@@ -186,6 +187,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
               {bundles.map((bundle) => (
                 <article
                   key={bundle.id}
+                  id={bundle.id}
                   className={`cw-v2-pricing-card cw-v2-pricing-card--bundle cw-v2-pricing-card--${bundle.id}`}
                   aria-labelledby={`pricing-name-${bundle.id}`}
                 >

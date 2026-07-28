@@ -103,7 +103,7 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.secondaryCta).toBe('Choose your walk')
     expect(hero.secondaryHref).toBe('#pricing')
     expect(hero.getAppCta).toBe('Get the app')
-    expect(hero.getAppHref).toBe('#get-app')
+    expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
   })
 

@@ -1,7 +1,15 @@
+import { CHRONOWALK_HOME_ICON } from '../../redesign/ui/HomeScreenInstallOption.jsx'
+
 /**
  * How to open ChronoWalk: browser (available now) above App Store / Play Store (coming soon).
  */
-export default function LandingGetAppSection() {
+export default function LandingGetAppSection({ onChooseTour }) {
+  const goToPackages = (event) => {
+    if (!onChooseTour) return
+    event.preventDefault()
+    onChooseTour()
+  }
+
   return (
     <section
       id="get-app"
@@ -20,33 +28,24 @@ export default function LandingGetAppSection() {
         </header>
 
         <div className="cw-v4-getapp__options">
-          <a href="/" className="cw-v4-getapp__option cw-v4-getapp__option--active">
-            <span className="cw-v4-getapp__option-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                <rect
-                  x="4"
-                  y="3"
-                  width="16"
-                  height="18"
-                  rx="2.5"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                />
-                <path
-                  d="M8 7h8M8 11h8M8 15h5"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                />
-              </svg>
+          <a
+            href="#pricing"
+            className="cw-v4-getapp__option cw-v4-getapp__option--active"
+            onClick={goToPackages}
+          >
+            <span className="cw-v4-getapp__option-icon cw-v4-getapp__option-icon--brand" aria-hidden>
+              <img src={CHRONOWALK_HOME_ICON} alt="" width="40" height="40" draggable={false} />
             </span>
             <span className="cw-v4-getapp__option-copy">
               <span className="cw-v4-getapp__option-eyebrow">Available now</span>
               <span className="cw-v4-getapp__option-title">Use in browser</span>
               <span className="cw-v4-getapp__option-note">
-                Open ChronoWalk on your phone. Set up once online, then walk offline.
+                Open ChronoWalk directly on your phone without downloading any app. Set up once
+                online, and use later with data or offline when needed.
               </span>
-              <span className="cw-v4-getapp__option-cta">Open ChronoWalk →</span>
+              <span className="cw-v4-getapp__option-cta">
+                Choose a walk and start using ChronoWalk
+              </span>
             </span>
           </a>
 
