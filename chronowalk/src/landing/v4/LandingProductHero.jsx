@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LANDING_CONTENT, LANDING_HERO_REVIEWS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
@@ -9,7 +9,7 @@ import {
   syncLandingReviewFlagsFromUrl,
 } from '../landingReviewsVisibility.js'
 
-const SLIDE_MS = 7000
+const SLIDE_MS = 8000
 const FADE_MS = 900
 
 function StarRow({ rating = 4.9 }) {
@@ -43,7 +43,7 @@ function HeroLead({ text, highlight }) {
 
 /**
  * Rome-sky hero with a mild fade slideshow of the exported marketing frames.
- * Slide 0 = current primary hero; secondary slides are the original PNGs.
+ * Slide 0 = current primary hero; secondary slides are portrait story frames.
  */
 export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }) {
   const section = LANDING_CONTENT.hero
@@ -53,6 +53,8 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   const [index, setIndex] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [reviewsVisible, setReviewsVisible] = useState(true)
+  const [paused, setPaused] = useState(false)
+  const touchStartX = useRef(null)
 
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -77,7 +79,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   }, [])
 
   useEffect(() => {
-    if (reducedMotion || total < 2) return undefined
+    if (reducedMotion || paused || total < 2) return undefined
 
     let timer = 0
     const tick = () => {
@@ -89,7 +91,15 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
     }
     timer = window.setTimeout(tick, SLIDE_MS)
     return () => window.clearTimeout(timer)
-  }, [reducedMotion, total])
+  }, [reducedMotion, paused, total, index])
+
+  const goTo = (next) => {
+    setPaused(true)
+    setIndex(((next % total) + total) % total)
+  }
+
+  const goPrev = () => goTo(index - 1)
+  const goNext = () => goTo(index + 1)
 
   const interactive = index === 0
 
@@ -99,6 +109,19 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
       className="cw-v4-hero"
       aria-labelledby="cw-v4-hero-heading"
       aria-roledescription="carousel"
+      onTouchStart={(event) => {
+        touchStartX.current = event.changedTouches?.[0]?.clientX ?? null
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current
+        const end = event.changedTouches?.[0]?.clientX
+        touchStartX.current = null
+        if (start == null || end == null) return
+        const delta = end - start
+        if (Math.abs(delta) < 48) return
+        if (delta > 0) goPrev()
+        else goNext()
+      }}
     >
       <div className="cw-v4-hero__stage" style={{ '--cw-hero-fade-ms': `${FADE_MS}ms` }}>
         <div className={`cw-v4-hero__slide-layer${index === 0 ? ' is-active' : ''}`}>
@@ -189,20 +212,41 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
         })}
       </div>
 
-      {!reducedMotion && total > 1 ? (
-        <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero slides">
-          {Array.from({ length: total }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              role="tab"
-              aria-selected={index === i}
-              aria-label={i === 0 ? 'Main hero' : storySlides[i - 1]?.title || `Slide ${i + 1}`}
-              className={`cw-v4-hero__dot${index === i ? ' is-active' : ''}`}
-              onClick={() => setIndex(i)}
-            />
-          ))}
-        </div>
+      {total > 1 ? (
+        <>
+          <button
+            type="button"
+            className="cw-v4-hero__arrow cw-v4-hero__arrow--prev"
+            aria-label="Previous slide"
+            onClick={goPrev}
+          >
+            <span aria-hidden>‹</span>
+          </button>
+          <button
+            type="button"
+            className="cw-v4-hero__arrow cw-v4-hero__arrow--next"
+            aria-label="Next slide"
+            onClick={goNext}
+          >
+            <span aria-hidden>›</span>
+          </button>
+          <p className="cw-v4-hero__hint" aria-hidden>
+            Explore what ChronoWalk includes
+          </p>
+          <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero slides">
+            {Array.from({ length: total }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={index === i}
+                aria-label={i === 0 ? 'Main hero' : storySlides[i - 1]?.title || `Slide ${i + 1}`}
+                className={`cw-v4-hero__dot${index === i ? ' is-active' : ''}`}
+                onClick={() => goTo(i)}
+              />
+            ))}
+          </div>
+        </>
       ) : null}
     </section>
   )

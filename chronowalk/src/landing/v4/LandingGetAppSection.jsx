@@ -15,7 +15,7 @@ export default function LandingGetAppSection() {
             Open ChronoWalk your way.
           </h2>
           <p className="cw-v4-section-lead">
-            Use it in your browser today. Native App Store and Play Store builds are on the way.
+            Start in your browser today. Native App Store and Play Store builds are on the way.
           </p>
         </header>
 
@@ -44,9 +44,9 @@ export default function LandingGetAppSection() {
               <span className="cw-v4-getapp__option-eyebrow">Available now</span>
               <span className="cw-v4-getapp__option-title">Use in browser</span>
               <span className="cw-v4-getapp__option-note">
-                No App Store download. Open ChronoWalk in your mobile browser. Initial setup needs
-                internet; then prepare the walk for offline use.
+                Open ChronoWalk on your phone. Set up once online, then walk offline.
               </span>
+              <span className="cw-v4-getapp__option-cta">Open ChronoWalk →</span>
             </span>
           </a>
 
@@ -65,7 +65,7 @@ export default function LandingGetAppSection() {
               </svg>
             </span>
             <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Download on the</span>
+              <span className="cw-v4-getapp__option-eyebrow">Coming soon</span>
               <span className="cw-v4-getapp__option-title">App Store</span>
             </span>
           </button>
@@ -85,14 +85,14 @@ export default function LandingGetAppSection() {
               </svg>
             </span>
             <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Get it on</span>
+              <span className="cw-v4-getapp__option-eyebrow">Coming soon</span>
               <span className="cw-v4-getapp__option-title">Google Play</span>
             </span>
           </button>
         </div>
 
         <p className="cw-v4-getapp__soon">
-          Coming soon: native App Store and Google Play apps. ChronoWalk is a browser app today.
+          Native apps are on the way. ChronoWalk is a full browser experience today.
         </p>
       </div>
     </section>

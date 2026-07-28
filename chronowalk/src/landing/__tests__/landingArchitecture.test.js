@@ -51,7 +51,8 @@ describe('landing product-story architecture (V4)', () => {
   it('frames the sticky phone demo as four chapters', () => {
     const section = LANDING_CONTENT['product-demo']
     expect(section.id).toBe('how-it-works')
-    expect(section.headline).toBe('One walk, shown from beginning to end.')
+    expect(section.eyebrow).toBe('The App')
+    expect(section.headline).toBe('How does ChronoWalk work?')
     expect(section.chapters).toHaveLength(4)
     expect(section.chapters.map((c) => c.id)).toEqual([
       'choose',
@@ -95,7 +96,7 @@ describe('landing product-story architecture (V4)', () => {
   it('keeps the hero CTAs for sneak peek and choose tour', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.eyebrow).toBeNull()
-    expect(hero.headline).toMatch(/full and fascinating experience of Rome/i)
+    expect(hero.headline).toBe('Rome, at your own pace.')
     expect(hero.subheadlineHighlight).toMatch(/best self-guided audio tour/i)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
     expect(hero.primaryCta).toBe('Get a free sneak peek')
@@ -150,7 +151,7 @@ describe('landing product-story architecture (V4)', () => {
 
   it('keeps ChronoWalk voice without banned marketing phrases', () => {
     expect(LANDING_CONTENT.hero.eyebrow).toBeNull()
-    expect(LANDING_CONTENT['product-demo'].headline).toBe('One walk, shown from beginning to end.')
+    expect(LANDING_CONTENT['product-demo'].headline).toBe('How does ChronoWalk work?')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [
       'revolutionary',

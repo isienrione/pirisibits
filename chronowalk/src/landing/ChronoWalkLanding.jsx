@@ -156,7 +156,6 @@ export default function ChronoWalkLanding() {
             onGetApp={handleGetApp}
           />
           <LandingGetAppSection />
-          <LandingProductDemo />
         </LandingAct>
 
         <LandingAct
@@ -169,6 +168,7 @@ export default function ChronoWalkLanding() {
           <LandingPersonas
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
           />
+          <LandingProductDemo />
         </LandingAct>
 
         <LandingAct

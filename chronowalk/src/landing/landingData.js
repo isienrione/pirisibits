@@ -271,12 +271,11 @@ export const LANDING_CONTENT = {
   hero: {
     id: 'top',
     eyebrow: null,
-    headline:
-      'Get the full and fascinating experience of Rome, on an immersive tour at your own pace',
+    headline: 'Rome, at your own pace.',
     accentLine: null,
     subheadline:
-      'The best self-guided audio tour all around the eternal city. Make the best out of your visit and roam freely without missing anything important.',
-    subheadlineHighlight: 'best self-guided audio tour all around the eternal city',
+      'The best self-guided audio tour of the Eternal City. Wander freely without missing what matters.',
+    subheadlineHighlight: 'best self-guided audio tour of the Eternal City',
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
     secondaryCta: LANDING_CTA.chooseTour,
     secondaryHref: '#pricing',
@@ -292,8 +291,8 @@ export const LANDING_CONTENT = {
 
   'product-demo': {
     id: 'how-it-works',
-    eyebrow: 'HOW CHRONOWALK WORKS',
-    headline: 'One walk, shown from beginning to end.',
+    eyebrow: 'The App',
+    headline: 'How does ChronoWalk work?',
     subheadline: 'Scroll to follow the phone from choosing a route to hearing the story on site.',
     chapters: [
       {
