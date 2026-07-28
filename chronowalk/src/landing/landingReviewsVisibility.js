@@ -52,13 +52,13 @@ function readQuery(param) {
   }
 }
 
-/** Whether the reviews capsule should render on the hero. Default: shown during testing. */
+/** Whether the reviews capsule should render on the hero. Default: hidden until real reviews ship. */
 export function getLandingReviewsVisible() {
   const fromQuery = readQuery(LANDING_REVIEWS_PARAM)
   if (fromQuery != null) return fromQuery
   const stored = readStorage(LANDING_REVIEWS_KEY)
   if (stored != null) return stored
-  return true
+  return false
 }
 
 export function setLandingReviewsVisible(visible) {

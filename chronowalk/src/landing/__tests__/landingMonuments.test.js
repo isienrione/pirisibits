@@ -48,7 +48,7 @@ describe('getLandingRouteJourney', () => {
   })
 
   it('frames the stop carousel without a catalog pitch', () => {
-    expect(LANDING_CONTENT.monuments.headline).toContain('Rome, stop by stop')
+    expect(LANDING_CONTENT.monuments.headline).toMatch(/waypoints you can discover with ChronoWalk/i)
     expect(LANDING_CONTENT.monuments.subheadline).toMatch(/swipe/i)
     expect(LANDING_CONTENT.monuments.routeName).toBe('Roma Eterna')
   })

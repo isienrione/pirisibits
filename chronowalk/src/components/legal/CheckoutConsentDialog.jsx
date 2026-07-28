@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { TAX_INCLUSIVE_NOTE } from './immediateAccessConsent.js'
 import './legal.css'
 
@@ -10,11 +11,17 @@ function CheckoutConsentDialogPanel({
   onCancel,
 }) {
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
     const onKeyDown = (event) => {
       if (event.key === 'Escape' && !busy) onCancel?.()
     }
     window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
   }, [busy, onCancel])
 
   return (
@@ -74,6 +81,7 @@ function CheckoutConsentDialogPanel({
 /**
  * Confirm modal before Paddle checkout (no withdrawal-waiver checkbox —
  * that notice lives in the post-purchase access email + refund policy).
+ * Portaled to document.body so landing overflow/stacking cannot hide it.
  */
 export default function CheckoutConsentDialog({
   open,
@@ -83,15 +91,16 @@ export default function CheckoutConsentDialog({
   onConfirm,
   onCancel,
 }) {
-  if (!open) return null
+  if (!open || typeof document === 'undefined') return null
 
-  return (
+  return createPortal(
     <CheckoutConsentDialogPanel
       tierLabel={tierLabel}
       priceLabel={priceLabel}
       busy={busy}
       onConfirm={onConfirm}
       onCancel={onCancel}
-    />
+    />,
+    document.body,
   )
 }

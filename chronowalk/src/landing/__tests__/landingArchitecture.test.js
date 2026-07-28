@@ -51,7 +51,8 @@ describe('landing product-story architecture (V4)', () => {
   it('frames the sticky phone demo as four chapters', () => {
     const section = LANDING_CONTENT['product-demo']
     expect(section.id).toBe('how-it-works')
-    expect(section.headline).toBe('One walk, shown from beginning to end.')
+    expect(section.eyebrow).toBe('The App')
+    expect(section.headline).toBe('How does ChronoWalk work?')
     expect(section.chapters).toHaveLength(4)
     expect(section.chapters.map((c) => c.id)).toEqual([
       'choose',
@@ -81,7 +82,7 @@ describe('landing product-story architecture (V4)', () => {
     const section = LANDING_CONTENT.personas
     expect(section.id).toBe('who-its-for')
     expect(section.items).toHaveLength(5)
-    expect(section.headline).toBe('Built so that everyone can get the most out of Rome')
+    expect(section.headline).toBe('ChronoWalk is your reliable companion')
     expect(section.items.map((item) => item.headline)).toEqual(
       expect.arrayContaining([
         'No Colosseum ticket?',
@@ -92,22 +93,29 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.items.find((item) => item.id === 'no-tickets')?.imageKey).toBe('trevi')
   })
 
-  it('keeps the hero CTAs for sneak peek and choose tour', () => {
+  it('keeps the hero CTAs for sneak peek, get app, and how it works', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.eyebrow).toBeNull()
-    expect(hero.headline).toMatch(/full and fascinating experience of Rome/i)
+    expect(hero.headline).toBe('Rome, at your own pace.')
     expect(hero.subheadlineHighlight).toMatch(/best self-guided audio tour/i)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
     expect(hero.primaryCta).toBe('Get a free sneak peek')
-    expect(hero.secondaryCta).toBe('Choose your walk')
-    expect(hero.secondaryHref).toBe('#pricing')
+    expect(hero.secondaryCta).toBe(LANDING_CTA.howItWorks)
+    expect(hero.secondaryCta).toBe('How does ChronoWalk work?')
+    expect(hero.secondaryHref).toBe('#how-it-works')
     expect(hero.getAppCta).toBe('Get the app')
     expect(hero.getAppHref).toBe('#get-app')
     expect(hero.primaryHref).toBe('/preview')
   })
 
+  it('shows a nav Get the app CTA that deep-links to the get-app section', () => {
+    expect(LANDING_CONTENT.header.cta).toBe(LANDING_CTA.getApp)
+    expect(LANDING_CONTENT.header.ctaHref).toBe('#get-app')
+    expect(LANDING_CONTENT.header.ctaShort).toBe('Get App')
+  })
+
   it('removes the top-right header sneak-peek CTA', () => {
-    expect(LANDING_CONTENT.header.cta).toBeNull()
+    expect(LANDING_CONTENT.header.cta).not.toBe(LANDING_CTA.tryFreeSneakPeek)
   })
 
   it('ships trust as an expandable checklist', () => {
@@ -150,7 +158,7 @@ describe('landing product-story architecture (V4)', () => {
 
   it('keeps ChronoWalk voice without banned marketing phrases', () => {
     expect(LANDING_CONTENT.hero.eyebrow).toBeNull()
-    expect(LANDING_CONTENT['product-demo'].headline).toBe('One walk, shown from beginning to end.')
+    expect(LANDING_CONTENT['product-demo'].headline).toBe('How does ChronoWalk work?')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [
       'revolutionary',

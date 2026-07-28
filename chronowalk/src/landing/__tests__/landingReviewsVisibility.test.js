@@ -19,8 +19,8 @@ describe('landingReviewsVisibility', () => {
     window.history.replaceState({}, '', '/')
   })
 
-  it('hides reviews only when explicitly turned off', () => {
-    expect(getLandingReviewsVisible()).toBe(true)
+  it('hides reviews by default until real quotes ship', () => {
+    expect(getLandingReviewsVisible()).toBe(false)
   })
 
   it('persists the reviews toggle in localStorage', () => {
