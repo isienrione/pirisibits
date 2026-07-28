@@ -116,20 +116,25 @@ export default function LandingProductDemo() {
             </div>
 
             <div className="cw-v4-demo__copy-col" aria-live="polite">
-              <p className="cw-v4-demo__chapter-index">
-                {String(active + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')}
-              </p>
-              <h3 className="cw-v4-demo__chapter-title">{chapter?.title}</h3>
-              <p className="cw-v4-demo__chapter-body">{chapter?.body}</p>
-              {chapter?.beats?.length ? (
-                <ul className="cw-v4-demo__beats">
-                  {chapter.beats.map((beat, beatIndex) => (
-                    <li key={beat} className={beatIndex <= subPhase ? 'is-on' : undefined}>
-                      {beat}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              <div
+                key={`${chapter?.id ?? 'choose'}-${subPhase}`}
+                className="cw-v4-demo__copy-panel"
+              >
+                <p className="cw-v4-demo__chapter-index">
+                  {String(active + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')}
+                </p>
+                <h3 className="cw-v4-demo__chapter-title">{chapter?.title}</h3>
+                <p className="cw-v4-demo__chapter-body">{chapter?.body}</p>
+                {chapter?.beats?.length ? (
+                  <ul className="cw-v4-demo__beats">
+                    {chapter.beats.map((beat, beatIndex) => (
+                      <li key={beat} className={beatIndex <= subPhase ? 'is-on' : undefined}>
+                        {beat}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
