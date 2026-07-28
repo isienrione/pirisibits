@@ -164,19 +164,6 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
             <div className="cw-v4-hero__actions">
-              <a
-                href={section.secondaryHref ?? '#pricing'}
-                className="cw-v4-btn cw-v4-btn--purchase"
-                tabIndex={interactive ? 0 : -1}
-                onClick={(event) => {
-                  if (!onChooseTour) return
-                  event.preventDefault()
-                  onChooseTour()
-                }}
-              >
-                {section.secondaryCta}
-              </a>
-
               <button
                 type="button"
                 className="cw-v4-btn cw-v4-btn--primary"
@@ -197,6 +184,21 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                 }}
               >
                 {section.getAppCta}
+              </a>
+
+              <a
+                href={section.secondaryHref ?? '#how-it-works'}
+                className="cw-v4-btn cw-v4-btn--purchase"
+                tabIndex={interactive ? 0 : -1}
+                onClick={(event) => {
+                  const id = (section.secondaryHref ?? '#how-it-works').replace(/^#/, '')
+                  const target = id ? document.getElementById(id) : null
+                  if (!target) return
+                  event.preventDefault()
+                  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+              >
+                {section.secondaryCta}
               </a>
             </div>
           </div>

@@ -421,6 +421,8 @@
   color: #1a1208;
   border-color: rgba(255, 220, 160, 0.45);
   box-shadow: 0 8px 22px rgba(224, 138, 40, 0.28);
+  text-wrap: balance;
+  line-height: 1.25;
 }
 
 .cw-v4-btn--primary {
@@ -718,12 +720,12 @@
 
 @media (min-width: 640px) {
   .cw-v4-hero__actions {
-    grid-template-columns: 1.2fr 1fr auto;
-    max-width: 36rem;
+    grid-template-columns: 1fr 1fr;
+    max-width: 34rem;
   }
 
   .cw-v4-btn--purchase {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 }
 

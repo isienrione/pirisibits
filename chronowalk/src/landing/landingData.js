@@ -26,6 +26,7 @@ export const LANDING_CTA = {
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
   exploreRomeRoutes: 'See all Rome walks',
   chooseTour: 'Choose your walk',
+  howItWorks: 'How does ChronoWalk work?',
   getApp: 'Get the app',
   reviews: '★★★★★ Reviews',
 }
@@ -349,8 +350,8 @@ export const LANDING_CONTENT = {
       'The best self-guided audio tour of the Eternal City. Wander freely without missing what matters.',
     subheadlineHighlight: 'best self-guided audio tour of the Eternal City',
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: LANDING_CTA.chooseTour,
-    secondaryHref: '#pricing',
+    secondaryCta: LANDING_CTA.howItWorks,
+    secondaryHref: '#how-it-works',
     getAppCta: LANDING_CTA.getApp,
     getAppHref: '#pricing',
     reviewsCta: 'See more',
