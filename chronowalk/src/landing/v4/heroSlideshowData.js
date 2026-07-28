@@ -1,11 +1,7 @@
 /**
  * Secondary hero slides — full-bleed art from public/landing/hero-slides/.
- * Keep these images intact; only swap files when design exports are corrected.
- *
- * Known baked-in art deltas vs live catalog (re-export when ready):
- * - coverage.png: says 22 stops (product is 21; no Forum of Augustus)
- * - packages.png: $17.99 / $12 / 13 / 7 stops (live: €14.99 / €9.99, 12 / 8)
- * - intelligent-nav.png: phone map shows Santiago streets (demo GPS fixture)
+ * Slide 0 in the hero carousel remains LANDING_HERO (Rome sky); these five
+ * follow it. Swap PNG files in place when design exports are updated.
  */
 export const HERO_SLIDESHOW_SLIDES = [
   {
@@ -15,7 +11,7 @@ export const HERO_SLIDESHOW_SLIDES = [
   },
   {
     id: 'ruin-room',
-    title: 'The Ruin Becomes the Room.',
+    title: 'The ruin becomes the room.',
     src: '/landing/hero-slides/ruin-room.png',
   },
   {
@@ -29,23 +25,8 @@ export const HERO_SLIDESHOW_SLIDES = [
     src: '/landing/hero-slides/audio-narratives.png',
   },
   {
-    id: 'intelligent-nav',
-    title: 'Intelligent Navigation.',
-    src: '/landing/hero-slides/intelligent-nav.png',
-  },
-  {
-    id: 'evidence',
-    title: 'Evidence You Can Check.',
-    src: '/landing/hero-slides/evidence.png',
-  },
-  {
-    id: 'coverage',
-    title: 'Comprehensive Coverage.',
-    src: '/landing/hero-slides/coverage.png',
-  },
-  {
     id: 'packages',
-    title: 'Flexible Packages.',
+    title: 'Choose your Roman walk.',
     src: '/landing/hero-slides/packages.png',
   },
 ]

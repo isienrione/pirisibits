@@ -5,7 +5,15 @@ import { resolve } from 'node:path'
 
 describe('heroSlideshowData', () => {
   it('points every story slide at a real horizontal PNG', () => {
-    expect(HERO_SLIDESHOW_SLIDES.length).toBe(8)
+    expect(HERO_SLIDESHOW_SLIDES.length).toBe(5)
+    expect(HERO_SLIDESHOW_SLIDES.map((s) => s.id)).toEqual([
+      'then-now',
+      'ruin-room',
+      'gps-guidance',
+      'audio-narratives',
+      'packages',
+    ])
+
     for (const slide of HERO_SLIDESHOW_SLIDES) {
       expect(slide.src).toMatch(/^\/landing\/hero-slides\/.+\.png$/)
       const disk = resolve(process.cwd(), `public${slide.src}`)
