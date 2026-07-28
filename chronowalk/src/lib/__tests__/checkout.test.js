@@ -71,7 +71,8 @@ describe('checkout helpers (Paddle)', () => {
   it('resolves rome tiers and Couple/Family bundles', () => {
     expect(getTierById('rome-essential')?.priceCents).toBe(999)
     expect(getTierById('rome-couple')?.priceCents).toBe(2500)
-    expect(getTierById('rome-family')?.name).toBe('Family Bundle')
+    expect(getTierById('rome-couple')?.name).toBe('Couple')
+    expect(getTierById('rome-family')?.name).toBe('Family')
     expect(getTierById('rome-couple')).not.toHaveProperty('seatLimit')
     expect(getTierById('rome-couple')).not.toHaveProperty('contentProductId')
     expect(getTierById('missing')).toBeNull()
