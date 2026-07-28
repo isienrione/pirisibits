@@ -4,14 +4,14 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 describe('heroSlideshowData', () => {
-  it('points every story slide at a real horizontal PNG', () => {
+  it('points every story slide at a real portrait PNG', () => {
     expect(HERO_SLIDESHOW_SLIDES.length).toBe(5)
     expect(HERO_SLIDESHOW_SLIDES.map((s) => s.id)).toEqual([
       'then-now',
       'ruin-room',
       'gps-guidance',
       'audio-narratives',
-      'packages',
+      'choose-your-walk',
     ])
 
     for (const slide of HERO_SLIDESHOW_SLIDES) {

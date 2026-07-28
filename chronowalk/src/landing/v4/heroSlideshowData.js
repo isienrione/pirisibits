@@ -1,7 +1,7 @@
 /**
  * Secondary hero slides — full-bleed art from public/landing/hero-slides/.
  * Slide 0 in the hero carousel remains LANDING_HERO (Rome sky); these five
- * follow it. Swap PNG files in place when design exports are updated.
+ * follow it. Assets are portrait (≈9:16) marketing frames.
  */
 export const HERO_SLIDESHOW_SLIDES = [
   {
@@ -25,9 +25,9 @@ export const HERO_SLIDESHOW_SLIDES = [
     src: '/landing/hero-slides/audio-narratives.png',
   },
   {
-    id: 'packages',
+    id: 'choose-your-walk',
     title: 'Choose your Roman walk.',
-    src: '/landing/hero-slides/packages.png',
+    src: '/landing/hero-slides/choose-your-walk.png',
   },
 ]
 
