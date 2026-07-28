@@ -25,7 +25,7 @@ export const LANDING_CTA = {
   tryOneStopFree: 'Get a free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
   exploreRomeRoutes: 'See all Rome walks',
-  chooseTour: 'Choose your tour',
+  chooseTour: 'Choose your walk',
   getApp: 'Get the app',
   reviews: '★★★★★ Reviews',
 }
@@ -270,16 +270,18 @@ export const LANDING_LEGACY_DEEPLINK_IDS = [
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: 'SELF-GUIDED AUDIO WALKS IN ROME',
+    eyebrow: null,
     headline:
       'Get the full and fascinating experience of Rome, on an immersive tour at your own pace',
     accentLine: null,
     subheadline:
-      'The best self-guided tour all around the eternal city. Make the best out of your visit and roam freely without missing anything important.',
+      'The best self-guided audio tour all around the eternal city. Make the best out of your visit and roam freely without missing anything important.',
+    subheadlineHighlight: 'best self-guided audio tour all around the eternal city',
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
     secondaryCta: LANDING_CTA.chooseTour,
     secondaryHref: '#pricing',
     getAppCta: LANDING_CTA.getApp,
+    getAppHref: '#get-app',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',

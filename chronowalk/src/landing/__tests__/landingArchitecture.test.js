@@ -94,12 +94,15 @@ describe('landing product-story architecture (V4)', () => {
 
   it('keeps the hero CTAs for sneak peek and choose tour', () => {
     const hero = LANDING_CONTENT.hero
+    expect(hero.eyebrow).toBeNull()
     expect(hero.headline).toMatch(/full and fascinating experience of Rome/i)
+    expect(hero.subheadlineHighlight).toMatch(/best self-guided audio tour/i)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
     expect(hero.primaryCta).toBe('Get a free sneak peek')
-    expect(hero.secondaryCta).toBe(LANDING_CTA.chooseTour)
+    expect(hero.secondaryCta).toBe('Choose your walk')
     expect(hero.secondaryHref).toBe('#pricing')
     expect(hero.getAppCta).toBe('Get the app')
+    expect(hero.getAppHref).toBe('#get-app')
     expect(hero.primaryHref).toBe('/preview')
   })
 
@@ -146,7 +149,7 @@ describe('landing product-story architecture (V4)', () => {
   })
 
   it('keeps ChronoWalk voice without banned marketing phrases', () => {
-    expect(LANDING_CONTENT.hero.eyebrow).toBe('SELF-GUIDED AUDIO WALKS IN ROME')
+    expect(LANDING_CONTENT.hero.eyebrow).toBeNull()
     expect(LANDING_CONTENT['product-demo'].headline).toBe('One walk, shown from beginning to end.')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [

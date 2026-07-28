@@ -19,16 +19,16 @@ describe('landingReviewsVisibility', () => {
     window.history.replaceState({}, '', '/')
   })
 
-  it('hides reviews by default', () => {
-    expect(getLandingReviewsVisible()).toBe(false)
+  it('hides reviews only when explicitly turned off', () => {
+    expect(getLandingReviewsVisible()).toBe(true)
   })
 
   it('persists the reviews toggle in localStorage', () => {
-    setLandingReviewsVisible(true)
-    expect(window.localStorage.getItem(LANDING_REVIEWS_KEY)).toBe('1')
-    expect(getLandingReviewsVisible()).toBe(true)
     setLandingReviewsVisible(false)
+    expect(window.localStorage.getItem(LANDING_REVIEWS_KEY)).toBe('0')
     expect(getLandingReviewsVisible()).toBe(false)
+    setLandingReviewsVisible(true)
+    expect(getLandingReviewsVisible()).toBe(true)
   })
 
   it('honors ?landing_reviews=1 and sticky-writes storage', () => {

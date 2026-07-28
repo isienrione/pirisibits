@@ -12,17 +12,6 @@ import {
 const SLIDE_MS = 7000
 const FADE_MS = 900
 
-function AppStoreGlyph() {
-  return (
-    <svg className="cw-v4-appstore__glyph" viewBox="0 0 16 16" aria-hidden width="16" height="16">
-      <path
-        fill="currentColor"
-        d="M11.18 8.3c.02 2.13 1.87 2.84 1.89 2.85-.02.05-.3 1.01-.98 2-.59.86-1.2 1.71-2.16 1.73-.95.02-1.25-.56-2.34-.56-1.08 0-1.42.54-2.32.58-.93.04-1.64-.93-2.24-1.78C1.8 11.4.9 8.6 1.95 6.7c.52-.94 1.45-1.54 2.46-1.56.96-.02 1.87.65 2.34.65.46 0 1.55-.8 2.62-.68.45.02 1.7.18 2.5 1.36-.06.04-1.5.87-1.69 2.83ZM9.7 3.5c.5-.61.84-1.46.75-2.3-.72.03-1.6.48-2.12 1.09-.47.54-.88 1.4-.77 2.23.81.06 1.64-.41 2.14-1.02Z"
-      />
-    </svg>
-  )
-}
-
 function StarRow({ rating = 4.9 }) {
   return (
     <span className="cw-v4-reviews__stars" aria-label={`${rating} out of 5 stars`}>
@@ -33,6 +22,22 @@ function StarRow({ rating = 4.9 }) {
       ))}
       <span className="cw-v4-reviews__score">{rating.toFixed(1)}</span>
     </span>
+  )
+}
+
+function HeroLead({ text, highlight }) {
+  if (!highlight || !text.includes(highlight)) {
+    return <p className="cw-v4-hero__lead">{text}</p>
+  }
+  const start = text.indexOf(highlight)
+  const before = text.slice(0, start)
+  const after = text.slice(start + highlight.length)
+  return (
+    <p className="cw-v4-hero__lead">
+      {before}
+      <mark className="cw-v4-hero__mark">{highlight}</mark>
+      {after}
+    </p>
   )
 }
 
@@ -47,7 +52,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   const total = 1 + storySlides.length
   const [index, setIndex] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const [reviewsVisible, setReviewsVisible] = useState(false)
+  const [reviewsVisible, setReviewsVisible] = useState(true)
 
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -110,25 +115,24 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
           </div>
 
           <div className="cw-v4-hero__copy">
-            {section.eyebrow ? <p className="cw-v4-hero__brand">{section.eyebrow}</p> : null}
             <h1 id="cw-v4-hero-heading" className="cw-v4-hero__title">
               {section.headline}
             </h1>
-            <p className="cw-v4-hero__lead">{section.subheadline}</p>
+            <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
             <div className="cw-v4-hero__actions">
-              <button
-                type="button"
-                className="cw-v4-btn cw-v4-btn--appstore"
-                onClick={() => onGetApp?.()}
+              <a
+                href={section.secondaryHref ?? '#pricing'}
+                className="cw-v4-btn cw-v4-btn--purchase"
                 tabIndex={interactive ? 0 : -1}
+                onClick={(event) => {
+                  if (!onChooseTour) return
+                  event.preventDefault()
+                  onChooseTour()
+                }}
               >
-                <AppStoreGlyph />
-                <span className="cw-v4-appstore__text">
-                  <span className="cw-v4-appstore__eyebrow">Download on the</span>
-                  <span className="cw-v4-appstore__title">{section.getAppCta}</span>
-                </span>
-              </button>
+                {section.secondaryCta}
+              </a>
 
               <button
                 type="button"
@@ -139,18 +143,14 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                 {section.primaryCta}
               </button>
 
-              <a
-                href={section.secondaryHref ?? '#pricing'}
-                className="cw-v4-btn cw-v4-btn--secondary"
+              <button
+                type="button"
+                className="cw-v4-btn cw-v4-btn--ghost cw-v4-btn--getapp"
+                onClick={() => onGetApp?.()}
                 tabIndex={interactive ? 0 : -1}
-                onClick={(event) => {
-                  if (!onChooseTour) return
-                  event.preventDefault()
-                  onChooseTour()
-                }}
               >
-                {section.secondaryCta}
-              </a>
+                {section.getAppCta}
+              </button>
             </div>
 
             {reviewsVisible && reviews ? (

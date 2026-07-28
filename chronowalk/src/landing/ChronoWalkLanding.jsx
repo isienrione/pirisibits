@@ -4,6 +4,7 @@ import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
 import LandingIntroNav from './v4/LandingIntroNav.jsx'
 import LandingProductHero from './v4/LandingProductHero.jsx'
+import LandingGetAppSection from './v4/LandingGetAppSection.jsx'
 import LandingProductDemo from './v4/LandingProductDemo.jsx'
 import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
 import LandingPersonas from './v4/LandingPersonas.jsx'
@@ -11,7 +12,6 @@ import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
 import LandingReviewsDevToggle from './v4/LandingReviewsDevToggle.jsx'
-import { usePwaInstall } from '../hooks/usePwaInstall.js'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
@@ -41,7 +41,6 @@ import './ChronoWalkLanding.v4.css'
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
   const { cents } = useLandingPrice()
-  const { installed, canPromptInstall, promptInstall } = usePwaInstall()
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const pendingTier = useMemo(
@@ -125,17 +124,14 @@ export default function ChronoWalkLanding() {
     window.location.hash = 'pricing'
   }, [])
 
-  const handleGetApp = useCallback(async () => {
-    if (installed) {
-      navigate('/')
+  const handleGetApp = useCallback(() => {
+    const target = document.getElementById('get-app')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       return
     }
-    if (canPromptInstall) {
-      const result = await promptInstall()
-      if (result?.ok) return
-    }
-    navigate('/')
-  }, [canPromptInstall, installed, navigate, promptInstall])
+    window.location.hash = 'get-app'
+  }, [])
 
   const [actOpen, actWalk, actChoose] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
@@ -159,6 +155,7 @@ export default function ChronoWalkLanding() {
             onChooseTour={handleChooseTour}
             onGetApp={handleGetApp}
           />
+          <LandingGetAppSection />
           <LandingProductDemo />
         </LandingAct>
 
