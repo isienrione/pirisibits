@@ -1,5 +1,5 @@
 /**
- * How to open ChronoWalk: App Store / Play Store (coming soon) or browser (available now).
+ * How to open ChronoWalk: browser (available now) above App Store / Play Store (coming soon).
  */
 export default function LandingGetAppSection() {
   return (
@@ -20,6 +20,36 @@ export default function LandingGetAppSection() {
         </header>
 
         <div className="cw-v4-getapp__options">
+          <a href="/" className="cw-v4-getapp__option cw-v4-getapp__option--active">
+            <span className="cw-v4-getapp__option-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+                <rect
+                  x="4"
+                  y="3"
+                  width="16"
+                  height="18"
+                  rx="2.5"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                />
+                <path
+                  d="M8 7h8M8 11h8M8 15h5"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span className="cw-v4-getapp__option-copy">
+              <span className="cw-v4-getapp__option-eyebrow">Available now</span>
+              <span className="cw-v4-getapp__option-title">Use in browser</span>
+              <span className="cw-v4-getapp__option-note">
+                No App Store download. Open ChronoWalk in your mobile browser. Initial setup needs
+                internet; then prepare the walk for offline use.
+              </span>
+            </span>
+          </a>
+
           <button
             type="button"
             className="cw-v4-getapp__option cw-v4-getapp__option--dimmed"
@@ -59,36 +89,6 @@ export default function LandingGetAppSection() {
               <span className="cw-v4-getapp__option-title">Google Play</span>
             </span>
           </button>
-
-          <a href="/" className="cw-v4-getapp__option cw-v4-getapp__option--active">
-            <span className="cw-v4-getapp__option-icon" aria-hidden>
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                <rect
-                  x="4"
-                  y="3"
-                  width="16"
-                  height="18"
-                  rx="2.5"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                />
-                <path
-                  d="M8 7h8M8 11h8M8 15h5"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Available now</span>
-              <span className="cw-v4-getapp__option-title">Use in browser</span>
-              <span className="cw-v4-getapp__option-note">
-                No App Store download. Open ChronoWalk in your mobile browser. Initial setup needs
-                internet; then prepare the walk for offline use.
-              </span>
-            </span>
-          </a>
         </div>
 
         <p className="cw-v4-getapp__soon">
