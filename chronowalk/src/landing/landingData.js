@@ -40,63 +40,35 @@ export const FREE_PREVIEW = {
 /** Tiered Rome journey offerings shown on the landing product showcase. Prices in EUR. */
 export const ROME_TIERS = [
   {
-    id: 'rome-central',
-    name: 'Roma Historica',
-    /** @deprecated use `name` - retained for archive / older UI strings */
-    eyebrow: 'Roma Historica',
-    tierLabel: 'CENTRAL ROME',
-    bestFor: 'Best for an afternoon through Rome’s historic center.',
-    outcome:
-      'Eight stops through the living city around the Pantheon, with stories tied to the squares, fountains, streets, and monuments in front of you.',
-    price: '€9.99',
-    priceCents: 999,
-    priceNote: 'once · taxes included where applicable',
-    description:
-      'Eight stops through the living city around the Pantheon, with stories tied to the squares, fountains, streets, and monuments in front of you.',
-    bullets: [
-      'Place-tied audio at each stop',
-      'Then vs Now reconstructions where available',
-      'Directions and saved progress',
-    ],
-    expandLabel: 'See all 8 stops',
-    primaryCta: 'Choose Roma Historica',
-  },
-  {
-    id: 'rome-essential',
-    name: 'Roma Antica',
-    eyebrow: 'Roma Antica',
-    tierLabel: 'ANCIENT ROME',
-    bestFor: 'Best for the Colosseum, Palatine, Forum, and Capitoline area.',
-    outcome:
-      'Twelve stops through Rome’s ancient core, from the arena and imperial route to the places where politics, ritual, and public life unfolded.',
-    price: '€9.99',
-    priceCents: 999,
-    priceNote: 'once · taxes included where applicable',
-    description:
-      'Twelve stops through Rome’s ancient core, from the arena and imperial route to the places where politics, ritual, and public life unfolded.',
-    bullets: [
-      'Place-tied audio at each stop',
-      'Then vs Now reconstructions where available',
-      'Directions and saved progress',
-    ],
-    expandLabel: 'See all 12 stops',
-    primaryCta: 'Choose Roma Antica',
-  },
-  {
     id: 'rome-complete',
     name: 'Roma Eterna',
     eyebrow: 'Roma Eterna',
     tierLabel: 'THE COMPLETE ROME WALK',
+    theme: 'eterna',
+    tag: 'Complete experience',
+    tagline: 'The complete city loop',
     bestFor: 'All 21 stops, from ancient Rome to the historic center and Via Appia.',
     outcome:
-      'One continuous story across the city. Follow the suggested order, start at another included stop, or divide the walk across your trip.',
+      'One city. One continuous story. From ancient Rome to the historic center. The full ChronoWalk experience.',
     price: '€14.99',
     priceCents: 1499,
-    priceNote: 'once · taxes included where applicable',
-    badge: 'Complete Rome walk',
+    priceNote: 'One-time purchase. No subscription. Yours forever.',
+    badge: 'Complete experience',
     description:
-      'One continuous story across the city. Follow the suggested order, start at another included stop, or divide the walk across your trip.',
-    includesLabel: 'Roma Historica + Roma Antica + the complete Rome walk',
+      'The full journey through ancient Rome and the historic center. Twenty-one stops. Two thousand years of story.',
+    durationLabel: '4.5 – 5.5 hr',
+    stopsLabel: '21 stops',
+    distanceLabel: '~6 km',
+    mapImage: '/landing/rome-pricing-basemap-complete.jpg',
+    legend: [
+      { tone: 'full', label: 'Full route (21 stops)', detail: '~6 km · 4.5 – 5.5 hr' },
+      {
+        tone: 'optional',
+        label: 'Optional loop (4 stops)',
+        detail: 'Palatine, Circus Maximus View, Forum overview',
+      },
+    ],
+    includesLabel: 'Includes all highlights in the city + optional loop',
     featuredBullet: 'Only €5 more than either shorter route.',
     bullets: [
       'All 21 stops, from ancient Rome to the historic center and Via Appia',
@@ -104,7 +76,98 @@ export const ROME_TIERS = [
       'Directions and saved progress',
     ],
     expandLabel: 'See all 21 stops',
-    primaryCta: 'Unlock all 21 stops',
+    primaryCta: 'Choose Roma Eterna',
+    footFeatures: [
+      { icon: 'pin', title: 'Start anywhere', body: 'Begin at any stop' },
+      { icon: 'download', title: 'Download & go', body: 'Use offline' },
+      { icon: 'bookmark', title: 'Pick up anytime', body: 'Your progress is saved' },
+    ],
+  },
+  {
+    id: 'rome-essential',
+    name: 'Roma Antica',
+    eyebrow: 'Roma Antica',
+    tierLabel: 'ANCIENT ROME',
+    theme: 'antica',
+    tag: 'Ancient Rome',
+    tagline: 'Colosseum, Palatine & Ancient Rome Core',
+    bestFor: 'Best for the Colosseum, Palatine, Forum, and Capitoline area.',
+    outcome: 'Walk through the heart of Ancient Rome, from the Colosseum and Palatine Hill to the Roman Forum.',
+    price: '€9.99',
+    priceCents: 999,
+    priceNote: 'One-time payment and it’s yours forever.',
+    description:
+      'Walk through the heart of Ancient Rome, from the Colosseum and Palatine Hill to the Roman Forum.',
+    durationLabel: '~2.5 – 3 hr',
+    stopsLabel: '12 stops',
+    distanceLabel: '~3 km',
+    mapImage: '/landing/rome-pricing-basemap-ancient.jpg',
+    legend: [
+      {
+        tone: 'short',
+        label: 'Short route (9 stops)',
+        detail: 'Direct path without optional loop · ~1.5 – 2 hr · ~2.2 km',
+      },
+      {
+        tone: 'full',
+        label: 'Full route (12 stops)',
+        detail: 'Includes optional loop · ~2.5 – 3 hr · ~3 km',
+      },
+      {
+        tone: 'optional',
+        label: 'Optional loop (3 stops)',
+        detail: 'Palatine, Circo Massimo & Forum overview · ~30 – 45 min',
+      },
+    ],
+    bullets: [
+      'Place-tied audio at each stop',
+      'Then vs Now reconstructions where available',
+      'Directions and saved progress',
+    ],
+    expandLabel: 'See all 12 stops',
+    primaryCta: 'Choose Roma Antica',
+    footFeatures: [
+      { icon: 'pin', title: 'Start anywhere', body: 'Begin at any stop' },
+      { icon: 'download', title: 'Download & go', body: 'Use offline' },
+      { icon: 'bookmark', title: 'Pick up anytime', body: 'Your progress is saved' },
+    ],
+  },
+  {
+    id: 'rome-central',
+    name: 'Roma Historica',
+    /** @deprecated use `name` - retained for archive / older UI strings */
+    eyebrow: 'Roma Historica',
+    tierLabel: 'CENTRAL ROME',
+    theme: 'historica',
+    tag: 'Centro Storico',
+    tagline: 'Centro Storico & Pantheon deep dive',
+    bestFor: 'Best for an afternoon through Rome’s historic center.',
+    outcome:
+      'Perfect for an afternoon through Rome’s historic heart, with a deep dive into the Pantheon.',
+    price: '€9.99',
+    priceCents: 999,
+    priceNote: 'One-time payment and it’s yours forever.',
+    description:
+      'Perfect for an afternoon through Rome’s historic heart, with a deep dive into the Pantheon.',
+    durationLabel: '~2.5 – 3 hr',
+    stopsLabel: '8 stops',
+    distanceLabel: '~4 km',
+    mapImage: '/landing/rome-pricing-basemap-central.jpg',
+    legend: [
+      { tone: 'full', label: 'Historic center route', detail: '8 stops · ~2.5 – 3 hr · ~4 km' },
+    ],
+    bullets: [
+      'Place-tied audio at each stop',
+      'Then vs Now reconstructions where available',
+      'Directions and saved progress',
+    ],
+    expandLabel: 'See all 8 stops',
+    primaryCta: 'Choose Roma Historica',
+    footFeatures: [
+      { icon: 'pin', title: 'Start anywhere', body: 'Begin at any stop' },
+      { icon: 'download', title: 'Download & go', body: 'Use offline' },
+      { icon: 'bookmark', title: 'Pick up anytime', body: 'Your progress is saved' },
+    ],
   },
 ]
 
@@ -699,13 +762,13 @@ export const LANDING_CONTENT = {
 
   pricing: {
     id: 'pricing',
-    eyebrow: 'ROME WALKS',
-    headline: 'Choose how much of Rome you want.',
-    subheadline: 'One purchase. No subscription. Prepare the walk before you leave Wi-Fi and keep access afterward.',
-    intro:
-      'Every route includes place-tied audio, Then vs Now reconstructions, directions, and saved progress.',
+    eyebrow: 'CHOOSE YOUR WALK',
+    headline: 'Choose your Roman walk.',
+    subheadline:
+      'Three self-guided routes. Same offline GPS, audio, and progress saving. Pick the chapter that matches your day.',
+    intro: '',
     footnote:
-      'Secure checkout by Paddle · Access arrives by email · Entrance tickets are not included',
+      'Secure checkout by Paddle · Access arrives by email · Entrance tickets are not included · Taxes included where applicable',
     accessLinkLabel: 'Already purchased? Open your access link',
     accessHref: '/access',
     metaTimeLabel: 'Est. duration',
@@ -716,7 +779,7 @@ export const LANDING_CONTENT = {
       eyebrow: 'WALK TOGETHER',
       headline: 'Share the walk, not the earbuds.',
       lead:
-        'Each person follows the complete Roma Eterna walk on their own phone. Shared progress keeps the group connected as the day unfolds. Shared progress stays connected. Exact audio timing may vary between browsers.',
+        'Each person follows the complete Roma Eterna walk on their own phone. Shared progress keeps the group connected as the day unfolds. Exact audio timing may vary between browsers.',
       bundles: ROME_BUNDLES,
     },
   },

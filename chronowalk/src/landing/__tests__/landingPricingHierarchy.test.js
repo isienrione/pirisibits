@@ -4,42 +4,61 @@ import { getLandingTierStats } from '../landingTierStats.js'
 
 describe('pricing card hierarchy content', () => {
   it('keeps product ids, prices, and checkout cents unchanged', () => {
-    expect(ROME_TIERS.map((tier) => ({ id: tier.id, price: tier.price, cents: tier.priceCents }))).toEqual([
+    expect(
+      [...ROME_TIERS]
+        .sort((a, b) => a.id.localeCompare(b.id))
+        .map((tier) => ({ id: tier.id, price: tier.price, cents: tier.priceCents })),
+    ).toEqual([
       { id: 'rome-central', price: '€9.99', cents: 999 },
-      { id: 'rome-essential', price: '€9.99', cents: 999 },
       { id: 'rome-complete', price: '€14.99', cents: 1499 },
+      { id: 'rome-essential', price: '€9.99', cents: 999 },
+    ])
+  })
+
+  it('orders packages Eterna → Antica → Historica on the landing', () => {
+    expect(ROME_TIERS.map((tier) => tier.id)).toEqual([
+      'rome-complete',
+      'rome-essential',
+      'rome-central',
+    ])
+    expect(ROME_TIERS.map((tier) => tier.name)).toEqual([
+      'Roma Eterna',
+      'Roma Antica',
+      'Roma Historica',
     ])
   })
 
   it('uses consistent route names with best-for and outcome copy', () => {
-    expect(ROME_TIERS.map((tier) => tier.name)).toEqual([
-      'Roma Historica',
-      'Roma Antica',
-      'Roma Eterna',
-    ])
     for (const tier of ROME_TIERS) {
       expect(tier.bestFor.length).toBeGreaterThan(12)
       expect(tier.outcome.length).toBeGreaterThan(20)
       expect(tier.expandLabel).toMatch(/stop/i)
+      expect(tier.theme).toMatch(/eterna|antica|historica/)
+      expect(tier.tagline.length).toBeGreaterThan(8)
+      expect(tier.durationLabel).toBeTruthy()
+      expect(tier.stopsLabel).toBeTruthy()
+      expect(tier.distanceLabel).toBeTruthy()
+      expect(tier.mapImage).toMatch(/\/landing\/rome-pricing-basemap-/)
     }
-    expect(ROME_TIERS[0].bestFor).toMatch(/Best for/i)
-    expect(ROME_TIERS[1].bestFor).toMatch(/Best for/i)
-    expect(ROME_TIERS[2].bestFor).toMatch(/All 21 stops/i)
+    expect(ROME_TIERS.find((t) => t.id === 'rome-central').bestFor).toMatch(/Best for/i)
+    expect(ROME_TIERS.find((t) => t.id === 'rome-essential').bestFor).toMatch(/Best for/i)
+    expect(ROME_TIERS.find((t) => t.id === 'rome-complete').bestFor).toMatch(/All 21 stops/i)
   })
 
   it('keeps Roma Eterna featured without invented conversion claims', () => {
     const eterna = ROME_TIERS.find((tier) => tier.id === 'rome-complete')
-    expect(eterna.badge).toBe('Complete Rome walk')
+    expect(eterna.badge).toBe('Complete experience')
     expect(eterna.badge).not.toMatch(/%|popular|bestseller|most loved/i)
+    expect(eterna.tag).not.toMatch(/%|popular|bestseller|most loved/i)
     expect(eterna.bullets[0]).toMatch(/All 21 stops/)
-    expect(eterna.primaryCta).toBe('Unlock all 21 stops')
+    expect(eterna.primaryCta).toBe('Choose Roma Eterna')
   })
 
   it('names each purchase CTA after its package', () => {
     expect(ROME_TIERS.map((tier) => tier.primaryCta)).toEqual([
-      'Choose Roma Historica',
+      'Choose Roma Eterna',
       'Choose Roma Antica',
-      'Unlock all 21 stops',
+      'Choose Roma Historica',
     ])
   })
 
