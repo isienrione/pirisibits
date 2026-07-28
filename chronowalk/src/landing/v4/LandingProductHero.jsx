@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import { Expand } from 'lucide-react'
 import { LANDING_CONTENT } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
+import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 
 const SLIDE_MS = 8000
 const FADE_MS = 900
@@ -68,6 +70,7 @@ function scrollToPricingTarget(id) {
 /**
  * Rome-sky hero with a mild fade slideshow of the exported marketing frames.
  * Slide 0 = current primary hero; secondary slides are portrait story frames.
+ * Story frames open a fullscreen pinch-zoom viewer when enlarged.
  */
 export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }) {
   const section = LANDING_CONTENT.hero
@@ -76,7 +79,9 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   const [index, setIndex] = useState(0)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [paused, setPaused] = useState(false)
+  const [viewerSlide, setViewerSlide] = useState(null)
   const touchStartX = useRef(null)
+  const expandTriggerRef = useRef(null)
 
   useEffect(() => {
     const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
@@ -87,7 +92,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   }, [])
 
   useEffect(() => {
-    if (reducedMotion || paused || total < 2) return undefined
+    if (reducedMotion || paused || viewerSlide || total < 2) return undefined
 
     let timer = 0
     const tick = () => {
@@ -99,7 +104,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
     }
     timer = window.setTimeout(tick, SLIDE_MS)
     return () => window.clearTimeout(timer)
-  }, [reducedMotion, paused, total, index])
+  }, [reducedMotion, paused, viewerSlide, total, index])
 
   const goTo = (next) => {
     setPaused(true)
@@ -108,6 +113,12 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
 
   const goPrev = () => goTo(index - 1)
   const goNext = () => goTo(index + 1)
+
+  const openSlideViewer = (slide, triggerEl) => {
+    setPaused(true)
+    if (triggerEl) expandTriggerRef.current = triggerEl
+    setViewerSlide(slide)
+  }
 
   const interactive = index === 0
 
@@ -121,6 +132,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
         touchStartX.current = event.changedTouches?.[0]?.clientX ?? null
       }}
       onTouchEnd={(event) => {
+        if (viewerSlide) return
         const start = touchStartX.current
         const end = event.changedTouches?.[0]?.clientX
         touchStartX.current = null
@@ -227,15 +239,37 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                         />
                       ))}
                     </div>
+                    <button
+                      type="button"
+                      className="cw-v4-hero__art-enlarge"
+                      tabIndex={active ? 0 : -1}
+                      aria-label={`Enlarge ${slide.title}`}
+                      onClick={(event) => openSlideViewer(slide, event.currentTarget)}
+                    >
+                      <Expand size={16} aria-hidden="true" />
+                      <span>Enlarge</span>
+                    </button>
                   </div>
                 ) : (
-                  <img
-                    className="cw-v4-hero__art"
-                    src={slide.src}
-                    alt={slide.title}
-                    decoding="async"
-                    loading={slideIndex < 2 ? 'eager' : 'lazy'}
-                  />
+                  <button
+                    type="button"
+                    className="cw-v4-hero__art-hit"
+                    tabIndex={active ? 0 : -1}
+                    aria-label={`Enlarge ${slide.title}`}
+                    onClick={(event) => openSlideViewer(slide, event.currentTarget)}
+                  >
+                    <img
+                      className="cw-v4-hero__art"
+                      src={slide.src}
+                      alt=""
+                      decoding="async"
+                      loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                    />
+                    <span className="cw-v4-hero__art-enlarge cw-v4-hero__art-enlarge--on-art">
+                      <Expand size={16} aria-hidden="true" />
+                      <span>Tap to enlarge</span>
+                    </span>
+                  </button>
                 )}
               </div>
             </div>
@@ -278,6 +312,20 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
             ))}
           </div>
         </>
+      ) : null}
+
+      {viewerSlide ? (
+        <LandingZoomableImageViewer
+          key={viewerSlide.id}
+          open
+          title={viewerSlide.title}
+          src={viewerSlide.src}
+          alt={viewerSlide.title}
+          accent="eterna"
+          hint="Pinch or double-tap to zoom in on details that caught your eye. Drag to pan."
+          onClose={() => setViewerSlide(null)}
+          returnFocusRef={expandTriggerRef}
+        />
       ) : null}
     </section>
   )

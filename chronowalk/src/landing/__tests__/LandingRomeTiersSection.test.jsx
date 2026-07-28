@@ -208,7 +208,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' }))
     expect(onBeginTier).toHaveBeenCalledWith('rome-complete')
 
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Close map viewer' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close viewer' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 

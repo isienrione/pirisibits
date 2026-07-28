@@ -9,19 +9,28 @@ const ZOOM_STEP = 0.35
 const FOCUSABLE =
   'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
+const DEFAULT_HINT =
+  'Pinch or double-tap to zoom in on details. Drag to pan when zoomed.'
+
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
 }
 
 /**
- * Full-screen poster viewer with pinch/pan zoom and a sticky checkout bar.
- * Checkout stays in `onBeginTier` (same handler as the mobile card CTA).
+ * Accessible full-screen image viewer with pinch/pan zoom.
+ * Optional sticky action bar for package checkout.
  */
-export function LandingPackagePosterViewer({
+export function LandingZoomableImageViewer({
   open,
-  tier,
+  title,
+  src,
+  width,
+  height,
+  alt = '',
+  hint = DEFAULT_HINT,
+  accent = 'eterna',
+  action = null,
   onClose,
-  onBeginTier,
   returnFocusRef,
 }) {
   const titleId = useId()
@@ -221,14 +230,14 @@ export function LandingPackagePosterViewer({
     if (pointersRef.current.size === 0) panRef.current = null
   }
 
-  if (!open || !tier || typeof document === 'undefined') return null
+  if (!open || !src || typeof document === 'undefined') return null
 
-  const theme = tier.theme ?? 'eterna'
   const transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`
   const transition = reducedMotion ? 'none' : 'transform 120ms ease-out'
+  const hasAction = Boolean(action?.ctaLabel && action?.onCta)
 
   return createPortal(
-    <div className={`cw-v4-poster-viewer cw-v4-poster-viewer--${theme}`} role="presentation">
+    <div className={`cw-v4-poster-viewer cw-v4-poster-viewer--${accent}`} role="presentation">
       <div
         ref={dialogRef}
         className="cw-v4-poster-viewer__dialog"
@@ -239,9 +248,9 @@ export function LandingPackagePosterViewer({
         <div className="cw-v4-poster-viewer__top">
           <header className="cw-v4-poster-viewer__chrome">
             <h2 id={titleId} className="cw-v4-poster-viewer__title">
-              {tier.name} illustrated route map
+              {title}
             </h2>
-            <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Map zoom controls">
+            <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Zoom controls">
               <button
                 type="button"
                 className="cw-v4-poster-viewer__tool"
@@ -271,15 +280,13 @@ export function LandingPackagePosterViewer({
                 className="cw-v4-poster-viewer__tool cw-v4-poster-viewer__tool--close"
                 data-viewer-close
                 onClick={() => onClose?.()}
-                aria-label="Close map viewer"
+                aria-label="Close viewer"
               >
                 <X size={22} aria-hidden="true" />
               </button>
             </div>
           </header>
-          <p className="cw-v4-poster-viewer__hint">
-            Pinch or double-tap to zoom in on monuments and route details. Drag to pan.
-          </p>
+          {hint ? <p className="cw-v4-poster-viewer__hint">{hint}</p> : null}
         </div>
 
         <div
@@ -294,30 +301,65 @@ export function LandingPackagePosterViewer({
           <img
             ref={imgRef}
             className="cw-v4-poster-viewer__image"
-            src={tier.cardImage}
-            alt=""
-            width={tier.cardWidth}
-            height={tier.cardHeight}
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
             draggable={false}
             style={{ transform, transition }}
           />
         </div>
 
-        <div className="cw-v4-poster-viewer__actionbar">
-          <div className="cw-v4-poster-viewer__action-meta">
-            <p className="cw-v4-poster-viewer__action-name">{tier.name}</p>
-            <p className="cw-v4-poster-viewer__action-price">{tier.price}</p>
+        {hasAction ? (
+          <div className="cw-v4-poster-viewer__actionbar">
+            <div className="cw-v4-poster-viewer__action-meta">
+              {action.name ? <p className="cw-v4-poster-viewer__action-name">{action.name}</p> : null}
+              {action.price ? <p className="cw-v4-poster-viewer__action-price">{action.price}</p> : null}
+            </div>
+            <button
+              type="button"
+              className="cw-v4-poster-viewer__cta"
+              onClick={() => action.onCta?.()}
+            >
+              {action.ctaLabel}
+            </button>
           </div>
-          <button
-            type="button"
-            className="cw-v4-poster-viewer__cta"
-            onClick={() => onBeginTier?.(tier.id)}
-          >
-            {tier.primaryCta}
-          </button>
-        </div>
+        ) : null}
       </div>
     </div>,
     document.body,
+  )
+}
+
+/**
+ * Package-card wrapper — same checkout handler as the mobile CTA.
+ */
+export function LandingPackagePosterViewer({
+  open,
+  tier,
+  onClose,
+  onBeginTier,
+  returnFocusRef,
+}) {
+  if (!tier) return null
+  return (
+    <LandingZoomableImageViewer
+      open={open}
+      title={`${tier.name} illustrated route map`}
+      src={tier.cardImage}
+      width={tier.cardWidth}
+      height={tier.cardHeight}
+      alt=""
+      accent={tier.theme ?? 'eterna'}
+      hint="Pinch or double-tap to zoom in on monuments and route details. Drag to pan."
+      action={{
+        name: tier.name,
+        price: tier.price,
+        ctaLabel: tier.primaryCta,
+        onCta: () => onBeginTier?.(tier.id),
+      }}
+      onClose={onClose}
+      returnFocusRef={returnFocusRef}
+    />
   )
 }
