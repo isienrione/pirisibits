@@ -16,6 +16,8 @@ describe('heroSlideshowData', () => {
 
     for (const slide of HERO_SLIDESHOW_SLIDES) {
       expect(slide.src).toMatch(/^\/landing\/hero-slides\/.+\.png$/)
+      expect(slide.width).toBeGreaterThan(0)
+      expect(slide.height).toBeGreaterThan(0)
       const disk = resolve(process.cwd(), `public${slide.src}`)
       expect(existsSync(disk), disk).toBe(true)
     }
