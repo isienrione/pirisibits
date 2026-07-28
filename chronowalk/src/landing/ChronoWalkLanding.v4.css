@@ -440,7 +440,7 @@
 }
 
 .cw-v4-demo__track {
-  --v4-phone-w: min(42vw, 20rem, calc(68vh * 390 / 844));
+  --v4-phone-w: min(48vw, 24rem, calc(82vh * 390 / 844));
   --v4-track-pad: clamp(1rem, 4vw, 2.5rem);
   width: min(100%, var(--v4-max));
   margin-inline: auto;
@@ -565,6 +565,63 @@
   background: #0b0b0d;
 }
 
+.cw-v4-demo-walk-map__basemap {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 48%;
+  transform: scale(1.04);
+  filter: saturate(0.92) contrast(1.05);
+}
+
+.cw-v4-demo-walk-map__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(11, 11, 13, 0.18) 0%, transparent 28%, rgba(11, 11, 13, 0.35) 100%),
+    radial-gradient(ellipse 70% 55% at 50% 45%, transparent 40%, rgba(11, 11, 13, 0.35) 100%);
+  pointer-events: none;
+}
+
+.cw-v4-demo-walk-map__route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cw-v4-demo-walk-map__you {
+  fill: #f3eee6;
+  stroke: #4e9b8f;
+  stroke-width: 3;
+}
+
+.cw-v4-demo-walk-map__you-ring {
+  fill: rgba(78, 155, 143, 0.18);
+  stroke: rgba(78, 155, 143, 0.55);
+  stroke-width: 2;
+  transform-origin: 205px 200px;
+  animation: cw-v4-you-pulse 2.4s ease-out infinite;
+}
+
+@keyframes cw-v4-you-pulse {
+  0% {
+    transform: scale(0.72);
+    opacity: 0.85;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
 .cw-v4-demo-walk-map__canvas {
   display: block;
   width: 100%;
@@ -651,16 +708,18 @@
 /* Narrow: phone on top, copy below — still one sticky stage, no overlap. */
 @media (max-width: 39.99rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(52vw, 15.5rem, calc(38vh * 390 / 844));
+    /* Bigger mockup so in-phone UI is readable. */
+    --v4-phone-w: min(86vw, 23rem, calc(58vh * 390 / 844));
   }
 
   .cw-v4-demo__stage {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(10rem, auto);
-    align-content: center;
-    row-gap: 1.25rem;
+    grid-template-rows: auto minmax(8.5rem, auto);
+    align-content: start;
+    row-gap: 0.85rem;
     justify-items: center;
-    padding-top: calc(var(--v4-nav-h) + 0.5rem);
+    padding-top: calc(var(--v4-nav-h) + 0.35rem);
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
 
   .cw-v4-demo__phone {
@@ -669,7 +728,7 @@
 
   .cw-v4-demo__copy {
     width: min(100%, 26rem);
-    min-height: 11rem;
+    min-height: 9.5rem;
     text-align: center;
   }
 
@@ -685,21 +744,28 @@
   }
 
   .cw-v4-demo__chapter-title {
-    font-size: clamp(1.35rem, 5vw, 1.85rem);
+    font-size: clamp(1.25rem, 4.6vw, 1.7rem);
   }
 
   .cw-v4-demo__chapter-body {
     margin-inline: auto;
+    font-size: 0.92rem;
   }
 
   .cw-v4-demo__beats {
     justify-content: center;
+    margin-top: 0.85rem;
+  }
+
+  .cw-v4-demo__beats li {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.55rem;
   }
 }
 
 @media (min-width: 64rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(21rem, calc(72vh * 390 / 844));
+    --v4-phone-w: min(24rem, calc(84vh * 390 / 844));
   }
 
   .cw-v4-demo__stage {

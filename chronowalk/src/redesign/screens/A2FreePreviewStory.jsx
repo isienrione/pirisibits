@@ -24,6 +24,7 @@ export default function A2FreePreviewStory({
   onThresholdCross,
   onStoryComplete,
   onBack,
+  demoAutoReveal = false,
 }) {
   const playerProps = buildImmersivePlayerProps({
     waypoint,
@@ -55,6 +56,7 @@ export default function A2FreePreviewStory({
         {...playerProps}
         actLabel={eyebrowLabel}
         forceDiegeticHint
+        demoAutoReveal={demoAutoReveal}
       />
     </div>
   )

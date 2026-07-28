@@ -55,7 +55,7 @@ const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
   )
 })
 
-/** Arrive — Threshold / story open. Stable tree. */
+/** Arrive — Threshold / story open with auto demo reveal. */
 const ArriveScreen = memo(function ArriveScreen({ beat = 0 }) {
   return (
     <A2FreePreviewStory
@@ -70,6 +70,7 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0 }) {
       storyEnded={false}
       initialTab="audio"
       continueLabel="See the full tour →"
+      demoAutoReveal
       onTogglePlay={noop}
       onSkipBack={noop}
       onSkipForward={noop}

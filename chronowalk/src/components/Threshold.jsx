@@ -177,6 +177,11 @@ export default function Threshold({
   hideUi = false,
   /** First-threshold auto-peek: briefly show Ancient ~30%, then recede. */
   autoPeek = false,
+  /**
+   * Landing demo: loop a full press-and-hold reveal so visitors see Threshold
+   * without needing to interact inside the phone mockup.
+   */
+  demoAutoReveal = false,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
@@ -359,6 +364,7 @@ export default function Threshold({
 
   // Optional first-visit auto-peek — teach by showing, not telling.
   useEffect(() => {
+    if (demoAutoReveal) return undefined
     if (!autoPeek || !active || !reconstruction || reducedMotion) return undefined
     if (peekRanRef.current) return undefined
     peekRanRef.current = true
@@ -393,7 +399,61 @@ export default function Threshold({
       peekCancelRef.current = true
       timers.forEach((id) => window.clearTimeout(id))
     }
-  }, [active, animateReveal, autoPeek, reconstruction, reducedMotion])
+  }, [active, animateReveal, autoPeek, demoAutoReveal, reconstruction, reducedMotion])
+
+  // Landing product demo — full hold cycle on a loop (non-interactive teach).
+  useEffect(() => {
+    if (!demoAutoReveal || !active || !reconstruction || reducedMotion) return undefined
+
+    let cancelled = false
+    peekCancelRef.current = false
+    const timers = []
+    const schedule = (fn, ms) => {
+      const id = window.setTimeout(fn, ms)
+      timers.push(id)
+      return id
+    }
+
+    const runCycle = () => {
+      if (cancelled || holdSessionRef.current || latchedRef.current) {
+        if (!cancelled) schedule(runCycle, 2400)
+        return
+      }
+
+      setHolding(true)
+      setVideoPlaying(true)
+      onHoldStart?.()
+      audioRef.current?.rampToThen(1100)
+      animateReveal(0, 0.94, 1100, () => {
+        if (cancelled || holdSessionRef.current || latchedRef.current) return
+        schedule(() => {
+          if (cancelled || holdSessionRef.current || latchedRef.current) return
+          setHolding(false)
+          onHoldEnd?.({ reveal: 0, latched: false, via: 'demo' })
+          audioRef.current?.rampToNow(950)
+          animateReveal(revealRef.current, 0, 950, () => {
+            if (!holdSessionRef.current && !latchedRef.current) setVideoPlaying(false)
+            if (!cancelled) schedule(runCycle, 2000)
+          })
+        }, 1700)
+      })
+    }
+
+    schedule(runCycle, 700)
+
+    return () => {
+      cancelled = true
+      timers.forEach((id) => window.clearTimeout(id))
+    }
+  }, [
+    active,
+    animateReveal,
+    demoAutoReveal,
+    onHoldEnd,
+    onHoldStart,
+    reconstruction,
+    reducedMotion,
+  ])
 
   const handlePointerDown = useCallback(
     (event) => {

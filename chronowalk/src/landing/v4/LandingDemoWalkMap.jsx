@@ -1,45 +1,81 @@
+import { useMemo } from 'react'
+import { env, isMapboxConfigured } from '../../config/env.js'
 import WalkingMapChrome from '../../redesign/ui/WalkingMapChrome.jsx'
+import { ROME_LANDING_BASEMAP_BY_TIER } from '../landingMapboxStatic.js'
+
+/** Pantheon plaza — matches the free-preview stop. */
+const PANTHEON = { lng: 12.47687, lat: 41.89868 }
+
+const DEFAULT_ROUTE = [
+  [12.47635, 41.89935],
+  [12.47655, 41.89905],
+  [12.47675, 41.89885],
+  [PANTHEON.lng, PANTHEON.lat],
+]
+
+const FALLBACK_BASEMAP = ROME_LANDING_BASEMAP_BY_TIER['rome-central']
 
 /**
- * Live map slot for the sticky-phone walking demo.
- * Uses real WalkingMapChrome; map surface is a lightweight vector stand-in
- * so the landing never depends on Mapbox tiles or screenshots.
+ * Mapbox-looking walking map for the sticky-phone demo.
+ * Prefers a Mapbox Static dark-streets image (same family as the app) with a
+ * glowing route + user marker overlay. Falls back to the committed basemap.
  */
 export default function LandingDemoWalkMap({
   bearing = 28,
-  directionsGeometry: _directionsGeometry,
-  directionsModeActive: _directionsModeActive,
+  directionsGeometry,
 }) {
+  const route = directionsGeometry?.coordinates?.length
+    ? directionsGeometry.coordinates
+    : DEFAULT_ROUTE
+
+  const basemapSrc = useMemo(() => {
+    if (!isMapboxConfigured() || !env.mapboxToken) return FALLBACK_BASEMAP
+    const pathCoords = route.map(([lng, lat]) => `${lng},${lat}`).join(',')
+    const overlay = encodeURIComponent(`path-5+e07a5f-0.95(${pathCoords})`)
+    return (
+      `https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/` +
+      `${overlay}/` +
+      `${PANTHEON.lng},${PANTHEON.lat},16.2,${bearing},55/` +
+      `390x420@2x?access_token=${encodeURIComponent(env.mapboxToken)}` +
+      `&attribution=false&logo=false`
+    )
+  }, [bearing, route])
+
   return (
     <div className="cw-v4-demo-walk-map" data-testid="landing-demo-walk-map">
-      <svg className="cw-v4-demo-walk-map__canvas" viewBox="0 0 390 420" aria-hidden>
+      <img
+        className="cw-v4-demo-walk-map__basemap"
+        src={basemapSrc}
+        alt=""
+        decoding="async"
+        onError={(event) => {
+          if (event.currentTarget.getAttribute('src') === FALLBACK_BASEMAP) return
+          event.currentTarget.src = FALLBACK_BASEMAP
+        }}
+      />
+      <div className="cw-v4-demo-walk-map__veil" aria-hidden />
+      <svg className="cw-v4-demo-walk-map__route" viewBox="0 0 390 420" aria-hidden>
         <defs>
-          <linearGradient id="cw-v4-walk-sky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1a2230" />
-            <stop offset="100%" stopColor="#0b0b0d" />
-          </linearGradient>
+          <filter id="cw-v4-route-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
-        <rect width="390" height="420" fill="url(#cw-v4-walk-sky)" />
         <path
-          d="M40 80 H350 M40 140 H350 M40 200 H350 M40 260 H350 M40 320 H350 M40 380 H350"
-          stroke="rgba(196,165,116,0.08)"
-          strokeWidth="1"
-        />
-        <path
-          d="M70 40 V390 M140 40 V390 M210 40 V390 M280 40 V390 M340 40 V390"
-          stroke="rgba(196,165,116,0.06)"
-          strokeWidth="1"
-        />
-        <path
-          d="M48 360 C 110 300, 150 250, 190 210 S 280 120, 330 70"
+          d="M62 360 C 120 300, 165 250, 205 200 S 285 110, 318 78"
           fill="none"
-          stroke="rgba(224,122,95,0.85)"
-          strokeWidth="4"
+          stroke="rgba(224,122,95,0.95)"
+          strokeWidth="5"
           strokeLinecap="round"
+          filter="url(#cw-v4-route-glow)"
         />
-        <circle cx="190" cy="210" r="7" fill="#f3eee6" stroke="#e07a5f" strokeWidth="3" />
-        <circle cx="330" cy="70" r="9" fill="#e07a5f" />
-        <circle cx="330" cy="70" r="16" fill="none" stroke="rgba(224,122,95,0.35)" strokeWidth="2" />
+        <circle className="cw-v4-demo-walk-map__you-ring" cx="205" cy="200" r="18" />
+        <circle className="cw-v4-demo-walk-map__you" cx="205" cy="200" r="7" />
+        <circle cx="318" cy="78" r="8" fill="#e07a5f" stroke="#f3eee6" strokeWidth="2.5" />
+        <circle cx="318" cy="78" r="16" fill="none" stroke="rgba(224,122,95,0.4)" strokeWidth="2" />
       </svg>
       <WalkingMapChrome bearing={bearing} onRecenter={() => {}} />
     </div>
