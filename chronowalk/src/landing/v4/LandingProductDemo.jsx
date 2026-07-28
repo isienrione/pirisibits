@@ -17,12 +17,13 @@ function useReducedMotion() {
 
 /**
  * Sticky-phone product film powered by real application screens.
- * Phone stays fixed; chapter copy scrolls; component state transitions.
+ * Phone stays fixed across all chapters; scroll drives chapter + phase.
  */
 export default function LandingProductDemo() {
   const section = LANDING_CONTENT['product-demo']
   const chapters = section.chapters ?? []
   const sectionRef = useRef(null)
+  const stageRef = useRef(null)
   const chapterRefs = useRef([])
   const [active, setActive] = useState(0)
   const [subPhase, setSubPhase] = useState(0)
@@ -34,26 +35,34 @@ export default function LandingProductDemo() {
     const nodes = chapterRefs.current.filter(Boolean)
     if (!nodes.length) return undefined
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        let best = null
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          if (!best || entry.intersectionRatio > best.intersectionRatio) best = entry
-        }
-        if (!best) return
-        const index = Number(best.target.dataset.chapterIndex)
-        if (Number.isFinite(index)) setActive(index)
-      },
-      {
-        root: null,
-        rootMargin: '-20% 0px -35% 0px',
-        threshold: [0.2, 0.45, 0.7],
-      },
-    )
+    const pickActive = () => {
+      const viewport = window.innerHeight || 1
+      const focusY = viewport * 0.62
+      let bestIndex = 0
+      let bestDist = Number.POSITIVE_INFINITY
 
-    nodes.forEach((node) => observer.observe(node))
-    return () => observer.disconnect()
+      nodes.forEach((node, index) => {
+        const rect = node.getBoundingClientRect()
+        const mid = rect.top + rect.height * 0.35
+        const dist = Math.abs(mid - focusY)
+        const visible = rect.bottom > viewport * 0.18 && rect.top < viewport * 0.92
+        if (!visible) return
+        if (dist < bestDist) {
+          bestDist = dist
+          bestIndex = index
+        }
+      })
+
+      setActive(bestIndex)
+    }
+
+    pickActive()
+    window.addEventListener('scroll', pickActive, { passive: true })
+    window.addEventListener('resize', pickActive)
+    return () => {
+      window.removeEventListener('scroll', pickActive)
+      window.removeEventListener('resize', pickActive)
+    }
   }, [chapters.length])
 
   useEffect(() => {
@@ -96,16 +105,14 @@ export default function LandingProductDemo() {
         {section.subheadline ? <p className="cw-v4-demo__lead">{section.subheadline}</p> : null}
       </div>
 
-      <div className="cw-v4-demo__stage">
-        <div className="cw-v4-demo__phone-rail">
-          <div className="cw-v4-demo__phone-sticky">
-            <div className={`cw-v4-demo__phone cw-v4-demo__phone--${chapter?.id ?? 'choose'}`}>
-              <LandingProductPhoneHost chapterId={chapter?.id ?? 'choose'} phase={subPhase} />
-            </div>
-            <p className="cw-v4-demo__phone-caption" aria-live="polite">
-              {chapter?.beats?.[subPhase] ?? chapter?.title}
-            </p>
+      <div ref={stageRef} className="cw-v4-demo__stage">
+        <div className="cw-v4-demo__phone-sticky">
+          <div className={`cw-v4-demo__phone cw-v4-demo__phone--${chapter?.id ?? 'choose'}`}>
+            <LandingProductPhoneHost chapterId={chapter?.id ?? 'choose'} phase={subPhase} />
           </div>
+          <p className="cw-v4-demo__phone-caption" aria-live="polite">
+            {String(active + 1).padStart(2, '0')} · {chapter?.beats?.[subPhase] ?? chapter?.title}
+          </p>
         </div>
 
         <div className="cw-v4-demo__chapters">
@@ -122,7 +129,7 @@ export default function LandingProductDemo() {
               aria-current={index === active ? 'true' : undefined}
             >
               <p className="cw-v4-demo__chapter-index">
-                {String(index + 1).padStart(2, '0')}
+                {String(index + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')}
               </p>
               <h3 className="cw-v4-demo__chapter-title">{item.title}</h3>
               <p className="cw-v4-demo__chapter-body">{item.body}</p>
