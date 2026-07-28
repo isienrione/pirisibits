@@ -111,6 +111,7 @@ describe('landing product-story architecture (V4)', () => {
   it('shows a nav Get the app CTA that deep-links to the get-app section', () => {
     expect(LANDING_CONTENT.header.cta).toBe(LANDING_CTA.getApp)
     expect(LANDING_CONTENT.header.ctaHref).toBe('#get-app')
+    expect(LANDING_CONTENT.header.ctaShort).toBe('Get App')
   })
 
   it('removes the top-right header sneak-peek CTA', () => {

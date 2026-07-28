@@ -192,7 +192,9 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                 tabIndex={interactive ? 0 : -1}
                 onClick={(event) => {
                   const id = (section.secondaryHref ?? '#how-it-works').replace(/^#/, '')
-                  const target = id ? document.getElementById(id) : null
+                  const target =
+                    document.getElementById('cw-v4-demo-heading') ||
+                    (id ? document.getElementById(id) : null)
                   if (!target) return
                   event.preventDefault()
                   target.scrollIntoView({ behavior: 'smooth', block: 'start' })

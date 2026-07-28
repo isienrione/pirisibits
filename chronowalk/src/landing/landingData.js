@@ -804,7 +804,7 @@ export const LANDING_CONTENT = {
     /** Shown in the nav only after the hero leaves the viewport. */
     cta: LANDING_CTA.getApp,
     ctaHref: '#get-app',
-    ctaShort: 'App',
+    ctaShort: 'Get App',
   },
 
   footer: {
