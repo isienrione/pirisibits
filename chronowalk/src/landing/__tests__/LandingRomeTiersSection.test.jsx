@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import LandingRomeTiersSection from '../LandingRomeTiersSection.jsx'
 import { ROME_BUNDLES, ROME_TIERS, LANDING_CONTENT } from '../landingData.js'
 import { getLandingTierStats } from '../landingTierStats.js'
@@ -9,7 +9,27 @@ vi.mock('../landingAnalytics.js', () => ({
   trackLandingPricingView: () => {},
 }))
 
-describe('LandingRomeTiersSection bundles', () => {
+function mockMinWidth(matchesDesktop) {
+  window.matchMedia = vi.fn().mockImplementation((query) => ({
+    matches: query.includes('min-width: 768px') ? matchesDesktop : false,
+    media: query,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }))
+}
+
+describe('LandingRomeTiersSection desktop posters', () => {
+  beforeEach(() => {
+    mockMinWidth(true)
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals?.()
+  })
+
   it('renders three individual tours plus Couple and Family offers', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 
@@ -19,6 +39,8 @@ describe('LandingRomeTiersSection bundles', () => {
     expect(screen.getByRole('heading', { name: 'Couple' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Family' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /Share the walk, not the earbuds/i })).toBeInTheDocument()
+    expect(screen.getByTestId('cw-desktop-pkg-stack')).toBeInTheDocument()
+    expect(screen.queryByTestId('cw-mobile-route-chooser')).not.toBeInTheDocument()
   })
 
   it('keeps Historica / Antica / Eterna stop counts at 8 / 12 / 21', () => {
@@ -115,5 +137,101 @@ describe('LandingRomeTiersSection bundles', () => {
     ])
     expect(ROME_TIERS).toHaveLength(3)
     expect(ROME_BUNDLES).toHaveLength(2)
+  })
+})
+
+describe('LandingRomeTiersSection mobile route chooser', () => {
+  beforeEach(() => {
+    mockMinWidth(false)
+    window.history.replaceState(null, '', '/landing')
+  })
+
+  it('defaults to Roma Eterna with named tabs and readable HTML facts', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    expect(screen.getByTestId('cw-mobile-route-chooser')).toBeInTheDocument()
+    expect(screen.queryByTestId('cw-desktop-pkg-stack')).not.toBeInTheDocument()
+
+    const eternaTab = screen.getByRole('tab', { name: 'Roma Eterna' })
+    expect(eternaTab).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Roma Antica' })).toHaveAttribute('aria-selected', 'false')
+    expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'false')
+
+    const panel = screen.getByRole('tabpanel')
+    expect(panel).toHaveTextContent('€14.99')
+    expect(panel).toHaveTextContent('4.5 – 5.5 hr')
+    expect(panel).toHaveTextContent('21 stops')
+    expect(panel).toHaveTextContent('~6 km')
+    expect(panel).toHaveTextContent(/The full journey through ancient Rome/)
+    expect(within(panel).getByRole('button', { name: 'Choose Roma Eterna' })).toBeInTheDocument()
+  })
+
+  it('switches summary data across all three routes without stacking posters', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Roma Antica' }))
+    let panel = screen.getByRole('tabpanel')
+    expect(panel).toHaveTextContent('€9.99')
+    expect(panel).toHaveTextContent('12 stops')
+    expect(panel).toHaveTextContent('~3 km')
+    expect(panel).toHaveTextContent(/Colosseum and Palatine Hill/)
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Roma Historica' }))
+    panel = screen.getByRole('tabpanel')
+    expect(panel).toHaveTextContent('8 stops')
+    expect(panel).toHaveTextContent('~4 km')
+    expect(panel).toHaveTextContent(/historic heart/)
+
+    expect(document.querySelectorAll('.cw-v4-pkg-mobile-card__map-art')).toHaveLength(1)
+  })
+
+  it('invokes the same checkout handler from the mobile CTA', () => {
+    const onBeginTier = vi.fn()
+    render(<LandingRomeTiersSection onBeginTier={onBeginTier} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Roma Antica' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Roma Antica' }))
+    expect(onBeginTier).toHaveBeenCalledTimes(1)
+    expect(onBeginTier).toHaveBeenCalledWith('rome-essential')
+  })
+
+  it('opens and closes the illustrated map viewer with dialog semantics', () => {
+    const onBeginTier = vi.fn()
+    render(<LandingRomeTiersSection onBeginTier={onBeginTier} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /View full illustrated route map/i }))
+    const dialog = screen.getByRole('dialog', { name: /Roma Eterna illustrated route map/i })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' })).toBeInTheDocument()
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' }))
+    expect(onBeginTier).toHaveBeenCalledWith('rome-complete')
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close map viewer' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('lets Compare all routes select another route from canonical data', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    fireEvent.click(screen.getByText('Compare all routes'))
+    const compare = screen.getByText('Compare all routes').closest('details')
+    expect(compare).toHaveTextContent('Roma Historica')
+    expect(compare).toHaveTextContent('8 stops')
+    expect(compare).toHaveTextContent('€9.99')
+
+    const historicaRow = [...compare.querySelectorAll('.cw-v4-pkg-compare__row')].find((row) =>
+      row.textContent.includes('Roma Historica'),
+    )
+    fireEvent.click(within(historicaRow).getByRole('button', { name: 'View route' }))
+    expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('Centro Storico & Pantheon deep dive')
+  })
+
+  it('honors a route hash for the initial mobile selection', () => {
+    window.history.replaceState(null, '', '/landing#rome-central')
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+    expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('8 stops')
   })
 })

@@ -1,6 +1,12 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { Expand } from 'lucide-react'
 import { LANDING_CONTENT } from './landingData.js'
 import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
+import { useMediaQuery } from '../hooks/useMediaQuery.js'
+import { useReducedMotion } from '../hooks/useReducedMotion.js'
+import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
+
+const DESKTOP_MQ = '(min-width: 768px)'
 
 function CheckIcon() {
   return (
@@ -16,9 +22,14 @@ function CheckIcon() {
   )
 }
 
-function PackageCard({ tier, index, onBeginTier }) {
+function resolveTierFromHash(tiers) {
+  if (typeof window === 'undefined') return null
+  const hash = window.location.hash.replace(/^#/, '')
+  return tiers.find((tier) => tier.id === hash)?.id ?? null
+}
+
+function DesktopPackageCard({ tier, index, onBeginTier }) {
   const theme = tier.theme ?? 'eterna'
-  const cardImage = tier.cardImage
   const alt = [
     tier.name,
     tier.tagline,
@@ -45,7 +56,7 @@ function PackageCard({ tier, index, onBeginTier }) {
       <div className="cw-v4-pkg__frame">
         <img
           className="cw-v4-pkg__card-art"
-          src={cardImage}
+          src={tier.cardImage}
           alt={alt}
           width={tier.cardWidth}
           height={tier.cardHeight}
@@ -65,8 +76,232 @@ function PackageCard({ tier, index, onBeginTier }) {
   )
 }
 
+function MobileRouteChooser({ tiers, onBeginTier }) {
+  const reducedMotion = useReducedMotion()
+  const tablistId = useId()
+  const cardRef = useRef(null)
+  const mapTriggerRef = useRef(null)
+  const tabRefs = useRef([])
+
+  const [activeId, setActiveId] = useState(
+    () => resolveTierFromHash(tiers) ?? tiers[0]?.id ?? 'rome-complete',
+  )
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [compareOpen, setCompareOpen] = useState(false)
+
+  const activeTier = tiers.find((tier) => tier.id === activeId) ?? tiers[0]
+
+  useEffect(() => {
+    const applyHash = () => {
+      const fromHash = resolveTierFromHash(tiers)
+      if (fromHash) setActiveId(fromHash)
+    }
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [tiers])
+
+  const selectTier = useCallback(
+    (tierId, { syncHash = true } = {}) => {
+      setActiveId(tierId)
+      if (syncHash && typeof window !== 'undefined') {
+        const next = `#${tierId}`
+        if (window.location.hash !== next) {
+          window.history.replaceState(null, '', next)
+        }
+      }
+    },
+    [],
+  )
+
+  const onTabKeyDown = (event, index) => {
+    if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft' && event.key !== 'Home' && event.key !== 'End') {
+      return
+    }
+    event.preventDefault()
+    let nextIndex = index
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % tiers.length
+    if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tiers.length) % tiers.length
+    if (event.key === 'Home') nextIndex = 0
+    if (event.key === 'End') nextIndex = tiers.length - 1
+    const next = tiers[nextIndex]
+    if (!next) return
+    selectTier(next.id)
+    tabRefs.current[nextIndex]?.focus()
+  }
+
+  const openViewer = () => setViewerOpen(true)
+
+  const viewRouteFromCompare = (tierId) => {
+    selectTier(tierId)
+    setCompareOpen(false)
+    const node = cardRef.current
+    if (!node) return
+    node.scrollIntoView({
+      behavior: reducedMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
+
+  if (!activeTier) return null
+
+  const theme = activeTier.theme ?? 'eterna'
+  const badge = activeTier.tag || activeTier.badge
+  const panelId = 'cw-mobile-route-panel'
+
+  return (
+    <div className="cw-v4-pkg-mobile" data-testid="cw-mobile-route-chooser">
+      <div
+        className="cw-v4-pkg-tabs"
+        role="tablist"
+        aria-label="Rome walking routes"
+        id={tablistId}
+      >
+        {tiers.map((tier, index) => {
+          const selected = tier.id === activeTier.id
+          return (
+            <button
+              key={tier.id}
+              ref={(node) => {
+                tabRefs.current[index] = node
+              }}
+              type="button"
+              role="tab"
+              id={`cw-mobile-tab-${tier.id}`}
+              className={`cw-v4-pkg-tab cw-v4-pkg-tab--${tier.theme}${selected ? ' is-active' : ''}`}
+              aria-selected={selected}
+              aria-controls={panelId}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => selectTier(tier.id)}
+              onKeyDown={(event) => onTabKeyDown(event, index)}
+            >
+              {tier.name}
+            </button>
+          )
+        })}
+      </div>
+
+      <article
+        ref={cardRef}
+        id={panelId}
+        role="tabpanel"
+        aria-labelledby={`cw-mobile-tab-${activeTier.id}`}
+        className={`cw-v4-pkg-mobile-card cw-v4-pkg-mobile-card--${theme}${reducedMotion ? '' : ' cw-v4-pkg-mobile-card--fade'}`}
+        key={activeTier.id}
+      >
+        <span id={activeTier.id} className="cw-v4-visually-hidden" tabIndex={-1}>
+          {activeTier.name}
+        </span>
+        {badge ? <p className="cw-v4-pkg-mobile-card__badge">{badge}</p> : null}
+        <h3 id={`pricing-name-${activeTier.id}`} className="cw-v4-pkg-mobile-card__title">
+          {activeTier.name}
+        </h3>
+        {activeTier.tagline ? (
+          <p className="cw-v4-pkg-mobile-card__tagline">{activeTier.tagline}</p>
+        ) : null}
+
+        <ul className="cw-v4-pkg-mobile-card__facts" aria-label={`${activeTier.name} route facts`}>
+          <li>
+            <span className="cw-v4-pkg-mobile-card__fact-label">Est. duration</span>
+            <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.durationLabel}</span>
+          </li>
+          <li>
+            <span className="cw-v4-pkg-mobile-card__fact-label">Stops</span>
+            <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.stopsLabel}</span>
+          </li>
+          <li>
+            <span className="cw-v4-pkg-mobile-card__fact-label">Distance</span>
+            <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.distanceLabel}</span>
+          </li>
+        </ul>
+
+        <p className="cw-v4-pkg-mobile-card__desc">{activeTier.description}</p>
+
+        <div className="cw-v4-pkg-mobile-card__price-row">
+          <p className="cw-v4-pkg-mobile-card__price">{activeTier.price}</p>
+          <p className="cw-v4-pkg-mobile-card__price-note">{activeTier.priceNote}</p>
+        </div>
+
+        <button
+          type="button"
+          className="cw-v4-pkg-mobile-card__cta"
+          onClick={() => onBeginTier(activeTier.id)}
+        >
+          {activeTier.primaryCta}
+        </button>
+
+        <div className="cw-v4-pkg-mobile-card__map">
+          <div className="cw-v4-pkg-mobile-card__map-frame">
+            <img
+              className="cw-v4-pkg-mobile-card__map-art"
+              src={activeTier.cardImage}
+              alt={`Illustrated route map for ${activeTier.name}`}
+              width={activeTier.cardWidth}
+              height={activeTier.cardHeight}
+              loading="eager"
+              decoding="async"
+            />
+            <div className="cw-v4-pkg-mobile-card__map-fade" aria-hidden="true" />
+          </div>
+          <button
+            ref={mapTriggerRef}
+            type="button"
+            className="cw-v4-pkg-mobile-card__map-open"
+            onClick={openViewer}
+          >
+            <Expand size={18} aria-hidden="true" />
+            <span>View full illustrated route map</span>
+          </button>
+        </div>
+      </article>
+
+      <details
+        className="cw-v4-pkg-compare"
+        open={compareOpen}
+        onToggle={(event) => setCompareOpen(event.currentTarget.open)}
+      >
+        <summary className="cw-v4-pkg-compare__summary">Compare all routes</summary>
+        <ul className="cw-v4-pkg-compare__list">
+          {tiers.map((tier) => (
+            <li key={tier.id} className={`cw-v4-pkg-compare__row cw-v4-pkg-compare__row--${tier.theme}`}>
+              <div className="cw-v4-pkg-compare__copy">
+                <p className="cw-v4-pkg-compare__name">{tier.name}</p>
+                <p className="cw-v4-pkg-compare__meta">
+                  {tier.durationLabel}
+                  <span aria-hidden="true"> · </span>
+                  {tier.stopsLabel}
+                  <span aria-hidden="true"> · </span>
+                  {tier.distanceLabel}
+                </p>
+                <p className="cw-v4-pkg-compare__price">{tier.price}</p>
+              </div>
+              <button
+                type="button"
+                className="cw-v4-pkg-compare__view"
+                onClick={() => viewRouteFromCompare(tier.id)}
+              >
+                View route
+              </button>
+            </li>
+          ))}
+        </ul>
+      </details>
+
+      {viewerOpen ? (
+        <LandingPackagePosterViewer
+          key={activeTier.id}
+          open
+          tier={activeTier}
+          onClose={() => setViewerOpen(false)}
+          onBeginTier={onBeginTier}
+          returnFocusRef={mapTriggerRef}
+        />
+      ) : null}    </div>
+  )
+}
+
 /**
- * Act III: Choose your walk. Full package-card artwork + Couple/Family.
+ * Act III: Choose your walk. Desktop poster stack + mobile route chooser.
  * Checkout stays in `onBeginTier` (purchase path, not access-code).
  */
 export default function LandingRomeTiersSection({ onBeginTier }) {
@@ -75,6 +310,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
   const shared = section.sharedExperience
   const bundles = shared?.bundles ?? []
   const sectionRef = useRef(null)
+  const isDesktop = useMediaQuery(DESKTOP_MQ, true)
 
   useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
 
@@ -97,16 +333,20 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
           {section.intro ? <p className="cw-v2-pricing__intro">{section.intro}</p> : null}
         </header>
 
-        <div className="cw-v4-pkg-stack">
-          {tiers.map((tier, index) => (
-            <PackageCard
-              key={tier.id}
-              tier={tier}
-              index={index}
-              onBeginTier={onBeginTier}
-            />
-          ))}
-        </div>
+        {isDesktop ? (
+          <div className="cw-v4-pkg-stack" data-testid="cw-desktop-pkg-stack">
+            {tiers.map((tier, index) => (
+              <DesktopPackageCard
+                key={tier.id}
+                tier={tier}
+                index={index}
+                onBeginTier={onBeginTier}
+              />
+            ))}
+          </div>
+        ) : (
+          <MobileRouteChooser tiers={tiers} onBeginTier={onBeginTier} />
+        )}
 
         {shared && bundles.length > 0 ? (
           <div
