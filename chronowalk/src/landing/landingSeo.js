@@ -4,7 +4,7 @@ import { ROME_TIERS } from './landingData.js'
 export const LANDING_DOCUMENT = {
   title: 'ChronoWalk · Self-guided Rome walks',
   description:
-    'Self-guided audio walks in Rome with place-tied narration and Then vs Now reconstructions. Try the Pantheon free. One-time purchase, no subscription.',
+    'Self-guided audio walks in Rome with place-tied narration and Then vs Now reconstructions. Free sneak peek at the Pantheon. One-time purchase, no subscription.',
 }
 
 /**

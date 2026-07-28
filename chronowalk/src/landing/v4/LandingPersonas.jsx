@@ -6,6 +6,8 @@ const REAL_MOMENT = {
   pantheon: '/landing/real-moment/pantheon.jpg',
   wander: '/landing/real-moment/wander.jpg',
   forum: '/landing/real-moment/forum.jpg',
+  /** Free centro storico landmark for the sold-out Colosseum situation. */
+  trevi: '/waypoints/fontana-di-trevi/modern-poster.jpg',
 }
 
 /**

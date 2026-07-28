@@ -18,11 +18,11 @@ export const LANDING_CTA = {
   begin: 'Choose a Rome walk',
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
-  tryFree: 'Try the Pantheon free',
+  tryFree: 'Free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
-  tryFreeSneakPeek: 'Try the Pantheon free',
+  tryFreeSneakPeek: 'Free sneak peek',
   seeRoutes: 'See all Rome walks',
-  tryOneStopFree: 'Try the Pantheon free',
+  tryOneStopFree: 'Free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
   exploreRomeRoutes: 'See all Rome walks',
   reviews: '★★★★★ Reviews',
@@ -193,7 +193,7 @@ export const LANDING_VERIFIED_REVIEWS = []
 
 export const stickyCta = {
   primary: `Choose a Rome walk · ${PRICE_PLACEHOLDER}`,
-  secondary: 'Try the Pantheon free',
+  secondary: 'Free sneak peek',
 }
 
 /**
@@ -313,38 +313,38 @@ export const LANDING_CONTENT = {
   personas: {
     id: 'who-its-for',
     eyebrow: 'WHEN CHRONOWALK HELPS MOST',
-    headline: 'Built for the Rome you actually get.',
+    headline: 'Built so that everyone can get the most out of Rome',
     subheadline: null,
     items: [
       {
         id: 'no-tickets',
         headline: 'No Colosseum ticket?',
         body: 'The monument may be sold out. The city is not. Follow the stories, façades, viewpoints, and public spaces still open around you.',
-        imageKey: 'street',
+        imageKey: 'trevi',
         cta: 'See the Rome walks',
         href: '#pricing',
       },
       {
         id: 'rigid',
-        headline: 'Hate rigid tour schedules?',
-        body: 'No meeting point. No flag. No pressure to keep up. Pause when Rome distracts you and continue when you are ready.',
+        headline: 'Not a fan of rigid tour schedules?',
+        body: 'No meeting point, no flag or umbrella to follow around. No pressure to keep up or overwhelming large groups.',
         imageKey: 'wander',
         cta: 'See the Rome walks',
         href: '#pricing',
       },
       {
         id: 'history',
-        headline: 'Love history, but still want to wander?',
-        body: 'Hear the story tied to the stones in front of you without giving your whole day to a group tour.',
+        headline: 'Want to wander freely, but missing history facts gives you FOMO?',
+        body: 'Hear the story tied to the stones in front of you, with full reconstructions to help you immerse yourself in historic details, without giving your whole day to a group tour.',
         imageKey: 'forum',
-        cta: 'Try the Pantheon free',
+        cta: LANDING_CTA.tryFreeSneakPeek,
         href: '#how-it-works',
         preview: true,
       },
       {
         id: 'itineraries',
-        headline: 'Planning Rome in twelve browser tabs?',
-        body: 'Close the tabs. Start with one researched route and know the day is worth taking.',
+        headline: 'Overwhelmed by infinite tour options and mixed reviews?',
+        body: 'Close all those tabs, you can trust us. Start with one researched route and know the day will be worth taking.',
         imageKey: 'pantheon',
         cta: 'Compare the walks',
         href: '#pricing',
@@ -712,7 +712,7 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     cta: LANDING_CTA.tryFreeSneakPeek,
-    ctaShort: 'Try free',
+    ctaShort: 'Sneak peek',
   },
 
   footer: {

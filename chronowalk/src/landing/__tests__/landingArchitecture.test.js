@@ -81,19 +81,21 @@ describe('landing product-story architecture (V4)', () => {
     const section = LANDING_CONTENT.personas
     expect(section.id).toBe('who-its-for')
     expect(section.items).toHaveLength(5)
+    expect(section.headline).toBe('Built so that everyone can get the most out of Rome')
     expect(section.items.map((item) => item.headline)).toEqual(
       expect.arrayContaining([
         'No Colosseum ticket?',
-        'Hate rigid tour schedules?',
+        'Not a fan of rigid tour schedules?',
         'Guided tours outside your budget?',
       ]),
     )
+    expect(section.items.find((item) => item.id === 'no-tickets')?.imageKey).toBe('trevi')
   })
 
-  it('keeps the hero to one free Pantheon CTA', () => {
+  it('keeps the hero to one free sneak-peek CTA', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
-    expect(hero.primaryCta).toBe('Try the Pantheon free')
+    expect(hero.primaryCta).toBe('Free sneak peek')
     expect(hero.secondaryCta).toBeNull()
     expect(hero.reviewsCta).toBeNull()
     expect(hero.primaryHref).toBe('/preview')
@@ -149,7 +151,6 @@ describe('landing product-story architecture (V4)', () => {
       'seamless',
       'unlock the magic',
       'hidden gems',
-      'sneak peek',
       'roma centrale',
       'private guide',
       'most loved',
@@ -157,6 +158,7 @@ describe('landing product-story architecture (V4)', () => {
     ]) {
       expect(joined).not.toContain(banned)
     }
+    expect(joined).toContain('free sneak peek')
     expect(joined).not.toContain('\u2014')
   })
 })
