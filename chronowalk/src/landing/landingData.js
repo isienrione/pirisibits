@@ -705,7 +705,7 @@ export const LANDING_CONTENT = {
       { label: 'Tours', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
-    cta: LANDING_CTA.tryFree,
+    cta: LANDING_CTA.tryFreeSneakPeek,
     ctaShort: 'Try free',
   },
 

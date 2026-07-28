@@ -4,7 +4,7 @@ const ART_W = 390
 
 /**
  * Measure the phone screen and scale the 390px artboard exactly to its width.
- * More reliable than container-query units across mobile browsers.
+ * Never collapses to 0 — a zero scale paints an empty black phone.
  */
 export default function usePhoneArtboardScale() {
   const screenRef = useRef(null)
@@ -16,7 +16,9 @@ export default function usePhoneArtboardScale() {
 
     const update = () => {
       const width = node.getBoundingClientRect().width
-      if (width > 0) setScale(width / ART_W)
+      if (width < 8) return
+      const next = width / ART_W
+      setScale((prev) => (Math.abs(prev - next) < 0.001 ? prev : next))
     }
 
     update()

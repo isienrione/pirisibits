@@ -9,25 +9,22 @@ export function clamp01(t) {
 }
 
 /**
- * Hold lengths (relative). Transitions are separate and shared —
- * so A fades out while B fades in over the same scrub window.
+ * Short holds — enough to read, not a marathon.
+ * Emotional arrive chapter gets a touch more room.
  */
 export function chapterHoldWeight(chapter) {
-  if (chapter?.emotional) return 6.4
-  if (chapter?.id === 'walk') return 5.2
-  return 4.4
+  if (chapter?.emotional) return 1.15
+  if (chapter?.id === 'walk') return 1.0
+  return 0.85
 }
 
-/** Shared crossfade length relative to holds — lands ~400–600px in typical viewports. */
-export const XFADE_WEIGHT = 1.35
+/** Crossfade window relative to holds (~350–550px on typical viewports). */
+export const XFADE_WEIGHT = 0.42
 
 /**
- * Build a timeline of holds + true pairwise crossfades.
- *
- * progress 0→1 maps to:
- *   hold0 → xfade(0→1) → hold1 → xfade(1→2) → … → holdN
- *
- * During xfade i→i+1, opacities are locked: A = 1−t, B = t.
+ * Build hold + true pairwise crossfade timeline.
+ * progress 0→1: hold0 → xfade → hold1 → … → holdN
+ * During xfade: A = 1−t, B = t (never both empty).
  */
 export function buildCinematicTimeline(chapters) {
   if (!chapters?.length) {
@@ -44,19 +41,17 @@ export function buildCinematicTimeline(chapters) {
   chapters.forEach((chapter, index) => {
     const holdStart = cursor / totalWeight
     cursor += holds[index]
-    const holdEnd = cursor / totalWeight
     segments.push({
       type: 'hold',
       index,
       id: chapter.id,
       start: holdStart,
-      end: holdEnd,
+      end: cursor / totalWeight,
     })
 
     if (index < chapters.length - 1) {
       const fadeStart = cursor / totalWeight
       cursor += XFADE_WEIGHT
-      const fadeEnd = cursor / totalWeight
       segments.push({
         type: 'xfade',
         from: index,
@@ -64,12 +59,11 @@ export function buildCinematicTimeline(chapters) {
         fromId: chapter.id,
         toId: chapters[index + 1].id,
         start: fadeStart,
-        end: fadeEnd,
+        end: cursor / totalWeight,
       })
     }
   })
 
-  // Float hygiene — last segment must land exactly on 1.
   if (segments.length) {
     segments[0].start = 0
     segments[segments.length - 1].end = 1
@@ -78,19 +72,19 @@ export function buildCinematicTimeline(chapters) {
   return { totalWeight, segments, chapters }
 }
 
-/** Soft screen motion — opacity + slight rise/scale. No blur (blur tanks live UI). */
+/** Soft screen motion — opacity + slight rise/scale. No blur. */
 export function softLayerMotion(opacity) {
   const t = clamp01(opacity)
   return {
     opacity: t,
-    transform: `translateY(${(1 - t) * 20}px) scale(${0.98 + 0.02 * t})`,
+    transform: `translateY(${(1 - t) * 16}px) scale(${0.985 + 0.015 * t})`,
     pointerEvents: t > 0.55 ? 'auto' : 'none',
   }
 }
 
 /**
- * Resolve per-chapter opacity + local 0→1 progress from global scroll progress.
- * True crossfade: outgoing and incoming share the same t.
+ * Resolve per-chapter opacity + local progress.
+ * Guarantees at least one layer is visible (never an empty phone).
  */
 export function resolveTimeline(progress, timeline) {
   const p = clamp01(progress)
@@ -131,7 +125,6 @@ export function resolveTimeline(progress, timeline) {
   if (!matched) {
     if (p <= 0) {
       opacities[0] = 1
-      locals[0] = 0
       activeIndex = 0
     } else {
       const last = count - 1
@@ -141,18 +134,32 @@ export function resolveTimeline(progress, timeline) {
     }
   }
 
+  // Safety: never leave the phone empty (floating-point gaps).
+  const peak = Math.max(...opacities, 0)
+  if (peak < 0.08) {
+    opacities[activeIndex] = 1
+  }
+
   return { opacities, locals, activeIndex }
 }
 
-/** Beat index from chapter-local progress (for chips only — not for remounting screens). */
 export function beatFromLocal(local, beatCount) {
   const beats = Math.max(1, beatCount)
   return Math.min(beats - 1, Math.floor(clamp01(local) * beats))
 }
 
-/**
- * Text opacity: 0 away from viewport center → 1 at center → 0 again.
- */
+/** Track height in vh — short cinematic scrub, not a marathon. */
+export function timelineHeightVh(timeline) {
+  // ~1 viewport of lead-in feel per weight unit; floor so 4 chapters stay usable.
+  return Math.max(280, Math.round(timeline.totalWeight * 70))
+}
+
+// —— Back-compat helpers ——
+
+export function chapterScrollWeight(chapter) {
+  return chapterHoldWeight(chapter) + XFADE_WEIGHT * 0.5
+}
+
 export function textCenterOpacity(rect, viewportHeight) {
   if (!rect) return 0
   const viewCenter = viewportHeight * 0.5
@@ -162,22 +169,10 @@ export function textCenterOpacity(rect, viewportHeight) {
   return smoothstep(1 - Math.min(1, dist / range))
 }
 
-/** Track height in vh — holds + xfades, with breathing room. */
-export function timelineHeightVh(timeline) {
-  return Math.round(timeline.totalWeight * 100)
-}
-
-// —— Back-compat helpers used by older tests (thin wrappers) ——
-
-export function chapterScrollWeight(chapter) {
-  return chapterHoldWeight(chapter) + XFADE_WEIGHT * 0.5
-}
-
 export function buildChapterRanges(chapters, overlap = 0.18) {
   const timeline = buildCinematicTimeline(chapters)
   return timeline.chapters.map((chapter, index) => {
-    const holds = timeline.segments.filter((s) => s.type === 'hold' && s.index === index)
-    const hold = holds[0]
+    const hold = timeline.segments.find((s) => s.type === 'hold' && s.index === index)
     const prevX = timeline.segments.find((s) => s.type === 'xfade' && s.to === index)
     const nextX = timeline.segments.find((s) => s.type === 'xfade' && s.from === index)
     const start = prevX ? prevX.start : hold?.start ?? 0
@@ -194,20 +189,12 @@ export function buildChapterRanges(chapters, overlap = 0.18) {
   })
 }
 
-export const PHONE_FADE_SCROLL_PX = 480
+export const PHONE_FADE_SCROLL_PX = 420
 
 export function phoneLayerStyle(progress, start, end, scrollablePx = 0) {
-  const timeline = {
-    chapters: [{ id: 'a' }, { id: 'b' }],
-    segments: [
-      { type: 'hold', index: 0, start: 0, end: start },
-      { type: 'xfade', from: 0, to: 1, start, end, fromId: 'a', toId: 'b' },
-      { type: 'hold', index: 1, start: end, end: 1 },
-    ],
-  }
-  // Direct soft motion for a synthetic single-layer fade window
   const span = Math.max(0.001, end - start)
-  const fadeFromPx = scrollablePx > 0 ? PHONE_FADE_SCROLL_PX / scrollablePx : Math.min(0.1, span * 0.28)
+  const fadeFromPx =
+    scrollablePx > 0 ? PHONE_FADE_SCROLL_PX / scrollablePx : Math.min(0.1, span * 0.28)
   const fade = Math.min(span * 0.42, Math.max(0.02, fadeFromPx))
   let opacity = 0
   if (progress > start && progress < end) {
@@ -215,7 +202,6 @@ export function phoneLayerStyle(progress, start, end, scrollablePx = 0) {
     else if (progress > end - fade) opacity = 1 - smoothstep((progress - (end - fade)) / fade)
     else opacity = 1
   }
-  void timeline
   return softLayerMotion(opacity)
 }
 

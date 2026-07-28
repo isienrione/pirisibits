@@ -413,16 +413,16 @@
   transform: translateY(-1px);
 }
 
-/* ——— Product demo: one continuous cinematic timeline ——— */
+/* ——— Product demo: one sticky stage, short synced scrub ——— */
 
 .cw-v4-demo {
-  padding: 3.5rem 0 1rem;
+  padding: 3.5rem 0 2rem;
   scroll-snap-type: none;
 }
 
 .cw-v4-demo__intro {
   width: min(100% - 2rem, 40rem);
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.5rem;
   text-align: center;
 }
 
@@ -440,48 +440,36 @@
 }
 
 .cw-v4-demo__track {
-  --v4-phone-w: min(42vw, 20rem, calc(72vh * 390 / 844));
+  --v4-phone-w: min(42vw, 20rem, calc(68vh * 390 / 844));
   --v4-track-pad: clamp(1rem, 4vw, 2.5rem);
   width: min(100%, var(--v4-max));
   margin-inline: auto;
-  min-height: var(--v4-pin-h, 2240vh);
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  column-gap: clamp(1.5rem, 4vw, 4rem);
-  padding-inline: var(--v4-track-pad);
-  box-sizing: border-box;
+  min-height: var(--v4-pin-h, 320vh);
   position: relative;
   scroll-snap-type: none;
 }
 
-.cw-v4-demo__phone-slot {
-  grid-column: 1;
-  grid-row: 1;
-  /* Stretch with the full timeline so sticky never remounts / re-sticks. */
-  min-height: 100%;
-  align-self: stretch;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.cw-v4-demo__phone-sticky {
+/* Single sticky composition: phone + copy, never overlapping. */
+.cw-v4-demo__stage {
   position: sticky;
   top: 0;
-  height: 100dvh;
-  height: 100vh;
-  display: flex;
+  z-index: 2;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
+  column-gap: clamp(1.5rem, 4vw, 4rem);
   padding:
     calc(var(--v4-nav-h) + 0.75rem)
-    0
+    var(--v4-track-pad)
     max(1rem, env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
 .cw-v4-demo__phone {
   width: var(--v4-phone-w);
-  pointer-events: auto;
+  justify-self: start;
   /* Hardware never animates — only screen layers. */
 }
 
@@ -534,10 +522,8 @@
   width: 390px;
   height: 844px;
   will-change: opacity, transform;
-  /* Scroll progress writes opacity/transform directly — no CSS transition jumps. */
   transition: none;
   contain: layout paint;
-  /* No blur on live product UI — blur causes frame drops that read as jumps. */
   filter: none !important;
 }
 
@@ -586,31 +572,26 @@
   object-fit: cover;
 }
 
-.cw-v4-demo__copy-rail {
-  grid-column: 2;
-  grid-row: 1;
+.cw-v4-demo__copy {
+  position: relative;
   min-width: 0;
-  padding-bottom: 20vh;
-  z-index: 2;
+  min-height: 14rem;
+  align-self: center;
 }
 
-.cw-v4-demo__copy-beat {
-  min-height: calc(var(--beat-weight, 5.75) * 100vh);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+.cw-v4-demo__copy-panel {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  max-width: 34rem;
   will-change: opacity, transform;
-  scroll-snap-align: none;
-  /* Opacity/transform set by scroll rAF — start invisible until measured. */
-  opacity: 0;
   transition: none;
   filter: none !important;
+  pointer-events: none;
 }
 
-.cw-v4-demo__copy-inner {
-  max-width: 34rem;
-  text-align: left;
-  padding: 10vh 0;
+.cw-v4-demo__copy-panel:first-child {
+  position: relative;
 }
 
 .cw-v4-demo__chapter-index {
@@ -667,66 +648,61 @@
   background: rgba(224, 122, 95, 0.14);
 }
 
-/*
- * Narrow phones: same single sticky phone model.
- * Phone slot spans the full track; copy shares the row and scrolls under/around it.
- */
+/* Narrow: phone on top, copy below — still one sticky stage, no overlap. */
 @media (max-width: 39.99rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(56vw, 16.5rem, calc(42vh * 390 / 844));
-    --v4-phone-stack-h: calc(var(--v4-phone-w) * 844 / 390 + var(--v4-nav-h) + 1.5rem);
+    --v4-phone-w: min(52vw, 15.5rem, calc(38vh * 390 / 844));
+  }
+
+  .cw-v4-demo__stage {
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(10rem, auto);
+    align-content: center;
+    row-gap: 1.25rem;
+    justify-items: center;
+    padding-top: calc(var(--v4-nav-h) + 0.5rem);
   }
 
-  .cw-v4-demo__phone-slot {
-    grid-column: 1;
-    grid-row: 1;
-    min-height: 100%;
-    z-index: 3;
-    background: linear-gradient(
-      180deg,
-      var(--v4-obsidian) 0%,
-      rgba(11, 11, 13, 0.92) 42%,
-      rgba(11, 11, 13, 0) 72%
-    );
+  .cw-v4-demo__phone {
+    justify-self: center;
   }
 
-  .cw-v4-demo__phone-sticky {
-    align-items: flex-start;
-    justify-content: center;
-    height: auto;
-    min-height: 0;
-    padding:
-      calc(var(--v4-nav-h) + 0.4rem)
-      0
-      0.75rem;
-  }
-
-  .cw-v4-demo__copy-rail {
-    grid-column: 1;
-    grid-row: 1;
-    padding-top: var(--v4-phone-stack-h);
-    z-index: 2;
-  }
-
-  .cw-v4-demo__copy-inner {
+  .cw-v4-demo__copy {
+    width: min(100%, 26rem);
+    min-height: 11rem;
     text-align: center;
+  }
+
+  .cw-v4-demo__copy-panel {
+    left: 0;
+    right: 0;
     margin-inline: auto;
     max-width: 26rem;
+  }
+
+  .cw-v4-demo__copy-panel:first-child {
+    position: relative;
+  }
+
+  .cw-v4-demo__chapter-title {
+    font-size: clamp(1.35rem, 5vw, 1.85rem);
+  }
+
+  .cw-v4-demo__chapter-body {
+    margin-inline: auto;
   }
 
   .cw-v4-demo__beats {
     justify-content: center;
   }
-
-  .cw-v4-demo__chapter-title {
-    font-size: clamp(1.4rem, 5vw, 1.85rem);
-  }
 }
 
 @media (min-width: 64rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(22rem, calc(78vh * 390 / 844));
+    --v4-phone-w: min(21rem, calc(72vh * 390 / 844));
+  }
+
+  .cw-v4-demo__stage {
     column-gap: 4rem;
   }
 }
@@ -1197,7 +1173,7 @@
   .cw-v4-intro__word,
   .cw-v4-hero__clouds,
   .cw-v4-demo__phone,
-  .cw-v4-demo__copy-beat,
+  .cw-v4-demo__copy-panel,
   .cw-v4-phone-layer,
   .cw-v4-stops__image,
   .cw-landing-screen__pantheon-now,

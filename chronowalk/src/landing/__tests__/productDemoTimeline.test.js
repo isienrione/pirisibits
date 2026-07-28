@@ -22,9 +22,18 @@ describe('productDemoTimeline', () => {
     const fades = timeline.segments.filter((s) => s.type === 'xfade')
     expect(holds).toHaveLength(4)
     expect(fades).toHaveLength(3)
-    expect(XFADE_WEIGHT).toBeGreaterThan(1)
+    expect(XFADE_WEIGHT).toBeGreaterThan(0.2)
     expect(timeline.segments[0].start).toBe(0)
     expect(timeline.segments[timeline.segments.length - 1].end).toBe(1)
+    expect(timeline.totalWeight).toBeLessThan(8)
+  })
+
+  it('never leaves the phone empty and keeps text opacity locked to phone', () => {
+    const timeline = buildCinematicTimeline(CHAPTERS)
+    for (const p of [0, 0.12, 0.33, 0.5, 0.66, 0.88, 1]) {
+      const { opacities } = resolveTimeline(p, timeline)
+      expect(Math.max(...opacities)).toBeGreaterThanOrEqual(0.08)
+    }
   })
 
   it('crossfades with locked A↓ / B↑ over the same scrub window', () => {

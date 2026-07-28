@@ -5,12 +5,9 @@ import LandingProductPhoneStage from './LandingProductPhoneStage.jsx'
 import {
   beatFromLocal,
   buildCinematicTimeline,
-  chapterHoldWeight,
   resolveTimeline,
   softLayerMotion,
-  textCenterOpacity,
   timelineHeightVh,
-  XFADE_WEIGHT,
 } from './productDemoTimeline.js'
 
 function applyMotion(node, opacity) {
@@ -22,11 +19,11 @@ function applyMotion(node, opacity) {
 }
 
 /**
- * One continuous cinematic timeline:
- * - phone mounts once, sticks once, unmounts once
- * - true A↓ / B↑ crossfades (shared scrub window)
- * - copy scrolls and fades 0→1→0 through viewport center
- * - scroll styles written on the compositor path (rAF + DOM), not React per frame
+ * One sticky cinematic stage:
+ * - phone + copy share the SAME scroll progress (always synced)
+ * - copy is a stacked panel in the sticky stage — never scrolls under the phone
+ * - tall track only drives progress (short distance)
+ * - phone never empty: timeline guarantees a visible layer
  */
 export default function LandingProductDemo() {
   const section = LANDING_CONTENT['product-demo']
@@ -35,7 +32,6 @@ export default function LandingProductDemo() {
   const trackRef = useRef(null)
   const layerRefs = useRef([])
   const copyRefs = useRef([])
-  const progressRef = useRef(0)
   const beatKeyRef = useRef('')
   const [beats, setBeats] = useState(() => chapters.map(() => 0))
 
@@ -54,37 +50,30 @@ export default function LandingProductDemo() {
       const rect = track.getBoundingClientRect()
       const scrollable = Math.max(1, rect.height - window.innerHeight)
       const progress = Math.min(1, Math.max(0, -rect.top / scrollable))
-      progressRef.current = progress
-
       const { opacities, locals, activeIndex } = resolveTimeline(progress, timeline)
 
-      // Phone layers — direct DOM (no React render)
       for (let i = 0; i < chapters.length; i += 1) {
-        applyMotion(layerRefs.current[i], opacities[i] ?? 0)
+        const opacity = opacities[i] ?? 0
+        applyMotion(layerRefs.current[i], opacity)
+        applyMotion(copyRefs.current[i], opacity)
+
         const layer = layerRefs.current[i]
         if (layer) {
           layer.dataset.active = i === activeIndex ? 'true' : 'false'
-          layer.setAttribute('aria-hidden', opacities[i] < 0.2 ? 'true' : 'false')
-          // Walk resume blend from local progress (overlay, not remount)
+          layer.setAttribute('aria-hidden', opacity < 0.2 ? 'true' : 'false')
           if (chapters[i].id === 'walk') {
             const local = locals[i] ?? 0
             const resume = local < 0.55 ? 0 : local > 0.78 ? 1 : (local - 0.55) / 0.23
             layer.style.setProperty('--resume-blend', String(resume))
           }
         }
+
+        const copy = copyRefs.current[i]
+        if (copy) {
+          copy.setAttribute('aria-hidden', opacity < 0.2 ? 'true' : 'false')
+        }
       }
 
-      // Copy — center fade via DOM
-      const vh = window.innerHeight || 1
-      for (let i = 0; i < chapters.length; i += 1) {
-        const node = copyRefs.current[i]
-        if (!node) continue
-        const opacity = textCenterOpacity(node.getBoundingClientRect(), vh)
-        node.style.opacity = String(opacity)
-        node.style.transform = `translateY(${(1 - opacity) * 20}px)`
-      }
-
-      // Beat chips only — infrequent React state
       const nextBeats = chapters.map((chapter, i) =>
         beatFromLocal(locals[i] ?? 0, chapter.beats?.length ?? 1),
       )
@@ -130,30 +119,26 @@ export default function LandingProductDemo() {
         className="cw-v4-demo__track"
         style={{ '--v4-pin-h': `${pinHeightVh}vh` }}
       >
-        <div className="cw-v4-demo__phone-slot">
-          <div className="cw-v4-demo__phone-sticky">
-            <div className="cw-v4-demo__phone">
-              <LandingProductPhoneStage
-                chapters={chapters}
-                layerRefs={layerRefs}
-                beats={beats}
-              />
-            </div>
+        <div className="cw-v4-demo__stage">
+          <div className="cw-v4-demo__phone">
+            <LandingProductPhoneStage
+              chapters={chapters}
+              layerRefs={layerRefs}
+              beats={beats}
+            />
           </div>
-        </div>
 
-        <div className="cw-v4-demo__copy-rail">
-          {chapters.map((chapter, index) => (
-            <article
-              key={chapter.id}
-              ref={(el) => {
-                copyRefs.current[index] = el
-              }}
-              className="cw-v4-demo__copy-beat"
-              data-chapter={chapter.id}
-              style={{ '--beat-weight': chapterHoldWeight(chapter) + XFADE_WEIGHT }}
-            >
-              <div className="cw-v4-demo__copy-inner">
+          <div className="cw-v4-demo__copy">
+            {chapters.map((chapter, index) => (
+              <article
+                key={chapter.id}
+                ref={(el) => {
+                  copyRefs.current[index] = el
+                }}
+                className="cw-v4-demo__copy-panel"
+                data-chapter={chapter.id}
+                style={{ opacity: index === 0 ? 1 : 0 }}
+              >
                 <p className="cw-v4-demo__chapter-index">
                   {String(index + 1).padStart(2, '0')} /{' '}
                   {String(chapters.length).padStart(2, '0')}
@@ -172,9 +157,9 @@ export default function LandingProductDemo() {
                     ))}
                   </ul>
                 ) : null}
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>

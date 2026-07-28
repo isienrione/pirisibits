@@ -68,10 +68,11 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.chapters[1].emotional).toBe(true)
   })
 
-  it('gives the cinematic demo generous scroll weight with true xfades', () => {
+  it('gives the cinematic demo a short synced scrub with true xfades', () => {
     const chapters = LANDING_CONTENT['product-demo'].chapters
     const timeline = buildCinematicTimeline(chapters)
-    expect(timeline.totalWeight).toBeGreaterThanOrEqual(20)
+    expect(timeline.totalWeight).toBeLessThan(8)
+    expect(timeline.totalWeight).toBeGreaterThan(3)
     expect(timeline.segments.filter((s) => s.type === 'xfade')).toHaveLength(3)
     expect(chapterHoldWeight(chapters[1])).toBeGreaterThan(chapterHoldWeight(chapters[0]))
   })
