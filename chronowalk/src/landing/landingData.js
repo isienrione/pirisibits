@@ -706,7 +706,7 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     cta: LANDING_CTA.tryFreeSneakPeek,
-    ctaShort: 'Try free',
+    ctaShort: 'Sneak peek',
   },
 
   footer: {

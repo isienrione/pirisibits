@@ -33,7 +33,9 @@ export default function LandingProductDemo() {
   const layerRefs = useRef([])
   const copyRefs = useRef([])
   const beatKeyRef = useRef('')
+  const activeKeyRef = useRef(0)
   const [beats, setBeats] = useState(() => chapters.map(() => 0))
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const timeline = useMemo(() => buildCinematicTimeline(chapters), [chapters])
   const pinHeightVh = useMemo(() => timelineHeightVh(timeline), [timeline])
@@ -50,7 +52,9 @@ export default function LandingProductDemo() {
       const rect = track.getBoundingClientRect()
       const scrollable = Math.max(1, rect.height - window.innerHeight)
       const progress = Math.min(1, Math.max(0, -rect.top / scrollable))
-      const { opacities, locals, activeIndex } = resolveTimeline(progress, timeline)
+      const resolved = resolveTimeline(progress, timeline)
+      const { opacities, locals } = resolved
+      const nextActive = resolved.activeIndex
 
       for (let i = 0; i < chapters.length; i += 1) {
         const opacity = opacities[i] ?? 0
@@ -59,7 +63,7 @@ export default function LandingProductDemo() {
 
         const layer = layerRefs.current[i]
         if (layer) {
-          layer.dataset.active = i === activeIndex ? 'true' : 'false'
+          layer.dataset.active = i === nextActive ? 'true' : 'false'
           layer.setAttribute('aria-hidden', opacity < 0.2 ? 'true' : 'false')
           if (chapters[i].id === 'walk') {
             const local = locals[i] ?? 0
@@ -81,6 +85,10 @@ export default function LandingProductDemo() {
       if (key !== beatKeyRef.current) {
         beatKeyRef.current = key
         setBeats(nextBeats)
+      }
+      if (nextActive !== activeKeyRef.current) {
+        activeKeyRef.current = nextActive
+        setActiveIndex(nextActive)
       }
     }
 
@@ -125,6 +133,7 @@ export default function LandingProductDemo() {
               chapters={chapters}
               layerRefs={layerRefs}
               beats={beats}
+              activeIndex={activeIndex}
             />
           </div>
 

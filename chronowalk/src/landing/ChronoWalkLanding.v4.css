@@ -708,15 +708,8 @@
 /* Narrow: phone dominates the viewport — readable in-phone UI. */
 @media (max-width: 39.99rem) {
   .cw-v4-demo__track {
-    /*
-     * Prefer near-full width. Only shrink if the phone would overflow the
-     * sticky stage after nav + a tight copy strip.
-     */
-    --v4-phone-w: min(
-      94vw,
-      28rem,
-      calc((100dvh - var(--v4-nav-h) - 5.5rem) * 390 / 844)
-    );
+    /* Near full-bleed mockup — no height-based width clamp. */
+    --v4-phone-w: min(92vw, 28rem);
   }
 
   .cw-v4-demo__stage {
@@ -761,9 +754,16 @@
     font-size: clamp(1.15rem, 4.2vw, 1.55rem);
   }
 
-  /* Keep the sticky stage short so the phone can grow. */
+  /* Show a short body line on mobile so chapter copy stays readable. */
   .cw-v4-demo__chapter-body {
-    display: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-inline: auto;
+    margin-top: 0.4rem;
+    font-size: 0.86rem;
+    max-width: 34ch;
   }
 
   .cw-v4-demo__beats {

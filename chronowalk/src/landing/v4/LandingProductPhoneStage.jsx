@@ -55,8 +55,8 @@ const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
   )
 })
 
-/** Arrive — Threshold / story open with auto demo reveal. */
-const ArriveScreen = memo(function ArriveScreen({ beat = 0 }) {
+/** Arrive — Threshold auto-reveal only while this chapter is the active scene. */
+const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
   return (
     <A2FreePreviewStory
       manifest={MANIFEST}
@@ -70,7 +70,8 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0 }) {
       storyEnded={false}
       initialTab="audio"
       continueLabel="See the full tour →"
-      demoAutoReveal
+      demoAutoReveal={active}
+      suppressAutoRevealInvite={!active}
       onTogglePlay={noop}
       onSkipBack={noop}
       onSkipForward={noop}
@@ -97,6 +98,7 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
       storyEnded={beat >= 2}
       initialTab={beat >= 1 ? 'transcript' : 'audio'}
       continueLabel="See the full tour →"
+      suppressAutoRevealInvite
       onTogglePlay={noop}
       onSkipBack={noop}
       onSkipForward={noop}
@@ -147,9 +149,9 @@ const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
   )
 })
 
-const ChapterScreen = memo(function ChapterScreen({ chapterId, beat }) {
+const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
   if (chapterId === 'choose') return <ChooseScreen beat={beat} />
-  if (chapterId === 'arrive') return <ArriveScreen beat={beat} />
+  if (chapterId === 'arrive') return <ArriveScreen beat={beat} active={active} />
   if (chapterId === 'listen') return <ListenScreen beat={beat} />
   if (chapterId === 'walk') return <WalkScreen beat={beat} />
   return <ChooseScreen beat={0} />
@@ -163,6 +165,7 @@ export default function LandingProductPhoneStage({
   chapters = [],
   layerRefs,
   beats = [],
+  activeIndex = 0,
 }) {
   return (
     <LandingProductPhoneFrame>
@@ -179,7 +182,11 @@ export default function LandingProductPhoneStage({
                 data-chapter={chapter.id}
                 style={{ opacity: index === 0 ? 1 : 0 }}
               >
-                <ChapterScreen chapterId={chapter.id} beat={beats[index] ?? 0} />
+                <ChapterScreen
+                  chapterId={chapter.id}
+                  beat={beats[index] ?? 0}
+                  active={index === activeIndex}
+                />
               </div>
             ))}
           </div>
