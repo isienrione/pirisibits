@@ -104,12 +104,17 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.secondaryCta).toBe('How does ChronoWalk work?')
     expect(hero.secondaryHref).toBe('#how-it-works')
     expect(hero.getAppCta).toBe('Get the app')
-    expect(hero.getAppHref).toBe('#pricing')
+    expect(hero.getAppHref).toBe('#get-app')
     expect(hero.primaryHref).toBe('/preview')
   })
 
+  it('shows a nav Get the app CTA that deep-links to the get-app section', () => {
+    expect(LANDING_CONTENT.header.cta).toBe(LANDING_CTA.getApp)
+    expect(LANDING_CONTENT.header.ctaHref).toBe('#get-app')
+  })
+
   it('removes the top-right header sneak-peek CTA', () => {
-    expect(LANDING_CONTENT.header.cta).toBeNull()
+    expect(LANDING_CONTENT.header.cta).not.toBe(LANDING_CTA.tryFreeSneakPeek)
   })
 
   it('ships trust as an expandable checklist', () => {

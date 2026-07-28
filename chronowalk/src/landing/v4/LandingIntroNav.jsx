@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
-import { LANDING_CONTENT } from '../landingData.js'
+import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
 const INTRO_MS = 2000
 const COMPRESS_MS = 900
@@ -8,11 +8,12 @@ const COMPRESS_MS = 900
 /**
  * Keynote-style open: ChronoWalk mark plays once, then compresses into the nav bar.
  * No controls. Muted. Autoplay once.
- * Free sneak peek CTA lives in the hero (not top-right).
+ * Top-right Get the app appears only after the hero leaves the viewport.
  */
-export default function LandingIntroNav({ onComplete }) {
-  const { nav } = LANDING_CONTENT.header
+export default function LandingIntroNav({ onComplete, onGetApp }) {
+  const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
   const [phase, setPhase] = useState('intro') // intro | compress | nav
+  const [showGetApp, setShowGetApp] = useState(false)
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
@@ -41,8 +42,45 @@ export default function LandingIntroNav({ onComplete }) {
     }
   }, [onComplete, reduceMotion])
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !cta) return undefined
+
+    const hero = document.getElementById('top')
+    if (!hero || typeof IntersectionObserver === 'undefined') {
+      const onScroll = () => {
+        const threshold = Math.min(window.innerHeight * 0.72, hero?.offsetHeight || window.innerHeight)
+        setShowGetApp(window.scrollY > threshold)
+      }
+      onScroll()
+      window.addEventListener('scroll', onScroll, { passive: true })
+      return () => window.removeEventListener('scroll', onScroll)
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Keep the nav CTA hidden while the hero is meaningfully on screen.
+        const heroVisible = entry.isIntersecting && entry.intersectionRatio >= 0.18
+        setShowGetApp(!heroVisible)
+      },
+      {
+        root: null,
+        threshold: [0, 0.18, 0.35, 0.6, 1],
+      },
+    )
+    observer.observe(hero)
+    return () => observer.disconnect()
+  }, [cta])
+
   const isNav = phase === 'nav'
   const isCompress = phase === 'compress'
+  const ctaLabel = cta || LANDING_CTA.getApp
+  const ctaTarget = ctaHref || '#get-app'
+
+  const handleCtaClick = (event) => {
+    if (!onGetApp) return
+    event.preventDefault()
+    onGetApp()
+  }
 
   return (
     <>
@@ -72,7 +110,7 @@ export default function LandingIntroNav({ onComplete }) {
       </div>
 
       <header
-        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}`}
+        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}`}
         data-phase={phase}
       >
         <div className="cw-v4-nav__inner">
@@ -88,6 +126,19 @@ export default function LandingIntroNav({ onComplete }) {
               </a>
             ))}
           </nav>
+
+          {cta ? (
+            <a
+              href={ctaTarget}
+              className="cw-v4-nav__cta"
+              aria-hidden={!showGetApp}
+              tabIndex={showGetApp ? 0 : -1}
+              onClick={handleCtaClick}
+            >
+              <span className="cw-v4-nav__cta-long">{ctaLabel}</span>
+              <span className="cw-v4-nav__cta-short">{ctaShort || ctaLabel}</span>
+            </a>
+          ) : null}
         </div>
       </header>
     </>

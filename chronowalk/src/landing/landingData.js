@@ -353,7 +353,7 @@ export const LANDING_CONTENT = {
     secondaryCta: LANDING_CTA.howItWorks,
     secondaryHref: '#how-it-works',
     getAppCta: LANDING_CTA.getApp,
-    getAppHref: '#pricing',
+    getAppHref: '#get-app',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',
@@ -801,9 +801,10 @@ export const LANDING_CONTENT = {
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
-    /** Top-right sneak peek removed; free CTA lives in the hero. */
-    cta: null,
-    ctaShort: null,
+    /** Shown in the nav only after the hero leaves the viewport. */
+    cta: LANDING_CTA.getApp,
+    ctaHref: '#get-app',
+    ctaShort: 'App',
   },
 
   footer: {

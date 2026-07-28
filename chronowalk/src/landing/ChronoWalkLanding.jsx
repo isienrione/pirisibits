@@ -125,12 +125,12 @@ export default function ChronoWalkLanding() {
   }, [])
 
   const handleGetApp = useCallback(() => {
-    const target = document.getElementById('pricing')
+    const target = document.getElementById('get-app')
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       return
     }
-    window.location.hash = 'pricing'
+    window.location.hash = 'get-app'
   }, [])
 
   const [actOpen, actWalk, actChoose] = LANDING_ACTS
@@ -142,7 +142,7 @@ export default function ChronoWalkLanding() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingIntroNav />
+      <LandingIntroNav onGetApp={handleGetApp} />
       <main>
         <LandingAct
           id={actOpen.id}
@@ -155,7 +155,6 @@ export default function ChronoWalkLanding() {
             onChooseTour={handleChooseTour}
             onGetApp={handleGetApp}
           />
-          <LandingGetAppSection onChooseTour={handleChooseTour} />
         </LandingAct>
 
         <LandingAct
@@ -192,6 +191,7 @@ export default function ChronoWalkLanding() {
           <div id="try-free" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="compare" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          <LandingGetAppSection onChooseTour={handleChooseTour} />
           <LandingFaqSectionV2 />
         </LandingAct>
       </main>

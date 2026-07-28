@@ -234,17 +234,34 @@
 .cw-v4-nav__cta {
   margin-left: auto;
   appearance: none;
-  border: 0;
+  border: 1px solid rgba(255, 220, 160, 0.45);
   border-radius: 999px;
-  background: var(--v4-ember);
-  color: #fff;
-  padding: 0.65rem 1.05rem;
+  background: linear-gradient(180deg, #f0b14a 0%, #e08a28 100%);
+  color: #1a1208;
+  padding: 0.45rem 0.9rem;
   font: inherit;
-  font-size: 0.86rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
   cursor: pointer;
   text-decoration: none;
-  min-height: 2.75rem;
+  min-height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(-0.35rem);
+  pointer-events: none;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease,
+    box-shadow 0.25s ease;
+}
+
+.cw-v4-nav--cta .cw-v4-nav__cta {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .cw-v4-nav__cta-short {
@@ -257,11 +274,17 @@
   }
 
   .cw-v4-nav__cta {
-    margin-left: 0;
+    margin-left: 0.35rem;
   }
 }
 
 @media (max-width: 28rem) {
+  .cw-v4-nav__cta {
+    padding-inline: 0.75rem;
+    font-size: 0.78rem;
+    min-height: 2.2rem;
+  }
+
   .cw-v4-nav__cta-long {
     display: none;
   }
@@ -568,6 +591,7 @@
 
 .cw-v4-getapp {
   padding: 3.5rem 0 2.5rem;
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
   background:
     radial-gradient(ellipse 60% 50% at 20% 0%, rgba(232, 161, 60, 0.08), transparent 70%),
     #121014;
@@ -909,16 +933,16 @@
   position: absolute;
   z-index: 4;
   top: auto;
-  /* Sit beside the CTA cluster, clear of headline/lead copy */
-  bottom: max(5.75rem, calc(env(safe-area-inset-bottom) + 5.25rem));
-  width: 2.1rem;
-  height: 2.1rem;
+  /* Sit with the dots row so arrows never cover headline or CTAs */
+  bottom: max(0.95rem, calc(env(safe-area-inset-bottom) + 0.75rem));
+  width: 2rem;
+  height: 2rem;
   border: 1px solid rgba(243, 238, 230, 0.28);
   border-radius: 999px;
   background: rgba(8, 8, 10, 0.55);
   color: #faf6ef;
   backdrop-filter: blur(10px);
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   line-height: 1;
   display: grid;
   place-items: center;
@@ -973,10 +997,10 @@
 
 @media (max-width: 39.99rem) {
   .cw-v4-hero__arrow {
-    width: 1.75rem;
-    height: 1.75rem;
-    font-size: 1.1rem;
-    bottom: max(5.35rem, calc(env(safe-area-inset-bottom) + 4.85rem));
+    width: 1.7rem;
+    height: 1.7rem;
+    font-size: 1.05rem;
+    bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.7rem));
   }
 
   .cw-v4-hero__arrow--prev {
@@ -995,10 +1019,9 @@
 
 @media (min-width: 40rem) {
   .cw-v4-hero__arrow {
-    width: 2.25rem;
-    height: 2.25rem;
-    font-size: 1.35rem;
-    bottom: max(4.85rem, calc(env(safe-area-inset-bottom) + 4.35rem));
+    width: 2.15rem;
+    height: 2.15rem;
+    font-size: 1.3rem;
   }
 }
 
