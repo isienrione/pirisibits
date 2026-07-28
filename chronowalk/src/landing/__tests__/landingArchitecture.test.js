@@ -9,7 +9,7 @@ import {
   LANDING_SECTION_ORDER,
   LANDING_VERIFIED_REVIEWS,
 } from '../landingData.js'
-import { chapterScrollWeight } from '../v4/productDemoTimeline.js'
+import { buildCinematicTimeline, chapterHoldWeight } from '../v4/productDemoTimeline.js'
 
 describe('landing product-story architecture (V4)', () => {
   it('defines the product-story section order', () => {
@@ -68,11 +68,12 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.chapters[1].emotional).toBe(true)
   })
 
-  it('gives the cinematic demo generous scroll weight', () => {
+  it('gives the cinematic demo generous scroll weight with true xfades', () => {
     const chapters = LANDING_CONTENT['product-demo'].chapters
-    const total = chapters.reduce((sum, chapter) => sum + chapterScrollWeight(chapter), 0)
-    expect(total).toBeGreaterThanOrEqual(20)
-    expect(chapterScrollWeight(chapters[1])).toBeGreaterThan(chapterScrollWeight(chapters[0]))
+    const timeline = buildCinematicTimeline(chapters)
+    expect(timeline.totalWeight).toBeGreaterThanOrEqual(20)
+    expect(timeline.segments.filter((s) => s.type === 'xfade')).toHaveLength(3)
+    expect(chapterHoldWeight(chapters[1])).toBeGreaterThan(chapterHoldWeight(chapters[0]))
   })
 
   it('uses situation-led personas instead of demographics', () => {

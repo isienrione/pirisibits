@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
-  buildChapterRanges,
-  chapterPhase,
-  phoneLayerStyle,
-  PHONE_FADE_SCROLL_PX,
+  buildCinematicTimeline,
+  resolveTimeline,
+  softLayerMotion,
   textCenterOpacity,
+  beatFromLocal,
+  XFADE_WEIGHT,
 } from '../v4/productDemoTimeline.js'
 
 const CHAPTERS = [
@@ -15,42 +16,44 @@ const CHAPTERS = [
 ]
 
 describe('productDemoTimeline', () => {
-  it('builds overlapping chapter ranges so the next scene starts early', () => {
-    const ranges = buildChapterRanges(CHAPTERS, 0.18)
-    expect(ranges).toHaveLength(4)
-    expect(ranges[0].start).toBe(0)
-    expect(ranges[3].end).toBe(1)
-    for (let i = 0; i < ranges.length - 1; i += 1) {
-      expect(ranges[i + 1].start).toBeLessThan(ranges[i].end)
-    }
+  it('builds hold + true pairwise xfade segments', () => {
+    const timeline = buildCinematicTimeline(CHAPTERS)
+    const holds = timeline.segments.filter((s) => s.type === 'hold')
+    const fades = timeline.segments.filter((s) => s.type === 'xfade')
+    expect(holds).toHaveLength(4)
+    expect(fades).toHaveLength(3)
+    expect(XFADE_WEIGHT).toBeGreaterThan(1)
+    expect(timeline.segments[0].start).toBe(0)
+    expect(timeline.segments[timeline.segments.length - 1].end).toBe(1)
   })
 
-  it('crossfades phone layers over roughly 300–600px of scroll', () => {
-    const scrollablePx = 12000
-    const fadeProgress = PHONE_FADE_SCROLL_PX / scrollablePx
-    const style = phoneLayerStyle(fadeProgress * 0.5, 0, 0.25, scrollablePx)
-    expect(style.opacity).toBeGreaterThan(0)
-    expect(style.opacity).toBeLessThan(1)
-    expect(PHONE_FADE_SCROLL_PX).toBeGreaterThanOrEqual(300)
-    expect(PHONE_FADE_SCROLL_PX).toBeLessThanOrEqual(600)
+  it('crossfades with locked A↓ / B↑ over the same scrub window', () => {
+    const timeline = buildCinematicTimeline(CHAPTERS)
+    const xfade = timeline.segments.find((s) => s.type === 'xfade')
+    const mid = (xfade.start + xfade.end) / 2
+    const { opacities } = resolveTimeline(mid, timeline)
+    expect(opacities[xfade.from]).toBeGreaterThan(0.2)
+    expect(opacities[xfade.to]).toBeGreaterThan(0.2)
+    expect(Math.abs(opacities[xfade.from] + opacities[xfade.to] - 1)).toBeLessThan(0.02)
   })
 
-  it('uses soft opacity / translateY / scale / blur — never hard cuts', () => {
-    const mid = phoneLayerStyle(0.5, 0.2, 0.8, 10000)
+  it('uses soft opacity / translateY / scale — never hard cuts or blur on phone layers', () => {
+    const mid = softLayerMotion(1)
     expect(mid.opacity).toBe(1)
     expect(mid.transform).toContain('translateY(0px)')
     expect(mid.transform).toContain('scale(1)')
+    expect(mid.filter).toBeUndefined()
 
-    const edge = phoneLayerStyle(0.21, 0.2, 0.8, 10000)
+    const edge = softLayerMotion(0.4)
     expect(edge.transform).toMatch(/translateY\(/)
     expect(edge.transform).toMatch(/scale\(/)
-    expect(edge.filter).toMatch(/blur\(/)
+    expect(edge.filter).toBeUndefined()
   })
 
-  it('advances beat phases inside a chapter', () => {
-    expect(chapterPhase(0.1, 0, 1, 4)).toBe(0)
-    expect(chapterPhase(0.6, 0, 1, 4)).toBe(2)
-    expect(chapterPhase(0.99, 0, 1, 4)).toBe(3)
+  it('advances beat phases from local chapter progress', () => {
+    expect(beatFromLocal(0.1, 4)).toBe(0)
+    expect(beatFromLocal(0.6, 4)).toBe(2)
+    expect(beatFromLocal(0.99, 4)).toBe(3)
   })
 
   it('fades explanatory text through viewport center', () => {

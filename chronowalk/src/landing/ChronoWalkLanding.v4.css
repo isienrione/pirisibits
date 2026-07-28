@@ -533,9 +533,41 @@
   inset: 0;
   width: 390px;
   height: 844px;
-  will-change: opacity, transform, filter;
-  /* Transitions come from scroll progress — no CSS transition jumps. */
+  will-change: opacity, transform;
+  /* Scroll progress writes opacity/transform directly — no CSS transition jumps. */
   transition: none;
+  contain: layout paint;
+  /* No blur on live product UI — blur causes frame drops that read as jumps. */
+  filter: none !important;
+}
+
+.cw-v4-walk-stack {
+  position: relative;
+  width: 390px;
+  height: 844px;
+  overflow: hidden;
+}
+
+.cw-v4-walk-live,
+.cw-v4-walk-resume {
+  position: absolute;
+  inset: 0;
+  width: 390px;
+  height: 844px;
+}
+
+.cw-v4-walk-live {
+  opacity: calc(1 - (var(--resume-blend, 0) * 0.92));
+  transform: translateY(calc(var(--resume-blend, 0) * 12px))
+    scale(calc(1 - (var(--resume-blend, 0) * 0.02)));
+}
+
+.cw-v4-walk-resume {
+  opacity: var(--resume-blend, 0);
+  transform: translateY(calc((1 - var(--resume-blend, 0)) * 20px))
+    scale(calc(0.98 + (var(--resume-blend, 0) * 0.02)));
+  pointer-events: none;
+  z-index: 2;
 }
 
 .cw-v4-demo-walk-map {
@@ -563,12 +595,16 @@
 }
 
 .cw-v4-demo__copy-beat {
-  min-height: calc(var(--beat-weight, 4.8) * 100vh);
+  min-height: calc(var(--beat-weight, 5.75) * 100vh);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  will-change: opacity, transform, filter;
+  will-change: opacity, transform;
   scroll-snap-align: none;
+  /* Opacity/transform set by scroll rAF — start invisible until measured. */
+  opacity: 0;
+  transition: none;
+  filter: none !important;
 }
 
 .cw-v4-demo__copy-inner {

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { createRef } from 'react'
 import { render, screen } from '@testing-library/react'
 import LandingProductPhoneStage from '../v4/LandingProductPhoneStage.jsx'
 
@@ -11,44 +12,22 @@ vi.mock('../../hooks/useWalkingDirections.js', () => ({
   }),
 }))
 
-function visibleLayer(id, phase = 0) {
-  return {
-    id,
-    phase,
-    style: {
-      opacity: 1,
-      transform: 'translateY(0px) scale(1)',
-      filter: 'none',
-      pointerEvents: 'auto',
-      visibility: 'visible',
-    },
-  }
-}
-
-function hiddenLayer(id) {
-  return {
-    id,
-    phase: 0,
-    style: {
-      opacity: 0,
-      transform: 'translateY(20px) scale(0.98)',
-      filter: 'blur(6px)',
-      pointerEvents: 'none',
-      visibility: 'hidden',
-    },
-  }
-}
+const CHAPTERS = [
+  { id: 'choose', beats: ['a', 'b', 'c'] },
+  { id: 'arrive', beats: ['a', 'b', 'c', 'd'] },
+  { id: 'listen', beats: ['a', 'b', 'c'] },
+  { id: 'walk', beats: ['a', 'b', 'c', 'd'] },
+]
 
 describe('LandingProductPhoneStage', () => {
   it('keeps one phone frame while layering real product screens', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
     render(
       <LandingProductPhoneStage
-        layers={[
-          visibleLayer('choose', 0),
-          hiddenLayer('arrive'),
-          hiddenLayer('listen'),
-          hiddenLayer('walk'),
-        ]}
+        chapters={CHAPTERS}
+        layerRefs={layerRefs}
+        beats={[0, 0, 0, 0]}
       />,
     )
     expect(screen.getByLabelText(/product demo/i)).toBeInTheDocument()
@@ -59,14 +38,13 @@ describe('LandingProductPhoneStage', () => {
   })
 
   it('mounts the real Pantheon free-preview player', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
     render(
       <LandingProductPhoneStage
-        layers={[
-          hiddenLayer('choose'),
-          visibleLayer('arrive', 0),
-          hiddenLayer('listen'),
-          hiddenLayer('walk'),
-        ]}
+        chapters={CHAPTERS}
+        layerRefs={layerRefs}
+        beats={[0, 0, 0, 0]}
       />,
     )
     expect(screen.getAllByText(/free preview · pantheon/i).length).toBeGreaterThan(0)
@@ -74,33 +52,34 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
-  it('mounts real walking companion for the navigation chapter', () => {
+  it('mounts real walking companion with resume as an overlay (no remount cut)', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
     render(
       <LandingProductPhoneStage
-        layers={[
-          hiddenLayer('choose'),
-          hiddenLayer('arrive'),
-          hiddenLayer('listen'),
-          visibleLayer('walk', 0),
-        ]}
+        chapters={CHAPTERS}
+        layerRefs={layerRefs}
+        beats={[0, 0, 0, 0]}
       />,
     )
     expect(screen.getByTestId('walking-companion-screen')).toBeInTheDocument()
     expect(screen.getByTestId('landing-demo-walk-map')).toBeInTheDocument()
     expect(screen.getByText(/walking to/i)).toBeInTheDocument()
+    expect(document.querySelector('.cw-v4-walk-resume')).toBeTruthy()
+    expect(screen.getByText(/rome kept your place/i)).toBeInTheDocument()
   })
 
-  it('transitions walk chapter into the real resume screen', () => {
+  it('keeps walking root mounted when resume beat is active', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
     render(
       <LandingProductPhoneStage
-        layers={[
-          hiddenLayer('choose'),
-          hiddenLayer('arrive'),
-          hiddenLayer('listen'),
-          visibleLayer('walk', 2),
-        ]}
+        chapters={CHAPTERS}
+        layerRefs={layerRefs}
+        beats={[0, 0, 0, 2]}
       />,
     )
+    expect(screen.getByTestId('walking-companion-screen')).toBeInTheDocument()
     expect(screen.getByText(/rome kept your place/i)).toBeInTheDocument()
   })
 })
