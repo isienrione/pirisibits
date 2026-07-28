@@ -25,6 +25,10 @@ const chapterSchema = z.union([
     file: z.string(),
     title: z.string().optional(),
     transcript: z.string().optional(),
+    /** Optional static hero for chapter (used when threshold is off). */
+    photo: z.string().optional(),
+    /** Optional override for combined stops (e.g. Severus + Curia). */
+    reconstruction: reconstructionSchema.optional(),
   }),
 ])
 
@@ -50,6 +54,8 @@ const waypointSchema = z.object({
   photo: z.string().optional(),
   now_image: nowImageSchema.optional(),
   reconstruction: reconstructionSchema.optional(),
+  /** Explicitly disable then/now threshold (static photo stops). */
+  threshold: z.boolean().optional(),
   approachLine: z.string().optional(),
   arrivalLine: z.string().optional(),
 })
