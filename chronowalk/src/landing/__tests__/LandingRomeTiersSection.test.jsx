@@ -202,6 +202,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     fireEvent.click(screen.getByRole('button', { name: 'View full illustrated route map' }))
     const dialog = screen.getByRole('dialog', { name: /Roma Eterna illustrated route map/i })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveTextContent(/Pinch or double-tap to zoom/i)
     expect(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' })).toBeInTheDocument()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' }))

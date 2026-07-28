@@ -236,46 +236,51 @@ export function LandingPackagePosterViewer({
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <header className="cw-v4-poster-viewer__chrome">
-          <h2 id={titleId} className="cw-v4-poster-viewer__title">
-            {tier.name} illustrated route map
-          </h2>
-          <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Map zoom controls">
-            <button
-              type="button"
-              className="cw-v4-poster-viewer__tool"
-              onClick={() => zoomBy(ZOOM_STEP)}
-              aria-label="Zoom in"
-            >
-              <ZoomIn size={20} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="cw-v4-poster-viewer__tool"
-              onClick={() => zoomBy(-ZOOM_STEP)}
-              aria-label="Zoom out"
-            >
-              <ZoomOut size={20} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="cw-v4-poster-viewer__tool"
-              onClick={resetView}
-              aria-label="Reset zoom"
-            >
-              <RotateCcw size={20} aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              className="cw-v4-poster-viewer__tool cw-v4-poster-viewer__tool--close"
-              data-viewer-close
-              onClick={() => onClose?.()}
-              aria-label="Close map viewer"
-            >
-              <X size={22} aria-hidden="true" />
-            </button>
-          </div>
-        </header>
+        <div className="cw-v4-poster-viewer__top">
+          <header className="cw-v4-poster-viewer__chrome">
+            <h2 id={titleId} className="cw-v4-poster-viewer__title">
+              {tier.name} illustrated route map
+            </h2>
+            <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Map zoom controls">
+              <button
+                type="button"
+                className="cw-v4-poster-viewer__tool"
+                onClick={() => zoomBy(ZOOM_STEP)}
+                aria-label="Zoom in"
+              >
+                <ZoomIn size={20} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="cw-v4-poster-viewer__tool"
+                onClick={() => zoomBy(-ZOOM_STEP)}
+                aria-label="Zoom out"
+              >
+                <ZoomOut size={20} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="cw-v4-poster-viewer__tool"
+                onClick={resetView}
+                aria-label="Reset zoom"
+              >
+                <RotateCcw size={20} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                className="cw-v4-poster-viewer__tool cw-v4-poster-viewer__tool--close"
+                data-viewer-close
+                onClick={() => onClose?.()}
+                aria-label="Close map viewer"
+              >
+                <X size={22} aria-hidden="true" />
+              </button>
+            </div>
+          </header>
+          <p className="cw-v4-poster-viewer__hint">
+            Pinch or double-tap to zoom in on monuments and route details. Drag to pan.
+          </p>
+        </div>
 
         <div
           ref={stageRef}
