@@ -201,32 +201,42 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
               inert={active ? undefined : true}
             >
               <div className={`cw-v4-hero__art-frame${isPackages ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
-                <img
-                  className="cw-v4-hero__art"
-                  src={slide.src}
-                  alt={slide.title}
-                  decoding="async"
-                  loading={slideIndex < 2 ? 'eager' : 'lazy'}
-                />
                 {isPackages ? (
-                  <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
-                    {PACKAGE_HOTSPOTS.map((spot) => (
-                      <a
-                        key={spot.id}
-                        href={`#${spot.id}`}
-                        className="cw-v4-hero__hotspot"
-                        style={spot.style}
-                        aria-label={spot.label}
-                        tabIndex={active ? 0 : -1}
-                        onClick={(event) => {
-                          event.preventDefault()
-                          setPaused(true)
-                          scrollToPricingTarget(spot.id)
-                        }}
-                      />
-                    ))}
+                  <div className="cw-v4-hero__art-shell">
+                    <img
+                      className="cw-v4-hero__art"
+                      src={slide.src}
+                      alt={slide.title}
+                      decoding="async"
+                      loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                    />
+                    <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
+                      {PACKAGE_HOTSPOTS.map((spot) => (
+                        <a
+                          key={spot.id}
+                          href={`#${spot.id}`}
+                          className="cw-v4-hero__hotspot"
+                          style={spot.style}
+                          aria-label={spot.label}
+                          tabIndex={active ? 0 : -1}
+                          onClick={(event) => {
+                            event.preventDefault()
+                            setPaused(true)
+                            scrollToPricingTarget(spot.id)
+                          }}
+                        />
+                      ))}
+                    </div>
                   </div>
-                ) : null}
+                ) : (
+                  <img
+                    className="cw-v4-hero__art"
+                    src={slide.src}
+                    alt={slide.title}
+                    decoding="async"
+                    loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                  />
+                )}
               </div>
             </div>
           )

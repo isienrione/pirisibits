@@ -329,8 +329,8 @@ export const LANDING_CONTENT = {
 
   personas: {
     id: 'who-its-for',
-    eyebrow: 'WHEN CHRONOWALK HELPS MOST',
-    headline: 'Built so that everyone can get the most out of Rome',
+    eyebrow: null,
+    headline: 'ChronoWalk is your reliable companion',
     subheadline: null,
     items: [
       {
@@ -564,7 +564,7 @@ export const LANDING_CONTENT = {
   monuments: {
     id: 'monuments',
     eyebrow: 'THE STOPS',
-    headline: 'Rome, stop by stop.',
+    headline: 'Browse through all the different waypoints you can discover with ChronoWalk',
     subheadline: 'Swipe through the stops that carry the story across the city.',
     /** Always-on SEO / continuity line - full ordered names stay in the DOM via the trail. */
     routeName: 'Roma Eterna',

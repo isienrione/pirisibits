@@ -82,7 +82,7 @@ describe('landing product-story architecture (V4)', () => {
     const section = LANDING_CONTENT.personas
     expect(section.id).toBe('who-its-for')
     expect(section.items).toHaveLength(5)
-    expect(section.headline).toBe('Built so that everyone can get the most out of Rome')
+    expect(section.headline).toBe('ChronoWalk is your reliable companion')
     expect(section.items.map((item) => item.headline)).toEqual(
       expect.arrayContaining([
         'No Colosseum ticket?',
