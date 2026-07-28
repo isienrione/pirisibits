@@ -440,7 +440,7 @@
 }
 
 .cw-v4-demo__track {
-  --v4-phone-w: min(52vw, 26rem, calc(86vh * 390 / 844));
+  --v4-phone-w: min(46vw, 22rem, calc(78vh * 390 / 844));
   --v4-track-pad: clamp(0.75rem, 3vw, 2.5rem);
   width: min(100%, var(--v4-max));
   margin-inline: auto;
@@ -449,7 +449,7 @@
   scroll-snap-type: none;
 }
 
-/* Single sticky composition: phone + copy, never overlapping. */
+/* Single sticky composition: phone left + copy right, synced crossfades. */
 .cw-v4-demo__stage {
   position: sticky;
   top: 0;
@@ -459,7 +459,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: clamp(1.5rem, 4vw, 4rem);
+  column-gap: clamp(0.85rem, 3.5vw, 4rem);
   padding:
     calc(var(--v4-nav-h) + 0.75rem)
     var(--v4-track-pad)
@@ -632,8 +632,9 @@
 .cw-v4-demo__copy {
   position: relative;
   min-width: 0;
-  min-height: 14rem;
+  min-height: 12rem;
   align-self: center;
+  text-align: left;
 }
 
 .cw-v4-demo__copy-panel {
@@ -652,7 +653,7 @@
 }
 
 .cw-v4-demo__chapter-index {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.55rem;
   color: var(--v4-gold);
   letter-spacing: 0.2em;
   font-size: 0.72rem;
@@ -661,28 +662,29 @@
 .cw-v4-demo__chapter-title {
   margin: 0;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: clamp(1.55rem, 3.4vw, 2.75rem);
+  font-size: clamp(1.35rem, 3.2vw, 2.75rem);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.12;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .cw-v4-demo__chapter-body {
-  margin: 0.9rem 0 0;
+  margin: 0.75rem 0 0;
   color: var(--v4-muted);
-  font-size: clamp(0.95rem, 1.5vw, 1.12rem);
-  line-height: 1.55;
+  font-size: clamp(0.88rem, 1.5vw, 1.12rem);
+  line-height: 1.5;
   max-width: 30rem;
 }
 
 .cw-v4-demo__beats {
   list-style: none;
-  margin: 1.25rem 0 0;
+  margin: 1rem 0 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
 .cw-v4-demo__beats li {
@@ -705,92 +707,97 @@
   background: rgba(224, 122, 95, 0.14);
 }
 
-/* Narrow: phone dominates the viewport — readable in-phone UI. */
+/* Narrow: phone LEFT + titles RIGHT — same synced crossfade model. */
 @media (max-width: 39.99rem) {
   .cw-v4-demo__track {
-    /* Near full-bleed mockup — no height-based width clamp. */
-    --v4-phone-w: min(92vw, 28rem);
+    --v4-phone-w: min(
+      46vw,
+      15.5rem,
+      calc((100dvh - var(--v4-nav-h) - 1.25rem) * 390 / 844)
+    );
   }
 
   .cw-v4-demo__stage {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    align-content: start;
-    justify-items: center;
-    row-gap: 0.55rem;
-    padding-inline: 0.5rem;
-    padding-top: calc(var(--v4-nav-h) + 0.25rem);
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.75rem;
+    padding-inline: 0.65rem;
+    padding-top: calc(var(--v4-nav-h) + 0.4rem);
+    padding-bottom: max(0.65rem, env(safe-area-inset-bottom));
   }
 
   .cw-v4-demo__phone {
-    justify-self: center;
-    width: var(--v4-phone-w);
+    justify-self: start;
   }
 
   .cw-v4-demo__copy {
-    width: min(100% - 1rem, 28rem);
-    min-height: 0;
-    text-align: center;
+    min-height: 10rem;
+    text-align: left;
   }
 
   .cw-v4-demo__copy-panel {
+    max-width: none;
     left: 0;
-    right: 0;
-    margin-inline: auto;
-    max-width: 28rem;
-  }
-
-  .cw-v4-demo__copy-panel:first-child {
-    position: relative;
+    right: auto;
+    margin-inline: 0;
   }
 
   .cw-v4-demo__chapter-index {
     margin-bottom: 0.35rem;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
   }
 
   .cw-v4-demo__chapter-title {
-    font-size: clamp(1.15rem, 4.2vw, 1.55rem);
+    font-size: clamp(1.05rem, 4.6vw, 1.45rem);
+    line-height: 1.15;
   }
 
-  /* Show a short body line on mobile so chapter copy stays readable. */
   .cw-v4-demo__chapter-body {
+    margin-top: 0.45rem;
+    margin-inline: 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    max-width: none;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-inline: auto;
-    margin-top: 0.4rem;
-    font-size: 0.86rem;
-    max-width: 34ch;
   }
 
   .cw-v4-demo__beats {
-    justify-content: center;
-    margin-top: 0.45rem;
-    gap: 0.3rem;
+    justify-content: flex-start;
+    margin-top: 0.65rem;
+    gap: 0.28rem;
   }
 
   .cw-v4-demo__beats li {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     padding: 0.2rem 0.45rem;
+    letter-spacing: 0.06em;
   }
 }
 
 @media (min-width: 40rem) and (max-width: 63.99rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(52vw, 26rem, calc(88vh * 390 / 844));
+    --v4-phone-w: min(44vw, 22rem, calc(82vh * 390 / 844));
+  }
+
+  .cw-v4-demo__stage {
+    column-gap: 1.5rem;
   }
 }
 
 @media (min-width: 64rem) {
   .cw-v4-demo__track {
-    --v4-phone-w: min(26rem, calc(88vh * 390 / 844));
+    --v4-phone-w: min(24rem, calc(84vh * 390 / 844));
   }
 
   .cw-v4-demo__stage {
-    column-gap: 4rem;
+    column-gap: 3.5rem;
+  }
+
+  .cw-v4-demo__chapter-title {
+    font-size: clamp(1.75rem, 3vw, 2.75rem);
   }
 }
 
