@@ -90,7 +90,7 @@ function AppChrome() {
 
 function AppRoutes() {
   return (
-    <V2ErrorBoundary title="Tour unavailable">
+    <V2ErrorBoundary title="Couldn’t load ChronoWalk">
       <Routes>
         <Route path="/" element={<ApexHomeRedirect />} />
         <Route path="/landing" element={<PublicLandingRoute />} />

@@ -4,9 +4,13 @@ import V2ErrorBoundary from '../V2ErrorBoundary.jsx'
 
 const recoverStaleClient = vi.fn(async () => ({ recovered: true, reloading: true }))
 
-vi.mock('../../pwa/staleChunkRecovery.js', () => ({
-  recoverStaleClient: (...args) => recoverStaleClient(...args),
-}))
+vi.mock('../../pwa/staleChunkRecovery.js', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    recoverStaleClient: (...args) => recoverStaleClient(...args),
+  }
+})
 
 function BrokenChild() {
   throw new Error('boom')
@@ -48,13 +52,32 @@ describe('V2ErrorBoundary', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     render(
-      <V2ErrorBoundary title="Tour unavailable">
+      <V2ErrorBoundary title="Couldn’t load ChronoWalk">
         <BrokenChild />
       </V2ErrorBoundary>,
     )
 
     fireEvent.click(screen.getByRole('button', { name: /try again/i }))
     await waitFor(() => expect(recoverStaleClient).toHaveBeenCalledWith({ force: true }))
+
+    consoleError.mockRestore()
+  })
+
+  it('auto-recovers when a stale chunk error is caught', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    function StaleChunkChild() {
+      throw new Error('Failed to fetch dynamically imported module: https://example/assets/x.js')
+    }
+
+    render(
+      <V2ErrorBoundary title="Couldn’t load ChronoWalk">
+        <StaleChunkChild />
+      </V2ErrorBoundary>,
+    )
+
+    expect(screen.getByText(/Updating ChronoWalk/i)).toBeInTheDocument()
+    await waitFor(() => expect(recoverStaleClient).toHaveBeenCalled())
 
     consoleError.mockRestore()
   })
