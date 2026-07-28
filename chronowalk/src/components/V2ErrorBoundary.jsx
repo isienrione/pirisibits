@@ -1,10 +1,10 @@
 import { Component } from 'react'
-import { recoverStaleClient } from '../pwa/staleChunkRecovery.js'
+import { isStaleChunkError, recoverStaleClient } from '../pwa/staleChunkRecovery.js'
 
 export default class V2ErrorBoundary extends Component {
   constructor(props) {
     super(props)
-    this.state = { hasError: false, recovering: false }
+    this.state = { hasError: false, recovering: false, autoRecovering: false }
   }
 
   static getDerivedStateFromError() {
@@ -13,6 +13,15 @@ export default class V2ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     console.error('V2ErrorBoundary caught an error:', error, info)
+
+    // After a Cloudflare deploy, old hashed chunks 404 and React throws here.
+    // Self-heal once instead of leaving a misleading "Tour unavailable" screen.
+    if (isStaleChunkError(error) && !this.state.autoRecovering) {
+      this.setState({ autoRecovering: true, recovering: true })
+      void recoverStaleClient().finally(() => {
+        this.setState({ recovering: false })
+      })
+    }
   }
 
   handleRetry = () => {
@@ -74,7 +83,9 @@ export default class V2ErrorBoundary extends Component {
               fontWeight: 500,
             }}
           >
-            {this.props.title ?? 'Something went wrong'}
+            {this.state.autoRecovering
+              ? 'Updating ChronoWalk…'
+              : (this.props.title ?? 'Something went wrong')}
           </p>
           <p
             style={{
@@ -84,8 +95,10 @@ export default class V2ErrorBoundary extends Component {
               color: 'color-mix(in srgb, var(--ink) 65%, var(--bone))',
             }}
           >
-            {this.props.message ??
-              'This screen could not load. Try again to refresh the app shell — your access and progress stay on this device.'}
+            {this.state.autoRecovering
+              ? 'A newer version just shipped. Refreshing the app shell — your access and progress stay on this device.'
+              : (this.props.message ??
+                'This screen could not load. Try again to refresh the app shell — your access and progress stay on this device.')}
           </p>
           <button
             type="button"
