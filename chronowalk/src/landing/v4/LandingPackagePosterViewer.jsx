@@ -46,12 +46,26 @@ export function LandingZoomableImageViewer({
   const [scale, setScale] = useState(1)
   const [tx, setTx] = useState(0)
   const [ty, setTy] = useState(0)
+  const [hintVisible, setHintVisible] = useState(false)
 
   const resetView = useCallback(() => {
     setScale(1)
     setTx(0)
     setTy(0)
   }, [])
+
+  const dismissHint = useCallback(() => {
+    setHintVisible(false)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return undefined
+    resetView()
+    setHintVisible(Boolean(hint))
+    if (!hint) return undefined
+    const timer = window.setTimeout(() => setHintVisible(false), reducedMotion ? 1800 : 4200)
+    return () => window.clearTimeout(timer)
+  }, [open, hint, reducedMotion, resetView])
 
   useEffect(() => {
     if (!open) return undefined
@@ -161,6 +175,7 @@ export function LandingZoomableImageViewer({
   )
 
   const onPointerDown = (event) => {
+    dismissHint()
     const stage = stageRef.current
     if (!stage) return
     stage.setPointerCapture?.(event.pointerId)
@@ -235,9 +250,13 @@ export function LandingZoomableImageViewer({
   const transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`
   const transition = reducedMotion ? 'none' : 'transform 120ms ease-out'
   const hasAction = Boolean(action?.ctaLabel && action?.onCta)
+  const zoomed = scale > 1.05
 
   return createPortal(
-    <div className={`cw-v4-poster-viewer cw-v4-poster-viewer--${accent}`} role="presentation">
+    <div
+      className={`cw-v4-poster-viewer cw-v4-poster-viewer--${accent}${zoomed ? ' is-zoomed' : ''}${hasAction ? ' has-action' : ''}`}
+      role="presentation"
+    >
       <div
         ref={dialogRef}
         className="cw-v4-poster-viewer__dialog"
@@ -245,49 +264,9 @@ export function LandingZoomableImageViewer({
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <div className="cw-v4-poster-viewer__top">
-          <header className="cw-v4-poster-viewer__chrome">
-            <h2 id={titleId} className="cw-v4-poster-viewer__title">
-              {title}
-            </h2>
-            <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Zoom controls">
-              <button
-                type="button"
-                className="cw-v4-poster-viewer__tool"
-                onClick={() => zoomBy(ZOOM_STEP)}
-                aria-label="Zoom in"
-              >
-                <ZoomIn size={20} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="cw-v4-poster-viewer__tool"
-                onClick={() => zoomBy(-ZOOM_STEP)}
-                aria-label="Zoom out"
-              >
-                <ZoomOut size={20} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="cw-v4-poster-viewer__tool"
-                onClick={resetView}
-                aria-label="Reset zoom"
-              >
-                <RotateCcw size={20} aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                className="cw-v4-poster-viewer__tool cw-v4-poster-viewer__tool--close"
-                data-viewer-close
-                onClick={() => onClose?.()}
-                aria-label="Close viewer"
-              >
-                <X size={22} aria-hidden="true" />
-              </button>
-            </div>
-          </header>
-          {hint ? <p className="cw-v4-poster-viewer__hint">{hint}</p> : null}
-        </div>
+        <h2 id={titleId} className="cw-v4-visually-hidden">
+          {title}
+        </h2>
 
         <div
           ref={stageRef}
@@ -308,6 +287,59 @@ export function LandingZoomableImageViewer({
             draggable={false}
             style={{ transform, transition }}
           />
+        </div>
+
+        <div className="cw-v4-poster-viewer__overlay">
+          <div className="cw-v4-poster-viewer__tools" role="group" aria-label="Zoom controls">
+            <button
+              type="button"
+              className="cw-v4-poster-viewer__tool"
+              onClick={() => {
+                dismissHint()
+                zoomBy(ZOOM_STEP)
+              }}
+              aria-label="Zoom in"
+            >
+              <ZoomIn size={20} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="cw-v4-poster-viewer__tool"
+              onClick={() => {
+                dismissHint()
+                zoomBy(-ZOOM_STEP)
+              }}
+              aria-label="Zoom out"
+            >
+              <ZoomOut size={20} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="cw-v4-poster-viewer__tool"
+              onClick={() => {
+                dismissHint()
+                resetView()
+              }}
+              aria-label="Reset zoom"
+            >
+              <RotateCcw size={20} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="cw-v4-poster-viewer__tool cw-v4-poster-viewer__tool--close"
+              data-viewer-close
+              onClick={() => onClose?.()}
+              aria-label="Close viewer"
+            >
+              <X size={22} aria-hidden="true" />
+            </button>
+          </div>
+
+          {hint && hintVisible ? (
+            <p className="cw-v4-poster-viewer__hint" role="status">
+              {hint}
+            </p>
+          ) : null}
         </div>
 
         {hasAction ? (
