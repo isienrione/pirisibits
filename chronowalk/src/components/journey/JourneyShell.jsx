@@ -16,6 +16,7 @@ import { getPromotionInsertSteps } from '../../content/optionalPromotion.js'
 import { consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { JOURNEY_STATES, isImmersiveJourneyState } from '../../state/journey.js'
+import { HAPTIC_KIND, triggerHaptic } from '../../utils/haptics.js'
 import ApproachingScreen from './ApproachingScreen.jsx'
 import ArrivalScreen from './ArrivalScreen.jsx'
 import PathChoiceScreen from './PathChoiceScreen.jsx'
@@ -146,6 +147,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const storyViewRef = useRef('chapters')
   // Guards a waypoint from arriving twice (dwell timer + manual tap can race).
   const arrivedWaypointRef = useRef(null)
+  // Ensures chime + “Waypoint unlocked!” fire once per stop (GPS or manual).
+  const arrivalAlertPlayedRef = useRef(null)
+  const arrivalHapticPlayedRef = useRef(null)
   // Handle for the 5s continuous-presence timer; null when not counting.
   const dwellTimerRef = useRef(null)
   // Always points at the latest arriveAtWaypoint so the timer closure is fresh.
@@ -677,6 +681,26 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setDockSnapshot(null)
   }, [audio])
 
+  // Pocket-safe arrival: chime → “Waypoint unlocked!” + haptic, once per stop.
+  const notifyArrivalUnlock = useCallback(
+    (waypointId) => {
+      if (!waypointId) return
+
+      if (arrivalHapticPlayedRef.current !== waypointId) {
+        arrivalHapticPlayedRef.current = waypointId
+        triggerHaptic(HAPTIC_KIND.ARRIVAL_PULSE)
+        triggerHaptic(HAPTIC_KIND.ARRIVAL_UNLOCK)
+      }
+
+      if (arrivalAlertPlayedRef.current === waypointId) return
+      if (!audioUnlocked) return
+
+      arrivalAlertPlayedRef.current = waypointId
+      void audioOpsRef.current.playArrivalChime()
+    },
+    [audioUnlocked]
+  )
+
   // Confirmed arrival — auto (after 5s dwell) or manual ("I'm here"). Guarded so
   // the dwell timer and a manual tap can never fire arrival for the same
   // waypoint twice.
@@ -690,25 +714,24 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
+      notifyArrivalUnlock(waypointId)
 
       if (variant === 'redesign') {
         storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
         transition(JOURNEY_STATES.STORY)
         void tryStartWaypointNarration(waypointId).then((started) => {
           if (started) setAudioUnlocked(true)
-          if (started && audioUnlocked) void audioOpsRef.current.playArrivalChime()
           else if (!started) armStoryAutoplayGesture(waypointId)
         })
       } else {
         transition(JOURNEY_STATES.ARRIVED)
-        if (audioUnlocked) void audio.playArrivalChime()
       }
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
       if (source === 'manual' || source === 'transit_manual') {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [armStoryAutoplayGesture, audio, audioUnlocked, transition, tryStartWaypointNarration, variant]
+    [armStoryAutoplayGesture, notifyArrivalUnlock, transition, tryStartWaypointNarration, variant]
   )
 
   useEffect(() => {
@@ -771,6 +794,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // Reset the arrival guard and any pending dwell whenever the target changes.
   useEffect(() => {
     arrivedWaypointRef.current = null
+    arrivalAlertPlayedRef.current = null
+    arrivalHapticPlayedRef.current = null
     if (dwellTimerRef.current != null) {
       clearTimeout(dwellTimerRef.current)
       dwellTimerRef.current = null
@@ -787,6 +812,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const accuracyReliable = geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
 
     if (geo.insideGeofence && accuracyReliable) {
+      // Pocket-safe: alert as soon as GPS confirms arrival (all visit stops).
+      notifyArrivalUnlock(step.id)
+
       if (variant !== 'redesign') {
         // Legacy: mature dwell before auto-arrival.
         if (dwellTimerRef.current == null) {
@@ -808,7 +836,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
       transition(JOURNEY_STATES.APPROACHING)
     }
-  }, [arrivalAccuracyLimitM, geo.insideGeofence, geo.approachingGeofence, geo.accuracy, geoTarget, state, step?.id, step?.type, transition, variant])
+  }, [
+    arrivalAccuracyLimitM,
+    geo.insideGeofence,
+    geo.approachingGeofence,
+    geo.accuracy,
+    geoTarget,
+    notifyArrivalUnlock,
+    state,
+    step?.id,
+    step?.type,
+    transition,
+    variant,
+  ])
 
   useEffect(() => () => {
     if (dwellTimerRef.current != null) clearTimeout(dwellTimerRef.current)
@@ -822,6 +862,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const gpsArrivalReliable =
     geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
   const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
+
+  // If GPS already confirmed arrival before audio unlock, play as soon as audio is ready.
+  useEffect(() => {
+    if (!audioUnlocked) return
+    if (!gpsArrived || step?.type !== 'waypoint') return
+    if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+    notifyArrivalUnlock(step.id)
+  }, [audioUnlocked, gpsArrived, notifyArrivalUnlock, state, step?.id, step?.type])
 
   useEffect(() => {
     if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || needsPathChoice) return

@@ -1009,8 +1009,13 @@ export class AudioEngine {
     await this.playSystemCue(filename)
   }
 
+  /**
+   * Pocket-safe arrival alert: notification chime, then “Waypoint unlocked!”.
+   * Used for every visit-stop arrival (geofence or manual confirm).
+   */
   async playArrivalChime() {
     await this.playUiCue('arrival')
+    await this.playUiCue('arrival_unlocked')
   }
 
   async playCompletionChime() {
@@ -1041,11 +1046,23 @@ export class AudioEngine {
 
     source.connect(cueGain)
     cueGain.connect(this.systemGain)
-    source.start(0)
-    this.activeSources.push(source)
-    source.onended = () => {
-      this.activeSources = this.activeSources.filter((s) => s !== source)
-    }
+
+    await new Promise((resolve) => {
+      let settled = false
+      const finish = () => {
+        if (settled) return
+        settled = true
+        this.activeSources = this.activeSources.filter((s) => s !== source)
+        resolve()
+      }
+      source.onended = finish
+      try {
+        source.start(0)
+        this.activeSources.push(source)
+      } catch {
+        finish()
+      }
+    })
   }
 
   teardown() {
