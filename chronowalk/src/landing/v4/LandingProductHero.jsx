@@ -223,8 +223,12 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                       className="cw-v4-hero__art"
                       src={slide.src}
                       alt={slide.title}
+                      width={slide.width}
+                      height={slide.height}
                       decoding="async"
-                      loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                      // Eager: inert/opacity-hidden slides skip native lazy-load on iOS.
+                      loading="eager"
+                      fetchPriority={active ? 'high' : 'low'}
                     />
                     <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
                       {PACKAGE_HOTSPOTS.map((spot) => (
@@ -266,8 +270,11 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                       className="cw-v4-hero__art"
                       src={slide.src}
                       alt=""
+                      width={slide.width}
+                      height={slide.height}
                       decoding="async"
-                      loading={slideIndex < 2 ? 'eager' : 'lazy'}
+                      loading="eager"
+                      fetchPriority={active ? 'high' : 'low'}
                     />
                     <span className="cw-v4-hero__art-enlarge cw-v4-hero__art-enlarge--on-art">
                       <Expand size={16} aria-hidden="true" />
