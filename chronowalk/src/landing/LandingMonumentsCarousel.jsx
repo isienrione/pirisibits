@@ -145,9 +145,9 @@ export default function LandingMonumentsCarousel() {
             <span className="cw-v2-monuments__trail-sep" aria-hidden="true">
               ·
             </span>
-            <span className="cw-v2-monuments__trail-count">{totalStops} places</span>
+            <span className="cw-v2-monuments__trail-count">{totalStops} stops</span>
             <span className="cw-v2-monuments__trail-sep" aria-hidden="true">
-              —
+              ·
             </span>
             {stops.map((stop, index) => (
               <span key={stop.id} className="cw-v2-monuments__trail-stop">

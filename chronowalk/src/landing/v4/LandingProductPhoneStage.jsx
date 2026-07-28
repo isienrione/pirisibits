@@ -1,6 +1,9 @@
 import { memo } from 'react'
 import { loadRomeManifest, getWaypoint } from '../../content/manifest.js'
 import { JOURNEY_PACE, PACE_OPTIONS } from '../../data/romePacing.js'
+
+/** Landing demo only: purchasable Rome walks (omit begin-flow custom itinerary). */
+const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURNEY_PACE.OWN)
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
@@ -41,15 +44,15 @@ const DEMO_WALK_DIRECTIONS = {
 const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
   return (
     <B4PaceSelector
-      options={PACE_OPTIONS}
+      options={LANDING_PACE_OPTIONS}
       selectedPace={beat >= 1 ? JOURNEY_PACE.CENTRAL : JOURNEY_PACE.HEROIC}
       onSelectPace={noop}
       onContinue={noop}
       showPrices
       subtitle={
         beat >= 1
-          ? 'Shorter routes when time is tight.'
-          : 'Roma Eterna for the full city loop.'
+          ? 'Shorter walks for the part of Rome you have time for.'
+          : 'Roma Eterna for the complete 21-stop route.'
       }
     />
   )
@@ -62,14 +65,14 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
       manifest={MANIFEST}
       waypoint={PANTHEON}
       waypointId="w17"
-      eyebrowLabel="FREE PREVIEW · PANTHEON"
+      eyebrowLabel="FREE COMPLETE STOP"
       narrationPlaying={false}
       audioAvailable
       currentTime={beat >= 2 ? 42 : 14}
       duration={240}
       storyEnded={false}
       initialTab="audio"
-      continueLabel="See the full tour →"
+      continueLabel="See all 21 stops"
       demoAutoReveal={active}
       suppressAutoRevealInvite={!active}
       onTogglePlay={noop}
@@ -90,14 +93,14 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
       manifest={MANIFEST}
       waypoint={PANTHEON}
       waypointId="w17"
-      eyebrowLabel="FREE PREVIEW · PANTHEON"
+      eyebrowLabel="FREE COMPLETE STOP"
       narrationPlaying={false}
       audioAvailable
       currentTime={beat === 0 ? 48 : beat === 1 ? 96 : 150}
       duration={240}
       storyEnded={beat >= 2}
       initialTab={beat >= 1 ? 'transcript' : 'audio'}
-      continueLabel="See the full tour →"
+      continueLabel="See all 21 stops"
       suppressAutoRevealInvite
       onTogglePlay={noop}
       onSkipBack={noop}

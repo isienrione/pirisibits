@@ -30,11 +30,11 @@ describe('LandingPhoneScreens', () => {
   it('renders Pantheon listening and free-preview variants', () => {
     const { rerender } = render(<ListeningScreen />)
     expect(screen.getByLabelText(/pantheon chapter/i)).toBeInTheDocument()
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
 
     rerender(<PreviewScreen />)
-    expect(screen.getByText(/free preview · pantheon/i)).toBeInTheDocument()
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/free complete stop/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
   })
 
   it('resolves listening via LandingStepMockup for how-it-works step 3', () => {
@@ -48,7 +48,7 @@ describe('LandingPhoneScreens', () => {
 
   it('can still render live HTML screens when mode=live', () => {
     render(<LandingStepMockup variant="listening" mode="live" />)
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
   })
 
   it('renders Pantheon story reveal phases for the sticky phone', () => {

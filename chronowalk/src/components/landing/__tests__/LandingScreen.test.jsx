@@ -55,7 +55,7 @@ describe('LandingScreen', () => {
     expect(screen.getByText('Recommended by Hotel Roma')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /walk where rome/i })).toBeInTheDocument()
     expect(screen.getByText(PRODUCT_TRUTH.placesAcrossActsLabel)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /unlock rome — €14\.99/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /unlock all 21 stops · €14\.99/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /restore access/i })).toHaveAttribute('href', '/access')
   })
 
@@ -66,7 +66,7 @@ describe('LandingScreen', () => {
       </MemoryRouter>
     )
 
-    fireEvent.click(screen.getByRole('button', { name: /unlock rome — €14\.99/i }))
+    fireEvent.click(screen.getByRole('button', { name: /unlock all 21 stops · €14\.99/i }))
 
     const continueBtn = await screen.findByRole('button', { name: /continue to secure checkout/i })
     expect(continueBtn).toBeEnabled()

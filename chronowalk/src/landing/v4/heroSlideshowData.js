@@ -10,7 +10,7 @@
 export const HERO_SLIDESHOW_SLIDES = [
   {
     id: 'then-now',
-    title: 'ChronoWalk Rome — Walk freely, keep the context.',
+    title: 'ChronoWalk Rome. Walk freely, keep the context.',
     src: '/landing/hero-slides/then-now.png',
   },
   {

@@ -28,7 +28,7 @@ export const HOW_IT_WORKS_SHOTS = {
   map: {
     /** Filename includes landmark so SW CacheFirst cannot serve a prior Titus still. */
     src: '/landing/phone-screens/walk-pantheon.jpg',
-    label: 'ChronoWalk walking steps — Pantheon',
+    label: 'ChronoWalk walking steps: Pantheon',
   },
   listening: {
     src: '/landing/phone-screens/listen-pantheon.jpg',
@@ -53,7 +53,7 @@ export function ProductShotScreen({ src, label, size = 'lg' }) {
   )
 }
 
-/** Step 1 — route overview (cream “your route” screen). */
+/** Step 1: route overview (cream “your route” screen). */
 export function JourneyPickScreen({ size = 'md' }) {
   const stops = [
     { n: 1, title: 'The Colosseum', color: ACT.I, act: 'ACT I', filled: true },
@@ -107,7 +107,7 @@ export function JourneyPickScreen({ size = 'md' }) {
         </div>
 
         <p className="cw-landing-screen__route-note">
-          Next you&apos;ll enable location — then the guided tutorial begins at your first stop.
+          Next you&apos;ll enable location, then the guided tutorial begins at your first stop.
         </p>
         <div className="cw-landing-screen__route-cta">Enable location &amp; begin</div>
       </div>
@@ -115,7 +115,7 @@ export function JourneyPickScreen({ size = 'md' }) {
   )
 }
 
-/** Step 2 — walking companion steps view. */
+/** Step 2: walking companion steps view. */
 export function MapRouteScreen({ size = 'md' }) {
   const steps = [
     { n: 1, text: 'Continue along Via del Seminario', dist: '120 m' },
@@ -124,7 +124,7 @@ export function MapRouteScreen({ size = 'md' }) {
   ]
 
   return (
-    <LandingPhoneViewport label="ChronoWalk walking steps — Pantheon" size={size}>
+    <LandingPhoneViewport label="ChronoWalk walking steps: Pantheon" size={size}>
       <div className="cw-landing-screen cw-landing-screen--walk">
         <header className="cw-landing-screen__walk-header">
           <div className="cw-landing-screen__walk-copy">
@@ -172,10 +172,10 @@ export function MapRouteScreen({ size = 'md' }) {
   )
 }
 
-/** Arrival UI — “You have arrived” + Begin Chapter (real product). */
+/** Arrival UI: “You have arrived” + Begin Chapter (real product). */
 export function ArriveScreen({ size = 'md' }) {
   return (
-    <LandingPhoneViewport label="ChronoWalk arrival — The Pantheon" size={size}>
+    <LandingPhoneViewport label="ChronoWalk arrival: The Pantheon" size={size}>
       <div className="cw-landing-screen cw-landing-screen--arrived">
         <header className="cw-landing-screen__arrived-top">
           <span className="cw-landing-screen__chip" aria-hidden>
@@ -209,7 +209,7 @@ export function ArriveScreen({ size = 'md' }) {
   )
 }
 
-/** Immersive listening — Pantheon free-preview chapter (hero + how-it-works). */
+/** Immersive listening: Pantheon free complete-stop chapter (hero + how-it-works). */
 export function ListeningScreen({ size = 'md' }) {
   return (
     <LandingPhoneViewport label="ChronoWalk Pantheon chapter" size={size}>
@@ -221,7 +221,7 @@ export function ListeningScreen({ size = 'md' }) {
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
-          <span className="cw-landing-screen__listen-act">Free preview · Pantheon</span>
+          <span className="cw-landing-screen__listen-act">Free complete stop</span>
           <span className="cw-landing-screen__chip">?</span>
         </header>
 
@@ -238,7 +238,7 @@ export function ListeningScreen({ size = 'md' }) {
           </div>
 
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
+            Chapter 1 of 1 · The Pantheon. Exterior (~4:00)
           </p>
           <p className="cw-landing-screen__listen-note">
             Evidence-based reconstruction · portico bronze finish is informed conjecture
@@ -265,14 +265,14 @@ export function ListeningScreen({ size = 'md' }) {
             <span className="cw-landing-screen__listen-skip" />
           </div>
 
-          <div className="cw-landing-screen__listen-cta">See the full tour →</div>
+          <div className="cw-landing-screen__listen-cta">See all 21 stops</div>
         </div>
       </div>
     </LandingPhoneViewport>
   )
 }
 
-/** Pantheon free-preview player — Try free section. */
+/** Pantheon free complete-stop player: Try free section. */
 export function PreviewScreen({ size = 'md' }) {
   return (
     <LandingPhoneViewport label="ChronoWalk Pantheon free preview" size={size}>
@@ -284,7 +284,7 @@ export function PreviewScreen({ size = 'md' }) {
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
-          <span className="cw-landing-screen__preview-badge">Free preview · Pantheon</span>
+          <span className="cw-landing-screen__preview-badge">Free complete stop</span>
           <span className="cw-landing-screen__chip">?</span>
         </header>
 
@@ -303,7 +303,7 @@ export function PreviewScreen({ size = 'md' }) {
           </div>
 
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
+            Chapter 1 of 1 · The Pantheon. Exterior (~4:00)
           </p>
 
           <div className="cw-landing-screen__listen-wave cw-landing-screen__listen-wave--ember" aria-hidden>
@@ -327,7 +327,7 @@ export function PreviewScreen({ size = 'md' }) {
             <span className="cw-landing-screen__listen-skip" />
           </div>
 
-          <div className="cw-landing-screen__listen-cta">See the full tour →</div>
+          <div className="cw-landing-screen__listen-cta">See all 21 stops</div>
         </div>
       </div>
     </LandingPhoneViewport>
@@ -353,13 +353,13 @@ export function ThresholdRevealScreen({ size = 'md' }) {
   )
 }
 
-/** @deprecated Prefer ListeningScreen — alias for older “audio” call sites. */
+/** @deprecated Prefer ListeningScreen: alias for older “audio” call sites. */
 export function AudioPlayerScreen(props) {
   return <ListeningScreen {...props} />
 }
 
 /**
- * Pantheon free-preview story for the sticky phone — tour → hold → reconstruct.
+ * Pantheon free complete-stop story for the sticky phone: tour to hold to reconstruct.
  * `phase`: 0 tour UI · 1 hold pulse · 2 revealed reconstruction.
  */
 export function PantheonStoryScreen({ size = 'lg', phase = 0 }) {
@@ -389,7 +389,7 @@ export function PantheonStoryScreen({ size = 'lg', phase = 0 }) {
 
         <header className="cw-landing-screen__listen-top">
           <span className="cw-landing-screen__chip">←</span>
-          <span className="cw-landing-screen__preview-badge">Free preview · Pantheon</span>
+          <span className="cw-landing-screen__preview-badge">Free complete stop</span>
           <span className="cw-landing-screen__chip">?</span>
         </header>
 
@@ -414,7 +414,7 @@ export function PantheonStoryScreen({ size = 'lg', phase = 0 }) {
             <span>Read instead</span>
           </div>
           <p className="cw-landing-screen__listen-chapter">
-            Chapter 1 of 1 · The Pantheon — Exterior (~4:00)
+            Chapter 1 of 1 · The Pantheon. Exterior (~4:00)
           </p>
           <div className="cw-landing-screen__listen-wave cw-landing-screen__listen-wave--ember">
             {Array.from({ length: 28 }, (_, i) => (
@@ -432,7 +432,7 @@ export function PantheonStoryScreen({ size = 'lg', phase = 0 }) {
 }
 
 /**
- * Walking companion story — Map → Steps → Resume → Continue.
+ * Walking companion story: Map to Steps to Resume to Continue.
  * Uses the real walk product shot with live overlays for phase beats.
  */
 export function WalkStoryScreen({ size = 'lg', phase = 0 }) {

@@ -18,24 +18,28 @@ describe('pricing card hierarchy content', () => {
       'Roma Eterna',
     ])
     for (const tier of ROME_TIERS) {
-      expect(tier.bestFor).toMatch(/Best for/i)
+      expect(tier.bestFor.length).toBeGreaterThan(12)
       expect(tier.outcome.length).toBeGreaterThan(20)
       expect(tier.expandLabel).toMatch(/stop/i)
     }
+    expect(ROME_TIERS[0].bestFor).toMatch(/Best for/i)
+    expect(ROME_TIERS[1].bestFor).toMatch(/Best for/i)
+    expect(ROME_TIERS[2].bestFor).toMatch(/All 21 stops/i)
   })
 
   it('keeps Roma Eterna featured without invented conversion claims', () => {
     const eterna = ROME_TIERS.find((tier) => tier.id === 'rome-complete')
-    expect(eterna.badge).toBe('Full city loop')
-    expect(eterna.badge).not.toMatch(/%|popular|bestseller/i)
+    expect(eterna.badge).toBe('Complete Rome walk')
+    expect(eterna.badge).not.toMatch(/%|popular|bestseller|most loved/i)
     expect(eterna.bullets[0]).toMatch(/All 21 stops/)
+    expect(eterna.primaryCta).toBe('Unlock all 21 stops')
   })
 
   it('names each purchase CTA after its package', () => {
     expect(ROME_TIERS.map((tier) => tier.primaryCta)).toEqual([
       'Choose Roma Historica',
       'Choose Roma Antica',
-      'Choose Roma Eterna',
+      'Unlock all 21 stops',
     ])
   })
 
@@ -47,14 +51,15 @@ describe('pricing card hierarchy content', () => {
 
   it('defines Couple and Family bundles without a group offer', () => {
     expect(ROME_BUNDLES.map((bundle) => bundle.id)).toEqual(['rome-couple', 'rome-family'])
+    expect(ROME_BUNDLES.map((bundle) => bundle.name)).toEqual(['Couple', 'Family'])
     expect(ROME_BUNDLES.map((bundle) => bundle.primaryCta)).toEqual([
-      'Choose Couple Bundle',
-      'Choose Family Bundle',
+      'Choose Couple',
+      'Choose Family',
     ])
     for (const bundle of ROME_BUNDLES) {
       expect(bundle.contentStops).toBe('All 21 stops')
-      expect(bundle.contentTitle).toBe('Complete Roma Eterna')
-      expect(bundle.contentLoop).toBe('Full city loop')
+      expect(bundle.contentTitle).toBe('Full Roma Eterna for each person')
+      expect(bundle.contentLoop).toBe('Shared tour progress')
       expect(JSON.stringify(bundle)).not.toMatch(/group bundle/i)
       expect(bundle).not.toHaveProperty('seatLimit')
       expect(bundle).not.toHaveProperty('contentProductId')

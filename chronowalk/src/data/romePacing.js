@@ -1,4 +1,4 @@
-/** Rome journey pacing — tiered tour products (replaces the old two-day split). */
+/** Rome journey pacing: tiered tour products (replaces the old two-day split). */
 
 export const JOURNEY_PACE = {
   CENTRAL: 'central',
@@ -10,32 +10,32 @@ export const JOURNEY_PACE = {
 export const PACE_ORIENTATION =
   'You can change your mind at any time. Nothing expires. Nothing is skipped forever.'
 
-/** Seven act slots for tier cards — null means the act is not in this tour. */
+/** Seven act slots for tier cards; null means the act is not in this tour. */
 export const ACT_DOT_KEYS = ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore']
 
 export const PACE_OPTIONS = [
   {
     id: JOURNEY_PACE.HEROIC,
     title: 'Roma Eterna',
-    badge: 'Most loved',
+    badge: null,
     priceLabel: '€14.99',
     priceCents: 1499,
     description:
-      "The complete Rome — Colosseum, Forum, Circus Maximus View on Path B, Pantheon, Centro Storico, Castel Sant'Angelo, and Via Appia in one continuous walk.",
-    includedSummary: 'Colosseum · Forum · Pantheon · centro storico · Via Appia',
+      "The complete 21-stop Rome walk: Colosseum, Forum, Circus Maximus View on Path B, Pantheon, historic center, Castel Sant'Angelo, and Via Appia.",
+    includedSummary: 'Colosseum · Forum · Pantheon · historic center · Via Appia',
     actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'capitoline',
     default: true,
   },
   {
     id: JOURNEY_PACE.CENTRAL,
-    title: 'Roma Centrale',
+    title: 'Roma Historica',
     badge: null,
     priceLabel: '€9.99',
     priceCents: 999,
     description:
-      "Trajan's Market and centro storico — Spanish Steps, Trevi, Navona, Campo de' Fiori, Largo Argentina, Castel Sant'Angelo, and Via Appia.",
-    includedSummary: 'Pantheon · piazzas · fountains · the Tiber · Via Appia',
+      "Eight stops through Rome’s historic center around the Pantheon: squares, fountains, streets, and monuments in front of you.",
+    includedSummary: 'Pantheon · piazzas · fountains · the Tiber',
     actDots: [null, null, null, 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'pantheon',
   },
@@ -46,7 +46,7 @@ export const PACE_OPTIONS = [
     priceLabel: '€9.99',
     priceCents: 999,
     description:
-      'The Colosseum through the Forum — Palatine Hill terrace, Circus Maximus View on Path B, and Capitoline Hill with place-tied stories at each stop.',
+      'Twelve stops through Rome’s ancient core: Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Forum, and Capitoline Hill.',
     includedSummary: 'Colosseum · Palatine · Circus View · Forum · Capitoline',
     actDots: ['act1', 'act2', 'act3', null, null, null, null],
     imageKey: 'colosseum',
@@ -58,7 +58,7 @@ export const PACE_OPTIONS = [
     priceLabel: '€14.99',
     priceCents: 1499,
     description:
-      'Pick any stops you like — one morning or many. Build your own route through every landmark in the catalog.',
+      'Pick any stops you like, one morning or many. Build your own route through every landmark in the catalog.',
     includedSummary: 'Any act · any order · your itinerary',
     actDots: ['act1', 'act2', 'act3', 'act4', 'act5', 'act6', 'encore'],
     imageKey: 'trajan',
@@ -80,7 +80,7 @@ export const ROME_ACTS = [
     title: 'The Gate & the Hill',
     waypoints: ['w03', 'w04', 'enc_circus'],
     entry: 'Arch of Titus',
-    promise: 'Two doors into ancient Rome — you choose at the piazza.',
+    promise: 'Two doors into ancient Rome. You choose at the piazza.',
   },
   {
     id: 'act3',

@@ -47,7 +47,7 @@ describe('LandingProductPhoneStage', () => {
         beats={[0, 0, 0, 0]}
       />,
     )
-    expect(screen.getAllByText(/free preview · pantheon/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/free complete stop/i).length).toBeGreaterThan(0)
     expect(screen.getAllByTestId('waypoint-immersive').length).toBeGreaterThan(0)
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
@@ -66,7 +66,7 @@ describe('LandingProductPhoneStage', () => {
     expect(screen.getByTestId('landing-demo-walk-map')).toBeInTheDocument()
     expect(screen.getByTestId('landing-demo-walk-shell')).toBeInTheDocument()
     expect(screen.getByText(/walking to/i)).toBeInTheDocument()
-    expect(screen.getByText(/audio begins automatically/i)).toBeInTheDocument()
+    expect(screen.getByText(/the chapter is ready when you arrive/i)).toBeInTheDocument()
     expect(document.querySelector('.cw-v4-walk-resume')).toBeNull()
     expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
   })

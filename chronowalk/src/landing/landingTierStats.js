@@ -51,12 +51,12 @@ function formatDurationMinutes(minutes) {
 }
 
 function formatAudioMinutes(minutes) {
-  if (!minutes) return '—'
+  if (!minutes) return '–'
   return `~${formatDurationMinutes(minutes)}`
 }
 
 function formatRouteTimeRange(minMinutes, maxMinutes) {
-  if (!minMinutes || !maxMinutes) return '—'
+  if (!minMinutes || !maxMinutes) return '–'
   if (minMinutes === maxMinutes) return `~${formatDurationMinutes(minMinutes)}`
 
   const minLabel = formatDurationMinutes(minMinutes)
@@ -74,7 +74,7 @@ function formatRouteTimeRange(minMinutes, maxMinutes) {
 }
 
 function formatDistance(km) {
-  if (!km) return '—'
+  if (!km) return '–'
   const miles = kmToMiles(km)
   return `${km.toFixed(1)} km / ${miles} mi`
 }

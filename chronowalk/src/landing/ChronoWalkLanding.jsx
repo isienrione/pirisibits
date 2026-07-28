@@ -99,7 +99,7 @@ export default function ChronoWalkLanding() {
     const result = await openCheckout({ tierId: pendingTierId, source: 'landing' })
     if (!result.ok) {
       console.warn(
-        '[ChronoWalk landing] Checkout unavailable — opening /purchase handoff.',
+        '[ChronoWalk landing] Checkout unavailable: opening /purchase handoff.',
         pendingTierId,
       )
       const tier = pendingTierId

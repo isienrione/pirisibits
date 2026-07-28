@@ -12,7 +12,7 @@ export default function LandingDemoWalkShell({ children }) {
           ♪
         </span>
         <p>
-          Audio begins automatically when you arrive
+          The chapter is ready when you arrive at the stop
           <span className="cw-v4-walk-shell__audio-link"> Learn more ›</span>
         </p>
       </div>

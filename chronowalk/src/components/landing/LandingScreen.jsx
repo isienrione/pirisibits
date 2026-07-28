@@ -242,7 +242,7 @@ export default function LandingScreen() {
             cursor: checkoutReady ? 'pointer' : 'not-allowed',
           }}
         >
-          Unlock Rome — {label}
+          Unlock all 21 stops · {label}
         </button>
 
         {!checkoutReady ? (

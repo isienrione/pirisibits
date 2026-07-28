@@ -51,7 +51,7 @@ describe('landing product-story architecture (V4)', () => {
   it('frames the sticky phone demo as four chapters', () => {
     const section = LANDING_CONTENT['product-demo']
     expect(section.id).toBe('how-it-works')
-    expect(section.headline).toBe('How does ChronoWalk work?')
+    expect(section.headline).toBe('One walk, shown from beginning to end.')
     expect(section.chapters).toHaveLength(4)
     expect(section.chapters.map((c) => c.id)).toEqual([
       'choose',
@@ -83,17 +83,17 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.items).toHaveLength(5)
     expect(section.items.map((item) => item.headline)).toEqual(
       expect.arrayContaining([
-        "Didn't get Colosseum tickets?",
+        'No Colosseum ticket?',
         'Hate rigid tour schedules?',
-        'Want guided tours without paying €70?',
+        'Guided tours outside your budget?',
       ]),
     )
   })
 
-  it('keeps the hero to one free sneak-peek CTA', () => {
+  it('keeps the hero to one free Pantheon CTA', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
-    expect(hero.primaryCta).toBe('Try a free sneak peek')
+    expect(hero.primaryCta).toBe('Try the Pantheon free')
     expect(hero.secondaryCta).toBeNull()
     expect(hero.reviewsCta).toBeNull()
     expect(hero.primaryHref).toBe('/preview')
@@ -102,12 +102,12 @@ describe('landing product-story architecture (V4)', () => {
   it('ships trust as an expandable checklist', () => {
     const section = LANDING_CONTENT.trust
     expect(section.checklist.map((row) => row.title)).toEqual([
-      'Works in browser',
-      'Offline',
+      'Works in your browser',
+      'Prepare for offline use',
       'One-time purchase',
-      'GPS aware',
-      'Evidence-based',
-      'Saved progress',
+      'Uses your location',
+      'Evidence stated honestly',
+      'Progress saved',
     ])
     expect(LANDING_VERIFIED_REVIEWS).toEqual([])
   })
@@ -138,8 +138,8 @@ describe('landing product-story architecture (V4)', () => {
   })
 
   it('keeps ChronoWalk voice without banned marketing phrases', () => {
-    expect(LANDING_CONTENT.hero.eyebrow).toBe('ChronoWalk')
-    expect(LANDING_CONTENT['product-demo'].headline).toBe('How does ChronoWalk work?')
+    expect(LANDING_CONTENT.hero.eyebrow).toBe('SELF-GUIDED AUDIO WALKS IN ROME')
+    expect(LANDING_CONTENT['product-demo'].headline).toBe('One walk, shown from beginning to end.')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [
       'revolutionary',
@@ -149,8 +149,14 @@ describe('landing product-story architecture (V4)', () => {
       'seamless',
       'unlock the magic',
       'hidden gems',
+      'sneak peek',
+      'roma centrale',
+      'private guide',
+      'most loved',
+      'most popular',
     ]) {
       expect(joined).not.toContain(banned)
     }
+    expect(joined).not.toContain('\u2014')
   })
 })
