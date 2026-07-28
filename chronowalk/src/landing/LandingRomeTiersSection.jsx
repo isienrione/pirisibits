@@ -231,7 +231,12 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
         </button>
 
         <div className="cw-v4-pkg-mobile-card__map">
-          <div className="cw-v4-pkg-mobile-card__map-frame">
+          <button
+            type="button"
+            className="cw-v4-pkg-mobile-card__map-frame"
+            onClick={openViewer}
+            aria-label={`View full illustrated route map for ${activeTier.name}`}
+          >
             <img
               className="cw-v4-pkg-mobile-card__map-art"
               src={activeTier.cardImage}
@@ -242,7 +247,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
               decoding="async"
             />
             <div className="cw-v4-pkg-mobile-card__map-fade" aria-hidden="true" />
-          </div>
+          </button>
           <button
             ref={mapTriggerRef}
             type="button"

@@ -199,7 +199,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     const onBeginTier = vi.fn()
     render(<LandingRomeTiersSection onBeginTier={onBeginTier} />)
 
-    fireEvent.click(screen.getByRole('button', { name: /View full illustrated route map/i }))
+    fireEvent.click(screen.getByRole('button', { name: 'View full illustrated route map' }))
     const dialog = screen.getByRole('dialog', { name: /Roma Eterna illustrated route map/i })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     expect(within(dialog).getByRole('button', { name: 'Choose Roma Eterna' })).toBeInTheDocument()
@@ -209,6 +209,14 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Close map viewer' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('opens the map viewer when the poster preview is tapped', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+    fireEvent.click(
+      screen.getByRole('button', { name: /View full illustrated route map for Roma Eterna/i }),
+    )
+    expect(screen.getByRole('dialog', { name: /Roma Eterna illustrated route map/i })).toBeInTheDocument()
   })
 
   it('lets Compare all routes select another route from canonical data', () => {

@@ -1830,16 +1830,18 @@
 
 .cw-v4-pkg__hotspot {
   position: absolute;
-  top: var(--pkg-hotspot-top);
-  left: var(--pkg-hotspot-inset);
-  width: calc(100% - (var(--pkg-hotspot-inset) * 2));
-  height: var(--pkg-hotspot-height);
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 0.7rem;
+  border-radius: inherit;
   background: transparent;
   cursor: pointer;
+  z-index: 2;
 }
 
 .cw-v4-pkg__hotspot:hover {
@@ -2106,11 +2108,21 @@
 
 .cw-v4-pkg-mobile-card__map-frame {
   position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid color-mix(in srgb, var(--pkg-accent) 30%, transparent);
   background: #e8dfcf;
+  cursor: pointer;
+}
+
+.cw-v4-pkg-mobile-card__map-frame:focus-visible {
+  outline: 3px solid var(--pkg-accent);
+  outline-offset: 2px;
 }
 
 .cw-v4-pkg-mobile-card__map-art {
