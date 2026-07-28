@@ -440,8 +440,8 @@
 }
 
 .cw-v4-demo__track {
-  --v4-phone-w: min(48vw, 24rem, calc(82vh * 390 / 844));
-  --v4-track-pad: clamp(1rem, 4vw, 2.5rem);
+  --v4-phone-w: min(52vw, 26rem, calc(86vh * 390 / 844));
+  --v4-track-pad: clamp(0.75rem, 3vw, 2.5rem);
   width: min(100%, var(--v4-max));
   margin-inline: auto;
   min-height: var(--v4-pin-h, 320vh);
