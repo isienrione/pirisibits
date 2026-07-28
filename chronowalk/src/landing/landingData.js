@@ -18,13 +18,15 @@ export const LANDING_CTA = {
   begin: 'Choose a Rome walk',
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
-  tryFree: 'Free sneak peek',
+  tryFree: 'Get a free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
-  tryFreeSneakPeek: 'Free sneak peek',
+  tryFreeSneakPeek: 'Get a free sneak peek',
   seeRoutes: 'See all Rome walks',
-  tryOneStopFree: 'Free sneak peek',
+  tryOneStopFree: 'Get a free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
   exploreRomeRoutes: 'See all Rome walks',
+  chooseTour: 'Choose your tour',
+  getApp: 'Get the app',
   reviews: '★★★★★ Reviews',
 }
 
@@ -193,7 +195,20 @@ export const LANDING_VERIFIED_REVIEWS = []
 
 export const stickyCta = {
   primary: `Choose a Rome walk · ${PRICE_PLACEHOLDER}`,
-  secondary: 'Free sneak peek',
+  secondary: 'Get a free sneak peek',
+}
+
+/**
+ * Hero reviews capsule (testing period).
+ * Hidden by default; enable via LandingReviewsDevToggle or ?landing_reviews=1.
+ * Replace quote/attribution only with approved traveler reviews before launch.
+ */
+export const LANDING_HERO_REVIEWS = {
+  rating: 4.9,
+  quote: 'Finally a Rome walk that lets you wander and still understand what you are looking at.',
+  attribution: 'Testing placeholder · replace with an approved review',
+  seeMoreLabel: 'See more',
+  seeMoreHref: '#trust',
 }
 
 /**
@@ -256,18 +271,19 @@ export const LANDING_CONTENT = {
   hero: {
     id: 'top',
     eyebrow: 'SELF-GUIDED AUDIO WALKS IN ROME',
-    headline: 'Rome in your pocket.',
-    /** Canonical hero headline; A/B experiment copy aligned in landingExperiments. */
-    accentLine: 'Start anywhere. Wander freely. Never lose your place.',
+    headline:
+      'Get the full and fascinating experience of Rome, on an immersive tour at your own pace',
+    accentLine: null,
     subheadline:
-      'Place-tied audio and Then vs Now reconstructions, connected to the Rome in front of you.',
+      'The best self-guided tour all around the eternal city. Make the best out of your visit and roam freely without missing anything important.',
     primaryCta: LANDING_CTA.tryFreeSneakPeek,
-    secondaryCta: null,
-    reviewsCta: null,
-    reviewsHref: null,
+    secondaryCta: LANDING_CTA.chooseTour,
+    secondaryHref: '#pricing',
+    getAppCta: LANDING_CTA.getApp,
+    reviewsCta: 'See more',
+    reviewsHref: '#trust',
     primaryHref: '/preview',
-    /** Browser / offline / purchase trust line. */
-    trustLine: 'Opens in your browser · Prepare for offline use · One-time purchase',
+    trustLine: null,
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },
@@ -711,8 +727,9 @@ export const LANDING_CONTENT = {
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
     ],
-    cta: LANDING_CTA.tryFreeSneakPeek,
-    ctaShort: 'Sneak peek',
+    /** Top-right sneak peek removed; free CTA lives in the hero. */
+    cta: null,
+    ctaShort: null,
   },
 
   footer: {

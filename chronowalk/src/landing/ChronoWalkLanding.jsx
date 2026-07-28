@@ -10,6 +10,8 @@ import LandingPersonas from './v4/LandingPersonas.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
+import LandingReviewsDevToggle from './v4/LandingReviewsDevToggle.jsx'
+import { usePwaInstall } from '../hooks/usePwaInstall.js'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
@@ -39,6 +41,7 @@ import './ChronoWalkLanding.v4.css'
 export default function ChronoWalkLanding() {
   const navigate = useNavigate()
   const { cents } = useLandingPrice()
+  const { installed, canPromptInstall, promptInstall } = usePwaInstall()
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const pendingTier = useMemo(
@@ -113,6 +116,27 @@ export default function ChronoWalkLanding() {
     setCheckoutBusy(false)
   }, [cents, navigate, pendingTierId])
 
+  const handleChooseTour = useCallback(() => {
+    const target = document.getElementById('pricing')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+    window.location.hash = 'pricing'
+  }, [])
+
+  const handleGetApp = useCallback(async () => {
+    if (installed) {
+      navigate('/')
+      return
+    }
+    if (canPromptInstall) {
+      const result = await promptInstall()
+      if (result?.ok) return
+    }
+    navigate('/')
+  }, [canPromptInstall, installed, navigate, promptInstall])
+
   const [actOpen, actWalk, actChoose] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
 
@@ -122,7 +146,7 @@ export default function ChronoWalkLanding() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingIntroNav onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HEADER)} />
+      <LandingIntroNav />
       <main>
         <LandingAct
           id={actOpen.id}
@@ -132,6 +156,8 @@ export default function ChronoWalkLanding() {
         >
           <LandingProductHero
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
+            onChooseTour={handleChooseTour}
+            onGetApp={handleGetApp}
           />
           <LandingProductDemo />
         </LandingAct>
@@ -173,6 +199,7 @@ export default function ChronoWalkLanding() {
         </LandingAct>
       </main>
       <LandingSiteFooter />
+      <LandingReviewsDevToggle />
       <CheckoutConsentDialog
         open={Boolean(pendingTierId)}
         tierLabel={pendingTier?.name ?? pendingTier?.eyebrow ?? null}

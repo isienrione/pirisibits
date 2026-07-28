@@ -92,13 +92,19 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.items.find((item) => item.id === 'no-tickets')?.imageKey).toBe('trevi')
   })
 
-  it('keeps the hero to one free sneak-peek CTA', () => {
+  it('keeps the hero CTAs for sneak peek and choose tour', () => {
     const hero = LANDING_CONTENT.hero
+    expect(hero.headline).toMatch(/full and fascinating experience of Rome/i)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
-    expect(hero.primaryCta).toBe('Free sneak peek')
-    expect(hero.secondaryCta).toBeNull()
-    expect(hero.reviewsCta).toBeNull()
+    expect(hero.primaryCta).toBe('Get a free sneak peek')
+    expect(hero.secondaryCta).toBe(LANDING_CTA.chooseTour)
+    expect(hero.secondaryHref).toBe('#pricing')
+    expect(hero.getAppCta).toBe('Get the app')
     expect(hero.primaryHref).toBe('/preview')
+  })
+
+  it('removes the top-right header sneak-peek CTA', () => {
+    expect(LANDING_CONTENT.header.cta).toBeNull()
   })
 
   it('ships trust as an expandable checklist', () => {
@@ -158,7 +164,7 @@ describe('landing product-story architecture (V4)', () => {
     ]) {
       expect(joined).not.toContain(banned)
     }
-    expect(joined).toContain('free sneak peek')
+    expect(joined).toContain('get a free sneak peek')
     expect(joined).not.toContain('\u2014')
   })
 })

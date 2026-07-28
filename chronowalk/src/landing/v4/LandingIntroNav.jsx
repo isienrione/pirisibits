@@ -8,9 +8,10 @@ const COMPRESS_MS = 900
 /**
  * Keynote-style open: ChronoWalk mark plays once, then compresses into the nav bar.
  * No controls. Muted. Autoplay once.
+ * Free sneak peek CTA lives in the hero (not top-right).
  */
-export default function LandingIntroNav({ onPreview, onComplete }) {
-  const { nav, cta, ctaShort = 'Try free' } = LANDING_CONTENT.header
+export default function LandingIntroNav({ onComplete }) {
+  const { nav } = LANDING_CONTENT.header
   const [phase, setPhase] = useState('intro') // intro | compress | nav
   const reduceMotion =
     typeof window !== 'undefined' &&
@@ -87,18 +88,6 @@ export default function LandingIntroNav({ onPreview, onComplete }) {
               </a>
             ))}
           </nav>
-
-          {onPreview ? (
-            <button type="button" className="cw-v4-nav__cta" onClick={onPreview}>
-              <span className="cw-v4-nav__cta-long">{cta}</span>
-              <span className="cw-v4-nav__cta-short">{ctaShort}</span>
-            </button>
-          ) : (
-            <a href="#how-it-works" className="cw-v4-nav__cta">
-              <span className="cw-v4-nav__cta-long">{cta}</span>
-              <span className="cw-v4-nav__cta-short">{ctaShort}</span>
-            </a>
-          )}
         </div>
       </header>
     </>

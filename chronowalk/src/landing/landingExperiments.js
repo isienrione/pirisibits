@@ -12,11 +12,13 @@ export const LANDING_EXP_HERO_PARAM = 'landing_exp_hero'
 export const LANDING_EXP_HERO_COPY = Object.freeze({
   a: {
     id: 'a',
-    headline: 'Rome in your pocket.',
+    headline:
+      'Get the full and fascinating experience of Rome, on an immersive tour at your own pace',
   },
   b: {
     id: 'b',
-    headline: 'Rome in your pocket.',
+    headline:
+      'Get the full and fascinating experience of Rome, on an immersive tour at your own pace',
   },
 })
 
