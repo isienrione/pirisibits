@@ -6,6 +6,7 @@ import {
   VISUAL_SYNC_DELAY_MS,
   waitForCanPlayThrough,
 } from './audioMedia';
+import { resolveSystemUrl } from './audioUrl.js'
 
 const AUDIO_MODES = {
   AMBIENT: 'AMBIENT',
@@ -221,20 +222,55 @@ class AudioOrchestrator {
   }
 
   async playArrivalAlert(alertUrl) {
-    if (!alertUrl) {
-      console.warn('AudioOrchestrator: missing arrival alert URL.');
-      return;
+    const chimeUrl = resolveSystemUrl('ui_arrival_chime.mp3')
+    const unlockedUrl = resolveSystemUrl('ui_waypoint_unlocked.mp3')
+    const sequence = [chimeUrl, unlockedUrl].filter(Boolean)
+
+    if (sequence.length === 0) {
+      if (!alertUrl) {
+        console.warn('AudioOrchestrator: missing arrival alert URL.')
+        return
+      }
+      sequence.push(alertUrl)
     }
 
     try {
-      this.alertPlayer.pause();
-      this.alertPlayer.currentTime = 0;
-      this.alertPlayer.volume = ARRIVAL_ALERT_VOLUME;
-      this.alertPlayer.src = alertUrl;
-      await this.alertPlayer.play();
+      for (const url of sequence) {
+        await this.playAlertClip(url)
+      }
     } catch (error) {
-      console.warn('Arrival alert playback blocked.', error);
+      console.warn('Arrival alert playback blocked.', error)
     }
+  }
+
+  playAlertClip(url) {
+    return new Promise((resolve, reject) => {
+      const player = this.alertPlayer
+      const cleanup = () => {
+        player.removeEventListener('ended', onEnded)
+        player.removeEventListener('error', onError)
+      }
+      const onEnded = () => {
+        cleanup()
+        resolve()
+      }
+      const onError = () => {
+        cleanup()
+        reject(new Error(`Arrival alert failed to load: ${url}`))
+      }
+
+      cleanup()
+      player.pause()
+      player.currentTime = 0
+      player.volume = ARRIVAL_ALERT_VOLUME
+      player.src = url
+      player.addEventListener('ended', onEnded)
+      player.addEventListener('error', onError)
+      void player.play().catch((error) => {
+        cleanup()
+        reject(error)
+      })
+    })
   }
 
   prefetchArrival(arrivalUrl = this.audioUrls.arrival) {
