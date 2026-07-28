@@ -110,8 +110,6 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
   const goNext = () => goTo(index + 1)
 
   const interactive = index === 0
-  const packagesSlideIndex = storySlides.findIndex((slide) => slide.id === 'choose-your-walk')
-  const packagesActive = packagesSlideIndex >= 0 && index === packagesSlideIndex + 1
 
   return (
     <section
