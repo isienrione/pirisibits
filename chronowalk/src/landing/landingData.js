@@ -16,10 +16,11 @@ export const LANDING_PREVIEW_AUDIO_FILE = 'w17_ch1.mp3'
 /** Shared CTA labels used across sections. */
 export const LANDING_CTA = {
   begin: 'Begin Rome',
-  /** Primary purchase-path CTA on the product-story hero. */
+  /** Primary purchase-path CTA (pricing / packages). */
   unlockRome: 'Unlock Rome',
   tryFree: 'Try Pantheon Free',
-  tryFreeSneakPeek: 'Try Pantheon Free',
+  /** Single hero CTA — free Pantheon preview. */
+  tryFreeSneakPeek: 'Try a free sneak peek',
   seeRoutes: 'See packages',
   tryOneStopFree: 'Try Pantheon Free',
   /** Secondary CTAs that scroll to `#pricing` (packages), not the route map. */
@@ -256,11 +257,11 @@ export const LANDING_CONTENT = {
     accentLine: 'The phone knows where you stand.',
     subheadline:
       'Self-guided walks with GPS narration and Threshold — tied to the stones in front of you.',
-    primaryCta: LANDING_CTA.unlockRome,
-    secondaryCta: LANDING_CTA.tryFree,
-    reviewsCta: LANDING_CTA.reviews,
-    reviewsHref: '#trust',
-    primaryHref: '#pricing',
+    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    secondaryCta: null,
+    reviewsCta: null,
+    reviewsHref: null,
+    primaryHref: '/preview',
     /** Calm purchase cue — depth lives in the sticky phone story. */
     trustLine: 'One purchase. No subscription. Your pace.',
     phoneLabel: 'Listening at a landmark',
@@ -271,7 +272,7 @@ export const LANDING_CONTENT = {
     id: 'how-it-works',
     eyebrow: 'The product',
     headline: 'How does ChronoWalk work?',
-    subheadline: 'Scroll. Watch the phone. One idea at a time.',
+    subheadline: 'Scroll. Watch the phone. One continuous scene.',
     chapters: [
       {
         id: 'choose',

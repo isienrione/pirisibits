@@ -9,6 +9,7 @@ import {
   LANDING_SECTION_ORDER,
   LANDING_VERIFIED_REVIEWS,
 } from '../landingData.js'
+import { chapterScrollWeight } from '../v4/productDemoTimeline.js'
 
 describe('landing product-story architecture (V4)', () => {
   it('defines the product-story section order', () => {
@@ -67,6 +68,13 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.chapters[1].emotional).toBe(true)
   })
 
+  it('gives the cinematic demo generous scroll weight', () => {
+    const chapters = LANDING_CONTENT['product-demo'].chapters
+    const total = chapters.reduce((sum, chapter) => sum + chapterScrollWeight(chapter), 0)
+    expect(total).toBeGreaterThanOrEqual(20)
+    expect(chapterScrollWeight(chapters[1])).toBeGreaterThan(chapterScrollWeight(chapters[0]))
+  })
+
   it('uses situation-led personas instead of demographics', () => {
     const section = LANDING_CONTENT.personas
     expect(section.id).toBe('who-its-for')
@@ -80,13 +88,13 @@ describe('landing product-story architecture (V4)', () => {
     )
   })
 
-  it('keeps hero CTAs to three actions only', () => {
+  it('keeps the hero to one free sneak-peek CTA', () => {
     const hero = LANDING_CONTENT.hero
-    expect(hero.primaryCta).toBe(LANDING_CTA.unlockRome)
-    expect(hero.secondaryCta).toBe(LANDING_CTA.tryFree)
-    expect(hero.reviewsCta).toBe(LANDING_CTA.reviews)
-    expect(hero.primaryHref).toBe('#pricing')
-    expect(hero.reviewsHref).toBe('#trust')
+    expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
+    expect(hero.primaryCta).toBe('Try a free sneak peek')
+    expect(hero.secondaryCta).toBeNull()
+    expect(hero.reviewsCta).toBeNull()
+    expect(hero.primaryHref).toBe('/preview')
   })
 
   it('ships trust as an expandable checklist', () => {
@@ -139,7 +147,6 @@ describe('landing product-story architecture (V4)', () => {
       'seamless',
       'unlock the magic',
       'hidden gems',
-      'sneak peek',
     ]) {
       expect(joined).not.toContain(banned)
     }

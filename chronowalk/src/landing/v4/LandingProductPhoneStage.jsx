@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo } from 'react'
 import { loadRomeManifest, getWaypoint } from '../../content/manifest.js'
 import { JOURNEY_PACE, PACE_OPTIONS } from '../../data/romePacing.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -17,6 +17,7 @@ import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
 const MANIFEST = loadRomeManifest()
 const PANTHEON = getWaypoint(MANIFEST, 'w17')
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
+const noop = () => {}
 
 const DEMO_WALK_DIRECTIONS = {
   steps: [
@@ -37,8 +38,6 @@ const DEMO_WALK_DIRECTIONS = {
   source: 'landing-demo',
 }
 
-function noop() {}
-
 function ChooseScreen({ phase }) {
   if (phase >= 2) {
     return (
@@ -51,12 +50,10 @@ function ChooseScreen({ phase }) {
       />
     )
   }
-
-  const selectedPace = phase === 1 ? JOURNEY_PACE.CENTRAL : JOURNEY_PACE.HEROIC
   return (
     <B4PaceSelector
       options={PACE_OPTIONS}
-      selectedPace={selectedPace}
+      selectedPace={phase === 1 ? JOURNEY_PACE.CENTRAL : JOURNEY_PACE.HEROIC}
       onSelectPace={noop}
       onContinue={noop}
       showPrices
@@ -71,9 +68,6 @@ function ChooseScreen({ phase }) {
 
 function PantheonScreen({ phase, chapterId }) {
   const listening = chapterId === 'listen'
-  const initialTab = listening && phase >= 1 ? 'transcript' : 'audio'
-  const currentTime = listening ? (phase === 0 ? 18 : phase === 1 ? 77 : 140) : phase >= 2 ? 42 : 12
-
   return (
     <A2FreePreviewStory
       manifest={MANIFEST}
@@ -82,10 +76,10 @@ function PantheonScreen({ phase, chapterId }) {
       eyebrowLabel="FREE PREVIEW · PANTHEON"
       narrationPlaying={false}
       audioAvailable
-      currentTime={currentTime}
+      currentTime={listening ? (phase === 0 ? 18 : phase === 1 ? 77 : 140) : phase >= 2 ? 42 : 12}
       duration={240}
       storyEnded={listening && phase >= 2}
-      initialTab={initialTab}
+      initialTab={listening && phase >= 1 ? 'transcript' : 'audio'}
       continueLabel="See the full tour →"
       onTogglePlay={noop}
       onSkipBack={noop}
@@ -108,10 +102,7 @@ function WalkScreen({ phase }) {
       />
     )
   }
-
-  const forcedRouteView = phase === 1 ? 'steps' : 'map'
   const arrived = phase >= 3
-
   return (
     <C2Walking
       title="The Pantheon"
@@ -123,7 +114,7 @@ function WalkScreen({ phase }) {
       locationStatus={LOCATION_STATUS.GRANTED}
       near={arrived}
       insideGeofence={arrived}
-      forcedRouteView={arrived ? null : forcedRouteView}
+      forcedRouteView={arrived ? null : phase === 1 ? 'steps' : 'map'}
       directionsOverride={DEMO_WALK_DIRECTIONS}
       map={<LandingDemoWalkMap />}
       onPause={noop}
@@ -134,25 +125,36 @@ function WalkScreen({ phase }) {
   )
 }
 
-/**
- * Sticky-phone host — mounts real product screens inside the iPhone frame.
- */
-export default function LandingProductPhoneHost({ chapterId = 'choose', phase = 0 }) {
-  const screen = useMemo(() => {
-    if (chapterId === 'choose') return <ChooseScreen phase={phase} />
-    if (chapterId === 'arrive' || chapterId === 'listen') {
-      return <PantheonScreen phase={phase} chapterId={chapterId} />
-    }
-    if (chapterId === 'walk') return <WalkScreen phase={phase} />
-    return <ChooseScreen phase={0} />
-  }, [chapterId, phase])
+const ChapterScreen = memo(function ChapterScreen({ chapterId, phase }) {
+  if (chapterId === 'choose') return <ChooseScreen phase={phase} />
+  if (chapterId === 'arrive' || chapterId === 'listen') {
+    return <PantheonScreen phase={phase} chapterId={chapterId} />
+  }
+  if (chapterId === 'walk') return <WalkScreen phase={phase} />
+  return <ChooseScreen phase={0} />
+})
 
+/**
+ * Phone mounts once. All chapter screens stay layered and crossfade.
+ * Hardware frame never animates — only screen layers.
+ */
+export default function LandingProductPhoneStage({ layers = [] }) {
   return (
     <LandingProductPhoneFrame>
       <RedesignNavCtx.Provider value={NOOP_NAV}>
         <ThresholdChromeProvider>
-          <div className="cw-v4-phone-app" data-chapter={chapterId} data-phase={phase}>
-            {screen}
+          <div className="cw-v4-phone-app cw-v4-phone-layers">
+            {layers.map((layer) => (
+              <div
+                key={layer.id}
+                className="cw-v4-phone-layer"
+                data-chapter={layer.id}
+                style={layer.style}
+                aria-hidden={layer.style.opacity < 0.2}
+              >
+                <ChapterScreen chapterId={layer.id} phase={layer.phase} />
+              </div>
+            ))}
           </div>
         </ThresholdChromeProvider>
       </RedesignNavCtx.Provider>

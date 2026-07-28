@@ -1,88 +1,88 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { LANDING_CONTENT } from '../landingData.js'
 import { observeLandingSectionOnce, trackLandingRouteView } from '../landingAnalytics.js'
-import LandingProductPhoneHost from './LandingProductPhoneHost.jsx'
-
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const sync = () => setReduced(mq.matches)
-    sync()
-    mq.addEventListener?.('change', sync)
-    return () => mq.removeEventListener?.('change', sync)
-  }, [])
-  return reduced
-}
-
-function chapterWeight(chapter) {
-  return chapter?.emotional ? 1.75 : 1
-}
+import LandingProductPhoneStage from './LandingProductPhoneStage.jsx'
+import {
+  buildChapterRanges,
+  chapterPhase,
+  chapterScrollWeight,
+  phoneLayerStyle,
+  textCenterOpacity,
+} from './productDemoTimeline.js'
 
 /**
- * Apple-style pin scrub:
- * - One tall scroll track
- * - Sticky viewport with phone + one copy panel
- * - Scroll progress maps cleanly to chapter + beat
+ * One continuous cinematic timeline:
+ * - phone mounts once, sticks once, unmounts once
+ * - screen layers crossfade with overlap
+ * - copy scrolls and fades 0→1→0 through viewport center
+ * - no section snap / no per-chapter sticky containers
  */
 export default function LandingProductDemo() {
   const section = LANDING_CONTENT['product-demo']
   const chapters = section.chapters ?? []
   const sectionRef = useRef(null)
-  const pinRef = useRef(null)
+  const trackRef = useRef(null)
+  const copyRefs = useRef([])
   const [progress, setProgress] = useState(0)
-  const reducedMotion = useReducedMotion()
+  const [scrollablePx, setScrollablePx] = useState(0)
+  const [textOpacities, setTextOpacities] = useState(() => chapters.map(() => 0))
 
-  const weights = useMemo(() => chapters.map(chapterWeight), [chapters])
-  const totalWeight = useMemo(
-    () => weights.reduce((sum, weight) => sum + weight, 0) || 1,
-    [weights],
+  const ranges = useMemo(() => buildChapterRanges(chapters, 0.18), [chapters])
+  const pinHeightVh = useMemo(
+    () => Math.round(chapters.reduce((sum, chapter) => sum + chapterScrollWeight(chapter), 0) * 100),
+    [chapters],
   )
 
-  const { active, subPhase, chapter } = useMemo(() => {
-    const clamped = Math.min(0.999, Math.max(0, progress))
-    let cursor = clamped * totalWeight
-    let index = 0
-
-    for (let i = 0; i < weights.length; i += 1) {
-      if (cursor <= weights[i] || i === weights.length - 1) {
-        index = i
-        const local = Math.min(1, Math.max(0, cursor / (weights[i] || 1)))
-        const beats = Math.max(1, chapters[i]?.beats?.length ?? 1)
-        const phase = reducedMotion
-          ? beats - 1
-          : Math.min(beats - 1, Math.floor(local * beats))
-        return { active: index, subPhase: phase, chapter: chapters[i] }
-      }
-      cursor -= weights[i]
-    }
-
-    return { active: 0, subPhase: 0, chapter: chapters[0] }
-  }, [chapters, progress, reducedMotion, totalWeight, weights])
+  const layers = useMemo(
+    () =>
+      ranges.map((range) => ({
+        id: range.id,
+        phase: chapterPhase(
+          progress,
+          range.start,
+          range.end,
+          range.chapter.beats?.length ?? 1,
+        ),
+        style: phoneLayerStyle(progress, range.start, range.end, scrollablePx),
+      })),
+    [progress, ranges, scrollablePx],
+  )
 
   useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingRouteView()), [])
 
   useEffect(() => {
-    const pin = pinRef.current
-    if (!pin) return undefined
+    const track = trackRef.current
+    if (!track) return undefined
 
+    let frame = 0
     const update = () => {
-      const rect = pin.getBoundingClientRect()
+      const rect = track.getBoundingClientRect()
       const scrollable = Math.max(1, rect.height - window.innerHeight)
-      const raw = (-rect.top) / scrollable
-      setProgress(Math.min(1, Math.max(0, raw)))
+      const nextProgress = Math.min(1, Math.max(0, -rect.top / scrollable))
+      setScrollablePx(scrollable)
+      setProgress(nextProgress)
+
+      const vh = window.innerHeight || 1
+      const nextText = copyRefs.current.map((node) =>
+        node ? textCenterOpacity(node.getBoundingClientRect(), vh) : 0,
+      )
+      setTextOpacities(nextText)
+    }
+
+    const onScroll = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(update)
     }
 
     update()
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
     return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
     }
-  }, [])
-
-  const pinHeightVh = Math.round(totalWeight * 100)
+  }, [chapters.length])
 
   return (
     <section
@@ -100,43 +100,61 @@ export default function LandingProductDemo() {
       </div>
 
       <div
-        ref={pinRef}
-        className="cw-v4-demo__pin"
+        ref={trackRef}
+        className="cw-v4-demo__track"
         style={{ '--v4-pin-h': `${pinHeightVh}vh` }}
       >
-        <div className="cw-v4-demo__sticky">
-          <div className="cw-v4-demo__layout">
-            <div className="cw-v4-demo__phone-col">
-              <div className={`cw-v4-demo__phone cw-v4-demo__phone--${chapter?.id ?? 'choose'}`}>
-                <LandingProductPhoneHost
-                  chapterId={chapter?.id ?? 'choose'}
-                  phase={subPhase}
-                />
-              </div>
-            </div>
-
-            <div className="cw-v4-demo__copy-col" aria-live="polite">
-              <div
-                key={`${chapter?.id ?? 'choose'}-${subPhase}`}
-                className="cw-v4-demo__copy-panel"
-              >
-                <p className="cw-v4-demo__chapter-index">
-                  {String(active + 1).padStart(2, '0')} / {String(chapters.length).padStart(2, '0')}
-                </p>
-                <h3 className="cw-v4-demo__chapter-title">{chapter?.title}</h3>
-                <p className="cw-v4-demo__chapter-body">{chapter?.body}</p>
-                {chapter?.beats?.length ? (
-                  <ul className="cw-v4-demo__beats">
-                    {chapter.beats.map((beat, beatIndex) => (
-                      <li key={beat} className={beatIndex <= subPhase ? 'is-on' : undefined}>
-                        {beat}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
+        {/* Single sticky phone host — mounts with the track, never remounts per chapter. */}
+        <div className="cw-v4-demo__phone-slot">
+          <div className="cw-v4-demo__phone-sticky">
+            <div className="cw-v4-demo__phone">
+              <LandingProductPhoneStage layers={layers} />
             </div>
           </div>
+        </div>
+
+        <div className="cw-v4-demo__copy-rail">
+          {chapters.map((chapter, index) => {
+            const opacity = textOpacities[index] ?? 0
+            const y = (1 - opacity) * 20
+            return (
+              <article
+                key={chapter.id}
+                ref={(el) => {
+                  copyRefs.current[index] = el
+                }}
+                className="cw-v4-demo__copy-beat"
+                data-chapter={chapter.id}
+                style={{
+                  '--beat-weight': chapterScrollWeight(chapter),
+                  opacity,
+                  transform: `translateY(${y}px)`,
+                  filter: opacity >= 0.98 ? 'none' : `blur(${(1 - opacity) * 6}px)`,
+                }}
+              >
+                <div className="cw-v4-demo__copy-inner">
+                  <p className="cw-v4-demo__chapter-index">
+                    {String(index + 1).padStart(2, '0')} /{' '}
+                    {String(chapters.length).padStart(2, '0')}
+                  </p>
+                  <h3 className="cw-v4-demo__chapter-title">{chapter.title}</h3>
+                  <p className="cw-v4-demo__chapter-body">{chapter.body}</p>
+                  {chapter.beats?.length ? (
+                    <ul className="cw-v4-demo__beats">
+                      {chapter.beats.map((beat, beatIndex) => (
+                        <li
+                          key={beat}
+                          className={beatIndex <= (layers[index]?.phase ?? 0) ? 'is-on' : undefined}
+                        >
+                          {beat}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
     </section>

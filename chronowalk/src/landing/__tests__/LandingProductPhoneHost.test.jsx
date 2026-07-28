@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import LandingProductPhoneHost from '../v4/LandingProductPhoneHost.jsx'
+import LandingProductPhoneStage from '../v4/LandingProductPhoneStage.jsx'
 
 vi.mock('../../hooks/useWalkingDirections.js', () => ({
   useWalkingDirections: () => ({
@@ -11,32 +11,96 @@ vi.mock('../../hooks/useWalkingDirections.js', () => ({
   }),
 }))
 
-describe('LandingProductPhoneHost', () => {
-  it('mounts real tour selection for the choose chapter', () => {
-    render(<LandingProductPhoneHost chapterId="choose" phase={0} />)
+function visibleLayer(id, phase = 0) {
+  return {
+    id,
+    phase,
+    style: {
+      opacity: 1,
+      transform: 'translateY(0px) scale(1)',
+      filter: 'none',
+      pointerEvents: 'auto',
+      visibility: 'visible',
+    },
+  }
+}
+
+function hiddenLayer(id) {
+  return {
+    id,
+    phase: 0,
+    style: {
+      opacity: 0,
+      transform: 'translateY(20px) scale(0.98)',
+      filter: 'blur(6px)',
+      pointerEvents: 'none',
+      visibility: 'hidden',
+    },
+  }
+}
+
+describe('LandingProductPhoneStage', () => {
+  it('keeps one phone frame while layering real product screens', () => {
+    render(
+      <LandingProductPhoneStage
+        layers={[
+          visibleLayer('choose', 0),
+          hiddenLayer('arrive'),
+          hiddenLayer('listen'),
+          hiddenLayer('walk'),
+        ]}
+      />,
+    )
     expect(screen.getByLabelText(/product demo/i)).toBeInTheDocument()
+    expect(document.querySelectorAll('.cw-landing-phone').length).toBe(1)
+    expect(document.querySelectorAll('.cw-v4-phone-layer').length).toBe(4)
     expect(screen.getAllByText(/roma eterna/i).length).toBeGreaterThan(0)
-    expect(screen.getByText(/choose your/i)).toBeInTheDocument()
-    expect(document.querySelector('.cw-v4-phone-artboard')).toBeTruthy()
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
   it('mounts the real Pantheon free-preview player', () => {
-    render(<LandingProductPhoneHost chapterId="arrive" phase={0} />)
-    expect(screen.getByText(/free preview · pantheon/i)).toBeInTheDocument()
-    expect(screen.getByTestId('waypoint-immersive')).toBeInTheDocument()
+    render(
+      <LandingProductPhoneStage
+        layers={[
+          hiddenLayer('choose'),
+          visibleLayer('arrive', 0),
+          hiddenLayer('listen'),
+          hiddenLayer('walk'),
+        ]}
+      />,
+    )
+    expect(screen.getAllByText(/free preview · pantheon/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByTestId('waypoint-immersive').length).toBeGreaterThan(0)
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
   it('mounts real walking companion for the navigation chapter', () => {
-    render(<LandingProductPhoneHost chapterId="walk" phase={0} />)
+    render(
+      <LandingProductPhoneStage
+        layers={[
+          hiddenLayer('choose'),
+          hiddenLayer('arrive'),
+          hiddenLayer('listen'),
+          visibleLayer('walk', 0),
+        ]}
+      />,
+    )
     expect(screen.getByTestId('walking-companion-screen')).toBeInTheDocument()
     expect(screen.getByTestId('landing-demo-walk-map')).toBeInTheDocument()
     expect(screen.getByText(/walking to/i)).toBeInTheDocument()
   })
 
   it('transitions walk chapter into the real resume screen', () => {
-    render(<LandingProductPhoneHost chapterId="walk" phase={2} />)
+    render(
+      <LandingProductPhoneStage
+        layers={[
+          hiddenLayer('choose'),
+          hiddenLayer('arrive'),
+          hiddenLayer('listen'),
+          visibleLayer('walk', 2),
+        ]}
+      />,
+    )
     expect(screen.getByText(/rome kept your place/i)).toBeInTheDocument()
   })
 })

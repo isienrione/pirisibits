@@ -24,7 +24,6 @@ import {
   trackLandingCheckoutOpen,
   trackLandingPricingCta,
   trackLandingPreviewCta,
-  trackLandingRoutesCta,
   trackLandingView,
 } from './landingAnalytics.js'
 import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
@@ -78,10 +77,6 @@ export default function ChronoWalkLanding() {
     },
     [navigate],
   )
-
-  const handleRoutes = useCallback((section) => {
-    trackLandingRoutesCta(section)
-  }, [])
 
   const handleBeginTier = useCallback((tierId) => {
     trackLandingPricingCta(tierId)
@@ -137,7 +132,6 @@ export default function ChronoWalkLanding() {
         >
           <LandingProductHero
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
-            onUnlock={() => handleRoutes(LANDING_ANALYTICS_SECTIONS.HERO)}
           />
           <LandingProductDemo />
         </LandingAct>

@@ -4,9 +4,9 @@ import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 
 /**
- * Rome-sky hero — no phone screenshots. Three actions only.
+ * Rome-sky hero — no phone screenshots. One free-preview CTA.
  */
-export default function LandingProductHero({ onPreview, onUnlock, onReviews }) {
+export default function LandingProductHero({ onPreview }) {
   const section = LANDING_CONTENT.hero
 
   return (
@@ -32,27 +32,13 @@ export default function LandingProductHero({ onPreview, onUnlock, onReviews }) {
         {section.accentLine ? <p className="cw-v4-hero__accent">{section.accentLine}</p> : null}
 
         <div className="cw-v4-hero__actions">
-          <a
-            href={section.primaryHref ?? '#pricing'}
-            className="cw-v4-btn cw-v4-btn--primary"
-            onClick={() => onUnlock?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-          >
-            {section.primaryCta}
-          </a>
           <button
             type="button"
-            className="cw-v4-btn cw-v4-btn--secondary"
+            className="cw-v4-btn cw-v4-btn--primary"
             onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
           >
-            {section.secondaryCta}
+            {section.primaryCta}
           </button>
-          <a
-            href={section.reviewsHref ?? '#trust'}
-            className="cw-v4-btn cw-v4-btn--ghost"
-            onClick={() => onReviews?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-          >
-            {section.reviewsCta}
-          </a>
         </div>
 
         {section.trustLine ? <p className="cw-v4-hero__trust">{section.trustLine}</p> : null}
