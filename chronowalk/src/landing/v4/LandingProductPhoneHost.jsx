@@ -11,7 +11,7 @@ import TourRoutePreviewScreen from '../../redesign/ui/TourRoutePreviewScreen.jsx
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import C8dResume from '../../redesign/screens/C8dResume.jsx'
-import LandingPhoneViewport from '../LandingPhoneViewport.jsx'
+import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
 
 const MANIFEST = loadRomeManifest()
@@ -20,21 +20,9 @@ const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 
 const DEMO_WALK_DIRECTIONS = {
   steps: [
-    {
-      instruction: 'Continue along Via del Seminario',
-      distanceM: 120,
-      durationSec: 90,
-    },
-    {
-      instruction: 'Cross Piazza della Rotonda',
-      distanceM: 90,
-      durationSec: 70,
-    },
-    {
-      instruction: 'The Pantheon portico is ahead',
-      distanceM: 70,
-      durationSec: 55,
-    },
+    { instruction: 'Continue along Via del Seminario', distanceM: 120, durationSec: 90 },
+    { instruction: 'Cross Piazza della Rotonda', distanceM: 90, durationSec: 70 },
+    { instruction: 'The Pantheon portico is ahead', distanceM: 70, durationSec: 55 },
   ],
   geometry: {
     type: 'LineString',
@@ -122,7 +110,6 @@ function WalkScreen({ phase }) {
   }
 
   const forcedRouteView = phase === 1 ? 'steps' : 'map'
-  const near = phase >= 3
   const arrived = phase >= 3
 
   return (
@@ -132,16 +119,16 @@ function WalkScreen({ phase }) {
       actNumeral="V"
       stopKey="w17"
       accent={T.actV}
-      distanceM={arrived ? 12 : near ? 55 : 280}
+      distanceM={arrived ? 12 : 280}
       locationStatus={LOCATION_STATUS.GRANTED}
-      near={near}
+      near={arrived}
       insideGeofence={arrived}
       forcedRouteView={arrived ? null : forcedRouteView}
       directionsOverride={DEMO_WALK_DIRECTIONS}
       map={<LandingDemoWalkMap />}
       onPause={noop}
       onBeginChapter={noop}
-      onContinue={phase >= 3 ? noop : undefined}
+      onContinue={arrived ? noop : undefined}
       continueLabel="Continue walking →"
     />
   )
@@ -149,7 +136,6 @@ function WalkScreen({ phase }) {
 
 /**
  * Sticky-phone host — mounts real product screens inside the iPhone frame.
- * Scroll phase changes component state; no screenshots.
  */
 export default function LandingProductPhoneHost({ chapterId = 'choose', phase = 0 }) {
   const screen = useMemo(() => {
@@ -162,7 +148,7 @@ export default function LandingProductPhoneHost({ chapterId = 'choose', phase = 
   }, [chapterId, phase])
 
   return (
-    <LandingPhoneViewport label="ChronoWalk product demo" size="xl">
+    <LandingProductPhoneFrame>
       <RedesignNavCtx.Provider value={NOOP_NAV}>
         <ThresholdChromeProvider>
           <div className="cw-v4-phone-app" data-chapter={chapterId} data-phase={phase}>
@@ -170,6 +156,6 @@ export default function LandingProductPhoneHost({ chapterId = 'choose', phase = 
           </div>
         </ThresholdChromeProvider>
       </RedesignNavCtx.Provider>
-    </LandingPhoneViewport>
+    </LandingProductPhoneFrame>
   )
 }

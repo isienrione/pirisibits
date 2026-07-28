@@ -413,15 +413,15 @@
   transform: translateY(-1px);
 }
 
-/* ——— Sticky product demo ——— */
+/* ——— Sticky product demo (pin scrub) ——— */
 
 .cw-v4-demo {
-  padding: 4.5rem 0 2rem;
+  padding: 3.5rem 0 1rem;
 }
 
 .cw-v4-demo__intro {
   width: min(100% - 2rem, 40rem);
-  margin: 0 auto 2.5rem;
+  margin: 0 auto 2rem;
   text-align: center;
 }
 
@@ -438,38 +438,46 @@
   color: var(--v4-muted);
 }
 
-.cw-v4-demo__stage {
-  /* Stage must wrap phone + chapters so sticky survives the full story. */
-  --v4-phone-w: min(72vw, 20rem, calc(70vh * 390 / 844));
+.cw-v4-demo__pin {
+  --v4-phone-w: min(58vw, 17.5rem, calc(52vh * 390 / 844));
+  height: var(--v4-pin-h, 475vh);
   position: relative;
-  width: min(100% - 1rem, var(--v4-max));
-  margin-inline: auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
 }
 
-.cw-v4-demo__phone-sticky {
+.cw-v4-demo__sticky {
   position: sticky;
-  top: calc(var(--v4-nav-h) + 0.35rem);
+  top: 0;
+  height: 100dvh;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.65rem;
-  z-index: 3;
-  padding: 0.35rem 0 0.75rem;
-  background: linear-gradient(
-    180deg,
-    var(--v4-obsidian) 0%,
-    var(--v4-obsidian) 78%,
-    rgba(11, 11, 13, 0) 100%
-  );
+  justify-content: center;
+  padding:
+    calc(var(--v4-nav-h) + 0.5rem)
+    1rem
+    max(1rem, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: var(--v4-obsidian);
+}
+
+.cw-v4-demo__layout {
+  width: min(100%, var(--v4-max));
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cw-v4-demo__phone-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
 }
 
 .cw-v4-demo__phone {
-  /* Inherit --v4-phone-w from stage — keeps artboard scale + chapter padding in sync. */
   width: var(--v4-phone-w);
-  transition: opacity 0.45s ease;
 }
 
 .cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone,
@@ -479,34 +487,26 @@
   --phone-display-w: 100%;
 }
 
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__shot {
-  pointer-events: none;
-}
-
-/* Force artboard scale from the visible screen width (nearest container). */
 .cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__screen {
   position: relative;
-  container-type: inline-size;
-  container-name: phone-screen;
-  width: 100%;
-  aspect-ratio: 390 / 844;
+  overflow: hidden;
 }
 
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__stage {
+.cw-v4-phone-screen {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: #0b0b0d;
 }
 
-.cw-landing--v4 .cw-v4-demo__phone .cw-landing-phone__artboard {
+.cw-v4-phone-artboard {
   position: absolute;
   top: 0;
   left: 0;
   width: 390px;
   height: 844px;
-  transform: scale(calc(100cqw / 390));
   transform-origin: top left;
   pointer-events: auto;
 }
@@ -535,89 +535,57 @@
   object-fit: cover;
 }
 
-.cw-v4-demo__phone-caption {
-  margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--v4-gold);
-}
-
-.cw-v4-demo__chapters {
-  display: grid;
-  gap: 0;
-  /* Sit under sticky phone on mobile so copy stays readable. */
-  position: relative;
-  z-index: 1;
-}
-
-.cw-v4-demo__chapter {
-  min-height: 110vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  /* Clear sticky phone so each chapter’s copy is visible below it. */
-  padding: calc(var(--v4-phone-w, 18rem) * 844 / 390 + 2.5rem) 1rem 30vh;
-  opacity: 0.4;
-  transform: translateY(0.4rem);
-  transition:
-    opacity 0.45s ease,
-    transform 0.45s ease;
-}
-
-.cw-v4-demo__chapter.is-active {
-  opacity: 1;
-  transform: none;
-}
-
-.cw-v4-demo__chapter--peak {
-  min-height: 170vh;
+.cw-v4-demo__copy-col {
+  max-width: 28rem;
+  margin-inline: auto;
+  text-align: center;
+  padding: 0 0.25rem 0.25rem;
 }
 
 .cw-v4-demo__chapter-index {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.55rem;
   color: var(--v4-gold);
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 }
 
 .cw-v4-demo__chapter-title {
   margin: 0;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  font-size: clamp(1.45rem, 4.2vw, 2.2rem);
   font-weight: 400;
   line-height: 1.12;
 }
 
 .cw-v4-demo__chapter-body {
-  margin: 1rem 0 0;
+  margin: 0.7rem 0 0;
   color: var(--v4-muted);
-  font-size: 1.05rem;
-  line-height: 1.6;
-  max-width: 28rem;
+  font-size: 0.98rem;
+  line-height: 1.55;
 }
 
 .cw-v4-demo__beats {
   list-style: none;
-  margin: 1.5rem 0 0;
+  margin: 1rem 0 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.45rem;
 }
 
 .cw-v4-demo__beats li {
   border: 1px solid var(--v4-line);
   border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(243, 238, 230, 0.45);
+  color: rgba(243, 238, 230, 0.42);
   transition:
-    color 0.35s ease,
-    border-color 0.35s ease,
-    background 0.35s ease;
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background 0.3s ease;
 }
 
 .cw-v4-demo__beats li.is-on {
@@ -627,38 +595,34 @@
 }
 
 @media (min-width: 64rem) {
-  .cw-v4-demo__stage {
-    --v4-phone-w: 22rem;
-    grid-template-columns: minmax(20rem, 24rem) minmax(0, 1fr);
-    align-items: start;
-    gap: 2.5rem 3rem;
+  .cw-v4-demo__pin {
+    --v4-phone-w: 21rem;
   }
 
-  .cw-v4-demo__phone-sticky {
-    grid-column: 1;
-    grid-row: 1;
-    align-self: start;
-    background: transparent;
-    padding-top: 0;
+  .cw-v4-demo__layout {
+    grid-template-columns: minmax(20rem, 22rem) minmax(0, 1fr);
+    grid-template-rows: 1fr;
+    align-items: center;
+    gap: 3.5rem;
   }
 
-  .cw-v4-demo__chapters {
-    grid-column: 2;
-    grid-row: 1;
+  .cw-v4-demo__copy-col {
+    margin-inline: 0;
+    text-align: left;
+    padding: 0;
   }
 
-  .cw-v4-demo__phone {
-    width: var(--v4-phone-w);
+  .cw-v4-demo__chapter-title {
+    font-size: clamp(2rem, 3vw, 2.7rem);
   }
 
-  .cw-v4-demo__chapter {
-    min-height: 100vh;
-    justify-content: center;
-    padding: 20vh 1rem 20vh 0.25rem;
+  .cw-v4-demo__chapter-body {
+    font-size: 1.08rem;
+    max-width: 30rem;
   }
 
-  .cw-v4-demo__chapter--peak {
-    min-height: 160vh;
+  .cw-v4-demo__beats {
+    justify-content: flex-start;
   }
 }
 
@@ -1128,7 +1092,7 @@
   .cw-v4-intro__word,
   .cw-v4-hero__clouds,
   .cw-v4-demo__phone,
-  .cw-v4-demo__chapter,
+  .cw-v4-demo__copy-col,
   .cw-v4-stops__image,
   .cw-landing-screen__pantheon-now,
   .cw-landing-screen__pantheon-then {

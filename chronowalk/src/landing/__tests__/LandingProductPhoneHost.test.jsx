@@ -17,6 +17,7 @@ describe('LandingProductPhoneHost', () => {
     expect(screen.getByLabelText(/product demo/i)).toBeInTheDocument()
     expect(screen.getAllByText(/roma eterna/i).length).toBeGreaterThan(0)
     expect(screen.getByText(/choose your/i)).toBeInTheDocument()
+    expect(document.querySelector('.cw-v4-phone-artboard')).toBeTruthy()
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
