@@ -775,7 +775,7 @@ export const LANDING_CONTENT = {
     eyebrow: 'CHOOSE YOUR WALK',
     headline: 'Choose your Roman walk.',
     subheadline:
-      'Three self-guided routes. Same offline GPS, audio, and progress saving. Pick the chapter that matches your day.',
+      'Three self-guided routes. Same offline audio, maps, and progress saving. Pick the chapter that matches your day.',
     intro: '',
     footnote:
       'Secure checkout by Paddle · Access arrives by email · Entrance tickets are not included · Taxes included where applicable',

@@ -111,8 +111,8 @@ describe('pricing card hierarchy content', () => {
       historica: 'var(--v2-silver)',
       antica: 'var(--olive, #6b7a52)',
       eterna: 'var(--ember, #e8a13c)',
-      couple: 'var(--act-arena, #e4552e)',
-      family: 'var(--verdigris, var(--act-market, #4e9b8f))',
+      couple: '#4f7d62',
+      family: '#6e68a8',
     })
     expect(new Set(Object.values(accents)).size).toBe(5)
   })

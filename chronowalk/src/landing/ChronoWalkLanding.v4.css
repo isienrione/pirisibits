@@ -1939,9 +1939,9 @@
   padding: 0;
   overflow: hidden;
   border-radius: 1.25rem;
-  background: #efe7d8;
-  border: 1px solid rgba(33, 28, 21, 0.1);
-  box-shadow: 0 22px 48px rgba(33, 28, 21, 0.12);
+  background: #fffdf8;
+  border: 1.5px solid rgba(33, 28, 21, 0.16);
+  box-shadow: 0 16px 36px rgba(33, 28, 21, 0.1);
 }
 
 .cw-v4-pkg--eterna {
@@ -2023,8 +2023,8 @@
   gap: 0.4rem;
   padding: 0.3rem;
   border-radius: 999px;
-  background: rgba(33, 28, 21, 0.04);
-  border: 1px solid var(--v4-line);
+  background: rgba(255, 253, 248, 0.92);
+  border: 1.5px solid rgba(33, 28, 21, 0.14);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -2090,19 +2090,19 @@
 .cw-v4-pkg-mobile-card {
   --pkg-accent: #b08d3e;
   --pkg-accent-deep: #8a6a28;
-  --pkg-paper: #f4efe6;
-  --pkg-ink: #1c1915;
-  --pkg-muted: rgba(28, 25, 21, 0.7);
+  --pkg-paper: #fffdf8;
+  --pkg-ink: #1a1611;
+  --pkg-muted: rgba(26, 22, 17, 0.68);
   display: grid;
   gap: 0.95rem;
-  padding: 1.15rem 1.1rem 1.2rem;
+  padding: 1.2rem 1.15rem 1.25rem;
   border-radius: 1.2rem;
   background:
-    radial-gradient(ellipse 80% 45% at 100% 0%, color-mix(in srgb, var(--pkg-accent) 18%, transparent), transparent 55%),
-    linear-gradient(165deg, var(--pkg-paper), #ebe3d4);
+    radial-gradient(ellipse 80% 45% at 100% 0%, color-mix(in srgb, var(--pkg-accent) 16%, transparent), transparent 55%),
+    linear-gradient(165deg, var(--pkg-paper), #f3ebe0);
   color: var(--pkg-ink);
-  border: 1px solid color-mix(in srgb, var(--pkg-accent) 34%, transparent);
-  box-shadow: 0 18px 40px rgba(33, 28, 21, 0.1);
+  border: 1.5px solid color-mix(in srgb, var(--pkg-accent) 52%, rgba(33, 28, 21, 0.22));
+  box-shadow: 0 14px 30px rgba(33, 28, 21, 0.09);
   scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
 }
 
@@ -2152,9 +2152,10 @@
   margin: 0;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: clamp(1.85rem, 7vw, 2.35rem);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.02em;
+  color: var(--pkg-ink);
 }
 
 .cw-v4-pkg-mobile-card__tagline {
@@ -2162,17 +2163,18 @@
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: 1.05rem;
   font-style: italic;
+  font-weight: 560;
   color: var(--pkg-accent-deep);
 }
 
 .cw-v4-pkg-mobile-card__facts {
   list-style: none;
   margin: 0;
-  padding: 0.75rem 0;
+  padding: 0.8rem 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.55rem;
-  border-block: 1px solid rgba(28, 25, 21, 0.1);
+  border-block: 1.5px solid rgba(28, 25, 21, 0.14);
 }
 
 .cw-v4-pkg-mobile-card__facts li {
@@ -2183,15 +2185,16 @@
 .cw-v4-pkg-mobile-card__fact-label {
   font-family: var(--font-ui, 'DM Sans', sans-serif);
   font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--pkg-muted);
+  color: rgba(26, 22, 17, 0.55);
 }
 
 .cw-v4-pkg-mobile-card__fact-value {
   font-family: var(--font-ui, 'DM Sans', sans-serif);
   font-size: 0.98rem;
-  font-weight: 700;
+  font-weight: 750;
   line-height: 1.25;
   color: var(--pkg-ink);
 }
@@ -2200,8 +2203,9 @@
   margin: 0;
   font-family: var(--font-ui, 'DM Sans', sans-serif);
   font-size: 1rem;
+  font-weight: 500;
   line-height: 1.55;
-  color: var(--pkg-muted);
+  color: rgba(26, 22, 17, 0.72);
 }
 
 .cw-v4-pkg-mobile-card__price-row {
@@ -2213,8 +2217,9 @@
   margin: 0;
   font-family: var(--font-display, 'Fraunces', Georgia, serif);
   font-size: 2.15rem;
-  font-weight: 600;
+  font-weight: 650;
   line-height: 1;
+  color: var(--pkg-ink);
 }
 
 .cw-v4-pkg-mobile-card__price-note {
@@ -2317,8 +2322,8 @@
 
 .cw-v4-pkg-compare {
   border-radius: 1rem;
-  border: 1px solid var(--v4-line);
-  background: rgba(33, 28, 21, 0.03);
+  border: 1.5px solid rgba(33, 28, 21, 0.14);
+  background: rgba(255, 253, 248, 0.9);
   color: var(--v4-ink);
 }
 
@@ -2364,8 +2369,8 @@
   align-items: center;
   padding: 0.75rem 0.8rem;
   border-radius: 0.85rem;
-  background: rgba(255, 253, 248, 0.9);
-  border: 1px solid rgba(33, 28, 21, 0.08);
+  background: #fffdf8;
+  border: 1.5px solid rgba(33, 28, 21, 0.12);
   border-left: 3px solid var(--v4-gold);
 }
 
@@ -2675,22 +2680,65 @@
 
 .cw-landing--v4 .cw-v2-pricing-card--bundle {
   background:
-    linear-gradient(180deg, rgba(228, 85, 46, 0.08), transparent 40%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tier-accent) 14%, transparent), transparent 48%),
     #fffdf8;
-  border: 1px solid rgba(33, 28, 21, 0.1);
+  border: 1.5px solid color-mix(in srgb, var(--tier-accent) 48%, rgba(33, 28, 21, 0.18));
+  box-shadow: 0 14px 30px rgba(33, 28, 21, 0.08);
 }
 
-.cw-landing--v4 .cw-v2-pricing-card__name,
-.cw-landing--v4 .cw-v2-pricing-card__price,
+.cw-landing--v4 .cw-v2-pricing-card--rome-couple {
+  --tier-cta-ink: #f7fff9;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card--rome-family {
+  --tier-cta-ink: #f7f6ff;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__name {
+  color: var(--tier-accent);
+  font-weight: 600;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__price {
+  color: var(--tier-accent);
+  font-weight: 650;
+}
+
 .cw-landing--v4 .cw-v2-pricing-card__item {
   color: var(--v4-ink);
+  font-weight: 560;
 }
 
 .cw-landing--v4 .cw-v2-pricing-card__best-for,
 .cw-landing--v4 .cw-v2-pricing-card__note,
 .cw-landing--v4 .cw-v2-pricing-card__outcome,
 .cw-landing--v4 .cw-v2-pricing-card__meta dd {
-  color: var(--v4-muted);
+  color: rgba(33, 28, 21, 0.7);
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__content-callout {
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--tier-accent) 12%, #fffdf8),
+      #fffdf8
+    );
+  border: 1.5px solid color-mix(in srgb, var(--tier-accent) 42%, rgba(33, 28, 21, 0.12));
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__content-title {
+  color: var(--tier-accent);
+  font-weight: 650;
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__content-stops,
+.cw-landing--v4 .cw-v2-pricing-card__content-loop {
+  color: var(--v4-ink);
+}
+
+.cw-landing--v4 .cw-v2-pricing-card__per-person {
+  color: color-mix(in srgb, var(--tier-accent) 82%, var(--v4-ink));
+  font-weight: 700;
 }
 
 /* ——— Trust checklist ——— */

@@ -15,13 +15,13 @@
   --v2-coral: var(--v2-terracotta);
   --v2-bronze: var(--bronze);
   --v2-olive: var(--olive);
-  /* Package accents — five distinct brand hues (stone / olive / ember / terracotta / verdigris) */
+  /* Package accents — match choose-your-walk hero slide (stone / olive / ember / sage / lavender) */
   --v2-silver: #c5c0b6;
   --v2-package-historica: var(--v2-silver);
   --v2-package-antica: var(--olive, #6b7a52);
   --v2-package-eterna: var(--ember, #e8a13c);
-  --v2-package-couple: var(--act-arena, #e4552e);
-  --v2-package-family: var(--verdigris, var(--act-market, #4e9b8f));
+  --v2-package-couple: #4f7d62;
+  --v2-package-family: #6e68a8;
   --v2-max: 72rem;
   --v2-narrow: 56rem;
   --v2-pricing: 64rem;
