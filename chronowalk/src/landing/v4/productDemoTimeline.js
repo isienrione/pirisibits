@@ -13,10 +13,11 @@ export function clamp01(t) {
  * Emotional arrive chapter gets a touch more room.
  */
 export function chapterHoldWeight(chapter) {
-  if (chapter?.emotional) return 1.15
+  // Arrive stays longer so the Threshold then/now cycle can finish on-screen.
+  if (chapter?.emotional) return 1.55
   // Walk map holds longer now that resume overlay is gone.
-  if (chapter?.id === 'walk') return 1.35
-  return 0.85
+  if (chapter?.id === 'walk') return 1.4
+  return 0.8
 }
 
 /** Crossfade window relative to holds (~350–550px on typical viewports). */
@@ -151,8 +152,8 @@ export function beatFromLocal(local, beatCount) {
 
 /** Track height in vh — short cinematic scrub, not a marathon. */
 export function timelineHeightVh(timeline) {
-  // Keep the scrub compact so the next section arrives sooner after the last hold.
-  return Math.max(250, Math.round(timeline.totalWeight * 62))
+  // Compact scrub: enough to read each scene, then hand off quickly to THE STOPS.
+  return Math.max(220, Math.round(timeline.totalWeight * 54))
 }
 
 // —— Back-compat helpers ——

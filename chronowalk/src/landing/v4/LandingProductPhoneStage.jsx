@@ -11,6 +11,7 @@ import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
+import LandingDemoWalkShell from './LandingDemoWalkShell.jsx'
 
 const MANIFEST = loadRomeManifest()
 const PANTHEON = getWaypoint(MANIFEST, 'w17')
@@ -110,29 +111,31 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk — map guidance holds for the full chapter (no resume overlay cut).
- * Beats only toggle Map / Steps chrome; the walking root never remounts.
+ * Walk — map-forward guidance scene (photo 5).
+ * Beats mostly stay on Map; one beat peeks at Steps. No resume cut.
  */
 const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
   return (
     <div className="cw-v4-walk-stack">
-      <C2Walking
-        title="The Pantheon"
-        photo={pantheonNow}
-        actNumeral="V"
-        stopKey="w17"
-        accent={T.actV}
-        distanceM={beat >= 2 ? 120 : 280}
-        locationStatus={LOCATION_STATUS.GRANTED}
-        near={false}
-        insideGeofence={false}
-        forcedRouteView={beat === 1 ? 'steps' : 'map'}
-        directionsOverride={DEMO_WALK_DIRECTIONS}
-        map={<LandingDemoWalkMap />}
-        onPause={noop}
-        onBeginChapter={noop}
-        continueLabel="Continue walking →"
-      />
+      <LandingDemoWalkShell>
+        <C2Walking
+          title="The Pantheon"
+          photo={pantheonNow}
+          actNumeral="V"
+          stopKey="w17"
+          accent={T.actV}
+          distanceM={beat >= 2 ? 160 : 280}
+          locationStatus={LOCATION_STATUS.GRANTED}
+          near={false}
+          insideGeofence={false}
+          forcedRouteView={beat === 1 ? 'steps' : 'map'}
+          directionsOverride={DEMO_WALK_DIRECTIONS}
+          map={<LandingDemoWalkMap />}
+          onPause={noop}
+          onBeginChapter={noop}
+          continueLabel="Continue walking →"
+        />
+      </LandingDemoWalkShell>
     </div>
   )
 })
