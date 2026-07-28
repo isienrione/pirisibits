@@ -78,6 +78,8 @@ export default function C6ImmersivePlayer({
   /** @deprecated Prefer forceDiegeticHint */
   forceRevealInvite = false,
   suppressAutoRevealInvite = false,
+  /** Landing demo: loop a full Threshold hold reveal. */
+  demoAutoReveal = false,
 }) {
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
@@ -95,7 +97,11 @@ export default function C6ImmersivePlayer({
 
   const forceHint = forceDiegeticHint || forceRevealInvite
   const alreadyCrossed = !forceHint && hasCrossedThreshold()
-  const autoPeek = hasReconstruction && !suppressAutoRevealInvite && (forceHint || !alreadyCrossed)
+  const autoPeek =
+    !demoAutoReveal &&
+    hasReconstruction &&
+    !suppressAutoRevealInvite &&
+    (forceHint || !alreadyCrossed)
 
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
@@ -450,6 +456,7 @@ export default function C6ImmersivePlayer({
         thenSoundscapeUrl={thenSoundscapeUrl}
         hideUi={chromeHidden}
         autoPeek={autoPeek}
+        demoAutoReveal={demoAutoReveal}
         onHoldStart={handleRevealHoldStart}
         onHoldEnd={handleRevealHoldEnd}
         onCrossed={onThresholdCross}

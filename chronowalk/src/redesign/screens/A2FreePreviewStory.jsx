@@ -16,6 +16,7 @@ export default function A2FreePreviewStory({
   duration = 0,
   storyEnded = false,
   continueLabel = 'See the full tour →',
+  initialTab = 'audio',
   onTogglePlay,
   onSkipBack,
   onSkipForward,
@@ -23,12 +24,15 @@ export default function A2FreePreviewStory({
   onThresholdCross,
   onStoryComplete,
   onBack,
+  demoAutoReveal = false,
+  suppressAutoRevealInvite = false,
 }) {
   const playerProps = buildImmersivePlayerProps({
     waypoint,
     waypointId,
     manifest,
     storyEnded,
+    initialTab,
     audio: {
       narrationPlaying,
       currentTime,
@@ -53,6 +57,8 @@ export default function A2FreePreviewStory({
         {...playerProps}
         actLabel={eyebrowLabel}
         forceDiegeticHint
+        demoAutoReveal={demoAutoReveal}
+        suppressAutoRevealInvite={suppressAutoRevealInvite}
       />
     </div>
   )

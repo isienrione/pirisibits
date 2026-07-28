@@ -5,6 +5,8 @@ import {
   JourneyPickScreen,
   ListeningScreen,
   PreviewScreen,
+  PantheonStoryScreen,
+  WalkStoryScreen,
   LandingStepMockup,
 } from '../LandingPhoneScreens.jsx'
 
@@ -28,11 +30,11 @@ describe('LandingPhoneScreens', () => {
   it('renders Pantheon listening and free-preview variants', () => {
     const { rerender } = render(<ListeningScreen />)
     expect(screen.getByLabelText(/pantheon chapter/i)).toBeInTheDocument()
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
 
     rerender(<PreviewScreen />)
-    expect(screen.getByText(/free preview · pantheon/i)).toBeInTheDocument()
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/free complete stop/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
   })
 
   it('resolves listening via LandingStepMockup for how-it-works step 3', () => {
@@ -46,6 +48,23 @@ describe('LandingPhoneScreens', () => {
 
   it('can still render live HTML screens when mode=live', () => {
     render(<LandingStepMockup variant="listening" mode="live" />)
-    expect(screen.getByText(/see the full tour/i)).toBeInTheDocument()
+    expect(screen.getByText(/see all 21 stops/i)).toBeInTheDocument()
+  })
+
+  it('renders Pantheon story reveal phases for the sticky phone', () => {
+    const { rerender, container } = render(<PantheonStoryScreen phase={0} />)
+    expect(screen.getByText(/press & hold to reveal/i)).toBeInTheDocument()
+    expect(container.querySelector('.cw-landing-screen__pantheon-then')).toBeTruthy()
+
+    rerender(<PantheonStoryScreen phase={2} />)
+    expect(screen.getByText(/revealed · ancient rome/i)).toBeInTheDocument()
+    expect(container.querySelector('.cw-landing-screen__pantheon-then.is-revealed')).toBeTruthy()
+  })
+
+  it('renders walk story overlays for map/steps/resume/continue', () => {
+    const { rerender } = render(<WalkStoryScreen phase={0} />)
+    expect(screen.getByText(/^map$/i)).toBeInTheDocument()
+    rerender(<WalkStoryScreen phase={2} />)
+    expect(screen.getByText(/paused · resume later/i)).toBeInTheDocument()
   })
 })

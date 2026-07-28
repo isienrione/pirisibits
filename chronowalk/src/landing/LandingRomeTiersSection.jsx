@@ -1,9 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { LANDING_CONTENT } from './landingData.js'
 import LandingTierRouteMap, { PinIcon } from './LandingTierRouteMap.jsx'
+import TourRouteIllustration from '../redesign/ui/TourRouteIllustration.jsx'
+import { loadRomeManifest } from '../content/manifest.js'
+import { JOURNEY_PACE } from '../data/romePacing.js'
 import { getLandingTierRouteStops } from './landingTierRoutes.js'
 import { getLandingTierStats } from './landingTierStats.js'
 import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
+
+const TIER_PACE = {
+  'rome-complete': JOURNEY_PACE.HEROIC,
+  'rome-central': JOURNEY_PACE.CENTRAL,
+  'rome-essential': JOURNEY_PACE.CLASSIC,
+}
 
 function CheckIcon() {
   return (
@@ -32,6 +41,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
   const sectionRef = useRef(null)
   const timeLabel = section.metaTimeLabel ?? 'Est. duration'
   const stopsLabel = section.metaStopsLabel ?? 'Key stops'
+  const romeManifest = useMemo(() => loadRomeManifest(), [])
 
   useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
 
@@ -92,7 +102,16 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
                 <p className="cw-v2-pricing-card__outcome">{tier.outcome}</p>
 
-                <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
+                {isFeatured && romeManifest ? (
+                  <div className="cw-v2-pricing-card__route-illustration" aria-hidden="true">
+                    <TourRouteIllustration
+                      manifest={romeManifest}
+                      context={{ path: 'a', pace: TIER_PACE[tier.id] ?? JOURNEY_PACE.HEROIC }}
+                    />
+                  </div>
+                ) : (
+                  <LandingTierRouteMap tierId={tier.id} featured={isFeatured} />
+                )}
 
                 <button
                   type="button"

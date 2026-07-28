@@ -202,8 +202,8 @@ export default function LandingThresholdSection() {
   const statusText = revealed
     ? 'Past view revealed'
     : reveal > 0.02
-      ? `Revealing the past — ${Math.round(reveal * 100)}%`
-      : 'Present view — press and hold to reveal the past'
+                      ? `Revealing the past · ${Math.round(reveal * 100)}%`
+                      : 'Present view. Press and hold to reveal the past'
 
   return (
     <section

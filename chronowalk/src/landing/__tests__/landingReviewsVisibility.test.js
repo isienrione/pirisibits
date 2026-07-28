@@ -1,0 +1,41 @@
+import { describe, expect, it, beforeEach, afterEach } from 'vitest'
+import {
+  LANDING_REVIEWS_KEY,
+  LANDING_DEV_KEY,
+  getLandingReviewsVisible,
+  setLandingReviewsVisible,
+  getLandingDevToolsVisible,
+  syncLandingReviewFlagsFromUrl,
+} from '../landingReviewsVisibility.js'
+
+describe('landingReviewsVisibility', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    window.history.replaceState({}, '', '/landing')
+  })
+
+  afterEach(() => {
+    window.localStorage.clear()
+    window.history.replaceState({}, '', '/')
+  })
+
+  it('hides reviews only when explicitly turned off', () => {
+    expect(getLandingReviewsVisible()).toBe(true)
+  })
+
+  it('persists the reviews toggle in localStorage', () => {
+    setLandingReviewsVisible(false)
+    expect(window.localStorage.getItem(LANDING_REVIEWS_KEY)).toBe('0')
+    expect(getLandingReviewsVisible()).toBe(false)
+    setLandingReviewsVisible(true)
+    expect(getLandingReviewsVisible()).toBe(true)
+  })
+
+  it('honors ?landing_reviews=1 and sticky-writes storage', () => {
+    window.history.replaceState({}, '', '/landing?landing_reviews=1&landing_dev=1')
+    syncLandingReviewFlagsFromUrl()
+    expect(getLandingReviewsVisible()).toBe(true)
+    expect(getLandingDevToolsVisible()).toBe(true)
+    expect(window.localStorage.getItem(LANDING_DEV_KEY)).toBe('1')
+  })
+})

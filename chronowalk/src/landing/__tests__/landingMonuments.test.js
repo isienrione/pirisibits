@@ -47,8 +47,9 @@ describe('getLandingRouteJourney', () => {
     ).toBe(totalStops)
   })
 
-  it('sells continuity in section copy, not a stop count catalog', () => {
-    expect(LANDING_CONTENT.monuments.headline).toContain('One continuous story')
-    expect(LANDING_CONTENT.monuments.subheadline).toMatch(/Arena to the Appian Way/i)
+  it('frames the stop carousel without a catalog pitch', () => {
+    expect(LANDING_CONTENT.monuments.headline).toContain('Rome, stop by stop')
+    expect(LANDING_CONTENT.monuments.subheadline).toMatch(/swipe/i)
+    expect(LANDING_CONTENT.monuments.routeName).toBe('Roma Eterna')
   })
 })

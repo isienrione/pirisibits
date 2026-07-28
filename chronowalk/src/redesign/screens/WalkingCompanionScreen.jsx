@@ -65,24 +65,32 @@ export default function WalkingCompanionScreen({
   beginChapterLabel = null,
   testId = 'walking-companion-screen',
   walkingUiRev,
+  /** Optional controlled Map/Steps tab — used by landing product demo storytelling. */
+  forcedRouteView = null,
+  /** Optional precomputed directions — skips Mapbox when provided. */
+  directionsOverride = null,
 }) {
   const [fullPlayerOpen, setFullPlayerOpen] = useState(false)
   const [userConfirmedArrival, setUserConfirmedArrival] = useState(false)
   const [dragProgress, setDragProgress] = useState(null)
   const [routeView, setRouteView] = useState('map')
   const approachCueRef = useRef(null)
+  const activeRouteView = forcedRouteView === 'map' || forcedRouteView === 'steps' ? forcedRouteView : routeView
 
   const showArrivedUI = arrived || userConfirmedArrival
   const storyCtaLabel = beginChapterLabel || `Open the ${title} story →`
 
-  const { directions, loading: directionsLoading, error: directionsError, retry: retryDirections } =
-    useWalkingDirections({
-      origin: userPosition,
-      destination,
-      legFallback,
-      destinationName: title,
-      enabled: !showArrivedUI && Boolean(destination),
-    })
+  const liveDirections = useWalkingDirections({
+    origin: userPosition,
+    destination,
+    legFallback,
+    destinationName: title,
+    enabled: !directionsOverride && !showArrivedUI && Boolean(destination),
+  })
+  const directions = directionsOverride ?? liveDirections.directions
+  const directionsLoading = directionsOverride ? false : liveDirections.loading
+  const directionsError = directionsOverride ? null : liveDirections.error
+  const retryDirections = liveDirections.retry
 
   const externalMapsUrl = useMemo(
     () => buildGoogleMapsDirectionsUrl(userPosition, destination),
@@ -303,8 +311,8 @@ export default function WalkingCompanionScreen({
             <button
               type="button"
               role="tab"
-              aria-selected={routeView === 'map'}
-              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              aria-selected={activeRouteView === 'map'}
+              className={`cw-walking-companion__view-btn cw-wc-pressable${activeRouteView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('map')}
             >
               Map
@@ -312,8 +320,8 @@ export default function WalkingCompanionScreen({
             <button
               type="button"
               role="tab"
-              aria-selected={routeView === 'steps'}
-              className={`cw-walking-companion__view-btn cw-wc-pressable${routeView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
+              aria-selected={activeRouteView === 'steps'}
+              className={`cw-walking-companion__view-btn cw-wc-pressable${activeRouteView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('steps')}
             >
               Steps
@@ -332,7 +340,7 @@ export default function WalkingCompanionScreen({
               </div>
             </div>
           </div>
-        ) : routeView === 'steps' ? (
+        ) : activeRouteView === 'steps' ? (
           <div className="cw-walking-companion__steps-pane">
             <WalkingCompanionStepsPanel
               steps={directions?.steps ?? []}

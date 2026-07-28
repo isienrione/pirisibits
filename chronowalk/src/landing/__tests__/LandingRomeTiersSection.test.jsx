@@ -16,9 +16,9 @@ describe('LandingRomeTiersSection bundles', () => {
     expect(screen.getByRole('heading', { name: 'Roma Historica' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Roma Antica' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Roma Eterna' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Couple Bundle' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Family Bundle' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /Rome is better shared/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Couple' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Family' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Share the walk, not the earbuds/i })).toBeInTheDocument()
   })
 
   it('keeps Historica / Antica / Eterna stop counts at 8 / 12 / 21', () => {
@@ -30,29 +30,27 @@ describe('LandingRomeTiersSection bundles', () => {
   it('shows Couple price, seats, Roma Eterna content, per-person value, and savings', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 
-    const couple = screen.getByRole('article', { name: /Couple Bundle/i })
+    const couple = screen.getByRole('article', { name: /^Couple$/i })
     expect(couple).toHaveTextContent('€25')
-    expect(couple).toHaveTextContent(/Two people\/devices/i)
-    expect(couple).toHaveTextContent('Complete Roma Eterna')
+    expect(couple).toHaveTextContent(/2 people and devices/i)
+    expect(couple).toHaveTextContent('Full Roma Eterna for each person')
     expect(couple).toHaveTextContent('All 21 stops')
-    expect(couple).toHaveTextContent('Full city loop')
+    expect(couple).toHaveTextContent('Shared tour progress')
     expect(couple).toHaveTextContent('€12.50 per person')
     expect(couple).toHaveTextContent('Save €4.98')
-    expect(couple).toHaveTextContent(/shared tour syncing/i)
   })
 
   it('shows Family price, seats, Roma Eterna content, per-person value, and savings', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 
-    const family = screen.getByRole('article', { name: /Family Bundle/i })
+    const family = screen.getByRole('article', { name: /^Family$/i })
     expect(family).toHaveTextContent('€35')
-    expect(family).toHaveTextContent(/Up to four people\/devices/i)
-    expect(family).toHaveTextContent('Complete Roma Eterna')
+    expect(family).toHaveTextContent(/Up to 4 people and devices/i)
+    expect(family).toHaveTextContent('Full Roma Eterna for each person')
     expect(family).toHaveTextContent('All 21 stops')
-    expect(family).toHaveTextContent('Full city loop')
+    expect(family).toHaveTextContent('Shared tour progress')
     expect(family).toHaveTextContent(/€8\.75 per person/i)
     expect(family).toHaveTextContent(/Save up to €24\.96/i)
-    expect(family).toHaveTextContent(/shared tour syncing/i)
   })
 
   it('does not render group-bundle language anywhere in pricing or FAQ copy', () => {
@@ -68,8 +66,8 @@ describe('LandingRomeTiersSection bundles', () => {
     const onBeginTier = vi.fn()
     render(<LandingRomeTiersSection onBeginTier={onBeginTier} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Choose Couple Bundle' }))
-    fireEvent.click(screen.getByRole('button', { name: 'Choose Family Bundle' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Couple' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Family' }))
 
     expect(onBeginTier).toHaveBeenNthCalledWith(1, 'rome-couple')
     expect(onBeginTier).toHaveBeenNthCalledWith(2, 'rome-family')
@@ -79,8 +77,8 @@ describe('LandingRomeTiersSection bundles', () => {
   it('exposes accessible names and focusable CTAs for both bundles', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 
-    const coupleCta = screen.getByRole('button', { name: 'Choose Couple Bundle' })
-    const familyCta = screen.getByRole('button', { name: 'Choose Family Bundle' })
+    const coupleCta = screen.getByRole('button', { name: 'Choose Couple' })
+    const familyCta = screen.getByRole('button', { name: 'Choose Family' })
     expect(coupleCta).toBeEnabled()
     expect(familyCta).toBeEnabled()
     coupleCta.focus()
