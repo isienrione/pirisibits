@@ -38,6 +38,7 @@ export default function A2FreePreviewStory({
       currentTime,
       duration,
       audioAvailable,
+      chapterCount: 4,
     },
     handlers: {
       onTogglePlay,

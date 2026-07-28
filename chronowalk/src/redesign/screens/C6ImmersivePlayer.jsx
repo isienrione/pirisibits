@@ -417,8 +417,8 @@ export default function C6ImmersivePlayer({
       Chapter {chapterIndex + 1} of {chapterCount}
       {chapterTitle ? (
         <>
-          {' '}
-          · <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
+          {': '}
+          <span style={{ color: T.warmWhite }}>{chapterTitle}</span>
         </>
       ) : null}
     </p>
