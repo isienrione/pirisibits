@@ -74,6 +74,27 @@ describe('LandingRomeTiersSection bundles', () => {
     expect(onBeginTier.mock.calls.every((call) => call.length === 1)).toBe(true)
   })
 
+  it('wires package card hotspots to the matching product ids', () => {
+    const onBeginTier = vi.fn()
+    render(<LandingRomeTiersSection onBeginTier={onBeginTier} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Roma Eterna' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Roma Antica' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose Roma Historica' }))
+
+    expect(onBeginTier).toHaveBeenNthCalledWith(1, 'rome-complete')
+    expect(onBeginTier).toHaveBeenNthCalledWith(2, 'rome-essential')
+    expect(onBeginTier).toHaveBeenNthCalledWith(3, 'rome-central')
+  })
+
+  it('renders the uploaded package card artwork for each Rome walk', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    expect(document.querySelector('img[src="/landing/hero-slides/package-roma-eterna.png"]')).toBeTruthy()
+    expect(document.querySelector('img[src="/landing/hero-slides/package-roma-antica.png"]')).toBeTruthy()
+    expect(document.querySelector('img[src="/landing/hero-slides/package-roma-historica.png"]')).toBeTruthy()
+  })
+
   it('exposes accessible names and focusable CTAs for both bundles', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 

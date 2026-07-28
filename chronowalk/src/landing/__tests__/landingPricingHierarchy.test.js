@@ -52,6 +52,13 @@ describe('pricing card hierarchy content', () => {
     expect(eterna.tag).not.toMatch(/%|popular|bestseller|most loved/i)
     expect(eterna.bullets[0]).toMatch(/All 21 stops/)
     expect(eterna.primaryCta).toBe('Choose Roma Eterna')
+    expect(eterna.cardImage).toBe('/landing/hero-slides/package-roma-eterna.png')
+    expect(ROME_TIERS.find((t) => t.id === 'rome-essential').cardImage).toBe(
+      '/landing/hero-slides/package-roma-antica.png',
+    )
+    expect(ROME_TIERS.find((t) => t.id === 'rome-central').cardImage).toBe(
+      '/landing/hero-slides/package-roma-historica.png',
+    )
   })
 
   it('names each purchase CTA after its package', () => {

@@ -60,6 +60,9 @@ export const ROME_TIERS = [
     stopsLabel: '21 stops',
     distanceLabel: '~6 km',
     mapImage: '/landing/rome-pricing-basemap-complete.jpg',
+    cardImage: '/landing/hero-slides/package-roma-eterna.png',
+    cardWidth: 1024,
+    cardHeight: 1536,
     legend: [
       { tone: 'full', label: 'Full route (21 stops)', detail: '~6 km · 4.5 – 5.5 hr' },
       {
@@ -102,6 +105,9 @@ export const ROME_TIERS = [
     stopsLabel: '12 stops',
     distanceLabel: '~3 km',
     mapImage: '/landing/rome-pricing-basemap-ancient.jpg',
+    cardImage: '/landing/hero-slides/package-roma-antica.png',
+    cardWidth: 1024,
+    cardHeight: 1536,
     legend: [
       {
         tone: 'short',
@@ -153,6 +159,9 @@ export const ROME_TIERS = [
     stopsLabel: '8 stops',
     distanceLabel: '~4 km',
     mapImage: '/landing/rome-pricing-basemap-central.jpg',
+    cardImage: '/landing/hero-slides/package-roma-historica.png',
+    cardWidth: 941,
+    cardHeight: 1672,
     legend: [
       { tone: 'full', label: 'Historic center route', detail: '8 stops · ~2.5 – 3 hr · ~4 km' },
     ],
