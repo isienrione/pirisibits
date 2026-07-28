@@ -26,15 +26,20 @@ function createMockContext() {
     currentTime: 0,
     destination: {},
     createGain: vi.fn(gainNode),
-    createBufferSource: vi.fn(() => ({
-      buffer: null,
-      loop: false,
-      connect: vi.fn(),
-      start: vi.fn(),
-      stop: vi.fn(),
-      onended: null,
-      playbackRate: { value: 1 },
-    })),
+    createBufferSource: vi.fn(() => {
+      const source = {
+        buffer: null,
+        loop: false,
+        connect: vi.fn(),
+        start: vi.fn(() => {
+          queueMicrotask(() => source.onended?.())
+        }),
+        stop: vi.fn(),
+        onended: null,
+        playbackRate: { value: 1 },
+      }
+      return source
+    }),
     resume: vi.fn(async () => {}),
     close: vi.fn(async () => {}),
   };
@@ -156,16 +161,18 @@ describe('AudioEngine', () => {
     expect(engine.longwalkTimer).toBeNull();
   });
 
-  it('playArrivalChime and playCompletionChime resolve UI system cues', async () => {
+  it('playArrivalChime plays notification chime then waypoint-unlocked cue', async () => {
     const manifest = manifestFromEngine(engine);
-    const arrivalSpy = vi.spyOn(engine, 'playUiCue');
+    const arrivalSpy = vi.spyOn(engine, 'playUiCue').mockResolvedValue();
 
     await engine.playArrivalChime();
     await engine.playCompletionChime();
 
-    expect(arrivalSpy).toHaveBeenCalledWith('arrival');
+    expect(arrivalSpy).toHaveBeenNthCalledWith(1, 'arrival');
+    expect(arrivalSpy).toHaveBeenNthCalledWith(2, 'arrival_unlocked');
     expect(arrivalSpy).toHaveBeenCalledWith('completion');
-    expect(manifest.system.ui.arrival).toBeTruthy();
+    expect(manifest.system.ui.arrival).toBe('ui_arrival_chime.mp3');
+    expect(manifest.system.ui.arrival_unlocked).toBe('ui_waypoint_unlocked.mp3');
     expect(manifest.system.ui.completion).toBeTruthy();
   });
 

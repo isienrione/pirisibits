@@ -16,11 +16,20 @@ export function collectManifestMediaPaths(manifest) {
     add(waypoint.photo)
 
     const reconstruction = waypoint.reconstruction
-    if (!reconstruction) continue
+    if (reconstruction) {
+      add(reconstruction.now)
+      add(reconstruction.then)
+      add(reconstruction.loop)
+    }
 
-    add(reconstruction.now)
-    add(reconstruction.then)
-    add(reconstruction.loop)
+    for (const chapter of waypoint.chapters ?? []) {
+      if (!chapter || typeof chapter === 'string') continue
+      add(chapter.photo)
+      if (!chapter.reconstruction) continue
+      add(chapter.reconstruction.now)
+      add(chapter.reconstruction.then)
+      add(chapter.reconstruction.loop)
+    }
   }
 
   return [...paths].sort()
