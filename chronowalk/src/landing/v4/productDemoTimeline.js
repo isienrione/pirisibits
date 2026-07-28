@@ -14,7 +14,8 @@ export function clamp01(t) {
  */
 export function chapterHoldWeight(chapter) {
   if (chapter?.emotional) return 1.15
-  if (chapter?.id === 'walk') return 1.0
+  // Walk map holds longer now that resume overlay is gone.
+  if (chapter?.id === 'walk') return 1.35
   return 0.85
 }
 
@@ -150,8 +151,8 @@ export function beatFromLocal(local, beatCount) {
 
 /** Track height in vh — short cinematic scrub, not a marathon. */
 export function timelineHeightVh(timeline) {
-  // ~1 viewport of lead-in feel per weight unit; floor so 4 chapters stay usable.
-  return Math.max(280, Math.round(timeline.totalWeight * 70))
+  // Keep the scrub compact so the next section arrives sooner after the last hold.
+  return Math.max(250, Math.round(timeline.totalWeight * 62))
 }
 
 // —— Back-compat helpers ——

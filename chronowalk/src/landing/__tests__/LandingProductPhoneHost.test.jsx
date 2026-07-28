@@ -52,7 +52,7 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
-  it('mounts real walking companion with resume as an overlay (no remount cut)', () => {
+  it('mounts real walking companion map guidance without a resume overlay', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -65,11 +65,11 @@ describe('LandingProductPhoneStage', () => {
     expect(screen.getByTestId('walking-companion-screen')).toBeInTheDocument()
     expect(screen.getByTestId('landing-demo-walk-map')).toBeInTheDocument()
     expect(screen.getByText(/walking to/i)).toBeInTheDocument()
-    expect(document.querySelector('.cw-v4-walk-resume')).toBeTruthy()
-    expect(screen.getByText(/rome kept your place/i)).toBeInTheDocument()
+    expect(document.querySelector('.cw-v4-walk-resume')).toBeNull()
+    expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
   })
 
-  it('keeps walking root mounted when resume beat is active', () => {
+  it('keeps walking map root mounted across later walk beats', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -80,6 +80,7 @@ describe('LandingProductPhoneStage', () => {
       />,
     )
     expect(screen.getByTestId('walking-companion-screen')).toBeInTheDocument()
-    expect(screen.getByText(/rome kept your place/i)).toBeInTheDocument()
+    expect(screen.getByTestId('landing-demo-walk-map')).toBeInTheDocument()
+    expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
   })
 })

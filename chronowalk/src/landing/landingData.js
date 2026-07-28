@@ -301,7 +301,7 @@ export const LANDING_CONTENT = {
         title: 'Wander freely, without getting lost.',
         body: 'Clear directions, distance, and the nearest stop. Pause. Resume later. Flexible route. GPS guidance that stays calm.',
         component: 'C2Walking',
-        beats: ['Map', 'Steps', 'Resume', 'Continue'],
+        beats: ['Map', 'Steps', 'Pause', 'Continue'],
       },
     ],
   },

@@ -9,7 +9,6 @@ import { T } from '../../redesign/tokens.js'
 import B4PaceSelector from '../../redesign/screens/B4PaceSelector.jsx'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import C2Walking from '../../redesign/screens/C2Walking.jsx'
-import C8dResume from '../../redesign/screens/C8dResume.jsx'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
 
@@ -111,40 +110,29 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk — one walking root forever.
- * Resume is an opacity overlay driven by --resume-blend (scroll), never a remount cut.
+ * Walk — map guidance holds for the full chapter (no resume overlay cut).
+ * Beats only toggle Map / Steps chrome; the walking root never remounts.
  */
 const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
-  const near = beat >= 3
   return (
     <div className="cw-v4-walk-stack">
-      <div className="cw-v4-walk-live">
-        <C2Walking
-          title="The Pantheon"
-          photo={pantheonNow}
-          actNumeral="V"
-          stopKey="w17"
-          accent={T.actV}
-          distanceM={near ? 12 : 280}
-          locationStatus={LOCATION_STATUS.GRANTED}
-          near={near}
-          insideGeofence={near}
-          forcedRouteView={near ? null : 'map'}
-          directionsOverride={DEMO_WALK_DIRECTIONS}
-          map={<LandingDemoWalkMap />}
-          onPause={noop}
-          onBeginChapter={noop}
-          onContinue={near ? noop : undefined}
-          continueLabel="Continue walking →"
-        />
-      </div>
-      <div className="cw-v4-walk-resume" aria-hidden>
-        <C8dResume
-          resumeLabel="Pick up at The Pantheon"
-          onContinue={noop}
-          onStartFresh={noop}
-        />
-      </div>
+      <C2Walking
+        title="The Pantheon"
+        photo={pantheonNow}
+        actNumeral="V"
+        stopKey="w17"
+        accent={T.actV}
+        distanceM={beat >= 2 ? 120 : 280}
+        locationStatus={LOCATION_STATUS.GRANTED}
+        near={false}
+        insideGeofence={false}
+        forcedRouteView={beat === 1 ? 'steps' : 'map'}
+        directionsOverride={DEMO_WALK_DIRECTIONS}
+        map={<LandingDemoWalkMap />}
+        onPause={noop}
+        onBeginChapter={noop}
+        continueLabel="Continue walking →"
+      />
     </div>
   )
 })

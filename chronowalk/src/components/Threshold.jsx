@@ -416,30 +416,31 @@ export default function Threshold({
 
     const runCycle = () => {
       if (cancelled || holdSessionRef.current || latchedRef.current) {
-        if (!cancelled) schedule(runCycle, 2400)
+        if (!cancelled) schedule(runCycle, 2800)
         return
       }
 
       setHolding(true)
       setVideoPlaying(true)
       onHoldStart?.()
-      audioRef.current?.rampToThen(1100)
-      animateReveal(0, 0.94, 1100, () => {
+      // Slightly slower rise so modern → ancient reads as a clear transition.
+      audioRef.current?.rampToThen(1800)
+      animateReveal(0, 0.94, 1800, () => {
         if (cancelled || holdSessionRef.current || latchedRef.current) return
         schedule(() => {
           if (cancelled || holdSessionRef.current || latchedRef.current) return
           setHolding(false)
           onHoldEnd?.({ reveal: 0, latched: false, via: 'demo' })
-          audioRef.current?.rampToNow(950)
-          animateReveal(revealRef.current, 0, 950, () => {
+          audioRef.current?.rampToNow(1500)
+          animateReveal(revealRef.current, 0, 1500, () => {
             if (!holdSessionRef.current && !latchedRef.current) setVideoPlaying(false)
-            if (!cancelled) schedule(runCycle, 2000)
+            if (!cancelled) schedule(runCycle, 2200)
           })
-        }, 1700)
+        }, 2200)
       })
     }
 
-    schedule(runCycle, 700)
+    schedule(runCycle, 800)
 
     return () => {
       cancelled = true

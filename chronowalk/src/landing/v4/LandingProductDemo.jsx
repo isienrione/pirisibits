@@ -65,11 +65,6 @@ export default function LandingProductDemo() {
         if (layer) {
           layer.dataset.active = i === nextActive ? 'true' : 'false'
           layer.setAttribute('aria-hidden', opacity < 0.2 ? 'true' : 'false')
-          if (chapters[i].id === 'walk') {
-            const local = locals[i] ?? 0
-            const resume = local < 0.55 ? 0 : local > 0.78 ? 1 : (local - 0.55) / 0.23
-            layer.style.setProperty('--resume-blend', String(resume))
-          }
         }
 
         const copy = copyRefs.current[i]
