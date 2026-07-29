@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#16130F" />
+    <title>ChronoWalk — Refreshing app shell</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #16130f;
+        color: #f5efe3;
+        font: 500 1rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      main {
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+        text-align: center;
+      }
+      p {
+        margin: 0;
+        max-width: 22rem;
+      }
+      .sub {
+        margin-top: 0.75rem;
+        opacity: 0.7;
+        font-size: 0.9rem;
+        font-weight: 400;
+      }
+    </style>
+    <script>
+      ;(function () {
+        // Static escape hatch for poisoned PWA shells. Not part of the SPA.
+        // Clears Cache Storage + service workers only — access keys and tour
+        // progress in localStorage / IndexedDB are preserved.
+        try {
+          localStorage.setItem('cw-skip-sw-once', '1')
+          localStorage.removeItem('cw-needs-shell-reset')
+          sessionStorage.removeItem('cw-chunk-reload')
+          sessionStorage.removeItem('cw-boot-pending')
+          sessionStorage.removeItem('cw-boot-reload')
+        } catch (e) {}
+
+        function go() {
+          window.location.replace('/landing?cw_bust=' + Date.now())
+        }
+
+        var jobs = []
+        if ('caches' in window) {
+          jobs.push(
+            caches.keys().then(function (names) {
+              return Promise.all(
+                names.map(function (name) {
+                  return caches.delete(name)
+                }),
+              )
+            }),
+          )
+        }
+        if ('serviceWorker' in navigator) {
+          jobs.push(
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              return Promise.all(
+                regs.map(function (reg) {
+                  return reg.unregister()
+                }),
+              )
+            }),
+          )
+        }
+
+        Promise.all(jobs)
+          .catch(function () {})
+          .then(function () {
+            return new Promise(function (resolve) {
+              window.setTimeout(resolve, 450)
+            })
+          })
+          .then(go)
+      })()
+    </script>
+  </head>
+  <body>
+    <main>
+      <div>
+        <p>Refreshing ChronoWalk…</p>
+        <p class="sub">Your access and progress stay on this device.</p>
+      </div>
+    </main>
+  </body>
+</html>

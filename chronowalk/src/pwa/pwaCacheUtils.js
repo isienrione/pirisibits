@@ -19,6 +19,30 @@ export async function unregisterAllServiceWorkers() {
   await Promise.all(registrations.map((registration) => registration.unregister()))
 }
 
+/**
+ * Wait until this tab is no longer controlled by a service worker.
+ * iOS Safari often keeps the old controller briefly after unregister();
+ * navigating while still controlled re-serves the poisoned shell.
+ *
+ * @param {number} [timeoutMs]
+ * @returns {Promise<boolean>} true when controller is gone
+ */
+export async function waitForServiceWorkerControllerGone(timeoutMs = 2500) {
+  if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
+    return true
+  }
+
+  const started = Date.now()
+  while (Date.now() - started < timeoutMs) {
+    const controller = navigator.serviceWorker.controller
+    const regs = await navigator.serviceWorker.getRegistrations()
+    if (!controller && regs.length === 0) return true
+    await new Promise((resolve) => window.setTimeout(resolve, 100))
+  }
+
+  return !navigator.serviceWorker.controller
+}
+
 export function isChromeBrowser() {
   if (typeof navigator === 'undefined') return false
   return /Chrome/i.test(navigator.userAgent) && !/Edg|OPR/i.test(navigator.userAgent)

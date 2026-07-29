@@ -108,7 +108,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   const visitedStopCount = useMemo(() => {
     if (!manifest) return 0
-    return context.completedWaypointIds.filter((id) => isVisitStop(getWaypoint(manifest, id))).length
+    const completed = Array.isArray(context.completedWaypointIds)
+      ? context.completedWaypointIds
+      : []
+    return completed.filter((id) => isVisitStop(getWaypoint(manifest, id))).length
   }, [context.completedWaypointIds, manifest])
   const audio = useAudioEngine(manifest)
   const beginWaypointStoryRef = useRef(null)

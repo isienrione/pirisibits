@@ -61,6 +61,11 @@ describe('V2ErrorBoundary', () => {
       </V2ErrorBoundary>,
     )
 
+    expect(screen.getByRole('link', { name: /refresh the app shell/i })).toHaveAttribute(
+      'href',
+      '/reset-shell.html',
+    )
+
     fireEvent.click(screen.getByRole('button', { name: /try again/i }))
     await waitFor(() =>
       expect(recoverStaleClient).toHaveBeenCalledWith({ force: true, reason: 'manual-retry' }),

@@ -84,32 +84,89 @@
     </style>
     <script>
       ;(function () {
-        var key = 'cw-boot-reload'
+        var RESET_KEY = 'cw-needs-shell-reset'
+        var BOOT_RELOAD_KEY = 'cw-boot-reload'
+        var SKIP_SW_KEY = 'cw-skip-sw-once'
+
+        function markSkipSw() {
+          try {
+            localStorage.setItem(SKIP_SW_KEY, '1')
+          } catch (e) {}
+        }
+
+        function clearCachesAndWorkers() {
+          var jobs = []
+          if ('caches' in window) {
+            jobs.push(
+              caches.keys().then(function (names) {
+                return Promise.all(
+                  names.map(function (name) {
+                    return caches.delete(name)
+                  }),
+                )
+              }),
+            )
+          }
+          if ('serviceWorker' in navigator) {
+            jobs.push(
+              navigator.serviceWorker.getRegistrations().then(function (regs) {
+                return Promise.all(
+                  regs.map(function (reg) {
+                    return reg.unregister()
+                  }),
+                )
+              }),
+            )
+          }
+          return Promise.all(jobs)
+        }
+
+        function goLanding() {
+          window.location.replace('/landing?cw_bust=' + Date.now())
+        }
+
+        // Nuclear path: previous Try again / recovery set this flag. Stop parsing
+        // the rest of the document (poisoned module scripts) and wipe the shell
+        // before loading any hashed assets. Credentials in localStorage stay.
+        try {
+          if (localStorage.getItem(RESET_KEY) === '1') {
+            localStorage.removeItem(RESET_KEY)
+            markSkipSw()
+            document.write(
+              '<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>' +
+                '<title>Updating ChronoWalk…</title>' +
+                '<style>html,body{margin:0;min-height:100%;background:#16130f;color:#f5efe3;font:500 1rem/1.5 system-ui,-apple-system,sans-serif;display:grid;place-items:center}</style>' +
+                '</head><body><p>Updating ChronoWalk…</p></body></html>',
+            )
+            document.close()
+            clearCachesAndWorkers()
+              .catch(function () {})
+              .then(function () {
+                return new Promise(function (resolve) {
+                  window.setTimeout(resolve, 400)
+                })
+              })
+              .then(goLanding)
+            return
+          }
+        } catch (e) {}
+
         window.addEventListener(
           'error',
           function (event) {
             var target = event.target
-            if (!target || target.tagName !== 'SCRIPT' || !target.src || sessionStorage.getItem(key)) return
-            sessionStorage.setItem(key, '1')
-            var reload = function () {
-              window.location.reload()
+            if (!target || target.tagName !== 'SCRIPT' || !target.src) return
+            try {
+              if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
+              sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
+            } catch (err) {
+              return
             }
-            var jobs = []
-            if ('caches' in window) {
-              jobs.push(
-                caches.keys().then(function (names) {
-                  return Promise.all(names.map(function (name) { return caches.delete(name) }))
-                }),
-              )
-            }
-            if ('serviceWorker' in navigator) {
-              jobs.push(
-                navigator.serviceWorker.getRegistrations().then(function (regs) {
-                  return Promise.all(regs.map(function (reg) { return reg.unregister() }))
-                }),
-              )
-            }
-            Promise.all(jobs).then(reload).catch(reload)
+            markSkipSw()
+            try {
+              localStorage.setItem(RESET_KEY, '1')
+            } catch (err2) {}
+            clearCachesAndWorkers().then(goLanding).catch(goLanding)
           },
           true,
         )

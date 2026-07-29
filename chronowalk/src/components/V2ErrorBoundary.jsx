@@ -131,6 +131,26 @@ export default class V2ErrorBoundary extends Component {
           >
             {this.state.recovering ? 'Refreshing…' : 'Try again'}
           </button>
+          {!this.state.autoRecovering ? (
+            <p
+              style={{
+                margin: '16px 0 0',
+                fontSize: 'var(--fs-secondary)',
+                lineHeight: 1.5,
+                color: 'color-mix(in srgb, var(--ink) 55%, var(--bone))',
+              }}
+            >
+              Still stuck?{' '}
+              <a
+                href="/reset-shell.html"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                Refresh the app shell
+              </a>
+              {' '}
+              — access stays on this device.
+            </p>
+          ) : null}
         </div>
       </main>
     )

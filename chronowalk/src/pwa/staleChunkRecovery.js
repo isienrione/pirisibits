@@ -10,10 +10,15 @@ import {
   hardReload,
   showUpdatingOverlay,
   unregisterAllServiceWorkers,
+  waitForServiceWorkerControllerGone,
 } from './pwaCacheUtils.js'
 
 export const CHUNK_RECOVERY_GUARD_KEY = 'cw-chunk-reload'
 export const BOOT_PENDING_KEY = 'cw-boot-pending'
+/** localStorage — survives the recovery navigation; consumed by index.html. */
+export const SHELL_RESET_KEY = 'cw-needs-shell-reset'
+/** Skip SW registration for one successful network boot after a shell reset. */
+export const SKIP_SW_ONCE_KEY = 'cw-skip-sw-once'
 
 /**
  * @param {unknown} error
@@ -37,6 +42,15 @@ export function isStaleChunkError(error) {
   )
 }
 
+function markShellResetIntent() {
+  try {
+    localStorage.setItem(SHELL_RESET_KEY, '1')
+    localStorage.setItem(SKIP_SW_ONCE_KEY, '1')
+  } catch {
+    // Private mode / quota — recovery can still attempt SW purge.
+  }
+}
+
 /**
  * At most one controlled recovery per tab session (unless force).
  * Credentials and journey progress in localStorage / IndexedDB are kept.
@@ -54,19 +68,22 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
   }
 
   sessionStorage.setItem(CHUNK_RECOVERY_GUARD_KEY, reason || '1')
+  markShellResetIntent()
   showUpdatingOverlay('Updating ChronoWalk…')
 
   try {
     await clearAllCaches()
     await unregisterAllServiceWorkers()
-    // iOS Safari often keeps the old controller briefly after unregister.
-    await new Promise((resolve) => window.setTimeout(resolve, 280))
+    // Critical on iOS: do not navigate while the old SW still controls this tab.
+    await waitForServiceWorkerControllerGone(2500)
+    await new Promise((resolve) => window.setTimeout(resolve, 200))
   } catch {
     // Still reload — a hard navigation often picks up the new deploy.
   }
 
-  // Land on marketing shell with a bust param so Safari cannot reuse bfcache HTML.
-  hardReload({ path: '/landing' })
+  // Escape via the static reset page (denylisted from SPA navigation fallback)
+  // so a still-controlling service worker cannot re-serve poisoned HTML.
+  hardReload({ path: '/reset-shell.html' })
   return { recovered: true, reloading: true }
 }
 
@@ -82,6 +99,30 @@ export function clearChunkRecoveryGuard() {
 export function clearBootPending() {
   if (typeof sessionStorage === 'undefined') return
   sessionStorage.removeItem(BOOT_PENDING_KEY)
+}
+
+/**
+ * After a successful React mount, drop the one-boot SW skip flag so later
+ * visits can register the service worker normally.
+ */
+export function clearSkipSwOnce() {
+  try {
+    localStorage.removeItem(SKIP_SW_ONCE_KEY)
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * True when this boot should not register a service worker (post-recovery).
+ * Consumes nothing — clearSkipSwOnce runs after a successful mount.
+ */
+export function shouldSkipServiceWorkerRegistration() {
+  try {
+    return localStorage.getItem(SKIP_SW_ONCE_KEY) === '1'
+  } catch {
+    return false
+  }
 }
 
 /**
