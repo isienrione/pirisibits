@@ -55,13 +55,16 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
-    expect(existsSync(join(ROOT, 'public/reset-shell.html'))).toBe(true)
-    const html = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
+    expect(existsSync(join(ROOT, 'public/rome/reset-shell.html'))).toBe(true)
+    const html = readFileSync(join(ROOT, 'public/rome/reset-shell.html'), 'utf8')
     expect(html).toContain('cw-skip-sw-once')
     expect(html).toContain('caches.delete')
     expect(html).toContain('unregister')
     expect(html).toContain('/landing?cw_bust=')
     expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
+
+    const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
+    expect(legacy).toContain('/rome/reset-shell.html')
   })
 })

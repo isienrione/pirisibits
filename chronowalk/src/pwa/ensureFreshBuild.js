@@ -83,5 +83,5 @@ async function runBuildMigration(currentBuildId) {
   await unregisterAllServiceWorkers()
   localStorage.setItem(BUILD_STORAGE_KEY, currentBuildId)
   sessionStorage.setItem(BUILD_RELOAD_GUARD_KEY, '1')
-  hardReload({ path: '/reset-shell.html' })
+  hardReload({ path: '/rome/reset-shell.html' })
 }
