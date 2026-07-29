@@ -5,6 +5,7 @@ import { observeLandingSectionOnce, trackLandingPricingView } from './landingAna
 import { useMediaQuery } from '../hooks/useMediaQuery.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
+import LandingAccessCta from './v4/LandingAccessCta.jsx'
 
 const DESKTOP_MQ = '(min-width: 768px)'
 
@@ -441,13 +442,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
         {section.footnote ? <p className="cw-v2-pricing__footnote">{section.footnote}</p> : null}
 
-        {section.accessHref ? (
-          <p className="cw-v2-pricing__access">
-            <a href={section.accessHref} className="cw-v2-pricing__access-link">
-              {section.accessLinkLabel ?? 'Already purchased? Enter your access link'}
-            </a>
-          </p>
-        ) : null}
+        <LandingAccessCta className="cw-v4-access-cta--pricing" />
       </div>
     </section>
   )

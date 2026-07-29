@@ -55,16 +55,41 @@ function HeroLead({ text, highlight }) {
   )
 }
 
+const WALK_PACKAGE_IDS = new Set(['rome-complete', 'rome-essential', 'rome-central'])
+const BUNDLE_PACKAGE_IDS = new Set(['rome-couple', 'rome-family'])
+
+/**
+ * Scroll to a stable section start (not mid-card), then sync hash so mobile
+ * route tabs / deep links select the right package.
+ */
 function scrollToPricingTarget(id) {
+  const scrollId = BUNDLE_PACKAGE_IDS.has(id)
+    ? 'shared-experience'
+    : WALK_PACKAGE_IDS.has(id)
+      ? 'pricing'
+      : id || 'pricing'
+
+  if (id && typeof window !== 'undefined') {
+    const next = `#${id}`
+    if (window.location.hash !== next) {
+      window.history.replaceState(null, '', next)
+      window.dispatchEvent(new Event('hashchange'))
+    }
+  }
+
   const target =
-    document.getElementById(id) ||
-    document.getElementById(`pricing-name-${id}`) ||
+    document.getElementById(scrollId) ||
     document.getElementById('pricing')
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  if (!target) {
+    window.location.hash = id ? `#${id}` : '#pricing'
     return
   }
-  window.location.hash = id ? `#${id}` : '#pricing'
+
+  // Let hash listeners update the mobile tab before measuring scroll.
+  window.requestAnimationFrame(() => {
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
 }
 
 /**

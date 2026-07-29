@@ -9,7 +9,6 @@ import LandingProductDemo from './v4/LandingProductDemo.jsx'
 import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
 import LandingPersonas from './v4/LandingPersonas.jsx'
 import LandingRomeTiersSection from './LandingRomeTiersSection.jsx'
-import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
 import LandingReviewsDevToggle from './v4/LandingReviewsDevToggle.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
@@ -190,9 +189,8 @@ export default function ChronoWalkLanding() {
           <div id="try-free" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="compare" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
-          {/* Get App before the Before you walk | FAQ block (not between trust + FAQ). */}
+          {/* Get App, then FAQ (questions + trust checklist continuation). */}
           <LandingGetAppSection onChooseTour={handleChooseTour} />
-          <LandingTrustChecklist />
           <LandingFaqSectionV2 />
         </LandingAct>
       </main>

@@ -1921,6 +1921,7 @@
     transparent;
   color: inherit;
   padding-block: 4.5rem 5.5rem;
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.5rem);
 }
 
 .cw-landing--v4 .cw-v4-pricing__head {
@@ -2737,6 +2738,7 @@
   background:
     linear-gradient(180deg, rgba(11, 11, 13, 0.18), rgba(11, 11, 13, 0.72)),
     url('/landing/lifestyle-couple.png') center 30% / cover no-repeat;
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.65rem);
 }
 
 .cw-landing--v4 .cw-v2-pricing__shared-title {
@@ -2892,6 +2894,89 @@
 
 .cw-v4-trust {
   padding: 4.5rem 0 5rem;
+}
+
+.cw-v4-trust--embedded {
+  padding: 2.25rem 0 0;
+  margin-top: 2.25rem;
+  border-top: 1px solid var(--v4-line);
+}
+
+.cw-v4-trust--embedded .cw-v4-trust__list {
+  border-top: 0;
+}
+
+.cw-v4-access-cta {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: center;
+  text-align: center;
+  margin: 1.75rem auto 0;
+  max-width: 28rem;
+  padding: 1.15rem 1.1rem 1.2rem;
+  border-radius: 1.15rem;
+  border: 1.5px solid color-mix(in srgb, var(--v4-amber-deep) 55%, rgba(33, 28, 21, 0.18));
+  background:
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--v4-amber) 22%, #fffdf8),
+      #fffdf8 70%
+    );
+  box-shadow: 0 12px 28px rgba(201, 127, 30, 0.12);
+}
+
+.cw-v4-access-cta__eyebrow {
+  margin: 0;
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--v4-amber-deep);
+}
+
+.cw-v4-access-cta__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.85rem;
+  width: min(100%, 22rem);
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--v4-amber) 55%, transparent);
+  background: linear-gradient(180deg, var(--v4-amber) 0%, var(--v4-amber-deep) 100%);
+  color: #2a1206;
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.2;
+  text-decoration: none;
+  text-align: center;
+}
+
+.cw-v4-access-cta__button:hover {
+  filter: brightness(1.03);
+}
+
+.cw-v4-access-cta__button:focus-visible {
+  outline: 2px solid var(--v4-amber-deep);
+  outline-offset: 3px;
+}
+
+.cw-v4-access-cta__note {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: rgba(33, 28, 21, 0.62);
+  text-wrap: pretty;
+}
+
+.cw-v4-access-cta--pricing {
+  margin-top: 1.5rem;
+}
+
+.cw-v4-access-cta--after-getapp {
+  margin-top: 1.65rem;
 }
 
 .cw-v4-trust__list {
