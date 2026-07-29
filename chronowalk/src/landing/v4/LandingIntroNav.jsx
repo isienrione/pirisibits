@@ -3,6 +3,7 @@ import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
 /** Soft dissolve starts before the last frame so the cut into the hero isn’t abrupt. */
+/** Edge-bust: cinematic open (intro-open.mp4) — 2026-07-29 */
 const EXIT_LEAD_MS = 680
 const COMPRESS_MS = 900
 const FALLBACK_MAX_MS = 12000

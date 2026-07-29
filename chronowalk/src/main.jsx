@@ -6,6 +6,11 @@ import './redesign/redesign.css'
 import './index.css'
 import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
+import { DEPLOY_EDGE_BUST } from './config/env.js'
+
+if (import.meta.env.DEV) {
+  console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
+}
 
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
 // VITE_V2_APP / VITE_FIGMA_REDESIGN switches have been retired so no environment

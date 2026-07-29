@@ -2,6 +2,9 @@ import {
   readDevGeofencesMode,
 } from '../content/devGeofenceTools.js'
 
+/** Bumped to invalidate Cloudflare edge cache after SPA-HTML poison under /assets/*. */
+export const DEPLOY_EDGE_BUST = 'intro-open-2026-07-29'
+
 const parseBooleanEnv = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase()
   return normalized === 'true' || normalized === '1' || normalized === 'yes'

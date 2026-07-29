@@ -7,6 +7,8 @@ import {
 
 const PENDING_TIER_KEY = 'cw_pending_purchase_tier_v1'
 const PURCHASED_TIER_KEY = 'cw_purchased_tier_v1'
+/** @see DEPLOY_EDGE_BUST — keep pendingPurchase chunk hashing with edge busts */
+void 'intro-open-2026-07-29'
 
 /** Remember which Rome pack the traveler chose before checkout completes. */
 export function rememberPendingPurchaseTier(tierId) {
