@@ -60,21 +60,27 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   const exitStarted = useRef(false)
   const bodyOverflowRef = useRef('')
   const completedRef = useRef(false)
+  const playIntroOnMount = useRef(phase === 'intro')
 
+  // Nav handoff — keep separate so intro→compress does not tear down timers.
   useEffect(() => {
-    if (phase === 'nav') {
-      if (!completedRef.current) {
-        completedRef.current = true
-        onComplete?.()
-      }
+    if (phase !== 'nav') return undefined
+    if (!completedRef.current) {
+      completedRef.current = true
+      onComplete?.()
+    }
+    return undefined
+  }, [onComplete, phase])
+
+  // One-shot cinematic. Do not depend on `phase`: compress used to re-run this
+  // effect, clear the nav timer in cleanup, then no-op beginCompress forever.
+  useEffect(() => {
+    if (reduceMotion) {
+      setPhase('nav')
       return undefined
     }
 
-    if (reduceMotion) {
-      if (!completedRef.current) {
-        completedRef.current = true
-        onComplete?.()
-      }
+    if (!playIntroOnMount.current) {
       return undefined
     }
 
@@ -92,10 +98,6 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
     const finishToNav = () => {
       setPhase('nav')
       document.body.style.overflow = bodyOverflowRef.current
-      if (!completedRef.current) {
-        completedRef.current = true
-        onComplete?.()
-      }
     }
 
     const beginCompress = () => {
@@ -154,7 +156,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
       }
       document.body.style.overflow = bodyOverflowRef.current
     }
-  }, [onComplete, reduceMotion, phase])
+  }, [reduceMotion])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined

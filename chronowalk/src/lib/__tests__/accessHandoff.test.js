@@ -70,4 +70,28 @@ describe('accessHandoff', () => {
     expect(document.cookie).toContain(HANDOFF_COOKIE)
     expect(window.location.search).toContain(HANDOFF_QUERY_KEY)
   })
+
+  it('mirrors the handoff cookie from session writes without a dynamic import', () => {
+    // Importing this module registers sync hooks on accessSession.
+    writeDeviceCredential('cred-mirror')
+    writeAccessEntitlement({
+      purchasedProductId: 'rome-complete',
+      contentProductId: 'rome-complete',
+      seatLimit: 1,
+      role: 'solo',
+    })
+    expect(document.cookie).toContain(HANDOFF_COOKIE)
+  })
+})
+
+describe('accessSession boot safety', () => {
+  it('does not dynamic-import accessHandoff (Vite rewrote that to the entry chunk)', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { dirname, join } = await import('node:path')
+    const { fileURLToPath } = await import('node:url')
+    const dir = dirname(fileURLToPath(import.meta.url))
+    const source = readFileSync(join(dir, '../accessSession.js'), 'utf8')
+    expect(source).not.toMatch(/import\(\s*['"]\.\/accessHandoff\.js['"]\s*\)/)
+    expect(source).toContain('registerAccessHandoffHooks')
+  })
 })
