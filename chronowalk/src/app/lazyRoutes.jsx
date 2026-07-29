@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import ChronoWalkLanding from '../landing/ChronoWalkLanding.jsx'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
 
 function BootLoadingFallback() {
@@ -87,10 +88,10 @@ export const LazyTourPage = lazyRoute(
   'tour',
 )
 
-export const LazyLandingPage = lazyRoute(
-  () => import('../landing/ChronoWalkLanding.jsx'),
-  'landing',
-)
+/** Eager: landing must not depend on a second hashed chunk Safari can poison. */
+export function LazyLandingPage(props) {
+  return <ChronoWalkLanding {...props} />
+}
 
 export const LazyJourneyPage = lazyRoute(
   () => import('../redesign/pages/RedesignJourneyPage.jsx'),

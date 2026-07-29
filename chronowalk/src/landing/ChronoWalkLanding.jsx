@@ -13,6 +13,7 @@ import LandingFaqSectionV2 from './LandingFaqSectionV2.jsx'
 import LandingReviewsDevToggle from './v4/LandingReviewsDevToggle.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
+import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { resolveLandingTierCents } from './landingCheckout.js'
@@ -166,7 +167,14 @@ export default function ChronoWalkLanding() {
           <LandingPersonas
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
           />
-          <LandingProductDemo />
+          <V2ErrorBoundary
+            title="Demo unavailable"
+            message="The product demo could not load on this device. The rest of ChronoWalk still works — scroll for tours and pricing."
+            autoRecoverOnAnyError={false}
+            onRetry={() => window.location.assign('/rome/reset-shell.html')}
+          >
+            <LandingProductDemo />
+          </V2ErrorBoundary>
         </LandingAct>
 
         <LandingAct

@@ -4,12 +4,15 @@ import { isStaleChunkError, recoverStaleClient } from '../pwa/staleChunkRecovery
 export default class V2ErrorBoundary extends Component {
   constructor(props) {
     super(props)
-    this.state = { hasError: false, recovering: false, autoRecovering: false }
+    this.state = { hasError: false, recovering: false, autoRecovering: false, errorMessage: '' }
     this.autoRecoverAttempted = false
   }
 
-  static getDerivedStateFromError() {
-    return { hasError: true }
+  static getDerivedStateFromError(error) {
+    return {
+      hasError: true,
+      errorMessage: String(error?.message || error || '').slice(0, 240),
+    }
   }
 
   componentDidCatch(error, info) {
@@ -110,6 +113,20 @@ export default class V2ErrorBoundary extends Component {
               : (this.props.message ??
                 'This screen could not load. Try again to refresh the app shell — your access and progress stay on this device.')}
           </p>
+          {!this.state.autoRecovering && this.state.errorMessage ? (
+            <p
+              style={{
+                margin: '12px 0 0',
+                fontSize: '0.75rem',
+                lineHeight: 1.4,
+                wordBreak: 'break-word',
+                color: 'color-mix(in srgb, var(--ink) 45%, var(--bone))',
+                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              }}
+            >
+              {this.state.errorMessage}
+            </p>
+          ) : null}
           <button
             type="button"
             onClick={this.handleRetry}
