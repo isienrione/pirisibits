@@ -93,6 +93,14 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
+  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const hydrateAttempted = useRef(false)
+
+  useEffect(() => {
+    setFailed(false)
+    setResolvedSrc(src)
+    hydrateAttempted.current = false
+  }, [src])
 
   useEffect(() => {
     const video = videoRef.current
@@ -112,9 +120,28 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     } else {
       video.pause()
     }
-  }, [playing, failed])
+  }, [playing, failed, resolvedSrc])
 
-  if (!src || failed) {
+  const handleError = useCallback(() => {
+    if (!hydrateAttempted.current && src && !String(src).startsWith('blob:')) {
+      hydrateAttempted.current = true
+      void import('../audio/offlinePackage.js')
+        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+        .then((blobUrl) => {
+          if (blobUrl) {
+            setResolvedSrc(blobUrl)
+            setFailed(false)
+            return
+          }
+          setFailed(true)
+        })
+        .catch(() => setFailed(true))
+      return
+    }
+    setFailed(true)
+  }, [src])
+
+  if (!resolvedSrc || failed) {
     return (
       <ThresholdLayerImage
         src={poster}
@@ -130,14 +157,14 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
       ref={videoRef}
       className={className}
       style={{ ...style, pointerEvents: 'none' }}
-      src={src}
+      src={resolvedSrc}
       poster={poster}
       muted
       loop
       playsInline
       preload="metadata"
       draggable={false}
-      onError={() => setFailed(true)}
+      onError={handleError}
     />
   )
 }

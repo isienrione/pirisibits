@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { lazyWithRecovery } from '../../utils/lazyWithRecovery.js'
 import {
   buildManifestTour,
@@ -6,6 +6,28 @@ import {
   resolveActiveMapLeg,
 } from '../../content/mapStops.js'
 import { isDebugMap } from '../../config/env.js'
+import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
+
+/** Prefer cached Standard vector tiles when the radio is constrained. */
+function useConstrainedNetwork() {
+  const [constrained, setConstrained] = useState(false)
+  useEffect(() => {
+    const conn =
+      typeof navigator !== 'undefined'
+        ? navigator.connection || navigator.mozConnection || navigator.webkitConnection
+        : null
+    const update = () => {
+      const type = conn?.effectiveType
+      setConstrained(
+        Boolean(conn?.saveData || type === '2g' || type === 'slow-2g'),
+      )
+    }
+    update()
+    conn?.addEventListener?.('change', update)
+    return () => conn?.removeEventListener?.('change', update)
+  }, [])
+  return constrained
+}
 
 const TourMap = lazyWithRecovery(() => import('../TourMap.jsx'), 'map')
 
@@ -38,6 +60,9 @@ export default function JourneyInlineMap({
   directionsGeometry = null,
   directionsModeActive = false,
 }) {
+  const { isOffline } = useNetworkStatus()
+  const constrainedNetwork = useConstrainedNetwork()
+  const preferOfflineStyle = isOffline || constrainedNetwork
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
     [manifest, context.path]
@@ -112,6 +137,8 @@ export default function JourneyInlineMap({
       minimalUI
       walkingCompanionUI
       fillContainer
+      isOffline={isOffline}
+      preferOfflineStyle={preferOfflineStyle}
       directionsGeometry={directionsGeometry}
       directionsModeActive={directionsModeActive}
       />

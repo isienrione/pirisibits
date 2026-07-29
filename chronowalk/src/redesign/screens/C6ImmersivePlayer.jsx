@@ -533,7 +533,7 @@ export default function C6ImmersivePlayer({
             className="cw-waypoint-immersive__topbar cw-waypoint-immersive__chrome"
             style={{
               position: 'absolute',
-              top: 'max(12px, env(safe-area-inset-top))',
+              top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
               left: 16,
               // Keep the right edge clear for the DEV QA badge (fixed top-right).
               right: 64,

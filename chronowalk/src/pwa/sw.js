@@ -31,7 +31,7 @@ import {
   isHtmlResponse,
   shouldDenyNavigationFallback,
 } from './swAssetGuards.js'
-import { APP_SHELL_PRECACHE_URL } from './cloudflarePrecacheUrls.js'
+import { APP_SHELL_PRECACHE_URL, OFFLINE_PRECACHE_URL } from './cloudflarePrecacheUrls.js'
 
 // Defined by Vite (`define.__APP_BUILD_ID__`). Keep as a string concat so the
 // built sw.js still contains a literal `chronowalk-<id>` for ensureFreshBuild.
@@ -147,6 +147,7 @@ const navigationNetworkFirst = new NetworkFirst({
 })
 
 const cachedAppShell = createHandlerBoundToURL(APP_SHELL_PRECACHE_URL)
+const cachedOfflinePage = createHandlerBoundToURL(OFFLINE_PRECACHE_URL)
 
 async function handleNavigation(params) {
   const { request, url } = params
@@ -172,7 +173,17 @@ async function handleNavigation(params) {
   try {
     return await cachedAppShell(params)
   } catch {
-    return Response.error()
+    // Never return a failed opaque network error — that surfaces Safari’s native
+    // offline interstitial mid Home Screen session / package download.
+    // Serve our offline page instead.
+    try {
+      return await cachedOfflinePage(params)
+    } catch {
+      return new Response(
+        '<!doctype html><title>ChronoWalk</title><body style="font-family:system-ui;padding:2rem;background:#16130f;color:#f5efe3">ChronoWalk is offline. Reopen the app when you have a signal — your access stays on this device.</body>',
+        { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+      )
+    }
   }
 }
 

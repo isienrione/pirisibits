@@ -1,4 +1,4 @@
-import { formatWalkingTime } from '../../content/journeyProgress.js'
+import { formatWalkingTime, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 
 export function formatPlaybackClock(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
@@ -52,29 +52,33 @@ export function resolveWalkChromeDistanceCopy({
     }
   }
 
+  const safeLive = sanitizeWalkDistanceM(liveDistanceM)
+  const safeEstimated = sanitizeWalkDistanceM(estimatedDistanceM)
+  const safeDirections = sanitizeWalkDistanceM(directionsDistanceM)
+
   // Prefer stop→stop estimate when live/directions look like a stale GPS jump
   // (common when advancing with "I'm here" while still geolocated at an earlier stop).
   const directionsInflated =
-    typeof estimatedDistanceM === 'number' &&
-    estimatedDistanceM > 0 &&
-    typeof directionsDistanceM === 'number' &&
-    directionsDistanceM > estimatedDistanceM * 1.75
+    typeof safeEstimated === 'number' &&
+    safeEstimated > 0 &&
+    typeof safeDirections === 'number' &&
+    safeDirections > safeEstimated * 1.75
 
   const liveInflated =
-    typeof estimatedDistanceM === 'number' &&
-    estimatedDistanceM > 0 &&
-    typeof liveDistanceM === 'number' &&
-    liveDistanceM > estimatedDistanceM * 1.75
+    typeof safeEstimated === 'number' &&
+    safeEstimated > 0 &&
+    typeof safeLive === 'number' &&
+    safeLive > safeEstimated * 1.75
 
   const preferredMeters = directionsInflated || liveInflated
-    ? estimatedDistanceM
-    : typeof directionsDistanceM === 'number' && directionsDistanceM > 0
-      ? directionsDistanceM
-      : liveDistanceM
+    ? safeEstimated
+    : typeof safeDirections === 'number' && safeDirections > 0
+      ? safeDirections
+      : safeLive
 
   const base = resolveWalkingDistanceCopy(
     preferredMeters,
-    estimatedDistanceM,
+    safeEstimated,
     locationStatus,
   )
 
