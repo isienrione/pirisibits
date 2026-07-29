@@ -15,7 +15,17 @@ function BootLoadingFallback() {
         textAlign: 'center',
       }}
     >
-      <p style={{ margin: 0, fontSize: '1rem', lineHeight: 1.5 }}>Loading ChronoWalk…</p>
+      <div>
+        <p style={{ margin: 0, fontSize: '1rem', lineHeight: 1.5 }}>Loading ChronoWalk…</p>
+        <p style={{ margin: '16px 0 0', fontSize: '0.9rem', lineHeight: 1.5, opacity: 0.75 }}>
+          Taking too long?{' '}
+          <a href="/rome/reset-shell.html" style={{ color: 'inherit' }}>
+            Refresh the app shell
+          </a>
+          {' '}
+          — access stays on this device.
+        </p>
+      </div>
     </main>
   )
 }

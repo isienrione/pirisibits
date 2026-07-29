@@ -197,9 +197,9 @@
         var hint = document.getElementById('cw-boot-hint')
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
-          hint.textContent =
-            'ChronoWalk is taking longer than usual. Try refreshing, or open this page in a private tab.'
-        }, 12000)
+          hint.innerHTML =
+            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell.html" style="color:inherit">Refresh the app shell</a> — your access stays on this device.'
+        }, 5000)
       })()
     </script>
   </body>
