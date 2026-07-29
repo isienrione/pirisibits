@@ -166,8 +166,9 @@ export function shouldSkipServiceWorkerRegistration() {
 
 /**
  * Call at the very start of main.jsx. If the previous paint never finished
- * (tab crashed / white-screened mid-boot), purge the PWA shell once.
- * Returns true when a recovery reload was started.
+ * (tab crashed / white-screened mid-boot), record it — but always return false
+ * so React still mounts. Blocking mount caused permanent "Loading ChronoWalk…".
+ * @returns {false}
  */
 export function recoverInterruptedBoot() {
   if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') {
@@ -177,13 +178,10 @@ export function recoverInterruptedBoot() {
   const pending = sessionStorage.getItem(BOOT_PENDING_KEY)
   if (pending === '1') {
     sessionStorage.removeItem(BOOT_PENDING_KEY)
-    // Already wiped recently — let this boot finish instead of looping.
-    if (recentlyResetShell()) {
-      sessionStorage.setItem(BOOT_PENDING_KEY, '1')
-      return false
+    // One background attempt only when we have not just reset the shell.
+    if (!recentlyResetShell()) {
+      void recoverStaleClient({ force: false, reason: 'interrupted-boot' })
     }
-    void recoverStaleClient({ force: true, reason: 'interrupted-boot' })
-    return true
   }
 
   sessionStorage.setItem(BOOT_PENDING_KEY, '1')

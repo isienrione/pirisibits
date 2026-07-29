@@ -13,15 +13,15 @@ if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
 }
 
-// If the previous paint died mid-boot (common after a deploy on iOS Safari),
-// purge the poisoned service-worker shell before mounting React. Access keys
-// and journey progress in localStorage stay put.
-const recoveringBoot = recoverInterruptedBoot()
+// Mark / clear interrupted-boot sentinel, but never block React mount.
+// Blocking mount left iOS Safari stuck on "Loading ChronoWalk…" forever when
+// a recovery navigation did not start.
+recoverInterruptedBoot()
 
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
 // VITE_V2_APP / VITE_FIGMA_REDESIGN switches have been retired so no environment
 // variable can boot an older generation of the app.
-if (!recoveringBoot && typeof document !== 'undefined') {
+if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
 
@@ -36,10 +36,8 @@ if (!recoveringBoot && typeof document !== 'undefined') {
   motionQuery?.addEventListener?.('change', syncReducedMotionClass)
 }
 
-if (!recoveringBoot) {
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
-      <AppRouter />
-    </StrictMode>,
-  )
-}
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <AppRouter />
+  </StrictMode>,
+)

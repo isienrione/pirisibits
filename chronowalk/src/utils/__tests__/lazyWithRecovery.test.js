@@ -14,6 +14,7 @@ vi.mock('../../pwa/staleChunkRecovery.js', async () => {
 describe('recoverDynamicImport', () => {
   beforeEach(() => {
     sessionStorage.clear()
+    localStorage.clear()
     recoverStaleClient.mockReset()
     recoverStaleClient.mockImplementation(async () => {
       sessionStorage.setItem('cw-chunk-reload', '1')
@@ -23,10 +24,11 @@ describe('recoverDynamicImport', () => {
 
   afterEach(() => {
     sessionStorage.clear()
+    localStorage.clear()
   })
 
-  it('triggers one stale-client recovery when a dynamic import fails', () => {
-    const result = recoverDynamicImport(
+  it('triggers one stale-client recovery when a dynamic import fails', async () => {
+    const result = await recoverDynamicImport(
       new TypeError('Failed to fetch dynamically imported module'),
       'test view',
     )
@@ -36,15 +38,27 @@ describe('recoverDynamicImport', () => {
     expect(sessionStorage.getItem('cw-chunk-reload')).toBe('1')
   })
 
-  it('does not recover again if the guard is already set', () => {
+  it('does not recover again if the guard is already set', async () => {
     sessionStorage.setItem('cw-chunk-reload', '1')
     const error = new TypeError('Failed to fetch dynamically imported module')
 
-    const result = recoverDynamicImport(error, 'test view')
+    const result = await recoverDynamicImport(error, 'test view')
 
     expect(result.reloading).toBe(false)
     expect(result.error).toBe(error)
     expect(recoverStaleClient).not.toHaveBeenCalled()
     expect(sessionStorage.getItem('cw-chunk-reload')).toBeNull()
+  })
+
+  it('does not hang when shell reset cooldown blocks recovery', async () => {
+    localStorage.setItem('cw-shell-reset-at', String(Date.now()))
+    recoverStaleClient.mockResolvedValue({ recovered: false, reloading: false })
+    const error = new TypeError('Failed to fetch dynamically imported module')
+
+    const result = await recoverDynamicImport(error, 'landing')
+
+    expect(result.reloading).toBe(false)
+    expect(result.error).toBe(error)
+    expect(recoverStaleClient).not.toHaveBeenCalled()
   })
 })

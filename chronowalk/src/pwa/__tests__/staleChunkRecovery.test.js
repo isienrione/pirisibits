@@ -109,10 +109,10 @@ describe('staleChunkRecovery', () => {
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeNull()
   })
 
-  it('recovers an interrupted boot once', async () => {
+  it('recovers an interrupted boot in the background without blocking mount', async () => {
     sessionStorage.setItem(BOOT_PENDING_KEY, '1')
-    expect(recoverInterruptedBoot()).toBe(true)
-    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBeNull()
+    expect(recoverInterruptedBoot()).toBe(false)
+    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBe('1')
     await vi.waitFor(() => {
       expect(hardReload).toHaveBeenCalled()
     })
