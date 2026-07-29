@@ -173,8 +173,9 @@ async function handleNavigation(params) {
   try {
     return await cachedAppShell(params)
   } catch {
-    // Never Response.error() — that surfaces Safari’s native offline interstitial
-    // mid Home Screen session / package download. Serve our offline page instead.
+    // Never return a failed opaque network error — that surfaces Safari’s native
+    // offline interstitial mid Home Screen session / package download.
+    // Serve our offline page instead.
     try {
       return await cachedOfflinePage(params)
     } catch {
