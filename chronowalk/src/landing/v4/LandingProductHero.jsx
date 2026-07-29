@@ -9,6 +9,8 @@ import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 
 const SLIDE_MS = 8000
+/** First Rome-sky hero needs more reading time before the art slideshow begins. */
+const FIRST_SLIDE_MS = 14000
 const FADE_MS = 900
 
 /** Approximate click targets over the Choose your walk marketing frame. */
@@ -129,14 +131,15 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
     if (reducedMotion || paused || viewerSlide || total < 2) return undefined
 
     let timer = 0
+    const dwell = index === 0 ? FIRST_SLIDE_MS : SLIDE_MS
     const tick = () => {
       if (document.hidden) {
-        timer = window.setTimeout(tick, SLIDE_MS)
+        timer = window.setTimeout(tick, dwell)
         return
       }
       setIndex((current) => (current + 1) % total)
     }
-    timer = window.setTimeout(tick, SLIDE_MS)
+    timer = window.setTimeout(tick, dwell)
     return () => window.clearTimeout(timer)
   }, [reducedMotion, paused, viewerSlide, total, index])
 

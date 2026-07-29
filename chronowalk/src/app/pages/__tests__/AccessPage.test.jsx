@@ -142,9 +142,11 @@ describe('AccessPage', () => {
 
     renderAccessPage('/access?token=00000000-0000-4000-8000-000000000000')
 
+    // Fresh unlock always opens App Entry (offline + A2HS) before resume/begin.
     await waitFor(() => {
-      expect(screen.getByText('Begin route')).toBeInTheDocument()
+      expect(screen.getByText('Setup route')).toBeInTheDocument()
     })
+    expect(pullMock).toHaveBeenCalled()
   })
 
   it('shows restore UI when token validation fails', async () => {

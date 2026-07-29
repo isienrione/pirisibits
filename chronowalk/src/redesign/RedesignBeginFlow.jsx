@@ -7,7 +7,7 @@ import {
   readPurchasedTier,
   shouldShowPaceModePicker,
 } from '../lib/pendingPurchase.js'
-import { isAppEntryComplete } from '../lib/appEntry.js'
+import { clearAppEntryComplete, isAppEntryComplete } from '../lib/appEntry.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
@@ -193,7 +193,9 @@ export default function RedesignBeginFlow() {
           }}
           onStartFresh={() => {
             reset()
-            setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
+            // Fresh walkers should see offline + Home Screen prepare before GPS.
+            clearAppEntryComplete()
+            navigate('/setup', { replace: true })
           }}
         />
       </div>

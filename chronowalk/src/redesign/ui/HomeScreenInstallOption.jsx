@@ -3,6 +3,7 @@ import { Home, Share, Plus, MoreVertical } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { useReducedMotion } from '../../hooks/useReducedMotion.js'
 import { isIosDevice } from '../../utils/pwaInstall.js'
+import { syncAccessHandoff } from '../../lib/accessHandoff.js'
 
 /** Real ChronoWalk home-screen icon used in the install how-to. */
 export const CHRONOWALK_HOME_ICON = '/pwa/icon-192.png'
@@ -249,7 +250,13 @@ export default function HomeScreenInstallOption({
     )
   }
 
+  const prepareHandoffForInstall = () => {
+    // Put ticket into cookie + URL so Add to Home Screen opens with access.
+    syncAccessHandoff({ updateUrl: true })
+  }
+
   const handlePrimary = async () => {
+    prepareHandoffForInstall()
     if (canPromptInstall && platform === 'android') {
       await onInstall?.()
       return
@@ -257,7 +264,10 @@ export default function HomeScreenInstallOption({
     setOpen(true)
   }
 
-  const toggle = () => setOpen((v) => !v)
+  const toggle = () => {
+    prepareHandoffForInstall()
+    setOpen((v) => !v)
+  }
 
   return (
     <div
