@@ -1,54 +1,123 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
-const INTRO_MS = 2000
+/** Soft dissolve starts before the last frame so the cut into the hero isn’t abrupt. */
+const EXIT_LEAD_MS = 680
 const COMPRESS_MS = 900
+const FALLBACK_MAX_MS = 12000
 const NAV_OFFSET_PX = 68
 
 /**
- * Keynote-style open: ChronoWalk mark plays once, then compresses into the nav bar.
- * No controls. Muted. Autoplay once.
- * After scrolling past the product hero into the stop slides / paper sections:
- * Get App CTA + obsidian nav chrome.
+ * Keynote-style open: muted cinematic plays once on a full-bleed black stage,
+ * then dissolves into the fixed nav (same handoff as the old mark intro).
+ * After scrolling past the product hero: Get App CTA + obsidian nav chrome.
  */
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)
+  )
+}
+
 export default function LandingIntroNav({ onComplete, onGetApp }) {
   const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
-  const [phase, setPhase] = useState('intro') // intro | compress | nav
+  const reduceMotion = prefersReducedMotion()
+  const [phase, setPhase] = useState(() => (prefersReducedMotion() ? 'nav' : 'intro'))
   const [pastHero, setPastHero] = useState(false)
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+  const [videoReady, setVideoReady] = useState(false)
+  const videoRef = useRef(null)
+  const exitStarted = useRef(false)
+  const bodyOverflowRef = useRef('')
+  const completedRef = useRef(false)
 
   useEffect(() => {
     if (reduceMotion) {
-      setPhase('nav')
-      onComplete?.()
+      if (!completedRef.current) {
+        completedRef.current = true
+        onComplete?.()
+      }
       return undefined
     }
 
-    const previousOverflow = document.body.style.overflow
+    bodyOverflowRef.current = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
-    const t1 = window.setTimeout(() => setPhase('compress'), INTRO_MS)
-    const t2 = window.setTimeout(() => {
+    const video = videoRef.current
+    let exitTimer = 0
+    let navTimer = 0
+    let fallbackTimer = 0
+    let leadArmed = false
+
+    const finishToNav = () => {
       setPhase('nav')
-      document.body.style.overflow = previousOverflow
-      onComplete?.()
-    }, INTRO_MS + COMPRESS_MS)
+      document.body.style.overflow = bodyOverflowRef.current
+      if (!completedRef.current) {
+        completedRef.current = true
+        onComplete?.()
+      }
+    }
+
+    const beginCompress = () => {
+      if (exitStarted.current) return
+      exitStarted.current = true
+      setPhase('compress')
+      window.clearTimeout(exitTimer)
+      navTimer = window.setTimeout(finishToNav, COMPRESS_MS)
+    }
+
+    const armExitLead = () => {
+      if (leadArmed || !video || !Number.isFinite(video.duration) || video.duration <= 0) return
+      leadArmed = true
+      const remainingMs = Math.max(
+        0,
+        (video.duration - video.currentTime) * 1000 - EXIT_LEAD_MS,
+      )
+      exitTimer = window.setTimeout(beginCompress, remainingMs)
+    }
+
+    const onLoadedMeta = () => armExitLead()
+    const onCanPlay = () => {
+      setVideoReady(true)
+      const play = video?.play()
+      if (play && typeof play.catch === 'function') {
+        play.catch(() => beginCompress())
+      }
+    }
+    const onEnded = () => beginCompress()
+    const onError = () => beginCompress()
+
+    if (video) {
+      video.addEventListener('loadedmetadata', onLoadedMeta)
+      video.addEventListener('canplay', onCanPlay)
+      video.addEventListener('ended', onEnded)
+      video.addEventListener('error', onError)
+      if (video.readyState >= 1) onLoadedMeta()
+      if (video.readyState >= 3) onCanPlay()
+      else video.load()
+    } else {
+      beginCompress()
+    }
+
+    fallbackTimer = window.setTimeout(beginCompress, FALLBACK_MAX_MS)
 
     return () => {
-      window.clearTimeout(t1)
-      window.clearTimeout(t2)
-      document.body.style.overflow = previousOverflow
+      window.clearTimeout(exitTimer)
+      window.clearTimeout(navTimer)
+      window.clearTimeout(fallbackTimer)
+      if (video) {
+        video.removeEventListener('loadedmetadata', onLoadedMeta)
+        video.removeEventListener('canplay', onCanPlay)
+        video.removeEventListener('ended', onEnded)
+        video.removeEventListener('error', onError)
+      }
+      document.body.style.overflow = bodyOverflowRef.current
     }
   }, [onComplete, reduceMotion])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
 
-    // Flip to obsidian once the dark product hero (#top) is no longer under the nav.
-    // That covers the stop-slides section and everything below (paper surfaces).
     const hero = document.getElementById('top')
     if (!hero) return undefined
 
@@ -88,7 +157,6 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   const showGetApp = Boolean(cta) && pastHero
   const ctaLabel = cta || LANDING_CTA.getApp
   const ctaTarget = ctaHref || '#get-app'
-  // Logo: `light` on paper/cream, `dark` on obsidian.
   const logoVariant = pastHero ? 'dark' : 'light'
 
   const handleCtaClick = (event) => {
@@ -100,27 +168,29 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   return (
     <>
       <div
-        className={`cw-v4-intro${isCompress ? ' cw-v4-intro--compress' : ''}${isNav ? ' cw-v4-intro--done' : ''}`}
+        className={[
+          'cw-v4-intro',
+          videoReady ? 'cw-v4-intro--ready' : '',
+          isCompress ? 'cw-v4-intro--compress' : '',
+          isNav ? 'cw-v4-intro--done' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         aria-hidden={isNav}
       >
-        <div className="cw-v4-intro__mark">
-          <svg className="cw-v4-intro__prism" viewBox="0 0 120 120" aria-hidden>
-            <defs>
-              <linearGradient id="cw-v4-intro-spec" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#E4552E" />
-                <stop offset="17%" stopColor="#E8A13C" />
-                <stop offset="34%" stopColor="#7C9A5C" />
-                <stop offset="50%" stopColor="#4E9B8F" />
-                <stop offset="67%" stopColor="#4E7D9B" />
-                <stop offset="83%" stopColor="#8A6FB5" />
-                <stop offset="100%" stopColor="#B14A6E" />
-              </linearGradient>
-            </defs>
-            <circle className="cw-v4-intro__circle" cx="60" cy="60" r="52" />
-            <line className="cw-v4-intro__spectrum" x1="60" y1="8" x2="60" y2="112" />
-            <line className="cw-v4-intro__ember" x1="60" y1="8" x2="60" y2="112" />
-          </svg>
-          <p className="cw-v4-intro__word">ChronoWalk</p>
+        <div className="cw-v4-intro__stage">
+          <video
+            ref={videoRef}
+            className="cw-v4-intro__video"
+            src="/landing/intro-open.mp4"
+            poster="/landing/intro-open-poster.jpg"
+            muted
+            playsInline
+            preload="auto"
+            autoPlay
+            tabIndex={-1}
+            aria-hidden="true"
+          />
         </div>
       </div>
 

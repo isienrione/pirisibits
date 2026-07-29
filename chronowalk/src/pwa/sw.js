@@ -211,6 +211,25 @@ registerRoute(
 )
 
 registerRoute(
+  ({ sameOrigin, url }) =>
+    sameOrigin &&
+    url.pathname.startsWith('/landing/') &&
+    /\.(?:mp4|webm)$/i.test(url.pathname),
+  new CacheFirst({
+    cacheName: 'chronowalk-landing-video-v1',
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      rejectHtmlAssetPlugin,
+      new ExpirationPlugin({
+        maxEntries: 6,
+        maxAgeSeconds: 60 * 60 * 24 * 30,
+      }),
+    ],
+  }),
+  'GET',
+)
+
+registerRoute(
   ({ sameOrigin, request, url }) =>
     sameOrigin &&
     request.destination !== 'document' &&
