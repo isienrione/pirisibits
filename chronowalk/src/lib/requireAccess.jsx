@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { hasAccess } from './config.js'
 import { validateDeviceAccess, readDeviceCredential } from './access.js'
 import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
+import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
 
 /**
  * Gate paid tour surfaces.
@@ -12,13 +13,16 @@ import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } fr
  * shell to paint while revalidation runs (avoids Home Screen → paste-code flash).
  */
 export function RequireAccess({ children, redirectTo = '/access' }) {
-  const [allowed, setAllowed] = useState(() => hasValidLocalAccess() || Boolean(readDeviceCredential()))
+  const [allowed, setAllowed] = useState(
+    () => hasValidLocalAccess() || Boolean(readDeviceCredential()) || consumeAccessHandoff(),
+  )
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
     let cancelled = false
 
     async function run() {
+      consumeAccessHandoff()
       const credential = readDeviceCredential()
       if (!credential) {
         if (!cancelled) {
@@ -40,6 +44,7 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
       if (cancelled) return
 
       if (result.ok) {
+        syncAccessHandoff({ updateUrl: false })
         setAllowed(true)
         setChecking(false)
         return

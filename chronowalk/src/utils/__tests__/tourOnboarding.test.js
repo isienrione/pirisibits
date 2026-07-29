@@ -53,6 +53,18 @@ describe('tourOnboarding', () => {
     ).toBe(false)
   })
 
+  it('still treats Colosseum as first stop after instruction cards are dismissed', () => {
+    const manifest = loadRomeManifest()
+    markTourOnboardingComplete()
+    expect(
+      isOnFirstTourStop(
+        { completedWaypointIds: [], currentSequenceIndex: 0, pace: JOURNEY_PACE.CLASSIC, path: 'a' },
+        { type: 'waypoint', id: 'w01' },
+        manifest,
+      ),
+    ).toBe(true)
+  })
+
   it('treats the first selected own-pace stop as the opening waypoint', () => {
     const manifest = loadRomeManifest()
     const ownContext = {

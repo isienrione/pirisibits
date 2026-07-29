@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
 import { getAnalyticsConsent, setAnalyticsConsent } from '../../lib/track.js'
+import { syncAccessHandoff } from '../../lib/accessHandoff.js'
 import {
   isAppEntryComplete,
   markAppEntryComplete,
@@ -24,12 +25,19 @@ export default function RedesignSetupPage() {
   const purchasedTier = readPurchasedTier()
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
   const offline = useOfflineAudio()
-  const [step, setStep] = useState('threshold')
+  // Land on prepare (offline + A2HS) — the screen travelers expect before the tour.
+  // Threshold pack splash remains reachable only if we add an explicit back later.
+  const [step, setStep] = useState('prepare')
   const [showIosHelp, setShowIosHelp] = useState(false)
   const [analyticsEnabled, setAnalyticsEnabled] = useState(
     () => getAnalyticsConsent() === 'accepted',
   )
   const finishedEntryRef = useRef(false)
+
+  // Keep Home Screen handoff warm while the traveler is on prepare.
+  useEffect(() => {
+    syncAccessHandoff({ updateUrl: true })
+  }, [])
 
   const finishEntry = useCallback(() => {
     if (finishedEntryRef.current) return
@@ -43,6 +51,7 @@ export default function RedesignSetupPage() {
   }, [navigate])
 
   const handleInstall = async () => {
+    syncAccessHandoff({ updateUrl: true })
     if (showIosInstructions) {
       setShowIosHelp(true)
       return

@@ -18,10 +18,10 @@ describe('ThresholdDiegeticHint', () => {
     expect(screen.queryByText(/press & hold to cross the threshold/i)).not.toBeInTheDocument()
   })
 
-  it('can render ring-only without the text line or finger', () => {
+  it('keeps the pointing hand on brief ring-only nudges (no text)', () => {
     render(<ThresholdDiegeticHint thenLabel="ANCIENT ROME" showText={false} />)
     expect(screen.getByTestId('threshold-diegetic-hint')).toBeInTheDocument()
     expect(screen.queryByText(/hold to reveal/i)).not.toBeInTheDocument()
-    expect(screen.queryByTestId('threshold-diegetic-finger')).not.toBeInTheDocument()
+    expect(screen.getByTestId('threshold-diegetic-finger')).toBeInTheDocument()
   })
 })

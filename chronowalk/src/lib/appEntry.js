@@ -1,7 +1,8 @@
 import { getJourneySnapshot, JOURNEY_STATES } from '../state/journey.js'
 import { readPurchasedTier } from './pendingPurchase.js'
 
-const APP_ENTRY_DONE_KEY = 'cw_app_entry_done_v1'
+/** Bumped so travelers see offline + A2HS prepare again after the v2 flow shipped. */
+const APP_ENTRY_DONE_KEY = 'cw_app_entry_done_v2'
 
 /** True once the traveler has crossed from marketing into the app shell. */
 export function isAppEntryComplete() {
