@@ -56,7 +56,7 @@ describe('BeginFlow', () => {
     expect(screen.getByRole('heading', { name: /rome is yours/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /roma eterna/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /roma antica/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /roma centrale/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /roma historica/i })).toBeInTheDocument()
     expect(screen.getByText(/nothing is skipped forever/i)).toBeInTheDocument()
   })
 
