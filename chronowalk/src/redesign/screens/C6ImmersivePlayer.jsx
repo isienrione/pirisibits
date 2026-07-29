@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings } from 'lucide-react'
+import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings, X } from 'lucide-react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
@@ -88,6 +88,7 @@ export default function C6ImmersivePlayer({
   const [showAudioNotice, setShowAudioNotice] = useState(false)
   const [focusReveal, setFocusReveal] = useState(false)
   const [revealLatched, setRevealLatched] = useState(false)
+  const [photoLightboxOpen, setPhotoLightboxOpen] = useState(false)
   /** 'full' = ring + text · 'ring' = brief fading ring · 'hidden' */
   const [hintMode, setHintMode] = useState('hidden')
   const [hintFading, setHintFading] = useState(false)
@@ -187,6 +188,10 @@ export default function C6ImmersivePlayer({
       setHintMode('hidden')
       setHintFading(false)
     }, 380)
+  }, [])
+
+  const handleNowTap = useCallback(() => {
+    setPhotoLightboxOpen(true)
   }, [])
 
   const handleRevealHoldStart = useCallback(() => {
@@ -459,6 +464,7 @@ export default function C6ImmersivePlayer({
         demoAutoReveal={demoAutoReveal}
         onHoldStart={handleRevealHoldStart}
         onHoldEnd={handleRevealHoldEnd}
+        onNowTap={handleNowTap}
         onCrossed={onThresholdCross}
       />
     </div>
@@ -471,6 +477,12 @@ export default function C6ImmersivePlayer({
         backgroundImage: `url(${photo})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center 28%',
+        cursor: 'pointer',
+      }}
+      onClick={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const relX = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 1
+        if (relX < 0.5) setPhotoLightboxOpen(true)
       }}
     />
   )
@@ -723,6 +735,59 @@ export default function C6ImmersivePlayer({
               </button>
             </div>
           ) : null}
+        </div>
+      ) : null}
+
+      {photoLightboxOpen ? (
+        <div
+          data-testid="now-photo-lightbox"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9000,
+            background: '#000',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={() => setPhotoLightboxOpen(false)}
+        >
+          <img
+            src={photo}
+            alt={title}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              display: 'block',
+              pointerEvents: 'none',
+              userSelect: 'none',
+            }}
+            draggable={false}
+          />
+          <button
+            type="button"
+            aria-label="Close photo view"
+            onClick={(e) => { e.stopPropagation(); setPhotoLightboxOpen(false) }}
+            style={{
+              position: 'absolute',
+              top: 'max(16px, env(safe-area-inset-top))',
+              right: 'max(16px, env(safe-area-inset-right))',
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              background: 'rgba(11,11,13,0.65)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(245,240,232,0.2)',
+              color: T.warmWhite,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <X size={20} aria-hidden />
+          </button>
         </div>
       ) : null}
     </div>

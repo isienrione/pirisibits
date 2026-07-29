@@ -16,6 +16,8 @@ import { isBundleSku } from '../../lib/launchSkus.js'
 import { readAccessEntitlement } from '../../lib/accessSession.js'
 import { bundleMetaForProductId } from '../../lib/familyWalk.js'
 import AnalyticsPreferencesControl from '../../components/analytics/AnalyticsPreferencesControl.jsx'
+import HomeScreenInstallOption from './HomeScreenInstallOption.jsx'
+import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -173,6 +175,8 @@ export default function SettingsBottomSheet({ open, onClose }) {
           ? 'Invite people and manage your shared tour'
           : 'Manage your shared tour'
 
+  const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
+
   if (!open) return null
 
   const offlineDetail = offline.isReady
@@ -304,11 +308,30 @@ export default function SettingsBottomSheet({ open, onClose }) {
             />
           ) : null}
 
-          <ActionRow
-            label="Download today for offline"
-            detail={offlineDetail}
-            onClick={handleDownload}
-          />
+          <div
+            style={{
+              borderRadius: 12,
+              border: `1.5px solid ${T.ember}55`,
+              background: `${T.ember}0a`,
+              padding: '0 12px',
+              marginBottom: 8,
+            }}
+          >
+            <p style={{ margin: '10px 0 2px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>Recommended</p>
+            <ActionRow
+              label="Download for offline"
+              detail={offlineDetail}
+              onClick={handleDownload}
+            />
+            <div style={{ paddingBottom: 4 }}>
+              <HomeScreenInstallOption
+                installed={installed}
+                canPromptInstall={canPromptInstall}
+                showIosInstructions={showIosInstructions}
+                onInstall={promptInstall}
+              />
+            </div>
+          </div>
           <ActionRow label="Restore purchase" onClick={handleRestore} />
           <ActionRow label="Help" onClick={handleHelp} />
           <ActionRow label="About" onClick={handleAbout} />

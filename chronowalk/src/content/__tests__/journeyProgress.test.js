@@ -33,9 +33,19 @@ describe('journeyProgress', () => {
     expect(meters).toBeGreaterThan(0)
   })
 
-  it('formats walking time from distance', () => {
-    expect(formatWalkingTime(400)).toBe('5 min walk')
+  it('formats walking time from distance using 100 m/min brisk pace', () => {
+    // 400 m → brisk 4 min, leisure 5 min — brisk < 8, so single value
+    expect(formatWalkingTime(400)).toBe('4 min walk')
     expect(formatWalkingTime(null)).toBeNull()
+  })
+
+  it('shows a range for longer walks when times differ by >= 2 min', () => {
+    // 900 m → brisk 9 min, leisure 11 min (diff = 2, brisk >= 8) → range
+    expect(formatWalkingTime(900)).toBe('9–11 min walk')
+    // 600 m → brisk 6 min, leisure 8 min (brisk < 8) → single
+    expect(formatWalkingTime(600)).toBe('6 min walk')
+    // 1000 m → brisk 10 min, leisure 13 min (diff = 3, brisk >= 8) → range
+    expect(formatWalkingTime(1000)).toBe('10–13 min walk')
   })
 
   it('plans mid-tour continue with updated progress', () => {

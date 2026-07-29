@@ -38,5 +38,5 @@ export function formatElapsedDuration(startedAtMs) {
 
 export function estimateWalkMinutes(distanceMeters) {
   if (distanceMeters == null || Number.isNaN(distanceMeters)) return null
-  return Math.max(1, Math.ceil(distanceMeters / 80))
+  return Math.max(1, Math.ceil(distanceMeters / 100))
 }

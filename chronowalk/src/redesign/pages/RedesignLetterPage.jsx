@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { buildJourneyLetter, projectMeanderPoints } from '../../content/journeyLetter.js'
+import {
+  buildJourneyLetter,
+  projectMeanderPoints,
+  readTravelerName,
+  writeTravelerName,
+} from '../../content/journeyLetter.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { saveLetterCard, shareLetterCard } from '../../components/letter/letterExport.js'
@@ -13,10 +18,14 @@ export default function RedesignLetterPage() {
   const { manifest, loading, error } = useTourManifest()
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [travelerName, setTravelerName] = useState(() => readTravelerName())
 
   const letter = useMemo(
-    () => (manifest ? buildJourneyLetter(manifest, context) : null),
-    [manifest, context],
+    () =>
+      manifest
+        ? buildJourneyLetter(manifest, { ...context, travelerName })
+        : null,
+    [manifest, context, travelerName],
   )
 
   const meander = useMemo(
@@ -37,16 +46,27 @@ export default function RedesignLetterPage() {
     ]
   }, [letter])
 
+  const handleNameChange = (name) => {
+    setTravelerName(name)
+    writeTravelerName(name)
+  }
+
   const handleSave = async () => {
     if (!letter) return
     setBusy(true)
     setMessage('')
     try {
-      await saveLetterCard(letter, meander)
-      track(TRACK_EVENTS.LETTER_SAVE, { stop_count: letter.stopCount })
-      setMessage('Letter saved to your device.')
-    } catch (saveError) {
-      setMessage(saveError.message ?? 'Could not save the letter.')
+      const result = await saveLetterCard(letter, meander)
+      track(TRACK_EVENTS.LETTER_SAVE, { stop_count: letter.stopCount, method: result })
+      setMessage(
+        result === 'fallback'
+          ? 'Letter opened - long-press the image to save it.'
+          : result === 'error'
+            ? 'Could not save the letter. Try sharing it instead.'
+            : 'Letter saved to your device.',
+      )
+    } catch {
+      setMessage('Could not save the letter. Try sharing it instead.')
     } finally {
       setBusy(false)
     }
@@ -60,14 +80,14 @@ export default function RedesignLetterPage() {
       const result = await shareLetterCard(letter, meander)
       track(TRACK_EVENTS.LETTER_SHARE, { stop_count: letter.stopCount, method: result })
       setMessage(
-        result === 'clipboard'
-          ? 'Letter copied to clipboard.'
-          : result === 'share'
-            ? 'Letter shared.'
-            : 'Sharing is not supported on this device.',
+        result === 'share'
+          ? 'Letter image ready to share.'
+          : result === 'download' || result === 'fallback'
+            ? 'Letter image saved - share it from your photos.'
+            : 'Could not share the letter image on this device.',
       )
-    } catch (shareError) {
-      setMessage(shareError.message ?? 'Could not share the letter.')
+    } catch {
+      setMessage('Could not share the letter image on this device.')
     } finally {
       setBusy(false)
     }
@@ -98,7 +118,7 @@ export default function RedesignLetterPage() {
     <RedesignRouteShell>
       <div className="redesign-app-shell">
         <F1JourneyLetter
-          firstName={letter.firstName ?? ''}
+          firstName={letter.firstName ?? 'Traveler'}
           body={letter.body}
           reflection={letter.reflection}
           stats={stats}
@@ -107,6 +127,8 @@ export default function RedesignLetterPage() {
           onSave={handleSave}
           onShare={handleShare}
           onBack={() => navigate('/journal')}
+          travelerName={travelerName}
+          onTravelerNameChange={handleNameChange}
         />
       </div>
     </RedesignRouteShell>

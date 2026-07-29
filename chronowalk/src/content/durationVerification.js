@@ -1,4 +1,4 @@
-const MIN_BYTES_PER_SECOND = 8_000
+const MIN_BYTES_PER_SECOND = 5_000
 
 export function audioKeyFromManifestPath(manifestPath) {
   return manifestPath.split('/').pop()

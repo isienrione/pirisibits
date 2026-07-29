@@ -98,12 +98,33 @@ export default function AppEntryPrepare({
           One download keeps the stories playing when signal drops.
         </p>
 
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
+        <div
+          style={{
+            borderTop: `1px solid ${T.ink800}`,
+            borderRadius: 14,
+            border: `1.5px solid ${T.ember}55`,
+            background: `${T.ember}0a`,
+            padding: '18px 16px 16px',
+            marginBottom: 16,
+          }}
+        >
+          <p
+            style={{
+              margin: '0 0 12px',
+              fontSize: 10,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: T.ember,
+              fontWeight: 600,
+            }}
+          >
+            Recommended
+          </p>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
                 Download the walk
-                <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> — 215 MB</span>
+                <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> - 215 MB</span>
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
                 Works offline in Rome&apos;s dense streets.
@@ -181,14 +202,16 @@ export default function AppEntryPrepare({
               </svg>
             </button>
           </div>
-        </div>
 
-        <HomeScreenInstallOption
-          installed={installed}
-          canPromptInstall={canPromptInstall}
-          showIosInstructions={showIosInstructions}
-          onInstall={onInstall}
-        />
+          <div style={{ marginTop: 16, borderTop: `1px solid ${T.ink800}`, paddingTop: 12 }}>
+            <HomeScreenInstallOption
+              installed={installed}
+              canPromptInstall={canPromptInstall}
+              showIosInstructions={showIosInstructions}
+              onInstall={onInstall}
+            />
+          </div>
+        </div>
 
         <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
@@ -197,7 +220,7 @@ export default function AppEntryPrepare({
                 Help improve ChronoWalk
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Anonymous usage only — we count moments, never people.
+                Anonymous usage only - we count moments, never people.
               </p>
             </div>
             <button

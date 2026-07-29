@@ -3,7 +3,7 @@ import { PREFERENCES_CHANGED_EVENT, readAudioSpeed, writeAudioSpeed } from '../u
 
 const STORAGE_KEY = 'cw_app_prefs_v1'
 
-export const SETTINGS_PLAYBACK_SPEEDS = [0.8, 1, 1.2]
+export const SETTINGS_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
 export const TEXT_SIZE_OPTIONS = ['sm', 'md', 'lg']
 
 const DEFAULT_PREFS = {
@@ -11,7 +11,7 @@ const DEFAULT_PREFS = {
   wifiOnlyDownload: true,
   hapticFeedback: true,
   reduceMotion: false,
-  playbackSpeed: 1,
+  playbackSpeed: 1.2,
   preferTranscript: false,
   textSize: 'md',
 }
@@ -24,7 +24,7 @@ export function transcriptFontSizePx(textSize = 'md') {
 
 function normalizePlaybackSpeed(speed) {
   const numeric = Number(speed)
-  return SETTINGS_PLAYBACK_SPEEDS.includes(numeric) ? numeric : 1
+  return SETTINGS_PLAYBACK_SPEEDS.includes(numeric) ? numeric : 1.2
 }
 
 function normalizeTextSize(textSize) {

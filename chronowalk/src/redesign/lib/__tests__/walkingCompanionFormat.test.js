@@ -18,7 +18,7 @@ describe('walkingCompanionFormat', () => {
     ).toBe('335 m · 4 min')
   })
 
-  it('prefers Directions duration for chrome ETA', () => {
+  it('prefers distance-based estimate over raw Mapbox duration', () => {
     const resolveWalkingDistanceCopy = () => ({
       primary: '335 m',
       secondary: '5 min walk',
@@ -26,6 +26,7 @@ describe('walkingCompanionFormat', () => {
       pending: false,
     })
 
+    // directionsDistanceM provided → distance-based: 335/100 = 3.35 → 3 min
     const copy = resolveWalkChromeDistanceCopy({
       liveDistanceM: 400,
       directionsDistanceM: 335,
@@ -33,7 +34,26 @@ describe('walkingCompanionFormat', () => {
       resolveWalkingDistanceCopy,
     })
 
-    expect(formatDistanceLine(copy)).toBe('335 m · 4 min')
+    expect(formatDistanceLine(copy)).toBe('335 m · 3 min')
+  })
+
+  it('falls back to blended Mapbox duration when distance is unavailable', () => {
+    const resolveWalkingDistanceCopy = () => ({
+      primary: '~400 m',
+      secondary: null,
+      estimated: true,
+      pending: false,
+    })
+
+    // No directionsDistanceM → duration * 0.72: 300 * 0.72 = 216 s → 4 min
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 400,
+      directionsDistanceM: null,
+      directionsDurationSec: 300,
+      resolveWalkingDistanceCopy,
+    })
+
+    expect(formatDistanceLine(copy)).toBe('~400 m · 4 min')
   })
 
   it('formats remaining time in compact style', () => {

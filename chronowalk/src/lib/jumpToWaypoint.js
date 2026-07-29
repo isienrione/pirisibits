@@ -1,4 +1,3 @@
-import { getDebugGeoPlacement, isDebugGeo } from '../config/env.js'
 import {
   beginJourney,
   jumpToSequenceIndex,
@@ -40,14 +39,17 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
     window.sessionStorage.setItem(STORY_VIEW_KEY, storyView)
   }
 
-  const placement = getDebugGeoPlacement()
-  const fallback =
-    isDebugGeo() && placement === 'arrived' ? JOURNEY_STATES.ARRIVED : JOURNEY_STATES.WALKING
-
+  // When an explicit targetState is provided (e.g. STORY for "Listen here" or
+  // THRESHOLD for the dev panel), honour it. THRESHOLD is special and must not
+  // be normalised away. When the caller passes null (the "Walk here" button),
+  // always resolve to WALKING — never let the old debug-geo "arrived" placement
+  // silently redirect a walk-intent jump into STORY, which locked the UI.
   const resolvedState =
     targetState === JOURNEY_STATES.THRESHOLD
       ? JOURNEY_STATES.THRESHOLD
-      : normalizeRedesignJourneyState(targetState ?? fallback)
+      : targetState != null
+        ? normalizeRedesignJourneyState(targetState)
+        : JOURNEY_STATES.WALKING
 
   transitionJourney(resolvedState)
 

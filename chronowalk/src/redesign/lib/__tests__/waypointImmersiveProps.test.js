@@ -48,7 +48,7 @@ describe('waypointImmersiveProps', () => {
       '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4',
     )
     expect(waypoint.reconstruction.then).toBe(
-      '/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.jpg',
+      '/waypoints/forum-cluster/forum-arch-severus/ancient-poster.jpg',
     )
   })
 
@@ -64,7 +64,15 @@ describe('waypointImmersiveProps', () => {
       manifest,
       chapterIndex: 0,
     })
-    const tombProps = buildImmersivePlayerProps({
+    // ch2 (index 1) = empire under feet — photo is tomb (user-assigned)
+    const empireProps = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w23',
+      manifest,
+      chapterIndex: 1,
+    })
+    // ch3 (index 2) = tombs chapter — photo is general interior oculus
+    const tombsProps = buildImmersivePlayerProps({
       waypoint,
       waypointId: 'w23',
       manifest,
@@ -74,9 +82,10 @@ describe('waypointImmersiveProps', () => {
     expect(domeProps.hasReconstruction).toBe(false)
     expect(domeProps.thenLoop).toBeNull()
     expect(domeProps.photo).toContain('/waypoints/pantheon/interior/interior-oculus.jpg')
-    expect(tombProps.photo).toContain(
+    expect(empireProps.photo).toContain(
       '/waypoints/pantheon/interior/interior-tomb-vittorio-emanuele.jpg',
     )
+    expect(tombsProps.photo).toContain('/waypoints/pantheon/interior/interior-oculus.jpg')
   })
 
   it('uses Curia reconstruction media for the Curia chapter on w11_12', () => {

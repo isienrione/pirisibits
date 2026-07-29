@@ -6,15 +6,23 @@ import { Vignette, BottomScrim } from '../ui/index.js';
 export default function F1JourneyLetter({
   firstName = "",
   body = "Today you crossed twenty-one centuries on foot. You began at a fountain that sinks, and you ended at a tomb that refused to stay a tomb. Rome will remember you were here.",
-  reflection = "— Your companion",
+  reflection = "- Your companion",
   stats = [{ v: "28 km", l: "walked" }, { v: "6h 40m", l: "in Rome" }, { v: "21", l: "centuries crossed" }],
   busy = false,
   statusMessage = "",
+  travelerName = "",
+  onTravelerNameChange,
   onSave,
   onShare,
   onBack,
 }) {
   const [phase, setPhase] = useState(0);
+  const [editingName, setEditingName] = useState(false);
+  const [nameDraft, setNameDraft] = useState(travelerName || "");
+
+  useEffect(() => {
+    setNameDraft(travelerName || "");
+  }, [travelerName]);
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 2600);
@@ -40,9 +48,15 @@ export default function F1JourneyLetter({
     { cx: 378, cy: 14, color: T.encore },
   ];
 
+  const displayName = firstName || 'Traveler';
+
+  const commitName = () => {
+    onTravelerNameChange?.(nameDraft.trim());
+    setEditingName(false);
+  };
+
   return (
     <div style={{ background: T.obsidian, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
-      {/* Full-bleed Spanish Steps — the golden-hour emotional peak */}
       <div style={{
         position: "absolute", inset: 0,
         backgroundImage: `url(${spanishSteps})`,
@@ -53,9 +67,7 @@ export default function F1JourneyLetter({
       <Vignette />
       <BottomScrim strength={0.94} />
 
-      {/* Content */}
       <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%", padding: "52px 28px 28px", overflowY: "auto", scrollbarWidth: "none" }}>
-        {/* Spectrum route SVG */}
         <div style={{ flexShrink: 0, height: 170, position: "relative", marginBottom: 4 }}>
           <svg width="100%" height="170" viewBox="0 0 390 170" preserveAspectRatio="xMinYMin meet">
             <line x1="0" y1="90" x2="390" y2="90" stroke={T.ink800} strokeWidth="1" />
@@ -79,7 +91,6 @@ export default function F1JourneyLetter({
           </svg>
         </div>
 
-        {/* Stats */}
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 28, flexShrink: 0, opacity: phase >= 1 ? 1 : 0, transition: "opacity 700ms" }}>
           {stats.map(s => (
             <div key={s.l} style={{ textAlign: "center" }}>
@@ -89,13 +100,45 @@ export default function F1JourneyLetter({
           ))}
         </div>
 
-        {/* The Letter — Fraunces, ON the photograph */}
         <div style={{ opacity: phase >= 2 ? 1 : 0, transition: "opacity 800ms", flex: 1, flexShrink: 0 }}>
           <div style={{ width: 1.5, height: 32, background: T.ember, marginBottom: 24, opacity: 0.8, animation: "seamBreathe 3s ease-in-out infinite", boxShadow: "0 0 12px rgba(232,161,60,0.45)" }} />
           <div style={{ fontFamily: F.display, color: T.warmWhite, fontWeight: 300 }}>
-            {firstName && (
-              <p style={{ fontSize: 24, marginBottom: 22, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>Dear {firstName} —</p>
-            )}
+            {typeof onTravelerNameChange === 'function' ? (
+              <div style={{ marginBottom: 18 }}>
+                <p style={{ fontSize: 12, color: T.muted, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+                  Address the letter to
+                </p>
+                <input
+                  type="text"
+                  value={nameDraft}
+                  onChange={(e) => setNameDraft(e.target.value)}
+                  onFocus={() => setEditingName(true)}
+                  onBlur={commitName}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.currentTarget.blur()
+                    }
+                  }}
+                  placeholder="Traveler"
+                  aria-label="Your name for the letter"
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: `1px solid ${T.ink800}`,
+                    background: 'rgba(11,11,13,0.55)',
+                    color: T.warmWhite,
+                    fontFamily: F.display,
+                    fontSize: 18,
+                    fontWeight: 300,
+                  }}
+                />
+              </div>
+            ) : null}
+            <p style={{ fontSize: 24, marginBottom: 22, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>
+              Dear {displayName}{editingName ? '' : ''} -
+            </p>
             <p style={{ fontSize: 19, lineHeight: 1.78, textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}>
               {body}
             </p>
@@ -105,7 +148,6 @@ export default function F1JourneyLetter({
           </div>
         </div>
 
-        {/* Actions + review */}
         <div style={{ opacity: phase >= 3 ? 1 : 0, transition: "opacity 800ms", marginTop: 28, flexShrink: 0 }}>
           <button
             type="button"
@@ -116,7 +158,7 @@ export default function F1JourneyLetter({
             borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
             border: "none", cursor: busy ? 'wait' : "pointer", marginBottom: 10,
             boxShadow: "0 0 24px rgba(232,161,60,0.45)",
-          }}>Keep this — save your Letter</button>
+          }}>Keep this - save your Letter</button>
           <button
             type="button"
             disabled={busy}

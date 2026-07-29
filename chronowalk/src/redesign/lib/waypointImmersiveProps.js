@@ -54,16 +54,21 @@ export function buildImmersivePlayerProps({
   const chapters = waypoint?.chapters?.length ? waypoint.chapters : []
   const { nowAmbienceUrl, thenSoundscapeUrl } = resolveThresholdAmbienceUrls(manifest)
   const transcript = transcriptOverride ?? resolveWaypointTranscript(waypoint, chapterIndex)
+  const activeChapterTitle = chapterTitle(
+    chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint)),
+    `Chapter ${chapterIndex + 1}`
+  )
 
   return {
     accent: accentForWaypoint(waypoint, manifest),
     actLabel: actLabelForWaypoint(waypoint, manifest),
-    title: titleForWaypoint(waypoint),
+    // Multi-chapter stops (e.g. Severus + Curia) show the active chapter as the hero title.
+    title:
+      chapters.length > 1 && activeChapterTitle
+        ? activeChapterTitle
+        : titleForWaypoint(waypoint),
     tagline: taglineForWaypoint(waypoint),
-    chapterTitle: chapterTitle(
-      chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint)),
-      `Chapter ${chapterIndex + 1}`
-    ),
+    chapterTitle: activeChapterTitle,
     chapterIndex,
     chapterCount: audio.chapterCount || Math.max(chapters.length, 1),
     chapterTitles: chapters.map((chapter, index) =>

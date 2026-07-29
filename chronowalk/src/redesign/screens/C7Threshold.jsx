@@ -18,6 +18,7 @@ export default function C7Threshold({
   onCrossed,
   onHoldStart = null,
   onHoldEnd = null,
+  onNowTap = null,
   hideUi = false,
   embedded = false,
   immersive = false,
@@ -49,6 +50,7 @@ export default function C7Threshold({
       thenSoundscapeUrl={thenSoundscapeUrl}
       onHoldStart={onHoldStart}
       onHoldEnd={onHoldEnd}
+      onNowTap={onNowTap}
       hideUi={hideUi}
       autoPeek={autoPeek}
       demoAutoReveal={demoAutoReveal}

@@ -1,4 +1,15 @@
 /**
+ * Normalize em dashes in transcript text for display.
+ * Converts space-emdash-space to space-hyphen-space, and bare em dash to hyphen.
+ * @param {string} text
+ * @returns {string}
+ */
+export function normalizeTranscriptDashes(text) {
+  if (!text || typeof text !== 'string') return text
+  return text.replace(/ \u2014 /g, ' - ').replace(/\u2014/g, '-')
+}
+
+/**
  * Remove ElevenLabs / director cues in square brackets from readable copy.
  * @param {string | null | undefined} text
  * @returns {string}
@@ -6,7 +17,7 @@
 export function stripDirectorCues(text) {
   if (!text || typeof text !== 'string') return ''
 
-  return text
+  return normalizeTranscriptDashes(text)
     .replace(/\[[^\]]*\]/g, '')
     .split('\n')
     .map((line) => line.replace(/[ \t]{2,}/g, ' ').trim())

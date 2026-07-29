@@ -25,10 +25,12 @@ export default function RedesignWalkTogetherPage() {
   return (
     <RedesignRouteShell>
       <div
-        className="redesign-app-shell cw-grain cw-walk-together-page"
+        className="cw-grain cw-walk-together-page"
         data-testid="walk-together-page"
         style={{
           minHeight: '100dvh',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
           background: T.bone,
           color: T.ink,
           fontFamily: F.body,

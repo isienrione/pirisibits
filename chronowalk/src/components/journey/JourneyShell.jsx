@@ -216,6 +216,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
       scriptedRestNarrationStartedRef.current = null
       scriptedRestEnteredRef.current = null
     }
+    // Jumping away from STORY/ARRIVED back to WALKING (e.g. "Walk here" to a
+    // new stop) — stop the previous story narration, clear the autoplay guard
+    // so the new stop can start fresh, and release any stale dock snapshot.
+    if (
+      (prevStateRef.current === JOURNEY_STATES.STORY ||
+        prevStateRef.current === JOURNEY_STATES.ARRIVED) &&
+      state === JOURNEY_STATES.WALKING
+    ) {
+      audioOpsRef.current.stopNarration()
+      waypointAutoplayRef.current.clearStarted()
+      playedStepRef.current = null
+      setDockSnapshot(null)
+    }
     prevStateRef.current = state
   }, [state])
 
@@ -715,23 +728,13 @@ export default function JourneyShell({ variant = 'legacy' }) {
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
       notifyArrivalUnlock(waypointId)
-
-      if (variant === 'redesign') {
-        storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-        transition(JOURNEY_STATES.STORY)
-        void tryStartWaypointNarration(waypointId).then((started) => {
-          if (started) setAudioUnlocked(true)
-          else if (!started) armStoryAutoplayGesture(waypointId)
-        })
-      } else {
-        transition(JOURNEY_STATES.ARRIVED)
-      }
+      transition(JOURNEY_STATES.ARRIVED)
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
       if (source === 'manual' || source === 'transit_manual') {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },
-    [armStoryAutoplayGesture, notifyArrivalUnlock, transition, tryStartWaypointNarration, variant]
+    [notifyArrivalUnlock, transition]
   )
 
   useEffect(() => {
@@ -815,14 +818,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
       // Pocket-safe: alert as soon as GPS confirms arrival (all visit stops).
       notifyArrivalUnlock(step.id)
 
-      if (variant !== 'redesign') {
-        // Legacy: mature dwell before auto-arrival.
-        if (dwellTimerRef.current == null) {
-          dwellTimerRef.current = setTimeout(() => {
-            dwellTimerRef.current = null
-            arriveRef.current?.('auto')
-          }, ARRIVAL_DWELL_MS)
-        }
+      // Mature dwell, then land on ARRIVED (never skip straight into story).
+      if (dwellTimerRef.current == null) {
+        dwellTimerRef.current = setTimeout(() => {
+          dwellTimerRef.current = null
+          arriveRef.current?.('auto')
+        }, ARRIVAL_DWELL_MS)
       }
       return
     }
@@ -847,7 +848,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
     step?.id,
     step?.type,
     transition,
-    variant,
   ])
 
   useEffect(() => () => {
@@ -928,21 +928,6 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setBusy(false)
   }
 
-  // Redesign skips ARRIVED — recover stale sessions (e.g. map tab manual arrival).
-  const arrivedRecoveryRef = useRef(null)
-  useEffect(() => {
-    if (variant !== 'redesign') return undefined
-    if (state !== JOURNEY_STATES.ARRIVED || step?.type !== 'waypoint') {
-      if (state !== JOURNEY_STATES.ARRIVED) arrivedRecoveryRef.current = null
-      return undefined
-    }
-    if (arrivedRecoveryRef.current === step.id) return undefined
-    arrivedRecoveryRef.current = step.id
-    storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
-    transition(JOURNEY_STATES.STORY)
-    void tryStartWaypointNarrationRef.current(step.id)
-    return undefined
-  }, [state, step?.id, step?.type, transition, variant])
 
   const handleTranscript = () => {
     storyViewRef.current = 'transcript'
