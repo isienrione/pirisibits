@@ -9,7 +9,11 @@ import {
   cacheLegDirections,
   cacheLegRoute,
 } from '../utils/routeGeometryCache'
+import { getDistance } from '../utils/distance'
 import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
+
+/** If GPS is farther than this from the previous stop, prefer stop→stop routing. */
+const STALE_GPS_FROM_LEG_M = 350
 
 function geometryFromLegCache(tourId, fromId, toId) {
   const coordinates = getLegRouteCoordinates(tourId, fromId, toId)
@@ -129,6 +133,32 @@ export function useWalkingDirections({
       if (isSameLocation(routingOrigin, routingDestination)) {
         setDirections(null)
         setError('You are already at this landmark.')
+        setLoading(false)
+        return
+      }
+
+      // When the traveler has jumped ahead (I'm here / resume) but GPS is still
+      // near an earlier stop, Mapbox GPS→destination inflates distance badly.
+      // Prefer the planned stop→stop leg in that case.
+      const legFrom = legFallback?.from
+      const gpsFarFromLegStart =
+        legFrom?.lat != null &&
+        legFrom?.lng != null &&
+        getDistance(routingOrigin.lat, routingOrigin.lng, legFrom.lat, legFrom.lng) >
+          STALE_GPS_FROM_LEG_M
+
+      if (gpsFarFromLegStart) {
+        setLoading(true)
+        setError(null)
+        const legResult = await legPromise
+        if (cancelled) return
+        if (legResult?.steps?.length) {
+          setDirections(legResult)
+          setError(null)
+        } else {
+          setDirections(null)
+          setError('Could not load walking directions. Try again or open Google Maps.')
+        }
         setLoading(false)
         return
       }

@@ -296,6 +296,24 @@ export default function Threshold({
     }
   }, [])
 
+  const mediaKey = `${reconstruction?.loop ?? ''}|${reconstruction?.then ?? ''}|${reconstruction?.now ?? ''}`
+  const prevMediaKeyRef = useRef(mediaKey)
+
+  // Reset reveal when the reconstruction media changes (e.g. Curia / chapter swap)
+  // so a mid-swipe seam cannot leave a thin vertical strip + black void.
+  useEffect(() => {
+    if (prevMediaKeyRef.current === mediaKey) return
+    prevMediaKeyRef.current = mediaKey
+    cancelAnimation()
+    clearHoldCommitTimer()
+    setReveal(0)
+    revealRef.current = 0
+    setHolding(false)
+    setLatchedToThen(false)
+    latchedRef.current = false
+    setVideoPlaying(false)
+  }, [mediaKey, cancelAnimation, clearHoldCommitTimer])
+
   const notifyFullyRevealed = useCallback(() => {
     if (fullyRevealedHoldRef.current) return
     fullyRevealedHoldRef.current = true

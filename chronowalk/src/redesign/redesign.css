@@ -499,8 +499,8 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 8, 8, 0.35) 0%, transparent 18%),
-    linear-gradient(0deg, rgba(11, 11, 13, 0.98) 0%, rgba(11, 11, 13, 0.72) 34%, rgba(11, 11, 13, 0.2) 58%, transparent 72%);
+    linear-gradient(180deg, rgba(8, 8, 8, 0.72) 0%, rgba(8, 8, 8, 0.35) 22%, transparent 40%),
+    linear-gradient(0deg, rgba(11, 11, 13, 0.98) 0%, rgba(11, 11, 13, 0.78) 34%, rgba(11, 11, 13, 0.35) 58%, transparent 78%);
   pointer-events: none;
   z-index: 3;
 }
@@ -513,6 +513,13 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   z-index: 5;
   padding: 0 24px 10px;
   pointer-events: none;
+}
+
+.cw-waypoint-immersive__hero-title h2,
+.cw-waypoint-immersive__hero-title p {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 4px 18px rgba(0, 0, 0, 0.55);
 }
 
 .cw-waypoint-immersive__threshold {
@@ -897,7 +904,8 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
 }
 
 :root {
-  --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  /* Content height of the tab bar. Safe-area is added only for standalone PWA. */
+  --shell-tab-bar-height: 4.75rem;
   --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   /* Legacy fallback; action stack is now in-flow so panel no longer offsets by this. */
@@ -1490,7 +1498,12 @@ html.redesign-pwa #root {
   overflow-y: auto;
 }
 
-html.redesign-pwa[data-shell-tab-bar='visible'] {
+html[data-shell-standalone='true'] {
+  --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+}
+
+html.redesign-pwa[data-shell-tab-bar='visible'],
+html[data-shell-tab-bar='visible'] {
   --wc-shell-tab-inset: var(--shell-tab-bar-height);
 }
 

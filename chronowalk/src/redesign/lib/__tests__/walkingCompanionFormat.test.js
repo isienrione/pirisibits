@@ -60,4 +60,36 @@ describe('walkingCompanionFormat', () => {
     expect(formatRemainingShort(88)).toBe('−1:28')
     expect(formatPlaybackClock(88)).toBe('1:28')
   })
+
+  it('uses etaOverride for ride legs', () => {
+    const resolveWalkingDistanceCopy = () => ({
+      primary: '8.0 km',
+      secondary: '80–100 min walk',
+      estimated: true,
+      pending: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 8000,
+      directionsDistanceM: 8000,
+      etaOverride: 'estimated 30 min drive',
+      resolveWalkingDistanceCopy,
+    })
+    expect(formatDistanceLine(copy)).toBe('estimated 30 min drive')
+  })
+
+  it('prefers stop estimate when directions look inflated by stale GPS', () => {
+    const resolveWalkingDistanceCopy = (meters) => ({
+      primary: meters != null ? `${Math.round(meters)} m` : '—',
+      secondary: null,
+      estimated: false,
+      pending: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 2200,
+      estimatedDistanceM: 560,
+      directionsDistanceM: 2200,
+      resolveWalkingDistanceCopy,
+    })
+    expect(copy.primary).toBe('560 m')
+  })
 })

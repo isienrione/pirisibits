@@ -1,23 +1,26 @@
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { hasAccess } from './config.js'
-import { validateDeviceAccess } from './access.js'
-import { hasValidLocalAccess } from './accessSession.js'
+import { validateDeviceAccess, readDeviceCredential } from './access.js'
+import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
 
 /**
  * Gate paid tour surfaces.
  * Uses credential + entitlement (with offline lease), not a bare boolean.
  * While online, revalidates on mount; clears access when server rejects.
+ * Soft grace: if a credential exists but the lease just expired, allow the
+ * shell to paint while revalidation runs (avoids Home Screen → paste-code flash).
  */
 export function RequireAccess({ children, redirectTo = '/access' }) {
-  const [allowed, setAllowed] = useState(() => hasValidLocalAccess())
+  const [allowed, setAllowed] = useState(() => hasValidLocalAccess() || Boolean(readDeviceCredential()))
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
     let cancelled = false
 
     async function run() {
-      if (!hasValidLocalAccess()) {
+      const credential = readDeviceCredential()
+      if (!credential) {
         if (!cancelled) {
           setAllowed(false)
           setChecking(false)
@@ -25,7 +28,7 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
         return
       }
 
-      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      if (hasValidLocalAccess() && typeof navigator !== 'undefined' && navigator.onLine === false) {
         if (!cancelled) {
           setAllowed(true)
           setChecking(false)
@@ -35,7 +38,23 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
 
       const result = await validateDeviceAccess()
       if (cancelled) return
-      setAllowed(Boolean(result.ok))
+
+      if (result.ok) {
+        setAllowed(true)
+        setChecking(false)
+        return
+      }
+
+      // Network blip with an existing (even slightly stale) entitlement: keep walking.
+      const entitlement = readAccessEntitlement()
+      if (result.reason === 'network' && entitlement && credential) {
+        writeAccessEntitlement(entitlement)
+        setAllowed(true)
+        setChecking(false)
+        return
+      }
+
+      setAllowed(false)
       setChecking(false)
     }
 
@@ -46,7 +65,7 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
   }, [])
 
   if (checking) {
-    if (!hasAccess()) {
+    if (!hasAccess() && !readDeviceCredential()) {
       return <Navigate to={redirectTo} replace />
     }
     return children

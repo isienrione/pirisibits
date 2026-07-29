@@ -31,30 +31,37 @@ export default function WalkingCompanionStepsPanel({
       if (onOpenExternalMaps) onOpenExternalMaps(externalMapsUrl)
       else window.open(externalMapsUrl, '_blank', 'noopener,noreferrer')
     }
+    const isInfo = !onRetry && !externalMapsUrl
 
     return (
       <div className="cw-walking-directions" data-testid="walking-directions-steps">
-        <p className="cw-walking-directions__status cw-walking-directions__status--error">{error}</p>
-        <div className="cw-walking-directions__actions">
-          {onRetry ? (
-            <button
-              type="button"
-              className="cw-walking-directions__retry cw-wc-pressable"
-              onClick={onRetry}
-            >
-              Try again
-            </button>
-          ) : null}
-          {externalMapsUrl ? (
-            <button
-              type="button"
-              className="cw-walking-directions__maps cw-wc-pressable"
-              onClick={openMaps}
-            >
-              Open in Google Maps
-            </button>
-          ) : null}
-        </div>
+        <p
+          className={`cw-walking-directions__status${isInfo ? '' : ' cw-walking-directions__status--error'}`}
+        >
+          {error}
+        </p>
+        {onRetry || externalMapsUrl ? (
+          <div className="cw-walking-directions__actions">
+            {onRetry ? (
+              <button
+                type="button"
+                className="cw-walking-directions__retry cw-wc-pressable"
+                onClick={onRetry}
+              >
+                Try again
+              </button>
+            ) : null}
+            {externalMapsUrl ? (
+              <button
+                type="button"
+                className="cw-walking-directions__maps cw-wc-pressable"
+                onClick={openMaps}
+              >
+                Open in Google Maps
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     )
   }

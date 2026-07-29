@@ -179,14 +179,22 @@ function AndroidChromeHowToDemo() {
 }
 
 /**
- * Third prepare-row option: install to home screen, with expand/hover capsule.
+ * Install-to-home-screen option, with expand/hover how-to.
+ * @param {'dark' | 'light'} tone — dark for prepare (obsidian), light for Settings (bone).
  */
 export default function HomeScreenInstallOption({
   installed = false,
   canPromptInstall = false,
   showIosInstructions = false,
   onInstall,
+  tone = 'dark',
+  /** When true, omit the top hairline (already inside a Recommended card). */
+  embedded = false,
 }) {
+  const titleColor = tone === 'light' ? T.ink : T.warmWhite
+  const borderColor = tone === 'light' ? `${T.ink}22` : T.ink800
+  const topBorder = embedded || tone === 'light' ? 'none' : `1px solid ${borderColor}`
+  const topPad = embedded || tone === 'light' ? 0 : 22
   const panelId = useId()
   const defaultPlatform = useMemo(() => {
     if (showIosInstructions || isIosDevice()) return 'ios'
@@ -211,12 +219,12 @@ export default function HomeScreenInstallOption({
   if (installed) {
     return (
       <div
-        style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}
+        style={{ borderTop: topBorder, paddingTop: topPad, paddingBottom: 22 }}
         data-testid="a2hs-option-installed"
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
+            <p style={{ fontSize: 16, color: titleColor, fontWeight: 500, marginBottom: 5 }}>
               Ready as a mobile app
             </p>
             <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
@@ -253,7 +261,7 @@ export default function HomeScreenInstallOption({
 
   return (
     <div
-      style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}
+      style={{ borderTop: topBorder, paddingTop: topPad, paddingBottom: 22 }}
       data-testid="a2hs-option"
       onMouseEnter={() => setHoverOpen(true)}
       onMouseLeave={() => setHoverOpen(false)}
@@ -274,7 +282,7 @@ export default function HomeScreenInstallOption({
             fontFamily: F.body,
           }}
         >
-          <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
+          <p style={{ fontSize: 16, color: titleColor, fontWeight: 500, marginBottom: 5 }}>
             Use as a mobile app
           </p>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>

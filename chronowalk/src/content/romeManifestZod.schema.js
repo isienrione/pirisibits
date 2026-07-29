@@ -47,6 +47,7 @@ const waypointSchema = z.object({
   inserts: z.array(z.string()).optional(),
   alt_inserts: z.array(z.string()).optional(),
   outro_variants: z.record(z.string(), z.string()).optional(),
+  outro_title: z.string().optional(),
   interior_zone: z.string().optional(),
   optional_on_path: z.enum(['a', 'b']).optional(),
   scripted_rest: z.boolean().optional(),
@@ -71,6 +72,8 @@ const transitSchema = z.object({
   choice: z.boolean().optional(),
   duration_s: z.number().optional(),
   note: z.string().optional(),
+  travel_mode: z.enum(['walk', 'ride']).optional(),
+  eta_label: z.string().optional(),
 })
 
 const insertSchema = z.object({

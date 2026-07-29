@@ -1563,6 +1563,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             onPrimeAudio={() => audio.primeForGesture()}
             insideGeofence={gpsArrived}
             near
+            isFirstStop={isOnFirstTourStop(context, step, manifest)}
             extraBottomInset={dockActive ? 88 : 0}
             onOpenSettings={openSettings}
             map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
@@ -1674,6 +1675,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             onPrimeAudio={() => audio.primeForGesture()}
             insideGeofence={gpsArrived}
             near={nearApproach}
+            isFirstStop={isOnFirstTourStop(context, step, manifest)}
             extraBottomInset={dockActive ? 88 : 0}
             onPause={() => transition(JOURNEY_STATES.PAUSED)}
             onOpenSettings={openSettings}
