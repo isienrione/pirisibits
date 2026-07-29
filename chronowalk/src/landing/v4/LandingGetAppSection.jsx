@@ -1,4 +1,5 @@
 import { CHRONOWALK_HOME_ICON } from '../../redesign/ui/HomeScreenInstallOption.jsx'
+import LandingAccessCta from './LandingAccessCta.jsx'
 
 /**
  * How to open ChronoWalk: browser (available now) above App Store / Play Store (coming soon).
@@ -93,6 +94,8 @@ export default function LandingGetAppSection({ onChooseTour }) {
         <p className="cw-v4-getapp__soon">
           Native apps are on the way. ChronoWalk is a full browser experience today.
         </p>
+
+        <LandingAccessCta className="cw-v4-access-cta--after-getapp" />
       </div>
     </section>
   )

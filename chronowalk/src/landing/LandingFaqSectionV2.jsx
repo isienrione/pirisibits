@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getLandingFaqItems, LANDING_CONTENT } from './landingData.js'
 import { trackLandingFaqOpen } from './landingAnalytics.js'
+import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 
 function faqDeepLinkId(itemId) {
   return `faq-${itemId}`
@@ -156,6 +157,8 @@ export default function LandingFaqSectionV2() {
             </section>
           ))}
         </div>
+
+        <LandingTrustChecklist embedded />
       </div>
     </section>
   )

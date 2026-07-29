@@ -295,8 +295,8 @@ export const LANDING_SECTION_ORDER = [
   'monuments',
   'personas',
   'pricing',
-  'trust',
   'faq',
+  'trust',
 ]
 
 /** Narrative acts for composition / a11y / navigation (`#act-*`). */
@@ -320,7 +320,7 @@ export const LANDING_ACTS = [
     label: 'Act III: The Choice',
     index: 'III',
     name: 'The Choice',
-    sections: ['pricing', 'trust', 'faq'],
+    sections: ['pricing', 'faq', 'trust'],
   },
 ]
 
@@ -505,7 +505,7 @@ export const LANDING_CONTENT = {
   trust: {
     id: 'trust',
     eyebrow: null,
-    headline: 'Before you walk | FAQ',
+    headline: null,
     subheadline: null,
     checklist: [
       {
@@ -952,8 +952,8 @@ export const LANDING_CONTENT = {
 
   faq: {
     id: 'faq',
-    eyebrow: 'BEFORE YOU WALK | FAQ',
-    headline: 'Before you walk | FAQ',
+    eyebrow: null,
+    headline: 'Frequently Asked Questions',
     groups: [
       {
         id: 'understanding',

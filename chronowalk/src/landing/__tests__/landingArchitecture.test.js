@@ -19,8 +19,8 @@ describe('landing product-story architecture (V4)', () => {
       'monuments',
       'personas',
       'pricing',
-      'trust',
       'faq',
+      'trust',
     ])
   })
 
