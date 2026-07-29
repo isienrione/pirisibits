@@ -68,12 +68,19 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
 
 /**
  * Where an unlocked traveler should land when opening the site.
- * @param {{ resumable?: boolean, entryComplete?: boolean }} opts
+ * Fresh unlocks always enter App Entry (A2HS + offline prepare) even if a
+ * previous session marked entry complete.
+ * @param {{ resumable?: boolean, entryComplete?: boolean, afterUnlock?: boolean }} opts
  */
 export function getAppHomePath({
   resumable = false,
   entryComplete = isAppEntryComplete(),
+  afterUnlock = false,
 } = {}) {
+  if (afterUnlock) {
+    clearAppEntryComplete()
+    return '/setup'
+  }
   if (resumable) return '/begin'
   if (!entryComplete) return '/setup'
   return '/begin'

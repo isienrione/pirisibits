@@ -34,6 +34,14 @@ describe('appEntry', () => {
     expect(getAppHomePath({ resumable: true, entryComplete: false })).toBe('/begin')
   })
 
+  it('forces App Entry setup after a fresh unlock', () => {
+    markAppEntryComplete()
+    expect(getAppHomePath({ afterUnlock: true, entryComplete: true, resumable: true })).toBe(
+      '/setup',
+    )
+    expect(isAppEntryComplete()).toBe(false)
+  })
+
   it('returns /journey for an active walk so the current stop is preserved', () => {
     expect(
       getActiveWalkPath({

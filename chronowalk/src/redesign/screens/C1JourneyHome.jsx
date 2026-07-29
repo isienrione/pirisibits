@@ -18,7 +18,7 @@ export default function C1JourneyHome() {
     { num: "IV",  color: T.actIV,  name: "The Market",      promise: "Trade, gossip, and the smell of fresh bread.",              status: "ahead",   photo: trajansNow    },
     { num: "V",   color: T.actV,   name: "The Living City", promise: "The centuries pile up and somehow stay distinct.",          status: "ahead",   photo: pantheonNow   },
     { num: "VI",  color: T.actVI,  name: "The River",       promise: "Everything Rome built, it built toward this water.",        status: "ahead",   photo: spanishSteps  },
-    { num: "ENC", color: T.encore, name: "The Quiet Road",  promise: "A road where Rome goes quiet. Worth every minute.",         status: "ahead",   photo: spanishSteps  },
+    { num: "ENC", color: T.encore, name: "Optional Encore",  promise: "Via Appia Antica — estimated 30 min drive.",         status: "ahead",   photo: spanishSteps  },
   ];
 
   // Seam x-position: within the left third (about 38px from left edge)

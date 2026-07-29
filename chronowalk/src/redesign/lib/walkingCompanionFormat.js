@@ -34,9 +34,41 @@ export function resolveWalkChromeDistanceCopy({
   directionsDurationSec = null,
   locationStatus = null,
   resolveWalkingDistanceCopy,
+  /** Override chrome copy for ride/taxi legs (e.g. Via Appia encore). */
+  etaOverride = null,
 }) {
-  const preferredMeters =
-    typeof directionsDistanceM === 'number' && directionsDistanceM > 0
+  if (etaOverride) {
+    const base = resolveWalkingDistanceCopy(
+      null,
+      estimatedDistanceM,
+      locationStatus,
+    )
+    return {
+      ...base,
+      primary: etaOverride,
+      secondary: null,
+      pending: false,
+      gpsBlocked: false,
+    }
+  }
+
+  // Prefer stop→stop estimate when live/directions look like a stale GPS jump
+  // (common when advancing with "I'm here" while still geolocated at an earlier stop).
+  const directionsInflated =
+    typeof estimatedDistanceM === 'number' &&
+    estimatedDistanceM > 0 &&
+    typeof directionsDistanceM === 'number' &&
+    directionsDistanceM > estimatedDistanceM * 1.75
+
+  const liveInflated =
+    typeof estimatedDistanceM === 'number' &&
+    estimatedDistanceM > 0 &&
+    typeof liveDistanceM === 'number' &&
+    liveDistanceM > estimatedDistanceM * 1.75
+
+  const preferredMeters = directionsInflated || liveInflated
+    ? estimatedDistanceM
+    : typeof directionsDistanceM === 'number' && directionsDistanceM > 0
       ? directionsDistanceM
       : liveDistanceM
 
@@ -47,13 +79,18 @@ export function resolveWalkChromeDistanceCopy({
   )
 
   if (!base.gpsBlocked && !base.pending) {
-    if (typeof directionsDistanceM === 'number' && directionsDistanceM > 0) {
-      // Prefer a distance-based estimate using the same brisk/range format as
-      // the rest of the app — more consistent than raw Mapbox pedestrian durations
-      // which tend to overestimate for an active tourist pace.
-      const timeCopy = formatWalkingTime(directionsDistanceM)
+    const metersForTime =
+      typeof preferredMeters === 'number' && preferredMeters > 0
+        ? preferredMeters
+        : null
+    if (metersForTime != null) {
+      const timeCopy = formatWalkingTime(metersForTime)
       if (timeCopy) return { ...base, secondary: timeCopy }
-    } else if (typeof directionsDurationSec === 'number' && directionsDurationSec > 0) {
+    } else if (
+      !directionsInflated &&
+      typeof directionsDurationSec === 'number' &&
+      directionsDurationSec > 0
+    ) {
       // Mapbox durations assume a slow pace; scale down ~28 % to match 100 m/min.
       const effectiveSec = Math.round(directionsDurationSec * 0.72)
       const minutes = Math.max(1, Math.round(effectiveSec / 60))

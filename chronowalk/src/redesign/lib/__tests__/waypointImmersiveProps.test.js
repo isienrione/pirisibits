@@ -137,4 +137,42 @@ describe('waypointImmersiveProps', () => {
     expect(ch1.title).not.toMatch(/\b[IVXLC\d]+\b/)
     expect(ch1.tagline).toMatch(/Arch of Titus I/i)
   })
+
+  it('titles Titus outro chapter as Enter the valley', () => {
+    const waypoint = getWaypoint(manifest, 'w03')
+    const outro = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 2,
+      audio: { chapterCount: 3 },
+    })
+    expect(outro.chapterTitle).toBe('Enter the valley')
+    expect(outro.title).toBe('Enter the valley')
+    expect(outro.tagline).toBe('Enter the valley')
+  })
+
+  it('uses Circo Massimo only (no Circus Maximus dual name)', () => {
+    const waypoint = getWaypoint(manifest, 'w04')
+    const circus = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w04',
+      manifest,
+      chapterIndex: 1,
+    })
+    expect(circus.chapterTitle).toBe('Circo Massimo')
+    expect(circus.chapterTitle).not.toMatch(/Circus Maximus/i)
+  })
+
+  it('titles Pantheon interior chapter as Resilience and Purpose', () => {
+    const waypoint = getWaypoint(manifest, 'w23')
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w23',
+      manifest,
+      chapterIndex: 2,
+    })
+    expect(props.chapterTitle).toMatch(/Resilience and Purpose/i)
+    expect(props.chapterTitle).not.toMatch(/Tombs/i)
+  })
 })

@@ -74,25 +74,36 @@ export function buildImmersivePlayerProps({
   const chapters = waypoint?.chapters?.length ? waypoint.chapters : []
   const { nowAmbienceUrl, thenSoundscapeUrl } = resolveThresholdAmbienceUrls(manifest)
   const transcript = transcriptOverride ?? resolveWaypointTranscript(waypoint, chapterIndex)
-  const activeChapterTitle = chapterTitle(
-    chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint)),
-    `Chapter ${chapterIndex + 1}`
-  )
+  const hasOutro =
+    Boolean(waypoint?.outro_variants) &&
+    (audio.chapterCount || 0) > chapters.length
+  const outroTitle = waypoint?.outro_title || 'Enter the valley'
+  const activeChapterTitle =
+    chapterIndex >= chapters.length && (hasOutro || waypoint?.outro_variants)
+      ? outroTitle
+      : chapterTitle(
+          chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint)),
+          `Chapter ${chapterIndex + 1}`,
+        )
+  const displayChapterCount =
+    audio.chapterCount || Math.max(chapters.length + (waypoint?.outro_variants ? 1 : 0), 1)
+  const chapterTitles = [
+    ...chapters.map((chapter, index) => chapterTitle(chapter, `Chapter ${index + 1}`)),
+    ...(waypoint?.outro_variants ? [outroTitle] : []),
+  ]
 
   return {
     accent: accentForWaypoint(waypoint, manifest),
     actLabel: actLabelForWaypoint(waypoint, manifest),
-    title: heroTitleForWaypoint(waypoint, activeChapterTitle, chapters.length),
+    title: heroTitleForWaypoint(waypoint, activeChapterTitle, displayChapterCount),
     tagline:
-      chapters.length > 1 && activeChapterTitle
+      displayChapterCount > 1 && activeChapterTitle
         ? activeChapterTitle
         : taglineForWaypoint(waypoint),
     chapterTitle: activeChapterTitle,
     chapterIndex,
-    chapterCount: audio.chapterCount || Math.max(chapters.length, 1),
-    chapterTitles: chapters.map((chapter, index) =>
-      chapterTitle(chapter, `Chapter ${index + 1}`)
-    ),
+    chapterCount: displayChapterCount,
+    chapterTitles,
     photo: photoForWaypoint(waypoint, chapterIndex),
     waypointId,
     thenPhoto: thenPhotoForWaypoint(waypoint, chapterIndex),

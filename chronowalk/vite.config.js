@@ -101,9 +101,9 @@ export default defineConfig({
         display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         scope: '/',
-        start_url: '/tour',
-        // Prefer /tour for installed PWAs so access + progress resume immediately.
-        // /landing remains the browser marketing entry via apex redirect.
+        // /begin resumes an in-progress walk (or setup) when local access exists.
+        // /tour alone hard-gated travelers back to the email paste screen on cold open.
+        start_url: '/begin',
         categories: ['travel', 'navigation'],
         icons: [
           {

@@ -69,6 +69,13 @@ export default function WalkingCompanionScreen({
   forcedRouteView = null,
   /** Optional precomputed directions — skips Mapbox when provided. */
   directionsOverride = null,
+  /**
+   * First tour stop (Colosseum): there is no previous leg, so directions will
+   * often fail. Show orienting copy instead of a scary error.
+   */
+  isFirstStop = false,
+  /** Ride/taxi legs (e.g. Via Appia) — replaces walk distance chrome. */
+  etaOverride = null,
 }) {
   const [fullPlayerOpen, setFullPlayerOpen] = useState(false)
   const [userConfirmedArrival, setUserConfirmedArrival] = useState(false)
@@ -80,22 +87,31 @@ export default function WalkingCompanionScreen({
   const showArrivedUI = arrived || userConfirmedArrival
   const storyCtaLabel = beginChapterLabel || `Open the ${title} story →`
 
+  const externalMapsUrl = useMemo(
+    () => buildGoogleMapsDirectionsUrl(userPosition, destination),
+    [userPosition, destination],
+  )
+
   const liveDirections = useWalkingDirections({
     origin: userPosition,
     destination,
     legFallback,
     destinationName: title,
-    enabled: !directionsOverride && !showArrivedUI && Boolean(destination),
+    enabled:
+      !isFirstStop && !directionsOverride && !showArrivedUI && Boolean(destination),
   })
-  const directions = directionsOverride ?? liveDirections.directions
-  const directionsLoading = directionsOverride ? false : liveDirections.loading
-  const directionsError = directionsOverride ? null : liveDirections.error
-  const retryDirections = liveDirections.retry
-
-  const externalMapsUrl = useMemo(
-    () => buildGoogleMapsDirectionsUrl(userPosition, destination),
-    [userPosition, destination],
-  )
+  const directions = isFirstStop ? null : directionsOverride ?? liveDirections.directions
+  const directionsLoading =
+    isFirstStop || directionsOverride ? false : liveDirections.loading
+  const firstStopDirectionsCopy =
+    'Once you arrive at the Colosseum, this screen will show navigation directions for the following stops.'
+  const directionsError = isFirstStop
+    ? firstStopDirectionsCopy
+    : directionsOverride
+      ? null
+      : liveDirections.error
+  const retryDirections = isFirstStop ? undefined : liveDirections.retry
+  const mapsUrlForPanel = isFirstStop ? null : externalMapsUrl
 
   const handleOpenExternalMaps = useCallback((url) => {
     if (url) window.open(url, '_blank', 'noopener,noreferrer')
@@ -185,6 +201,7 @@ export default function WalkingCompanionScreen({
     directionsDurationSec: directions?.durationSec,
     locationStatus,
     resolveWalkingDistanceCopy,
+    etaOverride,
   })
   const distanceLine = formatDistanceLine(distanceCopy)
   const showGpsHelp = !showArrivedUI && distanceCopy.gpsBlocked
@@ -377,7 +394,7 @@ export default function WalkingCompanionScreen({
               error={directionsError}
               destinationTitle={title}
               onRetry={retryDirections}
-              externalMapsUrl={externalMapsUrl}
+              externalMapsUrl={mapsUrlForPanel}
               onOpenExternalMaps={handleOpenExternalMaps}
               variant="full"
             />
@@ -400,7 +417,7 @@ export default function WalkingCompanionScreen({
                 destinationTitle={title}
                 destinationPhoto={photo}
                 onRetry={retryDirections}
-                externalMapsUrl={externalMapsUrl}
+                externalMapsUrl={mapsUrlForPanel}
                 onOpenExternalMaps={handleOpenExternalMaps}
                 maxVisible={4}
               />
