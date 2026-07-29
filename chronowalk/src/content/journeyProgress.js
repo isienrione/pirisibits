@@ -27,6 +27,9 @@ export function isLastStop(manifest, currentStop) {
 }
 
 function stopCoords(stop) {
+  // For ETA we prefer "walkCoords" (visitor approach / camera POV) when available,
+  // since landmark/geofence centers can inflate straight-line distance.
+  if (stop?.walkCoords?.lat != null && stop?.walkCoords?.lng != null) return stop.walkCoords
   if (stop?.coords?.lat != null && stop?.coords?.lng != null) return stop.coords
   if (stop?.geofence?.lat != null && stop?.geofence?.lng != null) return stop.geofence
   return null

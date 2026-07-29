@@ -29,6 +29,29 @@ export function normalizeBundleInviteCode(inviteCode) {
   return String(inviteCode ?? '').trim().toLowerCase()
 }
 
+export const LAST_BUNDLE_INVITE_CODE_KEY = 'cw_last_bundle_invite_code_v1'
+
+export function writeLastBundleInviteCode(inviteCode) {
+  if (typeof window === 'undefined') return
+  try {
+    const code = normalizeBundleInviteCode(inviteCode)
+    if (!code) return
+    window.localStorage.setItem(LAST_BUNDLE_INVITE_CODE_KEY, code)
+  } catch {
+    /* ignore */
+  }
+}
+
+export function readLastBundleInviteCode() {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.localStorage.getItem(LAST_BUNDLE_INVITE_CODE_KEY)
+    return raw ? normalizeBundleInviteCode(raw) : null
+  } catch {
+    return null
+  }
+}
+
 /** Build `/invite?code=` share URL from the configured site origin. */
 export function buildInviteShareUrl(inviteCode) {
   const code = normalizeBundleInviteCode(inviteCode)

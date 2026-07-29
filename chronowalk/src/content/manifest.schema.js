@@ -94,6 +94,7 @@ export function normalizeManifestStop(raw) {
   const placeholders = placeholderPathsForStop(raw.id)
 
   const coords = raw.coords ?? { lat: 0, lng: 0 }
+  const walkCoords = raw.walkCoords ?? coords
   const title = String(raw.title ?? raw.id)
   const shortTitle = raw.shortTitle ?? deriveShortTitle(title, raw.id)
 
@@ -107,6 +108,11 @@ export function normalizeManifestStop(raw) {
     coords: {
       lat: Number(coords.lat) || 0,
       lng: Number(coords.lng) || 0,
+    },
+    // Used for ETA / "time to next" estimation only (doesn't affect geofencing).
+    walkCoords: {
+      lat: Number(walkCoords.lat) || 0,
+      lng: Number(walkCoords.lng) || 0,
     },
     radiusM: Number.isFinite(raw.radiusM) ? raw.radiusM : 30,
     heroImage: pickMediaUrl(raw.heroImage, placeholders.heroImage, PLACEHOLDER_MEDIA.heroImage),
