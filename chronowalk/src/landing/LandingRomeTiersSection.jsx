@@ -202,7 +202,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
 
         <ul className="cw-v4-pkg-mobile-card__facts" aria-label={`${activeTier.name} route facts`}>
           <li>
-            <span className="cw-v4-pkg-mobile-card__fact-label">Est. duration</span>
+            <span className="cw-v4-pkg-mobile-card__fact-label">Duration</span>
             <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.durationLabel}</span>
           </li>
           <li>
