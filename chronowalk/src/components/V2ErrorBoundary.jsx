@@ -15,15 +15,13 @@ export default class V2ErrorBoundary extends Component {
   componentDidCatch(error, info) {
     console.error('V2ErrorBoundary caught an error:', error, info)
 
-    // After a Cloudflare deploy, old hashed chunks 404 / HTML-poisoned module
-    // URLs throw here. Self-heal once instead of leaving a dead screen.
-    // Also attempt once for unknown boot errors — poisoned shells on iOS often
-    // surface as generic TypeErrors rather than explicit chunk messages.
+    // Only auto-heal known stale-chunk / poisoned-shell failures. Auto-recovering
+    // *any* error caused a loop: throw → reset-shell → /landing → same throw.
     if (this.autoRecoverAttempted) return
     this.autoRecoverAttempted = true
 
     const shouldAuto =
-      isStaleChunkError(error) || this.props.autoRecoverOnAnyError !== false
+      isStaleChunkError(error) || this.props.autoRecoverOnAnyError === true
 
     if (!shouldAuto) return
 

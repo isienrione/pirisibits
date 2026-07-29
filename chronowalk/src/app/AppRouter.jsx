@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { env } from '../config/env.js'
 import NetworkStatusBanner from '../components/NetworkStatusBanner.jsx'
 import PwaUpdatePrompt from '../components/PwaUpdatePrompt.jsx'
@@ -20,7 +20,6 @@ import { isImmersiveJourneyState } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
 import {
   clearBootPending,
-  clearChunkRecoveryGuard,
   clearSkipSwOnce,
 } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
@@ -93,6 +92,37 @@ function AppChrome() {
   return <NetworkStatusBanner />
 }
 
+/** Marketing / legal routes must not run journey hooks that can throw on corrupt progress. */
+const JOURNEY_CHROME_PATHS = new Set([
+  '/journey',
+  '/tour',
+  '/map',
+  '/begin',
+  '/setup',
+  '/walk-together',
+  '/journal',
+  '/letter',
+  '/settings',
+  '/access/confirmed',
+])
+
+function JourneyChrome() {
+  const { pathname } = useLocation()
+  const onJourneyChrome =
+    JOURNEY_CHROME_PATHS.has(pathname) ||
+    pathname.startsWith('/journal/') ||
+    pathname.startsWith('/preview/')
+
+  if (!onJourneyChrome) return null
+
+  return (
+    <>
+      <JourneyThresholdLayer />
+      <FlowEscapeButton />
+    </>
+  )
+}
+
 function AppRoutes() {
   return (
     <V2ErrorBoundary title="Couldn’t load ChronoWalk">
@@ -127,9 +157,8 @@ function AppRoutes() {
         <Route path="/contact" element={<LazyContactPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <JourneyThresholdLayer />
+      <JourneyChrome />
       <ShellTabBar />
-      <FlowEscapeButton />
       <PwaUpdatePrompt />
       <TourDebugBootstrap />
       {import.meta.env.DEV && LazyUxRegressionTester ? (
@@ -155,8 +184,9 @@ function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
-    // Successful React mount — clear boot / chunk recovery sentinels.
-    clearChunkRecoveryGuard()
+    // Successful React mount — clear mid-boot sentinel / one-boot SW skip.
+    // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
+    // /landing mounts then throws again (lazyWithRecovery clears it on success).
     clearBootPending()
     clearSkipSwOnce()
     // Drop one-shot cache-bust param from stale-shell recovery navigations.

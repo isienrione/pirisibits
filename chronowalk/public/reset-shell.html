@@ -41,7 +41,9 @@
         try {
           localStorage.setItem('cw-skip-sw-once', '1')
           localStorage.removeItem('cw-needs-shell-reset')
-          sessionStorage.removeItem('cw-chunk-reload')
+          // Keep cw-chunk-reload set so a non-stale crash after reset cannot
+          // auto-loop: throw → reset-shell → /landing → throw → reset-shell…
+          sessionStorage.setItem('cw-chunk-reload', 'reset-shell')
           sessionStorage.removeItem('cw-boot-pending')
           sessionStorage.removeItem('cw-boot-reload')
         } catch (e) {}

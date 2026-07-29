@@ -61,5 +61,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('caches.delete')
     expect(html).toContain('unregister')
     expect(html).toContain('/landing?cw_bust=')
+    expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
+    expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
   })
 })

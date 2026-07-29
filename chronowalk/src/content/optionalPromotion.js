@@ -21,10 +21,11 @@ export function getPromotionInsertSteps(manifest, waypointId, path) {
 
 export function buildEffectiveSequence(manifest, path, promotedOptionalIds = []) {
   const base = [...getTraversalSequence(manifest, path)]
-  if (!promotedOptionalIds.length) return base
+  const promoted = Array.isArray(promotedOptionalIds) ? promotedOptionalIds : []
+  if (!promoted.length) return base
 
   let sequence = base
-  for (const waypointId of promotedOptionalIds) {
+  for (const waypointId of promoted) {
     const config = getPromotionConfig(manifest, waypointId, path)
     if (!config) continue
 

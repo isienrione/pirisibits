@@ -93,7 +93,7 @@ describe('V2ErrorBoundary', () => {
     consoleError.mockRestore()
   })
 
-  it('auto-recovers generic boot errors once', async () => {
+  it('does not auto-recover generic errors (avoids landing loop)', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     render(
@@ -102,13 +102,9 @@ describe('V2ErrorBoundary', () => {
       </V2ErrorBoundary>,
     )
 
-    expect(screen.getByText(/Updating ChronoWalk/i)).toBeInTheDocument()
-    await waitFor(() =>
-      expect(recoverStaleClient).toHaveBeenCalledWith({
-        force: false,
-        reason: 'error-boundary',
-      }),
-    )
+    expect(screen.getByText('Couldn’t load ChronoWalk')).toBeInTheDocument()
+    expect(screen.queryByText(/Updating ChronoWalk/i)).not.toBeInTheDocument()
+    await waitFor(() => expect(recoverStaleClient).not.toHaveBeenCalled())
 
     consoleError.mockRestore()
   })
