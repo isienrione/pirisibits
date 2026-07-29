@@ -101,7 +101,9 @@ export default defineConfig({
         display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         scope: '/',
-        start_url: '/landing',
+        start_url: '/tour',
+        // Prefer /tour for installed PWAs so access + progress resume immediately.
+        // /landing remains the browser marketing entry via apex redirect.
         categories: ['travel', 'navigation'],
         icons: [
           {

@@ -30,6 +30,8 @@ import {
 } from './landingAnalytics.js'
 import { ANALYTICS_CONSENT, subscribeAnalyticsConsent } from '../lib/track.js'
 import { ensureLandingExpHero } from './landingExperiments.js'
+import { hasValidLocalAccess } from '../lib/accessSession.js'
+import { getActiveWalkPath } from '../lib/appEntry.js'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
@@ -43,6 +45,7 @@ export default function ChronoWalkLanding() {
   const { cents } = useLandingPrice()
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
+  const hasAccess = useMemo(() => hasValidLocalAccess(), [])
   const pendingTier = useMemo(
     () => (pendingTierId ? getTierById(pendingTierId) : null),
     [pendingTierId],
@@ -79,6 +82,10 @@ export default function ChronoWalkLanding() {
     },
     [navigate],
   )
+
+  const handleContinueWalk = useCallback(() => {
+    navigate(getActiveWalkPath())
+  }, [navigate])
 
   const handleBeginTier = useCallback((tierId) => {
     trackLandingPricingCta(tierId)
@@ -154,6 +161,7 @@ export default function ChronoWalkLanding() {
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
             onGetApp={handleGetApp}
+            onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
         </LandingAct>
 

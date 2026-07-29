@@ -27,6 +27,26 @@ export function taglineForWaypoint(waypoint) {
   return waypoint?.arrivalLine?.replace(/\s*\/\s*/g, ' — ') ?? approachCopy(waypoint)
 }
 
+/**
+ * Hero title for the immersive player.
+ * - Distinct chapter names (Curia under Severus) stay as the title.
+ * - Numbered siblings of the same stop ("Arch of Titus I - …") collapse to the
+ *   stop name so the main title never carries a chapter numeral.
+ */
+export function heroTitleForWaypoint(waypoint, activeChapterTitle, chapterCount = 1) {
+  const stopTitle = titleForWaypoint(waypoint)
+  if (chapterCount <= 1 || !activeChapterTitle) return stopTitle
+  try {
+    const escaped = stopTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    if (new RegExp(`^${escaped}\\s+[IVXLC\\d]+\\b`, 'i').test(activeChapterTitle)) {
+      return stopTitle
+    }
+  } catch {
+    // ignore bad title characters
+  }
+  return activeChapterTitle
+}
+
 export function resolveWaypointTranscript(waypoint, chapterIndex = 0, fallbackTranscript = null) {
   const chapters = waypoint?.chapters?.length ? waypoint.chapters : []
   const activeChapter = chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint))
@@ -62,12 +82,11 @@ export function buildImmersivePlayerProps({
   return {
     accent: accentForWaypoint(waypoint, manifest),
     actLabel: actLabelForWaypoint(waypoint, manifest),
-    // Multi-chapter stops (e.g. Severus + Curia) show the active chapter as the hero title.
-    title:
+    title: heroTitleForWaypoint(waypoint, activeChapterTitle, chapters.length),
+    tagline:
       chapters.length > 1 && activeChapterTitle
         ? activeChapterTitle
-        : titleForWaypoint(waypoint),
-    tagline: taglineForWaypoint(waypoint),
+        : taglineForWaypoint(waypoint),
     chapterTitle: activeChapterTitle,
     chapterIndex,
     chapterCount: audio.chapterCount || Math.max(chapters.length, 1),

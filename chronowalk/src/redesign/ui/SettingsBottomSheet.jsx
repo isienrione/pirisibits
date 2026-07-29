@@ -260,7 +260,17 @@ export default function SettingsBottomSheet({ open, onClose }) {
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: '0 24px' }}>
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain',
+            scrollbarWidth: 'none',
+            padding: '0 24px',
+          }}
+        >
           <Hairline />
           <Row
             label="Audio speed"

@@ -17,6 +17,7 @@ import { consumeStoryViewIntent } from '../../lib/jumpToWaypoint.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { JOURNEY_STATES, isImmersiveJourneyState } from '../../state/journey.js'
 import { HAPTIC_KIND, triggerHaptic } from '../../utils/haptics.js'
+import { STORY_PLAYBACK_SPEEDS, cycleAudioSpeed, readAudioSpeed } from '../../utils/appPreferences.js'
 import ApproachingScreen from './ApproachingScreen.jsx'
 import ArrivalScreen from './ArrivalScreen.jsx'
 import PathChoiceScreen from './PathChoiceScreen.jsx'
@@ -89,9 +90,8 @@ const POOR_ACCURACY_M = 60
 // Indoor Santiago field tests often report 80–120 m accuracy; relax while dev geofences are on.
 const DEV_GEOFENCE_ACCURACY_M = 150
 
-// Speeds offered by the immersive player's speed pill (subset of the shared
-// STORY_PLAYBACK_SPEEDS preference set).
-const PLAYER_SPEEDS = [0.8, 1, 1.2]
+// Speeds offered by the immersive player's speed pill — same set as Settings.
+const PLAYER_SPEEDS = STORY_PLAYBACK_SPEEDS
 
 export default function JourneyShell({ variant = 'legacy' }) {
   const navigate = useNavigate()
@@ -648,9 +648,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
   // the traveller looks through time. No separate THRESHOLD screen handoff.
 
   const handleCycleSpeed = useCallback(() => {
-    const current = audio.playbackRate ?? 1
-    const idx = PLAYER_SPEEDS.indexOf(current)
-    const next = PLAYER_SPEEDS[(idx + 1) % PLAYER_SPEEDS.length]
+    const current = audio.playbackRate ?? readAudioSpeed()
+    const next = cycleAudioSpeed(current)
     audio.setPlaybackRate(next)
   }, [audio])
 
