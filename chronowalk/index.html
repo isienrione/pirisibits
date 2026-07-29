@@ -87,11 +87,18 @@
         var RESET_KEY = 'cw-needs-shell-reset'
         var BOOT_RELOAD_KEY = 'cw-boot-reload'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
+        // Under /rome/ so older service workers (denylist /^\/rome\//) cannot
+        // intercept and re-serve the poisoned SPA shell.
+        var RESET_PATH = '/rome/reset-shell.html'
 
         function markSkipSw() {
           try {
             localStorage.setItem(SKIP_SW_KEY, '1')
           } catch (e) {}
+        }
+
+        function goResetShell() {
+          window.location.replace(RESET_PATH + '?cw_bust=' + Date.now())
         }
 
         function clearCachesAndWorkers() {
@@ -121,32 +128,13 @@
           return Promise.all(jobs)
         }
 
-        function goLanding() {
-          window.location.replace('/landing?cw_bust=' + Date.now())
-        }
-
-        // Nuclear path: previous Try again / recovery set this flag. Stop parsing
-        // the rest of the document (poisoned module scripts) and wipe the shell
-        // before loading any hashed assets. Credentials in localStorage stay.
+        // Never use document.write here — Mobile Safari renders the rest of the
+        // inline script as visible text. Just bounce to the static reset page.
         try {
           if (localStorage.getItem(RESET_KEY) === '1') {
             localStorage.removeItem(RESET_KEY)
             markSkipSw()
-            document.write(
-              '<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>' +
-                '<title>Updating ChronoWalk…</title>' +
-                '<style>html,body{margin:0;min-height:100%;background:#16130f;color:#f5efe3;font:500 1rem/1.5 system-ui,-apple-system,sans-serif;display:grid;place-items:center}</style>' +
-                '</head><body><p>Updating ChronoWalk…</p></body></html>',
-            )
-            document.close()
-            clearCachesAndWorkers()
-              .catch(function () {})
-              .then(function () {
-                return new Promise(function (resolve) {
-                  window.setTimeout(resolve, 400)
-                })
-              })
-              .then(goLanding)
+            goResetShell()
             return
           }
         } catch (e) {}
@@ -166,7 +154,7 @@
             try {
               localStorage.setItem(RESET_KEY, '1')
             } catch (err2) {}
-            clearCachesAndWorkers().then(goLanding).catch(goLanding)
+            clearCachesAndWorkers().then(goResetShell).catch(goResetShell)
           },
           true,
         )

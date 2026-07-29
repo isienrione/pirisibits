@@ -83,7 +83,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
 
   // Escape via the static reset page (denylisted from SPA navigation fallback)
   // so a still-controlling service worker cannot re-serve poisoned HTML.
-  hardReload({ path: '/reset-shell.html' })
+  hardReload({ path: '/rome/reset-shell.html' })
   return { recovered: true, reloading: true }
 }
 
