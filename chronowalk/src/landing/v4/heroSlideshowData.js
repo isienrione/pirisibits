@@ -4,7 +4,7 @@
  * follow it. Assets are portrait (≈9:16) marketing frames.
  *
  * width/height are intrinsic pixel sizes so the frame does not collapse before
- * decode (especially important on iOS when slides toggle via opacity/inert).
+ * decode (especially important on iOS when slides toggle via opacity).
  */
 export const HERO_SLIDESHOW_SLIDES = [
   {

@@ -6,6 +6,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
 import LandingAccessCta from './v4/LandingAccessCta.jsx'
+import { preloadLandingImages, retryImageOnError } from './v4/preloadLandingImages.js'
 
 const DESKTOP_MQ = '(min-width: 768px)'
 
@@ -61,7 +62,9 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           alt={alt}
           width={tier.cardWidth}
           height={tier.cardHeight}
-          loading={index === 0 ? 'eager' : 'lazy'}
+          loading="eager"
+          fetchPriority={index === 0 ? 'high' : 'auto'}
+          onError={retryImageOnError}
           decoding="async"
         />
         <button
@@ -245,7 +248,9 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
               width={activeTier.cardWidth}
               height={activeTier.cardHeight}
               loading="eager"
+              fetchPriority="high"
               decoding="async"
+              onError={retryImageOnError}
             />
             <div className="cw-v4-pkg-mobile-card__map-fade" aria-hidden="true" />
           </button>
@@ -319,6 +324,10 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
   const isDesktop = useMediaQuery(DESKTOP_MQ, true)
 
   useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
+
+  useEffect(() => {
+    preloadLandingImages((section.tiers ?? []).map((tier) => tier.cardImage))
+  }, [section.tiers])
 
   return (
     <section

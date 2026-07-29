@@ -24,7 +24,7 @@ import {
   precacheAndRoute,
 } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
-import { CacheFirst, NetworkFirst, NetworkOnly } from 'workbox-strategies'
+import { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies'
 import {
   isAssetOrModuleRequest,
   isHtmlPoisonedAssetEntry,
@@ -191,11 +191,31 @@ registerRoute(
 )
 
 registerRoute(
+  ({ sameOrigin, url }) =>
+    sameOrigin &&
+    url.pathname.startsWith('/landing/') &&
+    /\.(?:png|jpg|jpeg|svg|gif|webp|avif)$/i.test(url.pathname),
+  new StaleWhileRevalidate({
+    // Landing stills must paint fast on return visits; revalidate in background.
+    cacheName: 'chronowalk-landing-media-v1',
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      rejectHtmlAssetPlugin,
+      new ExpirationPlugin({
+        maxEntries: 48,
+        maxAgeSeconds: 60 * 60 * 24 * 14,
+      }),
+    ],
+  }),
+  'GET',
+)
+
+registerRoute(
   ({ sameOrigin, request, url }) =>
     sameOrigin &&
     request.destination !== 'document' &&
     !isAssetOrModuleRequest(request, url) &&
-    // Landing marketing stills change with deploys — never CacheFirst them.
+    // Landing marketing stills are handled above (StaleWhileRevalidate).
     !url.pathname.startsWith('/landing/') &&
     /\.(?:png|jpg|jpeg|svg|gif|webp|mp3|mp4|woff2?)$/i.test(url.pathname),
   new CacheFirst({

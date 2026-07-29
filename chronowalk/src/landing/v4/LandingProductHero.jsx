@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Expand } from 'lucide-react'
-import { LANDING_CONTENT } from '../landingData.js'
+import { LANDING_CONTENT, ROME_TIERS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
+import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 
 const SLIDE_MS = 8000
 const FADE_MS = 900
@@ -115,6 +116,14 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
     mq?.addEventListener?.('change', sync)
     return () => mq?.removeEventListener?.('change', sync)
   }, [])
+
+  // Kick off decode outside opacity/inert layers so slides are ready when shown.
+  useEffect(() => {
+    preloadLandingImages([
+      ...storySlides.map((slide) => slide.src),
+      ...ROME_TIERS.map((tier) => tier.cardImage),
+    ])
+  }, [storySlides])
 
   useEffect(() => {
     if (reducedMotion || paused || viewerSlide || total < 2) return undefined
@@ -233,13 +242,15 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
 
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
+          const nextStoryIndex = index === 0 ? 0 : index < total - 1 ? index : -1
+          const isNext = slideIndex === nextStoryIndex
           const isPackages = slide.id === 'choose-your-walk'
+          const priority = active || isNext ? 'high' : 'auto'
           return (
             <div
               key={slide.id}
               className={`cw-v4-hero__slide-layer cw-v4-hero__slide-layer--art${active ? ' is-active' : ''}`}
               aria-hidden={!active}
-              inert={active ? undefined : true}
             >
               <div className={`cw-v4-hero__art-frame${isPackages ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
                 {isPackages ? (
@@ -251,9 +262,9 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                       width={slide.width}
                       height={slide.height}
                       decoding="async"
-                      // Eager: inert/opacity-hidden slides skip native lazy-load on iOS.
                       loading="eager"
-                      fetchPriority={active ? 'high' : 'low'}
+                      fetchPriority={priority}
+                      onError={retryImageOnError}
                     />
                     <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
                       {PACKAGE_HOTSPOTS.map((spot) => (
@@ -299,7 +310,8 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
                       height={slide.height}
                       decoding="async"
                       loading="eager"
-                      fetchPriority={active ? 'high' : 'low'}
+                      fetchPriority={priority}
+                      onError={retryImageOnError}
                     />
                     <span className="cw-v4-hero__art-enlarge cw-v4-hero__art-enlarge--on-art">
                       <Expand size={16} aria-hidden="true" />
