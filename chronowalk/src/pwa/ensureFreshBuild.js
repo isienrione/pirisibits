@@ -1,4 +1,4 @@
-import { clearAllCaches, unregisterAllServiceWorkers } from './pwaCacheUtils.js'
+import { clearAllCaches, hardReload, unregisterAllServiceWorkers } from './pwaCacheUtils.js'
 import { fetchWithTimeout } from './fetchWithTimeout.js'
 
 export const BUILD_STORAGE_KEY = 'cw-app-build'
@@ -83,5 +83,5 @@ async function runBuildMigration(currentBuildId) {
   await unregisterAllServiceWorkers()
   localStorage.setItem(BUILD_STORAGE_KEY, currentBuildId)
   sessionStorage.setItem(BUILD_RELOAD_GUARD_KEY, '1')
-  window.location.reload()
+  hardReload()
 }

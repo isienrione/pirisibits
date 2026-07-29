@@ -18,6 +18,9 @@ export function isStaleChunkError(error) {
   return (
     message.includes('Failed to fetch dynamically imported module') ||
     message.includes('Importing a module script failed') ||
+    message.includes('error loading dynamically imported module') ||
+    message.includes('Load failed') ||
+    message.includes("Unexpected token '<'") ||
     error?.name === 'ChunkLoadError'
   )
 }
@@ -41,6 +44,8 @@ export async function recoverStaleClient({ force = false } = {}) {
   try {
     await clearAllCaches()
     await unregisterAllServiceWorkers()
+    // Give iOS Safari a beat to drop the old controller before navigating.
+    await new Promise((resolve) => window.setTimeout(resolve, 120))
   } catch {
     // Still reload — a soft reload often picks up the new deploy.
   }

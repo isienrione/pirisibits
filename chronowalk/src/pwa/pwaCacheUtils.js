@@ -24,8 +24,20 @@ export function isChromeBrowser() {
   return /Chrome/i.test(navigator.userAgent) && !/Edg|OPR/i.test(navigator.userAgent)
 }
 
+/**
+ * Cache-busting navigation. Plain location.reload() often reuses Safari's
+ * HTTP/bfcache document after a Cloudflare deploy, so the same stale shell
+ * comes back. Replace with a unique query param forces a network HTML fetch.
+ */
 export function hardReload() {
-  window.location.reload()
+  if (typeof window === 'undefined') return
+  try {
+    const url = new URL(window.location.href)
+    url.searchParams.set('cw_bust', String(Date.now()))
+    window.location.replace(url.toString())
+  } catch {
+    window.location.reload()
+  }
 }
 
 export function showUpdatingOverlay(message = 'Updating…') {

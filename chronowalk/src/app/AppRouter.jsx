@@ -150,6 +150,16 @@ function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
+    // Drop one-shot cache-bust param from stale-shell recovery navigations.
+    try {
+      const url = new URL(window.location.href)
+      if (url.searchParams.has('cw_bust')) {
+        url.searchParams.delete('cw_bust')
+        window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+      }
+    } catch {
+      // ignore
+    }
   }, [])
 
   useEffect(() => {

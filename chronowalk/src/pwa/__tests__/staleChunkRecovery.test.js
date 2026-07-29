@@ -30,6 +30,8 @@ describe('staleChunkRecovery', () => {
     expect(
       isStaleChunkError(new TypeError('Failed to fetch dynamically imported module')),
     ).toBe(true)
+    expect(isStaleChunkError(new TypeError('Load failed'))).toBe(true)
+    expect(isStaleChunkError(new SyntaxError("Unexpected token '<'"))).toBe(true)
     expect(isStaleChunkError(new Error('boom'))).toBe(false)
   })
 
