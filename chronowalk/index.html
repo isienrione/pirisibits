@@ -87,6 +87,8 @@
         var RESET_KEY = 'cw-needs-shell-reset'
         var BOOT_RELOAD_KEY = 'cw-boot-reload'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
+        var RESET_AT_KEY = 'cw-shell-reset-at'
+        var COOLDOWN_MS = 2 * 60 * 1000
         // Under /rome/ so older service workers (denylist /^\/rome\//) cannot
         // intercept and re-serve the poisoned SPA shell.
         var RESET_PATH = '/rome/reset-shell.html'
@@ -95,6 +97,15 @@
           try {
             localStorage.setItem(SKIP_SW_KEY, '1')
           } catch (e) {}
+        }
+
+        function recentlyReset() {
+          try {
+            var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
+            return last && Date.now() - last < COOLDOWN_MS
+          } catch (e) {
+            return false
+          }
         }
 
         function goResetShell() {
@@ -134,6 +145,8 @@
           if (localStorage.getItem(RESET_KEY) === '1') {
             localStorage.removeItem(RESET_KEY)
             markSkipSw()
+            // Cooldown: stay on this document and boot instead of looping.
+            if (recentlyReset()) return
             goResetShell()
             return
           }
@@ -146,6 +159,7 @@
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
+              if (recentlyReset()) return
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
             } catch (err) {
               return

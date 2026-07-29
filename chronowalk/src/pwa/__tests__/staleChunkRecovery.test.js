@@ -2,11 +2,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   BOOT_PENDING_KEY,
   CHUNK_RECOVERY_GUARD_KEY,
+  SHELL_RESET_AT_KEY,
   SHELL_RESET_KEY,
   SKIP_SW_ONCE_KEY,
   clearBootPending,
   clearChunkRecoveryGuard,
   isStaleChunkError,
+  recentlyResetShell,
   recoverInterruptedBoot,
   recoverStaleClient,
   shouldSkipServiceWorkerRegistration,
@@ -87,6 +89,20 @@ describe('staleChunkRecovery', () => {
     expect(shouldSkipServiceWorkerRegistration()).toBe(true)
   })
 
+  it('after a recent shell reset, skips auto-recover and force goes to landing only', async () => {
+    localStorage.setItem(SHELL_RESET_AT_KEY, String(Date.now()))
+    expect(recentlyResetShell()).toBe(true)
+
+    const blocked = await recoverStaleClient()
+    expect(blocked).toEqual({ recovered: false, reloading: false })
+    expect(hardReload).not.toHaveBeenCalled()
+
+    const forced = await recoverStaleClient({ force: true })
+    expect(forced).toEqual({ recovered: true, reloading: true })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/landing' })
+    expect(clearAllCaches).not.toHaveBeenCalled()
+  })
+
   it('clears the guard after a successful boot', () => {
     sessionStorage.setItem(CHUNK_RECOVERY_GUARD_KEY, '1')
     clearChunkRecoveryGuard()
@@ -100,6 +116,16 @@ describe('staleChunkRecovery', () => {
     await vi.waitFor(() => {
       expect(hardReload).toHaveBeenCalled()
     })
+  })
+
+  it('does not loop interrupted boot during shell-reset cooldown', () => {
+    localStorage.setItem(SHELL_RESET_AT_KEY, String(Date.now()))
+    sessionStorage.setItem(BOOT_PENDING_KEY, '1')
+    expect(recoverInterruptedBoot()).toBe(false)
+    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBe('1')
+    expect(hardReload).not.toHaveBeenCalled()
+    clearBootPending()
+    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBeNull()
   })
 
   it('marks boot pending on a clean start', () => {

@@ -62,6 +62,8 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('unregister')
     expect(html).toContain('/landing?cw_bust=')
     expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
+    expect(html).toContain('cw-shell-reset-at')
+    expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')

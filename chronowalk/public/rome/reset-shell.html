@@ -38,19 +38,33 @@
         // Static escape hatch for poisoned PWA shells. Not part of the SPA.
         // Clears Cache Storage + service workers only — access keys and tour
         // progress in localStorage / IndexedDB are preserved.
-        try {
-          localStorage.setItem('cw-skip-sw-once', '1')
-          localStorage.removeItem('cw-needs-shell-reset')
-          // Keep cw-chunk-reload set so a non-stale crash after reset cannot
-          // auto-loop: throw → reset-shell → /landing → throw → reset-shell…
-          sessionStorage.setItem('cw-chunk-reload', 'reset-shell')
-          sessionStorage.removeItem('cw-boot-pending')
-          sessionStorage.removeItem('cw-boot-reload')
-        } catch (e) {}
+        var RESET_AT_KEY = 'cw-shell-reset-at'
+        var COOLDOWN_MS = 2 * 60 * 1000
+        var now = Date.now()
 
-        function go() {
+        function goLanding() {
           window.location.replace('/landing?cw_bust=' + Date.now())
         }
+
+        try {
+          var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
+          // Already wiped recently — do not clear boot guards again or we loop:
+          // reset-shell → landing → script error → reset-shell → …
+          if (last && now - last < COOLDOWN_MS) {
+            localStorage.setItem('cw-skip-sw-once', '1')
+            localStorage.removeItem('cw-needs-shell-reset')
+            goLanding()
+            return
+          }
+
+          localStorage.setItem(RESET_AT_KEY, String(now))
+          localStorage.setItem('cw-skip-sw-once', '1')
+          localStorage.removeItem('cw-needs-shell-reset')
+          // Keep cw-chunk-reload / cw-boot-reload set so automatic recovery
+          // cannot immediately bounce back into this page.
+          sessionStorage.setItem('cw-chunk-reload', 'reset-shell')
+          sessionStorage.removeItem('cw-boot-pending')
+        } catch (e) {}
 
         var jobs = []
         if ('caches' in window) {
@@ -83,7 +97,7 @@
               window.setTimeout(resolve, 450)
             })
           })
-          .then(go)
+          .then(goLanding)
       })()
     </script>
   </head>
