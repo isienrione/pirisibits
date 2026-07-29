@@ -19,6 +19,10 @@ export const BOOT_PENDING_KEY = 'cw-boot-pending'
 export const SHELL_RESET_KEY = 'cw-needs-shell-reset'
 /** Skip SW registration for one successful network boot after a shell reset. */
 export const SKIP_SW_ONCE_KEY = 'cw-skip-sw-once'
+/** Timestamp of the last shell reset — used to break reset↔landing loops. */
+export const SHELL_RESET_AT_KEY = 'cw-shell-reset-at'
+/** Ignore further automatic resets within this window. */
+export const SHELL_RESET_COOLDOWN_MS = 2 * 60 * 1000
 
 /**
  * @param {unknown} error
@@ -42,6 +46,31 @@ export function isStaleChunkError(error) {
   )
 }
 
+export function readShellResetAt() {
+  try {
+    const raw = localStorage.getItem(SHELL_RESET_AT_KEY)
+    const value = Number(raw)
+    return Number.isFinite(value) ? value : 0
+  } catch {
+    return 0
+  }
+}
+
+export function recentlyResetShell(now = Date.now()) {
+  const last = readShellResetAt()
+  return last > 0 && now - last < SHELL_RESET_COOLDOWN_MS
+}
+
+export function markShellResetCompleted(now = Date.now()) {
+  try {
+    localStorage.setItem(SHELL_RESET_AT_KEY, String(now))
+    localStorage.setItem(SKIP_SW_ONCE_KEY, '1')
+    localStorage.removeItem(SHELL_RESET_KEY)
+  } catch {
+    // ignore
+  }
+}
+
 function markShellResetIntent() {
   try {
     localStorage.setItem(SHELL_RESET_KEY, '1')
@@ -60,6 +89,16 @@ function markShellResetIntent() {
 export async function recoverStaleClient({ force = false, reason = 'stale-shell' } = {}) {
   if (typeof window === 'undefined') {
     return { recovered: false, reloading: false }
+  }
+
+  // Break eternal reset-shell ↔ landing loops after a recent successful wipe.
+  if (recentlyResetShell()) {
+    if (!force) {
+      return { recovered: false, reloading: false }
+    }
+    showUpdatingOverlay('Updating ChronoWalk…')
+    hardReload({ path: '/landing' })
+    return { recovered: true, reloading: true }
   }
 
   const guard = sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)
@@ -103,9 +142,10 @@ export function clearBootPending() {
 
 /**
  * After a successful React mount, drop the one-boot SW skip flag so later
- * visits can register the service worker normally.
+ * visits can register the service worker normally — but not during cooldown.
  */
 export function clearSkipSwOnce() {
+  if (recentlyResetShell()) return
   try {
     localStorage.removeItem(SKIP_SW_ONCE_KEY)
   } catch {
@@ -115,11 +155,10 @@ export function clearSkipSwOnce() {
 
 /**
  * True when this boot should not register a service worker (post-recovery).
- * Consumes nothing — clearSkipSwOnce runs after a successful mount.
  */
 export function shouldSkipServiceWorkerRegistration() {
   try {
-    return localStorage.getItem(SKIP_SW_ONCE_KEY) === '1'
+    return localStorage.getItem(SKIP_SW_ONCE_KEY) === '1' || recentlyResetShell()
   } catch {
     return false
   }
@@ -137,8 +176,12 @@ export function recoverInterruptedBoot() {
 
   const pending = sessionStorage.getItem(BOOT_PENDING_KEY)
   if (pending === '1') {
-    // Previous boot never cleared the sentinel — treat as a poisoned shell.
     sessionStorage.removeItem(BOOT_PENDING_KEY)
+    // Already wiped recently — let this boot finish instead of looping.
+    if (recentlyResetShell()) {
+      sessionStorage.setItem(BOOT_PENDING_KEY, '1')
+      return false
+    }
     void recoverStaleClient({ force: true, reason: 'interrupted-boot' })
     return true
   }
