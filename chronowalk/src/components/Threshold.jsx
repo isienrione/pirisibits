@@ -661,9 +661,11 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
-  // Modern (now) photo fills the frame; ancient reconstruction preserves aspect ratio.
+  // Modern (now) and ancient (then) share the same framing so mismatched
+  // source aspect ratios (e.g. Curia landscape reconstruction on a portrait
+  // NOW photo) do not letterbox one era while the other fills the frame.
   const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
-  const thenLayerStyle = THRESHOLD_LAYER_CONTAIN
+  const thenLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
 
   const thenLayer =
     reconstruction.loop ? (

@@ -98,7 +98,7 @@ function scrollToPricingTarget(id) {
  * Slide 0 = current primary hero; secondary slides are portrait story frames.
  * Story frames open a fullscreen pinch-zoom viewer when enlarged.
  */
-export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }) {
+export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, onContinueWalk }) {
   const section = LANDING_CONTENT.hero
   const storySlides = HERO_SLIDESHOW_SLIDES
   const total = 1 + storySlides.length
@@ -198,14 +198,25 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
             <div className="cw-v4-hero__actions">
-              <button
-                type="button"
-                className="cw-v4-btn cw-v4-btn--primary"
-                onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                tabIndex={interactive ? 0 : -1}
-              >
-                {section.primaryCta}
-              </button>
+              {onContinueWalk ? (
+                <button
+                  type="button"
+                  className="cw-v4-btn cw-v4-btn--primary"
+                  onClick={onContinueWalk}
+                  tabIndex={interactive ? 0 : -1}
+                >
+                  Continue your walk
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="cw-v4-btn cw-v4-btn--primary"
+                  onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
+                  tabIndex={interactive ? 0 : -1}
+                >
+                  {section.primaryCta}
+                </button>
+              )}
 
               <a
                 href={section.getAppHref ?? '#pricing'}

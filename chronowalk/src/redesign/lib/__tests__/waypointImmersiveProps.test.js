@@ -113,5 +113,28 @@ describe('waypointImmersiveProps', () => {
     expect(curiaProps.thenPhoto).toContain(
       '/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.jpg',
     )
+    expect(curiaProps.title).toMatch(/Curia Julia/i)
+    expect(severusProps.title).toMatch(/Septimius Severus|Arch of Septimius/i)
+  })
+
+  it('keeps Arch of Titus hero title free of chapter numerals', () => {
+    const waypoint = getWaypoint(manifest, 'w03')
+    const ch1 = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 0,
+    })
+    const ch2 = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 1,
+    })
+
+    expect(ch1.title).toBe('Arch of Titus')
+    expect(ch2.title).toBe('Arch of Titus')
+    expect(ch1.title).not.toMatch(/\b[IVXLC\d]+\b/)
+    expect(ch1.tagline).toMatch(/Arch of Titus I/i)
   })
 })
