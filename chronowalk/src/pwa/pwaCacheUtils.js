@@ -28,15 +28,24 @@ export function isChromeBrowser() {
  * Cache-busting navigation. Plain location.reload() often reuses Safari's
  * HTTP/bfcache document after a Cloudflare deploy, so the same stale shell
  * comes back. Replace with a unique query param forces a network HTML fetch.
+ *
+ * @param {{ path?: string }} [options]
  */
-export function hardReload() {
+export function hardReload({ path } = {}) {
   if (typeof window === 'undefined') return
   try {
-    const url = new URL(window.location.href)
+    const url = new URL(path || window.location.href, window.location.origin)
+    // Drop prior bust tokens so they don't stack.
+    url.searchParams.delete('cw_bust')
     url.searchParams.set('cw_bust', String(Date.now()))
-    window.location.replace(url.toString())
+    // Prefer assign so iOS standalone PWAs still navigate after SW unregister.
+    window.location.assign(url.toString())
   } catch {
-    window.location.reload()
+    try {
+      window.location.href = `${path || '/landing'}?cw_bust=${Date.now()}`
+    } catch {
+      window.location.reload()
+    }
   }
 }
 

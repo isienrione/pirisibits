@@ -18,6 +18,7 @@ import { useAccessRevalidation } from '../hooks/useAccessRevalidation.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { isImmersiveJourneyState } from '../state/journey.js'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
+import { clearBootPending, clearChunkRecoveryGuard } from '../pwa/staleChunkRecovery.js'
 import { JourneyThresholdLayer } from './pages/ThresholdPage'
 import { RequireAccess } from '../lib/requireAccess.jsx'
 import {
@@ -150,6 +151,9 @@ function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
+    // Successful React mount — clear boot / chunk recovery sentinels.
+    clearChunkRecoveryGuard()
+    clearBootPending()
     // Drop one-shot cache-bust param from stale-shell recovery navigations.
     try {
       const url = new URL(window.location.href)

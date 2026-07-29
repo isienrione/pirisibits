@@ -7,15 +7,21 @@ import './index.css'
 import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
+import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
 }
 
+// If the previous paint died mid-boot (common after a deploy on iOS Safari),
+// purge the poisoned service-worker shell before mounting React. Access keys
+// and journey progress in localStorage stay put.
+const recoveringBoot = recoverInterruptedBoot()
+
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
 // VITE_V2_APP / VITE_FIGMA_REDESIGN switches have been retired so no environment
 // variable can boot an older generation of the app.
-if (typeof document !== 'undefined') {
+if (!recoveringBoot && typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
 
@@ -30,8 +36,10 @@ if (typeof document !== 'undefined') {
   motionQuery?.addEventListener?.('change', syncReducedMotionClass)
 }
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AppRouter />
-  </StrictMode>
-)
+if (!recoveringBoot) {
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <AppRouter />
+    </StrictMode>,
+  )
+}
