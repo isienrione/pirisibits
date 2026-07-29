@@ -9,10 +9,38 @@ import { OFFLINE_LEASE_MS } from './launchSkus.js'
 export const DEVICE_CREDENTIAL_KEY = 'cw_device_credential_v1'
 export const ACCESS_ENTITLEMENT_KEY = 'cw_access_entitlement_v1'
 
+/**
+ * Optional handoff hooks registered by accessHandoff.js.
+ * Must NOT dynamic-import accessHandoff from here — Vite rewrote that import to
+ * re-fetch the entire app entry chunk during boot and left iOS stuck on
+ * "Loading ChronoWalk…".
+ */
+let handoffSync = null
+let handoffClear = null
+let handoffMirrorBusy = false
+
+/** @param {{ sync?: Function, clear?: Function }} hooks */
+export function registerAccessHandoffHooks(hooks = {}) {
+  handoffSync = typeof hooks.sync === 'function' ? hooks.sync : null
+  handoffClear = typeof hooks.clear === 'function' ? hooks.clear : null
+}
+
 function mirrorHandoff() {
-  // Lazy import avoids circular init with accessHandoff ↔ accessSession.
+  if (!handoffSync || handoffMirrorBusy) return
+  handoffMirrorBusy = true
   try {
-    void import('./accessHandoff.js').then((m) => m.syncAccessHandoff({ updateUrl: false }))
+    handoffSync({ updateUrl: false })
+  } catch {
+    /* ignore */
+  } finally {
+    handoffMirrorBusy = false
+  }
+}
+
+function clearHandoffMirror() {
+  if (!handoffClear) return
+  try {
+    handoffClear()
   } catch {
     /* ignore */
   }
@@ -144,7 +172,7 @@ export function clearLocalAccessState() {
     window.localStorage.removeItem('cw_family_bundle_v1')
     window.localStorage.removeItem('cw_walk_session_v1')
     window.localStorage.removeItem('cw_active_walk_session_v1')
-    void import('./accessHandoff.js').then((m) => m.clearAccessHandoff())
+    clearHandoffMirror()
   } catch {
     /* ignore */
   }

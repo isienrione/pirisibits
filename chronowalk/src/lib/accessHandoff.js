@@ -19,6 +19,7 @@ import {
   writeDeviceCredential,
   writeAccessEntitlement,
   hasValidLocalAccess,
+  registerAccessHandoffHooks,
 } from './accessSession.js'
 import { getDeviceId } from './deviceId.js'
 
@@ -221,3 +222,9 @@ export const __handoffTestKeys = {
   HANDOFF_QUERY_KEY,
   HANDOFF_COOKIE,
 }
+
+// Wire session writes to cookie mirroring without a circular dynamic import.
+registerAccessHandoffHooks({
+  sync: syncAccessHandoff,
+  clear: clearAccessHandoff,
+})
