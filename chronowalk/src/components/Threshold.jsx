@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ThresholdAudioCrossfade } from '../audio/thresholdAudio'
 import { useHideThresholdChrome } from '../context/ThresholdChromeContext'
-import { THRESHOLD_HOLD_MS, THRESHOLD_HOLD_COMMIT_MS, THRESHOLD_HOLD_COMMIT_FINISH_MS, THRESHOLD_RELEASE_MS } from '../data/thresholdDemo'
+import {
+  THRESHOLD_HOLD_MS,
+  THRESHOLD_HOLD_COMMIT_MS,
+  THRESHOLD_HOLD_COMMIT_FINISH_MS,
+  THRESHOLD_RELEASE_MS,
+} from '../data/thresholdTiming.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
 import {

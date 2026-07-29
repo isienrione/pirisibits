@@ -69,4 +69,11 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
     expect(legacy).toContain('/rome/reset-shell.html')
   })
+
+  it('eager-loads the marketing landing page (no second poisonable chunk)', () => {
+    const routes = readFileSync(join(ROOT, 'src/app/lazyRoutes.jsx'), 'utf8')
+    expect(routes).toContain("import ChronoWalkLanding from '../landing/ChronoWalkLanding.jsx'")
+    expect(routes).toMatch(/export function LazyLandingPage/)
+    expect(routes).not.toMatch(/LazyLandingPage = lazyRoute\(\s*\(\)\s*=>\s*import\(['"]\.\.\/landing\/ChronoWalkLanding/)
+  })
 })
