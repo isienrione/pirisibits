@@ -504,8 +504,8 @@ export const LANDING_CONTENT = {
 
   trust: {
     id: 'trust',
-    eyebrow: 'BEFORE YOU WALK',
-    headline: 'Built for a day outside.',
+    eyebrow: null,
+    headline: 'Before you walk | FAQ',
     subheadline: null,
     checklist: [
       {
@@ -952,8 +952,8 @@ export const LANDING_CONTENT = {
 
   faq: {
     id: 'faq',
-    eyebrow: 'QUESTIONS',
-    headline: 'Before you walk.',
+    eyebrow: 'BEFORE YOU WALK | FAQ',
+    headline: 'Before you walk | FAQ',
     groups: [
       {
         id: 'understanding',

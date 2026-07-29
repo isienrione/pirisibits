@@ -184,14 +184,15 @@ export default function ChronoWalkLanding() {
             tabIndex={-1}
             aria-hidden="true"
           />
-          <LandingTrustChecklist />
           {/* Legacy anchors preserved for existing hashes / SEO. */}
           <div id="threshold" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="benefits" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="try-free" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="compare" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
+          {/* Get App before the Before you walk | FAQ block (not between trust + FAQ). */}
           <LandingGetAppSection onChooseTour={handleChooseTour} />
+          <LandingTrustChecklist />
           <LandingFaqSectionV2 />
         </LandingAct>
       </main>

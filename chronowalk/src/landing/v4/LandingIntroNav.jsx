@@ -4,16 +4,18 @@ import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
 const INTRO_MS = 2000
 const COMPRESS_MS = 900
+const NAV_OFFSET_PX = 68
 
 /**
  * Keynote-style open: ChronoWalk mark plays once, then compresses into the nav bar.
  * No controls. Muted. Autoplay once.
- * Top-right Get the app appears only after the hero leaves the viewport.
+ * After scrolling past the product hero into the stop slides / paper sections:
+ * Get App CTA + obsidian nav chrome.
  */
 export default function LandingIntroNav({ onComplete, onGetApp }) {
   const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
   const [phase, setPhase] = useState('intro') // intro | compress | nav
-  const [showGetApp, setShowGetApp] = useState(false)
+  const [pastHero, setPastHero] = useState(false)
   const reduceMotion =
     typeof window !== 'undefined' &&
     window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
@@ -43,38 +45,51 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   }, [onComplete, reduceMotion])
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !cta) return undefined
+    if (typeof window === 'undefined') return undefined
 
+    // Flip to obsidian once the dark product hero (#top) is no longer under the nav.
+    // That covers the stop-slides section and everything below (paper surfaces).
     const hero = document.getElementById('top')
-    if (!hero || typeof IntersectionObserver === 'undefined') {
-      const onScroll = () => {
-        const threshold = Math.min(window.innerHeight * 0.72, hero?.offsetHeight || window.innerHeight)
-        setShowGetApp(window.scrollY > threshold)
+    if (!hero) return undefined
+
+    const updatePastHero = () => {
+      const rect = hero.getBoundingClientRect()
+      setPastHero(rect.bottom <= NAV_OFFSET_PX)
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      updatePastHero()
+      window.addEventListener('scroll', updatePastHero, { passive: true })
+      window.addEventListener('resize', updatePastHero)
+      return () => {
+        window.removeEventListener('scroll', updatePastHero)
+        window.removeEventListener('resize', updatePastHero)
       }
-      onScroll()
-      window.addEventListener('scroll', onScroll, { passive: true })
-      return () => window.removeEventListener('scroll', onScroll)
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Keep the nav CTA hidden while the hero is meaningfully on screen.
-        const heroVisible = entry.isIntersecting && entry.intersectionRatio >= 0.18
-        setShowGetApp(!heroVisible)
+        const heroVisible = entry.isIntersecting && entry.intersectionRatio >= 0.12
+        setPastHero(!heroVisible)
       },
       {
         root: null,
-        threshold: [0, 0.18, 0.35, 0.6, 1],
+        rootMargin: `-${NAV_OFFSET_PX}px 0px 0px 0px`,
+        threshold: [0, 0.12, 0.25, 0.5, 1],
       },
     )
     observer.observe(hero)
+    updatePastHero()
     return () => observer.disconnect()
-  }, [cta])
+  }, [])
 
   const isNav = phase === 'nav'
   const isCompress = phase === 'compress'
+  const showGetApp = Boolean(cta) && pastHero
   const ctaLabel = cta || LANDING_CTA.getApp
   const ctaTarget = ctaHref || '#get-app'
+  // Logo: `light` on paper/cream, `dark` on obsidian.
+  const logoVariant = pastHero ? 'dark' : 'light'
 
   const handleCtaClick = (event) => {
     if (!onGetApp) return
@@ -110,12 +125,12 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
       </div>
 
       <header
-        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}`}
+        className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${pastHero ? ' cw-v4-nav--scrolled' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}`}
         data-phase={phase}
       >
         <div className="cw-v4-nav__inner">
           <a href="#top" className="cw-v4-nav__brand" aria-label="ChronoWalk home">
-            <ChronoWalkLogo size={32} variant="dark" className="cw-v4-nav__emblem" />
+            <ChronoWalkLogo size={32} variant={logoVariant} className="cw-v4-nav__emblem" />
             <span className="cw-v4-nav__name">ChronoWalk</span>
           </a>
 
