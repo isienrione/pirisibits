@@ -22,6 +22,8 @@ export function buildLetterCardSvg(letter, meander) {
     )
     .join('')
 
+  const safeSalutation = escapeXml(`Dear ${letter.firstName || 'Traveler'} -`)
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   <rect width="100%" height="100%" fill="#FAF6EF" />
@@ -30,9 +32,10 @@ export function buildLetterCardSvg(letter, meander) {
   <rect x="56" y="170" width="688" height="260" rx="18" fill="#EFE7D8" />
   ${path ? `<path d="${path}" transform="translate(40 220) scale(2)" fill="none" stroke="#E4552E" stroke-width="3" stroke-linecap="round" />` : ''}
   ${dots}
-  <foreignObject x="56" y="470" width="688" height="260">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: DM Sans, system-ui, sans-serif; font-size: 20px; line-height: 1.55; color: #211C15;">
-      ${safeBody}
+  <foreignObject x="56" y="450" width="688" height="300">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Fraunces, Georgia, serif; font-size: 22px; line-height: 1.55; color: #211C15;">
+      <p style="margin: 0 0 16px; font-weight: 300;">${safeSalutation}</p>
+      <p style="margin: 0; font-family: DM Sans, system-ui, sans-serif; font-size: 20px;">${safeBody}</p>
     </div>
   </foreignObject>
   <text x="56" y="820" fill="#4F7A6A" font-family="Fraunces, Georgia, serif" font-size="24" font-style="italic">${safeReflection}</text>
@@ -71,42 +74,84 @@ async function svgToPngBlob(svgMarkup) {
 
 export async function saveLetterCard(letter, meander) {
   const svg = buildLetterCardSvg(letter, meander)
-  const blob = await svgToPngBlob(svg)
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `chronowalk-${letter.city?.toLowerCase() ?? 'rome'}-letter.png`
-  link.click()
-  URL.revokeObjectURL(url)
-  return true
+  const filename = `chronowalk-${letter.city?.toLowerCase() ?? 'rome'}-letter.png`
+
+  // Prefer navigator.share with the image file (works on iOS/Android).
+  try {
+    const blob = await svgToPngBlob(svg)
+    const file = new File([blob], filename, { type: 'image/png' })
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: letter.title, files: [file] })
+      return 'share'
+    }
+  } catch {
+    // fall through to download
+  }
+
+  // Blob URL download (standard desktop / Android Chrome).
+  try {
+    const blob = await svgToPngBlob(svg)
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    link.click()
+    URL.revokeObjectURL(url)
+    return 'download'
+  } catch (blobErr) {
+    // SecurityError or insecure context — use data URL fallback.
+    const isSecurityError =
+      blobErr instanceof DOMException &&
+      (blobErr.name === 'SecurityError' || blobErr.code === 18)
+    if (!isSecurityError) throw blobErr
+  }
+
+  // Last resort: open image in new tab and prompt user to long-press to save.
+  try {
+    const canvas = document.createElement('canvas')
+    canvas.width = 800
+    canvas.height = 1100
+    const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
+    const svgUrl = URL.createObjectURL(svgBlob)
+    await new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        canvas.getContext('2d').drawImage(img, 0, 0)
+        resolve()
+      }
+      img.onerror = reject
+      img.src = svgUrl
+    })
+    URL.revokeObjectURL(svgUrl)
+    const dataUrl = canvas.toDataURL('image/png')
+    const win = window.open()
+    if (win) {
+      win.document.write(`<img src="${dataUrl}" style="max-width:100%" /><p>Long-press the image to save.</p>`)
+    }
+    return 'fallback'
+  } catch {
+    return 'error'
+  }
 }
 
 export async function shareLetterCard(letter, meander) {
-  const text = letter.shareText
+  const filename = `chronowalk-${letter.city?.toLowerCase() ?? 'rome'}-letter.png`
 
+  // Prefer sharing the rendered PNG image.
   if (navigator.share) {
     try {
       const svg = buildLetterCardSvg(letter, meander)
       const blob = await svgToPngBlob(svg)
-      const file = new File([blob], 'chronowalk-letter.png', { type: 'image/png' })
-      await navigator.share({
-        title: letter.title,
-        text,
-        files: [file],
-      })
-      return 'share'
+      const file = new File([blob], filename, { type: 'image/png' })
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ title: letter.title, files: [file] })
+        return 'share'
+      }
     } catch {
-      // fall through to text share
+      // Image share failed; fall through to download.
     }
-
-    await navigator.share({ title: letter.title, text })
-    return 'share'
   }
 
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text)
-    return 'clipboard'
-  }
-
-  return 'unsupported'
+  // Fall back to downloading the image so the user can share it manually.
+  return saveLetterCard(letter, meander)
 }

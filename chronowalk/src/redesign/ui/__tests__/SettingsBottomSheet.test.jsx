@@ -58,7 +58,7 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Audio speed')).toBeInTheDocument()
     expect(screen.getByText('Read instead of listen')).toBeInTheDocument()
     expect(screen.getByText('Text size')).toBeInTheDocument()
-    expect(screen.getByText('Download today for offline')).toBeInTheDocument()
+    expect(screen.getByText('Download for offline')).toBeInTheDocument()
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()

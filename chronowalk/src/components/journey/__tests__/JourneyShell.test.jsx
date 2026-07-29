@@ -256,12 +256,13 @@ describe('JourneyShell', () => {
     expect(getWaypoint(manifest, 'w23')?.chapters).toHaveLength(3)
   })
 
-  it('places Circus Maximus View on Path B after Palatine; encore is Via Appia only', () => {
+  it('enc_circus is defined but not in path B sequence; encore is Via Appia only', () => {
     const manifest = loadRomeManifest()
     const pathA = buildEffectiveSequence(manifest, 'a', [])
     const pathB = buildEffectiveSequence(manifest, 'b', [])
     expect(getWaypoint(manifest, 'enc_circus')?.title).toMatch(/circus maximus view/i)
-    expect(pathB.indexOf('enc_circus')).toBe(pathB.indexOf('w04') + 1)
+    expect(pathB).not.toContain('enc_circus')
+    expect(pathB[pathB.indexOf('w04') + 1]).toBe('t03')
     expect(pathB.slice(pathB.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
     expect(pathA).not.toContain('enc_circus')
     expect(pathA.slice(pathA.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
@@ -458,13 +459,13 @@ describe('JourneyShell', () => {
     })
     renderShell({ variant: 'redesign' })
 
+    // "I'm here" now advances straight into the arrival moment (unlock + You have arrived).
     fireEvent.click(await screen.findByTestId('transit-im-here'))
-    fireEvent.click(await screen.findByTestId('transit-arrive-destination'))
 
-    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.ARRIVED)
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)
     expect(await screen.findByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
-    expect(screen.getByText(/read instead/i)).toBeInTheDocument()
+    expect(screen.getByText(/begin listening/i)).toBeInTheDocument()
   })
 
   it('shows path choice at t01 before path is locked', async () => {

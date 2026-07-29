@@ -13,8 +13,11 @@ describe('tourStats', () => {
     expect(formatWalkedDistance(meters)).toMatch(/m|km/)
   })
 
-  it('estimates walk minutes from distance', () => {
+  it('estimates walk minutes from distance at 100 m/min', () => {
+    // 240 m → ceil(240/100) = ceil(2.4) = 3
     expect(estimateWalkMinutes(240)).toBe(3)
+    // 300 m → ceil(300/100) = 3 (was 4 at 80 m/min)
+    expect(estimateWalkMinutes(300)).toBe(3)
     expect(estimateWalkMinutes(null)).toBeNull()
   })
 })

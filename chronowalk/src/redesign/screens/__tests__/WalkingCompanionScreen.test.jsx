@@ -46,7 +46,7 @@ describe('WalkingCompanionScreen', () => {
     expect(screen.getByTestId('walking-map')).toHaveAttribute('data-directions', 'true')
     expect(screen.getByTestId('next-turns-card')).toBeInTheDocument()
     expect(screen.getByText('Next turns')).toBeInTheDocument()
-    expect(screen.getByTestId('walking-distance-meta')).toHaveTextContent('335 m · 4 min')
+    expect(screen.getByTestId('walking-distance-meta')).toHaveTextContent('335 m · 3 min')
     expect(screen.getByRole('button', { name: /open the arch of titus story/i })).toBeInTheDocument()
   })
 

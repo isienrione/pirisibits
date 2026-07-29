@@ -61,11 +61,20 @@ export function formatDistanceToNext(meters) {
   return formatWalkedDistance(meters)
 }
 
-/** Rough walking pace for launch estimates (~4.8 km/h). */
+/**
+ * Walking time estimate using a brisk tourist pace (100 m/min ≈ 6 km/h).
+ * For longer walks (brisk >= 8 min) where the leisurely pace (80 m/min) differs
+ * by at least 2 minutes, returns a "brisk–leisure min walk" range so travellers
+ * with different walking speeds both feel the estimate is accurate.
+ */
 export function formatWalkingTime(meters) {
   if (!meters || meters <= 0) return null
-  const minutes = Math.max(1, Math.round(meters / 80))
-  return `${minutes} min walk`
+  const brisk = Math.max(1, Math.round(meters / 100))
+  const leisure = Math.max(1, Math.round(meters / 80))
+  if (brisk >= 8 && leisure - brisk >= 2) {
+    return `${brisk}–${leisure} min walk`
+  }
+  return `${brisk} min walk`
 }
 
 /**

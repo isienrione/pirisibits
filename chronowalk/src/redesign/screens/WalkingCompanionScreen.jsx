@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { cloneElement, isValidElement, useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react'
 import { CheckCircle2, Footprints, Settings } from 'lucide-react'
 import { T } from '../tokens.js'
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
@@ -111,6 +111,34 @@ export default function WalkingCompanionScreen({
       }),
     [userPosition, directions?.steps, directions?.geometry, directions?.distanceM],
   )
+
+  // Debounce currentStepIndex so GPS jitter doesn't cause the highlighted step
+  // to flicker rapidly between adjacent steps. Only commit a new index after
+  // it has been stable for ~1.2 s. The ref tracks both the pending candidate
+  // and the debounce timer so they survive re-renders.
+  const [stableStepIndex, setStableStepIndex] = useState(0)
+  const stepDebounceRef = useRef({ timer: null, pending: 0 })
+
+  useLayoutEffect(() => {
+    // Reset immediately whenever we change stops (directions reload).
+    setStableStepIndex(0)
+    stepDebounceRef.current.pending = 0
+    if (stepDebounceRef.current.timer !== null) {
+      clearTimeout(stepDebounceRef.current.timer)
+      stepDebounceRef.current.timer = null
+    }
+  }, [stopKey])
+
+  useEffect(() => {
+    const raw = walkingStepProgress.currentStepIndex
+    if (raw === stableStepIndex) return
+    stepDebounceRef.current.pending = raw
+    if (stepDebounceRef.current.timer !== null) return
+    stepDebounceRef.current.timer = setTimeout(() => {
+      stepDebounceRef.current.timer = null
+      setStableStepIndex(stepDebounceRef.current.pending)
+    }, 1200)
+  }, [walkingStepProgress.currentStepIndex, stableStepIndex])
 
   const mapWithDirections = useMemo(() => {
     if (!isValidElement(map)) return map
@@ -344,7 +372,7 @@ export default function WalkingCompanionScreen({
           <div className="cw-walking-companion__steps-pane">
             <WalkingCompanionStepsPanel
               steps={directions?.steps ?? []}
-              currentStepIndex={walkingStepProgress.currentStepIndex}
+              currentStepIndex={stableStepIndex}
               loading={directionsLoading}
               error={directionsError}
               destinationTitle={title}
@@ -366,7 +394,7 @@ export default function WalkingCompanionScreen({
             <div className="cw-walking-companion__next-turns">
               <NextTurnsCard
                 steps={directions?.steps ?? []}
-                currentStepIndex={walkingStepProgress.currentStepIndex}
+                currentStepIndex={stableStepIndex}
                 loading={directionsLoading}
                 error={directionsError}
                 destinationTitle={title}
@@ -439,7 +467,16 @@ export default function WalkingCompanionScreen({
               type="button"
               data-testid={mode === 'transit' ? 'transit-im-here' : 'manual-arrive'}
               className="cw-walking-companion__dock-btn cw-walking-companion__dock-btn--here cw-wc-pressable"
-              onClick={() => setUserConfirmedArrival(true)}
+              onClick={() => {
+                setUserConfirmedArrival(true)
+                // Prefer the real arrival flow (unlock chime + You have arrived)
+                // so story narration never starts from this tap alone.
+                if (typeof onBeginChapter === 'function') {
+                  onPrimeAudio?.()
+                  onBeginChapter()
+                  return
+                }
+              }}
             >
               I'm here
             </button>

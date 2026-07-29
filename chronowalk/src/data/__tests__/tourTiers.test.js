@@ -41,8 +41,8 @@ describe('tourTiers', () => {
     const eterna = getVisitStopIds(manifest, { pace: JOURNEY_PACE.HEROIC })
 
     expect(central).toHaveLength(10)
-    expect(anticaPathB).toHaveLength(11)
-    expect(anticaPathB).toContain('enc_circus')
+    expect(anticaPathB).toHaveLength(10)
+    expect(anticaPathB).not.toContain('enc_circus')
     expect(eterna.length).toBeGreaterThan(central.length)
     expect(eterna.length).toBeGreaterThan(anticaPathB.length)
   })

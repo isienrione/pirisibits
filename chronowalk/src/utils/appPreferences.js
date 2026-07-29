@@ -6,7 +6,7 @@ const NOTIFICATIONS_KEY = 'chronowalk:notifications'
 const HAPTICS_KEY = 'chronowalk:haptics-enabled'
 const APP_PREFS_KEY = 'cw_app_prefs_v1'
 
-export const STORY_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.25, 1.5, 2]
+export const STORY_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
 export const PREFERENCES_CHANGED_EVENT = 'chronowalk:preferences-changed'
 
 const readBool = (key, fallback = false) => {
@@ -37,13 +37,13 @@ export const readAudioEnabled = () => {
 export const writeAudioEnabled = (enabled) => writeBool(AUDIO_ENABLED_KEY, enabled)
 
 export const readAudioSpeed = () => {
-  if (typeof window === 'undefined') return 1
+  if (typeof window === 'undefined') return 1.2
 
   try {
     const speed = Number(window.localStorage.getItem(AUDIO_SPEED_KEY))
-    return STORY_PLAYBACK_SPEEDS.includes(speed) ? speed : 1
+    return STORY_PLAYBACK_SPEEDS.includes(speed) ? speed : 1.2
   } catch {
-    return 1
+    return 1.2
   }
 }
 

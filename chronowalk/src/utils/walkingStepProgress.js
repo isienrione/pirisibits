@@ -2,7 +2,7 @@ import { getDistance } from './distance'
 
 function projectAlongRoute(coordinates, userPos) {
   if (!coordinates?.length || userPos?.lat == null || userPos?.lng == null) {
-    return { distanceAlongM: 0, closestIndex: 0 }
+    return { distanceAlongM: 0, closestIndex: 0, minDistanceM: Infinity }
   }
 
   let closestIndex = 0
@@ -42,8 +42,11 @@ function projectAlongRoute(coordinates, userPos) {
     }
   }
 
-  return { distanceAlongM, closestIndex }
+  return { distanceAlongM, closestIndex, minDistanceM: minDistance }
 }
+
+/** Threshold beyond which GPS is considered "far from route" and we pin step 0. */
+const FAR_FROM_ROUTE_M = 500
 
 export function resolveWalkingStepProgress({
   userPos,
@@ -66,7 +69,18 @@ export function resolveWalkingStepProgress({
   }
 
   const coordinates = geometry?.coordinates ?? []
-  const { distanceAlongM } = projectAlongRoute(coordinates, userPos)
+  const { distanceAlongM, minDistanceM } = projectAlongRoute(coordinates, userPos)
+
+  // If the user has no GPS position yet, or is too far from the route geometry
+  // (e.g. outside Rome / stale/unreliable fix), pin to step 0 so the step
+  // indicator doesn't flicker based on meaningless projection noise.
+  if (userPos?.lat == null || userPos?.lng == null || minDistanceM > FAR_FROM_ROUTE_M) {
+    return {
+      currentStepIndex: 0,
+      routeProgress: 0,
+      remainingDistanceM: safeTotalDistanceM,
+    }
+  }
 
   let cumulativeM = 0
   let currentStepIndex = 0

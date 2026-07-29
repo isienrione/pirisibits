@@ -1015,6 +1015,7 @@ export class AudioEngine {
    */
   async playArrivalChime() {
     await this.playUiCue('arrival')
+    await new Promise((r) => setTimeout(r, 450))
     await this.playUiCue('arrival_unlocked')
   }
 

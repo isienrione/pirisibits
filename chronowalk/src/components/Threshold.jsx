@@ -15,6 +15,8 @@ import ThresholdSourceBadge, {
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
 
 const REVEAL_COMPLETE = 0.98
+/** Short single-tap threshold — gestures shorter than this are treated as taps, not holds. */
+const SHORT_TAP_MS = 260
 
 /** Shared framing for both eras — same box, same scale, minimal crop. */
 const THRESHOLD_LAYER_CONTAIN = {
@@ -94,7 +96,13 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     if (playing) {
       const playPromise = video.play()
       if (playPromise?.catch) {
-        playPromise.catch(() => setFailed(true))
+        // AbortError = browser interrupted play (e.g. src changed) — not a real failure.
+        // Other transient errors should not permanently fall back to static.
+        playPromise.catch((err) => {
+          if (err?.name !== 'AbortError') {
+            console.warn('ThresholdVideo: play() rejected', err?.name, err?.message)
+          }
+        })
       }
     } else {
       video.pause()
@@ -182,11 +190,18 @@ export default function Threshold({
    * without needing to interact inside the phone mockup.
    */
   demoAutoReveal = false,
+  /**
+   * Called when the user does a short single tap on the left (now) side of the image.
+   * Intended for: fullscreen now-photo lightbox without text/audio overlays.
+   * Left side = pointer x < 50% of component width.
+   */
+  onNowTap = null,
 }) {
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
   const audioRef = useRef(null)
   const holdStartRef = useRef(null)
+  const holdStartXRef = useRef(null)
   const rafRef = useRef(null)
   const pointerIdRef = useRef(null)
   const fullyRevealedHoldRef = useRef(false)
@@ -477,6 +492,7 @@ export default function Threshold({
       }
       pointerIdRef.current = event.pointerId
       holdStartRef.current = performance.now()
+      holdStartXRef.current = event.clientX
       fullyRevealedHoldRef.current = false
       holdCommittedRef.current = false
       holdSessionRef.current = true
@@ -528,12 +544,39 @@ export default function Threshold({
       if (pointerIdRef.current != null && event.pointerId !== pointerIdRef.current) return
 
       const heldMs = holdStartRef.current ? performance.now() - holdStartRef.current : 0
+      const startX = holdStartXRef.current
       const hadHoldSession = holdSessionRef.current
       const wasCommitted = holdCommittedRef.current
       clearHoldCommitTimer()
       holdStartRef.current = null
+      holdStartXRef.current = null
       pointerIdRef.current = null
       setHolding(false)
+
+      // Short left-side tap → fullscreen now-photo lightbox.
+      // Only trigger when not currently latched (latched tap = release to now).
+      if (
+        onNowTap &&
+        heldMs < SHORT_TAP_MS &&
+        !wasCommitted &&
+        !latchedRef.current &&
+        startX != null &&
+        rootRef.current
+      ) {
+        const rect = rootRef.current.getBoundingClientRect()
+        const relX = rect.width > 0 ? (startX - rect.left) / rect.width : 1
+        if (relX < 0.5) {
+          // Cancel the brief animation that started on pointer-down.
+          cancelAnimation()
+          setReveal(0)
+          revealRef.current = 0
+          setVideoPlaying(false)
+          holdSessionRef.current = false
+          audioRef.current?.rampToNow(200)
+          onNowTap()
+          return
+        }
+      }
 
       if (waypoint?.id && heldMs > 0) {
         track(TRACK_EVENTS.THRESHOLD_HOLD, {
@@ -578,9 +621,11 @@ export default function Threshold({
     },
     [
       animateReveal,
+      cancelAnimation,
       clearHoldCommitTimer,
       endHoldSession,
       latchToThen,
+      onNowTap,
       reducedMotion,
       waypoint?.id,
     ],
@@ -611,23 +656,26 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
-  const layerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
+  // Modern (now) photo fills the frame; ancient reconstruction preserves aspect ratio.
+  const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
+  const thenLayerStyle = THRESHOLD_LAYER_CONTAIN
 
   const thenLayer =
     reconstruction.loop ? (
       <ThresholdVideo
+        key={reconstruction.loop}
         src={reconstruction.loop}
         poster={reconstruction.then}
         playing={videoPlaying}
         className="threshold-layer"
-        style={layerStyle}
+        style={thenLayerStyle}
       />
     ) : (
       <ThresholdLayerImage
         src={thenSrc}
         alt=""
         className="threshold-layer"
-        style={layerStyle}
+        style={thenLayerStyle}
       />
     )
 
@@ -636,7 +684,7 @@ export default function Threshold({
       src={reconstruction.now}
       alt=""
       className="threshold-layer"
-      style={layerStyle}
+      style={nowLayerStyle}
     />
   )
 

@@ -272,7 +272,7 @@ export default function RedesignStopsScreen() {
                           </button>
                           <button
                             type="button"
-                            onClick={() => walkToStop(card.id)}
+                            onClick={() => walkToStop(card.id, JOURNEY_STATES.WALKING)}
                             style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
                           >
                             Walk here

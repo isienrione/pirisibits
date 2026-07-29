@@ -623,7 +623,7 @@ export default function RedesignMyTourScreen() {
                               </button>
                               <button
                                 type="button"
-                                onClick={() => walkToStop(stop.id)}
+                                onClick={() => walkToStop(stop.id, JOURNEY_STATES.WALKING)}
                                 style={{
                                   fontSize: 11,
                                   color: T.obsidian,

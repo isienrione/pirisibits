@@ -48,8 +48,8 @@ describe('appPreferences', () => {
     expect(readPlayerIconsPref()).toBe(true)
   })
 
-  it('defaults story playback speed to 1x', () => {
-    expect(readAudioSpeed()).toBe(1)
+  it('defaults story playback speed to 1.2x', () => {
+    expect(readAudioSpeed()).toBe(1.2)
   })
 
   it('persists and cycles story playback speed', () => {

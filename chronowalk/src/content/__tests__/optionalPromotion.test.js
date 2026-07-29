@@ -15,15 +15,16 @@ describe('optional waypoint promotion', () => {
     expect(getOptionalWaypointIds(manifest, 'b')).toEqual([])
   })
 
-  it('places Circus Maximus View on path B after Palatine, not in the encore', () => {
+  it('enc_circus is not in path B sequence (Palatine flows directly to Titus)', () => {
     const pathA = buildEffectiveSequence(manifest, 'a', [])
     const pathB = buildEffectiveSequence(manifest, 'b', [])
-    const viewIndex = pathB.indexOf('enc_circus')
-    expect(viewIndex).toBeGreaterThanOrEqual(0)
-    expect(pathB[viewIndex - 1]).toBe('w04')
+    expect(pathB).not.toContain('enc_circus')
     expect(pathB.slice(-2)).toEqual(['t22', 'w22'])
     expect(pathA).not.toContain('enc_circus')
     expect(pathA.slice(-2)).toEqual(['t22', 'w22'])
+    // Path B goes Palatine → Titus directly
+    expect(pathB[pathB.indexOf('w04') + 1]).toBe('t03')
+    expect(pathB[pathB.indexOf('t03') + 1]).toBe('w03')
   })
 
   it('inserts promoted w04 steps before w06 on path A', () => {

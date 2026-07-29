@@ -4,9 +4,9 @@ import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
 /** Soft dissolve starts before the last frame so the cut into the hero isn’t abrupt. */
 /** Edge-bust: cinematic open (intro-open.mp4) — 2026-07-29 */
-const EXIT_LEAD_MS = 680
-const COMPRESS_MS = 900
-const FALLBACK_MAX_MS = 12000
+const EXIT_LEAD_MS = 320
+const COMPRESS_MS = 450
+const FALLBACK_MAX_MS = 7000
 const NAV_OFFSET_PX = 68
 
 /**
@@ -80,6 +80,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
     const onLoadedMeta = () => armExitLead()
     const onCanPlay = () => {
       setVideoReady(true)
+      if (video) video.playbackRate = 1.35
       const play = video?.play()
       if (play && typeof play.catch === 'function') {
         play.catch(() => beginCompress())

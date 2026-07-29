@@ -39,7 +39,7 @@ describe('PurchasePage', () => {
 
     expect(screen.getByText('Rome')).toBeInTheDocument()
     expect(screen.getByText(/Full bundle · at your own pace/i)).toBeInTheDocument()
-    expect(screen.getByText(/23 places · yours to keep/i)).toBeInTheDocument()
+    expect(screen.getByText(/21 places · yours to keep/i)).toBeInTheDocument()
     expect(screen.getByText('Total')).toBeInTheDocument()
     expect(screen.getByText('€14.99')).toBeInTheDocument()
     expect(screen.getByText('Secure payment')).toBeInTheDocument()

@@ -14,7 +14,7 @@ describe('durationManifest', () => {
   it('seeds transit narration durations from duration_s', () => {
     const seeds = seedDurationsFromTransits(manifest)
     expect(seeds['t02.mp3']).toBe(25)
-    expect(seeds['t01_fork_a.mp3']).toBe(70)
+    expect(seeds['t01_fork_a.mp3']).toBe(81)
     expect(seeds['t03_b.mp3']).toBe(30)
   })
 

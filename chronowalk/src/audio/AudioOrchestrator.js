@@ -235,8 +235,11 @@ class AudioOrchestrator {
     }
 
     try {
-      for (const url of sequence) {
-        await this.playAlertClip(url)
+      for (let i = 0; i < sequence.length; i++) {
+        await this.playAlertClip(sequence[i])
+        if (i < sequence.length - 1) {
+          await new Promise((r) => setTimeout(r, 450))
+        }
       }
     } catch (error) {
       console.warn('Arrival alert playback blocked.', error)

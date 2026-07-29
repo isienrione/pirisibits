@@ -46,8 +46,8 @@ describe('SettingsPage', () => {
     fireEvent.click(screen.getByRole('switch', { name: /toggle journey notifications/i }))
     expect(readNotificationsEnabled()).toBe(false)
 
-    fireEvent.click(screen.getByRole('button', { name: '1×' }))
-    expect(readAudioSpeed()).toBe(1.2)
+    fireEvent.click(screen.getByRole('button', { name: '1.2×' }))
+    expect(readAudioSpeed()).toBe(1.5)
 
     fireEvent.click(screen.getByRole('switch', { name: /toggle haptic feedback/i }))
     expect(readHapticsEnabled()).toBe(false)

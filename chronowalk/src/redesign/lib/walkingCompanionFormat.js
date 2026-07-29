@@ -1,3 +1,5 @@
+import { formatWalkingTime } from '../../content/journeyProgress.js'
+
 export function formatPlaybackClock(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
   const total = Math.floor(seconds)
@@ -44,16 +46,18 @@ export function resolveWalkChromeDistanceCopy({
     locationStatus,
   )
 
-  if (
-    typeof directionsDurationSec === 'number' &&
-    directionsDurationSec > 0 &&
-    !base.gpsBlocked &&
-    !base.pending
-  ) {
-    const minutes = Math.max(1, Math.round(directionsDurationSec / 60))
-    return {
-      ...base,
-      secondary: `${minutes} min`,
+  if (!base.gpsBlocked && !base.pending) {
+    if (typeof directionsDistanceM === 'number' && directionsDistanceM > 0) {
+      // Prefer a distance-based estimate using the same brisk/range format as
+      // the rest of the app — more consistent than raw Mapbox pedestrian durations
+      // which tend to overestimate for an active tourist pace.
+      const timeCopy = formatWalkingTime(directionsDistanceM)
+      if (timeCopy) return { ...base, secondary: timeCopy }
+    } else if (typeof directionsDurationSec === 'number' && directionsDurationSec > 0) {
+      // Mapbox durations assume a slow pace; scale down ~28 % to match 100 m/min.
+      const effectiveSec = Math.round(directionsDurationSec * 0.72)
+      const minutes = Math.max(1, Math.round(effectiveSec / 60))
+      return { ...base, secondary: `${minutes} min` }
     }
   }
 

@@ -44,7 +44,7 @@ function formatDistancePhrase(meters) {
 
 export function composeLetterBody(manifest, stops) {
   if (!stops.length) {
-    return 'Your letter is still blank — Rome is waiting for your footsteps. Each stop you hear will add a line to the path you walked.'
+    return 'Your letter is still blank - Rome is waiting for your footsteps. Each stop you hear will add a line to the path you walked.'
   }
 
   const names = stops.map((stop) => stop.title)
@@ -52,7 +52,7 @@ export function composeLetterBody(manifest, stops) {
   const city = manifest?.name ?? 'Rome'
 
   if (names.length === 1) {
-    return `You began in ${city} at ${names[0]}. One doorway opened — and the city already knows your name.`
+    return `You began in ${city} at ${names[0]}. One doorway opened - and the city already knows your name.`
   }
 
   const route = names.length === 2
@@ -66,12 +66,35 @@ export function composeLetterBody(manifest, stops) {
   return `You walked ${city} from ${route}.${distanceLine} The stories you heard are yours to keep.`
 }
 
+const TRAVELER_NAME_KEY = 'cw_traveler_name_v1'
+
+export function readTravelerName() {
+  if (typeof window === 'undefined') return ''
+  try {
+    return window.localStorage.getItem(TRAVELER_NAME_KEY)?.trim() ?? ''
+  } catch {
+    return ''
+  }
+}
+
+export function writeTravelerName(name) {
+  if (typeof window === 'undefined') return
+  try {
+    const cleaned = String(name ?? '').trim().slice(0, 40)
+    if (cleaned) window.localStorage.setItem(TRAVELER_NAME_KEY, cleaned)
+    else window.localStorage.removeItem(TRAVELER_NAME_KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
 export function buildJourneyLetter(manifest, context = {}) {
   const path = context.path ?? 'a'
   const stops = buildLetterStops(manifest, context.completedWaypointIds ?? [], path)
   const reflection = pickJournalReflection(manifest, stops.length)
   const body = composeLetterBody(manifest, stops)
   const walkedMeters = estimateLetterWalkedMeters(stops)
+  const firstName = context.travelerName?.trim() || readTravelerName() || 'Traveler'
 
   return {
     city: manifest?.name ?? 'Rome',
@@ -81,6 +104,7 @@ export function buildJourneyLetter(manifest, context = {}) {
     stops,
     stopCount: stops.length,
     walkedMeters,
+    firstName,
     shareText: [body, reflection].filter(Boolean).join('\n\n'),
   }
 }
