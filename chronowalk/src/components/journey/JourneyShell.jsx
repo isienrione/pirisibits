@@ -91,7 +91,8 @@ const DEV_GEOFENCE_ACCURACY_M = 150
 
 // Speeds offered by the immersive player's speed pill (subset of the shared
 // STORY_PLAYBACK_SPEEDS preference set).
-const PLAYER_SPEEDS = [0.8, 1, 1.2]
+// Keep in sync with Story/C6Immersive audio controls.
+const PLAYER_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
 
 export default function JourneyShell({ variant = 'legacy' }) {
   const navigate = useNavigate()
