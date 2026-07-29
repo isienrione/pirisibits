@@ -3,12 +3,19 @@ import { ensureFreshBuildAsync } from './ensureFreshBuild.js'
 import { ensureWalkingUiFresh } from './walkingUiMigration.js'
 import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
+import { shouldSkipServiceWorkerRegistration } from './staleChunkRecovery.js'
 
 const devStub = registerAppServiceWorker(registerSW, { isProd: false })
 
 /** Resolves once build migration (if any) has finished and the SW controller is ready. */
 export const pwaReady = (async () => {
   if (typeof window === 'undefined') return devStub
+
+  // After a poisoned-shell recovery, boot once from the network without
+  // immediately re-installing a service worker that can re-claim stale caches.
+  if (shouldSkipServiceWorkerRegistration()) {
+    return devStub
+  }
 
   const isMigrating = await ensureFreshBuildAsync()
   if (isMigrating) return devStub

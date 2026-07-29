@@ -44,6 +44,31 @@ describe('journey state machine', () => {
     expect(parsed.context.currentSequenceIndex).toBe(4)
   })
 
+  it('coerces corrupt journey arrays instead of crashing on hydrate', async () => {
+    localStorage.setItem(
+      'cw_journey_v1',
+      JSON.stringify({
+        state: JOURNEY_STATES.WALKING,
+        context: {
+          path: 'a',
+          completedWaypointIds: null,
+          completedTransitIds: 'nope',
+          promotedOptionalIds: { w04: true },
+          currentSequenceIndex: '3',
+        },
+      }),
+    )
+
+    vi.resetModules()
+    const { getJourneySnapshot: freshSnapshot } = await import('../journey.js')
+    const snap = freshSnapshot()
+    expect(snap.state).toBe(JOURNEY_STATES.WALKING)
+    expect(snap.context.completedWaypointIds).toEqual([])
+    expect(snap.context.completedTransitIds).toEqual([])
+    expect(snap.context.promotedOptionalIds).toEqual([])
+    expect(snap.context.currentSequenceIndex).toBe(3)
+  })
+
   it('locks path at the act II fork', () => {
     setJourneyPath('b')
     expect(getJourneySnapshot().context.path).toBe('b')

@@ -40,13 +40,19 @@ describe('ensureFreshBuild', () => {
       },
     })
 
+    const assign = vi.fn()
     const reload = vi.fn()
-    vi.stubGlobal('location', { reload: reload })
+    vi.stubGlobal('location', {
+      href: 'https://chronowalk.com/journey',
+      origin: 'https://chronowalk.com',
+      assign,
+      reload,
+    })
 
     expect(ensureFreshBuild('build-new')).toBe(true)
 
     await vi.waitFor(() => {
-      expect(reload).toHaveBeenCalled()
+      expect(assign).toHaveBeenCalled()
     })
 
     expect(cacheDelete).toHaveBeenCalledWith('workbox-precache')
@@ -93,13 +99,19 @@ describe('ensureFreshBuild', () => {
       },
     })
 
+    const assign = vi.fn()
     const reload = vi.fn()
-    vi.stubGlobal('location', { reload: reload })
+    vi.stubGlobal('location', {
+      href: 'https://chronowalk.com/journey',
+      origin: 'https://chronowalk.com',
+      assign,
+      reload,
+    })
 
     await expect(ensureFreshBuildAsync('build-old')).resolves.toBe(true)
 
     await vi.waitFor(() => {
-      expect(reload).toHaveBeenCalled()
+      expect(assign).toHaveBeenCalled()
     })
 
     expect(localStorage.getItem(BUILD_STORAGE_KEY)).toBe('build-new')

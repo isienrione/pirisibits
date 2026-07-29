@@ -70,6 +70,59 @@ const defaultState = () => ({
   context: defaultContext(),
 })
 
+function asStringArray(value) {
+  if (!Array.isArray(value)) return []
+  return value.filter((item) => typeof item === 'string' && item.length > 0)
+}
+
+function normalizeJourneyContext(rawContext = {}) {
+  const mergedContext = {
+    ...defaultContext(),
+    ...rawContext,
+  }
+
+  if (mergedContext.dayNumber != null && mergedContext.pace == null) {
+    mergedContext.pace = JOURNEY_PACE.CLASSIC
+  }
+
+  delete mergedContext.dayNumber
+
+  if (mergedContext.currentSequenceIndex == null) {
+    mergedContext.currentSequenceIndex = mergedContext.currentWaypointIndex ?? 0
+  }
+
+  const seqIndex = Number(mergedContext.currentSequenceIndex)
+  mergedContext.currentSequenceIndex = Number.isFinite(seqIndex) && seqIndex >= 0 ? seqIndex : 0
+
+  const wpIndex = Number(mergedContext.currentWaypointIndex)
+  mergedContext.currentWaypointIndex = Number.isFinite(wpIndex) && wpIndex >= 0 ? wpIndex : 0
+
+  mergedContext.completedWaypointIds = asStringArray(mergedContext.completedWaypointIds)
+  mergedContext.completedTransitIds = asStringArray(mergedContext.completedTransitIds)
+  mergedContext.promotedOptionalIds = asStringArray(mergedContext.promotedOptionalIds)
+
+  if (mergedContext.pathLocked == null) {
+    mergedContext.pathLocked = false
+  } else {
+    mergedContext.pathLocked = Boolean(mergedContext.pathLocked)
+  }
+
+  if (mergedContext.lastActiveAt == null && mergedContext.pausedAt != null) {
+    mergedContext.lastActiveAt = mergedContext.pausedAt
+  }
+
+  if (mergedContext.pendingResumeCue == null) {
+    mergedContext.pendingResumeCue = null
+  }
+
+  if (mergedContext.customWaypointIds != null) {
+    const custom = asStringArray(mergedContext.customWaypointIds)
+    mergedContext.customWaypointIds = custom.length > 0 ? custom : null
+  }
+
+  return mergedContext
+}
+
 function readStorage() {
   if (typeof window === 'undefined') return defaultState()
 
@@ -77,48 +130,9 @@ function readStorage() {
     const raw = window.localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState()
     const parsed = JSON.parse(raw)
-    const mergedContext = {
-      ...defaultContext(),
-      ...parsed.context,
-    }
-
-    if (mergedContext.dayNumber != null && mergedContext.pace == null) {
-      mergedContext.pace = JOURNEY_PACE.CLASSIC
-    }
-
-    delete mergedContext.dayNumber
-
-    if (mergedContext.currentSequenceIndex == null) {
-      mergedContext.currentSequenceIndex = mergedContext.currentWaypointIndex ?? 0
-    }
-
-    if (mergedContext.completedTransitIds == null) {
-      mergedContext.completedTransitIds = []
-    }
-
-    if (mergedContext.pathLocked == null) {
-      mergedContext.pathLocked = false
-    }
-
-    if (mergedContext.promotedOptionalIds == null) {
-      mergedContext.promotedOptionalIds = []
-    }
-
-    if (mergedContext.lastActiveAt == null && mergedContext.pausedAt != null) {
-      mergedContext.lastActiveAt = mergedContext.pausedAt
-    }
-
-    if (mergedContext.pendingResumeCue == null) {
-      mergedContext.pendingResumeCue = null
-    }
-
-    if (mergedContext.customWaypointIds == null) {
-      mergedContext.customWaypointIds = null
-    }
-
     return {
       state: migratePersistedJourneyState(parsed.state ?? JOURNEY_STATES.IDLE),
-      context: mergedContext,
+      context: normalizeJourneyContext(parsed.context),
     }
   } catch {
     return defaultState()
@@ -183,10 +197,7 @@ export function hydrateJourney(remoteSnapshot) {
 
   const remote = {
     state: migratePersistedJourneyState(remoteSnapshot.state),
-    context: {
-      ...defaultContext(),
-      ...remoteSnapshot.context,
-    },
+    context: normalizeJourneyContext(remoteSnapshot.context),
   }
 
   if (!isResumableJourney(remote)) return snapshot

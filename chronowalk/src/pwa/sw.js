@@ -181,6 +181,8 @@ registerRoute(
     denylist: [
       /^\/offline$/,
       /^\/offline\.html$/,
+      /^\/reset-shell$/,
+      /^\/reset-shell\.html$/,
       /^\/rome\//,
       /^\/waypoints\//,
       /^\/assets\//,

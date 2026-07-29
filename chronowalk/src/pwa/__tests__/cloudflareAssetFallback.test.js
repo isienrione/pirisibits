@@ -34,6 +34,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(headers).toMatch(/\/sw\.js[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/index\.html[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/landing[\s\S]*?no-cache/)
+    expect(headers).toMatch(/\/reset-shell(?:\.html)?[\s\S]*?no-cache/)
     expect(headers).toMatch(/\/assets\/\*[\s\S]*?immutable/)
     expect(headers).toMatch(/\/robots\.txt[\s\S]*?Content-Type:\s*text\/plain/)
     expect(headers).toMatch(/\/sitemap\.xml[\s\S]*?Content-Type:\s*application\/xml/)
@@ -48,7 +49,19 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).toContain("BUILD_PREFIX + '-assets'")
     expect(sw).toContain('APP_SHELL_PRECACHE_URL')
     expect(sw).toContain("createHandlerBoundToURL(APP_SHELL_PRECACHE_URL)")
+    expect(sw).toMatch(/\/\^\\\/reset-shell\$\//)
     // Must not bind the offline shell to apex `/` (302 in production).
     expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
+  })
+
+  it('ships a static reset-shell escape hatch outside the SPA', () => {
+    expect(existsSync(join(ROOT, 'public/reset-shell.html'))).toBe(true)
+    const html = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
+    expect(html).toContain('cw-skip-sw-once')
+    expect(html).toContain('caches.delete')
+    expect(html).toContain('unregister')
+    expect(html).toContain('/landing?cw_bust=')
+    expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
+    expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
   })
 })

@@ -5,6 +5,7 @@ export default class V2ErrorBoundary extends Component {
   constructor(props) {
     super(props)
     this.state = { hasError: false, recovering: false, autoRecovering: false }
+    this.autoRecoverAttempted = false
   }
 
   static getDerivedStateFromError() {
@@ -14,35 +15,44 @@ export default class V2ErrorBoundary extends Component {
   componentDidCatch(error, info) {
     console.error('V2ErrorBoundary caught an error:', error, info)
 
-    // After a Cloudflare deploy, old hashed chunks 404 and React throws here.
-    // Self-heal once instead of leaving a misleading "Tour unavailable" screen.
-    if (isStaleChunkError(error) && !this.state.autoRecovering) {
-      this.setState({ autoRecovering: true, recovering: true })
-      void recoverStaleClient().finally(() => {
-        this.setState({ recovering: false })
-      })
-    }
+    // Only auto-heal known stale-chunk / poisoned-shell failures. Auto-recovering
+    // *any* error caused a loop: throw → reset-shell → /landing → same throw.
+    if (this.autoRecoverAttempted) return
+    this.autoRecoverAttempted = true
+
+    const shouldAuto =
+      isStaleChunkError(error) || this.props.autoRecoverOnAnyError === true
+
+    if (!shouldAuto) return
+
+    this.setState({ autoRecovering: true, recovering: true })
+    void recoverStaleClient({ force: false, reason: 'error-boundary' }).then((result) => {
+      if (!result?.reloading) {
+        // Guard already spent — show Try again so the traveler can force it.
+        this.setState({ autoRecovering: false, recovering: false })
+      }
+    })
   }
 
   handleRetry = () => {
     if (this.state.recovering) return
-    this.setState({ recovering: true })
+    this.setState({ recovering: true, autoRecovering: true })
 
     const custom = this.props.onRetry
     if (typeof custom === 'function') {
       Promise.resolve(custom())
         .catch(() => {})
         .finally(() => {
-          this.setState({ hasError: false, recovering: false })
+          this.setState({ hasError: false, recovering: false, autoRecovering: false })
         })
       return
     }
 
     // Default: real stale-build recovery (purge SW caches + reload once).
     // Does not clear credentials, progress, or IndexedDB tour state.
-    void recoverStaleClient({ force: true }).finally(() => {
+    void recoverStaleClient({ force: true, reason: 'manual-retry' }).finally(() => {
       // If reload was blocked in tests, allow another click.
-      this.setState({ hasError: true, recovering: false })
+      this.setState({ hasError: true, recovering: false, autoRecovering: false })
     })
   }
 
@@ -119,6 +129,26 @@ export default class V2ErrorBoundary extends Component {
           >
             {this.state.recovering ? 'Refreshing…' : 'Try again'}
           </button>
+          {!this.state.autoRecovering ? (
+            <p
+              style={{
+                margin: '16px 0 0',
+                fontSize: 'var(--fs-secondary)',
+                lineHeight: 1.5,
+                color: 'color-mix(in srgb, var(--ink) 55%, var(--bone))',
+              }}
+            >
+              Still stuck?{' '}
+              <a
+                href="/reset-shell.html"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                Refresh the app shell
+              </a>
+              {' '}
+              — access stays on this device.
+            </p>
+          ) : null}
         </div>
       </main>
     )

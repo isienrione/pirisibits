@@ -16,8 +16,17 @@ import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
 import LandingDemoWalkShell from './LandingDemoWalkShell.jsx'
 
-const MANIFEST = loadRomeManifest()
-const PANTHEON = getWaypoint(MANIFEST, 'w17')
+function loadLandingDemoManifest() {
+  try {
+    return loadRomeManifest()
+  } catch (error) {
+    console.error('LandingProductPhoneStage: failed to load Rome manifest', error)
+    return null
+  }
+}
+
+const MANIFEST = loadLandingDemoManifest()
+const PANTHEON = MANIFEST ? getWaypoint(MANIFEST, 'w17') : null
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 const noop = () => {}
 
@@ -60,6 +69,9 @@ const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
 
 /** Arrive — Threshold auto-reveal only while this chapter is the active scene. */
 const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
+  if (!MANIFEST || !PANTHEON) {
+    return <ChooseScreen beat={0} />
+  }
   return (
     <A2FreePreviewStory
       manifest={MANIFEST}
@@ -88,6 +100,9 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
 
 /** Listen — narration / transcript. Stable tree (no tab remount thrash). */
 const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
+  if (!MANIFEST || !PANTHEON) {
+    return <ChooseScreen beat={0} />
+  }
   return (
     <A2FreePreviewStory
       manifest={MANIFEST}

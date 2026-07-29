@@ -36,6 +36,15 @@ describe('optional waypoint promotion', () => {
     expect(getPromotionInsertSteps(manifest, 'w04', 'a')).toEqual(['t02', 'w04', 't03'])
   })
 
+  it('tolerates non-array promotedOptionalIds without throwing', () => {
+    expect(buildEffectiveSequence(manifest, 'a', null)).toEqual(
+      buildEffectiveSequence(manifest, 'a', []),
+    )
+    expect(buildEffectiveSequence(manifest, 'a', { w04: true })).toEqual(
+      buildEffectiveSequence(manifest, 'a', []),
+    )
+  })
+
   it('leaves path B sequence unchanged when w04 is not optional', () => {
     const base = buildEffectiveSequence(manifest, 'b', [])
     const promoted = buildEffectiveSequence(manifest, 'b', ['w04'])

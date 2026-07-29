@@ -11,12 +11,19 @@ import RedesignThresholdOverlay from '../../redesign/ui/RedesignThresholdOverlay
 export function JourneyThresholdLayer() {
   const { state, context, completeStoryAfterThreshold } = useV2Journey()
   const { requestAdvanceToWaypoint } = useSharedWalkGuard()
-  const manifest = useMemo(() => loadRomeManifest(), [])
+  const manifest = useMemo(() => {
+    try {
+      return loadRomeManifest()
+    } catch (error) {
+      console.error('JourneyThresholdLayer: failed to load manifest', error)
+      return null
+    }
+  }, [])
   const step = useJourneyStep(
     manifest,
     context.path,
     context.currentSequenceIndex,
-    context.promotedOptionalIds
+    Array.isArray(context.promotedOptionalIds) ? context.promotedOptionalIds : [],
   )
 
   if (state !== JOURNEY_STATES.THRESHOLD || !manifest || step?.type !== 'waypoint') return null

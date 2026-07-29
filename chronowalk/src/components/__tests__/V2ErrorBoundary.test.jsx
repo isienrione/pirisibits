@@ -19,14 +19,17 @@ function BrokenChild() {
 describe('V2ErrorBoundary', () => {
   beforeEach(() => {
     recoverStaleClient.mockClear()
+    recoverStaleClient.mockResolvedValue({ recovered: true, reloading: true })
   })
 
   it('renders fallback UI and custom onRetry still remounts', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
     const onRetry = vi.fn()
+    // Don't auto-recover in this test — custom onRetry owns the path.
+    recoverStaleClient.mockResolvedValue({ recovered: false, reloading: false })
 
     const { rerender } = render(
-      <V2ErrorBoundary title="Journey error" onRetry={onRetry}>
+      <V2ErrorBoundary title="Journey error" onRetry={onRetry} autoRecoverOnAnyError={false}>
         <BrokenChild />
       </V2ErrorBoundary>,
     )
@@ -35,7 +38,7 @@ describe('V2ErrorBoundary', () => {
     expect(screen.getByText('Journey error')).toBeInTheDocument()
 
     rerender(
-      <V2ErrorBoundary title="Journey error" onRetry={onRetry}>
+      <V2ErrorBoundary title="Journey error" onRetry={onRetry} autoRecoverOnAnyError={false}>
         <p>Recovered</p>
       </V2ErrorBoundary>,
     )
@@ -50,15 +53,23 @@ describe('V2ErrorBoundary', () => {
 
   it('Try again performs real stale-client recovery by default', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    recoverStaleClient.mockResolvedValue({ recovered: false, reloading: false })
 
     render(
-      <V2ErrorBoundary title="Couldn’t load ChronoWalk">
+      <V2ErrorBoundary title="Couldn’t load ChronoWalk" autoRecoverOnAnyError={false}>
         <BrokenChild />
       </V2ErrorBoundary>,
     )
 
+    expect(screen.getByRole('link', { name: /refresh the app shell/i })).toHaveAttribute(
+      'href',
+      '/reset-shell.html',
+    )
+
     fireEvent.click(screen.getByRole('button', { name: /try again/i }))
-    await waitFor(() => expect(recoverStaleClient).toHaveBeenCalledWith({ force: true }))
+    await waitFor(() =>
+      expect(recoverStaleClient).toHaveBeenCalledWith({ force: true, reason: 'manual-retry' }),
+    )
 
     consoleError.mockRestore()
   })
@@ -78,6 +89,22 @@ describe('V2ErrorBoundary', () => {
 
     expect(screen.getByText(/Updating ChronoWalk/i)).toBeInTheDocument()
     await waitFor(() => expect(recoverStaleClient).toHaveBeenCalled())
+
+    consoleError.mockRestore()
+  })
+
+  it('does not auto-recover generic errors (avoids landing loop)', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    render(
+      <V2ErrorBoundary title="Couldn’t load ChronoWalk">
+        <BrokenChild />
+      </V2ErrorBoundary>,
+    )
+
+    expect(screen.getByText('Couldn’t load ChronoWalk')).toBeInTheDocument()
+    expect(screen.queryByText(/Updating ChronoWalk/i)).not.toBeInTheDocument()
+    await waitFor(() => expect(recoverStaleClient).not.toHaveBeenCalled())
 
     consoleError.mockRestore()
   })
