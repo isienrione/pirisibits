@@ -23,6 +23,7 @@ import { toWalkCardModel } from '../../content/stopPresentation.js'
 import { resolveMapBottomCard, MAP_BOTTOM_CTA } from '../../content/mapBottomCard.js'
 import MapBottomCard from '../../redesign/ui/MapBottomCard.jsx'
 import { ShellWalkCard } from '../../shell'
+import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
 
 const TourMap = lazyWithRecovery(() => import('../TourMap.jsx'), 'map')
 
@@ -81,6 +82,7 @@ function ConfidenceChip({ label, active, compact = false }) {
 
 export default function MapScreen({ variant = 'legacy' }) {
   const navigate = useNavigate()
+  const { isOffline } = useNetworkStatus()
   const { state, context, transition } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const step = useJourneyStep(
@@ -347,6 +349,8 @@ export default function MapScreen({ variant = 'legacy' }) {
         arrivalPulseActive={geo.insideGeofence}
         debugMapEnabled={isDebugMap()}
         minimalUI={isRedesign}
+        isOffline={isOffline}
+        preferOfflineStyle={isOffline}
         directionsModeActive={directionsOpen}
         directionsGeometry={directions?.geometry ?? null}
         focusTarget={focusTarget}
@@ -359,7 +363,7 @@ export default function MapScreen({ variant = 'legacy' }) {
           <div
             style={{
               position: 'absolute',
-              top: 'max(10px, env(safe-area-inset-top))',
+              top: 'calc(env(safe-area-inset-top, 0px) + 10px)',
               left: 12,
               right: 12,
               zIndex: 40,
@@ -413,7 +417,7 @@ export default function MapScreen({ variant = 'legacy' }) {
             <div
               style={{
                 position: 'absolute',
-                top: 'max(56px, calc(env(safe-area-inset-top) + 46px))',
+                top: 'calc(env(safe-area-inset-top, 0px) + 56px)',
                 left: 12,
                 right: 12,
                 zIndex: 40,
@@ -433,7 +437,7 @@ export default function MapScreen({ variant = 'legacy' }) {
         <div
           style={{
             position: 'absolute',
-            top: 'max(12px, env(safe-area-inset-top))',
+            top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
             left: 12,
             right: 12,
             zIndex: 40,

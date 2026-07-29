@@ -104,7 +104,10 @@ export default function TourOnboardingCards({
       className="cw-tour-onboarding-cards"
       data-testid="tour-onboarding-cards"
       data-phase={visiblePhase}
-      style={{ bottom: `calc(${bottomInset}px + max(16px, env(safe-area-inset-bottom)))` }}
+      style={{
+        // Extra lift above Pause/I'm here; tab safe-area lives in CSS bottom.
+        '--cw-onboarding-dock-lift': `${Math.max(16, bottomInset)}px`,
+      }}
       role="dialog"
       aria-labelledby="tour-onboarding-card-title"
       aria-describedby="tour-onboarding-card-body"

@@ -89,6 +89,8 @@ function buildDirectionsUrl(from, to, accessToken, options = {}) {
 export const buildWalkingDirectionsUrl = buildDirectionsUrl
 
 
+const DIRECTIONS_TIMEOUT_MS = 10_000
+
 /** Walking directions with turn-by-turn steps for in-app guidance. */
 export const fetchWalkingDirections = async (from, to, accessToken, options = {}) => {
   if (!from?.lat || !from?.lng || !to?.lat || !to?.lng || !accessToken) {
@@ -96,9 +98,20 @@ export const fetchWalkingDirections = async (from, to, accessToken, options = {}
   }
 
   const url = buildDirectionsUrl(from, to, accessToken, options)
+  const timeoutMs = options.timeoutMs ?? DIRECTIONS_TIMEOUT_MS
 
   try {
-    const response = await fetch(url)
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null
+    const timeoutId =
+      controller && timeoutMs > 0
+        ? setTimeout(() => controller.abort(), timeoutMs)
+        : null
+    let response
+    try {
+      response = await fetch(url, controller ? { signal: controller.signal } : undefined)
+    } finally {
+      if (timeoutId != null) clearTimeout(timeoutId)
+    }
     if (!response.ok) {
       let detail = null
       try {

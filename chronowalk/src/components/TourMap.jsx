@@ -298,6 +298,7 @@ function TourMapboxView({
   minimalUI = false,
   walkingCompanionUI = false,
   fillContainer = false,
+  preferOfflineStyle = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -389,7 +390,10 @@ function TourMapboxView({
       }
     }
 
-    const styleOptions = resolveTourMapStyleOptions({ walkingCompanionUI })
+    const styleOptions = resolveTourMapStyleOptions({
+      walkingCompanionUI,
+      preferOfflineStyle,
+    })
 
     const markMapReady = () => {
       if (cancelled || !map.current) return
@@ -979,6 +983,7 @@ const TourMap = ({
   minimalUI = false,
   walkingCompanionUI = false,
   fillContainer = false,
+  preferOfflineStyle = false,
 }) => {
   const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
@@ -1027,6 +1032,7 @@ const TourMap = ({
       minimalUI={minimalUI}
       walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
+      preferOfflineStyle={preferOfflineStyle || isOffline}
     />
   )
 }

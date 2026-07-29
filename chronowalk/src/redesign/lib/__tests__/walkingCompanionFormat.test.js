@@ -92,4 +92,22 @@ describe('walkingCompanionFormat', () => {
     })
     expect(copy.primary).toBe('560 m')
   })
+
+  it('drops absurd GPS distances instead of showing 11000+ km', () => {
+    const resolveWalkingDistanceCopy = (meters, estimated) => ({
+      primary: meters != null ? `${Math.round(meters)} m` : estimated != null ? `~${Math.round(estimated)} m` : '—',
+      secondary: null,
+      estimated: meters == null,
+      pending: false,
+      gpsBlocked: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 11_901_300,
+      estimatedDistanceM: 420,
+      directionsDistanceM: 11_901_300,
+      resolveWalkingDistanceCopy,
+    })
+    expect(copy.primary).toBe('~420 m')
+    expect(formatDistanceLine(copy)).not.toMatch(/km/i)
+  })
 })

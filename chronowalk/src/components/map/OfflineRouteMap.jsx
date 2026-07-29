@@ -12,6 +12,7 @@ import {
   getTourRouteCoordinates,
 } from '../../utils/routeGeometryCache'
 import { estimateWalkMinutes } from '../../utils/tourStats'
+import { sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { StatusBadge, cn } from '../ui'
 import { hex } from '../../design/tokens.js'
 
@@ -59,26 +60,32 @@ function RouteOverviewSvg({ model }) {
           strokeLinejoin="round"
         />
       ) : null}
-      {model.stops.map((stop) => (
-        <g key={stop.id}>
-          <circle
-            cx={stop.x}
-            cy={stop.y}
-            r={stop.status === 'current' ? 8 : 6}
-            fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
-            stroke={hex.warmWhite}
-            strokeWidth="2"
-          />
-          <text
-            x={stop.x}
-            y={stop.y - 12}
-            textAnchor="middle"
-            className="fill-ink900 text-[9px] font-semibold"
-          >
-            {stop.title?.split(' ').slice(0, 2).join(' ')}
-          </text>
-        </g>
-      ))}
+      {model.stops.map((stop) => {
+        // Label only current + next — labeling every stop stacks into illegible glyphs.
+        const showLabel = stop.status === 'current' || stop.status === 'upcoming'
+        return (
+          <g key={stop.id}>
+            <circle
+              cx={stop.x}
+              cy={stop.y}
+              r={stop.status === 'current' ? 8 : 6}
+              fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
+              stroke={hex.warmWhite}
+              strokeWidth="2"
+            />
+            {showLabel && stop.status === 'current' ? (
+              <text
+                x={stop.x}
+                y={stop.y - 12}
+                textAnchor="middle"
+                className="fill-ink900 text-[9px] font-semibold"
+              >
+                {stop.title?.split(' ').slice(0, 2).join(' ')}
+              </text>
+            ) : null}
+          </g>
+        )
+      })}
       {model.userPoint ? (
         <g>
           <circle
@@ -170,8 +177,9 @@ export function OfflineRouteMap({
     [tour, stops, routeCoordinates, activeLeg, transitLegActive, userPos]
   )
 
-  const distanceLabel = formatDistanceLabel(distance)
-  const walkMinutes = estimateWalkMinutes(distance)
+  const safeDistance = sanitizeWalkDistanceM(distance)
+  const distanceLabel = formatDistanceLabel(safeDistance)
+  const walkMinutes = estimateWalkMinutes(safeDistance)
 
   const walkingInstruction = buildOfflineWalkingInstruction({
     state,

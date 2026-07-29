@@ -188,9 +188,22 @@ export async function verifyRomeAudioPackage(manifest) {
   }
 }
 
-export async function hydrateRomeAudioCache(manifest) {
+/**
+ * @param {object} manifest
+ * @param {{ includeMedia?: boolean | 'stills' }} [options]
+ *   After package download use `stills` — blob-URL’ing every reconstruction
+ *   video at once has OOM-killed Home Screen WebViews on iOS. Videos hydrate
+ *   on demand via {@link hydrateCachedManifestPath}.
+ */
+export async function hydrateRomeAudioCache(manifest, { includeMedia = 'stills' } = {}) {
   const audioPaths = listRomeAudioManifestPaths(manifest)
-  const mediaPaths = listRomeMediaManifestPaths(manifest)
+  const allMedia = listRomeMediaManifestPaths(manifest)
+  const mediaPaths =
+    includeMedia === true
+      ? allMedia
+      : includeMedia === 'stills'
+        ? allMedia.filter((path) => !path.endsWith('.mp4'))
+        : []
   const cache = await openRomeAudioCache()
 
   for (const manifestPath of audioPaths) {
@@ -214,6 +227,70 @@ export async function hydrateRomeAudioCache(manifest) {
   }
 }
 
+/** Hydrate a single cached media/audio path into a blob URL (idempotent). */
+export async function hydrateCachedManifestPath(manifestPath, { kind = 'media' } = {}) {
+  if (!manifestPath) return null
+  const cache = await openRomeAudioCache()
+  const response = await cache.match(cacheUrlForManifestPath(manifestPath))
+  if (!response?.ok) return null
+  const blob = await response.blob()
+  if (!blob.size) return null
+  const blobUrl = URL.createObjectURL(blob)
+  if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
+  else registerCachedMedia(manifestPath, blobUrl)
+  return blobUrl
+}
+
+const DOWNLOAD_ATTEMPTS = 3
+const DOWNLOAD_TIMEOUT_MS = 45_000
+
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException('Download aborted', 'AbortError'))
+      return
+    }
+    const timer = setTimeout(resolve, ms)
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new DOMException('Download aborted', 'AbortError'))
+    }
+    signal?.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
+async function fetchWithRetry(url, { signal, attempts = DOWNLOAD_ATTEMPTS } = {}) {
+  let lastError = null
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS)
+    const onOuterAbort = () => controller.abort()
+    signal?.addEventListener('abort', onOuterAbort)
+
+    try {
+      const response = await fetch(url, { signal: controller.signal })
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      return response
+    } catch (error) {
+      lastError = error
+      if (signal?.aborted) {
+        throw new DOMException('Download aborted', 'AbortError')
+      }
+      if (attempt < attempts - 1) {
+        await sleep(400 * 2 ** attempt, signal)
+      }
+    } finally {
+      clearTimeout(timeoutId)
+      signal?.removeEventListener('abort', onOuterAbort)
+    }
+  }
+  throw lastError ?? new Error('Download failed')
+}
+
 async function downloadManifestPaths(paths, { cache, signal, onPathComplete, contentTypeForPath }) {
   for (const manifestPath of paths) {
     if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
@@ -221,11 +298,7 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
     const sourceUrl = cacheUrlForManifestPath(manifestPath)
     const existing = await cache.match(sourceUrl)
     if (!existing?.ok) {
-      const response = await fetch(sourceUrl)
-      if (!response.ok) {
-        throw new Error(`Failed to download ${manifestPath} (${response.status})`)
-      }
-
+      const response = await fetchWithRetry(sourceUrl, { signal })
       const blob = await response.blob()
       if (!blob.size) {
         throw new Error(`Downloaded empty file for ${manifestPath}`)
@@ -301,22 +374,34 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       throw new Error(`Offline verification failed (${packageVerification.missing.length} missing files).`)
     }
 
-    await hydrateRomeAudioCache(manifest)
+    // Stills only — full video blob hydration has killed iOS Home Screen WebViews.
+    await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
+    let mapVerification = { valid: true, skipped: true, total: 0, missing: [] }
     if (env.mapboxToken && mapEstimate.tileCount > 0) {
-      await downloadRomeMapTiles(manifest, {
-        signal,
-        token: env.mapboxToken,
-        onProgress: ({ completed: mapCompleted, currentPath }) => {
-          completed = audioPaths.length + mediaPaths.length + mapCompleted
-          reportProgress(currentPath)
-        },
-      })
-    }
-
-    const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
-    if (!mapVerification.valid && !mapVerification.skipped) {
-      throw new Error(`Map tile verification failed (${mapVerification.missing.length} missing).`)
+      try {
+        await downloadRomeMapTiles(manifest, {
+          signal,
+          token: env.mapboxToken,
+          onProgress: ({ completed: mapCompleted, currentPath }) => {
+            completed = audioPaths.length + mediaPaths.length + mapCompleted
+            reportProgress(currentPath)
+          },
+        })
+        mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+      } catch (mapError) {
+        // Stories still work offline without a full tile pack — don't fail the package.
+        console.warn('[offline] Map tile download incomplete:', mapError)
+        mapVerification = {
+          valid: false,
+          skipped: false,
+          total: mapEstimate.tileCount,
+          missing: ['map-tiles'],
+          error: mapError?.message ?? 'map_tiles_failed',
+        }
+        completed = audioPaths.length + mediaPaths.length + mapEstimate.tileCount
+        reportProgress('map-tiles-partial')
+      }
     }
 
     const downloadedAt = Date.now()
@@ -324,9 +409,9 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
       fileCount: audioPaths.length,
       mediaFileCount: mediaPaths.length,
-      mapTileCount: mapVerification.total,
+      mapTileCount: mapVerification.valid || mapVerification.skipped ? mapVerification.total : 0,
       downloadedAt,
-      error: null,
+      error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
     })
 
     return {

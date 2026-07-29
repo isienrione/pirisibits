@@ -66,7 +66,8 @@ export default function AppEntryPrepare({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          padding: '56px 28px 40px',
+          padding:
+            'max(56px, calc(env(safe-area-inset-top, 0px) + 16px)) 28px max(40px, calc(env(safe-area-inset-bottom, 0px) + 16px))',
           overflowY: 'auto',
         }}
       >

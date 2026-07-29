@@ -1,4 +1,5 @@
 import { getDistance } from './distance'
+import { sanitizeWalkDistanceM } from '../content/journeyProgress.js'
 
 const CARDINALS = [
   'north',
@@ -12,8 +13,9 @@ const CARDINALS = [
 ]
 
 export function formatDistanceLabel(distanceMeters) {
-  if (distanceMeters == null || Number.isNaN(distanceMeters)) return null
-  const meters = Math.round(distanceMeters)
+  const safe = sanitizeWalkDistanceM(distanceMeters)
+  if (safe == null) return null
+  const meters = Math.round(safe)
   if (meters < 1000) return `${meters} m`
   return `${(meters / 1000).toFixed(1)} km`
 }

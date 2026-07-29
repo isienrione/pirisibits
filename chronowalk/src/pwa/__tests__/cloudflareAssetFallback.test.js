@@ -49,6 +49,10 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).toContain("BUILD_PREFIX + '-assets'")
     expect(sw).toContain('APP_SHELL_PRECACHE_URL')
     expect(sw).toContain("createHandlerBoundToURL(APP_SHELL_PRECACHE_URL)")
+    expect(sw).toContain('OFFLINE_PRECACHE_URL')
+    expect(sw).toContain('createHandlerBoundToURL(OFFLINE_PRECACHE_URL)')
+    // Response.error() surfaces Safari’s native “no signal” interstitial.
+    expect(sw).not.toContain('Response.error()')
     expect(sw).toMatch(/\/\^\\\/reset-shell\$\//)
     // Must not bind the offline shell to apex `/` (302 in production).
     expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
