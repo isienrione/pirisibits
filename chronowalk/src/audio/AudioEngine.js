@@ -1014,9 +1014,17 @@ export class AudioEngine {
    * Used for every visit-stop arrival (geofence or manual confirm).
    */
   async playArrivalChime() {
-    await this.playUiCue('arrival')
-    await new Promise((r) => setTimeout(r, 450))
-    await this.playUiCue('arrival_unlocked')
+    try {
+      await this.init()
+      if (this.context?.state === 'suspended') {
+        await this.context.resume().catch(() => {})
+      }
+      await this.playUiCue('arrival')
+      await new Promise((r) => setTimeout(r, 450))
+      await this.playUiCue('arrival_unlocked')
+    } catch (error) {
+      console.warn('[audio] playArrivalChime failed', error)
+    }
   }
 
   async playCompletionChime() {

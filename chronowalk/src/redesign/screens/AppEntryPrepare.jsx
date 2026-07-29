@@ -12,6 +12,7 @@ export default function AppEntryPrepare({
   downloading = false,
   downloadProgress = 0,
   downloadComplete = false,
+  downloadError = null,
   analyticsEnabled = false,
   installed = false,
   canPromptInstall = false,
@@ -132,9 +133,15 @@ export default function AppEntryPrepare({
               </p>
               {done ? (
                 <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
-              ) : downloading && downloadProgress > 0 ? (
+              ) : downloading ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                  {Math.round(downloadProgress * 215)} MB of 215 MB
+                  {downloadProgress > 0
+                    ? `${Math.round(downloadProgress * 215)} MB of 215 MB`
+                    : 'Starting download…'}
+                </p>
+              ) : downloadError ? (
+                <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
+                  Download paused — tap to retry on a steadier connection.
                 </p>
               ) : null}
             </div>

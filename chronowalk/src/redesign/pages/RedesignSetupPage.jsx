@@ -99,6 +99,7 @@ export default function RedesignSetupPage() {
             downloading={offline.isDownloading}
             downloadProgress={downloadProgress}
             downloadComplete={offline.isReady}
+            downloadError={offline.error}
             analyticsEnabled={analyticsEnabled}
             installed={installed}
             canPromptInstall={canPromptInstall}

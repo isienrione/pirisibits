@@ -1,5 +1,8 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { loadRomeManifest } from '../../content/manifest.js'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
   estimateRomeAudioDownload,
   listRomeAudioManifestPaths,
@@ -54,5 +57,15 @@ describe('offlinePackage', () => {
 
     expect(readRomeOfflineStatus().status).toBe(OFFLINE_AUDIO_STATUS.COMPLETE)
     expect(localStorage.getItem(ROME_OFFLINE_STATUS_KEY)).toBeTruthy()
+  })
+
+  it('does not require map tiles for offline-ready (prevents prepare UI collapse)', () => {
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../offlinePackage.js'),
+      'utf8',
+    )
+    const readyFn = source.slice(source.indexOf('export async function isRomeAudioReadyOffline'))
+    expect(readyFn).toContain('return verification.valid')
+    expect(readyFn).not.toContain('isRomeMapReadyOffline')
   })
 })

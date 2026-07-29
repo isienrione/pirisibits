@@ -1492,10 +1492,15 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
+  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  max-height: 100dvh;
+  max-height: var(--app-height, 100dvh);
   padding-bottom: var(--wc-shell-tab-inset, 0px);
-  /* Allow the companion layout to scroll on very short viewports rather than
-     clip content below the map (dock buttons, steps toggle, etc.). */
+  /* Scroll the frame when content is taller than the inset viewport. */
+  overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 html[data-shell-standalone='true'] {
@@ -1808,16 +1813,16 @@ html[data-shell-tab-bar='visible'] {
   position: fixed;
   left: 0;
   right: 0;
-  /* Clamp under the status bar so tall cards never cover the Dynamic Island. */
+  /* Clamp under the status bar; sit mid-upper so cards aren’t glued to the dock. */
   top: calc(env(safe-area-inset-top, 0px) + 12px);
   bottom: calc(
     var(--wc-shell-tab-inset, 0px) + var(--cw-onboarding-dock-lift, 16px)
   );
   z-index: 120;
-  padding: 0 16px;
+  padding: 0 16px min(14vh, 96px);
   pointer-events: none;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 }
 
@@ -2059,16 +2064,16 @@ html[data-shell-tab-bar='visible'] {
   --wc-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--wc-bg);
   color: var(--wc-warm-white);
-  /* Use min-height so the companion fills at least the viewport but can grow
-     on short screens, allowing the page to scroll to reach dock buttons and
-     content below the map. overflow: hidden is replaced with overflow-y: auto
-     to enable that scrolling; the map stays bounded via __map-wrap max-height. */
-  height: auto;
-  min-height: 100dvh;
-  min-height: var(--app-height, 100dvh);
+  /* Fill the companion frame (already padded for the tab bar). Using 100dvh
+     here made Pause / I'm here sit under the tab bar with no usable scroll. */
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   font-family: 'DM Sans', system-ui, sans-serif;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   -webkit-font-smoothing: antialiased;
@@ -2885,9 +2890,9 @@ html[data-shell-tab-bar='visible'] {
 }
 
 /* Tab bar already owns safe-area-inset-bottom via --shell-tab-bar-height —
-   don't double-pad the companion footer (was a white gap above the home indicator). */
+   keep a small breathing gap above the nav, not a second home-indicator pad. */
 html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
-  padding-bottom: calc(12px + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px));
+  padding-bottom: calc(16px + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px));
 }
 
 .cw-walking-companion__dock {

@@ -212,32 +212,59 @@ export async function downloadRomeMapTiles(manifest, { onProgress, signal, token
   const cache = await openMapTileCache()
   let completed = 0
 
+  const TILE_ATTEMPTS = 3
+  const TILE_TIMEOUT_MS = 20_000
+
   for (const url of urls) {
     if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
 
     const existing = await cache.match(url)
     if (!existing?.ok) {
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error(`Failed to download map tile (${response.status})`)
+      let lastError = null
+      let stored = false
+      for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt += 1) {
+        if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), TILE_TIMEOUT_MS)
+        const onOuterAbort = () => controller.abort()
+        signal?.addEventListener('abort', onOuterAbort)
+        try {
+          const response = await fetch(url, { signal: controller.signal })
+          if (!response.ok) {
+            throw new Error(`Failed to download map tile (${response.status})`)
+          }
+          const blob = await response.blob()
+          if (!blob.size) {
+            throw new Error('Downloaded empty map tile')
+          }
+          const contentType =
+            response.headers.get('Content-Type') ??
+            (url.includes('.pbf') ? 'application/vnd.mapbox-vector-tile' : 'application/json')
+          await cache.put(
+            url,
+            new Response(blob, {
+              status: 200,
+              headers: { 'Content-Type': contentType },
+            }),
+          )
+          stored = true
+          break
+        } catch (error) {
+          lastError = error
+          if (signal?.aborted) {
+            throw new DOMException('Download aborted', 'AbortError')
+          }
+          if (attempt < TILE_ATTEMPTS - 1) {
+            await new Promise((resolve) => setTimeout(resolve, 300 * 2 ** attempt))
+          }
+        } finally {
+          clearTimeout(timeoutId)
+          signal?.removeEventListener('abort', onOuterAbort)
+        }
       }
-
-      const blob = await response.blob()
-      if (!blob.size) {
-        throw new Error('Downloaded empty map tile')
+      if (!stored) {
+        throw lastError ?? new Error('Failed to download map tile')
       }
-
-      const contentType =
-        response.headers.get('Content-Type') ??
-        (url.includes('.pbf') ? 'application/vnd.mapbox-vector-tile' : 'application/json')
-
-      await cache.put(
-        url,
-        new Response(blob, {
-          status: 200,
-          headers: { 'Content-Type': contentType },
-        })
-      )
     }
 
     completed += 1

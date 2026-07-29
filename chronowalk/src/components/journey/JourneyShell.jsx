@@ -698,7 +698,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   // Pocket-safe arrival: chime → “Waypoint unlocked!” + haptic, once per stop.
   const notifyArrivalUnlock = useCallback(
-    (waypointId) => {
+    (waypointId, { requireUnlock = true } = {}) => {
       if (!waypointId) return
 
       if (arrivalHapticPlayedRef.current !== waypointId) {
@@ -708,7 +708,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
       }
 
       if (arrivalAlertPlayedRef.current === waypointId) return
-      if (!audioUnlocked) return
+      // Manual "I'm here" has a user gesture — play even before the global
+      // unlock flag flips, otherwise the chime was silently skipped forever.
+      if (requireUnlock && !audioUnlocked) return
 
       arrivalAlertPlayedRef.current = waypointId
       void audioOpsRef.current.playArrivalChime()
@@ -729,10 +731,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
-      notifyArrivalUnlock(waypointId)
+      const fromGesture = source === 'manual' || source === 'transit_manual'
+      notifyArrivalUnlock(waypointId, { requireUnlock: !fromGesture })
       transition(JOURNEY_STATES.ARRIVED)
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
-      if (source === 'manual' || source === 'transit_manual') {
+      if (fromGesture) {
         track(TRACK_EVENTS.GPS_FALLBACK_USED, { waypoint_id: waypointId })
       }
     },

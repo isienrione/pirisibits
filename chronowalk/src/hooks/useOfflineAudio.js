@@ -47,16 +47,17 @@ export function useOfflineAudio() {
 
     setError(null)
     setIsDownloading(true)
+    setProgress({ completed: 0, total: 1, percent: 0, currentPath: 'starting' })
 
     try {
       await downloadRomeAudioPackage(manifest, { onProgress: setProgress })
+      setProgress({ completed: 1, total: 1, percent: 100, currentPath: 'complete' })
       await refresh()
     } catch (downloadError) {
       setError(downloadError?.message ?? 'Download failed. Try again on a stable connection.')
       await refresh()
     } finally {
       setIsDownloading(false)
-      setProgress(null)
     }
   }, [isDownloading, manifest, refresh])
 
