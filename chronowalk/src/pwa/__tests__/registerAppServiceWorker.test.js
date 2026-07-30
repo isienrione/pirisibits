@@ -36,21 +36,6 @@ describe('registerAppServiceWorker', () => {
     expect(() => controller.applyUpdate()).not.toThrow()
   })
 
-  it('does not register a service worker inside the Capacitor native shell', () => {
-    vi.stubGlobal('window', {
-      ...window,
-      Capacitor: {
-        isNativePlatform: () => true,
-        getPlatform: () => 'ios',
-      },
-    })
-    const registerSW = vi.fn()
-    const controller = registerAppServiceWorker(registerSW, { isProd: true })
-
-    expect(registerSW).not.toHaveBeenCalled()
-    expect(() => controller.applyUpdate()).not.toThrow()
-  })
-
   it('registers the service worker and exposes update hooks in production', () => {
     let onNeedRefresh
     const updateSW = vi.fn()

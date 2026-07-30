@@ -5,7 +5,6 @@ import './design/tokens.css'
 import './redesign/redesign.css'
 import './index.css'
 import AppRouter from './app/AppRouter.jsx'
-import { bootstrapNativeShell } from './native/bootstrapNativeShell.js'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
 import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
@@ -34,7 +33,6 @@ try {
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('redesign-pwa')
   initMobileViewportChrome()
-  void bootstrapNativeShell()
 
   const motionQuery =
     typeof window.matchMedia === 'function'

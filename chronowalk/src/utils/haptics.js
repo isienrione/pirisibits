@@ -1,8 +1,5 @@
 /** @typedef {'softTap' | 'selection' | 'success' | 'warning' | 'arrivalPulse' | 'arrivalUnlock'} HapticKind */
 
-import { Haptics, ImpactStyle, NotificationType } from '@capacitor/haptics'
-import { isNativeApp } from './nativePlatform'
-
 export const HAPTIC_KIND = {
   SOFT_TAP: 'softTap',
   SELECTION: 'selection',
@@ -44,7 +41,13 @@ export function isReducedMotionPreferred() {
 export function canUseHaptics() {
   if (typeof window === 'undefined') return false
   if (isReducedMotionPreferred()) return false
-  return Boolean(isNativeApp() || getCordovaTaptic() || navigator.vibrate)
+  return Boolean(getCapacitorHaptics() || navigator.vibrate)
+}
+
+function getCapacitorHaptics() {
+  const capacitor = window.Capacitor
+  if (!capacitor) return null
+  return capacitor.Plugins?.Haptics ?? null
 }
 
 function getCordovaTaptic() {
@@ -52,28 +55,29 @@ function getCordovaTaptic() {
 }
 
 async function runCapacitorHaptic(kind) {
-  if (!isNativeApp()) return false
+  const haptics = getCapacitorHaptics()
+  if (!haptics) return false
 
   try {
     switch (kind) {
       case HAPTIC_KIND.SOFT_TAP:
-        await Haptics.impact({ style: ImpactStyle.Light })
+        await haptics.impact?.({ style: 'LIGHT' })
         return true
       case HAPTIC_KIND.SELECTION:
-        await Haptics.selectionChanged()
+        await haptics.selectionChanged?.()
         return true
       case HAPTIC_KIND.SUCCESS:
-        await Haptics.notification({ type: NotificationType.Success })
+        await haptics.notification?.({ type: 'SUCCESS' })
         return true
       case HAPTIC_KIND.WARNING:
-        await Haptics.notification({ type: NotificationType.Warning })
+        await haptics.notification?.({ type: 'WARNING' })
         return true
       case HAPTIC_KIND.ARRIVAL_PULSE:
-        await Haptics.impact({ style: ImpactStyle.Medium })
+        await haptics.impact?.({ style: 'MEDIUM' })
         return true
       case HAPTIC_KIND.ARRIVAL_UNLOCK:
-        await Haptics.notification({ type: NotificationType.Success })
-        await Haptics.impact({ style: ImpactStyle.Heavy })
+        await haptics.notification?.({ type: 'SUCCESS' })
+        await haptics.impact?.({ style: 'HEAVY' })
         return true
       default:
         return false
@@ -139,7 +143,9 @@ export function triggerHaptic(kind) {
 
   lastTriggeredAt.set(kind, now)
 
-  if (isNativeApp() || getCordovaTaptic()) {
+  const hasNativeBridge = Boolean(getCapacitorHaptics() || getCordovaTaptic())
+
+  if (hasNativeBridge) {
     void (async () => {
       const usedNative = (await runCapacitorHaptic(kind)) || runCordovaHaptic(kind)
       if (!usedNative) runVibrationPattern(kind)

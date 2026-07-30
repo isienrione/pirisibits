@@ -1,5 +1,3 @@
-import { isNativeApp } from './nativePlatform'
-
 function matchesDisplayMode(query) {
   const matchMedia = typeof window !== 'undefined' ? window.matchMedia : null
   if (typeof matchMedia !== 'function') return false
@@ -11,24 +9,15 @@ function matchesDisplayMode(query) {
   }
 }
 
-/**
- * True when the app is running as an installed home-screen PWA
- * or inside the Capacitor native shell (treat as already "installed").
- */
+/** True when the app is running as an installed home-screen PWA. */
 export function isStandaloneMode() {
   if (typeof window === 'undefined') return false
-  if (isNativeApp()) return true
 
   return (
     matchesDisplayMode('(display-mode: standalone)') ||
     matchesDisplayMode('(display-mode: fullscreen)') ||
     window.navigator.standalone === true
   )
-}
-
-/** True when PWA install UI should be offered (never inside the native shell). */
-export function shouldOfferPwaInstall() {
-  return !isNativeApp() && !isStandaloneMode()
 }
 
 export function isIosDevice() {
