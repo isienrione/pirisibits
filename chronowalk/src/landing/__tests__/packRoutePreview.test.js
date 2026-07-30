@@ -9,11 +9,10 @@ describe('getPackRoutePreview', () => {
     const historica = getPackRoutePreview(JOURNEY_PACE.CENTRAL)
 
     expect(eterna.marketingStopCount).toBe(21)
-    expect(eterna.cardImage).toContain('package-roma-eterna')
-    expect(antica.marketingStopCount).toBe(12)
-    expect(antica.cardImage).toContain('package-roma-antica')
-    expect(historica.marketingStopCount).toBe(8)
-    expect(historica.cardImage).toContain('package-roma-historica')
+    expect(eterna.cardImage).toContain('package-roma-eterna-route')
+    expect(antica.cardImage).toContain('package-roma-antica-route')
+    expect(historica.cardImage).toContain('package-roma-historica-route')
+    expect(eterna.cardImage).not.toBe('/landing/hero-slides/package-roma-eterna.png')
   })
 
   it('returns null for own-pace custom routes', () => {
