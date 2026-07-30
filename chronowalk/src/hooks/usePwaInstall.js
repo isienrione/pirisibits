@@ -1,19 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { isNativeApp } from '../utils/nativePlatform'
-import { isIosDevice, isStandaloneMode, shouldOfferPwaInstall } from '../utils/pwaInstall'
+import { isIosDevice, isStandaloneMode } from '../utils/pwaInstall'
 
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [installed, setInstalled] = useState(() => isStandaloneMode())
 
   useEffect(() => {
-    // Native shell already is the app — never surface web install prompts.
-    if (isNativeApp()) {
-      setInstalled(true)
-      setDeferredPrompt(null)
-      return undefined
-    }
-
     setInstalled(isStandaloneMode())
 
     const onBeforeInstall = (event) => {
@@ -62,10 +54,9 @@ export function usePwaInstall() {
     return { ok: outcome === 'accepted', outcome }
   }, [deferredPrompt])
 
-  const offerInstall = shouldOfferPwaInstall()
-  const canPromptInstall = offerInstall && Boolean(deferredPrompt)
-  const showIosInstructions = offerInstall && !installed && isIosDevice()
-  const showInstallOption = offerInstall && !installed
+  const canPromptInstall = Boolean(deferredPrompt)
+  const showIosInstructions = !installed && isIosDevice()
+  const showInstallOption = !installed
 
   return {
     installed,

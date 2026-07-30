@@ -60,13 +60,6 @@ npm run build
 npm run preview
 ```
 
-**iOS App Store shell (Capacitor, parallel to the PWA):** see [`docs/CAPACITOR_IOS.md`](docs/CAPACITOR_IOS.md).
-
-```bash
-npm run build:ios   # web build + sync into ios/
-npm run cap:ios     # open Xcode (Mac)
-```
-
 **Tests:**
 
 ```bash
