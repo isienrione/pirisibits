@@ -260,7 +260,17 @@ export default function SettingsBottomSheet({ open, onClose }) {
           </button>
         </div>
 
-        <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', padding: '0 24px' }}>
+        <div
+          style={{
+            flex: 1,
+            minHeight: 0,
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain',
+            scrollbarWidth: 'none',
+            padding: '0 24px',
+          }}
+        >
           <Hairline />
           <Row
             label="Audio speed"
@@ -314,23 +324,41 @@ export default function SettingsBottomSheet({ open, onClose }) {
               border: `1.5px solid ${T.ember}55`,
               background: `${T.ember}0a`,
               padding: '0 12px',
-              marginBottom: 8,
+              marginBottom: 10,
             }}
+            data-testid="settings-offline-option"
           >
-            <p style={{ margin: '10px 0 2px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>Recommended</p>
+            <p style={{ margin: '10px 0 2px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
+              Recommended
+            </p>
             <ActionRow
               label="Download for offline"
+              subtitle="Keep stories and maps ready when signal drops"
               detail={offlineDetail}
               onClick={handleDownload}
             />
-            <div style={{ paddingBottom: 4 }}>
-              <HomeScreenInstallOption
-                installed={installed}
-                canPromptInstall={canPromptInstall}
-                showIosInstructions={showIosInstructions}
-                onInstall={promptInstall}
-              />
-            </div>
+          </div>
+          <div
+            style={{
+              borderRadius: 12,
+              border: `1.5px solid ${T.ember}55`,
+              background: `${T.ember}0a`,
+              padding: '10px 12px 4px',
+              marginBottom: 8,
+            }}
+            data-testid="settings-a2hs-option"
+          >
+            <p style={{ margin: '0 0 4px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
+              Recommended
+            </p>
+            <HomeScreenInstallOption
+              installed={installed}
+              canPromptInstall={canPromptInstall}
+              showIosInstructions={showIosInstructions}
+              onInstall={promptInstall}
+              tone="light"
+              embedded
+            />
           </div>
           <ActionRow label="Restore purchase" onClick={handleRestore} />
           <ActionRow label="Help" onClick={handleHelp} />

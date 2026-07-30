@@ -12,6 +12,8 @@ export default function AppEntryPrepare({
   downloading = false,
   downloadProgress = 0,
   downloadComplete = false,
+  downloadError = null,
+  mapTilesPartial = false,
   analyticsEnabled = false,
   installed = false,
   canPromptInstall = false,
@@ -66,7 +68,8 @@ export default function AppEntryPrepare({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          padding: '56px 28px 40px',
+          padding:
+            'max(56px, calc(env(safe-area-inset-top, 0px) + 16px)) 28px max(40px, calc(env(safe-area-inset-bottom, 0px) + 16px))',
           overflowY: 'auto',
         }}
       >
@@ -98,14 +101,29 @@ export default function AppEntryPrepare({
           One download keeps the stories playing when signal drops.
         </p>
 
-        <div
+        <button
+          type="button"
+          data-testid="app-entry-download"
+          aria-label={
+            done ? 'Download complete' : downloadError ? 'Retry download' : 'Download the walk'
+          }
+          disabled={done || downloading}
+          onClick={() => {
+            if (done || downloading) return
+            onDownload?.()
+          }}
           style={{
-            borderTop: `1px solid ${T.ink800}`,
+            display: 'block',
+            width: '100%',
+            textAlign: 'left',
             borderRadius: 14,
             border: `1.5px solid ${T.ember}55`,
             background: `${T.ember}0a`,
             padding: '18px 16px 16px',
-            marginBottom: 16,
+            marginBottom: 12,
+            cursor: done || downloading ? 'default' : 'pointer',
+            font: 'inherit',
+            color: 'inherit',
           }}
         >
           <p
@@ -127,31 +145,27 @@ export default function AppEntryPrepare({
                 <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> - 215 MB</span>
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Works offline in Rome&apos;s dense streets.
+                Stories, then-vs-now images, and walking-map tiles for Rome.
               </p>
               {done ? (
-                <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
-              ) : downloading && downloadProgress > 0 ? (
+                mapTilesPartial ? (
+                  <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
+                    Stories ready. Map tiles need a steadier connection — retry when you have signal.
+                  </p>
+                ) : (
+                  <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
+                )
+              ) : downloading ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                  {Math.round(downloadProgress * 215)} MB of 215 MB
+                  {downloadProgress > 0.02
+                    ? `${Math.max(1, Math.round(downloadProgress * 100))}% saved`
+                    : 'Starting download…'}
                 </p>
+              ) : downloadError ? (
+                <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>{downloadError}</p>
               ) : null}
             </div>
-            <button
-              type="button"
-              aria-label={done ? 'Download complete' : 'Download the walk'}
-              onClick={() => {
-                if (done) return
-                onDownload?.()
-              }}
-              style={{
-                flexShrink: 0,
-                border: 'none',
-                background: 'transparent',
-                padding: 0,
-                cursor: done ? 'default' : 'pointer',
-              }}
-            >
+            <span style={{ flexShrink: 0, lineHeight: 0 }} aria-hidden="true">
               <svg width="52" height="52" viewBox="0 0 52 52">
                 <circle cx="26" cy="26" r={ringR} fill="none" stroke={T.ink800} strokeWidth="2" />
                 <circle
@@ -200,17 +214,40 @@ export default function AppEntryPrepare({
                   </>
                 )}
               </svg>
-            </button>
+            </span>
           </div>
+        </button>
 
-          <div style={{ marginTop: 16, borderTop: `1px solid ${T.ink800}`, paddingTop: 12 }}>
-            <HomeScreenInstallOption
-              installed={installed}
-              canPromptInstall={canPromptInstall}
-              showIosInstructions={showIosInstructions}
-              onInstall={onInstall}
-            />
-          </div>
+        <div
+          style={{
+            borderRadius: 14,
+            border: `1.5px solid ${T.ember}55`,
+            background: `${T.ember}0a`,
+            padding: '18px 16px 8px',
+            marginBottom: 16,
+          }}
+          data-testid="app-entry-a2hs"
+        >
+          <p
+            style={{
+              margin: '0 0 4px',
+              fontSize: 10,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: T.ember,
+              fontWeight: 600,
+            }}
+          >
+            Recommended
+          </p>
+          <HomeScreenInstallOption
+            installed={installed}
+            canPromptInstall={canPromptInstall}
+            showIosInstructions={showIosInstructions}
+            onInstall={onInstall}
+            tone="dark"
+            embedded
+          />
         </div>
 
         <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>

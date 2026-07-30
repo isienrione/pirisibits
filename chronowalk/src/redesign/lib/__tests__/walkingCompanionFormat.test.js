@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
   formatDistanceLine,
+  formatOpenStoryCta,
   formatPlaybackClock,
   formatRemainingShort,
   resolveWalkChromeDistanceCopy,
 } from '../walkingCompanionFormat.js'
 
 describe('walkingCompanionFormat', () => {
+  it('formats open-story CTA without doubling The', () => {
+    expect(formatOpenStoryCta('The Colosseum')).toBe('Open The Colosseum story →')
+    expect(formatOpenStoryCta('Temple of Vesta')).toBe('Open the Temple of Vesta story →')
+    expect(formatOpenStoryCta('')).toBe('Open the story →')
+  })
+
   it('formats distance with middle dot separator', () => {
     expect(
       formatDistanceLine({
@@ -59,5 +66,55 @@ describe('walkingCompanionFormat', () => {
   it('formats remaining time in compact style', () => {
     expect(formatRemainingShort(88)).toBe('−1:28')
     expect(formatPlaybackClock(88)).toBe('1:28')
+  })
+
+  it('uses etaOverride for ride legs', () => {
+    const resolveWalkingDistanceCopy = () => ({
+      primary: '8.0 km',
+      secondary: '80–100 min walk',
+      estimated: true,
+      pending: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 8000,
+      directionsDistanceM: 8000,
+      etaOverride: 'estimated 30 min drive',
+      resolveWalkingDistanceCopy,
+    })
+    expect(formatDistanceLine(copy)).toBe('estimated 30 min drive')
+  })
+
+  it('prefers stop estimate when directions look inflated by stale GPS', () => {
+    const resolveWalkingDistanceCopy = (meters) => ({
+      primary: meters != null ? `${Math.round(meters)} m` : '—',
+      secondary: null,
+      estimated: false,
+      pending: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 2200,
+      estimatedDistanceM: 560,
+      directionsDistanceM: 2200,
+      resolveWalkingDistanceCopy,
+    })
+    expect(copy.primary).toBe('560 m')
+  })
+
+  it('drops absurd GPS distances instead of showing 11000+ km', () => {
+    const resolveWalkingDistanceCopy = (meters, estimated) => ({
+      primary: meters != null ? `${Math.round(meters)} m` : estimated != null ? `~${Math.round(estimated)} m` : '—',
+      secondary: null,
+      estimated: meters == null,
+      pending: false,
+      gpsBlocked: false,
+    })
+    const copy = resolveWalkChromeDistanceCopy({
+      liveDistanceM: 11_901_300,
+      estimatedDistanceM: 420,
+      directionsDistanceM: 11_901_300,
+      resolveWalkingDistanceCopy,
+    })
+    expect(copy.primary).toBe('~420 m')
+    expect(formatDistanceLine(copy)).not.toMatch(/km/i)
   })
 })

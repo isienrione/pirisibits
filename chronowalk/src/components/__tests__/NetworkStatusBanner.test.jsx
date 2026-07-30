@@ -23,7 +23,7 @@ describe('NetworkStatusBanner', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByText(/offline — cached audio/i)).toBeInTheDocument()
+    expect(screen.getByText(/offline — cached audio and maps should still work/i)).toBeInTheDocument()
   })
 
   it('hides while journey is idle', () => {

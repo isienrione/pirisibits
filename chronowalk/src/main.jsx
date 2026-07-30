@@ -8,6 +8,7 @@ import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
 import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
+import { consumeAccessHandoff } from './lib/accessHandoff.js'
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
@@ -17,6 +18,14 @@ if (import.meta.env.DEV) {
 // Blocking mount left iOS Safari stuck on "Loading ChronoWalk…" forever when
 // a recovery navigation did not start.
 recoverInterruptedBoot()
+
+// Home Screen / standalone partitions often miss the tab that redeemed access.
+// Hydrate from cw_h query or handoff cookie before any RequireAccess gate runs.
+try {
+  consumeAccessHandoff()
+} catch {
+  /* ignore */
+}
 
 // Production entry is the v2 redesign app only. The legacy LaunchRouter and the
 // VITE_V2_APP / VITE_FIGMA_REDESIGN switches have been retired so no environment

@@ -8,6 +8,43 @@ import { OFFLINE_LEASE_MS } from './launchSkus.js'
 
 export const DEVICE_CREDENTIAL_KEY = 'cw_device_credential_v1'
 export const ACCESS_ENTITLEMENT_KEY = 'cw_access_entitlement_v1'
+
+/**
+ * Optional handoff hooks registered by accessHandoff.js.
+ * Must NOT dynamic-import accessHandoff from here — Vite rewrote that import to
+ * re-fetch the entire app entry chunk during boot and left iOS stuck on
+ * "Loading ChronoWalk…".
+ */
+let handoffSync = null
+let handoffClear = null
+let handoffMirrorBusy = false
+
+/** @param {{ sync?: Function, clear?: Function }} hooks */
+export function registerAccessHandoffHooks(hooks = {}) {
+  handoffSync = typeof hooks.sync === 'function' ? hooks.sync : null
+  handoffClear = typeof hooks.clear === 'function' ? hooks.clear : null
+}
+
+function mirrorHandoff() {
+  if (!handoffSync || handoffMirrorBusy) return
+  handoffMirrorBusy = true
+  try {
+    handoffSync({ updateUrl: false })
+  } catch {
+    /* ignore */
+  } finally {
+    handoffMirrorBusy = false
+  }
+}
+
+function clearHandoffMirror() {
+  if (!handoffClear) return
+  try {
+    handoffClear()
+  } catch {
+    /* ignore */
+  }
+}
 /** @deprecated Prefer DEVICE_CREDENTIAL_KEY — kept for migration reads. */
 export const LEGACY_ACCESS_TOKEN_KEY = 'cw_access_token_v1'
 export const ACCESS_BOOL_KEY = 'cw_access'
@@ -43,6 +80,7 @@ export function writeDeviceCredential(credential) {
     window.localStorage.setItem(DEVICE_CREDENTIAL_KEY, String(credential))
     // Stop treating legacy bearer key as authoritative.
     window.localStorage.removeItem(LEGACY_ACCESS_TOKEN_KEY)
+    mirrorHandoff()
   } catch {
     /* ignore */
   }
@@ -108,6 +146,7 @@ export function writeAccessEntitlement(payload) {
   try {
     window.localStorage.setItem(ACCESS_ENTITLEMENT_KEY, JSON.stringify(next))
     window.localStorage.setItem(ACCESS_BOOL_KEY, 'true')
+    mirrorHandoff()
   } catch {
     /* ignore */
   }
@@ -133,6 +172,7 @@ export function clearLocalAccessState() {
     window.localStorage.removeItem('cw_family_bundle_v1')
     window.localStorage.removeItem('cw_walk_session_v1')
     window.localStorage.removeItem('cw_active_walk_session_v1')
+    clearHandoffMirror()
   } catch {
     /* ignore */
   }

@@ -28,8 +28,13 @@ export const F = {
   body: "'DM Sans', system-ui, sans-serif",
 }
 
-/** Bottom padding when the fixed shell tab bar is visible. */
-export const SHELL_TAB_BAR_INSET = 'calc(var(--shell-tab-bar-height) + max(8px, env(safe-area-inset-bottom)))'
+/**
+ * Bottom padding when the fixed shell tab bar is visible.
+ * `--shell-tab-bar-height` already includes the safe-area inset used by the
+ * fixed tab bar — do not add env(safe-area-inset-bottom) again or a large gap
+ * appears between the tabs and the browser chrome.
+ */
+export const SHELL_TAB_BAR_INSET = 'var(--shell-tab-bar-height)'
 
 /**
  * Bottom padding for immersive (chrome-free) screens where the tab bar is

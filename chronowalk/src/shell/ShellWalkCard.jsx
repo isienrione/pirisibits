@@ -3,7 +3,8 @@ import { Button } from '../components/ui'
 function formatWalkEta(distanceM) {
   if (distanceM == null) return null
   const meters = Math.round(distanceM)
-  const minutes = Math.max(1, Math.round(distanceM / 80))
+  // Match journeyProgress brisk tourist pace (100 m/min).
+  const minutes = Math.max(1, Math.round(distanceM / 100))
   return `${meters} m · ${minutes} min`
 }
 

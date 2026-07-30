@@ -12,6 +12,7 @@ import {
   getTourRouteCoordinates,
 } from '../../utils/routeGeometryCache'
 import { estimateWalkMinutes } from '../../utils/tourStats'
+import { sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 import { StatusBadge, cn } from '../ui'
 import { hex } from '../../design/tokens.js'
 
@@ -59,26 +60,32 @@ function RouteOverviewSvg({ model }) {
           strokeLinejoin="round"
         />
       ) : null}
-      {model.stops.map((stop) => (
-        <g key={stop.id}>
-          <circle
-            cx={stop.x}
-            cy={stop.y}
-            r={stop.status === 'current' ? 8 : 6}
-            fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
-            stroke={hex.warmWhite}
-            strokeWidth="2"
-          />
-          <text
-            x={stop.x}
-            y={stop.y - 12}
-            textAnchor="middle"
-            className="fill-ink900 text-[9px] font-semibold"
-          >
-            {stop.title?.split(' ').slice(0, 2).join(' ')}
-          </text>
-        </g>
-      ))}
+      {model.stops.map((stop) => {
+        // Label only current + next — labeling every stop stacks into illegible glyphs.
+        const showLabel = stop.status === 'current' || stop.status === 'upcoming'
+        return (
+          <g key={stop.id}>
+            <circle
+              cx={stop.x}
+              cy={stop.y}
+              r={stop.status === 'current' ? 8 : 6}
+              fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
+              stroke={hex.warmWhite}
+              strokeWidth="2"
+            />
+            {showLabel && stop.status === 'current' ? (
+              <text
+                x={stop.x}
+                y={stop.y - 12}
+                textAnchor="middle"
+                className="fill-ink900 text-[9px] font-semibold"
+              >
+                {stop.title?.split(' ').slice(0, 2).join(' ')}
+              </text>
+            ) : null}
+          </g>
+        )
+      })}
       {model.userPoint ? (
         <g>
           <circle
@@ -129,6 +136,8 @@ export function OfflineRouteMap({
   distance,
   awaitingFirstStop = false,
   className,
+  /** Fit the walking companion map slot instead of a full-page bone layout. */
+  compact = false,
 }) {
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const { currentStop, nextStop, targetStop } = resolveActiveLegEndpoints({
@@ -170,8 +179,9 @@ export function OfflineRouteMap({
     [tour, stops, routeCoordinates, activeLeg, transitLegActive, userPos]
   )
 
-  const distanceLabel = formatDistanceLabel(distance)
-  const walkMinutes = estimateWalkMinutes(distance)
+  const safeDistance = sanitizeWalkDistanceM(distance)
+  const distanceLabel = formatDistanceLabel(safeDistance)
+  const walkMinutes = estimateWalkMinutes(safeDistance)
 
   const walkingInstruction = buildOfflineWalkingInstruction({
     state,
@@ -186,6 +196,26 @@ export function OfflineRouteMap({
     userPos,
     targetLandmark: targetStop?.landmark,
   })
+
+  if (compact) {
+    return (
+      <div
+        className={cn('flex h-full w-full flex-col bg-obsidian text-ink900', className)}
+        data-testid="offline-route-map-compact"
+      >
+        <div className="flex min-h-0 flex-1 flex-col justify-center p-2">
+          <RouteOverviewSvg model={overview} />
+          <p className="mt-2 px-1 text-center text-[11px] leading-snug text-muted">
+            {atStop
+              ? 'You are within arrival range.'
+              : distanceLabel
+                ? `${distanceLabel} away · cached overview`
+                : 'Cached route overview'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div

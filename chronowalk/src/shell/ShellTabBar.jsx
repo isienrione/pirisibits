@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
+import { isStandaloneMode } from '../utils/pwaInstall.js'
 import { getShellTabs, isShellTabActive, SHELL_COMPANION_PATHS } from './config.js'
 
 export default function ShellTabBar() {
@@ -10,6 +11,7 @@ export default function ShellTabBar() {
 
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
   const visible = onCompanionRoute && !shouldHideShellTabBar(chromeHidden)
+  const standalone = isStandaloneMode()
 
   useEffect(() => {
     const root = document.documentElement
@@ -18,11 +20,13 @@ export default function ShellTabBar() {
     } else {
       delete root.dataset.shellTabBar
     }
+    root.dataset.shellStandalone = standalone ? 'true' : 'false'
 
     return () => {
       delete root.dataset.shellTabBar
+      delete root.dataset.shellStandalone
     }
-  }, [visible])
+  }, [visible, standalone])
 
   if (!visible) return null
 
@@ -31,8 +35,13 @@ export default function ShellTabBar() {
   return (
     <nav
       aria-label="Tour navigation"
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink800 bg-bone px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-card"
-      style={{ fontFamily: 'var(--font-ui)' }}
+      className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
+      style={{
+        fontFamily: 'var(--font-ui)',
+        // viewport-fit=cover always exposes the home-indicator inset — extend
+        // the bone background flush to the physical bottom (no black gap).
+        paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+      }}
     >
       <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-1">
         {tabs.map((tab) => {

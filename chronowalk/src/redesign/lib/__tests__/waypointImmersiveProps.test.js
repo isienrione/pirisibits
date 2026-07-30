@@ -113,5 +113,66 @@ describe('waypointImmersiveProps', () => {
     expect(curiaProps.thenPhoto).toContain(
       '/waypoints/forum-cluster/forum-curia-julia/ancient-reconstruction.jpg',
     )
+    expect(curiaProps.title).toMatch(/Curia Julia/i)
+    expect(severusProps.title).toMatch(/Septimius Severus|Arch of Septimius/i)
+  })
+
+  it('keeps Arch of Titus hero title free of chapter numerals', () => {
+    const waypoint = getWaypoint(manifest, 'w03')
+    const ch1 = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 0,
+    })
+    const ch2 = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 1,
+    })
+
+    expect(ch1.title).toBe('Arch of Titus')
+    expect(ch2.title).toBe('Arch of Titus')
+    expect(ch1.title).not.toMatch(/\b[IVXLC\d]+\b/)
+    expect(ch1.tagline).toMatch(/Arch of Titus I/i)
+  })
+
+  it('titles Titus outro chapter as Enter the valley', () => {
+    const waypoint = getWaypoint(manifest, 'w03')
+    const outro = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w03',
+      manifest,
+      chapterIndex: 2,
+      audio: { chapterCount: 3 },
+    })
+    expect(outro.chapterTitle).toBe('Enter the valley')
+    expect(outro.title).toBe('Enter the valley')
+    expect(outro.tagline).toBe('Enter the valley')
+  })
+
+  it('uses Circus Maximus (English title, not Circo Massimo)', () => {
+    const waypoint = getWaypoint(manifest, 'w04')
+    const circus = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w04',
+      manifest,
+      chapterIndex: 1,
+    })
+    expect(circus.chapterTitle).toBe('Circus Maximus')
+    expect(circus.chapterTitle).not.toMatch(/Circo Massimo/i)
+  })
+
+  it('titles Pantheon interior tombs chapter as the tombs', () => {
+    const waypoint = getWaypoint(manifest, 'w23')
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w23',
+      manifest,
+      chapterIndex: 2,
+    })
+    expect(props.chapterTitle).toMatch(/the tombs/i)
+    expect(props.chapterTitle).not.toMatch(/Resilience and Purpose/i)
   })
 })

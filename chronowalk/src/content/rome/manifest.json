@@ -89,7 +89,7 @@
     {
       "id": "encore",
       "numeral": "Encore",
-      "title": "The Long Road",
+      "title": "Optional Encore",
       "waypoints": [
         "w22"
       ]
@@ -295,6 +295,7 @@
         "a": "forum_intro_gate.mp3",
         "b": "w03_outro_b.mp3"
       },
+      "outro_title": "Enter the valley",
       "inserts": [
         "ins_jerusalem"
       ],
@@ -983,7 +984,7 @@
       }
     },
     "w22": {
-      "title": "Via Appia Antica",
+      "title": "Optional Encore › Via Appia Antica",
       "act": "encore",
       "geofence": {
         "lat": 41.8635,
@@ -1029,7 +1030,7 @@
       "duration_s": 81,
       "variant_meta": {
         "a": {
-          "title": "PATH A · Colosseum → Titus gate",
+          "title": "Colosseum → Titus gate",
           "transcript": "[brisk]  Straight to the heart, then. Head for the park entrance nearest the white marble arch on the rise - one ticket, one entry, and everything ahead of you sits inside the fence. [warm]  The gate itself is our first stop... and it's no ordinary gate. [quiet]  Remember the war that paid for the building behind you? [slow]  You're about to see the receipt."
         },
         "b": {
@@ -1049,7 +1050,7 @@
       "audio": "t04_forum.mp3",
       "zone": "antiquity",
       "duration_s": 18,
-      "title": "Into the Forum → Basilica (both paths · ~0:20)",
+      "title": "Into the Forum → Basilica",
       "transcript": "[warm]  Keep the arch at your back and drift left where the path forks. The enormous thing ahead with three surviving vaults is where we stop next. [wry]  It looks unfinished. It's actually just extremely stolen."
     },
     "t05": {
@@ -1154,7 +1155,9 @@
       "after": "w21",
       "zone": "antiquity",
       "duration_s": 120,
-      "title": "→ Via Appia Antica",
+      "travel_mode": "ride",
+      "eta_label": "estimated 30 min drive",
+      "title": "Optional Encore › Via Appia Antica",
       "transcript": "[warm]  From here, the Appia is a short ride rather than another long walk - taxi, bus, or a quiet tram south to the park gate. [matter-of-fact]  Ask for Via Appia Antica, near the Circus of Maxentius. [slow]  When the basalt paving appears under your feet, you're on the queen of roads. [quiet]  Press continue when you arrive - the stones will take it from there."
     },
     "t03": {
@@ -1166,7 +1169,7 @@
       "duration_s": 30,
       "variant_meta": {
         "b": {
-          "title": "Descent → Arch of Titus (PATH B · ~0:25)",
+          "title": "Descent → Arch of Titus",
           "transcript": "[warm]  Down the Clivus Palatinus - the emperors' own driveway, and still the best-named street in Rome. Where the slope meets the valley floor, the white marble arch stands at the head of the Sacred Way. [slow]  That gate is where the Forum begins... [quiet]  and where our next story is carved into the stone."
         }
       }

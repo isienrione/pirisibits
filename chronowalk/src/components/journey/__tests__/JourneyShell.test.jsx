@@ -52,7 +52,8 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
     playResumeCue: vi.fn().mockResolvedValue(undefined),
-    playArrivalChime: vi.fn().mockResolvedValue(undefined),
+    playArrivalChime: vi.fn().mockResolvedValue(true),
+    cancelArrivalChime: vi.fn(),
     playCompletionChime: vi.fn().mockResolvedValue(undefined),
     endTransit: vi.fn(),
     stopNarration: vi.fn(),
@@ -189,7 +190,7 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByText(/your rome awaits/i)).toBeInTheDocument()
-    expect(screen.getByTestId('tour-route-illustration')).toBeInTheDocument()
+    expect(screen.getByTestId('route-preview-pack')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /begin your walk/i })).toBeInTheDocument()
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
@@ -236,7 +237,7 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(playCallsBeforeSettings)
 
     fireEvent.click(screen.getByRole('button', { name: 'Done' }))
-    await screen.findByRole('heading', { name: /the colosseum/i })
+    await screen.findByRole('heading', { name: /colosseum/i })
     expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
     expect(audioMock.narrationPlaying).toBe(true)

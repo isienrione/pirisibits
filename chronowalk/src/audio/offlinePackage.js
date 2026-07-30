@@ -8,7 +8,6 @@ import {
   downloadRomeMapTiles,
   estimateRomeMapTileDownload,
   hydrateRomeMapTileCache,
-  isRomeMapReadyOffline,
   verifyRomeMapTiles,
 } from '../map/offlineMapTiles.js'
 import { env } from '../config/env.js'
@@ -30,6 +29,24 @@ const ESTIMATED_BYTES_PER_VIDEO = 3_000_000
 
 function clampPercent(value) {
   return Math.max(0, Math.min(100, Math.round(value)))
+}
+
+function isHtmlContentType(contentType) {
+  return String(contentType || '').toLowerCase().includes('text/html')
+}
+
+/**
+ * Files the walk cannot start without. Optional beds/inserts/ambience that are
+ * not shipped on Pages must not fail the whole prepare download — Cloudflare
+ * SPA fallback returns 200 HTML for those missing paths.
+ */
+export function isCriticalOfflineAudioPath(manifestPath) {
+  const path = String(manifestPath || '')
+  if (!path.includes('/rome/audio/')) return false
+  if (/\/narration\/w\d+/i.test(path)) return true
+  if (/\/narration\/t\d+/i.test(path) && !path.endsWith('/t02.mp3')) return true
+  if (path.includes('ui_arrival_chime') || path.includes('ui_waypoint_unlocked')) return true
+  return false
 }
 
 function mediaContentType(manifestPath) {
@@ -119,6 +136,15 @@ export function writeRomeOfflineStatus(status) {
   window.localStorage.setItem(ROME_OFFLINE_STATUS_KEY, JSON.stringify(status))
 }
 
+/** True when the offline package persisted at least some Rome walking-map tiles. */
+export function hasCachedRomeMapTiles() {
+  const status = readRomeOfflineStatus()
+  return (
+    status.status === OFFLINE_AUDIO_STATUS.COMPLETE &&
+    Number(status.mapTileCount) > 0
+  )
+}
+
 async function openRomeAudioCache() {
   if (typeof caches === 'undefined') {
     throw new Error('Cache storage is not supported in this browser.')
@@ -188,9 +214,22 @@ export async function verifyRomeAudioPackage(manifest) {
   }
 }
 
-export async function hydrateRomeAudioCache(manifest) {
+/**
+ * @param {object} manifest
+ * @param {{ includeMedia?: boolean | 'stills' }} [options]
+ *   After package download use `stills` — blob-URL’ing every reconstruction
+ *   video at once has OOM-killed Home Screen WebViews on iOS. Videos hydrate
+ *   on demand via {@link hydrateCachedManifestPath}.
+ */
+export async function hydrateRomeAudioCache(manifest, { includeMedia = 'stills' } = {}) {
   const audioPaths = listRomeAudioManifestPaths(manifest)
-  const mediaPaths = listRomeMediaManifestPaths(manifest)
+  const allMedia = listRomeMediaManifestPaths(manifest)
+  const mediaPaths =
+    includeMedia === true
+      ? allMedia
+      : includeMedia === 'stills'
+        ? allMedia.filter((path) => !path.endsWith('.mp4'))
+        : []
   const cache = await openRomeAudioCache()
 
   for (const manifestPath of audioPaths) {
@@ -214,16 +253,101 @@ export async function hydrateRomeAudioCache(manifest) {
   }
 }
 
+/** Hydrate a single cached media/audio path into a blob URL (idempotent). */
+export async function hydrateCachedManifestPath(manifestPath, { kind = 'media' } = {}) {
+  if (!manifestPath) return null
+  const cache = await openRomeAudioCache()
+  const response = await cache.match(cacheUrlForManifestPath(manifestPath))
+  if (!response?.ok) return null
+  const blob = await response.blob()
+  if (!blob.size) return null
+  const blobUrl = URL.createObjectURL(blob)
+  if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
+  else registerCachedMedia(manifestPath, blobUrl)
+  return blobUrl
+}
+
+const DOWNLOAD_ATTEMPTS = 3
+/** Large reconstructions can exceed 45s on cellular even with bars. */
+const DOWNLOAD_TIMEOUT_MS = 120_000
+
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException('Download aborted', 'AbortError'))
+      return
+    }
+    const timer = setTimeout(resolve, ms)
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new DOMException('Download aborted', 'AbortError'))
+    }
+    signal?.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
+async function fetchWithRetry(url, { signal, attempts = DOWNLOAD_ATTEMPTS } = {}) {
+  let lastError = null
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
+
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), DOWNLOAD_TIMEOUT_MS)
+    const onOuterAbort = () => controller.abort()
+    signal?.addEventListener('abort', onOuterAbort)
+
+    try {
+      const response = await fetch(url, { signal: controller.signal })
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      return response
+    } catch (error) {
+      lastError = error
+      if (signal?.aborted) {
+        throw new DOMException('Download aborted', 'AbortError')
+      }
+      if (attempt < attempts - 1) {
+        await sleep(400 * 2 ** attempt, signal)
+      }
+    } finally {
+      clearTimeout(timeoutId)
+      signal?.removeEventListener('abort', onOuterAbort)
+    }
+  }
+  throw lastError ?? new Error('Download failed')
+}
+
 async function downloadManifestPaths(paths, { cache, signal, onPathComplete, contentTypeForPath }) {
+  const skipped = []
+
   for (const manifestPath of paths) {
     if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
 
     const sourceUrl = cacheUrlForManifestPath(manifestPath)
     const existing = await cache.match(sourceUrl)
-    if (!existing?.ok) {
-      const response = await fetch(sourceUrl)
-      if (!response.ok) {
-        throw new Error(`Failed to download ${manifestPath} (${response.status})`)
+    if (existing?.ok) {
+      // Scrub SPA HTML that was previously cached under media URLs.
+      if (isHtmlContentType(existing.headers.get('Content-Type'))) {
+        await cache.delete(sourceUrl)
+      } else {
+        const existingBlob = await existing.blob()
+        if (existingBlob.size > 0) {
+          onPathComplete(manifestPath)
+          continue
+        }
+        await cache.delete(sourceUrl)
+      }
+    }
+
+    try {
+      const response = await fetchWithRetry(sourceUrl, { signal })
+      const contentType = response.headers.get('Content-Type') ?? contentTypeForPath(manifestPath)
+      if (isHtmlContentType(contentType)) {
+        // Missing file on Cloudflare Pages — SPA shell, not media.
+        skipped.push(manifestPath)
+        onPathComplete(manifestPath)
+        continue
       }
 
       const blob = await response.blob()
@@ -231,23 +355,44 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
         throw new Error(`Downloaded empty file for ${manifestPath}`)
       }
 
-      await cache.put(sourceUrl, new Response(blob, {
-        status: 200,
-        headers: {
-          'Content-Type': response.headers.get('Content-Type') ?? contentTypeForPath(manifestPath),
-        },
-      }))
-    }
+      // Sniff tiny HTML shells that omitted Content-Type.
+      if (blob.size < 24_000) {
+        const head = await blob.slice(0, 64).text()
+        if (/<!doctype html|<html[\s>]/i.test(head)) {
+          skipped.push(manifestPath)
+          onPathComplete(manifestPath)
+          continue
+        }
+      }
 
-    onPathComplete(manifestPath)
+      await cache.put(
+        sourceUrl,
+        new Response(blob, {
+          status: 200,
+          headers: { 'Content-Type': contentType },
+        }),
+      )
+      onPathComplete(manifestPath)
+    } catch (error) {
+      if (error?.name === 'AbortError' || signal?.aborted) throw error
+      if (isCriticalOfflineAudioPath(manifestPath)) {
+        throw error
+      }
+      console.warn('[offline] Skipping unavailable optional asset:', manifestPath, error)
+      skipped.push(manifestPath)
+      onPathComplete(manifestPath)
+    }
   }
+
+  return skipped
 }
 
 export async function downloadRomeAudioPackage(manifest, { onProgress, signal } = {}) {
   const audioPaths = listRomeAudioManifestPaths(manifest)
   const mediaPaths = listRomeMediaManifestPaths(manifest)
   const mapEstimate = estimateRomeMapTileDownload(manifest)
-  const totalSteps = audioPaths.length + mediaPaths.length + mapEstimate.tileCount
+  // Prepare ring tracks stories only — map tiles continue in the background.
+  const storiesTotal = Math.max(1, audioPaths.length + mediaPaths.length)
   const cache = await openRomeAudioCache()
 
   writeRomeOfflineStatus({
@@ -265,8 +410,8 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     const reportProgress = (currentPath) => {
       onProgress?.({
         completed,
-        total: totalSteps,
-        percent: clampPercent((completed / totalSteps) * 100),
+        total: storiesTotal,
+        percent: clampPercent((completed / storiesTotal) * 100),
         currentPath,
       })
     }
@@ -276,14 +421,14 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       reportProgress(manifestPath)
     }
 
-    await downloadManifestPaths(audioPaths, {
+    const skippedAudio = await downloadManifestPaths(audioPaths, {
       cache,
       signal,
       onPathComplete,
       contentTypeForPath: () => 'audio/mpeg',
     })
 
-    await downloadManifestPaths(mediaPaths, {
+    const skippedMedia = await downloadManifestPaths(mediaPaths, {
       cache,
       signal,
       onPathComplete,
@@ -291,52 +436,107 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     })
 
     const packageVerification = await verifyRomeAudioPackage(manifest)
-    if (!packageVerification.valid) {
-      const durationIssue = packageVerification.durationMismatches?.[0]
-      if (durationIssue) {
-        throw new Error(
-          `Offline duration check failed for ${durationIssue.path} (${durationIssue.blobSize} bytes, expected ≥${durationIssue.minimumBytes}).`
-        )
-      }
-      throw new Error(`Offline verification failed (${packageVerification.missing.length} missing files).`)
+    const criticalMissing = (packageVerification.missing ?? []).filter(isCriticalOfflineAudioPath)
+    const criticalDuration = (packageVerification.durationMismatches ?? []).filter((entry) =>
+      isCriticalOfflineAudioPath(entry.path),
+    )
+    if (criticalMissing.length > 0) {
+      throw new Error(
+        `Offline verification failed (${criticalMissing.length} essential story files missing).`,
+      )
+    }
+    if (criticalDuration.length > 0) {
+      const durationIssue = criticalDuration[0]
+      throw new Error(
+        `Offline duration check failed for ${durationIssue.path} (${durationIssue.blobSize} bytes, expected ≥${durationIssue.minimumBytes}).`,
+      )
+    }
+    if (skippedAudio.length || skippedMedia.length) {
+      console.warn(
+        '[offline] Skipped unavailable optional assets:',
+        skippedAudio.length + skippedMedia.length,
+      )
     }
 
-    await hydrateRomeAudioCache(manifest)
+    // Stills only — full video blob hydration has killed iOS Home Screen WebViews.
+    await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
-    if (env.mapboxToken && mapEstimate.tileCount > 0) {
-      await downloadRomeMapTiles(manifest, {
-        signal,
-        token: env.mapboxToken,
-        onProgress: ({ completed: mapCompleted, currentPath }) => {
-          completed = audioPaths.length + mediaPaths.length + mapCompleted
-          reportProgress(currentPath)
-        },
-      })
-    }
-
-    const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
-    if (!mapVerification.valid && !mapVerification.skipped) {
-      throw new Error(`Map tile verification failed (${mapVerification.missing.length} missing).`)
-    }
-
+    // Mark stories ready immediately so the prepare UI does not collapse while
+    // map tiles (optional, often flaky on cellular) are still fetching.
     const downloadedAt = Date.now()
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
-      fileCount: audioPaths.length,
-      mediaFileCount: mediaPaths.length,
-      mapTileCount: mapVerification.total,
+      fileCount: audioPaths.length - skippedAudio.length,
+      mediaFileCount: mediaPaths.length - skippedMedia.length,
+      mapTileCount: 0,
       downloadedAt,
       error: null,
+      skippedOptional: skippedAudio.length + skippedMedia.length,
     })
+    completed = storiesTotal
+    onProgress?.({
+      completed: storiesTotal,
+      total: storiesTotal,
+      percent: 100,
+      currentPath: 'stories-ready',
+    })
+
+    let mapVerification = { valid: true, skipped: true, total: 0, missing: [] }
+    if (env.mapboxToken && mapEstimate.tileCount > 0) {
+      try {
+        await downloadRomeMapTiles(manifest, {
+          signal,
+          token: env.mapboxToken,
+          onProgress: ({ currentPath }) => {
+            onProgress?.({
+              completed: storiesTotal,
+              total: storiesTotal,
+              percent: 100,
+              currentPath,
+            })
+          },
+        })
+        mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+        writeRomeOfflineStatus({
+          status: OFFLINE_AUDIO_STATUS.COMPLETE,
+          fileCount: audioPaths.length - skippedAudio.length,
+          mediaFileCount: mediaPaths.length - skippedMedia.length,
+          mapTileCount: mapVerification.total,
+          downloadedAt,
+          error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
+          skippedOptional: skippedAudio.length + skippedMedia.length,
+        })
+      } catch (mapError) {
+        console.warn('[offline] Map tile download incomplete:', mapError)
+        mapVerification = {
+          valid: false,
+          skipped: false,
+          total: mapEstimate.tileCount,
+          missing: ['map-tiles'],
+          error: mapError?.message ?? 'map_tiles_failed',
+        }
+        writeRomeOfflineStatus({
+          status: OFFLINE_AUDIO_STATUS.COMPLETE,
+          fileCount: audioPaths.length - skippedAudio.length,
+          mediaFileCount: mediaPaths.length - skippedMedia.length,
+          mapTileCount: 0,
+          downloadedAt,
+          error: 'map_tiles_partial',
+          skippedOptional: skippedAudio.length + skippedMedia.length,
+        })
+      }
+    }
 
     return {
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
-      fileCount: audioPaths.length,
-      mediaFileCount: mediaPaths.length,
-      mapTileCount: mapVerification.total,
+      fileCount: audioPaths.length - skippedAudio.length,
+      mediaFileCount: mediaPaths.length - skippedMedia.length,
+      mapTileCount: mapVerification.total ?? 0,
       downloadedAt,
       verification: packageVerification,
       mapVerification,
+      skippedAudio,
+      skippedMedia,
     }
   } catch (error) {
     writeRomeOfflineStatus({
@@ -381,6 +581,11 @@ export async function isRomeAudioReadyOffline(manifest) {
   const status = readRomeOfflineStatus()
   if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return false
   const verification = await verifyRomeAudioPackage(manifest)
-  if (!verification.valid) return false
-  return isRomeMapReadyOffline(manifest, { token: env.mapboxToken })
+  // Optional beds/inserts may be absent from Pages (SPA HTML). Only essential
+  // story narration + arrival cues must be present for "ready".
+  const criticalMissing = (verification.missing ?? []).filter(isCriticalOfflineAudioPath)
+  const criticalDuration = (verification.durationMismatches ?? []).filter((entry) =>
+    isCriticalOfflineAudioPath(entry.path),
+  )
+  return criticalMissing.length === 0 && criticalDuration.length === 0
 }

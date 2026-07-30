@@ -229,12 +229,16 @@ export default function AppEntryFamily({ onSkip }) {
 
 const shellStyle = {
   height: '100%',
+  minHeight: 0,
   padding: '48px 24px 32px',
   fontFamily: F.body,
   color: T.warmWhite,
   background: T.obsidian,
   display: 'flex',
   flexDirection: 'column',
+  overflowY: 'auto',
+  WebkitOverflowScrolling: 'touch',
+  overscrollBehavior: 'contain',
 }
 
 const primaryButtonStyle = {

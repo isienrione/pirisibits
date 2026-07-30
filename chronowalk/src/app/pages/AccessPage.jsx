@@ -5,6 +5,7 @@ import { hasAccess } from '../../lib/config'
 import { parseAccessToken, readDeviceCredential } from '../../lib/access.js'
 import { pullJourneyProgress } from '../../lib/journeyCloud.js'
 import { hydrateJourney } from '../../state/journey'
+import { syncAccessHandoff } from '../../lib/accessHandoff.js'
 import { getAccessDestination } from './accessDestination.js'
 
 export function AccessPage() {
@@ -22,6 +23,7 @@ export function AccessPage() {
         if (remote) hydrateJourney(remote)
       }
     } finally {
+      syncAccessHandoff({ updateUrl: true })
       navigate(getAccessDestination({ afterUnlock: true }), { replace: true })
     }
   }, [navigate])

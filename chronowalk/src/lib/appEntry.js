@@ -1,7 +1,8 @@
 import { getJourneySnapshot, JOURNEY_STATES } from '../state/journey.js'
 import { readPurchasedTier } from './pendingPurchase.js'
 
-const APP_ENTRY_DONE_KEY = 'cw_app_entry_done_v1'
+/** Bumped so travelers see offline + A2HS prepare again after the v2 flow shipped. */
+const APP_ENTRY_DONE_KEY = 'cw_app_entry_done_v2'
 
 /** True once the traveler has crossed from marketing into the app shell. */
 export function isAppEntryComplete() {
@@ -68,12 +69,19 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
 
 /**
  * Where an unlocked traveler should land when opening the site.
- * @param {{ resumable?: boolean, entryComplete?: boolean }} opts
+ * Fresh unlocks always enter App Entry (A2HS + offline prepare) even if a
+ * previous session marked entry complete.
+ * @param {{ resumable?: boolean, entryComplete?: boolean, afterUnlock?: boolean }} opts
  */
 export function getAppHomePath({
   resumable = false,
   entryComplete = isAppEntryComplete(),
+  afterUnlock = false,
 } = {}) {
+  if (afterUnlock) {
+    clearAppEntryComplete()
+    return '/setup'
+  }
   if (resumable) return '/begin'
   if (!entryComplete) return '/setup'
   return '/begin'

@@ -47,16 +47,25 @@ export function useOfflineAudio() {
 
     setError(null)
     setIsDownloading(true)
+    setIsReady(false)
+    setProgress({ completed: 0, total: 1, percent: 1, currentPath: 'starting' })
 
     try {
       await downloadRomeAudioPackage(manifest, { onProgress: setProgress })
+      setProgress({ completed: 1, total: 1, percent: 100, currentPath: 'complete' })
+      setError(null)
       await refresh()
     } catch (downloadError) {
-      setError(downloadError?.message ?? 'Download failed. Try again on a stable connection.')
+      const message = downloadError?.message ?? 'Download failed'
+      // Missing CDN files are not a "bad signal" problem — say so clearly.
+      const friendly =
+        /essential story files missing|HTML|verification failed/i.test(message)
+          ? 'Some story files could not be saved. Tap to retry.'
+          : 'Download paused — tap to retry.'
+      setError(friendly)
       await refresh()
     } finally {
       setIsDownloading(false)
-      setProgress(null)
     }
   }, [isDownloading, manifest, refresh])
 

@@ -49,22 +49,34 @@ export function isMapboxStandardStyle(styleUrl) {
  * stays on Standard vector (night) so the PWA does not pay satellite tile cost
  * on every screen.
  *
+ * Offline / spotty-signal: prefer Standard vector — that matches the offline
+ * tile package (`mapbox/standard` + streets-v8). Satellite tiles are not cached
+ * and paint black under poor connectivity.
+ *
  * `VITE_MAPBOX_STYLE_URL` still overrides the MAP-tab style for Studio experiments.
- * The walking hero always prefers Standard Satellite unless an explicit
+ * The walking hero prefers Standard Satellite online unless an explicit
  * `VITE_MAPBOX_WALKING_STYLE_URL` is set.
  *
- * @param {{ walkingCompanionUI?: boolean }} [options]
+ * @param {{ walkingCompanionUI?: boolean, preferOfflineStyle?: boolean }} [options]
  */
-export function resolveTourMapStyleOptions({ walkingCompanionUI = false } = {}) {
+export function resolveTourMapStyleOptions({
+  walkingCompanionUI = false,
+  preferOfflineStyle = false,
+} = {}) {
   if (walkingCompanionUI) {
-    const style =
-      import.meta.env.VITE_MAPBOX_WALKING_STYLE_URL || MAPBOX_STYLE_STANDARD_SATELLITE
+    const style = preferOfflineStyle
+      ? MAPBOX_STYLE_STANDARD
+      : import.meta.env.VITE_MAPBOX_WALKING_STYLE_URL || MAPBOX_STYLE_STANDARD_SATELLITE
     return {
       style,
       config: {
-        basemap: { ...WALKING_HERO_BASEMAP_CONFIG },
+        basemap: {
+          ...WALKING_HERO_BASEMAP_CONFIG,
+          // Day offline — night-on-empty-tiles reads as a broken grey/black load.
+          ...(preferOfflineStyle ? { lightPreset: 'day' } : null),
+        },
       },
-      surface: 'walking-hero',
+      surface: preferOfflineStyle ? 'walking-hero-offline' : 'walking-hero',
     }
   }
 

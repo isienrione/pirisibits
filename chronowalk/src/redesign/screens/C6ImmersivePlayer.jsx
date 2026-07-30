@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings, X } from 'lucide-react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 import ThresholdDiegeticHint from '../ui/ThresholdDiegeticHint.jsx'
@@ -534,7 +534,7 @@ export default function C6ImmersivePlayer({
             className="cw-waypoint-immersive__topbar cw-waypoint-immersive__chrome"
             style={{
               position: 'absolute',
-              top: 'max(12px, env(safe-area-inset-top))',
+              top: 'calc(env(safe-area-inset-top, 0px) + 12px)',
               left: 16,
               // Keep the right edge clear for the DEV QA badge (fixed top-right).
               right: 64,
@@ -662,9 +662,7 @@ export default function C6ImmersivePlayer({
             style={{
               display: 'flex',
               flexDirection: 'column',
-              padding: showContinuity
-                ? '8px 24px 10px'
-                : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+              padding: showContinuity ? '8px 24px 10px' : undefined,
             }}
           >
             {showContinuity ? (

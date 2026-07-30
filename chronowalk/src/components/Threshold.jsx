@@ -93,6 +93,14 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
+  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const hydrateAttempted = useRef(false)
+
+  useEffect(() => {
+    setFailed(false)
+    setResolvedSrc(src)
+    hydrateAttempted.current = false
+  }, [src])
 
   useEffect(() => {
     const video = videoRef.current
@@ -112,9 +120,28 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     } else {
       video.pause()
     }
-  }, [playing, failed])
+  }, [playing, failed, resolvedSrc])
 
-  if (!src || failed) {
+  const handleError = useCallback(() => {
+    if (!hydrateAttempted.current && src && !String(src).startsWith('blob:')) {
+      hydrateAttempted.current = true
+      void import('../audio/offlinePackage.js')
+        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+        .then((blobUrl) => {
+          if (blobUrl) {
+            setResolvedSrc(blobUrl)
+            setFailed(false)
+            return
+          }
+          setFailed(true)
+        })
+        .catch(() => setFailed(true))
+      return
+    }
+    setFailed(true)
+  }, [src])
+
+  if (!resolvedSrc || failed) {
     return (
       <ThresholdLayerImage
         src={poster}
@@ -130,14 +157,14 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
       ref={videoRef}
       className={className}
       style={{ ...style, pointerEvents: 'none' }}
-      src={src}
+      src={resolvedSrc}
       poster={poster}
       muted
       loop
       playsInline
       preload="metadata"
       draggable={false}
-      onError={() => setFailed(true)}
+      onError={handleError}
     />
   )
 }
@@ -295,6 +322,24 @@ export default function Threshold({
       holdCommitTimerRef.current = null
     }
   }, [])
+
+  const mediaKey = `${reconstruction?.loop ?? ''}|${reconstruction?.then ?? ''}|${reconstruction?.now ?? ''}`
+  const prevMediaKeyRef = useRef(mediaKey)
+
+  // Reset reveal when the reconstruction media changes (e.g. Curia / chapter swap)
+  // so a mid-swipe seam cannot leave a thin vertical strip + black void.
+  useEffect(() => {
+    if (prevMediaKeyRef.current === mediaKey) return
+    prevMediaKeyRef.current = mediaKey
+    cancelAnimation()
+    clearHoldCommitTimer()
+    setReveal(0)
+    revealRef.current = 0
+    setHolding(false)
+    setLatchedToThen(false)
+    latchedRef.current = false
+    setVideoPlaying(false)
+  }, [mediaKey, cancelAnimation, clearHoldCommitTimer])
 
   const notifyFullyRevealed = useCallback(() => {
     if (fullyRevealedHoldRef.current) return
@@ -661,8 +706,10 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
-  // Immersive mode: both eras should fill the frame consistently (avoid "small aspect ratio" letterboxing).
-  // Legacy / non-immersive mode: preserve aspect ratio for "then".
+  // Modern (now) and ancient (then) share the same framing so mismatched
+  // source aspect ratios (e.g. Curia landscape reconstruction on a portrait
+  // NOW photo) do not letterbox one era while the other fills the frame.
+  // Immersive uses cover; non-immersive uses contain — both eras match.
   const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
   const thenLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
 

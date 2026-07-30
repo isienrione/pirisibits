@@ -22,6 +22,17 @@ describe('mapStyles', () => {
     expect(options.config.basemap.lightPreset).toBe('dusk')
   })
 
+  it('uses Standard vector for the walking hero when preferOfflineStyle is set', () => {
+    const options = resolveTourMapStyleOptions({
+      walkingCompanionUI: true,
+      preferOfflineStyle: true,
+    })
+
+    expect(options.style).toBe(MAPBOX_STYLE_STANDARD)
+    expect(options.surface).toBe('walking-hero-offline')
+    expect(options.config.basemap.lightPreset).toBe('day')
+  })
+
   it('uses Standard night vector for the MAP tab by default', () => {
     vi.stubEnv('VITE_MAPBOX_STYLE_URL', '')
     const options = resolveTourMapStyleOptions({ walkingCompanionUI: false })

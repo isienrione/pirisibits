@@ -170,7 +170,11 @@ export function useAudioEngine(manifest) {
   }, [])
 
   const playArrivalChime = useCallback(async () => {
-    await engineRef.current?.playArrivalChime()
+    return (await engineRef.current?.playArrivalChime()) ?? false
+  }, [])
+
+  const cancelArrivalChime = useCallback(() => {
+    engineRef.current?.cancelArrivalChime()
   }, [])
 
   const playCompletionChime = useCallback(async () => {
@@ -235,6 +239,7 @@ export function useAudioEngine(manifest) {
     playTransit,
     playResumeCue,
     playArrivalChime,
+    cancelArrivalChime,
     playCompletionChime,
     playUiCue,
     endTransit,

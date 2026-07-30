@@ -117,10 +117,10 @@ export const ROME_ACTS = [
   {
     id: 'encore',
     numeral: 'Encore',
-    title: 'The Long Road',
+    title: 'Optional Encore',
     waypoints: ['w22'],
-    entry: 'Via Appia Antica',
-    promise: 'Walk where legions and merchants left Rome.',
+    entry: 'Optional Encore › Via Appia Antica',
+    promise: 'Estimated 30 min drive — walk where legions and merchants left Rome.',
   },
 ]
 

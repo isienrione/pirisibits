@@ -205,23 +205,28 @@ function AppRouter() {
     let cancelled = false
 
     async function restoreOfflineAudio() {
-      const { readRomeOfflineStatus, OFFLINE_AUDIO_STATUS, verifyRomeAudioPackage, hydrateRomeAudioCache } =
-        await import('../audio/offlinePackage.js')
+      const {
+        readRomeOfflineStatus,
+        OFFLINE_AUDIO_STATUS,
+        isRomeAudioReadyOffline,
+        hydrateRomeAudioCache,
+      } = await import('../audio/offlinePackage.js')
 
       const status = readRomeOfflineStatus()
       if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return
 
       const { loadRomeManifest } = await import('../content/manifest.js')
       const manifest = loadRomeManifest()
-      const verification = await verifyRomeAudioPackage(manifest)
-      if (cancelled || !verification.valid) return
+      // Critical-only readiness — optional beds/inserts may be soft-skipped and
+      // must not block hydrating arrival chimes + stories for offline playback.
+      const ready = await isRomeAudioReadyOffline(manifest)
+      if (cancelled || !ready) return
 
       await hydrateRomeAudioCache(manifest)
 
-      const { verifyRomeMapTiles, hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
-      const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
-      if (cancelled || (!mapVerification.valid && !mapVerification.skipped)) return
-
+      // Hydrate whatever map tiles we have — partial caches still beat a black map.
+      const { hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
+      if (cancelled) return
       await hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
     }
 

@@ -19,6 +19,9 @@ export function stripDirectorCues(text) {
 
   return normalizeTranscriptDashes(text)
     .replace(/\[[^\]]*\]/g, '')
+    // Director emoji cues (e.g. look/gesture markers in Navona scripts).
+    .replace(/[\u{1F44B}-\u{1F44F}\u{1F3AD}\u{270B}\u{1F446}-\u{1F450}\u{261D}\u{1F918}-\u{1F91F}]/gu, '')
+    .replace(/[✋🎭👆👇👈👉]/gu, '')
     .split('\n')
     .map((line) => line.replace(/[ \t]{2,}/g, ' ').trim())
     .join('\n')

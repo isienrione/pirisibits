@@ -1,7 +1,11 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { loadRomeManifest } from '../../content/manifest.js'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import {
   estimateRomeAudioDownload,
+  isCriticalOfflineAudioPath,
   listRomeAudioManifestPaths,
   listRomeMediaManifestPaths,
   readRomeOfflineStatus,
@@ -54,5 +58,33 @@ describe('offlinePackage', () => {
 
     expect(readRomeOfflineStatus().status).toBe(OFFLINE_AUDIO_STATUS.COMPLETE)
     expect(localStorage.getItem(ROME_OFFLINE_STATUS_KEY)).toBeTruthy()
+  })
+
+  it('does not require map tiles for offline-ready (prevents prepare UI collapse)', () => {
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../offlinePackage.js'),
+      'utf8',
+    )
+    const readyFn = source.slice(source.indexOf('export async function isRomeAudioReadyOffline'))
+    expect(readyFn).toContain('isCriticalOfflineAudioPath')
+    expect(readyFn).not.toContain('isRomeMapReadyOffline')
+  })
+
+  it('treats waypoint narration as critical and beds/inserts as optional', () => {
+    expect(isCriticalOfflineAudioPath('/rome/audio/narration/w01.mp3')).toBe(true)
+    expect(isCriticalOfflineAudioPath('/rome/audio/system/ui_arrival_chime.mp3')).toBe(true)
+    expect(isCriticalOfflineAudioPath('/rome/audio/beds/bed_antiquity.mp3')).toBe(false)
+    expect(isCriticalOfflineAudioPath('/rome/audio/inserts/ins_fire.mp3')).toBe(false)
+    expect(isCriticalOfflineAudioPath('/rome/audio/narration/t02.mp3')).toBe(false)
+  })
+
+  it('rejects SPA HTML poison instead of treating it as media', () => {
+    const source = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../offlinePackage.js'),
+      'utf8',
+    )
+    expect(source).toContain('isHtmlContentType')
+    expect(source).toContain('<!doctype html')
+    expect(source).toContain('Skipping unavailable optional asset')
   })
 })

@@ -499,8 +499,8 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 8, 8, 0.35) 0%, transparent 18%),
-    linear-gradient(0deg, rgba(11, 11, 13, 0.98) 0%, rgba(11, 11, 13, 0.72) 34%, rgba(11, 11, 13, 0.2) 58%, transparent 72%);
+    linear-gradient(180deg, rgba(8, 8, 8, 0.72) 0%, rgba(8, 8, 8, 0.35) 22%, transparent 40%),
+    linear-gradient(0deg, rgba(11, 11, 13, 0.98) 0%, rgba(11, 11, 13, 0.78) 34%, rgba(11, 11, 13, 0.35) 58%, transparent 78%);
   pointer-events: none;
   z-index: 3;
 }
@@ -513,6 +513,13 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   z-index: 5;
   padding: 0 24px 10px;
   pointer-events: none;
+}
+
+.cw-waypoint-immersive__hero-title h2,
+.cw-waypoint-immersive__hero-title p {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 4px 18px rgba(0, 0, 0, 0.55);
 }
 
 .cw-waypoint-immersive__threshold {
@@ -533,6 +540,7 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   -webkit-overflow-scrolling: touch;
   background: transparent !important;
   border-top: none !important;
+  padding: 8px 24px max(12px, env(safe-area-inset-bottom));
 }
 
 /*
@@ -560,6 +568,16 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
     rgba(11, 11, 13, 0.96) 100%
   );
   pointer-events: auto;
+}
+
+/* Tab bar already owns safe-area via --wc-shell-tab-inset on the phone frame —
+   keep a short breathing gap above the nav, not a second home-indicator pad. */
+html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__action-stack {
+  padding-bottom: calc(8px + var(--wc-browser-chrome, 0px));
+}
+
+html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
+  padding-bottom: 8px;
 }
 
 .cw-waypoint-immersive__sync-slot {
@@ -897,7 +915,9 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
 }
 
 :root {
-  --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  /* Tab content (~3.75rem) + home-indicator inset so the bone bar is flush
+     with the physical bottom under viewport-fit=cover. */
+  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
   --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   /* Legacy fallback; action stack is now in-flow so panel no longer offsets by this. */
@@ -1484,22 +1504,70 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
+  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  max-height: 100dvh;
+  max-height: var(--app-height, 100dvh);
   padding-bottom: var(--wc-shell-tab-inset, 0px);
-  /* Allow the companion layout to scroll on very short viewports rather than
-     clip content below the map (dock buttons, steps toggle, etc.). */
+  /* Scroll the frame when content is taller than the inset viewport. */
+  overflow-x: hidden;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-html.redesign-pwa[data-shell-tab-bar='visible'] {
+html[data-shell-standalone='true'] {
+  /* Same flush rule as browser — home indicator is already in the token. */
+  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+html.redesign-pwa[data-shell-tab-bar='visible'],
+html[data-shell-tab-bar='visible'] {
   --wc-shell-tab-inset: var(--shell-tab-bar-height);
 }
 
 .redesign-phone-frame--companion > * {
-  /* min-height keeps the shell filling the viewport; removing the hard
-     max-height: 100% lets the content grow on very short screens. */
-  min-height: 100%;
+  /* Fill the content box ABOVE the tab-bar padding — never the full border box,
+     or a black obsidian strip appears between the screen and the fixed nav. */
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* Single journey root so banners / docks don't each claim 100% height. */
+.cw-journey-shell-root {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Walking companion needs to scroll inside the frame when map + directions
+   exceed the inset viewport — don't clip that overflow at the shell root. */
+.cw-journey-shell-root:has(> .cw-walking-companion) {
+  overflow: visible;
   height: auto;
+  min-height: 100%;
   max-height: none;
+}
+
+.cw-journey-shell-root > .cw-arrival-moment,
+.cw-journey-shell-root > .cw-waypoint-immersive,
+.cw-journey-shell-root > .cw-walking-companion,
+.cw-journey-shell-root > .cw-grain,
+.cw-journey-shell-root > [data-testid='journey-layout'] {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
 }
 
 .redesign-prototype-chrome {
@@ -1795,14 +1863,29 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   position: fixed;
   left: 0;
   right: 0;
+  /* Clamp under the status bar; sit mid-upper so cards aren’t glued to the dock. */
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  bottom: calc(
+    var(--wc-shell-tab-inset, 0px) + var(--cw-onboarding-dock-lift, 16px)
+  );
   z-index: 120;
-  padding: 0 16px;
+  padding: 0 16px min(14vh, 96px);
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cw-tour-onboarding-cards__card {
   position: relative;
+  width: 100%;
   max-width: 420px;
+  max-height: min(
+    70dvh,
+    calc(
+      100dvh - env(safe-area-inset-top, 0px) - var(--wc-shell-tab-inset, 4.75rem) - 48px
+    )
+  );
   margin: 0 auto;
   padding: 18px 18px 16px;
   border-radius: 16px;
@@ -1810,6 +1893,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   border: 1px solid rgba(245, 239, 227, 0.12);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
   pointer-events: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: tourOnboardingSlideUp 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -1966,6 +2051,31 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   flex-direction: column;
 }
 
+.cw-route-preview-panel__hero--pack {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 12px 8px;
+}
+
+.cw-route-preview-panel__pack {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cw-route-preview-panel__pack-img {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(33, 28, 21, 0.12);
+  object-fit: contain;
+  background: #f3ebe0;
+}
+
 .cw-route-preview-panel__loading {
   flex: 1 1 auto;
   min-height: inherit;
@@ -2029,16 +2139,16 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   --wc-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--wc-bg);
   color: var(--wc-warm-white);
-  /* Use min-height so the companion fills at least the viewport but can grow
-     on short screens, allowing the page to scroll to reach dock buttons and
-     content below the map. overflow: hidden is replaced with overflow-y: auto
-     to enable that scrolling; the map stays bounded via __map-wrap max-height. */
-  height: auto;
-  min-height: 100dvh;
-  min-height: var(--app-height, 100dvh);
+  /* Fill the companion frame (already padded for the tab bar). Using 100dvh
+     here made Pause / I'm here sit under the tab bar with no usable scroll. */
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   font-family: 'DM Sans', system-ui, sans-serif;
+  overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   -webkit-font-smoothing: antialiased;
@@ -2063,7 +2173,7 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-walking-companion__header {
   flex-shrink: 0;
   padding:
-    max(12px, env(safe-area-inset-top))
+    calc(env(safe-area-inset-top, 0px) + 12px)
     max(20px, env(safe-area-inset-right))
     12px
     max(20px, env(safe-area-inset-left));
@@ -2290,6 +2400,8 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
   flex-direction: column;
   gap: 10px;
   padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+  /* Allow the companion to grow past the frame so map + directions can scroll. */
+  overflow: visible;
 }
 
 .cw-walking-companion__view-toggle {
@@ -2323,11 +2435,9 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap {
-  flex: 1 1 42%;
+  flex: 0 0 auto;
+  height: clamp(180px, 36vh, 320px);
   min-height: 160px;
-  /* Cap height so the map doesn't consume the full viewport on short screens,
-     keeping footer / dock buttons reachable without scrolling in most cases. */
-  max-height: clamp(200px, 48vh, 420px);
   position: relative;
   border-radius: 16px;
   overflow: hidden;
@@ -2339,14 +2449,15 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap--arrived {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  height: clamp(160px, 32vh, 280px);
 }
 
 .cw-walking-companion__next-turns {
-  flex: 0 1 40%;
+  flex: 0 0 auto;
   min-height: 0;
-  max-height: 44%;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -2852,6 +2963,12 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
     max(16px, env(safe-area-inset-right))
     calc(max(12px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
     max(16px, env(safe-area-inset-left));
+}
+
+/* Tab bar already owns safe-area-inset-bottom via --shell-tab-bar-height —
+   keep a small breathing gap above the nav, not a second home-indicator pad. */
+html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
+  padding-bottom: calc(16px + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px));
 }
 
 .cw-walking-companion__dock {
@@ -3715,6 +3832,167 @@ html.redesign-pwa[data-shell-tab-bar='visible'] {
 .cw-walk-together__continue:focus-visible {
   outline: 2px solid var(--wt-accent);
   outline-offset: 3px;
+}
+
+/* ── Arrival moment (C4) — card hugs CTAs; photo fills leftover space ── */
+.cw-arrival-moment {
+  background: var(--cw-bone, #faf6ef);
+  height: 100%;
+  max-height: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.cw-arrival-moment__photo {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 180px;
+  overflow: hidden;
+}
+
+.cw-arrival-moment__photo-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+}
+
+.cw-arrival-moment__photo-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(11, 11, 13, 0.15) 0%, rgba(11, 11, 13, 0.55) 100%);
+}
+
+.cw-arrival-moment__pulse {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.cw-arrival-moment__unlock {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 36px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(11, 11, 13, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  animation: cw-arrival-unlock-in 280ms ease-out;
+}
+
+.cw-arrival-moment__unlock p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #faf6ef;
+}
+
+.cw-arrival-moment__unlock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+@keyframes cw-arrival-unlock-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cw-arrival-moment__card {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--cw-bone, #faf6ef);
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  position: relative;
+  z-index: 10;
+  padding: 22px 24px 12px;
+  box-shadow: 0 -8px 32px rgba(33, 28, 21, 0.12);
+}
+
+/* When the shell tab bar is hidden, keep a real home-indicator pad. */
+html:not([data-shell-tab-bar='visible']) .cw-arrival-moment__card {
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+}
+
+.cw-arrival-moment__copy {
+  flex: 0 0 auto;
+}
+
+.cw-arrival-moment__title {
+  font-size: 30px;
+  font-weight: 300;
+  line-height: 1.1;
+  margin: 8px 0 10px;
+}
+
+.cw-arrival-moment__desc {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.cw-arrival-moment__actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cw-arrival-moment__primary {
+  width: 100%;
+  padding: 15px 20px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cw-arrival-moment__primary:disabled,
+.cw-arrival-moment__secondary:disabled,
+.cw-arrival-moment__tertiary:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.cw-arrival-moment__secondary,
+.cw-arrival-moment__tertiary {
+  width: 100%;
+  padding: 12px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cw-arrival-moment__tertiary {
+  font-size: 13px;
 }
 
 .cw-walk-together__footer--sticky {

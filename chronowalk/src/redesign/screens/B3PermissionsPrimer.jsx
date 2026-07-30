@@ -24,6 +24,7 @@ const BENEFITS = [
 export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, paceTitle }) {
   return (
     <div
+      data-testid="permissions-primer"
       style={{
         background: T.obsidian,
         height: '100%',
@@ -53,9 +54,11 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           flexDirection: 'column',
           padding:
             'max(48px, calc(env(safe-area-inset-top) + 20px)) 24px max(32px, calc(env(safe-area-inset-bottom) + 24px))',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
-        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28, flexShrink: 0 }}>
           <ChronoWalkLogo size={68} />
           <p
             style={{
@@ -72,13 +75,14 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
 
         <div
           style={{
-            flex: 1,
+            flex: '1 0 auto',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             maxWidth: 360,
             margin: '0 auto',
             width: '100%',
+            minHeight: 0,
           }}
         >
           <h1
@@ -130,7 +134,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
           </ul>
         </div>
 
-        <div style={{ marginTop: 24 }}>
+        <div style={{ marginTop: 24, flexShrink: 0, paddingBottom: 8 }}>
           {paceTitle ? (
             <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 16px' }}>
               {paceTitle} pace selected

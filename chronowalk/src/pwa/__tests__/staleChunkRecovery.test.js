@@ -53,6 +53,39 @@ describe('staleChunkRecovery', () => {
     expect(isStaleChunkError(new TypeError('Load failed'))).toBe(true)
     expect(isStaleChunkError(new SyntaxError("Unexpected token '<'"))).toBe(true)
     expect(isStaleChunkError(new Error('boom'))).toBe(false)
+    // Bare network blips must not trigger a hard shell reset mid-download.
+    expect(isStaleChunkError(new TypeError('Failed to fetch'))).toBe(false)
+  })
+
+  it('defers recovery while offline or mid package download', async () => {
+    const { shouldDeferStaleRecovery, recoverStaleClient } = await import('../staleChunkRecovery.js')
+    localStorage.setItem(
+      'cw_offline_rome_audio_v1',
+      JSON.stringify({ status: 'downloading' }),
+    )
+    expect(shouldDeferStaleRecovery()).toBe(true)
+    const result = await recoverStaleClient({ reason: 'test-download' })
+    expect(result).toEqual({ recovered: false, reloading: false })
+    expect(hardReload).not.toHaveBeenCalled()
+  })
+
+  it('defers recovery when an offline package is already complete', async () => {
+    const { shouldDeferStaleRecovery, recoverStaleClient } = await import('../staleChunkRecovery.js')
+    localStorage.setItem(
+      'cw_offline_rome_audio_v1',
+      JSON.stringify({ status: 'complete', fileCount: 40 }),
+    )
+    expect(shouldDeferStaleRecovery()).toBe(true)
+    const result = await recoverStaleClient({ reason: 'test-offline-complete' })
+    expect(result).toEqual({ recovered: false, reloading: false })
+    expect(clearAllCaches).not.toHaveBeenCalled()
+    expect(hardReload).not.toHaveBeenCalled()
+  })
+
+  it('defers recovery when offline status JSON is corrupt', async () => {
+    const { shouldDeferStaleRecovery } = await import('../staleChunkRecovery.js')
+    localStorage.setItem('cw_offline_rome_audio_v1', '{not-json')
+    expect(shouldDeferStaleRecovery()).toBe(true)
   })
 
   it('recovers at most once per tab session without clearing credentials', async () => {

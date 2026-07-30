@@ -298,6 +298,7 @@ function TourMapboxView({
   minimalUI = false,
   walkingCompanionUI = false,
   fillContainer = false,
+  preferOfflineStyle = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -389,7 +390,10 @@ function TourMapboxView({
       }
     }
 
-    const styleOptions = resolveTourMapStyleOptions({ walkingCompanionUI })
+    const styleOptions = resolveTourMapStyleOptions({
+      walkingCompanionUI,
+      preferOfflineStyle,
+    })
 
     const markMapReady = () => {
       if (cancelled || !map.current) return
@@ -435,6 +439,8 @@ function TourMapboxView({
           center: [center.lng, center.lat],
           zoom: walkingCompanionUI ? WALKING_COMPANION_MIN_ZOOM : tour?.mapZoom ?? 14,
           pitch: walkingCompanionUI ? WALKING_COMPANION_PITCH : 0,
+          // Let one-finger vertical drags scroll the walking companion page.
+          cooperativeGestures: Boolean(walkingCompanionUI),
           transformRequest: createMapboxTransformRequest(),
         })
       } catch (error) {
@@ -456,6 +462,7 @@ function TourMapboxView({
         }
       })
 
+      let offlineTileErrors = 0
       map.current.on('error', (event) => {
         const status = event?.error?.status
         const message = event?.error?.message ?? ''
@@ -465,6 +472,17 @@ function TourMapboxView({
           /unauthorized|forbidden|not authorized/i.test(message)
         ) {
           console.warn('Mapbox auth error:', event?.error ?? event)
+          onMapFailureRef.current?.()
+          return
+        }
+        // Offline + missing tiles → compact OfflineRouteMap instead of a grey canvas.
+        const radioOffline =
+          preferOfflineStyle ||
+          (typeof navigator !== 'undefined' && navigator.onLine === false)
+        if (!radioOffline) return
+        offlineTileErrors += 1
+        if (offlineTileErrors >= 3) {
+          console.warn('Mapbox offline tile errors — falling back to route sketch')
           onMapFailureRef.current?.()
         }
       })
@@ -979,14 +997,20 @@ const TourMap = ({
   minimalUI = false,
   walkingCompanionUI = false,
   fillContainer = false,
+  preferOfflineStyle = false,
 }) => {
-  const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
+  const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
     setOfflineMapMode(true)
   }, [])
 
   useEffect(() => {
-    if (isOffline) setOfflineMapMode(true)
+    if (!isMapboxConfigured()) {
+      setOfflineMapMode(true)
+      return
+    }
+    // Back online — restore Mapbox (remount via style key picks satellite/standard).
+    if (!isOffline) setOfflineMapMode(false)
   }, [isOffline])
 
   if (offlineMapMode) {
@@ -1001,6 +1025,7 @@ const TourMap = ({
         state={state}
         distance={distance}
         awaitingFirstStop={awaitingFirstStop}
+        compact={Boolean(fillContainer || walkingCompanionUI || minimalUI)}
       />
     )
   }
@@ -1027,6 +1052,8 @@ const TourMap = ({
       minimalUI={minimalUI}
       walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
+      preferOfflineStyle={preferOfflineStyle || isOffline}
+      key={preferOfflineStyle || isOffline ? 'map-offline-style' : 'map-online-style'}
     />
   )
 }

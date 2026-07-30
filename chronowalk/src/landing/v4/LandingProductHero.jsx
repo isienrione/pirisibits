@@ -9,6 +9,8 @@ import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 
 const SLIDE_MS = 8000
+/** First Rome-sky hero needs more reading time before the art slideshow begins. */
+const FIRST_SLIDE_MS = 14000
 const FADE_MS = 900
 
 /** Approximate click targets over the Choose your walk marketing frame. */
@@ -98,7 +100,7 @@ function scrollToPricingTarget(id) {
  * Slide 0 = current primary hero; secondary slides are portrait story frames.
  * Story frames open a fullscreen pinch-zoom viewer when enlarged.
  */
-export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }) {
+export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, onContinueWalk }) {
   const section = LANDING_CONTENT.hero
   const storySlides = HERO_SLIDESHOW_SLIDES
   const total = 1 + storySlides.length
@@ -129,14 +131,15 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
     if (reducedMotion || paused || viewerSlide || total < 2) return undefined
 
     let timer = 0
+    const dwell = index === 0 ? FIRST_SLIDE_MS : SLIDE_MS
     const tick = () => {
       if (document.hidden) {
-        timer = window.setTimeout(tick, SLIDE_MS)
+        timer = window.setTimeout(tick, dwell)
         return
       }
       setIndex((current) => (current + 1) % total)
     }
-    timer = window.setTimeout(tick, SLIDE_MS)
+    timer = window.setTimeout(tick, dwell)
     return () => window.clearTimeout(timer)
   }, [reducedMotion, paused, viewerSlide, total, index])
 
@@ -198,14 +201,25 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp }
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
             <div className="cw-v4-hero__actions">
-              <button
-                type="button"
-                className="cw-v4-btn cw-v4-btn--primary"
-                onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                tabIndex={interactive ? 0 : -1}
-              >
-                {section.primaryCta}
-              </button>
+              {onContinueWalk ? (
+                <button
+                  type="button"
+                  className="cw-v4-btn cw-v4-btn--primary"
+                  onClick={onContinueWalk}
+                  tabIndex={interactive ? 0 : -1}
+                >
+                  Continue your walk
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="cw-v4-btn cw-v4-btn--primary"
+                  onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
+                  tabIndex={interactive ? 0 : -1}
+                >
+                  {section.primaryCta}
+                </button>
+              )}
 
               <a
                 href={section.getAppHref ?? '#pricing'}

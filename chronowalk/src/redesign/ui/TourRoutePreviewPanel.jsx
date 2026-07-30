@@ -1,14 +1,12 @@
 import { useMemo } from 'react'
-import { buildTourRoadmapForContext } from '../../content/tourRoadmap.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
-import { getWaypoint } from '../../content/manifest.js'
+import { getPackRoutePreview } from '../../landing/packRoutePreview.js'
 import { T, F } from '../tokens.js'
-import { titleForWaypoint } from '../lib/waypointPresentation.js'
 import { Eyebrow } from './index.js'
 import TourRouteIllustration from './TourRouteIllustration.jsx'
 
 /**
- * Shared route preview — illustrated roadmap dominates the screen.
+ * Shared route preview — pack poster for known tiers, illustrated roadmap otherwise.
  */
 export default function TourRoutePreviewPanel({
   manifest,
@@ -19,38 +17,43 @@ export default function TourRoutePreviewPanel({
   title,
   subtitle,
 }) {
-  const stops = useMemo(
-    () =>
-      buildTourRoadmapForContext(manifest, {
-        path: context?.path ?? 'a',
-        pace: context?.pace,
-        promotedOptionalIds: context?.promotedOptionalIds ?? [],
-        customWaypointIds: context?.customWaypointIds,
-        sequenceIndex: 0,
-        completedWaypointIds: [],
-      }),
-    [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds],
-  )
+  const pack = useMemo(() => getPackRoutePreview(context?.pace), [context?.pace])
 
   const stopCount = useMemo(() => {
+    if (pack?.marketingStopCount) return pack.marketingStopCount
     if (!manifest) return 0
+    // Own-pace / unknown: prefer catalog marketing count when no custom list.
+    if (context?.pace == null) {
+      return getTourProductTruth(manifest, {
+        path: context?.path ?? 'a',
+        promotedOptionalIds: context?.promotedOptionalIds ?? [],
+        customWaypointIds: context?.customWaypointIds,
+      }).visitStopCount
+    }
     return getTourProductTruth(manifest, {
       path: context?.path ?? 'a',
       pace: context?.pace,
       promotedOptionalIds: context?.promotedOptionalIds ?? [],
       customWaypointIds: context?.customWaypointIds,
     }).visitStopCount
-  }, [manifest, context?.path, context?.pace, context?.promotedOptionalIds, context?.customWaypointIds])
-
-  const firstStopTitle = stops[0] ? titleForWaypoint(getWaypoint(manifest, stops[0].id)) : null
+  }, [
+    pack?.marketingStopCount,
+    manifest,
+    context?.path,
+    context?.pace,
+    context?.promotedOptionalIds,
+    context?.customWaypointIds,
+  ])
 
   const headerEyebrow = eyebrow ?? cityLabel.toUpperCase()
   const headerTitle =
     title ??
     (stopCount > 0 ? `${stopCount} stops · your route` : 'Your route')
   const headerSubtitle =
-    subtitle === undefined && firstStopTitle
-      ? `Starting at ${firstStopTitle} — scroll the map to see every stop in order.`
+    subtitle === undefined
+      ? pack
+        ? pack.tagline
+        : null
       : subtitle
 
   return (
@@ -70,10 +73,23 @@ export default function TourRoutePreviewPanel({
         ) : null}
       </div>
 
-      <div className="cw-route-preview-panel__hero">
+      <div
+        className={`cw-route-preview-panel__hero${pack ? ' cw-route-preview-panel__hero--pack' : ''}`}
+      >
         {loading || !manifest ? (
           <div className="cw-route-preview-panel__loading" style={{ color: T.muted }}>
             Loading route…
+          </div>
+        ) : pack?.cardImage ? (
+          <div className="cw-route-preview-panel__pack" data-testid="route-preview-pack">
+            <img
+              className="cw-route-preview-panel__pack-img"
+              src={pack.cardImage}
+              alt={`${pack.name} route map — ${pack.stopsLabel}`}
+              width={pack.cardWidth}
+              height={pack.cardHeight}
+              decoding="async"
+            />
           </div>
         ) : (
           <TourRouteIllustration manifest={manifest} context={context ?? { path: 'a' }} />

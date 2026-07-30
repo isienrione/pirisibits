@@ -1,4 +1,4 @@
-import { formatWalkingTime } from '../../content/journeyProgress.js'
+import { formatWalkingTime, sanitizeWalkDistanceM } from '../../content/journeyProgress.js'
 
 export function formatPlaybackClock(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
@@ -34,26 +34,67 @@ export function resolveWalkChromeDistanceCopy({
   directionsDurationSec = null,
   locationStatus = null,
   resolveWalkingDistanceCopy,
+  /** Override chrome copy for ride/taxi legs (e.g. Via Appia encore). */
+  etaOverride = null,
 }) {
-  const preferredMeters =
-    typeof directionsDistanceM === 'number' && directionsDistanceM > 0
-      ? directionsDistanceM
-      : liveDistanceM
+  if (etaOverride) {
+    const base = resolveWalkingDistanceCopy(
+      null,
+      estimatedDistanceM,
+      locationStatus,
+    )
+    return {
+      ...base,
+      primary: etaOverride,
+      secondary: null,
+      pending: false,
+      gpsBlocked: false,
+    }
+  }
+
+  const safeLive = sanitizeWalkDistanceM(liveDistanceM)
+  const safeEstimated = sanitizeWalkDistanceM(estimatedDistanceM)
+  const safeDirections = sanitizeWalkDistanceM(directionsDistanceM)
+
+  // Prefer stop→stop estimate when live/directions look like a stale GPS jump
+  // (common when advancing with "I'm here" while still geolocated at an earlier stop).
+  const directionsInflated =
+    typeof safeEstimated === 'number' &&
+    safeEstimated > 0 &&
+    typeof safeDirections === 'number' &&
+    safeDirections > safeEstimated * 1.75
+
+  const liveInflated =
+    typeof safeEstimated === 'number' &&
+    safeEstimated > 0 &&
+    typeof safeLive === 'number' &&
+    safeLive > safeEstimated * 1.75
+
+  const preferredMeters = directionsInflated || liveInflated
+    ? safeEstimated
+    : typeof safeDirections === 'number' && safeDirections > 0
+      ? safeDirections
+      : safeLive
 
   const base = resolveWalkingDistanceCopy(
     preferredMeters,
-    estimatedDistanceM,
+    safeEstimated,
     locationStatus,
   )
 
   if (!base.gpsBlocked && !base.pending) {
-    if (typeof directionsDistanceM === 'number' && directionsDistanceM > 0) {
-      // Prefer a distance-based estimate using the same brisk/range format as
-      // the rest of the app — more consistent than raw Mapbox pedestrian durations
-      // which tend to overestimate for an active tourist pace.
-      const timeCopy = formatWalkingTime(directionsDistanceM)
+    const metersForTime =
+      typeof preferredMeters === 'number' && preferredMeters > 0
+        ? preferredMeters
+        : null
+    if (metersForTime != null) {
+      const timeCopy = formatWalkingTime(metersForTime)
       if (timeCopy) return { ...base, secondary: timeCopy }
-    } else if (typeof directionsDurationSec === 'number' && directionsDurationSec > 0) {
+    } else if (
+      !directionsInflated &&
+      typeof directionsDurationSec === 'number' &&
+      directionsDurationSec > 0
+    ) {
       // Mapbox durations assume a slow pace; scale down ~28 % to match 100 m/min.
       const effectiveSec = Math.round(directionsDurationSec * 0.72)
       const minutes = Math.max(1, Math.round(effectiveSec / 60))
@@ -67,4 +108,11 @@ export function resolveWalkChromeDistanceCopy({
 export function formatRemainingShort(seconds) {
   if (!Number.isFinite(seconds) || seconds <= 0) return '−0:00'
   return `−${formatPlaybackClock(Math.ceil(seconds))}`
+}
+
+/** Avoid “Open the The Colosseum story” when the title already starts with The. */
+export function formatOpenStoryCta(title) {
+  const t = String(title ?? '').trim()
+  if (!t) return 'Open the story →'
+  return /^the\s+/i.test(t) ? `Open ${t} story →` : `Open the ${t} story →`
 }

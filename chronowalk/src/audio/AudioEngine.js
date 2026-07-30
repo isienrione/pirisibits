@@ -1,6 +1,6 @@
 import { MIX_CONFIG } from './mix.config.js'
 import { dbToGain } from './db.js'
-import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl } from './audioUrl.js'
+import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl, resolveSystemUrlAsync } from './audioUrl.js'
 import {
   buildTransitPlan,
   buildWaypointPlan,
@@ -46,6 +46,9 @@ export class AudioEngine {
     this.narrationPlaying = false
     this.playbackGeneration = 0
     this.activeSources = []
+    // Arrival chime/VO oneshots — tracked separately so cancel doesn't kill beds.
+    this.arrivalChimeGeneration = 0
+    this.arrivalSources = []
 
     // Controllable narration session (play/pause/seek/skip across a plan).
     // Narration uses an HTMLAudioElement so iOS can keep playing in background
@@ -1010,13 +1013,144 @@ export class AudioEngine {
   }
 
   /**
+   * Stop an in-flight arrival chime / “Waypoint unlocked!” VO so it cannot
+   * leak into story narration after the walker leaves the arrival moment.
+   */
+  cancelArrivalChime() {
+    this.arrivalChimeGeneration += 1
+    for (const source of this.arrivalSources) {
+      try {
+        if (typeof source.stop === 'function') {
+          source.stop()
+        } else if (typeof source.pause === 'function') {
+          source.pause()
+          source.removeAttribute?.('src')
+          source.src = ''
+          source.load?.()
+        }
+      } catch {
+        // already stopped
+      }
+    }
+    this.arrivalSources = []
+  }
+
+  /**
+   * Arrival cues use HTMLAudioElement (same path as narration) so iOS plays
+   * them with the Ring/Silent switch on Silent — Web Audio BufferSources are muted.
+   */
+  async playArrivalOneShot(filename) {
+    if (!filename) return false
+    const url = await resolveSystemUrlAsync(filename)
+    if (!url) return false
+
+    const audio = this.createAudio?.()
+    if (!audio) return false
+
+    try {
+      audio.preload = 'auto'
+      audio.playsInline = true
+    } catch {
+      // Non-browser test doubles may not support playsInline.
+    }
+
+    this.arrivalSources.push(audio)
+
+    const cleanup = () => {
+      this.arrivalSources = this.arrivalSources.filter((s) => s !== audio)
+      try {
+        audio.removeAttribute?.('src')
+        audio.src = ''
+        audio.load?.()
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      audio.src = url
+      audio.load?.()
+      await new Promise((resolve, reject) => {
+        let settled = false
+        const finish = (ok) => {
+          if (settled) return
+          settled = true
+          audio.removeEventListener('ended', onEnded)
+          audio.removeEventListener('error', onError)
+          if (ok) resolve()
+          else reject(new Error(`Arrival cue failed: ${filename}`))
+        }
+        const onEnded = () => finish(true)
+        const onError = () => finish(false)
+        audio.addEventListener('ended', onEnded)
+        audio.addEventListener('error', onError)
+        void audio.play().catch((error) => {
+          finish(false)
+          console.warn('[audio] arrival cue play blocked', error)
+        })
+      })
+      cleanup()
+      return true
+    } catch {
+      cleanup()
+      return false
+    }
+  }
+
+  /**
    * Pocket-safe arrival alert: notification chime, then “Waypoint unlocked!”.
    * Used for every visit-stop arrival (geofence or manual confirm).
+   * @returns {Promise<boolean>} true when the full sequence finished.
    */
   async playArrivalChime() {
-    await this.playUiCue('arrival')
-    await new Promise((r) => setTimeout(r, 450))
-    await this.playUiCue('arrival_unlocked')
+    const generation = ++this.arrivalChimeGeneration
+    // Drop any prior half-played sequence before starting a fresh one.
+    for (const source of [...this.arrivalSources]) {
+      try {
+        if (typeof source.stop === 'function') {
+          source.stop()
+        } else if (typeof source.pause === 'function') {
+          source.pause()
+        }
+      } catch {
+        // already stopped
+      }
+    }
+    this.arrivalSources = []
+
+    try {
+      // Unlock HTMLAudio on the same gesture path as narration (silent-switch safe).
+      const prime = this.createAudio?.()
+      if (prime) {
+        try {
+          prime.playsInline = true
+          prime.muted = true
+          prime.src =
+            (await resolveSystemUrlAsync(this.manifest?.system?.ui?.arrival)) || ''
+          await prime.play().catch(() => {})
+          prime.pause()
+          prime.muted = false
+        } catch {
+          // ignore priming failures
+        }
+      }
+
+      const arrivalFile = this.manifest?.system?.ui?.arrival
+      const unlockedFile = this.manifest?.system?.ui?.arrival_unlocked
+      const playedArrival = await this.playArrivalOneShot(arrivalFile)
+      if (generation !== this.arrivalChimeGeneration) return false
+
+      if (playedArrival) {
+        await new Promise((r) => setTimeout(r, 450))
+        if (generation !== this.arrivalChimeGeneration) return false
+      }
+
+      const playedUnlocked = await this.playArrivalOneShot(unlockedFile)
+      return generation === this.arrivalChimeGeneration && (playedArrival || playedUnlocked)
+    } catch (error) {
+      console.warn('[audio] playArrivalChime failed', error)
+      return false
+    }
   }
 
   async playCompletionChime() {

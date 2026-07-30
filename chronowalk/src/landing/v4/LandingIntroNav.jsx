@@ -8,9 +8,11 @@ const EXIT_LEAD_MS = 320
 const COMPRESS_MS = 450
 const FALLBACK_MAX_MS = 7000
 const NAV_OFFSET_PX = 68
+const INTRO_PLAYS_KEY = 'cw_landing_intro_plays_v1'
+const INTRO_PLAY_CAP = 2
 
 /**
- * Keynote-style open: muted cinematic plays once on a full-bleed black stage,
+ * Keynote-style open: muted cinematic plays at most twice per browser profile,
  * then dissolves into the fixed nav (same handoff as the old mark intro).
  * After scrolling past the product hero: Get App CTA + obsidian nav chrome.
  */
@@ -21,25 +23,68 @@ function prefersReducedMotion() {
   )
 }
 
+function readIntroPlays() {
+  if (typeof window === 'undefined') return INTRO_PLAY_CAP
+  try {
+    return Math.max(0, Number(window.localStorage.getItem(INTRO_PLAYS_KEY) || 0) || 0)
+  } catch {
+    return INTRO_PLAY_CAP
+  }
+}
+
+function bumpIntroPlays() {
+  if (typeof window === 'undefined') return
+  try {
+    // Dedupe within a single page lifetime so Strict Mode remounts don’t double-count.
+    if (window.sessionStorage?.getItem(`${INTRO_PLAYS_KEY}:session`) === '1') return
+    window.sessionStorage?.setItem(`${INTRO_PLAYS_KEY}:session`, '1')
+    const next = Math.min(INTRO_PLAY_CAP, readIntroPlays() + 1)
+    window.localStorage.setItem(INTRO_PLAYS_KEY, String(next))
+  } catch {
+    /* ignore */
+  }
+}
+
+function shouldPlayIntro() {
+  if (prefersReducedMotion()) return false
+  return readIntroPlays() < INTRO_PLAY_CAP
+}
+
 export default function LandingIntroNav({ onComplete, onGetApp }) {
   const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
   const reduceMotion = prefersReducedMotion()
-  const [phase, setPhase] = useState(() => (prefersReducedMotion() ? 'nav' : 'intro'))
+  const [phase, setPhase] = useState(() => (shouldPlayIntro() ? 'intro' : 'nav'))
   const [pastHero, setPastHero] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const videoRef = useRef(null)
   const exitStarted = useRef(false)
   const bodyOverflowRef = useRef('')
   const completedRef = useRef(false)
+  const playIntroOnMount = useRef(phase === 'intro')
 
+  // Nav handoff — keep separate so intro→compress does not tear down timers.
+  useEffect(() => {
+    if (phase !== 'nav') return undefined
+    if (!completedRef.current) {
+      completedRef.current = true
+      onComplete?.()
+    }
+    return undefined
+  }, [onComplete, phase])
+
+  // One-shot cinematic. Do not depend on `phase`: compress used to re-run this
+  // effect, clear the nav timer in cleanup, then no-op beginCompress forever.
   useEffect(() => {
     if (reduceMotion) {
-      if (!completedRef.current) {
-        completedRef.current = true
-        onComplete?.()
-      }
+      setPhase('nav')
       return undefined
     }
+
+    if (!playIntroOnMount.current) {
+      return undefined
+    }
+
+    bumpIntroPlays()
 
     bodyOverflowRef.current = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -53,10 +98,6 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
     const finishToNav = () => {
       setPhase('nav')
       document.body.style.overflow = bodyOverflowRef.current
-      if (!completedRef.current) {
-        completedRef.current = true
-        onComplete?.()
-      }
     }
 
     const beginCompress = () => {
@@ -115,7 +156,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
       }
       document.body.style.overflow = bodyOverflowRef.current
     }
-  }, [onComplete, reduceMotion])
+  }, [reduceMotion])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -169,32 +210,34 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
 
   return (
     <>
-      <div
-        className={[
-          'cw-v4-intro',
-          videoReady ? 'cw-v4-intro--ready' : '',
-          isCompress ? 'cw-v4-intro--compress' : '',
-          isNav ? 'cw-v4-intro--done' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        aria-hidden={isNav}
-      >
-        <div className="cw-v4-intro__stage">
-          <video
-            ref={videoRef}
-            className="cw-v4-intro__video"
-            src="/landing/intro-open.mp4"
-            poster="/landing/intro-open-poster.jpg"
-            muted
-            playsInline
-            preload="auto"
-            autoPlay
-            tabIndex={-1}
-            aria-hidden="true"
-          />
+      {!isNav || isCompress ? (
+        <div
+          className={[
+            'cw-v4-intro',
+            videoReady ? 'cw-v4-intro--ready' : '',
+            isCompress ? 'cw-v4-intro--compress' : '',
+            isNav ? 'cw-v4-intro--done' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          aria-hidden={isNav}
+        >
+          <div className="cw-v4-intro__stage">
+            <video
+              ref={videoRef}
+              className="cw-v4-intro__video"
+              src="/landing/intro-open.mp4"
+              poster="/landing/intro-open-poster.jpg"
+              muted
+              playsInline
+              preload="auto"
+              autoPlay
+              tabIndex={-1}
+              aria-hidden="true"
+            />
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <header
         className={`cw-v4-nav${isNav || isCompress ? ' cw-v4-nav--visible' : ''}${pastHero ? ' cw-v4-nav--scrolled' : ''}${showGetApp ? ' cw-v4-nav--cta' : ''}`}

@@ -27,6 +27,6 @@ describe('romePacing', () => {
     expect(ROME_ACTS).toHaveLength(7)
     expect(getActForWaypoint('w01')?.title).toBe('The Arena')
     expect(getActForWaypoint('w15')?.title).toBe('The Living City')
-    expect(getActForWaypoint('w22')?.title).toBe('The Long Road')
+    expect(getActForWaypoint('w22')?.title).toBe('Optional Encore')
   })
 })

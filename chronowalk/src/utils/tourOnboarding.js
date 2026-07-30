@@ -53,10 +53,14 @@ export function shouldShowTourRoutePreview(context) {
   return shouldShowTourOnboarding(context)
 }
 
-/** First visit stop — opening waypoint on the active tour itinerary. */
+/**
+ * Opening waypoint on the active tour itinerary (no completed stops yet).
+ * Independent of instruction-card onboarding completion — used for first-stop
+ * directions copy so Colosseum never shows a false “open Google Maps” error.
+ */
 export function isOnFirstTourStop(context, step, manifest = null) {
-  if (!shouldShowTourOnboarding(context)) return false
   if (step?.type !== 'waypoint') return false
+  if (!isFreshTourStart(context)) return false
 
   if (manifest && step.id) {
     const firstId = getTourWaypointIds(manifest, context)[0]

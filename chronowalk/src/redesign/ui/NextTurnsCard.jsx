@@ -71,7 +71,11 @@ export default function NextTurnsCard({
         </p>
       ) : error ? (
         <div className="cw-next-turns-card__status-block">
-          <p className="cw-next-turns-card__status cw-next-turns-card__status--error">{error}</p>
+          <p
+            className={`cw-next-turns-card__status${!onRetry && !externalMapsUrl ? '' : ' cw-next-turns-card__status--error'}`}
+          >
+            {error}
+          </p>
           <div className="cw-next-turns-card__actions">
             {onRetry ? (
               <button type="button" className="cw-next-turns-card__action cw-wc-pressable" onClick={onRetry}>

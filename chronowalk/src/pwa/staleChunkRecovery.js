@@ -24,6 +24,29 @@ export const SHELL_RESET_AT_KEY = 'cw-shell-reset-at'
 /** Ignore further automatic resets within this window. */
 export const SHELL_RESET_COOLDOWN_MS = 2 * 60 * 1000
 
+/** localStorage key — keep in sync with audio/offlinePackage.js (avoid import cycles). */
+const OFFLINE_STATUS_KEY = 'cw_offline_rome_audio_v1'
+
+/**
+ * True when a hard recovery navigation would likely hit Safari’s native
+ * “can’t open without signal” interstitial (or interrupt an in-flight download).
+ * Also defer when an offline package is already on-device — never wipe the SW
+ * just because iOS lied about navigator.onLine during a brief background.
+ */
+export function shouldDeferStaleRecovery() {
+  try {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return true
+    const raw = localStorage.getItem(OFFLINE_STATUS_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw)
+    const status = parsed?.status
+    return status === 'downloading' || status === 'complete'
+  } catch {
+    // Fail closed — better to keep a slightly stale shell than brick Safari offline.
+    return true
+  }
+}
+
 /**
  * @param {unknown} error
  */
@@ -31,17 +54,19 @@ export function isStaleChunkError(error) {
   if (!error) return false
   const message = String(error?.message || error)
   const name = String(error?.name || '')
+  // Do NOT match bare "Failed to fetch" — that fires for Directions/Mapbox/audio
+  // blips and used to hard-navigate into Safari’s offline interstitial.
   return (
     message.includes('Failed to fetch dynamically imported module') ||
     message.includes('Importing a module script failed') ||
     message.includes('error loading dynamically imported module') ||
-    message.includes('Failed to fetch') ||
-    message.includes('Load failed') ||
     message.includes('Loading chunk') ||
     message.includes('Unable to preload CSS') ||
     message.includes("Unexpected token '<'") ||
     message.includes('Expected a JavaScript-or-Wasm module script') ||
     message.includes('MIME type') ||
+    // Safari dynamic-import wording (keep narrow — paired with shouldDeferStaleRecovery).
+    (message === 'Load failed' || message.includes('Load failed for')) ||
     name === 'ChunkLoadError'
   )
 }
@@ -88,6 +113,12 @@ function markShellResetIntent() {
  */
 export async function recoverStaleClient({ force = false, reason = 'stale-shell' } = {}) {
   if (typeof window === 'undefined') {
+    return { recovered: false, reloading: false }
+  }
+
+  // Never navigate away while offline or mid package download — Safari shows
+  // “can’t open this page without a signal” and aborts the Cache API work.
+  if (!force && shouldDeferStaleRecovery()) {
     return { recovered: false, reloading: false }
   }
 
