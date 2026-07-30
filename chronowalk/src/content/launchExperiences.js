@@ -2,7 +2,7 @@ import { TOUR_HERO_PHOTO } from './modernPhotoRegistry.js'
 
 const tourHeroPhoto = TOUR_HERO_PHOTO
 
-/** Screen 6 — experience modes for a launch destination. */
+/** Screen 6 · experience modes for a launch destination. */
 export const ROME_LAUNCH_EXPERIENCES = [
   {
     id: 'classic-split',
@@ -10,7 +10,7 @@ export const ROME_LAUNCH_EXPERIENCES = [
     duration: 'Your pace',
     walkingStyle: 'Forum core, then the city loop',
     description:
-      'A natural order if you want structure — ancient stops first, then the living city. Take a week between chapters if you like.',
+      'A natural order if you want structure · ancient stops first, then the living city. Take a week between chapters if you like.',
     heroImage: tourHeroPhoto,
   },
   {
@@ -19,7 +19,7 @@ export const ROME_LAUNCH_EXPERIENCES = [
     duration: '~8 hours',
     walkingStyle: 'One ambitious circuit',
     description:
-      'Walk the full journey in a single day — for travelers who want every landmark while the light holds.',
+      'Walk the full journey in a single day · for travelers who want every landmark while the light holds.',
     heroImage: '/waypoints/colosseum/exterior/ancient-poster.jpg',
   },
   {
@@ -28,7 +28,7 @@ export const ROME_LAUNCH_EXPERIENCES = [
     duration: 'No limit',
     walkingStyle: 'Pause anytime',
     description:
-      'No schedule, no rush. Return whenever you like — Rome unlocks story by story, on your terms.',
+      'No schedule, no rush. Return whenever you like · Rome unlocks story by story, on your terms.',
     heroImage: '/waypoints/pantheon/ancient-poster.jpg',
   },
 ]

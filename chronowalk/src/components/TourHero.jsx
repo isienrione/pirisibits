@@ -167,7 +167,7 @@ function TourHero({ tour, singleWaypointId, onStartTour }) {
           </div>
 
           <p className="mt-6 text-center text-[0.7rem] leading-relaxed text-muted/90 sm:text-xs">
-            Your tour begins at the Colosseum — walk there to unlock your first story. Location is
+            Your tour begins at the Colosseum · walk there to unlock your first story. Location is
             used only to guide you between stops.
           </p>
         </div>

@@ -39,7 +39,7 @@ export function PwaInstallPanel({
 
           {installed ? (
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Open ChronoWalk from your home screen like any other app — full screen, no browser chrome.
+              Open ChronoWalk from your home screen like any other app · full screen, no browser chrome.
             </p>
           ) : showIosInstructions ? (
             <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -49,7 +49,7 @@ export function PwaInstallPanel({
             </p>
           ) : (
             <p className="mt-2 text-sm leading-relaxed text-muted">
-              Install a home-screen icon that opens ChronoWalk directly — great for tour day when you want
+              Install a home-screen icon that opens ChronoWalk directly · great for tour day when you want
               quick access without typing the URL.
             </p>
           )}
@@ -67,8 +67,8 @@ export function PwaInstallPanel({
 
           {!installed && showIosInstructions && !canPromptInstall ? (
             <p className="mt-3 text-xs leading-relaxed text-muted/90">
-              Tip: if you opened this from Instagram or another app, switch to Safari or Chrome —
-              in-app browsers often hide Add to Home Screen.
+              Tip: if you opened this from Instagram or another app, switch to Safari or Chrome.
+              In-app browsers often hide Add to Home Screen.
             </p>
           ) : null}
 

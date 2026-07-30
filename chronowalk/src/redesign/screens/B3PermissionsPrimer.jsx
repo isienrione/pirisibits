@@ -107,7 +107,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               margin: '0 0 28px',
             }}
           >
-            ChronoWalk uses your location only while you are walking the tour — never in the
+            ChronoWalk uses your location only while you are walking the tour · never in the
             background when the app is closed.
           </p>
 

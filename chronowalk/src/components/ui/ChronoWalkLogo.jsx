@@ -1,6 +1,6 @@
 import { cn } from './cn.js'
 
-/** Official brand assets — see /public/brand/ */
+/** Official brand assets · see /public/brand/ */
 const ASSETS = {
   emblem: {
     dark: '/brand/emblem-dark.png',
@@ -73,7 +73,7 @@ function WordmarkTitle({ variant, className }) {
 }
 
 /**
- * ChronoWalk brand lockup — official raster assets from the brand manual.
+ * ChronoWalk brand lockup · official raster assets from the brand manual.
  *
  * @param {'dark' | 'light'} variant - `dark` on obsidian; `light` on warm ivory surfaces.
  * @param {'horizontal' | 'stacked'} layout - Manual horizontal or stacked lockup.

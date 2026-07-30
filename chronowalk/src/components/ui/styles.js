@@ -1,4 +1,4 @@
-/** Layout helpers — surfaces use bg-ink900 rounded-card inline. */
+/** Layout helpers · surfaces use bg-ink900 rounded-card inline. */
 export const pageShell =
   'h-full overflow-y-auto bg-obsidian pb-[calc(5.5rem+var(--audio-bar-inset,0px)+env(safe-area-inset-bottom))] lg:pb-8'
 

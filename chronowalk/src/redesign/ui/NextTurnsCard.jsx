@@ -1,8 +1,9 @@
 import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
+import { OfflineMediaImg } from '../../components/OfflineMediaImg.jsx'
 
 /**
  * Format a Directions step for the Next turns card.
- * Example: "Exit the Colosseum and turn left — 120 m"
+ * Example: "Exit the Colosseum and turn left · 120 m"
  */
 export function formatNextTurnLine(step) {
   const instruction = String(step?.instruction ?? '').trim() || 'Continue'
@@ -10,7 +11,7 @@ export function formatNextTurnLine(step) {
     typeof step?.distanceM === 'number' && step.distanceM > 0
       ? formatStepDistance(step.distanceM)
       : null
-  return distance ? `${instruction} — ${distance}` : instruction
+  return distance ? `${instruction} · ${distance}` : instruction
 }
 
 /**
@@ -52,7 +53,7 @@ export default function NextTurnsCard({
           <p className="cw-next-turns-card__destination">{destinationTitle}</p>
         </div>
         {destinationPhoto ? (
-          <img
+          <OfflineMediaImg
             className="cw-next-turns-card__thumb"
             src={destinationPhoto}
             alt=""

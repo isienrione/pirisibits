@@ -44,7 +44,7 @@ function currentJourneyStepId(manifest) {
 /**
  * Shared-session group stop for leave detection.
  * Prefer the leader-published session waypoint; when it has not landed yet
- * (common right after session create — pause/resume can still work), fall back
+ * (common right after session create · pause/resume can still work), fall back
  * to this device's current journey step so Continue cannot fail-open.
  */
 function resolveGroupStopId(session, manifest) {
@@ -74,7 +74,7 @@ export function SharedWalkGuardProvider({ children }) {
 
   /**
    * True while a known non-leader bundle member may still be attaching to an
-   * active shared session — must not silently allow waypoint changes.
+   * active shared session · must not silently allow waypoint changes.
    */
   const isFollowerSessionUnresolved = useCallback(() => {
     if (!family) return false
@@ -108,7 +108,7 @@ export function SharedWalkGuardProvider({ children }) {
 
       const manifest = loadRomeManifest()
       const groupStop = resolveGroupStopId(session, manifest)
-      // Synced follower with unknown group stop — fail closed (never silent advance).
+      // Synced follower with unknown group stop · fail closed (never silent advance).
       if (!groupStop) return true
       return destinationWaypointId !== groupStop
     },

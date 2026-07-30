@@ -17,7 +17,7 @@ const DEFAULT_GROUPS = [
     actNum: "III", actName: "The Forum", actId: "act3", color: T.actIII,
     stops: [
       { n: 4,  name: "The Sacred Way",          hook: "The road that built the empire, one triumph at a time.",    dur: "8 min",  photo: viaSacraNow    },
-      { n: 5,  name: "The Temple of Saturn",    hook: "Treasury, prison, gods — all sharing one corner.",          dur: "5 min",  photo: templeSaturnNow    },
+      { n: 5,  name: "The Temple of Saturn",    hook: "Treasury, prison, gods · all sharing one corner.",          dur: "5 min",  photo: templeSaturnNow    },
     ],
   },
   {
@@ -75,7 +75,7 @@ export function C1bRouteSheet({
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 20px 14px", flexShrink: 0 }}>
-          <Eyebrow color={T.actI} hairline>ROUTE — {totalStops} STOPS</Eyebrow>
+          <Eyebrow color={T.actI} hairline>ROUTE · {totalStops} STOPS</Eyebrow>
           {onClose && (
             <button type="button" onClick={onClose} style={{ fontFamily: F.body, fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer" }}>
               Done
@@ -88,7 +88,7 @@ export function C1bRouteSheet({
             <div key={`${group.actNum}-${group.actName}`}>
               <div style={{ padding: "14px 20px 8px" }}>
                 <Eyebrow color={group.color} hairline>
-                  ACT {group.actNum} — {group.actName}
+                  ACT {group.actNum} · {group.actName}
                 </Eyebrow>
               </div>
 

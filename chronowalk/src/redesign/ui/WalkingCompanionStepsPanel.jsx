@@ -2,8 +2,8 @@ import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
 
 /**
  * Turn-by-turn steps for the walking companion (redesign dark theme).
- * `variant="timeline"` — compact "Next turns" list under the map (mock layout).
- * `variant="full"` — detailed steps tab.
+ * `variant="timeline"` · compact "Next turns" list under the map (mock layout).
+ * `variant="full"` · detailed steps tab.
  */
 export default function WalkingCompanionStepsPanel({
   steps = [],

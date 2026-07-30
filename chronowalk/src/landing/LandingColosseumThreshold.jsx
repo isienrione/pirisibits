@@ -1,7 +1,7 @@
 import { LANDING_COLOSSEUM_NOW, LANDING_COLOSSEUM_THEN } from './landingVisualAssets.js'
 
 /**
- * Colosseum then/now threshold visual — matched 3:4 crops with dissolve reveal.
+ * Colosseum then/now threshold visual · matched 3:4 crops with dissolve reveal.
  * Clip-wipes exaggerate viewpoint mismatch; opacity dissolve keeps the beat readable.
  * Keeps legacy `cw-doc-threshold-demo*` classes for phone mockups.
  */

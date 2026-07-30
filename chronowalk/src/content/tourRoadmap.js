@@ -62,7 +62,7 @@ export function buildTourRoadmap(
   })
 }
 
-/** Pace- and selection-aware roadmap — filters to the active tour itinerary. */
+/** Pace- and selection-aware roadmap · filters to the active tour itinerary. */
 export function buildTourRoadmapForContext(
   manifest,
   {
@@ -95,7 +95,7 @@ export function summarizeTourRoadmap(stops) {
   return { completed, total: stops.length }
 }
 
-/** Dynamic headline — e.g. "You've walked the Forum — the Palatine is next." */
+/** Dynamic headline · e.g. "You've walked the Forum · the Palatine is next." */
 export function tourRoadmapHeadline(stops) {
   if (!stops.length) return 'Your Rome route awaits.'
 
@@ -123,5 +123,5 @@ export function tourRoadmapHeadline(stops) {
       ? completed[0].title
       : `${completed[completed.length - 2]?.title} and ${completed[completed.length - 1]?.title}`
 
-  return `You've walked ${recent} — ${next.title} is next.`
+  return `You've walked ${recent} · ${next.title} is next.`
 }

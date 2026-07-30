@@ -1,7 +1,7 @@
 import { T } from '../tokens.js'
 
 /**
- * Concentric pulse rings — water-drop beacon (shared center on dot + rings).
+ * Concentric pulse rings · water-drop beacon (shared center on dot + rings).
  */
 export function PulseRings({ accent = T.actI, variant = 'arrival', count = 3 }) {
   const animation =

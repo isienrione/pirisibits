@@ -11,7 +11,7 @@ export function cleanTransitTrackTitle(title) {
     .trim()
 }
 
-/** Shared C2Transit props — one builder for every transit leg. */
+/** Shared C2Transit props · one builder for every transit leg. */
 export function buildTransitImmersiveProps({
   step,
   manifest,
@@ -29,8 +29,8 @@ export function buildTransitImmersiveProps({
   const transitNote =
     step.record?.note ??
     (rawTitle
-      ? `Listen on the way — ${String(cleanTransitTrackTitle(rawTitle)).replace(/^→\s*/, '')}`
-      : 'The city between stops has its own stories — listen while Rome rolls past.')
+      ? `Listen on the way · ${String(cleanTransitTrackTitle(rawTitle)).replace(/^→\s*/, '')}`
+      : 'The city between stops has its own stories · listen while Rome rolls past.')
   const travelMode = step.record?.travel_mode ?? step.record?.travelMode ?? null
   const etaOverride =
     step.record?.eta_label ??

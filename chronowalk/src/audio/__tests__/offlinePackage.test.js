@@ -73,9 +73,23 @@ describe('offlinePackage', () => {
   it('treats waypoint narration as critical and beds/inserts as optional', () => {
     expect(isCriticalOfflineAudioPath('/rome/audio/narration/w01.mp3')).toBe(true)
     expect(isCriticalOfflineAudioPath('/rome/audio/system/ui_arrival_chime.mp3')).toBe(true)
+    expect(isCriticalOfflineAudioPath('/rome/audio/narration/forum_intro_above.mp3')).toBe(true)
     expect(isCriticalOfflineAudioPath('/rome/audio/beds/bed_antiquity.mp3')).toBe(false)
     expect(isCriticalOfflineAudioPath('/rome/audio/inserts/ins_fire.mp3')).toBe(false)
     expect(isCriticalOfflineAudioPath('/rome/audio/narration/t02.mp3')).toBe(false)
+  })
+
+  it('treats waypoint posters as critical media and reconstruction videos as optional', async () => {
+    const { isCriticalOfflineMediaPath } = await import('../offlinePackage.js')
+    expect(isCriticalOfflineMediaPath('/waypoints/palatine-hill-cluster/modern-poster.jpg')).toBe(
+      true,
+    )
+    expect(
+      isCriticalOfflineMediaPath('/waypoints/circus-maximus/ancient-reconstruction.jpg'),
+    ).toBe(true)
+    expect(
+      isCriticalOfflineMediaPath('/waypoints/palatine-hill-cluster/ancient-reconstruction.mp4'),
+    ).toBe(false)
   })
 
   it('rejects SPA HTML poison instead of treating it as media', () => {

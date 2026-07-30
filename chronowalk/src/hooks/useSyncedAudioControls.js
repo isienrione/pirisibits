@@ -6,11 +6,11 @@ import { useOptionalFamilyWalk } from '../redesign/context/FamilyWalkContext.jsx
  *
  * - Sync OFF → fully autonomous (no publish, ignore remote transport)
  * - Sync ON → anyone can pause-for-all; resume-for-all respects resumePolicy
- * - Remote resume may be blocked by mobile autoplay — surfaces pendingGroupResume
+ * - Remote resume may be blocked by mobile autoplay · surfaces pendingGroupResume
  *
  * Product truth: shared tour progress/session sync, not millisecond audio sync.
  *
- * @param {object} audio — return value of useAudioEngine
+ * @param {object} audio · return value of useAudioEngine
  * @param {{ currentWaypointId?: string|null, onRemoteWaypoint?: (id: string) => void }} [opts]
  */
 export function useSyncedAudioControls(audio, opts = {}) {
@@ -132,7 +132,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
     family?.session?.waypointId,
   ])
 
-  // Leader clock heartbeat while playing — includes current waypoint/stop.
+  // Leader clock heartbeat while playing · includes current waypoint/stop.
   useEffect(() => {
     if (!family?.session || !syncOn || !family.isLeader || !audio?.narrationPlaying) return undefined
     const id = window.setInterval(() => {

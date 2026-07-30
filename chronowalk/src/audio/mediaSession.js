@@ -1,5 +1,5 @@
 /**
- * Media Session helpers — surface narration in iOS Now Playing / Dynamic Island
+ * Media Session helpers · surface narration in iOS Now Playing / Dynamic Island
  * and lock-screen controls while HTML audio keeps playing in the background.
  */
 
@@ -71,6 +71,6 @@ export function updateMediaSession({
     }
     navigator.mediaSession.playbackState = playing ? 'playing' : 'paused'
   } catch {
-    // Ignore Media Session failures — playback still works without the panel.
+    // Ignore Media Session failures · playback still works without the panel.
   }
 }

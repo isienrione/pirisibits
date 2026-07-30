@@ -1,5 +1,5 @@
 /**
- * ChronoWalk purchase unlock email — HTML + plaintext.
+ * ChronoWalk purchase unlock email · HTML + plaintext.
  * Product-specific copy from the server-derived purchase SKU.
  * Never includes device credentials or member invite links.
  */
@@ -57,7 +57,7 @@ export function buildSkuCopy({ productId, seatLimit = null, claimExpiresAt = nul
   const expiry = formatClaimExpiry(claimExpiresAt)
   const oneTime =
     `This access link and code are one-time. They expire on ${expiry}. ` +
-    'If you already used them, or they expired, request a fresh restore email from chronowalk.com/access — do not reuse an old code.'
+    'If you already used them, or they expired, request a fresh restore email from chronowalk.com/access · do not reuse an old code.'
 
   if (isBundleSku(productId)) {
     const cap = Number.isFinite(seats) && seats > 0 ? seats : productId === 'rome-couple' ? 2 : 4
@@ -68,7 +68,7 @@ export function buildSkuCopy({ productId, seatLimit = null, claimExpiresAt = nul
       headline: 'Your shared Rome experience is ready.',
       intro:
         `You purchased ${pack}. Every seat includes all ${BUNDLE_STOPS} Roma Eterna stops. ` +
-        `Your plan covers ${cap} seats total — including you as the organizer.`,
+        `Your plan covers ${cap} seats total · including you as the organizer.`,
       organizerNext:
         `After you unlock with the one-time code below, open Family / Bundle settings in the app to invite or reset members one at a time. ` +
         'We never email member seat credentials or a list of invite links together.',
@@ -98,7 +98,7 @@ export function buildAccessLink(siteUrl, claim) {
 
 export function accessEmailSubject(productId) {
   const pack = packLabel(productId)
-  return pack ? `Your ChronoWalk access — ${pack}` : 'Your ChronoWalk Rome access link'
+  return pack ? `Your ChronoWalk access · ${pack}` : 'Your ChronoWalk Rome access link'
 }
 
 /**
@@ -156,7 +156,7 @@ export function buildAccessEmailText(opts) {
     '',
     'WALK · LISTEN · TIME TRAVEL',
     '',
-    'EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described. Details: https://chronowalk.com/legal/refund',
+    'EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and · where the law allows · you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described. Details: https://chronowalk.com/legal/refund',
   ]
     .filter((line) => line != null && line !== '')
     .join('\n')
@@ -218,7 +218,7 @@ export function buildAccessEmailHtml(opts) {
 </head>
 <body style="margin:0;padding:0;background-color:#050505;color:#f5f0e6;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
-    Your Rome experience is ready — open your ChronoWalk one-time access link.
+    Your Rome experience is ready · open your ChronoWalk one-time access link.
   </div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#050505;margin:0;padding:0;">
     <tr>
@@ -285,7 +285,7 @@ export function buildAccessEmailHtml(opts) {
               </p>
               <img src="${escapeHtml(emblem)}" width="36" height="36" alt="" style="display:inline-block;width:36px;height:36px;border:0;opacity:0.9;" />
               <p style="margin:18px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:1.55;color:#6e675c;text-align:left;">
-                EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and — where the law allows — you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described.
+                EU / UK note: ChronoWalk is digital content delivered immediately. By opening your access link or entering your access code, supply begins and · where the law allows · you lose the usual 14-day cooling-off / withdrawal right for this purchase. This does not affect your rights if the content is faulty or not as described.
                 <a href="${escapeHtml(base)}/legal/refund" style="color:#c9a227;text-decoration:underline;">Refund policy</a>
               </p>
             </td>

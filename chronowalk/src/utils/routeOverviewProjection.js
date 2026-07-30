@@ -1,4 +1,4 @@
-const PADDING = 12
+const PADDING = 28
 
 function collectPoints({ routeCoordinates, stops, userPos }) {
   const points = []
@@ -22,18 +22,18 @@ function collectPoints({ routeCoordinates, stops, userPos }) {
   return points
 }
 
-function projectPoint(point, bounds, width, height) {
+function projectPoint(point, bounds, width, height, padding = PADDING) {
   const x =
     bounds.minLng === bounds.maxLng
       ? width / 2
-      : ((point.lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * (width - PADDING * 2) +
-        PADDING
+      : ((point.lng - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * (width - padding * 2) +
+        padding
 
   const y =
     bounds.minLat === bounds.maxLat
       ? height / 2
-      : (1 - (point.lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * (height - PADDING * 2) +
-        PADDING
+      : (1 - (point.lat - bounds.minLat) / (bounds.maxLat - bounds.minLat)) * (height - padding * 2) +
+        padding
 
   return { x, y }
 }
@@ -44,8 +44,9 @@ function buildBounds(points) {
 
   const latSpan = Math.max(...lats) - Math.min(...lats)
   const lngSpan = Math.max(...lngs) - Math.min(...lngs)
-  const latPad = Math.max(latSpan * 0.12, 0.0008)
-  const lngPad = Math.max(lngSpan * 0.12, 0.0008)
+  // Keep a usable minimum span so a short Forum leg doesn't collapse to a speck.
+  const latPad = Math.max(latSpan * 0.18, 0.0012)
+  const lngPad = Math.max(lngSpan * 0.18, 0.0012)
 
   return {
     minLat: Math.min(...lats) - latPad,
@@ -58,7 +59,7 @@ function buildBounds(points) {
 export function buildLandmarkRouteCoordinates(stops, tour) {
   const orderedIds = tour?.stopIds?.length
     ? tour.stopIds
-  : (stops ?? []).map((stop) => stop.id)
+    : (stops ?? []).map((stop) => stop.id)
 
   return orderedIds
     .map((stopId) => {
@@ -69,6 +70,50 @@ export function buildLandmarkRouteCoordinates(stops, tour) {
     .filter(Boolean)
 }
 
+/** Landmark segment for the current walking leg (previous → destination). */
+export function buildActiveLegCoordinates(stops, activeLeg, userPos = null) {
+  if (!activeLeg) return null
+  const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
+  const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
+  if (from && to) {
+    return [
+      [from.lng, from.lat],
+      [to.lng, to.lat],
+    ]
+  }
+  if (to && userPos?.lat != null && userPos?.lng != null) {
+    return [
+      [userPos.lng, userPos.lat],
+      [to.lng, to.lat],
+    ]
+  }
+  return null
+}
+
+function resolveFocusStops(stops, activeLeg, focus) {
+  if (focus !== 'active-leg') return stops ?? []
+  if (!activeLeg) {
+    return (stops ?? []).filter((stop) => stop.status === 'current' || stop.status === 'upcoming')
+  }
+  const ids = new Set([activeLeg.fromId, activeLeg.toId].filter(Boolean))
+  const focused = (stops ?? []).filter((stop) => ids.has(stop.id))
+  if (focused.length) return focused
+  return (stops ?? []).filter((stop) => stop.status === 'current' || stop.status === 'upcoming')
+}
+
+/**
+ * @param {{
+ *   tour?: object,
+ *   stops?: object[],
+ *   routeCoordinates?: number[][],
+ *   activeLeg?: { fromId?: string, toId?: string } | null,
+ *   transitLegActive?: boolean,
+ *   userPos?: { lat: number, lng: number } | null,
+ *   width?: number,
+ *   height?: number,
+ *   focus?: 'tour' | 'active-leg',
+ * }} options
+ */
 export function buildRouteOverviewModel({
   tour,
   stops = [],
@@ -78,25 +123,33 @@ export function buildRouteOverviewModel({
   userPos,
   width = 360,
   height = 220,
+  focus = 'tour',
 }) {
-  const fullRoute = routeCoordinates?.length
-    ? routeCoordinates
-    : buildLandmarkRouteCoordinates(stops, tour)
+  const landmarkTour = buildLandmarkRouteCoordinates(stops, tour)
+  const fullRoute = routeCoordinates?.length ? routeCoordinates : landmarkTour
 
+  const landmarkLeg = buildActiveLegCoordinates(stops, activeLeg, userPos)
+  // Prefer provided route coords when they already describe the active walk;
+  // otherwise always synthesize previous → destination for walking frames.
   const activeRoute =
-    transitLegActive && activeLeg
-      ? (() => {
-          const from = stops.find((stop) => stop.id === activeLeg.fromId)?.landmark
-          const to = stops.find((stop) => stop.id === activeLeg.toId)?.landmark
-          if (!from || !to) return null
-          return [
-            [from.lng, from.lat],
-            [to.lng, to.lat],
-          ]
-        })()
-      : null
+    focus === 'active-leg'
+      ? routeCoordinates?.length >= 2
+        ? routeCoordinates
+        : landmarkLeg
+      : transitLegActive && landmarkLeg
+        ? landmarkLeg
+        : null
 
-  const points = collectPoints({ routeCoordinates: fullRoute, stops, userPos })
+  const focusStops = resolveFocusStops(stops, activeLeg, focus)
+  const frameRoute =
+    focus === 'active-leg' ? activeRoute ?? fullRoute : fullRoute
+
+  const points = collectPoints({
+    routeCoordinates: frameRoute,
+    stops: focusStops,
+    userPos,
+  })
+
   if (!points.length) {
     return {
       width,
@@ -105,25 +158,35 @@ export function buildRouteOverviewModel({
       activeRoutePath: '',
       stops: [],
       userPoint: null,
+      focus,
     }
   }
 
   const bounds = buildBounds(points)
 
-  const toPath = (coordinates) =>
-    (coordinates ?? [])
+  const toPath = (coordinates) => {
+    const coords = (coordinates ?? []).filter(
+      (coordinate) =>
+        Array.isArray(coordinate) &&
+        coordinate.length >= 2 &&
+        Number.isFinite(coordinate[0]) &&
+        Number.isFinite(coordinate[1]),
+    )
+    if (coords.length < 2) return ''
+    return coords
       .map((coordinate, index) => {
         const projected = projectPoint(
           { lat: coordinate[1], lng: coordinate[0] },
           bounds,
           width,
-          height
+          height,
         )
         return `${index === 0 ? 'M' : 'L'} ${projected.x.toFixed(2)} ${projected.y.toFixed(2)}`
       })
       .join(' ')
+  }
 
-  const projectedStops = (stops ?? [])
+  const projectedStops = focusStops
     .filter((stop) => stop?.landmark)
     .map((stop) => ({
       id: stop.id,
@@ -140,9 +203,10 @@ export function buildRouteOverviewModel({
   return {
     width,
     height,
-    fullRoutePath: toPath(fullRoute),
-    activeRoutePath: activeRoute ? toPath(activeRoute) : '',
+    fullRoutePath: focus === 'active-leg' ? '' : toPath(fullRoute),
+    activeRoutePath: toPath(activeRoute ?? (focus === 'active-leg' ? frameRoute : null)),
     stops: projectedStops,
     userPoint,
+    focus,
   }
 }

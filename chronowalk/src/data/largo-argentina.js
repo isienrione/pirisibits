@@ -2,7 +2,7 @@ export const LARGO_ARGENTINA = { lat: 41.89528, lng: 12.47694 }
 
 /** Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=largo-argentina */
 
-/** Street level at Area Sacra — Theatre of Pompey / Curia (Caesar assassination site). */
+/** Street level at Area Sacra · Theatre of Pompey / Curia (Caesar assassination site). */
 export const LARGO_ARGENTINA_VIEWPOINT = {
   lat: 41.89555,
   lng: 12.47665,
@@ -35,7 +35,7 @@ export const LARGO_ARGENTINA_WAYPOINT = {
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Largo Argentina!",
   arrival_subtitle:
-    'Beneath the cats and columns lie Pompey\'s theatre — and the room where Caesar fell.',
+    'Beneath the cats and columns lie Pompey\'s theatre · and the room where Caesar fell.',
   immersive_orientation_hint:
     'Stand at the railing overlooking the sunken temples, then begin the immersive view.',
   lat: LARGO_ARGENTINA.lat,

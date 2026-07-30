@@ -1,6 +1,6 @@
 const REFLECTION_SENTENCES = {
   colosseum:
-    'For four centuries, this arena held the breath of an empire — and the lives of those who entered it.',
+    'For four centuries, this arena held the breath of an empire · and the lives of those who entered it.',
   pantheon:
     'For nearly two thousand years, this dome remained the largest on Earth.',
   default:

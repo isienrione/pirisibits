@@ -34,5 +34,15 @@ export function clearCachedMedia() {
 export function mediaUrl(path) {
   if (!path) return null
   if (blobCache.has(path)) return blobCache.get(path)
+  // Threshold/C6 often receive absolute CDN URLs after resolvePhotoUrl; offline
+  // blobs are keyed by the manifest path (`/waypoints/...`).
+  try {
+    if (/^https?:\/\//i.test(path)) {
+      const pathname = new URL(path).pathname
+      if (pathname && blobCache.has(pathname)) return blobCache.get(pathname)
+    }
+  } catch {
+    // ignore bad URLs
+  }
   return resolveNetworkMediaUrl(path)
 }

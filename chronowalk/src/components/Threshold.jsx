@@ -20,10 +20,10 @@ import ThresholdSourceBadge, {
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
 
 const REVEAL_COMPLETE = 0.98
-/** Short single-tap threshold — gestures shorter than this are treated as taps, not holds. */
+/** Short single-tap threshold · gestures shorter than this are treated as taps, not holds. */
 const SHORT_TAP_MS = 260
 
-/** Shared framing for both eras — same box, same scale, minimal crop. */
+/** Shared framing for both eras · same box, same scale, minimal crop. */
 const THRESHOLD_LAYER_CONTAIN = {
   position: 'absolute',
   inset: 0,
@@ -63,8 +63,55 @@ function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, imm
 
 function ThresholdLayerImage({ src, alt, className, style }) {
   const [failed, setFailed] = useState(false)
+  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const hydrateGeneration = useRef(0)
 
-  if (!src || failed) {
+  useEffect(() => {
+    setFailed(false)
+    setResolvedSrc(src)
+    const generation = ++hydrateGeneration.current
+    if (!src || String(src).startsWith('blob:')) return undefined
+
+    let cancelled = false
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (cancelled || generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
+  const handleError = useCallback(() => {
+    const generation = hydrateGeneration.current
+    if (!src || String(resolvedSrc).startsWith('blob:')) {
+      setFailed(true)
+      return
+    }
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
+      })
+      .catch(() => {
+        if (generation === hydrateGeneration.current) setFailed(true)
+      })
+  }, [src, resolvedSrc])
+
+  if (!resolvedSrc || failed) {
     return (
       <div
         className={className}
@@ -80,12 +127,12 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 
   return (
     <img
-      src={src}
+      src={resolvedSrc}
       alt={alt ?? ''}
       className={className}
       style={{ ...style, pointerEvents: 'none' }}
       draggable={false}
-      onError={() => setFailed(true)}
+      onError={handleError}
     />
   )
 }
@@ -94,12 +141,29 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
   const [resolvedSrc, setResolvedSrc] = useState(src)
-  const hydrateAttempted = useRef(false)
+  const hydrateGeneration = useRef(0)
 
   useEffect(() => {
     setFailed(false)
     setResolvedSrc(src)
-    hydrateAttempted.current = false
+    const generation = ++hydrateGeneration.current
+    if (!src || String(src).startsWith('blob:')) return undefined
+
+    let cancelled = false
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (cancelled || generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
   }, [src])
 
   useEffect(() => {
@@ -109,7 +173,7 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     if (playing) {
       const playPromise = video.play()
       if (playPromise?.catch) {
-        // AbortError = browser interrupted play (e.g. src changed) — not a real failure.
+        // AbortError = browser interrupted play (e.g. src changed) · not a real failure.
         // Other transient errors should not permanently fall back to static.
         playPromise.catch((err) => {
           if (err?.name !== 'AbortError') {
@@ -123,23 +187,26 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
   }, [playing, failed, resolvedSrc])
 
   const handleError = useCallback(() => {
-    if (!hydrateAttempted.current && src && !String(src).startsWith('blob:')) {
-      hydrateAttempted.current = true
-      void import('../audio/offlinePackage.js')
-        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-        .then((blobUrl) => {
-          if (blobUrl) {
-            setResolvedSrc(blobUrl)
-            setFailed(false)
-            return
-          }
-          setFailed(true)
-        })
-        .catch(() => setFailed(true))
+    const generation = hydrateGeneration.current
+    if (!src || String(resolvedSrc).startsWith('blob:')) {
+      setFailed(true)
       return
     }
-    setFailed(true)
-  }, [src])
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
+      })
+      .catch(() => {
+        if (generation === hydrateGeneration.current) setFailed(true)
+      })
+  }, [src, resolvedSrc])
 
   if (!resolvedSrc || failed) {
     return (
@@ -197,7 +264,7 @@ function fireHoldHaptic() {
 }
 
 /**
- * Press-and-hold time crossing — signature ChronoWalk interaction.
+ * Press-and-hold time crossing · signature ChronoWalk interaction.
  * Single canonical implementation for journey, preview, and landing demo.
  */
 export default function Threshold({
@@ -427,7 +494,7 @@ export default function Threshold({
     [active, latchToThen, onHoldEnd, reducedMotion, releaseToNow],
   )
 
-  // Optional first-visit auto-peek — teach by showing, not telling.
+  // Optional first-visit auto-peek · teach by showing, not telling.
   useEffect(() => {
     if (demoAutoReveal) return undefined
     if (!autoPeek || !active || !reconstruction || reducedMotion) return undefined
@@ -466,7 +533,7 @@ export default function Threshold({
     }
   }, [active, animateReveal, autoPeek, demoAutoReveal, reconstruction, reducedMotion])
 
-  // Landing product demo — full hold cycle on a loop (non-interactive teach).
+  // Landing product demo · full hold cycle on a loop (non-interactive teach).
   useEffect(() => {
     if (!demoAutoReveal || !active || !reconstruction || reducedMotion) return undefined
 
@@ -709,7 +776,7 @@ export default function Threshold({
   // Modern (now) and ancient (then) share the same framing so mismatched
   // source aspect ratios (e.g. Curia landscape reconstruction on a portrait
   // NOW photo) do not letterbox one era while the other fills the frame.
-  // Immersive uses cover; non-immersive uses contain — both eras match.
+  // Immersive uses cover; non-immersive uses contain · both eras match.
   const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
   const thenLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
 

@@ -41,12 +41,17 @@ describe('OfflineRouteMap', () => {
     expect(screen.getByLabelText(/simplified tour route overview/i)).toBeInTheDocument()
   })
 
-  it('renders a compact sketch for the walking companion slot', () => {
+  it('renders a compact sketch framed on the active walking leg', () => {
     render(
       <OfflineRouteMap
         tour={{ id: 'rome-core', stopIds: ['colosseum', 'roman-forum'] }}
-        stops={stops}
-        activeTargetId="colosseum"
+        stops={[
+          { ...stops[0], status: 'completed' },
+          { ...stops[1], status: 'current' },
+        ]}
+        activeTargetId="roman-forum"
+        activeLeg={{ fromId: 'colosseum', toId: 'roman-forum' }}
+        transitLegActive
         userPos={{ lat: 41.8898, lng: 12.4915 }}
         state={JOURNEY_STATE.TRANSIT}
         distance={180}
@@ -55,6 +60,9 @@ describe('OfflineRouteMap', () => {
     )
 
     expect(screen.getByTestId('offline-route-map-compact')).toBeInTheDocument()
-    expect(screen.getByText(/offline route sketch/i)).toBeInTheDocument()
+    const svg = screen.getByLabelText(/simplified tour route overview/i)
+    const path = svg.querySelector('path')
+    expect(path?.getAttribute('d') || '').toMatch(/L /)
+    expect(screen.getAllByText(/Colosseum|Roman Forum/).length).toBeGreaterThan(0)
   })
 })

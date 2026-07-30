@@ -18,7 +18,7 @@ export default function D1Map({ embedded = false }) {
     { id: "ENC", color: T.encore, label: "Enc" },
   ];
 
-  // Route polyline — 7 act segments sharing endpoints
+  // Route polyline · 7 act segments sharing endpoints
   const segments = [
     { act:"I",   color: T.actI,   d:"M 308 655 Q 296 642 285 630 Q 272 616 262 604" },
     { act:"II",  color: T.actII,  d:"M 262 604 Q 250 592 238 580 Q 228 570 218 560" },
@@ -29,7 +29,7 @@ export default function D1Map({ embedded = false }) {
     { act:"ENC", color: T.encore, d:"M 112 250 Q 98 248 88 247 Q 83 246 78 245" },
   ];
 
-  // Waypoints — status: done / current / ahead
+  // Waypoints · status: done / current / ahead
   const waypoints = [
     { id:0, name:"The Colosseum",       act:"I",   color:T.actI,   status:"done",    x:308, y:655, hook:"Fifty thousand witnesses, zero exits for gladiators.", dist:"0.0 km", photo:colosseumNow  },
     { id:1, name:"Arch of Constantine", act:"I",   color:T.actI,   status:"done",    x:285, y:630, hook:"Three emperors, one arch, not all remembered fondly.",   dist:"0.3 km", photo:archTitusNow  },
@@ -55,23 +55,23 @@ export default function D1Map({ embedded = false }) {
       onClick={() => setSelectedPin(null)}
     >
       {/* ──────────────────────────────────────────────────────────────── */}
-      {/* CUSTOM MAP SVG — warm desaturated bone/stone tile               */}
+      {/* CUSTOM MAP SVG · warm desaturated bone/stone tile               */}
       {/* ──────────────────────────────────────────────────────────────── */}
       <svg
         viewBox="0 0 390 844"
         preserveAspectRatio="xMidYMid slice"
         style={{ position:"absolute", inset:0, display:"block", width:"100%", height:"100%" }}
       >
-        {/* Base — warm road-surface sand */}
+        {/* Base · warm road-surface sand */}
         <rect width="390" height="844" fill="#EFE7D2"/>
 
-        {/* ── Tiber river — filled path for natural bank shape ── */}
+        {/* ── Tiber river · filled path for natural bank shape ── */}
         <path
           d="M 42 0 C 40 80 46 160 50 240 C 54 310 60 370 57 450 C 53 530 58 610 62 690 C 65 750 67 800 65 844
              L 88 844 C 86 800 84 750 81 690 C 77 610 82 530 78 450 C 75 370 80 310 84 240 C 88 160 90 80 88 0 Z"
           fill="#B4CAD8"
         />
-        {/* River highlight — lighter inner */}
+        {/* River highlight · lighter inner */}
         <path
           d="M 50 0 C 48 80 52 160 56 240 C 60 310 65 370 62 450 C 58 530 62 610 66 690 C 69 750 71 800 69 844
              L 82 844 C 80 800 78 750 75 690 C 71 610 75 530 71 450 C 68 370 73 310 77 240 C 81 160 83 80 81 0 Z"
@@ -79,9 +79,9 @@ export default function D1Map({ embedded = false }) {
         />
 
         {/* ── City block district fills ── */}
-        {/* SE — Celio & Colosseum district */}
+        {/* SE · Celio & Colosseum district */}
         <polygon points="390,844 390,440 348,404 305,410 272,468 255,530 258,590 300,660 355,755 390,800" fill="#E6DBc6"/>
-        {/* East — Esquilino */}
+        {/* East · Esquilino */}
         <polygon points="390,0 390,440 348,404 315,364 295,298 298,225 322,172 360,125 390,90" fill="#E6DBc6"/>
         {/* Centro Storico */}
         <polygon points="248,560 272,468 255,412 230,372 200,354 174,362 170,402 162,462 162,490 175,522 218,560" fill="#E4D8C2"/>
@@ -93,7 +93,7 @@ export default function D1Map({ embedded = false }) {
         <polygon points="88,0 120,0 148,120 140,205 128,260 115,295 105,332 100,380 95,430 90,510 86,600 83,700 82,844 65,844 65,700 62,610 57,450 60,370 54,240 50,160 48,80 46,0" fill="#E2D6C0"/>
 
         {/* ── Green areas ── */}
-        {/* Palatine Hill — terraced green oval */}
+        {/* Palatine Hill · terraced green oval */}
         <ellipse cx="268" cy="625" rx="50" ry="38" fill="#C9D8AA" opacity="0.82"/>
         <ellipse cx="268" cy="625" rx="38" ry="28" fill="#D2E0B4" opacity="0.5"/>
         {/* Celio gardens */}
@@ -104,13 +104,13 @@ export default function D1Map({ embedded = false }) {
         <ellipse cx="218" cy="318" rx="18" ry="13" fill="#CEDBAC" opacity="0.7"/>
 
         {/* ── Major road corridors (lighter stripes than blocks) ── */}
-        {/* Via dei Fori Imperiali — the ancient processional road */}
+        {/* Via dei Fori Imperiali · the ancient processional road */}
         <path d="M 314 670 L 248 590 L 180 510 L 163 482" stroke="#E8E0CE" strokeWidth="16" fill="none" strokeLinecap="round"/>
         {/* Via Sacra through Forum */}
         <path d="M 248 590 L 230 572 L 215 558 L 195 540" stroke="#EAE2D0" strokeWidth="9" fill="none" strokeLinecap="round"/>
-        {/* Lungotevere — road along Tiber east bank */}
+        {/* Lungotevere · road along Tiber east bank */}
         <path d="M 90 0 Q 94 200 90 400 Q 86 600 92 844" stroke="#E8E0CC" strokeWidth="13" fill="none"/>
-        {/* Via del Corso — N/S through center */}
+        {/* Via del Corso · N/S through center */}
         <path d="M 232 242 Q 228 310 220 380 Q 214 430 210 468" stroke="#EAE2D0" strokeWidth="8" fill="none" strokeLinecap="round"/>
         {/* Via Nazionale */}
         <path d="M 248 458 Q 238 390 226 330 Q 220 298 215 268" stroke="#EAE2D0" strokeWidth="8" fill="none" strokeLinecap="round"/>
@@ -122,14 +122,14 @@ export default function D1Map({ embedded = false }) {
         <path d="M 115 338 Q 145 332 175 328 Q 205 325 228 328" stroke="#EDE5D3" strokeWidth="5" fill="none"/>
 
         {/* ── Landmark outlines ── */}
-        {/* Colosseum — double oval */}
+        {/* Colosseum · double oval */}
         <ellipse cx="308" cy="660" rx="26" ry="20" fill="#E2D6C0" stroke="#C2B09A" strokeWidth="2.5"/>
         <ellipse cx="308" cy="660" rx="17" ry="13" fill="#EDE5D5"/>
-        {/* Pantheon — circle */}
+        {/* Pantheon · circle */}
         <circle cx="135" cy="388" r="11" fill="#E2D6C0" stroke="#C2B09A" strokeWidth="2"/>
         {/* Castel Sant'Angelo */}
         <circle cx="78" cy="245" r="9" fill="#E2D6C0" stroke="#C2B09A" strokeWidth="2"/>
-        {/* Piazza Navona — slender oval */}
+        {/* Piazza Navona · slender oval */}
         <ellipse cx="115" cy="350" rx="8" ry="18" fill="none" stroke="#C2B09A" strokeWidth="1.5"/>
 
         {/* ── Act-gradient route polyline ── */}
@@ -195,7 +195,7 @@ export default function D1Map({ embedded = false }) {
           );
         })}
 
-        {/* ── User location dot — warm-white with ember halo ── */}
+        {/* ── User location dot · warm-white with ember halo ── */}
         <circle cx="242" cy="586" r="8" fill={T.warmWhite} stroke={T.warmWhite} strokeWidth="2"/>
         <circle cx="242" cy="586" r="14" fill="none" stroke={T.ember} strokeWidth="1.5" opacity="0.55"
           style={{ animation:"presencePulse 2.5s ease-in-out infinite" }}/>
@@ -234,8 +234,8 @@ export default function D1Map({ embedded = false }) {
         })}
       </div>
 
-      {/* ── Bottom controls — sit above tab bar ── */}
-      {/* "Start from where I am" — bottom-left */}
+      {/* ── Bottom controls · sit above tab bar ── */}
+      {/* "Start from where I am" · bottom-left */}
       <button
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, left:20, zIndex:22,
@@ -251,7 +251,7 @@ export default function D1Map({ embedded = false }) {
         Start from where I am
       </button>
 
-      {/* Recenter icon — bottom-right */}
+      {/* Recenter icon · bottom-right */}
       <button
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, right:20, zIndex:22,
@@ -273,7 +273,7 @@ export default function D1Map({ embedded = false }) {
         </svg>
       </button>
 
-      {/* ── Pin preview sheet — slides up on tap ── */}
+      {/* ── Pin preview sheet · slides up on tap ── */}
       {sel && (
         <div
           style={{
@@ -302,7 +302,7 @@ export default function D1Map({ embedded = false }) {
             <div style={{ flex:1 }}>
               {/* Act eyebrow */}
               <Eyebrow color={sel.color}>ACT {sel.act}</Eyebrow>
-              {/* Name — Fraunces 20 */}
+              {/* Name · Fraunces 20 */}
               <p style={{
                 fontFamily:F.display, fontSize:20,
                 color:T.ink, lineHeight:1.2, marginTop:4, marginBottom:4,

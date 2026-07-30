@@ -6,7 +6,7 @@ export default function C3Approaching({
   accent = T.actI,
   title = 'The Colosseum',
   photo = colosseumNow,
-  approachLine = 'The stones are close now — let the city slow you down.',
+  approachLine = 'The stones are close now · let the city slow you down.',
   progressPct = 35,
   subtitle = 'almost there',
   onArrive,
@@ -193,7 +193,7 @@ export default function C3Approaching({
               textAlign: 'center',
             }}
           >
-            The satellites are being shy — tap when you&apos;ve reached it.
+            The satellites are being shy · tap when you&apos;ve reached it.
           </p>
         ) : null}
       </div>

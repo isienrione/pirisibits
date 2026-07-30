@@ -127,7 +127,7 @@ export default function SettingsGuidancePanel() {
         title="Reduced motion"
         description={
           reducedMotion
-            ? 'Your device prefers reduced motion — animations are softened.'
+            ? 'Your device prefers reduced motion · animations are softened.'
             : 'Full motion is enabled for arrivals and transitions.'
         }
         value={reducedMotion ? 'On' : 'Off'}

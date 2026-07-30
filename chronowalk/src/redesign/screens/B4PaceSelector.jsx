@@ -358,7 +358,7 @@ export default function B4PaceSelector({
           }}
         >
           {activeIndex != null && activeIndex >= 0
-            ? `Begin — ${options[activeIndex].title}`
+            ? `Begin · ${options[activeIndex].title}`
             : 'Select a tour'}
         </button>
       </div>

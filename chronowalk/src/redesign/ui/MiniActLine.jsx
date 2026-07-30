@@ -1,4 +1,4 @@
-/** Dashed act-accent route line — separator between Journal act groups */
+/** Dashed act-accent route line · separator between Journal act groups */
 export function MiniActLine({ color }) {
   return (
     <div style={{ padding: '12px 20px 4px' }}>

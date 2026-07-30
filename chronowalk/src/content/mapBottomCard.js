@@ -73,7 +73,7 @@ export function resolveMapBottomCard({
     return {
       stateId: MAP_BOTTOM_CARD_STATES.OFF_ROUTE,
       title: "Looks like we've wandered a little",
-      meta: 'No matter — Rome rewards wandering.',
+      meta: 'No matter · Rome rewards wandering.',
       ctaLabel: 'Back to route',
       ctaAction: MAP_BOTTOM_CTA.BACK_TO_ROUTE,
       landmark,

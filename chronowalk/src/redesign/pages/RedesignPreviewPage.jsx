@@ -144,7 +144,7 @@ export default function RedesignPreviewPage() {
     setCheckoutBusy(false)
     setConsentOpen(false)
     if (result.ok) return
-    // Purchase path only — never mix unlock with access-code entry.
+    // Purchase path only · never mix unlock with access-code entry.
     navigate('/landing#pricing')
   }
 

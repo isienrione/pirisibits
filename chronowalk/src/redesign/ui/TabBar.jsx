@@ -1,6 +1,6 @@
 import { T, F } from '../tokens.js'
 
-/** Three-tab EXPLORER bar — Journey · Map · Journal */
+/** Three-tab EXPLORER bar · Journey · Map · Journal */
 export function TabBar({ active = 'JOURNEY', onChange }) {
   const tabs = ['JOURNEY', 'MAP', 'JOURNAL']
 

@@ -1,4 +1,4 @@
-/** ChronoWalk design tokens — JS mirror for Tailwind and inline styles. */
+/** ChronoWalk design tokens · JS mirror for Tailwind and inline styles. */
 
 /** Launch-flow explorer palette (ivory/bronze editorial surfaces). */
 export const palette = {
@@ -19,7 +19,7 @@ export const palette = {
   skyBlue: '#7CB7D8',
 }
 
-/** Role-based aliases — prefer these in new UI code. */
+/** Role-based aliases · prefer these in new UI code. */
 export const semantic = {
   surfaceImmersive: palette.obsidian,
   surfaceEditorial: palette.ivory,

@@ -47,7 +47,7 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return
-      // Never poke SW update while offline — a failed update path has triggered
+      // Never poke SW update while offline · a failed update path has triggered
       // shell wipes that land Safari on its native “no signal” interstitial.
       if (typeof navigator !== 'undefined' && navigator.onLine === false) return
       navigator.serviceWorker.getRegistration()?.then((reg) => reg?.update())
@@ -63,7 +63,7 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
   const activateUpdate = () => {
     pendingReload = true
     updateServiceWorker?.(true)
-    // iOS home-screen PWAs sometimes skip controllerchange — nudge a reload.
+    // iOS home-screen PWAs sometimes skip controllerchange · nudge a reload.
     if (typeof window !== 'undefined') {
       window.setTimeout(() => {
         if (pendingReload) scheduleReload()

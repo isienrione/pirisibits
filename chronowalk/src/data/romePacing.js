@@ -120,7 +120,7 @@ export const ROME_ACTS = [
     title: 'Optional Encore',
     waypoints: ['w22'],
     entry: 'Optional Encore › Via Appia Antica',
-    promise: 'Estimated 30 min drive — walk where legions and merchants left Rome.',
+    promise: 'Estimated 30 min drive · walk where legions and merchants left Rome.',
   },
 ]
 

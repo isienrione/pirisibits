@@ -18,9 +18,9 @@ export default function DevGeofenceHud({ geoTarget, geo }) {
       <p className="cw-dev-geofence-hud__title">Santiago GPS test active</p>
       <p className="cw-dev-geofence-hud__line">{label}</p>
       <p className="cw-dev-geofence-hud__line">
-        Distance {geo.distance != null ? `${Math.round(geo.distance)} m` : '—'}
+        Distance {geo.distance != null ? `${Math.round(geo.distance)} m` : '-'}
         {' · '}
-        Accuracy {geo.accuracy != null ? `${Math.round(geo.accuracy)} m` : '—'}
+        Accuracy {geo.accuracy != null ? `${Math.round(geo.accuracy)} m` : '-'}
         {' · '}
         {geo.insideGeofence ? 'Inside geofence' : 'Outside geofence'}
       </p>

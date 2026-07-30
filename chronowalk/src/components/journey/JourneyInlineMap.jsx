@@ -65,7 +65,7 @@ export default function JourneyInlineMap({
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
   // Prefer the cached vector style whenever signal is weak OR we already
-  // persisted Rome map tiles — satellite tiles are not offline-cached.
+  // persisted Rome map tiles · satellite tiles are not offline-cached.
   // When fully offline, TourMap skips Mapbox Standard and uses OfflineRouteMap.
   const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
   const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle || isOffline)

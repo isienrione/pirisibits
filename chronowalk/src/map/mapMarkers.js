@@ -1,5 +1,5 @@
 /**
- * ChronoWalk map HTML markers — dark pills with landmark glyphs + labels,
+ * ChronoWalk map HTML markers · dark pills with landmark glyphs + labels,
  * and a gold pulsing user-location ring for satellite readability.
  */
 

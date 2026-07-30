@@ -16,7 +16,7 @@ export default function C1bStandalone() {
           </div>
         </div>
       </div>
-      {/* The sheet — always open */}
+      {/* The sheet · always open */}
       <C1bRouteSheet />
     </div>
   );

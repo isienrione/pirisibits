@@ -10,7 +10,7 @@ function resolvePlaceCount(destination) {
   return getTourProductTruth(manifest).publicPlaceCount
 }
 
-/** Launch destination cards — Screen 2 Tour Selection. */
+/** Launch destination cards · Screen 2 Tour Selection. */
 export const LAUNCH_DESTINATIONS = [
   {
     id: 'rome',
@@ -18,7 +18,7 @@ export const LAUNCH_DESTINATIONS = [
     subtitle: 'The eternal city',
     placeCount: 23,
     description:
-      'Emperors, temples, and triumphs — restored on the streets where history was made.',
+      'Emperors, temples, and triumphs · restored on the streets where history was made.',
     heroImage: tourHeroPhoto,
     available: true,
   },
@@ -38,7 +38,7 @@ export const LAUNCH_DESTINATIONS = [
     subtitle: 'Frozen in time',
     placeCount: 12,
     description:
-      'Walk the streets of a Roman city preserved beneath the ash — life stopped, then revealed.',
+      'Walk the streets of a Roman city preserved beneath the ash · life stopped, then revealed.',
     heroImage: '/destinations/pompeii-hero.jpg',
     available: false,
   },

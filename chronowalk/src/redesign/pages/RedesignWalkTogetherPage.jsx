@@ -6,7 +6,7 @@ import WalkTogetherPanel from '../ui/WalkTogetherPanel.jsx'
 import { T, F } from '../tokens.js'
 
 /**
- * Persistent Couple/Family management screen — reachable after onboarding.
+ * Persistent Couple/Family management screen · reachable after onboarding.
  * Primary action returns to the active walk; secondary returns to Settings.
  */
 export default function RedesignWalkTogetherPage() {

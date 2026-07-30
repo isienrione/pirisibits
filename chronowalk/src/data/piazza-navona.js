@@ -4,7 +4,7 @@ export const PIAZZA_NAVONA = { lat: 41.89918, lng: 12.47306 }
 
 /**
  * South edge of the oval piazza, facing north toward Bernini's central fountain.
- * Ancient layer: Stadium of Domitian (Circus Agonalis) — same camera, era swap only.
+ * Ancient layer: Stadium of Domitian (Circus Agonalis) · same camera, era swap only.
  *
  * Street View scout: walk from Corso del Rinascimento into the piazza until
  * the baroque facades and fountain fill the frame (compact_piazza band).
@@ -42,7 +42,7 @@ export const PIAZZA_NAVONA_WAYPOINT = {
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Piazza Navona!",
   arrival_subtitle:
-    "Bernini's fountains and baroque palaces cover the bones of Domitian's stadium — peel back the centuries.",
+    "Bernini's fountains and baroque palaces cover the bones of Domitian's stadium · peel back the centuries.",
   immersive_orientation_hint:
     'Stand on the southern edge of the oval piazza, facing north toward the central fountain, then begin the immersive view.',
   lat: PIAZZA_NAVONA.lat,

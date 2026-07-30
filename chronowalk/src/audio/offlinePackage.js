@@ -37,7 +37,7 @@ function isHtmlContentType(contentType) {
 
 /**
  * Files the walk cannot start without. Optional beds/inserts/ambience that are
- * not shipped on Pages must not fail the whole prepare download — Cloudflare
+ * not shipped on Pages must not fail the whole prepare download · Cloudflare
  * SPA fallback returns 200 HTML for those missing paths.
  */
 export function isCriticalOfflineAudioPath(manifestPath) {
@@ -46,7 +46,26 @@ export function isCriticalOfflineAudioPath(manifestPath) {
   if (/\/narration\/w\d+/i.test(path)) return true
   if (/\/narration\/t\d+/i.test(path) && !path.endsWith('/t02.mp3')) return true
   if (path.includes('ui_arrival_chime') || path.includes('ui_waypoint_unlocked')) return true
+  // Multi-chapter / named story files that are not w##.mp3 (Palatine railing, etc.)
+  if (/\/narration\/forum_intro_/i.test(path)) return true
+  if (/\/narration\/enc_circus\.mp3/i.test(path)) return true
+  if (/\/narration\/pause\.mp3/i.test(path)) return true
   return false
+}
+
+/**
+ * Hero stills / reconstruction posters travelers see on every stop.
+ * Videos stay optional (Threshold falls back to the poster when the loop is missing).
+ */
+export function isCriticalOfflineMediaPath(manifestPath) {
+  const path = String(manifestPath || '')
+  if (!path.includes('/waypoints/')) return false
+  if (/\.mp4$/i.test(path)) return false
+  return /\.(jpe?g|webp|avif|png)$/i.test(path)
+}
+
+function isCriticalOfflinePath(manifestPath) {
+  return isCriticalOfflineAudioPath(manifestPath) || isCriticalOfflineMediaPath(manifestPath)
 }
 
 function mediaContentType(manifestPath) {
@@ -217,7 +236,7 @@ export async function verifyRomeAudioPackage(manifest) {
 /**
  * @param {object} manifest
  * @param {{ includeMedia?: boolean | 'stills' }} [options]
- *   After package download use `stills` — blob-URL’ing every reconstruction
+ *   After package download use `stills` · blob-URL’ing every reconstruction
  *   video at once has OOM-killed Home Screen WebViews on iOS. Videos hydrate
  *   on demand via {@link hydrateCachedManifestPath}.
  */
@@ -257,13 +276,84 @@ export async function hydrateRomeAudioCache(manifest, { includeMedia = 'stills' 
 export async function hydrateCachedManifestPath(manifestPath, { kind = 'media' } = {}) {
   if (!manifestPath) return null
   const cache = await openRomeAudioCache()
-  const response = await cache.match(cacheUrlForManifestPath(manifestPath))
+
+  const candidates = []
+  const pushUnique = (value) => {
+    if (value && !candidates.includes(value)) candidates.push(value)
+  }
+
+  pushUnique(cacheUrlForManifestPath(manifestPath))
+  pushUnique(manifestPath)
+  try {
+    if (/^https?:\/\//i.test(manifestPath)) {
+      pushUnique(new URL(manifestPath).pathname)
+    }
+  } catch {
+    // ignore
+  }
+
+  let response = null
+  let matchedKey = null
+  for (const key of candidates) {
+    const hit = await cache.match(key)
+    if (hit?.ok) {
+      response = hit
+      matchedKey = key
+      break
+    }
+  }
+
+  // Pathname scan · CDN host / query variants still hit the Rome media cache.
+  if (!response?.ok) {
+    try {
+      const targetPath = new URL(
+        /^https?:\/\//i.test(manifestPath)
+          ? manifestPath
+          : cacheUrlForManifestPath(manifestPath) || manifestPath,
+        'https://chronowalk.local',
+      ).pathname
+      const keys = await cache.keys()
+      for (const request of keys) {
+        try {
+          const keyUrl = new URL(request.url)
+          if (keyUrl.pathname !== targetPath) continue
+          const hit = await cache.match(request)
+          if (hit?.ok) {
+            response = hit
+            matchedKey = targetPath
+            break
+          }
+        } catch {
+          // ignore
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   if (!response?.ok) return null
   const blob = await response.blob()
   if (!blob.size) return null
   const blobUrl = URL.createObjectURL(blob)
-  if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
-  else registerCachedMedia(manifestPath, blobUrl)
+  const registerPath =
+    matchedKey && matchedKey.startsWith('/')
+      ? matchedKey
+      : (() => {
+          try {
+            if (/^https?:\/\//i.test(manifestPath)) return new URL(manifestPath).pathname
+          } catch {
+            // ignore
+          }
+          return manifestPath
+        })()
+  if (kind === 'audio') registerCachedAudio(registerPath, blobUrl)
+  else registerCachedMedia(registerPath, blobUrl)
+  // Also register under the original key so callers with CDN URLs resolve.
+  if (registerPath !== manifestPath) {
+    if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
+    else registerCachedMedia(manifestPath, blobUrl)
+  }
   return blobUrl
 }
 
@@ -344,7 +434,10 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
       const response = await fetchWithRetry(sourceUrl, { signal })
       const contentType = response.headers.get('Content-Type') ?? contentTypeForPath(manifestPath)
       if (isHtmlContentType(contentType)) {
-        // Missing file on Cloudflare Pages — SPA shell, not media.
+        // Missing file on Cloudflare Pages · SPA shell, not media.
+        if (isCriticalOfflinePath(manifestPath)) {
+          throw new Error(`Critical asset returned HTML (missing file): ${manifestPath}`)
+        }
         skipped.push(manifestPath)
         onPathComplete(manifestPath)
         continue
@@ -359,6 +452,9 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
       if (blob.size < 24_000) {
         const head = await blob.slice(0, 64).text()
         if (/<!doctype html|<html[\s>]/i.test(head)) {
+          if (isCriticalOfflinePath(manifestPath)) {
+            throw new Error(`Critical asset returned HTML body: ${manifestPath}`)
+          }
           skipped.push(manifestPath)
           onPathComplete(manifestPath)
           continue
@@ -375,7 +471,7 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
       onPathComplete(manifestPath)
     } catch (error) {
       if (error?.name === 'AbortError' || signal?.aborted) throw error
-      if (isCriticalOfflineAudioPath(manifestPath)) {
+      if (isCriticalOfflinePath(manifestPath)) {
         throw error
       }
       console.warn('[offline] Skipping unavailable optional asset:', manifestPath, error)
@@ -391,7 +487,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
   const audioPaths = listRomeAudioManifestPaths(manifest)
   const mediaPaths = listRomeMediaManifestPaths(manifest)
   const mapEstimate = estimateRomeMapTileDownload(manifest)
-  // Prepare ring tracks stories only — map tiles continue in the background.
+  // Prepare ring tracks stories only · map tiles continue in the background.
   const storiesTotal = Math.max(1, audioPaths.length + mediaPaths.length)
   const cache = await openRomeAudioCache()
 
@@ -436,7 +532,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     })
 
     const packageVerification = await verifyRomeAudioPackage(manifest)
-    const criticalMissing = (packageVerification.missing ?? []).filter(isCriticalOfflineAudioPath)
+    const criticalMissing = (packageVerification.missing ?? []).filter(isCriticalOfflinePath)
     const criticalDuration = (packageVerification.durationMismatches ?? []).filter((entry) =>
       isCriticalOfflineAudioPath(entry.path),
     )
@@ -458,7 +554,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       )
     }
 
-    // Stills only — full video blob hydration has killed iOS Home Screen WebViews.
+    // Stills only · full video blob hydration has killed iOS Home Screen WebViews.
     await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
     // Mark stories ready immediately so the prepare UI does not collapse while
@@ -581,9 +677,9 @@ export async function isRomeAudioReadyOffline(manifest) {
   const status = readRomeOfflineStatus()
   if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return false
   const verification = await verifyRomeAudioPackage(manifest)
-  // Optional beds/inserts may be absent from Pages (SPA HTML). Only essential
-  // story narration + arrival cues must be present for "ready".
-  const criticalMissing = (verification.missing ?? []).filter(isCriticalOfflineAudioPath)
+  // Optional beds/inserts/videos may be absent. Essential narration + hero stills
+  // must be present for "ready".
+  const criticalMissing = (verification.missing ?? []).filter(isCriticalOfflinePath)
   const criticalDuration = (verification.durationMismatches ?? []).filter((entry) =>
     isCriticalOfflineAudioPath(entry.path),
   )

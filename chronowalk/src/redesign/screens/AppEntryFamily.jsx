@@ -8,7 +8,7 @@ import { APP_ENTRY_FAMILY_PHASE } from './appEntryFamilyPhase.js'
 
 function classifyResolvedBundle(bundle) {
   if (bundle?.role === 'owner' || bundle?.isOwner) {
-    // Organizer invite UI needs server seat inventory — incomplete views are not ready.
+    // Organizer invite UI needs server seat inventory · incomplete views are not ready.
     if (!Array.isArray(bundle.seats)) return null
     return APP_ENTRY_FAMILY_PHASE.ORGANIZER
   }
@@ -23,7 +23,7 @@ function classifyResolvedBundle(bundle) {
 
 /**
  * Optional Couple/Family invite step during app entry.
- * Bundle type and seats come from the verified purchase — no client tier selector.
+ * Bundle type and seats come from the verified purchase · no client tier selector.
  *
  * Organizers see Walk together management. Verified members and solo buyers skip
  * once via an effect (never during render).
@@ -46,7 +46,7 @@ export default function AppEntryFamily({ onSkip }) {
     setResolveError(null)
 
     if (typeof refreshBundle !== 'function') {
-      // Outside provider: nothing to manage — advance safely.
+      // Outside provider: nothing to manage · advance safely.
       return APP_ENTRY_FAMILY_PHASE.SOLO
     }
 
@@ -97,7 +97,7 @@ export default function AppEntryFamily({ onSkip }) {
     }
   }, [resolveEntry, retryToken])
 
-  // Members / solo / invalid: advance exactly once after resolve — never during render.
+  // Members / solo / invalid: advance exactly once after resolve · never during render.
   useEffect(() => {
     if (
       phase === APP_ENTRY_FAMILY_PHASE.MEMBER ||
@@ -181,7 +181,7 @@ export default function AppEntryFamily({ onSkip }) {
     )
   }
 
-  // Verified organizer — show invite management (no client tier selector).
+  // Verified organizer · show invite management (no client tier selector).
   return (
     <div
       data-testid="app-entry-family"

@@ -1,6 +1,6 @@
 /**
  * Landing conversion analytics (Prompt 21).
- * Provider remains PostHog via `track()` — consent, init, and base props unchanged.
+ * Provider remains PostHog via `track()` · consent, init, and base props unchanged.
  *
  * Primary funnel:
  *   landing_view
@@ -53,7 +53,7 @@ export function resetLandingAnalyticsForTests() {
 
 export function trackLandingView() {
   if (onceFlags.view) return false
-  // Do not consume the once-flag before consent — otherwise accepting later
+  // Do not consume the once-flag before consent · otherwise accepting later
   // would permanently skip the first landing_view.
   if (!isAnalyticsReady()) return false
   onceFlags.view = true
@@ -165,7 +165,7 @@ export function trackLandingRouteExpand({ expanded }) {
   )
 }
 
-/** Pricing section entered viewport (once) — route/product consideration. */
+/** Pricing section entered viewport (once) · route/product consideration. */
 export function trackLandingPricingView() {
   if (onceFlags.pricingView) return false
   onceFlags.pricingView = true
@@ -179,7 +179,7 @@ export function trackLandingPricingView() {
 }
 
 /**
- * Pricing card purchase CTA — product intent before checkout handoff.
+ * Pricing card purchase CTA · product intent before checkout handoff.
  * @param {string} tierId
  */
 export function trackLandingPricingCta(tierId) {

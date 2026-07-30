@@ -85,7 +85,7 @@ describe('checkout helpers (Paddle)', () => {
       productId: 'rome-central',
       consentVersion: '2026-07-21',
     })
-    // product_id may be sent for analytics — webhook must ignore it for access.
+    // product_id may be sent for analytics · webhook must ignore it for access.
     expect(data).toEqual({
       product_id: 'rome-central',
       host: 'hotelroma1',

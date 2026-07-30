@@ -22,13 +22,13 @@ export function estimateWalkedDistanceMeters(tour, arrivedStopIds = []) {
 }
 
 export function formatWalkedDistance(meters) {
-  if (!meters || meters < 1) return '—'
+  if (!meters || meters < 1) return '-'
   if (meters < 1000) return `${Math.round(meters)} m`
   return `${(meters / 1000).toFixed(1)} km`
 }
 
 export function formatElapsedDuration(startedAtMs) {
-  if (!startedAtMs) return '—'
+  if (!startedAtMs) return '-'
   const minutes = Math.max(1, Math.round((Date.now() - startedAtMs) / 60000))
   if (minutes < 60) return `${minutes} min`
   const hours = Math.floor(minutes / 60)

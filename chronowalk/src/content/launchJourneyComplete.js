@@ -1,7 +1,7 @@
 const COMPLETE_MOMENTS = {
   'rome-launch': {
     headline: 'You walked Ancient Rome.',
-    subline: 'The basalt under your feet outlasted empire. The road is still here — and so are you.',
+    subline: 'The basalt under your feet outlasted empire. The road is still here · and so are you.',
     heroImage: '/waypoints/via-appia/modern-poster.jpg',
   },
   default: {

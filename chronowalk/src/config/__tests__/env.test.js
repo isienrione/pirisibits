@@ -135,7 +135,7 @@ describe('env URL params', () => {
     expect(isDebugGeo()).toBe(true)
     expect(getDebugGeoPlacement()).toBe('arrived')
 
-    // Restore neutral stubs — same as beforeEach — so defaults win again.
+    // Restore neutral stubs · same as beforeEach · so defaults win again.
     stubNeutralDebugEnv()
     setSearch('/')
     clearDevGeofencesMode()

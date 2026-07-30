@@ -1,5 +1,5 @@
 /**
- * Journey-driven map companion card — one primary CTA, warm map chrome.
+ * Journey-driven map companion card · one primary CTA, warm map chrome.
  */
 export default function MapBottomCard({
   title,
