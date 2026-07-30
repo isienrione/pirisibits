@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
   formatDistanceLine,
+  formatOpenStoryCta,
   formatPlaybackClock,
   formatRemainingShort,
   resolveWalkChromeDistanceCopy,
 } from '../walkingCompanionFormat.js'
 
 describe('walkingCompanionFormat', () => {
+  it('formats open-story CTA without doubling The', () => {
+    expect(formatOpenStoryCta('The Colosseum')).toBe('Open The Colosseum story →')
+    expect(formatOpenStoryCta('Temple of Vesta')).toBe('Open the Temple of Vesta story →')
+    expect(formatOpenStoryCta('')).toBe('Open the story →')
+  })
+
   it('formats distance with middle dot separator', () => {
     expect(
       formatDistanceLine({

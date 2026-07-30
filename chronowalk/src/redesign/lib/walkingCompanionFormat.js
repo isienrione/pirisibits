@@ -109,3 +109,10 @@ export function formatRemainingShort(seconds) {
   if (!Number.isFinite(seconds) || seconds <= 0) return '−0:00'
   return `−${formatPlaybackClock(Math.ceil(seconds))}`
 }
+
+/** Avoid “Open the The Colosseum story” when the title already starts with The. */
+export function formatOpenStoryCta(title) {
+  const t = String(title ?? '').trim()
+  if (!t) return 'Open the story →'
+  return /^the\s+/i.test(t) ? `Open ${t} story →` : `Open the ${t} story →`
+}

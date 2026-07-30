@@ -1020,7 +1020,14 @@ export class AudioEngine {
     this.arrivalChimeGeneration += 1
     for (const source of this.arrivalSources) {
       try {
-        source.stop()
+        if (typeof source.stop === 'function') {
+          source.stop()
+        } else if (typeof source.pause === 'function') {
+          source.pause()
+          source.removeAttribute?.('src')
+          source.src = ''
+          source.load?.()
+        }
       } catch {
         // already stopped
       }
@@ -1028,46 +1035,66 @@ export class AudioEngine {
     this.arrivalSources = []
   }
 
+  /**
+   * Arrival cues use HTMLAudioElement (same path as narration) so iOS plays
+   * them with the Ring/Silent switch on Silent — Web Audio BufferSources are muted.
+   */
   async playArrivalOneShot(filename) {
     if (!filename) return false
     const url = resolveSystemUrl(filename)
     if (!url) return false
 
-    await this.init()
-    if (!this.context) return false
+    const audio = this.createAudio?.()
+    if (!audio) return false
 
-    const buffer = await this.loadBuffer(url, this.context)
-    if (!buffer) return false
+    try {
+      audio.preload = 'auto'
+      audio.playsInline = true
+    } catch {
+      // Non-browser test doubles may not support playsInline.
+    }
 
-    const source = this.context.createBufferSource()
-    source.buffer = buffer
+    this.arrivalSources.push(audio)
 
-    const cueGain = this.context.createGain()
-    cueGain.gain.value = 1
-
-    source.connect(cueGain)
-    cueGain.connect(this.systemGain)
-
-    this.arrivalSources.push(source)
-    this.activeSources.push(source)
-
-    await new Promise((resolve) => {
-      let settled = false
-      const finish = () => {
-        if (settled) return
-        settled = true
-        this.arrivalSources = this.arrivalSources.filter((s) => s !== source)
-        this.activeSources = this.activeSources.filter((s) => s !== source)
-        resolve()
-      }
-      source.onended = finish
+    const cleanup = () => {
+      this.arrivalSources = this.arrivalSources.filter((s) => s !== audio)
       try {
-        source.start(0)
+        audio.removeAttribute?.('src')
+        audio.src = ''
+        audio.load?.()
       } catch {
-        finish()
+        // ignore
       }
-    })
-    return true
+    }
+
+    try {
+      audio.src = url
+      audio.load?.()
+      await new Promise((resolve, reject) => {
+        let settled = false
+        const finish = (ok) => {
+          if (settled) return
+          settled = true
+          audio.removeEventListener('ended', onEnded)
+          audio.removeEventListener('error', onError)
+          if (ok) resolve()
+          else reject(new Error(`Arrival cue failed: ${filename}`))
+        }
+        const onEnded = () => finish(true)
+        const onError = () => finish(false)
+        audio.addEventListener('ended', onEnded)
+        audio.addEventListener('error', onError)
+        void audio.play().catch((error) => {
+          finish(false)
+          console.warn('[audio] arrival cue play blocked', error)
+        })
+      })
+      cleanup()
+      return true
+    } catch {
+      cleanup()
+      return false
+    }
   }
 
   /**
@@ -1078,9 +1105,13 @@ export class AudioEngine {
   async playArrivalChime() {
     const generation = ++this.arrivalChimeGeneration
     // Drop any prior half-played sequence before starting a fresh one.
-    for (const source of this.arrivalSources) {
+    for (const source of [...this.arrivalSources]) {
       try {
-        source.stop()
+        if (typeof source.stop === 'function') {
+          source.stop()
+        } else if (typeof source.pause === 'function') {
+          source.pause()
+        }
       } catch {
         // already stopped
       }
@@ -1088,9 +1119,19 @@ export class AudioEngine {
     this.arrivalSources = []
 
     try {
-      await this.init()
-      if (this.context?.state === 'suspended') {
-        await this.context.resume().catch(() => {})
+      // Unlock HTMLAudio on the same gesture path as narration (silent-switch safe).
+      const prime = this.createAudio?.()
+      if (prime) {
+        try {
+          prime.playsInline = true
+          prime.muted = true
+          prime.src = resolveSystemUrl(this.manifest?.system?.ui?.arrival) || ''
+          await prime.play().catch(() => {})
+          prime.pause()
+          prime.muted = false
+        } catch {
+          // ignore priming failures
+        }
       }
 
       const arrivalFile = this.manifest?.system?.ui?.arrival

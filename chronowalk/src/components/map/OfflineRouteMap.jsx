@@ -136,6 +136,8 @@ export function OfflineRouteMap({
   distance,
   awaitingFirstStop = false,
   className,
+  /** Fit the walking companion map slot instead of a full-page bone layout. */
+  compact = false,
 }) {
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const { currentStop, nextStop, targetStop } = resolveActiveLegEndpoints({
@@ -194,6 +196,26 @@ export function OfflineRouteMap({
     userPos,
     targetLandmark: targetStop?.landmark,
   })
+
+  if (compact) {
+    return (
+      <div
+        className={cn('flex h-full w-full flex-col bg-obsidian text-ink900', className)}
+        data-testid="offline-route-map-compact"
+      >
+        <div className="flex min-h-0 flex-1 flex-col justify-center p-2">
+          <RouteOverviewSvg model={overview} />
+          <p className="mt-2 px-1 text-center text-[11px] leading-snug text-muted">
+            {atStop
+              ? 'You are within arrival range.'
+              : distanceLabel
+                ? `${distanceLabel} away · cached overview`
+                : 'Cached route overview'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div

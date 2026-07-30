@@ -178,6 +178,27 @@ describe('AudioEngine', () => {
     expect(manifest.system.ui.completion).toBeTruthy();
   });
 
+  it('playArrivalOneShot uses HTMLAudioElement so silent-switch still plays', async () => {
+    const audio = createMockAudio();
+    audio.play = vi.fn(async function play() {
+      this.paused = false;
+      queueMicrotask(() => {
+        for (const fn of this._ended || []) fn();
+      });
+    });
+    const ended = [];
+    audio.addEventListener = vi.fn((event, fn) => {
+      if (event === 'ended') ended.push(fn);
+      audio._ended = ended;
+    });
+    createAudio.mockReturnValueOnce(audio).mockReturnValueOnce(audio);
+
+    const ok = await engine.playArrivalOneShot('ui_arrival_chime.mp3');
+    expect(ok).toBe(true);
+    expect(audio.playsInline).toBe(true);
+    expect(audio.play).toHaveBeenCalled();
+  });
+
   it('cancelArrivalChime stops a mid-sequence unlock cue', async () => {
     const arrivalSpy = vi
       .spyOn(engine, 'playArrivalOneShot')

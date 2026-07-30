@@ -6,7 +6,8 @@ import {
   resolveActiveMapLeg,
 } from '../../content/mapStops.js'
 import { hasCachedRomeMapTiles } from '../../audio/offlinePackage.js'
-import { isDebugMap } from '../../config/env.js'
+import { hydrateRomeMapTileCache } from '../../map/offlineMapTiles.js'
+import { env, isDebugMap } from '../../config/env.js'
 import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
 
 /** Prefer cached Standard vector tiles when the radio is constrained. */
@@ -66,6 +67,18 @@ export default function JourneyInlineMap({
   // Prefer the cached Standard vector style whenever signal is weak OR we
   // already persisted Rome map tiles — satellite tiles are not offline-cached.
   const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
+
+  useEffect(() => {
+    if (!manifest || !env.mapboxToken) return undefined
+    let cancelled = false
+    void hydrateRomeMapTileCache(manifest, { token: env.mapboxToken }).catch((error) => {
+      if (!cancelled) console.warn('[map] tile cache hydrate failed', error)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [manifest])
+
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
     [manifest, context.path]
