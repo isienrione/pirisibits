@@ -18,7 +18,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
           Sold out happens to the best of us.
         </h2>
         <p style={{ fontSize: 15, color: T.muted, fontStyle: "italic", marginBottom: 28 }}>
-          — and Rome planned for it.
+          - and Rome planned for it.
         </p>
         {/* Accent hairline under context */}
         <div style={{ width: "100%", height: 1, background: `${T.muted}28`, marginBottom: 28 }} />
@@ -27,11 +27,11 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
       {/* Scrollable content */}
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 32px", position: "relative", zIndex: 2 }}>
 
-        {/* Offer block — no card box, just photography + content */}
+        {/* Offer block - no card box, just photography + content */}
         <div style={{ marginBottom: 20 }}>
           <Eyebrow color={accent} hairline>AN ALTERNATIVE WALK</Eyebrow>
           <div style={{ marginTop: 14 }}>
-            {/* Offer photo — 4:3 */}
+            {/* Offer photo - 4:3 */}
             <div style={{ borderRadius: 14, overflow: "hidden", marginBottom: 16, aspectRatio: "4/3" }}>
               <img
                 src={severusNow}
@@ -62,7 +62,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               <span>zero queue</span>
             </p>
 
-            {/* Mini-map hint — Via dei Fori Imperiali schematic */}
+            {/* Mini-map hint - Via dei Fori Imperiali schematic */}
             <div style={{
               borderRadius: 12, overflow: "hidden",
               background: `${T.warmWhite}`,
@@ -74,7 +74,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
                 Route to viewpoint
               </p>
               <svg width="100%" height="90" viewBox="0 0 310 90">
-                {/* Via dei Fori Imperiali — main road */}
+                {/* Via dei Fori Imperiali - main road */}
                 <rect x="0" y="36" width="310" height="18" rx="3" fill={`${T.muted}18`} />
                 <text x="155" y="49" textAnchor="middle" style={{ fontSize: "8px", fill: T.muted, letterSpacing: "0.12em" }}>
                   VIA DEI FORI IMPERIALI
@@ -86,7 +86,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
                   ROMAN FORUM
                 </text>
 
-                {/* Walking path — from left to railing pin */}
+                {/* Walking path - from left to railing pin */}
                 <path d="M 30 44 L 230 44" stroke={accent} strokeWidth="2" strokeDasharray="5 3" strokeLinecap="round" />
                 <polygon points="228,40 236,44 228,48" fill={accent} />
 

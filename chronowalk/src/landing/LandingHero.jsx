@@ -6,7 +6,7 @@ import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
- * Act I hero — transformation first, function second.
+ * Act I hero - transformation first, function second.
  * Full-bleed cinematic Rome plate (distinct from interludes / ending).
  * Headline: Test 1 A/B via `landingExperiments` (`landing_exp_hero`).
  */

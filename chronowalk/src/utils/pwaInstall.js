@@ -25,7 +25,7 @@ export function isIosDevice() {
   return /iphone|ipad|ipod/i.test(navigator.userAgent)
 }
 
-/** Safari on iOS — no beforeinstallprompt; user must use Share → Add to Home Screen. */
+/** Safari on iOS - no beforeinstallprompt; user must use Share → Add to Home Screen. */
 export function isIosSafari() {
   if (!isIosDevice()) return false
   const ua = navigator.userAgent

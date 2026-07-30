@@ -1,8 +1,8 @@
 /**
- * Paddle Billing commerce — ChronoWalk Rome packs (one-time prices).
+ * Paddle Billing commerce - ChronoWalk Rome packs (one-time prices).
  * Overlay checkout via @paddle/paddle-js; unlock still comes from the webhook.
  *
- * custom_data.product_id is attribution/debug only — it never authorizes access.
+ * custom_data.product_id is attribution/debug only - it never authorizes access.
  * Entitlement is derived server-side from the paid Paddle price id.
  */
 
@@ -57,7 +57,7 @@ export function isCanonicalCheckoutProduct(productId) {
  * Optional `fromConfig` map (from Supabase app_config.paddle_prices) wins over env
  * per key; missing keys still read ambient import.meta.env unless `env` is provided.
  *
- * When `options.env` is passed (including `{}`), that bag is the only ambient source —
+ * When `options.env` is passed (including `{}`), that bag is the only ambient source -
  * never merge missing fields from import.meta.env. Used by hermetic tests.
  */
 export function resolvePaddlePriceId(tierId, fromConfig, options = {}) {
@@ -86,7 +86,7 @@ export function resolvePaddlePriceId(tierId, fromConfig, options = {}) {
  * Bundles enabled + missing/duplicate public bundle price IDs → not ready.
  *
  * Pass `env` (including `{}`) to make ambient price lookup authoritative for the
- * call — missing keys are not filled from import.meta.env. Omit `env` for normal
+ * call - missing keys are not filled from import.meta.env. Omit `env` for normal
  * runtime resolution from Vite env.
  */
 export function assertPublicPriceConfig(options = {}) {
@@ -145,7 +145,7 @@ export function isPaddleCheckoutReady(tierId, paddlePricesFromConfig) {
 
 /**
  * Build Paddle `customData` (string values only).
- * product_id / host / experiment / consent are attribution only — not entitlement authority.
+ * product_id / host / experiment / consent are attribution only - not entitlement authority.
  */
 export function buildPaddleCustomData({
   host,
@@ -155,7 +155,7 @@ export function buildPaddleCustomData({
 } = {}) {
   /** @type {Record<string, string>} */
   const data = {}
-  // Attribution/debug only — webhook ignores this for access.
+  // Attribution/debug only - webhook ignores this for access.
   if (productId && isCanonicalCheckoutProduct(productId)) {
     data.product_id = String(productId)
   }
@@ -241,7 +241,7 @@ export async function openPaddleCheckout({
   return { ok: true, mode: 'overlay', priceId, quantity: 1 }
 }
 
-/** Test helper — reset singleton between vitest cases. */
+/** Test helper - reset singleton between vitest cases. */
 export function __resetPaddleForTests() {
   paddleSingleton = undefined
   paddleInitPromise = null

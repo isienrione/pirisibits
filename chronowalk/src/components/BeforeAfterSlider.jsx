@@ -149,7 +149,7 @@ const SliderItemShell = ({
 
 const MEDIA_PROBE_TIMEOUT_MS = 12000;
 
-const AncientPlaceholder = ({ message = 'Ancient reconstruction — coming next' }) => (
+const AncientPlaceholder = ({ message = 'Ancient reconstruction - coming next' }) => (
   <div className="flex h-full min-h-[12rem] flex-col items-center justify-center bg-obsidian p-6 text-center text-warmwhite">
     <p className="font-display text-base font-semibold text-ember">{message}</p>
     <p className="mt-3 max-w-xs text-sm text-muted/80">
@@ -688,7 +688,7 @@ const BeforeAfterSlider = ({
   const renderAncientItem = () => {
     if (!historicImg || ancientMedia.failed) {
       return (
-        <AncientPlaceholder message="Ancient reconstruction could not load — check your connection and retry." />
+        <AncientPlaceholder message="Ancient reconstruction could not load - check your connection and retry." />
       );
     }
 
@@ -837,10 +837,10 @@ const BeforeAfterSlider = ({
       );
     }
     if (animationLoopActive) {
-      return 'A brief animation — then you can drag between eras.';
+      return 'A brief animation - then you can drag between eras.';
     }
     if (usingVideo) {
-      return 'Watch the facade come alive — comparison opens when ready.';
+      return 'Watch the facade come alive - comparison opens when ready.';
     }
     if (tiltEnabled && isActive) {
       return (

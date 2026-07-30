@@ -78,7 +78,7 @@ export function useAudioEngine(manifest) {
     })
 
     return () => {
-      // Detach React listeners only — keep the engine (and HTML audio) alive
+      // Detach React listeners only - keep the engine (and HTML audio) alive
       // while the traveler browses map / stops / journal.
       if (engine.onNarrationChange === setNarrationPlaying) {
         engine.onNarrationChange = null

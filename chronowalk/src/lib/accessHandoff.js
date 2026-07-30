@@ -214,7 +214,7 @@ export function consumeAccessHandoff(now = Date.now()) {
   return true
 }
 
-/** Test helper — keys used by this module. */
+/** Test helper - keys used by this module. */
 export const __handoffTestKeys = {
   DEVICE_CREDENTIAL_KEY,
   ACCESS_ENTITLEMENT_KEY,

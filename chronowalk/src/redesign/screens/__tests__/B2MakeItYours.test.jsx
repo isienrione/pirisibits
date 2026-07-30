@@ -8,7 +8,7 @@ describe('AppEntryPrepare', () => {
     const onInstall = vi.fn()
     render(
       <AppEntryPrepare
-        analyticsEnabled={false}
+        analyticsEnabled
         onAnalyticsChange={onAnalyticsChange}
         onInstall={onInstall}
         onContinue={vi.fn()}
@@ -25,14 +25,18 @@ describe('AppEntryPrepare', () => {
       screen.getByText(/add chronowalk to your home screen so you open it like a regular app/i),
     ).toBeInTheDocument()
     expect(screen.getByText(/help improve chronowalk/i)).toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: /disable analytics/i })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    )
 
-    fireEvent.click(screen.getByRole('switch', { name: /enable analytics/i }))
-    expect(onAnalyticsChange).toHaveBeenCalledWith(true)
+    fireEvent.click(screen.getByRole('switch', { name: /disable analytics/i }))
+    expect(onAnalyticsChange).toHaveBeenCalledWith(false)
 
     fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
     expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
-    expect(screen.getByText(/iphone — safari or chrome/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/iphone - safari or chrome/i).length).toBeGreaterThan(0)
     expect(screen.getByTestId('a2hs-ios-inapp-warning')).toBeInTheDocument()
   })
 

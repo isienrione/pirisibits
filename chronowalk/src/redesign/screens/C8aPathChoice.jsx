@@ -13,7 +13,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
   const paths = [
     {
       key: 'A',
-      label: 'Path A — The Forum Direct',
+      label: 'Path A - The Forum Direct',
       chip: '~45 min shorter',
       chipStyle: { background: T.ember, color: T.obsidian },
       body: 'Straight through the gate of triumphs and down into the heart. The Palatine stays available as an optional climb.',
@@ -21,10 +21,10 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
     },
     {
       key: 'B',
-      label: "Path B — The Emperor's Approach",
+      label: "Path B - The Emperor's Approach",
       chip: 'The full hill',
       chipStyle: { border: `1px solid ${hairline}`, color: T.warmWhite, background: 'transparent' },
-      body: "Past Constantine's arch, up the Palatine the way power went — palace, Circus Maximus View, then descend into the Forum from above.",
+      body: "Past Constantine's arch, up the Palatine the way power went - palace, Circus Maximus View, then descend into the Forum from above.",
       cta: "Take The Emperor's Approach",
     },
   ]

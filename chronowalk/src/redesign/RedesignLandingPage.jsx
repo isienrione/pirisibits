@@ -1,5 +1,5 @@
 /**
- * Production landing — Figma A1 design wired to checkout + preview routes.
+ * Production landing - Figma A1 design wired to checkout + preview routes.
  */
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'

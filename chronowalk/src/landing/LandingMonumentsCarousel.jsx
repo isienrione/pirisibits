@@ -8,7 +8,7 @@ import {
 } from './landingAnalytics.js'
 
 /**
- * Act II — continuous Rome route (not a monument catalog).
+ * Act II - continuous Rome route (not a monument catalog).
  * Desktop: horizontal editorial timeline · Mobile: vertical route spine.
  * Preview shows landmark milestones; expand reveals every stop by chapter.
  */

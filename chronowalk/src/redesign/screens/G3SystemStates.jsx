@@ -20,14 +20,14 @@ export default function G3SystemStates() {
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: F.body }}>
 
-      {/* ── (a) OFFLINE WITHOUT PACK — obsidian, seam, copy + retry ── */}
+      {/* ── (a) OFFLINE WITHOUT PACK - obsidian, seam, copy + retry ── */}
       <div style={{ height: zoneH, position: "relative", overflow: "hidden", background: T.obsidian, flexShrink: 0 }}>
         {/* Dim background photo */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${severusNow})`, backgroundSize: "cover", backgroundPosition: "center 40%", filter: "brightness(0.10) saturate(0.2)" }} />
         <Seam />
         <div style={{ position: "absolute", inset: 0, zIndex: 5, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 32px", textAlign: "center" }}>
           <p style={{ fontSize: 15, color: T.warmWhite, lineHeight: 1.6, marginBottom: 4 }}>
-            Rome is out of signal — your stories aren't.
+            Rome is out of signal - your stories aren't.
           </p>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, marginBottom: 20 }}>
             Download when you're back on wifi.
@@ -42,7 +42,7 @@ export default function G3SystemStates() {
         </div>
       </div>
 
-      {/* ── (b) GPS DENIED — amber banner over bone walking screen ── */}
+      {/* ── (b) GPS DENIED - amber banner over bone walking screen ── */}
       <div style={{ height: zoneH, position: "relative", overflow: "hidden", background: T.bone, flexShrink: 0 }}>
         {/* Walking screen context (dimmed) */}
         <div style={{ padding: "14px 20px 0", opacity: 0.45 }}>
@@ -52,7 +52,7 @@ export default function G3SystemStates() {
           <span style={{ color: `${T.ink}55`, fontSize: 12 }}> · about 5 min</span>
         </div>
 
-        {/* Single amber banner — NOT red */}
+        {/* Single amber banner - NOT red */}
         <div style={{
           margin: "10px 16px 0",
           background: `${T.ember}16`,
@@ -65,7 +65,7 @@ export default function G3SystemStates() {
           gap: 12,
         }}>
           <p style={{ fontSize: 13, color: T.ink, lineHeight: 1.4, flex: 1 }}>
-            Location access is off — stories won't auto-start.
+            Location access is off - stories won't auto-start.
           </p>
           <button style={{ fontFamily: F.body, fontSize: 12, color: T.ember, fontWeight: 500, background: "none", border: "none", cursor: "pointer", flexShrink: 0, padding: 0 }}>
             Enable in Settings
@@ -78,7 +78,7 @@ export default function G3SystemStates() {
         </div>
       </div>
 
-      {/* ── (c) AUDIO INTERRUPTION — quiet bottom toast ── */}
+      {/* ── (c) AUDIO INTERRUPTION - quiet bottom toast ── */}
       <div style={{ flex: 1, position: "relative", overflow: "hidden", background: T.obsidian, flexShrink: 0 }} onClick={resetToast}>
         {/* Story context */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${colosseumNow})`, backgroundSize: "cover", backgroundPosition: "center 20%", filter: "brightness(0.2)" }} />
@@ -87,7 +87,7 @@ export default function G3SystemStates() {
           <p style={{ fontSize: 11, color: T.muted }}>Chapter 2 · Playing</p>
         </div>
 
-        {/* Toast — quiet, bottom, auto-dismisses */}
+        {/* Toast - quiet, bottom, auto-dismisses */}
         <div style={{
           position: "absolute", bottom: 14, left: 16, right: 16, zIndex: 20,
           background: `${T.ink}F0`,

@@ -26,12 +26,12 @@ function formatTime(seconds) {
 }
 
 /**
- * Unified waypoint view — full-bleed landmark + then/now threshold, audio below.
+ * Unified waypoint view - full-bleed landmark + then/now threshold, audio below.
  * Matches the Pantheon free-preview layout for every stop.
  */
 export default function C6ImmersivePlayer({
   accent = T.actI,
-  actLabel = 'ACT I — THE ARENA',
+  actLabel = 'ACT I - THE ARENA',
   title = 'The Colosseum',
   chapterTitle = 'The Beast Awakens',
   chapterIndex = 0,
@@ -680,7 +680,7 @@ export default function C6ImmersivePlayer({
                   <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
                     {import.meta.env.DEV
                       ? 'Narration audio is unavailable in this development build.'
-                      : 'Narration is preparing — check your connection.'}
+                      : 'Narration is preparing - check your connection.'}
                   </p>
                 ) : null}
 

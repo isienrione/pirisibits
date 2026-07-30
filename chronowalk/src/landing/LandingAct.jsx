@@ -3,14 +3,14 @@ import GoldSeam from './GoldSeam.jsx'
 /**
  * Editorial act wrapper (Prompt 17).
  * Region landmark + quiet marker; labels are not headings (H1 stays in hero).
- * Act visibility is not tracked — no clean existing analytics event for acts.
+ * Act visibility is not tracked - no clean existing analytics event for acts.
  *
  * @param {object} props
- * @param {string} props.id — `#act-promise` | `#act-experience` | `#act-decision`
- * @param {string} props.label — full aria label, e.g. "Act I — The Promise"
- * @param {string} props.index — Roman numeral ("I")
- * @param {string} props.name — short title ("The Promise")
- * @param {boolean} [props.transition] — Gold Seam above the marker (acts II / III)
+ * @param {string} props.id - `#act-promise` | `#act-experience` | `#act-decision`
+ * @param {string} props.label - full aria label, e.g. "Act I - The Promise"
+ * @param {string} props.index - Roman numeral ("I")
+ * @param {string} props.name - short title ("The Promise")
+ * @param {boolean} [props.transition] - Gold Seam above the marker (acts II / III)
  * @param {import('react').ReactNode} props.children
  */
 export default function LandingAct({

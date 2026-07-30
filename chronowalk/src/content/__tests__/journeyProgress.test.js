@@ -34,7 +34,7 @@ describe('journeyProgress', () => {
   })
 
   it('formats walking time from distance using 100 m/min brisk pace', () => {
-    // 400 m → brisk 4 min, leisure 5 min — brisk < 8, so single value
+    // 400 m → brisk 4 min, leisure 5 min - brisk < 8, so single value
     expect(formatWalkingTime(400)).toBe('4 min walk')
     expect(formatWalkingTime(null)).toBeNull()
   })

@@ -116,7 +116,7 @@ function renderShell(props = {}) {
   )
 }
 
-/** Classic Path A auto-promotes Palatine (w04) — indexes must match beginJourney. */
+/** Classic Path A auto-promotes Palatine (w04) - indexes must match beginJourney. */
 function classicPathASequence(manifest = loadRomeManifest()) {
   return buildEffectiveSequence(manifest, 'a', ['w04'])
 }

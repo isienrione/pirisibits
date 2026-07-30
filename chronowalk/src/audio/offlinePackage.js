@@ -37,7 +37,7 @@ function isHtmlContentType(contentType) {
 
 /**
  * Files the walk cannot start without. Optional beds/inserts/ambience that are
- * not shipped on Pages must not fail the whole prepare download — Cloudflare
+ * not shipped on Pages must not fail the whole prepare download - Cloudflare
  * SPA fallback returns 200 HTML for those missing paths.
  */
 export function isCriticalOfflineAudioPath(manifestPath) {
@@ -217,7 +217,7 @@ export async function verifyRomeAudioPackage(manifest) {
 /**
  * @param {object} manifest
  * @param {{ includeMedia?: boolean | 'stills' }} [options]
- *   After package download use `stills` — blob-URL’ing every reconstruction
+ *   After package download use `stills` - blob-URL’ing every reconstruction
  *   video at once has OOM-killed Home Screen WebViews on iOS. Videos hydrate
  *   on demand via {@link hydrateCachedManifestPath}.
  */
@@ -344,7 +344,7 @@ async function downloadManifestPaths(paths, { cache, signal, onPathComplete, con
       const response = await fetchWithRetry(sourceUrl, { signal })
       const contentType = response.headers.get('Content-Type') ?? contentTypeForPath(manifestPath)
       if (isHtmlContentType(contentType)) {
-        // Missing file on Cloudflare Pages — SPA shell, not media.
+        // Missing file on Cloudflare Pages - SPA shell, not media.
         skipped.push(manifestPath)
         onPathComplete(manifestPath)
         continue
@@ -391,7 +391,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
   const audioPaths = listRomeAudioManifestPaths(manifest)
   const mediaPaths = listRomeMediaManifestPaths(manifest)
   const mapEstimate = estimateRomeMapTileDownload(manifest)
-  // Prepare ring tracks stories only — map tiles continue in the background.
+  // Prepare ring tracks stories only - map tiles continue in the background.
   const storiesTotal = Math.max(1, audioPaths.length + mediaPaths.length)
   const cache = await openRomeAudioCache()
 
@@ -458,7 +458,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       )
     }
 
-    // Stills only — full video blob hydration has killed iOS Home Screen WebViews.
+    // Stills only - full video blob hydration has killed iOS Home Screen WebViews.
     await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
     // Mark stories ready immediately so the prepare UI does not collapse while

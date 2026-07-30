@@ -2,7 +2,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { cn } from './cn'
 
 /**
- * Premium Then & Now handle — bronze medallion on a glowing vertical time fracture.
+ * Premium Then & Now handle - bronze medallion on a glowing vertical time fracture.
  */
 export function TimeFractureHandle({ className, size = 'md' }) {
   const reducedMotion = useReducedMotion()

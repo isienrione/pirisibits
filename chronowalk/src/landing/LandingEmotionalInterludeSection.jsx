@@ -4,7 +4,7 @@ import { LANDING_CINEMATIC_INTERLUDE } from './landingVisualAssets.js'
 import './CinematicInterlude.css'
 
 /**
- * Act I — first cinematic interlude (hero → Threshold).
+ * Act I - first cinematic interlude (hero → Threshold).
  * Thin wrapper over reusable CinematicInterlude.
  */
 export default function LandingEmotionalInterludeSection() {

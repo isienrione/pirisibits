@@ -9,7 +9,7 @@ import C7Threshold from './C7Threshold.jsx';
 
 export default function E2MemoryDetail({
   accent = T.actI,
-  actLabel = 'ACT I — THE ARENA',
+  actLabel = 'ACT I - THE ARENA',
   title = 'The Colosseum',
   nowPhoto = colosseumNow,
   thenPhoto = colosseumNow,
@@ -168,7 +168,7 @@ export default function E2MemoryDetail({
           </div>
         ) : null}
 
-        {/* Interactive threshold — hold or drag the seam */}
+        {/* Interactive threshold - hold or drag the seam */}
         <p style={{ fontSize: 11, color: accent, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500, marginBottom: 10 }}>
           Immersion
         </p>
@@ -197,7 +197,7 @@ export default function E2MemoryDetail({
           {honestyCaption}
         </p>
 
-        {/* Key facts — editorial list, hairline-separated, no bullets */}
+        {/* Key facts - editorial list, hairline-separated, no bullets */}
         <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
         {facts.map((fact, i) => (
           <div key={i}>
@@ -215,9 +215,9 @@ export default function E2MemoryDetail({
           {txOpen && (
             <div style={{ padding: "16px 0 8px" }}>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.82 }}>
-                {transcript ?? '"You are standing at the largest amphitheater ever built. The Romans called it the Flavian Amphitheatre — the Colosseum is a nickname. Vespasian began it. Titus opened it in 80 AD with one hundred days of games. Both are dead, and the building is not. That tells you something about what they understood about power..."'}
+                {transcript ?? '"You are standing at the largest amphitheater ever built. The Romans called it the Flavian Amphitheatre - the Colosseum is a nickname. Vespasian began it. Titus opened it in 80 AD with one hundred days of games. Both are dead, and the building is not. That tells you something about what they understood about power..."'}
               </p>
-              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: 10, fontStyle: "italic" }}>— Chapter I, The Beast Awakens</p>
+              <p style={{ fontSize: 11, color: `${T.muted}88`, marginTop: 10, fontStyle: "italic" }}>- Chapter I, The Beast Awakens</p>
             </div>
           )}
         </div>

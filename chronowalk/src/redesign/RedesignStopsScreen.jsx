@@ -166,7 +166,7 @@ export default function RedesignStopsScreen() {
                   aria-hidden
                 />
                 <Eyebrow color={group.color} hairline>
-                  ACT {group.act} — {group.name}
+                  ACT {group.act} - {group.name}
                 </Eyebrow>
               </div>
 

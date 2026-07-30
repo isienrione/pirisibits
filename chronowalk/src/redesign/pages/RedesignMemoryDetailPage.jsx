@@ -73,7 +73,7 @@ export default function RedesignMemoryDetailPage() {
       <div className="redesign-app-shell redesign-phone-frame">
         <E2MemoryDetail
           accent={accentForWaypoint(waypoint, manifest)}
-          actLabel={act ? `ACT ${act.numeral} — ${act.title?.toUpperCase()}` : undefined}
+          actLabel={act ? `ACT ${act.numeral} - ${act.title?.toUpperCase()}` : undefined}
           title={titleForWaypoint(waypoint)}
           nowPhoto={photoForWaypoint(waypoint)}
           thenPhoto={thenPhotoForWaypoint(waypoint)}

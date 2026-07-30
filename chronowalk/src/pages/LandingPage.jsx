@@ -12,7 +12,7 @@ const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
 const PANTHEON_PREVIEW_POSTER = '/waypoints/pantheon/ancient-poster.jpg'
 
 const SUPPORTING_COPY =
-  'Walk the eternal city as it stood under emperors — every stone restored, every moment waiting to be lived.'
+  'Walk the eternal city as it stood under emperors - every stone restored, every moment waiting to be lived.'
 
 const TRUST_STATS = getLandingTrustStats(loadRomeManifest())
 

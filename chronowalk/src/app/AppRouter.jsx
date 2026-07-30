@@ -184,7 +184,7 @@ function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
-    // Successful React mount — clear mid-boot sentinel / one-boot SW skip.
+    // Successful React mount - clear mid-boot sentinel / one-boot SW skip.
     // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
     // /landing mounts then throws again (lazyWithRecovery clears it on success).
     clearBootPending()
@@ -217,14 +217,14 @@ function AppRouter() {
 
       const { loadRomeManifest } = await import('../content/manifest.js')
       const manifest = loadRomeManifest()
-      // Critical-only readiness — optional beds/inserts may be soft-skipped and
+      // Critical-only readiness - optional beds/inserts may be soft-skipped and
       // must not block hydrating arrival chimes + stories for offline playback.
       const ready = await isRomeAudioReadyOffline(manifest)
       if (cancelled || !ready) return
 
       await hydrateRomeAudioCache(manifest)
 
-      // Hydrate whatever map tiles we have — partial caches still beat a black map.
+      // Hydrate whatever map tiles we have - partial caches still beat a black map.
       const { hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
       if (cancelled) return
       await hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })

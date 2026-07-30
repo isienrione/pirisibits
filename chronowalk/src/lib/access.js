@@ -29,7 +29,7 @@ const DEV_TOKENS = new Set(['dev', 'local'])
 export const ACCESS_TOKEN_KEY = 'cw_access_token_v1'
 
 function allowsDevAccessTokens() {
-  // Explicit local/sandbox testing only — never treat arbitrary UUIDs as valid.
+  // Explicit local/sandbox testing only - never treat arbitrary UUIDs as valid.
   return import.meta.env.DEV || import.meta.env.VITE_ALLOW_DEV_ACCESS === 'true'
 }
 
@@ -253,7 +253,7 @@ export async function validateAccessToken(token) {
   return redeemPurchaseClaim(token)
 }
 
-/** @deprecated Prefer writeDeviceCredential — kept for older call sites. */
+/** @deprecated Prefer writeDeviceCredential - kept for older call sites. */
 export function rememberAccessToken(token) {
   writeDeviceCredential(token)
 }

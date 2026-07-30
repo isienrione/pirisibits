@@ -37,7 +37,7 @@ export const hasAncientSliderMedia = (waypoint) =>
   hasShippedWaypointMedia(waypoint) &&
   Boolean(waypoint?.ancient_video_url || waypoint?.ancient_image_url)
 
-/** Stops with only a modern animated video — no before/after comparison layer. */
+/** Stops with only a modern animated video - no before/after comparison layer. */
 export const isModernVideoImmersive = (waypoint) =>
   waypoint?.immersive_mode === 'modern_video' ||
   (hasModernSliderMedia(waypoint) && !hasAncientSliderMedia(waypoint))
@@ -96,7 +96,7 @@ export const getModernPosterUrl = (waypoint) => {
   return bustMediaUrl(waypoint?.modern_poster_url, waypoint)
 }
 
-/** Cover art for stops list, HUD, audio bar, and card hero — prefers modern-exterior stills. */
+/** Cover art for stops list, HUD, audio bar, and card hero - prefers modern-exterior stills. */
 export const getModernCoverUrl = (waypoint) => {
   if (!hasShippedWaypointMedia(waypoint)) return null
   return bustMediaUrl(waypoint?.modern_image_url || waypoint?.modern_poster_url, waypoint)

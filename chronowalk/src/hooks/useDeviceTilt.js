@@ -23,7 +23,7 @@ export const requestDeviceTiltPermission = async () => {
 
 /**
  * Returns tilt as degrees relative to the first reading after `enabled` turns on.
- * Small deltas only — suitable for subtle parallax, not full-device rotation.
+ * Small deltas only - suitable for subtle parallax, not full-device rotation.
  */
 export const useDeviceTilt = (enabled = true) => {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });

@@ -36,7 +36,7 @@ function IosHowToDemo() {
     >
       <div className="cw-a2hs-demo__phone">
         <div className="cw-a2hs-demo__screen">
-          {/* 1 — Safari or Chrome + Share */}
+          {/* 1 - Safari or Chrome + Share */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--1">
             <div className="cw-a2hs-demo__chrome-bar">
               <span className="cw-a2hs-demo__url">chronowalk.com</span>
@@ -51,7 +51,7 @@ function IosHowToDemo() {
             <p className="cw-a2hs-demo__caption">1 · Tap Share</p>
           </div>
 
-          {/* 2 — Share sheet → Add to Home Screen */}
+          {/* 2 - Share sheet → Add to Home Screen */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--2">
             <div className="cw-a2hs-demo__sheet cw-a2hs-demo__sheet--tall">
               <div className="cw-a2hs-demo__sheet-preview">
@@ -67,7 +67,7 @@ function IosHowToDemo() {
             <p className="cw-a2hs-demo__caption">2 · Choose Add to Home Screen</p>
           </div>
 
-          {/* 3 — Confirm dialog with real logo */}
+          {/* 3 - Confirm dialog with real logo */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--3">
             <div className="cw-a2hs-demo__confirm">
               <ChronoWalkAppIcon className="cw-a2hs-demo__confirm-logo" size={40} alt="" />
@@ -81,7 +81,7 @@ function IosHowToDemo() {
             <p className="cw-a2hs-demo__caption">3 · Tap Add</p>
           </div>
 
-          {/* 4 — Home screen with ChronoWalk icon */}
+          {/* 4 - Home screen with ChronoWalk icon */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--4">
             <div className="cw-a2hs-demo__home-grid">
               <span className="cw-a2hs-demo__app-dot" />
@@ -115,7 +115,7 @@ function AndroidChromeHowToDemo() {
     >
       <div className="cw-a2hs-demo__phone">
         <div className="cw-a2hs-demo__screen">
-          {/* 1 — Chrome + ⋮ */}
+          {/* 1 - Chrome + ⋮ */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--1">
             <div className="cw-a2hs-demo__chrome-bar">
               <span className="cw-a2hs-demo__url">chronowalk.com</span>
@@ -130,7 +130,7 @@ function AndroidChromeHowToDemo() {
             <p className="cw-a2hs-demo__caption">1 · Tap ⋮ in Chrome</p>
           </div>
 
-          {/* 2 — Menu */}
+          {/* 2 - Menu */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--2">
             <div className="cw-a2hs-demo__menu">
               <div className="cw-a2hs-demo__sheet-row">New tab</div>
@@ -146,7 +146,7 @@ function AndroidChromeHowToDemo() {
             <p className="cw-a2hs-demo__caption">2 · Install app / Add to Home screen</p>
           </div>
 
-          {/* 3 — Install sheet with logo */}
+          {/* 3 - Install sheet with logo */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--3">
             <div className="cw-a2hs-demo__confirm">
               <ChronoWalkAppIcon className="cw-a2hs-demo__confirm-logo" size={40} alt="" />
@@ -160,7 +160,7 @@ function AndroidChromeHowToDemo() {
             <p className="cw-a2hs-demo__caption">3 · Confirm Install</p>
           </div>
 
-          {/* 4 — Home */}
+          {/* 4 - Home */}
           <div className="cw-a2hs-demo__scene cw-a2hs-demo__scene--4">
             <div className="cw-a2hs-demo__home-grid">
               <span className="cw-a2hs-demo__app-dot" />
@@ -181,7 +181,7 @@ function AndroidChromeHowToDemo() {
 
 /**
  * Install-to-home-screen option, with expand/hover how-to.
- * @param {'dark' | 'light'} tone — dark for prepare (obsidian), light for Settings (bone).
+ * @param {'dark' | 'light'} tone - dark for prepare (obsidian), light for Settings (bone).
  */
 export default function HomeScreenInstallOption({
   installed = false,
@@ -229,7 +229,7 @@ export default function HomeScreenInstallOption({
               Ready as a mobile app
             </p>
             <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-              Open ChronoWalk from your Home Screen — full-screen, no browser.
+              Open ChronoWalk from your Home Screen - full-screen, no browser.
             </p>
           </div>
           <span
@@ -296,7 +296,7 @@ export default function HomeScreenInstallOption({
             Use as a mobile app
           </p>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>
-            Add ChronoWalk to your Home Screen so you open it like a regular app — not from the browser.
+            Add ChronoWalk to your Home Screen so you open it like a regular app - not from the browser.
           </p>
         </button>
         <button
@@ -358,21 +358,21 @@ export default function HomeScreenInstallOption({
           <div className="cw-a2hs-capsule__copy">
             {platform === 'ios' ? (
               <>
-                <p className="cw-a2hs-capsule__title">iPhone — Safari or Chrome</p>
+                <p className="cw-a2hs-capsule__title">iPhone - Safari or Chrome</p>
                 <ol className="cw-a2hs-capsule__steps">
                   <li>
                     Open this page in <strong>Safari</strong> or <strong>Chrome</strong> on your
                     iPhone (not Instagram, Facebook, or other in-app browsers)
                   </li>
                   <li>
-                    Tap <strong>Share</strong> — at the bottom in Safari, or next to the address bar
+                    Tap <strong>Share</strong> - at the bottom in Safari, or next to the address bar
                     in Chrome
                   </li>
                   <li>
                     Scroll and tap <strong>Add to Home Screen</strong>
                   </li>
                   <li>
-                    You’ll see the <strong>ChronoWalk</strong> logo — tap <strong>Add</strong>
+                    You’ll see the <strong>ChronoWalk</strong> logo - tap <strong>Add</strong>
                   </li>
                   <li>On your Home Screen, open the ChronoWalk icon (not the website)</li>
                 </ol>
@@ -383,7 +383,7 @@ export default function HomeScreenInstallOption({
               </>
             ) : (
               <>
-                <p className="cw-a2hs-capsule__title">Android — Chrome (Samsung &amp; others)</p>
+                <p className="cw-a2hs-capsule__title">Android - Chrome (Samsung &amp; others)</p>
                 <ol className="cw-a2hs-capsule__steps">
                   <li>
                     Open this page in <strong>Chrome</strong> on your Android phone (Samsung, Pixel,
@@ -396,7 +396,7 @@ export default function HomeScreenInstallOption({
                     Choose <strong>Install app</strong> or <strong>Add to Home screen</strong>
                   </li>
                   <li>
-                    Confirm — the <strong>ChronoWalk</strong> logo appears as the app icon
+                    Confirm - the <strong>ChronoWalk</strong> logo appears as the app icon
                   </li>
                   <li>Launch ChronoWalk from the Home Screen icon on tour day</li>
                 </ol>
@@ -415,7 +415,7 @@ export default function HomeScreenInstallOption({
                   </p>
                 )}
                 <p className="cw-a2hs-capsule__warn">
-                  On iPhone, use the <strong>iPhone · Safari or Chrome</strong> tab — Share works in
+                  On iPhone, use the <strong>iPhone · Safari or Chrome</strong> tab - Share works in
                   both browsers.
                 </p>
               </>

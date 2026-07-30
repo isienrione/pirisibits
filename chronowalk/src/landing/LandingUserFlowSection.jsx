@@ -2,7 +2,7 @@ import { LANDING_CONTENT } from './landingData.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
- * Act II — How it works as a sequential path (connected steps).
+ * Act II - How it works as a sequential path (connected steps).
  * Realistic phone frames with product screens lead each step.
  */
 export default function LandingUserFlowSection() {

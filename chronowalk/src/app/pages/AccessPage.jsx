@@ -28,7 +28,7 @@ export function AccessPage() {
     }
   }, [navigate])
 
-  // A token URL must ALWAYS be validated — never skip because cw_access was set.
+  // A token URL must ALWAYS be validated - never skip because cw_access was set.
   if (urlToken) {
     return <AccessScreen onValidated={handleValidated} forceValidateToken={urlToken} />
   }

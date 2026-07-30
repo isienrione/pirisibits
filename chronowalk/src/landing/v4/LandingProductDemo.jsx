@@ -21,7 +21,7 @@ function applyMotion(node, opacity) {
 /**
  * One sticky cinematic stage:
  * - phone + copy share the SAME scroll progress (always synced)
- * - copy is a stacked panel in the sticky stage — never scrolls under the phone
+ * - copy is a stacked panel in the sticky stage - never scrolls under the phone
  * - tall track only drives progress (short distance)
  * - phone never empty: timeline guarantees a visible layer
  */

@@ -1,6 +1,6 @@
 import { T } from '../tokens.js'
 
-/** Node dot on the act spine — three visual states */
+/** Node dot on the act spine - three visual states */
 export function ActNode({ status, color, radius = 7 }) {
   const size = radius * 2
   const base = {

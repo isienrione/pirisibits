@@ -17,7 +17,7 @@ import AppEntryPrepare from '../screens/AppEntryPrepare.jsx'
 import AppEntryFamily from '../screens/AppEntryFamily.jsx'
 
 /**
- * App Entry — replaces the old marketing-adjacent setup checklist.
+ * App Entry - replaces the old marketing-adjacent setup checklist.
  * threshold → prepare → family → /begin
  */
 export default function RedesignSetupPage() {
@@ -25,14 +25,24 @@ export default function RedesignSetupPage() {
   const purchasedTier = readPurchasedTier()
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
   const offline = useOfflineAudio()
-  // Land on prepare (offline + A2HS) — the screen travelers expect before the tour.
+  // Land on prepare (offline + A2HS) - the screen travelers expect before the tour.
   // Threshold pack splash remains reachable only if we add an explicit back later.
   const [step, setStep] = useState('prepare')
   const [showIosHelp, setShowIosHelp] = useState(false)
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(
-    () => getAnalyticsConsent() === 'accepted',
-  )
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => {
+    const consent = getAnalyticsConsent()
+    // Unset → on by default (Help improve ChronoWalk). Explicit decline stays off.
+    if (consent === 'declined') return false
+    return true
+  })
   const finishedEntryRef = useRef(false)
+
+  // Persist the prepare-screen default (on) so finishEntry does not treat unset as decline.
+  useEffect(() => {
+    if (getAnalyticsConsent() == null) {
+      setAnalyticsConsent(true)
+    }
+  }, [])
 
   // Keep Home Screen handoff warm while the traveler is on prepare.
   useEffect(() => {
@@ -43,8 +53,8 @@ export default function RedesignSetupPage() {
     if (finishedEntryRef.current) return
     finishedEntryRef.current = true
     if (getAnalyticsConsent() == null) {
-      setAnalyticsConsent(false)
-      setAnalyticsEnabled(false)
+      setAnalyticsConsent(true)
+      setAnalyticsEnabled(true)
     }
     markAppEntryComplete()
     navigate('/begin', { replace: true })

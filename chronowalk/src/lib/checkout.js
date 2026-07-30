@@ -41,19 +41,19 @@ export async function resolveCheckoutReady() {
   return isPaddleCheckoutReady(undefined, config?.paddle_prices)
 }
 
-/** @deprecated Prefer resolveCheckoutReady — Lemon URL resolution removed. */
+/** @deprecated Prefer resolveCheckoutReady - Lemon URL resolution removed. */
 export async function resolveCheckoutBaseUrl() {
   const ready = await resolveCheckoutReady()
   return ready ? 'paddle' : ''
 }
 
-/** @deprecated Lemon URL picker — no-op for Paddle (returns empty). */
+/** @deprecated Lemon URL picker - no-op for Paddle (returns empty). */
 export function pickCheckoutBaseUrl() {
   return ''
 }
 
 /**
- * @deprecated Lemon URL builder — Paddle uses price ids + customData.
+ * @deprecated Lemon URL builder - Paddle uses price ids + customData.
  * Kept so older tests / call sites fail soft instead of throwing.
  */
 export function buildTierCheckoutUrl() {
@@ -61,7 +61,7 @@ export function buildTierCheckoutUrl() {
 }
 
 /**
- * Open Paddle checkout — overlay by default.
+ * Open Paddle checkout - overlay by default.
  * @returns {Promise<
  *   | { ok: true, mode: 'overlay' | 'hosted', priceId: string }
  *   | { ok: false, reason: 'not_configured' | string }
@@ -99,7 +99,7 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
     tier: tierId ?? null,
   })
 
-  // custom_data is attribution only — webhook derives entitlement from price.id.
+  // custom_data is attribution only - webhook derives entitlement from price.id.
   const customData = buildPaddleCustomData({
     host: getHost(),
     abVariantCents: tierCents,
@@ -115,7 +115,7 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
   return openPaddleCheckout({ priceId, customData, email })
 }
 
-/** Ordered buyer journey steps — used by UI and docs. */
+/** Ordered buyer journey steps - used by UI and docs. */
 export const TRANSACTION_STEPS = Object.freeze([
   {
     id: 'choose',
@@ -140,6 +140,6 @@ export const TRANSACTION_STEPS = Object.freeze([
   {
     id: 'setup',
     title: 'Begin setup',
-    body: 'Pace, acts, and first steps — then the walk.',
+    body: 'Pace, acts, and first steps - then the walk.',
   },
 ])

@@ -82,7 +82,7 @@ describe('walk session participant detach/rejoin (local store)', () => {
       deviceId: 'partner',
       patch: { event: 'pause', positionSeconds: 99 },
     })
-    // Sync still on for the group — transport events apply to the shared session,
+    // Sync still on for the group - transport events apply to the shared session,
     // but client UI ignores them when walking independently.
     expect(otherFollowerPause.positionSeconds).toBe(99)
     expect(otherFollowerPause.syncParticipation).toBe('independent')

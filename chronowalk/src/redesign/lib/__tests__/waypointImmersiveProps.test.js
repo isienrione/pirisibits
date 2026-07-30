@@ -64,14 +64,14 @@ describe('waypointImmersiveProps', () => {
       manifest,
       chapterIndex: 0,
     })
-    // ch2 (index 1) = empire under feet — photo is tomb (user-assigned)
+    // ch2 (index 1) = empire under feet - photo is tomb (user-assigned)
     const empireProps = buildImmersivePlayerProps({
       waypoint,
       waypointId: 'w23',
       manifest,
       chapterIndex: 1,
     })
-    // ch3 (index 2) = tombs chapter — photo is general interior oculus
+    // ch3 (index 2) = tombs chapter - photo is general interior oculus
     const tombsProps = buildImmersivePlayerProps({
       waypoint,
       waypointId: 'w23',

@@ -1,8 +1,8 @@
 import { LANDING_CONTENT } from './landingData.js'
 
 /**
- * Act III — Why ChronoWalk (Phase 12).
- * Promise-led distinctions — no competitor matrix, no named rivals.
+ * Act III - Why ChronoWalk (Phase 12).
+ * Promise-led distinctions - no competitor matrix, no named rivals.
  */
 export default function LandingWhyChronoWalkSection() {
   const section = LANDING_CONTENT.why

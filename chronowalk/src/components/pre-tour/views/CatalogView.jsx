@@ -97,7 +97,7 @@ export function CatalogView({
 
       <div className="border-t border-ink800/80 pt-6">
         <p className="text-sm leading-relaxed text-muted">
-          Not ready to buy? Walk the Colosseum for free — experience the reconstruction and opening
+          Not ready to buy? Walk the Colosseum for free - experience the reconstruction and opening
           audio before unlocking the full tour.
         </p>
         <Button

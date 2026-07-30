@@ -159,7 +159,7 @@ describe('public robots.txt + sitemap.xml', () => {
     const vite = readFileSync(join(ROOT, 'vite.config.js'), 'utf8')
     expect(vite).not.toMatch(/robots\.txt/)
     expect(vite).not.toMatch(/sitemap\.xml/)
-    // globPatterns is js/css/html/ico/svg/woff2/json — excludes txt/xml
+    // globPatterns is js/css/html/ico/svg/woff2/json - excludes txt/xml
     expect(vite).toMatch(/globPatterns:\s*\[[^\]]*js,css,html/)
   })
 })

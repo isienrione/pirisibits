@@ -3,7 +3,7 @@ import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 
 /**
- * Arrival — photo fills leftover space; cream card hugs copy + CTAs so there
+ * Arrival - photo fills leftover space; cream card hugs copy + CTAs so there
  * is no empty bone under “Read instead”. Tab-bar inset lives on the phone
  * frame, not as a second home-indicator pad here.
  */

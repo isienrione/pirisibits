@@ -3,7 +3,7 @@ const APPROACH_CUES = [
   'The amphitheatre is beginning to reveal itself.',
   'Pause for a moment. The next chapter begins just ahead.',
   'You are close now. Let the city slow you down.',
-  'Listen — the stones are near.',
+  'Listen - the stones are near.',
   'The next chapter waits just ahead.',
   'Almost there. Rome opens in front of you.',
   'Slow your step. You are nearly upon it.',
@@ -11,7 +11,7 @@ const APPROACH_CUES = [
 
 const STORAGE_KEY = 'cw_approach_cue_index'
 
-/** Rotate cinematic anticipation cues — never the same index twice in a row. */
+/** Rotate cinematic anticipation cues - never the same index twice in a row. */
 export function pickApproachCue(stopKey = 'default') {
   if (typeof window === 'undefined') {
     return APPROACH_CUES[0]

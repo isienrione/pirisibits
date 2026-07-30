@@ -99,7 +99,7 @@ export async function saveLetterCard(letter, meander) {
     URL.revokeObjectURL(url)
     return 'download'
   } catch (blobErr) {
-    // SecurityError or insecure context — use data URL fallback.
+    // SecurityError or insecure context - use data URL fallback.
     const isSecurityError =
       blobErr instanceof DOMException &&
       (blobErr.name === 'SecurityError' || blobErr.code === 18)

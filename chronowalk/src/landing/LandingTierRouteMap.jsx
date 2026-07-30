@@ -57,7 +57,7 @@ function MapMarker({ point, index, showTooltip }) {
 }
 
 /**
- * Sepia aerial Rome map with numbered stop markers and walking route — journey UI style.
+ * Sepia aerial Rome map with numbered stop markers and walking route - journey UI style.
  */
 export default function LandingTierRouteMap({ tierId, featured = false, className = '' }) {
   const stops = getLandingTierRouteStops(tierId)

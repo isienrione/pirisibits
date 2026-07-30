@@ -1,5 +1,5 @@
 const DEVICE_KEY = 'cw_device_id'
-/** @see DEPLOY_EDGE_BUST — keep deviceId chunk hashing with edge busts */
+/** @see DEPLOY_EDGE_BUST - keep deviceId chunk hashing with edge busts */
 void 'intro-open-2026-07-29'
 
 function randomId() {

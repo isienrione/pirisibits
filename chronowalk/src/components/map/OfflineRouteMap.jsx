@@ -61,7 +61,7 @@ function RouteOverviewSvg({ model }) {
         />
       ) : null}
       {model.stops.map((stop) => {
-        // Label only current + next — labeling every stop stacks into illegible glyphs.
+        // Label only current + next - labeling every stop stacks into illegible glyphs.
         const showLabel = stop.status === 'current' || stop.status === 'upcoming'
         return (
           <g key={stop.id}>

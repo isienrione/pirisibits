@@ -27,7 +27,7 @@ function TourOverviewView({
   if (!tour) {
     return (
       <PageShell containerClassName="flex min-h-[50vh] items-center justify-center text-center">
-        <p className="text-muted">Single-stop mode — open the map to explore this landmark.</p>
+        <p className="text-muted">Single-stop mode - open the map to explore this landmark.</p>
       </PageShell>
     )
   }
@@ -62,7 +62,7 @@ function TourOverviewView({
         title={tour.title}
         subtitle={
           isFreePreview
-            ? 'Full bundled route on the map — Colosseum unlocked, every other stop locked until purchase'
+            ? 'Full bundled route on the map - Colosseum unlocked, every other stop locked until purchase'
             : tour.subtitle
         }
       />
@@ -75,7 +75,7 @@ function TourOverviewView({
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             Explore the full tour map and stop list below. Tap the Colosseum to try the immersive
-            experience — locked landmarks show what you get when you buy.
+            experience - locked landmarks show what you get when you buy.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <Button
@@ -162,7 +162,7 @@ function TourOverviewView({
           </div>
         ) : (
           <p className="mt-5 text-sm leading-relaxed text-muted">
-            The complete Rome bundle includes the Roman Forum cluster and the city loop —{' '}
+            The complete Rome bundle includes the Roman Forum cluster and the city loop -{' '}
             {totalStops} landmarks with audio and reconstructions at each stop.
           </p>
         )}
