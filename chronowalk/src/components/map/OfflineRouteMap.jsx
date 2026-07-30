@@ -79,11 +79,27 @@ function RouteOverviewSvg({ model, dark = false }) {
         />
       ) : null}
       {model.stops.map((stop) => {
-        const isDestination = stop.status === 'current' || stop.id === model.destinationId
-        const isOrigin = stop.status === 'completed' || stop.id === model.originId
+        const isDestination =
+          Boolean(model.destinationId) && stop.id === model.destinationId
+            ? true
+            : !model.destinationId && stop.status === 'current'
+        const isOrigin = Boolean(model.originId) && stop.id === model.originId
+        // Only label the active pair · labeling every completed stop stacks text.
         const showLabel = isDestination || isOrigin
         const label = shortMapLabel(stop.title)
-        const labelY = Math.max(14, stop.y - 14)
+        // Nudge origin/destination labels apart when projected points are close.
+        const pair = model.stops.find(
+          (other) =>
+            other.id !== stop.id &&
+            ((isDestination && other.id === model.originId) ||
+              (isOrigin && other.id === model.destinationId)),
+        )
+        const closePair =
+          pair && Math.hypot(pair.x - stop.x, pair.y - stop.y) < 56
+        const labelY = Math.max(
+          14,
+          stop.y - 14 + (closePair && isOrigin ? 22 : closePair && isDestination ? -6 : 0),
+        )
         return (
           <g key={stop.id}>
             <circle
@@ -167,6 +183,8 @@ export function OfflineRouteMap({
   className,
   /** Fit the walking companion map slot instead of a full-page bone layout. */
   compact = false,
+  /** True radio offline · drives caption honesty when Wi‑Fi returns. */
+  isOffline = true,
 }) {
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const { currentStop, nextStop, targetStop } = resolveActiveLegEndpoints({
@@ -266,8 +284,12 @@ export function OfflineRouteMap({
             {atStop
               ? 'You are within arrival range.'
               : distanceLabel
-                ? `${distanceLabel}${walkMinutes ? ` · ~${walkMinutes} min` : ''} · offline route sketch`
-                : 'Offline route sketch · street tiles need a signal'}
+                ? `${distanceLabel}${walkMinutes ? ` · ~${walkMinutes} min` : ''} · ${
+                    isOffline ? 'offline route sketch' : 'route sketch'
+                  }`
+                : isOffline
+                  ? 'Offline route sketch · street tiles need a signal'
+                  : 'Route sketch · map tiles are reconnecting'}
           </p>
         </div>
       </div>

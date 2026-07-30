@@ -35,6 +35,18 @@ function isHtmlContentType(contentType) {
   return String(contentType || '').toLowerCase().includes('text/html')
 }
 
+/** SPA HTML accidentally cached as a still must never become a blob URL. */
+async function blobLooksLikeHtml(blob) {
+  if (!blob) return true
+  if (isHtmlContentType(blob.type)) return true
+  try {
+    const sample = await blob.slice(0, 96).text()
+    return /^\s*<(!doctype|html[\s>]|head[\s>]|body[\s>])/i.test(sample)
+  } catch {
+    return false
+  }
+}
+
 /**
  * Files the walk cannot start without. Optional beds/inserts/ambience that are
  * not shipped on Pages must not fail the whole prepare download · Cloudflare
@@ -264,9 +276,11 @@ export async function hydrateRomeAudioCache(manifest, { includeMedia = 'stills' 
   for (const manifestPath of mediaPaths) {
     const response = await cache.match(cacheUrlForManifestPath(manifestPath))
     if (!response?.ok) continue
+    if (isHtmlContentType(response.headers.get('content-type'))) continue
 
     const blob = await response.blob()
     if (!blob.size) continue
+    if (await blobLooksLikeHtml(blob)) continue
 
     registerCachedMedia(manifestPath, URL.createObjectURL(blob))
   }
@@ -333,8 +347,10 @@ export async function hydrateCachedManifestPath(manifestPath, { kind = 'media' }
   }
 
   if (!response?.ok) return null
+  if (isHtmlContentType(response.headers.get('content-type'))) return null
   const blob = await response.blob()
   if (!blob.size) return null
+  if (await blobLooksLikeHtml(blob)) return null
   const blobUrl = URL.createObjectURL(blob)
   const registerPath =
     matchedKey && matchedKey.startsWith('/')

@@ -12,7 +12,7 @@ import {
   hasCrossedThreshold,
   markThresholdCrossed,
 } from '../../utils/thresholdWaypointReveal.js'
-import { OfflineMediaImg, useOfflineMediaUrl } from '../../components/OfflineMediaImg.jsx'
+import { OfflineMediaImg } from '../../components/OfflineMediaImg.jsx'
 
 // Default speeds (must include 1.5× and 2×).
 const DEFAULT_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
@@ -105,9 +105,6 @@ export default function C6ImmersivePlayer({
     hasReconstruction &&
     !suppressAutoRevealInvite &&
     (forceHint || !alreadyCrossed)
-  const offlinePhoto = useOfflineMediaUrl(photo)
-  const heroPhotoSrc = offlinePhoto.src || photo
-
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
   const canSeek = typeof onSeek === 'function' && duration > 0 && audioAvailable
@@ -478,18 +475,32 @@ export default function C6ImmersivePlayer({
       style={{
         position: 'absolute',
         inset: 0,
-        backgroundImage: heroPhotoSrc ? `url(${heroPhotoSrc})` : undefined,
         backgroundColor: T.obsidian,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center 28%',
         cursor: 'pointer',
+        overflow: 'hidden',
       }}
       onClick={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
         const relX = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 1
         if (relX < 0.5) setPhotoLightboxOpen(true)
       }}
-    />
+    >
+      {/* <img> (not CSS background) so OfflineMediaImg can recover from bad blobs. */}
+      <OfflineMediaImg
+        src={photo}
+        alt={title}
+        data-testid="waypoint-immersive-photo"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          objectPosition: 'center 28%',
+          display: 'block',
+        }}
+      />
+    </div>
   )
 
   return (
