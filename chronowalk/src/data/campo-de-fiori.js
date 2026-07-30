@@ -2,7 +2,7 @@ export const CAMPO_DE_FIORI = { lat: 41.89559, lng: 12.47223 }
 
 /** Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=campo-de-fiori */
 
-/** South edge of the square, facing north — medieval open campo ancient layer (not Theatre of Pompey). */
+/** South edge of the square, facing north · medieval open campo ancient layer (not Theatre of Pompey). */
 export const CAMPO_DE_FIORI_VIEWPOINT = {
   lat: 41.89535,
   lng: 12.47215,
@@ -35,7 +35,7 @@ export const CAMPO_DE_FIORI_WAYPOINT = {
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached Campo de' Fiori!",
   arrival_subtitle:
-    'Market stalls and Bruno\'s shadow — peel back to an open campo before the baroque city closed in.',
+    'Market stalls and Bruno\'s shadow · peel back to an open campo before the baroque city closed in.',
   immersive_orientation_hint:
     'Stand on the south side of the square facing the statue and market, then begin the immersive view.',
   lat: CAMPO_DE_FIORI.lat,

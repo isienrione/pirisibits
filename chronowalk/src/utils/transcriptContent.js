@@ -66,7 +66,7 @@ export function splitTranscriptParagraphs(text) {
 /** Bias applied to playback progress before mapping to words (accounts for pauses in audio). */
 export const KARAOKE_SYNC_BIAS = 0.86
 
-/** Extra timeline weight between paragraphs — approximates breath gaps in narration. */
+/** Extra timeline weight between paragraphs · approximates breath gaps in narration. */
 const PARAGRAPH_GAP_WEIGHT = 14
 
 function wordWeight(text) {

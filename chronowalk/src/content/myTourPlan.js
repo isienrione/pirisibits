@@ -81,7 +81,7 @@ function actDisplayStatus(actStatus, locked) {
 }
 
 /**
- * Act-grouped tour roadmap for the My Tour tab — filtered by pace and own-pace selection.
+ * Act-grouped tour roadmap for the My Tour tab · filtered by pace and own-pace selection.
  */
 export function buildMyTourActs(manifest, context) {
   if (!manifest?.acts) return []
@@ -153,18 +153,18 @@ export function primaryCtaLabel(acts, journeyActive) {
     current.numeral === 'Encore' ? 'Encore' : `Act ${current.numeral}`
 
   if (journeyActive) {
-    return `Return to walk — ${current.title}`
+    return `Return to walk · ${current.title}`
   }
 
   if (current.stops.every((stop) => stop.status === 'completed')) {
     const next = acts.find((act) => act.actStatus !== 'done' && !act.locked)
     if (next) {
       const nextLabel = next.numeral === 'Encore' ? 'Encore' : `Act ${next.numeral}`
-      return `Begin ${nextLabel} — ${next.title}`
+      return `Begin ${nextLabel} · ${next.title}`
     }
   }
 
-  return `Begin ${numeralLabel} — ${current.title}`
+  return `Begin ${numeralLabel} · ${current.title}`
 }
 
 /** Flat walking-order groups for the route sheet. */
@@ -235,7 +235,7 @@ export function needsOwnPaceSelection(context) {
 }
 
 /**
- * Act-grouped tour for the free-preview ghost state — one sample stop unlocked, rest locked.
+ * Act-grouped tour for the free-preview ghost state · one sample stop unlocked, rest locked.
  * @param {import('./manifest.js').RomeManifest} manifest
  * @param {string} previewWaypointId
  */

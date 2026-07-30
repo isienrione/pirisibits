@@ -10,7 +10,7 @@ import {
 } from '../lib/tourRouteIllustration.js'
 
 /**
- * Stylized, map-inspired route drawing — sequential stops on a winding path,
+ * Stylized, map-inspired route drawing · sequential stops on a winding path,
  * not tied to real-world coordinates (avoids cluttered Mapbox labels).
  */
 export default function TourRouteIllustration({ manifest, context, className = '' }) {

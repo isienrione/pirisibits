@@ -180,7 +180,7 @@ export function OfflineRouteMap({
   const routeCoordinates = useMemo(() => {
     if (!tour?.id) return null
 
-    // Prefer the active leg polyline whenever we know the leg — not only when
+    // Prefer the active leg polyline whenever we know the leg · not only when
     // transitLegActive is true (offline sketch still needs the segment).
     if (activeLeg?.fromId && activeLeg?.toId) {
       return (
@@ -267,7 +267,7 @@ export function OfflineRouteMap({
               ? 'You are within arrival range.'
               : distanceLabel
                 ? `${distanceLabel}${walkMinutes ? ` · ~${walkMinutes} min` : ''} · offline route sketch`
-                : 'Offline route sketch — street tiles need a signal'}
+                : 'Offline route sketch · street tiles need a signal'}
           </p>
         </div>
       </div>

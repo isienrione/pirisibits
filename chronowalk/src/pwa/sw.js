@@ -1,7 +1,7 @@
 /* ChronoWalk service worker
  *
  * Cloudflare Pages SPA fallback (`/* → /index.html 200`) returns HTML for
- * missing paths — including missing hashed `/assets/*.js` URLs. If that HTML
+ * missing paths · including missing hashed `/assets/*.js` URLs. If that HTML
  * is cached under a module key, dynamic `import()` fails with:
  *   TypeError: Failed to fetch dynamically imported module
  * even while a direct network fetch of a live asset returns real JavaScript.
@@ -57,7 +57,7 @@ const rejectHtmlAssetPlugin = {
   },
 }
 
-// Injection point — must stay exactly `self.__WB_MANIFEST` for vite-plugin-pwa.
+// Injection point · must stay exactly `self.__WB_MANIFEST` for vite-plugin-pwa.
 // HTML-guard plugins prevent SPA fallback bodies from sticking under /assets/*.js keys.
 precacheAndRoute(self.__WB_MANIFEST, {
   ignoreURLParametersMatching: [/^_/],
@@ -162,7 +162,7 @@ async function handleNavigation(params) {
   try {
     const response = await navigationNetworkFirst.handle(params)
     if (response && !isHtmlResponse(response) && request.destination === 'document') {
-      // Unexpected non-HTML for a document — still return it.
+      // Unexpected non-HTML for a document · still return it.
       return response
     }
     if (response) return response
@@ -173,14 +173,14 @@ async function handleNavigation(params) {
   try {
     return await cachedAppShell(params)
   } catch {
-    // Never return a failed opaque network error — that surfaces Safari’s native
+    // Never return a failed opaque network error · that surfaces Safari’s native
     // offline interstitial mid Home Screen session / package download.
     // Serve our offline page instead.
     try {
       return await cachedOfflinePage(params)
     } catch {
       return new Response(
-        '<!doctype html><title>ChronoWalk</title><body style="font-family:system-ui;padding:2rem;background:#16130f;color:#f5efe3">ChronoWalk is offline. Reopen the app when you have a signal — your access stays on this device.</body>',
+        '<!doctype html><title>ChronoWalk</title><body style="font-family:system-ui;padding:2rem;background:#16130f;color:#f5efe3">ChronoWalk is offline. Reopen the app when you have a signal. Your access stays on this device.</body>',
         { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
       )
     }

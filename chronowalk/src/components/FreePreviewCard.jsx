@@ -26,7 +26,7 @@ export function FreePreviewCard({ onTryFreePreview, className = 'mt-8' }) {
             Explore the full Rome tour on the map
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted">
-            See every landmark on the bundled route — Forum cluster and city loop — with the
+            See every landmark on the bundled route · Forum cluster and city loop · with the
             Colosseum unlocked. Tap any locked stop to preview what you&apos;re missing.
           </p>
           <Button

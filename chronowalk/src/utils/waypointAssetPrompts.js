@@ -81,9 +81,9 @@ const sharedCameraRules = (waypoint) => {
     `Matched viewpoint for ChronoWalk slider at ${ctx.title}.`,
     `Camera POV: ${formatCoords(waypoint)}.`,
     ctx.orientationHint ? `Visitor orientation: ${ctx.orientationHint}` : null,
-    'Tripod-locked camera — no pan, tilt, zoom, or dolly during clip.',
+    'Tripod-locked camera · no pan, tilt, zoom, or dolly during clip.',
     '16:9 landscape, full landmark facade visible, center-weighted composition.',
-    'Facade should fill ~60–75% of frame height (Colosseum close-approach standard — not a distant plaza postcard).',
+    'Facade should fill ~60–75% of frame height (Colosseum close-approach standard · not a distant plaza postcard).',
     'No text, watermarks, UI, or borders in frame.',
   ]
     .filter(Boolean)
@@ -99,7 +99,7 @@ export const buildModernAnimatedVideoPrompt = (waypoint) => {
     'Use the provided modern reference photo as the exact camera angle and framing.',
     `Duration ${DEFAULT_VIDEO_DURATION_SEC} seconds, 16:9, 24fps feel.`,
     'Only subtle ambient motion: light cloud drift, tiny pedestrian movement, soft daylight shimmer.',
-    'Architecture stays perfectly fixed — no camera movement, no warp, no morph.',
+    'Architecture stays perfectly fixed · no camera movement, no warp, no morph.',
     `Hero compare frame should work at ~${ctx.posterSec}s (full facade, minimal foreground clutter).`,
     'Photorealistic, natural color, Rome street atmosphere.',
   ].join(' ');
@@ -112,7 +112,7 @@ export const buildAncientStillPrompt = (waypoint) => {
   return [
     `Ancient Rome reconstruction of ${ctx.title}, exact same camera position as reference modern photo.`,
     formatCoords(waypoint),
-    'Same field of view, same facade angle, same horizon line — only the era changes to ~125 AD.',
+    'Same field of view, same facade angle, same horizon line · only the era changes to ~125 AD.',
     'Historically plausible architecture, warm Mediterranean daylight, photorealistic archaeological visualization.',
     'No modern buildings, cars, tourists, signs, scaffolding, or anachronisms.',
     'Full height of monument visible, 16:9 composition, sharp detail on stone and arches.',
@@ -126,10 +126,10 @@ export const buildAncientAnimatedVideoPrompt = (waypoint) => {
 
   return [
     `Ancient Rome reconstruction video of ${ctx.title}, locked tripod camera, ${formatCoords(waypoint)}.`,
-    'Match the motion timing and framing of the modern reference video — same duration and crop.',
+    'Match the motion timing and framing of the modern reference video · same duration and crop.',
     `Duration ${DEFAULT_VIDEO_DURATION_SEC} seconds, 16:9.`,
     'Only subtle era-appropriate motion: banners, dust, crowds as silhouettes, warm light flicker.',
-    'Monument structure remains fixed — no camera move, no geometry drift between frames.',
+    'Monument structure remains fixed · no camera move, no geometry drift between frames.',
     `Hero poster frame at ~${ctx.posterSec}s with complete facade for before/after compare.`,
     'Photorealistic Rome Reborn quality, cinematic but documentary.',
   ].join(' ');
@@ -143,7 +143,7 @@ export const buildDaVinciResolveBrief = (waypoint) => {
   const modernOnly = isModernVideoOnlyWaypoint(waypoint);
 
   return [
-    `# ChronoWalk export brief — ${ctx.title} (${id})`,
+    `# ChronoWalk export brief · ${ctx.title} (${id})`,
     '',
     '## Timeline',
     `- Modern clip: ${DEFAULT_VIDEO_DURATION_SEC}s @ 16:9`,
@@ -153,7 +153,7 @@ export const buildDaVinciResolveBrief = (waypoint) => {
     '',
     '## Match rules',
     '- Identical resolution and fps between modern and ancient timelines',
-    '- Disable reframing — pixel-align facades',
+    '- Disable reframing · pixel-align facades',
     '- Ancient poster: pad to 16:9 if source is square (preserve full height)',
     '',
     '## Deliverables',
@@ -185,7 +185,7 @@ export const buildToolingNotes = (waypoint, modernReferenceUrl) => {
     midjourney: modernOnly
       ? null
       : {
-      title: 'Midjourney — ancient still',
+      title: 'Midjourney · ancient still',
       steps: [
         'Export modern ground-level photo from Street View (or shoot on site).',
         `Upload modern reference: ${modernReferenceUrl ?? 'modern-exterior.jpg'}`,
@@ -196,10 +196,10 @@ export const buildToolingNotes = (waypoint, modernReferenceUrl) => {
       ],
     },
     runway: {
-      title: modernOnly ? 'Runway / Pika — modern video' : 'Runway / Pika — modern + ancient video',
+      title: modernOnly ? 'Runway / Pika · modern video' : 'Runway / Pika · modern + ancient video',
       steps: [
         `Image-to-video: modern still → ${DEFAULT_VIDEO_DURATION_SEC}s clip (locked camera).`,
-        'Use motion brush only on sky/crowds — lock architecture mask.',
+        'Use motion brush only on sky/crowds · lock architecture mask.',
         ...(modernOnly
           ? [`Save ${mediaRoot}/modern.mp4`]
           : [
@@ -210,7 +210,7 @@ export const buildToolingNotes = (waypoint, modernReferenceUrl) => {
       ],
     },
     davinci: {
-      title: 'DaVinci Resolve — sync & posters',
+      title: 'DaVinci Resolve · sync & posters',
       steps: modernOnly
         ? [
             `Mark ${ctx.posterSec}s as hero frame on the modern timeline.`,

@@ -46,7 +46,7 @@ describe('productDemoTimeline', () => {
     expect(Math.abs(opacities[xfade.from] + opacities[xfade.to] - 1)).toBeLessThan(0.02)
   })
 
-  it('uses soft opacity / translateY / scale — never hard cuts or blur on phone layers', () => {
+  it('uses soft opacity / translateY / scale · never hard cuts or blur on phone layers', () => {
     const mid = softLayerMotion(1)
     expect(mid.opacity).toBe(1)
     expect(mid.transform).toContain('translateY(0px)')

@@ -21,7 +21,7 @@ function haptic(pattern) {
 }
 
 /**
- * Act I signature Threshold — press-and-hold reveals evidence-based reconstruction.
+ * Act I signature Threshold · press-and-hold reveals evidence-based reconstruction.
  */
 export default function LandingThresholdSection() {
   const section = LANDING_CONTENT.threshold
@@ -98,7 +98,7 @@ export default function LandingThresholdSection() {
 
   const beginHold = useCallback(
     (event) => {
-      // Already fully revealed — require Hide / toggle before starting again (avoids duplicate complete).
+      // Already fully revealed · require Hide / toggle before starting again (avoids duplicate complete).
       if (revealRef.current >= 0.98) return
       if (event?.pointerType === 'mouse' && event.button != null && event.button !== 0) return
 

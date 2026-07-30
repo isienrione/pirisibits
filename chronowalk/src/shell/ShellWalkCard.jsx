@@ -9,7 +9,7 @@ function formatWalkEta(distanceM) {
 }
 
 /**
- * Map floating walk card — props only; parent supplies journey/map data.
+ * Map floating walk card · props only; parent supplies journey/map data.
  */
 export default function ShellWalkCard({
   eyebrow = 'Next stop',

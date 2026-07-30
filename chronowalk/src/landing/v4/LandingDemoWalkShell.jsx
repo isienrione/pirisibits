@@ -1,5 +1,5 @@
 /**
- * Landing-only chrome around the walking companion — matches the photo-5
+ * Landing-only chrome around the walking companion · matches the photo-5
  * map guidance scene (audio tip + shell tabs) without changing product UI.
  */
 export default function LandingDemoWalkShell({ children }) {

@@ -62,7 +62,7 @@ describe('commerce catalog consumers', () => {
   })
 
   it('fails closed in production when bundle prices are missing or duplicated', () => {
-    // Authoritative empty ambient bag — never fill from .env.local / import.meta.env.
+    // Authoritative empty ambient bag · never fill from .env.local / import.meta.env.
     const missing = assertPublicPriceConfig({
       environment: 'production',
       bundlesEnabled: true,

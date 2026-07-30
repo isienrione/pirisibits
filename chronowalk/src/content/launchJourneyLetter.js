@@ -47,8 +47,8 @@ export function buildJourneyLetter({ travelerName = 'Traveler', manifest, contex
   const paragraphs = [
     'You set out on foot through a city that has never stopped remembering itself.',
     visitedPlaces.length
-      ? `Along the way, you found ${placeRoll}${visitedPlaces.length > 4 ? ` — and ${visitedPlaces.length - 4} more places that asked you to stand still` : ''}. At each arrival, the present loosened its grip. Story followed. Then threshold.`
-      : 'Along the way, you learned to arrive — not as a visitor passing through, but as someone willing to stand still long enough for the city to speak.',
+      ? `Along the way, you found ${placeRoll}${visitedPlaces.length > 4 ? ` · and ${visitedPlaces.length - 4} more places that asked you to stand still` : ''}. At each arrival, the present loosened its grip. Story followed. Then threshold.`
+      : 'Along the way, you learned to arrive · not as a visitor passing through, but as someone willing to stand still long enough for the city to speak.',
     'You listened. You crossed from the world as it is into reconstructions of what Rome dared to build. You held the camera up to time and let the ancient settle over the modern, even for a moment.',
     'This was not a tour completed. It was a pace chosen, an attention kept, a willingness to let stone carry memory forward.',
     'Wherever you walk next, carry this: you have already learned how to arrive.',

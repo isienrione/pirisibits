@@ -1,10 +1,10 @@
-/** Web Audio mix levels — single source of truth for the three-layer engine (Prompt B). */
+/** Web Audio mix levels · single source of truth for the three-layer engine (Prompt B). */
 
 export const MIX_CONFIG = {
   bed: {
-    // Walking / silence between stops — audible fill-in for continuity.
+    // Walking / silence between stops · audible fill-in for continuity.
     idleDb: -24,
-    // Under voice narration — faint background only (≈18 dB below idle).
+    // Under voice narration · faint background only (≈18 dB below idle).
     duckedDb: -42,
     crossfadeMs: 2000,
   },

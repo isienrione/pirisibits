@@ -9,7 +9,7 @@ export function clamp01(t) {
 }
 
 /**
- * Short holds — enough to read, not a marathon.
+ * Short holds · enough to read, not a marathon.
  * Emotional arrive chapter gets a touch more room.
  */
 export function chapterHoldWeight(chapter) {
@@ -74,7 +74,7 @@ export function buildCinematicTimeline(chapters) {
   return { totalWeight, segments, chapters }
 }
 
-/** Soft screen motion — opacity + slight rise/scale. No blur. */
+/** Soft screen motion · opacity + slight rise/scale. No blur. */
 export function softLayerMotion(opacity) {
   const t = clamp01(opacity)
   return {
@@ -150,13 +150,13 @@ export function beatFromLocal(local, beatCount) {
   return Math.min(beats - 1, Math.floor(clamp01(local) * beats))
 }
 
-/** Track height in vh — short cinematic scrub, not a marathon. */
+/** Track height in vh · short cinematic scrub, not a marathon. */
 export function timelineHeightVh(timeline) {
   // Compact scrub: enough to read each scene, then hand off quickly to THE STOPS.
   return Math.max(220, Math.round(timeline.totalWeight * 54))
 }
 
-// —— Back-compat helpers ——
+// ·· Back-compat helpers ··
 
 export function chapterScrollWeight(chapter) {
   return chapterHoldWeight(chapter) + XFADE_WEIGHT * 0.5

@@ -6,7 +6,7 @@ import { useV2Journey, useTourManifest } from './useV2Journey.js'
 
 /**
  * Returns the current journey act's accent as a CSS `var(...)` value.
- * Components should consume this hook — never hardcode an act accent.
+ * Components should consume this hook · never hardcode an act accent.
  */
 export function useActAccent() {
   const { context } = useV2Journey()

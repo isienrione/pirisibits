@@ -23,7 +23,7 @@ function sameAudioSrc(currentSrc, nextUrl) {
 }
 
 /**
- * Shared preview audio element — not torn down on React effect cleanup.
+ * Shared preview audio element · not torn down on React effect cleanup.
  * @param {string} url
  * @returns {HTMLAudioElement | null}
  */
@@ -91,7 +91,7 @@ export function getActivePreviewSessionAudio() {
   return sessionAudio
 }
 
-/** @deprecated Use getActivePreviewSessionAudio — kept for existing imports/tests. */
+/** @deprecated Use getActivePreviewSessionAudio · kept for existing imports/tests. */
 export function consumePreviewAudioHandoff() {
   if (!playbackIntent || !sessionAudio) return null
   playbackIntent = false

@@ -3,14 +3,14 @@ import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
- * Reusable cinematic narrative break — image + minimal copy, no CTA/cards/icons.
+ * Reusable cinematic narrative break · image + minimal copy, no CTA/cards/icons.
  *
  * @param {object} props
  * @param {string} [props.id]
- * @param {string[]} props.lines — poetic lines (first is the accessible heading)
+ * @param {string[]} props.lines · poetic lines (first is the accessible heading)
  * @param {{ mobileSrc: string, desktopSrc: string, lqipSrc?: string, alt?: string, mobileWidth?: number, mobileHeight?: number, desktopWidth?: number, desktopHeight?: number }} props.image
  * @param {'before'|'after'|'both'|'none'} [props.seam='both']
- * @param {boolean} [props.parallax=true] — subtle translate only; disabled when reduced motion
+ * @param {boolean} [props.parallax=true] · subtle translate only; disabled when reduced motion
  * @param {string} [props.className]
  */
 export default function CinematicInterlude({

@@ -1,4 +1,4 @@
-/** ChronoWalk redesign tokens — aligned with official brand palette. */
+/** ChronoWalk redesign tokens · aligned with official brand palette. */
 
 export const T = {
   obsidian: '#0B0B0D',
@@ -31,14 +31,14 @@ export const F = {
 /**
  * Bottom padding when the fixed shell tab bar is visible.
  * `--shell-tab-bar-height` already includes the safe-area inset used by the
- * fixed tab bar — do not add env(safe-area-inset-bottom) again or a large gap
+ * fixed tab bar · do not add env(safe-area-inset-bottom) again or a large gap
  * appears between the tabs and the browser chrome.
  */
 export const SHELL_TAB_BAR_INSET = 'var(--shell-tab-bar-height)'
 
 /**
  * Bottom padding for immersive (chrome-free) screens where the tab bar is
- * hidden — no tab-bar reservation, just breathing room + the safe-area inset.
+ * hidden · no tab-bar reservation, just breathing room + the safe-area inset.
  */
 export const SHELL_SAFE_BOTTOM_INSET = 'max(24px, env(safe-area-inset-bottom))'
 

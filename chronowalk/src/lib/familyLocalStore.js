@@ -327,7 +327,7 @@ export const localFamilyStore = {
 
     if (patch.event) {
       if (!session.syncEnabled && ['pause', 'resume', 'seek', 'rate', 'clock'].includes(patch.event)) {
-        // sync off — ignore transport
+        // sync off · ignore transport
       } else {
         switch (patch.event) {
           case 'pause':

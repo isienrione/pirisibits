@@ -1,6 +1,6 @@
 import { T } from '../tokens.js'
 
-/** EXPLORER daylight surface — bone background + paper grain overlay */
+/** EXPLORER daylight surface · bone background + paper grain overlay */
 export function GrainSurface({ children, style }) {
   return (
     <div

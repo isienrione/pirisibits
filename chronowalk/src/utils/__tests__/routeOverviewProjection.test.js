@@ -73,7 +73,7 @@ describe('routeOverviewProjection', () => {
     expect(model.stops.length).toBeLessThanOrEqual(2)
 
     const nums = model.activeRoutePath.match(/[\d.]+/g)?.map(Number) ?? []
-    // x0 y0 x1 y1 — active leg must span a usable distance, not a ~14px speck.
+    // x0 y0 x1 y1 · active leg must span a usable distance, not a ~14px speck.
     const dx = Math.abs(nums[2] - nums[0])
     const dy = Math.abs(nums[3] - nums[1])
     expect(Math.hypot(dx, dy)).toBeGreaterThan(80)

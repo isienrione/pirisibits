@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { LANDING_CONTENT } from '../landingData.js'
 
 /**
- * Compact expandable trust checklist — replaces the long feature list.
+ * Compact expandable trust checklist · replaces the long feature list.
  * When `embedded`, renders without its own section title (FAQ continuation).
  */
 export default function LandingTrustChecklist({ embedded = false }) {

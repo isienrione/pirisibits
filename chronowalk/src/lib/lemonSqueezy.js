@@ -1,5 +1,5 @@
 /**
- * @deprecated Lemon Squeezy commerce — superseded by Paddle (`src/lib/paddle.js`).
+ * @deprecated Lemon Squeezy commerce · superseded by Paddle (`src/lib/paddle.js`).
  * Kept for reference / archived tests. `openCheckout` no longer calls this module.
  *
  * Store: chronowalk.lemonsqueezy.com (historical).

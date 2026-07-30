@@ -4,7 +4,7 @@ import { useJourney } from '../../hooks/useJourney'
 import { GoldButton } from '../ui'
 
 /**
- * Post-threshold forward transition — advance to the next stop or tour completion.
+ * Post-threshold forward transition · advance to the next stop or tour completion.
  */
 export default function ContinueWalkingTransition({ open = true, className = '' }) {
   const { state, currentStop, nextStop, distanceToNextM, isLastStop, continueWalking } =

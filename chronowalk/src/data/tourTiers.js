@@ -15,7 +15,7 @@ export const TOUR_TIER_WAYPOINTS = {
     'w21',
     'w22',
   ],
-  /** Roma Antica — Colosseum, Palatine, Circus Maximus View (Path B), Forum, Capitoline. */
+  /** Roma Antica · Colosseum, Palatine, Circus Maximus View (Path B), Forum, Capitoline. */
   [JOURNEY_PACE.CLASSIC]: [
     'w01',
     'w02',
@@ -32,7 +32,7 @@ export const TOUR_TIER_WAYPOINTS = {
   ],
 }
 
-/** Act ids included per tier — used for dots + My Tour grouping. */
+/** Act ids included per tier · used for dots + My Tour grouping. */
 export const TOUR_TIER_ACT_IDS = {
   [JOURNEY_PACE.CENTRAL]: ['act4', 'act5', 'act6', 'encore'],
   [JOURNEY_PACE.CLASSIC]: ['act1', 'act2', 'act3'],

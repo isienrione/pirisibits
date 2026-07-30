@@ -9,7 +9,7 @@ describe('HomeScreenInstallOption', () => {
     fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
     expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
-    expect(screen.getByText(/iphone — safari or chrome/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/iphone · safari or chrome/i).length).toBeGreaterThan(0)
     expect(
       screen.getByText((_, el) => el?.tagName === 'LI' && /Share/.test(el.textContent || '')),
     ).toBeInTheDocument()
@@ -29,7 +29,7 @@ describe('HomeScreenInstallOption', () => {
     fireEvent.click(screen.getByRole('tab', { name: /android · chrome/i }))
 
     expect(screen.getByTestId('a2hs-howto-demo-android')).toBeInTheDocument()
-    expect(screen.getByText(/android — chrome \(samsung/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/android · chrome \(samsung/i).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /^add to home screen$/i })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /^add to home screen$/i }))

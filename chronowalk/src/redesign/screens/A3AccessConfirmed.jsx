@@ -38,11 +38,11 @@ export default function A3AccessConfirmed({ onContinue }) {
 
   return (
     <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
-      {/* Dim photo — satisfies photo-on-every-immersion-screen; brightness kept near-black */}
+      {/* Dim photo · satisfies photo-on-every-immersion-screen; brightness kept near-black */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${colosseumNow})`, backgroundSize: "cover", backgroundPosition: "center 20%", filter: "brightness(0.04) saturate(0.3)" }} />
       <Vignette />
 
-      {/* Seam drawing downward — the key turning in the lock */}
+      {/* Seam drawing downward · the key turning in the lock */}
       {/* Outer glow envelope */}
       <div style={{
         position: "absolute",
@@ -63,7 +63,7 @@ export default function A3AccessConfirmed({ onContinue }) {
         background: T.ember,
         boxShadow: "0 0 12px rgba(232,161,60,0.55)",
       }} />
-      {/* Leading dot — the keyhead moving down */}
+      {/* Leading dot · the keyhead moving down */}
       {pct > 0 && pct < 1 && (
         <div style={{
           position: "absolute",
@@ -75,7 +75,7 @@ export default function A3AccessConfirmed({ onContinue }) {
         }} />
       )}
 
-      {/* Content — lower half, clear of the Seam draw zone */}
+      {/* Content · lower half, clear of the Seam draw zone */}
       <div style={{
         position: "absolute",
         bottom: 0, left: 0, right: 0,
@@ -103,7 +103,7 @@ export default function A3AccessConfirmed({ onContinue }) {
           marginBottom: 36,
           maxWidth: 280,
         }}>
-          Your access link is in your email — it works on any phone.
+          Your access link is in your email · it works on any phone.
         </p>
 
         <button

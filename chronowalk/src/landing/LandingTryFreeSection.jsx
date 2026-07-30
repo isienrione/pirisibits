@@ -2,7 +2,7 @@ import { LANDING_CONTENT } from './landingData.js'
 import LandingLivePhoneMockup from './LandingLivePhoneMockup.jsx'
 
 /**
- * Act II — free Pantheon preview.
+ * Act II · free Pantheon preview.
  * One mockup, sharp offer framing, same preview handoff + analytics as other CTAs.
  */
 export default function LandingTryFreeSection({ onPreview, onRoutes }) {

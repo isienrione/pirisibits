@@ -1,5 +1,5 @@
 /**
- * Build Asset Studio URLs — prompts UI for AI asset production.
+ * Build Asset Studio URLs · prompts UI for AI asset production.
  * Pattern: ?assetStudio=true&waypoint=<id>
  */
 import { ROME_CORE_TOUR } from '../data/rome-core-tour'

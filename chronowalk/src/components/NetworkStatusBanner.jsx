@@ -29,7 +29,7 @@ export default function NetworkStatusBanner() {
         backdropFilter: 'blur(8px)',
       }}
     >
-      You're offline — cached audio works normally; navigation data may be unavailable
+      You're offline. Cached audio works normally; navigation data may be unavailable
     </div>
   )
 }

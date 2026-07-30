@@ -103,7 +103,7 @@ export default function E1JournalHome({
       ) : (
         <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", paddingBottom: 16, position: "relative", zIndex: 2 }}>
 
-          {/* Journey Letter pinned — the ONE dark card in the light room */}
+          {/* Journey Letter pinned · the ONE dark card in the light room */}
           <div style={{ padding: "4px 24px 24px" }}>
             <div style={{ background: T.ink, borderRadius: 14, padding: 18, boxShadow: "0 4px 18px rgba(33,28,21,0.14)" }}>
               <div style={{ marginBottom: 14 }}>
@@ -123,7 +123,7 @@ export default function E1JournalHome({
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                 <div>
                   <p style={{ fontSize: 11, color: T.ember, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 6 }}>JOURNEY LETTER</p>
-                  <p style={{ fontFamily: F.display, fontSize: 20, color: T.warmWhite, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>Dear Traveler —</p>
+                  <p style={{ fontFamily: F.display, fontSize: 20, color: T.warmWhite, fontWeight: 300, lineHeight: 1.2, marginBottom: 4 }}>Dear Traveler,</p>
                   <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.5 }}>Rome · 2–3 July 2025 · 21 centuries</p>
                 </div>
                 <button type="button" onClick={() => (onLetterClick ? onLetterClick() : navigate("F1"))} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 12, fontFamily: F.body, flexShrink: 0, marginLeft: 12 }}>Open</button>
@@ -136,7 +136,7 @@ export default function E1JournalHome({
             <div key={group.act}>
               {gi > 0 && <MiniActLine color={group.color} />}
               <div style={{ padding: "8px 24px 16px" }}>
-                <Eyebrow color={group.color} hairline>ACT {group.act} — {group.name}</Eyebrow>
+                <Eyebrow color={group.color} hairline>ACT {group.act} · {group.name}</Eyebrow>
               </div>
               {group.cards.map(card => (
                 <div key={card.id} style={{ padding: "0 24px 16px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>

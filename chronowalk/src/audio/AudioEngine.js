@@ -46,7 +46,7 @@ export class AudioEngine {
     this.narrationPlaying = false
     this.playbackGeneration = 0
     this.activeSources = []
-    // Arrival chime/VO oneshots — tracked separately so cancel doesn't kill beds.
+    // Arrival chime/VO oneshots · tracked separately so cancel doesn't kill beds.
     this.arrivalChimeGeneration = 0
     this.arrivalSources = []
 
@@ -216,7 +216,7 @@ export class AudioEngine {
       }
     }
 
-    // HTML narration often keeps playing while Chrome is backgrounded — treat
+    // HTML narration often keeps playing while Chrome is backgrounded · treat
     // that as healthy, not interrupted.
     if (this.isNarrationElementPlaying()) {
       this.setNarrationPlaying(true)
@@ -225,7 +225,7 @@ export class AudioEngine {
       return false
     }
 
-    // User (or lock-screen controls) paused intentionally — no resume banner.
+    // User (or lock-screen controls) paused intentionally · no resume banner.
     if (this.session?.paused) {
       this.setPlaybackInterrupted(false)
       this.syncMediaSession()
@@ -613,7 +613,7 @@ export class AudioEngine {
       if (this.session !== session || session.element !== audio) return
       // Ignore programmatic pauses during seek/teardown (session.paused already set).
       if (session.paused) return
-      // Natural end also fires `pause` in some browsers — let onEnded advance.
+      // Natural end also fires `pause` in some browsers · let onEnded advance.
       if (audio.ended) return
       // OS / Dynamic Island may pause without going through pauseNarration().
       session.offset = audio.currentTime || session.offset
@@ -676,7 +676,7 @@ export class AudioEngine {
     }
     clearMediaSession()
     this.emitProgress()
-    // Natural completion only — stop()/teardown() clear the session directly and
+    // Natural completion only · stop()/teardown() clear the session directly and
     // never route through here.
     this.onNarrationEnded?.(ended)
   }
@@ -1037,7 +1037,7 @@ export class AudioEngine {
 
   /**
    * Arrival cues use HTMLAudioElement (same path as narration) so iOS plays
-   * them with the Ring/Silent switch on Silent — Web Audio BufferSources are muted.
+   * them with the Ring/Silent switch on Silent · Web Audio BufferSources are muted.
    */
   async playArrivalOneShot(filename) {
     if (!filename) return false

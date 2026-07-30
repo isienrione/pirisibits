@@ -13,7 +13,7 @@ function formatTime(seconds) {
 /**
  * Persistent, minimizable narration dock. Rendered above the tab bar / safe
  * area during the journey so audio (especially transit narration heard while
- * walking) is always visible and controllable — never a mystery sound.
+ * walking) is always visible and controllable · never a mystery sound.
  */
 export default function FloatingAudioPlayer({
   accent = T.actI,

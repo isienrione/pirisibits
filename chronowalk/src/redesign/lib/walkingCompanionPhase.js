@@ -102,7 +102,7 @@ export function resolveWalkingDistanceCopy(distanceM, estimatedDistanceM, locati
   }
 
   return {
-    primary: '—',
+    primary: '-',
     secondary: null,
     estimated: false,
     pending: locationStatus === LOCATION_STATUS.WAITING,

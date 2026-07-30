@@ -3,7 +3,7 @@ import { LANDING_ENDING } from './landingVisualAssets.js'
 import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
- * Act III — final cinematic CTA (Prompt 16).
+ * Act III · final cinematic CTA (Prompt 16).
  * Film-frame leave-taking: full-bleed Rome, dark veil, gold seam, quiet CTAs.
  * Primary → /preview (landing_cta_preview); secondary → #pricing.
  */

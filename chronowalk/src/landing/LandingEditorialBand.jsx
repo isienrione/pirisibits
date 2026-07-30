@@ -3,7 +3,7 @@ import { viaSacraNow } from '../redesign/images.js'
 import { LANDING_CONTENT } from './landingData.js'
 
 /**
- * Full-bleed bone band — problem + rescue editorial copy.
+ * Full-bleed bone band · problem + rescue editorial copy.
  * Sits immediately below the cinematic hero (obsidian → bone transition).
  */
 export default function LandingEditorialBand() {

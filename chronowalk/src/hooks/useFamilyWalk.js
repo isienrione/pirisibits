@@ -55,7 +55,7 @@ export function useFamilyWalk() {
   const [session, setSession] = useState(() => readCachedSession())
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
-  /** One-time invite secrets keyed by seat id — never logged / never analytics. */
+  /** One-time invite secrets keyed by seat id · never logged / never analytics. */
   const [latestInvites, setLatestInvites] = useState({})
   const applyingRemoteRef = useRef(false)
   const lastUpdatedRef = useRef(session?.updatedAt ?? null)

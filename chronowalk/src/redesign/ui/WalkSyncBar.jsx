@@ -159,7 +159,7 @@ export default function WalkSyncBar({
 
       {pendingGroupResume && !isLeader ? (
         <p style={{ margin: 0, fontSize: 12, color: `${T.warmWhite}75` }}>
-          Group resumed — tap to continue audio on this phone (browser autoplay limit).
+          Group resumed · tap to continue audio on this phone (browser autoplay limit).
         </p>
       ) : null}
 

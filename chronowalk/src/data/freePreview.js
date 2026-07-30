@@ -1,4 +1,4 @@
-/** Free sample stop — Colosseum exterior reconstruction + intro audio. */
+/** Free sample stop · Colosseum exterior reconstruction + intro audio. */
 export const FREE_PREVIEW_STOP_ID = 'colosseum'
 
 /** Full bundled route shown in free preview (all stops visible, one unlocked). */

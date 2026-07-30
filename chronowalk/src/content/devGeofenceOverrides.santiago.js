@@ -1,5 +1,5 @@
 /**
- * TEMPORARY field-test geofences — Santiago, Chile (Providencia / Las Condes).
+ * TEMPORARY field-test geofences · Santiago, Chile (Providencia / Las Condes).
  * Enabled only when ?devGeofences=santiago or VITE_DEV_GEOFENCES=santiago.
  * Remove this file and wiring once Rome GPS field testing is complete.
  */

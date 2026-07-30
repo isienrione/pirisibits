@@ -21,7 +21,7 @@ const SEAM_X = 38
 const NODE_R = 7
 
 /**
- * Post-preview ghost tour — full Rome itinerary visible, one sample stop unlocked.
+ * Post-preview ghost tour · full Rome itinerary visible, one sample stop unlocked.
  */
 export default function A2PreviewGhostTour({
   manifest,

@@ -88,7 +88,7 @@ function InviteForm({ initialCode }) {
             color: 'var(--muted-warm)',
           }}
         >
-          Enter the invite code from your partner or family — it unlocks the tour on this phone.
+          Enter the invite code from your partner or family · it unlocks the tour on this phone.
         </p>
 
         <form onSubmit={redeem} style={{ marginTop: 28, display: 'grid', gap: 14 }}>
@@ -119,7 +119,7 @@ function InviteForm({ initialCode }) {
                 color: 'var(--warm-white)',
                 fontSize: 'var(--fs-secondary)',
                 letterSpacing: '0.12em',
-                // Visual only — does not mutate React state / submitted secret.
+                // Visual only · does not mutate React state / submitted secret.
                 textTransform: 'uppercase',
               }}
             />
@@ -194,7 +194,7 @@ function InviteForm({ initialCode }) {
 
 export function InvitePage() {
   const [searchParams] = useSearchParams()
-  // Preserve URL secret as-is (trim only). Never destructively uppercase —
+  // Preserve URL secret as-is (trim only). Never destructively uppercase ·
   // secrets are lowercase hex; CSS may style the field as uppercase visually.
   // Remount when the query code changes so URL loads stay non-destructive.
   const codeFromUrl = (searchParams.get('code') ?? '').trim()

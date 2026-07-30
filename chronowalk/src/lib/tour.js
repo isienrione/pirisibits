@@ -45,7 +45,7 @@ export function resolveWaypointMedia(waypoint) {
   }
 }
 
-// Legacy helper — acts replaced days
+// Legacy helper · acts replaced days
 export function allWaypointIdsForDay() {
   return []
 }

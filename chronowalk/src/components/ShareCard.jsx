@@ -213,7 +213,7 @@ export function ShareCard({
       const file = new File([blob], `chronowalk-${slug}.png`, { type: 'image/png' })
       const shareData = {
         files: [file],
-        title: `${title} — ChronoWalk`,
+        title: `${title} · ChronoWalk`,
         text: `Then and now at ${title} with ChronoWalk.`,
       }
 
@@ -223,7 +223,7 @@ export function ShareCard({
       }
 
       downloadBlob(blob, `chronowalk-${slug}.png`)
-      setToast('Download started — press and hold the image to save on some devices.')
+      setToast('Download started · press and hold the image to save on some devices.')
     } catch (error) {
       if (error?.name === 'AbortError') return
       console.error('ShareCard share failed:', error)

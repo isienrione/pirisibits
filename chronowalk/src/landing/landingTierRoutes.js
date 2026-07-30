@@ -76,7 +76,7 @@ const COMPLETE_ROUTE = [
   'appian-way',
 ]
 
-/** Wide Rome frame — complete tier and legacy helpers. */
+/** Wide Rome frame · complete tier and legacy helpers. */
 export const ROME_LANDING_MAP_BOUNDS = {
   minLat: 41.854,
   maxLat: 41.907,
@@ -125,7 +125,7 @@ export function buildBoundsFromStops(stops, paddingRatio = 0.25) {
   }
 }
 
-/** Per-tier map frame — central and ancient tiers zoom into their clusters. */
+/** Per-tier map frame · central and ancient tiers zoom into their clusters. */
 export function getLandingTierMapBounds(tierId) {
   const stops = getLandingTierRouteStops(tierId)
   const padding = TIER_MAP_PADDING[tierId] ?? 0.2
@@ -141,7 +141,7 @@ const TIBER_GEO = [
   { lat: 41.858, lng: 12.504 },
 ]
 
-/** Walk order per landing tier — used for route lines on pricing maps. */
+/** Walk order per landing tier · used for route lines on pricing maps. */
 export const LANDING_TIER_ROUTES = {
   'rome-central': [...CENTRAL_ROME_TOUR.stopIds],
   'rome-essential': ESSENTIAL_ROUTE,

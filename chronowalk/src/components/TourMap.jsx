@@ -156,7 +156,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       casingWidth: walkingCompanionUI ? 12 : 9,
       casingOpacity: walkingCompanionUI ? 0.6 : 0.4,
       lineWidth: walkingCompanionUI ? 4 : 3.5,
-      // Solid core on the walk hero — dashed reads as a flat schematic stroke.
+      // Solid core on the walk hero · dashed reads as a flat schematic stroke.
       dashed: !walkingCompanionUI,
     })
 
@@ -482,7 +482,7 @@ function TourMapboxView({
         if (!radioOffline) return
         offlineTileErrors += 1
         if (offlineTileErrors >= 3) {
-          console.warn('Mapbox offline tile errors — falling back to route sketch')
+          console.warn('Mapbox offline tile errors · falling back to route sketch')
           onMapFailureRef.current?.()
         }
       })
@@ -883,7 +883,7 @@ function TourMapboxView({
 
   useEffect(() => {
     if (!focusTarget?.lng || !focusTarget?.lat || !map.current || !mapLoaded) return
-    // Walking hero recenter uses pitched fitBounds — never flatten via flyTo.
+    // Walking hero recenter uses pitched fitBounds · never flatten via flyTo.
     if (walkingCompanionUI) return
 
     map.current.flyTo({
@@ -1001,7 +1001,7 @@ const TourMap = ({
 }) => {
   // Mapbox Standard cannot paint offline (style imports, glyphs, sprites, and
   // 3D models are not in the Rome tile package). Use the SVG route sketch
-  // immediately — never leave walkers on a grey canvas.
+  // immediately · never leave walkers on a grey canvas.
   const [offlineMapMode, setOfflineMapMode] = useState(
     () => !isMapboxConfigured() || Boolean(isOffline),
   )

@@ -113,7 +113,7 @@ export default function AppEntryThreshold({
             maxWidth: 300,
           }}
         >
-          {packBlurb} This is no longer the website — open ChronoWalk from here like an app.
+          {packBlurb} This is no longer the website · open ChronoWalk from here like an app.
         </p>
 
         <div style={{ marginTop: 'auto', display: 'grid', gap: 12 }}>
@@ -149,7 +149,7 @@ export default function AppEntryThreshold({
                 >
                   Tap <span style={{ color: T.warmWhite }}>Share</span>, then{' '}
                   <span style={{ color: T.warmWhite }}>Add to Home Screen</span>. Then open the icon
-                  — not the website.
+                  · not the website.
                 </p>
               ) : null}
               <button

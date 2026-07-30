@@ -25,7 +25,7 @@ import {
 
 /**
  * One adaptive layout for walking between stops (waypoint legs + transits).
- * Presentation only — callers supply routing, GPS, and narration handlers.
+ * Presentation only · callers supply routing, GPS, and narration handlers.
  */
 export default function WalkingCompanionScreen({
   accent = T.actI,
@@ -66,16 +66,16 @@ export default function WalkingCompanionScreen({
   beginChapterLabel = null,
   testId = 'walking-companion-screen',
   walkingUiRev,
-  /** Optional controlled Map/Steps tab — used by landing product demo storytelling. */
+  /** Optional controlled Map/Steps tab · used by landing product demo storytelling. */
   forcedRouteView = null,
-  /** Optional precomputed directions — skips Mapbox when provided. */
+  /** Optional precomputed directions · skips Mapbox when provided. */
   directionsOverride = null,
   /**
    * First tour stop (Colosseum): there is no previous leg, so directions will
    * often fail. Show orienting copy instead of a scary error.
    */
   isFirstStop = false,
-  /** Ride/taxi legs (e.g. Via Appia) — replaces walk distance chrome. */
+  /** Ride/taxi legs (e.g. Via Appia) · replaces walk distance chrome. */
   etaOverride = null,
 }) {
   const [fullPlayerOpen, setFullPlayerOpen] = useState(false)

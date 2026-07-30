@@ -43,7 +43,7 @@ function displayTitle(size) {
 }
 
 /**
- * Purchase flow surface while Paddle credentials are pending — or the calm bridge
+ * Purchase flow surface while Paddle credentials are pending · or the calm bridge
  * before opening a configured checkout. No decoration; editorial instructions only.
  */
 export default function APurchasePending({
@@ -82,7 +82,7 @@ export default function APurchasePending({
         <p style={{ ...bodyStyle, color: T.muted, marginTop: 16, maxWidth: 340 }}>
           {checkoutReady
             ? 'Paddle checkout opens next. After payment, your access link arrives by email.'
-            : 'Payments wait on Paddle credentials (client token + price ids). The steps below are ready — live card checkout appears when checkout is configured.'}
+            : 'Payments wait on Paddle credentials (client token + price ids). The steps below are ready · live card checkout appears when checkout is configured.'}
         </p>
 
         {(tierLabel || priceLabel) && (
@@ -172,7 +172,7 @@ export default function APurchasePending({
                 Your selected tour stays here until payment completes. Set{' '}
                 <code style={{ color: T.ember }}>VITE_PADDLE_CLIENT_TOKEN</code> and{' '}
                 <code style={{ color: T.ember }}>VITE_PADDLE_PRICE_ROME_*</code> (see{' '}
-                <code style={{ color: T.ember }}>docs/PADDLE_SETUP.md</code>) — Rome will not unlock
+                <code style={{ color: T.ember }}>docs/PADDLE_SETUP.md</code>) · Rome will not unlock
                 without purchase.
               </p>
               <div style={{ marginTop: 16, height: 12, position: 'relative' }}>
@@ -183,7 +183,7 @@ export default function APurchasePending({
 
           {!checkoutReady && stagingAllowed && onStagingCheckout ? (
             <GhostButton onClick={onStagingCheckout} style={{ opacity: busy ? 0.7 : 1 }}>
-              Dev only — simulate paid unlock
+              Dev only · simulate paid unlock
             </GhostButton>
           ) : null}
 

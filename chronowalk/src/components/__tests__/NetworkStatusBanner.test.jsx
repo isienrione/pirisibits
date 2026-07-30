@@ -23,7 +23,7 @@ describe('NetworkStatusBanner', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByText(/you're offline — cached audio works normally/i)).toBeInTheDocument()
+    expect(screen.getByText(/you're offline\. cached audio works normally/i)).toBeInTheDocument()
     expect(screen.getByText(/navigation data may be unavailable/i)).toBeInTheDocument()
   })
 

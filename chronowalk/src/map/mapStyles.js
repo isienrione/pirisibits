@@ -1,9 +1,9 @@
 import { hex } from '../design/tokens.js'
 
-/** Mapbox Standard Satellite — Walking-to hero only (heavier imagery tiles). */
+/** Mapbox Standard Satellite · Walking-to hero only (heavier imagery tiles). */
 export const MAPBOX_STYLE_STANDARD_SATELLITE = 'mapbox://styles/mapbox/standard-satellite'
 
-/** Mapbox Standard vector — full-screen MAP tab (lighter bandwidth). */
+/** Mapbox Standard vector · full-screen MAP tab (lighter bandwidth). */
 export const MAPBOX_STYLE_STANDARD = 'mapbox://styles/mapbox/standard'
 
 /**
@@ -20,7 +20,7 @@ export const WALKING_HERO_BASEMAP_CONFIG = Object.freeze({
 
 /**
  * Basemap config for the full-screen MAP tab.
- * Night Standard + warm road accents — ChronoWalk palette, not Mapbox blue.
+ * Night Standard + warm road accents · ChronoWalk palette, not Mapbox blue.
  */
 export const MAP_TAB_BASEMAP_CONFIG = Object.freeze({
   lightPreset: 'night',
@@ -51,7 +51,7 @@ export function isMapboxStandardStyle(styleUrl) {
  *
  * Offline / spotty-signal: prefer Standard vector while online-but-constrained
  * (satellite would paint black). When fully offline, TourMap mounts
- * OfflineRouteMap instead — Mapbox Standard needs imports/glyphs/models that
+ * OfflineRouteMap instead · Mapbox Standard needs imports/glyphs/models that
  * the Rome tile package does not include, so Standard stays grey offline.
  *
  * `VITE_MAPBOX_STYLE_URL` still overrides the MAP-tab style for Studio experiments.
@@ -73,7 +73,7 @@ export function resolveTourMapStyleOptions({
       config: {
         basemap: {
           ...WALKING_HERO_BASEMAP_CONFIG,
-          // Day offline — night-on-empty-tiles reads as a broken grey/black load.
+          // Day offline · night-on-empty-tiles reads as a broken grey/black load.
           ...(preferOfflineStyle ? { lightPreset: 'day' } : null),
         },
       },

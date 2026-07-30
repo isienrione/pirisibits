@@ -37,7 +37,7 @@ import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
 
 /**
- * ChronoWalk Landing V4 — Apple-style product presentation.
+ * ChronoWalk Landing V4 · Apple-style product presentation.
  * Sticky phone is the protagonist. Commerce / FAQ / SEO handlers preserved.
  */
 export default function ChronoWalkLanding() {
@@ -177,7 +177,7 @@ export default function ChronoWalkLanding() {
           />
           <V2ErrorBoundary
             title="Demo unavailable"
-            message="The product demo could not load on this device. The rest of ChronoWalk still works — scroll for tours and pricing."
+            message="The product demo could not load on this device. The rest of ChronoWalk still works · scroll for tours and pricing."
             autoRecoverOnAnyError={false}
             onRetry={() => window.location.assign('/rome/reset-shell.html')}
           >

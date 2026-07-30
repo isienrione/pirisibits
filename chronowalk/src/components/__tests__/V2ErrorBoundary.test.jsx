@@ -25,7 +25,7 @@ describe('V2ErrorBoundary', () => {
   it('renders fallback UI and custom onRetry still remounts', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
     const onRetry = vi.fn()
-    // Don't auto-recover in this test — custom onRetry owns the path.
+    // Don't auto-recover in this test · custom onRetry owns the path.
     recoverStaleClient.mockResolvedValue({ recovered: false, reloading: false })
 
     const { rerender } = render(

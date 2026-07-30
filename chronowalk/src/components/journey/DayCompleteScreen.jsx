@@ -15,7 +15,7 @@ export default function DayCompleteScreen({
     >
       <p style={{ margin: '20px 0 0', fontSize: 'var(--fs-secondary)', color: 'var(--muted-warm)', lineHeight: 1.5 }}>
         {actTitle ? `You finished ${actTitle}.` : 'You finished the Forum and the market.'} Take the evening.
-        Rome keeps your place — Acts V and VI begin when you return.
+        Rome keeps your place · Acts V and VI begin when you return.
       </p>
 
       <div style={{ marginTop: 28 }}>
