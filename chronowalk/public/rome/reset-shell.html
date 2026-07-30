@@ -61,20 +61,18 @@
         //
         // Critical on iOS: unregister() can resolve while navigator.serviceWorker
         // .controller is still set. Navigating then re-serves the poisoned shell
-        // under the old controller → module scripts fail → index.html cooldown
-        // suppresses recovery → permanent "Loading ChronoWalk…".
+        // under the old controller → module scripts fail → index.html recovery
+        // bounces back here → blink loop on "Refreshing ChronoWalk…".
         //
-        // NEVER navigate to /landing while controller is still set. Previous
-        // fixes waited ~2.5s then navigated anyway - that was still insufficient
-        // on iOS. Instead: wait longer, reload this denylisted page once to drop
-        // the controller client, and only then go to /landing. If still stuck,
-        // show a manual continue (do not poison /landing).
+        // Rules:
+        // 1. NEVER navigate to /landing while a controller (or registration) remains.
+        // 2. force=1 (stuck escape): NEVER auto-navigate. Wipe, then show Continue.
+        // 3. Loop guard: if this page reloads itself too often, stop and show Continue.
         var RESET_AT_KEY = 'cw-shell-reset-at'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
         var WAIT_RELOAD_KEY = 'cw-reset-shell-wait-reload'
-        var COOLDOWN_MS = 2 * 60 * 1000
+        var LOOP_KEY = 'cw-reset-shell-loop'
         var CONTROLLER_WAIT_MS = 10000
-        var now = Date.now()
         var force = false
         try {
           force = new URLSearchParams(window.location.search).get('force') === '1'
@@ -87,6 +85,12 @@
           } catch (e) {
             window.location.href = '/landing?cw_bust=' + Date.now()
           }
+        }
+
+        function isShellClear() {
+          if (!('serviceWorker' in navigator)) return true
+          var controller = navigator.serviceWorker.controller
+          return !controller
         }
 
         function waitForControllerGone(timeoutMs) {
@@ -156,44 +160,72 @@
             sessionStorage.setItem('cw-chunk-reload', 'reset-shell')
             sessionStorage.removeItem('cw-boot-pending')
             sessionStorage.removeItem(WAIT_RELOAD_KEY)
+            sessionStorage.removeItem(LOOP_KEY)
+            // Stop index.html hang-watchdog from bouncing straight back here.
+            sessionStorage.setItem('cw-boot-hang-redirect', '1')
           } catch (e) {}
         }
 
-        function showStuckUi() {
+        function showStuckUi(detail) {
           var status = document.getElementById('cw-reset-status')
           var sub = document.getElementById('cw-reset-sub')
           var actions = document.getElementById('cw-reset-actions')
           if (status) {
-            status.textContent = 'Almost done - one more step'
+            status.textContent = 'Ready when you are'
           }
           if (sub) {
             sub.innerHTML =
-              'This browser is still holding an old app shell. Close <strong>every</strong> ChronoWalk tab (Chrome and Safari), swipe away the Home Screen icon if you use it, wait 5 seconds, then tap Continue. Your access stays on this device.'
+              detail ||
+              'Close <strong>every</strong> ChronoWalk tab in Chrome and Safari (and swipe away the Home Screen icon if you use it). Wait a few seconds, then tap Continue. Your access stays on this device.'
           }
           if (actions) actions.classList.remove('hidden')
         }
 
-        // Show Continue early so travelers are not staring at a blank wipe
-        // while iOS keeps the old controller alive in another tab.
-        window.setTimeout(function () {
-          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-            showStuckUi()
+        function bumpLoopCount() {
+          var n = 0
+          try {
+            n = parseInt(sessionStorage.getItem(LOOP_KEY) || '0', 10) || 0
+            n += 1
+            sessionStorage.setItem(LOOP_KEY, String(n))
+          } catch (e) {
+            n = 99
           }
-        }, 2500)
+          return n
+        }
+
+        var loopCount = bumpLoopCount()
+        // force=1 or blink-loop: never auto-navigate. Wipe, then wait for Continue.
+        var manualOnly = force || loopCount >= 2
+
+        function finishManual() {
+          return clearCachesAndWorkers()
+            .catch(function () {})
+            .then(function () {
+              showStuckUi()
+            })
+        }
 
         function finishToLanding() {
           return waitForControllerGone(CONTROLLER_WAIT_MS).then(function (gone) {
-            if (gone) {
+            if (gone && isShellClear()) {
               markResetCompleted()
               return new Promise(function (resolve) {
                 window.setTimeout(resolve, 200)
-              }).then(goLanding)
+              }).then(function () {
+                // Re-check right before leaving - iOS can reattach a controller.
+                if (!isShellClear()) {
+                  showStuckUi()
+                  return
+                }
+                goLanding()
+              })
             }
 
             // Still controlled after unregister: reload THIS denylisted document so
             // the next document is not a controlled client. At most once per tab.
+            // Never reload on force=1 / loop - that is the blink.
             try {
-              if (sessionStorage.getItem(WAIT_RELOAD_KEY) !== '1') {
+              if (!manualOnly && sessionStorage.getItem(WAIT_RELOAD_KEY) !== '1') {
                 sessionStorage.setItem(WAIT_RELOAD_KEY, '1')
                 window.location.reload()
                 return
@@ -215,24 +247,37 @@
           }
         } catch (e) {}
 
-        // Always wipe + wait. Skipping the wait left iOS on Loading ChronoWalk.
-        clearCachesAndWorkers()
-          .catch(function () {})
-          .then(finishToLanding)
+        if (manualOnly) {
+          // Stuck escape / blink break: wipe once and stop. No reload, no /landing.
+          finishManual()
+        } else {
+          clearCachesAndWorkers()
+            .catch(function () {})
+            .then(finishToLanding)
+        }
+
+        // Surface Continue quickly so the page is never a dead "Refreshing…" forever.
+        window.setTimeout(function () {
+          showStuckUi()
+        }, 1500)
 
         window.__cwResetShellContinue = function () {
+          var status = document.getElementById('cw-reset-status')
+          if (status) status.textContent = 'Checking…'
           clearCachesAndWorkers()
             .catch(function () {})
             .then(function () {
               return waitForControllerGone(CONTROLLER_WAIT_MS)
             })
             .then(function (gone) {
-              if (gone) {
+              if (gone && isShellClear()) {
                 markResetCompleted()
                 goLanding()
                 return
               }
-              showStuckUi()
+              showStuckUi(
+                'Still held by an old app shell. Close every other ChronoWalk tab, wait 5 seconds, then tap Continue again. Your access stays on this device.',
+              )
             })
         }
       })()

@@ -156,11 +156,15 @@
         // document is STILL controlled, modules will load under the redundant SW
         // and hang on "Loading ChronoWalk…". Bounce back to force reset instead
         // of evaluating /assets/*.js under the poison controller.
+        //
+        // Do NOT bounce during the post-reset cooldown - that + hang-watchdog
+        // created a blink loop (reset-shell ↔ /landing).
         try {
           if (
             localStorage.getItem(SKIP_SW_KEY) === '1' &&
             'serviceWorker' in navigator &&
-            navigator.serviceWorker.controller
+            navigator.serviceWorker.controller &&
+            !recentlyReset()
           ) {
             window.location.replace(RESET_PATH + '?force=1&cw_bust=' + Date.now())
             return
@@ -174,13 +178,14 @@
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
-              // After a recent shell wipe, automatic reset-shell loops are blocked.
-              // Surface a forced escape hatch instead of leaving "Loading ChronoWalk…" forever
-              // (common when iOS still controlled the tab during reset-shell → /landing).
+              // After a recent shell wipe, do not auto-bounce again (blink loop).
+              // Keep a manual escape on the boot hint instead.
               if (recentlyReset()) {
-                // Cooldown used to only show a link - on iOS many travelers never
-                // tap it and stay on "Loading ChronoWalk…" forever. Force wipe.
-                window.location.replace(RESET_PATH + '?force=1&cw_bust=' + Date.now())
+                var hint = document.getElementById('cw-boot-hint')
+                if (hint) {
+                  hint.innerHTML =
+                    'ChronoWalk could not finish loading.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Tap to refresh the app shell</a> - close other ChronoWalk tabs first. Access stays on this device.'
+                }
                 return
               }
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
@@ -231,14 +236,23 @@
     <script>
       ;(function () {
         // If React never mounts (poisoned SW serving HTML as JS, hung boot),
-        // do not leave travelers on "Loading ChronoWalk…" forever. Auto-bounce
-        // to the denylisted reset page once per tab session; after that, keep
-        // a manual link so we do not loop.
+        // bounce once to the denylisted reset page. Never bounce during the
+        // post-reset cooldown - that caused reset-shell ↔ /landing blinking.
         var HANG_REDIRECT_KEY = 'cw-boot-hang-redirect'
+        var RESET_AT_KEY = 'cw-shell-reset-at'
         var RESET_HREF = '/rome/reset-shell?force=1'
         var hint = document.getElementById('cw-boot-hint')
         var hangMs =
           'serviceWorker' in navigator && navigator.serviceWorker.controller ? 3500 : 6000
+
+        function recentlyReset() {
+          try {
+            var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
+            return last && Date.now() - last < 2 * 60 * 1000
+          } catch (e) {
+            return false
+          }
+        }
 
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
@@ -246,7 +260,7 @@
           try {
             already = sessionStorage.getItem(HANG_REDIRECT_KEY) === '1'
           } catch (e) {}
-          if (!already) {
+          if (!already && !recentlyReset()) {
             try {
               sessionStorage.setItem(HANG_REDIRECT_KEY, '1')
             } catch (e2) {}
