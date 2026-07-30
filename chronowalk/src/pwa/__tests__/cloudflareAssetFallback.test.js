@@ -66,14 +66,13 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
 
   it('keeps boot recovery from auto-navigating into reset/open loops', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
-    expect(html).toContain('/landing?cw_clean=1')
-    expect(html).toContain('Open ChronoWalk')
-    expect(html).toContain("pathname.indexOf('/assets/')")
+    expect(html).toContain('/rome/reset-shell?force=1')
+    expect(html).toContain('cw-asset-fail-purge')
+    expect(html).toContain('cw-sw-purge-reload')
+    expect(html).toContain('unregister')
     expect(html).not.toContain('assets.lemonsqueezy.com/lemon.js')
     expect(html).not.toContain('goResetShell')
     expect(html).not.toContain('goOpenStuck')
-    expect(html).toContain('cw-sw-purge-reload')
-    expect(html).toContain('unregister')
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {

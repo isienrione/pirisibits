@@ -89,6 +89,7 @@
         var SKIP_SW_KEY = 'cw-skip-sw-once'
         var RESET_AT_KEY = 'cw-shell-reset-at'
         var PURGE_RELOAD_KEY = 'cw-sw-purge-reload'
+        var ASSET_FAIL_KEY = 'cw-asset-fail-purge'
 
         function markSkipSw() {
           try {
@@ -96,28 +97,20 @@
           } catch (e) {}
         }
 
-        // ROOT CAUSE FIX: if a service worker still controls this tab, module
-        // scripts can receive HTML (SPA fallback) and React never mounts -
-        // forever "Loading ChronoWalk…". Kill SW/caches and reload once before
-        // any /assets module runs.
-        try {
-          if (
-            'serviceWorker' in navigator &&
-            navigator.serviceWorker.controller &&
-            sessionStorage.getItem(PURGE_RELOAD_KEY) !== '1'
-          ) {
-            sessionStorage.setItem(PURGE_RELOAD_KEY, '1')
-            markSkipSw()
-            var jobs = []
-            if ('caches' in window) {
-              jobs.push(
-                caches.keys().then(function (names) {
-                  return Promise.all(names.map(function (name) {
+        function clearCachesAndWorkers() {
+          var jobs = []
+          if ('caches' in window) {
+            jobs.push(
+              caches.keys().then(function (names) {
+                return Promise.all(
+                  names.map(function (name) {
                     return caches.delete(name)
-                  }))
-                }),
-              )
-            }
+                  }),
+                )
+              }),
+            )
+          }
+          if ('serviceWorker' in navigator) {
             jobs.push(
               navigator.serviceWorker.getRegistrations().then(function (regs) {
                 return Promise.all(
@@ -127,7 +120,22 @@
                 )
               }),
             )
-            Promise.all(jobs)
+          }
+          return Promise.all(jobs)
+        }
+
+        // ROOT CAUSE FIX: if a service worker still controls this tab, module
+        // scripts can receive HTML (SPA fallback) and React never mounts.
+        // Kill SW/caches and reload once before any /assets module runs.
+        try {
+          if (
+            'serviceWorker' in navigator &&
+            navigator.serviceWorker.controller &&
+            sessionStorage.getItem(PURGE_RELOAD_KEY) !== '1'
+          ) {
+            sessionStorage.setItem(PURGE_RELOAD_KEY, '1')
+            markSkipSw()
+            clearCachesAndWorkers()
               .catch(function () {})
               .then(function () {
                 window.location.reload()
@@ -136,36 +144,21 @@
           }
         } catch (e) {}
 
-        // Best-effort: even without a controller, drop registrations so a later
-        // navigation cannot reclaim a poisoned worker. Do not block boot.
+        // Best-effort: drop registrations so a later navigation cannot reclaim
+        // a poisoned worker. Do not block boot.
         try {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (reg) {
-                reg.unregister()
-              })
-            })
-          }
-          if ('caches' in window) {
-            caches.keys().then(function (names) {
-              names.forEach(function (name) {
-                caches.delete(name)
-              })
-            })
-          }
+          clearCachesAndWorkers().catch(function () {})
         } catch (e2) {}
 
-        // Never use document.write here — Mobile Safari renders the rest of the
-        // inline script as visible text.
         try {
-          // Fresh start: clear loop flags, but KEEP skip-sw so a lingering
-          // controller cannot re-enter reset-shell recovery.
           var params = new URLSearchParams(window.location.search || '')
           if (params.get('cw_clean') === '1') {
             localStorage.removeItem(RESET_KEY)
             localStorage.removeItem(RESET_AT_KEY)
             localStorage.setItem(SKIP_SW_KEY, '1')
             sessionStorage.removeItem(BOOT_RELOAD_KEY)
+            sessionStorage.removeItem(PURGE_RELOAD_KEY)
+            sessionStorage.removeItem(ASSET_FAIL_KEY)
             sessionStorage.setItem('cw-boot-hang-redirect', '1')
             sessionStorage.removeItem('cw-chunk-reload')
             if (window.history && window.history.replaceState) {
@@ -196,16 +189,30 @@
             } catch (parseErr) {
               return
             }
+
+            // Chrome iOS keeps its own SW/cache separate from Safari. One more
+            // denylisted wipe often clears it; if not, site-data clear is required.
             try {
-              if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
-              sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
+              if (sessionStorage.getItem(ASSET_FAIL_KEY) !== '1') {
+                sessionStorage.setItem(ASSET_FAIL_KEY, '1')
+                sessionStorage.removeItem(PURGE_RELOAD_KEY)
+                sessionStorage.removeItem(BOOT_RELOAD_KEY)
+                markSkipSw()
+                clearCachesAndWorkers()
+                  .catch(function () {})
+                  .then(function () {
+                    window.location.replace('/rome/reset-shell?force=1&cw_bust=' + Date.now())
+                  })
+                return
+              }
             } catch (err) {
-              return
+              // fall through to manual instructions
             }
+
             var hint = document.getElementById('cw-boot-hint')
             if (hint) {
               hint.innerHTML =
-                'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a><br/><span style="opacity:0.75;font-size:0.9rem">Or clear Cookies and site data for chronowalk.com, then reopen this page.</span>'
+                'Chrome still has an old ChronoWalk copy on this phone.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh app shell</a><br/><span style="display:inline-block;margin-top:0.75rem;opacity:0.85;font-size:0.9rem;font-weight:400">If that fails: tap the lock icon by the URL → Cookies and site data → clear for chronowalk.com → then open chronowalk.com/landing</span>'
             }
           },
           true,
@@ -227,7 +234,7 @@
         Loading ChronoWalk…
         <br />
         <a
-          href="/landing?cw_clean=1"
+          href="/rome/reset-shell?force=1"
           style="
             display: inline-block;
             margin-top: 1rem;
@@ -236,7 +243,7 @@
             font-size: 0.9rem;
             font-weight: 400;
           "
-          >Open ChronoWalk</a
+          >Stuck? Refresh app shell</a
         >
       </p>
     </div>
@@ -246,18 +253,15 @@
          shell-reset recovery or "could not finish loading". -->
     <script>
       ;(function () {
-        // If React never mounts, show a real link. Do NOT auto-redirect to
-        // /rome/open or reset-shell - that bounce loop made buttons look dead
-        // after travelers already cleared site data.
         var hint = document.getElementById('cw-boot-hint')
         var hasController =
           'serviceWorker' in navigator && Boolean(navigator.serviceWorker.controller)
-        var hangMs = hasController ? 5000 : 15000
+        var hangMs = hasController ? 4000 : 12000
 
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
           hint.innerHTML =
-            'ChronoWalk is taking longer than usual.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
+            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh app shell</a><br/><span style="opacity:0.85;font-size:0.9rem">Chrome: lock icon → Cookies and site data → clear chronowalk.com, then open /landing</span>'
         }, hangMs)
       })()
     </script>
