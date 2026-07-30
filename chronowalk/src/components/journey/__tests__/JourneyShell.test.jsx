@@ -52,7 +52,8 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     playWaypoint: playWaypointMock,
     playTransit: playTransitMock,
     playResumeCue: vi.fn().mockResolvedValue(undefined),
-    playArrivalChime: vi.fn().mockResolvedValue(undefined),
+    playArrivalChime: vi.fn().mockResolvedValue(true),
+    cancelArrivalChime: vi.fn(),
     playCompletionChime: vi.fn().mockResolvedValue(undefined),
     endTransit: vi.fn(),
     stopNarration: vi.fn(),
@@ -189,7 +190,7 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByText(/your rome awaits/i)).toBeInTheDocument()
-    expect(screen.getByTestId('tour-route-illustration')).toBeInTheDocument()
+    expect(screen.getByTestId('route-preview-pack')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /begin your walk/i })).toBeInTheDocument()
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })

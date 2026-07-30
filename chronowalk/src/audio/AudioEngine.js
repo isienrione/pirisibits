@@ -46,6 +46,9 @@ export class AudioEngine {
     this.narrationPlaying = false
     this.playbackGeneration = 0
     this.activeSources = []
+    // Arrival chime/VO oneshots — tracked separately so cancel doesn't kill beds.
+    this.arrivalChimeGeneration = 0
+    this.arrivalSources = []
 
     // Controllable narration session (play/pause/seek/skip across a plan).
     // Narration uses an HTMLAudioElement so iOS can keep playing in background
@@ -1010,20 +1013,101 @@ export class AudioEngine {
   }
 
   /**
+   * Stop an in-flight arrival chime / “Waypoint unlocked!” VO so it cannot
+   * leak into story narration after the walker leaves the arrival moment.
+   */
+  cancelArrivalChime() {
+    this.arrivalChimeGeneration += 1
+    for (const source of this.arrivalSources) {
+      try {
+        source.stop()
+      } catch {
+        // already stopped
+      }
+    }
+    this.arrivalSources = []
+  }
+
+  async playArrivalOneShot(filename) {
+    if (!filename) return false
+    const url = resolveSystemUrl(filename)
+    if (!url) return false
+
+    await this.init()
+    if (!this.context) return false
+
+    const buffer = await this.loadBuffer(url, this.context)
+    if (!buffer) return false
+
+    const source = this.context.createBufferSource()
+    source.buffer = buffer
+
+    const cueGain = this.context.createGain()
+    cueGain.gain.value = 1
+
+    source.connect(cueGain)
+    cueGain.connect(this.systemGain)
+
+    this.arrivalSources.push(source)
+    this.activeSources.push(source)
+
+    await new Promise((resolve) => {
+      let settled = false
+      const finish = () => {
+        if (settled) return
+        settled = true
+        this.arrivalSources = this.arrivalSources.filter((s) => s !== source)
+        this.activeSources = this.activeSources.filter((s) => s !== source)
+        resolve()
+      }
+      source.onended = finish
+      try {
+        source.start(0)
+      } catch {
+        finish()
+      }
+    })
+    return true
+  }
+
+  /**
    * Pocket-safe arrival alert: notification chime, then “Waypoint unlocked!”.
    * Used for every visit-stop arrival (geofence or manual confirm).
+   * @returns {Promise<boolean>} true when the full sequence finished.
    */
   async playArrivalChime() {
+    const generation = ++this.arrivalChimeGeneration
+    // Drop any prior half-played sequence before starting a fresh one.
+    for (const source of this.arrivalSources) {
+      try {
+        source.stop()
+      } catch {
+        // already stopped
+      }
+    }
+    this.arrivalSources = []
+
     try {
       await this.init()
       if (this.context?.state === 'suspended') {
         await this.context.resume().catch(() => {})
       }
-      await this.playUiCue('arrival')
-      await new Promise((r) => setTimeout(r, 450))
-      await this.playUiCue('arrival_unlocked')
+
+      const arrivalFile = this.manifest?.system?.ui?.arrival
+      const unlockedFile = this.manifest?.system?.ui?.arrival_unlocked
+      const playedArrival = await this.playArrivalOneShot(arrivalFile)
+      if (generation !== this.arrivalChimeGeneration) return false
+
+      if (playedArrival) {
+        await new Promise((r) => setTimeout(r, 450))
+        if (generation !== this.arrivalChimeGeneration) return false
+      }
+
+      const playedUnlocked = await this.playArrivalOneShot(unlockedFile)
+      return generation === this.arrivalChimeGeneration && (playedArrival || playedUnlocked)
     } catch (error) {
       console.warn('[audio] playArrivalChime failed', error)
+      return false
     }
   }
 

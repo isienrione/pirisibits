@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings, X } from 'lucide-react'
-import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
+import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
 import ThresholdDiegeticHint from '../ui/ThresholdDiegeticHint.jsx'
@@ -661,9 +661,7 @@ export default function C6ImmersivePlayer({
             style={{
               display: 'flex',
               flexDirection: 'column',
-              padding: showContinuity
-                ? '8px 24px 10px'
-                : `8px 24px max(12px, ${SHELL_SAFE_BOTTOM_INSET})`,
+              padding: showContinuity ? '8px 24px 10px' : undefined,
             }}
           >
             {showContinuity ? (

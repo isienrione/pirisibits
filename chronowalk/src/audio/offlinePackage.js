@@ -136,6 +136,15 @@ export function writeRomeOfflineStatus(status) {
   window.localStorage.setItem(ROME_OFFLINE_STATUS_KEY, JSON.stringify(status))
 }
 
+/** True when the offline package persisted at least some Rome walking-map tiles. */
+export function hasCachedRomeMapTiles() {
+  const status = readRomeOfflineStatus()
+  return (
+    status.status === OFFLINE_AUDIO_STATUS.COMPLETE &&
+    Number(status.mapTileCount) > 0
+  )
+}
+
 async function openRomeAudioCache() {
   if (typeof caches === 'undefined') {
     throw new Error('Cache storage is not supported in this browser.')

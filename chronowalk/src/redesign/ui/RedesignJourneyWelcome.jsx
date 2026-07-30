@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
+import { getPackRoutePreview } from '../../landing/packRoutePreview.js'
 import { useTourManifest, useV2Journey } from '../../hooks/useV2Journey.js'
 import { SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { PrimaryButton } from './index.js'
@@ -13,10 +14,11 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
   const { manifest, loading } = useTourManifest()
 
   const stopCount = useMemo(() => {
+    const pack = getPackRoutePreview(context.pace)
+    if (pack?.marketingStopCount) return pack.marketingStopCount
     if (!manifest) return 0
     return getTourProductTruth(manifest, {
       path: context.path,
-      pace: context.pace,
       promotedOptionalIds: context.promotedOptionalIds,
       customWaypointIds: context.customWaypointIds,
     }).visitStopCount
