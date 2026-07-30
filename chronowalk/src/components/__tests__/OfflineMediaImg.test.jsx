@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { OfflineMediaImg } from '../OfflineMediaImg.jsx'
 import { clearCachedMedia, registerCachedMedia } from '../../lib/mediaUrl.js'
@@ -8,8 +8,31 @@ describe('OfflineMediaImg', () => {
     clearCachedMedia()
   })
 
-  it('falls back to the network URL when a cached blob fails to paint', async () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('prefers the network URL while online even when a blob is registered', () => {
     registerCachedMedia('/waypoints/pantheon/interior/interior-oculus.jpg', 'blob:poison')
+    vi.stubGlobal('navigator', { ...navigator, onLine: true })
+
+    render(
+      <OfflineMediaImg
+        src="/waypoints/pantheon/interior/interior-oculus.jpg"
+        alt="Pantheon dome"
+        data-testid="pantheon-hero"
+      />,
+    )
+
+    expect(screen.getByTestId('pantheon-hero')).toHaveAttribute(
+      'src',
+      '/waypoints/pantheon/interior/interior-oculus.jpg',
+    )
+  })
+
+  it('uses the cached blob while offline and falls back to network on paint failure', async () => {
+    registerCachedMedia('/waypoints/pantheon/interior/interior-oculus.jpg', 'blob:poison')
+    vi.stubGlobal('navigator', { ...navigator, onLine: false })
 
     render(
       <OfflineMediaImg

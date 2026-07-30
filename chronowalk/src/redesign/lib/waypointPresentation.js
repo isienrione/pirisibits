@@ -99,16 +99,27 @@ export function photoForWaypoint(waypoint, chapterIndex = 0) {
   return getNowPhotoUrl('colosseum')
 }
 
-/** Sibling ancient still when reconstruction.then was wrongly set to the modern poster. */
-function inferredAncientPosterPath(waypoint) {
+/**
+ * Sibling ancient still when reconstruction.then was wrongly set to the modern poster.
+ * Prefer ancient-poster.jpg, then ancient-reconstruction.jpg (Circus / Rostra convention).
+ */
+function inferredAncientStillPath(waypoint) {
   const loop =
     resolveWaypointReconstruction(waypoint)?.loop ?? inferredReconstructionLoopPath(waypoint)
   if (!loop || !loop.includes('/waypoints/')) return null
-  const fromLoop = loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-poster.jpg')
-  if (fromLoop !== loop) return fromLoop
+  if (/ancient-reconstruction\.mp4$/i.test(loop)) {
+    return {
+      poster: loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-poster.jpg'),
+      still: loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-reconstruction.jpg'),
+    }
+  }
   const photo = waypoint?.photo ?? ''
-  const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
-  return flat ? `${flat[1]}ancient-poster.jpg` : null
+  const flat = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/)/)
+  if (!flat) return null
+  return {
+    poster: `${flat[1]}ancient-poster.jpg`,
+    still: `${flat[1]}ancient-reconstruction.jpg`,
+  }
 }
 
 export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
@@ -120,8 +131,10 @@ export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
     if (reconstruction.then && reconstruction.then !== reconstruction.now) {
       return resolvePhotoUrl(reconstruction.then)
     }
-    const inferredThen = inferredAncientPosterPath(waypoint)
-    if (inferredThen) return resolvePhotoUrl(inferredThen)
+    const inferred = inferredAncientStillPath(waypoint)
+    // Prefer poster, then still · callers may 404 on missing files; video remains primary.
+    if (inferred?.poster) return resolvePhotoUrl(inferred.poster)
+    if (inferred?.still) return resolvePhotoUrl(inferred.still)
     if (reconstruction.then) return resolvePhotoUrl(reconstruction.then)
     return resolvePhotoUrl(reconstruction.now ?? waypoint?.photo)
   }

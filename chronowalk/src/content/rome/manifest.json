@@ -213,7 +213,7 @@
       "photo": "/waypoints/colosseum/exterior/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/colosseum/exterior/modern-poster.jpg",
-        "then": "/waypoints/colosseum/exterior/modern-poster.jpg",
+        "then": "/waypoints/colosseum/exterior/ancient-poster.jpg",
         "loop": "/waypoints/colosseum/exterior/ancient-reconstruction.mp4",
         "caption": "Evidence-based reconstruction · awning colours are informed conjecture"
       },
@@ -616,7 +616,7 @@
       "photo": "/waypoints/capitoline-hill/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/capitoline-hill/modern-poster.jpg",
-        "then": "/waypoints/capitoline-hill/modern-poster.jpg",
+        "then": "/waypoints/capitoline-hill/ancient-poster.jpg",
         "loop": "/waypoints/capitoline-hill/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },
@@ -834,7 +834,7 @@
       "photo": "/waypoints/piazza-navona/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/piazza-navona/modern-poster.jpg",
-        "then": "/waypoints/piazza-navona/modern-poster.jpg",
+        "then": "/waypoints/piazza-navona/ancient-poster.jpg",
         "loop": "/waypoints/piazza-navona/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },
@@ -871,7 +871,7 @@
       "photo": "/waypoints/campo-de-fiori/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/campo-de-fiori/modern-poster.jpg",
-        "then": "/waypoints/campo-de-fiori/modern-poster.jpg",
+        "then": "/waypoints/campo-de-fiori/ancient-poster.jpg",
         "loop": "/waypoints/campo-de-fiori/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },
@@ -905,7 +905,7 @@
       "photo": "/waypoints/largo-argentina/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/largo-argentina/modern-poster.jpg",
-        "then": "/waypoints/largo-argentina/modern-poster.jpg",
+        "then": "/waypoints/largo-argentina/ancient-poster.jpg",
         "loop": "/waypoints/largo-argentina/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },
@@ -942,7 +942,7 @@
       "photo": "/waypoints/castel-sant-angelo/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/castel-sant-angelo/modern-poster.jpg",
-        "then": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+        "then": "/waypoints/castel-sant-angelo/ancient-poster.jpg",
         "loop": "/waypoints/castel-sant-angelo/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },
@@ -971,7 +971,7 @@
       "photo": "/waypoints/circus-maximus/modern-poster.jpg",
       "reconstruction": {
         "now": "/waypoints/circus-maximus/modern-poster.jpg",
-        "then": "/waypoints/circus-maximus/modern-poster.jpg",
+        "then": "/waypoints/circus-maximus/ancient-reconstruction.jpg",
         "loop": "/waypoints/circus-maximus/ancient-reconstruction.mp4",
         "caption": "Interpretive reconstruction informed by archaeology and scholarship."
       },

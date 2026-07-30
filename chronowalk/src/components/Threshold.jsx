@@ -62,42 +62,80 @@ function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, imm
   )
 }
 
-function ThresholdLayerImage({ src, alt, className, style }) {
+/** True when we should paint from Cache API blobs instead of the network URL. */
+function preferOfflineMediaBlob() {
+  if (typeof navigator === 'undefined') return false
+  return navigator.onLine === false
+}
+
+/**
+ * Network-first Threshold media.
+ * Online: always start with the CDN/same-origin URL (the pre-448ed62 path).
+ * Offline: use a registered blob or hydrate from the Rome Cache API.
+ * Blobs are an enhancement / fallback · never displace a working network URL while online.
+ */
+function useThresholdMediaSrc(src) {
+  const networkSrc = networkMediaUrl(src) ?? src
+  const [resolvedSrc, setResolvedSrc] = useState(() => {
+    if (!src) return src
+    if (preferOfflineMediaBlob()) {
+      const cached = mediaUrl(src)
+      if (cached && String(cached).startsWith('blob:')) return cached
+    }
+    return networkSrc
+  })
   const [failed, setFailed] = useState(false)
-  const [resolvedSrc, setResolvedSrc] = useState(() => mediaUrl(src) ?? src)
   const hydrateGeneration = useRef(0)
   const triedNetworkFallback = useRef(false)
+  const triedOfflineHydrate = useRef(false)
 
   useEffect(() => {
     setFailed(false)
     triedNetworkFallback.current = false
-    setResolvedSrc(mediaUrl(src) ?? src)
+    triedOfflineHydrate.current = false
     const generation = ++hydrateGeneration.current
-    if (!src || String(mediaUrl(src) ?? src).startsWith('blob:')) return undefined
-
-    let cancelled = false
-    void import('../audio/offlinePackage.js')
-      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-      .then((blobUrl) => {
-        if (cancelled || generation !== hydrateGeneration.current) return
-        if (blobUrl) {
-          setResolvedSrc(blobUrl)
-          setFailed(false)
-        }
-      })
-      .catch(() => {})
-
-    return () => {
-      cancelled = true
+    if (!src) {
+      setResolvedSrc(src)
+      return undefined
     }
+
+    const network = networkMediaUrl(src) ?? src
+
+    if (preferOfflineMediaBlob()) {
+      const cached = mediaUrl(src)
+      if (cached && String(cached).startsWith('blob:')) {
+        setResolvedSrc(cached)
+        return undefined
+      }
+      setResolvedSrc(network)
+      let cancelled = false
+      void import('../audio/offlinePackage.js')
+        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+        .then((blobUrl) => {
+          if (cancelled || generation !== hydrateGeneration.current) return
+          if (blobUrl) {
+            setResolvedSrc(blobUrl)
+            setFailed(false)
+          }
+        })
+        .catch(() => {})
+      return () => {
+        cancelled = true
+      }
+    }
+
+    // Online · restore the classic network URL. Do not eager-hydrate over it.
+    setResolvedSrc(network)
+    return undefined
   }, [src])
 
-  const handleError = useCallback(() => {
+  const onError = useCallback(() => {
     const generation = hydrateGeneration.current
     if (!src) {
       setFailed(true)
       return
     }
+
     // Poisoned offline blob → drop it and retry the network URL once.
     if (String(resolvedSrc).startsWith('blob:')) {
       unregisterCachedMedia(src)
@@ -111,36 +149,35 @@ function ThresholdLayerImage({ src, alt, className, style }) {
       setFailed(true)
       return
     }
-    void import('../audio/offlinePackage.js')
-      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-      .then((blobUrl) => {
-        if (generation !== hydrateGeneration.current) return
-        if (blobUrl) {
-          setResolvedSrc(blobUrl)
-          setFailed(false)
-          return
-        }
-        const network = networkMediaUrl(src)
-        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
-          triedNetworkFallback.current = true
-          setResolvedSrc(network)
-          setFailed(false)
-          return
-        }
-        setFailed(true)
-      })
-      .catch(() => {
-        if (generation !== hydrateGeneration.current) return
-        const network = networkMediaUrl(src)
-        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
-          triedNetworkFallback.current = true
-          setResolvedSrc(network)
-          setFailed(false)
-          return
-        }
-        setFailed(true)
-      })
+
+    // Network (or same-origin) failed · try a Cache API blob once, then give up.
+    if (!triedOfflineHydrate.current) {
+      triedOfflineHydrate.current = true
+      void import('../audio/offlinePackage.js')
+        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+        .then((blobUrl) => {
+          if (generation !== hydrateGeneration.current) return
+          if (blobUrl) {
+            setResolvedSrc(blobUrl)
+            setFailed(false)
+            return
+          }
+          setFailed(true)
+        })
+        .catch(() => {
+          if (generation === hydrateGeneration.current) setFailed(true)
+        })
+      return
+    }
+
+    setFailed(true)
   }, [src, resolvedSrc])
+
+  return { resolvedSrc, failed, onError }
+}
+
+function ThresholdLayerImage({ src, alt, className, style }) {
+  const { resolvedSrc, failed, onError } = useThresholdMediaSrc(src)
 
   if (!resolvedSrc || failed) {
     return (
@@ -163,41 +200,14 @@ function ThresholdLayerImage({ src, alt, className, style }) {
       className={className}
       style={{ ...style, pointerEvents: 'none' }}
       draggable={false}
-      onError={handleError}
+      onError={onError}
     />
   )
 }
 
 function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
-  const [failed, setFailed] = useState(false)
-  const [resolvedSrc, setResolvedSrc] = useState(() => mediaUrl(src) ?? src)
-  const hydrateGeneration = useRef(0)
-  const triedNetworkFallback = useRef(false)
-
-  useEffect(() => {
-    setFailed(false)
-    triedNetworkFallback.current = false
-    setResolvedSrc(mediaUrl(src) ?? src)
-    const generation = ++hydrateGeneration.current
-    if (!src || String(mediaUrl(src) ?? src).startsWith('blob:')) return undefined
-
-    let cancelled = false
-    void import('../audio/offlinePackage.js')
-      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-      .then((blobUrl) => {
-        if (cancelled || generation !== hydrateGeneration.current) return
-        if (blobUrl) {
-          setResolvedSrc(blobUrl)
-          setFailed(false)
-        }
-      })
-      .catch(() => {})
-
-    return () => {
-      cancelled = true
-    }
-  }, [src])
+  const { resolvedSrc, failed, onError } = useThresholdMediaSrc(src)
 
   useEffect(() => {
     const video = videoRef.current
@@ -218,56 +228,6 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
       video.pause()
     }
   }, [playing, failed, resolvedSrc])
-
-  const handleError = useCallback(() => {
-    const generation = hydrateGeneration.current
-    if (!src) {
-      setFailed(true)
-      return
-    }
-    // Poisoned offline blob → network URL before falling back to the poster.
-    if (String(resolvedSrc).startsWith('blob:')) {
-      unregisterCachedMedia(src)
-      const network = networkMediaUrl(src)
-      if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
-        triedNetworkFallback.current = true
-        setResolvedSrc(network)
-        setFailed(false)
-        return
-      }
-      setFailed(true)
-      return
-    }
-    void import('../audio/offlinePackage.js')
-      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-      .then((blobUrl) => {
-        if (generation !== hydrateGeneration.current) return
-        if (blobUrl) {
-          setResolvedSrc(blobUrl)
-          setFailed(false)
-          return
-        }
-        const network = networkMediaUrl(src)
-        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
-          triedNetworkFallback.current = true
-          setResolvedSrc(network)
-          setFailed(false)
-          return
-        }
-        setFailed(true)
-      })
-      .catch(() => {
-        if (generation !== hydrateGeneration.current) return
-        const network = networkMediaUrl(src)
-        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
-          triedNetworkFallback.current = true
-          setResolvedSrc(network)
-          setFailed(false)
-          return
-        }
-        setFailed(true)
-      })
-  }, [src, resolvedSrc])
 
   if (!resolvedSrc || failed) {
     return (
@@ -292,7 +252,7 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
       playsInline
       preload="metadata"
       draggable={false}
-      onError={handleError}
+      onError={onError}
     />
   )
 }

@@ -46,6 +46,38 @@ describe('waypointImmersiveProps', () => {
     expect(props.thenLoop).toContain('/waypoints/pantheon/ancient-reconstruction.mp4')
   })
 
+  it('uses ancient poster + loop for Piazza Navona (w18) and Campo de\' Fiori (w19)', () => {
+    for (const [id, folder] of [
+      ['w18', 'piazza-navona'],
+      ['w19', 'campo-de-fiori'],
+    ]) {
+      const waypoint = getWaypoint(manifest, id)
+      const props = buildImmersivePlayerProps({
+        waypoint,
+        waypointId: id,
+        manifest,
+      })
+      expect(props.hasReconstruction).toBe(true)
+      expect(props.photo).toContain(`/waypoints/${folder}/modern-poster.jpg`)
+      expect(props.thenPhoto).toContain(`/waypoints/${folder}/ancient-poster.jpg`)
+      expect(props.thenPhoto).not.toBe(props.photo)
+      expect(props.thenLoop).toContain(`/waypoints/${folder}/ancient-reconstruction.mp4`)
+    }
+  })
+
+  it('infers ancient still when reconstruction.then wrongly equals now (Trevi)', () => {
+    const waypoint = getWaypoint(manifest, 'w16')
+    expect(waypoint.reconstruction.then).toBe(waypoint.reconstruction.now)
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w16',
+      manifest,
+    })
+    expect(props.thenPhoto).toContain('/waypoints/fontana-di-trevi/ancient-poster.jpg')
+    expect(props.thenPhoto).not.toBe(props.photo)
+    expect(props.thenLoop).toContain('/waypoints/fontana-di-trevi/ancient-reconstruction.mp4')
+  })
+
   it('infers ancient loop path from photo folder', () => {
     const waypoint = getWaypoint(manifest, 'w01')
     expect(inferredReconstructionLoopPath(waypoint)).toBe(
