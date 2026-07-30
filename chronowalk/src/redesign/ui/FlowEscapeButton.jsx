@@ -14,9 +14,14 @@ export default function FlowEscapeButton() {
   const location = useLocation()
   const { state: journeyState, transition } = useV2Journey()
 
-  // Threshold is a one-way crossing — the global back control sent travellers to
-  // Arrived and trapped them in a story → threshold loop.
-  if (location.pathname === '/journey' && journeyState === JOURNEY_STATES.THRESHOLD) {
+  // Threshold / story / arrived screens already own a Back control — a second
+  // fixed escape stacked on top looked like a doubled, cropped chevron.
+  if (
+    location.pathname === '/journey' &&
+    (journeyState === JOURNEY_STATES.THRESHOLD ||
+      journeyState === JOURNEY_STATES.STORY ||
+      journeyState === JOURNEY_STATES.ARRIVED)
+  ) {
     return null
   }
 
@@ -79,8 +84,8 @@ export default function FlowEscapeButton() {
       className="cw-flow-escape"
       style={{
         position: 'fixed',
-        top: 'max(6px, env(safe-area-inset-top))',
-        left: 'max(6px, env(safe-area-inset-left))',
+        top: 'calc(env(safe-area-inset-top, 0px) + 8px)',
+        left: 'calc(env(safe-area-inset-left, 0px) + 8px)',
         zIndex: 120,
         display: 'flex',
         alignItems: 'center',

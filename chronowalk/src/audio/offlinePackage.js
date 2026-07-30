@@ -8,7 +8,6 @@ import {
   downloadRomeMapTiles,
   estimateRomeMapTileDownload,
   hydrateRomeMapTileCache,
-  isRomeMapReadyOffline,
   verifyRomeMapTiles,
 } from '../map/offlineMapTiles.js'
 import { env } from '../config/env.js'
@@ -377,6 +376,25 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     // Stills only — full video blob hydration has killed iOS Home Screen WebViews.
     await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
+    // Mark stories ready immediately so the prepare UI does not collapse while
+    // map tiles (optional, often flaky on cellular) are still fetching.
+    const downloadedAt = Date.now()
+    writeRomeOfflineStatus({
+      status: OFFLINE_AUDIO_STATUS.COMPLETE,
+      fileCount: audioPaths.length,
+      mediaFileCount: mediaPaths.length,
+      mapTileCount: 0,
+      downloadedAt,
+      error: null,
+    })
+    completed = audioPaths.length + mediaPaths.length
+    onProgress?.({
+      completed: totalSteps,
+      total: totalSteps,
+      percent: 100,
+      currentPath: 'stories-ready',
+    })
+
     let mapVerification = { valid: true, skipped: true, total: 0, missing: [] }
     if (env.mapboxToken && mapEstimate.tileCount > 0) {
       try {
@@ -389,8 +407,15 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
           },
         })
         mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+        writeRomeOfflineStatus({
+          status: OFFLINE_AUDIO_STATUS.COMPLETE,
+          fileCount: audioPaths.length,
+          mediaFileCount: mediaPaths.length,
+          mapTileCount: mapVerification.total,
+          downloadedAt,
+          error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
+        })
       } catch (mapError) {
-        // Stories still work offline without a full tile pack — don't fail the package.
         console.warn('[offline] Map tile download incomplete:', mapError)
         mapVerification = {
           valid: false,
@@ -399,26 +424,22 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
           missing: ['map-tiles'],
           error: mapError?.message ?? 'map_tiles_failed',
         }
-        completed = audioPaths.length + mediaPaths.length + mapEstimate.tileCount
-        reportProgress('map-tiles-partial')
+        writeRomeOfflineStatus({
+          status: OFFLINE_AUDIO_STATUS.COMPLETE,
+          fileCount: audioPaths.length,
+          mediaFileCount: mediaPaths.length,
+          mapTileCount: 0,
+          downloadedAt,
+          error: 'map_tiles_partial',
+        })
       }
     }
-
-    const downloadedAt = Date.now()
-    writeRomeOfflineStatus({
-      status: OFFLINE_AUDIO_STATUS.COMPLETE,
-      fileCount: audioPaths.length,
-      mediaFileCount: mediaPaths.length,
-      mapTileCount: mapVerification.valid || mapVerification.skipped ? mapVerification.total : 0,
-      downloadedAt,
-      error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
-    })
 
     return {
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
       fileCount: audioPaths.length,
       mediaFileCount: mediaPaths.length,
-      mapTileCount: mapVerification.total,
+      mapTileCount: mapVerification.total ?? 0,
       downloadedAt,
       verification: packageVerification,
       mapVerification,
@@ -466,6 +487,7 @@ export async function isRomeAudioReadyOffline(manifest) {
   const status = readRomeOfflineStatus()
   if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return false
   const verification = await verifyRomeAudioPackage(manifest)
-  if (!verification.valid) return false
-  return isRomeMapReadyOffline(manifest, { token: env.mapboxToken })
+  // Audio + media are enough for "download complete". Map tiles are best-effort
+  // and must not collapse the prepare UI back to the download arrow.
+  return verification.valid
 }
