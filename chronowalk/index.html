@@ -114,10 +114,6 @@
           window.location.replace(RESET_PATH + '?cw_bust=' + Date.now())
         }
 
-        function goOpenStuck() {
-          window.location.replace(OPEN_PATH + '?stuck=1&cw_bust=' + Date.now())
-        }
-
         function clearCachesAndWorkers() {
           var jobs = []
           if ('caches' in window) {
@@ -159,22 +155,15 @@
         } catch (e) {}
 
         // Belt-and-suspenders: after a shell wipe we set cw-skip-sw-once. If this
-        // document is STILL controlled, modules will load under the redundant SW
-        // and hang on "Loading ChronoWalk…".
-        //
-        // During cooldown, bounce to denylisted /rome/open (not reset-shell) so we
-        // do not blink, and so we never evaluate /assets under a poison controller.
+        // document is STILL controlled, do not evaluate modules under the poison
+        // controller - send them to the denylisted open page (plain link to /landing).
         try {
           if (
             localStorage.getItem(SKIP_SW_KEY) === '1' &&
             'serviceWorker' in navigator &&
             navigator.serviceWorker.controller
           ) {
-            if (recentlyReset()) {
-              goOpenStuck()
-            } else {
-              window.location.replace(RESET_PATH + '?force=1&cw_bust=' + Date.now())
-            }
+            window.location.replace(OPEN_PATH + '?cw_bust=' + Date.now())
             return
           }
         } catch (e) {}
@@ -186,10 +175,14 @@
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
-              // After a recent shell wipe, escape via /rome/open - not another
-              // reset-shell trip that fought the hang watchdog.
+              // Never auto-bounce into open/reset after a recent wipe - that loop
+              // made "Open ChronoWalk" look broken. Stay and show a real link.
               if (recentlyReset()) {
-                goOpenStuck()
+                var hint = document.getElementById('cw-boot-hint')
+                if (hint) {
+                  hint.innerHTML =
+                    'ChronoWalk could not finish loading.<br/><a href="/landing" style="color:inherit">Open ChronoWalk</a>'
+                }
                 return
               }
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
@@ -221,7 +214,7 @@
         Loading ChronoWalk…
         <br />
         <a
-          href="/rome/reset-shell?force=1"
+          href="/landing"
           style="
             display: inline-block;
             margin-top: 1rem;
@@ -230,7 +223,7 @@
             font-size: 0.9rem;
             font-weight: 400;
           "
-          >Stuck? Refresh the app shell</a
+          >Open ChronoWalk</a
         >
       </p>
     </div>
@@ -239,51 +232,18 @@
     <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
     <script>
       ;(function () {
-        // If React never mounts, escape via denylisted helpers. Prefer /rome/open
-        // after a recent reset so we do not re-enter the reset-shell blink loop.
-        var HANG_REDIRECT_KEY = 'cw-boot-hang-redirect'
-        var RESET_AT_KEY = 'cw-shell-reset-at'
-        var OPEN_HREF = '/rome/open?stuck=1'
-        var RESET_HREF = '/rome/reset-shell?force=1'
+        // If React never mounts, show a real link. Do NOT auto-redirect to
+        // /rome/open or reset-shell - that bounce loop made buttons look dead
+        // after travelers already cleared site data.
         var hint = document.getElementById('cw-boot-hint')
         var hasController =
           'serviceWorker' in navigator && Boolean(navigator.serviceWorker.controller)
-        // Controlled boots fail fast; uncontrolled boots may just be slow on cellular.
-        var hangMs = hasController ? 4000 : 20000
-
-        function recentlyReset() {
-          try {
-            var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
-            return last && Date.now() - last < 2 * 60 * 1000
-          } catch (e) {
-            return false
-          }
-        }
+        var hangMs = hasController ? 5000 : 15000
 
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
-          var already = false
-          try {
-            already = sessionStorage.getItem(HANG_REDIRECT_KEY) === '1'
-          } catch (e) {}
-
-          // Still controlled after wipe attempt → open bridge (Website Data path).
-          if (hasController || recentlyReset()) {
-            window.location.replace(OPEN_HREF + '&cw_bust=' + Date.now())
-            return
-          }
-
-          if (!already) {
-            try {
-              sessionStorage.setItem(HANG_REDIRECT_KEY, '1')
-            } catch (e2) {}
-            window.location.replace(RESET_HREF + '&cw_bust=' + Date.now())
-            return
-          }
           hint.innerHTML =
-            'ChronoWalk could not finish loading.<br/>Close every ChronoWalk tab, then <a href="' +
-            OPEN_HREF +
-            '" style="color:inherit">tap here to open ChronoWalk</a>. Your access stays on this device unless you clear Website Data.'
+            'ChronoWalk is taking longer than usual.<br/><a href="/landing" style="color:inherit">Open ChronoWalk</a><br/><a href="/rome/reset-shell?force=1" style="color:inherit;opacity:0.7">Refresh app shell</a>'
         }, hangMs)
       })()
     </script>
