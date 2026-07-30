@@ -69,6 +69,25 @@ describe('staleChunkRecovery', () => {
     expect(hardReload).not.toHaveBeenCalled()
   })
 
+  it('defers recovery when an offline package is already complete', async () => {
+    const { shouldDeferStaleRecovery, recoverStaleClient } = await import('../staleChunkRecovery.js')
+    localStorage.setItem(
+      'cw_offline_rome_audio_v1',
+      JSON.stringify({ status: 'complete', fileCount: 40 }),
+    )
+    expect(shouldDeferStaleRecovery()).toBe(true)
+    const result = await recoverStaleClient({ reason: 'test-offline-complete' })
+    expect(result).toEqual({ recovered: false, reloading: false })
+    expect(clearAllCaches).not.toHaveBeenCalled()
+    expect(hardReload).not.toHaveBeenCalled()
+  })
+
+  it('defers recovery when offline status JSON is corrupt', async () => {
+    const { shouldDeferStaleRecovery } = await import('../staleChunkRecovery.js')
+    localStorage.setItem('cw_offline_rome_audio_v1', '{not-json')
+    expect(shouldDeferStaleRecovery()).toBe(true)
+  })
+
   it('recovers at most once per tab session without clearing credentials', async () => {
     localStorage.setItem('cw_device_credential_v1', 'keep-me')
     localStorage.setItem('cw_access_entitlement_v1', '{"ok":true}')

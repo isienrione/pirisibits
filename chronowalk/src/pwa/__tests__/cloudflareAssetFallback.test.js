@@ -56,6 +56,10 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).toMatch(/\/\^\\\/reset-shell\$\//)
     // Must not bind the offline shell to apex `/` (302 in production).
     expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
+    // Rome offline map tiles must be cache-first — NetworkOnly bricks walking maps.
+    expect(sw).toContain('chronowalk-rome-map-tiles-v1')
+    expect(sw).toContain('matchRomeMapTile')
+    expect(sw).not.toMatch(/api\.mapbox\.com[\s\S]{0,80}NetworkOnly/)
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {

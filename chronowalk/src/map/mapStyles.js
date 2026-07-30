@@ -72,7 +72,8 @@ export function resolveTourMapStyleOptions({
       config: {
         basemap: {
           ...WALKING_HERO_BASEMAP_CONFIG,
-          ...(preferOfflineStyle ? { lightPreset: 'night' } : null),
+          // Day offline — night-on-empty-tiles reads as a broken grey/black load.
+          ...(preferOfflineStyle ? { lightPreset: 'day' } : null),
         },
       },
       surface: preferOfflineStyle ? 'walking-hero-offline' : 'walking-hero',

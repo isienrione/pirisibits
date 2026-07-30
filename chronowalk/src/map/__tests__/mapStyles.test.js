@@ -30,7 +30,7 @@ describe('mapStyles', () => {
 
     expect(options.style).toBe(MAPBOX_STYLE_STANDARD)
     expect(options.surface).toBe('walking-hero-offline')
-    expect(options.config.basemap.lightPreset).toBe('night')
+    expect(options.config.basemap.lightPreset).toBe('day')
   })
 
   it('uses Standard night vector for the MAP tab by default', () => {

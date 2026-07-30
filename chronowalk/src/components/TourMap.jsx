@@ -462,6 +462,7 @@ function TourMapboxView({
         }
       })
 
+      let offlineTileErrors = 0
       map.current.on('error', (event) => {
         const status = event?.error?.status
         const message = event?.error?.message ?? ''
@@ -471,6 +472,17 @@ function TourMapboxView({
           /unauthorized|forbidden|not authorized/i.test(message)
         ) {
           console.warn('Mapbox auth error:', event?.error ?? event)
+          onMapFailureRef.current?.()
+          return
+        }
+        // Offline + missing tiles → compact OfflineRouteMap instead of a grey canvas.
+        const radioOffline =
+          preferOfflineStyle ||
+          (typeof navigator !== 'undefined' && navigator.onLine === false)
+        if (!radioOffline) return
+        offlineTileErrors += 1
+        if (offlineTileErrors >= 3) {
+          console.warn('Mapbox offline tile errors — falling back to route sketch')
           onMapFailureRef.current?.()
         }
       })

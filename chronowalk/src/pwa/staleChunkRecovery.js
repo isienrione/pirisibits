@@ -30,6 +30,8 @@ const OFFLINE_STATUS_KEY = 'cw_offline_rome_audio_v1'
 /**
  * True when a hard recovery navigation would likely hit Safari’s native
  * “can’t open without signal” interstitial (or interrupt an in-flight download).
+ * Also defer when an offline package is already on-device — never wipe the SW
+ * just because iOS lied about navigator.onLine during a brief background.
  */
 export function shouldDeferStaleRecovery() {
   try {
@@ -37,9 +39,11 @@ export function shouldDeferStaleRecovery() {
     const raw = localStorage.getItem(OFFLINE_STATUS_KEY)
     if (!raw) return false
     const parsed = JSON.parse(raw)
-    return parsed?.status === 'downloading'
+    const status = parsed?.status
+    return status === 'downloading' || status === 'complete'
   } catch {
-    return false
+    // Fail closed — better to keep a slightly stale shell than brick Safari offline.
+    return true
   }
 }
 

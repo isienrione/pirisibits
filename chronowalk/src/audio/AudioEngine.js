@@ -1,6 +1,6 @@
 import { MIX_CONFIG } from './mix.config.js'
 import { dbToGain } from './db.js'
-import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl } from './audioUrl.js'
+import { resolveNarrationUrl, resolvePlanItemUrl, resolveSystemUrl, resolveSystemUrlAsync } from './audioUrl.js'
 import {
   buildTransitPlan,
   buildWaypointPlan,
@@ -1041,7 +1041,7 @@ export class AudioEngine {
    */
   async playArrivalOneShot(filename) {
     if (!filename) return false
-    const url = resolveSystemUrl(filename)
+    const url = await resolveSystemUrlAsync(filename)
     if (!url) return false
 
     const audio = this.createAudio?.()
@@ -1125,7 +1125,8 @@ export class AudioEngine {
         try {
           prime.playsInline = true
           prime.muted = true
-          prime.src = resolveSystemUrl(this.manifest?.system?.ui?.arrival) || ''
+          prime.src =
+            (await resolveSystemUrlAsync(this.manifest?.system?.ui?.arrival)) || ''
           await prime.play().catch(() => {})
           prime.pause()
           prime.muted = false

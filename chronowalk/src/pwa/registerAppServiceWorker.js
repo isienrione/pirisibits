@@ -47,11 +47,15 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return
+      // Never poke SW update while offline — a failed update path has triggered
+      // shell wipes that land Safari on its native “no signal” interstitial.
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) return
       navigator.serviceWorker.getRegistration()?.then((reg) => reg?.update())
     })
 
     window.addEventListener('pageshow', (event) => {
       if (!event.persisted) return
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) return
       navigator.serviceWorker.getRegistration()?.then((reg) => reg?.update())
     })
   }
