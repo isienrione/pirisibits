@@ -3,15 +3,16 @@ import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
 
 /**
- * Arrival — full-bleed photo + cream card with full immersive options on every stop.
- * CTAs pin to the card floor; tab-bar safe-area is owned by the shell inset, not
- * a second home-indicator pad inside this card.
+ * Arrival — photo fills leftover space; cream card hugs copy + CTAs so there
+ * is no empty bone under “Read instead”. Tab-bar inset lives on the phone
+ * frame, not as a second home-indicator pad here.
  */
 export default function C4ArrivalMoment({
   accent = T.actI,
   title = 'The Colosseum',
   photo = colosseumNow,
   description = 'Take a second. Look up.',
+  unlockNotice = false,
   onBeginListening,
   onTranscript,
   onViewImages,
@@ -29,6 +30,17 @@ export default function C4ArrivalMoment({
         <div className="cw-arrival-moment__pulse">
           <PulseRings accent={accent} variant="arrival" count={3} />
         </div>
+        {unlockNotice ? (
+          <div
+            className="cw-arrival-moment__unlock"
+            data-testid="arrival-unlock-notice"
+            role="status"
+            aria-live="polite"
+          >
+            <span className="cw-arrival-moment__unlock-dot" style={{ background: accent }} />
+            <p style={{ fontFamily: F.body }}>Waypoint unlocked</p>
+          </div>
+        ) : null}
       </div>
 
       <div className="cw-arrival-moment__card">
