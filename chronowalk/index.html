@@ -178,11 +178,9 @@
               // Surface a forced escape hatch instead of leaving "Loading ChronoWalk…" forever
               // (common when iOS still controlled the tab during reset-shell → /landing).
               if (recentlyReset()) {
-                var hint = document.getElementById('cw-boot-hint')
-                if (hint) {
-                  hint.innerHTML =
-                    'ChronoWalk could not finish loading.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
-                }
+                // Cooldown used to only show a link - on iOS many travelers never
+                // tap it and stay on "Loading ChronoWalk…" forever. Force wipe.
+                window.location.replace(RESET_PATH + '?force=1&cw_bust=' + Date.now())
                 return
               }
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
@@ -212,6 +210,19 @@
         "
       >
         Loading ChronoWalk…
+        <br />
+        <a
+          href="/rome/reset-shell?force=1"
+          style="
+            display: inline-block;
+            margin-top: 1rem;
+            color: inherit;
+            opacity: 0.75;
+            font-size: 0.9rem;
+            font-weight: 400;
+          "
+          >Stuck? Refresh the app shell</a
+        >
       </p>
     </div>
     <script type="module" src="/src/main.jsx"></script>
@@ -219,12 +230,34 @@
     <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
     <script>
       ;(function () {
+        // If React never mounts (poisoned SW serving HTML as JS, hung boot),
+        // do not leave travelers on "Loading ChronoWalk…" forever. Auto-bounce
+        // to the denylisted reset page once per tab session; after that, keep
+        // a manual link so we do not loop.
+        var HANG_REDIRECT_KEY = 'cw-boot-hang-redirect'
+        var RESET_HREF = '/rome/reset-shell?force=1'
         var hint = document.getElementById('cw-boot-hint')
+        var hangMs =
+          'serviceWorker' in navigator && navigator.serviceWorker.controller ? 3500 : 6000
+
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
+          var already = false
+          try {
+            already = sessionStorage.getItem(HANG_REDIRECT_KEY) === '1'
+          } catch (e) {}
+          if (!already) {
+            try {
+              sessionStorage.setItem(HANG_REDIRECT_KEY, '1')
+            } catch (e2) {}
+            window.location.replace(RESET_HREF + '&cw_bust=' + Date.now())
+            return
+          }
           hint.innerHTML =
-            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
-        }, 5000)
+            'ChronoWalk could not finish loading.<br/>Close every ChronoWalk tab, then <a href="' +
+            RESET_HREF +
+            '" style="color:inherit">tap here to refresh the app shell</a>. Your access stays on this device.'
+        }, hangMs)
       })()
     </script>
   </body>

@@ -168,10 +168,18 @@
           }
           if (sub) {
             sub.innerHTML =
-              'This browser is still holding an old app shell. Close every ChronoWalk tab (and the Home Screen icon if you use it), then tap Continue. Your access stays on this device.'
+              'This browser is still holding an old app shell. Close <strong>every</strong> ChronoWalk tab (Chrome and Safari), swipe away the Home Screen icon if you use it, wait 5 seconds, then tap Continue. Your access stays on this device.'
           }
           if (actions) actions.classList.remove('hidden')
         }
+
+        // Show Continue early so travelers are not staring at a blank wipe
+        // while iOS keeps the old controller alive in another tab.
+        window.setTimeout(function () {
+          if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            showStuckUi()
+          }
+        }, 2500)
 
         function finishToLanding() {
           return waitForControllerGone(CONTROLLER_WAIT_MS).then(function (gone) {
