@@ -71,6 +71,10 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('/landing?cw_bust=')
     expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
     expect(html).toContain('cw-shell-reset-at')
+    // Match recoverStaleClient: do not navigate while iOS still has a controller.
+    expect(html).toContain('waitForControllerGone')
+    expect(html).toContain('serviceWorker.controller')
+    expect(html).toContain('force')
     expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 

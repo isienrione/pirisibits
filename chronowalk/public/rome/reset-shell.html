@@ -38,19 +38,64 @@
         // Static escape hatch for poisoned PWA shells. Not part of the SPA.
         // Clears Cache Storage + service workers only - access keys and tour
         // progress in localStorage / IndexedDB are preserved.
+        //
+        // Critical on iOS: unregister() can resolve while navigator.serviceWorker
+        // .controller is still set. Navigating then re-serves the poisoned shell
+        // under the old controller → module scripts fail → index.html cooldown
+        // suppresses recovery → permanent "Loading ChronoWalk…".
         var RESET_AT_KEY = 'cw-shell-reset-at'
         var COOLDOWN_MS = 2 * 60 * 1000
+        var CONTROLLER_WAIT_MS = 2500
         var now = Date.now()
+        var force = false
+        try {
+          force = new URLSearchParams(window.location.search).get('force') === '1'
+        } catch (e) {}
 
         function goLanding() {
-          window.location.replace('/landing?cw_bust=' + Date.now())
+          // assign (not replace): iOS often drops controlled navigations with replace.
+          try {
+            window.location.assign('/landing?cw_bust=' + Date.now())
+          } catch (e) {
+            window.location.href = '/landing?cw_bust=' + Date.now()
+          }
+        }
+
+        function waitForControllerGone(timeoutMs) {
+          if (!('serviceWorker' in navigator)) {
+            return Promise.resolve(true)
+          }
+          var started = Date.now()
+          return new Promise(function (resolve) {
+            function tick() {
+              var controller = navigator.serviceWorker.controller
+              navigator.serviceWorker
+                .getRegistrations()
+                .then(function (regs) {
+                  if (!controller && (!regs || regs.length === 0)) {
+                    resolve(true)
+                    return
+                  }
+                  if (Date.now() - started >= timeoutMs) {
+                    resolve(!navigator.serviceWorker.controller)
+                    return
+                  }
+                  window.setTimeout(tick, 100)
+                })
+                .catch(function () {
+                  resolve(!navigator.serviceWorker.controller)
+                })
+            }
+            tick()
+          })
         }
 
         try {
           var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
           // Already wiped recently - do not clear boot guards again or we loop:
           // reset-shell → landing → script error → reset-shell → …
-          if (last && now - last < COOLDOWN_MS) {
+          // Explicit ?force=1 (from the stuck-loading link) bypasses cooldown.
+          if (!force && last && now - last < COOLDOWN_MS) {
             localStorage.setItem('cw-skip-sw-once', '1')
             localStorage.removeItem('cw-needs-shell-reset')
             goLanding()
@@ -93,8 +138,11 @@
         Promise.all(jobs)
           .catch(function () {})
           .then(function () {
+            return waitForControllerGone(CONTROLLER_WAIT_MS)
+          })
+          .then(function () {
             return new Promise(function (resolve) {
-              window.setTimeout(resolve, 450)
+              window.setTimeout(resolve, 200)
             })
           })
           .then(goLanding)

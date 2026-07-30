@@ -159,7 +159,17 @@
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
-              if (recentlyReset()) return
+              // After a recent shell wipe, automatic reset-shell loops are blocked.
+              // Surface a forced escape hatch instead of leaving "Loading ChronoWalk…" forever
+              // (common when iOS still controlled the tab during reset-shell → /landing).
+              if (recentlyReset()) {
+                var hint = document.getElementById('cw-boot-hint')
+                if (hint) {
+                  hint.innerHTML =
+                    'ChronoWalk could not finish loading.<br/><a href="/rome/reset-shell.html?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
+                }
+                return
+              }
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
             } catch (err) {
               return
@@ -198,7 +208,7 @@
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
           hint.innerHTML =
-            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell.html" style="color:inherit">Refresh the app shell</a> — your access stays on this device.'
+            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell.html?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
         }, 5000)
       })()
     </script>
