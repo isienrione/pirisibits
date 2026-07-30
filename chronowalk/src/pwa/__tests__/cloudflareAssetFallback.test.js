@@ -67,7 +67,9 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('cw-boot-hang-redirect')
     expect(html).toContain('/rome/reset-shell?force=1')
     expect(html).toContain('Stuck? Refresh the app shell')
-    expect(html).toContain('location.replace(RESET_PATH + \'?force=1&cw_bust=\'')
+    // Hang bounce must not fire during post-reset cooldown (blink loop).
+    expect(html).toContain('!recentlyReset()')
+    expect(html).toContain('cw-shell-reset-at')
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
@@ -90,6 +92,10 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('Do NOT navigate to /landing while controlled')
     expect(html).toContain('WAIT_RELOAD_KEY')
     expect(html).toContain("localStorage.removeItem(RESET_AT_KEY)")
+    // force=1 / blink loop: stop auto-nav and require Continue.
+    expect(html).toContain('manualOnly')
+    expect(html).toContain('LOOP_KEY')
+    expect(html).toContain('finishManual')
     expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 
