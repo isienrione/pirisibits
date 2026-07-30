@@ -543,11 +543,6 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   padding: 8px 24px max(12px, env(safe-area-inset-bottom));
 }
 
-/* Phone frame already reserves --wc-shell-tab-inset (includes safe-area). */
-html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
-  padding-bottom: 12px;
-}
-
 /*
  * Continuity / sync live in the in-flow action stack below the stage, so the
  * panel sits on the stage floor (no absolute overlap with the orange CTA).
@@ -578,7 +573,11 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
 /* Tab bar already owns safe-area via --wc-shell-tab-inset on the phone frame —
    keep a short breathing gap above the nav, not a second home-indicator pad. */
 html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__action-stack {
-  padding-bottom: calc(12px + var(--wc-browser-chrome, 0px));
+  padding-bottom: calc(8px + var(--wc-browser-chrome, 0px));
+}
+
+html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
+  padding-bottom: 8px;
 }
 
 .cw-waypoint-immersive__sync-slot {
@@ -916,8 +915,8 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__action-stack {
 }
 
 :root {
-  /* Content height of the tab bar. Safe-area is added only for standalone PWA. */
-  --shell-tab-bar-height: 4.75rem;
+  /* Matches ShellTabBar content: pt-2 + min-h-11 row + pb-0.5rem (~60px). */
+  --shell-tab-bar-height: 3.75rem;
   --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   /* Legacy fallback; action stack is now in-flow so panel no longer offsets by this. */
@@ -1516,7 +1515,7 @@ html.redesign-pwa #root {
 }
 
 html[data-shell-standalone='true'] {
-  --shell-tab-bar-height: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  --shell-tab-bar-height: calc(3.75rem + max(0.5rem, env(safe-area-inset-bottom)));
 }
 
 html.redesign-pwa[data-shell-tab-bar='visible'],
@@ -1525,11 +1524,39 @@ html[data-shell-tab-bar='visible'] {
 }
 
 .redesign-phone-frame--companion > * {
-  /* min-height keeps the shell filling the viewport; removing the hard
-     max-height: 100% lets the content grow on very short screens. */
-  min-height: 100%;
-  height: auto;
-  max-height: none;
+  /* Fill the content box ABOVE the tab-bar padding — never the full border box,
+     or a black obsidian strip appears between the screen and the fixed nav. */
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+/* Single journey root so banners / docks don't each claim 100% height. */
+.cw-journey-shell-root {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cw-journey-shell-root > .cw-arrival-moment,
+.cw-journey-shell-root > .cw-waypoint-immersive,
+.cw-journey-shell-root > .cw-walking-companion,
+.cw-journey-shell-root > .cw-grain,
+.cw-journey-shell-root > [data-testid='journey-layout'] {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
 }
 
 .redesign-prototype-chrome {
@@ -3795,10 +3822,11 @@ html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
   outline-offset: 3px;
 }
 
-/* ── Arrival moment (C4) — pin CTAs, avoid double safe-area under tab bar ── */
+/* ── Arrival moment (C4) — card hugs CTAs; photo fills leftover space ── */
 .cw-arrival-moment {
   background: var(--cw-bone, #faf6ef);
   height: 100%;
+  max-height: 100%;
   position: relative;
   overflow: hidden;
   font-family: 'DM Sans', system-ui, sans-serif;
@@ -3808,9 +3836,8 @@ html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
 
 .cw-arrival-moment__photo {
   position: relative;
-  flex: 0 0 46%;
-  min-height: 220px;
-  max-height: 52%;
+  flex: 1 1 auto;
+  min-height: 180px;
   overflow: hidden;
 }
 
@@ -3835,42 +3862,84 @@ html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
   z-index: 5;
 }
 
+.cw-arrival-moment__unlock {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 36px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(11, 11, 13, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  animation: cw-arrival-unlock-in 280ms ease-out;
+}
+
+.cw-arrival-moment__unlock p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #faf6ef;
+}
+
+.cw-arrival-moment__unlock-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+@keyframes cw-arrival-unlock-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .cw-arrival-moment__card {
-  flex: 1 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 16px;
   background: var(--cw-bone, #faf6ef);
   border-radius: 24px 24px 0 0;
   margin-top: -24px;
   position: relative;
   z-index: 10;
-  padding: 24px 24px 16px;
+  padding: 22px 24px 12px;
   box-shadow: 0 -8px 32px rgba(33, 28, 21, 0.12);
 }
 
 /* When the shell tab bar is hidden, keep a real home-indicator pad. */
 html:not([data-shell-tab-bar='visible']) .cw-arrival-moment__card {
-  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 
 .cw-arrival-moment__copy {
-  flex: 0 1 auto;
-  min-height: 0;
+  flex: 0 0 auto;
 }
 
 .cw-arrival-moment__title {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 300;
   line-height: 1.1;
-  margin: 10px 0 12px;
+  margin: 8px 0 10px;
 }
 
 .cw-arrival-moment__desc {
   font-size: 15px;
-  line-height: 1.65;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -3878,13 +3947,12 @@ html:not([data-shell-tab-bar='visible']) .cw-arrival-moment__card {
   flex: 0 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 4px;
+  gap: 8px;
 }
 
 .cw-arrival-moment__primary {
   width: 100%;
-  padding: 16px 20px;
+  padding: 15px 20px;
   border-radius: 14px;
   border: none;
   font-weight: 600;
@@ -3902,7 +3970,7 @@ html:not([data-shell-tab-bar='visible']) .cw-arrival-moment__card {
 .cw-arrival-moment__secondary,
 .cw-arrival-moment__tertiary {
   width: 100%;
-  padding: 13px 12px;
+  padding: 12px;
   border-radius: 999px;
   border: 1.5px solid transparent;
   background: transparent;
