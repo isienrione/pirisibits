@@ -28,7 +28,7 @@ export default function AudioInterruptionBanner({ onResume, busy = false }) {
           cursor: busy ? 'wait' : 'pointer',
         }}
       >
-        Sound was interrupted · tap to resume
+        Sound was interrupted — tap to resume
       </button>
       <p
         style={{

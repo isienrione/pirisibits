@@ -15,7 +15,7 @@ export const TOUR_PRODUCTS = {
     title: 'Roma Historica',
     tagline: "Trajan's Market + Pantheon + centro storico",
     description:
-      "Trajan's Market and the walk around the Pantheon · Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside the Colosseum archaeological park.",
+      "Trajan's Market and the walk around the Pantheon — Spanish Steps, Trevi, Navona, Campo, Argentina, and Castel Sant'Angelo. Outside the Colosseum archaeological park.",
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: CENTRAL_ROME_TOUR.stopIds,
@@ -27,7 +27,7 @@ export const TOUR_PRODUCTS = {
     title: 'Roma Antica',
     tagline: 'Colosseum, Forum, hills & Circus Maximus View',
     description:
-      'The ancient core · Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Roman Forum, and Capitoline Hill · with place-tied stories and Threshold at each stop.',
+      'The ancient core — Colosseum, Palatine Hill terrace, Circus Maximus View on Path B, Roman Forum, and Capitoline Hill — with place-tied stories and Threshold at each stop.',
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: ROME_ANTICA_TOUR.stopIds,
@@ -39,7 +39,7 @@ export const TOUR_PRODUCTS = {
     title: 'Roman Forum',
     tagline: 'Every stop in the Forum cluster',
     description:
-      'Walk the Forum floor · Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of Saturn, Curia Julia, and Arch of Septimius Severus. All eight forum-cluster landmarks with matched before/after reveals.',
+      'Walk the Forum floor — Arch of Titus, Basilica of Maxentius, Via Sacra, Temple of Vesta, the Rostra, Temple of Saturn, Curia Julia, and Arch of Septimius Severus. All eight forum-cluster landmarks with matched before/after reveals.',
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: ROMAN_FORUM_TOUR.stopIds,
@@ -51,7 +51,7 @@ export const TOUR_PRODUCTS = {
     title: 'Heart of Ancient Rome',
     tagline: 'Colosseum, Capitoline & the city loop',
     description:
-      'The grand city loop · Colosseum, Palatine Hill, Circus Maximus View, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, and the Appian Way.',
+      'The grand city loop — Colosseum, Palatine Hill, Circus Maximus View, Capitoline Hill, Trajan\'s Market, Pantheon, Trevi, Argentina, Campo de\' Fiori, Piazza Navona, Castel Sant\'Angelo, and the Appian Way.',
     priceUsd: 9.99,
     priceCents: 999,
     stopIds: HEART_OF_ANCIENT_ROME_TOUR.stopIds,
@@ -62,7 +62,7 @@ export const TOUR_PRODUCTS = {
     title: 'Roma Eterna',
     tagline: 'Full bundle · at your own pace',
     description:
-      'Unlock every ChronoWalk Rome route · archaeological core, centro storico, and the full city loop to the Appian Way.',
+      'Unlock every ChronoWalk Rome route — archaeological core, centro storico, and the full city loop to the Appian Way.',
     priceUsd: 14.99,
     priceCents: 1499,
     savingsUsd: 4.99,
@@ -102,6 +102,6 @@ export const getTourIdsForProduct = (productId) => {
 /** Format a tour price amount in euros (legacy export name `formatUsd`). */
 export const formatUsd = (amount) => {
   const value = Number(amount)
-  if (!Number.isFinite(value)) return '€-'
+  if (!Number.isFinite(value)) return '€—'
   return `€${Number.isInteger(value) ? value : value.toFixed(2)}`
 }

@@ -24,7 +24,7 @@ function BootLoadingFallback() {
             Refresh the app shell
           </a>
           {' '}
-          Access stays on this device.
+          — access stays on this device.
         </p>
       </div>
     </main>

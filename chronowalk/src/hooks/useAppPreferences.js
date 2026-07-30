@@ -65,7 +65,7 @@ function applyReduceMotionClass(enabled) {
 }
 
 /**
- * User-facing preferences · stored locally, wired to features incrementally.
+ * User-facing preferences — stored locally, wired to features incrementally.
  */
 export function useAppPreferences() {
   const [prefs, setPrefs] = useState(readPrefs)

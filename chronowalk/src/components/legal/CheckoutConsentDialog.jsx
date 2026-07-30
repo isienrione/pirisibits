@@ -79,7 +79,7 @@ function CheckoutConsentDialogPanel({
 }
 
 /**
- * Confirm modal before Paddle checkout (no withdrawal-waiver checkbox ·
+ * Confirm modal before Paddle checkout (no withdrawal-waiver checkbox —
  * that notice lives in the post-purchase access email + refund policy).
  * Portaled to document.body so landing overflow/stacking cannot hide it.
  */

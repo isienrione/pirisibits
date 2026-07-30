@@ -364,7 +364,7 @@ export function LandingZoomableImageViewer({
 }
 
 /**
- * Package-card wrapper · same checkout handler as the mobile CTA.
+ * Package-card wrapper — same checkout handler as the mobile CTA.
  */
 export function LandingPackagePosterViewer({
   open,

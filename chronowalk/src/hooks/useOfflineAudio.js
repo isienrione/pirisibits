@@ -57,11 +57,11 @@ export function useOfflineAudio() {
       await refresh()
     } catch (downloadError) {
       const message = downloadError?.message ?? 'Download failed'
-      // Missing CDN files are not a "bad signal" problem · say so clearly.
+      // Missing CDN files are not a "bad signal" problem — say so clearly.
       const friendly =
         /essential story files missing|HTML|verification failed/i.test(message)
           ? 'Some story files could not be saved. Tap to retry.'
-          : 'Download paused · tap to retry.'
+          : 'Download paused — tap to retry.'
       setError(friendly)
       await refresh()
     } finally {
@@ -84,7 +84,7 @@ export function useOfflineAudio() {
   return {
     manifest,
     estimate,
-    estimateLabel: estimate ? formatDownloadSize(estimate.totalBytes ?? estimate.bytes) : '-',
+    estimateLabel: estimate ? formatDownloadSize(estimate.totalBytes ?? estimate.bytes) : '—',
     status,
     isReady,
     isDownloading,

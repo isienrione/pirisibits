@@ -130,7 +130,7 @@ describe('journey state machine', () => {
     expect(first.state).toBe(JOURNEY_STATES.COMPLETE)
     expect(first.context.promotedOptionalIds ?? []).not.toContain('enc_circus')
 
-    // Re-fire continue while still indexed on Capitoline · must stay complete, not replay.
+    // Re-fire continue while still indexed on Capitoline — must stay complete, not replay.
     transitionJourney(JOURNEY_STATES.STORY, {
       path: 'b',
       pathLocked: true,

@@ -31,7 +31,7 @@ export default class V2ErrorBoundary extends Component {
     this.setState({ autoRecovering: true, recovering: true })
     void recoverStaleClient({ force: false, reason: 'error-boundary' }).then((result) => {
       if (!result?.reloading) {
-        // Guard already spent · show Try again so the traveler can force it.
+        // Guard already spent — show Try again so the traveler can force it.
         this.setState({ autoRecovering: false, recovering: false })
       }
     })
@@ -109,9 +109,9 @@ export default class V2ErrorBoundary extends Component {
             }}
           >
             {this.state.autoRecovering
-              ? 'A newer version just shipped. Refreshing the app shell · your access and progress stay on this device.'
+              ? 'A newer version just shipped. Refreshing the app shell — your access and progress stay on this device.'
               : (this.props.message ??
-                'This screen could not load. Try again to refresh the app shell · your access and progress stay on this device.')}
+                'This screen could not load. Try again to refresh the app shell — your access and progress stay on this device.')}
           </p>
           {!this.state.autoRecovering && this.state.errorMessage ? (
             <p
@@ -163,7 +163,7 @@ export default class V2ErrorBoundary extends Component {
                 Refresh the app shell
               </a>
               {' '}
-              · access stays on this device.
+              — access stays on this device.
             </p>
           ) : null}
         </div>

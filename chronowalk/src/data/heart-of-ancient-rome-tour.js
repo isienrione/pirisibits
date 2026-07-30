@@ -1,4 +1,4 @@
-/** Heart of Ancient Rome · city loop: Colosseum, Capitoline Hill, and all non-forum-cluster stops. */
+/** Heart of Ancient Rome — city loop: Colosseum, Capitoline Hill, and all non-forum-cluster stops. */
 export const HEART_OF_ANCIENT_ROME_TOUR = {
   id: 'heart-of-ancient-rome',
   productId: 'heart-of-ancient-rome',

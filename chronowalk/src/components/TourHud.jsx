@@ -61,7 +61,7 @@ function RouteThumbnail({ posterUrl, title, compact = false }) {
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center px-1 text-center text-[0.6rem] font-semibold uppercase tracking-wide text-muted">
-          {title?.slice(0, 2) ?? '-'}
+          {title?.slice(0, 2) ?? '—'}
         </div>
       )}
     </div>
@@ -193,7 +193,7 @@ const TourHud = ({
   if (isFreePreview) {
     routeHeadline = 'Complete Rome tour'
     routeSubline = `${totalStops} landmarks on the map`
-    statusLabel = 'Colosseum unlocked · tap locked stops to preview the full tour'
+    statusLabel = 'Colosseum unlocked — tap locked stops to preview the full tour'
     statusTone = 'default'
   } else if (awaitingFirstStop) {
     routeHeadline = 'Tour begins at'
@@ -213,7 +213,7 @@ const TourHud = ({
     routeHeadline = 'You have arrived'
     routeSubline = currentStopTitle
     statusLabel = dismissedWaypointTitle
-      ? 'Story minimized · reopen when ready'
+      ? 'Story minimized — reopen when ready'
       : 'Explore the landmark to continue'
     statusTone = 'arrived'
   } else {

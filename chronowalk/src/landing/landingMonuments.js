@@ -1,7 +1,7 @@
 import { getModernPosterUrl } from '../content/modernPhotoRegistry.js'
 import { LANDING_ROUTE_STOPS, LANDING_TIER_ROUTES } from './landingTierRoutes.js'
 
-/** Highlight stops shown before expand · span Arena → Appian without a catalog.
+/** Highlight stops shown before expand — span Arena → Appian without a catalog.
  *  Pantheon (free preview) is the living-city beat; Forum uses Via Sacra, not Titus.
  */
 export const LANDING_ROUTE_PREVIEW_IDS = [
@@ -58,7 +58,7 @@ export const LANDING_ROUTE_CHAPTERS = [
   },
 ]
 
-/** All monuments on the complete Rome route · ordered journey, not a catalog. */
+/** All monuments on the complete Rome route — ordered journey, not a catalog. */
 export function getLandingMonuments() {
   const stopIds = LANDING_TIER_ROUTES['rome-complete'] ?? []
 

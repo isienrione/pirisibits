@@ -17,7 +17,7 @@ import AppEntryPrepare from '../screens/AppEntryPrepare.jsx'
 import AppEntryFamily from '../screens/AppEntryFamily.jsx'
 
 /**
- * App Entry · replaces the old marketing-adjacent setup checklist.
+ * App Entry — replaces the old marketing-adjacent setup checklist.
  * threshold → prepare → family → /begin
  */
 export default function RedesignSetupPage() {
@@ -25,7 +25,7 @@ export default function RedesignSetupPage() {
   const purchasedTier = readPurchasedTier()
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
   const offline = useOfflineAudio()
-  // Land on prepare (offline + A2HS) · the screen travelers expect before the tour.
+  // Land on prepare (offline + A2HS) — the screen travelers expect before the tour.
   // Threshold pack splash remains reachable only if we add an explicit back later.
   const [step, setStep] = useState('prepare')
   const [showIosHelp, setShowIosHelp] = useState(false)

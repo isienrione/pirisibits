@@ -156,7 +156,7 @@ function setupMapLayers(map, { stops, tour, bounds, minimalUI, walkingCompanionU
       casingWidth: walkingCompanionUI ? 12 : 9,
       casingOpacity: walkingCompanionUI ? 0.6 : 0.4,
       lineWidth: walkingCompanionUI ? 4 : 3.5,
-      // Solid core on the walk hero · dashed reads as a flat schematic stroke.
+      // Solid core on the walk hero — dashed reads as a flat schematic stroke.
       dashed: !walkingCompanionUI,
     })
 
@@ -299,8 +299,6 @@ function TourMapboxView({
   walkingCompanionUI = false,
   fillContainer = false,
   preferOfflineStyle = false,
-  /** Only true radio-offline may latch OfflineRouteMap on tile/timeout errors. */
-  allowOfflineSketchFallback = false,
 }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
@@ -308,7 +306,6 @@ function TourMapboxView({
   const userMarker = useRef(null)
   const landmarkMarkers = useRef([])
   const onMapFailureRef = useRef(onMapFailure)
-  const allowSketchFallbackRef = useRef(allowOfflineSketchFallback)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [pulsePoint, setPulsePoint] = useState(null)
   const [legRouteCoordinates, setLegRouteCoordinates] = useState(null)
@@ -370,10 +367,6 @@ function TourMapboxView({
   }, [onMapFailure])
 
   useEffect(() => {
-    allowSketchFallbackRef.current = allowOfflineSketchFallback
-  }, [allowOfflineSketchFallback])
-
-  useEffect(() => {
     const container = mapContainer.current
     if (!mapboxToken || !container || map.current) return undefined
 
@@ -387,8 +380,7 @@ function TourMapboxView({
     let bootstrapTimeoutId = window.setTimeout(() => {
       if (cancelled || map.current?.loaded?.()) return
       console.warn('Mapbox bootstrap timed out before the map became ready')
-      // Online timeouts must not permanently replace Mapbox with the sketch.
-      if (allowSketchFallbackRef.current) onMapFailureRef.current?.()
+      onMapFailureRef.current?.()
     }, MAP_BOOTSTRAP_TIMEOUT_MS)
 
     const clearBootstrapTimeout = () => {
@@ -483,16 +475,14 @@ function TourMapboxView({
           onMapFailureRef.current?.()
           return
         }
-        // Only latch the SVG sketch when the device is actually offline.
-        // preferOfflineStyle alone (cached package / constrained) must not brick
-        // Mapbox after a few Standard tile errors while Wi‑Fi is up.
+        // Offline + missing tiles → compact OfflineRouteMap instead of a grey canvas.
         const radioOffline =
-          allowSketchFallbackRef.current ||
+          preferOfflineStyle ||
           (typeof navigator !== 'undefined' && navigator.onLine === false)
         if (!radioOffline) return
         offlineTileErrors += 1
         if (offlineTileErrors >= 3) {
-          console.warn('Mapbox offline tile errors · falling back to route sketch')
+          console.warn('Mapbox offline tile errors — falling back to route sketch')
           onMapFailureRef.current?.()
         }
       })
@@ -505,7 +495,7 @@ function TourMapboxView({
       loadTimeoutId = window.setTimeout(() => {
         if (cancelled || map.current?.loaded?.()) return
         console.warn('Mapbox load timed out')
-        if (allowSketchFallbackRef.current) onMapFailureRef.current?.()
+        onMapFailureRef.current?.()
       }, MAP_BOOTSTRAP_TIMEOUT_MS)
     }
 
@@ -517,23 +507,19 @@ function TourMapboxView({
       })
       .catch((error) => {
         console.error('Mapbox runtime load failed:', error)
-        // Online: keep the Mapbox slot (retry on remount). Offline: sketch.
-        if (allowSketchFallbackRef.current) onMapFailureRef.current?.()
+        onMapFailureRef.current?.()
       })
 
-    const resizeObserver =
-      typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(() => {
-            if (map.current) {
-              map.current.resize()
-              return
-            }
-            if (mapboxglRef.current) {
-              initMap(mapboxglRef.current)
-            }
-          })
-        : null
-    resizeObserver?.observe(container)
+    const resizeObserver = new ResizeObserver(() => {
+      if (map.current) {
+        map.current.resize()
+        return
+      }
+      if (mapboxglRef.current) {
+        initMap(mapboxglRef.current)
+      }
+    })
+    resizeObserver.observe(container)
 
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -545,7 +531,7 @@ function TourMapboxView({
     return () => {
       cancelled = true
       clearBootstrapTimeout()
-      resizeObserver?.disconnect()
+      resizeObserver.disconnect()
       document.removeEventListener('visibilitychange', onVisibilityChange)
       if (loadTimeoutId != null) {
         window.clearTimeout(loadTimeoutId)
@@ -897,7 +883,7 @@ function TourMapboxView({
 
   useEffect(() => {
     if (!focusTarget?.lng || !focusTarget?.lat || !map.current || !mapLoaded) return
-    // Walking hero recenter uses pitched fitBounds · never flatten via flyTo.
+    // Walking hero recenter uses pitched fitBounds — never flatten via flyTo.
     if (walkingCompanionUI) return
 
     map.current.flyTo({
@@ -1013,12 +999,7 @@ const TourMap = ({
   fillContainer = false,
   preferOfflineStyle = false,
 }) => {
-  // Mapbox Standard cannot paint offline (style imports, glyphs, sprites, and
-  // 3D models are not in the Rome tile package). Use the SVG route sketch
-  // immediately · never leave walkers on a grey canvas.
-  const [offlineMapMode, setOfflineMapMode] = useState(
-    () => !isMapboxConfigured() || Boolean(isOffline),
-  )
+  const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
     setOfflineMapMode(true)
   }, [])
@@ -1028,7 +1009,8 @@ const TourMap = ({
       setOfflineMapMode(true)
       return
     }
-    setOfflineMapMode(Boolean(isOffline))
+    // Back online — restore Mapbox (remount via style key picks satellite/standard).
+    if (!isOffline) setOfflineMapMode(false)
   }, [isOffline])
 
   if (offlineMapMode) {
@@ -1044,7 +1026,6 @@ const TourMap = ({
         distance={distance}
         awaitingFirstStop={awaitingFirstStop}
         compact={Boolean(fillContainer || walkingCompanionUI || minimalUI)}
-        isOffline={Boolean(isOffline)}
       />
     )
   }
@@ -1072,7 +1053,6 @@ const TourMap = ({
       walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
       preferOfflineStyle={preferOfflineStyle || isOffline}
-      allowOfflineSketchFallback={Boolean(isOffline)}
       key={preferOfflineStyle || isOffline ? 'map-offline-style' : 'map-online-style'}
     />
   )

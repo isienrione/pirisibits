@@ -11,7 +11,7 @@ export const ACCESS_ENTITLEMENT_KEY = 'cw_access_entitlement_v1'
 
 /**
  * Optional handoff hooks registered by accessHandoff.js.
- * Must NOT dynamic-import accessHandoff from here · Vite rewrote that import to
+ * Must NOT dynamic-import accessHandoff from here — Vite rewrote that import to
  * re-fetch the entire app entry chunk during boot and left iOS stuck on
  * "Loading ChronoWalk…".
  */
@@ -45,7 +45,7 @@ function clearHandoffMirror() {
     /* ignore */
   }
 }
-/** @deprecated Prefer DEVICE_CREDENTIAL_KEY · kept for migration reads. */
+/** @deprecated Prefer DEVICE_CREDENTIAL_KEY — kept for migration reads. */
 export const LEGACY_ACCESS_TOKEN_KEY = 'cw_access_token_v1'
 export const ACCESS_BOOL_KEY = 'cw_access'
 

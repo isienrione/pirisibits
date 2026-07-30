@@ -16,7 +16,7 @@ const redirectsSource = readFileSync(
 describe('AppRouter apex home', () => {
   it('sends chronowalk.com / straight to /landing (never /setup via hasAccess)', () => {
     // Bare domain must open the marketing site. Purchasers reach setup only via
-    // /access and post-purchase routes · not a silent gate on `/`.
+    // /access and post-purchase routes — not a silent gate on `/`.
     expect(routerSource).toContain('<Route path="/" element={<ApexHomeRedirect />} />')
     expect(routerSource).toContain('<Route path="/landing" element={<PublicLandingRoute />} />')
     expect(routerSource).toMatch(/Navigate to="\/landing"/)

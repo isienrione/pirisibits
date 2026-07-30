@@ -9,7 +9,7 @@ const SCENARIO_IMAGES = {
 }
 
 /**
- * Act II · real-moment scenarios with place-tinted thumbnails (not persona cards).
+ * Act II — real-moment scenarios with place-tinted thumbnails (not persona cards).
  */
 export default function LandingRealMomentSection() {
   const section = LANDING_CONTENT['real-moment']

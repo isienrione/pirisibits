@@ -65,7 +65,7 @@ export async function resolveSystemUrlAsync(filename) {
   return getAudioUrl(path)
 }
 
-/** Free Pantheon sample · narration files live under /rome/audio/narration/. */
+/** Free Pantheon sample — narration files live under /rome/audio/narration/. */
 export function resolvePreviewUrl(filename) {
   const file = filename === 'preview_pantheon.mp3' ? 'w17_ch1.mp3' : filename
   return getAudioUrl(narrationPath(file))

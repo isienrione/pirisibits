@@ -86,7 +86,7 @@ describe('walkingCompanionFormat', () => {
 
   it('prefers stop estimate when directions look inflated by stale GPS', () => {
     const resolveWalkingDistanceCopy = (meters) => ({
-      primary: meters != null ? `${Math.round(meters)} m` : '-',
+      primary: meters != null ? `${Math.round(meters)} m` : '—',
       secondary: null,
       estimated: false,
       pending: false,
@@ -102,7 +102,7 @@ describe('walkingCompanionFormat', () => {
 
   it('drops absurd GPS distances instead of showing 11000+ km', () => {
     const resolveWalkingDistanceCopy = (meters, estimated) => ({
-      primary: meters != null ? `${Math.round(meters)} m` : estimated != null ? `~${Math.round(estimated)} m` : '-',
+      primary: meters != null ? `${Math.round(meters)} m` : estimated != null ? `~${Math.round(estimated)} m` : '—',
       secondary: null,
       estimated: meters == null,
       pending: false,

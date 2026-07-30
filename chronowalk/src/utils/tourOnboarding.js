@@ -19,7 +19,7 @@ export function clearTourOnboarding() {
 }
 
 /**
- * Mobile-friendly replay · open /begin?replayOnboarding=1 (add &fresh=1 to restart from scratch).
+ * Mobile-friendly replay — open /begin?replayOnboarding=1 (add &fresh=1 to restart from scratch).
  * @returns {{ replay: boolean, fresh: boolean }}
  */
 export function parseReplayOnboardingSearch(search = '') {
@@ -48,14 +48,14 @@ export function shouldShowTourOnboarding(context) {
   return isFreshTourStart(context)
 }
 
-/** Route preview at /begin · after pace (and own-pace stop selection). */
+/** Route preview at /begin — after pace (and own-pace stop selection). */
 export function shouldShowTourRoutePreview(context) {
   return shouldShowTourOnboarding(context)
 }
 
 /**
  * Opening waypoint on the active tour itinerary (no completed stops yet).
- * Independent of instruction-card onboarding completion · used for first-stop
+ * Independent of instruction-card onboarding completion — used for first-stop
  * directions copy so Colosseum never shows a false “open Google Maps” error.
  */
 export function isOnFirstTourStop(context, step, manifest = null) {
@@ -127,7 +127,7 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
       return {
         eyebrow: 'Arrive',
         title: 'You\'ll know when you\'re there',
-        body: `Watch the distance shrink on screen. When you're at ${stopTitle}, the map highlights your zone and the **I'm here** button appears · tap it to begin the story. GPS may also confirm arrival automatically.`,
+        body: `Watch the distance shrink on screen. When you're at ${stopTitle}, the map highlights your zone and the **I'm here** button appears — tap it to begin the story. GPS may also confirm arrival automatically.`,
       }
     case 'listen':
       return {
@@ -139,7 +139,7 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
       return {
         eyebrow: 'Read',
         title: 'Prefer the full script?',
-        body: 'Tap **Read instead** above the player to open the complete transcript · follow along while you listen, or read quietly if audio isn\'t practical.',
+        body: 'Tap **Read instead** above the player to open the complete transcript — follow along while you listen, or read quietly if audio isn\'t practical.',
       }
     case 'continue':
       return {
@@ -151,7 +151,7 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
       return {
         eyebrow: 'Reveal',
         title: 'Press & hold the image',
-        body: 'See how this place looked centuries ago · press and hold anywhere on the photo. Your narration keeps playing while you explore.',
+        body: 'See how this place looked centuries ago — press and hold anywhere on the photo. Your narration keeps playing while you explore.',
       }
     default:
       return null

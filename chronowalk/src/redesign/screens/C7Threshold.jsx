@@ -3,7 +3,7 @@ import { T, F } from '../tokens.js'
 
 /**
  * Redesign-facing adapter for the canonical Threshold component.
- * Maps presentation props to the shared waypoint shape · no duplicate hold logic.
+ * Maps presentation props to the shared waypoint shape — no duplicate hold logic.
  */
 export default function C7Threshold({
   nowPhoto,

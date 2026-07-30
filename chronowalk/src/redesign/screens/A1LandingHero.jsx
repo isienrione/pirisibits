@@ -105,7 +105,7 @@ export default function A1LandingHero({ priceLabel = '€14.99', onPurchase, onP
             time.
           </h1>
           <p style={{ fontSize: 16, color: `${T.warmWhite}CC`, lineHeight: 1.65 }}>
-            Rome, narrated like a film,
+            Rome, narrated like a film —
             <br />
             revealed by your touch.
           </p>
@@ -181,7 +181,7 @@ export default function A1LandingHero({ priceLabel = '€14.99', onPurchase, onP
               cursor: 'pointer',
             }}
           >
-            <span>Get ChronoWalk Rome · {priceLabel}</span>
+            <span>Get ChronoWalk Rome — {priceLabel}</span>
             <ChevronRight size={18} />
           </button>
           <button

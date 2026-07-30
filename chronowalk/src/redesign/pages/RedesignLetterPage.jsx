@@ -41,7 +41,7 @@ export default function RedesignLetterPage() {
     const stopCount = letter?.stopCount ?? 0
     return [
       { v: `${stopCount} stops`, l: 'visited' },
-      { v: letter?.durationLabel ?? '-', l: 'in Rome' },
+      { v: letter?.durationLabel ?? '—', l: 'in Rome' },
       { v: '21', l: 'centuries crossed' },
     ]
   }, [letter])

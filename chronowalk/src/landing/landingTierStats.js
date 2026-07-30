@@ -5,7 +5,7 @@ import { getLandingTierRouteStops } from './landingTierRoutes.js'
 /** Urban walking routes are longer than straight-line stop-to-stop legs. */
 const WALK_ROUTE_FACTOR = 1.35
 
-/** Studio narration totals · rounded for pricing cards. */
+/** Studio narration totals — rounded for pricing cards. */
 const AUDIO_MINUTES_BY_TIER = {
   'rome-central': 70,
   'rome-essential': 80,
@@ -80,7 +80,7 @@ function formatDistance(km) {
 }
 
 /**
- * Landing pricing stats · audio minutes, on-route time range, and distance.
+ * Landing pricing stats — audio minutes, on-route time range, and distance.
  * On-route time = narration + walking between stops, shown as a low–high estimate.
  * @param {string} tierId
  */

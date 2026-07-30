@@ -7,7 +7,7 @@ function getTourActIds(pace) {
   return getTierActIds(pace)
 }
 
-/** Pause / scripted rest · on the route but not a landmark stop. */
+/** Pause / scripted rest — on the route but not a landmark stop. */
 export function isVisitStop(waypoint) {
   if (!waypoint) return false
   if (waypoint.scripted_rest) return false
@@ -95,12 +95,12 @@ export function computeStoryStopCount(manifest, options = {}) {
 }
 
 export function formatPublicPlacesLabel(count) {
-  if (!Number.isFinite(count) || count <= 0) return '-'
+  if (!Number.isFinite(count) || count <= 0) return '—'
   return `${count} place${count === 1 ? '' : 's'}`
 }
 
 export function formatVisitStopsLabel(count) {
-  if (!Number.isFinite(count) || count <= 0) return '-'
+  if (!Number.isFinite(count) || count <= 0) return '—'
   return `${count} stop${count === 1 ? '' : 's'}`
 }
 
@@ -119,7 +119,7 @@ export function formatPlacesAvailableNow(publicPlaceCount) {
 }
 
 /**
- * Canonical Rome product counts and marketing labels · single source for UI copy.
+ * Canonical Rome product counts and marketing labels — single source for UI copy.
  */
 export function getTourProductTruth(manifest, options = {}) {
   const product = manifest?.product ?? {}
@@ -146,7 +146,7 @@ export function getTourProductTruth(manifest, options = {}) {
 
   const durationLabel = product.durationLabel ?? 'your pace'
   const ownershipLabel = product.ownershipLabel ?? 'yours forever'
-  const distanceLabel = product.distanceLabel ?? '-'
+  const distanceLabel = product.distanceLabel ?? '—'
   const priceFallbackCents = product.priceFallbackCents ?? manifest?.price_fallback_cents ?? 1499
   const currency = product.currency ?? 'EUR'
 

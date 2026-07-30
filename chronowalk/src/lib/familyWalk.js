@@ -12,7 +12,7 @@ import { isBundleSku } from './launchSkus.js'
 
 const MEMBERSHIP_KEY = 'cw_family_membership_v1'
 
-/** Public site origin for invite deep links · never hardcode a wrong host. */
+/** Public site origin for invite deep links — never hardcode a wrong host. */
 export function getPublicSiteOrigin() {
   if (typeof window === 'undefined') {
     return String(import.meta.env.VITE_SITE_URL ?? '').trim().replace(/\/$/, '')
@@ -23,7 +23,7 @@ export function getPublicSiteOrigin() {
 
 /**
  * Canonical bundle-invite form (matches DB `_cw_normalize_bundle_invite`).
- * Existing secrets are lowercase hex · trim + lowercase only.
+ * Existing secrets are lowercase hex — trim + lowercase only.
  */
 export function normalizeBundleInviteCode(inviteCode) {
   return String(inviteCode ?? '').trim().toLowerCase()
@@ -112,7 +112,7 @@ function normalizeBundleView(raw, { isOwner = false } = {}) {
     isOwner: role === 'owner' || Boolean(isOwner || raw.isOwner),
     bundleStatus: raw.bundle_status ?? raw.bundleStatus ?? null,
     seats,
-    // Legacy alias used by older UI · maps from server product id only.
+    // Legacy alias used by older UI — maps from server product id only.
     tier:
       purchasedProductId === 'rome-couple'
         ? 'couple'
@@ -139,7 +139,7 @@ function memberViewFromAccess(access) {
 }
 
 function allowsLocalFamilyDevStore() {
-  // Local store may exercise UI in DEV only · never grants production access.
+  // Local store may exercise UI in DEV only — never grants production access.
   return import.meta.env.DEV || import.meta.env.VITE_ALLOW_DEV_ACCESS === 'true'
 }
 
@@ -526,7 +526,7 @@ export async function updateWalkSessionState(sessionId, patch) {
   })
   if (remote.ok && remote.data?.ok !== false) return remote.data
   if (remote.reason === 'stale_update' && remote.data?.id) {
-    // Server kept newer state · return it so the client converges.
+    // Server kept newer state — return it so the client converges.
     return { ...remote.data, ok: true }
   }
   if (remote.data?.reason === 'stale_update' && remote.data?.id) {
@@ -602,7 +602,7 @@ export function isActivelySynced(session) {
 
 export function isLeader(session, id = null) {
   if (!session) return false
-  // Server payloads include mySeatId · prefer seat comparison (authoritative).
+  // Server payloads include mySeatId — prefer seat comparison (authoritative).
   if (session.leaderSeatId && session.mySeatId) {
     return session.leaderSeatId === session.mySeatId
   }
@@ -620,7 +620,7 @@ export function isLeader(session, id = null) {
 export function shouldAcceptRemoteSession(localSession, remoteSession) {
   if (!remoteSession?.id) return false
   if (localSession?.id && remoteSession.id !== localSession.id) {
-    // Different session id · accept (organizer restarted).
+    // Different session id — accept (organizer restarted).
     return true
   }
   if (!localSession?.updatedAt || !remoteSession.updatedAt) return true

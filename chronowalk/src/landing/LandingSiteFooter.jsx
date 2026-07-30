@@ -20,10 +20,10 @@ function resolveFooterHref(href, landingPrefix) {
 }
 
 /**
- * Site footer · landing anchors + Legal cluster required for Paddle review.
+ * Site footer — landing anchors + Legal cluster required for Paddle review.
  * @param {{ pricingHref?: string, landingPrefix?: string }} props
- *   pricingHref · `#pricing` on landing; `/landing#pricing` on standalone pages.
- *   landingPrefix · when set (e.g. `/landing`), section anchors point at the marketing page.
+ *   pricingHref — `#pricing` on landing; `/landing#pricing` on standalone pages.
+ *   landingPrefix — when set (e.g. `/landing`), section anchors point at the marketing page.
  */
 export default function LandingSiteFooter({
   pricingHref = '#pricing',

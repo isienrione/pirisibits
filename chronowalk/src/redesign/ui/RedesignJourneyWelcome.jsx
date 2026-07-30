@@ -7,7 +7,7 @@ import { PrimaryButton } from './index.js'
 import TourRoutePreviewPanel from './TourRoutePreviewPanel.jsx'
 
 /**
- * Journey welcome · full-screen illustrated roadmap before unlocking audio.
+ * Journey welcome — full-screen illustrated roadmap before unlocking audio.
  */
 export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
   const { context } = useV2Journey()
@@ -38,7 +38,7 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
             One living city.
           </>
         }
-        subtitle="Walk the full route · from the Arena to the Appian Way. Narration unlocks as you arrive at each place."
+        subtitle="Walk the full route — from the Arena to the Appian Way. Narration unlocks as you arrive at each place."
       />
 
       <footer
@@ -46,7 +46,7 @@ export default function RedesignJourneyWelcome({ onUnlock, busy = false }) {
         style={{ paddingBottom: SHELL_TAB_BAR_INSET }}
       >
         <p className="cw-route-preview-screen__note">
-          Tap once to wake sound · narration, ambience, and the city between stops.
+          Tap once to wake sound — narration, ambience, and the city between stops.
         </p>
         <PrimaryButton onClick={onUnlock} disabled={busy}>
           {busy ? 'Starting audio…' : 'Begin your walk'}

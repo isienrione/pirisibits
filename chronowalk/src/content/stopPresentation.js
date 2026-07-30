@@ -9,7 +9,7 @@ const STATUS_SUBTITLE = {
 }
 
 /**
- * Maps manifest map-stop records to shell row props · keeps UI free of content shape.
+ * Maps manifest map-stop records to shell row props — keeps UI free of content shape.
  */
 export function toStopRowModel(manifest, stop, index) {
   const waypoint = getWaypoint(manifest, stop.id)

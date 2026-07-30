@@ -288,7 +288,7 @@ export default function B5OwnPaceStopPicker({
             boxShadow: canContinue ? `0 0 20px ${T.ember}44` : 'none',
           }}
         >
-          {canContinue ? `Build my tour · ${selected.size} stops` : 'Select at least one stop'}
+          {canContinue ? `Build my tour — ${selected.size} stops` : 'Select at least one stop'}
         </button>
       </div>
     </div>

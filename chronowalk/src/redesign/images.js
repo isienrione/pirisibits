@@ -1,5 +1,5 @@
 /**
- * Redesign screen photos · local NOW images from public/waypoints/.
+ * Redesign screen photos — local NOW images from public/waypoints/.
  */
 import {
   getModernExteriorUrl,
@@ -46,7 +46,7 @@ export const THEN_pantheon = nowExterior('pantheon')
 
 export const tourHero = `${TOUR_HERO_PHOTO}${bust}`
 
-/** Lookup by legacy stop id · used when wiring screens to real waypoint data. */
+/** Lookup by legacy stop id — used when wiring screens to real waypoint data. */
 export function getNowPhotoUrl(stopId) {
   return now(stopId)
 }

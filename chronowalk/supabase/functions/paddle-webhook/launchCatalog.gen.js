@@ -1,8 +1,8 @@
-/* AUTO-GENERATED from commerce/launchCatalog.json · do not edit.
- * fingerprint: 09be43b736436bc3
+/* AUTO-GENERATED from commerce/launchCatalog.json — do not edit.
+ * fingerprint: e2280d5f60b0ccec
  * Regenerate: node scripts/generate-commerce-consumers.mjs
  */
-export const LAUNCH_CATALOG_FINGERPRINT = "09be43b736436bc3"
+export const LAUNCH_CATALOG_FINGERPRINT = "e2280d5f60b0ccec"
 export const LAUNCH_CATALOG_CURRENCY = "EUR"
 export const LAUNCH_CATALOG_TAX_CATEGORY = "standard"
 export const LAUNCH_CATALOG_METADATA_KEY = "chronowalk_sku"
@@ -11,7 +11,7 @@ export const LAUNCH_CATALOG_PRODUCTS = Object.freeze([
     "productId": "rome-central",
     "name": "Roma Historica",
     "paddleProductName": "ChronoWalk · Roma Historica",
-    "description": "Central Rome walking tour · Trajan, Pantheon, centro storico.",
+    "description": "Central Rome walking tour — Trajan, Pantheon, centro storico.",
     "amountCents": 999,
     "contentProductId": "rome-central",
     "seatLimit": 1,
@@ -24,7 +24,7 @@ export const LAUNCH_CATALOG_PRODUCTS = Object.freeze([
     "productId": "rome-essential",
     "name": "Roma Antica",
     "paddleProductName": "ChronoWalk · Roma Antica",
-    "description": "Ancient core · Colosseum, Forum, Palatine, Capitoline, Circus Maximus.",
+    "description": "Ancient core — Colosseum, Forum, Palatine, Capitoline, Circus Maximus.",
     "amountCents": 999,
     "contentProductId": "rome-essential",
     "seatLimit": 1,
@@ -37,7 +37,7 @@ export const LAUNCH_CATALOG_PRODUCTS = Object.freeze([
     "productId": "rome-complete",
     "name": "Roma Eterna",
     "paddleProductName": "ChronoWalk · Roma Eterna",
-    "description": "Full Rome bundle · every ChronoWalk Rome route in one walk.",
+    "description": "Full Rome bundle — every ChronoWalk Rome route in one walk.",
     "amountCents": 1499,
     "contentProductId": "rome-complete",
     "seatLimit": 1,

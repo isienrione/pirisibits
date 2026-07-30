@@ -4,7 +4,7 @@ const ART_W = 390
 
 /**
  * Measure the phone screen and scale the 390px artboard exactly to its width.
- * Never collapses to 0 · a zero scale paints an empty black phone.
+ * Never collapses to 0 — a zero scale paints an empty black phone.
  */
 export default function usePhoneArtboardScale() {
   const screenRef = useRef(null)

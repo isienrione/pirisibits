@@ -60,7 +60,7 @@ function renderModule({ catalog, fingerprint }) {
     serverEnvKey: p.serverEnvKey,
   }))
 
-  return `/* AUTO-GENERATED from commerce/launchCatalog.json · do not edit.
+  return `/* AUTO-GENERATED from commerce/launchCatalog.json — do not edit.
  * fingerprint: ${fingerprint}
  * Regenerate: node scripts/generate-commerce-consumers.mjs
  */

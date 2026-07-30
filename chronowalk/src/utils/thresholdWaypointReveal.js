@@ -1,5 +1,5 @@
 const CROSSED_KEY = 'chronowalk.hasCrossedThreshold'
-/** Legacy keys from earlier invite / hint tutorials · honor so returning travelers aren't re-taught. */
+/** Legacy keys from earlier invite / hint tutorials — honor so returning travelers aren't re-taught. */
 const LEGACY_KEYS = ['cw_threshold_reveal_tutorial_seen', 'cw_threshold_hint_done']
 
 function readFlag(key) {
@@ -7,7 +7,7 @@ function readFlag(key) {
   try {
     return window.localStorage.getItem(key) === 'true'
   } catch {
-    // Storage unavailable · treat as already crossed so we only show a brief ring.
+    // Storage unavailable — treat as already crossed so we only show a brief ring.
     return true
   }
 }

@@ -1,7 +1,7 @@
 export const WALKING_COMPANION_MIN_ZOOM = 15.5
 export const WALKING_COMPANION_MAX_ZOOM = 16.5
 
-/** Tilted hero-walk camera · composed 3D look over satellite. */
+/** Tilted hero-walk camera — composed 3D look over satellite. */
 export const WALKING_COMPANION_PITCH = 45
 
 /**
@@ -15,7 +15,7 @@ export const WALKING_COMPANION_MAP_PADDING = {
   right: 56,
 }
 
-/** Rough Rome tour footprint · reject stray GPS / bad geometry for camera framing. */
+/** Rough Rome tour footprint — reject stray GPS / bad geometry for camera framing. */
 export const ROME_CAMERA_BOUNDS = {
   minLat: 41.84,
   maxLat: 41.93,

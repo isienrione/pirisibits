@@ -1,4 +1,4 @@
-/** Launch-core journey flow states (not GPS transit/arrival · see useGeoLocation). */
+/** Launch-core journey flow states (not GPS transit/arrival — see useGeoLocation). */
 export const JOURNEY_STATES = {
   IDLE: 'idle',
   WALKING: 'walking',
@@ -131,7 +131,7 @@ export function resetJourney() {
   return snapshot
 }
 
-/** Dev / test helper · replace entire snapshot. */
+/** Dev / test helper — replace entire snapshot. */
 export function hydrateJourney(nextSnapshot) {
   commit(nextSnapshot)
   return snapshot

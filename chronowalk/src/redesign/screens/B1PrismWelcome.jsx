@@ -24,10 +24,10 @@ export default function B1PrismWelcome({ onComplete }) {
       style={{ background: T.obsidian, height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative", fontFamily: F.body }}
       onClick={() => (onComplete ? onComplete() : setCycleKey(k => k + 1))}
     >
-      {/* Dim photo · near-black so animation reads clean; satisfies immersion rule */}
+      {/* Dim photo — near-black so animation reads clean; satisfies immersion rule */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${severusNow})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.04) saturate(0.2)", pointerEvents: "none" }} />
       <Vignette />
-      {/* Tap hint · production; frame label kept for prototype gallery */}
+      {/* Tap hint — production; frame label kept for prototype gallery */}
       <div style={{ position: "absolute", top: "max(52px, env(safe-area-inset-top))", left: 0, right: 0, textAlign: "center", zIndex: 2 }}>
         <span style={{ fontSize: 10, color: `${T.muted}88`, letterSpacing: "0.16em" }}>TAP TO CONTINUE</span>
       </div>
@@ -46,7 +46,7 @@ export default function B1PrismWelcome({ onComplete }) {
           </linearGradient>
         </defs>
 
-        {/* Circle · draws itself over 1.2s */}
+        {/* Circle — draws itself over 1.2s */}
         <circle
           cx="60" cy="60" r="52"
           fill="none"
@@ -60,7 +60,7 @@ export default function B1PrismWelcome({ onComplete }) {
           }}
         />
 
-        {/* Spectrum hairline · draws top-to-bottom through the circle */}
+        {/* Spectrum hairline — draws top-to-bottom through the circle */}
         <line
           x1="60" y1="8" x2="60" y2="112"
           stroke="url(#b1spec)"
@@ -78,7 +78,7 @@ export default function B1PrismWelcome({ onComplete }) {
           }}
         />
 
-        {/* Ember hairline · resolves from spectrum at phase 2 */}
+        {/* Ember hairline — resolves from spectrum at phase 2 */}
         <line
           x1="60" y1="8" x2="60" y2="112"
           stroke={T.ember}
@@ -92,7 +92,7 @@ export default function B1PrismWelcome({ onComplete }) {
         />
       </svg>
 
-      {/* "ROME" · fades in at phase 2 */}
+      {/* "ROME" — fades in at phase 2 */}
       <div style={{ marginTop: 40, opacity: phase >= 2 ? 1 : 0, transition: "opacity 700ms ease 200ms" }}>
         <span style={{
           fontFamily: F.display, fontSize: 36, color: T.warmWhite,

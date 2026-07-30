@@ -27,7 +27,7 @@ const COLOSSEUM_SCENE = {
       label: 'Velarium',
       title: 'The velarium',
       era: 'c. 80 AD',
-      body: 'A vast awning of canvas and rope shielded spectators from the Roman sun. Its engineering was as public as the games themselves · proof that spectacle required infrastructure.',
+      body: 'A vast awning of canvas and rope shielded spectators from the Roman sun. Its engineering was as public as the games themselves — proof that spectacle required infrastructure.',
     },
     {
       id: 'cavea',
@@ -54,7 +54,7 @@ const COLOSSEUM_SCENE = {
       label: 'Pulvinar',
       title: 'The imperial box',
       era: 'c. 80 AD',
-      body: 'From the pulvinar, emperors watched Rome watch them. Power was performed as proximity · the ruler visible, the crowd accountable to his gaze.',
+      body: 'From the pulvinar, emperors watched Rome watch them. Power was performed as proximity — the ruler visible, the crowd accountable to his gaze.',
     },
     {
       id: 'hypogeum',
@@ -85,7 +85,7 @@ const DEFAULT_SCENE = {
       y: 0.62,
       label: 'Threshold',
       title: 'The crossing',
-      body: 'To step inside was to leave the ordinary city. Thresholds in Rome were not merely doors · they were contracts between crowd, ritual, and empire.',
+      body: 'To step inside was to leave the ordinary city. Thresholds in Rome were not merely doors — they were contracts between crowd, ritual, and empire.',
     },
   ],
 }

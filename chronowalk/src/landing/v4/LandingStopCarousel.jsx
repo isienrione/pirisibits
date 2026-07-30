@@ -7,7 +7,7 @@ import {
 } from '../landingAnalytics.js'
 
 /**
- * Premium horizontal stop carousel · Apple TV artwork energy.
+ * Premium horizontal stop carousel — Apple TV artwork energy.
  * Infinite-feeling track via duplicated slides.
  */
 export default function LandingStopCarousel() {

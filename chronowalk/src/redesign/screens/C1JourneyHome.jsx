@@ -13,12 +13,12 @@ export default function C1JourneyHome() {
 
   const acts = [
     { num: "I",   color: T.actI,   name: "The Arena",       promise: "Where it all began. The crowd remembers.",                  status: "current", photo: colosseumNow  },
-    { num: "II",  color: T.actII,  name: "The Sacred Way",  promise: "The road Caesar walked · in both directions.",              status: "ahead",   photo: palatineNow    },
+    { num: "II",  color: T.actII,  name: "The Sacred Way",  promise: "The road Caesar walked — in both directions.",              status: "ahead",   photo: palatineNow    },
     { num: "III", color: T.actIII, name: "The Forum",       promise: "Nine stops, one drained swamp, the centre of the world.",   status: "ahead",   photo: capitolineNow },
     { num: "IV",  color: T.actIV,  name: "The Market",      promise: "Trade, gossip, and the smell of fresh bread.",              status: "ahead",   photo: trajansNow    },
     { num: "V",   color: T.actV,   name: "The Living City", promise: "The centuries pile up and somehow stay distinct.",          status: "ahead",   photo: pantheonNow   },
     { num: "VI",  color: T.actVI,  name: "The River",       promise: "Everything Rome built, it built toward this water.",        status: "ahead",   photo: spanishSteps  },
-    { num: "ENC", color: T.encore, name: "Optional Encore",  promise: "Via Appia Antica · estimated 30 min drive.",         status: "ahead",   photo: spanishSteps  },
+    { num: "ENC", color: T.encore, name: "Optional Encore",  promise: "Via Appia Antica — estimated 30 min drive.",         status: "ahead",   photo: spanishSteps  },
   ];
 
   // Seam x-position: within the left third (about 38px from left edge)
@@ -38,7 +38,7 @@ export default function C1JourneyHome() {
 
       {/* ── Act spine (scrollable) ── */}
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", position: "relative" }}>
-        {/* Vertical ember Seam · left third of screen */}
+        {/* Vertical ember Seam — left third of screen */}
         <div style={{
           position: "absolute",
           left: SEAM_X,
@@ -64,7 +64,7 @@ export default function C1JourneyHome() {
                 gap: 12,
               }}
             >
-              {/* Node indicator · sits ON the seam */}
+              {/* Node indicator — sits ON the seam */}
               <div style={{
                 position: "absolute",
                 left: SEAM_X - NODE_R,
@@ -86,7 +86,7 @@ export default function C1JourneyHome() {
                 }),
               }} />
 
-              {/* 56 × 56 photo thumb · leads the row */}
+              {/* 56 × 56 photo thumb — leads the row */}
               <img
                 src={act.photo}
                 alt={act.name}
@@ -118,7 +118,7 @@ export default function C1JourneyHome() {
                   {act.num === "ENC" ? "ENCORE" : `ACT ${act.num}`}
                 </span>
 
-                {/* Act name · Fraunces 22 */}
+                {/* Act name — Fraunces 22 */}
                 <p style={{
                   fontFamily: F.display,
                   fontSize: 22,
@@ -130,7 +130,7 @@ export default function C1JourneyHome() {
                   {act.name}
                 </p>
 
-                {/* One-line promise · DM Sans 13 muted */}
+                {/* One-line promise — DM Sans 13 muted */}
                 <p style={{
                   fontSize: 13,
                   color: T.muted,
@@ -167,7 +167,7 @@ export default function C1JourneyHome() {
             boxShadow: `0 0 22px ${T.actI}50`,
           }}
         >
-          Begin Act I · The Arena
+          Begin Act I — The Arena
         </button>
         <div style={{ display: "flex", justifyContent: "center", gap: 36 }}>
           <button

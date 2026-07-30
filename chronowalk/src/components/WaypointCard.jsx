@@ -122,7 +122,7 @@ function AudioTranscriptSection({ waypoint }) {
       <p className="mt-3 text-sm leading-relaxed text-muted">{transcript}</p>
       {!waypoint?.arrival_transcript ? (
         <p className="mt-2 text-xs text-muted/80">
-          Placeholder · timed captions will sync with narration in a future update.
+          Placeholder — timed captions will sync with narration in a future update.
         </p>
       ) : null}
     </details>
@@ -594,7 +594,7 @@ const WaypointCard = ({
         {accessMode === 'freeSample' ? (
           <div className="mt-4 space-y-3">
             <p className="rounded-2xl border border-ember/30 bg-ember/10 px-4 py-3 text-sm leading-relaxed text-ink900">
-              This is your free taste of ChronoWalk · the Colosseum reconstruction and opening audio
+              This is your free taste of ChronoWalk — the Colosseum reconstruction and opening audio
               story. Unlock the full tours to walk every stop with GPS guidance and expert narration.
             </p>
             {onViewTours ? (
@@ -669,7 +669,7 @@ const WaypointCard = ({
             />
             {needsResumeAudio ? (
               <p className="text-xs text-muted">
-                Audio was interrupted · tap play to continue the story.
+                Audio was interrupted — tap play to continue the story.
               </p>
             ) : null}
             <AudioTranscriptSection waypoint={waypoint} />

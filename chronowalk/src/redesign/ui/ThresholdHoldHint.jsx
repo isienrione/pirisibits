@@ -2,7 +2,7 @@ import { Pointer } from 'lucide-react'
 
 /**
  * Persistent affordance for press-and-hold threshold reveal.
- * Stays visible whenever a reconstruction is available · not first-visit only.
+ * Stays visible whenever a reconstruction is available — not first-visit only.
  */
 function PressHoldIcon() {
   return (

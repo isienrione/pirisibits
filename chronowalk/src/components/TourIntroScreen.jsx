@@ -4,7 +4,7 @@ import TourIntroContent from './TourIntroContent'
 
 const tourHeroPhoto = `/tour-hero.jpg?v=${__APP_BUILD_ID__}`
 
-/** Standalone intro screen · scrolls to catalog when embedded in TourLanding. */
+/** Standalone intro screen — scrolls to catalog when embedded in TourLanding. */
 function TourIntroScreen({ onTryFreePreview, onViewTours }) {
   const [heroSrc, setHeroSrc] = useState(tourHeroPhoto)
 

@@ -1,6 +1,6 @@
 import { ROMAN_FORUM_STOP_IDS } from './forumWaypoints'
 
-/** Roman Forum · eight stops inside public/waypoints/forum-cluster/. */
+/** Roman Forum — eight stops inside public/waypoints/forum-cluster/. */
 export const ROMAN_FORUM_TOUR = {
   id: 'roman-forum',
   productId: 'roman-forum',

@@ -16,7 +16,7 @@ export function useFamilyWalkContext() {
   return ctx
 }
 
-/** Optional · returns null outside provider (e.g. isolated tests). */
+/** Optional — returns null outside provider (e.g. isolated tests). */
 export function useOptionalFamilyWalk() {
   return useContext(FamilyWalkCtx)
 }

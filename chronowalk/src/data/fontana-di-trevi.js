@@ -2,7 +2,7 @@ export const FONTANA_DI_TREVI = { lat: 41.90094, lng: 12.48331 }
 
 /** Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=fontana-di-trevi */
 
-/** Narrow-alley reveal POV · fountain fills frame at end of Via delle Muratte. */
+/** Narrow-alley reveal POV — fountain fills frame at end of Via delle Muratte. */
 export const FONTANA_DI_TREVI_VIEWPOINT = {
   lat: 41.90085,
   lng: 12.48345,
@@ -31,7 +31,7 @@ export const FONTANA_DI_TREVI_WAYPOINT = {
   framingProfile: 'narrow_reveal',
   arrival_headline: "You've reached the Trevi Fountain!",
   arrival_subtitle:
-    'Baroque Rome bursts into view at the end of the alley · watch the modern scene come alive.',
+    'Baroque Rome bursts into view at the end of the alley — watch the modern scene come alive.',
   immersive_orientation_hint:
     'Stand at the basin rail facing the fountain facade, then begin the immersive view.',
   lat: FONTANA_DI_TREVI.lat,

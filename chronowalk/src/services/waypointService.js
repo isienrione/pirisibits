@@ -10,7 +10,7 @@ import { getLocalWaypoint, mergeWaypointWithLocalDefaults } from './waypointMerg
  */
 
 /**
- * Local seed data · fallback when Supabase is not configured.
+ * Local seed data — fallback when Supabase is not configured.
  */
 const getLocalWaypointById = (id) => getLocalWaypoint(id)
 

@@ -30,7 +30,7 @@ function writePanelOpen(open) {
   window.sessionStorage.setItem(PANEL_OPEN_KEY, open ? '1' : '0')
 }
 
-/** Collapsible QA panel · only when ?devPanel=true (not auto with geo_debug). */
+/** Collapsible QA panel — only when ?devPanel=true (not auto with geo_debug). */
 export default function V2FieldTestPanel() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -48,7 +48,7 @@ export default function V2FieldTestPanel() {
   const activeLabel = useMemo(() => {
     if (step?.type === 'waypoint' && step.record?.title) return step.record.title
     if (step?.targetWaypoint?.title) return `→ ${step.targetWaypoint.title}`
-    return '-'
+    return '—'
   }, [step])
 
   if (!isDevPanelEnabled()) return null

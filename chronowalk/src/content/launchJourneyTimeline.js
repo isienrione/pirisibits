@@ -11,13 +11,13 @@ export const TIMELINE_MOMENT_KINDS = {
 }
 
 const ARRIVAL_LINES = {
-  colosseum: 'The amphitheatre opened before you · stone that once held an empire watching.',
+  colosseum: 'The amphitheatre opened before you — stone that once held an empire watching.',
   pantheon: 'You stood beneath a dome that has outlasted nearly everything Rome built after it.',
   default: 'You arrived, and the present made room for you to linger.',
 }
 
 const WALKING_LINES = {
-  default: 'Rome asked you to walk · not rush · between the places that still remember.',
+  default: 'Rome asked you to walk — not rush — between the places that still remember.',
 }
 
 const AUDIO_LINES = {
@@ -25,7 +25,7 @@ const AUDIO_LINES = {
 }
 
 const THRESHOLD_LINES = {
-  default: 'You crossed the threshold · from what is, into what Rome once dared to build.',
+  default: 'You crossed the threshold — from what is, into what Rome once dared to build.',
 }
 
 const PHOTO_LINES = {
@@ -150,7 +150,7 @@ export function buildJourneyTimeline({ manifest, context, recap }) {
   return {
     intro:
       monumentTitles.length > 0
-        ? 'This is the path you walked · not measured in efficiency, but in the moments you chose to keep.'
+        ? 'This is the path you walked — not measured in efficiency, but in the moments you chose to keep.'
         : 'Your journey is still unfolding. When you return, this timeline will hold what you walked, heard, and captured.',
     routeLabel:
       monumentTitles.length > 1

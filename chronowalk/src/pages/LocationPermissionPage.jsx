@@ -8,7 +8,7 @@ import { offlineDownloadPath } from '../routes/paths'
 const HEADLINE = "We'll know exactly when you've reached each story."
 
 const SUPPORTING_COPY =
-  'Each place unlocks the moment you arrive · as if the city recognized you were standing there. That is when history stops feeling distant and starts feeling alive.'
+  'Each place unlocks the moment you arrive — as if the city recognized you were standing there. That is when history stops feeling distant and starts feeling alive.'
 
 function requestLocationAccess() {
   if (isDebugGeo() || !navigator.geolocation) {

@@ -57,7 +57,7 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
     case 'rome-essential':
       return 'Colosseum, Forum, hills, and Circus Maximus.'
     case 'rome-complete':
-      return 'The full Rome walk · archaeological core to the Appian Way.'
+      return 'The full Rome walk — archaeological core to the Appian Way.'
     case 'rome-couple':
       return 'Complete Roma Eterna for two devices, with shared tour progress.'
     case 'rome-family':

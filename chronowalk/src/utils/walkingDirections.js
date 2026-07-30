@@ -4,7 +4,7 @@ const GENERIC_STREET_PATTERN =
 const GENERIC_INSTRUCTION_PATTERN =
   /\b(the\s+)?(walkway|footway|path|pedestrian(?:\s+road|\s+zone|\s+crossing)?|cycleway)\b/i
 
-/** Mapbox often labels archaeological paths as generic "walkway" · treat as unnamed. */
+/** Mapbox often labels archaeological paths as generic "walkway" — treat as unnamed. */
 export function isGenericStreetName(name) {
   if (!name || typeof name !== 'string') return true
   const trimmed = name.trim()

@@ -8,7 +8,7 @@ import { createElement } from 'react'
 
 function renderInline(text, keyPrefix) {
   const nodes = []
-  // Bold (**…**), links ([label](url)), otherwise plain text · including [BRACKETS]
+  // Bold (**…**), links ([label](url)), otherwise plain text — including [BRACKETS]
   const pattern = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g
   let last = 0
   let match

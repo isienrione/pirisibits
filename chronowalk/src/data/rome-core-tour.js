@@ -7,7 +7,7 @@ import { ROMAN_FORUM_TOUR } from './roman-forum-tour'
 export const ROME_CORE_TOUR = {
   id: 'rome-core',
   title: 'Heart of Ancient Rome (full)',
-  subtitle: 'Roman Forum + city loop · all stops',
+  subtitle: 'Roman Forum + city loop — all stops',
   stopIds: [...ROMAN_FORUM_TOUR.stopIds, ...HEART_OF_ANCIENT_ROME_TOUR.stopIds],
   mapZoom: 14,
 }
