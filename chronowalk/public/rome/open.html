@@ -49,25 +49,55 @@
         text-decoration: none;
         cursor: pointer;
       }
-      .hidden {
-        display: none !important;
+      button.btn-primary {
+        background: #f5efe3;
+        color: #16130f;
+        border-color: #f5efe3;
       }
     </style>
     <script>
       ;(function () {
         // Denylisted bridge between reset-shell and /landing.
-        // Continue must NOT jump straight to /landing while iOS may still reattach
-        // a controller - that leaves "could not finish loading" with no progress.
+        // iOS Chrome can hang forever inside caches.delete / unregister - never
+        // await those without a timeout, or travelers stay on "Opening…" forever.
         var RESET_AT_KEY = 'cw-shell-reset-at'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
-        var STABLE_MS = 2000
-        var WAIT_MS = 12000
+        var STABLE_MS = 1000
+        var WAIT_MS = 5000
+        var CLEAR_TIMEOUT_MS = 2500
+        var finished = false
         var stuck = false
         try {
           stuck = new URLSearchParams(window.location.search).get('stuck') === '1'
         } catch (e) {}
 
+        function withTimeout(promise, ms) {
+          return new Promise(function (resolve) {
+            var settled = false
+            var timer = window.setTimeout(function () {
+              if (settled) return
+              settled = true
+              resolve({ timedOut: true })
+            }, ms)
+            Promise.resolve(promise)
+              .then(function (value) {
+                if (settled) return
+                settled = true
+                window.clearTimeout(timer)
+                resolve({ timedOut: false, value: value })
+              })
+              .catch(function () {
+                if (settled) return
+                settled = true
+                window.clearTimeout(timer)
+                resolve({ timedOut: false, value: null })
+              })
+          })
+        }
+
         function goLanding() {
+          if (finished) return
+          finished = true
           try {
             window.location.assign('/landing?cw_bust=' + Date.now())
           } catch (e) {
@@ -82,17 +112,12 @@
           if (sub && detail) sub.innerHTML = detail
         }
 
-        function showActions() {
-          var actions = document.getElementById('cw-open-actions')
-          if (actions) actions.classList.remove('hidden')
-        }
-
         function showNuclear() {
+          if (finished) return
           setStatus(
-            'One more step on this phone',
-            'ChronoWalk is still blocked by an old saved copy of the site. Close every ChronoWalk tab, then clear <strong>Website Data</strong> for chronowalk.com (Safari: Settings → Safari → Advanced → Website Data → chronowalk.com → Remove; Chrome: lock icon → Cookies and site data → clear). Your purchase stays with your email - reopen the access link after. Access keys on this phone will need that link again.',
+            'This phone needs a full site-data clear',
+            'The old ChronoWalk copy will not drop on its own. In Chrome: tap the lock (or tune) icon by the URL → Cookies and site data → clear for chronowalk.com. In Safari: Settings → Safari → Advanced → Website Data → chronowalk.com → Remove. Then open your access email link again. Your purchase stays with that email.',
           )
-          showActions()
         }
 
         function clearCachesAndWorkers() {
@@ -126,10 +151,11 @@
           if (!('serviceWorker' in navigator)) {
             return Promise.resolve({ controller: false, regs: 0 })
           }
-          return navigator.serviceWorker.getRegistrations().then(function (regs) {
+          return withTimeout(navigator.serviceWorker.getRegistrations(), 1500).then(function (result) {
+            var regs = result.timedOut ? [] : result.value || []
             return {
               controller: Boolean(navigator.serviceWorker.controller),
-              regs: regs ? regs.length : 0,
+              regs: regs.length || 0,
             }
           })
         }
@@ -139,27 +165,29 @@
           var clearSince = 0
           return new Promise(function (resolve) {
             function tick() {
-              readShellState()
-                .then(function (state) {
-                  var clear = !state.controller && state.regs === 0
-                  if (clear) {
-                    if (!clearSince) clearSince = Date.now()
-                    if (Date.now() - clearSince >= stableMs) {
-                      resolve(true)
-                      return
-                    }
-                  } else {
-                    clearSince = 0
-                  }
-                  if (Date.now() - started >= timeoutMs) {
-                    resolve(false)
+              if (finished) {
+                resolve(false)
+                return
+              }
+              readShellState().then(function (state) {
+                // Controller gone is the critical signal. Lingering registration
+                // entries on iOS often never clear even after unregister().
+                var clear = !state.controller
+                if (clear) {
+                  if (!clearSince) clearSince = Date.now()
+                  if (Date.now() - clearSince >= stableMs) {
+                    resolve(true)
                     return
                   }
-                  window.setTimeout(tick, 150)
-                })
-                .catch(function () {
-                  resolve(!navigator.serviceWorker.controller)
-                })
+                } else {
+                  clearSince = 0
+                }
+                if (Date.now() - started >= timeoutMs) {
+                  resolve(!navigator.serviceWorker || !navigator.serviceWorker.controller)
+                  return
+                }
+                window.setTimeout(tick, 150)
+              })
             }
             tick()
           })
@@ -176,19 +204,22 @@
         }
 
         function tryOpen() {
-          setStatus('Opening ChronoWalk…', 'Waiting until this phone drops the old app shell.')
-          return clearCachesAndWorkers()
-            .catch(function () {})
+          setStatus(
+            'Opening ChronoWalk…',
+            'Waiting briefly for the old app shell to drop. If this stays here, use Clear site data below.',
+          )
+          return withTimeout(clearCachesAndWorkers(), CLEAR_TIMEOUT_MS)
             .then(function () {
               return waitForStableClear(WAIT_MS, STABLE_MS)
             })
             .then(function (ok) {
-              if (!ok) {
-                showNuclear()
+              if (finished) return
+              if (ok && !(navigator.serviceWorker && navigator.serviceWorker.controller)) {
+                markReady()
+                goLanding()
                 return
               }
-              markReady()
-              goLanding()
+              showNuclear()
             })
         }
 
@@ -197,16 +228,38 @@
         } catch (e) {}
 
         window.__cwOpenRetry = function () {
+          finished = false
           tryOpen()
+        }
+
+        window.__cwOpenAnyway = function () {
+          markReady()
+          goLanding()
         }
 
         window.__cwOpenReset = function () {
           window.location.assign('/rome/reset-shell?force=1&cw_bust=' + Date.now())
         }
 
+        // Hard ceiling: never leave travelers on Opening… with no next step.
+        window.setTimeout(function () {
+          if (!finished && !(navigator.serviceWorker && navigator.serviceWorker.controller)) {
+            markReady()
+            goLanding()
+            return
+          }
+          if (!finished) showNuclear()
+        }, CLEAR_TIMEOUT_MS + WAIT_MS + STABLE_MS + 500)
+
+        // Show actions immediately - do not wait for async wipe.
+        window.setTimeout(function () {
+          var actions = document.getElementById('cw-open-actions')
+          if (actions) actions.classList.remove('cw-deferred-hide')
+        }, 800)
+
         if (stuck) {
           showNuclear()
-          clearCachesAndWorkers().catch(function () {})
+          withTimeout(clearCachesAndWorkers(), CLEAR_TIMEOUT_MS)
         } else {
           tryOpen()
         }
@@ -218,9 +271,12 @@
       <div>
         <p id="cw-open-status">Opening ChronoWalk…</p>
         <p id="cw-open-sub" class="sub">
-          Waiting until this phone drops the old app shell. Your access stays on this device unless you clear Website Data.
+          Waiting briefly for the old app shell to drop. If this stays here, use Clear site data below.
         </p>
-        <div id="cw-open-actions" class="actions hidden">
+        <div id="cw-open-actions" class="actions cw-deferred-hide" style="display: grid">
+          <button type="button" class="btn btn-primary" onclick="window.__cwOpenAnyway && window.__cwOpenAnyway()">
+            Open site anyway
+          </button>
           <button type="button" class="btn" onclick="window.__cwOpenRetry && window.__cwOpenRetry()">
             Try again
           </button>
@@ -228,6 +284,11 @@
             Refresh app shell again
           </button>
         </div>
+        <style>
+          .cw-deferred-hide {
+            visibility: hidden;
+          }
+        </style>
       </div>
     </main>
   </body>
