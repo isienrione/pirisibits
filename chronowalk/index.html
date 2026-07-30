@@ -144,6 +144,26 @@
         // Never use document.write here — Mobile Safari renders the rest of the
         // inline script as visible text. Just bounce to the static reset page.
         try {
+          // Fresh start after a clean open - drop recovery flags that keep
+          // showing "could not finish loading" on every /landing visit.
+          var params = new URLSearchParams(window.location.search || '')
+          if (params.get('cw_clean') === '1') {
+            localStorage.removeItem(RESET_KEY)
+            localStorage.removeItem(RESET_AT_KEY)
+            localStorage.removeItem(SKIP_SW_KEY)
+            sessionStorage.removeItem(BOOT_RELOAD_KEY)
+            sessionStorage.removeItem('cw-boot-hang-redirect')
+            sessionStorage.removeItem('cw-chunk-reload')
+            if (window.history && window.history.replaceState) {
+              params.delete('cw_clean')
+              var next = window.location.pathname
+              var q = params.toString()
+              window.history.replaceState(null, '', next + (q ? '?' + q : ''))
+            }
+          }
+        } catch (e) {}
+
+        try {
           if (localStorage.getItem(RESET_KEY) === '1') {
             localStorage.removeItem(RESET_KEY)
             markSkipSw()
@@ -173,6 +193,15 @@
           function (event) {
             var target = event.target
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
+            // Only recover for our app modules. Third-party scripts (Lemon, analytics)
+            // must NOT trigger reset-shell / "could not finish loading" loops.
+            try {
+              var srcUrl = new URL(target.src, window.location.href)
+              if (srcUrl.origin !== window.location.origin) return
+              if (srcUrl.pathname.indexOf('/assets/') !== 0) return
+            } catch (parseErr) {
+              return
+            }
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
               // Never auto-bounce into open/reset after a recent wipe - that loop
@@ -181,7 +210,7 @@
                 var hint = document.getElementById('cw-boot-hint')
                 if (hint) {
                   hint.innerHTML =
-                    'ChronoWalk could not finish loading.<br/><a href="/landing" style="color:inherit">Open ChronoWalk</a>'
+                    'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
                 }
                 return
               }
@@ -214,7 +243,7 @@
         Loading ChronoWalk…
         <br />
         <a
-          href="/landing"
+          href="/landing?cw_clean=1"
           style="
             display: inline-block;
             margin-top: 1rem;
@@ -228,8 +257,9 @@
       </p>
     </div>
     <script type="module" src="/src/main.jsx"></script>
-    <!-- Lemon Squeezy checkout overlay (Roma Eterna). Also loaded on demand from src/lib/lemonSqueezy.js -->
-    <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+    <!-- Lemon.js is loaded on demand from src/lib/lemonSqueezy.js at checkout -
+         do not put it here. A failed third-party script must never trigger
+         shell-reset recovery or "could not finish loading". -->
     <script>
       ;(function () {
         // If React never mounts, show a real link. Do NOT auto-redirect to
@@ -243,7 +273,7 @@
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
           hint.innerHTML =
-            'ChronoWalk is taking longer than usual.<br/><a href="/landing" style="color:inherit">Open ChronoWalk</a><br/><a href="/rome/reset-shell?force=1" style="color:inherit;opacity:0.7">Refresh app shell</a>'
+            'ChronoWalk is taking longer than usual.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
         }, hangMs)
       })()
     </script>

@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#16130F" />
     <!-- Real navigation fallback - works even if JS is broken or bouncing. -->
-    <meta http-equiv="refresh" content="2;url=/landing" />
+    <meta http-equiv="refresh" content="2;url=/landing?cw_clean=1" />
     <title>ChronoWalk</title>
     <style>
       html,
@@ -91,11 +91,11 @@
         try {
           if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
             window.setTimeout(function () {
-              window.location.replace('/landing?cw_bust=' + Date.now())
+              window.location.replace('/landing?cw_clean=1&cw_bust=' + Date.now())
             }, 250)
           }
         } catch (e) {
-          window.location.replace('/landing?cw_bust=' + Date.now())
+          window.location.replace('/landing?cw_clean=1&cw_bust=' + Date.now())
         }
       })()
     </script>
@@ -108,8 +108,8 @@
           Tap below to open the site. After clearing site data, you do not need the refresh tools anymore.
         </p>
         <div class="actions">
-          <a class="btn btn-primary" href="/landing">Open ChronoWalk</a>
-          <a class="btn" href="/landing?cw_bust=1">Open with refresh</a>
+          <a class="btn btn-primary" href="/landing?cw_clean=1">Open ChronoWalk</a>
+          <a class="btn" href="/landing?cw_clean=1&cw_bust=1">Open with refresh</a>
         </div>
       </div>
     </main>
