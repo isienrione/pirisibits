@@ -81,6 +81,13 @@ async function sendResendAccessEmail({
       claimExpiresAt,
       siteUrl: siteUrl(),
     }),
+    // Helps Microsoft/Outlook reputation; mailto is enough for transactional access mail.
+    headers: [
+      {
+        name: 'List-Unsubscribe',
+        value: '<mailto:support@chronowalk.com?subject=unsubscribe>',
+      },
+    ],
   }
 
   // Prefer generation id; legacy fallback uses outbox row id (migration backfill).

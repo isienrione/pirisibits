@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { applyPurchaseUnlock } from '../../lib/pendingPurchase.js'
+import { requestAccessEmail } from '../../lib/requestAccessEmail.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 function AccessShell({ children }) {
@@ -47,6 +48,10 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
   const [searchParams] = useSearchParams()
   const token = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
   const [manualToken, setManualToken] = useState('')
+  const [resendEmail, setResendEmail] = useState('')
+  const [resendOrderId, setResendOrderId] = useState('')
+  const [resendBusy, setResendBusy] = useState(false)
+  const [resendMessage, setResendMessage] = useState(null)
   // Async claim outcome only - idle/validating are derived from token presence.
   const [outcome, setOutcome] = useState(null)
   const [outcomeForToken, setOutcomeForToken] = useState(token)
@@ -103,6 +108,22 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
     const trimmed = manualToken.trim()
     if (!trimmed) return
     navigate(`/access?token=${encodeURIComponent(trimmed)}`, { replace: true })
+  }
+
+  const handleResendSubmit = async (event) => {
+    event.preventDefault()
+    if (resendBusy) return
+    setResendBusy(true)
+    setResendMessage(null)
+    try {
+      const result = await requestAccessEmail({
+        email: resendEmail,
+        orderId: resendOrderId,
+      })
+      setResendMessage(result.message)
+    } finally {
+      setResendBusy(false)
+    }
   }
 
   return (
@@ -220,6 +241,133 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
               Enter Rome
             </button>
           </form>
+
+          <section style={{ marginTop: 36 }} aria-labelledby="access-resend-heading">
+            <h2
+              id="access-resend-heading"
+              style={{
+                margin: 0,
+                fontFamily: 'var(--font-display)',
+                fontSize: 'var(--fs-h2)',
+                fontWeight: 500,
+              }}
+            >
+              Didn&apos;t get your access email?
+            </h2>
+            <p
+              style={{
+                marginTop: 10,
+                fontSize: 'var(--fs-secondary)',
+                lineHeight: 1.55,
+                color: 'var(--muted-warm)',
+              }}
+            >
+              Use the same email as your Paddle receipt and the order id that starts with{' '}
+              <code style={{ color: 'var(--warm-white)' }}>txn_</code>. Check Junk / Other on
+              Microsoft addresses.
+            </p>
+            <form onSubmit={handleResendSubmit} style={{ marginTop: 20 }}>
+              <label
+                htmlFor="access-resend-email"
+                style={{
+                  display: 'block',
+                  fontSize: 'var(--fs-caption)',
+                  fontWeight: 600,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--muted-warm)',
+                }}
+              >
+                Purchase email
+              </label>
+              <input
+                id="access-resend-email"
+                name="access-resend-email"
+                type="email"
+                autoComplete="email"
+                value={resendEmail}
+                onChange={(event) => setResendEmail(event.target.value)}
+                placeholder="you@outlook.com"
+                required
+                style={{
+                  marginTop: 10,
+                  width: '100%',
+                  padding: '14px 16px',
+                  borderRadius: 'var(--r-card)',
+                  border: '1px solid color-mix(in srgb, var(--warm-white) 14%, transparent)',
+                  background: 'color-mix(in srgb, var(--ink) 70%, transparent)',
+                  color: 'var(--warm-white)',
+                  fontSize: 'var(--fs-secondary)',
+                }}
+              />
+              <label
+                htmlFor="access-resend-order"
+                style={{
+                  display: 'block',
+                  marginTop: 16,
+                  fontSize: 'var(--fs-caption)',
+                  fontWeight: 600,
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--muted-warm)',
+                }}
+              >
+                Paddle order id
+              </label>
+              <input
+                id="access-resend-order"
+                name="access-resend-order"
+                type="text"
+                autoComplete="off"
+                value={resendOrderId}
+                onChange={(event) => setResendOrderId(event.target.value)}
+                placeholder="txn_…"
+                required
+                style={{
+                  marginTop: 10,
+                  width: '100%',
+                  padding: '14px 16px',
+                  borderRadius: 'var(--r-card)',
+                  border: '1px solid color-mix(in srgb, var(--warm-white) 14%, transparent)',
+                  background: 'color-mix(in srgb, var(--ink) 70%, transparent)',
+                  color: 'var(--warm-white)',
+                  fontSize: 'var(--fs-secondary)',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={resendBusy}
+                style={{
+                  marginTop: 14,
+                  width: '100%',
+                  padding: '14px 18px',
+                  border: '1px solid color-mix(in srgb, var(--warm-white) 22%, transparent)',
+                  borderRadius: 999,
+                  background: 'transparent',
+                  color: 'var(--warm-white)',
+                  fontSize: 'var(--fs-body)',
+                  fontWeight: 600,
+                  cursor: resendBusy ? 'wait' : 'pointer',
+                  opacity: resendBusy ? 0.7 : 1,
+                }}
+              >
+                {resendBusy ? 'Sending…' : 'Email me a fresh access link'}
+              </button>
+            </form>
+            {resendMessage ? (
+              <p
+                role="status"
+                style={{
+                  marginTop: 14,
+                  fontSize: 'var(--fs-secondary)',
+                  lineHeight: 1.55,
+                  color: 'var(--verdigris)',
+                }}
+              >
+                {resendMessage}
+              </p>
+            ) : null}
+          </section>
         </>
       ) : null}
 

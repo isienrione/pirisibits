@@ -23,6 +23,12 @@ describe('AccessScreen', () => {
 
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
     expect(screen.getByText(/personal link/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /didn.t get your access email/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /email me a fresh access link/i }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /see rome packages/i })).toHaveAttribute(
       'href',
       '/landing#pricing',

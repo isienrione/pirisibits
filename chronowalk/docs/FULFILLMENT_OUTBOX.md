@@ -66,6 +66,22 @@ Use Supabase Dashboard → Edge Functions → Schedules (or `pg_cron` + `net.htt
 | `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | all Edge functions |
 | `PADDLE_*` / `PADDLE_PRICE_ROME_*` | paddle-webhook (unchanged) |
 
+## Buyer self-serve (Microsoft / lost email)
+
+`/access` → **Email me a fresh access link** posts to Edge Function `request-access-email`
+with purchase email + Paddle `txn_…` order id.
+
+- Always returns a generic ack (no match leakage).
+- Rate limit: 3 requests / email / hour and 3 / order / hour (`buyer_access_email_rate_limit`).
+- If outbox still has ciphertext + active claim → `operator_requeue_fulfillment` with generation rotate.
+- Otherwise → `operator_restore_purchase_access` + new encrypted outbox row (`buyer_request`).
+- Deploy: apply migration `20260730_buyer_request_access_email.sql`, then deploy the
+  `request-access-email` function (same secrets as restore CLI: `CLAIM_ENCRYPTION_KEY`, service role).
+
+Paddle receipts and ChronoWalk access mail are different senders. Microsoft/Outlook often
+accepts then junks Resend mail even when Gmail delivers — buyers should check Junk/Other,
+then use self-serve resend.
+
 ## Operator CLIs
 
 ```bash
