@@ -915,8 +915,9 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
 }
 
 :root {
-  /* Matches ShellTabBar content: pt-2 + min-h-11 row + pb-0.5rem (~60px). */
-  --shell-tab-bar-height: 3.75rem;
+  /* Tab content (~3.75rem) + home-indicator inset so the bone bar is flush
+     with the physical bottom under viewport-fit=cover. */
+  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
   --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   /* Legacy fallback; action stack is now in-flow so panel no longer offsets by this. */
@@ -1515,7 +1516,8 @@ html.redesign-pwa #root {
 }
 
 html[data-shell-standalone='true'] {
-  --shell-tab-bar-height: calc(3.75rem + max(0.5rem, env(safe-area-inset-bottom)));
+  /* Same flush rule as browser — home indicator is already in the token. */
+  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
 }
 
 html.redesign-pwa[data-shell-tab-bar='visible'],
@@ -1545,6 +1547,15 @@ html[data-shell-tab-bar='visible'] {
   max-height: 100%;
   min-height: 0;
   overflow: hidden;
+}
+
+/* Walking companion needs to scroll inside the frame when map + directions
+   exceed the inset viewport — don't clip that overflow at the shell root. */
+.cw-journey-shell-root:has(> .cw-walking-companion) {
+  overflow: visible;
+  height: auto;
+  min-height: 100%;
+  max-height: none;
 }
 
 .cw-journey-shell-root > .cw-arrival-moment,
@@ -2389,6 +2400,8 @@ html[data-shell-tab-bar='visible'] {
   flex-direction: column;
   gap: 10px;
   padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
+  /* Allow the companion to grow past the frame so map + directions can scroll. */
+  overflow: visible;
 }
 
 .cw-walking-companion__view-toggle {
@@ -2422,11 +2435,9 @@ html[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap {
-  flex: 1 1 42%;
+  flex: 0 0 auto;
+  height: clamp(180px, 36vh, 320px);
   min-height: 160px;
-  /* Cap height so the map doesn't consume the full viewport on short screens,
-     keeping footer / dock buttons reachable without scrolling in most cases. */
-  max-height: clamp(200px, 48vh, 420px);
   position: relative;
   border-radius: 16px;
   overflow: hidden;
@@ -2438,14 +2449,15 @@ html[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap--arrived {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  height: clamp(160px, 32vh, 280px);
 }
 
 .cw-walking-companion__next-turns {
-  flex: 0 1 40%;
+  flex: 0 0 auto;
   min-height: 0;
-  max-height: 44%;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }

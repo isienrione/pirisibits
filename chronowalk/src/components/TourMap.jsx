@@ -439,6 +439,8 @@ function TourMapboxView({
           center: [center.lng, center.lat],
           zoom: walkingCompanionUI ? WALKING_COMPANION_MIN_ZOOM : tour?.mapZoom ?? 14,
           pitch: walkingCompanionUI ? WALKING_COMPANION_PITCH : 0,
+          // Let one-finger vertical drags scroll the walking companion page.
+          cooperativeGestures: Boolean(walkingCompanionUI),
           transformRequest: createMapboxTransformRequest(),
         })
       } catch (error) {
@@ -985,13 +987,18 @@ const TourMap = ({
   fillContainer = false,
   preferOfflineStyle = false,
 }) => {
-  const [offlineMapMode, setOfflineMapMode] = useState(isOffline || !isMapboxConfigured())
+  const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
   const handleMapFailure = useCallback(() => {
     setOfflineMapMode(true)
   }, [])
 
   useEffect(() => {
-    if (isOffline) setOfflineMapMode(true)
+    if (!isMapboxConfigured()) {
+      setOfflineMapMode(true)
+      return
+    }
+    // Back online — restore Mapbox (remount via style key picks satellite/standard).
+    if (!isOffline) setOfflineMapMode(false)
   }, [isOffline])
 
   if (offlineMapMode) {
@@ -1006,6 +1013,7 @@ const TourMap = ({
         state={state}
         distance={distance}
         awaitingFirstStop={awaitingFirstStop}
+        compact={Boolean(fillContainer || walkingCompanionUI || minimalUI)}
       />
     )
   }
@@ -1033,6 +1041,7 @@ const TourMap = ({
       walkingCompanionUI={walkingCompanionUI}
       fillContainer={fillContainer}
       preferOfflineStyle={preferOfflineStyle || isOffline}
+      key={preferOfflineStyle || isOffline ? 'map-offline-style' : 'map-online-style'}
     />
   )
 }

@@ -13,6 +13,7 @@ import NextTurnsCard from '../ui/NextTurnsCard.jsx'
 import { pickApproachCue } from '../lib/walkingApproachCues.js'
 import {
   formatDistanceLine,
+  formatOpenStoryCta,
   resolveWalkChromeDistanceCopy,
 } from '../lib/walkingCompanionFormat.js'
 import {
@@ -85,7 +86,7 @@ export default function WalkingCompanionScreen({
   const activeRouteView = forcedRouteView === 'map' || forcedRouteView === 'steps' ? forcedRouteView : routeView
 
   const showArrivedUI = arrived || userConfirmedArrival
-  const storyCtaLabel = beginChapterLabel || `Open the ${title} story →`
+  const storyCtaLabel = beginChapterLabel || formatOpenStoryCta(title)
 
   const externalMapsUrl = useMemo(
     () => buildGoogleMapsDirectionsUrl(userPosition, destination),
