@@ -88,16 +88,25 @@ describe('staleChunkRecovery', () => {
     expect(shouldDeferStaleRecovery()).toBe(true)
   })
 
-  it('recovers at most once per tab session without clearing credentials', async () => {
+  it('does not auto-recover without force (avoids Chrome reset loops)', async () => {
+    localStorage.setItem('cw_device_credential_v1', 'keep-me')
+    const first = await recoverStaleClient()
+    expect(first).toEqual({ recovered: false, reloading: false })
+    expect(clearAllCaches).not.toHaveBeenCalled()
+    expect(hardReload).not.toHaveBeenCalled()
+    expect(localStorage.getItem('cw_device_credential_v1')).toBe('keep-me')
+  })
+
+  it('force recovery wipes then opens /landing (not reset-shell)', async () => {
     localStorage.setItem('cw_device_credential_v1', 'keep-me')
     localStorage.setItem('cw_access_entitlement_v1', '{"ok":true}')
 
-    const first = await recoverStaleClient()
+    const first = await recoverStaleClient({ force: true })
     expect(first).toEqual({ recovered: true, reloading: true })
     expect(clearAllCaches).toHaveBeenCalledTimes(1)
     expect(unregisterAllServiceWorkers).toHaveBeenCalledTimes(1)
     expect(waitForServiceWorkerControllerGone).toHaveBeenCalledWith(10000)
-    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/landing?cw_clean=1' })
     expect(showUpdatingOverlay).toHaveBeenCalled()
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeTruthy()
     expect(localStorage.getItem(SHELL_RESET_KEY)).toBe('1')
@@ -108,21 +117,14 @@ describe('staleChunkRecovery', () => {
     clearAllCaches.mockClear()
     hardReload.mockClear()
 
-    const second = await recoverStaleClient()
+    const second = await recoverStaleClient({ force: true })
     expect(second).toEqual({ recovered: false, reloading: false })
     expect(clearAllCaches).not.toHaveBeenCalled()
     expect(hardReload).not.toHaveBeenCalled()
   })
 
-  it('force recovery bypasses the guard (Try again)', async () => {
+  it('force recovery during cooldown goes to landing only', async () => {
     sessionStorage.setItem(CHUNK_RECOVERY_GUARD_KEY, '1')
-    await recoverStaleClient({ force: true })
-    expect(clearAllCaches).toHaveBeenCalledTimes(1)
-    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell' })
-    expect(shouldSkipServiceWorkerRegistration()).toBe(true)
-  })
-
-  it('after a recent shell reset, skips auto-recover and force goes to landing only', async () => {
     localStorage.setItem(SHELL_RESET_AT_KEY, String(Date.now()))
     expect(recentlyResetShell()).toBe(true)
 
@@ -132,8 +134,9 @@ describe('staleChunkRecovery', () => {
 
     const forced = await recoverStaleClient({ force: true })
     expect(forced).toEqual({ recovered: true, reloading: true })
-    expect(hardReload).toHaveBeenCalledWith({ path: '/landing' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/landing?cw_clean=1' })
     expect(clearAllCaches).not.toHaveBeenCalled()
+    expect(shouldSkipServiceWorkerRegistration()).toBe(true)
   })
 
   it('clears the guard after a successful boot', () => {
@@ -142,28 +145,16 @@ describe('staleChunkRecovery', () => {
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeNull()
   })
 
-  it('recovers an interrupted boot in the background without blocking mount', async () => {
+  it('clears interrupted-boot sentinel without navigating', () => {
     sessionStorage.setItem(BOOT_PENDING_KEY, '1')
     expect(recoverInterruptedBoot()).toBe(false)
-    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBe('1')
-    await vi.waitFor(() => {
-      expect(hardReload).toHaveBeenCalled()
-    })
-  })
-
-  it('does not loop interrupted boot during shell-reset cooldown', () => {
-    localStorage.setItem(SHELL_RESET_AT_KEY, String(Date.now()))
-    sessionStorage.setItem(BOOT_PENDING_KEY, '1')
-    expect(recoverInterruptedBoot()).toBe(false)
-    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBe('1')
-    expect(hardReload).not.toHaveBeenCalled()
-    clearBootPending()
     expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBeNull()
+    expect(hardReload).not.toHaveBeenCalled()
   })
 
-  it('marks boot pending on a clean start', () => {
+  it('clearBootPending is safe when already clear', () => {
     expect(recoverInterruptedBoot()).toBe(false)
-    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBe('1')
+    expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBeNull()
     clearBootPending()
     expect(sessionStorage.getItem(BOOT_PENDING_KEY)).toBeNull()
   })

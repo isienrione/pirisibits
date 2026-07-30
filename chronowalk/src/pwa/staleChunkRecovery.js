@@ -122,18 +122,21 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
     return { recovered: false, reloading: false }
   }
 
-  // Break eternal reset-shell ↔ landing loops after a recent successful wipe.
+  // Auto recovery into reset-shell trapped Chrome iOS in loops (Safari was fine).
+  // Only an explicit force path may wipe + reload, and it goes to /landing.
+  if (!force) {
+    return { recovered: false, reloading: false }
+  }
+
+  // Break eternal reset ↔ landing loops after a recent successful wipe.
   if (recentlyResetShell()) {
-    if (!force) {
-      return { recovered: false, reloading: false }
-    }
     showUpdatingOverlay('Updating ChronoWalk…')
-    hardReload({ path: '/landing' })
+    hardReload({ path: '/landing?cw_clean=1' })
     return { recovered: true, reloading: true }
   }
 
   const guard = sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)
-  if (guard && !force) {
+  if (guard) {
     return { recovered: false, reloading: false }
   }
 
@@ -144,17 +147,13 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
   try {
     await clearAllCaches()
     await unregisterAllServiceWorkers()
-    // Critical on iOS: do not navigate while the old SW still controls this tab.
-    // Match reset-shell: iOS often keeps the controller well past 2.5s.
     await waitForServiceWorkerControllerGone(10000)
     await new Promise((resolve) => window.setTimeout(resolve, 200))
   } catch {
     // Still reload - a hard navigation often picks up the new deploy.
   }
 
-  // Escape via the static reset page (denylisted from SPA navigation fallback)
-  // so a still-controlling service worker cannot re-serve poisoned HTML.
-  hardReload({ path: '/rome/reset-shell' })
+  hardReload({ path: '/landing?cw_clean=1' })
   return { recovered: true, reloading: true }
 }
 
@@ -198,8 +197,8 @@ export function shouldSkipServiceWorkerRegistration() {
 
 /**
  * Call at the very start of main.jsx. If the previous paint never finished
- * (tab crashed / white-screened mid-boot), record it - but always return false
- * so React still mounts. Blocking mount caused permanent "Loading ChronoWalk…".
+ * (tab crashed / white-screened mid-boot), clear the sentinel - but never
+ * auto-navigate to reset-shell (that trapped Chrome iOS in recovery loops).
  * @returns {false}
  */
 export function recoverInterruptedBoot() {
@@ -207,15 +206,6 @@ export function recoverInterruptedBoot() {
     return false
   }
 
-  const pending = sessionStorage.getItem(BOOT_PENDING_KEY)
-  if (pending === '1') {
-    sessionStorage.removeItem(BOOT_PENDING_KEY)
-    // One background attempt only when we have not just reset the shell.
-    if (!recentlyResetShell()) {
-      void recoverStaleClient({ force: false, reason: 'interrupted-boot' })
-    }
-  }
-
-  sessionStorage.setItem(BOOT_PENDING_KEY, '1')
+  sessionStorage.removeItem(BOOT_PENDING_KEY)
   return false
 }
