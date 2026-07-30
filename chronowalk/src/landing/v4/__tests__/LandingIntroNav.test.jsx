@@ -43,8 +43,24 @@ describe('LandingIntroNav', () => {
     expect(screen.getByLabelText('ChronoWalk home')).toBeTruthy()
   })
 
-  it('skips the intro after the play cap', () => {
-    localStorage.setItem('cw_landing_intro_plays_v1', '2')
+  it('skips the intro after it has played once', () => {
+    localStorage.setItem('cw_landing_intro_plays_v1', '1')
+    const onComplete = vi.fn()
+    render(<LandingIntroNav onComplete={onComplete} />)
+    expect(document.querySelector('.cw-v4-intro')).toBeNull()
+    expect(document.querySelector('[data-phase="nav"]')).toBeTruthy()
+    expect(onComplete).toHaveBeenCalled()
+  })
+
+  it('does not replay after the first visit (back / home remount)', () => {
+    vi.useFakeTimers()
+    const { unmount } = render(<LandingIntroNav />)
+    expect(document.querySelector('.cw-v4-intro')).toBeTruthy()
+    expect(localStorage.getItem('cw_landing_intro_plays_v1')).toBe('1')
+
+    unmount()
+    sessionStorage.clear()
+
     const onComplete = vi.fn()
     render(<LandingIntroNav onComplete={onComplete} />)
     expect(document.querySelector('.cw-v4-intro')).toBeNull()

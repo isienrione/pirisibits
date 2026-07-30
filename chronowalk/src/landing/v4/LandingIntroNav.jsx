@@ -9,10 +9,11 @@ const COMPRESS_MS = 450
 const FALLBACK_MAX_MS = 7000
 const NAV_OFFSET_PX = 68
 const INTRO_PLAYS_KEY = 'cw_landing_intro_plays_v1'
-const INTRO_PLAY_CAP = 2
+/** Once per browser profile — back/home must not replay the open. */
+const INTRO_PLAY_CAP = 1
 
 /**
- * Keynote-style open: muted cinematic plays at most twice per browser profile,
+ * Keynote-style open: muted cinematic plays once per browser profile,
  * then dissolves into the fixed nav (same handoff as the old mark intro).
  * After scrolling past the product hero: Get App CTA + obsidian nav chrome.
  */
