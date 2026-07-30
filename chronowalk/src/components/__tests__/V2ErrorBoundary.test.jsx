@@ -63,7 +63,7 @@ describe('V2ErrorBoundary', () => {
 
     expect(screen.getByRole('link', { name: /refresh the app shell/i })).toHaveAttribute(
       'href',
-      '/rome/reset-shell.html',
+      '/rome/reset-shell',
     )
 
     fireEvent.click(screen.getByRole('button', { name: /try again/i }))

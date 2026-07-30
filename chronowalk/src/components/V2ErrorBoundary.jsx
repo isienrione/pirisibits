@@ -157,7 +157,7 @@ export default class V2ErrorBoundary extends Component {
             >
               Still stuck?{' '}
               <a
-                href="/rome/reset-shell.html?force=1"
+                href="/rome/reset-shell?force=1"
                 style={{ color: 'inherit', textDecoration: 'underline' }}
               >
                 Refresh the app shell

@@ -75,11 +75,14 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('waitForControllerGone')
     expect(html).toContain('serviceWorker.controller')
     expect(html).toContain('force')
+    // Cooldown retries must still wipe + wait (not bounce straight to /landing).
+    expect(html).toContain('clearCachesAndWorkers')
+    expect(html).toContain('finishToLanding')
     expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
-    expect(legacy).toContain('/rome/reset-shell.html')
+    expect(legacy).toContain('/rome/reset-shell')
   })
 
   it('eager-loads the marketing landing page (no second poisonable chunk)', () => {
