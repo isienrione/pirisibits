@@ -540,6 +540,12 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   -webkit-overflow-scrolling: touch;
   background: transparent !important;
   border-top: none !important;
+  padding: 8px 24px max(12px, env(safe-area-inset-bottom));
+}
+
+/* Phone frame already reserves --wc-shell-tab-inset (includes safe-area). */
+html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
+  padding-bottom: 12px;
 }
 
 /*
@@ -567,6 +573,12 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
     rgba(11, 11, 13, 0.96) 100%
   );
   pointer-events: auto;
+}
+
+/* Tab bar already owns safe-area via --wc-shell-tab-inset on the phone frame —
+   keep a short breathing gap above the nav, not a second home-indicator pad. */
+html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__action-stack {
+  padding-bottom: calc(12px + var(--wc-browser-chrome, 0px));
 }
 
 .cw-waypoint-immersive__sync-slot {
@@ -1999,6 +2011,31 @@ html[data-shell-tab-bar='visible'] {
   padding: 0 8px 6px;
   display: flex;
   flex-direction: column;
+}
+
+.cw-route-preview-panel__hero--pack {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 12px 8px;
+}
+
+.cw-route-preview-panel__pack {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cw-route-preview-panel__pack-img {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(33, 28, 21, 0.12);
+  object-fit: contain;
+  background: #f3ebe0;
 }
 
 .cw-route-preview-panel__loading {
@@ -3756,6 +3793,126 @@ html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
 .cw-walk-together__continue:focus-visible {
   outline: 2px solid var(--wt-accent);
   outline-offset: 3px;
+}
+
+/* ── Arrival moment (C4) — pin CTAs, avoid double safe-area under tab bar ── */
+.cw-arrival-moment {
+  background: var(--cw-bone, #faf6ef);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.cw-arrival-moment__photo {
+  position: relative;
+  flex: 0 0 46%;
+  min-height: 220px;
+  max-height: 52%;
+  overflow: hidden;
+}
+
+.cw-arrival-moment__photo-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+}
+
+.cw-arrival-moment__photo-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(11, 11, 13, 0.15) 0%, rgba(11, 11, 13, 0.55) 100%);
+}
+
+.cw-arrival-moment__pulse {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.cw-arrival-moment__card {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--cw-bone, #faf6ef);
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  position: relative;
+  z-index: 10;
+  padding: 24px 24px 16px;
+  box-shadow: 0 -8px 32px rgba(33, 28, 21, 0.12);
+}
+
+/* When the shell tab bar is hidden, keep a real home-indicator pad. */
+html:not([data-shell-tab-bar='visible']) .cw-arrival-moment__card {
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+
+.cw-arrival-moment__copy {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+.cw-arrival-moment__title {
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1.1;
+  margin: 10px 0 12px;
+}
+
+.cw-arrival-moment__desc {
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.cw-arrival-moment__actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.cw-arrival-moment__primary {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.cw-arrival-moment__primary:disabled,
+.cw-arrival-moment__secondary:disabled,
+.cw-arrival-moment__tertiary:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.cw-arrival-moment__secondary,
+.cw-arrival-moment__tertiary {
+  width: 100%;
+  padding: 13px 12px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cw-arrival-moment__tertiary {
+  font-size: 13px;
 }
 
 .cw-walk-together__footer--sticky {

@@ -152,6 +152,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const arrivedWaypointRef = useRef(null)
   // Ensures chime + “Waypoint unlocked!” fire once per stop (GPS or manual).
   const arrivalAlertPlayedRef = useRef(null)
+  const arrivalAlertInFlightRef = useRef(null)
   const arrivalHapticPlayedRef = useRef(null)
   // Handle for the 5s continuous-presence timer; null when not counting.
   const dwellTimerRef = useRef(null)
@@ -697,6 +698,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [audio])
 
   // Pocket-safe arrival: chime → “Waypoint unlocked!” + haptic, once per stop.
+  // Do not mark the cue “played” until the sequence finishes (or the walker
+  // starts the story). That way a blocked unlock can retry, and a cancelled
+  // mid-sequence never leaves a lone “unlocked” VO over narration.
   const notifyArrivalUnlock = useCallback(
     (waypointId, { requireUnlock = true } = {}) => {
       if (!waypointId) return
@@ -708,15 +712,30 @@ export default function JourneyShell({ variant = 'legacy' }) {
       }
 
       if (arrivalAlertPlayedRef.current === waypointId) return
+      if (arrivalAlertInFlightRef.current === waypointId) return
       // Manual "I'm here" has a user gesture — play even before the global
       // unlock flag flips, otherwise the chime was silently skipped forever.
       if (requireUnlock && !audioUnlocked) return
 
-      arrivalAlertPlayedRef.current = waypointId
-      void audioOpsRef.current.playArrivalChime()
+      arrivalAlertInFlightRef.current = waypointId
+      void audioOpsRef.current.playArrivalChime().then((completed) => {
+        if (arrivalAlertInFlightRef.current === waypointId) {
+          arrivalAlertInFlightRef.current = null
+        }
+        if (completed) {
+          arrivalAlertPlayedRef.current = waypointId
+        }
+      })
     },
     [audioUnlocked]
   )
+
+  const suppressArrivalUnlockForStory = useCallback((waypointId) => {
+    if (!waypointId) return
+    audioOpsRef.current.cancelArrivalChime?.()
+    arrivalAlertInFlightRef.current = null
+    arrivalAlertPlayedRef.current = waypointId
+  }, [])
 
   // Confirmed arrival — auto (after 5s dwell) or manual ("I'm here"). Guarded so
   // the dwell timer and a manual tap can never fire arrival for the same
@@ -803,7 +822,9 @@ export default function JourneyShell({ variant = 'legacy' }) {
   useEffect(() => {
     arrivedWaypointRef.current = null
     arrivalAlertPlayedRef.current = null
+    arrivalAlertInFlightRef.current = null
     arrivalHapticPlayedRef.current = null
+    audioOpsRef.current.cancelArrivalChime?.()
     if (dwellTimerRef.current != null) {
       clearTimeout(dwellTimerRef.current)
       dwellTimerRef.current = null
@@ -868,11 +889,15 @@ export default function JourneyShell({ variant = 'legacy' }) {
     geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
   const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
 
-  // If GPS already confirmed arrival before audio unlock, play as soon as audio is ready.
+  // If GPS (or ARRIVED) confirmed before audio unlock, play as soon as audio is ready.
+  // Include ARRIVED so a deferred unlock is not silently dropped after dwell.
   useEffect(() => {
     if (!audioUnlocked) return
-    if (!gpsArrived || step?.type !== 'waypoint') return
-    if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
+    if (step?.type !== 'waypoint') return
+    const onApproach =
+      (state === JOURNEY_STATES.WALKING || state === JOURNEY_STATES.APPROACHING) && gpsArrived
+    const onArrived = state === JOURNEY_STATES.ARRIVED
+    if (!onApproach && !onArrived) return
     notifyArrivalUnlock(step.id)
   }, [audioUnlocked, gpsArrived, notifyArrivalUnlock, state, step?.id, step?.type])
 
@@ -926,6 +951,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const handleBeginStory = async () => {
     if (!step?.record) return
     audio.primeForGesture()
+    // Never let a late “unlocked” VO land mid-chapter.
+    if (step.type === 'waypoint') suppressArrivalUnlockForStory(step.id)
     storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)

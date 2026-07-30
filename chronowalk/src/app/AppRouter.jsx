@@ -218,10 +218,9 @@ function AppRouter() {
 
       await hydrateRomeAudioCache(manifest)
 
-      const { verifyRomeMapTiles, hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
-      const mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
-      if (cancelled || (!mapVerification.valid && !mapVerification.skipped)) return
-
+      // Hydrate whatever map tiles we have — partial caches still beat a black map.
+      const { hydrateRomeMapTileCache } = await import('../map/offlineMapTiles.js')
+      if (cancelled) return
       await hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
     }
 

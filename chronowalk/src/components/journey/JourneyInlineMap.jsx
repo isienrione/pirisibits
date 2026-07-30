@@ -5,6 +5,7 @@ import {
   buildMapStopsFromManifest,
   resolveActiveMapLeg,
 } from '../../content/mapStops.js'
+import { hasCachedRomeMapTiles } from '../../audio/offlinePackage.js'
 import { isDebugMap } from '../../config/env.js'
 import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
 
@@ -62,7 +63,9 @@ export default function JourneyInlineMap({
 }) {
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
-  const preferOfflineStyle = isOffline || constrainedNetwork
+  // Prefer the cached Standard vector style whenever signal is weak OR we
+  // already persisted Rome map tiles — satellite tiles are not offline-cached.
+  const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
     [manifest, context.path]

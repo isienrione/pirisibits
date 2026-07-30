@@ -163,17 +163,35 @@ describe('AudioEngine', () => {
 
   it('playArrivalChime plays notification chime then waypoint-unlocked cue', async () => {
     const manifest = manifestFromEngine(engine);
-    const arrivalSpy = vi.spyOn(engine, 'playUiCue').mockResolvedValue();
+    const arrivalSpy = vi.spyOn(engine, 'playArrivalOneShot').mockResolvedValue(true);
+    const uiSpy = vi.spyOn(engine, 'playUiCue').mockResolvedValue();
 
-    await engine.playArrivalChime();
+    const completed = await engine.playArrivalChime();
     await engine.playCompletionChime();
 
-    expect(arrivalSpy).toHaveBeenNthCalledWith(1, 'arrival');
-    expect(arrivalSpy).toHaveBeenNthCalledWith(2, 'arrival_unlocked');
-    expect(arrivalSpy).toHaveBeenCalledWith('completion');
+    expect(completed).toBe(true);
+    expect(arrivalSpy).toHaveBeenNthCalledWith(1, 'ui_arrival_chime.mp3');
+    expect(arrivalSpy).toHaveBeenNthCalledWith(2, 'ui_waypoint_unlocked.mp3');
+    expect(uiSpy).toHaveBeenCalledWith('completion');
     expect(manifest.system.ui.arrival).toBe('ui_arrival_chime.mp3');
     expect(manifest.system.ui.arrival_unlocked).toBe('ui_waypoint_unlocked.mp3');
     expect(manifest.system.ui.completion).toBeTruthy();
+  });
+
+  it('cancelArrivalChime stops a mid-sequence unlock cue', async () => {
+    const arrivalSpy = vi
+      .spyOn(engine, 'playArrivalOneShot')
+      .mockImplementation(async () => {
+        await new Promise((r) => setTimeout(r, 30));
+        return true;
+      });
+
+    const pending = engine.playArrivalChime();
+    engine.cancelArrivalChime();
+    const completed = await pending;
+
+    expect(completed).toBe(false);
+    expect(arrivalSpy).toHaveBeenCalled();
   });
 
   it('playOneShot applies per-cue gain from levelDb', async () => {

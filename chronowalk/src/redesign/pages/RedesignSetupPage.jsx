@@ -100,6 +100,7 @@ export default function RedesignSetupPage() {
             downloadProgress={downloadProgress}
             downloadComplete={offline.isReady}
             downloadError={offline.error}
+            mapTilesPartial={offline.status?.error === 'map_tiles_partial'}
             analyticsEnabled={analyticsEnabled}
             installed={installed}
             canPromptInstall={canPromptInstall}

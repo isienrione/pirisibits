@@ -13,6 +13,7 @@ export default function AppEntryPrepare({
   downloadProgress = 0,
   downloadComplete = false,
   downloadError = null,
+  mapTilesPartial = false,
   analyticsEnabled = false,
   installed = false,
   canPromptInstall = false,
@@ -144,10 +145,16 @@ export default function AppEntryPrepare({
                 <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> - 215 MB</span>
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Works offline in Rome&apos;s dense streets.
+                Stories, then-vs-now images, and walking-map tiles for Rome.
               </p>
               {done ? (
-                <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
+                mapTilesPartial ? (
+                  <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
+                    Stories ready. Map tiles need a steadier connection — retry when you have signal.
+                  </p>
+                ) : (
+                  <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
+                )
               ) : downloading ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
                   {downloadProgress > 0.02
