@@ -64,11 +64,11 @@ export default function JourneyInlineMap({
 }) {
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
-  // Prefer the cached vector style whenever signal is weak OR we already
-  // persisted Rome map tiles · satellite tiles are not offline-cached.
-  // When fully offline, TourMap skips Mapbox Standard and uses OfflineRouteMap.
-  const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
-  const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle || isOffline)
+  // Prefer the lighter vector style only when radio is offline or the network is
+  // constrained. A completed offline package must NOT force this online · that
+  // latched Mapbox Standard tile errors into OfflineRouteMap forever.
+  const preferOfflineStyle = isOffline || constrainedNetwork
+  const [offlineMapReady, setOfflineMapReady] = useState(true)
 
   useEffect(() => {
     if (!manifest || !env.mapboxToken) {
@@ -80,12 +80,17 @@ export default function JourneyInlineMap({
       setOfflineMapReady(true)
       return undefined
     }
-    if (!preferOfflineStyle) {
+
+    const shouldHydrate = preferOfflineStyle || hasCachedRomeMapTiles()
+    if (!shouldHydrate) {
       setOfflineMapReady(true)
       return undefined
     }
+
     let cancelled = false
-    setOfflineMapReady(false)
+    // Only block paint when we actually need the offline-leaning style first.
+    // Online + cached tiles: hydrate in the background; keep Mapbox mounting.
+    if (preferOfflineStyle) setOfflineMapReady(false)
     void hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
       .catch((error) => {
         if (!cancelled) console.warn('[map] tile cache hydrate failed', error)

@@ -93,12 +93,13 @@ export function buildActiveLegCoordinates(stops, activeLeg, userPos = null) {
 function resolveFocusStops(stops, activeLeg, focus) {
   if (focus !== 'active-leg') return stops ?? []
   if (!activeLeg) {
-    return (stops ?? []).filter((stop) => stop.status === 'current' || stop.status === 'upcoming')
+    // Compact frames: only the current destination · not every upcoming stop.
+    return (stops ?? []).filter((stop) => stop.status === 'current')
   }
   const ids = new Set([activeLeg.fromId, activeLeg.toId].filter(Boolean))
   const focused = (stops ?? []).filter((stop) => ids.has(stop.id))
   if (focused.length) return focused
-  return (stops ?? []).filter((stop) => stop.status === 'current' || stop.status === 'upcoming')
+  return (stops ?? []).filter((stop) => stop.status === 'current')
 }
 
 /**
@@ -141,8 +142,10 @@ export function buildRouteOverviewModel({
         : null
 
   const focusStops = resolveFocusStops(stops, activeLeg, focus)
+  // Never fall back to the full tour for active-leg frames · that crushes the
+  // walking pair into overlapping corner dots and stacked labels.
   const frameRoute =
-    focus === 'active-leg' ? activeRoute ?? fullRoute : fullRoute
+    focus === 'active-leg' ? activeRoute ?? landmarkLeg ?? null : fullRoute
 
   const points = collectPoints({
     routeCoordinates: frameRoute,
