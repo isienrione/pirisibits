@@ -99,42 +99,14 @@ export function photoForWaypoint(waypoint, chapterIndex = 0) {
   return getNowPhotoUrl('colosseum')
 }
 
-/**
- * Sibling ancient still when reconstruction.then was wrongly set to the modern poster.
- * Prefer ancient-poster.jpg, then ancient-reconstruction.jpg (Circus / Rostra convention).
- */
-function inferredAncientStillPath(waypoint) {
-  const loop =
-    resolveWaypointReconstruction(waypoint)?.loop ?? inferredReconstructionLoopPath(waypoint)
-  if (!loop || !loop.includes('/waypoints/')) return null
-  if (/ancient-reconstruction\.mp4$/i.test(loop)) {
-    return {
-      poster: loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-poster.jpg'),
-      still: loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-reconstruction.jpg'),
-    }
-  }
-  const photo = waypoint?.photo ?? ''
-  const flat = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/)/)
-  if (!flat) return null
-  return {
-    poster: `${flat[1]}ancient-poster.jpg`,
-    still: `${flat[1]}ancient-reconstruction.jpg`,
-  }
-}
-
 export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
 
   if (reconstruction?.loop) {
-    // Prefer the ancient still as the video poster when available.
-    // Guard: then === now means the reveal has no era change if the video fails.
-    if (reconstruction.then && reconstruction.then !== reconstruction.now) {
-      return resolvePhotoUrl(reconstruction.then)
-    }
-    const inferred = inferredAncientStillPath(waypoint)
-    // Prefer poster, then still · callers may 404 on missing files; video remains primary.
-    if (inferred?.poster) return resolvePhotoUrl(inferred.poster)
-    if (inferred?.still) return resolvePhotoUrl(inferred.still)
+    // Prefer a distinct ancient still as the video poster when available.
+    // When then === now (mp4-only stops like Trevi), keep the modern poster —
+    // do not invent ancient-poster.jpg paths that 404. The loop video is the
+    // reconstruction; network-first Threshold keeps that working online.
     if (reconstruction.then) return resolvePhotoUrl(reconstruction.then)
     return resolvePhotoUrl(reconstruction.now ?? waypoint?.photo)
   }

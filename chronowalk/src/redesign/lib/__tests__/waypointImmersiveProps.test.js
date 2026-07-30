@@ -65,7 +65,7 @@ describe('waypointImmersiveProps', () => {
     }
   })
 
-  it('infers ancient still when reconstruction.then wrongly equals now (Trevi)', () => {
+  it('keeps mp4-only Trevi on modern poster; reconstruction is the loop video', () => {
     const waypoint = getWaypoint(manifest, 'w16')
     expect(waypoint.reconstruction.then).toBe(waypoint.reconstruction.now)
     const props = buildImmersivePlayerProps({
@@ -73,8 +73,7 @@ describe('waypointImmersiveProps', () => {
       waypointId: 'w16',
       manifest,
     })
-    expect(props.thenPhoto).toContain('/waypoints/fontana-di-trevi/ancient-poster.jpg')
-    expect(props.thenPhoto).not.toBe(props.photo)
+    expect(props.thenPhoto).toContain('/waypoints/fontana-di-trevi/modern-poster.jpg')
     expect(props.thenLoop).toContain('/waypoints/fontana-di-trevi/ancient-reconstruction.mp4')
   })
 
