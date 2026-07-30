@@ -999,7 +999,12 @@ const TourMap = ({
   fillContainer = false,
   preferOfflineStyle = false,
 }) => {
-  const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
+  // Mapbox Standard cannot paint offline (style imports, glyphs, sprites, and
+  // 3D models are not in the Rome tile package). Use the SVG route sketch
+  // immediately — never leave walkers on a grey canvas.
+  const [offlineMapMode, setOfflineMapMode] = useState(
+    () => !isMapboxConfigured() || Boolean(isOffline),
+  )
   const handleMapFailure = useCallback(() => {
     setOfflineMapMode(true)
   }, [])
@@ -1009,8 +1014,7 @@ const TourMap = ({
       setOfflineMapMode(true)
       return
     }
-    // Back online — restore Mapbox (remount via style key picks satellite/standard).
-    if (!isOffline) setOfflineMapMode(false)
+    setOfflineMapMode(Boolean(isOffline))
   }, [isOffline])
 
   if (offlineMapMode) {

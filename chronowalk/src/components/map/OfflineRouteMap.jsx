@@ -209,8 +209,8 @@ export function OfflineRouteMap({
             {atStop
               ? 'You are within arrival range.'
               : distanceLabel
-                ? `${distanceLabel} away · cached overview`
-                : 'Cached route overview'}
+                ? `${distanceLabel} away · offline route sketch`
+                : 'Offline route sketch — street tiles need a signal'}
           </p>
         </div>
       </div>
