@@ -7,15 +7,27 @@ import { shouldSkipServiceWorkerRegistration } from './staleChunkRecovery.js'
 
 const devStub = registerAppServiceWorker(registerSW, { isProd: false })
 
-/** Resolves once build migration (if any) has finished and the SW controller is ready. */
-export const pwaReady = (async () => {
-  if (typeof window === 'undefined') return devStub
+/**
+ * EMERGENCY: do not register a service worker during boot.
+ * Poisoned SW controllers on iOS Chrome were serving HTML for /assets/*.js,
+ * which left travelers on "Loading ChronoWalk…" forever. Offline cache can
+ * return after the app has mounted successfully.
+ */
+export const SERVICE_WORKER_BOOT_DISABLED = true
 
-  // After a poisoned-shell recovery, boot once from the network without
-  // immediately re-installing a service worker that can re-claim stale caches.
-  if (shouldSkipServiceWorkerRegistration()) {
-    return devStub
-  }
+/** Resolves once optional SW registration has finished (or been skipped). */
+export const pwaReady = Promise.resolve(devStub)
+
+export let pwaController = devStub
+
+/**
+ * Call after React has mounted. Safe to call multiple times.
+ * @returns {Promise<typeof devStub>}
+ */
+export async function startPwaRegistration() {
+  if (typeof window === 'undefined') return devStub
+  if (SERVICE_WORKER_BOOT_DISABLED) return devStub
+  if (shouldSkipServiceWorkerRegistration()) return devStub
 
   const isMigrating = await ensureFreshBuildAsync()
   if (isMigrating) return devStub
@@ -23,11 +35,7 @@ export const pwaReady = (async () => {
   const walkingUiMigrating = await ensureWalkingUiFresh(WALKING_UI_REVISION)
   if (walkingUiMigrating) return devStub
 
-  return registerAppServiceWorker(registerSW)
-})()
-
-export let pwaController = devStub
-
-void pwaReady.then((controller) => {
+  const controller = registerAppServiceWorker(registerSW)
   pwaController = controller
-})
+  return controller
+}

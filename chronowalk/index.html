@@ -88,12 +88,72 @@
         var BOOT_RELOAD_KEY = 'cw-boot-reload'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
         var RESET_AT_KEY = 'cw-shell-reset-at'
+        var PURGE_RELOAD_KEY = 'cw-sw-purge-reload'
 
         function markSkipSw() {
           try {
             localStorage.setItem(SKIP_SW_KEY, '1')
           } catch (e) {}
         }
+
+        // ROOT CAUSE FIX: if a service worker still controls this tab, module
+        // scripts can receive HTML (SPA fallback) and React never mounts -
+        // forever "Loading ChronoWalk…". Kill SW/caches and reload once before
+        // any /assets module runs.
+        try {
+          if (
+            'serviceWorker' in navigator &&
+            navigator.serviceWorker.controller &&
+            sessionStorage.getItem(PURGE_RELOAD_KEY) !== '1'
+          ) {
+            sessionStorage.setItem(PURGE_RELOAD_KEY, '1')
+            markSkipSw()
+            var jobs = []
+            if ('caches' in window) {
+              jobs.push(
+                caches.keys().then(function (names) {
+                  return Promise.all(names.map(function (name) {
+                    return caches.delete(name)
+                  }))
+                }),
+              )
+            }
+            jobs.push(
+              navigator.serviceWorker.getRegistrations().then(function (regs) {
+                return Promise.all(
+                  regs.map(function (reg) {
+                    return reg.unregister()
+                  }),
+                )
+              }),
+            )
+            Promise.all(jobs)
+              .catch(function () {})
+              .then(function () {
+                window.location.reload()
+              })
+            return
+          }
+        } catch (e) {}
+
+        // Best-effort: even without a controller, drop registrations so a later
+        // navigation cannot reclaim a poisoned worker. Do not block boot.
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              regs.forEach(function (reg) {
+                reg.unregister()
+              })
+            })
+          }
+          if ('caches' in window) {
+            caches.keys().then(function (names) {
+              names.forEach(function (name) {
+                caches.delete(name)
+              })
+            })
+          }
+        } catch (e2) {}
 
         // Never use document.write here — Mobile Safari renders the rest of the
         // inline script as visible text.
@@ -119,27 +179,8 @@
 
         try {
           if (localStorage.getItem(RESET_KEY) === '1') {
-            // Do not auto-navigate to reset-shell - that blinked with /rome/open.
             localStorage.removeItem(RESET_KEY)
             markSkipSw()
-          }
-        } catch (e) {}
-
-        // If still controlled after a wipe intent, stay put and show a link.
-        // Navigating to /rome/open or reset-shell created the blink loop.
-        try {
-          if (
-            localStorage.getItem(SKIP_SW_KEY) === '1' &&
-            'serviceWorker' in navigator &&
-            navigator.serviceWorker.controller
-          ) {
-            window.addEventListener('DOMContentLoaded', function () {
-              var hint = document.getElementById('cw-boot-hint')
-              if (hint) {
-                hint.innerHTML =
-                  'This phone is still holding an old app copy.<br/><a href="/landing?cw_clean=1" style="color:inherit">Try Open ChronoWalk</a><br/><span style="opacity:0.75;font-size:0.9rem">If that fails, clear Cookies and site data for chronowalk.com, then open your access email link.</span>'
-              }
-            })
           }
         } catch (e) {}
 
@@ -148,7 +189,6 @@
           function (event) {
             var target = event.target
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
-            // Only same-origin /assets modules - never third-party, never auto-reset.
             try {
               var srcUrl = new URL(target.src, window.location.href)
               if (srcUrl.origin !== window.location.origin) return
@@ -165,7 +205,7 @@
             var hint = document.getElementById('cw-boot-hint')
             if (hint) {
               hint.innerHTML =
-                'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
+                'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a><br/><span style="opacity:0.75;font-size:0.9rem">Or clear Cookies and site data for chronowalk.com, then reopen this page.</span>'
             }
           },
           true,

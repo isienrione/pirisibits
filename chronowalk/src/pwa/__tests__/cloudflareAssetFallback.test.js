@@ -70,7 +70,8 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).not.toContain('assets.lemonsqueezy.com/lemon.js')
     expect(html).not.toContain('goResetShell')
     expect(html).not.toContain('goOpenStuck')
-    expect(html).toContain("localStorage.setItem(SKIP_SW_KEY, '1')")
+    expect(html).toContain('cw-sw-purge-reload')
+    expect(html).toContain('unregister')
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
