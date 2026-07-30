@@ -84,18 +84,54 @@
     </style>
     <script>
       ;(function () {
-        // IMPORTANT: do not navigate, reload, or clear caches here.
-        // Aggressive recovery (reset-shell redirects, mid-boot cache deletes)
-        // trapped Chrome iOS in loops while Safari could already load /landing.
+        // Boot rules (learned the hard way on Chrome iOS):
+        // - Never auto-send people to /rome/reset-shell or /rome/open (blink loops).
+        // - Never delete Cache Storage during boot (races module fetches).
+        // - Never reload() the same poisoned document.
+        // - DO one-shot unregister + replace to /landing when a SW still controls
+        //   the tab — otherwise /assets/*.js can be SPA HTML and React never mounts
+        //   ("Loading ChronoWalk…" forever).
+        var PURGE_KEY = 'cw-sw-purge-reload'
+        var SKIP_SW_KEY = 'cw-skip-sw-once'
+
+        function cleanLandingUrl() {
+          var path = window.location.pathname || '/landing'
+          if (path === '/' || path === '/index.html') path = '/landing'
+          return path + '?cw_clean=1'
+        }
+
+        function showHangRecovery() {
+          var hint = document.getElementById('cw-boot-hint')
+          if (!hint) return
+          hint.setAttribute('role', 'status')
+          hint.innerHTML =
+            'Still loading…' +
+            '<br /><br />' +
+            '<a href="/landing?cw_clean=1" style="color:#f5efe3;text-decoration:underline">Open ChronoWalk</a>' +
+            '<br /><br />' +
+            '<a href="/rome/reset-shell?force=1" style="color:#f5efe3;opacity:0.8;text-decoration:underline;font-size:0.9em">Refresh the app shell</a>' +
+            '<span style="display:block;margin-top:0.75rem;font-size:0.85em;opacity:0.7">Access stays on this device.</span>'
+        }
+
+        function scheduleHangWatchdog(ms) {
+          window.setTimeout(function () {
+            try {
+              showHangRecovery()
+            } catch (e) {}
+          }, ms)
+        }
+
         try {
           var params = new URLSearchParams(window.location.search || '')
           if (params.get('cw_clean') === '1') {
             localStorage.removeItem('cw-needs-shell-reset')
             localStorage.removeItem('cw-shell-reset-at')
-            localStorage.setItem('cw-skip-sw-once', '1')
+            localStorage.setItem(SKIP_SW_KEY, '1')
             sessionStorage.removeItem('cw-boot-reload')
             sessionStorage.removeItem('cw-boot-pending')
             sessionStorage.removeItem('cw-chunk-reload')
+            // Keep PURGE_KEY for this tab session so a lingering controller
+            // cannot bounce replace → cw_clean → replace forever.
             if (window.history && window.history.replaceState) {
               params.delete('cw_clean')
               var next = window.location.pathname
@@ -105,8 +141,40 @@
           }
         } catch (e) {}
 
-        // Quietly drop any SW registration without blocking module load.
-        // Never delete Cache Storage during boot - that raced Chrome module fetches.
+        // Poisoned controller: unregister (no cache wipe), then replace once.
+        try {
+          if (
+            'serviceWorker' in navigator &&
+            navigator.serviceWorker.controller &&
+            sessionStorage.getItem(PURGE_KEY) !== '1'
+          ) {
+            sessionStorage.setItem(PURGE_KEY, '1')
+            try {
+              localStorage.setItem(SKIP_SW_KEY, '1')
+            } catch (eSkip) {}
+            var goLanding = function () {
+              window.location.replace(cleanLandingUrl())
+            }
+            navigator.serviceWorker
+              .getRegistrations()
+              .then(function (regs) {
+                return Promise.all(
+                  regs.map(function (reg) {
+                    return reg.unregister()
+                  }),
+                )
+              })
+              .catch(function () {})
+              .then(goLanding)
+            scheduleHangWatchdog(12000)
+            return
+          }
+          if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+            sessionStorage.removeItem(PURGE_KEY)
+          }
+        } catch (eCtrl) {}
+
+        // Quietly drop registrations without a controller. Do not touch Cache Storage.
         try {
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
@@ -116,6 +184,8 @@
             })
           }
         } catch (e2) {}
+
+        scheduleHangWatchdog(8000)
       })()
     </script>
   </head>
