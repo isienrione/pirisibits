@@ -64,12 +64,11 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
 
   it('auto-bounces hung boots from index.html to reset-shell', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
-    expect(html).toContain('cw-boot-hang-redirect')
-    expect(html).toContain('/rome/reset-shell?force=1')
-    expect(html).toContain('/rome/open')
-    expect(html).toContain('Stuck? Refresh the app shell')
-    expect(html).toContain('cw-shell-reset-at')
-    expect(html).toContain('goOpenStuck')
+    expect(html).toContain('/landing')
+    expect(html).toContain('Open ChronoWalk')
+    // Hang path must not auto-bounce into /rome/open (dead-button loop).
+    expect(html).not.toContain('goOpenStuck')
+    expect(html).not.toContain("location.replace(OPEN_HREF")
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
@@ -102,12 +101,9 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 
     const open = readFileSync(join(ROOT, 'public/rome/open.html'), 'utf8')
-    expect(open).toContain('waitForStableClear')
-    expect(open).toContain('withTimeout')
-    expect(open).toContain('/landing?cw_bust=')
-    expect(open).toContain('Website Data')
-    expect(open).toContain('__cwOpenAnyway')
-    expect(open).toContain('CLEAR_TIMEOUT_MS')
+    expect(open).toContain('href="/landing"')
+    expect(open).toContain('http-equiv="refresh"')
+    expect(open).toContain('Open ChronoWalk')
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
     expect(legacy).toContain('/rome/reset-shell')
