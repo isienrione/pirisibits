@@ -63,8 +63,55 @@ function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, imm
 
 function ThresholdLayerImage({ src, alt, className, style }) {
   const [failed, setFailed] = useState(false)
+  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const hydrateGeneration = useRef(0)
 
-  if (!src || failed) {
+  useEffect(() => {
+    setFailed(false)
+    setResolvedSrc(src)
+    const generation = ++hydrateGeneration.current
+    if (!src || String(src).startsWith('blob:')) return undefined
+
+    let cancelled = false
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (cancelled || generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
+  }, [src])
+
+  const handleError = useCallback(() => {
+    const generation = hydrateGeneration.current
+    if (!src || String(resolvedSrc).startsWith('blob:')) {
+      setFailed(true)
+      return
+    }
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
+      })
+      .catch(() => {
+        if (generation === hydrateGeneration.current) setFailed(true)
+      })
+  }, [src, resolvedSrc])
+
+  if (!resolvedSrc || failed) {
     return (
       <div
         className={className}
@@ -80,12 +127,12 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 
   return (
     <img
-      src={src}
+      src={resolvedSrc}
       alt={alt ?? ''}
       className={className}
       style={{ ...style, pointerEvents: 'none' }}
       draggable={false}
-      onError={() => setFailed(true)}
+      onError={handleError}
     />
   )
 }
@@ -94,12 +141,29 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
   const [resolvedSrc, setResolvedSrc] = useState(src)
-  const hydrateAttempted = useRef(false)
+  const hydrateGeneration = useRef(0)
 
   useEffect(() => {
     setFailed(false)
     setResolvedSrc(src)
-    hydrateAttempted.current = false
+    const generation = ++hydrateGeneration.current
+    if (!src || String(src).startsWith('blob:')) return undefined
+
+    let cancelled = false
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (cancelled || generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      cancelled = true
+    }
   }, [src])
 
   useEffect(() => {
@@ -123,23 +187,26 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
   }, [playing, failed, resolvedSrc])
 
   const handleError = useCallback(() => {
-    if (!hydrateAttempted.current && src && !String(src).startsWith('blob:')) {
-      hydrateAttempted.current = true
-      void import('../audio/offlinePackage.js')
-        .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
-        .then((blobUrl) => {
-          if (blobUrl) {
-            setResolvedSrc(blobUrl)
-            setFailed(false)
-            return
-          }
-          setFailed(true)
-        })
-        .catch(() => setFailed(true))
+    const generation = hydrateGeneration.current
+    if (!src || String(resolvedSrc).startsWith('blob:')) {
+      setFailed(true)
       return
     }
-    setFailed(true)
-  }, [src])
+    void import('../audio/offlinePackage.js')
+      .then((m) => m.hydrateCachedManifestPath(src, { kind: 'media' }))
+      .then((blobUrl) => {
+        if (generation !== hydrateGeneration.current) return
+        if (blobUrl) {
+          setResolvedSrc(blobUrl)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
+      })
+      .catch(() => {
+        if (generation === hydrateGeneration.current) setFailed(true)
+      })
+  }, [src, resolvedSrc])
 
   if (!resolvedSrc || failed) {
     return (

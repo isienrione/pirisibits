@@ -257,13 +257,84 @@ export async function hydrateRomeAudioCache(manifest, { includeMedia = 'stills' 
 export async function hydrateCachedManifestPath(manifestPath, { kind = 'media' } = {}) {
   if (!manifestPath) return null
   const cache = await openRomeAudioCache()
-  const response = await cache.match(cacheUrlForManifestPath(manifestPath))
+
+  const candidates = []
+  const pushUnique = (value) => {
+    if (value && !candidates.includes(value)) candidates.push(value)
+  }
+
+  pushUnique(cacheUrlForManifestPath(manifestPath))
+  pushUnique(manifestPath)
+  try {
+    if (/^https?:\/\//i.test(manifestPath)) {
+      pushUnique(new URL(manifestPath).pathname)
+    }
+  } catch {
+    // ignore
+  }
+
+  let response = null
+  let matchedKey = null
+  for (const key of candidates) {
+    const hit = await cache.match(key)
+    if (hit?.ok) {
+      response = hit
+      matchedKey = key
+      break
+    }
+  }
+
+  // Pathname scan — CDN host / query variants still hit the Rome media cache.
+  if (!response?.ok) {
+    try {
+      const targetPath = new URL(
+        /^https?:\/\//i.test(manifestPath)
+          ? manifestPath
+          : cacheUrlForManifestPath(manifestPath) || manifestPath,
+        'https://chronowalk.local',
+      ).pathname
+      const keys = await cache.keys()
+      for (const request of keys) {
+        try {
+          const keyUrl = new URL(request.url)
+          if (keyUrl.pathname !== targetPath) continue
+          const hit = await cache.match(request)
+          if (hit?.ok) {
+            response = hit
+            matchedKey = targetPath
+            break
+          }
+        } catch {
+          // ignore
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   if (!response?.ok) return null
   const blob = await response.blob()
   if (!blob.size) return null
   const blobUrl = URL.createObjectURL(blob)
-  if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
-  else registerCachedMedia(manifestPath, blobUrl)
+  const registerPath =
+    matchedKey && matchedKey.startsWith('/')
+      ? matchedKey
+      : (() => {
+          try {
+            if (/^https?:\/\//i.test(manifestPath)) return new URL(manifestPath).pathname
+          } catch {
+            // ignore
+          }
+          return manifestPath
+        })()
+  if (kind === 'audio') registerCachedAudio(registerPath, blobUrl)
+  else registerCachedMedia(registerPath, blobUrl)
+  // Also register under the original key so callers with CDN URLs resolve.
+  if (registerPath !== manifestPath) {
+    if (kind === 'audio') registerCachedAudio(manifestPath, blobUrl)
+    else registerCachedMedia(manifestPath, blobUrl)
+  }
   return blobUrl
 }
 
