@@ -100,15 +100,30 @@ export default function AppEntryPrepare({
           One download keeps the stories playing when signal drops.
         </p>
 
-        <div
+        <button
+          type="button"
+          data-testid="app-entry-download"
+          aria-label={
+            done ? 'Download complete' : downloadError ? 'Retry download' : 'Download the walk'
+          }
+          disabled={done || downloading}
+          onClick={() => {
+            if (done || downloading) return
+            onDownload?.()
+          }}
           style={{
+            display: 'block',
+            width: '100%',
+            textAlign: 'left',
             borderRadius: 14,
             border: `1.5px solid ${T.ember}55`,
             background: `${T.ember}0a`,
             padding: '18px 16px 16px',
             marginBottom: 12,
+            cursor: done || downloading ? 'default' : 'pointer',
+            font: 'inherit',
+            color: 'inherit',
           }}
-          data-testid="app-entry-download"
         >
           <p
             style={{
@@ -135,31 +150,15 @@ export default function AppEntryPrepare({
                 <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
               ) : downloading ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                  {downloadProgress > 0
-                    ? `${Math.round(downloadProgress * 215)} MB of 215 MB`
+                  {downloadProgress > 0.02
+                    ? `${Math.max(1, Math.round(downloadProgress * 100))}% saved`
                     : 'Starting download…'}
                 </p>
               ) : downloadError ? (
-                <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                  Download paused — tap to retry on a steadier connection.
-                </p>
+                <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>{downloadError}</p>
               ) : null}
             </div>
-            <button
-              type="button"
-              aria-label={done ? 'Download complete' : 'Download the walk'}
-              onClick={() => {
-                if (done) return
-                onDownload?.()
-              }}
-              style={{
-                flexShrink: 0,
-                border: 'none',
-                background: 'transparent',
-                padding: 0,
-                cursor: done ? 'default' : 'pointer',
-              }}
-            >
+            <span style={{ flexShrink: 0, lineHeight: 0 }} aria-hidden="true">
               <svg width="52" height="52" viewBox="0 0 52 52">
                 <circle cx="26" cy="26" r={ringR} fill="none" stroke={T.ink800} strokeWidth="2" />
                 <circle
@@ -208,9 +207,9 @@ export default function AppEntryPrepare({
                   </>
                 )}
               </svg>
-            </button>
+            </span>
           </div>
-        </div>
+        </button>
 
         <div
           style={{
