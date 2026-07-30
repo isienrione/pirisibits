@@ -3,7 +3,7 @@ import {
 } from '../content/devGeofenceTools.js'
 
 /** Bumped to invalidate Cloudflare edge cache after SPA-HTML poison under /assets/*. */
-export const DEPLOY_EDGE_BUST = 'offline-download-retry-2026-07-30'
+export const DEPLOY_EDGE_BUST = 'reset-shell-controller-wait-2026-07-30'
 
 const parseBooleanEnv = (value) => {
   const normalized = String(value ?? '').trim().toLowerCase()
