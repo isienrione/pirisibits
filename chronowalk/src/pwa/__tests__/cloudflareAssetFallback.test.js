@@ -68,6 +68,12 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
     expect(html).toContain('Loading ChronoWalk')
     expect(html).toContain('unregister')
+    // Hang watchdog offers a manual escape if React never mounts (Chrome iOS).
+    expect(html).toContain('cw-boot-hint')
+    expect(html).toContain('/landing?cw_clean=1')
+    expect(html).toContain('/rome/reset-shell?force=1')
+    expect(html).toContain('CriOS')
+    // PR #214: auto navigation WAS the Chrome loop — keep it gone.
     expect(html).not.toContain('location.replace')
     expect(html).not.toContain('location.reload')
     expect(html).not.toContain('assets.lemonsqueezy.com/lemon.js')
@@ -75,6 +81,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).not.toContain('cw-asset-fail-purge')
     // Must not clear Cache Storage during boot (raced Chrome module loads).
     expect(html).not.toContain('caches.delete')
+    expect(html).not.toMatch(/location\.(assign|href)\s*=\s*['"]\/rome\/(reset-shell|open)/)
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
