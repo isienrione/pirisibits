@@ -27,7 +27,7 @@ export async function unregisterAllServiceWorkers() {
  * @param {number} [timeoutMs]
  * @returns {Promise<boolean>} true when controller is gone
  */
-export async function waitForServiceWorkerControllerGone(timeoutMs = 2500) {
+export async function waitForServiceWorkerControllerGone(timeoutMs = 10000) {
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) {
     return true
   }
@@ -40,7 +40,9 @@ export async function waitForServiceWorkerControllerGone(timeoutMs = 2500) {
     await new Promise((resolve) => window.setTimeout(resolve, 100))
   }
 
-  return !navigator.serviceWorker.controller
+  const controller = navigator.serviceWorker.controller
+  const regs = await navigator.serviceWorker.getRegistrations()
+  return !controller && regs.length === 0
 }
 
 export function isChromeBrowser() {

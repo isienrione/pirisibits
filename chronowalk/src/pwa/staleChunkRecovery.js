@@ -145,7 +145,8 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
     await clearAllCaches()
     await unregisterAllServiceWorkers()
     // Critical on iOS: do not navigate while the old SW still controls this tab.
-    await waitForServiceWorkerControllerGone(2500)
+    // Match reset-shell: iOS often keeps the controller well past 2.5s.
+    await waitForServiceWorkerControllerGone(10000)
     await new Promise((resolve) => window.setTimeout(resolve, 200))
   } catch {
     // Still reload - a hard navigation often picks up the new deploy.

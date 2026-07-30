@@ -78,6 +78,10 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     // Cooldown retries must still wipe + wait (not bounce straight to /landing).
     expect(html).toContain('clearCachesAndWorkers')
     expect(html).toContain('finishToLanding')
+    // Must not navigate to /landing while a controller remains (iOS poison path).
+    expect(html).toContain('Do NOT navigate to /landing while controlled')
+    expect(html).toContain('WAIT_RELOAD_KEY')
+    expect(html).toContain("localStorage.removeItem(RESET_AT_KEY)")
     expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 

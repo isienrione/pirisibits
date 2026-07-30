@@ -152,6 +152,21 @@
           }
         } catch (e) {}
 
+        // Belt-and-suspenders: after a shell wipe we set cw-skip-sw-once. If this
+        // document is STILL controlled, modules will load under the redundant SW
+        // and hang on "Loading ChronoWalk…". Bounce back to force reset instead
+        // of evaluating /assets/*.js under the poison controller.
+        try {
+          if (
+            localStorage.getItem(SKIP_SW_KEY) === '1' &&
+            'serviceWorker' in navigator &&
+            navigator.serviceWorker.controller
+          ) {
+            window.location.replace(RESET_PATH + '?force=1&cw_bust=' + Date.now())
+            return
+          }
+        } catch (e) {}
+
         window.addEventListener(
           'error',
           function (event) {

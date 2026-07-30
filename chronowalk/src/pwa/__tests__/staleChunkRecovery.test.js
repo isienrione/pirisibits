@@ -96,7 +96,7 @@ describe('staleChunkRecovery', () => {
     expect(first).toEqual({ recovered: true, reloading: true })
     expect(clearAllCaches).toHaveBeenCalledTimes(1)
     expect(unregisterAllServiceWorkers).toHaveBeenCalledTimes(1)
-    expect(waitForServiceWorkerControllerGone).toHaveBeenCalled()
+    expect(waitForServiceWorkerControllerGone).toHaveBeenCalledWith(10000)
     expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell' })
     expect(showUpdatingOverlay).toHaveBeenCalled()
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeTruthy()
