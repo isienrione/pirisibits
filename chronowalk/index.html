@@ -84,33 +84,35 @@
     </style>
     <script>
       ;(function () {
-        // Boot rules (learned the hard way on Chrome iOS):
+        // Boot rules (learned the hard way — Safari OK, Chrome iOS not):
         // - Never auto-send people to /rome/reset-shell or /rome/open (blink loops).
-        // - Never delete Cache Storage during boot (races module fetches).
-        // - Never reload() the same poisoned document.
-        // - DO one-shot unregister + replace to /landing when a SW still controls
-        //   the tab — otherwise /assets/*.js can be SPA HTML and React never mounts
-        //   ("Loading ChronoWalk…" forever).
-        var PURGE_KEY = 'cw-sw-purge-reload'
+        // - Never delete Cache Storage during boot (races Chrome module fetches).
+        // - Never auto-navigate / reload the document (PR #214: that WAS the Chrome loop).
+        // - Quietly unregister any SW; if React never mounts, show a manual escape.
+        // Chrome on iOS keeps site data separate from Safari, so a poisoned SW in
+        // Chrome does not affect Safari.
         var SKIP_SW_KEY = 'cw-skip-sw-once'
 
-        function cleanLandingUrl() {
-          var path = window.location.pathname || '/landing'
-          if (path === '/' || path === '/index.html') path = '/landing'
-          return path + '?cw_clean=1'
+        function isChromeIosOrDesktop() {
+          var ua = navigator.userAgent || ''
+          // iOS Chrome uses CriOS (no "Chrome" token). Desktop uses Chrome.
+          return (/CriOS/i.test(ua) || /Chrome/i.test(ua)) && !/Edg|OPR|EdgiOS/i.test(ua)
         }
 
         function showHangRecovery() {
           var hint = document.getElementById('cw-boot-hint')
           if (!hint) return
           hint.setAttribute('role', 'status')
+          var chromeNote = isChromeIosOrDesktop()
+            ? '<span style="display:block;margin-top:1rem;font-size:0.85em;opacity:0.75;line-height:1.45">Chrome tip: tap the lock icon → Cookies and site data → clear chronowalk.com, then use Open ChronoWalk. Safari can keep working on its own.</span>'
+            : '<span style="display:block;margin-top:0.75rem;font-size:0.85em;opacity:0.7">Access stays on this device.</span>'
           hint.innerHTML =
             'Still loading…' +
             '<br /><br />' +
             '<a href="/landing?cw_clean=1" style="color:#f5efe3;text-decoration:underline">Open ChronoWalk</a>' +
             '<br /><br />' +
             '<a href="/rome/reset-shell?force=1" style="color:#f5efe3;opacity:0.8;text-decoration:underline;font-size:0.9em">Refresh the app shell</a>' +
-            '<span style="display:block;margin-top:0.75rem;font-size:0.85em;opacity:0.7">Access stays on this device.</span>'
+            chromeNote
         }
 
         function scheduleHangWatchdog(ms) {
@@ -130,8 +132,7 @@
             sessionStorage.removeItem('cw-boot-reload')
             sessionStorage.removeItem('cw-boot-pending')
             sessionStorage.removeItem('cw-chunk-reload')
-            // Keep PURGE_KEY for this tab session so a lingering controller
-            // cannot bounce replace → cw_clean → replace forever.
+            sessionStorage.removeItem('cw-sw-purge-reload')
             if (window.history && window.history.replaceState) {
               params.delete('cw_clean')
               var next = window.location.pathname
@@ -141,40 +142,9 @@
           }
         } catch (e) {}
 
-        // Poisoned controller: unregister (no cache wipe), then replace once.
-        try {
-          if (
-            'serviceWorker' in navigator &&
-            navigator.serviceWorker.controller &&
-            sessionStorage.getItem(PURGE_KEY) !== '1'
-          ) {
-            sessionStorage.setItem(PURGE_KEY, '1')
-            try {
-              localStorage.setItem(SKIP_SW_KEY, '1')
-            } catch (eSkip) {}
-            var goLanding = function () {
-              window.location.replace(cleanLandingUrl())
-            }
-            navigator.serviceWorker
-              .getRegistrations()
-              .then(function (regs) {
-                return Promise.all(
-                  regs.map(function (reg) {
-                    return reg.unregister()
-                  }),
-                )
-              })
-              .catch(function () {})
-              .then(goLanding)
-            scheduleHangWatchdog(12000)
-            return
-          }
-          if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
-            sessionStorage.removeItem(PURGE_KEY)
-          }
-        } catch (eCtrl) {}
-
-        // Quietly drop registrations without a controller. Do not touch Cache Storage.
+        // Quietly drop any SW registration without blocking module load.
+        // Never delete Cache Storage during boot - that raced Chrome module fetches.
+        // Never auto-navigate the document here - that recreated the Chrome recovery loop.
         try {
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function (regs) {
@@ -185,7 +155,8 @@
           }
         } catch (e2) {}
 
-        scheduleHangWatchdog(8000)
+        // Chrome often needs the manual escape sooner; Safari rarely hits this.
+        scheduleHangWatchdog(isChromeIosOrDesktop() ? 4500 : 8000)
       })()
     </script>
   </head>
