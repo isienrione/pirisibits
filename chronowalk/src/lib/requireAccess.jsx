@@ -4,6 +4,7 @@ import { hasAccess } from './config.js'
 import { validateDeviceAccess, readDeviceCredential } from './access.js'
 import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
 import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
+import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
 
 /**
  * Gate paid tour surfaces.
@@ -11,6 +12,8 @@ import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
  * While online, revalidates on mount; clears access when server rejects.
  * Soft grace: if a credential exists but the lease just expired, allow the
  * shell to paint while revalidation runs (avoids Home Screen → paste-code flash).
+ * Home Screen relaunches: if access is missing, try auto-redeeming the last
+ * `/invite?code=` before redirecting to `/access`.
  */
 export function RequireAccess({ children, redirectTo = '/access' }) {
   const [allowed, setAllowed] = useState(
@@ -23,7 +26,30 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
 
     async function run() {
       consumeAccessHandoff()
-      const credential = readDeviceCredential()
+      let credential = readDeviceCredential()
+
+      // Home Screen / shortcut relaunches might not preserve URL parameters.
+      // If we've previously seen an `/invite?code=...` flow, try to redeem
+      // that last code automatically (only online) before bouncing to /access.
+      if (!credential && !hasValidLocalAccess()) {
+        if (typeof navigator !== 'undefined' && navigator.onLine !== false) {
+          const inviteCode = readLastBundleInviteCode()
+          if (inviteCode) {
+            try {
+              await claimFamilySeat({ inviteCode, displayName: 'Walker' })
+              credential = readDeviceCredential()
+              if (!cancelled && (hasValidLocalAccess() || credential)) {
+                setAllowed(true)
+                setChecking(false)
+                return
+              }
+            } catch {
+              // Fall through to normal access prompt.
+            }
+          }
+        }
+      }
+
       if (!credential) {
         if (!cancelled) {
           setAllowed(false)
@@ -70,10 +96,13 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
   }, [])
 
   if (checking) {
-    if (!hasAccess() && !readDeviceCredential()) {
-      return <Navigate to={redirectTo} replace />
+    // Soft paint when we already have a credential/lease.
+    if (hasAccess() || readDeviceCredential() || hasValidLocalAccess()) {
+      return children
     }
-    return children
+    // Wait for invite auto-redeem / revalidation before bouncing to /access
+    // (avoids Home Screen → paste-code flash).
+    return null
   }
 
   if (!allowed) {

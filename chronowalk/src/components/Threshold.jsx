@@ -709,6 +709,7 @@ export default function Threshold({
   // Modern (now) and ancient (then) share the same framing so mismatched
   // source aspect ratios (e.g. Curia landscape reconstruction on a portrait
   // NOW photo) do not letterbox one era while the other fills the frame.
+  // Immersive uses cover; non-immersive uses contain — both eras match.
   const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
   const thenLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
 

@@ -13,7 +13,8 @@ import {
   markThresholdCrossed,
 } from '../../utils/thresholdWaypointReveal.js'
 
-const DEFAULT_SPEEDS = [0.8, 1, 1.2]
+// Default speeds (must include 1.5× and 2×).
+const DEFAULT_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
 const BRIEF_RING_MS = 1500
 
 function formatTime(seconds) {

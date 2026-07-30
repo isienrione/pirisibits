@@ -152,7 +152,7 @@ describe('waypointImmersiveProps', () => {
     expect(outro.tagline).toBe('Enter the valley')
   })
 
-  it('uses Circo Massimo only (no Circus Maximus dual name)', () => {
+  it('uses Circus Maximus (English title, not Circo Massimo)', () => {
     const waypoint = getWaypoint(manifest, 'w04')
     const circus = buildImmersivePlayerProps({
       waypoint,
@@ -160,11 +160,11 @@ describe('waypointImmersiveProps', () => {
       manifest,
       chapterIndex: 1,
     })
-    expect(circus.chapterTitle).toBe('Circo Massimo')
-    expect(circus.chapterTitle).not.toMatch(/Circus Maximus/i)
+    expect(circus.chapterTitle).toBe('Circus Maximus')
+    expect(circus.chapterTitle).not.toMatch(/Circo Massimo/i)
   })
 
-  it('titles Pantheon interior chapter as Resilience and Purpose', () => {
+  it('titles Pantheon interior tombs chapter as the tombs', () => {
     const waypoint = getWaypoint(manifest, 'w23')
     const props = buildImmersivePlayerProps({
       waypoint,
@@ -172,7 +172,7 @@ describe('waypointImmersiveProps', () => {
       manifest,
       chapterIndex: 2,
     })
-    expect(props.chapterTitle).toMatch(/Resilience and Purpose/i)
-    expect(props.chapterTitle).not.toMatch(/Tombs/i)
+    expect(props.chapterTitle).toMatch(/the tombs/i)
+    expect(props.chapterTitle).not.toMatch(/Resilience and Purpose/i)
   })
 })

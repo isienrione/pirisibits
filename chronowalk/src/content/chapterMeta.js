@@ -2,6 +2,23 @@ import { stripDirectorCues } from '../utils/transcriptContent.js'
 
 /** Helpers for waypoint chapter entries (string filename or { file, title, transcript }). */
 
+function sanitizeChapterTitleText(rawTitle) {
+  if (typeof rawTitle !== 'string') return rawTitle
+  let t = rawTitle.trim().replace(/\s+/g, ' ')
+
+  // Remove accidental chapter numbering prefixes.
+  // Examples:
+  // - "Chapter 3: the city ..." → "the city ..."
+  // - "3. resilient for centuries" → "resilient for centuries"
+  t = t.replace(/^chapter\s*\d+[\s:\-.)]+\s*/i, '')
+  t = t.replace(/^\d+\s*[\.\)]\s*/, '')
+
+  // Remove trailing duration fragments like "(1:23)" / "[1:23]".
+  t = t.replace(/\s*(?:\(|\[)\s*\d+:\d+(?:\.\d+)?\s*(?:\)|\])\s*$/, '')
+
+  return t
+}
+
 export function chapterFile(chapter) {
   if (!chapter) return null
   return typeof chapter === 'string' ? chapter : chapter.file ?? null
@@ -13,7 +30,7 @@ export const chapterAudioFile = chapterFile
 export function chapterTitle(chapter, fallback = null) {
   if (!chapter) return fallback
   if (typeof chapter === 'string') return fallback
-  return chapter.title ?? fallback
+  return sanitizeChapterTitleText(chapter.title ?? fallback)
 }
 
 export function chapterTranscript(chapter) {

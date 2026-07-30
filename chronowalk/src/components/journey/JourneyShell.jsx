@@ -60,6 +60,7 @@ import TourOnboardingCards from '../../redesign/ui/TourOnboardingCards.jsx'
 import {
   isOnFirstTourStop,
   markTourOnboardingComplete,
+  shouldShowTourOnboarding,
 } from '../../utils/tourOnboarding.js'
 import FloatingAudioPlayer from '../../redesign/ui/FloatingAudioPlayer.jsx'
 import WalkSyncBar from '../../redesign/ui/WalkSyncBar.jsx'
@@ -1501,7 +1502,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
             <C6ImmersivePlayer
               {...playerProps}
               onOpenSettings={openSettings}
-              suppressAutoRevealInvite={isOnFirstTourStop(context, step, manifest)}
+              suppressAutoRevealInvite={
+                isOnFirstTourStop(context, step, manifest) &&
+                shouldShowTourOnboarding(context)
+              }
               syncSlot={
                 syncAudio.joinCode ? (
                   <WalkSyncBar

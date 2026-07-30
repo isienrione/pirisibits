@@ -16,6 +16,12 @@ export function buildStopFromLegacy(stopId, index, nextStopId) {
   const shortTitle = deriveShortTitle(title, stopId)
   const subtitle = waypoint?.arrival_subtitle ?? ''
   const landmark = geo?.landmark ?? (waypoint ? { lat: waypoint.lat, lng: waypoint.lng } : null)
+  // ETA should reflect where a traveler actually stands/approaches (camera POV),
+  // not always the map/geofence "landmark center".
+  const walkCoords =
+    waypoint?.viewpoint?.lat != null && waypoint?.viewpoint?.lng != null
+      ? { lat: waypoint.viewpoint.lat, lng: waypoint.viewpoint.lng }
+      : landmark ?? { lat: 0, lng: 0 }
 
   return normalizeManifestStop({
     id: stopId,
@@ -24,6 +30,7 @@ export function buildStopFromLegacy(stopId, index, nextStopId) {
     shortTitle,
     subtitle,
     coords: landmark ?? { lat: 0, lng: 0 },
+    walkCoords,
     radiusM: geo?.geofenceThresholdM ?? 30,
     heroImage:
       waypoint?.modern_poster_url ??

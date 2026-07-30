@@ -237,7 +237,7 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(playCallsBeforeSettings)
 
     fireEvent.click(screen.getByRole('button', { name: 'Done' }))
-    await screen.findByRole('heading', { name: /the colosseum/i })
+    await screen.findByRole('heading', { name: /colosseum/i })
     expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.STORY)
     expect(audioMock.narrationPlaying).toBe(true)

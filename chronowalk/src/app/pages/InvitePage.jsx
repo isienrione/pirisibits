@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { claimFamilySeat, normalizeBundleInviteCode } from '../../lib/familyWalk.js'
+import {
+  claimFamilySeat,
+  normalizeBundleInviteCode,
+  writeLastBundleInviteCode,
+} from '../../lib/familyWalk.js'
 import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 import { isResumableJourney } from '../../state/journey.js'
 
@@ -17,6 +21,13 @@ function InviteForm({ initialCode }) {
   const [name, setName] = useState('')
   const [status, setStatus] = useState(initialCode ? 'ready' : 'idle')
   const [error, setError] = useState(null)
+
+  // Persist the bundle invite code so a Home Screen / shortcut launch can
+  // restore access without requiring the user to re-enter it.
+  useEffect(() => {
+    if (!initialCode) return
+    writeLastBundleInviteCode(initialCode)
+  }, [initialCode])
 
   const redeem = async (event) => {
     event?.preventDefault?.()
