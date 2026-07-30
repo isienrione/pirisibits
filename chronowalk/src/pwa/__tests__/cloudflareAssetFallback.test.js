@@ -103,8 +103,11 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
 
     const open = readFileSync(join(ROOT, 'public/rome/open.html'), 'utf8')
     expect(open).toContain('waitForStableClear')
+    expect(open).toContain('withTimeout')
     expect(open).toContain('/landing?cw_bust=')
     expect(open).toContain('Website Data')
+    expect(open).toContain('__cwOpenAnyway')
+    expect(open).toContain('CLEAR_TIMEOUT_MS')
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
     expect(legacy).toContain('/rome/reset-shell')
