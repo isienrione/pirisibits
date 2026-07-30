@@ -49,9 +49,10 @@ export function isMapboxStandardStyle(styleUrl) {
  * stays on Standard vector (night) so the PWA does not pay satellite tile cost
  * on every screen.
  *
- * Offline / spotty-signal: prefer Standard vector — that matches the offline
- * tile package (`mapbox/standard` + streets-v8). Satellite tiles are not cached
- * and paint black under poor connectivity.
+ * Offline / spotty-signal: prefer Standard vector while online-but-constrained
+ * (satellite would paint black). When fully offline, TourMap mounts
+ * OfflineRouteMap instead — Mapbox Standard needs imports/glyphs/models that
+ * the Rome tile package does not include, so Standard stays grey offline.
  *
  * `VITE_MAPBOX_STYLE_URL` still overrides the MAP-tab style for Studio experiments.
  * The walking hero prefers Standard Satellite online unless an explicit

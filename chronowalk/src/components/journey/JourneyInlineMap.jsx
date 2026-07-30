@@ -64,18 +64,22 @@ export default function JourneyInlineMap({
 }) {
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
-  // Prefer the cached Standard vector style whenever signal is weak OR we
-  // already persisted Rome map tiles — satellite tiles are not offline-cached.
+  // Prefer the cached vector style whenever signal is weak OR we already
+  // persisted Rome map tiles — satellite tiles are not offline-cached.
+  // When fully offline, TourMap skips Mapbox Standard and uses OfflineRouteMap.
   const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
-  const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle)
+  const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle || isOffline)
 
   useEffect(() => {
     if (!manifest || !env.mapboxToken) {
       setOfflineMapReady(true)
       return undefined
     }
-    // Wait for Cache API → blob hydration before mounting Mapbox, otherwise the
-    // first paint races an empty tile map and stays grey offline.
+    // Fully offline → OfflineRouteMap; no Cache→blob hydrate needed for Mapbox.
+    if (isOffline) {
+      setOfflineMapReady(true)
+      return undefined
+    }
     if (!preferOfflineStyle) {
       setOfflineMapReady(true)
       return undefined
@@ -92,7 +96,7 @@ export default function JourneyInlineMap({
     return () => {
       cancelled = true
     }
-  }, [manifest, preferOfflineStyle])
+  }, [manifest, preferOfflineStyle, isOffline])
 
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
