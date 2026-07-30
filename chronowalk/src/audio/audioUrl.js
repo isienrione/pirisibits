@@ -46,6 +46,25 @@ export function resolveSystemUrl(filename) {
   return getAudioUrl(systemPath(filename))
 }
 
+/**
+ * Resolve a system cue for offline-safe playback. Hydrates from the Rome audio
+ * Cache API when the in-memory blob map is cold (common after a background kill).
+ */
+export async function resolveSystemUrlAsync(filename) {
+  if (!filename) return null
+  const path = systemPath(filename)
+  const existing = blobCache.get(path)
+  if (existing) return existing
+  try {
+    const { hydrateCachedManifestPath } = await import('./offlinePackage.js')
+    const hydrated = await hydrateCachedManifestPath(path, { kind: 'audio' })
+    if (hydrated) return hydrated
+  } catch {
+    // Fall through to network / mediaUrl.
+  }
+  return getAudioUrl(path)
+}
+
 /** Free Pantheon sample — narration files live under /rome/audio/narration/. */
 export function resolvePreviewUrl(filename) {
   const file = filename === 'preview_pantheon.mp3' ? 'w17_ch1.mp3' : filename

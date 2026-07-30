@@ -67,17 +67,32 @@ export default function JourneyInlineMap({
   // Prefer the cached Standard vector style whenever signal is weak OR we
   // already persisted Rome map tiles — satellite tiles are not offline-cached.
   const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
+  const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle)
 
   useEffect(() => {
-    if (!manifest || !env.mapboxToken) return undefined
+    if (!manifest || !env.mapboxToken) {
+      setOfflineMapReady(true)
+      return undefined
+    }
+    // Wait for Cache API → blob hydration before mounting Mapbox, otherwise the
+    // first paint races an empty tile map and stays grey offline.
+    if (!preferOfflineStyle) {
+      setOfflineMapReady(true)
+      return undefined
+    }
     let cancelled = false
-    void hydrateRomeMapTileCache(manifest, { token: env.mapboxToken }).catch((error) => {
-      if (!cancelled) console.warn('[map] tile cache hydrate failed', error)
-    })
+    setOfflineMapReady(false)
+    void hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
+      .catch((error) => {
+        if (!cancelled) console.warn('[map] tile cache hydrate failed', error)
+      })
+      .finally(() => {
+        if (!cancelled) setOfflineMapReady(true)
+      })
     return () => {
       cancelled = true
     }
-  }, [manifest])
+  }, [manifest, preferOfflineStyle])
 
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
@@ -134,6 +149,10 @@ export default function JourneyInlineMap({
         Map loading…
       </div>
     )
+  }
+
+  if (preferOfflineStyle && !offlineMapReady) {
+    return <InlineMapLoadingFallback />
   }
 
   return (

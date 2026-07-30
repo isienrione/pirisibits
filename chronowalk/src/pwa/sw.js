@@ -24,7 +24,7 @@ import {
   precacheAndRoute,
 } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
-import { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } from 'workbox-strategies'
+import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import {
   isAssetOrModuleRequest,
   isHtmlPoisonedAssetEntry,
@@ -293,4 +293,67 @@ registerRoute(
   'GET',
 )
 
-registerRoute(/^https:\/\/api\.mapbox\.com\/.*/i, new NetworkOnly(), 'GET')
+/** Same name as `ROME_MAP_TILE_CACHE` in map/offlineMapTiles.js (keep in sync). */
+const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v1'
+
+function normalizeMapboxRequestUrl(url) {
+  try {
+    const parsed = new URL(url)
+    parsed.searchParams.delete('sku')
+    parsed.searchParams.delete('pluginName')
+    parsed.searchParams.delete('fresh')
+    return parsed.toString()
+  } catch {
+    return url
+  }
+}
+
+async function matchRomeMapTile(request) {
+  const cache = await caches.open(ROME_MAP_TILE_CACHE)
+  const direct = await cache.match(request)
+  if (direct) return direct
+
+  const normalized = normalizeMapboxRequestUrl(request.url)
+  if (normalized !== request.url) {
+    const normalizedMatch = await cache.match(normalized)
+    if (normalizedMatch) return normalizedMatch
+  }
+
+  try {
+    const target = new URL(request.url)
+    const keys = await cache.keys()
+    for (const key of keys) {
+      try {
+        const keyUrl = new URL(key.url)
+        if (keyUrl.hostname === target.hostname && keyUrl.pathname === target.pathname) {
+          const hit = await cache.match(key)
+          if (hit) return hit
+        }
+      } catch {
+        // ignore
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null
+}
+
+// Cache-first for Rome offline tiles (style JSON + vector PBFs). Network when online
+// so maps keep working after a package download; never NetworkOnly (bricks offline).
+registerRoute(
+  ({ url }) =>
+    url.hostname === 'api.mapbox.com' ||
+    url.hostname.endsWith('.tiles.mapbox.com') ||
+    url.hostname === 'tiles.mapbox.com',
+  async ({ request }) => {
+    const cached = await matchRomeMapTile(request)
+    if (cached) return cached
+    try {
+      return await fetch(request)
+    } catch {
+      return new Response('', { status: 503, statusText: 'Map tile unavailable offline' })
+    }
+  },
+  'GET',
+)

@@ -4,9 +4,11 @@ import { getManifestTourBounds, getManifestWaypointIds } from '../content/mapSto
 export const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v1'
 export const DEFAULT_MAP_STYLE_PATH = 'mapbox/standard'
 export const DEFAULT_MAP_TILESET = 'mapbox.mapbox-streets-v8'
-export const DEFAULT_MAP_ZOOM_MIN = 14
-export const DEFAULT_MAP_ZOOM_MAX = 16
-export const BOUNDS_PADDING_DEG = 0.004
+/** Cover walking-camera zooms (≈15.5–16.5) with a one-level buffer either side. */
+export const DEFAULT_MAP_ZOOM_MIN = 13
+export const DEFAULT_MAP_ZOOM_MAX = 17
+/** ~1.1 km padding so route + user position near stops stay inside the tile hull. */
+export const BOUNDS_PADDING_DEG = 0.01
 
 const tileBlobUrls = new Map()
 
@@ -17,11 +19,48 @@ function clampPercent(value) {
 function normalizeUrl(url) {
   try {
     const parsed = new URL(url)
+    // Mapbox appends volatile billing/session params; strip so Cache + blob maps hit.
     parsed.searchParams.delete('sku')
+    parsed.searchParams.delete('pluginName')
+    parsed.searchParams.delete('fresh')
     return parsed.toString()
   } catch {
     return url
   }
+}
+
+/** Match a tile/style Response even when query params differ from download time. */
+async function matchMapTileInCache(cache, url) {
+  if (!cache || !url) return null
+
+  const direct = await cache.match(url)
+  if (direct?.ok) return direct
+
+  const normalized = normalizeUrl(url)
+  if (normalized !== url) {
+    const normalizedMatch = await cache.match(normalized)
+    if (normalizedMatch?.ok) return normalizedMatch
+  }
+
+  try {
+    const target = new URL(url)
+    const keys = await cache.keys()
+    for (const key of keys) {
+      try {
+        const keyUrl = new URL(typeof key === 'string' ? key : key.url)
+        if (keyUrl.pathname !== target.pathname) continue
+        if (keyUrl.hostname !== target.hostname) continue
+        const hit = await cache.match(key)
+        if (hit?.ok) return hit
+      } catch {
+        // ignore malformed cache keys
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  return null
 }
 
 export function lngLatToTile(lng, lat, zoom) {
@@ -142,8 +181,24 @@ export function createMapboxTransformRequest() {
     ) {
       const cached = resolveCachedMapTileUrl(url)
       if (cached) return { url: cached }
+      // Kick a background Cache API → blob register for the next request of this URL.
+      void warmCachedMapTile(url)
     }
     return { url }
+  }
+}
+
+async function warmCachedMapTile(url) {
+  try {
+    if (resolveCachedMapTileUrl(url)) return
+    const cache = await openMapTileCache()
+    const match = await matchMapTileInCache(cache, url)
+    if (!match?.ok) return
+    const blob = await match.blob()
+    if (!blob.size) return
+    registerCachedMapTile(url, URL.createObjectURL(blob))
+  } catch {
+    // ignore
   }
 }
 
@@ -164,7 +219,7 @@ export async function verifyRomeMapTiles(manifest, options = {}) {
   const missing = []
 
   for (const url of urls) {
-    const match = await cache.match(url)
+    const match = await matchMapTileInCache(cache, url)
     if (!match?.ok) {
       missing.push(url)
       continue
@@ -183,14 +238,12 @@ export async function verifyRomeMapTiles(manifest, options = {}) {
 }
 
 export async function hydrateRomeMapTileCache(manifest, options = {}) {
-  const urls = listRomeMapTileUrls(manifest, options)
-  if (!urls.length) return { hydrated: 0 }
-
   const cache = await openMapTileCache()
   let hydrated = 0
 
+  const urls = listRomeMapTileUrls(manifest, options)
   for (const url of urls) {
-    const response = await cache.match(url)
+    const response = await matchMapTileInCache(cache, url)
     if (!response?.ok) continue
 
     const blob = await response.blob()
@@ -198,6 +251,24 @@ export async function hydrateRomeMapTileCache(manifest, options = {}) {
 
     registerCachedMapTile(url, URL.createObjectURL(blob))
     hydrated += 1
+  }
+
+  // Register every Cache entry — older packages / URL variants still feed
+  // sync transformRequest even when they fall outside the current URL list.
+  try {
+    const keys = await cache.keys()
+    for (const request of keys) {
+      const url = typeof request === 'string' ? request : request.url
+      if (!url || resolveCachedMapTileUrl(url)) continue
+      const response = await cache.match(request)
+      if (!response?.ok) continue
+      const blob = await response.blob()
+      if (!blob.size) continue
+      registerCachedMapTile(url, URL.createObjectURL(blob))
+      hydrated += 1
+    }
+  } catch {
+    // ignore cache enumeration failures
   }
 
   return { hydrated }
