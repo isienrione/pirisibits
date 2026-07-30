@@ -1,4 +1,5 @@
 import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
+import { OfflineMediaImg } from '../OfflineMediaImg.jsx'
 
 /**
  * Format a Directions step for the Next turns card.
@@ -52,7 +53,7 @@ export default function NextTurnsCard({
           <p className="cw-next-turns-card__destination">{destinationTitle}</p>
         </div>
         {destinationPhoto ? (
-          <img
+          <OfflineMediaImg
             className="cw-next-turns-card__thumb"
             src={destinationPhoto}
             alt=""
