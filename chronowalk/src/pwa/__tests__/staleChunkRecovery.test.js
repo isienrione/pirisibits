@@ -97,7 +97,7 @@ describe('staleChunkRecovery', () => {
     expect(clearAllCaches).toHaveBeenCalledTimes(1)
     expect(unregisterAllServiceWorkers).toHaveBeenCalledTimes(1)
     expect(waitForServiceWorkerControllerGone).toHaveBeenCalled()
-    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell.html' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell' })
     expect(showUpdatingOverlay).toHaveBeenCalled()
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeTruthy()
     expect(localStorage.getItem(SHELL_RESET_KEY)).toBe('1')
@@ -118,7 +118,7 @@ describe('staleChunkRecovery', () => {
     sessionStorage.setItem(CHUNK_RECOVERY_GUARD_KEY, '1')
     await recoverStaleClient({ force: true })
     expect(clearAllCaches).toHaveBeenCalledTimes(1)
-    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell.html' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/rome/reset-shell' })
     expect(shouldSkipServiceWorkerRegistration()).toBe(true)
   })
 

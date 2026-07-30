@@ -91,7 +91,7 @@
         var COOLDOWN_MS = 2 * 60 * 1000
         // Under /rome/ so older service workers (denylist /^\/rome\//) cannot
         // intercept and re-serve the poisoned SPA shell.
-        var RESET_PATH = '/rome/reset-shell.html'
+        var RESET_PATH = '/rome/reset-shell'
 
         function markSkipSw() {
           try {
@@ -166,7 +166,7 @@
                 var hint = document.getElementById('cw-boot-hint')
                 if (hint) {
                   hint.innerHTML =
-                    'ChronoWalk could not finish loading.<br/><a href="/rome/reset-shell.html?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
+                    'ChronoWalk could not finish loading.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
                 }
                 return
               }
@@ -208,7 +208,7 @@
         window.setTimeout(function () {
           if (!hint || !document.getElementById('cw-boot-hint')) return
           hint.innerHTML =
-            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell.html?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
+            'ChronoWalk is taking longer than usual.<br/><a href="/rome/reset-shell?force=1" style="color:inherit">Refresh the app shell</a> - access stays on this device.'
         }, 5000)
       })()
     </script>

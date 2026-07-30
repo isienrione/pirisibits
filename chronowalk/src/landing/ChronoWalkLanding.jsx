@@ -179,7 +179,7 @@ export default function ChronoWalkLanding() {
             title="Demo unavailable"
             message="The product demo could not load on this device. The rest of ChronoWalk still works - scroll for tours and pricing."
             autoRecoverOnAnyError={false}
-            onRetry={() => window.location.assign('/rome/reset-shell.html?force=1')}
+            onRetry={() => window.location.assign('/rome/reset-shell?force=1')}
           >
             <LandingProductDemo />
           </V2ErrorBoundary>
