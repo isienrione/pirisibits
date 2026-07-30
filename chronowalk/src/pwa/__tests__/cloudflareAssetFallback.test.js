@@ -62,6 +62,14 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).not.toMatch(/api\.mapbox\.com[\s\S]{0,80}NetworkOnly/)
   })
 
+  it('auto-bounces hung boots from index.html to reset-shell', () => {
+    const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
+    expect(html).toContain('cw-boot-hang-redirect')
+    expect(html).toContain('/rome/reset-shell?force=1')
+    expect(html).toContain('Stuck? Refresh the app shell')
+    expect(html).toContain('location.replace(RESET_PATH + \'?force=1&cw_bust=\'')
+  })
+
   it('ships a static reset-shell escape hatch outside the SPA', () => {
     expect(existsSync(join(ROOT, 'public/rome/reset-shell.html'))).toBe(true)
     const html = readFileSync(join(ROOT, 'public/rome/reset-shell.html'), 'utf8')
