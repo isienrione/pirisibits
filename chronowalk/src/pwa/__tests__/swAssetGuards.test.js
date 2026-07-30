@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  asSafariSafeResponse,
   isAssetOrModuleRequest,
   isHtmlPoisonedAssetEntry,
   isHtmlResponse,
@@ -125,5 +126,24 @@ describe('swAssetGuards', () => {
       ),
     ).toBe(false)
     expect(isHtmlPoisonedAssetEntry('https://chronowalk.com/walk-together', html)).toBe(false)
+  })
+
+  it('rebuilds redirected responses so Safari will accept SW navigations', async () => {
+    const body = '<!doctype html><title>ok</title>'
+    const redirected = {
+      redirected: true,
+      status: 200,
+      statusText: 'OK',
+      headers: new Headers({ 'content-type': 'text/html' }),
+      arrayBuffer: async () => new TextEncoder().encode(body).buffer,
+    }
+    const safe = await asSafariSafeResponse(redirected)
+    expect(safe).toBeInstanceOf(Response)
+    expect(safe.redirected).toBe(false)
+    expect(safe.status).toBe(200)
+    expect(await safe.text()).toBe(body)
+
+    const plain = new Response(body, { status: 200 })
+    expect(await asSafariSafeResponse(plain)).toBe(plain)
   })
 })

@@ -54,6 +54,8 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     // Opaque failed navigations surface Safari’s native “no signal” interstitial.
     expect(sw).not.toMatch(/return\s+Response\.error\s*\(/)
     expect(sw).toMatch(/\/\^\\\/reset-shell\$\//)
+    expect(sw).toContain('asSafariSafeResponse')
+    expect(sw).toMatch(/\/\^\\\/\$\//)
     // Must not bind the offline shell to apex `/` (302 in production).
     expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
     // Rome offline map tiles must be cache-first - NetworkOnly bricks walking maps.
