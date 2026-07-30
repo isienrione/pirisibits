@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './pwa/pwaController.js'
+import { startPwaRegistration } from './pwa/pwaController.js'
 import './design/tokens.css'
 import './redesign/redesign.css'
 import './index.css'
@@ -50,3 +50,12 @@ createRoot(document.getElementById('root')).render(
     <AppRouter />
   </StrictMode>,
 )
+
+// Register the service worker only after the UI is up - never during module
+// evaluation, which raced poisoned controllers and blocked first paint.
+// Currently disabled entirely via SERVICE_WORKER_BOOT_DISABLED.
+if (typeof window !== 'undefined') {
+  window.setTimeout(() => {
+    void startPwaRegistration()
+  }, 5000)
+}
