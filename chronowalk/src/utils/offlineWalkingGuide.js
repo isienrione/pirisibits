@@ -78,8 +78,8 @@ export function buildOfflineWalkingInstruction({
     }
 
     return bearing
-      ? `Head ${bearing} toward ${destination} · about ${distanceLabel} away.`
-      : `Head toward ${destination} · about ${distanceLabel} away.`
+      ? `Head ${bearing} toward ${destination} — about ${distanceLabel} away.`
+      : `Head toward ${destination} — about ${distanceLabel} away.`
   }
 
   if (destination) {

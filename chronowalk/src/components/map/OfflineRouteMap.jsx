@@ -20,27 +20,12 @@ const STOP_COLORS = {
   completed: hex.verdigris,
   current: hex.ember,
   upcoming: hex.inkMuted,
-  previous: hex.bronze,
 }
 
-function shortMapLabel(title, maxLen = 22) {
-  const text = String(title ?? '').trim()
-  if (!text) return ''
-  if (text.length <= maxLen) return text
-  return `${text.slice(0, maxLen - 1).trim()}…`
-}
-
-function RouteOverviewSvg({ model, dark = false }) {
-  if (!model.fullRoutePath && !model.activeRoutePath && !model.stops.length) {
+function RouteOverviewSvg({ model }) {
+  if (!model.fullRoutePath && !model.stops.length) {
     return (
-      <div
-        className={cn(
-          'flex h-[220px] items-center justify-center rounded-3xl border border-dashed text-sm',
-          dark
-            ? 'border-white/15 bg-obsidian/80 text-white/55'
-            : 'border-ink800 bg-bone text-muted',
-        )}
-      >
+      <div className="flex h-[220px] items-center justify-center rounded-3xl border border-dashed border-ink800 bg-bone text-sm text-muted">
         Route overview will appear once stops are loaded.
       </div>
     )
@@ -49,10 +34,7 @@ function RouteOverviewSvg({ model, dark = false }) {
   return (
     <svg
       viewBox={`0 0 ${model.width} ${model.height}`}
-      className={cn(
-        'h-[220px] w-full rounded-3xl',
-        dark ? 'border border-white/10 bg-obsidian' : 'border border-ink800 bg-bone',
-      )}
+      className="h-[220px] w-full rounded-3xl border border-ink800 bg-bone"
       role="img"
       aria-label="Simplified tour route overview"
     >
@@ -60,11 +42,11 @@ function RouteOverviewSvg({ model, dark = false }) {
         <path
           d={model.fullRoutePath}
           fill="none"
-          stroke={dark ? 'rgba(232,161,60,0.35)' : hex.cityRome}
+          stroke={hex.cityRome}
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeOpacity={dark ? 1 : 0.35}
+          strokeOpacity="0.35"
           strokeDasharray="6 8"
         />
       ) : null}
@@ -72,59 +54,33 @@ function RouteOverviewSvg({ model, dark = false }) {
         <path
           d={model.activeRoutePath}
           fill="none"
-          stroke={dark ? hex.ember : hex.cityRome}
-          strokeWidth="5"
+          stroke={hex.cityRome}
+          strokeWidth="4.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       ) : null}
       {model.stops.map((stop) => {
-        const isDestination =
-          Boolean(model.destinationId) && stop.id === model.destinationId
-            ? true
-            : !model.destinationId && stop.status === 'current'
-        const isOrigin = Boolean(model.originId) && stop.id === model.originId
-        // Only label the active pair · labeling every completed stop stacks text.
-        const showLabel = isDestination || isOrigin
-        const label = shortMapLabel(stop.title)
-        // Nudge origin/destination labels apart when projected points are close.
-        const pair = model.stops.find(
-          (other) =>
-            other.id !== stop.id &&
-            ((isDestination && other.id === model.originId) ||
-              (isOrigin && other.id === model.destinationId)),
-        )
-        const closePair =
-          pair && Math.hypot(pair.x - stop.x, pair.y - stop.y) < 56
-        const labelY = Math.max(
-          14,
-          stop.y - 14 + (closePair && isOrigin ? 22 : closePair && isDestination ? -6 : 0),
-        )
+        // Label only current + next — labeling every stop stacks into illegible glyphs.
+        const showLabel = stop.status === 'current' || stop.status === 'upcoming'
         return (
           <g key={stop.id}>
             <circle
               cx={stop.x}
               cy={stop.y}
-              r={isDestination ? 9 : 7}
-              fill={
-                isDestination
-                  ? STOP_COLORS.current
-                  : isOrigin
-                    ? STOP_COLORS.previous
-                    : STOP_COLORS.upcoming
-              }
-              stroke={dark ? '#F5F0E8' : hex.warmWhite}
+              r={stop.status === 'current' ? 8 : 6}
+              fill={STOP_COLORS[stop.status] ?? STOP_COLORS.upcoming}
+              stroke={hex.warmWhite}
               strokeWidth="2"
             />
-            {showLabel && label ? (
+            {showLabel && stop.status === 'current' ? (
               <text
-                x={Math.min(model.width - 8, Math.max(8, stop.x))}
-                y={labelY}
+                x={stop.x}
+                y={stop.y - 12}
                 textAnchor="middle"
-                fill={dark ? '#F5F0E8' : '#1A1814'}
-                style={{ fontSize: 11, fontWeight: 600 }}
+                className="fill-ink900 text-[9px] font-semibold"
               >
-                {label}
+                {stop.title?.split(' ').slice(0, 2).join(' ')}
               </text>
             ) : null}
           </g>
@@ -135,19 +91,18 @@ function RouteOverviewSvg({ model, dark = false }) {
           <circle
             cx={model.userPoint.x}
             cy={model.userPoint.y}
-            r="10"
+            r="9"
             fill={hex.cityLondon}
-            stroke={dark ? '#F5F0E8' : hex.warmWhite}
+            stroke={hex.warmWhite}
             strokeWidth="3"
           />
           <text
             x={model.userPoint.x}
-            y={Math.min(model.height - 8, model.userPoint.y + 24)}
+            y={model.userPoint.y + 22}
             textAnchor="middle"
-            fill={dark ? '#7EB8D4' : hex.cityLondon}
-            style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em' }}
+            className="fill-sky-blue text-[8px] font-bold uppercase tracking-[0.12em]"
           >
-            YOU
+            You
           </text>
         </g>
       ) : null}
@@ -183,8 +138,6 @@ export function OfflineRouteMap({
   className,
   /** Fit the walking companion map slot instead of a full-page bone layout. */
   compact = false,
-  /** True radio offline · drives caption honesty when Wi‑Fi returns. */
-  isOffline = true,
 }) {
   const atStop = state === JOURNEY_STATE.ARRIVAL
   const { currentStop, nextStop, targetStop } = resolveActiveLegEndpoints({
@@ -197,15 +150,6 @@ export function OfflineRouteMap({
 
   const routeCoordinates = useMemo(() => {
     if (!tour?.id) return null
-
-    // Prefer the active leg polyline whenever we know the leg · not only when
-    // transitLegActive is true (offline sketch still needs the segment).
-    if (activeLeg?.fromId && activeLeg?.toId) {
-      return (
-        getLegRouteCoordinates(tour.id, activeLeg.fromId, activeLeg.toId) ??
-        null
-      )
-    }
 
     if (transitLegActive && activeLeg) {
       return (
@@ -222,37 +166,18 @@ export function OfflineRouteMap({
     return getLegWalkingSteps(tour.id, activeLeg.fromId, activeLeg.toId)
   }, [tour?.id, activeLeg])
 
-  const overview = useMemo(() => {
-    const model = buildRouteOverviewModel({
-      tour,
-      stops,
-      routeCoordinates,
-      activeLeg:
-        activeLeg ??
-        (activeTargetId
-          ? { fromId: currentStop?.id, toId: activeTargetId }
-          : null),
-      transitLegActive: transitLegActive || Boolean(activeLeg || activeTargetId),
-      userPos,
-      focus: compact ? 'active-leg' : 'tour',
-    })
-    return {
-      ...model,
-      originId: activeLeg?.fromId ?? currentStop?.id ?? null,
-      destinationId: activeLeg?.toId ?? activeTargetId ?? targetStop?.id ?? null,
-    }
-  }, [
-    tour,
-    stops,
-    routeCoordinates,
-    activeLeg,
-    transitLegActive,
-    userPos,
-    compact,
-    activeTargetId,
-    currentStop?.id,
-    targetStop?.id,
-  ])
+  const overview = useMemo(
+    () =>
+      buildRouteOverviewModel({
+        tour,
+        stops,
+        routeCoordinates,
+        activeLeg,
+        transitLegActive,
+        userPos,
+      }),
+    [tour, stops, routeCoordinates, activeLeg, transitLegActive, userPos]
+  )
 
   const safeDistance = sanitizeWalkDistanceM(distance)
   const distanceLabel = formatDistanceLabel(safeDistance)
@@ -279,17 +204,13 @@ export function OfflineRouteMap({
         data-testid="offline-route-map-compact"
       >
         <div className="flex min-h-0 flex-1 flex-col justify-center p-2">
-          <RouteOverviewSvg model={overview} dark />
-          <p className="mt-2 px-1 text-center text-[11px] leading-snug text-white/55">
+          <RouteOverviewSvg model={overview} />
+          <p className="mt-2 px-1 text-center text-[11px] leading-snug text-muted">
             {atStop
               ? 'You are within arrival range.'
               : distanceLabel
-                ? `${distanceLabel}${walkMinutes ? ` · ~${walkMinutes} min` : ''} · ${
-                    isOffline ? 'offline route sketch' : 'route sketch'
-                  }`
-                : isOffline
-                  ? 'Offline route sketch · street tiles need a signal'
-                  : 'Route sketch · map tiles are reconnecting'}
+                ? `${distanceLabel} away · cached overview`
+                : 'Cached route overview'}
           </p>
         </div>
       </div>

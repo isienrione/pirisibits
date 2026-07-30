@@ -3,7 +3,7 @@ import { LANDING_AFTER_ROME } from './landingVisualAssets.js'
 import { LandingResponsivePicture } from './LandingResponsivePicture.jsx'
 
 /**
- * Act III · After Rome (Prompt 14).
+ * Act III — After Rome (Prompt 14).
  * Cinematic memory beat before FAQ: purchase → memory, not stats or product UI.
  */
 export default function LandingAfterRomeSection({ onRoutes }) {

@@ -3,7 +3,7 @@ import { tapAction } from './focusRing'
 import { usePressHandlers } from './usePressHandlers'
 
 /**
- * Museum-plaque card surface · warm paper, soft depth, optional fiber texture.
+ * Museum-plaque card surface — warm paper, soft depth, optional fiber texture.
  */
 export function ParchmentCard({
   as: Component = 'div',

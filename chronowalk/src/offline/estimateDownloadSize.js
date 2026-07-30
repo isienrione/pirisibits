@@ -19,7 +19,7 @@ const ESTIMATED_BYTES_BY_KIND = {
 const METADATA_OVERHEAD_BYTES = 48_000
 
 export function formatDownloadSize(bytes) {
-  if (bytes == null || Number.isNaN(bytes)) return '-'
+  if (bytes == null || Number.isNaN(bytes)) return '—'
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(bytes < 10_240 ? 1 : 0)} KB`
   if (bytes < 1024 * 1024 * 1024) {

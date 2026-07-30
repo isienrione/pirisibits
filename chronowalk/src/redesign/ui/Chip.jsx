@@ -1,6 +1,6 @@
 import { F } from '../tokens.js'
 
-/** Filter or badge chip · used in D1 Map filters and act badges */
+/** Filter or badge chip — used in D1 Map filters and act badges */
 export function Chip({ children, color, active = false, onClick }) {
   return (
     <button

@@ -19,7 +19,7 @@ import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandoff.js'
 
 /**
- * /purchase · paywall. Paddle when configured; otherwise blocked until credentials exist.
+ * /purchase — paywall. Paddle when configured; otherwise blocked until credentials exist.
  * Staging unlock only with ?devUnlock=1 (never the default pack → walk path).
  */
 export function PurchaseFlowPage() {

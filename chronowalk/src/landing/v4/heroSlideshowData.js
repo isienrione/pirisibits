@@ -1,5 +1,5 @@
 /**
- * Secondary hero slides · full-bleed art from public/landing/hero-slides/.
+ * Secondary hero slides — full-bleed art from public/landing/hero-slides/.
  * Slide 0 in the hero carousel remains LANDING_HERO (Rome sky); these five
  * follow it. Assets are portrait (≈9:16) marketing frames.
  *

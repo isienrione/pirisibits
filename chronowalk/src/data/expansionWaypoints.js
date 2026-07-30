@@ -1,11 +1,11 @@
-/** Expansion stops outside forum-cluster · scaffold until assets ship. */
+/** Expansion stops outside forum-cluster — scaffold until assets ship. */
 export const EXPANSION_STOP_META = {
   'palatine-hill-cluster': {
     title: 'Palatine Hill',
     lat: 41.8886,
     lng: 12.4872,
     viewpoint: { lat: 41.88845, lng: 12.48705, heading: 140, pitch: 16 },
-    subtitle: 'Emperors’ palaces above the Forum · where legend says Rome was born.',
+    subtitle: 'Emperors’ palaces above the Forum — where legend says Rome was born.',
     assetRoot: 'palatine-hill-cluster',
   },
   'trajan-market': {
@@ -13,7 +13,7 @@ export const EXPANSION_STOP_META = {
     lat: 41.8956,
     lng: 12.48595,
     viewpoint: { lat: 41.89545, lng: 12.48555, heading: 200, pitch: 18 },
-    subtitle: 'Brick arcades and shops · ancient Rome’s multi-level market hall.',
+    subtitle: 'Brick arcades and shops — ancient Rome’s multi-level market hall.',
     assetRoot: 'trajan-market',
   },
   'circus-maximus': {
@@ -21,7 +21,7 @@ export const EXPANSION_STOP_META = {
     lat: 41.8859,
     lng: 12.4857,
     viewpoint: { lat: 41.8857, lng: 12.48545, heading: 85, pitch: 12 },
-    subtitle: 'The chariot circus · a quarter million Romans cheering from the banks.',
+    subtitle: 'The chariot circus — a quarter million Romans cheering from the banks.',
     assetRoot: 'circus-maximus',
   },
   'appian-way': {
@@ -29,7 +29,7 @@ export const EXPANSION_STOP_META = {
     lat: 41.85655,
     lng: 12.51185,
     viewpoint: { lat: 41.85655, lng: 12.51185, heading: 250, pitch: 10 },
-    subtitle: 'The queen of roads · basalt paving and tombs leading out of the city.',
+    subtitle: 'The queen of roads — basalt paving and tombs leading out of the city.',
     assetRoot: 'via-appia',
   },
   'spanish-steps': {
@@ -37,7 +37,7 @@ export const EXPANSION_STOP_META = {
     lat: 41.90597,
     lng: 12.48259,
     viewpoint: { lat: 41.9059, lng: 12.4827, heading: 200, pitch: 12 },
-    subtitle: 'The Scalinata · Rome’s great outdoor salon between Trinità dei Monti and the piazza.',
+    subtitle: 'The Scalinata — Rome’s great outdoor salon between Trinità dei Monti and the piazza.',
     assetRoot: 'spanish-steps',
     // Ship only assets that exist under public/waypoints/spanish-steps/.
     shipAssets: true,

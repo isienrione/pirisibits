@@ -32,7 +32,7 @@ describe('AppEntryPrepare', () => {
     fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')
     expect(screen.getByTestId('a2hs-howto-demo-ios')).toBeInTheDocument()
-    expect(screen.getAllByText(/iphone · safari or chrome/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/iphone — safari or chrome/i)).toBeInTheDocument()
     expect(screen.getByTestId('a2hs-ios-inapp-warning')).toBeInTheDocument()
   })
 

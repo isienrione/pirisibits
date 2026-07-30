@@ -49,7 +49,7 @@ const DEMO_WALK_DIRECTIONS = {
   source: 'landing-demo',
 }
 
-/** Stable choose screen · never remounts a different root. */
+/** Stable choose screen — never remounts a different root. */
 const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
   return (
     <B4PaceSelector
@@ -67,7 +67,7 @@ const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
   )
 })
 
-/** Arrive · Threshold auto-reveal only while this chapter is the active scene. */
+/** Arrive — Threshold auto-reveal only while this chapter is the active scene. */
 const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
   if (!MANIFEST || !PANTHEON) {
     return <ChooseScreen beat={0} />
@@ -98,7 +98,7 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
   )
 })
 
-/** Listen · narration / transcript. Stable tree (no tab remount thrash). */
+/** Listen — narration / transcript. Stable tree (no tab remount thrash). */
 const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
   if (!MANIFEST || !PANTHEON) {
     return <ChooseScreen beat={0} />
@@ -129,7 +129,7 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk · map-forward guidance scene (photo 5).
+ * Walk — map-forward guidance scene (photo 5).
  * Beats mostly stay on Map; one beat peeks at Steps. No resume cut.
  */
 const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
@@ -168,7 +168,7 @@ const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
 
 /**
  * Phone mounts once. Chapter screens stay layered; parent scrubs opacity via refs.
- * Hardware frame never animates · only screen layers.
+ * Hardware frame never animates — only screen layers.
  */
 export default function LandingProductPhoneStage({
   chapters = [],

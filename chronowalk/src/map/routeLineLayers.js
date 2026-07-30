@@ -1,6 +1,6 @@
 import { hex } from '../design/tokens.js'
 
-/** ChronoWalk route orange (Rome terracotta) · never Mapbox default blue. */
+/** ChronoWalk route orange (Rome terracotta) — never Mapbox default blue. */
 export const ROUTE_LINE_COLOR = hex.cityRome
 /** Ember gold used for the under-glow bloom. */
 export const ROUTE_GLOW_COLOR = hex.ember
@@ -36,9 +36,9 @@ function casingIdFromGlow(glowLayerId) {
  * Stacked glowing route for Mapbox Standard / Standard-Satellite.
  *
  * Three passes (bottom → top):
- * 1. Soft outer bloom (wide + blurred) · the “neon” halo
- * 2. Solid casing (no blur) · keeps the path visible on busy satellite
- * 3. Bright core · solid by default so it doesn’t read as a flat dashed stroke
+ * 1. Soft outer bloom (wide + blurred) — the “neon” halo
+ * 2. Solid casing (no blur) — keeps the path visible on busy satellite
+ * 3. Bright core — solid by default so it doesn’t read as a flat dashed stroke
  *
  * `line-emissive-strength: 1` keeps the path bright under 3D basemap lighting.
  *
@@ -153,7 +153,7 @@ export function applyWalkingRoutePaint(
     if (dashed) {
       map.setPaintProperty(lineLayerId, 'line-dasharray', [1.6, 1.4])
     } else {
-      // Solid core · clear any leftover dash from older style loads.
+      // Solid core — clear any leftover dash from older style loads.
       map.setPaintProperty(lineLayerId, 'line-dasharray', null)
     }
   }

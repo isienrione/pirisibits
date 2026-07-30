@@ -213,7 +213,7 @@ export function titleForWaypoint(waypoint) {
 }
 
 export function approachCopy(waypoint) {
-  return waypoint?.approachLine ?? 'Keep walking · Rome is just ahead.'
+  return waypoint?.approachLine ?? 'Keep walking — Rome is just ahead.'
 }
 
 export function arrivalCopy(waypoint) {

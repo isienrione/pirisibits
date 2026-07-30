@@ -3,7 +3,7 @@
  *
  * Pretty URLs: `/index.html` → `/` (308), `/offline.html` → `/offline` (308).
  * Apex rule: `/` → `/landing` (302). Workbox precache REQUIRES a final HTTP 200
- * without following a redirect chain · precaching `/` fails when `/` is only a
+ * without following a redirect chain — precaching `/` fails when `/` is only a
  * 302 (and failed harder when SPA fallback briefly returned 404 in deploy 8a799eb).
  *
  * Therefore the SPA shell is precached at `/landing` (the stable 200 document URL).
@@ -18,7 +18,7 @@ export function toCloudflareCanonicalUrl(url) {
   if (url === 'offline.html' || url === '/offline.html') {
     return OFFLINE_PRECACHE_URL
   }
-  // Never emit bare `/` · it redirects to /landing in production.
+  // Never emit bare `/` — it redirects to /landing in production.
   if (url === '/index' || url === 'index') return APP_SHELL_PRECACHE_URL
   return url
 }

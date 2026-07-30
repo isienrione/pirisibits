@@ -14,7 +14,7 @@ import {
 
 describe('transcriptContent', () => {
   it('strips ElevenLabs director cues from readable copy', () => {
-    const raw = '[warm] Hello [pause] world.\n\n[PRE-NARRATION PAUSE · 8 seconds]\n\n[slow] Keep going.'
+    const raw = '[warm] Hello [pause] world.\n\n[PRE-NARRATION PAUSE — 8 seconds]\n\n[slow] Keep going.'
     expect(stripDirectorCues(raw)).toBe('Hello world.\n\nKeep going.')
   })
 

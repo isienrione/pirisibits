@@ -13,7 +13,7 @@ const FALLBACK_CONFIG = {
   /** Keep disabled so live price stays fixed at the full-bundle amount. */
   ab: { enabled: false, variants: [1499, 1499], split: 0.5 },
   review_url: 'https://www.google.com/maps',
-  /** Legacy Lemon field · unused by Paddle overlay; kept for older rows. */
+  /** Legacy Lemon field — unused by Paddle overlay; kept for older rows. */
   checkout_url: '',
   /** Optional map of tier id → Paddle price id (`pri_…`), overrides env. */
   paddle_prices: {},
@@ -124,7 +124,7 @@ export function formatConfigPrice(cents, currency = 'EUR') {
 
 /**
  * Local gate for paid routes: requires a stored device credential and a
- * non-expired offline lease / entitlement · never a bare cw_access boolean.
+ * non-expired offline lease / entitlement — never a bare cw_access boolean.
  */
 export function hasAccess() {
   return hasValidLocalAccess()
@@ -133,7 +133,7 @@ export function hasAccess() {
 /** @deprecated Prefer applyPurchaseUnlock / redeemPurchaseClaim persistence. */
 export function grantAccess() {
   if (typeof window === 'undefined') return
-  // Compatibility for DEV presets only · still requires an entitlement write.
+  // Compatibility for DEV presets only — still requires an entitlement write.
   writeAccessEntitlement({
     purchasedProductId: 'rome-complete',
     contentProductId: 'rome-complete',

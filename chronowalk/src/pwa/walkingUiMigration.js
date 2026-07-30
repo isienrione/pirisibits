@@ -61,7 +61,7 @@ export function shouldMigrateWalkingUi(bundledRevision, deployedRevision) {
 }
 
 /**
- * Legacy compass walking screen markers · present only in pre-companion bundles.
+ * Legacy compass walking screen markers — present only in pre-companion bundles.
  */
 export function isLegacyWalkingDom() {
   if (typeof document === 'undefined') return false

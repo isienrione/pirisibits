@@ -355,7 +355,7 @@ export function completeWaypointAndAdvance(waypointId, manifest = null) {
   }
 
   // Threshold or story completion can fire twice (e.g. back → arrived → threshold
-  // again). Never skip the next transit/waypoint by advancing the index twice ·
+  // again). Never skip the next transit/waypoint by advancing the index twice —
   // unless we are still indexed on this completed stop (failed promote / stale
   // resume), in which case advance once so Path B cannot loop Capitoline forever.
   if (alreadyComplete) {
@@ -392,7 +392,7 @@ export function promoteOptionalWaypoint(waypointId, manifest) {
   if (promotedOptionalIds.includes(waypointId)) return snapshot
 
   const inserts = getPromotionInsertSteps(manifest, waypointId, path)
-  // No insert steps for this path (e.g. Path B has no optional enc_circus) · do
+  // No insert steps for this path (e.g. Path B has no optional enc_circus) — do
   // not orphan a promoted id or leave the traveler on the same stop forever.
   if (!inserts.length) return snapshot
 

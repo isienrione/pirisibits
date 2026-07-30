@@ -253,7 +253,7 @@ export async function hydrateRomeMapTileCache(manifest, options = {}) {
     hydrated += 1
   }
 
-  // Register every Cache entry · older packages / URL variants still feed
+  // Register every Cache entry — older packages / URL variants still feed
   // sync transformRequest even when they fall outside the current URL list.
   try {
     const keys = await cache.keys()

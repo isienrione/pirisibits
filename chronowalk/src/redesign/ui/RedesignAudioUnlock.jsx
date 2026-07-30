@@ -30,7 +30,7 @@ export default function RedesignAudioUnlock({ onUnlock, busy = false }) {
         Ready when you are
       </h1>
       <p style={{ fontSize: 16, color: T.muted, lineHeight: 1.65, marginBottom: 28 }}>
-        Tap once to wake the soundscape · narration, ambience, and the city between stops.
+        Tap once to wake the soundscape — narration, ambience, and the city between stops.
       </p>
       <PrimaryButton onClick={onUnlock} disabled={busy}>
         {busy ? 'Starting audio…' : 'Begin sound'}

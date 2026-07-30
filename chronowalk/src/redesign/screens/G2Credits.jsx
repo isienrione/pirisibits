@@ -11,42 +11,42 @@ export default function G2Credits({ onBack }) {
       stop: "The Colosseum",
       items: [
         { type: "NOW photograph", author: "Dario Veronesi", license: "Unsplash License", url: "unsplash.com/@dariovero_" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
     {
       stop: "Arch of Constantine",
       items: [
         { type: "NOW photograph", author: "David Köhler", license: "Unsplash License", url: "unsplash.com/@davidkhlr" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
     {
       stop: "The Pantheon",
       items: [
         { type: "NOW photograph", author: "Fadi Al Shami", license: "Unsplash License", url: "unsplash.com/@fadster666" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
     {
       stop: "Capitoline Hill",
       items: [
         { type: "NOW photograph", author: "Massimo Virgilio", license: "Unsplash License", url: "unsplash.com/@massimovirgilio" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
     {
       stop: "Roman Forum",
       items: [
         { type: "NOW photograph", author: "Nicholas Martinelli", license: "Unsplash License", url: "unsplash.com/@nickmartinelli98" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
     {
       stop: "Trajan's Market",
       items: [
         { type: "NOW photograph", author: "Chad Greiter", license: "Unsplash License", url: "unsplash.com/@cgreiter" },
-        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use · disclosed", url: "" },
+        { type: "THEN reconstruction", author: "AI-generated (Midjourney v6)", license: "Commercial use — disclosed", url: "" },
       ],
     },
   ];
@@ -65,13 +65,13 @@ export default function G2Credits({ onBack }) {
           Credits & Attribution
         </h2>
 
-        {/* AI disclosure · editorial intro paragraph */}
+        {/* AI disclosure — editorial intro paragraph */}
         <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid ${T.muted}28` }}>
           <p style={{ fontSize: 11, color: T.muted, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 12 }}>
             AI RECONSTRUCTIONS
           </p>
           <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75 }}>
-            The THEN images in ChronoWalk are AI-generated historical reconstructions produced with Midjourney v6. They are interpretations informed by archaeology and scholarship · not photographic records. Where conjecture was required (colours, crowds, vegetation), we have noted it in the honesty captions on each screen.
+            The THEN images in ChronoWalk are AI-generated historical reconstructions produced with Midjourney v6. They are interpretations informed by archaeology and scholarship — not photographic records. Where conjecture was required (colours, crowds, vegetation), we have noted it in the honesty captions on each screen.
           </p>
           <p style={{ fontSize: 14, color: T.ink, lineHeight: 1.75, marginTop: 12 }}>
             No AI imagery depicts real people, living or deceased, without documented historical basis.
@@ -91,7 +91,7 @@ export default function G2Credits({ onBack }) {
               <div key={ii} style={{ paddingLeft: 16, marginBottom: 6 }}>
                 <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.55 }}>
                   {item.type}{" "}
-                  <span style={{ color: T.ink }}>{item.author}</span>
+                  <span style={{ color: T.ink }}>— {item.author}</span>
                   {" · "}{item.license}
                   {item.url ? (
                     <a href={`https://${item.url}`} target="_blank" rel="noreferrer" style={{ color: T.ember, textDecoration: 'none' }}>
@@ -110,15 +110,15 @@ export default function G2Credits({ onBack }) {
             MUSIC & SOUND
           </p>
           <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.65 }}>
-            Ambient compositions and presence pulses · original works commissioned for ChronoWalk Rome.
+            Ambient compositions and presence pulses — original works commissioned for ChronoWalk Rome.
             SFX world-builds recorded on location and in Foley, Rome 2025.
           </p>
         </div>
 
-        {/* Footer · verbatim from spec */}
+        {/* Footer — verbatim from spec */}
         <div style={{ paddingTop: 20, borderTop: `1px solid ${T.muted}28` }}>
           <p style={{ fontSize: 12, color: T.muted, lineHeight: 1.7, fontStyle: "italic" }}>
-            Facts checked against current scholarship · corrections:{" "}
+            Facts checked against current scholarship — corrections:{" "}
             <a href="mailto:hello@chronowalk.com" style={{ color: T.ink, textDecoration: 'none' }}>hello@chronowalk.com</a>
           </p>
         </div>

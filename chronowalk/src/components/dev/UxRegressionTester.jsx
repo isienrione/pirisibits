@@ -46,7 +46,7 @@ function writePanelOpen(open) {
   window.sessionStorage.setItem(PANEL_OPEN_KEY, open ? '1' : '0')
 }
 
-/** Dev-only UX regression tester · never mounted in production builds. */
+/** Dev-only UX regression tester — never mounted in production builds. */
 export default function UxRegressionTester() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -65,7 +65,7 @@ export default function UxRegressionTester() {
   const activeLabel = useMemo(() => {
     if (step?.type === 'waypoint' && step.record?.title) return step.record.title
     if (step?.targetWaypoint?.title) return `→ ${step.targetWaypoint.title}`
-    return '-'
+    return '—'
   }, [step])
 
   if (!import.meta.env.DEV) return null

@@ -11,7 +11,7 @@ const REAL_MOMENT = {
 }
 
 /**
- * Situation-led personas · large photography, one emotional sentence, one CTA.
+ * Situation-led personas — large photography, one emotional sentence, one CTA.
  */
 export default function LandingPersonas({ onPreview }) {
   const section = LANDING_CONTENT.personas

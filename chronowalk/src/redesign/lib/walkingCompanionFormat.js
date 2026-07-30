@@ -12,7 +12,7 @@ export function formatPlaybackClock(seconds) {
  */
 export function formatDistanceLine(distanceCopy) {
   if (distanceCopy?.gpsBlocked) return 'Distance unavailable'
-  if (distanceCopy?.pending) return '-'
+  if (distanceCopy?.pending) return '—'
   const dist = distanceCopy?.primary
   const etaRaw = distanceCopy?.secondary
   const eta =
@@ -21,7 +21,7 @@ export function formatDistanceLine(distanceCopy) {
       : null
   if (dist && eta) return `${dist} · ${eta}`
   if (dist) return dist
-  return '-'
+  return '—'
 }
 
 /**

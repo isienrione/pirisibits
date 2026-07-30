@@ -157,11 +157,7 @@ export function useWalkingDirections({
           setError(null)
         } else {
           setDirections(null)
-          setError(
-            typeof navigator !== 'undefined' && navigator.onLine === false
-              ? 'Street-by-street steps need a signal. Follow the route sketch, then tap I’m here when you arrive.'
-              : 'Could not load walking directions. Try again or open Google Maps.',
-          )
+          setError('Could not load walking directions. Try again or open Google Maps.')
         }
         setLoading(false)
         return
@@ -193,11 +189,7 @@ export function useWalkingDirections({
 
       if (!best?.steps?.length) {
         setDirections(null)
-        setError(
-          typeof navigator !== 'undefined' && navigator.onLine === false
-            ? 'Street-by-street steps need a signal. Follow the route sketch, then tap I’m here when you arrive.'
-            : 'Could not load walking directions. Try again or open Google Maps.',
-        )
+        setError('Could not load walking directions. Try again or open Google Maps.')
       } else {
         if (best === adhocResult) {
           cacheAdhocWalkingDirections(routingOrigin, routingDestination, adhocResult)

@@ -9,7 +9,7 @@ import {
   resetLandingExperimentsForTests,
 } from '../landingExperiments.js'
 
-describe('landingExperiments · hero Test 1', () => {
+describe('landingExperiments — hero Test 1', () => {
   beforeEach(() => {
     resetLandingExperimentsForTests()
     window.history.replaceState({}, '', '/')

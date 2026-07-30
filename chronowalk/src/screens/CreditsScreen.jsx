@@ -40,7 +40,7 @@ export default function CreditsScreen() {
             {wikimediaCredits.map((entry) => (
               <li key={entry.id} className="text-sm leading-relaxed text-ink900">
                 <span className="font-semibold">{entry.title}</span>
-                {' · '}
+                {' — '}
                 {entry.sourceUrl ? (
                   <a
                     href={entry.sourceUrl}

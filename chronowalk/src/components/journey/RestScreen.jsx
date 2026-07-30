@@ -5,7 +5,7 @@ export default function RestScreen({ title, subtitle, onResume, busy = false }) 
   return (
     <JourneyLayout eyebrow="Rest" title={title} subtitle={subtitle}>
       <p style={{ margin: '20px 0 0', fontSize: 'var(--fs-secondary)', color: 'var(--muted-warm)', lineHeight: 1.5 }}>
-        Find shade. Sit. The Forum can wait · resume when you are ready.
+        Find shade. Sit. The Forum can wait — resume when you are ready.
       </p>
 
       <div style={{ marginTop: 28 }}>

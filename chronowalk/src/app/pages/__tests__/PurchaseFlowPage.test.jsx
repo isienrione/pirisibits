@@ -42,7 +42,7 @@ describe('PurchaseFlowPage', () => {
     resolveCheckoutReady.mockResolvedValue(false)
   })
 
-  it('blocks free unlock · no staging CTA without ?devUnlock=1', async () => {
+  it('blocks free unlock — no staging CTA without ?devUnlock=1', async () => {
     render(
       <MemoryRouter initialEntries={['/purchase?tier=rome-complete']}>
         <Routes>

@@ -372,7 +372,7 @@ describe('JourneyShell shared-walk Continue guard', () => {
     await screen.findByRole('heading', { name: /the colosseum/i })
     expect(screen.getByTestId('walk-sync-bar')).toHaveAttribute('data-walking-independently', 'true')
     fireEvent.click(screen.getByTestId('story-continue'))
-    // Independent walkers already left the shared stop path · guard should not block.
+    // Independent walkers already left the shared stop path — guard should not block.
     await waitFor(() =>
       expect(getJourneySnapshot().context.currentSequenceIndex).toBeGreaterThan(0),
     )

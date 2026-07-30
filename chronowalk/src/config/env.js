@@ -28,7 +28,7 @@ function normalizePlacementToken(value) {
 
 /** Raw debug-geo URL/build value (true, walking, approaching, etc.). */
 export const getDebugGeoParam = () => {
-  // Fail closed in production · query and Vite env must not fake GPS placement.
+  // Fail closed in production — query and Vite env must not fake GPS placement.
   if (isProductionRuntime()) return null
 
   if (typeof window !== 'undefined') {
@@ -87,9 +87,9 @@ export const isDebugGeo = () => {
 
 /**
  * Simulated GPS placement while debug geo is active (dev/preview only).
- * - arrived (default): inside geofence · triggers arrival cards
+ * - arrived (default): inside geofence — triggers arrival cards
  * - approaching: just outside geofence
- * - walking: farther away · walking / map UI
+ * - walking: farther away — walking / map UI
  * - rome: fixed Colosseum-approach origin (from ?simulate=rome)
  *
  * Sources (non-production only): URL debugGeo value, then
@@ -133,7 +133,7 @@ export const getTourId = () => {
 
 /**
  * Single-waypoint debug (?singleWaypoint=pantheon).
- * `?waypoint=` is reserved for Asset Studio only · it does not affect tour mode.
+ * `?waypoint=` is reserved for Asset Studio only — it does not affect tour mode.
  */
 export const getSingleWaypointId = () => {
   if (typeof window === 'undefined') return null

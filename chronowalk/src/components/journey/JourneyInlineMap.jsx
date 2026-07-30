@@ -64,33 +64,24 @@ export default function JourneyInlineMap({
 }) {
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
-  // Prefer the lighter vector style only when radio is offline or the network is
-  // constrained. A completed offline package must NOT force this online · that
-  // latched Mapbox Standard tile errors into OfflineRouteMap forever.
-  const preferOfflineStyle = isOffline || constrainedNetwork
-  const [offlineMapReady, setOfflineMapReady] = useState(true)
+  // Prefer the cached Standard vector style whenever signal is weak OR we
+  // already persisted Rome map tiles — satellite tiles are not offline-cached.
+  const preferOfflineStyle = isOffline || constrainedNetwork || hasCachedRomeMapTiles()
+  const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle)
 
   useEffect(() => {
     if (!manifest || !env.mapboxToken) {
       setOfflineMapReady(true)
       return undefined
     }
-    // Fully offline → OfflineRouteMap; no Cache→blob hydrate needed for Mapbox.
-    if (isOffline) {
+    // Wait for Cache API → blob hydration before mounting Mapbox, otherwise the
+    // first paint races an empty tile map and stays grey offline.
+    if (!preferOfflineStyle) {
       setOfflineMapReady(true)
       return undefined
     }
-
-    const shouldHydrate = preferOfflineStyle || hasCachedRomeMapTiles()
-    if (!shouldHydrate) {
-      setOfflineMapReady(true)
-      return undefined
-    }
-
     let cancelled = false
-    // Only block paint when we actually need the offline-leaning style first.
-    // Online + cached tiles: hydrate in the background; keep Mapbox mounting.
-    if (preferOfflineStyle) setOfflineMapReady(false)
+    setOfflineMapReady(false)
     void hydrateRomeMapTileCache(manifest, { token: env.mapboxToken })
       .catch((error) => {
         if (!cancelled) console.warn('[map] tile cache hydrate failed', error)
@@ -101,7 +92,7 @@ export default function JourneyInlineMap({
     return () => {
       cancelled = true
     }
-  }, [manifest, preferOfflineStyle, isOffline])
+  }, [manifest, preferOfflineStyle])
 
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),

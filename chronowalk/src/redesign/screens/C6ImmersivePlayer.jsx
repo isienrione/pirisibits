@@ -12,7 +12,6 @@ import {
   hasCrossedThreshold,
   markThresholdCrossed,
 } from '../../utils/thresholdWaypointReveal.js'
-import { OfflineMediaImg } from '../../components/OfflineMediaImg.jsx'
 
 // Default speeds (must include 1.5× and 2×).
 const DEFAULT_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
@@ -27,12 +26,12 @@ function formatTime(seconds) {
 }
 
 /**
- * Unified waypoint view · full-bleed landmark + then/now threshold, audio below.
+ * Unified waypoint view — full-bleed landmark + then/now threshold, audio below.
  * Matches the Pantheon free-preview layout for every stop.
  */
 export default function C6ImmersivePlayer({
   accent = T.actI,
-  actLabel = 'ACT I · THE ARENA',
+  actLabel = 'ACT I — THE ARENA',
   title = 'The Colosseum',
   chapterTitle = 'The Beast Awakens',
   chapterIndex = 0,
@@ -105,6 +104,7 @@ export default function C6ImmersivePlayer({
     hasReconstruction &&
     !suppressAutoRevealInvite &&
     (forceHint || !alreadyCrossed)
+
   const liveProgress = duration > 0 ? Math.min(Math.max(currentTime / duration, 0), 1) : 0
   const progress = dragProgress ?? liveProgress
   const canSeek = typeof onSeek === 'function' && duration > 0 && audioAvailable
@@ -475,32 +475,17 @@ export default function C6ImmersivePlayer({
       style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: T.obsidian,
+        backgroundImage: `url(${photo})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 28%',
         cursor: 'pointer',
-        overflow: 'hidden',
       }}
       onClick={(e) => {
         const rect = e.currentTarget.getBoundingClientRect()
         const relX = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 1
         if (relX < 0.5) setPhotoLightboxOpen(true)
       }}
-    >
-      {/* <img> (not CSS background) so OfflineMediaImg can recover from bad blobs. */}
-      <OfflineMediaImg
-        src={photo}
-        alt={title}
-        data-testid="waypoint-immersive-photo"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          objectPosition: 'center 28%',
-          display: 'block',
-        }}
-      />
-    </div>
+    />
   )
 
   return (
@@ -695,7 +680,7 @@ export default function C6ImmersivePlayer({
                   <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
                     {import.meta.env.DEV
                       ? 'Narration audio is unavailable in this development build.'
-                      : 'Narration is preparing · check your connection.'}
+                      : 'Narration is preparing — check your connection.'}
                   </p>
                 ) : null}
 
@@ -766,7 +751,7 @@ export default function C6ImmersivePlayer({
           }}
           onClick={() => setPhotoLightboxOpen(false)}
         >
-          <OfflineMediaImg
+          <img
             src={photo}
             alt={title}
             style={{
@@ -777,6 +762,7 @@ export default function C6ImmersivePlayer({
               pointerEvents: 'none',
               userSelect: 'none',
             }}
+            draggable={false}
           />
           <button
             type="button"

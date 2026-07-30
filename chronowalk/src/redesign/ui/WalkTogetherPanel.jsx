@@ -9,7 +9,7 @@ import { useSharedWalkGuard } from '../context/SharedWalkGuardContext.jsx'
 import { buildWalkTogetherPresentationSeats } from '../lib/walkTogetherPresentation.js'
 import { getWaypoint, loadRomeManifest } from '../../content/manifest.js'
 
-/** Couple terracotta / Family verdigris · from established tokens only. */
+/** Couple terracotta / Family verdigris — from established tokens only. */
 function accentForProductId(productId) {
   if (productId === 'rome-couple') return T.terracotta
   if (productId === 'rome-family') return T.actIV
@@ -67,7 +67,7 @@ async function shareInvite({ invite, url }) {
 function seatStatusLabel(seat, invite, isOwnerSeat) {
   if (isOwnerSeat) return 'Organizer'
   if (seat.status === 'claimed') return 'Joined on a device'
-  if (seat.status === 'revoked' && !invite) return 'Seat revoked · create a new invitation'
+  if (seat.status === 'revoked' && !invite) return 'Seat revoked — create a new invitation'
   if (invite) return 'Invitation ready'
   return 'Open seat'
 }
@@ -83,7 +83,7 @@ function humanErrorMessage(error) {
     return 'Every seat on this walk is already filled.'
   }
   if (error === 'retired') {
-    return 'Bundles are created by purchase only · manage invitations here instead.'
+    return 'Bundles are created by purchase only — manage invitations here instead.'
   }
   return String(error)
 }
@@ -119,7 +119,7 @@ function OccupancyNodes({ seatLimit, claimedCount, accent, isEntry }) {
 }
 
 /**
- * Persistent Couple/Family management UI · server-authoritative seats only.
+ * Persistent Couple/Family management UI — server-authoritative seats only.
  * Used from Settings (/walk-together) and optional app-entry.
  */
 export default function WalkTogetherPanel({
@@ -202,7 +202,7 @@ export default function WalkTogetherPanel({
     setInviteBusy(true)
     try {
       await createInvite(seatId)
-      setStatusNote('Invitation created. Copy or share it now · it will not be shown again later.')
+      setStatusNote('Invitation created. Copy or share it now — it will not be shown again later.')
     } catch {
       /* error surfaced via family.error */
     } finally {
@@ -294,7 +294,7 @@ export default function WalkTogetherPanel({
         <p className="cw-walk-together__promise">Complete Roma Eterna · All 21 stops</p>
         <p className="cw-walk-together__lede">
           {isOrganizer
-            ? 'Share one Rome walk with the people beside you · invitations, seats, and shared tour progress in one place.'
+            ? 'Share one Rome walk with the people beside you — invitations, seats, and shared tour progress in one place.'
             : 'You’re walking together on a shared Couple/Family Rome walk.'}
         </p>
 
@@ -331,7 +331,7 @@ export default function WalkTogetherPanel({
             <ul className="cw-walk-together__seats">
               {presentedSeats.map(({ seat, presentationNumber, displayName, isOrganizerSeat }) => {
                 const invite = latestInvites?.[seat.id] ?? seat.inviteCode ?? null
-                // Permissions from verified seat role · never from presentationNumber.
+                // Permissions from verified seat role — never from presentationNumber.
                 const canInvite =
                   !isOrganizerSeat && (seat.status === 'open' || seat.status === 'revoked')
                 const canRevoke =
@@ -462,7 +462,7 @@ export default function WalkTogetherPanel({
               <>
                 <p className="cw-walk-together__hint">
                   Start shared tour progress when everyone is ready. This keeps the group on the same
-                  walk · not live GPS or perfectly synchronized audio.
+                  walk — not live GPS or perfectly synchronized audio.
                 </p>
                 <button
                   type="button"
@@ -483,7 +483,7 @@ export default function WalkTogetherPanel({
                   <div>
                     <p className="cw-walk-together__toggle-label">Shared tour syncing</p>
                     <p className="cw-walk-together__hint">
-                      Keeps shared tour progress connected across devices · not live GPS or synced
+                      Keeps shared tour progress connected across devices — not live GPS or synced
                       audio playback.
                     </p>
                   </div>
@@ -533,7 +533,7 @@ export default function WalkTogetherPanel({
             data-walking-independently={isWalkingIndependently ? 'true' : 'false'}
           >
             <p className="cw-walk-together__member-copy">
-              You belong to a shared Couple/Family walk with shared tour progress. Full Roma Eterna,
+              You belong to a shared Couple/Family walk with shared tour progress. Full Roma Eterna ·
               21 stops on this device.
             </p>
             <p className="cw-walk-together__seat-status">

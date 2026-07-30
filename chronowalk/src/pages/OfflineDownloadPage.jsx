@@ -130,7 +130,7 @@ export default function OfflineDownloadPage() {
           <p className="mt-10 text-center text-lg text-deep-slate">Rome is ready whenever you are.</p>
         ) : (
           <p className="mt-6 max-w-sm text-center text-base leading-relaxed text-soft-slate">
-            Stories, imagery, and audio · saved so the city stays with you, even without signal.
+            Stories, imagery, and audio — saved so the city stays with you, even without signal.
           </p>
         )}
 

@@ -23,13 +23,13 @@ export default function C8cActComplete({
     return () => clearTimeout(t);
   }, []);
 
-  // Route path length for dashoffset animation · approximate
+  // Route path length for dashoffset animation — approximate
   const pathD = "M 28 210 Q 80 185 118 168 Q 155 150 185 140 Q 220 128 258 118 Q 295 108 330 96 Q 355 87 374 80";
   const pathLen = 390; // generous estimate for dasharray
 
   return (
     <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
-      {/* Dark map-hint background · capitoline heavily desaturated */}
+      {/* Dark map-hint background — capitoline heavily desaturated */}
       <div style={{
         position: "absolute", inset: 0,
         backgroundImage: `url(${capitolineNow})`,
@@ -48,14 +48,14 @@ export default function C8cActComplete({
       }} />
       <Vignette />
 
-      {/* Route line SVG · draws itself */}
+      {/* Route line SVG — draws itself */}
       <div style={{ position: "absolute", inset: 0, zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
         <svg
           width="390" height="280"
           viewBox="0 0 390 280"
           style={{ position: "absolute", top: "18%", left: 0 }}
         >
-          {/* Soft glow duplicate · wider, low opacity */}
+          {/* Soft glow duplicate — wider, low opacity */}
           <path
             d={pathD}
             stroke={verdigris}
@@ -101,13 +101,13 @@ export default function C8cActComplete({
         </svg>
       </div>
 
-      {/* Content · lower half */}
+      {/* Content — lower half */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
         padding: `0 28px ${SHELL_SAFE_BOTTOM_INSET}`,
         zIndex: 10,
       }}>
-        {/* Stats · DM Sans mono */}
+        {/* Stats — DM Sans mono */}
         <div style={{
           display: "flex", gap: 8, alignItems: "center",
           marginBottom: 24, justifyContent: "center",
@@ -135,7 +135,7 @@ export default function C8cActComplete({
           {closingLine}
         </p>
 
-        {/* Seam tick · ember: time itself, always, regardless of act */}
+        {/* Seam tick — ember: time itself, always, regardless of act */}
         <div style={{
           width: 1.5, height: 24, background: T.ember,
           margin: "0 auto 24px",
@@ -158,7 +158,7 @@ export default function C8cActComplete({
             boxShadow: `0 0 22px ${verdigris}55`,
           }}
         >
-          Continue to Act V · The Living City
+          Continue to Act V — The Living City
         </button>
 
         {/* Quiet */}
@@ -172,7 +172,7 @@ export default function C8cActComplete({
           background: "none", border: "none",
           cursor: "pointer", fontFamily: F.body,
         }}>
-          That's today · save my place.
+          That's today — save my place.
         </button>
       </div>
     </div>

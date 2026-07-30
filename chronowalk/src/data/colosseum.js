@@ -2,7 +2,7 @@ export const COLOSSEUM = { lat: 41.8902, lng: 12.4922 }
 
 /** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=colosseum */
 
-// Visitor camera POV for the before/after slider (facade approach · near Google Street View)
+// Visitor camera POV for the before/after slider (facade approach — near Google Street View)
 export const COLOSSEUM_VIEWPOINT = {
   lat: 41.891275,
   lng: 12.491202,
@@ -26,13 +26,13 @@ export const ARRIVAL_AUDIO_PREFETCH_RADIUS_M = 200
 export const DEBUG_USER_POS = { lat: COLOSSEUM.lat, lng: COLOSSEUM.lng }
 
 /*
- * SLIDER IMAGE PIPELINE · exterior subfolder (matched viewpoint)
+ * SLIDER IMAGE PIPELINE — exterior subfolder (matched viewpoint)
  *
- * 1. MODERN · video preferred, still as fallback:
+ * 1. MODERN — video preferred, still as fallback:
  *    - public/waypoints/colosseum/exterior/modern.mp4
  *    - public/waypoints/colosseum/exterior/modern-exterior.jpg
  *
- * 2. ANCIENT · matched video or still, same camera as modern:
+ * 2. ANCIENT — matched video or still, same camera as modern:
  *    - public/waypoints/colosseum/exterior/ancient-reconstruction.mp4
  *    - public/waypoints/colosseum/exterior/ancient-reconstruction.jpg
  *
@@ -64,7 +64,7 @@ export const COLOSSEUM_WAYPOINT = {
   title: 'The Colosseum',
   media_cache_version: 10,
   arrival_headline: "You've reached the Colosseum!",
-  arrival_subtitle: 'Ancient Rome awaits · choose how you want to explore.',
+  arrival_subtitle: 'Ancient Rome awaits — choose how you want to explore.',
   immersive_orientation_hint:
     'Stand facing the Colosseum facade, then tap Begin Immersive View for the best before/after reveal.',
   lat: COLOSSEUM.lat,

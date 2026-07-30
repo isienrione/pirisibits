@@ -2,7 +2,7 @@ export const CAPITOLINE_HILL = { lat: 41.89324, lng: 12.48275 }
 
 /** Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=capitoline-hill */
 
-/** Piazza del Campidoglio edge · Forum overlook (Capitoline vista ~100 AD). */
+/** Piazza del Campidoglio edge — Forum overlook (Capitoline vista ~100 AD). */
 export const CAPITOLINE_HILL_VIEWPOINT = {
   lat: 41.89305,
   lng: 12.4825,
@@ -38,7 +38,7 @@ export const CAPITOLINE_HILL_WAYPOINT = {
   framingProfile: 'large_approach',
   arrival_headline: "You've reached the Capitoline Hill!",
   arrival_subtitle:
-    'From Rome\'s sacred hill, the Forum spreads below · temples, triumph, and empire in one vista.',
+    'From Rome\'s sacred hill, the Forum spreads below — temples, triumph, and empire in one vista.',
   immersive_orientation_hint:
     'Stand at the edge of Piazza del Campidoglio overlooking the Forum, then begin the immersive view.',
   lat: CAPITOLINE_HILL.lat,

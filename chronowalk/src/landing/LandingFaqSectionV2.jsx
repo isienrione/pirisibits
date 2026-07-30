@@ -16,7 +16,7 @@ function indexFromHash(items) {
 }
 
 /**
- * Act III · FAQ grouped by buying anxiety (Prompt 15).
+ * Act III — FAQ grouped by buying anxiety (Prompt 15).
  * Accordion keyboard support + FAQPage JSON-LD + `#faq-<id>` deep links.
  */
 export default function LandingFaqSectionV2() {

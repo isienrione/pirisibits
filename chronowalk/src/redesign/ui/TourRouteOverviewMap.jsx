@@ -23,7 +23,7 @@ function MapFallback() {
 }
 
 /**
- * Full-route map preview · all stops visible, fit to Rome bounds.
+ * Full-route map preview — all stops visible, fit to Rome bounds.
  * Used in first-tour onboarding before the walk begins.
  */
 export default function TourRouteOverviewMap({ manifest, context }) {

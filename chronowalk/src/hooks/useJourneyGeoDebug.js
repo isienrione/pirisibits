@@ -70,7 +70,7 @@ export function useJourneyGeoDebugOptions(target, { geofenceRadiusM = 40 } = {})
 
   const placement = debugGeo ? getDebugGeoPlacement() : 'arrived'
 
-  // Rome simulation must never pin GPS to the active stop · that collapses
+  // Rome simulation must never pin GPS to the active stop — that collapses
   // walking routes into "already at this landmark" and blocks Directions QA.
   const simulateAtTarget =
     !simulateRome && ((debugGeo && placement === 'arrived') || devSimulateGps)

@@ -34,7 +34,7 @@ export default function JourneyDevPanel() {
         state: <strong>{state}</strong>
       </p>
       <p style={{ margin: '0 0 8px', wordBreak: 'break-word' }}>
-        stop: {currentStop?.title ?? context.currentStopId ?? '-'} ({context.currentStopIndex})
+        stop: {currentStop?.title ?? context.currentStopId ?? '—'} ({context.currentStopIndex})
       </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
         {JOURNEY_STATE_LIST.map((nextState) => (

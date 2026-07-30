@@ -10,7 +10,7 @@ const PATH_D =
   'M 14 74 C 22 68, 26 62, 32 58 S 42 50, 50 44 S 60 48, 68 54 S 78 42, 86 28'
 
 /**
- * Static SVG route schematic · landing only, no map tiles.
+ * Static SVG route schematic — landing only, no map tiles.
  */
 export default function LandingRouteSchematic({
   stops = ROUTE_POINTS.map((p) => p.label),

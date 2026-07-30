@@ -39,12 +39,12 @@ function sumRouteDistanceMeters(stops) {
 }
 
 function formatDistanceKm(meters) {
-  if (!meters) return '-'
+  if (!meters) return '—'
   return `${(meters / 1000).toFixed(1)} km`
 }
 
 function formatWalkingTime(minutes) {
-  if (!minutes) return '-'
+  if (!minutes) return '—'
   if (minutes < 60) return `${minutes} min`
   const hours = Math.floor(minutes / 60)
   const remainder = minutes % 60
@@ -66,7 +66,7 @@ function buildRomeTourDetail() {
     subtitle: destination?.subtitle ?? 'The eternal city',
     tagline: product?.tagline ?? 'Forum cluster + city loop',
     description:
-      'Two thousand years of empire, faith, and genius · restored where you stand, told at your pace.',
+      'Two thousand years of empire, faith, and genius — restored where you stand, told at your pace.',
     heroImage: destination?.heroImage ?? TOUR_HERO_PHOTO,
     productId: product?.id ?? 'rome-complete',
     priceUsd: product?.priceUsd ?? 14.99,
@@ -77,13 +77,13 @@ function buildRomeTourDetail() {
     },
     stats: {
       duration: truth.durationLabel,
-      distance: truth.distanceLabel !== '-' ? truth.distanceLabel : formatDistanceKm(distanceMeters),
+      distance: truth.distanceLabel !== '—' ? truth.distanceLabel : formatDistanceKm(distanceMeters),
       walkingTime: formatWalkingTime(walkingMinutes),
       stories: truth.publicPlaceCount,
       visitStops: truth.visitStopCount,
     },
     previewAudio: {
-      title: 'Colosseum · opening story',
+      title: 'Colosseum — opening story',
       durationLabel: '4 minutes',
       src: ROME_PREVIEW_AUDIO,
     },

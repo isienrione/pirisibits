@@ -47,7 +47,7 @@ const TRUST_ICONS = {
 }
 
 /**
- * Act III · How we build trust with quiet verification icons.
+ * Act III — How we build trust with quiet verification icons.
  */
 export default function LandingTrustProofSection() {
   const section = LANDING_CONTENT.trust

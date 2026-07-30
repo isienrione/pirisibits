@@ -1,5 +1,5 @@
 /**
- * Restrained horizontal Gold Seam · act transitions and cinematic breaks.
+ * Restrained horizontal Gold Seam — act transitions and cinematic breaks.
  * Felt more than noticed; no breathe/scroll-jack. Glow drops under reduced motion via CSS.
  */
 export default function GoldSeam({ className = '', variant = 'act' }) {

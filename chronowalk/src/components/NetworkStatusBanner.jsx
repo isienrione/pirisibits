@@ -29,7 +29,7 @@ export default function NetworkStatusBanner() {
         backdropFilter: 'blur(8px)',
       }}
     >
-      You're offline. Cached audio works normally; navigation data may be unavailable
+      Offline — cached audio and maps should still work
     </div>
   )
 }

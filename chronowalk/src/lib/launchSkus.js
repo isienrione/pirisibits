@@ -1,5 +1,5 @@
 /**
- * Launch commerce matrix · generated from commerce/launchCatalog.json.
+ * Launch commerce matrix — generated from commerce/launchCatalog.json.
  * product_id = purchased SKU; content_product_id = route entitlement.
  */
 

@@ -13,7 +13,7 @@ import C6ImmersivePlayer from '../screens/C6ImmersivePlayer.jsx'
 
 const DEFAULT_PREVIEW_WAYPOINT = 'w01'
 
-/** Dev/preview route · unified immersive layout for any manifest waypoint. */
+/** Dev/preview route — unified immersive layout for any manifest waypoint. */
 export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp = null }) {
   const navigate = useNavigate()
   const { waypointId: waypointIdParam } = useParams()

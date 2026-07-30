@@ -23,8 +23,7 @@ describe('NetworkStatusBanner', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByText(/you're offline\. cached audio works normally/i)).toBeInTheDocument()
-    expect(screen.getByText(/navigation data may be unavailable/i)).toBeInTheDocument()
+    expect(screen.getByText(/offline — cached audio and maps should still work/i)).toBeInTheDocument()
   })
 
   it('hides while journey is idle', () => {

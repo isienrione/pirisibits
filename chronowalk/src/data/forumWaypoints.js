@@ -1,4 +1,4 @@
-/** Walk order through public/waypoints/forum-cluster/ · matches expansion docs. */
+/** Walk order through public/waypoints/forum-cluster/ — matches expansion docs. */
 export const ROMAN_FORUM_STOP_IDS = [
   'forum-arch-titus',
   'forum-basilica-maxentius',
@@ -18,7 +18,7 @@ const FORUM_STOP_META = {
     lat: 41.8905,
     lng: 12.48835,
     viewpoint: { lat: 41.8905, lng: 12.48835, heading: 25, pitch: 18 },
-    subtitle: 'Triumphal relief and the sack of Jerusalem · Rome’s victory arch in living stone.',
+    subtitle: 'Triumphal relief and the sack of Jerusalem — Rome’s victory arch in living stone.',
   },
   'forum-basilica-maxentius': {
     title: 'Basilica of Maxentius',
@@ -32,7 +32,7 @@ const FORUM_STOP_META = {
     lat: 41.89255,
     lng: 12.48535,
     viewpoint: { lat: 41.8924, lng: 12.4851, heading: 45, pitch: 12 },
-    subtitle: 'The Sacred Way · processions, temples, and empire rolled through this pavement.',
+    subtitle: 'The Sacred Way — processions, temples, and empire rolled through this pavement.',
   },
   'forum-temple-vesta': {
     title: 'Temple of Vesta',
@@ -60,7 +60,7 @@ const FORUM_STOP_META = {
     lat: 41.89223,
     lng: 12.48528,
     viewpoint: { lat: 41.89205, lng: 12.48505, heading: 55, pitch: 18 },
-    subtitle: 'The Senate house · marble doors and the chamber where Rome decided its fate.',
+    subtitle: 'The Senate house — marble doors and the chamber where Rome decided its fate.',
     mediaCacheVersion: 2,
   },
   'forum-arch-severus': {
@@ -68,7 +68,7 @@ const FORUM_STOP_META = {
     lat: 41.89301,
     lng: 12.48442,
     viewpoint: { lat: 41.89275, lng: 12.48455, heading: 340, pitch: 17 },
-    subtitle: 'A triple arch celebrating victories on the eastern frontier · gilded and intact.',
+    subtitle: 'A triple arch celebrating victories on the eastern frontier — gilded and intact.',
     mediaCacheVersion: 2,
   },
 }

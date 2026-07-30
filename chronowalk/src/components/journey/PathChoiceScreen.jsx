@@ -5,7 +5,7 @@ const PATH_OPTIONS = [
   {
     id: JOURNEY_PATH.A,
     title: 'Through the Forum gate',
-    description: 'Titus’ arch first · the triumph route into the Forum.',
+    description: 'Titus’ arch first — the triumph route into the Forum.',
   },
   {
     id: JOURNEY_PATH.B,

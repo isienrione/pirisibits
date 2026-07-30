@@ -83,7 +83,7 @@ import JourneyInlineMap from './JourneyInlineMap.jsx'
 import DevGeofenceHud from '../dev/DevGeofenceHud.jsx'
 
 // GPS in Rome drifts, so arrival is confirmed only after a stable, continuous
-// presence near the landmark · never the instant the radius is first touched.
+// presence near the landmark — never the instant the radius is first touched.
 const ARRIVAL_DWELL_MS = 5000
 // When the position's radius of uncertainty is worse than this, we don't
 // auto-arrive; the traveller can still tap "I'm here".
@@ -91,7 +91,7 @@ const POOR_ACCURACY_M = 60
 // Indoor Santiago field tests often report 80–120 m accuracy; relax while dev geofences are on.
 const DEV_GEOFENCE_ACCURACY_M = 150
 
-// Speeds offered by the immersive player's speed pill · same set as Settings.
+// Speeds offered by the immersive player's speed pill — same set as Settings.
 const PLAYER_SPEEDS = STORY_PLAYBACK_SPEEDS
 
 export default function JourneyShell({ variant = 'legacy' }) {
@@ -130,7 +130,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
-  // Last heard narration · keeps the floating dock visible after audio ends.
+  // Last heard narration — keeps the floating dock visible after audio ends.
   const [dockSnapshot, setDockSnapshot] = useState(null)
   // Visual “Waypoint unlocked” banner on You've Arrived (synced with the chime).
   const [arrivalUnlockBanner, setArrivalUnlockBanner] = useState(null)
@@ -224,7 +224,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       scriptedRestEnteredRef.current = null
     }
     // Jumping away from STORY/ARRIVED back to WALKING (e.g. "Walk here" to a
-    // new stop) · stop the previous story narration, clear the autoplay guard
+    // new stop) — stop the previous story narration, clear the autoplay guard
     // so the new stop can start fresh, and release any stale dock snapshot.
     if (
       (prevStateRef.current === JOURNEY_STATES.STORY ||
@@ -428,7 +428,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   armStoryAutoplayGestureRef.current = armStoryAutoplayGesture
 
   // After threshold (e.g. w07), the next step is often a transit leg (t06 → Vesta).
-  // Never auto-play t01 · travelers must pick Path A or B first.
+  // Never auto-play t01 — travelers must pick Path A or B first.
   useEffect(() => {
     if (!justLeftThresholdRef.current) return
     if (state !== JOURNEY_STATES.WALKING || step?.type !== 'transit' || !step.id) return
@@ -611,7 +611,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
   // Fallback when the engine ends playback but the ended event is missed (mobile
   // backgrounding, buffer edge cases, insert tails, or races with step changes).
-  // Only treat "near end" on the *last* plan item · mid-stop chapters (e.g. Pantheon
+  // Only treat "near end" on the *last* plan item — mid-stop chapters (e.g. Pantheon
   // exterior → interior) must keep playing the remaining narration.
   useEffect(() => {
     if (state !== JOURNEY_STATES.STORY || step?.type !== 'waypoint') return
@@ -648,7 +648,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyEnded,
   ])
 
-  // Threshold is inline on the immersive player · narration keeps playing while
+  // Threshold is inline on the immersive player — narration keeps playing while
   // the traveller looks through time. No separate THRESHOLD screen handoff.
 
   const handleCycleSpeed = useCallback(() => {
@@ -700,7 +700,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setDockSnapshot(null)
   }, [audio])
 
-  // Pocket haptic when GPS confirms you're in the radius · full chime+VO wait
+  // Pocket haptic when GPS confirms you're in the radius — full chime+VO wait
   // for the You've Arrived screen so the unlock never fires five seconds early.
   const pulseArrivalHaptic = useCallback((waypointId) => {
     if (!waypointId) return
@@ -710,7 +710,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     triggerHaptic(HAPTIC_KIND.ARRIVAL_UNLOCK)
   }, [])
 
-  // Full arrival alert: chime → “Waypoint unlocked!” · once per stop, on Arrived.
+  // Full arrival alert: chime → “Waypoint unlocked!” — once per stop, on Arrived.
   // Do not mark the cue “played” until the sequence finishes (or the walker
   // starts the story). That way a blocked unlock can retry, and a cancelled
   // mid-sequence never leaves a lone “unlocked” VO over narration.
@@ -722,7 +722,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
       if (arrivalAlertPlayedRef.current === waypointId) return
       if (arrivalAlertInFlightRef.current === waypointId) return
-      // Manual "I'm here" has a user gesture · play even before the global
+      // Manual "I'm here" has a user gesture — play even before the global
       // unlock flag flips, otherwise the chime was silently skipped forever.
       if (requireUnlock && !audioUnlocked) return
 
@@ -748,7 +748,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     setArrivalUnlockBanner((current) => (current === waypointId ? null : current))
   }, [])
 
-  // Confirmed arrival · auto (after 5s dwell) or manual ("I'm here"). Guarded so
+  // Confirmed arrival — auto (after 5s dwell) or manual ("I'm here"). Guarded so
   // the dwell timer and a manual tap can never fire arrival for the same
   // waypoint twice.
   const beginWaypointStory = useCallback(
@@ -762,7 +762,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       audioOpsRef.current.stopNarration()
       audioOpsRef.current.primeForGesture()
       const fromGesture = source === 'manual' || source === 'transit_manual'
-      // Chime + unlock VO belong on You've Arrived · not while still walking.
+      // Chime + unlock VO belong on You've Arrived — not while still walking.
       notifyArrivalUnlock(waypointId, { requireUnlock: !fromGesture, showBanner: true })
       transition(JOURNEY_STATES.ARRIVED)
       track(TRACK_EVENTS.WAYPOINT_ARRIVED, { waypoint_id: waypointId, source })
@@ -830,7 +830,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     arriveRef.current = arriveAtWaypoint
   }, [arriveAtWaypoint])
 
-  // Reset arrival guards when the target changes · but never cancel a chime we
+  // Reset arrival guards when the target changes — but never cancel a chime we
   // just started for the waypoint we are arriving at (transit advance flips
   // step.id in the same turn as beginWaypointStory).
   useEffect(() => {
@@ -857,7 +857,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     const accuracyReliable = geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
 
     if (geo.insideGeofence && accuracyReliable) {
-      // Pocket pulse only · chime + “Waypoint unlocked!” play on You've Arrived.
+      // Pocket pulse only — chime + “Waypoint unlocked!” play on You've Arrived.
       pulseArrivalHaptic(step.id)
 
       // Mature dwell, then land on ARRIVED (never skip straight into story).
@@ -870,7 +870,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return
     }
 
-    // Left the radius (or accuracy went bad) before dwell matured · cancel.
+    // Left the radius (or accuracy went bad) before dwell matured — cancel.
     if (dwellTimerRef.current != null) {
       clearTimeout(dwellTimerRef.current)
       dwellTimerRef.current = null
@@ -905,7 +905,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     return () => window.clearTimeout(timer)
   }, [arrivalUnlockBanner])
 
-  // True when the fix is too uncertain to trust for auto-arrival · used to
+  // True when the fix is too uncertain to trust for auto-arrival — used to
   // gently surface the manual "I'm here" affordance.
   const locationShy =
     geo.accuracy != null && geo.accuracy > arrivalAccuracyLimitM
@@ -915,7 +915,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
 
   // If Arrived before audio unlock, play the full chime as soon as audio is ready.
-  // Do NOT replay on WALKING/APPROACHING · that was the early-fire bug.
+  // Do NOT replay on WALKING/APPROACHING — that was the early-fire bug.
   useEffect(() => {
     if (!audioUnlocked) return
     if (step?.type !== 'waypoint') return
@@ -1193,7 +1193,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       />
     ) : null
 
-  // Persistent narration dock · visible during walking/transit narration and briefly after.
+  // Persistent narration dock — visible during walking/transit narration and briefly after.
   const narrationSessionLive =
     audio.narrationPlaying ||
     (audio.progress?.itemCount ?? 0) > 0 ||
@@ -1384,7 +1384,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
       <JourneyLayout
         eyebrow="Journey"
         title="Ready when you are"
-        subtitle="Tap once to wake the soundscape · narration, ambience, and the city between stops."
+        subtitle="Tap once to wake the soundscape — narration, ambience, and the city between stops."
       >
         <JourneyPrimaryButton onClick={handleUnlockAudio} disabled={busy}>
           {busy ? 'Starting audio…' : 'Begin sound'}

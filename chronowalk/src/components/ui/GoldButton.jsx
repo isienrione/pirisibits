@@ -16,7 +16,7 @@ function ArrowRightIcon({ className }) {
 }
 
 /**
- * Primary gold CTA · mockup-style cinematic tour start button.
+ * Primary gold CTA — mockup-style cinematic tour start button.
  */
 export function GoldButton({ className, showArrow = false, children, ...props }) {
   return (

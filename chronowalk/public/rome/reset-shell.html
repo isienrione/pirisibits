@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#16130F" />
-    <title>ChronoWalk · Refreshing app shell</title>
+    <title>ChronoWalk — Refreshing app shell</title>
     <style>
       html,
       body {
@@ -36,7 +36,7 @@
     <script>
       ;(function () {
         // Static escape hatch for poisoned PWA shells. Not part of the SPA.
-        // Clears Cache Storage + service workers only · access keys and tour
+        // Clears Cache Storage + service workers only — access keys and tour
         // progress in localStorage / IndexedDB are preserved.
         var RESET_AT_KEY = 'cw-shell-reset-at'
         var COOLDOWN_MS = 2 * 60 * 1000
@@ -48,7 +48,7 @@
 
         try {
           var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
-          // Already wiped recently · do not clear boot guards again or we loop:
+          // Already wiped recently — do not clear boot guards again or we loop:
           // reset-shell → landing → script error → reset-shell → …
           if (last && now - last < COOLDOWN_MS) {
             localStorage.setItem('cw-skip-sw-once', '1')

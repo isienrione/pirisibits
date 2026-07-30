@@ -109,7 +109,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
             align="left"
             eyebrow="Asset production studio"
             title={promptPack.title}
-            subtitle="Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference image and viewpoint metadata · same pipeline used for the Colosseum portal."
+            subtitle="Generates Midjourney, Runway, and DaVinci prompts from the waypoint modern reference image and viewpoint metadata — same pipeline used for the Colosseum portal."
           />
 
           <div className="bg-ink900 rounded-card mt-5 p-4">
@@ -240,7 +240,7 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
         </section>
 
         <PromptBlock
-          title="Shared camera rules (reference · do not paste alone)"
+          title="Shared camera rules (reference — do not paste alone)"
           body={`${promptPack.sharedCameraRules}\n\nUse the tool-specific prompts below. Prepend this block only if a tool's prompt field is short and you need extra camera constraints.`}
           tool="Context for you · optional prefix"
         />
@@ -253,24 +253,24 @@ const WaypointAssetStudio = ({ waypointId = 'colosseum' }) => {
                 {modernReferencePath ? 'Skip modern still' : 'Capture modern still'}
               </strong>
               {modernReferencePath
-                ? ' · modern-exterior.jpg is already in the waypoint folder (re-export from Street View only if framing check fails).'
-                : ' · export modern-exterior.jpg from Street View at the viewpoint above.'}
+                ? ' — modern-exterior.jpg is already in the waypoint folder (re-export from Street View only if framing check fails).'
+                : ' — export modern-exterior.jpg from Street View at the viewpoint above.'}
             </li>
             <li>
-              <strong className="text-ink900">Runway / Pika</strong> · paste{' '}
+              <strong className="text-ink900">Runway / Pika</strong> — paste{' '}
               <em>Modern animated video</em>, upload <code className="text-terracotta">modern-exterior.jpg</code> → save{' '}
               <code className="text-terracotta">modern.mp4</code>
             </li>
             <li>
-              <strong className="text-ink900">Midjourney</strong> · paste <em>Ancient still image</em>, attach modern
+              <strong className="text-ink900">Midjourney</strong> — paste <em>Ancient still image</em>, attach modern
               photo as image reference → save <code className="text-terracotta">ancient-reconstruction.jpg</code>
             </li>
             <li>
-              <strong className="text-ink900">Runway / Pika</strong> · paste <em>Ancient animated video</em>, use
+              <strong className="text-ink900">Runway / Pika</strong> — paste <em>Ancient animated video</em>, use
               ancient still + motion-sync from modern clip → save <code className="text-terracotta">ancient-reconstruction.mp4</code>
             </li>
             <li>
-              <strong className="text-ink900">DaVinci / export</strong> · use brief to pull poster frames at ~3s
+              <strong className="text-ink900">DaVinci / export</strong> — use brief to pull poster frames at ~3s
             </li>
           </ol>
         </section>

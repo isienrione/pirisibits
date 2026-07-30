@@ -2,10 +2,10 @@ import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 
 export default function F2ShareCard() {
-  // Exportable 9:16 artifact · rendered at 390×844 inside the phone frame
+  // Exportable 9:16 artifact — rendered at 390×844 inside the phone frame
   const actColors = [T.actI, T.actII, T.actIII, T.actIV, T.actV, T.actVI, T.encore];
 
-  // Winding spectrum route · the full walk as a curving hero SVG
+  // Winding spectrum route — the full walk as a curving hero SVG
   const routeSegs = [
     { d: "M 28 170 Q 72 150 105 136",  c: T.actI   },
     { d: "M 105 136 Q 145 120 172 110",c: T.actII  },
@@ -27,14 +27,14 @@ export default function F2ShareCard() {
 
   return (
     <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
-      {/* Dim city photo · near-obsidian, preserves artifact feel */}
+      {/* Dim city photo — near-obsidian, preserves artifact feel */}
       <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${spanishSteps})`, backgroundSize: "cover", backgroundPosition: "center 30%", filter: "brightness(0.05) saturate(0.3)" }} />
       {/* Vignette to deepen corners */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 40%, transparent 38%, rgba(0,0,0,0.42) 100%)", pointerEvents: "none", zIndex: 1 }} />
 
       <div style={{ position: "relative", zIndex: 2, height: "100%", display: "flex", flexDirection: "column", padding: "52px 32px 50px" }}>
 
-        {/* PrismSeam mark · top left */}
+        {/* PrismSeam mark — top left */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "auto" }}>
           <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
             <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5"
@@ -46,7 +46,7 @@ export default function F2ShareCard() {
           </span>
         </div>
 
-        {/* ── Spectrum route-line · HERO ELEMENT ── */}
+        {/* ── Spectrum route-line — HERO ELEMENT ── */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 36 }}>
 
           <svg width="100%" height="190" viewBox="0 0 390 190" style={{ overflow: "visible" }}>
@@ -81,7 +81,7 @@ export default function F2ShareCard() {
             ROME · 12 AUGUST 2026
           </p>
 
-          {/* Stats · single mono row */}
+          {/* Stats — single mono row */}
           <p style={{
             fontSize: 14, color: `${T.warmWhite}CC`,
             fontVariantNumeric: "tabular-nums",
@@ -90,7 +90,7 @@ export default function F2ShareCard() {
             14.2 km · 7h 12m · 21 centuries
           </p>
 
-          {/* Closing line · Fraunces italic */}
+          {/* Closing line — Fraunces italic */}
           <p style={{
             fontFamily: F.display, fontSize: 18,
             fontStyle: "italic", fontWeight: 300,
@@ -104,7 +104,7 @@ export default function F2ShareCard() {
           </p>
         </div>
 
-        {/* Wordmark · bottom, with ember seam tick */}
+        {/* Wordmark — bottom, with ember seam tick */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}>
           <div style={{ width: 1.5, height: 14, background: T.ember, opacity: 0.55,
             boxShadow: "0 0 6px rgba(232,161,60,0.4)" }} />

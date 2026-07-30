@@ -47,7 +47,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
   const [searchParams] = useSearchParams()
   const token = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
   const [manualToken, setManualToken] = useState('')
-  // Async claim outcome only · idle/validating are derived from token presence.
+  // Async claim outcome only — idle/validating are derived from token presence.
   const [outcome, setOutcome] = useState(null)
   const [outcomeForToken, setOutcomeForToken] = useState(token)
 
@@ -65,7 +65,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
 
     let cancelled = false
 
-    // Always validate the presented URL/manual claim · unrelated local cw_access
+    // Always validate the presented URL/manual claim — unrelated local cw_access
     // state must never short-circuit an invalid/rotated token.
     validateAccessToken(token).then((result) => {
       if (cancelled) return
@@ -164,7 +164,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 color: 'var(--muted-warm)',
               }}
             >
-              After purchase, open the personal link from your email on this phone · or paste it
+              After purchase, open the personal link from your email on this phone — or paste it
               below. This screen is for returning buyers only, not checkout.
             </p>
           ) : null}

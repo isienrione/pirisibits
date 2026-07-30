@@ -3,7 +3,7 @@ import { buildImmersivePlayerProps } from '../lib/waypointImmersiveProps.js'
 import C6ImmersivePlayer from './C6ImmersivePlayer.jsx'
 
 /**
- * Free Pantheon preview · same unified immersive layout as every journey stop.
+ * Free Pantheon preview — same unified immersive layout as every journey stop.
  */
 export default function A2FreePreviewStory({
   manifest,
