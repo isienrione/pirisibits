@@ -26,6 +26,7 @@ import {
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies'
 import {
+  asSafariSafeResponse,
   isAssetOrModuleRequest,
   isHtmlPoisonedAssetEntry,
   isHtmlResponse,
@@ -153,31 +154,52 @@ async function handleNavigation(params) {
   const { request, url } = params
   // Belt-and-suspenders: never treat asset fetches as navigations.
   if (isAssetOrModuleRequest(request, url)) {
-    return fetch(request)
+    return asSafariSafeResponse(await fetch(request))
   }
   if (shouldDenyNavigationFallback(`${url.pathname}${url.search}`)) {
-    return fetch(request)
+    return asSafariSafeResponse(await fetch(request))
+  }
+
+  // Apex `/` is a Cloudflare 302 → /landing. Never fetch `/` inside the SW:
+  // Safari rejects redirected Responses from service workers.
+  if (url.pathname === '/' || url.pathname === '') {
+    try {
+      const landingRequest = new Request(new URL('/landing', url.origin).href, {
+        method: 'GET',
+        headers: request.headers,
+        credentials: request.credentials,
+        mode: 'same-origin',
+      })
+      const network = await fetch(landingRequest)
+      if (network) return asSafariSafeResponse(network)
+    } catch {
+      // fall through to precache
+    }
+    try {
+      return asSafariSafeResponse(await cachedAppShell(params))
+    } catch {
+      return asSafariSafeResponse(await cachedOfflinePage(params))
+    }
   }
 
   try {
     const response = await navigationNetworkFirst.handle(params)
     if (response && !isHtmlResponse(response) && request.destination === 'document') {
-      // Unexpected non-HTML for a document - still return it.
-      return response
+      return asSafariSafeResponse(response)
     }
-    if (response) return response
+    if (response) return asSafariSafeResponse(response)
   } catch {
     // Fall through to the precached SPA shell.
   }
 
   try {
-    return await cachedAppShell(params)
+    return asSafariSafeResponse(await cachedAppShell(params))
   } catch {
     // Never return a failed opaque network error - that surfaces Safari’s native
     // offline interstitial mid Home Screen session / package download.
     // Serve our offline page instead.
     try {
-      return await cachedOfflinePage(params)
+      return asSafariSafeResponse(await cachedOfflinePage(params))
     } catch {
       return new Response(
         '<!doctype html><title>ChronoWalk</title><body style="font-family:system-ui;padding:2rem;background:#16130f;color:#f5efe3">ChronoWalk is offline. Reopen the app when you have a signal - your access stays on this device.</body>',
@@ -190,6 +212,8 @@ async function handleNavigation(params) {
 registerRoute(
   new NavigationRoute(handleNavigation, {
     denylist: [
+      // Let the browser follow Cloudflare's / → /landing 302 itself.
+      /^\/$/,
       /^\/offline$/,
       /^\/offline\.html$/,
       /^\/reset-shell$/,

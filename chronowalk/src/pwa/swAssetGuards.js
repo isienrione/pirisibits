@@ -85,3 +85,25 @@ export function isHtmlPoisonedAssetEntry(requestUrl, response) {
     return false
   }
 }
+
+/**
+ * Safari / WebKit rejects navigation responses from a service worker when
+ * `response.redirected === true` ("Response served by service worker has
+ * redirections"). Cloudflare serves `/` → `/landing` 302; if the SW follows
+ * that redirect and returns the final Response, Safari refuses to open the page.
+ *
+ * Rebuild a same-content Response so the redirected flag is cleared.
+ *
+ * @param {Response | null | undefined} response
+ * @returns {Promise<Response | null | undefined>}
+ */
+export async function asSafariSafeResponse(response) {
+  if (!response || !response.redirected) return response
+  const buffer = await response.arrayBuffer()
+  const headers = new Headers(response.headers)
+  return new Response(buffer, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
