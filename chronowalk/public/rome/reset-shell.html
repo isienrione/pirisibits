@@ -79,11 +79,12 @@
         } catch (e) {}
 
         function goLanding() {
-          // assign (not replace): iOS often drops controlled navigations with replace.
+          // Bridge via denylisted /rome/open so we never hand a still-poisonable
+          // tab straight to /landing (that produced "could not finish loading").
           try {
-            window.location.assign('/landing?cw_bust=' + Date.now())
+            window.location.assign('/rome/open?cw_bust=' + Date.now())
           } catch (e) {
-            window.location.href = '/landing?cw_bust=' + Date.now()
+            window.location.href = '/rome/open?cw_bust=' + Date.now()
           }
         }
 

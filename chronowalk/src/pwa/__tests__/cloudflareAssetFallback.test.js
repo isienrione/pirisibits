@@ -66,19 +66,21 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
     expect(html).toContain('cw-boot-hang-redirect')
     expect(html).toContain('/rome/reset-shell?force=1')
+    expect(html).toContain('/rome/open')
     expect(html).toContain('Stuck? Refresh the app shell')
-    // Hang bounce must not fire during post-reset cooldown (blink loop).
-    expect(html).toContain('!recentlyReset()')
     expect(html).toContain('cw-shell-reset-at')
+    expect(html).toContain('goOpenStuck')
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
     expect(existsSync(join(ROOT, 'public/rome/reset-shell.html'))).toBe(true)
+    expect(existsSync(join(ROOT, 'public/rome/open.html'))).toBe(true)
     const html = readFileSync(join(ROOT, 'public/rome/reset-shell.html'), 'utf8')
     expect(html).toContain('cw-skip-sw-once')
     expect(html).toContain('caches.delete')
     expect(html).toContain('unregister')
-    expect(html).toContain('/landing?cw_bust=')
+    // Continue goes through denylisted /rome/open, not straight to /landing.
+    expect(html).toContain('/rome/open?cw_bust=')
     expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
     expect(html).toContain('cw-shell-reset-at')
     // Match recoverStaleClient: do not navigate while iOS still has a controller.
@@ -98,6 +100,11 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('finishManual')
     expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
     expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
+
+    const open = readFileSync(join(ROOT, 'public/rome/open.html'), 'utf8')
+    expect(open).toContain('waitForStableClear')
+    expect(open).toContain('/landing?cw_bust=')
+    expect(open).toContain('Website Data')
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
     expect(legacy).toContain('/rome/reset-shell')
