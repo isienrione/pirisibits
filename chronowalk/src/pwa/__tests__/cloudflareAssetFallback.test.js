@@ -62,16 +62,15 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).not.toMatch(/api\.mapbox\.com[\s\S]{0,80}NetworkOnly/)
   })
 
-  it('auto-bounces hung boots from index.html to reset-shell', () => {
+  it('keeps boot recovery from auto-navigating into reset/open loops', () => {
     const html = readFileSync(join(ROOT, 'index.html'), 'utf8')
     expect(html).toContain('/landing?cw_clean=1')
     expect(html).toContain('Open ChronoWalk')
-    // Third-party script failures must not trigger shell recovery.
     expect(html).toContain("pathname.indexOf('/assets/')")
     expect(html).not.toContain('assets.lemonsqueezy.com/lemon.js')
-    // Hang path must not auto-bounce into /rome/open (dead-button loop).
+    expect(html).not.toContain('goResetShell')
     expect(html).not.toContain('goOpenStuck')
-    expect(html).not.toContain("location.replace(OPEN_HREF")
+    expect(html).toContain("localStorage.setItem(SKIP_SW_KEY, '1')")
   })
 
   it('ships a static reset-shell escape hatch outside the SPA', () => {
@@ -81,32 +80,20 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('cw-skip-sw-once')
     expect(html).toContain('caches.delete')
     expect(html).toContain('unregister')
-    // Continue goes through denylisted /rome/open, not straight to /landing.
-    expect(html).toContain('/rome/open?cw_bust=')
-    expect(html).toContain("sessionStorage.setItem('cw-chunk-reload'")
-    expect(html).toContain('cw-shell-reset-at')
-    // Match recoverStaleClient: do not navigate while iOS still has a controller.
-    expect(html).toContain('waitForControllerGone')
-    expect(html).toContain('serviceWorker.controller')
-    expect(html).toContain('force')
-    // Cooldown retries must still wipe + wait (not bounce straight to /landing).
+    // Continue must be a real link to /landing - never JS-assign to /rome/open.
+    expect(html).toContain('href="/landing?cw_clean=1"')
+    expect(html).not.toContain('/rome/open')
+    expect(html).not.toContain('location.assign')
+    expect(html).not.toContain('location.replace')
+    expect(html).not.toContain('location.reload')
     expect(html).toContain('clearCachesAndWorkers')
-    expect(html).toContain('finishToLanding')
-    // Must not navigate to /landing while a controller remains (iOS poison path).
-    expect(html).toContain('Do NOT navigate to /landing while controlled')
-    expect(html).toContain('WAIT_RELOAD_KEY')
-    expect(html).toContain("localStorage.removeItem(RESET_AT_KEY)")
-    // force=1 / blink loop: stop auto-nav and require Continue.
-    expect(html).toContain('manualOnly')
-    expect(html).toContain('LOOP_KEY')
-    expect(html).toContain('finishManual')
-    expect(html).not.toContain("sessionStorage.removeItem('cw-boot-reload'")
-    expect(html).not.toContain("sessionStorage.removeItem('cw-chunk-reload'")
 
     const open = readFileSync(join(ROOT, 'public/rome/open.html'), 'utf8')
     expect(open).toContain('href="/landing?cw_clean=1"')
-    expect(open).toContain('http-equiv="refresh"')
     expect(open).toContain('Open ChronoWalk')
+    expect(open).not.toContain('http-equiv="refresh"')
+    expect(open).not.toContain('location.replace')
+    expect(open).not.toContain('location.assign')
 
     const legacy = readFileSync(join(ROOT, 'public/reset-shell.html'), 'utf8')
     expect(legacy).toContain('/rome/reset-shell')
