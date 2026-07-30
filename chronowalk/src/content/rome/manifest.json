@@ -745,7 +745,7 @@
       ],
       "reconstruction": {
         "now": "/waypoints/pantheon/modern-poster.jpg",
-        "then": "/waypoints/pantheon/modern-poster.jpg",
+        "then": "/waypoints/pantheon/ancient-poster.jpg",
         "loop": "/waypoints/pantheon/ancient-reconstruction.mp4",
         "caption": "Evidence-based reconstruction · portico bronze finish is informed conjecture"
       },

@@ -99,11 +99,29 @@ export function photoForWaypoint(waypoint, chapterIndex = 0) {
   return getNowPhotoUrl('colosseum')
 }
 
+/** Sibling ancient still when reconstruction.then was wrongly set to the modern poster. */
+function inferredAncientPosterPath(waypoint) {
+  const loop =
+    resolveWaypointReconstruction(waypoint)?.loop ?? inferredReconstructionLoopPath(waypoint)
+  if (!loop || !loop.includes('/waypoints/')) return null
+  const fromLoop = loop.replace(/ancient-reconstruction\.mp4$/i, 'ancient-poster.jpg')
+  if (fromLoop !== loop) return fromLoop
+  const photo = waypoint?.photo ?? ''
+  const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
+  return flat ? `${flat[1]}ancient-poster.jpg` : null
+}
+
 export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
 
   if (reconstruction?.loop) {
     // Prefer the ancient still as the video poster when available.
+    // Guard: then === now means the reveal has no era change if the video fails.
+    if (reconstruction.then && reconstruction.then !== reconstruction.now) {
+      return resolvePhotoUrl(reconstruction.then)
+    }
+    const inferredThen = inferredAncientPosterPath(waypoint)
+    if (inferredThen) return resolvePhotoUrl(inferredThen)
     if (reconstruction.then) return resolvePhotoUrl(reconstruction.then)
     return resolvePhotoUrl(reconstruction.now ?? waypoint?.photo)
   }

@@ -32,6 +32,20 @@ describe('waypointImmersiveProps', () => {
     expect(props.waypointId).toBe('w17')
   })
 
+  it('uses ancient poster + reconstruction loop for Pantheon exterior (w17)', () => {
+    const waypoint = getWaypoint(manifest, 'w17')
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w17',
+      manifest,
+    })
+    expect(props.hasReconstruction).toBe(true)
+    expect(props.photo).toContain('/waypoints/pantheon/modern-poster.jpg')
+    expect(props.thenPhoto).toContain('/waypoints/pantheon/ancient-poster.jpg')
+    expect(props.thenPhoto).not.toBe(props.photo)
+    expect(props.thenLoop).toContain('/waypoints/pantheon/ancient-reconstruction.mp4')
+  })
+
   it('infers ancient loop path from photo folder', () => {
     const waypoint = getWaypoint(manifest, 'w01')
     expect(inferredReconstructionLoopPath(waypoint)).toBe(

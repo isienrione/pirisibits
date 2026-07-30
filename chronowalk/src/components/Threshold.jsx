@@ -18,6 +18,7 @@ import ThresholdSourceBadge, {
   AI_NOW_DISCLOSURE_COPY,
 } from './threshold/ThresholdSourceBadge.jsx'
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
+import { mediaUrl, networkMediaUrl, unregisterCachedMedia } from '../lib/mediaUrl.js'
 
 const REVEAL_COMPLETE = 0.98
 /** Short single-tap threshold · gestures shorter than this are treated as taps, not holds. */
@@ -63,14 +64,16 @@ function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, imm
 
 function ThresholdLayerImage({ src, alt, className, style }) {
   const [failed, setFailed] = useState(false)
-  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const [resolvedSrc, setResolvedSrc] = useState(() => mediaUrl(src) ?? src)
   const hydrateGeneration = useRef(0)
+  const triedNetworkFallback = useRef(false)
 
   useEffect(() => {
     setFailed(false)
-    setResolvedSrc(src)
+    triedNetworkFallback.current = false
+    setResolvedSrc(mediaUrl(src) ?? src)
     const generation = ++hydrateGeneration.current
-    if (!src || String(src).startsWith('blob:')) return undefined
+    if (!src || String(mediaUrl(src) ?? src).startsWith('blob:')) return undefined
 
     let cancelled = false
     void import('../audio/offlinePackage.js')
@@ -91,7 +94,20 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 
   const handleError = useCallback(() => {
     const generation = hydrateGeneration.current
-    if (!src || String(resolvedSrc).startsWith('blob:')) {
+    if (!src) {
+      setFailed(true)
+      return
+    }
+    // Poisoned offline blob → drop it and retry the network URL once.
+    if (String(resolvedSrc).startsWith('blob:')) {
+      unregisterCachedMedia(src)
+      const network = networkMediaUrl(src)
+      if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+        triedNetworkFallback.current = true
+        setResolvedSrc(network)
+        setFailed(false)
+        return
+      }
       setFailed(true)
       return
     }
@@ -104,10 +120,25 @@ function ThresholdLayerImage({ src, alt, className, style }) {
           setFailed(false)
           return
         }
+        const network = networkMediaUrl(src)
+        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+          triedNetworkFallback.current = true
+          setResolvedSrc(network)
+          setFailed(false)
+          return
+        }
         setFailed(true)
       })
       .catch(() => {
-        if (generation === hydrateGeneration.current) setFailed(true)
+        if (generation !== hydrateGeneration.current) return
+        const network = networkMediaUrl(src)
+        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+          triedNetworkFallback.current = true
+          setResolvedSrc(network)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
       })
   }, [src, resolvedSrc])
 
@@ -140,14 +171,16 @@ function ThresholdLayerImage({ src, alt, className, style }) {
 function ThresholdVideo({ src, poster, playing, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
-  const [resolvedSrc, setResolvedSrc] = useState(src)
+  const [resolvedSrc, setResolvedSrc] = useState(() => mediaUrl(src) ?? src)
   const hydrateGeneration = useRef(0)
+  const triedNetworkFallback = useRef(false)
 
   useEffect(() => {
     setFailed(false)
-    setResolvedSrc(src)
+    triedNetworkFallback.current = false
+    setResolvedSrc(mediaUrl(src) ?? src)
     const generation = ++hydrateGeneration.current
-    if (!src || String(src).startsWith('blob:')) return undefined
+    if (!src || String(mediaUrl(src) ?? src).startsWith('blob:')) return undefined
 
     let cancelled = false
     void import('../audio/offlinePackage.js')
@@ -188,7 +221,20 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
 
   const handleError = useCallback(() => {
     const generation = hydrateGeneration.current
-    if (!src || String(resolvedSrc).startsWith('blob:')) {
+    if (!src) {
+      setFailed(true)
+      return
+    }
+    // Poisoned offline blob → network URL before falling back to the poster.
+    if (String(resolvedSrc).startsWith('blob:')) {
+      unregisterCachedMedia(src)
+      const network = networkMediaUrl(src)
+      if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+        triedNetworkFallback.current = true
+        setResolvedSrc(network)
+        setFailed(false)
+        return
+      }
       setFailed(true)
       return
     }
@@ -201,10 +247,25 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
           setFailed(false)
           return
         }
+        const network = networkMediaUrl(src)
+        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+          triedNetworkFallback.current = true
+          setResolvedSrc(network)
+          setFailed(false)
+          return
+        }
         setFailed(true)
       })
       .catch(() => {
-        if (generation === hydrateGeneration.current) setFailed(true)
+        if (generation !== hydrateGeneration.current) return
+        const network = networkMediaUrl(src)
+        if (network && network !== resolvedSrc && !triedNetworkFallback.current) {
+          triedNetworkFallback.current = true
+          setResolvedSrc(network)
+          setFailed(false)
+          return
+        }
+        setFailed(true)
       })
   }, [src, resolvedSrc])
 
