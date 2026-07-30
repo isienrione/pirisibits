@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex" />
     <meta name="theme-color" content="#16130F" />
-    <!-- Real navigation fallback - works even if JS is broken or bouncing. -->
-    <meta http-equiv="refresh" content="2;url=/landing?cw_clean=1" />
     <title>ChronoWalk</title>
     <style>
       html,
@@ -56,60 +54,17 @@
         border-color: #f5efe3;
       }
     </style>
-    <script>
-      ;(function () {
-        // Keep this page dumb. Auto-recovery bounce loops made travelers think
-        // buttons did nothing. Prefer real links + a short meta refresh.
-        try {
-          localStorage.removeItem('cw-shell-reset-at')
-          localStorage.setItem('cw-skip-sw-once', '1')
-          localStorage.removeItem('cw-needs-shell-reset')
-          sessionStorage.setItem('cw-boot-hang-redirect', '1')
-        } catch (e) {}
-
-        // Best-effort wipe - never block the link / meta refresh.
-        try {
-          if ('caches' in window) {
-            caches.keys().then(function (names) {
-              names.forEach(function (name) {
-                caches.delete(name)
-              })
-            })
-          }
-        } catch (e) {}
-        try {
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function (regs) {
-              regs.forEach(function (reg) {
-                reg.unregister()
-              })
-            })
-          }
-        } catch (e) {}
-
-        // If nothing is controlling this tab, leave immediately.
-        try {
-          if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
-            window.setTimeout(function () {
-              window.location.replace('/landing?cw_clean=1&cw_bust=' + Date.now())
-            }, 250)
-          }
-        } catch (e) {
-          window.location.replace('/landing?cw_clean=1&cw_bust=' + Date.now())
-        }
-      })()
-    </script>
   </head>
   <body>
     <main>
       <div>
         <p>ChronoWalk is ready</p>
         <p class="sub">
-          Tap below to open the site. After clearing site data, you do not need the refresh tools anymore.
+          Tap Open ChronoWalk once. Do not use Refresh app shell - that screen can loop with this one.
         </p>
         <div class="actions">
+          <!-- Real link only. No meta-refresh / JS redirect (those bounced into reset-shell). -->
           <a class="btn btn-primary" href="/landing?cw_clean=1">Open ChronoWalk</a>
-          <a class="btn" href="/landing?cw_clean=1&cw_bust=1">Open with refresh</a>
         </div>
       </div>
     </main>

@@ -88,12 +88,6 @@
         var BOOT_RELOAD_KEY = 'cw-boot-reload'
         var SKIP_SW_KEY = 'cw-skip-sw-once'
         var RESET_AT_KEY = 'cw-shell-reset-at'
-        var COOLDOWN_MS = 2 * 60 * 1000
-        // Under /rome/ so older service workers (denylist /^\/rome\//) cannot
-        // intercept and re-serve the poisoned SPA shell.
-        var RESET_PATH = '/rome/reset-shell'
-
-        var OPEN_PATH = '/rome/open'
 
         function markSkipSw() {
           try {
@@ -101,58 +95,18 @@
           } catch (e) {}
         }
 
-        function recentlyReset() {
-          try {
-            var last = parseInt(localStorage.getItem(RESET_AT_KEY) || '0', 10)
-            return last && Date.now() - last < COOLDOWN_MS
-          } catch (e) {
-            return false
-          }
-        }
-
-        function goResetShell() {
-          window.location.replace(RESET_PATH + '?cw_bust=' + Date.now())
-        }
-
-        function clearCachesAndWorkers() {
-          var jobs = []
-          if ('caches' in window) {
-            jobs.push(
-              caches.keys().then(function (names) {
-                return Promise.all(
-                  names.map(function (name) {
-                    return caches.delete(name)
-                  }),
-                )
-              }),
-            )
-          }
-          if ('serviceWorker' in navigator) {
-            jobs.push(
-              navigator.serviceWorker.getRegistrations().then(function (regs) {
-                return Promise.all(
-                  regs.map(function (reg) {
-                    return reg.unregister()
-                  }),
-                )
-              }),
-            )
-          }
-          return Promise.all(jobs)
-        }
-
         // Never use document.write here — Mobile Safari renders the rest of the
-        // inline script as visible text. Just bounce to the static reset page.
+        // inline script as visible text.
         try {
-          // Fresh start after a clean open - drop recovery flags that keep
-          // showing "could not finish loading" on every /landing visit.
+          // Fresh start: clear loop flags, but KEEP skip-sw so a lingering
+          // controller cannot re-enter reset-shell recovery.
           var params = new URLSearchParams(window.location.search || '')
           if (params.get('cw_clean') === '1') {
             localStorage.removeItem(RESET_KEY)
             localStorage.removeItem(RESET_AT_KEY)
-            localStorage.removeItem(SKIP_SW_KEY)
+            localStorage.setItem(SKIP_SW_KEY, '1')
             sessionStorage.removeItem(BOOT_RELOAD_KEY)
-            sessionStorage.removeItem('cw-boot-hang-redirect')
+            sessionStorage.setItem('cw-boot-hang-redirect', '1')
             sessionStorage.removeItem('cw-chunk-reload')
             if (window.history && window.history.replaceState) {
               params.delete('cw_clean')
@@ -165,26 +119,27 @@
 
         try {
           if (localStorage.getItem(RESET_KEY) === '1') {
+            // Do not auto-navigate to reset-shell - that blinked with /rome/open.
             localStorage.removeItem(RESET_KEY)
             markSkipSw()
-            // Cooldown: stay on this document and boot instead of looping.
-            if (recentlyReset()) return
-            goResetShell()
-            return
           }
         } catch (e) {}
 
-        // Belt-and-suspenders: after a shell wipe we set cw-skip-sw-once. If this
-        // document is STILL controlled, do not evaluate modules under the poison
-        // controller - send them to the denylisted open page (plain link to /landing).
+        // If still controlled after a wipe intent, stay put and show a link.
+        // Navigating to /rome/open or reset-shell created the blink loop.
         try {
           if (
             localStorage.getItem(SKIP_SW_KEY) === '1' &&
             'serviceWorker' in navigator &&
             navigator.serviceWorker.controller
           ) {
-            window.location.replace(OPEN_PATH + '?cw_bust=' + Date.now())
-            return
+            window.addEventListener('DOMContentLoaded', function () {
+              var hint = document.getElementById('cw-boot-hint')
+              if (hint) {
+                hint.innerHTML =
+                  'This phone is still holding an old app copy.<br/><a href="/landing?cw_clean=1" style="color:inherit">Try Open ChronoWalk</a><br/><span style="opacity:0.75;font-size:0.9rem">If that fails, clear Cookies and site data for chronowalk.com, then open your access email link.</span>'
+              }
+            })
           }
         } catch (e) {}
 
@@ -193,8 +148,7 @@
           function (event) {
             var target = event.target
             if (!target || target.tagName !== 'SCRIPT' || !target.src) return
-            // Only recover for our app modules. Third-party scripts (Lemon, analytics)
-            // must NOT trigger reset-shell / "could not finish loading" loops.
+            // Only same-origin /assets modules - never third-party, never auto-reset.
             try {
               var srcUrl = new URL(target.src, window.location.href)
               if (srcUrl.origin !== window.location.origin) return
@@ -204,25 +158,15 @@
             }
             try {
               if (sessionStorage.getItem(BOOT_RELOAD_KEY)) return
-              // Never auto-bounce into open/reset after a recent wipe - that loop
-              // made "Open ChronoWalk" look broken. Stay and show a real link.
-              if (recentlyReset()) {
-                var hint = document.getElementById('cw-boot-hint')
-                if (hint) {
-                  hint.innerHTML =
-                    'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
-                }
-                return
-              }
               sessionStorage.setItem(BOOT_RELOAD_KEY, '1')
             } catch (err) {
               return
             }
-            markSkipSw()
-            try {
-              localStorage.setItem(RESET_KEY, '1')
-            } catch (err2) {}
-            clearCachesAndWorkers().then(goResetShell).catch(goResetShell)
+            var hint = document.getElementById('cw-boot-hint')
+            if (hint) {
+              hint.innerHTML =
+                'ChronoWalk could not finish loading.<br/><a href="/landing?cw_clean=1" style="color:inherit">Open ChronoWalk</a>'
+            }
           },
           true,
         )
