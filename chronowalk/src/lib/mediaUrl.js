@@ -18,6 +18,11 @@ export function cacheUrlForManifestPath(manifestPath) {
   return resolveNetworkMediaUrl(manifestPath)
 }
 
+/** Network/CDN URL only · never a Cache API blob. */
+export function networkMediaUrl(path) {
+  return resolveNetworkMediaUrl(path)
+}
+
 /**
  * Register a cached blob URL for offline threshold media and heroes.
  * @param {string} manifestPath e.g. /rome/img/w01_now.avif
@@ -25,6 +30,20 @@ export function cacheUrlForManifestPath(manifestPath) {
  */
 export function registerCachedMedia(manifestPath, blobUrl) {
   if (manifestPath && blobUrl) blobCache.set(manifestPath, blobUrl)
+}
+
+/** Drop a poisoned offline blob so callers can fall back to the network URL. */
+export function unregisterCachedMedia(manifestPath) {
+  if (!manifestPath) return
+  blobCache.delete(manifestPath)
+  try {
+    if (/^https?:\/\//i.test(manifestPath)) {
+      const pathname = new URL(manifestPath).pathname
+      if (pathname) blobCache.delete(pathname)
+    }
+  } catch {
+    // ignore
+  }
 }
 
 export function clearCachedMedia() {
