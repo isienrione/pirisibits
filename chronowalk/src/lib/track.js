@@ -46,7 +46,7 @@ export const TRACK_EVENTS = {
   LANDING_ROUTE_EXPAND: 'landing_route_expand',
   LANDING_PRICING_VIEW: 'landing_pricing_view',
   LANDING_FAQ_OPEN: 'landing_faq_open',
-  /** @deprecated prefer LANDING_PRICING_VIEW — kept for historical funnel queries */
+  /** @deprecated prefer LANDING_PRICING_VIEW - kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
 }
 
@@ -104,7 +104,7 @@ export function initAnalytics() {
     posthog.init(key, {
       api_host: 'https://eu.i.posthog.com',
       autocapture: false,
-      // SPA: custom ChronoWalk events only — avoid automatic $pageview duplicates
+      // SPA: custom ChronoWalk events only - avoid automatic $pageview duplicates
       // on history changes; landing_view / journey events are explicit.
       capture_pageview: false,
       disable_session_recording: true,

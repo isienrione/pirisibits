@@ -1,5 +1,5 @@
 /**
- * Production SEO route inventory — keep in sync with AppRouter + footer legal links.
+ * Production SEO route inventory - keep in sync with AppRouter + footer legal links.
  * robots.txt / sitemap.xml under public/ are the deploy artifacts; this module is the
  * source of truth for tests and document meta (canonical vs noindex).
  */

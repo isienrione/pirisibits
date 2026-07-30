@@ -2,7 +2,7 @@
  * Client-side recovery when a deploy leaves hashed chunks unreachable or when
  * the service worker has cached SPA HTML under a JavaScript URL.
  *
- * Preserves localStorage / IndexedDB credentials and tour progress — only
+ * Preserves localStorage / IndexedDB credentials and tour progress - only
  * Cache Storage + service-worker registrations are cleared.
  */
 import {
@@ -15,22 +15,22 @@ import {
 
 export const CHUNK_RECOVERY_GUARD_KEY = 'cw-chunk-reload'
 export const BOOT_PENDING_KEY = 'cw-boot-pending'
-/** localStorage — survives the recovery navigation; consumed by index.html. */
+/** localStorage - survives the recovery navigation; consumed by index.html. */
 export const SHELL_RESET_KEY = 'cw-needs-shell-reset'
 /** Skip SW registration for one successful network boot after a shell reset. */
 export const SKIP_SW_ONCE_KEY = 'cw-skip-sw-once'
-/** Timestamp of the last shell reset — used to break reset↔landing loops. */
+/** Timestamp of the last shell reset - used to break reset↔landing loops. */
 export const SHELL_RESET_AT_KEY = 'cw-shell-reset-at'
 /** Ignore further automatic resets within this window. */
 export const SHELL_RESET_COOLDOWN_MS = 2 * 60 * 1000
 
-/** localStorage key — keep in sync with audio/offlinePackage.js (avoid import cycles). */
+/** localStorage key - keep in sync with audio/offlinePackage.js (avoid import cycles). */
 const OFFLINE_STATUS_KEY = 'cw_offline_rome_audio_v1'
 
 /**
  * True when a hard recovery navigation would likely hit Safari’s native
  * “can’t open without signal” interstitial (or interrupt an in-flight download).
- * Also defer when an offline package is already on-device — never wipe the SW
+ * Also defer when an offline package is already on-device - never wipe the SW
  * just because iOS lied about navigator.onLine during a brief background.
  */
 export function shouldDeferStaleRecovery() {
@@ -42,7 +42,7 @@ export function shouldDeferStaleRecovery() {
     const status = parsed?.status
     return status === 'downloading' || status === 'complete'
   } catch {
-    // Fail closed — better to keep a slightly stale shell than brick Safari offline.
+    // Fail closed - better to keep a slightly stale shell than brick Safari offline.
     return true
   }
 }
@@ -54,7 +54,7 @@ export function isStaleChunkError(error) {
   if (!error) return false
   const message = String(error?.message || error)
   const name = String(error?.name || '')
-  // Do NOT match bare "Failed to fetch" — that fires for Directions/Mapbox/audio
+  // Do NOT match bare "Failed to fetch" - that fires for Directions/Mapbox/audio
   // blips and used to hard-navigate into Safari’s offline interstitial.
   return (
     message.includes('Failed to fetch dynamically imported module') ||
@@ -65,7 +65,7 @@ export function isStaleChunkError(error) {
     message.includes("Unexpected token '<'") ||
     message.includes('Expected a JavaScript-or-Wasm module script') ||
     message.includes('MIME type') ||
-    // Safari dynamic-import wording (keep narrow — paired with shouldDeferStaleRecovery).
+    // Safari dynamic-import wording (keep narrow - paired with shouldDeferStaleRecovery).
     (message === 'Load failed' || message.includes('Load failed for')) ||
     name === 'ChunkLoadError'
   )
@@ -101,7 +101,7 @@ function markShellResetIntent() {
     localStorage.setItem(SHELL_RESET_KEY, '1')
     localStorage.setItem(SKIP_SW_ONCE_KEY, '1')
   } catch {
-    // Private mode / quota — recovery can still attempt SW purge.
+    // Private mode / quota - recovery can still attempt SW purge.
   }
 }
 
@@ -116,7 +116,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
     return { recovered: false, reloading: false }
   }
 
-  // Never navigate away while offline or mid package download — Safari shows
+  // Never navigate away while offline or mid package download - Safari shows
   // “can’t open this page without a signal” and aborts the Cache API work.
   if (!force && shouldDeferStaleRecovery()) {
     return { recovered: false, reloading: false }
@@ -148,7 +148,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
     await waitForServiceWorkerControllerGone(2500)
     await new Promise((resolve) => window.setTimeout(resolve, 200))
   } catch {
-    // Still reload — a hard navigation often picks up the new deploy.
+    // Still reload - a hard navigation often picks up the new deploy.
   }
 
   // Escape via the static reset page (denylisted from SPA navigation fallback)
@@ -173,7 +173,7 @@ export function clearBootPending() {
 
 /**
  * After a successful React mount, drop the one-boot SW skip flag so later
- * visits can register the service worker normally — but not during cooldown.
+ * visits can register the service worker normally - but not during cooldown.
  */
 export function clearSkipSwOnce() {
   if (recentlyResetShell()) return
@@ -197,7 +197,7 @@ export function shouldSkipServiceWorkerRegistration() {
 
 /**
  * Call at the very start of main.jsx. If the previous paint never finished
- * (tab crashed / white-screened mid-boot), record it — but always return false
+ * (tab crashed / white-screened mid-boot), record it - but always return false
  * so React still mounts. Blocking mount caused permanent "Loading ChronoWalk…".
  * @returns {false}
  */

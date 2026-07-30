@@ -19,12 +19,12 @@ import {
 
 export function actLabelForWaypoint(waypoint, manifest) {
   const act = waypoint?.act ? manifest?.acts?.find((a) => a.id === waypoint.act) : null
-  if (act) return `ACT ${act.numeral} — ${act.title?.toUpperCase()}`
+  if (act) return `ACT ${act.numeral} - ${act.title?.toUpperCase()}`
   return `ACT ${numeralForWaypoint(waypoint)}`
 }
 
 export function taglineForWaypoint(waypoint) {
-  return waypoint?.arrivalLine?.replace(/\s*\/\s*/g, ' — ') ?? approachCopy(waypoint)
+  return waypoint?.arrivalLine?.replace(/\s*\/\s*/g, ' - ') ?? approachCopy(waypoint)
 }
 
 /**

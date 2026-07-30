@@ -12,7 +12,7 @@ function injectMapboxStylesheet(cssUrl) {
 }
 
 /**
- * Loads Mapbox GL only when a map view mounts — keeps the 1.8MB library off the landing boot path.
+ * Loads Mapbox GL only when a map view mounts - keeps the 1.8MB library off the landing boot path.
  */
 export function loadMapboxRuntime() {
   if (!runtimePromise) {

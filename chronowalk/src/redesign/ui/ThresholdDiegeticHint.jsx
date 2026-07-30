@@ -16,7 +16,7 @@ export function formatThenHintLabel(thenLabel = 'ANCIENT ROME') {
 }
 
 /**
- * Minimal on-image threshold hint — pulsing gold touch-ring + pointing hand.
+ * Minimal on-image threshold hint - pulsing gold touch-ring + pointing hand.
  * The hand is always shown (including brief ring-only nudges) so this never
  * looks like the arrival “waypoint unlocked” beacon. Optional one-line copy
  * on the first teach. pointer-events: none so holds pass through to Threshold.

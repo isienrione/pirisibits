@@ -7,7 +7,7 @@ import {
 
 const PENDING_TIER_KEY = 'cw_pending_purchase_tier_v1'
 const PURCHASED_TIER_KEY = 'cw_purchased_tier_v1'
-/** @see DEPLOY_EDGE_BUST — keep pendingPurchase chunk hashing with edge busts */
+/** @see DEPLOY_EDGE_BUST - keep pendingPurchase chunk hashing with edge busts */
 void 'intro-open-2026-07-29'
 
 /** Remember which Rome pack the traveler chose before checkout completes. */
@@ -73,7 +73,7 @@ export function paceIdForPurchaseTier(tierId) {
 }
 
 /**
- * True when the buyer unlocked Roma Eterna content — they may choose any route mode.
+ * True when the buyer unlocked Roma Eterna content - they may choose any route mode.
  * Single packs skip the mode picker and start their locked route.
  */
 export function shouldShowPaceModePicker(tierId) {

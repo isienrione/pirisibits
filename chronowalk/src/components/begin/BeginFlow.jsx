@@ -253,7 +253,7 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
       <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
         {locationDenied
           ? 'You can still walk Rome, but arrivals will not auto-detect until location is enabled for this site in your browser settings.'
-          : 'ChronoWalk uses your location only while the tour is active — to detect arrivals and guide you between stops.'}
+          : 'ChronoWalk uses your location only while the tour is active - to detect arrivals and guide you between stops.'}
       </p>
 
       {!locationDenied ? (

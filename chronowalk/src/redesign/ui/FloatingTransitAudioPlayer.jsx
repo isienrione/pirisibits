@@ -23,7 +23,7 @@ function TinyWaveform({ playing, progress }) {
 }
 
 /**
- * Mini floating companion for transit narration — Apple Maps / Music mini-player feel.
+ * Mini floating companion for transit narration - Apple Maps / Music mini-player feel.
  * Tap the card (not play) to open the full narration player.
  */
 export default function FloatingTransitAudioPlayer({

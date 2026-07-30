@@ -81,11 +81,11 @@ function buildDirectionsUrl(from, to, accessToken, options = {}) {
     params.set('waypoint_names', `;${options.destinationName.slice(0, 120)}`)
   }
 
-  // Profile path segment: mapbox/walking — required for pedestrian routing.
+  // Profile path segment: mapbox/walking - required for pedestrian routing.
   return `https://api.mapbox.com/directions/v5/mapbox/walking/${coordinates}?${params.toString()}`
 }
 
-/** Exposed for tests — confirms walking profile + steps + geojson geometry. */
+/** Exposed for tests - confirms walking profile + steps + geojson geometry. */
 export const buildWalkingDirectionsUrl = buildDirectionsUrl
 
 

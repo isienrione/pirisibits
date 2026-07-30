@@ -24,7 +24,7 @@ export default function C5ReflectionBeat() {
       }} />
       <Vignette />
 
-      {/* The signature line — full-bleed Fraunces italic, centered */}
+      {/* The signature line - full-bleed Fraunces italic, centered */}
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 48px", zIndex: 10 }}>
         <p style={{
           fontFamily: F.display, fontSize: 28,
@@ -37,7 +37,7 @@ export default function C5ReflectionBeat() {
         </p>
       </div>
 
-      {/* Continue — fades in after 3s */}
+      {/* Continue - fades in after 3s */}
       <div style={{
         position: "absolute", bottom: 64, left: 0, right: 0,
         textAlign: "center", zIndex: 10,

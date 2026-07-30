@@ -17,4 +17,4 @@ export function collectWikimediaCredits(manifest) {
 }
 
 export const ABOUT_IMAGERY_COPY =
-  "Present-day photographs are sourced from Wikimedia Commons under Creative Commons licenses (credited above) where available. Where a suitable licensed photograph wasn't available, present-day imagery was generated with AI tools, referenced against real historical photographs of each location. Historical reconstructions throughout the app are AI-generated interpretations informed by archaeological and historical research — see each waypoint's caption for source notes."
+  "Present-day photographs are sourced from Wikimedia Commons under Creative Commons licenses (credited above) where available. Where a suitable licensed photograph wasn't available, present-day imagery was generated with AI tools, referenced against real historical photographs of each location. Historical reconstructions throughout the app are AI-generated interpretations informed by archaeological and historical research - see each waypoint's caption for source notes."

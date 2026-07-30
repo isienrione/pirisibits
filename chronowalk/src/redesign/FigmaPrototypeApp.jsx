@@ -1,5 +1,5 @@
 /**
- * Figma Make prototype gallery — browse every redesigned screen.
+ * Figma Make prototype gallery - browse every redesigned screen.
  * Route: /prototype (local CHRONOWALK 3 only)
  */
 import { useState } from 'react'

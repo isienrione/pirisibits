@@ -1,6 +1,6 @@
 /**
  * Landing post-launch experiments (see docs/LANDING_POST_LAUNCH_AB.md).
- * Test 1 — hero headline positioning. Sticky per browser; URL override for QA.
+ * Test 1 - hero headline positioning. Sticky per browser; URL override for QA.
  *
  * Do not reuse `ab_variant` (price AB cents in config/track).
  */
@@ -8,7 +8,7 @@
 export const LANDING_EXP_HERO_KEY = 'cw_landing_exp_hero'
 export const LANDING_EXP_HERO_PARAM = 'landing_exp_hero'
 
-/** Test 1 copy — headline only (accent / sub / CTAs stay shared). */
+/** Test 1 copy - headline only (accent / sub / CTAs stay shared). */
 export const LANDING_EXP_HERO_COPY = Object.freeze({
   a: {
     id: 'a',
@@ -48,7 +48,7 @@ function writeStored(variant) {
   try {
     window.localStorage.setItem(LANDING_EXP_HERO_KEY, variant)
   } catch {
-    /* private mode / quota — still use in-memory for the session via return value */
+    /* private mode / quota - still use in-memory for the session via return value */
   }
 }
 

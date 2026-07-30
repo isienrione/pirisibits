@@ -38,7 +38,7 @@ export default function ShellTabBar() {
       className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
       style={{
         fontFamily: 'var(--font-ui)',
-        // viewport-fit=cover always exposes the home-indicator inset — extend
+        // viewport-fit=cover always exposes the home-indicator inset - extend
         // the bone background flush to the physical bottom (no black gap).
         paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
       }}

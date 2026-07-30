@@ -3,7 +3,7 @@ import { getJourneySnapshot, JOURNEY_STATES, isResumableJourney } from '../../st
 import { getAppHomePath, isAppEntryComplete } from '../../lib/appEntry.js'
 
 /**
- * Legacy /access/confirmed — send travelers into App Entry or resume.
+ * Legacy /access/confirmed - send travelers into App Entry or resume.
  * The cinematic threshold now lives on /setup.
  */
 export default function RedesignAccessConfirmedPage() {

@@ -3,7 +3,7 @@ export const PANTHEON = { lat: 41.89885, lng: 12.47687 }
 /** Asset Studio (AI prompts): http://localhost:5173/?assetStudio=true&waypoint=pantheon */
 
 /**
- * Mid-piazza POV facing the portico — closer than the fountain-wide Street View shot.
+ * Mid-piazza POV facing the portico - closer than the fountain-wide Street View shot.
  * Re-scouted to match Colosseum-style framing (monument fills the frame).
  *
  * Previous pass used the Maps place pin / fountain fisheye (offset ~0 m, pitch 10.5°).
@@ -44,9 +44,9 @@ export const PANTHEON_WAYPOINT = {
   media_cache_version: 3,
   framingProfile: 'compact_piazza',
   arrival_headline: "You've reached the Pantheon!",
-  arrival_subtitle: 'The temple of all gods awaits — step into imperial Rome.',
+  arrival_subtitle: 'The temple of all gods awaits - step into imperial Rome.',
   immersive_orientation_hint:
-    'Stand in Piazza della Rotonda facing the portico — partway between the fountain and the steps — then begin the immersive view.',
+    'Stand in Piazza della Rotonda facing the portico - partway between the fountain and the steps - then begin the immersive view.',
   lat: PANTHEON.lat,
   lng: PANTHEON.lng,
   viewpoint: PANTHEON_VIEWPOINT,

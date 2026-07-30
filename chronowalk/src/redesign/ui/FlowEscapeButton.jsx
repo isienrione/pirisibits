@@ -14,7 +14,7 @@ export default function FlowEscapeButton() {
   const location = useLocation()
   const { state: journeyState, transition } = useV2Journey()
 
-  // Threshold / story / arrived screens already own a Back control — a second
+  // Threshold / story / arrived screens already own a Back control - a second
   // fixed escape stacked on top looked like a doubled, cropped chevron.
   if (
     location.pathname === '/journey' &&

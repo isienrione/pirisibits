@@ -16,7 +16,7 @@ export default function C8dResume({
   return (
     <div style={{ background: T.obsidian, height: "100%", position: "relative", overflow: "hidden", fontFamily: F.body }}>
 
-      {/* Golden-hour Rome — Spanish Steps at sunset for warmth */}
+      {/* Golden-hour Rome - Spanish Steps at sunset for warmth */}
       <div style={{
         position: "absolute", inset: 0,
         backgroundImage: `url(${spanishSteps})`,
@@ -26,7 +26,7 @@ export default function C8dResume({
       <Vignette />
       <BottomScrim strength={0.88} />
 
-      {/* Content — type on the photograph */}
+      {/* Content - type on the photograph */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 10,
         display: "flex", flexDirection: "column",

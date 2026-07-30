@@ -7,7 +7,7 @@ const stop = {
   number: 1,
   title: 'The Colosseum',
   shortTitle: 'Colosseum',
-  subtitle: 'Ancient Rome awaits — choose how you want to explore.',
+  subtitle: 'Ancient Rome awaits - choose how you want to explore.',
   heroImage: '/waypoints/colosseum/exterior/modern-poster.jpg',
   transcript: 'The Colosseum rises where emperors once commanded the city.',
 }

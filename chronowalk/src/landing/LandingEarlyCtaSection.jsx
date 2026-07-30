@@ -1,6 +1,6 @@
 import { LANDING_CONTENT } from './landingData.js'
 
-/** Act I — early conversion band immediately under Threshold. */
+/** Act I - early conversion band immediately under Threshold. */
 export default function LandingEarlyCtaSection({ onPreview }) {
   const section = LANDING_CONTENT['early-cta']
 

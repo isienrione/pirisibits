@@ -2,7 +2,7 @@ import { Button } from './Button'
 import { cn } from './cn'
 
 /**
- * Primary CTA — engraved bronze with soft metallic depth.
+ * Primary CTA - engraved bronze with soft metallic depth.
  */
 export function BronzeButton({ className, variant = 'primary', ...props }) {
   return (

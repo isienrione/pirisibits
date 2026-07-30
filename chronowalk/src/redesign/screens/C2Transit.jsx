@@ -1,6 +1,6 @@
 import WalkingCompanionScreen from './WalkingCompanionScreen.jsx'
 
-/** Transit between stops — delegates to the unified walking companion layout. */
+/** Transit between stops - delegates to the unified walking companion layout. */
 export default function C2Transit({
   destinationTitle: _destinationTitle,
   onArriveAtDestination,

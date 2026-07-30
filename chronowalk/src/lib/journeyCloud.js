@@ -61,7 +61,7 @@ export function scheduleJourneyCloudPush(snapshot) {
   }, PUSH_DEBOUNCE_MS)
 }
 
-/** Test helper — flush pending debounce immediately. */
+/** Test helper - flush pending debounce immediately. */
 export function flushJourneyCloudPushForTests() {
   if (pushTimer) {
     clearTimeout(pushTimer)

@@ -2,7 +2,7 @@ export const CASTEL_SANT_ANGELO = { lat: 41.90306, lng: 12.46627 }
 
 /** Asset Studio: http://localhost:5173/?assetStudio=true&waypoint=castel-sant-angelo */
 
-/** Ponte Sant'Angelo — frontal view of the castle drum (rescouted POV). */
+/** Ponte Sant'Angelo - frontal view of the castle drum (rescouted POV). */
 export const CASTEL_SANT_ANGELO_VIEWPOINT = {
   lat: 41.9025034,
   lng: 12.4664057,
@@ -38,7 +38,7 @@ export const CASTEL_SANT_ANGELO_WAYPOINT = {
   framingProfile: 'large_approach',
   arrival_headline: "You've reached Castel Sant'Angelo!",
   arrival_subtitle:
-    "Hadrian's mausoleum became a papal fortress — drag time back to Rome's marble drum and bronze angel.",
+    "Hadrian's mausoleum became a papal fortress - drag time back to Rome's marble drum and bronze angel.",
   immersive_orientation_hint:
     'Stand on Ponte Sant\'Angelo facing the round castle, then begin the immersive view.',
   lat: CASTEL_SANT_ANGELO.lat,

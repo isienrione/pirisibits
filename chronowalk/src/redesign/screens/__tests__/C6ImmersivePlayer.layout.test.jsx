@@ -214,7 +214,7 @@ describe('C6ImmersivePlayer next-step CTA layout', () => {
     const onStoryComplete = vi.fn()
     mountPlayer(
       <C6ImmersivePlayer
-        title="Colosseum interior — a long landmark title that wraps on narrow phones"
+        title="Colosseum interior - a long landmark title that wraps on narrow phones"
         chapterTitle="Chapter title that is also quite long for regression coverage"
         chapterIndex={0}
         chapterCount={2}

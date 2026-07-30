@@ -6,7 +6,7 @@ import HomeScreenInstallOption from '../ui/HomeScreenInstallOption.jsx'
 
 /**
  * In-app prepare step: offline download, home-screen install, optional analytics.
- * Shown after the threshold — not marketing, not the walk yet.
+ * Shown after the threshold - not marketing, not the walk yet.
  */
 export default function AppEntryPrepare({
   downloading = false,
@@ -14,7 +14,7 @@ export default function AppEntryPrepare({
   downloadComplete = false,
   downloadError = null,
   mapTilesPartial = false,
-  analyticsEnabled = false,
+  analyticsEnabled = true,
   installed = false,
   canPromptInstall = false,
   showIosInstructions = false,
@@ -150,7 +150,7 @@ export default function AppEntryPrepare({
               {done ? (
                 mapTilesPartial ? (
                   <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                    Stories ready. Map tiles need a steadier connection — retry when you have signal.
+                    Stories ready. Map tiles need a steadier connection - retry when you have signal.
                   </p>
                 ) : (
                   <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>

@@ -8,7 +8,7 @@ describe('ThresholdDiegeticHint', () => {
     expect(formatThenHintLabel('imperial rome')).toBe('Imperial Rome')
   })
 
-  it('renders ring + one line — not a triple-instruction card', () => {
+  it('renders ring + one line - not a triple-instruction card', () => {
     render(<ThresholdDiegeticHint thenLabel="ANCIENT ROME" showText />)
     expect(screen.getByTestId('threshold-diegetic-hint')).toBeInTheDocument()
     expect(screen.getByText(/hold to reveal ancient rome/i)).toBeInTheDocument()

@@ -2,7 +2,7 @@
  * Customer-facing seat presentation for Walk together.
  *
  * Presentation numbers are display-only. Invitation/revoke/sync actions must
- * always use the original server seat `id` — never the presentation number.
+ * always use the original server seat `id` - never the presentation number.
  */
 
 /**

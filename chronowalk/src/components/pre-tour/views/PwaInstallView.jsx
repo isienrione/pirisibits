@@ -12,7 +12,7 @@ export function PwaInstallView() {
         <EditorialTitle
           eyebrow="Install"
           size="md"
-          subtitle="Add ChronoWalk to your home screen for quick access on tour day — full screen, like a native app."
+          subtitle="Add ChronoWalk to your home screen for quick access on tour day - full screen, like a native app."
         >
           Walk with ChronoWalk offline-ready
         </EditorialTitle>

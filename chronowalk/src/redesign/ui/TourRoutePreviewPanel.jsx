@@ -6,7 +6,7 @@ import { Eyebrow } from './index.js'
 import TourRouteIllustration from './TourRouteIllustration.jsx'
 
 /**
- * Shared route preview — pack poster for known tiers, illustrated roadmap otherwise.
+ * Shared route preview - pack poster for known tiers, illustrated roadmap otherwise.
  */
 export default function TourRoutePreviewPanel({
   manifest,
@@ -85,7 +85,7 @@ export default function TourRoutePreviewPanel({
             <img
               className="cw-route-preview-panel__pack-img"
               src={pack.cardImage}
-              alt={`${pack.name} route map — ${pack.stopsLabel}`}
+              alt={`${pack.name} route map - ${pack.stopsLabel}`}
               width={pack.cardWidth}
               height={pack.cardHeight}
               decoding="async"

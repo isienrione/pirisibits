@@ -3,7 +3,7 @@ import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
 /** Soft dissolve starts before the last frame so the cut into the hero isn’t abrupt. */
-/** Edge-bust: cinematic open (intro-open.mp4) — 2026-07-29 */
+/** Edge-bust: cinematic open (intro-open.mp4) - 2026-07-29 */
 const EXIT_LEAD_MS = 320
 const COMPRESS_MS = 450
 const FALLBACK_MAX_MS = 7000
@@ -62,7 +62,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   const completedRef = useRef(false)
   const playIntroOnMount = useRef(phase === 'intro')
 
-  // Nav handoff — keep separate so intro→compress does not tear down timers.
+  // Nav handoff - keep separate so intro→compress does not tear down timers.
   useEffect(() => {
     if (phase !== 'nav') return undefined
     if (!completedRef.current) {

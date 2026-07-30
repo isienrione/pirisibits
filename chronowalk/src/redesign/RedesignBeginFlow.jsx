@@ -22,7 +22,7 @@ import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
 
 const ETERNA_MODE_SUBTITLE =
-  'Roma Eterna includes every route mode. Start with the full walk, just the centro storico, just the Colosseum and Forum, or hand-pick stops to match your day. Colored dots show which acts sit in each tour — choose one to continue.'
+  'Roma Eterna includes every route mode. Start with the full walk, just the centro storico, just the Colosseum and Forum, or hand-pick stops to match your day. Colored dots show which acts sit in each tour - choose one to continue.'
 
 const ETERNA_MODE_FOOTER =
   'You can change your mind later. Nothing expires.'
@@ -172,7 +172,7 @@ export default function RedesignBeginFlow() {
         loading={loading}
         context={previewContext}
         continueLabel="Enable location & begin"
-        footerNote="Next you'll enable location — then the guided tutorial begins at your first stop."
+        footerNote="Next you'll enable location - then the guided tutorial begins at your first stop."
         onContinue={() => setStepName('location')}
       />
     )

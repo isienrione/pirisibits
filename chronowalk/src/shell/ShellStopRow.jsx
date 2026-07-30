@@ -35,7 +35,7 @@ function TargetIcon() {
 }
 
 /**
- * Presentational stop row — all content via props; no manifest imports.
+ * Presentational stop row - all content via props; no manifest imports.
  */
 export default function ShellStopRow({
   index,

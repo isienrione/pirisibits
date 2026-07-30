@@ -17,7 +17,7 @@ export function resolveLandingTierCents(tierId, liveCents) {
 
 /**
  * Build Paddle customData for a landing offer (preferred path).
- * Attribution only — does not send seat_limit or content_product_id.
+ * Attribution only - does not send seat_limit or content_product_id.
  */
 export function buildLandingTierCustomData(tierId, { host, abVariantCents } = {}) {
   const tierCents = resolveLandingTierCents(tierId, abVariantCents)
@@ -29,7 +29,7 @@ export function buildLandingTierCustomData(tierId, { host, abVariantCents } = {}
 }
 
 /**
- * @deprecated Lemon URL helper — prefer {@link buildLandingTierCustomData}.
+ * @deprecated Lemon URL helper - prefer {@link buildLandingTierCustomData}.
  * Kept for archive tests that still exercise query-param metadata.
  */
 export function buildLandingTierCheckoutUrl(baseUrl, tierId, { host, abVariantCents } = {}) {

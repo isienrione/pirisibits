@@ -50,7 +50,7 @@ vi.mock('../../../state/journey.js', async () => {
   }
 })
 
-// Stable mock for family context — tests set `familyState.current`
+// Stable mock for family context - tests set `familyState.current`
 const familyState = { current: null }
 vi.mock('../FamilyWalkContext.jsx', () => ({
   useOptionalFamilyWalk: () => familyState.current,
@@ -233,7 +233,7 @@ describe('SharedWalkGuardContext', () => {
 
   it('fail-closes when session waypointId is still null (local stop fallback)', async () => {
     // Production race: pause/resume works before leader clock publishes waypointId.
-    // Path A is w01→w02 consecutive — Continue must still warn.
+    // Path A is w01→w02 consecutive - Continue must still warn.
     getStepIdAtIndex.mockReturnValue('w01')
     familyState.current = syncedFollower({
       session: {

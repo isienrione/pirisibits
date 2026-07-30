@@ -1,4 +1,4 @@
-/** Centro storico loop — piazzas and fountains outside Parco Archeologico del Colosseo. */
+/** Centro storico loop - piazzas and fountains outside Parco Archeologico del Colosseo. */
 export const CENTRAL_ROME_TOUR = {
   id: 'central-rome',
   productId: 'rome-central',

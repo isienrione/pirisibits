@@ -10,7 +10,7 @@ const steps = [
 
 describe('NextTurnsCard', () => {
   it('formats instruction with distance', () => {
-    expect(formatNextTurnLine(steps[0])).toBe('Exit the Colosseum and turn left — 120 m')
+    expect(formatNextTurnLine(steps[0])).toBe('Exit the Colosseum and turn left - 120 m')
     expect(formatNextTurnLine({ instruction: 'Continue' })).toBe('Continue')
   })
 
@@ -35,8 +35,8 @@ describe('NextTurnsCard', () => {
     expect(
       screen.getByRole('list', { name: /upcoming maneuvers to arch of titus/i }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Exit the Colosseum and turn left — 120 m')).toBeInTheDocument()
-    expect(screen.getByText('Continue on Via dei Fori Imperiali — 180 m')).toBeInTheDocument()
+    expect(screen.getByText('Exit the Colosseum and turn left - 120 m')).toBeInTheDocument()
+    expect(screen.getByText('Continue on Via dei Fori Imperiali - 180 m')).toBeInTheDocument()
   })
 
   it('offers retry and Google Maps when routing fails', () => {

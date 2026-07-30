@@ -3,7 +3,7 @@ import { PrimaryButton } from './index.js'
 import TourRoutePreviewPanel from './TourRoutePreviewPanel.jsx'
 
 /**
- * Full-screen tour route preview — illustrated roadmap is the hero.
+ * Full-screen tour route preview - illustrated roadmap is the hero.
  */
 export default function TourRoutePreviewScreen({
   manifest,

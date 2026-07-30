@@ -8,7 +8,7 @@ const sizeStyles = {
 }
 
 /**
- * Engraved bronze medallion — inspired by the ChronoWalk logo mark.
+ * Engraved bronze medallion - inspired by the ChronoWalk logo mark.
  */
 export function MedallionBadge({
   size = 'md',

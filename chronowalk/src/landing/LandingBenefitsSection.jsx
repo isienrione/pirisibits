@@ -1,7 +1,7 @@
 import { LANDING_CONTENT } from './landingData.js'
 
 /**
- * Act II — benefits once (“What stays with you”).
+ * Act II - benefits once (“What stays with you”).
  * Editorial list (not cards); product advantages appear only here.
  */
 export default function LandingBenefitsSection() {

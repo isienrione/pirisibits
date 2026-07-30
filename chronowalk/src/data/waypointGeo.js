@@ -76,7 +76,7 @@ const EXPANSION_GEO = Object.fromEntries(
   ])
 )
 
-/** Map / geofence settings per waypoint — extend when adding new stops. */
+/** Map / geofence settings per waypoint - extend when adding new stops. */
 export const WAYPOINT_GEO = {
   colosseum: {
     id: 'colosseum',

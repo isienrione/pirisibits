@@ -31,7 +31,7 @@ export function resolveCompanionMode({
   geofenceRadiusM = 40,
   locationStatus,
   stationaryMs = 0,
-  /** Dev Rome GPS simulation — never treat fixed QA coords as off-route. */
+  /** Dev Rome GPS simulation - never treat fixed QA coords as off-route. */
   suppressOffRoute = false,
 }) {
   if (locationStatus !== LOCATION_STATUS.GRANTED || distance == null) {
@@ -55,7 +55,7 @@ export function companionCopy(mode, { targetTitle } = {}) {
       eyebrow: 'Off route',
       title: "You're farther from the path",
       subtitle: targetTitle
-        ? `Head back toward ${targetTitle} when you're ready — or open the map for bearings.`
+        ? `Head back toward ${targetTitle} when you're ready - or open the map for bearings.`
         : "Open the map for bearings when you're ready to continue.",
     }
   }

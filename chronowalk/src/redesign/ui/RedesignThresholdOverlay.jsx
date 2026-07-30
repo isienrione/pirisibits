@@ -104,7 +104,7 @@ export default function RedesignThresholdOverlay({
               backdropFilter: 'blur(8px)',
             }}
           >
-            Skip — continue walking →
+            Skip - continue walking →
           </button>
         ) : null}
       </div>
