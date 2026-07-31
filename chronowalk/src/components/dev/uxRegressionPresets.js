@@ -40,7 +40,7 @@ export const UX_JOURNEY_SCENE_IDS = {
 }
 
 export const UX_ROUTE_TARGETS = [
-  { id: 'landing', label: 'Landing', path: '/landing' },
+  { id: 'landing', label: 'Landing', path: '/' },
   { id: 'preview', label: 'Preview', path: '/preview' },
   { id: 'access', label: 'Access', path: '/access' },
   { id: 'setup', label: 'Setup', path: '/setup' },
@@ -105,7 +105,7 @@ export function applyFirstTimeVisitorPreset() {
   })
 
   return {
-    route: '/landing',
+    route: '/',
     searchParams: {},
   }
 }
@@ -299,7 +299,7 @@ export function applyUxPersonaPreset(manifest, personaId) {
     case UX_PERSONA_IDS.RETURNING_WITH_PROGRESS:
       return applyReturningWithProgressPreset(manifest)
     default:
-      return { route: '/landing', searchParams: {} }
+      return { route: '/', searchParams: {} }
   }
 }
 

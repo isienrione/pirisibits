@@ -28,14 +28,22 @@ describe('DocumentSeo', () => {
     })
   })
 
-  it('sets index+canonical on /landing', () => {
-    renderAt('/landing')
+  it('sets index+canonical on /', () => {
+    renderAt('/')
     expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
       'index,follow',
     )
     expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
-      'https://chronowalk.com/landing',
+      'https://chronowalk.com/',
     )
+  })
+
+  it('does not advertise /landing as indexable', () => {
+    renderAt('/landing')
+    expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
+      'noindex,nofollow',
+    )
+    expect(document.querySelector('link[rel="canonical"]')).toBeNull()
   })
 
   it('sets index+canonical on legal and contact routes', () => {

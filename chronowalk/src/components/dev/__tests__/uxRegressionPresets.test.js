@@ -33,7 +33,7 @@ describe('uxRegressionPresets', () => {
 
     const result = applyFirstTimeVisitorPreset()
 
-    expect(result.route).toBe('/landing')
+    expect(result.route).toBe('/')
     expect(localStorage.getItem(ACCESS_KEY)).toBeNull()
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.IDLE)
     expect(readRomeOfflineStatus().status).toBe(OFFLINE_AUDIO_STATUS.NONE)
@@ -58,7 +58,7 @@ describe('uxRegressionPresets', () => {
   })
 
   it('applyUxPersonaPreset routes first-time visitor', () => {
-    expect(applyUxPersonaPreset(null, UX_PERSONA_IDS.FIRST_TIME_VISITOR).route).toBe('/landing')
+    expect(applyUxPersonaPreset(null, UX_PERSONA_IDS.FIRST_TIME_VISITOR).route).toBe('/')
   })
 
   it('threshold scene forces threshold state at colosseum', () => {

@@ -6,8 +6,8 @@
  *   TypeError: Failed to fetch dynamically imported module
  * even while a direct network fetch of a live asset returns real JavaScript.
  *
- * Apex `/` → `/landing` (302). Workbox cannot precache `/` (redirects fail
- * install). The SPA shell is therefore precached at `/landing` (HTTP 200).
+ * Legacy `/landing` → `/` (301). Workbox cannot precache `/landing` (redirects
+ * fail install). The SPA shell is therefore precached at `/` (HTTP 200).
  *
  * Rules:
  * 1. Never serve/cache the SPA HTML for script, style, worker, or /assets/*.
@@ -160,21 +160,10 @@ async function handleNavigation(params) {
     return asSafariSafeResponse(await fetch(request))
   }
 
-  // Apex `/` is a Cloudflare 302 → /landing. Never fetch `/` inside the SW:
-  // Safari rejects redirected Responses from service workers.
-  if (url.pathname === '/' || url.pathname === '') {
-    try {
-      const landingRequest = new Request(new URL('/landing', url.origin).href, {
-        method: 'GET',
-        headers: request.headers,
-        credentials: request.credentials,
-        mode: 'same-origin',
-      })
-      const network = await fetch(landingRequest)
-      if (network) return asSafariSafeResponse(network)
-    } catch {
-      // fall through to precache
-    }
+  // Legacy `/landing` is a Cloudflare 301 → /. Never fetch `/landing` inside the
+  // SW: Safari rejects redirected Responses from service workers. Let the
+  // browser follow that redirect (denylist below); serve the apex shell here.
+  if (url.pathname === '/landing') {
     try {
       return asSafariSafeResponse(await cachedAppShell(params))
     } catch {
@@ -212,8 +201,8 @@ async function handleNavigation(params) {
 registerRoute(
   new NavigationRoute(handleNavigation, {
     denylist: [
-      // Let the browser follow Cloudflare's / → /landing 302 itself.
-      /^\/$/,
+      // Let the browser follow Cloudflare's /landing → / 301 itself.
+      /^\/landing$/,
       /^\/offline$/,
       /^\/offline\.html$/,
       /^\/reset-shell$/,

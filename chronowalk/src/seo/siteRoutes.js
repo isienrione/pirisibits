@@ -8,7 +8,7 @@ export const PRODUCTION_ORIGIN = 'https://chronowalk.com'
 
 /** Canonical public marketing / legal / contact paths (sitemap + indexable). */
 export const INDEXABLE_PUBLIC_PATHS = Object.freeze([
-  '/landing',
+  '/',
   '/contact',
   '/legal/terms',
   '/legal/privacy',
@@ -68,11 +68,12 @@ export function resolveDocumentSeo(pathname) {
   if (isIndexablePublicPath(path)) {
     return {
       robots: 'index,follow',
-      canonicalHref: toAbsoluteUrl(path),
+      // Homepage canonical must be exactly https://chronowalk.com/
+      canonicalHref: path === '/' ? `${PRODUCTION_ORIGIN}/` : toAbsoluteUrl(path),
     }
   }
 
-  if (isNoindexPath(path) || path === '/') {
+  if (isNoindexPath(path)) {
     return {
       robots: 'noindex,nofollow',
       canonicalHref: null,

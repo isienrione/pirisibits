@@ -97,7 +97,7 @@ describe('staleChunkRecovery', () => {
     expect(localStorage.getItem('cw_device_credential_v1')).toBe('keep-me')
   })
 
-  it('force recovery wipes then opens /landing (not reset-shell)', async () => {
+  it('force recovery wipes then opens / (not reset-shell)', async () => {
     localStorage.setItem('cw_device_credential_v1', 'keep-me')
     localStorage.setItem('cw_access_entitlement_v1', '{"ok":true}')
 
@@ -106,7 +106,7 @@ describe('staleChunkRecovery', () => {
     expect(clearAllCaches).toHaveBeenCalledTimes(1)
     expect(unregisterAllServiceWorkers).toHaveBeenCalledTimes(1)
     expect(waitForServiceWorkerControllerGone).toHaveBeenCalledWith(10000)
-    expect(hardReload).toHaveBeenCalledWith({ path: '/landing?cw_clean=1' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/?cw_clean=1' })
     expect(showUpdatingOverlay).toHaveBeenCalled()
     expect(sessionStorage.getItem(CHUNK_RECOVERY_GUARD_KEY)).toBeTruthy()
     expect(localStorage.getItem(SHELL_RESET_KEY)).toBe('1')
@@ -134,7 +134,7 @@ describe('staleChunkRecovery', () => {
 
     const forced = await recoverStaleClient({ force: true })
     expect(forced).toEqual({ recovered: true, reloading: true })
-    expect(hardReload).toHaveBeenCalledWith({ path: '/landing?cw_clean=1' })
+    expect(hardReload).toHaveBeenCalledWith({ path: '/?cw_clean=1' })
     expect(clearAllCaches).not.toHaveBeenCalled()
     expect(shouldSkipServiceWorkerRegistration()).toBe(true)
   })

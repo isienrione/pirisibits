@@ -17,7 +17,7 @@ describe('landing_view after analytics consent', () => {
     vi.clearAllMocks()
     localStorage.clear()
     vi.stubEnv('VITE_POSTHOG_KEY', 'phc_test')
-    window.history.replaceState({}, '', '/landing')
+    window.history.replaceState({}, '', '/')
   })
 
   afterEach(() => {

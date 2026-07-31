@@ -8,9 +8,9 @@ import { JOURNEY_STATES, transitionJourney } from '../../../state/journey'
 
 function renderLandingPage() {
   return render(
-    <MemoryRouter initialEntries={['/landing']}>
+    <MemoryRouter initialEntries={['/']}>
       <Routes>
-        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/setup" element={<div>Setup route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />

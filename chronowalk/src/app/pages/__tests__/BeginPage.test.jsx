@@ -11,7 +11,7 @@ function renderBeginPage() {
     <MemoryRouter initialEntries={['/begin']}>
       <Routes>
         <Route path="/begin" element={<BeginPage />} />
-        <Route path="/landing" element={<div>Landing route</div>} />
+        <Route path="/" element={<div>Landing route</div>} />
         <Route path="/setup" element={<div>Setup route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>

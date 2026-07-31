@@ -123,7 +123,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
   }
 
   // Auto recovery into reset-shell trapped Chrome iOS in loops (Safari was fine).
-  // Only an explicit force path may wipe + reload, and it goes to /landing.
+  // Only an explicit force path may wipe + reload, and it goes to /.
   if (!force) {
     return { recovered: false, reloading: false }
   }
@@ -131,7 +131,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
   // Break eternal reset ↔ landing loops after a recent successful wipe.
   if (recentlyResetShell()) {
     showUpdatingOverlay('Updating ChronoWalk…')
-    hardReload({ path: '/landing?cw_clean=1' })
+    hardReload({ path: '/?cw_clean=1' })
     return { recovered: true, reloading: true }
   }
 
@@ -153,7 +153,7 @@ export async function recoverStaleClient({ force = false, reason = 'stale-shell'
     // Still reload - a hard navigation often picks up the new deploy.
   }
 
-  hardReload({ path: '/landing?cw_clean=1' })
+  hardReload({ path: '/?cw_clean=1' })
   return { recovered: true, reloading: true }
 }
 

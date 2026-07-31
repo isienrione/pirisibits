@@ -18,11 +18,11 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
 
 function renderWelcomeFlow() {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={['/welcome-flow']}>
       <Routes>
-        <Route path="/" element={<WelcomeFlow />} />
+        <Route path="/welcome-flow" element={<WelcomeFlow />} />
         <Route path="/begin" element={<div>Begin route</div>} />
-        <Route path="/landing" element={<div>Landing route</div>} />
+        <Route path="/" element={<div>Landing route</div>} />
       </Routes>
     </MemoryRouter>
   )

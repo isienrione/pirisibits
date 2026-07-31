@@ -31,14 +31,27 @@ function parseSitemapLocs(xml) {
 }
 
 describe('siteRoutes SEO inventory', () => {
-  it('marks landing/legal/contact as indexable with absolute canonicals', () => {
+  it('marks homepage/legal/contact as indexable with absolute canonicals', () => {
     for (const path of INDEXABLE_PUBLIC_PATHS) {
       expect(isIndexablePublicPath(path)).toBe(true)
       const seo = resolveDocumentSeo(path)
       expect(seo.robots).toBe('index,follow')
-      expect(seo.canonicalHref).toBe(toAbsoluteUrl(path))
+      expect(seo.canonicalHref).toBe(path === '/' ? `${PRODUCTION_ORIGIN}/` : toAbsoluteUrl(path))
       expect(seo.canonicalHref.startsWith(`${PRODUCTION_ORIGIN}/`)).toBe(true)
     }
+  })
+
+  it('does not treat legacy /landing as an indexable canonical path', () => {
+    expect(INDEXABLE_PUBLIC_PATHS).not.toContain('/landing')
+    expect(isIndexablePublicPath('/landing')).toBe(false)
+    expect(resolveDocumentSeo('/landing').robots).toBe('noindex,nofollow')
+    expect(resolveDocumentSeo('/landing').canonicalHref).toBeNull()
+  })
+
+  it('indexes / with https://chronowalk.com/ canonical', () => {
+    const seo = resolveDocumentSeo('/')
+    expect(seo.robots).toBe('index,follow')
+    expect(seo.canonicalHref).toBe('https://chronowalk.com/')
   })
 
   it('marks credential/transactional/app routes as noindex', () => {
@@ -80,7 +93,8 @@ describe('public robots.txt + sitemap.xml', () => {
     const robots = readPublic('robots.txt')
     expect(robots).not.toMatch(/<!doctype html>/i)
     expect(robots).toMatch(/^User-agent:\s*\*/m)
-    expect(robots).toMatch(/^Allow:\s*\/landing$/m)
+    expect(robots).toMatch(/^Allow:\s*\/$/m)
+    expect(robots).not.toMatch(/^Allow:\s*\/landing$/m)
     expect(robots).toMatch(/^Allow:\s*\/legal\/$/m)
     expect(robots).toMatch(/^Allow:\s*\/contact$/m)
     expect(robots).toMatch(/^Sitemap:\s*https:\/\/chronowalk\.com\/sitemap\.xml$/m)
@@ -124,8 +138,10 @@ describe('public robots.txt + sitemap.xml', () => {
       const path = loc.slice(PRODUCTION_ORIGIN.length)
       expect(routerPaths).toContain(path)
       expect(INDEXABLE_PUBLIC_PATHS).toContain(path)
-      if (path !== '/landing') {
+      if (path !== '/') {
         expect(footerLegal).toContain(path)
+      } else {
+        expect(routerPaths).toContain('/')
       }
     }
 
@@ -180,7 +196,8 @@ describe('built dist SEO files (when present)', () => {
     expect(robots.trimStart().toLowerCase().startsWith('<!doctype html>')).toBe(false)
     expect(sitemap.trimStart().toLowerCase().startsWith('<!doctype html>')).toBe(false)
     expect(robots).toContain('Sitemap: https://chronowalk.com/sitemap.xml')
-    expect(sitemap).toContain('<loc>https://chronowalk.com/landing</loc>')
+    expect(sitemap).toContain('<loc>https://chronowalk.com/</loc>')
+    expect(sitemap).not.toContain('<loc>https://chronowalk.com/landing</loc>')
     expect(robots).toBe(readPublic('robots.txt'))
     expect(sitemap).toBe(readPublic('sitemap.xml'))
   })

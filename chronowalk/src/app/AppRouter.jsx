@@ -66,12 +66,9 @@ if (import.meta.env.DEV) {
   )
 }
 
-// Apex chronowalk.com must open the marketing site. Send `/` to `/landing`
-// (same page) so owners with cw_access never get silently redirected to /setup.
-function ApexHomeRedirect() {
-  return <Navigate to="/landing" replace />
-}
-
+// Apex chronowalk.com serves the public marketing homepage directly.
+// Purchasers reach setup only via /access and post-purchase routes - not a
+// silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
 function PublicLandingRoute() {
   return <LazyLandingPage />
 }
@@ -127,8 +124,8 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Couldn’t load ChronoWalk">
       <Routes>
-        <Route path="/" element={<ApexHomeRedirect />} />
-        <Route path="/landing" element={<PublicLandingRoute />} />
+        <Route path="/" element={<PublicLandingRoute />} />
+        <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />
@@ -186,7 +183,7 @@ function AppRouter() {
     initAnalytics()
     // Successful React mount - clear mid-boot sentinel / one-boot SW skip.
     // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
-    // /landing mounts then throws again (lazyWithRecovery clears it on success).
+    // the homepage mounts then throws again (lazyWithRecovery clears it on success).
     clearBootPending()
     clearSkipSwOnce()
     // Drop one-shot cache-bust param from stale-shell recovery navigations.

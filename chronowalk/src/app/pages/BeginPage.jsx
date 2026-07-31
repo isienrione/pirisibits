@@ -5,7 +5,7 @@ import RedesignBeginFlow from '../../redesign/RedesignBeginFlow.jsx'
 
 export function BeginPage() {
   if (!hasAccess()) {
-    return <Navigate to="/landing" replace />
+    return <Navigate to="/" replace />
   }
 
   return <RedesignBeginFlow />

@@ -1,14 +1,13 @@
-# Apex marketing entry: chronowalk.com → /landing before the SPA boots.
-# Prevents stale clients with the old HomeRoute (cw_access → /setup) from
-# keeping owners off the public landing when they type the bare domain.
-/    /landing   302
+# Public marketing homepage is the apex SPA document (HTTP 200).
+# Legacy /landing URL permanently redirects to / for SEO + bookmarks.
+/landing    /    301
 
 # SPA fallback for client-side routes (React Router).
 # Note: Cloudflare Pages still 308-redirects /index.html → / and
 # /offline.html → /offline (Pretty URLs).
 #
 # Do NOT add `/assets/* … 404` rules here. On Cloudflare Pages that pattern
-# broke subsequent SPA fallback (`/landing` → 404) in production deploy 8a799eb.
+# broke subsequent SPA fallback in production deploy 8a799eb.
 # Missing hashed assets may still receive index.html via this catch-all; the
 # service worker rejects/scrubs text/html under /assets/* and script destinations
 # instead of relying on Cloudflare for a dedicated asset 404.

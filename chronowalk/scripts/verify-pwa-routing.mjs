@@ -40,18 +40,22 @@ function checkRedirects(source, label) {
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('#'))
 
-  const hasApex = lines.some((line) => /^\/\s+\/landing\s+302$/.test(line))
+  const hasLandingToHome = lines.some((line) => /^\/landing\s+\/\s+301$/.test(line))
+  const hasLegacyApex = lines.some((line) => /^\/\s+\/landing\s+302$/.test(line))
   const hasSpa = lines.some((line) => /^\/\*\s+\/index\.html\s+200$/.test(line))
   const hasAssets404 = lines.some((line) => line.startsWith('/assets/*') && /\s404\s*$/.test(line))
 
-  if (!hasApex) fail(`${label}: missing \`/ → /landing 302\``)
-  else ok(`${label}: / → /landing 302`)
+  if (!hasLandingToHome) fail(`${label}: missing \`/landing → / 301\``)
+  else ok(`${label}: /landing → / 301`)
+
+  if (hasLegacyApex) fail(`${label}: legacy \`/ → /landing 302\` must be removed`)
+  else ok(`${label}: no / → /landing 302`)
 
   if (!hasSpa) fail(`${label}: missing \`/* → /index.html 200\``)
-  else ok(`${label}: /* → /index.html 200 (covers /landing, /walk-together, …)`)
+  else ok(`${label}: /* → /index.html 200 (covers /, /walk-together, …)`)
 
   if (hasAssets404) {
-    fail(`${label}: /assets/* 404 rule present (broke /landing on Cloudflare Pages)`)
+    fail(`${label}: /assets/* 404 rule present (broke SPA fallback on Cloudflare Pages)`)
   } else {
     ok(`${label}: no /assets/* 404 rule`)
   }
@@ -69,7 +73,7 @@ function checkBuiltSw(swSource) {
   if (unsafe.length) {
     fail(`dist/sw.js precache contains unsafe URLs: ${unsafe.join(', ')}`)
   } else {
-    ok('dist/sw.js precache has no bare / or /index.html entries')
+    ok('dist/sw.js precache has no /landing or /index.html entries')
   }
 
   if (!/status!==200/.test(swSource) && !/status !== 200/.test(swSource)) {
@@ -93,7 +97,7 @@ function checkManifestTransformUnit() {
   if (mapped.some((e) => isUnsafePrecacheUrl(typeof e === 'string' ? e : e.url))) {
     fail('mapManifestToCloudflareCanonical still emits unsafe URLs')
   } else {
-    ok('manifest transform maps index.html → /landing only')
+    ok('manifest transform maps index.html → / only')
   }
 }
 
@@ -171,18 +175,36 @@ async function probeLive() {
   }
 
   const root = await fetchHead('/')
-  if (root.status !== 302 && root.status !== 301) {
-    fail(`live ${base}/ expected 302, got ${root.status}`)
+  if (root.status !== 200) {
+    fail(`live ${base}/ expected 200, got ${root.status}`)
   } else {
-    const location = root.headers.get('location') || ''
-    if (!location.includes('/landing')) {
-      fail(`live ${base}/ Location should include /landing, got ${location}`)
+    const ct = root.headers.get('content-type') || ''
+    if (!/text\/html/i.test(ct)) {
+      fail(`live ${base}/ expected text/html, got ${ct}`)
     } else {
-      ok(`live ${base}/ → ${location} (${root.status})`)
+      ok(`live ${base}/ → 200 text/html`)
     }
   }
 
-  for (const path of ['/landing', '/walk-together']) {
+  const landing = await fetchHead('/landing')
+  if (landing.status !== 301 && landing.status !== 308) {
+    fail(`live ${base}/landing expected 301/308, got ${landing.status}`)
+  } else {
+    const location = landing.headers.get('location') || ''
+    let dest = location
+    try {
+      dest = new URL(location, base).pathname
+    } catch {
+      // keep raw
+    }
+    if (dest !== '/') {
+      fail(`live ${base}/landing Location should be /, got ${location}`)
+    } else {
+      ok(`live ${base}/landing → ${location} (${landing.status})`)
+    }
+  }
+
+  for (const path of ['/walk-together']) {
     const response = await fetchHead(path)
     const ct = response.headers.get('content-type') || ''
     if (response.status !== 200 || !/text\/html/i.test(ct)) {
@@ -224,12 +246,12 @@ async function probeLive() {
     ok(`live ${base}/sitemap.xml → 200 ${sitemapCt}`)
   }
 
-  // Discover a real hashed chunk from the landing document.
-  const landing = await fetch(`${base}/landing`, { redirect: 'follow' })
-  const html = await landing.text()
+  // Discover a real hashed chunk from the homepage document.
+  const home = await fetch(`${base}/`, { redirect: 'follow' })
+  const html = await home.text()
   const asset = html.match(/\/assets\/[^"']+\.js/)?.[0]
   if (!asset) {
-    fail('live landing HTML did not reference a /assets/*.js chunk')
+    fail('live homepage HTML did not reference a /assets/*.js chunk')
   } else {
     const assetRes = await fetchHead(asset)
     const ct = assetRes.headers.get('content-type') || ''

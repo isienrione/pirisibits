@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { RedesignNavCtx } from './nav.js'
 
 const SCREEN_ROUTES = {
-  A1: '/landing',
+  A1: '/',
   A2: '/preview',
   A3: '/access/confirmed',
   B1: '/welcome',

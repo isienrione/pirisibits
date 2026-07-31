@@ -379,7 +379,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
       </p>
       <p style={{ marginTop: 12, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
         Haven&apos;t purchased yet?{' '}
-        <Link to="/landing#pricing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
+        <Link to="/#pricing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
           See Rome packages
         </Link>
       </p>

@@ -12,7 +12,7 @@ export default function LegalPageShell({ children }) {
   return (
     <div className="cw-legal-page">
       <main className="cw-legal-page__main">
-        <Link to="/landing" className="cw-legal-page__back">
+        <Link to="/" className="cw-legal-page__back">
           ← Back to ChronoWalk
         </Link>
         {children}
@@ -20,7 +20,7 @@ export default function LegalPageShell({ children }) {
           <GoldSeam variant="act" />
         </div>
       </main>
-      <LandingSiteFooter pricingHref="/landing#pricing" landingPrefix="/landing" />
+      <LandingSiteFooter pricingHref="/#pricing" landingPrefix="/" />
     </div>
   )
 }

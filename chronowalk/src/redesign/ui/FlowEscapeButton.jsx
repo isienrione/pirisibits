@@ -6,7 +6,7 @@ import { JOURNEY_STATES } from '../../state/journey.js'
 import { T, F } from '../tokens.js'
 
 function homePath() {
-  return hasAccess() ? '/tour' : '/landing'
+  return hasAccess() ? '/tour' : '/'
 }
 
 export default function FlowEscapeButton() {
@@ -54,12 +54,12 @@ export default function FlowEscapeButton() {
     }
 
     if (pathname === '/setup' || pathname === '/access/confirmed') {
-      navigate(hasAccess() ? '/begin' : '/landing', { replace: true })
+      navigate(hasAccess() ? '/begin' : '/', { replace: true })
       return
     }
 
     if (pathname === '/preview') {
-      navigate('/landing', { replace: true })
+      navigate('/', { replace: true })
       return
     }
 

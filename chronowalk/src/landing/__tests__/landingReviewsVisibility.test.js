@@ -11,7 +11,7 @@ import {
 describe('landingReviewsVisibility', () => {
   beforeEach(() => {
     window.localStorage.clear()
-    window.history.replaceState({}, '', '/landing')
+    window.history.replaceState({}, '', '/')
   })
 
   afterEach(() => {
@@ -32,7 +32,7 @@ describe('landingReviewsVisibility', () => {
   })
 
   it('honors ?landing_reviews=1 and sticky-writes storage', () => {
-    window.history.replaceState({}, '', '/landing?landing_reviews=1&landing_dev=1')
+    window.history.replaceState({}, '', '/?landing_reviews=1&landing_dev=1')
     syncLandingReviewFlagsFromUrl()
     expect(getLandingReviewsVisible()).toBe(true)
     expect(getLandingDevToolsVisible()).toBe(true)

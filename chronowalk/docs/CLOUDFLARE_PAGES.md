@@ -37,21 +37,22 @@ Full commerce wiring: [`docs/PADDLE_SETUP.md`](./PADDLE_SETUP.md). Redeploy afte
 Cloudflare Pages reads `public/_redirects`:
 
 ```
-/    /landing   302
+/landing    /    301
 /*   /index.html   200
 ```
 
-- Apex `/` always redirects to `/landing`.
-- `/landing`, `/walk-together`, and other React Router document routes are served the SPA shell via the catch-all rewrite (HTTP 200 `text/html`).
-- **Do not** add `/assets/* … 404` rules. Deploy `8a799eb` proved that pattern can break SPA fallback on Cloudflare Pages (`/landing` → 404) and prevent Workbox from installing.
+- Apex `/` serves the marketing SPA (HTTP 200 via the catch-all rewrite).
+- Legacy `/landing` permanently redirects to `/` (301).
+- `/`, `/walk-together`, and other React Router document routes are served the SPA shell via the catch-all rewrite (HTTP 200 `text/html`).
+- **Do not** add `/assets/* … 404` rules. Deploy `8a799eb` proved that pattern can break SPA fallback on Cloudflare Pages and prevent Workbox from installing.
 
 Missing hashed `/assets/*.js` files may still receive `index.html` from the catch-all. The service worker rejects/`scrub`s `text/html` under asset and module requests so that HTML is never evaluated as JavaScript.
 
 ### Pretty URLs + Workbox precache
 
-Cloudflare Pages also **redirects** `/index.html` → `/` (308). Combined with apex `/` → `/landing` (302), **`/` is not a valid Workbox precache URL** (install fails with `bad-precaching-response` on redirects / 404s).
+Cloudflare Pages also **redirects** `/index.html` → `/` (308). Legacy `/landing` → `/` (301) means **`/landing` is not a valid Workbox precache URL** (install fails with `bad-precaching-response` on redirects).
 
-The build maps `index.html` → **`/landing`** (stable HTTP 200) via `src/pwa/cloudflarePrecacheUrls.js`. Offline navigation falls back with `createHandlerBoundToURL('/landing')`.
+The build maps `index.html` → **`/`** (stable HTTP 200) via `src/pwa/cloudflarePrecacheUrls.js`. Offline navigation falls back with `createHandlerBoundToURL('/')`.
 
 Operator check after `npm run build`:
 

@@ -100,7 +100,7 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
       <RedesignRouteShell>
         <div className="redesign-app-shell" style={{ padding: 24, color: T.warmWhite }}>
           <p>Unknown waypoint: {waypointId}</p>
-          <button type="button" onClick={() => navigate('/landing')}>Back</button>
+          <button type="button" onClick={() => navigate('/')}>Back</button>
         </div>
       </RedesignRouteShell>
     )
@@ -131,7 +131,7 @@ export default function RedesignWaypointPreviewPage({ waypointId: waypointIdProp
         if (audio) audio.currentTime = seconds
       },
       onThresholdCross: handleThresholdCross,
-      onBack: () => navigate('/landing'),
+      onBack: () => navigate('/'),
     },
   })
 

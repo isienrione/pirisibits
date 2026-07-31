@@ -145,12 +145,12 @@ export default function RedesignPreviewPage() {
     setConsentOpen(false)
     if (result.ok) return
     // Purchase path only - never mix unlock with access-code entry.
-    navigate('/landing#pricing')
+    navigate('/#pricing')
   }
 
   const handleBack = () => {
     stopPreviewSessionAudio()
-    navigate('/landing')
+    navigate('/')
   }
 
   const handleStoryComplete = () => {

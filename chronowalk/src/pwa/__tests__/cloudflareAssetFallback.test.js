@@ -13,18 +13,19 @@ function redirectLines(source) {
 }
 
 describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
-  it('preserves / → /landing 302 and SPA fallback without an assets 404 rule', () => {
+  it('preserves /landing → / 301 and SPA fallback without an assets 404 rule', () => {
     const redirects = readFileSync(join(ROOT, 'public/_redirects'), 'utf8')
     const lines = redirectLines(redirects)
 
-    expect(lines.some((line) => /^\/\s+\/landing\s+302$/.test(line))).toBe(true)
+    expect(lines.some((line) => /^\/landing\s+\/\s+301$/.test(line))).toBe(true)
+    expect(lines.some((line) => /^\/\s+\/landing\s+302$/.test(line))).toBe(false)
     expect(lines.some((line) => /^\/\*\s+\/index\.html\s+200$/.test(line))).toBe(true)
-    // The 8a799eb rule that broke /landing in production must stay gone.
+    // The 8a799eb rule that broke SPA fallback in production must stay gone.
     expect(lines.some((line) => line.startsWith('/assets/*'))).toBe(false)
     expect(existsSync(join(ROOT, 'public/404.html'))).toBe(false)
 
     // Document routes are covered by the catch-all SPA rewrite (not listed
-    // individually); ensure no rule shadows /landing with a 404.
+    // individually); ensure no rule shadows homepage with a 404.
     expect(redirects).not.toMatch(/\/landing\s+[^\n]*\s+404/)
     expect(redirects).not.toMatch(/\/walk-together\s+[^\n]*\s+404/)
   })
@@ -41,7 +42,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(headers).not.toMatch(/\/404\.html/)
   })
 
-  it('service worker source rejects HTML for asset/module routes and binds shell to /landing', () => {
+  it('service worker source rejects HTML for asset/module routes and binds shell to /', () => {
     const sw = readFileSync(join(ROOT, 'src/pwa/sw.js'), 'utf8')
     expect(sw).toContain('isAssetOrModuleRequest')
     expect(sw).toContain('rejectHtmlAssetPlugin')
@@ -55,9 +56,9 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(sw).not.toMatch(/return\s+Response\.error\s*\(/)
     expect(sw).toMatch(/\/\^\\\/reset-shell\$\//)
     expect(sw).toContain('asSafariSafeResponse')
-    expect(sw).toMatch(/\/\^\\\/\$\//)
-    // Must not bind the offline shell to apex `/` (302 in production).
-    expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/['"]\s*\)/)
+    expect(sw).toMatch(/\/\^\\\/landing\$\//)
+    // Must not bind the offline shell to legacy /landing (301 in production).
+    expect(sw).not.toMatch(/createHandlerBoundToURL\(\s*['"]\/landing['"]\s*\)/)
     // Rome offline map tiles must be cache-first - NetworkOnly bricks walking maps.
     expect(sw).toContain('chronowalk-rome-map-tiles-v1')
     expect(sw).toContain('matchRomeMapTile')
@@ -70,7 +71,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('unregister')
     // Hang watchdog offers a manual escape if React never mounts (Chrome iOS).
     expect(html).toContain('cw-boot-hint')
-    expect(html).toContain('/landing?cw_clean=1')
+    expect(html).toContain('/?cw_clean=1')
     expect(html).toContain('/rome/reset-shell?force=1')
     expect(html).toContain('CriOS')
     // PR #214: auto navigation WAS the Chrome loop — keep it gone.
@@ -91,8 +92,8 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('cw-skip-sw-once')
     expect(html).toContain('caches.delete')
     expect(html).toContain('unregister')
-    // Continue must be a real link to /landing - never JS-assign to /rome/open.
-    expect(html).toContain('href="/landing?cw_clean=1"')
+    // Continue must be a real link to / - never JS-assign to /rome/open.
+    expect(html).toContain('href="/?cw_clean=1"')
     expect(html).not.toContain('/rome/open')
     expect(html).not.toContain('location.assign')
     expect(html).not.toContain('location.replace')
@@ -100,7 +101,7 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(html).toContain('clearCachesAndWorkers')
 
     const open = readFileSync(join(ROOT, 'public/rome/open.html'), 'utf8')
-    expect(open).toContain('href="/landing?cw_clean=1"')
+    expect(open).toContain('href="/?cw_clean=1"')
     expect(open).toContain('Open ChronoWalk')
     expect(open).not.toContain('http-equiv="refresh"')
     expect(open).not.toContain('location.replace')

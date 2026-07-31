@@ -89,7 +89,7 @@ export function isHtmlPoisonedAssetEntry(requestUrl, response) {
 /**
  * Safari / WebKit rejects navigation responses from a service worker when
  * `response.redirected === true` ("Response served by service worker has
- * redirections"). Cloudflare serves `/` → `/landing` 302; if the SW follows
+ * redirections"). Cloudflare serves `/landing` → `/` 301; if the SW follows
  * that redirect and returns the final Response, Safari refuses to open the page.
  *
  * Rebuild a same-content Response so the redirected flag is cleared.

@@ -68,7 +68,7 @@ export function hardReload({ path } = {}) {
     window.location.assign(url.toString())
   } catch {
     try {
-      window.location.href = `${path || '/landing'}?cw_bust=${Date.now()}`
+      window.location.href = `${path || '/'}?cw_bust=${Date.now()}`
     } catch {
       window.location.reload()
     }

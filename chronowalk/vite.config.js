@@ -61,13 +61,13 @@ export default defineConfig({
     walkingUiRevisionPlugin(),
     VitePWA({
       // Custom SW (injectManifest):
-      // - Apex `/` → `/landing` 302 — precache the SPA shell at `/landing` (200),
-      //   never at `/` (Workbox rejects redirect responses during install).
-      // - Cloudflare Pretty URLs 308 `/index.html` → `/` then would 302 again;
-      //   manifestTransforms map index.html → `/landing`.
+      // - Legacy `/landing` → `/` 301 — precache the SPA shell at `/` (200),
+      //   never at `/landing` (Workbox rejects redirect responses during install).
+      // - Cloudflare Pretty URLs 308 `/index.html` → `/`;
+      //   manifestTransforms map index.html → `/`.
       // - Missing `/assets/*` may still get SPA HTML from Cloudflare; the SW
       //   rejects/scrubs text/html under asset/module requests (do not use a
-      //   `_redirects` `/assets/* 404` rule — it broke /landing in prod).
+      //   `_redirects` `/assets/* 404` rule — it broke SPA routes in prod).
       strategies: 'injectManifest',
       srcDir: 'src/pwa',
       filename: 'sw.js',

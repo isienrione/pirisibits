@@ -31,7 +31,7 @@ describe('AccessScreen', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /see rome packages/i })).toHaveAttribute(
       'href',
-      '/landing#pricing',
+      '/#pricing',
     )
     expect(screen.getByRole('link', { name: /hear the pantheon/i })).toHaveAttribute('href', '/preview')
   })

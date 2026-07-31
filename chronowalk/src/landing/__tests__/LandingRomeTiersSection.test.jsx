@@ -143,7 +143,7 @@ describe('LandingRomeTiersSection desktop posters', () => {
 describe('LandingRomeTiersSection mobile route chooser', () => {
   beforeEach(() => {
     mockMinWidth(false)
-    window.history.replaceState(null, '', '/landing')
+    window.history.replaceState(null, '', '/')
   })
 
   it('defaults to Roma Eterna with named tabs and readable HTML facts', () => {
@@ -238,7 +238,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
   })
 
   it('honors a route hash for the initial mobile selection', () => {
-    window.history.replaceState(null, '', '/landing#rome-central')
+    window.history.replaceState(null, '', '/#rome-central')
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
     expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tabpanel')).toHaveTextContent('8 stops')
