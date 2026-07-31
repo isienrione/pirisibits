@@ -145,9 +145,10 @@ Push `public/waypoints/<id>/` media to git before expecting new assets on Netlif
 
 1. **Colosseum used to be unmapped** — a fresh tour starts at w01. Without a Santiago remap,
    real GPS cannot be “20 m from the Colosseum” in Chile. Prefer the remapped start below.
-2. **Accuracy gate** — distance can read 20 m while accuracy is 80–120 m. Auto-arrive only fires
-   when accuracy is good enough (≤150 m with Santiago remaps; ≤60 m otherwise). The orange HUD
-   now says when accuracy is blocking.
+2. **Accuracy gate** — distance can read 20 m while accuracy is 80–120 m. **Recognition UI**
+   ("You have arrived" for the correct stop) now follows distance into the geofence. **Auto-open**
+   of the story card still needs accuracy ≤90 m in Rome (≤150 m with Santiago remaps). The orange
+   HUD says when accuracy is blocking auto-open.
 3. **Transit legs** — most of the tour walks on a transit step. Auto-arrive must fire there too
    (fixed: 5 s dwell inside the destination geofence opens the arrival card).
 
