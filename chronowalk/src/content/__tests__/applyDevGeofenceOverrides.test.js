@@ -11,6 +11,7 @@ describe('applyDevGeofenceOverrides', () => {
     const manifest = applyDevGeofenceOverrides(
       {
         waypoints: {
+          w01: { title: 'Colosseum', geofence: { lat: 41.89, lng: 12.49, radius_m: 45 } },
           w06: { title: 'Basilica', geofence: { lat: 41.89, lng: 12.48, radius_m: 40 } },
           pause: { title: 'Forum rest', geofence: { lat: 41.89, lng: 12.48, radius_m: 80 } },
           w11_12: { title: 'Arch of Septimius Severus', geofence: { lat: 41.89, lng: 12.48, radius_m: 40 } },
@@ -20,6 +21,12 @@ describe('applyDevGeofenceOverrides', () => {
       'santiago',
     )
 
+    expect(manifest.waypoints.w01.geofence).toEqual({
+      lat: SANTIAGO_DEV_WAYPOINT_GEOFENCES.w01.lat,
+      lng: SANTIAGO_DEV_WAYPOINT_GEOFENCES.w01.lng,
+      radius_m: SANTIAGO_DEV_WAYPOINT_GEOFENCES.w01.radius_m,
+    })
+    expect(manifest.waypoints.w01._devGeofenceOverride.label).toMatch(/Starbucks/i)
     expect(manifest.waypoints.w06.geofence).toEqual({
       lat: SANTIAGO_DEV_WAYPOINT_GEOFENCES.w06.lat,
       lng: SANTIAGO_DEV_WAYPOINT_GEOFENCES.w06.lng,
@@ -31,7 +38,7 @@ describe('applyDevGeofenceOverrides', () => {
     expect(manifest.waypoints.w99.geofence.lat).toBe(1)
     expect(manifest._devGeofenceOverrides.mode).toBe('santiago')
     expect(manifest._devGeofenceOverrides.waypointIds).toEqual(
-      expect.arrayContaining(['pause', 'w11_12']),
+      expect.arrayContaining(['w01', 'w02', 'pause', 'w11_12']),
     )
     expect(rome.waypointsById.w06.geofence.lat).toBe(41.89175)
   })
