@@ -86,8 +86,9 @@ import DevGeofenceHud from '../dev/DevGeofenceHud.jsx'
 // presence near the landmark - never the instant the radius is first touched.
 const ARRIVAL_DWELL_MS = 5000
 // When the position's radius of uncertainty is worse than this, we don't
-// auto-arrive; the traveller can still tap "I'm here".
-const POOR_ACCURACY_M = 60
+// auto-arrive; the traveller can still tap "I'm here". Rome urban canyons
+// often report 50–85 m even outdoors, so keep this above a typical Forum fix.
+const POOR_ACCURACY_M = 90
 // Indoor Santiago field tests often report 80–120 m accuracy; relax while dev geofences are on.
 const DEV_GEOFENCE_ACCURACY_M = 150
 
@@ -945,14 +946,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
     return () => window.clearTimeout(timer)
   }, [arrivalUnlockBanner])
 
-  // True when the fix is too uncertain to trust for auto-arrival - used to
-  // gently surface the manual "I'm here" affordance.
-  const locationShy =
-    geo.accuracy != null && geo.accuracy > arrivalAccuracyLimitM
-
-  const gpsArrivalReliable =
-    geo.accuracy == null || geo.accuracy <= arrivalAccuracyLimitM
-  const gpsArrived = Boolean(geo.insideGeofence && gpsArrivalReliable)
+  // Recognition UI follows distance into the stop geofence (correct waypoint
+  // name + "You have arrived"). Auto-open of the arrival card still requires a
+  // reliable accuracy reading inside the dwell effect above.
+  const gpsRecognizedAtStop = Boolean(geo.insideGeofence)
 
   // If Arrived before audio unlock, play the full chime as soon as audio is ready.
   // Do NOT replay on WALKING/APPROACHING - that was the early-fire bug.
@@ -1645,7 +1642,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
       const nearApproach =
-        !gpsArrived &&
+        !gpsRecognizedAtStop &&
         (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
       return withInterruptionBanner(
         wrapWithFirstStopOnboarding(
@@ -1662,7 +1659,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             onRetryLocation={geo.retryLocation}
             onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
             onPrimeAudio={() => audio.primeForGesture()}
-            insideGeofence={gpsArrived}
+            insideGeofence={gpsRecognizedAtStop}
             near
             isFirstStop={isOnFirstTourStop(context, step, manifest)}
             extraBottomInset={dockActive ? 88 : 0}
@@ -1671,7 +1668,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           />,
           {
             near: nearApproach,
-            insideGeofence: gpsArrived,
+            insideGeofence: gpsRecognizedAtStop,
             bottomInset: dockActive ? 88 : 0,
           },
         ),
@@ -1723,14 +1720,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
           userPosition={geo.position}
           destination={walkingDestination}
           legFallback={walkingLegFallback}
-          arrived={gpsArrived}
+          arrived={gpsRecognizedAtStop}
           distanceM={liveWalkDistanceM}
           estimatedDistanceM={estimatedWalkDistanceM}
           locationStatus={geo.locationStatus}
           onRetryLocation={geo.retryLocation}
           onPrimeAudio={() => audio.primeForGesture()}
           near={
-            !gpsArrived &&
+            !gpsRecognizedAtStop &&
             (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
           }
           map={<JourneyInlineMap manifest={manifest} context={context} geo={geo} />}
@@ -1757,7 +1754,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const props = redesignWaypointProps(step.record)
       const nearApproach =
-        !gpsArrived &&
+        !gpsRecognizedAtStop &&
         (geo.approachingGeofence || isWithinApproachDistance(liveWalkDistanceM))
       return withInterruptionBanner(
         wrapWithFirstStopOnboarding(
@@ -1774,7 +1771,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
             onRetryLocation={geo.retryLocation}
             onBeginChapter={() => beginWaypointStory(step.id, 'manual')}
             onPrimeAudio={() => audio.primeForGesture()}
-            insideGeofence={gpsArrived}
+            insideGeofence={gpsRecognizedAtStop}
             near={nearApproach}
             isFirstStop={isOnFirstTourStop(context, step, manifest)}
             extraBottomInset={dockActive ? 88 : 0}
@@ -1784,7 +1781,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           />,
           {
             near: nearApproach,
-            insideGeofence: gpsArrived,
+            insideGeofence: gpsRecognizedAtStop,
             bottomInset: dockActive ? 88 : 0,
           },
         ),

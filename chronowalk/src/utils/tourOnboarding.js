@@ -127,7 +127,7 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
       return {
         eyebrow: 'Arrive',
         title: 'You\'ll know when you\'re there',
-        body: `Watch the distance shrink on screen. When you're at ${stopTitle}, the map highlights your zone and the **I'm here** button appears - tap it to begin the story. GPS may also confirm arrival automatically.`,
+        body: `Watch the distance shrink on screen. When GPS has you at ${stopTitle}, this screen switches to You have arrived for that stop. The story card opens automatically when the signal is solid - or tap Begin chapter / I'm here.`,
       }
     case 'listen':
       return {
