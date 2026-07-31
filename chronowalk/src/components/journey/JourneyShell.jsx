@@ -797,44 +797,71 @@ export default function JourneyShell({ variant = 'legacy' }) {
     [beginWaypointStory, state, step]
   )
 
-  const handleTransitDestinationArrival = useCallback(() => {
-    if (!manifest || step?.type !== 'transit' || !step.targetWaypoint) return
+  const handleTransitDestinationArrival = useCallback(
+    (source = 'transit_manual') => {
+      if (!manifest || step?.type !== 'transit' || !step.targetWaypoint) return
 
-    const transitId = step.id
-    const waypointId = step.targetWaypoint.id
+      const transitId = step.id
+      const waypointId = step.targetWaypoint.id
+      if (arrivedWaypointRef.current === waypointId) return
+      // Claim immediately so a dwell timer cannot double-fire while the shared
+      // walk guard dialog / advance is in flight.
+      arrivedWaypointRef.current = waypointId
 
-    const runArrival = () => {
-      audio.stopNarration()
-      audio.endTransit()
-      completeTransit(transitId)
-      playedStepRef.current = null
-      waypointAutoplayRef.current.clearStarted()
-      setDockSnapshot(null)
-      advanceSequence(manifest)
-      beginWaypointStory(waypointId, 'transit_manual')
-      return true
-    }
+      const arrivalSource = source === 'auto' ? 'auto' : 'transit_manual'
 
-    void requestAdvanceToWaypoint(waypointId, runArrival)
-  }, [
-    advanceSequence,
-    audio,
-    beginWaypointStory,
-    completeTransit,
-    manifest,
-    requestAdvanceToWaypoint,
-    step,
-  ])
+      const runArrival = () => {
+        audio.stopNarration()
+        audio.endTransit()
+        completeTransit(transitId)
+        playedStepRef.current = null
+        waypointAutoplayRef.current.clearStarted()
+        setDockSnapshot(null)
+        advanceSequence(manifest)
+        beginWaypointStory(waypointId, arrivalSource)
+        return true
+      }
+
+      void requestAdvanceToWaypoint(waypointId, runArrival)
+    },
+    [
+      advanceSequence,
+      audio,
+      beginWaypointStory,
+      completeTransit,
+      manifest,
+      requestAdvanceToWaypoint,
+      step,
+    ]
+  )
+
+  // Auto GPS dwell + manual "I'm here" both land here for waypoint and transit.
+  const confirmGpsArrival = useCallback(
+    (source) => {
+      if (step?.type === 'transit') {
+        handleTransitDestinationArrival(source)
+        return
+      }
+      arriveAtWaypoint(source)
+    },
+    [arriveAtWaypoint, handleTransitDestinationArrival, step?.type]
+  )
 
   useEffect(() => {
-    arriveRef.current = arriveAtWaypoint
-  }, [arriveAtWaypoint])
+    arriveRef.current = confirmGpsArrival
+  }, [confirmGpsArrival])
 
   // Reset arrival guards when the target changes - but never cancel a chime we
   // just started for the waypoint we are arriving at (transit advance flips
   // step.id in the same turn as beginWaypointStory).
   useEffect(() => {
     if (arrivedWaypointRef.current === step?.id) return
+    if (
+      step?.type === 'transit' &&
+      arrivedWaypointRef.current === step?.targetWaypoint?.id
+    ) {
+      return
+    }
     arrivedWaypointRef.current = null
     arrivalAlertPlayedRef.current = null
     arrivalAlertInFlightRef.current = null
@@ -845,12 +872,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
       clearTimeout(dwellTimerRef.current)
       dwellTimerRef.current = null
     }
-  }, [step?.id])
+  }, [step?.id, step?.type, step?.targetWaypoint?.id])
 
   useEffect(() => {
-    if (!geoTarget || step?.type !== 'waypoint') return
+    if (!geoTarget) return
+    // Most of the tour walks on a transit leg toward the next stop - auto-arrive
+    // must work there too, not only while the sequence step is already a waypoint.
+    if (step?.type !== 'waypoint' && step?.type !== 'transit') return
+    if (step?.type === 'transit' && needsPathChoice) return
     if (state !== JOURNEY_STATES.WALKING && state !== JOURNEY_STATES.APPROACHING) return
-    if (arrivedWaypointRef.current === step.id) return
+
+    const targetArrivalId =
+      step?.type === 'waypoint' ? step.id : step?.targetWaypoint?.id
+    if (!targetArrivalId || arrivedWaypointRef.current === targetArrivalId) return
 
     // Reject drift: a wildly uncertain fix can flicker "inside" the radius, so
     // we never auto-arrive on it (the "I'm here" button still works).
@@ -858,7 +892,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
 
     if (geo.insideGeofence && accuracyReliable) {
       // Pocket pulse only - chime + “Waypoint unlocked!” play on You've Arrived.
-      pulseArrivalHaptic(step.id)
+      pulseArrivalHaptic(targetArrivalId)
 
       // Mature dwell, then land on ARRIVED (never skip straight into story).
       if (dwellTimerRef.current == null) {
@@ -876,7 +910,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
       dwellTimerRef.current = null
     }
 
-    if (geo.approachingGeofence && state === JOURNEY_STATES.WALKING) {
+    if (
+      geo.approachingGeofence &&
+      state === JOURNEY_STATES.WALKING &&
+      step?.type === 'waypoint'
+    ) {
       transition(JOURNEY_STATES.APPROACHING)
     }
   }, [
@@ -885,10 +923,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
     geo.approachingGeofence,
     geo.accuracy,
     geoTarget,
+    needsPathChoice,
     pulseArrivalHaptic,
     state,
     step?.id,
     step?.type,
+    step?.targetWaypoint?.id,
     transition,
   ])
 
@@ -1289,7 +1329,11 @@ export default function JourneyShell({ variant = 'legacy' }) {
     <div className="cw-journey-shell-root">
       {interruptionBanner}
       {devGeofenceActive && !loading && geoTarget ? (
-        <DevGeofenceHud geoTarget={geoTarget} geo={geo} />
+        <DevGeofenceHud
+          geoTarget={geoTarget}
+          geo={geo}
+          arrivalAccuracyLimitM={arrivalAccuracyLimitM}
+        />
       ) : null}
       {content}
       {floatingPlayer}

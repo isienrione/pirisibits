@@ -138,15 +138,28 @@ Push `public/waypoints/<id>/` media to git before expecting new assets on Netlif
 
 ## Temporary Santiago GPS field test (Providencia / Las Condes)
 
-**Remove before Rome production QA is done.** Enables live GPS arrival cards at six Santiago
-locations by remapping Rome forum waypoints. Do **not** use `debugGeo` — use your phone’s real GPS.
+**Remove before Rome production QA is done.** Remaps selected Rome stops to Santiago sites so
+**live phone GPS** can open arrival cards. Do **not** combine with `debugGeo`.
+
+### Why an earlier Colosseum test could show ~20 m and still not open the card
+
+1. **Colosseum used to be unmapped** — a fresh tour starts at w01. Without a Santiago remap,
+   real GPS cannot be “20 m from the Colosseum” in Chile. Prefer the remapped start below.
+2. **Accuracy gate** — distance can read 20 m while accuracy is 80–120 m. Auto-arrive only fires
+   when accuracy is good enough (≤150 m with Santiago remaps; ≤60 m otherwise). The orange HUD
+   now says when accuracy is blocking.
+3. **Transit legs** — most of the tour walks on a transit step. Auto-arrive must fire there too
+   (fixed: 5 s dwell inside the destination geofence opens the arrival card).
 
 The flag **sticks in sessionStorage** after the first visit, so it survives `/begin` → `/journey`
-navigation even when the URL loses `?devGeofences=santiago`. Look for the orange **“Santiago GPS test active”** banner on the walking screen.
+even when the URL loses `?devGeofences=santiago`. Look for the orange **“Santiago GPS test active”**
+banner (distance, accuracy, auto-arrive status).
 
 | Rome stop | Test location | Coordinates |
 |-----------|---------------|-------------|
-| w06 Basilica | Starbucks Callao (Mariano Sánchez Fontecilla 310) | -33.4199, -70.5982 |
+| **w01 Colosseum (tour start)** | Starbucks Callao (Mariano Sánchez Fontecilla 310) | -33.4199, -70.5982 |
+| **w02 Colosseum interior** | Novotel Santiago Providencia | -33.4211, -70.6031 |
+| w06 Basilica | Starbucks Callao (same site as w01) | -33.4199, -70.5982 |
 | w07 Via Sacra | Novotel Santiago Providencia | -33.4211, -70.6031 |
 | w08 Temple of Vesta | Rishtedar Providencia | -33.4207, -70.6034 |
 | pause Forum rest | Quinoa Restaurant (Luis Pasteur 5393) | -33.3951, -70.5820 |
@@ -157,13 +170,14 @@ Enable with `?devGeofences=santiago` (or `VITE_DEV_GEOFENCES=santiago` in `.env`
 
 | Goal | URL |
 |------|-----|
-| Fresh journey, walk to Basilica test site | `/journey?devGeofences=santiago&resetTour=true` |
+| **Fresh journey → Colosseum at Starbucks Callao** | `/journey?devGeofences=santiago&resetTour=true` |
 | Jump to Basilica **walking leg** (transit t04) | `/journey?devGeofences=santiago&debugStop=basilica-of-maxentius` |
 | Jump to Vesta walking leg | `/journey?devGeofences=santiago&debugStop=temple-of-vesta` |
 | Jump to Forum rest / Quinoa | `/journey?devGeofences=santiago&debugStop=quinoa` |
 | Jump to Heart of the Forum / Bidasoa | `/journey?devGeofences=santiago&debugStop=bidasoa` |
 
-If auto-arrival does not flip within ~30 s outdoors, tap **I'm here** at the bottom, then **Begin Chapter**.
+**Pass criteria outdoors:** HUD shows Inside + accuracy OK → wait ~5 s → **You've Arrived** card
+opens by itself (no tap). If accuracy stays too low for ~30 s, tap **I'm here**.
 
 Override source: `src/content/devGeofenceOverrides.santiago.js`
 

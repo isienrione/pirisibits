@@ -44,8 +44,14 @@ export const SANTIAGO_DEV_GEOFENCE_SITES = {
   },
 }
 
-/** Rome waypoint ids remapped to Santiago test sites (forum cluster + Rostra). */
+/**
+ * Rome waypoint ids remapped to Santiago test sites.
+ * w01/w02 cover the tour start (fresh journey lands on Colosseum first).
+ * Forum cluster + Rostra cover later transit→arrive legs.
+ */
 export const SANTIAGO_DEV_WAYPOINT_GEOFENCES = {
+  w01: SANTIAGO_DEV_GEOFENCE_SITES['starbucks-callao'],
+  w02: SANTIAGO_DEV_GEOFENCE_SITES.novotel,
   w06: SANTIAGO_DEV_GEOFENCE_SITES['starbucks-callao'],
   w07: SANTIAGO_DEV_GEOFENCE_SITES.novotel,
   w08: SANTIAGO_DEV_GEOFENCE_SITES.rishtedar,

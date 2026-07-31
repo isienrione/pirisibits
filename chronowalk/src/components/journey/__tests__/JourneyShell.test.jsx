@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
+import { render, screen, fireEvent, within, act } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
 import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
@@ -32,6 +32,17 @@ const audioMock = vi.hoisted(() => ({
     playing: false,
     paused: false,
   },
+}))
+
+const geoMock = vi.hoisted(() => ({
+  distance: 120,
+  accuracy: 10,
+  insideGeofence: false,
+  approachingGeofence: false,
+  state: 'TRANSIT',
+  locationStatus: 'granted',
+  position: { lat: 41.8902, lng: 12.4922 },
+  retryLocation: vi.fn(),
 }))
 
 vi.mock('../../../hooks/useAudioEngine.js', () => ({
@@ -69,15 +80,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
 }))
 
 vi.mock('../../../hooks/useJourneyGeo.js', () => ({
-  useJourneyGeo: () => ({
-    distance: 120,
-    insideGeofence: false,
-    approachingGeofence: false,
-    state: 'TRANSIT',
-    locationStatus: 'granted',
-    position: { lat: 41.8902, lng: 12.4922 },
-    retryLocation: vi.fn(),
-  }),
+  useJourneyGeo: () => geoMock,
 }))
 
 vi.mock('../../../hooks/useOfflineAudio.js', () => ({
@@ -154,10 +157,23 @@ describe('JourneyShell', () => {
       playing: false,
       paused: false,
     }
+    Object.assign(geoMock, {
+      distance: 120,
+      accuracy: 10,
+      insideGeofence: false,
+      approachingGeofence: false,
+      state: 'TRANSIT',
+      locationStatus: 'granted',
+      position: { lat: 41.8902, lng: 12.4922 },
+    })
     playWaypointMock.mockClear()
     playTransitMock.mockClear()
     unlockMock.mockClear()
     jumpToChapterMock.mockClear()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('redirects idle travelers to begin', () => {
@@ -467,6 +483,60 @@ describe('JourneyShell', () => {
     expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)
     expect(await screen.findByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
     expect(screen.getByText(/begin listening/i)).toBeInTheDocument()
+  })
+
+  it('auto-opens arrival after GPS dwell on a transit leg', async () => {
+    const t15Index = sequenceIndexOf('t15')
+
+    geoMock.distance = 18
+    geoMock.accuracy = 12
+    geoMock.insideGeofence = true
+    geoMock.approachingGeofence = false
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: t15Index,
+      completedWaypointIds: ['w15'],
+    })
+
+    vi.useFakeTimers()
+    renderShell({ variant: 'redesign' })
+
+    expect(screen.getByTestId('transit-screen')).toBeInTheDocument()
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.WALKING)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(5000)
+    })
+
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.ARRIVED)
+    expect(getJourneySnapshot().context.currentSequenceIndex).toBe(t15Index + 1)
+    expect(screen.getByRole('heading', { name: /fontana di trevi/i })).toBeInTheDocument()
+  })
+
+  it('does not auto-arrive on transit when GPS accuracy is too poor', async () => {
+    const t15Index = sequenceIndexOf('t15')
+
+    geoMock.distance = 18
+    geoMock.accuracy = 120
+    geoMock.insideGeofence = true
+
+    beginJourney({ pace: 'classic', path: 'a', pathLocked: true })
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: t15Index,
+      completedWaypointIds: ['w15'],
+    })
+
+    vi.useFakeTimers()
+    renderShell({ variant: 'redesign' })
+
+    expect(screen.getByTestId('transit-screen')).toBeInTheDocument()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(8000)
+    })
+
+    expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.WALKING)
   })
 
   it('shows path choice at t01 before path is locked', async () => {
