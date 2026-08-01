@@ -9,6 +9,14 @@ vi.mock('../landingAnalytics.js', () => ({
   trackLandingPricingView: () => {},
 }))
 
+vi.mock('../../lib/track.js', () => ({
+  track: vi.fn(),
+  TRACK_EVENTS: {
+    GUARANTEE_VIEW: 'guarantee_view',
+  },
+  isAnalyticsReady: () => false,
+}))
+
 function mockMinWidth(matchesDesktop) {
   window.matchMedia = vi.fn().mockImplementation((query) => ({
     matches: query.includes('min-width: 768px') ? matchesDesktop : false,
@@ -41,6 +49,19 @@ describe('LandingRomeTiersSection desktop posters', () => {
     expect(screen.getByRole('heading', { name: /Share the walk, not the earbuds/i })).toBeInTheDocument()
     expect(screen.getByTestId('cw-desktop-pkg-stack')).toBeInTheDocument()
     expect(screen.queryByTestId('cw-mobile-route-chooser')).not.toBeInTheDocument()
+  })
+
+  it('renders a single guarantee line below the package stack', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    const guarantee = screen.getByTestId('cw-pricing-guarantee')
+    expect(guarantee).toHaveTextContent('Secure checkout via Paddle · VAT included · Instant email access')
+    expect(guarantee).toHaveTextContent(/Money-back guarantee/)
+    expect(guarantee).toHaveTextContent(/email us and we'll refund you/)
+    expect(screen.getAllByTestId('cw-pricing-guarantee')).toHaveLength(1)
+
+    const stack = screen.getByTestId('cw-desktop-pkg-stack')
+    expect(stack.compareDocumentPosition(guarantee) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('keeps Historica / Antica / Eterna stop counts at 8 / 12 / 21', () => {
@@ -193,6 +214,17 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Choose Roma Antica' }))
     expect(onBeginTier).toHaveBeenCalledTimes(1)
     expect(onBeginTier).toHaveBeenCalledWith('rome-essential')
+  })
+
+  it('places the guarantee once directly under the buy button', () => {
+    render(<LandingRomeTiersSection onBeginTier={() => {}} />)
+
+    const panel = screen.getByRole('tabpanel')
+    const cta = within(panel).getByRole('button', { name: 'Choose Roma Eterna' })
+    const guarantee = within(panel).getByTestId('cw-pricing-guarantee')
+    expect(screen.getAllByTestId('cw-pricing-guarantee')).toHaveLength(1)
+    expect(cta.compareDocumentPosition(guarantee) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(guarantee).toHaveTextContent('Secure checkout via Paddle · VAT included · Instant email access')
   })
 
   it('opens and closes the illustrated map viewer with dialog semantics', () => {

@@ -2003,6 +2003,61 @@
   color: var(--v4-ink);
 }
 
+/* Trust / money-back line — below tier CTAs, subordinate to the buy button */
+.cw-v4-pricing-guarantee {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding-inline: 0.25rem;
+  text-align: center;
+  font-family: 'Inter', var(--font-ui, 'DM Sans', system-ui, sans-serif);
+}
+
+/* Desktop: stack has no gap to this sibling — keep 12–16px above */
+.cw-v4-pkg-stack + .cw-v4-pricing-guarantee {
+  margin-top: 0.875rem;
+  padding-inline: 0.5rem;
+}
+
+.cw-v4-pricing-guarantee__secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.4rem;
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--muted, #b9af9c);
+}
+
+.cw-landing--v4 .cw-v4-pricing-guarantee__secure {
+  color: color-mix(in srgb, var(--v4-ink) 48%, var(--v4-paper-3));
+}
+
+.cw-v4-pricing-guarantee__lock {
+  flex: 0 0 auto;
+  color: inherit;
+}
+
+.cw-v4-pricing-guarantee__promise {
+  margin: 0.4rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--v4-ink, #211c15) 72%, transparent);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.cw-v4-pricing-guarantee__accent {
+  color: var(--gold, #d4af37);
+  font-weight: 600;
+}
+
 .cw-v4-pkg-stack {
   display: grid;
   gap: 1.5rem;

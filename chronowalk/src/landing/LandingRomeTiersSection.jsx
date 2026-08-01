@@ -6,6 +6,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
 import LandingAccessCta from './v4/LandingAccessCta.jsx'
+import LandingPricingGuarantee from './v4/LandingPricingGuarantee.jsx'
 import { preloadLandingImages, retryImageOnError } from './v4/preloadLandingImages.js'
 
 const DESKTOP_MQ = '(min-width: 768px)'
@@ -234,6 +235,8 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           {activeTier.primaryCta}
         </button>
 
+        <LandingPricingGuarantee />
+
         <div className="cw-v4-pkg-mobile-card__map">
           <button
             type="button"
@@ -349,16 +352,19 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
         </header>
 
         {isDesktop ? (
-          <div className="cw-v4-pkg-stack" data-testid="cw-desktop-pkg-stack">
-            {tiers.map((tier, index) => (
-              <DesktopPackageCard
-                key={tier.id}
-                tier={tier}
-                index={index}
-                onBeginTier={onBeginTier}
-              />
-            ))}
-          </div>
+          <>
+            <div className="cw-v4-pkg-stack" data-testid="cw-desktop-pkg-stack">
+              {tiers.map((tier, index) => (
+                <DesktopPackageCard
+                  key={tier.id}
+                  tier={tier}
+                  index={index}
+                  onBeginTier={onBeginTier}
+                />
+              ))}
+            </div>
+            <LandingPricingGuarantee />
+          </>
         ) : (
           <MobileRouteChooser tiers={tiers} onBeginTier={onBeginTier} />
         )}

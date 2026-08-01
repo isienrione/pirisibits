@@ -46,6 +46,7 @@ export const TRACK_EVENTS = {
   LANDING_ROUTE_EXPAND: 'landing_route_expand',
   LANDING_PRICING_VIEW: 'landing_pricing_view',
   LANDING_FAQ_OPEN: 'landing_faq_open',
+  GUARANTEE_VIEW: 'guarantee_view',
   /** @deprecated prefer LANDING_PRICING_VIEW - kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
 }
