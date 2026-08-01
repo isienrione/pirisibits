@@ -101,6 +101,38 @@ export default function AppEntryPrepare({
           One download keeps the stories playing when signal drops.
         </p>
 
+        <div
+          style={{
+            borderRadius: 14,
+            border: `1.5px solid ${T.ember}55`,
+            background: `${T.ember}0a`,
+            padding: '18px 16px 8px',
+            marginBottom: 12,
+          }}
+          data-testid="app-entry-a2hs"
+        >
+          <p
+            style={{
+              margin: '0 0 4px',
+              fontSize: 10,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: T.ember,
+              fontWeight: 600,
+            }}
+          >
+            Recommended
+          </p>
+          <HomeScreenInstallOption
+            installed={installed}
+            canPromptInstall={canPromptInstall}
+            showIosInstructions={showIosInstructions}
+            onInstall={onInstall}
+            tone="dark"
+            embedded
+          />
+        </div>
+
         <button
           type="button"
           data-testid="app-entry-download"
@@ -120,7 +152,7 @@ export default function AppEntryPrepare({
             border: `1.5px solid ${T.ember}55`,
             background: `${T.ember}0a`,
             padding: '18px 16px 16px',
-            marginBottom: 12,
+            marginBottom: 16,
             cursor: done || downloading ? 'default' : 'pointer',
             font: 'inherit',
             color: 'inherit',
@@ -217,38 +249,6 @@ export default function AppEntryPrepare({
             </span>
           </div>
         </button>
-
-        <div
-          style={{
-            borderRadius: 14,
-            border: `1.5px solid ${T.ember}55`,
-            background: `${T.ember}0a`,
-            padding: '18px 16px 8px',
-            marginBottom: 16,
-          }}
-          data-testid="app-entry-a2hs"
-        >
-          <p
-            style={{
-              margin: '0 0 4px',
-              fontSize: 10,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: T.ember,
-              fontWeight: 600,
-            }}
-          >
-            Recommended
-          </p>
-          <HomeScreenInstallOption
-            installed={installed}
-            canPromptInstall={canPromptInstall}
-            showIosInstructions={showIosInstructions}
-            onInstall={onInstall}
-            tone="dark"
-            embedded
-          />
-        </div>
 
         <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
