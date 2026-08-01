@@ -7,15 +7,18 @@ import {
   writeTravelerName,
 } from '../../content/journeyLetter.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
+import { JOURNEY_STATES } from '../../state/journey.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { saveLetterCard, shareLetterCard } from '../../components/letter/letterExport.js'
+import ReviewPrompt from '../../components/ReviewPrompt.jsx'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import F1JourneyLetter from '../screens/F1JourneyLetter.jsx'
 
 export default function RedesignLetterPage() {
   const navigate = useNavigate()
-  const { context } = useV2Journey()
+  const { context, state } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
+  const reviewPromptActive = state === JOURNEY_STATES.COMPLETE
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [travelerName, setTravelerName] = useState(() => readTravelerName())
@@ -131,6 +134,7 @@ export default function RedesignLetterPage() {
           onTravelerNameChange={handleNameChange}
         />
       </div>
+      <ReviewPrompt active={reviewPromptActive} />
     </RedesignRouteShell>
   )
 }
