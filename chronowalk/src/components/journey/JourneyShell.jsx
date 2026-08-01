@@ -54,6 +54,7 @@ import C8aPathChoice from '../../redesign/screens/C8aPathChoice.jsx'
 import C8bThePause from '../../redesign/screens/C8bThePause.jsx'
 import C8cActComplete from '../../redesign/screens/C8cActComplete.jsx'
 import C8eJourneyComplete from '../../redesign/screens/C8eJourneyComplete.jsx'
+import ReviewPrompt from '../ReviewPrompt.jsx'
 import { ACT_COLORS, T, SHELL_TAB_BAR_INSET, SHELL_SAFE_BOTTOM_INSET } from '../../redesign/tokens.js'
 import RedesignJourneyWelcome from '../../redesign/ui/RedesignJourneyWelcome.jsx'
 import TourOnboardingCards from '../../redesign/ui/TourOnboardingCards.jsx'
@@ -1362,41 +1363,47 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const moment = getJourneyCompleteMoment(manifest)
       return withInterruptionBanner(
-        <C8eJourneyComplete
-          headline={moment.headline}
-          subline={moment.subline}
-          stopCount={visitedStopCount}
-          accent={T.encore}
-          onReadLetter={() => navigate('/letter')}
-          onReturnTour={() => navigate('/tour')}
-        />
+        <>
+          <C8eJourneyComplete
+            headline={moment.headline}
+            subline={moment.subline}
+            stopCount={visitedStopCount}
+            accent={T.encore}
+            onReadLetter={() => navigate('/letter')}
+            onReturnTour={() => navigate('/tour')}
+          />
+          <ReviewPrompt active />
+        </>
       )
     }
     return withInterruptionBanner(
-      <JourneyLayout
-        eyebrow="Journey complete"
-        title="You walked Rome"
-        subtitle="Your letter and journal gathered what you heard along the way."
-        footer={
-          <Link
-            to="/letter"
-            style={{
-              display: 'block',
-              width: '100%',
-              padding: '16px 20px',
-              borderRadius: 999,
-              background: 'var(--accent)',
-              color: 'var(--bone)',
-              fontSize: 'var(--fs-body)',
-              fontWeight: 600,
-              textAlign: 'center',
-              textDecoration: 'none',
-            }}
-          >
-            Read your letter
-          </Link>
-        }
-      />
+      <>
+        <JourneyLayout
+          eyebrow="Journey complete"
+          title="You walked Rome"
+          subtitle="Your letter and journal gathered what you heard along the way."
+          footer={
+            <Link
+              to="/letter"
+              style={{
+                display: 'block',
+                width: '100%',
+                padding: '16px 20px',
+                borderRadius: 999,
+                background: 'var(--accent)',
+                color: 'var(--bone)',
+                fontSize: 'var(--fs-body)',
+                fontWeight: 600,
+                textAlign: 'center',
+                textDecoration: 'none',
+              }}
+            >
+              Read your letter
+            </Link>
+          }
+        />
+        <ReviewPrompt active />
+      </>
     )
   }
 

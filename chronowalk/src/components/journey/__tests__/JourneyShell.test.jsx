@@ -670,5 +670,6 @@ describe('JourneyShell', () => {
     expect(screen.getByText(/you walked ancient rome/i)).toBeInTheDocument()
     expect(screen.getByTestId('journey-complete-letter')).toBeInTheDocument()
     expect(screen.getByTestId('journey-complete-tour')).toBeInTheDocument()
+    expect(screen.queryByTestId('review-prompt')).not.toBeInTheDocument()
   })
 })
