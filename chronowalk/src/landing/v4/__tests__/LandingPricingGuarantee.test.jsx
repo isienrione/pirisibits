@@ -41,8 +41,9 @@ describe('LandingPricingGuarantee', () => {
       'Secure checkout via Paddle · VAT included · Instant email access',
     )
     expect(container.textContent).toContain(
-      "Money-back guarantee — if it doesn't work on your phone or isn't what you expected, email us and we'll refund you.",
+      "Money-back guarantee if it doesn't work on your phone or isn't what you expected, email us and we'll refund you.",
     )
+    expect(container.textContent).not.toContain('—')
     expect(container.querySelector('.cw-v4-pricing-guarantee__accent')?.textContent).toBe(
       'Money-back guarantee',
     )

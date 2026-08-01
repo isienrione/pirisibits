@@ -2020,6 +2020,12 @@
   padding-inline: 0.5rem;
 }
 
+/* Mobile: sits between the route card and Compare all routes */
+.cw-v4-pkg-mobile-card + .cw-v4-pricing-guarantee {
+  margin-block: -0.2rem;
+  padding-inline: 0.15rem;
+}
+
 .cw-v4-pricing-guarantee__secure {
   display: flex;
   align-items: center;

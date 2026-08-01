@@ -235,8 +235,6 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           {activeTier.primaryCta}
         </button>
 
-        <LandingPricingGuarantee />
-
         <div className="cw-v4-pkg-mobile-card__map">
           <button
             type="button"
@@ -268,6 +266,8 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           </button>
         </div>
       </article>
+
+      <LandingPricingGuarantee />
 
       <details
         className="cw-v4-pkg-compare"

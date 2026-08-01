@@ -216,15 +216,18 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     expect(onBeginTier).toHaveBeenCalledWith('rome-essential')
   })
 
-  it('places the guarantee once directly under the buy button', () => {
+  it('places the guarantee outside the card and above Compare all routes', () => {
     render(<LandingRomeTiersSection onBeginTier={() => {}} />)
 
     const panel = screen.getByRole('tabpanel')
-    const cta = within(panel).getByRole('button', { name: 'Choose Roma Eterna' })
-    const guarantee = within(panel).getByTestId('cw-pricing-guarantee')
+    const guarantee = screen.getByTestId('cw-pricing-guarantee')
+    const compare = screen.getByText('Compare all routes')
     expect(screen.getAllByTestId('cw-pricing-guarantee')).toHaveLength(1)
-    expect(cta.compareDocumentPosition(guarantee) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(panel.contains(guarantee)).toBe(false)
+    expect(panel.compareDocumentPosition(guarantee) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(guarantee.compareDocumentPosition(compare) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(guarantee).toHaveTextContent('Secure checkout via Paddle · VAT included · Instant email access')
+    expect(guarantee.textContent).not.toContain('—')
   })
 
   it('opens and closes the illustrated map viewer with dialog semantics', () => {

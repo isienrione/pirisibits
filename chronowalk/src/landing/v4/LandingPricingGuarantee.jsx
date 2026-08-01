@@ -44,7 +44,7 @@ export default function LandingPricingGuarantee() {
       </p>
       <p className="cw-v4-pricing-guarantee__promise">
         <span className="cw-v4-pricing-guarantee__accent">Money-back guarantee</span>
-        {' — if it doesn\'t work on your phone or isn\'t what you expected, email us and we\'ll refund you.'}
+        {" if it doesn't work on your phone or isn't what you expected, email us and we'll refund you."}
       </p>
     </div>
   )
