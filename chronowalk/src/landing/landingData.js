@@ -29,7 +29,7 @@ export const LANDING_CTA = {
   exploreRomeRoutes: 'See all Rome walks',
   chooseTour: 'Choose your walk',
   howItWorks: 'How does ChronoWalk work?',
-  getApp: 'Get the app',
+  getApp: 'Get the tour',
   reviews: '★★★★★ Reviews',
 }
 
@@ -811,7 +811,7 @@ export const LANDING_CONTENT = {
     /** Shown in the nav only after the hero leaves the viewport. */
     cta: LANDING_CTA.getApp,
     ctaHref: '#get-app',
-    ctaShort: 'Get App',
+    ctaShort: 'Get Tour',
   },
 
   footer: {

@@ -111,10 +111,11 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.primaryHref).toBe('/preview')
   })
 
-  it('shows a nav Get the app CTA that deep-links to the get-app section', () => {
+  it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {
     expect(LANDING_CONTENT.header.cta).toBe(LANDING_CTA.getApp)
+    expect(LANDING_CONTENT.header.cta).toBe('Get the tour')
     expect(LANDING_CONTENT.header.ctaHref).toBe('#get-app')
-    expect(LANDING_CONTENT.header.ctaShort).toBe('Get App')
+    expect(LANDING_CONTENT.header.ctaShort).toBe('Get Tour')
   })
 
   it('removes the top-right header sneak-peek CTA', () => {

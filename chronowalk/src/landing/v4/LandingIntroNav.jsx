@@ -15,7 +15,7 @@ const INTRO_PLAY_CAP = 1
 /**
  * Keynote-style open: muted cinematic plays once per browser profile,
  * then dissolves into the fixed nav (same handoff as the old mark intro).
- * After scrolling past the product hero: Get App CTA + obsidian nav chrome.
+ * After scrolling past the product hero: Get Tour CTA + obsidian nav chrome.
  */
 function prefersReducedMotion() {
   return (
