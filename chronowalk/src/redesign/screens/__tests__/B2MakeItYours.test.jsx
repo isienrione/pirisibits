@@ -24,6 +24,9 @@ describe('AppEntryPrepare', () => {
     expect(
       screen.getByText(/add chronowalk to your home screen so you open it like a regular app/i),
     ).toBeInTheDocument()
+    const a2hs = screen.getByTestId('app-entry-a2hs')
+    const download = screen.getByTestId('app-entry-download')
+    expect(a2hs.compareDocumentPosition(download) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(screen.getByText(/help improve chronowalk/i)).toBeInTheDocument()
     expect(screen.getByRole('switch', { name: /disable analytics/i })).toHaveAttribute(
       'aria-checked',
