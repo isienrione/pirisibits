@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useId, useState } from 'react'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import {
-  REVIEW_PROMPT_DELAY_MS,
   TRUSTPILOT_REVIEW_URL,
+  armReviewPromptIfNeeded,
+  getReviewPromptRemainingMs,
   hasSeenReviewPrompt,
   markReviewPromptSeen,
 } from '../lib/reviewPromptStorage.js'
@@ -10,8 +11,8 @@ import './ReviewPrompt.css'
 
 /**
  * One-time Trustpilot ask after journey completion.
- * Mount with `active` when the journey-complete screen is shown; waits 4s
- * before appearing so it does not collide with the celebration.
+ * Arming happens when the journey enters COMPLETE (due time persisted), so the
+ * 4s delay survives navigation to the letter screen.
  */
 export default function ReviewPrompt({ active = false }) {
   const titleId = useId()
@@ -26,9 +27,13 @@ export default function ReviewPrompt({ active = false }) {
   useEffect(() => {
     if (!active || hasSeenReviewPrompt()) return undefined
 
+    armReviewPromptIfNeeded()
+    const remaining = getReviewPromptRemainingMs()
+    if (remaining == null) return undefined
+
     const timer = window.setTimeout(() => {
       if (!hasSeenReviewPrompt()) setVisible(true)
-    }, REVIEW_PROMPT_DELAY_MS)
+    }, remaining)
 
     return () => window.clearTimeout(timer)
   }, [active])

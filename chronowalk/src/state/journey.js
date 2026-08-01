@@ -5,6 +5,7 @@ import { buildEffectiveSequence, getPromotionInsertSteps } from '../content/opti
 import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js'
 import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
 import { scheduleJourneyCloudPush } from '../lib/journeyCloud.js'
+import { armReviewPromptIfNeeded } from '../lib/reviewPromptStorage.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -172,6 +173,11 @@ export function transitionJourney(nextState, contextPatch = {}) {
     },
   }
   writeStorage(snapshot)
+  // Arm once when the tour finishes so the 4s Trustpilot delay survives
+  // navigation from the complete screen to /letter.
+  if (nextState === JOURNEY_STATES.COMPLETE) {
+    armReviewPromptIfNeeded()
+  }
   emit()
   return snapshot
 }

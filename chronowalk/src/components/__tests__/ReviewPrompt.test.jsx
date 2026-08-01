@@ -3,8 +3,10 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import ReviewPrompt from '../ReviewPrompt.jsx'
 import {
   REVIEW_PROMPT_DELAY_MS,
+  REVIEW_PROMPT_DUE_AT_KEY,
   REVIEW_PROMPT_SEEN_KEY,
   TRUSTPILOT_REVIEW_URL,
+  armReviewPromptIfNeeded,
 } from '../../lib/reviewPromptStorage.js'
 import { TRACK_EVENTS } from '../../lib/track.js'
 
@@ -43,6 +45,29 @@ describe('ReviewPrompt', () => {
     })
     expect(screen.getByTestId('review-prompt')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'How was the walk?' })).toBeInTheDocument()
+  })
+
+  it('honors the remaining delay after remount (complete → letter)', () => {
+    armReviewPromptIfNeeded()
+    const { unmount } = render(<ReviewPrompt active />)
+
+    act(() => {
+      vi.advanceTimersByTime(2500)
+    })
+    expect(screen.queryByTestId('review-prompt')).not.toBeInTheDocument()
+    unmount()
+
+    render(<ReviewPrompt active />)
+    act(() => {
+      vi.advanceTimersByTime(1499)
+    })
+    expect(screen.queryByTestId('review-prompt')).not.toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(1)
+    })
+    expect(screen.getByTestId('review-prompt')).toBeInTheDocument()
+    expect(localStorage.getItem(REVIEW_PROMPT_DUE_AT_KEY)).toBeTruthy()
   })
 
   it('never shows when the seen flag is already set', () => {
