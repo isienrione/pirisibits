@@ -200,7 +200,9 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
             </h1>
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
-            <div className="cw-v4-hero__actions">
+            <div
+              className={`cw-v4-hero__actions${onContinueWalk ? '' : ' cw-v4-hero__actions--with-meta'}`}
+            >
               {onContinueWalk ? (
                 <button
                   type="button"
@@ -214,12 +216,22 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
                 <button
                   type="button"
                   className="cw-v4-btn cw-v4-btn--primary"
+                  aria-label={section.primaryCtaAriaLabel || undefined}
+                  aria-describedby={
+                    section.primaryCtaMeta ? 'cw-v4-hero-free-stop-meta' : undefined
+                  }
                   onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
                   tabIndex={interactive ? 0 : -1}
                 >
                   {section.primaryCta}
                 </button>
               )}
+
+              {!onContinueWalk && section.primaryCtaMeta ? (
+                <p id="cw-v4-hero-free-stop-meta" className="cw-v4-hero__cta-meta">
+                  {section.primaryCtaMeta}
+                </p>
+              ) : null}
 
               <a
                 href={section.getAppHref ?? '#pricing'}

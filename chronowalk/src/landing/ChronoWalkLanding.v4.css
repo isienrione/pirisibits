@@ -418,9 +418,40 @@
 .cw-v4-hero__actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: 0.55rem 0.65rem;
   margin-top: 1.35rem;
   max-width: 28rem;
+  align-items: stretch;
+}
+
+/* Unpaid: free CTA + gold CTA share row 1; Pantheon helper sits under the free CTA. */
+.cw-v4-hero__actions--with-meta > .cw-v4-btn--primary {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.cw-v4-hero__actions--with-meta > .cw-v4-btn--getapp {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.cw-v4-hero__cta-meta {
+  grid-column: 1;
+  grid-row: 2;
+  margin: 0;
+  padding: 0 0.2rem;
+  color: rgba(250, 246, 239, 0.78);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+}
+
+.cw-v4-hero__actions--with-meta > .cw-v4-btn--purchase {
+  grid-column: 1 / -1;
+  grid-row: 3;
 }
 
 .cw-v4-btn {
@@ -430,8 +461,8 @@
   justify-content: center;
   border: 1px solid transparent;
   border-radius: 999px;
-  min-height: 2.7rem;
-  padding: 0.65rem 1rem;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
   font: inherit;
   font-size: 0.9rem;
   font-weight: 600;
@@ -439,12 +470,18 @@
   text-decoration: none;
   cursor: pointer;
   text-align: center;
+  text-wrap: balance;
   transition:
     background 0.25s ease,
     color 0.25s ease,
     border-color 0.25s ease,
     transform 0.25s ease,
     box-shadow 0.25s ease;
+}
+
+.cw-v4-hero__actions > .cw-v4-btn--primary,
+.cw-v4-hero__actions > .cw-v4-btn--getapp {
+  min-height: 2.85rem;
 }
 
 .cw-v4-btn--purchase {
@@ -762,6 +799,53 @@
   color: rgba(33, 28, 21, 0.62);
 }
 
+@media (max-width: 22.49rem) {
+  /* ~360px and below: tighten before stacking at ordinary phone widths. */
+  .cw-v4-hero__actions {
+    gap: 0.45rem 0.5rem;
+  }
+
+  .cw-v4-hero__actions > .cw-v4-btn--primary,
+  .cw-v4-hero__actions > .cw-v4-btn--getapp {
+    font-size: 0.82rem;
+    padding: 0.55rem 0.65rem;
+    min-height: 2.75rem;
+    line-height: 1.22;
+  }
+
+  .cw-v4-hero__cta-meta {
+    font-size: 0.64rem;
+  }
+}
+
+@media (max-width: 20rem) {
+  /* 320px: last resort — stack top CTAs only when side-by-side labels cannot stay legible. */
+  .cw-v4-hero__actions,
+  .cw-v4-hero__actions--with-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .cw-v4-hero__actions--with-meta > .cw-v4-btn--primary {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .cw-v4-hero__actions--with-meta > .cw-v4-hero__cta-meta {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .cw-v4-hero__actions--with-meta > .cw-v4-btn--getapp {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .cw-v4-hero__actions--with-meta > .cw-v4-btn--purchase {
+    grid-column: 1;
+    grid-row: 4;
+  }
+}
+
 @media (min-width: 640px) {
   .cw-v4-hero__actions {
     grid-template-columns: 1fr 1fr;
@@ -770,6 +854,10 @@
 
   .cw-v4-btn--purchase {
     grid-column: 1 / -1;
+  }
+
+  .cw-v4-hero__cta-meta {
+    font-size: 0.74rem;
   }
 }
 

@@ -50,7 +50,16 @@ describe('landing conversion analytics', () => {
     trackLandingRoutesCta(LANDING_ANALYTICS_SECTIONS.FINAL_CTA)
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.LANDING_CTA_PREVIEW,
-      expect.objectContaining({ section: 'hero', preview: 'pantheon', landing_exp_hero: 'a' }),
+      expect.objectContaining({
+        section: 'hero',
+        preview: 'pantheon',
+        stop: 'pantheon',
+        access: 'free',
+        sample_type: 'complete_stop',
+        duration_minutes: 4,
+        cta: 'complete_stop',
+        landing_exp_hero: 'a',
+      }),
     )
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.LANDING_CTA_ROUTES,

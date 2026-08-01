@@ -21,6 +21,8 @@ export const LANDING_CTA = {
   tryFree: 'Get a free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
   tryFreeSneakPeek: 'Get a free sneak peek',
+  /** Hero unpaid CTA — complete Pantheon free stop (not a teaser). */
+  experienceCompleteStop: 'Experience a complete stop',
   seeRoutes: 'See all Rome walks',
   tryOneStopFree: 'Get a free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
@@ -35,6 +37,8 @@ export const LANDING_CTA = {
 export const FREE_PREVIEW = {
   title: 'The Pantheon',
   meta: 'Free complete stop · ~4 minutes',
+  /** Hero helper under the unpaid free-stop CTA. */
+  heroCtaMeta: 'The Pantheon · 4 minutes · Free · No signup',
   copy: 'Place-tied audio and a Then vs Now reconstruction at one complete Pantheon stop.',
 }
 
@@ -349,10 +353,13 @@ export const LANDING_CONTENT = {
     subheadline:
       'The best self-guided audio tour of the Eternal City. Wander freely without missing what matters.',
     subheadlineHighlight: 'best self-guided audio tour of the Eternal City',
-    primaryCta: LANDING_CTA.tryFreeSneakPeek,
+    primaryCta: LANDING_CTA.experienceCompleteStop,
+    primaryCtaAriaLabel: 'Experience a complete Pantheon stop for free',
+    primaryCtaMeta: FREE_PREVIEW.heroCtaMeta,
     secondaryCta: LANDING_CTA.howItWorks,
     secondaryHref: '#how-it-works',
-    getAppCta: LANDING_CTA.getApp,
+    /** Gold CTA keeps the Get App destination; label emphasizes unlocking the full route. */
+    getAppCta: LANDING_CTA.unlockRome,
     getAppHref: '#get-app',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
