@@ -93,17 +93,20 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.items.find((item) => item.id === 'no-tickets')?.imageKey).toBe('trevi')
   })
 
-  it('keeps the hero CTAs for sneak peek, get app, and how it works', () => {
+  it('keeps the hero CTAs for complete stop, unlock route, and how it works', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.eyebrow).toBeNull()
     expect(hero.headline).toBe('Rome, at your own pace.')
     expect(hero.subheadlineHighlight).toMatch(/best self-guided audio tour/i)
-    expect(hero.primaryCta).toBe(LANDING_CTA.tryFreeSneakPeek)
-    expect(hero.primaryCta).toBe('Get a free sneak peek')
+    expect(hero.primaryCta).toBe(LANDING_CTA.experienceCompleteStop)
+    expect(hero.primaryCta).toBe('Experience a complete stop')
+    expect(hero.primaryCtaMeta).toBe('The Pantheon · 4 minutes · Free · No signup')
+    expect(hero.primaryCtaAriaLabel).toBe('Experience a complete Pantheon stop for free')
     expect(hero.secondaryCta).toBe(LANDING_CTA.howItWorks)
     expect(hero.secondaryCta).toBe('How does ChronoWalk work?')
     expect(hero.secondaryHref).toBe('#how-it-works')
-    expect(hero.getAppCta).toBe('Get the app')
+    expect(hero.getAppCta).toBe(LANDING_CTA.unlockRome)
+    expect(hero.getAppCta).toBe('Unlock all 21 stops')
     expect(hero.getAppHref).toBe('#get-app')
     expect(hero.primaryHref).toBe('/preview')
   })

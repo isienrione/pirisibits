@@ -62,7 +62,9 @@ export function trackLandingView() {
 }
 
 /**
- * Free preview CTA → /preview (also leads to preview_start on the preview page).
+ * Free complete-stop CTA → /preview (also leads to preview_start on the preview page).
+ * Reuses `landing_cta_preview` (funnel-stable); metadata marks a complete Pantheon stop.
+ * `section` carries placement (e.g. hero); base `source` stays `landing`.
  * @param {string} section
  */
 export function trackLandingPreviewCta(section) {
@@ -71,7 +73,11 @@ export function trackLandingPreviewCta(section) {
     landingProps({
       section,
       preview: 'pantheon',
-      cta: 'preview',
+      stop: 'pantheon',
+      access: 'free',
+      sample_type: 'complete_stop',
+      duration_minutes: 4,
+      cta: 'complete_stop',
     }),
   )
 }
