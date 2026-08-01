@@ -1,0 +1,156 @@
+/* One-time Trustpilot ask — obsidian bottom sheet after journey complete */
+
+.cw-review-prompt {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.cw-review-prompt__backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--obsidian, #0b0b0d) 55%, transparent);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.cw-review-prompt__sheet {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  width: min(100%, 28rem);
+  margin: 0;
+  padding: 0.85rem 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--obsidian, #0b0b0d);
+  color: var(--bone, #faf6ef);
+  border: 1px solid color-mix(in srgb, var(--ember, #d4af37) 28%, transparent);
+  border-bottom: 0;
+  box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  animation: cw-review-prompt-rise 320ms ease both;
+}
+
+.cw-review-prompt__handle {
+  width: 2.5rem;
+  height: 0.28rem;
+  margin: 0 auto 0.85rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bone, #faf6ef) 28%, transparent);
+}
+
+.cw-review-prompt__gold {
+  width: 2rem;
+  height: 1.5px;
+  margin: 0 0 0.9rem;
+  border-radius: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ember, #d4af37) 20%,
+    #f0d78c 50%,
+    var(--ember, #d4af37) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ember, #d4af37) 55%, transparent);
+}
+
+.cw-review-prompt__title {
+  margin: 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.45rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--bone, #faf6ef);
+}
+
+.cw-review-prompt__body {
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--bone, #faf6ef) 78%, transparent);
+}
+
+.cw-review-prompt__actions {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+}
+
+.cw-review-prompt__btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.cw-review-prompt__btn:focus-visible {
+  outline: 2px solid var(--ember, #d4af37);
+  outline-offset: 2px;
+}
+
+.cw-review-prompt__btn--primary {
+  background: linear-gradient(180deg, #e8c35a 0%, var(--ember, #d4af37) 100%);
+  color: var(--obsidian, #0b0b0d);
+  border: 1px solid color-mix(in srgb, var(--ember, #d4af37) 55%, transparent);
+  box-shadow: 0 8px 22px rgba(212, 175, 55, 0.28);
+}
+
+.cw-review-prompt__btn--primary:hover {
+  transform: translateY(-1px);
+}
+
+.cw-review-prompt__btn--secondary {
+  background: transparent;
+  color: color-mix(in srgb, var(--bone, #faf6ef) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bone, #faf6ef) 22%, transparent);
+}
+
+.cw-review-prompt__btn--secondary:hover {
+  border-color: color-mix(in srgb, var(--bone, #faf6ef) 40%, transparent);
+  color: var(--bone, #faf6ef);
+}
+
+@keyframes cw-review-prompt-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-review-prompt__sheet {
+    animation: none;
+  }
+
+  .cw-review-prompt__btn--primary:hover {
+    transform: none;
+  }
+}
