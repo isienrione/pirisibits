@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import AppEntryPrepare from '../AppEntryPrepare.jsx'
 
 describe('AppEntryPrepare', () => {
@@ -45,7 +45,21 @@ describe('AppEntryPrepare', () => {
 
   it('shows installed state when already on the home screen', () => {
     render(<AppEntryPrepare installed onContinue={vi.fn()} />)
+    const card = screen.getByTestId('app-entry-a2hs')
+    expect(card).toHaveAttribute('data-installed', 'true')
+    expect(within(card).getByText(/^Done$/i)).toBeInTheDocument()
     expect(screen.getByTestId('a2hs-option-installed')).toBeInTheDocument()
     expect(screen.getByText(/ready as a mobile app/i)).toBeInTheDocument()
+    expect(screen.getByText(/you're already using chronowalk from your home screen/i)).toBeInTheDocument()
+    expect(within(card).queryByText(/^Recommended$/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps Recommended install copy when opened from the browser', () => {
+    render(<AppEntryPrepare onContinue={vi.fn()} showIosInstructions />)
+    const card = screen.getByTestId('app-entry-a2hs')
+    expect(card).toHaveAttribute('data-installed', 'false')
+    expect(within(card).getByText(/^Recommended$/i)).toBeInTheDocument()
+    expect(screen.getByText(/use as a mobile app/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('a2hs-option-installed')).not.toBeInTheDocument()
   })
 })

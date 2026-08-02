@@ -104,12 +104,13 @@ export default function AppEntryPrepare({
         <div
           style={{
             borderRadius: 14,
-            border: `1.5px solid ${T.ember}55`,
-            background: `${T.ember}0a`,
+            border: `1.5px solid ${installed ? `${T.actII}66` : `${T.ember}55`}`,
+            background: installed ? `${T.actII}0f` : `${T.ember}0a`,
             padding: '18px 16px 8px',
             marginBottom: 12,
           }}
           data-testid="app-entry-a2hs"
+          data-installed={installed ? 'true' : 'false'}
         >
           <p
             style={{
@@ -117,11 +118,11 @@ export default function AppEntryPrepare({
               fontSize: 10,
               letterSpacing: '0.14em',
               textTransform: 'uppercase',
-              color: T.ember,
+              color: installed ? T.actII : T.ember,
               fontWeight: 600,
             }}
           >
-            Recommended
+            {installed ? 'Done' : 'Recommended'}
           </p>
           <HomeScreenInstallOption
             installed={installed}
