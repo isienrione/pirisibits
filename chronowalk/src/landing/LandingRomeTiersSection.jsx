@@ -34,14 +34,20 @@ function resolveTierFromHash(tiers) {
 function PacingNote({ text, className }) {
   if (!text) return null
   const match = text.match(/^(.*?)(1 or 2 days)(.*)$/i)
-  if (!match) {
-    return <p className={className}>{text}</p>
-  }
   return (
     <p className={className}>
-      {match[1]}
-      <strong>{match[2]}</strong>
-      {match[3]}
+      <span className="cw-v4-pacing__kicker">Your pace</span>
+      <span className="cw-v4-pacing__line">
+        {match ? (
+          <>
+            {match[1]}
+            <strong className="cw-v4-pacing__emphasis">{match[2]}</strong>
+            {match[3]}
+          </>
+        ) : (
+          text
+        )}
+      </span>
     </p>
   )
 }
@@ -93,7 +99,7 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           <span className="cw-v4-visually-hidden">{tier.primaryCta}</span>
         </button>
       </div>
-      <PacingNote text={tier.pacingNote} className="cw-v4-pkg__pacing" />
+      <PacingNote text={tier.pacingNote} className="cw-v4-pacing cw-v4-pkg__pacing" />
     </article>
   )
 }
@@ -237,7 +243,10 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           </li>
         </ul>
 
-        <PacingNote text={activeTier.pacingNote} className="cw-v4-pkg-mobile-card__pacing" />
+        <PacingNote
+          text={activeTier.pacingNote}
+          className="cw-v4-pacing cw-v4-pkg-mobile-card__pacing"
+        />
 
         <p className="cw-v4-pkg-mobile-card__desc">{activeTier.description}</p>
 
