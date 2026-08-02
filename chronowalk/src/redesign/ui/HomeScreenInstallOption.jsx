@@ -229,7 +229,7 @@ export default function HomeScreenInstallOption({
               Ready as a mobile app
             </p>
             <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-              Open ChronoWalk from your Home Screen - full-screen, no browser.
+              You&apos;re already using ChronoWalk from your Home Screen.
             </p>
           </div>
           <span
@@ -237,13 +237,25 @@ export default function HomeScreenInstallOption({
             style={{
               width: 44,
               height: 44,
-              borderRadius: 12,
-              overflow: 'hidden',
+              borderRadius: '50%',
               flexShrink: 0,
-              boxShadow: `0 0 0 1px ${T.actII}44`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: `${T.actII}22`,
+              boxShadow: `0 0 0 1.5px ${T.actII}66`,
+              color: T.actII,
             }}
           >
-            <ChronoWalkAppIcon size={44} alt="" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 12.5 10 17.5 19 7.5"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </span>
         </div>
       </div>
