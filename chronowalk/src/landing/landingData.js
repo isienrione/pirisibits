@@ -52,6 +52,7 @@ export const ROME_TIERS = [
     theme: 'eterna',
     tag: 'Complete experience',
     tagline: 'The complete city loop',
+    pacingNote: 'You can do it in 1 or 2 days!',
     bestFor: 'All 21 stops, from ancient Rome to the historic center and Via Appia.',
     outcome:
       'One city. One continuous story. From ancient Rome to the historic center. The full ChronoWalk experience.',
