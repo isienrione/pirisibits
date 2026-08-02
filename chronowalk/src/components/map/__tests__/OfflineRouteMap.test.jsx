@@ -40,4 +40,24 @@ describe('OfflineRouteMap', () => {
     expect(screen.getByText(/distance to next waypoint:/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/simplified tour route overview/i)).toBeInTheDocument()
   })
+
+  it('renders a compact offline overview for the walking companion', () => {
+    render(
+      <OfflineRouteMap
+        compact
+        tour={{ id: 'rome-core', stopIds: ['colosseum', 'roman-forum'] }}
+        stops={stops}
+        activeTargetId="colosseum"
+        activeLeg={{ fromId: 'colosseum', toId: 'roman-forum' }}
+        transitLegActive
+        userPos={{ lat: 41.8898, lng: 12.4915 }}
+        state={JOURNEY_STATE.TRANSIT}
+        distance={180}
+      />,
+    )
+
+    expect(screen.getByTestId('offline-route-map-compact')).toBeInTheDocument()
+    expect(screen.getByLabelText(/simplified tour route overview/i)).toBeInTheDocument()
+    expect(screen.getByText(/offline route overview/i)).toBeInTheDocument()
+  })
 })

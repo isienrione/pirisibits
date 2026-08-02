@@ -72,9 +72,10 @@ export default function RedesignSetupPage() {
   }
 
   const handleDownload = () => {
-    if (!offline.isDownloading && !offline.isReady) {
-      void offline.startDownload()
-    }
+    if (offline.isDownloading) return
+    // Allow re-run when stories are ready but the map pack is incomplete.
+    if (offline.isReady && offline.status?.error !== 'map_tiles_partial') return
+    void offline.startDownload()
   }
 
   const handleAnalyticsChange = useCallback((enabled) => {

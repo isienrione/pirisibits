@@ -307,7 +307,7 @@ registerRoute(
 )
 
 /** Same name as `ROME_MAP_TILE_CACHE` in map/offlineMapTiles.js (keep in sync). */
-const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v1'
+const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v2'
 
 function normalizeMapboxRequestUrl(url) {
   try {

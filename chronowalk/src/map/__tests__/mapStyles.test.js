@@ -3,6 +3,7 @@ import {
   isMapboxStandardStyle,
   MAPBOX_STYLE_STANDARD,
   MAPBOX_STYLE_STANDARD_SATELLITE,
+  MAPBOX_STYLE_STREETS_OFFLINE,
   resolveTourMapStyleOptions,
   WALKING_HERO_BASEMAP_CONFIG,
   MAP_TAB_BASEMAP_CONFIG,
@@ -22,15 +23,26 @@ describe('mapStyles', () => {
     expect(options.config.basemap.lightPreset).toBe('dusk')
   })
 
-  it('uses Standard vector for the walking hero when preferOfflineStyle is set', () => {
+  it('uses classic Streets for the walking hero when preferOfflineStyle is set', () => {
     const options = resolveTourMapStyleOptions({
       walkingCompanionUI: true,
       preferOfflineStyle: true,
     })
 
-    expect(options.style).toBe(MAPBOX_STYLE_STANDARD)
+    expect(options.style).toBe(MAPBOX_STYLE_STREETS_OFFLINE)
     expect(options.surface).toBe('walking-hero-offline')
-    expect(options.config.basemap.lightPreset).toBe('day')
+    expect(options.config).toBeUndefined()
+  })
+
+  it('prefers a hydrated offline style blob URL when provided', () => {
+    const options = resolveTourMapStyleOptions({
+      walkingCompanionUI: true,
+      preferOfflineStyle: true,
+      offlineStyleUrl: 'blob:offline-style',
+    })
+
+    expect(options.style).toBe('blob:offline-style')
+    expect(options.surface).toBe('walking-hero-offline')
   })
 
   it('uses Standard night vector for the MAP tab by default', () => {
