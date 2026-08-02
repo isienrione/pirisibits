@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronUp, ChevronDown, X, RotateCcw } from 'lucide-react'
+import { usePressHandlers } from '../../components/ui/usePressHandlers.js'
 import { T, F } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
@@ -46,6 +47,8 @@ export default function FloatingAudioPlayer({
   const displayTime = dragProgress != null ? dragProgress * duration : currentTime
   const remaining = duration > 0 ? Math.max(duration - displayTime, 0) : 0
   const handleMain = ended ? onReplay : onToggle
+  const mainPressHandlers = usePressHandlers(handleMain)
+  const playPressHandlers = usePressHandlers(onToggle)
   const reading = Boolean(showTranscript && transcript)
 
   useEffect(() => {
@@ -158,7 +161,7 @@ export default function FloatingAudioPlayer({
 
           <button
             type="button"
-            onClick={handleMain}
+            {...mainPressHandlers}
             aria-label={ended ? 'Replay' : narrationPlaying ? 'Pause' : 'Play'}
             style={{
               width: 40,
@@ -303,7 +306,7 @@ export default function FloatingAudioPlayer({
               </button>
               <button
                 type="button"
-                onClick={onToggle}
+                {...playPressHandlers}
                 aria-label={narrationPlaying ? 'Pause' : 'Play'}
                 style={{
                   width: 52,

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Pause, Play } from 'lucide-react'
+import { usePressHandlers } from '../../components/ui/usePressHandlers.js'
 import { T } from '../tokens.js'
 import { formatRemainingShort } from '../lib/walkingCompanionFormat.js'
 
@@ -58,6 +59,7 @@ export default function FloatingTransitAudioPlayer({
   }, [currentTime, duration, narrationPlaying])
 
   const remaining = duration > 0 ? Math.max(duration - currentTime, 0) : 0
+  const playPressHandlers = usePressHandlers(onToggle)
 
   if (!mounted) return null
 
@@ -71,7 +73,7 @@ export default function FloatingTransitAudioPlayer({
         <button
           type="button"
           className="cw-ftap__play cw-wc-pressable"
-          onClick={onToggle}
+          {...playPressHandlers}
           aria-label={narrationPlaying ? 'Pause narration' : 'Play narration'}
         >
           {narrationPlaying ? (

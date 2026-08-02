@@ -411,11 +411,12 @@ export class AudioEngine {
 
     if (!transit) return
 
+    // Same transit already loaded — never rebuild the plan. Rebuilding while
+    // paused would restart audio from 0 and feel like pause "didn't work".
     if (
       this.activePlayback?.kind === 'transit' &&
       this.activePlayback?.id === transitId &&
-      this.session &&
-      !this.session.paused
+      this.session
     ) {
       return
     }
@@ -774,13 +775,19 @@ export class AudioEngine {
 
   pauseNarration() {
     const session = this.session
-    if (!session || session.paused || !session.element) return
+    if (!session) return
+
+    // Always force the element to pause even if session.paused is stale
+    // (UI can show "playing" while the flag drifted). Missing element is still
+    // marked paused so the next item does not auto-resume after a user pause.
     session.offset = this.getNarrationTime()
     session.paused = true
-    try {
-      session.element.pause()
-    } catch {
-      // ignore
+    if (session.element) {
+      try {
+        session.element.pause()
+      } catch {
+        // ignore
+      }
     }
     this.setNarrationPlaying(false)
     this.syncMediaSession()

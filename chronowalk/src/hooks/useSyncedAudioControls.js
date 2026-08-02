@@ -19,6 +19,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
   const lastAppliedRef = useRef(null)
   const lastWaypointRef = useRef(null)
   const localApplyingRef = useRef(false)
+  const clearApplyingTimerRef = useRef(null)
   const [pendingGroupResume, setPendingGroupResume] = useState(false)
 
   const syncOn = Boolean(family?.session && family.syncEnabled && !family.isWalkingIndependently)
@@ -34,13 +35,51 @@ export function useSyncedAudioControls(audio, opts = {}) {
     [markApplyingRemote],
   )
 
-  // Apply remote session transport when sync is on
+  const scheduleClearApplying = useCallback(() => {
+    if (clearApplyingTimerRef.current != null) {
+      window.clearTimeout(clearApplyingTimerRef.current)
+    }
+    clearApplyingTimerRef.current = window.setTimeout(() => {
+      clearApplyingTimerRef.current = null
+      setApplying(false)
+    }, 80)
+  }, [setApplying])
+
+  useEffect(
+    () => () => {
+      if (clearApplyingTimerRef.current != null) {
+        window.clearTimeout(clearApplyingTimerRef.current)
+        clearApplyingTimerRef.current = null
+      }
+      localApplyingRef.current = false
+      markApplyingRemote?.(false)
+    },
+    [markApplyingRemote],
+  )
+
+  const sessionUpdatedAt = family?.session?.updatedAt
+  const sessionPaused = family?.session?.paused
+  const sessionPlaying = family?.session?.playing
+  const sessionPosition = family?.session?.positionSeconds
+  const sessionChapter = family?.session?.chapterIndex
+  const sessionRate = family?.session?.playbackRate
+  const sessionPauseSource = family?.session?.pauseSourceSeatId
+  const sessionMySeat = family?.session?.mySeatId
+  const sessionWaypointId = family?.session?.waypointId
+
+  // Apply remote session transport when sync is on.
+  // Depend on session fields + playback flags — not the whole `audio` object
+  // (useAudioEngine returns a new object every render / progress tick).
   useEffect(() => {
     if (!family?.session || !syncOn || !audio) return undefined
 
     const session = family.session
     const key = `${session.updatedAt}|${session.paused}|${session.playing}|${session.positionSeconds}|${session.chapterIndex}|${session.waypointId ?? ''}`
-    if (key === lastAppliedRef.current) return undefined
+    if (key === lastAppliedRef.current) {
+      // A cancelled prior apply may have left the guard stuck — never keep it.
+      if (localApplyingRef.current) scheduleClearApplying()
+      return undefined
+    }
 
     // Ignore echoes of our own pause (seat-id aware)
     if (
@@ -50,6 +89,7 @@ export function useSyncedAudioControls(audio, opts = {}) {
       session.paused
     ) {
       lastAppliedRef.current = key
+      if (localApplyingRef.current) scheduleClearApplying()
       return undefined
     }
 
@@ -104,9 +144,9 @@ export function useSyncedAudioControls(audio, opts = {}) {
           }
         }
       } finally {
-        window.setTimeout(() => {
-          if (!cancelled) setApplying(false)
-        }, 80)
+        // Always clear — even if this effect was superseded — so user pause
+        // taps are never permanently swallowed by isApplyingRemote.
+        scheduleClearApplying()
       }
     }
 
@@ -116,20 +156,25 @@ export function useSyncedAudioControls(audio, opts = {}) {
     }
   }, [
     audio,
+    audio?.narrationPlaying,
+    audio?.playbackRate,
+    audio?.progress?.chapterIndex,
+    audio?.progress?.currentTime,
     family?.session,
     syncOn,
     isLeader,
     onRemoteWaypoint,
     setApplying,
-    family?.session?.updatedAt,
-    family?.session?.paused,
-    family?.session?.playing,
-    family?.session?.positionSeconds,
-    family?.session?.chapterIndex,
-    family?.session?.playbackRate,
-    family?.session?.pauseSourceSeatId,
-    family?.session?.mySeatId,
-    family?.session?.waypointId,
+    scheduleClearApplying,
+    sessionUpdatedAt,
+    sessionPaused,
+    sessionPlaying,
+    sessionPosition,
+    sessionChapter,
+    sessionRate,
+    sessionPauseSource,
+    sessionMySeat,
+    sessionWaypointId,
   ])
 
   // Leader clock heartbeat while playing - includes current waypoint/stop.
@@ -222,14 +267,20 @@ export function useSyncedAudioControls(audio, opts = {}) {
     return ok !== false
   }, [audio])
 
-  const toggleSyncedPlayback = async () => {
-    if (localApplyingRef.current || isApplyingRemote?.()) return
-    if (audio?.narrationPlaying) {
+  const toggleSyncedPlayback = useCallback(async () => {
+    const engine = typeof audio?.getEngine === 'function' ? audio.getEngine() : null
+    const elementPlaying = Boolean(engine?.isNarrationElementPlaying?.())
+    const uiPlaying = Boolean(audio?.narrationPlaying)
+
+    // User pause must never be swallowed by remote-apply guards.
+    if (uiPlaying || elementPlaying) {
       await pauseForEveryone()
       return
     }
+
+    if (localApplyingRef.current || isApplyingRemote?.()) return
     await resumeForEveryone()
-  }
+  }, [audio, isApplyingRemote, pauseForEveryone, resumeForEveryone])
 
   const seekSynced = useCallback(
     async (seconds) => {

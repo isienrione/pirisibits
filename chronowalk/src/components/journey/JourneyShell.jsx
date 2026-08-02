@@ -980,8 +980,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
       seedTransitDock(step)
       void audio.playTransit(step.id)
     }
+    // Intentionally omit the whole `audio` object — useAudioEngine returns a new
+    // identity every progress tick; re-running here could race a user pause.
   }, [
-    audio,
+    audio.playTransit,
     audioUnlocked,
     manifest,
     context.path,
