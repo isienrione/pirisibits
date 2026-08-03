@@ -37,6 +37,9 @@ scripts/incident/
 # OS cruft
 .DS_Store
 
+# Capacitor local IDE / sync noise (ios/ project is committed)
+.capacitor
+
 # Logs
 *.log
 npm-debug.log*
