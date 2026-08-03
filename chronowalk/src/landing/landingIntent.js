@@ -7,7 +7,7 @@
  * - Canonical SEO stays on `/` without the intent param (see siteRoutes).
  */
 
-import { LANDING_CTA, LANDING_CONTENT, LANDING_PRICE_FALLBACK_LABEL } from './landingData.js'
+import { LANDING_CTA, LANDING_CONTENT } from './landingData.js'
 import {
   LANDING_CINEMATIC_INTERLUDE,
   LANDING_HERO,
@@ -31,7 +31,7 @@ const INTENT_SET = new Set(LANDING_INTENT_IDS)
 
 export const LANDING_INTENT_DEFAULT = /** @type {LandingIntentId} */ ('rome')
 
-const UNLOCK_PRICED = `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`
+const UNLOCK_PRICED = LANDING_CTA.unlockRomePriced
 
 /**
  * Fixed copy + image + CTA roles per allowlisted intent.

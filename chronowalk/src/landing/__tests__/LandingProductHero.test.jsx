@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import LandingProductHero from '../v4/LandingProductHero.jsx'
-import { LANDING_CTA, LANDING_PRICE_FALLBACK_LABEL } from '../landingData.js'
+import { LANDING_CTA } from '../landingData.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
@@ -118,7 +118,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     ).toBeInTheDocument()
 
     const paidCta = screen.getByRole('link', {
-      name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+      name: 'Unlock from €9.99',
     })
     expect(paidCta).toHaveAttribute('href', '#pricing')
     expect(paidCta).toHaveTextContent(LANDING_CTA.unlockRomePriced)
@@ -165,7 +165,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
-    expect(kids[1].textContent).toMatch(/Unlock all 21 stops/i)
+    expect(kids[1].textContent).toMatch(/Unlock from €9\.99/i)
     expect(kids[1].className).toMatch(/getapp/)
   })
 
@@ -183,7 +183,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     )
 
     const unlock = screen.getByRole('link', {
-      name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+      name: 'Unlock from €9.99',
     })
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: LANDING_CTA.tryPantheonFree })).not.toBeInTheDocument()
@@ -191,7 +191,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
-    expect(kids[0].textContent).toMatch(/Unlock all 21 stops/i)
+    expect(kids[0].textContent).toMatch(/Unlock from €9\.99/i)
     expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))

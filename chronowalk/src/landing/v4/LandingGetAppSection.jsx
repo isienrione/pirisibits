@@ -41,8 +41,9 @@ export default function LandingGetAppSection({ onChooseTour }) {
               <span className="cw-v4-getapp__option-eyebrow">Available now</span>
               <span className="cw-v4-getapp__option-title">Use in browser</span>
               <span className="cw-v4-getapp__option-note">
-                Open ChronoWalk directly on your phone without downloading any app. Set up once
-                online, and use later with data or offline when needed.
+                Open ChronoWalk directly on your phone without downloading any app. Access your
+                tour directly on this website, add it to Home Screen and done! It now behaves
+                just like a mobile app, without the hassle.
               </span>
               <span className="cw-v4-getapp__option-cta">
                 Choose a walk and start using ChronoWalk
