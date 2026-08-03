@@ -31,11 +31,33 @@ function resolveTierFromHash(tiers) {
   return tiers.find((tier) => tier.id === hash)?.id ?? null
 }
 
+function PacingNote({ text, className }) {
+  if (!text) return null
+  const match = text.match(/^(.*?)(1 or 2 days)(.*)$/i)
+  return (
+    <p className={className}>
+      <span className="cw-v4-pacing__kicker">Your pace</span>
+      <span className="cw-v4-pacing__line">
+        {match ? (
+          <>
+            {match[1]}
+            <strong className="cw-v4-pacing__emphasis">{match[2]}</strong>
+            {match[3]}
+          </>
+        ) : (
+          text
+        )}
+      </span>
+    </p>
+  )
+}
+
 function DesktopPackageCard({ tier, index, onBeginTier }) {
   const theme = tier.theme ?? 'eterna'
   const alt = [
     tier.name,
     tier.tagline,
+    tier.pacingNote,
     tier.price,
     `${tier.stopsLabel}, ${tier.durationLabel}, ${tier.distanceLabel}.`,
     tier.description,
@@ -77,6 +99,7 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           <span className="cw-v4-visually-hidden">{tier.primaryCta}</span>
         </button>
       </div>
+      <PacingNote text={tier.pacingNote} className="cw-v4-pacing cw-v4-pkg__pacing" />
     </article>
   )
 }
@@ -220,6 +243,11 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           </li>
         </ul>
 
+        <PacingNote
+          text={activeTier.pacingNote}
+          className="cw-v4-pacing cw-v4-pkg-mobile-card__pacing"
+        />
+
         <p className="cw-v4-pkg-mobile-card__desc">{activeTier.description}</p>
 
         <div className="cw-v4-pkg-mobile-card__price-row">
@@ -287,6 +315,9 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
                   <span aria-hidden="true"> · </span>
                   {tier.distanceLabel}
                 </p>
+                {tier.pacingNote ? (
+                  <p className="cw-v4-pkg-compare__pacing">{tier.pacingNote}</p>
+                ) : null}
                 <p className="cw-v4-pkg-compare__price">{tier.price}</p>
               </div>
               <button

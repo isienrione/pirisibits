@@ -50,6 +50,7 @@ describe('pricing card hierarchy content', () => {
     expect(eterna.badge).toBe('Complete experience')
     expect(eterna.badge).not.toMatch(/%|popular|bestseller|most loved/i)
     expect(eterna.tag).not.toMatch(/%|popular|bestseller|most loved/i)
+    expect(eterna.pacingNote).toBe('You can do it in 1 or 2 days!')
     expect(eterna.bullets[0]).toMatch(/All 21 stops/)
     expect(eterna.primaryCta).toBe('Choose Roma Eterna')
     expect(eterna.cardImage).toBe('/landing/hero-slides/package-roma-eterna.png')
@@ -59,6 +60,8 @@ describe('pricing card hierarchy content', () => {
     expect(ROME_TIERS.find((t) => t.id === 'rome-central').cardImage).toBe(
       '/landing/hero-slides/package-roma-historica.png',
     )
+    expect(ROME_TIERS.find((t) => t.id === 'rome-essential').pacingNote).toBeUndefined()
+    expect(ROME_TIERS.find((t) => t.id === 'rome-central').pacingNote).toBeUndefined()
   })
 
   it('names each purchase CTA after its package', () => {
