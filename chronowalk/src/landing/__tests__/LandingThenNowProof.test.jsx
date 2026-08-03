@@ -8,7 +8,7 @@ const startedMock = vi.fn()
 const completedMock = vi.fn()
 
 vi.mock('../../hooks/useReducedMotion.js', () => ({
-  useReducedMotion: () => false,
+  useReducedMotion: () => true,
 }))
 
 vi.mock('../landingAnalytics.js', () => ({
@@ -17,16 +17,15 @@ vi.mock('../landingAnalytics.js', () => ({
   trackThenNowDemoCompleted: (...args) => completedMock(...args),
 }))
 
+vi.mock('../v4/usePhoneArtboardScale.js', () => ({
+  default: () => ({ screenRef: { current: null }, scale: 0.5 }),
+}))
+
 describe('LandingThenNowProof', () => {
   beforeEach(() => {
     viewedMock.mockClear()
     startedMock.mockClear()
     completedMock.mockClear()
-    vi.stubGlobal('requestAnimationFrame', (cb) => {
-      cb(performance.now() + 1000)
-      return 1
-    })
-    vi.stubGlobal('cancelAnimationFrame', () => {})
     vi.stubGlobal(
       'IntersectionObserver',
       class {
@@ -46,36 +45,35 @@ describe('LandingThenNowProof', () => {
     vi.unstubAllGlobals()
   })
 
-  it('renders approved copy and a Show Ancient Rome fallback', () => {
+  it('renders marketing copy around a phone-framed app Threshold', () => {
     render(<LandingThenNowProof />)
     const section = LANDING_CONTENT.thenNowProof
     expect(screen.getByRole('heading', { level: 2, name: section.headline })).toBeInTheDocument()
-    expect(screen.getByText(section.support)).toBeInTheDocument()
-    expect(screen.getByText(section.exampleNote)).toBeInTheDocument()
+    expect(screen.getByLabelText(/ChronoWalk Then\/Now inside the app/i)).toBeInTheDocument()
+    expect(screen.getByTestId('then-now-app-screen')).toBeInTheDocument()
+    expect(screen.getAllByText(/Hold to reveal Ancient Rome/i).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: section.revealLabel })).toBeInTheDocument()
   })
 
-  it('tracks view once when entering viewport and start on fallback toggle', () => {
+  it('tracks view once when entering viewport', () => {
     render(<LandingThenNowProof />)
     expect(viewedMock).toHaveBeenCalledTimes(1)
-
-    act(() => {
-      fireEvent.click(screen.getByRole('button', { name: /Show Ancient Rome/i }))
-    })
-    expect(startedMock).toHaveBeenCalledWith(expect.objectContaining({ via: 'button' }))
   })
 
   it('does not mount audio elements', () => {
     const { container } = render(<LandingThenNowProof />)
     expect(container.querySelector('audio')).toBeNull()
-    expect(container.querySelector('video')).toBeNull()
   })
 
-  it('uses the Colosseum interior still pair', () => {
+  it('uses the product Colosseum interior reconstruction media', () => {
     const { container } = render(<LandingThenNowProof />)
-    const imgs = [...container.querySelectorAll('img')].map((img) => img.getAttribute('src'))
-    expect(imgs.some((src) => src?.includes('colosseum-interior-now'))).toBe(true)
-    expect(imgs.some((src) => src?.includes('colosseum-interior-then'))).toBe(true)
-    expect(imgs.some((src) => src?.includes('colosseum-now.jpg'))).toBe(false)
+    const media = [
+      ...[...container.querySelectorAll('img')].map((el) => el.getAttribute('src') || ''),
+      ...[...container.querySelectorAll('video')].map(
+        (el) => el.getAttribute('src') || el.getAttribute('poster') || '',
+      ),
+    ]
+    expect(media.some((src) => src.includes('/waypoints/colosseum/interior/'))).toBe(true)
+    expect(container.querySelector('video')).toBeTruthy()
   })
 })
