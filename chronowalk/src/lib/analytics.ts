@@ -24,6 +24,11 @@ export type FunnelEventName =
   | 'checkout_closed'
   | 'checkout_completed'
   | 'checkout_error'
+  | 'checkout_payment_failed'
+  | 'checkout_open_failed'
+  | 'checkout_customer_created'
+  | 'checkout_items_updated'
+  | 'paddle_script_failed'
 
 export type EngagementEventName =
   | 'preview_play_click'
@@ -101,6 +106,8 @@ const onceKeys = new Set<string>()
 const previewProgressFired = new Set<number>()
 let sampleInteractFired = false
 
+let lastCtaLocation: CtaLocation | null = null
+
 /** @internal */
 export function __resetAnalyticsSessionForTests() {
   onceKeys.clear()
@@ -111,6 +118,7 @@ export function __resetAnalyticsSessionForTests() {
   attributionCaptured = false
   scrollListenersInstalled = false
   exitListenersInstalled = false
+  lastCtaLocation = null
   landingStartedAt =
     typeof performance !== 'undefined' && typeof performance.now === 'function'
       ? performance.now()
@@ -275,11 +283,45 @@ export function trackCtaClick(opts: {
   priceEur?: number
   ctaLocation: CtaLocation
 }): boolean {
+  lastCtaLocation = opts.ctaLocation
   return track('cta_click', {
     cta_location: opts.ctaLocation,
     ...(opts.tier ? { tier: opts.tier } : {}),
     ...(opts.priceEur != null ? { price_eur: opts.priceEur } : {}),
   })
+}
+
+/** Last buy/start CTA placement — forwarded into Paddle customData. */
+export function getLastCtaLocation(): CtaLocation | null {
+  return lastCtaLocation
+}
+
+/** UTM / click-id attribution captured from the landing URL. */
+export function getCapturedAttribution(): Attribution {
+  captureAttributionFromUrl()
+  return { ...attribution }
+}
+
+/**
+ * PostHog identity for Paddle customData (never throws).
+ * Uses posthog.get_distinct_id / get_session_id when available.
+ */
+export function getPostHogCheckoutIdentity(): {
+  ph_distinct_id: string | null
+  ph_session_id: string | null
+} {
+  try {
+    const distinct =
+      typeof posthog.get_distinct_id === 'function' ? posthog.get_distinct_id() : null
+    const session =
+      typeof posthog.get_session_id === 'function' ? posthog.get_session_id() : null
+    return {
+      ph_distinct_id: distinct != null && String(distinct) ? String(distinct) : null,
+      ph_session_id: session != null && String(session) ? String(session) : null,
+    }
+  } catch {
+    return { ph_distinct_id: null, ph_session_id: null }
+  }
 }
 
 export function trackCheckoutOpened(opts: { tier: string; priceEur?: number }): boolean {
@@ -308,11 +350,48 @@ export function trackCheckoutCompleted(opts: {
   })
 }
 
-export function trackCheckoutError(opts: { tier: string; errorMessage: string }): boolean {
+export function trackCheckoutError(opts: { tier?: string; errorMessage: string }): boolean {
   return track('checkout_error', {
-    tier: opts.tier,
     error_message: opts.errorMessage,
+    ...(opts.tier ? { tier: opts.tier } : {}),
   })
+}
+
+export function trackCheckoutPaymentFailed(opts: {
+  tier?: string
+  errorMessage?: string
+}): boolean {
+  return track('checkout_payment_failed', {
+    ...(opts.tier ? { tier: opts.tier } : {}),
+    ...(opts.errorMessage ? { error_message: opts.errorMessage } : {}),
+  })
+}
+
+export function trackCheckoutOpenFailed(opts: {
+  tier?: string
+  errorMessage: string
+}): boolean {
+  return track('checkout_open_failed', {
+    error_message: opts.errorMessage,
+    ...(opts.tier ? { tier: opts.tier } : {}),
+  })
+}
+
+export function trackCheckoutCustomerCreated(opts: { tier?: string } = {}): boolean {
+  return track('checkout_customer_created', {
+    ...(opts.tier ? { tier: opts.tier } : {}),
+  })
+}
+
+export function trackCheckoutItemsUpdated(opts: { tier?: string } = {}): boolean {
+  return track('checkout_items_updated', {
+    ...(opts.tier ? { tier: opts.tier } : {}),
+  })
+}
+
+export function trackPaddleScriptFailed(opts: { reason: string } = { reason: 'unknown' }): boolean {
+  if (!once(`paddle_script_failed:${opts.reason}`)) return false
+  return track('paddle_script_failed', { error_message: opts.reason })
 }
 
 export function trackPreviewPlayClick(routeSlug = 'pantheon'): boolean {

@@ -118,7 +118,12 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
   // (Paddle Billing does not use Lemon-style buy URLs).
   void preferredMode
 
-  const result = await openPaddleCheckout({ priceId, customData, email })
+  const result = await openPaddleCheckout({
+    priceId,
+    customData,
+    email,
+    tierId: tierId || null,
+  })
   if (!result.ok && tierId) {
     trackCheckoutError({
       tier: tierId,

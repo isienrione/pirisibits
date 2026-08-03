@@ -2,8 +2,12 @@
  * Paddle Billing commerce - ChronoWalk Rome packs (one-time prices).
  * Overlay checkout via @paddle/paddle-js; unlock still comes from the webhook.
  *
- * custom_data.product_id is attribution/debug only - it never authorizes access.
+ * custom_data is attribution/debug only - it never authorizes access.
  * Entitlement is derived server-side from the paid Paddle price id.
+ *
+ * Loading: npm package `@paddle/paddle-js` dynamically injects
+ * https://cdn.paddle.com/paddle/v2/paddle.js (no async/defer attrs; browser
+ * loads dynamically-inserted classic scripts asynchronously).
  */
 
 import { initializePaddle } from '@paddle/paddle-js'
@@ -11,12 +15,21 @@ import {
   LAUNCH_CATALOG_BY_ID,
   LAUNCH_CATALOG_PRODUCTS,
 } from './generated/launchCatalog.gen.js'
+import { getAbVariantCents } from './config.js'
 import {
   centsToPriceEur,
+  getCapturedAttribution,
+  getLastCtaLocation,
+  getPostHogCheckoutIdentity,
   trackCheckoutClosed,
   trackCheckoutCompleted,
+  trackCheckoutCustomerCreated,
   trackCheckoutError,
+  trackCheckoutItemsUpdated,
+  trackCheckoutOpenFailed,
   trackCheckoutOpened,
+  trackCheckoutPaymentFailed,
+  trackPaddleScriptFailed,
 } from './analytics.ts'
 
 /** Tier id → Vite env key for the Paddle price id (`pri_…`). */
@@ -29,17 +42,21 @@ export const CANONICAL_CHECKOUT_PRODUCT_IDS = Object.freeze(
 )
 
 const DEFAULT_TIER = 'rome-complete'
+const SUPPORT_EMAIL = 'support@chronowalk.com'
+const FALLBACK_ROOT_ID = 'cw-checkout-fallback'
 
 /** @type {import('@paddle/paddle-js').Paddle | null | undefined} */
 let paddleSingleton
 /** @type {Promise<import('@paddle/paddle-js').Paddle | null> | null} */
 let paddleInitPromise = null
+let paddleStartupWarned = false
 
 /** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean } | null} */
 let activeCheckout = null
 
 /**
  * Remember the open checkout so Paddle eventCallback can emit funnel events.
+ * Does not fire `checkout_opened` — that maps from Paddle `checkout.loaded`.
  * @param {{ tier: string, priceCents?: number | null }} opts
  */
 export function beginCheckoutAnalytics({ tier, priceCents } = {}) {
@@ -50,39 +67,60 @@ export function beginCheckoutAnalytics({ tier, priceCents } = {}) {
     openedAt: Date.now(),
     completed: false,
   }
-  trackCheckoutOpened({
-    tier,
-    priceEur: activeCheckout.priceEur,
-  })
 }
 
 function handlePaddleCheckoutEvent(event) {
   const name = event?.name
-  if (!name || !activeCheckout) return
+  if (!name) return
+
+  const tier = activeCheckout?.tier
+  const priceEur = activeCheckout?.priceEur
+
+  if (name === 'checkout.loaded') {
+    if (tier) {
+      trackCheckoutOpened({ tier, priceEur })
+    }
+    return
+  }
 
   if (name === 'checkout.completed') {
-    activeCheckout.completed = true
+    if (activeCheckout) activeCheckout.completed = true
     const transactionId =
       event?.data?.transaction_id ||
       event?.data?.id ||
       event?.data?.transaction?.id ||
       undefined
-    trackCheckoutCompleted({
-      tier: activeCheckout.tier,
-      priceEur: activeCheckout.priceEur,
-      transactionId: transactionId ? String(transactionId) : undefined,
-    })
+    if (tier) {
+      trackCheckoutCompleted({
+        tier,
+        priceEur,
+        transactionId: transactionId ? String(transactionId) : undefined,
+      })
+    }
     return
   }
 
   if (name === 'checkout.closed') {
-    if (!activeCheckout.completed) {
+    if (activeCheckout && !activeCheckout.completed && tier) {
       trackCheckoutClosed({
-        tier: activeCheckout.tier,
+        tier,
         secondsInCheckout: (Date.now() - activeCheckout.openedAt) / 1000,
       })
     }
     activeCheckout = null
+    return
+  }
+
+  if (name === 'checkout.payment.failed') {
+    const message =
+      event?.error?.detail ||
+      event?.data?.error ||
+      event?.error?.message ||
+      'payment_failed'
+    trackCheckoutPaymentFailed({
+      tier,
+      errorMessage: String(message),
+    })
     return
   }
 
@@ -93,9 +131,19 @@ function handlePaddleCheckoutEvent(event) {
       event?.error?.message ||
       name
     trackCheckoutError({
-      tier: activeCheckout.tier,
+      tier,
       errorMessage: String(message),
     })
+    return
+  }
+
+  if (name === 'checkout.customer.created') {
+    trackCheckoutCustomerCreated({ tier })
+    return
+  }
+
+  if (name === 'checkout.items.updated') {
+    trackCheckoutItemsUpdated({ tier })
   }
 }
 
@@ -214,15 +262,23 @@ export function isPaddleCheckoutReady(tierId, paddlePricesFromConfig) {
   return Boolean(resolvePaddlePriceId(tierId, paddlePricesFromConfig))
 }
 
+function setCustomString(data, key, value) {
+  if (value == null) return
+  const text = String(value).trim()
+  if (!text) return
+  data[key] = text
+}
+
 /**
  * Build Paddle `customData` (string values only).
- * product_id / host / experiment / consent are attribution only - not entitlement authority.
+ * product_id / host / experiment / consent / PostHog / UTM are attribution only.
  */
 export function buildPaddleCustomData({
   host,
   abVariantCents,
   productId,
   consentVersion,
+  ctaLocation,
 } = {}) {
   /** @type {Record<string, string>} */
   const data = {}
@@ -230,11 +286,24 @@ export function buildPaddleCustomData({
   if (productId && isCanonicalCheckoutProduct(productId)) {
     data.product_id = String(productId)
   }
-  if (host) data.host = String(host)
-  if (abVariantCents != null && abVariantCents !== '') {
-    data.ab_variant = String(abVariantCents)
-  }
-  if (consentVersion) data.consent_version = String(consentVersion)
+  setCustomString(data, 'host', host)
+  const ab = abVariantCents != null && abVariantCents !== '' ? abVariantCents : getAbVariantCents()
+  setCustomString(data, 'ab_variant', ab)
+  setCustomString(data, 'consent_version', consentVersion)
+
+  const identity = getPostHogCheckoutIdentity()
+  setCustomString(data, 'ph_distinct_id', identity.ph_distinct_id)
+  setCustomString(data, 'ph_session_id', identity.ph_session_id)
+
+  const attr = getCapturedAttribution()
+  setCustomString(data, 'utm_source', attr.utm_source)
+  setCustomString(data, 'utm_medium', attr.utm_medium)
+  setCustomString(data, 'utm_campaign', attr.utm_campaign)
+  setCustomString(data, 'gclid', attr.gclid)
+  setCustomString(data, 'gbraid', attr.gbraid)
+
+  setCustomString(data, 'cta_location', ctaLocation ?? getLastCtaLocation())
+
   return data
 }
 
@@ -243,6 +312,88 @@ function successUrl() {
   const base = String(import.meta.env.VITE_SITE_URL ?? '').trim().replace(/\/$/, '')
   const origin = base || window.location.origin
   return `${origin}/access/confirmed`
+}
+
+/**
+ * Visible mailto fallback when checkout cannot open — never silent.
+ * @param {{ tier?: string | null, errorMessage?: string }} opts
+ */
+export function showCheckoutUnavailableFallback({ tier = null, errorMessage = '' } = {}) {
+  if (typeof document === 'undefined') return
+
+  document.getElementById(FALLBACK_ROOT_ID)?.remove()
+
+  const subject = encodeURIComponent(
+    tier ? `ChronoWalk checkout help (${tier})` : 'ChronoWalk checkout help',
+  )
+  const body = encodeURIComponent(
+    [
+      'Hi ChronoWalk,',
+      '',
+      'Checkout did not open on my device.',
+      tier ? `Tier: ${tier}` : null,
+      errorMessage ? `Error: ${errorMessage}` : null,
+      `Page: ${typeof window !== 'undefined' ? window.location.href : ''}`,
+      '',
+      'Thanks,',
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  )
+  const mailto = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`
+
+  const root = document.createElement('div')
+  root.id = FALLBACK_ROOT_ID
+  root.setAttribute('role', 'alertdialog')
+  root.setAttribute('aria-modal', 'true')
+  root.setAttribute('aria-labelledby', 'cw-checkout-fallback-title')
+  root.style.cssText = [
+    'position:fixed',
+    'inset:0',
+    'z-index:10000',
+    'display:grid',
+    'place-items:center',
+    'padding:1rem',
+    'background:rgba(11,11,13,0.55)',
+  ].join(';')
+
+  root.innerHTML = `
+    <div style="width:min(100%,26rem);padding:1.25rem 1.35rem;border-radius:16px;background:#faf6ef;color:#1a1a1f;font-family:system-ui,sans-serif;box-shadow:0 16px 48px rgba(0,0,0,0.28)">
+      <h2 id="cw-checkout-fallback-title" style="margin:0 0 0.55rem;font-size:1.2rem;font-weight:650">Checkout could not open</h2>
+      <p style="margin:0 0 0.85rem;font-size:0.95rem;line-height:1.5">
+        Something went wrong starting secure checkout. Email us and we will help you finish your purchase.
+      </p>
+      <a href="${mailto}" style="display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0.65rem 1rem;border-radius:999px;background:#e8a13c;color:#2a1206;font-weight:700;text-decoration:none">
+        Email ${SUPPORT_EMAIL}
+      </a>
+      <button type="button" data-cw-fallback-close style="display:block;width:100%;margin-top:0.75rem;min-height:44px;border:0;background:transparent;color:rgba(26,26,31,0.7);font:inherit;cursor:pointer">
+        Close
+      </button>
+    </div>
+  `
+
+  const close = () => root.remove()
+  root.addEventListener('click', (event) => {
+    if (event.target === root) close()
+  })
+  root.querySelector('[data-cw-fallback-close]')?.addEventListener('click', close)
+  document.body.appendChild(root)
+}
+
+/**
+ * Warn once at startup when the Paddle client token is missing, and fire analytics.
+ * Safe to call before or after PostHog init (events no-op until ready).
+ */
+export function warnPaddleAtStartup() {
+  if (typeof window === 'undefined' || paddleStartupWarned) return
+  paddleStartupWarned = true
+
+  if (!getPaddleClientToken()) {
+    console.warn(
+      '[paddle] VITE_PADDLE_CLIENT_TOKEN is missing — checkout overlay cannot start.',
+    )
+    trackPaddleScriptFailed({ reason: 'missing_client_token' })
+  }
 }
 
 /**
@@ -255,7 +406,13 @@ export function ensurePaddle() {
   if (paddleInitPromise) return paddleInitPromise
 
   const token = getPaddleClientToken()
-  if (!token) return Promise.resolve(null)
+  if (!token) {
+    console.warn(
+      '[paddle] Cannot initialize — VITE_PADDLE_CLIENT_TOKEN is missing.',
+    )
+    trackPaddleScriptFailed({ reason: 'missing_client_token' })
+    return Promise.resolve(null)
+  }
 
   paddleInitPromise = initializePaddle({
     token,
@@ -264,10 +421,18 @@ export function ensurePaddle() {
   })
     .then((instance) => {
       paddleSingleton = instance ?? null
+      if (!paddleSingleton?.Checkout?.open) {
+        console.warn('[paddle] Paddle.js loaded but Checkout.open is unavailable.')
+        trackPaddleScriptFailed({ reason: 'checkout_api_unavailable' })
+      }
       return paddleSingleton
     })
     .catch((err) => {
-      console.error('[paddle] initialize failed', err)
+      console.error('[paddle] initialize / script load failed', err)
+      console.warn('[paddle] Paddle.js failed to load — checkout will not open.')
+      trackPaddleScriptFailed({
+        reason: err?.message ? String(err.message) : 'initialize_failed',
+      })
       paddleInitPromise = null
       return null
     })
@@ -283,12 +448,21 @@ export async function openPaddleCheckout({
   priceId,
   customData,
   email,
+  tierId = null,
 } = {}) {
-  if (!priceId) return { ok: false, reason: 'missing_price_id' }
+  if (!priceId) {
+    const message = 'missing_price_id'
+    trackCheckoutOpenFailed({ tier: tierId || undefined, errorMessage: message })
+    showCheckoutUnavailableFallback({ tier: tierId, errorMessage: message })
+    return { ok: false, reason: message, fallbackShown: true }
+  }
 
   const paddle = await ensurePaddle()
   if (!paddle?.Checkout?.open) {
-    return { ok: false, reason: 'script_unavailable' }
+    const message = 'script_unavailable'
+    trackCheckoutOpenFailed({ tier: tierId || undefined, errorMessage: message })
+    showCheckoutUnavailableFallback({ tier: tierId, errorMessage: message })
+    return { ok: false, reason: message, fallbackShown: true }
   }
 
   /** @type {import('@paddle/paddle-js').CheckoutOpenOptions} */
@@ -309,8 +483,16 @@ export async function openPaddleCheckout({
     options.customer = { email }
   }
 
-  paddle.Checkout.open(options)
-  return { ok: true, mode: 'overlay', priceId, quantity: 1 }
+  try {
+    paddle.Checkout.open(options)
+    return { ok: true, mode: 'overlay', priceId, quantity: 1 }
+  } catch (err) {
+    const message = err?.message ? String(err.message) : 'checkout_open_threw'
+    console.error('[paddle] Checkout.open threw', err)
+    trackCheckoutOpenFailed({ tier: tierId || undefined, errorMessage: message })
+    showCheckoutUnavailableFallback({ tier: tierId, errorMessage: message })
+    return { ok: false, reason: 'open_threw', fallbackShown: true, errorMessage: message }
+  }
 }
 
 /** Test helper - reset singleton between vitest cases. */
@@ -318,6 +500,10 @@ export function __resetPaddleForTests() {
   paddleSingleton = undefined
   paddleInitPromise = null
   activeCheckout = null
+  paddleStartupWarned = false
+  if (typeof document !== 'undefined') {
+    document.getElementById(FALLBACK_ROOT_ID)?.remove()
+  }
 }
 
 export { LAUNCH_CATALOG_BY_ID, LAUNCH_CATALOG_PRODUCTS }
