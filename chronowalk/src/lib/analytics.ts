@@ -46,6 +46,9 @@ export type EngagementEventName =
   | 'preview_audio_progress'
   | 'faq_open'
   | 'sample_image_interact'
+  | 'engaged_heartbeat'
+  | 'deep_engagement'
+  | 'bounced_fast'
 
 export type ExitEventName = 'scroll_milestone' | 'exit_intent'
 
@@ -70,6 +73,7 @@ export type AnalyticsProps = {
   max_scroll_pct?: number
   seconds_on_page?: number
   deepest_funnel_step_reached?: string
+  longest_dwell_section?: string
   [key: string]: unknown
 }
 
@@ -86,6 +90,28 @@ const FUNNEL_RANK: Record<string, number> = {
 
 const SCROLL_MILESTONES = [25, 50, 75, 90, 100] as const
 const PREVIEW_PROGRESS_MARKS = [25, 50, 75, 100] as const
+/** Engaged-time heartbeats (visible tab only). */
+const HEARTBEAT_MARKS = [10, 30, 60, 120, 300] as const
+const DEEP_ENGAGEMENT_SECONDS = 60
+const DEEP_ENGAGEMENT_SCROLL_PCT = 50
+const BOUNCE_MAX_SECONDS = 15
+const BOUNCE_MAX_SCROLL_PCT = 25
+
+/** Primary landing section ids (+ acts) for dwell tracking. */
+const LANDING_SECTION_IDS = [
+  'top',
+  'how-it-works',
+  'monuments',
+  'who-its-for',
+  'pricing',
+  'shared-experience',
+  'get-app',
+  'faq',
+  'trust',
+  'act-open',
+  'act-walk',
+  'act-choose',
+] as const
 
 let landingStartedAt =
   typeof performance !== 'undefined' && typeof performance.now === 'function'
@@ -95,13 +121,41 @@ let maxScrollPct = 0
 let deepestFunnelStep = 'none'
 let scrollListenersInstalled = false
 let exitListenersInstalled = false
+let engagementListenersInstalled = false
 let analyticsReady = false
+
+/** Accumulated ms while the tab was visible (excludes hidden intervals). */
+let engagedMsAccumulated = 0
+/** Date.now() when the current visible interval started; null when paused/hidden. */
+let engagedVisibleSince: number | null = null
+let heartbeatTimer: ReturnType<typeof setInterval> | null = null
+let sectionObserver: IntersectionObserver | null = null
+const sectionDwellMs = new Map<string, number>()
+const sectionVisibleSince = new Map<string, number>()
+const sectionIntersecting = new Set<string>()
 
 const onceKeys = new Set<string>()
 const previewProgressFired = new Set<number>()
 let sampleInteractFired = false
 
 let lastCtaLocation: CtaLocation | null = null
+
+function stopHeartbeatTicker() {
+  if (heartbeatTimer != null) {
+    clearInterval(heartbeatTimer)
+    heartbeatTimer = null
+  }
+}
+
+function disconnectSectionObserver() {
+  if (sectionObserver) {
+    sectionObserver.disconnect()
+    sectionObserver = null
+  }
+  sectionDwellMs.clear()
+  sectionVisibleSince.clear()
+  sectionIntersecting.clear()
+}
 
 /** @internal */
 export function __resetAnalyticsSessionForTests() {
@@ -112,6 +166,11 @@ export function __resetAnalyticsSessionForTests() {
   deepestFunnelStep = 'none'
   scrollListenersInstalled = false
   exitListenersInstalled = false
+  engagementListenersInstalled = false
+  engagedMsAccumulated = 0
+  engagedVisibleSince = null
+  stopHeartbeatTicker()
+  disconnectSectionObserver()
   lastCtaLocation = null
   landingStartedAt =
     typeof performance !== 'undefined' && typeof performance.now === 'function'
@@ -136,6 +195,155 @@ function nowMs() {
 
 function secondsSinceLanding() {
   return Math.max(0, Math.round((nowMs() - landingStartedAt) / 1000))
+}
+
+function wallClockNow() {
+  return Date.now()
+}
+
+/** Seconds the tab has been visible (heartbeats / bounce / deep engagement). */
+function getEngagedSeconds() {
+  let total = engagedMsAccumulated
+  if (engagedVisibleSince != null) {
+    total += wallClockNow() - engagedVisibleSince
+  }
+  return Math.max(0, Math.round(total / 1000))
+}
+
+function pauseSectionDwell() {
+  const now = wallClockNow()
+  for (const [id, since] of sectionVisibleSince) {
+    sectionDwellMs.set(id, (sectionDwellMs.get(id) || 0) + (now - since))
+  }
+  sectionVisibleSince.clear()
+}
+
+function resumeSectionDwell() {
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+  const now = wallClockNow()
+  for (const id of sectionIntersecting) {
+    if (!sectionVisibleSince.has(id)) {
+      sectionVisibleSince.set(id, now)
+    }
+  }
+}
+
+function getLongestDwellSection(): string | null {
+  const now = wallClockNow()
+  let best: string | null = null
+  let bestMs = 0
+  const ids = new Set<string>([...sectionDwellMs.keys(), ...sectionVisibleSince.keys()])
+  for (const id of ids) {
+    let ms = sectionDwellMs.get(id) || 0
+    const since = sectionVisibleSince.get(id)
+    if (since != null) ms += now - since
+    if (ms > bestMs) {
+      bestMs = ms
+      best = id
+    }
+  }
+  return best
+}
+
+function maybeDeepEngagement() {
+  const seconds = getEngagedSeconds()
+  updateScrollDepth()
+  if (
+    seconds >= DEEP_ENGAGEMENT_SECONDS &&
+    maxScrollPct >= DEEP_ENGAGEMENT_SCROLL_PCT &&
+    once('deep_engagement')
+  ) {
+    track('deep_engagement', {
+      seconds_on_page: seconds,
+      max_scroll_pct: Math.round(maxScrollPct),
+    })
+  }
+}
+
+function tickEngagementHeartbeat() {
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+  const seconds = getEngagedSeconds()
+  updateScrollDepth()
+  const maxScroll = Math.round(maxScrollPct)
+
+  for (const mark of HEARTBEAT_MARKS) {
+    if (seconds >= mark && once(`engaged_heartbeat:${mark}`)) {
+      track('engaged_heartbeat', {
+        seconds_on_page: mark,
+        max_scroll_pct: maxScroll,
+      })
+    }
+  }
+  maybeDeepEngagement()
+}
+
+function startHeartbeatTicker() {
+  if (heartbeatTimer != null) return
+  heartbeatTimer = setInterval(tickEngagementHeartbeat, 1000)
+  tickEngagementHeartbeat()
+}
+
+function pauseEngagedClock() {
+  if (engagedVisibleSince != null) {
+    engagedMsAccumulated += wallClockNow() - engagedVisibleSince
+    engagedVisibleSince = null
+  }
+  stopHeartbeatTicker()
+  pauseSectionDwell()
+}
+
+function resumeEngagedClock() {
+  if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+  if (engagedVisibleSince != null) return
+  engagedVisibleSince = wallClockNow()
+  resumeSectionDwell()
+  startHeartbeatTicker()
+}
+
+function installSectionDwellObserver() {
+  if (typeof document === 'undefined' || typeof IntersectionObserver !== 'function') return
+  if (sectionObserver) return
+
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      const now = wallClockNow()
+      const tabVisible = document.visibilityState !== 'hidden'
+      for (const entry of entries) {
+        const el = entry.target as HTMLElement
+        const id = el.id || el.getAttribute('data-analytics-section') || ''
+        if (!id) continue
+        if (entry.isIntersecting) {
+          sectionIntersecting.add(id)
+          if (tabVisible && !sectionVisibleSince.has(id)) {
+            sectionVisibleSince.set(id, now)
+          }
+        } else {
+          sectionIntersecting.delete(id)
+          const since = sectionVisibleSince.get(id)
+          if (since != null) {
+            sectionDwellMs.set(id, (sectionDwellMs.get(id) || 0) + (now - since))
+            sectionVisibleSince.delete(id)
+          }
+        }
+      }
+    },
+    { threshold: [0, 0.25, 0.5] },
+  )
+
+  const observed = new Set<Element>()
+  for (const id of LANDING_SECTION_IDS) {
+    const el = document.getElementById(id)
+    if (el && !observed.has(el)) {
+      sectionObserver.observe(el)
+      observed.add(el)
+    }
+  }
+  document.querySelectorAll('[data-analytics-section]').forEach((el) => {
+    if (!observed.has(el)) {
+      sectionObserver!.observe(el)
+      observed.add(el)
+    }
+  })
 }
 
 function readScrollDepthPct() {
@@ -194,7 +402,8 @@ function buildBaseProps(extra: AnalyticsProps = {}): Record<string, unknown> {
     landing_exp_hero: exp,
     ...attributionToProps(attr),
     seconds_since_landing: secondsSinceLanding(),
-    scroll_depth_pct: maxScrollPct,
+    scroll_depth_pct: Math.round(maxScrollPct),
+    max_scroll_pct: Math.round(maxScrollPct),
     is_pwa: isStandalonePwa(),
     is_ios: isIosDevice(),
     ...extra,
@@ -436,15 +645,29 @@ function fireScrollMilestones() {
       track('scroll_milestone', { pct })
     }
   }
+  maybeDeepEngagement()
 }
 
 function fireExitIntent() {
   if (!once('exit_intent')) return
   updateScrollDepth()
+  const longest = getLongestDwellSection()
   track('exit_intent', {
-    max_scroll_pct: maxScrollPct,
+    max_scroll_pct: Math.round(maxScrollPct),
     seconds_on_page: secondsSinceLanding(),
     deepest_funnel_step_reached: deepestFunnelStep,
+    ...(longest ? { longest_dwell_section: longest } : {}),
+  })
+}
+
+function fireBouncedFast() {
+  const seconds = getEngagedSeconds()
+  updateScrollDepth()
+  if (seconds >= BOUNCE_MAX_SECONDS || maxScrollPct >= BOUNCE_MAX_SCROLL_PCT) return
+  if (!once('bounced_fast')) return
+  track('bounced_fast', {
+    seconds_on_page: seconds,
+    max_scroll_pct: Math.round(maxScrollPct),
   })
 }
 
@@ -549,7 +772,7 @@ export function trackSlowPage(opts: { lcpMs: number }): boolean {
   return track('slow_page', { lcp_ms: Math.round(opts.lcpMs) })
 }
 
-/** Debounced scroll milestones + exit intent. Safe to call multiple times. */
+/** Debounced scroll milestones + exit intent + engagement depth. Safe to call multiple times. */
 export function installLandingPageListeners(): () => void {
   if (typeof window === 'undefined') return () => {}
 
@@ -565,10 +788,20 @@ export function installLandingPageListeners(): () => void {
     }, 150)
   }
 
-  const onHidden = () => {
-    if (document.visibilityState === 'hidden') fireExitIntent()
+  const onVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+      pauseEngagedClock()
+      fireExitIntent()
+    } else {
+      resumeEngagedClock()
+    }
   }
-  const onPageHide = () => fireExitIntent()
+
+  const onPageHide = () => {
+    pauseEngagedClock()
+    fireBouncedFast()
+    fireExitIntent()
+  }
 
   if (!scrollListenersInstalled) {
     scrollListenersInstalled = true
@@ -578,16 +811,25 @@ export function installLandingPageListeners(): () => void {
 
   if (!exitListenersInstalled) {
     exitListenersInstalled = true
-    document.addEventListener('visibilitychange', onHidden)
+    document.addEventListener('visibilitychange', onVisibilityChange)
     window.addEventListener('pagehide', onPageHide)
+  }
+
+  if (!engagementListenersInstalled) {
+    engagementListenersInstalled = true
+    installSectionDwellObserver()
+    resumeEngagedClock()
   }
 
   return () => {
     if (scrollTimer != null) clearTimeout(scrollTimer)
     window.removeEventListener('scroll', onScroll)
-    document.removeEventListener('visibilitychange', onHidden)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
     window.removeEventListener('pagehide', onPageHide)
+    pauseEngagedClock()
+    disconnectSectionObserver()
     scrollListenersInstalled = false
     exitListenersInstalled = false
+    engagementListenersInstalled = false
   }
 }

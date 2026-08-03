@@ -45,7 +45,9 @@ describe('landing funnel analytics', () => {
       is_ios: expect.any(Boolean),
       seconds_since_landing: expect.any(Number),
       scroll_depth_pct: expect.any(Number),
+      max_scroll_pct: expect.any(Number),
     })
+    expect(props.max_scroll_pct).toBe(props.scroll_depth_pct)
   })
 
   it('fires pricing_view and tier views once', async () => {
