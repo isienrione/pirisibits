@@ -38,9 +38,11 @@ describe('registerAppServiceWorker', () => {
 
   it('registers the service worker and exposes update hooks in production', () => {
     let onNeedRefresh
+    let onNeedReload
     const updateSW = vi.fn()
     const registerSW = vi.fn((options) => {
       onNeedRefresh = options.onNeedRefresh
+      onNeedReload = options.onNeedReload
       return updateSW
     })
 
@@ -54,14 +56,35 @@ describe('registerAppServiceWorker', () => {
       expect.objectContaining({
         immediate: true,
         onNeedRefresh: expect.any(Function),
+        onNeedReload: expect.any(Function),
         onOfflineReady: expect.any(Function),
       })
     )
     expect(listener).toHaveBeenCalledTimes(1)
     expect(updateSW).not.toHaveBeenCalled()
 
+    // Ambient SW activate must show toast — never hardReload.
+    onNeedReload()
+    expect(listener).toHaveBeenCalledTimes(2)
+    expect(hardReload).not.toHaveBeenCalled()
+
     controller.applyUpdate()
     expect(updateSW).toHaveBeenCalledWith(true)
+  })
+
+  it('reloads on onNeedReload only after the traveler accepts an update', () => {
+    let onNeedReload
+    const updateSW = vi.fn()
+    const registerSW = vi.fn((options) => {
+      onNeedReload = options.onNeedReload
+      return updateSW
+    })
+
+    const controller = registerAppServiceWorker(registerSW, { isProd: true })
+    controller.applyUpdate()
+    onNeedReload()
+
+    expect(hardReload).toHaveBeenCalled()
   })
 
   describe('checkForAppUpdate', () => {
