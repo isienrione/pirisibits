@@ -133,10 +133,13 @@ describe('landing product-story architecture (V4)', () => {
     ])
     expect(strip.items.map((item) => item.support)).toEqual([
       'Opens in your browser, works as a mobile app',
-      'Set up on WiFi before you head out and get ready to walk',
+      'Set up before you head out and get ready to walk',
       'No subscriptions',
-      'Check one stop: Pantheon Part 1 (FREE)',
+      'Enjoy Pantheon Part 1 (FREE)',
     ])
+    const tryFree = strip.items.find((item) => item.id === 'try-free')
+    expect(tryFree.supportLinkText).toBe('Pantheon Part 1 (FREE)')
+    expect(tryFree.supportLinkHref).toBe('/preview')
     const blob = JSON.stringify(strip).toLowerCase()
     expect(blob).not.toMatch(/best.?seller|testimonial|★|award|limited|most popular/)
   })
@@ -149,7 +152,7 @@ describe('landing product-story architecture (V4)', () => {
     const landingPath = join(dirname(fileURLToPath(import.meta.url)), '../ChronoWalkLanding.jsx')
     const text = readFileSync(landingPath, 'utf8')
     expect(text).toMatch(/import LandingHeroReassurance from '\.\/v4\/LandingHeroReassurance\.jsx'/)
-    expect(text.match(/<LandingHeroReassurance\s*\/>/g)).toHaveLength(1)
+    expect(text.match(/<LandingHeroReassurance\b[^>]*\/>/g)).toHaveLength(1)
     const heroIdx = text.indexOf('<LandingProductHero')
     const stripIdx = text.indexOf('<LandingHeroReassurance')
     expect(heroIdx).toBeGreaterThan(-1)

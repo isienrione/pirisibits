@@ -1,10 +1,11 @@
 import { LANDING_CONTENT } from '../landingData.js'
+import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 
 /**
  * Compact factual reassurance strip directly under the hero.
- * Noninteractive — no invented social proof.
+ * Mostly noninteractive; the free Pantheon line may link to /preview.
  */
-export default function LandingHeroReassurance() {
+export default function LandingHeroReassurance({ onPreview } = {}) {
   const section = LANDING_CONTENT.heroReassurance
   const items = section?.items ?? []
   if (!items.length) return null
@@ -22,7 +23,24 @@ export default function LandingHeroReassurance() {
               <span className="cw-v4-reassure__mark" aria-hidden="true" />
               <div className="cw-v4-reassure__copy">
                 <p className="cw-v4-reassure__label">{item.label}</p>
-                <p className="cw-v4-reassure__support">{item.support}</p>
+                <p className="cw-v4-reassure__support">
+                  {item.supportLinkText ? (
+                    <>
+                      {item.supportBefore ?? ''}
+                      <button
+                        type="button"
+                        className="cw-v4-reassure__link"
+                        onClick={() =>
+                          onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO_REASSURANCE)
+                        }
+                      >
+                        {item.supportLinkText}
+                      </button>
+                    </>
+                  ) : (
+                    item.support
+                  )}
+                </p>
               </div>
             </li>
           ))}

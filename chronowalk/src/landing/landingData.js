@@ -396,7 +396,7 @@ export const LANDING_CONTENT = {
       {
         id: 'offline',
         label: 'Offline mode available',
-        support: 'Set up on WiFi before you head out and get ready to walk',
+        support: 'Set up before you head out and get ready to walk',
       },
       {
         id: 'payment',
@@ -406,7 +406,10 @@ export const LANDING_CONTENT = {
       {
         id: 'try-free',
         label: 'Not sure yet? Try before you buy',
-        support: 'Check one stop: Pantheon Part 1 (FREE)',
+        support: 'Enjoy Pantheon Part 1 (FREE)',
+        supportBefore: 'Enjoy ',
+        supportLinkText: 'Pantheon Part 1 (FREE)',
+        supportLinkHref: '/preview',
       },
     ],
   },

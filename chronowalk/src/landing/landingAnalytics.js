@@ -19,6 +19,7 @@ import { resolveLandingIntent } from './landingIntent.js'
 /** Allowed section ids for CTA context (keep short + stable). */
 export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
   HERO: 'hero',
+  HERO_REASSURANCE: 'hero-reassurance',
   HEADER: 'header',
   EARLY_CTA: 'early-cta',
   THRESHOLD: 'threshold',
