@@ -470,13 +470,22 @@
 
 /* Two horizontal pills: Unlock + (free Pantheon XOR Continue). Trust spans full width. */
 .cw-v4-hero__actions--pair {
-  grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.55rem;
   max-width: 34rem;
+  width: 100%;
 }
 
 .cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
 .cw-v4-hero__actions--pair > .cw-v4-btn--primary {
-  min-height: 2.85rem;
+  min-width: 0;
+  width: 100%;
+  min-height: 2.65rem;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  text-wrap: nowrap;
 }
 
 .cw-v4-hero__actions--pair > .cw-v4-btn--primary {
@@ -487,6 +496,32 @@
 .cw-v4-hero__actions--pair > .cw-v4-hero__trust {
   grid-column: 1 / -1;
   padding: 0 0.15rem;
+}
+
+/* Mobile: short labels so the pair stays one compact row. */
+.cw-v4-btn-label--short {
+  display: none;
+}
+
+.cw-v4-btn-label--full {
+  display: inline;
+}
+
+@media (max-width: 39.99rem) {
+  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
+  .cw-v4-hero__actions--pair > .cw-v4-btn--primary {
+    min-height: 2.55rem;
+    padding: 0.5rem 0.45rem;
+    font-size: 0.78rem;
+  }
+
+  .cw-v4-hero__actions--pair .cw-v4-btn-label--full {
+    display: none;
+  }
+
+  .cw-v4-hero__actions--pair .cw-v4-btn-label--short {
+    display: inline;
+  }
 }
 
 /* Legacy stacked clarity (kept for any remaining callers). */
@@ -902,13 +937,18 @@
 
 @media (max-width: 22.49rem) {
   .cw-v4-hero__actions {
-    gap: 0.45rem 0.5rem;
+    gap: 0.4rem 0.4rem;
+  }
+
+  .cw-v4-hero__actions--pair > .cw-v4-btn--primary,
+  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp {
+    font-size: 0.72rem;
+    padding: 0.45rem 0.35rem;
+    min-height: 2.45rem;
   }
 
   .cw-v4-hero__actions > .cw-v4-btn--primary,
   .cw-v4-hero__actions > .cw-v4-btn--getapp,
-  .cw-v4-hero__actions--pair > .cw-v4-btn--primary,
-  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
   .cw-v4-hero__actions--clarity > .cw-v4-btn--primary,
   .cw-v4-hero__actions--clarity > .cw-v4-btn--getapp {
     font-size: 0.78rem;
@@ -925,8 +965,16 @@
 @media (min-width: 640px) {
   .cw-v4-hero__actions,
   .cw-v4-hero__actions--pair {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 34rem;
+  }
+
+  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
+  .cw-v4-hero__actions--pair > .cw-v4-btn--primary {
+    font-size: 0.9rem;
+    min-height: 2.85rem;
+    padding: 0.65rem 0.85rem;
+    text-wrap: balance;
   }
 
   .cw-v4-hero__actions--clarity {

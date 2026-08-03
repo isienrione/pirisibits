@@ -224,6 +224,7 @@ export default function LandingProductHero({
                     key="unlock"
                     href={section.getAppHref ?? '#pricing'}
                     className="cw-v4-btn cw-v4-btn--getapp"
+                    aria-label={section.getAppCta}
                     tabIndex={interactive ? 0 : -1}
                     onClick={(event) => {
                       if (!onGetApp && !onChooseTour) return
@@ -231,7 +232,12 @@ export default function LandingProductHero({
                       ;(onGetApp || onChooseTour)?.()
                     }}
                   >
-                    {section.getAppCta}
+                    <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
+                      {section.getAppCta}
+                    </span>
+                    <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
+                      Unlock · €14.99
+                    </span>
                   </a>
                 )
 
@@ -242,21 +248,32 @@ export default function LandingProductHero({
                     key="continue"
                     type="button"
                     className="cw-v4-btn cw-v4-btn--primary"
+                    aria-label="Continue your walk"
                     onClick={onContinueWalk}
                     tabIndex={interactive ? 0 : -1}
                   >
-                    Continue your walk
+                    <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
+                      Continue your walk
+                    </span>
+                    <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
+                      Continue
+                    </span>
                   </button>
                 ) : (
                   <button
                     key="preview"
                     type="button"
                     className="cw-v4-btn cw-v4-btn--primary"
-                    aria-label={section.primaryCtaAriaLabel || undefined}
+                    aria-label={section.primaryCtaAriaLabel || section.primaryCta}
                     onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
                     tabIndex={interactive ? 0 : -1}
                   >
-                    {section.primaryCta}
+                    <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
+                      {section.primaryCta}
+                    </span>
+                    <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
+                      Try Pantheon free
+                    </span>
                   </button>
                 )
 
