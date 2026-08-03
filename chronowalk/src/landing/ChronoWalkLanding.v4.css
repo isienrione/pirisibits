@@ -1390,6 +1390,181 @@
   }
 }
 
+/* ——— Then/Now proof (post-trust strip) ——— */
+
+.cw-v4-then-now {
+  position: relative;
+  padding: 2.25rem 0 2.75rem;
+  background:
+    linear-gradient(180deg, var(--v4-paper) 0%, #f3ebe0 42%, var(--v4-paper-2, #efe6d8) 100%);
+  border-bottom: 1px solid var(--v4-line);
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
+}
+
+.cw-v4-then-now__layout {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .cw-v4-then-now__layout {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2.25rem 2.75rem;
+    align-items: center;
+  }
+}
+
+.cw-v4-then-now__intro {
+  max-width: 34rem;
+}
+
+.cw-v4-then-now__headline {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.55rem, 2.6vw, 2.35rem);
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--v4-ink);
+}
+
+.cw-v4-then-now__support {
+  margin: 0.85rem 0 0;
+  max-width: 32rem;
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--v4-muted);
+}
+
+.cw-v4-then-now__stage-wrap {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+.cw-v4-then-now__stage-frame {
+  position: relative;
+  width: min(100%, 22.5rem);
+  aspect-ratio: 3 / 4;
+  border-radius: 1.15rem;
+  overflow: hidden;
+  background: #1a1612;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 18px 40px rgba(33, 28, 21, 0.18);
+  outline: none;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.cw-v4-then-now__stage-frame:focus-visible {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--v4-amber) 55%, transparent),
+    0 18px 40px rgba(33, 28, 21, 0.18);
+}
+
+.cw-v4-then-now__stage-frame .cw-threshold-stage,
+.cw-v4-then-now__stage-frame .cw-doc-threshold-demo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.cw-v4-then-now__hold-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  z-index: 4;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.45rem 0.85rem;
+  max-width: calc(100% - 1.5rem);
+  border-radius: 999px;
+  border: 1px solid rgba(243, 238, 230, 0.28);
+  background: rgba(20, 18, 16, 0.72);
+  color: rgba(243, 238, 230, 0.94);
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  text-align: center;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+
+.cw-v4-then-now__hold-hint--touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .cw-v4-then-now__hold-hint--pointer {
+    display: none;
+  }
+
+  .cw-v4-then-now__hold-hint--touch {
+    display: inline;
+  }
+}
+
+.cw-v4-then-now__status {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--v4-muted);
+  text-align: center;
+}
+
+.cw-v4-then-now__controls {
+  display: flex;
+  justify-content: center;
+}
+
+.cw-v4-then-now__fallback {
+  appearance: none;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(33, 28, 21, 0.18);
+  background: #fffdf8;
+  color: var(--v4-ink);
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cw-v4-then-now__fallback:hover,
+.cw-v4-then-now__fallback:focus-visible {
+  border-color: color-mix(in srgb, var(--v4-amber-deep) 55%, #211c15);
+}
+
+.cw-v4-then-now__fallback:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--v4-amber) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.cw-v4-then-now__note {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--v4-muted) 88%, transparent);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-v4-then-now__stage-frame .cw-threshold-stage__now,
+  .cw-v4-then-now__stage-frame .cw-doc-threshold-demo__now {
+    transition: none !important;
+  }
+}
+
 /* ——— Product demo: one sticky stage, short synced scrub ——— */
 
 

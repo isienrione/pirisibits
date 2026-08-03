@@ -414,6 +414,24 @@ export const LANDING_CONTENT = {
     ],
   },
 
+  /**
+   * Silent Then/Now proof under the trust strip — reuses the approved Colosseum pair.
+   * Interaction mirrors the product hold; full scrollable product demo remains below.
+   */
+  thenNowProof: {
+    id: 'then-now',
+    eyebrow: 'The ruin becomes the room',
+    headline: 'Press and hold to step back 2,000 years.',
+    support:
+      'Reveal the Rome that once stood around you, then hear what happened there.',
+    holdHint: 'Press and hold to reveal Ancient Rome',
+    holdHintTouch: 'Touch and hold to reveal Ancient Rome',
+    revealLabel: 'Show Ancient Rome',
+    hideLabel: 'Show today',
+    exampleNote: 'An example of the Then/Now experience inside ChronoWalk',
+    landmarkLabel: 'Colosseum',
+  },
+
   'product-demo': {
     id: 'how-it-works',
     eyebrow: 'The App',

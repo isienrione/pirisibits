@@ -5,6 +5,7 @@ import LandingAct from './LandingAct.jsx'
 import LandingIntroNav from './v4/LandingIntroNav.jsx'
 import LandingProductHero from './v4/LandingProductHero.jsx'
 import LandingHeroReassurance from './v4/LandingHeroReassurance.jsx'
+import LandingThenNowProof from './v4/LandingThenNowProof.jsx'
 import LandingGetAppSection from './v4/LandingGetAppSection.jsx'
 import LandingProductDemo from './v4/LandingProductDemo.jsx'
 import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
@@ -213,6 +214,7 @@ function ChronoWalkLandingInner() {
             onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
           <LandingHeroReassurance onPreview={handlePreview} />
+          <LandingThenNowProof />
         </LandingAct>
 
         <LandingAct

@@ -10,12 +10,15 @@ export default function LandingColosseumThreshold({
   interactive = false,
   className = '',
   onPointerDown,
+  onPointerMove,
   onPointerUp,
   onPointerCancel,
   onPointerLeave,
   hint = 'Press and hold to reveal',
   showProgress = false,
   labelledBy,
+  loading = 'lazy',
+  fetchPriority,
 }) {
   const amount = Math.min(1, Math.max(0, reveal))
   const progressPct = Math.round(amount * 100)
@@ -25,6 +28,7 @@ export default function LandingColosseumThreshold({
     <div
       className={`cw-doc-threshold-demo cw-threshold-stage${interactive ? ' cw-threshold-stage--interactive' : ' cw-doc-threshold-demo--static'}${className ? ` ${className}` : ''}`}
       onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerLeave}
@@ -43,8 +47,9 @@ export default function LandingColosseumThreshold({
           alt=""
           width={960}
           height={1280}
-          loading="lazy"
+          loading={loading}
           decoding="async"
+          fetchPriority={fetchPriority}
           draggable={false}
         />
         {showProgress ? (
@@ -63,8 +68,9 @@ export default function LandingColosseumThreshold({
           alt=""
           width={960}
           height={1280}
-          loading="lazy"
+          loading={loading}
           decoding="async"
+          fetchPriority={fetchPriority}
           draggable={false}
         />
         {showProgress ? (
