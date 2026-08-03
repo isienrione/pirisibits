@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, Suspense, lazy } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { isDevGeofencesSantiago, isDevPanelEnabled } from '../../config/env.js'
+import { INCLUDE_DEBUG_PANEL } from '../debug/includeDebugPanel.js'
+import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
 import { useJourneyGeoDebugOptions } from '../../hooks/useJourneyGeoDebug.js'
 import { DEV_TOOLS_CHANGED, readDevSimulateGps } from '../dev/devTools.js'
 import { useAudioEngine } from '../../hooks/useAudioEngine.js'
@@ -94,6 +96,10 @@ const DEV_GEOFENCE_ACCURACY_M = 150
 
 // Speeds offered by the immersive player's speed pill - same set as Settings.
 const PLAYER_SPEEDS = STORY_PLAYBACK_SPEEDS
+
+const DebugPanelHost = INCLUDE_DEBUG_PANEL
+  ? lazy(() => import('../debug/DebugPanelHost.jsx'))
+  : null
 
 export default function JourneyShell({ variant = 'legacy' }) {
   const navigate = useNavigate()
@@ -1336,8 +1342,29 @@ export default function JourneyShell({ variant = 'legacy' }) {
           arrivalAccuracyLimitM={arrivalAccuracyLimitM}
         />
       ) : null}
+      {/* Subtle logo for 5-tap debug gesture (panel also opens via ?debug=1). */}
+      {INCLUDE_DEBUG_PANEL ? (
+        <div
+          data-testid="cw-journey-debug-logo"
+          style={{
+            position: 'fixed',
+            top: 8,
+            left: 8,
+            zIndex: 40,
+            opacity: 0.22,
+            pointerEvents: 'auto',
+          }}
+        >
+          <ChronoWalkLogo size={26} variant="dark" />
+        </div>
+      ) : null}
       {content}
       {floatingPlayer}
+      {DebugPanelHost ? (
+        <Suspense fallback={null}>
+          <DebugPanelHost />
+        </Suspense>
+      ) : null}
     </div>
   )
 

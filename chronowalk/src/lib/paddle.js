@@ -517,4 +517,17 @@ export function __resetPaddleForTests() {
   }
 }
 
+/**
+ * Coarse Paddle.js load status for diagnostics.
+ * @returns {'loaded' | 'loading' | 'missing_token' | 'not_loaded' | 'unavailable'}
+ */
+export function getPaddleLoadStatus() {
+  if (typeof window === 'undefined') return 'not_loaded'
+  if (paddleSingleton?.Checkout?.open) return 'loaded'
+  if (paddleSingleton) return 'unavailable'
+  if (paddleInitPromise) return 'loading'
+  if (!getPaddleClientToken()) return 'missing_token'
+  return 'not_loaded'
+}
+
 export { LAUNCH_CATALOG_BY_ID, LAUNCH_CATALOG_PRODUCTS }

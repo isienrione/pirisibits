@@ -8,6 +8,7 @@ import {
   trackMapboxInitFailed,
   trackSlowPage,
 } from './analytics.ts'
+import { setMapboxInitStatus } from './mapboxStatus.js'
 
 const LCP_SLOW_MS = 2500
 const STACK_HEAD_LINES = 6
@@ -132,9 +133,12 @@ export function installLcpSlowPageWatcher() {
 
 /** Mapbox GL failed to load or construct — once per reason key. */
 export function reportMapboxInitFailure(reason, detail) {
+  const reasonText = reason ? String(reason).slice(0, 200) : 'unknown'
+  const detailText = detail ? String(detail).slice(0, 400) : null
+  setMapboxInitStatus('failed', detailText ? `${reasonText}: ${detailText}` : reasonText)
   trackMapboxInitFailed({
-    reason: reason ? String(reason).slice(0, 200) : 'unknown',
-    detail: detail ? String(detail).slice(0, 400) : null,
+    reason: reasonText,
+    detail: detailText,
   })
 }
 

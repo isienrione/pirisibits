@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, Suspense, lazy } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
@@ -14,6 +14,7 @@ import LandingReviewsDevToggle from './v4/LandingReviewsDevToggle.jsx'
 import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
+import { INCLUDE_DEBUG_PANEL } from '../components/debug/includeDebugPanel.js'
 import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { resolveLandingTierCents } from './landingCheckout.js'
@@ -41,6 +42,10 @@ import LandingErrorBoundary from './LandingErrorBoundary.jsx'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
+
+const DebugPanelHost = INCLUDE_DEBUG_PANEL
+  ? lazy(() => import('../components/debug/DebugPanelHost.jsx'))
+  : null
 
 /**
  * ChronoWalk Landing V4 - Apple-style product presentation.
@@ -239,6 +244,11 @@ function ChronoWalkLandingInner() {
       </main>
       <LandingSiteFooter />
       <LandingReviewsDevToggle />
+      {DebugPanelHost ? (
+        <Suspense fallback={null}>
+          <DebugPanelHost />
+        </Suspense>
+      ) : null}
       <CheckoutConsentDialog
         open={Boolean(pendingTierId)}
         tierLabel={pendingTier?.name ?? pendingTier?.eyebrow ?? null}

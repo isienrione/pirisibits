@@ -16,6 +16,7 @@ import {
   trackGoogleAdsCheckoutOpened,
   trackGoogleAdsPurchaseConversion,
 } from './googleAds.js'
+import { recordDebugEvent } from './debugEventLog.js'
 
 export type CtaLocation =
   | 'hero'
@@ -205,6 +206,18 @@ export function markAnalyticsReady(ready = true) {
 
 export function isProductAnalyticsReady() {
   return analyticsReady
+}
+
+/** Live engagement figures for the hidden DebugPanel. */
+export function getEngagementDebugSnapshot() {
+  return {
+    scroll_depth_pct: Math.round(maxScrollPct),
+    max_scroll_pct: Math.round(maxScrollPct),
+    seconds_on_page: secondsSinceLanding(),
+    engaged_seconds: getEngagedSeconds(),
+    deepest_funnel_step: deepestFunnelStep,
+    analytics_ready: analyticsReady,
+  }
 }
 
 function nowMs() {
@@ -443,7 +456,13 @@ export function track(event: AnalyticsEventName, props: AnalyticsProps = {}): bo
   if (!analyticsReady || typeof window === 'undefined') return false
   try {
     if (event in FUNNEL_RANK) markFunnelStep(String(event))
-    posthog.capture(String(event), buildBaseProps(props))
+    const payload = buildBaseProps(props)
+    posthog.capture(String(event), payload)
+    try {
+      recordDebugEvent(String(event), payload)
+    } catch {
+      /* debug log must never break capture */
+    }
     return true
   } catch {
     return false
