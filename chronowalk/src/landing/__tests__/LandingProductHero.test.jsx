@@ -136,8 +136,8 @@ describe('LandingProductHero CTA hierarchy', () => {
     expect(actions.className).toMatch(/actions--pair/)
 
     expect(
-      screen.getByText('Works in any browser · Offline mode available · No subscription'),
-    ).toBeInTheDocument()
+      screen.queryByText('Works in any browser · Offline mode available · No subscription'),
+    ).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'How does ChronoWalk work?' })).not.toBeInTheDocument()
 
     fireEvent.click(paidCta)
