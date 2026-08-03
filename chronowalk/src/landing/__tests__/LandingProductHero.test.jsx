@@ -48,7 +48,12 @@ describe('LandingProductHero CTA hierarchy', () => {
         name: 'Ancient Rome, brought back to life as you walk.',
       }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Rome, at your own pace.')).toBeInTheDocument()
+    expect(screen.getByText('At your own pace.')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops/i,
+      ),
+    ).toBeInTheDocument()
 
     const paidCta = screen.getByRole('link', {
       name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,

@@ -355,10 +355,10 @@ export const LANDING_CONTENT = {
     eyebrow: 'Self-guided audio walking tour of Rome',
     headline: 'Ancient Rome, brought back to life as you walk.',
     /** Atmospheric leftover — must stay subordinate to the benefit headline. */
-    accentLine: 'Rome, at your own pace.',
+    accentLine: 'At your own pace.',
     subheadline:
-      'Explore the Colosseum, Roman Forum, Pantheon and 18 historic stops through immersive audio, curated walking routes and interactive visual reconstructions, right in your phone’s browser.',
-    subheadlineHighlight: 'interactive visual reconstructions',
+      'Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops • immersive audio • curated routes • visual ancient reconstructions',
+    subheadlineHighlight: 'visual ancient reconstructions',
     /** Free Pantheon preview (secondary visual weight; still opens /preview). */
     primaryCta: LANDING_CTA.tryPantheonFree,
     primaryCtaAriaLabel: 'Try one complete Pantheon stop for free',

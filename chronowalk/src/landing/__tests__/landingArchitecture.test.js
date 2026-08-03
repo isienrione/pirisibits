@@ -97,9 +97,15 @@ describe('landing product-story architecture (V4)', () => {
     const hero = LANDING_CONTENT.hero
     expect(hero.eyebrow).toMatch(/self-guided audio walking tour of rome/i)
     expect(hero.headline).toBe('Ancient Rome, brought back to life as you walk.')
-    expect(hero.accentLine).toBe('Rome, at your own pace.')
-    expect(hero.subheadline).toMatch(/21|18 historic stops/i)
-    expect(hero.subheadline).toMatch(/browser/i)
+    expect(hero.accentLine).toBe('At your own pace.')
+    expect(hero.subheadline).toMatch(/Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops/i)
+    expect(hero.subheadline).toMatch(/immersive audio/i)
+    expect(hero.subheadline).toMatch(/visual ancient reconstructions/i)
+    // Avoid “Rome” stacking in the first viewport (eyebrow + headline only).
+    const romeHits = `${hero.eyebrow} ${hero.headline} ${hero.accentLine} ${hero.subheadline}`.match(
+      /\bRome\b/gi,
+    )
+    expect(romeHits?.length ?? 0).toBeLessThanOrEqual(2)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryPantheonFree)
     expect(hero.primaryCtaAriaLabel).toBe('Try one complete Pantheon stop for free')
     expect(hero.primaryCtaMeta).toBeNull()
