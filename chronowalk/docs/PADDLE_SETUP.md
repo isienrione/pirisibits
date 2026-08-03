@@ -144,7 +144,7 @@ Do **not** omit `adjustment.updated`: live refunds often start as `pending_appro
 
 If an approved dashboard “Full refund” arrived as top-level `type: partial` and the inbox row is `failed` / `partial_operator_review`:
 
-1. Apply `20260727_webhook_failed_reclaim.sql` and redeploy `paddle-webhook` (`2026-07-27-v13-effective-full-refund`).
+1. Apply `20260727_webhook_failed_reclaim.sql` (and `20260803_purchases_attribution_analytics.sql` for email_hash / custom_data) and redeploy `paddle-webhook` (`2026-08-03-v14-purchase-analytics`).
 2. In Paddle → Notifications, **replay** the same `adjustment.updated` notification (same event id).
 3. ChronoWalk reclaims the failed inbox row, verifies item coverage + totals against the Paddle transaction, then revokes purchase credentials / bundle seats.
 4. Do **not** issue another refund or remint access.
