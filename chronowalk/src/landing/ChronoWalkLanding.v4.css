@@ -1461,6 +1461,10 @@
   overflow: hidden;
 }
 
+.cw-v4-then-now-app .cw-waypoint-immersive__hero-title {
+  bottom: 46%;
+}
+
 .cw-v4-then-now-app .cw-waypoint-immersive__panel.cw-v4-then-now-app__panel {
   padding: 12px 20px 18px;
   gap: 10px;
