@@ -93,22 +93,22 @@ describe('landing product-story architecture (V4)', () => {
     expect(section.items.find((item) => item.id === 'no-tickets')?.imageKey).toBe('trevi')
   })
 
-  it('keeps the hero CTAs for complete stop, unlock route, and how it works', () => {
+  it('keeps a clear product-category hero with paid unlock and Pantheon preview', () => {
     const hero = LANDING_CONTENT.hero
-    expect(hero.eyebrow).toBeNull()
-    expect(hero.headline).toBe('Rome, at your own pace.')
-    expect(hero.subheadlineHighlight).toMatch(/best self-guided audio tour/i)
-    expect(hero.primaryCta).toBe(LANDING_CTA.experienceCompleteStop)
-    expect(hero.primaryCta).toBe('Experience a complete stop')
-    expect(hero.primaryCtaMeta).toBe('The Pantheon · 4 minutes · Free · No signup')
-    expect(hero.primaryCtaAriaLabel).toBe('Experience a complete Pantheon stop for free')
-    expect(hero.secondaryCta).toBe(LANDING_CTA.howItWorks)
-    expect(hero.secondaryCta).toBe('How does ChronoWalk work?')
-    expect(hero.secondaryHref).toBe('#how-it-works')
-    expect(hero.getAppCta).toBe(LANDING_CTA.unlockRome)
-    expect(hero.getAppCta).toBe('Unlock all 21 stops')
-    expect(hero.getAppHref).toBe('#get-app')
+    expect(hero.eyebrow).toMatch(/self-guided audio walking tour of rome/i)
+    expect(hero.headline).toBe('Ancient Rome, brought back to life as you walk.')
+    expect(hero.accentLine).toBe('Rome, at your own pace.')
+    expect(hero.subheadline).toMatch(/21|18 historic stops/i)
+    expect(hero.subheadline).toMatch(/browser/i)
+    expect(hero.primaryCta).toBe(LANDING_CTA.tryPantheonFree)
+    expect(hero.primaryCtaAriaLabel).toBe('Try one complete Pantheon stop for free')
+    expect(hero.primaryCtaMeta).toBeNull()
+    expect(hero.secondaryCta).toBeNull()
+    expect(hero.getAppCta).toBe(LANDING_CTA.unlockRomePriced)
+    expect(hero.getAppCta).toMatch(/€14\.99/)
+    expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
+    expect(hero.trustLine).toMatch(/No subscription/i)
   })
 
   it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {
@@ -161,7 +161,7 @@ describe('landing product-story architecture (V4)', () => {
   })
 
   it('keeps ChronoWalk voice without banned marketing phrases', () => {
-    expect(LANDING_CONTENT.hero.eyebrow).toBeNull()
+    expect(LANDING_CONTENT.hero.eyebrow).toBeTruthy()
     expect(LANDING_CONTENT['product-demo'].headline).toBe('How does ChronoWalk work?')
     const joined = JSON.stringify(LANDING_CONTENT).toLowerCase()
     for (const banned of [

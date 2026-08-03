@@ -162,10 +162,16 @@ function ChronoWalkLandingInner() {
     window.location.hash = 'get-app'
   }, [])
 
-  const handleHeroGetApp = useCallback(() => {
+  /** Hero paid unlock CTA — pricing, not the get-app section. */
+  const handleHeroUnlock = useCallback(() => {
     trackCtaClick({ ctaLocation: 'hero' })
-    handleGetApp()
-  }, [handleGetApp])
+    const target = document.getElementById('pricing')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      return
+    }
+    window.location.hash = 'pricing'
+  }, [])
 
   const handleStickyGetApp = useCallback(() => {
     trackCtaClick({ ctaLocation: 'sticky_bar' })
@@ -192,7 +198,7 @@ function ChronoWalkLandingInner() {
           <LandingProductHero
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
-            onGetApp={handleHeroGetApp}
+            onGetApp={handleHeroUnlock}
             onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
         </LandingAct>
