@@ -24,19 +24,19 @@ describe('AnalyticsConsentBanner', () => {
     cleanup()
   })
 
-  it('shows the consent notice when consent is unknown', () => {
+  it('shows the marketing cookie notice when preference is unknown', () => {
     render(
       <MemoryRouter>
         <AnalyticsConsentBanner />
       </MemoryRouter>,
     )
     expect(screen.getByTestId('analytics-consent-banner')).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: /help us improve chronowalk/i })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: /marketing cookies/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /privacy policy/i })).toHaveAttribute(
       'href',
       '/legal/privacy',
     )
-    expect(screen.getByTestId('analytics-consent-accept')).toBeInTheDocument()
+    expect(screen.getByTestId('analytics-consent-accept')).toHaveTextContent(/allow marketing/i)
     expect(screen.getByTestId('analytics-consent-decline')).toBeInTheDocument()
   })
 
@@ -92,7 +92,7 @@ describe('AnalyticsPreferencesControl', () => {
     cleanup()
   })
 
-  it('opens preferences and lets a declined user opt in', () => {
+  it('opens preferences and lets a declined user allow marketing', () => {
     render(
       <MemoryRouter>
         <AnalyticsPreferencesControl variant="footer" />
@@ -100,19 +100,19 @@ describe('AnalyticsPreferencesControl', () => {
     )
     fireEvent.click(screen.getByTestId('analytics-preferences-open'))
     expect(screen.getByTestId('analytics-preferences-dialog')).toBeInTheDocument()
-    expect(screen.getByText(/current choice:/i)).toHaveTextContent(/analytics off/i)
+    expect(screen.getByText(/current choice:/i)).toHaveTextContent(/marketing cookies off/i)
     fireEvent.click(screen.getByTestId('analytics-preferences-accept'))
     expect(trackApi.setAnalyticsConsent).toHaveBeenCalledWith(true)
   })
 
-  it('lets an accepted user withdraw consent', () => {
+  it('lets an accepted user turn marketing off', () => {
     trackApi.getAnalyticsConsent.mockReturnValue('accepted')
     render(
       <MemoryRouter>
         <AnalyticsPreferencesControl variant="settings" />
       </MemoryRouter>,
     )
-    fireEvent.click(screen.getByRole('button', { name: /analytics preferences/i }))
+    fireEvent.click(screen.getByRole('button', { name: /marketing preferences/i }))
     fireEvent.click(screen.getByTestId('analytics-preferences-decline'))
     expect(trackApi.setAnalyticsConsent).toHaveBeenCalledWith(false)
   })

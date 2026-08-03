@@ -3,7 +3,7 @@
 Do not change design without measuring whether it helps. This doc is the contract for funnel measurement.
 
 Provider: **PostHog** (`src/lib/track.js`) — no new analytics dependency.  
-Consent: `cw_analytics_consent` — **opt-in only** after purchase on `/setup` (“Help improve ChronoWalk”). `initAnalytics()` / `track()` stay off until the traveler enables it (`accepted`). Declining (or continuing without enabling) stores `declined`. There is no consent banner on the landing page.
+Consent: product analytics + session replay start **immediately** under legitimate interest (`initAnalytics()` on app boot). The site banner / preferences control **marketing cookies only** (`cw_marketing_consent`). Declining marketing does **not** call `opt_out_capturing` or block `track()`.
 
 ## Primary funnel
 
@@ -77,16 +77,16 @@ cd chronowalk
 npm test -- --run src/landing/__tests__/landingAnalytics.test.js src/landing/__tests__/LandingThresholdSection.test.jsx
 ```
 
-### Manual (local, with PostHog key + consent accepted)
+### Manual (local, with PostHog key)
 
 1. Open `/` or `/landing` with DevTools → Network filtered to `eu.i.posthog.com`.
-2. Confirm one `landing_view`.
+2. Confirm product analytics starts without accepting marketing cookies (`$pageview` / `landing_view`).
 3. Click hero primary → `landing_cta_preview` with `section: hero`, then on `/preview` → `preview_start`.
 4. Reload; click hero secondary → `landing_cta_routes` with `section: hero`.
 5. Scroll to route → one `landing_route_view`; expand stops → `landing_route_expand`.
 6. Scroll to pricing → one `landing_pricing_view`; click a tier CTA → `landing_cta_begin` + `checkout_open` with matching `tier`.
 7. Open an FAQ item → `landing_faq_open` with `question_id`.
-8. Decline analytics consent → no further `capture` calls.
+8. Decline marketing cookies → product `capture` calls continue; preference stored in `cw_marketing_consent`.
 
 ### PostHog UI
 

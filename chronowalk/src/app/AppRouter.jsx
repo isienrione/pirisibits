@@ -174,8 +174,8 @@ function AccessRevalidationBootstrap() {
 }
 
 function AppRouter() {
-  // Sync init for already-accepted travelers so child effects (e.g. landing_view)
-  // see a ready analytics client. No-ops without consent or key.
+  // Product analytics starts immediately (legitimate interest). Marketing cookies
+  // remain behind AnalyticsConsentBanner / preferences.
   initAnalytics()
 
   useEffect(() => {

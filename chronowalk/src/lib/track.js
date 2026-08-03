@@ -3,7 +3,10 @@ import { getHost } from './host'
 import { getAbVariantCents } from './config'
 import { peekLandingExpHero } from '../landing/landingExperiments.js'
 
-const CONSENT_KEY = 'cw_analytics_consent'
+/** Marketing / advertising cookies only — does not gate product analytics. */
+const MARKETING_CONSENT_KEY = 'cw_marketing_consent'
+/** @deprecated legacy key; migrated once into MARKETING_CONSENT_KEY */
+const LEGACY_ANALYTICS_CONSENT_KEY = 'cw_analytics_consent'
 
 export const ANALYTICS_CONSENT = Object.freeze({
   ACCEPTED: 'accepted',
@@ -71,13 +74,28 @@ function notifyConsentListeners(value) {
   }
 }
 
-/** True only after PostHog has successfully initialized under accepted consent. */
+function readStoredMarketingConsent() {
+  if (typeof window === 'undefined') return null
+  const current = window.localStorage.getItem(MARKETING_CONSENT_KEY)
+  if (current === ANALYTICS_CONSENT.ACCEPTED || current === ANALYTICS_CONSENT.DECLINED) {
+    return current
+  }
+  const legacy = window.localStorage.getItem(LEGACY_ANALYTICS_CONSENT_KEY)
+  if (legacy === ANALYTICS_CONSENT.ACCEPTED || legacy === ANALYTICS_CONSENT.DECLINED) {
+    window.localStorage.setItem(MARKETING_CONSENT_KEY, legacy)
+    return legacy
+  }
+  return null
+}
+
+/** True after PostHog has successfully initialized (product analytics — always-on). */
 export function isAnalyticsReady() {
   return initialized
 }
 
 /**
- * Subscribe to consent changes (`accepted` | `declined`).
+ * Subscribe to marketing-consent changes (`accepted` | `declined`).
+ * Does not control PostHog product analytics.
  * @param {(value: string) => void} listener
  * @returns {() => void} unsubscribe
  */
@@ -89,7 +107,7 @@ export function subscribeAnalyticsConsent(listener) {
 }
 
 /**
- * Opt-in only. Never initializes without explicit `accepted` consent.
+ * Initialize PostHog immediately (legitimate interest for product analytics).
  * Safe when the key is missing or PostHog throws / is blocked.
  */
 export function initAnalytics() {
@@ -98,18 +116,29 @@ export function initAnalytics() {
   const key = import.meta.env.VITE_POSTHOG_KEY
   if (!key) return
 
-  const consent = window.localStorage.getItem(CONSENT_KEY)
-  if (consent !== ANALYTICS_CONSENT.ACCEPTED) return
-
   try {
     posthog.init(key, {
       api_host: 'https://eu.i.posthog.com',
-      autocapture: false,
-      // SPA: custom ChronoWalk events only - avoid automatic $pageview duplicates
-      // on history changes; landing_view / journey events are explicit.
-      capture_pageview: false,
-      disable_session_recording: true,
-      persistence: 'localStorage',
+      person_profiles: 'always',
+      capture_pageview: true,
+      capture_pageleave: true,
+      autocapture: true,
+      rageclick: true,
+      disable_session_recording: false,
+      session_recording: {
+        maskAllInputs: false,
+        maskTextSelector: '[data-ph-mask]',
+        recordCrossOriginIframes: false,
+      },
+      persistence: 'localStorage+cookie',
+      loaded: (ph) => {
+        ph.register({
+          app_version: __APP_VERSION__ ?? 'unknown',
+          is_pwa: window.matchMedia('(display-mode: standalone)').matches,
+          is_ios: /iPad|iPhone|iPod/.test(navigator.userAgent),
+          connection_type: navigator.connection?.effectiveType ?? 'unknown',
+        })
+      },
     })
     initialized = true
 
@@ -121,45 +150,27 @@ export function initAnalytics() {
   }
 }
 
+/**
+ * Persist marketing / advertising cookie preference only.
+ * Never opts PostHog product analytics in or out.
+ * @param {boolean} accepted
+ */
 export function setAnalyticsConsent(accepted) {
   if (typeof window === 'undefined') return
 
   const value = accepted ? ANALYTICS_CONSENT.ACCEPTED : ANALYTICS_CONSENT.DECLINED
-  window.localStorage.setItem(CONSENT_KEY, value)
-
-  if (!accepted) {
-    if (initialized) {
-      try {
-        posthog.opt_out_capturing()
-      } catch {
-        // Ignore opt-out failures; local decline still blocks track().
-      }
-    }
-    notifyConsentListeners(value)
-    return
-  }
-
-  initAnalytics()
-  if (initialized) {
-    try {
-      posthog.opt_in_capturing()
-    } catch {
-      // Capture stays gated by initialized + opt-in best-effort.
-    }
-  }
+  window.localStorage.setItem(MARKETING_CONSENT_KEY, value)
+  window.localStorage.setItem(LEGACY_ANALYTICS_CONSENT_KEY, value)
   notifyConsentListeners(value)
 }
 
 /**
+ * Marketing cookie preference (`accepted` | `declined` | null).
+ * Product analytics is independent of this value.
  * @returns {'accepted' | 'declined' | null}
  */
 export function getAnalyticsConsent() {
-  if (typeof window === 'undefined') return null
-  const value = window.localStorage.getItem(CONSENT_KEY)
-  if (value === ANALYTICS_CONSENT.ACCEPTED || value === ANALYTICS_CONSENT.DECLINED) {
-    return value
-  }
-  return null
+  return readStoredMarketingConsent()
 }
 
 export function track(event, properties = {}) {

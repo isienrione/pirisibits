@@ -3,7 +3,8 @@ import { useAnalyticsConsent } from './useAnalyticsConsent.js'
 import './analyticsConsent.css'
 
 /**
- * Global first-visit analytics notice. Shown only while consent is unknown.
+ * Global first-visit marketing cookie notice. Shown only while preference is unknown.
+ * Product analytics (PostHog) starts independently under legitimate interest.
  * Non-modal region so checkout CTAs remain usable.
  */
 export default function AnalyticsConsentBanner() {
@@ -21,11 +22,12 @@ export default function AnalyticsConsentBanner() {
       >
         <div className="cw-analytics-consent__copy">
           <h2 id="cw-analytics-consent-title" className="cw-analytics-consent__title">
-            Help us improve ChronoWalk
+            Marketing cookies
           </h2>
           <p id="cw-analytics-consent-body" className="cw-analytics-consent__body">
-            We use optional, privacy-conscious analytics to understand which routes and features
-            are useful. Essential access and offline storage work without analytics.{' '}
+            We use optional marketing cookies for ads and remarketing when you allow them.
+            Product analytics that keep ChronoWalk working and improving run under legitimate
+            interest and are not controlled here.{' '}
             <Link to="/legal/privacy" className="cw-analytics-consent__link">
               Privacy Policy
             </Link>
@@ -38,7 +40,7 @@ export default function AnalyticsConsentBanner() {
             onClick={accept}
             data-testid="analytics-consent-accept"
           >
-            Allow analytics
+            Allow marketing
           </button>
           <button
             type="button"
