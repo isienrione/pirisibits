@@ -421,9 +421,6 @@ export default function LandingProductHero({
           >
             <span aria-hidden>›</span>
           </button>
-          <p className="cw-v4-hero__hint" aria-hidden>
-            Explore what ChronoWalk includes
-          </p>
           <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero slides">
             {Array.from({ length: total }, (_, i) => (
               <button
