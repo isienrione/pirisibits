@@ -81,7 +81,10 @@ export default defineConfig({
       strategies: 'injectManifest',
       srcDir: 'src/pwa',
       filename: 'sw.js',
-      registerType: 'autoUpdate',
+      // Prompt (toast) — never auto-reload on SW activate. autoUpdate +
+      // vite-plugin-pwa's default onNeedReload → window.location.reload() was
+      // a likely cause of mid-session full reloads on mobile Safari.
+      registerType: 'prompt',
       includeAssets: [
         'favicon.svg',
         'favicon-32.png',

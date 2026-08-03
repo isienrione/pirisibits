@@ -11,8 +11,12 @@ import {
 
 /**
  * Registers the Workbox service worker in production and exposes update hooks.
- * iOS standalone PWAs often keep stale JS until the page reloads after a new SW activates.
- * Chrome installed PWAs can keep an old controller until caches are cleared and all tabs reload.
+ *
+ * Critical: never auto-reload when a new service worker takes control.
+ * vite-plugin-pwa `autoUpdate` (and even `prompt` after SKIP_WAITING) defaults
+ * to `window.location.reload()` unless `onNeedReload` is provided. We only
+ * reload after the traveler explicitly taps the update toast (or Settings →
+ * refresh), and otherwise surface `onNeedRefresh` listeners.
  */
 export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.PROD } = {}) {
   if (!isProd || typeof registerSW !== 'function') {
@@ -30,6 +34,16 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
   let pendingReload = false
   let reloading = false
 
+  const notifyNeedRefresh = () => {
+    listeners.forEach((listener) => {
+      try {
+        listener()
+      } catch {
+        // Toast listeners must never break the app shell.
+      }
+    })
+  }
+
   const scheduleReload = () => {
     if (reloading || typeof window === 'undefined') return
     reloading = true
@@ -38,6 +52,8 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
 
   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('controllerchange', () => {
+      // Only reload when the traveler accepted an update — never on ambient
+      // controller changes (first claim, external update, unregister races).
       if (pendingReload) scheduleReload()
     })
 
@@ -63,7 +79,8 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
   const activateUpdate = () => {
     pendingReload = true
     updateServiceWorker?.(true)
-    // iOS home-screen PWAs sometimes skip controllerchange - nudge a reload.
+    // iOS home-screen PWAs sometimes skip controllerchange - nudge a reload
+    // only after an explicit user accept (pendingReload already set).
     if (typeof window !== 'undefined') {
       window.setTimeout(() => {
         if (pendingReload) scheduleReload()
@@ -74,9 +91,17 @@ export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.
   updateServiceWorker = registerSW({
     immediate: true,
     onNeedRefresh() {
-      listeners.forEach((listener) => listener())
+      notifyNeedRefresh()
     },
     onOfflineReady() {},
+    // Suppress vite-plugin-pwa's default `window.location.reload()`.
+    onNeedReload() {
+      if (pendingReload) {
+        scheduleReload()
+        return
+      }
+      notifyNeedRefresh()
+    },
   })
 
   return {

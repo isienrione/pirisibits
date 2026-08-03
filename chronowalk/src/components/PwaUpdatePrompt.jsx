@@ -13,14 +13,14 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
     >
       <div className="bg-ink900 rounded-card pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 ">
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-ember">Update available</p>
+          <p className="text-eyebrow uppercase text-ember">New version available</p>
           <p className="mt-1 text-sm leading-relaxed text-ink900">
-            A new version of ChronoWalk is ready. Refresh to get the latest improvements.
+            Tap to refresh when you are ready — browsing is not interrupted.
           </p>
         </div>
         <div className="flex shrink-0 flex-col gap-2">
           <Button size="sm" onClick={onUpdate}>
-            Update
+            Tap to refresh
           </Button>
           <Button variant="ghost" size="sm" onClick={onDismiss}>
             Later
