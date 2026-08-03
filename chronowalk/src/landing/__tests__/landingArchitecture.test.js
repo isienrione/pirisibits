@@ -110,7 +110,7 @@ describe('landing product-story architecture (V4)', () => {
     )
     expect(romeHits?.length ?? 0).toBeLessThanOrEqual(2)
     expect(hero.primaryCta).toBe(LANDING_CTA.tryPantheonFree)
-    expect(hero.primaryCtaAriaLabel).toBe('Try one complete Pantheon stop for free')
+    expect(hero.primaryCtaAriaLabel).toBe(LANDING_CTA.tryPantheonFree)
     expect(hero.primaryCtaMeta).toBeNull()
     expect(hero.secondaryCta).toBeNull()
     expect(hero.getAppCta).toBe(LANDING_CTA.unlockRomePriced)
@@ -118,6 +118,7 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
     expect(hero.trustLine).toMatch(/No subscription/i)
+    expect(hero.ctaPriority).toBe('unlock')
   })
 
   it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {

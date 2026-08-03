@@ -14,6 +14,7 @@
 
 import { isAnalyticsReady, track, TRACK_EVENTS } from '../lib/track.js'
 import { ensureLandingExpHero, peekLandingExpHero } from './landingExperiments.js'
+import { resolveLandingIntent } from './landingIntent.js'
 
 /** Allowed section ids for CTA context (keep short + stable). */
 export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
@@ -40,6 +41,7 @@ function landingProps(extra = {}) {
   return {
     source: 'landing',
     landing_exp_hero: exp,
+    landing_intent: resolveLandingIntent(),
     ...extra,
   }
 }

@@ -36,6 +36,10 @@ import {
   trackTierCardClick,
 } from '../lib/analytics.ts'
 import { ensureLandingExpHero } from './landingExperiments.js'
+import {
+  resolveLandingIntent,
+  resolveLandingIntentHero,
+} from './landingIntent.js'
 import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
 import LandingErrorBoundary from './LandingErrorBoundary.jsx'
@@ -65,6 +69,11 @@ function ChronoWalkLandingInner() {
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const hasAccess = useMemo(() => hasValidLocalAccess(), [])
+  const landingIntent = useMemo(() => resolveLandingIntent(), [])
+  const intentHero = useMemo(
+    () => resolveLandingIntentHero(landingIntent),
+    [landingIntent],
+  )
   const pendingTier = useMemo(
     () => (pendingTierId ? getTierById(pendingTierId) : null),
     [pendingTierId],
@@ -196,6 +205,7 @@ function ChronoWalkLandingInner() {
           name={actOpen.name}
         >
           <LandingProductHero
+            hero={intentHero}
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
             onGetApp={handleHeroUnlock}

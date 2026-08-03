@@ -468,7 +468,7 @@
   align-items: stretch;
 }
 
-/* Cold-traffic clarity: paid unlock first (full width), free Pantheon second. */
+/* Cold-traffic clarity: stacked full-width CTAs (DOM order = visual order). */
 .cw-v4-hero__actions--clarity {
   grid-template-columns: 1fr;
   max-width: 26rem;
@@ -477,14 +477,12 @@
 
 .cw-v4-hero__actions--clarity > .cw-v4-btn--getapp {
   grid-column: 1;
-  grid-row: 1;
   min-height: 3rem;
   font-size: 0.95rem;
 }
 
 .cw-v4-hero__actions--clarity > .cw-v4-btn--primary {
   grid-column: 1;
-  grid-row: 2;
   min-height: 2.85rem;
   background: rgba(250, 246, 239, 0.96);
   border-color: rgba(250, 246, 239, 0.85);
@@ -492,7 +490,6 @@
 
 .cw-v4-hero__actions--clarity > .cw-v4-hero__trust {
   grid-column: 1;
-  grid-row: 3;
   padding: 0 0.15rem;
 }
 

@@ -26,7 +26,9 @@ export const LANDING_CTA = {
   /** Hero unpaid CTA — complete Pantheon free stop (not a teaser). */
   experienceCompleteStop: 'Experience a complete stop',
   /** Hero free CTA — names the Pantheon example stop explicitly. */
-  tryPantheonFree: 'Try one stop for free: The Pantheon Part 1',
+  tryPantheonFree: 'Try the complete Pantheon stop free',
+  tryCompleteStopFree: 'Try a complete stop free',
+  tryPantheonStopFree: 'Try the Pantheon stop free',
   seeRoutes: 'See all Rome walks',
   tryOneStopFree: 'Get a free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
@@ -361,13 +363,15 @@ export const LANDING_CONTENT = {
     subheadlineHighlight: 'Colosseum, Roman Forum, The Pantheon & 18 other stops',
     /** Free Pantheon preview (secondary visual weight; still opens /preview). */
     primaryCta: LANDING_CTA.tryPantheonFree,
-    primaryCtaAriaLabel: 'Try one complete Pantheon stop for free',
+    primaryCtaAriaLabel: LANDING_CTA.tryPantheonFree,
     primaryCtaMeta: null,
     secondaryCta: null,
     secondaryHref: null,
     /** Paid unlock — gold CTA; scrolls to Rome walks / pricing. */
     getAppCta: LANDING_CTA.unlockRomePriced,
     getAppHref: '#pricing',
+    /** Default CTA stack: gold unlock first. Intent pantheon may flip to preview-first. */
+    ctaPriority: 'unlock',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',

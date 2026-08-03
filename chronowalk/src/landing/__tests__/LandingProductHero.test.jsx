@@ -69,7 +69,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     expect(paidCta).toHaveTextContent(LANDING_CTA.unlockRomePriced)
 
     const freeCta = screen.getByRole('button', {
-      name: 'Try one complete Pantheon stop for free',
+      name: LANDING_CTA.tryPantheonFree,
     })
     expect(freeCta).toHaveTextContent(LANDING_CTA.tryPantheonFree)
 
@@ -85,21 +85,49 @@ describe('LandingProductHero CTA hierarchy', () => {
     expect(onPreview).toHaveBeenCalledWith('hero')
   })
 
-  it('preserves Continue your walk without Pantheon helper copy', () => {
+  it('puts Pantheon free CTA first for pantheon intent', async () => {
+    const onPreview = vi.fn()
+    const onGetApp = vi.fn()
+    const { resolveLandingIntentHero } = await import('../landingIntent.js')
+    const hero = resolveLandingIntentHero('pantheon')
+    render(
+      <LandingProductHero
+        hero={hero}
+        onPreview={onPreview}
+        onChooseTour={() => {}}
+        onGetApp={onGetApp}
+      />,
+    )
+
+    const actions = document.querySelector('.cw-v4-hero__actions')
+    const kids = [...actions.querySelectorAll('a, button')]
+    expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
+    expect(kids[1].textContent).toMatch(/Unlock all 21 stops/i)
+    expect(kids[1].className).toMatch(/getapp/)
+  })
+
+  it('keeps Unlock visible when Continue your walk is offered', () => {
     const onContinueWalk = vi.fn()
+    const onGetApp = vi.fn()
     render(
       <LandingProductHero
         onPreview={() => {}}
         onChooseTour={() => {}}
-        onGetApp={() => {}}
+        onGetApp={onGetApp}
         onContinueWalk={onContinueWalk}
       />,
     )
 
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Pantheon/i })).not.toBeInTheDocument()
+    const unlock = screen.getByRole('link', {
+      name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+    })
+    expect(unlock).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: LANDING_CTA.tryPantheonFree })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
     expect(onContinueWalk).toHaveBeenCalledTimes(1)
+    fireEvent.click(unlock)
+    expect(onGetApp).toHaveBeenCalledTimes(1)
   })
 })

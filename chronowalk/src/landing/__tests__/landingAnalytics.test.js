@@ -41,7 +41,20 @@ describe('landing conversion analytics', () => {
     expect(track).toHaveBeenCalledTimes(1)
     expect(track).toHaveBeenCalledWith(
       TRACK_EVENTS.LANDING_VIEW,
-      expect.objectContaining({ source: 'landing', landing_exp_hero: 'a' }),
+      expect.objectContaining({
+        source: 'landing',
+        landing_exp_hero: 'a',
+        landing_intent: 'rome',
+      }),
+    )
+  })
+
+  it('records allowlisted landing_intent from ?intent=', () => {
+    window.history.replaceState({}, '', '/?intent=colosseum&landing_exp_hero=a')
+    expect(trackLandingView()).toBe(true)
+    expect(track).toHaveBeenCalledWith(
+      TRACK_EVENTS.LANDING_VIEW,
+      expect.objectContaining({ landing_intent: 'colosseum' }),
     )
   })
 
