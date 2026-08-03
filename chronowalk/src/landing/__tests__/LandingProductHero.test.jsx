@@ -7,6 +7,61 @@ vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
 }))
 
+describe('LandingProductHero manual gallery', () => {
+  it('does not auto-advance slides on a timer', () => {
+    vi.useFakeTimers()
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    vi.advanceTimersByTime(60_000)
+
+    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    vi.useRealTimers()
+  })
+
+  it('advances only via controls and keeps accessible labels', () => {
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next hero image' }))
+    expect(screen.getByRole('tab', { name: /ChronoWalk Rome/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Previous hero image' }))
+    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    fireEvent.click(screen.getByRole('tab', { name: /Choose your Roman walk/i }))
+    expect(screen.getByRole('tab', { name: /Choose your Roman walk/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+  })
+
+  it('supports keyboard arrows when the gallery is focused', () => {
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+    const gallery = document.getElementById('top')
+    expect(gallery).toBeTruthy()
+    gallery.focus()
+    fireEvent.keyDown(gallery, { key: 'ArrowRight' })
+    expect(screen.getByRole('tab', { name: /ChronoWalk Rome/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+  })
+})
+
 describe('LandingProductHero story slide enlarge', () => {
   it('opens a zoomable viewer when a story slide is enlarged', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
