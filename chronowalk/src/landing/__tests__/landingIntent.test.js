@@ -58,7 +58,7 @@ describe('landingIntent', () => {
 
   it('puts Pantheon free CTA first only for pantheon intent', () => {
     expect(resolveLandingIntentHero('pantheon').ctaPriority).toBe('preview')
-    expect(resolveLandingIntentHero('pantheon').primaryCta).toBe('Try the Pantheon stop free')
+    expect(resolveLandingIntentHero('pantheon').primaryCta).toBe(LANDING_CTA.tryPantheonStopFree)
     expect(resolveLandingIntentHero('colosseum').ctaPriority).toBe('unlock')
     expect(resolveLandingIntentHero('rome').ctaPriority).toBe('unlock')
   })

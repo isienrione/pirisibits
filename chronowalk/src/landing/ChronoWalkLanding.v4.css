@@ -468,7 +468,28 @@
   align-items: stretch;
 }
 
-/* Cold-traffic clarity: stacked full-width CTAs (DOM order = visual order). */
+/* Two horizontal pills: Unlock + (free Pantheon XOR Continue). Trust spans full width. */
+.cw-v4-hero__actions--pair {
+  grid-template-columns: 1fr 1fr;
+  max-width: 34rem;
+}
+
+.cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
+.cw-v4-hero__actions--pair > .cw-v4-btn--primary {
+  min-height: 2.85rem;
+}
+
+.cw-v4-hero__actions--pair > .cw-v4-btn--primary {
+  background: rgba(250, 246, 239, 0.96);
+  border-color: rgba(250, 246, 239, 0.85);
+}
+
+.cw-v4-hero__actions--pair > .cw-v4-hero__trust {
+  grid-column: 1 / -1;
+  padding: 0 0.15rem;
+}
+
+/* Legacy stacked clarity (kept for any remaining callers). */
 .cw-v4-hero__actions--clarity {
   grid-template-columns: 1fr;
   max-width: 26rem;
@@ -868,6 +889,11 @@
     max-width: 36rem;
   }
 
+  .cw-v4-hero__actions--pair {
+    max-width: none;
+    width: min(100%, 34rem);
+  }
+
   .cw-v4-hero__actions--clarity {
     max-width: none;
     width: min(100%, 26rem);
@@ -881,10 +907,12 @@
 
   .cw-v4-hero__actions > .cw-v4-btn--primary,
   .cw-v4-hero__actions > .cw-v4-btn--getapp,
+  .cw-v4-hero__actions--pair > .cw-v4-btn--primary,
+  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp,
   .cw-v4-hero__actions--clarity > .cw-v4-btn--primary,
   .cw-v4-hero__actions--clarity > .cw-v4-btn--getapp {
-    font-size: 0.82rem;
-    padding: 0.55rem 0.7rem;
+    font-size: 0.78rem;
+    padding: 0.55rem 0.55rem;
     min-height: 2.75rem;
     line-height: 1.22;
   }
@@ -895,7 +923,8 @@
 }
 
 @media (min-width: 640px) {
-  .cw-v4-hero__actions:not(.cw-v4-hero__actions--clarity) {
+  .cw-v4-hero__actions,
+  .cw-v4-hero__actions--pair {
     grid-template-columns: 1fr 1fr;
     max-width: 34rem;
   }

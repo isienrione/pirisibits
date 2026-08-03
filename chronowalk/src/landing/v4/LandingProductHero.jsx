@@ -217,7 +217,7 @@ export default function LandingProductHero({
             ) : null}
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
-            <div className="cw-v4-hero__actions cw-v4-hero__actions--clarity">
+            <div className="cw-v4-hero__actions cw-v4-hero__actions--pair">
               {(() => {
                 const unlockCta = (
                   <a
@@ -235,8 +235,9 @@ export default function LandingProductHero({
                   </a>
                 )
 
-                // Continue your walk only replaces the free Pantheon CTA — Unlock always stays.
-                const secondaryCta = onContinueWalk ? (
+                // First visit: free Pantheon. Returning walker: Continue.
+                // Unlock always stays as the other pill in the horizontal pair.
+                const freeOrContinue = onContinueWalk ? (
                   <button
                     key="continue"
                     type="button"
@@ -259,15 +260,16 @@ export default function LandingProductHero({
                   </button>
                 )
 
+                // Default: Unlock | Free/Continue. Pantheon intent: Free first.
                 return previewFirst ? (
                   <>
-                    {secondaryCta}
+                    {freeOrContinue}
                     {unlockCta}
                   </>
                 ) : (
                   <>
                     {unlockCta}
-                    {secondaryCta}
+                    {freeOrContinue}
                   </>
                 )
               })()}
