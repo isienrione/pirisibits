@@ -8,6 +8,7 @@ import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
 import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
+import { captureAttribution } from './lib/attribution.ts'
 import { consumeAccessHandoff } from './lib/accessHandoff.js'
 
 if (import.meta.env.DEV) {
@@ -18,6 +19,9 @@ if (import.meta.env.DEV) {
 // Blocking mount left iOS Safari stuck on "Loading ChronoWalk…" forever when
 // a recovery navigation did not start.
 recoverInterruptedBoot()
+
+// First-touch attribution before React / hash replaceState can drop query params.
+captureAttribution()
 
 // Home Screen / standalone partitions often miss the tab that redeemed access.
 // Hydrate from cw_h query or handoff cookie before any RequireAccess gate runs.

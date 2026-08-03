@@ -18,7 +18,6 @@ import {
 import { getAbVariantCents } from './config.js'
 import {
   centsToPriceEur,
-  getCapturedAttribution,
   getLastCtaLocation,
   getPostHogCheckoutIdentity,
   trackCheckoutClosed,
@@ -31,6 +30,7 @@ import {
   trackCheckoutPaymentFailed,
   trackPaddleScriptFailed,
 } from './analytics.ts'
+import { attributionToProps, captureAttribution, getAttribution } from './attribution.ts'
 
 /** Tier id → Vite env key for the Paddle price id (`pri_…`). */
 export const PADDLE_PRICE_ENV_KEYS = Object.freeze(
@@ -295,12 +295,12 @@ export function buildPaddleCustomData({
   setCustomString(data, 'ph_distinct_id', identity.ph_distinct_id)
   setCustomString(data, 'ph_session_id', identity.ph_session_id)
 
-  const attr = getCapturedAttribution()
-  setCustomString(data, 'utm_source', attr.utm_source)
-  setCustomString(data, 'utm_medium', attr.utm_medium)
-  setCustomString(data, 'utm_campaign', attr.utm_campaign)
-  setCustomString(data, 'gclid', attr.gclid)
-  setCustomString(data, 'gbraid', attr.gbraid)
+  captureAttribution()
+  const attrProps = attributionToProps(getAttribution())
+  for (const [key, value] of Object.entries(attrProps)) {
+    // Paddle customData is string-only; skip numeric captured_at.
+    if (typeof value === 'string') setCustomString(data, key, value)
+  }
 
   setCustomString(data, 'cta_location', ctaLocation ?? getLastCtaLocation())
 

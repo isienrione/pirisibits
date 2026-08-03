@@ -5,6 +5,13 @@
 import posthog from 'posthog-js'
 import { getAbVariantCents } from './config.js'
 import { peekLandingExpHero, ensureLandingExpHero } from '../landing/landingExperiments.js'
+import {
+  attributionToProps,
+  captureAttribution,
+  getAttribution,
+  type AttributionRecord,
+  __resetAttributionForTests,
+} from './attribution.ts'
 
 export type CtaLocation =
   | 'hero'
@@ -62,14 +69,6 @@ export type AnalyticsProps = {
   [key: string]: unknown
 }
 
-type Attribution = {
-  utm_source: string | null
-  utm_medium: string | null
-  utm_campaign: string | null
-  gclid: string | null
-  gbraid: string | null
-}
-
 const FUNNEL_RANK: Record<string, number> = {
   none: 0,
   landing: 1,
@@ -90,14 +89,6 @@ let landingStartedAt =
     : Date.now()
 let maxScrollPct = 0
 let deepestFunnelStep = 'none'
-let attribution: Attribution = {
-  utm_source: null,
-  utm_medium: null,
-  utm_campaign: null,
-  gclid: null,
-  gbraid: null,
-}
-let attributionCaptured = false
 let scrollListenersInstalled = false
 let exitListenersInstalled = false
 let analyticsReady = false
@@ -115,7 +106,6 @@ export function __resetAnalyticsSessionForTests() {
   sampleInteractFired = false
   maxScrollPct = 0
   deepestFunnelStep = 'none'
-  attributionCaptured = false
   scrollListenersInstalled = false
   exitListenersInstalled = false
   lastCtaLocation = null
@@ -123,13 +113,7 @@ export function __resetAnalyticsSessionForTests() {
     typeof performance !== 'undefined' && typeof performance.now === 'function'
       ? performance.now()
       : Date.now()
-  attribution = {
-    utm_source: null,
-    utm_medium: null,
-    utm_campaign: null,
-    gclid: null,
-    gbraid: null,
-  }
+  __resetAttributionForTests()
 }
 
 export function markAnalyticsReady(ready = true) {
@@ -167,23 +151,6 @@ function updateScrollDepth() {
   return maxScrollPct
 }
 
-function captureAttributionFromUrl() {
-  if (attributionCaptured || typeof window === 'undefined') return
-  attributionCaptured = true
-  try {
-    const params = new URLSearchParams(window.location.search)
-    attribution = {
-      utm_source: params.get('utm_source'),
-      utm_medium: params.get('utm_medium'),
-      utm_campaign: params.get('utm_campaign'),
-      gclid: params.get('gclid'),
-      gbraid: params.get('gbraid'),
-    }
-  } catch {
-    /* ignore */
-  }
-}
-
 function isStandalonePwa() {
   if (typeof window === 'undefined') return false
   try {
@@ -210,21 +177,18 @@ export function centsToPriceEur(cents: number | null | undefined): number | unde
 }
 
 function buildBaseProps(extra: AnalyticsProps = {}): Record<string, unknown> {
-  captureAttributionFromUrl()
+  captureAttribution()
   updateScrollDepth()
   const exp =
     peekLandingExpHero() ??
     (typeof window !== 'undefined' && typeof ensureLandingExpHero === 'function'
       ? ensureLandingExpHero()
       : null)
+  const attr = getAttribution()
   const props: Record<string, unknown> = {
     ab_variant: getAbVariantCents(),
     landing_exp_hero: exp,
-    utm_source: attribution.utm_source,
-    utm_medium: attribution.utm_medium,
-    utm_campaign: attribution.utm_campaign,
-    gclid: attribution.gclid,
-    gbraid: attribution.gbraid,
+    ...attributionToProps(attr),
     seconds_since_landing: secondsSinceLanding(),
     scroll_depth_pct: maxScrollPct,
     is_pwa: isStandalonePwa(),
@@ -296,10 +260,25 @@ export function getLastCtaLocation(): CtaLocation | null {
   return lastCtaLocation
 }
 
-/** UTM / click-id attribution captured from the landing URL. */
-export function getCapturedAttribution(): Attribution {
-  captureAttributionFromUrl()
-  return { ...attribution }
+/** UTM / click-id attribution — first-touch via {@link getAttribution}. */
+export function getCapturedAttribution(): AttributionRecord {
+  captureAttribution()
+  return getAttribution() ?? {
+    utm_source: null,
+    utm_medium: null,
+    utm_campaign: null,
+    utm_content: null,
+    utm_term: null,
+    gclid: null,
+    gbraid: null,
+    wbraid: null,
+    msclkid: null,
+    ttclid: null,
+    fbclid: null,
+    landing_page_url: null,
+    document_referrer: null,
+    captured_at: 0,
+  }
 }
 
 /**
@@ -495,7 +474,7 @@ export function observeDwellOnce(
 export function installLandingPageListeners(): () => void {
   if (typeof window === 'undefined') return () => {}
 
-  captureAttributionFromUrl()
+  captureAttribution()
   markFunnelStep('landing')
 
   let scrollTimer: ReturnType<typeof setTimeout> | null = null

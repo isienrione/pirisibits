@@ -15,13 +15,6 @@ vi.mock('../analytics.ts', async () => {
       ph_distinct_id: 'ph_user_1',
       ph_session_id: 'ph_sess_1',
     }),
-    getCapturedAttribution: () => ({
-      utm_source: 'google',
-      utm_medium: 'cpc',
-      utm_campaign: 'rome',
-      gclid: 'gclid_1',
-      gbraid: 'gbraid_1',
-    }),
     getLastCtaLocation: () => 'hero',
     trackCheckoutOpened: vi.fn(() => true),
     trackCheckoutClosed: vi.fn(() => true),
@@ -32,6 +25,58 @@ vi.mock('../analytics.ts', async () => {
     trackCheckoutCustomerCreated: vi.fn(() => true),
     trackCheckoutItemsUpdated: vi.fn(() => true),
     trackPaddleScriptFailed: vi.fn(() => true),
+  }
+})
+
+vi.mock('../attribution.ts', async () => {
+  const actual = await vi.importActual('../attribution.ts')
+  return {
+    ...actual,
+    getAttribution: () => ({
+      utm_source: 'google',
+      utm_medium: 'cpc',
+      utm_campaign: 'rome',
+      utm_content: null,
+      utm_term: null,
+      gclid: 'gclid_1',
+      gbraid: 'gbraid_1',
+      wbraid: null,
+      msclkid: null,
+      ttclid: null,
+      fbclid: null,
+      landing_page_url: 'https://chronowalk.com/?utm_source=google',
+      document_referrer: 'https://google.com/',
+      captured_at: 1700000000000,
+    }),
+    captureAttribution: () => ({
+      utm_source: 'google',
+      utm_medium: 'cpc',
+      utm_campaign: 'rome',
+      utm_content: null,
+      utm_term: null,
+      gclid: 'gclid_1',
+      gbraid: 'gbraid_1',
+      wbraid: null,
+      msclkid: null,
+      ttclid: null,
+      fbclid: null,
+      landing_page_url: 'https://chronowalk.com/?utm_source=google',
+      document_referrer: 'https://google.com/',
+      captured_at: 1700000000000,
+    }),
+    attributionToProps: (record) => {
+      if (!record) return {}
+      const out = {}
+      for (const [k, v] of Object.entries(record)) {
+        if (v == null || v === '') continue
+        if (k === 'captured_at') {
+          out.attribution_captured_at = v
+          continue
+        }
+        out[k] = v
+      }
+      return out
+    },
   }
 })
 

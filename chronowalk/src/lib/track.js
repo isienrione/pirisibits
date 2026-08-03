@@ -4,6 +4,11 @@ import {
   markAnalyticsReady,
   track as analyticsTrack,
 } from './analytics.ts'
+import {
+  captureAttribution,
+  registerAttributionWithPosthog,
+  getAttribution,
+} from './attribution.ts'
 
 /** Marketing / advertising cookies only — does not gate product analytics. */
 const MARKETING_CONSENT_KEY = 'cw_marketing_consent'
@@ -105,6 +110,9 @@ export function subscribeAnalyticsConsent(listener) {
 export function initAnalytics() {
   if (initialized || typeof window === 'undefined') return
 
+  // Capture before any landing hash navigation can strip ?utm_* params.
+  captureAttribution()
+
   const key = import.meta.env.VITE_POSTHOG_KEY
   if (!key) return
 
@@ -130,6 +138,9 @@ export function initAnalytics() {
           is_ios: /iPad|iPhone|iPod/.test(navigator.userAgent),
           connection_type: navigator.connection?.effectiveType ?? 'unknown',
         })
+        // First-touch UTMs / click ids — survive landing hash replaceState.
+        captureAttribution()
+        registerAttributionWithPosthog(getAttribution())
       },
     })
     initialized = true
