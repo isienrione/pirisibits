@@ -219,7 +219,7 @@ export default function LandingProductHero({
 
             <div
               className={`cw-v4-hero__actions${
-                onContinueWalk ? '' : ' cw-v4-hero__actions--clarity'
+                onContinueWalk ? ' cw-v4-hero__actions--clarity cw-v4-hero__actions--with-continue' : ' cw-v4-hero__actions--clarity'
               }`}
             >
               {onContinueWalk ? (
@@ -231,61 +231,59 @@ export default function LandingProductHero({
                 >
                   Continue your walk
                 </button>
+              ) : null}
+
+              {previewFirst ? (
+                <>
+                  <button
+                    type="button"
+                    className="cw-v4-btn cw-v4-btn--primary"
+                    aria-label={section.primaryCtaAriaLabel || undefined}
+                    onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
+                    tabIndex={interactive ? 0 : -1}
+                  >
+                    {section.primaryCta}
+                  </button>
+                  <a
+                    href={section.getAppHref ?? '#pricing'}
+                    className="cw-v4-btn cw-v4-btn--getapp"
+                    tabIndex={interactive ? 0 : -1}
+                    onClick={(event) => {
+                      if (!onGetApp && !onChooseTour) return
+                      event.preventDefault()
+                      ;(onGetApp || onChooseTour)?.()
+                    }}
+                  >
+                    {section.getAppCta}
+                  </a>
+                </>
               ) : (
                 <>
-                  {previewFirst ? (
-                    <>
-                      <button
-                        type="button"
-                        className="cw-v4-btn cw-v4-btn--primary"
-                        aria-label={section.primaryCtaAriaLabel || undefined}
-                        onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                        tabIndex={interactive ? 0 : -1}
-                      >
-                        {section.primaryCta}
-                      </button>
-                      <a
-                        href={section.getAppHref ?? '#pricing'}
-                        className="cw-v4-btn cw-v4-btn--getapp"
-                        tabIndex={interactive ? 0 : -1}
-                        onClick={(event) => {
-                          if (!onGetApp && !onChooseTour) return
-                          event.preventDefault()
-                          ;(onGetApp || onChooseTour)?.()
-                        }}
-                      >
-                        {section.getAppCta}
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <a
-                        href={section.getAppHref ?? '#pricing'}
-                        className="cw-v4-btn cw-v4-btn--getapp"
-                        tabIndex={interactive ? 0 : -1}
-                        onClick={(event) => {
-                          if (!onGetApp && !onChooseTour) return
-                          event.preventDefault()
-                          ;(onGetApp || onChooseTour)?.()
-                        }}
-                      >
-                        {section.getAppCta}
-                      </a>
-                      <button
-                        type="button"
-                        className="cw-v4-btn cw-v4-btn--primary"
-                        aria-label={section.primaryCtaAriaLabel || undefined}
-                        onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                        tabIndex={interactive ? 0 : -1}
-                      >
-                        {section.primaryCta}
-                      </button>
-                    </>
-                  )}
+                  <a
+                    href={section.getAppHref ?? '#pricing'}
+                    className="cw-v4-btn cw-v4-btn--getapp"
+                    tabIndex={interactive ? 0 : -1}
+                    onClick={(event) => {
+                      if (!onGetApp && !onChooseTour) return
+                      event.preventDefault()
+                      ;(onGetApp || onChooseTour)?.()
+                    }}
+                  >
+                    {section.getAppCta}
+                  </a>
+                  <button
+                    type="button"
+                    className="cw-v4-btn cw-v4-btn--primary"
+                    aria-label={section.primaryCtaAriaLabel || undefined}
+                    onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
+                    tabIndex={interactive ? 0 : -1}
+                  >
+                    {section.primaryCta}
+                  </button>
                 </>
               )}
 
-              {!onContinueWalk && section.trustLine ? (
+              {section.trustLine ? (
                 <p className="cw-v4-hero__trust">{section.trustLine}</p>
               ) : null}
 

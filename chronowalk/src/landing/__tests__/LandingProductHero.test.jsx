@@ -106,21 +106,28 @@ describe('LandingProductHero CTA hierarchy', () => {
     expect(kids[1].className).toMatch(/getapp/)
   })
 
-  it('preserves Continue your walk without Pantheon helper copy', () => {
+  it('keeps Unlock visible when Continue your walk is offered', () => {
     const onContinueWalk = vi.fn()
+    const onGetApp = vi.fn()
     render(
       <LandingProductHero
         onPreview={() => {}}
         onChooseTour={() => {}}
-        onGetApp={() => {}}
+        onGetApp={onGetApp}
         onContinueWalk={onContinueWalk}
       />,
     )
 
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Pantheon/i })).not.toBeInTheDocument()
+    const unlock = screen.getByRole('link', {
+      name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+    })
+    expect(unlock).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: LANDING_CTA.tryPantheonFree })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
     expect(onContinueWalk).toHaveBeenCalledTimes(1)
+    fireEvent.click(unlock)
+    expect(onGetApp).toHaveBeenCalledTimes(1)
   })
 })
