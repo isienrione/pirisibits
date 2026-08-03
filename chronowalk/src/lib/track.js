@@ -9,6 +9,10 @@ import {
   registerAttributionWithPosthog,
   getAttribution,
 } from './attribution.ts'
+import {
+  initGoogleAds,
+  updateGoogleAdsConsent,
+} from './googleAds.js'
 
 /** Marketing / advertising cookies only — does not gate product analytics. */
 const MARKETING_CONSENT_KEY = 'cw_marketing_consent'
@@ -113,6 +117,10 @@ export function initAnalytics() {
   // Capture before any landing hash navigation can strip ?utm_* params.
   captureAttribution()
 
+  // Google Ads base tag (async) — Consent Mode defaults already in index.html.
+  // Not blocked by the marketing banner; ad_storage stays denied until consent.
+  initGoogleAds({ marketingConsent: readStoredMarketingConsent() })
+
   const key = import.meta.env.VITE_POSTHOG_KEY
   if (!key) return
 
@@ -166,6 +174,7 @@ export function setAnalyticsConsent(accepted) {
   const value = accepted ? ANALYTICS_CONSENT.ACCEPTED : ANALYTICS_CONSENT.DECLINED
   window.localStorage.setItem(MARKETING_CONSENT_KEY, value)
   window.localStorage.setItem(LEGACY_ANALYTICS_CONSENT_KEY, value)
+  updateGoogleAdsConsent(Boolean(accepted))
   notifyConsentListeners(value)
 }
 

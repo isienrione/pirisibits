@@ -90,11 +90,22 @@ function handlePaddleCheckoutEvent(event) {
       event?.data?.id ||
       event?.data?.transaction?.id ||
       undefined
+    const email =
+      event?.data?.customer?.email ||
+      event?.data?.email ||
+      null
+    const currency =
+      event?.data?.currency_code ||
+      event?.data?.currencyCode ||
+      event?.data?.totals?.currency_code ||
+      'EUR'
     if (tier) {
       trackCheckoutCompleted({
         tier,
         priceEur,
         transactionId: transactionId ? String(transactionId) : undefined,
+        currency: currency ? String(currency) : 'EUR',
+        email: email ? String(email) : null,
       })
     }
     return

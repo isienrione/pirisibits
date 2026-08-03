@@ -12,6 +12,10 @@ import {
   type AttributionRecord,
   __resetAttributionForTests,
 } from './attribution.ts'
+import {
+  trackGoogleAdsCheckoutOpened,
+  trackGoogleAdsPurchaseConversion,
+} from './googleAds.js'
 
 export type CtaLocation =
   | 'hero'
@@ -304,10 +308,21 @@ export function getPostHogCheckoutIdentity(): {
 }
 
 export function trackCheckoutOpened(opts: { tier: string; priceEur?: number }): boolean {
-  return track('checkout_opened', {
+  const ok = track('checkout_opened', {
     tier: opts.tier,
     ...(opts.priceEur != null ? { price_eur: opts.priceEur } : {}),
   })
+  // Secondary Google Ads micro-conversion (observation / optimize early).
+  try {
+    trackGoogleAdsCheckoutOpened({
+      tier: opts.tier,
+      value: opts.priceEur,
+      currency: 'EUR',
+    })
+  } catch {
+    /* never block checkout analytics */
+  }
+  return ok
 }
 
 export function trackCheckoutClosed(opts: { tier: string; secondsInCheckout: number }): boolean {
@@ -321,12 +336,23 @@ export function trackCheckoutCompleted(opts: {
   tier: string
   priceEur?: number
   transactionId?: string
+  currency?: string
+  email?: string | null
 }): boolean {
-  return track('checkout_completed', {
+  const ok = track('checkout_completed', {
     tier: opts.tier,
     ...(opts.priceEur != null ? { price_eur: opts.priceEur } : {}),
     ...(opts.transactionId ? { transaction_id: opts.transactionId } : {}),
   })
+  // Primary Google Ads purchase conversion + enhanced conversions (hashed email).
+  void trackGoogleAdsPurchaseConversion({
+    value: opts.priceEur,
+    currency: opts.currency || 'EUR',
+    transactionId: opts.transactionId,
+    email: opts.email,
+    tier: opts.tier,
+  }).catch(() => {})
+  return ok
 }
 
 export function trackCheckoutError(opts: { tier?: string; errorMessage: string }): boolean {

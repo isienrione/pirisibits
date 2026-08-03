@@ -82,6 +82,21 @@
         color: #f5efe3;
       }
     </style>
+    <!-- Google Ads Consent Mode v2 defaults BEFORE gtag.js (ads denied; analytics granted).
+         Conversion ID / labels come from VITE_GOOGLE_ADS_* via src/lib/googleAds.js. -->
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'granted',
+        wait_for_update: 500,
+      })
+    </script>
     <script>
       ;(function () {
         // Boot rules (learned the hard way — Safari OK, Chrome iOS not):

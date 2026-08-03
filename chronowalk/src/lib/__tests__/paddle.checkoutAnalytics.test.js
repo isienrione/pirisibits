@@ -125,12 +125,18 @@ describe('paddle checkout analytics', () => {
 
     opts.eventCallback({
       name: 'checkout.completed',
-      data: { transaction_id: 'txn_1' },
+      data: {
+        transaction_id: 'txn_1',
+        currency_code: 'EUR',
+        customer: { email: 'buyer@example.com' },
+      },
     })
     expect(analytics.trackCheckoutCompleted).toHaveBeenCalledWith(
       expect.objectContaining({
         tier: 'rome-complete',
         transactionId: 'txn_1',
+        currency: 'EUR',
+        email: 'buyer@example.com',
       }),
     )
 
