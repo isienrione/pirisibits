@@ -26,7 +26,7 @@ export const LANDING_CTA = {
   /** Hero unpaid CTA — complete Pantheon free stop (not a teaser). */
   experienceCompleteStop: 'Experience a complete stop',
   /** Hero free CTA — names the Pantheon example stop explicitly. */
-  tryPantheonFree: 'Try the complete Pantheon stop free',
+  tryPantheonFree: 'Try one stop for free: The Pantheon Part 1',
   tryCompleteStopFree: 'Try a complete stop free',
   tryPantheonStopFree: 'Try the Pantheon stop free',
   seeRoutes: 'See all Rome walks',

@@ -71,7 +71,14 @@ describe('LandingProductHero CTA hierarchy', () => {
     const freeCta = screen.getByRole('button', {
       name: LANDING_CTA.tryPantheonFree,
     })
-    expect(freeCta).toHaveTextContent(LANDING_CTA.tryPantheonFree)
+    expect(freeCta).toHaveTextContent('Try one stop for free: The Pantheon Part 1')
+
+    const actions = document.querySelector('.cw-v4-hero__actions')
+    const kids = [...actions.querySelectorAll('a, button')]
+    expect(kids).toHaveLength(2)
+    expect(kids[0]).toBe(paidCta)
+    expect(kids[1]).toBe(freeCta)
+    expect(actions.className).toMatch(/actions--pair/)
 
     expect(
       screen.getByText('Works in any browser · Offline mode available · No subscription'),
@@ -101,12 +108,13 @@ describe('LandingProductHero CTA hierarchy', () => {
 
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
+    expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
     expect(kids[1].textContent).toMatch(/Unlock all 21 stops/i)
     expect(kids[1].className).toMatch(/getapp/)
   })
 
-  it('keeps Unlock when Continue replaces only the free Pantheon CTA', () => {
+  it('swaps only the free Pantheon pill for Continue when the walker has access', () => {
     const onContinueWalk = vi.fn()
     const onGetApp = vi.fn()
     const onPreview = vi.fn()
@@ -122,13 +130,12 @@ describe('LandingProductHero CTA hierarchy', () => {
     const unlock = screen.getByRole('link', {
       name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
     })
-    expect(unlock).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
-    // Free Pantheon is swapped for Continue — not shown alongside it.
     expect(screen.queryByRole('button', { name: LANDING_CTA.tryPantheonFree })).not.toBeInTheDocument()
 
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
+    expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Unlock all 21 stops/i)
     expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
