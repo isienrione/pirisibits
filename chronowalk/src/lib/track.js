@@ -1,7 +1,9 @@
 import posthog from 'posthog-js'
 import { getHost } from './host'
-import { getAbVariantCents } from './config'
-import { peekLandingExpHero } from '../landing/landingExperiments.js'
+import {
+  markAnalyticsReady,
+  track as analyticsTrack,
+} from './analytics.ts'
 
 /** Marketing / advertising cookies only — does not gate product analytics. */
 const MARKETING_CONSENT_KEY = 'cw_marketing_consent'
@@ -52,16 +54,6 @@ export const TRACK_EVENTS = {
   GUARANTEE_VIEW: 'guarantee_view',
   /** @deprecated prefer LANDING_PRICING_VIEW - kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
-}
-
-function baseProps(extra = {}) {
-  const landingExpHero = peekLandingExpHero()
-  return {
-    host: getHost(),
-    ab_variant: getAbVariantCents(),
-    ...(landingExpHero ? { landing_exp_hero: landingExpHero } : {}),
-    ...extra,
-  }
 }
 
 function notifyConsentListeners(value) {
@@ -141,12 +133,14 @@ export function initAnalytics() {
       },
     })
     initialized = true
+    markAnalyticsReady(true)
 
     if (new URLSearchParams(window.location.search).has('h')) {
       track(TRACK_EVENTS.QR_SCAN)
     }
   } catch {
     initialized = false
+    markAnalyticsReady(false)
   }
 }
 
@@ -173,12 +167,12 @@ export function getAnalyticsConsent() {
   return readStoredMarketingConsent()
 }
 
+/**
+ * Legacy + funnel events — always routed through `analytics.ts` (sole capture site).
+ * @param {string} event
+ * @param {Record<string, unknown>} [properties]
+ */
 export function track(event, properties = {}) {
   if (!initialized) return false
-  try {
-    posthog.capture(event, baseProps(properties))
-    return true
-  } catch {
-    return false
-  }
+  return analyticsTrack(event, { host: getHost(), ...properties })
 }

@@ -12,7 +12,10 @@ vi.mock('posthog-js', () => ({ default: posthogMock }))
 
 vi.mock('../host.js', () => ({ getHost: () => null }))
 vi.mock('../config.js', () => ({ getAbVariantCents: () => 1499 }))
-vi.mock('../../landing/landingExperiments.js', () => ({ peekLandingExpHero: () => null }))
+vi.mock('../../landing/landingExperiments.js', () => ({
+  peekLandingExpHero: () => null,
+  ensureLandingExpHero: () => null,
+}))
 
 describe('product analytics (immediate init)', () => {
   beforeEach(() => {

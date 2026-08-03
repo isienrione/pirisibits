@@ -6,6 +6,11 @@ import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { useTourManifest } from '../../hooks/useV2Journey.js'
 import { getTierById, openCheckout } from '../../lib/checkout.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
+import {
+  notePreviewAudioTime,
+  trackCtaClick,
+  trackPreviewPlayClick,
+} from '../../lib/analytics.ts'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import {
@@ -52,13 +57,17 @@ export default function RedesignPreviewPage() {
   const attachAudioListeners = useCallback((audio) => {
     if (!audio) return () => {}
 
-    const onTime = () => setCurrentTime(audio.currentTime)
+    const onTime = () => {
+      setCurrentTime(audio.currentTime)
+      notePreviewAudioTime(audio.currentTime, audio.duration || duration, 'pantheon')
+    }
     const onMeta = () => setDuration(audio.duration || 0)
     const onPlay = () => setPlaying(true)
     const onPause = () => setPlaying(false)
     const onEnded = () => {
       setPlaying(false)
       setStoryEnded(true)
+      notePreviewAudioTime(audio.duration || duration, audio.duration || duration, 'pantheon')
     }
     const onError = () => setAudioError(true)
 
@@ -86,7 +95,7 @@ export default function RedesignPreviewPage() {
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('error', onError)
     }
-  }, [])
+  }, [duration])
 
   useEffect(() => {
     if (!previewUrl) return undefined
@@ -135,6 +144,7 @@ export default function RedesignPreviewPage() {
   }
 
   const handleUnlock = () => {
+    trackCtaClick({ tier: 'rome-complete', ctaLocation: 'preview' })
     setConsentOpen(true)
   }
 
@@ -164,6 +174,7 @@ export default function RedesignPreviewPage() {
       audio.pause()
       return
     }
+    trackPreviewPlayClick('pantheon')
     void audio.play().catch(() => {})
   }
 

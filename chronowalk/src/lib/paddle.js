@@ -11,6 +11,13 @@ import {
   LAUNCH_CATALOG_BY_ID,
   LAUNCH_CATALOG_PRODUCTS,
 } from './generated/launchCatalog.gen.js'
+import {
+  centsToPriceEur,
+  trackCheckoutClosed,
+  trackCheckoutCompleted,
+  trackCheckoutError,
+  trackCheckoutOpened,
+} from './analytics.ts'
 
 /** Tier id → Vite env key for the Paddle price id (`pri_…`). */
 export const PADDLE_PRICE_ENV_KEYS = Object.freeze(
@@ -27,6 +34,70 @@ const DEFAULT_TIER = 'rome-complete'
 let paddleSingleton
 /** @type {Promise<import('@paddle/paddle-js').Paddle | null> | null} */
 let paddleInitPromise = null
+
+/** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean } | null} */
+let activeCheckout = null
+
+/**
+ * Remember the open checkout so Paddle eventCallback can emit funnel events.
+ * @param {{ tier: string, priceCents?: number | null }} opts
+ */
+export function beginCheckoutAnalytics({ tier, priceCents } = {}) {
+  if (!tier) return
+  activeCheckout = {
+    tier,
+    priceEur: centsToPriceEur(priceCents),
+    openedAt: Date.now(),
+    completed: false,
+  }
+  trackCheckoutOpened({
+    tier,
+    priceEur: activeCheckout.priceEur,
+  })
+}
+
+function handlePaddleCheckoutEvent(event) {
+  const name = event?.name
+  if (!name || !activeCheckout) return
+
+  if (name === 'checkout.completed') {
+    activeCheckout.completed = true
+    const transactionId =
+      event?.data?.transaction_id ||
+      event?.data?.id ||
+      event?.data?.transaction?.id ||
+      undefined
+    trackCheckoutCompleted({
+      tier: activeCheckout.tier,
+      priceEur: activeCheckout.priceEur,
+      transactionId: transactionId ? String(transactionId) : undefined,
+    })
+    return
+  }
+
+  if (name === 'checkout.closed') {
+    if (!activeCheckout.completed) {
+      trackCheckoutClosed({
+        tier: activeCheckout.tier,
+        secondsInCheckout: (Date.now() - activeCheckout.openedAt) / 1000,
+      })
+    }
+    activeCheckout = null
+    return
+  }
+
+  if (name === 'checkout.error' || name === 'checkout.failed') {
+    const message =
+      event?.error?.detail ||
+      event?.data?.error ||
+      event?.error?.message ||
+      name
+    trackCheckoutError({
+      tier: activeCheckout.tier,
+      errorMessage: String(message),
+    })
+  }
+}
 
 export function getPaddleClientToken() {
   const token = String(import.meta.env.VITE_PADDLE_CLIENT_TOKEN ?? '').trim()
@@ -189,6 +260,7 @@ export function ensurePaddle() {
   paddleInitPromise = initializePaddle({
     token,
     environment: getPaddleEnvironment(),
+    eventCallback: handlePaddleCheckoutEvent,
   })
     .then((instance) => {
       paddleSingleton = instance ?? null
@@ -245,6 +317,7 @@ export async function openPaddleCheckout({
 export function __resetPaddleForTests() {
   paddleSingleton = undefined
   paddleInitPromise = null
+  activeCheckout = null
 }
 
 export { LAUNCH_CATALOG_BY_ID, LAUNCH_CATALOG_PRODUCTS }

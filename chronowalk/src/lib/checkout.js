@@ -1,10 +1,12 @@
 import { getHost } from './host.js'
 import { getAbVariantCents, loadAppConfig } from './config.js'
 import { track, TRACK_EVENTS } from './track.js'
+import { trackCheckoutError } from './analytics.ts'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { ROME_BUNDLES, ROME_TIERS } from '../landing/landingData.js'
 import {
   assertPublicPriceConfig,
+  beginCheckoutAnalytics,
   buildPaddleCustomData,
   isCanonicalCheckoutProduct,
   isPaddleCheckoutReady,
@@ -99,6 +101,10 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
     tier: tierId ?? null,
   })
 
+  if (tierId) {
+    beginCheckoutAnalytics({ tier: tierId, priceCents: tierCents })
+  }
+
   // custom_data is attribution only - webhook derives entitlement from price.id.
   const customData = buildPaddleCustomData({
     host: getHost(),
@@ -112,7 +118,14 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
   // (Paddle Billing does not use Lemon-style buy URLs).
   void preferredMode
 
-  return openPaddleCheckout({ priceId, customData, email })
+  const result = await openPaddleCheckout({ priceId, customData, email })
+  if (!result.ok && tierId) {
+    trackCheckoutError({
+      tier: tierId,
+      errorMessage: String(result.reason || 'checkout_failed'),
+    })
+  }
+  return result
 }
 
 /** Ordered buyer journey steps - used by UI and docs. */

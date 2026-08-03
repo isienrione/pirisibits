@@ -4,6 +4,7 @@ import { LANDING_CONTENT, ROME_TIERS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
+import { trackCtaClick } from '../../lib/analytics.ts'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
@@ -304,6 +305,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
                           onClick={(event) => {
                             event.preventDefault()
                             setPaused(true)
+                            trackCtaClick({ tier: spot.id, ctaLocation: 'route_card' })
                             scrollToPricingTarget(spot.id)
                           }}
                         />

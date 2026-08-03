@@ -11,6 +11,10 @@ const posthogMock = vi.hoisted(() => ({
 vi.mock('posthog-js', () => ({ default: posthogMock }))
 vi.mock('../../lib/host.js', () => ({ getHost: () => null }))
 vi.mock('../../lib/config.js', () => ({ getAbVariantCents: () => 1499 }))
+vi.mock('../../landing/landingExperiments.js', () => ({
+  peekLandingExpHero: () => null,
+  ensureLandingExpHero: () => null,
+}))
 
 describe('landing_view with immediate analytics', () => {
   beforeEach(() => {

@@ -28,6 +28,12 @@ import {
   trackLandingPreviewCta,
   trackLandingView,
 } from './landingAnalytics.js'
+import {
+  centsToPriceEur,
+  installLandingPageListeners,
+  trackCtaClick,
+  trackTierCardClick,
+} from '../lib/analytics.ts'
 import { ensureLandingExpHero } from './landingExperiments.js'
 import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
@@ -53,6 +59,7 @@ export default function ChronoWalkLanding() {
   useEffect(() => {
     ensureLandingExpHero()
     trackLandingView()
+    return installLandingPageListeners()
   }, [])
 
   useEffect(() => {
@@ -81,11 +88,17 @@ export default function ChronoWalkLanding() {
     navigate(getActiveWalkPath())
   }, [navigate])
 
-  const handleBeginTier = useCallback((tierId) => {
-    trackLandingPricingCta(tierId)
-    rememberPendingPurchaseTier(tierId)
-    setPendingTierId(tierId)
-  }, [])
+  const handleBeginTier = useCallback(
+    (tierId) => {
+      const priceEur = centsToPriceEur(resolveLandingTierCents(tierId, cents))
+      trackTierCardClick(tierId, priceEur)
+      trackCtaClick({ tier: tierId, priceEur, ctaLocation: 'pricing' })
+      trackLandingPricingCta(tierId)
+      rememberPendingPurchaseTier(tierId)
+      setPendingTierId(tierId)
+    },
+    [cents],
+  )
 
   const handleConsentCancel = useCallback(() => {
     if (checkoutBusy) return
@@ -117,6 +130,7 @@ export default function ChronoWalkLanding() {
   }, [cents, navigate, pendingTierId])
 
   const handleChooseTour = useCallback(() => {
+    trackCtaClick({ ctaLocation: 'footer' })
     const target = document.getElementById('pricing')
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -134,6 +148,16 @@ export default function ChronoWalkLanding() {
     window.location.hash = 'get-app'
   }, [])
 
+  const handleHeroGetApp = useCallback(() => {
+    trackCtaClick({ ctaLocation: 'hero' })
+    handleGetApp()
+  }, [handleGetApp])
+
+  const handleStickyGetApp = useCallback(() => {
+    trackCtaClick({ ctaLocation: 'sticky_bar' })
+    handleGetApp()
+  }, [handleGetApp])
+
   const [actOpen, actWalk, actChoose] = LANDING_ACTS
   const productSchema = buildLandingProductSchema()
 
@@ -143,7 +167,7 @@ export default function ChronoWalkLanding() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingIntroNav onGetApp={handleGetApp} />
+      <LandingIntroNav onGetApp={handleStickyGetApp} />
       <main>
         <LandingAct
           id={actOpen.id}
@@ -154,7 +178,7 @@ export default function ChronoWalkLanding() {
           <LandingProductHero
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
-            onGetApp={handleGetApp}
+            onGetApp={handleHeroGetApp}
             onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
         </LandingAct>
