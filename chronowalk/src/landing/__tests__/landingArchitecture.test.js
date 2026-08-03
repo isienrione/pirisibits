@@ -98,9 +98,12 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.eyebrow).toMatch(/self-guided audio walking tour of rome/i)
     expect(hero.headline).toBe('Ancient Rome, brought back to life as you walk.')
     expect(hero.accentLine).toBe('At your own pace.')
-    expect(hero.subheadline).toMatch(/Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops/i)
+    expect(hero.subheadline).toMatch(/Enjoy the Colosseum, Roman Forum, The Pantheon & 18 other stops/i)
     expect(hero.subheadline).toMatch(/immersive audio/i)
     expect(hero.subheadline).toMatch(/visual ancient reconstructions/i)
+    expect(hero.subheadlineHighlight).toBe(
+      'Colosseum, Roman Forum, The Pantheon & 18 other stops',
+    )
     // Avoid “Rome” stacking in the first viewport (eyebrow + headline only).
     const romeHits = `${hero.eyebrow} ${hero.headline} ${hero.accentLine} ${hero.subheadline}`.match(
       /\bRome\b/gi,
