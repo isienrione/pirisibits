@@ -12,6 +12,9 @@ vi.mock('../../landing/landingExperiments.js', () => ({
   peekLandingExpHero: () => 'control',
   ensureLandingExpHero: () => 'control',
 }))
+vi.mock('../../landing/landingIntent.js', () => ({
+  resolveLandingIntent: () => 'rome',
+}))
 
 describe('landing funnel analytics', () => {
   beforeEach(async () => {

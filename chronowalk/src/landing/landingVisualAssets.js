@@ -68,6 +68,30 @@ export const LANDING_HERO = cinematicPlane('hero', {
 })
 
 /**
+ * Single still used as a full-bleed hero plane (mobile + desktop share one master).
+ * Prefer cinematicPlane when responsive masters exist.
+ * @param {string} src
+ * @param {{ alt?: string, objectPosition?: string }} [opts]
+ */
+export function landingStillPlane(src, { alt = '', objectPosition } = {}) {
+  return {
+    mobileSrc: src,
+    desktopSrc: src,
+    mobileWebp: undefined,
+    desktopWebp: undefined,
+    mobileAvif: undefined,
+    desktopAvif: undefined,
+    lqipSrc: undefined,
+    alt,
+    objectPosition,
+    mobileWidth: 1080,
+    mobileHeight: 1350,
+    desktopWidth: 1920,
+    desktopHeight: 1080,
+  }
+}
+
+/**
  * Act I cinematic interlude - Colosseum arrival beat.
  */
 export const LANDING_CINEMATIC_INTERLUDE = cinematicPlane('interlude', {

@@ -5,6 +5,7 @@
 import posthog from 'posthog-js'
 import { getAbVariantCents } from './config.js'
 import { peekLandingExpHero, ensureLandingExpHero } from '../landing/landingExperiments.js'
+import { resolveLandingIntent } from '../landing/landingIntent.js'
 import {
   attributionToProps,
   captureAttribution,
@@ -433,6 +434,7 @@ function buildBaseProps(extra: AnalyticsProps = {}): Record<string, unknown> {
   const props: Record<string, unknown> = {
     ab_variant: getAbVariantCents(),
     landing_exp_hero: exp,
+    landing_intent: resolveLandingIntent(),
     ...attributionToProps(attr),
     seconds_since_landing: secondsSinceLanding(),
     scroll_depth_pct: Math.round(maxScrollPct),

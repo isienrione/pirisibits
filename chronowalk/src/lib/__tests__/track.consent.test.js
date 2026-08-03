@@ -16,6 +16,9 @@ vi.mock('../../landing/landingExperiments.js', () => ({
   peekLandingExpHero: () => null,
   ensureLandingExpHero: () => null,
 }))
+vi.mock('../../landing/landingIntent.js', () => ({
+  resolveLandingIntent: () => 'rome',
+}))
 
 describe('product analytics (immediate init)', () => {
   beforeEach(() => {
