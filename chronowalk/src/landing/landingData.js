@@ -423,7 +423,7 @@ export const LANDING_CONTENT = {
     eyebrow: 'The ruin becomes the room',
     headline: 'Press and hold to step back 2,000 years.',
     support:
-      'Reveal the Rome that once stood around you, then hear what happened there.',
+      'ChronoWalk pairs place-tied audio with Then & Now reconstructions you press and hold to reveal.',
     holdHint: 'Press and hold to reveal Ancient Rome',
     holdHintTouch: 'Touch and hold to reveal Ancient Rome',
     revealLabel: 'Show Ancient Rome',
