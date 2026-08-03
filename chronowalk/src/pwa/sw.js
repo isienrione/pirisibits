@@ -40,7 +40,10 @@ import { APP_SHELL_PRECACHE_URL, OFFLINE_PRECACHE_URL } from './cloudflarePrecac
 const BUILD_PREFIX = 'chronowalk-' + __APP_BUILD_ID__
 setCacheNameDetails({ prefix: BUILD_PREFIX })
 
-self.skipWaiting()
+// Do NOT call skipWaiting() at install time. Immediate activation + clientsClaim
+// races vite-plugin-pwa / our controllerchange handlers into a full document
+// reload. Wait for an explicit SKIP_WAITING message after the traveler taps
+// the "New version available" toast.
 clientsClaim()
 
 const rejectHtmlAssetPlugin = {

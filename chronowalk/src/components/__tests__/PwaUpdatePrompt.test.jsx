@@ -14,8 +14,8 @@ describe('PwaUpdatePromptView', () => {
   it('prompts the user to refresh when an update is available', () => {
     render(<PwaUpdatePromptView visible onUpdate={vi.fn()} onDismiss={vi.fn()} />)
 
-    expect(screen.getByRole('status')).toHaveTextContent(/update available/i)
-    expect(screen.getByRole('button', { name: /^update$/i })).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent(/new version available/i)
+    expect(screen.getByRole('button', { name: /tap to refresh/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /later/i })).toBeInTheDocument()
   })
 
@@ -23,7 +23,7 @@ describe('PwaUpdatePromptView', () => {
     const onUpdate = vi.fn()
     render(<PwaUpdatePromptView visible onUpdate={onUpdate} onDismiss={vi.fn()} />)
 
-    fireEvent.click(screen.getByRole('button', { name: /^update$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /tap to refresh/i }))
 
     expect(onUpdate).toHaveBeenCalledTimes(1)
   })

@@ -49,6 +49,8 @@ export const TRACK_EVENTS = {
   GUARANTEE_VIEW: 'guarantee_view',
   /** @deprecated prefer LANDING_PRICING_VIEW - kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
+  PAGE_UNLOAD: 'page_unload',
+  PAGE_RELOAD_DETECTED: 'page_reload_detected',
 }
 
 function baseProps(extra = {}) {
@@ -170,4 +172,79 @@ export function track(event, properties = {}) {
   } catch {
     return false
   }
+}
+
+let pageLifecycleInstalled = false
+let pageLifecycleStartedAt =
+  typeof performance !== 'undefined' && typeof performance.now === 'function'
+    ? performance.now()
+    : Date.now()
+
+function readNavigationType() {
+  try {
+    const entry = performance.getEntriesByType?.('navigation')?.[0]
+    return entry?.type ?? null
+  } catch {
+    return null
+  }
+}
+
+function secondsOnPage() {
+  const now =
+    typeof performance !== 'undefined' && typeof performance.now === 'function'
+      ? performance.now()
+      : Date.now()
+  return Math.max(0, Math.round((now - pageLifecycleStartedAt) / 1000))
+}
+
+/**
+ * Fire unload / reload diagnostics for investigating unexpected full-page reloads
+ * (e.g. mobile Safari mid-session). Safe to call multiple times; listeners install once.
+ * Events no-op until PostHog is initialized (consent accepted).
+ */
+export function installPageLifecycleDiagnostics() {
+  if (typeof window === 'undefined' || pageLifecycleInstalled) return () => {}
+  pageLifecycleInstalled = true
+  pageLifecycleStartedAt =
+    typeof performance !== 'undefined' && typeof performance.now === 'function'
+      ? performance.now()
+      : Date.now()
+
+  const navigationType = readNavigationType()
+  if (navigationType === 'reload') {
+    // Defer slightly so initAnalytics() in the same tick can finish first.
+    window.setTimeout(() => {
+      track(TRACK_EVENTS.PAGE_RELOAD_DETECTED, { navigation_type: navigationType })
+    }, 0)
+  }
+
+  const fireUnload = (reasonHint) => {
+    track(TRACK_EVENTS.PAGE_UNLOAD, {
+      reason_hint: reasonHint,
+      seconds_on_page: secondsOnPage(),
+      navigation_type: readNavigationType(),
+    })
+  }
+
+  const onBeforeUnload = () => fireUnload('beforeunload')
+  const onPageHide = (event) =>
+    fireUnload(event?.persisted ? 'pagehide_bfcache' : 'pagehide')
+
+  window.addEventListener('beforeunload', onBeforeUnload)
+  window.addEventListener('pagehide', onPageHide)
+
+  return () => {
+    window.removeEventListener('beforeunload', onBeforeUnload)
+    window.removeEventListener('pagehide', onPageHide)
+    pageLifecycleInstalled = false
+  }
+}
+
+/** @internal */
+export function __resetPageLifecycleDiagnosticsForTests() {
+  pageLifecycleInstalled = false
+  pageLifecycleStartedAt =
+    typeof performance !== 'undefined' && typeof performance.now === 'function'
+      ? performance.now()
+      : Date.now()
 }

@@ -7,7 +7,7 @@ import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { ShellTabBar } from '../shell'
 import { ThresholdChromeProvider, useThresholdChrome } from '../context/ThresholdChromeContext'
 import { captureHostFromUrl } from '../lib/host'
-import { initAnalytics } from '../lib/track'
+import { initAnalytics, installPageLifecycleDiagnostics } from '../lib/track'
 import AnalyticsConsentBanner from '../components/analytics/AnalyticsConsentBanner.jsx'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
@@ -181,6 +181,7 @@ function AppRouter() {
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
+    const cleanupLifecycle = installPageLifecycleDiagnostics()
     // Successful React mount - clear mid-boot sentinel / one-boot SW skip.
     // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
     // the homepage mounts then throws again (lazyWithRecovery clears it on success).
@@ -195,6 +196,9 @@ function AppRouter() {
       }
     } catch {
       // ignore
+    }
+    return () => {
+      cleanupLifecycle?.()
     }
   }, [])
 
