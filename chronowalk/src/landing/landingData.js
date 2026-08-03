@@ -357,8 +357,8 @@ export const LANDING_CONTENT = {
     /** Atmospheric leftover — must stay subordinate to the benefit headline. */
     accentLine: 'At your own pace.',
     subheadline:
-      'Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops • immersive audio • curated routes • visual ancient reconstructions',
-    subheadlineHighlight: 'visual ancient reconstructions',
+      'Enjoy the Colosseum, Roman Forum, The Pantheon & 18 other stops • immersive audio • curated routes • visual ancient reconstructions',
+    subheadlineHighlight: 'Colosseum, Roman Forum, The Pantheon & 18 other stops',
     /** Free Pantheon preview (secondary visual weight; still opens /preview). */
     primaryCta: LANDING_CTA.tryPantheonFree,
     primaryCtaAriaLabel: 'Try one complete Pantheon stop for free',

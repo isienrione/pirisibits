@@ -50,9 +50,16 @@ describe('LandingProductHero CTA hierarchy', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('At your own pace.')).toBeInTheDocument()
     expect(
-      screen.getByText(
-        /Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops/i,
-      ),
+      screen.getByText('Colosseum, Roman Forum, The Pantheon & 18 other stops'),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/visual ancient reconstructions/i)).toBeInTheDocument()
+    expect(
+      screen.queryByText('visual ancient reconstructions', { selector: 'mark' }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByText('Colosseum, Roman Forum, The Pantheon & 18 other stops', {
+        selector: 'mark',
+      }),
     ).toBeInTheDocument()
 
     const paidCta = screen.getByRole('link', {
