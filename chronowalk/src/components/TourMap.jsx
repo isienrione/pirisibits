@@ -6,7 +6,11 @@ import {
   WALKING_COMPANION_PITCH,
 } from '../utils/walkingCompanionMapCamera.js'
 import { loadMapboxRuntime } from '../map/mapboxLoader.js'
-import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
+import {
+  createMapboxTransformRequest,
+  getCachedOfflineStyleUrl,
+} from '../map/offlineMapTiles.js'
+import { hasCachedRomeMapTiles } from '../audio/offlinePackage.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
@@ -393,6 +397,7 @@ function TourMapboxView({
     const styleOptions = resolveTourMapStyleOptions({
       walkingCompanionUI,
       preferOfflineStyle,
+      offlineStyleUrl: preferOfflineStyle ? getCachedOfflineStyleUrl(mapboxToken) : null,
     })
 
     const markMapReady = () => {
@@ -999,7 +1004,11 @@ const TourMap = ({
   fillContainer = false,
   preferOfflineStyle = false,
 }) => {
-  const [offlineMapMode, setOfflineMapMode] = useState(!isMapboxConfigured())
+  // Offline without a complete Streets pack → sketch immediately. Trying Mapbox
+  // Standard/empty tiles paints "two dots in nowhere" before error fallback.
+  const [offlineMapMode, setOfflineMapMode] = useState(
+    () => !isMapboxConfigured() || (isOffline && !hasCachedRomeMapTiles()),
+  )
   const handleMapFailure = useCallback(() => {
     setOfflineMapMode(true)
   }, [])
@@ -1009,7 +1018,11 @@ const TourMap = ({
       setOfflineMapMode(true)
       return
     }
-    // Back online - restore Mapbox (remount via style key picks satellite/standard).
+    if (isOffline && !hasCachedRomeMapTiles()) {
+      setOfflineMapMode(true)
+      return
+    }
+    // Back online - restore Mapbox (remount via style key picks satellite/streets).
     if (!isOffline) setOfflineMapMode(false)
   }, [isOffline])
 

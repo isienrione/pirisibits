@@ -34,7 +34,7 @@ function RouteOverviewSvg({ model }) {
   return (
     <svg
       viewBox={`0 0 ${model.width} ${model.height}`}
-      className="h-[220px] w-full rounded-3xl border border-ink800 bg-bone"
+      className="h-[220px] w-full rounded-3xl border border-ink800 bg-[#f3eee6]"
       role="img"
       aria-label="Simplified tour route overview"
     >
@@ -200,17 +200,19 @@ export function OfflineRouteMap({
   if (compact) {
     return (
       <div
-        className={cn('flex h-full w-full flex-col bg-obsidian text-ink900', className)}
+        className={cn('flex h-full w-full flex-col bg-obsidian', className)}
         data-testid="offline-route-map-compact"
       >
-        <div className="flex min-h-0 flex-1 flex-col justify-center p-2">
-          <RouteOverviewSvg model={overview} />
-          <p className="mt-2 px-1 text-center text-[11px] leading-snug text-muted">
+        <div className="flex min-h-0 flex-1 flex-col justify-center gap-2 p-2">
+          <div className="overflow-hidden rounded-2xl border border-ink800/80 bg-[#1a1814] shadow-inner">
+            <RouteOverviewSvg model={overview} />
+          </div>
+          <p className="px-1 text-center text-[11px] leading-snug text-muted">
             {atStop
               ? 'You are within arrival range.'
               : distanceLabel
-                ? `${distanceLabel} away · cached overview`
-                : 'Cached route overview'}
+                ? `${distanceLabel} · offline route overview`
+                : 'Offline route overview · download maps on Wi‑Fi for street detail'}
           </p>
         </div>
       </div>

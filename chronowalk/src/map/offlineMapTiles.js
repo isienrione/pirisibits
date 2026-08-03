@@ -1,14 +1,38 @@
 import { env } from '../config/env.js'
 import { getManifestTourBounds, getManifestWaypointIds } from '../content/mapStops.js'
 
-export const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v1'
-export const DEFAULT_MAP_STYLE_PATH = 'mapbox/standard'
+/**
+ * Offline Rome walking-map pack.
+ *
+ * Uses classic Mapbox Streets (not Standard). Standard pulls dynamic basemap
+ * resources that cannot be cached reliably — offline that becomes an empty
+ * canvas with only the traveler / destination markers ("two dots").
+ *
+ * Pack contents: style JSON + streets-v8 vector tiles + glyphs + sprites.
+ */
+export const ROME_MAP_TILE_CACHE = 'chronowalk-rome-map-tiles-v2'
+/** Classic style — glyphs/sprites/tiles are enumerable and Cache-friendly. */
+export const DEFAULT_MAP_STYLE_PATH = 'mapbox/streets-v12'
 export const DEFAULT_MAP_TILESET = 'mapbox.mapbox-streets-v8'
 /** Cover walking-camera zooms (≈15.5–16.5) with a one-level buffer either side. */
 export const DEFAULT_MAP_ZOOM_MIN = 13
-export const DEFAULT_MAP_ZOOM_MAX = 17
+export const DEFAULT_MAP_ZOOM_MAX = 16
 /** ~1.1 km padding so route + user position near stops stay inside the tile hull. */
 export const BOUNDS_PADDING_DEG = 0.01
+/** Soft-fail tiles; require this fraction (plus style/glyphs/sprites) to pass. */
+export const MAP_TILE_COVERAGE_THRESHOLD = 0.9
+const DOWNLOAD_CONCURRENCY = 6
+const TILE_ATTEMPTS = 3
+const TILE_TIMEOUT_MS = 25_000
+/** Latin + common European ranges for street labels. */
+const GLYPH_RANGES = ['0-255', '256-511', '512-767']
+const FALLBACK_FONTSTACKS = [
+  'DIN Pro Regular',
+  'DIN Pro Medium',
+  'DIN Pro Bold',
+  'DIN Pro Italic',
+  'Arial Unicode MS Regular',
+]
 
 const tileBlobUrls = new Map()
 
@@ -107,9 +131,10 @@ export function tilesCoveringBounds(bounds, zoomMin = DEFAULT_MAP_ZOOM_MIN, zoom
   return tiles
 }
 
-export function parseMapboxStylePath(styleUrl = env.mapboxStyleUrl) {
-  if (!styleUrl?.startsWith('mapbox://styles/')) return DEFAULT_MAP_STYLE_PATH
-  return styleUrl.replace('mapbox://styles/', '')
+export function parseMapboxStylePath(styleUrl) {
+  const url = styleUrl || `mapbox://styles/${DEFAULT_MAP_STYLE_PATH}`
+  if (!url?.startsWith('mapbox://styles/')) return DEFAULT_MAP_STYLE_PATH
+  return url.replace('mapbox://styles/', '')
 }
 
 export function styleJsonUrl(stylePath = DEFAULT_MAP_STYLE_PATH, token = env.mapboxToken) {
@@ -122,25 +147,87 @@ export function vectorTileUrl(tile, token = env.mapboxToken, tileset = DEFAULT_M
   return `https://api.mapbox.com/v4/${tileset}/${tile.z}/${tile.x}/${tile.y}.vector.pbf?access_token=${token}`
 }
 
+export function glyphUrl(fontstack, range, token = env.mapboxToken) {
+  if (!token || !fontstack || !range) return null
+  const encoded = encodeURIComponent(fontstack)
+  return `https://api.mapbox.com/fonts/v1/mapbox/${encoded}/${range}.pbf?access_token=${token}`
+}
+
+export function spriteUrls(stylePath = DEFAULT_MAP_STYLE_PATH, token = env.mapboxToken) {
+  if (!token) return []
+  const base = `https://api.mapbox.com/styles/v1/${stylePath}/sprite`
+  return [
+    `${base}.json?access_token=${token}`,
+    `${base}.png?access_token=${token}`,
+    `${base}@2x.json?access_token=${token}`,
+    `${base}@2x.png?access_token=${token}`,
+  ]
+}
+
+function collectFontstacksFromStyle(style) {
+  const stacks = new Set(FALLBACK_FONTSTACKS)
+  for (const layer of style?.layers ?? []) {
+    const fonts = layer?.layout?.['text-font']
+    if (!Array.isArray(fonts)) continue
+    for (const font of fonts) {
+      if (typeof font === 'string' && font.trim()) stacks.add(font.trim())
+    }
+  }
+  return [...stacks]
+}
+
+function listGlyphUrlsFromStyle(style, token = env.mapboxToken) {
+  const urls = []
+  for (const fontstack of collectFontstacksFromStyle(style)) {
+    for (const range of GLYPH_RANGES) {
+      const url = glyphUrl(fontstack, range, token)
+      if (url) urls.push(url)
+    }
+  }
+  return urls
+}
+
+export function listRomeVectorTileUrls(
+  manifest,
+  {
+    token = env.mapboxToken,
+    zoomMin = DEFAULT_MAP_ZOOM_MIN,
+    zoomMax = DEFAULT_MAP_ZOOM_MAX,
+  } = {},
+) {
+  if (!token || !manifest) return []
+  const bounds = padBounds(
+    getManifestTourBounds(manifest, getManifestWaypointIds(manifest, manifest.journey?.default_path ?? 'a')),
+  )
+  return tilesCoveringBounds(bounds, zoomMin, zoomMax)
+    .map((tile) => vectorTileUrl(tile, token))
+    .filter(Boolean)
+}
+
+/**
+ * Synchronous URL list for estimates / verify (style + tiles + sprite stubs).
+ * Glyph URLs are added after the style JSON is fetched (fontstacks from layers).
+ */
 export function listRomeMapTileUrls(
   manifest,
   {
     token = env.mapboxToken,
-    stylePath = parseMapboxStylePath(),
+    stylePath = DEFAULT_MAP_STYLE_PATH,
     zoomMin = DEFAULT_MAP_ZOOM_MIN,
     zoomMax = DEFAULT_MAP_ZOOM_MAX,
-  } = {}
+  } = {},
 ) {
   if (!token || !manifest) return []
 
-  const bounds = padBounds(
-    getManifestTourBounds(manifest, getManifestWaypointIds(manifest, manifest.journey?.default_path ?? 'a'))
-  )
-  const urls = [styleJsonUrl(stylePath, token)].filter(Boolean)
+  const urls = [styleJsonUrl(stylePath, token), ...spriteUrls(stylePath, token)].filter(Boolean)
+  urls.push(...listRomeVectorTileUrls(manifest, { token, zoomMin, zoomMax }))
 
-  for (const tile of tilesCoveringBounds(bounds, zoomMin, zoomMax)) {
-    const url = vectorTileUrl(tile, token)
-    if (url) urls.push(url)
+  // Estimated glyph set (actual download uses style-derived stacks).
+  for (const fontstack of FALLBACK_FONTSTACKS) {
+    for (const range of GLYPH_RANGES) {
+      const url = glyphUrl(fontstack, range, token)
+      if (url) urls.push(url)
+    }
   }
 
   return urls
@@ -150,7 +237,7 @@ export function estimateRomeMapTileDownload(manifest, options = {}) {
   const urls = listRomeMapTileUrls(manifest, options)
   return {
     tileCount: urls.length,
-    bytes: urls.length * 45_000,
+    bytes: urls.length * 40_000,
   }
 }
 
@@ -167,6 +254,12 @@ export function clearCachedMapTiles() {
 
 export function resolveCachedMapTileUrl(url) {
   return tileBlobUrls.get(normalizeUrl(url)) ?? null
+}
+
+/** Blob URL for the offline style JSON, if hydrated — prefer this for Mapbox `style`. */
+export function getCachedOfflineStyleUrl(token = env.mapboxToken) {
+  const url = styleJsonUrl(DEFAULT_MAP_STYLE_PATH, token)
+  return url ? resolveCachedMapTileUrl(url) : null
 }
 
 export function createMapboxTransformRequest() {
@@ -209,31 +302,151 @@ async function openMapTileCache() {
   return caches.open(ROME_MAP_TILE_CACHE)
 }
 
+async function putCacheBlob(cache, url, blob, contentType) {
+  await cache.put(
+    url,
+    new Response(blob, {
+      status: 200,
+      headers: { 'Content-Type': contentType },
+    }),
+  )
+}
+
+function guessContentType(url, responseType) {
+  if (responseType) return responseType
+  if (url.includes('.pbf')) return 'application/vnd.mapbox-vector-tile'
+  if (url.includes('.json')) return 'application/json'
+  if (url.includes('.png')) return 'image/png'
+  return 'application/octet-stream'
+}
+
+async function fetchAndStore(cache, url, { signal } = {}) {
+  const existing = await matchMapTileInCache(cache, url)
+  if (existing?.ok) {
+    const blob = await existing.blob()
+    if (blob.size) return { ok: true, skipped: true }
+  }
+
+  let lastError = null
+  for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt += 1) {
+    if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), TILE_TIMEOUT_MS)
+    const onOuterAbort = () => controller.abort()
+    signal?.addEventListener('abort', onOuterAbort)
+    try {
+      const response = await fetch(url, { signal: controller.signal })
+      if (!response.ok) {
+        throw new Error(`Failed to download map asset (${response.status})`)
+      }
+      const blob = await response.blob()
+      if (!blob.size) {
+        throw new Error('Downloaded empty map asset')
+      }
+      await putCacheBlob(cache, url, blob, guessContentType(url, response.headers.get('Content-Type')))
+      return { ok: true, skipped: false }
+    } catch (error) {
+      lastError = error
+      if (signal?.aborted) {
+        throw new DOMException('Download aborted', 'AbortError')
+      }
+      if (attempt < TILE_ATTEMPTS - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 300 * 2 ** attempt))
+      }
+    } finally {
+      clearTimeout(timeoutId)
+      signal?.removeEventListener('abort', onOuterAbort)
+    }
+  }
+  return { ok: false, error: lastError }
+}
+
+async function runPool(items, concurrency, worker) {
+  let next = 0
+  const workers = Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (next < items.length) {
+      const index = next
+      next += 1
+      await worker(items[index], index)
+    }
+  })
+  await Promise.all(workers)
+}
+
 export async function verifyRomeMapTiles(manifest, options = {}) {
-  const urls = listRomeMapTileUrls(manifest, options)
-  if (!urls.length) {
+  const token = options.token ?? env.mapboxToken
+  const stylePath = options.stylePath ?? DEFAULT_MAP_STYLE_PATH
+  const styleUrl = styleJsonUrl(stylePath, token)
+  if (!styleUrl) {
     return { valid: true, total: 0, missing: [], skipped: true }
   }
 
   const cache = await openMapTileCache()
   const missing = []
 
-  for (const url of urls) {
+  const styleMatch = await matchMapTileInCache(cache, styleUrl)
+  if (!styleMatch?.ok) {
+    return {
+      valid: false,
+      total: 1,
+      missing: [styleUrl],
+      skipped: false,
+      coverage: 0,
+    }
+  }
+
+  let style = null
+  try {
+    style = await styleMatch.clone().json()
+  } catch {
+    missing.push(styleUrl)
+  }
+
+  const spriteList = spriteUrls(stylePath, token)
+  for (const url of spriteList) {
+    const match = await matchMapTileInCache(cache, url)
+    if (!match?.ok) missing.push(url)
+  }
+
+  const glyphList = style ? listGlyphUrlsFromStyle(style, token) : []
+  let glyphsPresent = 0
+  for (const url of glyphList) {
+    const match = await matchMapTileInCache(cache, url)
+    if (match?.ok) glyphsPresent += 1
+    else missing.push(url)
+  }
+
+  const tileUrls = listRomeVectorTileUrls(manifest, options)
+  let tilesPresent = 0
+  for (const url of tileUrls) {
     const match = await matchMapTileInCache(cache, url)
     if (!match?.ok) {
       missing.push(url)
       continue
     }
-
     const blob = await match.blob()
-    if (!blob.size) missing.push(url)
+    if (!blob.size) {
+      missing.push(url)
+      continue
+    }
+    tilesPresent += 1
   }
 
+  const tileCoverage = tileUrls.length ? tilesPresent / tileUrls.length : 1
+  const spritesOk = spriteList.every((url) => !missing.includes(url))
+  const glyphsOk = glyphsPresent >= Math.min(3, glyphList.length)
+  const valid =
+    Boolean(style) && spritesOk && glyphsOk && tileCoverage >= MAP_TILE_COVERAGE_THRESHOLD
+
   return {
-    valid: missing.length === 0,
-    total: urls.length,
+    valid,
+    total: 1 + spriteList.length + glyphList.length + tileUrls.length,
     missing,
     skipped: false,
+    coverage: tileCoverage,
+    tilesPresent,
+    tileTotal: tileUrls.length,
+    glyphsPresent,
   }
 }
 
@@ -275,89 +488,85 @@ export async function hydrateRomeMapTileCache(manifest, options = {}) {
 }
 
 export async function downloadRomeMapTiles(manifest, { onProgress, signal, token = env.mapboxToken } = {}) {
-  const urls = listRomeMapTileUrls(manifest, { token })
-  if (!urls.length) {
+  const stylePath = DEFAULT_MAP_STYLE_PATH
+  const styleUrl = styleJsonUrl(stylePath, token)
+  if (!styleUrl || !manifest) {
     return { skipped: true, tileCount: 0 }
   }
 
   const cache = await openMapTileCache()
+
+  // 1) Style JSON first — needed to discover fonts.
+  const styleResult = await fetchAndStore(cache, styleUrl, { signal })
+  if (!styleResult.ok) {
+    throw styleResult.error ?? new Error('Failed to download offline map style')
+  }
+
+  const styleResponse = await matchMapTileInCache(cache, styleUrl)
+  const style = await styleResponse.json()
+
+  // Rewrite mapbox:// glyph/sprite refs to absolute HTTPS so blob-loaded styles
+  // request URLs that match our Cache keys / transformRequest.
+  const absoluteStyle = {
+    ...style,
+    glyphs: `https://api.mapbox.com/fonts/v1/mapbox/{fontstack}/{range}.pbf?access_token=${token}`,
+    sprite: `https://api.mapbox.com/styles/v1/${stylePath}/sprite`,
+  }
+  await putCacheBlob(
+    cache,
+    styleUrl,
+    new Blob([JSON.stringify(absoluteStyle)], { type: 'application/json' }),
+    'application/json',
+  )
+
+  const assetUrls = [
+    ...spriteUrls(stylePath, token),
+    ...listGlyphUrlsFromStyle(absoluteStyle, token),
+    ...listRomeVectorTileUrls(manifest, { token }),
+  ]
+
   let completed = 0
+  const total = assetUrls.length + 1
+  onProgress?.({
+    completed: 1,
+    total,
+    percent: clampPercent((1 / total) * 100),
+    currentPath: styleUrl,
+  })
 
-  const TILE_ATTEMPTS = 3
-  const TILE_TIMEOUT_MS = 20_000
-
-  for (const url of urls) {
+  const failures = []
+  await runPool(assetUrls, DOWNLOAD_CONCURRENCY, async (url) => {
     if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
-
-    const existing = await cache.match(url)
-    if (!existing?.ok) {
-      let lastError = null
-      let stored = false
-      for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt += 1) {
-        if (signal?.aborted) throw new DOMException('Download aborted', 'AbortError')
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), TILE_TIMEOUT_MS)
-        const onOuterAbort = () => controller.abort()
-        signal?.addEventListener('abort', onOuterAbort)
-        try {
-          const response = await fetch(url, { signal: controller.signal })
-          if (!response.ok) {
-            throw new Error(`Failed to download map tile (${response.status})`)
-          }
-          const blob = await response.blob()
-          if (!blob.size) {
-            throw new Error('Downloaded empty map tile')
-          }
-          const contentType =
-            response.headers.get('Content-Type') ??
-            (url.includes('.pbf') ? 'application/vnd.mapbox-vector-tile' : 'application/json')
-          await cache.put(
-            url,
-            new Response(blob, {
-              status: 200,
-              headers: { 'Content-Type': contentType },
-            }),
-          )
-          stored = true
-          break
-        } catch (error) {
-          lastError = error
-          if (signal?.aborted) {
-            throw new DOMException('Download aborted', 'AbortError')
-          }
-          if (attempt < TILE_ATTEMPTS - 1) {
-            await new Promise((resolve) => setTimeout(resolve, 300 * 2 ** attempt))
-          }
-        } finally {
-          clearTimeout(timeoutId)
-          signal?.removeEventListener('abort', onOuterAbort)
-        }
-      }
-      if (!stored) {
-        throw lastError ?? new Error('Failed to download map tile')
-      }
+    const result = await fetchAndStore(cache, url, { signal })
+    if (!result.ok) {
+      failures.push({ url, error: result.error?.message ?? 'failed' })
     }
-
     completed += 1
     onProgress?.({
-      completed,
-      total: urls.length,
-      percent: clampPercent((completed / urls.length) * 100),
+      completed: completed + 1,
+      total,
+      percent: clampPercent(((completed + 1) / total) * 100),
       currentPath: url,
     })
-  }
+  })
 
-  const verification = await verifyRomeMapTiles(manifest, { token })
+  const verification = await verifyRomeMapTiles(manifest, { token, stylePath })
   if (!verification.valid) {
-    throw new Error(`Map tile verification failed (${verification.missing.length} missing).`)
+    const failedTiles = failures.length
+    throw new Error(
+      `Map pack incomplete (${verification.missing.length} missing` +
+        `${failedTiles ? `, ${failedTiles} fetch failures` : ''}` +
+        `, coverage ${Math.round((verification.coverage ?? 0) * 100)}%).`,
+    )
   }
 
-  await hydrateRomeMapTileCache(manifest, { token })
+  await hydrateRomeMapTileCache(manifest, { token, stylePath })
 
   return {
     skipped: false,
-    tileCount: urls.length,
+    tileCount: verification.total,
     verification,
+    failures,
   }
 }
 

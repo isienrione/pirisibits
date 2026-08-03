@@ -3,11 +3,14 @@ import { loadRomeManifest } from '../../content/manifest.js'
 import {
   clearCachedMapTiles,
   createMapboxTransformRequest,
+  DEFAULT_MAP_STYLE_PATH,
+  glyphUrl,
   listRomeMapTileUrls,
   lngLatToTile,
   padBounds,
   registerCachedMapTile,
   resolveCachedMapTileUrl,
+  spriteUrls,
   tilesCoveringBounds,
   vectorTileUrl,
 } from '../offlineMapTiles.js'
@@ -37,11 +40,19 @@ describe('offlineMapTiles', () => {
     expect(padded.maxLng).toBeCloseTo(12.51)
   })
 
-  it('lists style and vector tile URLs for Rome', () => {
+  it('lists classic Streets style, sprites, glyphs, and vector tiles for Rome', () => {
     const urls = listRomeMapTileUrls(manifest, { token, zoomMin: 14, zoomMax: 14 })
-    expect(urls[0]).toContain('styles/v1/mapbox/standard')
+    expect(DEFAULT_MAP_STYLE_PATH).toBe('mapbox/streets-v12')
+    expect(urls[0]).toContain('styles/v1/mapbox/streets-v12')
+    expect(urls.some((url) => url.includes('/sprite'))).toBe(true)
+    expect(urls.some((url) => url.includes('/fonts/v1/mapbox/'))).toBe(true)
     expect(urls.some((url) => url.includes('.vector.pbf'))).toBe(true)
-    expect(urls.length).toBeGreaterThan(1)
+    expect(urls.length).toBeGreaterThan(10)
+  })
+
+  it('builds sprite and glyph URL helpers', () => {
+    expect(spriteUrls(DEFAULT_MAP_STYLE_PATH, token)).toHaveLength(4)
+    expect(glyphUrl('DIN Pro Regular', '0-255', token)).toContain('DIN%20Pro%20Regular')
   })
 
   it('builds a bounded tile set without duplicates', () => {
@@ -68,6 +79,7 @@ describe('offlineMapTiles', () => {
 
     const transformRequest = createMapboxTransformRequest()
     expect(transformRequest(sourceUrl, 'Tile')).toEqual({ url: 'blob:cached-tile' })
+    expect(transformRequest(sourceUrl, 'Glyphs')).toEqual({ url: 'blob:cached-tile' })
     expect(transformRequest('https://example.com/tile', 'Tile')).toEqual({
       url: 'https://example.com/tile',
     })

@@ -7,6 +7,12 @@ export const MAPBOX_STYLE_STANDARD_SATELLITE = 'mapbox://styles/mapbox/standard-
 export const MAPBOX_STYLE_STANDARD = 'mapbox://styles/mapbox/standard'
 
 /**
+ * Classic Streets — used offline. Unlike Standard, glyphs/sprites/tiles are
+ * fully enumerable and match the Rome offline pack in `offlineMapTiles.js`.
+ */
+export const MAPBOX_STYLE_STREETS_OFFLINE = 'mapbox://styles/mapbox/streets-v12'
+
+/**
  * Basemap config for the Walking companion hero.
  * Dusk light matches ChronoWalk bronze/gold mood over Rome imagery.
  */
@@ -49,34 +55,38 @@ export function isMapboxStandardStyle(styleUrl) {
  * stays on Standard vector (night) so the PWA does not pay satellite tile cost
  * on every screen.
  *
- * Offline / spotty-signal: prefer Standard vector - that matches the offline
- * tile package (`mapbox/standard` + streets-v8). Satellite tiles are not cached
- * and paint black under poor connectivity.
+ * Offline / spotty-signal: prefer classic Streets-v12 — that matches the offline
+ * pack (style + streets-v8 tiles + glyphs + sprites). Mapbox Standard cannot be
+ * cached completely and paints an empty canvas offline. Satellite is not cached.
  *
  * `VITE_MAPBOX_STYLE_URL` still overrides the MAP-tab style for Studio experiments.
  * The walking hero prefers Standard Satellite online unless an explicit
  * `VITE_MAPBOX_WALKING_STYLE_URL` is set.
  *
- * @param {{ walkingCompanionUI?: boolean, preferOfflineStyle?: boolean }} [options]
+ * @param {{ walkingCompanionUI?: boolean, preferOfflineStyle?: boolean, offlineStyleUrl?: string|null }} [options]
  */
 export function resolveTourMapStyleOptions({
   walkingCompanionUI = false,
   preferOfflineStyle = false,
+  offlineStyleUrl = null,
 } = {}) {
   if (walkingCompanionUI) {
-    const style = preferOfflineStyle
-      ? MAPBOX_STYLE_STANDARD
-      : import.meta.env.VITE_MAPBOX_WALKING_STYLE_URL || MAPBOX_STYLE_STANDARD_SATELLITE
+    if (preferOfflineStyle) {
+      return {
+        // Prefer the hydrated style blob so Mapbox never hits the network for JSON.
+        style: offlineStyleUrl || MAPBOX_STYLE_STREETS_OFFLINE,
+        config: undefined,
+        surface: 'walking-hero-offline',
+      }
+    }
+    const style =
+      import.meta.env.VITE_MAPBOX_WALKING_STYLE_URL || MAPBOX_STYLE_STANDARD_SATELLITE
     return {
       style,
       config: {
-        basemap: {
-          ...WALKING_HERO_BASEMAP_CONFIG,
-          // Day offline - night-on-empty-tiles reads as a broken grey/black load.
-          ...(preferOfflineStyle ? { lightPreset: 'day' } : null),
-        },
+        basemap: { ...WALKING_HERO_BASEMAP_CONFIG },
       },
-      surface: preferOfflineStyle ? 'walking-hero-offline' : 'walking-hero',
+      surface: 'walking-hero',
     }
   }
 

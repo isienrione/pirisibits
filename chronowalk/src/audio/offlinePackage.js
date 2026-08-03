@@ -136,12 +136,13 @@ export function writeRomeOfflineStatus(status) {
   window.localStorage.setItem(ROME_OFFLINE_STATUS_KEY, JSON.stringify(status))
 }
 
-/** True when the offline package persisted at least some Rome walking-map tiles. */
+/** True when the offline package persisted a complete Rome walking-map pack. */
 export function hasCachedRomeMapTiles() {
   const status = readRomeOfflineStatus()
   return (
     status.status === OFFLINE_AUDIO_STATUS.COMPLETE &&
-    Number(status.mapTileCount) > 0
+    Number(status.mapTileCount) > 0 &&
+    !status.error
   )
 }
 

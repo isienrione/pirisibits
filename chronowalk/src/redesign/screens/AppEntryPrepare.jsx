@@ -138,11 +138,17 @@ export default function AppEntryPrepare({
           type="button"
           data-testid="app-entry-download"
           aria-label={
-            done ? 'Download complete' : downloadError ? 'Retry download' : 'Download the walk'
+            done && !mapTilesPartial
+              ? 'Download complete'
+              : mapTilesPartial
+                ? 'Retry map download'
+                : downloadError
+                  ? 'Retry download'
+                  : 'Download the walk'
           }
-          disabled={done || downloading}
+          disabled={downloading || (done && !mapTilesPartial)}
           onClick={() => {
-            if (done || downloading) return
+            if (downloading || (done && !mapTilesPartial)) return
             onDownload?.()
           }}
           style={{
@@ -154,7 +160,7 @@ export default function AppEntryPrepare({
             background: `${T.ember}0a`,
             padding: '18px 16px 16px',
             marginBottom: 16,
-            cursor: done || downloading ? 'default' : 'pointer',
+            cursor: downloading || (done && !mapTilesPartial) ? 'default' : 'pointer',
             font: 'inherit',
             color: 'inherit',
           }}
@@ -183,7 +189,7 @@ export default function AppEntryPrepare({
               {done ? (
                 mapTilesPartial ? (
                   <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                    Stories ready. Map tiles need a steadier connection - retry when you have signal.
+                    Stories ready. Maps need Wi‑Fi or a steadier signal - tap to retry map download.
                   </p>
                 ) : (
                   <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
