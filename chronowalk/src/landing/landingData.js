@@ -375,9 +375,40 @@ export const LANDING_CONTENT = {
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',
-    trustLine: 'Works in any browser · Offline mode available · No subscription',
+    /** Replaced by `heroReassurance` strip directly under the hero. */
+    trustLine: null,
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
+  },
+
+  /**
+   * Compact post-hero reassurance — factual only; no invented social proof.
+   * Placed once, immediately under the hero.
+   */
+  heroReassurance: {
+    id: 'hero-reassurance',
+    items: [
+      {
+        id: 'browser',
+        label: 'No app-store download',
+        support: 'Opens directly in your browser',
+      },
+      {
+        id: 'offline',
+        label: 'Ready for offline walking',
+        support: 'Download before you head out',
+      },
+      {
+        id: 'payment',
+        label: 'One payment',
+        support: 'No subscription',
+      },
+      {
+        id: 'try-free',
+        label: 'Try before you buy',
+        support: 'Complete Pantheon stop free',
+      },
+    ],
   },
 
   'product-demo': {

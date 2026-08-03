@@ -117,8 +117,43 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.getAppCta).toMatch(/€14\.99/)
     expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
-    expect(hero.trustLine).toMatch(/No subscription/i)
+    expect(hero.trustLine).toBeNull()
     expect(hero.ctaPriority).toBe('unlock')
+  })
+
+  it('exposes a compact post-hero reassurance strip with factual claims only', () => {
+    const strip = LANDING_CONTENT.heroReassurance
+    expect(strip.id).toBe('hero-reassurance')
+    expect(strip.items).toHaveLength(4)
+    expect(strip.items.map((item) => item.label)).toEqual([
+      'No app-store download',
+      'Ready for offline walking',
+      'One payment',
+      'Try before you buy',
+    ])
+    expect(strip.items.map((item) => item.support)).toEqual([
+      'Opens directly in your browser',
+      'Download before you head out',
+      'No subscription',
+      'Complete Pantheon stop free',
+    ])
+    const blob = JSON.stringify(strip).toLowerCase()
+    expect(blob).not.toMatch(/best.?seller|testimonial|★|award|limited|most popular/)
+  })
+
+  it('mounts the reassurance strip once in ChronoWalkLanding, under the hero', async () => {
+    // File-based check keeps placement stable without mounting the full landing tree.
+    const { readFileSync } = await import('node:fs')
+    const { fileURLToPath } = await import('node:url')
+    const { dirname, join } = await import('node:path')
+    const landingPath = join(dirname(fileURLToPath(import.meta.url)), '../ChronoWalkLanding.jsx')
+    const text = readFileSync(landingPath, 'utf8')
+    expect(text).toMatch(/import LandingHeroReassurance from '\.\/v4\/LandingHeroReassurance\.jsx'/)
+    expect(text.match(/<LandingHeroReassurance\s*\/>/g)).toHaveLength(1)
+    const heroIdx = text.indexOf('<LandingProductHero')
+    const stripIdx = text.indexOf('<LandingHeroReassurance')
+    expect(heroIdx).toBeGreaterThan(-1)
+    expect(stripIdx).toBeGreaterThan(heroIdx)
   })
 
   it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {
