@@ -212,7 +212,7 @@ function ChronoWalkLandingInner() {
             onGetApp={handleHeroUnlock}
             onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
-          <LandingHeroReassurance />
+          <LandingHeroReassurance onPreview={handlePreview} />
         </LandingAct>
 
         <LandingAct
