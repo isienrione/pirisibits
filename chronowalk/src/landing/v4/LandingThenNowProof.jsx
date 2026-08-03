@@ -399,11 +399,15 @@ export default function LandingThenNowProof() {
   )
 
   const revealed = reveal >= COMPLETE_THRESHOLD
-  const statusText = revealed
-    ? 'Ancient Rome revealed'
-    : reveal > 0.02
-      ? `Revealing Ancient Rome · ${Math.round(reveal * 100)}%`
-      : `${section.holdHint}. ${section.revealLabel} is also available as a button.`
+  const statusText = peekingRef.current
+    ? `${section.holdHint}. ${section.revealLabel} is also available as a button.`
+    : revealed
+      ? 'Ancient Rome revealed'
+      : reveal > 0.02
+        ? `Revealing Ancient Rome · ${Math.round(reveal * 100)}%`
+        : `${section.holdHint}. ${section.revealLabel} is also available as a button.`
+
+  const showHoldHint = reveal < 0.12 && !peekingRef.current
 
   return (
     <section
@@ -448,7 +452,7 @@ export default function LandingThenNowProof() {
                 if (holdingRef.current || pendingPointerRef.current) onPointerEnd()
               }}
             />
-            {reveal < 0.12 ? (
+            {showHoldHint ? (
               <p className="cw-v4-then-now__hold-hint" aria-hidden="true">
                 <span className="cw-v4-then-now__hold-hint--pointer">{section.holdHint}</span>
                 <span className="cw-v4-then-now__hold-hint--touch">{section.holdHintTouch}</span>
