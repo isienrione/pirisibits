@@ -114,7 +114,7 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.primaryCtaMeta).toBeNull()
     expect(hero.secondaryCta).toBeNull()
     expect(hero.getAppCta).toBe(LANDING_CTA.unlockRomePriced)
-    expect(hero.getAppCta).toMatch(/€14\.99/)
+    expect(hero.getAppCta).toMatch(/from €9\.99/)
     expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
     expect(hero.trustLine).toBeNull()

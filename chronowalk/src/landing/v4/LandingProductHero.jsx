@@ -231,7 +231,7 @@ export default function LandingProductHero({
                       {section.getAppCta}
                     </span>
                     <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
-                      Unlock · €14.99
+                      Unlock from €9.99
                     </span>
                   </a>
                 )

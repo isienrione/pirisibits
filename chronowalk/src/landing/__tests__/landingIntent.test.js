@@ -7,7 +7,7 @@ import {
   resolveLandingIntent,
   resolveLandingIntentHero,
 } from '../landingIntent.js'
-import { LANDING_CTA, LANDING_PRICE_FALLBACK_LABEL } from '../landingData.js'
+import { LANDING_CTA } from '../landingData.js'
 
 describe('landingIntent', () => {
   it('defaults when intent is absent', () => {
@@ -52,7 +52,8 @@ describe('landingIntent', () => {
       const hero = resolveLandingIntentHero(/** @type {any} */ (id))
       expect(hero.getAppHref).toBe('#pricing')
       expect(hero.primaryHref).toBe('/preview')
-      expect(hero.unlockCta).toContain(LANDING_PRICE_FALLBACK_LABEL)
+      expect(hero.unlockCta).toBe(LANDING_CTA.unlockRomePriced)
+      expect(hero.unlockCta).toMatch(/from €9\.99/)
     }
   })
 
@@ -78,6 +79,6 @@ describe('landingIntent', () => {
 
   it('exposes landing_intent analytics ids matching allowlist', () => {
     expect(getLandingIntentVariant('forum').id).toBe('forum')
-    expect(LANDING_CTA.unlockRomePriced).toContain('€14.99')
+    expect(LANDING_CTA.unlockRomePriced).toBe('Unlock from €9.99')
   })
 })

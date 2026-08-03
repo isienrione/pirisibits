@@ -18,8 +18,8 @@ export const LANDING_CTA = {
   begin: 'Choose a Rome walk',
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
-  /** Hero paid CTA — includes price for cold-traffic clarity. */
-  unlockRomePriced: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+  /** Hero paid CTA — entry price for cold-traffic clarity. */
+  unlockRomePriced: 'Unlock from €9.99',
   tryFree: 'Get a free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
   tryFreeSneakPeek: 'Get a free sneak peek',
