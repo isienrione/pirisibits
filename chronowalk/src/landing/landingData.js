@@ -391,22 +391,22 @@ export const LANDING_CONTENT = {
       {
         id: 'browser',
         label: 'No app-store download',
-        support: 'Opens directly in your browser',
+        support: 'Opens in your browser, works as a mobile app',
       },
       {
         id: 'offline',
-        label: 'Ready for offline walking',
-        support: 'Download before you head out',
+        label: 'Offline mode available',
+        support: 'Set up on WiFi before you head out and get ready to walk',
       },
       {
         id: 'payment',
         label: 'One payment',
-        support: 'No subscription',
+        support: 'No subscriptions',
       },
       {
         id: 'try-free',
-        label: 'Try before you buy',
-        support: 'Complete Pantheon stop free',
+        label: 'Not sure yet? Try before you buy',
+        support: 'Check one stop: Pantheon Part 1 (FREE)',
       },
     ],
   },

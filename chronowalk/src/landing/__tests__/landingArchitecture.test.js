@@ -127,15 +127,15 @@ describe('landing product-story architecture (V4)', () => {
     expect(strip.items).toHaveLength(4)
     expect(strip.items.map((item) => item.label)).toEqual([
       'No app-store download',
-      'Ready for offline walking',
+      'Offline mode available',
       'One payment',
-      'Try before you buy',
+      'Not sure yet? Try before you buy',
     ])
     expect(strip.items.map((item) => item.support)).toEqual([
-      'Opens directly in your browser',
-      'Download before you head out',
-      'No subscription',
-      'Complete Pantheon stop free',
+      'Opens in your browser, works as a mobile app',
+      'Set up on WiFi before you head out and get ready to walk',
+      'No subscriptions',
+      'Check one stop: Pantheon Part 1 (FREE)',
     ])
     const blob = JSON.stringify(strip).toLowerCase()
     expect(blob).not.toMatch(/best.?seller|testimonial|★|award|limited|most popular/)
