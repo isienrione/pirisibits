@@ -1446,8 +1446,8 @@
 
 .cw-v4-then-now__stage-frame {
   position: relative;
-  width: min(100%, 22.5rem);
-  aspect-ratio: 3 / 4;
+  width: min(100%, 20.5rem);
+  aspect-ratio: 9 / 16;
   border-radius: 1.15rem;
   overflow: hidden;
   background: #1a1612;
@@ -1467,13 +1467,8 @@
     0 18px 40px rgba(33, 28, 21, 0.18);
 }
 
-.cw-v4-then-now__stage-frame .cw-threshold-stage,
-.cw-v4-then-now__stage-frame .cw-doc-threshold-demo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
+.cw-v4-then-now__stage-frame .cw-threshold-stage__img {
+  object-position: center 42%;
 }
 
 .cw-v4-then-now__hold-hint {

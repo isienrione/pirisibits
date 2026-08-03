@@ -429,7 +429,8 @@ export const LANDING_CONTENT = {
     revealLabel: 'Show Ancient Rome',
     hideLabel: 'Show today',
     exampleNote: 'An example of the Then/Now experience inside ChronoWalk',
-    landmarkLabel: 'Colosseum',
+    landmarkLabel: 'Colosseum interior',
+    pair: 'colosseum-interior',
   },
 
   'product-demo': {

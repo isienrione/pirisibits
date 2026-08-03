@@ -161,7 +161,7 @@ export function trackThenNowDemoViewed() {
     TRACK_EVENTS.THEN_NOW_DEMO_VIEWED,
     landingProps({
       section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
-      waypoint_id: 'landing-colosseum',
+      waypoint_id: 'landing-colosseum-interior',
     }),
   )
   return true
@@ -174,7 +174,7 @@ export function trackThenNowDemoStarted({ via = 'hold' } = {}) {
     landingProps({
       section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
       via,
-      waypoint_id: 'landing-colosseum',
+      waypoint_id: 'landing-colosseum-interior',
     }),
   )
 }
@@ -186,7 +186,7 @@ export function trackThenNowDemoCompleted({ via = 'hold', duration_ms } = {}) {
     landingProps({
       section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
       via,
-      waypoint_id: 'landing-colosseum',
+      waypoint_id: 'landing-colosseum-interior',
       ...(typeof duration_ms === 'number' ? { duration_ms: Math.round(duration_ms) } : {}),
     }),
   )

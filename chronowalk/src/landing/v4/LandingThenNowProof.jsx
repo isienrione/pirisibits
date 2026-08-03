@@ -3,6 +3,10 @@ import { useReducedMotion } from '../../hooks/useReducedMotion.js'
 import LandingColosseumThreshold from '../LandingColosseumThreshold.jsx'
 import { LANDING_CONTENT } from '../landingData.js'
 import {
+  LANDING_COLOSSEUM_INTERIOR_NOW,
+  LANDING_COLOSSEUM_INTERIOR_THEN,
+} from '../landingVisualAssets.js'
+import {
   trackThenNowDemoCompleted,
   trackThenNowDemoStarted,
   trackThenNowDemoViewed,
@@ -31,7 +35,7 @@ function haptic(pattern) {
 }
 
 /**
- * Top-of-page Then/Now proof — reuses LandingColosseumThreshold (approved pair + dissolve).
+ * Top-of-page Then/Now proof — Colosseum interior pair via LandingColosseumThreshold.
  * Silent, user-driven hold (optional one-time peek). Full product demo remains below.
  */
 export default function LandingThenNowProof() {
@@ -45,6 +49,7 @@ export default function LandingThenNowProof() {
   const [reveal, setReveal] = useState(0)
   const [fallbackLatched, setFallbackLatched] = useState(false)
   const [inView, setInView] = useState(false)
+  const [peeking, setPeeking] = useState(false)
 
   const holdingRef = useRef(false)
   const peekingRef = useRef(false)
@@ -80,6 +85,7 @@ export default function LandingThenNowProof() {
   const stopPeek = useCallback(() => {
     if (!peekingRef.current) return
     peekingRef.current = false
+    setPeeking(false)
     clearPeekTimers()
     cancelRevealAnimation()
     if (!holdingRef.current && !fallbackLatched && revealRef.current < COMPLETE_THRESHOLD) {
@@ -358,6 +364,7 @@ export default function LandingThenNowProof() {
 
     peekDoneRef.current = true
     peekingRef.current = true
+    setPeeking(true)
 
     const startPeek = window.setTimeout(() => {
       if (userTouchedRef.current || !peekingRef.current) return
@@ -373,6 +380,7 @@ export default function LandingThenNowProof() {
               durationMs: PEEK_IN_MS,
               onDone: () => {
                 peekingRef.current = false
+                setPeeking(false)
               },
             })
           }, PEEK_HOLD_MS)
@@ -386,6 +394,7 @@ export default function LandingThenNowProof() {
       clearPeekTimers()
       cancelRevealAnimation()
       peekingRef.current = false
+      setPeeking(false)
     }
   }, [animateRevealTo, cancelRevealAnimation, clearPeekTimers, inView, reducedMotion])
 
@@ -399,7 +408,7 @@ export default function LandingThenNowProof() {
   )
 
   const revealed = reveal >= COMPLETE_THRESHOLD
-  const statusText = peekingRef.current
+  const statusText = peeking
     ? `${section.holdHint}. ${section.revealLabel} is also available as a button.`
     : revealed
       ? 'Ancient Rome revealed'
@@ -407,7 +416,7 @@ export default function LandingThenNowProof() {
         ? `Revealing Ancient Rome · ${Math.round(reveal * 100)}%`
         : `${section.holdHint}. ${section.revealLabel} is also available as a button.`
 
-  const showHoldHint = reveal < 0.12 && !peekingRef.current
+  const showHoldHint = reveal < 0.12 && !peeking
 
   return (
     <section
@@ -444,6 +453,11 @@ export default function LandingThenNowProof() {
               fetchPriority="low"
               hint=""
               labelledBy={headingId}
+              nowSrc={LANDING_COLOSSEUM_INTERIOR_NOW}
+              thenSrc={LANDING_COLOSSEUM_INTERIOR_THEN}
+              width={720}
+              height={1280}
+              ariaLabel="Colosseum interior today compared with an evidence-based ancient reconstruction"
               onPointerDown={onPointerDown}
               onPointerMove={onPointerMove}
               onPointerUp={onPointerEnd}

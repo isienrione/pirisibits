@@ -70,4 +70,12 @@ describe('LandingThenNowProof', () => {
     expect(container.querySelector('audio')).toBeNull()
     expect(container.querySelector('video')).toBeNull()
   })
+
+  it('uses the Colosseum interior still pair', () => {
+    const { container } = render(<LandingThenNowProof />)
+    const imgs = [...container.querySelectorAll('img')].map((img) => img.getAttribute('src'))
+    expect(imgs.some((src) => src?.includes('colosseum-interior-now'))).toBe(true)
+    expect(imgs.some((src) => src?.includes('colosseum-interior-then'))).toBe(true)
+    expect(imgs.some((src) => src?.includes('colosseum-now.jpg'))).toBe(false)
+  })
 })
