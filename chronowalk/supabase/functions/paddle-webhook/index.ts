@@ -1,7 +1,7 @@
 /**
  * Paddle Billing webhook — unlocks ChronoWalk purchases.
  *
- * WEBHOOK_BUILD: 2026-07-27-v13-effective-full-refund
+ * WEBHOOK_BUILD: 2026-08-03-v14-purchase-analytics
  *
  * Entitlement is derived only from data.items[].price.id via server secrets
  * PADDLE_PRICE_ROME_*. custom_data.product_id is attribution only.
@@ -9,9 +9,11 @@
  * Email delivery is enqueued to fulfillment_outbox for process-fulfillment-outbox.
  * Adjustments: refunds/credits/chargebacks via apply_paddle_adjustment.
  * Effective-full: top-level partial with every original item fully covered + equal totals.
+ * Analytics: email_hash + custom_data on purchases; PostHog purchase_confirmed (server).
+ * Also handles transaction.payment_failed / transaction.updated / subscription.canceled.
  *
  * Deploy the paddle-webhook function directory (index + local modules).
- * Logs / JSON MUST contain "2026-07-27-v13-effective-full-refund".
+ * Logs / JSON MUST contain "2026-08-03-v14-purchase-analytics".
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
@@ -32,8 +34,15 @@ import {
   resolveLaunchEntitlementFromTransaction,
   shouldIgnoreOutOfOrderEvent,
 } from './fulfillmentLogic.js'
+import {
+  buildPurchaseConfirmedProperties,
+  capturePosthogPurchaseConfirmed,
+  extractAttributionCustomData,
+  hashEmailSha256,
+  readTransactionCountry,
+} from './purchaseAnalytics.js'
 
-const WEBHOOK_BUILD = '2026-07-27-v13-effective-full-refund'
+const WEBHOOK_BUILD = '2026-08-03-v14-purchase-analytics'
 
 function readServerPriceEnv() {
   return {
@@ -269,6 +278,7 @@ async function resolveBuyerEmail(supabase, mode, data) {
 
 async function upsertPurchase(supabase, {
   email,
+  emailHash,
   orderId,
   productId,
   contentProductId,
@@ -277,6 +287,8 @@ async function upsertPurchase(supabase, {
   paddleCustomerId,
   currencyCode,
   amountCents,
+  country,
+  customData,
   host,
   abVariant,
 }) {
@@ -285,6 +297,7 @@ async function upsertPurchase(supabase, {
     .upsert(
       {
         email,
+        email_hash: emailHash ?? null,
         order_id: orderId,
         product_id: productId,
         content_product_id: contentProductId,
@@ -293,6 +306,8 @@ async function upsertPurchase(supabase, {
         paddle_customer_id: paddleCustomerId,
         currency_code: currencyCode,
         amount_cents: amountCents,
+        country: country ?? null,
+        custom_data: customData && typeof customData === 'object' ? customData : {},
         status: 'active',
         host,
         ab_variant: Number.isFinite(abVariant) ? abVariant : null,
@@ -301,7 +316,7 @@ async function upsertPurchase(supabase, {
       },
       { onConflict: 'order_id' },
     )
-    .select('id, email, product_id, content_product_id, seat_limit, order_id, status')
+    .select('id, email, product_id, content_product_id, seat_limit, order_id, status, email_hash, custom_data')
     .single()
 
   if (error) throw new Error(`purchases upsert failed: ${error.message}`)
@@ -542,8 +557,13 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
     seatLimit: resolvedEntitlement.seatLimit,
   })
 
+  const emailHash = await hashEmailSha256(resolvedEmail.email)
+  const customData = extractAttributionCustomData(data)
+  const country = readTransactionCountry(data)
+
   const row = await upsertPurchase(supabase, {
     email: resolvedEmail.email,
+    emailHash,
     orderId: String(orderId),
     productId: resolvedEntitlement.productId,
     contentProductId: resolvedEntitlement.contentProductId,
@@ -552,6 +572,8 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
     paddleCustomerId: data?.customer_id ? String(data.customer_id) : null,
     currencyCode: resolvedEntitlement.currencyCode,
     amountCents: resolvedEntitlement.amountCents,
+    country,
+    customData,
     host: resolvedEntitlement.custom.host,
     abVariant: resolvedEntitlement.custom.ab_variant,
   })
@@ -592,6 +614,49 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
 
   const outbox = await enqueueFulfillmentOnly(supabase, row, rawClaim)
 
+  // Server-side PostHog — fire-and-forget relative to Paddle ACK (caller may waitUntil).
+  const distinctId =
+    customData.ph_distinct_id ||
+    (emailHash ? `email_hash:${emailHash}` : null) ||
+    String(orderId)
+  const posthogResult = await capturePosthogPurchaseConfirmed({
+    apiKey:
+      Deno.env.get('POSTHOG_PROJECT_API_KEY') ??
+      Deno.env.get('POSTHOG_API_KEY') ??
+      '',
+    host: Deno.env.get('POSTHOG_HOST') ?? 'https://eu.i.posthog.com',
+    distinctId,
+    properties: buildPurchaseConfirmedProperties({
+      transactionId: String(orderId),
+      tier: resolvedEntitlement.productId,
+      amountCents: resolvedEntitlement.amountCents,
+      currency: resolvedEntitlement.currencyCode,
+      country,
+      emailHash,
+      customData,
+    }),
+  })
+  if (!posthogResult.ok && !posthogResult.skipped) {
+    console.warn('[paddle-webhook] purchase_confirmed capture failed', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      reason: posthogResult.reason,
+      status: posthogResult.status ?? null,
+    })
+  } else if (posthogResult.skipped) {
+    console.log('[paddle-webhook] purchase_confirmed skipped', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      reason: posthogResult.reason,
+    })
+  } else {
+    console.log('[paddle-webhook] purchase_confirmed sent', {
+      build: WEBHOOK_BUILD,
+      orderId: maskId(orderId),
+      hasPhDistinctId: Boolean(customData.ph_distinct_id),
+    })
+  }
+
   console.log('[paddle-webhook] purchase entitled + fulfillment enqueued', {
     build: WEBHOOK_BUILD,
     orderId: maskId(row.order_id),
@@ -600,6 +665,8 @@ async function handleTransactionCompleted(supabase, mode, data, envelope) {
     seatLimit: row.seat_limit,
     claimIssued: Boolean(claimResult.issued),
     outboxReused: Boolean(outbox?.reused),
+    emailHashPrefix: emailHash ? emailHash.slice(0, 8) : null,
+    country,
   })
 
   return { ok: true, purchaseId: row.id }
@@ -669,6 +736,124 @@ async function handleAdjustmentEvent(supabase, mode, data, envelope) {
   return { ok: true, ...result, decision }
 }
 
+async function handleTransactionPaymentFailed(supabase, data, envelope) {
+  const orderId = data?.id ? String(data.id) : null
+  const customData = extractAttributionCustomData(data)
+  console.warn('[paddle-webhook] transaction.payment_failed', {
+    build: WEBHOOK_BUILD,
+    orderId: orderId ? maskId(orderId) : null,
+    status: data?.status ?? null,
+    eventId: envelope?.event_id ? maskId(envelope.event_id) : null,
+    hasPhDistinctId: Boolean(customData.ph_distinct_id),
+    tierHint: customData.product_id ?? null,
+  })
+  return { ok: true, ignored: false, reason: 'payment_failed_logged' }
+}
+
+async function handleTransactionUpdated(supabase, mode, data, envelope) {
+  const status = String(data?.status ?? '').toLowerCase()
+  const orderId = data?.id ? String(data.id) : null
+  console.log('[paddle-webhook] transaction.updated', {
+    build: WEBHOOK_BUILD,
+    orderId: orderId ? maskId(orderId) : null,
+    status: status || null,
+  })
+
+  // If Paddle later marks the txn completed via updated, fulfill once.
+  if (status === 'completed') {
+    return handleTransactionCompleted(supabase, mode, data, envelope)
+  }
+
+  if (orderId) {
+    const occurredAt = envelope?.occurred_at ?? data?.updated_at ?? null
+    await supabase
+      .from('purchases')
+      .update({
+        last_event_occurred_at: occurredAt,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('order_id', orderId)
+  }
+
+  return { ok: true, ignored: status !== 'completed', reason: `updated_${status || 'unknown'}` }
+}
+
+async function handleSubscriptionCanceled(supabase, data, envelope) {
+  // ChronoWalk launch SKUs are one-time; still acknowledge for Paddle retries.
+  const subscriptionId = data?.id ? String(data.id) : null
+  console.log('[paddle-webhook] subscription.canceled', {
+    build: WEBHOOK_BUILD,
+    subscriptionId: subscriptionId ? maskId(subscriptionId) : null,
+    eventId: envelope?.event_id ? maskId(envelope.event_id) : null,
+    status: data?.status ?? null,
+  })
+  return { ok: true, ignored: true, reason: 'subscription_canceled_logged' }
+}
+
+function scheduleBackground(task) {
+  // Supabase Edge / Deno Deploy: acknowledge Paddle quickly, finish work async.
+  const runtime = globalThis.EdgeRuntime
+  if (runtime && typeof runtime.waitUntil === 'function') {
+    runtime.waitUntil(task)
+    return true
+  }
+  return false
+}
+
+async function processVerifiedEvent(supabase, mode, envelope, eventType, data) {
+  let handlerFailed = false
+  let handlerReason = null
+  try {
+    if (eventType === 'customer.created' || eventType === 'customer.updated') {
+      await handleCustomerEvent(supabase, data)
+    } else if (eventType === 'transaction.completed') {
+      const result = await handleTransactionCompleted(supabase, mode, data, envelope)
+      if (result && result.ok === false) {
+        handlerFailed = true
+        handlerReason = result.reason ?? 'handler_failed'
+      }
+    } else if (eventType === 'transaction.payment_failed') {
+      await handleTransactionPaymentFailed(supabase, data, envelope)
+    } else if (eventType === 'transaction.updated') {
+      const result = await handleTransactionUpdated(supabase, mode, data, envelope)
+      if (result && result.ok === false) {
+        handlerFailed = true
+        handlerReason = result.reason ?? 'handler_failed'
+      }
+    } else if (eventType === 'subscription.canceled') {
+      await handleSubscriptionCanceled(supabase, data, envelope)
+    } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
+      const result = await handleAdjustmentEvent(supabase, mode, data, envelope)
+      if (result && result.ok === false) {
+        handlerFailed = true
+        handlerReason = result.reason ?? 'handler_failed'
+      } else if (result?.decision?.operatorReview || result?.operator_review) {
+        handlerFailed = true
+        handlerReason = result?.decision?.reason ?? result?.reason ?? 'operator_review'
+      }
+    } else {
+      console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
+    }
+  } catch (handlerErr) {
+    handlerFailed = true
+    handlerReason = handlerErr instanceof Error ? handlerErr.message : String(handlerErr)
+    console.error('[paddle-webhook] handler failed', {
+      build: WEBHOOK_BUILD,
+      eventType,
+      message: handlerReason,
+    }, handlerErr)
+  } finally {
+    const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
+    if (eventId) {
+      if (handlerFailed) {
+        await completeWebhookEvent(supabase, eventId, false, handlerReason ?? 'failed')
+      } else {
+        await completeWebhookEvent(supabase, eventId, true, null)
+      }
+    }
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -687,19 +872,68 @@ Deno.serve(async (req) => {
 
   console.log('[paddle-webhook] request', { build: WEBHOOK_BUILD })
 
-  if (!signature || !rawBody) {
-    return new Response(JSON.stringify({ error: 'Missing signature or body', build: WEBHOOK_BUILD }), {
+  if (!secret) {
+    console.error('[paddle-webhook] signature rejected', {
+      build: WEBHOOK_BUILD,
+      reason: 'missing_webhook_secret',
+    })
+    return new Response(JSON.stringify({ error: 'Webhook secret not configured', build: WEBHOOK_BUILD }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  if (!signature) {
+    console.error('[paddle-webhook] signature rejected', {
+      build: WEBHOOK_BUILD,
+      reason: 'missing_paddle_signature_header',
+    })
+    return new Response(JSON.stringify({ error: 'Missing paddle-signature', build: WEBHOOK_BUILD }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  if (!rawBody) {
+    console.error('[paddle-webhook] signature rejected', {
+      build: WEBHOOK_BUILD,
+      reason: 'empty_body',
+    })
+    return new Response(JSON.stringify({ error: 'Missing body', build: WEBHOOK_BUILD }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
+  let mode
   try {
-    const mode = resolvePaddleMode()
-    const paddle = getPaddle()
-    // Verify signature (throws if invalid). We still fulfill from raw JSON.
-    await paddle.webhooks.unmarshal(rawBody, secret, signature)
+    mode = resolvePaddleMode()
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[paddle-webhook] failed', { build: WEBHOOK_BUILD, message }, err)
+    return new Response(JSON.stringify({ error: message, build: WEBHOOK_BUILD }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
 
+  try {
+    const paddle = getPaddle()
+    await paddle.webhooks.unmarshal(rawBody, secret, signature)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[paddle-webhook] signature rejected', {
+      build: WEBHOOK_BUILD,
+      reason: 'invalid_signature',
+      detail: message.slice(0, 300),
+    })
+    return new Response(JSON.stringify({ error: 'Invalid signature', build: WEBHOOK_BUILD }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  try {
     const { envelope, eventType, data } = readPayload(rawBody)
     const supabase = getSupabaseAdmin()
 
@@ -728,45 +962,15 @@ Deno.serve(async (req) => {
       })
     }
 
-    let handlerFailed = false
-    let handlerReason = null
-    try {
-      if (eventType === 'customer.created' || eventType === 'customer.updated') {
-        await handleCustomerEvent(supabase, data)
-      } else if (eventType === 'transaction.completed') {
-        const result = await handleTransactionCompleted(supabase, mode, data, envelope)
-        if (result && result.ok === false) {
-          handlerFailed = true
-          handlerReason = result.reason ?? 'handler_failed'
-        }
-      } else if (eventType === 'adjustment.created' || eventType === 'adjustment.updated') {
-        const result = await handleAdjustmentEvent(supabase, mode, data, envelope)
-        if (result && result.ok === false) {
-          handlerFailed = true
-          handlerReason = result.reason ?? 'handler_failed'
-        } else if (result?.decision?.operatorReview || result?.operator_review) {
-          handlerFailed = true
-          handlerReason = result?.decision?.reason ?? result?.reason ?? 'operator_review'
-        }
-      } else {
-        console.log('[paddle-webhook] ignored event', { build: WEBHOOK_BUILD, eventType })
-      }
-    } catch (handlerErr) {
-      handlerFailed = true
-      handlerReason = handlerErr instanceof Error ? handlerErr.message : String(handlerErr)
-      throw handlerErr
-    } finally {
-      const eventId = envelope?.event_id ?? envelope?.notification_id ?? null
-      if (eventId) {
-        if (handlerFailed) {
-          // Idempotent with markOperatorReview — keeps failed reclaimable.
-          await completeWebhookEvent(supabase, eventId, false, handlerReason ?? 'failed')
-        } else {
-          await completeWebhookEvent(supabase, eventId, true, null)
-        }
-      }
+    const work = processVerifiedEvent(supabase, mode, envelope, eventType, data)
+    if (scheduleBackground(work)) {
+      return new Response(JSON.stringify({ received: true, async: true, build: WEBHOOK_BUILD }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
     }
 
+    await work
     return new Response(JSON.stringify({ received: true, build: WEBHOOK_BUILD }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -774,6 +978,7 @@ Deno.serve(async (req) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[paddle-webhook] failed', { build: WEBHOOK_BUILD, message }, err)
+    // Still 200 after signature verify when possible — but inbox/setup failures need retry.
     return new Response(JSON.stringify({ error: message, build: WEBHOOK_BUILD }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -3,13 +3,10 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import AppEntryPrepare from '../AppEntryPrepare.jsx'
 
 describe('AppEntryPrepare', () => {
-  it('offers offline download, home-screen install, and analytics opt-in', () => {
-    const onAnalyticsChange = vi.fn()
+  it('offers offline download and home-screen install', () => {
     const onInstall = vi.fn()
     render(
       <AppEntryPrepare
-        analyticsEnabled
-        onAnalyticsChange={onAnalyticsChange}
         onInstall={onInstall}
         onContinue={vi.fn()}
         showIosInstructions
@@ -27,14 +24,8 @@ describe('AppEntryPrepare', () => {
     const a2hs = screen.getByTestId('app-entry-a2hs')
     const download = screen.getByTestId('app-entry-download')
     expect(a2hs.compareDocumentPosition(download) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    expect(screen.getByText(/help improve chronowalk/i)).toBeInTheDocument()
-    expect(screen.getByRole('switch', { name: /disable analytics/i })).toHaveAttribute(
-      'aria-checked',
-      'true',
-    )
-
-    fireEvent.click(screen.getByRole('switch', { name: /disable analytics/i }))
-    expect(onAnalyticsChange).toHaveBeenCalledWith(false)
+    expect(screen.queryByText(/help improve chronowalk/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('switch', { name: /analytics/i })).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /use as a mobile app/i }))
     expect(screen.getByTestId('a2hs-capsule')).toHaveClass('cw-a2hs-capsule--open')

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import LandingProductHero from '../v4/LandingProductHero.jsx'
+import { LANDING_CTA, LANDING_PRICE_FALLBACK_LABEL } from '../landingData.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
@@ -33,18 +34,45 @@ describe('LandingProductHero story slide enlarge', () => {
 })
 
 describe('LandingProductHero CTA hierarchy', () => {
-  it('shows the unpaid complete-stop CTA with Pantheon helper copy', () => {
+  it('leads with paid unlock and a clear Pantheon free preview', () => {
     const onPreview = vi.fn()
-    render(<LandingProductHero onPreview={onPreview} onChooseTour={() => {}} onGetApp={() => {}} />)
+    const onGetApp = vi.fn()
+    render(
+      <LandingProductHero onPreview={onPreview} onChooseTour={() => {}} onGetApp={onGetApp} />,
+    )
+
+    expect(screen.getByText(/Self-guided audio walking tour of Rome/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Ancient Rome, brought back to life as you walk.',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('At your own pace.')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        /Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops/i,
+      ),
+    ).toBeInTheDocument()
+
+    const paidCta = screen.getByRole('link', {
+      name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
+    })
+    expect(paidCta).toHaveAttribute('href', '#pricing')
+    expect(paidCta).toHaveTextContent(LANDING_CTA.unlockRomePriced)
 
     const freeCta = screen.getByRole('button', {
-      name: 'Experience a complete Pantheon stop for free',
+      name: 'Try one complete Pantheon stop for free',
     })
-    expect(freeCta).toHaveTextContent('Experience a complete stop')
-    expect(screen.getByText('The Pantheon · 4 minutes · Free · No signup')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Unlock all 21 stops' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'How does ChronoWalk work?' })).toBeInTheDocument()
-    expect(screen.getByText('Explore what ChronoWalk includes')).toBeInTheDocument()
+    expect(freeCta).toHaveTextContent(LANDING_CTA.tryPantheonFree)
+
+    expect(
+      screen.getByText('Works in any browser · Offline mode available · No subscription'),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'How does ChronoWalk work?' })).not.toBeInTheDocument()
+
+    fireEvent.click(paidCta)
+    expect(onGetApp).toHaveBeenCalledTimes(1)
 
     fireEvent.click(freeCta)
     expect(onPreview).toHaveBeenCalledWith('hero')
@@ -62,8 +90,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     )
 
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
-    expect(screen.queryByText('The Pantheon · 4 minutes · Free · No signup')).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /complete Pantheon stop/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Pantheon/i })).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
     expect(onContinueWalk).toHaveBeenCalledTimes(1)

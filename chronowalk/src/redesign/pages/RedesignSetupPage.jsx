@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
 import { useOfflineAudio } from '../../hooks/useOfflineAudio.js'
-import { getAnalyticsConsent, setAnalyticsConsent } from '../../lib/track.js'
 import { syncAccessHandoff } from '../../lib/accessHandoff.js'
 import {
   isAppEntryComplete,
@@ -29,20 +28,7 @@ export default function RedesignSetupPage() {
   // Threshold pack splash remains reachable only if we add an explicit back later.
   const [step, setStep] = useState('prepare')
   const [showIosHelp, setShowIosHelp] = useState(false)
-  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => {
-    const consent = getAnalyticsConsent()
-    // Unset → on by default (Help improve ChronoWalk). Explicit decline stays off.
-    if (consent === 'declined') return false
-    return true
-  })
   const finishedEntryRef = useRef(false)
-
-  // Persist the prepare-screen default (on) so finishEntry does not treat unset as decline.
-  useEffect(() => {
-    if (getAnalyticsConsent() == null) {
-      setAnalyticsConsent(true)
-    }
-  }, [])
 
   // Keep Home Screen handoff warm while the traveler is on prepare.
   useEffect(() => {
@@ -52,10 +38,6 @@ export default function RedesignSetupPage() {
   const finishEntry = useCallback(() => {
     if (finishedEntryRef.current) return
     finishedEntryRef.current = true
-    if (getAnalyticsConsent() == null) {
-      setAnalyticsConsent(true)
-      setAnalyticsEnabled(true)
-    }
     markAppEntryComplete()
     navigate('/begin', { replace: true })
   }, [navigate])
@@ -76,11 +58,6 @@ export default function RedesignSetupPage() {
       void offline.startDownload()
     }
   }
-
-  const handleAnalyticsChange = useCallback((enabled) => {
-    setAnalyticsEnabled(enabled)
-    setAnalyticsConsent(enabled)
-  }, [])
 
   if (isAppEntryComplete()) {
     return <Navigate to="/begin" replace />
@@ -111,13 +88,11 @@ export default function RedesignSetupPage() {
             downloadComplete={offline.isReady}
             downloadError={offline.error}
             mapTilesPartial={offline.status?.error === 'map_tiles_partial'}
-            analyticsEnabled={analyticsEnabled}
             installed={installed}
             canPromptInstall={canPromptInstall}
             showIosInstructions={showIosInstructions || showIosHelp}
             onDownload={handleDownload}
             onInstall={handleInstall}
-            onAnalyticsChange={handleAnalyticsChange}
             onContinue={() => setStep('family')}
           />
         ) : null}

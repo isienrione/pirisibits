@@ -46,6 +46,8 @@
     "fulfillment:retry": "node scripts/retry-fulfillment-outbox.mjs",
     "fulfillment:restore": "node scripts/restore-purchase-access.mjs",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:analytics": "playwright test tests/analytics.spec.ts",
     "pretest": "npm run check:commerce-drift"
   },
   "dependencies": {
@@ -63,6 +65,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@paddle/paddle-node-sdk": "^3.8.0",
+    "@playwright/test": "^1.54.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.14",

@@ -131,6 +131,8 @@ export function readCustomData(data) {
     host: custom.host ? String(custom.host) : null,
     ab_variant: custom.ab_variant != null ? Number(custom.ab_variant) : null,
     consent_version: custom.consent_version ? String(custom.consent_version) : null,
+    ph_distinct_id: custom.ph_distinct_id ? String(custom.ph_distinct_id) : null,
+    cta_location: custom.cta_location ? String(custom.cta_location) : null,
   }
 }
 

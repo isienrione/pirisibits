@@ -7,7 +7,7 @@ import { cn } from './ui/cn';
 import { resolveSliderPosterAtSec, resolveSliderPostAnimationLoopMs } from '../utils/sliderMedia';
 import { composeLayerTransform } from '../utils/calibrationStorage';
 import { HAPTIC_KIND, triggerHaptic } from '../utils/haptics';
-
+import { trackSampleImageInteract } from '../lib/analytics.ts';
 const SLIDER_SNAP_POSITIONS = [0, 50, 100];
 const SLIDER_SNAP_TOLERANCE = 4;
 
@@ -325,6 +325,7 @@ const BeforeAfterSlider = ({
   embedded = false,
   startImmersive = false,
   onRequestExit = null,
+  stopName = null,
 }) => {
   const [immersive, setImmersive] = useState(startImmersive);
   const reducedMotion = useReducedMotion();
@@ -362,8 +363,11 @@ const BeforeAfterSlider = ({
 
   const handleSliderPositionChange = useCallback((position) => {
     sliderPositionRef.current = position;
+    if (!isDraggingSliderRef.current) {
+      trackSampleImageInteract(stopName || 'then-vs-now');
+    }
     isDraggingSliderRef.current = true;
-  }, []);
+  }, [stopName]);
 
   const handleSliderRelease = useCallback(() => {
     if (!isDraggingSliderRef.current) return;

@@ -31,6 +31,16 @@ function readWalkingUiRevision() {
 
 const walkingUiRevision = readWalkingUiRevision()
 const buildId = resolveBuildId()
+const appVersion = (() => {
+  try {
+    const pkg = JSON.parse(
+      readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'package.json'), 'utf8'),
+    )
+    return typeof pkg.version === 'string' && pkg.version ? pkg.version : '0.0.0'
+  } catch {
+    return '0.0.0'
+  }
+})()
 
 function walkingUiRevisionPlugin() {
   return {
@@ -176,6 +186,7 @@ export default defineConfig({
   ],
   define: {
     __APP_BUILD_ID__: JSON.stringify(buildId),
+    __APP_VERSION__: JSON.stringify(appVersion),
   },
   server: {
     host: true,

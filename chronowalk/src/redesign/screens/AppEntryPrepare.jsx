@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
 import { T, F } from '../tokens.js'
 import { spanishSteps } from '../images.js'
 import { Vignette, BottomScrim } from '../ui/index.js'
 import HomeScreenInstallOption from '../ui/HomeScreenInstallOption.jsx'
 
 /**
- * In-app prepare step: offline download, home-screen install, optional analytics.
+ * In-app prepare step: offline download and home-screen install.
  * Shown after the threshold - not marketing, not the walk yet.
  */
 export default function AppEntryPrepare({
@@ -14,28 +13,16 @@ export default function AppEntryPrepare({
   downloadComplete = false,
   downloadError = null,
   mapTilesPartial = false,
-  analyticsEnabled = true,
   installed = false,
   canPromptInstall = false,
   showIosInstructions = false,
   onDownload,
   onInstall,
-  onAnalyticsChange,
   onContinue,
 }) {
-  const [analyticsOn, setAnalyticsOn] = useState(Boolean(analyticsEnabled))
   const ringR = 22
   const ringC = 2 * Math.PI * ringR
   const done = downloadComplete || downloadProgress >= 1
-
-  useEffect(() => {
-    setAnalyticsOn(Boolean(analyticsEnabled))
-  }, [analyticsEnabled])
-
-  const setAnalytics = (next) => {
-    setAnalyticsOn(next)
-    onAnalyticsChange?.(next)
-  }
 
   return (
     <div
@@ -250,49 +237,6 @@ export default function AppEntryPrepare({
             </span>
           </div>
         </button>
-
-        <div style={{ borderTop: `1px solid ${T.ink800}`, paddingTop: 22, paddingBottom: 22 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 6 }}>
-                Help improve ChronoWalk
-              </p>
-              <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Anonymous usage only - we count moments, never people.
-              </p>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={analyticsOn}
-              aria-label={analyticsOn ? 'Disable analytics' : 'Enable analytics'}
-              onClick={() => setAnalytics(!analyticsOn)}
-              style={{
-                flexShrink: 0,
-                width: 52,
-                height: 32,
-                borderRadius: 999,
-                border: 'none',
-                padding: 3,
-                cursor: 'pointer',
-                background: analyticsOn ? T.ember : T.ink800,
-              }}
-            >
-              <span
-                aria-hidden
-                style={{
-                  display: 'block',
-                  width: 26,
-                  height: 26,
-                  borderRadius: '50%',
-                  background: analyticsOn ? T.obsidian : T.muted,
-                  transform: analyticsOn ? 'translateX(20px)' : 'translateX(0)',
-                  transition: 'transform 160ms ease',
-                }}
-              />
-            </button>
-          </div>
-        </div>
 
         <div style={{ marginTop: 'auto', paddingTop: 24, display: 'grid', gap: 10 }}>
           <button

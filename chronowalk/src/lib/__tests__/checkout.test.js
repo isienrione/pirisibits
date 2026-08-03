@@ -84,14 +84,30 @@ describe('checkout helpers (Paddle)', () => {
       abVariantCents: 999,
       productId: 'rome-central',
       consentVersion: '2026-07-21',
+      ctaLocation: 'pricing',
     })
     // product_id may be sent for analytics - webhook must ignore it for access.
-    expect(data).toEqual({
+    expect(data).toMatchObject({
       product_id: 'rome-central',
       host: 'hotelroma1',
       ab_variant: '999',
       consent_version: '2026-07-21',
+      cta_location: 'pricing',
     })
+    // Optional PostHog / UTM keys are string-only when present.
+    for (const key of [
+      'ph_distinct_id',
+      'ph_session_id',
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'gclid',
+      'gbraid',
+    ]) {
+      if (key in data) expect(typeof data[key]).toBe('string')
+    }
+    expect(data).not.toHaveProperty('seat_limit')
+    expect(data).not.toHaveProperty('content_product_id')
   })
 
   it('resolves all five price ids from env', () => {

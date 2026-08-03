@@ -4,6 +4,7 @@ import { LANDING_CONTENT, ROME_TIERS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
+import { trackCtaClick } from '../../lib/analytics.ts'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
@@ -195,13 +196,21 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
           </div>
 
           <div className="cw-v4-hero__copy">
+            {section.eyebrow ? (
+              <p className="cw-v4-hero__eyebrow">{section.eyebrow}</p>
+            ) : null}
             <h1 id="cw-v4-hero-heading" className="cw-v4-hero__title">
               {section.headline}
             </h1>
+            {section.accentLine ? (
+              <p className="cw-v4-hero__accent">{section.accentLine}</p>
+            ) : null}
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
             <div
-              className={`cw-v4-hero__actions${onContinueWalk ? '' : ' cw-v4-hero__actions--with-meta'}`}
+              className={`cw-v4-hero__actions${
+                onContinueWalk ? '' : ' cw-v4-hero__actions--clarity'
+              }`}
             >
               {onContinueWalk ? (
                 <button
@@ -213,55 +222,54 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
                   Continue your walk
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className="cw-v4-btn cw-v4-btn--primary"
-                  aria-label={section.primaryCtaAriaLabel || undefined}
-                  aria-describedby={
-                    section.primaryCtaMeta ? 'cw-v4-hero-free-stop-meta' : undefined
-                  }
-                  onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                  tabIndex={interactive ? 0 : -1}
-                >
-                  {section.primaryCta}
-                </button>
+                <>
+                  <a
+                    href={section.getAppHref ?? '#pricing'}
+                    className="cw-v4-btn cw-v4-btn--getapp"
+                    tabIndex={interactive ? 0 : -1}
+                    onClick={(event) => {
+                      if (!onGetApp && !onChooseTour) return
+                      event.preventDefault()
+                      ;(onGetApp || onChooseTour)?.()
+                    }}
+                  >
+                    {section.getAppCta}
+                  </a>
+
+                  <button
+                    type="button"
+                    className="cw-v4-btn cw-v4-btn--primary"
+                    aria-label={section.primaryCtaAriaLabel || undefined}
+                    onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
+                    tabIndex={interactive ? 0 : -1}
+                  >
+                    {section.primaryCta}
+                  </button>
+                </>
               )}
 
-              {!onContinueWalk && section.primaryCtaMeta ? (
-                <p id="cw-v4-hero-free-stop-meta" className="cw-v4-hero__cta-meta">
-                  {section.primaryCtaMeta}
-                </p>
+              {!onContinueWalk && section.trustLine ? (
+                <p className="cw-v4-hero__trust">{section.trustLine}</p>
               ) : null}
 
-              <a
-                href={section.getAppHref ?? '#pricing'}
-                className="cw-v4-btn cw-v4-btn--getapp"
-                tabIndex={interactive ? 0 : -1}
-                onClick={(event) => {
-                  if (!onGetApp && !onChooseTour) return
-                  event.preventDefault()
-                  ;(onGetApp || onChooseTour)?.()
-                }}
-              >
-                {section.getAppCta}
-              </a>
-
-              <a
-                href={section.secondaryHref ?? '#how-it-works'}
-                className="cw-v4-btn cw-v4-btn--purchase"
-                tabIndex={interactive ? 0 : -1}
-                onClick={(event) => {
-                  const id = (section.secondaryHref ?? '#how-it-works').replace(/^#/, '')
-                  const target =
-                    document.getElementById('cw-v4-demo-heading') ||
-                    (id ? document.getElementById(id) : null)
-                  if (!target) return
-                  event.preventDefault()
-                  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              >
-                {section.secondaryCta}
-              </a>
+              {section.secondaryCta && section.secondaryHref ? (
+                <a
+                  href={section.secondaryHref}
+                  className="cw-v4-btn cw-v4-btn--purchase"
+                  tabIndex={interactive ? 0 : -1}
+                  onClick={(event) => {
+                    const id = section.secondaryHref.replace(/^#/, '')
+                    const target =
+                      document.getElementById('cw-v4-demo-heading') ||
+                      (id ? document.getElementById(id) : null)
+                    if (!target) return
+                    event.preventDefault()
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
+                >
+                  {section.secondaryCta}
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
@@ -304,6 +312,7 @@ export default function LandingProductHero({ onPreview, onChooseTour, onGetApp, 
                           onClick={(event) => {
                             event.preventDefault()
                             setPaused(true)
+                            trackCtaClick({ tier: spot.id, ctaLocation: 'route_card' })
                             scrollToPricingTarget(spot.id)
                           }}
                         />

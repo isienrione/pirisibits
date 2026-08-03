@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getLandingFaqItems, LANDING_CONTENT } from './landingData.js'
 import { trackLandingFaqOpen } from './landingAnalytics.js'
+import { trackFaqOpen } from '../lib/analytics.ts'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 
 function faqDeepLinkId(itemId) {
@@ -41,6 +42,7 @@ export default function LandingFaqSectionV2() {
         const item = items[next]
         const group = groups.find((entry) => entry.items.some((entryItem) => entryItem.id === item.id))
         trackLandingFaqOpen({ questionId: item.id, groupId: group?.id })
+        trackFaqOpen(item.q || item.question || item.id)
       }
       return next
     })

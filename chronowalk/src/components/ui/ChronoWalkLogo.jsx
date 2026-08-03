@@ -1,4 +1,5 @@
 import { cn } from './cn.js'
+import { noteDebugLogoTap } from '../debug/debugPanelGate.js'
 
 /** Official brand assets - see /public/brand/ */
 const ASSETS = {
@@ -21,7 +22,7 @@ const ASPECT = {
   stacked: 1,
 }
 
-function EmblemImage({ variant, size, className, alt = 'ChronoWalk emblem' }) {
+function EmblemImage({ variant, size, className, alt = 'ChronoWalk emblem', onPointerDown }) {
   return (
     <img
       src={ASSETS.emblem[variant]}
@@ -31,11 +32,12 @@ function EmblemImage({ variant, size, className, alt = 'ChronoWalk emblem' }) {
       className={cn('block shrink-0', className)}
       style={{ width: size, height: 'auto' }}
       decoding="async"
+      onPointerDown={onPointerDown}
     />
   )
 }
 
-function LockupImage({ src, width, aspect, className, alt = 'ChronoWalk' }) {
+function LockupImage({ src, width, aspect, className, alt = 'ChronoWalk', onPointerDown }) {
   return (
     <img
       src={src}
@@ -45,6 +47,7 @@ function LockupImage({ src, width, aspect, className, alt = 'ChronoWalk' }) {
       className={cn('block max-w-full', className)}
       style={{ width, height: 'auto' }}
       decoding="async"
+      onPointerDown={onPointerDown}
     />
   )
 }
@@ -90,14 +93,31 @@ export default function ChronoWalkLogo({
   color: _legacyColor,
 }) {
   const stacked = layout === 'stacked' || width < 240
+  const onLogoPointerDown = () => {
+    noteDebugLogoTap()
+  }
 
   if (size != null) {
-    return <EmblemImage variant={variant} size={size} className={className} />
+    return (
+      <EmblemImage
+        variant={variant}
+        size={size}
+        className={className}
+        onPointerDown={onLogoPointerDown}
+      />
+    )
   }
 
   if (!showWordmark) {
     const emblemSize = Math.round(Math.min(Math.max(width * 0.28, 60), 104))
-    return <EmblemImage variant={variant} size={emblemSize} className={className} />
+    return (
+      <EmblemImage
+        variant={variant}
+        size={emblemSize}
+        className={className}
+        onPointerDown={onLogoPointerDown}
+      />
+    )
   }
 
   const useFullLockup = !hideTagline
@@ -110,6 +130,7 @@ export default function ChronoWalkLogo({
         width={width}
         aspect={ASPECT[lockupKey]}
         className={className}
+        onPointerDown={onLogoPointerDown}
       />
     )
   }
@@ -126,6 +147,8 @@ export default function ChronoWalkLogo({
       style={{ gap: stacked ? '0.75rem' : '1rem', maxWidth: width }}
       role="img"
       aria-label="ChronoWalk"
+      onPointerDown={onLogoPointerDown}
+      data-cw-debug-logo-tap="1"
     >
       <EmblemImage variant={variant} size={emblemSize} alt="" />
       <WordmarkTitle variant={variant} />

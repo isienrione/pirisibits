@@ -551,6 +551,7 @@ const WaypointCard = ({
                   ancientPosterUrl={getAncientPosterUrl(waypoint)}
                   calibration={calibration}
                   alignmentMode={alignmentMode}
+                  stopName={waypoint.title || waypoint.id}
                   maxFrameHeightRatio={0.62}
                   onRequestExit={exitCompareView}
                 />

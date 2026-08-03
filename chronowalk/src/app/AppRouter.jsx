@@ -9,6 +9,7 @@ import { ThresholdChromeProvider, useThresholdChrome } from '../context/Threshol
 import { captureHostFromUrl } from '../lib/host'
 import { initAnalytics } from '../lib/track'
 import AnalyticsConsentBanner from '../components/analytics/AnalyticsConsentBanner.jsx'
+import { warnPaddleAtStartup } from '../lib/paddle.js'
 import FlowEscapeButton from '../redesign/ui/FlowEscapeButton.jsx'
 import { SettingsSheetProvider } from '../redesign/context/SettingsSheetContext.jsx'
 import { FamilyWalkProvider } from '../redesign/context/FamilyWalkContext.jsx'
@@ -174,13 +175,14 @@ function AccessRevalidationBootstrap() {
 }
 
 function AppRouter() {
-  // Sync init for already-accepted travelers so child effects (e.g. landing_view)
-  // see a ready analytics client. No-ops without consent or key.
+  // Product analytics starts immediately (legitimate interest). Marketing cookies
+  // remain behind AnalyticsConsentBanner / preferences.
   initAnalytics()
 
   useEffect(() => {
     captureHostFromUrl()
     initAnalytics()
+    warnPaddleAtStartup()
     // Successful React mount - clear mid-boot sentinel / one-boot SW skip.
     // Do NOT clear cw-chunk-reload here: that guard stops recovery loops when
     // the homepage mounts then throws again (lazyWithRecovery clears it on success).

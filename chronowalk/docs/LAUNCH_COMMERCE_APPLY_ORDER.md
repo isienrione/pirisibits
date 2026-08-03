@@ -45,7 +45,7 @@ CI and full commerce launch validation should run **`npm run test:sql`** (and/or
    ```
    Paste the five printed `pri_…` into Cloudflare Pages (`VITE_PADDLE_PRICE_*`) and Supabase Edge secrets (`PADDLE_PRICE_*`). Also set `CLAIM_ENCRYPTION_KEY` (32-byte base64).
 13. **Edge Functions** — deploy (see `docs/FULFILLMENT_OUTBOX.md` for secret names, no values):
-   - `paddle-webhook` build `2026-07-27-v13-effective-full-refund` (no Resend inline; handles `adjustment.*`; effective-full partial coverage; failed-event reclaim)
+   - `paddle-webhook` build `2026-08-03-v14-purchase-analytics` (no Resend inline; handles `adjustment.*` + payment_failed/updated/subscription.canceled; PostHog `purchase_confirmed`; email_hash/custom_data; effective-full partial coverage; failed-event reclaim)
    - `process-fulfillment-outbox` build `2026-07-23-v2-email-generation` + cron every minute with `FULFILLMENT_CRON_SECRET`
    - `resend-webhook` build `2026-07-23-v2-email-generation` with `RESEND_WEBHOOK_SECRET` (Svix)
 14. **Paddle notification destination** — subscribe to `transaction.completed`, `customer.created`, `customer.updated`, **`adjustment.created`**, and **`adjustment.updated`** (see `docs/PADDLE_SETUP.md`).

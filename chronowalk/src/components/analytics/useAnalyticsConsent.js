@@ -6,8 +6,9 @@ import {
 } from '../../lib/track.js'
 
 /**
- * React binding for ChronoWalk analytics consent persistence.
+ * React binding for ChronoWalk marketing cookie preference.
  * Does not clear access, offline packs, journey progress, or app preferences.
+ * Does not gate PostHog product analytics.
  */
 export function useAnalyticsConsent() {
   const [consent, setConsent] = useState(() => getAnalyticsConsent())

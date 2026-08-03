@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Expand } from 'lucide-react'
 import { LANDING_CONTENT } from './landingData.js'
-import { observeLandingSectionOnce, trackLandingPricingView } from './landingAnalytics.js'
+import { trackLandingPricingView } from './landingAnalytics.js'
+import {
+  observeDwellOnce,
+  trackPricingView,
+  trackTierCardView,
+} from '../lib/analytics.ts'
 import { useMediaQuery } from '../hooks/useMediaQuery.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
@@ -54,6 +59,7 @@ function PacingNote({ text, className }) {
 
 function DesktopPackageCard({ tier, index, onBeginTier }) {
   const theme = tier.theme ?? 'eterna'
+  const cardRef = useRef(null)
   const alt = [
     tier.name,
     tier.tagline,
@@ -65,8 +71,17 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
     .filter(Boolean)
     .join(' ')
 
+  useEffect(
+    () =>
+      observeDwellOnce(cardRef.current, () => {
+        trackTierCardView(tier.id)
+      }),
+    [tier.id],
+  )
+
   return (
     <article
+      ref={cardRef}
       id={tier.id}
       className={`cw-v4-pkg cw-v4-pkg--image cw-v4-pkg--${theme}`}
       aria-labelledby={`pricing-name-${tier.id}`}
@@ -128,6 +143,14 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
     window.addEventListener('hashchange', applyHash)
     return () => window.removeEventListener('hashchange', applyHash)
   }, [tiers])
+
+  useEffect(
+    () =>
+      observeDwellOnce(cardRef.current, () => {
+        if (activeTier?.id) trackTierCardView(activeTier.id)
+      }),
+    [activeTier?.id],
+  )
 
   const selectTier = useCallback(
     (tierId, { syncHash = true } = {}) => {
@@ -357,7 +380,18 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
   const sectionRef = useRef(null)
   const isDesktop = useMediaQuery(DESKTOP_MQ, true)
 
-  useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingPricingView()), [])
+  useEffect(
+    () =>
+      observeDwellOnce(
+        sectionRef.current,
+        () => {
+          trackLandingPricingView()
+          trackPricingView()
+        },
+        { threshold: 0.5, dwellMs: 1000 },
+      ),
+    [],
+  )
 
   useEffect(() => {
     preloadLandingImages((section.tiers ?? []).map((tier) => tier.cardImage))

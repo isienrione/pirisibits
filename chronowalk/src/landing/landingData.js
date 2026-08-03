@@ -18,11 +18,15 @@ export const LANDING_CTA = {
   begin: 'Choose a Rome walk',
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
+  /** Hero paid CTA — includes price for cold-traffic clarity. */
+  unlockRomePriced: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
   tryFree: 'Get a free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
   tryFreeSneakPeek: 'Get a free sneak peek',
   /** Hero unpaid CTA — complete Pantheon free stop (not a teaser). */
   experienceCompleteStop: 'Experience a complete stop',
+  /** Hero free CTA — names the Pantheon example stop explicitly. */
+  tryPantheonFree: 'Try one stop for free: The Pantheon Part 1',
   seeRoutes: 'See all Rome walks',
   tryOneStopFree: 'Get a free sneak peek',
   /** Secondary CTAs that scroll to `#pricing` (Rome walks), not the route map. */
@@ -348,24 +352,26 @@ export const LANDING_LEGACY_DEEPLINK_IDS = [
 export const LANDING_CONTENT = {
   hero: {
     id: 'top',
-    eyebrow: null,
-    headline: 'Rome, at your own pace.',
-    accentLine: null,
+    eyebrow: 'Self-guided audio walking tour of Rome',
+    headline: 'Ancient Rome, brought back to life as you walk.',
+    /** Atmospheric leftover — must stay subordinate to the benefit headline. */
+    accentLine: 'At your own pace.',
     subheadline:
-      'The best self-guided audio tour of the Eternal City. Wander freely without missing what matters.',
-    subheadlineHighlight: 'best self-guided audio tour of the Eternal City',
-    primaryCta: LANDING_CTA.experienceCompleteStop,
-    primaryCtaAriaLabel: 'Experience a complete Pantheon stop for free',
-    primaryCtaMeta: FREE_PREVIEW.heroCtaMeta,
-    secondaryCta: LANDING_CTA.howItWorks,
-    secondaryHref: '#how-it-works',
-    /** Gold CTA keeps the Get App destination; label emphasizes unlocking the full route. */
-    getAppCta: LANDING_CTA.unlockRome,
-    getAppHref: '#get-app',
+      'Enjoy the Colosseum, Roman Forum, The Pantheon and 18 other stops • immersive audio • curated routes • visual ancient reconstructions',
+    subheadlineHighlight: 'visual ancient reconstructions',
+    /** Free Pantheon preview (secondary visual weight; still opens /preview). */
+    primaryCta: LANDING_CTA.tryPantheonFree,
+    primaryCtaAriaLabel: 'Try one complete Pantheon stop for free',
+    primaryCtaMeta: null,
+    secondaryCta: null,
+    secondaryHref: null,
+    /** Paid unlock — gold CTA; scrolls to Rome walks / pricing. */
+    getAppCta: LANDING_CTA.unlockRomePriced,
+    getAppHref: '#pricing',
     reviewsCta: 'See more',
     reviewsHref: '#trust',
     primaryHref: '/preview',
-    trustLine: null,
+    trustLine: 'Works in any browser · Offline mode available · No subscription',
     phoneLabel: 'Listening at a landmark',
     freeStoryMeta: FREE_PREVIEW.meta,
   },

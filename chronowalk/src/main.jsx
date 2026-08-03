@@ -8,7 +8,12 @@ import AppRouter from './app/AppRouter.jsx'
 import { initMobileViewportChrome } from './utils/mobileViewportChrome.js'
 import { DEPLOY_EDGE_BUST } from './config/env.js'
 import { recoverInterruptedBoot } from './pwa/staleChunkRecovery.js'
+import { captureAttribution } from './lib/attribution.ts'
 import { consumeAccessHandoff } from './lib/accessHandoff.js'
+import {
+  installGlobalErrorHandlers,
+  installLcpSlowPageWatcher,
+} from './lib/errorVisibility.js'
 
 if (import.meta.env.DEV) {
   console.debug('[chronowalk] deploy edge bust', DEPLOY_EDGE_BUST)
@@ -18,6 +23,13 @@ if (import.meta.env.DEV) {
 // Blocking mount left iOS Safari stuck on "Loading ChronoWalk…" forever when
 // a recovery navigation did not start.
 recoverInterruptedBoot()
+
+// First-touch attribution before React / hash replaceState can drop query params.
+captureAttribution()
+
+// Global JS / promise errors + LCP slow_page (events no-op until PostHog ready).
+installGlobalErrorHandlers()
+installLcpSlowPageWatcher()
 
 // Home Screen / standalone partitions often miss the tab that redeemed access.
 // Hydrate from cw_h query or handoff cookie before any RequireAccess gate runs.

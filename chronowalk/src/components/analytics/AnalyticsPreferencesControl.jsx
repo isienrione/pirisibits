@@ -4,13 +4,14 @@ import { useAnalyticsConsent } from './useAnalyticsConsent.js'
 import './analyticsConsent.css'
 
 function statusLabel(consent) {
-  if (consent === 'accepted') return 'Analytics allowed'
-  if (consent === 'declined') return 'Analytics off'
+  if (consent === 'accepted') return 'Marketing cookies allowed'
+  if (consent === 'declined') return 'Marketing cookies off'
   return 'Not chosen yet'
 }
 
 /**
- * Footer / Settings control to view and change analytics consent.
+ * Footer / Settings control to view and change marketing cookie preference.
+ * Product analytics is not gated by this control.
  * @param {{ variant?: 'footer' | 'settings', className?: string }} props
  */
 export default function AnalyticsPreferencesControl({ variant = 'footer', className = '' }) {
@@ -27,7 +28,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  const triggerLabel = variant === 'settings' ? 'Analytics preferences' : 'Privacy choices'
+  const triggerLabel = variant === 'settings' ? 'Marketing preferences' : 'Privacy choices'
 
   return (
     <div className={`cw-analytics-prefs ${className}`.trim()} data-testid="analytics-preferences">
@@ -69,8 +70,9 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
               Current choice: <strong>{statusLabel(consent)}</strong>
             </p>
             <p className="cw-analytics-prefs__body">
-              Optional analytics help us improve ChronoWalk. Essential access, offline downloads,
-              and journey progress are never tied to this choice.{' '}
+              This controls optional marketing and advertising cookies only. Product analytics
+              (including session replay) run under legitimate interest to improve ChronoWalk and
+              are not tied to this choice.{' '}
               <Link to="/legal/privacy" className="cw-analytics-consent__link" onClick={() => setOpen(false)}>
                 Privacy Policy
               </Link>
@@ -86,7 +88,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-accept"
                 disabled={isAccepted}
               >
-                Allow analytics
+                Allow marketing
               </button>
               <button
                 type="button"
@@ -98,7 +100,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-decline"
                 disabled={consent === 'declined'}
               >
-                Turn analytics off
+                Turn marketing off
               </button>
               <button
                 type="button"
