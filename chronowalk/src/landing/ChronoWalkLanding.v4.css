@@ -321,6 +321,8 @@
   align-items: start;
   padding: 6.5rem 0 3.5rem;
   overflow: hidden;
+  /* Prefer vertical page scroll; horizontal swipes stay with the gallery. */
+  touch-action: pan-y;
 }
 
 @media (max-width: 39.99rem) {
@@ -1007,7 +1009,7 @@
   pointer-events: none;
   /* Keep layers paintable/loadable on iOS — do not use content-visibility:hidden. */
   content-visibility: visible;
-  transition: opacity var(--cw-hero-fade-ms, 900ms) ease;
+  transition: opacity var(--cw-hero-fade-ms, 400ms) ease;
   display: grid;
   align-items: end;
   padding: 5rem 0 4.5rem;
@@ -1017,6 +1019,12 @@
   opacity: 1;
   pointer-events: auto;
   z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-v4-hero__slide-layer {
+    transition: none;
+  }
 }
 
 .cw-v4-hero__slide-layer--art {
@@ -1185,14 +1193,14 @@
   top: auto;
   /* Sit with the dots row so arrows never cover headline or CTAs */
   bottom: max(0.95rem, calc(env(safe-area-inset-bottom) + 0.75rem));
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid rgba(243, 238, 230, 0.28);
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 1px solid rgba(243, 238, 230, 0.22);
   border-radius: 999px;
-  background: rgba(8, 8, 10, 0.55);
-  color: #faf6ef;
-  backdrop-filter: blur(10px);
-  font-size: 1.2rem;
+  background: rgba(8, 8, 10, 0.42);
+  color: rgba(250, 246, 239, 0.88);
+  backdrop-filter: blur(8px);
+  font-size: 1.05rem;
   line-height: 1;
   display: grid;
   place-items: center;
@@ -1200,13 +1208,18 @@
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
-    transform 0.2s ease;
+    color 0.2s ease;
 }
 
 .cw-v4-hero__arrow:hover {
-  background: rgba(8, 8, 10, 0.75);
-  border-color: rgba(240, 177, 74, 0.55);
-  transform: scale(1.04);
+  background: rgba(8, 8, 10, 0.62);
+  border-color: rgba(240, 177, 74, 0.45);
+  color: #faf6ef;
+}
+
+.cw-v4-hero__arrow:focus-visible {
+  outline: 2px solid rgba(240, 177, 74, 0.85);
+  outline-offset: 2px;
 }
 
 .cw-v4-hero__arrow--prev {
@@ -1215,25 +1228,16 @@
 
 .cw-v4-hero__arrow--next {
   right: max(0.45rem, calc((100% - var(--v4-max)) / 2));
-  animation: cw-v4-arrow-nudge 2.4s ease-in-out infinite;
-}
-
-@keyframes cw-v4-arrow-nudge {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(0.22rem);
-  }
 }
 
 @media (max-width: 39.99rem) {
   .cw-v4-hero__arrow {
-    width: 1.7rem;
-    height: 1.7rem;
-    font-size: 1.05rem;
+    width: 1.55rem;
+    height: 1.55rem;
+    font-size: 0.95rem;
     bottom: max(0.9rem, calc(env(safe-area-inset-bottom) + 0.7rem));
+    /* Keep discreet on small screens — swipe + dots remain primary. */
+    opacity: 0.82;
   }
 
   .cw-v4-hero__arrow--prev {
@@ -1247,18 +1251,18 @@
 
 @media (min-width: 40rem) {
   .cw-v4-hero__arrow {
-    width: 2.15rem;
-    height: 2.15rem;
-    font-size: 1.3rem;
+    width: 1.95rem;
+    height: 1.95rem;
+    font-size: 1.15rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cw-v4-hero__arrow--next {
-    animation: none;
+  .cw-v4-hero__slide-layer {
+    transition: none;
   }
 
-  .cw-v4-hero__slide-layer {
+  .cw-v4-hero__arrow {
     transition: none;
   }
 }

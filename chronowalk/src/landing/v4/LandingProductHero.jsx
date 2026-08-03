@@ -9,10 +9,9 @@ import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 
-const SLIDE_MS = 8000
-/** First Rome-sky hero needs more reading time before the art slideshow begins. */
-const FIRST_SLIDE_MS = 14000
-const FADE_MS = 900
+/** Crossfade duration for deliberate slide changes (respects prefers-reduced-motion in CSS). */
+const FADE_MS = 400
+const SWIPE_THRESHOLD_PX = 48
 
 /** Approximate click targets over the Choose your walk marketing frame. */
 const PACKAGE_HOTSPOTS = [
@@ -97,9 +96,8 @@ function scrollToPricingTarget(id) {
 }
 
 /**
- * Rome-sky hero with a mild fade slideshow of the exported marketing frames.
- * Slide 0 = current primary hero; secondary slides are portrait story frames.
- * Story frames open a fullscreen pinch-zoom viewer when enlarged.
+ * Manual hero gallery: Rome-sky + marketing frames.
+ * Advances only via swipe, prev/next, dots, or focused keyboard arrows — never on a timer.
  *
  * Optional `hero` is a resolved intent overlay from `resolveLandingIntentHero`.
  */
@@ -116,46 +114,26 @@ export default function LandingProductHero({
   const storySlides = HERO_SLIDESHOW_SLIDES
   const total = 1 + storySlides.length
   const [index, setIndex] = useState(0)
-  const [reducedMotion, setReducedMotion] = useState(false)
-  const [paused, setPaused] = useState(false)
   const [viewerSlide, setViewerSlide] = useState(null)
   const touchStartX = useRef(null)
   const expandTriggerRef = useRef(null)
 
+  // Warm pricing posters only — do not preload every hero story frame at LCP.
   useEffect(() => {
-    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-    const sync = () => setReducedMotion(Boolean(mq?.matches))
-    sync()
-    mq?.addEventListener?.('change', sync)
-    return () => mq?.removeEventListener?.('change', sync)
+    preloadLandingImages(ROME_TIERS.map((tier) => tier.cardImage))
   }, [])
 
-  // Kick off decode outside opacity/inert layers so slides are ready when shown.
+  // Prefetch only the adjacent story frame after the visitor moves off slide 0.
   useEffect(() => {
-    preloadLandingImages([
-      ...storySlides.map((slide) => slide.src),
-      ...ROME_TIERS.map((tier) => tier.cardImage),
-    ])
-  }, [storySlides])
-
-  useEffect(() => {
-    if (reducedMotion || paused || viewerSlide || total < 2) return undefined
-
-    let timer = 0
-    const dwell = index === 0 ? FIRST_SLIDE_MS : SLIDE_MS
-    const tick = () => {
-      if (document.hidden) {
-        timer = window.setTimeout(tick, dwell)
-        return
-      }
-      setIndex((current) => (current + 1) % total)
-    }
-    timer = window.setTimeout(tick, dwell)
-    return () => window.clearTimeout(timer)
-  }, [reducedMotion, paused, viewerSlide, total, index])
+    if (index < 1) return undefined
+    const neighbors = [storySlides[index - 1], storySlides[index], storySlides[index + 1]]
+      .filter(Boolean)
+      .map((slide) => slide.src)
+    preloadLandingImages(neighbors)
+    return undefined
+  }, [index, storySlides])
 
   const goTo = (next) => {
-    setPaused(true)
     setIndex(((next % total) + total) % total)
   }
 
@@ -163,9 +141,23 @@ export default function LandingProductHero({
   const goNext = () => goTo(index + 1)
 
   const openSlideViewer = (slide, triggerEl) => {
-    setPaused(true)
     if (triggerEl) expandTriggerRef.current = triggerEl
     setViewerSlide(slide)
+  }
+
+  const onHeroKeyDown = (event) => {
+    if (viewerSlide || total < 2) return
+    const tag = event.target?.tagName
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || event.target?.isContentEditable) {
+      return
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      goPrev()
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      goNext()
+    }
   }
 
   const interactive = index === 0
@@ -176,6 +168,9 @@ export default function LandingProductHero({
       className="cw-v4-hero"
       aria-labelledby="cw-v4-hero-heading"
       aria-roledescription="carousel"
+      aria-label="ChronoWalk hero gallery"
+      tabIndex={0}
+      onKeyDown={onHeroKeyDown}
       onTouchStart={(event) => {
         touchStartX.current = event.changedTouches?.[0]?.clientX ?? null
       }}
@@ -186,7 +181,7 @@ export default function LandingProductHero({
         touchStartX.current = null
         if (start == null || end == null) return
         const delta = end - start
-        if (Math.abs(delta) < 48) return
+        if (Math.abs(delta) < SWIPE_THRESHOLD_PX) return
         if (delta > 0) goPrev()
         else goNext()
       }}
@@ -319,10 +314,7 @@ export default function LandingProductHero({
 
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
-          const nextStoryIndex = index === 0 ? 0 : index < total - 1 ? index : -1
-          const isNext = slideIndex === nextStoryIndex
           const isPackages = slide.id === 'choose-your-walk'
-          const priority = active || isNext ? 'high' : 'auto'
           return (
             <div
               key={slide.id}
@@ -335,12 +327,12 @@ export default function LandingProductHero({
                     <img
                       className="cw-v4-hero__art"
                       src={slide.src}
-                      alt={slide.title}
+                      alt=""
                       width={slide.width}
                       height={slide.height}
                       decoding="async"
-                      loading="eager"
-                      fetchPriority={priority}
+                      loading={active ? 'eager' : 'lazy'}
+                      fetchPriority={active ? 'high' : 'low'}
                       onError={retryImageOnError}
                     />
                     <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
@@ -354,7 +346,6 @@ export default function LandingProductHero({
                           tabIndex={active ? 0 : -1}
                           onClick={(event) => {
                             event.preventDefault()
-                            setPaused(true)
                             trackCtaClick({ tier: spot.id, ctaLocation: 'route_card' })
                             scrollToPricingTarget(spot.id)
                           }}
@@ -387,8 +378,8 @@ export default function LandingProductHero({
                       width={slide.width}
                       height={slide.height}
                       decoding="async"
-                      loading="eager"
-                      fetchPriority={priority}
+                      loading={active ? 'eager' : 'lazy'}
+                      fetchPriority={active ? 'high' : 'low'}
                       onError={retryImageOnError}
                     />
                     <span className="cw-v4-hero__art-enlarge cw-v4-hero__art-enlarge--on-art">
@@ -408,7 +399,7 @@ export default function LandingProductHero({
           <button
             type="button"
             className="cw-v4-hero__arrow cw-v4-hero__arrow--prev"
-            aria-label="Previous slide"
+            aria-label="Previous hero image"
             onClick={goPrev}
           >
             <span aria-hidden>‹</span>
@@ -416,19 +407,21 @@ export default function LandingProductHero({
           <button
             type="button"
             className="cw-v4-hero__arrow cw-v4-hero__arrow--next"
-            aria-label="Next slide"
+            aria-label="Next hero image"
             onClick={goNext}
           >
             <span aria-hidden>›</span>
           </button>
-          <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero slides">
+          <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero images">
             {Array.from({ length: total }, (_, i) => (
               <button
                 key={i}
                 type="button"
                 role="tab"
                 aria-selected={index === i}
-                aria-label={i === 0 ? 'Main hero' : storySlides[i - 1]?.title || `Slide ${i + 1}`}
+                aria-label={
+                  i === 0 ? 'Main hero image' : storySlides[i - 1]?.title || `Hero image ${i + 1}`
+                }
                 className={`cw-v4-hero__dot${index === i ? ' is-active' : ''}`}
                 onClick={() => goTo(i)}
               />
@@ -439,15 +432,15 @@ export default function LandingProductHero({
 
       {viewerSlide ? (
         <LandingZoomableImageViewer
-          key={viewerSlide.id}
           open
-          title={viewerSlide.title}
           src={viewerSlide.src}
-          alt={viewerSlide.title}
-          accent="eterna"
-          hint="Pinch or double-tap to zoom in on details that caught your eye. Drag to pan."
-          onClose={() => setViewerSlide(null)}
-          returnFocusRef={expandTriggerRef}
+          title={viewerSlide.title}
+          onClose={() => {
+            setViewerSlide(null)
+            const trigger = expandTriggerRef.current
+            expandTriggerRef.current = null
+            window.requestAnimationFrame(() => trigger?.focus?.())
+          }}
         />
       ) : null}
     </section>
