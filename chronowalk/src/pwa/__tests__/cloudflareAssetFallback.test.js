@@ -117,4 +117,15 @@ describe('Cloudflare SPA routing + SW asset HTML rejection', () => {
     expect(routes).toMatch(/export function LazyLandingPage/)
     expect(routes).not.toMatch(/LazyLandingPage = lazyRoute\(\s*\(\)\s*=>\s*import\(['"]\.\.\/landing\/ChronoWalkLanding/)
   })
+
+  it('eager-loads the free Pantheon preview page (no second poisonable chunk)', () => {
+    const routes = readFileSync(join(ROOT, 'src/app/lazyRoutes.jsx'), 'utf8')
+    expect(routes).toContain(
+      "import RedesignPreviewPage from '../redesign/pages/RedesignPreviewPage.jsx'",
+    )
+    expect(routes).toMatch(/export function LazyPreviewPage/)
+    expect(routes).not.toMatch(
+      /LazyPreviewPage = lazyRoute\(\s*\(\)\s*=>\s*import\(['"]\.\.\/redesign\/pages\/RedesignPreviewPage/,
+    )
+  })
 })
