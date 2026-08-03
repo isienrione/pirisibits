@@ -41,6 +41,16 @@ export type FunnelEventName =
   | 'checkout_items_updated'
   | 'paddle_script_failed'
 
+export type AudioDiagnosticEventName =
+  | 'audio_play_attempt'
+  | 'audio_play_blocked'
+  | 'audio_interrupted'
+  | 'audio_background_drop'
+  | 'wake_lock_acquired'
+  | 'wake_lock_failed'
+  | 'wake_lock_released_unexpectedly'
+  | 'audio_completed'
+
 export type EngagementEventName =
   | 'preview_play_click'
   | 'preview_audio_progress'
@@ -49,6 +59,7 @@ export type EngagementEventName =
   | 'engaged_heartbeat'
   | 'deep_engagement'
   | 'bounced_fast'
+  | AudioDiagnosticEventName
 
 export type ExitEventName = 'scroll_milestone' | 'exit_intent'
 
@@ -74,6 +85,15 @@ export type AnalyticsProps = {
   seconds_on_page?: number
   deepest_funnel_step_reached?: string
   longest_dwell_section?: string
+  stop_id?: string
+  error_name?: string
+  event_type?: string
+  current_time_s?: number
+  expected_time_s?: number
+  actual_time_s?: number
+  gap_s?: number
+  duration_listened_s?: number
+  pct_complete?: number
   [key: string]: unknown
 }
 
@@ -636,6 +656,82 @@ export function trackSampleImageInteract(stopName: string): boolean {
   if (sampleInteractFired) return false
   sampleInteractFired = true
   return track('sample_image_interact', { stop_name: stopName })
+}
+
+export function trackAudioPlayAttempt(opts: {
+  stopId: string
+  routeSlug?: string | null
+}): boolean {
+  return track('audio_play_attempt', {
+    stop_id: opts.stopId,
+    ...(opts.routeSlug ? { route_slug: opts.routeSlug } : {}),
+    is_pwa: isStandalonePwa(),
+    is_ios: isIosDevice(),
+  })
+}
+
+export function trackAudioPlayBlocked(opts: {
+  stopId?: string | null
+  errorName?: string | null
+}): boolean {
+  return track('audio_play_blocked', {
+    ...(opts.stopId ? { stop_id: opts.stopId } : {}),
+    ...(opts.errorName ? { error_name: opts.errorName } : {}),
+  })
+}
+
+export function trackAudioInterrupted(opts: {
+  stopId?: string | null
+  eventType: string
+  currentTimeS?: number
+}): boolean {
+  return track('audio_interrupted', {
+    ...(opts.stopId ? { stop_id: opts.stopId } : {}),
+    event_type: opts.eventType,
+    ...(opts.currentTimeS != null
+      ? { current_time_s: Math.round(opts.currentTimeS * 10) / 10 }
+      : {}),
+  })
+}
+
+export function trackAudioBackgroundDrop(opts: {
+  stopId?: string | null
+  expectedTimeS: number
+  actualTimeS: number
+  gapS: number
+}): boolean {
+  return track('audio_background_drop', {
+    ...(opts.stopId ? { stop_id: opts.stopId } : {}),
+    expected_time_s: Math.round(opts.expectedTimeS * 10) / 10,
+    actual_time_s: Math.round(opts.actualTimeS * 10) / 10,
+    gap_s: Math.round(opts.gapS * 10) / 10,
+  })
+}
+
+export function trackWakeLockAcquired(): boolean {
+  return track('wake_lock_acquired')
+}
+
+export function trackWakeLockFailed(opts: { errorName?: string | null } = {}): boolean {
+  return track('wake_lock_failed', {
+    ...(opts.errorName ? { error_name: opts.errorName } : {}),
+  })
+}
+
+export function trackWakeLockReleasedUnexpectedly(): boolean {
+  return track('wake_lock_released_unexpectedly')
+}
+
+export function trackAudioCompleted(opts: {
+  stopId?: string | null
+  durationListenedS: number
+  pctComplete: number
+}): boolean {
+  return track('audio_completed', {
+    ...(opts.stopId ? { stop_id: opts.stopId } : {}),
+    duration_listened_s: Math.round(opts.durationListenedS),
+    pct_complete: Math.max(0, Math.min(100, Math.round(opts.pctComplete))),
+  })
 }
 
 function fireScrollMilestones() {

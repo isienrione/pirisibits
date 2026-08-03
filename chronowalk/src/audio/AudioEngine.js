@@ -11,9 +11,22 @@ import {
   clearMediaSession,
   updateMediaSession,
 } from './mediaSession.js'
+import { acquireScreenWakeLock, releaseScreenWakeLock } from './screenWakeLock.js'
 import { readBackgroundPlay } from '../utils/appPreferences.js'
+import {
+  trackAudioBackgroundDrop,
+  trackAudioCompleted,
+  trackAudioInterrupted,
+  trackAudioPlayAttempt,
+  trackAudioPlayBlocked,
+} from '../lib/analytics.ts'
 
 const JOURNEY_WALKING = 'walking'
+const AUDIO_INTERRUPT_EVENTS = ['stalled', 'waiting', 'error', 'suspend']
+/** Minimum background gap (s) before reporting a drop. */
+const BACKGROUND_DROP_MIN_GAP_S = 1
+/** Ignore visibility flickers shorter than this. */
+const BACKGROUND_DROP_MIN_HIDDEN_S = 0.5
 
 export class AudioEngine {
   constructor({
@@ -77,6 +90,18 @@ export class AudioEngine {
     this.interruptedPlayback = null
     this.visibilityListenerAttached = false
     this.mediaSessionBound = false
+    /** @type {{ stopId: string | null, currentTimeS: number, hiddenAtMs: number } | null} */
+    this.backgroundProbe = null
+  }
+
+  getRouteSlug() {
+    const m = this.manifest
+    if (!m) return null
+    return m.tour_id || m.meta?.id || m.journey?.id || m.id || null
+  }
+
+  getActiveStopId() {
+    return this.activePlayback?.id ?? null
   }
 
   handleVisibilityChange = () => {
@@ -195,6 +220,16 @@ export class AudioEngine {
   onPageHidden() {
     this.playingBeforeHidden = this.narrationPlaying || this.isNarrationElementPlaying()
 
+    if (this.playingBeforeHidden) {
+      this.backgroundProbe = {
+        stopId: this.getActiveStopId(),
+        currentTimeS: this.getNarrationTime(),
+        hiddenAtMs: Date.now(),
+      }
+    } else {
+      this.backgroundProbe = null
+    }
+
     // Prefer HTML audio continuing in the background (Dynamic Island / lock screen).
     // Only pause on hide when the user turned Background Play off.
     if (!this.isBackgroundPlayEnabled() && this.narrationPlaying) {
@@ -204,7 +239,33 @@ export class AudioEngine {
 
   async onPageVisible() {
     await this.syncPlaybackState()
+    this.checkAudioBackgroundDrop()
     this.playingBeforeHidden = false
+  }
+
+  checkAudioBackgroundDrop() {
+    const probe = this.backgroundProbe
+    this.backgroundProbe = null
+    if (!probe) return
+
+    const hiddenS = (Date.now() - probe.hiddenAtMs) / 1000
+    if (hiddenS < BACKGROUND_DROP_MIN_HIDDEN_S) return
+
+    const rate = this.playbackRate > 0 ? this.playbackRate : 1
+    const expectedTimeS = probe.currentTimeS + hiddenS * rate
+    const actualTimeS = this.getNarrationTime()
+    const gapS = Math.max(0, expectedTimeS - actualTimeS)
+    const advancedS = actualTimeS - probe.currentTimeS
+    const barelyAdvanced = advancedS < Math.min(1, hiddenS * 0.2)
+
+    if (!barelyAdvanced || gapS < BACKGROUND_DROP_MIN_GAP_S) return
+
+    trackAudioBackgroundDrop({
+      stopId: probe.stopId,
+      expectedTimeS,
+      actualTimeS,
+      gapS,
+    })
   }
 
   async syncPlaybackState() {
@@ -586,11 +647,21 @@ export class AudioEngine {
       if (!active || active.element !== audio) return
       if (active.generation !== this.playbackGeneration) return
 
+      const endedTimeS = Number.isFinite(audio.currentTime)
+        ? audio.currentTime
+        : active.duration || 0
+      const endedDurationS = Number.isFinite(audio.duration)
+        ? audio.duration
+        : active.duration || endedTimeS
+
       active.element = null
       active.index += 1
       active.offset = 0
       if (active.index >= active.plan.length) {
-        this.finishSession()
+        this.finishSession({
+          durationListenedS: endedTimeS || endedDurationS,
+          durationS: endedDurationS,
+        })
       } else {
         void this.startCurrentItem(0)
       }
@@ -632,16 +703,38 @@ export class AudioEngine {
       this.emitProgress()
     }
 
+    const interruptedTypes = new Set()
+    const onInterrupted = (event) => {
+      if (this.session !== session || session.element !== audio) return
+      const eventType = event?.type || 'unknown'
+      if (interruptedTypes.has(eventType)) return
+      interruptedTypes.add(eventType)
+      const currentTimeS = Number.isFinite(audio.currentTime)
+        ? audio.currentTime
+        : session.offset || 0
+      trackAudioInterrupted({
+        stopId: this.getActiveStopId(),
+        eventType,
+        currentTimeS,
+      })
+    }
+
     audio.addEventListener('ended', onEnded)
     audio.addEventListener('loadedmetadata', onLoadedMetadata)
     audio.addEventListener('pause', onPause)
     audio.addEventListener('play', onPlay)
+    for (const type of AUDIO_INTERRUPT_EVENTS) {
+      audio.addEventListener(type, onInterrupted)
+    }
 
     session.cleanup = () => {
       audio.removeEventListener('ended', onEnded)
       audio.removeEventListener('loadedmetadata', onLoadedMetadata)
       audio.removeEventListener('pause', onPause)
       audio.removeEventListener('play', onPlay)
+      for (const type of AUDIO_INTERRUPT_EVENTS) {
+        audio.removeEventListener(type, onInterrupted)
+      }
     }
 
     try {
@@ -652,22 +745,49 @@ export class AudioEngine {
       // Seek after metadata if needed.
     }
 
+    const stopId = this.getActiveStopId()
+    if (stopId) {
+      trackAudioPlayAttempt({
+        stopId,
+        routeSlug: this.getRouteSlug(),
+      })
+    }
+
     try {
       await audio.play()
       this.setNarrationPlaying(true)
       this.syncMediaSession()
       this.emitProgress()
-    } catch {
+    } catch (err) {
       // Autoplay may be blocked until a fresh gesture; keep the session paused.
       session.paused = true
       this.setNarrationPlaying(false)
       this.syncMediaSession()
       this.emitProgress()
+      const errorName =
+        err && typeof err === 'object' && 'name' in err && err.name
+          ? String(err.name)
+          : 'Error'
+      trackAudioPlayBlocked({
+        stopId,
+        errorName,
+      })
     }
   }
 
-  finishSession() {
+  finishSession(completion = {}) {
     const ended = this.activePlayback
+    const listenedS =
+      completion.durationListenedS != null
+        ? completion.durationListenedS
+        : this.getNarrationTime()
+    const duration =
+      completion.durationS != null
+        ? completion.durationS
+        : this.getNarrationProgress().duration || listenedS
+    const pctComplete =
+      duration > 0 ? Math.min(100, (listenedS / duration) * 100) : 100
+
     this.releaseNarrationElement()
     this.session = null
     this.setNarrationPlaying(false)
@@ -676,6 +796,15 @@ export class AudioEngine {
     }
     clearMediaSession()
     this.emitProgress()
+
+    if (ended?.id) {
+      trackAudioCompleted({
+        stopId: ended.id,
+        durationListenedS: listenedS || duration,
+        pctComplete: Number.isFinite(pctComplete) ? pctComplete : 100,
+      })
+    }
+
     // Natural completion only - stop()/teardown() clear the session directly and
     // never route through here.
     this.onNarrationEnded?.(ended)
@@ -807,17 +936,32 @@ export class AudioEngine {
 
     try {
       session.paused = false
+      const stopId = this.getActiveStopId()
+      if (stopId) {
+        trackAudioPlayAttempt({
+          stopId,
+          routeSlug: this.getRouteSlug(),
+        })
+      }
       await session.element.play()
       this.setNarrationPlaying(true)
       this.setPlaybackInterrupted(false)
       this.syncMediaSession()
       this.emitProgress()
       return true
-    } catch {
+    } catch (err) {
       session.paused = true
       this.setNarrationPlaying(false)
       this.syncMediaSession()
       this.emitProgress()
+      const errorName =
+        err && typeof err === 'object' && 'name' in err && err.name
+          ? String(err.name)
+          : 'Error'
+      trackAudioPlayBlocked({
+        stopId: this.getActiveStopId(),
+        errorName,
+      })
       return false
     }
   }
@@ -913,6 +1057,12 @@ export class AudioEngine {
   setNarrationPlaying(playing) {
     if (this.narrationPlaying === playing) return
     this.narrationPlaying = playing
+
+    if (playing) {
+      void acquireScreenWakeLock()
+    } else {
+      void releaseScreenWakeLock()
+    }
 
     if (!this.context || !this.bedGain) {
       this.onNarrationChange?.(playing)
@@ -1207,6 +1357,8 @@ export class AudioEngine {
     this.clearTransitSession()
     this.playbackGeneration += 1
     this.playingBeforeHidden = false
+    this.backgroundProbe = null
+    void releaseScreenWakeLock()
 
     for (const source of this.activeSources) {
       try {
