@@ -98,7 +98,7 @@ Run **one** test at a time. Plan, variants, and metric definitions: [`LANDING_PO
 
 | Order | Experiment | Key decision | Status |
 |------:|------------|--------------|--------|
-| 1 | Hero headline A/B | Curiosity vs clarity positioning | **Live** — `landing_exp_hero` sticky 50/50 |
+| 1 | Hero headline A/B | Curiosity vs clarity positioning | **Paused** — forced `landing_exp_hero=a`; re-enable in `landingExperiments.js` |
 | 2 | Primary CTA label | Generic free stop vs Pantheon-specific | Planned |
 | 3 | Threshold before vs after How It Works | Proof timing | Planned |
 | 4 | Pricing card order | Mix / AOV vs conversion | Planned |

@@ -59,10 +59,11 @@ Live order already matches this implementation sequence (Act I Promise → Act I
 | **A (control)** | Walk until the city starts talking. |
 | **B** | Walk Rome freely—with the history you’d miss on your own. |
 
-**Status: LIVE — sticky 50/50.** Assignment in `landingExperiments.js` (`cw_landing_exp_hero`).  
-QA override: `?landing_exp_hero=a` or `?landing_exp_hero=b`.  
-Property on funnel events: `landing_exp_hero` (do not use `ab_variant`).  
-Disable via `LANDING_EXP_HERO_ENABLED = false` (forces A without wiping storage).
+**Status: PAUSED 2026-08-02 — insufficient traffic for significance.**  
+Pin: `LANDING_EXP_HERO_ENABLED = false` in `landingExperiments.js` forces control **A** for 100% of traffic and clears any persisted `b` assignment.  
+Re-enable at >500 clicks/week (flip the constant back to `true`).  
+QA override still works: `?landing_exp_hero=a` or `?landing_exp_hero=b`.  
+Property on funnel events: `landing_exp_hero` (do not use `ab_variant` — price cents keep firing separately for history).
 
 Default copy in `LANDING_CONTENT.hero.headline` remains A for tests / SEO docs.
 
