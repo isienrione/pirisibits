@@ -217,25 +217,38 @@ export default function LandingProductHero({
             ) : null}
             <HeroLead text={section.subheadline} highlight={section.subheadlineHighlight} />
 
-            <div
-              className={`cw-v4-hero__actions${
-                onContinueWalk ? ' cw-v4-hero__actions--clarity cw-v4-hero__actions--with-continue' : ' cw-v4-hero__actions--clarity'
-              }`}
-            >
-              {onContinueWalk ? (
-                <button
-                  type="button"
-                  className="cw-v4-btn cw-v4-btn--primary"
-                  onClick={onContinueWalk}
-                  tabIndex={interactive ? 0 : -1}
-                >
-                  Continue your walk
-                </button>
-              ) : null}
+            <div className="cw-v4-hero__actions cw-v4-hero__actions--clarity">
+              {(() => {
+                const unlockCta = (
+                  <a
+                    key="unlock"
+                    href={section.getAppHref ?? '#pricing'}
+                    className="cw-v4-btn cw-v4-btn--getapp"
+                    tabIndex={interactive ? 0 : -1}
+                    onClick={(event) => {
+                      if (!onGetApp && !onChooseTour) return
+                      event.preventDefault()
+                      ;(onGetApp || onChooseTour)?.()
+                    }}
+                  >
+                    {section.getAppCta}
+                  </a>
+                )
 
-              {previewFirst ? (
-                <>
+                // Continue your walk only replaces the free Pantheon CTA — Unlock always stays.
+                const secondaryCta = onContinueWalk ? (
                   <button
+                    key="continue"
+                    type="button"
+                    className="cw-v4-btn cw-v4-btn--primary"
+                    onClick={onContinueWalk}
+                    tabIndex={interactive ? 0 : -1}
+                  >
+                    Continue your walk
+                  </button>
+                ) : (
+                  <button
+                    key="preview"
                     type="button"
                     className="cw-v4-btn cw-v4-btn--primary"
                     aria-label={section.primaryCtaAriaLabel || undefined}
@@ -244,44 +257,20 @@ export default function LandingProductHero({
                   >
                     {section.primaryCta}
                   </button>
-                  <a
-                    href={section.getAppHref ?? '#pricing'}
-                    className="cw-v4-btn cw-v4-btn--getapp"
-                    tabIndex={interactive ? 0 : -1}
-                    onClick={(event) => {
-                      if (!onGetApp && !onChooseTour) return
-                      event.preventDefault()
-                      ;(onGetApp || onChooseTour)?.()
-                    }}
-                  >
-                    {section.getAppCta}
-                  </a>
-                </>
-              ) : (
-                <>
-                  <a
-                    href={section.getAppHref ?? '#pricing'}
-                    className="cw-v4-btn cw-v4-btn--getapp"
-                    tabIndex={interactive ? 0 : -1}
-                    onClick={(event) => {
-                      if (!onGetApp && !onChooseTour) return
-                      event.preventDefault()
-                      ;(onGetApp || onChooseTour)?.()
-                    }}
-                  >
-                    {section.getAppCta}
-                  </a>
-                  <button
-                    type="button"
-                    className="cw-v4-btn cw-v4-btn--primary"
-                    aria-label={section.primaryCtaAriaLabel || undefined}
-                    onClick={() => onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO)}
-                    tabIndex={interactive ? 0 : -1}
-                  >
-                    {section.primaryCta}
-                  </button>
-                </>
-              )}
+                )
+
+                return previewFirst ? (
+                  <>
+                    {secondaryCta}
+                    {unlockCta}
+                  </>
+                ) : (
+                  <>
+                    {unlockCta}
+                    {secondaryCta}
+                  </>
+                )
+              })()}
 
               {section.trustLine ? (
                 <p className="cw-v4-hero__trust">{section.trustLine}</p>

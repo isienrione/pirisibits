@@ -106,28 +106,36 @@ describe('LandingProductHero CTA hierarchy', () => {
     expect(kids[1].className).toMatch(/getapp/)
   })
 
-  it('keeps Unlock visible when Continue your walk is offered', () => {
+  it('keeps Unlock when Continue replaces only the free Pantheon CTA', () => {
     const onContinueWalk = vi.fn()
     const onGetApp = vi.fn()
+    const onPreview = vi.fn()
     render(
       <LandingProductHero
-        onPreview={() => {}}
+        onPreview={onPreview}
         onChooseTour={() => {}}
         onGetApp={onGetApp}
         onContinueWalk={onContinueWalk}
       />,
     )
 
-    expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
     const unlock = screen.getByRole('link', {
       name: `Unlock all 21 stops · ${LANDING_PRICE_FALLBACK_LABEL}`,
     })
     expect(unlock).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: LANDING_CTA.tryPantheonFree })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
+    // Free Pantheon is swapped for Continue — not shown alongside it.
+    expect(screen.queryByRole('button', { name: LANDING_CTA.tryPantheonFree })).not.toBeInTheDocument()
+
+    const actions = document.querySelector('.cw-v4-hero__actions')
+    const kids = [...actions.querySelectorAll('a, button')]
+    expect(kids[0].textContent).toMatch(/Unlock all 21 stops/i)
+    expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
     expect(onContinueWalk).toHaveBeenCalledTimes(1)
     fireEvent.click(unlock)
     expect(onGetApp).toHaveBeenCalledTimes(1)
+    expect(onPreview).not.toHaveBeenCalled()
   })
 })
