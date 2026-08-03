@@ -1218,23 +1218,6 @@
   animation: cw-v4-arrow-nudge 2.4s ease-in-out infinite;
 }
 
-.cw-v4-hero__hint {
-  position: absolute;
-  z-index: 3;
-  left: 50%;
-  bottom: 2.65rem;
-  transform: translateX(-50%);
-  margin: 0;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(8, 8, 10, 0.45);
-  color: rgba(250, 246, 239, 0.82);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
 @keyframes cw-v4-arrow-nudge {
   0%,
   100% {
@@ -1259,11 +1242,6 @@
 
   .cw-v4-hero__arrow--next {
     right: 0.35rem;
-  }
-
-  .cw-v4-hero__hint {
-    bottom: 2.45rem;
-    font-size: 0.68rem;
   }
 }
 
