@@ -7,11 +7,18 @@ const CINEMATIC = `${LANDING_IMG}/cinematic`
 
 /**
  * Shared landing imagery - keep NOW/THEN coherent across threshold demo + phone mockups.
- * Threshold pair is a matched 3:4 crop set (dissolve reveal) under /landing/threshold/.
+ * Exterior threshold pair is a matched 3:4 crop set under /landing/threshold/.
+ * Interior pair is a matched 9:16 crop from the product Colosseum-interior stop.
  */
 export const LANDING_COLOSSEUM_NOW = `${LANDING_IMG}/threshold/colosseum-now.jpg`
 export const LANDING_COLOSSEUM_THEN = `${LANDING_IMG}/threshold/colosseum-then.jpg`
+export const LANDING_COLOSSEUM_INTERIOR_NOW = `${LANDING_IMG}/threshold/colosseum-interior-now.jpg`
+export const LANDING_COLOSSEUM_INTERIOR_THEN = `${LANDING_IMG}/threshold/colosseum-interior-then.jpg`
 export const LANDING_COLOSSEUM_THEN_LOOP = mediaUrl(`${COLOSSEUM_EXTERIOR}/ancient-reconstruction.mp4`)
+/** Product Colosseum-interior loop (silent landing demos prefer the still pair above). */
+export const LANDING_COLOSSEUM_INTERIOR_THEN_LOOP = mediaUrl(
+  '/waypoints/colosseum/interior/ancient-reconstruction.mp4',
+)
 /** Waypoint poster - used where a live “today” still is needed outside Threshold. */
 export const LANDING_COLOSSEUM_NOW_WAYPOINT = colosseumNow
 export const LANDING_PANTHEON_NOW = pantheonNow

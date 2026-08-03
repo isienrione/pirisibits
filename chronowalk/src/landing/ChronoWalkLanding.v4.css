@@ -1390,6 +1390,197 @@
   }
 }
 
+/* ——— Then/Now proof (post-trust strip) ——— */
+
+.cw-v4-then-now {
+  position: relative;
+  padding: 2.25rem 0 2.75rem;
+  background:
+    linear-gradient(180deg, var(--v4-paper) 0%, #f3ebe0 42%, var(--v4-paper-2, #efe6d8) 100%);
+  border-bottom: 1px solid var(--v4-line);
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
+}
+
+.cw-v4-then-now__layout {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .cw-v4-then-now__layout {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2.25rem 2.75rem;
+    align-items: center;
+  }
+}
+
+.cw-v4-then-now__intro {
+  max-width: 34rem;
+}
+
+.cw-v4-then-now__headline {
+  margin: 0.55rem 0 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.55rem, 2.6vw, 2.35rem);
+  font-weight: 550;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--v4-ink);
+}
+
+.cw-v4-then-now__support {
+  margin: 0.85rem 0 0;
+  max-width: 32rem;
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--v4-muted);
+}
+
+.cw-v4-then-now__stage-wrap {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+}
+
+.cw-v4-then-now__phone {
+  width: min(100%, var(--v4-phone-w, 17.5rem));
+  justify-self: center;
+}
+
+.cw-landing--v4 .cw-v4-then-now__phone .cw-landing-phone,
+.cw-landing--v4 .cw-v4-then-now__phone .cw-landing-phone--xl {
+  width: 100%;
+  max-width: none;
+  --phone-display-w: 100%;
+}
+
+.cw-landing--v4 .cw-v4-then-now__phone .cw-landing-phone__screen {
+  position: relative;
+  overflow: hidden;
+}
+
+.cw-v4-then-now-app .cw-waypoint-immersive__hero-title {
+  bottom: 46%;
+}
+
+.cw-v4-then-now-app .cw-waypoint-immersive__panel.cw-v4-then-now-app__panel {
+  padding: 12px 20px 18px;
+  gap: 10px;
+}
+
+.cw-v4-then-now-app__wave {
+  height: 28px;
+  border-radius: 8px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(232, 161, 60, 0.15) 0%,
+      rgba(232, 161, 60, 0.55) 18%,
+      rgba(245, 240, 232, 0.18) 42%,
+      rgba(232, 161, 60, 0.4) 68%,
+      rgba(245, 240, 232, 0.12) 100%
+    );
+  opacity: 0.9;
+}
+
+.cw-v4-then-now-app__transport {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cw-v4-then-now-app__time {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: rgba(245, 240, 232, 0.55);
+  min-width: 2.2rem;
+}
+
+.cw-v4-then-now-app__play {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--v4-amber, #e8a13c) 82%, #211c15);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  position: relative;
+}
+
+.cw-v4-then-now-app__play::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 7px 0 7px 12px;
+  border-color: transparent transparent transparent #1a1612;
+}
+
+.cw-v4-then-now-app__chapter {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 240, 232, 0.48);
+  text-align: center;
+}
+
+.cw-v4-then-now__status {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--v4-muted);
+  text-align: center;
+}
+
+.cw-v4-then-now__controls {
+  display: flex;
+  justify-content: center;
+}
+
+.cw-v4-then-now__fallback {
+  appearance: none;
+  margin: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(33, 28, 21, 0.18);
+  background: #fffdf8;
+  color: var(--v4-ink);
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cw-v4-then-now__fallback:hover,
+.cw-v4-then-now__fallback:focus-visible {
+  border-color: color-mix(in srgb, var(--v4-amber-deep) 55%, #211c15);
+}
+
+.cw-v4-then-now__fallback:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--v4-amber) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.cw-v4-then-now__note {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--v4-muted) 88%, transparent);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-v4-then-now-app .cw-diegetic-hint__ring-outer,
+  .cw-v4-then-now-app .cw-diegetic-hint__ring-mid,
+  .cw-v4-then-now-app .cw-diegetic-hint__ring-core {
+    animation: none !important;
+  }
+}
+
 /* ——— Product demo: one sticky stage, short synced scrub ——— */
 
 

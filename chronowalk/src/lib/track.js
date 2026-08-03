@@ -61,6 +61,9 @@ export const TRACK_EVENTS = {
   LANDING_PRICING_VIEW: 'landing_pricing_view',
   LANDING_FAQ_OPEN: 'landing_faq_open',
   GUARANTEE_VIEW: 'guarantee_view',
+  THEN_NOW_DEMO_VIEWED: 'then_now_demo_viewed',
+  THEN_NOW_DEMO_STARTED: 'then_now_demo_started',
+  THEN_NOW_DEMO_COMPLETED: 'then_now_demo_completed',
   /** @deprecated prefer LANDING_PRICING_VIEW - kept for historical funnel queries */
   LANDING_SCROLL_PRODUCT: 'landing_scroll_product',
   PAGE_UNLOAD: 'page_unload',

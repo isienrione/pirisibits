@@ -20,6 +20,7 @@ import { resolveLandingIntent } from './landingIntent.js'
 export const LANDING_ANALYTICS_SECTIONS = Object.freeze({
   HERO: 'hero',
   HERO_REASSURANCE: 'hero-reassurance',
+  THEN_NOW: 'then-now',
   HEADER: 'header',
   EARLY_CTA: 'early-cta',
   THRESHOLD: 'threshold',
@@ -35,6 +36,7 @@ const onceFlags = {
   view: false,
   routeView: false,
   pricingView: false,
+  thenNowView: false,
 }
 
 function landingProps(extra = {}) {
@@ -52,6 +54,7 @@ export function resetLandingAnalyticsForTests() {
   onceFlags.view = false
   onceFlags.routeView = false
   onceFlags.pricingView = false
+  onceFlags.thenNowView = false
 }
 
 export function trackLandingView() {
@@ -146,6 +149,45 @@ export function trackLandingThresholdCancelled({ duration_ms, via = 'hold' } = {
       via,
       waypoint_id: 'landing-colosseum',
       duration_ms: Math.round(duration_ms ?? 0),
+    }),
+  )
+}
+
+/** Top-of-page Then/Now proof entered viewport (once per page load). */
+export function trackThenNowDemoViewed() {
+  if (onceFlags.thenNowView) return false
+  onceFlags.thenNowView = true
+  track(
+    TRACK_EVENTS.THEN_NOW_DEMO_VIEWED,
+    landingProps({
+      section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
+      waypoint_id: 'landing-colosseum-interior',
+    }),
+  )
+  return true
+}
+
+/** Meaningful Then/Now interaction started (once per hold / toggle). */
+export function trackThenNowDemoStarted({ via = 'hold' } = {}) {
+  track(
+    TRACK_EVENTS.THEN_NOW_DEMO_STARTED,
+    landingProps({
+      section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
+      via,
+      waypoint_id: 'landing-colosseum-interior',
+    }),
+  )
+}
+
+/** Then/Now reveal reached the intended completion threshold. */
+export function trackThenNowDemoCompleted({ via = 'hold', duration_ms } = {}) {
+  track(
+    TRACK_EVENTS.THEN_NOW_DEMO_COMPLETED,
+    landingProps({
+      section: LANDING_ANALYTICS_SECTIONS.THEN_NOW,
+      via,
+      waypoint_id: 'landing-colosseum-interior',
+      ...(typeof duration_ms === 'number' ? { duration_ms: Math.round(duration_ms) } : {}),
     }),
   )
 }

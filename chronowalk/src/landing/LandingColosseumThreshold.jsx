@@ -1,21 +1,34 @@
-import { LANDING_COLOSSEUM_NOW, LANDING_COLOSSEUM_THEN } from './landingVisualAssets.js'
+import {
+  LANDING_COLOSSEUM_NOW,
+  LANDING_COLOSSEUM_THEN,
+} from './landingVisualAssets.js'
 
 /**
- * Colosseum then/now threshold visual - matched 3:4 crops with dissolve reveal.
+ * Colosseum then/now threshold visual - matched crops with dissolve reveal.
  * Clip-wipes exaggerate viewpoint mismatch; opacity dissolve keeps the beat readable.
  * Keeps legacy `cw-doc-threshold-demo*` classes for phone mockups.
+ *
+ * Defaults remain the exterior landing pair so archived sections stay unchanged.
  */
 export default function LandingColosseumThreshold({
   reveal = 0,
   interactive = false,
   className = '',
   onPointerDown,
+  onPointerMove,
   onPointerUp,
   onPointerCancel,
   onPointerLeave,
   hint = 'Press and hold to reveal',
   showProgress = false,
   labelledBy,
+  loading = 'lazy',
+  fetchPriority,
+  nowSrc = LANDING_COLOSSEUM_NOW,
+  thenSrc = LANDING_COLOSSEUM_THEN,
+  width = 960,
+  height = 1280,
+  ariaLabel = 'Colosseum today compared with an evidence-based ancient reconstruction',
 }) {
   const amount = Math.min(1, Math.max(0, reveal))
   const progressPct = Math.round(amount * 100)
@@ -25,26 +38,24 @@ export default function LandingColosseumThreshold({
     <div
       className={`cw-doc-threshold-demo cw-threshold-stage${interactive ? ' cw-threshold-stage--interactive' : ' cw-doc-threshold-demo--static'}${className ? ` ${className}` : ''}`}
       onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
       onPointerLeave={onPointerLeave}
       role="img"
       aria-labelledby={labelledBy}
-      aria-label={
-        labelledBy
-          ? undefined
-          : 'Colosseum today compared with an evidence-based ancient reconstruction'
-      }
+      aria-label={labelledBy ? undefined : ariaLabel}
     >
       <div className="cw-doc-threshold-demo__then cw-threshold-stage__then" aria-hidden="true">
         <img
           className="cw-threshold-stage__img cw-threshold-stage__img--then"
-          src={LANDING_COLOSSEUM_THEN}
+          src={thenSrc}
           alt=""
-          width={960}
-          height={1280}
-          loading="lazy"
+          width={width}
+          height={height}
+          loading={loading}
           decoding="async"
+          fetchPriority={fetchPriority}
           draggable={false}
         />
         {showProgress ? (
@@ -59,12 +70,13 @@ export default function LandingColosseumThreshold({
       >
         <img
           className="cw-threshold-stage__img cw-threshold-stage__img--now"
-          src={LANDING_COLOSSEUM_NOW}
+          src={nowSrc}
           alt=""
-          width={960}
-          height={1280}
-          loading="lazy"
+          width={width}
+          height={height}
+          loading={loading}
           decoding="async"
+          fetchPriority={fetchPriority}
           draggable={false}
         />
         {showProgress ? (
