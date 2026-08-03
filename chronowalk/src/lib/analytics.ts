@@ -463,6 +463,19 @@ export function track(event: AnalyticsEventName, props: AnalyticsProps = {}): bo
     } catch {
       /* debug log must never break capture */
     }
+    // Playwright / DebugPanel: mirror into window.__cwPhEvents when present.
+    try {
+      const sink = (window as Window & { __cwPhEvents?: unknown }).__cwPhEvents
+      if (Array.isArray(sink)) {
+        sink.push({
+          event: String(event),
+          properties: payload,
+          ts: Date.now(),
+        })
+      }
+    } catch {
+      /* ignore */
+    }
     return true
   } catch {
     return false
@@ -787,8 +800,29 @@ function fireBouncedFast() {
 }
 
 /**
+ * True when enough of the element is on screen to count as a dwell.
+ * Tall sections (pricing) often cannot reach intersectionRatio ≥ 0.5 on mobile
+ * because the element is taller than the viewport — also accept filling
+ * `threshold` of the viewport height.
+ */
+function isDwellVisible(
+  entry: IntersectionObserverEntry,
+  threshold: number,
+): boolean {
+  if (!entry?.isIntersecting) return false
+  if (entry.intersectionRatio >= threshold) return true
+  const viewportH =
+    entry.rootBounds?.height ||
+    (typeof window !== 'undefined' ? window.innerHeight : 0)
+  if (viewportH <= 0) return false
+  return entry.intersectionRect.height / viewportH >= threshold
+}
+
+/**
  * Observe element until ≥ threshold visible for dwellMs, then fire once.
  * Fast scrolls past do not count.
+ * For elements taller than the viewport, “visible” means filling ≥ threshold
+ * of the viewport (not ≥ threshold of the element’s own height).
  */
 export function observeDwellOnce(
   element: Element | null | undefined,
@@ -809,8 +843,8 @@ export function observeDwellOnce(
 
   const io = new IntersectionObserver(
     ([entry]) => {
-      if (done) return
-      if (entry?.isIntersecting && entry.intersectionRatio >= threshold) {
+      if (done || !entry) return
+      if (isDwellVisible(entry, threshold)) {
         if (timer != null) return
         timer = setTimeout(() => {
           if (done) return
@@ -823,7 +857,7 @@ export function observeDwellOnce(
         clearTimer()
       }
     },
-    { threshold: [0, threshold, 1] },
+    { threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1] },
   )
 
   io.observe(element)

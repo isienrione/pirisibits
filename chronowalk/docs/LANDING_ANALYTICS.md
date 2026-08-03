@@ -74,8 +74,11 @@ Code: `src/landing/landingAnalytics.js` · constants also on `TRACK_EVENTS` in `
 
 ```bash
 cd chronowalk
-npm test -- --run src/landing/__tests__/landingAnalytics.test.js src/landing/__tests__/LandingThresholdSection.test.jsx
+npm test -- --run src/landing/__tests__/landingAnalytics.test.js
+npm run test:e2e:analytics   # Playwright — tests/analytics.spec.ts (also runs in CI)
 ```
+
+Manual mobile checklist (full event tables): [`scripts/verify-analytics.md`](../scripts/verify-analytics.md).
 
 ### Manual (local, with PostHog key)
 

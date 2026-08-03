@@ -1,0 +1,50 @@
+name: Analytics e2e
+
+on:
+  push:
+    branches: [figma, 'cursor/**']
+  pull_request:
+
+concurrency:
+  group: analytics-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analytics-funnel:
+    name: Landing funnel (Playwright)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chronowalk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: chronowalk/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run analytics funnel e2e
+        run: npm run test:e2e:analytics
+        env:
+          CI: 'true'
+          VITE_POSTHOG_KEY: phc_playwright_analytics_ci
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-analytics-report
+          path: |
+            chronowalk/playwright-report/
+            chronowalk/test-results/
+          retention-days: 7

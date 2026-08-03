@@ -152,6 +152,12 @@ export function initAnalytics() {
         registerAttributionWithPosthog(getAttribution())
       },
     })
+    // Expose the module singleton for DebugPanel / Playwright capture stubs.
+    try {
+      window.posthog = posthog
+    } catch {
+      /* ignore */
+    }
     initialized = true
     markAnalyticsReady(true)
 
