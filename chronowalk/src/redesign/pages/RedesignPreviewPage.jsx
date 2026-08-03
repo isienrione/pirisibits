@@ -19,6 +19,7 @@ import {
   retainPreviewPlaybackIntent,
   stopPreviewSessionAudio,
 } from '../../landing/previewAudioHandoff.js'
+import { reportAudioLoadFailure } from '../../lib/errorVisibility.js'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import A2FreePreviewStory from '../screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../screens/A2PreviewGhostTour.jsx'
@@ -69,7 +70,10 @@ export default function RedesignPreviewPage() {
       setStoryEnded(true)
       notePreviewAudioTime(audio.duration || duration, audio.duration || duration, 'pantheon')
     }
-    const onError = () => setAudioError(true)
+    const onError = () => {
+      setAudioError(true)
+      reportAudioLoadFailure(audio.currentSrc || audio.src || null)
+    }
 
     audio.addEventListener('timeupdate', onTime)
     audio.addEventListener('loadedmetadata', onMeta)

@@ -1,5 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+
+vi.mock('../../lib/errorVisibility.js', () => ({
+  reportImageLoadFailure: vi.fn(),
+}))
+
 import { preloadLandingImages, retryImageOnError } from '../v4/preloadLandingImages.js'
+import { reportImageLoadFailure } from '../../lib/errorVisibility.js'
 
 describe('preloadLandingImages', () => {
   const OriginalImage = globalThis.Image
@@ -51,6 +57,7 @@ describe('preloadLandingImages', () => {
     }
 
     retryImageOnError({ currentTarget: img })
+    expect(reportImageLoadFailure).toHaveBeenCalledWith('/landing/hero-slides/ruin-room.png')
     expect(img.dataset.cwRetry).toBe('1')
     expect(img.src).toMatch(/^\/landing\/hero-slides\/ruin-room\.png\?cw_img=\d+$/)
 

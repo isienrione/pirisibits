@@ -496,6 +496,59 @@ export function observeDwellOnce(
   }
 }
 
+
+export function trackJsError(opts: {
+  message: string
+  source?: string | null
+  lineno?: number | null
+  stackHead?: string | null
+}): boolean {
+  return track('js_error', {
+    message: opts.message,
+    ...(opts.source ? { source: opts.source } : {}),
+    ...(opts.lineno != null ? { lineno: opts.lineno } : {}),
+    ...(opts.stackHead ? { stack_head: opts.stackHead } : {}),
+  })
+}
+
+export function trackReactErrorBoundary(opts: {
+  componentStackHead?: string | null
+  errorMessage?: string | null
+}): boolean {
+  return track('react_error_boundary', {
+    ...(opts.componentStackHead ? { component_stack_head: opts.componentStackHead } : {}),
+    ...(opts.errorMessage ? { error_message: opts.errorMessage } : {}),
+  })
+}
+
+export function trackAssetLoadFailed(opts: {
+  assetUrl?: string | null
+  assetType: 'image' | 'audio' | 'map' | string
+}): boolean {
+  return track('asset_load_failed', {
+    asset_type: opts.assetType,
+    ...(opts.assetUrl ? { asset_url: opts.assetUrl } : {}),
+  })
+}
+
+export function trackMapboxInitFailed(opts: {
+  reason: string
+  detail?: string | null
+}): boolean {
+  if (!once(`mapbox_init_failed:${opts.reason}`)) return false
+  return track('asset_load_failed', {
+    asset_type: 'map',
+    asset_url: 'mapbox-gl',
+    error_message: opts.reason,
+    ...(opts.detail ? { detail: opts.detail } : {}),
+  })
+}
+
+export function trackSlowPage(opts: { lcpMs: number }): boolean {
+  if (!once('slow_page')) return false
+  return track('slow_page', { lcp_ms: Math.round(opts.lcpMs) })
+}
+
 /** Debounced scroll milestones + exit intent. Safe to call multiple times. */
 export function installLandingPageListeners(): () => void {
   if (typeof window === 'undefined') return () => {}

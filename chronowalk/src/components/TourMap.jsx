@@ -7,6 +7,7 @@ import {
 } from '../utils/walkingCompanionMapCamera.js'
 import { loadMapboxRuntime } from '../map/mapboxLoader.js'
 import { createMapboxTransformRequest } from '../map/offlineMapTiles.js'
+import { reportMapboxInitFailure } from '../lib/errorVisibility.js'
 import { JOURNEY_STATE } from '../hooks/useGeoLocation'
 import { createCirclePolygon } from '../utils/circleGeoJSON'
 import {
@@ -380,6 +381,7 @@ function TourMapboxView({
     let bootstrapTimeoutId = window.setTimeout(() => {
       if (cancelled || map.current?.loaded?.()) return
       console.warn('Mapbox bootstrap timed out before the map became ready')
+      reportMapboxInitFailure('bootstrap_timeout')
       onMapFailureRef.current?.()
     }, MAP_BOOTSTRAP_TIMEOUT_MS)
 
@@ -445,6 +447,10 @@ function TourMapboxView({
         })
       } catch (error) {
         console.error('Mapbox initialization failed:', error)
+        reportMapboxInitFailure(
+          'map_construct_failed',
+          error instanceof Error ? error.message : String(error),
+        )
         onMapFailureRef.current?.()
         return
       }
@@ -507,6 +513,10 @@ function TourMapboxView({
       })
       .catch((error) => {
         console.error('Mapbox runtime load failed:', error)
+        reportMapboxInitFailure(
+          'runtime_load_failed',
+          error instanceof Error ? error.message : String(error),
+        )
         onMapFailureRef.current?.()
       })
 

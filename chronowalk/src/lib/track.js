@@ -132,6 +132,7 @@ export function initAnalytics() {
       capture_pageleave: true,
       autocapture: true,
       rageclick: true,
+      capture_exceptions: true,
       disable_session_recording: false,
       session_recording: {
         maskAllInputs: false,

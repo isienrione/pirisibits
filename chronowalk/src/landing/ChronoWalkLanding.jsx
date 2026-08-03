@@ -37,6 +37,7 @@ import {
 import { ensureLandingExpHero } from './landingExperiments.js'
 import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
+import LandingErrorBoundary from './LandingErrorBoundary.jsx'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
@@ -46,6 +47,14 @@ import './ChronoWalkLanding.v4.css'
  * Sticky phone is the protagonist. Commerce / FAQ / SEO handlers preserved.
  */
 export default function ChronoWalkLanding() {
+  return (
+    <LandingErrorBoundary>
+      <ChronoWalkLandingInner />
+    </LandingErrorBoundary>
+  )
+}
+
+function ChronoWalkLandingInner() {
   const navigate = useNavigate()
   const { cents } = useLandingPrice()
   const [pendingTierId, setPendingTierId] = useState(null)
