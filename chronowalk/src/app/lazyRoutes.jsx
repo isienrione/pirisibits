@@ -172,3 +172,18 @@ export const LazyContactPage = lazyRoute(
   () => import('./pages/ContactPage.jsx'),
   'contact',
 )
+
+export const LazyFreePantheonPage = lazyRoute(
+  () => import('../landing/acquisition/FreePantheonPage.jsx'),
+  'free pantheon',
+)
+
+export const LazyAncientRomePage = lazyRoute(
+  () => import('../landing/acquisition/AncientRomePage.jsx'),
+  'ancient rome',
+)
+
+export const LazyHowItWorksPage = lazyRoute(
+  () => import('../landing/acquisition/HowItWorksPage.jsx'),
+  'how it works',
+)

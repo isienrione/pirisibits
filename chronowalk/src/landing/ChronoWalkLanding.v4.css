@@ -78,6 +78,20 @@
   line-height: 1.55;
 }
 
+.cw-landing--v4 .cw-v4-pkg__acq-link,
+.cw-landing--v4 .cw-v4-pkg-mobile-card__acq-link {
+  margin: 0.65rem 0 0;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.cw-landing--v4 .cw-v4-pkg__acq-link a,
+.cw-landing--v4 .cw-v4-pkg-mobile-card__acq-link a {
+  color: var(--v4-ink);
+  font-weight: 600;
+  text-underline-offset: 0.18em;
+}
+
 /* ——— Intro → Nav ——— */
 
 /* Full-bleed black stage — letterboxing matches the cinematic, not a video player. */

@@ -409,7 +409,7 @@ export const LANDING_CONTENT = {
         support: 'Enjoy Pantheon Part 1 (FREE)',
         supportBefore: 'Enjoy ',
         supportLinkText: 'Pantheon Part 1 (FREE)',
-        supportLinkHref: '/preview',
+        supportLinkHref: '/free-pantheon',
       },
     ],
   },
@@ -867,7 +867,7 @@ export const LANDING_CONTENT = {
 
   header: {
     nav: [
-      { label: 'How it works', href: '#how-it-works' },
+      { label: 'How it works', href: '/how-it-works' },
       { label: 'Stops', href: '#monuments' },
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
@@ -881,7 +881,8 @@ export const LANDING_CONTENT = {
   footer: {
     tagline: 'Self-guided audio walks for Rome, researched and yours to keep.',
     nav: [
-      { label: 'How it works', href: '#how-it-works' },
+      { label: 'Home', href: '/' },
+      { label: 'How it works', href: '/how-it-works' },
       { label: 'Stops', href: '#monuments' },
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },

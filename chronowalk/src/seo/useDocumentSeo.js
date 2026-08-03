@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { applyDocumentMeta } from './applyDocumentMeta.js'
+import { getPageMeta } from './pageMeta.js'
 import { resolveDocumentSeo } from './siteRoutes.js'
 
 const ROBOTS_META_NAME = 'robots'
@@ -34,6 +36,7 @@ function removeLinkByRel(rel) {
  * Applies route-aware robots + canonical tags for SPA navigations.
  * Public marketing/legal/contact pages get canonical absolute HTTPS URLs;
  * credential / transactional / app routes get noindex.
+ * Indexable pages with PAGE_META also receive title / description / OG tags.
  */
 export function useDocumentSeo() {
   const { pathname } = useLocation()
@@ -54,7 +57,20 @@ export function useDocumentSeo() {
       removeLinkByRel(CANONICAL_REL)
     }
 
+    const pageMeta = getPageMeta(pathname)
+    const restorePageMeta = pageMeta
+      ? applyDocumentMeta({
+          title: pageMeta.title,
+          description: pageMeta.description,
+          canonicalHref,
+          ogImage: pageMeta.ogImage,
+          ogImageAlt: pageMeta.ogImageAlt,
+        })
+      : null
+
     return () => {
+      restorePageMeta?.()
+
       if (previousRobots != null) robotsMeta.setAttribute('content', previousRobots)
       else robotsMeta.remove()
 

@@ -3,6 +3,8 @@ import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  ACQUISITION_PUBLIC_PATHS,
+  FOOTER_LEGAL_PATHS,
   INDEXABLE_PUBLIC_PATHS,
   NOINDEX_PATH_PREFIXES,
   PRODUCTION_ORIGIN,
@@ -95,6 +97,9 @@ describe('public robots.txt + sitemap.xml', () => {
     expect(robots).toMatch(/^User-agent:\s*\*/m)
     expect(robots).toMatch(/^Allow:\s*\/$/m)
     expect(robots).not.toMatch(/^Allow:\s*\/landing$/m)
+    expect(robots).toMatch(/^Allow:\s*\/free-pantheon$/m)
+    expect(robots).toMatch(/^Allow:\s*\/ancient-rome$/m)
+    expect(robots).toMatch(/^Allow:\s*\/how-it-works$/m)
     expect(robots).toMatch(/^Allow:\s*\/legal\/$/m)
     expect(robots).toMatch(/^Allow:\s*\/contact$/m)
     expect(robots).toMatch(/^Sitemap:\s*https:\/\/chronowalk\.com\/sitemap\.xml$/m)
@@ -138,11 +143,19 @@ describe('public robots.txt + sitemap.xml', () => {
       const path = loc.slice(PRODUCTION_ORIGIN.length)
       expect(routerPaths).toContain(path)
       expect(INDEXABLE_PUBLIC_PATHS).toContain(path)
-      if (path !== '/') {
-        expect(footerLegal).toContain(path)
-      } else {
+      if (path === '/') {
         expect(routerPaths).toContain('/')
+      } else if (ACQUISITION_PUBLIC_PATHS.includes(path)) {
+        expect(FOOTER_LEGAL_PATHS).not.toContain(path)
+      } else {
+        expect(FOOTER_LEGAL_PATHS).toContain(path)
+        expect(footerLegal).toContain(path)
       }
+    }
+
+    for (const path of ACQUISITION_PUBLIC_PATHS) {
+      expect(locs).toContain(toAbsoluteUrl(path))
+      expect(routerPaths).toContain(path)
     }
 
     for (const banned of [

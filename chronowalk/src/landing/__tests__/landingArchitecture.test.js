@@ -139,7 +139,7 @@ describe('landing product-story architecture (V4)', () => {
     ])
     const tryFree = strip.items.find((item) => item.id === 'try-free')
     expect(tryFree.supportLinkText).toBe('Pantheon Part 1 (FREE)')
-    expect(tryFree.supportLinkHref).toBe('/preview')
+    expect(tryFree.supportLinkHref).toBe('/free-pantheon')
     const blob = JSON.stringify(strip).toLowerCase()
     expect(blob).not.toMatch(/best.?seller|testimonial|★|award|limited|most popular/)
   })
