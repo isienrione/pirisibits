@@ -438,14 +438,15 @@
 }
 
 .cw-v4-hero__trust {
-  margin: 0.15rem 0 0;
+  margin: 0.2rem 0 0;
   color: rgba(250, 246, 239, 0.72);
-  line-height: 1.4;
-  max-width: 28rem;
-  font-size: clamp(0.72rem, 2vw, 0.82rem);
+  line-height: 1.25;
+  max-width: none;
+  font-size: clamp(0.68rem, 1.9vw, 0.8rem);
   font-weight: 500;
   letter-spacing: 0.01em;
-  text-wrap: balance;
+  text-align: center;
+  white-space: nowrap;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -495,7 +496,12 @@
 
 .cw-v4-hero__actions--pair > .cw-v4-hero__trust {
   grid-column: 1 / -1;
-  padding: 0 0.15rem;
+  justify-self: stretch;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* Mobile: short labels so the pair stays one compact row. */
@@ -958,7 +964,8 @@
   }
 
   .cw-v4-hero__trust {
-    font-size: 0.68rem;
+    font-size: 0.62rem;
+    letter-spacing: 0;
   }
 }
 
