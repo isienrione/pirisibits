@@ -189,9 +189,13 @@ describe('C6ImmersivePlayer next-step CTA layout', () => {
     expect(redesignCss).toMatch(
       /\.redesign-phone-frame--companion\s*\{[^}]*--wc-shell-tab-inset/s,
     )
-    // Frame height must subtract the tab inset (not pad over it) so tab taps work.
+    // Frame sits above the tab strip (height AND min-height). Leaving base
+    // min-height at full viewport made max-height lose and cropped the dock.
     expect(redesignCss).toMatch(
       /\.redesign-phone-frame--companion\s*\{[^}]*height:\s*calc\([^)]*--wc-shell-tab-inset/s,
+    )
+    expect(redesignCss).toMatch(
+      /\.redesign-phone-frame--companion\s*\{[^}]*min-height:\s*calc\([^)]*--wc-shell-tab-inset/s,
     )
     expect(redesignCss).not.toMatch(
       /\.redesign-phone-frame--companion\s*\{[^}]*padding-bottom:\s*var\(--wc-shell-tab-inset/s,

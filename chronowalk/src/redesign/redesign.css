@@ -1504,12 +1504,15 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
-  /* Exclude the tab strip from the frame box so MAP/TOUR/JOURNAL taps reach
-     ShellTabBar. Padding used to leave an overlapping hit region over the tabs. */
+  /* Sit above the fixed ShellTabBar so MAP/TOUR/JOURNAL stay tappable.
+     Must override base .redesign-phone-frame min-height — otherwise min-height
+     wins over a shorter height/max-height and Pause / I'm here sit under the nav. */
   height: calc(100dvh - var(--wc-shell-tab-inset, 0px));
   height: calc(var(--app-height, 100dvh) - var(--wc-shell-tab-inset, 0px));
   max-height: calc(100dvh - var(--wc-shell-tab-inset, 0px));
   max-height: calc(var(--app-height, 100dvh) - var(--wc-shell-tab-inset, 0px));
+  min-height: calc(100dvh - var(--wc-shell-tab-inset, 0px));
+  min-height: calc(var(--app-height, 100dvh) - var(--wc-shell-tab-inset, 0px));
   /* Scroll the frame when content is taller than the inset viewport. */
   overflow-x: hidden;
   overflow-y: auto;
@@ -2197,7 +2200,7 @@ html[data-shell-tab-bar='visible'] {
   --wc-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   background: var(--wc-bg);
   color: var(--wc-warm-white);
-  /* Fill the companion frame (already padded for the tab bar). Using 100dvh
+  /* Fill the companion frame (already sized above the tab bar). Using 100dvh
      here made Pause / I'm here sit under the tab bar with no usable scroll. */
   box-sizing: border-box;
   height: 100%;
