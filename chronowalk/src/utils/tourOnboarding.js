@@ -120,38 +120,38 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
     case 'walk':
       return {
         eyebrow: 'Walk',
-        title: `Head toward ${stopTitle}`,
-        body: 'Follow the map and route line. Distance and walking time update as you move through the city.',
+        title: `Head to ${stopTitle}`,
+        body: 'Follow the route line. Distance updates as you walk.',
       }
     case 'arrive':
       return {
         eyebrow: 'Arrive',
-        title: 'You\'ll know when you\'re there',
-        body: `Watch the distance shrink on screen. When you're at ${stopTitle}, the map highlights your zone and the **I'm here** button appears - tap it to begin the story. GPS may also confirm arrival automatically.`,
+        title: 'Tap I’m here when you arrive',
+        body: 'When the map highlights your zone, start the story.',
       }
     case 'listen':
       return {
         eyebrow: 'Audio',
-        title: 'Play and pause narration',
-        body: 'Story audio starts when you arrive. Tap the **play / pause** button in the player to stop or resume. Rewind and speed controls sit beside it.',
+        title: 'Play and pause anytime',
+        body: 'Narration starts after this tip. Use the yellow control below.',
       }
     case 'transcript':
       return {
         eyebrow: 'Read',
-        title: 'Prefer the full script?',
-        body: 'Tap **Read instead** above the player to open the complete transcript - follow along while you listen, or read quietly if audio isn\'t practical.',
+        title: 'Prefer reading?',
+        body: 'Tap **Read instead** above the player for the full script.',
       }
     case 'continue':
       return {
         eyebrow: 'Continue',
-        title: 'Move to the next stop',
-        body: 'When you\'re ready to leave, tap **Continue walking →** at the bottom. You can also skip ahead if you\'ve heard enough of the story.',
+        title: 'Ready for the next stop?',
+        body: 'Use **Continue walking** at the bottom when you’re done here.',
       }
     case 'reveal':
       return {
         eyebrow: 'Reveal',
-        title: 'Press & hold the image',
-        body: 'See how this place looked centuries ago - press and hold anywhere on the photo. Your narration keeps playing while you explore.',
+        title: 'Press & hold the photo',
+        body: 'See then and now. Narration keeps playing while you hold.',
       }
     default:
       return null

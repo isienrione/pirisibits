@@ -119,7 +119,7 @@ describe('tourOnboarding', () => {
     const walk = cardCopyForPhase('walk', 'The Colosseum')
     expect(walk.title).toMatch(/Colosseum/)
     expect(cardCopyForPhase('listen').title).toMatch(/pause/i)
-    expect(cardCopyForPhase('transcript').title).toMatch(/script/i)
+    expect(cardCopyForPhase('transcript').title).toMatch(/reading/i)
     expect(cardCopyForPhase('continue').title).toMatch(/next stop/i)
     expect(cardCopyForPhase('reveal').title).toMatch(/hold/i)
   })

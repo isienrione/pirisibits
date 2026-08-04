@@ -1863,65 +1863,88 @@ html[data-shell-tab-bar='visible'] {
   position: fixed;
   left: 0;
   right: 0;
-  /* Clamp under the status bar; sit mid-upper so cards aren’t glued to the dock. */
   top: calc(env(safe-area-inset-top, 0px) + 12px);
   bottom: calc(
     var(--wc-shell-tab-inset, 0px) + var(--cw-onboarding-dock-lift, 16px)
   );
   z-index: 120;
-  padding: 0 16px min(14vh, 96px);
+  padding: 0 18px min(12vh, 72px);
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.cw-tour-onboarding-cards__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 42%, rgba(11, 11, 13, 0.18), transparent 70%),
+    rgba(11, 11, 13, 0.42);
+  pointer-events: none;
+  animation: tourOnboardingFadeIn 280ms ease-out;
+}
+
 .cw-tour-onboarding-cards__card {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  max-height: min(
-    70dvh,
-    calc(
-      100dvh - env(safe-area-inset-top, 0px) - var(--wc-shell-tab-inset, 4.75rem) - 48px
-    )
-  );
+  max-width: 22.5rem;
   margin: 0 auto;
-  padding: 18px 18px 16px;
-  border-radius: 16px;
-  background: rgba(22, 19, 15, 0.94);
-  border: 1px solid rgba(245, 239, 227, 0.12);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  padding: 1.05rem 1.05rem 0.95rem;
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(165deg, #fffdf8 0%, #f4efe6 100%);
+  border: 1px solid rgba(33, 28, 21, 0.08);
+  box-shadow:
+    0 18px 40px rgba(11, 11, 13, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset;
   pointer-events: auto;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  animation: tourOnboardingSlideUp 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: tourOnboardingFloatIn 480ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes tourOnboardingSlideUp {
+@keyframes tourOnboardingFadeIn {
   from {
     opacity: 0;
-    transform: translateY(16px);
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes tourOnboardingFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tourOnboardingFloat {
+  0%,
+  100% {
     transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
   }
 }
 
 .cw-tour-onboarding-cards__close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 0.7rem;
+  right: 0.7rem;
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 1.85rem;
+  height: 1.85rem;
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: rgba(245, 239, 227, 0.08);
-  color: rgba(245, 239, 227, 0.72);
+  background: rgba(33, 28, 21, 0.06);
+  color: rgba(33, 28, 21, 0.55);
   cursor: pointer;
 }
 
@@ -1930,32 +1953,63 @@ html[data-shell-tab-bar='visible'] {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 0 28px 8px 0;
-  font-size: 10px;
-  letter-spacing: 0.16em;
+  margin: 0 2rem 0.45rem 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #e4552e;
-  font-weight: 600;
+  color: #b4532a;
+  font-weight: 700;
+}
+
+.cw-tour-onboarding-cards__eyebrow-label {
+  color: #b4532a;
 }
 
 .cw-tour-onboarding-cards__progress {
-  color: rgba(245, 239, 227, 0.45);
+  color: rgba(33, 28, 21, 0.42);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
 }
 
 .cw-tour-onboarding-cards__title {
-  margin: 0 0 8px;
-  font-size: 22px;
-  font-weight: 400;
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.2rem, 4.6vw, 1.45rem);
+  font-weight: 500;
   line-height: 1.2;
-  color: #f5efe3;
+  letter-spacing: -0.02em;
+  color: #211c15;
 }
 
 .cw-tour-onboarding-cards__body {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: rgba(245, 239, 227, 0.72);
+  margin: 0 0 0.85rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: rgba(33, 28, 21, 0.72);
+}
+
+.cw-tour-onboarding-cards__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0 0 0.85rem;
+}
+
+.cw-tour-onboarding-cards__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(33, 28, 21, 0.16);
+}
+
+.cw-tour-onboarding-cards__dot.is-done {
+  background: rgba(180, 83, 42, 0.45);
+}
+
+.cw-tour-onboarding-cards__dot.is-active {
+  width: 1rem;
+  background: #c45a2c;
+  animation: tourOnboardingFloat 1.8s ease-in-out infinite;
 }
 
 .cw-tour-onboarding-cards__action {
@@ -1964,16 +2018,18 @@ html[data-shell-tab-bar='visible'] {
   justify-content: center;
   gap: 4px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 0.8rem 1rem;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 650;
   cursor: pointer;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cw-tour-onboarding-cards__card {
+  .cw-tour-onboarding-cards__card,
+  .cw-tour-onboarding-cards__backdrop,
+  .cw-tour-onboarding-cards__dot.is-active {
     animation: none;
   }
 }

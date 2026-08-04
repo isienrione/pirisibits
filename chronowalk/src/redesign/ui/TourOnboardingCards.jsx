@@ -12,7 +12,7 @@ function renderBody(text) {
   const parts = text.split(/\*\*(.+?)\*\*/g)
   return parts.map((part, index) =>
     index % 2 === 1 ? (
-      <strong key={index} style={{ color: T.warmWhite, fontWeight: 600 }}>
+      <strong key={index} style={{ color: T.ink, fontWeight: 650 }}>
         {part}
       </strong>
     ) : (
@@ -22,7 +22,8 @@ function renderBody(text) {
 }
 
 /**
- * Floating instruction cards for first-tour / first-stop onboarding.
+ * Floating first-tour tip cards.
+ * Light “paper” surface so they read as temporary coaching over the dark walk UI.
  */
 export default function TourOnboardingCards({
   state,
@@ -32,6 +33,7 @@ export default function TourOnboardingCards({
   insideGeofence = false,
   hasReconstruction = false,
   bottomInset = 0,
+  onBlockingChange,
 }) {
   const [dismissedPhases, setDismissedPhases] = useState(() => new Set())
 
@@ -69,6 +71,12 @@ export default function TourOnboardingCards({
   const copy = visiblePhase ? cardCopyForPhase(visiblePhase, stopTitle) : null
   const stepNumber = visiblePhase ? ONBOARDING_CARD_PHASES.indexOf(visiblePhase) + 1 : 0
   const totalSteps = ONBOARDING_CARD_PHASES.length
+  const blocking = Boolean(visiblePhase)
+
+  useEffect(() => {
+    onBlockingChange?.(blocking)
+    return () => onBlockingChange?.(false)
+  }, [blocking, onBlockingChange])
 
   const dismissCurrent = useCallback(() => {
     if (!visiblePhase) return
@@ -81,7 +89,8 @@ export default function TourOnboardingCards({
 
   const finishOnboarding = useCallback(() => {
     markTourOnboardingComplete()
-  }, [])
+    onBlockingChange?.(false)
+  }, [onBlockingChange])
 
   useEffect(() => {
     if (dismissedPhases.size >= ONBOARDING_CARD_PHASES.length) {
@@ -104,29 +113,31 @@ export default function TourOnboardingCards({
       className="cw-tour-onboarding-cards"
       data-testid="tour-onboarding-cards"
       data-phase={visiblePhase}
+      data-blocking={blocking ? 'true' : 'false'}
       style={{
-        // Extra lift above Pause/I'm here; tab safe-area lives in CSS bottom.
         '--cw-onboarding-dock-lift': `${Math.max(16, bottomInset)}px`,
       }}
       role="dialog"
+      aria-modal="true"
       aria-labelledby="tour-onboarding-card-title"
       aria-describedby="tour-onboarding-card-body"
     >
+      <div className="cw-tour-onboarding-cards__backdrop" aria-hidden="true" />
       <div className="cw-tour-onboarding-cards__card">
         <button
           type="button"
           className="cw-tour-onboarding-cards__close"
-          aria-label="Dismiss tip"
+          aria-label="Close tutorial"
           onClick={() => {
-            dismissCurrent()
-            if (isLast) finishOnboarding()
+            // Closing skips the rest of the tips so travelers can get into the story.
+            finishOnboarding()
           }}
         >
-          <X size={16} strokeWidth={2.25} />
+          <X size={15} strokeWidth={2.25} />
         </button>
 
         <p className="cw-tour-onboarding-cards__eyebrow" style={{ fontFamily: F.body }}>
-          {copy.eyebrow}
+          <span className="cw-tour-onboarding-cards__eyebrow-label">Quick tip</span>
           <span className="cw-tour-onboarding-cards__progress">
             {stepNumber}/{totalSteps}
           </span>
@@ -140,9 +151,28 @@ export default function TourOnboardingCards({
           {copy.title}
         </h2>
 
-        <p id="tour-onboarding-card-body" className="cw-tour-onboarding-cards__body" style={{ fontFamily: F.body }}>
+        <p
+          id="tour-onboarding-card-body"
+          className="cw-tour-onboarding-cards__body"
+          style={{ fontFamily: F.body }}
+        >
           {renderBody(copy.body)}
         </p>
+
+        <div className="cw-tour-onboarding-cards__dots" aria-hidden="true">
+          {ONBOARDING_CARD_PHASES.map((phase, index) => (
+            <span
+              key={phase}
+              className={
+                index + 1 === stepNumber
+                  ? 'cw-tour-onboarding-cards__dot is-active'
+                  : index + 1 < stepNumber
+                    ? 'cw-tour-onboarding-cards__dot is-done'
+                    : 'cw-tour-onboarding-cards__dot'
+              }
+            />
+          ))}
+        </div>
 
         <button
           type="button"
@@ -153,7 +183,7 @@ export default function TourOnboardingCards({
             if (isLast) finishOnboarding()
           }}
         >
-          {isLast ? 'Got it' : 'Next'}
+          {isLast ? 'Start listening' : 'Next'}
           {!isLast ? <ChevronRight size={16} strokeWidth={2.5} aria-hidden /> : null}
         </button>
       </div>

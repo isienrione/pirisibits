@@ -326,7 +326,7 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
-    expect(screen.getByText(/Play and pause narration/i)).toBeInTheDocument()
+    expect(screen.getByText(/Play and pause anytime/i)).toBeInTheDocument()
     expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.queryByTestId('threshold-diegetic-hint')).not.toBeInTheDocument()

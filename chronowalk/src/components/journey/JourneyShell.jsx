@@ -135,6 +135,8 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [busy, setBusy] = useState(false)
   const [audioUnlocked, setAudioUnlocked] = useState(false)
   const [devSimulateGps, setDevSimulateGps] = useState(false)
+  /** First-stop tip cards block Colosseum narration until dismissed. */
+  const [storyTutorialBlocking, setStoryTutorialBlocking] = useState(false)
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
   // Last heard narration - keeps the floating dock visible after audio ends.
@@ -382,6 +384,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const tryStartWaypointNarration = useCallback(
     async (waypointId) => {
       if (!manifest || !waypointId) return false
+      if (storyTutorialBlocking) return false
 
       return waypointAutoplayRef.current.ensureStarted(
         waypointId,
@@ -404,7 +407,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         },
       )
     },
-    [manifest, setActiveWaypoint],
+    [manifest, setActiveWaypoint, storyTutorialBlocking],
   )
 
   const clearStoryAutoplayGesture = useCallback(() => {
@@ -510,6 +513,15 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return undefined
     }
 
+    // Keep the first-stop tip quiet until the traveler finishes or closes it.
+    if (storyTutorialBlocking) {
+      clearStoryAutoplayGesture()
+      if (audioOpsRef.current.narrationPlaying) {
+        audioOpsRef.current.pauseNarration()
+      }
+      return undefined
+    }
+
     const waypointId = step.id
     let cancelled = false
     let retryTimer = null
@@ -546,7 +558,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
       if (retryTimer != null) window.clearTimeout(retryTimer)
       clearStoryAutoplayGesture()
     }
-  }, [clearStoryAutoplayGesture, state, step?.id, step?.type, audioUnlocked])
+  }, [
+    clearStoryAutoplayGesture,
+    state,
+    step?.id,
+    step?.type,
+    audioUnlocked,
+    storyTutorialBlocking,
+  ])
 
   useEffect(() => () => clearStoryAutoplayGesture(), [clearStoryAutoplayGesture])
 
@@ -1025,7 +1044,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     storyViewRef.current = getAppPreferences().preferTranscript ? 'transcript' : 'chapters'
     setBusy(true)
     transition(JOURNEY_STATES.STORY)
-    if (step.type === 'waypoint') void tryStartWaypointNarration(step.id)
+    // First-stop tips own the moment - narration waits until they finish/close.
+    const holdForTutorial =
+      step.type === 'waypoint' &&
+      isOnFirstTourStop(context, step, manifest) &&
+      shouldShowTourOnboarding(context)
+    if (step.type === 'waypoint' && !holdForTutorial) {
+      void tryStartWaypointNarration(step.id)
+    }
     setBusy(false)
   }
 
@@ -1447,6 +1473,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           insideGeofence={insideGeofence}
           hasReconstruction={hasReconstruction}
           bottomInset={bottomInset}
+          onBlockingChange={setStoryTutorialBlocking}
         />
       </>
     )
