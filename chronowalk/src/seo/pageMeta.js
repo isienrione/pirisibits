@@ -22,9 +22,9 @@ export const PAGE_META_BY_PATH = Object.freeze({
   '/free-pantheon': Object.freeze({
     title: 'Free Pantheon Audio Guide Experience | ChronoWalk Rome',
     description:
-      'Experience a complete Pantheon audio stop free. Explore its history through immersive storytelling and visual reconstruction directly in your browser.',
+      'Try Pantheon Part 1 free — the full exterior chapter with immersive audio and Then/Now reconstruction. Opens in your browser; no payment required.',
     ogImage: `${PRODUCTION_ORIGIN}/landing/real-moment/pantheon.jpg`,
-    ogImageAlt: 'The Pantheon in Rome',
+    ogImageAlt: 'The Pantheon exterior in Rome',
   }),
   '/ancient-rome': Object.freeze({
     title: 'Ancient Rome Self-Guided Audio Walking Tour | ChronoWalk',

@@ -29,6 +29,7 @@ export default function A2PreviewGhostTour({
   previewStopTitle = 'The Pantheon',
   onUnlock,
   onBack,
+  backLabel = 'Back to Home',
 }) {
   const acts = useMemo(
     () => (manifest ? buildPreviewTourActs(manifest, previewWaypointId) : []),
@@ -360,7 +361,7 @@ export default function A2PreviewGhostTour({
               fontFamily: F.body,
             }}
           >
-            Back to Home
+            {backLabel}
           </button>
         ) : null}
       </div>

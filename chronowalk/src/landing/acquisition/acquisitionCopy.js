@@ -12,10 +12,10 @@ export const ACQUISITION_PATHS = Object.freeze([
 export const FREE_PANTHEON_COPY = Object.freeze({
   path: '/free-pantheon',
   landingPageType: 'free_pantheon',
-  eyebrow: 'FREE PANTHEON AUDIO EXPERIENCE',
-  h1: 'Experience the Pantheon with a complete audio stop—free.',
+  eyebrow: 'FREE SNEAK PEEK · PANTHEON PART 1 OF 4',
+  h1: 'Try Pantheon Part 1 free—the full exterior chapter.',
   lead:
-    'Stand beneath Rome’s most extraordinary ancient interior and understand what you are seeing through immersive audio, place-tied storytelling and visual reconstruction.',
+    'Hear the complete Pantheon exterior chapter (~4 minutes) with immersive audio and Then/Now reconstruction. Three more Pantheon chapters (including the interior) unlock with the full Rome tour.',
   primaryCta: 'Start the Pantheon experience',
   secondaryCta: 'Explore the full 21-stop Rome tour',
   trustLine: 'No app-store download · Opens in your browser · No payment required',
@@ -24,31 +24,29 @@ export const FREE_PANTHEON_COPY = Object.freeze({
   includesHeading: 'What the free experience includes',
   includes: [
     {
-      title: 'A complete Pantheon story',
-      body: 'Hear why the building survived and how Romans experienced it.',
+      title: 'Pantheon Part 1 — Exterior',
+      body: 'A full free chapter with the complete exterior narration — not a short teaser clip.',
     },
     {
       title: 'Place-tied audio',
-      body: 'Follow the story while standing inside or near the monument.',
+      body: 'Follow the story while standing outside the monument, at your own pace.',
     },
     {
-      title: 'Visual reconstruction',
-      body: 'Reveal details that are difficult to imagine from the surviving structure alone.',
+      title: 'Exterior visual reconstruction',
+      body: 'Press and hold to reveal Then/Now details of the Pantheon exterior.',
     },
   ],
-  proofEyebrow: 'SEE HOW CHRONOWALK WORKS',
-  proofHeading: 'The monument stops being background.',
-  proofLead:
-    'ChronoWalk helps you see the surviving building, imagine the world around it and understand why it mattered.',
-  upgradeHeading: 'Continue beyond the Pantheon.',
+  includesNote:
+    'The Pantheon experience has 4 chapters in total. This free peek is Part 1 (exterior) only. Parts 2–4, including the interior, are part of the paid Rome tour.',
+  upgradeHeading: 'Continue beyond the exterior.',
   upgradeLead:
-    'Unlock the complete Rome experience with 21 historic stops across the Colosseum, Roman Forum, Pantheon and the streets connecting them.',
+    'Unlock all 21 Rome stops — including the remaining Pantheon chapters and the Colosseum, Roman Forum, and the streets connecting them.',
   upgradeCta: 'Unlock all 21 stops · €14.99',
   compareCta: 'Compare Rome routes',
   faq: [
     {
-      q: 'Is the Pantheon experience really free?',
-      a: 'Yes. The complete Pantheon stop requires no payment and no signup.',
+      q: 'Is this the whole Pantheon experience?',
+      a: 'No. This free sneak peek is Pantheon Part 1 of 4 — the full exterior chapter (~4 minutes) with its complete audio and reconstruction. Three more Pantheon chapters, including the interior, unlock with the paid Rome tour.',
     },
     {
       q: 'Do I need to download an app?',

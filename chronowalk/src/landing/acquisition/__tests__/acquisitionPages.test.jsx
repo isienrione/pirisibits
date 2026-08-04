@@ -7,6 +7,7 @@ import HowItWorksPage from '../HowItWorksPage.jsx'
 import { DocumentSeo } from '../../../seo/useDocumentSeo.js'
 import { getPageMeta } from '../../../seo/pageMeta.js'
 import { getLandingTierStats } from '../../landingTierStats.js'
+import { FREE_PANTHEON_COPY } from '../acquisitionCopy.js'
 import {
   resetAcquisitionAnalyticsForTests,
   trackAcquisitionPageView,
@@ -35,6 +36,32 @@ vi.mock('../../v4/LandingProductDemo.jsx', () => ({
   default: function MockDemo() {
     return <div data-testid="product-demo">Product demo</div>
   },
+}))
+
+vi.mock('../../v4/LandingProductPhoneFrame.jsx', () => ({
+  default: function MockPhone({ children }) {
+    return <div data-testid="pantheon-phone-frame">{children}</div>
+  },
+}))
+
+vi.mock('../../../redesign/screens/A2FreePreviewStory.jsx', () => ({
+  default: function MockStory() {
+    return <div data-testid="pantheon-preview-story">Pantheon preview story</div>
+  },
+}))
+
+vi.mock('../../../hooks/useV2Journey.js', () => ({
+  useTourManifest: () => ({
+    loading: false,
+    manifest: { system: { preview: 'w17_ch1.mp3' }, waypoints: [] },
+  }),
+}))
+
+vi.mock('../../../content/manifest.js', () => ({
+  getWaypoint: () => ({
+    id: 'w17',
+    title: 'The Pantheon',
+  }),
 }))
 
 vi.mock('../../../components/legal/CheckoutConsentDialog.jsx', () => ({
@@ -66,18 +93,26 @@ describe('acquisition pages', () => {
     })
   })
 
-  it('renders /free-pantheon with one H1 and free start CTA', () => {
+  it('renders /free-pantheon with Part 1 exterior framing and embedded phone demo', () => {
     renderPage('/free-pantheon', <FreePantheonPage />)
     const headings = screen.getAllByRole('heading', { level: 1 })
     expect(headings).toHaveLength(1)
-    expect(headings[0]).toHaveTextContent(/complete audio stop/i)
+    expect(headings[0]).toHaveTextContent(/Pantheon Part 1/i)
+    expect(headings[0]).toHaveTextContent(/exterior/i)
+    expect(FREE_PANTHEON_COPY.includesNote).toMatch(/Parts 2–4/i)
     expect(
       screen.getByRole('button', { name: /Start the Pantheon experience/i }),
     ).toBeInTheDocument()
+    expect(screen.getByTestId('pantheon-phone-frame')).toBeInTheDocument()
+    expect(screen.getByTestId('pantheon-preview-story')).toBeInTheDocument()
+    expect(screen.getByText(/What the free experience includes/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /full 21-stop Rome tour/i })).toBeInTheDocument()
     expect(document.title).toBe(getPageMeta('/free-pantheon').title)
     expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
       'https://chronowalk.com/free-pantheon',
     )
+    expect(getPageMeta('/free-pantheon').description).toMatch(/Part 1/i)
+    expect(getPageMeta('/free-pantheon').description).not.toMatch(/complete Pantheon audio stop/i)
   })
 
   it('renders /ancient-rome with verified Roma Antica stop count and checkout CTAs', () => {
@@ -113,18 +148,6 @@ describe('acquisition pages', () => {
     expect(track).toHaveBeenCalledWith(
       'free_pantheon_page_view',
       expect.objectContaining({ landing_page_type: 'free_pantheon' }),
-    )
-  })
-
-  it('keeps acquisition CTAs wired to existing preview and product IDs', () => {
-    renderPage('/free-pantheon', <FreePantheonPage />)
-    expect(screen.getByRole('link', { name: /full 21-stop Rome tour/i })).toHaveAttribute(
-      'href',
-      '/#pricing',
-    )
-    expect(screen.getByRole('link', { name: /How ChronoWalk works/i })).toHaveAttribute(
-      'href',
-      '/how-it-works',
     )
   })
 })

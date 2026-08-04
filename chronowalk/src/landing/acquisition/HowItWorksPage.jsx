@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import LandingProductDemo from '../v4/LandingProductDemo.jsx'
-import { LANDING_PREVIEW_AUDIO_FILE } from '../landingData.js'
-import { primePreviewAudioForNavigation } from '../previewAudioHandoff.js'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import { HOW_IT_WORKS_COPY } from './acquisitionCopy.js'
 import {
@@ -24,9 +21,7 @@ export default function HowItWorksPage() {
   const startFree = useCallback(
     (section = 'hero') => {
       trackHowItWorksFreeClicked(section)
-      const url = resolvePreviewUrl(LANDING_PREVIEW_AUDIO_FILE)
-      if (url) primePreviewAudioForNavigation(url)
-      navigate('/preview')
+      navigate('/free-pantheon')
     },
     [navigate],
   )

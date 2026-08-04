@@ -17,6 +17,8 @@ export default function A2FreePreviewStory({
   storyEnded = false,
   continueLabel = 'See the full tour →',
   initialTab = 'audio',
+  /** Pantheon exterior free chapter is Part 1 of 4 total Pantheon chapters. */
+  chapterCount = 4,
   onTogglePlay,
   onSkipBack,
   onSkipForward,
@@ -38,7 +40,7 @@ export default function A2FreePreviewStory({
       currentTime,
       duration,
       audioAvailable,
-      chapterCount: 4,
+      chapterCount,
     },
     handlers: {
       onTogglePlay,
