@@ -848,8 +848,8 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
 
 .cw-flow-escape:hover,
 .cw-flow-escape:focus-visible {
-  opacity: 0.88;
-  background: rgba(11, 11, 13, 0.62);
+  opacity: 0.95;
+  background: rgba(11, 11, 13, 0.72);
   outline: none;
 }
 
