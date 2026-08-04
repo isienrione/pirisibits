@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
@@ -11,7 +11,6 @@ import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 export default function FreePantheonPage() {
   const copy = FREE_PANTHEON_COPY
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
-  const previewRef = useRef(null)
 
   const goFullTour = useCallback(
     (section = 'upgrade') => {
@@ -20,15 +19,6 @@ export default function FreePantheonPage() {
     },
     [checkout],
   )
-
-  const startNow = useCallback(() => {
-    previewRef.current?.start('hero')
-  }, [])
-
-  const peekPhone = useCallback((event) => {
-    event.preventDefault()
-    previewRef.current?.scrollIntoView()
-  }, [])
 
   return (
     <AcquisitionPageShell
@@ -43,24 +33,12 @@ export default function FreePantheonPage() {
             {copy.h1}
           </h1>
           <p className="cw-acq-hero__lead cw-acq-hero__lead--short">{copy.lead}</p>
-          <div className="cw-acq-hero__actions cw-acq-hero__actions--stack">
-            <button
-              type="button"
-              className="cw-acq-btn cw-acq-btn--primary"
-              onClick={startNow}
-            >
-              {copy.primaryCta}
-            </button>
-            <a href="#try-pantheon" className="cw-acq-skip" onClick={peekPhone}>
-              {copy.peekLink}
-            </a>
-          </div>
+          <p className="cw-acq-hero__interact">{copy.interactPrompt}</p>
           <p className="cw-acq-hero__trust">{copy.trustLine}</p>
         </div>
       </section>
 
       <FreePantheonPreviewEmbed
-        ref={previewRef}
         includesCompact={copy.includesCompact}
         onUnlockFullTour={() => goFullTour('preview_unlock')}
       />

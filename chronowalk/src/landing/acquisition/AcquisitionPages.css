@@ -119,24 +119,18 @@
   line-height: 1.45;
 }
 
-.cw-acq-hero__actions--stack {
-  flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
-  gap: 0.55rem;
-}
-
-.cw-acq-skip {
+.cw-acq-hero__interact {
+  margin: 1rem 0 0;
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
   color: var(--v4-ink);
-  font-size: 0.92rem;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
 }
 
-.cw-acq-skip:hover,
-.cw-acq-skip:focus-visible {
-  color: var(--v4-amber-deep);
+.cw-acq-hero--demo-first .cw-acq-hero__trust {
+  margin-top: 0.7rem;
 }
 
 .cw-acq-preview--tight {
@@ -176,10 +170,6 @@
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-}
-
-.cw-acq-preview__start-under {
-  width: min(100%, 20rem);
 }
 
 .cw-acq-preview-phone__app {

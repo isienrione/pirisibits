@@ -15,8 +15,7 @@ export const FREE_PANTHEON_COPY = Object.freeze({
   eyebrow: 'FREE · PANTHEON PART 1 OF 4 · EXTERIOR',
   h1: 'Try the Pantheon exterior chapter free.',
   lead: 'Full 4 minute chapter (not a teaser) with audio and a Then/Now visual reconstruction demo.',
-  primaryCta: 'Start the Pantheon experience',
-  peekLink: 'Show me now',
+  interactPrompt: 'Interact with the phone screen and enjoy a piece of ChronoWalk',
   secondaryCta: 'Explore the full 21-stop Rome tour',
   trustLine: 'No app download · Browser · Free',
   includesCompact: [

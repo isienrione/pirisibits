@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, forwardRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../../redesign/screens/A2PreviewGhostTour.jsx'
@@ -51,12 +51,9 @@ function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack })
 
 /**
  * Large phone mockup of the live Pantheon exterior preview.
- * Parent can call ref.start(section) to open fullscreen immediately.
+ * Interaction happens on the phone screen itself (no separate Start CTA).
  */
-const FreePantheonPreviewEmbed = forwardRef(function FreePantheonPreviewEmbed(
-  { onUnlockFullTour, includesCompact = [] },
-  ref,
-) {
+export default function FreePantheonPreviewEmbed({ onUnlockFullTour, includesCompact = [] }) {
   const [immersive, setImmersive] = useState(false)
   const preview = usePantheonPreviewController({ analyticsSource: 'free_pantheon' })
 
@@ -74,20 +71,6 @@ const FreePantheonPreviewEmbed = forwardRef(function FreePantheonPreviewEmbed(
     preview.exitToPage()
     setImmersive(false)
   }, [preview])
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      start: (section = 'hero') => openImmersive(section),
-      scrollIntoView: () => {
-        document.getElementById('try-pantheon')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        })
-      },
-    }),
-    [openImmersive],
-  )
 
   useEffect(() => {
     if (!immersive) return undefined
@@ -127,13 +110,6 @@ const FreePantheonPreviewEmbed = forwardRef(function FreePantheonPreviewEmbed(
               ))}
             </ul>
           ) : null}
-          <button
-            type="button"
-            className="cw-acq-btn cw-acq-btn--primary cw-acq-preview__start-under"
-            onClick={() => openImmersive('under_phone')}
-          >
-            Start the Pantheon experience
-          </button>
         </div>
       ) : null}
 
@@ -180,6 +156,4 @@ const FreePantheonPreviewEmbed = forwardRef(function FreePantheonPreviewEmbed(
         : null}
     </section>
   )
-})
-
-export default FreePantheonPreviewEmbed
+}
