@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, Suspense, lazy } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState, Suspense, lazy } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { resolvePreviewUrl } from '../audio/audioUrl.js'
 import LandingAct from './LandingAct.jsx'
@@ -85,6 +85,33 @@ function ChronoWalkLandingInner() {
     ensureLandingExpHero()
     trackLandingView()
     return installLandingPageListeners()
+  }, [])
+
+  /**
+   * SPA navigations from acquisition pages keep the previous scroll offset.
+   * Without a deep-link hash, always open on the hero. With a hash, scroll to it
+   * after mount (React Router does not reliably do this across routes).
+   */
+  useLayoutEffect(() => {
+    const hash = window.location.hash.replace(/^#/, '')
+    if (!hash) {
+      window.scrollTo(0, 0)
+      return undefined
+    }
+
+    let frame = 0
+    let attempts = 0
+    const scrollToHash = () => {
+      const target = document.getElementById(hash)
+      if (target) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' })
+        return
+      }
+      attempts += 1
+      if (attempts < 12) frame = window.requestAnimationFrame(scrollToHash)
+    }
+    frame = window.requestAnimationFrame(scrollToHash)
+    return () => window.cancelAnimationFrame(frame)
   }, [])
 
   useEffect(() => {

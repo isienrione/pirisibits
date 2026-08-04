@@ -128,6 +128,9 @@ describe('acquisition pages', () => {
     expect(FREE_PANTHEON_COPY.includesCompact).toContain('Part 1 of 4 only')
     expect(screen.getByTestId('pantheon-phone-frame')).toBeInTheDocument()
     expect(document.getElementById('try-pantheon')).toBeTruthy()
+    expect(
+      screen.getByRole('link', { name: /Explore the full 21-stop Rome tour/i }),
+    ).toHaveAttribute('href', '/')
     expect(document.title).toBe(getPageMeta('/free-pantheon').title)
   })
 

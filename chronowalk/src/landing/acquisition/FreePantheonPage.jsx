@@ -59,7 +59,7 @@ export default function FreePantheonPage() {
               {copy.upgradeCta}
             </button>
             <Link
-              to="/#pricing"
+              to="/"
               className="cw-acq-link"
               onClick={() => trackFreePantheonFullTourClicked('compare')}
             >
