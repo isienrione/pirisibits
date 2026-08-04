@@ -97,28 +97,16 @@ export default function AncientRomePage() {
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
           </div>
-          <div className="cw-acq-hero__media-col">
-            <figure className="cw-acq-hero__media">
-              <img
-                src={copy.heroImage}
-                alt={copy.heroImageAlt}
-                width={1200}
-                height={900}
-                fetchPriority="high"
-                decoding="async"
-              />
-            </figure>
-            <p className="cw-acq-disclaimer cw-acq-disclaimer--under-media" role="note">
-              <span className="cw-acq-disclaimer__mark" aria-hidden="true">
-                *
-              </span>
-              <span className="cw-acq-disclaimer__body">
-                <strong>{copy.admissionNoteEmphasis}</strong>
-                {' '}
-                {copy.admissionNote}
-              </span>
-            </p>
-          </div>
+          <figure className="cw-acq-hero__media">
+            <img
+              src={copy.heroImage}
+              alt={copy.heroImageAlt}
+              width={1200}
+              height={900}
+              fetchPriority="high"
+              decoding="async"
+            />
+          </figure>
         </div>
       </section>
 
