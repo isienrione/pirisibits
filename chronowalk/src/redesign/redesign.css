@@ -2204,9 +2204,9 @@ html[data-shell-tab-bar='visible'] {
   display: flex;
   flex-direction: column;
   font-family: 'DM Sans', system-ui, sans-serif;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Clip to the shell frame — map/turns scroll inside __body so dock never
+     stacks under Next turns on short phones. */
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -2456,8 +2456,10 @@ html[data-shell-tab-bar='visible'] {
   flex-direction: column;
   gap: 10px;
   padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right));
-  /* Allow the companion to grow past the frame so map + directions can scroll. */
-  overflow: visible;
+  /* Keep map + next-turns above the footer dock on short phones. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .cw-walking-companion__view-toggle {
@@ -2491,9 +2493,9 @@ html[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__map-wrap {
-  flex: 0 0 auto;
-  height: clamp(180px, 36vh, 320px);
-  min-height: 160px;
+  flex: 0 1 auto;
+  height: clamp(140px, 28vh, 280px);
+  min-height: 120px;
   position: relative;
   border-radius: 16px;
   overflow: hidden;
@@ -2510,12 +2512,12 @@ html[data-shell-tab-bar='visible'] {
 }
 
 .cw-walking-companion__next-turns {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-height: 0;
-  max-height: none;
-  overflow: visible;
+  overflow: auto;
   display: flex;
   flex-direction: column;
+  padding-bottom: 4px;
 }
 
 /* ── Next turns card (Phase 7) ─────────────────────────────────── */
@@ -2568,6 +2570,7 @@ html[data-shell-tab-bar='visible'] {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .cw-next-turns-card__thumb {
@@ -3010,12 +3013,16 @@ html[data-shell-tab-bar='visible'] {
 .cw-walking-companion__footer {
   position: relative;
   z-index: 3;
+  isolation: isolate;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Opaque so dock labels never read through Next turns on short viewports. */
+  background: var(--wc-bg);
+  border-top: 1px solid color-mix(in srgb, var(--wc-warm-white) 8%, transparent);
   padding:
-    10px
+    12px
     max(16px, env(safe-area-inset-right))
     calc(max(12px, env(safe-area-inset-bottom)) + var(--wc-browser-chrome, 0px) + var(--wc-footer-extra, 0px))
     max(16px, env(safe-area-inset-left));
@@ -3036,17 +3043,21 @@ html[data-shell-tab-bar='visible'] .cw-walking-companion__footer {
 
 .cw-walking-companion__dock-btn {
   flex: 1;
+  min-width: 0;
   min-height: 48px;
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--wc-warm-white) 16%, transparent);
-  background: transparent;
+  background: rgba(17, 16, 15, 0.96);
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--wc-warm-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cw-walking-companion__dock-btn--primary {
