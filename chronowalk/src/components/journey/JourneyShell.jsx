@@ -1461,7 +1461,13 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   const wrapWithFirstStopOnboarding = (node, { near = false, insideGeofence = false, hasReconstruction = false, bottomInset = 0 } = {}) => {
-    if (variant !== 'redesign' || !isOnFirstTourStop(context, step, manifest)) return node
+    if (
+      variant !== 'redesign' ||
+      !isOnFirstTourStop(context, step, manifest) ||
+      !shouldShowTourOnboarding(context)
+    ) {
+      return node
+    }
     return (
       <>
         {node}
