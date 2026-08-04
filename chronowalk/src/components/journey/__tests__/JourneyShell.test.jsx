@@ -357,6 +357,7 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('threshold-diegetic-hint')).toBeInTheDocument()
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
     expect(screen.getByText(/hold to reveal ancient rome/i)).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()
