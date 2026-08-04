@@ -1,12 +1,16 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import LandingHeroReassurance from '../v4/LandingHeroReassurance.jsx'
 import { LANDING_CONTENT } from '../landingData.js'
-import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 
 describe('LandingHeroReassurance', () => {
   it('renders the four factual items as a list', () => {
-    render(<LandingHeroReassurance />)
+    render(
+      <MemoryRouter>
+        <LandingHeroReassurance />
+      </MemoryRouter>,
+    )
 
     const region = screen.getByRole('region', { name: /Why ChronoWalk is easy to start/i })
     expect(region).toBeInTheDocument()
@@ -22,15 +26,17 @@ describe('LandingHeroReassurance', () => {
     expect(screen.getByText('No subscriptions')).toBeInTheDocument()
   })
 
-  it('makes Pantheon Part 1 (FREE) a bold preview control', () => {
+  it('links Pantheon Part 1 (FREE) to the free Pantheon acquisition page', () => {
     const onPreview = vi.fn()
-    render(<LandingHeroReassurance onPreview={onPreview} />)
+    render(
+      <MemoryRouter>
+        <LandingHeroReassurance onPreview={onPreview} />
+      </MemoryRouter>,
+    )
 
-    const link = screen.getByRole('button', { name: 'Pantheon Part 1 (FREE)' })
+    const link = screen.getByRole('link', { name: 'Pantheon Part 1 (FREE)' })
     expect(link).toHaveClass('cw-v4-reassure__link')
-    expect(link.tagName).toBe('BUTTON')
-
-    fireEvent.click(link)
-    expect(onPreview).toHaveBeenCalledWith(LANDING_ANALYTICS_SECTIONS.HERO_REASSURANCE)
+    expect(link).toHaveAttribute('href', '/free-pantheon')
+    expect(onPreview).not.toHaveBeenCalled()
   })
 })

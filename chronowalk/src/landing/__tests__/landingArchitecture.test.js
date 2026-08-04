@@ -9,7 +9,7 @@ import {
   LANDING_SECTION_ORDER,
   LANDING_VERIFIED_REVIEWS,
 } from '../landingData.js'
-import { buildCinematicTimeline, chapterHoldWeight } from '../v4/productDemoTimeline.js'
+import { resolveSequentialChapters } from '../v4/LandingProductSequentialDemo.jsx'
 
 describe('landing product-story architecture (V4)', () => {
   it('defines the product-story section order', () => {
@@ -48,34 +48,38 @@ describe('landing product-story architecture (V4)', () => {
     )
   })
 
-  it('frames the sticky phone demo as four chapters', () => {
+  it('frames the product demo as four sequential chapters', () => {
     const section = LANDING_CONTENT['product-demo']
     expect(section.id).toBe('how-it-works')
     expect(section.eyebrow).toBe('The App')
     expect(section.headline).toBe('How does ChronoWalk work?')
+    expect(section.subheadline).not.toMatch(/scroll to follow/i)
     expect(section.chapters).toHaveLength(4)
     expect(section.chapters.map((c) => c.id)).toEqual([
-      'choose',
+      'begin',
       'arrive',
       'listen',
       'walk',
     ])
     expect(section.chapters.map((c) => c.component)).toEqual([
-      'B4PaceSelector',
+      'LandingDemoBeginTourScreen',
       'A2FreePreviewStory',
       'A2FreePreviewStory',
       'C2Walking',
     ])
     expect(section.chapters[1].emotional).toBe(true)
+    expect(resolveSequentialChapters(section.chapters).map((c) => c.id)).toEqual([
+      'begin',
+      'arrive',
+      'listen',
+      'walk',
+    ])
   })
 
-  it('gives the cinematic demo a short synced scrub with true xfades', () => {
-    const chapters = LANDING_CONTENT['product-demo'].chapters
-    const timeline = buildCinematicTimeline(chapters)
-    expect(timeline.totalWeight).toBeLessThan(8)
-    expect(timeline.totalWeight).toBeGreaterThan(3)
-    expect(timeline.segments.filter((s) => s.type === 'xfade')).toHaveLength(3)
-    expect(chapterHoldWeight(chapters[1])).toBeGreaterThan(chapterHoldWeight(chapters[0]))
+  it('keeps the product demo free of sticky scrub timelines', () => {
+    const section = LANDING_CONTENT['product-demo']
+    expect(section.chapters.some((chapter) => chapter.id === 'choose')).toBe(false)
+    expect(section.chapters[0].title).toMatch(/begin your chosen walking route/i)
   })
 
   it('uses situation-led personas instead of demographics', () => {
@@ -139,7 +143,7 @@ describe('landing product-story architecture (V4)', () => {
     ])
     const tryFree = strip.items.find((item) => item.id === 'try-free')
     expect(tryFree.supportLinkText).toBe('Pantheon Part 1 (FREE)')
-    expect(tryFree.supportLinkHref).toBe('/preview')
+    expect(tryFree.supportLinkHref).toBe('/free-pantheon')
     const blob = JSON.stringify(strip).toLowerCase()
     expect(blob).not.toMatch(/best.?seller|testimonial|★|award|limited|most popular/)
   })

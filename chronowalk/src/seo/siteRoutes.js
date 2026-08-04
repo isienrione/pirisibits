@@ -6,9 +6,27 @@
 
 export const PRODUCTION_ORIGIN = 'https://chronowalk.com'
 
-/** Canonical public marketing / legal / contact paths (sitemap + indexable). */
+/** Canonical public marketing / legal / contact / acquisition paths (sitemap + indexable). */
 export const INDEXABLE_PUBLIC_PATHS = Object.freeze([
   '/',
+  '/free-pantheon',
+  '/ancient-rome',
+  '/how-it-works',
+  '/contact',
+  '/legal/terms',
+  '/legal/privacy',
+  '/legal/refund',
+])
+
+/** Focused Ads / search acquisition pages (subset of INDEXABLE_PUBLIC_PATHS). */
+export const ACQUISITION_PUBLIC_PATHS = Object.freeze([
+  '/free-pantheon',
+  '/ancient-rome',
+  '/how-it-works',
+])
+
+/** Legal + contact paths linked from the site footer. */
+export const FOOTER_LEGAL_PATHS = Object.freeze([
   '/contact',
   '/legal/terms',
   '/legal/privacy',

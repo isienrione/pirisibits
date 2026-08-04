@@ -7,10 +7,11 @@ import '../components/legal/legal.css'
 const SUPPORT_EMAIL = 'support@chronowalk.com'
 
 const LEGAL_LINKS = [
+  { label: 'Home', to: '/' },
+  { label: 'Contact', to: '/contact' },
   { label: 'Terms', to: '/legal/terms' },
   { label: 'Privacy', to: '/legal/privacy' },
-  { label: 'Refunds', to: '/legal/refund' },
-  { label: 'Support', to: '/contact' },
+  { label: 'Refund policy', to: '/legal/refund' },
 ]
 
 function resolveFooterHref(href, landingPrefix) {

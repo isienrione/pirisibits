@@ -51,6 +51,9 @@ import {
   LazyLegalPrivacyPage,
   LazyLegalRefundPage,
   LazyContactPage,
+  LazyFreePantheonPage,
+  LazyAncientRomePage,
+  LazyHowItWorksPage,
 } from './lazyRoutes.jsx'
 import { DocumentSeo } from '../seo/useDocumentSeo.js'
 
@@ -127,6 +130,9 @@ function AppRoutes() {
       <Routes>
         <Route path="/" element={<PublicLandingRoute />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
+        <Route path="/free-pantheon" element={<LazyFreePantheonPage />} />
+        <Route path="/ancient-rome" element={<LazyAncientRomePage />} />
+        <Route path="/how-it-works" element={<LazyHowItWorksPage />} />
         <Route path="/preview" element={<LazyPreviewPage />} />
         <Route path="/preview/colosseum" element={<LazyColosseumPreviewPage />} />
         <Route path="/preview/waypoint/:waypointId" element={<LazyWaypointPreviewPage />} />

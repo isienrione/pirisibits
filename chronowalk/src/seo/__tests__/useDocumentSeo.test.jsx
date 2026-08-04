@@ -59,6 +59,23 @@ describe('DocumentSeo', () => {
     }
   })
 
+  it('sets index+canonical+title on acquisition sitelink pages', () => {
+    for (const path of ['/free-pantheon', '/ancient-rome', '/how-it-works']) {
+      cleanup()
+      renderAt(path)
+      expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toBe(
+        'index,follow',
+      )
+      expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
+        `https://chronowalk.com${path}`,
+      )
+      expect(document.title.length).toBeGreaterThan(10)
+      expect(document.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(
+        `https://chronowalk.com${path}`,
+      )
+    }
+  })
+
   it('sets noindex and removes canonical on private app routes', () => {
     for (const path of ['/access', '/invite', '/journey', '/walk-together', '/preview']) {
       cleanup()

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Expand } from 'lucide-react'
 import { LANDING_CONTENT } from './landingData.js'
 import { trackLandingPricingView } from './landingAnalytics.js'
@@ -115,6 +116,11 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
         </button>
       </div>
       <PacingNote text={tier.pacingNote} className="cw-v4-pacing cw-v4-pkg__pacing" />
+      {tier.id === 'rome-essential' ? (
+        <p className="cw-v4-pkg__acq-link">
+          <Link to="/ancient-rome">Explore Ancient Rome</Link>
+        </p>
+      ) : null}
     </article>
   )
 }
@@ -285,6 +291,12 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
         >
           {activeTier.primaryCta}
         </button>
+
+        {activeTier.id === 'rome-essential' ? (
+          <p className="cw-v4-pkg-mobile-card__acq-link">
+            <Link to="/ancient-rome">Explore Ancient Rome</Link>
+          </p>
+        ) : null}
 
         <div className="cw-v4-pkg-mobile-card__map">
           <button

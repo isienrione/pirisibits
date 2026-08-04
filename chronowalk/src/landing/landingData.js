@@ -297,7 +297,7 @@ export const LANDING_HERO_REVIEWS = {
 
 /**
  * Product-story architecture (Landing V4).
- * Intro compresses into nav · sticky phone demo · capability sections.
+ * Intro compresses into nav · sequential phone demo · capability sections.
  * Keys match LANDING_CONTENT.
  */
 export const LANDING_SECTION_ORDER = [
@@ -409,7 +409,7 @@ export const LANDING_CONTENT = {
         support: 'Enjoy Pantheon Part 1 (FREE)',
         supportBefore: 'Enjoy ',
         supportLinkText: 'Pantheon Part 1 (FREE)',
-        supportLinkHref: '/preview',
+        supportLinkHref: '/free-pantheon',
       },
     ],
   },
@@ -437,14 +437,14 @@ export const LANDING_CONTENT = {
     id: 'how-it-works',
     eyebrow: 'The App',
     headline: 'How does ChronoWalk work?',
-    subheadline: 'Scroll to follow the phone from choosing a route to hearing the story on site.',
+    subheadline: 'From opening your route to hearing the story on site, one step at a time.',
     chapters: [
       {
-        id: 'choose',
-        title: 'Choose your Rome walk.',
-        body: 'Take the complete 21-stop route, or choose a shorter walk for the part of Rome you have time for. Start at any included stop. Follow the suggested order, skip ahead, or change direction.',
-        component: 'B4PaceSelector',
-        beats: ['ROMA ETERNA', 'SHORTER WALKS', 'START ANYWHERE'],
+        id: 'begin',
+        title: 'Begin your chosen walking route.',
+        body: 'Open your Rome walk and see the acts ahead. Start Act I, jump from where you are, or open the route map whenever you need it.',
+        component: 'LandingDemoBeginTourScreen',
+        beats: ['YOUR TOUR', 'BEGIN ACT I', 'START WHERE YOU ARE'],
       },
       {
         id: 'arrive',
@@ -867,7 +867,7 @@ export const LANDING_CONTENT = {
 
   header: {
     nav: [
-      { label: 'How it works', href: '#how-it-works' },
+      { label: 'How it works', href: '/how-it-works' },
       { label: 'Stops', href: '#monuments' },
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },
@@ -881,7 +881,8 @@ export const LANDING_CONTENT = {
   footer: {
     tagline: 'Self-guided audio walks for Rome, researched and yours to keep.',
     nav: [
-      { label: 'How it works', href: '#how-it-works' },
+      { label: 'Home', href: '/' },
+      { label: 'How it works', href: '/how-it-works' },
       { label: 'Stops', href: '#monuments' },
       { label: 'Rome walks', href: '#pricing' },
       { label: 'FAQ', href: '#faq' },

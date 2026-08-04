@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getWaypoint } from '../../content/manifest.js'
 import { bindAutoplayHtmlAudio } from '../../audio/autoplayHtmlAudio.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
@@ -24,8 +24,17 @@ import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import A2FreePreviewStory from '../screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../screens/A2PreviewGhostTour.jsx'
 
+const PREVIEW_RETURN_ALLOWLIST = new Set(['/', '/free-pantheon', '/how-it-works', '/ancient-rome'])
+
+function resolvePreviewReturnTo(state) {
+  const candidate = typeof state?.returnTo === 'string' ? state.returnTo : '/'
+  return PREVIEW_RETURN_ALLOWLIST.has(candidate) ? candidate : '/'
+}
+
 export default function RedesignPreviewPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const returnTo = resolvePreviewReturnTo(location.state)
   const { manifest, loading } = useTourManifest()
   const audioRef = useRef(null)
   const [phase, setPhase] = useState('story')
@@ -164,7 +173,7 @@ export default function RedesignPreviewPage() {
 
   const handleBack = () => {
     stopPreviewSessionAudio()
-    navigate('/')
+    navigate(returnTo)
   }
 
   const handleStoryComplete = () => {

@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom'
 import { LANDING_CONTENT } from '../landingData.js'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
 
 /**
  * Compact factual reassurance strip directly under the hero.
- * Mostly noninteractive; the free Pantheon line may link to /preview.
+ * Mostly noninteractive; the free Pantheon line may link to /free-pantheon
+ * (or call onPreview when no href is configured).
  */
 export default function LandingHeroReassurance({ onPreview } = {}) {
   const section = LANDING_CONTENT.heroReassurance
@@ -27,15 +29,21 @@ export default function LandingHeroReassurance({ onPreview } = {}) {
                   {item.supportLinkText ? (
                     <>
                       {item.supportBefore ?? ''}
-                      <button
-                        type="button"
-                        className="cw-v4-reassure__link"
-                        onClick={() =>
-                          onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO_REASSURANCE)
-                        }
-                      >
-                        {item.supportLinkText}
-                      </button>
+                      {item.supportLinkHref ? (
+                        <Link to={item.supportLinkHref} className="cw-v4-reassure__link">
+                          {item.supportLinkText}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          className="cw-v4-reassure__link"
+                          onClick={() =>
+                            onPreview?.(LANDING_ANALYTICS_SECTIONS.HERO_REASSURANCE)
+                          }
+                        >
+                          {item.supportLinkText}
+                        </button>
+                      )}
                     </>
                   ) : (
                     item.support

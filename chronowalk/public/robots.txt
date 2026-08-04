@@ -2,6 +2,9 @@
 # Not a security boundary - access still requires credentials / entitlements.
 User-agent: *
 Allow: /
+Allow: /free-pantheon
+Allow: /ancient-rome
+Allow: /how-it-works
 Allow: /legal/
 Allow: /contact
 
