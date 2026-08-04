@@ -35,7 +35,7 @@ export default function ShellTabBar() {
   return (
     <nav
       aria-label="Tour navigation"
-      className="fixed inset-x-0 bottom-0 z-[60] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
+      className="fixed inset-x-0 bottom-0 z-[80] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
       style={{
         fontFamily: 'var(--font-ui)',
         // viewport-fit=cover always exposes the home-indicator inset - extend

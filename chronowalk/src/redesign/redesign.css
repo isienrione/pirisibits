@@ -1504,11 +1504,12 @@ html.redesign-pwa #root {
 
 .redesign-phone-frame--companion {
   box-sizing: border-box;
-  height: 100dvh;
-  height: var(--app-height, 100dvh);
-  max-height: 100dvh;
-  max-height: var(--app-height, 100dvh);
-  padding-bottom: var(--wc-shell-tab-inset, 0px);
+  /* Exclude the tab strip from the frame box so MAP/TOUR/JOURNAL taps reach
+     ShellTabBar. Padding used to leave an overlapping hit region over the tabs. */
+  height: calc(100dvh - var(--wc-shell-tab-inset, 0px));
+  height: calc(var(--app-height, 100dvh) - var(--wc-shell-tab-inset, 0px));
+  max-height: calc(100dvh - var(--wc-shell-tab-inset, 0px));
+  max-height: calc(var(--app-height, 100dvh) - var(--wc-shell-tab-inset, 0px));
   /* Scroll the frame when content is taller than the inset viewport. */
   overflow-x: hidden;
   overflow-y: auto;
@@ -1562,7 +1563,8 @@ html[data-shell-tab-bar='visible'] {
 .cw-journey-shell-root > .cw-waypoint-immersive,
 .cw-journey-shell-root > .cw-walking-companion,
 .cw-journey-shell-root > .cw-grain,
-.cw-journey-shell-root > [data-testid='journey-layout'] {
+.cw-journey-shell-root > [data-testid='journey-layout'],
+.cw-journey-shell-root > [data-testid='path-choice-screen'] {
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
