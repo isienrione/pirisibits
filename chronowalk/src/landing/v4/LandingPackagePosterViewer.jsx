@@ -2,6 +2,10 @@ import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { X, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react'
 import { useReducedMotion } from '../../hooks/useReducedMotion.js'
+import {
+  attemptSafariZoomRecovery,
+  installSafariPageZoomBlock,
+} from '../../utils/safariPageZoom.js'
 
 const MIN_SCALE = 1
 const MAX_SCALE = 4
@@ -72,6 +76,10 @@ export function LandingZoomableImageViewer({
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const focusReturn = returnFocusRef
+    const stopSafariPageZoom = installSafariPageZoomBlock(document.body, {
+      // Keep pointer pinch/pan working inside the CSS-transform viewer.
+      blockMultiTouchMove: false,
+    })
 
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -103,6 +111,9 @@ export function LandingZoomableImageViewer({
       window.cancelAnimationFrame(frame)
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', onKeyDown)
+      stopSafariPageZoom()
+      // If Safari page-zoom leaked through, bounce the viewport meta once.
+      attemptSafariZoomRecovery()
       const node = focusReturn?.current
       if (node && typeof node.focus === 'function') {
         window.requestAnimationFrame(() => node.focus({ preventScroll: true }))

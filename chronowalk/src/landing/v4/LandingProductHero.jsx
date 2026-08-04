@@ -8,6 +8,7 @@ import { trackCtaClick } from '../../lib/analytics.ts'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
+import { installSafariPageZoomBlock } from '../../utils/safariPageZoom.js'
 
 /** Crossfade duration for deliberate slide changes (respects prefers-reduced-motion in CSS). */
 const FADE_MS = 400
@@ -117,11 +118,15 @@ export default function LandingProductHero({
   const [viewerSlide, setViewerSlide] = useState(null)
   const touchStartX = useRef(null)
   const expandTriggerRef = useRef(null)
+  const heroRef = useRef(null)
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.
   useEffect(() => {
     preloadLandingImages(ROME_TIERS.map((tier) => tier.cardImage))
   }, [])
+
+  // Safari: keep pinch/double-tap from locking the whole page on hero art.
+  useEffect(() => installSafariPageZoomBlock(heroRef.current), [])
 
   // Prefetch only the adjacent story frame after the visitor moves off slide 0.
   useEffect(() => {
@@ -164,6 +169,7 @@ export default function LandingProductHero({
 
   return (
     <section
+      ref={heroRef}
       id={section.id}
       className="cw-v4-hero"
       aria-labelledby="cw-v4-hero-heading"

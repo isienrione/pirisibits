@@ -18,6 +18,7 @@ import ThresholdSourceBadge, {
   AI_NOW_DISCLOSURE_COPY,
 } from './threshold/ThresholdSourceBadge.jsx'
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
+import { installSafariPageZoomBlock } from '../utils/safariPageZoom.js'
 
 const REVEAL_COMPLETE = 0.98
 /** Short single-tap threshold - gestures shorter than this are treated as taps, not holds. */
@@ -273,12 +274,14 @@ export default function Threshold({
     root.addEventListener('contextmenu', blockSelection)
     root.addEventListener('selectstart', blockSelection)
     root.addEventListener('dragstart', blockSelection)
+    const stopSafariPageZoom = installSafariPageZoomBlock(root)
 
     return () => {
       root.removeEventListener('touchstart', blockBrowserGesture)
       root.removeEventListener('contextmenu', blockSelection)
       root.removeEventListener('selectstart', blockSelection)
       root.removeEventListener('dragstart', blockSelection)
+      stopSafariPageZoom()
     }
   }, [active])
 

@@ -335,8 +335,8 @@
   align-items: start;
   padding: 6.5rem 0 3.5rem;
   overflow: hidden;
-  /* Prefer vertical page scroll; horizontal swipes stay with the gallery. */
-  touch-action: pan-y;
+  /* Pan vertically; block double-tap / pinch page-zoom that Safari leaves stuck. */
+  touch-action: manipulation;
 }
 
 @media (max-width: 39.99rem) {
@@ -364,6 +364,9 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cw-v4-hero__clouds {
@@ -1095,6 +1098,9 @@
   object-fit: contain;
   object-position: center center;
   background: #121014;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cw-v4-hero__hotspot {
@@ -1801,6 +1807,9 @@
   height: 100%;
   object-fit: cover;
   object-position: top center;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cw-v4-walk-shell {
@@ -2177,6 +2186,9 @@
   object-fit: cover;
   transform: scale(1.02);
   transition: transform 0.8s ease;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cw-v4-stops__card:hover .cw-v4-stops__image {
@@ -2451,6 +2463,9 @@
   width: 100%;
   height: auto;
   vertical-align: top;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .cw-v4-pkg__hotspot {
