@@ -73,8 +73,8 @@ export function paceIdForPurchaseTier(tierId) {
 }
 
 /**
- * True when the buyer unlocked Roma Eterna content - they may choose any route mode.
- * Single packs skip the mode picker and start their locked route.
+ * True when the buyer unlocked Roma Eterna content - they may customize any route mode
+ * from Settings (Change or customize route). Default begin flow skips the picker.
  */
 export function shouldShowPaceModePicker(tierId) {
   return (

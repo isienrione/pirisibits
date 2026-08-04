@@ -6,9 +6,9 @@ import { grantTestAccess } from '../../../test/grantTestAccess.js'
 import { markAppEntryComplete } from '../../../lib/appEntry.js'
 import { JOURNEY_STATES, resetJourney, transitionJourney } from '../../../state/journey'
 
-function renderBeginPage() {
+function renderBeginPage(path = '/begin') {
   return render(
-    <MemoryRouter initialEntries={['/begin']}>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/" element={<div>Landing route</div>} />
@@ -40,11 +40,23 @@ describe('BeginPage', () => {
     expect(screen.getByText('Setup route')).toBeInTheDocument()
   })
 
-  it('starts at app-home pace selection after entry', () => {
+  it('skips pace selection by default and opens the route preview for Roma Eterna', () => {
     grantTestAccess()
     markAppEntryComplete()
 
     renderBeginPage()
+
+    expect(screen.queryByTestId('app-begin-home')).not.toBeInTheDocument()
+    expect(screen.getByTestId('tour-route-preview')).toBeInTheDocument()
+    expect(screen.getByText(/your route/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /enable location & begin/i })).toBeInTheDocument()
+  })
+
+  it('opens the pace picker when Settings asks to change or customize the route', () => {
+    grantTestAccess()
+    markAppEntryComplete()
+
+    renderBeginPage('/begin?chooseRoute=1')
 
     expect(screen.getByTestId('app-begin-home')).toBeInTheDocument()
     expect(screen.getByText(/your walk/i)).toBeInTheDocument()
@@ -52,11 +64,11 @@ describe('BeginPage', () => {
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
-  it('shows pace-aware route preview after choosing a pace', () => {
+  it('shows pace-aware route preview after choosing a pace from Settings', () => {
     grantTestAccess()
     markAppEntryComplete()
 
-    renderBeginPage()
+    renderBeginPage('/begin?chooseRoute=1')
 
     fireEvent.click(screen.getByRole('button', { name: /begin - roma eterna/i }))
 
@@ -71,9 +83,6 @@ describe('BeginPage', () => {
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
 
     renderBeginPage()
-
-    fireEvent.click(screen.getByRole('button', { name: /roma antica/i }))
-    fireEvent.click(screen.getByRole('button', { name: /begin - roma antica/i }))
 
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
     expect(screen.getByText(/enable location for gps guidance/i)).toBeInTheDocument()
@@ -90,5 +99,18 @@ describe('BeginPage', () => {
 
     expect(screen.getByRole('heading', { name: /rome kept your place/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /continue your walk/i })).toBeInTheDocument()
+  })
+
+  it('lets an in-progress traveler open the pace picker from Settings', () => {
+    grantTestAccess()
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 2,
+      completedWaypointIds: ['w01'],
+    })
+
+    renderBeginPage('/begin?chooseRoute=1')
+
+    expect(screen.getByTestId('app-begin-home')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /rome kept your place/i })).not.toBeInTheDocument()
   })
 })

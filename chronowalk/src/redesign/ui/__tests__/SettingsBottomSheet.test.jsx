@@ -66,7 +66,16 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByRole('button', { name: /marketing preferences/i })).toBeInTheDocument()
     expect(screen.queryByTestId('family-walk-panel')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-walk-together')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('settings-change-route')).not.toBeInTheDocument()
     expect(screen.getByText(/ChronoWalk · Rome · made to disappear/)).toBeInTheDocument()
+  })
+
+  it('surfaces Change or customize route for Roma Eterna purchasers', () => {
+    localStorage.setItem('cw_purchased_tier_v1', 'rome-complete')
+    renderSheet()
+    expect(screen.getByTestId('settings-change-route')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('settings-change-route'))
+    expect(mockNavigate).toHaveBeenCalledWith('/begin?chooseRoute=1')
   })
 
   it('surfaces Walk together for a verified bundle entitlement', () => {

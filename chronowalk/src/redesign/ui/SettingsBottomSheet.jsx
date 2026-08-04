@@ -15,6 +15,13 @@ import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
 import { isBundleSku } from '../../lib/launchSkus.js'
 import { readAccessEntitlement } from '../../lib/accessSession.js'
 import { bundleMetaForProductId } from '../../lib/familyWalk.js'
+import {
+  beginChooseRoutePath,
+} from '../beginFlowParams.js'
+import {
+  readPurchasedTier,
+  shouldShowPaceModePicker,
+} from '../../lib/pendingPurchase.js'
 import AnalyticsPreferencesControl from '../../components/analytics/AnalyticsPreferencesControl.jsx'
 import HomeScreenInstallOption from './HomeScreenInstallOption.jsx'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
@@ -165,6 +172,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
     null
   const showWalkTogether =
     Boolean(family?.hasBundleAccess) || isBundleSku(purchasedProductId)
+  const showChangeRoute = shouldShowPaceModePicker(readPurchasedTier())
   const walkMeta = bundleMetaForProductId(purchasedProductId)
   const walkSubtitle =
     family?.isOrganizer || entitlement?.role === 'owner'
@@ -198,6 +206,11 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const handleWalkTogether = () => {
     onClose()
     navigate('/walk-together')
+  }
+
+  const handleChangeRoute = () => {
+    onClose()
+    navigate(beginChooseRoutePath())
   }
 
   const handleHelp = () => {
@@ -307,6 +320,15 @@ export default function SettingsBottomSheet({ open, onClose }) {
             }
           />
           <Hairline />
+
+          {showChangeRoute ? (
+            <ActionRow
+              label="Change or customize route"
+              subtitle="Switch Roma Eterna, a shorter walk, or pick your own stops"
+              testId="settings-change-route"
+              onClick={handleChangeRoute}
+            />
+          ) : null}
 
           {showWalkTogether ? (
             <ActionRow

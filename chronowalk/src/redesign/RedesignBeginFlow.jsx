@@ -15,6 +15,7 @@ import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
 import { findSequenceIndexForWaypoint, getTourWaypointIds } from '../content/myTourPlan.js'
 import { applyReplayOnboardingFromSearch, shouldShowTourRoutePreview } from '../utils/tourOnboarding.js'
+import { BEGIN_CHOOSE_ROUTE_PARAM } from './beginFlowParams.js'
 import TourRoutePreviewScreen from './ui/TourRoutePreviewScreen.jsx'
 import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
@@ -27,10 +28,17 @@ const ETERNA_MODE_SUBTITLE =
 const ETERNA_MODE_FOOTER =
   'You can change your mind later. Nothing expires.'
 
-function initialBeginStep(isResumable, showModePicker, showRoutePreview) {
+function wantsChooseRoute(searchParams) {
+  const value = searchParams?.get?.(BEGIN_CHOOSE_ROUTE_PARAM)
+  return value === '1' || value === 'true'
+}
+
+function initialBeginStep(isResumable, showModePicker, showRoutePreview, forceChooseRoute) {
+  // Explicit Settings entry: open the mode picker even when a walk is in progress.
+  if (forceChooseRoute && showModePicker) return 'pace'
   if (isResumable) return 'resume'
-  if (showModePicker) return 'pace'
-  // Single-pack buyers skip the mode picker and go straight to map / location.
+  // Default begin flow skips the pace picker - Eterna buyers start on Roma Eterna.
+  // Route customization lives in Settings → Change or customize route.
   return showRoutePreview ? 'mapPreview' : 'location'
 }
 
@@ -54,6 +62,7 @@ export default function RedesignBeginFlow() {
   )
   const purchasedTier = useMemo(() => readPurchasedTier(), [])
   const showModePicker = shouldShowPaceModePicker(purchasedTier)
+  const forceChooseRoute = wantsChooseRoute(searchParams)
   const paceOptions = useMemo(
     () => getPaceOptionsForPurchasedTier(purchasedTier),
     [purchasedTier],
@@ -61,7 +70,7 @@ export default function RedesignBeginFlow() {
   const needsAppEntry = !isAppEntryComplete() && !isResumable
   const showRoutePreview = shouldShowTourRoutePreview(context)
   const [stepName, setStepName] = useState(() =>
-    initialBeginStep(isResumable, showModePicker, showRoutePreview),
+    initialBeginStep(isResumable, showModePicker, showRoutePreview, forceChooseRoute),
   )
   const [selectedPace, setSelectedPace] = useState(() => resolveInitialPace(context.pace))
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
@@ -76,13 +85,14 @@ export default function RedesignBeginFlow() {
     [context, selectedPace, ownPaceStops],
   )
 
-  // Single-pack / non-Eterna: lock the purchased route and skip the picker.
+  // Lock the purchased / selected route whenever we are not actively customizing it.
   useEffect(() => {
-    if (showModePicker || isResumable) return
+    if (isResumable) return
+    if (stepName === 'pace' || stepName === 'pickStops') return
     setJourneyPace(selectedPace)
-  }, [showModePicker, isResumable, selectedPace, setJourneyPace])
+  }, [isResumable, stepName, selectedPace, setJourneyPace])
 
-  // If we landed on 'pace' without Eterna (e.g. start fresh from resume), skip ahead.
+  // If we landed on 'pace' without unlocked modes (e.g. stale URL), skip ahead.
   useEffect(() => {
     if (stepName !== 'pace' || showModePicker) return
     setJourneyPace(selectedPace)
@@ -95,11 +105,11 @@ export default function RedesignBeginFlow() {
 
     if (fresh) {
       reset()
-      setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
+      setStepName(showRoutePreview ? 'mapPreview' : 'location')
     } else if (isResumable) {
       setStepName('resume')
     } else {
-      setStepName(showModePicker ? 'pace' : showRoutePreview ? 'mapPreview' : 'location')
+      setStepName(showRoutePreview ? 'mapPreview' : 'location')
     }
 
     if (searchParams.has('replayOnboarding') || searchParams.has('fresh')) {
@@ -110,7 +120,15 @@ export default function RedesignBeginFlow() {
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
 
+  const clearChooseRouteParam = () => {
+    if (!searchParams.has(BEGIN_CHOOSE_ROUTE_PARAM)) return
+    const next = new URLSearchParams(searchParams)
+    next.delete(BEGIN_CHOOSE_ROUTE_PARAM)
+    setSearchParams(next, { replace: true })
+  }
+
   const advanceAfterPaceSelection = () => {
+    clearChooseRouteParam()
     if (selectedPace === JOURNEY_PACE.OWN) {
       setStepName('pickStops')
       return
