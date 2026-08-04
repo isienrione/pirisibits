@@ -33,15 +33,15 @@ const noop = () => {}
 
 const DEMO_WALK_DIRECTIONS = {
   steps: [
-    { instruction: 'Continue along Via del Babuino', distanceM: 180, durationSec: 140 },
-    { instruction: 'Cross Piazza di Spagna', distanceM: 90, durationSec: 70 },
-    { instruction: 'The Spanish Steps rise ahead', distanceM: 70, durationSec: 55 },
+    { instruction: 'Continue toward Piazza di Spagna', distanceM: 160, durationSec: 130 },
+    { instruction: 'Cross Piazza di Spagna', distanceM: 70, durationSec: 55 },
+    { instruction: 'The Spanish Steps rise ahead', distanceM: 50, durationSec: 40 },
   ],
   geometry: {
     type: 'LineString',
     coordinates: [
-      [12.4798, 41.9018],
-      [12.4811, 41.9036],
+      [12.48355, 41.90385],
+      [12.48235, 41.90525],
       [12.48259, 41.90597],
     ],
   },

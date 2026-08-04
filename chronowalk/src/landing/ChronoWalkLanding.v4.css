@@ -1857,6 +1857,11 @@
   pointer-events: none;
 }
 
+.cw-v4-demo-walk-map__veil--light {
+  background:
+    linear-gradient(180deg, rgba(11, 11, 13, 0.08) 0%, transparent 22%, rgba(11, 11, 13, 0.22) 100%);
+}
+
 .cw-v4-demo-walk-map__cue {
   position: absolute;
   top: 0.85rem;
