@@ -7,7 +7,7 @@ const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURN
 import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
-import { pantheonNow } from '../../redesign/images.js'
+import { spanishSteps } from '../../redesign/images.js'
 import { T } from '../../redesign/tokens.js'
 import B4PaceSelector from '../../redesign/screens/B4PaceSelector.jsx'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
@@ -33,20 +33,20 @@ const noop = () => {}
 
 const DEMO_WALK_DIRECTIONS = {
   steps: [
-    { instruction: 'Continue along Via del Seminario', distanceM: 120, durationSec: 90 },
-    { instruction: 'Cross Piazza della Rotonda', distanceM: 90, durationSec: 70 },
-    { instruction: 'The Pantheon portico is ahead', distanceM: 70, durationSec: 55 },
+    { instruction: 'Continue along Via del Babuino', distanceM: 180, durationSec: 140 },
+    { instruction: 'Cross Piazza di Spagna', distanceM: 90, durationSec: 70 },
+    { instruction: 'The Spanish Steps rise ahead', distanceM: 70, durationSec: 55 },
   ],
   geometry: {
     type: 'LineString',
     coordinates: [
-      [12.4765, 41.8992],
-      [12.4768, 41.8990],
-      [12.4770, 41.8988],
+      [12.4798, 41.9018],
+      [12.4811, 41.9036],
+      [12.48259, 41.90597],
     ],
   },
-  distanceM: 280,
-  durationSec: 240,
+  distanceM: 1200,
+  durationSec: 780,
   source: 'landing-demo',
 }
 
@@ -135,7 +135,7 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk - map-forward guidance scene (photo 5).
+ * Walk - map-forward guidance scene (Spanish Steps approach).
  * Beats mostly stay on Map; one beat peeks at Steps. No resume cut.
  */
 const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
@@ -143,21 +143,21 @@ const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
     <div className="cw-v4-walk-stack">
       <LandingDemoWalkShell>
         <C2Walking
-          title="The Pantheon"
-          photo={pantheonNow}
+          title="Spanish Steps"
+          photo={spanishSteps}
           actNumeral="V"
-          stopKey="w17"
+          stopKey="w15"
           accent={T.actV}
-          distanceM={beat >= 2 ? 160 : 280}
+          distanceM={beat >= 2 ? 90 : 180}
           locationStatus={LOCATION_STATUS.GRANTED}
-          near={false}
+          near
           insideGeofence={false}
           forcedRouteView={beat === 1 ? 'steps' : 'map'}
           directionsOverride={DEMO_WALK_DIRECTIONS}
           map={<LandingDemoWalkMap />}
           onPause={noop}
           onBeginChapter={noop}
-          continueLabel="Continue walking →"
+          continueLabel="Open the Spanish Steps story →"
         />
       </LandingDemoWalkShell>
     </div>
