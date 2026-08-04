@@ -147,6 +147,8 @@ describe('acquisition pages', () => {
     expect(
       screen.getByRole('link', { name: /See more details of each route and pricing/i }),
     ).toHaveAttribute('href', '/#pricing')
+    expect(screen.getByText(/Admission tickets are not included/i)).toBeInTheDocument()
+    expect(screen.getByText(/Colosseum, Roman Forum, Palatine/i)).toBeInTheDocument()
     expect(document.title).toBe(getPageMeta('/ancient-rome').title)
   })
 

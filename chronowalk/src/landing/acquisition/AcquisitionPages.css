@@ -366,6 +366,17 @@
   font-size: 0.84rem;
 }
 
+.cw-acq-hero__note--disclaimer {
+  margin-top: 0.65rem;
+  max-width: 36rem;
+  line-height: 1.45;
+}
+
+.cw-acq-hero__note--disclaimer strong {
+  color: var(--v4-ink);
+  font-weight: 700;
+}
+
 .cw-acq-link {
   color: var(--v4-ink);
   font-weight: 600;

@@ -59,7 +59,10 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   primaryCtaPrefix: 'Explore the Ancient Rome route',
   secondaryCta: 'Unlock all 21 Rome stops · €14.99',
   trustLine: 'One payment · No app-store download · Prepare for offline walking',
-  admissionNote: 'Admission tickets are not included.',
+  admissionNotePrefix: '* ',
+  admissionNoteEmphasis: 'Admission tickets are not included',
+  admissionNote:
+    'for the Colosseum, Roman Forum, Palatine or other monuments. ChronoWalk is an audio walking experience only.',
   heroImage: '/landing/real-moment/forum.jpg',
   heroImageAlt: 'Roman Forum ruins in Ancient Rome',
   experienceHeading: 'What you will experience',
@@ -85,7 +88,7 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   faq: [
     {
       q: 'Does this include Colosseum or Forum tickets?',
-      a: 'No. ChronoWalk does not include monument admission tickets. It is a self-guided audio walking experience you use on your own phone.',
+      a: 'No. Admission tickets for the Colosseum, Roman Forum, Palatine or other monuments are not included. ChronoWalk is a self-guided audio walking experience you use on your own phone.',
     },
     {
       q: 'Can I start at any stop?',

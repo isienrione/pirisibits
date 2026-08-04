@@ -96,7 +96,12 @@ export default function AncientRomePage() {
               </button>
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
-            <p className="cw-acq-hero__note">{copy.admissionNote}</p>
+            <p className="cw-acq-hero__note cw-acq-hero__note--disclaimer">
+              {copy.admissionNotePrefix}
+              <strong>{copy.admissionNoteEmphasis}</strong>
+              {' '}
+              {copy.admissionNote}
+            </p>
           </div>
           <figure className="cw-acq-hero__media">
             <img
