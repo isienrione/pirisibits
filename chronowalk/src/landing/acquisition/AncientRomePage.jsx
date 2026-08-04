@@ -96,11 +96,15 @@ export default function AncientRomePage() {
               </button>
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
-            <p className="cw-acq-hero__note cw-acq-hero__note--disclaimer">
-              {copy.admissionNotePrefix}
-              <strong>{copy.admissionNoteEmphasis}</strong>
-              {' '}
-              {copy.admissionNote}
+            <p className="cw-acq-disclaimer" role="note">
+              <span className="cw-acq-disclaimer__mark" aria-hidden="true">
+                *
+              </span>
+              <span className="cw-acq-disclaimer__body">
+                <strong>{copy.admissionNoteEmphasis}</strong>
+                {' '}
+                {copy.admissionNote}
+              </span>
             </p>
           </div>
           <figure className="cw-acq-hero__media">
@@ -260,6 +264,17 @@ export default function AncientRomePage() {
               </article>
             </div>
           </div>
+
+          <p className="cw-acq-disclaimer cw-acq-disclaimer--choice" role="note">
+            <span className="cw-acq-disclaimer__mark" aria-hidden="true">
+              *
+            </span>
+            <span className="cw-acq-disclaimer__body">
+              <strong>{copy.admissionNoteEmphasis}</strong>
+              {' '}
+              {copy.admissionNote}
+            </span>
+          </p>
 
           <p className="cw-acq-choice__pricing-link">
             <Link

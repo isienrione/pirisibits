@@ -366,15 +366,36 @@
   font-size: 0.84rem;
 }
 
-.cw-acq-hero__note--disclaimer {
-  margin-top: 0.65rem;
+.cw-acq-disclaimer {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  margin: 0.85rem 0 0;
   max-width: 36rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--v4-ink) 16%, transparent);
+  border-left: 3px solid var(--v4-ink);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--v4-paper-2) 88%, #fff);
+  color: var(--v4-ink);
+  font-size: 0.9rem;
   line-height: 1.45;
 }
 
-.cw-acq-hero__note--disclaimer strong {
-  color: var(--v4-ink);
-  font-weight: 700;
+.cw-acq-disclaimer__mark {
+  flex: 0 0 auto;
+  margin-top: 0.05rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cw-acq-disclaimer__body strong {
+  font-weight: 750;
+}
+
+.cw-acq-disclaimer--choice {
+  margin: 1.35rem auto 0;
+  max-width: 40rem;
 }
 
 .cw-acq-link {

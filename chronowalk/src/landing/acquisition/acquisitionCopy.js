@@ -59,7 +59,6 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   primaryCtaPrefix: 'Explore the Ancient Rome route',
   secondaryCta: 'Unlock all 21 Rome stops · €14.99',
   trustLine: 'One payment · No app-store download · Prepare for offline walking',
-  admissionNotePrefix: '* ',
   admissionNoteEmphasis: 'Admission tickets are not included',
   admissionNote:
     'for the Colosseum, Roman Forum, Palatine or other monuments. ChronoWalk is an audio walking experience only.',

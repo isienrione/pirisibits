@@ -147,10 +147,10 @@ describe('acquisition pages', () => {
     expect(
       screen.getByRole('link', { name: /See more details of each route and pricing/i }),
     ).toHaveAttribute('href', '/#pricing')
-    const disclaimer = document.querySelector('.cw-acq-hero__note--disclaimer')
-    expect(disclaimer).toBeTruthy()
-    expect(disclaimer).toHaveTextContent(/\*\s*Admission tickets are not included/i)
-    expect(disclaimer).toHaveTextContent(/Colosseum, Roman Forum, Palatine/i)
+    const disclaimers = screen.getAllByRole('note')
+    expect(disclaimers.length).toBeGreaterThanOrEqual(1)
+    expect(disclaimers[0]).toHaveTextContent(/Admission tickets are not included/i)
+    expect(disclaimers[0]).toHaveTextContent(/Colosseum, Roman Forum, Palatine/i)
     expect(document.title).toBe(getPageMeta('/ancient-rome').title)
   })
 
