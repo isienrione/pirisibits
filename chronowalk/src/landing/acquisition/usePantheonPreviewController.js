@@ -101,8 +101,8 @@ export function usePantheonPreviewController({ analyticsSource = 'free_pantheon'
     const detach = attachAudioListeners(audio)
     const fromGesture = consumePreviewPlaybackIntent()
 
-    if (fromGesture || audio.paused) {
-      void audio.play().catch(() => {})
+    if ((fromGesture || audio.paused) && audio.play) {
+      void Promise.resolve(audio.play()).catch(() => {})
     }
 
     return () => {
@@ -127,7 +127,7 @@ export function usePantheonPreviewController({ analyticsSource = 'free_pantheon'
     primePreviewAudioForNavigation(previewUrl)
     const audio = getPreviewSessionAudio(previewUrl)
     audioRef.current = audio
-    if (audio) void audio.play().catch(() => {})
+    if (audio?.play) void Promise.resolve(audio.play()).catch(() => {})
     return true
   }, [analyticsSource, previewUrl])
 
@@ -143,7 +143,7 @@ export function usePantheonPreviewController({ analyticsSource = 'free_pantheon'
     }
     trackPreviewPlayClick('pantheon')
     setStarted(true)
-    void audio.play().catch(() => {})
+    if (audio.play) void Promise.resolve(audio.play()).catch(() => {})
   }, [playing, startExperience])
 
   const skipBack = useCallback(() => {

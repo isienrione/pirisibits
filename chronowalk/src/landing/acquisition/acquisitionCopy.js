@@ -12,35 +12,21 @@ export const ACQUISITION_PATHS = Object.freeze([
 export const FREE_PANTHEON_COPY = Object.freeze({
   path: '/free-pantheon',
   landingPageType: 'free_pantheon',
-  eyebrow: 'FREE SNEAK PEEK · PANTHEON PART 1 OF 4',
-  h1: 'Try Pantheon Part 1 free—the full exterior chapter.',
-  lead:
-    'Hear the complete Pantheon exterior chapter (~4 minutes) with immersive audio and Then/Now reconstruction. Three more Pantheon chapters (including the interior) unlock with the full Rome tour.',
+  eyebrow: 'FREE · PANTHEON PART 1 OF 4 · EXTERIOR',
+  h1: 'Try the Pantheon exterior chapter free.',
+  lead: 'Full ~4-minute chapter with audio and Then/Now — not a teaser. Interior chapters unlock with the Rome tour.',
   primaryCta: 'Start the Pantheon experience',
+  peekLink: 'Peek the phone first ↓',
   secondaryCta: 'Explore the full 21-stop Rome tour',
-  trustLine: 'No app-store download · Opens in your browser · No payment required',
-  heroImage: '/landing/real-moment/pantheon.jpg',
-  heroImageAlt: 'The Pantheon exterior in Rome',
-  includesHeading: 'What the free experience includes',
-  includes: [
-    {
-      title: 'Pantheon Part 1 — Exterior',
-      body: 'A full free chapter with the complete exterior narration — not a short teaser clip.',
-    },
-    {
-      title: 'Place-tied audio',
-      body: 'Follow the story while standing outside the monument, at your own pace.',
-    },
-    {
-      title: 'Exterior visual reconstruction',
-      body: 'Press and hold to reveal Then/Now details of the Pantheon exterior.',
-    },
+  trustLine: 'No app download · Browser · Free',
+  includesCompact: [
+    'Full exterior audio chapter',
+    'Then/Now reconstruction',
+    'Part 1 of 4 only',
   ],
-  includesNote:
-    'The Pantheon experience has 4 chapters in total. This free peek is Part 1 (exterior) only. Parts 2–4, including the interior, are part of the paid Rome tour.',
-  upgradeHeading: 'Continue beyond the exterior.',
+  upgradeHeading: 'Want the rest of the Pantheon?',
   upgradeLead:
-    'Unlock all 21 Rome stops — including the remaining Pantheon chapters and the Colosseum, Roman Forum, and the streets connecting them.',
+    'Unlock Parts 2–4 (including the interior) plus 21 Rome stops — Colosseum, Forum, and more.',
   upgradeCta: 'Unlock all 21 stops · €14.99',
   compareCta: 'Compare Rome routes',
   faq: [

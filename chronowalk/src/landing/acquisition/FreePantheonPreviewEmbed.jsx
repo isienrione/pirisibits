@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, forwardRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../../redesign/screens/A2PreviewGhostTour.jsx'
@@ -50,14 +50,13 @@ function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack })
 }
 
 /**
- * Large phone mockup of the live Pantheon exterior preview, with a Start CTA
- * that expands into a fullscreen experience (same player as /preview).
- * Back collapses to this acquisition page — no navigation away.
+ * Large phone mockup of the live Pantheon exterior preview.
+ * Parent can call ref.start(section) to open fullscreen immediately.
  */
-export default function FreePantheonPreviewEmbed({
-  startLabel = 'Start the Pantheon experience',
-  onUnlockFullTour,
-}) {
+const FreePantheonPreviewEmbed = forwardRef(function FreePantheonPreviewEmbed(
+  { onUnlockFullTour, includesCompact = [] },
+  ref,
+) {
   const [immersive, setImmersive] = useState(false)
   const preview = usePantheonPreviewController({ analyticsSource: 'free_pantheon' })
 
@@ -76,6 +75,20 @@ export default function FreePantheonPreviewEmbed({
     setImmersive(false)
   }, [preview])
 
+  useImperativeHandle(
+    ref,
+    () => ({
+      start: (section = 'hero') => openImmersive(section),
+      scrollIntoView: () => {
+        document.getElementById('try-pantheon')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      },
+    }),
+    [openImmersive],
+  )
+
   useEffect(() => {
     if (!immersive) return undefined
     const previous = document.body.style.overflow
@@ -91,25 +104,11 @@ export default function FreePantheonPreviewEmbed({
   }, [closeImmersive, immersive])
 
   return (
-    <section className="cw-acq-section cw-acq-preview" aria-labelledby="free-pantheon-demo">
-      <div className="cw-v4-wrap cw-acq-preview__intro">
-        <p className="cw-v4-eyebrow">TRY IT HERE</p>
-        <h2 id="free-pantheon-demo" className="cw-v4-section-title">
-          Pantheon Part 1 — Exterior
-        </h2>
-        <p className="cw-v4-section-lead">
-          A full free chapter (~4 minutes) with the complete exterior audio and Then/Now
-          reconstruction. Three more Pantheon chapters unlock with the full Rome tour.
-        </p>
-        <button
-          type="button"
-          className="cw-acq-btn cw-acq-btn--primary cw-acq-preview__start"
-          onClick={() => openImmersive('demo')}
-        >
-          {startLabel}
-        </button>
-      </div>
-
+    <section
+      id="try-pantheon"
+      className="cw-acq-preview cw-acq-preview--tight"
+      aria-label="Pantheon Part 1 exterior preview"
+    >
       {!immersive ? (
         <div className="cw-acq-preview__phone-wrap">
           <LandingProductPhoneFrame label="ChronoWalk Pantheon exterior preview">
@@ -121,6 +120,20 @@ export default function FreePantheonPreviewEmbed({
               />
             </div>
           </LandingProductPhoneFrame>
+          {includesCompact.length ? (
+            <ul className="cw-acq-preview__chips" aria-label="What this free chapter includes">
+              {includesCompact.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          ) : null}
+          <button
+            type="button"
+            className="cw-acq-btn cw-acq-btn--primary cw-acq-preview__start-under"
+            onClick={() => openImmersive('under_phone')}
+          >
+            Start the Pantheon experience
+          </button>
         </div>
       ) : null}
 
@@ -167,4 +180,6 @@ export default function FreePantheonPreviewEmbed({
         : null}
     </section>
   )
-}
+})
+
+export default FreePantheonPreviewEmbed

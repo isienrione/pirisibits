@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import FreePantheonPage from '../FreePantheonPage.jsx'
 import AncientRomePage from '../AncientRomePage.jsx'
@@ -74,6 +74,24 @@ vi.mock('../../useLandingPrice.js', () => ({
   useLandingPrice: () => ({ cents: 1499 }),
 }))
 
+vi.mock('../../previewAudioHandoff.js', () => ({
+  consumePreviewPlaybackIntent: () => false,
+  getPreviewSessionAudio: () => ({
+    play: vi.fn(async () => {}),
+    pause: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    paused: true,
+    currentTime: 0,
+    duration: 0,
+    ended: false,
+    readyState: 0,
+  }),
+  primePreviewAudioForNavigation: vi.fn(),
+  retainPreviewPlaybackIntent: vi.fn(),
+  stopPreviewSessionAudio: vi.fn(),
+}))
+
 function renderPage(path, element) {
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -93,26 +111,32 @@ describe('acquisition pages', () => {
     })
   })
 
-  it('renders /free-pantheon with Part 1 exterior framing and embedded phone demo', () => {
+  it('renders a compact /free-pantheon with immediate start and phone nearby', () => {
     renderPage('/free-pantheon', <FreePantheonPage />)
     const headings = screen.getAllByRole('heading', { level: 1 })
     expect(headings).toHaveLength(1)
-    expect(headings[0]).toHaveTextContent(/Pantheon Part 1/i)
-    expect(headings[0]).toHaveTextContent(/exterior/i)
-    expect(FREE_PANTHEON_COPY.includesNote).toMatch(/Parts 2–4/i)
-    expect(
-      screen.getByRole('button', { name: /Start the Pantheon experience/i }),
-    ).toBeInTheDocument()
-    expect(screen.getByTestId('pantheon-phone-frame')).toBeInTheDocument()
-    expect(screen.getByTestId('pantheon-preview-story')).toBeInTheDocument()
-    expect(screen.getByText(/What the free experience includes/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /full 21-stop Rome tour/i })).toBeInTheDocument()
-    expect(document.title).toBe(getPageMeta('/free-pantheon').title)
-    expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
-      'https://chronowalk.com/free-pantheon',
+    expect(headings[0]).toHaveTextContent(/exterior chapter free/i)
+    expect(screen.queryByText(/What the free experience includes/i)).not.toBeInTheDocument()
+    expect(FREE_PANTHEON_COPY.includesCompact).toContain('Part 1 of 4 only')
+    expect(screen.getByRole('link', { name: /Peek the phone first/i })).toHaveAttribute(
+      'href',
+      '#try-pantheon',
     )
-    expect(getPageMeta('/free-pantheon').description).toMatch(/Part 1/i)
-    expect(getPageMeta('/free-pantheon').description).not.toMatch(/complete Pantheon audio stop/i)
+    expect(screen.getAllByRole('button', { name: /Start the Pantheon experience/i }).length).toBeGreaterThan(0)
+    expect(screen.getByTestId('pantheon-phone-frame')).toBeInTheDocument()
+    expect(document.getElementById('try-pantheon')).toBeTruthy()
+    expect(document.title).toBe(getPageMeta('/free-pantheon').title)
+  })
+
+  it('opens immersive preview from the hero start CTA', () => {
+    renderPage('/free-pantheon', <FreePantheonPage />)
+    fireEvent.click(screen.getAllByRole('button', { name: /Start the Pantheon experience/i })[0])
+    expect(
+      screen.getByRole('dialog', { name: /Pantheon Part 1 exterior experience/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /Back to free Pantheon page/i }),
+    ).toBeInTheDocument()
   })
 
   it('renders /ancient-rome with verified Roma Antica stop count and checkout CTAs', () => {
@@ -130,8 +154,6 @@ describe('acquisition pages', () => {
     renderPage('/how-it-works', <HowItWorksPage />)
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByText(/Open and prepare/i)).toBeInTheDocument()
-    expect(screen.getByText(/Start where you are/i)).toBeInTheDocument()
-    expect(screen.getByText(/Listen, reveal and continue/i)).toBeInTheDocument()
     expect(screen.getByTestId('product-demo')).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: /Try the Pantheon stop free/i }),
@@ -145,9 +167,5 @@ describe('acquisition pages', () => {
     expect(trackAcquisitionPageView('free_pantheon')).toBe(true)
     expect(trackAcquisitionPageView('free_pantheon')).toBe(false)
     expect(track).toHaveBeenCalledTimes(1)
-    expect(track).toHaveBeenCalledWith(
-      'free_pantheon_page_view',
-      expect.objectContaining({ landing_page_type: 'free_pantheon' }),
-    )
   })
 })

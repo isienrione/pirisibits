@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
@@ -11,6 +11,7 @@ import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 export default function FreePantheonPage() {
   const copy = FREE_PANTHEON_COPY
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
+  const previewRef = useRef(null)
 
   const goFullTour = useCallback(
     (section = 'upgrade') => {
@@ -20,48 +21,51 @@ export default function FreePantheonPage() {
     [checkout],
   )
 
+  const startNow = useCallback(() => {
+    previewRef.current?.start('hero')
+  }, [])
+
+  const peekPhone = useCallback((event) => {
+    event.preventDefault()
+    previewRef.current?.scrollIntoView()
+  }, [])
+
   return (
     <AcquisitionPageShell
       landingPageType={copy.landingPageType}
       headerPrimaryCta="Get the full Rome tour"
       onHeaderPrimaryClick={() => goFullTour('header')}
     >
-      <section className="cw-acq-hero cw-acq-hero--compact" aria-labelledby="free-pantheon-h1">
-        <div className="cw-v4-wrap cw-v4-wrap--narrow">
+      <section className="cw-acq-hero cw-acq-hero--demo-first" aria-labelledby="free-pantheon-h1">
+        <div className="cw-v4-wrap cw-acq-hero--demo-first__inner">
           <p className="cw-v4-eyebrow">{copy.eyebrow}</p>
           <h1 id="free-pantheon-h1" className="cw-acq-hero__title">
             {copy.h1}
           </h1>
-          <p className="cw-acq-hero__lead">{copy.lead}</p>
+          <p className="cw-acq-hero__lead cw-acq-hero__lead--short">{copy.lead}</p>
+          <div className="cw-acq-hero__actions cw-acq-hero__actions--stack">
+            <button
+              type="button"
+              className="cw-acq-btn cw-acq-btn--primary"
+              onClick={startNow}
+            >
+              {copy.primaryCta}
+            </button>
+            <a href="#try-pantheon" className="cw-acq-skip" onClick={peekPhone}>
+              {copy.peekLink}
+            </a>
+          </div>
           <p className="cw-acq-hero__trust">{copy.trustLine}</p>
         </div>
       </section>
 
-      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="free-includes">
-        <div className="cw-v4-wrap">
-          <h2 id="free-includes" className="cw-v4-section-title">
-            {copy.includesHeading}
-          </h2>
-          <ul className="cw-acq-include__list">
-            {copy.includes.map((item) => (
-              <li key={item.title} className="cw-acq-include__item">
-                <h3 className="cw-acq-include__title">{item.title}</h3>
-                <p className="cw-acq-include__body">{item.body}</p>
-              </li>
-            ))}
-          </ul>
-          {copy.includesNote ? (
-            <p className="cw-acq-includes-note">{copy.includesNote}</p>
-          ) : null}
-        </div>
-      </section>
-
       <FreePantheonPreviewEmbed
-        startLabel={copy.primaryCta}
+        ref={previewRef}
+        includesCompact={copy.includesCompact}
         onUnlockFullTour={() => goFullTour('preview_unlock')}
       />
 
-      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="free-upgrade">
+      <section className="cw-acq-section cw-acq-section--paper cw-acq-section--tight" aria-labelledby="free-upgrade">
         <div className="cw-v4-wrap cw-v4-wrap--narrow">
           <h2 id="free-upgrade" className="cw-v4-section-title">
             {copy.upgradeHeading}
@@ -84,12 +88,8 @@ export default function FreePantheonPage() {
             </Link>
           </div>
           <p className="cw-acq-hero__trust" style={{ marginTop: '0.75rem' }}>
-            <Link to="/#pricing" className="cw-acq-link">
-              {copy.compareCta}
-            </Link>
-            {' · '}
             <Link to="/how-it-works" className="cw-acq-link">
-              How ChronoWalk works
+              How it works
             </Link>
             {' · '}
             <Link to="/" className="cw-acq-link">
