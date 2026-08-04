@@ -161,7 +161,8 @@ describe('acquisition pages', () => {
     renderPage('/how-it-works', <HowItWorksPage />)
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByTestId('how-it-works-sequential-demo')).toBeInTheDocument()
-    expect(screen.getByText(/Choose your Rome walk/i)).toBeInTheDocument()
+    expect(screen.getByText(/Begin your chosen walking route/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Choose your Rome walk/i)).not.toBeInTheDocument()
     expect(screen.getByText(/Wander freely/i)).toBeInTheDocument()
     expect(screen.queryByText(/Scroll to follow the phone/i)).not.toBeInTheDocument()
     expect(

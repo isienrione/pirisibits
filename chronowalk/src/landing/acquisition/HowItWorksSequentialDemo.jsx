@@ -3,14 +3,27 @@ import { LandingDemoChapterPhone } from '../v4/LandingProductPhoneStage.jsx'
 
 /** Representative beat per chapter so each phone frame shows a clear product state. */
 const CHAPTER_BEATS = Object.freeze({
-  choose: 1,
+  begin: 0,
   arrive: 2,
   listen: 0,
   walk: 0,
 })
 
+/** First chapter override for ads: begin the chosen route (not pace picker). */
+const BEGIN_CHAPTER = Object.freeze({
+  id: 'begin',
+  title: 'Begin your chosen walking route.',
+  body: 'Open your Rome walk and see the acts ahead. Start Act I, jump from where you are, or open the route map whenever you need it.',
+  beats: ['YOUR TOUR', 'BEGIN ACT I', 'START WHERE YOU ARE'],
+})
+
 function withoutDashes(text) {
   return String(text ?? '').replace(/[—–]/g, '-')
+}
+
+function resolveAcquisitionChapters(sourceChapters = []) {
+  const rest = sourceChapters.filter((chapter) => chapter.id !== 'choose')
+  return [BEGIN_CHAPTER, ...rest]
 }
 
 /**
@@ -19,7 +32,7 @@ function withoutDashes(text) {
  */
 export default function HowItWorksSequentialDemo() {
   const section = LANDING_CONTENT['product-demo']
-  const chapters = section?.chapters ?? []
+  const chapters = resolveAcquisitionChapters(section?.chapters ?? [])
 
   return (
     <div className="cw-acq-seq" data-testid="how-it-works-sequential-demo">

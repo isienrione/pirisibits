@@ -15,6 +15,7 @@ import C2Walking from '../../redesign/screens/C2Walking.jsx'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
 import LandingDemoWalkShell from './LandingDemoWalkShell.jsx'
+import LandingDemoBeginTourScreen from './LandingDemoBeginTourScreen.jsx'
 
 function loadLandingDemoManifest() {
   try {
@@ -48,6 +49,11 @@ const DEMO_WALK_DIRECTIONS = {
   durationSec: 240,
   source: 'landing-demo',
 }
+
+/** Stable begin-route screen for acquisition sequential demos. */
+const BeginTourScreen = memo(function BeginTourScreen() {
+  return <LandingDemoBeginTourScreen />
+})
 
 /** Stable choose screen - never remounts a different root. */
 const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
@@ -159,6 +165,7 @@ const WalkScreen = memo(function WalkScreen({ beat = 0 }) {
 })
 
 const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
+  if (chapterId === 'begin') return <BeginTourScreen />
   if (chapterId === 'choose') return <ChooseScreen beat={beat} />
   if (chapterId === 'arrive') return <ArriveScreen beat={beat} active={active} />
   if (chapterId === 'listen') return <ListenScreen beat={beat} />
