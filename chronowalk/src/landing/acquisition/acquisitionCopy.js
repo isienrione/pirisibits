@@ -14,9 +14,9 @@ export const FREE_PANTHEON_COPY = Object.freeze({
   landingPageType: 'free_pantheon',
   eyebrow: 'FREE · PANTHEON PART 1 OF 4 · EXTERIOR',
   h1: 'Try the Pantheon exterior chapter free.',
-  lead: 'Full ~4-minute chapter with audio and Then/Now — not a teaser. Interior chapters unlock with the Rome tour.',
+  lead: 'Full 4 minute chapter (not a teaser) with audio and a Then/Now visual reconstruction demo.',
   primaryCta: 'Start the Pantheon experience',
-  peekLink: 'Peek the phone first ↓',
+  peekLink: 'Show me now',
   secondaryCta: 'Explore the full 21-stop Rome tour',
   trustLine: 'No app download · Browser · Free',
   includesCompact: [
@@ -26,13 +26,13 @@ export const FREE_PANTHEON_COPY = Object.freeze({
   ],
   upgradeHeading: 'Want the rest of the Pantheon?',
   upgradeLead:
-    'Unlock Parts 2–4 (including the interior) plus 21 Rome stops — Colosseum, Forum, and more.',
+    'Unlock Parts 2-4 (including the interior) plus 21 Rome stops: Colosseum, Forum, and more.',
   upgradeCta: 'Unlock all 21 stops · €14.99',
   compareCta: 'Compare Rome routes',
   faq: [
     {
       q: 'Is this the whole Pantheon experience?',
-      a: 'No. This free sneak peek is Pantheon Part 1 of 4 — the full exterior chapter (~4 minutes) with its complete audio and reconstruction. Three more Pantheon chapters, including the interior, unlock with the paid Rome tour.',
+      a: 'No. This free sneak peek is Pantheon Part 1 of 4: the full exterior chapter (~4 minutes) with its complete audio and reconstruction. Three more Pantheon chapters, including the interior, unlock with the paid Rome tour.',
     },
     {
       q: 'Do I need to download an app?',
@@ -87,7 +87,7 @@ export const ANCIENT_ROME_COPY = Object.freeze({
     },
     {
       q: 'Can I start at any stop?',
-      a: 'Yes. Start from a convenient included stop and continue flexibly — you are not locked to stop one.',
+      a: 'Yes. Start from a convenient included stop and continue flexibly. You are not locked to stop one.',
     },
     {
       q: 'Is this a live guided tour?',

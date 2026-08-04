@@ -113,7 +113,7 @@ export function usePantheonPreviewController({ analyticsSource = 'free_pantheon'
 
   useEffect(
     () => () => {
-      // Leaving the acquisition page — stop session audio.
+      // Leaving the acquisition page: stop session audio.
       stopPreviewSessionAudio()
     },
     [],

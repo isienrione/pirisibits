@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 
 /**
- * Compact acquisition-page header — brand home + focused CTAs, no hamburger.
+ * Compact acquisition-page header: brand home + focused CTAs, no hamburger.
  */
 export default function AcquisitionHeader({
   primaryCta = 'Get the full Rome tour',

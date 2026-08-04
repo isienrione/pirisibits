@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 
 /**
- * Short acquisition FAQ — one open panel at a time, keyboard-friendly.
+ * Short acquisition FAQ: one open panel at a time, keyboard-friendly.
  * @param {{ items: Array<{ q: string, a: string }>, heading?: string }} props
  */
 export default function AcquisitionFaq({ items, heading = 'Questions' }) {

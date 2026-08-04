@@ -118,7 +118,7 @@ describe('acquisition pages', () => {
     expect(headings[0]).toHaveTextContent(/exterior chapter free/i)
     expect(screen.queryByText(/What the free experience includes/i)).not.toBeInTheDocument()
     expect(FREE_PANTHEON_COPY.includesCompact).toContain('Part 1 of 4 only')
-    expect(screen.getByRole('link', { name: /Peek the phone first/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Show me now/i })).toHaveAttribute(
       'href',
       '#try-pantheon',
     )
