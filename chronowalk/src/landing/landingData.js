@@ -297,13 +297,13 @@ export const LANDING_HERO_REVIEWS = {
 
 /**
  * Product-story architecture (Landing V4).
- * Intro compresses into nav · sequential phone demo · capability sections.
+ * Intro compresses into nav · stop carousel · how-it-works · personas · pricing.
  * Keys match LANDING_CONTENT.
  */
 export const LANDING_SECTION_ORDER = [
   'hero',
-  'product-demo',
   'monuments',
+  'product-demo',
   'personas',
   'pricing',
   'faq',
@@ -317,14 +317,14 @@ export const LANDING_ACTS = [
     label: 'Act I: The Open',
     index: 'I',
     name: 'The Open',
-    sections: ['hero', 'product-demo'],
+    sections: ['hero'],
   },
   {
     id: 'act-walk',
     label: 'Act II: The Walk',
     index: 'II',
     name: 'The Walk',
-    sections: ['monuments', 'personas'],
+    sections: ['monuments', 'product-demo', 'personas'],
   },
   {
     id: 'act-choose',

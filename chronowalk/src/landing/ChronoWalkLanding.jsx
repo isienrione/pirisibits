@@ -251,9 +251,6 @@ function ChronoWalkLandingInner() {
           name={actWalk.name}
         >
           <LandingStopCarousel />
-          <LandingPersonas
-            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
-          />
           <V2ErrorBoundary
             title="Demo unavailable"
             message="The product demo could not load on this device. The rest of ChronoWalk still works - scroll for tours and pricing."
@@ -262,6 +259,9 @@ function ChronoWalkLandingInner() {
           >
             <LandingProductDemo />
           </V2ErrorBoundary>
+          <LandingPersonas
+            onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
+          />
         </LandingAct>
 
         <LandingAct

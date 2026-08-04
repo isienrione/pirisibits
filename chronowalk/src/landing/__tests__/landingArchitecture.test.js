@@ -15,8 +15,8 @@ describe('landing product-story architecture (V4)', () => {
   it('defines the product-story section order', () => {
     expect(LANDING_SECTION_ORDER).toEqual([
       'hero',
-      'product-demo',
       'monuments',
+      'product-demo',
       'personas',
       'pricing',
       'faq',
@@ -161,6 +161,22 @@ describe('landing product-story architecture (V4)', () => {
     const stripIdx = text.indexOf('<LandingHeroReassurance')
     expect(heroIdx).toBeGreaterThan(-1)
     expect(stripIdx).toBeGreaterThan(heroIdx)
+  })
+
+  it('mounts Act II as carousel → how-it-works → personas → pricing', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { fileURLToPath } = await import('node:url')
+    const { dirname, join } = await import('node:path')
+    const landingPath = join(dirname(fileURLToPath(import.meta.url)), '../ChronoWalkLanding.jsx')
+    const text = readFileSync(landingPath, 'utf8')
+    const carouselIdx = text.indexOf('<LandingStopCarousel')
+    const demoIdx = text.indexOf('<LandingProductDemo')
+    const personasIdx = text.indexOf('<LandingPersonas')
+    const pricingIdx = text.indexOf('<LandingRomeTiersSection')
+    expect(carouselIdx).toBeGreaterThan(-1)
+    expect(demoIdx).toBeGreaterThan(carouselIdx)
+    expect(personasIdx).toBeGreaterThan(demoIdx)
+    expect(pricingIdx).toBeGreaterThan(personasIdx)
   })
 
   it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {
