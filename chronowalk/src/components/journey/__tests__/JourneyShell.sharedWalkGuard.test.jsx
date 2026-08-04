@@ -60,6 +60,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     skipNarration: vi.fn(),
     jumpToChapter: vi.fn(),
     setPath: vi.fn(),
+    getActiveStopId: () => null,
   }),
 }))
 

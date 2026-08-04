@@ -85,8 +85,11 @@ export function buildImmersivePlayerProps({
           chapterAtIndex(chapters, chapterIndex, signatureLine(waypoint)),
           `Chapter ${chapterIndex + 1}`,
         )
-  const displayChapterCount =
-    audio.chapterCount || Math.max(chapters.length + (waypoint?.outro_variants ? 1 : 0), 1)
+  const displayChapterCount = Math.max(
+    audio.chapterCount ?? 0,
+    chapters.length + (waypoint?.outro_variants ? 1 : 0),
+    1,
+  )
   const chapterTitles = [
     ...chapters.map((chapter, index) => chapterTitle(chapter, `Chapter ${index + 1}`)),
     ...(waypoint?.outro_variants ? [outroTitle] : []),

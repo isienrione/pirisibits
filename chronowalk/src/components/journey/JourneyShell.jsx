@@ -389,8 +389,12 @@ export default function JourneyShell({ variant = 'legacy' }) {
       return waypointAutoplayRef.current.ensureStarted(
         waypointId,
         {
+          // Only adopt a live session for THIS waypoint. A paused/playing prior
+          // stop (e.g. Colosseum exterior → interior) must not skip playWaypoint.
           isPlaying: () => {
             const live = audioOpsRef.current
+            const activeId = live.getActiveStopId?.() ?? null
+            if (activeId !== waypointId) return false
             return (
               live.narrationPlaying ||
               (live.progress?.itemCount ?? 0) > 0 ||
@@ -526,13 +530,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     let cancelled = false
     let retryTimer = null
 
+    const isThisWaypointLive = () => {
+      const live = audioOpsRef.current
+      const activeId = live.getActiveStopId?.() ?? null
+      return activeId === waypointId && Boolean(live.narrationPlaying)
+    }
+
     const attempt = async () => {
       const started = await tryStartWaypointNarrationRef.current(waypointId)
       if (cancelled) return
       if (
         started ||
         waypointAutoplayRef.current.getStartedWaypointId() === waypointId ||
-        audioOpsRef.current.narrationPlaying
+        isThisWaypointLive()
       ) {
         return
       }
@@ -543,7 +553,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         if (cancelled) return
         if (
           waypointAutoplayRef.current.getStartedWaypointId() === waypointId ||
-          audioOpsRef.current.narrationPlaying
+          isThisWaypointLive()
         ) {
           return
         }
@@ -1544,17 +1554,26 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const record = step.record
       const chapters = record.chapters?.length ? record.chapters : []
-      const activeChapterIndex = audio.progress?.chapterCount
-        ? audio.progress.chapterIndex
-        : 0
-      const chapterCount = audio.progress?.chapterCount || Math.max(chapters.length, 1)
+      const sessionForThisStop = audio.getActiveStopId?.() === step.id
+      const activeChapterIndex =
+        sessionForThisStop && audio.progress?.chapterCount
+          ? audio.progress.chapterIndex
+          : 0
+      // Prefer manifest chapter count when a prior stop's session still reports a smaller count.
+      const chapterCount = Math.max(
+        sessionForThisStop ? audio.progress?.chapterCount ?? 0 : 0,
+        chapters.length,
+        1,
+      )
       const hasMoreChapters =
         !storyEnded && chapterCount > 1 && activeChapterIndex < chapterCount - 1
-      const audioAvailable =
-        audio.narrationPlaying ||
-        (audio.progress?.itemCount ?? 0) > 0 ||
-        (audio.progress?.duration ?? 0) > 0 ||
-        storyEnded
+      const hasLoadedSession =
+        sessionForThisStop &&
+        (audio.narrationPlaying ||
+          (audio.progress?.itemCount ?? 0) > 0 ||
+          (audio.progress?.duration ?? 0) > 0)
+      // Keep play enabled so a cold / wrong-stop session can still be started.
+      const audioAvailable = hasLoadedSession || storyEnded || chapters.length > 0
 
       const realTranscript = resolveStepTranscript(step, context.path)
       const playerProps = buildImmersivePlayerProps({
@@ -1566,27 +1585,35 @@ export default function JourneyShell({ variant = 'legacy' }) {
         initialTab: storyViewRef.current,
         transcriptOverride: realTranscript ? stripDirectorCues(realTranscript) : null,
         audio: {
-          narrationPlaying: audio.narrationPlaying,
-          currentTime: audio.progress?.currentTime ?? 0,
-          duration: audio.progress?.duration ?? 0,
+          narrationPlaying: sessionForThisStop ? audio.narrationPlaying : false,
+          currentTime: sessionForThisStop ? audio.progress?.currentTime ?? 0 : 0,
+          duration: sessionForThisStop ? audio.progress?.duration ?? 0 : 0,
           playbackRate: audio.playbackRate,
           chapterCount,
           audioAvailable,
         },
         continueLabel: hasMoreChapters
           ? 'Next chapter →'
-          : storyEnded || !audio.narrationPlaying
+          : storyEnded || !(sessionForThisStop && audio.narrationPlaying)
             ? 'Continue walking →'
             : 'Skip ahead →',
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
           onTogglePlay: () => {
-            void syncAudio.toggleSyncedPlayback().catch((err) => {
-              if (err?.code === 'resume_leader_only') {
-                setSyncStatus('Only the leader can resume for everyone.')
+            void (async () => {
+              if (!hasLoadedSession) {
+                const started = await tryStartWaypointNarration(step.id)
+                if (started) return
               }
-            })
+              try {
+                await syncAudio.toggleSyncedPlayback()
+              } catch (err) {
+                if (err?.code === 'resume_leader_only') {
+                  setSyncStatus('Only the leader can resume for everyone.')
+                }
+              }
+            })()
           },
           onSkipBack: () => audio.skipNarration(-15),
           onSkipForward: () => audio.skipNarration(15),

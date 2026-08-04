@@ -18,10 +18,12 @@ const playWaypointMock = vi.fn().mockResolvedValue(true)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
 const unlockMock = vi.fn().mockResolvedValue(true)
 const jumpToChapterMock = vi.fn()
+const getActiveStopIdMock = vi.fn(() => null)
 
 const audioMock = vi.hoisted(() => ({
   narrationPlaying: false,
   ready: true,
+  activeStopId: null,
   progress: {
     currentTime: 0,
     duration: 0,
@@ -76,6 +78,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     skipNarration: vi.fn(),
     jumpToChapter: jumpToChapterMock,
     setPath: vi.fn(),
+    getActiveStopId: () => getActiveStopIdMock() ?? audioMock.activeStopId,
   }),
 }))
 
@@ -147,6 +150,7 @@ describe('JourneyShell', () => {
     resetJourney()
     audioMock.narrationPlaying = false
     audioMock.ready = true
+    audioMock.activeStopId = null
     audioMock.progress = {
       currentTime: 0,
       duration: 0,
@@ -170,6 +174,8 @@ describe('JourneyShell', () => {
     playTransitMock.mockClear()
     unlockMock.mockClear()
     jumpToChapterMock.mockClear()
+    getActiveStopIdMock.mockClear()
+    getActiveStopIdMock.mockReturnValue(null)
   })
 
   afterEach(() => {
@@ -222,8 +228,39 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
+  it('starts Colosseum interior even when previous exterior session is still live', async () => {
+    // Simulate a stuck handoff: exterior audio/session still present when interior opens.
+    audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w01'
+    audioMock.progress = {
+      currentTime: 30,
+      duration: 180,
+      chapterIndex: 0,
+      chapterCount: 1,
+      itemIndex: 0,
+      itemCount: 2,
+      playing: true,
+      paused: false,
+    }
+
+    const w02Index = sequenceIndexOf('w02')
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: w02Index,
+      completedWaypointIds: ['w01'],
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByRole('heading', { name: /colosseum interior/i })).toBeInTheDocument()
+    expect(playWaypointMock).toHaveBeenCalledWith('w02')
+    // Prefer chapter chrome over the stale single-chapter arrival line.
+    expect(screen.getAllByText(/Colosseum Interior I - The Underneath/i).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/you are standing where the crowd never stood/i)).not.toBeInTheDocument()
+  })
+
   it('exposes a visible Settings control on the active immersive player', async () => {
     audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w01'
     audioMock.progress = {
       currentTime: 42,
       duration: 120,
@@ -292,6 +329,7 @@ describe('JourneyShell', () => {
     expect(interiorIndex).toBeGreaterThanOrEqual(0)
 
     audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w23'
     audioMock.progress = {
       currentTime: 10,
       duration: 120,

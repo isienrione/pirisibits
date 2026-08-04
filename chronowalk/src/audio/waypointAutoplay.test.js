@@ -67,4 +67,20 @@ describe('createWaypointAutoplayCoordinator', () => {
     expect(start).toHaveBeenCalledTimes(0)
     expect(coordinator.getStartedWaypointId()).toBe('w01')
   })
+
+  it('starts the new stop when isPlaying reports a different live session', async () => {
+    const coordinator = createWaypointAutoplayCoordinator()
+    const start = vi.fn(async () => true)
+
+    // Caller must only return true when THIS waypoint is live.
+    const started = await coordinator.ensureStarted(
+      'w02',
+      { isPlaying: () => false },
+      start,
+    )
+
+    expect(started).toBe(true)
+    expect(start).toHaveBeenCalledTimes(1)
+    expect(coordinator.getStartedWaypointId()).toBe('w02')
+  })
 })
