@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { ChevronRight, X } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import {
@@ -79,7 +79,8 @@ export default function TourOnboardingCards({
   const totalSteps = ONBOARDING_CARD_PHASES.length
   const blocking = Boolean(visiblePhase)
 
-  useEffect(() => {
+  // Layout effect so JourneyShell holds narration before its autoplay useEffect runs.
+  useLayoutEffect(() => {
     onBlockingChange?.(blocking)
     return () => onBlockingChange?.(false)
   }, [blocking, onBlockingChange])

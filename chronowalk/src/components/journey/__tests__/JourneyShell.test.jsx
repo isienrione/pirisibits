@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { render, screen, fireEvent, within, act } from '@testing-library/react'
+import { render, screen, fireEvent, within, act, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
 import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
@@ -72,7 +72,7 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     stopNarration: vi.fn(),
     resumePlayback: vi.fn().mockResolvedValue(undefined),
     pauseNarration: vi.fn(),
-    resumeNarration: vi.fn(),
+    resumeNarration: vi.fn().mockResolvedValue(true),
     toggleNarration: vi.fn(),
     seekNarration: vi.fn(),
     skipNarration: vi.fn(),
@@ -217,7 +217,8 @@ describe('JourneyShell', () => {
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
-  it('redesign auto-starts waypoint narration when story opens', async () => {
+  it('redesign auto-starts waypoint narration when story opens after tips are done', async () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
@@ -226,6 +227,37 @@ describe('JourneyShell', () => {
     expect(screen.getByText(/colosseum exterior/i)).toBeInTheDocument()
     expect(playWaypointMock).toHaveBeenCalledWith('w01')
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('holds Colosseum exterior narration until floating tips are closed', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(playWaypointMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: /Close tutorial/i }))
+
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+    await waitFor(() => expect(playWaypointMock).toHaveBeenCalledWith('w01'))
+  })
+
+  it('starts Colosseum exterior narration after the final tip', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(playWaypointMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start listening' }))
+
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+    await waitFor(() => expect(playWaypointMock).toHaveBeenCalledWith('w01'))
   })
 
   it('starts Colosseum interior even when previous exterior session is still live', async () => {

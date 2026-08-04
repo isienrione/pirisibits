@@ -137,6 +137,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   /** First-stop tip cards block Colosseum narration until dismissed. */
   const [storyTutorialBlocking, setStoryTutorialBlocking] = useState(false)
+  // Bumped when tips release blocking so autoplay re-runs even if blocking was already false.
+  const [tourTipsReleaseNonce, setTourTipsReleaseNonce] = useState(0)
+  const handleTourTutorialBlockingChange = useCallback((blocking) => {
+    setStoryTutorialBlocking(Boolean(blocking))
+    if (!blocking) {
+      setTourTipsReleaseNonce((n) => n + 1)
+    }
+  }, [])
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
   // Last heard narration - keeps the floating dock visible after audio ends.
@@ -384,22 +392,27 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const tryStartWaypointNarration = useCallback(
     async (waypointId) => {
       if (!manifest || !waypointId) return false
-      if (storyTutorialBlocking) return false
+      // Hold Colosseum exterior (first-stop) narration until floating tips finish/close.
+      // Check both the tip callback and persisted onboarding so we do not race the
+      // first tip mount (blocking starts false before TourOnboardingCards effects).
+      const holdForFirstStopTips =
+        storyTutorialBlocking ||
+        (variant === 'redesign' &&
+          step?.type === 'waypoint' &&
+          step?.id === waypointId &&
+          isOnFirstTourStop(context, step, manifest) &&
+          shouldShowTourOnboarding(context))
+      if (holdForFirstStopTips) return false
 
       return waypointAutoplayRef.current.ensureStarted(
         waypointId,
         {
-          // Only adopt a live session for THIS waypoint. A paused/playing prior
-          // stop (e.g. Colosseum exterior → interior) must not skip playWaypoint.
+          // Only adopt an actively playing session for THIS waypoint.
+          // A paused tip-hold must resume/start, not be treated as already begun.
           isPlaying: () => {
             const live = audioOpsRef.current
             const activeId = live.getActiveStopId?.() ?? null
-            if (activeId !== waypointId) return false
-            return (
-              live.narrationPlaying ||
-              (live.progress?.itemCount ?? 0) > 0 ||
-              (live.progress?.duration ?? 0) > 0
-            )
+            return activeId === waypointId && Boolean(live.narrationPlaying)
           },
         },
         async () => {
@@ -407,11 +420,27 @@ export default function JourneyShell({ variant = 'legacy' }) {
           const unlocked = await live.unlock()
           if (unlocked) setAudioUnlocked(true)
           setActiveWaypoint(waypointId, manifest)
+
+          const activeId = live.getActiveStopId?.() ?? null
+          const hasPausedSession =
+            activeId === waypointId &&
+            !live.narrationPlaying &&
+            ((live.progress?.itemCount ?? 0) > 0 || (live.progress?.duration ?? 0) > 0)
+          if (hasPausedSession) {
+            return (await live.resumeNarration()) !== false
+          }
           return (await live.playWaypoint(waypointId)) ?? false
         },
       )
     },
-    [manifest, setActiveWaypoint, storyTutorialBlocking],
+    [
+      context,
+      manifest,
+      setActiveWaypoint,
+      step,
+      storyTutorialBlocking,
+      variant,
+    ],
   )
 
   const clearStoryAutoplayGesture = useCallback(() => {
@@ -518,7 +547,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     }
 
     // Keep the first-stop tip quiet until the traveler finishes or closes it.
-    if (storyTutorialBlocking) {
+    // Also gate on pending onboarding so we do not start under tips before the
+    // tip component's blocking effect has run.
+    const tipsPending =
+      storyTutorialBlocking ||
+      (variant === 'redesign' &&
+        isOnFirstTourStop(context, step, manifest) &&
+        shouldShowTourOnboarding(context))
+    if (tipsPending) {
       clearStoryAutoplayGesture()
       if (audioOpsRef.current.narrationPlaying) {
         audioOpsRef.current.pauseNarration()
@@ -570,11 +606,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     }
   }, [
     clearStoryAutoplayGesture,
+    context,
+    manifest,
     state,
-    step?.id,
-    step?.type,
+    step,
     audioUnlocked,
     storyTutorialBlocking,
+    tourTipsReleaseNonce,
+    variant,
   ])
 
   useEffect(() => () => clearStoryAutoplayGesture(), [clearStoryAutoplayGesture])
@@ -1489,7 +1528,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           insideGeofence={insideGeofence}
           hasReconstruction={hasReconstruction}
           bottomInset={bottomInset}
-          onBlockingChange={setStoryTutorialBlocking}
+          onBlockingChange={handleTourTutorialBlockingChange}
         />
       </>
     )
@@ -1602,6 +1641,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
           onCycleSpeed: handleCycleSpeed,
           onTogglePlay: () => {
             void (async () => {
+              // Do not let play start Colosseum exterior under floating tips.
+              if (
+                storyTutorialBlocking ||
+                (isOnFirstTourStop(context, step, manifest) &&
+                  shouldShowTourOnboarding(context))
+              ) {
+                return
+              }
               if (!hasLoadedSession) {
                 const started = await tryStartWaypointNarration(step.id)
                 if (started) return
