@@ -117,7 +117,7 @@ const WalkScreen = memo(function WalkScreen() {
   return (
     <div className="cw-v4-walk-static" data-testid="landing-demo-walk-static">
       <img
-        src="/landing/phone-screens/walk-spanish-steps-screen.jpg"
+        src="/landing/phone-screens/walk-spanish-steps-screen.png"
         alt="Walking to Spanish Steps in ChronoWalk"
         decoding="async"
         draggable={false}
