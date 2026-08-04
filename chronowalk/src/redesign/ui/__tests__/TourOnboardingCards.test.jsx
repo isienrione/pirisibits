@@ -49,7 +49,7 @@ describe('TourOnboardingCards', () => {
     expect(screen.getByText(/Quick tip/i)).toBeInTheDocument()
   })
 
-  it('reports blocking while visible and clears it when closed', () => {
+  it('dismisses only the current tip on close without wiping the tutorial', () => {
     const onBlockingChange = vi.fn()
     render(
       <TourOnboardingCards
@@ -62,10 +62,11 @@ describe('TourOnboardingCards', () => {
     )
 
     expect(onBlockingChange).toHaveBeenCalledWith(true)
-    fireEvent.click(screen.getByRole('button', { name: /Close tutorial/i }))
-    expect(localStorage.getItem('cw_tour_onboarding_complete')).toBe('true')
-    expect(onBlockingChange).toHaveBeenCalledWith(false)
-    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    fireEvent.click(screen.getByRole('button', { name: /Dismiss tip/i }))
+    expect(localStorage.getItem('cw_tour_onboarding_complete')).toBeNull()
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'transcript')
+    expect(onBlockingChange).toHaveBeenCalledWith(true)
   })
 
   it('advances through story tips with Next', () => {

@@ -85,6 +85,12 @@ export default function TourOnboardingCards({
     return () => onBlockingChange?.(false)
   }, [blocking, onBlockingChange])
 
+  const finishOnboarding = useCallback(() => {
+    markTourOnboardingComplete()
+    setFinished(true)
+    onBlockingChange?.(false)
+  }, [onBlockingChange])
+
   const dismissCurrent = useCallback(() => {
     if (!visiblePhase) return
     setDismissedPhases((prev) => {
@@ -93,12 +99,6 @@ export default function TourOnboardingCards({
       return next
     })
   }, [visiblePhase])
-
-  const finishOnboarding = useCallback(() => {
-    markTourOnboardingComplete()
-    setFinished(true)
-    onBlockingChange?.(false)
-  }, [onBlockingChange])
 
   useEffect(() => {
     if (dismissedPhases.size >= ONBOARDING_CARD_PHASES.length) {
@@ -135,10 +135,11 @@ export default function TourOnboardingCards({
         <button
           type="button"
           className="cw-tour-onboarding-cards__close"
-          aria-label="Close tutorial"
+          aria-label="Dismiss tip"
           onClick={() => {
-            // Skip remaining tips and hide the card so travelers can continue.
-            finishOnboarding()
+            // Dismiss this tip only — do not wipe the whole tutorial.
+            dismissCurrent()
+            if (isLast) finishOnboarding()
           }}
         >
           <X size={15} strokeWidth={2.25} />
