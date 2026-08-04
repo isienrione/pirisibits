@@ -7,6 +7,18 @@ import {
 } from '../landingAnalytics.js'
 
 /**
+ * Width of one monument set (first card → matching clone), including the flex gap.
+ * `scrollWidth / 2` is wrong when the track has symmetric padding — the seam lands
+ * on Colosseum (stop 0) and scroll-snap fights a half-gap error (blink / stutter).
+ */
+export function measureStopCarouselLoopWidth(scroller, stopCount) {
+  if (!scroller || stopCount <= 0) return 0
+  const cards = scroller.querySelectorAll('.cw-v4-stops__card')
+  if (cards.length < stopCount * 2) return 0
+  return cards[stopCount].offsetLeft - cards[0].offsetLeft
+}
+
+/**
  * Premium horizontal stop carousel - Apple TV artwork energy.
  * Infinite-feeling track via duplicated slides.
  */
@@ -21,21 +33,51 @@ export default function LandingStopCarousel() {
 
   useEffect(() => {
     const el = scrollerRef.current
-    if (!el) return undefined
+    if (!el || monuments.length === 0) return undefined
+
+    let looping = false
+    let rafId = 0
+
+    const jumpBy = (delta) => {
+      if (looping || !delta) return
+      looping = true
+      const previousSnap = el.style.scrollSnapType
+      // Disable snap for the teleport so mandatory centering cannot re-fire scroll
+      // and bounce across the Colosseum seam three times.
+      el.style.scrollSnapType = 'none'
+      el.scrollLeft += delta
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        el.style.scrollSnapType = previousSnap
+        // Second frame: let layout settle before accepting another wrap.
+        rafId = requestAnimationFrame(() => {
+          looping = false
+        })
+      })
+    }
 
     const onScroll = () => {
-      const half = el.scrollWidth / 2
-      if (el.scrollLeft >= half) {
-        el.scrollLeft -= half
+      if (looping) return
+      const loopWidth = measureStopCarouselLoopWidth(el, monuments.length)
+      if (loopWidth <= 0) return
+
+      if (el.scrollLeft >= loopWidth) {
+        jumpBy(-loopWidth)
       } else if (el.scrollLeft <= 0) {
-        el.scrollLeft += half
+        jumpBy(loopWidth)
       }
     }
 
-    // Start mid-track so left swipe also loops.
-    el.scrollLeft = el.scrollWidth / 4
+    // Start mid–first copy so left swipe can loop without an immediate wrap.
+    const loopWidth = measureStopCarouselLoopWidth(el, monuments.length)
+    el.scrollLeft = loopWidth > 0 ? loopWidth / 2 : el.scrollWidth / 4
+
     el.addEventListener('scroll', onScroll, { passive: true })
-    return () => el.removeEventListener('scroll', onScroll)
+    return () => {
+      cancelAnimationFrame(rafId)
+      el.removeEventListener('scroll', onScroll)
+      el.style.scrollSnapType = ''
+    }
   }, [monuments.length])
 
   return (
@@ -64,26 +106,38 @@ export default function LandingStopCarousel() {
         aria-label={section.previewAriaLabel}
       >
         <div className="cw-v4-stops__track">
-          {track.map((stop, index) => (
-            <article
-              key={`${stop.id}-${index}`}
-              className="cw-v4-stops__card"
-              aria-hidden={index >= monuments.length ? true : undefined}
-            >
-              <img
-                className="cw-v4-stops__image"
-                src={stop.photo}
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="cw-v4-stops__meta">
-                <p className="cw-v4-stops__index">{String(stop.index).padStart(2, '0')}</p>
-                <h3 className="cw-v4-stops__name">{stop.title}</h3>
-                <p className="cw-v4-stops__sub">{stop.short}</p>
-              </div>
-            </article>
-          ))}
+          {track.map((stop, index) => {
+            const inFirstCopy = index < monuments.length
+            // Eager-load the first set + the clone seam (Colosseum) so the wrap
+            // never flashes an unloaded poster.
+            const nearSeam =
+              index === monuments.length ||
+              index === monuments.length - 1 ||
+              index === monuments.length + 1
+            const eager = inFirstCopy || nearSeam
+
+            return (
+              <article
+                key={`${stop.id}-${index}`}
+                className="cw-v4-stops__card"
+                aria-hidden={index >= monuments.length ? true : undefined}
+              >
+                <img
+                  className="cw-v4-stops__image"
+                  src={stop.photo}
+                  alt=""
+                  loading={eager ? 'eager' : 'lazy'}
+                  decoding="async"
+                  fetchPriority={index === 0 || index === monuments.length ? 'high' : undefined}
+                />
+                <div className="cw-v4-stops__meta">
+                  <p className="cw-v4-stops__index">{String(stop.index).padStart(2, '0')}</p>
+                  <h3 className="cw-v4-stops__name">{stop.title}</h3>
+                  <p className="cw-v4-stops__sub">{stop.short}</p>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
     </section>
