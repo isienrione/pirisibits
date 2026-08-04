@@ -60,7 +60,7 @@ The Service uses cookies and similar technologies:
 - **Strictly necessary** cookies/storage make the Service work (for example, delivering your purchased content). These do not require consent.
 - **Analytics** technologies help us understand usage. We use **PostHog**.
 
-Where required by law (including the EU/UK), we ask for your **consent** before enabling non-essential analytics. ChronoWalk shows an in-app notice so you can **Allow analytics** or choose **No thanks**. You can change that choice anytime from **Privacy choices** in the site footer or **Analytics preferences** in Settings; withdrawing consent stops analytics capture immediately. Essential access, offline downloads, and journey progress do not depend on analytics. You can also disable cookies in your browser, though some features may not work properly.
+Where required by law (including the EU/UK), we ask for your **consent** before enabling optional marketing and advertising cookies. ChronoWalk shows an in-app **Cookies** notice so you can **Accept** or **Reject**. You can change that choice anytime from **Privacy choices** in the site footer or **Cookie preferences** in Settings. Product analytics (PostHog) that help us keep ChronoWalk working and improving may run under legitimate interest and are described in this policy; essential access, offline downloads, and journey progress do not depend on marketing cookies. You can also disable cookies in your browser, though some features may not work properly.
 
 ---
 

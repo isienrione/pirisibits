@@ -4,13 +4,13 @@ import { useAnalyticsConsent } from './useAnalyticsConsent.js'
 import './analyticsConsent.css'
 
 function statusLabel(consent) {
-  if (consent === 'accepted') return 'Marketing cookies allowed'
-  if (consent === 'declined') return 'Marketing cookies off'
+  if (consent === 'accepted') return 'Cookies allowed'
+  if (consent === 'declined') return 'Cookies off'
   return 'Not chosen yet'
 }
 
 /**
- * Footer / Settings control to view and change marketing cookie preference.
+ * Footer / Settings control to view and change optional cookie preference.
  * Product analytics is not gated by this control.
  * @param {{ variant?: 'footer' | 'settings', className?: string }} props
  */
@@ -28,7 +28,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  const triggerLabel = variant === 'settings' ? 'Marketing preferences' : 'Privacy choices'
+  const triggerLabel = variant === 'settings' ? 'Cookie preferences' : 'Privacy choices'
 
   return (
     <div className={`cw-analytics-prefs ${className}`.trim()} data-testid="analytics-preferences">
@@ -77,7 +77,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 Privacy Policy
               </Link>
             </p>
-            <div className="cw-analytics-consent__actions">
+            <div className="cw-analytics-consent__actions cw-analytics-consent__actions--prefs">
               <button
                 type="button"
                 className="cw-analytics-consent__btn cw-analytics-consent__btn--accept"
@@ -88,7 +88,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-accept"
                 disabled={isAccepted}
               >
-                Allow marketing
+                Accept cookies
               </button>
               <button
                 type="button"
@@ -100,7 +100,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-decline"
                 disabled={consent === 'declined'}
               >
-                Turn marketing off
+                Reject cookies
               </button>
               <button
                 type="button"

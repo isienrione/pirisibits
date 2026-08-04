@@ -63,7 +63,7 @@ describe('SettingsBottomSheet', () => {
     expect(screen.getByText('Help')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
     expect(screen.getByTestId('analytics-preferences')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /marketing preferences/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /cookie preferences/i })).toBeInTheDocument()
     expect(screen.queryByTestId('family-walk-panel')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-walk-together')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-change-route')).not.toBeInTheDocument()

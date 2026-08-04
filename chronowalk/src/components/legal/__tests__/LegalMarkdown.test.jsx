@@ -22,6 +22,6 @@ describe('LegalMarkdown', () => {
     expect(screen.getByRole('columnheader', { name: /legal basis/i })).toBeInTheDocument()
     expect(screen.getByText(/Deliver the experience you purchased/i)).toBeInTheDocument()
     expect(document.body.textContent).toContain('PostHog')
-    expect(document.body.textContent).toMatch(/Privacy choices|Analytics preferences/i)
+    expect(document.body.textContent).toMatch(/Privacy choices|Cookie preferences/i)
   })
 })
