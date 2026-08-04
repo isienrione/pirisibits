@@ -372,6 +372,26 @@
   text-underline-offset: 0.18em;
 }
 
+.cw-acq-text-link {
+  color: #1f5c5a;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, #1f5c5a 55%, transparent);
+}
+
+.cw-acq-text-link:hover,
+.cw-acq-text-link:focus-visible {
+  color: #154544;
+  text-decoration-color: #154544;
+}
+
+.cw-acq-text-link--block {
+  display: inline-block;
+  font-size: 1.02rem;
+}
+
 .cw-acq-btn {
   display: inline-flex;
   align-items: center;
@@ -488,18 +508,56 @@
   margin-top: 1.5rem;
 }
 
+.cw-acq-choice__stack {
+  display: grid;
+  gap: 1rem;
+}
+
 .cw-acq-choice__card {
   border: 1px solid var(--v4-line);
-  border-radius: 1rem;
+  border-radius: 1.15rem;
   padding: 1.25rem;
   background: var(--v4-paper);
 }
 
-.cw-acq-choice__card--featured {
-  border-color: color-mix(in srgb, var(--v4-amber) 55%, var(--v4-line));
+.cw-acq-choice__card--antica {
+  --acq-choice-accent: #1f5c5a;
+  --acq-choice-accent-deep: #154544;
+  --acq-choice-paper: #f3faf9;
+  border-color: color-mix(in srgb, var(--acq-choice-accent) 52%, rgba(33, 28, 21, 0.22));
   background:
-    radial-gradient(ellipse 80% 60% at 100% 0%, rgba(232, 161, 60, 0.14), transparent 55%),
-    var(--v4-paper);
+    radial-gradient(ellipse 80% 45% at 100% 0%, color-mix(in srgb, var(--acq-choice-accent) 16%, transparent), transparent 55%),
+    linear-gradient(165deg, #fffdf8, var(--acq-choice-paper));
+}
+
+.cw-acq-choice__card--eterna {
+  --acq-choice-accent: #b08d3e;
+  --acq-choice-accent-deep: #8a6a28;
+  --acq-choice-paper: #f3ebe0;
+  border-color: color-mix(in srgb, var(--acq-choice-accent) 55%, var(--v4-line));
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 0%, color-mix(in srgb, var(--acq-choice-accent) 18%, transparent), transparent 55%),
+    linear-gradient(165deg, #fffdf8, var(--acq-choice-paper));
+}
+
+.cw-acq-choice__card--historica {
+  --acq-choice-accent: #a35a3a;
+  --acq-choice-accent-deep: #7f4128;
+  --acq-choice-paper: #f8efe9;
+  border-color: color-mix(in srgb, var(--acq-choice-accent) 52%, rgba(33, 28, 21, 0.22));
+  background:
+    radial-gradient(ellipse 80% 45% at 100% 0%, color-mix(in srgb, var(--acq-choice-accent) 16%, transparent), transparent 55%),
+    linear-gradient(165deg, #fffdf8, var(--acq-choice-paper));
+}
+
+.cw-acq-choice__theme {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--acq-choice-accent-deep, var(--v4-muted));
 }
 
 .cw-acq-choice__name {
@@ -533,6 +591,26 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.65rem;
+}
+
+.cw-acq-btn--antica {
+  background: linear-gradient(135deg, #3d8a86, #1f5c5a);
+  color: #f7fffe;
+}
+
+.cw-acq-btn--eterna {
+  background: linear-gradient(135deg, #c4a574, #8a6a28);
+  color: #fffaf3;
+}
+
+.cw-acq-btn--historica {
+  background: linear-gradient(135deg, #b46848, #7f4128);
+  color: #fffaf6;
+}
+
+.cw-acq-choice__pricing-link {
+  margin: 1.35rem 0 0;
+  text-align: center;
 }
 
 .cw-acq-faq__list {
@@ -598,6 +676,7 @@
 
   .cw-acq-choice {
     grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
 
   .cw-acq-reassure {

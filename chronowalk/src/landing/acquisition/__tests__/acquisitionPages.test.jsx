@@ -134,8 +134,19 @@ describe('acquisition pages', () => {
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Ancient Rome/i)
     expect(screen.getAllByText(new RegExp(`${stopCount} stops`)).length).toBeGreaterThan(0)
+    expect(screen.getByText('Via Sacra')).toBeInTheDocument()
+    expect(screen.getByText('Palatine terrace viewpoint')).toBeInTheDocument()
+    expect(screen.queryByText('Temple of Saturn')).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /See the complete route/i })).toHaveAttribute(
+      'href',
+      '/#rome-essential',
+    )
     expect(screen.getByRole('button', { name: /Choose Roma Antica/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Choose Roma Historica/i })).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /Unlock all 21 stops/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getByRole('link', { name: /See more details of each route and pricing/i }),
+    ).toHaveAttribute('href', '/#pricing')
     expect(document.title).toBe(getPageMeta('/ancient-rome').title)
   })
 

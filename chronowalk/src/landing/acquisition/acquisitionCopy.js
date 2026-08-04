@@ -79,7 +79,9 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   choiceHeading: 'Choose your Rome walk',
   anticaCta: 'Choose Roma Antica',
   eternaCta: 'Unlock all 21 stops',
+  historicaCta: 'Choose Roma Historica',
   eternaValueLine: 'Only €5 more for the complete 21-stop Rome experience.',
+  pricingDetailsCta: 'See more details of each route and pricing',
   faq: [
     {
       q: 'Does this include Colosseum or Forum tickets?',
@@ -158,6 +160,6 @@ export const ANCIENT_ROME_FEATURED_STOP_LABELS = Object.freeze([
   'Arch of Titus',
   'Roman Forum',
   'Curia Julia',
-  'Temple of Saturn',
-  'Palatine viewpoints',
+  'Via Sacra',
+  'Palatine terrace viewpoint',
 ])

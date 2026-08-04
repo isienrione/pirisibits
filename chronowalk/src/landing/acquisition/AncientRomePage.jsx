@@ -19,6 +19,11 @@ import {
 } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 
+/** Avoid em/en dashes in acquisition-facing stats copy. */
+function withoutDashes(label) {
+  return String(label ?? '').replace(/[—–]/g, '-')
+}
+
 export default function AncientRomePage() {
   const copy = ANCIENT_ROME_COPY
   const antica = useMemo(
@@ -29,7 +34,12 @@ export default function AncientRomePage() {
     () => ROME_TIERS.find((tier) => tier.id === 'rome-complete'),
     [],
   )
+  const historica = useMemo(
+    () => ROME_TIERS.find((tier) => tier.id === 'rome-central'),
+    [],
+  )
   const anticaStats = useMemo(() => getLandingTierStats('rome-essential'), [])
+  const historicaStats = useMemo(() => getLandingTierStats('rome-central'), [])
   const anticaStops = useMemo(() => getLandingTierRouteStops('rome-essential'), [])
 
   const checkout = useAcquisitionCheckout({
@@ -46,6 +56,11 @@ export default function AncientRomePage() {
     trackAncientRomeFullTourClicked(section)
     trackAncientRomeRouteClicked('rome-complete', section)
     checkout.beginTier('rome-complete')
+  }, [checkout])
+
+  const chooseHistorica = useCallback(() => {
+    trackAncientRomeRouteClicked('rome-central', 'choice')
+    checkout.beginTier('rome-central')
   }, [checkout])
 
   const primaryCta = `${copy.primaryCtaPrefix} · ${antica?.price ?? '€9.99'}`
@@ -118,7 +133,9 @@ export default function AncientRomePage() {
             {copy.stopsLead}{' '}
             <strong>
               {anticaStats.stopCount} stops
-              {anticaStats.routeTimeLabel ? ` · ${anticaStats.routeTimeLabel}` : ''}
+              {anticaStats.routeTimeLabel
+                ? ` · ${withoutDashes(anticaStats.routeTimeLabel)}`
+                : ''}
               {anticaStats.distanceLabel ? ` · ${anticaStats.distanceLabel}` : ''}
             </strong>
             .
@@ -131,7 +148,7 @@ export default function AncientRomePage() {
           <p style={{ marginTop: '1.25rem' }}>
             <Link
               to="/#rome-essential"
-              className="cw-acq-link"
+              className="cw-acq-text-link"
               onClick={() => trackAncientRomeRouteClicked('rome-essential', 'stops_link')}
             >
               {copy.seeCompleteRoute}
@@ -166,7 +183,11 @@ export default function AncientRomePage() {
             {copy.choiceHeading}
           </h2>
           <div className="cw-acq-choice">
-            <article className="cw-acq-choice__card" aria-labelledby="choice-antica">
+            <article
+              className="cw-acq-choice__card cw-acq-choice__card--antica"
+              aria-labelledby="choice-antica"
+            >
+              <p className="cw-acq-choice__theme">{antica?.tierLabel ?? 'ANCIENT ROME'}</p>
               <h3 id="choice-antica" className="cw-acq-choice__name">
                 {antica?.name ?? 'Roma Antica'}
               </h3>
@@ -177,7 +198,7 @@ export default function AncientRomePage() {
               <div className="cw-acq-choice__actions">
                 <button
                   type="button"
-                  className="cw-acq-btn cw-acq-btn--secondary"
+                  className="cw-acq-btn cw-acq-btn--antica"
                   onClick={chooseAntica}
                 >
                   {copy.anticaCta}
@@ -185,29 +206,66 @@ export default function AncientRomePage() {
               </div>
             </article>
 
-            <article
-              className="cw-acq-choice__card cw-acq-choice__card--featured"
-              aria-labelledby="choice-eterna"
-            >
-              <h3 id="choice-eterna" className="cw-acq-choice__name">
-                {eterna?.name ?? 'Roma Eterna'}
-              </h3>
-              <p className="cw-acq-choice__meta">
-                21 stops · Includes Ancient Rome plus the wider city story
-              </p>
-              <p className="cw-acq-choice__price">{eterna?.price ?? '€14.99'}</p>
-              <p className="cw-acq-choice__value">{copy.eternaValueLine}</p>
-              <div className="cw-acq-choice__actions">
-                <button
-                  type="button"
-                  className="cw-acq-btn cw-acq-btn--primary"
-                  onClick={() => chooseEterna('choice')}
-                >
-                  {copy.eternaCta}
-                </button>
-              </div>
-            </article>
+            <div className="cw-acq-choice__stack">
+              <article
+                className="cw-acq-choice__card cw-acq-choice__card--eterna"
+                aria-labelledby="choice-eterna"
+              >
+                <p className="cw-acq-choice__theme">{eterna?.tierLabel ?? 'THE COMPLETE ROME WALK'}</p>
+                <h3 id="choice-eterna" className="cw-acq-choice__name">
+                  {eterna?.name ?? 'Roma Eterna'}
+                </h3>
+                <p className="cw-acq-choice__meta">
+                  21 stops · Includes Ancient Rome plus the wider city story
+                </p>
+                <p className="cw-acq-choice__price">{eterna?.price ?? '€14.99'}</p>
+                <p className="cw-acq-choice__value">{copy.eternaValueLine}</p>
+                <div className="cw-acq-choice__actions">
+                  <button
+                    type="button"
+                    className="cw-acq-btn cw-acq-btn--eterna"
+                    onClick={() => chooseEterna('choice')}
+                  >
+                    {copy.eternaCta}
+                  </button>
+                </div>
+              </article>
+
+              <article
+                className="cw-acq-choice__card cw-acq-choice__card--historica"
+                aria-labelledby="choice-historica"
+              >
+                <p className="cw-acq-choice__theme">{historica?.tierLabel ?? 'CENTRAL ROME'}</p>
+                <h3 id="choice-historica" className="cw-acq-choice__name">
+                  {historica?.name ?? 'Roma Historica'}
+                </h3>
+                <p className="cw-acq-choice__meta">
+                  {historicaStats.stopCount} stops · Centro Storico and Pantheon deep dive
+                </p>
+                <p className="cw-acq-choice__price">{historica?.price ?? '€9.99'}</p>
+                <div className="cw-acq-choice__actions">
+                  <button
+                    type="button"
+                    className="cw-acq-btn cw-acq-btn--historica"
+                    onClick={chooseHistorica}
+                  >
+                    {copy.historicaCta}
+                  </button>
+                </div>
+              </article>
+            </div>
           </div>
+
+          <p className="cw-acq-choice__pricing-link">
+            <Link
+              to="/#pricing"
+              className="cw-acq-text-link cw-acq-text-link--block"
+              onClick={() => trackAncientRomeRouteClicked('rome-complete', 'choice_details')}
+            >
+              {copy.pricingDetailsCta}
+            </Link>
+          </p>
+
           <p className="cw-acq-hero__trust" style={{ marginTop: '1.5rem' }}>
             <Link to="/free-pantheon" className="cw-acq-link">
               Try the Pantheon free
