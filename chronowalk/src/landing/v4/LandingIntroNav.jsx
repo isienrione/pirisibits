@@ -2,8 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 
+/**
+ * Cinematic logo open assets remain in the repo:
+ *   /landing/intro-open.mp4
+ *   /landing/intro-open-poster.jpg
+ * Kept off every surface until we have a better moment to show them.
+ * Flip to `true` to restore the previous first-visit intro.
+ */
+export const LANDING_INTRO_VIDEO_ENABLED = false
+
 /** Soft dissolve starts before the last frame so the cut into the hero isn’t abrupt. */
-/** Edge-bust: cinematic open (intro-open.mp4) - 2026-07-29 */
 const EXIT_LEAD_MS = 320
 const COMPRESS_MS = 450
 const FALLBACK_MAX_MS = 7000
@@ -13,8 +21,8 @@ const INTRO_PLAYS_KEY = 'cw_landing_intro_plays_v1'
 const INTRO_PLAY_CAP = 1
 
 /**
- * Keynote-style open: muted cinematic plays once per browser profile,
- * then dissolves into the fixed nav (same handoff as the old mark intro).
+ * Landing header. When LANDING_INTRO_VIDEO_ENABLED, plays a one-shot muted
+ * cinematic then dissolves into the fixed nav. Currently disabled site-wide.
  * After scrolling past the product hero: Get Tour CTA + obsidian nav chrome.
  */
 function prefersReducedMotion() {
@@ -47,13 +55,13 @@ function bumpIntroPlays() {
 }
 
 function shouldPlayIntro() {
+  if (!LANDING_INTRO_VIDEO_ENABLED) return false
   if (prefersReducedMotion()) return false
   return readIntroPlays() < INTRO_PLAY_CAP
 }
 
 export default function LandingIntroNav({ onComplete, onGetApp }) {
   const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
-  const reduceMotion = prefersReducedMotion()
   const [phase, setPhase] = useState(() => (shouldPlayIntro() ? 'intro' : 'nav'))
   const [pastHero, setPastHero] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -73,17 +81,10 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
     return undefined
   }, [onComplete, phase])
 
-  // One-shot cinematic. Do not depend on `phase`: compress used to re-run this
-  // effect, clear the nav timer in cleanup, then no-op beginCompress forever.
+  // One-shot cinematic (dormant while LANDING_INTRO_VIDEO_ENABLED is false).
   useEffect(() => {
-    if (reduceMotion) {
-      setPhase('nav')
-      return undefined
-    }
-
-    if (!playIntroOnMount.current) {
-      return undefined
-    }
+    if (!LANDING_INTRO_VIDEO_ENABLED) return undefined
+    if (!playIntroOnMount.current) return undefined
 
     bumpIntroPlays()
 
@@ -157,7 +158,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
       }
       document.body.style.overflow = bodyOverflowRef.current
     }
-  }, [reduceMotion])
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -198,6 +199,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
 
   const isNav = phase === 'nav'
   const isCompress = phase === 'compress'
+  const showIntroOverlay = LANDING_INTRO_VIDEO_ENABLED && (!isNav || isCompress)
   const showGetApp = Boolean(cta) && pastHero
   const ctaLabel = cta || LANDING_CTA.getApp
   const ctaTarget = ctaHref || '#get-app'
@@ -211,7 +213,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
 
   return (
     <>
-      {!isNav || isCompress ? (
+      {showIntroOverlay ? (
         <div
           className={[
             'cw-v4-intro',
