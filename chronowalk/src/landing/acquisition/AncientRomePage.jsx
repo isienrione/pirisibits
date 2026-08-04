@@ -96,7 +96,19 @@ export default function AncientRomePage() {
               </button>
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
-            <p className="cw-acq-disclaimer" role="note">
+          </div>
+          <div className="cw-acq-hero__media-col">
+            <figure className="cw-acq-hero__media">
+              <img
+                src={copy.heroImage}
+                alt={copy.heroImageAlt}
+                width={1200}
+                height={900}
+                fetchPriority="high"
+                decoding="async"
+              />
+            </figure>
+            <p className="cw-acq-disclaimer cw-acq-disclaimer--under-media" role="note">
               <span className="cw-acq-disclaimer__mark" aria-hidden="true">
                 *
               </span>
@@ -107,16 +119,6 @@ export default function AncientRomePage() {
               </span>
             </p>
           </div>
-          <figure className="cw-acq-hero__media">
-            <img
-              src={copy.heroImage}
-              alt={copy.heroImageAlt}
-              width={1200}
-              height={900}
-              fetchPriority="high"
-              decoding="async"
-            />
-          </figure>
         </div>
       </section>
 
