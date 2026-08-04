@@ -26,6 +26,12 @@ describe('journey state machine', () => {
     resetJourney()
   })
 
+  it('clears first-stop tip completion when beginning a fresh tour', () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
+    beginJourney({ pace: 'classic' })
+    expect(localStorage.getItem('cw_tour_onboarding_complete')).toBeNull()
+  })
+
   it('transitions between states', () => {
     transitionJourney(JOURNEY_STATES.WALKING)
     expect(getJourneySnapshot().state).toBe(JOURNEY_STATES.WALKING)

@@ -6,6 +6,7 @@ import { resolveResumeCue, wasAwayLongEnough } from '../content/journeyResume.js
 import { migratePersistedJourneyState } from '../redesign/lib/redesignJourneyState.js'
 import { scheduleJourneyCloudPush } from '../lib/journeyCloud.js'
 import { armReviewPromptIfNeeded } from '../lib/reviewPromptStorage.js'
+import { clearTourOnboarding } from '../utils/tourOnboarding.js'
 
 const STORAGE_KEY = 'cw_journey_v1'
 
@@ -264,6 +265,9 @@ export function beginJourney({
   sequenceIndex = 0,
   customWaypointIds = null,
 } = {}) {
+  // Fresh tours should see first-stop coaching again.
+  clearTourOnboarding()
+
   const promotedOptionalIds =
     pace === JOURNEY_PACE.CLASSIC && path === JOURNEY_PATH.A ? ['w04'] : []
 

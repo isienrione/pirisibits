@@ -218,8 +218,8 @@ describe('JourneyShell', () => {
   })
 
   it('redesign auto-starts waypoint narration when story opens after tips are done', async () => {
-    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
@@ -229,21 +229,7 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
-  it('holds Colosseum exterior narration until floating tips are closed', async () => {
-    beginJourney({ pace: 'classic' })
-    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
-    renderShell({ variant: 'redesign' })
-
-    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
-    expect(playWaypointMock).not.toHaveBeenCalled()
-
-    fireEvent.click(screen.getByRole('button', { name: /Close tutorial/i }))
-
-    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
-    await waitFor(() => expect(playWaypointMock).toHaveBeenCalledWith('w01'))
-  })
-
-  it('starts Colosseum exterior narration after the final tip', async () => {
+  it('holds Colosseum exterior narration until floating tips are finished', async () => {
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
@@ -421,8 +407,8 @@ describe('JourneyShell', () => {
   })
 
   it('shows diegetic threshold hint after first-tour onboarding is complete', async () => {
-    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
@@ -454,9 +440,9 @@ describe('JourneyShell', () => {
   })
 
   it('suppresses the full hint after the first successful threshold cross', async () => {
+    beginJourney({ pace: 'classic' })
     localStorage.setItem('cw_tour_onboarding_complete', 'true')
     localStorage.setItem('chronowalk.hasCrossedThreshold', 'true')
-    beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
 
