@@ -186,7 +186,19 @@ describe('C6ImmersivePlayer next-step CTA layout', () => {
     const frame = host.querySelector('.redesign-phone-frame--companion')
     expect(frame).toContainElement(cta)
     expect(screen.getByTestId('immersive-action-stack')).toContainElement(cta)
-    expect(redesignCss).toMatch(/\.redesign-phone-frame--companion\s*\{[^}]*--wc-shell-tab-inset/s)
+    expect(redesignCss).toMatch(
+      /\.redesign-phone-frame--companion\s*\{[^}]*--wc-shell-tab-inset/s,
+    )
+    // Frame height must subtract the tab inset (not pad over it) so tab taps work.
+    expect(redesignCss).toMatch(
+      /\.redesign-phone-frame--companion\s*\{[^}]*height:\s*calc\([^)]*--wc-shell-tab-inset/s,
+    )
+    expect(redesignCss).not.toMatch(
+      /\.redesign-phone-frame--companion\s*\{[^}]*padding-bottom:\s*var\(--wc-shell-tab-inset/s,
+    )
+    expect(redesignCss).toMatch(
+      /\.cw-journey-shell-root\s*>\s*\[data-testid='path-choice-screen'\]/,
+    )
   })
 
   it('reserves safe-area padding on the action stack stylesheet rule', () => {
