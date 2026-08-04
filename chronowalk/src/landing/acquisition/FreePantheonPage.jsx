@@ -33,13 +33,14 @@ export default function FreePantheonPage() {
             {copy.h1}
           </h1>
           <p className="cw-acq-hero__lead cw-acq-hero__lead--short">{copy.lead}</p>
-          <p className="cw-acq-hero__interact">{copy.interactPrompt}</p>
           <p className="cw-acq-hero__trust">{copy.trustLine}</p>
         </div>
       </section>
 
       <FreePantheonPreviewEmbed
         includesCompact={copy.includesCompact}
+        tipEyebrow={copy.interactTipEyebrow}
+        tipPrompt={copy.interactPrompt}
         onUnlockFullTour={() => goFullTour('preview_unlock')}
       />
 

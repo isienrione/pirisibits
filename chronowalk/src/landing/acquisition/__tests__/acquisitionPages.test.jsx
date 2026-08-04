@@ -119,9 +119,9 @@ describe('acquisition pages', () => {
     expect(screen.queryByText(/What the free experience includes/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Start the Pantheon experience/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /Show me now/i })).not.toBeInTheDocument()
-    expect(
-      screen.getByText(/Interact with the phone screen and enjoy a piece of ChronoWalk/i),
-    ).toBeInTheDocument()
+    const tip = screen.getByTestId('pantheon-phone-tip')
+    expect(tip).toHaveTextContent(/This phone is the demo/i)
+    expect(tip).toHaveTextContent(/Interact with the phone screen and enjoy a piece of ChronoWalk/i)
     expect(FREE_PANTHEON_COPY.includesCompact).toContain('Part 1 of 4 only')
     expect(screen.getByTestId('pantheon-phone-frame')).toBeInTheDocument()
     expect(document.getElementById('try-pantheon')).toBeTruthy()

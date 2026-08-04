@@ -53,12 +53,20 @@ function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack })
  * Large phone mockup of the live Pantheon exterior preview.
  * Interaction happens on the phone screen itself (no separate Start CTA).
  */
-export default function FreePantheonPreviewEmbed({ onUnlockFullTour, includesCompact = [] }) {
+export default function FreePantheonPreviewEmbed({
+  onUnlockFullTour,
+  includesCompact = [],
+  tipEyebrow = 'This phone is the demo',
+  tipPrompt = 'Interact with the phone screen and enjoy a piece of ChronoWalk',
+}) {
   const [immersive, setImmersive] = useState(false)
+  const [tipDismissed, setTipDismissed] = useState(false)
   const preview = usePantheonPreviewController({ analyticsSource: 'free_pantheon' })
+  const showTip = !immersive && !tipDismissed && !preview.started
 
   const openImmersive = useCallback(
     (section = 'demo') => {
+      setTipDismissed(true)
       trackFreePantheonStartClicked(section)
       preview.startExperience()
       setImmersive(true)
@@ -94,15 +102,29 @@ export default function FreePantheonPreviewEmbed({ onUnlockFullTour, includesCom
     >
       {!immersive ? (
         <div className="cw-acq-preview__phone-wrap">
-          <LandingProductPhoneFrame label="ChronoWalk Pantheon exterior preview">
-            <div className="cw-acq-preview-phone__app">
-              <PantheonStoryPlayer
-                preview={preview}
-                immersive={false}
-                onRequestImmersive={openImmersive}
-              />
-            </div>
-          </LandingProductPhoneFrame>
+          <div className="cw-acq-preview__phone-stage">
+            {showTip ? (
+              <aside
+                className="cw-acq-phone-tip"
+                role="status"
+                aria-live="polite"
+                data-testid="pantheon-phone-tip"
+              >
+                <p className="cw-acq-phone-tip__eyebrow">{tipEyebrow}</p>
+                <p className="cw-acq-phone-tip__text">{tipPrompt}</p>
+                <span className="cw-acq-phone-tip__caret" aria-hidden="true" />
+              </aside>
+            ) : null}
+            <LandingProductPhoneFrame label="ChronoWalk Pantheon exterior preview">
+              <div className="cw-acq-preview-phone__app">
+                <PantheonStoryPlayer
+                  preview={preview}
+                  immersive={false}
+                  onRequestImmersive={openImmersive}
+                />
+              </div>
+            </LandingProductPhoneFrame>
+          </div>
           {includesCompact.length ? (
             <ul className="cw-acq-preview__chips" aria-label="What this free chapter includes">
               {includesCompact.map((item) => (
