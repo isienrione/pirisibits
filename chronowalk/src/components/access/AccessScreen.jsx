@@ -202,7 +202,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 color: 'var(--muted-warm)',
               }}
             >
-              From your email
+              Enter the access code from your email
             </label>
             <input
               id="access-token"
@@ -210,7 +210,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
               type="text"
               value={manualToken}
               onChange={(event) => setManualToken(event.target.value)}
-              placeholder="Paste from your email"
+              placeholder="Paste the code you received here"
               autoComplete="off"
               style={{
                 marginTop: 10,

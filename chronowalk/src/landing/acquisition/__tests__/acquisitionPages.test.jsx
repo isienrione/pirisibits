@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import FreePantheonPage from '../FreePantheonPage.jsx'
 import AncientRomePage from '../AncientRomePage.jsx'
 import HowItWorksPage from '../HowItWorksPage.jsx'
@@ -12,6 +12,16 @@ import {
   resetAcquisitionAnalyticsForTests,
   trackAcquisitionPageView,
 } from '../acquisitionAnalytics.js'
+
+function LocationProbe() {
+  const location = useLocation()
+  return (
+    <div data-testid="location-probe">
+      {location.pathname}
+      {location.hash}
+    </div>
+  )
+}
 
 vi.mock('../../../lib/track.js', async (importOriginal) => {
   const actual = await importOriginal()
@@ -52,6 +62,27 @@ vi.mock('../../../redesign/screens/A2FreePreviewStory.jsx', () => ({
     return <div data-testid="pantheon-preview-story">Pantheon preview story</div>
   },
 }))
+
+vi.mock('../FreePantheonPreviewEmbed.jsx', async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    default: function MockEmbed(props) {
+      return (
+        <div data-testid="pantheon-preview-embed">
+          <div data-testid="pantheon-phone-frame" id="try-pantheon" />
+          <aside data-testid="pantheon-phone-tip">
+            <p>This phone is the demo</p>
+            <p>Interact with the phone screen and enjoy a piece of ChronoWalk</p>
+          </aside>
+          <button type="button" onClick={() => props.onUnlockFullTour?.()}>
+            Unlock full tour
+          </button>
+        </div>
+      )
+    },
+  }
+})
 
 vi.mock('../../../hooks/useV2Journey.js', () => ({
   useTourManifest: () => ({
@@ -95,12 +126,14 @@ vi.mock('../../previewAudioHandoff.js', () => ({
   stopPreviewSessionAudio: vi.fn(),
 }))
 
-function renderPage(path, element) {
+function renderPage(path, element, { routes } = {}) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <DocumentSeo />
+      <LocationProbe />
       <Routes>
         <Route path={path} element={element} />
+        {routes}
       </Routes>
     </MemoryRouter>,
   )
@@ -132,6 +165,23 @@ describe('acquisition pages', () => {
       screen.getByRole('link', { name: /Explore the full 21-stop Rome tour/i }),
     ).toHaveAttribute('href', '/')
     expect(document.title).toBe(getPageMeta('/free-pantheon').title)
+  })
+
+  it('routes preview unlock to landing pricing, not /access', () => {
+    renderPage('/free-pantheon', <FreePantheonPage />, {
+      routes: (
+        <>
+          <Route path="/" element={<div data-testid="landing-home">Landing</div>} />
+          <Route path="/access" element={<div data-testid="access-page">Access</div>} />
+        </>
+      ),
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Unlock full tour/i }))
+
+    expect(screen.getByTestId('landing-home')).toBeInTheDocument()
+    expect(screen.queryByTestId('access-page')).not.toBeInTheDocument()
+    expect(screen.getByTestId('location-probe')).toHaveTextContent('/#pricing')
   })
 
   it('renders /ancient-rome with verified Roma Antica stop count and checkout CTAs', () => {

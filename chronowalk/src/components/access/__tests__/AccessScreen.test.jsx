@@ -24,6 +24,10 @@ describe('AccessScreen', () => {
     expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument()
     expect(screen.getByText(/personal link/i)).toBeInTheDocument()
     expect(
+      screen.getByLabelText(/enter the access code from your email/i),
+    ).toBeInTheDocument()
+    expect(screen.getByPlaceholderText(/paste the code you received here/i)).toBeInTheDocument()
+    expect(
       screen.getByRole('heading', { name: /didn.t get your access email/i }),
     ).toBeInTheDocument()
     expect(
@@ -45,7 +49,7 @@ describe('AccessScreen', () => {
       </MemoryRouter>
     )
 
-    fireEvent.change(screen.getByLabelText(/from your email/i), {
+    fireEvent.change(screen.getByLabelText(/enter the access code from your email/i), {
       target: { value: 'dev' },
     })
     fireEvent.click(screen.getByRole('button', { name: /enter rome/i }))

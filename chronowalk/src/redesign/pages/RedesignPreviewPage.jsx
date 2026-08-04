@@ -4,14 +4,12 @@ import { getWaypoint } from '../../content/manifest.js'
 import { bindAutoplayHtmlAudio } from '../../audio/autoplayHtmlAudio.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { useTourManifest } from '../../hooks/useV2Journey.js'
-import { getTierById, openCheckout } from '../../lib/checkout.js'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import {
   notePreviewAudioTime,
   trackCtaClick,
   trackPreviewPlayClick,
 } from '../../lib/analytics.ts'
-import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import {
   consumePreviewPlaybackIntent,
@@ -43,10 +41,7 @@ export default function RedesignPreviewPage() {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [storyEnded, setStoryEnded] = useState(false)
-  const [consentOpen, setConsentOpen] = useState(false)
-  const [checkoutBusy, setCheckoutBusy] = useState(false)
   const thresholdTrackedRef = useRef(false)
-  const completeTier = useMemo(() => getTierById('rome-complete'), [])
 
   const waypoint = useMemo(
     () => (manifest ? getWaypoint(manifest, 'w17') : null),
@@ -158,17 +153,8 @@ export default function RedesignPreviewPage() {
 
   const handleUnlock = () => {
     trackCtaClick({ tier: 'rome-complete', ctaLocation: 'preview' })
-    setConsentOpen(true)
-  }
-
-  const handleConsentConfirm = async () => {
-    setCheckoutBusy(true)
-    const result = await openCheckout({ tierId: 'rome-complete', source: 'preview' })
-    setCheckoutBusy(false)
-    setConsentOpen(false)
-    if (result.ok) return
-    // Purchase path only - never mix unlock with access-code entry.
-    navigate('/#pricing')
+    // Unpaid preview unlock → landing pricing, never /access.
+    navigate({ pathname: '/', hash: 'pricing' })
   }
 
   const handleBack = () => {
@@ -238,16 +224,6 @@ export default function RedesignPreviewPage() {
           />
         )}
       </div>
-      <CheckoutConsentDialog
-        open={consentOpen}
-        tierLabel={completeTier?.name ?? completeTier?.eyebrow ?? 'Roma Eterna'}
-        priceLabel={completeTier?.price ?? null}
-        busy={checkoutBusy}
-        onConfirm={handleConsentConfirm}
-        onCancel={() => {
-          if (!checkoutBusy) setConsentOpen(false)
-        }}
-      />
     </RedesignRouteShell>
   )
 }

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
@@ -10,6 +10,7 @@ import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 
 export default function FreePantheonPage() {
   const copy = FREE_PANTHEON_COPY
+  const navigate = useNavigate()
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
 
   const goFullTour = useCallback(
@@ -19,6 +20,12 @@ export default function FreePantheonPage() {
     },
     [checkout],
   )
+
+  /** Preview map unlock → landing pricing (not /access or checkout). */
+  const goPricingFromUnlock = useCallback(() => {
+    trackFreePantheonFullTourClicked('preview_unlock')
+    navigate({ pathname: '/', hash: 'pricing' })
+  }, [navigate])
 
   return (
     <AcquisitionPageShell
@@ -41,7 +48,7 @@ export default function FreePantheonPage() {
         includesCompact={copy.includesCompact}
         tipEyebrow={copy.interactTipEyebrow}
         tipPrompt={copy.interactPrompt}
-        onUnlockFullTour={() => goFullTour('preview_unlock')}
+        onUnlockFullTour={goPricingFromUnlock}
       />
 
       <section className="cw-acq-section cw-acq-section--paper cw-acq-section--tight" aria-labelledby="free-upgrade">

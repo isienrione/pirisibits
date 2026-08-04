@@ -40,10 +40,10 @@ export function useAcquisitionCheckout({ source = 'acquisition', onCheckoutStart
 
     const result = await openCheckout({ tierId: pendingTierId, source })
     if (!result.ok) {
-      const tier = pendingTierId
       setPendingTierId(null)
       setCheckoutBusy(false)
-      navigate(`/purchase?tier=${encodeURIComponent(tier)}`)
+      // Show packages on the landing — never send unpaid buyers to /access.
+      navigate({ pathname: '/', hash: 'pricing' })
       return
     }
 
