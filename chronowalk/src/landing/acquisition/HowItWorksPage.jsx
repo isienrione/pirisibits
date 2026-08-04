@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
-import LandingProductDemo from '../v4/LandingProductDemo.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
+import HowItWorksSequentialDemo from './HowItWorksSequentialDemo.jsx'
 import { HOW_IT_WORKS_COPY } from './acquisitionCopy.js'
 import {
   trackHowItWorksDemoStarted,
@@ -44,7 +44,7 @@ export default function HowItWorksPage() {
         trackHowItWorksDemoStarted()
         observer.disconnect()
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     )
     observer.observe(node)
     return () => observer.disconnect()
@@ -96,37 +96,19 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="how-steps">
-        <div className="cw-v4-wrap">
-          <h2 id="how-steps" className="cw-v4-section-title">
-            {copy.stepsHeading}
-          </h2>
-          <ol className="cw-acq-steps">
-            {copy.steps.map((step, index) => (
-              <li key={step.title} className="cw-acq-step">
-                <h3 className="cw-acq-step__title">
-                  <span aria-hidden="true">{index + 1}. </span>
-                  {step.title}
-                </h3>
-                <p className="cw-acq-step__body">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="cw-acq-section" aria-labelledby="how-demo" ref={demoRef}>
+      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="how-demo" ref={demoRef}>
         <div className="cw-v4-wrap cw-v4-wrap--narrow">
           <h2 id="how-demo" className="cw-v4-section-title">
             {copy.demoHeading}
           </h2>
+          <p className="cw-v4-section-lead">{copy.demoLead}</p>
         </div>
-        <div className="cw-acq-demo-slot">
-          <LandingProductDemo />
+        <div className="cw-v4-wrap">
+          <HowItWorksSequentialDemo />
         </div>
       </section>
 
-      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="how-reassure">
+      <section className="cw-acq-section" aria-labelledby="how-reassure">
         <div className="cw-v4-wrap">
           <h2 id="how-reassure" className="cw-v4-section-title">
             {copy.reassureHeading}
@@ -142,7 +124,7 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <section className="cw-acq-section" aria-labelledby="how-final">
+      <section className="cw-acq-section cw-acq-section--paper" aria-labelledby="how-final">
         <div className="cw-v4-wrap cw-v4-wrap--narrow">
           <h2 id="how-final" className="cw-v4-section-title">
             {copy.finalHeading}

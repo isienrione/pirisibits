@@ -116,22 +116,8 @@ export const HOW_IT_WORKS_COPY = Object.freeze({
   trustLine: 'No app-store download · One payment · Prepare before walking',
   heroImage: '/landing/hero-slides/then-now.png',
   heroImageAlt: 'ChronoWalk Then/Now reveal on a phone screen',
-  stepsHeading: 'Three steps to start',
-  steps: [
-    {
-      title: 'Open and prepare',
-      body: 'Open ChronoWalk in your browser. Before heading out, load the experience while connected so it is ready for your walk.',
-    },
-    {
-      title: 'Start where you are',
-      body: 'Choose a nearby stop or begin with the route you planned. You are not required to join a group or follow a rigid schedule.',
-    },
-    {
-      title: 'Listen, reveal and continue',
-      body: 'Hear the story at the monument, press and hold to reveal Ancient Rome, then continue when you are ready.',
-    },
-  ],
-  demoHeading: 'See the product in motion',
+  demoHeading: 'How ChronoWalk works',
+  demoLead: 'Four screens. Scroll normally. Each step shows what you see on your phone.',
   reassureHeading: 'Common questions, answered',
   reassure: [
     {

@@ -32,9 +32,12 @@ vi.mock('../../v4/LandingThenNowProof.jsx', () => ({
   },
 }))
 
-vi.mock('../../v4/LandingProductDemo.jsx', () => ({
-  default: function MockDemo() {
-    return <div data-testid="product-demo">Product demo</div>
+vi.mock('../../v4/LandingProductPhoneStage.jsx', () => ({
+  default: function MockPhoneStage() {
+    return <div data-testid="product-phone-stage">Phone stage</div>
+  },
+  LandingDemoChapterPhone: function MockChapterPhone({ chapterId }) {
+    return <div data-testid={`demo-chapter-phone-${chapterId}`}>Phone {chapterId}</div>
   },
 }))
 
@@ -154,11 +157,13 @@ describe('acquisition pages', () => {
     expect(document.title).toBe(getPageMeta('/ancient-rome').title)
   })
 
-  it('renders /how-it-works with three steps and free/paid choice', () => {
+  it('renders /how-it-works with sequential phone chapters and free/paid choice', () => {
     renderPage('/how-it-works', <HowItWorksPage />)
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
-    expect(screen.getByText(/Open and prepare/i)).toBeInTheDocument()
-    expect(screen.getByTestId('product-demo')).toBeInTheDocument()
+    expect(screen.getByTestId('how-it-works-sequential-demo')).toBeInTheDocument()
+    expect(screen.getByText(/Choose your Rome walk/i)).toBeInTheDocument()
+    expect(screen.getByText(/Wander freely/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Scroll to follow the phone/i)).not.toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: /Try the Pantheon stop free/i }),
     ).toBeInTheDocument()

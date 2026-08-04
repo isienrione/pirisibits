@@ -167,6 +167,28 @@ const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
 })
 
 /**
+ * Single phone frame for one product-demo chapter (non-scrub / sequential layouts).
+ */
+export function LandingDemoChapterPhone({
+  chapterId,
+  beat = 0,
+  active = true,
+  label = 'ChronoWalk product demo',
+}) {
+  return (
+    <LandingProductPhoneFrame label={label}>
+      <RedesignNavCtx.Provider value={NOOP_NAV}>
+        <ThresholdChromeProvider>
+          <div className="cw-v4-phone-app">
+            <ChapterScreen chapterId={chapterId} beat={beat} active={active} />
+          </div>
+        </ThresholdChromeProvider>
+      </RedesignNavCtx.Provider>
+    </LandingProductPhoneFrame>
+  )
+}
+
+/**
  * Phone mounts once. Chapter screens stay layered; parent scrubs opacity via refs.
  * Hardware frame never animates - only screen layers.
  */
