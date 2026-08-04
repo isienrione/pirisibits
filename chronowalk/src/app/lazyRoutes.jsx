@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import ChronoWalkLanding from '../landing/ChronoWalkLanding.jsx'
+import RedesignPreviewPage from '../redesign/pages/RedesignPreviewPage.jsx'
 import { lazyWithRecovery } from '../utils/lazyWithRecovery.js'
 
 function BootLoadingFallback() {
@@ -53,10 +54,14 @@ export const LazyColosseumPreviewPage = lazyRoute(
   'colosseum preview',
 )
 
-export const LazyPreviewPage = lazyRoute(
-  () => import('../redesign/pages/RedesignPreviewPage.jsx'),
-  'preview',
-)
+/**
+ * Eager: free Pantheon /preview is a primary marketing CTA ("Try free").
+ * A second hashed chunk can be poisoned by Cloudflare SPA HTML under /assets/*
+ * (Safari: `'text/html' is not a valid JavaScript MIME type`).
+ */
+export function LazyPreviewPage(props) {
+  return <RedesignPreviewPage {...props} />
+}
 
 export const LazySetupPage = lazyRoute(
   () => import('../redesign/pages/RedesignSetupPage.jsx'),
