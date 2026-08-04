@@ -225,6 +225,10 @@ export function useAudioEngine(manifest) {
     engineRef.current?.setPath(path)
   }, [])
 
+  const getActiveStopId = useCallback(() => {
+    return engineRef.current?.getActiveStopId?.() ?? null
+  }, [])
+
   return {
     ready,
     narrationPlaying,
@@ -252,6 +256,7 @@ export function useAudioEngine(manifest) {
     skipNarration,
     jumpToChapter,
     setPath,
+    getActiveStopId,
     getEngine: () => engineRef.current,
   }
 }

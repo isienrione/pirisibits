@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { ChevronRight, X } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import {
   ONBOARDING_CARD_PHASES,
   cardCopyForPhase,
+  hasCompletedTourOnboarding,
   markTourOnboardingComplete,
   resolveTourOnboardingCardPhase,
 } from '../../utils/tourOnboarding.js'
@@ -36,15 +37,20 @@ export default function TourOnboardingCards({
   onBlockingChange,
 }) {
   const [dismissedPhases, setDismissedPhases] = useState(() => new Set())
+  // Local flag so Close/finish hides the card immediately (localStorage alone
+  // does not re-render). Also respects prior completion on remount.
+  const [finished, setFinished] = useState(() => hasCompletedTourOnboarding())
 
-  const activePhase = resolveTourOnboardingCardPhase({
-    state,
-    stepType,
-    near,
-    insideGeofence,
-    hasReconstruction,
-    dismissedPhases,
-  })
+  const activePhase = finished
+    ? null
+    : resolveTourOnboardingCardPhase({
+        state,
+        stepType,
+        near,
+        insideGeofence,
+        hasReconstruction,
+        dismissedPhases,
+      })
 
   useEffect(() => {
     if (!activePhase) return
@@ -73,7 +79,8 @@ export default function TourOnboardingCards({
   const totalSteps = ONBOARDING_CARD_PHASES.length
   const blocking = Boolean(visiblePhase)
 
-  useEffect(() => {
+  // Layout effect so JourneyShell holds narration before its autoplay useEffect runs.
+  useLayoutEffect(() => {
     onBlockingChange?.(blocking)
     return () => onBlockingChange?.(false)
   }, [blocking, onBlockingChange])
@@ -89,6 +96,7 @@ export default function TourOnboardingCards({
 
   const finishOnboarding = useCallback(() => {
     markTourOnboardingComplete()
+    setFinished(true)
     onBlockingChange?.(false)
   }, [onBlockingChange])
 
@@ -104,7 +112,7 @@ export default function TourOnboardingCards({
     }
   }, [dismissedPhases, finishOnboarding, visiblePhase])
 
-  if (!copy || !visiblePhase) return null
+  if (finished || !copy || !visiblePhase) return null
 
   const isLast = visiblePhase === 'reveal' || (visiblePhase === 'continue' && !hasReconstruction)
 
@@ -129,7 +137,7 @@ export default function TourOnboardingCards({
           className="cw-tour-onboarding-cards__close"
           aria-label="Close tutorial"
           onClick={() => {
-            // Closing skips the rest of the tips so travelers can get into the story.
+            // Skip remaining tips and hide the card so travelers can continue.
             finishOnboarding()
           }}
         >

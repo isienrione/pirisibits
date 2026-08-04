@@ -133,7 +133,7 @@ export function cardCopyForPhase(phase, stopTitle = 'your first stop') {
       return {
         eyebrow: 'Audio',
         title: 'Play and pause anytime',
-        body: 'Narration starts after this tip. Use the yellow control below.',
+        body: 'Narration waits until you finish or close these tips. Then use the yellow control below.',
       }
     case 'transcript':
       return {

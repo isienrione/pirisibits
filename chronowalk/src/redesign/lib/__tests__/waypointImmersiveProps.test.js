@@ -138,6 +138,24 @@ describe('waypointImmersiveProps', () => {
     expect(ch1.tagline).toMatch(/Arch of Titus I/i)
   })
 
+  it('prefers manifest chapter count over a stale smaller live count', () => {
+    const waypoint = getWaypoint(manifest, 'w02')
+    expect(waypoint.chapters.length).toBeGreaterThan(1)
+
+    const props = buildImmersivePlayerProps({
+      waypoint,
+      waypointId: 'w02',
+      manifest,
+      chapterIndex: 0,
+      // Stale exterior session can report chapterCount: 1 while interior has 2+.
+      audio: { chapterCount: 1 },
+    })
+
+    expect(props.chapterCount).toBe(waypoint.chapters.length)
+    expect(props.tagline).toMatch(/Colosseum Interior/i)
+    expect(props.tagline).not.toMatch(/crowd never stood/i)
+  })
+
   it('titles Titus outro chapter as Enter the valley', () => {
     const waypoint = getWaypoint(manifest, 'w03')
     const outro = buildImmersivePlayerProps({

@@ -137,6 +137,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const [devSimulateGps, setDevSimulateGps] = useState(false)
   /** First-stop tip cards block Colosseum narration until dismissed. */
   const [storyTutorialBlocking, setStoryTutorialBlocking] = useState(false)
+  // Bumped when tips release blocking so autoplay re-runs even if blocking was already false.
+  const [tourTipsReleaseNonce, setTourTipsReleaseNonce] = useState(0)
+  const handleTourTutorialBlockingChange = useCallback((blocking) => {
+    setStoryTutorialBlocking(Boolean(blocking))
+    if (!blocking) {
+      setTourTipsReleaseNonce((n) => n + 1)
+    }
+  }, [])
   // True once the current waypoint's narration reaches its natural end.
   const [storyEnded, setStoryEnded] = useState(false)
   // Last heard narration - keeps the floating dock visible after audio ends.
@@ -384,18 +392,27 @@ export default function JourneyShell({ variant = 'legacy' }) {
   const tryStartWaypointNarration = useCallback(
     async (waypointId) => {
       if (!manifest || !waypointId) return false
-      if (storyTutorialBlocking) return false
+      // Hold Colosseum exterior (first-stop) narration until floating tips finish/close.
+      // Check both the tip callback and persisted onboarding so we do not race the
+      // first tip mount (blocking starts false before TourOnboardingCards effects).
+      const holdForFirstStopTips =
+        storyTutorialBlocking ||
+        (variant === 'redesign' &&
+          step?.type === 'waypoint' &&
+          step?.id === waypointId &&
+          isOnFirstTourStop(context, step, manifest) &&
+          shouldShowTourOnboarding(context))
+      if (holdForFirstStopTips) return false
 
       return waypointAutoplayRef.current.ensureStarted(
         waypointId,
         {
+          // Only adopt an actively playing session for THIS waypoint.
+          // A paused tip-hold must resume/start, not be treated as already begun.
           isPlaying: () => {
             const live = audioOpsRef.current
-            return (
-              live.narrationPlaying ||
-              (live.progress?.itemCount ?? 0) > 0 ||
-              (live.progress?.duration ?? 0) > 0
-            )
+            const activeId = live.getActiveStopId?.() ?? null
+            return activeId === waypointId && Boolean(live.narrationPlaying)
           },
         },
         async () => {
@@ -403,11 +420,27 @@ export default function JourneyShell({ variant = 'legacy' }) {
           const unlocked = await live.unlock()
           if (unlocked) setAudioUnlocked(true)
           setActiveWaypoint(waypointId, manifest)
+
+          const activeId = live.getActiveStopId?.() ?? null
+          const hasPausedSession =
+            activeId === waypointId &&
+            !live.narrationPlaying &&
+            ((live.progress?.itemCount ?? 0) > 0 || (live.progress?.duration ?? 0) > 0)
+          if (hasPausedSession) {
+            return (await live.resumeNarration()) !== false
+          }
           return (await live.playWaypoint(waypointId)) ?? false
         },
       )
     },
-    [manifest, setActiveWaypoint, storyTutorialBlocking],
+    [
+      context,
+      manifest,
+      setActiveWaypoint,
+      step,
+      storyTutorialBlocking,
+      variant,
+    ],
   )
 
   const clearStoryAutoplayGesture = useCallback(() => {
@@ -514,7 +547,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     }
 
     // Keep the first-stop tip quiet until the traveler finishes or closes it.
-    if (storyTutorialBlocking) {
+    // Also gate on pending onboarding so we do not start under tips before the
+    // tip component's blocking effect has run.
+    const tipsPending =
+      storyTutorialBlocking ||
+      (variant === 'redesign' &&
+        isOnFirstTourStop(context, step, manifest) &&
+        shouldShowTourOnboarding(context))
+    if (tipsPending) {
       clearStoryAutoplayGesture()
       if (audioOpsRef.current.narrationPlaying) {
         audioOpsRef.current.pauseNarration()
@@ -526,13 +566,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     let cancelled = false
     let retryTimer = null
 
+    const isThisWaypointLive = () => {
+      const live = audioOpsRef.current
+      const activeId = live.getActiveStopId?.() ?? null
+      return activeId === waypointId && Boolean(live.narrationPlaying)
+    }
+
     const attempt = async () => {
       const started = await tryStartWaypointNarrationRef.current(waypointId)
       if (cancelled) return
       if (
         started ||
         waypointAutoplayRef.current.getStartedWaypointId() === waypointId ||
-        audioOpsRef.current.narrationPlaying
+        isThisWaypointLive()
       ) {
         return
       }
@@ -543,7 +589,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         if (cancelled) return
         if (
           waypointAutoplayRef.current.getStartedWaypointId() === waypointId ||
-          audioOpsRef.current.narrationPlaying
+          isThisWaypointLive()
         ) {
           return
         }
@@ -560,11 +606,14 @@ export default function JourneyShell({ variant = 'legacy' }) {
     }
   }, [
     clearStoryAutoplayGesture,
+    context,
+    manifest,
     state,
-    step?.id,
-    step?.type,
+    step,
     audioUnlocked,
     storyTutorialBlocking,
+    tourTipsReleaseNonce,
+    variant,
   ])
 
   useEffect(() => () => clearStoryAutoplayGesture(), [clearStoryAutoplayGesture])
@@ -1461,7 +1510,13 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }
 
   const wrapWithFirstStopOnboarding = (node, { near = false, insideGeofence = false, hasReconstruction = false, bottomInset = 0 } = {}) => {
-    if (variant !== 'redesign' || !isOnFirstTourStop(context, step, manifest)) return node
+    if (
+      variant !== 'redesign' ||
+      !isOnFirstTourStop(context, step, manifest) ||
+      !shouldShowTourOnboarding(context)
+    ) {
+      return node
+    }
     return (
       <>
         {node}
@@ -1473,7 +1528,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
           insideGeofence={insideGeofence}
           hasReconstruction={hasReconstruction}
           bottomInset={bottomInset}
-          onBlockingChange={setStoryTutorialBlocking}
+          onBlockingChange={handleTourTutorialBlockingChange}
         />
       </>
     )
@@ -1538,17 +1593,26 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       const record = step.record
       const chapters = record.chapters?.length ? record.chapters : []
-      const activeChapterIndex = audio.progress?.chapterCount
-        ? audio.progress.chapterIndex
-        : 0
-      const chapterCount = audio.progress?.chapterCount || Math.max(chapters.length, 1)
+      const sessionForThisStop = audio.getActiveStopId?.() === step.id
+      const activeChapterIndex =
+        sessionForThisStop && audio.progress?.chapterCount
+          ? audio.progress.chapterIndex
+          : 0
+      // Prefer manifest chapter count when a prior stop's session still reports a smaller count.
+      const chapterCount = Math.max(
+        sessionForThisStop ? audio.progress?.chapterCount ?? 0 : 0,
+        chapters.length,
+        1,
+      )
       const hasMoreChapters =
         !storyEnded && chapterCount > 1 && activeChapterIndex < chapterCount - 1
-      const audioAvailable =
-        audio.narrationPlaying ||
-        (audio.progress?.itemCount ?? 0) > 0 ||
-        (audio.progress?.duration ?? 0) > 0 ||
-        storyEnded
+      const hasLoadedSession =
+        sessionForThisStop &&
+        (audio.narrationPlaying ||
+          (audio.progress?.itemCount ?? 0) > 0 ||
+          (audio.progress?.duration ?? 0) > 0)
+      // Keep play enabled so a cold / wrong-stop session can still be started.
+      const audioAvailable = hasLoadedSession || storyEnded || chapters.length > 0
 
       const realTranscript = resolveStepTranscript(step, context.path)
       const playerProps = buildImmersivePlayerProps({
@@ -1560,27 +1624,43 @@ export default function JourneyShell({ variant = 'legacy' }) {
         initialTab: storyViewRef.current,
         transcriptOverride: realTranscript ? stripDirectorCues(realTranscript) : null,
         audio: {
-          narrationPlaying: audio.narrationPlaying,
-          currentTime: audio.progress?.currentTime ?? 0,
-          duration: audio.progress?.duration ?? 0,
+          narrationPlaying: sessionForThisStop ? audio.narrationPlaying : false,
+          currentTime: sessionForThisStop ? audio.progress?.currentTime ?? 0 : 0,
+          duration: sessionForThisStop ? audio.progress?.duration ?? 0 : 0,
           playbackRate: audio.playbackRate,
           chapterCount,
           audioAvailable,
         },
         continueLabel: hasMoreChapters
           ? 'Next chapter →'
-          : storyEnded || !audio.narrationPlaying
+          : storyEnded || !(sessionForThisStop && audio.narrationPlaying)
             ? 'Continue walking →'
             : 'Skip ahead →',
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
           onTogglePlay: () => {
-            void syncAudio.toggleSyncedPlayback().catch((err) => {
-              if (err?.code === 'resume_leader_only') {
-                setSyncStatus('Only the leader can resume for everyone.')
+            void (async () => {
+              // Do not let play start Colosseum exterior under floating tips.
+              if (
+                storyTutorialBlocking ||
+                (isOnFirstTourStop(context, step, manifest) &&
+                  shouldShowTourOnboarding(context))
+              ) {
+                return
               }
-            })
+              if (!hasLoadedSession) {
+                const started = await tryStartWaypointNarration(step.id)
+                if (started) return
+              }
+              try {
+                await syncAudio.toggleSyncedPlayback()
+              } catch (err) {
+                if (err?.code === 'resume_leader_only') {
+                  setSyncStatus('Only the leader can resume for everyone.')
+                }
+              }
+            })()
           },
           onSkipBack: () => audio.skipNarration(-15),
           onSkipForward: () => audio.skipNarration(15),

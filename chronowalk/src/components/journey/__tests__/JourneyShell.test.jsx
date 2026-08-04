@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { render, screen, fireEvent, within, act } from '@testing-library/react'
+import { render, screen, fireEvent, within, act, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import JourneyShell from '../JourneyShell.jsx'
 import { SettingsSheetProvider } from '../../../redesign/context/SettingsSheetContext.jsx'
@@ -18,10 +18,12 @@ const playWaypointMock = vi.fn().mockResolvedValue(true)
 const playTransitMock = vi.fn().mockResolvedValue(undefined)
 const unlockMock = vi.fn().mockResolvedValue(true)
 const jumpToChapterMock = vi.fn()
+const getActiveStopIdMock = vi.fn(() => null)
 
 const audioMock = vi.hoisted(() => ({
   narrationPlaying: false,
   ready: true,
+  activeStopId: null,
   progress: {
     currentTime: 0,
     duration: 0,
@@ -70,12 +72,13 @@ vi.mock('../../../hooks/useAudioEngine.js', () => ({
     stopNarration: vi.fn(),
     resumePlayback: vi.fn().mockResolvedValue(undefined),
     pauseNarration: vi.fn(),
-    resumeNarration: vi.fn(),
+    resumeNarration: vi.fn().mockResolvedValue(true),
     toggleNarration: vi.fn(),
     seekNarration: vi.fn(),
     skipNarration: vi.fn(),
     jumpToChapter: jumpToChapterMock,
     setPath: vi.fn(),
+    getActiveStopId: () => getActiveStopIdMock() ?? audioMock.activeStopId,
   }),
 }))
 
@@ -147,6 +150,7 @@ describe('JourneyShell', () => {
     resetJourney()
     audioMock.narrationPlaying = false
     audioMock.ready = true
+    audioMock.activeStopId = null
     audioMock.progress = {
       currentTime: 0,
       duration: 0,
@@ -170,6 +174,8 @@ describe('JourneyShell', () => {
     playTransitMock.mockClear()
     unlockMock.mockClear()
     jumpToChapterMock.mockClear()
+    getActiveStopIdMock.mockClear()
+    getActiveStopIdMock.mockReturnValue(null)
   })
 
   afterEach(() => {
@@ -211,7 +217,8 @@ describe('JourneyShell', () => {
     expect(screen.queryByTestId('tour-route-preview')).not.toBeInTheDocument()
   })
 
-  it('redesign auto-starts waypoint narration when story opens', async () => {
+  it('redesign auto-starts waypoint narration when story opens after tips are done', async () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
     beginJourney({ pace: 'classic' })
     transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
     renderShell({ variant: 'redesign' })
@@ -222,8 +229,70 @@ describe('JourneyShell', () => {
     expect(playWaypointMock).toHaveBeenCalledTimes(1)
   })
 
+  it('holds Colosseum exterior narration until floating tips are closed', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(playWaypointMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: /Close tutorial/i }))
+
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+    await waitFor(() => expect(playWaypointMock).toHaveBeenCalledWith('w01'))
+  })
+
+  it('starts Colosseum exterior narration after the final tip', async () => {
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, { currentSequenceIndex: 0 })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    expect(playWaypointMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start listening' }))
+
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+    await waitFor(() => expect(playWaypointMock).toHaveBeenCalledWith('w01'))
+  })
+
+  it('starts Colosseum interior even when previous exterior session is still live', async () => {
+    // Simulate a stuck handoff: exterior audio/session still present when interior opens.
+    audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w01'
+    audioMock.progress = {
+      currentTime: 30,
+      duration: 180,
+      chapterIndex: 0,
+      chapterCount: 1,
+      itemIndex: 0,
+      itemCount: 2,
+      playing: true,
+      paused: false,
+    }
+
+    const w02Index = sequenceIndexOf('w02')
+    beginJourney({ pace: 'classic' })
+    transitionJourney(JOURNEY_STATES.STORY, {
+      currentSequenceIndex: w02Index,
+      completedWaypointIds: ['w01'],
+    })
+    renderShell({ variant: 'redesign' })
+
+    expect(await screen.findByRole('heading', { name: /colosseum interior/i })).toBeInTheDocument()
+    expect(playWaypointMock).toHaveBeenCalledWith('w02')
+    // Prefer chapter chrome over the stale single-chapter arrival line.
+    expect(screen.getAllByText(/Colosseum Interior I - The Underneath/i).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/you are standing where the crowd never stood/i)).not.toBeInTheDocument()
+  })
+
   it('exposes a visible Settings control on the active immersive player', async () => {
     audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w01'
     audioMock.progress = {
       currentTime: 42,
       duration: 120,
@@ -292,6 +361,7 @@ describe('JourneyShell', () => {
     expect(interiorIndex).toBeGreaterThanOrEqual(0)
 
     audioMock.narrationPlaying = true
+    audioMock.activeStopId = 'w23'
     audioMock.progress = {
       currentTime: 10,
       duration: 120,
@@ -357,6 +427,7 @@ describe('JourneyShell', () => {
     renderShell({ variant: 'redesign' })
 
     expect(await screen.findByTestId('threshold-diegetic-hint')).toBeInTheDocument()
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
     expect(screen.getByText(/hold to reveal ancient rome/i)).toBeInTheDocument()
     expect(screen.queryByTestId('reveal-invite')).not.toBeInTheDocument()
     expect(screen.queryByTestId('threshold-help')).not.toBeInTheDocument()

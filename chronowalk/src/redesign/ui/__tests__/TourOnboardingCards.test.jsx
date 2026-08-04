@@ -65,6 +65,26 @@ describe('TourOnboardingCards', () => {
     fireEvent.click(screen.getByRole('button', { name: /Close tutorial/i }))
     expect(localStorage.getItem('cw_tour_onboarding_complete')).toBe('true')
     expect(onBlockingChange).toHaveBeenCalledWith(false)
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+  })
+
+  it('advances through story tips with Next', () => {
+    render(
+      <TourOnboardingCards
+        state="story"
+        stepType="waypoint"
+        stopTitle="The Colosseum"
+        hasReconstruction
+      />,
+    )
+
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'listen')
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'transcript')
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'continue')
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+    expect(screen.getByTestId('tour-onboarding-cards')).toHaveAttribute('data-phase', 'reveal')
   })
 
   it('marks onboarding complete after the final card is dismissed', () => {
@@ -83,5 +103,20 @@ describe('TourOnboardingCards', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start listening' }))
 
     expect(localStorage.getItem('cw_tour_onboarding_complete')).toBe('true')
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
+  })
+
+  it('does not show tips again after onboarding was already completed', () => {
+    localStorage.setItem('cw_tour_onboarding_complete', 'true')
+    render(
+      <TourOnboardingCards
+        state="story"
+        stepType="waypoint"
+        stopTitle="The Colosseum"
+        hasReconstruction
+      />,
+    )
+
+    expect(screen.queryByTestId('tour-onboarding-cards')).not.toBeInTheDocument()
   })
 })
