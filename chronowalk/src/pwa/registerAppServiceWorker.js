@@ -8,6 +8,17 @@ import {
   showUpdatingOverlay,
   unregisterAllServiceWorkers,
 } from './pwaCacheUtils.js'
+import { canRegisterServiceWorker } from '../platform/runtime/index.js'
+
+function createNoopController() {
+  return {
+    applyUpdate: () => {},
+    onNeedRefresh: () => () => {},
+    checkForAppUpdate: async () => {
+      if (typeof window !== 'undefined') window.location.reload()
+    },
+  }
+}
 
 /**
  * Registers the Workbox service worker in production and exposes update hooks.
@@ -17,16 +28,12 @@ import {
  * to `window.location.reload()` unless `onNeedReload` is provided. We only
  * reload after the traveler explicitly taps the update toast (or Settings →
  * refresh), and otherwise surface `onNeedRefresh` listeners.
+ *
+ * Capacitor native shells skip registration — assets are bundled via `cap sync`.
  */
 export function registerAppServiceWorker(registerSW, { isProd = import.meta.env.PROD } = {}) {
-  if (!isProd || typeof registerSW !== 'function') {
-    return {
-      applyUpdate: () => {},
-      onNeedRefresh: () => () => {},
-      checkForAppUpdate: async () => {
-        window.location.reload()
-      },
-    }
+  if (!isProd || typeof registerSW !== 'function' || !canRegisterServiceWorker()) {
+    return createNoopController()
   }
 
   const listeners = new Set()

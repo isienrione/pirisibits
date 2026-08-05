@@ -4,6 +4,7 @@ import { ensureWalkingUiFresh } from './walkingUiMigration.js'
 import { WALKING_UI_REVISION } from '../content/walkingUiRevision.js'
 import { registerAppServiceWorker } from './registerAppServiceWorker.js'
 import { shouldSkipServiceWorkerRegistration } from './staleChunkRecovery.js'
+import { canRegisterServiceWorker } from '../platform/runtime/index.js'
 
 const devStub = registerAppServiceWorker(registerSW, { isProd: false })
 
@@ -26,6 +27,9 @@ export let pwaController = devStub
  */
 export async function startPwaRegistration() {
   if (typeof window === 'undefined') return devStub
+  // Native Capacitor shells must never register a browser SW or run PWA
+  // recovery/migration flows designed for Safari/Chrome install partitions.
+  if (!canRegisterServiceWorker()) return devStub
   if (SERVICE_WORKER_BOOT_DISABLED) return devStub
   if (shouldSkipServiceWorkerRegistration()) return devStub
 

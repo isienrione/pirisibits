@@ -63,9 +63,17 @@ createRoot(document.getElementById('root')).render(
   </StrictMode>,
 )
 
+// Capacitor native shell: status bar + splash (no-op on web).
+if (typeof window !== 'undefined') {
+  void import('./platform/runtime/bootstrapNativeShell.js')
+    .then((mod) => mod.bootstrapNativeShell())
+    .catch(() => {})
+}
+
 // Register the service worker only after the UI is up - never during module
 // evaluation, which raced poisoned controllers and blocked first paint.
 // Currently disabled entirely via SERVICE_WORKER_BOOT_DISABLED.
+// Native Capacitor shells skip registration inside startPwaRegistration.
 if (typeof window !== 'undefined') {
   window.setTimeout(() => {
     void startPwaRegistration()
