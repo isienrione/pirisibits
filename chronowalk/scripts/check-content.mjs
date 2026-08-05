@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Validate Rome manifest schema and HEAD-check audio files on R2.
+ * Validate city package + Rome live manifest schema and HEAD-check audio on R2.
  *
  * Usage:
  *   npm run check:content
@@ -17,6 +17,7 @@ import { collectManifestMediaPaths } from '../src/content/mediaPaths.js'
 import { audioKeyFromManifestPath } from '../src/content/durationVerification.js'
 import { durationCoverage } from '../src/content/durationManifest.js'
 import { parseRomeManifest } from '../src/content/romeManifestZod.schema.js'
+import { loadCityPackage, validateCity } from '../src/content/cityPackage/index.js'
 import { assertMediaHostResolvable, getMediaBase, loadEnvLocal, printMediaHostHelp } from './mediaBaseEnv.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -31,6 +32,17 @@ async function headCheck(url) {
 
 async function main() {
   loadEnvLocal()
+
+  const romePackage = loadCityPackage('rome')
+  const cityValidation = validateCity(romePackage)
+  if (!cityValidation.ok) {
+    console.error('✗ Rome city package validation failed:\n')
+    for (const issue of cityValidation.issues.filter((i) => i.severity === 'error')) {
+      console.error(`  - [${issue.code}] ${issue.message}`)
+    }
+    process.exit(1)
+  }
+  console.log('✓ Rome city package valid (src/content/cities/rome/)')
 
   const raw = JSON.parse(readFileSync(manifestPath, 'utf8'))
   const manifest = parseRomeManifest(raw)

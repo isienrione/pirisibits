@@ -1,0 +1,14 @@
+[
+  {
+    "contentId": "quay-north.en",
+    "stopId": "quay-north",
+    "locale": "en",
+    "title": "North Quay"
+  },
+  {
+    "contentId": "lighthouse.en",
+    "stopId": "lighthouse",
+    "locale": "en",
+    "title": "Lighthouse"
+  }
+]

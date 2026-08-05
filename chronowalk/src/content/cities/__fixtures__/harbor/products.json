@@ -1,0 +1,11 @@
+[
+  {
+    "productId": "harbor-loop",
+    "cityId": "harbor",
+    "name": "Harbor Loop",
+    "routeIds": [
+      "harbor-loop-main",
+      "harbor-loop-alt"
+    ]
+  }
+]
