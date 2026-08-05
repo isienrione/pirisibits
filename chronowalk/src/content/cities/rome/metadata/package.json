@@ -1,0 +1,12 @@
+{
+  "cityId": "rome",
+  "schemaVersion": 1,
+  "catalogSchemaVersion": 1,
+  "cityPackageSchemaVersion": 1,
+  "manifestSchemaVersion": 1,
+  "packageVersion": "1.0.0",
+  "published": true,
+  "runtimeCompat": {
+    "manifestPath": "src/content/rome/manifest.json"
+  }
+}
