@@ -1,0 +1,1125 @@
+[
+  {
+    "assetId": "w01.audio.chapter.0",
+    "kind": "audio",
+    "path": "w01.mp3",
+    "category": "narration",
+    "stopId": "w01"
+  },
+  {
+    "assetId": "w01.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w01",
+    "inline": true
+  },
+  {
+    "assetId": "w01.image.photo",
+    "kind": "image",
+    "path": "/waypoints/colosseum/exterior/modern-poster.jpg",
+    "stopId": "w01"
+  },
+  {
+    "assetId": "w01.image.now",
+    "kind": "image",
+    "path": "/waypoints/colosseum/exterior/modern-poster.jpg",
+    "stopId": "w01"
+  },
+  {
+    "assetId": "w01.image.then",
+    "kind": "image",
+    "path": "/waypoints/colosseum/exterior/modern-poster.jpg",
+    "stopId": "w01"
+  },
+  {
+    "assetId": "w01.video.loop",
+    "kind": "video",
+    "path": "/waypoints/colosseum/exterior/ancient-reconstruction.mp4",
+    "stopId": "w01"
+  },
+  {
+    "assetId": "w02.audio.chapter.0",
+    "kind": "audio",
+    "path": "w02_ch1.mp3",
+    "category": "narration",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w02.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w02",
+    "inline": true
+  },
+  {
+    "assetId": "w02.audio.chapter.1",
+    "kind": "audio",
+    "path": "w02_ch2.mp3",
+    "category": "narration",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w02.transcript.chapter.1",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w02",
+    "inline": true
+  },
+  {
+    "assetId": "w02.image.photo",
+    "kind": "image",
+    "path": "/waypoints/colosseum/interior/modern-poster.jpg",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w02.image.now",
+    "kind": "image",
+    "path": "/waypoints/colosseum/interior/modern-poster.jpg",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w02.image.then",
+    "kind": "image",
+    "path": "/waypoints/colosseum/interior/modern-poster.jpg",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w02.video.loop",
+    "kind": "video",
+    "path": "/waypoints/colosseum/interior/ancient-reconstruction.mp4",
+    "stopId": "w02"
+  },
+  {
+    "assetId": "w03.audio.chapter.0",
+    "kind": "audio",
+    "path": "w03_ch1.mp3",
+    "category": "narration",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w03",
+    "inline": true
+  },
+  {
+    "assetId": "w03.audio.chapter.1",
+    "kind": "audio",
+    "path": "w03_ch2.mp3",
+    "category": "narration",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.transcript.chapter.1",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w03",
+    "inline": true
+  },
+  {
+    "assetId": "w03.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-titus/modern-poster.jpg",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-arch-titus/ancient-reconstruction.mp4",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.audio.outro.a",
+    "kind": "audio",
+    "path": "forum_intro_gate.mp3",
+    "category": "narration",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w03.audio.outro.b",
+    "kind": "audio",
+    "path": "w03_outro_b.mp3",
+    "category": "narration",
+    "stopId": "w03"
+  },
+  {
+    "assetId": "w04.audio.chapter.0",
+    "kind": "audio",
+    "path": "w04_ch1.mp3",
+    "category": "narration",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w04",
+    "inline": true
+  },
+  {
+    "assetId": "w04.audio.chapter.1",
+    "kind": "audio",
+    "path": "w04_ch2.mp3",
+    "category": "narration",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.transcript.chapter.1",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w04",
+    "inline": true
+  },
+  {
+    "assetId": "w04.audio.chapter.2",
+    "kind": "audio",
+    "path": "forum_intro_above.mp3",
+    "category": "narration",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.transcript.chapter.2",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w04",
+    "inline": true
+  },
+  {
+    "assetId": "w04.image.photo",
+    "kind": "image",
+    "path": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.image.now",
+    "kind": "image",
+    "path": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.image.then",
+    "kind": "image",
+    "path": "/waypoints/palatine-hill-cluster/modern-poster.jpg",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w04.video.loop",
+    "kind": "video",
+    "path": "/waypoints/palatine-hill-cluster/ancient-reconstruction.mp4",
+    "stopId": "w04"
+  },
+  {
+    "assetId": "w06.audio.chapter.0",
+    "kind": "audio",
+    "path": "w06.mp3",
+    "category": "narration",
+    "stopId": "w06"
+  },
+  {
+    "assetId": "w06.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w06",
+    "inline": true
+  },
+  {
+    "assetId": "w06.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+    "stopId": "w06"
+  },
+  {
+    "assetId": "w06.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+    "stopId": "w06"
+  },
+  {
+    "assetId": "w06.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-basilica-maxentius/modern-poster.jpg",
+    "stopId": "w06"
+  },
+  {
+    "assetId": "w06.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-basilica-maxentius/ancient-reconstruction.mp4",
+    "stopId": "w06"
+  },
+  {
+    "assetId": "w07.audio.chapter.0",
+    "kind": "audio",
+    "path": "w07.mp3",
+    "category": "narration",
+    "stopId": "w07"
+  },
+  {
+    "assetId": "w07.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w07",
+    "inline": true
+  },
+  {
+    "assetId": "w07.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+    "stopId": "w07"
+  },
+  {
+    "assetId": "w07.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+    "stopId": "w07"
+  },
+  {
+    "assetId": "w07.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg",
+    "stopId": "w07"
+  },
+  {
+    "assetId": "w07.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-via-sacra/ancient-reconstruction.mp4",
+    "stopId": "w07"
+  },
+  {
+    "assetId": "w08.audio.chapter.0",
+    "kind": "audio",
+    "path": "w08.mp3",
+    "category": "narration",
+    "stopId": "w08"
+  },
+  {
+    "assetId": "w08.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w08",
+    "inline": true
+  },
+  {
+    "assetId": "w08.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+    "stopId": "w08"
+  },
+  {
+    "assetId": "w08.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+    "stopId": "w08"
+  },
+  {
+    "assetId": "w08.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-temple-vesta/modern-poster.jpg",
+    "stopId": "w08"
+  },
+  {
+    "assetId": "w08.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-temple-vesta/ancient-reconstruction.mp4",
+    "stopId": "w08"
+  },
+  {
+    "assetId": "pause.audio.chapter.0",
+    "kind": "audio",
+    "path": "pause.mp3",
+    "category": "narration",
+    "stopId": "pause"
+  },
+  {
+    "assetId": "pause.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "pause",
+    "inline": true
+  },
+  {
+    "assetId": "w10.audio.chapter.0",
+    "kind": "audio",
+    "path": "w10.mp3",
+    "category": "narration",
+    "stopId": "w10"
+  },
+  {
+    "assetId": "w10.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w10",
+    "inline": true
+  },
+  {
+    "assetId": "w10.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+    "stopId": "w10"
+  },
+  {
+    "assetId": "w10.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-rostra/modern-poster.jpg",
+    "stopId": "w10"
+  },
+  {
+    "assetId": "w10.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-rostra/ancient-reconstruction.jpg",
+    "stopId": "w10"
+  },
+  {
+    "assetId": "w10.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-rostra/ancient-reconstruction.mp4",
+    "stopId": "w10"
+  },
+  {
+    "assetId": "w11_12.audio.chapter.0",
+    "kind": "audio",
+    "path": "w1112_b1.mp3",
+    "category": "narration",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w11_12.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w11_12",
+    "inline": true
+  },
+  {
+    "assetId": "w11_12.audio.chapter.1",
+    "kind": "audio",
+    "path": "w1112_b2.mp3",
+    "category": "narration",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w11_12.transcript.chapter.1",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w11_12",
+    "inline": true
+  },
+  {
+    "assetId": "w11_12.image.photo",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w11_12.image.now",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-severus/modern-poster.jpg",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w11_12.image.then",
+    "kind": "image",
+    "path": "/waypoints/forum-cluster/forum-arch-severus/ancient-poster.jpg",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w11_12.video.loop",
+    "kind": "video",
+    "path": "/waypoints/forum-cluster/forum-arch-severus/ancient-reconstruction.mp4",
+    "stopId": "w11_12"
+  },
+  {
+    "assetId": "w13.audio.chapter.0",
+    "kind": "audio",
+    "path": "w13.mp3",
+    "category": "narration",
+    "stopId": "w13"
+  },
+  {
+    "assetId": "w13.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w13",
+    "inline": true
+  },
+  {
+    "assetId": "w13.image.photo",
+    "kind": "image",
+    "path": "/waypoints/capitoline-hill/modern-poster.jpg",
+    "stopId": "w13"
+  },
+  {
+    "assetId": "w13.image.now",
+    "kind": "image",
+    "path": "/waypoints/capitoline-hill/modern-poster.jpg",
+    "stopId": "w13"
+  },
+  {
+    "assetId": "w13.image.then",
+    "kind": "image",
+    "path": "/waypoints/capitoline-hill/modern-poster.jpg",
+    "stopId": "w13"
+  },
+  {
+    "assetId": "w13.video.loop",
+    "kind": "video",
+    "path": "/waypoints/capitoline-hill/ancient-reconstruction.mp4",
+    "stopId": "w13"
+  },
+  {
+    "assetId": "w14.audio.chapter.0",
+    "kind": "audio",
+    "path": "w14.mp3",
+    "category": "narration",
+    "stopId": "w14"
+  },
+  {
+    "assetId": "w14.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w14",
+    "inline": true
+  },
+  {
+    "assetId": "w14.image.photo",
+    "kind": "image",
+    "path": "/waypoints/trajan-market/modern-poster.jpg",
+    "stopId": "w14"
+  },
+  {
+    "assetId": "w14.image.now",
+    "kind": "image",
+    "path": "/waypoints/trajan-market/modern-poster.jpg",
+    "stopId": "w14"
+  },
+  {
+    "assetId": "w14.image.then",
+    "kind": "image",
+    "path": "/waypoints/trajan-market/modern-poster.jpg",
+    "stopId": "w14"
+  },
+  {
+    "assetId": "w14.video.loop",
+    "kind": "video",
+    "path": "/waypoints/trajan-market/ancient-reconstruction.mp4",
+    "stopId": "w14"
+  },
+  {
+    "assetId": "w15.audio.chapter.0",
+    "kind": "audio",
+    "path": "w15.mp3",
+    "category": "narration",
+    "stopId": "w15"
+  },
+  {
+    "assetId": "w15.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w15",
+    "inline": true
+  },
+  {
+    "assetId": "w15.image.photo",
+    "kind": "image",
+    "path": "/waypoints/spanish-steps/modern-poster.jpg",
+    "stopId": "w15"
+  },
+  {
+    "assetId": "w15.image.now",
+    "kind": "image",
+    "path": "/waypoints/spanish-steps/modern-poster.jpg",
+    "stopId": "w15"
+  },
+  {
+    "assetId": "w15.image.then",
+    "kind": "image",
+    "path": "/waypoints/spanish-steps/modern-poster.jpg",
+    "stopId": "w15"
+  },
+  {
+    "assetId": "w15.video.loop",
+    "kind": "video",
+    "path": "/waypoints/spanish-steps/ancient-reconstruction.mp4",
+    "stopId": "w15"
+  },
+  {
+    "assetId": "w16.audio.chapter.0",
+    "kind": "audio",
+    "path": "w16.mp3",
+    "category": "narration",
+    "stopId": "w16"
+  },
+  {
+    "assetId": "w16.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w16",
+    "inline": true
+  },
+  {
+    "assetId": "w16.image.photo",
+    "kind": "image",
+    "path": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+    "stopId": "w16"
+  },
+  {
+    "assetId": "w16.image.now",
+    "kind": "image",
+    "path": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+    "stopId": "w16"
+  },
+  {
+    "assetId": "w16.image.then",
+    "kind": "image",
+    "path": "/waypoints/fontana-di-trevi/modern-poster.jpg",
+    "stopId": "w16"
+  },
+  {
+    "assetId": "w16.video.loop",
+    "kind": "video",
+    "path": "/waypoints/fontana-di-trevi/ancient-reconstruction.mp4",
+    "stopId": "w16"
+  },
+  {
+    "assetId": "w17.audio.chapter.0",
+    "kind": "audio",
+    "path": "w17_ch1.mp3",
+    "category": "narration",
+    "stopId": "w17"
+  },
+  {
+    "assetId": "w17.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w17",
+    "inline": true
+  },
+  {
+    "assetId": "w17.image.photo",
+    "kind": "image",
+    "path": "/waypoints/pantheon/modern-poster.jpg",
+    "stopId": "w17"
+  },
+  {
+    "assetId": "w17.image.now",
+    "kind": "image",
+    "path": "/waypoints/pantheon/modern-poster.jpg",
+    "stopId": "w17"
+  },
+  {
+    "assetId": "w17.image.then",
+    "kind": "image",
+    "path": "/waypoints/pantheon/modern-poster.jpg",
+    "stopId": "w17"
+  },
+  {
+    "assetId": "w17.video.loop",
+    "kind": "video",
+    "path": "/waypoints/pantheon/ancient-reconstruction.mp4",
+    "stopId": "w17"
+  },
+  {
+    "assetId": "w23.audio.chapter.0",
+    "kind": "audio",
+    "path": "w17_ch2.mp3",
+    "category": "narration",
+    "stopId": "w23"
+  },
+  {
+    "assetId": "w23.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w23",
+    "inline": true
+  },
+  {
+    "assetId": "w23.audio.chapter.1",
+    "kind": "audio",
+    "path": "w17_ch3.mp3",
+    "category": "narration",
+    "stopId": "w23"
+  },
+  {
+    "assetId": "w23.transcript.chapter.1",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w23",
+    "inline": true
+  },
+  {
+    "assetId": "w23.audio.chapter.2",
+    "kind": "audio",
+    "path": "w17_ch4.mp3",
+    "category": "narration",
+    "stopId": "w23"
+  },
+  {
+    "assetId": "w23.transcript.chapter.2",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w23",
+    "inline": true
+  },
+  {
+    "assetId": "w23.image.photo",
+    "kind": "image",
+    "path": "/waypoints/pantheon/interior/interior-oculus.jpg",
+    "stopId": "w23"
+  },
+  {
+    "assetId": "w18.audio.chapter.0",
+    "kind": "audio",
+    "path": "w18.mp3",
+    "category": "narration",
+    "stopId": "w18"
+  },
+  {
+    "assetId": "w18.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w18",
+    "inline": true
+  },
+  {
+    "assetId": "w18.image.photo",
+    "kind": "image",
+    "path": "/waypoints/piazza-navona/modern-poster.jpg",
+    "stopId": "w18"
+  },
+  {
+    "assetId": "w18.image.now",
+    "kind": "image",
+    "path": "/waypoints/piazza-navona/modern-poster.jpg",
+    "stopId": "w18"
+  },
+  {
+    "assetId": "w18.image.then",
+    "kind": "image",
+    "path": "/waypoints/piazza-navona/modern-poster.jpg",
+    "stopId": "w18"
+  },
+  {
+    "assetId": "w18.video.loop",
+    "kind": "video",
+    "path": "/waypoints/piazza-navona/ancient-reconstruction.mp4",
+    "stopId": "w18"
+  },
+  {
+    "assetId": "w19.audio.chapter.0",
+    "kind": "audio",
+    "path": "w19.mp3",
+    "category": "narration",
+    "stopId": "w19"
+  },
+  {
+    "assetId": "w19.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w19",
+    "inline": true
+  },
+  {
+    "assetId": "w19.image.photo",
+    "kind": "image",
+    "path": "/waypoints/campo-de-fiori/modern-poster.jpg",
+    "stopId": "w19"
+  },
+  {
+    "assetId": "w19.image.now",
+    "kind": "image",
+    "path": "/waypoints/campo-de-fiori/modern-poster.jpg",
+    "stopId": "w19"
+  },
+  {
+    "assetId": "w19.image.then",
+    "kind": "image",
+    "path": "/waypoints/campo-de-fiori/modern-poster.jpg",
+    "stopId": "w19"
+  },
+  {
+    "assetId": "w19.video.loop",
+    "kind": "video",
+    "path": "/waypoints/campo-de-fiori/ancient-reconstruction.mp4",
+    "stopId": "w19"
+  },
+  {
+    "assetId": "w20.audio.chapter.0",
+    "kind": "audio",
+    "path": "w20.mp3",
+    "category": "narration",
+    "stopId": "w20"
+  },
+  {
+    "assetId": "w20.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w20",
+    "inline": true
+  },
+  {
+    "assetId": "w20.image.photo",
+    "kind": "image",
+    "path": "/waypoints/largo-argentina/modern-poster.jpg",
+    "stopId": "w20"
+  },
+  {
+    "assetId": "w20.image.now",
+    "kind": "image",
+    "path": "/waypoints/largo-argentina/modern-poster.jpg",
+    "stopId": "w20"
+  },
+  {
+    "assetId": "w20.image.then",
+    "kind": "image",
+    "path": "/waypoints/largo-argentina/modern-poster.jpg",
+    "stopId": "w20"
+  },
+  {
+    "assetId": "w20.video.loop",
+    "kind": "video",
+    "path": "/waypoints/largo-argentina/ancient-reconstruction.mp4",
+    "stopId": "w20"
+  },
+  {
+    "assetId": "w21.audio.chapter.0",
+    "kind": "audio",
+    "path": "w21.mp3",
+    "category": "narration",
+    "stopId": "w21"
+  },
+  {
+    "assetId": "w21.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w21",
+    "inline": true
+  },
+  {
+    "assetId": "w21.image.photo",
+    "kind": "image",
+    "path": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+    "stopId": "w21"
+  },
+  {
+    "assetId": "w21.image.now",
+    "kind": "image",
+    "path": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+    "stopId": "w21"
+  },
+  {
+    "assetId": "w21.image.then",
+    "kind": "image",
+    "path": "/waypoints/castel-sant-angelo/modern-poster.jpg",
+    "stopId": "w21"
+  },
+  {
+    "assetId": "w21.video.loop",
+    "kind": "video",
+    "path": "/waypoints/castel-sant-angelo/ancient-reconstruction.mp4",
+    "stopId": "w21"
+  },
+  {
+    "assetId": "enc_circus.audio.chapter.0",
+    "kind": "audio",
+    "path": "enc_circus.mp3",
+    "category": "narration",
+    "stopId": "enc_circus"
+  },
+  {
+    "assetId": "enc_circus.image.photo",
+    "kind": "image",
+    "path": "/waypoints/circus-maximus/modern-poster.jpg",
+    "stopId": "enc_circus"
+  },
+  {
+    "assetId": "enc_circus.image.now",
+    "kind": "image",
+    "path": "/waypoints/circus-maximus/modern-poster.jpg",
+    "stopId": "enc_circus"
+  },
+  {
+    "assetId": "enc_circus.image.then",
+    "kind": "image",
+    "path": "/waypoints/circus-maximus/modern-poster.jpg",
+    "stopId": "enc_circus"
+  },
+  {
+    "assetId": "enc_circus.video.loop",
+    "kind": "video",
+    "path": "/waypoints/circus-maximus/ancient-reconstruction.mp4",
+    "stopId": "enc_circus"
+  },
+  {
+    "assetId": "w22.audio.chapter.0",
+    "kind": "audio",
+    "path": "w22.mp3",
+    "category": "narration",
+    "stopId": "w22"
+  },
+  {
+    "assetId": "w22.transcript.chapter.0",
+    "kind": "transcript",
+    "locale": "en",
+    "stopId": "w22",
+    "inline": true
+  },
+  {
+    "assetId": "w22.image.photo",
+    "kind": "image",
+    "path": "/waypoints/via-appia/modern-poster.jpg",
+    "stopId": "w22"
+  },
+  {
+    "assetId": "w22.image.now",
+    "kind": "image",
+    "path": "/waypoints/via-appia/modern-poster.jpg",
+    "stopId": "w22"
+  },
+  {
+    "assetId": "w22.image.then",
+    "kind": "image",
+    "path": "/waypoints/via-appia/modern-poster.jpg",
+    "stopId": "w22"
+  },
+  {
+    "assetId": "w22.video.loop",
+    "kind": "video",
+    "path": "/waypoints/via-appia/ancient-reconstruction.mp4",
+    "stopId": "w22"
+  },
+  {
+    "assetId": "t01.audio.a",
+    "kind": "audio",
+    "path": "t01_fork_a.mp3",
+    "category": "narration",
+    "transitId": "t01"
+  },
+  {
+    "assetId": "t01.audio.b",
+    "kind": "audio",
+    "path": "t01_fork_b.mp3",
+    "category": "narration",
+    "transitId": "t01"
+  },
+  {
+    "assetId": "t02.audio",
+    "kind": "audio",
+    "path": "t02.mp3",
+    "category": "narration",
+    "transitId": "t02"
+  },
+  {
+    "assetId": "t04.audio",
+    "kind": "audio",
+    "path": "t04_forum.mp3",
+    "category": "narration",
+    "transitId": "t04"
+  },
+  {
+    "assetId": "t05.audio",
+    "kind": "audio",
+    "path": "t05.mp3",
+    "category": "narration",
+    "transitId": "t05"
+  },
+  {
+    "assetId": "t06.audio",
+    "kind": "audio",
+    "path": "t06.mp3",
+    "category": "narration",
+    "transitId": "t06"
+  },
+  {
+    "assetId": "t07.audio",
+    "kind": "audio",
+    "path": "t07.mp3",
+    "category": "narration",
+    "transitId": "t07"
+  },
+  {
+    "assetId": "t08.audio",
+    "kind": "audio",
+    "path": "t08.mp3",
+    "category": "narration",
+    "transitId": "t08"
+  },
+  {
+    "assetId": "t09.audio",
+    "kind": "audio",
+    "path": "t09.mp3",
+    "category": "narration",
+    "transitId": "t09"
+  },
+  {
+    "assetId": "t10.audio",
+    "kind": "audio",
+    "path": "t10.mp3",
+    "category": "narration",
+    "transitId": "t10"
+  },
+  {
+    "assetId": "t15.audio",
+    "kind": "audio",
+    "path": "t15.mp3",
+    "category": "narration",
+    "transitId": "t15"
+  },
+  {
+    "assetId": "t12.audio",
+    "kind": "audio",
+    "path": "t12.mp3",
+    "category": "narration",
+    "transitId": "t12"
+  },
+  {
+    "assetId": "t13.audio",
+    "kind": "audio",
+    "path": "t13.mp3",
+    "category": "narration",
+    "transitId": "t13"
+  },
+  {
+    "assetId": "t18.audio",
+    "kind": "audio",
+    "path": "t18.mp3",
+    "category": "narration",
+    "transitId": "t18"
+  },
+  {
+    "assetId": "t19.audio",
+    "kind": "audio",
+    "path": "t19.mp3",
+    "category": "narration",
+    "transitId": "t19"
+  },
+  {
+    "assetId": "t16.audio",
+    "kind": "audio",
+    "path": "t16.mp3",
+    "category": "narration",
+    "transitId": "t16"
+  },
+  {
+    "assetId": "t03.audio.b",
+    "kind": "audio",
+    "path": "t03_b.mp3",
+    "category": "narration",
+    "transitId": "t03"
+  },
+  {
+    "assetId": "ins_whopaid.audio",
+    "kind": "audio",
+    "path": "ins_whopaid.mp3",
+    "category": "inserts",
+    "insertId": "ins_whopaid"
+  },
+  {
+    "assetId": "ins_window.audio",
+    "kind": "audio",
+    "path": "ins_window.mp3",
+    "category": "inserts",
+    "insertId": "ins_window"
+  },
+  {
+    "assetId": "ins_jerusalem.audio",
+    "kind": "audio",
+    "path": "ins_jerusalem.mp3",
+    "category": "inserts",
+    "insertId": "ins_jerusalem"
+  },
+  {
+    "assetId": "ins_fire.audio",
+    "kind": "audio",
+    "path": "ins_fire.mp3",
+    "category": "inserts",
+    "insertId": "ins_fire"
+  },
+  {
+    "assetId": "ins_caesar_tease.audio",
+    "kind": "audio",
+    "path": "ins_caesar_tease.mp3",
+    "category": "inserts",
+    "insertId": "ins_caesar_tease"
+  },
+  {
+    "assetId": "ins_water_trevi.audio",
+    "kind": "audio",
+    "path": "ins_water_trevi.mp3",
+    "category": "inserts",
+    "insertId": "ins_water_trevi"
+  },
+  {
+    "assetId": "ins_agrippa.audio",
+    "kind": "audio",
+    "path": "ins_agrippa.mp3",
+    "category": "inserts",
+    "insertId": "ins_agrippa"
+  },
+  {
+    "assetId": "ins_constantine.audio",
+    "kind": "audio",
+    "path": "ins_constantine.mp3",
+    "category": "inserts",
+    "insertId": "ins_constantine"
+  },
+  {
+    "assetId": "w21_alt_bruno.audio",
+    "kind": "audio",
+    "path": "w21_alt_bruno.mp3",
+    "category": "inserts",
+    "insertId": "w21_alt_bruno"
+  },
+  {
+    "assetId": "bed.antiquity",
+    "kind": "audio",
+    "path": "bed_antiquity.mp3",
+    "category": "beds",
+    "zone": "antiquity"
+  },
+  {
+    "assetId": "bed.centro",
+    "kind": "audio",
+    "path": "bed_centro.mp3",
+    "category": "beds",
+    "zone": "centro"
+  },
+  {
+    "assetId": "bed.river",
+    "kind": "audio",
+    "path": "bed_river.mp3",
+    "category": "beds",
+    "zone": "river"
+  },
+  {
+    "assetId": "bed.underworld",
+    "kind": "audio",
+    "path": "bed_underworld.mp3",
+    "category": "beds",
+    "zone": "underworld"
+  },
+  {
+    "assetId": "bed.pantheon_interior",
+    "kind": "audio",
+    "path": "bed_pantheon_interior.mp3",
+    "category": "beds",
+    "zone": "pantheon_interior"
+  },
+  {
+    "assetId": "system.preview",
+    "kind": "audio",
+    "path": "w17_ch1.mp3",
+    "category": "system",
+    "role": "preview"
+  }
+]

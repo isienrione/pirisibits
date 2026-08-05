@@ -1,0 +1,262 @@
+[
+  {
+    "routeId": "rome-eternal-main",
+    "cityId": "rome",
+    "productId": "rome-eternal",
+    "name": "Rome Eternal — main path",
+    "pathKey": "a",
+    "stops": [
+      {
+        "stopId": "w01",
+        "displayOrder": 0
+      },
+      {
+        "stopId": "w02",
+        "displayOrder": 1
+      },
+      {
+        "stopId": "w03",
+        "displayOrder": 2
+      },
+      {
+        "stopId": "w06",
+        "displayOrder": 3
+      },
+      {
+        "stopId": "w07",
+        "displayOrder": 4
+      },
+      {
+        "stopId": "w08",
+        "displayOrder": 5
+      },
+      {
+        "stopId": "pause",
+        "displayOrder": 6
+      },
+      {
+        "stopId": "w10",
+        "displayOrder": 7
+      },
+      {
+        "stopId": "w11_12",
+        "displayOrder": 8
+      },
+      {
+        "stopId": "w13",
+        "displayOrder": 9
+      },
+      {
+        "stopId": "w14",
+        "displayOrder": 10
+      },
+      {
+        "stopId": "w15",
+        "displayOrder": 11
+      },
+      {
+        "stopId": "w16",
+        "displayOrder": 12
+      },
+      {
+        "stopId": "w17",
+        "displayOrder": 13
+      },
+      {
+        "stopId": "w23",
+        "displayOrder": 14
+      },
+      {
+        "stopId": "w18",
+        "displayOrder": 15
+      },
+      {
+        "stopId": "w19",
+        "displayOrder": 16
+      },
+      {
+        "stopId": "w20",
+        "displayOrder": 17
+      },
+      {
+        "stopId": "w21",
+        "displayOrder": 18
+      },
+      {
+        "stopId": "w22",
+        "displayOrder": 19
+      }
+    ],
+    "sequence": [
+      "w01",
+      "w02",
+      "t01",
+      "w03",
+      "t04",
+      "w06",
+      "t05",
+      "w07",
+      "t06",
+      "w08",
+      "pause",
+      "t07",
+      "w10",
+      "t08",
+      "w11_12",
+      "t09",
+      "w13",
+      "t10",
+      "w14",
+      "t14",
+      "w15",
+      "t15",
+      "w16",
+      "t12",
+      "w17",
+      "w23",
+      "t13",
+      "w18",
+      "t18",
+      "w19",
+      "t19",
+      "w20",
+      "t16",
+      "w21",
+      "t22",
+      "w22"
+    ]
+  },
+  {
+    "routeId": "rome-eternal-path-b",
+    "cityId": "rome",
+    "productId": "rome-eternal",
+    "name": "Rome Eternal — path b",
+    "pathKey": "b",
+    "stops": [
+      {
+        "stopId": "w01",
+        "displayOrder": 0
+      },
+      {
+        "stopId": "w02",
+        "displayOrder": 1
+      },
+      {
+        "stopId": "w04",
+        "displayOrder": 2
+      },
+      {
+        "stopId": "w03",
+        "displayOrder": 3
+      },
+      {
+        "stopId": "w06",
+        "displayOrder": 4
+      },
+      {
+        "stopId": "w07",
+        "displayOrder": 5
+      },
+      {
+        "stopId": "w08",
+        "displayOrder": 6
+      },
+      {
+        "stopId": "pause",
+        "displayOrder": 7
+      },
+      {
+        "stopId": "w10",
+        "displayOrder": 8
+      },
+      {
+        "stopId": "w11_12",
+        "displayOrder": 9
+      },
+      {
+        "stopId": "w13",
+        "displayOrder": 10
+      },
+      {
+        "stopId": "w14",
+        "displayOrder": 11
+      },
+      {
+        "stopId": "w15",
+        "displayOrder": 12
+      },
+      {
+        "stopId": "w16",
+        "displayOrder": 13
+      },
+      {
+        "stopId": "w17",
+        "displayOrder": 14
+      },
+      {
+        "stopId": "w23",
+        "displayOrder": 15
+      },
+      {
+        "stopId": "w18",
+        "displayOrder": 16
+      },
+      {
+        "stopId": "w19",
+        "displayOrder": 17
+      },
+      {
+        "stopId": "w20",
+        "displayOrder": 18
+      },
+      {
+        "stopId": "w21",
+        "displayOrder": 19
+      },
+      {
+        "stopId": "w22",
+        "displayOrder": 20
+      }
+    ],
+    "sequence": [
+      "w01",
+      "w02",
+      "t01",
+      "w04",
+      "t03",
+      "w03",
+      "t04",
+      "w06",
+      "t05",
+      "w07",
+      "t06",
+      "w08",
+      "pause",
+      "t07",
+      "w10",
+      "t08",
+      "w11_12",
+      "t09",
+      "w13",
+      "t10",
+      "w14",
+      "t14",
+      "w15",
+      "t15",
+      "w16",
+      "t12",
+      "w17",
+      "w23",
+      "t13",
+      "w18",
+      "t18",
+      "w19",
+      "t19",
+      "w20",
+      "t16",
+      "w21",
+      "t22",
+      "w22"
+    ]
+  }
+]

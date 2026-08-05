@@ -1,0 +1,423 @@
+[
+  {
+    "stopId": "w01",
+    "cityId": "rome",
+    "name": "The Colosseum",
+    "actId": "act1",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8902,
+      "lng": 12.4922
+    },
+    "geofence": {
+      "lat": 41.8902,
+      "lng": 12.4922,
+      "radius_m": 45
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w02",
+    "cityId": "rome",
+    "name": "Colosseum interior",
+    "actId": "act1",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8904,
+      "lng": 12.4924
+    },
+    "geofence": {
+      "lat": 41.8904,
+      "lng": 12.4924,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w03",
+    "cityId": "rome",
+    "name": "Arch of Titus",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8905,
+      "lng": 12.48835
+    },
+    "geofence": {
+      "lat": 41.8905,
+      "lng": 12.48835,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w04",
+    "cityId": "rome",
+    "name": "The Palatine",
+    "actId": "act2",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8886,
+      "lng": 12.4872
+    },
+    "geofence": {
+      "lat": 41.8886,
+      "lng": 12.4872,
+      "radius_m": 50
+    },
+    "optionalOnPath": "a",
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w06",
+    "cityId": "rome",
+    "name": "Basilica of Maxentius",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89175,
+      "lng": 12.488
+    },
+    "geofence": {
+      "lat": 41.89175,
+      "lng": 12.488,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w07",
+    "cityId": "rome",
+    "name": "Via Sacra",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89255,
+      "lng": 12.48535
+    },
+    "geofence": {
+      "lat": 41.89255,
+      "lng": 12.48535,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w08",
+    "cityId": "rome",
+    "name": "Temple of Vesta",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89182,
+      "lng": 12.48715
+    },
+    "geofence": {
+      "lat": 41.89182,
+      "lng": 12.48715,
+      "radius_m": 35
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "pause",
+    "cityId": "rome",
+    "name": "Forum rest",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8919,
+      "lng": 12.4865
+    },
+    "geofence": {
+      "lat": 41.8919,
+      "lng": 12.4865,
+      "radius_m": 80
+    },
+    "optionalOnPath": null,
+    "scriptedRest": true,
+    "display": null
+  },
+  {
+    "stopId": "w10",
+    "cityId": "rome",
+    "name": "The Rostra",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89282,
+      "lng": 12.48518
+    },
+    "geofence": {
+      "lat": 41.89282,
+      "lng": 12.48518,
+      "radius_m": 35
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w11_12",
+    "cityId": "rome",
+    "name": "Arch of Septimius Severus",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89301,
+      "lng": 12.48442
+    },
+    "geofence": {
+      "lat": 41.89301,
+      "lng": 12.48442,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": {
+      "publicPlaceCount": 2,
+      "combinedLabel": "Arch of Septimius Severus & Curia Julia"
+    }
+  },
+  {
+    "stopId": "w13",
+    "cityId": "rome",
+    "name": "Capitoline Hill",
+    "actId": "act3",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.89324,
+      "lng": 12.48275
+    },
+    "geofence": {
+      "lat": 41.89324,
+      "lng": 12.48275,
+      "radius_m": 45
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w14",
+    "cityId": "rome",
+    "name": "Trajan's Market",
+    "actId": "act4",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8956,
+      "lng": 12.48595
+    },
+    "geofence": {
+      "lat": 41.8956,
+      "lng": 12.48595,
+      "radius_m": 45
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w15",
+    "cityId": "rome",
+    "name": "Spanish Steps",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.90597,
+      "lng": 12.48259
+    },
+    "geofence": {
+      "lat": 41.90597,
+      "lng": 12.48259,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w16",
+    "cityId": "rome",
+    "name": "Fontana di Trevi",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.90094,
+      "lng": 12.48331
+    },
+    "geofence": {
+      "lat": 41.90094,
+      "lng": 12.48331,
+      "radius_m": 35
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w17",
+    "cityId": "rome",
+    "name": "The Pantheon",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.89885,
+      "lng": 12.47687
+    },
+    "geofence": {
+      "lat": 41.89885,
+      "lng": 12.47687,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w23",
+    "cityId": "rome",
+    "name": "Pantheon interior",
+    "actId": "act5",
+    "zone": "pantheon_interior",
+    "location": {
+      "lat": 41.89868,
+      "lng": 12.47683
+    },
+    "geofence": {
+      "lat": 41.89868,
+      "lng": 12.47683,
+      "radius_m": 35
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w18",
+    "cityId": "rome",
+    "name": "Piazza Navona",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.89918,
+      "lng": 12.47306
+    },
+    "geofence": {
+      "lat": 41.89918,
+      "lng": 12.47306,
+      "radius_m": 45
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w19",
+    "cityId": "rome",
+    "name": "Campo de' Fiori",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.89559,
+      "lng": 12.47223
+    },
+    "geofence": {
+      "lat": 41.89559,
+      "lng": 12.47223,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w20",
+    "cityId": "rome",
+    "name": "Largo di Torre Argentina",
+    "actId": "act5",
+    "zone": "centro",
+    "location": {
+      "lat": 41.89528,
+      "lng": 12.47694
+    },
+    "geofence": {
+      "lat": 41.89528,
+      "lng": 12.47694,
+      "radius_m": 40
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w21",
+    "cityId": "rome",
+    "name": "Castel Sant'Angelo",
+    "actId": "act6",
+    "zone": "river",
+    "location": {
+      "lat": 41.90306,
+      "lng": 12.46627
+    },
+    "geofence": {
+      "lat": 41.90306,
+      "lng": 12.46627,
+      "radius_m": 45
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "enc_circus",
+    "cityId": "rome",
+    "name": "Circus Maximus View",
+    "actId": "act2",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8859,
+      "lng": 12.4857
+    },
+    "geofence": {
+      "lat": 41.8859,
+      "lng": 12.4857,
+      "radius_m": 55
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  },
+  {
+    "stopId": "w22",
+    "cityId": "rome",
+    "name": "Optional Encore › Via Appia Antica",
+    "actId": "encore",
+    "zone": "antiquity",
+    "location": {
+      "lat": 41.8635,
+      "lng": 12.5148
+    },
+    "geofence": {
+      "lat": 41.8635,
+      "lng": 12.5148,
+      "radius_m": 60
+    },
+    "optionalOnPath": null,
+    "scriptedRest": false,
+    "display": null
+  }
+]

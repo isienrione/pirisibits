@@ -1,0 +1,20 @@
+[
+  {
+    "assetId": "quay-north.audio.main",
+    "kind": "audio",
+    "path": "quay-north.mp3",
+    "stopId": "quay-north"
+  },
+  {
+    "assetId": "lighthouse.audio.main",
+    "kind": "audio",
+    "path": "lighthouse.mp3",
+    "stopId": "lighthouse"
+  },
+  {
+    "assetId": "system.preview",
+    "kind": "audio",
+    "path": "preview.mp3",
+    "role": "preview"
+  }
+]
