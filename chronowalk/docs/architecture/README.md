@@ -6,6 +6,7 @@
 | [RUNTIME_CATALOG_AND_ROME_ADAPTER.md](./RUNTIME_CATALOG_AND_ROME_ADAPTER.md) | Runtime catalog + legacy Rome adapter (PR 3) |
 | [GENERIC_COMMERCE_AND_ENTITLEMENTS.md](./GENERIC_COMMERCE_AND_ENTITLEMENTS.md) | Generic entitlements + Paddle compatibility (PR 4) |
 | [GENERIC_NAVIGATION_AND_ROUTING.md](./GENERIC_NAVIGATION_AND_ROUTING.md) | Generic navigation + legacy URL compatibility (PR 5) |
+| [CAPACITOR_IOS_SHELL.md](./CAPACITOR_IOS_SHELL.md) | Capacitor iOS shell + untracked ios/ safety (PR 6) |
 | [NEXT_PR_CITY_PACKAGE_GENERATOR.md](./NEXT_PR_CITY_PACKAGE_GENERATOR.md) | Historical intent note (generator landed; see CITY_PACKAGE_GENERATOR.md) |
 
 ## Roadmap status
@@ -16,5 +17,6 @@
 | 2 | City package generator | Done |
 | 3 | Runtime catalog + Rome adapter | Done |
 | 4 | Generic commerce / entitlements | Done |
-| 5 | Generic navigation + routing (preserve public URLs) | **This PR** |
-| 6 | Wire selected future routes / App Link handoff (keep legacy URLs) | Next |
+| 5 | Generic navigation + routing | Done |
+| 6 | Capacitor iOS shell foundation | **This PR** |
+| 7+ | StoreKit, native downloads, background audio/location, App Link polish | Later |

@@ -1,3 +1,5 @@
+import { canOfferPwaInstall } from '../platform/runtime/index.js'
+
 function matchesDisplayMode(query) {
   const matchMedia = typeof window !== 'undefined' ? window.matchMedia : null
   if (typeof matchMedia !== 'function') return false
@@ -9,15 +11,24 @@ function matchesDisplayMode(query) {
   }
 }
 
-/** True when the app is running as an installed home-screen PWA. */
+/**
+ * True when the app is running as an installed home-screen PWA
+ * or inside the Capacitor native shell (already the installed app).
+ */
 export function isStandaloneMode() {
   if (typeof window === 'undefined') return false
+  if (!canOfferPwaInstall()) return true
 
   return (
     matchesDisplayMode('(display-mode: standalone)') ||
     matchesDisplayMode('(display-mode: fullscreen)') ||
     window.navigator.standalone === true
   )
+}
+
+/** True when PWA / Add to Home Screen UI should be offered. */
+export function shouldOfferPwaInstall() {
+  return canOfferPwaInstall() && !isStandaloneMode()
 }
 
 export function isIosDevice() {

@@ -37,6 +37,13 @@ scripts/incident/
 # OS cruft
 .DS_Store
 
+# Capacitor local IDE / sync noise.
+# Tracked Xcode project lives under native-review/ios/ for this PR.
+# Do NOT remove the ios/ ignore until the Mac-side untracked chronowalk/ios/
+# directory has been audited and migrated (see CAPACITOR_IOS_SHELL.md).
+.capacitor
+/ios/
+
 # Logs
 *.log
 npm-debug.log*
