@@ -7,6 +7,10 @@
     "dev": "vite",
     "generate:pwa-assets": "node scripts/generate-pwa-assets.mjs",
     "build": "npm run generate:pwa-assets && vite build",
+    "ios:sync": "npm run build && npx cap sync ios",
+    "ios:copy": "npx cap copy ios",
+    "ios:open": "npx cap open ios",
+    "ios:doctor": "npx cap doctor",
     "verify:pwa-routing": "node scripts/verify-pwa-routing.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -52,6 +56,13 @@
     "pretest": "npm run check:commerce-drift"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/device": "^8.0.3",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.5.0",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3",
     "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",
@@ -64,6 +75,7 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
     "@eslint/js": "^10.0.1",
     "@paddle/paddle-node-sdk": "^3.8.0",
     "@playwright/test": "^1.54.2",
