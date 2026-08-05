@@ -101,11 +101,12 @@ Signing & Capabilities when those feature PRs land.
 ## Out of scope (later PRs)
 
 - StoreKit / IAP
-- Native offline downloads
 - Background audio / Media Session beyond current web
 - Background location / geofencing plugins
 - Push notifications
 - Exposing Paddle checkout inside the native app
+
+Native offline downloads: see [NATIVE_DOWNLOAD_MANAGER.md](./NATIVE_DOWNLOAD_MANAGER.md) (PR 7).
 
 ## Rollback
 
