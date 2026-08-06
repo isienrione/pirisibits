@@ -212,7 +212,13 @@ export function createStoreKitPurchaseAdapter(options = {}) {
      * @param {string[]} [productIds] Internal product ids
      */
     async getAvailableProducts(productIds) {
+      console.info('[CW TRACE] storeKitAdapter.getAvailableProducts entered', {
+        productIds: productIds ?? null,
+      })
       if (!canUse()) {
+        console.info('[CW TRACE] storeKitAdapter.getAvailableProducts early return', {
+          code: 'storekit_unavailable',
+        })
         return { ok: false, code: 'storekit_unavailable', products: [] }
       }
 
@@ -224,8 +230,15 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       let pluginProducts = []
       try {
         const { NativePurchases, PURCHASE_TYPE } = await loadPluginModule()
+        console.info('[CW TRACE] storeKitAdapter.getAvailableProducts plugin loaded', {
+          purchaseTypeInapp: PURCHASE_TYPE?.INAPP ?? null,
+        })
         if (typeof NativePurchases.getProducts === 'function') {
           const appleIds = mappings.map((m) => m.appleProductId)
+          console.info('[CW TRACE] storeKitAdapter.getAvailableProducts requested Apple IDs', {
+            appleIds,
+            productType: PURCHASE_TYPE.INAPP,
+          })
           logStoreKitLocal('requested Apple product IDs', {
             appleIds,
             productType: PURCHASE_TYPE.INAPP,
@@ -241,10 +254,14 @@ export function createStoreKitPurchaseAdapter(options = {}) {
           )
 
           pluginProducts = Array.isArray(result) ? result : result?.products ?? []
+          console.info('[CW TRACE] storeKitAdapter.getAvailableProducts products returned', {
+            count: pluginProducts.length,
+          })
           logStoreKitLocal('number of products returned', { count: pluginProducts.length })
         }
       } catch (err) {
         const code = classifyStoreKitPurchaseError(err)
+        console.error('[CW TRACE] storeKitAdapter.getAvailableProducts caught', { code })
         logStoreKitLocal('controlled error code', { code, phase: 'getProducts' })
         return {
           ok: false,
@@ -281,7 +298,13 @@ export function createStoreKitPurchaseAdapter(options = {}) {
     },
 
     async purchaseProduct(productId, purchaseOptions = {}) {
-      if (!canUse()) {
+      console.info('[CW TRACE] storeKitAdapter.purchaseProduct entered', { productId })
+      const canUseResult = canUse()
+      console.info('[CW TRACE] storeKitAdapter.purchaseProduct canUse', {
+        productId,
+        canUse: canUseResult,
+      })
+      if (!canUseResult) {
         return {
           ok: false,
           code: 'storekit_unavailable',
@@ -291,6 +314,10 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       }
 
       if (isApplePurchaseDeferred(productId)) {
+        console.info('[CW TRACE] storeKitAdapter.purchaseProduct early return', {
+          code: 'apple_product_deferred',
+          productId,
+        })
         return {
           ok: false,
           code: 'apple_product_deferred',
@@ -301,7 +328,16 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       }
 
       const mapping = getStoreKitMapping(productId)
+      console.info('[CW TRACE] storeKitAdapter.purchaseProduct mapping found', {
+        productId,
+        found: Boolean(mapping),
+        appleProductId: mapping?.appleProductId ?? null,
+      })
       if (!mapping || !APPLE_PRODUCT_IDS[productId]) {
+        console.info('[CW TRACE] storeKitAdapter.purchaseProduct early return', {
+          code: 'unknown_product',
+          productId,
+        })
         return {
           ok: false,
           code: 'unknown_product',
@@ -310,7 +346,16 @@ export function createStoreKitPurchaseAdapter(options = {}) {
         }
       }
 
-      if (!mappingEnabled(mapping)) {
+      const enabled = mappingEnabled(mapping)
+      console.info('[CW TRACE] storeKitAdapter.purchaseProduct mapping enabled', {
+        productId,
+        enabled,
+      })
+      if (!enabled) {
+        console.info('[CW TRACE] storeKitAdapter.purchaseProduct early return', {
+          code: 'apple_product_disabled',
+          productId,
+        })
         return {
           ok: false,
           code: 'apple_product_disabled',
@@ -323,6 +368,11 @@ export function createStoreKitPurchaseAdapter(options = {}) {
 
       try {
         const { NativePurchases, PURCHASE_TYPE } = await loadPluginModule()
+        console.info('[CW TRACE] storeKitAdapter.purchaseProduct plugin module loaded', {
+          productId,
+          purchaseTypeInapp: PURCHASE_TYPE?.INAPP ?? null,
+          hasPurchaseProduct: typeof NativePurchases.purchaseProduct === 'function',
+        })
         if (typeof NativePurchases.purchaseProduct !== 'function') {
           const err = new Error('StoreKit purchaseProduct missing')
           err.code = 'storekit_capability_missing'
@@ -347,11 +397,24 @@ export function createStoreKitPurchaseAdapter(options = {}) {
           hasAppAccountToken: Boolean(appAccountToken),
         })
 
+        console.info('[CW TRACE] storeKitAdapter before NativePurchases.purchaseProduct', {
+          productId,
+          appleProductId: mapping.appleProductId,
+          productType: purchaseRequest.productType,
+          quantity: purchaseRequest.quantity,
+          hasAppAccountToken: Boolean(appAccountToken),
+        })
+
         // Documented Capgo StoreKit 2 API for one-time (non-consumable) products.
         const raw = await withStoreKitTimeout(
           NativePurchases.purchaseProduct(purchaseRequest),
           { timeoutMs, label: 'purchaseProduct' },
         )
+
+        console.info('[CW TRACE] storeKitAdapter after NativePurchases.purchaseProduct', {
+          productId,
+          hasResult: Boolean(raw),
+        })
 
         const entitlement = normalizeAppleTransaction(
           {
@@ -381,6 +444,10 @@ export function createStoreKitPurchaseAdapter(options = {}) {
         }
       } catch (err) {
         const code = classifyStoreKitPurchaseError(err)
+        if (code === 'storekit_request_timeout') {
+          console.info('[CW TRACE] storeKitAdapter.purchaseProduct timeout', { productId, code })
+        }
+        console.error('[CW TRACE] storeKitAdapter.purchaseProduct caught', { productId, code })
         logStoreKitLocal('purchase failed', { code })
         logStoreKitLocal('controlled error code', { code, phase: 'purchaseProduct' })
         return {
