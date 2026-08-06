@@ -109,9 +109,8 @@ implement OS background transfer.
 
 ## What PR 8 does next
 
-- StoreKit / App Store products
-- Entitlement synchronization with Apple
-- Wire purchase → download eligibility without exposing Paddle in the native shell
+- StoreKit purchase foundation — see [STOREKIT_AND_APPLE_ENTITLEMENTS.md](./STOREKIT_AND_APPLE_ENTITLEMENTS.md)
+- Server verification / ASSN and download eligibility wiring remain later work
 
 ## Rollback / cleanup
 

@@ -1,0 +1,66 @@
+{
+  "identifier" : "ChronoWalkLocalStoreKit",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "CWLOCALHISTORICA",
+      "localizations" : [
+        {
+          "description" : "Roma Historica — local StoreKit test product",
+          "displayName" : "Roma Historica",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.chronowalk.city.rome.historica",
+      "referenceName" : "Roma Historica",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "CWLOCALANTICA",
+      "localizations" : [
+        {
+          "description" : "Roma Antica — local StoreKit test product",
+          "displayName" : "Roma Antica",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.chronowalk.city.rome.antica",
+      "referenceName" : "Roma Antica",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : false,
+      "internalID" : "CWLOCALETERNA",
+      "localizations" : [
+        {
+          "description" : "Roma Eterna — local StoreKit test product",
+          "displayName" : "Roma Eterna",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.chronowalk.city.rome.eterna",
+      "referenceName" : "Roma Eterna",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

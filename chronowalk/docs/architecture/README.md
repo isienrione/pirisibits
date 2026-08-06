@@ -8,6 +8,7 @@
 | [GENERIC_NAVIGATION_AND_ROUTING.md](./GENERIC_NAVIGATION_AND_ROUTING.md) | Generic navigation + legacy URL compatibility (PR 5) |
 | [CAPACITOR_IOS_SHELL.md](./CAPACITOR_IOS_SHELL.md) | Capacitor iOS shell + untracked ios/ safety (PR 6) |
 | [NATIVE_DOWNLOAD_MANAGER.md](./NATIVE_DOWNLOAD_MANAGER.md) | Versioned native/web download manager (PR 7) |
+| [STOREKIT_AND_APPLE_ENTITLEMENTS.md](./STOREKIT_AND_APPLE_ENTITLEMENTS.md) | StoreKit purchase foundation + Apple entitlements (PR 8) |
 | [NEXT_PR_CITY_PACKAGE_GENERATOR.md](./NEXT_PR_CITY_PACKAGE_GENERATOR.md) | Historical intent note (generator landed; see CITY_PACKAGE_GENERATOR.md) |
 
 ## Roadmap status
@@ -20,5 +21,6 @@
 | 4 | Generic commerce / entitlements | Done |
 | 5 | Generic navigation + routing | Done |
 | 6 | Capacitor iOS shell foundation | Done |
-| 7 | Native download manager | **This PR** |
-| 8+ | StoreKit, entitlement sync, background audio/location, App Link polish | Later |
+| 7 | Native download manager | Done |
+| 8 | StoreKit + Apple entitlements foundation | **This PR** |
+| 9+ | Server verification, ASSN, background audio/location, App Link polish | Later |
