@@ -56,6 +56,7 @@ import {
   LazyHowItWorksPage,
 } from './lazyRoutes.jsx'
 import { DocumentSeo } from '../seo/useDocumentSeo.js'
+import { shouldUseNativeAppEntry, NativeAppEntry } from '../native/index.js'
 
 function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
@@ -71,10 +72,18 @@ if (import.meta.env.DEV) {
 }
 
 // Apex chronowalk.com serves the public marketing homepage directly.
+// Capacitor native iOS uses the product-first NativeAppEntry instead.
 // Purchasers reach setup only via /access and post-purchase routes - not a
 // silent gate on `/`. Legacy `/landing` permanently redirects to `/`.
 function PublicLandingRoute() {
   return <LazyLandingPage />
+}
+
+function RootEntryRoute() {
+  if (shouldUseNativeAppEntry()) {
+    return <NativeAppEntry />
+  }
+  return <PublicLandingRoute />
 }
 
 function TourDebugBootstrap() {
@@ -128,7 +137,7 @@ function AppRoutes() {
   return (
     <V2ErrorBoundary title="Couldn’t load ChronoWalk">
       <Routes>
-        <Route path="/" element={<PublicLandingRoute />} />
+        <Route path="/" element={<RootEntryRoute />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/free-pantheon" element={<LazyFreePantheonPage />} />
         <Route path="/ancient-rome" element={<LazyAncientRomePage />} />

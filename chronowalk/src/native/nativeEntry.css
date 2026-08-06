@@ -1,0 +1,98 @@
+.cw-native-entry {
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: max(24px, env(safe-area-inset-top)) 22px max(32px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(212, 175, 55, 0.18), transparent 55%),
+    linear-gradient(180deg, #121218 0%, #0b0b0d 48%, #14121a 100%);
+  color: #faf6ef;
+}
+
+.cw-native-entry__brand {
+  margin-bottom: 28px;
+}
+
+.cw-native-entry__eyebrow {
+  margin: 12px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 239, 0.55);
+}
+
+.cw-native-entry__title {
+  margin: 8px 0 0;
+  font-size: clamp(1.85rem, 5vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: #faf6ef;
+}
+
+.cw-native-entry__body {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: rgba(250, 246, 239, 0.72);
+  max-width: 28rem;
+}
+
+.cw-native-entry__city-card {
+  margin: 8px 0 28px;
+  padding: 22px 20px;
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(26, 26, 31, 0.85);
+  border: 1px solid rgba(250, 246, 239, 0.08);
+}
+
+.cw-native-entry__offline {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: #d4af37;
+}
+
+.cw-native-entry__actions {
+  display: grid;
+  gap: 12px;
+}
+
+.cw-native-entry__status {
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(250, 246, 239, 0.7);
+}
+
+.cw-native-entry__muted {
+  color: rgba(250, 246, 239, 0.55);
+}
+
+.cw-native-products__list {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.cw-native-products__item {
+  padding: 18px 16px;
+  border-radius: 16px;
+  background: rgba(26, 26, 31, 0.9);
+  border: 1px solid rgba(250, 246, 239, 0.08);
+  display: grid;
+  gap: 12px;
+}
+
+.cw-native-products__name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.cw-native-products__price {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: rgba(250, 246, 239, 0.6);
+}

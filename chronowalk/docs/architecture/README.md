@@ -9,6 +9,7 @@
 | [CAPACITOR_IOS_SHELL.md](./CAPACITOR_IOS_SHELL.md) | Capacitor iOS shell + untracked ios/ safety (PR 6) |
 | [NATIVE_DOWNLOAD_MANAGER.md](./NATIVE_DOWNLOAD_MANAGER.md) | Versioned native/web download manager (PR 7) |
 | [STOREKIT_AND_APPLE_ENTITLEMENTS.md](./STOREKIT_AND_APPLE_ENTITLEMENTS.md) | StoreKit purchase foundation + Apple entitlements (PR 8) |
+| [NATIVE_APP_ENTRY.md](./NATIVE_APP_ENTRY.md) | Native iOS product-first app entry (vs web landing) |
 | [NEXT_PR_CITY_PACKAGE_GENERATOR.md](./NEXT_PR_CITY_PACKAGE_GENERATOR.md) | Historical intent note (generator landed; see CITY_PACKAGE_GENERATOR.md) |
 
 ## Roadmap status
@@ -22,5 +23,6 @@
 | 5 | Generic navigation + routing | Done |
 | 6 | Capacitor iOS shell foundation | Done |
 | 7 | Native download manager | Done |
-| 8 | StoreKit + Apple entitlements foundation | **This PR** |
-| 9+ | Server verification, ASSN, background audio/location, App Link polish | Later |
+| 8 | StoreKit + Apple entitlements foundation | Done |
+| 9 | Native app entry (product-first home) | **This PR** |
+| 10+ | Server verification, ASSN, background audio/location, App Link polish | Later |
