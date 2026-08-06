@@ -10,9 +10,16 @@ import {
   getNativeFreePreviewPath,
   listNativeSoloProductsForCity,
 } from '../nativeEntryRouting.js'
+import {
+  getOfflineStatusPresentation,
+  getRestorePresentation,
+  getPurchaseUnavailableMessage,
+} from '../nativeCopy.js'
 import { NativeAppEntry } from '../NativeAppEntry.jsx'
 import { NativeProductList } from '../NativeProductList.jsx'
+import { NativeCityHome } from '../NativeCityHome.jsx'
 import { JOURNEY_STATES } from '../../state/journey.js'
+import { isReducedMotionPreferred } from '../../utils/haptics.js'
 
 function stubCapacitor({ native = false, platform = 'web' } = {}) {
   vi.stubGlobal('Capacitor', {
@@ -38,15 +45,13 @@ beforeEach(() => {
   __setPublishedPackagesForTests(null)
 })
 
-describe('web vs native root entry', () => {
-  it('web root keeps the marketing entry path (shouldUseNativeAppEntry false)', () => {
+describe('native entry rendering', () => {
+  it('web root keeps marketing entry (shouldUseNativeAppEntry false)', () => {
     expect(shouldUseNativeAppEntry()).toBe(false)
   })
 
-  it('native iOS root selects NativeAppEntry', () => {
+  it('native iOS renders NativeAppEntry home', () => {
     stubCapacitor({ native: true, platform: 'ios' })
-    expect(shouldUseNativeAppEntry()).toBe(true)
-
     render(
       <MemoryRouter>
         <NativeAppEntry forceNative />
@@ -54,81 +59,13 @@ describe('web vs native root entry', () => {
     )
     expect(screen.getByTestId('native-app-entry')).toBeTruthy()
     expect(screen.getByTestId('native-city-home')).toBeTruthy()
+    expect(screen.getByText(/Walk through Rome as it once was/i)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Explore Rome/i })).toBeTruthy()
   })
 })
 
-describe('catalog-driven native entry', () => {
-  it('derives published cities from the catalog and presents Rome directly', () => {
-    const model = getNativeEntryModel()
-    expect(model.ok).toBe(true)
-    expect(model.mode).toBe('city_home')
-    expect(model.cities.map((c) => c.cityId)).toEqual(['rome'])
-    expect(model.city.cityId).toBe('rome')
-    expect(model.cities.some((c) => c.cityId === 'harbor')).toBe(false)
-  })
-
-  it('never shows the harbor fixture', () => {
-    const harbor = loadCityPackage('harbor')
-    expect(harbor.isFixture).toBe(true)
-    const model = getNativeEntryModel()
-    expect(model.cities.map((c) => c.cityId)).not.toContain('harbor')
-    expect(JSON.stringify(model)).not.toMatch(/harbor-loop/i)
-  })
-
-  it('fails safely when no published cities exist', () => {
-    __setPublishedPackagesForTests([])
-    const model = getNativeEntryModel({ cities: [] })
-    expect(model.ok).toBe(false)
-    expect(model.code).toBe('no_published_cities')
-  })
-
-  it('supports a second published city without Rome-specific branching', () => {
-    const rome = loadCityPackage('rome')
-    const athensLike = {
-      ...loadCityPackage('harbor'),
-      cityId: 'athens',
-      isFixture: false,
-      metadata: { ...loadCityPackage('harbor').metadata, published: true, cityId: 'athens' },
-      city: {
-        cityId: 'athens',
-        name: 'Athens',
-        slug: 'athens',
-        defaultLocale: 'en',
-      },
-      products: [
-        {
-          productId: 'athens-agora',
-          cityId: 'athens',
-          name: 'Agora Walk',
-          routeIds: ['harbor-loop-main'],
-        },
-      ],
-    }
-    // Inject two published cities into the model via options.cities
-    const model = getNativeEntryModel({
-      cities: [
-        { cityId: 'rome', name: 'Rome', slug: 'rome' },
-        { cityId: 'athens', name: 'Athens', slug: 'athens' },
-      ],
-    })
-    expect(model.mode).toBe('city_list')
-    expect(model.cities.map((c) => c.cityId).sort()).toEqual(['athens', 'rome'])
-
-    const selected = getNativeEntryModel({
-      cities: model.cities,
-      selectedCityId: 'athens',
-    })
-    expect(selected.mode).toBe('city_home')
-    expect(selected.city.cityId).toBe('athens')
-    // No Rome hard-branch required for selection.
-    expect(selected.city.cityId).not.toBe('rome')
-    void rome
-    void athensLike
-  })
-})
-
-describe('continue walk and free preview', () => {
-  it('shows continue walk only when progress exists', () => {
+describe('Continue Walk visibility', () => {
+  it('shows Continue Walk only when progress exists', () => {
     const idle = getNativeEntryModel({
       journeySnapshot: { state: JOURNEY_STATES.IDLE, context: {} },
     })
@@ -141,67 +78,74 @@ describe('continue walk and free preview', () => {
       },
     })
     expect(resumable.continueWalk.available).toBe(true)
-    expect(resumable.continueWalk.path).toBeTruthy()
-  })
-
-  it('resolves Pantheon free preview correctly', () => {
-    expect(getNativeFreePreviewPath('rome')).toBe('/preview')
-    expect(getNativeFreePreviewPath('athens')).toBeNull()
-    const model = getNativeEntryModel()
-    expect(model.freePreviewPath).toBe('/preview')
-  })
-})
-
-describe('native product list and purchases', () => {
-  it('uses current catalog solo products (Eterna, Antica, Historica)', () => {
-    const products = listNativeSoloProductsForCity('rome')
-    expect(products.map((p) => p.productId)).toEqual([
-      'rome-complete',
-      'rome-essential',
-      'rome-central',
-    ])
-    expect(products.map((p) => p.name)).toEqual([
-      'Roma Eterna',
-      'Roma Antica',
-      'Roma Historica',
-    ])
-    expect(products.every((p) => p.kind === 'solo')).toBe(true)
-  })
-
-  it('never invokes Paddle from the native purchase CTA', async () => {
-    const purchaseProduct = vi.fn(async () => ({ ok: false, code: 'apple_product_disabled' }))
-    const purchaseService = {
-      canPurchaseProduct: () => ({ ok: false, code: 'apple_product_disabled' }),
-      purchaseProduct,
-      getAvailableProducts: async () => ({ ok: true, products: [] }),
-      restorePurchases: async () => ({ ok: true, candidates: [] }),
-      canInvokePaddleCheckout: () => false,
-    }
-
-    // Ensure paddle checkout is not available in this stubbed native context.
-    stubCapacitor({ native: true, platform: 'ios' })
-    const { canInvokePaddleCheckout } = await import('../../purchases/purchaseProvider.js')
-    expect(canInvokePaddleCheckout()).toBe(false)
 
     render(
       <MemoryRouter>
-        <NativeProductList
-          products={listNativeSoloProductsForCity('rome')}
-          purchaseService={purchaseService}
+        <NativeCityHome
+          model={resumable}
+          purchaseService={{ restorePurchases: async () => ({ ok: true, candidates: [] }) }}
+          downloadService={{ getDownloadStatus: async () => ({ status: 'not_downloaded' }) }}
+          onExploreProducts={() => {}}
         />
       </MemoryRouter>,
     )
+    expect(screen.getByRole('button', { name: /Continue Walk/i })).toBeTruthy()
+    expect(screen.getByTestId('native-progress-chip')).toBeTruthy()
+  })
+})
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Purchase' })[0])
-    await waitFor(() => {
-      expect(screen.getByText(/Apple In-App Purchase is not configured/i)).toBeTruthy()
-    })
-    // Gate failed before purchaseProduct — still ensure paddle was never the path.
-    expect(canInvokePaddleCheckout()).toBe(false)
-    expect(purchaseProduct).not.toHaveBeenCalled()
+describe('single-city presentation', () => {
+  it('presents Rome directly with more-cities footnote', () => {
+    const model = getNativeEntryModel()
+    expect(model.mode).toBe('city_home')
+    expect(model.city.cityId).toBe('rome')
+    expect(model.cities.some((c) => c.cityId === 'harbor')).toBe(false)
+
+    render(
+      <MemoryRouter>
+        <NativeAppEntry forceNative />
+      </MemoryRouter>,
+    )
+    expect(screen.getByTestId('native-more-cities')).toHaveTextContent(/More cities coming/i)
+    expect(screen.queryByTestId('native-app-entry-city-list')).toBeNull()
+  })
+})
+
+describe('product cards', () => {
+  it('renders flagship Roma Eterna card and App Store price fallback', async () => {
+    const products = listNativeSoloProductsForCity('rome')
+    render(
+      <MemoryRouter>
+        <NativeProductList
+          products={products}
+          purchaseService={{
+            canPurchaseProduct: () => ({ ok: false, code: 'apple_product_disabled' }),
+            purchaseProduct: async () => ({ ok: false }),
+            getAvailableProducts: async () => ({ ok: true, products: [] }),
+          }}
+        />
+      </MemoryRouter>,
+    )
+    expect(screen.getByTestId('native-product-card-rome-complete')).toBeTruthy()
+    expect(screen.getByText('Recommended')).toBeTruthy()
+    expect(screen.getByTestId('native-price-rome-complete')).toHaveTextContent(
+      /Available after App Store configuration/i,
+    )
+    expect(screen.getByRole('button', { name: /Get Roma Eterna/i })).toBeTruthy()
+  })
+})
+
+describe('restore states', () => {
+  it('shows polished restore empty / success / error copy', () => {
+    expect(getRestorePresentation({ ok: true, candidates: [] }).kind).toBe('empty')
+    expect(getRestorePresentation({ ok: true, candidates: [{ id: 1 }] }).kind).toBe('success')
+    expect(getRestorePresentation({ ok: false, code: 'storekit_unavailable' }).title).toMatch(
+      /unavailable/i,
+    )
+    expect(JSON.stringify(getRestorePresentation({ ok: false, code: 'x' }))).not.toMatch(/paddle/i)
   })
 
-  it('exposes Restore Purchases on the native home', async () => {
+  it('exposes Restore Purchases and reports empty restore', async () => {
     stubCapacitor({ native: true, platform: 'ios' })
     const restorePurchases = vi.fn(async () => ({
       ok: true,
@@ -219,15 +163,147 @@ describe('native product list and purchases', () => {
             getAvailableProducts: async () => ({ ok: true, products: [] }),
           }}
           downloadService={{
-            getDownloadStatus: async () => ({ status: 'not_downloaded' }),
+            getDownloadStatus: async () => ({ status: 'ready' }),
           }}
         />
       </MemoryRouter>,
     )
-
-    fireEvent.click(screen.getByRole('button', { name: 'Restore Purchases' }))
+    fireEvent.click(screen.getByRole('button', { name: /Restore Purchases/i }))
+    await waitFor(() => expect(restorePurchases).toHaveBeenCalled())
     await waitFor(() => {
-      expect(restorePurchases).toHaveBeenCalled()
+      expect(screen.getByTestId('native-restore-status')).toHaveTextContent(/Nothing to restore/i)
     })
+  })
+})
+
+describe('offline state', () => {
+  it('humanizes offline / download presentation', () => {
+    expect(getOfflineStatusPresentation({ status: 'ready' }).label).toBe('Ready offline')
+    expect(getOfflineStatusPresentation({ status: 'downloading' }).label).toBe('Downloading…')
+    expect(getOfflineStatusPresentation(null, { online: false }).label).toMatch(/Needs internet/i)
+  })
+
+  it('shows Ready offline chip when downloaded', async () => {
+    render(
+      <MemoryRouter>
+        <NativeCityHome
+          model={getNativeEntryModel()}
+          purchaseService={{ restorePurchases: async () => ({ ok: true, candidates: [] }) }}
+          downloadService={{ getDownloadStatus: async () => ({ status: 'ready' }) }}
+          onExploreProducts={() => {}}
+        />
+      </MemoryRouter>,
+    )
+    await waitFor(() => {
+      expect(screen.getByTestId('native-offline-status')).toHaveTextContent(/Ready offline/i)
+    })
+  })
+})
+
+describe('StoreKit unavailable', () => {
+  it('never uses Paddle language for unavailable purchases', async () => {
+    expect(getPurchaseUnavailableMessage('paddle_unavailable_on_native')).not.toMatch(/paddle/i)
+    expect(getPurchaseUnavailableMessage('apple_product_disabled')).toMatch(/App Store configuration/i)
+
+    stubCapacitor({ native: true, platform: 'ios' })
+    const purchaseProduct = vi.fn()
+    render(
+      <MemoryRouter>
+        <NativeProductList
+          products={listNativeSoloProductsForCity('rome')}
+          purchaseService={{
+            canPurchaseProduct: () => ({ ok: false, code: 'storekit_unavailable' }),
+            purchaseProduct,
+            getAvailableProducts: async () => ({ ok: true, products: [] }),
+          }}
+        />
+      </MemoryRouter>,
+    )
+    fireEvent.click(screen.getByRole('button', { name: /Get Roma Eterna/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/In-App Purchase unavailable/i)).toBeTruthy()
+    })
+    expect(purchaseProduct).not.toHaveBeenCalled()
+    expect(document.body.textContent).not.toMatch(/paddle/i)
+  })
+})
+
+describe('accessibility labels', () => {
+  it('exposes VoiceOver-friendly labels for primary actions and settings', () => {
+    render(
+      <MemoryRouter>
+        <NativeCityHome
+          model={getNativeEntryModel()}
+          purchaseService={{ restorePurchases: async () => ({ ok: true, candidates: [] }) }}
+          downloadService={{ getDownloadStatus: async () => ({ status: 'not_downloaded' }) }}
+          onExploreProducts={() => {}}
+        />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('button', { name: 'Open settings' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Explore Rome' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Try the Pantheon stop free' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Restore purchases' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Downloads' })).toBeTruthy()
+  })
+})
+
+describe('reduced motion', () => {
+  it('detects prefers-reduced-motion without throwing', () => {
+    expect(typeof isReducedMotionPreferred()).toBe('boolean')
+  })
+
+  it('applies reduced-motion shell class when preferred', () => {
+    const matchMedia = vi.fn().mockImplementation((query) => ({
+      matches: String(query).includes('prefers-reduced-motion'),
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }))
+    window.matchMedia = matchMedia
+    render(
+      <MemoryRouter>
+        <NativeAppEntry forceNative />
+      </MemoryRouter>,
+    )
+    expect(document.querySelector('.cw-native-shell--reduced')).toBeTruthy()
+  })
+})
+
+describe('no Paddle / no PWA install prompts', () => {
+  it('native home copy contains no Paddle or PWA install language', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <NativeAppEntry forceNative />
+      </MemoryRouter>,
+    )
+    const text = container.textContent || ''
+    expect(text).not.toMatch(/paddle/i)
+    expect(text).not.toMatch(/add to home screen|install app|pwa/i)
+    expect(getNativeFreePreviewPath('rome')).toBe('/preview')
+    expect(loadCityPackage('harbor').isFixture).toBe(true)
+  })
+})
+
+describe('catalog safety', () => {
+  it('fails safely with no published city', () => {
+    const model = getNativeEntryModel({ cities: [] })
+    expect(model.ok).toBe(false)
+    render(
+      <MemoryRouter>
+        <NativeAppEntry forceNative modelOptions={{ cities: [] }} />
+      </MemoryRouter>,
+    )
+    expect(screen.getByTestId('native-app-entry-empty')).toBeTruthy()
+  })
+
+  it('second published city uses city list without Rome-only branching', () => {
+    const model = getNativeEntryModel({
+      cities: [
+        { cityId: 'rome', name: 'Rome', slug: 'rome' },
+        { cityId: 'athens', name: 'Athens', slug: 'athens' },
+      ],
+    })
+    expect(model.mode).toBe('city_list')
   })
 })

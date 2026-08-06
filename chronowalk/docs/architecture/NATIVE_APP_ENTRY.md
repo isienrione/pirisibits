@@ -81,10 +81,11 @@ line (“Available offline”, etc.). Does not change download manager internals
 Adding Athens requires a published city package + commerce city mapping.
 The entry model already switches to a city list when `cities.length > 1`.
 
-## What remains for later native UX
+## Visual polish
 
-- Richer city artwork / hero photography
-- Entitlement-aware “Owned” badges after server-verified Apple grants
-- Full PurchaseService migration of every CTA
-- Tab-bar integration polish for native-only screens
-- Offline download start from the home card
+Native UI is scoped under `.cw-native-shell` so web pages are untouched.
+First viewport: ChronoWalk brand, cinematic city hero, offline chip, Continue /
+Explore / Pantheon Free, Restore + Downloads, Settings sheet (Restore, Help,
+Legal, About). Humanized offline and restore copy; StoreKit prices when
+available; no Paddle language; haptics via existing `utils/haptics.js`;
+`prefers-reduced-motion` respected.
