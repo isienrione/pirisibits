@@ -149,6 +149,54 @@ describe('product cards', () => {
     )
     expect(screen.getByRole('button', { name: /Get Roma Eterna/i })).toBeTruthy()
   })
+
+  it('leaves Working… after purchase timeout/failure', async () => {
+    stubCapacitor({ native: true, platform: 'ios' })
+    const products = listNativeSoloProductsForCity('rome')
+    let resolvePurchase
+    const purchaseProduct = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          resolvePurchase = resolve
+        }),
+    )
+
+    render(
+      <MemoryRouter>
+        <NativeProductList
+          products={products}
+          purchaseService={{
+            canPurchaseProduct: () => ({ ok: true, provider: 'storekit' }),
+            purchaseProduct,
+            getAvailableProducts: async () => ({
+              ok: true,
+              products: [
+                {
+                  productId: 'rome-complete',
+                  localizedPriceString: '€14.99',
+                },
+              ],
+            }),
+          }}
+        />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByTestId('native-buy-rome-complete'))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('native-buy-rome-complete')).toHaveTextContent(/Working/i)
+    })
+
+    resolvePurchase({ ok: false, code: 'storekit_request_timeout' })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('native-buy-rome-complete')).not.toHaveTextContent(/Working/i)
+    })
+    expect(
+      screen.getByText(getPurchaseUnavailableMessage('storekit_request_timeout')),
+    ).toBeTruthy()
+  })
 })
 
 describe('restore states', () => {
