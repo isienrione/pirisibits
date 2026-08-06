@@ -127,6 +127,49 @@ Current implementation always returns `status: 'not_configured'` /
 
 Do not invent anonymous permanent cross-device matching.
 
+## Local Xcode StoreKit testing (`VITE_STOREKIT_MODE=local`)
+
+Apple mappings stay `enabled: false` / `environment: 'unconfigured'` in source.
+Do **not** flip those flags for day-to-day device testing.
+
+Instead, use a **build-time** local mode that enables only the three solo Rome
+SKUs via `isStoreKitMappingEnabled()`:
+
+| Internal id | Local mode | Couple / Family |
+|-------------|------------|-----------------|
+| `rome-central` | enabled for purchase / listing | — |
+| `rome-essential` | enabled | — |
+| `rome-complete` | enabled | — |
+| `rome-couple` / `rome-family` | still deferred / disabled | unchanged |
+
+### Exact local setup
+
+1. Create an **untracked** `.env.local` in `chronowalk/` (gitignores `.env.*`):
+
+   ```bash
+   echo 'VITE_STOREKIT_MODE=local' > .env.local
+   ```
+
+2. Rebuild and sync Capacitor iOS so the flag is baked into `dist/`:
+
+   ```bash
+   npm run ios:sync
+   ```
+
+3. In Xcode: scheme → **Run** → **Options** → StoreKit Configuration →
+   select `ChronoWalkLocal.storekit`
+   (`native-review/ios/ChronoWalkLocal.storekit`).
+
+4. **Product → Clean Build Folder**, then Run on a simulator or device.
+
+5. Confirm product cards show **StoreKit localized title + price** (not
+   “Available after App Store configuration”), and purchase / restore use
+   StoreKit — never Paddle on native iOS.
+
+Remove `.env.local` (or unset the flag) and re-run `npm run ios:sync` before any
+production / TestFlight build so Apple stays disabled until App Store Connect
+products are intentionally enabled.
+
 ## Xcode / App Store Connect (future, manual)
 
 1. In Xcode: Signing & Capabilities → add **In-App Purchase**.
@@ -135,7 +178,8 @@ Do not invent anonymous permanent cross-device matching.
 3. Create non-consumable products in App Store Connect matching the Apple ids above.
 4. Use sandbox / TestFlight Apple IDs for purchase + restore tests.
 5. Configure signing / provisioning for the ChronoWalk app id.
-6. Flip mapping `enabled: true` only after products exist and sandbox works.
+6. Flip mapping `enabled: true` only after products exist and sandbox works
+   (or keep using `VITE_STOREKIT_MODE=local` for local-only testing).
 7. Deploy server verification + ASSN before treating grants as permanent.
 
 ## Rollback

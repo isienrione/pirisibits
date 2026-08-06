@@ -9,6 +9,7 @@ import {
   getStoreKitMapping,
   listApplePurchasableMappings,
   isApplePurchaseDeferred,
+  isStoreKitMappingEnabled,
   APPLE_PRODUCT_IDS,
 } from './storeKitProductMappings.js'
 import { normalizeAppleTransaction, isLocalAppleCandidate } from './transactionNormalizer.js'
@@ -58,7 +59,7 @@ export function createStoreKitPurchaseAdapter(options = {}) {
     if (options.treatMappingsEnabled) {
       return !isApplePurchaseDeferred(mapping.productId)
     }
-    return mapping.enabled === true && !isApplePurchaseDeferred(mapping.productId)
+    return isStoreKitMappingEnabled(mapping)
   }
 
   return {
