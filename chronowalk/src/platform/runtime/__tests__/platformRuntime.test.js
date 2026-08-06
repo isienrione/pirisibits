@@ -12,6 +12,8 @@ import {
   canRegisterServiceWorker,
   canOfferPwaInstall,
   canUseWebCheckout,
+  canUsePaddleCheckout,
+  canUseStoreKitPurchase,
   canUseBrowserShellRecovery,
 } from '../index.js'
 import { registerAppServiceWorker } from '../../../pwa/registerAppServiceWorker.js'
@@ -113,12 +115,17 @@ describe('browser-only capabilities', () => {
     expect(getAppCapabilities().pwaInstall).toBe(false)
     expect(getAppCapabilities().addToHomeScreenHints).toBe(false)
     expect(canUseWebCheckout()).toBe(false)
+    expect(canUsePaddleCheckout()).toBe(false)
+    expect(canUseStoreKitPurchase()).toBe(true)
+    expect(getAppCapabilities().storeKitPurchase).toBe(true)
     expect(canUseBrowserShellRecovery()).toBe(false)
   })
 
   it('keeps web checkout and install available on web', () => {
     expect(canOfferPwaInstall()).toBe(true)
     expect(canUseWebCheckout()).toBe(true)
+    expect(canUsePaddleCheckout()).toBe(true)
+    expect(canUseStoreKitPurchase()).toBe(false)
     expect(canUseBrowserShellRecovery()).toBe(true)
   })
 })

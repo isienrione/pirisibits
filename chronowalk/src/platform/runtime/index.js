@@ -12,6 +12,8 @@ export {
   canRegisterServiceWorker,
   canOfferPwaInstall,
   canUseWebCheckout,
+  canUsePaddleCheckout,
+  canUseStoreKitPurchase,
   canUseBrowserShellRecovery,
 } from './capabilities.js'
 

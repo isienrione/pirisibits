@@ -14,6 +14,7 @@ import {
   resolveCheckoutMode,
   resolvePaddlePriceId,
 } from './paddle.js'
+import { canUseWebCheckout } from '../platform/runtime/index.js'
 
 const TIER_BY_ID = Object.fromEntries(
   [...ROME_TIERS, ...ROME_BUNDLES].map((offer) => [offer.id, offer]),
@@ -70,6 +71,12 @@ export function buildTierCheckoutUrl() {
  * >}
  */
 export async function openCheckout({ tierId, source = 'app', mode, email, consentVersion } = {}) {
+  // Native iOS must use StoreKit — never open Paddle inside the Capacitor shell.
+  // Web/PWA behavior is unchanged when canUseWebCheckout() is true.
+  if (!canUseWebCheckout()) {
+    return { ok: false, reason: 'paddle_unavailable_on_native' }
+  }
+
   const config = await loadAppConfig()
 
   if (tierId && !isCanonicalCheckoutProduct(tierId)) {
