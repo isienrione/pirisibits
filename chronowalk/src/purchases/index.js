@@ -46,3 +46,16 @@ export {
   getPurchaseService,
   __resetPurchaseServiceForTests,
 } from './purchaseService.js'
+
+export {
+  LOCAL_STOREKIT_ENTITLEMENTS_KEY,
+  isLocalStoreKitEntitlementModeAllowed,
+  canActivateLocalStoreKitEntitlement,
+  activateLocalStoreKitEntitlement,
+  activateLocalStoreKitEntitlementsFromRestore,
+  getLocalStoreKitEntitlements,
+  hasLocalStoreKitEntitlement,
+  hasActiveLocalStoreKitAccess,
+  clearLocalStoreKitEntitlements,
+  openTourLabelForProduct,
+} from './localStoreKitEntitlements.js'

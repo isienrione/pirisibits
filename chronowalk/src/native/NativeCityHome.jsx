@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { getDownloadService } from '../downloads/index.js'
-import { getPurchaseService } from '../purchases/index.js'
+import {
+  getPurchaseService,
+  activateLocalStoreKitEntitlementsFromRestore,
+} from '../purchases/index.js'
 import { getNativeEntryModel } from './nativeEntryRouting.js'
 import {
   getNativeCityHeroSrc,
@@ -107,11 +110,22 @@ export function NativeCityHome({
     setRestoreResult(null)
     try {
       const result = await purchases.restorePurchases()
-      setRestoreResult(result)
-      if (result?.ok && (result.candidates?.length || result.entitlements?.length)) {
+      const local = activateLocalStoreKitEntitlementsFromRestore(result)
+      if (local.ok) {
+        setRestoreResult({
+          ...result,
+          ok: true,
+          localActivated: true,
+          activated: local.activated,
+        })
         nativeSuccessHaptic()
-      } else if (!result?.ok) {
-        nativeWarningHaptic()
+      } else {
+        setRestoreResult(result)
+        if (result?.ok && (result.candidates?.length || result.entitlements?.length)) {
+          nativeSuccessHaptic()
+        } else if (!result?.ok) {
+          nativeWarningHaptic()
+        }
       }
     } catch {
       setRestoreResult({ ok: false, code: 'restore_failed' })

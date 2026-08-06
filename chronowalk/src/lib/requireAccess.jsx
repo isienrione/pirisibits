@@ -5,6 +5,7 @@ import { validateDeviceAccess, readDeviceCredential } from './access.js'
 import { hasValidLocalAccess, readAccessEntitlement, writeAccessEntitlement } from './accessSession.js'
 import { consumeAccessHandoff, syncAccessHandoff } from './accessHandoff.js'
 import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
+import { hasActiveLocalStoreKitAccess } from '../purchases/localStoreKitEntitlements.js'
 
 /**
  * Gate paid tour surfaces.
@@ -17,7 +18,11 @@ import { claimFamilySeat, readLastBundleInviteCode } from './familyWalk.js'
  */
 export function RequireAccess({ children, redirectTo = '/access' }) {
   const [allowed, setAllowed] = useState(
-    () => hasValidLocalAccess() || Boolean(readDeviceCredential()) || consumeAccessHandoff(),
+    () =>
+      hasValidLocalAccess() ||
+      hasActiveLocalStoreKitAccess() ||
+      Boolean(readDeviceCredential()) ||
+      consumeAccessHandoff(),
   )
   const [checking, setChecking] = useState(true)
 
@@ -28,10 +33,19 @@ export function RequireAccess({ children, redirectTo = '/access' }) {
       consumeAccessHandoff()
       let credential = readDeviceCredential()
 
+      // Local Xcode StoreKit test access — no device credential required.
+      if (!credential && hasActiveLocalStoreKitAccess()) {
+        if (!cancelled) {
+          setAllowed(true)
+          setChecking(false)
+        }
+        return
+      }
+
       // Home Screen / shortcut relaunches might not preserve URL parameters.
       // If we've previously seen an `/invite?code=...` flow, try to redeem
       // that last code automatically (only online) before bouncing to /access.
-      if (!credential && !hasValidLocalAccess()) {
+      if (!credential && !hasValidLocalAccess() && !hasActiveLocalStoreKitAccess()) {
         if (typeof navigator !== 'undefined' && navigator.onLine !== false) {
           const inviteCode = readLastBundleInviteCode()
           if (inviteCode) {

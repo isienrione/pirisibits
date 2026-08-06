@@ -1,5 +1,9 @@
-import { useCallback, useEffect, useId, useRef } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  clearLocalStoreKitEntitlements,
+  isLocalStoreKitEntitlementModeAllowed,
+} from '../purchases/index.js'
 import { NativeButton } from './NativeButton.jsx'
 import { nativeSelectionHaptic } from './nativeHaptics.js'
 
@@ -16,9 +20,14 @@ export function NativeSettings({ open, onClose, onRestore }) {
   const navigate = useNavigate()
   const titleId = useId()
   const closeRef = useRef(null)
+  const [resetNotice, setResetNotice] = useState(null)
+  const showLocalReset = isLocalStoreKitEntitlementModeAllowed()
 
   useEffect(() => {
-    if (!open) return undefined
+    if (!open) {
+      setResetNotice(null)
+      return undefined
+    }
     closeRef.current?.focus?.()
     const onKey = (event) => {
       if (event.key === 'Escape') onClose()
@@ -35,6 +44,12 @@ export function NativeSettings({ open, onClose, onRestore }) {
     },
     [navigate, onClose],
   )
+
+  const handleResetLocalAccess = useCallback(() => {
+    nativeSelectionHaptic()
+    clearLocalStoreKitEntitlements()
+    setResetNotice('StoreKit test access cleared.')
+  }, [])
 
   if (!open) return null
 
@@ -84,6 +99,24 @@ export function NativeSettings({ open, onClose, onRestore }) {
               Restore purchases
             </NativeButton>
           </li>
+          {showLocalReset ? (
+            <li>
+              <NativeButton
+                variant="ghost"
+                className="cw-native-settings__row"
+                testId="native-settings-reset-storekit"
+                aria-label="Reset StoreKit test access"
+                onClick={handleResetLocalAccess}
+              >
+                Reset StoreKit test access
+              </NativeButton>
+              {resetNotice ? (
+                <p className="cw-native-status__detail" role="status" aria-live="polite">
+                  {resetNotice}
+                </p>
+              ) : null}
+            </li>
+          ) : null}
           <li>
             <NativeButton
               variant="ghost"

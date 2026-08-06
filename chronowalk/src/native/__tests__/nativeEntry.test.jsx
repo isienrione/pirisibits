@@ -38,6 +38,7 @@ function stubCapacitor({ native = false, platform = 'web' } = {}) {
 
 beforeEach(() => {
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   if (typeof window !== 'undefined') {
     delete window.Capacitor
   }
@@ -197,12 +198,64 @@ describe('product cards', () => {
       screen.getByText(getPurchaseUnavailableMessage('storekit_request_timeout')),
     ).toBeTruthy()
   })
+
+  it('14. successful local purchase exits Working and exposes Open Tour', async () => {
+    vi.stubEnv('VITE_STOREKIT_MODE', 'local')
+    stubCapacitor({ native: true, platform: 'ios' })
+    window.localStorage.clear()
+
+    const { normalizeAppleTransaction } = await import('../../purchases/transactionNormalizer.js')
+    const entitlement = normalizeAppleTransaction({
+      productId: 'com.chronowalk.city.rome.eterna',
+      transactionId: 'txn_ui_local',
+      purchaseDate: '2026-08-06T00:00:00.000Z',
+    })
+
+    const products = listNativeSoloProductsForCity('rome')
+    const purchaseProduct = vi.fn(async () => ({
+      ok: true,
+      provider: 'apple',
+      entitlement,
+      serverVerified: false,
+      localCandidate: true,
+    }))
+
+    render(
+      <MemoryRouter>
+        <NativeProductList
+          products={products}
+          purchaseService={{
+            canPurchaseProduct: () => ({ ok: true, provider: 'storekit' }),
+            purchaseProduct,
+            getAvailableProducts: async () => ({
+              ok: true,
+              products: [{ productId: 'rome-complete', localizedPriceString: '€14.99' }],
+            }),
+          }}
+        />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByTestId('native-buy-rome-complete'))
+
+    await waitFor(() => {
+      expect(screen.getByText(/Purchase complete for local testing/i)).toBeTruthy()
+    })
+    expect(screen.queryByText(/Working/i)).toBeNull()
+    expect(screen.getByTestId('native-open-tour-rome-complete')).toHaveTextContent(
+      /Open Roma Eterna/i,
+    )
+    expect(screen.queryByTestId('native-buy-rome-complete')).toBeNull()
+  })
 })
 
 describe('restore states', () => {
   it('shows polished restore empty / success / error copy', () => {
     expect(getRestorePresentation({ ok: true, candidates: [] }).kind).toBe('empty')
     expect(getRestorePresentation({ ok: true, candidates: [{ id: 1 }] }).kind).toBe('success')
+    expect(getRestorePresentation({ ok: true, localActivated: true }).detail).toMatch(
+      /Local StoreKit test access/i,
+    )
     expect(getRestorePresentation({ ok: false, code: 'storekit_unavailable' }).title).toMatch(
       /unavailable/i,
     )
@@ -369,5 +422,89 @@ describe('catalog safety', () => {
       ],
     })
     expect(model.mode).toBe('city_list')
+  })
+})
+
+describe('local StoreKit settings reset', () => {
+  it('Reset StoreKit test access appears only in local native mode', async () => {
+    vi.stubEnv('VITE_STOREKIT_MODE', 'local')
+    stubCapacitor({ native: true, platform: 'ios' })
+    window.localStorage.clear()
+
+    const { activateLocalStoreKitEntitlement } = await import(
+      '../../purchases/localStoreKitEntitlements.js'
+    )
+    const { normalizeAppleTransaction } = await import('../../purchases/transactionNormalizer.js')
+    activateLocalStoreKitEntitlement({
+      ok: true,
+      provider: 'apple',
+      localCandidate: true,
+      serverVerified: false,
+      entitlement: normalizeAppleTransaction({
+        productId: 'com.chronowalk.city.rome.eterna',
+        transactionId: 'txn_settings',
+      }),
+    })
+
+    render(
+      <MemoryRouter>
+        <NativeCityHome
+          model={getNativeEntryModel()}
+          purchaseService={{ restorePurchases: async () => ({ ok: true, candidates: [] }) }}
+          downloadService={{ getDownloadStatus: async () => ({ status: 'not_downloaded' }) }}
+          onExploreProducts={() => {}}
+        />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open settings' }))
+    const reset = await screen.findByTestId('native-settings-reset-storekit')
+    expect(reset).toHaveTextContent(/Reset StoreKit test access/i)
+    fireEvent.click(reset)
+    await waitFor(() => {
+      expect(screen.getByText(/StoreKit test access cleared/i)).toBeTruthy()
+    })
+  })
+
+  it('does not show Reset StoreKit test access outside local mode', () => {
+    stubCapacitor({ native: true, platform: 'ios' })
+    render(
+      <MemoryRouter>
+        <NativeCityHome
+          model={getNativeEntryModel()}
+          purchaseService={{ restorePurchases: async () => ({ ok: true, candidates: [] }) }}
+          downloadService={{ getDownloadStatus: async () => ({ status: 'not_downloaded' }) }}
+          onExploreProducts={() => {}}
+        />
+      </MemoryRouter>,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Open settings' }))
+    expect(screen.queryByTestId('native-settings-reset-storekit')).toBeNull()
+  })
+})
+
+describe('no temporary CW TRACE logging', () => {
+  it('15. source tree has no [CW TRACE] markers', async () => {
+    const { readdirSync, readFileSync, statSync } = await import('node:fs')
+    const { join } = await import('node:path')
+    const roots = ['src/purchases', 'src/native', 'src/lib']
+    /** @type {string[]} */
+    const hits = []
+
+    function walk(dir) {
+      for (const name of readdirSync(dir)) {
+        if (name === '__tests__' || name === 'node_modules') continue
+        const path = join(dir, name)
+        const st = statSync(path)
+        if (st.isDirectory()) walk(path)
+        else if (/\.(js|jsx|ts|tsx)$/.test(name)) {
+          const text = readFileSync(path, 'utf8')
+          if (text.includes('[CW TRACE]')) hits.push(path)
+        }
+      }
+    }
+
+    for (const root of roots) walk(root)
+    expect(hits).toEqual([])
   })
 })
