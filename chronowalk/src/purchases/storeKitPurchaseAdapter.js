@@ -1,8 +1,9 @@
 /**
  * StoreKit purchase adapter via @capgo/native-purchases (StoreKit 2).
  *
- * Plugin is loaded lazily so the web bundle never initializes billing.
- * Injectable `nativePurchases` supports Vitest without Xcode.
+ * Lazy-loads NativePurchases + PURCHASE_TYPE together. Non-consumable Rome
+ * products always use PURCHASE_TYPE.INAPP and quantity: 1 per Capgo docs.
+ * Plugin is not initialized on web (gated by canUseStoreKit).
  */
 
 import {
@@ -10,6 +11,7 @@ import {
   listApplePurchasableMappings,
   isApplePurchaseDeferred,
   isStoreKitMappingEnabled,
+  isStoreKitLocalMode,
   APPLE_PRODUCT_IDS,
 } from './storeKitProductMappings.js'
 import { normalizeAppleTransaction, isLocalAppleCandidate } from './transactionNormalizer.js'
@@ -17,41 +19,160 @@ import { processRestoredTransactions } from './restorePurchases.js'
 import { canUseStoreKitPurchase } from '../platform/runtime/index.js'
 
 export const STOREKIT_PLUGIN_ID = '@capgo/native-purchases'
+export const STOREKIT_REQUEST_TIMEOUT_MS = 20_000
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /**
- * @typedef {Object} NativePurchasesBridge
- * @property {() => Promise<{ isBillingSupported: boolean } | boolean>} [isBillingSupported]
- * @property {(opts: { productIdentifiers: string[] }) => Promise<{ products?: object[] } | object[]>} [getProducts]
- * @property {(opts: object) => Promise<object>} [purchaseProduct]
- * @property {() => Promise<object[] | { purchases?: object[] }>} [restorePurchases]
- * @property {() => Promise<object[] | { purchases?: object[] }>} [getPurchases]
+ * @param {unknown} token
+ * @returns {string | undefined}
  */
+function sanitizeAppAccountToken(token) {
+  if (typeof token !== 'string') return undefined
+  const trimmed = token.trim()
+  if (!trimmed || !UUID_RE.test(trimmed)) return undefined
+  return trimmed
+}
+
+/**
+ * @param {string} message
+ * @param {Record<string, unknown>} [details]
+ */
+function logStoreKitLocal(message, details) {
+  if (!isStoreKitLocalMode()) return
+  if (details && Object.keys(details).length > 0) {
+    console.info(`[StoreKit local] ${message}`, details)
+  } else {
+    console.info(`[StoreKit local] ${message}`)
+  }
+}
+
+/**
+ * @template T
+ * @param {Promise<T>} promise
+ * @param {{ timeoutMs?: number, label?: string }} [options]
+ * @returns {Promise<T>}
+ */
+async function withStoreKitTimeout(promise, options = {}) {
+  const timeoutMs = options.timeoutMs ?? STOREKIT_REQUEST_TIMEOUT_MS
+  let timer
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          const err = new Error(
+            options.label
+              ? `StoreKit ${options.label} timed out after ${timeoutMs}ms`
+              : `StoreKit request timed out after ${timeoutMs}ms`,
+          )
+          err.code = 'storekit_request_timeout'
+          reject(err)
+        }, timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timer) clearTimeout(timer)
+  }
+}
+
+/**
+ * @param {unknown} err
+ * @returns {string}
+ */
+function classifyStoreKitPurchaseError(err) {
+  const code = String(err?.code ?? '').toLowerCase()
+  const message = String(err?.message ?? '').toLowerCase()
+  if (code === 'storekit_request_timeout' || message.includes('timed out')) {
+    return 'storekit_request_timeout'
+  }
+  if (
+    code === 'product_not_returned' ||
+    message.includes('product not found') ||
+    message.includes('cannot find product')
+  ) {
+    return 'product_not_returned'
+  }
+  if (
+    code.includes('cancel') ||
+    message.includes('cancel') ||
+    code === 'user_cancelled' ||
+    code === 'purchase_cancelled'
+  ) {
+    return 'purchase_cancelled'
+  }
+  if (
+    code === 'storekit_plugin_missing' ||
+    code === 'storekit_capability_missing' ||
+    code === 'storekit_unavailable'
+  ) {
+    return code
+  }
+  return 'storekit_purchase_failed'
+}
 
 /**
  * @param {object} [options]
- * @param {NativePurchasesBridge} [options.nativePurchases]
+ * @param {object} [options.nativePurchases]
+ * @param {{ INAPP: string, SUBS?: string }} [options.purchaseType]
+ * @param {() => Promise<object>} [options.loadPlugin]
  * @param {() => boolean} [options.canUseStoreKit]
- * @param {boolean} [options.treatMappingsEnabled] Test override to enable disabled mappings
+ * @param {boolean} [options.treatMappingsEnabled]
+ * @param {number} [options.requestTimeoutMs]
  */
 export function createStoreKitPurchaseAdapter(options = {}) {
   const canUse =
     options.canUseStoreKit ?? (() => canUseStoreKitPurchase())
-  /** @type {Promise<NativePurchasesBridge> | null} */
-  let pluginPromise = null
+  const timeoutMs = options.requestTimeoutMs ?? STOREKIT_REQUEST_TIMEOUT_MS
 
-  async function getPlugin() {
-    if (options.nativePurchases) return options.nativePurchases
-    if (!pluginPromise) {
-      pluginPromise = import('@capgo/native-purchases')
-        .then((mod) => mod.NativePurchases || mod.default || mod)
-        .catch((err) => {
+  /** @type {Promise<{ NativePurchases: object, PURCHASE_TYPE: { INAPP: string, SUBS?: string } }> | null} */
+  let pluginModulePromise = null
+
+  /**
+   * Lazy-load both NativePurchases and PURCHASE_TYPE from @capgo/native-purchases.
+   * Never called on web because callers gate on canUse() first.
+   */
+  async function loadPluginModule() {
+    if (pluginModulePromise) return pluginModulePromise
+
+    pluginModulePromise = (async () => {
+      if (options.nativePurchases) {
+        return {
+          NativePurchases: options.nativePurchases,
+          PURCHASE_TYPE: options.purchaseType ?? { INAPP: 'inapp', SUBS: 'subs' },
+        }
+      }
+
+      const load = options.loadPlugin ?? (() => import('@capgo/native-purchases'))
+      try {
+        const mod = await load()
+        const NativePurchases =
+          mod.NativePurchases || mod.default?.NativePurchases || mod.default
+        const PURCHASE_TYPE = mod.PURCHASE_TYPE || mod.default?.PURCHASE_TYPE
+
+        if (!NativePurchases || typeof NativePurchases !== 'object') {
           const error = new Error('StoreKit plugin unavailable')
           error.code = 'storekit_plugin_missing'
-          error.cause = err
           throw error
-        })
-    }
-    return pluginPromise
+        }
+        if (!PURCHASE_TYPE || PURCHASE_TYPE.INAPP == null) {
+          const error = new Error('StoreKit PURCHASE_TYPE unavailable')
+          error.code = 'storekit_plugin_missing'
+          throw error
+        }
+
+        return { NativePurchases, PURCHASE_TYPE }
+      } catch (err) {
+        if (err?.code === 'storekit_plugin_missing') throw err
+        const error = new Error('StoreKit plugin unavailable')
+        error.code = 'storekit_plugin_missing'
+        error.cause = err
+        throw error
+      }
+    })()
+
+    return pluginModulePromise
   }
 
   function mappingEnabled(mapping) {
@@ -60,6 +181,10 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       return !isApplePurchaseDeferred(mapping.productId)
     }
     return isStoreKitMappingEnabled(mapping)
+  }
+
+  if (isStoreKitLocalMode()) {
+    logStoreKitLocal('StoreKit local mode active')
   }
 
   return {
@@ -71,9 +196,9 @@ export function createStoreKitPurchaseAdapter(options = {}) {
     async isAvailable() {
       if (!canUse()) return false
       try {
-        const plugin = await getPlugin()
-        if (typeof plugin.isBillingSupported === 'function') {
-          const status = await plugin.isBillingSupported()
+        const { NativePurchases } = await loadPluginModule()
+        if (typeof NativePurchases.isBillingSupported === 'function') {
+          const status = await NativePurchases.isBillingSupported()
           if (typeof status === 'boolean') return status
           return Boolean(status?.isBillingSupported ?? status?.supported)
         }
@@ -98,16 +223,35 @@ export function createStoreKitPurchaseAdapter(options = {}) {
 
       let pluginProducts = []
       try {
-        const plugin = await getPlugin()
-        if (typeof plugin.getProducts === 'function') {
+        const { NativePurchases, PURCHASE_TYPE } = await loadPluginModule()
+        if (typeof NativePurchases.getProducts === 'function') {
           const appleIds = mappings.map((m) => m.appleProductId)
-          const result = await plugin.getProducts({ productIdentifiers: appleIds })
+          logStoreKitLocal('requested Apple product IDs', {
+            appleIds,
+            productType: PURCHASE_TYPE.INAPP,
+          })
+
+          // Documented Capgo StoreKit 2 API for one-time (non-consumable) products.
+          const result = await withStoreKitTimeout(
+            NativePurchases.getProducts({
+              productIdentifiers: appleIds,
+              productType: PURCHASE_TYPE.INAPP,
+            }),
+            { timeoutMs, label: 'getProducts' },
+          )
+
           pluginProducts = Array.isArray(result) ? result : result?.products ?? []
+          logStoreKitLocal('number of products returned', { count: pluginProducts.length })
         }
       } catch (err) {
+        const code = classifyStoreKitPurchaseError(err)
+        logStoreKitLocal('controlled error code', { code, phase: 'getProducts' })
         return {
           ok: false,
-          code: err?.code || 'storekit_capability_missing',
+          code:
+            code === 'storekit_purchase_failed'
+              ? err?.code || 'storekit_capability_missing'
+              : code,
           products: [],
           message: err?.message || 'StoreKit products unavailable',
         }
@@ -125,7 +269,6 @@ export function createStoreKitPurchaseAdapter(options = {}) {
           contentProductId: mapping.contentProductId,
           provider: 'apple',
           enabled: mappingEnabled(mapping),
-          // Localized price MUST come from StoreKit when present — never replace with hard-coded catalog cents.
           localizedPriceString: store?.priceString || store?.localizedPrice || null,
           currencyCode: store?.currencyCode || null,
           title: store?.title || mapping.displayName || mapping.productId,
@@ -179,17 +322,36 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       }
 
       try {
-        const plugin = await getPlugin()
-        if (typeof plugin.purchaseProduct !== 'function') {
+        const { NativePurchases, PURCHASE_TYPE } = await loadPluginModule()
+        if (typeof NativePurchases.purchaseProduct !== 'function') {
           const err = new Error('StoreKit purchaseProduct missing')
           err.code = 'storekit_capability_missing'
           throw err
         }
 
-        const raw = await plugin.purchaseProduct({
+        /** @type {Record<string, unknown>} */
+        const purchaseRequest = {
           productIdentifier: mapping.appleProductId,
-          appAccountToken: purchaseOptions.appAccountToken,
+          productType: PURCHASE_TYPE.INAPP,
+          quantity: 1,
+        }
+        const appAccountToken = sanitizeAppAccountToken(purchaseOptions.appAccountToken)
+        if (appAccountToken) {
+          purchaseRequest.appAccountToken = appAccountToken
+        }
+
+        logStoreKitLocal('purchase started', {
+          appleProductId: mapping.appleProductId,
+          productType: purchaseRequest.productType,
+          quantity: purchaseRequest.quantity,
+          hasAppAccountToken: Boolean(appAccountToken),
         })
+
+        // Documented Capgo StoreKit 2 API for one-time (non-consumable) products.
+        const raw = await withStoreKitTimeout(
+          NativePurchases.purchaseProduct(purchaseRequest),
+          { timeoutMs, label: 'purchaseProduct' },
+        )
 
         const entitlement = normalizeAppleTransaction(
           {
@@ -198,25 +360,32 @@ export function createStoreKitPurchaseAdapter(options = {}) {
             transactionId: raw?.transactionId || raw?.transactionIdentifier,
             originalTransactionId: raw?.originalTransactionId,
             jwsRepresentation: raw?.jwsRepresentation,
-            appAccountToken: purchaseOptions.appAccountToken,
+            appAccountToken,
             purchaseDate: raw?.purchaseDate || raw?.transactionDate,
           },
           { subjectId: purchaseOptions.subjectId },
         )
+
+        logStoreKitLocal('purchase resolved', {
+          ok: Boolean(entitlement),
+          productId,
+        })
 
         return {
           ok: Boolean(entitlement),
           code: entitlement ? null : 'normalize_failed',
           provider: 'apple',
           entitlement,
-          // Explicit: local StoreKit success ≠ server-verified permanent access.
           serverVerified: false,
           localCandidate: entitlement ? isLocalAppleCandidate(entitlement) : false,
         }
       } catch (err) {
+        const code = classifyStoreKitPurchaseError(err)
+        logStoreKitLocal('purchase failed', { code })
+        logStoreKitLocal('controlled error code', { code, phase: 'purchaseProduct' })
         return {
           ok: false,
-          code: err?.code || 'storekit_purchase_failed',
+          code,
           provider: 'apple',
           serverVerified: false,
           message: err?.message || 'StoreKit purchase failed',
@@ -236,13 +405,19 @@ export function createStoreKitPurchaseAdapter(options = {}) {
       }
 
       try {
-        const plugin = await getPlugin()
+        const { NativePurchases } = await loadPluginModule()
         let raw = []
-        if (typeof plugin.restorePurchases === 'function') {
-          const result = await plugin.restorePurchases()
+        if (typeof NativePurchases.restorePurchases === 'function') {
+          const result = await withStoreKitTimeout(NativePurchases.restorePurchases(), {
+            timeoutMs,
+            label: 'restorePurchases',
+          })
           raw = Array.isArray(result) ? result : result?.purchases || result?.transactions || []
-        } else if (typeof plugin.getPurchases === 'function') {
-          const result = await plugin.getPurchases()
+        } else if (typeof NativePurchases.getPurchases === 'function') {
+          const result = await withStoreKitTimeout(NativePurchases.getPurchases(), {
+            timeoutMs,
+            label: 'getPurchases',
+          })
           raw = Array.isArray(result) ? result : result?.purchases || []
         } else {
           const err = new Error('StoreKit restore unavailable')
@@ -262,9 +437,13 @@ export function createStoreKitPurchaseAdapter(options = {}) {
           serverVerified: false,
         }
       } catch (err) {
+        const code = classifyStoreKitPurchaseError(err)
         return {
           ok: false,
-          code: err?.code || 'storekit_restore_failed',
+          code:
+            code === 'storekit_purchase_failed'
+              ? err?.code || 'storekit_restore_failed'
+              : code,
           provider: 'apple',
           entitlements: [],
           serverVerified: false,

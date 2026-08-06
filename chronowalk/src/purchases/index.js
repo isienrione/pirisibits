@@ -38,7 +38,18 @@ export { createWebPurchaseAdapter } from './webPurchaseAdapter.js'
 export {
   createStoreKitPurchaseAdapter,
   STOREKIT_PLUGIN_ID,
+  STOREKIT_REQUEST_TIMEOUT_MS,
 } from './storeKitPurchaseAdapter.js'
+
+export {
+  sanitizeAppAccountToken,
+  buildInAppPurchaseOptions,
+  buildInAppGetProductsOptions,
+  classifyStoreKitPurchaseError,
+  withStoreKitTimeout,
+  loadNativePurchasesModule,
+  PURCHASE_TYPE_INAPP_FALLBACK,
+} from './storeKitPlugin.js'
 
 export {
   createPurchaseService,
