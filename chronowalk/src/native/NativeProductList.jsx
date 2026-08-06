@@ -56,10 +56,16 @@ export function NativeProductList({
 
   const handlePurchase = useCallback(
     async (productId) => {
+      console.info('[CW TRACE] NativeProductList.handlePurchase entered', { productId })
       setBusyId(productId)
       setMessages((prev) => ({ ...prev, [productId]: null }))
 
-      if (canInvokePaddleCheckout()) {
+      const paddleCheckout = canInvokePaddleCheckout()
+      console.info('[CW TRACE] NativeProductList.canInvokePaddleCheckout', {
+        productId,
+        canInvokePaddleCheckout: paddleCheckout,
+      })
+      if (paddleCheckout) {
         setMessages((prev) => ({
           ...prev,
           [productId]: getPurchaseUnavailableMessage('paddle_unavailable_on_native'),
@@ -70,6 +76,12 @@ export function NativeProductList({
       }
 
       const gate = purchases.canPurchaseProduct?.(productId) ?? { ok: false, code: 'unavailable' }
+      console.info('[CW TRACE] NativeProductList.canPurchaseProduct result', {
+        productId,
+        ok: gate?.ok,
+        code: gate?.code ?? null,
+        provider: gate?.provider ?? null,
+      })
       if (!gate.ok) {
         setMessages((prev) => ({
           ...prev,
@@ -81,7 +93,15 @@ export function NativeProductList({
       }
 
       try {
+        console.info('[CW TRACE] NativeProductList before purchases.purchaseProduct', {
+          productId,
+        })
         const result = await purchases.purchaseProduct(productId)
+        console.info('[CW TRACE] NativeProductList after purchases.purchaseProduct', {
+          productId,
+          ok: result?.ok,
+          code: result?.code ?? null,
+        })
         if (result?.ok) {
           nativeSuccessHaptic()
           setMessages((prev) => ({
@@ -97,13 +117,18 @@ export function NativeProductList({
             [productId]: getPurchaseUnavailableMessage(result?.code) || 'Purchase couldn’t complete.',
           }))
         }
-      } catch {
+      } catch (err) {
+        console.error('[CW TRACE] NativeProductList purchases.purchaseProduct threw', {
+          productId,
+          code: err?.code ?? null,
+        })
         nativeWarningHaptic()
         setMessages((prev) => ({
           ...prev,
           [productId]: 'Purchase couldn’t complete.',
         }))
       } finally {
+        console.info('[CW TRACE] NativeProductList.handlePurchase finally', { productId })
         setBusyId(null)
       }
     },

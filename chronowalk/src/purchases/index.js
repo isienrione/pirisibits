@@ -42,16 +42,6 @@ export {
 } from './storeKitPurchaseAdapter.js'
 
 export {
-  sanitizeAppAccountToken,
-  buildInAppPurchaseOptions,
-  buildInAppGetProductsOptions,
-  classifyStoreKitPurchaseError,
-  withStoreKitTimeout,
-  loadNativePurchasesModule,
-  PURCHASE_TYPE_INAPP_FALLBACK,
-} from './storeKitPlugin.js'
-
-export {
   createPurchaseService,
   getPurchaseService,
   __resetPurchaseServiceForTests,
