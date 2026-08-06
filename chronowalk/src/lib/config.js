@@ -4,6 +4,7 @@ import {
   hasValidLocalAccess,
   writeAccessEntitlement,
 } from './accessSession.js'
+import { hasActiveLocalStoreKitAccess } from '../purchases/localStoreKitEntitlements.js'
 
 const ACCESS_KEY = 'cw_access'
 const AB_KEY = 'cw_ab_variant'
@@ -125,9 +126,10 @@ export function formatConfigPrice(cents, currency = 'EUR') {
 /**
  * Local gate for paid routes: requires a stored device credential and a
  * non-expired offline lease / entitlement - never a bare cw_access boolean.
+ * Local Xcode StoreKit test access is an additional, mode-gated path only.
  */
 export function hasAccess() {
-  return hasValidLocalAccess()
+  return hasValidLocalAccess() || hasActiveLocalStoreKitAccess()
 }
 
 /** @deprecated Prefer applyPurchaseUnlock / redeemPurchaseClaim persistence. */

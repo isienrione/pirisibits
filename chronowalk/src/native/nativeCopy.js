@@ -43,6 +43,13 @@ export function getRestorePresentation(result) {
     }
   }
   if (result.ok) {
+    if (result.localActivated) {
+      return {
+        kind: 'success',
+        title: 'Purchases restored',
+        detail: 'Local StoreKit test access is active on this device.',
+      }
+    }
     const count = result.candidates?.length ?? result.entitlements?.length ?? 0
     if (count > 0) {
       return {

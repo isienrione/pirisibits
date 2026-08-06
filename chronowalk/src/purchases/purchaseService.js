@@ -18,7 +18,6 @@ import {
 import { normalizeAppleTransaction } from './transactionNormalizer.js'
 import { verifyAppleTransaction } from './serverVerification.js'
 import { getSkuEntitlementShape } from '../commerce/commerceCatalog.js'
-import { getPlatformName } from '../platform/runtime/index.js'
 
 /**
  * @param {object} [options]
@@ -54,17 +53,9 @@ export function createPurchaseService(options = {}) {
      */
     canPurchaseProduct(productId) {
       const provider = resolvePurchaseProvider()
-      const platform = getPlatformName()
-      console.info('[CW TRACE] purchaseService.canPurchaseProduct', {
-        productId,
-        provider: provider.provider,
-        platform,
-        reason: provider.reason,
-      })
 
       if (!productId || !getSkuEntitlementShape(productId)) {
         const gate = { ok: false, code: 'unknown_product', provider: provider.provider }
-        console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
         return gate
       }
 
@@ -74,25 +65,21 @@ export function createPurchaseService(options = {}) {
           code: provider.canUsePaddle ? null : 'paddle_unavailable',
           provider: 'paddle',
         }
-        console.info('[CW TRACE] purchaseService.canPurchaseProduct final gate', gate)
         return gate
       }
 
       if (provider.provider === 'storekit') {
         if (isApplePurchaseDeferred(productId)) {
           const gate = { ok: false, code: 'apple_product_deferred', provider: 'storekit' }
-          console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
           return gate
         }
         const mapping = getStoreKitMapping(productId)
         if (!mapping) {
           const gate = { ok: false, code: 'no_apple_mapping', provider: 'storekit' }
-          console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
           return gate
         }
         if (!provider.canUseStoreKit) {
           const gate = { ok: false, code: 'storekit_unavailable', provider: 'storekit' }
-          console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
           return gate
         }
         if (
@@ -100,7 +87,6 @@ export function createPurchaseService(options = {}) {
           !options.storeKitAdapterOptions?.treatMappingsEnabled
         ) {
           const gate = { ok: false, code: 'apple_product_disabled', provider: 'storekit' }
-          console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
           return gate
         }
         const gate = {
@@ -109,17 +95,10 @@ export function createPurchaseService(options = {}) {
           provider: 'storekit',
           appleProductId: mapping.appleProductId,
         }
-        console.info('[CW TRACE] purchaseService.canPurchaseProduct final gate', {
-          ok: gate.ok,
-          code: gate.code,
-          provider: gate.provider,
-          appleProductId: gate.appleProductId,
-        })
         return gate
       }
 
       const gate = { ok: false, code: 'unsupported_platform', provider: 'none' }
-      console.info('[CW TRACE] purchaseService.canPurchaseProduct early return', gate)
       return gate
     },
 
@@ -134,59 +113,23 @@ export function createPurchaseService(options = {}) {
 
     async purchaseProduct(productId, purchaseOptions = {}) {
       const provider = resolvePurchaseProvider()
-      console.info('[CW TRACE] purchaseService.purchaseProduct entered', {
-        productId,
-        provider: provider.provider,
-        platform: getPlatformName(),
-      })
 
       if (provider.provider === 'storekit' && canInvokePaddleCheckout()) {
         // Defensive: should never happen given capability matrix.
         const early = { ok: false, code: 'invariant_paddle_on_native', serverVerified: false }
-        console.info('[CW TRACE] purchaseService.purchaseProduct early return', early)
         return early
       }
       if (provider.provider === 'none') {
         const early = { ok: false, code: 'unsupported_platform', serverVerified: false }
-        console.info('[CW TRACE] purchaseService.purchaseProduct early return', early)
         return early
       }
       const gate = this.canPurchaseProduct(productId)
-      console.info('[CW TRACE] purchaseService.purchaseProduct gate result', {
-        productId,
-        ok: gate?.ok,
-        code: gate?.code ?? null,
-        provider: gate?.provider ?? null,
-      })
       if (!gate.ok && provider.provider === 'storekit') {
         const early = { ...gate, serverVerified: false }
-        console.info('[CW TRACE] purchaseService.purchaseProduct early return', {
-          ok: early.ok,
-          code: early.code,
-          provider: early.provider,
-        })
         return early
       }
       const adapter = adapterFor(provider.provider)
-      try {
-        console.info('[CW TRACE] purchaseService before adapter.purchaseProduct', {
-          productId,
-          provider: provider.provider,
-        })
-        const result = await adapter.purchaseProduct(productId, purchaseOptions)
-        console.info('[CW TRACE] purchaseService after adapter.purchaseProduct', {
-          productId,
-          ok: result?.ok,
-          code: result?.code ?? null,
-        })
-        return result
-      } catch (err) {
-        console.error('[CW TRACE] purchaseService adapter.purchaseProduct caught', {
-          productId,
-          code: err?.code ?? null,
-        })
-        throw err
-      }
+      return adapter.purchaseProduct(productId, purchaseOptions)
     },
 
     async restorePurchases(restoreOptions = {}) {
