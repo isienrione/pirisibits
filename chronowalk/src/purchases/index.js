@@ -1,10 +1,14 @@
 export {
   APPLE_PRODUCT_IDS,
   STOREKIT_PRODUCT_MAPPINGS,
+  LOCAL_STOREKIT_SOLO_PRODUCT_IDS,
   getStoreKitMapping,
   getStoreKitMappingByAppleId,
   listApplePurchasableMappings,
   isApplePurchaseDeferred,
+  getStoreKitMode,
+  isStoreKitLocalMode,
+  isStoreKitMappingEnabled,
   resolveInternalProductIdFromApple,
 } from './storeKitProductMappings.js'
 

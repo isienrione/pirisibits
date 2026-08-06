@@ -12,6 +12,7 @@ import { createStoreKitPurchaseAdapter } from './storeKitPurchaseAdapter.js'
 import {
   getStoreKitMapping,
   isApplePurchaseDeferred,
+  isStoreKitMappingEnabled,
   listApplePurchasableMappings,
 } from './storeKitProductMappings.js'
 import { normalizeAppleTransaction } from './transactionNormalizer.js'
@@ -75,7 +76,10 @@ export function createPurchaseService(options = {}) {
         if (!provider.canUseStoreKit) {
           return { ok: false, code: 'storekit_unavailable', provider: 'storekit' }
         }
-        if (!mapping.enabled && !options.storeKitAdapterOptions?.treatMappingsEnabled) {
+        if (
+          !isStoreKitMappingEnabled(mapping) &&
+          !options.storeKitAdapterOptions?.treatMappingsEnabled
+        ) {
           return { ok: false, code: 'apple_product_disabled', provider: 'storekit' }
         }
         return { ok: true, code: null, provider: 'storekit', appleProductId: mapping.appleProductId }
