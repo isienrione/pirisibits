@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { __setPublishedPackagesForTests } from '../../catalog/cityRegistry.js'
 import { clearCatalogCache } from '../../catalog/catalogService.js'
-import { loadCityPackage } from '../../content/cityPackage/index.js'
+import { loadPackagedCityPackage } from '../../content/cityPackage/runtime.js'
 import {
   shouldUseNativeAppEntry,
   getNativeEntryModel,
@@ -61,6 +61,22 @@ describe('native entry rendering', () => {
     expect(screen.getByTestId('native-city-home')).toBeTruthy()
     expect(screen.getByText(/Walk through Rome as it once was/i)).toBeTruthy()
     expect(screen.getByRole('button', { name: /Explore Rome/i })).toBeTruthy()
+  })
+
+  it('NativeAppEntry bootstraps without fileURLToPath / Node path APIs', () => {
+    stubCapacitor({ native: true, platform: 'ios' })
+    const boom = () => {
+      throw new Error('fileURLToPath must not be called in native bootstrap')
+    }
+    vi.stubGlobal('fileURLToPath', boom)
+    expect(() => {
+      render(
+        <MemoryRouter>
+          <NativeAppEntry forceNative />
+        </MemoryRouter>,
+      )
+    }).not.toThrow()
+    expect(screen.getByTestId('native-app-entry')).toBeTruthy()
   })
 })
 
@@ -281,7 +297,7 @@ describe('no Paddle / no PWA install prompts', () => {
     expect(text).not.toMatch(/paddle/i)
     expect(text).not.toMatch(/add to home screen|install app|pwa/i)
     expect(getNativeFreePreviewPath('rome')).toBe('/preview')
-    expect(loadCityPackage('harbor').isFixture).toBe(true)
+    expect(loadPackagedCityPackage('harbor').isFixture).toBe(true)
   })
 })
 

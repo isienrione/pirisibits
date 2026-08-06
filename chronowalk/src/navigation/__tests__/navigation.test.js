@@ -18,7 +18,7 @@ import {
 } from '../index.js'
 import { clearCatalogCache } from '../../catalog/index.js'
 import { __setPublishedPackagesForTests } from '../../catalog/cityRegistry.js'
-import { loadCityPackage } from '../../content/cityPackage/index.js'
+import { loadPackagedCityPackage } from '../../content/cityPackage/runtime.js'
 
 beforeEach(() => {
   __setPublishedPackagesForTests(null)
@@ -183,8 +183,8 @@ describe('deep links', () => {
 
 describe('second-city fixture', () => {
   it('can navigate a second published city without changing callers', () => {
-    const rome = loadCityPackage('rome')
-    const harbor = loadCityPackage('harbor')
+    const rome = loadPackagedCityPackage('rome')
+    const harbor = loadPackagedCityPackage('harbor')
     const athens = {
       ...harbor,
       cityId: 'athens',

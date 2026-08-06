@@ -18,7 +18,11 @@ import {
   loadPublishedCityPackages,
 } from '../index.js'
 import { __setPublishedPackagesForTests } from '../cityRegistry.js'
-import { listCityIds, listFixtureCityIds, loadCityPackage } from '../../content/cityPackage/index.js'
+import {
+  listCityIds,
+  listFixtureCityIds,
+  loadCityPackage,
+} from '../../content/cityPackage/node.js'
 
 beforeEach(() => {
   clearCatalogCache()

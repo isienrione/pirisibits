@@ -1,24 +1,19 @@
-export {
-  CITIES_ROOT,
-  REPO_ROOT,
-  cityPackageDir,
-  cityPackagePath,
-  listCityIds,
-  listFixtureCityIds,
-  loadCityPackage,
-  resolveCityPackageRoot,
-  resolveRepoPath,
-} from './paths.js'
-
-export { validateCity, assertValidCity } from './validateCity.js'
-export { validateCatalog, assertValidCatalog } from './validateCatalog.js'
-export {
-  generateCityManifest,
-  generateRomeManifestCompat,
-} from './generateCityManifest.js'
+/**
+ * Default city-package entry — browser-safe runtime only.
+ * Node tooling: import from `./node.js` instead.
+ */
 
 export {
+  listPackagedCityIds,
+  listPackagedFixtureCityIds,
+  loadPackagedCityPackage,
+  tryLoadPackagedCityPackage,
+  getAllPackagedCityPackages,
+  validateCity,
+  assertValidCity,
+  validateCatalog,
+  assertValidCatalog,
   CATALOG_SCHEMA_VERSION,
   CITY_PACKAGE_SCHEMA_VERSION,
   MANIFEST_SCHEMA_VERSION,
-} from '../cities/schemaVersions.js'
+} from './runtime.js'

@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it, beforeEach } from 'vitest'
 import { loadRomeManifest } from '../../content/manifest.js'
-import { loadCityPackage } from '../../content/cityPackage/index.js'
+import { loadCityPackage } from '../../content/cityPackage/node.js'
 import {
   clearCatalogCache,
   getPublishedCities,

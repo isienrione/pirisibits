@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { loadCityPackage } from '../../content/cityPackage/index.js'
+import { loadPackagedCityPackage } from '../../content/cityPackage/runtime.js'
 import { __setPublishedPackagesForTests } from '../../catalog/cityRegistry.js'
 import { clearCatalogCache } from '../../catalog/catalogService.js'
 import {
@@ -55,7 +55,7 @@ describe('Rome download manifest (generic)', () => {
 
 describe('multi-city fixture support', () => {
   it('builds a manifest for the harbor fixture without Rome hardcoding', () => {
-    const harbor = loadCityPackage('harbor')
+    const harbor = loadPackagedCityPackage('harbor')
     const manifest = getDownloadManifest('harbor-loop', 'en', { package: harbor })
     expect(manifest.cityId).toBe('harbor')
     expect(manifest.productId).toBe('harbor-loop')
@@ -192,7 +192,7 @@ describe('download + resume + remove', () => {
     const service = createDownloadService({ platform: 'web', adapter })
 
     // Tiny synthetic manifest via harbor package for speed.
-    const harbor = loadCityPackage('harbor')
+    const harbor = loadPackagedCityPackage('harbor')
     const full = getDownloadManifest('harbor-loop', 'en', { package: harbor })
     const tiny = {
       ...full,
@@ -297,7 +297,7 @@ describe('download + resume + remove', () => {
       getNetworkStatus: async () => ({ connected: true }),
       getFreeBytes: async () => 50_000_000,
     })
-    const harbor = loadCityPackage('harbor')
+    const harbor = loadPackagedCityPackage('harbor')
     const full = getDownloadManifest('harbor-loop', 'en', { package: harbor })
     const tiny = {
       ...full,
