@@ -2,9 +2,12 @@
  * City registry — published cities only (never fixtures).
  */
 
-import { listCityIds, loadCityPackage } from '../content/cityPackage/index.js'
+import {
+  listPackagedCityIds,
+  loadPackagedCityPackage,
+} from '../content/cityPackage/runtime.js'
 
-/** @type {Map<string, import('../content/cityPackage/paths.js').CityPackage> | null} */
+/** @type {Map<string, import('../content/cityPackage/types.js').CityPackage> | null} */
 let publishedCache = null
 
 /**
@@ -18,7 +21,7 @@ export function clearCityRegistryCache() {
  * Test-only: inject published packages into the registry cache.
  * Used to prove onboarding a second city is data-driven.
  *
- * @param {import('../content/cityPackage/paths.js').CityPackage[] | null} packages
+ * @param {import('../content/cityPackage/types.js').CityPackage[] | null} packages
  */
 export function __setPublishedPackagesForTests(packages) {
   if (packages == null) {
@@ -32,15 +35,15 @@ export function __setPublishedPackagesForTests(packages) {
  * Load published city packages. Fixtures and unpublished packages are excluded.
  * Data-driven: any package with `metadata.published === true` appears here.
  *
- * @returns {import('../content/cityPackage/paths.js').CityPackage[]}
+ * @returns {import('../content/cityPackage/types.js').CityPackage[]}
  */
 export function loadPublishedCityPackages() {
   if (publishedCache) return [...publishedCache.values()]
 
-  /** @type {Map<string, import('../content/cityPackage/paths.js').CityPackage>} */
+  /** @type {Map<string, import('../content/cityPackage/types.js').CityPackage>} */
   const map = new Map()
-  for (const cityId of listCityIds()) {
-    const pkg = loadCityPackage(cityId)
+  for (const cityId of listPackagedCityIds()) {
+    const pkg = loadPackagedCityPackage(cityId)
     if (pkg.isFixture) continue
     if (pkg.metadata?.published !== true) continue
     map.set(pkg.cityId, pkg)
@@ -51,7 +54,7 @@ export function loadPublishedCityPackages() {
 
 /**
  * @param {string} cityId
- * @returns {import('../content/cityPackage/paths.js').CityPackage | null}
+ * @returns {import('../content/cityPackage/types.js').CityPackage | null}
  */
 export function getPublishedPackage(cityId) {
   if (!cityId) return null
@@ -60,7 +63,7 @@ export function getPublishedPackage(cityId) {
 }
 
 /**
- * @param {import('../content/cityPackage/paths.js').CityPackage} pkg
+ * @param {import('../content/cityPackage/types.js').CityPackage} pkg
  */
 export function toCityRecord(pkg) {
   const city = pkg.city

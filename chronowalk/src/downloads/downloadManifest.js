@@ -8,7 +8,7 @@ import { isDownloadManifest } from '../domain/downloads/types.js'
 import { getPublishedPackage } from '../catalog/cityRegistry.js'
 import { findProductById } from '../catalog/productRegistry.js'
 import { listRoutesForProduct } from '../catalog/routeRegistry.js'
-import { loadCityPackage } from '../content/cityPackage/index.js'
+import { tryLoadPackagedCityPackage } from '../content/cityPackage/runtime.js'
 import { resolveDownloadProduct } from './downloadRegistry.js'
 import { defaultAudioPublicPath, isSafeRelativePath, toStorageRelativePath } from './paths.js'
 import { integrityCapability, parseChecksum } from './checksum.js'
@@ -51,7 +51,7 @@ const DEFAULT_OTHER_BYTES = 50_000
 /**
  * @param {string} productRef
  * @param {string} [locale]
- * @param {{ package?: import('../content/cityPackage/paths.js').CityPackage | null }} [options]
+ * @param {{ package?: import('../content/cityPackage/types.js').CityPackage | null }} [options]
  * @returns {ProductDownloadManifest}
  */
 export function getDownloadManifest(productRef, locale = 'en', options = {}) {
@@ -347,11 +347,7 @@ function defaultBytesForType(type) {
  * @param {string} cityId
  */
 function tryLoadPackage(cityId) {
-  try {
-    return loadCityPackage(cityId)
-  } catch {
-    return null
-  }
+  return tryLoadPackagedCityPackage(cityId)
 }
 
 /**

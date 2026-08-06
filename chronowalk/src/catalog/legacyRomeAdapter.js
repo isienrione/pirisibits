@@ -111,7 +111,7 @@ function normalizeSlug(value) {
 }
 
 /**
- * @returns {import('../content/cityPackage/paths.js').CityPackage | null}
+ * @returns {import('../content/cityPackage/types.js').CityPackage | null}
  */
 export function getRomePackage() {
   return getPublishedPackage(ROME_CITY_ID)

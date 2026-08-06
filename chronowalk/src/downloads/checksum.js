@@ -1,5 +1,6 @@
 /**
- * Checksum helpers. Never invent checksums — absent means unverified.
+ * Browser / Capacitor-safe checksum helpers (Web Crypto only).
+ * Node tooling that cannot use Web Crypto: `./checksum.node.js`.
  */
 
 /**
@@ -35,13 +36,14 @@ export function formatSha256Checksum(hex) {
  */
 export async function sha256Hex(data) {
   const bytes = data instanceof Uint8Array ? data : new Uint8Array(data)
-  if (typeof crypto !== 'undefined' && crypto.subtle?.digest) {
-    const digest = await crypto.subtle.digest('SHA-256', bytes)
-    return bufferToHex(new Uint8Array(digest))
+  const subtle = globalThis.crypto?.subtle
+  if (!subtle?.digest) {
+    throw new Error(
+      'Web Crypto SHA-256 is required for checksum verification in this runtime',
+    )
   }
-  // Node / Vitest fallback without WebCrypto subtle.
-  const { createHash } = await import('node:crypto')
-  return createHash('sha256').update(bytes).digest('hex')
+  const digest = await subtle.digest('SHA-256', bytes)
+  return bufferToHex(new Uint8Array(digest))
 }
 
 /**

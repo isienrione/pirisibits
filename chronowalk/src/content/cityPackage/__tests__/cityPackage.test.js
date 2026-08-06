@@ -13,7 +13,7 @@ import {
   CATALOG_SCHEMA_VERSION,
   CITY_PACKAGE_SCHEMA_VERSION,
   MANIFEST_SCHEMA_VERSION,
-} from '../index.js'
+} from '../node.js'
 import { parseRomeManifest } from '../../romeManifestZod.schema.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))

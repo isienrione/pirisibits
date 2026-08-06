@@ -16,7 +16,11 @@ import {
   getPublishedPackage,
   loadPublishedCityPackages,
 } from '../catalog/cityRegistry.js'
-import { listFixtureCityIds, loadCityPackage } from '../content/cityPackage/index.js'
+import {
+  listPackagedFixtureCityIds,
+  loadPackagedCityPackage,
+  tryLoadPackagedCityPackage,
+} from '../content/cityPackage/runtime.js'
 
 /**
  * @typedef {Object} DownloadProductRef
@@ -81,8 +85,8 @@ export function resolveDownloadProduct(productRef) {
   // Unpublished fixtures — allow resolve for tests / offline tooling.
   if (!product) {
     try {
-      for (const cityId of listFixtureCityIds()) {
-        const pkg = loadCityPackage(cityId)
+      for (const cityId of listPackagedFixtureCityIds()) {
+        const pkg = loadPackagedCityPackage(cityId)
         const match = (pkg.products ?? []).find(
           (p) => p.productId === packageProductId || p.productId === productRef,
         )
@@ -119,19 +123,16 @@ export function resolveDownloadProduct(productRef) {
  */
 export function listDownloadableProducts(cityId, { includeFixtures = false } = {}) {
   if (includeFixtures) {
-    try {
-      const pkg = loadCityPackage(cityId)
-      return (pkg.products ?? []).map((p) => ({
-        productId: p.productId,
-        cityId: p.cityId ?? cityId,
-        name: p.name,
-        slug: p.slug ?? p.productId,
-        routeIds: [...(p.routeIds ?? [])],
-        marketing: p.marketing ?? null,
-      }))
-    } catch {
-      return []
-    }
+    const pkg = tryLoadPackagedCityPackage(cityId)
+    if (!pkg) return []
+    return (pkg.products ?? []).map((p) => ({
+      productId: p.productId,
+      cityId: p.cityId ?? cityId,
+      name: p.name,
+      slug: p.slug ?? p.productId,
+      routeIds: [...(p.routeIds ?? [])],
+      marketing: p.marketing ?? null,
+    }))
   }
   return listProductsForCity(cityId)
 }
