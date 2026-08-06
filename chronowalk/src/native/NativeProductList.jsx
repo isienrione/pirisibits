@@ -1,24 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
-import { PrimaryButton } from '../redesign/ui/PrimaryButton.jsx'
-import { GhostButton } from '../redesign/ui/GhostButton.jsx'
-import { T, F } from '../redesign/tokens.js'
 import {
   getPurchaseService,
   canInvokePaddleCheckout,
 } from '../purchases/index.js'
 import { describeNativeProduct } from './nativeEntryRouting.js'
+import {
+  getNativeProductAccent,
+  getPurchaseUnavailableMessage,
+  NATIVE_PRODUCT_BLURBS,
+} from './nativeCopy.js'
+import { NativeButton } from './NativeButton.jsx'
+import { nativeSuccessHaptic, nativeWarningHaptic, isReducedMotionPreferred } from './nativeHaptics.js'
 import './nativeEntry.css'
 
 /**
- * Native product list for a published city.
- * Never invokes Paddle. StoreKit only when configured/enabled.
- *
- * @param {{
- *   products?: object[],
- *   cityName?: string,
- *   purchaseService?: ReturnType<typeof getPurchaseService>,
- *   onBack?: () => void,
- * }} [props]
+ * Polished native product list — StoreKit only, never Paddle.
  */
 export function NativeProductList({
   products = [],
@@ -30,6 +26,7 @@ export function NativeProductList({
   const [messages, setMessages] = useState({})
   const [busyId, setBusyId] = useState(null)
   const [priceLabels, setPriceLabels] = useState({})
+  const reducedMotion = isReducedMotionPreferred()
 
   useEffect(() => {
     let cancelled = false
@@ -62,27 +59,23 @@ export function NativeProductList({
       setBusyId(productId)
       setMessages((prev) => ({ ...prev, [productId]: null }))
 
-      // Hard safeguard — native must never open Paddle.
       if (canInvokePaddleCheckout()) {
         setMessages((prev) => ({
           ...prev,
-          [productId]: 'Paddle checkout is not available in the iOS app.',
+          [productId]: getPurchaseUnavailableMessage('paddle_unavailable_on_native'),
         }))
+        nativeWarningHaptic()
         setBusyId(null)
         return
       }
 
       const gate = purchases.canPurchaseProduct?.(productId) ?? { ok: false, code: 'unavailable' }
       if (!gate.ok) {
-        const human =
-          gate.code === 'apple_product_disabled'
-            ? 'Apple In-App Purchase is not configured yet.'
-            : gate.code === 'apple_product_deferred'
-              ? 'This product is not available on the App Store yet.'
-              : gate.code === 'storekit_unavailable'
-                ? 'StoreKit is unavailable on this device.'
-                : 'Purchase unavailable.'
-        setMessages((prev) => ({ ...prev, [productId]: human }))
+        setMessages((prev) => ({
+          ...prev,
+          [productId]: getPurchaseUnavailableMessage(gate.code),
+        }))
+        nativeWarningHaptic()
         setBusyId(null)
         return
       }
@@ -90,23 +83,25 @@ export function NativeProductList({
       try {
         const result = await purchases.purchaseProduct(productId)
         if (result?.ok) {
+          nativeSuccessHaptic()
           setMessages((prev) => ({
             ...prev,
-            [productId]:
-              result.serverVerified
-                ? 'Purchase complete.'
-                : 'Purchase recorded locally. Server verification comes next.',
+            [productId]: result.serverVerified
+              ? 'Purchase complete.'
+              : 'Purchase received. Unlock finalizes after verification.',
           }))
         } else {
+          nativeWarningHaptic()
           setMessages((prev) => ({
             ...prev,
-            [productId]: result?.message || result?.code || 'Purchase failed.',
+            [productId]: getPurchaseUnavailableMessage(result?.code) || 'Purchase couldn’t complete.',
           }))
         }
-      } catch (err) {
+      } catch {
+        nativeWarningHaptic()
         setMessages((prev) => ({
           ...prev,
-          [productId]: err?.message || 'Purchase failed.',
+          [productId]: 'Purchase couldn’t complete.',
         }))
       } finally {
         setBusyId(null)
@@ -116,59 +111,81 @@ export function NativeProductList({
   )
 
   return (
-    <div className="cw-native-entry cw-native-products" data-testid="native-product-list">
-      <header className="cw-native-entry__brand">
-        <p className="cw-native-entry__eyebrow">{cityName}</p>
-        <h1 className="cw-native-entry__title">Choose your walk</h1>
-        <p className="cw-native-entry__body">
-          Prices come from the App Store when In-App Purchase is configured.
-        </p>
-      </header>
+    <div
+      className={`cw-native-shell cw-native-products ${reducedMotion ? 'cw-native-shell--reduced' : 'cw-native-shell--motion'}`}
+      data-testid="native-product-list"
+    >
+      <div className="cw-native-shell__panel">
+        <header className="cw-native-products__header">
+          <p className="cw-native-eyebrow">{cityName}</p>
+          <h1 className="cw-native-title">Choose your walk</h1>
+          <p className="cw-native-lede">
+            Flagship and focused routes for the same city — priced by the App Store.
+          </p>
+        </header>
 
-      <ul className="cw-native-products__list">
-        {products.map((product) => {
-          const detail = describeNativeProduct(product.productId) ?? {
-            productId: product.productId,
-            name: product.name,
-          }
-          const price = priceLabels[product.productId]
-          return (
-            <li key={product.productId} className="cw-native-products__item">
-              <div>
-                <h2 className="cw-native-products__name">{detail.name}</h2>
-                <p className="cw-native-products__price" data-testid={`native-price-${product.productId}`}>
-                  {price || 'Price unavailable until App Store products are enabled'}
-                </p>
-              </div>
-              <PrimaryButton
-                onClick={() => handlePurchase(product.productId)}
-                disabled={busyId === product.productId}
-                data-testid={`native-buy-${product.productId}`}
+        <ul className="cw-native-products__list" aria-label={`${cityName} walks`}>
+          {products.map((product) => {
+            const detail = describeNativeProduct(product.productId) ?? {
+              productId: product.productId,
+              name: product.name,
+            }
+            const accent = getNativeProductAccent(product.productId)
+            const price = priceLabels[product.productId]
+            const flagship = accent === 'flagship'
+            return (
+              <li
+                key={product.productId}
+                className={`cw-native-products__item${flagship ? ' cw-native-products__item--flagship' : ''}`}
+                data-testid={`native-product-card-${product.productId}`}
               >
-                {busyId === product.productId ? 'Working…' : 'Purchase'}
-              </PrimaryButton>
-              {messages[product.productId] ? (
-                <p className="cw-native-entry__status" role="status">
-                  {messages[product.productId]}
-                </p>
-              ) : null}
-            </li>
-          )
-        })}
-      </ul>
+                {flagship ? (
+                  <span className="cw-native-products__badge" aria-label="Recommended">
+                    Recommended
+                  </span>
+                ) : null}
+                <div>
+                  <h2 className="cw-native-products__name">{detail.name}</h2>
+                  <p className="cw-native-products__blurb">
+                    {NATIVE_PRODUCT_BLURBS[product.productId] || 'A ChronoWalk city route.'}
+                  </p>
+                  <p
+                    className={`cw-native-products__price${price ? '' : ' cw-native-products__price--pending'}`}
+                    data-testid={`native-price-${product.productId}`}
+                  >
+                    {price || 'Available after App Store configuration'}
+                  </p>
+                </div>
+                <NativeButton
+                  variant={flagship ? 'terracotta' : 'secondary'}
+                  disabled={busyId === product.productId}
+                  testId={`native-buy-${product.productId}`}
+                  aria-label={flagship ? `Get ${detail.name}` : `Purchase ${detail.name}`}
+                  onClick={() => handlePurchase(product.productId)}
+                >
+                  {busyId === product.productId ? 'Working…' : flagship ? 'Get Roma Eterna' : 'Purchase'}
+                </NativeButton>
+                {messages[product.productId] ? (
+                  <p className="cw-native-status__detail" role="status" aria-live="polite">
+                    {messages[product.productId]}
+                  </p>
+                ) : null}
+              </li>
+            )
+          })}
+        </ul>
 
-      {onBack ? (
-        <GhostButton onClick={onBack} data-testid="native-products-back">
-          Back
-        </GhostButton>
-      ) : null}
-
-      <style>{`
-        .cw-native-entry__title, .cw-native-products__name { font-family: ${F.display}; color: ${T.warmWhite}; }
-        .cw-native-entry__body, .cw-native-products__price, .cw-native-entry__eyebrow, .cw-native-entry__status {
-          font-family: ${F.body};
-        }
-      `}</style>
+        {onBack ? (
+          <NativeButton
+            variant="ghost"
+            testId="native-products-back"
+            aria-label="Back to city home"
+            onClick={onBack}
+          >
+            Back
+          </NativeButton>
+        ) : null}
+      </div>
     </div>
   )
 }
