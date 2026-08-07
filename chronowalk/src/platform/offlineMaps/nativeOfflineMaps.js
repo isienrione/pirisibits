@@ -34,6 +34,9 @@ export {
 
 const PLUGIN_NAME = 'ChronoWalkOfflineMaps'
 
+/** Capacitor event name for download progress (native iOS). */
+export const OFFLINE_MAP_PROGRESS_EVENT = 'offlineMapProgress'
+
 /**
  * @returns {any | null}
  */
@@ -210,6 +213,128 @@ export async function deleteRegion(params) {
   }
 }
 
+/**
+ * Open the native Mapbox MapView test map (iOS only).
+ * Never routes to TourMap / RedesignMapPage / Mapbox GL JS.
+ *
+ * @param {{ cityId: string }} params
+ * @returns {Promise<{
+ *   opened: boolean,
+ *   cityId: string | null,
+ *   supported: boolean,
+ *   renderer?: string,
+ *   styleURI?: string,
+ *   errorCode?: string,
+ *   errorMessage?: string,
+ * }>}
+ */
+export async function openTestMap({ cityId } = {}) {
+  const normalizedCityId =
+    typeof cityId === 'string' ? cityId.trim().toLowerCase() : ''
+
+  if (!isNativeIOS()) {
+    return {
+      opened: false,
+      cityId: normalizedCityId || null,
+      supported: false,
+      errorCode: OFFLINE_MAP_ERROR.UNSUPPORTED_PLATFORM,
+    }
+  }
+
+  if (!normalizedCityId || !getOfflineMapConfig(normalizedCityId)) {
+    return {
+      opened: false,
+      cityId: normalizedCityId || null,
+      supported: true,
+      errorCode: OFFLINE_MAP_ERROR.UNSUPPORTED_CITY,
+    }
+  }
+
+  const plugin = resolveNativeOfflineMapsPlugin()
+  if (!plugin?.openTestMap) {
+    return {
+      opened: false,
+      cityId: normalizedCityId,
+      supported: false,
+      errorCode: OFFLINE_MAP_ERROR.UNSUPPORTED_PLATFORM,
+    }
+  }
+
+  try {
+    const raw = await plugin.openTestMap({ cityId: normalizedCityId })
+    return {
+      opened: Boolean(raw?.opened),
+      cityId: normalizedCityId,
+      supported: true,
+      renderer:
+        typeof raw?.renderer === 'string' ? raw.renderer : 'mapbox-maps-ios',
+      styleURI:
+        typeof raw?.styleURI === 'string'
+          ? raw.styleURI
+          : getOfflineMapConfig(normalizedCityId)?.styleURI,
+    }
+  } catch (error) {
+    const code =
+      error?.code ??
+      error?.data?.code ??
+      error?.errorCode ??
+      error?.message
+
+    return {
+      opened: false,
+      cityId: normalizedCityId,
+      supported: true,
+      errorCode: normalizeOfflineMapErrorCode(code),
+      errorMessage:
+        typeof error?.message === 'string' && error.message
+          ? error.message
+          : undefined,
+    }
+  }
+}
+
+/**
+ * Subscribe to native download progress events when available.
+ * Returns an unsubscribe function. No-op on web / missing plugin.
+ *
+ * @param {(payload: ReturnType<typeof normalizeRegionStatus>) => void} listener
+ * @returns {() => void}
+ */
+export function subscribeOfflineMapProgress(listener) {
+  if (typeof listener !== 'function') return () => {}
+  if (!isNativeIOS()) return () => {}
+
+  const plugin = resolveNativeOfflineMapsPlugin()
+  if (!plugin?.addListener) return () => {}
+
+  let handle = null
+  let cancelled = false
+
+  Promise.resolve(plugin.addListener(OFFLINE_MAP_PROGRESS_EVENT, (raw) => {
+    listener(
+      normalizeRegionStatus(raw ?? {}, {
+        cityId: typeof raw?.cityId === 'string' ? raw.cityId : null,
+        supported: true,
+      }),
+    )
+  }))
+    .then((h) => {
+      if (cancelled) {
+        h?.remove?.()
+        return
+      }
+      handle = h
+    })
+    .catch(() => {
+      // Progress events are optional for the DEV harness.
+    })
+
+  return () => {
+    cancelled = true
+    handle?.remove?.()
+  }
+}
+
 function failureFromPluginError(cityId, error) {
   const code =
     error?.code ??
@@ -237,6 +362,8 @@ export const nativeOfflineMaps = {
   getRegionStatus,
   downloadRegion,
   deleteRegion,
+  openTestMap,
+  subscribeOfflineMapProgress,
   resolveNativeOfflineMapsPlugin,
 }
 

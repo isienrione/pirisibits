@@ -2,7 +2,7 @@ import { WebPlugin } from '@capacitor/core'
 
 /**
  * Web stub — native Mapbox offline maps are iOS-only.
- * The app bridge must not call this path for real downloads.
+ * The app bridge must not call this path for real downloads / native maps.
  */
 export class ChronoWalkOfflineMapsWeb extends WebPlugin {
   async isSupported() {
@@ -25,5 +25,13 @@ export class ChronoWalkOfflineMapsWeb extends WebPlugin {
 
   async deleteRegion() {
     throw this.unavailable('Native offline maps are only available on iOS')
+  }
+
+  async openTestMap() {
+    return {
+      opened: false,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
   }
 }

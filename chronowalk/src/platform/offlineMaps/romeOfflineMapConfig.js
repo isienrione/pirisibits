@@ -31,6 +31,16 @@ export const ROME_OFFLINE_MAP_CONFIG = Object.freeze({
   styleURI: DEFAULT_NATIVE_OFFLINE_STYLE_URI,
   bounds: ROME_OFFLINE_MAP_BOUNDS,
   ...ROME_OFFLINE_MAP_ZOOM,
+  /** Initial camera zoom for the native offline test map. */
+  initialZoom: 13.5,
+  center: Object.freeze({
+    latitude: Number(
+      ((ROME_OFFLINE_MAP_BOUNDS.south + ROME_OFFLINE_MAP_BOUNDS.north) / 2).toFixed(5),
+    ),
+    longitude: Number(
+      ((ROME_OFFLINE_MAP_BOUNDS.west + ROME_OFFLINE_MAP_BOUNDS.east) / 2).toFixed(5),
+    ),
+  }),
 })
 
 /**

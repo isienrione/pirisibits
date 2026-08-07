@@ -33,6 +33,9 @@ final class OfflineMapRegionManager {
         case failed
     }
 
+    /// Optional progress sink for Capacitor `offlineMapProgress` events (DEV harness).
+    var onProgress: (([String: Any]) -> Void)?
+
     private init() {}
 
     // MARK: - Configuration gate
@@ -49,6 +52,24 @@ final class OfflineMapRegionManager {
         if MapboxOptions.accessToken.isEmpty {
             MapboxOptions.accessToken = token
         }
+    }
+
+    /// Shared TileStore used for downloads and native MapView offline reads.
+    var sharedTileStore: TileStore {
+        tileStore
+    }
+
+    /// Point Mapbox Maps at the same TileStore used for region downloads.
+    /// Call before presenting ChronoWalkOfflineMapViewController.
+    func prepareMapboxMapsForOfflinePresentation() {
+        do {
+            try ensureMapboxConfigured()
+        } catch {
+            // Presenter still builds the view; openTestMap already gated on token.
+        }
+        MapboxMapsOptions.tileStore = tileStore
+        // Prefer packs already in TileStore; fall back to network when online.
+        MapboxMapsOptions.tileStoreUsageMode = .readOnly
     }
 
     private func resolvedAccessToken() -> String {
@@ -218,12 +239,15 @@ final class OfflineMapRegionManager {
             for: styleURI,
             loadOptions: stylePackOptions
         ) { [weak self] progress in
-            self?.lock.lock()
-            self?.progressByCity[region.cityId] = ProgressSnapshot(
+            guard let self else { return }
+            let snapshot = ProgressSnapshot(
                 completedResourceCount: progress.completedResourceCount,
                 requiredResourceCount: max(progress.requiredResourceCount, 1)
             )
-            self?.lock.unlock()
+            self.lock.lock()
+            self.progressByCity[region.cityId] = snapshot
+            self.lock.unlock()
+            self.emitProgress(cityId: region.cityId, status: .downloading, progress: snapshot)
         } completion: { [weak self] result in
             guard let self else { return }
             switch result {
@@ -283,12 +307,15 @@ final class OfflineMapRegionManager {
             forId: region.tileRegionId,
             loadOptions: loadOptions
         ) { [weak self] progress in
-            self?.lock.lock()
-            self?.progressByCity[region.cityId] = ProgressSnapshot(
+            guard let self else { return }
+            let snapshot = ProgressSnapshot(
                 completedResourceCount: progress.completedResourceCount,
                 requiredResourceCount: progress.requiredResourceCount
             )
-            self?.lock.unlock()
+            self.lock.lock()
+            self.progressByCity[region.cityId] = snapshot
+            self.lock.unlock()
+            self.emitProgress(cityId: region.cityId, status: .downloading, progress: snapshot)
         } completion: { [weak self] result in
             guard let self else { return }
             self.clearActiveDownload(cityId: region.cityId)
@@ -303,6 +330,7 @@ final class OfflineMapRegionManager {
                 self.progressByCity[region.cityId] = snapshot
                 self.lastFailureByCity[region.cityId] = nil
                 self.lock.unlock()
+                self.emitProgress(cityId: region.cityId, status: .downloaded, progress: snapshot)
                 completion(.success(self.statusPayload(
                     cityId: region.cityId,
                     status: .downloaded,
@@ -313,6 +341,7 @@ final class OfflineMapRegionManager {
                 self.lock.lock()
                 self.lastFailureByCity[region.cityId] = normalized
                 self.lock.unlock()
+                self.emitProgress(cityId: region.cityId, status: .failed, progress: nil, error: normalized)
                 completion(.failure(normalized))
             }
         }
@@ -399,6 +428,23 @@ final class OfflineMapRegionManager {
         activeDownloads[cityId] = nil
         stylePackCancelable = nil
         lock.unlock()
+    }
+
+    private func emitProgress(
+        cityId: String,
+        status: RegionStatus,
+        progress: ProgressSnapshot?,
+        error: OfflineMapError? = nil
+    ) {
+        let payload = statusPayload(
+            cityId: cityId,
+            status: status,
+            progress: progress,
+            error: error
+        )
+        DispatchQueue.main.async { [weak self] in
+            self?.onProgress?(payload)
+        }
     }
 
     private func statusPayload(

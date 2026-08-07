@@ -18,4 +18,5 @@ export const OFFLINE_MAP_ERROR_CODES = Object.freeze([
   'download_failed',
   'unsupported_city',
   'already_downloading',
+  'unsupported_platform',
 ])

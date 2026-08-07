@@ -43,6 +43,8 @@ enum OfflineMapRegionConfig {
         let north: Double
         let minZoom: UInt8
         let maxZoom: UInt8
+        /// Initial camera zoom for the native test map (Phase 1.5 harness).
+        let initialZoom: Double
 
         var tileRegionId: String {
             OfflineMapRegionConfig.tileRegionId(forCityId: cityId)
@@ -50,6 +52,14 @@ enum OfflineMapRegionConfig {
 
         var zoomRange: ClosedRange<UInt8> {
             minZoom...maxZoom
+        }
+
+        var centerLatitude: Double {
+            (south + north) / 2.0
+        }
+
+        var centerLongitude: Double {
+            (west + east) / 2.0
         }
 
         var polygon: Polygon {
@@ -71,6 +81,8 @@ enum OfflineMapRegionConfig {
         /// Conservative walking zoom range.
         static let minZoom: UInt8 = 11
         static let maxZoom: UInt8 = 16
+        /// Central Rome camera for the native offline test map.
+        static let initialZoom: Double = 13.5
 
         static var region: OfflineCityRegion {
             OfflineCityRegion(
@@ -80,7 +92,8 @@ enum OfflineMapRegionConfig {
                 east: east,
                 north: north,
                 minZoom: minZoom,
-                maxZoom: maxZoom
+                maxZoom: maxZoom,
+                initialZoom: initialZoom
             )
         }
     }
