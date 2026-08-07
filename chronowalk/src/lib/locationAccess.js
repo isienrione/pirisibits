@@ -1,15 +1,18 @@
-import { isDebugGeo } from '../config/env'
+/**
+ * Browser-safe location access entry used by begin / permissions UI.
+ * Delegates to platform/location — permission ≠ GPS fix.
+ */
 
-export function requestLocationAccess() {
-  if (isDebugGeo() || typeof navigator === 'undefined' || !navigator.geolocation) {
-    return Promise.resolve('granted')
-  }
-
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      () => resolve('granted'),
-      () => resolve('denied'),
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
-    )
-  })
-}
+export {
+  requestLocationAccess,
+  enableLocationForTour,
+  acquirePositionAsync,
+  getLocationSession,
+  subscribeLocationSession,
+  LOCATION_PERMISSION,
+  LOCATION_FIX_STATUS,
+  INITIAL_FIX_TIMEOUT_MS,
+  SIMULATOR_ROME_LOCATION,
+  __resetLocationSessionForTests,
+  __resetLocationFacadeForTests,
+} from '../platform/location/index.js'

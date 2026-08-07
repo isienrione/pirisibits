@@ -2,6 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { getDistance } from '../utils/distance';
 import { COLOSSEUM } from '../data/colosseum';
 import { isDebugGeo } from '../config/env';
+import {
+  getLocationSession,
+  subscribeLocationSession,
+  LOCATION_PERMISSION,
+  LOCATION_FIX_STATUS,
+} from '../platform/location/index.js';
 
 export const JOURNEY_STATE = {
   TRANSIT: 'TRANSIT',
@@ -10,6 +16,7 @@ export const JOURNEY_STATE = {
 
 export const LOCATION_STATUS = {
   WAITING: 'waiting',
+  SEARCHING: 'searching',
   GRANTED: 'granted',
   DENIED: 'denied',
   UNAVAILABLE: 'unavailable',
@@ -25,11 +32,28 @@ const mapGeoError = (err) => {
     case 2:
       return LOCATION_STATUS.UNAVAILABLE;
     case 3:
-      return LOCATION_STATUS.WAITING;
+      return LOCATION_STATUS.SEARCHING;
     default:
       return LOCATION_STATUS.UNAVAILABLE;
   }
 };
+
+function statusFromSession(session) {
+  if (!session) return null;
+  if (session.permission === LOCATION_PERMISSION.DENIED) {
+    return LOCATION_STATUS.DENIED;
+  }
+  if (session.permission === LOCATION_PERMISSION.GRANTED) {
+    if (session.fixStatus === LOCATION_FIX_STATUS.AVAILABLE && session.position) {
+      return LOCATION_STATUS.GRANTED;
+    }
+    if (session.fixStatus === LOCATION_FIX_STATUS.UNAVAILABLE) {
+      return LOCATION_STATUS.UNAVAILABLE;
+    }
+    return LOCATION_STATUS.SEARCHING;
+  }
+  return null;
+}
 
 const resolveJourneyState = (lat, lng, target, geofenceThresholdM) => {
   if (lat == null || lng == null || !target) {
@@ -75,9 +99,41 @@ export const useGeoLocation = ({
   );
 
   const retryLocation = useCallback(() => {
-    setLocationStatus(LOCATION_STATUS.WAITING);
+    setLocationStatus(LOCATION_STATUS.SEARCHING);
     setWatchKey((current) => current + 1);
   }, []);
+
+  // Apply session permission/fix updates (including late GPS after enable).
+  useEffect(() => {
+    if (debugMode || simulateAtTarget) return undefined;
+
+    const applySession = (session) => {
+      const nextStatus = statusFromSession(session);
+      if (nextStatus) setLocationStatus(nextStatus);
+      if (
+        session?.permission === LOCATION_PERMISSION.GRANTED &&
+        session.position?.lat != null &&
+        session.position?.lng != null
+      ) {
+        setAccuracy(
+          typeof session.position.accuracyM === 'number'
+            ? session.position.accuracyM
+            : null
+        );
+        setJourney(
+          resolveJourneyState(
+            session.position.lat,
+            session.position.lng,
+            target,
+            geofenceThresholdM
+          )
+        );
+      }
+    };
+
+    applySession(getLocationSession());
+    return subscribeLocationSession(applySession);
+  }, [debugMode, simulateAtTarget, target, geofenceThresholdM]);
 
   useEffect(() => {
     if (simulateAtTarget && target) {
@@ -104,8 +160,18 @@ export const useGeoLocation = ({
     }
 
     if (!navigator.geolocation) {
-      setLocationStatus(LOCATION_STATUS.UNAVAILABLE);
+      const session = getLocationSession();
+      if (session.permission === LOCATION_PERMISSION.GRANTED) {
+        setLocationStatus(LOCATION_STATUS.SEARCHING);
+      } else {
+        setLocationStatus(LOCATION_STATUS.UNAVAILABLE);
+      }
       return;
+    }
+
+    const session = getLocationSession();
+    if (session.permission === LOCATION_PERMISSION.GRANTED && !session.position) {
+      setLocationStatus(LOCATION_STATUS.SEARCHING);
     }
 
     const watcher = navigator.geolocation.watchPosition(
@@ -128,10 +194,22 @@ export const useGeoLocation = ({
         setState(newState);
       },
       (err) => {
-        console.error(err);
+        // Permission denied is terminal; timeout/unavailable while granted stays searchable.
+        const sessionNow = getLocationSession();
+        if (err?.code === 1) {
+          setLocationStatus(LOCATION_STATUS.DENIED);
+          return;
+        }
+        if (sessionNow.permission === LOCATION_PERMISSION.GRANTED) {
+          setLocationStatus(
+            err?.code === 3 ? LOCATION_STATUS.SEARCHING : LOCATION_STATUS.UNAVAILABLE
+          );
+          return;
+        }
         setLocationStatus(mapGeoError(err));
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      // Continuous watch for the active walk — initial enable used a bounded one-shot.
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
     );
 
     return () => navigator.geolocation.clearWatch(watcher);

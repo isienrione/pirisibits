@@ -9,7 +9,7 @@ describe('LocationNotice', () => {
       <LocationNotice status={LOCATION_STATUS.DENIED} onRetry={vi.fn()} />
     )
 
-    expect(screen.getByText(/location access is off/i)).toBeInTheDocument()
+    expect(screen.getByText(/location isn’t enabled/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try location again/i })).toBeInTheDocument()
   })
 
@@ -29,5 +29,18 @@ describe('LocationNotice', () => {
     )
 
     expect(container).toBeEmptyDOMElement()
+  })
+
+  it('shows searching copy with Continue anyway when permission is granted but GPS is pending', () => {
+    const onContinue = vi.fn()
+    render(
+      <LocationNotice status={LOCATION_STATUS.SEARCHING} onContinue={onContinue} />
+    )
+
+    expect(
+      screen.getByText(/location is enabled\. finding your position/i),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /continue anyway/i }))
+    expect(onContinue).toHaveBeenCalledTimes(1)
   })
 })

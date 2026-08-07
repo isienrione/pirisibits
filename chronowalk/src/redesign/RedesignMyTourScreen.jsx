@@ -22,7 +22,7 @@ import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.j
 import { getWaypoint } from '../content/manifest.js'
 import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { getDistance } from '../utils/distance.js'
-import { requestLocationAccess } from '../lib/locationAccess.js'
+import { enableLocationForTour, acquirePositionAsync } from '../lib/locationAccess.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
 
 const ACT_COLOR = {
@@ -134,51 +134,48 @@ export default function RedesignMyTourScreen() {
   const handleStartFromHere = async () => {
     if (!manifest) return
     setGeoBusy(true)
-    await requestLocationAccess()
-    setGeoBusy(false)
-
-    const tourIds = getTourWaypointIds(manifest, context)
-    if (!tourIds.length) return
-
-    const resolvePosition = () =>
-      new Promise((resolve) => {
-        if (typeof navigator === 'undefined' || !navigator.geolocation) {
-          resolve(null)
-          return
-        }
-        navigator.geolocation.getCurrentPosition(
-          (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-          () => resolve(null),
-          { enableHighAccuracy: true, timeout: 12000 },
-        )
+    try {
+      const enableResult = await enableLocationForTour({
+        waitForFix: false,
+        skipIfDeniedAlready: false,
       })
 
-    const position = await resolvePosition()
-    if (!position) {
-      navigate('/map')
-      return
-    }
+      const tourIds = getTourWaypointIds(manifest, context)
+      if (!tourIds.length) return
 
-    let nearestId = tourIds[0]
-    let bestDist = Infinity
-    for (const id of tourIds) {
-      const waypoint = getWaypoint(manifest, id)
-      if (!waypoint?.geofence) continue
-      const dist = getDistance(
-        position.lat,
-        position.lng,
-        waypoint.geofence.lat,
-        waypoint.geofence.lng,
-      )
-      if (dist < bestDist) {
-        bestDist = dist
-        nearestId = id
+      // Prefer an immediate sample if enable already got one; otherwise bounded async fix.
+      let position = enableResult.position
+      if (!position && enableResult.locationEnabled) {
+        position = await acquirePositionAsync({ timeoutMs: 9000 })
       }
-    }
 
-    void requestJumpToWaypoint(manifest, nearestId, context, state).then((jumped) => {
+      if (!position) {
+        navigate('/map')
+        return
+      }
+
+      let nearestId = tourIds[0]
+      let bestDist = Infinity
+      for (const id of tourIds) {
+        const waypoint = getWaypoint(manifest, id)
+        if (!waypoint?.geofence) continue
+        const dist = getDistance(
+          position.lat,
+          position.lng,
+          waypoint.geofence.lat,
+          waypoint.geofence.lng,
+        )
+        if (dist < bestDist) {
+          bestDist = dist
+          nearestId = id
+        }
+      }
+
+      const jumped = await requestJumpToWaypoint(manifest, nearestId, context, state)
       if (jumped) navigate('/journey')
-    })
+    } finally {
+      setGeoBusy(false)
+    }
   }
 
   const handleOwnPaceConfirm = () => {
