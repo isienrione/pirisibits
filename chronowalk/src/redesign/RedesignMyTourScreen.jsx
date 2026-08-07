@@ -22,7 +22,7 @@ import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.j
 import { getWaypoint } from '../content/manifest.js'
 import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { getDistance } from '../utils/distance.js'
-import { enableLocationForTour, acquirePositionAsync } from '../lib/locationAccess.js'
+import { enableLocationForTourBounded, acquirePositionAsync } from '../lib/locationAccess.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
 
 const ACT_COLOR = {
@@ -135,7 +135,7 @@ export default function RedesignMyTourScreen() {
     if (!manifest) return
     setGeoBusy(true)
     try {
-      const enableResult = await enableLocationForTour({
+      const enableResult = await enableLocationForTourBounded({
         waitForFix: false,
         skipIfDeniedAlready: false,
       })

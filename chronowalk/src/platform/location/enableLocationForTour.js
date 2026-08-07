@@ -175,7 +175,9 @@ export async function enableLocationForTour(options = {}) {
           ? response.position
             ? LOCATION_FIX_STATUS.AVAILABLE
             : LOCATION_FIX_STATUS.SEARCHING
-          : LOCATION_FIX_STATUS.IDLE,
+          : permission === LOCATION_PERMISSION.UNAVAILABLE
+            ? LOCATION_FIX_STATUS.UNAVAILABLE
+            : LOCATION_FIX_STATUS.IDLE,
       position: response.position,
       hasPrompted: true,
     })
@@ -213,20 +215,30 @@ export async function enableLocationForTour(options = {}) {
       })
     }
 
+    if (permission === LOCATION_PERMISSION.UNAVAILABLE) {
+      return buildLocationEnableResult({
+        permission: LOCATION_PERMISSION.UNAVAILABLE,
+        fixStatus: LOCATION_FIX_STATUS.UNAVAILABLE,
+        timedOut: response.timedOut ?? true,
+      })
+    }
+
     return buildLocationEnableResult({
       permission: LOCATION_PERMISSION.DENIED,
       fixStatus: LOCATION_FIX_STATUS.IDLE,
       timedOut: response.timedOut,
     })
   } catch {
+    // Do not falsely mark the user denied on unexpected adapter failures.
     patchLocationSession({
-      permission: LOCATION_PERMISSION.DENIED,
+      permission: LOCATION_PERMISSION.UNAVAILABLE,
       fixStatus: LOCATION_FIX_STATUS.UNAVAILABLE,
       hasPrompted: true,
     })
     return buildLocationEnableResult({
-      permission: LOCATION_PERMISSION.DENIED,
+      permission: LOCATION_PERMISSION.UNAVAILABLE,
       fixStatus: LOCATION_FIX_STATUS.UNAVAILABLE,
+      timedOut: true,
     })
   }
 }
@@ -234,8 +246,9 @@ export async function enableLocationForTour(options = {}) {
 /**
  * Back-compat string API used by BeginFlow / tests.
  * 'granted' means permission granted — not that a GPS fix arrived.
+ * 'unavailable' means permission could not be resolved in time (not a hard denial).
  *
- * @returns {Promise<'granted' | 'denied'>}
+ * @returns {Promise<'granted' | 'denied' | 'unavailable'>}
  */
 export async function requestLocationAccess(options = {}) {
   const result = await enableLocationForTour(options)

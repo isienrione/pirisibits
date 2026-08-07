@@ -4,13 +4,15 @@
  * PERMISSION GRANTED ≠ CURRENT GPS FIX AVAILABLE
  */
 
-/** @typedef {'prompt' | 'granted' | 'denied'} LocationPermissionState */
+/** @typedef {'prompt' | 'granted' | 'denied' | 'unavailable'} LocationPermissionState */
 /** @typedef {'idle' | 'searching' | 'available' | 'unavailable'} LocationFixStatus */
 
 export const LOCATION_PERMISSION = Object.freeze({
   PROMPT: 'prompt',
   GRANTED: 'granted',
   DENIED: 'denied',
+  /** Indeterminate — permission call timed out / could not be resolved. Not a hard denial. */
+  UNAVAILABLE: 'unavailable',
 })
 
 export const LOCATION_FIX_STATUS = Object.freeze({
@@ -25,6 +27,18 @@ export const INITIAL_FIX_TIMEOUT_MS = 9000
 
 /** Soft maximumAge for the first walking fix (ms). */
 export const INITIAL_FIX_MAXIMUM_AGE_MS = 30_000
+
+/** Native Capacitor checkPermissions bound. */
+export const CHECK_PERMISSIONS_TIMEOUT_MS = 5000
+
+/** Native Capacitor requestPermissions bound (system sheet may take time). */
+export const REQUEST_PERMISSIONS_TIMEOUT_MS = 15000
+
+/** Fresh check after a requestPermissions timeout. */
+export const POST_TIMEOUT_CHECK_TIMEOUT_MS = 3000
+
+/** Defense-in-depth: no startup UI may stay busy longer than this. */
+export const LOCATION_UI_TIMEOUT_MS = 20000
 
 /**
  * Simulator QA (Xcode):
@@ -55,7 +69,7 @@ export const SIMULATOR_ROME_LOCATION = Object.freeze({
  * @property {boolean} locationEnabled
  * @property {LocationSample | null} position
  * @property {boolean} shouldAdvance
- * @property {'granted' | 'denied'} access
+ * @property {'granted' | 'denied' | 'unavailable'} access
  * @property {boolean} [timedOut]
  */
 
@@ -74,6 +88,13 @@ export function normalizePermissionState(value) {
   ) {
     return LOCATION_PERMISSION.DENIED
   }
+  if (
+    value === LOCATION_PERMISSION.UNAVAILABLE ||
+    value === 'unavailable' ||
+    value === 'indeterminate'
+  ) {
+    return LOCATION_PERMISSION.UNAVAILABLE
+  }
   return LOCATION_PERMISSION.PROMPT
 }
 
@@ -88,13 +109,22 @@ export function buildLocationEnableResult(partial) {
     partial.fixStatus ??
     (locationEnabled ? LOCATION_FIX_STATUS.SEARCHING : LOCATION_FIX_STATUS.IDLE)
 
+  let access = 'denied'
+  if (locationEnabled) access = 'granted'
+  else if (permission === LOCATION_PERMISSION.UNAVAILABLE) access = 'unavailable'
+
   return {
     permission,
     fixStatus,
     locationEnabled,
     position: partial.position ?? null,
-    shouldAdvance: locationEnabled || permission === LOCATION_PERMISSION.DENIED,
-    access: locationEnabled ? 'granted' : 'denied',
+    // Always allow the UI to leave the busy/permission screen.
+    shouldAdvance:
+      locationEnabled ||
+      permission === LOCATION_PERMISSION.DENIED ||
+      permission === LOCATION_PERMISSION.UNAVAILABLE ||
+      Boolean(partial.timedOut),
+    access,
     timedOut: Boolean(partial.timedOut),
   }
 }
