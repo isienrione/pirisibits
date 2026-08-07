@@ -20,3 +20,12 @@ export const OFFLINE_MAP_ERROR_CODES = Object.freeze([
   'already_downloading',
   'unsupported_platform',
 ])
+
+/** Transit map methods are iOS-native only (see ChronoWalkOfflineMapsPlugin). */
+export const TRANSIT_MAP_METHODS = Object.freeze([
+  'openTransitMap',
+  'updateTransitMap',
+  'closeTransitMap',
+  'recenterTransitMap',
+  'setTransitMapVisible',
+])

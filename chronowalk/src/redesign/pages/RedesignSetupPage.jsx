@@ -87,7 +87,10 @@ export default function RedesignSetupPage() {
             downloadProgress={downloadProgress}
             downloadComplete={offline.isReady}
             downloadError={offline.error}
-            mapTilesPartial={offline.status?.error === 'map_tiles_partial'}
+            mapTilesPartial={
+              offline.status?.error === 'map_tiles_partial' ||
+              offline.status?.error === 'map_region_partial'
+            }
             installed={installed}
             canPromptInstall={canPromptInstall}
             showIosInstructions={showIosInstructions || showIosHelp}

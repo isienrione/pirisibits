@@ -34,4 +34,44 @@ export class ChronoWalkOfflineMapsWeb extends WebPlugin {
       errorCode: 'unsupported_platform',
     }
   }
+
+  async openTransitMap() {
+    return {
+      opened: false,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
+  }
+
+  async updateTransitMap() {
+    return {
+      updated: false,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
+  }
+
+  async closeTransitMap() {
+    return {
+      closed: true,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
+  }
+
+  async recenterTransitMap() {
+    return {
+      recentered: false,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
+  }
+
+  async setTransitMapVisible() {
+    return {
+      visible: false,
+      supported: false,
+      errorCode: 'unsupported_platform',
+    }
+  }
 }

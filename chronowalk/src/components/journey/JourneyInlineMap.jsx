@@ -9,6 +9,8 @@ import { hasCachedRomeMapTiles } from '../../audio/offlinePackage.js'
 import { hydrateRomeMapTileCache } from '../../map/offlineMapTiles.js'
 import { env, isDebugMap } from '../../config/env.js'
 import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
+import { shouldUseNativeTransitMap } from '../../platform/offlineMaps/nativeTransitMap.js'
+import NativeTransitMapPane from './NativeTransitMapPane.jsx'
 
 /** Prefer cached Standard vector tiles when the radio is constrained. */
 function useConstrainedNetwork() {
@@ -54,6 +56,7 @@ function InlineMapLoadingFallback() {
 /**
  * Minimal Mapbox embed for in-journey screens (transit).
  * Parent must provide a bounded height (flex: 1 or explicit px).
+ * On native iOS, uses Mapbox Maps SDK via the offline-maps plugin (not GL JS).
  */
 export default function JourneyInlineMap({
   manifest,
@@ -62,6 +65,7 @@ export default function JourneyInlineMap({
   directionsGeometry = null,
   directionsModeActive = false,
 }) {
+  const useNative = shouldUseNativeTransitMap()
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
   // Prefer the cached Standard vector style whenever signal is weak OR we
@@ -70,6 +74,7 @@ export default function JourneyInlineMap({
   const [offlineMapReady, setOfflineMapReady] = useState(!preferOfflineStyle)
 
   useEffect(() => {
+    if (useNative) return undefined
     if (!manifest || !env.mapboxToken) {
       setOfflineMapReady(true)
       return undefined
@@ -92,7 +97,7 @@ export default function JourneyInlineMap({
     return () => {
       cancelled = true
     }
-  }, [manifest, preferOfflineStyle])
+  }, [manifest, preferOfflineStyle, useNative])
 
   const tour = useMemo(
     () => (manifest ? buildManifestTour(manifest, context.path) : null),
@@ -132,6 +137,39 @@ export default function JourneyInlineMap({
   )
 
   const activeStop = stops.find((stop) => stop.id === activeTargetId) ?? null
+
+  const legOrigin = useMemo(() => {
+    if (!activeLeg?.fromId || !manifest) return null
+    const from = stops.find((stop) => stop.id === activeLeg.fromId)
+    const lat = from?.landmark?.lat ?? from?.lat
+    const lng = from?.landmark?.lng ?? from?.lng
+    if (lat == null || lng == null) return null
+    return { lat, lng, id: from.id }
+  }, [activeLeg, manifest, stops])
+
+  const legDestination = useMemo(() => {
+    const lat = activeStop?.landmark?.lat ?? activeStop?.lat
+    const lng = activeStop?.landmark?.lng ?? activeStop?.lng
+    if (lat == null || lng == null) return null
+    return { lat, lng, id: activeStop.id }
+  }, [activeStop])
+
+  if (useNative) {
+    return (
+      <NativeTransitMapPane
+        manifest={manifest}
+        context={context}
+        geo={geo}
+        directionsGeometry={directionsGeometry}
+        directionsModeActive={directionsModeActive}
+        cityId="rome"
+        origin={legOrigin}
+        destination={legDestination}
+        activeStopId={activeTargetId}
+        destinationStopId={activeTargetId}
+      />
+    )
+  }
 
   if (!tour || !stops.length) {
     return (
