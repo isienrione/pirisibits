@@ -1,0 +1,427 @@
+CHRONOWALK 2.0 — GATE 0
+DEEP PRODUCT UNDERSTANDING + FRONTIER EXPLORATION
+
+You now have two authoritative documents:
+
+1. ChronoWalk Founder Playbook
+2. CHRONOWALK_REPLIT_MASTER.md
+
+Read BOTH completely before responding.
+
+The Founder Playbook is the company constitution: it defines the purpose, product philosophy, historical integrity, traveler promise, quality standard and long-term ambition.
+
+The MASTER document translates those principles into implementation-grade instructions for this greenfield build and contains an explicit FRONTIER INNOVATION MANDATE.
+
+IMPORTANT INTERPRETATION RULE:
+
+The Founder Playbook is a constitution, NOT a technological ceiling.
+
+You must preserve ChronoWalk's underlying purpose and permanent principles while being explicitly encouraged to challenge, replace or radically improve current implementations.
+
+Do not assume that the current ChronoWalk product, current PWA, current Rome stops, current Then/Now slider, current maps, current audio, current visual language, current route structures, or any previous technical decision represents the best version of ChronoWalk.
+
+We are rebuilding from first principles.
+
+The objective is NOT:
+
+"build a more polished version of the existing ChronoWalk."
+
+The objective is:
+
+"If ChronoWalk were invented today by an exceptional consumer-product, mobile, spatial-computing, historical-interpretation, audio and storytelling team with access to the best practical technology available in 2026, what should it become?"
+
+ChronoWalk must be conservative about truth and aggressive about experience.
+
+PRESERVE:
+- historical rigor
+- trust
+- human editorial quality
+- traveler autonomy
+- historical presence
+- the city as protagonist
+- technology serving the story
+- premium execution
+- quality before scale
+- city-independent platform thinking
+- eventual ability to support 100+ cities
+
+CHALLENGE FREELY:
+- the current UI
+- current navigation
+- current audio experience
+- fixed route assumptions
+- current Then/Now implementation
+- current image-based reconstruction
+- PWA-first assumptions
+- current maps
+- stop structure
+- number of stops
+- current technical architecture
+- current media production methods
+- current interaction paradigms
+
+ChronoWalk 2.0 is intended to launch as a REAL MOBILE PRODUCT:
+
+- iOS first
+- Android next
+- architecture deliberately designed so Android does not require rebuilding the company
+- web may support discovery, commerce, previews or accounts, but the core traveler product should be evaluated as a true mobile experience
+
+Do NOT choose a stack yet.
+
+Evaluate the product before choosing between:
+- native Swift / SwiftUI
+- React Native / Expo
+- Flutter
+- Kotlin Multiplatform
+- shared-core + native shells
+- hybrid architectures
+- or another approach
+
+The product architecture should follow the desired experience, not the reverse.
+
+==================================================
+FRONTIER TECHNOLOGY MANDATE
+==================================================
+
+I explicitly want you to be MORE ambitious than the current ChronoWalk if today's technology allows it.
+
+Investigate seriously whether ChronoWalk can use technologies such as:
+
+- mobile computer vision
+- visual anchors
+- image/scene recognition
+- camera pose estimation
+- depth estimation
+- segmentation
+- object/architecture recognition
+- ARKit
+- ARCore
+- geospatial/VPS anchoring
+- WebXR where relevant
+- lightweight 3D
+- photogrammetry
+- Gaussian splatting / NeRF-like representations where useful
+- spatial audio
+- device sensors
+- haptics
+- on-device models
+- multimodal AI
+- adaptive contextual narration
+- location-aware storytelling
+- layered historical eras
+- scene-aware assistance
+- high-performance GPU rendering
+
+Do not add any of these because they sound impressive.
+
+Evaluate them according to whether they create stronger HISTORICAL PRESENCE.
+
+For each important immersive problem, consider three solution bands:
+
+A. ROBUST PREMIUM BASELINE
+Highly reliable and scalable across many devices/cities.
+
+B. AMBITIOUS PRACTICAL FRONTIER
+Advanced technology that is commercially realistic today.
+
+C. FLAGSHIP / EXPERIMENTAL FRONTIER
+The most powerful credible experience for selected locations, even if it requires true AR, spatial reconstruction, advanced computer vision or significantly greater production effort.
+
+Do not automatically discard C because it is harder.
+
+Instead determine whether it deserves:
+- flagship-stop use
+- flagship-city use
+- premium use
+- device-specific enhancement
+- experimental prototype status
+- later roadmap status
+
+Use PROGRESSIVE ENHANCEMENT when appropriate.
+
+A lower-capability device might receive an extraordinary cinematic Then/Now experience.
+
+A stronger device might receive camera-assisted spatial reconstruction.
+
+A flagship supported device/location might receive true anchored AR/3D.
+
+The story and historical integrity must survive across all tiers.
+
+==================================================
+THRESHOLD / HISTORICAL RECONSTRUCTION
+==================================================
+
+The existing Then/Now slider is a powerful concept but NOT a permanent implementation requirement.
+
+One example of a more ambitious direction is:
+
+User raises the camera
+→ app helps align the physical monument
+→ interface says:
+
+"Hold to restore Rome."
+
+→ user holds
+→ the missing historical architecture appears over the live contemporary scene
+→ releasing or moving allows comparison between past and present.
+
+IMPORTANT:
+
+It does NOT necessarily have to be geometrically perfect, persistent world-scale AR to feel magical.
+
+A premium camera-assisted reveal using:
+- guided viewpoint
+- visual alignment
+- perspective-matched reconstruction
+- feature matching
+- segmentation
+- depth-aware compositing
+- subtle parallax
+- lightweight 3D
+
+may produce most of the emotional impact at dramatically lower production cost.
+
+However, this is NOT an instruction to avoid true AR.
+
+If true AR materially improves the experience and is practical for a flagship stop, investigate it seriously.
+
+"Hold to restore Rome" is also an EXAMPLE, not sacred copy.
+
+If you invent something materially better, propose it.
+
+Preserve the revelation, not the mechanism.
+
+At least one interaction in the first production-quality ChronoWalk experience should aspire to create this reaction:
+
+"I have never experienced a city like this before."
+
+==================================================
+AI AND CONTENT
+==================================================
+
+AI may be deeply involved in the production infrastructure.
+
+AI must never become the aesthetic.
+
+The traveler must not perceive:
+- AI fluff
+- generic travel writing
+- robotic narration
+- synthetic cadence
+- hallucinated history
+- generic reconstruction imagery
+- formulaic stops
+- cheap mass-generated content
+
+Do not build:
+
+Wikipedia → LLM → TTS → publish.
+
+Historical production must be evidence-based.
+
+Think in terms of:
+
+Research
+→ evidence dossier
+→ structured historical claims
+→ source/confidence classification
+→ story architecture
+→ script
+→ historical audit
+→ spoken-language edit
+→ premium audio production
+→ visual/reconstruction production
+→ integrated QA
+→ beta
+→ publication
+
+The narrator should feel like an exceptionally knowledgeable, intelligent, warm human walking beside the traveler.
+
+The phone should enhance the city and repeatedly return attention to the physical environment.
+
+==================================================
+SCALABILITY
+==================================================
+
+The architecture must ultimately support 100+ cities.
+
+Do not build:
+
+RomePage
+FlorencePage
+ParisPage
+
+with duplicated city logic.
+
+The long-term product is more than the consumer app.
+
+Think in terms of:
+
+CHRONOWALK ENGINE
++
+CHRONOWALK FOUNDRY / CMS
++
+HISTORICAL KNOWLEDGE SYSTEM / KNOWLEDGE GRAPH
++
+RESEARCH AND CLAIM SYSTEM
++
+NARRATIVE PRODUCTION SYSTEM
++
+AUDIO PRODUCTION SYSTEM
++
+RECONSTRUCTION / SPATIAL ASSET PIPELINE
++
+LOCALIZATION
++
+QA
++
+CONSUMER MOBILE EXPERIENCE
+
+The objective is not to automate tours.
+
+The objective is to automate the production of extraordinary experiences WITHOUT automating away judgment.
+
+==================================================
+IMPORTANT: DO NOT BUILD YET
+==================================================
+
+This is GATE 0.
+
+Do not scaffold the mobile app.
+
+Do not choose the final stack.
+
+Do not build screens.
+
+Do not generate city content.
+
+Do not create Rome yet.
+
+Do not implement the Threshold yet.
+
+Your job in this gate is to understand, challenge, investigate and propose.
+
+Create the following documents inside the project:
+
+1. PRODUCT_THESIS.md
+
+Explain what ChronoWalk fundamentally is and what job it performs.
+
+2. INVARIANTS_AND_REPLACEABLE_ASSUMPTIONS.md
+
+Separate permanent ChronoWalk principles from legacy implementation assumptions.
+
+3. CURRENT_CONCEPT_CRITIQUE.md
+
+Critique the current conceptual implementation described by the materials.
+Identify what is already strong, what is limiting, and what should be transcended.
+
+4. CHRONOWALK_2_PRODUCT_PROPOSAL.md
+
+Describe what the best credible ChronoWalk 2.0 should become.
+
+5. FRONTIER_EXPERIENCE_OPPORTUNITIES.md
+
+Explore ambitious product experiences we may not have previously considered.
+
+6. THRESHOLD_EVOLUTION.md
+
+Compare:
+- cinematic Then/Now
+- camera-assisted spatial reconstruction
+- lightweight 3D
+- true AR
+- any superior approach you identify
+
+7. MOBILE_PLATFORM_OPTIONS.md
+
+Evaluate the best architectural approaches for:
+iOS-first → Android-next → potential advanced camera/spatial features.
+
+DO NOT make the final stack decision yet.
+
+8. HISTORICAL_CONTENT_AND_AI_SYSTEM.md
+
+Explain how we can achieve scale without AI slop or factual unreliability.
+
+9. CITY_SCALING_AND_FOUNDRY_CONCEPT.md
+
+Explain how the internal production platform should eventually work.
+
+10. TECHNICAL_RISK_REGISTER.md
+
+Include:
+- device fragmentation
+- AR feasibility
+- camera alignment
+- GPS
+- battery
+- offline
+- asset size
+- 3D production burden
+- audio production
+- historical review
+- localization
+- scalability
+- platform risk
+
+11. EXPERIMENTS_BEFORE_ARCHITECTURE.md
+
+Identify the smallest experiments we should perform BEFORE committing to architecture.
+
+Especially identify experiments that answer questions such as:
+
+- Can a tourist align a live camera with a monument naturally?
+- Is 2.5D spatial reconstruction magical enough?
+- Is true AR meaningfully better?
+- Can it remain stable outdoors?
+- What does it do to battery and heat?
+- What asset size is acceptable?
+- What works offline?
+- Which mobile architecture gives us the necessary camera/spatial capability without unnecessary platform duplication?
+
+==================================================
+RESEARCH EXPECTATION
+==================================================
+
+Do not rely only on your prior knowledge.
+
+Where possible, investigate the current 2026 technical landscape relevant to the product.
+
+Distinguish clearly between:
+
+- established capability
+- capability that needs prototyping
+- technically feasible but expensive
+- device/platform-dependent
+- speculative
+- not currently recommended
+
+Do not present experimental technology as guaranteed.
+
+==================================================
+YOUR FINAL RESPONSE TO ME
+==================================================
+
+After creating those documents, give me a concise executive summary containing:
+
+A. What you believe ChronoWalk should NEVER lose.
+
+B. The 5 biggest opportunities to make ChronoWalk dramatically better than the current concept.
+
+C. The single most promising frontier experience you think we should prototype first.
+
+D. The three biggest assumptions we may currently be wrong about.
+
+E. The highest-risk technical idea.
+
+F. The idea with the greatest potential to become ChronoWalk's category-defining moment.
+
+G. Any contradictions or tensions you found between the Founder Playbook and the frontier ambition.
+
+H. What you recommend we investigate in Gate 1.
+
+Then STOP.
+
+Do not implement anything until I explicitly approve the next gate.

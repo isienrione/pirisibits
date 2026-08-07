@@ -1,45 +1,29 @@
-# [Project name]
+# ChronoWalk 2.0
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+## Project overview
+Greenfield rebuild of ChronoWalk — a premium **Historical Immersion Platform** for travelers ("from sightseeing to city understanding"). iOS-first native mobile product, Android next, eventually 100+ cities. Rome is the laboratory (vertical slice: Pantheon, Forum, Colosseum).
 
-## Run & Operate
+**Status: Gate 0 complete (August 2026), awaiting founder approval. Nothing is built yet — no stack chosen, no scaffolding, no content generated. Do not build until the founder approves Gate 1.**
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+## Gated process (strict)
+The founder runs a gated process (Gates 0–9, defined in the Master Pack). Never skip ahead of the approved gate. Gate 0 deliverables live in `docs/gate0/` (11 analysis documents).
 
-## Stack
+## Source-of-truth hierarchy
+1. Founder Playbook (Spanish PDF in `attached_assets/`, extracted at /tmp/playbook.txt during Gate 0) — the "constitution"
+2. Replit Master Pack (`attached_assets/CHRONOWALK_REPLIT_MASTER_*.md`)
+3. Founder decisions in chat
+4. Legacy artifacts
+5. Agent preference (lowest)
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+The Playbook is a constitution, not a technological ceiling: preserve principles, challenge implementations (e.g., PWA-first is replaced by native iOS in 2.0).
 
-## Where things live
+## Product invariants (never violate)
+City is the protagonist · historical rigor with claim classification (never Wikipedia→LLM→TTS→publish) · traveler freedom · quality before scale (15-point standard, 80% Rule) · technology serves the story · city-agnostic architecture (no RomePage.tsx patterns) · frugality · AI drafts, humans decide.
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
-
-## Architecture decisions
-
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
+## Required ongoing docs (once building starts)
+ASSUMPTIONS.md, DECISIONS.md, PRODUCT_DEBT.md per the Master Pack.
 
 ## User preferences
-
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- Follow the gated process; stop at gate boundaries for approval.
+- Surface conflicts instead of silently choosing.
+- Label capabilities honestly: established / needs prototyping / expensive / device-dependent / speculative / not recommended.
