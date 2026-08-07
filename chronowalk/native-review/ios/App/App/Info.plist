@@ -66,5 +66,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<!-- Mapbox public token: set User-Defined Build Setting MAPBOX_ACCESS_TOKEN in Xcode
+	     (or xcconfig). Do not commit secrets. Mapbox also reads MBXAccessToken at runtime. -->
+	<key>MBXAccessToken</key>
+	<string>$(MAPBOX_ACCESS_TOKEN)</string>
+	<!-- Optional Studio style override; empty / unset falls back to mapbox://styles/mapbox/standard -->
+	<key>CWMapboxStyleURI</key>
+	<string>$(CW_MAPBOX_STYLE_URI)</string>
 </dict>
 </plist>

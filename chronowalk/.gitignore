@@ -44,6 +44,11 @@ scripts/incident/
 .capacitor
 /ios/
 
+# Local Mapbox native credentials (keep *.example templates only)
+native-review/ios/**/Mapbox.xcconfig
+native-review/ios/**/*.xcconfig.local
+**/.netrc
+
 # Logs
 *.log
 npm-debug.log*
