@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import BeginFlow from '../BeginFlow'
 import { JOURNEY_PACE } from '../../../data/romePacing'
@@ -19,6 +19,14 @@ vi.mock('../../../hooks/useV2Journey', () => ({
 }))
 
 vi.mock('../../../lib/locationAccess', () => ({
+  enableLocationForTourBounded: vi.fn().mockResolvedValue({
+    permission: 'granted',
+    fixStatus: 'available',
+    locationEnabled: true,
+    position: { lat: 41.89, lng: 12.49 },
+    shouldAdvance: true,
+    access: 'granted',
+  }),
   enableLocationForTour: vi.fn().mockResolvedValue({
     permission: 'granted',
     fixStatus: 'available',
@@ -32,6 +40,7 @@ vi.mock('../../../lib/locationAccess', () => ({
     PROMPT: 'prompt',
     GRANTED: 'granted',
     DENIED: 'denied',
+    UNAVAILABLE: 'unavailable',
   },
   LOCATION_FIX_STATUS: {
     IDLE: 'idle',
@@ -62,11 +71,21 @@ function renderBeginFlow() {
 }
 
 describe('BeginFlow', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     beginMock.mockClear()
     resumeMock.mockClear()
     resetMock.mockClear()
     trackMock.mockClear()
+    const { enableLocationForTourBounded } = await import('../../../lib/locationAccess')
+    enableLocationForTourBounded.mockReset()
+    enableLocationForTourBounded.mockResolvedValue({
+      permission: 'granted',
+      fixStatus: 'available',
+      locationEnabled: true,
+      position: { lat: 41.89, lng: 12.49 },
+      shouldAdvance: true,
+      access: 'granted',
+    })
   })
 
   it('shows the pace selector copy from the acts model', () => {
@@ -107,8 +126,8 @@ describe('BeginFlow', () => {
   })
 
   it('shows recovery copy when location permission is denied', async () => {
-    const { enableLocationForTour } = await import('../../../lib/locationAccess')
-    enableLocationForTour.mockResolvedValueOnce({
+    const { enableLocationForTourBounded } = await import('../../../lib/locationAccess')
+    enableLocationForTourBounded.mockResolvedValueOnce({
       permission: 'denied',
       fixStatus: 'idle',
       locationEnabled: false,
@@ -138,9 +157,9 @@ describe('BeginFlow', () => {
   })
 
   it('starts the journey when permission is granted even if GPS is still searching', async () => {
-    const { enableLocationForTour } = await import('../../../lib/locationAccess')
+    const { enableLocationForTourBounded } = await import('../../../lib/locationAccess')
     let resolveFix
-    enableLocationForTour.mockImplementationOnce(
+    enableLocationForTourBounded.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
           resolveFix = () =>
@@ -161,11 +180,68 @@ describe('BeginFlow', () => {
 
     expect(screen.getByRole('button', { name: /requesting access/i })).toBeDisabled()
 
-    resolveFix()
+    await act(async () => {
+      resolveFix()
+    })
 
     await waitFor(() => {
       expect(screen.getByText('Journey route')).toBeInTheDocument()
     })
     expect(beginMock).toHaveBeenCalled()
+  })
+
+  it('exits Requesting access when permission resolve is slow / unavailable', async () => {
+    const { enableLocationForTourBounded } = await import('../../../lib/locationAccess')
+    enableLocationForTourBounded.mockResolvedValueOnce({
+      permission: 'unavailable',
+      fixStatus: 'unavailable',
+      locationEnabled: false,
+      position: null,
+      shouldAdvance: true,
+      access: 'unavailable',
+      timedOut: true,
+    })
+
+    renderBeginFlow()
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: /enable location & start/i }))
+
+    expect(
+      await screen.findByRole('heading', {
+        name: /location permission is taking longer than expected/i,
+      }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /requesting access/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue anyway/i })).toBeEnabled()
+    expect(screen.getByRole('button', { name: /try again/i })).toBeEnabled()
+    expect(beginMock).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: /continue anyway/i }))
+    await waitFor(() => {
+      expect(screen.getByText('Journey route')).toBeInTheDocument()
+    })
+  })
+
+  it('never awaits a GPS fix before leaving the permission screen', async () => {
+    const { enableLocationForTourBounded } = await import('../../../lib/locationAccess')
+    enableLocationForTourBounded.mockResolvedValueOnce({
+      permission: 'granted',
+      fixStatus: 'searching',
+      locationEnabled: true,
+      position: null,
+      shouldAdvance: true,
+      access: 'granted',
+    })
+
+    renderBeginFlow()
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: /enable location & start/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey route')).toBeInTheDocument()
+    })
+    expect(enableLocationForTourBounded).toHaveBeenCalledWith(
+      expect.objectContaining({ waitForFix: false }),
+    )
   })
 })

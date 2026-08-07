@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { enableLocationForTour } from '../../../lib/locationAccess'
+import { enableLocationForTourBounded } from '../../../lib/locationAccess'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
 import { Button, EditorialTitle } from '../../ui'
 
@@ -10,7 +10,7 @@ export function PermissionsView({ onContinue }) {
     setBusy(true)
     triggerHaptic(HAPTIC_KIND.SOFT_TAP)
     try {
-      await enableLocationForTour({
+      await enableLocationForTourBounded({
         waitForFix: false,
         skipIfDeniedAlready: false,
       })

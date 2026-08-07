@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { enableLocationForTour } from '../lib/locationAccess'
+import { enableLocationForTourBounded } from '../lib/locationAccess'
 import { BronzeButton, Button } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
 import { offlineDownloadPath } from '../routes/paths'
@@ -23,7 +23,7 @@ export default function LocationPermissionPage() {
     if (isRequesting) return
     setIsRequesting(true)
     try {
-      await enableLocationForTour({
+      await enableLocationForTourBounded({
         waitForFix: false,
         skipIfDeniedAlready: false,
       })
