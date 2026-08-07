@@ -1,0 +1,6 @@
+X-D0 dataset v2 FROZEN (Day 3)
+cases: 200
+sha256: 4c23114b6ce498e15ef44c731001e85fcb363539e315d9248d4ac5caa5c53602
+patched (permit/forbid layer only): 19
+expected-behavior codes changed: 0
+prompts changed: 0

@@ -1,0 +1,144 @@
+APPROVED.
+
+Historical Verification Pass 1 is accepted with these two founder decisions:
+
+1. SEV-04
+Use an INDISTINCT SUMMIT SILHOUETTE in ART-0.
+
+Do not omit the summit entirely, because the existence of crowning statuary is historically meaningful and visually important.
+
+However:
+- no countable horses
+- no readable rider arrangement
+- no conventional four-horse quadriga
+- no claim that the precise composition is known
+- treat it as mass/silhouette only
+
+Narration may explain that coin evidence suggests a more complex imperial group, likely including a six-horse chariot, while explicitly preserving uncertainty.
+
+2. ERA LABEL
+Ratify:
+
+“Early 4th century CE — depicted state approximately 312–320 CE”
+
+Retire “c. 315 CE” from experiment-facing materials where it implies false precision.
+
+Use the narrower 312–320 range internally for reconstruction consistency, but present the broader “early 4th century CE” label to users/testers unless the exact range is analytically necessary.
+
+Historical Verification Gate = PASSED for ART-0.
+
+Now GO DAY 3.
+
+DAY 3 SCOPE ONLY
+
+A. FREEZE X-D0 DATASET
+
+Apply the historical-verification flags to the grader/permitted-content layer.
+
+Do not change prompts unless absolutely necessary.
+
+Return:
+- final case count
+- category counts
+- cases modified at rubric/permitted-content level
+- zero-change confirmation for expected-behavior codes if still true
+- checksum/version identifier for the frozen dataset
+
+Once frozen, do not silently edit cases during the benchmark.
+
+B. RUN X-D0 BENCHMARK
+
+Run the constrained vs unconstrained comparison exactly under the locked protocol.
+
+For both systems report:
+
+- correctness
+- usefulness
+- trust calibration
+- unsupported claim count
+- refusal appropriateness
+- contested-claim handling
+- false-premise correction
+- scope discipline
+
+Also report results by category:
+- factual
+- contested
+- out-of-ledger trap
+- adversarial false premise
+- scope/refusal
+
+Do not average away catastrophic hallucinations.
+
+List every unsupported claim individually.
+
+Use founder/manual review for:
+- all unsupported-claim flags
+- the predeclared 20% spot-check sample
+
+If full founder review cannot happen today, clearly separate:
+PRELIMINARY AUTOMATED RESULT
+from
+FOUNDER-VERIFIED RESULT
+
+Do not call X-D0 passed until the required human verification is complete.
+
+C. BUILD B1 INTERACTION SHELL
+
+Build ONLY the interaction shell.
+
+Do not create production art.
+
+Use neutral placeholder / ART-0-compatible layers where needed.
+
+The purpose is to validate:
+- layered reveal interaction
+- parallax/depth behavior
+- transitions
+- touch behavior
+- performance
+- mobile layout
+- ability to swap in the shared ART-0 asset set later
+
+Keep this experiment isolated from production ChronoWalk code.
+
+Do not alter the real Then/Now implementation yet.
+
+D. B1 TECHNICAL QA
+
+Test:
+- iPhone-size viewport
+- touch interaction
+- accidental browser swipe/back conflict
+- frame rate / jank
+- asset preload behavior
+- reduced-motion fallback
+- accessibility fallback
+- ability to use the exact same reconstruction asset in flattened Control and layered B1
+
+Do not optimize for visual beauty yet.
+
+E. NO LANTERN BUILD TODAY
+
+Do not build Lantern yet.
+
+I want the B1 shell stable first so Lantern can reuse the same asset and rendering substrate rather than spawning another prototype stack.
+
+F. END-OF-DAY RETURN
+
+Return:
+
+1. X-D0 frozen dataset version
+2. Benchmark results
+3. Every unsupported claim found
+4. Whether X-D0 is PASS / ITERATE / KILL / PENDING FOUNDER REVIEW
+5. B1 shell architecture
+6. Screenshots / preview description
+7. B1 technical QA results
+8. Performance measurements
+9. Files created/modified
+10. Spend today
+11. Anything that blocks Day 4
+12. Decisions requiring my approval
+
+Do not proceed to Day 4 until I explicitly say GO DAY 4.
