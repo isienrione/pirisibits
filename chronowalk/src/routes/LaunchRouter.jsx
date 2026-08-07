@@ -28,6 +28,7 @@ import ExploreMorePage from '../pages/ExploreMorePage.jsx'
 import JourneyMemoriesPage from '../pages/JourneyMemoriesPage.jsx'
 import SettingsPage from '../pages/SettingsPage.jsx'
 import JourneyDevPanel from '../components/dev/JourneyDevPanel.jsx'
+import OfflineMapTestPanel from '../components/dev/OfflineMapTestPanel.jsx'
 import { ROUTES } from './paths.js'
 import FigmaPrototypeApp from '../redesign/FigmaPrototypeApp.jsx'
 
@@ -67,6 +68,7 @@ export default function LaunchRouter() {
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
       </Routes>
       {import.meta.env.DEV ? <JourneyDevPanel /> : null}
+      {import.meta.env.DEV ? <OfflineMapTestPanel /> : null}
     </BrowserRouter>
   )
 }

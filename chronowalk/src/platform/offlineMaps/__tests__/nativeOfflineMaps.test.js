@@ -8,6 +8,7 @@ import {
   getOfflineMapConfig,
   getRegionStatus,
   isSupported,
+  openTestMap,
   normalizeDownloadProgress,
   normalizeOfflineMapErrorCode,
   normalizeOfflineMapStatus,
@@ -18,6 +19,7 @@ import {
   ROME_OFFLINE_MAP_BOUNDS,
   ROME_OFFLINE_MAP_CONFIG,
   ROME_OFFLINE_MAP_ZOOM,
+  subscribeOfflineMapProgress,
 } from '../index.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -66,11 +68,12 @@ describe('web does not invoke native plugin', () => {
     expect(resolveNativeOfflineMapsPlugin()).toBeNull()
   })
 
-  it('get/download/delete fail safely on web', async () => {
+  it('get/download/delete/openTestMap fail safely on web', async () => {
     const plugin = {
       getRegionStatus: vi.fn(),
       downloadRegion: vi.fn(),
       deleteRegion: vi.fn(),
+      openTestMap: vi.fn(),
     }
     stubCapacitor({ native: false, platform: 'web', plugins: { ChronoWalkOfflineMaps: plugin } })
 
@@ -87,9 +90,15 @@ describe('web does not invoke native plugin', () => {
       supported: false,
       errorCode: OFFLINE_MAP_ERROR.UNSUPPORTED_PLATFORM,
     })
+    await expect(openTestMap({ cityId: 'rome' })).resolves.toMatchObject({
+      opened: false,
+      supported: false,
+      errorCode: OFFLINE_MAP_ERROR.UNSUPPORTED_PLATFORM,
+    })
     expect(plugin.getRegionStatus).not.toHaveBeenCalled()
     expect(plugin.downloadRegion).not.toHaveBeenCalled()
     expect(plugin.deleteRegion).not.toHaveBeenCalled()
+    expect(plugin.openTestMap).not.toHaveBeenCalled()
   })
 })
 
@@ -118,6 +127,14 @@ describe('iOS bridge selects native plugin', () => {
         status: 'not_downloaded',
         supported: true,
       })),
+      openTestMap: vi.fn(async () => ({
+        opened: true,
+        cityId: 'rome',
+        supported: true,
+        renderer: 'mapbox-maps-ios',
+        styleURI: 'mapbox://styles/mapbox/standard',
+      })),
+      addListener: vi.fn(async () => ({ remove: vi.fn() })),
     }
     stubCapacitor({ native: true, platform: 'ios', plugins: { ChronoWalkOfflineMaps: plugin } })
 
@@ -141,6 +158,34 @@ describe('iOS bridge selects native plugin', () => {
       supported: true,
     })
     expect(plugin.deleteRegion).toHaveBeenCalledWith({ cityId: 'rome' })
+    await expect(openTestMap({ cityId: 'rome' })).resolves.toMatchObject({
+      opened: true,
+      cityId: 'rome',
+      supported: true,
+      renderer: 'mapbox-maps-ios',
+    })
+    expect(plugin.openTestMap).toHaveBeenCalledWith({ cityId: 'rome' })
+
+    const listener = vi.fn()
+    const unsubscribe = subscribeOfflineMapProgress(listener)
+    expect(plugin.addListener).toHaveBeenCalled()
+    unsubscribe()
+  })
+
+  it('openTestMap returns mapbox_not_configured without crashing', async () => {
+    const plugin = {
+      openTestMap: vi.fn(async () => {
+        const err = new Error('Mapbox public access token missing')
+        err.code = 'mapbox_not_configured'
+        throw err
+      }),
+    }
+    stubCapacitor({ native: true, platform: 'ios', plugins: { ChronoWalkOfflineMaps: plugin } })
+    await expect(openTestMap({ cityId: 'rome' })).resolves.toMatchObject({
+      opened: false,
+      supported: true,
+      errorCode: OFFLINE_MAP_ERROR.MAPBOX_NOT_CONFIGURED,
+    })
   })
 
   it('does not select native plugin on Android', async () => {
@@ -163,6 +208,11 @@ describe('Rome config is centralized', () => {
     expect(ROME_OFFLINE_MAP_ZOOM).toEqual({ minZoom: 11, maxZoom: 16 })
     expect(ROME_OFFLINE_MAP_CONFIG.tileRegionId).toBe('chronowalk-rome')
     expect(ROME_OFFLINE_MAP_CONFIG.styleURI).toBe('mapbox://styles/mapbox/standard')
+    expect(ROME_OFFLINE_MAP_CONFIG.initialZoom).toBe(13.5)
+    expect(ROME_OFFLINE_MAP_CONFIG.center).toEqual({
+      latitude: 41.895,
+      longitude: 12.485,
+    })
     expect(getOfflineMapConfig('rome')).toBe(ROME_OFFLINE_MAP_CONFIG)
     expect(getOfflineMapConfig('athens')).toBeNull()
   })
@@ -176,6 +226,7 @@ describe('Rome config is centralized', () => {
     expect(swift).toContain('static let north = 41.93')
     expect(swift).toContain('static let minZoom: UInt8 = 11')
     expect(swift).toContain('static let maxZoom: UInt8 = 16')
+    expect(swift).toContain('static let initialZoom: Double = 13.5')
     expect(swift).toContain('mapbox://styles/mapbox/standard')
     expect(swift).toContain('chronowalk-\\(cityId)')
   })
@@ -292,5 +343,45 @@ describe('browser bundle safety', () => {
     expect(source).not.toMatch(/@capacitor\//)
     expect(source).not.toMatch(/@chronowalk\/offline-maps/)
     expect(source).not.toMatch(/mapbox-gl/)
+  })
+
+  it('DEV Offline Map Test panel is gated and not wired into production journey map', () => {
+    const panel = readFileSync(
+      join(ROOT, 'src/components/dev/OfflineMapTestPanel.jsx'),
+      'utf8',
+    )
+    const router = readFileSync(join(ROOT, 'src/routes/LaunchRouter.jsx'), 'utf8')
+    const tourMap = readFileSync(join(ROOT, 'src/components/TourMap.jsx'), 'utf8')
+
+    expect(panel).toContain('shouldRenderOfflineMapTestPanel')
+    expect(panel).toContain('openTestMap')
+    expect(panel).not.toMatch(/from ['"].*TourMap/)
+    expect(panel).not.toContain('RedesignMapPage')
+    expect(panel).not.toContain('mapbox-gl')
+    expect(router).toContain('OfflineMapTestPanel')
+    expect(router).toMatch(/import\.meta\.env\.DEV \? <OfflineMapTestPanel/)
+    expect(tourMap).not.toContain('openTestMap')
+    expect(tourMap).not.toContain('OfflineMapTestPanel')
+  })
+
+  it('native openTestMap presenter exists and uses Mapbox MapView', () => {
+    const presenter = readFileSync(
+      join(
+        ROOT,
+        'plugins/chronowalk-offline-maps/ios/Sources/ChronoWalkOfflineMapsPlugin/ChronoWalkOfflineMapViewController.swift',
+      ),
+      'utf8',
+    )
+    const plugin = readFileSync(
+      join(
+        ROOT,
+        'plugins/chronowalk-offline-maps/ios/Sources/ChronoWalkOfflineMapsPlugin/ChronoWalkOfflineMapsPlugin.swift',
+      ),
+      'utf8',
+    )
+    expect(presenter).toContain('MapView')
+    expect(presenter).toContain('prepareMapboxMapsForOfflinePresentation')
+    expect(plugin).toContain('openTestMap')
+    expect(plugin).toContain('ChronoWalkOfflineMapViewController')
   })
 })
