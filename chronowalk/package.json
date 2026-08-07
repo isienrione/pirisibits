@@ -66,6 +66,7 @@
     "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/status-bar": "^8.0.3",
     "@capgo/native-purchases": "^8.6.5",
+    "@chronowalk/offline-maps": "file:plugins/chronowalk-offline-maps",
     "@paddle/paddle-js": "^1.6.4",
     "@supabase/supabase-js": "^2.108.2",
     "idb": "^8.0.3",

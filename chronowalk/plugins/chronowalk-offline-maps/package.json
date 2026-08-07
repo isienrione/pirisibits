@@ -1,0 +1,31 @@
+{
+  "name": "@chronowalk/offline-maps",
+  "version": "0.1.0",
+  "description": "ChronoWalk native Mapbox offline map region plugin (iOS)",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "types": "src/index.d.ts",
+  "files": [
+    "ios/Sources",
+    "src",
+    "Package.swift",
+    "ChronoWalkOfflineMaps.podspec"
+  ],
+  "author": "ChronoWalk",
+  "license": "UNLICENSED",
+  "private": true,
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    }
+  },
+  "peerDependencies": {
+    "@capacitor/core": ">=8.0.0"
+  },
+  "keywords": [
+    "capacitor",
+    "plugin",
+    "mapbox",
+    "offline"
+  ]
+}

@@ -1,0 +1,9 @@
+// Example xcconfig for local Mapbox credentials.
+// Copy to Mapbox.xcconfig (gitignored) and set values locally.
+// Wire MAPBOX_ACCESS_TOKEN as a User-Defined Build Setting in the App target,
+// or `#include` this file from the project xcconfig.
+//
+// Do not commit real tokens.
+
+MAPBOX_ACCESS_TOKEN =
+CW_MAPBOX_STYLE_URI = mapbox://styles/mapbox/standard
