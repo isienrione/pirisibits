@@ -1,0 +1,26 @@
+Create a new greenfield project called ChronoWalk 2.0 for a premium historical immersion platform for travelers.
+
+ChronoWalk must be conceived from day one as a production-grade mobile application, with iOS as the first launch platform and an architecture deliberately designed to support Android next without rebuilding the product from scratch.
+
+This is not primarily a responsive website or PWA project. Web may later exist for discovery, commerce, previews, account access or supporting experiences, but the core traveler experience should be designed around a true mobile-app context: camera, location, audio, offline use, background/resume behavior, device sensors, haptics, spatial interaction and potentially advanced AR/computer-vision capabilities.
+
+The product will eventually be a sophisticated consumer application combining location-aware storytelling, cinematic audio, historically rigorous visual reconstruction, computer vision and potentially advanced spatial/AR experiences. It must ultimately support 100+ cities.
+
+IMPORTANT: Do not choose the final mobile stack, architecture, design system or implementation approach yet. Do not start building the application yet.
+
+I have a detailed Founder Playbook and a product/technical specification pack that I will provide immediately after the workspace is created. Those documents must be studied before implementation begins.
+
+When the specifications are provided, you will be expected to evaluate the best 2026 architecture for:
+
+* premium iOS-first delivery
+* subsequent Android support
+* advanced camera/computer-vision/AR capability
+* offline media and maps
+* background/resume audio
+* location and sensor access
+* high-performance animation and rendering
+* long-term maintainability across 100+ cities
+
+Do not assume that React Native, Expo, Flutter, native Swift, Kotlin Multiplatform, a hybrid architecture, or any other stack is correct before evaluating the product requirements.
+
+For now, create/open the greenfield project workspace only and wait for my specifications.
