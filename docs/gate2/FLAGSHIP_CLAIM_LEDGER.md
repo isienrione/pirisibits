@@ -1,6 +1,6 @@
 # Flagship Claim Ledger v1 — Campidoglio Forum Overlook panorama
 
-**Target era for reconstruction: c. 315 CE** (immediately post-Constantinian victory; Basilica of Maxentius complete; Diocletianic rebuilds of Curia, Saturn, Basilica Julia in place; Forum fully monumental, pre-medieval decay). Chosen because it maximizes both the number of standing structures and the contrast with today's ruins.
+**Target era for reconstruction: early 4th century CE (depicted state ≈ 312–320; working label "c. 315")** — relabeled after Historical Verification Pass 1 to avoid false year-precision (pending founder ratification). Immediately post-Constantinian victory; Basilica of Maxentius complete; Diocletianic rebuilds of Curia, Saturn, Basilica Julia in place; Forum fully monumental, pre-medieval decay. Chosen because it maximizes both the number of standing structures and the contrast with today's ruins.
 
 **Confidence classes:** **EST** = established (archaeological/epigraphic consensus) · **PROB** = probable (strong evidence, details reconstructed) · **CONT** = contested (competing scholarly reconstructions) · **UNK** = insufficient evidence — **do not depict distinctively**.
 
@@ -20,14 +20,14 @@ Field key per claim: **ID | Claim | Object/relationship | Era | Conf | Source | 
 - **GEN-01** | The Forum in c. 315 CE was a fully paved, densely monumentalized civic square, still in active political/religious use | whole scene | 315 | EST | S1,S3 | Forum chapter overviews | depict intact pavement, standing buildings, human activity | NOT a ruin, NOT a museum space | Narr ✓ | Vis ✓ | —
 - **GEN-02** | The central square was paved with travertine slabs (Augustan repaving retained) | square floor | 315 | EST | S1,S2 | pavement descriptions; surviving slabs | travertine tone floor plane | NOT marble floor across whole square | Narr ✓ | Vis ✓ | —
 - **GEN-03** | Honorific columns and statue monuments lined the square's south side (seven brick-cored column bases survive, Tetrarchic era) | south edge of square | c. 303–315 | EST | S1,S2,S6 | surviving column bases along Via Sacra south side | row of columns w/ statues atop, south side | exact statue identities NOT known | Narr ✓ | Vis ✓ (generic statues) | Statue subjects UNK — depict generic gilded figures
-- **GEN-04** | Buildings were faced in colored marbles, stucco and gilded bronze — not white | all facades | 315 | PROB | S2,S5 | polychromy scholarship, surviving veneer traces | polychrome facades, gilded roof details | exact color schemes per building NOT documented | Narr ✓ (as general truth) | Vis ✓ (restrained polychromy) | Specific palettes CONT — keep generic
-- **GEN-05** | The Column of Phocas (prominent in today's view) was erected only in 608 CE | freestanding column, centre-left | 608 | EST | S1,S6 | dedicatory inscription in situ | **must NOT appear in the 315 reconstruction**; its spot: open square/statue base | do NOT invent a predecessor monument on that exact spot | Narr ✓ (great then/now beat) | Vis: omit | Possible earlier reuse of the column base is CONT — leave spot unmarked
+- **GEN-04** | Buildings were faced in colored marbles, stucco and gilded bronze — not white | all facades | 315 | PROB | S2,S5 | polychromy scholarship, surviving veneer traces | MATERIAL-TRUE color only: grey/pink granite (Saturn shafts), veined marbles, restrained veneer fields, gilded bronze accents, terracotta tiles | NO painted-surface schemes, NO saturated "painted Rome" look | Narr ✓ ("color came from the stones themselves") | Vis ✓ material-true only | **HV1 verified:** material polychromy HIGH; painted schemes on these monuments LOW; speculative saturation = do-not-depict
+- **GEN-05** | The Column of Phocas (prominent in today's view) was erected only in 608 CE | freestanding column, centre-left | 608 | EST | S1,S6 | dedicatory inscription in situ | **must NOT appear in the 315 reconstruction**; its spot: visually neutral pavement / generic base clutter per GEN-03 | do NOT invent a predecessor monument on that exact spot | Narr ✓ (upgraded beat: base recycled from a Diocletian statue monument, re-carved for Phocas in 608 — CIL VI 1200) | Vis: omit/neutral | **HV1 verified:** shaft is reused 2nd-c. work; socle recycled from a Diocletian dedication; but reuse ≠ proof that monument stood on this spot in 315 → spot stays neutral
 
 ## SEV — Arch of Septimius Severus (near-left)
 - **SEV-01** | Triple-bay marble triumphal arch dedicated 203 CE to Septimius Severus, Caracalla (and originally Geta) | arch | 203→315 | EST | S1,S6 | standing monument + attic inscription | depict intact, clean, full attic inscription | — | Narr ✓ | Vis ✓ | —
 - **SEV-02** | Geta's name was erased from the inscription after his murder (damnatio memoriae, 212) | attic inscription | 212→315 | EST | S1,S3,S6 | visible re-cut inscription | 315 state shows the RE-CUT text (post-erasure) | do NOT show Geta's name present | Narr ✓ (flagship story) | Vis ✓ | —
 - **SEV-03** | Relief panels depict the Parthian campaigns | arch facades | 203 | EST | S1,S2 | surviving reliefs | reliefs present, painted per GEN-04 | precise original paintwork UNK | Narr ✓ | Vis ✓ (geometry), paint generic | —
-- **SEV-04** | The attic carried a bronze quadriga group (emperor in six-horse/four-horse chariot with flanking figures) | arch top | 203→315 | PROB | S1,S2 | coin depictions; no physical survival | bronze chariot group silhouette on attic | exact composition/figure count NOT certain | Narr ✓ (say "coins show…") | Vis ✓ as approximate blockout | Coin readings differ (4 vs 6 horses) — CONT detail, generic group allowed
+- **SEV-04** | The attic carried a bronze quadriga group (emperor in six-horse/four-horse chariot with flanking figures) | arch top | 203→315 | PROB | S1,S2 | coin depictions; no physical survival | indistinct silhouette ONLY — no countable horses/identifiable figures | exact composition NOT certain; do NOT default to a conventional quadriga | Narr ✓ ("coins show… some dies suggest six horses, sons flanking") | Vis: silhouette or omit (founder to choose) | **HV1 verified:** coin evidence (RIC IV types; Brilliant MAAR 29, 1967) supports a six-horse (seiuges) reading w/ flanking equestrian sons; composition stays LOW-confidence
 
 ## ROS — Rostra Augusti (below/centre-near)
 - **ROS-01** | The Rostra was the speakers' platform, ~3 m high, ~24 m wide, facing the square | platform | 315 | EST | S1,S2,S6 | surviving structure | raised platform, crowd-facing | — | Narr ✓ | Vis ✓ | —
@@ -64,10 +64,10 @@ Field key per claim: **ID | Claim | Object/relationship | Era | Conf | Source | 
 ## DIV — Temple of Divus Julius + environs (centre, far side of square)
 - **DIV-01** | Temple of the Deified Julius Caesar closed the square's SE short side, on the site of Caesar's cremation (44 BCE) | temple | 29 BCE→315 | EST(site/function) | S1,S3 | podium core survives | temple mass closing the vista | — | Narr ✓ (strongest emotional beat) | Vis ✓ mass | —
 - **DIV-02** | Its platform incorporated a rostra (Rostra ad Divi Iuli) facing the square | platform front | 29 BCE→315 | EST | S1,S4 | structural + literary | fronting platform | — | Narr ✓ | Vis ✓ | —
-- **DIV-03** | Elevation (hexastyle? pycnostyle per Vitruvius) and the "star of Caesar" pediment emblem | facade | 29 BCE | CONT | S2,S4 | Vitruvius reference + coins | conservative hexastyle front, optional star on coins-basis | do NOT assert facade details as established | Narr hedged ("coins show a star") | Vis: constrained approximate | Coin vs Vitruvius readings CONT
+- **DIV-03** | Elevation (hexastyle? pycnostyle per Vitruvius) and the "star of Caesar" pediment emblem | facade | 29 BCE | CONT | S2,S4 | Vitruvius reference + coins | conservative close-set (pycnostyle) front, generic; **star OMITTED from facade** | do NOT assert facade details as established; do NOT render the star as fact | Narr hedged (star = coin/comet story, A/B split: association HIGH, placement LOW) | Vis: constrained approximate mass, no star | **HV1 verified:** sidus Iulium association HIGH (Pliny NH 2.93–94; Suet. Div.Iul. 88; coins); architectural placement at ~315 LOW → visual omit
 
 ## AEM — Basilica Aemilia/Paulli (left of axis, north side)
-- **AEM-01** | Basilica Aemilia lined the NE side of the square with a two-story facade and the Tabernae Novae shop row fronting it | basilica + shops | 315 | EST | S1,S2 | footprint, surviving elements | long colonnaded facade + shop portico ("Portus of Gaius & Lucius" naming CONT) | — | Narr ✓ | Vis ✓ | Portico attribution naming CONT — avoid naming in narration
+- **AEM-01** | Basilica Aemilia lined the NE side of the square with a two-story facade and the Tabernae Novae shop row fronting it | basilica + shops | 315 | EST | S1,S2 | footprint, surviving elements | long colonnaded facade + shop portico | do NOT caption the portico "Porticus of Gaius and Lucius" as fact | Narr ✓ (structure; name only as "commonly identified as…", or omitted) | Vis ✓ | **HV1 verified:** structure HIGH; name attribution MODERATE-LOW (Platner–Ashby; Digital Augustan Rome; AJA 17, 1913) — suppress name in VPG scripts
 - **AEM-02** | Destroyed/burned in the 410 sack (green coin-stains on floor) — i.e., still intact in 315 | basilica | 410 | EST | S1,S6 | melted-coin floor stains | intact in 315 scene | do NOT depict damage | Narr ✓ (as future fate) | Vis ✓ intact | —
 
 ## VIA — Via Sacra
@@ -83,14 +83,16 @@ Field key per claim: **ID | Claim | Object/relationship | Era | Conf | Source | 
 
 ## Do-not-depict register (visual hard bans for the 315 scene)
 1. Column of Phocas (GEN-05, 608 CE).
-2. Any invented pediment narrative sculpture (SAT-04, DIV-03 beyond coin-attested star).
+2. Any invented pediment narrative sculpture (SAT-04, DIV-03) — **including the sidus Iulium star on the Divus Julius facade** (HV1: association HIGH but placement LOW → narration only).
 3. Specific statue identities on GEN-03 columns — generic figures only.
 4. Church/medieval/modern accretions visible today (Curia church door, S. Lorenzo in Miranda facade, ramps, railings, trees, tourists).
-5. Detailed per-building color schemes (generic restrained polychromy only, GEN-04).
+5. Painted-surface color schemes and speculative saturation (GEN-04: material-true color only — granite, marbles, gilded bronze, terracotta).
 6. Any interior spaces (nothing in this vantage exposes interiors).
+7. Countable horses or identifiable figures in the Severan summit group (SEV-04: indistinct silhouette or omit).
+8. Any specific monument on the future Column-of-Phocas spot (GEN-05: neutral pavement/generic base clutter only).
 
 ## Claims requiring founder review (contested/uncertain)
-CON-01 elevation · BJ-02 roof form · DIV-03 facade details · SEV-04 quadriga composition · GEN-04 polychromy degree · GEN-05 spot treatment · AEM-01 portico naming. Recommendation embedded per claim; founder may downgrade any to narration-only.
+**Historical Verification Pass 1 complete** (see `HISTORICAL_VERIFICATION_PASS_1.md` for the full 13-field verification per item + decision table). All seven items now carry verified confidence splits and locked treatments. Remaining founder decisions: ① SEV-04 silhouette vs full omit; ② era relabel to "early 4th century CE (≈312–320)".
 
 ## Verification status
 All source attributions are from standard reference works cited from general knowledge; **none is yet verified against the physical texts** — Day 2 QA flags this as the ledger's main open risk. Verification plan: founder spot-check of the 7 review claims + optional historian pass ($200–500, NOT authorized yet).

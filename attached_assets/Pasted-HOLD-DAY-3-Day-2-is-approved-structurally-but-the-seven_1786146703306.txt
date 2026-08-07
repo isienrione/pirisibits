@@ -1,0 +1,182 @@
+HOLD DAY 3.
+
+Day 2 is approved structurally, but the seven contested historical claims must go through a HISTORICAL VERIFICATION GATE before they are allowed to drive ART-0 or narration.
+
+Do not build B1 yet.
+Do not build Lantern yet.
+Do not generate reconstruction imagery yet.
+Do not run D0 yet.
+Do not proceed to Day 3.
+
+Perform a focused verification pass on ONLY these seven contested items:
+
+1. Temple of Concord elevation / façade reconstruction
+2. Basilica Julia roof form
+3. Temple of Divus Julius façade
+4. Sidus Iulium / star representation on Divus Julius
+5. Arch of Septimius Severus summit quadriga composition
+6. Degree / location of architectural polychromy appropriate to the c. 315 Forum reconstruction
+7. Basilica Aemilia portico naming / attribution
+
+Also resolve separately:
+
+8. What, if anything, can responsibly be shown at the later Column of Phocas location in c. 315 CE
+
+Do not invent certainty merely to complete the image.
+
+--------------------------------------------------
+SOURCE STANDARD
+--------------------------------------------------
+
+For each item, distinguish:
+
+A. PRIMARY EVIDENCE
+- standing remains
+- inscriptions
+- ancient literary testimony
+- coins
+- archaeological fragments
+
+B. MODERN SCHOLARLY RECONSTRUCTION
+- Claridge
+- Gorski & Packer
+- Coarelli
+- LTUR
+- peer-reviewed / institutional archaeological reconstructions
+- digitales-forum-romanum where relevant
+
+C. SPECULATIVE / ILLUSTRATIVE RECONSTRUCTION
+
+Do not treat C as equivalent to A or B.
+
+Where sources disagree, preserve disagreement.
+
+--------------------------------------------------
+REQUIRED OUTPUT FOR EACH CLAIM
+--------------------------------------------------
+
+Return:
+
+1. Claim ID
+2. Exact question
+3. Primary evidence
+4. Scholarly reconstruction evidence
+5. Conflicting interpretations
+6. Confidence:
+   - HIGH
+   - MODERATE
+   - LOW
+   - DO NOT DEPICT
+7. Safe for narration?
+8. Safe for ART-0?
+9. If visual-safe, what EXACTLY may be shown?
+10. What MUST NOT be shown as certain?
+11. Recommended ART-0 treatment:
+    - depict normally
+    - simplified/mass-only
+    - visually hedged
+    - omit
+12. Recommended narration language, if any
+13. Sources with enough bibliographic detail for me to verify manually
+
+--------------------------------------------------
+SPECIFIC CAUTIONS
+--------------------------------------------------
+
+ARCH OF SEPTIMIUS SEVERUS
+
+Do NOT assume a conventional four-horse quadriga.
+
+Known numismatic/topographical evidence appears to support more complicated summit compositions, including six-horse interpretations.
+
+Resolve what the coin evidence actually allows us to say.
+
+If composition cannot be fixed confidently:
+- use silhouette/mass-only,
+- or omit summit statuary from ART-0.
+
+DIVUS JULIUS
+
+Separate two claims:
+
+A. existence/iconographic association of the sidus Iulium
+B. exact architectural placement/form on the temple façade in the target reconstruction
+
+Do not let good evidence for A falsely inflate confidence in B.
+
+BASILICA JULIA
+
+Do not infer roof pitch, roofing material, clerestory configuration, or upper-storey articulation unless supported.
+
+If only the volumetric envelope is defensible, ART-0 should use massing rather than detailed invented architecture.
+
+CONCORD
+
+If elevation evidence is insufficient for a detailed façade, use historically constrained massing.
+
+POLYCHROMY
+
+Do not ask “Were Roman buildings colorful?” generically.
+
+Ask:
+“What color/material treatment can responsibly be depicted on THESE monuments in the Roman Forum around c. 315 CE?”
+
+Distinguish:
+- colored marble inherent to the material
+- painted architectural surfaces
+- gilding
+- statuary color
+- speculative saturation
+
+The reconstruction must not become a generic brightly-painted ‘ancient Rome’ image.
+
+PHOCAS LOCATION
+
+The Column of Phocas itself is prohibited because it dates to AD 608.
+
+Do not fill the location with an invented predecessor.
+
+If the 315 condition is unknown:
+leave the area visually neutral rather than fabricating a monument.
+
+--------------------------------------------------
+ERA CHECK
+--------------------------------------------------
+
+Also sanity-check the target date c. 315 CE.
+
+Return:
+
+- why c. 315 is preferable to c. 300, c. 310, c. 320 or a broader “early 4th century” target;
+- which visible structures materially depend on choosing 315;
+- whether any reconstruction element in the current ledger is anachronistic specifically at 315;
+- whether “c. 315 CE” creates false precision.
+
+If the archaeological evidence supports only a broader window, recommend the historically more defensible label.
+
+--------------------------------------------------
+DECISION TABLE
+--------------------------------------------------
+
+At the end, give me:
+
+CLAIM | CONFIDENCE | NARRATION | ART-0 | TREATMENT | FOUNDER REVIEW?
+
+Then update FLAGSHIP_CLAIM_LEDGER.md accordingly.
+
+Do not touch the 200-case D0 dataset yet except to FLAG cases whose expected answer would change because of this historical verification.
+
+Return:
+
+1. verified findings
+2. claims upgraded
+3. claims downgraded
+4. claims removed from visual reconstruction
+5. D0 cases flagged
+6. revised do-not-depict register
+7. whether the target era should remain c. 315 CE
+8. source list
+9. files modified
+10. confirmation that nothing was built and $0 spent
+
+Hold after this verification pass.
