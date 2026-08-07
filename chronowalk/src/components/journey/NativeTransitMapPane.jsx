@@ -5,9 +5,14 @@ import {
   setTransitMapVisible,
   updateTransitMap,
 } from '../../platform/offlineMaps/nativeTransitMap.js'
+import {
+  nativeMapLog,
+  summarizeTransitMapPayload,
+} from '../../platform/offlineMaps/nativeMapDiagnostics.js'
 import { resolveActiveMapLeg } from '../../content/mapStops.js'
 
 const FALLBACK_COPY = 'Map unavailable. Continue with step directions.'
+const MAX_FRAME_WAIT_ATTEMPTS = 20
 
 function readFrame(el) {
   if (!el || typeof el.getBoundingClientRect !== 'function') return null
@@ -40,8 +45,13 @@ export default function NativeTransitMapPane({
 }) {
   const hostRef = useRef(null)
   const openedRef = useRef(false)
+  const frameWaitAttemptsRef = useRef(0)
   const [failed, setFailed] = useState(false)
   const [errorCode, setErrorCode] = useState(null)
+
+  useEffect(() => {
+    nativeMapLog('pane mounted')
+  }, [])
 
   const resolvedDestinationStopId =
     destinationStopId ??
@@ -98,12 +108,53 @@ export default function NativeTransitMapPane({
 
   const syncNativeMap = useCallback(async () => {
     const params = buildParams()
-    if (!params.frame) return
+    if (!params.frame) {
+      frameWaitAttemptsRef.current += 1
+      const host = hostRef.current
+      const raw = host?.getBoundingClientRect?.()
+      nativeMapLog('measured frame', {
+        valid: false,
+        attempt: frameWaitAttemptsRef.current,
+        raw: raw
+          ? {
+              x: Math.round(raw.left),
+              y: Math.round(raw.top),
+              width: Math.round(raw.width),
+              height: Math.round(raw.height),
+            }
+          : null,
+      })
+      if (frameWaitAttemptsRef.current >= MAX_FRAME_WAIT_ATTEMPTS) {
+        nativeMapLog('pane fallback', { errorCode: 'invalid_frame' })
+        setFailed(true)
+        setErrorCode('invalid_frame')
+      }
+      return
+    }
+
+    frameWaitAttemptsRef.current = 0
+    nativeMapLog('measured frame', {
+      valid: true,
+      x: Math.round(params.frame.x),
+      y: Math.round(params.frame.y),
+      width: Math.round(params.frame.width),
+      height: Math.round(params.frame.height),
+    })
 
     try {
       if (!openedRef.current) {
+        nativeMapLog('openTransitMap start', summarizeTransitMapPayload(params))
         const result = await openTransitMap(params)
+        nativeMapLog('openTransitMap result', {
+          opened: result?.opened ?? false,
+          supported: result?.supported ?? false,
+          errorCode: result?.errorCode ?? null,
+          renderer: result?.renderer ?? null,
+        })
         if (!result?.opened) {
+          nativeMapLog('pane fallback', {
+            errorCode: result?.errorCode ?? 'download_failed',
+          })
           setFailed(true)
           setErrorCode(result?.errorCode ?? 'download_failed')
           return
@@ -115,14 +166,24 @@ export default function NativeTransitMapPane({
       }
 
       const result = await updateTransitMap(params)
+      nativeMapLog('updateTransitMap result', {
+        updated: result?.updated ?? false,
+        supported: result?.supported ?? false,
+        errorCode: result?.errorCode ?? null,
+      })
       if (result?.updated === false && result?.errorCode) {
+        nativeMapLog('pane fallback', { errorCode: result.errorCode })
         setFailed(true)
         setErrorCode(result.errorCode)
       } else {
         setFailed(false)
         setErrorCode(null)
       }
-    } catch {
+    } catch (error) {
+      nativeMapLog('pane fallback', {
+        errorCode: 'download_failed',
+        message: typeof error?.message === 'string' ? error.message : 'unknown',
+      })
       setFailed(true)
       setErrorCode('download_failed')
     }
@@ -130,10 +191,25 @@ export default function NativeTransitMapPane({
 
   useLayoutEffect(() => {
     let cancelled = false
+    let retryTimer = null
+
     const run = () => {
       if (!cancelled) void syncNativeMap()
     }
     run()
+
+    // Remeasure until the slot has a real size (flex/clamp layout can be 0 on first paint).
+    let attempts = 0
+    const scheduleRetry = () => {
+      if (cancelled || openedRef.current || failed) return
+      if (attempts >= MAX_FRAME_WAIT_ATTEMPTS) return
+      attempts += 1
+      retryTimer = setTimeout(() => {
+        run()
+        scheduleRetry()
+      }, 50)
+    }
+    scheduleRetry()
 
     const el = hostRef.current
     let observer = null
@@ -148,11 +224,12 @@ export default function NativeTransitMapPane({
 
     return () => {
       cancelled = true
+      if (retryTimer != null) clearTimeout(retryTimer)
       observer?.disconnect()
       window.removeEventListener('scroll', onScroll, true)
       window.removeEventListener('resize', onScroll)
     }
-  }, [syncNativeMap])
+  }, [syncNativeMap, failed])
 
   useEffect(() => {
     void setTransitMapVisible(true)
@@ -198,7 +275,7 @@ export default function NativeTransitMapPane({
       style={{
         width: '100%',
         height: '100%',
-        // Transparent host — native MapView overlays this slot.
+        // Transparent host — native MapView overlays this slot above WKWebView.
         background: 'transparent',
         minHeight: 120,
       }}

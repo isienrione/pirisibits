@@ -11,6 +11,7 @@ import {
 } from '../utils/routeGeometryCache'
 import { getDistance } from '../utils/distance'
 import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
+import { directionsLog } from '../platform/offlineMaps/nativeMapDiagnostics.js'
 
 /** If GPS is farther than this from the previous stop, prefer stop→stop routing. */
 const STALE_GPS_FROM_LEG_M = 350
@@ -98,7 +99,16 @@ export function useWalkingDirections({
         return
       }
 
+      directionsLog('provider', {
+        provider: 'mapbox-directions-v5',
+        hasToken: Boolean(env.mapboxToken),
+        hasOrigin: Boolean(routingOrigin),
+        hasDestination: Boolean(routingDestination),
+        hasLegFallback: Boolean(legFallback?.fromId && legFallback?.toId),
+      })
+
       if (!env.mapboxToken) {
+        directionsLog('normalized error code', { code: 'missing_token' })
         setDirections(null)
         setError('Mapbox token is required for walking directions.')
         setLoading(false)

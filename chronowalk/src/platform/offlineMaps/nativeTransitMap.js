@@ -10,6 +10,10 @@ import {
   normalizeOfflineMapErrorCode,
 } from './offlineMapStatus.js'
 import { resolveNativeOfflineMapsPlugin } from './nativeOfflineMaps.js'
+import {
+  nativeMapLog,
+  summarizeTransitMapPayload,
+} from './nativeMapDiagnostics.js'
 
 /**
  * @param {unknown} value
@@ -107,7 +111,9 @@ export function normalizeFrame(frame) {
  * Native iOS only — web / Android remain on the existing web map.
  */
 export function shouldUseNativeTransitMap() {
-  return isNativeIOS()
+  const value = isNativeIOS()
+  nativeMapLog('isNativeIOS', { value })
+  return value
 }
 
 function unsupportedOpen(cityId = null) {
@@ -124,7 +130,12 @@ function unsupportedOpen(cityId = null) {
  */
 export async function openTransitMap(params = {}) {
   const payload = buildTransitMapPayload(params)
-  if (!isNativeIOS()) return unsupportedOpen(payload.cityId)
+  nativeMapLog('payload summary', summarizeTransitMapPayload(payload))
+
+  if (!isNativeIOS()) {
+    nativeMapLog('isNativeIOS', { value: false })
+    return unsupportedOpen(payload.cityId)
+  }
 
   if (!getOfflineMapConfig(payload.cityId)) {
     return {
@@ -146,6 +157,10 @@ export async function openTransitMap(params = {}) {
   }
 
   const plugin = resolveNativeOfflineMapsPlugin()
+  nativeMapLog('plugin resolved', {
+    resolved: Boolean(plugin),
+    hasOpenTransitMap: Boolean(plugin?.openTransitMap),
+  })
   if (!plugin?.openTransitMap) return unsupportedOpen(payload.cityId)
 
   try {
