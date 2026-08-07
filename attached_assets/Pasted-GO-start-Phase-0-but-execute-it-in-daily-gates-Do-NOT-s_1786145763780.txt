@@ -1,0 +1,89 @@
+GO — start Phase 0, but execute it in daily gates.
+
+Do NOT start the whole Phase 0 package at once.
+
+Start with DAY 1 ONLY.
+
+DAY 1 objectives:
+
+1. Freeze HPS v0
+2. Define the flagship Forum vantage
+3. Define the baseline/control condition
+4. Lock the X-VPG test protocol
+5. Lock the X-D0 test protocol
+6. Produce the ART-0 brief template
+7. Produce the Day-1 decision checklist
+
+IMPORTANT:
+- Do not build B1 yet.
+- Do not build Lantern yet.
+- Do not build B3-PREP yet.
+- Do not commission art.
+- Do not spend money.
+- Do not modify production ChronoWalk code.
+- Keep all Gate 2 work isolated under docs/gate2/ and/or a dedicated experimental prototype area.
+
+For HPS v0:
+Return the literal final questionnaire and scoring sheet so I can approve or reject it.
+
+For the flagship Forum vantage:
+Recommend ONE exact vantage based on:
+- historical interpretability
+- visual transformation potential
+- suitability for layered Then/Now
+- suitability for Lantern
+- suitability later for B2/VPS testing
+- tourist accessibility
+- ability to test without special access
+- crowd conditions
+- line-of-sight stability
+
+Do not just name “Roman Forum.”
+Specify the exact monument / viewing position concept and explain why it is the best Gate 2 control site.
+
+For the baseline/control:
+Define exactly what the control experience is.
+It should be representative of the best CURRENT ChronoWalk experience, not an artificially weak straw-man control.
+
+For X-VPG:
+Lock:
+- cells
+- participant flow
+- randomized/counterbalanced order
+- exposure duration
+- HPS timing
+- forced-choice question
+- comprehension check
+- attention-conflict measurement
+- pass / iterate / kill rule
+- minimum N and preferred N
+
+For X-D0:
+Lock:
+- eval set structure
+- claim categories
+- answer correctness rubric
+- hallucination / unsupported-claim rubric
+- trust calibration rubric
+- constrained vs unconstrained comparison
+- pass / kill rule
+- number of test cases
+
+For ART-0:
+Create a brief TEMPLATE only.
+Do not generate or commission assets yet.
+
+End with:
+
+DAY 1 APPROVAL PACK
+
+Containing:
+A. Final HPS v0
+B. Recommended flagship vantage
+C. Exact baseline condition
+D. X-VPG protocol
+E. X-D0 protocol
+F. ART-0 brief template
+G. Decisions requiring my approval before Day 2
+
+Do not proceed to Day 2 until I explicitly say GO DAY 2.
