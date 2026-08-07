@@ -60,13 +60,15 @@ describe('offlinePackage', () => {
     expect(localStorage.getItem(ROME_OFFLINE_STATUS_KEY)).toBeTruthy()
   })
 
-  it('does not require map tiles for offline-ready (prevents prepare UI collapse)', () => {
+  it('web offline-ready does not require Cache API map tiles (native TileStore is separate)', () => {
     const source = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), '../offlinePackage.js'),
       'utf8',
     )
     const readyFn = source.slice(source.indexOf('export async function isRomeAudioReadyOffline'))
     expect(readyFn).toContain('isCriticalOfflineAudioPath')
+    expect(readyFn).toContain('isNativeIOS')
+    expect(readyFn).toContain('isNativePackageMapReady')
     expect(readyFn).not.toContain('isRomeMapReadyOffline')
   })
 

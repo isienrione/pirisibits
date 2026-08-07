@@ -11,6 +11,13 @@ import {
   verifyRomeMapTiles,
 } from '../map/offlineMapTiles.js'
 import { env } from '../config/env.js'
+import { isNativeIOS } from '../platform/runtime/platformRuntime.js'
+import {
+  clearNativeRomeMapRegion,
+  ensureNativeRomeMapRegion,
+  isNativePackageMapReady,
+  NATIVE_MAP_REGION_PARTIAL_ERROR,
+} from '../platform/offlineMaps/nativeMapPackageDownload.js'
 
 export const ROME_OFFLINE_PACKAGE_ID = 'rome'
 export const ROME_AUDIO_CACHE = 'chronowalk-rome-audio-v2'
@@ -395,6 +402,23 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
   const storiesTotal = Math.max(1, audioPaths.length + mediaPaths.length)
   const cache = await openRomeAudioCache()
 
+  // If critical stories are already present and only the native map is missing,
+  // retry the map component without redownloading the whole package.
+  const storiesAlreadyReady = await areRomeCriticalStoriesReady(manifest)
+  const nativeMapAlreadyReady = isNativeIOS()
+    ? await isNativePackageMapReady('rome')
+    : true
+
+  if (storiesAlreadyReady && isNativeIOS() && !nativeMapAlreadyReady) {
+    return downloadNativeMapComponentOnly(manifest, {
+      onProgress,
+      signal,
+      audioPaths,
+      mediaPaths,
+      storiesTotal,
+    })
+  }
+
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.DOWNLOADING,
     fileCount: audioPaths.length,
@@ -462,7 +486,7 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
     await hydrateRomeAudioCache(manifest, { includeMedia: 'stills' })
 
     // Mark stories ready immediately so the prepare UI does not collapse while
-    // map tiles (optional, often flaky on cellular) are still fetching.
+    // map tiles (optional on web; required native TileStore region on iOS) fetch.
     const downloadedAt = Date.now()
     writeRomeOfflineStatus({
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
@@ -481,60 +505,26 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
       currentPath: 'stories-ready',
     })
 
-    let mapVerification = { valid: true, skipped: true, total: 0, missing: [] }
-    if (env.mapboxToken && mapEstimate.tileCount > 0) {
-      try {
-        await downloadRomeMapTiles(manifest, {
-          signal,
-          token: env.mapboxToken,
-          onProgress: ({ currentPath }) => {
-            onProgress?.({
-              completed: storiesTotal,
-              total: storiesTotal,
-              percent: 100,
-              currentPath,
-            })
-          },
-        })
-        mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
-        writeRomeOfflineStatus({
-          status: OFFLINE_AUDIO_STATUS.COMPLETE,
-          fileCount: audioPaths.length - skippedAudio.length,
-          mediaFileCount: mediaPaths.length - skippedMedia.length,
-          mapTileCount: mapVerification.total,
-          downloadedAt,
-          error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
-          skippedOptional: skippedAudio.length + skippedMedia.length,
-        })
-      } catch (mapError) {
-        console.warn('[offline] Map tile download incomplete:', mapError)
-        mapVerification = {
-          valid: false,
-          skipped: false,
-          total: mapEstimate.tileCount,
-          missing: ['map-tiles'],
-          error: mapError?.message ?? 'map_tiles_failed',
-        }
-        writeRomeOfflineStatus({
-          status: OFFLINE_AUDIO_STATUS.COMPLETE,
-          fileCount: audioPaths.length - skippedAudio.length,
-          mediaFileCount: mediaPaths.length - skippedMedia.length,
-          mapTileCount: 0,
-          downloadedAt,
-          error: 'map_tiles_partial',
-          skippedOptional: skippedAudio.length + skippedMedia.length,
-        })
-      }
-    }
+    const mapResult = await downloadPackageMapComponent(manifest, {
+      onProgress,
+      signal,
+      storiesTotal,
+      mapEstimate,
+      audioCount: audioPaths.length - skippedAudio.length,
+      mediaCount: mediaPaths.length - skippedMedia.length,
+      downloadedAt,
+      skippedOptional: skippedAudio.length + skippedMedia.length,
+    })
 
     return {
       status: OFFLINE_AUDIO_STATUS.COMPLETE,
       fileCount: audioPaths.length - skippedAudio.length,
       mediaFileCount: mediaPaths.length - skippedMedia.length,
-      mapTileCount: mapVerification.total ?? 0,
+      mapTileCount: mapResult.mapTileCount ?? 0,
       downloadedAt,
       verification: packageVerification,
-      mapVerification,
+      mapVerification: mapResult.mapVerification,
+      nativeMap: mapResult.nativeMap ?? null,
       skippedAudio,
       skippedMedia,
     }
@@ -551,6 +541,207 @@ export async function downloadRomeAudioPackage(manifest, { onProgress, signal } 
   }
 }
 
+/**
+ * Map portion of the Rome offline package.
+ * Native iOS → Mapbox TileStore downloadRegion('rome').
+ * Web/PWA → existing Cache API map tiles (unchanged).
+ */
+async function downloadPackageMapComponent(
+  manifest,
+  {
+    onProgress,
+    signal,
+    storiesTotal,
+    mapEstimate,
+    audioCount,
+    mediaCount,
+    downloadedAt,
+    skippedOptional,
+  },
+) {
+  if (isNativeIOS()) {
+    try {
+      const nativeMap = await ensureNativeRomeMapRegion({
+        cityId: 'rome',
+        onProgress: (payload) => {
+          onProgress?.({
+            completed: storiesTotal,
+            total: storiesTotal,
+            percent: 100,
+            currentPath: payload?.currentPath ?? 'native-map-rome',
+            mapProgress: payload?.progress ?? null,
+            mapStatus: payload?.status ?? null,
+            mapCompletedResourceCount: payload?.completedResourceCount ?? null,
+            mapRequiredResourceCount: payload?.requiredResourceCount ?? null,
+          })
+        },
+      })
+      writeRomeOfflineStatus({
+        status: OFFLINE_AUDIO_STATUS.COMPLETE,
+        fileCount: audioCount,
+        mediaFileCount: mediaCount,
+        mapTileCount: nativeMap.status?.requiredResourceCount ?? 1,
+        downloadedAt,
+        error: null,
+        skippedOptional,
+        nativeMapReady: true,
+      })
+      return {
+        mapTileCount: nativeMap.status?.requiredResourceCount ?? 1,
+        mapVerification: {
+          valid: true,
+          skipped: false,
+          native: true,
+          alreadyPresent: nativeMap.alreadyPresent,
+          invokedDownloadRegion: nativeMap.invokedDownloadRegion,
+          total: nativeMap.status?.requiredResourceCount ?? 1,
+          missing: [],
+        },
+        nativeMap,
+      }
+    } catch (mapError) {
+      console.warn('[offline] Native map region download incomplete:', mapError)
+      writeRomeOfflineStatus({
+        status: OFFLINE_AUDIO_STATUS.COMPLETE,
+        fileCount: audioCount,
+        mediaFileCount: mediaCount,
+        mapTileCount: 0,
+        downloadedAt,
+        error: NATIVE_MAP_REGION_PARTIAL_ERROR,
+        skippedOptional,
+        nativeMapReady: false,
+      })
+      return {
+        mapTileCount: 0,
+        mapVerification: {
+          valid: false,
+          skipped: false,
+          native: true,
+          total: 0,
+          missing: ['native-map-region'],
+          error: mapError?.message ?? NATIVE_MAP_REGION_PARTIAL_ERROR,
+        },
+        nativeMap: {
+          downloaded: false,
+          invokedDownloadRegion: true,
+          error: mapError?.message ?? NATIVE_MAP_REGION_PARTIAL_ERROR,
+        },
+      }
+    }
+  }
+
+  let mapVerification = { valid: true, skipped: true, total: 0, missing: [] }
+  if (env.mapboxToken && mapEstimate.tileCount > 0) {
+    try {
+      await downloadRomeMapTiles(manifest, {
+        signal,
+        token: env.mapboxToken,
+        onProgress: ({ currentPath }) => {
+          onProgress?.({
+            completed: storiesTotal,
+            total: storiesTotal,
+            percent: 100,
+            currentPath,
+          })
+        },
+      })
+      mapVerification = await verifyRomeMapTiles(manifest, { token: env.mapboxToken })
+      writeRomeOfflineStatus({
+        status: OFFLINE_AUDIO_STATUS.COMPLETE,
+        fileCount: audioCount,
+        mediaFileCount: mediaCount,
+        mapTileCount: mapVerification.total,
+        downloadedAt,
+        error: mapVerification.valid || mapVerification.skipped ? null : 'map_tiles_partial',
+        skippedOptional,
+      })
+    } catch (mapError) {
+      console.warn('[offline] Map tile download incomplete:', mapError)
+      mapVerification = {
+        valid: false,
+        skipped: false,
+        total: mapEstimate.tileCount,
+        missing: ['map-tiles'],
+        error: mapError?.message ?? 'map_tiles_failed',
+      }
+      writeRomeOfflineStatus({
+        status: OFFLINE_AUDIO_STATUS.COMPLETE,
+        fileCount: audioCount,
+        mediaFileCount: mediaCount,
+        mapTileCount: 0,
+        downloadedAt,
+        error: 'map_tiles_partial',
+        skippedOptional,
+      })
+    }
+  }
+
+  return {
+    mapTileCount: mapVerification.total ?? 0,
+    mapVerification,
+    nativeMap: null,
+  }
+}
+
+async function downloadNativeMapComponentOnly(
+  manifest,
+  { onProgress, signal, audioPaths, mediaPaths, storiesTotal },
+) {
+  void signal
+  const prior = readRomeOfflineStatus()
+  writeRomeOfflineStatus({
+    ...prior,
+    status: OFFLINE_AUDIO_STATUS.DOWNLOADING,
+    error: null,
+  })
+
+  onProgress?.({
+    completed: storiesTotal,
+    total: storiesTotal,
+    percent: 100,
+    currentPath: 'native-map-rome',
+  })
+
+  const downloadedAt = prior.downloadedAt ?? Date.now()
+  const mapResult = await downloadPackageMapComponent(manifest, {
+    onProgress,
+    signal,
+    storiesTotal,
+    mapEstimate: estimateRomeMapTileDownload(manifest),
+    audioCount: prior.fileCount ?? audioPaths.length,
+    mediaCount: prior.mediaFileCount ?? mediaPaths.length,
+    downloadedAt,
+    skippedOptional: prior.skippedOptional ?? 0,
+  })
+
+  return {
+    status: OFFLINE_AUDIO_STATUS.COMPLETE,
+    fileCount: prior.fileCount ?? audioPaths.length,
+    mediaFileCount: prior.mediaFileCount ?? mediaPaths.length,
+    mapTileCount: mapResult.mapTileCount ?? 0,
+    downloadedAt,
+    verification: await verifyRomeAudioPackage(manifest),
+    mapVerification: mapResult.mapVerification,
+    nativeMap: mapResult.nativeMap ?? null,
+    skippedAudio: [],
+    skippedMedia: [],
+    mapOnlyRetry: true,
+  }
+}
+
+async function areRomeCriticalStoriesReady(manifest) {
+  try {
+    const verification = await verifyRomeAudioPackage(manifest)
+    const criticalMissing = (verification.missing ?? []).filter(isCriticalOfflineAudioPath)
+    const criticalDuration = (verification.durationMismatches ?? []).filter((entry) =>
+      isCriticalOfflineAudioPath(entry.path),
+    )
+    return criticalMissing.length === 0 && criticalDuration.length === 0
+  } catch {
+    return false
+  }
+}
+
 export async function clearRomeAudioPackage(manifest) {
   const audioPaths = listRomeAudioManifestPaths(manifest)
   const mediaPaths = listRomeMediaManifestPaths(manifest)
@@ -564,6 +755,7 @@ export async function clearRomeAudioPackage(manifest) {
   clearCachedAudio()
   clearCachedMedia()
   await clearRomeMapTiles(manifest, { token: env.mapboxToken })
+  await clearNativeRomeMapRegion('rome')
 
   writeRomeOfflineStatus({
     status: OFFLINE_AUDIO_STATUS.NONE,
@@ -572,6 +764,7 @@ export async function clearRomeAudioPackage(manifest) {
     mapTileCount: 0,
     downloadedAt: null,
     error: null,
+    nativeMapReady: false,
   })
 
   return { deleted: audioPaths.length + mediaPaths.length }
@@ -580,6 +773,7 @@ export async function clearRomeAudioPackage(manifest) {
 export async function isRomeAudioReadyOffline(manifest) {
   const status = readRomeOfflineStatus()
   if (status.status !== OFFLINE_AUDIO_STATUS.COMPLETE) return false
+  if (status.error === NATIVE_MAP_REGION_PARTIAL_ERROR) return false
   const verification = await verifyRomeAudioPackage(manifest)
   // Optional beds/inserts may be absent from Pages (SPA HTML). Only essential
   // story narration + arrival cues must be present for "ready".
@@ -587,5 +781,12 @@ export async function isRomeAudioReadyOffline(manifest) {
   const criticalDuration = (verification.durationMismatches ?? []).filter((entry) =>
     isCriticalOfflineAudioPath(entry.path),
   )
-  return criticalMissing.length === 0 && criticalDuration.length === 0
+  if (criticalMissing.length > 0 || criticalDuration.length > 0) return false
+
+  // Native iOS: Ready offline requires the Rome TileStore region as well.
+  // Web/PWA: Cache API map tiles remain optional (do not block prepare).
+  if (isNativeIOS()) {
+    return isNativePackageMapReady('rome')
+  }
+  return true
 }
