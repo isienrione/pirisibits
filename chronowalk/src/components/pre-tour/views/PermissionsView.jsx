@@ -1,21 +1,7 @@
 import { useState } from 'react'
-import { isDebugGeo } from '../../../config/env'
+import { enableLocationForTour } from '../../../lib/locationAccess'
 import { HAPTIC_KIND, triggerHaptic } from '../../../utils/haptics'
 import { Button, EditorialTitle } from '../../ui'
-
-function requestLocationAccess() {
-  if (isDebugGeo() || !navigator.geolocation) {
-    return Promise.resolve('granted')
-  }
-
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      () => resolve('granted'),
-      () => resolve('denied'),
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
-    )
-  })
-}
 
 export function PermissionsView({ onContinue }) {
   const [busy, setBusy] = useState(false)
@@ -23,9 +9,15 @@ export function PermissionsView({ onContinue }) {
   const handleEnable = async () => {
     setBusy(true)
     triggerHaptic(HAPTIC_KIND.SOFT_TAP)
-    await requestLocationAccess()
-    setBusy(false)
-    onContinue()
+    try {
+      await enableLocationForTour({
+        waitForFix: false,
+        skipIfDeniedAlready: false,
+      })
+    } finally {
+      setBusy(false)
+      onContinue()
+    }
   }
 
   return (
@@ -51,6 +43,7 @@ export function PermissionsView({ onContinue }) {
         <Button
           variant="ghost"
           fullWidth
+          disabled={busy}
           onClick={() => {
             triggerHaptic(HAPTIC_KIND.SOFT_TAP)
             onContinue()

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { isDebugGeo } from '../config/env'
+import { enableLocationForTour } from '../lib/locationAccess'
 import { BronzeButton, Button } from '../components/ui'
 import { metaLabel } from '../components/ui/styles'
 import { offlineDownloadPath } from '../routes/paths'
@@ -9,20 +9,6 @@ const HEADLINE = "We'll know exactly when you've reached each story."
 
 const SUPPORTING_COPY =
   'Each place unlocks the moment you arrive - as if the city recognized you were standing there. That is when history stops feeling distant and starts feeling alive.'
-
-function requestLocationAccess() {
-  if (isDebugGeo() || !navigator.geolocation) {
-    return Promise.resolve()
-  }
-
-  return new Promise((resolve) => {
-    navigator.geolocation.getCurrentPosition(
-      () => resolve(),
-      () => resolve(),
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
-    )
-  })
-}
 
 export default function LocationPermissionPage() {
   const navigate = useNavigate()
@@ -36,9 +22,15 @@ export default function LocationPermissionPage() {
   const handleEnable = async () => {
     if (isRequesting) return
     setIsRequesting(true)
-    await requestLocationAccess()
-    setIsRequesting(false)
-    continueToJourney()
+    try {
+      await enableLocationForTour({
+        waitForFix: false,
+        skipIfDeniedAlready: false,
+      })
+    } finally {
+      setIsRequesting(false)
+      continueToJourney()
+    }
   }
 
   return (

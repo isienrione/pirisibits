@@ -19,7 +19,26 @@ vi.mock('../../../hooks/useV2Journey', () => ({
 }))
 
 vi.mock('../../../lib/locationAccess', () => ({
+  enableLocationForTour: vi.fn().mockResolvedValue({
+    permission: 'granted',
+    fixStatus: 'available',
+    locationEnabled: true,
+    position: { lat: 41.89, lng: 12.49 },
+    shouldAdvance: true,
+    access: 'granted',
+  }),
   requestLocationAccess: vi.fn().mockResolvedValue('granted'),
+  LOCATION_PERMISSION: {
+    PROMPT: 'prompt',
+    GRANTED: 'granted',
+    DENIED: 'denied',
+  },
+  LOCATION_FIX_STATUS: {
+    IDLE: 'idle',
+    SEARCHING: 'searching',
+    AVAILABLE: 'available',
+    UNAVAILABLE: 'unavailable',
+  },
 }))
 
 vi.mock('../../../lib/track', () => ({
@@ -88,8 +107,15 @@ describe('BeginFlow', () => {
   })
 
   it('shows recovery copy when location permission is denied', async () => {
-    const { requestLocationAccess } = await import('../../../lib/locationAccess')
-    requestLocationAccess.mockResolvedValueOnce('denied')
+    const { enableLocationForTour } = await import('../../../lib/locationAccess')
+    enableLocationForTour.mockResolvedValueOnce({
+      permission: 'denied',
+      fixStatus: 'idle',
+      locationEnabled: false,
+      position: null,
+      shouldAdvance: true,
+      access: 'denied',
+    })
 
     renderBeginFlow()
 
@@ -104,6 +130,38 @@ describe('BeginFlow', () => {
     })
 
     fireEvent.click(screen.getByRole('button', { name: /continue without location/i }))
+
+    await waitFor(() => {
+      expect(screen.getByText('Journey route')).toBeInTheDocument()
+    })
+    expect(beginMock).toHaveBeenCalled()
+  })
+
+  it('starts the journey when permission is granted even if GPS is still searching', async () => {
+    const { enableLocationForTour } = await import('../../../lib/locationAccess')
+    let resolveFix
+    enableLocationForTour.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveFix = () =>
+            resolve({
+              permission: 'granted',
+              fixStatus: 'searching',
+              locationEnabled: true,
+              position: null,
+              shouldAdvance: true,
+              access: 'granted',
+            })
+        }),
+    )
+
+    renderBeginFlow()
+    fireEvent.click(screen.getByRole('button', { name: 'Continue' }))
+    fireEvent.click(screen.getByRole('button', { name: /enable location & start/i }))
+
+    expect(screen.getByRole('button', { name: /requesting access/i })).toBeDisabled()
+
+    resolveFix()
 
     await waitFor(() => {
       expect(screen.getByText('Journey route')).toBeInTheDocument()

@@ -8,7 +8,7 @@ import {
   shouldShowPaceModePicker,
 } from '../lib/pendingPurchase.js'
 import { clearAppEntryComplete, isAppEntryComplete } from '../lib/appEntry.js'
-import { requestLocationAccess } from '../lib/locationAccess.js'
+import { enableLocationForTour, LOCATION_PERMISSION } from '../lib/locationAccess.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
@@ -164,14 +164,23 @@ export default function RedesignBeginFlow() {
 
   const handleEnableLocation = async () => {
     setBusy(true)
-    const result = await requestLocationAccess()
-    setBusy(false)
-    if (result === 'granted') {
+    try {
+      const result = await enableLocationForTour({
+        waitForFix: false,
+        skipIfDeniedAlready: false,
+      })
+      if (result.permission !== LOCATION_PERMISSION.GRANTED) {
+        track(TRACK_EVENTS.GPS_FALLBACK_USED, {
+          source: 'begin_flow',
+          result: result.access,
+        })
+      }
+      // Always enter the tour after the permission attempt resolves —
+      // granted without a fix is OK; denied uses manual mode.
       startJourney()
-      return
+    } finally {
+      setBusy(false)
     }
-    track(TRACK_EVENTS.GPS_FALLBACK_USED, { source: 'begin_flow', result })
-    startJourney()
   }
 
   const handlePaceContinue = () => {

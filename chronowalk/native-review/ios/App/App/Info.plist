@@ -73,5 +73,9 @@
 	<!-- Optional Studio style override; empty / unset falls back to mapbox://styles/mapbox/standard -->
 	<key>CWMapboxStyleURI</key>
 	<string>$(CW_MAPBOX_STYLE_URI)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ChronoWalk uses your location while you walk to detect arrivals at landmarks and guide you between stops. Location is not used in the background when the tour is closed.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>ChronoWalk uses your location while you walk to detect arrivals at landmarks and guide you between stops.</string>
 </dict>
 </plist>

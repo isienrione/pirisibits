@@ -7,7 +7,11 @@ import {
   getPaceOption,
 } from '../../data/romePacing'
 import { useV2Journey } from '../../hooks/useV2Journey'
-import { requestLocationAccess } from '../../lib/locationAccess'
+import {
+  enableLocationForTour,
+  LOCATION_FIX_STATUS,
+  LOCATION_PERMISSION,
+} from '../../lib/locationAccess'
 import { track, TRACK_EVENTS } from '../../lib/track'
 
 function ResumePromptView({ onContinue, onStartFresh }) {
@@ -225,7 +229,27 @@ function PaceSelectView({ selectedPace, onSelectPace, onContinue }) {
   )
 }
 
-function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, locationDenied = false }) {
+function LocationPromptView({
+  pace,
+  onEnable,
+  onSkip,
+  onContinueAnyway,
+  busy,
+  locationDenied = false,
+  locationSearching = false,
+}) {
+  const title = locationDenied
+    ? 'Location access is off'
+    : locationSearching
+      ? 'Location is enabled'
+      : 'Enable location for GPS guidance'
+
+  const body = locationDenied
+    ? 'Location isn’t enabled. You can still use the map and choose stops manually.'
+    : locationSearching
+      ? 'Location is enabled. Finding your position… You can continue — the map will follow once GPS is ready.'
+      : 'ChronoWalk uses your location only while the tour is active - to detect arrivals and guide you between stops.'
+
   return (
     <BeginShell>
       <p
@@ -248,15 +272,13 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
           lineHeight: 1.15,
         }}
       >
-        {locationDenied ? 'Location access is off' : 'Enable location for GPS guidance'}
+        {title}
       </h1>
       <p style={{ marginTop: 12, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
-        {locationDenied
-          ? 'You can still walk Rome, but arrivals will not auto-detect until location is enabled for this site in your browser settings.'
-          : 'ChronoWalk uses your location only while the tour is active - to detect arrivals and guide you between stops.'}
+        {body}
       </p>
 
-      {!locationDenied ? (
+      {!locationDenied && !locationSearching ? (
         <ul
           style={{
             margin: '24px 0 0',
@@ -272,13 +294,13 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
           <li>Walking directions stay in sync with your position</li>
           <li>You can pause or change this anytime in Settings</li>
         </ul>
-      ) : (
+      ) : locationDenied ? (
         <p style={{ marginTop: 20, fontSize: 'var(--fs-secondary)', lineHeight: 1.55, color: 'var(--muted-warm)' }}>
           Use the map for bearings, or tap &ldquo;I&apos;ve arrived&rdquo; at each stop when you are there.
         </p>
-      )}
+      ) : null}
 
-      {locationDenied ? (
+      {locationDenied || locationSearching ? (
         <button
           type="button"
           onClick={onContinueAnyway}
@@ -296,7 +318,7 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
             cursor: busy ? 'wait' : 'pointer',
           }}
         >
-          Continue without location
+          {locationSearching ? 'Continue anyway' : 'Continue without location'}
         </button>
       ) : (
         <button
@@ -320,7 +342,7 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
         </button>
       )}
 
-      {!locationDenied ? (
+      {!locationDenied && !locationSearching ? (
         <button
           type="button"
           onClick={onSkip}
@@ -339,7 +361,9 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
         >
           Continue without enabling
         </button>
-      ) : (
+      ) : null}
+
+      {locationDenied ? (
         <button
           type="button"
           onClick={onEnable}
@@ -358,7 +382,7 @@ function LocationPromptView({ pace, onEnable, onSkip, onContinueAnyway, busy, lo
         >
           {busy ? 'Requesting access…' : 'Try location again'}
         </button>
-      )}
+      ) : null}
     </BeginShell>
   )
 }
@@ -370,6 +394,7 @@ export default function BeginFlow() {
   const [selectedPace, setSelectedPace] = useState(JOURNEY_PACE.CLASSIC)
   const [busy, setBusy] = useState(false)
   const [locationDenied, setLocationDenied] = useState(false)
+  const [locationSearching, setLocationSearching] = useState(false)
 
   const activePace = getPaceOption(selectedPace)
 
@@ -392,17 +417,28 @@ export default function BeginFlow() {
 
   const handleEnableLocation = async () => {
     setBusy(true)
-    const result = await requestLocationAccess()
-    setBusy(false)
+    try {
+      // Permission grant advances immediately — GPS fix is async and must not block.
+      const result = await enableLocationForTour({
+        waitForFix: false,
+        skipIfDeniedAlready: false,
+      })
+      if (result.permission === LOCATION_PERMISSION.GRANTED) {
+        setLocationDenied(false)
+        setLocationSearching(result.fixStatus === LOCATION_FIX_STATUS.SEARCHING)
+        startJourney()
+        return
+      }
 
-    if (result === 'granted') {
-      setLocationDenied(false)
-      startJourney()
-      return
+      setLocationSearching(false)
+      setLocationDenied(true)
+      track(TRACK_EVENTS.GPS_FALLBACK_USED, {
+        source: 'begin_flow',
+        result: result.access,
+      })
+    } finally {
+      setBusy(false)
     }
-
-    setLocationDenied(true)
-    track(TRACK_EVENTS.GPS_FALLBACK_USED, { source: 'begin_flow', result })
   }
 
   if (step === 'resume') {
@@ -415,6 +451,7 @@ export default function BeginFlow() {
         pace={activePace}
         busy={busy}
         locationDenied={locationDenied}
+        locationSearching={locationSearching}
         onEnable={handleEnableLocation}
         onSkip={startJourney}
         onContinueAnyway={startJourney}
