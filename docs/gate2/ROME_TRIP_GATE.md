@@ -19,6 +19,7 @@ Purpose: no money is spent on the first Rome field trip until every REQUIRED ite
 | 9 | Stop permissions & logistics confirmed | **REQUIRED** | Colosseum/Forum entry rules, filming/testing constraints, timed tickets, backup stops if access fails. A permissions surprise can zero a field day. |
 | 10 | Recruitment plan for on-site participants | **REQUIRED** | Script + incentive for intercepting travelers (target n per cell), plus 2 brought testers as floor if intercept fails. |
 | 11 | Trip data-loss protection | **REQUIRED** | Same-day log/footage backup routine; a lost phone must cost one day, not the trip. |
+| 12 | Field Access Verification — Campidoglio Overlook | **REQUIRED (Day 1 of trip, before any sessions)** | On-the-ground confirmation of the exact railing test position (Via del Campidoglio / Via di Monte Tarpeo): unrestricted public access, practical hours, security restrictions, tripod/equipment constraints, crowd behavior, tolerance of repeated participant sessions. Vantage approval is provisional until this passes; fallback vantage selected on-site if it fails. |
 
 ## Final gate (GO requires ALL):
 2, 3, 4(amended), 5, 6, 7, 8(amended), 9, 10, 11. Item 1 is reported but non-blocking.

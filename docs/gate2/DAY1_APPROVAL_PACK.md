@@ -54,7 +54,11 @@ Why it beats alternatives on every criterion:
 - **Layered Then/Now suitability:** elevated ~15–20 m oblique angle gives natural depth layering (foreground arch → mid basilica → far Titus) — exactly what 2.5D parallax needs; minimal foreground pedestrian occlusion because tourists below are *inside* the scene, not blocking it.
 - **Lantern suitability:** wide panorama with many discrete aimable targets (each monument a reveal), from a fixed standing position at a railing — the ideal beam-sweep geometry.
 - **B2/VPS later:** stable monumental geometry with high visual-feature density; a fixed, repeatable standing position (railing) makes coarse alignment and later anchoring tests reproducible; the same vantage serves B1 → VPG → B2 → AB without re-authoring.
-- **Access:** **free, public, open 24/7, no ticket, no special permission** — unlike anything inside the paid archaeological area. Testing, filming reference photography, and repeat sessions cost nothing and can run at 7:00 for empty conditions.
+- **Access (PROVISIONAL — not yet field-verified):** believed to be free public street-level access outside the ticketed Capitoline Museums / Tabularium route, with no ticket required. **"Open 24/7" is NOT asserted as established experimental fact.** Field Access Verification (below) must confirm before any Rome testing.
+
+**Exact outdoor public test position (definition, pending field verification):** the stone railing of the terrace where **Via del Campidoglio meets Via di Monte Tarpeo, at the southeast flank of Palazzo Senatorio** (public street level, reached on foot from Piazza del Campidoglio; NOT inside the museums or the Tabularium gallery, which is a separate ticketed indoor viewpoint that we are explicitly not choosing). Camera orientation ≈ southeast (approx. 120–135°), eye height ≈ 1.6 m at the railing, terrace ≈ 15–20 m above the Forum floor. Expected field of view ≈ 60–75° horizontal: Arch of Septimius Severus near-left with the Curia beyond, Rostra below-center, Temple of Saturn columns near-right, Temple of Vespasian foreground-right, Basilica Julia mid-field, Via Sacra receding along the axis past Castor & Pollux toward the Arch of Titus and the Basilica of Maxentius mass at far left-of-axis.
+
+**FIELD ACCESS VERIFICATION (required before Rome testing — added to Rome trip gate):** confirm on the ground: (1) unrestricted public access at the exact railing position; (2) practical testing hours (early-morning emptiness assumed, not verified); (3) any security/police restrictions on lingering or repeated sessions; (4) tripod/equipment constraints at the railing; (5) crowd behavior and turnover at the position; (6) whether repeated participant testing (multiple sessions/day over several days) draws intervention. Until verified, all Rome session planning treats access parameters as assumptions.
 - **Crowds / line-of-sight stability:** moderate crowds at the railing but self-clearing; the sightline itself can't be blocked (everything below eye level). Weather is the only variable.
 
 Runner-up (recorded, not recommended): Via Sacra ground level at the Temple of Saturn — more visceral "inside the ruins" feel, but requires paid timed entry, heavy occlusion, unstable positions; better as a *second* stop for B2 Rome sessions than as the Gate 2 control site.
@@ -63,13 +67,13 @@ Runner-up (recorded, not recommended): Via Sacra ground level at the Temple of S
 
 ---
 
-## C. Exact baseline/control condition
+## C. Exact baseline/control condition (REVISED per founder correction — control fairness)
 
-Deliberately the **best current-generation ChronoWalk-style experience**, not a straw man:
+> **Control "C": best current ChronoWalk-style static/binary Then/Now — built from the SAME ART-0 reconstruction.** The ART-0 depth layers are flattened into a single full-frame reconstruction image; the user toggles/cross-fades between the current-state photo and that flattened reconstruction (binary then/now, no parallax, no layering, no aiming). Same ~90-second narration audio as the test cells, captions identifying the five key monuments.
 
-> **Control "C": Premium static Then/Now + narrated placard.** A high-quality current-state photograph from the exact vantage, paired side-by-side with a *good existing* reconstruction illustration of the same view (licensed/public-domain quality artwork, not our ART-0), user can toggle/compare freely, accompanied by a professionally written ~90-second narration (same claim ledger, same facts as the test cells) delivered as clean audio. Untimed reading captions identifying the five key monuments.
+**Held constant across C / B1 / Lantern:** historical claims (one ledger) · reconstruction content (identical ART-0 layers, flattened for C) · viewpoint & framing · image resolution · reconstruction fidelity · exposure time (3 min) · narration content and voice. **The only manipulated variable is interaction/presentation:** C = static/binary toggle · B1 = layered cinematic Then/Now (parallax/scrub) · B5 = Lantern aimed discovery.
 
-Rules: identical historical claims across C, B1-cell, and Lantern-cell (only the medium/interaction varies); narration quality equal in all cells; C is self-paced like the others. This is what a discerning traveler can already buy today — beating it is the actual bar.
+**Documented residual confound:** flattening removes depth-layer separation, so C is necessarily a 2D composite of the same art. This is inherent to the manipulation (layering *is* what B1 tests), not an asset-quality difference — content and fidelity are pixel-identical. Any compositing artifact introduced by flattening will be QA'd to invisibility before sessions; if any visual difference beyond layering survives QA, it is logged as a confound in the analysis section of the results. The earlier idea of using third-party polished artwork for C is **withdrawn** (it would have confounded interaction with asset quality).
 
 ---
 

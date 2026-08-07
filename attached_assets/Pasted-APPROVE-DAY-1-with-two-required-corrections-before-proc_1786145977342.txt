@@ -1,0 +1,151 @@
+APPROVE DAY 1, with two required corrections before proceeding.
+
+1. X-VPG CONTROL FAIRNESS
+
+The baseline/control must use the SAME underlying historical content and as-close-as-possible visual fidelity as B1 and Lantern.
+
+Do not accidentally create:
+
+Control = polished existing reconstruction
+B1/Lantern = rough ART-0
+
+or the reverse.
+
+That would confound interaction with asset quality.
+
+For X-VPG, hold constant wherever possible:
+
+- historical claims
+- reconstruction content
+- viewpoint
+- framing
+- image resolution
+- reconstruction fidelity
+- exposure time
+- narration content
+
+The primary manipulated variable should be INTERACTION/PRESENTATION:
+
+CONTROL:
+best current ChronoWalk-style static/binary Then/Now presentation
+
+B1:
+layered cinematic Then/Now
+
+B5:
+Lantern active discovery
+
+If an identical asset cannot technically serve all three, document exactly what differs and why, and flag it as a confound in the analysis.
+
+Update the protocol accordingly.
+
+2. FLAGSHIP VANTAGE ACCESS CLAIM
+
+Approve Campidoglio Forum Overlook provisionally.
+
+However, do not state “open 24/7” as an established experimental fact yet.
+
+Define the EXACT outdoor public test position:
+- street / terrace / railing reference
+- approximate camera orientation
+- expected field of view
+- whether it is outside the ticketed Capitoline Museums / Tabularium route
+
+Create a FIELD ACCESS VERIFICATION item to confirm before Rome testing:
+- unrestricted public access
+- practical testing hours
+- security restrictions
+- tripod / equipment constraints
+- crowd behavior
+- whether repeated participant testing is permitted
+
+The experiment should not depend on museum opening hours unless we explicitly choose an indoor museum viewpoint.
+
+After applying those two corrections:
+
+GO DAY 2.
+
+DAY 2 SCOPE ONLY:
+
+A. FLAGSHIP CLAIM LEDGER
+Create the first complete claim ledger for the selected Forum panorama.
+
+It must map claims to visible reconstruction elements.
+
+For every claim include:
+- claim ID
+- claim
+- object / building / spatial relationship affected
+- era/date
+- confidence classification
+- source
+- exact source support
+- reconstruction implication
+- what must NOT be inferred
+- whether safe for narration
+- whether safe for visual reconstruction
+- contested interpretation notes
+
+Do not silently convert uncertainty into visual certainty.
+
+B. ART-0 SPECIFICATION
+
+Using the claim ledger, produce the concrete ART-0 asset specification for the Campidoglio panorama.
+
+Do NOT commission final art.
+
+Define:
+- modern base image requirements
+- reconstruction layers
+- depth planes
+- occlusion masks
+- Lantern reveal regions
+- B1 layering regions
+- shared control asset
+- required resolution/aspect ratio
+- which elements may use approximate blockout
+- which elements require historically constrained geometry
+- explicit “do not depict” items where evidence is insufficient
+
+The same ART-0 historical reconstruction should support Control, B1 and Lantern wherever technically possible.
+
+C. X-D0 DATASET
+
+Build the 200-case X-D0 evaluation dataset from the ledger.
+
+Do not run the experiment yet unless the dataset and rubric pass QA first.
+
+Return category counts and examples for:
+- in-ledger factual
+- contested
+- out-of-ledger traps
+- adversarial false premise
+- scope/refusal
+
+Every evaluation case must include:
+- prompt
+- expected behavior
+- permitted claims
+- forbidden claims
+- scoring rubric
+- relevant ledger IDs
+
+D. DAY 2 QA
+
+Before proceeding to Day 3, return:
+
+1. Flagship claim ledger summary
+2. Sources used
+3. Uncertain/contested claims requiring founder review
+4. ART-0 exact layer list
+5. X-D0 dataset statistics
+6. 10 representative X-D0 cases
+7. Anything that could materially compromise the experiment
+8. Spend today
+9. Files created/modified
+10. Decisions requiring my approval
+
+Do not build B1 or Lantern yet.
+Do not generate final reconstruction art.
+Do not spend money.
+Do not proceed to Day 3 until I explicitly say GO DAY 3.
