@@ -1,5 +1,5 @@
 # TECHNICAL_RISK_REGISTER.md
-ChronoWalk 2.0 — Gate 0 · August 2026
+ChronoWalk 2.0 — Gate 0 · August 2026 · **Updated at Gate 1 (see "Gate 1 revisions" at end)**
 
 Risks ranked by (impact × likelihood), with mitigations and the gate where each must be retired. Complements the strategic risks in Playbook Ch. 42.
 
@@ -17,6 +17,14 @@ Risks ranked by (impact × likelihood), with mitigations and the gate where each
 | T10 | **Android debt** — iOS-first choices that make Android a rewrite | Medium | Medium | Stack decision (Gate 1) weighs shared-core options; content/pack format is platform-neutral by construction |
 | T11 | **GPS canyon effects in dense centro streets** for non-flagship stops | Medium | Medium-High | Trigger design tolerant of 10–20 m error (approach zones, not points); heading-based disambiguation; never make a Threshold depend on precise GPS alone |
 | T12 | **AI-voice uncanny/flatness harming Tier A presence** | Medium | Medium | A/B human vs. directed-AI narration in E1; voice is an editorial casting decision per Playbook, not a cost default |
+
+## Gate 1 revisions (August 2026)
+
+- **T1 reframed.** "Presence doesn't materialize" is no longer an audio-only gate (founder correction #1). The risk now reads: *no experience variant — audio, visual, or combination — produces reliable presence.* Retired only by the full Track A + Track B + X-AB program, not by E1/X-A alone.
+- **T-new-13: Premature architecture convergence.** Gate 0's SwiftUI leaning was itself a risk instance (founder correction #2). Mitigation: Track E matrix without winner selection; all Gate 2 prototypes explicitly throwaway; stack decision deferred to end of Gate 2 with the evidence procedure in GATE1_DECISION_TREE.md.
+- **T-new-14: Stand-in-site validity.** Phase 1 economy relies on non-Rome test sites predicting Rome responses (A-15). Mitigation: shared variants re-run on Rome field days; divergence is itself a finding.
+- **T-new-15: Experiment-program sprawl.** Six tracks could consume months. Mitigation: strict phase structure (desk → remote → 2 concentrated Rome field trips); everything possible rides along on shared field days; kill criteria enforced.
+- **T2, T5, T7, T12** now carry named experiments (X-B3, X-B4/Track F, X-D0, voice A/B in X-A) with kill criteria — see docs/gate1/.
 
 ## Risks accepted deliberately (per Playbook risk philosophy)
 

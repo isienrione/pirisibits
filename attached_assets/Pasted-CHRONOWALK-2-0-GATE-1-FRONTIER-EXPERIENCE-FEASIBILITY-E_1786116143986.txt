@@ -1,0 +1,499 @@
+CHRONOWALK 2.0 — GATE 1
+FRONTIER EXPERIENCE + FEASIBILITY EXPERIMENT DESIGN
+
+Gate 0 is approved as a strong foundation, with two important founder corrections before proceeding.
+
+==================================================
+FOUNDER CORRECTION #1:
+DO NOT MAKE AUDIO THE GATEKEEPER FOR SPATIAL/VISUAL INNOVATION
+==================================================
+
+Your E1 spatial-audio Presence Test is valuable and should remain in the experimental program.
+
+However, I do NOT approve the statement:
+
+"If audio craft alone can't manufacture presence, no camera trick will save the product."
+
+That is an unsupported assumption.
+
+ChronoWalk's potential breakthrough may come from the COMBINATION of:
+
+- narrative
+- physical location
+- cinematic audio
+- spatial audio
+- historical reconstruction
+- camera/computer vision
+- AR/spatial computing
+- interaction
+- visual transformation
+
+A visual/spatial reconstruction may create historical presence that audio alone cannot.
+
+Therefore:
+
+Do not make E1 a prerequisite for testing visual/spatial experiences.
+
+Audio and spatial reconstruction experiments should proceed as PARALLEL discovery tracks.
+
+ChronoWalk 2.0 must not prematurely become "an extraordinarily good audio guide."
+
+We are explicitly searching for something potentially category-defining beyond conventional audio tours.
+
+==================================================
+FOUNDER CORRECTION #2:
+DO NOT PREMATURELY CONVERGE ON SWIFTUI
+==================================================
+
+Your current SwiftUI-native leaning is a hypothesis, not a decision.
+
+Do not optimize architecture around it yet.
+
+The final architecture must emerge from the experience requirements and experiments.
+
+We need to understand whether the best ChronoWalk requires:
+
+- native SwiftUI
+- React Native / Expo + native modules
+- Flutter
+- Kotlin Multiplatform
+- shared domain/content core + native experience shells
+- Unity or another 3D layer for selected experiences
+- RealityKit / ARKit modules
+- a hybrid architecture
+- or another credible approach.
+
+Remember:
+
+iOS launches first.
+
+Android follows.
+
+Android must not require rebuilding the company.
+
+But cross-platform convenience must also NOT cap the quality of the experience.
+
+==================================================
+GATE 1 OBJECTIVE
+==================================================
+
+DO NOT BUILD THE CONSUMER APP YET.
+
+Design the experimental program that will tell us what ChronoWalk 2.0 SHOULD be before we commit to its architecture.
+
+The experiments must answer:
+
+"What creates the greatest believable historical presence on a real traveler, at a quality and production cost that can eventually support a global product?"
+
+Use the Rome vertical slice:
+
+- Pantheon
+- Roman Forum
+- Colosseum
+
+These three locations deliberately represent different reconstruction problems.
+
+==================================================
+TRACK A — AUDIO / NARRATIVE PRESENCE
+==================================================
+
+Design an experiment comparing:
+
+A1. Excellent conventional premium narration
+
+A2. Premium narration + cinematic environmental sound design
+
+A3. Premium narration + head-tracked/spatial audio where supported
+
+A4. Any stronger audio approach you identify
+
+Test:
+
+- phone in pocket
+- headphones/earbuds
+- outdoor conditions
+- ordinary consumer hardware
+- interruptions
+- battery impact
+- offline capability
+
+Determine what spatial audio genuinely adds rather than assuming it is transformative.
+
+==================================================
+TRACK B — VISUAL / SPATIAL THRESHOLD
+==================================================
+
+This is equally important to Track A.
+
+Prototype conceptually and technically compare:
+
+B1. PREMIUM CINEMATIC THEN/NOW
+
+Perfectly matched present/historical viewpoint.
+
+Press, drag, hold or another interaction.
+
+Potential:
+- parallax
+- depth layers
+- subtle motion
+- environmental sound
+- historical overlays
+
+B2. CAMERA-ASSISTED 2.5D RECONSTRUCTION
+
+User raises camera.
+
+App guides viewpoint alignment.
+
+Historical reconstruction overlays the live scene using the minimum robust technology necessary.
+
+Investigate:
+- image matching
+- feature matching
+- homography
+- segmentation
+- depth estimation
+- camera pose
+- device orientation
+- parallax
+- lightweight geometry
+- GPU compositing
+
+One possible interaction remains:
+
+"Hold to restore Rome."
+
+But DO NOT assume this is the best interaction.
+
+B3. TRUE ANCHORED AR
+
+Investigate an actual spatial reconstruction using appropriate native spatial technologies.
+
+Evaluate:
+- visual anchors
+- world anchors
+- geospatial/VPS
+- RealityKit / ARKit
+- ARCore implications for Android
+- occlusion
+- tracking stability
+- movement
+- scale
+- outdoor behavior
+
+B4. PHOTOREAL SPATIAL RECONSTRUCTION
+
+Investigate whether techniques involving:
+
+- Gaussian splatting
+- NeRF-derived assets
+- photogrammetry
+- authored 3D + neural rendering
+- hybrid reconstructed geometry
+
+can realistically represent a LOST historical environment rather than merely scanning what exists today.
+
+B5. INVENT A FIFTH OPTION
+
+Do not limit yourself to our ideas.
+
+Propose at least one historical-reconstruction interaction that neither the current ChronoWalk nor this prompt has described.
+
+It must be technically credible enough to prototype.
+
+==================================================
+TRACK C — MULTI-ERA EXPERIENCE
+==================================================
+
+Investigate whether ChronoWalk could do something more powerful than binary THEN / NOW.
+
+For example:
+
+TODAY
+→ 1800
+→ 1500
+→ AD 400
+→ AD 125
+
+or another carefully authored temporal model.
+
+Could a traveler scrub, move, walk, listen or interact through layers of the same physical location?
+
+Would this increase understanding or become a gimmick?
+
+Design the smallest experiment that answers that.
+
+==================================================
+TRACK D — CONTEXTUAL INTELLIGENCE
+==================================================
+
+Explore how the app could understand enough context to feel intelligent without becoming "ChatGPT tourism."
+
+Possibilities:
+
+- current location
+- current stop
+- direction user is facing
+- current reconstruction
+- route progress
+- time available
+- question asked
+- historical claim ledger
+- what the camera currently sees
+- previous stories heard
+
+Explore:
+
+D1. contextual historical Q&A
+
+D2. "What am I looking at?" camera assistance
+
+D3. adaptive explanation based on physical viewpoint
+
+D4. intelligent re-routing without destroying authored narrative
+
+D5. any more powerful concept you identify
+
+All historical responses must remain constrained by approved evidence.
+
+==================================================
+TRACK E — MOBILE PLATFORM CAPABILITY MATRIX
+==================================================
+
+Now evaluate architecture candidates against ACTUAL ChronoWalk requirements.
+
+Create a matrix comparing at least:
+
+- Native Swift / SwiftUI + RealityKit/ARKit
+- React Native / Expo with native modules
+- Flutter
+- Kotlin Multiplatform / shared-core approach
+- Native experience shells + shared backend/content/domain layer
+- any credible hybrid architecture you recommend
+
+Evaluate:
+
+- iOS experience ceiling
+- Android portability
+- AR capability
+- computer vision
+- camera control
+- GPU rendering
+- spatial audio
+- background audio
+- offline
+- maps/location
+- sensors/haptics
+- performance
+- battery
+- developer velocity
+- Replit's ability to build/maintain it
+- testing complexity
+- long-term maintenance
+- ability to support 100+ cities
+- ability to integrate advanced native features later
+
+DO NOT SELECT THE WINNER YET.
+
+==================================================
+TRACK F — PRODUCTION ECONOMICS
+==================================================
+
+For every visual/spatial tier estimate the operational burden of producing ONE additional stop.
+
+Break down:
+
+- research
+- source collection
+- modern reference capture
+- reconstruction
+- 2D asset production
+- 3D asset production
+- spatial calibration
+- device testing
+- historical review
+- localization
+- maintenance
+
+Classify each experience as potentially suitable for:
+
+- every stop
+- selected premium stops
+- 1–3 flagship stops per city
+- flagship cities only
+- experimental only
+
+We are NOT optimizing only for cheapness.
+
+A costly interaction can be strategically correct if it becomes ChronoWalk's defining moment.
+
+==================================================
+THE THREE ROME TEST CASES
+==================================================
+
+Do not treat the three stops identically.
+
+PANTHEON
+
+Much of the structure survives.
+
+Ask:
+What does reconstruction reveal that the traveler cannot already see?
+
+Could multiple eras, color, ritual, crowd, roof/interior treatment or spatial audio be more valuable than simply rebuilding geometry?
+
+ROMAN FORUM
+
+This is perhaps the strongest reconstruction test.
+
+The traveler sees fragments and ruins.
+
+Ask:
+Can ChronoWalk restore the missing city around them convincingly enough that the ruins become legible?
+
+This should aggressively test camera/spatial reconstruction.
+
+COLOSSEUM
+
+Test:
+- monumental scale
+- missing structures
+- crowd
+- arena/hypogeum relationships
+- multiple viewpoints
+- historical phases
+
+Ask whether this deserves flagship true AR / spatial treatment.
+
+==================================================
+EXPERIMENT DESIGN REQUIREMENT
+==================================================
+
+For each proposed experiment define:
+
+1. Hypothesis
+2. User experience
+3. Technical implementation
+4. What must be built
+5. What can be faked/prototyped initially
+6. Device requirements
+7. Need for physical presence in Rome or whether remote testing is possible
+8. Historical assets required
+9. Estimated implementation difficulty
+10. Estimated content-production difficulty
+11. Main technical failure mode
+12. Main experience failure mode
+13. Battery/performance concern
+14. Android implications
+15. Success metric
+16. Kill criterion
+17. What architectural decision this experiment informs
+
+==================================================
+IMPORTANT DISTINCTION: PROTOTYPE VS PRODUCT
+==================================================
+
+We are allowed to use technical shortcuts in an experiment to answer a question.
+
+We are NOT allowed to mistake the shortcut for production architecture.
+
+Example:
+
+If we can manually calibrate a Pantheon reconstruction to test whether the experience is magical, do that before building an automated city-wide calibration system.
+
+Test the user value first.
+
+Then engineer scale.
+
+==================================================
+HISTORICAL PRESENCE SCORE V0
+==================================================
+
+Design a practical measurement instrument.
+
+It should measure concepts such as:
+
+- "The place came alive."
+- "I could understand what used to be here."
+- "I could imagine the people who occupied this place."
+- "I saw details I would otherwise have ignored."
+- "I see this place differently now."
+- "This felt meaningfully different from an audio guide."
+- "I would pay for this experience in another city."
+
+Include:
+
+- quantitative questions
+- qualitative questions
+- behavioral signals
+- what NOT to measure
+- how to avoid leading testers
+
+Do not make a single arbitrary 70% threshold our sole decision criterion.
+
+==================================================
+DELIVERABLES
+==================================================
+
+Create:
+
+GATE1_EXPERIMENT_PROGRAM.md
+
+AUDIO_PRESENCE_EXPERIMENTS.md
+
+SPATIAL_THRESHOLD_EXPERIMENTS.md
+
+MULTI_ERA_EXPERIMENT.md
+
+CONTEXTUAL_INTELLIGENCE_EXPERIMENTS.md
+
+MOBILE_CAPABILITY_MATRIX.md
+
+PRODUCTION_ECONOMICS_BY_TIER.md
+
+HISTORICAL_PRESENCE_SCORE_V0.md
+
+GATE1_DECISION_TREE.md
+
+Update:
+
+ASSUMPTIONS.md
+DECISIONS.md
+TECHNICAL_RISK_REGISTER.md
+
+==================================================
+DO NOT BUILD YET
+==================================================
+
+Do NOT scaffold the production app.
+
+Do NOT choose the stack.
+
+Do NOT start Foundry.
+
+Do NOT generate full Rome.
+
+Do NOT build ten cities.
+
+This gate designs the experiments.
+
+At the end, return:
+
+1. The experiments you recommend actually running, in exact order.
+
+2. Which experiments can run in parallel.
+
+3. Which require being physically in Rome.
+
+4. The single experiment most likely to reveal a category-defining experience.
+
+5. The cheapest experiment with potentially enormous upside.
+
+6. The experiment most likely to fail.
+
+7. What you changed your mind about after this analysis.
+
+8. What we should physically BUILD FIRST in Gate 2.
+
+Then STOP for founder review.
