@@ -1,0 +1,181 @@
+Turn your Gate 1 conclusions into a HARD Gate 2 execution plan.
+
+Do not build yet.
+
+I want you to convert every proposed experiment into a decision-grade experiment matrix so we can know:
+- what to build first,
+- what can run in parallel,
+- what must wait for Rome,
+- what gets killed,
+- what earns more investment.
+
+Use the exact experiment labels and concepts you already defined:
+- X-A1 / X-A2 / X-A3
+- X-AB
+- X-B1
+- X-B2
+- X-B3
+- X-B4
+- X-B5 Lantern
+- X-C1
+- X-D0
+- D2 / D3 / D4
+- HPS v0
+- Track E
+- Track F
+
+For EACH experiment, return these columns:
+
+1. Experiment ID
+2. Decision this experiment is meant to unlock
+3. Exact hypothesis
+4. Control / comparator
+5. Prototype to build
+6. What can be fake / Wizard-of-Oz
+7. What must be real
+8. Required assets
+9. Required engineering
+10. Whether Rome is required
+11. Sample / participants needed
+12. Test procedure
+13. Primary metric
+14. Secondary metrics
+15. Historical Presence metric used
+16. Success threshold
+17. Kill threshold
+18. Ambiguous-result rule
+19. Estimated build effort
+20. Estimated cash cost
+21. Dependencies
+22. Can run in parallel with
+23. Key technical risk
+24. Key UX risk
+25. What we learn even if it fails
+26. What happens next if it passes
+27. What happens next if it fails
+
+IMPORTANT DECISION RULES
+
+Do not allow vague success criteria such as:
+- “users liked it”
+- “felt immersive”
+- “looked promising”
+
+Every experiment must have a pre-declared pass / fail / ambiguous rule.
+
+For subjective experience experiments, define a quantitative HPS v0 score or subscore before testing.
+
+For X-AB:
+Treat it as a real factorial comparison:
+A = audio
+B = visual
+AB = audio + visual
+Control = current/baseline experience
+
+The purpose is to distinguish:
+- audio effect
+- visual effect
+- additive effect
+- true synergy
+
+For X-B2:
+Define the hypothesis specifically around whether camera-assisted 2.5D reconstruction produces materially greater historical presence than B1 cinematic Then/Now, while remaining usable outdoors.
+
+For X-B5 Lantern:
+Move this as early as technically possible.
+Assume it can use rough B2/B1 assets.
+Test whether the interaction metaphor creates more presence than passive reveal even before visual fidelity is high.
+
+For X-B3:
+Treat VPS as infrastructure validation, NOT as an experience success test.
+Its job is to answer whether anchoring is reliable enough at the exact flagship Rome sites to justify depending on it.
+
+For X-B4:
+Do not assume Gaussian splats deserve investment.
+Explicitly test whether they create user value beyond pre-rendered / constrained-view alternatives.
+
+For HPS v0:
+Design the first usable Historical Presence Score before any user experiment.
+
+It must distinguish at minimum:
+- spatial presence: “I felt oriented inside the historical place”
+- temporal presence: “I could imagine the place in another era”
+- historical legibility: “the ruins became understandable”
+- emotional presence / wonder
+- interaction burden
+- attention conflict with the real place
+- confidence / trust in what was shown
+
+Propose:
+- questionnaire items
+- response scale
+- scoring method
+- which items form the core HPS
+- which are diagnostic dimensions
+- how to avoid simply measuring “wow factor”
+
+ROME TRIP GATE
+
+Define explicit GO / NO-GO requirements before we spend money on the first Rome field trip.
+
+At minimum assess whether these should be required:
+
+- B1 remote prototype reaches threshold
+- B2 local/desktop illusion is convincing enough to justify field work
+- B3 probe app is fully instrumented
+- X-A3 audio scene is production-quality enough that Rome tests PLACE, not unfinished sound design
+- HPS v0 is frozen before field testing
+- all logging works automatically
+- test protocol is rehearsed locally
+- required reconstruction assets are locked
+
+Do not automatically accept these.
+Evaluate them and return the final gate.
+
+BUILD ORDER
+
+After the matrix, give me:
+
+A. PHASE 0 — start immediately, desk-based
+Exact builds in priority order.
+
+B. PHASE 1 — remote/local user testing
+Exact experiments and sequencing.
+
+C. PHASE 2 — Rome field trip 1
+Exact experiments, stops, what data to collect, and what must already be ready.
+
+D. PHASE 3 — Rome field trip 2
+Only if justified by trip 1 findings.
+
+PARALLELIZATION
+
+Give me a dependency graph showing what can run in parallel.
+
+I specifically want you to challenge unnecessary dependencies.
+Audio and visual should not block each other unless there is a real dependency.
+
+RESOURCE PLAN
+
+For each Phase 0 item, specify:
+- who/what is needed
+- approximate hours
+- whether I can do it myself
+- whether AI tools can produce it
+- whether a specialist is needed
+- expected out-of-pocket cost
+
+FIRST 7 DAYS
+
+Finally give me a literal Day 1 through Day 7 action plan.
+
+Assume I am one founder working with AI coding/design tools and external freelancers only when necessary.
+
+For every day tell me:
+- what I personally do
+- what I ask AI/coding agents to do
+- what assets get produced
+- what decision gets unlocked
+
+Do not start implementation.
+Return the plan first.

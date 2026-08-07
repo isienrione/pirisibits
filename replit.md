@@ -3,7 +3,7 @@
 ## Project overview
 Greenfield rebuild of ChronoWalk — a premium **Historical Immersion Platform** for travelers ("from sightseeing to city understanding"). iOS-first native mobile product, Android next, eventually 100+ cities. Rome is the laboratory (vertical slice: Pantheon, Forum, Colosseum).
 
-**Status: Gate 0 complete (August 2026), awaiting founder approval. Nothing is built yet — no stack chosen, no scaffolding, no content generated. Do not build until the founder approves Gate 1.**
+**Status: Gate 1 delivered (docs/gate1/) and the Gate 2 execution plan delivered (docs/gate2/: experiment matrix, frozen HPS v0 instrument, Rome trip GO/NO-GO gate, build order + 7-day plan) — August 2026, awaiting founder approval. Nothing is built yet — no stack chosen, no scaffolding, no content generated. Do not build until the founder approves the Gate 2 plan.**
 
 ## Gated process (strict)
 The founder runs a gated process (Gates 0–9, defined in the Master Pack). Never skip ahead of the approved gate. Gate 0 deliverables live in `docs/gate0/` (11 analysis documents).
