@@ -10,6 +10,8 @@ import { hydrateRomeMapTileCache } from '../../map/offlineMapTiles.js'
 import { env, isDebugMap } from '../../config/env.js'
 import { useNetworkStatus } from '../../hooks/useNetworkStatus.js'
 import { shouldUseNativeTransitMap } from '../../platform/offlineMaps/nativeTransitMap.js'
+import { nativeMapLog } from '../../platform/offlineMaps/nativeMapDiagnostics.js'
+import { getPlatformName } from '../../platform/runtime/platformRuntime.js'
 import NativeTransitMapPane from './NativeTransitMapPane.jsx'
 
 /** Prefer cached Standard vector tiles when the radio is constrained. */
@@ -66,6 +68,12 @@ export default function JourneyInlineMap({
   directionsModeActive = false,
 }) {
   const useNative = shouldUseNativeTransitMap()
+  useEffect(() => {
+    nativeMapLog('shouldUseNativeTransitMap', {
+      value: useNative,
+      platform: getPlatformName(),
+    })
+  }, [useNative])
   const { isOffline } = useNetworkStatus()
   const constrainedNetwork = useConstrainedNetwork()
   // Prefer the cached Standard vector style whenever signal is weak OR we

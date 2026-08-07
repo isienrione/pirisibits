@@ -9,6 +9,7 @@ import {
   normalizeWalkingSteps,
   pickBestWalkingDirections,
 } from '../utils/walkingDirections'
+import { directionsLog } from '../platform/offlineMaps/nativeMapDiagnostics.js'
 
 export const fetchWalkingRoute = async (from, to, accessToken, options = {}) => {
   const result = await fetchWalkingDirections(from, to, accessToken, options)
@@ -93,7 +94,26 @@ const DIRECTIONS_TIMEOUT_MS = 10_000
 
 /** Walking directions with turn-by-turn steps for in-app guidance. */
 export const fetchWalkingDirections = async (from, to, accessToken, options = {}) => {
-  if (!from?.lat || !from?.lng || !to?.lat || !to?.lng || !accessToken) {
+  const hasOrigin = Boolean(from && Number.isFinite(from.lat) && Number.isFinite(from.lng))
+  const hasDestination = Boolean(to && Number.isFinite(to.lat) && Number.isFinite(to.lng))
+  const hasToken = Boolean(accessToken)
+
+  directionsLog('request start', {
+    provider: 'mapbox-directions-v5',
+    profile: 'mapbox/walking',
+    hasToken,
+    hasOrigin,
+    hasDestination,
+  })
+
+  if (!hasOrigin || !hasDestination || !hasToken) {
+    directionsLog('normalized error code', {
+      code: !hasToken
+        ? 'missing_token'
+        : !hasOrigin
+          ? 'missing_origin'
+          : 'missing_destination',
+    })
     return null
   }
 
@@ -112,6 +132,7 @@ export const fetchWalkingDirections = async (from, to, accessToken, options = {}
     } finally {
       if (timeoutId != null) clearTimeout(timeoutId)
     }
+    directionsLog('HTTP status', { status: response.status, ok: response.ok })
     if (!response.ok) {
       let detail = null
       try {
@@ -121,17 +142,30 @@ export const fetchWalkingDirections = async (from, to, accessToken, options = {}
         detail = null
       }
       console.warn('fetchWalkingDirections: Mapbox Directions failed.', response.status, detail)
+      directionsLog('normalized error code', {
+        code: 'http_error',
+        status: response.status,
+        detail: typeof detail === 'string' ? detail.slice(0, 120) : null,
+      })
       return null
     }
 
     const data = await response.json()
     if (data?.code && data.code !== 'Ok') {
       console.warn('fetchWalkingDirections: Mapbox Directions error.', data.code, data.message)
+      directionsLog('normalized error code', {
+        code: String(data.code || 'mapbox_error'),
+        message: typeof data.message === 'string' ? data.message.slice(0, 120) : null,
+      })
       return null
     }
 
     const routes = data?.routes ?? []
-    if (!routes.length) return null
+    directionsLog('success route count', { count: routes.length })
+    if (!routes.length) {
+      directionsLog('normalized error code', { code: 'empty_routes' })
+      return null
+    }
 
     const parsed = routes
       .map((route) =>
@@ -147,9 +181,17 @@ export const fetchWalkingDirections = async (from, to, accessToken, options = {}
       })),
     )
 
+    if (!best) {
+      directionsLog('normalized error code', { code: 'unparseable_routes' })
+    }
     return best ?? null
   } catch (error) {
     console.warn('fetchWalkingDirections: Mapbox Directions failed.', error)
+    const aborted = error?.name === 'AbortError'
+    directionsLog('normalized error code', {
+      code: aborted ? 'timeout' : 'network_error',
+      message: typeof error?.message === 'string' ? error.message.slice(0, 120) : null,
+    })
     return null
   }
 }

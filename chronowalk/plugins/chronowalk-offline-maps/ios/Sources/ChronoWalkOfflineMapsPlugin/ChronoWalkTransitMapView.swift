@@ -53,6 +53,7 @@ final class ChronoWalkTransitMapView: UIView {
     func installMapIfNeeded() {
         guard mapView == nil else { return }
 
+        print("[NativeMap native] MapView created bounds=\(bounds)")
         OfflineMapRegionManager.shared.prepareMapboxMapsForOfflinePresentation()
 
         let camera = CameraOptions(
@@ -62,9 +63,11 @@ final class ChronoWalkTransitMapView: UIView {
             ),
             zoom: 14
         )
+        let styleURI = OfflineMapRegionConfig.styleURI
+        print("[NativeMap native] style load started uri=\(OfflineMapRegionConfig.styleURIString)")
         let options = MapInitOptions(
             cameraOptions: camera,
-            styleURI: OfflineMapRegionConfig.styleURI
+            styleURI: styleURI
         )
         let map = MapView(frame: bounds, mapInitOptions: options)
         map.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -72,6 +75,7 @@ final class ChronoWalkTransitMapView: UIView {
         map.ornaments.options.compass.visibility = .hidden
         insertSubview(map, at: 0)
         mapView = map
+        print("[NativeMap native] MapView added to container")
 
         polylineManager = map.annotations.makePolylineAnnotationManager(
             id: "chronowalk-transit-route"
@@ -81,9 +85,14 @@ final class ChronoWalkTransitMapView: UIView {
         )
 
         map.mapboxMap.onStyleLoaded.observeNext { [weak self] _ in
+            print("[NativeMap native] style loaded")
             self?.styleLoaded = true
             self?.applyAnnotations()
             self?.fitCamera(animated: false)
+        }.store(in: &cancelables)
+
+        map.mapboxMap.onMapLoadingError.observe { error in
+            print("[NativeMap native] style load failed type=\(error.type) message=\(error.message)")
         }.store(in: &cancelables)
 
         addSubview(recenterButton)
@@ -93,6 +102,17 @@ final class ChronoWalkTransitMapView: UIView {
             recenterButton.heightAnchor.constraint(equalToConstant: 36),
             recenterButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 88)
         ])
+    }
+
+    private var lastLoggedBounds: CGRect = .null
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.width > 0, bounds.height > 0 else { return }
+        if lastLoggedBounds.width != bounds.width || lastLoggedBounds.height != bounds.height {
+            lastLoggedBounds = bounds
+            print("[NativeMap native] container frame after layout w=\(bounds.width) h=\(bounds.height)")
+        }
     }
 
     func apply(state: TransitMapState) {

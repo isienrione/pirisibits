@@ -201,12 +201,14 @@ public class ChronoWalkOfflineMapsPlugin: CAPPlugin, CAPBridgedPlugin {
 
     /// Embed a native transit MapView over the React map slot (iOS only).
     @objc public func openTransitMap(_ call: CAPPluginCall) {
+        print("[NativeMap native] openTransitMap received")
         let jsObject = callOptionsDictionary(call)
         let state = TransitMapState.from(jsObject: jsObject)
         let frame = ChronoWalkTransitMapPresenter.parseFrame(from: call.getObject("frame"))
             ?? ChronoWalkTransitMapPresenter.parseFrame(from: jsObject["frame"] as? JSObject)
 
         guard let frame else {
+            print("[NativeMap native] openTransitMap rejected — missing frame")
             call.reject(
                 "frame { x, y, width, height } is required",
                 OfflineMapErrorCode.downloadFailed.rawValue,
@@ -227,6 +229,7 @@ public class ChronoWalkOfflineMapsPlugin: CAPPlugin, CAPBridgedPlugin {
                 return
             }
             guard let host = self.bridge?.viewController else {
+                print("[NativeMap native] host missing")
                 call.reject(
                     "No host view controller available",
                     OfflineMapErrorCode.downloadFailed.rawValue,
@@ -235,6 +238,7 @@ public class ChronoWalkOfflineMapsPlugin: CAPPlugin, CAPBridgedPlugin {
                 )
                 return
             }
+            print("[NativeMap native] host found")
 
             do {
                 let payload = try self.transitPresenter.open(
@@ -245,9 +249,11 @@ public class ChronoWalkOfflineMapsPlugin: CAPPlugin, CAPBridgedPlugin {
                 )
                 call.resolve(payload)
             } catch let error as OfflineMapError {
+                print("[NativeMap native] openTransitMap failed code=\(error.code.rawValue)")
                 call.reject(error.message, error.code.rawValue, nil, error.bridgePayload)
             } catch {
                 let normalized = OfflineMapError.normalize(error)
+                print("[NativeMap native] openTransitMap failed code=\(normalized.code.rawValue)")
                 call.reject(normalized.message, normalized.code.rawValue, nil, normalized.bridgePayload)
             }
         }

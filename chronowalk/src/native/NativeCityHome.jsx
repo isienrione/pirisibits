@@ -67,7 +67,11 @@ export function NativeCityHome({
       }
       try {
         const status = await downloads.getDownloadStatus(primaryProductId)
-        if (!cancelled) setDownloadStatus(status)
+        const { resolveOfflineReadyStatus } = await import(
+          '../platform/offlineMaps/nativeOfflineReady.js'
+        )
+        const merged = await resolveOfflineReadyStatus(status, { cityId: 'rome' })
+        if (!cancelled) setDownloadStatus(merged)
       } catch {
         if (!cancelled) setDownloadStatus(null)
       }
