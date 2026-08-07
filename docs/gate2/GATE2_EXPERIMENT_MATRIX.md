@@ -1,6 +1,77 @@
-# Gate 2 — Decision-Grade Experiment Matrix
+# Gate 2 — Decision-Grade Experiment Matrix (REVISION 1)
 
-Every experiment carries the 27 fields from the founder brief. Thresholds reference the frozen HPS v0 instrument (`HPS_V0_FROZEN_INSTRUMENT.md`); "standard HPS thresholds" = Pass ΔHPS ≥ +1.0 & forced choice ≥ 70%; Kill ΔHPS < +0.4 or FC < 55%; Ambiguous = one pre-declared iteration then re-test once, second ambiguous = kill for investment.
+Every experiment carries the 27 fields from the founder brief. Revision 1 incorporates the founder's ten corrections (August 2026). Where a block below conflicts with the Revision 1 sections, **Revision 1 governs**.
+
+## REVISION 1 — Governing amendments
+
+### R1.1 Evidence-level framework (applies to every result)
+- **E0** = founder/technical proof only · **E1** = usability signal · **E2** = directional user evidence · **E3** = decision-grade prototype evidence · **E4** = field-confirmed evidence.
+- Every pass/kill statement must declare the evidence level achieved. **No feature graduates to expensive production investment (ART-1 or beyond, or dedicated engineering) on E0/E1 alone — E2 minimum, E3 preferred.**
+- These are exploratory studies, not clinical trials. Thresholds are decision heuristics; the noise rule below guards against over-reading.
+
+### R1.2 Sample-size & design table (people experiments)
+| Exp | Min N (exploratory read, ≤E2) | Preferred N (pass decision, E3) | Design | Allocation / counterbalancing | Too-noisy rule |
+|---|---|---|---|---|---|
+| X-A1 | 5 | 10–12 | Within-subject | AB/BA order randomized | SD of Δ > 2.0 or order effect > half the main effect → collect more or downgrade to E1 |
+| X-A2 | 5 | 10–12 | Within-subject | vs A1 winner, order randomized | same |
+| X-A3 | 6 | 10–12 (+6–8 Rome) | Within-subject | same | same |
+| X-VPG (pre-gate) | 6 | 8–10 | Within-subject, 3 cells (baseline/B1/B5) | Latin square | any cell SD > 2.0 → E1 only |
+| X-B1 | 6 | 10–12 | Within-subject | vs static control, counterbalanced | standard |
+| X-B2 | 5 (Rome) | 8–10 (Rome) | Within-subject vs B1 | counterbalanced | standard |
+| X-B5 | 6 | 10–12 | Within-subject vs passive | counterbalanced | standard |
+| X-AB | 8 | 12–16 | Within-subject 4 cells | Latin square (4 orders × balanced) | see R1.4 |
+| X-C1 | 6 | 10–12 | Within-subject 3 cells | Latin square | quiz floor/ceiling (>90% or <30% all cells) → redesign quiz |
+| D2 | rides A2 cohort | 8–10 | Within-subject | — | item SD > 2.0 |
+| D3 | 5 | 8–10 | Within-subject vs D2-WoZ | — | false-trigger confound noted per session |
+| D4 | 4 walks | 8–10 walks | Between-walk (route fixed vs adaptive) | alternate assignment | satisfaction SD > 2.0 |
+Within-subject is the default (small N, large expected effects); the only between-subject element is D4 walks. Carryover is mitigated by counterbalancing + minimum 10-min washout + content-order invariance (same claims every cell).
+
+### R1.3 Primary-metric review (universal ΔHPS +1.0 revoked)
+| Exp | Correct primary metric | Threshold notes |
+|---|---|---|
+| X-A1 | ΔHPS core | Standard (+1.0) retained — head-to-head experience comparison is what ΔHPS is for |
+| X-A2 | Δ SP subscale | Pass: SP Δ ≥ +0.7 & FC ≥ 65% (increment over good rung); core HPS secondary |
+| X-A3 | Δ SP subscale | Pass: SP Δ ≥ +1.0 & FC ≥ 60% vs best rung; core Δ secondary |
+| X-VPG | Δ core HPS + Δ HL vs baseline placard | Signal bar (not pass bar): either concept Δ ≥ +0.7 at E1/E2 justifies ART-1; both < +0.4 → stop art spend |
+| X-B1 | ΔHPS core AND HL subscale | Pass: core Δ ≥ +1.0 AND HL Δ ≥ +1.5 (legibility is B1's job) |
+| X-B2 | ΔHPS core, gated by IB & completion | Pass: Δ ≥ +1.0 AND IB ≤ 3.5 AND ≥80% outdoor completion. IB/AC are co-primary gates, not secondaries |
+| X-B3-FIELD | Engineering thresholds only — **no HPS** | lock/drift/survival per provider/stop |
+| X-B3-PREP | Operational checklist only — **no VPS verdict permitted** | see split entry |
+| X-B4 | Forced choice + free-viewpoint usage | HPS-lite tertiary |
+| X-B5 | ΔHPS core AND IB jointly | Pass requires BOTH: Δ ≥ +0.7 AND IB ≤ 3.5; presence bought with burden is a fail |
+| X-C1 | Temporal comprehension (quiz) + HL | Quiz Δ ≥ +20 pts co-primary with HL Δ ≥ +1.0; core HPS secondary |
+| X-D0 | Answer correctness/trust: unsupported-claim count | 0 unsupported; usefulness ≥80%; no presence metric |
+| D2/D3 | Custom viewpoint item + TR | ≥5.5 / retention ≥80% |
+| D4 | Satisfaction + friction items | ≥ +1.0 on single item |
+| Track E | Engineering: hours, blockers, perf parity | no user metrics |
+| Track F | Economic: $/stop, h/stop vs bands | no user metrics |
+| **AC veto (all experiential cells at real sites):** | An experience **cannot pass, regardless of HPS**, if mean AC > 4.5/7 or AC rises ≥ +1.5 vs its control. ChronoWalk must not win by making people look at Rome less. | |
+
+### R1.4 X-AB factorial — explicit math (supersedes block below)
+Cells: C = baseline placard-style info · A = audio only · B = visual only · AB = both. All within-subject, Latin-square ordered (4 sequences, participants balanced across them), identical claims in every cell, ≥10-min washout, cell order entered as a covariate check.
+- **Main audio effect** = ((A − C) + (AB − B)) / 2
+- **Main visual effect** = ((B − C) + (AB − A)) / 2
+- **Interaction (synergy)** = AB − A − B + C
+- **Synergy declared ONLY if** interaction ≥ +0.5 on core HPS **and** the AB cell wins the final forced ranking for ≥ 60% of participants. AB merely scoring highest is expected under additivity and proves nothing.
+- Contamination mitigation: no debriefing between cells; questionnaire immediately after each cell; facilitator blind-scripted; order-effect check = compare first-position cell means across sequences (difference > half the interaction term ⇒ result downgraded one evidence level).
+- Evidence ceiling: desk version E2; Rome version E3/E4.
+
+### R1.5 Asset tiers (ART-0 / ART-1 / ART-2)
+- **ART-0** — throwaway prototype assets: AI-assisted reconstruction drafts, rough paintovers, composited depth layers, greybox, approximate occlusion masks, ≤$300 freelance cleanup. Historically *plausible* (ledger-consistent silhouettes/masses/uses), not rigorous. Used by X-VPG, first B1/B5 tests, C1 rough eras.
+- **ART-1** — historically rigorous prototype art. Commissioned **only after** the relevant interaction passes the visual pre-gate at E2. Founder approval required per commission.
+- **ART-2** — production reconstruction. **Not authorized in early Gate 2.**
+
+### R1.6 New experiment: X-VPG — Visual Pre-Gate (runs before any ART-1 commission)
+1. **ID:** X-VPG · 2. **Decision:** Do the B1 (cinematic layered Then/Now) and B5 (Lantern) *interaction concepts* create enough presence/legibility with ART-0 assets to deserve rigorous art? 3. **Hypothesis:** at least one concept achieves Δ ≥ +0.7 (core or HL) vs baseline placard using rough assets. 4. **Control:** static image + placard text, same claims. 5. **Prototype:** B1 shell + Lantern mode over the same ART-0 layers. 6. **Fake:** everything visual is rough by design. 7. **Real:** interaction responsiveness; claim accuracy. 8. **Assets:** ART-0 for one vantage. 9. **Eng:** S. 10. **Rome:** no. 11. **N:** 6 min / 8–10 preferred, within-subject 3 cells, Latin square. 12. **Procedure:** all 3 cells per participant, HPS + diagnostics after each, forced ranking. 13–15. Per R1.3. 16. **Signal (GO for ART-1):** either concept Δ ≥ +0.7 at E1/E2 with AC/IB clean. 17. **Stop rule:** both concepts < +0.4 → **no ART-1 commission**; program pivots to audio-led + re-examines interaction design before any further art spend. 18. Ambiguous: one iteration of interaction (not art), re-test. 19. Effort: S (rides B1 shell). 20. Cash: ≤$500 total incl. ART-0 cleanup. 21. Deps: ledger, ART-0, B1 shell. 22. Parallel: A-track, D0, B3-PREP. 23. Tech risk: rough assets so bad they invalidate the test (mitigate: founder plausibility QA before sessions). 24. UX risk: novelty (NV1 + second-exposure rule). 25. Fail learning: interaction concepts don't carry presence without fidelity — the single cheapest possible discovery of that fact. 26. Pass → ART-1 commission for winning concept(s); full X-B1/B5 protocols at E3. 27. Fail → art budget preserved; audio-led product shapes rise.
+
+### R1.7 X-B3 split (supersedes the X-B3 block below)
+**X-B3-PREP — local engineering rehearsal (NOT a VPS experiment).** Tests ONLY: probe-app stability, instrumentation, logging completeness, session recording, provider switching, battery, thermal, error capture, fallback behavior, data export, operator procedure. Output: operational checklist pass/fail (all items green = Rome-gate item #3 satisfied). **It is prohibited from producing any statement about VPS feasibility — local anchoring behavior does not predict Roman Forum performance and must not be logged as evidence about it.** Evidence class: E0 by definition. Effort M–L; cash $0–500; deps none; parallel with everything.
+**X-B3-FIELD — the actual Rome VPS experiment.** Only B3-FIELD evaluates lock time, drift, relocalization, session survival, provider coverage, monumental-scale anchoring feasibility — thresholds as in the original block (lock ≤10 s, drift <0.5 m/3 min, ≥90% survival, ≥1 provider at ≥2 of 3 stops). Evidence class: E4. Rome required, absolutely.
+All references to "B3" in dependency graphs and day plans are now B3-PREP (local, anytime) or B3-FIELD (Rome only).
+
+---
+
+Standard HPS thresholds referenced by unamended blocks = Pass ΔHPS ≥ +1.0 & forced choice ≥ 70%; Kill ΔHPS < +0.4 or FC < 55%; Ambiguous = one pre-declared iteration then re-test once, second ambiguous = kill for investment — as modified per experiment by R1.3.
 
 Effort scale: S ≤ 2 founder-days, M ≤ 1 founder-week, L ≤ 3 founder-weeks (with AI tooling). Costs are out-of-pocket cash, excluding founder time and the shared Rome trip budget (trip costed once in BUILD_ORDER file).
 
@@ -151,8 +222,8 @@ Effort scale: S ≤ 2 founder-days, M ≤ 1 founder-week, L ≤ 3 founder-weeks 
 26. **Pass →** Category-defining candidate confirmed; B3 decides whether anchoring can remove the fixed-vantage constraint; Tier T-B2 economics activated.
 27. **Fail →** B1+A becomes the product spine; B3/B4 deprioritized to yearly re-checks.
 
-## X-B3 — VPS/anchoring infrastructure probe
-1. **ID:** X-B3
+## X-B3 — VPS/anchoring infrastructure probe — SPLIT PER R1.7 into X-B3-PREP (local rehearsal, no VPS verdict) and X-B3-FIELD (Rome-only, the block below applies to B3-FIELD)
+1. **ID:** X-B3-FIELD (see R1.7 for X-B3-PREP)
 2. **Decision:** Is world-anchored tracking reliable enough at the exact flagship Rome sites to *depend on* it in the product? **Infrastructure validation, not an experience test** — no HPS.
 3. **Hypothesis:** At least one provider achieves lock ≤ 10 s, drift < 0.5 m over 3 min, and ≥ 90% session survival at ≥ 2 of 3 flagship stops across morning/midday/crowded conditions.
 4. **Control:** N/A (measurement against absolute engineering thresholds, per provider per stop).
@@ -238,7 +309,7 @@ Effort scale: S ≤ 2 founder-days, M ≤ 1 founder-week, L ≤ 3 founder-weeks 
 26. **Pass →** Lantern becomes a core interaction candidate; integrated into B2 Rome sessions and X-AB variant; claim-confidence-as-light design begins.
 27. **Fail →** Passive authored reveal wins; Lantern archived as flagship garnish at most.
 
-## X-AB — Factorial combination cell (founder hypothesis)
+## X-AB — Factorial combination cell (founder hypothesis) — ANALYSIS SUPERSEDED BY R1.4 (explicit main-effect/interaction math; synergy requires interaction term AB−A−B+C ≥ +0.5, not merely AB scoring highest)
 1. **ID:** X-AB
 2. **Decision:** Is the breakthrough the *combination* — true synergy beyond additive audio + visual effects?
 3. **Hypothesis:** 2×2 factorial at one flagship vantage: cells = Control (plain placard-style info), A-only (best audio rung), B-only (best visual rung), AB (both). Synergy hypothesis: HPS(AB) − HPS(Control) > [HPS(A) − HPS(Control)] + [HPS(B) − HPS(Control)] (super-additive interaction), or at minimum AB ≥ best single + 0.5.

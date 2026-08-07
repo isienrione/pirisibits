@@ -1,0 +1,327 @@
+The Gate 2 framework is approved in principle, but make the following corrections BEFORE Phase 0 starts.
+
+Do not build anything yet.
+
+I want a FINAL EXECUTION REVISION, not a new strategy.
+
+Keep all existing Gate 2 documents and experiment IDs, but amend them as follows.
+
+--------------------------------------------------
+1. FIX THE B3 / ROME CONTRADICTION
+--------------------------------------------------
+
+You previously concluded correctly that true VPS/anchoring validation is location-specific and requires Rome.
+
+But the Day 7 plan now says:
+
+“first fully instrumented local B3 walk”
+
+Separate these into TWO distinct activities:
+
+B3-PREP:
+A local / any-city engineering rehearsal that tests ONLY:
+- probe app stability
+- instrumentation
+- logging
+- session recording
+- provider switching
+- battery consumption
+- thermal behavior
+- error capture
+- fallback behavior
+- data export
+- operator procedure
+
+It MUST NOT produce a pass/fail result on VPS feasibility.
+
+B3-FIELD:
+The actual Rome VPS experiment.
+
+Only B3-FIELD may evaluate:
+- lock time
+- drift
+- relocalization
+- session survival
+- provider coverage
+- monumental-scale anchoring feasibility
+
+Update every dependency graph, Gate 2 matrix entry and Day 1–7 plan accordingly.
+
+Do not imply that local VPS behavior predicts Roman Forum performance.
+
+--------------------------------------------------
+2. REDUCE PHASE 0 CASH EXPOSURE
+--------------------------------------------------
+
+I do NOT want to commit $3.5k–$10.5k before we have evidence that the interaction concepts deserve expensive reconstruction art.
+
+Split visual asset production into:
+
+ART-0 — throwaway prototype assets
+Goal:
+Test interaction and experiential hypotheses.
+
+Allowed:
+- AI-assisted reconstruction drafts
+- rough paintovers
+- composited depth layers
+- greybox geometry
+- approximate occlusion masks
+- low-cost freelancer cleanup
+
+These must be historically plausible enough not to invalidate the test, but are NOT final production reconstruction art.
+
+ART-1 — historically rigorous prototype art
+Commission ONLY after the relevant visual interaction passes the first cheap test.
+
+ART-2 — production-quality reconstruction
+Do not authorize during early Gate 2.
+
+Revise Phase 0 budget accordingly.
+
+I want:
+- minimum viable Phase 0 cash budget
+- expected budget
+- maximum before a formal founder approval checkpoint
+
+Target the first meaningful experimental read for well under $2,000 if reasonably possible.
+
+Challenge every expenditure.
+
+--------------------------------------------------
+3. ADD SAMPLE SIZE / EVIDENCE QUALITY
+--------------------------------------------------
+
+Every experiment involving people must specify:
+
+- minimum N for an exploratory read
+- preferred N before a real pass decision
+- allocation across cells
+- whether within-subject or between-subject
+- counterbalancing/randomization where relevant
+- what result is considered too noisy to interpret
+
+Do NOT pretend these early experiments have clinical-trial statistical power.
+
+Instead classify evidence:
+
+E0 = founder/technical proof only
+E1 = usability signal
+E2 = directional user evidence
+E3 = decision-grade prototype evidence
+E4 = field-confirmed evidence
+
+Every pass/kill result must state the evidence level achieved.
+
+A feature cannot graduate to expensive production investment based solely on E0/E1.
+
+--------------------------------------------------
+4. FIX X-AB FACTORIAL ANALYSIS
+--------------------------------------------------
+
+Make the factorial structure mathematically explicit.
+
+Cells:
+
+C = baseline/control
+A = audio only
+B = visual only
+AB = audio + visual
+
+Main audio effect:
+((A - C) + (AB - B)) / 2
+
+Main visual effect:
+((B - C) + (AB - A)) / 2
+
+Interaction / synergy:
+AB - A - B + C
+
+Declare synergy only if the interaction term clears the pre-declared threshold.
+
+Do not call AB “synergistic” merely because AB scores highest.
+
+Also specify:
+- cell allocation
+- randomization
+- order effects
+- whether participants can experience more than one condition
+- contamination/carryover mitigation
+
+--------------------------------------------------
+5. REVISIT UNIVERSAL ΔHPS = +1.0
+--------------------------------------------------
+
+Do not mechanically use ΔHPS ≥ +1.0 for every experiential experiment unless justified.
+
+For each experiment determine whether:
+- absolute HPS
+- ΔHPS
+- subscale movement
+- forced choice
+- task success
+- interaction burden
+- attention conflict
+
+is the correct primary decision metric.
+
+Keep the system consistent, but don't force one threshold onto experiments that answer fundamentally different questions.
+
+For example:
+- B3 should have no HPS criterion.
+- D0 should primarily evaluate answer correctness/trust, not presence.
+- B5 may need presence AND interaction burden.
+- C1 may primarily test temporal comprehension.
+- Track E/F should use engineering/economic criteria.
+
+--------------------------------------------------
+6. ADD A CHEAP VISUAL PRE-GATE
+--------------------------------------------------
+
+Before commissioning ART-1 for B1/B2/B5, create a VISUAL PRE-GATE.
+
+Use ART-0.
+
+Test whether users understand and respond to:
+
+B1:
+cinematic layered Then/Now
+
+B5:
+Lantern active discovery
+
+Use the SAME underlying historical content wherever possible.
+
+The question at this stage is NOT photorealism.
+
+It is:
+“Is the interaction concept itself creating enough additional historical presence / legibility to deserve expensive art?”
+
+If neither concept shows meaningful signal with decent rough assets, stop before commissioning expensive reconstruction work.
+
+--------------------------------------------------
+7. MAKE HPS V0 ACTUALLY FREEZABLE
+--------------------------------------------------
+
+Before calling HPS v0 “frozen,” provide the literal questionnaire.
+
+For every item include:
+
+- exact wording
+- scale anchors 1 and 7
+- dimension
+- whether core or diagnostic
+- scoring direction
+- reverse-scored status if any
+
+Then show:
+
+CORE HPS formula
+SUBSCALE formulas
+TRUST diagnostic
+ATTENTION CONFLICT diagnostic
+INTERACTION BURDEN diagnostic
+NOVELTY / WOW diagnostic
+
+Also explain what happens if:
+
+HPS rises but attention conflict also rises substantially.
+
+ChronoWalk should NOT count an experience as a success if the phone becomes more impressive but causes the user to look less at Rome.
+
+Create an explicit veto condition for excessive attention conflict.
+
+--------------------------------------------------
+8. REWRITE FIRST 7 DAYS
+--------------------------------------------------
+
+Revise the first week around LOW-COST LEARNING.
+
+I want something closer to:
+
+DAY 1
+- freeze measurement instrument
+- select flagship vantage
+- define visual control condition
+- lock experiment protocols
+
+DAY 2
+- claim ledger for that vantage
+- create ART-0 brief
+- start cheap visual blockout
+- build D0 dataset/eval cases
+
+DAY 3
+- run D0 benchmark
+- build B1 interaction shell
+- no expensive art yet
+
+DAY 4
+- build Lantern interaction using same ART-0 assets
+- start A1 audio scene independently
+
+DAY 5
+- internal/founder QA
+- fix obvious interaction problems
+- recruit first external testers
+
+DAY 6
+- first B1 vs Lantern vs baseline exploratory test
+- collect HPS + diagnostics
+- classify evidence E1/E2
+
+DAY 7
+- B3-PREP local instrumentation rehearsal
+- NOT VPS validation
+- analyze Week 1 results
+- make first GO / ITERATE / KILL decisions
+
+Adjust this if you have a better sequence, but preserve the principle:
+DO NOT spend heavily before cheap interaction evidence exists.
+
+--------------------------------------------------
+9. ADD A DAY-7 DECISION BOARD
+--------------------------------------------------
+
+At the end of Week 1 I want one table:
+
+BET
+CURRENT EVIDENCE LEVEL
+RESULT
+GO / ITERATE / KILL
+NEXT COST
+NEXT DECISION
+FOUNDER APPROVAL REQUIRED?
+
+Include at minimum:
+A
+B1
+B5
+D0
+B3-PREP
+C1 if started
+
+--------------------------------------------------
+10. GIVE ME THE ACTUAL START BUTTON
+--------------------------------------------------
+
+After making all revisions, end with:
+
+“PHASE 0 START PACKAGE”
+
+It must contain ONLY the work that should begin immediately.
+
+Give me:
+
+A. exact tasks for me
+B. exact tasks for Replit
+C. exact tasks for other AI tools
+D. any freelancer brief required this week
+E. files/artifacts to create
+F. maximum permitted spend before Day-7 review
+G. exact first experiment to run
+H. what NOT to work on yet
+
+Do not implement anything.
+
+Update the Gate 2 documents and return a concise changelog plus the PHASE 0 START PACKAGE.
