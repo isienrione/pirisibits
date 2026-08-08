@@ -300,6 +300,10 @@ function ChronoWalkLandingInner() {
         open={Boolean(pendingTierId)}
         tierLabel={pendingTier?.name ?? pendingTier?.eyebrow ?? null}
         priceLabel={pendingTier?.price ?? null}
+        basePriceLabel={pendingTier?.launchOffer ? pendingTier?.basePrice ?? null : null}
+        offerLabel={pendingTier?.launchOffer ? pendingTier?.offerLabel ?? null : null}
+        saveLabel={pendingTier?.launchOffer ? pendingTier?.saveLabel ?? null : null}
+        launchOffer={Boolean(pendingTier?.launchOffer)}
         busy={checkoutBusy}
         onConfirm={handleConsentConfirm}
         onCancel={handleConsentCancel}

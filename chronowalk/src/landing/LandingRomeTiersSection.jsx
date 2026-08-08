@@ -111,6 +111,18 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           onError={retryImageOnError}
           decoding="async"
         />
+        {tier.launchOffer ? (
+          <div className="cw-v4-pkg__offer-chip" aria-hidden="true">
+            <OfferPriceDisplay
+              price={tier.price}
+              basePrice={tier.basePrice}
+              offerLabel={tier.offerLabel}
+              saveLabel={tier.saveLabel}
+              launchOffer
+              compact
+            />
+          </div>
+        ) : null}
         <button
           type="button"
           className="cw-v4-pkg__hotspot"
@@ -291,6 +303,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           price={activeTier.price}
           basePrice={activeTier.basePrice}
           offerLabel={activeTier.offerLabel}
+          saveLabel={activeTier.saveLabel}
           launchOffer={activeTier.launchOffer}
           note={activeTier.priceNote}
         />
@@ -370,7 +383,9 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
                   price={tier.price}
                   basePrice={tier.basePrice}
                   offerLabel={tier.offerLabel}
+                  saveLabel={tier.saveLabel}
                   launchOffer={tier.launchOffer}
+                  compact
                 />
               </div>
               <button
@@ -449,6 +464,14 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
           {section.subheadline ? (
             <p className="cw-v2-section__lead cw-v4-section-lead">{section.subheadline}</p>
           ) : null}
+          {tiers.some((tier) => tier.launchOffer) ? (
+            <p className="cw-v4-pricing__launch-note" data-testid="cw-pricing-launch-note">
+              <span className="cw-v4-pricing__launch-note-label">Launch offer</span>
+              <span className="cw-v4-pricing__launch-note-copy">
+                Temporary introductory pricing — scratched list prices show what you save today.
+              </span>
+            </p>
+          ) : null}
           {section.intro ? <p className="cw-v2-pricing__intro">{section.intro}</p> : null}
         </header>
 
@@ -515,6 +538,7 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                     price={bundle.price}
                     basePrice={bundle.basePrice}
                     offerLabel={bundle.offerLabel}
+                    saveLabel={bundle.saveLabel}
                     launchOffer={bundle.launchOffer}
                     note={bundle.priceNote}
                   />

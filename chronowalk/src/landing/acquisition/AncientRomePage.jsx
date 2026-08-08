@@ -4,7 +4,7 @@ import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.
 import { applyLaunchOfferToOffer, isLaunchOfferActive } from '../../lib/launchOffer.js'
 import LandingThenNowProof from '../v4/LandingThenNowProof.jsx'
 import { getUnlockAllStopsCta, ROME_TIERS } from '../landingData.js'
-import OfferPriceDisplay from '../OfferPriceDisplay.jsx'
+import OfferPriceDisplay, { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
 import { getLandingTierRouteStops } from '../landingTierRoutes.js'
 import { getLandingTierStats } from '../landingTierStats.js'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
@@ -96,9 +96,10 @@ export default function AncientRomePage() {
               <button
                 type="button"
                 className="cw-acq-btn cw-acq-btn--secondary"
+                aria-label={unlockAllCta}
                 onClick={() => chooseEterna('hero')}
               >
-                {unlockAllCta}
+                <LaunchOfferUnlockCtaLabel fallback={unlockAllCta} />
               </button>
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
@@ -205,6 +206,7 @@ export default function AncientRomePage() {
                 price={antica?.price ?? '€9.99'}
                 basePrice={antica?.basePrice}
                 offerLabel={antica?.offerLabel}
+                saveLabel={antica?.saveLabel}
                 launchOffer={antica?.launchOffer}
               />
               <div className="cw-acq-choice__actions">
@@ -236,6 +238,7 @@ export default function AncientRomePage() {
                   price={eterna?.price ?? '€14.99'}
                   basePrice={eterna?.basePrice}
                   offerLabel={eterna?.offerLabel}
+                  saveLabel={eterna?.saveLabel}
                   launchOffer={eterna?.launchOffer}
                 />
                 <p className="cw-acq-choice__value">{eternaValueLine}</p>
@@ -267,6 +270,7 @@ export default function AncientRomePage() {
                   price={historica?.price ?? '€9.99'}
                   basePrice={historica?.basePrice}
                   offerLabel={historica?.offerLabel}
+                  saveLabel={historica?.saveLabel}
                   launchOffer={historica?.launchOffer}
                 />
                 <div className="cw-acq-choice__actions">
@@ -325,6 +329,16 @@ export default function AncientRomePage() {
         open={Boolean(checkout.pendingTierId)}
         tierLabel={checkout.pendingTier?.name ?? null}
         priceLabel={checkout.pendingTier?.price ?? null}
+        basePriceLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.basePrice ?? null : null
+        }
+        offerLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.offerLabel ?? null : null
+        }
+        saveLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.saveLabel ?? null : null
+        }
+        launchOffer={Boolean(checkout.pendingTier?.launchOffer)}
         busy={checkout.checkoutBusy}
         onCancel={checkout.cancelConsent}
         onConfirm={checkout.confirmConsent}

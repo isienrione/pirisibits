@@ -215,10 +215,15 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     expect(screen.getByRole('tab', { name: 'Roma Antica' })).toHaveAttribute('aria-selected', 'false')
     expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'false')
 
+    expect(screen.getByTestId('cw-pricing-launch-note')).toHaveTextContent(/Launch offer/i)
+    expect(screen.getByTestId('cw-pricing-launch-note')).toHaveTextContent(/scratched list prices/i)
+
     const panel = screen.getByRole('tabpanel')
     expect(panel).toHaveTextContent('€14.99')
     expect(panel).toHaveTextContent('€10')
     expect(panel).toHaveTextContent(/Launch offer/i)
+    expect(panel).toHaveTextContent('Save €4.99')
+    expect(panel.querySelector('.cw-offer-price__scratch')).toBeTruthy()
     expect(panel).toHaveTextContent('4.5 – 5.5 hr')
     expect(panel).toHaveTextContent('21 stops')
     expect(panel).toHaveTextContent('~6 km')

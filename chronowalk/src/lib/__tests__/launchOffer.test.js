@@ -99,11 +99,13 @@ describe('launchOffer', () => {
     expect(eterna.price).toBe('€10')
     expect(eterna.basePrice).toBe('€14.99')
     expect(eterna.launchOffer).toBe(true)
+    expect(eterna.saveLabel).toBe('Save €4.99')
     expect(ROME_TIERS.find((t) => t.id === 'rome-complete').priceCents).toBe(1499)
 
     const couple = applyLaunchOfferToOffer(ROME_BUNDLES.find((b) => b.id === 'rome-couple'))
     expect(couple.price).toBe('€17')
     expect(couple.basePrice).toBe('€25')
+    expect(couple.saveLabel).toBe('Save €8')
     expect(couple.savingsLine).toMatch(/Save €3/)
   })
 

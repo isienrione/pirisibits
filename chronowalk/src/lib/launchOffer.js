@@ -164,6 +164,25 @@ export function getLaunchOfferHeroUnlockShortCta() {
 }
 
 /**
+ * Structured hero unlock price parts for scratched-base disclosure UI.
+ * Null when Launch Offer is off.
+ */
+export function getLaunchOfferHeroPriceParts() {
+  if (!isLaunchOfferActive()) return null
+  const pricing = getLaunchOfferPricing('rome-complete')
+  if (!pricing) return null
+  return {
+    prefix: 'Unlock all 21 stops',
+    prefixShort: 'Unlock',
+    basePrice: pricing.baseLabel,
+    price: pricing.promoLabel,
+    offerLabel: LAUNCH_OFFER_LABEL,
+    saveLabel: `Save ${formatEurFromCents(pricing.discountCents)}`,
+    launchOffer: true,
+  }
+}
+
+/**
  * Bundle savings against current individual Roma Eterna price.
  * During launch offer: Eterna = €10 → Couple saves €3, Family saves €15 at 4 seats.
  */
@@ -217,6 +236,7 @@ export function applyLaunchOfferToOffer(offer) {
       basePrice: undefined,
       basePriceCents: undefined,
       offerLabel: undefined,
+      saveLabel: undefined,
     }
   }
 
@@ -230,6 +250,7 @@ export function applyLaunchOfferToOffer(offer) {
     basePrice: pricing.baseLabel,
     basePriceCents: pricing.baseCents,
     offerLabel: LAUNCH_OFFER_LABEL,
+    saveLabel: `Save ${formatEurFromCents(pricing.discountCents)}`,
   }
 
   if (offer.id === 'rome-complete') {

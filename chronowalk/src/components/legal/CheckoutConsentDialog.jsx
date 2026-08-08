@@ -1,11 +1,16 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { TAX_INCLUSIVE_NOTE } from './immediateAccessConsent.js'
+import OfferPriceDisplay from '../../landing/OfferPriceDisplay.jsx'
 import './legal.css'
 
 function CheckoutConsentDialogPanel({
   tierLabel,
   priceLabel,
+  basePriceLabel = null,
+  offerLabel = null,
+  saveLabel = null,
+  launchOffer = false,
   busy,
   onConfirm,
   onCancel,
@@ -44,7 +49,17 @@ function CheckoutConsentDialogPanel({
         </h2>
         {priceLabel ? (
           <>
-            <p className="cw-consent-dialog__price">{priceLabel}</p>
+            <OfferPriceDisplay
+              as="p"
+              className="cw-consent-dialog__price"
+              priceClassName="cw-consent-dialog__price-now"
+              price={priceLabel}
+              basePrice={basePriceLabel}
+              offerLabel={offerLabel}
+              saveLabel={saveLabel}
+              launchOffer={launchOffer}
+              onDark
+            />
             <p className="cw-consent-dialog__tax">{TAX_INCLUSIVE_NOTE}</p>
           </>
         ) : (
@@ -87,6 +102,10 @@ export default function CheckoutConsentDialog({
   open,
   tierLabel = null,
   priceLabel = null,
+  basePriceLabel = null,
+  offerLabel = null,
+  saveLabel = null,
+  launchOffer = false,
   busy = false,
   onConfirm,
   onCancel,
@@ -97,6 +116,10 @@ export default function CheckoutConsentDialog({
     <CheckoutConsentDialogPanel
       tierLabel={tierLabel}
       priceLabel={priceLabel}
+      basePriceLabel={basePriceLabel}
+      offerLabel={offerLabel}
+      saveLabel={saveLabel}
+      launchOffer={launchOffer}
       busy={busy}
       onConfirm={onConfirm}
       onCancel={onCancel}

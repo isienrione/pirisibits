@@ -4,6 +4,8 @@ import { LANDING_CONTENT, ROME_TIERS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
+import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
+import { getLaunchOfferHeroPriceParts } from '../../lib/launchOffer.js'
 import { trackCtaClick } from '../../lib/analytics.ts'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
@@ -220,6 +222,7 @@ export default function LandingProductHero({
 
             <div className="cw-v4-hero__actions cw-v4-hero__actions--pair">
               {(() => {
+                const offerParts = getLaunchOfferHeroPriceParts()
                 const unlockCta = (
                   <a
                     key="unlock"
@@ -234,10 +237,22 @@ export default function LandingProductHero({
                     }}
                   >
                     <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
-                      {section.getAppCta}
+                      {offerParts ? (
+                        <LaunchOfferUnlockCtaLabel fallback={section.getAppCta} onDark />
+                      ) : (
+                        section.getAppCta
+                      )}
                     </span>
                     <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
-                      {section.getAppCtaShort ?? section.getAppCta}
+                      {offerParts ? (
+                        <LaunchOfferUnlockCtaLabel
+                          fallback={section.getAppCtaShort ?? section.getAppCta}
+                          short
+                          onDark
+                        />
+                      ) : (
+                        section.getAppCtaShort ?? section.getAppCta
+                      )}
                     </span>
                   </a>
                 )

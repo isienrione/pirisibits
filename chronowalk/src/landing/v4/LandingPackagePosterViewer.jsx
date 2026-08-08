@@ -365,7 +365,9 @@ export function LandingZoomableImageViewer({
                   price={action.price}
                   basePrice={action.basePrice}
                   offerLabel={action.offerLabel}
+                  saveLabel={action.saveLabel}
                   launchOffer={action.launchOffer}
+                  onDark
                 />
               ) : null}
             </div>
@@ -410,6 +412,7 @@ export function LandingPackagePosterViewer({
         price: tier.price,
         basePrice: tier.basePrice,
         offerLabel: tier.offerLabel,
+        saveLabel: tier.saveLabel,
         launchOffer: tier.launchOffer,
         ctaLabel: tier.primaryCta,
         onCta: () => onBeginTier?.(tier.id),

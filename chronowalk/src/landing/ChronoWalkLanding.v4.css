@@ -3668,35 +3668,59 @@
   }
 }
 
-/* Launch Offer — restrained strike-through pricing */
-.cw-offer-price__stack {
+/* Launch Offer — landing layout hooks (base styles live in OfferPriceDisplay.css) */
+.cw-v4-pricing__launch-note {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.35rem 0.65rem;
+  gap: 0.45rem 0.75rem;
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--v4-amber, #e8a13c) 34%, transparent);
+  background: color-mix(in srgb, var(--v4-amber, #e8a13c) 12%, var(--v4-paper, #faf6ef));
 }
 
-.cw-offer-price__was {
+.cw-v4-pricing__launch-note-label {
   font-family: var(--font-ui, 'DM Sans', sans-serif);
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: rgba(26, 22, 17, 0.48);
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-}
-
-.cw-offer-price__now {
-  font-family: inherit;
-}
-
-.cw-offer-price__label {
-  font-family: var(--font-ui, 'DM Sans', sans-serif);
-  font-size: 0.72rem;
-  font-weight: 650;
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--pkg-accent-deep, #8a5a28);
+  color: var(--v4-amber-deep, #c97f1e);
+}
+
+.cw-v4-pricing__launch-note-copy {
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--v4-muted);
+}
+
+.cw-v4-pkg__offer-chip {
+  position: absolute;
+  left: 50%;
+  bottom: 11%;
+  z-index: 3;
+  transform: translateX(-50%);
+  width: min(86%, 16.5rem);
+  padding: 0.55rem 0.75rem 0.6rem;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, #fffdf8 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pkg-accent, #b08d3e) 38%, rgba(33, 28, 21, 0.16));
+  box-shadow: 0 10px 24px rgba(33, 28, 21, 0.16);
+  pointer-events: none;
+}
+
+.cw-v4-pkg__offer-chip .cw-offer-price__now {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.55rem;
+  font-weight: 650;
+  color: var(--v4-ink, #211c15);
+}
+
+.cw-v4-pkg__offer-chip .cw-offer-price__stack {
+  justify-content: center;
 }
 
 .cw-v4-pkg-mobile-card__price-row .cw-offer-price__stack,
@@ -3704,12 +3728,9 @@
   align-items: baseline;
 }
 
-.cw-v4-pkg-compare__price .cw-offer-price__stack {
-  gap: 0.25rem 0.5rem;
-}
-
-.cw-v4-pkg-compare__price .cw-offer-price__was {
-  font-size: 0.85rem;
+.cw-v4-pkg-mobile-card__price-row .cw-offer-price__now-wrap,
+.cw-v2-pricing-card__price-row .cw-offer-price__now-wrap {
+  gap: 0.55rem;
 }
 
 .cw-landing--v4 .cw-v2-pricing-card__ribbon--launch {
@@ -3721,10 +3742,37 @@
   justify-content: flex-start;
 }
 
-.cw-v4-poster-viewer__action-price .cw-offer-price__was {
-  color: rgba(245, 239, 227, 0.55);
+.cw-acq-choice__price .cw-offer-price__now {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: 1.55rem;
+  font-weight: 650;
 }
 
-.cw-v4-poster-viewer__action-price .cw-offer-price__label {
-  color: rgba(232, 161, 60, 0.95);
+.cw-v4-btn--getapp .cw-v4-btn-label--full,
+.cw-v4-btn--getapp .cw-v4-btn-label--short {
+  align-items: baseline;
+  gap: 0.15rem;
 }
+
+.cw-v4-btn--getapp .cw-v4-btn-label--full:has(.cw-offer-price),
+.cw-v4-btn--getapp .cw-v4-btn-label--short:has(.cw-offer-price) {
+  display: inline-flex;
+}
+
+.cw-v4-btn-label__offer {
+  margin-left: 0.05rem;
+}
+
+.cw-v4-btn-label__dot {
+  margin: 0 0.15rem;
+  opacity: 0.8;
+}
+
+.cw-v4-btn--getapp .cw-offer-price__was {
+  font-size: 0.88em;
+}
+
+.cw-v4-btn--getapp .cw-offer-price__now {
+  font-weight: 700;
+}
+

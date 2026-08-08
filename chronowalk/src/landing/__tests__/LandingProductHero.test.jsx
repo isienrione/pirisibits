@@ -130,7 +130,11 @@ describe('LandingProductHero CTA hierarchy', () => {
       name: 'Unlock all 21 stops · €10',
     })
     expect(paidCta).toHaveAttribute('href', '#pricing')
-    expect(paidCta).toHaveTextContent(LANDING_CTA.unlockRomePriced)
+    expect(paidCta).toHaveAttribute('aria-label', LANDING_CTA.unlockRomePriced)
+    expect(paidCta).toHaveTextContent(/Unlock all 21 stops/)
+    expect(paidCta).toHaveTextContent('€14.99')
+    expect(paidCta).toHaveTextContent('€10')
+    expect(paidCta.querySelector('[data-testid="cw-offer-price"]')).toBeTruthy()
 
     const freeCta = screen.getByRole('button', {
       name: LANDING_CTA.tryPantheonFree,
@@ -174,7 +178,9 @@ describe('LandingProductHero CTA hierarchy', () => {
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
-    expect(kids[1].textContent).toMatch(/Unlock all 21 stops · €10|Unlock · €10/i)
+    expect(kids[1].textContent).toMatch(/Unlock all 21 stops|Unlock/)
+    expect(kids[1].textContent).toMatch(/€10/)
+    expect(kids[1].textContent).toMatch(/€14\.99/)
     expect(kids[1].className).toMatch(/getapp/)
   })
 
@@ -200,7 +206,8 @@ describe('LandingProductHero CTA hierarchy', () => {
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
-    expect(kids[0].textContent).toMatch(/Unlock all 21 stops · €10|Unlock · €10/i)
+    expect(kids[0].textContent).toMatch(/Unlock all 21 stops|Unlock/)
+    expect(kids[0].textContent).toMatch(/€10/)
     expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))

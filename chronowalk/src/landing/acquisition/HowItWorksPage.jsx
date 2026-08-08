@@ -4,6 +4,7 @@ import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import HowItWorksSequentialDemo from './HowItWorksSequentialDemo.jsx'
 import { getUnlockAllStopsCta } from '../landingData.js'
+import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
 import { HOW_IT_WORKS_COPY } from './acquisitionCopy.js'
 import {
   trackHowItWorksDemoStarted,
@@ -142,9 +143,10 @@ export default function HowItWorksPage() {
             <button
               type="button"
               className="cw-acq-btn cw-acq-btn--secondary"
+              aria-label={unlockAllCta}
               onClick={() => startPaid('final')}
             >
-              {unlockAllCta}
+              <LaunchOfferUnlockCtaLabel fallback={unlockAllCta} />
             </button>
           </div>
           <p className="cw-acq-hero__trust" style={{ marginTop: '1.25rem' }}>
@@ -167,6 +169,16 @@ export default function HowItWorksPage() {
         open={Boolean(checkout.pendingTierId)}
         tierLabel={checkout.pendingTier?.name ?? null}
         priceLabel={checkout.pendingTier?.price ?? null}
+        basePriceLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.basePrice ?? null : null
+        }
+        offerLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.offerLabel ?? null : null
+        }
+        saveLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.saveLabel ?? null : null
+        }
+        launchOffer={Boolean(checkout.pendingTier?.launchOffer)}
         busy={checkout.checkoutBusy}
         onCancel={checkout.cancelConsent}
         onConfirm={checkout.confirmConsent}
