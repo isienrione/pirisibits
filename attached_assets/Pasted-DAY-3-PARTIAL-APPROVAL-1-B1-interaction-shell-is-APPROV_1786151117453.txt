@@ -1,0 +1,199 @@
+DAY 3 PARTIAL APPROVAL.
+
+1. B1 interaction shell is APPROVED as the shared experimental substrate.
+
+Use this same rendering substrate for:
+- B1 layered reveal
+- future Lantern mode
+- flattened Control
+
+Do not create a second visual prototype stack.
+
+2. X-D0 remains PENDING FOUNDER REVIEW.
+
+Do NOT rerun it yet.
+Do NOT loosen the zero-unsupported-claim standard.
+Do NOT proceed to Day 4 implementation yet.
+
+The constrained result is directionally excellent, but 65 judge flags across 35 cases require human adjudication before we know the real failure rate.
+
+CREATE A FOUNDER ADJUDICATION PACK.
+
+I do not want to inspect raw model transcripts one by one.
+
+Create:
+
+docs/gate2/XD0_FOUNDER_ADJUDICATION_PACK.md
+
+For EVERY one of the 65 constrained unsupported-claim flags, include a compact row with:
+
+1. Case ID
+2. Category
+3. User prompt
+4. Exact sentence / phrase flagged
+5. Ledger claim IDs available to the model
+6. Why the automated judge flagged it
+7. Replit preliminary classification:
+   A. REAL UNSUPPORTED CLAIM
+   B. OVER-SPECIFIC / DECORATIVE LEAK
+   C. PERMITTED PARAPHRASE
+   D. JUDGE FALSE POSITIVE
+   E. AMBIGUOUS — FOUNDER DECISION
+8. Evidence / ledger basis for that preliminary classification
+9. Severity:
+   - Critical historical fabrication
+   - Material unsupported detail
+   - Minor atmospheric embellishment
+   - Harmless wording
+10. Proposed founder decision:
+   - violation
+   - not violation
+   - ambiguous
+
+IMPORTANT:
+Do not silently adjudicate the benchmark yourself.
+Your classifications are recommendations only.
+
+Then create a SUMMARY TABLE:
+
+CLASSIFICATION | COUNT
+REAL UNSUPPORTED
+DECORATIVE LEAK
+PERMITTED PARAPHRASE
+JUDGE FALSE POSITIVE
+AMBIGUOUS
+
+Also show:
+- number of affected cases
+- number of flags per case
+- whether any single response contains multiple independent fabrications
+
+--------------------------------------------------
+40-CASE PREDECLARED SPOT CHECK
+--------------------------------------------------
+
+For the deterministic 40-case founder sample, create a second compact section.
+
+For each case show:
+
+- Case ID
+- Prompt
+- Expected behavior
+- Condensed constrained answer
+- Relevant ledger IDs
+- Automated score
+- Your recommended human score for:
+  correctness 0–2
+  trust calibration 0–2
+  behavior compliance pass/fail
+  unsupported claim yes/no
+- One sentence explaining any discrepancy
+
+Do NOT substitute cases.
+Preserve the frozen seeded sample exactly.
+
+--------------------------------------------------
+FOUNDER REVIEW UI
+--------------------------------------------------
+
+Make the document easy to review.
+
+At the end create a decision checklist where the founder can respond with something like:
+
+F003 flag 1 = violation
+F014 flag 1 = false positive
+C002 flag 2 = permitted
+...
+
+But minimize the number of decisions requiring manual intervention.
+
+If 20 flags are clearly the same repeated failure pattern, group them AFTER preserving the individual rows and propose one policy decision that could resolve the class.
+
+--------------------------------------------------
+ROOT-CAUSE CLUSTERS
+--------------------------------------------------
+
+Cluster the REAL / LIKELY violations into failure modes such as:
+
+- decorative architectural invention
+- unsupported sensory atmosphere
+- unsupported later-history attribution
+- legend presented as history
+- spatial specificity beyond ledger
+- contested interpretation presented as fact
+- scope leakage
+- other
+
+For each cluster return:
+
+- count
+- examples
+- likely prompt/runtime cause
+- proposed minimal mitigation
+
+Do NOT implement the mitigations yet.
+
+--------------------------------------------------
+ZERO-CLAIM STANDARD
+--------------------------------------------------
+
+Keep the current Gate 2 rule:
+
+The constrained system does not PASS while confirmed unsupported claims remain.
+
+Do not redefine “unsupported” merely to improve the metric.
+
+However, permitted ordinary-language paraphrase and spatial connective language should not be misclassified as fabrication.
+
+The purpose of founder adjudication is to distinguish those correctly.
+
+--------------------------------------------------
+CITY GRAPH DOCUMENTATION
+--------------------------------------------------
+
+Also record the strategic update we just approved in:
+
+docs/gate2/CHRONOWALK_2_CITY_GRAPH_ARCHITECTURE.md
+
+Documentation only.
+
+Record:
+
+- 21–25+ expected Anchor stops
+- approximately 50+ total Rome stops over time
+- Anchor / Signature / Discovery stop classes
+- variable production depth by class
+- dynamic routes over a content graph
+- geography/time/interests/context as route inputs
+- must-see anchors PLUS hidden discoveries
+- simple customer-facing commerce may remain
+- quality before stop count
+- automated production pipeline before mass content generation
+
+Also explicitly record:
+
+THIS DOES NOT AUTHORIZE:
+- generating 50 stops now
+- changing current production routes
+- changing commerce
+- refactoring current ChronoWalk
+- changing Gate 2 experiments
+
+--------------------------------------------------
+RETURN
+
+Return only:
+
+1. X-D0 adjudication summary counts
+2. Top failure clusters
+3. Number of decisions that genuinely require founder judgment
+4. 10 most important/ambiguous examples in the chat response
+5. Location of the full adjudication pack
+6. Confirmation the 40-case sample was preserved
+7. Confirmation B1 substrate is frozen/approved
+8. Confirmation City Graph architecture was documented
+9. Files created/modified
+10. Spend
+11. Confirmation no rerun or Day-4 implementation occurred
+
+HOLD after this.
