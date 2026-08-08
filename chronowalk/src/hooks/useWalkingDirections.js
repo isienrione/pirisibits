@@ -9,6 +9,7 @@ import {
   cacheLegDirections,
   cacheLegRoute,
 } from '../utils/routeGeometryCache'
+import { getCanonicalWalkingLeg } from '../navigation/canonicalWalkingLegs.js'
 import { getDistance } from '../utils/distance'
 import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
 import { directionsLog } from '../platform/offlineMaps/nativeMapDiagnostics.js'
@@ -16,13 +17,25 @@ import { directionsLog } from '../platform/offlineMaps/nativeMapDiagnostics.js'
 /** If GPS is farther than this from the previous stop, prefer stop→stop routing. */
 const STALE_GPS_FROM_LEG_M = 350
 
+export const ROUTE_UNAVAILABLE_COPY =
+  'Route unavailable right now — you can still open the stop and use the map.'
+
 function geometryFromLegCache(tourId, fromId, toId) {
   const coordinates = getLegRouteCoordinates(tourId, fromId, toId)
   if (!coordinates?.length) return null
   return { type: 'LineString', coordinates }
 }
 
-/** Load precomputed tour-leg directions (stop → stop), with session cache + Mapbox fallback. */
+function seedSessionCacheFromLeg(tourId, fromId, toId, leg) {
+  if (!tourId || !fromId || !toId || !leg?.steps?.length) return
+  cacheLegDirections(tourId, fromId, toId, leg.steps)
+  if (leg.geometry) cacheLegRoute(tourId, fromId, toId, leg.geometry)
+}
+
+/**
+ * Load stop→stop directions.
+ * Priority: session cache → packaged canonical Rome legs → Mapbox (when token present).
+ */
 export async function loadTourLegDirections(legFallback, accessToken, options = {}) {
   if (!legFallback?.tourId || !legFallback?.fromId || !legFallback?.toId) return null
 
@@ -38,6 +51,17 @@ export async function loadTourLegDirections(legFallback, accessToken, options = 
       durationSec: cachedSteps.reduce((sum, step) => sum + (step.durationSec ?? 0), 0),
       source: 'leg-cache',
     }
+  }
+
+  const canonical = getCanonicalWalkingLeg({ tourId, fromId, toId })
+  if (canonical?.steps?.length) {
+    seedSessionCacheFromLeg(tourId, fromId, toId, canonical)
+    directionsLog('canonical leg hit', {
+      fromId,
+      toId,
+      version: canonical.version,
+    })
+    return canonical
   }
 
   if (!from?.lat || from?.lng == null || !to?.lat || to?.lng == null || !accessToken) {
@@ -144,7 +168,7 @@ export function useWalkingDirections({
 
         directionsLog('normalized error code', { code: 'missing_token' })
         setDirections(null)
-        setError('Could not load walking directions. Try again or open Google Maps.')
+        setError(ROUTE_UNAVAILABLE_COPY)
         setLoading(false)
         return
       }
@@ -166,7 +190,7 @@ export function useWalkingDirections({
         } else {
           setDirections(null)
           setError(
-            'Enable location access for live directions, or wait a moment while the route loads.',
+            'Location is unavailable — open the map for the destination, or enable location for live guidance.',
           )
         }
 
@@ -201,7 +225,7 @@ export function useWalkingDirections({
           setError(null)
         } else {
           setDirections(null)
-          setError('Could not load walking directions. Try again or open Google Maps.')
+          setError(ROUTE_UNAVAILABLE_COPY)
         }
         setLoading(false)
         return
@@ -218,14 +242,23 @@ export function useWalkingDirections({
       setLoading(true)
       setError(null)
 
-      const adhocPromise = fetchWalkingDirections(
-        routingOrigin,
-        routingDestination,
-        env.mapboxToken,
-        { destinationName },
-      )
+      // Online preferred: live Mapbox GPS→destination, with stop→stop leg as backup.
+      let adhocResult = null
+      try {
+        adhocResult = await fetchWalkingDirections(
+          routingOrigin,
+          routingDestination,
+          env.mapboxToken,
+          { destinationName },
+        )
+      } catch (error) {
+        directionsLog('adhoc fetch threw', {
+          message: typeof error?.message === 'string' ? error.message.slice(0, 120) : 'unknown',
+        })
+        adhocResult = null
+      }
 
-      const [adhocResult, legResult] = await Promise.all([adhocPromise, legPromise])
+      const legResult = await legPromise
 
       if (cancelled) return
 
@@ -233,11 +266,14 @@ export function useWalkingDirections({
 
       if (!best?.steps?.length) {
         setDirections(null)
-        setError('Could not load walking directions. Try again or open Google Maps.')
+        setError(ROUTE_UNAVAILABLE_COPY)
       } else {
         if (best === adhocResult) {
           cacheAdhocWalkingDirections(routingOrigin, routingDestination, adhocResult)
         }
+        directionsLog('route source selected', {
+          source: best.source ?? (best === adhocResult ? 'adhoc-fetch' : legResult?.source),
+        })
         setDirections(best)
         setError(null)
       }

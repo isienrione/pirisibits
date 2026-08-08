@@ -39,6 +39,7 @@
     "normalize-audio": "bash scripts/normalize-audio.sh",
     "generate:city": "node scripts/generate-city-manifest.mjs",
     "generate:rome-manifest": "node scripts/generate-rome-manifest.mjs",
+    "generate:rome-canonical-legs": "node scripts/generate-rome-canonical-legs.mjs",
     "measure:durations": "node scripts/measure-rome-durations.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:content:local": "node scripts/check-content.mjs --skip-remote",

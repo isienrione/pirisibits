@@ -11,7 +11,8 @@ import {
 } from '../../platform/offlineMaps/nativeMapDiagnostics.js'
 import { resolveActiveMapLeg } from '../../content/mapStops.js'
 
-const FALLBACK_COPY = 'Map unavailable. Continue with step directions.'
+const FALLBACK_COPY =
+  'Map unavailable right now — you can still follow step directions or open the stop.'
 const MAX_FRAME_WAIT_ATTEMPTS = 24
 /** Prefer a real layout size before opening the native overlay (avoids 0×0 / sub-pixel slots). */
 const MIN_FRAME_PX = 8
