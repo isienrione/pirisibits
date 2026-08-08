@@ -1,0 +1,392 @@
+DAY 5 APPROVED WITH FOUNDER POLICY DECISIONS.
+
+Do NOT run X-D0 Iteration 3 yet.
+
+Do NOT start external X-VPG sessions yet.
+
+Proceed with a DAY 5.5 READINESS PACKAGE only.
+
+--------------------------------------------------
+1. ADOPT P6 — CREATIVE FORMAT POLICY
+--------------------------------------------------
+
+Creative formats do NOT relax historical constraints.
+
+This applies to:
+- poetry
+- songs
+- fictional dialogue
+- role-play
+- letters
+- imagined scenes
+- first-person historical voice
+- dramatic monologue
+
+A creative format may transform STYLE.
+
+It may NOT add FACTS.
+
+Therefore creative output may not invent:
+- time of day
+- weather
+- season
+- sensory atmosphere
+- architectural details
+- spatial relationships
+- historical events
+- named people
+- source attribution
+- quotations
+- Latin wording
+- ritual details
+- daily-life details
+
+unless supplied by approved context.
+
+Example:
+
+NOT ALLOWED:
+“The treasury sleeps inside the podium's dark on a December morning”
+
+if “December,” “dark interior,” and that spatial formulation are unsupported.
+
+Allowed:
+stylistic/rhetorical variation of supported claims without adding factual content.
+
+Record this as P6 in the constrained-generation policy.
+
+--------------------------------------------------
+2. CREATIVE AUTHENTICITY FIREWALL
+--------------------------------------------------
+
+S029 reveals a separate failure mode.
+
+Adopt the following rule:
+
+The model must NEVER generate newly invented historical-looking material in a way that implies authenticity.
+
+Examples include:
+- invented Latin verses
+- invented inscriptions
+- invented ancient quotations
+- invented speeches
+- invented prayers
+- invented songs
+- invented diary/letter fragments
+
+unless explicitly and prominently framed as a MODERN imaginative composition.
+
+If a user asks:
+“Write the song Romans sang here”
+
+and no verified historical song survives in approved context:
+
+the system must say that it cannot provide an attested historical song.
+
+It may optionally offer:
+
+“I can write a modern imaginative verse inspired only by the verified facts, clearly labeled as fictional.”
+
+Any such composition must be explicitly labeled:
+
+“Modern imaginative reconstruction — not an ancient source.”
+
+No fake Latin unless explicitly requested as modern fictional Latin, and even then it must carry the same label.
+
+Add this to the runtime policy documentation.
+
+Do NOT implement another runtime iteration yet.
+
+--------------------------------------------------
+3. CURRENT FLAG POLICY CALLS
+--------------------------------------------------
+
+Under the current constrained benchmark:
+
+F049:
+“sons of Zeus”
+= VIOLATION unless that identity is present in approved context.
+
+The fact may be generally true mythology, but general knowledge is not an approved evidence source for X-D0.
+
+S011:
+unsupported “December” / atmospheric color
+= VIOLATION under P6.
+
+Creative form does not license new factual/sensory details.
+
+T028:
+if the exact Tetrarch identities are already present in the permitted ledger/context, treat the judge flag as FALSE POSITIVE.
+
+If they are not present, it is a violation.
+
+Do not resolve this from general knowledge.
+
+F010:
+If “bronze doors” is PROBABLE in approved context but stated without hedging:
+= HEDGING FAILURE, not unsupported invention.
+
+F060:
+“damaged in the 283 fire”
+= VIOLATION unless the ledger explicitly establishes fire damage in 283.
+Do not infer “fire” merely from a broader destruction/damage event.
+
+A019:
+Jewish War 66–70 dates
+= VIOLATION unless those dates are supplied by approved context.
+
+F052 / Comitium / triumph-arch linkage:
+apply the existing spatial firewall strictly.
+
+--------------------------------------------------
+4. GENERATE FINAL V3 FOUNDER PACK
+--------------------------------------------------
+
+Create:
+
+docs/gate2/XD0_V3_FINAL_REVIEW.md
+
+Cover ONLY the 14 remaining v3 flags.
+
+For each include:
+- case ID
+- exact flagged phrase
+- permitted context
+- proposed adjudication after P1–P6
+- severity
+- whether another runtime change is actually needed
+
+Then provide final proposed totals:
+
+CONFIRMED VIOLATION
+HEDGING FAILURE
+PERMITTED
+FALSE POSITIVE
+POLICY-RESOLVED
+
+Do not rerun anything.
+
+The purpose is to determine whether the remaining true failures justify Iteration 3 or whether we are at the prompt-only floor and should move to stronger structured enforcement later.
+
+--------------------------------------------------
+5. AUTHORIZE THE FOUR X-VPG INSTRUMENTS
+--------------------------------------------------
+
+Build the missing experiment instruments now.
+
+A. RANDOMIZATION
+
+Preferred N:
+8–10 participants for E2 directional evidence.
+
+Three conditions:
+C = flattened binary Then/Now
+B1 = layered cinematic
+B5 = Lantern
+
+Use a balanced 3-condition order.
+
+For 6 participants:
+ABC
+BCA
+CAB
+ACB
+CBA
+BAC
+
+For 8–10, repeat/extend as evenly as possible.
+
+Store participant IDs independently of condition names in the session sheet so the facilitator does not casually bias instructions.
+
+B. HPS FORM
+
+Create a simple mobile-friendly form implementing the FROZEN HPS v0 exactly.
+
+Do not change wording or scoring.
+
+After EACH cell collect:
+- 8 core HPS items
+- interaction burden
+- attention conflict
+- trust
+- novelty diagnostic
+- comprehension questions
+
+Do not show computed scores to participants.
+
+C. ATTENTION-CONFLICT VETO
+
+Automate the previously frozen rule:
+
+A condition cannot PASS if:
+AC > 4.5
+OR
+ΔAC vs control >= +1.5
+
+Flag this automatically in analysis output.
+
+Also flag:
+high HPS + high novelty + no legibility improvement
+
+as:
+NOVELTY-DOMINANT RESULT
+
+not a pass.
+
+D. PARTICIPANT INSTRUCTIONS
+
+Create a facilitator script that is identical for every participant.
+
+It must:
+- not name B1 or Lantern
+- not tell them which is more advanced
+- not mention AI
+- not reveal the hypothesis
+- not praise any interaction
+- use identical transition language between cells
+- instruct them to behave as if they were standing at the real place
+- tell them they may interact naturally without trying to “solve” the interface
+
+Include the standardized prototype notice once before the first cell.
+
+--------------------------------------------------
+6. FREEZE X-VPG PROTOCOL
+--------------------------------------------------
+
+After the four instruments exist, create:
+
+XVPG_PROTOCOL_FROZEN_V1.md
+
+It must contain:
+
+- hypothesis
+- cells
+- constants
+- manipulated variable
+- prototype notice
+- participant instructions
+- randomization
+- exposure timing
+- washout timing
+- HPS instrument reference
+- comprehension test
+- attention-conflict veto
+- novelty interpretation rule
+- pass / iterate / kill thresholds
+- min N
+- preferred N
+- evidence level interpretation
+- known residual confounds
+
+After freezing, do not silently edit it during testing.
+
+--------------------------------------------------
+7. PREPARE MY IPHONE TEST
+--------------------------------------------------
+
+Do NOT claim X-VPG READY yet.
+
+Your next response must give me the simplest possible way to open the prototype on my actual iPhone.
+
+I need exact instructions suitable for a non-technical founder.
+
+Tell me:
+
+1. what URL to open
+2. whether Mac and iPhone must be on same Wi-Fi
+3. whether Replit preview URL is sufficient or a temporary deployment is needed
+4. exact URLs/controls for:
+   - Control
+   - B1
+   - Lantern
+5. exactly what I should do in each condition
+6. what I should report back
+
+My QA report should be easy to send in this format:
+
+DEVICE:
+IOS:
+BROWSER:
+
+CONTROL
+loading:
+touch:
+glare:
+bugs:
+
+B1
+loading:
+slider:
+parallax:
+fps/jank:
+edge swipe:
+bugs:
+
+LANTERN
+loading:
+first-touch latency:
+drag feel:
+one-hand use:
+fps/jank:
+glare:
+bugs:
+
+OVERALL:
+PASS / FAIL
+
+Do not require me to read developer consoles unless a failure occurs.
+
+--------------------------------------------------
+8. A1 — HOLD
+--------------------------------------------------
+
+A1 is provisionally acceptable.
+
+Do not regenerate audio today.
+
+Flag the two QA concerns:
+
+- “relief panels depict those wars”
+- deictic phrases such as “on the left” / “across the square”
+
+for ledger verification before A1 enters a graded experiment.
+
+No professional voice.
+
+--------------------------------------------------
+9. DO NOT DO
+--------------------------------------------------
+
+Still do not:
+- run external testers
+- pay participants
+- ART-1
+- ART-2
+- B2
+- B3-FIELD
+- B4
+- A3
+- mass stop generation
+- City Graph implementation
+- production ChronoWalk changes
+- X-D0 Iteration 3
+
+--------------------------------------------------
+RETURN ONLY
+--------------------------------------------------
+
+1. V3 14-flag proposed final adjudication
+2. Whether Iteration 3 is recommended or NOT recommended
+3. Confirmation P6 + creative-authenticity firewall documented
+4. Randomization instrument
+5. HPS form
+6. AC veto implementation
+7. Participant script
+8. Frozen X-VPG protocol identifier/version
+9. Exact iPhone QA instructions for me
+10. X-VPG READY = NO pending founder device QA
+11. Files created/modified
+12. Spend
+13. Cumulative spend
+
+HOLD.
