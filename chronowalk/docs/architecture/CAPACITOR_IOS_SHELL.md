@@ -119,7 +119,32 @@ Native offline downloads: see [NATIVE_DOWNLOAD_MANAGER.md](./NATIVE_DOWNLOAD_MAN
 | Script | Behavior |
 |--------|----------|
 | `npm run build` | Web only (unchanged) |
-| `npm run ios:sync` | `build` then `cap sync ios` |
+| `npm run ios:sync` | dual-token preflight → `build` → `cap sync ios` |
 | `npm run ios:copy` | `cap copy ios` |
 | `npm run ios:open` | `cap open ios` |
 | `npm run ios:doctor` | `cap doctor` |
+| `npm run check:ios-mapbox-env` | Warn if `VITE_MAPBOX_TOKEN` missing before an iOS sync |
+
+## Mapbox tokens (dual)
+
+iOS ChronoWalk uses **two** public Mapbox token surfaces. They are not interchangeable
+at runtime:
+
+| Token | Where it lives | Used for |
+|-------|----------------|----------|
+| `VITE_MAPBOX_TOKEN` | Vite env → baked into `dist` at `npm run build` | Directions API (Steps), any web Mapbox GL |
+| `MAPBOX_ACCESS_TOKEN` → Info.plist `MBXAccessToken` | Xcode build setting / xcconfig | Maps SDK MapView, OfflineManager / TileStore |
+
+`npm run ios:sync` runs `scripts/check-ios-mapbox-env.mjs` first. If
+`VITE_MAPBOX_TOKEN` is empty, the native map can still open (SDK token) while
+walking directions fail with a missing-token path. Set both to the same public
+`pk.` token for local Simulator builds.
+
+```bash
+# chronowalk/.env.local
+VITE_MAPBOX_TOKEN=pk.…
+# Optional hint only — Xcode still needs MAPBOX_ACCESS_TOKEN for MBXAccessToken:
+# MAPBOX_ACCESS_TOKEN=pk.…
+```
+
+Set `CW_REQUIRE_MAPBOX_TOKEN=1` to make the preflight fail hard instead of warn.

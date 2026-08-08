@@ -107,10 +107,44 @@ export function useWalkingDirections({
         hasLegFallback: Boolean(legFallback?.fromId && legFallback?.toId),
       })
 
+      // Session-cached tour legs / ad-hoc routes work without a Vite Mapbox token.
+      // Native iOS often has MBXAccessToken for the Maps SDK while the web bundle
+      // may still miss VITE_MAPBOX_TOKEN — don't block cached step lists in that case.
       if (!env.mapboxToken) {
+        setLoading(true)
+        setError(null)
+
+        if (legFallback) {
+          const cachedLeg = await loadTourLegDirections(legFallback, null, {
+            destinationName,
+          })
+          if (cancelled) return
+          if (cachedLeg?.steps?.length) {
+            directionsLog('cache hit without token', { source: cachedLeg.source })
+            setDirections(cachedLeg)
+            setError(null)
+            setLoading(false)
+            return
+          }
+        }
+
+        if (routingOrigin && routingDestination) {
+          const cachedAdhoc = getAdhocWalkingDirections(
+            routingOrigin,
+            routingDestination,
+          )
+          if (cachedAdhoc?.steps?.length) {
+            directionsLog('cache hit without token', { source: 'adhoc-cache' })
+            setDirections(cachedAdhoc)
+            setError(null)
+            setLoading(false)
+            return
+          }
+        }
+
         directionsLog('normalized error code', { code: 'missing_token' })
         setDirections(null)
-        setError('Mapbox token is required for walking directions.')
+        setError('Could not load walking directions. Try again or open Google Maps.')
         setLoading(false)
         return
       }
