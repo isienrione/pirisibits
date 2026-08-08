@@ -51,21 +51,27 @@ let paddleSingleton
 let paddleInitPromise = null
 let paddleStartupWarned = false
 
-/** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean } | null} */
+/** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean, promotionProps?: Record<string, unknown> } | null} */
 let activeCheckout = null
 
 /**
  * Remember the open checkout so Paddle eventCallback can emit funnel events.
  * Does not fire `checkout_opened` — that maps from Paddle `checkout.loaded`.
- * @param {{ tier: string, priceCents?: number | null }} opts
+ * @param {{
+ *   tier: string,
+ *   priceCents?: number | null,
+ *   promotionProps?: Record<string, unknown>,
+ * }} opts
  */
-export function beginCheckoutAnalytics({ tier, priceCents } = {}) {
+export function beginCheckoutAnalytics({ tier, priceCents, promotionProps } = {}) {
   if (!tier) return
   activeCheckout = {
     tier,
     priceEur: centsToPriceEur(priceCents),
     openedAt: Date.now(),
     completed: false,
+    promotionProps:
+      promotionProps && typeof promotionProps === 'object' ? promotionProps : undefined,
   }
 }
 
@@ -75,10 +81,11 @@ function handlePaddleCheckoutEvent(event) {
 
   const tier = activeCheckout?.tier
   const priceEur = activeCheckout?.priceEur
+  const promotionProps = activeCheckout?.promotionProps
 
   if (name === 'checkout.loaded') {
     if (tier) {
-      trackCheckoutOpened({ tier, priceEur })
+      trackCheckoutOpened({ tier, priceEur, ...promotionProps })
     }
     return
   }
@@ -106,6 +113,7 @@ function handlePaddleCheckoutEvent(event) {
         transactionId: transactionId ? String(transactionId) : undefined,
         currency: currency ? String(currency) : 'EUR',
         email: email ? String(email) : null,
+        ...promotionProps,
       })
     }
     return
@@ -454,12 +462,14 @@ export function ensurePaddle() {
 /**
  * Open Paddle overlay checkout for a canonical product (quantity always 1).
  * Buyer cannot choose content_product_id or seat_limit.
+ * Optional `discountId` applies a catalog discount automatically (Launch Offer).
  */
 export async function openPaddleCheckout({
   priceId,
   customData,
   email,
   tierId = null,
+  discountId = null,
 } = {}) {
   if (!priceId) {
     const message = 'missing_price_id'
@@ -476,6 +486,9 @@ export async function openPaddleCheckout({
     return { ok: false, reason: message, fallbackShown: true }
   }
 
+  const appliedDiscountId =
+    typeof discountId === 'string' && discountId.trim() ? discountId.trim() : null
+
   /** @type {import('@paddle/paddle-js').CheckoutOpenOptions} */
   const options = {
     items: [{ priceId, quantity: 1 }],
@@ -487,6 +500,13 @@ export async function openPaddleCheckout({
     },
   }
 
+  // Auto-applied Launch Offer: hide coupon UI and prevent removing the discount.
+  if (appliedDiscountId) {
+    options.discountId = appliedDiscountId
+    options.settings.showAddDiscounts = false
+    options.settings.allowDiscountRemoval = false
+  }
+
   if (customData && Object.keys(customData).length > 0) {
     options.customData = customData
   }
@@ -496,7 +516,13 @@ export async function openPaddleCheckout({
 
   try {
     paddle.Checkout.open(options)
-    return { ok: true, mode: 'overlay', priceId, quantity: 1 }
+    return {
+      ok: true,
+      mode: 'overlay',
+      priceId,
+      quantity: 1,
+      discountId: appliedDiscountId,
+    }
   } catch (err) {
     const message = err?.message ? String(err.message) : 'checkout_open_threw'
     console.error('[paddle] Checkout.open threw', err)

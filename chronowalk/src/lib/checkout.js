@@ -5,6 +5,14 @@ import { trackCheckoutError } from './analytics.ts'
 import { resolveLandingTierCents } from '../landing/landingCheckout.js'
 import { ROME_BUNDLES, ROME_TIERS } from '../landing/landingData.js'
 import {
+  applyLaunchOfferToOffer,
+  getEffectivePriceCents,
+  isLaunchOfferActive,
+  LAUNCH_OFFER_BY_SKU,
+  launchOfferAnalyticsProps,
+  resolveLaunchDiscountId,
+} from './launchOffer.js'
+import {
   assertPublicPriceConfig,
   beginCheckoutAnalytics,
   buildPaddleCustomData,
@@ -31,7 +39,8 @@ export function isCheckoutConfigured(value) {
 }
 
 export function getTierById(tierId) {
-  return TIER_BY_ID[tierId] ?? null
+  const base = TIER_BY_ID[tierId] ?? null
+  return base ? applyLaunchOfferToOffer(base) : null
 }
 
 /**
@@ -94,21 +103,41 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
   const tierCents = tierId
     ? resolveLandingTierCents(tierId, abVariantCents)
     : abVariantCents
+  // Checkout-facing analytics use the effective (promotional) amount when active.
+  const effectiveCents =
+    tierId != null ? (getEffectivePriceCents(tierId, tierCents) ?? tierCents) : tierCents
+  const promotionProps = tierId ? launchOfferAnalyticsProps(tierId) : {}
+  const discountId = tierId ? resolveLaunchDiscountId(tierId) : null
+
+  // Fail closed: never open checkout advertising Launch Offer prices without a dsc_ id.
+  if (
+    tierId &&
+    isLaunchOfferActive() &&
+    LAUNCH_OFFER_BY_SKU[tierId] &&
+    !discountId
+  ) {
+    return { ok: false, reason: 'missing_discount_id' }
+  }
 
   track(TRACK_EVENTS.CHECKOUT_OPEN, {
-    price_cents: tierCents,
+    price_cents: effectiveCents,
     source,
     tier: tierId ?? null,
+    ...promotionProps,
   })
 
   if (tierId) {
-    beginCheckoutAnalytics({ tier: tierId, priceCents: tierCents })
+    beginCheckoutAnalytics({
+      tier: tierId,
+      priceCents: effectiveCents,
+      promotionProps,
+    })
   }
 
   // custom_data is attribution only - webhook derives entitlement from price.id.
   const customData = buildPaddleCustomData({
     host: getHost(),
-    abVariantCents: tierCents,
+    abVariantCents: effectiveCents,
     productId: tierId || undefined,
     consentVersion,
   })
@@ -123,6 +152,7 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
     customData,
     email,
     tierId: tierId || null,
+    discountId,
   })
   if (!result.ok && tierId) {
     trackCheckoutError({

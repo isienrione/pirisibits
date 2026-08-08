@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import HowItWorksSequentialDemo from './HowItWorksSequentialDemo.jsx'
+import { getUnlockAllStopsCta } from '../landingData.js'
 import { HOW_IT_WORKS_COPY } from './acquisitionCopy.js'
 import {
   trackHowItWorksDemoStarted,
@@ -14,6 +15,7 @@ import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 export default function HowItWorksPage() {
   const navigate = useNavigate()
   const copy = HOW_IT_WORKS_COPY
+  const unlockAllCta = getUnlockAllStopsCta()
   const demoTracked = useRef(false)
   const demoRef = useRef(null)
   const checkout = useAcquisitionCheckout({ source: 'how_it_works' })
@@ -142,7 +144,7 @@ export default function HowItWorksPage() {
               className="cw-acq-btn cw-acq-btn--secondary"
               onClick={() => startPaid('final')}
             >
-              {copy.finalSecondaryCta}
+              {unlockAllCta}
             </button>
           </div>
           <p className="cw-acq-hero__trust" style={{ marginTop: '1.25rem' }}>

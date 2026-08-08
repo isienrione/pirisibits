@@ -4,12 +4,14 @@ import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.
 import AcquisitionFaq from './AcquisitionFaq.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import FreePantheonPreviewEmbed from './FreePantheonPreviewEmbed.jsx'
+import { getUnlockAllStopsCta } from '../landingData.js'
 import { FREE_PANTHEON_COPY } from './acquisitionCopy.js'
 import { trackFreePantheonFullTourClicked } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 
 export default function FreePantheonPage() {
   const copy = FREE_PANTHEON_COPY
+  const unlockAllCta = getUnlockAllStopsCta()
   const navigate = useNavigate()
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
 
@@ -63,7 +65,7 @@ export default function FreePantheonPage() {
               className="cw-acq-btn cw-acq-btn--primary"
               onClick={() => goFullTour('upgrade')}
             >
-              {copy.upgradeCta}
+              {unlockAllCta}
             </button>
             <Link
               to="/"

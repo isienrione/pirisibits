@@ -570,16 +570,39 @@ export function getPostHogCheckoutIdentity(): {
   }
 }
 
-export function trackCheckoutOpened(opts: { tier: string; priceEur?: number }): boolean {
+export function trackCheckoutOpened(opts: {
+  tier: string
+  priceEur?: number
+  promotion?: string
+  base_price_eur?: number
+  discount_amount_eur?: number
+  effective_price_eur?: number
+  [key: string]: unknown
+}): boolean {
+  const {
+    tier,
+    priceEur,
+    promotion,
+    base_price_eur: basePriceEur,
+    discount_amount_eur: discountAmountEur,
+    effective_price_eur: effectivePriceEur,
+    ...rest
+  } = opts
   const ok = track('checkout_opened', {
-    tier: opts.tier,
-    ...(opts.priceEur != null ? { price_eur: opts.priceEur } : {}),
+    tier,
+    ...(priceEur != null ? { price_eur: priceEur } : {}),
+    ...(promotion ? { promotion } : {}),
+    ...(basePriceEur != null ? { base_price_eur: basePriceEur } : {}),
+    ...(discountAmountEur != null ? { discount_amount_eur: discountAmountEur } : {}),
+    ...(effectivePriceEur != null ? { effective_price_eur: effectivePriceEur } : {}),
+    ...rest,
   })
   // Secondary Google Ads micro-conversion (observation / optimize early).
+  // Prefer explicit effective promotional value when present.
   try {
     trackGoogleAdsCheckoutOpened({
-      tier: opts.tier,
-      value: opts.priceEur,
+      tier,
+      value: effectivePriceEur ?? priceEur,
       currency: 'EUR',
     })
   } catch {
@@ -601,19 +624,42 @@ export function trackCheckoutCompleted(opts: {
   transactionId?: string
   currency?: string
   email?: string | null
+  promotion?: string
+  base_price_eur?: number
+  discount_amount_eur?: number
+  effective_price_eur?: number
+  [key: string]: unknown
 }): boolean {
+  const {
+    tier,
+    priceEur,
+    transactionId,
+    currency,
+    email,
+    promotion,
+    base_price_eur: basePriceEur,
+    discount_amount_eur: discountAmountEur,
+    effective_price_eur: effectivePriceEur,
+    ...rest
+  } = opts
   const ok = track('checkout_completed', {
-    tier: opts.tier,
-    ...(opts.priceEur != null ? { price_eur: opts.priceEur } : {}),
-    ...(opts.transactionId ? { transaction_id: opts.transactionId } : {}),
+    tier,
+    ...(priceEur != null ? { price_eur: priceEur } : {}),
+    ...(transactionId ? { transaction_id: transactionId } : {}),
+    ...(promotion ? { promotion } : {}),
+    ...(basePriceEur != null ? { base_price_eur: basePriceEur } : {}),
+    ...(discountAmountEur != null ? { discount_amount_eur: discountAmountEur } : {}),
+    ...(effectivePriceEur != null ? { effective_price_eur: effectivePriceEur } : {}),
+    ...rest,
   })
   // Primary Google Ads purchase conversion + enhanced conversions (hashed email).
+  // Prefer effective promotional value so Ads is not told the base list price.
   void trackGoogleAdsPurchaseConversion({
-    value: opts.priceEur,
-    currency: opts.currency || 'EUR',
-    transactionId: opts.transactionId,
-    email: opts.email,
-    tier: opts.tier,
+    value: effectivePriceEur ?? priceEur,
+    currency: currency || 'EUR',
+    transactionId,
+    email,
+    tier,
   }).catch(() => {})
   return ok
 }

@@ -56,6 +56,8 @@ export default function APurchasePending({
   onPreview,
 }) {
   const priceLabel = tier?.price ?? null
+  const basePriceLabel = tier?.launchOffer ? tier?.basePrice ?? null : null
+  const offerLabel = tier?.launchOffer ? tier?.offerLabel ?? null : null
   const tierLabel = tier?.tierLabel ?? tier?.eyebrow ?? tier?.name ?? null
   const checkoutEnabled = checkoutReady && !busy
 
@@ -98,7 +100,42 @@ export default function APurchasePending({
               {tierLabel ?? 'Rome'}
             </p>
             {priceLabel ? (
-              <p style={{ ...displayTitle(28), color: T.warmWhite, marginTop: 6 }}>{priceLabel}</p>
+              <p style={{ ...displayTitle(28), color: T.warmWhite, marginTop: 6 }}>
+                {basePriceLabel ? (
+                  <>
+                    <s
+                      style={{
+                        display: 'block',
+                        fontSize: 16,
+                        fontWeight: 400,
+                        color: T.muted,
+                        textDecorationThickness: 1,
+                      }}
+                    >
+                      {basePriceLabel}
+                    </s>
+                    <span>{priceLabel}</span>
+                    {offerLabel ? (
+                      <span
+                        style={{
+                          display: 'block',
+                          marginTop: 6,
+                          fontFamily: F.body,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                          color: T.ember,
+                        }}
+                      >
+                        {offerLabel}
+                      </span>
+                    ) : null}
+                  </>
+                ) : (
+                  priceLabel
+                )}
+              </p>
             ) : null}
             <p style={{ ...bodyStyle, color: T.muted, marginTop: 6, fontSize: 13 }}>
               {TAX_INCLUSIVE_NOTE}

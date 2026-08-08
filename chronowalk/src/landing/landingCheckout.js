@@ -1,4 +1,5 @@
 import { buildCheckoutUrl } from '../lib/host.js'
+import { getEffectivePriceCents, isLaunchOfferActive } from '../lib/launchOffer.js'
 import { buildPaddleCustomData } from '../lib/paddle.js'
 import { ROME_BUNDLES, ROME_TIERS } from './landingData.js'
 
@@ -8,6 +9,11 @@ const OFFER_BY_ID = Object.fromEntries(
 
 /** Resolve checkout cents for a landing offer (complete tier may use live AB price). */
 export function resolveLandingTierCents(tierId, liveCents) {
+  if (isLaunchOfferActive()) {
+    const promo = getEffectivePriceCents(tierId, null)
+    if (promo != null) return promo
+  }
+
   const offer = OFFER_BY_ID[tierId]
   if (!offer) return liveCents
 

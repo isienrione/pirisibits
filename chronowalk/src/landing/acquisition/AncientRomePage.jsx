@@ -1,8 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
+import { applyLaunchOfferToOffer, isLaunchOfferActive } from '../../lib/launchOffer.js'
 import LandingThenNowProof from '../v4/LandingThenNowProof.jsx'
-import { ROME_TIERS } from '../landingData.js'
+import { getUnlockAllStopsCta, ROME_TIERS } from '../landingData.js'
+import OfferPriceDisplay from '../OfferPriceDisplay.jsx'
 import { getLandingTierRouteStops } from '../landingTierRoutes.js'
 import { getLandingTierStats } from '../landingTierStats.js'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
@@ -27,17 +29,21 @@ function withoutDashes(label) {
 export default function AncientRomePage() {
   const copy = ANCIENT_ROME_COPY
   const antica = useMemo(
-    () => ROME_TIERS.find((tier) => tier.id === 'rome-essential'),
+    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-essential')),
     [],
   )
   const eterna = useMemo(
-    () => ROME_TIERS.find((tier) => tier.id === 'rome-complete'),
+    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-complete')),
     [],
   )
   const historica = useMemo(
-    () => ROME_TIERS.find((tier) => tier.id === 'rome-central'),
+    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-central')),
     [],
   )
+  const unlockAllCta = getUnlockAllStopsCta()
+  const eternaValueLine = isLaunchOfferActive()
+    ? 'Introductory pricing for early walkers.'
+    : copy.eternaValueLine
   const anticaStats = useMemo(() => getLandingTierStats('rome-essential'), [])
   const historicaStats = useMemo(() => getLandingTierStats('rome-central'), [])
   const anticaStops = useMemo(() => getLandingTierRouteStops('rome-essential'), [])
@@ -92,7 +98,7 @@ export default function AncientRomePage() {
                 className="cw-acq-btn cw-acq-btn--secondary"
                 onClick={() => chooseEterna('hero')}
               >
-                {copy.secondaryCta}
+                {unlockAllCta}
               </button>
             </div>
             <p className="cw-acq-hero__trust">{copy.trustLine}</p>
@@ -193,7 +199,14 @@ export default function AncientRomePage() {
               <p className="cw-acq-choice__meta">
                 {anticaStats.stopCount} stops · Focused Ancient Rome route
               </p>
-              <p className="cw-acq-choice__price">{antica?.price ?? '€9.99'}</p>
+              <OfferPriceDisplay
+                as="p"
+                className="cw-acq-choice__price"
+                price={antica?.price ?? '€9.99'}
+                basePrice={antica?.basePrice}
+                offerLabel={antica?.offerLabel}
+                launchOffer={antica?.launchOffer}
+              />
               <div className="cw-acq-choice__actions">
                 <button
                   type="button"
@@ -217,8 +230,15 @@ export default function AncientRomePage() {
                 <p className="cw-acq-choice__meta">
                   21 stops · Includes Ancient Rome plus the wider city story
                 </p>
-                <p className="cw-acq-choice__price">{eterna?.price ?? '€14.99'}</p>
-                <p className="cw-acq-choice__value">{copy.eternaValueLine}</p>
+                <OfferPriceDisplay
+                  as="p"
+                  className="cw-acq-choice__price"
+                  price={eterna?.price ?? '€14.99'}
+                  basePrice={eterna?.basePrice}
+                  offerLabel={eterna?.offerLabel}
+                  launchOffer={eterna?.launchOffer}
+                />
+                <p className="cw-acq-choice__value">{eternaValueLine}</p>
                 <div className="cw-acq-choice__actions">
                   <button
                     type="button"
@@ -241,7 +261,14 @@ export default function AncientRomePage() {
                 <p className="cw-acq-choice__meta">
                   {historicaStats.stopCount} stops · Centro Storico and Pantheon deep dive
                 </p>
-                <p className="cw-acq-choice__price">{historica?.price ?? '€9.99'}</p>
+                <OfferPriceDisplay
+                  as="p"
+                  className="cw-acq-choice__price"
+                  price={historica?.price ?? '€9.99'}
+                  basePrice={historica?.basePrice}
+                  offerLabel={historica?.offerLabel}
+                  launchOffer={historica?.launchOffer}
+                />
                 <div className="cw-acq-choice__actions">
                   <button
                     type="button"

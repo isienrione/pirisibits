@@ -1,3 +1,10 @@
+import {
+  formatEurFromCents,
+  getEffectivePriceCents,
+  getLaunchOfferHeroUnlockCta,
+  getLaunchOfferHeroUnlockShortCta,
+} from '../lib/launchOffer.js'
+
 /** Scroll target for the Rome journey / purchase section. */
 export const ROME_JOURNEY_SECTION_ID = 'rome-journey'
 
@@ -18,8 +25,16 @@ export const LANDING_CTA = {
   begin: 'Choose a Rome walk',
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
-  /** Hero paid CTA — entry price for cold-traffic clarity. */
-  unlockRomePriced: 'Unlock from €9.99',
+  /**
+   * Hero paid CTA. During Launch Offer anchors on Roma Eterna promo (€10),
+   * not the cheapest Historica pack — product hierarchy stays Eterna-first.
+   */
+  get unlockRomePriced() {
+    return getLaunchOfferHeroUnlockCta()
+  },
+  get unlockRomePricedShort() {
+    return getLaunchOfferHeroUnlockShortCta()
+  },
   tryFree: 'Get a free sneak peek',
   /** Primary free-stop CTA (complete Pantheon stop). */
   tryFreeSneakPeek: 'Get a free sneak peek',
@@ -37,6 +52,12 @@ export const LANDING_CTA = {
   howItWorks: 'How does ChronoWalk work?',
   getApp: 'Get the tour',
   reviews: '★★★★★ Reviews',
+}
+
+/** Sticky / acquisition “unlock Eterna” CTA using current effective price. */
+export function getUnlockAllStopsCta() {
+  const cents = getEffectivePriceCents('rome-complete', LANDING_PRICE_FALLBACK_CENTS)
+  return `Unlock all 21 stops · ${formatEurFromCents(cents)}`
 }
 
 /** Explicit free complete-stop block (Pantheon) before purchase. */
@@ -368,7 +389,12 @@ export const LANDING_CONTENT = {
     secondaryCta: null,
     secondaryHref: null,
     /** Paid unlock — gold CTA; scrolls to Rome walks / pricing. */
-    getAppCta: LANDING_CTA.unlockRomePriced,
+    get getAppCta() {
+      return LANDING_CTA.unlockRomePriced
+    },
+    get getAppCtaShort() {
+      return LANDING_CTA.unlockRomePricedShort
+    },
     getAppHref: '#pricing',
     /** Default CTA stack: gold unlock first. Intent pantheon may flip to preview-first. */
     ctaPriority: 'unlock',

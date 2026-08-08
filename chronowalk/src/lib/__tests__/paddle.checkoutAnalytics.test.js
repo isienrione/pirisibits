@@ -190,6 +190,48 @@ describe('paddle checkout analytics', () => {
     })
   })
 
+  it('passes discountId and locks discount UI when Launch Offer discount is supplied', async () => {
+    openMock.mockImplementation(() => {})
+
+    const result = await openPaddleCheckout({
+      priceId: 'pri_complete_live',
+      discountId: 'dsc_complete',
+      tierId: 'rome-complete',
+      customData: { product_id: 'rome-complete' },
+    })
+
+    expect(result).toMatchObject({
+      ok: true,
+      priceId: 'pri_complete_live',
+      discountId: 'dsc_complete',
+    })
+    expect(openMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        items: [{ priceId: 'pri_complete_live', quantity: 1 }],
+        discountId: 'dsc_complete',
+        settings: expect.objectContaining({
+          displayMode: 'overlay',
+          showAddDiscounts: false,
+          allowDiscountRemoval: false,
+        }),
+      }),
+    )
+  })
+
+  it('omits discountId and discount UI locks when no discount is passed', async () => {
+    openMock.mockImplementation(() => {})
+
+    await openPaddleCheckout({
+      priceId: 'pri_complete_live',
+      tierId: 'rome-complete',
+    })
+
+    const options = openMock.mock.calls[0][0]
+    expect(options.discountId).toBeUndefined()
+    expect(options.settings.showAddDiscounts).toBeUndefined()
+    expect(options.settings.allowDiscountRemoval).toBeUndefined()
+  })
+
   it('tracks checkout_open_failed and shows mailto fallback when open throws', async () => {
     openMock.mockImplementation(() => {
       throw new Error('overlay_boom')

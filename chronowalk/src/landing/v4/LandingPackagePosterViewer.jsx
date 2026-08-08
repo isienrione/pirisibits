@@ -6,6 +6,7 @@ import {
   attemptSafariZoomRecovery,
   installSafariPageZoomBlock,
 } from '../../utils/safariPageZoom.js'
+import OfferPriceDisplay from '../OfferPriceDisplay.jsx'
 
 const MIN_SCALE = 1
 const MAX_SCALE = 4
@@ -357,7 +358,16 @@ export function LandingZoomableImageViewer({
           <div className="cw-v4-poster-viewer__actionbar">
             <div className="cw-v4-poster-viewer__action-meta">
               {action.name ? <p className="cw-v4-poster-viewer__action-name">{action.name}</p> : null}
-              {action.price ? <p className="cw-v4-poster-viewer__action-price">{action.price}</p> : null}
+              {action.price ? (
+                <OfferPriceDisplay
+                  as="p"
+                  className="cw-v4-poster-viewer__action-price"
+                  price={action.price}
+                  basePrice={action.basePrice}
+                  offerLabel={action.offerLabel}
+                  launchOffer={action.launchOffer}
+                />
+              ) : null}
             </div>
             <button
               type="button"
@@ -398,6 +408,9 @@ export function LandingPackagePosterViewer({
       action={{
         name: tier.name,
         price: tier.price,
+        basePrice: tier.basePrice,
+        offerLabel: tier.offerLabel,
+        launchOffer: tier.launchOffer,
         ctaLabel: tier.primaryCta,
         onCta: () => onBeginTier?.(tier.id),
       }}
