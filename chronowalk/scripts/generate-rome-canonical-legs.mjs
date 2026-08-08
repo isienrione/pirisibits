@@ -108,6 +108,7 @@ const manifest = JSON.parse(
 const tourId = manifest.id ?? 'rome'
 const sequences = manifest.journey?.sequences ?? {}
 const waypoints = manifest.waypoints ?? {}
+const transits = manifest.transits ?? {}
 
 function waypointPoint(id) {
   const w = waypoints[id]
@@ -215,22 +216,71 @@ function waypointSequence(seq) {
   return seq.filter((id) => waypoints[id]?.geofence)
 }
 
+/**
+ * Build required walking legs from journey sequences.
+ *
+ * Transit items with travel_mode === 'ride' (e.g. t22 Castel → Via Appia encore)
+ * are NOT collapsed into a walking leg — they become optionalRideTransitions.
+ */
 function collectCanonicalLegKeys() {
   const legsByKey = new Map()
   const routeSummaries = []
+  const optionalRideByKey = new Map()
+
   for (const [pathKey, seq] of Object.entries(sequences)) {
     const stopIds = waypointSequence(seq)
     const pathLegs = []
-    for (let i = 0; i < stopIds.length - 1; i += 1) {
-      const fromId = stopIds[i]
-      const toId = stopIds[i + 1]
-      const key = `${fromId}->${toId}`
-      if (!legsByKey.has(key)) legsByKey.set(key, { fromId, toId })
-      pathLegs.push(key)
+    let lastWaypointId = null
+    /** @type {null | { id: string, travel_mode?: string, eta_label?: string, title?: string, duration_s?: number }} */
+    let pendingRide = null
+
+    for (const id of seq) {
+      if (waypoints[id]?.geofence) {
+        if (lastWaypointId) {
+          const key = `${lastWaypointId}->${id}`
+          if (pendingRide) {
+            if (!optionalRideByKey.has(key)) {
+              optionalRideByKey.set(key, {
+                originStopId: lastWaypointId,
+                destinationStopId: id,
+                fromId: lastWaypointId,
+                toId: id,
+                transitId: pendingRide.id,
+                travelMode: pendingRide.travel_mode || 'ride',
+                etaLabel: pendingRide.eta_label || null,
+                title: pendingRide.title || null,
+                durationSeconds: pendingRide.duration_s ?? null,
+                reason:
+                  'Authored as a non-walking / ride transition (optional encore). Not part of the offline walking-leg package.',
+              })
+            }
+          } else {
+            if (!legsByKey.has(key)) {
+              legsByKey.set(key, { fromId: lastWaypointId, toId: id })
+            }
+            pathLegs.push(key)
+          }
+        }
+        lastWaypointId = id
+        pendingRide = null
+        continue
+      }
+
+      const transit = transits[id]
+      if (transit && transit.travel_mode === 'ride') {
+        pendingRide = { id, ...transit }
+      }
     }
+
     routeSummaries.push({ pathKey, stopIds, legKeys: pathLegs })
   }
-  return { legsByKey, routeSummaries, expectedKeys: [...legsByKey.keys()] }
+
+  return {
+    legsByKey,
+    routeSummaries,
+    expectedKeys: [...legsByKey.keys()],
+    optionalRideTransitions: [...optionalRideByKey.values()],
+  }
 }
 
 function cleanInstruction(instruction) {
@@ -343,7 +393,13 @@ async function fetchMapboxWalkingLeg({ fromId, toId, accessToken }) {
   return { ok: true, leg: candidate, report: validation.report }
 }
 
-function buildPackage({ legs, routeSummaries, assessment, sourceNote }) {
+function buildPackage({
+  legs,
+  routeSummaries,
+  assessment,
+  sourceNote,
+  optionalRideTransitions,
+}) {
   const debtKeys = assessment.reports
     .filter((r) => r.validationStatus === 'temporary_fallback')
     .map((r) => r.legKey)
@@ -365,6 +421,7 @@ function buildPackage({ legs, routeSummaries, assessment, sourceNote }) {
       invalidLegCount: assessment.invalidLegCount,
       complete: assessment.complete,
     },
+    optionalRideTransitions,
     productDebt: {
       allLegsUseTemporaryFallbackGeometry:
         assessment.temporaryFallbackLegCount === assessment.legCount &&
@@ -390,17 +447,32 @@ function printReport(assessment) {
 }
 
 async function main() {
-  const { legsByKey, routeSummaries, expectedKeys } = collectCanonicalLegKeys()
+  const { legsByKey, routeSummaries, expectedKeys, optionalRideTransitions } =
+    collectCanonicalLegKeys()
   const existing = loadExistingPackage()
   const legs = { ...(existing?.legs ?? {}) }
 
-  // Ensure every canonical key has at least a temporary scaffold in memory
+  // Drop non-walking ride transitions from the walking legs map (e.g. w21→w22).
+  const optionalRideKeys = new Set(
+    optionalRideTransitions.map((t) => `${t.originStopId}->${t.destinationStopId}`),
+  )
+  for (const key of optionalRideKeys) {
+    delete legs[key]
+  }
+
+  // Ensure every required walking key has at least a temporary scaffold in memory
   // when scaffolding or when missing (never invent network traffic).
   for (const [key, { fromId, toId }] of legsByKey) {
     if (!legs[key]) {
       const scaffold = buildTemporaryLeg(fromId, toId)
       if (scaffold) legs[key] = scaffold
     }
+  }
+
+  // Remove any stale walking legs that are no longer in the required set
+  // (preserve only expected + do not keep ride transitions as walking debt).
+  for (const key of Object.keys(legs)) {
+    if (!legsByKey.has(key)) delete legs[key]
   }
 
   let externalRequests = 0
@@ -501,6 +573,13 @@ async function main() {
     : 'Offline Rome stop→stop package is INCOMPLETE: one or more legs still use temporary straight-line fallback (product debt). Run with --fetch-mapbox after explicit approval to capture real walking geometry. Temporary geometry is not pedestrian street routing.'
 
   printReport(assessment)
+  if (optionalRideTransitions.length) {
+    console.log(
+      `[canonical-legs] optional ride transitions (not walking completeness): ${optionalRideTransitions
+        .map((t) => `${t.originStopId}->${t.destinationStopId} via ${t.transitId}`)
+        .join(', ')}`,
+    )
+  }
 
   if (!FETCH_MAPBOX && !SCAFFOLD_ONLY) {
     console.log(
@@ -512,7 +591,7 @@ async function main() {
     if (WRITE_REPORT) {
       writeFileSync(
         reportPath,
-        `${JSON.stringify({ generatedAt: new Date().toISOString(), assessment, fetchResults }, null, 2)}\n`,
+        `${JSON.stringify({ generatedAt: new Date().toISOString(), assessment, fetchResults, optionalRideTransitions }, null, 2)}\n`,
       )
     }
     process.exit(assessment.complete ? 0 : 0)
@@ -523,6 +602,7 @@ async function main() {
     routeSummaries,
     assessment,
     sourceNote,
+    optionalRideTransitions,
   })
   writeFileSync(outPath, `${JSON.stringify(package_, null, 2)}\n`)
   writeFileSync(
@@ -532,6 +612,7 @@ async function main() {
         generatedAt: new Date().toISOString(),
         externalRequests,
         fetchResults,
+        optionalRideTransitions,
         assessment,
       },
       null,

@@ -88,6 +88,49 @@ describe('canonicalWalkingLegValidation', () => {
     ).toContain('implausibly_long')
   })
 
+  it('accepts a legitimate adjacent short Mapbox leg (Pantheon exterior→interior)', () => {
+    const pantheonExterior = { lat: 41.89885, lng: 12.47687 }
+    const pantheonInterior = { lat: 41.89868, lng: 12.47683 }
+    const result = validateCanonicalWalkingLeg(
+      realLeg({
+        originStopId: 'w17',
+        destinationStopId: 'w23',
+        fromId: 'w17',
+        toId: 'w23',
+        from: pantheonExterior,
+        to: pantheonInterior,
+        distanceMeters: 8,
+        durationSeconds: 12,
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [pantheonExterior.lng, pantheonExterior.lat],
+            [12.47685, 41.89876],
+            [pantheonInterior.lng, pantheonInterior.lat],
+          ],
+        },
+        steps: [
+          { instruction: 'Enter the Pantheon through the bronze doors', distanceM: 8, type: 'depart' },
+          { instruction: 'Arrive at Pantheon interior', distanceM: 0, type: 'arrive' },
+        ],
+      }),
+      { origin: pantheonExterior, destination: pantheonInterior },
+    )
+    expect(result.flags).not.toContain('implausibly_short')
+    expect(result.ok).toBe(true)
+    expect(result.report.adjacentStopPair).toBe(true)
+    expect(result.report.stopSeparationM).toBeLessThan(80)
+  })
+
+  it('still rejects short Mapbox distance when stops are far apart', () => {
+    const result = validateCanonicalWalkingLeg(
+      realLeg({ distanceMeters: 8, durationSeconds: 10 }),
+      { origin, destination },
+    )
+    expect(result.flags).toContain('implausibly_short')
+    expect(result.ok).toBe(false)
+  })
+
   it('does not treat temporary straight-line packages as complete', () => {
     const assessment = assessCanonicalWalkingPackage({
       routes: [{ legKeys: ['w01->w02'] }],

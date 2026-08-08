@@ -56,16 +56,19 @@ describe('canonicalWalkingLegs', () => {
     ).toBeNull()
   })
 
-  it('packages legs but does not claim complete real walking routes yet', () => {
+  it('packages walking legs but excludes optional Appia ride from completeness', () => {
     const meta = getCanonicalWalkingLegsMeta()
-    expect(meta.legCount).toBe(21)
+    expect(meta.legCount).toBe(20)
     expect(meta.allLegsUseTemporaryFallbackGeometry).toBe(true)
-    expect(meta.productDebtLegCount).toBe(21)
+    expect(meta.productDebtLegCount).toBe(20)
     expect(meta.realWalkingLegCount).toBe(0)
     expect(meta.complete).toBe(false)
     expect(areCanonicalRomeLegsPackaged()).toBe(true)
     expect(areCanonicalRomeWalkingRoutesComplete()).toBe(false)
     expect(listTemporaryFallbackLegKeys()).toContain('w01->w02')
+    expect(listTemporaryFallbackLegKeys()).toContain('w17->w23')
+    expect(listTemporaryFallbackLegKeys()).not.toContain('w21->w22')
+    expect(getCanonicalWalkingLeg({ tourId: 'rome', fromId: 'w21', toId: 'w22' })).toBeNull()
     expect(CANONICAL_LEG_MISSING_COPY).toMatch(/isn’t prepared yet/)
   })
 })

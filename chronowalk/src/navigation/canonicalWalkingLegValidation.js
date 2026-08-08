@@ -14,12 +14,31 @@ export const LEG_SOURCE_AUTHORED_STOPS = 'authored-stop-coordinates'
 /** Max distance (m) from stop geofence to route endpoint before rejecting. */
 export const ENDPOINT_TOLERANCE_M = 120
 
-/** Reject routes shorter than this (m) unless haversine between stops is also tiny. */
+/** Reject routes shorter than this (m) unless stops are an adjacent near-pair. */
 export const MIN_ROUTE_DISTANCE_M = 15
 
-/** Reject routes longer than this (m) for central Rome stop→stop legs. */
+/**
+ * Max authored stop→stop separation (m) for "adjacent / near-identical" transitions
+ * (e.g. Pantheon exterior → interior). Short Mapbox distances are allowed only when
+ * stop separation is within this bound AND geometry/steps/endpoints validate.
+ */
+export const ADJACENT_STOP_MAX_SEPARATION_M = 80
+
+/** Reject routes longer than this (m) for central Rome stop→stop walking legs. */
 export const MAX_ROUTE_DISTANCE_M = 3500
 
+/**
+ * True when two stop coordinates are close enough that a very short pedestrian
+ * transition is plausible (doorway / interior handoff), not a routing failure.
+ *
+ * @param {{ lat: number, lng: number } | null | undefined} origin
+ * @param {{ lat: number, lng: number } | null | undefined} destination
+ * @returns {boolean}
+ */
+export function isAdjacentStopPair(origin, destination) {
+  const separationM = haversineMeters(origin, destination)
+  return separationM != null && separationM <= ADJACENT_STOP_MAX_SEPARATION_M
+}
 /**
  * Haversine distance in meters.
  * @param {{ lat: number, lng: number }} a
@@ -153,19 +172,30 @@ export function validateCanonicalWalkingLeg(leg, opts = {}) {
 
   if (!steps.length) flags.push('zero_steps')
 
-  if (!Number.isFinite(distanceMeters) || distanceMeters <= 0) {
+  const origin = opts.origin ?? leg?.from ?? null
+  const destination = opts.destination ?? leg?.to ?? null
+  const adjacentStops = isAdjacentStopPair(origin, destination)
+
+  if (!Number.isFinite(distanceMeters) || distanceMeters < 0) {
+    flags.push('missing_distance')
+  } else if (distanceMeters === 0 && !adjacentStops) {
     flags.push('missing_distance')
   } else {
-    if (distanceMeters < MIN_ROUTE_DISTANCE_M) flags.push('implausibly_short')
+    // Keep global short-route protection, but allow legitimate adjacent handoffs
+    // (Pantheon exterior→interior ≈19m) when Mapbox returns a tiny walking distance.
+    if (distanceMeters < MIN_ROUTE_DISTANCE_M && !adjacentStops) {
+      flags.push('implausibly_short')
+    }
     if (distanceMeters > MAX_ROUTE_DISTANCE_M) flags.push('implausibly_long')
   }
 
-  if (!Number.isFinite(durationSeconds) || durationSeconds <= 0) {
+  if (!Number.isFinite(durationSeconds) || durationSeconds < 0) {
+    flags.push('missing_duration')
+  } else if (durationSeconds === 0 && !adjacentStops) {
+    // Zero-duration is only acceptable for adjacent doorway/interior handoffs
+    // that still carry maneuver/arrival steps from Directions.
     flags.push('missing_duration')
   }
-
-  const origin = opts.origin ?? leg?.from ?? null
-  const destination = opts.destination ?? leg?.to ?? null
 
   if (geometry?.coordinates?.length) {
     const start = geometry.coordinates[0]
@@ -214,6 +244,8 @@ export function validateCanonicalWalkingLeg(leg, opts = {}) {
       stepCount: steps.length,
       source,
       geometryKind,
+      adjacentStopPair: adjacentStops,
+      stopSeparationM: haversineMeters(origin, destination),
       validationStatus: ok
         ? 'ok'
         : status === 'temporary_fallback'
