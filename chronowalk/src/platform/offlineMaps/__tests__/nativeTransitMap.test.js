@@ -219,6 +219,27 @@ describe('openTransitMap bridge', () => {
       supported: true,
     })
   })
+
+  it('rejects missing frame as invalid_frame instead of download_failed', async () => {
+    const plugin = { openTransitMap: vi.fn() }
+    stubCapacitor({
+      native: true,
+      platform: 'ios',
+      plugins: { ChronoWalkOfflineMaps: plugin },
+    })
+    await expect(
+      openTransitMap({
+        cityId: 'rome',
+        routeGeoJSON: { type: 'LineString', coordinates: [[12.49, 41.89]] },
+      }),
+    ).resolves.toMatchObject({
+      opened: false,
+      supported: true,
+      errorCode: OFFLINE_MAP_ERROR.INVALID_FRAME,
+      errorMessage: 'frame is required',
+    })
+    expect(plugin.openTransitMap).not.toHaveBeenCalled()
+  })
 })
 
 describe('native transit map path safety', () => {

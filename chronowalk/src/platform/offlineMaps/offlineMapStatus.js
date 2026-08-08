@@ -16,6 +16,7 @@ export const OFFLINE_MAP_ERROR = Object.freeze({
   TILE_LIMIT_EXCEEDED: 'tile_limit_exceeded',
   MAPBOX_NOT_CONFIGURED: 'mapbox_not_configured',
   DOWNLOAD_FAILED: 'download_failed',
+  INVALID_FRAME: 'invalid_frame',
   UNSUPPORTED_CITY: 'unsupported_city',
   ALREADY_DOWNLOADING: 'already_downloading',
   UNSUPPORTED_PLATFORM: 'unsupported_platform',
@@ -78,6 +79,13 @@ export function normalizeOfflineMapErrorCode(code) {
   }
   if (lower.includes('unsupported_platform')) {
     return OFFLINE_MAP_ERROR.UNSUPPORTED_PLATFORM
+  }
+  if (
+    lower.includes('invalid_frame') ||
+    lower.includes('frame is required') ||
+    lower.includes('frame_required')
+  ) {
+    return OFFLINE_MAP_ERROR.INVALID_FRAME
   }
 
   return OFFLINE_MAP_ERROR.DOWNLOAD_FAILED

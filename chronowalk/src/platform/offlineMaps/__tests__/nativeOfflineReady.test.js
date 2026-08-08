@@ -24,25 +24,29 @@ describe('mergeOfflineReadyWithMapRegion', () => {
     ).toMatchObject({
       status: 'not_downloaded',
       mapRegionReady: false,
+      routeLegsReady: false,
       reason: 'map_region_not_downloaded',
     })
   })
 
-  it('keeps ready when map region is downloaded', () => {
+  it('does not show Ready offline when route package is straight-line-only', () => {
     expect(
       mergeOfflineReadyWithMapRegion({ status: 'ready' }, true),
     ).toMatchObject({
-      status: 'ready',
+      status: 'not_downloaded',
       mapRegionReady: true,
+      routeLegsReady: false,
+      reason: 'route_legs_not_prepared',
     })
   })
 
-  it('leaves non-ready package status unchanged aside from mapRegionReady', () => {
+  it('leaves non-ready package status unchanged aside from readiness fields', () => {
     expect(
       mergeOfflineReadyWithMapRegion({ status: 'downloading' }, false),
     ).toMatchObject({
       status: 'downloading',
       mapRegionReady: false,
+      routeLegsReady: false,
     })
   })
 })
@@ -67,7 +71,7 @@ describe('resolveOfflineReadyStatus', () => {
     expect(getRegionStatus).toHaveBeenCalledWith({ cityId: 'rome' })
   })
 
-  it('marks ready when TileStore reports downloaded', async () => {
+  it('does not mark ready when TileStore is downloaded but walking routes are incomplete', async () => {
     vi.mocked(isNativeIOS).mockReturnValue(true)
     vi.mocked(getRegionStatus).mockResolvedValue({
       status: OFFLINE_MAP_STATUS.DOWNLOADED,
@@ -75,8 +79,10 @@ describe('resolveOfflineReadyStatus', () => {
     await expect(
       resolveOfflineReadyStatus({ status: 'ready' }),
     ).resolves.toMatchObject({
-      status: 'ready',
+      status: 'not_downloaded',
       mapRegionReady: true,
+      routeLegsReady: false,
+      reason: 'route_legs_not_prepared',
     })
   })
 
@@ -87,6 +93,7 @@ describe('resolveOfflineReadyStatus', () => {
     ).resolves.toMatchObject({
       status: 'ready',
       mapRegionReady: false,
+      routeLegsReady: false,
     })
     expect(getRegionStatus).not.toHaveBeenCalled()
   })
