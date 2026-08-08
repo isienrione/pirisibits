@@ -1,0 +1,7 @@
+order_code,first,second,third
+O1,A,B,C
+O2,B,C,A
+O3,C,A,B
+O4,A,C,B
+O5,C,B,A
+O6,B,A,C
