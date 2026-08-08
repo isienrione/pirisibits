@@ -17,6 +17,15 @@ import {
 import { normalizeAppleTransaction, isLocalAppleCandidate } from './transactionNormalizer.js'
 import { processRestoredTransactions } from './restorePurchases.js'
 import { canUseStoreKitPurchase } from '../platform/runtime/index.js'
+import {
+  awaitPurchaseSession,
+  beginPurchaseSession,
+  completePurchaseSession,
+  getPurchaseSession,
+  isPurchaseSessionBlocking,
+  markPurchaseSessionChecking,
+  releasePurchaseSession,
+} from './storeKitPurchaseSession.js'
 
 export const STOREKIT_PLUGIN_ID = '@capgo/native-purchases'
 export const STOREKIT_REQUEST_TIMEOUT_MS = 20_000
@@ -323,6 +332,23 @@ export function createStoreKitPurchaseAdapter(options = {}) {
         }
       }
 
+      // Duplicate Buy while native StoreKit may still be resolving.
+      if (isPurchaseSessionBlocking(productId)) {
+        const existing = getPurchaseSession(productId)
+        if (existing?.status === 'checking' || existing?.status === 'in_flight') {
+          return {
+            ok: false,
+            code: 'purchase_in_flight',
+            provider: 'apple',
+            serverVerified: false,
+            purchasePending: true,
+            message: 'Checking purchase…',
+          }
+        }
+      }
+
+      beginPurchaseSession(productId)
+
       try {
         const { NativePurchases, PURCHASE_TYPE } = await loadPluginModule()
         if (typeof NativePurchases.purchaseProduct !== 'function') {
@@ -349,52 +375,121 @@ export function createStoreKitPurchaseAdapter(options = {}) {
           hasAppAccountToken: Boolean(appAccountToken),
         })
 
+        // Keep the native promise alive after JS timeout so late success can settle.
+        const nativePromise = NativePurchases.purchaseProduct(purchaseRequest)
 
-        // Documented Capgo StoreKit 2 API for one-time (non-consumable) products.
-        const raw = await withStoreKitTimeout(
-          NativePurchases.purchaseProduct(purchaseRequest),
-          { timeoutMs, label: 'purchaseProduct' },
-        )
+        const settleFromRaw = (raw) => {
+          const entitlement = normalizeAppleTransaction(
+            {
+              ...raw,
+              productId: mapping.appleProductId,
+              transactionId: raw?.transactionId || raw?.transactionIdentifier,
+              originalTransactionId: raw?.originalTransactionId,
+              jwsRepresentation: raw?.jwsRepresentation,
+              appAccountToken,
+              purchaseDate: raw?.purchaseDate || raw?.transactionDate,
+            },
+            { subjectId: purchaseOptions.subjectId },
+          )
+          return {
+            ok: Boolean(entitlement),
+            code: entitlement ? null : 'normalize_failed',
+            provider: 'apple',
+            entitlement,
+            serverVerified: false,
+            localCandidate: entitlement ? isLocalAppleCandidate(entitlement) : false,
+          }
+        }
 
+        try {
+          const raw = await withStoreKitTimeout(nativePromise, {
+            timeoutMs,
+            label: 'purchaseProduct',
+          })
+          const settled = settleFromRaw(raw)
+          logStoreKitLocal('purchase resolved', {
+            ok: settled.ok,
+            productId,
+          })
+          return completePurchaseSession(productId, settled)
+        } catch (err) {
+          const code = classifyStoreKitPurchaseError(err)
+          if (code === 'storekit_request_timeout') {
+            // Do not treat timeout as definitive failure — native sheet may still finish.
+            markPurchaseSessionChecking(productId)
+            void nativePromise
+              .then((raw) => {
+                const settled = settleFromRaw(raw)
+                logStoreKitLocal('late purchase resolved', {
+                  ok: settled.ok,
+                  productId,
+                })
+                completePurchaseSession(productId, settled)
+              })
+              .catch((lateErr) => {
+                const lateCode = classifyStoreKitPurchaseError(lateErr)
+                logStoreKitLocal('late purchase failed', { code: lateCode })
+                completePurchaseSession(productId, {
+                  ok: false,
+                  code: lateCode,
+                  provider: 'apple',
+                  serverVerified: false,
+                  purchasePending: false,
+                  message: lateErr?.message || 'StoreKit purchase failed',
+                })
+              })
 
-        const entitlement = normalizeAppleTransaction(
-          {
-            ...raw,
-            productId: mapping.appleProductId,
-            transactionId: raw?.transactionId || raw?.transactionIdentifier,
-            originalTransactionId: raw?.originalTransactionId,
-            jwsRepresentation: raw?.jwsRepresentation,
-            appAccountToken,
-            purchaseDate: raw?.purchaseDate || raw?.transactionDate,
-          },
-          { subjectId: purchaseOptions.subjectId },
-        )
+            return {
+              ok: false,
+              code: 'storekit_request_timeout',
+              provider: 'apple',
+              serverVerified: false,
+              purchasePending: true,
+              message: 'Checking purchase…',
+            }
+          }
 
-        logStoreKitLocal('purchase resolved', {
-          ok: Boolean(entitlement),
-          productId,
-        })
-
-        return {
-          ok: Boolean(entitlement),
-          code: entitlement ? null : 'normalize_failed',
-          provider: 'apple',
-          entitlement,
-          serverVerified: false,
-          localCandidate: entitlement ? isLocalAppleCandidate(entitlement) : false,
+          logStoreKitLocal('purchase failed', { code })
+          logStoreKitLocal('controlled error code', { code, phase: 'purchaseProduct' })
+          return completePurchaseSession(productId, {
+            ok: false,
+            code,
+            provider: 'apple',
+            serverVerified: false,
+            purchasePending: false,
+            message: err?.message || 'StoreKit purchase failed',
+          })
         }
       } catch (err) {
         const code = classifyStoreKitPurchaseError(err)
-                logStoreKitLocal('purchase failed', { code })
+        logStoreKitLocal('purchase failed', { code })
         logStoreKitLocal('controlled error code', { code, phase: 'purchaseProduct' })
-        return {
+        return completePurchaseSession(productId, {
           ok: false,
           code,
           provider: 'apple',
           serverVerified: false,
+          purchasePending: false,
           message: err?.message || 'StoreKit purchase failed',
-        }
+        })
       }
+    },
+
+    /**
+     * Await a purchase that timed out on the JS side but may still complete natively.
+     * @param {string} productId
+     * @param {{ timeoutMs?: number }} [options]
+     */
+    async awaitPendingPurchase(productId, options = {}) {
+      return awaitPurchaseSession(productId, options)
+    },
+
+    isPurchasePending(productId) {
+      return isPurchaseSessionBlocking(productId)
+    },
+
+    releasePurchase(productId, result = null) {
+      releasePurchaseSession(productId, result)
     },
 
     async restorePurchases(restoreOptions = {}) {

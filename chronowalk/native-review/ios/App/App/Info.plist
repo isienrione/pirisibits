@@ -77,5 +77,10 @@
 	<string>ChronoWalk uses your location while you walk to detect arrivals at landmarks and guide you between stops. Location is not used in the background when the tour is closed.</string>
 	<key>NSLocationUsageDescription</key>
 	<string>ChronoWalk uses your location while you walk to detect arrivals at landmarks and guide you between stops.</string>
+	<!-- Keep narration playing when the traveler locks the phone or switches apps. -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 </dict>
 </plist>

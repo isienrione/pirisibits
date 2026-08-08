@@ -151,7 +151,7 @@ describe('product cards', () => {
     expect(screen.getByRole('button', { name: /Get Roma Eterna/i })).toBeTruthy()
   })
 
-  it('leaves Working… after purchase timeout/failure', async () => {
+  it('stays on Checking… after purchase timeout until late settlement', async () => {
     stubCapacitor({ native: true, platform: 'ios' })
     const products = listNativeSoloProductsForCity('rome')
     let resolvePurchase
@@ -159,6 +159,13 @@ describe('product cards', () => {
       () =>
         new Promise((resolve) => {
           resolvePurchase = resolve
+        }),
+    )
+    let resolvePending
+    const awaitPendingPurchase = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          resolvePending = resolve
         }),
     )
 
@@ -169,6 +176,7 @@ describe('product cards', () => {
           purchaseService={{
             canPurchaseProduct: () => ({ ok: true, provider: 'storekit' }),
             purchaseProduct,
+            awaitPendingPurchase,
             getAvailableProducts: async () => ({
               ok: true,
               products: [
@@ -189,14 +197,28 @@ describe('product cards', () => {
       expect(screen.getByTestId('native-buy-rome-complete')).toHaveTextContent(/Working/i)
     })
 
-    resolvePurchase({ ok: false, code: 'storekit_request_timeout' })
+    resolvePurchase({
+      ok: false,
+      code: 'storekit_request_timeout',
+      purchasePending: true,
+    })
 
     await waitFor(() => {
-      expect(screen.getByTestId('native-buy-rome-complete')).not.toHaveTextContent(/Working/i)
+      expect(screen.getByTestId('native-buy-rome-complete')).toHaveTextContent(/Checking/i)
     })
-    expect(
-      screen.getByText(getPurchaseUnavailableMessage('storekit_request_timeout')),
-    ).toBeTruthy()
+    expect(screen.getByText(/Checking purchase/i)).toBeTruthy()
+    // Buy stays disabled while checking — second product also blocked.
+    expect(screen.getByTestId('native-buy-rome-essential')).toBeDisabled()
+
+    resolvePending({
+      ok: false,
+      code: 'purchase_cancelled',
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('native-buy-rome-complete')).not.toHaveTextContent(/Checking/i)
+    })
+    expect(screen.getByText(/Purchase cancelled/i)).toBeTruthy()
   })
 
   it('14. successful local purchase exits Working and exposes Open Tour', async () => {

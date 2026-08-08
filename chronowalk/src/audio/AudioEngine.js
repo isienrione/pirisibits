@@ -20,6 +20,11 @@ import {
   trackAudioPlayAttempt,
   trackAudioPlayBlocked,
 } from '../lib/analytics.ts'
+import {
+  clearAudioPosition,
+  loadAudioPosition,
+  saveAudioPosition,
+} from './audioPositionStore.js'
 
 const JOURNEY_WALKING = 'walking'
 const AUDIO_INTERRUPT_EVENTS = ['stalled', 'waiting', 'error', 'suspend']
@@ -226,6 +231,7 @@ export class AudioEngine {
         currentTimeS: this.getNarrationTime(),
         hiddenAtMs: Date.now(),
       }
+      this.persistActiveAudioPosition({ force: true })
     } else {
       this.backgroundProbe = null
     }
@@ -330,10 +336,20 @@ export class AudioEngine {
 
     if (!target) return true
 
+    // Persist in-memory offset before restarting the plan so we do not jump to 0.
+    if (target.kind === 'waypoint' && this.session) {
+      this.persistActiveAudioPosition({ force: true })
+    }
+
     if (target.kind === 'transit') {
       await this.playTransit(target.id)
     } else {
-      await this.playWaypoint(target.id)
+      const tourId = this.getRouteSlug() || 'rome'
+      const saved = loadAudioPosition(tourId, target.id)
+      await this.playWaypoint(target.id, {
+        resumeOffsetS: saved && !saved.completed ? saved.positionMs / 1000 : 0,
+        startIndex: saved && !saved.completed ? saved.itemIndex : 0,
+      })
     }
 
     return true
@@ -451,7 +467,26 @@ export class AudioEngine {
     )
 
     this.activePlayback = { kind: 'waypoint', id: waypointId }
-    return this.playPlan(plan)
+
+    const tourId = this.getRouteSlug() || 'rome'
+    const saved = loadAudioPosition(tourId, waypointId)
+    // Completed tracks start fresh — do not park at the final millisecond.
+    if (saved?.completed) {
+      return this.playPlan(plan, { startOffsetS: 0, startIndex: 0 })
+    }
+
+    const resumeOffsetS =
+      typeof options.resumeOffsetS === 'number' && Number.isFinite(options.resumeOffsetS)
+        ? Math.max(0, options.resumeOffsetS)
+        : saved
+          ? saved.positionMs / 1000
+          : 0
+    const startIndex =
+      typeof options.startIndex === 'number'
+        ? Math.max(0, options.startIndex)
+        : saved?.itemIndex ?? 0
+
+    return this.playPlan(plan, { startOffsetS: resumeOffsetS, startIndex })
   }
 
   clearTransitSession() {
@@ -579,23 +614,35 @@ export class AudioEngine {
     this.bedGain.gain.linearRampToValueAtTime(targetBedGain, now + fadeSec)
   }
 
-  async playPlan(plan) {
+  async playPlan(plan, options = {}) {
     await this.init()
     if (!plan.length) return false
+
+    const startIndex = Math.max(
+      0,
+      Math.min(
+        typeof options.startIndex === 'number' ? options.startIndex : 0,
+        plan.length - 1,
+      ),
+    )
+    const startOffsetS =
+      typeof options.startOffsetS === 'number' && Number.isFinite(options.startOffsetS)
+        ? Math.max(0, options.startOffsetS)
+        : 0
 
     const generation = ++this.playbackGeneration
     this.releaseNarrationElement()
     this.session = {
       plan,
-      index: 0,
+      index: startIndex,
       generation,
       element: null,
       duration: 0,
-      offset: 0,
+      offset: startOffsetS,
       paused: false,
       cleanup: null,
     }
-    await this.startCurrentItem(0)
+    await this.startCurrentItem(startOffsetS)
     return this.narrationPlaying
   }
 
@@ -803,6 +850,15 @@ export class AudioEngine {
         durationListenedS: listenedS || duration,
         pctComplete: Number.isFinite(pctComplete) ? pctComplete : 100,
       })
+      if (ended.kind === 'waypoint') {
+        const tourId = this.getRouteSlug() || 'rome'
+        saveAudioPosition(tourId, ended.id, {
+          positionMs: 0,
+          itemIndex: 0,
+          completed: true,
+          force: true,
+        })
+      }
     }
 
     // Natural completion only - stop()/teardown() clear the session directly and
@@ -899,6 +955,39 @@ export class AudioEngine {
 
   emitProgress() {
     this.onProgress?.(this.getNarrationProgress())
+    this.persistActiveAudioPosition()
+  }
+
+  /**
+   * Persist the active waypoint narration offset (throttled unless force).
+   * @param {{ force?: boolean, completed?: boolean }} [opts]
+   */
+  persistActiveAudioPosition(opts = {}) {
+    const stopId =
+      this.activePlayback?.kind === 'waypoint' ? this.activePlayback.id : null
+    if (!stopId) return
+    const tourId = this.getRouteSlug() || 'rome'
+    const progress = this.getNarrationProgress()
+    const positionMs = Math.round((progress.currentTime || 0) * 1000)
+    const durationMs = Math.round((progress.duration || 0) * 1000)
+
+    if (opts.completed) {
+      saveAudioPosition(tourId, stopId, {
+        positionMs: 0,
+        itemIndex: 0,
+        completed: true,
+        force: true,
+      })
+      return
+    }
+
+    saveAudioPosition(tourId, stopId, {
+      positionMs,
+      itemIndex: progress.itemIndex || 0,
+      durationMs,
+      completed: false,
+      force: opts.force === true,
+    })
   }
 
   pauseNarration() {
@@ -914,6 +1003,7 @@ export class AudioEngine {
     this.setNarrationPlaying(false)
     this.syncMediaSession()
     this.emitProgress()
+    this.persistActiveAudioPosition({ force: true })
   }
 
   async resumeNarration() {

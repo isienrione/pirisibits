@@ -105,7 +105,9 @@ export function getPurchaseUnavailableMessage(code) {
     case 'storekit_capability_missing':
       return 'In-App Purchase unavailable on this device'
     case 'storekit_request_timeout':
-      return 'The App Store took too long to respond. Please try again.'
+      return 'Checking purchase… If this takes too long, use Restore Purchases.'
+    case 'purchase_in_flight':
+      return 'Checking purchase…'
     case 'product_not_returned':
       return 'This product isn’t available from the App Store right now. Please try again.'
     case 'purchase_cancelled':

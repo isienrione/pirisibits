@@ -314,7 +314,10 @@ describe('AudioEngine', () => {
 
     await engine.resumeInterruptedPlayback();
 
-    expect(playWaypoint).toHaveBeenCalledWith('w01');
+    expect(playWaypoint).toHaveBeenCalledWith('w01', {
+      resumeOffsetS: 0,
+      startIndex: 0,
+    });
     expect(engine.isPlaybackInterrupted()).toBe(false);
   });
 
