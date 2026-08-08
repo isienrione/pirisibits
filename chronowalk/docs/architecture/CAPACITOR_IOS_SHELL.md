@@ -45,6 +45,7 @@ generated Xcode tree off `chronowalk/ios/`.
 - **No production `server.url`** — the WebView loads bundled assets
 - Config file: `capacitor.config.json` (JSON so Capacitor CLI `require()` works with `"type": "module"`)
 - `ios.path`: `native-review/ios` (see safety procedure below)
+- Capacitor `Info.plist` declares `UIBackgroundModes` → `audio` so narration can continue when the app is backgrounded
 
 ## Platform detection
 

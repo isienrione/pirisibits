@@ -3,6 +3,7 @@ import {
   createStoreKitPurchaseAdapter,
   canInvokePaddleCheckout,
   resolvePurchaseProvider,
+  __resetPurchaseSessionsForTests,
 } from '../index.js'
 import { openCheckout } from '../../lib/checkout.js'
 
@@ -26,6 +27,7 @@ function stubCapacitor({ native = false, platform = 'web' } = {}) {
 beforeEach(() => {
   vi.unstubAllGlobals()
   vi.unstubAllEnvs()
+  __resetPurchaseSessionsForTests()
   if (typeof window !== 'undefined') {
     delete window.Capacitor
   }
@@ -158,6 +160,61 @@ describe('StoreKit adapter Capgo INAPP API', () => {
     const result = await adapter.purchaseProduct('rome-complete')
     expect(result.ok).toBe(false)
     expect(result.code).toBe('storekit_request_timeout')
+    expect(result.purchasePending).toBe(true)
+  })
+
+  it('keeps purchase pending after timeout and settles late success', async () => {
+    let resolveNative
+    const adapter = createStoreKitPurchaseAdapter({
+      canUseStoreKit: () => true,
+      treatMappingsEnabled: true,
+      purchaseType: PURCHASE_TYPE,
+      requestTimeoutMs: 40,
+      nativePurchases: {
+        purchaseProduct() {
+          return new Promise((resolve) => {
+            resolveNative = resolve
+          })
+        },
+      },
+    })
+
+    const timedOut = await adapter.purchaseProduct('rome-complete')
+    expect(timedOut.code).toBe('storekit_request_timeout')
+    expect(adapter.isPurchasePending('rome-complete')).toBe(true)
+
+    const duplicate = await adapter.purchaseProduct('rome-complete')
+    expect(duplicate.code).toBe('purchase_in_flight')
+    expect(duplicate.purchasePending).toBe(true)
+
+    resolveNative({
+      transactionId: 'txn_late',
+      productIdentifier: 'com.chronowalk.city.rome.eterna',
+    })
+
+    const late = await adapter.awaitPendingPurchase('rome-complete', { timeoutMs: 2000 })
+    expect(late?.ok).toBe(true)
+    expect(late?.entitlement).toBeTruthy()
+  })
+
+  it('releases the purchase lock on cancellation', async () => {
+    const adapter = createStoreKitPurchaseAdapter({
+      canUseStoreKit: () => true,
+      treatMappingsEnabled: true,
+      purchaseType: PURCHASE_TYPE,
+      requestTimeoutMs: 5_000,
+      nativePurchases: {
+        purchaseProduct() {
+          const err = new Error('user cancelled')
+          err.code = 'purchase_cancelled'
+          return Promise.reject(err)
+        },
+      },
+    })
+
+    const result = await adapter.purchaseProduct('rome-complete')
+    expect(result.code).toBe('purchase_cancelled')
+    expect(adapter.isPurchasePending('rome-complete')).toBe(false)
   })
 
   it('lazy-loads NativePurchases and PURCHASE_TYPE together', async () => {

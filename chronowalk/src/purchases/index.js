@@ -42,6 +42,19 @@ export {
 } from './storeKitPurchaseAdapter.js'
 
 export {
+  PURCHASE_SESSION_STATUS,
+  PURCHASE_SESSION_MAX_MS,
+  isPurchaseSessionBlocking,
+  beginPurchaseSession,
+  markPurchaseSessionChecking,
+  completePurchaseSession,
+  releasePurchaseSession,
+  getPurchaseSession,
+  awaitPurchaseSession,
+  __resetPurchaseSessionsForTests,
+} from './storeKitPurchaseSession.js'
+
+export {
   createPurchaseService,
   getPurchaseService,
   __resetPurchaseServiceForTests,

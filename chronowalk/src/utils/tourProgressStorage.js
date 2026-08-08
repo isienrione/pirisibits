@@ -7,6 +7,11 @@ const defaultProgress = () => ({
   arrivedStopIds: [],
   /** True while walking the leg toward targetStopIndex (after leaving prior stop) */
   transitLegActive: false,
+  /**
+   * Durable narration offsets by stop id.
+   * @type {Record<string, { positionMs: number, itemIndex?: number, completed?: boolean, updatedAt?: string }>}
+   */
+  audioByStopId: {},
 })
 
 function mirrorProgressToIndexedDb(tourId, progress) {
@@ -31,6 +36,10 @@ export const loadTourProgress = (tourId) => {
       ...defaultProgress(),
       ...parsed,
       arrivedStopIds: Array.isArray(parsed.arrivedStopIds) ? parsed.arrivedStopIds : [],
+      audioByStopId:
+        parsed.audioByStopId && typeof parsed.audioByStopId === 'object'
+          ? parsed.audioByStopId
+          : {},
     }
   } catch {
     return defaultProgress()
@@ -59,6 +68,10 @@ export const loadTourProgressAsync = async (tourId) => {
       arrivedStopIds: Array.isArray(offlineProgress.arrivedStopIds)
         ? offlineProgress.arrivedStopIds
         : [],
+      audioByStopId:
+        offlineProgress.audioByStopId && typeof offlineProgress.audioByStopId === 'object'
+          ? offlineProgress.audioByStopId
+          : {},
     }
   } catch (error) {
     console.warn('tourProgressStorage: IndexedDB fallback failed.', error)

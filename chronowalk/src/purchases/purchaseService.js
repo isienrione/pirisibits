@@ -132,6 +132,17 @@ export function createPurchaseService(options = {}) {
       return adapter.purchaseProduct(productId, purchaseOptions)
     },
 
+    async awaitPendingPurchase(productId, options = {}) {
+      const adapter = adapterFor(resolvePurchaseProvider().provider)
+      if (!adapter?.awaitPendingPurchase) return null
+      return adapter.awaitPendingPurchase(productId, options)
+    },
+
+    isPurchasePending(productId) {
+      const adapter = adapterFor(resolvePurchaseProvider().provider)
+      return Boolean(adapter?.isPurchasePending?.(productId))
+    },
+
     async restorePurchases(restoreOptions = {}) {
       const provider = resolvePurchaseProvider()
       const adapter = adapterFor(provider.provider)
