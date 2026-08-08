@@ -2,16 +2,16 @@
   "version": "rome-canonical-legs-v1",
   "tourId": "rome",
   "cityId": "rome",
-  "generatedAt": "2026-08-08T09:23:33.320Z",
-  "source": "authored-stop-coordinates",
-  "geometryKindDefault": "temporary-straight-line-fallback",
-  "note": "Offline Rome stop→stop package is INCOMPLETE: one or more legs still use temporary straight-line fallback (product debt). Run with --fetch-mapbox after explicit approval to capture real walking geometry. Temporary geometry is not pedestrian street routing.",
+  "generatedAt": "2026-08-08T09:32:13.600Z",
+  "source": "mapbox-directions",
+  "geometryKindDefault": "mapbox-walking",
+  "note": "Offline Rome stop→stop package captured from Mapbox Directions (walking). Runtime reads this JSON only — no Directions API at runtime.",
   "completeness": {
     "expectedLegCount": 20,
-    "realWalkingLegCount": 0,
-    "temporaryFallbackLegCount": 20,
+    "realWalkingLegCount": 20,
+    "temporaryFallbackLegCount": 0,
     "invalidLegCount": 0,
-    "complete": false
+    "complete": true
   },
   "optionalRideTransitions": [
     {
@@ -28,29 +28,8 @@
     }
   ],
   "productDebt": {
-    "allLegsUseTemporaryFallbackGeometry": true,
-    "legKeys": [
-      "w01->w02",
-      "w02->w03",
-      "w03->w06",
-      "w06->w07",
-      "w07->w08",
-      "w08->pause",
-      "pause->w10",
-      "w10->w11_12",
-      "w11_12->w13",
-      "w13->w14",
-      "w14->w15",
-      "w15->w16",
-      "w16->w17",
-      "w17->w23",
-      "w23->w18",
-      "w18->w19",
-      "w19->w20",
-      "w20->w21",
-      "w02->w04",
-      "w04->w03"
-    ],
+    "allLegsUseTemporaryFallbackGeometry": false,
+    "legKeys": [],
     "reason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox."
   },
   "routes": [
@@ -163,51 +142,148 @@
       },
       "fromTitle": "The Colosseum",
       "toTitle": "Colosseum interior",
-      "distanceMeters": 36,
-      "durationSeconds": 30,
-      "distanceM": 36,
-      "durationSec": 30,
+      "distanceMeters": 290,
+      "durationSeconds": 275,
+      "distanceM": 290,
+      "durationSec": 275,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.4922,
-            41.8902
+            12.492187,
+            41.889945
           ],
           [
-            12.4924,
-            41.8904
+            12.49205,
+            41.889661
+          ],
+          [
+            12.491962,
+            41.889472
+          ],
+          [
+            12.491793,
+            41.88952
+          ],
+          [
+            12.491572,
+            41.889599
+          ],
+          [
+            12.491349,
+            41.889739
+          ],
+          [
+            12.491208,
+            41.889867
+          ],
+          [
+            12.491132,
+            41.890028
+          ],
+          [
+            12.491101,
+            41.890183
+          ],
+          [
+            12.491094,
+            41.890307
+          ],
+          [
+            12.491109,
+            41.890431
+          ],
+          [
+            12.491142,
+            41.890429
+          ],
+          [
+            12.491196,
+            41.890431
+          ],
+          [
+            12.491365,
+            41.890555
+          ],
+          [
+            12.491388,
+            41.89058
+          ],
+          [
+            12.491416,
+            41.890609
+          ],
+          [
+            12.49149,
+            41.89058
+          ],
+          [
+            12.491433,
+            41.890552
+          ],
+          [
+            12.491413,
+            41.890523
+          ],
+          [
+            12.491615,
+            41.890457
+          ],
+          [
+            12.491874,
+            41.89038
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head northeast toward Colosseum interior — about 36 m.",
-          "distanceM": 31,
-          "durationSec": 26,
+          "instruction": "Walk south on the walkway.",
+          "streetName": null,
+          "distanceM": 55.859,
+          "durationSec": 83.892,
           "type": "depart",
-          "streetName": "Colosseum interior"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Colosseum interior.",
-          "distanceM": 5,
-          "durationSec": 5,
-          "type": "continue",
-          "streetName": "Colosseum interior"
+          "instruction": "Turn right onto Colosseo.",
+          "streetName": "Colosseo",
+          "distanceM": 142.025,
+          "durationSec": 99.847,
+          "type": "turn",
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at Colosseum interior.",
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 41.167,
+          "durationSec": 58.991,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 50.68,
+          "durationSec": 32.121,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "You have arrived at Colosseum interior.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Colosseum interior"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:19:59.033Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 21,
+      "stepCount": 5
     },
     "w02->w03": {
       "originStopId": "w02",
@@ -224,51 +300,228 @@
       },
       "fromTitle": "Colosseum interior",
       "toTitle": "Arch of Titus",
-      "distanceMeters": 436,
-      "durationSeconds": 349,
-      "distanceM": 436,
-      "durationSec": 349,
+      "distanceMeters": 391,
+      "durationSeconds": 356,
+      "distanceM": 391,
+      "durationSec": 356,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.4924,
-            41.8904
+            12.491874,
+            41.89038
           ],
           [
-            12.48835,
-            41.8905
+            12.491615,
+            41.890457
+          ],
+          [
+            12.491413,
+            41.890523
+          ],
+          [
+            12.491433,
+            41.890552
+          ],
+          [
+            12.49149,
+            41.89058
+          ],
+          [
+            12.491416,
+            41.890609
+          ],
+          [
+            12.491388,
+            41.89058
+          ],
+          [
+            12.491365,
+            41.890555
+          ],
+          [
+            12.491196,
+            41.890431
+          ],
+          [
+            12.491142,
+            41.890429
+          ],
+          [
+            12.491109,
+            41.890431
+          ],
+          [
+            12.491131,
+            41.890509
+          ],
+          [
+            12.491035,
+            41.890536
+          ],
+          [
+            12.490722,
+            41.890622
+          ],
+          [
+            12.490508,
+            41.890191
+          ],
+          [
+            12.490481,
+            41.890141
+          ],
+          [
+            12.490257,
+            41.890205
+          ],
+          [
+            12.490251,
+            41.890206
+          ],
+          [
+            12.48991,
+            41.890303
+          ],
+          [
+            12.489426,
+            41.890441
+          ],
+          [
+            12.48923,
+            41.890497
+          ],
+          [
+            12.489022,
+            41.89055
+          ],
+          [
+            12.488939,
+            41.890572
+          ],
+          [
+            12.488718,
+            41.890628
+          ],
+          [
+            12.488645,
+            41.890654
+          ],
+          [
+            12.488622,
+            41.890661
+          ],
+          [
+            12.488546,
+            41.890683
+          ],
+          [
+            12.488535,
+            41.890687
+          ],
+          [
+            12.488519,
+            41.890691
+          ],
+          [
+            12.488382,
+            41.890577
+          ],
+          [
+            12.488341,
+            41.890536
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Arch of Titus — about 436 m.",
-          "distanceM": 371,
-          "durationSec": 297,
+          "instruction": "Walk west on the walkway.",
+          "streetName": null,
+          "distanceM": 50.68,
+          "durationSec": 37.832,
           "type": "depart",
-          "streetName": "Arch of Titus"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Arch of Titus.",
-          "distanceM": 65,
-          "durationSec": 52,
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 41.167,
+          "durationSec": 58.991,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Colosseo.",
+          "streetName": "Colosseo",
+          "distanceM": 8.872,
+          "durationSec": 6.248,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 36.153,
+          "durationSec": 30.806,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 57.15,
+          "durationSec": 42.408,
           "type": "continue",
-          "streetName": "Arch of Titus"
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Arch of Titus.",
+          "instruction": "Turn right onto Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 110.991,
+          "durationSec": 92.952,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep right to stay on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 44.866,
+          "durationSec": 61.494,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Keep right to stay on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 17.936,
+          "durationSec": 12.631,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn left onto Clivus Palatino.",
+          "streetName": "Clivus Palatino",
+          "distanceM": 22.718,
+          "durationSec": 13,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "You have arrived at Arch of Titus.",
+          "streetName": "Clivus Palatino",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Arch of Titus"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:19:59.321Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 31,
+      "stepCount": 10
     },
     "w03->w06": {
       "originStopId": "w03",
@@ -285,51 +538,164 @@
       },
       "fromTitle": "Arch of Titus",
       "toTitle": "Basilica of Maxentius",
-      "distanceMeters": 185,
-      "durationSeconds": 148,
-      "distanceM": 185,
-      "durationSec": 148,
+      "distanceMeters": 139,
+      "durationSeconds": 86,
+      "distanceM": 139,
+      "durationSec": 86,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48835,
-            41.8905
+            12.488341,
+            41.890536
           ],
           [
-            12.488,
-            41.89175
+            12.488382,
+            41.890577
+          ],
+          [
+            12.488519,
+            41.890691
+          ],
+          [
+            12.488572,
+            41.890761
+          ],
+          [
+            12.488584,
+            41.890814
+          ],
+          [
+            12.488576,
+            41.890882
+          ],
+          [
+            12.488533,
+            41.890909
+          ],
+          [
+            12.488459,
+            41.890953
+          ],
+          [
+            12.488403,
+            41.890991
+          ],
+          [
+            12.488373,
+            41.891025
+          ],
+          [
+            12.488346,
+            41.891096
+          ],
+          [
+            12.488334,
+            41.891112
+          ],
+          [
+            12.488316,
+            41.891123
+          ],
+          [
+            12.488248,
+            41.89115
+          ],
+          [
+            12.488224,
+            41.891169
+          ],
+          [
+            12.488209,
+            41.891185
+          ],
+          [
+            12.48819,
+            41.891208
+          ],
+          [
+            12.48817,
+            41.891224
+          ],
+          [
+            12.488132,
+            41.891254
+          ],
+          [
+            12.488079,
+            41.891297
+          ],
+          [
+            12.488043,
+            41.891327
+          ],
+          [
+            12.487998,
+            41.891361
+          ],
+          [
+            12.487948,
+            41.891397
+          ],
+          [
+            12.487908,
+            41.891419
+          ],
+          [
+            12.487878,
+            41.891434
+          ],
+          [
+            12.487843,
+            41.891453
+          ],
+          [
+            12.487802,
+            41.891473
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head north toward Basilica of Maxentius — about 185 m.",
-          "distanceM": 157,
-          "durationSec": 126,
+          "instruction": "Walk northeast on Clivus Palatino.",
+          "streetName": "Clivus Palatino",
+          "distanceM": 22.718,
+          "durationSec": 19.596,
           "type": "depart",
-          "streetName": "Basilica of Maxentius"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Basilica of Maxentius.",
-          "distanceM": 28,
-          "durationSec": 22,
-          "type": "continue",
-          "streetName": "Basilica of Maxentius"
+          "instruction": "Bear left onto Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 22.527,
+          "durationSec": 16.438,
+          "type": "turn",
+          "modifier": "slight left"
         },
         {
-          "instruction": "Arrive at Basilica of Maxentius.",
+          "instruction": "Turn left to stay on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 93.812,
+          "durationSec": 50.172,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Basilica of Maxentius is on the right.",
+          "streetName": "Via Sacra",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Basilica of Maxentius"
+          "modifier": "right"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:19:59.619Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 27,
+      "stepCount": 4
     },
     "w06->w07": {
       "originStopId": "w06",
@@ -346,51 +712,112 @@
       },
       "fromTitle": "Basilica of Maxentius",
       "toTitle": "Via Sacra",
-      "distanceMeters": 308,
-      "durationSeconds": 246,
-      "distanceM": 308,
-      "durationSec": 246,
+      "distanceMeters": 237,
+      "durationSeconds": 155,
+      "distanceM": 237,
+      "durationSec": 155,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.488,
-            41.89175
+            12.487802,
+            41.891473
           ],
           [
-            12.48535,
-            41.89255
+            12.487748,
+            41.891494
+          ],
+          [
+            12.487684,
+            41.891515
+          ],
+          [
+            12.487512,
+            41.891585
+          ],
+          [
+            12.487392,
+            41.89163
+          ],
+          [
+            12.487361,
+            41.891641
+          ],
+          [
+            12.487329,
+            41.891654
+          ],
+          [
+            12.487121,
+            41.891717
+          ],
+          [
+            12.486856,
+            41.891797
+          ],
+          [
+            12.486756,
+            41.891836
+          ],
+          [
+            12.486594,
+            41.891957
+          ],
+          [
+            12.486532,
+            41.891988
+          ],
+          [
+            12.486367,
+            41.892071
+          ],
+          [
+            12.486331,
+            41.892088
+          ],
+          [
+            12.486287,
+            41.892108
+          ],
+          [
+            12.485906,
+            41.892298
+          ],
+          [
+            12.485743,
+            41.89237
+          ],
+          [
+            12.485347,
+            41.892547
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Via Sacra — about 308 m.",
-          "distanceM": 262,
-          "durationSec": 209,
+          "instruction": "Walk northwest on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 237.207,
+          "durationSec": 155.212,
           "type": "depart",
-          "streetName": "Via Sacra"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Via Sacra.",
-          "distanceM": 46,
-          "durationSec": 37,
-          "type": "continue",
-          "streetName": "Via Sacra"
-        },
-        {
-          "instruction": "Arrive at Via Sacra.",
+          "instruction": "You have arrived at Via Sacra.",
+          "streetName": "Via Sacra",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Via Sacra"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:00.023Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 18,
+      "stepCount": 2
     },
     "w07->w08": {
       "originStopId": "w07",
@@ -407,51 +834,108 @@
       },
       "fromTitle": "Via Sacra",
       "toTitle": "Temple of Vesta",
-      "distanceMeters": 221,
-      "durationSeconds": 177,
-      "distanceM": 221,
-      "durationSec": 177,
+      "distanceMeters": 185,
+      "durationSeconds": 145,
+      "distanceM": 185,
+      "durationSec": 145,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48535,
-            41.89255
+            12.485347,
+            41.892547
           ],
           [
-            12.48715,
-            41.89182
+            12.485743,
+            41.89237
+          ],
+          [
+            12.485906,
+            41.892298
+          ],
+          [
+            12.486287,
+            41.892108
+          ],
+          [
+            12.486331,
+            41.892088
+          ],
+          [
+            12.486367,
+            41.892071
+          ],
+          [
+            12.486532,
+            41.891988
+          ],
+          [
+            12.486594,
+            41.891957
+          ],
+          [
+            12.486756,
+            41.891836
+          ],
+          [
+            12.486856,
+            41.891797
+          ],
+          [
+            12.487121,
+            41.891717
+          ],
+          [
+            12.487142,
+            41.891755
+          ],
+          [
+            12.487169,
+            41.891804
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head southeast toward Temple of Vesta — about 221 m.",
-          "distanceM": 188,
-          "durationSec": 150,
+          "instruction": "Walk southeast on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 174.508,
+          "durationSec": 138.122,
           "type": "depart",
-          "streetName": "Temple of Vesta"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Temple of Vesta.",
-          "distanceM": 33,
-          "durationSec": 27,
-          "type": "continue",
-          "streetName": "Temple of Vesta"
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 4.574,
+          "durationSec": 3.221,
+          "type": "turn",
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Temple of Vesta.",
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 5.896,
+          "durationSec": 4.152,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "You have arrived at Temple of Vesta.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Temple of Vesta"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:00.246Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 13,
+      "stepCount": 4
     },
     "w08->pause": {
       "originStopId": "w08",
@@ -468,51 +952,84 @@
       },
       "fromTitle": "Temple of Vesta",
       "toTitle": "Forum rest",
-      "distanceMeters": 71,
-      "durationSeconds": 57,
-      "distanceM": 71,
-      "durationSec": 57,
+      "distanceMeters": 65,
+      "durationSeconds": 40,
+      "distanceM": 65,
+      "durationSec": 40,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48715,
-            41.89182
+            12.487169,
+            41.891804
           ],
           [
-            12.4865,
-            41.8919
+            12.487142,
+            41.891755
+          ],
+          [
+            12.487121,
+            41.891717
+          ],
+          [
+            12.486856,
+            41.891797
+          ],
+          [
+            12.486756,
+            41.891836
+          ],
+          [
+            12.486594,
+            41.891957
+          ],
+          [
+            12.486565,
+            41.891972
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Forum rest — about 71 m.",
-          "distanceM": 60,
-          "durationSec": 48,
+          "instruction": "Walk south.",
+          "streetName": null,
+          "distanceM": 5.896,
+          "durationSec": 4.152,
           "type": "depart",
-          "streetName": "Forum rest"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Forum rest.",
-          "distanceM": 11,
-          "durationSec": 9,
-          "type": "continue",
-          "streetName": "Forum rest"
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 4.574,
+          "durationSec": 3.221,
+          "type": "new name",
+          "modifier": "straight"
         },
         {
-          "instruction": "Arrive at Forum rest.",
+          "instruction": "Turn right onto Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 54.997,
+          "durationSec": 32.25,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Forum rest is on the left.",
+          "streetName": "Via Sacra",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Forum rest"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:00.467Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 7,
+      "stepCount": 4
     },
     "pause->w10": {
       "originStopId": "pause",
@@ -529,51 +1046,88 @@
       },
       "fromTitle": "Forum rest",
       "toTitle": "The Rostra",
-      "distanceMeters": 195,
-      "durationSeconds": 156,
-      "distanceM": 195,
-      "durationSec": 156,
+      "distanceMeters": 148,
+      "durationSeconds": 110,
+      "distanceM": 148,
+      "durationSec": 110,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.4865,
-            41.8919
+            12.486565,
+            41.891972
           ],
           [
-            12.48518,
-            41.89282
+            12.486532,
+            41.891988
+          ],
+          [
+            12.486367,
+            41.892071
+          ],
+          [
+            12.486331,
+            41.892088
+          ],
+          [
+            12.486287,
+            41.892108
+          ],
+          [
+            12.485906,
+            41.892298
+          ],
+          [
+            12.485743,
+            41.89237
+          ],
+          [
+            12.485214,
+            41.892606
+          ],
+          [
+            12.485253,
+            41.892665
+          ],
+          [
+            12.485322,
+            41.892719
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head northwest toward The Rostra — about 195 m.",
-          "distanceM": 166,
-          "durationSec": 133,
+          "instruction": "Walk northwest on Via Sacra.",
+          "streetName": "Via Sacra",
+          "distanceM": 132.382,
+          "durationSec": 95.135,
           "type": "depart",
-          "streetName": "The Rostra"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward The Rostra.",
-          "distanceM": 29,
-          "durationSec": 23,
-          "type": "continue",
-          "streetName": "The Rostra"
+          "instruction": "Turn right onto Argiletum/Argileto.",
+          "streetName": "Argiletum; Argileto",
+          "distanceM": 15.647,
+          "durationSec": 15.137,
+          "type": "turn",
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at The Rostra.",
+          "instruction": "The Rostra is on the left.",
+          "streetName": "Argiletum; Argileto",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "The Rostra"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:00.689Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 10,
+      "stepCount": 3
     },
     "w10->w11_12": {
       "originStopId": "w10",
@@ -590,51 +1144,376 @@
       },
       "fromTitle": "The Rostra",
       "toTitle": "Arch of Septimius Severus",
-      "distanceMeters": 86,
-      "durationSeconds": 69,
-      "distanceM": 86,
-      "durationSec": 69,
+      "distanceMeters": 744,
+      "durationSeconds": 542,
+      "distanceM": 744,
+      "durationSec": 542,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48518,
-            41.89282
+            12.485322,
+            41.892719
           ],
           [
-            12.48442,
-            41.89301
+            12.485409,
+            41.892787
+          ],
+          [
+            12.485535,
+            41.89277
+          ],
+          [
+            12.485638,
+            41.892724
+          ],
+          [
+            12.485653,
+            41.892726
+          ],
+          [
+            12.485915,
+            41.892607
+          ],
+          [
+            12.485924,
+            41.892617
+          ],
+          [
+            12.486107,
+            41.892534
+          ],
+          [
+            12.486098,
+            41.892524
+          ],
+          [
+            12.48653,
+            41.89233
+          ],
+          [
+            12.486554,
+            41.892251
+          ],
+          [
+            12.486817,
+            41.892545
+          ],
+          [
+            12.48687,
+            41.892602
+          ],
+          [
+            12.486929,
+            41.892655
+          ],
+          [
+            12.487018,
+            41.892693
+          ],
+          [
+            12.487053,
+            41.892707
+          ],
+          [
+            12.487101,
+            41.892723
+          ],
+          [
+            12.487139,
+            41.892736
+          ],
+          [
+            12.487169,
+            41.892748
+          ],
+          [
+            12.487191,
+            41.892764
+          ],
+          [
+            12.487257,
+            41.892824
+          ],
+          [
+            12.487307,
+            41.892875
+          ],
+          [
+            12.487376,
+            41.892954
+          ],
+          [
+            12.487407,
+            41.892991
+          ],
+          [
+            12.487358,
+            41.893012
+          ],
+          [
+            12.487321,
+            41.893027
+          ],
+          [
+            12.487288,
+            41.893042
+          ],
+          [
+            12.487261,
+            41.893057
+          ],
+          [
+            12.487226,
+            41.893077
+          ],
+          [
+            12.487079,
+            41.893164
+          ],
+          [
+            12.486887,
+            41.893291
+          ],
+          [
+            12.486677,
+            41.89347
+          ],
+          [
+            12.486316,
+            41.893734
+          ],
+          [
+            12.486048,
+            41.893883
+          ],
+          [
+            12.485696,
+            41.894083
+          ],
+          [
+            12.484746,
+            41.894604
+          ],
+          [
+            12.48461,
+            41.894515
+          ],
+          [
+            12.484484,
+            41.89442
+          ],
+          [
+            12.484336,
+            41.894316
+          ],
+          [
+            12.484288,
+            41.894279
+          ],
+          [
+            12.484254,
+            41.894243
+          ],
+          [
+            12.484237,
+            41.89422
+          ],
+          [
+            12.484232,
+            41.894211
+          ],
+          [
+            12.484212,
+            41.894167
+          ],
+          [
+            12.484197,
+            41.894126
+          ],
+          [
+            12.484188,
+            41.894083
+          ],
+          [
+            12.484182,
+            41.894039
+          ],
+          [
+            12.484184,
+            41.893997
+          ],
+          [
+            12.484194,
+            41.893944
+          ],
+          [
+            12.484364,
+            41.893515
+          ],
+          [
+            12.48437,
+            41.89348
+          ],
+          [
+            12.484368,
+            41.893462
+          ],
+          [
+            12.484364,
+            41.893442
+          ],
+          [
+            12.484356,
+            41.89342
+          ],
+          [
+            12.484345,
+            41.893401
+          ],
+          [
+            12.484328,
+            41.893379
+          ],
+          [
+            12.484309,
+            41.893358
+          ],
+          [
+            12.484276,
+            41.893325
+          ],
+          [
+            12.484234,
+            41.89329
+          ],
+          [
+            12.484198,
+            41.893266
+          ],
+          [
+            12.484163,
+            41.893248
+          ],
+          [
+            12.484124,
+            41.89323
+          ],
+          [
+            12.484093,
+            41.893218
+          ],
+          [
+            12.484137,
+            41.893183
+          ],
+          [
+            12.484217,
+            41.893153
+          ],
+          [
+            12.484227,
+            41.89315
+          ],
+          [
+            12.48424,
+            41.893145
+          ],
+          [
+            12.484315,
+            41.893114
+          ],
+          [
+            12.484344,
+            41.893099
+          ],
+          [
+            12.484453,
+            41.893057
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Arch of Septimius Severus — about 86 m.",
-          "distanceM": 73,
-          "durationSec": 59,
+          "instruction": "Walk northeast on Argiletum/Argileto.",
+          "streetName": "Argiletum; Argileto",
+          "distanceM": 10.422,
+          "durationSec": 10.015,
           "type": "depart",
-          "streetName": "Arch of Septimius Severus"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Arch of Septimius Severus.",
-          "distanceM": 13,
-          "durationSec": 10,
-          "type": "continue",
-          "streetName": "Arch of Septimius Severus"
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 109.506,
+          "durationSec": 69.405,
+          "type": "turn",
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at Arch of Septimius Severus.",
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 9.016,
+          "durationSec": 6.35,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 47.037,
+          "durationSec": 25.095,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Largo della Salara Vecchia.",
+          "streetName": "Largo della Salara Vecchia",
+          "distanceM": 63.657,
+          "durationSec": 43.953,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto Via dei Fori Imperiali.",
+          "streetName": "Via dei Fori Imperiali",
+          "distanceM": 285.256,
+          "durationSec": 212.052,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via di San Pietro in Carcere.",
+          "streetName": "Via di San Pietro in Carcere",
+          "distanceM": 184.163,
+          "durationSec": 152.454,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via dell'Arco di Settimio.",
+          "streetName": "Via dell'Arco di Settimio",
+          "distanceM": 35.037,
+          "durationSec": 22.901,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Arch of Septimius Severus is on the right.",
+          "streetName": "Via dell'Arco di Settimio",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Arch of Septimius Severus"
+          "modifier": "right"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:00.992Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 70,
+      "stepCount": 9
     },
     "w11_12->w13": {
       "originStopId": "w11_12",
@@ -651,51 +1530,268 @@
       },
       "fromTitle": "Arch of Septimius Severus",
       "toTitle": "Capitoline Hill",
-      "distanceMeters": 183,
-      "durationSeconds": 146,
-      "distanceM": 183,
-      "durationSec": 146,
+      "distanceMeters": 176,
+      "durationSeconds": 143,
+      "distanceM": 176,
+      "durationSec": 143,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48442,
-            41.89301
+            12.484453,
+            41.893057
           ],
           [
-            12.48275,
-            41.89324
+            12.484344,
+            41.893099
+          ],
+          [
+            12.484315,
+            41.893114
+          ],
+          [
+            12.48424,
+            41.893145
+          ],
+          [
+            12.484227,
+            41.89315
+          ],
+          [
+            12.484217,
+            41.893153
+          ],
+          [
+            12.484137,
+            41.893183
+          ],
+          [
+            12.484093,
+            41.893218
+          ],
+          [
+            12.484064,
+            41.893214
+          ],
+          [
+            12.484039,
+            41.893212
+          ],
+          [
+            12.484012,
+            41.893211
+          ],
+          [
+            12.48398,
+            41.893217
+          ],
+          [
+            12.48395,
+            41.893225
+          ],
+          [
+            12.483925,
+            41.893234
+          ],
+          [
+            12.483709,
+            41.893331
+          ],
+          [
+            12.483661,
+            41.893353
+          ],
+          [
+            12.483576,
+            41.893391
+          ],
+          [
+            12.483511,
+            41.893417
+          ],
+          [
+            12.483493,
+            41.893418
+          ],
+          [
+            12.483471,
+            41.893408
+          ],
+          [
+            12.483453,
+            41.893384
+          ],
+          [
+            12.483439,
+            41.893369
+          ],
+          [
+            12.483236,
+            41.893306
+          ],
+          [
+            12.483239,
+            41.893296
+          ],
+          [
+            12.483241,
+            41.893275
+          ],
+          [
+            12.48324,
+            41.89326
+          ],
+          [
+            12.483237,
+            41.893244
+          ],
+          [
+            12.483231,
+            41.893229
+          ],
+          [
+            12.483222,
+            41.893212
+          ],
+          [
+            12.483214,
+            41.8932
+          ],
+          [
+            12.483204,
+            41.893188
+          ],
+          [
+            12.483188,
+            41.893174
+          ],
+          [
+            12.48317,
+            41.893159
+          ],
+          [
+            12.483139,
+            41.893142
+          ],
+          [
+            12.483118,
+            41.893134
+          ],
+          [
+            12.483093,
+            41.893126
+          ],
+          [
+            12.483076,
+            41.893122
+          ],
+          [
+            12.483057,
+            41.893119
+          ],
+          [
+            12.483033,
+            41.893116
+          ],
+          [
+            12.483005,
+            41.893115
+          ],
+          [
+            12.482982,
+            41.893116
+          ],
+          [
+            12.482955,
+            41.893119
+          ],
+          [
+            12.482931,
+            41.893123
+          ],
+          [
+            12.482905,
+            41.89313
+          ],
+          [
+            12.482868,
+            41.893141
+          ],
+          [
+            12.482835,
+            41.893153
+          ],
+          [
+            12.482799,
+            41.893168
+          ],
+          [
+            12.482763,
+            41.893186
+          ],
+          [
+            12.48272,
+            41.893217
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Capitoline Hill — about 183 m.",
-          "distanceM": 156,
-          "durationSec": 124,
+          "instruction": "Walk northwest on Via dell'Arco di Settimio.",
+          "streetName": "Via dell'Arco di Settimio",
+          "distanceM": 35.037,
+          "durationSec": 26.836,
           "type": "depart",
-          "streetName": "Capitoline Hill"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Capitoline Hill.",
-          "distanceM": 27,
-          "durationSec": 22,
+          "instruction": "Bear left onto Via di San Pietro in Carcere.",
+          "streetName": "Via di San Pietro in Carcere",
+          "distanceM": 54.35,
+          "durationSec": 58.687,
+          "type": "turn",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left to stay on Via di San Pietro in Carcere.",
+          "streetName": "Via di San Pietro in Carcere",
+          "distanceM": 8.725,
+          "durationSec": 6.144,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Piazza del Campidoglio.",
+          "streetName": "Piazza del Campidoglio",
+          "distanceM": 18.225,
+          "durationSec": 12.835,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza del Campidoglio.",
+          "streetName": "Piazza del Campidoglio",
+          "distanceM": 59.74,
+          "durationSec": 38.757,
           "type": "continue",
-          "streetName": "Capitoline Hill"
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Capitoline Hill.",
+          "instruction": "Capitoline Hill is on the right.",
+          "streetName": "Piazza del Campidoglio",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Capitoline Hill"
+          "modifier": "right"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:01.516Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 49,
+      "stepCount": 6
     },
     "w13->w14": {
       "originStopId": "w13",
@@ -712,51 +1808,684 @@
       },
       "fromTitle": "Capitoline Hill",
       "toTitle": "Trajan's Market",
-      "distanceMeters": 485,
-      "durationSeconds": 388,
-      "distanceM": 485,
-      "durationSec": 388,
+      "distanceMeters": 1014,
+      "durationSeconds": 752,
+      "distanceM": 1014,
+      "durationSec": 752,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48275,
-            41.89324
+            12.48272,
+            41.893217
           ],
           [
-            12.48595,
-            41.8956
+            12.482763,
+            41.893186
+          ],
+          [
+            12.482799,
+            41.893168
+          ],
+          [
+            12.482835,
+            41.893153
+          ],
+          [
+            12.482868,
+            41.893141
+          ],
+          [
+            12.482905,
+            41.89313
+          ],
+          [
+            12.482931,
+            41.893123
+          ],
+          [
+            12.482955,
+            41.893119
+          ],
+          [
+            12.482982,
+            41.893116
+          ],
+          [
+            12.483005,
+            41.893115
+          ],
+          [
+            12.483033,
+            41.893116
+          ],
+          [
+            12.483057,
+            41.893119
+          ],
+          [
+            12.483076,
+            41.893122
+          ],
+          [
+            12.483093,
+            41.893126
+          ],
+          [
+            12.483118,
+            41.893134
+          ],
+          [
+            12.483139,
+            41.893142
+          ],
+          [
+            12.48317,
+            41.893159
+          ],
+          [
+            12.483188,
+            41.893174
+          ],
+          [
+            12.483204,
+            41.893188
+          ],
+          [
+            12.483214,
+            41.8932
+          ],
+          [
+            12.483222,
+            41.893212
+          ],
+          [
+            12.483231,
+            41.893229
+          ],
+          [
+            12.483237,
+            41.893244
+          ],
+          [
+            12.48324,
+            41.89326
+          ],
+          [
+            12.483241,
+            41.893275
+          ],
+          [
+            12.483239,
+            41.893296
+          ],
+          [
+            12.483236,
+            41.893306
+          ],
+          [
+            12.483439,
+            41.893369
+          ],
+          [
+            12.483453,
+            41.893384
+          ],
+          [
+            12.483471,
+            41.893408
+          ],
+          [
+            12.483493,
+            41.893418
+          ],
+          [
+            12.483511,
+            41.893417
+          ],
+          [
+            12.483576,
+            41.893391
+          ],
+          [
+            12.483661,
+            41.893353
+          ],
+          [
+            12.483709,
+            41.893331
+          ],
+          [
+            12.483925,
+            41.893234
+          ],
+          [
+            12.48395,
+            41.893225
+          ],
+          [
+            12.48398,
+            41.893217
+          ],
+          [
+            12.484012,
+            41.893211
+          ],
+          [
+            12.484039,
+            41.893212
+          ],
+          [
+            12.484064,
+            41.893214
+          ],
+          [
+            12.484093,
+            41.893218
+          ],
+          [
+            12.484124,
+            41.89323
+          ],
+          [
+            12.484163,
+            41.893248
+          ],
+          [
+            12.484198,
+            41.893266
+          ],
+          [
+            12.484234,
+            41.89329
+          ],
+          [
+            12.484276,
+            41.893325
+          ],
+          [
+            12.484309,
+            41.893358
+          ],
+          [
+            12.484328,
+            41.893379
+          ],
+          [
+            12.484345,
+            41.893401
+          ],
+          [
+            12.484356,
+            41.89342
+          ],
+          [
+            12.484364,
+            41.893442
+          ],
+          [
+            12.484368,
+            41.893462
+          ],
+          [
+            12.48437,
+            41.89348
+          ],
+          [
+            12.484364,
+            41.893515
+          ],
+          [
+            12.484194,
+            41.893944
+          ],
+          [
+            12.484184,
+            41.893997
+          ],
+          [
+            12.484182,
+            41.894039
+          ],
+          [
+            12.484188,
+            41.894083
+          ],
+          [
+            12.484197,
+            41.894126
+          ],
+          [
+            12.484212,
+            41.894167
+          ],
+          [
+            12.484232,
+            41.894211
+          ],
+          [
+            12.484237,
+            41.89422
+          ],
+          [
+            12.484254,
+            41.894243
+          ],
+          [
+            12.484288,
+            41.894279
+          ],
+          [
+            12.484336,
+            41.894316
+          ],
+          [
+            12.484484,
+            41.89442
+          ],
+          [
+            12.48461,
+            41.894515
+          ],
+          [
+            12.484746,
+            41.894604
+          ],
+          [
+            12.485696,
+            41.894083
+          ],
+          [
+            12.486048,
+            41.893883
+          ],
+          [
+            12.486316,
+            41.893734
+          ],
+          [
+            12.486999,
+            41.893396
+          ],
+          [
+            12.487056,
+            41.893373
+          ],
+          [
+            12.487095,
+            41.893362
+          ],
+          [
+            12.487133,
+            41.893356
+          ],
+          [
+            12.487195,
+            41.89335
+          ],
+          [
+            12.487286,
+            41.893339
+          ],
+          [
+            12.487348,
+            41.893333
+          ],
+          [
+            12.487418,
+            41.893328
+          ],
+          [
+            12.487457,
+            41.893327
+          ],
+          [
+            12.4875,
+            41.893327
+          ],
+          [
+            12.487585,
+            41.893333
+          ],
+          [
+            12.487638,
+            41.893338
+          ],
+          [
+            12.487677,
+            41.893339
+          ],
+          [
+            12.487711,
+            41.893336
+          ],
+          [
+            12.487874,
+            41.893306
+          ],
+          [
+            12.487949,
+            41.893318
+          ],
+          [
+            12.488036,
+            41.893336
+          ],
+          [
+            12.488023,
+            41.89337
+          ],
+          [
+            12.488022,
+            41.893377
+          ],
+          [
+            12.488022,
+            41.893386
+          ],
+          [
+            12.488025,
+            41.893395
+          ],
+          [
+            12.48803,
+            41.893405
+          ],
+          [
+            12.488035,
+            41.893412
+          ],
+          [
+            12.488041,
+            41.893419
+          ],
+          [
+            12.488055,
+            41.89343
+          ],
+          [
+            12.488069,
+            41.89344
+          ],
+          [
+            12.488134,
+            41.893479
+          ],
+          [
+            12.488161,
+            41.893495
+          ],
+          [
+            12.48817,
+            41.893502
+          ],
+          [
+            12.488177,
+            41.893513
+          ],
+          [
+            12.488179,
+            41.893523
+          ],
+          [
+            12.488178,
+            41.893535
+          ],
+          [
+            12.488171,
+            41.893552
+          ],
+          [
+            12.488166,
+            41.893559
+          ],
+          [
+            12.488158,
+            41.893568
+          ],
+          [
+            12.487829,
+            41.893831
+          ],
+          [
+            12.487619,
+            41.893837
+          ],
+          [
+            12.487319,
+            41.894149
+          ],
+          [
+            12.487286,
+            41.894217
+          ],
+          [
+            12.487254,
+            41.894304
+          ],
+          [
+            12.487225,
+            41.894453
+          ],
+          [
+            12.487025,
+            41.894651
+          ],
+          [
+            12.48698,
+            41.894749
+          ],
+          [
+            12.486938,
+            41.894844
+          ],
+          [
+            12.486925,
+            41.894948
+          ],
+          [
+            12.486922,
+            41.894968
+          ],
+          [
+            12.486912,
+            41.895021
+          ],
+          [
+            12.486813,
+            41.895036
+          ],
+          [
+            12.486588,
+            41.895071
+          ],
+          [
+            12.486567,
+            41.895036
+          ],
+          [
+            12.486371,
+            41.895068
+          ],
+          [
+            12.486333,
+            41.895068
+          ],
+          [
+            12.48632,
+            41.895069
+          ],
+          [
+            12.486257,
+            41.895098
+          ],
+          [
+            12.486182,
+            41.895168
+          ],
+          [
+            12.486162,
+            41.895186
+          ],
+          [
+            12.486181,
+            41.895205
+          ],
+          [
+            12.486217,
+            41.895254
+          ],
+          [
+            12.486238,
+            41.895307
+          ],
+          [
+            12.486245,
+            41.895363
+          ],
+          [
+            12.486237,
+            41.895418
+          ],
+          [
+            12.486215,
+            41.895471
+          ],
+          [
+            12.486179,
+            41.89552
+          ],
+          [
+            12.486131,
+            41.895562
+          ],
+          [
+            12.486072,
+            41.895597
+          ],
+          [
+            12.486006,
+            41.895622
+          ],
+          [
+            12.485962,
+            41.895631
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head northeast toward Trajan's Market — about 485 m.",
-          "distanceM": 412,
-          "durationSec": 330,
+          "instruction": "Walk southeast on Piazza del Campidoglio.",
+          "streetName": "Piazza del Campidoglio",
+          "distanceM": 59.74,
+          "durationSec": 47.797,
           "type": "depart",
-          "streetName": "Trajan's Market"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Trajan's Market.",
-          "distanceM": 73,
-          "durationSec": 58,
+          "instruction": "Turn right to stay on Piazza del Campidoglio.",
+          "streetName": "Piazza del Campidoglio",
+          "distanceM": 18.225,
+          "durationSec": 12.835,
           "type": "continue",
-          "streetName": "Trajan's Market"
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at Trajan's Market.",
+          "instruction": "Continue on Via di San Pietro in Carcere.",
+          "streetName": "Via di San Pietro in Carcere",
+          "distanceM": 8.725,
+          "durationSec": 6.144,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right to stay on Via di San Pietro in Carcere.",
+          "streetName": "Via di San Pietro in Carcere",
+          "distanceM": 238.513,
+          "durationSec": 157.623,
+          "type": "continue",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Via dei Fori Imperiali.",
+          "streetName": "Via dei Fori Imperiali",
+          "distanceM": 162.191,
+          "durationSec": 115.39,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep left to stay on Via dei Fori Imperiali.",
+          "streetName": "Via dei Fori Imperiali",
+          "distanceM": 67.963,
+          "durationSec": 43.075,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Keep left to take Largo Corrado Ricci.",
+          "streetName": "Largo Corrado Ricci",
+          "distanceM": 87.999,
+          "durationSec": 79.867,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left to stay on Largo Corrado Ricci.",
+          "streetName": "Largo Corrado Ricci",
+          "distanceM": 29.697,
+          "durationSec": 28.651,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left to stay on Largo Corrado Ricci.",
+          "streetName": "Largo Corrado Ricci",
+          "distanceM": 42.089,
+          "durationSec": 25.006,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via Tor de' Conti.",
+          "streetName": "Via Tor de' Conti",
+          "distanceM": 17.414,
+          "durationSec": 8.217,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right to stay on Via Tor de' Conti.",
+          "streetName": "Via Tor de' Conti",
+          "distanceM": 147.626,
+          "durationSec": 106.469,
+          "type": "continue",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 133.401,
+          "durationSec": 121.274,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Trajan's Market is on the left.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Trajan's Market"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:01.739Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 139,
+      "stepCount": 13
     },
     "w14->w15": {
       "originStopId": "w14",
@@ -773,51 +2502,712 @@
       },
       "fromTitle": "Trajan's Market",
       "toTitle": "Spanish Steps",
-      "distanceMeters": 1542,
-      "durationSeconds": 1234,
-      "distanceM": 1542,
-      "durationSec": 1234,
+      "distanceMeters": 2209,
+      "durationSeconds": 1705,
+      "distanceM": 2209,
+      "durationSec": 1705,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48595,
-            41.8956
+            12.485962,
+            41.895631
+          ],
+          [
+            12.486006,
+            41.895622
+          ],
+          [
+            12.486072,
+            41.895597
+          ],
+          [
+            12.486131,
+            41.895562
+          ],
+          [
+            12.486179,
+            41.89552
+          ],
+          [
+            12.486215,
+            41.895471
+          ],
+          [
+            12.486237,
+            41.895418
+          ],
+          [
+            12.486245,
+            41.895363
+          ],
+          [
+            12.486238,
+            41.895307
+          ],
+          [
+            12.486217,
+            41.895254
+          ],
+          [
+            12.486181,
+            41.895205
+          ],
+          [
+            12.486162,
+            41.895186
+          ],
+          [
+            12.486182,
+            41.895168
+          ],
+          [
+            12.486257,
+            41.895098
+          ],
+          [
+            12.48632,
+            41.895069
+          ],
+          [
+            12.486333,
+            41.895068
+          ],
+          [
+            12.486371,
+            41.895068
+          ],
+          [
+            12.486567,
+            41.895036
+          ],
+          [
+            12.486588,
+            41.895071
+          ],
+          [
+            12.486813,
+            41.895036
+          ],
+          [
+            12.486912,
+            41.895021
+          ],
+          [
+            12.486906,
+            41.895086
+          ],
+          [
+            12.486964,
+            41.895625
+          ],
+          [
+            12.487005,
+            41.895832
+          ],
+          [
+            12.487041,
+            41.895951
+          ],
+          [
+            12.487065,
+            41.896034
+          ],
+          [
+            12.4871,
+            41.896138
+          ],
+          [
+            12.487162,
+            41.896132
+          ],
+          [
+            12.487293,
+            41.89612
+          ],
+          [
+            12.487307,
+            41.896119
+          ],
+          [
+            12.487627,
+            41.896086
+          ],
+          [
+            12.488303,
+            41.896025
+          ],
+          [
+            12.488403,
+            41.896018
+          ],
+          [
+            12.4885,
+            41.896016
+          ],
+          [
+            12.488563,
+            41.896017
+          ],
+          [
+            12.488614,
+            41.896018
+          ],
+          [
+            12.488724,
+            41.896027
+          ],
+          [
+            12.489021,
+            41.896062
+          ],
+          [
+            12.489056,
+            41.896067
+          ],
+          [
+            12.489089,
+            41.896073
+          ],
+          [
+            12.489133,
+            41.896082
+          ],
+          [
+            12.489185,
+            41.896094
+          ],
+          [
+            12.489135,
+            41.896148
+          ],
+          [
+            12.488929,
+            41.896377
+          ],
+          [
+            12.488583,
+            41.896795
+          ],
+          [
+            12.488397,
+            41.896991
+          ],
+          [
+            12.48814,
+            41.89727
+          ],
+          [
+            12.488063,
+            41.897329
+          ],
+          [
+            12.488039,
+            41.897343
+          ],
+          [
+            12.488017,
+            41.897354
+          ],
+          [
+            12.488002,
+            41.897359
+          ],
+          [
+            12.48795,
+            41.897374
+          ],
+          [
+            12.487277,
+            41.897493
+          ],
+          [
+            12.487012,
+            41.89754
+          ],
+          [
+            12.486872,
+            41.897559
+          ],
+          [
+            12.486811,
+            41.897723
+          ],
+          [
+            12.486804,
+            41.897744
+          ],
+          [
+            12.486789,
+            41.897802
+          ],
+          [
+            12.486778,
+            41.897858
+          ],
+          [
+            12.486771,
+            41.89791
+          ],
+          [
+            12.486767,
+            41.897961
+          ],
+          [
+            12.486767,
+            41.897986
+          ],
+          [
+            12.486767,
+            41.898005
+          ],
+          [
+            12.486766,
+            41.898449
+          ],
+          [
+            12.486766,
+            41.898489
+          ],
+          [
+            12.486777,
+            41.898782
+          ],
+          [
+            12.486779,
+            41.898811
+          ],
+          [
+            12.486785,
+            41.898848
+          ],
+          [
+            12.486802,
+            41.898896
+          ],
+          [
+            12.48683,
+            41.898948
+          ],
+          [
+            12.486898,
+            41.899078
+          ],
+          [
+            12.486943,
+            41.899159
+          ],
+          [
+            12.486981,
+            41.899221
+          ],
+          [
+            12.487024,
+            41.899281
+          ],
+          [
+            12.487077,
+            41.899351
+          ],
+          [
+            12.487109,
+            41.899384
+          ],
+          [
+            12.487163,
+            41.899432
+          ],
+          [
+            12.487243,
+            41.899496
+          ],
+          [
+            12.487287,
+            41.899529
+          ],
+          [
+            12.487339,
+            41.899566
+          ],
+          [
+            12.487927,
+            41.899994
+          ],
+          [
+            12.487941,
+            41.900005
+          ],
+          [
+            12.488487,
+            41.900402
+          ],
+          [
+            12.48863,
+            41.900504
+          ],
+          [
+            12.489002,
+            41.900769
+          ],
+          [
+            12.489138,
+            41.900866
+          ],
+          [
+            12.489458,
+            41.90109
+          ],
+          [
+            12.489756,
+            41.901298
+          ],
+          [
+            12.490157,
+            41.901578
+          ],
+          [
+            12.490256,
+            41.901647
+          ],
+          [
+            12.490676,
+            41.901925
+          ],
+          [
+            12.490739,
+            41.901969
+          ],
+          [
+            12.490636,
+            41.902025
+          ],
+          [
+            12.489666,
+            41.902557
+          ],
+          [
+            12.489438,
+            41.902682
+          ],
+          [
+            12.489318,
+            41.902747
+          ],
+          [
+            12.48844,
+            41.903269
+          ],
+          [
+            12.488349,
+            41.903327
+          ],
+          [
+            12.48816,
+            41.903432
+          ],
+          [
+            12.487998,
+            41.903515
+          ],
+          [
+            12.487979,
+            41.903524
+          ],
+          [
+            12.487892,
+            41.903568
+          ],
+          [
+            12.487295,
+            41.903912
+          ],
+          [
+            12.487023,
+            41.904062
+          ],
+          [
+            12.486799,
+            41.90419
+          ],
+          [
+            12.486549,
+            41.904327
+          ],
+          [
+            12.486464,
+            41.904374
+          ],
+          [
+            12.485979,
+            41.904651
+          ],
+          [
+            12.485902,
+            41.904698
+          ],
+          [
+            12.485815,
+            41.904742
+          ],
+          [
+            12.484575,
+            41.905406
+          ],
+          [
+            12.484215,
+            41.905602
+          ],
+          [
+            12.483832,
+            41.905799
+          ],
+          [
+            12.483807,
+            41.905806
+          ],
+          [
+            12.483779,
+            41.905813
+          ],
+          [
+            12.483754,
+            41.905817
+          ],
+          [
+            12.483547,
+            41.90591
+          ],
+          [
+            12.483393,
+            41.905999
+          ],
+          [
+            12.483347,
+            41.906045
+          ],
+          [
+            12.483324,
+            41.906073
+          ],
+          [
+            12.483306,
+            41.906105
+          ],
+          [
+            12.483264,
+            41.90619
+          ],
+          [
+            12.483196,
+            41.906362
+          ],
+          [
+            12.483107,
+            41.906342
+          ],
+          [
+            12.483102,
+            41.906338
+          ],
+          [
+            12.483085,
+            41.906316
+          ],
+          [
+            12.483074,
+            41.906296
+          ],
+          [
+            12.483064,
+            41.906274
+          ],
+          [
+            12.483058,
+            41.906254
+          ],
+          [
+            12.483054,
+            41.906229
+          ],
+          [
+            12.483052,
+            41.906205
+          ],
+          [
+            12.483054,
+            41.906182
+          ],
+          [
+            12.48306,
+            41.906151
+          ],
+          [
+            12.483064,
+            41.906136
+          ],
+          [
+            12.483028,
+            41.906132
+          ],
+          [
+            12.482885,
+            41.906114
+          ],
+          [
+            12.482798,
+            41.906117
+          ],
+          [
+            12.482725,
+            41.906127
+          ],
+          [
+            12.482677,
+            41.906099
+          ],
+          [
+            12.482639,
+            41.906067
+          ],
+          [
+            12.482614,
+            41.906035
           ],
           [
             12.48259,
-            41.90597
+            41.905991
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head north toward Spanish Steps — about 1.5 km.",
-          "distanceM": 1311,
-          "durationSec": 1049,
+          "instruction": "Walk east on the walkway.",
+          "streetName": null,
+          "distanceM": 74.719,
+          "durationSec": 50.033,
           "type": "depart",
-          "streetName": "Spanish Steps"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Spanish Steps.",
-          "distanceM": 231,
-          "durationSec": 185,
-          "type": "continue",
-          "streetName": "Spanish Steps"
+          "instruction": "Keep left at the fork.",
+          "streetName": null,
+          "distanceM": 58.683,
+          "durationSec": 81.733,
+          "type": "fork",
+          "modifier": "slight left"
         },
         {
-          "instruction": "Arrive at Spanish Steps.",
+          "instruction": "Turn left onto Salita del Grillo.",
+          "streetName": "Salita del Grillo",
+          "distanceM": 125.704,
+          "durationSec": 132.797,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Via Panisperna.",
+          "streetName": "Via Panisperna",
+          "distanceM": 135.459,
+          "durationSec": 94.256,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep left to stay on Via Panisperna.",
+          "streetName": "Via Panisperna",
+          "distanceM": 38.977,
+          "durationSec": 20.586,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left onto Via Mazzarino.",
+          "streetName": "Via Mazzarino",
+          "distanceM": 268.549,
+          "durationSec": 234.516,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Via Ventiquattro Maggio.",
+          "streetName": "Via Ventiquattro Maggio",
+          "distanceM": 144.519,
+          "durationSec": 109.474,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Bear right onto Piazza del Quirinale.",
+          "streetName": "Piazza del Quirinale",
+          "distanceM": 482.042,
+          "durationSec": 394.779,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn left onto Via delle Quattro Fontane.",
+          "streetName": "Via delle Quattro Fontane",
+          "distanceM": 800.708,
+          "durationSec": 539.511,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Scalinata di Trinità dei Monti.",
+          "streetName": "Scalinata di Trinità dei Monti",
+          "distanceM": 31.642,
+          "durationSec": 18.257,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Scalinata della Trinità dei Monti.",
+          "streetName": "Scalinata della Trinità dei Monti",
+          "distanceM": 3.016,
+          "durationSec": 2.124,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on Spanish Steps.",
+          "streetName": "Spanish Steps",
+          "distanceM": 12.016,
+          "durationSec": 5.669,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 13.365,
+          "durationSec": 9.412,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto Spanish Steps.",
+          "streetName": "Spanish Steps",
+          "distanceM": 19.214,
+          "durationSec": 12.183,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "You have arrived at Spanish Steps.",
+          "streetName": "Spanish Steps",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Spanish Steps"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:02.035Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 142,
+      "stepCount": 15
     },
     "w15->w16": {
       "originStopId": "w15",
@@ -834,51 +3224,480 @@
       },
       "fromTitle": "Spanish Steps",
       "toTitle": "Fontana di Trevi",
-      "distanceMeters": 731,
-      "durationSeconds": 585,
-      "distanceM": 731,
-      "durationSec": 585,
+      "distanceMeters": 1020,
+      "durationSeconds": 753,
+      "distanceM": 1020,
+      "durationSec": 753,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
             12.48259,
-            41.90597
+            41.905991
           ],
           [
-            12.48331,
-            41.90094
+            12.482614,
+            41.906035
+          ],
+          [
+            12.482639,
+            41.906067
+          ],
+          [
+            12.482677,
+            41.906099
+          ],
+          [
+            12.482725,
+            41.906127
+          ],
+          [
+            12.482798,
+            41.906117
+          ],
+          [
+            12.482854,
+            41.906031
+          ],
+          [
+            12.482909,
+            41.906049
+          ],
+          [
+            12.483046,
+            41.906097
+          ],
+          [
+            12.483076,
+            41.906107
+          ],
+          [
+            12.483064,
+            41.906136
+          ],
+          [
+            12.48306,
+            41.906151
+          ],
+          [
+            12.483054,
+            41.906182
+          ],
+          [
+            12.483052,
+            41.906205
+          ],
+          [
+            12.483054,
+            41.906229
+          ],
+          [
+            12.483058,
+            41.906254
+          ],
+          [
+            12.483064,
+            41.906274
+          ],
+          [
+            12.483074,
+            41.906296
+          ],
+          [
+            12.483085,
+            41.906316
+          ],
+          [
+            12.483102,
+            41.906338
+          ],
+          [
+            12.483107,
+            41.906342
+          ],
+          [
+            12.483196,
+            41.906362
+          ],
+          [
+            12.483264,
+            41.90619
+          ],
+          [
+            12.483306,
+            41.906105
+          ],
+          [
+            12.483324,
+            41.906073
+          ],
+          [
+            12.483347,
+            41.906045
+          ],
+          [
+            12.483393,
+            41.905999
+          ],
+          [
+            12.483547,
+            41.90591
+          ],
+          [
+            12.483754,
+            41.905817
+          ],
+          [
+            12.483742,
+            41.905799
+          ],
+          [
+            12.483718,
+            41.905763
+          ],
+          [
+            12.483705,
+            41.905738
+          ],
+          [
+            12.483717,
+            41.905705
+          ],
+          [
+            12.48505,
+            41.904389
+          ],
+          [
+            12.48537,
+            41.904074
+          ],
+          [
+            12.485395,
+            41.90405
+          ],
+          [
+            12.485448,
+            41.903998
+          ],
+          [
+            12.485625,
+            41.904022
+          ],
+          [
+            12.485676,
+            41.904029
+          ],
+          [
+            12.485594,
+            41.903761
+          ],
+          [
+            12.485583,
+            41.903727
+          ],
+          [
+            12.485576,
+            41.903697
+          ],
+          [
+            12.485563,
+            41.903638
+          ],
+          [
+            12.485553,
+            41.903576
+          ],
+          [
+            12.485548,
+            41.903544
+          ],
+          [
+            12.485537,
+            41.903401
+          ],
+          [
+            12.485518,
+            41.903047
+          ],
+          [
+            12.485516,
+            41.903003
+          ],
+          [
+            12.48552,
+            41.902965
+          ],
+          [
+            12.485525,
+            41.902929
+          ],
+          [
+            12.485529,
+            41.902914
+          ],
+          [
+            12.485532,
+            41.902902
+          ],
+          [
+            12.485543,
+            41.90288
+          ],
+          [
+            12.485557,
+            41.902858
+          ],
+          [
+            12.485594,
+            41.902825
+          ],
+          [
+            12.485494,
+            41.902799
+          ],
+          [
+            12.485148,
+            41.902703
+          ],
+          [
+            12.484638,
+            41.902581
+          ],
+          [
+            12.484154,
+            41.902463
+          ],
+          [
+            12.48399,
+            41.902422
+          ],
+          [
+            12.483671,
+            41.902347
+          ],
+          [
+            12.483615,
+            41.902333
+          ],
+          [
+            12.482706,
+            41.902108
+          ],
+          [
+            12.48248,
+            41.902051
+          ],
+          [
+            12.482494,
+            41.902015
+          ],
+          [
+            12.482583,
+            41.901796
+          ],
+          [
+            12.482676,
+            41.901533
+          ],
+          [
+            12.482842,
+            41.901176
+          ],
+          [
+            12.482926,
+            41.900994
+          ],
+          [
+            12.482966,
+            41.900972
+          ],
+          [
+            12.482994,
+            41.900953
+          ],
+          [
+            12.483007,
+            41.900933
+          ],
+          [
+            12.483051,
+            41.900948
+          ],
+          [
+            12.483077,
+            41.900943
+          ],
+          [
+            12.483114,
+            41.900877
+          ],
+          [
+            12.483125,
+            41.900866
+          ],
+          [
+            12.483147,
+            41.900853
+          ],
+          [
+            12.483163,
+            41.900844
+          ],
+          [
+            12.483183,
+            41.900836
+          ],
+          [
+            12.483202,
+            41.900831
+          ],
+          [
+            12.483228,
+            41.90083
+          ],
+          [
+            12.483347,
+            41.900862
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head south toward Fontana di Trevi — about 731 m.",
-          "distanceM": 621,
-          "durationSec": 497,
+          "instruction": "Walk northeast on Spanish Steps.",
+          "streetName": "Spanish Steps",
+          "distanceM": 19.214,
+          "durationSec": 14.349,
           "type": "depart",
-          "streetName": "Fontana di Trevi"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Fontana di Trevi.",
-          "distanceM": 110,
-          "durationSec": 88,
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 6.15,
+          "durationSec": 4.331,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 10.638,
+          "durationSec": 9.739,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 4.978,
+          "durationSec": 3.505,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Spanish Steps.",
+          "streetName": "Spanish Steps",
+          "distanceM": 12.545,
+          "durationSec": 13.164,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on Scalinata della Trinità dei Monti.",
+          "streetName": "Scalinata della Trinità dei Monti",
+          "distanceM": 2.723,
+          "durationSec": 1.918,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left to stay on Scalinata della Trinità dei Monti.",
+          "streetName": "Scalinata della Trinità dei Monti",
+          "distanceM": 26.709,
+          "durationSec": 26.273,
           "type": "continue",
-          "streetName": "Fontana di Trevi"
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Fontana di Trevi.",
+          "instruction": "Continue on Scalinata di Trinità dei Monti.",
+          "streetName": "Scalinata di Trinità dei Monti",
+          "distanceM": 8.31,
+          "durationSec": 5.852,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right onto Piazza della Trinità dei Monti.",
+          "streetName": "Piazza della Trinità dei Monti",
+          "distanceM": 80.125,
+          "durationSec": 86.82,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right to stay on Piazza della Trinità dei Monti.",
+          "streetName": "Piazza della Trinità dei Monti",
+          "distanceM": 251.569,
+          "durationSec": 188.913,
+          "type": "continue",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Bear right onto Via Francesco Crispi.",
+          "streetName": "Via Francesco Crispi",
+          "distanceM": 156.001,
+          "durationSec": 99.354,
+          "type": "end of road",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto Largo del Tritone.",
+          "streetName": "Largo del Tritone",
+          "distanceM": 272.039,
+          "durationSec": 196.429,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Piazza Poli.",
+          "streetName": "Piazza Poli",
+          "distanceM": 59.916,
+          "durationSec": 38.372,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Via Poli.",
+          "streetName": "Via Poli",
+          "distanceM": 73.21,
+          "durationSec": 36.805,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto Piazza di Trevi.",
+          "streetName": "Piazza di Trevi",
+          "distanceM": 35.916,
+          "durationSec": 27.115,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Fontana di Trevi is on the left.",
+          "streetName": "Piazza di Trevi",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Fontana di Trevi"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:02.357Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 82,
+      "stepCount": 16
     },
     "w16->w17": {
       "originStopId": "w16",
@@ -895,51 +3714,340 @@
       },
       "fromTitle": "Fontana di Trevi",
       "toTitle": "The Pantheon",
-      "distanceMeters": 756,
-      "durationSeconds": 605,
-      "distanceM": 756,
-      "durationSec": 605,
+      "distanceMeters": 781,
+      "durationSeconds": 542,
+      "distanceM": 781,
+      "durationSec": 542,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.48331,
-            41.90094
+            12.483347,
+            41.900862
           ],
           [
-            12.47687,
-            41.89885
+            12.483228,
+            41.90083
+          ],
+          [
+            12.483202,
+            41.900831
+          ],
+          [
+            12.483183,
+            41.900836
+          ],
+          [
+            12.483163,
+            41.900844
+          ],
+          [
+            12.483147,
+            41.900853
+          ],
+          [
+            12.483125,
+            41.900866
+          ],
+          [
+            12.483114,
+            41.900877
+          ],
+          [
+            12.483077,
+            41.900943
+          ],
+          [
+            12.483051,
+            41.900948
+          ],
+          [
+            12.483007,
+            41.900933
+          ],
+          [
+            12.482994,
+            41.900953
+          ],
+          [
+            12.482966,
+            41.900972
+          ],
+          [
+            12.482926,
+            41.900994
+          ],
+          [
+            12.482609,
+            41.900971
+          ],
+          [
+            12.482481,
+            41.900956
+          ],
+          [
+            12.482336,
+            41.900936
+          ],
+          [
+            12.482088,
+            41.900888
+          ],
+          [
+            12.48161,
+            41.900815
+          ],
+          [
+            12.481632,
+            41.900762
+          ],
+          [
+            12.48165,
+            41.90072
+          ],
+          [
+            12.481816,
+            41.900326
+          ],
+          [
+            12.481952,
+            41.90004
+          ],
+          [
+            12.481128,
+            41.899835
+          ],
+          [
+            12.481031,
+            41.899813
+          ],
+          [
+            12.481055,
+            41.899753
+          ],
+          [
+            12.480982,
+            41.89973
+          ],
+          [
+            12.480933,
+            41.899713
+          ],
+          [
+            12.481033,
+            41.899375
+          ],
+          [
+            12.481013,
+            41.899372
+          ],
+          [
+            12.480592,
+            41.899288
+          ],
+          [
+            12.480136,
+            41.899244
+          ],
+          [
+            12.479984,
+            41.899236
+          ],
+          [
+            12.479823,
+            41.899219
+          ],
+          [
+            12.479596,
+            41.899192
+          ],
+          [
+            12.479447,
+            41.899162
+          ],
+          [
+            12.479383,
+            41.899147
+          ],
+          [
+            12.479224,
+            41.899132
+          ],
+          [
+            12.4787,
+            41.899066
+          ],
+          [
+            12.478416,
+            41.899038
+          ],
+          [
+            12.477976,
+            41.899022
+          ],
+          [
+            12.477196,
+            41.899005
+          ],
+          [
+            12.477185,
+            41.899026
+          ],
+          [
+            12.477036,
+            41.899154
+          ],
+          [
+            12.47692,
+            41.899149
+          ],
+          [
+            12.47678,
+            41.899141
+          ],
+          [
+            12.476796,
+            41.899008
+          ],
+          [
+            12.476796,
+            41.899
+          ],
+          [
+            12.476807,
+            41.898848
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head southwest toward The Pantheon — about 756 m.",
-          "distanceM": 643,
-          "durationSec": 514,
+          "instruction": "Walk west on Piazza di Trevi.",
+          "streetName": "Piazza di Trevi",
+          "distanceM": 35.916,
+          "durationSec": 23.022,
           "type": "depart",
-          "streetName": "The Pantheon"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward The Pantheon.",
-          "distanceM": 113,
-          "durationSec": 91,
+          "instruction": "Turn right to stay on Piazza di Trevi.",
+          "streetName": "Piazza di Trevi",
+          "distanceM": 9.734,
+          "durationSec": 6.855,
           "type": "continue",
-          "streetName": "The Pantheon"
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at The Pantheon.",
+          "instruction": "Keep left to take Piazza dei Crociferi.",
+          "streetName": "Piazza dei Crociferi",
+          "distanceM": 111.006,
+          "durationSec": 95.522,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left onto Via di Santa Maria in Via.",
+          "streetName": "Via di Santa Maria in Via",
+          "distanceM": 90.822,
+          "durationSec": 61.722,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Via Marco Minghetti.",
+          "streetName": "Via Marco Minghetti",
+          "distanceM": 80.389,
+          "durationSec": 59.654,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Via del Corso.",
+          "streetName": "Via del Corso",
+          "distanceM": 6.969,
+          "durationSec": 4.908,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the crosswalk.",
+          "streetName": null,
+          "distanceM": 11.048,
+          "durationSec": 8.78,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Via del Corso.",
+          "streetName": "Via del Corso",
+          "distanceM": 38.528,
+          "durationSec": 30.388,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Via del Caravita.",
+          "streetName": "Via del Caravita",
+          "distanceM": 321.61,
+          "durationSec": 200.927,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Via della Minerva.",
+          "streetName": "Via della Minerva",
+          "distanceM": 2.509,
+          "durationSec": 1.767,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep left to take Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 18.853,
+          "durationSec": 10.622,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 21.262,
+          "durationSec": 13.956,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 14.865,
+          "durationSec": 11.096,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 17.883,
+          "durationSec": 12.505,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "The Pantheon is on the left.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "The Pantheon"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:02.589Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 49,
+      "stepCount": 15
     },
     "w17->w23": {
       "originStopId": "w17",
@@ -956,51 +4064,48 @@
       },
       "fromTitle": "The Pantheon",
       "toTitle": "Pantheon interior",
-      "distanceMeters": 25,
-      "durationSeconds": 30,
-      "distanceM": 25,
-      "durationSec": 30,
+      "distanceMeters": 4,
+      "durationSeconds": 3,
+      "distanceM": 4,
+      "durationSec": 3,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.47687,
-            41.89885
+            12.476807,
+            41.898848
           ],
           [
-            12.47683,
-            41.89868
+            12.476809,
+            41.898813
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head south toward Pantheon interior — about 25 m.",
-          "distanceM": 21,
-          "durationSec": 26,
+          "instruction": "Walk south on the walkway.",
+          "streetName": null,
+          "distanceM": 3.852,
+          "durationSec": 2.801,
           "type": "depart",
-          "streetName": "Pantheon interior"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Pantheon interior.",
-          "distanceM": 4,
-          "durationSec": 5,
-          "type": "continue",
-          "streetName": "Pantheon interior"
-        },
-        {
-          "instruction": "Arrive at Pantheon interior.",
+          "instruction": "You have arrived at Pantheon interior.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Pantheon interior"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:32:13.590Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 2,
+      "stepCount": 2
     },
     "w23->w18": {
       "originStopId": "w23",
@@ -1017,51 +4122,544 @@
       },
       "fromTitle": "Pantheon interior",
       "toTitle": "Piazza Navona",
-      "distanceMeters": 412,
-      "durationSeconds": 330,
-      "distanceM": 412,
-      "durationSec": 330,
+      "distanceMeters": 886,
+      "durationSeconds": 648,
+      "distanceM": 886,
+      "durationSec": 648,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.47683,
-            41.89868
+            12.476809,
+            41.898813
           ],
           [
-            12.47306,
-            41.89918
+            12.476796,
+            41.899
+          ],
+          [
+            12.476796,
+            41.899008
+          ],
+          [
+            12.47678,
+            41.899141
+          ],
+          [
+            12.476635,
+            41.899133
+          ],
+          [
+            12.476521,
+            41.899017
+          ],
+          [
+            12.47638,
+            41.899011
+          ],
+          [
+            12.476028,
+            41.898996
+          ],
+          [
+            12.476023,
+            41.898919
+          ],
+          [
+            12.47602,
+            41.898878
+          ],
+          [
+            12.476011,
+            41.898806
+          ],
+          [
+            12.475995,
+            41.898718
+          ],
+          [
+            12.475978,
+            41.898643
+          ],
+          [
+            12.475971,
+            41.89861
+          ],
+          [
+            12.475962,
+            41.89858
+          ],
+          [
+            12.475934,
+            41.898478
+          ],
+          [
+            12.475924,
+            41.898457
+          ],
+          [
+            12.475913,
+            41.898436
+          ],
+          [
+            12.475871,
+            41.898436
+          ],
+          [
+            12.475831,
+            41.898435
+          ],
+          [
+            12.475789,
+            41.898432
+          ],
+          [
+            12.475759,
+            41.898427
+          ],
+          [
+            12.475728,
+            41.898421
+          ],
+          [
+            12.475696,
+            41.898413
+          ],
+          [
+            12.475672,
+            41.898404
+          ],
+          [
+            12.475641,
+            41.898394
+          ],
+          [
+            12.47559,
+            41.89837
+          ],
+          [
+            12.475555,
+            41.898367
+          ],
+          [
+            12.475262,
+            41.898351
+          ],
+          [
+            12.475174,
+            41.898347
+          ],
+          [
+            12.475148,
+            41.898343
+          ],
+          [
+            12.475126,
+            41.898335
+          ],
+          [
+            12.475109,
+            41.898324
+          ],
+          [
+            12.475096,
+            41.898309
+          ],
+          [
+            12.475088,
+            41.898291
+          ],
+          [
+            12.475086,
+            41.898273
+          ],
+          [
+            12.475086,
+            41.898258
+          ],
+          [
+            12.475084,
+            41.897924
+          ],
+          [
+            12.474408,
+            41.89789
+          ],
+          [
+            12.474383,
+            41.897888
+          ],
+          [
+            12.474127,
+            41.897874
+          ],
+          [
+            12.474096,
+            41.897873
+          ],
+          [
+            12.474008,
+            41.89787
+          ],
+          [
+            12.474002,
+            41.897921
+          ],
+          [
+            12.473979,
+            41.898141
+          ],
+          [
+            12.473952,
+            41.89839
+          ],
+          [
+            12.473947,
+            41.898423
+          ],
+          [
+            12.473945,
+            41.898441
+          ],
+          [
+            12.473891,
+            41.898915
+          ],
+          [
+            12.473887,
+            41.898943
+          ],
+          [
+            12.473866,
+            41.899147
+          ],
+          [
+            12.473851,
+            41.899319
+          ],
+          [
+            12.47385,
+            41.89935
+          ],
+          [
+            12.473856,
+            41.899387
+          ],
+          [
+            12.473861,
+            41.899399
+          ],
+          [
+            12.473866,
+            41.899409
+          ],
+          [
+            12.47387,
+            41.899422
+          ],
+          [
+            12.473876,
+            41.899436
+          ],
+          [
+            12.473884,
+            41.899454
+          ],
+          [
+            12.473889,
+            41.89947
+          ],
+          [
+            12.473892,
+            41.899487
+          ],
+          [
+            12.473894,
+            41.899502
+          ],
+          [
+            12.473897,
+            41.899621
+          ],
+          [
+            12.473896,
+            41.899661
+          ],
+          [
+            12.473891,
+            41.899706
+          ],
+          [
+            12.473888,
+            41.899748
+          ],
+          [
+            12.473881,
+            41.899795
+          ],
+          [
+            12.473847,
+            41.900009
+          ],
+          [
+            12.473842,
+            41.900037
+          ],
+          [
+            12.473839,
+            41.900077
+          ],
+          [
+            12.473825,
+            41.900223
+          ],
+          [
+            12.473821,
+            41.900278
+          ],
+          [
+            12.473816,
+            41.900327
+          ],
+          [
+            12.473807,
+            41.900366
+          ],
+          [
+            12.473796,
+            41.900391
+          ],
+          [
+            12.473782,
+            41.900408
+          ],
+          [
+            12.473767,
+            41.900422
+          ],
+          [
+            12.473751,
+            41.900432
+          ],
+          [
+            12.473722,
+            41.900441
+          ],
+          [
+            12.473694,
+            41.900448
+          ],
+          [
+            12.473652,
+            41.900453
+          ],
+          [
+            12.47361,
+            41.900456
+          ],
+          [
+            12.473473,
+            41.900458
+          ],
+          [
+            12.473409,
+            41.900457
+          ],
+          [
+            12.473346,
+            41.900457
+          ],
+          [
+            12.473281,
+            41.900457
+          ],
+          [
+            12.473168,
+            41.900457
+          ],
+          [
+            12.473169,
+            41.900369
+          ],
+          [
+            12.47317,
+            41.900357
+          ],
+          [
+            12.473175,
+            41.900092
+          ],
+          [
+            12.473119,
+            41.900009
+          ],
+          [
+            12.473151,
+            41.899994
+          ],
+          [
+            12.473179,
+            41.899976
+          ],
+          [
+            12.473202,
+            41.899955
+          ],
+          [
+            12.473221,
+            41.89993
+          ],
+          [
+            12.473233,
+            41.899903
+          ],
+          [
+            12.473241,
+            41.899876
+          ],
+          [
+            12.473313,
+            41.899117
+          ],
+          [
+            12.47325,
+            41.899112
+          ],
+          [
+            12.473054,
+            41.899168
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head west toward Piazza Navona — about 412 m.",
-          "distanceM": 350,
-          "durationSec": 281,
+          "instruction": "Walk north on the walkway.",
+          "streetName": null,
+          "distanceM": 21.735,
+          "durationSec": 15.306,
           "type": "depart",
-          "streetName": "Piazza Navona"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Piazza Navona.",
-          "distanceM": 62,
-          "durationSec": 50,
+          "instruction": "Continue on Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 14.865,
+          "durationSec": 9.421,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 12.047,
+          "durationSec": 8.484,
           "type": "continue",
-          "streetName": "Piazza Navona"
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Piazza Navona.",
+          "instruction": "Turn left to stay on Piazza della Rotonda.",
+          "streetName": "Piazza della Rotonda",
+          "distanceM": 15.999,
+          "durationSec": 12.619,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Salita de' Crescenzi.",
+          "streetName": "Salita de' Crescenzi",
+          "distanceM": 40.916,
+          "durationSec": 37.458,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Via di Sant'Eustachio.",
+          "streetName": "Via di Sant'Eustachio",
+          "distanceM": 63.274,
+          "durationSec": 36.467,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Piazza Di San Eustachio.",
+          "streetName": "Piazza Di San Eustachio",
+          "distanceM": 113.938,
+          "durationSec": 116.088,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Via dei Sediari.",
+          "streetName": "Via dei Sediari",
+          "distanceM": 89.364,
+          "durationSec": 50.191,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Corso del Rinascimento.",
+          "streetName": "Corso del Rinascimento",
+          "distanceM": 290.711,
+          "durationSec": 212.914,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Piazza delle Cinque Lune.",
+          "streetName": "Piazza delle Cinque Lune",
+          "distanceM": 46.093,
+          "durationSec": 24.895,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via Agonale.",
+          "streetName": "Via Agonale",
+          "distanceM": 40.638,
+          "durationSec": 24.584,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Bear right onto Piazza Navona.",
+          "streetName": "Piazza Navona",
+          "distanceM": 10.339,
+          "durationSec": 5.461,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn left to stay on Piazza Navona.",
+          "streetName": "Piazza Navona",
+          "distanceM": 103.358,
+          "durationSec": 77.155,
+          "type": "continue",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right to stay on Piazza Navona.",
+          "streetName": "Piazza Navona",
+          "distanceM": 22.659,
+          "durationSec": 17.029,
+          "type": "continue",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Piazza Navona is on the right.",
+          "streetName": "Piazza Navona",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Piazza Navona"
+          "modifier": "right"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:03.106Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 100,
+      "stepCount": 15
     },
     "w18->w19": {
       "originStopId": "w18",
@@ -1078,51 +4676,308 @@
       },
       "fromTitle": "Piazza Navona",
       "toTitle": "Campo de' Fiori",
-      "distanceMeters": 527,
-      "durationSeconds": 422,
-      "distanceM": 527,
-      "durationSec": 422,
+      "distanceMeters": 665,
+      "durationSeconds": 477,
+      "distanceM": 665,
+      "durationSec": 477,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.47306,
-            41.89918
+            12.473054,
+            41.899168
           ],
           [
-            12.47223,
-            41.89559
+            12.47291,
+            41.899209
+          ],
+          [
+            12.472847,
+            41.899206
+          ],
+          [
+            12.47275,
+            41.899203
+          ],
+          [
+            12.472283,
+            41.899188
+          ],
+          [
+            12.471726,
+            41.899191
+          ],
+          [
+            12.471471,
+            41.899201
+          ],
+          [
+            12.471523,
+            41.898924
+          ],
+          [
+            12.471574,
+            41.898739
+          ],
+          [
+            12.471577,
+            41.898729
+          ],
+          [
+            12.471583,
+            41.898721
+          ],
+          [
+            12.471594,
+            41.898714
+          ],
+          [
+            12.471607,
+            41.898707
+          ],
+          [
+            12.471621,
+            41.898698
+          ],
+          [
+            12.47163,
+            41.898688
+          ],
+          [
+            12.471634,
+            41.898676
+          ],
+          [
+            12.471637,
+            41.898653
+          ],
+          [
+            12.471646,
+            41.898362
+          ],
+          [
+            12.471643,
+            41.898268
+          ],
+          [
+            12.47164,
+            41.898187
+          ],
+          [
+            12.471632,
+            41.898131
+          ],
+          [
+            12.471611,
+            41.898057
+          ],
+          [
+            12.471597,
+            41.898025
+          ],
+          [
+            12.47162,
+            41.898019
+          ],
+          [
+            12.471887,
+            41.897909
+          ],
+          [
+            12.471946,
+            41.897883
+          ],
+          [
+            12.472071,
+            41.897813
+          ],
+          [
+            12.472143,
+            41.897768
+          ],
+          [
+            12.472202,
+            41.897724
+          ],
+          [
+            12.47226,
+            41.897673
+          ],
+          [
+            12.472454,
+            41.897464
+          ],
+          [
+            12.472718,
+            41.897198
+          ],
+          [
+            12.47273,
+            41.897185
+          ],
+          [
+            12.4726,
+            41.897044
+          ],
+          [
+            12.47257,
+            41.897011
+          ],
+          [
+            12.472542,
+            41.896971
+          ],
+          [
+            12.472487,
+            41.896985
+          ],
+          [
+            12.472281,
+            41.897003
+          ],
+          [
+            12.472274,
+            41.896982
+          ],
+          [
+            12.472263,
+            41.896952
+          ],
+          [
+            12.472249,
+            41.896915
+          ],
+          [
+            12.472134,
+            41.89661
+          ],
+          [
+            12.472057,
+            41.896417
+          ],
+          [
+            12.471854,
+            41.896049
+          ],
+          [
+            12.471817,
+            41.896003
+          ],
+          [
+            12.471811,
+            41.895977
+          ],
+          [
+            12.47152,
+            41.89575
+          ],
+          [
+            12.471803,
+            41.895613
+          ],
+          [
+            12.47209,
+            41.895452
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head south toward Campo de' Fiori — about 527 m.",
-          "distanceM": 448,
-          "durationSec": 359,
+          "instruction": "Walk west on Piazza Navona.",
+          "streetName": "Piazza Navona",
+          "distanceM": 64.766,
+          "durationSec": 60.62,
           "type": "depart",
-          "streetName": "Campo de' Fiori"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Campo de' Fiori.",
-          "distanceM": 79,
-          "durationSec": 63,
+          "instruction": "Continue on Via di Tor Millina.",
+          "streetName": "Via di Tor Millina",
+          "distanceM": 67.311,
+          "durationSec": 43.662,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto Via del Teatro Pace.",
+          "streetName": "Via del Teatro Pace",
+          "distanceM": 133.994,
+          "durationSec": 97.1,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via del Governo Vecchio.",
+          "streetName": "Via del Governo Vecchio",
+          "distanceM": 60.659,
+          "durationSec": 48.718,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Bear right onto Via di San Pantaleo.",
+          "streetName": "Via di San Pantaleo",
+          "distanceM": 74.288,
+          "durationSec": 39.546,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto Piazza di San Pantaleo.",
+          "streetName": "Piazza di San Pantaleo",
+          "distanceM": 28.493,
+          "durationSec": 18.586,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Corso Vittorio Emanuele Secondo.",
+          "streetName": "Corso Vittorio Emanuele Secondo",
+          "distanceM": 22.003,
+          "durationSec": 15.495,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Piazza della Cancelleria.",
+          "streetName": "Piazza della Cancelleria",
+          "distanceM": 118.079,
+          "durationSec": 83.319,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Campo de' Fiori.",
+          "streetName": "Campo de' Fiori",
+          "distanceM": 37.865,
+          "durationSec": 21.332,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left to stay on Campo de' Fiori.",
+          "streetName": "Campo de' Fiori",
+          "distanceM": 57.77,
+          "durationSec": 48.183,
           "type": "continue",
-          "streetName": "Campo de' Fiori"
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Campo de' Fiori.",
+          "instruction": "Campo de' Fiori is on the left.",
+          "streetName": "Campo de' Fiori",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Campo de' Fiori"
+          "modifier": "left"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:03.327Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 49,
+      "stepCount": 11
     },
     "w19->w20": {
       "originStopId": "w19",
@@ -1139,51 +4994,412 @@
       },
       "fromTitle": "Campo de' Fiori",
       "toTitle": "Largo di Torre Argentina",
-      "distanceMeters": 509,
-      "durationSeconds": 407,
-      "distanceM": 509,
-      "durationSec": 407,
+      "distanceMeters": 657,
+      "durationSeconds": 456,
+      "distanceM": 657,
+      "durationSec": 456,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.47223,
-            41.89559
+            12.47209,
+            41.895452
           ],
           [
-            12.47694,
-            41.89528
+            12.472213,
+            41.895383
+          ],
+          [
+            12.472481,
+            41.895233
+          ],
+          [
+            12.472557,
+            41.895191
+          ],
+          [
+            12.47257,
+            41.895186
+          ],
+          [
+            12.472693,
+            41.895092
+          ],
+          [
+            12.473049,
+            41.894819
+          ],
+          [
+            12.473265,
+            41.894678
+          ],
+          [
+            12.473445,
+            41.894569
+          ],
+          [
+            12.473579,
+            41.894489
+          ],
+          [
+            12.473589,
+            41.894484
+          ],
+          [
+            12.47373,
+            41.894421
+          ],
+          [
+            12.474016,
+            41.894329
+          ],
+          [
+            12.474241,
+            41.894266
+          ],
+          [
+            12.474763,
+            41.894101
+          ],
+          [
+            12.474866,
+            41.894068
+          ],
+          [
+            12.475178,
+            41.893962
+          ],
+          [
+            12.475205,
+            41.89395
+          ],
+          [
+            12.475226,
+            41.893934
+          ],
+          [
+            12.475237,
+            41.893918
+          ],
+          [
+            12.475247,
+            41.893932
+          ],
+          [
+            12.475305,
+            41.894016
+          ],
+          [
+            12.475322,
+            41.894032
+          ],
+          [
+            12.475342,
+            41.894047
+          ],
+          [
+            12.475362,
+            41.894054
+          ],
+          [
+            12.475393,
+            41.89406
+          ],
+          [
+            12.47541,
+            41.89406
+          ],
+          [
+            12.475426,
+            41.89406
+          ],
+          [
+            12.475666,
+            41.894033
+          ],
+          [
+            12.475764,
+            41.894025
+          ],
+          [
+            12.475844,
+            41.894021
+          ],
+          [
+            12.475851,
+            41.894021
+          ],
+          [
+            12.475904,
+            41.894022
+          ],
+          [
+            12.475926,
+            41.894023
+          ],
+          [
+            12.475952,
+            41.894023
+          ],
+          [
+            12.476018,
+            41.894026
+          ],
+          [
+            12.476035,
+            41.894027
+          ],
+          [
+            12.476222,
+            41.894266
+          ],
+          [
+            12.476317,
+            41.894392
+          ],
+          [
+            12.476345,
+            41.894431
+          ],
+          [
+            12.476362,
+            41.894463
+          ],
+          [
+            12.476371,
+            41.894485
+          ],
+          [
+            12.476381,
+            41.894515
+          ],
+          [
+            12.476387,
+            41.894551
+          ],
+          [
+            12.476414,
+            41.894733
+          ],
+          [
+            12.47642,
+            41.89475
+          ],
+          [
+            12.476425,
+            41.894766
+          ],
+          [
+            12.476434,
+            41.89478
+          ],
+          [
+            12.476445,
+            41.894793
+          ],
+          [
+            12.476454,
+            41.894803
+          ],
+          [
+            12.476464,
+            41.894811
+          ],
+          [
+            12.476482,
+            41.894821
+          ],
+          [
+            12.4765,
+            41.894831
+          ],
+          [
+            12.476517,
+            41.894838
+          ],
+          [
+            12.476533,
+            41.894845
+          ],
+          [
+            12.476556,
+            41.894851
+          ],
+          [
+            12.476584,
+            41.894857
+          ],
+          [
+            12.477247,
+            41.894861
+          ],
+          [
+            12.477313,
+            41.894861
+          ],
+          [
+            12.477313,
+            41.894901
+          ],
+          [
+            12.477313,
+            41.894929
+          ],
+          [
+            12.477313,
+            41.894946
+          ],
+          [
+            12.477312,
+            41.894955
+          ],
+          [
+            12.477324,
+            41.895064
+          ],
+          [
+            12.477335,
+            41.895172
+          ],
+          [
+            12.477307,
+            41.895428
+          ],
+          [
+            12.477218,
+            41.895421
+          ],
+          [
+            12.477205,
+            41.895421
+          ],
+          [
+            12.477207,
+            41.895403
+          ],
+          [
+            12.477184,
+            41.895402
+          ],
+          [
+            12.477187,
+            41.895379
+          ],
+          [
+            12.477061,
+            41.895371
+          ],
+          [
+            12.477069,
+            41.895287
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head east toward Largo di Torre Argentina — about 509 m.",
-          "distanceM": 433,
-          "durationSec": 346,
+          "instruction": "Walk southeast on Campo de' Fiori.",
+          "streetName": "Campo de' Fiori",
+          "distanceM": 48.372,
+          "durationSec": 36.22,
           "type": "depart",
-          "streetName": "Largo di Torre Argentina"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Largo di Torre Argentina.",
-          "distanceM": 76,
-          "durationSec": 61,
-          "type": "continue",
-          "streetName": "Largo di Torre Argentina"
+          "instruction": "Continue on Via dei Balestrari.",
+          "streetName": "Via dei Balestrari",
+          "distanceM": 267.604,
+          "durationSec": 195.859,
+          "type": "new name",
+          "modifier": "straight"
         },
         {
-          "instruction": "Arrive at Largo di Torre Argentina.",
+          "instruction": "Turn left onto Piazza Benedetto Cairoli.",
+          "streetName": "Piazza Benedetto Cairoli",
+          "distanceM": 74.896,
+          "durationSec": 51.112,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto Via Arenula.",
+          "streetName": "Via Arenula",
+          "distanceM": 167.542,
+          "durationSec": 106.263,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 10.467,
+          "durationSec": 7.371,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on Piazza dei Calcarari.",
+          "streetName": "Piazza dei Calcarari",
+          "distanceM": 52.824,
+          "durationSec": 34.173,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 8.493,
+          "durationSec": 5.981,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 3.92,
+          "durationSec": 2.76,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 2.572,
+          "durationSec": 1.812,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 10.479,
+          "durationSec": 4.944,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 9.368,
+          "durationSec": 9.053,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Largo di Torre Argentina is on the right.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Largo di Torre Argentina"
+          "modifier": "right"
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:03.544Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 73,
+      "stepCount": 12
     },
     "w20->w21": {
       "originStopId": "w20",
@@ -1200,51 +5416,1184 @@
       },
       "fromTitle": "Largo di Torre Argentina",
       "toTitle": "Castel Sant'Angelo",
-      "distanceMeters": 1607,
-      "durationSeconds": 1286,
-      "distanceM": 1607,
-      "durationSec": 1286,
+      "distanceMeters": 2248,
+      "durationSeconds": 1675,
+      "distanceM": 2248,
+      "durationSec": 1675,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.47694,
-            41.89528
+            12.477069,
+            41.895287
           ],
           [
-            12.46627,
-            41.90306
+            12.477076,
+            41.895219
+          ],
+          [
+            12.477205,
+            41.895227
+          ],
+          [
+            12.477187,
+            41.895379
+          ],
+          [
+            12.477184,
+            41.895402
+          ],
+          [
+            12.477207,
+            41.895403
+          ],
+          [
+            12.477205,
+            41.895421
+          ],
+          [
+            12.477218,
+            41.895421
+          ],
+          [
+            12.477307,
+            41.895428
+          ],
+          [
+            12.477335,
+            41.895172
+          ],
+          [
+            12.477324,
+            41.895064
+          ],
+          [
+            12.477312,
+            41.894955
+          ],
+          [
+            12.477313,
+            41.894946
+          ],
+          [
+            12.477313,
+            41.894929
+          ],
+          [
+            12.477313,
+            41.894901
+          ],
+          [
+            12.477313,
+            41.894861
+          ],
+          [
+            12.477247,
+            41.894861
+          ],
+          [
+            12.476584,
+            41.894857
+          ],
+          [
+            12.476558,
+            41.894865
+          ],
+          [
+            12.476543,
+            41.89487
+          ],
+          [
+            12.476526,
+            41.894877
+          ],
+          [
+            12.476515,
+            41.894883
+          ],
+          [
+            12.476508,
+            41.894888
+          ],
+          [
+            12.476498,
+            41.894894
+          ],
+          [
+            12.476485,
+            41.894904
+          ],
+          [
+            12.476476,
+            41.894912
+          ],
+          [
+            12.476468,
+            41.89492
+          ],
+          [
+            12.476458,
+            41.894934
+          ],
+          [
+            12.476451,
+            41.894945
+          ],
+          [
+            12.476445,
+            41.89496
+          ],
+          [
+            12.476441,
+            41.894981
+          ],
+          [
+            12.476439,
+            41.89502
+          ],
+          [
+            12.476446,
+            41.895198
+          ],
+          [
+            12.476448,
+            41.895358
+          ],
+          [
+            12.476449,
+            41.895526
+          ],
+          [
+            12.476455,
+            41.895764
+          ],
+          [
+            12.476457,
+            41.895816
+          ],
+          [
+            12.476466,
+            41.895877
+          ],
+          [
+            12.476482,
+            41.895941
+          ],
+          [
+            12.476489,
+            41.89596
+          ],
+          [
+            12.476504,
+            41.895991
+          ],
+          [
+            12.476464,
+            41.896025
+          ],
+          [
+            12.476411,
+            41.896068
+          ],
+          [
+            12.476362,
+            41.896102
+          ],
+          [
+            12.476304,
+            41.896131
+          ],
+          [
+            12.476289,
+            41.896138
+          ],
+          [
+            12.476092,
+            41.896222
+          ],
+          [
+            12.476023,
+            41.896263
+          ],
+          [
+            12.475855,
+            41.896323
+          ],
+          [
+            12.475851,
+            41.896324
+          ],
+          [
+            12.475805,
+            41.896336
+          ],
+          [
+            12.475755,
+            41.89635
+          ],
+          [
+            12.475707,
+            41.896362
+          ],
+          [
+            12.475685,
+            41.896367
+          ],
+          [
+            12.475664,
+            41.896371
+          ],
+          [
+            12.47563,
+            41.896376
+          ],
+          [
+            12.475521,
+            41.896388
+          ],
+          [
+            12.475226,
+            41.89642
+          ],
+          [
+            12.474872,
+            41.896461
+          ],
+          [
+            12.474696,
+            41.896481
+          ],
+          [
+            12.474616,
+            41.89649
+          ],
+          [
+            12.474493,
+            41.896502
+          ],
+          [
+            12.474222,
+            41.896528
+          ],
+          [
+            12.474144,
+            41.896535
+          ],
+          [
+            12.474058,
+            41.896544
+          ],
+          [
+            12.474035,
+            41.896546
+          ],
+          [
+            12.473963,
+            41.896553
+          ],
+          [
+            12.473942,
+            41.896555
+          ],
+          [
+            12.473821,
+            41.896568
+          ],
+          [
+            12.473701,
+            41.896582
+          ],
+          [
+            12.473644,
+            41.896591
+          ],
+          [
+            12.473575,
+            41.896602
+          ],
+          [
+            12.473511,
+            41.896618
+          ],
+          [
+            12.47348,
+            41.896627
+          ],
+          [
+            12.473448,
+            41.896636
+          ],
+          [
+            12.473421,
+            41.896645
+          ],
+          [
+            12.473392,
+            41.896655
+          ],
+          [
+            12.473339,
+            41.896675
+          ],
+          [
+            12.473329,
+            41.89668
+          ],
+          [
+            12.473245,
+            41.896724
+          ],
+          [
+            12.473172,
+            41.896763
+          ],
+          [
+            12.473166,
+            41.896766
+          ],
+          [
+            12.473003,
+            41.896835
+          ],
+          [
+            12.472928,
+            41.896865
+          ],
+          [
+            12.472898,
+            41.896877
+          ],
+          [
+            12.472819,
+            41.896905
+          ],
+          [
+            12.472779,
+            41.896892
+          ],
+          [
+            12.472733,
+            41.896879
+          ],
+          [
+            12.472707,
+            41.896873
+          ],
+          [
+            12.472671,
+            41.896867
+          ],
+          [
+            12.472553,
+            41.896895
+          ],
+          [
+            12.472481,
+            41.896911
+          ],
+          [
+            12.472281,
+            41.897003
+          ],
+          [
+            12.471753,
+            41.89712
+          ],
+          [
+            12.471134,
+            41.897258
+          ],
+          [
+            12.470638,
+            41.897369
+          ],
+          [
+            12.470521,
+            41.897395
+          ],
+          [
+            12.4701,
+            41.897493
+          ],
+          [
+            12.470082,
+            41.897437
+          ],
+          [
+            12.470074,
+            41.897408
+          ],
+          [
+            12.469943,
+            41.897148
+          ],
+          [
+            12.469914,
+            41.897102
+          ],
+          [
+            12.469818,
+            41.897126
+          ],
+          [
+            12.469737,
+            41.897146
+          ],
+          [
+            12.469302,
+            41.897239
+          ],
+          [
+            12.469273,
+            41.897244
+          ],
+          [
+            12.469244,
+            41.897249
+          ],
+          [
+            12.469217,
+            41.897252
+          ],
+          [
+            12.46919,
+            41.897255
+          ],
+          [
+            12.469161,
+            41.897258
+          ],
+          [
+            12.468687,
+            41.897286
+          ],
+          [
+            12.468657,
+            41.897288
+          ],
+          [
+            12.468634,
+            41.897291
+          ],
+          [
+            12.468612,
+            41.897295
+          ],
+          [
+            12.468588,
+            41.8973
+          ],
+          [
+            12.468496,
+            41.897315
+          ],
+          [
+            12.468429,
+            41.897326
+          ],
+          [
+            12.468389,
+            41.897331
+          ],
+          [
+            12.468351,
+            41.897336
+          ],
+          [
+            12.468311,
+            41.89734
+          ],
+          [
+            12.468277,
+            41.897344
+          ],
+          [
+            12.468241,
+            41.897347
+          ],
+          [
+            12.4682,
+            41.89735
+          ],
+          [
+            12.468151,
+            41.897353
+          ],
+          [
+            12.468109,
+            41.897355
+          ],
+          [
+            12.468069,
+            41.897358
+          ],
+          [
+            12.468026,
+            41.897359
+          ],
+          [
+            12.467914,
+            41.897399
+          ],
+          [
+            12.467883,
+            41.897412
+          ],
+          [
+            12.467854,
+            41.897426
+          ],
+          [
+            12.467826,
+            41.897442
+          ],
+          [
+            12.4678,
+            41.89746
+          ],
+          [
+            12.467587,
+            41.89763
+          ],
+          [
+            12.467429,
+            41.897778
+          ],
+          [
+            12.467161,
+            41.898039
+          ],
+          [
+            12.467124,
+            41.898078
+          ],
+          [
+            12.467087,
+            41.898117
+          ],
+          [
+            12.467047,
+            41.898163
+          ],
+          [
+            12.467007,
+            41.898208
+          ],
+          [
+            12.466849,
+            41.898402
+          ],
+          [
+            12.466826,
+            41.898431
+          ],
+          [
+            12.466803,
+            41.898464
+          ],
+          [
+            12.466783,
+            41.898496
+          ],
+          [
+            12.466762,
+            41.89853
+          ],
+          [
+            12.466691,
+            41.898656
+          ],
+          [
+            12.466687,
+            41.898666
+          ],
+          [
+            12.466683,
+            41.898677
+          ],
+          [
+            12.466679,
+            41.898687
+          ],
+          [
+            12.466676,
+            41.898698
+          ],
+          [
+            12.466672,
+            41.89872
+          ],
+          [
+            12.466665,
+            41.898766
+          ],
+          [
+            12.466659,
+            41.89881
+          ],
+          [
+            12.466657,
+            41.898837
+          ],
+          [
+            12.466649,
+            41.898899
+          ],
+          [
+            12.466642,
+            41.898949
+          ],
+          [
+            12.466608,
+            41.899141
+          ],
+          [
+            12.466604,
+            41.899154
+          ],
+          [
+            12.4666,
+            41.899167
+          ],
+          [
+            12.466593,
+            41.899181
+          ],
+          [
+            12.466586,
+            41.899195
+          ],
+          [
+            12.466431,
+            41.899437
+          ],
+          [
+            12.46645,
+            41.89945
+          ],
+          [
+            12.466527,
+            41.899504
+          ],
+          [
+            12.466471,
+            41.899546
+          ],
+          [
+            12.466408,
+            41.899593
+          ],
+          [
+            12.466381,
+            41.899632
+          ],
+          [
+            12.466366,
+            41.89965
+          ],
+          [
+            12.466347,
+            41.899671
+          ],
+          [
+            12.466327,
+            41.899692
+          ],
+          [
+            12.466314,
+            41.899705
+          ],
+          [
+            12.466297,
+            41.899721
+          ],
+          [
+            12.466277,
+            41.899738
+          ],
+          [
+            12.466245,
+            41.899766
+          ],
+          [
+            12.465889,
+            41.900026
+          ],
+          [
+            12.465846,
+            41.900057
+          ],
+          [
+            12.465774,
+            41.900106
+          ],
+          [
+            12.465684,
+            41.90017
+          ],
+          [
+            12.465548,
+            41.900269
+          ],
+          [
+            12.465464,
+            41.900334
+          ],
+          [
+            12.465446,
+            41.900347
+          ],
+          [
+            12.465401,
+            41.900376
+          ],
+          [
+            12.465366,
+            41.900396
+          ],
+          [
+            12.465261,
+            41.900454
+          ],
+          [
+            12.465161,
+            41.900528
+          ],
+          [
+            12.465128,
+            41.900552
+          ],
+          [
+            12.465004,
+            41.900652
+          ],
+          [
+            12.464968,
+            41.900678
+          ],
+          [
+            12.464891,
+            41.900739
+          ],
+          [
+            12.464874,
+            41.900752
+          ],
+          [
+            12.464818,
+            41.900792
+          ],
+          [
+            12.463875,
+            41.901502
+          ],
+          [
+            12.463858,
+            41.901514
+          ],
+          [
+            12.463769,
+            41.901584
+          ],
+          [
+            12.463706,
+            41.901632
+          ],
+          [
+            12.463661,
+            41.901665
+          ],
+          [
+            12.463458,
+            41.901814
+          ],
+          [
+            12.463333,
+            41.901912
+          ],
+          [
+            12.463005,
+            41.902165
+          ],
+          [
+            12.462988,
+            41.902182
+          ],
+          [
+            12.462968,
+            41.902202
+          ],
+          [
+            12.462956,
+            41.902226
+          ],
+          [
+            12.46301,
+            41.902229
+          ],
+          [
+            12.463086,
+            41.902232
+          ],
+          [
+            12.463114,
+            41.902234
+          ],
+          [
+            12.464238,
+            41.902279
+          ],
+          [
+            12.464259,
+            41.90228
+          ],
+          [
+            12.464298,
+            41.902282
+          ],
+          [
+            12.464296,
+            41.902326
+          ],
+          [
+            12.464292,
+            41.902395
+          ],
+          [
+            12.464313,
+            41.902396
+          ],
+          [
+            12.464406,
+            41.902399
+          ],
+          [
+            12.464662,
+            41.902402
+          ],
+          [
+            12.464867,
+            41.902404
+          ],
+          [
+            12.465067,
+            41.902407
+          ],
+          [
+            12.465426,
+            41.902431
+          ],
+          [
+            12.465377,
+            41.902531
+          ],
+          [
+            12.465354,
+            41.902578
+          ],
+          [
+            12.465432,
+            41.902744
+          ],
+          [
+            12.465372,
+            41.903052
+          ],
+          [
+            12.465425,
+            41.90305
+          ],
+          [
+            12.46548,
+            41.903054
+          ],
+          [
+            12.465429,
+            41.90332
+          ],
+          [
+            12.46542,
+            41.903578
+          ],
+          [
+            12.465559,
+            41.903612
+          ],
+          [
+            12.466103,
+            41.903652
+          ],
+          [
+            12.466317,
+            41.903668
+          ],
+          [
+            12.466318,
+            41.903511
+          ],
+          [
+            12.46632,
+            41.903435
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head northwest toward Castel Sant'Angelo — about 1.6 km.",
-          "distanceM": 1366,
-          "durationSec": 1093,
+          "instruction": "Walk south on the walkway.",
+          "streetName": null,
+          "distanceM": 7.598,
+          "durationSec": 7.316,
           "type": "depart",
-          "streetName": "Castel Sant'Angelo"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Castel Sant'Angelo.",
-          "distanceM": 241,
-          "durationSec": 193,
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 10.726,
+          "durationSec": 11.255,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 19.559,
+          "durationSec": 10.783,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 3.92,
+          "durationSec": 2.76,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 8.493,
+          "durationSec": 5.981,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Via di San Nicola de' Cesarini.",
+          "streetName": "Via di San Nicola de' Cesarini",
+          "distanceM": 52.824,
+          "durationSec": 41.428,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 10.467,
+          "durationSec": 8.371,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right onto Via Florida.",
+          "streetName": "Via Florida",
+          "distanceM": 60.409,
+          "durationSec": 36.738,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto Via di Torre Argentina.",
+          "streetName": "Via di Torre Argentina",
+          "distanceM": 132.256,
+          "durationSec": 101.174,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Largo di Torre Argentina.",
+          "streetName": "Largo di Torre Argentina",
+          "distanceM": 278.858,
+          "durationSec": 217.383,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Keep right to take Corso Vittorio Emanuele Secondo.",
+          "streetName": "Corso Vittorio Emanuele Secondo",
+          "distanceM": 16.955,
+          "durationSec": 9.73,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Keep right to stay on Corso Vittorio Emanuele Secondo.",
+          "streetName": "Corso Vittorio Emanuele Secondo",
+          "distanceM": 271.013,
+          "durationSec": 192.946,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn left onto Via Sora.",
+          "streetName": "Via Sora",
+          "distanceM": 46.274,
+          "durationSec": 36.132,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Via del Pellegrino.",
+          "streetName": "Via del Pellegrino",
+          "distanceM": 159.735,
+          "durationSec": 101.275,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Bear right onto Via dei Banchi Vecchi.",
+          "streetName": "Via dei Banchi Vecchi",
+          "distanceM": 275.271,
+          "durationSec": 193.898,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto Corso Vittorio Emanuele II.",
+          "streetName": "Corso Vittorio Emanuele II",
+          "distanceM": 10.904,
+          "durationSec": 8.679,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Corso Vittorio Emanuele Secondo.",
+          "streetName": "Corso Vittorio Emanuele Secondo",
+          "distanceM": 13.978,
+          "durationSec": 10.844,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Keep right to take Corso Vittorio Emanuele II.",
+          "streetName": "Corso Vittorio Emanuele II",
+          "distanceM": 410.47,
+          "durationSec": 324.586,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto Via della Conciliazione.",
+          "streetName": "Via della Conciliazione",
+          "distanceM": 111.368,
+          "durationSec": 71.492,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Largo Giovanni Ventitreesimo.",
+          "streetName": "Largo Giovanni Ventitreesimo",
+          "distanceM": 12.589,
+          "durationSec": 8.865,
+          "type": "end of road",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right to stay on Largo Giovanni Ventitreesimo.",
+          "streetName": "Largo Giovanni Ventitreesimo",
+          "distanceM": 94.094,
+          "durationSec": 54.633,
           "type": "continue",
-          "streetName": "Castel Sant'Angelo"
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at Castel Sant'Angelo.",
+          "instruction": "Turn left onto Viale Giuseppe Ceccarelli.",
+          "streetName": "Viale Giuseppe Ceccarelli",
+          "distanceM": 17.417,
+          "durationSec": 19.503,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Bear right onto the walkway.",
+          "streetName": null,
+          "distanceM": 54.222,
+          "durationSec": 76.203,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 4.397,
+          "durationSec": 3.096,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 4.579,
+          "durationSec": 3.224,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 58.641,
+          "durationSec": 46.252,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 12.122,
+          "durationSec": 8.537,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep right at the fork.",
+          "streetName": null,
+          "distanceM": 63.11,
+          "durationSec": 40.805,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 17.477,
+          "durationSec": 14.893,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 8.462,
+          "durationSec": 5.959,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "You have arrived at Castel Sant'Angelo.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Castel Sant'Angelo"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:03.844Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 228,
+      "stepCount": 31
     },
     "w02->w04": {
       "originStopId": "w02",
@@ -1261,51 +6610,1004 @@
       },
       "fromTitle": "Colosseum interior",
       "toTitle": "The Palatine",
-      "distanceMeters": 617,
-      "durationSeconds": 494,
-      "distanceM": 617,
-      "durationSec": 494,
+      "distanceMeters": 1353,
+      "durationSeconds": 1069,
+      "distanceM": 1353,
+      "durationSec": 1069,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.4924,
-            41.8904
+            12.491874,
+            41.89038
           ],
           [
-            12.4872,
-            41.8886
+            12.491615,
+            41.890457
+          ],
+          [
+            12.491413,
+            41.890523
+          ],
+          [
+            12.491433,
+            41.890552
+          ],
+          [
+            12.49149,
+            41.89058
+          ],
+          [
+            12.491416,
+            41.890609
+          ],
+          [
+            12.491388,
+            41.89058
+          ],
+          [
+            12.491365,
+            41.890555
+          ],
+          [
+            12.491196,
+            41.890431
+          ],
+          [
+            12.491142,
+            41.890429
+          ],
+          [
+            12.491109,
+            41.890431
+          ],
+          [
+            12.491131,
+            41.890509
+          ],
+          [
+            12.491173,
+            41.890594
+          ],
+          [
+            12.491204,
+            41.890648
+          ],
+          [
+            12.491154,
+            41.890702
+          ],
+          [
+            12.491099,
+            41.890758
+          ],
+          [
+            12.491065,
+            41.890769
+          ],
+          [
+            12.491159,
+            41.890951
+          ],
+          [
+            12.491177,
+            41.89099
+          ],
+          [
+            12.490929,
+            41.891059
+          ],
+          [
+            12.490941,
+            41.891088
+          ],
+          [
+            12.490954,
+            41.891119
+          ],
+          [
+            12.490998,
+            41.891217
+          ],
+          [
+            12.491019,
+            41.891272
+          ],
+          [
+            12.49113,
+            41.891253
+          ],
+          [
+            12.49125,
+            41.891235
+          ],
+          [
+            12.491475,
+            41.891207
+          ],
+          [
+            12.491705,
+            41.891184
+          ],
+          [
+            12.491808,
+            41.891172
+          ],
+          [
+            12.491918,
+            41.891162
+          ],
+          [
+            12.492117,
+            41.891138
+          ],
+          [
+            12.492218,
+            41.891127
+          ],
+          [
+            12.492267,
+            41.89112
+          ],
+          [
+            12.492317,
+            41.891115
+          ],
+          [
+            12.492379,
+            41.891107
+          ],
+          [
+            12.492461,
+            41.891095
+          ],
+          [
+            12.492503,
+            41.89109
+          ],
+          [
+            12.492572,
+            41.891077
+          ],
+          [
+            12.492656,
+            41.891059
+          ],
+          [
+            12.492726,
+            41.891041
+          ],
+          [
+            12.492832,
+            41.891011
+          ],
+          [
+            12.492876,
+            41.890996
+          ],
+          [
+            12.49293,
+            41.890978
+          ],
+          [
+            12.493165,
+            41.890893
+          ],
+          [
+            12.493274,
+            41.890853
+          ],
+          [
+            12.493327,
+            41.890831
+          ],
+          [
+            12.493378,
+            41.890809
+          ],
+          [
+            12.493449,
+            41.890774
+          ],
+          [
+            12.493517,
+            41.890739
+          ],
+          [
+            12.493745,
+            41.890588
+          ],
+          [
+            12.49378,
+            41.890562
+          ],
+          [
+            12.493819,
+            41.890529
+          ],
+          [
+            12.493852,
+            41.890494
+          ],
+          [
+            12.49388,
+            41.890461
+          ],
+          [
+            12.493896,
+            41.890438
+          ],
+          [
+            12.493914,
+            41.890406
+          ],
+          [
+            12.493928,
+            41.890376
+          ],
+          [
+            12.493936,
+            41.890352
+          ],
+          [
+            12.493943,
+            41.890323
+          ],
+          [
+            12.493949,
+            41.890288
+          ],
+          [
+            12.493952,
+            41.890261
+          ],
+          [
+            12.493954,
+            41.890227
+          ],
+          [
+            12.493956,
+            41.890191
+          ],
+          [
+            12.493955,
+            41.890156
+          ],
+          [
+            12.493954,
+            41.89012
+          ],
+          [
+            12.493943,
+            41.890061
+          ],
+          [
+            12.493853,
+            41.88984
+          ],
+          [
+            12.493797,
+            41.889713
+          ],
+          [
+            12.493765,
+            41.889651
+          ],
+          [
+            12.493732,
+            41.889598
+          ],
+          [
+            12.493695,
+            41.889551
+          ],
+          [
+            12.493653,
+            41.889506
+          ],
+          [
+            12.493602,
+            41.889462
+          ],
+          [
+            12.49355,
+            41.889424
+          ],
+          [
+            12.493494,
+            41.889392
+          ],
+          [
+            12.49343,
+            41.889362
+          ],
+          [
+            12.49337,
+            41.889338
+          ],
+          [
+            12.493308,
+            41.889317
+          ],
+          [
+            12.493247,
+            41.889299
+          ],
+          [
+            12.493151,
+            41.88928
+          ],
+          [
+            12.493045,
+            41.889261
+          ],
+          [
+            12.492913,
+            41.889246
+          ],
+          [
+            12.492781,
+            41.889241
+          ],
+          [
+            12.492546,
+            41.889243
+          ],
+          [
+            12.491908,
+            41.889258
+          ],
+          [
+            12.491832,
+            41.889258
+          ],
+          [
+            12.491754,
+            41.889253
+          ],
+          [
+            12.491684,
+            41.889246
+          ],
+          [
+            12.491612,
+            41.889237
+          ],
+          [
+            12.491541,
+            41.889227
+          ],
+          [
+            12.491469,
+            41.889214
+          ],
+          [
+            12.49141,
+            41.8892
+          ],
+          [
+            12.491326,
+            41.88918
+          ],
+          [
+            12.491258,
+            41.889158
+          ],
+          [
+            12.491185,
+            41.889135
+          ],
+          [
+            12.491121,
+            41.889111
+          ],
+          [
+            12.491046,
+            41.88908
+          ],
+          [
+            12.49097,
+            41.889047
+          ],
+          [
+            12.490897,
+            41.889007
+          ],
+          [
+            12.490825,
+            41.88896
+          ],
+          [
+            12.490756,
+            41.888913
+          ],
+          [
+            12.490476,
+            41.888704
+          ],
+          [
+            12.490434,
+            41.88867
+          ],
+          [
+            12.4904,
+            41.888635
+          ],
+          [
+            12.490375,
+            41.888604
+          ],
+          [
+            12.490351,
+            41.888566
+          ],
+          [
+            12.49033,
+            41.888522
+          ],
+          [
+            12.490311,
+            41.888478
+          ],
+          [
+            12.490293,
+            41.888422
+          ],
+          [
+            12.490146,
+            41.887913
+          ],
+          [
+            12.490129,
+            41.887853
+          ],
+          [
+            12.490089,
+            41.887859
+          ],
+          [
+            12.490064,
+            41.887863
+          ],
+          [
+            12.490037,
+            41.887867
+          ],
+          [
+            12.490014,
+            41.88779
+          ],
+          [
+            12.489915,
+            41.887804
+          ],
+          [
+            12.489733,
+            41.887831
+          ],
+          [
+            12.489691,
+            41.88784
+          ],
+          [
+            12.489649,
+            41.887846
+          ],
+          [
+            12.489593,
+            41.887851
+          ],
+          [
+            12.48957,
+            41.887778
+          ],
+          [
+            12.489556,
+            41.887729
+          ],
+          [
+            12.489552,
+            41.887712
+          ],
+          [
+            12.489542,
+            41.887683
+          ],
+          [
+            12.489512,
+            41.887582
+          ],
+          [
+            12.489427,
+            41.887588
+          ],
+          [
+            12.489115,
+            41.887613
+          ],
+          [
+            12.489096,
+            41.887638
+          ],
+          [
+            12.489078,
+            41.887663
+          ],
+          [
+            12.489052,
+            41.887688
+          ],
+          [
+            12.489016,
+            41.88771
+          ],
+          [
+            12.488814,
+            41.887763
+          ],
+          [
+            12.488536,
+            41.887824
+          ],
+          [
+            12.488389,
+            41.887882
+          ],
+          [
+            12.488311,
+            41.887913
+          ],
+          [
+            12.488401,
+            41.887984
+          ],
+          [
+            12.488403,
+            41.888043
+          ],
+          [
+            12.488424,
+            41.888083
+          ],
+          [
+            12.488437,
+            41.888095
+          ],
+          [
+            12.488427,
+            41.888175
+          ],
+          [
+            12.488373,
+            41.888196
+          ],
+          [
+            12.488308,
+            41.888221
+          ],
+          [
+            12.488244,
+            41.888249
+          ],
+          [
+            12.488187,
+            41.888283
+          ],
+          [
+            12.488163,
+            41.888305
+          ],
+          [
+            12.488151,
+            41.888326
+          ],
+          [
+            12.488149,
+            41.888361
+          ],
+          [
+            12.488109,
+            41.888362
+          ],
+          [
+            12.488077,
+            41.888354
+          ],
+          [
+            12.488041,
+            41.888334
+          ],
+          [
+            12.488003,
+            41.888304
+          ],
+          [
+            12.487871,
+            41.888193
+          ],
+          [
+            12.487832,
+            41.888202
+          ],
+          [
+            12.487827,
+            41.888206
+          ],
+          [
+            12.487808,
+            41.888215
+          ],
+          [
+            12.487739,
+            41.88816
+          ],
+          [
+            12.487632,
+            41.888226
+          ],
+          [
+            12.48759,
+            41.888212
+          ],
+          [
+            12.487562,
+            41.888238
+          ],
+          [
+            12.487535,
+            41.888317
+          ],
+          [
+            12.48752,
+            41.888348
+          ],
+          [
+            12.487501,
+            41.888373
+          ],
+          [
+            12.487459,
+            41.888411
+          ],
+          [
+            12.487405,
+            41.888447
+          ],
+          [
+            12.487307,
+            41.888505
+          ],
+          [
+            12.487255,
+            41.888523
+          ],
+          [
+            12.487231,
+            41.888533
+          ],
+          [
+            12.487198,
+            41.888554
+          ],
+          [
+            12.487155,
+            41.888623
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head southwest toward The Palatine — about 617 m.",
-          "distanceM": 524,
-          "durationSec": 420,
+          "instruction": "Walk west on the walkway.",
+          "streetName": null,
+          "distanceM": 50.68,
+          "durationSec": 37.832,
           "type": "depart",
-          "streetName": "The Palatine"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward The Palatine.",
-          "distanceM": 93,
-          "durationSec": 74,
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 41.167,
+          "durationSec": 58.991,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto Colosseo.",
+          "streetName": "Colosseo",
+          "distanceM": 25.491,
+          "durationSec": 17.952,
+          "type": "end of road",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 7.301,
+          "durationSec": 5.141,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 10.794,
+          "durationSec": 8.058,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 21.706,
+          "durationSec": 12.993,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 4.591,
+          "durationSec": 3.233,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 21.94,
+          "durationSec": 15.451,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 18.496,
+          "durationSec": 15.726,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 6.365,
+          "durationSec": 4.482,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right to stay on Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 217.817,
+          "durationSec": 172.799,
           "type": "continue",
-          "streetName": "The Palatine"
+          "modifier": "right"
         },
         {
-          "instruction": "Arrive at The Palatine.",
+          "instruction": "Keep right to stay on Piazza del Colosseo.",
+          "streetName": "Piazza del Colosseo",
+          "distanceM": 196.978,
+          "durationSec": 129.176,
+          "type": "fork",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Bear right onto Via Celio Vibenna.",
+          "streetName": "Via Celio Vibenna",
+          "distanceM": 350.212,
+          "durationSec": 257.41,
+          "type": "turn",
+          "modifier": "slight right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 7.782,
+          "durationSec": 6.48,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 8.781,
+          "durationSec": 6.184,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 35.571,
+          "durationSec": 56.052,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 8.347,
+          "durationSec": 5.878,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 5.577,
+          "durationSec": 3.927,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 1.921,
+          "durationSec": 1.353,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 3.333,
+          "durationSec": 2.347,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 11.515,
+          "durationSec": 8.109,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right.",
+          "streetName": null,
+          "distanceM": 7.076,
+          "durationSec": 4.983,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 26.006,
+          "durationSec": 33.331,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right.",
+          "streetName": null,
+          "distanceM": 6.355,
+          "durationSec": 4.475,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 49.147,
+          "durationSec": 55.196,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 13.787,
+          "durationSec": 6.894,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 7.328,
+          "durationSec": 5.16,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 10.867,
+          "durationSec": 8.112,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep left at the fork.",
+          "streetName": null,
+          "distanceM": 6.57,
+          "durationSec": 4.627,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Continue.",
+          "streetName": null,
+          "distanceM": 4.781,
+          "durationSec": 3.367,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Continue on the walkway.",
+          "streetName": null,
+          "distanceM": 1.716,
+          "durationSec": 1.209,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "Keep left at the fork.",
+          "streetName": null,
+          "distanceM": 8.944,
+          "durationSec": 6.299,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 32.912,
+          "durationSec": 24.568,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 36.788,
+          "durationSec": 17.933,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 8.378,
+          "durationSec": 5.9,
+          "type": "turn",
+          "modifier": "left"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 19.039,
+          "durationSec": 12.067,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 56.897,
+          "durationSec": 44.877,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "You have arrived at The Palatine.",
+          "streetName": null,
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "The Palatine"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:04.530Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 169,
+      "stepCount": 38
     },
     "w04->w03": {
       "originStopId": "w04",
@@ -1322,51 +7624,144 @@
       },
       "fromTitle": "The Palatine",
       "toTitle": "Arch of Titus",
-      "distanceMeters": 301,
-      "durationSeconds": 241,
-      "distanceM": 301,
-      "durationSec": 241,
+      "distanceMeters": 244,
+      "durationSeconds": 159,
+      "distanceM": 244,
+      "durationSec": 159,
       "geometry": {
         "type": "LineString",
         "coordinates": [
           [
-            12.4872,
-            41.8886
+            12.487155,
+            41.888623
           ],
           [
-            12.48835,
-            41.8905
+            12.487218,
+            41.888674
+          ],
+          [
+            12.487313,
+            41.888759
+          ],
+          [
+            12.487384,
+            41.888895
+          ],
+          [
+            12.487571,
+            41.889042
+          ],
+          [
+            12.487539,
+            41.889097
+          ],
+          [
+            12.487512,
+            41.88914
+          ],
+          [
+            12.487477,
+            41.88918
+          ],
+          [
+            12.487516,
+            41.889207
+          ],
+          [
+            12.487544,
+            41.889239
+          ],
+          [
+            12.487793,
+            41.88963
+          ],
+          [
+            12.487874,
+            41.889693
+          ],
+          [
+            12.487932,
+            41.889812
+          ],
+          [
+            12.488045,
+            41.890033
+          ],
+          [
+            12.488093,
+            41.890128
+          ],
+          [
+            12.488195,
+            41.890324
+          ],
+          [
+            12.488258,
+            41.890437
+          ],
+          [
+            12.488341,
+            41.890536
           ]
         ]
       },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
+      "geometryKind": "mapbox-walking",
+      "source": "mapbox-directions",
+      "productDebt": false,
       "steps": [
         {
-          "instruction": "Head northeast toward Arch of Titus — about 301 m.",
-          "distanceM": 256,
-          "durationSec": 205,
+          "instruction": "Walk northeast on the walkway.",
+          "streetName": null,
+          "distanceM": 58.802,
+          "durationSec": 50.106,
           "type": "depart",
-          "streetName": "Arch of Titus"
+          "modifier": null
         },
         {
-          "instruction": "Continue toward Arch of Titus.",
-          "distanceM": 45,
-          "durationSec": 36,
-          "type": "continue",
-          "streetName": "Arch of Titus"
+          "instruction": "Turn left onto the walkway.",
+          "streetName": null,
+          "distanceM": 17.27,
+          "durationSec": 22.135,
+          "type": "turn",
+          "modifier": "left"
         },
         {
-          "instruction": "Arrive at Arch of Titus.",
+          "instruction": "Turn right onto the walkway.",
+          "streetName": null,
+          "distanceM": 80.634,
+          "durationSec": 44.249,
+          "type": "turn",
+          "modifier": "right"
+        },
+        {
+          "instruction": "Keep left at the fork.",
+          "streetName": null,
+          "distanceM": 37.622,
+          "durationSec": 17.751,
+          "type": "fork",
+          "modifier": "slight left"
+        },
+        {
+          "instruction": "Continue on Clivus Palatino.",
+          "streetName": "Clivus Palatino",
+          "distanceM": 50.009,
+          "durationSec": 24.596,
+          "type": "new name",
+          "modifier": "straight"
+        },
+        {
+          "instruction": "You have arrived at Arch of Titus.",
+          "streetName": "Clivus Palatino",
           "distanceM": 0,
           "durationSec": 0,
           "type": "arrive",
-          "streetName": "Arch of Titus"
+          "modifier": null
         }
-      ]
+      ],
+      "generatedAt": "2026-08-08T09:20:04.837Z",
+      "validationStatus": "ok",
+      "geometryPointCount": 18,
+      "stepCount": 6
     }
   }
 }
