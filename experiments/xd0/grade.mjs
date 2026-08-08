@@ -74,7 +74,7 @@ async function pool(items, worker, concurrency) {
   return out;
 }
 
-for (const tag of ["constrained", "unconstrained"]) {
+for (const tag of (process.env.TAGS ? process.env.TAGS.split(",") : ["constrained", "unconstrained"])) {
   const outPath = `experiments/xd0/grades.${tag}.jsonl`;
   const done = new Set(
     fs.existsSync(outPath)

@@ -1,0 +1,9 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "gQzZuC5RMRzuMxh0H016S"
+uri = "file://docs/gate2/a1_audio/a1_narration_campidoglio.mp3"
+type = "audio"
+title = "A1 Narration — Campidoglio Overlook (draft)"
+description = "Ledger-constrained ~75s narration draft for the A1 audio experiment. EST claims plain, PROB hedged, CONT left as debate."

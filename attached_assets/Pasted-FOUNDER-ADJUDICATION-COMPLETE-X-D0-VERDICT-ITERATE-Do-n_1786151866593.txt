@@ -1,0 +1,381 @@
+FOUNDER ADJUDICATION COMPLETE.
+
+X-D0 VERDICT = ITERATE.
+
+Do not PASS it.
+Do not KILL it.
+
+The constrained system has demonstrated strong directional value, but the confirmed unsupported-claim rate is incompatible with ChronoWalk's historical-rigor standard.
+
+Apply these founder policy decisions:
+
+--------------------------------------------------
+P1 — DECORATIVE / ARCHITECTURAL SPECIFICITY
+--------------------------------------------------
+
+VIOLATION unless supported by an approved claim.
+
+Examples:
+- exact panel counts
+- decorative materials
+- doors
+- roof forms
+- nave heights
+- architectural articulation
+- sensory/visual embellishment
+
+Do not invent specificity simply to make prose vivid.
+
+If the ledger supports only:
+“campaign reliefs”
+
+the model may NOT upgrade it to:
+“four enormous sculpted panels wrapping around the arch”
+
+without evidence.
+
+--------------------------------------------------
+P2 — SPATIAL SPECIFICITY
+--------------------------------------------------
+
+Under the CURRENT X-D0 benchmark:
+
+Any spatial/topographical detail outside the permitted ledger is a violation,
+even when it happens to be factually correct.
+
+Examples:
+- south/north side
+- beside/behind
+- near another monument
+- exact sightline relationships
+
+Reason:
+the benchmark is testing constrained generation, not general world knowledge.
+
+FUTURE ARCHITECTURE NOTE:
+
+Create a proposal for a separately verified:
+
+SPATIAL_CONTEXT / ORIENTATION METADATA LAYER
+
+that may eventually contain:
+- coordinates
+- bearings
+- verified relative positions
+- sightlines
+- nearby landmarks
+- route relationships
+
+The Q&A runtime may later use this approved layer alongside the claim ledger.
+
+Do NOT implement that system today.
+
+--------------------------------------------------
+P3 — INVENTED SOURCE ATTRIBUTION
+--------------------------------------------------
+
+CRITICAL VIOLATION.
+
+Statements such as:
+
+“ancient sources tell us…”
+“archaeologists believe…”
+“the sources place…”
+“according to contemporary accounts…”
+
+are prohibited unless the approved evidence layer actually contains the supporting attribution.
+
+This is a higher-severity failure than ordinary decorative leakage because it creates false authority.
+
+Add a hard generation rule:
+
+NEVER ATTRIBUTE A CLAIM TO A SOURCE CLASS THAT IS NOT PRESENT IN THE APPROVED CONTEXT.
+
+--------------------------------------------------
+P4 — LEGENDS / DAILY LIFE / LATER HISTORY
+--------------------------------------------------
+
+These are permitted ONLY where supported by the approved ledger/context.
+
+Legend/tradition must preserve epistemic status.
+
+For example:
+
+BAD:
+“The Dioscuri appeared here after the battle.”
+
+GOOD, only if ledger-supported:
+“Roman tradition later told that the Dioscuri appeared…”
+
+Do not import famous stories merely because they are associated with the monument.
+
+Later history may not be added automatically as colorful context.
+
+--------------------------------------------------
+P5 — PROBABLE / RECONSTRUCTED CLAIMS
+--------------------------------------------------
+
+PROBABLE claims ARE allowed when present in the ledger.
+
+But linguistic certainty must match ledger certainty.
+
+Examples of acceptable framing:
+
+“may have…”
+“was probably…”
+“reconstructions often show…”
+“the evidence suggests…”
+
+The grader should NOT classify a properly hedged PROBABLE claim as unsupported merely because it is not HIGH-confidence.
+
+However:
+
+probable does not authorize adding adjacent unsupported detail.
+
+--------------------------------------------------
+A002 — FOUNDER DECISION
+--------------------------------------------------
+
+“The Colosseum lies just beyond our sightline, a bit to the south”
+
+= VIOLATION under the CURRENT benchmark.
+
+Reason:
+it is outside the permitted ledger/context even if geographically correct.
+
+This is exactly why a future verified spatial-context layer is desirable.
+
+Do not alter the benchmark standard to make this answer pass.
+
+--------------------------------------------------
+UPDATE ADJUDICATION
+--------------------------------------------------
+
+Apply these policy decisions to all 65 flags.
+
+Return final founder-adjudicated counts:
+
+- confirmed violations
+- false positives
+- permitted paraphrases
+- resolved probable/hedged claims
+- critical violations
+- cases affected
+
+Preserve all individual adjudication records.
+
+--------------------------------------------------
+X-D0 ITERATION 1
+--------------------------------------------------
+
+Now implement ONE constrained-runtime iteration.
+
+The goal is NOT to make the model bland.
+
+The goal is:
+
+expressive language
+WITHOUT
+new factual content.
+
+Implement the minimum effective controls.
+
+At minimum investigate:
+
+1. Strong instruction:
+   Do not add factual specificity beyond approved context.
+
+2. Epistemic matching:
+   HIGH → may state directly
+   MODERATE/PROBABLE → must hedge
+   LOW/CONTESTED → explicitly preserve uncertainty/debate
+   absent → do not claim
+
+3. Attribution firewall:
+   no source attribution unless source evidence is supplied.
+
+4. Legend firewall:
+   no famous associated legend unless explicitly supplied.
+
+5. Decorative-detail firewall:
+   vivid prose may use rhetoric and cadence, but may not generate new architecture/materials/events/people.
+
+6. Scope behavior:
+   when asked beyond the approved knowledge set:
+   distinguish:
+   “I don’t have enough verified material here to answer that reliably”
+   from an unnatural blanket refusal.
+
+DO NOT simply lower temperature and call it solved.
+
+Do not make the answers robotic.
+
+--------------------------------------------------
+RE-RUN
+--------------------------------------------------
+
+After implementing Iteration 1:
+
+First run a targeted regression set containing:
+- all 35 previously affected constrained cases
+- all invented-attribution cases
+- all traps
+- all contested cases
+- representative clean factual cases
+
+If that regression is clean enough to justify the compute:
+
+run the FULL frozen 200-case benchmark again.
+
+Do not alter the frozen prompts or expected-behavior codes.
+
+Compare Iteration 1 directly against:
+- original constrained
+- unconstrained
+
+Report:
+- unsupported claim count
+- affected-case count
+- correctness
+- usefulness
+- trust calibration
+- behavior compliance
+- refusal quality
+- category results
+
+List every remaining unsupported claim.
+
+X-D0 still requires founder verification before PASS.
+
+--------------------------------------------------
+GO DAY 4 — VISUAL TRACK
+--------------------------------------------------
+
+In parallel with the D0 iteration, begin DAY 4 visual work.
+
+AUDIO AND VISUAL REMAIN INDEPENDENT.
+
+DAY 4 VISUAL SCOPE:
+
+1. Build Lantern mode on the APPROVED B1 substrate.
+
+Do not create another renderer.
+
+Lantern must reuse:
+- same stage
+- same ART-0 contract
+- same historical reconstruction
+- same control content
+
+Manipulated variable = interaction.
+
+Lantern concept:
+the traveler moves/aims a bounded reveal region across the modern scene and discovers reconstructed historical layers underneath.
+
+Prioritize:
+- intuitive first-touch behavior
+- one-handed interaction
+- minimal instruction
+- no precision aiming requirement
+- robustness to imperfect alignment
+- outdoor legibility
+- accessibility fallback
+
+Do not overdesign it yet.
+
+2. BEGIN ART-0
+
+Authorize CHEAP throwaway assets only.
+
+No ART-1.
+No ART-2.
+No specialist historical reconstruction commission.
+
+Use the verified Campidoglio ledger and ART-0 specification.
+
+Generate/block out only enough quality to make X-VPG a fair interaction test.
+
+Control, B1 and Lantern must share the SAME historical reconstruction content.
+
+3. BUILD X-VPG STIMULUS PACKAGE
+
+Prepare:
+
+CONTROL
+= flattened binary Then/Now using the shared ART-0 reconstruction
+
+B1
+= layered cinematic presentation
+
+B5
+= Lantern active-discovery presentation
+
+Keep constant:
+- claims
+- image
+- reconstruction content
+- narration
+- exposure length
+- resolution
+
+Only presentation/interaction should materially differ.
+
+4. A1 AUDIO
+
+Continue A1 independently.
+
+Do not wait for ART-0.
+
+Use the same verified claim ledger.
+
+--------------------------------------------------
+DO NOT WORK ON
+--------------------------------------------------
+
+Still prohibited:
+
+- ART-1
+- ART-2
+- B2
+- B3-FIELD
+- B4 splats
+- A3 native spatial build
+- mass stop generation
+- production ChronoWalk refactor
+- commerce changes
+- City Graph implementation
+- route-engine implementation
+
+--------------------------------------------------
+DAY 4 RETURN
+--------------------------------------------------
+
+Return:
+
+A. X-D0
+1. Final founder-adjudicated original counts
+2. Runtime changes made
+3. Regression result
+4. Full rerun result if performed
+5. Every remaining violation
+6. Comparison vs original constrained
+7. PASS / ITERATE / KILL / PENDING FOUNDER REVIEW
+
+B. VISUAL
+8. Lantern implementation description
+9. How it shares B1 substrate
+10. ART-0 assets produced
+11. Control/B1/Lantern parity check
+12. Mobile/touch QA
+13. Anything likely to bias X-VPG
+
+C. AUDIO
+14. A1 progress
+
+D. OPERATIONS
+15. Files created/modified
+16. Spend today
+17. Running spend vs $1,500 cap
+18. Decisions requiring founder approval
+
+Do not proceed to Day 5.
