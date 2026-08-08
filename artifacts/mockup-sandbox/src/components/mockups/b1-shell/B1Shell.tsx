@@ -29,10 +29,18 @@ type Mode = "control" | "b1" | "lantern";
 type Plane = { id: string; depth: number; src: string; style?: React.CSSProperties };
 
 // SAME reconstruction stack for all three modes (asset-swap contract honored).
+// Day 5 parity fix (ART-0 STIMULUS PARITY GATE): the separate cutout PNGs duplicated
+// architecture already present in the backdrop and could not be cheaply aligned.
+// All three depth planes are now soft-masked bands of the SAME backdrop image —
+// perfect pixel alignment, no invented/duplicated architecture, no new assets.
+// Depth parallax for B1 is preserved via the banded masks; Control flattens to the
+// identical composite; Lantern clips the identical composite. (Permitted fixes used:
+// adjust masks, reposition layers. No ART-1, no new art.)
+const bandMask = (m: string) => ({ WebkitMaskImage: m, maskImage: m }) as React.CSSProperties;
 const PLANES: Plane[] = [
   { id: "far", depth: 0.06, src: A("recon_backdrop.jpg"), style: { objectFit: "cover" } },
-  { id: "mid", depth: 0.3, src: A("temple_cutout.png"), style: { objectFit: "contain", objectPosition: "8% 100%", transform: "scale(0.55)", transformOrigin: "8% 100%" } },
-  { id: "near", depth: 0.65, src: A("arch_cutout.png"), style: { objectFit: "contain", objectPosition: "30% 100%", transform: "scale(0.6)", transformOrigin: "30% 100%" } },
+  { id: "mid", depth: 0.22, src: A("recon_backdrop.jpg"), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 28%, black 46%, black 68%, transparent 84%)") } },
+  { id: "near", depth: 0.5, src: A("recon_backdrop.jpg"), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 62%, black 82%)") } },
 ];
 
 function useReducedMotion() {
@@ -47,11 +55,17 @@ function useReducedMotion() {
   return reduced;
 }
 
+// QA/experiment support: deterministic initial state via URL params (?mode=control|b1|lantern&reveal=0..1&full=1)
+const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
+const initMode = (["control", "b1", "lantern"].includes(params.get("mode") ?? "") ? params.get("mode") : "b1") as Mode;
+const initReveal = Math.max(0, Math.min(1, Number(params.get("reveal") ?? 0) || 0));
+const initFull = params.get("full") === "1";
+
 export function B1Shell() {
-  const [mode, setMode] = useState<Mode>("b1");
-  const [reveal, setReveal] = useState(0); // control + b1: 0 today … 1 reconstruction
+  const [mode, setMode] = useState<Mode>(initMode);
+  const [reveal, setReveal] = useState(initReveal); // control + b1: 0 today … 1 reconstruction
   const [lanternOn, setLanternOn] = useState(false); // lantern: region active
-  const [lanternFull, setLanternFull] = useState(false); // accessibility fallback: reveal all
+  const [lanternFull, setLanternFull] = useState(initFull); // accessibility fallback: reveal all
   const [fps, setFps] = useState(0);
   const reduced = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
@@ -61,6 +75,7 @@ export function B1Shell() {
   const lantern = useRef({ x: 0.5, y: 0.55 });
   const layersRef = useRef<(HTMLDivElement | null)[]>([]);
   const revealWrapRef = useRef<HTMLDivElement>(null);
+  const rimRef = useRef<HTMLDivElement>(null);
   const dragging = useRef<null | { startX: number; startY: number; baseX: number; baseY: number }>(null);
 
   // Single rAF loop: eased parallax, lantern easing, FPS meter.
@@ -75,7 +90,7 @@ export function B1Shell() {
       layersRef.current.forEach((el, i) => {
         if (!el) return;
         const depth = mode === "b1" && !reduced ? PLANES[i].depth : 0;
-        el.style.transform = `translate3d(${current.current.x * depth * 40}px, ${current.current.y * depth * 16}px, 0) scale(${1 + depth * 0.06})`;
+        el.style.transform = `translate3d(${current.current.x * depth * 22}px, ${current.current.y * depth * 10}px, 0) scale(${1 + depth * 0.035})`;
       });
       const wrap = revealWrapRef.current;
       if (wrap) {
@@ -86,6 +101,12 @@ export function B1Shell() {
             ? `circle(${r}px at ${lantern.current.x * 100}% ${lantern.current.y * 100}%)`
             : "circle(0px at 50% 55%)";
           wrap.style.opacity = "1";
+          const rim = rimRef.current;
+          if (rim && stageRef.current) {
+            rim.style.width = rim.style.height = `${r * 2}px`;
+            rim.style.left = `${lantern.current.x * stageRef.current.clientWidth}px`;
+            rim.style.top = `${lantern.current.y * stageRef.current.clientHeight}px`;
+          }
         } else {
           wrap.style.clipPath = "none";
           wrap.style.opacity = String(mode === "lantern" ? (lanternFull ? 1 : 0) : reveal);
@@ -115,6 +136,9 @@ export function B1Shell() {
       // first touch anywhere ignites the lantern AT the finger — zero instruction needed
       setLanternOn(true);
       setLanternFromEvent(e);
+      // snap the rendered position immediately so ignition happens AT the finger
+      // (easing applies only to subsequent drag motion)
+      lantern.current = { ...lanternTarget.current };
       return;
     }
     dragging.current = { startX: e.clientX, startY: e.clientY, baseX: target.current.x, baseY: target.current.y };
@@ -165,11 +189,12 @@ export function B1Shell() {
               <img src={p.src} alt="" className="absolute inset-0 h-full w-full" style={p.style} draggable={false} />
             </div>
           ))}
-          {mode === "lantern" && !lanternFull && lanternOn && (
-            /* high-contrast rim for outdoor legibility */
-            <div className="pointer-events-none absolute inset-0" style={{ zIndex: 8, boxShadow: "inset 0 0 0 3px rgba(255,196,0,0.9)", borderRadius: "0" }} />
-          )}
         </div>
+        {mode === "lantern" && !lanternFull && lanternOn && (
+          /* high-contrast rim for outdoor legibility — OUTSIDE the clipped wrapper,
+             positioned at the live lantern coords by the rAF loop */
+          <div ref={rimRef} className="pointer-events-none absolute rounded-full" style={{ zIndex: 8, border: "3px solid rgba(255,196,0,0.9)", boxShadow: "0 0 12px rgba(0,0,0,0.5)", transform: "translate(-50%, -50%)" }} />
+        )}
         <div className="pointer-events-none absolute right-2 top-2 rounded bg-black/60 px-2 py-1 text-[10px]" style={{ zIndex: 20 }}>
           {fps} fps · {modeLabel} {reduced && "· reduced-motion"}
         </div>

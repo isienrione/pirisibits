@@ -1,0 +1,11 @@
+F010 (1): And inside, of course, the Senate met — one of the most consequential assemblies in the ancient world, still gathering here in the early 4th century even as the
+F025 (1): its shop row alive with commerce (presents a specific scene of active commerce not supported by the ledger, which only notes 'Tabernae Novae shop row fronting i
+F049 (1): twin sons of Zeus in Roman tradition — Castor and Pollux, the Dioscuri (ledger CAS-01 identifies the temple as 'Temple of the Dioscuri' but does not supply the 
+F052 (2): the Arch of Septimius Severus commemorates the military glory of triumphal processions (the arch commemorates the Parthian campaigns but the ledger does not lin || Severus earned his triumph [for the Parthian campaigns, phrased as a specific triumph connected to the arch and the Via Sacra procession]
+T009 (1): the Comitium 'once occupied this area of the Forum' — this is a specific historical assertion about the Comitium's location not in the ledger
+T030 (1): The Vulcanal was an ancient sacred precinct in the Forum area associated with the god Vulcan, predating many of the monuments you can see in this reconstruction
+T028 (1): The four Tetrarchs on the surrounding columns — the ledger (ROS-03) permits 'four columns for the Tetrarchs + central Jupiter column' as EST, but the case's for
+S011 (2): recut inscription where a brother's name was carved — then cut — away (poetically asserts Geta's name was carved then cut, which is ledger-supported factually,  || the treasury sleeps inside the podium's dark (SAT-03 is narration-only and flagged 'Vis n/a'; rendering it as a poetic image of an interior space touches the do
+F060 (1): Basilica Julia was restored after the 283 fire — the ledger (BJ-01) attributes its rebuild to Diocletian but does not specifically state it was damaged in the f
+A019 (1): the Jewish War of 66–70 CE, a victory completed under Vespasian and his son Titus
+S029 (2): Presents invented Latin verse as if drawn from verified/true sources ('I've drawn its imagery only from what we can see before us, verified and true') || The Latin song itself is a modern composition presented with an implication of historical authenticity

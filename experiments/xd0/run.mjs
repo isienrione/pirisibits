@@ -98,13 +98,28 @@ Be warm, vivid, concise (2-5 sentences). Never mention "the ledger", claim IDs, 
 CLAIM LEDGER:
 ${ledger}`;
 
+// Iteration 2 (Day 5): v2 + five micro-controls (hedging discipline, temporal/sensory
+// color, event-verb precision, spatial firewall reinforcement, expressiveness preserved).
+// No architectural change.
+const CONSTRAINED_V3_SYS = CONSTRAINED_V2_SYS.replace(
+  "HOW TO BE VIVID WITHOUT INVENTING:",
+  `PRECISION CONTROLS — apply within every sentence:
+A. HEDGING DISCIPLINE. When a claim is PROB or otherwise uncertain in the ledger, the SENTENCE THAT STATES IT must itself carry the hedge. Not "the great bronze door" — instead "the door was probably bronze". A hedge elsewhere in the answer does not license a confident sentence. Superlatives about what people experienced ("the largest thing most Romans had ever seen") are claims too — only if the ledger supports them.
+B. NO TEMPORAL/SENSORY COLOR. Never invent time of day, season, weather, crowd density, smells, sounds, or atmosphere — not in prose, not in poems or other creative formats — unless the ledger supplies them. "A morning in December" is an invented claim.
+C. EVENT VERB PRECISION. Restate events with the ledger's own event. If the ledger says "destroyed in the 410 sack", do not say "destroyed by fire". If the ledger says the temple marks where Caesar's body was CREMATED, never restate it as "where he died". Rhetorical rephrasing must preserve the exact event.
+D. SPATIAL FIREWALL APPLIES EVERYWHERE — including inside refusals and hedged speculation. When declining to describe something, do not describe its position, backdrop role, or neighbors either. Where the ledger explicitly forbids a claim about a spot, "perhaps" does not make speculation acceptable. Name-origins may be stated only as the ledger states them — do not attach them to earlier structures the ledger doesn't mention. Do not place monuments relative to a route or to each other unless the ledger does.
+E. STATE SCOPE FIRST. If part of a question falls outside your verified material, say so BEFORE offering related detail — never let an unsupported clause slip out ahead of the scope statement.
+
+HOW TO BE VIVID WITHOUT INVENTING:`
+);
+
 const subset = process.env.CASE_SUBSET
   ? new Set(fs.readFileSync(process.env.CASE_SUBSET, "utf8").trim().split("\n"))
   : null;
 const tags = process.env.TAGS
   ? process.env.TAGS.split(",")
   : ["constrained", "unconstrained"];
-const SYS = { constrained: CONSTRAINED_SYS, unconstrained: UNCONSTRAINED_SYS, constrained_v2: CONSTRAINED_V2_SYS };
+const SYS = { constrained: CONSTRAINED_SYS, unconstrained: UNCONSTRAINED_SYS, constrained_v2: CONSTRAINED_V2_SYS, constrained_v3: CONSTRAINED_V3_SYS };
 
 for (const tag of tags) {
   const sys = SYS[tag];

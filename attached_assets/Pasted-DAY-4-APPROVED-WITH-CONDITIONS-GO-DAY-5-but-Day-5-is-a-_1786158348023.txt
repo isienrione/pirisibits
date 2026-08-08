@@ -1,0 +1,350 @@
+DAY 4 APPROVED WITH CONDITIONS.
+
+GO DAY 5, but Day 5 is a STIMULUS-VALIDATION + X-D0 ITERATION day.
+
+Do NOT run X-VPG with external testers yet.
+
+--------------------------------------------------
+1. X-D0 — GENERATE FINAL 17-FLAG REVIEW PACK
+--------------------------------------------------
+
+Create a compact founder adjudication pack for ONLY the 17 remaining v2 flags.
+
+For each show:
+
+- case ID
+- prompt
+- exact flagged phrase
+- permitted ledger/context
+- why flagged
+- recommended classification:
+  REAL VIOLATION
+  HEDGING FAILURE
+  PERMITTED PARAPHRASE
+  JUDGE FALSE POSITIVE
+  AMBIGUOUS
+- severity
+- proposed minimal fix
+
+Do not re-open already adjudicated original flags.
+
+Then apply the same P1–P5 founder policies already established.
+
+--------------------------------------------------
+2. X-D0 ITERATION 2
+--------------------------------------------------
+
+Proceed with ONE MICRO-ITERATION.
+
+Do NOT redesign the constrained architecture.
+
+Target only the remaining failure modes.
+
+Likely controls:
+
+A. HEDGING DISCIPLINE
+If a permitted claim is PROB / MODERATE:
+the sentence itself must visibly preserve uncertainty.
+
+Do not allow:
+"the bronze doors..."
+
+if the context only supports:
+"the doors were probably bronze."
+
+B. TEMPORAL/SENSORY COLOR
+Do not invent:
+- morning
+- evening
+- weather
+- season
+- crowd density
+- smells
+- sounds
+- atmosphere
+
+unless supplied.
+
+C. EVENT VERB PRECISION
+Do not transform:
+"sacked in 410"
+into:
+"destroyed by fire"
+
+unless fire is explicitly supported.
+
+D. SPATIAL FIREWALL
+Keep the current rule:
+no new relative geography unless supplied by approved context.
+
+E. EXPRESSIVENESS
+Preserve natural prose.
+
+Do not solve remaining violations by producing robotic bullet-point answers.
+
+Run targeted regression first.
+
+If justified, rerun the frozen 200-case benchmark.
+
+Return all remaining flags.
+
+Do not call PASS without founder review.
+
+--------------------------------------------------
+3. X-VPG DISCLAIMER — APPROVED, BUT CONTROLLED
+--------------------------------------------------
+
+Do NOT put a disclaimer card inside B1 or Lantern.
+
+That would itself become an experimental variable.
+
+Instead, before participants see ANY of the three cells, display exactly ONE neutral standardized prototype notice.
+
+Proposed meaning:
+
+"These are early prototype reconstructions created to test how historical information is presented. Some visual details are intentionally simplified. Please evaluate how each experience helps you understand and imagine the place, rather than the artistic polish."
+
+You may improve the wording slightly, but:
+
+- identical for every participant
+- appears once before all conditions
+- does not mention AI
+- does not single out uncertainty in one cell
+- does not tell participants which concept is expected to be better
+- does not mention Lantern/B1 by name
+- does not reveal the experiment hypothesis
+
+Record final wording in the protocol.
+
+--------------------------------------------------
+4. ART-0 STIMULUS PARITY GATE
+--------------------------------------------------
+
+Before user testing, audit whether Control / B1 / Lantern are genuinely comparable.
+
+The current known risk is:
+
+- rough depth cutouts do not perfectly align with L0
+- Lantern's circular reveal may conceal these errors
+- B1's full layered reveal may expose them
+
+This could falsely make Lantern feel more convincing.
+
+Fix ONLY enough ART-0 alignment to remove obvious condition-specific artifacts.
+
+Do NOT upgrade to ART-1.
+
+Do NOT make it beautiful.
+
+Do NOT commission anyone.
+
+Permitted cheap fixes:
+
+- reposition/scale layers
+- clean obvious cutout edges
+- adjust masks
+- harmonize brightness/contrast
+- remove obvious AI artifacts
+- improve occlusion boundaries
+- ensure the flattened Control is derived from the exact same reconstruction stack
+
+Do not invent additional architecture during cleanup.
+
+--------------------------------------------------
+5. CREATE AN X-VPG PARITY CHECKLIST
+--------------------------------------------------
+
+For each condition verify:
+
+CONTENT:
+- same historical claims
+- same structures depicted
+- same reconstruction details
+- same narration
+- same duration
+- same resolution
+
+VISUAL FIDELITY:
+- no condition receives better source imagery
+- no condition receives extra reconstruction detail
+- no condition receives superior color grading
+- no condition hides defects that materially remain exposed in another condition
+
+INFORMATION:
+- same amount of historical information available
+
+INTERACTION:
+This is the intended manipulated variable.
+
+Control:
+binary/static Then ↔ Now
+
+B1:
+layered cinematic reveal
+
+B5:
+Lantern active discovery
+
+Document any unavoidable residual confound.
+
+--------------------------------------------------
+6. IMPORTANT — LANTERN NOVELTY
+--------------------------------------------------
+
+Do NOT try to eliminate novelty.
+
+Novelty is partly intrinsic to an interaction concept.
+
+But continue measuring NV1 separately.
+
+Before interpreting X-VPG:
+
+If Lantern wins HPS but also:
+- has high novelty
+- does not improve legibility
+- increases attention conflict
+- or has significantly higher interaction burden
+
+then it does NOT automatically graduate.
+
+We want historical presence, not merely "this interaction is cool."
+
+--------------------------------------------------
+7. AUDIO CONSTANT
+--------------------------------------------------
+
+X-VPG is a VISUAL interaction experiment.
+
+If narration is included, the exact same A1 narration must play in:
+
+Control
+B1
+Lantern
+
+Same:
+- script
+- voice
+- timing
+- loudness
+- start behavior
+
+Audio is held constant.
+
+Do not compare different audio treatments during X-VPG.
+
+A-track experiments remain separate.
+
+--------------------------------------------------
+8. A1 QA
+--------------------------------------------------
+
+Review the current ~75-second A1 draft against the verified ledger.
+
+Return:
+
+- claim trace completeness
+- unsupported detail count
+- certainty-language compliance
+- approximate spoken duration
+- whether the narration directs attention back to the REAL Forum rather than making the phone the focus
+
+Do NOT spend money on professional VO yet.
+
+Draft TTS remains adequate for early testing.
+
+--------------------------------------------------
+9. PHONE QA
+--------------------------------------------------
+
+Prepare a simple device test checklist for me.
+
+I need to test the B1/Lantern prototype on an actual iPhone for:
+
+- touch responsiveness
+- accidental edge-swipe navigation
+- one-handed reach
+- FPS/jank
+- image loading
+- Lantern reveal latency
+- slider feel
+- glare/legibility
+- reduced-motion fallback
+
+Give me exact steps and what counts as PASS/FAIL.
+
+Do not claim performance is proven from headless testing.
+
+--------------------------------------------------
+10. X-VPG READINESS GATE
+--------------------------------------------------
+
+At end of Day 5 return:
+
+X-VPG READY = YES / NO
+
+YES only if:
+
+- same reconstruction content across all cells
+- obvious condition-specific asset artifacts removed
+- narration constant
+- disclaimer constant
+- protocol frozen
+- randomization ready
+- HPS form ready
+- attention-conflict veto ready
+- participant instructions ready
+- no known technical bug likely to influence one condition disproportionately
+
+If NO, state exactly what remains.
+
+--------------------------------------------------
+11. DO NOT START YET
+--------------------------------------------------
+
+Do not:
+- recruit/pay testers yet
+- run external X-VPG sessions
+- ART-1
+- ART-2
+- B2
+- B3-FIELD
+- B4
+- A3
+- City Graph implementation
+- mass stop generation
+- production ChronoWalk refactor
+
+--------------------------------------------------
+DAY 5 RETURN
+--------------------------------------------------
+
+Return:
+
+A. X-D0
+1. adjudication summary for the 17 flags
+2. Iteration 2 changes
+3. regression result
+4. full rerun result if performed
+5. remaining flags
+6. provisional verdict
+
+B. X-VPG
+7. final standardized prototype notice
+8. parity audit
+9. ART-0 fixes made
+10. residual confounds
+11. readiness YES/NO
+
+C. AUDIO
+12. A1 QA result
+
+D. DEVICE TEST
+13. exact iPhone QA steps for me
+
+E. OPERATIONS
+14. files created/modified
+15. spend today
+16. cumulative spend
+17. decisions requiring founder approval
+
+HOLD after Day 5.
