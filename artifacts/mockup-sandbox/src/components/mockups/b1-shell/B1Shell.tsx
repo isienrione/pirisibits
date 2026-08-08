@@ -8,11 +8,18 @@
  *   B5      — Lantern: bounded circular reveal region the traveler drags across the
  *             modern scene, discovering the reconstruction underneath.
  *
- * ART-0 assets (Day 4, cheap throwaway; do-not-depict register respected):
- *   /art0/L0_modern.jpg      — L0 modern backplate
- *   /art0/recon_backdrop.jpg — far reconstruction plane (sky→square)
- *   /art0/temple_cutout.png  — mid plane cutout (granite-column temple porch)
- *   /art0/arch_cutout.png    — near plane cutout (triple arch, indistinct summit silhouette)
+ * ART-0 assets (v2 — Day 5.5 founder-authorized implementation-correction pass;
+ * do-not-depict register respected; v1 files retained on disk for audit):
+ *   /art0/L0_modern_v2.jpg      — modern backplate (Campidoglio overlook, Colosseum at far end)
+ *   /art0/recon_backdrop_v2.jpg — 315 CE reconstruction, same vantage/layout; Colosseum
+ *                                 and Basilica of Maxentius remain visible at the far end
+ *
+ * DAY 5.5 FRAMING CORRECTION (root cause of founder QA defect A):
+ * assets are square (1024×1024) but the stage is tall portrait; object-fit:cover was
+ * silently discarding ~44% of the image width, and B1 parallax shifted that crop —
+ * hence "wiggle to see more". Fix: a fixed square SCENE BOX (exact fit for square
+ * assets — zero crop by definition, deterministic in every mode) centered in the stage
+ * with cinematic letterbox bands above/below. Identical framing in Control/B1/Lantern.
  *
  * Identical layer stack in every mode — the manipulated variable is interaction only.
  * Lantern principles: first-touch works anywhere (region jumps to finger), one-handed,
@@ -37,10 +44,11 @@ type Plane = { id: string; depth: number; src: string; style?: React.CSSProperti
 // identical composite; Lantern clips the identical composite. (Permitted fixes used:
 // adjust masks, reposition layers. No ART-1, no new art.)
 const bandMask = (m: string) => ({ WebkitMaskImage: m, maskImage: m }) as React.CSSProperties;
+const RECON = "recon_backdrop_v2.jpg";
 const PLANES: Plane[] = [
-  { id: "far", depth: 0.06, src: A("recon_backdrop.jpg"), style: { objectFit: "cover" } },
-  { id: "mid", depth: 0.22, src: A("recon_backdrop.jpg"), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 28%, black 46%, black 68%, transparent 84%)") } },
-  { id: "near", depth: 0.5, src: A("recon_backdrop.jpg"), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 62%, black 82%)") } },
+  { id: "far", depth: 0.06, src: A(RECON), style: { objectFit: "cover" } },
+  { id: "mid", depth: 0.22, src: A(RECON), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 28%, black 46%, black 68%, transparent 84%)") } },
+  { id: "near", depth: 0.5, src: A(RECON), style: { objectFit: "cover", ...bandMask("linear-gradient(to bottom, transparent 62%, black 82%)") } },
 ];
 
 function useReducedMotion() {
@@ -55,24 +63,31 @@ function useReducedMotion() {
   return reduced;
 }
 
-// QA/experiment support: deterministic initial state via URL params (?mode=control|b1|lantern&reveal=0..1&full=1)
+// QA/experiment support: deterministic initial state via URL params
+// (?mode=control|b1|lantern&reveal=0..1&full=1&lit=x,y — lit ignites the lantern at
+// fractional scene coords for screenshot QA without a touch)
 const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 const initMode = (["control", "b1", "lantern"].includes(params.get("mode") ?? "") ? params.get("mode") : "b1") as Mode;
 const initReveal = Math.max(0, Math.min(1, Number(params.get("reveal") ?? 0) || 0));
 const initFull = params.get("full") === "1";
+const initLit = (() => {
+  const v = (params.get("lit") ?? "").split(",").map(Number);
+  return v.length === 2 && v.every((n) => n >= 0 && n <= 1) ? { x: v[0], y: v[1] } : null;
+})();
 
 export function B1Shell() {
   const [mode, setMode] = useState<Mode>(initMode);
   const [reveal, setReveal] = useState(initReveal); // control + b1: 0 today … 1 reconstruction
-  const [lanternOn, setLanternOn] = useState(false); // lantern: region active
+  const [lanternOn, setLanternOn] = useState(initLit != null); // lantern: region active
   const [lanternFull, setLanternFull] = useState(initFull); // accessibility fallback: reveal all
   const [fps, setFps] = useState(0);
   const reduced = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
   const target = useRef({ x: 0, y: 0 });
   const current = useRef({ x: 0, y: 0 });
-  const lanternTarget = useRef({ x: 0.5, y: 0.55 });
-  const lantern = useRef({ x: 0.5, y: 0.55 });
+  const lanternTarget = useRef(initLit ?? { x: 0.5, y: 0.55 });
+  const lantern = useRef(initLit ?? { x: 0.5, y: 0.55 });
+  const sceneRef = useRef<HTMLDivElement>(null); // fixed square scene box — deterministic framing
   const layersRef = useRef<(HTMLDivElement | null)[]>([]);
   const revealWrapRef = useRef<HTMLDivElement>(null);
   const rimRef = useRef<HTMLDivElement>(null);
@@ -90,22 +105,25 @@ export function B1Shell() {
       layersRef.current.forEach((el, i) => {
         if (!el) return;
         const depth = mode === "b1" && !reduced ? PLANES[i].depth : 0;
-        el.style.transform = `translate3d(${current.current.x * depth * 22}px, ${current.current.y * depth * 10}px, 0) scale(${1 + depth * 0.035})`;
+        // overscan: scale margin must exceed max translation (depth*22px on a ~390px
+        // scene → factor 0.12 gives (s-1)/2*w ≥ depth*22 for all plane depths), so
+        // parallax can never expose a scene-box edge or the backplate through a band
+        el.style.transform = `translate3d(${current.current.x * depth * 22}px, ${current.current.y * depth * 10}px, 0) scale(${1 + depth * 0.12})`;
       });
       const wrap = revealWrapRef.current;
       if (wrap) {
         if (mode === "lantern" && !lanternFull) {
-          const w = stageRef.current?.clientWidth ?? 390;
+          const w = sceneRef.current?.clientWidth ?? 390;
           const r = Math.max(120, w * 0.34); // generous radius — no precision aiming
           wrap.style.clipPath = lanternOn
             ? `circle(${r}px at ${lantern.current.x * 100}% ${lantern.current.y * 100}%)`
             : "circle(0px at 50% 55%)";
           wrap.style.opacity = "1";
           const rim = rimRef.current;
-          if (rim && stageRef.current) {
+          if (rim && sceneRef.current) {
             rim.style.width = rim.style.height = `${r * 2}px`;
-            rim.style.left = `${lantern.current.x * stageRef.current.clientWidth}px`;
-            rim.style.top = `${lantern.current.y * stageRef.current.clientHeight}px`;
+            rim.style.left = `${lantern.current.x * sceneRef.current.clientWidth}px`;
+            rim.style.top = `${lantern.current.y * sceneRef.current.clientHeight}px`;
           }
         } else {
           wrap.style.clipPath = "none";
@@ -122,7 +140,8 @@ export function B1Shell() {
   }, [mode, reduced, lanternOn, lanternFull, reveal]);
 
   const setLanternFromEvent = (e: React.PointerEvent) => {
-    const rect = stageRef.current?.getBoundingClientRect();
+    // coords relative to the SCENE BOX (clamped) so the lantern maps 1:1 to the image
+    const rect = sceneRef.current?.getBoundingClientRect();
     if (!rect) return;
     lanternTarget.current = {
       x: Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)),
@@ -133,7 +152,11 @@ export function B1Shell() {
   const onPointerDown = (e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture?.(e.pointerId);
     if (mode === "lantern") {
-      // first touch anywhere ignites the lantern AT the finger — zero instruction needed
+      // first touch anywhere ON THE SCENE ignites the lantern AT the finger — zero
+      // instruction needed; touches in the letterbox bands are ignored (nothing to
+      // reveal there, and snapping the lantern to the boundary would be off-finger)
+      const rect = sceneRef.current?.getBoundingClientRect();
+      if (!rect || e.clientY < rect.top || e.clientY > rect.bottom) return;
       setLanternOn(true);
       setLanternFromEvent(e);
       // snap the rendered position immediately so ignition happens AT the finger
@@ -180,21 +203,26 @@ export function B1Shell() {
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
-        {/* L0 modern backplate — ART-0 */}
-        <img src={A("L0_modern.jpg")} alt="Modern Roman Forum from the Campidoglio overlook" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
-        {/* Reconstruction stack — identical in all modes; mode changes only how it is revealed */}
-        <div ref={revealWrapRef} className="absolute inset-0" style={{ transition, opacity: 0 }}>
-          {PLANES.map((p, i) => (
-            <div key={p.id} ref={(el) => { layersRef.current[i] = el; }} className="absolute inset-0 will-change-transform" style={{ zIndex: i + 1 }}>
-              <img src={p.src} alt="" className="absolute inset-0 h-full w-full" style={p.style} draggable={false} />
-            </div>
-          ))}
+        {/* SCENE BOX — fixed square, exact fit for the square ART-0 assets: the full
+            intended framing is ALWAYS visible by default, identically in all modes.
+            Letterbox bands above/below are plain black (cinematic register). */}
+        <div ref={sceneRef} className="absolute left-0 right-0 top-1/2 aspect-square -translate-y-1/2 overflow-hidden">
+          {/* L0 modern backplate — ART-0 v2 */}
+          <img src={A("L0_modern_v2.jpg")} alt="Modern Roman Forum from the Campidoglio overlook" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+          {/* Reconstruction stack — identical in all modes; mode changes only how it is revealed */}
+          <div ref={revealWrapRef} className="absolute inset-0" style={{ transition, opacity: 0 }}>
+            {PLANES.map((p, i) => (
+              <div key={p.id} ref={(el) => { layersRef.current[i] = el; }} className="absolute inset-0 will-change-transform" style={{ zIndex: i + 1 }}>
+                <img src={p.src} alt="" className="absolute inset-0 h-full w-full" style={p.style} draggable={false} />
+              </div>
+            ))}
+          </div>
+          {mode === "lantern" && !lanternFull && lanternOn && (
+            /* high-contrast rim for outdoor legibility — OUTSIDE the clipped wrapper,
+               positioned at the live lantern coords by the rAF loop */
+            <div ref={rimRef} className="pointer-events-none absolute rounded-full" style={{ zIndex: 8, border: "3px solid rgba(255,196,0,0.9)", boxShadow: "0 0 12px rgba(0,0,0,0.5)", transform: "translate(-50%, -50%)" }} />
+          )}
         </div>
-        {mode === "lantern" && !lanternFull && lanternOn && (
-          /* high-contrast rim for outdoor legibility — OUTSIDE the clipped wrapper,
-             positioned at the live lantern coords by the rAF loop */
-          <div ref={rimRef} className="pointer-events-none absolute rounded-full" style={{ zIndex: 8, border: "3px solid rgba(255,196,0,0.9)", boxShadow: "0 0 12px rgba(0,0,0,0.5)", transform: "translate(-50%, -50%)" }} />
-        )}
         <div className="pointer-events-none absolute right-2 top-2 rounded bg-black/60 px-2 py-1 text-[10px]" style={{ zIndex: 20 }}>
           {fps} fps · {modeLabel} {reduced && "· reduced-motion"}
         </div>

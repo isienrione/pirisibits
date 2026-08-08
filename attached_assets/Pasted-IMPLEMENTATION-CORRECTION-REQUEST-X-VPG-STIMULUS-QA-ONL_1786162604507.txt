@@ -1,0 +1,100 @@
+IMPLEMENTATION CORRECTION REQUEST — X-VPG STIMULUS QA ONLY
+Do not change the protocol. Do not change the hypothesis. Do not change randomization, HPS, notice wording, or scoring.
+This is stimulus/device QA correction only under the already frozen XVPG_PROTOCOL_FROZEN_V1.
+
+I ran the iPhone preview and the result is close, but not yet clean enough for testing.
+
+What I observed on device
+1) Default framing / cropping issue
+
+In the current prototype, the “then” image is cropped by default in a way that does not feel intentional.
+Sometimes, after extra tapping / wriggling / interaction, the image appears more fully, but the default first view should already be correct.
+
+That means:
+
+the “then” state must be properly framed without requiring extra fiddling
+the user should not have to “discover” the correct composition by accident
+the reconstructed view should fit naturally in the intended viewport from the start
+2) Reconstruction fidelity issue
+
+The current reconstruction is a promising draft, but it still feels too rough / speculative to be a trustworthy ChronoWalk-quality stimulus.
+
+I need the reconstruction to be:
+
+more realistic
+more visually coherent
+more historically plausible
+more faithful to the actual vantage / known site geometry
+
+Example concern:
+
+In the current prototype, the Colosseum disappears, and I cannot tell whether that is because:
+this is historically correct from occlusion by intervening structures,
+or the reconstruction is simply inaccurate / under-specified.
+
+That kind of ambiguity is not acceptable for a test stimulus, because users may react to reconstruction quality problems rather than to the intended interaction difference.
+
+What to do
+A. Fix the default display behavior
+
+Make sure the default state for each mode presents the image correctly on iPhone:
+
+no accidental crop feeling
+no hidden portions that only appear after repeated interaction
+stable initial framing
+the full intended composition should be visible in a controlled, intentional way
+
+If any viewport / object-fit / transform / masking / container sizing issue is causing this, fix it cleanly.
+
+B. Improve the ART-0 visual stimulus quality
+
+Keep it cheap and throwaway, but upgrade it enough that it can function as a serious experimental stimulus.
+
+Improve:
+
+realism of the reconstructed architecture
+consistency of perspective with the chosen viewpoint
+clearer site-specific fidelity
+more believable massing, layering, and urban context
+fewer obviously “AI-ish” or generic reconstruction artifacts
+C. Be explicit about uncertainty
+
+Where a feature is historically uncertain, do not silently invent detail.
+
+If something like the Colosseum’s visibility depends on viewpoint/occlusion/history, handle it one of these ways:
+
+depict it correctly and consistently if the evidence is strong, or
+omit/soften it in a way that reads as intentional and plausible, not as an obvious mistake, or
+document why it is absent so we know it is a deliberate reconstruction choice.
+D. Preserve the experiment structure
+
+Do not change the experimental logic.
+
+Keep:
+
+same protocol
+same 3 modes
+same substrate logic
+same manipulated variable principle
+same frozen X-VPG design
+
+Only make implementation-quality corrections so the stimulus is testable.
+
+What I want back
+
+Please return:
+
+Diagnosis of the cropping issue
+exact cause
+what you changed
+Visual reconstruction improvement summary
+what was upgraded
+what remains intentionally rough
+any known historical uncertainty still reflected in the image
+Whether the Colosseum / other notable skyline features are intentionally visible or intentionally not visible, and why
+Confirmation that protocol and experiment logic were left untouched
+Updated preview ready for another iPhone QA pass
+
+Do not recruit.
+Do not run sessions.
+Do not modify frozen protocol artifacts except to note that this was an implementation correction under device QA.

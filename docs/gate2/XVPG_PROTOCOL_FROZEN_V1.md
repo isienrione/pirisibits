@@ -12,6 +12,17 @@ protocol change requires an explicit founder-approved revision to V2 with a chan
 NOT YET AUTHORIZED. Remaining gate: FOUNDER IPHONE QA PASS. No recruiting or payment
 before that.
 
+## Implementation corrections (not protocol changes)
+
+- **XVPG-PROTOCOL-FROZEN-V1 — implementation correction #1 (Day 5.5, founder device QA):**
+  (a) Deterministic framing — square ART-0 assets were cover-cropped ~44% in width by the
+  portrait stage; stimulus now renders in a fixed square scene box (zero crop, identical
+  in all three cells, letterboxed). (b) ART-0 stimulus pair regenerated at corrected
+  place-anchoring (`L0_modern_v2.jpg` / `recon_backdrop_v2.jpg`): Colosseum and Basilica
+  of Maxentius remain visible at the far end of BOTH states; v1 assets retained on disk
+  for audit. No change to cells, HPS, thresholds, randomization, timing, veto, novelty
+  rule, instructions, or notice.
+
 ## 1. Hypothesis
 At least one interaction concept (B1 layered cinematic or B5 Lantern) achieves
 Δ ≥ +0.7 (core HPS or HL subscale) vs the baseline placard-style control using rough

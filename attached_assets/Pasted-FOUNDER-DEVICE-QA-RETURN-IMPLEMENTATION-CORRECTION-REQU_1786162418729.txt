@@ -1,0 +1,128 @@
+FOUNDER DEVICE QA RETURN — IMPLEMENTATION CORRECTION REQUIRED
+
+Summary:
+The prototype is mostly working on iPhone and feels close, but I am NOT authorizing external X-VPG testing yet.
+
+This is NOT a protocol change.
+This IS an implementation-correction pass on the visual stimulus / presentation.
+
+--------------------------------------------------
+1. DEVICE QA SUMMARY
+--------------------------------------------------
+
+Device:
+iPhone / Safari
+
+General result:
+- Performance looked fine (~60 fps)
+- Basic interaction worked
+- Control / B1 / Lantern are broadly functional
+- No catastrophic technical failure
+
+However, there are two blocking issues before external sessions:
+
+A. DEFAULT THEN-VIEW FRAMING / CROPPING
+The “then” image is cropped or framed incorrectly by default.
+If I click / wiggle / interact repeatedly, I can sometimes get a fuller view, but the default presentation is not reliable.
+
+That is a real defect for the experiment.
+A participant should not need extra fiddling to see the intended reconstruction properly.
+
+B. STIMULUS FIDELITY / HISTORICAL PLAUSIBILITY
+The reconstruction is a promising attempt, but still not convincing enough as a test stimulus.
+It should feel more realistic and more anchored to the actual place.
+
+Example:
+- in the current prototype, the Colosseum appears to disappear in the reconstructed view
+- maybe that is historically explainable due to an intervening structure, but if so, that logic is not legible at all
+- right now it reads more like “the image is off” than “the ancient view is intentionally different”
+
+That creates a confound:
+participants may react to image oddness / mistrust rather than to the interaction mode.
+
+--------------------------------------------------
+2. STATUS DECISION
+--------------------------------------------------
+
+X-VPG STATUS:
+NOT READY FOR EXTERNAL TESTING YET
+
+Reason:
+implementation correction needed for stimulus presentation / fidelity.
+
+This is NOT a request to:
+- change the protocol
+- change HPS
+- change randomization
+- change notice wording
+- change thresholds
+- rebuild the study
+
+It IS a request to:
+- correct the presentation of the existing stimulus
+- improve the historical / spatial plausibility of the ART-0 visual
+
+--------------------------------------------------
+3. REQUIRED CORRECTIONS
+--------------------------------------------------
+
+Please do a focused correction pass with these goals:
+
+(1) Fix default framing
+- the “today” and “then” states must both open in the correct intended framing
+- no hidden / clipped / partially off-frame reconstruction by default
+- no need for extra tapping, wriggling, or accidental gestures to see the correct full scene
+- make the default state deterministic and stable across Control / B1 / Lantern
+
+(2) Improve place-anchoring of the reconstruction
+- preserve the exact camera match as much as possible
+- ensure that major landmarks read coherently from the chosen vantage
+- if an important element is absent in the ancient view for historical reasons, make sure the visual logic feels intentional rather than mistaken
+- specifically review the visibility / occlusion logic around the Colosseum and other major recognizable anchors
+
+(3) Improve realism
+- make the reconstruction feel more like a plausible historical simulation and less like a generic AI city painting
+- maintain the do-not-depict register and historical caution rules already in force
+- do not introduce new speculative detail casually
+
+(4) Keep experimental parity intact
+- do not create different content per condition
+- Control / B1 / B5 must still use the identical substrate
+- interaction must remain the only manipulated variable
+
+--------------------------------------------------
+4. REQUESTED RETURN FORMAT
+--------------------------------------------------
+
+Please return:
+
+1. Exact diagnosis of why the “then” state is appearing cropped by default
+2. Whether the issue is:
+   - viewport fit
+   - container sizing
+   - image scaling mode
+   - pan/zoom state
+   - transform origin
+   - stage masking
+   - or something else
+3. The minimal correction implemented
+4. What was changed to improve the historical/spatial plausibility of the reconstruction
+5. Updated screenshots of:
+   - Control default today
+   - Control default then
+   - B1 default today
+   - B1 default then
+   - B5 default today
+   - B5 active reveal
+6. Confirmation that protocol parity remains intact
+7. Whether you believe the prototype is now ready for external testing
+
+--------------------------------------------------
+5. HOLD
+--------------------------------------------------
+
+Do not recruit testers yet.
+Do not alter the protocol.
+Do not start sessions.
+
+Wait for my review of the corrected visual pass.
