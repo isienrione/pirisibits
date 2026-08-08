@@ -1,0 +1,102 @@
+FOUNDER RATIFICATION — DAY 5.5
+
+1. X-D0 V3 ADJUDICATION
+
+Ratify the proposed V3 totals:
+
+- Confirmed violations: 10 flags / 8 cases
+- False positives: 2
+- Policy-resolved: 1
+- True-failure case rate: 4%
+
+X-D0 VERDICT:
+
+ITERATE ARCHITECTURALLY LATER.
+
+Do NOT run Iteration 3.
+
+Freeze constrained_v3 as the current best prompt-only baseline.
+
+Record the conclusion:
+
+Prompt-only constrained generation produced a very large improvement versus unconstrained generation, but did not reach the zero-unsupported-claim bar.
+
+The remaining failure classes are primarily structural:
+- cross-claim inference
+- entity halo / general-knowledge leakage
+- single-clause stochastic leakage
+- creative-authenticity leakage
+
+Future work should test structured enforcement such as:
+- explicit claim-ID grounding
+- post-generation claim extraction
+- verifier/reject/regenerate loop
+- deterministic spatial-context layer
+- Creative Authenticity Firewall at the interaction layer
+
+Do NOT build those systems now.
+
+--------------------------------------------------
+2. X-VPG PROTOCOL RATIFICATION
+--------------------------------------------------
+
+Ratify:
+
+XVPG-PROTOCOL-FROZEN-V1
+
+and the standardized prototype notice.
+
+The protocol is now frozen subject ONLY to:
+
+FOUNDER DEVICE QA.
+
+Do not make discretionary changes to:
+- cells
+- HPS wording
+- thresholds
+- randomization
+- timing
+- AC veto
+- novelty rule
+- participant instructions
+- prototype notice
+
+If device QA reveals a genuine technical defect, fix only that defect and document it as:
+
+XVPG-PROTOCOL-FROZEN-V1 — implementation correction
+
+not as a protocol change.
+
+--------------------------------------------------
+3. X-VPG STATUS
+--------------------------------------------------
+
+Current status:
+
+PROTOCOL READY
+INSTRUMENTS READY
+STIMULI READY
+EXTERNAL TESTING NOT YET AUTHORIZED
+
+Remaining gate:
+
+FOUNDER IPHONE QA PASS
+
+Do not recruit or pay testers before that.
+
+--------------------------------------------------
+4. HOLD
+--------------------------------------------------
+
+Do not:
+- change the prototype
+- generate new art
+- regenerate A1
+- recruit testers
+- run sessions
+- start B2/B3-FIELD/B4/A3
+- change production ChronoWalk
+- implement City Graph
+- run X-D0 again
+
+Wait for my iPhone QA report.

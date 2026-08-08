@@ -1,5 +1,19 @@
 # X-D0 Iteration 2 (constrained_v3) — Final 14-Flag Review
 
+> **FOUNDER-RATIFIED (Day 5.5).** Totals below are final: 10 confirmed violations / 8
+> cases, 2 false positives, 1 policy-resolved; true-failure case rate 4%.
+> **X-D0 VERDICT: ITERATE ARCHITECTURALLY LATER.** No Iteration 3. `constrained_v3` is
+> frozen as the current best prompt-only baseline.
+>
+> **Ratified conclusion:** Prompt-only constrained generation produced a very large
+> improvement versus unconstrained generation, but did not reach the
+> zero-unsupported-claim bar. Remaining failure classes are primarily structural:
+> cross-claim inference, entity halo / general-knowledge leakage, single-clause
+> stochastic leakage, creative-authenticity leakage. Future work should test structured
+> enforcement (explicit claim-ID grounding, post-generation claim extraction,
+> verifier/reject/regenerate loop, deterministic spatial-context layer, Creative
+> Authenticity Firewall at the interaction layer). None of those systems are built now.
+
 Scope: ONLY the 14 automated flags from the full frozen-200 rerun of constrained_v3
 (`experiments/xd0/unsupported.constrained_v3.txt`). Adjudicated under P1–P6 + Creative
 Authenticity Firewall (`XD0_CONSTRAINED_POLICIES.md`), including the founder's Day 5.5

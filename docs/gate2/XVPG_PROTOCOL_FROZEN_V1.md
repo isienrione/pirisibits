@@ -1,8 +1,16 @@
 # X-VPG PROTOCOL — FROZEN V1 (Day 5.5)
 
-**Identifier:** XVPG-PROTOCOL-FROZEN-V1 · **Status:** FROZEN upon founder ratification.
-After freezing, this document is not silently edited during testing; any change requires
-an explicit founder-approved revision to V2 with a change log.
+**Identifier:** XVPG-PROTOCOL-FROZEN-V1 · **Status:** **FROZEN — founder-ratified Day
+5.5** (protocol + standardized prototype notice), subject ONLY to founder device QA.
+No discretionary changes to cells, HPS wording, thresholds, randomization, timing, AC
+veto, novelty rule, participant instructions, or prototype notice. If device QA reveals
+a genuine technical defect, only that defect is fixed and documented as
+"XVPG-PROTOCOL-FROZEN-V1 — implementation correction," not as a protocol change. Any
+protocol change requires an explicit founder-approved revision to V2 with a change log.
+
+**Status board:** PROTOCOL READY · INSTRUMENTS READY · STIMULI READY · EXTERNAL TESTING
+NOT YET AUTHORIZED. Remaining gate: FOUNDER IPHONE QA PASS. No recruiting or payment
+before that.
 
 ## 1. Hypothesis
 At least one interaction concept (B1 layered cinematic or B5 Lantern) achieves
