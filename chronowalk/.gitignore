@@ -55,6 +55,9 @@ npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
+# Local canonical-leg capture reports (may be regenerated; not runtime)
+src/content/rome/canonicalWalkingLegs.report.json
+
 # Playwright
 /test-results/
 /playwright-report/

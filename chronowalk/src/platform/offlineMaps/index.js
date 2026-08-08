@@ -38,6 +38,8 @@ export {
   isNativeMapRegionDownloaded,
   mergeOfflineReadyWithMapRegion,
   resolveOfflineReadyStatus,
+  NAVIGATION_OFFLINE_READINESS,
+  resolveNavigationOfflineReadiness,
 } from './nativeOfflineReady.js'
 
 export {

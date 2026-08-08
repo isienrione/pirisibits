@@ -1,0 +1,1372 @@
+{
+  "version": "rome-canonical-legs-v1",
+  "tourId": "rome",
+  "cityId": "rome",
+  "generatedAt": "2026-08-08T09:23:33.320Z",
+  "source": "authored-stop-coordinates",
+  "geometryKindDefault": "temporary-straight-line-fallback",
+  "note": "Offline Rome stop→stop package is INCOMPLETE: one or more legs still use temporary straight-line fallback (product debt). Run with --fetch-mapbox after explicit approval to capture real walking geometry. Temporary geometry is not pedestrian street routing.",
+  "completeness": {
+    "expectedLegCount": 20,
+    "realWalkingLegCount": 0,
+    "temporaryFallbackLegCount": 20,
+    "invalidLegCount": 0,
+    "complete": false
+  },
+  "optionalRideTransitions": [
+    {
+      "originStopId": "w21",
+      "destinationStopId": "w22",
+      "fromId": "w21",
+      "toId": "w22",
+      "transitId": "t22",
+      "travelMode": "ride",
+      "etaLabel": "estimated 30 min drive",
+      "title": "Optional Encore › Via Appia Antica",
+      "durationSeconds": 120,
+      "reason": "Authored as a non-walking / ride transition (optional encore). Not part of the offline walking-leg package."
+    }
+  ],
+  "productDebt": {
+    "allLegsUseTemporaryFallbackGeometry": true,
+    "legKeys": [
+      "w01->w02",
+      "w02->w03",
+      "w03->w06",
+      "w06->w07",
+      "w07->w08",
+      "w08->pause",
+      "pause->w10",
+      "w10->w11_12",
+      "w11_12->w13",
+      "w13->w14",
+      "w14->w15",
+      "w15->w16",
+      "w16->w17",
+      "w17->w23",
+      "w23->w18",
+      "w18->w19",
+      "w19->w20",
+      "w20->w21",
+      "w02->w04",
+      "w04->w03"
+    ],
+    "reason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox."
+  },
+  "routes": [
+    {
+      "pathKey": "a",
+      "stopIds": [
+        "w01",
+        "w02",
+        "w03",
+        "w06",
+        "w07",
+        "w08",
+        "pause",
+        "w10",
+        "w11_12",
+        "w13",
+        "w14",
+        "w15",
+        "w16",
+        "w17",
+        "w23",
+        "w18",
+        "w19",
+        "w20",
+        "w21",
+        "w22"
+      ],
+      "legKeys": [
+        "w01->w02",
+        "w02->w03",
+        "w03->w06",
+        "w06->w07",
+        "w07->w08",
+        "w08->pause",
+        "pause->w10",
+        "w10->w11_12",
+        "w11_12->w13",
+        "w13->w14",
+        "w14->w15",
+        "w15->w16",
+        "w16->w17",
+        "w17->w23",
+        "w23->w18",
+        "w18->w19",
+        "w19->w20",
+        "w20->w21"
+      ]
+    },
+    {
+      "pathKey": "b",
+      "stopIds": [
+        "w01",
+        "w02",
+        "w04",
+        "w03",
+        "w06",
+        "w07",
+        "w08",
+        "pause",
+        "w10",
+        "w11_12",
+        "w13",
+        "w14",
+        "w15",
+        "w16",
+        "w17",
+        "w23",
+        "w18",
+        "w19",
+        "w20",
+        "w21",
+        "w22"
+      ],
+      "legKeys": [
+        "w01->w02",
+        "w02->w04",
+        "w04->w03",
+        "w03->w06",
+        "w06->w07",
+        "w07->w08",
+        "w08->pause",
+        "pause->w10",
+        "w10->w11_12",
+        "w11_12->w13",
+        "w13->w14",
+        "w14->w15",
+        "w15->w16",
+        "w16->w17",
+        "w17->w23",
+        "w23->w18",
+        "w18->w19",
+        "w19->w20",
+        "w20->w21"
+      ]
+    }
+  ],
+  "legs": {
+    "w01->w02": {
+      "originStopId": "w01",
+      "destinationStopId": "w02",
+      "fromId": "w01",
+      "toId": "w02",
+      "from": {
+        "lat": 41.8902,
+        "lng": 12.4922
+      },
+      "to": {
+        "lat": 41.8904,
+        "lng": 12.4924
+      },
+      "fromTitle": "The Colosseum",
+      "toTitle": "Colosseum interior",
+      "distanceMeters": 36,
+      "durationSeconds": 30,
+      "distanceM": 36,
+      "durationSec": 30,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.4922,
+            41.8902
+          ],
+          [
+            12.4924,
+            41.8904
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head northeast toward Colosseum interior — about 36 m.",
+          "distanceM": 31,
+          "durationSec": 26,
+          "type": "depart",
+          "streetName": "Colosseum interior"
+        },
+        {
+          "instruction": "Continue toward Colosseum interior.",
+          "distanceM": 5,
+          "durationSec": 5,
+          "type": "continue",
+          "streetName": "Colosseum interior"
+        },
+        {
+          "instruction": "Arrive at Colosseum interior.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Colosseum interior"
+        }
+      ]
+    },
+    "w02->w03": {
+      "originStopId": "w02",
+      "destinationStopId": "w03",
+      "fromId": "w02",
+      "toId": "w03",
+      "from": {
+        "lat": 41.8904,
+        "lng": 12.4924
+      },
+      "to": {
+        "lat": 41.8905,
+        "lng": 12.48835
+      },
+      "fromTitle": "Colosseum interior",
+      "toTitle": "Arch of Titus",
+      "distanceMeters": 436,
+      "durationSeconds": 349,
+      "distanceM": 436,
+      "durationSec": 349,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.4924,
+            41.8904
+          ],
+          [
+            12.48835,
+            41.8905
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Arch of Titus — about 436 m.",
+          "distanceM": 371,
+          "durationSec": 297,
+          "type": "depart",
+          "streetName": "Arch of Titus"
+        },
+        {
+          "instruction": "Continue toward Arch of Titus.",
+          "distanceM": 65,
+          "durationSec": 52,
+          "type": "continue",
+          "streetName": "Arch of Titus"
+        },
+        {
+          "instruction": "Arrive at Arch of Titus.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Arch of Titus"
+        }
+      ]
+    },
+    "w03->w06": {
+      "originStopId": "w03",
+      "destinationStopId": "w06",
+      "fromId": "w03",
+      "toId": "w06",
+      "from": {
+        "lat": 41.8905,
+        "lng": 12.48835
+      },
+      "to": {
+        "lat": 41.89175,
+        "lng": 12.488
+      },
+      "fromTitle": "Arch of Titus",
+      "toTitle": "Basilica of Maxentius",
+      "distanceMeters": 185,
+      "durationSeconds": 148,
+      "distanceM": 185,
+      "durationSec": 148,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48835,
+            41.8905
+          ],
+          [
+            12.488,
+            41.89175
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head north toward Basilica of Maxentius — about 185 m.",
+          "distanceM": 157,
+          "durationSec": 126,
+          "type": "depart",
+          "streetName": "Basilica of Maxentius"
+        },
+        {
+          "instruction": "Continue toward Basilica of Maxentius.",
+          "distanceM": 28,
+          "durationSec": 22,
+          "type": "continue",
+          "streetName": "Basilica of Maxentius"
+        },
+        {
+          "instruction": "Arrive at Basilica of Maxentius.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Basilica of Maxentius"
+        }
+      ]
+    },
+    "w06->w07": {
+      "originStopId": "w06",
+      "destinationStopId": "w07",
+      "fromId": "w06",
+      "toId": "w07",
+      "from": {
+        "lat": 41.89175,
+        "lng": 12.488
+      },
+      "to": {
+        "lat": 41.89255,
+        "lng": 12.48535
+      },
+      "fromTitle": "Basilica of Maxentius",
+      "toTitle": "Via Sacra",
+      "distanceMeters": 308,
+      "durationSeconds": 246,
+      "distanceM": 308,
+      "durationSec": 246,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.488,
+            41.89175
+          ],
+          [
+            12.48535,
+            41.89255
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Via Sacra — about 308 m.",
+          "distanceM": 262,
+          "durationSec": 209,
+          "type": "depart",
+          "streetName": "Via Sacra"
+        },
+        {
+          "instruction": "Continue toward Via Sacra.",
+          "distanceM": 46,
+          "durationSec": 37,
+          "type": "continue",
+          "streetName": "Via Sacra"
+        },
+        {
+          "instruction": "Arrive at Via Sacra.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Via Sacra"
+        }
+      ]
+    },
+    "w07->w08": {
+      "originStopId": "w07",
+      "destinationStopId": "w08",
+      "fromId": "w07",
+      "toId": "w08",
+      "from": {
+        "lat": 41.89255,
+        "lng": 12.48535
+      },
+      "to": {
+        "lat": 41.89182,
+        "lng": 12.48715
+      },
+      "fromTitle": "Via Sacra",
+      "toTitle": "Temple of Vesta",
+      "distanceMeters": 221,
+      "durationSeconds": 177,
+      "distanceM": 221,
+      "durationSec": 177,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48535,
+            41.89255
+          ],
+          [
+            12.48715,
+            41.89182
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head southeast toward Temple of Vesta — about 221 m.",
+          "distanceM": 188,
+          "durationSec": 150,
+          "type": "depart",
+          "streetName": "Temple of Vesta"
+        },
+        {
+          "instruction": "Continue toward Temple of Vesta.",
+          "distanceM": 33,
+          "durationSec": 27,
+          "type": "continue",
+          "streetName": "Temple of Vesta"
+        },
+        {
+          "instruction": "Arrive at Temple of Vesta.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Temple of Vesta"
+        }
+      ]
+    },
+    "w08->pause": {
+      "originStopId": "w08",
+      "destinationStopId": "pause",
+      "fromId": "w08",
+      "toId": "pause",
+      "from": {
+        "lat": 41.89182,
+        "lng": 12.48715
+      },
+      "to": {
+        "lat": 41.8919,
+        "lng": 12.4865
+      },
+      "fromTitle": "Temple of Vesta",
+      "toTitle": "Forum rest",
+      "distanceMeters": 71,
+      "durationSeconds": 57,
+      "distanceM": 71,
+      "durationSec": 57,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48715,
+            41.89182
+          ],
+          [
+            12.4865,
+            41.8919
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Forum rest — about 71 m.",
+          "distanceM": 60,
+          "durationSec": 48,
+          "type": "depart",
+          "streetName": "Forum rest"
+        },
+        {
+          "instruction": "Continue toward Forum rest.",
+          "distanceM": 11,
+          "durationSec": 9,
+          "type": "continue",
+          "streetName": "Forum rest"
+        },
+        {
+          "instruction": "Arrive at Forum rest.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Forum rest"
+        }
+      ]
+    },
+    "pause->w10": {
+      "originStopId": "pause",
+      "destinationStopId": "w10",
+      "fromId": "pause",
+      "toId": "w10",
+      "from": {
+        "lat": 41.8919,
+        "lng": 12.4865
+      },
+      "to": {
+        "lat": 41.89282,
+        "lng": 12.48518
+      },
+      "fromTitle": "Forum rest",
+      "toTitle": "The Rostra",
+      "distanceMeters": 195,
+      "durationSeconds": 156,
+      "distanceM": 195,
+      "durationSec": 156,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.4865,
+            41.8919
+          ],
+          [
+            12.48518,
+            41.89282
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head northwest toward The Rostra — about 195 m.",
+          "distanceM": 166,
+          "durationSec": 133,
+          "type": "depart",
+          "streetName": "The Rostra"
+        },
+        {
+          "instruction": "Continue toward The Rostra.",
+          "distanceM": 29,
+          "durationSec": 23,
+          "type": "continue",
+          "streetName": "The Rostra"
+        },
+        {
+          "instruction": "Arrive at The Rostra.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "The Rostra"
+        }
+      ]
+    },
+    "w10->w11_12": {
+      "originStopId": "w10",
+      "destinationStopId": "w11_12",
+      "fromId": "w10",
+      "toId": "w11_12",
+      "from": {
+        "lat": 41.89282,
+        "lng": 12.48518
+      },
+      "to": {
+        "lat": 41.89301,
+        "lng": 12.48442
+      },
+      "fromTitle": "The Rostra",
+      "toTitle": "Arch of Septimius Severus",
+      "distanceMeters": 86,
+      "durationSeconds": 69,
+      "distanceM": 86,
+      "durationSec": 69,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48518,
+            41.89282
+          ],
+          [
+            12.48442,
+            41.89301
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Arch of Septimius Severus — about 86 m.",
+          "distanceM": 73,
+          "durationSec": 59,
+          "type": "depart",
+          "streetName": "Arch of Septimius Severus"
+        },
+        {
+          "instruction": "Continue toward Arch of Septimius Severus.",
+          "distanceM": 13,
+          "durationSec": 10,
+          "type": "continue",
+          "streetName": "Arch of Septimius Severus"
+        },
+        {
+          "instruction": "Arrive at Arch of Septimius Severus.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Arch of Septimius Severus"
+        }
+      ]
+    },
+    "w11_12->w13": {
+      "originStopId": "w11_12",
+      "destinationStopId": "w13",
+      "fromId": "w11_12",
+      "toId": "w13",
+      "from": {
+        "lat": 41.89301,
+        "lng": 12.48442
+      },
+      "to": {
+        "lat": 41.89324,
+        "lng": 12.48275
+      },
+      "fromTitle": "Arch of Septimius Severus",
+      "toTitle": "Capitoline Hill",
+      "distanceMeters": 183,
+      "durationSeconds": 146,
+      "distanceM": 183,
+      "durationSec": 146,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48442,
+            41.89301
+          ],
+          [
+            12.48275,
+            41.89324
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Capitoline Hill — about 183 m.",
+          "distanceM": 156,
+          "durationSec": 124,
+          "type": "depart",
+          "streetName": "Capitoline Hill"
+        },
+        {
+          "instruction": "Continue toward Capitoline Hill.",
+          "distanceM": 27,
+          "durationSec": 22,
+          "type": "continue",
+          "streetName": "Capitoline Hill"
+        },
+        {
+          "instruction": "Arrive at Capitoline Hill.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Capitoline Hill"
+        }
+      ]
+    },
+    "w13->w14": {
+      "originStopId": "w13",
+      "destinationStopId": "w14",
+      "fromId": "w13",
+      "toId": "w14",
+      "from": {
+        "lat": 41.89324,
+        "lng": 12.48275
+      },
+      "to": {
+        "lat": 41.8956,
+        "lng": 12.48595
+      },
+      "fromTitle": "Capitoline Hill",
+      "toTitle": "Trajan's Market",
+      "distanceMeters": 485,
+      "durationSeconds": 388,
+      "distanceM": 485,
+      "durationSec": 388,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48275,
+            41.89324
+          ],
+          [
+            12.48595,
+            41.8956
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head northeast toward Trajan's Market — about 485 m.",
+          "distanceM": 412,
+          "durationSec": 330,
+          "type": "depart",
+          "streetName": "Trajan's Market"
+        },
+        {
+          "instruction": "Continue toward Trajan's Market.",
+          "distanceM": 73,
+          "durationSec": 58,
+          "type": "continue",
+          "streetName": "Trajan's Market"
+        },
+        {
+          "instruction": "Arrive at Trajan's Market.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Trajan's Market"
+        }
+      ]
+    },
+    "w14->w15": {
+      "originStopId": "w14",
+      "destinationStopId": "w15",
+      "fromId": "w14",
+      "toId": "w15",
+      "from": {
+        "lat": 41.8956,
+        "lng": 12.48595
+      },
+      "to": {
+        "lat": 41.90597,
+        "lng": 12.48259
+      },
+      "fromTitle": "Trajan's Market",
+      "toTitle": "Spanish Steps",
+      "distanceMeters": 1542,
+      "durationSeconds": 1234,
+      "distanceM": 1542,
+      "durationSec": 1234,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48595,
+            41.8956
+          ],
+          [
+            12.48259,
+            41.90597
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head north toward Spanish Steps — about 1.5 km.",
+          "distanceM": 1311,
+          "durationSec": 1049,
+          "type": "depart",
+          "streetName": "Spanish Steps"
+        },
+        {
+          "instruction": "Continue toward Spanish Steps.",
+          "distanceM": 231,
+          "durationSec": 185,
+          "type": "continue",
+          "streetName": "Spanish Steps"
+        },
+        {
+          "instruction": "Arrive at Spanish Steps.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Spanish Steps"
+        }
+      ]
+    },
+    "w15->w16": {
+      "originStopId": "w15",
+      "destinationStopId": "w16",
+      "fromId": "w15",
+      "toId": "w16",
+      "from": {
+        "lat": 41.90597,
+        "lng": 12.48259
+      },
+      "to": {
+        "lat": 41.90094,
+        "lng": 12.48331
+      },
+      "fromTitle": "Spanish Steps",
+      "toTitle": "Fontana di Trevi",
+      "distanceMeters": 731,
+      "durationSeconds": 585,
+      "distanceM": 731,
+      "durationSec": 585,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48259,
+            41.90597
+          ],
+          [
+            12.48331,
+            41.90094
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head south toward Fontana di Trevi — about 731 m.",
+          "distanceM": 621,
+          "durationSec": 497,
+          "type": "depart",
+          "streetName": "Fontana di Trevi"
+        },
+        {
+          "instruction": "Continue toward Fontana di Trevi.",
+          "distanceM": 110,
+          "durationSec": 88,
+          "type": "continue",
+          "streetName": "Fontana di Trevi"
+        },
+        {
+          "instruction": "Arrive at Fontana di Trevi.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Fontana di Trevi"
+        }
+      ]
+    },
+    "w16->w17": {
+      "originStopId": "w16",
+      "destinationStopId": "w17",
+      "fromId": "w16",
+      "toId": "w17",
+      "from": {
+        "lat": 41.90094,
+        "lng": 12.48331
+      },
+      "to": {
+        "lat": 41.89885,
+        "lng": 12.47687
+      },
+      "fromTitle": "Fontana di Trevi",
+      "toTitle": "The Pantheon",
+      "distanceMeters": 756,
+      "durationSeconds": 605,
+      "distanceM": 756,
+      "durationSec": 605,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.48331,
+            41.90094
+          ],
+          [
+            12.47687,
+            41.89885
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head southwest toward The Pantheon — about 756 m.",
+          "distanceM": 643,
+          "durationSec": 514,
+          "type": "depart",
+          "streetName": "The Pantheon"
+        },
+        {
+          "instruction": "Continue toward The Pantheon.",
+          "distanceM": 113,
+          "durationSec": 91,
+          "type": "continue",
+          "streetName": "The Pantheon"
+        },
+        {
+          "instruction": "Arrive at The Pantheon.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "The Pantheon"
+        }
+      ]
+    },
+    "w17->w23": {
+      "originStopId": "w17",
+      "destinationStopId": "w23",
+      "fromId": "w17",
+      "toId": "w23",
+      "from": {
+        "lat": 41.89885,
+        "lng": 12.47687
+      },
+      "to": {
+        "lat": 41.89868,
+        "lng": 12.47683
+      },
+      "fromTitle": "The Pantheon",
+      "toTitle": "Pantheon interior",
+      "distanceMeters": 25,
+      "durationSeconds": 30,
+      "distanceM": 25,
+      "durationSec": 30,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.47687,
+            41.89885
+          ],
+          [
+            12.47683,
+            41.89868
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head south toward Pantheon interior — about 25 m.",
+          "distanceM": 21,
+          "durationSec": 26,
+          "type": "depart",
+          "streetName": "Pantheon interior"
+        },
+        {
+          "instruction": "Continue toward Pantheon interior.",
+          "distanceM": 4,
+          "durationSec": 5,
+          "type": "continue",
+          "streetName": "Pantheon interior"
+        },
+        {
+          "instruction": "Arrive at Pantheon interior.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Pantheon interior"
+        }
+      ]
+    },
+    "w23->w18": {
+      "originStopId": "w23",
+      "destinationStopId": "w18",
+      "fromId": "w23",
+      "toId": "w18",
+      "from": {
+        "lat": 41.89868,
+        "lng": 12.47683
+      },
+      "to": {
+        "lat": 41.89918,
+        "lng": 12.47306
+      },
+      "fromTitle": "Pantheon interior",
+      "toTitle": "Piazza Navona",
+      "distanceMeters": 412,
+      "durationSeconds": 330,
+      "distanceM": 412,
+      "durationSec": 330,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.47683,
+            41.89868
+          ],
+          [
+            12.47306,
+            41.89918
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head west toward Piazza Navona — about 412 m.",
+          "distanceM": 350,
+          "durationSec": 281,
+          "type": "depart",
+          "streetName": "Piazza Navona"
+        },
+        {
+          "instruction": "Continue toward Piazza Navona.",
+          "distanceM": 62,
+          "durationSec": 50,
+          "type": "continue",
+          "streetName": "Piazza Navona"
+        },
+        {
+          "instruction": "Arrive at Piazza Navona.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Piazza Navona"
+        }
+      ]
+    },
+    "w18->w19": {
+      "originStopId": "w18",
+      "destinationStopId": "w19",
+      "fromId": "w18",
+      "toId": "w19",
+      "from": {
+        "lat": 41.89918,
+        "lng": 12.47306
+      },
+      "to": {
+        "lat": 41.89559,
+        "lng": 12.47223
+      },
+      "fromTitle": "Piazza Navona",
+      "toTitle": "Campo de' Fiori",
+      "distanceMeters": 527,
+      "durationSeconds": 422,
+      "distanceM": 527,
+      "durationSec": 422,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.47306,
+            41.89918
+          ],
+          [
+            12.47223,
+            41.89559
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head south toward Campo de' Fiori — about 527 m.",
+          "distanceM": 448,
+          "durationSec": 359,
+          "type": "depart",
+          "streetName": "Campo de' Fiori"
+        },
+        {
+          "instruction": "Continue toward Campo de' Fiori.",
+          "distanceM": 79,
+          "durationSec": 63,
+          "type": "continue",
+          "streetName": "Campo de' Fiori"
+        },
+        {
+          "instruction": "Arrive at Campo de' Fiori.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Campo de' Fiori"
+        }
+      ]
+    },
+    "w19->w20": {
+      "originStopId": "w19",
+      "destinationStopId": "w20",
+      "fromId": "w19",
+      "toId": "w20",
+      "from": {
+        "lat": 41.89559,
+        "lng": 12.47223
+      },
+      "to": {
+        "lat": 41.89528,
+        "lng": 12.47694
+      },
+      "fromTitle": "Campo de' Fiori",
+      "toTitle": "Largo di Torre Argentina",
+      "distanceMeters": 509,
+      "durationSeconds": 407,
+      "distanceM": 509,
+      "durationSec": 407,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.47223,
+            41.89559
+          ],
+          [
+            12.47694,
+            41.89528
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head east toward Largo di Torre Argentina — about 509 m.",
+          "distanceM": 433,
+          "durationSec": 346,
+          "type": "depart",
+          "streetName": "Largo di Torre Argentina"
+        },
+        {
+          "instruction": "Continue toward Largo di Torre Argentina.",
+          "distanceM": 76,
+          "durationSec": 61,
+          "type": "continue",
+          "streetName": "Largo di Torre Argentina"
+        },
+        {
+          "instruction": "Arrive at Largo di Torre Argentina.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Largo di Torre Argentina"
+        }
+      ]
+    },
+    "w20->w21": {
+      "originStopId": "w20",
+      "destinationStopId": "w21",
+      "fromId": "w20",
+      "toId": "w21",
+      "from": {
+        "lat": 41.89528,
+        "lng": 12.47694
+      },
+      "to": {
+        "lat": 41.90306,
+        "lng": 12.46627
+      },
+      "fromTitle": "Largo di Torre Argentina",
+      "toTitle": "Castel Sant'Angelo",
+      "distanceMeters": 1607,
+      "durationSeconds": 1286,
+      "distanceM": 1607,
+      "durationSec": 1286,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.47694,
+            41.89528
+          ],
+          [
+            12.46627,
+            41.90306
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head northwest toward Castel Sant'Angelo — about 1.6 km.",
+          "distanceM": 1366,
+          "durationSec": 1093,
+          "type": "depart",
+          "streetName": "Castel Sant'Angelo"
+        },
+        {
+          "instruction": "Continue toward Castel Sant'Angelo.",
+          "distanceM": 241,
+          "durationSec": 193,
+          "type": "continue",
+          "streetName": "Castel Sant'Angelo"
+        },
+        {
+          "instruction": "Arrive at Castel Sant'Angelo.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Castel Sant'Angelo"
+        }
+      ]
+    },
+    "w02->w04": {
+      "originStopId": "w02",
+      "destinationStopId": "w04",
+      "fromId": "w02",
+      "toId": "w04",
+      "from": {
+        "lat": 41.8904,
+        "lng": 12.4924
+      },
+      "to": {
+        "lat": 41.8886,
+        "lng": 12.4872
+      },
+      "fromTitle": "Colosseum interior",
+      "toTitle": "The Palatine",
+      "distanceMeters": 617,
+      "durationSeconds": 494,
+      "distanceM": 617,
+      "durationSec": 494,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.4924,
+            41.8904
+          ],
+          [
+            12.4872,
+            41.8886
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head southwest toward The Palatine — about 617 m.",
+          "distanceM": 524,
+          "durationSec": 420,
+          "type": "depart",
+          "streetName": "The Palatine"
+        },
+        {
+          "instruction": "Continue toward The Palatine.",
+          "distanceM": 93,
+          "durationSec": 74,
+          "type": "continue",
+          "streetName": "The Palatine"
+        },
+        {
+          "instruction": "Arrive at The Palatine.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "The Palatine"
+        }
+      ]
+    },
+    "w04->w03": {
+      "originStopId": "w04",
+      "destinationStopId": "w03",
+      "fromId": "w04",
+      "toId": "w03",
+      "from": {
+        "lat": 41.8886,
+        "lng": 12.4872
+      },
+      "to": {
+        "lat": 41.8905,
+        "lng": 12.48835
+      },
+      "fromTitle": "The Palatine",
+      "toTitle": "Arch of Titus",
+      "distanceMeters": 301,
+      "durationSeconds": 241,
+      "distanceM": 301,
+      "durationSec": 241,
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            12.4872,
+            41.8886
+          ],
+          [
+            12.48835,
+            41.8905
+          ]
+        ]
+      },
+      "geometryKind": "temporary-straight-line-fallback",
+      "source": "authored-stop-coordinates",
+      "productDebt": true,
+      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
+      "validationStatus": "temporary_fallback",
+      "steps": [
+        {
+          "instruction": "Head northeast toward Arch of Titus — about 301 m.",
+          "distanceM": 256,
+          "durationSec": 205,
+          "type": "depart",
+          "streetName": "Arch of Titus"
+        },
+        {
+          "instruction": "Continue toward Arch of Titus.",
+          "distanceM": 45,
+          "durationSec": 36,
+          "type": "continue",
+          "streetName": "Arch of Titus"
+        },
+        {
+          "instruction": "Arrive at Arch of Titus.",
+          "distanceM": 0,
+          "durationSec": 0,
+          "type": "arrive",
+          "streetName": "Arch of Titus"
+        }
+      ]
+    }
+  }
+}

@@ -147,11 +147,14 @@ export async function openTransitMap(params = {}) {
   }
 
   if (!payload.frame) {
+    nativeMapLog('openTransitMap rejected', {
+      errorCode: OFFLINE_MAP_ERROR.INVALID_FRAME,
+    })
     return {
       opened: false,
       supported: true,
       cityId: payload.cityId,
-      errorCode: OFFLINE_MAP_ERROR.DOWNLOAD_FAILED,
+      errorCode: OFFLINE_MAP_ERROR.INVALID_FRAME,
       errorMessage: 'frame is required',
     }
   }
