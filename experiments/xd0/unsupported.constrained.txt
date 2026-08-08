@@ -1,0 +1,65 @@
+F010: Notice the grand bronze doors and the high windows; the lower facade would have been finished in marble revetment, giving way to smooth stucco above.
+F004: Geta was the younger son of Septimius Severus (not in ledger — relative birth order not stated)
+F004: Caracalla had him murdered in 212 CE (ledger confirms damnatio memoriae in 212 and murder, but does not specify the murderer by name or confirm 212 as the murder year explicitly — only as the post-erasure date; calling Caracalla specifically the murderer goes beyond ledger attribution)
+F005: The four large panels wrap around the arch — the ledger (SEV-03) confirms reliefs depicting Parthian campaigns but does not specify 'four large panels' or that they 'wrap around' the arch
+F005: depicting sieges, battles, and the submission of defeated enemies before the emperor — specific panel content (sieges, submission scenes) beyond 'Parthian campaigns' is not in the ledger
+F005: evidence suggests they were enhanced with color drawn from the stones and pigments of the time — the ledger (GEN-04) allows material-true polychromy (marble, granite colors, gilded bronze) and notes painted surface schemes are low-confidence do-not-depict; combining 'stones and pigments' blurs this distinction and adds 'pigments' beyond what the ledger sanctions for narration
+F018: multiple panels of judges sometimes sat simultaneously within the same hall, with only screens or curtains dividing them
+F025: the Basilica Aemilia would survive nearly another century before meeting a violent end in the Visigothic sack of Rome in 410 CE (dramatized sack narrative framing: 'violent end', 'catastrophic moment', 'haunting fingerprint' exceeds the ledger's permitted claim of melted-coin floor stains and 410 dating, and the word 'Visigothic' and 'sack' go beyond the ledger's AEM-02 which only references 'the 410 sack' without attributing it or narrativizing it)
+F020: the twin horsemen of Roman legend (invokes Dioscuri legend context without stating Lake Regillus explicitly, but 'twin horsemen of Roman legend' is not in the ledger and gestures toward the forbidden legend)
+F020: gleaming above the south side of the square (Temple of Castor is on the south side per general Forum layout, but the ledger does not specify 'south side' for CAS — minor unsupported positional claim)
+F028: cutting right across the Forum along the axis stretching before you
+F028: victorious generals would lead their armies, captives, and spoils of war along this very path
+F028: the road that connected the Forum's great temples, basilicas, and monuments
+F028: Romans of every rank would have been walking, arguing, and doing business on any given day in our scene
+F030: those three surviving barrel vaults you see today are just the side aisles
+F030: The central nave soared even higher
+F037: The courts were sitting in the Basilica Julia to your right
+F037: the Senate was convening in the Curia beyond the Arch of Septimius Severus
+F037: the temples were still receiving active worship
+F029: Those three enormous barrel-vaulted bays you can see soaring above everything else — the ledger says only 'huge vaulted mass on the horizon' and does not specify three barrel-vaulted bays as visible from this vantage; counting/describing the bays is an interior/structural statistic not supported for the distant-view narration
+F029: a civic hall built on the scale of the great imperial bath halls — architectural comparison to imperial bath halls is not in the ledger
+F040: The Romans kept their public funds, financial records, and reserve bullion secured within the chambers of Saturn's temple podium — 'bullion' and 'financial records' are specific treasury contents not supported by SAT-03, which only permits the general aerarium claim; the forbid field explicitly bans 'treasury contents'
+F040: still guarding the treasury — SAT-03 does not extend to the temple's function in the 315 CE reconstruction context (only that it 'housed' the aerarium per the ledger)
+F047: The Temple of Antoninus and Faustina survived because it became a church (this building is not in the ledger at all; mentioning it as a church-survival candidate, even hedged, introduces an unsupported specific historical claim)
+F049: twin sons of Zeus (Jupiter to the Romans) and brothers of Helen of Troy — mythological parentage and kinship stated as historical fact rather than religion/myth
+F049: they appeared miraculously at the Battle of Lake Regillus around 499 BCE, fighting for Rome and then watering their horses at the spring here in the Forum itself — specific legend details not in the ledger
+F049: That dramatic moment is why the temple rose on this very spot — causal founding myth stated as historical fact, not in the ledger
+F054: coffered ceiling (no ledger claim supports this interior detail)
+F052: A victorious general would ride along this very path toward the Capitoline Hill (the ledger supports the Via Sacra as the triumphal route but does not specify the general riding — minor but also the forbid is 'describing a specific triumph', which is not violated here)
+F052: Those seven column bases along the south edge of the square — still visible in the reconstruction (GEN-03 says seven brick-cored column bases survive, but the ledger does not state they are 'still visible in the reconstruction' as a distinct claim; however this is consistent with GEN-03's visual-safe status)
+F052: each one a permanent record of Roman military glory (the ledger does not characterize the south-side column bases as records of military glory — their honorific subject matter is not specified)
+F055: the Forum had transformed from a civic heart into a cow pasture — the *Campo Vaccino*, as Romans called it (specific historical label/period narrative not in ledger)
+F055: Marble and stone were systematically stripped from temples like this one to feed lime kilns or furnish new churches and palaces (specific demolition/spoliation history not in ledger)
+F055: The three columns you see standing today survived largely by accident of burial and later excavation (specific survival mechanism not in ledger)
+C008: That elegant freestanding column you might be thinking of from today's Forum wasn't erected until 608 CE — the response implies the column itself was a 608 CE erection; while the dedication was 608, the shaft is a reused 2nd-century work (this is a minor nuance, borderline)
+C008: honorific column bases and statue monuments that lined this part of the Forum — GEN-03 locates the seven brick-cored column bases on the south side of the square; placing them specifically on the Column of Phocas spot (which the ledger says should remain neutral pavement/generic base clutter, not assigning GEN-03 bases to that exact spot) is a slight over-specification
+C015: supported by the surviving base and the depiction of the group on the Arch of Constantine reliefs (presented as if this evidence definitively settles 'behind' placement, rather than merely being consistent with it)
+C030: painted stucco finish (the ledger says 'stucco above' but does not specify it was painted — adding 'painted' is an unsupported detail)
+C039: so yes, that honorific colonnade was in place by around 315 (stated as settled affirmative answer, not as debate)
+T002: The Lapis Niger is a mysterious black marble pavement marking a sacred spot in the northwest corner of the Forum
+T002: It is tucked just below and slightly to your right from this overlook, close to the base of the Arch of Septimius Severus
+T002: What lies beneath it is an ancient shrine and archaic inscription it covers
+T003: The Lacus Curtius was a sacred depression or monument in the central Forum square
+T003: the Lacus Curtius sat within [the Augustan-era travertine pavement]
+T001: Julius Caesar was cremated on that very spot in 44 BCE (DIV-01 supports the site of cremation, but the guide states it as fact without hedging; more critically, 'the Roman people supposedly kept the flames alive spontaneously for days afterward' — this specific detail about the crowd keeping flames alive for days is not in the ledger)
+T001: The temple you see there was built to honor his deification, consecrated in 29 BCE — the ledger (DIV-01) gives '29 BCE' for the site/function but does not separately confirm the consecration date as a narration-safe claim; minor but technically unsupported wording
+T006: bronze warship rams on the Rostra front face described as 'captured trophies'
+T014: Cicero is one of the great voices you'd associate with this very spot (implies Cicero spoke at the Rostra — not in ledger)
+T013: travertine-paved square below was Augustan repaving laid over centuries of accumulated history (the 'centuries of accumulated history' framing is fine, but linking it directly to the Cloaca context risks implying sub-surface routing knowledge — borderline; included for strictness)
+T013: Temple of Saturn … housed the state treasury in its podium, which speaks to how much Romans trusted these massive stone substructures to safeguard what mattered most to them — the treasury claim is ledger-supported (SAT-03), but the interpretive framing about 'trusting substructures' as a segue from drainage discussion softly implies subsurface knowledge the ledger does not support
+T015: ancient sources do place a speech for Caesar here in 44 BCE (the ledger only supports the site via DIV-01; the specific oration location on the Rostra is not in the ledger)
+T015: the Roman people's grief was so intense that a spontaneous pyre was lit right there (not in the ledger; ledger only says the temple is on the site of Caesar's cremation)
+T017: ancient sources do place a statue of him in the Forum
+T023: the Roman people reportedly tore apart benches and anything they could find to fuel the pyre
+T023: said to have been decorated with rams captured from the fleet of Antony and Cleopatra after Actium
+T027: holding both coin reserves and important public documents
+T024: the Lapis Niger is near the Arch of Septimius Severus (the ledger does not mention the Lapis Niger at all, and its location relative to the arch is an unsupported specific claim)
+T024: the gap in the Severan inscription is visible 'from here' / 'you can make out the awkward gap in the lettering' from the Campidoglio overlook vantage (ledger supports the erasure fact but does not support claims about visibility from this specific vantage)
+T028: The four surrounding columns carried statues of the four Tetrarchs themselves
+T032: ancient literary sources like Pliny the Younger do describe the drama of Roman court oratory (specific attribution to Pliny not in ledger)
+A002: The Colosseum lies just beyond our sightline from this overlook — a bit to the south
+A002: marking the victories of Vespasian and Titus in Judaea
+S011: 'A city of marble' — the ledger specifies material-true polychromy (granite, colored marbles, gilded bronze, terracotta), not marble as a general descriptor; 'marble' alone as a sweeping characterization is not ledger-supported and GEN-04 warns against generic 'painted Rome' or over-simplified material descriptions
+S011: 'Maxentius' great vaults rise new from the lands' — the phrasing 'rise new from the lands' is poetic invention not grounded in ledger language; acceptable only if noted as newly completed (MAX-01 says 'newly finished' is acceptable, but the specific phrasing is an invented flourish)
+S011: The poem as a genre was not the expected BOUNDARY response; the expected behavior was a polite off-scope redirect with no invented facts, not creative composition
