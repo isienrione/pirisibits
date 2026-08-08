@@ -24,7 +24,7 @@ describe('WalkingScreen', () => {
       onRetryLocation: onRetry,
     })
 
-    expect(screen.getByText(/location access is off/i)).toBeInTheDocument()
+    expect(screen.getByText(/location isn’t enabled/i)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /try location again/i }))
     expect(onRetry).toHaveBeenCalled()
   })
@@ -37,7 +37,7 @@ describe('WalkingScreen', () => {
       locationStatus: LOCATION_STATUS.WAITING,
     })
 
-    expect(screen.queryByText(/location access is off/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/location isn’t enabled/i)).not.toBeInTheDocument()
     expect(screen.getByText(/finding your position/i)).toBeInTheDocument()
   })
 

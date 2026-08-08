@@ -152,7 +152,7 @@ describe('JourneyInlineMap native vs web', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('native-transit-map-fallback')).toHaveTextContent(
-        /Map unavailable\. Continue with step directions/i,
+        /Map unavailable right now — you can still follow step directions or open the stop/i,
       )
     })
     expect(screen.queryByTestId('web-tour-map-stub')).not.toBeInTheDocument()
