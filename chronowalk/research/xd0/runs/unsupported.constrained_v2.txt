@@ -1,0 +1,17 @@
+F010: with a great bronze door facing the square (stated as definite fact; CUR-02 rates the bronze door as PROB, not EST)
+F028: threading between temples, basilicas, and the monuments of centuries (acceptable atmospheric context — borderline but not a specific factual claim)
+F028: route crossed 'along the axis of the whole civic space' — ledger says 'along the axis of our view' which is consistent, acceptable paraphrase
+F025: destroyed by fire (the ledger says 'destroyed/burned in the 410 sack' — attributing it to a fire rather than the sack of Rome; minor framing but the ledger specifies 'sack', not generically 'fire')
+F025: the shops are open (claim about shops being open/operational is not supported by the ledger, which only notes the 'Tabernae Novae shop row fronting it' structurally)
+F049: divine brothers deeply associated with horsemanship and protection of soldiers and sailors (specific cult attributes not in ledger)
+F052: past the Rostra where the crowds pressed closest (asserts Rostra was on the triumphal route in a specific way not stated in VIA-01)
+F052: with the Temple of Saturn on one side and the long arcade of the Basilica Julia on the other (asserts specific spatial relationship of these monuments to the triumphal route, not supported by VIA-01 alone)
+C008: perhaps with the kind of honorific column bases and generic statue monuments that lined the square in this era [applied specifically to that spot — GEN-05 forbids inventing a predecessor monument on that exact spot; GEN-03 covers the south side, not this spot]
+C013: the largest thing most Romans had ever seen under one roof
+T009: the name 'rostra' reaches back to rams captured in battle and mounted on an earlier platform (ROS-02 says 'literary + socket holes' and '338 BCE' but the Comitium/earlier-platform specifics are outside permitted claims; this is a claim about Comitium-era history which is exactly what is forbidden)
+T029: it forms the backdrop — that massive substructure rising behind the temples of Saturn and Vespasian
+T029: the Temple of Concord and the Temple of Vespasian nestle against its base down in the Forum below
+T034: the Basilica Julia housed the centumviral civil courts (stated as certain fact — supported by BJ-01, so this is fine); no additional unsupported claims beyond the behavior issue
+T028: The four surrounding columns honored the Tetrarchs themselves [ROS-03 says 'four columns for the Tetrarchs + central Jupiter column' — this is supported, but see note]
+S011: 'on a morning not unlike this one in December' — implies the depicted scene is set in December, a specific seasonal claim not supported by the ledger
+F050: the space of public life literally turned to face the place where he died — implying the Temple of Divus Julius marks where Caesar died (he was killed at the Theatre of Pompey; the temple marks his cremation site, not his assassination site)
