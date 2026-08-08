@@ -2,17 +2,31 @@
   "version": "rome-canonical-legs-v1",
   "tourId": "rome",
   "cityId": "rome",
-  "generatedAt": "2026-08-08T08:14:21.121Z",
+  "generatedAt": "2026-08-08T09:23:33.320Z",
   "source": "authored-stop-coordinates",
   "geometryKindDefault": "temporary-straight-line-fallback",
   "note": "Offline Rome stop→stop package is INCOMPLETE: one or more legs still use temporary straight-line fallback (product debt). Run with --fetch-mapbox after explicit approval to capture real walking geometry. Temporary geometry is not pedestrian street routing.",
   "completeness": {
-    "expectedLegCount": 21,
+    "expectedLegCount": 20,
     "realWalkingLegCount": 0,
-    "temporaryFallbackLegCount": 21,
+    "temporaryFallbackLegCount": 20,
     "invalidLegCount": 0,
     "complete": false
   },
+  "optionalRideTransitions": [
+    {
+      "originStopId": "w21",
+      "destinationStopId": "w22",
+      "fromId": "w21",
+      "toId": "w22",
+      "transitId": "t22",
+      "travelMode": "ride",
+      "etaLabel": "estimated 30 min drive",
+      "title": "Optional Encore › Via Appia Antica",
+      "durationSeconds": 120,
+      "reason": "Authored as a non-walking / ride transition (optional encore). Not part of the offline walking-leg package."
+    }
+  ],
   "productDebt": {
     "allLegsUseTemporaryFallbackGeometry": true,
     "legKeys": [
@@ -34,7 +48,6 @@
       "w18->w19",
       "w19->w20",
       "w20->w21",
-      "w21->w22",
       "w02->w04",
       "w04->w03"
     ],
@@ -83,8 +96,7 @@
         "w23->w18",
         "w18->w19",
         "w19->w20",
-        "w20->w21",
-        "w21->w22"
+        "w20->w21"
       ]
     },
     {
@@ -131,8 +143,7 @@
         "w23->w18",
         "w18->w19",
         "w19->w20",
-        "w20->w21",
-        "w21->w22"
+        "w20->w21"
       ]
     }
   ],
@@ -1232,67 +1243,6 @@
           "durationSec": 0,
           "type": "arrive",
           "streetName": "Castel Sant'Angelo"
-        }
-      ]
-    },
-    "w21->w22": {
-      "originStopId": "w21",
-      "destinationStopId": "w22",
-      "fromId": "w21",
-      "toId": "w22",
-      "from": {
-        "lat": 41.90306,
-        "lng": 12.46627
-      },
-      "to": {
-        "lat": 41.8635,
-        "lng": 12.5148
-      },
-      "fromTitle": "Castel Sant'Angelo",
-      "toTitle": "Optional Encore › Via Appia Antica",
-      "distanceMeters": 7745,
-      "durationSeconds": 6196,
-      "distanceM": 7745,
-      "durationSec": 6196,
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            12.46627,
-            41.90306
-          ],
-          [
-            12.5148,
-            41.8635
-          ]
-        ]
-      },
-      "geometryKind": "temporary-straight-line-fallback",
-      "source": "authored-stop-coordinates",
-      "productDebt": true,
-      "productDebtReason": "Temporary stop-coordinate fallback only — not a pedestrian street route. Replace via --fetch-mapbox.",
-      "validationStatus": "temporary_fallback",
-      "steps": [
-        {
-          "instruction": "Head southeast toward Optional Encore › Via Appia Antica — about 7.7 km.",
-          "distanceM": 6583,
-          "durationSec": 5267,
-          "type": "depart",
-          "streetName": "Optional Encore › Via Appia Antica"
-        },
-        {
-          "instruction": "Continue toward Optional Encore › Via Appia Antica.",
-          "distanceM": 1162,
-          "durationSec": 929,
-          "type": "continue",
-          "streetName": "Optional Encore › Via Appia Antica"
-        },
-        {
-          "instruction": "Arrive at Optional Encore › Via Appia Antica.",
-          "distanceM": 0,
-          "durationSec": 0,
-          "type": "arrive",
-          "streetName": "Optional Encore › Via Appia Antica"
         }
       ]
     },
