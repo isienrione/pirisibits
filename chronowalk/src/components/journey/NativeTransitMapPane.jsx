@@ -12,12 +12,14 @@ import {
 import { resolveActiveMapLeg } from '../../content/mapStops.js'
 
 const FALLBACK_COPY = 'Map unavailable. Continue with step directions.'
-const MAX_FRAME_WAIT_ATTEMPTS = 20
+const MAX_FRAME_WAIT_ATTEMPTS = 24
+/** Prefer a real layout size before opening the native overlay (avoids 0×0 / sub-pixel slots). */
+const MIN_FRAME_PX = 8
 
 function readFrame(el) {
   if (!el || typeof el.getBoundingClientRect !== 'function') return null
   const rect = el.getBoundingClientRect()
-  if (rect.width < 2 || rect.height < 2) return null
+  if (rect.width < MIN_FRAME_PX || rect.height < MIN_FRAME_PX) return null
   return {
     x: rect.left,
     y: rect.top,
@@ -152,11 +154,10 @@ export default function NativeTransitMapPane({
           renderer: result?.renderer ?? null,
         })
         if (!result?.opened) {
-          nativeMapLog('pane fallback', {
-            errorCode: result?.errorCode ?? 'download_failed',
-          })
+          const code = result?.errorCode ?? 'download_failed'
+          nativeMapLog('pane fallback', { errorCode: code })
           setFailed(true)
-          setErrorCode(result?.errorCode ?? 'download_failed')
+          setErrorCode(code)
           return
         }
         openedRef.current = true
@@ -277,7 +278,10 @@ export default function NativeTransitMapPane({
         height: '100%',
         // Transparent host — native MapView overlays this slot above WKWebView.
         background: 'transparent',
-        minHeight: 120,
+        minHeight: 160,
+        minWidth: 1,
+        flex: '1 1 auto',
+        alignSelf: 'stretch',
       }}
     />
   )
