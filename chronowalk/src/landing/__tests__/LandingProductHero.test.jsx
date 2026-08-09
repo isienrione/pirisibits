@@ -95,6 +95,25 @@ describe('LandingProductHero story slide enlarge', () => {
     fireEvent.click(screen.getByRole('button', { name: /Enlarge Choose your Roman walk/i }))
     expect(screen.getByRole('dialog', { name: /Choose your Roman walk/i })).toBeInTheDocument()
   })
+
+  it('adds tier poster slides before Choose your walk with pricing hotspots', () => {
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Historica/i }))
+    expect(
+      screen.getByRole('link', { name: /Roma Historica — Centro Storico & Pantheon/i }),
+    ).toHaveAttribute('href', '#rome-central')
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Antica/i }))
+    expect(
+      screen.getByRole('link', { name: /Roma Antica — Colosseum, Palatine & Forum/i }),
+    ).toHaveAttribute('href', '#rome-essential')
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Eterna/i }))
+    expect(
+      screen.getByRole('link', { name: /Roma Eterna — the complete city loop/i }),
+    ).toHaveAttribute('href', '#rome-complete')
+  })
 })
 
 describe('LandingProductHero CTA hierarchy', () => {
