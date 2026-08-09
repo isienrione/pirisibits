@@ -118,7 +118,7 @@ describe('landing product-story architecture (V4)', () => {
     expect(hero.primaryCtaMeta).toBeNull()
     expect(hero.secondaryCta).toBeNull()
     expect(hero.getAppCta).toBe(LANDING_CTA.unlockRomePriced)
-    expect(hero.getAppCta).toMatch(/Unlock full tours from €4\.99|from €9\.99/)
+    expect(hero.getAppCta).toMatch(/Try a tour from €4\.99|from €9\.99/)
     expect(hero.getAppHref).toBe('#pricing')
     expect(hero.primaryHref).toBe('/preview')
     expect(hero.trustLine).toBeNull()
@@ -179,11 +179,11 @@ describe('landing product-story architecture (V4)', () => {
     expect(pricingIdx).toBeGreaterThan(personasIdx)
   })
 
-  it('shows a nav Get the tour CTA that deep-links to the get-app section', () => {
+  it('shows a nav Try a tour CTA that deep-links to the get-app section', () => {
     expect(LANDING_CONTENT.header.cta).toBe(LANDING_CTA.getApp)
-    expect(LANDING_CONTENT.header.cta).toMatch(/Get the tour/)
+    expect(LANDING_CONTENT.header.cta).toMatch(/Try a tour from €4\.99|Get the tour/)
     expect(LANDING_CONTENT.header.ctaHref).toBe('#get-app')
-    expect(LANDING_CONTENT.header.ctaShort).toMatch(/Get Tour|From €4\.99/)
+    expect(LANDING_CONTENT.header.ctaShort).toMatch(/Get Tour|Try from €4\.99/)
   })
 
   it('removes the top-right header sneak-peek CTA', () => {

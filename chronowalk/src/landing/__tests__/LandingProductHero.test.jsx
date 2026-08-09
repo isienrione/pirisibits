@@ -172,11 +172,11 @@ describe('LandingProductHero CTA hierarchy', () => {
     ).toBeInTheDocument()
 
     const paidCta = screen.getByRole('link', {
-      name: 'Unlock full tours from €4.99',
+      name: 'Try a tour from €4.99',
     })
     expect(paidCta).toHaveAttribute('href', '#pricing')
     expect(paidCta).toHaveAttribute('aria-label', LANDING_CTA.unlockRomePriced)
-    expect(paidCta).toHaveTextContent(/Unlock full tours from €4\.99/)
+    expect(paidCta).toHaveTextContent(/Try a tour from €4\.99/)
     expect(paidCta.querySelector('[data-testid="cw-offer-price"]')).toBeFalsy()
 
     const freeCta = screen.getByRole('button', {
@@ -221,7 +221,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
-    expect(kids[1].textContent).toMatch(/Unlock full tours from €4\.99|From €4\.99/)
+    expect(kids[1].textContent).toMatch(/Try a tour from €4\.99|Try from €4\.99/)
     expect(kids[1].className).toMatch(/getapp/)
   })
 
@@ -239,7 +239,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     )
 
     const unlock = screen.getByRole('link', {
-      name: 'Unlock full tours from €4.99',
+      name: 'Try a tour from €4.99',
     })
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: LANDING_CTA.tryPantheonFree })).not.toBeInTheDocument()
@@ -247,7 +247,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
-    expect(kids[0].textContent).toMatch(/Unlock full tours from €4\.99|From €4\.99/)
+    expect(kids[0].textContent).toMatch(/Try a tour from €4\.99|Try from €4\.99/)
     expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
