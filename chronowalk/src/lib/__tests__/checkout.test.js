@@ -2,16 +2,42 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getTierById,
   isCheckoutConfigured,
+  openCheckout,
   pickCheckoutBaseUrl,
   TRANSACTION_STEPS,
 } from '../checkout.js'
 import {
+  __setLaunchOfferActiveForTests,
+} from '../launchOffer.js'
+import {
   buildPaddleCustomData,
   isPaddleCheckoutReady,
+  openPaddleCheckout,
   PADDLE_PRICE_ENV_KEYS,
   resolvePaddlePriceId,
   __resetPaddleForTests,
 } from '../paddle.js'
+
+vi.mock('../paddle.js', async () => {
+  const actual = await vi.importActual('../paddle.js')
+  return {
+    ...actual,
+    openPaddleCheckout: vi.fn(),
+  }
+})
+
+vi.mock('../config.js', async () => {
+  const actual = await vi.importActual('../config.js')
+  return {
+    ...actual,
+    loadAppConfig: vi.fn(async () => ({
+      paddle_prices: {},
+      checkout_ready: true,
+      abVariantCents: 1499,
+    })),
+    getAbVariantCents: () => 1499,
+  }
+})
 
 const PADDLE_ENV_KEYS = [
   'VITE_PADDLE_CLIENT_TOKEN',
@@ -21,6 +47,11 @@ const PADDLE_ENV_KEYS = [
   'VITE_PADDLE_PRICE_ROME_COMPLETE',
   'VITE_PADDLE_PRICE_ROME_COUPLE',
   'VITE_PADDLE_PRICE_ROME_FAMILY',
+  'VITE_PADDLE_DISCOUNT_ROME_CENTRAL',
+  'VITE_PADDLE_DISCOUNT_ROME_ESSENTIAL',
+  'VITE_PADDLE_DISCOUNT_ROME_COMPLETE',
+  'VITE_PADDLE_DISCOUNT_ROME_COUPLE',
+  'VITE_PADDLE_DISCOUNT_ROME_FAMILY',
 ]
 
 function stubPaddleEnvCleared() {
@@ -37,18 +68,27 @@ function stubPaddleEnvPopulated() {
   vi.stubEnv('VITE_PADDLE_PRICE_ROME_COMPLETE', 'pri_complete_live')
   vi.stubEnv('VITE_PADDLE_PRICE_ROME_COUPLE', 'pri_couple_live')
   vi.stubEnv('VITE_PADDLE_PRICE_ROME_FAMILY', 'pri_family_live')
+  vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_CENTRAL', 'dsc_central')
+  vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_ESSENTIAL', 'dsc_essential')
+  vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_COMPLETE', 'dsc_complete')
+  vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_COUPLE', 'dsc_couple')
+  vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_FAMILY', 'dsc_family')
 }
 
 describe('checkout helpers (Paddle)', () => {
   beforeEach(() => {
     vi.unstubAllEnvs()
     __resetPaddleForTests()
+    __setLaunchOfferActiveForTests(null)
     stubPaddleEnvCleared()
+    openPaddleCheckout.mockReset()
+    openPaddleCheckout.mockResolvedValue({ ok: true, mode: 'overlay', priceId: 'pri_x' })
   })
 
   afterEach(() => {
     vi.unstubAllEnvs()
     __resetPaddleForTests()
+    __setLaunchOfferActiveForTests(null)
   })
 
   it('detects configured checkout from Paddle env', () => {
@@ -69,6 +109,7 @@ describe('checkout helpers (Paddle)', () => {
   })
 
   it('resolves rome tiers and Couple/Family bundles', () => {
+    __setLaunchOfferActiveForTests(false)
     expect(getTierById('rome-essential')?.priceCents).toBe(999)
     expect(getTierById('rome-couple')?.priceCents).toBe(2500)
     expect(getTierById('rome-couple')?.name).toBe('Couple')
@@ -158,5 +199,69 @@ describe('checkout helpers (Paddle)', () => {
       'setup',
     ])
     expect(TRANSACTION_STEPS.find((s) => s.id === 'checkout')?.body).toMatch(/Paddle/)
+  })
+
+  it('applies Launch Offer discountId with original price ids for every SKU', async () => {
+    stubPaddleEnvPopulated()
+    __setLaunchOfferActiveForTests(true)
+
+    const matrix = [
+      ['rome-central', 'pri_central_live', 'dsc_central'],
+      ['rome-essential', 'pri_essential_live', 'dsc_essential'],
+      ['rome-complete', 'pri_complete_live', 'dsc_complete'],
+      ['rome-couple', 'pri_couple_live', 'dsc_couple'],
+      ['rome-family', 'pri_family_live', 'dsc_family'],
+    ]
+
+    for (const [tierId, priceId, discountId] of matrix) {
+      openPaddleCheckout.mockClear()
+      const result = await openCheckout({ tierId, source: 'test' })
+      expect(result.ok).toBe(true)
+      expect(openPaddleCheckout).toHaveBeenCalledWith(
+        expect.objectContaining({
+          priceId,
+          discountId,
+          tierId,
+        }),
+      )
+    }
+  })
+
+  it('fails closed when Launch Offer is active but discount id is missing', async () => {
+    stubPaddleEnvPopulated()
+    vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_COMPLETE', '')
+    __setLaunchOfferActiveForTests(true)
+
+    const result = await openCheckout({ tierId: 'rome-complete' })
+    expect(result).toEqual({ ok: false, reason: 'missing_discount_id' })
+    expect(openPaddleCheckout).not.toHaveBeenCalled()
+  })
+
+  it('does not pass discountId when Launch Offer is disabled', async () => {
+    stubPaddleEnvPopulated()
+    __setLaunchOfferActiveForTests(false)
+
+    const result = await openCheckout({ tierId: 'rome-complete' })
+    expect(result.ok).toBe(true)
+    expect(openPaddleCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({
+        priceId: 'pri_complete_live',
+        discountId: null,
+        tierId: 'rome-complete',
+      }),
+    )
+  })
+
+  it('returns promotional display prices from getTierById while offer is active', () => {
+    __setLaunchOfferActiveForTests(true)
+    expect(getTierById('rome-central')).toMatchObject({
+      price: '€4.99',
+      basePrice: '€9.99',
+      launchOffer: true,
+    })
+    expect(getTierById('rome-essential')).toMatchObject({
+      price: '€6.99',
+      basePrice: '€9.99',
+    })
   })
 })

@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Expand } from 'lucide-react'
 import { LANDING_CONTENT } from './landingData.js'
+import OfferPriceDisplay from './OfferPriceDisplay.jsx'
 import { trackLandingPricingView } from './landingAnalytics.js'
 import {
   observeDwellOnce,
   trackPricingView,
   trackTierCardView,
 } from '../lib/analytics.ts'
+import { mapOffersWithLaunchOffer } from '../lib/launchOffer.js'
 import { useMediaQuery } from '../hooks/useMediaQuery.js'
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
 import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
@@ -61,11 +63,14 @@ function PacingNote({ text, className }) {
 function DesktopPackageCard({ tier, index, onBeginTier }) {
   const theme = tier.theme ?? 'eterna'
   const cardRef = useRef(null)
+  const priceA11y = tier.launchOffer
+    ? `${tier.basePrice} now ${tier.price}. ${tier.offerLabel}.`
+    : `${tier.price}.`
   const alt = [
     tier.name,
     tier.tagline,
     tier.pacingNote,
-    tier.price,
+    priceA11y,
     `${tier.stopsLabel}, ${tier.durationLabel}, ${tier.distanceLabel}.`,
     tier.description,
   ]
@@ -91,7 +96,7 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
         {tier.name}
       </h3>
       <p className="cw-v4-visually-hidden">
-        {tier.price}. {tier.priceNote}. {tier.description}
+        {priceA11y} {tier.priceNote}. {tier.description}
       </p>
 
       <div className="cw-v4-pkg__frame">
@@ -106,6 +111,18 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           onError={retryImageOnError}
           decoding="async"
         />
+        {tier.launchOffer ? (
+          <div className="cw-v4-pkg__offer-chip" aria-hidden="true">
+            <OfferPriceDisplay
+              price={tier.price}
+              basePrice={tier.basePrice}
+              offerLabel={tier.offerLabel}
+              saveLabel={tier.saveLabel}
+              launchOffer
+              compact
+            />
+          </div>
+        ) : null}
         <button
           type="button"
           className="cw-v4-pkg__hotspot"
@@ -279,10 +296,17 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
 
         <p className="cw-v4-pkg-mobile-card__desc">{activeTier.description}</p>
 
-        <div className="cw-v4-pkg-mobile-card__price-row">
-          <p className="cw-v4-pkg-mobile-card__price">{activeTier.price}</p>
-          <p className="cw-v4-pkg-mobile-card__price-note">{activeTier.priceNote}</p>
-        </div>
+        <OfferPriceDisplay
+          className="cw-v4-pkg-mobile-card__price-row"
+          priceClassName="cw-v4-pkg-mobile-card__price"
+          noteClassName="cw-v4-pkg-mobile-card__price-note"
+          price={activeTier.price}
+          basePrice={activeTier.basePrice}
+          offerLabel={activeTier.offerLabel}
+          saveLabel={activeTier.saveLabel}
+          launchOffer={activeTier.launchOffer}
+          note={activeTier.priceNote}
+        />
 
         <button
           type="button"
@@ -353,7 +377,16 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
                 {tier.pacingNote ? (
                   <p className="cw-v4-pkg-compare__pacing">{tier.pacingNote}</p>
                 ) : null}
-                <p className="cw-v4-pkg-compare__price">{tier.price}</p>
+                <OfferPriceDisplay
+                  as="p"
+                  className="cw-v4-pkg-compare__price"
+                  price={tier.price}
+                  basePrice={tier.basePrice}
+                  offerLabel={tier.offerLabel}
+                  saveLabel={tier.saveLabel}
+                  launchOffer={tier.launchOffer}
+                  compact
+                />
               </div>
               <button
                 type="button"
@@ -386,9 +419,15 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
  */
 export default function LandingRomeTiersSection({ onBeginTier }) {
   const section = LANDING_CONTENT.pricing
-  const tiers = section.tiers ?? []
+  const tiers = useMemo(
+    () => mapOffersWithLaunchOffer(section.tiers ?? []),
+    [section.tiers],
+  )
   const shared = section.sharedExperience
-  const bundles = shared?.bundles ?? []
+  const bundles = useMemo(
+    () => mapOffersWithLaunchOffer(shared?.bundles ?? []),
+    [shared?.bundles],
+  )
   const sectionRef = useRef(null)
   const isDesktop = useMediaQuery(DESKTOP_MQ, true)
 
@@ -424,6 +463,14 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
           </h2>
           {section.subheadline ? (
             <p className="cw-v2-section__lead cw-v4-section-lead">{section.subheadline}</p>
+          ) : null}
+          {tiers.some((tier) => tier.launchOffer) ? (
+            <p className="cw-v4-pricing__launch-note" data-testid="cw-pricing-launch-note">
+              <span className="cw-v4-pricing__launch-note-label">Launch offer</span>
+              <span className="cw-v4-pricing__launch-note-copy">
+                Temporary introductory pricing — scratched list prices show what you save today.
+              </span>
+            </p>
           ) : null}
           {section.intro ? <p className="cw-v2-pricing__intro">{section.intro}</p> : null}
         </header>
@@ -468,7 +515,13 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                   aria-labelledby={`pricing-name-${bundle.id}`}
                 >
                   {bundle.badge ? (
-                    <span className="cw-v2-pricing-card__ribbon cw-v2-pricing-card__ribbon--savings">
+                    <span
+                      className={`cw-v2-pricing-card__ribbon${
+                        bundle.launchOffer
+                          ? ' cw-v2-pricing-card__ribbon--launch'
+                          : ' cw-v2-pricing-card__ribbon--savings'
+                      }`}
+                    >
                       {bundle.badge}
                     </span>
                   ) : null}
@@ -478,10 +531,17 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
                   </h4>
                   <p className="cw-v2-pricing-card__best-for">{bundle.bestFor}</p>
 
-                  <div className="cw-v2-pricing-card__price-row">
-                    <span className="cw-v2-pricing-card__price">{bundle.price}</span>
-                    <span className="cw-v2-pricing-card__note">{bundle.priceNote}</span>
-                  </div>
+                  <OfferPriceDisplay
+                    className="cw-v2-pricing-card__price-row"
+                    priceClassName="cw-v2-pricing-card__price"
+                    noteClassName="cw-v2-pricing-card__note"
+                    price={bundle.price}
+                    basePrice={bundle.basePrice}
+                    offerLabel={bundle.offerLabel}
+                    saveLabel={bundle.saveLabel}
+                    launchOffer={bundle.launchOffer}
+                    note={bundle.priceNote}
+                  />
 
                   <dl
                     className="cw-v2-pricing-card__meta cw-v2-pricing-card__meta--bundle"

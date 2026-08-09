@@ -4,12 +4,15 @@ import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.
 import AcquisitionFaq from './AcquisitionFaq.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import FreePantheonPreviewEmbed from './FreePantheonPreviewEmbed.jsx'
+import { getUnlockAllStopsCta } from '../landingData.js'
+import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
 import { FREE_PANTHEON_COPY } from './acquisitionCopy.js'
 import { trackFreePantheonFullTourClicked } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
 
 export default function FreePantheonPage() {
   const copy = FREE_PANTHEON_COPY
+  const unlockAllCta = getUnlockAllStopsCta()
   const navigate = useNavigate()
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
 
@@ -61,9 +64,10 @@ export default function FreePantheonPage() {
             <button
               type="button"
               className="cw-acq-btn cw-acq-btn--primary"
+              aria-label={unlockAllCta}
               onClick={() => goFullTour('upgrade')}
             >
-              {copy.upgradeCta}
+              <LaunchOfferUnlockCtaLabel fallback={unlockAllCta} />
             </button>
             <Link
               to="/"
@@ -91,6 +95,16 @@ export default function FreePantheonPage() {
         open={Boolean(checkout.pendingTierId)}
         tierLabel={checkout.pendingTier?.name ?? null}
         priceLabel={checkout.pendingTier?.price ?? null}
+        basePriceLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.basePrice ?? null : null
+        }
+        offerLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.offerLabel ?? null : null
+        }
+        saveLabel={
+          checkout.pendingTier?.launchOffer ? checkout.pendingTier?.saveLabel ?? null : null
+        }
+        launchOffer={Boolean(checkout.pendingTier?.launchOffer)}
         busy={checkout.checkoutBusy}
         onCancel={checkout.cancelConsent}
         onConfirm={checkout.confirmConsent}

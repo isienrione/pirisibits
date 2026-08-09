@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import {
   LANDING_INTENT_DEFAULT,
   LANDING_INTENT_VARIANTS,
@@ -8,8 +8,13 @@ import {
   resolveLandingIntentHero,
 } from '../landingIntent.js'
 import { LANDING_CTA } from '../landingData.js'
+import { __setLaunchOfferActiveForTests } from '../../lib/launchOffer.js'
 
 describe('landingIntent', () => {
+  afterEach(() => {
+    __setLaunchOfferActiveForTests(null)
+  })
+
   it('defaults when intent is absent', () => {
     expect(resolveLandingIntent('')).toBe('rome')
     expect(resolveLandingIntent('?utm_source=google')).toBe('rome')
@@ -48,12 +53,13 @@ describe('landingIntent', () => {
   })
 
   it('keeps CTA destinations centralized', () => {
+    __setLaunchOfferActiveForTests(true)
     for (const id of Object.keys(LANDING_INTENT_VARIANTS)) {
       const hero = resolveLandingIntentHero(/** @type {any} */ (id))
       expect(hero.getAppHref).toBe('#pricing')
       expect(hero.primaryHref).toBe('/preview')
       expect(hero.unlockCta).toBe(LANDING_CTA.unlockRomePriced)
-      expect(hero.unlockCta).toMatch(/from €9\.99/)
+      expect(hero.unlockCta).toMatch(/Unlock all 21 stops · €10/)
     }
   })
 
@@ -79,6 +85,9 @@ describe('landingIntent', () => {
 
   it('exposes landing_intent analytics ids matching allowlist', () => {
     expect(getLandingIntentVariant('forum').id).toBe('forum')
+    __setLaunchOfferActiveForTests(true)
+    expect(LANDING_CTA.unlockRomePriced).toBe('Unlock all 21 stops · €10')
+    __setLaunchOfferActiveForTests(false)
     expect(LANDING_CTA.unlockRomePriced).toBe('Unlock from €9.99')
   })
 })

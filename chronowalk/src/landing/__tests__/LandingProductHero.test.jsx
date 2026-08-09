@@ -1,13 +1,22 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import LandingProductHero from '../v4/LandingProductHero.jsx'
 import { LANDING_CTA } from '../landingData.js'
+import { __setLaunchOfferActiveForTests } from '../../lib/launchOffer.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
 }))
 
 describe('LandingProductHero manual gallery', () => {
+  beforeEach(() => {
+    __setLaunchOfferActiveForTests(true)
+  })
+
+  afterEach(() => {
+    __setLaunchOfferActiveForTests(null)
+  })
+
   it('does not auto-advance slides on a timer', () => {
     vi.useFakeTimers()
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
@@ -118,10 +127,14 @@ describe('LandingProductHero CTA hierarchy', () => {
     ).toBeInTheDocument()
 
     const paidCta = screen.getByRole('link', {
-      name: 'Unlock from €9.99',
+      name: 'Unlock all 21 stops · €10',
     })
     expect(paidCta).toHaveAttribute('href', '#pricing')
-    expect(paidCta).toHaveTextContent(LANDING_CTA.unlockRomePriced)
+    expect(paidCta).toHaveAttribute('aria-label', LANDING_CTA.unlockRomePriced)
+    expect(paidCta).toHaveTextContent(/Unlock all 21 stops/)
+    expect(paidCta).toHaveTextContent('€14.99')
+    expect(paidCta).toHaveTextContent('€10')
+    expect(paidCta.querySelector('[data-testid="cw-offer-price"]')).toBeTruthy()
 
     const freeCta = screen.getByRole('button', {
       name: LANDING_CTA.tryPantheonFree,
@@ -165,7 +178,9 @@ describe('LandingProductHero CTA hierarchy', () => {
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
     expect(kids[0].textContent).toMatch(/Try the Pantheon stop free/i)
-    expect(kids[1].textContent).toMatch(/Unlock from €9\.99/i)
+    expect(kids[1].textContent).toMatch(/Unlock all 21 stops|Unlock/)
+    expect(kids[1].textContent).toMatch(/€10/)
+    expect(kids[1].textContent).toMatch(/€14\.99/)
     expect(kids[1].className).toMatch(/getapp/)
   })
 
@@ -183,7 +198,7 @@ describe('LandingProductHero CTA hierarchy', () => {
     )
 
     const unlock = screen.getByRole('link', {
-      name: 'Unlock from €9.99',
+      name: 'Unlock all 21 stops · €10',
     })
     expect(screen.getByRole('button', { name: 'Continue your walk' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: LANDING_CTA.tryPantheonFree })).not.toBeInTheDocument()
@@ -191,7 +206,8 @@ describe('LandingProductHero CTA hierarchy', () => {
     const actions = document.querySelector('.cw-v4-hero__actions')
     const kids = [...actions.querySelectorAll('a, button')]
     expect(kids).toHaveLength(2)
-    expect(kids[0].textContent).toMatch(/Unlock from €9\.99/i)
+    expect(kids[0].textContent).toMatch(/Unlock all 21 stops|Unlock/)
+    expect(kids[0].textContent).toMatch(/€10/)
     expect(kids[1].textContent).toMatch(/Continue your walk/i)
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue your walk' }))
