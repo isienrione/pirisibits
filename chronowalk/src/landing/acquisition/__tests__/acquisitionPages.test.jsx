@@ -177,7 +177,7 @@ describe('acquisition pages', () => {
       ),
     })
 
-    fireEvent.click(screen.getByRole('button', { name: /Unlock full tour/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Unlock full tour$/i }))
 
     expect(screen.getByTestId('landing-home')).toBeInTheDocument()
     expect(screen.queryByTestId('access-page')).not.toBeInTheDocument()
@@ -199,7 +199,10 @@ describe('acquisition pages', () => {
     )
     expect(screen.getByRole('button', { name: /Choose Roma Antica/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Choose Roma Historica/i })).toBeInTheDocument()
-    expect(screen.getAllByRole('button', { name: /Unlock all 21 stops/i }).length).toBeGreaterThan(0)
+    expect(
+      screen.getAllByRole('button', { name: /Unlock full tours from €4\.99|Unlock all 21 stops/i })
+        .length,
+    ).toBeGreaterThan(0)
     expect(
       screen.getByRole('link', { name: /See more details of each route and pricing/i }),
     ).toHaveAttribute('href', '/#pricing')

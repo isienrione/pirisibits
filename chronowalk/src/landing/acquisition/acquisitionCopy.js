@@ -27,7 +27,7 @@ export const FREE_PANTHEON_COPY = Object.freeze({
   upgradeHeading: 'Want the rest of the Pantheon?',
   upgradeLead:
     'Unlock Parts 2-4 (including the interior) plus 21 Rome stops: Colosseum, Forum, and more.',
-  upgradeCta: 'Unlock all 21 stops · €14.99',
+  upgradeCta: 'Unlock full tours from €4.99',
   compareCta: 'Compare Rome routes',
   faq: [
     {
@@ -57,7 +57,7 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   lead:
     'Explore the Colosseum, Roman Forum and the monuments around them through immersive audio, visual reconstruction and a route you can follow at your own pace.',
   primaryCtaPrefix: 'Explore the Ancient Rome route',
-  secondaryCta: 'Unlock all 21 Rome stops · €14.99',
+  secondaryCta: 'Unlock full tours from €4.99',
   trustLine: 'One payment · No app-store download · Prepare for offline walking',
   admissionNoteEmphasis: 'Admission tickets are not included',
   admissionNote:
@@ -80,9 +80,9 @@ export const ANCIENT_ROME_COPY = Object.freeze({
     'See the surviving monument, reveal the reconstructed setting, then hear the story while standing where it happened.',
   choiceHeading: 'Choose your Rome walk',
   anticaCta: 'Choose Roma Antica',
-  eternaCta: 'Unlock all 21 stops',
+  eternaCta: 'Unlock all 21 stops · €10',
   historicaCta: 'Choose Roma Historica',
-  eternaValueLine: 'Only €5 more for the complete 21-stop Rome experience.',
+  eternaValueLine: 'Roma Eterna is €10 during the Launch Offer — all 21 stops.',
   pricingDetailsCta: 'See more details of each route and pricing',
   faq: [
     {
@@ -139,7 +139,7 @@ export const HOW_IT_WORKS_COPY = Object.freeze({
   ],
   finalHeading: 'See it for yourself.',
   finalPrimaryCta: 'Experience the Pantheon free',
-  finalSecondaryCta: 'Unlock all 21 stops · €14.99',
+  finalSecondaryCta: 'Unlock full tours from €4.99',
 })
 
 /** Representative Ancient Rome stop labels (subset for scannable list). */

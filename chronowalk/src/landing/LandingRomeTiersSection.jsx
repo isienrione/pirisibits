@@ -112,15 +112,29 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
           decoding="async"
         />
         {tier.launchOffer ? (
-          <div className="cw-v4-pkg__offer-chip" aria-hidden="true">
-            <OfferPriceDisplay
-              price={tier.price}
-              basePrice={tier.basePrice}
-              offerLabel={tier.offerLabel}
-              saveLabel={tier.saveLabel}
-              launchOffer
-              compact
-            />
+          <div className="cw-v4-pkg__offer-panel" aria-hidden="true">
+            {/*
+              Covers painted list price + Buy art only. Foot features stay on the
+              poster below this band (do not extend the panel over them).
+            */}
+            <div className="cw-v4-pkg__offer-panel-buy">
+              <OfferPriceDisplay
+                className="cw-v4-pkg__offer-panel-price"
+                price={tier.price}
+                basePrice={tier.basePrice}
+                offerLabel={tier.offerLabel}
+                saveLabel={tier.saveLabel}
+                note={tier.priceNote}
+                noteClassName="cw-v4-pkg__offer-panel-note"
+                launchOffer
+              />
+            </div>
+            <span className="cw-v4-pkg__offer-panel-cta">
+              <span className="cw-v4-pkg__offer-panel-cta-label">{tier.primaryCta}</span>
+              <span className="cw-v4-pkg__offer-panel-cta-arrow" aria-hidden="true">
+                →
+              </span>
+            </span>
           </div>
         ) : null}
         <button

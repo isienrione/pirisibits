@@ -3,6 +3,9 @@ import {
   getEffectivePriceCents,
   getLaunchOfferHeroUnlockCta,
   getLaunchOfferHeroUnlockShortCta,
+  getLaunchOfferNavCta,
+  getLaunchOfferNavShortCta,
+  isLaunchOfferActive,
 } from '../lib/launchOffer.js'
 
 /** Scroll target for the Rome journey / purchase section. */
@@ -26,8 +29,7 @@ export const LANDING_CTA = {
   /** Primary purchase-path CTA (Roma Eterna). */
   unlockRome: 'Unlock all 21 stops',
   /**
-   * Hero paid CTA. During Launch Offer anchors on Roma Eterna promo (€10),
-   * not the cheapest Historica pack — product hierarchy stays Eterna-first.
+   * Hero paid CTA. During Launch Offer leads with the entry floor (€4.99).
    */
   get unlockRomePriced() {
     return getLaunchOfferHeroUnlockCta()
@@ -50,12 +52,21 @@ export const LANDING_CTA = {
   exploreRomeRoutes: 'See all Rome walks',
   chooseTour: 'Choose your walk',
   howItWorks: 'How does ChronoWalk work?',
-  getApp: 'Get the tour',
+  get getApp() {
+    return getLaunchOfferNavCta()
+  },
+  get getAppShort() {
+    return getLaunchOfferNavShortCta()
+  },
   reviews: '★★★★★ Reviews',
 }
 
-/** Sticky / acquisition “unlock Eterna” CTA using current effective price. */
+/**
+ * Sticky / acquisition unlock CTA.
+ * Launch Offer: entry floor. Otherwise: current Eterna effective price.
+ */
 export function getUnlockAllStopsCta() {
+  if (isLaunchOfferActive()) return getLaunchOfferHeroUnlockCta()
   const cents = getEffectivePriceCents('rome-complete', LANDING_PRICE_FALLBACK_CENTS)
   return `Unlock all 21 stops · ${formatEurFromCents(cents)}`
 }
@@ -899,9 +910,13 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     /** Shown in the nav only after the hero leaves the viewport. */
-    cta: LANDING_CTA.getApp,
+    get cta() {
+      return LANDING_CTA.getApp
+    },
     ctaHref: '#get-app',
-    ctaShort: 'Get Tour',
+    get ctaShort() {
+      return LANDING_CTA.getAppShort
+    },
   },
 
   footer: {

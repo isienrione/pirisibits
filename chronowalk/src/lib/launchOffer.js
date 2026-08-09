@@ -161,35 +161,40 @@ export function launchOfferAnalyticsProps(sku) {
   }
 }
 
-/** Hero / sticky CTA when Roma Eterna is the purchase anchor. */
+/**
+ * Entry-price CTA during Launch Offer — anchors on the lowest walk (Historica €4.99).
+ * When the offer is off, keep the prior “from €9.99” floor.
+ */
 export function getLaunchOfferHeroUnlockCta() {
   if (!isLaunchOfferActive()) return 'Unlock from €9.99'
-  return 'Unlock all 21 stops · €10'
+  return 'Unlock full tours from €4.99'
 }
 
 /** Short mobile hero label. */
 export function getLaunchOfferHeroUnlockShortCta() {
   if (!isLaunchOfferActive()) return 'Unlock from €9.99'
-  return 'Unlock · €10'
+  return 'From €4.99'
+}
+
+/** Nav “Get the tour” CTA with Launch Offer floor price. */
+export function getLaunchOfferNavCta() {
+  if (!isLaunchOfferActive()) return 'Get the tour'
+  return 'Get the tour from €4.99'
+}
+
+/** Short nav CTA for tight headers. */
+export function getLaunchOfferNavShortCta() {
+  if (!isLaunchOfferActive()) return 'Get Tour'
+  return 'From €4.99'
 }
 
 /**
  * Structured hero unlock price parts for scratched-base disclosure UI.
- * Null when Launch Offer is off.
+ * Null when Launch Offer is on — entry CTAs use plain “from €4.99” copy instead
+ * of scratching the Eterna list price (which reads as €10, not the floor).
  */
 export function getLaunchOfferHeroPriceParts() {
-  if (!isLaunchOfferActive()) return null
-  const pricing = getLaunchOfferPricing('rome-complete')
-  if (!pricing) return null
-  return {
-    prefix: 'Unlock all 21 stops',
-    prefixShort: 'Unlock',
-    basePrice: pricing.baseLabel,
-    price: pricing.promoLabel,
-    offerLabel: LAUNCH_OFFER_LABEL,
-    saveLabel: `Save ${formatEurFromCents(pricing.discountCents)}`,
-    launchOffer: true,
-  }
+  return null
 }
 
 /**
