@@ -23,7 +23,9 @@ export const LAUNCH_OFFER_ACTIVE = true
 
 /**
  * Promotional amounts per SKU (cents). Base amounts come from the catalog.
- * discountEnvKey → VITE_PADDLE_DISCOUNT_* (dsc_…) set in Cloudflare / .env.local
+ *
+ * `discountId` is the live Paddle catalog discount baked into the client.
+ * Optional `VITE_PADDLE_DISCOUNT_*` env vars override these (Cloudflare / .env.local).
  *
  * Mapping (do not invert — both solo packs are €9.99 base):
  *   rome-central  = Roma Historica
@@ -33,26 +35,31 @@ export const LAUNCH_OFFER_BY_SKU = Object.freeze({
   'rome-central': Object.freeze({
     promoCents: 499,
     discountCents: 500,
+    discountId: 'dsc_01kzhm7jeghbrygas2faa33mfr',
     discountEnvKey: 'VITE_PADDLE_DISCOUNT_ROME_CENTRAL',
   }),
   'rome-essential': Object.freeze({
     promoCents: 699,
     discountCents: 300,
+    discountId: 'dsc_01kzhm3jvfcsde2t57syqw8d60',
     discountEnvKey: 'VITE_PADDLE_DISCOUNT_ROME_ESSENTIAL',
   }),
   'rome-complete': Object.freeze({
     promoCents: 1000,
     discountCents: 499,
+    discountId: 'dsc_01kzhm1a03hzjmskcx3w1g5c20',
     discountEnvKey: 'VITE_PADDLE_DISCOUNT_ROME_COMPLETE',
   }),
   'rome-couple': Object.freeze({
     promoCents: 1700,
     discountCents: 800,
+    discountId: 'dsc_01kzhmaacq0xvpevgyfqxw37d0',
     discountEnvKey: 'VITE_PADDLE_DISCOUNT_ROME_COUPLE',
   }),
   'rome-family': Object.freeze({
     promoCents: 2500,
     discountCents: 1000,
+    discountId: 'dsc_01kzhmbv727802sfj92tjr057r',
     discountEnvKey: 'VITE_PADDLE_DISCOUNT_ROME_FAMILY',
   }),
 })
@@ -80,6 +87,7 @@ export function formatEurFromCents(cents) {
 
 /**
  * Resolve Paddle discount id (dsc_…) for a SKU when the offer is active.
+ * Prefers VITE_PADDLE_DISCOUNT_* when set; otherwise the baked-in catalog id.
  * @param {string | null | undefined} sku
  * @param {{ env?: Record<string, string | undefined> }} [options]
  */
@@ -88,12 +96,14 @@ export function resolveLaunchDiscountId(sku, options = {}) {
   const row = LAUNCH_OFFER_BY_SKU[sku]
   if (!row) return null
 
+  const bakedIn = String(row.discountId ?? '').trim() || null
+
   if (Object.prototype.hasOwnProperty.call(options, 'env')) {
     const bag = options.env && typeof options.env === 'object' ? options.env : {}
-    return String(bag[row.discountEnvKey] ?? '').trim() || null
+    return String(bag[row.discountEnvKey] ?? '').trim() || bakedIn
   }
 
-  return String(import.meta.env[row.discountEnvKey] ?? '').trim() || null
+  return String(import.meta.env[row.discountEnvKey] ?? '').trim() || bakedIn
 }
 
 /**

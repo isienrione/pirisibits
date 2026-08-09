@@ -227,14 +227,21 @@ describe('checkout helpers (Paddle)', () => {
     }
   })
 
-  it('fails closed when Launch Offer is active but discount id is missing', async () => {
+  it('falls back to baked-in Launch Offer discount id when env override is empty', async () => {
     stubPaddleEnvPopulated()
     vi.stubEnv('VITE_PADDLE_DISCOUNT_ROME_COMPLETE', '')
     __setLaunchOfferActiveForTests(true)
 
+    const { LAUNCH_OFFER_BY_SKU } = await import('../launchOffer.js')
     const result = await openCheckout({ tierId: 'rome-complete' })
-    expect(result).toEqual({ ok: false, reason: 'missing_discount_id' })
-    expect(openPaddleCheckout).not.toHaveBeenCalled()
+    expect(result.ok).toBe(true)
+    expect(openPaddleCheckout).toHaveBeenCalledWith(
+      expect.objectContaining({
+        priceId: 'pri_complete_live',
+        discountId: LAUNCH_OFFER_BY_SKU['rome-complete'].discountId,
+        tierId: 'rome-complete',
+      }),
+    )
   })
 
   it('does not pass discountId when Launch Offer is disabled', async () => {

@@ -72,6 +72,15 @@ describe('launchOffer', () => {
     }
   })
 
+  it('falls back to baked-in live discount ids when env overrides are empty', () => {
+    vi.unstubAllEnvs()
+    for (const [sku, row] of Object.entries(LAUNCH_OFFER_BY_SKU)) {
+      expect(row.discountId).toMatch(/^dsc_01/)
+      expect(resolveLaunchDiscountId(sku, { env: {} })).toBe(row.discountId)
+      expect(resolveLaunchDiscountId(sku)).toBe(row.discountId)
+    }
+  })
+
   it('formats whole euros without decimals', () => {
     expect(formatEurFromCents(1000)).toBe('€10')
     expect(formatEurFromCents(499)).toBe('€4.99')
