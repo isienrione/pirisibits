@@ -102,9 +102,9 @@ describe('launchOffer', () => {
   })
 
   it('leads entry CTAs with Launch Offer floor price (€4.99)', () => {
-    expect(getLaunchOfferHeroUnlockCta()).toBe('Unlock full tours from €4.99')
-    expect(getLaunchOfferHeroUnlockShortCta()).toBe('From €4.99')
-    expect(getLaunchOfferNavCta()).toBe('Get the tour from €4.99')
+    expect(getLaunchOfferHeroUnlockCta()).toBe('Try a tour from €4.99')
+    expect(getLaunchOfferHeroUnlockShortCta()).toBe('Try from €4.99')
+    expect(getLaunchOfferNavCta()).toBe('Try a tour from €4.99')
   })
 
   it('enriches landing offers for UI without mutating catalog bases', () => {

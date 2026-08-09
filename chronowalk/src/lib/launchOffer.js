@@ -167,25 +167,25 @@ export function launchOfferAnalyticsProps(sku) {
  */
 export function getLaunchOfferHeroUnlockCta() {
   if (!isLaunchOfferActive()) return 'Unlock from €9.99'
-  return 'Unlock full tours from €4.99'
+  return 'Try a tour from €4.99'
 }
 
 /** Short mobile hero label. */
 export function getLaunchOfferHeroUnlockShortCta() {
   if (!isLaunchOfferActive()) return 'Unlock from €9.99'
-  return 'From €4.99'
+  return 'Try from €4.99'
 }
 
-/** Nav “Get the tour” CTA with Launch Offer floor price. */
+/** Nav CTA with Launch Offer floor price. */
 export function getLaunchOfferNavCta() {
   if (!isLaunchOfferActive()) return 'Get the tour'
-  return 'Get the tour from €4.99'
+  return 'Try a tour from €4.99'
 }
 
 /** Short nav CTA for tight headers. */
 export function getLaunchOfferNavShortCta() {
   if (!isLaunchOfferActive()) return 'Get Tour'
-  return 'From €4.99'
+  return 'Try from €4.99'
 }
 
 /**
