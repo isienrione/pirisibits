@@ -337,14 +337,27 @@ export default function LandingProductHero({
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
           const isPackages = slide.id === 'choose-your-walk'
+          const packageHotspots = isPackages
+            ? PACKAGE_HOTSPOTS
+            : slide.pricingTarget
+              ? [
+                  {
+                    id: slide.pricingTarget,
+                    label: `${slide.title} — see pricing`,
+                    // Cover painted price + Buy on the package poster.
+                    style: { left: '5%', top: '68%', width: '90%', height: '24%' },
+                  },
+                ]
+              : null
+          const hasHotspots = Boolean(packageHotspots?.length)
           return (
             <div
               key={slide.id}
               className={`cw-v4-hero__slide-layer cw-v4-hero__slide-layer--art${active ? ' is-active' : ''}`}
               aria-hidden={!active}
             >
-              <div className={`cw-v4-hero__art-frame${isPackages ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
-                {isPackages ? (
+              <div className={`cw-v4-hero__art-frame${hasHotspots ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
+                {hasHotspots ? (
                   <div className="cw-v4-hero__art-shell">
                     <img
                       className="cw-v4-hero__art"
@@ -358,7 +371,7 @@ export default function LandingProductHero({
                       onError={retryImageOnError}
                     />
                     <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
-                      {PACKAGE_HOTSPOTS.map((spot) => (
+                      {packageHotspots.map((spot) => (
                         <a
                           key={spot.id}
                           href={`#${spot.id}`}

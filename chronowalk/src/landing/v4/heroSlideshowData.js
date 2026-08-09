@@ -1,7 +1,11 @@
 /**
  * Secondary hero slides - full-bleed art from public/landing/hero-slides/.
- * Slide 0 in the hero carousel remains LANDING_HERO (Rome sky); these five
+ * Slide 0 in the hero carousel remains LANDING_HERO (Rome sky); these frames
  * follow it. Assets are portrait (≈9:16) marketing frames.
+ *
+ * Package posters (Historica → Antica → Eterna) sit immediately before
+ * “Choose your Roman walk”, in ascending list/promo price order.
+ * Optional `pricingTarget` deep-links the Buy band to `#pricing` / that tier.
  *
  * width/height are intrinsic pixel sizes so the frame does not collapse before
  * decode (especially important on iOS when slides toggle via opacity).
@@ -34,6 +38,30 @@ export const HERO_SLIDESHOW_SLIDES = [
     src: '/landing/hero-slides/audio-narratives.png',
     width: 1086,
     height: 1448,
+  },
+  {
+    id: 'package-historica',
+    title: 'Roma Historica — Centro Storico & Pantheon.',
+    src: '/landing/hero-slides/package-roma-historica.png',
+    width: 941,
+    height: 1672,
+    pricingTarget: 'rome-central',
+  },
+  {
+    id: 'package-antica',
+    title: 'Roma Antica — Colosseum, Palatine & Forum.',
+    src: '/landing/hero-slides/package-roma-antica.png',
+    width: 1024,
+    height: 1536,
+    pricingTarget: 'rome-essential',
+  },
+  {
+    id: 'package-eterna',
+    title: 'Roma Eterna — the complete city loop.',
+    src: '/landing/hero-slides/package-roma-eterna.png',
+    width: 1024,
+    height: 1536,
+    pricingTarget: 'rome-complete',
   },
   {
     id: 'choose-your-walk',

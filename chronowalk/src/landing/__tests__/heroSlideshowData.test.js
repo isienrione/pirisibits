@@ -5,12 +5,15 @@ import { resolve } from 'node:path'
 
 describe('heroSlideshowData', () => {
   it('points every story slide at a real portrait PNG', () => {
-    expect(HERO_SLIDESHOW_SLIDES.length).toBe(5)
+    expect(HERO_SLIDESHOW_SLIDES.length).toBe(8)
     expect(HERO_SLIDESHOW_SLIDES.map((s) => s.id)).toEqual([
       'then-now',
       'ruin-room',
       'gps-guidance',
       'audio-narratives',
+      'package-historica',
+      'package-antica',
+      'package-eterna',
       'choose-your-walk',
     ])
 
@@ -21,6 +24,25 @@ describe('heroSlideshowData', () => {
       const disk = resolve(process.cwd(), `public${slide.src}`)
       expect(existsSync(disk), disk).toBe(true)
     }
+  })
+
+  it('places package posters before Choose your walk in ascending price order', () => {
+    const ids = HERO_SLIDESHOW_SLIDES.map((s) => s.id)
+    const chooseIdx = ids.indexOf('choose-your-walk')
+    expect(ids.slice(chooseIdx - 3, chooseIdx)).toEqual([
+      'package-historica',
+      'package-antica',
+      'package-eterna',
+    ])
+    expect(HERO_SLIDESHOW_SLIDES.find((s) => s.id === 'package-historica')?.pricingTarget).toBe(
+      'rome-central',
+    )
+    expect(HERO_SLIDESHOW_SLIDES.find((s) => s.id === 'package-antica')?.pricingTarget).toBe(
+      'rome-essential',
+    )
+    expect(HERO_SLIDESHOW_SLIDES.find((s) => s.id === 'package-eterna')?.pricingTarget).toBe(
+      'rome-complete',
+    )
   })
 
   it('keeps portrait phone mockups available for landing reuse', () => {
