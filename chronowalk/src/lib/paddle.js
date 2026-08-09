@@ -51,7 +51,7 @@ let paddleSingleton
 let paddleInitPromise = null
 let paddleStartupWarned = false
 
-/** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean, promotionProps?: Record<string, unknown> } | null} */
+/** @type {{ tier: string, priceEur?: number, openedAt: number, completed: boolean, promotionProps?: Record<string, unknown>, discountId?: string | null } | null} */
 let activeCheckout = null
 
 /**
@@ -61,9 +61,10 @@ let activeCheckout = null
  *   tier: string,
  *   priceCents?: number | null,
  *   promotionProps?: Record<string, unknown>,
+ *   discountId?: string | null,
  * }} opts
  */
-export function beginCheckoutAnalytics({ tier, priceCents, promotionProps } = {}) {
+export function beginCheckoutAnalytics({ tier, priceCents, promotionProps, discountId } = {}) {
   if (!tier) return
   activeCheckout = {
     tier,
@@ -72,6 +73,20 @@ export function beginCheckoutAnalytics({ tier, priceCents, promotionProps } = {}
     completed: false,
     promotionProps:
       promotionProps && typeof promotionProps === 'object' ? promotionProps : undefined,
+    discountId:
+      typeof discountId === 'string' && discountId.trim() ? discountId.trim() : null,
+  }
+}
+
+function ensureCheckoutDiscountApplied() {
+  const discountId = activeCheckout?.discountId
+  if (!discountId || !paddleSingleton?.Checkout?.updateCheckout) return
+  try {
+    // Re-assert catalog discount after load — some overlay sessions ignore the
+    // open()-time discountId until the checkout frame is ready.
+    paddleSingleton.Checkout.updateCheckout({ discountId })
+  } catch (err) {
+    console.warn('[paddle] updateCheckout(discountId) failed', err)
   }
 }
 
@@ -84,6 +99,7 @@ function handlePaddleCheckoutEvent(event) {
   const promotionProps = activeCheckout?.promotionProps
 
   if (name === 'checkout.loaded') {
+    ensureCheckoutDiscountApplied()
     if (tier) {
       trackCheckoutOpened({ tier, priceEur, ...promotionProps })
     }
@@ -505,6 +521,7 @@ export async function openPaddleCheckout({
     options.discountId = appliedDiscountId
     options.settings.showAddDiscounts = false
     options.settings.allowDiscountRemoval = false
+    if (activeCheckout) activeCheckout.discountId = appliedDiscountId
   }
 
   if (customData && Object.keys(customData).length > 0) {
@@ -516,6 +533,11 @@ export async function openPaddleCheckout({
 
   try {
     paddle.Checkout.open(options)
+    // Belt-and-suspenders: apply again once the overlay has spun up.
+    if (appliedDiscountId) {
+      queueMicrotask(() => ensureCheckoutDiscountApplied())
+      setTimeout(() => ensureCheckoutDiscountApplied(), 350)
+    }
     return {
       ok: true,
       mode: 'overlay',

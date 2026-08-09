@@ -131,6 +131,7 @@ export async function openCheckout({ tierId, source = 'app', mode, email, consen
       tier: tierId,
       priceCents: effectiveCents,
       promotionProps,
+      discountId,
     })
   }
 

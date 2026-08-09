@@ -227,7 +227,7 @@ export default function LandingProductHero({
                   <a
                     key="unlock"
                     href={section.getAppHref ?? '#pricing'}
-                    className="cw-v4-btn cw-v4-btn--getapp"
+                    className={`cw-v4-btn cw-v4-btn--getapp${offerParts ? ' cw-v4-btn--getapp-offer' : ''}`}
                     aria-label={section.getAppCta}
                     tabIndex={interactive ? 0 : -1}
                     onClick={(event) => {
@@ -236,6 +236,7 @@ export default function LandingProductHero({
                       ;(onGetApp || onChooseTour)?.()
                     }}
                   >
+                    {/* Single visible label tree — CSS toggles full vs short, never both. */}
                     <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
                       {offerParts ? (
                         <LaunchOfferUnlockCtaLabel fallback={section.getAppCta} onDark />

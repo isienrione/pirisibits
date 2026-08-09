@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const openMock = vi.fn()
+const updateCheckoutMock = vi.fn()
 const initializePaddleMock = vi.fn()
 
 vi.mock('@paddle/paddle-js', () => ({
@@ -96,9 +97,10 @@ describe('paddle checkout analytics', () => {
     __resetPaddleForTests()
     vi.clearAllMocks()
     openMock.mockReset()
+    updateCheckoutMock.mockReset()
     initializePaddleMock.mockReset()
     initializePaddleMock.mockResolvedValue({
-      Checkout: { open: openMock },
+      Checkout: { open: openMock, updateCheckout: updateCheckoutMock },
     })
     vi.stubEnv('VITE_PADDLE_CLIENT_TOKEN', 'test_client_token')
     vi.stubEnv('VITE_PADDLE_ENV', 'sandbox')
@@ -192,6 +194,11 @@ describe('paddle checkout analytics', () => {
 
   it('passes discountId and locks discount UI when Launch Offer discount is supplied', async () => {
     openMock.mockImplementation(() => {})
+    beginCheckoutAnalytics({
+      tier: 'rome-complete',
+      priceCents: 1000,
+      discountId: 'dsc_complete',
+    })
 
     const result = await openPaddleCheckout({
       priceId: 'pri_complete_live',
@@ -216,6 +223,10 @@ describe('paddle checkout analytics', () => {
         }),
       }),
     )
+
+    const opts = initializePaddleMock.mock.calls[0][0]
+    opts.eventCallback({ name: 'checkout.loaded' })
+    expect(updateCheckoutMock).toHaveBeenCalledWith({ discountId: 'dsc_complete' })
   })
 
   it('omits discountId and discount UI locks when no discount is passed', async () => {

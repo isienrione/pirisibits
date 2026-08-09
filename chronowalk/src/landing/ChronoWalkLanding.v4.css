@@ -540,12 +540,16 @@
     font-size: 0.78rem;
   }
 
-  .cw-v4-hero__actions--pair .cw-v4-btn-label--full {
-    display: none;
+  .cw-v4-hero__actions--pair .cw-v4-btn-label--full,
+  .cw-v4-hero__actions--pair .cw-v4-btn--getapp-offer .cw-v4-btn-label--full {
+    display: none !important;
   }
 
-  .cw-v4-hero__actions--pair .cw-v4-btn-label--short {
-    display: inline;
+  .cw-v4-hero__actions--pair .cw-v4-btn-label--short,
+  .cw-v4-hero__actions--pair .cw-v4-btn--getapp-offer .cw-v4-btn-label--short {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.15rem;
   }
 }
 
@@ -3748,24 +3752,12 @@
   font-weight: 650;
 }
 
-.cw-v4-btn--getapp .cw-v4-btn-label--full,
-.cw-v4-btn--getapp .cw-v4-btn-label--short {
+/* Keep full/short label show-hide intact — only style the inner offer stack. */
+.cw-v4-btn--getapp .cw-offer-unlock-cta {
+  display: inline-flex;
   align-items: baseline;
   gap: 0.15rem;
-}
-
-.cw-v4-btn--getapp .cw-v4-btn-label--full:has(.cw-offer-price),
-.cw-v4-btn--getapp .cw-v4-btn-label--short:has(.cw-offer-price) {
-  display: inline-flex;
-}
-
-.cw-v4-btn-label__offer {
-  margin-left: 0.05rem;
-}
-
-.cw-v4-btn-label__dot {
-  margin: 0 0.15rem;
-  opacity: 0.8;
+  max-width: 100%;
 }
 
 .cw-v4-btn--getapp .cw-offer-price__was {
@@ -3774,5 +3766,17 @@
 
 .cw-v4-btn--getapp .cw-offer-price__now {
   font-weight: 700;
+}
+
+@media (max-width: 39.99rem) {
+  .cw-v4-hero__actions--pair > .cw-v4-btn--getapp {
+    white-space: nowrap;
+  }
+
+  .cw-v4-hero__actions--pair .cw-v4-btn--getapp .cw-offer-unlock-cta__text {
+    max-width: 4.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
