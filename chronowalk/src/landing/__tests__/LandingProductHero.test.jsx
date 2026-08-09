@@ -100,19 +100,45 @@ describe('LandingProductHero story slide enlarge', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
     fireEvent.click(screen.getByRole('tab', { name: /Roma Historica/i }))
-    expect(
-      screen.getByRole('link', { name: /Roma Historica — Centro Storico & Pantheon/i }),
-    ).toHaveAttribute('href', '#rome-central')
+    expect(screen.getByRole('link', { name: /Roma Historica/i })).toHaveAttribute(
+      'href',
+      '#rome-central',
+    )
 
     fireEvent.click(screen.getByRole('tab', { name: /Roma Antica/i }))
-    expect(
-      screen.getByRole('link', { name: /Roma Antica — Colosseum, Palatine & Forum/i }),
-    ).toHaveAttribute('href', '#rome-essential')
+    expect(screen.getByRole('link', { name: /Roma Antica/i })).toHaveAttribute(
+      'href',
+      '#rome-essential',
+    )
 
     fireEvent.click(screen.getByRole('tab', { name: /Roma Eterna/i }))
-    expect(
-      screen.getByRole('link', { name: /Roma Eterna — the complete city loop/i }),
-    ).toHaveAttribute('href', '#rome-complete')
+    expect(screen.getByRole('link', { name: /Roma Eterna/i })).toHaveAttribute(
+      'href',
+      '#rome-complete',
+    )
+  })
+
+  it('overlays Launch Offer scratched prices on package poster slides', () => {
+    __setLaunchOfferActiveForTests(true)
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Historica/i }))
+    const historicaOffer = screen.getByTestId('cw-hero-pkg-offer-rome-central')
+    expect(historicaOffer).toHaveTextContent('€9.99')
+    expect(historicaOffer).toHaveTextContent('€4.99')
+    expect(historicaOffer).toHaveTextContent(/Launch offer/i)
+    expect(historicaOffer).toHaveTextContent(/Save €5/i)
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Antica/i }))
+    const anticaOffer = screen.getByTestId('cw-hero-pkg-offer-rome-essential')
+    expect(anticaOffer).toHaveTextContent('€6.99')
+    expect(anticaOffer).toHaveTextContent(/Save €3/i)
+
+    fireEvent.click(screen.getByRole('tab', { name: /Roma Eterna/i }))
+    const eternaOffer = screen.getByTestId('cw-hero-pkg-offer-rome-complete')
+    expect(eternaOffer).toHaveTextContent('€14.99')
+    expect(eternaOffer).toHaveTextContent('€10')
+    expect(eternaOffer).toHaveTextContent(/Save €4\.99/i)
   })
 })
 
