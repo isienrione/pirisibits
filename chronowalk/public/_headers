@@ -37,8 +37,11 @@
   Cache-Control: no-cache, no-store, must-revalidate
 /rome/open.html
   Cache-Control: no-cache, no-store, must-revalidate
+# Hashed assets are content-addressed, but avoid year-long immutable caching:
+# a deploy race can briefly serve a miss as HTML, and immutable would pin that
+# poison on the custom domain. One-day cache still CDNs well and self-heals.
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=86400, must-revalidate
 # SEO discovery files must never be served as the SPA shell (text/html).
 /robots.txt
   Content-Type: text/plain; charset=utf-8

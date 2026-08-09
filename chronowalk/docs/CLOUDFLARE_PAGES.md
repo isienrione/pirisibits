@@ -70,7 +70,7 @@ If a phone shows **This site can’t be reached / ERR_FAILED** for `chronowalk.c
 4. Settings → **Refresh app** / error-boundary **Try again** runs one controlled cache+SW recovery without clearing credentials.
 ## Cache headers
 
-`public/_headers` ships with the build and tells Cloudflare **not** to edge-cache the app shell or service worker (`/`, `/landing`, `/index.html`, `/sw.js`, workbox bundles). Hashed files under `/assets/` stay long-lived via content hashes.
+`public/_headers` ships with the build and tells Cloudflare **not** to edge-cache the app shell or service worker (`/`, `/landing`, `/index.html`, `/sw.js`, workbox bundles). Hashed files under `/assets/` use a one-day `must-revalidate` cache (not year-long `immutable`) so a deploy-race miss that briefly serves the SPA shell under an asset URL can self-heal without a manual purge.
 
 If testers still see an old UI after a deploy:
 
