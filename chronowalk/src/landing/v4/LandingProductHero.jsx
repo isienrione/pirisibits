@@ -1,11 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Expand } from 'lucide-react'
 import { LANDING_CONTENT, ROME_TIERS } from '../landingData.js'
 import { LANDING_HERO } from '../landingVisualAssets.js'
 import { LandingResponsivePicture } from '../LandingResponsivePicture.jsx'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
-import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
-import { getLaunchOfferHeroPriceParts } from '../../lib/launchOffer.js'
+import OfferPriceDisplay, { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
+import {
+  getLaunchOfferHeroPriceParts,
+  mapOffersWithLaunchOffer,
+} from '../../lib/launchOffer.js'
 import { trackCtaClick } from '../../lib/analytics.ts'
 import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
@@ -121,6 +124,10 @@ export default function LandingProductHero({
   const touchStartX = useRef(null)
   const expandTriggerRef = useRef(null)
   const heroRef = useRef(null)
+  const offerTiersById = useMemo(() => {
+    const mapped = mapOffersWithLaunchOffer(ROME_TIERS)
+    return Object.fromEntries(mapped.map((tier) => [tier.id, tier]))
+  }, [])
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.
   useEffect(() => {
@@ -337,19 +344,27 @@ export default function LandingProductHero({
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
           const isPackages = slide.id === 'choose-your-walk'
+          const offerTier = slide.pricingTarget ? offerTiersById[slide.pricingTarget] : null
           const packageHotspots = isPackages
             ? PACKAGE_HOTSPOTS
             : slide.pricingTarget
               ? [
                   {
                     id: slide.pricingTarget,
-                    label: `${slide.title} — see pricing`,
+                    label: offerTier
+                      ? `${offerTier.name} · ${
+                          offerTier.launchOffer
+                            ? `${offerTier.basePrice} now ${offerTier.price}`
+                            : offerTier.price
+                        } — see pricing`
+                      : `${slide.title} — see pricing`,
                     // Cover painted price + Buy on the package poster.
                     style: { left: '5%', top: '68%', width: '90%', height: '24%' },
                   },
                 ]
               : null
           const hasHotspots = Boolean(packageHotspots?.length)
+          const themeClass = offerTier?.theme ? ` cw-v4-pkg--${offerTier.theme}` : ''
           return (
             <div
               key={slide.id}
@@ -358,7 +373,7 @@ export default function LandingProductHero({
             >
               <div className={`cw-v4-hero__art-frame${hasHotspots ? ' cw-v4-hero__art-frame--hotspots' : ''}`}>
                 {hasHotspots ? (
-                  <div className="cw-v4-hero__art-shell">
+                  <div className={`cw-v4-hero__art-shell${themeClass}`}>
                     <img
                       className="cw-v4-hero__art"
                       src={slide.src}
@@ -370,6 +385,32 @@ export default function LandingProductHero({
                       fetchPriority={active ? 'high' : 'low'}
                       onError={retryImageOnError}
                     />
+                    {offerTier?.launchOffer ? (
+                      <div
+                        className="cw-v4-pkg__offer-panel cw-v4-hero__pkg-offer"
+                        data-testid={`cw-hero-pkg-offer-${offerTier.id}`}
+                        aria-hidden="true"
+                      >
+                        <div className="cw-v4-pkg__offer-panel-buy">
+                          <OfferPriceDisplay
+                            className="cw-v4-pkg__offer-panel-price"
+                            price={offerTier.price}
+                            basePrice={offerTier.basePrice}
+                            offerLabel={offerTier.offerLabel}
+                            saveLabel={offerTier.saveLabel}
+                            note={offerTier.priceNote}
+                            noteClassName="cw-v4-pkg__offer-panel-note"
+                            launchOffer
+                          />
+                        </div>
+                        <span className="cw-v4-pkg__offer-panel-cta">
+                          <span className="cw-v4-pkg__offer-panel-cta-label">{offerTier.primaryCta}</span>
+                          <span className="cw-v4-pkg__offer-panel-cta-arrow" aria-hidden="true">
+                            →
+                          </span>
+                        </span>
+                      </div>
+                    ) : null}
                     <div className="cw-v4-hero__art-hotspots" aria-hidden={!active}>
                       {packageHotspots.map((spot) => (
                         <a
@@ -470,6 +511,29 @@ export default function LandingProductHero({
           open
           src={viewerSlide.src}
           title={viewerSlide.title}
+          width={viewerSlide.width}
+          height={viewerSlide.height}
+          accent={offerTiersById[viewerSlide.pricingTarget]?.theme ?? 'eterna'}
+          action={(() => {
+            const tier = viewerSlide.pricingTarget
+              ? offerTiersById[viewerSlide.pricingTarget]
+              : null
+            if (!tier) return null
+            return {
+              name: tier.name,
+              price: tier.price,
+              basePrice: tier.basePrice,
+              offerLabel: tier.offerLabel,
+              saveLabel: tier.saveLabel,
+              launchOffer: tier.launchOffer,
+              ctaLabel: tier.primaryCta,
+              onCta: () => {
+                trackCtaClick({ tier: tier.id, ctaLocation: 'route_card' })
+                setViewerSlide(null)
+                scrollToPricingTarget(tier.id)
+              },
+            }
+          })()}
           onClose={() => {
             setViewerSlide(null)
             const trigger = expandTriggerRef.current
