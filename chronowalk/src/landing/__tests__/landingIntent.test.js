@@ -59,7 +59,7 @@ describe('landingIntent', () => {
       expect(hero.getAppHref).toBe('#pricing')
       expect(hero.primaryHref).toBe('/preview')
       expect(hero.unlockCta).toBe(LANDING_CTA.unlockRomePriced)
-      expect(hero.unlockCta).toMatch(/Unlock all 21 stops · €10/)
+      expect(hero.unlockCta).toMatch(/Unlock full tours from €4\.99/)
     }
   })
 
@@ -86,7 +86,7 @@ describe('landingIntent', () => {
   it('exposes landing_intent analytics ids matching allowlist', () => {
     expect(getLandingIntentVariant('forum').id).toBe('forum')
     __setLaunchOfferActiveForTests(true)
-    expect(LANDING_CTA.unlockRomePriced).toBe('Unlock all 21 stops · €10')
+    expect(LANDING_CTA.unlockRomePriced).toBe('Unlock full tours from €4.99')
     __setLaunchOfferActiveForTests(false)
     expect(LANDING_CTA.unlockRomePriced).toBe('Unlock from €9.99')
   })

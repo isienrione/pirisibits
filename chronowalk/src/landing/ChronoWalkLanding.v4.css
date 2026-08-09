@@ -2426,6 +2426,12 @@
   --pkg-hotspot-top: 88%;
   --pkg-hotspot-height: 7%;
   --pkg-hotspot-inset: 4%;
+  /*
+   * Launch Offer panel replaces painted list price + Buy only.
+   * Poster foot features sit below the Buy row — leave them uncovered.
+   */
+  --pkg-offer-panel-top: 78%;
+  --pkg-offer-panel-bottom: 3.75%;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -2437,23 +2443,32 @@
 
 .cw-v4-pkg--eterna {
   --pkg-accent: #b08d3e;
-  --pkg-hotspot-top: 90%;
-  --pkg-hotspot-height: 5.5%;
+  --pkg-hotspot-top: 86%;
+  --pkg-hotspot-height: 6%;
   --pkg-hotspot-inset: 3%;
+  /* Cover painted €14.99 + Buy fully; foot features sit just under the panel. */
+  --pkg-offer-panel-top: 78%;
+  --pkg-offer-panel-bottom: 3.75%;
 }
 
 .cw-v4-pkg--antica {
   --pkg-accent: #1f5c5a;
-  --pkg-hotspot-top: 88%;
+  --pkg-hotspot-top: 86%;
   --pkg-hotspot-height: 6.5%;
   --pkg-hotspot-inset: 4%;
+  /* Cover painted €9.99 + Buy fully; foot features sit just under the panel. */
+  --pkg-offer-panel-top: 78%;
+  --pkg-offer-panel-bottom: 3.75%;
 }
 
 .cw-v4-pkg--historica {
   --pkg-accent: #a35a3a;
-  --pkg-hotspot-top: 82.5%;
-  --pkg-hotspot-height: 7%;
+  --pkg-hotspot-top: 80%;
+  --pkg-hotspot-height: 8%;
   --pkg-hotspot-inset: 6%;
+  /* Price ~72–80%, Buy ~82–89%, features ~90%+ */
+  --pkg-offer-panel-top: 71%;
+  --pkg-offer-panel-bottom: 10%;
 }
 
 .cw-v4-pkg__frame {
@@ -3701,30 +3716,103 @@
   color: var(--v4-muted);
 }
 
-.cw-v4-pkg__offer-chip {
+/*
+ * Desktop poster Launch Offer panel — covers painted price + Buy art with a
+ * compact HTML price row and CTA. Stops above painted foot features.
+ * Hotspot still receives the click.
+ */
+.cw-v4-pkg__offer-panel {
   position: absolute;
-  left: 50%;
-  bottom: 11%;
+  left: 0;
+  right: 0;
+  top: var(--pkg-offer-panel-top, 78%);
+  bottom: var(--pkg-offer-panel-bottom, 5.5%);
   z-index: 3;
-  transform: translateX(-50%);
-  width: min(86%, 16.5rem);
-  padding: 0.55rem 0.75rem 0.6rem;
-  border-radius: 0.9rem;
-  background: color-mix(in srgb, #fffdf8 92%, transparent);
-  border: 1px solid color-mix(in srgb, var(--pkg-accent, #b08d3e) 38%, rgba(33, 28, 21, 0.16));
-  box-shadow: 0 10px 24px rgba(33, 28, 21, 0.16);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.45rem 1.05rem 0.5rem;
+  overflow: hidden;
+  background: #f4ebda;
+  box-shadow:
+    0 -10px 16px -8px color-mix(in srgb, #f4ebda 90%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #211c15 6%, transparent);
   pointer-events: none;
 }
 
-.cw-v4-pkg__offer-chip .cw-offer-price__now {
-  font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: 1.55rem;
-  font-weight: 650;
-  color: var(--v4-ink, #211c15);
+.cw-v4-pkg__offer-panel-buy {
+  display: grid;
+  gap: 0.2rem;
 }
 
-.cw-v4-pkg__offer-chip .cw-offer-price__stack {
-  justify-content: center;
+.cw-v4-pkg__offer-panel-price {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.cw-v4-pkg__offer-panel-price .cw-offer-price__stack {
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 0.4rem 0.7rem;
+}
+
+.cw-v4-pkg__offer-panel-price .cw-offer-price__was {
+  font-size: 1.05rem;
+}
+
+.cw-v4-pkg__offer-panel-price .cw-offer-price__now {
+  font-family: var(--font-display, 'Fraunces', Georgia, serif);
+  font-size: clamp(1.55rem, 3.8vw, 1.95rem);
+  font-weight: 650;
+  color: var(--v4-ink, #211c15);
+  letter-spacing: -0.02em;
+}
+
+.cw-v4-pkg__offer-panel-note {
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: rgba(33, 28, 21, 0.62);
+}
+
+.cw-v4-pkg__offer-panel-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  min-height: 2.6rem;
+  padding: 0.62rem 1rem;
+  border-radius: 999px;
+  background: var(--pkg-accent, #b08d3e);
+  color: #fffdf8;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--pkg-accent, #b08d3e) 28%, transparent);
+}
+
+.cw-v4-pkg__offer-panel-cta-label {
+  font-family: var(--font-ui, 'DM Sans', sans-serif);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.cw-v4-pkg__offer-panel-cta-arrow {
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0.92;
+}
+
+.cw-v4-pkg--historica .cw-v4-pkg__offer-panel-cta {
+  background: #a35a3a;
+}
+
+.cw-v4-pkg--antica .cw-v4-pkg__offer-panel-cta {
+  background: #1f5c5a;
+}
+
+.cw-v4-pkg--eterna .cw-v4-pkg__offer-panel-cta {
+  background: #8a6a2e;
 }
 
 .cw-v4-pkg-mobile-card__price-row .cw-offer-price__stack,
