@@ -1,0 +1,30 @@
+{
+  "act1": {
+    "numeral": "I",
+    "title": "La arena"
+  },
+  "act2": {
+    "numeral": "II",
+    "title": "La puerta y la colina"
+  },
+  "act3": {
+    "numeral": "III",
+    "title": "El Foro"
+  },
+  "act4": {
+    "numeral": "IV",
+    "title": "El mercado"
+  },
+  "act5": {
+    "numeral": "V",
+    "title": "La ciudad viva"
+  },
+  "act6": {
+    "numeral": "VI",
+    "title": "El río"
+  },
+  "encore": {
+    "numeral": "Bis",
+    "title": "Bis opcional"
+  }
+}
