@@ -1,10 +1,12 @@
 import { useNetworkStatus } from '../hooks/useNetworkStatus.js'
 import { useV2Journey } from '../hooks/useV2Journey.js'
 import { JOURNEY_STATES } from '../state/journey.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 export default function NetworkStatusBanner() {
   const { isOffline } = useNetworkStatus()
   const { state } = useV2Journey()
+  const t = useT()
 
   if (!isOffline || state === JOURNEY_STATES.IDLE) return null
 
@@ -12,7 +14,7 @@ export default function NetworkStatusBanner() {
     <div
       role="status"
       aria-live="polite"
-      aria-label="Offline mode"
+      aria-label={t('network.offline.aria')}
       style={{
         position: 'fixed',
         top: 'max(10px, env(safe-area-inset-top))',
@@ -29,7 +31,7 @@ export default function NetworkStatusBanner() {
         backdropFilter: 'blur(8px)',
       }}
     >
-      You're offline - cached audio and media works normally; navigation data may be unavailable on airplane mode
+      {t('network.offline.detail')}
     </div>
   )
 }

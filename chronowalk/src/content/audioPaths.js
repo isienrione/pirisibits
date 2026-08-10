@@ -2,6 +2,9 @@
 
 import { chapterFile } from './chapterMeta.js'
 import { collectThresholdAmbiencePaths } from './thresholdAmbience.js'
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import { DEFAULT_LOCALE, LOCALES } from '../i18n/locales.js'
+import { localeAudioFilePath } from '../i18n/audio/heroStopAudioMap.js'
 
 export const ROME_AUDIO_ROOT = '/rome/audio'
 
@@ -12,10 +15,19 @@ export const AUDIO_CATEGORIES = {
   SYSTEM: 'system',
 }
 
-export function audioFilePath(category, filename) {
+/**
+ * Resolve a category/filename to a locale-aware public path.
+ * English keeps `/rome/audio/{category}/{file}`; other locales use
+ * `/rome/audio/{locale}/{category}/{file}`.
+ */
+export function audioFilePath(category, filename, locale = getActiveLocale()) {
   if (!filename) return null
   const clean = filename.replace(/^\//, '')
-  return `${ROME_AUDIO_ROOT}/${category}/${clean}`
+  // Beds / inserts / system cues are language-neutral; only narration forks by locale.
+  if (category !== AUDIO_CATEGORIES.NARRATION || locale === LOCALES.EN || locale === DEFAULT_LOCALE) {
+    return `${ROME_AUDIO_ROOT}/${category}/${clean}`
+  }
+  return localeAudioFilePath(locale, category, clean)
 }
 
 export function narrationPath(filename) {
@@ -37,12 +49,13 @@ export function systemPath(filename) {
 /**
  * Collect every shipping audio path referenced by the manifest.
  * @param {import('./manifest.schema.js').romeManifestSchema['_output']} manifest
+ * @param {string} [locale]
  */
-export function collectManifestAudioPaths(manifest) {
+export function collectManifestAudioPaths(manifest, locale = getActiveLocale()) {
   const paths = new Set()
 
   const add = (category, file) => {
-    const path = audioFilePath(category, file)
+    const path = audioFilePath(category, file, locale)
     if (path) paths.add(path)
   }
 

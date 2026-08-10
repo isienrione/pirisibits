@@ -1,6 +1,7 @@
 import { COMPANION_MODES } from './companionGuidance.js'
 import { formatDistanceToNext, formatWalkingTime } from './journeyProgress.js'
 import { JOURNEY_STATES } from '../state/journey.js'
+import { t } from '../i18n/t.js'
 
 export const MAP_BOTTOM_CARD_STATES = {
   AWAITING_FIRST: 'awaiting_first',
@@ -26,25 +27,17 @@ function formatDistanceMeta(distanceM, { about = false } = {}) {
   if (!distance && !walkTime) return null
   if (!distance) return walkTime
   if (!walkTime) return distance
-  return about ? `${distance} · about ${walkTime}` : `${distance} · ${walkTime}`
+  return about
+    ? t('map.card.meta.about', { distance, walkTime })
+    : t('map.card.meta.pair', { distance, walkTime })
 }
 
 function resolveLandmarkTitle(waypoint, fallbackStop) {
-  return waypoint?.title ?? waypoint?.name ?? fallbackStop?.title ?? 'your next stop'
+  return waypoint?.title ?? waypoint?.name ?? fallbackStop?.title ?? t('map.card.nextStop')
 }
 
 /**
  * Derives the map bottom-card copy and CTA from journey + geo context.
- *
- * @param {object} input
- * @param {string} input.journeyState
- * @param {import('./manifest.js').resolveJourneyStep extends (...args: any[]) => infer R ? R : never} input.step
- * @param {{ title?: string } | null} input.activeStop
- * @param {number | null | undefined} input.distanceM
- * @param {string} input.companionMode
- * @param {number} input.sequenceIndex
- * @param {string[]} input.completedWaypointIds
- * @param {boolean} input.directionsOpen
  */
 export function resolveMapBottomCard({
   journeyState,
@@ -72,9 +65,9 @@ export function resolveMapBottomCard({
   ) {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.OFF_ROUTE,
-      title: "Looks like we've wandered a little",
-      meta: 'No matter - Rome rewards wandering.',
-      ctaLabel: 'Back to route',
+      title: t('map.card.offRoute.title'),
+      meta: t('map.card.offRoute.meta'),
+      ctaLabel: t('map.card.offRoute.cta'),
       ctaAction: MAP_BOTTOM_CTA.BACK_TO_ROUTE,
       landmark,
     }
@@ -83,9 +76,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.ARRIVED) {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.ARRIVED,
-      title: "You've arrived",
+      title: t('map.card.arrived.title'),
       meta: landmark,
-      ctaLabel: 'Open story',
+      ctaLabel: t('map.card.arrived.cta'),
       ctaAction: MAP_BOTTOM_CTA.OPEN_STORY,
       landmark,
     }
@@ -94,9 +87,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.APPROACHING) {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.APPROACHING,
-      title: `${landmark} is just ahead`,
-      meta: 'Slow your pace',
-      ctaLabel: "I'm here",
+      title: t('map.card.approaching.titleNamed', { landmark }),
+      meta: t('map.card.approaching.meta'),
+      ctaLabel: t('map.card.approaching.cta'),
       ctaAction: MAP_BOTTOM_CTA.MANUAL_ARRIVAL,
       landmark,
     }
@@ -105,9 +98,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.WALKING && step.type === 'transit') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.AFTER_STORY,
-      title: 'Next stop',
+      title: t('map.card.afterStory.titleShort'),
       meta: nextLandmark,
-      ctaLabel: `Walk to ${nextLandmark}`,
+      ctaLabel: t('map.card.afterStory.ctaNamed', { landmark: nextLandmark }),
       ctaAction: MAP_BOTTOM_CTA.WALK_TO_NEXT,
       landmark: nextLandmark,
     }
@@ -119,9 +112,9 @@ export function resolveMapBottomCard({
   ) {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.AWAITING_FIRST,
-      title: `Tour begins at ${landmark}`,
+      title: t('map.card.awaiting.titleNamed', { landmark }),
       meta: formatDistanceMeta(distanceM),
-      ctaLabel: 'Get walking directions',
+      ctaLabel: t('map.card.awaiting.cta.walking'),
       ctaAction: MAP_BOTTOM_CTA.GET_DIRECTIONS,
       landmark,
     }
@@ -130,9 +123,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.WALKING && step.type === 'waypoint') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.WALKING,
-      title: `Walking to ${landmark}`,
+      title: t('map.card.walking.titleNamed', { landmark }),
       meta: formatDistanceMeta(distanceM, { about: true }),
-      ctaLabel: 'Directions',
+      ctaLabel: t('map.card.walking.cta'),
       ctaAction: MAP_BOTTOM_CTA.OPEN_DIRECTIONS,
       landmark,
     }
@@ -141,9 +134,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.STORY || journeyState === JOURNEY_STATES.THRESHOLD) {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.ARRIVED,
-      title: "You've arrived",
+      title: t('map.card.arrived.title'),
       meta: landmark,
-      ctaLabel: 'Open story',
+      ctaLabel: t('map.card.arrived.cta'),
       ctaAction: MAP_BOTTOM_CTA.OPEN_STORY,
       landmark,
     }
@@ -152,9 +145,9 @@ export function resolveMapBottomCard({
   if (journeyState === JOURNEY_STATES.PAUSED && step.type === 'waypoint') {
     return {
       stateId: MAP_BOTTOM_CARD_STATES.WALKING,
-      title: `Walking to ${landmark}`,
+      title: t('map.card.walking.titleNamed', { landmark }),
       meta: formatDistanceMeta(distanceM, { about: true }),
-      ctaLabel: 'Directions',
+      ctaLabel: t('map.card.walking.cta'),
       ctaAction: MAP_BOTTOM_CTA.OPEN_DIRECTIONS,
       landmark,
     }

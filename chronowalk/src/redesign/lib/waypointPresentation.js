@@ -3,6 +3,7 @@ import { getNowPhotoUrl } from '../images.js'
 import { getAct } from '../../content/manifest.js'
 import { getModernExteriorUrl, getModernPosterUrl } from '../../content/modernPhotoRegistry.js'
 import { mediaUrl } from '../../lib/mediaUrl.js'
+import { t } from '../../i18n/t.js'
 
 const ACT_COLOR = {
   act1: T.actI,
@@ -213,11 +214,11 @@ export function titleForWaypoint(waypoint) {
 }
 
 export function approachCopy(waypoint) {
-  return waypoint?.approachLine ?? 'Keep walking - Rome is just ahead.'
+  return waypoint?.approachLine ?? t('approach.fallback')
 }
 
 export function arrivalCopy(waypoint) {
-  const line = waypoint?.arrivalLine ?? 'Take a second. Look up.'
+  const line = waypoint?.arrivalLine ?? t('arrival.fallback')
   return line.replace(/\s*\/\s*/g, '\n')
 }
 

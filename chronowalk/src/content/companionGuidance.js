@@ -1,5 +1,6 @@
 import { LOCATION_STATUS } from '../hooks/useGeoLocation.js'
 import { JOURNEY_STATES } from '../state/journey.js'
+import { t } from '../i18n/t.js'
 
 export const COMPANION_MODES = {
   NORMAL: 'normal',
@@ -52,20 +53,19 @@ export function resolveCompanionMode({
 export function companionCopy(mode, { targetTitle } = {}) {
   if (mode === COMPANION_MODES.OFF_ROUTE) {
     return {
-      eyebrow: 'Off route',
-      title: "You're farther from the path",
+      eyebrow: t('companion.offRoute.eyebrow'),
+      title: t('companion.offRoute.title'),
       subtitle: targetTitle
-        ? `Head back toward ${targetTitle} when you're ready - or open the map for bearings.`
-        : "Open the map for bearings when you're ready to continue.",
+        ? t('companion.offRoute.subtitle', { target: targetTitle })
+        : t('companion.offRoute.subtitle.generic'),
     }
   }
 
   if (mode === COMPANION_MODES.OBSERVING) {
     return {
-      eyebrow: 'Observation',
-      title: 'Take your time',
-      subtitle:
-        "Rome isn't going anywhere. Resume walking when you want the next story to find you.",
+      eyebrow: t('companion.observing.eyebrow'),
+      title: t('companion.observing.title'),
+      subtitle: t('companion.observing.subtitle'),
     }
   }
 

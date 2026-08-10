@@ -2,6 +2,8 @@ import { ChevronRight } from "lucide-react";
 import { useContext } from "react";
 import { T, F } from "../tokens.js";
 import { RedesignNavCtx } from '../nav.js';
+import { useI18n } from '../../i18n/I18nProvider.jsx';
+import { SUPPORTED_LOCALES } from '../../i18n/locales.js';
 
 export default function G1Settings({
   prefs,
@@ -13,6 +15,7 @@ export default function G1Settings({
   onRestoreAccess,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
+  const { locale, setLocale, t, labels } = useI18n();
 
   const state = prefs ?? {
     backgroundPlay: true,
@@ -70,16 +73,38 @@ export default function G1Settings({
     <div className="cw-grain" style={{ background: T.bone, height: "100%", fontFamily: F.body, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ padding: "48px 24px 8px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-        <h2 style={{ fontFamily: F.display, fontSize: 26, color: T.ink, fontWeight: 300 }}>Settings</h2>
-        <button type="button" onClick={() => (onDone ? onDone() : navigate("C1"))} style={{ fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer", fontFamily: F.body }}>Done</button>
+        <h2 style={{ fontFamily: F.display, fontSize: 26, color: T.ink, fontWeight: 300 }}>{t('settings.title')}</h2>
+        <button type="button" onClick={() => (onDone ? onDone() : navigate("C1"))} style={{ fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer", fontFamily: F.body }}>{t('settings.done')}</button>
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", padding: "0 24px 48px" }}>
 
-        {/* Playback */}
-        <SectionLabel>Playback</SectionLabel>
+        <SectionLabel>{t('settings.section.language')}</SectionLabel>
         <Hairline />
-        <Row label="Narration speed" sub="Default for new chapters"
+        <Row label={t('language.label')} sub={t('language.sub')}
+          right={
+            <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
+              {SUPPORTED_LOCALES.map((code) => {
+                const active = locale === code
+                return (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() => setLocale(code)}
+                    style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: active ? T.warmWhite : "transparent", color: active ? T.ink : T.muted, border: "none", cursor: "pointer" }}
+                  >
+                    {labels[code]}
+                  </button>
+                )
+              })}
+            </div>
+          }
+        />
+
+        {/* Playback */}
+        <SectionLabel>{t('settings.section.playback')}</SectionLabel>
+        <Hairline />
+        <Row label={t('settings.narrationSpeed')} sub={t('settings.narrationSpeed.sub')}
           right={
             <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
               {[1, 1.5, 2].map((speed) => {
@@ -99,28 +124,31 @@ export default function G1Settings({
           }
         />
         <Hairline />
-        <Row label="Background audio" sub="Ambient bed continues on lock screen"
+        <Row label={t('settings.backgroundAudio')} sub={t('settings.backgroundAudio.sub')}
           right={<Toggle on={state.backgroundPlay} onToggle={() => setState({ backgroundPlay: !state.backgroundPlay })} />}
         />
         <Hairline />
-        <Row label="Auto-advance chapters" sub="Where chapters are marked for it"
+        <Row label={t('settings.autoAdvance')} sub={t('settings.autoAdvance.sub')}
           right={<Toggle on={state.autoAdvance} onToggle={() => setState({ autoAdvance: !state.autoAdvance })} />}
         />
 
         {/* Sound */}
-        <SectionLabel>Sound</SectionLabel>
+        <SectionLabel>{t('settings.section.sound')}</SectionLabel>
         <Hairline />
-        <Row label="Ambient bed" sub="Narration volume follows system"
+        <Row label={t('settings.ambientBed')} sub={t('settings.ambientBed.sub')}
           right={
             <div style={{ display: "flex", background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2 }}>
-              {["Subtle","Off"].map((mode) => (
+              {[
+                { id: 'Subtle', label: t('settings.ambient.subtle') },
+                { id: 'Off', label: t('settings.ambient.off') },
+              ].map((mode) => (
                 <button
-                  key={mode}
+                  key={mode.id}
                   type="button"
-                  onClick={() => setState({ ambientBed: mode })}
-                  style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: (state.ambientBed ?? 'Subtle') === mode ? T.warmWhite : "transparent", color: (state.ambientBed ?? 'Subtle') === mode ? T.ink : T.muted, border: "none", cursor: "pointer" }}
+                  onClick={() => setState({ ambientBed: mode.id })}
+                  style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: (state.ambientBed ?? 'Subtle') === mode.id ? T.warmWhite : "transparent", color: (state.ambientBed ?? 'Subtle') === mode.id ? T.ink : T.muted, border: "none", cursor: "pointer" }}
                 >
-                  {mode}
+                  {mode.label}
                 </button>
               ))}
             </div>
@@ -128,34 +156,34 @@ export default function G1Settings({
         />
 
         {/* Device */}
-        <SectionLabel>Device</SectionLabel>
+        <SectionLabel>{t('settings.section.device')}</SectionLabel>
         <Hairline />
-        <Row label="Haptics"
+        <Row label={t('settings.haptics')}
           right={<Toggle on={state.hapticFeedback} onToggle={() => setState({ hapticFeedback: !state.hapticFeedback })} />}
         />
         <Hairline />
-        <Row label="Reduce motion"
+        <Row label={t('settings.reduceMotion')}
           right={<Toggle on={state.reduceMotion} onToggle={() => setState({ reduceMotion: !state.reduceMotion })} />}
         />
 
         {/* Content */}
-        <SectionLabel>Content</SectionLabel>
+        <SectionLabel>{t('settings.section.content')}</SectionLabel>
         <Hairline />
         <button type="button" onClick={() => (onOffline ? onOffline() : navigate("B2"))} style={{ width: "100%", textAlign: "left", padding: "14px 0", background: "none", border: "none", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: 15, color: T.ink }}>Offline content</p>
+          <p style={{ fontSize: 15, color: T.ink }}>{t('settings.offline')}</p>
           <ChevronRight size={16} color={T.muted} />
         </button>
         <Hairline />
         <button type="button" onClick={() => (onPace ? onPace() : navigate("B4"))} style={{ width: "100%", textAlign: "left", padding: "14px 0", background: "none", border: "none", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ fontSize: 15, color: T.ink }}>Your pace</p>
+          <p style={{ fontSize: 15, color: T.ink }}>{t('settings.pace')}</p>
           <ChevronRight size={16} color={T.muted} />
         </button>
 
         {/* Access */}
-        <SectionLabel>Access</SectionLabel>
+        <SectionLabel>{t('settings.section.access')}</SectionLabel>
         <Hairline />
-        <Row label="Restore access" sub="Opens your magic link email" right={
-          <button type="button" onClick={() => onRestoreAccess?.()} style={{ fontSize: 13, color: T.ember, background: 'none', border: 'none', cursor: 'pointer' }}>Restore</button>
+        <Row label={t('settings.restoreAccess')} right={
+          <button type="button" onClick={() => onRestoreAccess?.()} style={{ fontSize: 13, color: T.ember, background: 'none', border: 'none', cursor: 'pointer' }}>{t('settings.restoreAccess')}</button>
         } />
         <Hairline />
         <Row label="Devices" sub="2 devices linked" />

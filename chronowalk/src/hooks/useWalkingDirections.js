@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { env } from '../config/env'
 import { fetchWalkingDirections } from '../services/fetchWalkingRoute'
+import { getActiveLocale } from '../i18n/activeLocale.js'
 import {
   getAdhocWalkingDirections,
   cacheAdhocWalkingDirections,
@@ -45,6 +46,7 @@ export async function loadTourLegDirections(legFallback, accessToken, options = 
 
   const result = await fetchWalkingDirections(from, to, accessToken, {
     destinationName: options.destinationName,
+    language: options.language ?? getActiveLocale(),
   })
   if (!result?.steps?.length) return null
 
@@ -106,7 +108,10 @@ export function useWalkingDirections({
       }
 
       const legPromise = legFallback
-        ? loadTourLegDirections(legFallback, env.mapboxToken, { destinationName })
+        ? loadTourLegDirections(legFallback, env.mapboxToken, {
+            destinationName,
+            language: getActiveLocale(),
+          })
         : Promise.resolve(null)
 
       if (!routingOrigin) {
@@ -178,7 +183,7 @@ export function useWalkingDirections({
         routingOrigin,
         routingDestination,
         env.mapboxToken,
-        { destinationName },
+        { destinationName, language: getActiveLocale() },
       )
 
       const [adhocResult, legResult] = await Promise.all([adhocPromise, legPromise])

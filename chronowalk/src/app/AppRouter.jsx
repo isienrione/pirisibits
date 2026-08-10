@@ -56,6 +56,8 @@ import {
   LazyHowItWorksPage,
 } from './lazyRoutes.jsx'
 import { DocumentSeo } from '../seo/useDocumentSeo.js'
+import { I18nProvider } from '../i18n/I18nProvider.jsx'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function Paid({ children }) {
   return <RequireAccess>{children}</RequireAccess>
@@ -125,8 +127,9 @@ function JourneyChrome() {
 }
 
 function AppRoutes() {
+  const t = useT()
   return (
-    <V2ErrorBoundary title="Couldn’t load ChronoWalk">
+    <V2ErrorBoundary title={t('error.boundary.title')}>
       <Routes>
         <Route path="/" element={<PublicLandingRoute />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
@@ -247,20 +250,22 @@ function AppRouter() {
   }, [])
 
   return (
-    <ThresholdChromeProvider>
-      <BrowserRouter>
-        <SettingsSheetProvider>
-          <FamilyWalkProvider>
-            <SharedWalkGuardProvider>
-              <AccessRevalidationBootstrap />
-              <DocumentSeo />
-              <AppRoutes />
-              <AnalyticsConsentBanner />
-            </SharedWalkGuardProvider>
-          </FamilyWalkProvider>
-        </SettingsSheetProvider>
-      </BrowserRouter>
-    </ThresholdChromeProvider>
+    <I18nProvider>
+      <ThresholdChromeProvider>
+        <BrowserRouter>
+          <SettingsSheetProvider>
+            <FamilyWalkProvider>
+              <SharedWalkGuardProvider>
+                <AccessRevalidationBootstrap />
+                <DocumentSeo />
+                <AppRoutes />
+                <AnalyticsConsentBanner />
+              </SharedWalkGuardProvider>
+            </FamilyWalkProvider>
+          </SettingsSheetProvider>
+        </BrowserRouter>
+      </ThresholdChromeProvider>
+    </I18nProvider>
   )
 }
 
