@@ -12,6 +12,7 @@ import {
   hasCrossedThreshold,
   markThresholdCrossed,
 } from '../../utils/thresholdWaypointReveal.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 // Default speeds (must include 1.5× and 2×).
 const DEFAULT_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
@@ -53,7 +54,7 @@ export default function C6ImmersivePlayer({
   waypointId = 'waypoint',
   thenPhoto = null,
   thenLoop = null,
-  thenLabel = 'ANCIENT ROME',
+  thenLabel = null,
   honestyCaption = null,
   sourceNote = null,
   nowAmbienceUrl = null,
@@ -82,6 +83,7 @@ export default function C6ImmersivePlayer({
   /** Landing demo: loop a full Threshold hold reveal. */
   demoAutoReveal = false,
 }) {
+  const t = useT()
   const { prefs } = useAppPreferences()
   const transcriptFontSize = transcriptFontSizePx(prefs.textSize)
   const [tab, setTab] = useState(initialTab === 'transcript' ? 'transcript' : 'audio')
@@ -98,6 +100,7 @@ export default function C6ImmersivePlayer({
   const bars = useRef(Array.from({ length: 48 }, () => 8 + Math.random() * 28)).current
 
   const forceHint = forceDiegeticHint || forceRevealInvite
+  const resolvedThenLabel = thenLabel ?? t('threshold.ancientRome')
   const alreadyCrossed = !forceHint && hasCrossedThreshold()
   const autoPeek =
     !demoAutoReveal &&
@@ -235,7 +238,7 @@ export default function C6ImmersivePlayer({
   const showActionStack = showContinuity || Boolean(syncSlot)
   const continuityLabel =
     continueLabel ??
-    (storyEnded || !narrationPlaying ? 'Continue walking →' : 'Skip ahead →')
+    (storyEnded || !narrationPlaying ? t('player.continue') : t('player.skipAhead'))
   const chromeHidden = focusReveal
   const showDiegeticHint =
     hasReconstruction && !chromeHidden && !revealLatched && hintMode !== 'hidden'
@@ -251,21 +254,24 @@ export default function C6ImmersivePlayer({
         flexShrink: 0,
       }}
     >
-      {[['audio', 'Audio'], ['transcript', 'Read instead']].map(([t, label]) => (
+      {[
+        ['audio', t('story.audio')],
+        ['transcript', t('arrival.read')],
+      ].map(([tabId, label]) => (
         <button
-          key={t}
+          key={tabId}
           type="button"
-          onClick={() => selectTab(t)}
+          onClick={() => selectTab(tabId)}
           style={{
             paddingBottom: 8,
             fontSize: 11,
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: tab === t ? T.warmWhite : T.muted,
+            color: tab === tabId ? T.warmWhite : T.muted,
             marginBottom: -1,
             background: 'none',
             border: 'none',
-            borderBottom: `1.5px solid ${tab === t ? accent : 'transparent'}`,
+            borderBottom: `1.5px solid ${tab === tabId ? accent : 'transparent'}`,
             cursor: 'pointer',
             fontFamily: F.body,
           }}
@@ -328,7 +334,7 @@ export default function C6ImmersivePlayer({
         <button
           type="button"
           onClick={onCycleSpeed}
-          aria-label={`Playback speed ${formatPlaybackSpeed(playbackRate)}`}
+          aria-label={t('player.speed', { speed: formatPlaybackSpeed(playbackRate) })}
           style={{
             background: `${T.muted}22`,
             border: 'none',
@@ -346,7 +352,11 @@ export default function C6ImmersivePlayer({
         </button>
       ) : null}
       <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: 'tabular-nums', minWidth: 40, textAlign: 'right' }}>
-        {duration > 0 ? formatTime(duration) : narrationPlaying ? 'Playing' : 'Paused'}
+        {duration > 0
+          ? formatTime(duration)
+          : narrationPlaying
+            ? t('story.playing')
+            : t('story.paused')}
       </span>
     </div>
   )
@@ -366,7 +376,7 @@ export default function C6ImmersivePlayer({
         type="button"
         onClick={onSkipBack}
         disabled={!audioAvailable}
-        aria-label="Back 15 seconds"
+        aria-label={t('walk.audio.back15')}
         style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
       >
         <SkipBack size={compact ? 22 : 24} />
@@ -376,7 +386,7 @@ export default function C6ImmersivePlayer({
         type="button"
         onClick={onTogglePlay}
         disabled={!audioAvailable}
-        aria-label={narrationPlaying ? 'Pause' : 'Play'}
+        aria-label={narrationPlaying ? t('walk.audio.pause') : t('walk.audio.play')}
         style={{
           width: compact ? 52 : 60,
           height: compact ? 52 : 60,
@@ -401,7 +411,7 @@ export default function C6ImmersivePlayer({
         type="button"
         onClick={onSkipForward}
         disabled={!audioAvailable}
-        aria-label="Forward 15 seconds"
+        aria-label={t('walk.audio.forward15')}
         style={{ color: T.muted, background: 'none', border: 'none', cursor: audioAvailable ? 'pointer' : 'default', lineHeight: 0, opacity: audioAvailable ? 1 : 0.35, position: 'relative' }}
       >
         <SkipForward size={compact ? 22 : 24} />
@@ -420,7 +430,7 @@ export default function C6ImmersivePlayer({
 
   const chapterMeta = (
     <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.5, margin: '0 0 8px', flexShrink: 0 }}>
-      Chapter {chapterIndex + 1} of {chapterCount}
+      {t('player.chapter', { current: chapterIndex + 1, total: chapterCount })}
       {chapterTitle ? (
         <>
           {': '}
@@ -456,7 +466,7 @@ export default function C6ImmersivePlayer({
         nowPhoto={photo}
         thenPhoto={thenPhoto ?? photo}
         thenLoop={thenLoop}
-        thenLabel={thenLabel}
+        thenLabel={resolvedThenLabel}
         honestyCaption={honestyCaption ?? undefined}
         nowAmbienceUrl={nowAmbienceUrl}
         thenSoundscapeUrl={thenSoundscapeUrl}
@@ -519,7 +529,7 @@ export default function C6ImmersivePlayer({
 
           {showDiegeticHint ? (
             <ThresholdDiegeticHint
-              thenLabel={thenLabel}
+              thenLabel={resolvedThenLabel}
               showText={hintMode === 'full'}
               fading={hintFading}
             />
@@ -566,13 +576,13 @@ export default function C6ImmersivePlayer({
                 pointerEvents: 'auto',
               }}
             >
-              <ChevronLeft size={17} aria-hidden /> Back
+              <ChevronLeft size={17} aria-hidden /> {t('player.back')}
             </button>
             {typeof onOpenSettings === 'function' ? (
               <button
                 type="button"
                 onClick={onOpenSettings}
-                aria-label="Open settings"
+                aria-label={t('walk.openSettings')}
                 data-testid="journey-open-settings"
                 style={{
                   display: 'flex',
@@ -646,8 +656,8 @@ export default function C6ImmersivePlayer({
                 ) : (
                   <p style={{ fontFamily: F.body, fontSize: 14, color: T.muted, fontStyle: 'italic', margin: 0 }}>
                     {import.meta.env.DEV
-                      ? 'No written transcript is wired for this stop yet (development).'
-                      : 'A written transcript for this stop is coming soon.'}
+                      ? t('player.transcriptDev')
+                      : t('player.transcriptSoon')}
                   </p>
                 )}
               </div>
@@ -679,8 +689,8 @@ export default function C6ImmersivePlayer({
                 {showAudioNotice ? (
                   <p style={{ margin: '0 0 10px', fontSize: 12, color: T.muted, textAlign: 'center', lineHeight: 1.5, flexShrink: 0 }}>
                     {import.meta.env.DEV
-                      ? 'Narration audio is unavailable in this development build.'
-                      : 'Narration is preparing - check your connection.'}
+                      ? t('player.audioDev')
+                      : t('player.audioPreparing')}
                   </p>
                 ) : null}
 
@@ -692,7 +702,10 @@ export default function C6ImmersivePlayer({
         )}
 
         {sourceNote && hasReconstruction && !showContinuity ? (
-          <p className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome" aria-label="Reconstruction source">
+          <p
+            className="cw-waypoint-immersive__source-note cw-waypoint-immersive__chrome"
+            aria-label={t('threshold.source')}
+          >
             {sourceNote}
           </p>
         ) : null}
@@ -766,7 +779,7 @@ export default function C6ImmersivePlayer({
           />
           <button
             type="button"
-            aria-label="Close photo view"
+            aria-label={t('player.closePhoto')}
             onClick={(e) => { e.stopPropagation(); setPhotoLightboxOpen(false) }}
             style={{
               position: 'absolute',

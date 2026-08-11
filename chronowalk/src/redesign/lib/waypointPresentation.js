@@ -175,7 +175,7 @@ export function hasDistinctThenPhoto(waypoint, chapterIndex = 0) {
 
 export function thenLabelForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
-  return reconstruction?.era ?? waypoint?.era ?? 'ANCIENT ROME'
+  return reconstruction?.era ?? waypoint?.era ?? t('threshold.thenDefault')
 }
 
 export function honestyCaptionForWaypoint(waypoint, chapterIndex = 0) {
@@ -184,7 +184,7 @@ export function honestyCaptionForWaypoint(waypoint, chapterIndex = 0) {
   return (
     reconstruction?.caption ??
     reconstruction?.honesty ??
-    'Interpretive reconstruction informed by archaeology and scholarship.'
+    t('threshold.honesty')
   )
 }
 
@@ -196,10 +196,10 @@ export function reconstructionSourceNoteForWaypoint(waypoint, chapterIndex = 0) 
   if (reconstructionCaption) parts.push(reconstructionCaption)
   if (!reconstruction && waypoint?.now_image?.credit) {
     const license = waypoint.now_image.license ? ` (${waypoint.now_image.license})` : ''
-    parts.push(`Photo: ${waypoint.now_image.credit}${license}`)
+    parts.push(t('threshold.photo', { credit: waypoint.now_image.credit, license }))
   }
   if (waypoint?.now_image?.source === 'ai_generated') {
-    parts.push('Present-day view: AI-assisted rendering.')
+    parts.push(t('threshold.presentAi'))
   }
   return parts.length ? parts.join(' · ') : null
 }

@@ -5,10 +5,14 @@
  * Usage:
  *   npm run check:i18n
  *   npm run check:i18n -- --require-audio-files
+ *
+ * --require-audio-files hard-fails on every shipping Spanish narration asset
+ * expected by collectManifestAudioPaths(manifest, 'es') (currently 52 files),
+ * not only the 28 hero-stop chapters.
  */
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { missingMessageKeys, listMessageKeys } from '../src/i18n/t.js'
 import {
   assertHeroStopAudioMapComplete,
@@ -19,6 +23,8 @@ import {
   PANTHEON_STOP_IDS,
 } from '../src/i18n/audio/heroStopAudioMap.js'
 import { LOCALES } from '../src/i18n/locales.js'
+import { collectManifestAudioPaths } from '../src/content/audioPaths.js'
+import { parseRomeManifest } from '../src/content/romeManifestZod.schema.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
@@ -30,15 +36,31 @@ function fail(message, items = []) {
   process.exitCode = 1
 }
 
-function main() {
+function listScriptFiles(dir) {
+  if (!existsSync(dir)) return []
+  const out = []
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name)
+    if (entry.isDirectory()) out.push(...listScriptFiles(full))
+    else if (entry.isFile() && entry.name.endsWith('.md')) out.push(full)
+  }
+  return out
+}
+
+async function main() {
   process.exitCode = 0
 
   const enKeys = listMessageKeys(LOCALES.EN)
+  const esKeys = listMessageKeys(LOCALES.ES)
   const missingEs = missingMessageKeys(LOCALES.ES)
+  const orphanEs = esKeys.filter((key) => !enKeys.includes(key))
   if (missingEs.length) {
     fail(`Spanish message catalog missing ${missingEs.length} key(s)`, missingEs)
   } else {
     console.log(`✓ Message keys: ${enKeys.length} EN keys covered in ES`)
+  }
+  if (orphanEs.length) {
+    fail(`Spanish catalog has ${orphanEs.length} orphan key(s) not in EN`, orphanEs)
   }
 
   const mapStatus = assertHeroStopAudioMapComplete()
@@ -102,23 +124,89 @@ function main() {
     console.log('✓ All 21 hero stops have Spanish titles, lines, and chapter transcripts')
   }
 
-  const esPaths = listHeroStopSpanishAudioPaths()
-  const missingFiles = esPaths.filter((path) => !existsSync(join(root, 'public', path.replace(/^\//, ''))))
+  for (const name of ['transits.json', 'system.json', 'acts.json', 'reflections.json']) {
+    const path = join(root, 'src/i18n/content/es', name)
+    if (!existsSync(path)) fail(`Missing Spanish overlay file`, [path])
+  }
+  const transits = JSON.parse(readFileSync(join(root, 'src/i18n/content/es/transits.json'), 'utf8'))
+  if (Object.keys(transits).length < 10) {
+    fail('Spanish transit overlay looks too thin', [String(Object.keys(transits).length)])
+  } else {
+    console.log(`✓ Transit overlay present (${Object.keys(transits).length} transit ids)`)
+  }
+
+  const raw = JSON.parse(readFileSync(join(root, 'src/content/rome/manifest.json'), 'utf8'))
+  const manifest = parseRomeManifest(raw)
+  const esNarrationPaths = collectManifestAudioPaths(manifest, LOCALES.ES).filter((path) =>
+    path.startsWith('/rome/audio/es/narration/'),
+  )
+  const heroPaths = listHeroStopSpanishAudioPaths()
+  console.log(
+    `✓ Expected Spanish narration assets: ${esNarrationPaths.length} shipping / ${heroPaths.length} hero-stop chapters`,
+  )
+
+  const scriptsDir = join(root, 'docs/spanish-audio/scripts')
+  const scriptFiles = listScriptFiles(scriptsDir)
+  const scriptBasenames = new Set(
+    scriptFiles.map((file) => file.split('/').pop().replace(/\.md$/, '') + '.mp3'),
+  )
+  const missingScripts = esNarrationPaths
+    .map((path) => path.split('/').pop())
+    .filter((file) => !scriptBasenames.has(file))
+  if (missingScripts.length) {
+    fail(`ElevenLabs package missing ${missingScripts.length} script(s)`, missingScripts)
+  } else {
+    console.log(`✓ ElevenLabs scripts present for all ${esNarrationPaths.length} narration assets`)
+  }
+
+  for (const required of [
+    'docs/spanish-audio/00_READ_ME_FIRST.md',
+    'docs/spanish-audio/01_MASTER_AUDIO_MANIFEST.md',
+    'docs/spanish-audio/02_PRONUNCIATION_GUIDE.md',
+    'docs/i18n/SPANISH_STYLE_GUIDE.md',
+  ]) {
+    if (!existsSync(join(root, required))) fail('Missing Spanish production doc', [required])
+  }
+
+  const missingFiles = esNarrationPaths.filter(
+    (path) => !existsSync(join(root, 'public', path.replace(/^\//, ''))),
+  )
+  const zeroByte = esNarrationPaths.filter((path) => {
+    const full = join(root, 'public', path.replace(/^\//, ''))
+    if (!existsSync(full)) return false
+    try {
+      return statSync(full).size === 0
+    } catch {
+      return false
+    }
+  })
+
   if (requireAudioFiles) {
     if (missingFiles.length) {
       fail(
-        `${missingFiles.length} Spanish hero-stop audio file(s) missing under public/`,
+        `${missingFiles.length} Spanish narration MP3(s) missing under public/ (shipping set)`,
         missingFiles,
       )
     } else {
-      console.log(`✓ Spanish audio files present (${esPaths.length} narration assets)`)
+      console.log(`✓ Spanish audio files present (${esNarrationPaths.length} narration assets)`)
+    }
+    if (zeroByte.length) {
+      fail(`${zeroByte.length} Spanish narration MP3(s) are zero-byte`, zeroByte)
     }
   } else if (missingFiles.length) {
     console.log(
-      `⚠ ${missingFiles.length}/${esPaths.length} Spanish audio files not on disk yet (map is ready; use --require-audio-files for hard fail)`,
+      `⚠ ${missingFiles.length}/${esNarrationPaths.length} Spanish narration MP3s not on disk yet (map + scripts ready; use --require-audio-files for hard fail)`,
     )
   } else {
-    console.log(`✓ Spanish audio files present (${esPaths.length} narration assets)`)
+    console.log(`✓ Spanish audio files present (${esNarrationPaths.length} narration assets)`)
+  }
+
+  // Also surface hero-only count for operators who track the 28-file hero map.
+  const missingHero = heroPaths.filter(
+    (path) => !existsSync(join(root, 'public', path.replace(/^\//, ''))),
+  )
+  if (!requireAudioFiles && missingHero.length) {
+    console.log(`⚠ Hero-stop subset still missing on disk: ${missingHero.length}/28`)
   }
 
   if (process.exitCode) {
@@ -129,4 +217,7 @@ function main() {
   console.log('\n✓ check:i18n passed')
 }
 
-main()
+main().catch((error) => {
+  console.error(error)
+  process.exit(1)
+})

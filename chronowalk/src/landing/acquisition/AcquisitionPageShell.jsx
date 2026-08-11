@@ -2,6 +2,9 @@ import { useEffect } from 'react'
 import LandingSiteFooter from '../LandingSiteFooter.jsx'
 import AcquisitionHeader from './AcquisitionHeader.jsx'
 import { trackAcquisitionPageView } from './acquisitionAnalytics.js'
+import { useMemo } from 'react'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+import { getLocalizedLanding } from '../getLocalizedLanding.js'
 import '../ChronoWalkLanding.css'
 import '../ChronoWalkLanding.v2.css'
 import '../ChronoWalkLanding.v4.css'
@@ -20,6 +23,11 @@ export default function AcquisitionPageShell({
   onHeaderPrimaryClick,
   showHowItWorksLink = true,
 }) {
+  const { locale } = useI18n()
+  const footer = useMemo(
+    () => getLocalizedLanding(locale).LANDING_CONTENT.footer,
+    [locale],
+  )
   useEffect(() => {
     trackAcquisitionPageView(landingPageType)
   }, [landingPageType])
@@ -35,7 +43,11 @@ export default function AcquisitionPageShell({
       <main id="main" className="cw-acq-main">
         {children}
       </main>
-      <LandingSiteFooter pricingHref="/#pricing" landingPrefix="/" />
+      <LandingSiteFooter
+        content={footer}
+        pricingHref="/#pricing"
+        landingPrefix="/"
+      />
     </div>
   )
 }

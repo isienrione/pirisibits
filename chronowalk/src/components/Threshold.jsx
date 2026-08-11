@@ -14,11 +14,10 @@ import {
   revealToClipRight,
   revealToSeamPercent,
 } from '../utils/thresholdReveal'
-import ThresholdSourceBadge, {
-  AI_NOW_DISCLOSURE_COPY,
-} from './threshold/ThresholdSourceBadge.jsx'
+import ThresholdSourceBadge from './threshold/ThresholdSourceBadge.jsx'
 import ThresholdHoldHint from '../redesign/ui/ThresholdHoldHint.jsx'
 import { installSafariPageZoomBlock } from '../utils/safariPageZoom.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 const REVEAL_COMPLETE = 0.98
 /** Short single-tap threshold - gestures shorter than this are treated as taps, not holds. */
@@ -205,13 +204,13 @@ export default function Threshold({
   waypoint,
   nowAmbienceUrl,
   thenSoundscapeUrl,
-  thenLabel = 'Then',
+  thenLabel = null,
   active = true,
   embedded = false,
   immersive = false,
   className = '',
   onDismiss = null,
-  dismissLabel = 'Return to story',
+  dismissLabel = null,
   onHoldStart = null,
   onHoldEnd = null,
   onFullyRevealed = null,
@@ -230,6 +229,9 @@ export default function Threshold({
    */
   onNowTap = null,
 }) {
+  const t = useT()
+  const resolvedThenLabel = thenLabel ?? t('threshold.then')
+  const resolvedDismissLabel = dismissLabel ?? t('threshold.returnStory')
   const reducedMotion = useReducedMotion()
   const reconstruction = waypoint?.reconstruction
   const audioRef = useRef(null)
@@ -768,8 +770,14 @@ export default function Threshold({
       role="img"
       aria-label={
         latchedToThen
-          ? `Showing ${thenLabel}. Tap to return to today at ${waypoint?.name ?? 'this place'}.`
-          : `Press and hold to cross between now and ${thenLabel} at ${waypoint?.name ?? 'this place'}`
+          ? t('threshold.showingAria', {
+              era: resolvedThenLabel,
+              place: waypoint?.name ?? t('threshold.placeFallback'),
+            })
+          : t('threshold.holdAria', {
+              era: resolvedThenLabel,
+              place: waypoint?.name ?? t('threshold.placeFallback'),
+            })
       }
     >
       <ThresholdMediaCanvas
@@ -853,7 +861,7 @@ export default function Threshold({
             {onDismiss ? (
               <button
                 type="button"
-                aria-label="Close threshold"
+                aria-label={t('threshold.close')}
                 onPointerDown={(event) => event.stopPropagation()}
                 onClick={onDismiss}
                 style={{
@@ -880,7 +888,7 @@ export default function Threshold({
                 pointerEvents: 'none',
               }}
             >
-              Now
+              {t('threshold.now')}
             </span>
           </div>
 
@@ -896,7 +904,7 @@ export default function Threshold({
               pointerEvents: 'none',
             }}
           >
-            {thenLabel}
+            {resolvedThenLabel}
           </div>
         </>
       ) : !hideUi && embedded && showEraPills ? (
@@ -905,26 +913,26 @@ export default function Threshold({
             <button
               type="button"
               data-testid="threshold-era-then"
-              aria-label={`Show ${thenLabel}`}
+              aria-label={t('threshold.show', { era: resolvedThenLabel })}
               aria-pressed={latchedToThen || reveal > 0.5}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => handleEraPill('then')}
               style={eraPillStyle(latchedToThen || reveal > 0.5)}
             >
-              {thenLabel}
+              {resolvedThenLabel}
             </button>
           </div>
           <div style={{ position: 'absolute', bottom: immersive ? 18 : 14, right: 14, zIndex: 5 }}>
             <button
               type="button"
               data-testid="threshold-era-today"
-              aria-label="Show today"
+              aria-label={t('threshold.showToday')}
               aria-pressed={!latchedToThen && reveal < 0.5}
               onPointerDown={(event) => event.stopPropagation()}
               onClick={() => handleEraPill('today')}
               style={eraPillStyle(!latchedToThen && reveal < 0.5)}
             >
-              Today
+              {t('threshold.today')}
             </button>
           </div>
         </>
@@ -933,15 +941,15 @@ export default function Threshold({
       {!hideUi && !immersive && showNowAiBadge ? (
         <ThresholdSourceBadge
           align="left"
-          label="About this present-day view"
-          caption={AI_NOW_DISCLOSURE_COPY}
+          label={t('threshold.aboutNow')}
+          caption={t('threshold.aiDisclosure')}
         />
       ) : null}
 
       {!hideUi && !immersive && thenCaption ? (
         <ThresholdSourceBadge
           align="right"
-          label="About this reconstruction"
+          label={t('threshold.aboutReconstruction')}
           caption={thenCaption}
         />
       ) : null}
@@ -971,7 +979,7 @@ export default function Threshold({
             zIndex: 3,
           }}
         >
-          Tap to return to today
+          {t('threshold.returnToday')}
         </div>
       ) : null}
 
@@ -1004,7 +1012,7 @@ export default function Threshold({
               backdropFilter: 'blur(8px)',
             }}
           >
-            {dismissLabel}
+            {resolvedDismissLabel}
           </button>
         </div>
       ) : null}

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { T, F } from "../tokens.js";
 import { severusNow } from "../images.js";
 import { Vignette } from '../ui/index.js';
+import { useT } from '../../i18n/I18nProvider.jsx';
 
 export default function B1PrismWelcome({ onComplete }) {
+  const t = useT();
   // phase 0 → circle draws   phase 1 → spectrum hairline   phase 2 → ember + ROME
   const [phase, setPhase] = useState(0);
   const [cycleKey, setCycleKey] = useState(0);
@@ -29,7 +31,7 @@ export default function B1PrismWelcome({ onComplete }) {
       <Vignette />
       {/* Tap hint - production; frame label kept for prototype gallery */}
       <div style={{ position: "absolute", top: "max(52px, env(safe-area-inset-top))", left: 0, right: 0, textAlign: "center", zIndex: 2 }}>
-        <span style={{ fontSize: 10, color: `${T.muted}88`, letterSpacing: "0.16em" }}>TAP TO CONTINUE</span>
+        <span style={{ fontSize: 10, color: `${T.muted}88`, letterSpacing: "0.16em" }}>{t('onboarding.welcome.continue')}</span>
       </div>
 
       {/* PrismSeam logomark SVG */}
@@ -99,13 +101,13 @@ export default function B1PrismWelcome({ onComplete }) {
           fontWeight: 300, letterSpacing: "0.38em",
           textShadow: "0 0 32px rgba(245,239,227,0.25)",
         }}>
-          ROME
+          {t('onboarding.welcome.rome')}
         </span>
       </div>
 
       {/* Tap-to-skip hint */}
       <div style={{ position: "absolute", bottom: 52, left: 0, right: 0, textAlign: "center" }}>
-        <span style={{ fontSize: 12, color: T.muted, letterSpacing: "0.08em" }}>tap to skip</span>
+        <span style={{ fontSize: 12, color: T.muted, letterSpacing: "0.08em" }}>{t('onboarding.welcome.skip')}</span>
       </div>
     </div>
   );

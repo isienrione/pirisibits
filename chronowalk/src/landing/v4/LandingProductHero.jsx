@@ -14,6 +14,8 @@ import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 import { installSafariPageZoomBlock } from '../../utils/safariPageZoom.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+import { localizeLandingOffers } from '../getLocalizedLanding.js'
 
 /** Crossfade duration for deliberate slide changes (respects prefers-reduced-motion in CSS). */
 const FADE_MS = 400
@@ -23,27 +25,22 @@ const SWIPE_THRESHOLD_PX = 48
 const PACKAGE_HOTSPOTS = [
   {
     id: 'rome-complete',
-    label: 'Roma Eterna package',
     style: { left: '7%', top: '24%', width: '28%', height: '34%' },
   },
   {
     id: 'rome-essential',
-    label: 'Roma Antica package',
     style: { left: '36%', top: '24%', width: '28%', height: '34%' },
   },
   {
     id: 'rome-central',
-    label: 'Roma Historica package',
     style: { left: '65%', top: '24%', width: '28%', height: '34%' },
   },
   {
     id: 'rome-couple',
-    label: 'Couple package',
     style: { left: '7%', top: '60%', width: '42%', height: '18%' },
   },
   {
     id: 'rome-family',
-    label: 'Family package',
     style: { left: '51%', top: '60%', width: '42%', height: '18%' },
   },
 ]
@@ -113,7 +110,9 @@ export default function LandingProductHero({
   onChooseTour,
   onGetApp,
   onContinueWalk,
+  tiers = ROME_TIERS,
 }) {
+  const { locale, t } = useI18n()
   const section = hero ?? LANDING_CONTENT.hero
   const heroImage = section.heroImage ?? LANDING_HERO
   const previewFirst = section.ctaPriority === 'preview'
@@ -125,14 +124,14 @@ export default function LandingProductHero({
   const expandTriggerRef = useRef(null)
   const heroRef = useRef(null)
   const offerTiersById = useMemo(() => {
-    const mapped = mapOffersWithLaunchOffer(ROME_TIERS)
+    const mapped = localizeLandingOffers(mapOffersWithLaunchOffer(tiers), locale)
     return Object.fromEntries(mapped.map((tier) => [tier.id, tier]))
-  }, [])
+  }, [locale, tiers])
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.
   useEffect(() => {
-    preloadLandingImages(ROME_TIERS.map((tier) => tier.cardImage))
-  }, [])
+    preloadLandingImages(tiers.map((tier) => tier.cardImage))
+  }, [tiers])
 
   // Safari: keep pinch/double-tap from locking the whole page on hero art.
   useEffect(() => installSafariPageZoomBlock(heroRef.current), [])
@@ -183,7 +182,7 @@ export default function LandingProductHero({
       className="cw-v4-hero"
       aria-labelledby="cw-v4-hero-heading"
       aria-roledescription="carousel"
-      aria-label="ChronoWalk hero gallery"
+      aria-label={t('landing.hero.galleryAria')}
       tabIndex={0}
       onKeyDown={onHeroKeyDown}
       onTouchStart={(event) => {
@@ -272,15 +271,15 @@ export default function LandingProductHero({
                     key="continue"
                     type="button"
                     className="cw-v4-btn cw-v4-btn--primary"
-                    aria-label="Continue your walk"
+                    aria-label={t('landing.hero.continueAria')}
                     onClick={onContinueWalk}
                     tabIndex={interactive ? 0 : -1}
                   >
                     <span className="cw-v4-btn-label cw-v4-btn-label--full" aria-hidden="true">
-                      Continue your walk
+                      {t('landing.hero.continue')}
                     </span>
                     <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
-                      Continue
+                      {t('landing.hero.continueShort')}
                     </span>
                   </button>
                 ) : (
@@ -296,7 +295,7 @@ export default function LandingProductHero({
                       {section.primaryCta}
                     </span>
                     <span className="cw-v4-btn-label cw-v4-btn-label--short" aria-hidden="true">
-                      Try Pantheon free
+                      {t('landing.hero.tryPantheonShort')}
                     </span>
                   </button>
                 )
@@ -354,10 +353,10 @@ export default function LandingProductHero({
                     label: offerTier
                       ? `${offerTier.name} · ${
                           offerTier.launchOffer
-                            ? `${offerTier.basePrice} now ${offerTier.price}`
+                            ? `${offerTier.basePrice} · ${offerTier.price}`
                             : offerTier.price
-                        } — see pricing`
-                      : `${slide.title} — see pricing`,
+                        }`
+                      : slide.title,
                     // Cover painted price + Buy on the package poster.
                     style: { left: '5%', top: '68%', width: '90%', height: '24%' },
                   },
@@ -418,7 +417,7 @@ export default function LandingProductHero({
                           href={`#${spot.id}`}
                           className="cw-v4-hero__hotspot"
                           style={spot.style}
-                          aria-label={spot.label}
+                          aria-label={spot.label ?? offerTiersById[spot.id]?.name ?? spot.id}
                           tabIndex={active ? 0 : -1}
                           onClick={(event) => {
                             event.preventDefault()
@@ -432,11 +431,11 @@ export default function LandingProductHero({
                       type="button"
                       className="cw-v4-hero__art-enlarge"
                       tabIndex={active ? 0 : -1}
-                      aria-label={`Enlarge ${slide.title}`}
+                      aria-label={t('landing.hero.enlargeNamed', { title: slide.title })}
                       onClick={(event) => openSlideViewer(slide, event.currentTarget)}
                     >
                       <Expand size={16} aria-hidden="true" />
-                      <span>Enlarge</span>
+                      <span>{t('landing.hero.enlarge')}</span>
                     </button>
                   </div>
                 ) : (
@@ -444,7 +443,7 @@ export default function LandingProductHero({
                     type="button"
                     className="cw-v4-hero__art-hit"
                     tabIndex={active ? 0 : -1}
-                    aria-label={`Enlarge ${slide.title}`}
+                    aria-label={t('landing.hero.enlargeNamed', { title: slide.title })}
                     onClick={(event) => openSlideViewer(slide, event.currentTarget)}
                   >
                     <img
@@ -460,7 +459,7 @@ export default function LandingProductHero({
                     />
                     <span className="cw-v4-hero__art-enlarge cw-v4-hero__art-enlarge--on-art">
                       <Expand size={16} aria-hidden="true" />
-                      <span>Tap to enlarge</span>
+                      <span>{t('landing.hero.tapToEnlarge')}</span>
                     </span>
                   </button>
                 )}
@@ -475,7 +474,7 @@ export default function LandingProductHero({
           <button
             type="button"
             className="cw-v4-hero__arrow cw-v4-hero__arrow--prev"
-            aria-label="Previous hero image"
+            aria-label={t('landing.hero.previousImage')}
             onClick={goPrev}
           >
             <span aria-hidden>‹</span>
@@ -483,12 +482,12 @@ export default function LandingProductHero({
           <button
             type="button"
             className="cw-v4-hero__arrow cw-v4-hero__arrow--next"
-            aria-label="Next hero image"
+            aria-label={t('landing.hero.nextImage')}
             onClick={goNext}
           >
             <span aria-hidden>›</span>
           </button>
-          <div className="cw-v4-hero__dots" role="tablist" aria-label="Hero images">
+          <div className="cw-v4-hero__dots" role="tablist" aria-label={t('landing.hero.imagesAria')}>
             {Array.from({ length: total }, (_, i) => (
               <button
                 key={i}
@@ -496,7 +495,10 @@ export default function LandingProductHero({
                 role="tab"
                 aria-selected={index === i}
                 aria-label={
-                  i === 0 ? 'Main hero image' : storySlides[i - 1]?.title || `Hero image ${i + 1}`
+                  i === 0
+                    ? t('landing.hero.mainImage')
+                    : storySlides[i - 1]?.title ||
+                      t('landing.hero.imageNumber', { number: i + 1 })
                 }
                 className={`cw-v4-hero__dot${index === i ? ' is-active' : ''}`}
                 onClick={() => goTo(i)}

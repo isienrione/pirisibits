@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Lock } from 'lucide-react'
 import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { observeDwellOnce, trackCtaClick } from '../../lib/analytics.ts'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /** Module-level once-flag so mobile tier remounts do not re-fire. */
 let guaranteeViewFired = false
@@ -16,6 +17,7 @@ export function resetPricingGuaranteeAnalyticsForTests() {
  * Full-width of the pricing container; not repeated per tier card.
  */
 export default function LandingPricingGuarantee() {
+  const t = useT()
   const ref = useRef(null)
 
   useEffect(
@@ -40,7 +42,7 @@ export default function LandingPricingGuarantee() {
     >
       <p className="cw-v4-pricing-guarantee__secure">
         <Lock className="cw-v4-pricing-guarantee__lock" size={12} strokeWidth={2} aria-hidden="true" />
-        <span>Secure checkout via Paddle · VAT included · Instant email access</span>
+        <span>{t('landing.pricing.guaranteeSecure')}</span>
       </p>
       <p className="cw-v4-pricing-guarantee__promise">
         <span
@@ -55,9 +57,9 @@ export default function LandingPricingGuarantee() {
             }
           }}
         >
-          Money-back guarantee
+          {t('landing.pricing.guaranteeTitle')}
         </span>
-        {" if it doesn't work on your phone or isn't what you expected, email us and we'll refund you."}
+        {t('landing.pricing.guaranteeBody')}
       </p>
     </div>
   )

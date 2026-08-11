@@ -1,3 +1,5 @@
+import { t } from '../../i18n/t.js'
+
 /**
  * Customer-facing seat presentation for Walk together.
  *
@@ -38,7 +40,7 @@ export function buildWalkTogetherPresentationSeats(seats) {
       seat,
       presentationNumber,
       isOrganizerSeat,
-      displayName: isOrganizerSeat ? 'You' : `Walker ${presentationNumber}`,
+      displayName: isOrganizerSeat ? t('walkTogether.you') : t('walkTogether.walker', { n: presentationNumber }),
     }
   })
 }

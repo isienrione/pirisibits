@@ -7,8 +7,9 @@ import LandingProductSequentialDemo from './LandingProductSequentialDemo.jsx'
  * Landing “How does ChronoWalk work?” section.
  * Sequential phone + copy chapters (same pattern as /how-it-works) — normal scroll, no sticky scrub.
  */
-export default function LandingProductDemo() {
-  const section = LANDING_CONTENT['product-demo']
+export default function LandingProductDemo({
+  section = LANDING_CONTENT['product-demo'],
+}) {
   const sectionRef = useRef(null)
 
   useEffect(() => observeLandingSectionOnce(sectionRef.current, () => trackLandingRouteView()), [])
@@ -29,7 +30,10 @@ export default function LandingProductDemo() {
       </div>
 
       <div className="cw-v4-wrap">
-        <LandingProductSequentialDemo testId="landing-product-sequential-demo" />
+        <LandingProductSequentialDemo
+          section={section}
+          testId="landing-product-sequential-demo"
+        />
       </div>
     </section>
   )

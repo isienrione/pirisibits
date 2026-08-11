@@ -3,13 +3,15 @@ import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette, BottomScrim, Eyebrow } from '../ui/index.js';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C8dResume({
-  resumeLabel = 'Pick up at the Temple of Vesta',
+  resumeLabel = null,
   onContinue,
   onStartFresh,
   busy = false,
 }) {
+  const t = useT()
   const { navigate } = useContext(RedesignNavCtx);
   const accent   = T.actI;
 
@@ -33,7 +35,7 @@ export default function C8dResume({
         justifyContent: "flex-end",
         padding: "0 28px 60px",
       }}>
-        <Eyebrow color={accent}>WELCOME BACK</Eyebrow>
+        <Eyebrow color={accent}>{t('resume.eyebrow')}</Eyebrow>
 
         <h1 style={{
           fontFamily: F.display,
@@ -44,7 +46,7 @@ export default function C8dResume({
           margin: "14px 0 8px",
           textShadow: "0 2px 24px rgba(0,0,0,0.55)",
         }}>
-          Rome kept your place.
+          {t('resume.title')}
         </h1>
 
         <p style={{
@@ -53,7 +55,7 @@ export default function C8dResume({
           lineHeight: 1.6,
           marginBottom: 32,
         }}>
-          It's had practice waiting.
+          {t('resume.body')}
         </p>
 
         {/* Primary */}
@@ -71,7 +73,7 @@ export default function C8dResume({
             boxShadow: `0 0 22px ${accent}55`,
           }}
         >
-          {resumeLabel}
+          {resumeLabel ?? t('resume.default')}
         </button>
 
         {/* Quiet */}
@@ -85,7 +87,7 @@ export default function C8dResume({
           background: "none", border: "none",
           cursor: "pointer", fontFamily: F.body,
         }}>
-          Start from where I am
+          {t('resume.fresh')}
         </button>
       </div>
     </div>

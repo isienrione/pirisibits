@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 function InfoIcon() {
   return (
@@ -10,6 +11,7 @@ function InfoIcon() {
 }
 
 export function ThresholdCaptionBubble({ text, onDismiss }) {
+  const t = useT()
   if (!text) return null
 
   return (
@@ -49,7 +51,7 @@ export function ThresholdCaptionBubble({ text, onDismiss }) {
             cursor: 'pointer',
           }}
         >
-          Dismiss
+          {t('action.dismiss')}
         </button>
       ) : null}
     </div>

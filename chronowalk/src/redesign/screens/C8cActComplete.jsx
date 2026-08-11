@@ -1,26 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from "../tokens.js";
 import { capitolineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Vignette } from '../ui/index.js';
-import { useContext } from "react";
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C8cActComplete({
-  actTitle = 'ACT IV · THE MARKET',
-  closingLine = 'The ancient city, complete.',
-  stats = ['11 stops', '4.1 km', '21 centuries'],
+  actTitle = null,
+  closingLine = null,
+  stats = null,
   accent = T.actIV,
   onContinue,
   onSavePlace,
   busy = false,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
+  const t = useT()
   const verdigris = accent;
   const [drawn, setDrawn] = useState(false);
 
+  const resolvedActTitle = actTitle ?? t('actComplete.defaultAct')
+  const resolvedClosing = closingLine ?? t('actComplete.defaultClosing')
+  const resolvedStats = stats ?? [
+    t('actComplete.stops', { count: 11 }),
+    t('actComplete.distance'),
+    t('actComplete.centuries'),
+  ]
+
   useEffect(() => {
-    const t = setTimeout(() => setDrawn(true), 200);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDrawn(true), 200);
+    return () => clearTimeout(timer);
   }, []);
 
   // Route path length for dashoffset animation - approximate
@@ -96,7 +105,7 @@ export default function C8cActComplete({
           {/* Act label */}
           <text x="195" y="246" textAnchor="middle"
             style={{ fontSize: "9px", letterSpacing: "0.2em", fill: verdigris, opacity: 0.7, textTransform: "uppercase" }}>
-            {actTitle}
+            {resolvedActTitle}
           </text>
         </svg>
       </div>
@@ -112,7 +121,7 @@ export default function C8cActComplete({
           display: "flex", gap: 8, alignItems: "center",
           marginBottom: 24, justifyContent: "center",
         }}>
-          {stats.map((stat, i) => (
+          {resolvedStats.map((stat, i) => (
             <span key={stat} style={{
               fontSize: 13, color: T.muted,
               fontVariantNumeric: "tabular-nums",
@@ -132,7 +141,7 @@ export default function C8cActComplete({
           textAlign: "center", marginBottom: 32,
           textShadow: "0 2px 16px rgba(0,0,0,0.5)",
         }}>
-          {closingLine}
+          {resolvedClosing}
         </p>
 
         {/* Seam tick - ember: time itself, always, regardless of act */}
@@ -158,7 +167,7 @@ export default function C8cActComplete({
             boxShadow: `0 0 22px ${verdigris}55`,
           }}
         >
-          Continue to Act V - The Living City
+          {t('actComplete.continue')}
         </button>
 
         {/* Quiet */}
@@ -172,7 +181,7 @@ export default function C8cActComplete({
           background: "none", border: "none",
           cursor: "pointer", fontFamily: F.body,
         }}>
-          That's today - save my place.
+          {t('actComplete.save')}
         </button>
       </div>
     </div>

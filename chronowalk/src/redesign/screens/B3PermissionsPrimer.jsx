@@ -5,23 +5,25 @@ import { Vignette } from '../ui/index.js'
 import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
 import { PrimaryButton } from '../ui/PrimaryButton.jsx'
 import { GhostButton } from '../ui/GhostButton.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 const BENEFITS = [
   {
     icon: Navigation,
-    text: 'Arrival stories unlock when you reach each landmark',
+    key: 'onboarding.permissions.benefit.arrivals',
   },
   {
     icon: MapPin,
-    text: 'Walking directions stay in sync with your position',
+    key: 'onboarding.permissions.benefit.directions',
   },
   {
     icon: Shield,
-    text: 'You can change this anytime in Settings',
+    key: 'onboarding.permissions.benefit.settings',
   },
 ]
 
 export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, paceTitle }) {
+  const t = useT()
   return (
     <div
       data-testid="permissions-primer"
@@ -69,7 +71,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               color: T.muted,
             }}
           >
-            Before you walk
+            {t('onboarding.permissions.eyebrow')}
           </p>
         </div>
 
@@ -96,7 +98,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               textAlign: 'center',
             }}
           >
-            Enable location for GPS guidance
+            {t('onboarding.permissions.title')}
           </h1>
           <p
             style={{
@@ -107,13 +109,12 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
               margin: '0 0 28px',
             }}
           >
-            ChronoWalk uses your location only while you are walking the tour - never in the
-            background when the app is closed.
+            {t('onboarding.permissions.body')}
           </p>
 
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {BENEFITS.map(({ icon: Icon, text }) => (
-              <li key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+            {BENEFITS.map(({ icon: Icon, key }) => (
+              <li key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
                 <span
                   style={{
                     width: 36,
@@ -128,7 +129,7 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
                 >
                   <Icon size={18} color={T.ember} strokeWidth={1.8} />
                 </span>
-                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}dd`, lineHeight: 1.55 }}>{text}</p>
+                <p style={{ margin: 0, fontSize: 14, color: `${T.warmWhite}dd`, lineHeight: 1.55 }}>{t(key)}</p>
               </li>
             ))}
           </ul>
@@ -137,16 +138,18 @@ export default function B3PermissionsPrimer({ onEnable, onSkip, busy = false, pa
         <div style={{ marginTop: 24, flexShrink: 0, paddingBottom: 8 }}>
           {paceTitle ? (
             <p style={{ fontSize: 13, color: T.muted, textAlign: 'center', margin: '0 0 16px' }}>
-              {paceTitle} pace selected
+              {t('onboarding.permissions.pace', { pace: paceTitle })}
             </p>
           ) : null}
           <PrimaryButton onClick={onEnable} disabled={busy}>
-            {busy ? 'Requesting access…' : 'Enable location & start'}
+            {busy
+              ? t('onboarding.permissions.requesting')
+              : t('onboarding.permissions.enable')}
           </PrimaryButton>
           {onSkip ? (
             <div style={{ marginTop: 10 }}>
               <GhostButton onClick={onSkip} disabled={busy}>
-                Continue without enabling
+                {t('onboarding.permissions.skip')}
               </GhostButton>
             </div>
           ) : null}

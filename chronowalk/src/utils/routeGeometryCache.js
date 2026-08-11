@@ -1,3 +1,6 @@
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import { normalizeLocale } from '../i18n/locales.js'
+
 const storageKey = (tourId) => `chronowalk:route-cache:${tourId}`
 
 const emptyCache = () => ({
@@ -37,6 +40,10 @@ function legKey(fromId, toId) {
   return `${fromId}->${toId}:v2`
 }
 
+function directionsLegKey(fromId, toId, locale = getActiveLocale()) {
+  return `${legKey(fromId, toId)}:${normalizeLocale(locale)}`
+}
+
 export function cacheTourRoute(tourId, geometry) {
   if (!tourId || !geometry?.coordinates?.length) return
 
@@ -53,11 +60,11 @@ export function cacheLegRoute(tourId, fromId, toId, geometry) {
   writeCache(tourId, cache)
 }
 
-export function cacheLegDirections(tourId, fromId, toId, steps) {
+export function cacheLegDirections(tourId, fromId, toId, steps, locale = getActiveLocale()) {
   if (!tourId || !fromId || !toId || !steps?.length) return
 
   const cache = readCache(tourId)
-  cache.directions[legKey(fromId, toId)] = steps
+  cache.directions[directionsLegKey(fromId, toId, locale)] = steps
   writeCache(tourId, cache)
 }
 
@@ -70,9 +77,9 @@ export function getLegRouteCoordinates(tourId, fromId, toId) {
   return readCache(tourId).legs[legKey(fromId, toId)] ?? null
 }
 
-export function getLegWalkingSteps(tourId, fromId, toId) {
+export function getLegWalkingSteps(tourId, fromId, toId, locale = getActiveLocale()) {
   if (!tourId || !fromId || !toId) return null
-  return readCache(tourId).directions[legKey(fromId, toId)] ?? null
+  return readCache(tourId).directions[directionsLegKey(fromId, toId, locale)] ?? null
 }
 
 export function resetRouteGeometryCache(tourId) {
@@ -87,11 +94,11 @@ function coordKey(point) {
   return `${point.lat.toFixed(5)},${point.lng.toFixed(5)}`
 }
 
-function adhocKey(origin, destination) {
+function adhocKey(origin, destination, locale = getActiveLocale()) {
   const from = coordKey(origin)
   const to = coordKey(destination)
   if (!from || !to) return null
-  return `${from}->${to}`
+  return `${from}->${to}:${normalizeLocale(locale)}`
 }
 
 function readAdhocCache() {
@@ -117,8 +124,13 @@ function writeAdhocCache(cache) {
   }
 }
 
-export function cacheAdhocWalkingDirections(origin, destination, directions) {
-  const key = adhocKey(origin, destination)
+export function cacheAdhocWalkingDirections(
+  origin,
+  destination,
+  directions,
+  locale = getActiveLocale(),
+) {
+  const key = adhocKey(origin, destination, locale)
   if (!key || !directions?.steps?.length) return
 
   const cache = readAdhocCache()
@@ -126,8 +138,8 @@ export function cacheAdhocWalkingDirections(origin, destination, directions) {
   writeAdhocCache(cache)
 }
 
-export function getAdhocWalkingDirections(origin, destination) {
-  const key = adhocKey(origin, destination)
+export function getAdhocWalkingDirections(origin, destination, locale = getActiveLocale()) {
+  const key = adhocKey(origin, destination, locale)
   if (!key) return null
   return readAdhocCache()[key] ?? null
 }

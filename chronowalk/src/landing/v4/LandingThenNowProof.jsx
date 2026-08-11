@@ -8,14 +8,17 @@ import {
 } from '../landingAnalytics.js'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingThenNowAppScreen from './LandingThenNowAppScreen.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Top-of-page Then/Now proof — product Threshold inside the landing phone frame.
  * Silent, user-driven hold (optional one-time peek via Threshold autoPeek).
  * Full scrollable product demo remains below.
  */
-export default function LandingThenNowProof() {
-  const section = LANDING_CONTENT.thenNowProof
+export default function LandingThenNowProof({
+  section = LANDING_CONTENT.thenNowProof,
+}) {
+  const t = useT()
   const reducedMotion = useReducedMotion()
   const reactId = useId()
   const statusId = `${reactId}-status`
@@ -120,10 +123,13 @@ export default function LandingThenNowProof() {
   }, [autoPeek, inView, reducedMotion])
 
   const statusText = revealed
-    ? 'Ancient Rome revealed inside ChronoWalk'
+    ? t('landing.thenNow.revealedStatus')
     : holding
-      ? 'Revealing Ancient Rome'
-      : `${section.holdHint}. ${section.revealLabel} is also available as a button.`
+      ? t('landing.thenNow.revealingStatus')
+      : t('landing.thenNow.availableStatus', {
+          hint: section.holdHint,
+          action: section.revealLabel,
+        })
 
   return (
     <section
@@ -143,7 +149,7 @@ export default function LandingThenNowProof() {
 
         <div className="cw-v4-then-now__stage-wrap">
           <div ref={phoneRef} className="cw-v4-then-now__phone">
-            <LandingProductPhoneFrame label="ChronoWalk Then/Now inside the app">
+            <LandingProductPhoneFrame label={t('landing.thenNow.phoneLabel')}>
               <LandingThenNowAppScreen
                 active={inView}
                 autoPeek={autoPeek && !reducedMotion}

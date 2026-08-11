@@ -2,17 +2,10 @@ import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import AnalyticsPreferencesControl from '../components/analytics/AnalyticsPreferencesControl.jsx'
 import { LANDING_CONTENT } from './landingData.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 import '../components/legal/legal.css'
 
 const SUPPORT_EMAIL = 'support@chronowalk.com'
-
-const LEGAL_LINKS = [
-  { label: 'Home', to: '/' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'Terms', to: '/legal/terms' },
-  { label: 'Privacy', to: '/legal/privacy' },
-  { label: 'Refund policy', to: '/legal/refund' },
-]
 
 function resolveFooterHref(href, landingPrefix) {
   if (!landingPrefix) return href
@@ -29,8 +22,17 @@ function resolveFooterHref(href, landingPrefix) {
 export default function LandingSiteFooter({
   pricingHref = '#pricing',
   landingPrefix = '',
+  content = LANDING_CONTENT.footer,
 }) {
-  const { tagline, nav, credit, accessHref, accessLinkLabel } = LANDING_CONTENT.footer
+  const t = useT()
+  const { tagline, nav, credit, accessHref, accessLinkLabel } = content
+  const legalLinks = [
+    { label: t('landing.footer.home'), to: '/' },
+    { label: t('landing.footer.contact'), to: '/contact' },
+    { label: t('landing.footer.terms'), to: '/legal/terms' },
+    { label: t('landing.footer.privacy'), to: '/legal/privacy' },
+    { label: t('landing.footer.refund'), to: '/legal/refund' },
+  ]
   const year = new Date().getFullYear()
 
   return (
@@ -52,12 +54,12 @@ export default function LandingSiteFooter({
             </p>
           ) : null}
           <p className="cw-v2-footer__support">
-            Support:{' '}
+            {t('landing.footer.support')}:{' '}
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
           </p>
         </div>
 
-        <nav className="cw-v2-footer__nav" aria-label="Footer">
+        <nav className="cw-v2-footer__nav" aria-label={t('landing.footer.aria')}>
           {nav.map((item) => (
             <a
               key={item.href}
@@ -71,9 +73,9 @@ export default function LandingSiteFooter({
       </div>
 
       <div className="cw-v2-footer__legal">
-        <nav className="cw-v2-footer__legal-nav" aria-label="Legal">
-          <p className="cw-v2-footer__legal-nav-label">Legal</p>
-          {LEGAL_LINKS.map((item, index) => (
+        <nav className="cw-v2-footer__legal-nav" aria-label={t('landing.footer.legalAria')}>
+          <p className="cw-v2-footer__legal-nav-label">{t('landing.footer.legal')}</p>
+          {legalLinks.map((item, index) => (
             <span key={item.to} style={{ display: 'contents' }}>
               {index > 0 ? (
                 <span className="cw-v2-footer__legal-sep" aria-hidden="true">
@@ -89,7 +91,7 @@ export default function LandingSiteFooter({
             ·
           </span>
           <a href={pricingHref} className="cw-v2-footer__legal-link">
-            Pricing
+            {t('landing.footer.pricing')}
           </a>
         </nav>
         <div className="cw-v2-footer__privacy-choices">

@@ -1,10 +1,12 @@
 import { CHRONOWALK_HOME_ICON } from '../../redesign/ui/HomeScreenInstallOption.jsx'
 import LandingAccessCta from './LandingAccessCta.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * How to open ChronoWalk: browser (available now) above App Store / Play Store (coming soon).
  */
 export default function LandingGetAppSection({ onChooseTour }) {
+  const t = useT()
   const goToPackages = (event) => {
     if (!onChooseTour) return
     event.preventDefault()
@@ -19,12 +21,12 @@ export default function LandingGetAppSection({ onChooseTour }) {
     >
       <div className="cw-v4-wrap cw-v4-getapp__inner">
         <header className="cw-v4-section-head">
-          <p className="cw-v4-eyebrow">GET THE APP</p>
+          <p className="cw-v4-eyebrow">{t('landing.getApp.eyebrow')}</p>
           <h2 id="cw-v4-getapp-heading" className="cw-v4-section-title">
-            Open ChronoWalk your way.
+            {t('landing.getApp.title')}
           </h2>
           <p className="cw-v4-section-lead">
-            Start in your browser today. Native App Store and Play Store builds are on the way.
+            {t('landing.getApp.lead')}
           </p>
         </header>
 
@@ -38,15 +40,17 @@ export default function LandingGetAppSection({ onChooseTour }) {
               <img src={CHRONOWALK_HOME_ICON} alt="" width="40" height="40" draggable={false} />
             </span>
             <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Available now</span>
-              <span className="cw-v4-getapp__option-title">Use in browser</span>
+              <span className="cw-v4-getapp__option-eyebrow">
+                {t('landing.getApp.available')}
+              </span>
+              <span className="cw-v4-getapp__option-title">
+                {t('landing.getApp.browserTitle')}
+              </span>
               <span className="cw-v4-getapp__option-note">
-                Open ChronoWalk directly on your phone without downloading any app. Access your
-                tour directly on this website, add it to Home Screen and done! It now behaves
-                just like a mobile app, without the hassle.
+                {t('landing.getApp.browserBody')}
               </span>
               <span className="cw-v4-getapp__option-cta">
-                Choose a walk and start using ChronoWalk
+                {t('landing.getApp.browserCta')}
               </span>
             </span>
           </a>
@@ -66,7 +70,9 @@ export default function LandingGetAppSection({ onChooseTour }) {
               </svg>
             </span>
             <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Coming soon</span>
+              <span className="cw-v4-getapp__option-eyebrow">
+                {t('landing.getApp.comingSoon')}
+              </span>
               <span className="cw-v4-getapp__option-title">App Store</span>
             </span>
           </button>
@@ -86,14 +92,16 @@ export default function LandingGetAppSection({ onChooseTour }) {
               </svg>
             </span>
             <span className="cw-v4-getapp__option-copy">
-              <span className="cw-v4-getapp__option-eyebrow">Coming soon</span>
+              <span className="cw-v4-getapp__option-eyebrow">
+                {t('landing.getApp.comingSoon')}
+              </span>
               <span className="cw-v4-getapp__option-title">Google Play</span>
             </span>
           </button>
         </div>
 
         <p className="cw-v4-getapp__soon">
-          Native apps are on the way. ChronoWalk is a full browser experience today.
+          {t('landing.getApp.soonNote')}
         </p>
 
         <LandingAccessCta className="cw-v4-access-cta--after-getapp" />

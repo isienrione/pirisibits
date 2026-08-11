@@ -1,4 +1,5 @@
 import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Turn-by-turn steps for the walking companion (redesign dark theme).
@@ -17,10 +18,12 @@ export default function WalkingCompanionStepsPanel({
   variant = 'full',
   maxVisible = null,
 }) {
+  const t = useT()
+
   if (loading) {
     return (
       <div className="cw-walking-directions" data-testid="walking-directions-steps">
-        <p className="cw-walking-directions__status">Finding your route…</p>
+        <p className="cw-walking-directions__status">{t('walk.directions.finding')}</p>
       </div>
     )
   }
@@ -48,7 +51,7 @@ export default function WalkingCompanionStepsPanel({
                 className="cw-walking-directions__retry cw-wc-pressable"
                 onClick={onRetry}
               >
-                Try again
+                {t('action.retry')}
               </button>
             ) : null}
             {externalMapsUrl ? (
@@ -57,7 +60,7 @@ export default function WalkingCompanionStepsPanel({
                 className="cw-walking-directions__maps cw-wc-pressable"
                 onClick={openMaps}
               >
-                Open in Google Maps
+                {t('walk.directions.openGoogle')}
               </button>
             ) : null}
           </div>
@@ -69,7 +72,9 @@ export default function WalkingCompanionStepsPanel({
   if (!steps.length) {
     return (
       <div className="cw-walking-directions" data-testid="walking-directions-steps">
-        <p className="cw-walking-directions__status">Directions will appear once GPS is ready.</p>
+        <p className="cw-walking-directions__status">
+          {t('walk.directions.waiting')}
+        </p>
       </div>
     )
   }
@@ -84,9 +89,14 @@ export default function WalkingCompanionStepsPanel({
         data-testid="walking-directions-steps"
       >
         <div className="cw-walking-directions__timeline-head">
-          <p className="cw-walking-directions__eyebrow">Next turns</p>
+          <p className="cw-walking-directions__eyebrow">
+            {t('walk.directions.nextTurns')}
+          </p>
         </div>
-        <ol className="cw-walking-directions__timeline" aria-label={`Next turns to ${destinationTitle}`}>
+        <ol
+          className="cw-walking-directions__timeline"
+          aria-label={t('walk.directions.nextTurnsAria', { title: destinationTitle })}
+        >
           {visible.map((step, offset) => {
             const index = start + offset
             const isCurrent = index === currentStepIndex
@@ -114,7 +124,10 @@ export default function WalkingCompanionStepsPanel({
 
   const currentStep = steps[currentStepIndex] ?? steps[0]
   const nextStep = steps[currentStepIndex + 1] ?? null
-  const stepLabel = `Step ${Math.min(currentStepIndex + 1, steps.length)} of ${steps.length}`
+  const stepLabel = t('walk.directions.step', {
+    current: Math.min(currentStepIndex + 1, steps.length),
+    total: steps.length,
+  })
 
   return (
     <div className="cw-walking-directions" data-testid="walking-directions-steps">
@@ -127,7 +140,9 @@ export default function WalkingCompanionStepsPanel({
 
       {nextStep ? (
         <div className="cw-walking-directions__next">
-          <p className="cw-walking-directions__next-label">Then</p>
+          <p className="cw-walking-directions__next-label">
+            {t('walk.directions.then')}
+          </p>
           <p className="cw-walking-directions__next-text">{nextStep.instruction}</p>
           {nextStep.distanceM > 0 ? (
             <p className="cw-walking-directions__next-distance">{formatStepDistance(nextStep.distanceM)}</p>
@@ -135,7 +150,10 @@ export default function WalkingCompanionStepsPanel({
         </div>
       ) : null}
 
-      <ol className="cw-walking-directions__list" aria-label={`Steps to ${destinationTitle}`}>
+      <ol
+        className="cw-walking-directions__list"
+        aria-label={t('walk.directions.stepsAria', { title: destinationTitle })}
+      >
         {steps.map((step, index) => {
           const isCurrent = index === currentStepIndex
           const isPast = index < currentStepIndex

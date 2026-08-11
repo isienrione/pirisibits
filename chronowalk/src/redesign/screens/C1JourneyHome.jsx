@@ -1,24 +1,26 @@
 import { useState } from "react";
 import { Settings } from "lucide-react";
 import { T, F } from "../tokens.js";
-import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, palatineNow } from "../images.js";
+import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, trajansNow, palatineNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
-import { Eyebrow, Seam } from '../ui/index.js';
+import { Eyebrow } from '../ui/index.js';
 import { useContext } from "react";
 import { C1bRouteSheet } from './C1bRouteSheet.jsx';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C1JourneyHome() {
+  const t = useT()
   const { navigate } = useContext(RedesignNavCtx);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const acts = [
-    { num: "I",   color: T.actI,   name: "The Arena",       promise: "Where it all began. The crowd remembers.",                  status: "current", photo: colosseumNow  },
-    { num: "II",  color: T.actII,  name: "The Sacred Way",  promise: "The road Caesar walked - in both directions.",              status: "ahead",   photo: palatineNow    },
-    { num: "III", color: T.actIII, name: "The Forum",       promise: "Nine stops, one drained swamp, the centre of the world.",   status: "ahead",   photo: capitolineNow },
-    { num: "IV",  color: T.actIV,  name: "The Market",      promise: "Trade, gossip, and the smell of fresh bread.",              status: "ahead",   photo: trajansNow    },
-    { num: "V",   color: T.actV,   name: "The Living City", promise: "The centuries pile up and somehow stay distinct.",          status: "ahead",   photo: pantheonNow   },
-    { num: "VI",  color: T.actVI,  name: "The River",       promise: "Everything Rome built, it built toward this water.",        status: "ahead",   photo: spanishSteps  },
-    { num: "ENC", color: T.encore, name: "Optional Encore",  promise: "Via Appia Antica - estimated 30 min drive.",         status: "ahead",   photo: spanishSteps  },
+    { num: "I",   color: T.actI,   name: t('journeyHome.act1.name'), promise: t('journeyHome.act1.promise'), status: "current", photo: colosseumNow  },
+    { num: "II",  color: T.actII,  name: t('journeyHome.act2.name'), promise: t('journeyHome.act2.promise'), status: "ahead",   photo: palatineNow    },
+    { num: "III", color: T.actIII, name: t('journeyHome.act3.name'), promise: t('journeyHome.act3.promise'), status: "ahead",   photo: capitolineNow },
+    { num: "IV",  color: T.actIV,  name: t('journeyHome.act4.name'), promise: t('journeyHome.act4.promise'), status: "ahead",   photo: trajansNow    },
+    { num: "V",   color: T.actV,   name: t('journeyHome.act5.name'), promise: t('journeyHome.act5.promise'), status: "ahead",   photo: pantheonNow   },
+    { num: "VI",  color: T.actVI,  name: t('journeyHome.act6.name'), promise: t('journeyHome.act6.promise'), status: "ahead",   photo: spanishSteps  },
+    { num: "ENC", color: T.encore, name: t('journeyHome.encore.name'), promise: t('journeyHome.encore.promise'), status: "ahead", photo: spanishSteps  },
   ];
 
   // Seam x-position: within the left third (about 38px from left edge)
@@ -30,8 +32,8 @@ export default function C1JourneyHome() {
 
       {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "48px 24px 16px", flexShrink: 0, position: "relative", zIndex: 2 }}>
-        <Eyebrow color={T.actI} hairline>HEART OF ANCIENT ROME</Eyebrow>
-        <button onClick={() => navigate("G1")} style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0, padding: 4 }}>
+        <Eyebrow color={T.actI} hairline>{t('journeyHome.eyebrow')}</Eyebrow>
+        <button aria-label={t('walk.openSettings')} onClick={() => navigate("G1")} style={{ color: T.muted, background: "none", border: "none", cursor: "pointer", lineHeight: 0, padding: 4 }}>
           <Settings size={18} />
         </button>
       </div>
@@ -115,7 +117,9 @@ export default function C1JourneyHome() {
                   display: "block",
                   marginBottom: 2,
                 }}>
-                  {act.num === "ENC" ? "ENCORE" : `ACT ${act.num}`}
+                  {act.num === "ENC"
+                    ? t('journeyHome.encore')
+                    : t('journeyHome.act', { numeral: act.num })}
                 </span>
 
                 {/* Act name - Fraunces 22 */}
@@ -167,19 +171,19 @@ export default function C1JourneyHome() {
             boxShadow: `0 0 22px ${T.actI}50`,
           }}
         >
-          Begin Act I - The Arena
+          {t('journeyHome.begin')}
         </button>
         <div style={{ display: "flex", justifyContent: "center", gap: 36 }}>
           <button
             onClick={() => setSheetOpen(true)}
             style={{ fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer", fontFamily: F.body }}
           >
-            Route
+            {t('journeyHome.route')}
           </button>
           <button
             style={{ fontSize: 13, color: T.muted, background: "none", border: "none", cursor: "pointer", fontFamily: F.body }}
           >
-            Start from where I am
+            {t('journeyHome.startHere')}
           </button>
         </div>
       </div>
@@ -191,16 +195,20 @@ export default function C1JourneyHome() {
         background: T.bone, paddingBottom: 32, paddingTop: 4,
         zIndex: 5,
       }}>
-        {(["JOURNEY", "MAP", "JOURNAL"]).map(tab => (
-          <button key={tab} style={{
+        {[
+          ['journey', t('journeyHome.tab.journey')],
+          ['map', t('journeyHome.tab.map')],
+          ['journal', t('journeyHome.tab.journal')],
+        ].map(([tabId, label]) => (
+          <button key={tabId} style={{
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", gap: 4, paddingTop: 8,
             fontFamily: F.body, fontSize: 10, letterSpacing: "0.12em",
-            color: tab === "JOURNEY" ? T.actI : T.muted,
+            color: tabId === "journey" ? T.actI : T.muted,
             background: "none", border: "none", cursor: "pointer",
           }}>
-            <div style={{ width: 4, height: 4, borderRadius: 2, background: tab === "JOURNEY" ? T.actI : "transparent" }} />
-            {tab}
+            <div style={{ width: 4, height: 4, borderRadius: 2, background: tabId === "journey" ? T.actI : "transparent" }} />
+            {label}
           </button>
         ))}
       </div>

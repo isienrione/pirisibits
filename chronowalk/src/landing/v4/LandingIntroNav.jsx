@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
 
 /**
  * Cinematic logo open assets remain in the repo:
@@ -60,8 +62,14 @@ function shouldPlayIntro() {
   return readIntroPlays() < INTRO_PLAY_CAP
 }
 
-export default function LandingIntroNav({ onComplete, onGetApp }) {
-  const { nav, cta, ctaHref, ctaShort } = LANDING_CONTENT.header
+export default function LandingIntroNav({
+  onComplete,
+  onGetApp,
+  header = LANDING_CONTENT.header,
+  ctaCopy = LANDING_CTA,
+}) {
+  const { locale, setLocale, labels, t } = useI18n()
+  const { nav, cta, ctaHref, ctaShort } = header
   const [phase, setPhase] = useState(() => (shouldPlayIntro() ? 'intro' : 'nav'))
   const [pastHero, setPastHero] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
@@ -201,7 +209,7 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
   const isCompress = phase === 'compress'
   const showIntroOverlay = LANDING_INTRO_VIDEO_ENABLED && (!isNav || isCompress)
   const showGetApp = Boolean(cta) && pastHero
-  const ctaLabel = cta || LANDING_CTA.getApp
+  const ctaLabel = cta || ctaCopy.getApp
   const ctaTarget = ctaHref || '#get-app'
   const logoVariant = pastHero ? 'dark' : 'light'
 
@@ -247,18 +255,36 @@ export default function LandingIntroNav({ onComplete, onGetApp }) {
         data-phase={phase}
       >
         <div className="cw-v4-nav__inner">
-          <a href="#top" className="cw-v4-nav__brand" aria-label="ChronoWalk home">
+          <a href="#top" className="cw-v4-nav__brand" aria-label={t('landing.nav.homeAria')}>
             <ChronoWalkLogo size={32} variant={logoVariant} className="cw-v4-nav__emblem" />
             <span className="cw-v4-nav__name">ChronoWalk</span>
           </a>
 
-          <nav className="cw-v4-nav__links" aria-label="Primary">
+          <nav className="cw-v4-nav__links" aria-label={t('landing.nav.aria')}>
             {nav.map((item) => (
               <a key={item.href} href={item.href} className="cw-v4-nav__link">
                 {item.label}
               </a>
             ))}
           </nav>
+
+          <div
+            className="cw-v4-nav__language"
+            role="group"
+            aria-label={t('landing.nav.languageAria')}
+          >
+            {SUPPORTED_LOCALES.map((code) => (
+              <button
+                key={code}
+                type="button"
+                className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
+                aria-pressed={locale === code}
+                onClick={() => setLocale(code)}
+              >
+                {labels[code] ?? code}
+              </button>
+            ))}
+          </div>
 
           {cta ? (
             <a

@@ -9,6 +9,7 @@ import {
 import { RedesignNavCtx } from '../nav.js'
 import { Eyebrow } from '../ui/index.js'
 import { ACT_DOT_KEYS } from '../../data/romePacing.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 const PACE_IMAGES = {
   pantheon: pantheonNow,
@@ -40,33 +41,49 @@ export default function B4PaceSelector({
   onSelectPace,
   onContinue,
   showPrices = true,
-  eyebrow = 'BEFORE YOU BEGIN',
-  title = (
-    <>
-      Choose your
-      <br />
-      Rome.
-    </>
-  ),
+  eyebrow = null,
+  title = null,
   subtitle = null,
-  footerNote = 'You can change your mind at any time. Nothing expires. Nothing is skipped forever.',
+  footerNote = null,
 }) {
+  const t = useT()
   const { navigate } = useContext(RedesignNavCtx)
   const [selected, setSelected] = useState(null)
+  const resolvedEyebrow = eyebrow ?? t('onboarding.pace.eyebrow')
+  const resolvedTitle = title ?? (
+    <>
+      {t('onboarding.pace.titleLine1')}
+      <br />
+      {t('onboarding.pace.titleLine2')}
+    </>
+  )
+  const resolvedFooterNote = footerNote ?? t('onboarding.pace.footer')
 
   const options = useMemo(
     () =>
-      (optionsProp ?? []).map((opt) => ({
-        id: opt.id,
-        title: opt.title,
-        badge: opt.badge ?? null,
-        desc: opt.description,
-        included: opt.includedSummary ?? null,
-        priceLabel: opt.priceLabel ?? null,
-        img: PACE_IMAGES[opt.imageKey] ?? colosseumNow,
-        dots: resolveDots(opt.actDots),
-      })),
-    [optionsProp],
+      (optionsProp ?? []).map((opt) => {
+        const descriptionKey = `onboarding.pace.${opt.id}.description`
+        const includedKey = `onboarding.pace.${opt.id}.included`
+        const localizedDescription = t(descriptionKey)
+        const localizedIncluded = t(includedKey)
+        return {
+          id: opt.id,
+          title: opt.id === 'own' ? t('onboarding.pace.own.title') : opt.title,
+          badge: opt.badge ?? null,
+          desc:
+            localizedDescription === descriptionKey
+              ? opt.description
+              : localizedDescription,
+          included:
+            localizedIncluded === includedKey
+              ? opt.includedSummary ?? null
+              : localizedIncluded,
+          priceLabel: opt.priceLabel ?? null,
+          img: PACE_IMAGES[opt.imageKey] ?? colosseumNow,
+          dots: resolveDots(opt.actDots),
+        }
+      }),
+    [optionsProp, t],
   )
 
   const activeIndex =
@@ -137,7 +154,7 @@ export default function B4PaceSelector({
           />
         </div>
 
-        <Eyebrow color={T.ember}>{eyebrow}</Eyebrow>
+        <Eyebrow color={T.ember}>{resolvedEyebrow}</Eyebrow>
         <h2
           style={{
             fontFamily: F.display,
@@ -149,7 +166,7 @@ export default function B4PaceSelector({
             flexShrink: 0,
           }}
         >
-          {title}
+          {resolvedTitle}
         </h2>
         {subtitle ? (
           <p
@@ -323,7 +340,7 @@ export default function B4PaceSelector({
           ))}
         </div>
 
-        {footerNote ? (
+        {resolvedFooterNote ? (
           <p
             style={{
               fontSize: 13,
@@ -334,7 +351,7 @@ export default function B4PaceSelector({
               flexShrink: 0,
             }}
           >
-            {footerNote}
+            {resolvedFooterNote}
           </p>
         ) : null}
 
@@ -358,8 +375,8 @@ export default function B4PaceSelector({
           }}
         >
           {activeIndex != null && activeIndex >= 0
-            ? `Begin - ${options[activeIndex].title}`
-            : 'Select a tour'}
+            ? t('onboarding.pace.begin', { title: options[activeIndex].title })
+            : t('onboarding.pace.select')}
         </button>
       </div>
     </div>

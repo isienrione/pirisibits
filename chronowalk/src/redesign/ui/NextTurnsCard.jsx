@@ -1,11 +1,12 @@
 import { formatStepDistance } from '../../components/DirectionsStepList.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Format a Directions step for the Next turns card.
  * Example: "Exit the Colosseum and turn left - 120 m"
  */
-export function formatNextTurnLine(step) {
-  const instruction = String(step?.instruction ?? '').trim() || 'Continue'
+export function formatNextTurnLine(step, fallback = 'Continue') {
+  const instruction = String(step?.instruction ?? '').trim() || fallback
   const distance =
     typeof step?.distanceM === 'number' && step.distanceM > 0
       ? formatStepDistance(step.distanceM)
@@ -30,6 +31,7 @@ export default function NextTurnsCard({
   onOpenExternalMaps,
   maxVisible = 4,
 }) {
+  const t = useT()
   const start = Math.max(0, currentStepIndex)
   const visible =
     typeof maxVisible === 'number' ? steps.slice(start, start + maxVisible) : steps.slice(start)
@@ -44,11 +46,11 @@ export default function NextTurnsCard({
     <section
       className="cw-next-turns-card"
       data-testid="next-turns-card"
-      aria-label={`Next turns to ${destinationTitle}`}
+      aria-label={t('walk.directions.nextTurnsAria', { title: destinationTitle })}
     >
       <header className="cw-next-turns-card__head">
         <div className="cw-next-turns-card__head-copy">
-          <p className="cw-next-turns-card__eyebrow">Next turns</p>
+          <p className="cw-next-turns-card__eyebrow">{t('walk.directions.nextTurns')}</p>
           <p className="cw-next-turns-card__destination">{destinationTitle}</p>
         </div>
         {destinationPhoto ? (
@@ -67,7 +69,7 @@ export default function NextTurnsCard({
 
       {loading ? (
         <p className="cw-next-turns-card__status" data-testid="next-turns-status">
-          Finding your route…
+          {t('walk.directions.finding')}
         </p>
       ) : error ? (
         <div className="cw-next-turns-card__status-block">
@@ -79,7 +81,7 @@ export default function NextTurnsCard({
           <div className="cw-next-turns-card__actions">
             {onRetry ? (
               <button type="button" className="cw-next-turns-card__action cw-wc-pressable" onClick={onRetry}>
-                Try again
+                {t('action.retry')}
               </button>
             ) : null}
             {externalMapsUrl ? (
@@ -88,17 +90,20 @@ export default function NextTurnsCard({
                 className="cw-next-turns-card__action cw-next-turns-card__action--maps cw-wc-pressable"
                 onClick={openMaps}
               >
-                Open in Google Maps
+                {t('walk.directions.openGoogle')}
               </button>
             ) : null}
           </div>
         </div>
       ) : !visible.length ? (
         <p className="cw-next-turns-card__status" data-testid="next-turns-status">
-          Directions will appear once GPS is ready.
+          {t('walk.directions.waiting')}
         </p>
       ) : (
-        <ol className="cw-next-turns-card__timeline" aria-label={`Upcoming maneuvers to ${destinationTitle}`}>
+        <ol
+          className="cw-next-turns-card__timeline"
+          aria-label={t('walk.directions.upcomingAria', { title: destinationTitle })}
+        >
           {visible.map((step, offset) => {
             const index = start + offset
             const isCurrent = index === currentStepIndex
@@ -114,7 +119,9 @@ export default function NextTurnsCard({
                   <span className="cw-next-turns-card__node" />
                   {!isLast ? <span className="cw-next-turns-card__connector" /> : null}
                 </span>
-                <p className="cw-next-turns-card__line">{formatNextTurnLine(step)}</p>
+                <p className="cw-next-turns-card__line">
+                  {formatNextTurnLine(step, t('walk.directions.continue'))}
+                </p>
               </li>
             )
           })}

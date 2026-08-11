@@ -1,0 +1,82 @@
+{
+  "t01": {
+    "variant_meta": {
+      "a": {
+        "title": "Coliseo → entrada del Arco de Tito",
+        "transcript": "Directo al corazón, entonces. Ve hacia la entrada del parque más cercana al arco de mármol blanco, en lo alto de la pendiente: una entrada, un solo acceso, y todo lo que sigue está dentro del recinto. La propia puerta es nuestra primera parada... y no es una puerta cualquiera. ¿Recuerdas la guerra que pagó el edificio que dejas atrás? Estás a punto de ver el recibo."
+      },
+      "b": {
+        "title": "RUTA B · Coliseo → Constantino → entrada del Palatino",
+        "transcript": "El camino de los emperadores. Buena elección. Tus pantorrillas ya están avisadas. Camina hacia el arco triple que se alza solo en el borde de la plaza. Es el Arco de Constantino... y oculta algo a plena vista. En el año 315 después de Cristo no sobraba el dinero, así que la mayoría de sus relieves se arrancaron de monumentos más antiguos: triunfos de otros emperadores, con los rostros retallados para convertirlos en el de Constantino. Un emperador hecho, literalmente, de otros emperadores. Roma lo reciclaba todo... incluso la gloria. Recuerda el nombre. Dentro del Foro hay un edificio que robó de forma todavía más completa... a un hombre al que hizo ahogar.\n\nAhora deja el arco a tu izquierda y gira por Via di San Gregorio, la larga avenida arbolada. La entrada del Palatino se abre a tu derecha. Primero subimos la colina... como hacía el poder."
+      }
+    }
+  },
+  "t02": {
+    "title": "Arco de Tito → mirador del Palatino",
+    "transcript": "La subida es corta y la sombra es de verdad. A los emperadores los llevaban por esta pendiente en litera. Tú recibes gratis la auténtica experiencia desde el punto de vista de quienes cargaban con ellos."
+  },
+  "t03": {
+    "variant_meta": {
+      "b": {
+        "title": "Descenso → Arco de Tito",
+        "transcript": "Baja por el Clivus Palatinus, la vía de acceso privada de los emperadores y todavía una de las calles con mejor nombre de Roma. Donde la pendiente llega al fondo del valle, un arco de mármol blanco se alza al comienzo de la Vía Sacra. Esa puerta es donde empieza el Foro... y donde nuestra próxima historia está tallada en la piedra."
+      }
+    }
+  },
+  "t04": {
+    "title": "Entrada al Foro",
+    "transcript": "Deja el arco a tu espalda y sigue por la izquierda cuando el sendero se bifurque. Esa mole enorme de tres bóvedas que ves delante es nuestra próxima parada. Parece inacabada. En realidad, está extraordinariamente saqueada."
+  },
+  "t05": {
+    "title": "Lo que quedó",
+    "transcript": "El mármol desapareció lentamente. No en un solo episodio, sino en mil decisiones individuales a lo largo de quince siglos, cada una razonable para quien la tomó. Una iglesia necesitaba un suelo. Un palacio necesitaba una columna. Lo que atraviesas ahora es el resultado de esa aritmética: lo que era demasiado pesado para levantar, demasiado duro para cortar o demasiado peligroso para desmontar. Lo que ves... es lo que quedó cuando todo lo transportable se había ido. La Vía Sacra atravesaba todo esto."
+  },
+  "t06": {
+    "title": "Acercamiento a la Casa de las Vestales",
+    "transcript": "La Casa de las Vestales queda a tu izquierda mientras te acercas: el jardín alargado, el estanque y las estatuas de las sacerdotisas principales. Era uno de los pocos espacios privados al aire libre del Foro. Todos los demás atravesaban este lugar. Las vestales vivían en él. Seis mujeres... y el fuego que cuidaban... pertenecían a una clase de lugar distinta del camino que acabas de recorrer."
+  },
+  "t07": {
+    "title": "Templo de César, Saturno y la tribuna",
+    "transcript": "Justo delante, esa plataforma baja de piedra oscura es el Templo de César, donde la multitud levantó la pira la noche después del asesinato, antes de que ninguna institución decidiera qué hacer con el cuerpo. Seis mujeres cuidaron el fuego sagrado del Estado durante mil años, vigiladas y castigadas. Una vez, la multitud convirtió un lugar en sagrado... sin pedir permiso a nadie. Ahora gira un poco a la derecha, hacia el extremo occidental. Las ocho columnas altas son el Templo de Saturno, el tesoro del Estado. Y a treinta metros está la tribuna de los oradores. Dinero y discurso, a treinta metros y a la vista uno del otro. Los romanos no lo hicieron por casualidad."
+  },
+  "t08": {
+    "title": "Treinta pasos",
+    "transcript": "Treinta pasos, nada más. Ve hacia el gran arco junto a la pendiente y el edificio cuadrado de ladrillo que está a su lado. Dos historias, un solo lugar."
+  },
+  "t09": {
+    "title": "Subida al Capitolio",
+    "transcript": "Las escaleras de tu derecha suben fuera del valle. Tómatelas con calma: todos los triunfos de la historia romana terminaban en la cima de esta misma colina, y ninguno de aquellos generales llevaba una botella de agua. Te has ganado la vista que viene ahora."
+  },
+  "t10": {
+    "title": "De la ceremonia al comercio",
+    "transcript": "Baja ahora por el otro lado, hacia una Roma diferente: menos ceremonia, más comercio. De la colina donde los generales daban gracias a los dioses... al lugar donde sus casas compraban la pimienta. Son nueve minutos, y huele mejor que antes."
+  },
+  "t15": {
+    "title": "Sigue el sonido del agua",
+    "transcript": "Sal de la plaza junto a la escalinata y toma dirección sur, hacia el sonido que empezarás a oír dentro de unas calles. El agua que te acompaña desde la Escalinata de España está a punto de representar su segundo acto. La Acqua Vergine, el mismo acueducto antiguo y la misma ruta de dos mil años bajo tus pies, está reuniendo presión para la Fontana di Trevi. Sigue el sonido. Roma hará el resto."
+  },
+  "t12": {
+    "title": "Las calles se estrechan",
+    "transcript": "Ya has visto lo que hace la Acqua Vergine cuando Roma quiere dar espectáculo. Ahora vas a conocer al hombre que la construyó, o al menos el edificio que todavía lleva su nombre después de dos mil años y tres incendios. Ocho minutos. Las calles se estrechan antes de abrirse. Lo hacen a propósito."
+  },
+  "t13": {
+    "title": "El cielo se abre",
+    "transcript": "Ahora hacia el oeste. Las calles vuelven a cerrarse a tu alrededor: muros color crema, ropa tendida, pequeños altares en las esquinas. Roma hace su truco favorito al revés. Acaba de mostrarte su sala más perfecta y ahora lo esconde todo... para que el siguiente cielo abierto aparezca como un telón que se levanta. Lo sentirás antes de verlo: cambia el ruido, se abre el aire... y de pronto está ahí el óvalo entero."
+  },
+  "t18": {
+    "title": "Dos minutos hacia el sur",
+    "transcript": "Ve hacia el sur por las callejuelas: dos minutos de sombra y escaparates. La plaza que tienes delante es la única gran plaza de Roma sin una iglesia. Cuando veas quién está de pie en el centro... entenderás por qué."
+  },
+  "t19": {
+    "title": "Por Via dei Giubbonari",
+    "transcript": "Sal de la plaza por Via dei Giubbonari, la calle de los fabricantes de jubones. El gremio desapareció, pero el nombre se quedó. Roma hace esto todo el tiempo: el oficio muere, el siglo cambia y la calle conserva el nombre como una etiqueta que sobrevivió al frasco. A tres minutos verás una plaza hundida, llena de ruinas y gatos. Y lo que ocurrió allí... cambió todo lo que viste esta mañana, y casi todo lo que vino después."
+  },
+  "t16": {
+    "title": "La última caminata hacia el río",
+    "transcript": "Esta es la última caminata del día y es la mejor: hacia el oeste, en dirección al río. Cuando llegues al agua, gira a la derecha y deja que la luz haga lo que está a punto de hacer. Delante de ti, al otro lado del Tíber, una fortaleza redonda lleva diecinueve siglos en pie, cambiando de función como la ciudad cambia de siglo. Empezó como la tumba de un hombre. Se convirtió en el lugar al que huían los papas. Cruza despacio el puente de los ángeles cuando llegues. El edificio ha esperado muchísimo tiempo por ti... puede esperar diez minutos más."
+  },
+  "t22": {
+    "title": "Bis opcional › Vía Apia Antigua",
+    "transcript": "Desde aquí, la Vía Apia requiere un trayecto corto en lugar de otra caminata larga: taxi, autobús o un tranvía tranquilo hacia el sur, hasta la entrada del parque. Pide Via Appia Antica, cerca del Circo de Majencio. Cuando aparezca el pavimento de basalto bajo tus pies, estarás sobre la reina de los caminos. Pulsa continuar cuando llegues. Las piedras harán el resto."
+  }
+}

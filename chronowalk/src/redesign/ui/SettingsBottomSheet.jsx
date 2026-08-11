@@ -179,12 +179,12 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const walkMeta = bundleMetaForProductId(purchasedProductId)
   const walkSubtitle =
     family?.isOrganizer || entitlement?.role === 'owner'
-      ? 'Invite people and manage your shared tour'
+      ? t('settings.sheet.walkOwner')
       : family?.isMember || entitlement?.role === 'member'
-        ? 'View your shared tour'
+        ? t('settings.sheet.walkMember')
         : walkMeta
-          ? 'Invite people and manage your shared tour'
-          : 'Manage your shared tour'
+          ? t('settings.sheet.walkOwner')
+          : t('settings.sheet.walkManage')
 
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
 
@@ -368,7 +368,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
             data-testid="settings-offline-option"
           >
             <p style={{ margin: '10px 0 2px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Recommended
+              {t('settings.sheet.recommended')}
             </p>
             <ActionRow
               label={t('settings.sheet.offline')}
@@ -387,7 +387,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
             data-testid="settings-a2hs-option"
           >
             <p style={{ margin: '0 0 4px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Recommended
+              {t('settings.sheet.recommended')}
             </p>
             <HomeScreenInstallOption
               installed={installed}
@@ -423,11 +423,14 @@ export default function SettingsBottomSheet({ open, onClose }) {
               letterSpacing: '0.02em',
             }}
           >
-            ChronoWalk · Rome · made to disappear.
+            {t('settings.sheet.signature')}
             {typeof globalThis.__APP_BUILD_ID__ !== 'undefined' ? (
               <>
                 <br />
-                Build {globalThis.__APP_BUILD_ID__} · Walking UI {WALKING_UI_REVISION}
+                {t('settings.sheet.build', {
+                  build: globalThis.__APP_BUILD_ID__,
+                  revision: WALKING_UI_REVISION,
+                })}
               </>
             ) : null}
           </p>

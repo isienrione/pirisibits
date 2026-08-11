@@ -4,6 +4,7 @@ import { T } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { formatPlaybackClock } from '../lib/walkingCompanionFormat.js'
 import KaraokeTranscript from './KaraokeTranscript.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function TransitNarrationSheet({
   open = false,
@@ -26,6 +27,7 @@ export default function TransitNarrationSheet({
   onPointerMove,
   onPointerUp,
 }) {
+  const t = useT()
   const seekTrackRef = useRef(null)
 
   if (!open) return null
@@ -35,7 +37,7 @@ export default function TransitNarrationSheet({
       <button
         type="button"
         className="cw-transit-full-player__backdrop cw-wc-pressable"
-        aria-label="Close narration player"
+        aria-label={t('walk.audio.closePlayer')}
         onClick={onClose}
       />
       <div className="cw-transit-full-player__sheet">
@@ -45,7 +47,7 @@ export default function TransitNarrationSheet({
             type="button"
             className="cw-transit-full-player__close cw-wc-pressable"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('action.close')}
           >
             <X size={18} />
           </button>
@@ -53,7 +55,7 @@ export default function TransitNarrationSheet({
 
         <div className="cw-transit-full-player__transport">
           {onSkipBack ? (
-            <button type="button" className="cw-wc-pressable" onClick={onSkipBack} aria-label="Back 15 seconds">
+            <button type="button" className="cw-wc-pressable" onClick={onSkipBack} aria-label={t('walk.audio.back15')}>
               <SkipBack size={20} />
             </button>
           ) : null}
@@ -61,7 +63,7 @@ export default function TransitNarrationSheet({
             type="button"
             className="cw-transit-full-player__play cw-wc-pressable"
             onClick={onToggleAudio}
-            aria-label={narrationPlaying ? 'Pause' : 'Play'}
+            aria-label={narrationPlaying ? t('walk.audio.pause') : t('walk.audio.play')}
           >
             {narrationPlaying ? (
               <Pause size={22} fill={T.obsidian} color={T.obsidian} />
@@ -70,7 +72,7 @@ export default function TransitNarrationSheet({
             )}
           </button>
           {onSkipForward ? (
-            <button type="button" className="cw-wc-pressable" onClick={onSkipForward} aria-label="Forward 15 seconds">
+            <button type="button" className="cw-wc-pressable" onClick={onSkipForward} aria-label={t('walk.audio.forward15')}>
               <SkipForward size={20} />
             </button>
           ) : null}
@@ -105,7 +107,7 @@ export default function TransitNarrationSheet({
           ) : null}
           {transcript ? (
             <button type="button" className="cw-transit-full-player__read cw-wc-pressable" data-testid="transit-read-toggle">
-              Read instead
+              {t('walk.audio.read')}
             </button>
           ) : null}
         </div>

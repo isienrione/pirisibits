@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { getLandingFaqItems, LANDING_CONTENT } from './landingData.js'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { LANDING_CONTENT } from './landingData.js'
 import { trackLandingFaqOpen } from './landingAnalytics.js'
 import { trackFaqOpen } from '../lib/analytics.ts'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
@@ -20,20 +20,23 @@ function indexFromHash(items) {
  * Act III - FAQ grouped by buying anxiety (Prompt 15).
  * Accordion keyboard support + FAQPage JSON-LD + `#faq-<id>` deep links.
  */
-export default function LandingFaqSectionV2() {
-  const { id, headline, groups } = LANDING_CONTENT.faq
-  const items = getLandingFaqItems()
-  const [openIndex, setOpenIndex] = useState(() => indexFromHash(getLandingFaqItems()))
+export default function LandingFaqSectionV2({
+  section = LANDING_CONTENT.faq,
+  trustSection = LANDING_CONTENT.trust,
+}) {
+  const { id, headline, groups } = section
+  const items = useMemo(() => groups.flatMap((group) => group.items), [groups])
+  const [openIndex, setOpenIndex] = useState(() => indexFromHash(items))
   const buttonRefs = useRef([])
 
   useEffect(() => {
     const syncFromHash = () => {
-      setOpenIndex(indexFromHash(getLandingFaqItems()))
+      setOpenIndex(indexFromHash(items))
     }
     syncFromHash()
     window.addEventListener('hashchange', syncFromHash)
     return () => window.removeEventListener('hashchange', syncFromHash)
-  }, [])
+  }, [items])
 
   function toggle(index) {
     setOpenIndex((current) => {
@@ -160,7 +163,7 @@ export default function LandingFaqSectionV2() {
           ))}
         </div>
 
-        <LandingTrustChecklist embedded />
+        <LandingTrustChecklist embedded section={trustSection} />
       </div>
     </section>
   )

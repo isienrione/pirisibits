@@ -8,6 +8,8 @@ import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
 import { useSharedWalkGuard } from '../context/SharedWalkGuardContext.jsx'
 import { buildWalkTogetherPresentationSeats } from '../lib/walkTogetherPresentation.js'
 import { getWaypoint, loadRomeManifest } from '../../content/manifest.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
+import { t as translate } from '../../i18n/t.js'
 
 /** Couple terracotta / Family verdigris - from established tokens only. */
 function accentForProductId(productId) {
@@ -52,8 +54,8 @@ async function shareInvite({ invite, url }) {
   if (typeof navigator !== 'undefined' && typeof navigator.share === 'function' && url) {
     try {
       await navigator.share({
-        title: 'ChronoWalk invite',
-        text: 'Join my ChronoWalk Rome walk',
+        title: translate('walkTogether.shareTitle'),
+        text: translate('walkTogether.shareText'),
         url,
       })
       return true
@@ -65,25 +67,25 @@ async function shareInvite({ invite, url }) {
 }
 
 function seatStatusLabel(seat, invite, isOwnerSeat) {
-  if (isOwnerSeat) return 'Organizer'
-  if (seat.status === 'claimed') return 'Joined on a device'
-  if (seat.status === 'revoked' && !invite) return 'Seat revoked - create a new invitation'
-  if (invite) return 'Invitation ready'
-  return 'Open seat'
+  if (isOwnerSeat) return translate('walkTogether.status.organizer')
+  if (seat.status === 'claimed') return translate('walkTogether.status.claimed')
+  if (seat.status === 'revoked' && !invite) return translate('walkTogether.status.revoked')
+  if (invite) return translate('walkTogether.status.inviteReady')
+  return translate('walkTogether.status.open')
 }
 
 function humanErrorMessage(error) {
   if (error === 'missing_credential' || error === 'invalid') {
-    return 'This device no longer has an active Couple or Family walk. Restore your purchase to continue.'
+    return translate('walkTogether.error.missing')
   }
   if (error === 'not_owner') {
-    return 'Only the organizer can create or revoke invitations.'
+    return translate('walkTogether.error.notOwner')
   }
   if (error === 'no_seat') {
-    return 'Every seat on this walk is already filled.'
+    return translate('walkTogether.error.noSeat')
   }
   if (error === 'retired') {
-    return 'Bundles are created by purchase only - manage invitations here instead.'
+    return translate('walkTogether.error.retired')
   }
   return String(error)
 }
@@ -94,7 +96,7 @@ function OccupancyNodes({ seatLimit, claimedCount, accent, isEntry }) {
   return (
     <ul
       className="cw-walk-together__nodes"
-      aria-label={`${claimedCount} of ${total} travelers joined`}
+      aria-label={translate('walkTogether.occupancyAria', { claimed: claimedCount, total })}
     >
       {Array.from({ length: total }, (_, index) => {
         const filled = index < claimedCount
@@ -129,6 +131,7 @@ export default function WalkTogetherPanel({
 }) {
   const family = useOptionalFamilyWalk()
   const { requestRejoinSharedWalk } = useSharedWalkGuard()
+  const t = useT()
   const [statusNote, setStatusNote] = useState(null)
   const [inviteBusy, setInviteBusy] = useState(false)
   const refreshBundle = family?.refreshBundle
@@ -202,7 +205,7 @@ export default function WalkTogetherPanel({
     setInviteBusy(true)
     try {
       await createInvite(seatId)
-      setStatusNote('Invitation created. Copy or share it now - it will not be shown again later.')
+      setStatusNote(t('walkTogether.inviteCreated'))
     } catch {
       /* error surfaced via family.error */
     } finally {
@@ -213,13 +216,13 @@ export default function WalkTogetherPanel({
   const handleCopy = async (invite) => {
     const url = buildInviteShareUrl(invite)
     const ok = await copyText(url || invite)
-    setStatusNote(ok ? 'Invite link copied.' : 'Could not copy. Select the code manually.')
+    setStatusNote(ok ? t('walkTogether.copied') : t('walkTogether.copyFailed'))
   }
 
   const handleShare = async (invite) => {
     const url = buildInviteShareUrl(invite)
     const ok = await shareInvite({ invite, url })
-    setStatusNote(ok ? 'Invite ready to share.' : 'Could not open share sheet.')
+    setStatusNote(ok ? t('walkTogether.shareReady') : t('walkTogether.shareFailed'))
   }
 
   const continueButton = showContinue ? (
@@ -237,7 +240,7 @@ export default function WalkTogetherPanel({
         className="cw-walk-together__continue"
         style={{ background: accent, color: T.obsidian, minHeight: 48 }}
       >
-        Continue to your walk
+        {t('walkTogether.continue')}
       </button>
     </div>
   ) : null
@@ -250,16 +253,16 @@ export default function WalkTogetherPanel({
         style={{ fontFamily: F.body }}
       >
         <p className="cw-walk-together__empty">
-          Walk-together invites are available after a Couple or Family Bundle purchase on this device.
+          {t('walkTogether.empty')}
         </p>
         {continueButton}
       </section>
     )
   }
 
-  const occupancyLabel = `${claimedCount} of ${seatLimit} travelers joined`
+  const occupancyLabel = t('walkTogether.occupancy', { claimed: claimedCount, total: seatLimit })
   // Keep the legacy “seats in use” phrasing discoverable for existing copy checks.
-  const occupancyLegacy = `${claimedCount}/${seatLimit} seats in use`
+  const occupancyLegacy = t('walkTogether.occupancyLegacy', { claimed: claimedCount, total: seatLimit })
 
   return (
     <section
@@ -286,16 +289,16 @@ export default function WalkTogetherPanel({
     >
       <header className="cw-walk-together__header">
         <p className="cw-walk-together__eyebrow" style={{ color: accent }}>
-          Walk together
+          {t('walkTogether.eyebrow')}
         </p>
         <h2 id="walk-together-heading" className="cw-walk-together__title">
           {meta.label}
         </h2>
-        <p className="cw-walk-together__promise">Complete Roma Eterna · All 21 stops</p>
+        <p className="cw-walk-together__promise">{t('walkTogether.promise')}</p>
         <p className="cw-walk-together__lede">
           {isOrganizer
-            ? 'Share one Rome walk with the people beside you - invitations, seats, and shared tour progress in one place.'
-            : 'You’re walking together on a shared Couple/Family Rome walk.'}
+            ? t('walkTogether.lede.organizer')
+            : t('walkTogether.lede.member')}
         </p>
 
         {isOrganizer || seats.length > 0 ? (
@@ -312,10 +315,10 @@ export default function WalkTogetherPanel({
         ) : (
           <div className="cw-walk-together__occupancy" data-testid="walk-together-occupancy">
             <p className="cw-walk-together__occupancy-label">
-              Shared {meta.label.replace(/ Bundle$/i, '')} walk
+              {t('walkTogether.sharedWalk', { kind: meta.label.replace(/ Bundle$/i, '') })}
             </p>
             <p className="cw-walk-together__occupancy-meta">
-              Up to {seatLimit} travelers on this walk
+              {t('walkTogether.upTo', { total: seatLimit })}
             </p>
           </div>
         )}
@@ -325,7 +328,7 @@ export default function WalkTogetherPanel({
         <>
           <section className="cw-walk-together__party" aria-labelledby="walk-together-party-heading">
             <h3 id="walk-together-party-heading" className="cw-walk-together__section-title">
-              Your walking party
+              {t('walkTogether.party')}
             </h3>
 
             <ul className="cw-walk-together__seats">
@@ -395,17 +398,17 @@ export default function WalkTogetherPanel({
                             type="button"
                             onClick={() => void handleCopy(invite)}
                             className="cw-walk-together__btn cw-walk-together__btn--secondary"
-                            aria-label={`Copy invitation link for ${displayName}`}
+                            aria-label={t('walkTogether.copyLinkAria', { name: displayName })}
                           >
-                            Copy link
+                            {t('walkTogether.copyLink')}
                           </button>
                           <button
                             type="button"
                             onClick={() => void handleShare(invite)}
                             className="cw-walk-together__btn cw-walk-together__btn--secondary"
-                            aria-label={`Share invitation for ${displayName}`}
+                            aria-label={t('walkTogether.shareAria', { name: displayName })}
                           >
-                            Share
+                            {t('walkTogether.share')}
                           </button>
                         </div>
                       </div>
@@ -423,7 +426,7 @@ export default function WalkTogetherPanel({
                             color: isEntry ? T.warmWhite : T.ink,
                           }}
                         >
-                          {working ? 'Working…' : 'Create invitation'}
+                          {working ? t('walkTogether.working') : t('walkTogether.createInvite')}
                         </button>
                       ) : null}
                       {canRevoke ? (
@@ -432,9 +435,9 @@ export default function WalkTogetherPanel({
                           disabled={working}
                           onClick={() => void revokeSeat(seat.id)}
                           className="cw-walk-together__btn cw-walk-together__btn--tertiary"
-                          aria-label={`Revoke seat for ${displayName}`}
+                          aria-label={t('walkTogether.revokeAria', { name: displayName })}
                         >
-                          Revoke seat
+                          {t('walkTogether.revoke')}
                         </button>
                       ) : null}
                     </div>
@@ -445,7 +448,7 @@ export default function WalkTogetherPanel({
 
             {openMemberSeats.length === 0 && memberSeats.every((s) => s.status === 'claimed') ? (
               <p className="cw-walk-together__hint">
-                All paid seats are in use. Revoke a member seat to reissue an invitation.
+                {t('walkTogether.allSeats')}
               </p>
             ) : null}
           </section>
@@ -455,14 +458,13 @@ export default function WalkTogetherPanel({
             aria-labelledby="walk-together-sync-heading"
           >
             <h3 id="walk-together-sync-heading" className="cw-walk-together__section-title">
-              Shared walk controls
+              {t('walkTogether.syncHeading')}
             </h3>
 
             {!session ? (
               <>
                 <p className="cw-walk-together__hint">
-                  Start shared tour progress when everyone is ready. This keeps the group on the same
-                  walk - not live GPS or perfectly synchronized audio.
+                  {t('walkTogether.syncHint')}
                 </p>
                 <button
                   type="button"
@@ -471,40 +473,39 @@ export default function WalkTogetherPanel({
                   className="cw-walk-together__btn cw-walk-together__btn--accent"
                   style={{ background: accent, color: T.obsidian }}
                 >
-                  Start shared tour syncing
+                  {t('walkTogether.startSync')}
                 </button>
               </>
             ) : (
               <div data-testid="walk-together-session" className="cw-walk-together__sync-panel">
                 <p className="cw-walk-together__sync-status">
-                  Shared tour progress {isLeader ? '· you lead' : '· following'}
+                  {isLeader ? t('walkTogether.sessionLead') : t('walkTogether.sessionFollow')}
                 </p>
                 <div className="cw-walk-together__toggle-row">
                   <div>
-                    <p className="cw-walk-together__toggle-label">Shared tour syncing</p>
+                    <p className="cw-walk-together__toggle-label">{t('walkTogether.syncLabel')}</p>
                     <p className="cw-walk-together__hint">
-                      Keeps shared tour progress connected across devices - not live GPS or synced
-                      audio playback.
+                      {t('walkTogether.syncDetail')}
                     </p>
                   </div>
                   <Toggle
                     on={sessionSyncEnabled}
                     onToggle={() => void setSyncEnabled(!sessionSyncEnabled)}
-                    label="Shared tour syncing"
+                    label={t('walkTogether.syncLabel')}
                     accent={accent}
                   />
                 </div>
                 <div className="cw-walk-together__toggle-row">
                   <div>
-                    <p className="cw-walk-together__toggle-label">Only leader resumes</p>
-                    <p className="cw-walk-together__hint">Anyone can still pause for the group</p>
+                    <p className="cw-walk-together__toggle-label">{t('walkTogether.resumeLabel')}</p>
+                    <p className="cw-walk-together__hint">{t('walkTogether.resumeHint')}</p>
                   </div>
                   <Toggle
                     on={resumePolicy === 'leader'}
                     onToggle={() =>
                       void setResumePolicy(resumePolicy === 'leader' ? 'anyone' : 'leader')
                     }
-                    label="Only leader resumes"
+                    label={t('walkTogether.resumeLabel')}
                     accent={accent}
                   />
                 </div>
@@ -513,7 +514,7 @@ export default function WalkTogetherPanel({
                   onClick={leaveSharedWalk}
                   className="cw-walk-together__btn cw-walk-together__btn--tertiary"
                 >
-                  Leave shared tour
+                  {t('walkTogether.leaveTour')}
                 </button>
               </div>
             )}
@@ -525,7 +526,7 @@ export default function WalkTogetherPanel({
           aria-labelledby="walk-together-member-heading"
         >
           <h3 id="walk-together-member-heading" className="cw-walk-together__section-title">
-            You’re walking together
+            {t('walkTogether.memberHeading')}
           </h3>
           <div
             className="cw-walk-together__member-card"
@@ -533,24 +534,25 @@ export default function WalkTogetherPanel({
             data-walking-independently={isWalkingIndependently ? 'true' : 'false'}
           >
             <p className="cw-walk-together__member-copy">
-              You belong to a shared Couple/Family walk with shared tour progress. Full Roma Eterna ·
-              21 stops on this device.
+              {t('walkTogether.memberCopy')}
             </p>
             <p className="cw-walk-together__seat-status">
               {isWalkingIndependently
-                ? 'Walking independently'
+                ? t('walkTogether.independent')
                 : isLeader
-                  ? 'Leading the shared tour'
-                  : 'Following your walking party'}
+                  ? t('walkTogether.leading')
+                  : t('walkTogether.following')}
             </p>
             {session ? (
               <>
                 <p className="cw-walk-together__hint">
                   {isWalkingIndependently
                     ? groupStopTitle
-                      ? `Your group’s shared walk is still active at ${groupStopTitle}.`
-                      : 'Your group’s shared walk is still active.'
-                    : `Shared tour active ${isLeader ? '· you lead' : '· following'}`}
+                      ? t('walkTogether.groupActiveAt', { title: groupStopTitle })
+                      : t('walkTogether.groupActive')
+                    : isLeader
+                      ? t('walkTogether.sessionActiveLead')
+                      : t('walkTogether.sessionActiveFollow')}
                 </p>
                 {isWalkingIndependently ? (
                   <button
@@ -561,14 +563,13 @@ export default function WalkTogetherPanel({
                     className="cw-walk-together__btn cw-walk-together__btn--accent"
                     style={{ background: accent, color: T.obsidian, marginTop: 4 }}
                   >
-                    Rejoin shared walk
+                    {t('walkTogether.rejoin')}
                   </button>
                 ) : null}
               </>
             ) : (
               <p className="cw-walk-together__hint">
-                No active shared tour session on this phone yet. When your organizer starts one, your
-                walk progress can stay in step.
+                {t('walkTogether.noSession')}
               </p>
             )}
           </div>

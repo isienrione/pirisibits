@@ -22,8 +22,9 @@ export function measureStopCarouselLoopWidth(scroller, stopCount) {
  * Premium horizontal stop carousel - Apple TV artwork energy.
  * Infinite-feeling track via duplicated slides.
  */
-export default function LandingStopCarousel() {
-  const section = LANDING_CONTENT.monuments
+export default function LandingStopCarousel({
+  section = LANDING_CONTENT.monuments,
+}) {
   const monuments = getLandingMonuments().filter((stop) => stop.featured || stop.photo)
   const track = [...monuments, ...monuments]
   const sectionRef = useRef(null)

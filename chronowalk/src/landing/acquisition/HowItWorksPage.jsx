@@ -1,22 +1,31 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import HowItWorksSequentialDemo from './HowItWorksSequentialDemo.jsx'
-import { getUnlockAllStopsCta } from '../landingData.js'
 import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
-import { HOW_IT_WORKS_COPY } from './acquisitionCopy.js'
+import {
+  getLocalizedAcquisition,
+  getLocalizedLanding,
+  getLocalizedUnlockAllStopsCta,
+} from '../getLocalizedLanding.js'
 import {
   trackHowItWorksDemoStarted,
   trackHowItWorksFreeClicked,
   trackHowItWorksPaidClicked,
 } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 export default function HowItWorksPage() {
   const navigate = useNavigate()
-  const copy = HOW_IT_WORKS_COPY
-  const unlockAllCta = getUnlockAllStopsCta()
+  const { locale } = useI18n()
+  const copy = useMemo(
+    () => getLocalizedAcquisition(locale).HOW_IT_WORKS_COPY,
+    [locale],
+  )
+  const landing = useMemo(() => getLocalizedLanding(locale), [locale])
+  const unlockAllCta = getLocalizedUnlockAllStopsCta(locale)
   const demoTracked = useRef(false)
   const demoRef = useRef(null)
   const checkout = useAcquisitionCheckout({ source: 'how_it_works' })
@@ -56,7 +65,7 @@ export default function HowItWorksPage() {
   return (
     <AcquisitionPageShell
       landingPageType={copy.landingPageType}
-      headerPrimaryCta="Get the full Rome tour"
+      headerPrimaryCta={copy.headerPrimaryCta}
       onHeaderPrimaryClick={() => startPaid('header')}
       showHowItWorksLink={false}
     >
@@ -107,7 +116,7 @@ export default function HowItWorksPage() {
           <p className="cw-v4-section-lead">{copy.demoLead}</p>
         </div>
         <div className="cw-v4-wrap">
-          <HowItWorksSequentialDemo />
+          <HowItWorksSequentialDemo section={landing.LANDING_CONTENT['product-demo']} />
         </div>
       </section>
 
@@ -151,15 +160,15 @@ export default function HowItWorksPage() {
           </div>
           <p className="cw-acq-hero__trust" style={{ marginTop: '1.25rem' }}>
             <Link to="/free-pantheon" className="cw-acq-link">
-              Free Pantheon experience
+              {copy.freePantheon}
             </Link>
             {' · '}
             <Link to="/ancient-rome" className="cw-acq-link">
-              Ancient Rome route
+              {copy.ancientRome}
             </Link>
             {' · '}
             <Link to="/" className="cw-acq-link">
-              Full tour
+              {copy.fullTour}
             </Link>
           </p>
         </div>

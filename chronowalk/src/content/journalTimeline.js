@@ -1,6 +1,7 @@
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, resolveJourneyStep } from './manifest.js'
 import { isVisitStop } from './tourProductTruth.js'
+import { t } from '../i18n/t.js'
 
 export function pickJournalReflection(manifest, completedCount) {
   const reflections = manifest?.reflections ?? []
@@ -61,8 +62,8 @@ export function summarizeJournalProgress(timeline) {
 }
 
 export function journalHeadline({ completed, total }) {
-  if (total === 0) return 'Your Rome is still ahead of you.'
-  if (completed === 0) return 'Your Rome is still ahead of you.'
-  if (completed >= total) return 'You walked the city.'
-  return 'Your Rome is unfolding.'
+  if (total === 0) return t('journal.headline.ahead')
+  if (completed === 0) return t('journal.headline.ahead')
+  if (completed >= total) return t('journal.headline.complete')
+  return t('journal.headline.unfolding')
 }

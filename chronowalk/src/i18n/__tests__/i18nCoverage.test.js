@@ -65,6 +65,10 @@ describe('i18n coverage', () => {
     expect(localized.waypoints.w17.chapters[0].transcript).toMatch(/plaza|fuente|obelisco/i)
     expect(localized.waypoints.w23.chapters).toHaveLength(3)
     expect(localized.waypoints.w23.chapters.every((c) => c.transcript.length > 80)).toBe(true)
+    expect(localized.transits.t05.title).toMatch(/quedó|quedo/i)
+    expect(localized.transits.t05.transcript.length).toBeGreaterThan(40)
+    expect(localized.system.no_ticket_meta?.[0]?.transcript.length).toBeGreaterThan(80)
+    expect(localized.waypoints.w17.reconstruction?.caption).toMatch(/evidencias|conjetura/i)
 
     for (const id of HERO_STOP_IDS) {
       expect(localized.waypoints[id].title).toBeTruthy()

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAnalyticsConsent } from './useAnalyticsConsent.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 import './analyticsConsent.css'
 
 /**
@@ -8,6 +9,7 @@ import './analyticsConsent.css'
  * Non-modal region so checkout CTAs remain usable.
  */
 export default function AnalyticsConsentBanner() {
+  const t = useT()
   const { isUnknown, accept, decline } = useAnalyticsConsent()
 
   if (!isUnknown) return null
@@ -22,14 +24,12 @@ export default function AnalyticsConsentBanner() {
       >
         <div className="cw-analytics-consent__copy">
           <h2 id="cw-analytics-consent-title" className="cw-analytics-consent__title">
-            Cookies
+            {t('analytics.banner.title')}
           </h2>
           <p id="cw-analytics-consent-body" className="cw-analytics-consent__body">
-            We use optional cookies to measure ads and improve how ChronoWalk reaches people who
-            might enjoy it. Product analytics that keep the app working and improving run under
-            legitimate interest and are not controlled here.{' '}
+            {t('analytics.banner.body')}{' '}
             <Link to="/legal/privacy" className="cw-analytics-consent__link">
-              Privacy Policy
+              {t('analytics.privacyPolicy')}
             </Link>
           </p>
         </div>
@@ -40,7 +40,7 @@ export default function AnalyticsConsentBanner() {
             onClick={accept}
             data-testid="analytics-consent-accept"
           >
-            Accept
+            {t('analytics.accept')}
           </button>
           <button
             type="button"
@@ -48,7 +48,7 @@ export default function AnalyticsConsentBanner() {
             onClick={decline}
             data-testid="analytics-consent-decline"
           >
-            Reject
+            {t('analytics.reject')}
           </button>
         </div>
       </aside>

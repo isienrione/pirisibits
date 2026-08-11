@@ -7,6 +7,7 @@ import { Eyebrow } from '../../redesign/ui/Eyebrow.jsx'
 import ThresholdDiegeticHint from '../../redesign/ui/ThresholdDiegeticHint.jsx'
 import { F, T } from '../../redesign/tokens.js'
 import { Vignette } from '../../redesign/ui/Vignette.jsx'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 const INTERIOR_NOW = mediaUrl('/waypoints/colosseum/interior/modern-poster.jpg')
 const INTERIOR_THEN = mediaUrl('/waypoints/colosseum/interior/ancient-reconstruction.jpg')
@@ -24,9 +25,12 @@ export default function LandingThenNowAppScreen({
   onHoldEnd,
   onFullyRevealed,
 }) {
+  const { t } = useI18n()
   const [focusReveal, setFocusReveal] = useState(false)
   const [hintHidden, setHintHidden] = useState(false)
   const [latched, setLatched] = useState(false)
+  const thenLabel = t('threshold.thenDefault')
+  const honestyCaption = t('threshold.honesty')
 
   const handleHoldStart = useCallback(() => {
     setFocusReveal(true)
@@ -86,12 +90,12 @@ export default function LandingThenNowAppScreen({
                 immersive
                 active={active}
                 waypointId="landing-colosseum-interior"
-                waypointName="Colosseum interior"
+                waypointName={t('landing.thenNow.interiorName')}
                 nowPhoto={INTERIOR_NOW}
                 thenPhoto={INTERIOR_THEN}
                 thenLoop={INTERIOR_LOOP}
-                thenLabel="ANCIENT ROME"
-                honestyCaption="Interpretive reconstruction informed by archaeology and scholarship."
+                thenLabel={thenLabel}
+                honestyCaption={honestyCaption}
                 autoPeek={autoPeek}
                 onHoldStart={handleHoldStart}
                 onHoldEnd={handleHoldEnd}
@@ -100,7 +104,7 @@ export default function LandingThenNowAppScreen({
             </div>
 
             {showDiegeticHint ? (
-              <ThresholdDiegeticHint thenLabel="ANCIENT ROME" showText showHand />
+              <ThresholdDiegeticHint thenLabel={thenLabel} showText showHand />
             ) : null}
 
             <div className="cw-waypoint-immersive__hero-scrim cw-waypoint-immersive__chrome" aria-hidden />

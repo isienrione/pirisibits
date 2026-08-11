@@ -16,6 +16,8 @@ import { LandingPackagePosterViewer } from './v4/LandingPackagePosterViewer.jsx'
 import LandingAccessCta from './v4/LandingAccessCta.jsx'
 import LandingPricingGuarantee from './v4/LandingPricingGuarantee.jsx'
 import { preloadLandingImages, retryImageOnError } from './v4/preloadLandingImages.js'
+import { useI18n, useT } from '../i18n/I18nProvider.jsx'
+import { localizeLandingOffers } from './getLocalizedLanding.js'
 
 const DESKTOP_MQ = '(min-width: 768px)'
 
@@ -40,11 +42,12 @@ function resolveTierFromHash(tiers) {
 }
 
 function PacingNote({ text, className }) {
+  const t = useT()
   if (!text) return null
   const match = text.match(/^(.*?)(1 or 2 days)(.*)$/i)
   return (
     <p className={className}>
-      <span className="cw-v4-pacing__kicker">Your pace</span>
+      <span className="cw-v4-pacing__kicker">{t('landing.pricing.yourPace')}</span>
       <span className="cw-v4-pacing__line">
         {match ? (
           <>
@@ -61,6 +64,7 @@ function PacingNote({ text, className }) {
 }
 
 function DesktopPackageCard({ tier, index, onBeginTier }) {
+  const t = useT()
   const theme = tier.theme ?? 'eterna'
   const cardRef = useRef(null)
   const priceA11y = tier.launchOffer
@@ -149,7 +153,7 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
       <PacingNote text={tier.pacingNote} className="cw-v4-pacing cw-v4-pkg__pacing" />
       {tier.id === 'rome-essential' ? (
         <p className="cw-v4-pkg__acq-link">
-          <Link to="/ancient-rome">Explore Ancient Rome</Link>
+          <Link to="/ancient-rome">{t('landing.pricing.exploreAncient')}</Link>
         </p>
       ) : null}
     </article>
@@ -157,6 +161,7 @@ function DesktopPackageCard({ tier, index, onBeginTier }) {
 }
 
 function MobileRouteChooser({ tiers, onBeginTier }) {
+  const t = useT()
   const reducedMotion = useReducedMotion()
   const tablistId = useId()
   const cardRef = useRef(null)
@@ -242,7 +247,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
       <div
         className="cw-v4-pkg-tabs"
         role="tablist"
-        aria-label="Rome walking routes"
+        aria-label={t('landing.pricing.routesAria')}
         id={tablistId}
       >
         {tiers.map((tier, index) => {
@@ -288,17 +293,26 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
           <p className="cw-v4-pkg-mobile-card__tagline">{activeTier.tagline}</p>
         ) : null}
 
-        <ul className="cw-v4-pkg-mobile-card__facts" aria-label={`${activeTier.name} route facts`}>
+        <ul
+          className="cw-v4-pkg-mobile-card__facts"
+          aria-label={t('landing.pricing.routeFactsAria', { name: activeTier.name })}
+        >
           <li>
-            <span className="cw-v4-pkg-mobile-card__fact-label">Duration</span>
+            <span className="cw-v4-pkg-mobile-card__fact-label">
+              {t('landing.pricing.duration')}
+            </span>
             <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.durationLabel}</span>
           </li>
           <li>
-            <span className="cw-v4-pkg-mobile-card__fact-label">Stops</span>
+            <span className="cw-v4-pkg-mobile-card__fact-label">
+              {t('landing.pricing.stops')}
+            </span>
             <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.stopsLabel}</span>
           </li>
           <li>
-            <span className="cw-v4-pkg-mobile-card__fact-label">Distance</span>
+            <span className="cw-v4-pkg-mobile-card__fact-label">
+              {t('landing.pricing.distance')}
+            </span>
             <span className="cw-v4-pkg-mobile-card__fact-value">{activeTier.distanceLabel}</span>
           </li>
         </ul>
@@ -332,7 +346,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
 
         {activeTier.id === 'rome-essential' ? (
           <p className="cw-v4-pkg-mobile-card__acq-link">
-            <Link to="/ancient-rome">Explore Ancient Rome</Link>
+            <Link to="/ancient-rome">{t('landing.pricing.exploreAncient')}</Link>
           </p>
         ) : null}
 
@@ -341,12 +355,12 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
             type="button"
             className="cw-v4-pkg-mobile-card__map-frame"
             onClick={openViewer}
-            aria-label={`View full illustrated route map for ${activeTier.name}`}
+            aria-label={t('landing.pricing.viewMapAria', { name: activeTier.name })}
           >
             <img
               className="cw-v4-pkg-mobile-card__map-art"
               src={activeTier.cardImage}
-              alt={`Illustrated route map for ${activeTier.name}`}
+              alt={activeTier.name}
               width={activeTier.cardWidth}
               height={activeTier.cardHeight}
               loading="eager"
@@ -363,7 +377,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
             onClick={openViewer}
           >
             <Expand size={18} aria-hidden="true" />
-            <span>View full illustrated route map</span>
+            <span>{t('landing.pricing.viewMap')}</span>
           </button>
         </div>
       </article>
@@ -375,7 +389,9 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
         open={compareOpen}
         onToggle={(event) => setCompareOpen(event.currentTarget.open)}
       >
-        <summary className="cw-v4-pkg-compare__summary">Compare all routes</summary>
+        <summary className="cw-v4-pkg-compare__summary">
+          {t('landing.pricing.compare')}
+        </summary>
         <ul className="cw-v4-pkg-compare__list">
           {tiers.map((tier) => (
             <li key={tier.id} className={`cw-v4-pkg-compare__row cw-v4-pkg-compare__row--${tier.theme}`}>
@@ -407,7 +423,7 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
                 className="cw-v4-pkg-compare__view"
                 onClick={() => viewRouteFromCompare(tier.id)}
               >
-                View route
+                {t('landing.pricing.viewRoute')}
               </button>
             </li>
           ))}
@@ -431,16 +447,19 @@ function MobileRouteChooser({ tiers, onBeginTier }) {
  * Act III: Choose your walk. Desktop poster stack + mobile route chooser.
  * Checkout stays in `onBeginTier` (purchase path, not access-code).
  */
-export default function LandingRomeTiersSection({ onBeginTier }) {
-  const section = LANDING_CONTENT.pricing
+export default function LandingRomeTiersSection({
+  onBeginTier,
+  section = LANDING_CONTENT.pricing,
+}) {
+  const { locale, t } = useI18n()
   const tiers = useMemo(
-    () => mapOffersWithLaunchOffer(section.tiers ?? []),
-    [section.tiers],
+    () => localizeLandingOffers(mapOffersWithLaunchOffer(section.tiers ?? []), locale),
+    [locale, section.tiers],
   )
   const shared = section.sharedExperience
   const bundles = useMemo(
-    () => mapOffersWithLaunchOffer(shared?.bundles ?? []),
-    [shared?.bundles],
+    () => localizeLandingOffers(mapOffersWithLaunchOffer(shared?.bundles ?? []), locale),
+    [locale, shared?.bundles],
   )
   const sectionRef = useRef(null)
   const isDesktop = useMediaQuery(DESKTOP_MQ, true)
@@ -480,9 +499,11 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
           ) : null}
           {tiers.some((tier) => tier.launchOffer) ? (
             <p className="cw-v4-pricing__launch-note" data-testid="cw-pricing-launch-note">
-              <span className="cw-v4-pricing__launch-note-label">Launch offer</span>
+              <span className="cw-v4-pricing__launch-note-label">
+                {t('landing.pricing.launchLabel')}
+              </span>
               <span className="cw-v4-pricing__launch-note-copy">
-                Temporary introductory pricing — scratched list prices show what you save today.
+                {t('landing.pricing.launchCopy')}
               </span>
             </p>
           ) : null}
@@ -559,21 +580,21 @@ export default function LandingRomeTiersSection({ onBeginTier }) {
 
                   <dl
                     className="cw-v2-pricing-card__meta cw-v2-pricing-card__meta--bundle"
-                    aria-label={`${bundle.name} allowance`}
+                    aria-label={t('landing.pricing.allowanceAria', { name: bundle.name })}
                   >
                     <div className="cw-v2-pricing-card__meta-item">
-                      <dt>People / devices</dt>
+                      <dt>{t('landing.pricing.peopleDevices')}</dt>
                       <dd>{bundle.seatLabel}</dd>
                     </div>
                     <div className="cw-v2-pricing-card__meta-item">
-                      <dt>Included tour</dt>
+                      <dt>{t('landing.pricing.includedTour')}</dt>
                       <dd>{bundle.contentLine}</dd>
                     </div>
                   </dl>
 
                   <div
                     className="cw-v2-pricing-card__content-callout"
-                    aria-label={`${bundle.name} content entitlement`}
+                    aria-label={t('landing.pricing.entitlementAria', { name: bundle.name })}
                   >
                     <p className="cw-v2-pricing-card__content-title">{bundle.contentTitle}</p>
                     <p className="cw-v2-pricing-card__content-stops">{bundle.contentStops}</p>

@@ -1,5 +1,6 @@
 import Threshold from '../../components/Threshold.jsx'
 import { T, F } from '../tokens.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Redesign-facing adapter for the canonical Threshold component.
@@ -9,7 +10,7 @@ export default function C7Threshold({
   nowPhoto,
   thenPhoto,
   thenLoop = null,
-  thenLabel = 'ANCIENT ROME',
+  thenLabel = null,
   honestyCaption,
   waypointId = 'threshold',
   waypointName = 'Rome',
@@ -28,6 +29,8 @@ export default function C7Threshold({
   autoPeek = false,
   demoAutoReveal = false,
 }) {
+  const t = useT()
+  const resolvedThenLabel = thenLabel ?? t('threshold.ancientRome')
   const waypoint = {
     id: waypointId,
     name: waypointName,
@@ -42,7 +45,7 @@ export default function C7Threshold({
   const surface = (
     <Threshold
       waypoint={waypoint}
-      thenLabel={thenLabel}
+      thenLabel={resolvedThenLabel}
       embedded={embedded || framed}
       immersive={immersive}
       active={active}
@@ -67,12 +70,12 @@ export default function C7Threshold({
     >
       {framed ? (
         <>
-          <p className="cw-threshold-embedded__eyebrow">Immersion</p>
+          <p className="cw-threshold-embedded__eyebrow">{t('threshold.immersion')}</p>
           <div className="cw-threshold-embedded__card">
             <div className="cw-threshold-embedded__handle" aria-hidden />
             <div className="cw-threshold-embedded__surface">{surface}</div>
           </div>
-          <p className="cw-threshold-embedded__footer">Then · Now</p>
+          <p className="cw-threshold-embedded__footer">{t('threshold.thenNow')}</p>
         </>
       ) : (
         <div className="cw-threshold-embedded__surface">{surface}</div>

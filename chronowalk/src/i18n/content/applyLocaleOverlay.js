@@ -2,12 +2,28 @@ import { DEFAULT_LOCALE, LOCALES, normalizeLocale } from '../locales.js'
 import esWaypoints from './es/waypoints.json'
 import esActs from './es/acts.json'
 import esReflections from './es/reflections.json'
+import esTransits from './es/transits.json'
+import esSystem from './es/system.json'
+
+/** Known English reconstruction captions → Spanish (preserve epistemic hedging). */
+const ES_RECONSTRUCTION_CAPTIONS = Object.freeze({
+  'Interpretive reconstruction informed by archaeology and scholarship.':
+    'Reconstrucción interpretativa basada en la arqueología y en la investigación académica.',
+  'Evidence-based reconstruction · awning colours are informed conjecture':
+    'Reconstrucción basada en evidencias · los colores del toldo son una conjetura informada',
+  'Evidence-based reconstruction · relief details simplified for clarity':
+    'Reconstrucción basada en evidencias · detalles del relieve simplificados para mayor claridad',
+  'Evidence-based reconstruction · portico bronze finish is informed conjecture':
+    'Reconstrucción basada en evidencias · el acabado en bronce del pórtico es una conjetura informada',
+})
 
 const OVERLAYS = Object.freeze({
   [LOCALES.ES]: {
     waypoints: esWaypoints,
     acts: esActs,
     reflections: esReflections,
+    transits: esTransits,
+    system: esSystem,
   },
 })
 
@@ -28,6 +44,14 @@ function mergeChapter(baseChapter, overlayChapter) {
   }
 }
 
+function mergeReconstruction(base, overlay) {
+  if (!base || !overlay) return base
+  return {
+    ...base,
+    ...(overlay.caption != null ? { caption: overlay.caption } : {}),
+  }
+}
+
 function mergeWaypoint(base, overlay) {
   if (!overlay) return base
   const next = {
@@ -36,6 +60,26 @@ function mergeWaypoint(base, overlay) {
     ...(overlay.approachLine != null ? { approachLine: overlay.approachLine } : {}),
     ...(overlay.arrivalLine != null ? { arrivalLine: overlay.arrivalLine } : {}),
     ...(overlay.transcript != null ? { transcript: overlay.transcript } : {}),
+  }
+
+  if (base.reconstruction) {
+    let reconstruction = base.reconstruction
+    if (overlay.reconstruction) {
+      reconstruction = mergeReconstruction(base.reconstruction, overlay.reconstruction)
+    } else if (overlay.reconstructionCaption) {
+      reconstruction = {
+        ...base.reconstruction,
+        caption: overlay.reconstructionCaption,
+      }
+    }
+    const caption = reconstruction.caption
+    if (caption && ES_RECONSTRUCTION_CAPTIONS[caption]) {
+      reconstruction = {
+        ...reconstruction,
+        caption: ES_RECONSTRUCTION_CAPTIONS[caption],
+      }
+    }
+    next.reconstruction = reconstruction
   }
 
   if (Array.isArray(base.chapters) && Array.isArray(overlay.chapters)) {
@@ -52,6 +96,44 @@ function mergeWaypoint(base, overlay) {
     if (first && typeof first === 'object' && first.transcript) {
       next.transcript = first.transcript
     }
+  }
+
+  return next
+}
+
+function mergeTransit(base, overlay) {
+  if (!overlay) return base
+  const next = {
+    ...base,
+    ...(overlay.title != null ? { title: overlay.title } : {}),
+    ...(overlay.transcript != null ? { transcript: overlay.transcript } : {}),
+  }
+
+  if (base.variant_meta && overlay.variant_meta) {
+    const variantMeta = { ...base.variant_meta }
+    for (const [key, value] of Object.entries(overlay.variant_meta)) {
+      variantMeta[key] = {
+        ...(variantMeta[key] ?? {}),
+        ...value,
+      }
+    }
+    next.variant_meta = variantMeta
+  }
+
+  return next
+}
+
+function mergeSystem(base, overlay) {
+  if (!base || !overlay) return base
+  const next = { ...base }
+
+  if (Array.isArray(overlay.no_ticket) && Array.isArray(base.no_ticket)) {
+    // Keep shipping filename order; attach Spanish title/transcript metadata for UI/transcripts.
+    next.no_ticket_meta = overlay.no_ticket
+  }
+
+  if (overlay.resume) {
+    next.resume_meta = overlay.resume
   }
 
   return next
@@ -100,11 +182,27 @@ export function applyLocaleOverlay(manifest, locale = DEFAULT_LOCALE) {
     })
   }
 
+  let transits = manifest.transits
+  if (transits && overlay.transits) {
+    if (Array.isArray(transits)) {
+      transits = transits.map((transit) => mergeTransit(transit, overlay.transits[transit.id]))
+    } else {
+      transits = { ...transits }
+      for (const [id, base] of Object.entries(transits)) {
+        transits[id] = mergeTransit(base, overlay.transits[id])
+      }
+    }
+  }
+
+  const system = mergeSystem(manifest.system, overlay.system)
+
   return {
     ...manifest,
     waypoints,
     ...(acts ? { acts } : {}),
     ...(reflections ? { reflections } : {}),
+    ...(transits ? { transits } : {}),
+    ...(system ? { system } : {}),
   }
 }
 

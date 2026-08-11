@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom'
 import { LANDING_CONTENT } from '../landingData.js'
 import { LANDING_ANALYTICS_SECTIONS } from '../landingAnalytics.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Compact factual reassurance strip directly under the hero.
  * Mostly noninteractive; the free Pantheon line may link to /free-pantheon
  * (or call onPreview when no href is configured).
  */
-export default function LandingHeroReassurance({ onPreview } = {}) {
-  const section = LANDING_CONTENT.heroReassurance
+export default function LandingHeroReassurance({
+  onPreview,
+  section = LANDING_CONTENT.heroReassurance,
+} = {}) {
+  const t = useT()
   const items = section?.items ?? []
   if (!items.length) return null
 
@@ -16,7 +20,7 @@ export default function LandingHeroReassurance({ onPreview } = {}) {
     <section
       id={section.id}
       className="cw-v4-reassure"
-      aria-label="Why ChronoWalk is easy to start"
+      aria-label={t('landing.reassurance.aria')}
     >
       <div className="cw-v4-wrap">
         <ul className="cw-v4-reassure__list">

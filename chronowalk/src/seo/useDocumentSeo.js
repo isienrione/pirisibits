@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { applyDocumentMeta } from './applyDocumentMeta.js'
 import { getPageMeta } from './pageMeta.js'
 import { resolveDocumentSeo } from './siteRoutes.js'
+import { useI18n } from '../i18n/I18nProvider.jsx'
 
 const ROBOTS_META_NAME = 'robots'
 const CANONICAL_REL = 'canonical'
@@ -40,6 +41,7 @@ function removeLinkByRel(rel) {
  */
 export function useDocumentSeo() {
   const { pathname } = useLocation()
+  const { locale } = useI18n()
 
   useEffect(() => {
     const { robots, canonicalHref } = resolveDocumentSeo(pathname)
@@ -57,7 +59,7 @@ export function useDocumentSeo() {
       removeLinkByRel(CANONICAL_REL)
     }
 
-    const pageMeta = getPageMeta(pathname)
+    const pageMeta = getPageMeta(pathname, locale)
     const restorePageMeta = pageMeta
       ? applyDocumentMeta({
           title: pageMeta.title,
@@ -80,7 +82,7 @@ export function useDocumentSeo() {
         removeLinkByRel(CANONICAL_REL)
       }
     }
-  }, [pathname])
+  }, [locale, pathname])
 }
 
 /** Mount inside BrowserRouter so useLocation works. */

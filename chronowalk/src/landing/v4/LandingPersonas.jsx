@@ -13,8 +13,10 @@ const REAL_MOMENT = {
 /**
  * Situation-led personas - large photography, one emotional sentence, one CTA.
  */
-export default function LandingPersonas({ onPreview }) {
-  const section = LANDING_CONTENT.personas
+export default function LandingPersonas({
+  onPreview,
+  section = LANDING_CONTENT.personas,
+}) {
   const items = section.items ?? []
 
   return (

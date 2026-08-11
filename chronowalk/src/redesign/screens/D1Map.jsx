@@ -2,8 +2,10 @@ import { useState } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow, pantheonNow, capitolineNow, spanishSteps, severusNow, trajansNow, archTitusNow, palatineNow, navonaNow, castelNow } from "../images.js";
 import { Eyebrow, TabBar } from '../ui/index.js';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function D1Map({ embedded = false }) {
+  const t = useT()
   const [activeAct, setActiveAct]   = useState(null);
   const [selectedPin, setSelectedPin] = useState(6); // Pantheon pre-tapped
 
@@ -15,7 +17,7 @@ export default function D1Map({ embedded = false }) {
     { id: "IV",  color: T.actIV,  label: "IV"  },
     { id: "V",   color: T.actV,   label: "V"   },
     { id: "VI",  color: T.actVI,  label: "VI"  },
-    { id: "ENC", color: T.encore, label: "Enc" },
+    { id: "ENC", color: T.encore, label: t('mapDemo.encore') },
   ];
 
   // Route polyline - 7 act segments sharing endpoints
@@ -31,16 +33,16 @@ export default function D1Map({ embedded = false }) {
 
   // Waypoints - status: done / current / ahead
   const waypoints = [
-    { id:0, name:"The Colosseum",       act:"I",   color:T.actI,   status:"done",    x:308, y:655, hook:"Fifty thousand witnesses, zero exits for gladiators.", dist:"0.0 km", photo:colosseumNow  },
-    { id:1, name:"Arch of Constantine", act:"I",   color:T.actI,   status:"done",    x:285, y:630, hook:"Three emperors, one arch, not all remembered fondly.",   dist:"0.3 km", photo:archTitusNow  },
-    { id:2, name:"The Palatine Hill",   act:"II",  color:T.actII,  status:"current", x:255, y:596, hook:"The emperors lived here. You can feel the advantage.",  dist:"0.9 km", photo:palatineNow },
-    { id:3, name:"The Roman Forum",     act:"III", color:T.actIII, status:"ahead",   x:218, y:558, hook:"Nine stops, one drained swamp, the centre of the world.",dist:"1.5 km", photo:severusNow    },
-    { id:4, name:"Capitoline Hill",     act:"III", color:T.actIII, status:"ahead",   x:190, y:532, hook:"The original Rome, reduced to a pigeon square.",          dist:"1.9 km", photo:capitolineNow },
-    { id:5, name:"Trajan's Market",     act:"IV",  color:T.actIV,  status:"ahead",   x:150, y:450, hook:"Two thousand years ago, this was the shopping centre.",   dist:"2.5 km", photo:trajansNow    },
-    { id:6, name:"The Pantheon",        act:"V",   color:T.actV,   status:"ahead",   x:135, y:386, hook:"The dome that refused to fall.",                          dist:"3.1 km", photo:pantheonNow   },
-    { id:7, name:"Piazza Navona",       act:"V",   color:T.actV,   status:"ahead",   x:115, y:340, hook:"Built on a stadium, beautiful by accident.",              dist:"3.7 km", photo:navonaNow   },
-    { id:8, name:"The Spanish Steps",   act:"VI",  color:T.actVI,  status:"ahead",   x:195, y:293, hook:"138 steps. Zero shortcuts.",                              dist:"4.3 km", photo:spanishSteps  },
-    { id:9, name:"Castel Sant'Angelo",  act:"ENC", color:T.encore, status:"ahead",   x:78,  y:245, hook:"A tomb that became a fortress that became a prison.",     dist:"5.2 km", photo:castelNow  },
+    { id:0, name:t('mapDemo.stop.colosseum'),  act:"I",   color:T.actI,   status:"done",    x:308, y:655, hook:"Fifty thousand witnesses, zero exits for gladiators.", dist:"0.0 km", photo:colosseumNow  },
+    { id:1, name:t('mapDemo.stop.constantine'), act:"I",   color:T.actI,   status:"done",    x:285, y:630, hook:"Three emperors, one arch, not all remembered fondly.",   dist:"0.3 km", photo:archTitusNow  },
+    { id:2, name:t('mapDemo.stop.palatine'),    act:"II",  color:T.actII,  status:"current", x:255, y:596, hook:"The emperors lived here. You can feel the advantage.",  dist:"0.9 km", photo:palatineNow },
+    { id:3, name:t('mapDemo.stop.forum'),       act:"III", color:T.actIII, status:"ahead",   x:218, y:558, hook:"Nine stops, one drained swamp, the centre of the world.",dist:"1.5 km", photo:severusNow    },
+    { id:4, name:t('mapDemo.stop.capitoline'),  act:"III", color:T.actIII, status:"ahead",   x:190, y:532, hook:"The original Rome, reduced to a pigeon square.",          dist:"1.9 km", photo:capitolineNow },
+    { id:5, name:t('mapDemo.stop.trajan'),      act:"IV",  color:T.actIV,  status:"ahead",   x:150, y:450, hook:"Two thousand years ago, this was the shopping centre.",   dist:"2.5 km", photo:trajansNow    },
+    { id:6, name:t('mapDemo.stop.pantheon'),    act:"V",   color:T.actV,   status:"ahead",   x:135, y:386, hook:"The dome that refused to fall.",                          dist:"3.1 km", photo:pantheonNow   },
+    { id:7, name:t('mapDemo.stop.navona'),      act:"V",   color:T.actV,   status:"ahead",   x:115, y:340, hook:"Built on a stadium, beautiful by accident.",              dist:"3.7 km", photo:navonaNow   },
+    { id:8, name:t('mapDemo.stop.steps'),       act:"VI",  color:T.actVI,  status:"ahead",   x:195, y:293, hook:"138 steps. Zero shortcuts.",                              dist:"4.3 km", photo:spanishSteps  },
+    { id:9, name:t('mapDemo.stop.castel'),      act:"ENC", color:T.encore, status:"ahead",   x:78,  y:245, hook:"A tomb that became a fortress that became a prison.",     dist:"5.2 km", photo:castelNow  },
   ];
 
   const sel        = selectedPin !== null ? waypoints[selectedPin] : null;
@@ -248,11 +250,12 @@ export default function D1Map({ embedded = false }) {
         }}
         onClick={e => e.stopPropagation()}
       >
-        Start from where I am
+        {t('mapDemo.startHere')}
       </button>
 
       {/* Recenter icon - bottom-right */}
       <button
+        aria-label={t('mapDemo.recenter')}
         style={{
           position:"absolute", bottom: sheetShown ? controlsBottomWithSheet : controlsBottom, right:20, zIndex:22,
           width:44, height:44,
@@ -301,7 +304,9 @@ export default function D1Map({ embedded = false }) {
             />
             <div style={{ flex:1 }}>
               {/* Act eyebrow */}
-              <Eyebrow color={sel.color}>ACT {sel.act}</Eyebrow>
+              <Eyebrow color={sel.color}>
+                {t('mapDemo.act', { numeral: sel.act })}
+              </Eyebrow>
               {/* Name - Fraunces 20 */}
               <p style={{
                 fontFamily:F.display, fontSize:20,
@@ -328,7 +333,7 @@ export default function D1Map({ embedded = false }) {
               border:"none", cursor:"pointer",
               fontFamily:F.body,
             }}>
-              Take me there →
+              {t('mapDemo.takeMe')}
             </button>
           </div>
         </div>
