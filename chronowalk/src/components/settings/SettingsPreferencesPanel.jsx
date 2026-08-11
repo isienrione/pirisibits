@@ -87,7 +87,7 @@ export default function SettingsPreferencesPanel() {
               <GlobeIcon />
               {t('language.label')}
             </p>
-            <p className="mt-1 text-sm text-ink700">{t('language.sub')}</p>
+            <p className="mt-1 text-sm text-soft-slate">{t('language.sub')}</p>
           </div>
           <div
             className="inline-flex shrink-0 rounded-lg bg-parchment/70 p-0.5"
@@ -104,7 +104,7 @@ export default function SettingsPreferencesPanel() {
                   aria-pressed={active}
                   onClick={() => setLocale(code)}
                   className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
-                    active ? 'bg-ivory text-ink900 shadow-sm' : 'text-ink700'
+                    active ? 'bg-ivory text-ink900 shadow-sm' : 'text-soft-slate'
                   }`}
                 >
                   {code === 'en' ? '🇬🇧' : '🇪🇸'} {labels[code] ?? code}
