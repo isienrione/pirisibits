@@ -1,20 +1,46 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, fireEvent, within } from '@testing-library/react'
+import { render, screen, fireEvent, within, act } from '@testing-library/react'
 import LandingProductHero from '../v4/LandingProductHero.jsx'
 import { LANDING_CTA } from '../landingData.js'
 import { __setLaunchOfferActiveForTests } from '../../lib/launchOffer.js'
+import { I18nProvider, useI18n } from '../../i18n/I18nProvider.jsx'
+import { LOCALE_STORAGE_KEY } from '../../i18n/storage.js'
+import { LOCALES } from '../../i18n/locales.js'
+import { setActiveLocale } from '../../i18n/activeLocale.js'
 
 vi.mock('../landingAnalytics.js', () => ({
   LANDING_ANALYTICS_SECTIONS: { HERO: 'hero' },
 }))
 
+function LocaleSwitcher() {
+  const { setLocale } = useI18n()
+  return (
+    <button type="button" onClick={() => setLocale(LOCALES.ES)}>
+      Switch to Spanish
+    </button>
+  )
+}
+
+function renderHero(ui) {
+  return render(
+    <I18nProvider>
+      {ui}
+      <LocaleSwitcher />
+    </I18nProvider>,
+  )
+}
+
 describe('LandingProductHero manual gallery', () => {
   beforeEach(() => {
     __setLaunchOfferActiveForTests(true)
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
   })
 
   afterEach(() => {
     __setLaunchOfferActiveForTests(null)
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
   })
 
   it('does not auto-advance slides on a timer', () => {
@@ -69,9 +95,40 @@ describe('LandingProductHero manual gallery', () => {
       'true',
     )
   })
+
+  it('jumps to the first Spanish marketing frame after a locale swap', () => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
+    })
+
+    expect(
+      screen.getByRole('tab', { name: /ChronoWalk Roma\. Camina libremente/i }),
+    ).toHaveAttribute('aria-selected', 'true')
+
+    const art = document.querySelector('.cw-v4-hero__slide-layer--art.is-active img.cw-v4-hero__art')
+    expect(art?.getAttribute('src')).toBe('/landing/hero-slides/es/then-now.png')
+  })
 })
 
 describe('LandingProductHero story slide enlarge', () => {
+  beforeEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
+  afterEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
   it('opens a zoomable viewer when a story slide is enlarged', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
@@ -91,7 +148,7 @@ describe('LandingProductHero story slide enlarge', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
     fireEvent.click(screen.getByRole('tab', { name: /Choose your Roman walk/i }))
-    expect(screen.getByRole('link', { name: 'Roma Eterna package' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Roma Eterna' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /Enlarge Choose your Roman walk/i }))
     expect(screen.getByRole('dialog', { name: /Choose your Roman walk/i })).toBeInTheDocument()
   })
@@ -143,6 +200,16 @@ describe('LandingProductHero story slide enlarge', () => {
 })
 
 describe('LandingProductHero CTA hierarchy', () => {
+  beforeEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
+  afterEach(() => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    setActiveLocale(LOCALES.EN)
+  })
+
   it('leads with paid unlock and a clear Pantheon free preview', () => {
     const onPreview = vi.fn()
     const onGetApp = vi.fn()

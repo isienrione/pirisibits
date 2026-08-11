@@ -39,9 +39,11 @@
   Cache-Control: no-cache, no-store, must-revalidate
 # Hashed assets are content-addressed, but avoid year-long immutable caching:
 # a deploy race can briefly serve a miss as HTML, and immutable would pin that
-# poison on the custom domain. One-day cache still CDNs well and self-heals.
+# poison on the custom domain. Keep this short enough that a bad HIT self-heals
+# within an hour; new deploys also change the content hash so cold URLs miss.
 /assets/*
-  Cache-Control: public, max-age=86400, must-revalidate
+  Cache-Control: public, max-age=3600, must-revalidate
+  X-Content-Type-Options: nosniff
 # SEO discovery files must never be served as the SPA shell (text/html).
 /robots.txt
   Content-Type: text/plain; charset=utf-8

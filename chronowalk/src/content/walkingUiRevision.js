@@ -4,4 +4,4 @@
  * self-heals with one reload instead of showing pre-redesign UI (cream GUIDE/MAP
  * tabs, etc.).
  */
-export const WALKING_UI_REVISION = 17
+export const WALKING_UI_REVISION = 18

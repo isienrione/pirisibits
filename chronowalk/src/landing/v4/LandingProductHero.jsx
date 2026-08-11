@@ -123,14 +123,21 @@ export default function LandingProductHero({
   const touchStartX = useRef(null)
   const expandTriggerRef = useRef(null)
   const heroRef = useRef(null)
+  const localeBootRef = useRef(true)
   const offerTiersById = useMemo(() => {
     const mapped = localizeLandingOffers(mapOffersWithLaunchOffer(tiers), locale)
     return Object.fromEntries(mapped.map((tier) => [tier.id, tier]))
   }, [locale, tiers])
 
-  // Keep the active frame in range when locale swaps slide art.
+  // Keep the active frame in range. After a language swap, jump to the first
+  // marketing frame so localized art is obvious (slide 0 is always the sky hero).
   useEffect(() => {
-    setIndex((current) => Math.min(current, Math.max(0, total - 1)))
+    if (localeBootRef.current) {
+      localeBootRef.current = false
+      setIndex((current) => Math.min(current, Math.max(0, total - 1)))
+      return
+    }
+    setIndex(total > 1 ? 1 : 0)
   }, [total, locale])
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.
@@ -371,7 +378,7 @@ export default function LandingProductHero({
           const themeClass = offerTier?.theme ? ` cw-v4-pkg--${offerTier.theme}` : ''
           return (
             <div
-              key={slide.id}
+              key={`${locale}-${slide.id}`}
               className={`cw-v4-hero__slide-layer cw-v4-hero__slide-layer--art${active ? ' is-active' : ''}`}
               aria-hidden={!active}
             >
@@ -379,6 +386,7 @@ export default function LandingProductHero({
                 {hasHotspots ? (
                   <div className={`cw-v4-hero__art-shell${themeClass}`}>
                     <img
+                      key={`${locale}-${slide.id}-img`}
                       className="cw-v4-hero__art"
                       src={slide.src}
                       alt=""
@@ -452,6 +460,7 @@ export default function LandingProductHero({
                     onClick={(event) => openSlideViewer(slide, event.currentTarget)}
                   >
                     <img
+                      key={`${locale}-${slide.id}-img`}
                       className="cw-v4-hero__art"
                       src={slide.src}
                       alt=""
