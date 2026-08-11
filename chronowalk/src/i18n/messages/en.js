@@ -330,6 +330,9 @@ export const enMessages = Object.freeze({
     'You’ll go to Paddle’s secure checkout next. After payment, your access link arrives by email so you can start walking right away.',
   'checkout.consent.opening': 'Opening checkout…',
   'checkout.consent.continue': 'Continue to secure checkout',
+  'offer.now': 'now',
+  'offer.launch': 'Launch offer',
+  'offer.save': 'Save {amount}',
   'purchase.pending.brand': 'ChronoWalk · Rome',
   'purchase.pending.readyTitle': 'Continue to checkout',
   'purchase.pending.waitTitle': 'Checkout is almost ready',
@@ -798,6 +801,9 @@ export const enMessages = Object.freeze({
   'contact.paddle':
     'Payments are processed by Paddle.com as Merchant of Record. For billing questions you may also contact Paddle support via paddle.net.',
   'legal.back': '← Back to ChronoWalk',
+  'legal.privacy.documentTitle': 'Privacy Policy · ChronoWalk',
+  'legal.refund.documentTitle': 'Refund Policy · ChronoWalk',
+  'legal.terms.documentTitle': 'Terms of Service · ChronoWalk',
 
   // Landing phone demos
   'landing.demo.walkAlt': 'Walking to Spanish Steps in ChronoWalk',

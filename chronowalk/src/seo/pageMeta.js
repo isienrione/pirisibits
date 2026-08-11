@@ -47,6 +47,27 @@ export const PAGE_META_BY_PATH = Object.freeze({
     ogImage: DEFAULT_OG_IMAGE,
     ogImageAlt: 'ChronoWalk',
   }),
+  '/legal/privacy': Object.freeze({
+    title: 'Privacy Policy · ChronoWalk',
+    description:
+      'How ChronoWalk collects, uses, shares, and protects personal data for the website and walking PWA.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/refund': Object.freeze({
+    title: 'Refund Policy · ChronoWalk',
+    description:
+      'When ChronoWalk refunds are available for digital walking experiences, and how to request one via Paddle.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/terms': Object.freeze({
+    title: 'Terms of Service · ChronoWalk',
+    description:
+      'Terms governing access to ChronoWalk digital walking experiences, payments via Paddle, and your licence.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
 })
 
 export const PAGE_META_ES_BY_PATH = Object.freeze({
@@ -81,6 +102,27 @@ export const PAGE_META_ES_BY_PATH = Object.freeze({
     title: 'Contacto · ChronoWalk',
     description:
       'Contacta con el soporte de ChronoWalk para consultas sobre compras, acceso o reembolsos.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/privacy': Object.freeze({
+    title: 'Política de privacidad · ChronoWalk',
+    description:
+      'Cómo ChronoWalk recoge, usa, comparte y protege los datos personales del sitio y la PWA de caminata.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/refund': Object.freeze({
+    title: 'Política de reembolsos · ChronoWalk',
+    description:
+      'Cuándo hay reembolsos disponibles en ChronoWalk para experiencias digitales a pie, y cómo solicitarlos a través de Paddle.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/terms': Object.freeze({
+    title: 'Términos del servicio · ChronoWalk',
+    description:
+      'Términos que rigen el acceso a las experiencias digitales de ChronoWalk, los pagos con Paddle y tu licencia.',
     ogImage: DEFAULT_OG_IMAGE,
     ogImageAlt: 'ChronoWalk',
   }),

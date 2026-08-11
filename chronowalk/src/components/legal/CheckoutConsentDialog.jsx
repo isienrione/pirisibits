@@ -87,7 +87,7 @@ function CheckoutConsentDialogPanel({
             onClick={() => onCancel?.()}
             disabled={busy}
           >
-            {t('common.cancel')}
+            {t('action.cancel')}
           </button>
         </div>
       </div>

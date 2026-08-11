@@ -15,7 +15,7 @@ Same-day Spanish launch inventory for the ChronoWalk PWA. Product design and com
 | SEO / HTML / PWA | `index.html`, `src/seo/pageMeta.js`, Vite PWA manifest | `lang="en"` historically |
 | Errors / network / install | `V2ErrorBoundary`, banners, A2HS copy | In-app chrome |
 | Emails | `supabase/functions/_shared/accessEmailTemplate.js` | Transactional EN (out of this launch’s commerce scope) |
-| Legal | `src/content/legal/*.md` | EN legal (not rewritten here) |
+| Legal | `src/content/legal/*.md` + `es/` | EN + ES legal markdown by locale |
 
 **Localized in this pass (core experience):** message catalogs + Spanish Rome overlays + settings/shell/map/companion/Pantheon free page.
 

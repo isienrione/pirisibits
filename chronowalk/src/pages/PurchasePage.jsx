@@ -58,7 +58,7 @@ export default function PurchasePage() {
           onClick={() => navigate(tourDetailPath(destinationId))}
           disabled={isConfirming}
         >
-          {t('common.cancel')}
+          {t('action.cancel')}
         </Button>
       </div>
 
