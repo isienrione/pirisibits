@@ -33,9 +33,12 @@ function bootLocale() {
     return fromQuery
   }
 
+  // Default is always English. Spanish only after an explicit choice
+  // (?lang=es, landing toggle, or a previously stored preference).
   const resolved = resolveLocale({
     stored: readStoredLocale(),
-    preferNavigator: !readStoredLocale(),
+    preferNavigator: false,
+    fallback: DEFAULT_LOCALE,
   })
   setActiveLocale(resolved)
   applyDocumentLocale(resolved)

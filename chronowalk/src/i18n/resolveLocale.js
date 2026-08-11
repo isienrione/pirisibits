@@ -4,7 +4,10 @@ import { readStoredLocale } from './storage.js'
 /**
  * Resolve locale for boot / deep links.
  * Priority: explicit `?lang=` → stored preference → fallback (default en).
- * Navigator language is only used when `preferNavigator` is true (first-run helper).
+ *
+ * Navigator language is never used for the product default: ChronoWalk boots
+ * in English unless the traveler has chosen Spanish (or arrives with ?lang=).
+ * `preferNavigator` remains available for tests / tooling only.
  */
 export function resolveLocale({
   search = typeof window !== 'undefined' ? window.location.search : '',
