@@ -202,6 +202,8 @@ export const enMessages = Object.freeze({
   'landing.nav.aria': 'Primary',
   'landing.nav.homeAria': 'ChronoWalk home',
   'landing.nav.languageAria': 'Choose language',
+  'landing.nav.languageSign': 'Audio in English & Spanish — choose your language',
+  'landing.nav.languageSignShort': 'Audio EN & ES — pick yours',
   'landing.hero.galleryAria': 'ChronoWalk hero gallery',
   'landing.hero.continueAria': 'Continue your walk',
   'landing.hero.continue': 'Continue your walk',

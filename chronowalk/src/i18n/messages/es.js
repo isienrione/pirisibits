@@ -202,6 +202,8 @@ export const esMessages = Object.freeze({
   'landing.nav.aria': 'Principal',
   'landing.nav.homeAria': 'Inicio de ChronoWalk',
   'landing.nav.languageAria': 'Elegir idioma',
+  'landing.nav.languageSign': 'Audio en inglés y español — elige tu idioma',
+  'landing.nav.languageSignShort': 'Audio EN y ES — elige el tuyo',
   'landing.hero.galleryAria': 'Galería principal de ChronoWalk',
   'landing.hero.continueAria': 'Continuar tu recorrido',
   'landing.hero.continue': 'Continuar tu recorrido',

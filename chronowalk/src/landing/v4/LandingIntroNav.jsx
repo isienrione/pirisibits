@@ -268,22 +268,36 @@ export default function LandingIntroNav({
             ))}
           </nav>
 
-          <div
-            className="cw-v4-nav__language"
-            role="group"
-            aria-label={t('landing.nav.languageAria')}
-          >
-            {SUPPORTED_LOCALES.map((code) => (
-              <button
-                key={code}
-                type="button"
-                className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
-                aria-pressed={locale === code}
-                onClick={() => setLocale(code)}
-              >
-                {labels[code] ?? code}
-              </button>
-            ))}
+          <div className="cw-v4-nav__language-cluster">
+            <p className="cw-v4-nav__language-sign" role="status">
+              <span className="cw-v4-nav__language-flags" aria-hidden="true">
+                🇬🇧 🇪🇸
+              </span>
+              <span className="cw-v4-nav__language-sign-text">
+                {t('landing.nav.languageSign')}
+              </span>
+              <span className="cw-v4-nav__language-sign-text-short">
+                {t('landing.nav.languageSignShort')}
+              </span>
+            </p>
+            <div
+              className="cw-v4-nav__language"
+              role="group"
+              aria-label={t('landing.nav.languageAria')}
+            >
+              {SUPPORTED_LOCALES.map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
+                  aria-pressed={locale === code}
+                  onClick={() => setLocale(code)}
+                >
+                  <span aria-hidden="true">{code === 'en' ? '🇬🇧' : '🇪🇸'}</span>{' '}
+                  {labels[code] ?? code}
+                </button>
+              ))}
+            </div>
           </div>
 
           {cta ? (
