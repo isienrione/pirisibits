@@ -1,6 +1,7 @@
 import { useEffect, useId } from 'react'
 import { createPortal } from 'react-dom'
 import { T, F } from '../tokens.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Accessible confirmation dialog for shared-walk leave / rejoin.
@@ -11,17 +12,20 @@ export default function SharedWalkConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = 'Continue',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   busy = false,
   error = null,
   onConfirm,
   onCancel,
 }) {
+  const t = useT()
+  const resolvedConfirm = confirmLabel === undefined ? t('walkTogether.dialog.continue') : confirmLabel
+  const resolvedCancel = cancelLabel ?? t('walkTogether.dialog.cancel')
   const titleId = useId()
   const descriptionId = useId()
   const errorId = useId()
-  const showConfirm = Boolean(confirmLabel)
+  const showConfirm = Boolean(resolvedConfirm)
 
   useEffect(() => {
     if (!open) return undefined
@@ -56,7 +60,7 @@ export default function SharedWalkConfirmDialog({
     >
       <button
         type="button"
-        aria-label="Dismiss dialog"
+        aria-label={t('walkTogether.dialog.dismiss')}
         onClick={() => {
           if (!busy) onCancel?.()
         }}
@@ -143,7 +147,7 @@ export default function SharedWalkConfirmDialog({
               cursor: busy ? 'wait' : 'pointer',
             }}
           >
-            {cancelLabel}
+            {resolvedCancel}
           </button>
           {showConfirm ? (
             <button
@@ -163,7 +167,7 @@ export default function SharedWalkConfirmDialog({
                 opacity: busy ? 0.7 : 1,
               }}
             >
-              {busy ? 'Working…' : confirmLabel}
+              {busy ? t('walkTogether.working') : resolvedConfirm}
             </button>
           ) : null}
         </div>

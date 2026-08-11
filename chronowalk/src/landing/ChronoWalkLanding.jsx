@@ -17,13 +17,14 @@ import LandingSiteFooter from './LandingSiteFooter.jsx'
 import CheckoutConsentDialog from '../components/legal/CheckoutConsentDialog.jsx'
 import V2ErrorBoundary from '../components/V2ErrorBoundary.jsx'
 import { INCLUDE_DEBUG_PANEL } from '../components/debug/includeDebugPanel.js'
-import { ROME_JOURNEY_SECTION_ID, LANDING_ACTS, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
+import { ROME_JOURNEY_SECTION_ID, LANDING_PREVIEW_AUDIO_FILE } from './landingData.js'
+import { getLocalizedLanding } from './getLocalizedLanding.js'
 import { useLandingPrice } from './useLandingPrice.js'
 import { resolveLandingTierCents } from './landingCheckout.js'
 import { getTierById, openCheckout } from '../lib/checkout.js'
 import { rememberPendingPurchaseTier } from '../lib/pendingPurchase.js'
 import { primePreviewAudioForNavigation } from './previewAudioHandoff.js'
-import { buildLandingProductSchema, LANDING_DOCUMENT } from './landingSeo.js'
+import { buildLandingProductSchema, getLandingDocument } from './landingSeo.js'
 import {
   LANDING_ANALYTICS_SECTIONS,
   trackLandingCheckoutOpen,
@@ -45,6 +46,7 @@ import {
 import { hasValidLocalAccess } from '../lib/accessSession.js'
 import { getActiveWalkPath } from '../lib/appEntry.js'
 import LandingErrorBoundary from './LandingErrorBoundary.jsx'
+import { useI18n } from '../i18n/I18nProvider.jsx'
 import './ChronoWalkLanding.css'
 import './ChronoWalkLanding.v2.css'
 import './ChronoWalkLanding.v4.css'
@@ -67,14 +69,34 @@ export default function ChronoWalkLanding() {
 
 function ChronoWalkLandingInner() {
   const navigate = useNavigate()
+  const { locale, t } = useI18n()
+  const localized = useMemo(() => getLocalizedLanding(locale), [locale])
   const { cents } = useLandingPrice()
   const [pendingTierId, setPendingTierId] = useState(null)
   const [checkoutBusy, setCheckoutBusy] = useState(false)
   const hasAccess = useMemo(() => hasValidLocalAccess(), [])
   const landingIntent = useMemo(() => resolveLandingIntent(), [])
   const intentHero = useMemo(
-    () => resolveLandingIntentHero(landingIntent),
-    [landingIntent],
+    () => {
+      const resolved = resolveLandingIntentHero(landingIntent)
+      const overlay = localized.LANDING_INTENTS?.[landingIntent]
+      const previewCta =
+        landingIntent === 'pantheon'
+          ? localized.LANDING_CTA.tryPantheonStopFree
+          : landingIntent === 'colosseum'
+            ? localized.LANDING_CTA.tryCompleteStopFree
+            : localized.LANDING_CTA.tryPantheonFree
+      return {
+        ...resolved,
+        ...overlay,
+        getAppCta: localized.LANDING_CTA.unlockRomePriced,
+        getAppCtaShort: localized.LANDING_CTA.unlockRomePricedShort,
+        primaryCta: previewCta,
+        primaryCtaAriaLabel: previewCta,
+        previewCta,
+      }
+    },
+    [landingIntent, localized],
   )
   const pendingTier = useMemo(
     () => (pendingTierId ? getTierById(pendingTierId) : null),
@@ -115,16 +137,17 @@ function ChronoWalkLandingInner() {
   }, [])
 
   useEffect(() => {
+    const documentCopy = getLandingDocument(locale)
     const previousTitle = document.title
-    document.title = LANDING_DOCUMENT.title
+    document.title = documentCopy.title
     const meta = document.querySelector('meta[name="description"]')
     const previousDescription = meta?.getAttribute('content') ?? null
-    if (meta) meta.setAttribute('content', LANDING_DOCUMENT.description)
+    if (meta) meta.setAttribute('content', documentCopy.description)
     return () => {
       document.title = previousTitle
       if (meta && previousDescription != null) meta.setAttribute('content', previousDescription)
     }
-  }, [])
+  }, [locale])
 
   const handlePreview = useCallback(
     (section = LANDING_ANALYTICS_SECTIONS.HERO) => {
@@ -216,8 +239,8 @@ function ChronoWalkLandingInner() {
     handleGetApp()
   }, [handleGetApp])
 
-  const [actOpen, actWalk, actChoose] = LANDING_ACTS
-  const productSchema = buildLandingProductSchema()
+  const [actOpen, actWalk, actChoose] = localized.LANDING_ACTS
+  const productSchema = buildLandingProductSchema(localized.ROME_TIERS, locale)
 
   return (
     <div className="cw-landing cw-landing--premium cw-landing--v4">
@@ -225,7 +248,11 @@ function ChronoWalkLandingInner() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
-      <LandingIntroNav onGetApp={handleStickyGetApp} />
+      <LandingIntroNav
+        header={localized.LANDING_CONTENT.header}
+        ctaCopy={localized.LANDING_CTA}
+        onGetApp={handleStickyGetApp}
+      />
       <main>
         <LandingAct
           id={actOpen.id}
@@ -235,13 +262,17 @@ function ChronoWalkLandingInner() {
         >
           <LandingProductHero
             hero={intentHero}
+            tiers={localized.ROME_TIERS}
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
             onGetApp={handleHeroUnlock}
             onContinueWalk={hasAccess ? handleContinueWalk : undefined}
           />
-          <LandingHeroReassurance onPreview={handlePreview} />
-          <LandingThenNowProof />
+          <LandingHeroReassurance
+            section={localized.LANDING_CONTENT.heroReassurance}
+            onPreview={handlePreview}
+          />
+          <LandingThenNowProof section={localized.LANDING_CONTENT.thenNowProof} />
         </LandingAct>
 
         <LandingAct
@@ -250,16 +281,17 @@ function ChronoWalkLandingInner() {
           index={actWalk.index}
           name={actWalk.name}
         >
-          <LandingStopCarousel />
+          <LandingStopCarousel section={localized.LANDING_CONTENT.monuments} />
           <V2ErrorBoundary
-            title="Demo unavailable"
-            message="The product demo could not load on this device. The rest of ChronoWalk still works - scroll for tours and pricing."
+            title={t('landing.demo.errorTitle')}
+            message={t('landing.demo.errorBody')}
             autoRecoverOnAnyError={false}
             onRetry={() => window.location.assign('/rome/reset-shell?force=1')}
           >
-            <LandingProductDemo />
+            <LandingProductDemo section={localized.LANDING_CONTENT['product-demo']} />
           </V2ErrorBoundary>
           <LandingPersonas
+            section={localized.LANDING_CONTENT.personas}
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.TRY_FREE)}
           />
         </LandingAct>
@@ -270,7 +302,10 @@ function ChronoWalkLandingInner() {
           index={actChoose.index}
           name={actChoose.name}
         >
-          <LandingRomeTiersSection onBeginTier={handleBeginTier} />
+          <LandingRomeTiersSection
+            section={localized.LANDING_CONTENT.pricing}
+            onBeginTier={handleBeginTier}
+          />
           {/* Deep-link / SEO: pricing section is canonical; keep #rome-journey resolving. */}
           <div
             id={ROME_JOURNEY_SECTION_ID}
@@ -286,10 +321,13 @@ function ChronoWalkLandingInner() {
           <div id="letter" className="cw-landing-deeplink-anchor" tabIndex={-1} aria-hidden="true" />
           {/* Get App, then FAQ (questions + trust checklist continuation). */}
           <LandingGetAppSection onChooseTour={handleChooseTour} />
-          <LandingFaqSectionV2 />
+          <LandingFaqSectionV2
+            section={localized.LANDING_CONTENT.faq}
+            trustSection={localized.LANDING_CONTENT.trust}
+          />
         </LandingAct>
       </main>
-      <LandingSiteFooter />
+      <LandingSiteFooter content={localized.LANDING_CONTENT.footer} />
       <LandingReviewsDevToggle />
       {DebugPanelHost ? (
         <Suspense fallback={null}>

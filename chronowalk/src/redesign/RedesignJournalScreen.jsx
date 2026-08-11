@@ -8,19 +8,21 @@ import { T, ACT_COLORS } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
 import E1JournalHome from './screens/E1JournalHome.jsx'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
 }
 
-function statusLabel(status) {
-  if (status === 'completed') return 'Visited'
-  if (status === 'current') return 'Current'
-  return 'On route'
+function statusLabel(status, t) {
+  if (status === 'completed') return t('journal.visited')
+  if (status === 'current') return t('journal.current')
+  return t('journal.onRoute')
 }
 
 export default function RedesignJournalScreen({ embedded = true }) {
   const navigate = useNavigate()
+  const t = useT()
   const { openSettings } = useSettingsSheet()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -46,14 +48,14 @@ export default function RedesignJournalScreen({ embedded = true }) {
               id: entry.id,
               name: titleForWaypoint(waypoint),
               sigLine: signatureLine(waypoint),
-              ts: statusLabel(entry.status),
+              ts: statusLabel(entry.status, t),
               status: entry.status,
               photo: photoForWaypoint(waypoint),
             }
           }),
       }))
       .filter((group) => group.cards.length > 0)
-  }, [manifest, context.path, context.currentSequenceIndex, context.completedWaypointIds])
+  }, [manifest, context.path, context.currentSequenceIndex, context.completedWaypointIds, t])
 
   const progress = useMemo(() => summarizeJournalProgress(buildJournalTimeline(manifest ?? { acts: [] }, context)), [manifest, context])
   const headline = journalHeadline(progress)
@@ -64,8 +66,8 @@ export default function RedesignJournalScreen({ embedded = true }) {
       <E1JournalHome
         embedded={embedded}
         loading
-        headline="Your Rome"
-        subtitle="Gathering your path…"
+        headline={t('journal.yourRome')}
+        subtitle={t('journal.gathering')}
         groups={[]}
         empty={false}
       />
@@ -76,8 +78,8 @@ export default function RedesignJournalScreen({ embedded = true }) {
     return (
       <E1JournalHome
         embedded={embedded}
-        headline="Journal unavailable"
-        subtitle={error?.message ?? 'Could not load your memories.'}
+        headline={t('journal.unavailable')}
+        subtitle={error?.message ?? t('journal.loadError')}
         groups={[]}
         empty
         onStartWalk={() => navigate('/begin')}
@@ -88,7 +90,7 @@ export default function RedesignJournalScreen({ embedded = true }) {
   return (
     <E1JournalHome
       embedded={embedded}
-      headline="Your Rome"
+      headline={t('journal.yourRome')}
       subtitle={headline}
       groups={groups}
       empty={isEmpty}

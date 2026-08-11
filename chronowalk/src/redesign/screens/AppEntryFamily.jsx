@@ -5,6 +5,7 @@ import { useOptionalFamilyWalk } from '../context/FamilyWalkContext.jsx'
 import WalkTogetherPanel from '../ui/WalkTogetherPanel.jsx'
 import { T, F } from '../tokens.js'
 import { APP_ENTRY_FAMILY_PHASE } from './appEntryFamilyPhase.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 function classifyResolvedBundle(bundle) {
   if (bundle?.role === 'owner' || bundle?.isOwner) {
@@ -29,6 +30,7 @@ function classifyResolvedBundle(bundle) {
  * once via an effect (never during render).
  */
 export default function AppEntryFamily({ onSkip }) {
+  const t = useT()
   const family = useOptionalFamilyWalk()
   const refreshBundle = family?.refreshBundle
   const [phase, setPhase] = useState(APP_ENTRY_FAMILY_PHASE.RESOLVING)
@@ -126,7 +128,9 @@ export default function AppEntryFamily({ onSkip }) {
         aria-live="polite"
         aria-busy="true"
       >
-        <p style={{ margin: 0, color: T.muted, fontSize: 14 }}>Loading your bundle…</p>
+        <p style={{ margin: 0, color: T.muted, fontSize: 14 }}>
+          {t('entry.family.loading')}
+        </p>
       </div>
     )
   }
@@ -147,11 +151,10 @@ export default function AppEntryFamily({ onSkip }) {
             fontWeight: 500,
           }}
         >
-          Couldn’t load your walking party
+          {t('entry.family.errorTitle')}
         </h1>
         <p style={{ marginTop: 12, fontSize: 15, lineHeight: 1.5, color: T.muted }}>
-          Check your connection and try again. You can continue into the tour and invite people
-          later from Settings → Walk together.
+          {t('entry.family.errorBody')}
         </p>
         {resolveError ? (
           <p style={{ marginTop: 8, fontSize: 13, color: T.muted }}>{String(resolveError)}</p>
@@ -166,7 +169,7 @@ export default function AppEntryFamily({ onSkip }) {
             }}
             style={primaryButtonStyle}
           >
-            Retry
+            {t('common.retry')}
           </button>
           <button
             type="button"
@@ -174,7 +177,7 @@ export default function AppEntryFamily({ onSkip }) {
             onClick={finishOnce}
             style={secondaryButtonStyle}
           >
-            Continue without inviting
+            {t('entry.family.continue')}
           </button>
         </div>
       </div>
@@ -200,7 +203,7 @@ export default function AppEntryFamily({ onSkip }) {
           color: T.muted,
         }}
       >
-        Walking with someone?
+        {t('entry.family.eyebrow')}
       </p>
       <h1
         style={{
@@ -210,10 +213,10 @@ export default function AppEntryFamily({ onSkip }) {
           fontWeight: 500,
         }}
       >
-        Invite someone to your shared tour.
+        {t('entry.family.title')}
       </h1>
       <p style={{ marginTop: 12, fontSize: 15, lineHeight: 1.5, color: T.muted }}>
-        Create invitations now, or skip and manage them later from Settings → Walk together.
+        {t('entry.family.body')}
       </p>
 
       <div style={{ marginTop: 24, flex: 1 }}>
@@ -221,7 +224,7 @@ export default function AppEntryFamily({ onSkip }) {
       </div>
 
       <button type="button" onClick={finishOnce} style={secondaryButtonStyle}>
-        Skip for now
+        {t('entry.family.skip')}
       </button>
     </div>
   )

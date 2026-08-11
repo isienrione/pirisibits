@@ -1,20 +1,24 @@
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * The crossing from marketing site → ChronoWalk app.
  * One composition: brand, pack name, install CTA, continue in browser.
  */
 export default function AppEntryThreshold({
-  packTitle = 'ChronoWalk Rome',
-  packBlurb = 'Your self-guided Rome walk is unlocked on this phone.',
+  packTitle = null,
+  packBlurb = null,
   installed = false,
   canPromptInstall = false,
   showIosInstructions = false,
   onInstall,
   onContinue,
 }) {
+  const t = useT()
+  const resolvedPackTitle = packTitle ?? t('entry.threshold.defaultTitle')
+  const resolvedPackBlurb = packBlurb ?? t('entry.threshold.defaultBlurb')
   const primaryInstall = !installed && (canPromptInstall || showIosInstructions)
 
   return (
@@ -85,7 +89,7 @@ export default function AppEntryThreshold({
             color: T.muted,
           }}
         >
-          You&apos;re in the app now
+          {t('entry.threshold.eyebrow')}
         </p>
 
         <h1
@@ -99,9 +103,9 @@ export default function AppEntryThreshold({
             maxWidth: 320,
           }}
         >
-          {packTitle}
+          {resolvedPackTitle}
           <br />
-          is unlocked.
+          {t('entry.threshold.unlocked')}
         </h1>
 
         <p
@@ -113,7 +117,7 @@ export default function AppEntryThreshold({
             maxWidth: 300,
           }}
         >
-          {packBlurb} This is no longer the website - open ChronoWalk from here like an app.
+          {t('entry.threshold.body', { blurb: resolvedPackBlurb })}
         </p>
 
         <div style={{ marginTop: 'auto', display: 'grid', gap: 12 }}>
@@ -135,7 +139,9 @@ export default function AppEntryThreshold({
                   cursor: 'pointer',
                 }}
               >
-                {showIosInstructions ? 'How to add to Home Screen' : 'Add ChronoWalk to Home Screen'}
+                {showIosInstructions
+                  ? t('entry.threshold.iosInstall')
+                  : t('entry.threshold.install')}
               </button>
               {showIosInstructions ? (
                 <p
@@ -147,9 +153,7 @@ export default function AppEntryThreshold({
                     textAlign: 'center',
                   }}
                 >
-                  Tap <span style={{ color: T.warmWhite }}>Share</span>, then{' '}
-                  <span style={{ color: T.warmWhite }}>Add to Home Screen</span>. Then open the icon
-                  - not the website.
+                  {t('entry.threshold.iosHelp')}
                 </p>
               ) : null}
               <button
@@ -167,7 +171,7 @@ export default function AppEntryThreshold({
                   cursor: 'pointer',
                 }}
               >
-                Continue in browser
+                {t('entry.threshold.browser')}
               </button>
             </>
           ) : (
@@ -187,7 +191,7 @@ export default function AppEntryThreshold({
                 cursor: 'pointer',
               }}
             >
-              {installed ? 'Open your Rome' : 'Enter ChronoWalk'}
+              {installed ? t('entry.threshold.openRome') : t('entry.threshold.enter')}
             </button>
           )}
         </div>

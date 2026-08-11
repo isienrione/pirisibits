@@ -13,9 +13,11 @@ import { saveLetterCard, shareLetterCard } from '../../components/letter/letterE
 import ReviewPrompt from '../../components/ReviewPrompt.jsx'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import F1JourneyLetter from '../screens/F1JourneyLetter.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function RedesignLetterPage() {
   const navigate = useNavigate()
+  const t = useT()
   const { context, state } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
   const reviewPromptActive = state === JOURNEY_STATES.COMPLETE
@@ -43,11 +45,11 @@ export default function RedesignLetterPage() {
   const stats = useMemo(() => {
     const stopCount = letter?.stopCount ?? 0
     return [
-      { v: `${stopCount} stops`, l: 'visited' },
-      { v: letter?.durationLabel ?? '-', l: 'in Rome' },
-      { v: '21', l: 'centuries crossed' },
+      { v: t('letter.stopsValue', { count: stopCount }), l: t('letter.stat.visited') },
+      { v: letter?.durationLabel ?? '-', l: t('letter.stat.inRome') },
+      { v: '21', l: t('letter.stat.centuries') },
     ]
-  }, [letter])
+  }, [letter, t])
 
   const handleNameChange = (name) => {
     setTravelerName(name)
@@ -63,13 +65,13 @@ export default function RedesignLetterPage() {
       track(TRACK_EVENTS.LETTER_SAVE, { stop_count: letter.stopCount, method: result })
       setMessage(
         result === 'fallback'
-          ? 'Letter opened - long-press the image to save it.'
+          ? t('letter.saveFallback')
           : result === 'error'
-            ? 'Could not save the letter. Try sharing it instead.'
-            : 'Letter saved to your device.',
+            ? t('letter.saveError')
+            : t('letter.saved'),
       )
     } catch {
-      setMessage('Could not save the letter. Try sharing it instead.')
+      setMessage(t('letter.saveError'))
     } finally {
       setBusy(false)
     }
@@ -84,13 +86,13 @@ export default function RedesignLetterPage() {
       track(TRACK_EVENTS.LETTER_SHARE, { stop_count: letter.stopCount, method: result })
       setMessage(
         result === 'share'
-          ? 'Letter image ready to share.'
+          ? t('letter.shareReady')
           : result === 'download' || result === 'fallback'
-            ? 'Letter image saved - share it from your photos.'
-            : 'Could not share the letter image on this device.',
+            ? t('letter.shareSaved')
+            : t('letter.shareError'),
       )
     } catch {
-      setMessage('Could not share the letter image on this device.')
+      setMessage(t('letter.shareError'))
     } finally {
       setBusy(false)
     }
@@ -108,9 +110,9 @@ export default function RedesignLetterPage() {
     return (
       <RedesignRouteShell>
         <div className="redesign-app-shell redesign-phone-frame" style={{ padding: 32, color: '#FAF6EF' }}>
-          <p>{error?.message ?? 'Your letter is not ready yet. Keep walking.'}</p>
+          <p>{error?.message ?? t('letter.notReady')}</p>
           <button type="button" onClick={() => navigate('/journey')} style={{ marginTop: 16 }}>
-            Back to walk
+            {t('letter.backWalk')}
           </button>
         </div>
       </RedesignRouteShell>
@@ -121,7 +123,7 @@ export default function RedesignLetterPage() {
     <RedesignRouteShell>
       <div className="redesign-app-shell">
         <F1JourneyLetter
-          firstName={letter.firstName ?? 'Traveler'}
+          firstName={letter.firstName ?? t('letter.traveler')}
           body={letter.body}
           reflection={letter.reflection}
           stats={stats}

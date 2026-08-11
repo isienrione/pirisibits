@@ -5,8 +5,10 @@ import { LANDING_CONTENT } from '../landingData.js'
  * Compact expandable trust checklist - replaces the long feature list.
  * When `embedded`, renders without its own section title (FAQ continuation).
  */
-export default function LandingTrustChecklist({ embedded = false }) {
-  const section = LANDING_CONTENT.trust
+export default function LandingTrustChecklist({
+  embedded = false,
+  section = LANDING_CONTENT.trust,
+}) {
   const rows = section.checklist ?? []
   const [openId, setOpenId] = useState(null)
 

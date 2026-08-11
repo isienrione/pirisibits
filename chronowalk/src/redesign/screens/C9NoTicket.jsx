@@ -1,8 +1,10 @@
 import { T, F } from "../tokens.js";
-import { colosseumNow, severusNow } from "../images.js";
+import { severusNow } from "../images.js";
 import { Eyebrow } from '../ui/index.js';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C9NoTicket({ onTakeWalk, onDismiss }) {
+  const t = useT()
   const accent = T.actI;
 
   return (
@@ -15,10 +17,10 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
           color: T.ink, fontWeight: 300,
           lineHeight: 1.2, marginBottom: 6,
         }}>
-          Sold out happens to the best of us.
+          {t('noTicket.title')}
         </h2>
         <p style={{ fontSize: 15, color: T.muted, fontStyle: "italic", marginBottom: 28 }}>
-          - and Rome planned for it.
+          {t('noTicket.subtitle')}
         </p>
         {/* Accent hairline under context */}
         <div style={{ width: "100%", height: 1, background: `${T.muted}28`, marginBottom: 28 }} />
@@ -29,13 +31,13 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
 
         {/* Offer block - no card box, just photography + content */}
         <div style={{ marginBottom: 20 }}>
-          <Eyebrow color={accent} hairline>AN ALTERNATIVE WALK</Eyebrow>
+          <Eyebrow color={accent} hairline>{t('noTicket.eyebrow')}</Eyebrow>
           <div style={{ marginTop: 14 }}>
             {/* Offer photo - 4:3 */}
             <div style={{ borderRadius: 14, overflow: "hidden", marginBottom: 16, aspectRatio: "4/3" }}>
               <img
                 src={severusNow}
-                alt="The Forum from the Railing"
+                alt={t('noTicket.routeAlt')}
                 style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }}
               />
             </div>
@@ -46,7 +48,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               color: T.ink, fontWeight: 300,
               lineHeight: 1.15, marginBottom: 6,
             }}>
-              The Forum from the Railing
+              {t('noTicket.routeName')}
             </h3>
 
             {/* Meta line */}
@@ -55,11 +57,11 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               marginBottom: 16,
               display: "flex", alignItems: "center", gap: 8,
             }}>
-              <span>2 stories</span>
+              <span>{t('noTicket.stories')}</span>
               <span style={{ color: `${T.muted}60` }}>·</span>
-              <span>free ground</span>
+              <span>{t('noTicket.freeGround')}</span>
               <span style={{ color: `${T.muted}60` }}>·</span>
-              <span>zero queue</span>
+              <span>{t('noTicket.noQueue')}</span>
             </p>
 
             {/* Mini-map hint - Via dei Fori Imperiali schematic */}
@@ -71,7 +73,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               marginBottom: 20,
             }}>
               <p style={{ fontSize: 10, color: T.muted, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 10 }}>
-                Route to viewpoint
+                {t('noTicket.route')}
               </p>
               <svg width="100%" height="90" viewBox="0 0 310 90">
                 {/* Via dei Fori Imperiali - main road */}
@@ -92,12 +94,12 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
 
                 {/* You marker */}
                 <circle cx="30" cy="44" r="5" fill={T.warmWhite} stroke={accent} strokeWidth="1.5" />
-                <text x="30" y="30" textAnchor="middle" style={{ fontSize: "8px", fill: T.muted }}>You</text>
+                <text x="30" y="30" textAnchor="middle" style={{ fontSize: "8px", fill: T.muted }}>{t('noTicket.you')}</text>
 
                 {/* Railing viewpoint pin */}
                 <circle cx="240" cy="44" r="5" fill={accent} />
                 <circle cx="240" cy="44" r="9" fill="none" stroke={accent} strokeWidth="1" opacity="0.4" />
-                <text x="240" y="30" textAnchor="middle" style={{ fontSize: "8px", fill: accent }}>Railing</text>
+                <text x="240" y="30" textAnchor="middle" style={{ fontSize: "8px", fill: accent }}>{t('noTicket.railing')}</text>
               </svg>
             </div>
 
@@ -114,7 +116,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               marginBottom: 16,
               boxShadow: `0 0 20px ${accent}40`,
             }}>
-              Take the railing walk
+              {t('noTicket.cta')}
             </button>
 
             {/* Footnote */}
@@ -124,7 +126,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
               fontStyle: "italic",
               marginBottom: 16,
             }}>
-              The full version will still be here tomorrow.
+              {t('noTicket.footnote')}
             </p>
 
             {onDismiss ? (
@@ -143,7 +145,7 @@ export default function C9NoTicket({ onTakeWalk, onDismiss }) {
                   cursor: "pointer",
                 }}
               >
-                Continue without the ticket
+                {t('noTicket.dismiss')}
               </button>
             ) : null}
           </div>

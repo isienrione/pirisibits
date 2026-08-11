@@ -1,6 +1,7 @@
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow, PulseRings } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Arrival - photo fills leftover space; cream card hugs copy + CTAs so there
@@ -11,13 +12,16 @@ export default function C4ArrivalMoment({
   accent = T.actI,
   title = 'The Colosseum',
   photo = colosseumNow,
-  description = 'Take a second. Look up.',
+  description = null,
   unlockNotice = false,
   onBeginListening,
   onTranscript,
   onViewImages,
   busy = false,
 }) {
+  const t = useT()
+  const resolvedDescription = description ?? t('arrival.fallback')
+
   return (
     <div className="cw-arrival-moment" data-testid="arrival-moment">
       <div className="cw-arrival-moment__photo">
@@ -38,14 +42,14 @@ export default function C4ArrivalMoment({
             aria-live="polite"
           >
             <span className="cw-arrival-moment__unlock-dot" style={{ background: accent }} />
-            <p style={{ fontFamily: F.body }}>Waypoint unlocked</p>
+            <p style={{ fontFamily: F.body }}>{t('arrival.unlocked')}</p>
           </div>
         ) : null}
       </div>
 
       <div className="cw-arrival-moment__card">
         <div className="cw-arrival-moment__copy">
-          <Eyebrow color={accent}>YOU&apos;VE ARRIVED</Eyebrow>
+          <Eyebrow color={accent}>{t('arrival.eyebrow')}</Eyebrow>
           <h1
             className="cw-arrival-moment__title"
             style={{ fontFamily: F.display, color: T.ink }}
@@ -53,7 +57,7 @@ export default function C4ArrivalMoment({
             {title}
           </h1>
           <p className="cw-arrival-moment__desc" style={{ color: T.muted }}>
-            {description}
+            {resolvedDescription}
           </p>
         </div>
 
@@ -70,7 +74,7 @@ export default function C4ArrivalMoment({
               boxShadow: `0 4px 20px ${accent}44`,
             }}
           >
-            Begin listening
+            {t('arrival.listen')}
           </button>
 
           {onTranscript ? (
@@ -85,7 +89,7 @@ export default function C4ArrivalMoment({
                 fontFamily: F.body,
               }}
             >
-              Read instead
+              {t('arrival.read')}
             </button>
           ) : null}
 
@@ -101,7 +105,7 @@ export default function C4ArrivalMoment({
                 fontFamily: F.body,
               }}
             >
-              View images only
+              {t('arrival.images')}
             </button>
           ) : null}
         </div>

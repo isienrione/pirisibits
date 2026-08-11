@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
@@ -6,12 +6,40 @@ import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import FreePantheonPreviewEmbed from './FreePantheonPreviewEmbed.jsx'
 import { getUnlockAllStopsCta } from '../landingData.js'
 import { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
-import { FREE_PANTHEON_COPY } from './acquisitionCopy.js'
 import { trackFreePantheonFullTourClicked } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+
+function useFreePantheonCopy(t) {
+  return useMemo(
+    () => ({
+      landingPageType: 'free_pantheon',
+      eyebrow: t('pantheon.free.eyebrow'),
+      h1: t('pantheon.free.h1'),
+      lead: t('pantheon.free.lead'),
+      interactTipEyebrow: t('pantheon.free.interactTipEyebrow'),
+      interactPrompt: t('pantheon.free.interactPrompt'),
+      secondaryCta: t('pantheon.free.secondaryCta'),
+      trustLine: t('pantheon.free.trustLine'),
+      includesCompact: [
+        t('pantheon.free.includes.0'),
+        t('pantheon.free.includes.1'),
+        t('pantheon.free.includes.2'),
+      ],
+      upgradeHeading: t('pantheon.free.upgradeHeading'),
+      upgradeLead: t('pantheon.free.upgradeLead'),
+      faq: [0, 1, 2, 3].map((index) => ({
+        q: t(`pantheon.free.faq.${index}.q`),
+        a: t(`pantheon.free.faq.${index}.a`),
+      })),
+    }),
+    [t],
+  )
+}
 
 export default function FreePantheonPage() {
-  const copy = FREE_PANTHEON_COPY
+  const { t } = useI18n()
+  const copy = useFreePantheonCopy(t)
   const unlockAllCta = getUnlockAllStopsCta()
   const navigate = useNavigate()
   const checkout = useAcquisitionCheckout({ source: 'free_pantheon' })
@@ -33,7 +61,7 @@ export default function FreePantheonPage() {
   return (
     <AcquisitionPageShell
       landingPageType={copy.landingPageType}
-      headerPrimaryCta="Get the full Rome tour"
+      headerPrimaryCta={t('pantheon.free.headerCta')}
       onHeaderPrimaryClick={() => goFullTour('header')}
     >
       <section className="cw-acq-hero cw-acq-hero--demo-first" aria-labelledby="free-pantheon-h1">
@@ -79,17 +107,17 @@ export default function FreePantheonPage() {
           </div>
           <p className="cw-acq-hero__trust" style={{ marginTop: '0.75rem' }}>
             <Link to="/how-it-works" className="cw-acq-link">
-              How it works
+              {t('pantheon.free.howItWorks')}
             </Link>
             {' · '}
             <Link to="/" className="cw-acq-link">
-              Full Rome tour
+              {t('pantheon.free.fullTour')}
             </Link>
           </p>
         </div>
       </section>
 
-      <AcquisitionFaq items={copy.faq} heading="Quick answers" />
+      <AcquisitionFaq items={copy.faq} heading={t('pantheon.free.faqHeading')} />
 
       <CheckoutConsentDialog
         open={Boolean(checkout.pendingTierId)}

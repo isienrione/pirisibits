@@ -1,4 +1,5 @@
 import { stripDirectorCues } from '../utils/transcriptContent.js'
+import { t } from '../i18n/t.js'
 
 /** Helpers for waypoint chapter entries (string filename or { file, title, transcript }). */
 
@@ -38,9 +39,10 @@ export function chapterTranscript(chapter) {
   return chapter.transcript ?? null
 }
 
-export function chapterAtIndex(chapters, index, fallbackTitle = 'Chapter') {
+export function chapterAtIndex(chapters, index, fallbackTitle = null) {
   const chapter = chapters?.[index]
-  const numberedFallback = `${fallbackTitle} ${index + 1}`
+  const baseTitle = fallbackTitle ?? t('chapter.fallback')
+  const numberedFallback = `${baseTitle} ${index + 1}`
   const result = {
     title: chapterTitle(chapter, numberedFallback) ?? numberedFallback,
     file: chapterFile(chapter),

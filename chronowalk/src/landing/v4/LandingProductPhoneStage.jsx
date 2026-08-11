@@ -1,29 +1,54 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { loadRomeManifest, getWaypoint } from '../../content/manifest.js'
 import { JOURNEY_PACE, PACE_OPTIONS } from '../../data/romePacing.js'
-
-/** Landing demo only: purchasable Rome walks (omit begin-flow custom itinerary). */
-const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURNEY_PACE.OWN)
+import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
 import B4PaceSelector from '../../redesign/screens/B4PaceSelector.jsx'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
+import WalkingCompanionScreen from '../../redesign/screens/WalkingCompanionScreen.jsx'
+import { spanishSteps } from '../../redesign/images.js'
+import { T } from '../../redesign/tokens.js'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoBeginTourScreen from './LandingDemoBeginTourScreen.jsx'
+import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
-function loadLandingDemoManifest() {
-  try {
-    return loadRomeManifest()
-  } catch (error) {
-    console.error('LandingProductPhoneStage: failed to load Rome manifest', error)
-    return null
-  }
-}
-
-const MANIFEST = loadLandingDemoManifest()
-const PANTHEON = MANIFEST ? getWaypoint(MANIFEST, 'w17') : null
+/** Landing demo only: purchasable Rome walks (omit begin-flow custom itinerary). */
+const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURNEY_PACE.OWN)
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 const noop = () => {}
+
+/** Spanish Steps approach used by the product walk companion demo. */
+const STEPS_DEMO = Object.freeze({
+  userPosition: { lat: 41.9049, lng: 12.4818 },
+  destination: { lat: 41.90597, lng: 12.48259 },
+  distanceM: 180,
+  directionsOverride: {
+    distanceM: 180,
+    durationSec: 120,
+    steps: [],
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [12.4818, 41.9049],
+        [12.48259, 41.90597],
+      ],
+    },
+  },
+})
+
+function useLandingDemoManifest() {
+  const { locale } = useI18n()
+  return useMemo(() => {
+    try {
+      return loadRomeManifest()
+    } catch (error) {
+      console.error('LandingProductPhoneStage: failed to load Rome manifest', error)
+      return null
+    }
+  }, [locale])
+}
 
 /** Stable begin-route screen for acquisition sequential demos. */
 const BeginTourScreen = memo(function BeginTourScreen() {
@@ -32,6 +57,7 @@ const BeginTourScreen = memo(function BeginTourScreen() {
 
 /** Stable choose screen - never remounts a different root. */
 const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
+  const { t } = useI18n()
   return (
     <B4PaceSelector
       options={LANDING_PACE_OPTIONS}
@@ -39,33 +65,32 @@ const ChooseScreen = memo(function ChooseScreen({ beat = 0 }) {
       onSelectPace={noop}
       onContinue={noop}
       showPrices
-      subtitle={
-        beat >= 1
-          ? 'Shorter walks for the part of Rome you have time for.'
-          : 'Roma Eterna for the complete 21-stop route.'
-      }
+      subtitle={beat >= 1 ? t('landing.demo.pace.short') : t('landing.demo.pace.eterna')}
     />
   )
 })
 
 /** Arrive - Threshold auto-reveal only while this chapter is the active scene. */
 const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
-  if (!MANIFEST || !PANTHEON) {
+  const { t } = useI18n()
+  const manifest = useLandingDemoManifest()
+  const pantheon = manifest ? getWaypoint(manifest, 'w17') : null
+  if (!manifest || !pantheon) {
     return <ChooseScreen beat={0} />
   }
   return (
     <A2FreePreviewStory
-      manifest={MANIFEST}
-      waypoint={PANTHEON}
+      manifest={manifest}
+      waypoint={pantheon}
       waypointId="w17"
-      eyebrowLabel="FREE COMPLETE STOP"
+      eyebrowLabel={t('pantheon.preview.freeComplete')}
       narrationPlaying={false}
       audioAvailable
       currentTime={beat >= 2 ? 42 : 14}
       duration={240}
       storyEnded={false}
       initialTab="audio"
-      continueLabel="See all 21 stops"
+      continueLabel={t('pantheon.preview.continueAll')}
       demoAutoReveal={active}
       suppressAutoRevealInvite={!active}
       onTogglePlay={noop}
@@ -81,22 +106,25 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
 
 /** Listen - narration / transcript. Stable tree (no tab remount thrash). */
 const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
-  if (!MANIFEST || !PANTHEON) {
+  const { t } = useI18n()
+  const manifest = useLandingDemoManifest()
+  const pantheon = manifest ? getWaypoint(manifest, 'w17') : null
+  if (!manifest || !pantheon) {
     return <ChooseScreen beat={0} />
   }
   return (
     <A2FreePreviewStory
-      manifest={MANIFEST}
-      waypoint={PANTHEON}
+      manifest={manifest}
+      waypoint={pantheon}
       waypointId="w17"
-      eyebrowLabel="FREE COMPLETE STOP"
+      eyebrowLabel={t('pantheon.preview.freeComplete')}
       narrationPlaying={false}
       audioAvailable
       currentTime={beat === 0 ? 48 : beat === 1 ? 96 : 150}
       duration={240}
       storyEnded={beat >= 2}
       initialTab={beat >= 1 ? 'transcript' : 'audio'}
-      continueLabel="See all 21 stops"
+      continueLabel={t('pantheon.preview.continueAll')}
       suppressAutoRevealInvite
       onTogglePlay={noop}
       onSkipBack={noop}
@@ -110,17 +138,29 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk - static product screen matching the Spanish Steps walking companion.
- * Uses a committed full-phone screenshot so the map/route match the real app look.
+ * Walk - real WalkingCompanionScreen (same product UI as the live app),
+ * with the Spanish Steps basemap used for landing demos.
  */
 const WalkScreen = memo(function WalkScreen() {
+  const { t } = useI18n()
   return (
     <div className="cw-v4-walk-static" data-testid="landing-demo-walk-static">
-      <img
-        src="/landing/phone-screens/walk-spanish-steps-screen.png"
-        alt="Walking to Spanish Steps in ChronoWalk"
-        decoding="async"
-        draggable={false}
+      <WalkingCompanionScreen
+        accent={T.actV}
+        title={t('mapDemo.stop.steps')}
+        photo={spanishSteps}
+        stopKey="landing-demo-spanish-steps"
+        map={<LandingDemoWalkMap />}
+        forcedRouteView="map"
+        userPosition={STEPS_DEMO.userPosition}
+        destination={STEPS_DEMO.destination}
+        distanceM={STEPS_DEMO.distanceM}
+        estimatedDistanceM={STEPS_DEMO.distanceM}
+        directionsOverride={STEPS_DEMO.directionsOverride}
+        locationStatus={LOCATION_STATUS.GRANTED}
+        onContinue={noop}
+        onOpenSettings={noop}
+        testId="landing-demo-walk-companion"
       />
     </div>
   )

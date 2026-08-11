@@ -6,6 +6,7 @@ import { Eyebrow } from '../ui/index.js'
 import { buildPreviewTourActs, summarizePreviewTour } from '../../content/myTourPlan.js'
 import { getTourProductTruth } from '../../content/tourProductTruth.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 const ACT_COLOR = {
   act1: T.actI,
@@ -20,6 +21,10 @@ const ACT_COLOR = {
 const SEAM_X = 38
 const NODE_R = 7
 
+function isEncoreAct(act) {
+  return act?.id === 'encore' || act?.numeral === 'Encore' || act?.numeral === 'Bis'
+}
+
 /**
  * Post-preview ghost tour - full Rome itinerary visible, one sample stop unlocked.
  */
@@ -29,8 +34,9 @@ export default function A2PreviewGhostTour({
   previewStopTitle = 'The Pantheon',
   onUnlock,
   onBack,
-  backLabel = 'Back to Home',
+  backLabel,
 }) {
+  const { t } = useI18n()
   const acts = useMemo(
     () => (manifest ? buildPreviewTourActs(manifest, previewWaypointId) : []),
     [manifest, previewWaypointId],
@@ -38,6 +44,11 @@ export default function A2PreviewGhostTour({
   const progress = useMemo(() => summarizePreviewTour(acts), [acts])
   const productTruth = useMemo(() => (manifest ? getTourProductTruth(manifest) : null), [manifest])
   const [expandedActs, setExpandedActs] = useState(() => new Set())
+  const resolvedBack = backLabel ?? t('tour.ghost.backHome')
+  const placeCount = productTruth?.publicPlaceCount ?? progress.total
+  const unlockLabel = productTruth?.publicPlaceCount
+    ? t('tour.ghost.unlockAllCount', { count: productTruth.publicPlaceCount })
+    : t('tour.ghost.unlockAllCount', { count: progress.total })
 
   useEffect(() => {
     if (acts.length > 0) {
@@ -68,7 +79,7 @@ export default function A2PreviewGhostTour({
     >
       <div style={{ flexShrink: 0, padding: 'max(18px, env(safe-area-inset-top)) 24px 12px' }}>
         <ChronoWalkLogo className="cw-preview-ghost__logo" width={240} variant="light" hideTagline />
-        <Eyebrow color={T.gold}>YOUR TOUR</Eyebrow>
+        <Eyebrow color={T.gold}>{t('tour.yourTour')}</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -79,10 +90,10 @@ export default function A2PreviewGhostTour({
             lineHeight: 1.05,
           }}
         >
-          Rome on foot
+          {t('tour.romeOnFoot')}
         </h1>
         <p style={{ margin: 0, fontSize: 14, color: T.muted, lineHeight: 1.55 }}>
-          {previewStopTitle} is yours to try. {progress.locked} more places wait behind the full pass.
+          {t('tour.ghost.tryLead', { title: previewStopTitle, count: progress.locked })}
         </p>
       </div>
 
@@ -103,7 +114,9 @@ export default function A2PreviewGhostTour({
         <div style={{ paddingBottom: 16 }}>
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
-            const actLabel = act.numeral === 'Encore' ? 'ENCORE' : `ACT ${act.numeral}`
+            const actLabel = isEncoreAct(act)
+              ? t('journeyHome.encore')
+              : t('journeyHome.act', { numeral: act.numeral })
             const photo = photoForWaypoint(act.photoStop)
             const expanded = expandedActs.has(act.id)
 
@@ -204,7 +217,7 @@ export default function A2PreviewGhostTour({
                   <button
                     type="button"
                     onClick={() => toggleActExpanded(act.id)}
-                    aria-label={expanded ? 'Collapse act' : 'Expand act'}
+                    aria-label={expanded ? t('tour.ghost.collapse') : t('tour.ghost.expand')}
                     style={{
                       background: 'none',
                       border: 'none',
@@ -289,7 +302,7 @@ export default function A2PreviewGhostTour({
                           </div>
                           {isSample ? (
                             <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>
-                              SAMPLE
+                              {t('tour.ghost.sample')}
                             </span>
                           ) : (
                             <span
@@ -303,7 +316,7 @@ export default function A2PreviewGhostTour({
                               }}
                             >
                               <Lock size={12} aria-hidden />
-                              LOCKED
+                              {t('tour.ghost.locked')}
                             </span>
                           )}
                         </button>
@@ -325,8 +338,7 @@ export default function A2PreviewGhostTour({
         }}
       >
         <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.65, margin: '0 0 14px', fontStyle: 'italic' }}>
-          That&apos;s one room of {productTruth?.publicPlaceCount ?? progress.total}. The rest of Rome is waiting
-          outside.
+          {t('tour.ghost.oneRoom', { count: placeCount })}
         </p>
         <button
           type="button"
@@ -344,7 +356,7 @@ export default function A2PreviewGhostTour({
             cursor: 'pointer',
           }}
         >
-          Unlock all {productTruth?.publicPlacesLabel ?? `${progress.total} places`}
+          {unlockLabel}
         </button>
         {onBack ? (
           <button
@@ -361,7 +373,7 @@ export default function A2PreviewGhostTour({
               fontFamily: F.body,
             }}
           >
-            {backLabel}
+            {resolvedBack}
           </button>
         ) : null}
       </div>

@@ -3,7 +3,8 @@
  * Canonical + robots remain in siteRoutes.js (DocumentSeo).
  */
 
-import { LANDING_DOCUMENT } from '../landing/landingSeo.js'
+import { LANDING_DOCUMENT, LANDING_DOCUMENT_ES } from '../landing/landingSeo.js'
+import { LOCALES, normalizeLocale } from '../i18n/locales.js'
 import { PRODUCTION_ORIGIN, toAbsoluteUrl } from './siteRoutes.js'
 
 /** @typedef {{ title: string, description: string, ogImage: string, ogImageAlt?: string }} PageMeta */
@@ -46,11 +47,91 @@ export const PAGE_META_BY_PATH = Object.freeze({
     ogImage: DEFAULT_OG_IMAGE,
     ogImageAlt: 'ChronoWalk',
   }),
+  '/legal/privacy': Object.freeze({
+    title: 'Privacy Policy · ChronoWalk',
+    description:
+      'How ChronoWalk collects, uses, shares, and protects personal data for the website and walking PWA.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/refund': Object.freeze({
+    title: 'Refund Policy · ChronoWalk',
+    description:
+      'When ChronoWalk refunds are available for digital walking experiences, and how to request one via Paddle.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/terms': Object.freeze({
+    title: 'Terms of Service · ChronoWalk',
+    description:
+      'Terms governing access to ChronoWalk digital walking experiences, payments via Paddle, and your licence.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
 })
 
-export function getPageMeta(pathname) {
+export const PAGE_META_ES_BY_PATH = Object.freeze({
+  '/': Object.freeze({
+    title: LANDING_DOCUMENT_ES.title,
+    description: LANDING_DOCUMENT_ES.description,
+    ogImage: `${PRODUCTION_ORIGIN}/landing/cinematic/hero/desktop.webp`,
+    ogImageAlt: 'Experiencia autoguiada de ChronoWalk por Roma',
+  }),
+  '/free-pantheon': Object.freeze({
+    title: 'Experiencia gratis con audioguía del Panteón | ChronoWalk Roma',
+    description:
+      'Prueba gratis la parte 1 del Panteón: el capítulo exterior completo con audio inmersivo y reconstrucción Antes/Ahora. Se abre en el navegador y no requiere pago.',
+    ogImage: `${PRODUCTION_ORIGIN}/landing/real-moment/pantheon.jpg`,
+    ogImageAlt: 'Exterior del Panteón de Roma',
+  }),
+  '/ancient-rome': Object.freeze({
+    title: 'Recorrido autoguiado con audio por la Roma antigua | ChronoWalk',
+    description:
+      'Explora el Coliseo, el Foro Romano y el Palatino con audio inmersivo, rutas flexibles y reconstrucciones visuales.',
+    ogImage: `${PRODUCTION_ORIGIN}/landing/real-moment/forum.jpg`,
+    ogImageAlt: 'Ruinas de la Roma antigua con ChronoWalk',
+  }),
+  '/how-it-works': Object.freeze({
+    title: 'Cómo funciona ChronoWalk | Audioguía autoguiada de Roma',
+    description:
+      'Descubre cómo ChronoWalk se abre en tu navegador, te guía por Roma, reproduce audio inmersivo y revela reconstrucciones Antes/Ahora.',
+    ogImage: `${PRODUCTION_ORIGIN}/landing/hero-slides/then-now.png`,
+    ogImageAlt: 'Reconstrucción Antes/Ahora de ChronoWalk en un teléfono',
+  }),
+  '/contact': Object.freeze({
+    title: 'Contacto · ChronoWalk',
+    description:
+      'Contacta con el soporte de ChronoWalk para consultas sobre compras, acceso o reembolsos.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/privacy': Object.freeze({
+    title: 'Política de privacidad · ChronoWalk',
+    description:
+      'Cómo ChronoWalk recoge, usa, comparte y protege los datos personales del sitio y la PWA de caminata.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/refund': Object.freeze({
+    title: 'Política de reembolsos · ChronoWalk',
+    description:
+      'Cuándo hay reembolsos disponibles en ChronoWalk para experiencias digitales a pie, y cómo solicitarlos a través de Paddle.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+  '/legal/terms': Object.freeze({
+    title: 'Términos del servicio · ChronoWalk',
+    description:
+      'Términos que rigen el acceso a las experiencias digitales de ChronoWalk, los pagos con Paddle y tu licencia.',
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageAlt: 'ChronoWalk',
+  }),
+})
+
+export function getPageMeta(pathname, locale = LOCALES.EN) {
   const path = String(pathname || '').split('?')[0].split('#')[0] || '/'
-  return PAGE_META_BY_PATH[path] ?? null
+  const pages = normalizeLocale(locale) === LOCALES.ES ? PAGE_META_ES_BY_PATH : PAGE_META_BY_PATH
+  return pages[path] ?? null
 }
 
 export function absolutePageUrl(pathname) {

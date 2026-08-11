@@ -38,6 +38,8 @@
     "check:content:local": "node scripts/check-content.mjs --skip-remote",
     "check:content:strict": "node scripts/check-content.mjs --require-full-durations",
     "check:content:local:strict": "node scripts/check-content.mjs --skip-remote --require-full-durations",
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "check:i18n:audio": "node scripts/check-i18n.mjs --require-audio-files",
     "check:sensitive-data": "node scripts/check-no-sensitive-data.mjs",
     "generate:commerce": "node scripts/generate-commerce-consumers.mjs",
     "check:commerce-drift": "node scripts/generate-commerce-consumers.mjs --check",

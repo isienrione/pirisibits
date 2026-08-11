@@ -4,6 +4,7 @@ import { parseAccessToken, validateAccessToken } from '../../lib/access'
 import { applyPurchaseUnlock } from '../../lib/pendingPurchase.js'
 import { requestAccessEmail } from '../../lib/requestAccessEmail.js'
 import { track, TRACK_EVENTS } from '../../lib/track'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 function AccessShell({ children }) {
   return (
@@ -44,6 +45,7 @@ function StatusMessage({ title, body, tone = 'muted' }) {
 }
 
 export default function AccessScreen({ onValidated, forceValidateToken = null }) {
+  const t = useT()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const token = forceValidateToken || parseAccessToken(`?${searchParams.toString()}`)
@@ -137,7 +139,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
           color: 'var(--muted-warm)',
         }}
       >
-        Your ticket
+        {t('access.eyebrow')}
       </p>
       <h1
         style={{
@@ -148,29 +150,29 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
           lineHeight: 1.15,
         }}
       >
-        Welcome back, traveler.
+        {t('access.title')}
       </h1>
 
       {status === 'validating' ? (
         <StatusMessage
-          title="Confirming your purchase…"
-          body="One moment while we unlock Rome on this device."
+          title={t('access.validating.title')}
+          body={t('access.validating.body')}
         />
       ) : null}
 
       {status === 'success' ? (
         <StatusMessage
           tone="success"
-          title="Rome is ready."
-          body="Opening your tour…"
+          title={t('access.success.title')}
+          body={t('access.success.body')}
         />
       ) : null}
 
       {status === 'error' ? (
         <StatusMessage
           tone="error"
-          title="This link is not valid."
-          body="Open the access link from your purchase confirmation email, or paste your token below."
+          title={t('access.error.title')}
+          body={t('access.error.body')}
         />
       ) : null}
 
@@ -185,8 +187,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 color: 'var(--muted-warm)',
               }}
             >
-              After purchase, open the personal link from your email on this phone - or paste it
-              below. This screen is for returning buyers only, not checkout.
+              {t('access.idle.body')}
             </p>
           ) : null}
 
@@ -202,7 +203,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 color: 'var(--muted-warm)',
               }}
             >
-              Enter the access code from your email
+              {t('access.code.label')}
             </label>
             <input
               id="access-token"
@@ -210,7 +211,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
               type="text"
               value={manualToken}
               onChange={(event) => setManualToken(event.target.value)}
-              placeholder="Paste the code you received here"
+              placeholder={t('access.code.placeholder')}
               autoComplete="off"
               style={{
                 marginTop: 10,
@@ -238,7 +239,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 cursor: 'pointer',
               }}
             >
-              Enter Rome
+              {t('access.enterRome')}
             </button>
           </form>
 
@@ -252,7 +253,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 fontWeight: 500,
               }}
             >
-              Didn&apos;t get your access email?
+              {t('access.resend.title')}
             </h2>
             <p
               style={{
@@ -262,9 +263,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                 color: 'var(--muted-warm)',
               }}
             >
-              Use the same email as your Paddle receipt and the order id that starts with{' '}
-              <code style={{ color: 'var(--warm-white)' }}>txn_</code>. Check Junk / Other on
-              Microsoft addresses.
+              {t('access.resend.body')}
             </p>
             <form onSubmit={handleResendSubmit} style={{ marginTop: 20 }}>
               <label
@@ -278,7 +277,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                   color: 'var(--muted-warm)',
                 }}
               >
-                Purchase email
+                {t('access.resend.email')}
               </label>
               <input
                 id="access-resend-email"
@@ -312,7 +311,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                   color: 'var(--muted-warm)',
                 }}
               >
-                Paddle order id
+                {t('access.resend.order')}
               </label>
               <input
                 id="access-resend-order"
@@ -351,7 +350,7 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
                   opacity: resendBusy ? 0.7 : 1,
                 }}
               >
-                {resendBusy ? 'Sending…' : 'Email me a fresh access link'}
+                {resendBusy ? t('access.resend.sending') : t('access.resend.submit')}
               </button>
             </form>
             {resendMessage ? (
@@ -372,21 +371,21 @@ export default function AccessScreen({ onValidated, forceValidateToken = null })
       ) : null}
 
       <p style={{ marginTop: 28, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
-        Joining a partner or family?{' '}
+        {t('access.partner.prompt')}{' '}
         <Link to="/invite" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
-          Enter an invite code
+          {t('access.partner.action')}
         </Link>
       </p>
       <p style={{ marginTop: 12, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
-        Haven&apos;t purchased yet?{' '}
+        {t('access.purchase.prompt')}{' '}
         <Link to="/#pricing" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
-          See Rome packages
+          {t('access.purchase.action')}
         </Link>
       </p>
       <p style={{ marginTop: 12, fontSize: 'var(--fs-meta)', color: 'var(--muted-warm)' }}>
-        Trying the free sample?{' '}
+        {t('access.preview.prompt')}{' '}
         <Link to="/preview" style={{ color: 'var(--ember)', textDecoration: 'none' }}>
-          Hear the Pantheon
+          {t('access.preview.action')}
         </Link>
       </p>
     </AccessShell>

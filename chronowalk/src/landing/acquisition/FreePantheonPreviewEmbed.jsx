@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../../redesign/screens/A2PreviewGhostTour.jsx'
 import LandingProductPhoneFrame from '../v4/LandingProductPhoneFrame.jsx'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 import {
   trackFreePantheonDemoInteracted,
   trackFreePantheonStartClicked,
@@ -10,10 +11,12 @@ import {
 import { usePantheonPreviewController } from './usePantheonPreviewController.js'
 
 function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack }) {
+  const { t } = useI18n()
+
   if (preview.loading || !preview.waypoint) {
     return (
       <div className="cw-acq-preview-phone__loading" aria-busy="true">
-        Loading Pantheon preview…
+        {t('pantheon.preview.loading')}
       </div>
     )
   }
@@ -23,14 +26,14 @@ function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack })
       manifest={preview.manifest}
       waypoint={preview.waypoint}
       waypointId={preview.waypoint?.id ?? 'w17'}
-      eyebrowLabel="FREE · PANTHEON PART 1 OF 4 · EXTERIOR"
+      eyebrowLabel={t('pantheon.free.eyebrow')}
       narrationPlaying={preview.playing}
       audioAvailable={preview.audioAvailable}
       currentTime={preview.currentTime}
       duration={preview.duration}
       storyEnded={preview.storyEnded}
       chapterCount={4}
-      continueLabel="See the full tour →"
+      continueLabel={t('pantheon.preview.continue')}
       onTogglePlay={() => {
         if (!preview.started) onRequestImmersive('phone_play')
         else preview.togglePlay()
@@ -56,13 +59,16 @@ function PantheonStoryPlayer({ preview, immersive, onRequestImmersive, onBack })
 export default function FreePantheonPreviewEmbed({
   onUnlockFullTour,
   includesCompact = [],
-  tipEyebrow = 'This phone is the demo',
-  tipPrompt = 'Interact with the phone screen and enjoy a piece of ChronoWalk',
+  tipEyebrow,
+  tipPrompt,
 }) {
+  const { t } = useI18n()
   const [immersive, setImmersive] = useState(false)
   const [tipDismissed, setTipDismissed] = useState(false)
   const preview = usePantheonPreviewController({ analyticsSource: 'free_pantheon' })
   const showTip = !immersive && !tipDismissed && !preview.started
+  const resolvedTipEyebrow = tipEyebrow ?? t('pantheon.free.interactTipEyebrow')
+  const resolvedTipPrompt = tipPrompt ?? t('pantheon.free.interactPrompt')
 
   const openImmersive = useCallback(
     (section = 'demo') => {
@@ -98,7 +104,7 @@ export default function FreePantheonPreviewEmbed({
     <section
       id="try-pantheon"
       className="cw-acq-preview cw-acq-preview--tight"
-      aria-label="Pantheon Part 1 exterior preview"
+      aria-label={t('pantheon.preview.aria.section')}
     >
       {!immersive ? (
         <div className="cw-acq-preview__phone-wrap">
@@ -110,12 +116,12 @@ export default function FreePantheonPreviewEmbed({
                 aria-live="polite"
                 data-testid="pantheon-phone-tip"
               >
-                <p className="cw-acq-phone-tip__eyebrow">{tipEyebrow}</p>
-                <p className="cw-acq-phone-tip__text">{tipPrompt}</p>
+                <p className="cw-acq-phone-tip__eyebrow">{resolvedTipEyebrow}</p>
+                <p className="cw-acq-phone-tip__text">{resolvedTipPrompt}</p>
                 <span className="cw-acq-phone-tip__caret" aria-hidden="true" />
               </aside>
             ) : null}
-            <LandingProductPhoneFrame label="ChronoWalk Pantheon exterior preview">
+            <LandingProductPhoneFrame label={t('pantheon.preview.aria.phone')}>
               <div className="cw-acq-preview-phone__app">
                 <PantheonStoryPlayer
                   preview={preview}
@@ -126,7 +132,7 @@ export default function FreePantheonPreviewEmbed({
             </LandingProductPhoneFrame>
           </div>
           {includesCompact.length ? (
-            <ul className="cw-acq-preview__chips" aria-label="What this free chapter includes">
+            <ul className="cw-acq-preview__chips" aria-label={t('pantheon.preview.aria.includes')}>
               {includesCompact.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -141,14 +147,14 @@ export default function FreePantheonPreviewEmbed({
               className="cw-acq-preview-immersive"
               role="dialog"
               aria-modal="true"
-              aria-label="Pantheon Part 1 exterior experience"
+              aria-label={t('pantheon.preview.aria.dialog')}
             >
               <button
                 type="button"
                 className="cw-acq-preview-immersive__back"
                 onClick={closeImmersive}
               >
-                ← Back to free Pantheon page
+                {t('pantheon.preview.backToPage')}
               </button>
               <div className="cw-acq-preview-immersive__shell redesign-app-shell">
                 {preview.phase === 'story' ? (
@@ -162,8 +168,8 @@ export default function FreePantheonPreviewEmbed({
                   <A2PreviewGhostTour
                     manifest={preview.manifest}
                     previewWaypointId={preview.waypoint?.id ?? 'w17'}
-                    previewStopTitle={preview.waypoint?.title ?? 'The Pantheon'}
-                    backLabel="Back to free Pantheon page"
+                    previewStopTitle={preview.waypoint?.title ?? t('mapDemo.stop.pantheon')}
+                    backLabel={t('pantheon.preview.backToPage')}
                     onUnlock={() => {
                       closeImmersive()
                       onUnlockFullTour?.()

@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom'
 import CheckoutConsentDialog from '../../components/legal/CheckoutConsentDialog.jsx'
 import { applyLaunchOfferToOffer, isLaunchOfferActive } from '../../lib/launchOffer.js'
 import LandingThenNowProof from '../v4/LandingThenNowProof.jsx'
-import { getUnlockAllStopsCta, ROME_TIERS } from '../landingData.js'
 import OfferPriceDisplay, { LaunchOfferUnlockCtaLabel } from '../OfferPriceDisplay.jsx'
 import { getLandingTierRouteStops } from '../landingTierRoutes.js'
 import { getLandingTierStats } from '../landingTierStats.js'
 import AcquisitionFaq from './AcquisitionFaq.jsx'
 import AcquisitionPageShell from './AcquisitionPageShell.jsx'
 import {
-  ANCIENT_ROME_COPY,
-  ANCIENT_ROME_FEATURED_STOP_LABELS,
-} from './acquisitionCopy.js'
+  getLocalizedAcquisition,
+  getLocalizedLanding,
+  getLocalizedUnlockAllStopsCta,
+  localizeLandingOffers,
+} from '../getLocalizedLanding.js'
 import {
   trackAncientRomeCheckoutStarted,
   trackAncientRomeFullTourClicked,
@@ -20,6 +21,7 @@ import {
   trackAncientRomeThenNowStarted,
 } from './acquisitionAnalytics.js'
 import { useAcquisitionCheckout } from './useAcquisitionCheckout.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 /** Avoid em/en dashes in acquisition-facing stats copy. */
 function withoutDashes(label) {
@@ -27,22 +29,38 @@ function withoutDashes(label) {
 }
 
 export default function AncientRomePage() {
-  const copy = ANCIENT_ROME_COPY
+  const { locale } = useI18n()
+  const localized = useMemo(() => getLocalizedAcquisition(locale), [locale])
+  const landing = useMemo(() => getLocalizedLanding(locale), [locale])
+  const copy = localized.ANCIENT_ROME_COPY
+  const tiers = landing.ROME_TIERS
   const antica = useMemo(
-    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-essential')),
-    [],
+    () =>
+      localizeLandingOffers(
+        [applyLaunchOfferToOffer(tiers.find((tier) => tier.id === 'rome-essential'))],
+        locale,
+      )[0],
+    [locale, tiers],
   )
   const eterna = useMemo(
-    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-complete')),
-    [],
+    () =>
+      localizeLandingOffers(
+        [applyLaunchOfferToOffer(tiers.find((tier) => tier.id === 'rome-complete'))],
+        locale,
+      )[0],
+    [locale, tiers],
   )
   const historica = useMemo(
-    () => applyLaunchOfferToOffer(ROME_TIERS.find((tier) => tier.id === 'rome-central')),
-    [],
+    () =>
+      localizeLandingOffers(
+        [applyLaunchOfferToOffer(tiers.find((tier) => tier.id === 'rome-central'))],
+        locale,
+      )[0],
+    [locale, tiers],
   )
-  const unlockAllCta = getUnlockAllStopsCta()
+  const unlockAllCta = getLocalizedUnlockAllStopsCta(locale)
   const eternaValueLine = isLaunchOfferActive()
-    ? 'Introductory pricing for early walkers.'
+    ? copy.introductoryPricing
     : copy.eternaValueLine
   const anticaStats = useMemo(() => getLandingTierStats('rome-essential'), [])
   const historicaStats = useMemo(() => getLandingTierStats('rome-central'), [])
@@ -74,7 +92,7 @@ export default function AncientRomePage() {
   return (
     <AcquisitionPageShell
       landingPageType={copy.landingPageType}
-      headerPrimaryCta="Get the full Rome tour"
+      headerPrimaryCta={copy.headerPrimaryCta}
       onHeaderPrimaryClick={() => chooseEterna('header')}
     >
       <section className="cw-acq-hero" aria-labelledby="ancient-rome-h1">
@@ -138,7 +156,7 @@ export default function AncientRomePage() {
           <p className="cw-v4-section-lead">
             {copy.stopsLead}{' '}
             <strong>
-              {anticaStats.stopCount} stops
+              {anticaStats.stopCount} {copy.stopsSuffix}
               {anticaStats.routeTimeLabel
                 ? ` · ${withoutDashes(anticaStats.routeTimeLabel)}`
                 : ''}
@@ -147,7 +165,7 @@ export default function AncientRomePage() {
             .
           </p>
           <ul className="cw-acq-stops">
-            {ANCIENT_ROME_FEATURED_STOP_LABELS.map((label) => (
+            {localized.ANCIENT_ROME_FEATURED_STOP_LABELS.map((label) => (
               <li key={label}>{label}</li>
             ))}
           </ul>
@@ -160,8 +178,7 @@ export default function AncientRomePage() {
               {copy.seeCompleteRoute}
             </Link>
             <span className="cw-acq-hero__note" style={{ display: 'block', marginTop: '0.5rem' }}>
-              Route includes {anticaStops.length} verified stops from the current Roma Antica
-              product data.
+              {anticaStops.length} {copy.verifiedStops}
             </span>
           </p>
         </div>
@@ -179,7 +196,7 @@ export default function AncientRomePage() {
           className="cw-acq-demo-slot"
           onPointerDownCapture={() => trackAncientRomeThenNowStarted('hold')}
         >
-          <LandingThenNowProof />
+          <LandingThenNowProof section={landing.LANDING_CONTENT.thenNowProof} />
         </div>
       </section>
 
@@ -198,7 +215,7 @@ export default function AncientRomePage() {
                 {antica?.name ?? 'Roma Antica'}
               </h3>
               <p className="cw-acq-choice__meta">
-                {anticaStats.stopCount} stops · Focused Ancient Rome route
+                {anticaStats.stopCount} {copy.stopsSuffix} · {copy.ancientFocused}
               </p>
               <OfferPriceDisplay
                 as="p"
@@ -230,7 +247,7 @@ export default function AncientRomePage() {
                   {eterna?.name ?? 'Roma Eterna'}
                 </h3>
                 <p className="cw-acq-choice__meta">
-                  21 stops · Includes Ancient Rome plus the wider city story
+                  {copy.eternaMeta}
                 </p>
                 <OfferPriceDisplay
                   as="p"
@@ -262,7 +279,7 @@ export default function AncientRomePage() {
                   {historica?.name ?? 'Roma Historica'}
                 </h3>
                 <p className="cw-acq-choice__meta">
-                  {historicaStats.stopCount} stops · Centro Storico and Pantheon deep dive
+                  {historicaStats.stopCount} {copy.stopsSuffix} · {copy.historicaMeta}
                 </p>
                 <OfferPriceDisplay
                   as="p"
@@ -309,21 +326,21 @@ export default function AncientRomePage() {
 
           <p className="cw-acq-hero__trust" style={{ marginTop: '1.5rem' }}>
             <Link to="/free-pantheon" className="cw-acq-link">
-              Try the Pantheon free
+              {copy.freePantheon}
             </Link>
             {' · '}
             <Link to="/how-it-works" className="cw-acq-link">
-              How it works
+              {copy.howItWorks}
             </Link>
             {' · '}
             <Link to="/" className="cw-acq-link">
-              Full Rome tour
+              {copy.fullRomeTour}
             </Link>
           </p>
         </div>
       </section>
 
-      <AcquisitionFaq items={copy.faq} heading="Quick answers" />
+      <AcquisitionFaq items={copy.faq} heading={copy.quickAnswers} />
 
       <CheckoutConsentDialog
         open={Boolean(checkout.pendingTierId)}

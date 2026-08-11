@@ -3,6 +3,7 @@ import { buildJournalTimeline } from './journalTimeline.js'
 import { getWaypoint } from './manifest.js'
 import { formatDistanceToNext, formatWalkingTime } from './journeyProgress.js'
 import { getTourWaypointIds } from './myTourPlan.js'
+import { t } from '../i18n/t.js'
 
 function legMeta(fromWaypoint, toWaypoint) {
   if (!fromWaypoint?.geofence || !toWaypoint?.geofence) return null
@@ -97,31 +98,34 @@ export function summarizeTourRoadmap(stops) {
 
 /** Dynamic headline - e.g. "You've walked the Forum - the Palatine is next." */
 export function tourRoadmapHeadline(stops) {
-  if (!stops.length) return 'Your Rome route awaits.'
+  if (!stops.length) return t('tour.headline.await')
 
   const completed = stops.filter((s) => s.status === 'completed')
   const next = stops.find((s) => s.status === 'current') ?? stops.find((s) => s.status === 'upcoming')
 
   if (completed.length === 0 && next) {
-    return `${next.title} is first on your path.`
+    return t('tour.headline.first', { title: next.title })
   }
 
   if (completed.length === 0) {
-    return 'Your Rome route awaits.'
+    return t('tour.headline.await')
   }
 
   if (!next) {
     if (completed.length === 1) {
-      return `You've reached ${completed[0].title}. The city is yours.`
+      return t('tour.headline.reached', { title: completed[0].title })
     }
     const last = completed[completed.length - 1]?.title
-    return `You've walked through ${last}. The full route is complete.`
+    return t('tour.headline.complete', { title: last })
   }
 
   const recent =
     completed.length === 1
       ? completed[0].title
-      : `${completed[completed.length - 2]?.title} and ${completed[completed.length - 1]?.title}`
+      : t('letter.listAnd', {
+          a: completed[completed.length - 2]?.title,
+          b: completed[completed.length - 1]?.title,
+        })
 
-  return `You've walked ${recent} - ${next.title} is next.`
+  return t('tour.headline.progress', { recent, next: next.title })
 }

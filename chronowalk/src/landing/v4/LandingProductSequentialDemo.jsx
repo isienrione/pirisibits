@@ -34,9 +34,9 @@ export function resolveSequentialChapters(sourceChapters = []) {
  * scrolled normally (no sticky scrub / jack scroll).
  */
 export default function LandingProductSequentialDemo({
+  section = LANDING_CONTENT['product-demo'],
   testId = 'how-it-works-sequential-demo',
 } = {}) {
-  const section = LANDING_CONTENT['product-demo']
   const chapters = resolveSequentialChapters(section?.chapters ?? [])
 
   return (
@@ -58,7 +58,7 @@ export default function LandingProductSequentialDemo({
               </h3>
               <p className="cw-acq-seq__body">{withoutDashes(chapter.body)}</p>
               {chapter.beats?.length ? (
-                <ul className="cw-acq-seq__beats" aria-label={`${chapter.title} highlights`}>
+                <ul className="cw-acq-seq__beats" aria-label={chapter.title}>
                   {chapter.beats.map((beat) => (
                     <li key={beat}>{withoutDashes(beat)}</li>
                   ))}

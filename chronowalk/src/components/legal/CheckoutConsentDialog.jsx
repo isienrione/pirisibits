@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { TAX_INCLUSIVE_NOTE } from './immediateAccessConsent.js'
 import OfferPriceDisplay from '../../landing/OfferPriceDisplay.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 import './legal.css'
 
 function CheckoutConsentDialogPanel({
@@ -15,6 +15,7 @@ function CheckoutConsentDialogPanel({
   onConfirm,
   onCancel,
 }) {
+  const t = useT()
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -43,9 +44,11 @@ function CheckoutConsentDialogPanel({
         aria-modal="true"
         aria-labelledby="checkout-consent-title"
       >
-        <p className="cw-consent-dialog__eyebrow">Secure checkout</p>
+        <p className="cw-consent-dialog__eyebrow">{t('checkout.consent.eyebrow')}</p>
         <h2 id="checkout-consent-title" className="cw-consent-dialog__title">
-          {tierLabel ? `Continue with ${tierLabel}` : 'Continue to checkout'}
+          {tierLabel
+            ? t('checkout.consent.titleTier', { tier: tierLabel })
+            : t('checkout.consent.title')}
         </h2>
         {priceLabel ? (
           <>
@@ -60,14 +63,13 @@ function CheckoutConsentDialogPanel({
               launchOffer={launchOffer}
               onDark
             />
-            <p className="cw-consent-dialog__tax">{TAX_INCLUSIVE_NOTE}</p>
+            <p className="cw-consent-dialog__tax">{t('consent.taxInclusive')}</p>
           </>
         ) : (
-          <p className="cw-consent-dialog__tax">{TAX_INCLUSIVE_NOTE}</p>
+          <p className="cw-consent-dialog__tax">{t('consent.taxInclusive')}</p>
         )}
         <p className="cw-consent-dialog__body">
-          You’ll go to Paddle’s secure checkout next. After payment, your access link
-          arrives by email so you can start walking right away.
+          {t('checkout.consent.body')}
         </p>
 
         <div className="cw-consent-dialog__actions">
@@ -77,7 +79,7 @@ function CheckoutConsentDialogPanel({
             disabled={busy}
             onClick={() => onConfirm?.()}
           >
-            {busy ? 'Opening checkout…' : 'Continue to secure checkout'}
+            {busy ? t('checkout.consent.opening') : t('checkout.consent.continue')}
           </button>
           <button
             type="button"
@@ -85,7 +87,7 @@ function CheckoutConsentDialogPanel({
             onClick={() => onCancel?.()}
             disabled={busy}
           >
-            Cancel
+            {t('action.cancel')}
           </button>
         </div>
       </div>

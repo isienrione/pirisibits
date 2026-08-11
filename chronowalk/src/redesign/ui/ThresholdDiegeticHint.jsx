@@ -1,6 +1,7 @@
 import { Pointer } from 'lucide-react'
 import { F, T } from '../tokens.js'
 import { useReducedMotion } from '../../hooks/useReducedMotion.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Format then-label for the single diegetic instruction line.
@@ -22,15 +23,16 @@ export function formatThenHintLabel(thenLabel = 'ANCIENT ROME') {
  * on the first teach. pointer-events: none so holds pass through to Threshold.
  */
 export default function ThresholdDiegeticHint({
-  thenLabel = 'ANCIENT ROME',
+  thenLabel = null,
   showText = true,
   showHand = true,
   fading = false,
   className = '',
   testId = 'threshold-diegetic-hint',
 }) {
+  const t = useT()
   const reducedMotion = useReducedMotion()
-  const era = formatThenHintLabel(thenLabel)
+  const era = formatThenHintLabel(thenLabel ?? t('threshold.ancientRome'))
 
   return (
     <div
@@ -67,7 +69,7 @@ export default function ThresholdDiegeticHint({
       </div>
       {showText ? (
         <p className="cw-diegetic-hint__line" style={{ fontFamily: F.body, color: T.warmWhite }}>
-          Hold to reveal {era}
+          {t('threshold.holdReveal', { era })}
         </p>
       ) : null}
     </div>

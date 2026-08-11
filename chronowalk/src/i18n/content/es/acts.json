@@ -1,0 +1,37 @@
+{
+  "act1": {
+    "numeral": "I",
+    "title": "La arena",
+    "promise": "Donde el rugido de la multitud aún vive en la piedra."
+  },
+  "act2": {
+    "numeral": "II",
+    "title": "La puerta y la colina",
+    "promise": "La colina que dio nombre a todos los palacios. El Foro a tus pies."
+  },
+  "act3": {
+    "numeral": "III",
+    "title": "El Foro",
+    "promise": "La puerta, la Vía Sacra y el centro del mundo."
+  },
+  "act4": {
+    "numeral": "IV",
+    "title": "El mercado",
+    "promise": "La ciudad vertical de Roma, todavía legible en el ladrillo."
+  },
+  "act5": {
+    "numeral": "V",
+    "title": "La ciudad viva",
+    "promise": "Los siglos se acumulan y, aun así, se distinguen."
+  },
+  "act6": {
+    "numeral": "VI",
+    "title": "El río",
+    "promise": "Todo lo que Roma construyó apuntaba hacia estas aguas."
+  },
+  "encore": {
+    "numeral": "Bis",
+    "title": "Bis opcional",
+    "promise": "Vía Apia Antica: trayecto estimado de 30 minutos."
+  }
+}

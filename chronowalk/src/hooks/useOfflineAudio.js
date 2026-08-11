@@ -9,8 +9,10 @@ import {
   readRomeOfflineStatus,
 } from '../audio/offlinePackage.js'
 import { formatDownloadSize } from '../offline/estimateDownloadSize.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 export function useOfflineAudio() {
+  const t = useT()
   const [manifest, setManifest] = useState(null)
   const [status, setStatus] = useState(() => readRomeOfflineStatus())
   const [isReady, setIsReady] = useState(false)
@@ -60,14 +62,14 @@ export function useOfflineAudio() {
       // Missing CDN files are not a "bad signal" problem - say so clearly.
       const friendly =
         /essential story files missing|HTML|verification failed/i.test(message)
-          ? 'Some story files could not be saved. Tap to retry.'
-          : 'Download paused - tap to retry.'
+          ? t('offline.error.missing')
+          : t('offline.error.paused')
       setError(friendly)
       await refresh()
     } finally {
       setIsDownloading(false)
     }
-  }, [isDownloading, manifest, refresh])
+  }, [isDownloading, manifest, refresh, t])
 
   const removeDownload = useCallback(async () => {
     if (!manifest) return
@@ -77,9 +79,9 @@ export function useOfflineAudio() {
       await clearRomeAudioPackage(manifest)
       await refresh()
     } catch (deleteError) {
-      setError(deleteError?.message ?? 'Could not clear the offline download.')
+      setError(deleteError?.message ?? t('offline.error.clear'))
     }
-  }, [manifest, refresh])
+  }, [manifest, refresh, t])
 
   return {
     manifest,

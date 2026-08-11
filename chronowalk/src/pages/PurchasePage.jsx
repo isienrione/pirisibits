@@ -4,6 +4,7 @@ import { getLaunchTourDetail } from '../content/launchTourDetail'
 import { formatUsd } from '../data/tourProducts'
 import { Button, GoldButton, cn } from '../components/ui'
 import { beginJourneyPath, ROUTES, tourDetailPath } from '../routes/paths'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function LockIcon({ className }) {
   return (
@@ -20,6 +21,7 @@ function LockIcon({ className }) {
 }
 
 export default function PurchasePage() {
+  const t = useT()
   const navigate = useNavigate()
   const { destinationId } = useParams()
   const detail = useMemo(
@@ -31,7 +33,7 @@ export default function PurchasePage() {
   if (!detail) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-ivory px-6">
-        <p className="text-sm text-soft-slate">This journey is not available yet.</p>
+        <p className="text-sm text-soft-slate">{t('purchase.legacy.unavailable')}</p>
       </div>
     )
   }
@@ -56,14 +58,16 @@ export default function PurchasePage() {
           onClick={() => navigate(tourDetailPath(destinationId))}
           disabled={isConfirming}
         >
-          Cancel
+          {t('action.cancel')}
         </Button>
       </div>
 
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-6 pb-safe">
         <div className="text-center">
           <p className="font-display text-sm uppercase tracking-[0.2em] text-soft-slate">ChronoWalk</p>
-          <h1 className="sr-only">Purchase {detail.title}</h1>
+          <h1 className="sr-only">
+            {t('purchase.legacy.title', { title: detail.title })}
+          </h1>
         </div>
 
         <div className="mt-12 space-y-8">
@@ -71,13 +75,13 @@ export default function PurchasePage() {
             <p className="font-display text-3xl font-semibold text-deep-slate">{detail.title}</p>
             <p className="mt-2 text-base text-soft-slate">{detail.tagline}</p>
             <p className="mt-3 text-sm text-soft-slate">
-              {detail.stats.stories} places · yours to keep
+              {t('purchase.legacy.places', { count: detail.stats.stories })}
             </p>
           </div>
 
           <div className="border-t border-parchment/70 pt-8">
             <div className="flex items-baseline justify-between gap-4">
-              <span className="text-sm text-soft-slate">Total</span>
+              <span className="text-sm text-soft-slate">{t('purchase.legacy.total')}</span>
               <span className="font-display text-4xl font-semibold tracking-tight text-deep-slate">
                 {priceLabel}
               </span>
@@ -86,7 +90,7 @@ export default function PurchasePage() {
 
           <p className="flex items-center justify-center gap-2 text-sm text-soft-slate">
             <LockIcon className="h-4 w-4 shrink-0 text-soft-slate/80" />
-            <span>Secure payment</span>
+            <span>{t('purchase.legacy.secure')}</span>
           </p>
         </div>
 
@@ -97,7 +101,9 @@ export default function PurchasePage() {
             className={cn(isConfirming && 'opacity-80')}
             onClick={handleConfirm}
           >
-            {isConfirming ? 'Confirming…' : `Pay ${priceLabel}`}
+            {isConfirming
+              ? t('purchase.legacy.confirming')
+              : t('purchase.legacy.pay', { price: priceLabel })}
           </GoldButton>
         </div>
       </div>

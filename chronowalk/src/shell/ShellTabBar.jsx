@@ -4,10 +4,12 @@ import { useThresholdChrome } from '../context/ThresholdChromeContext.jsx'
 import { shouldHideShellTabBar } from '../state/journey.js'
 import { isStandaloneMode } from '../utils/pwaInstall.js'
 import { getShellTabs, isShellTabActive, SHELL_COMPANION_PATHS } from './config.js'
+import { useI18n } from '../i18n/I18nProvider.jsx'
 
 export default function ShellTabBar() {
   const { chromeHidden } = useThresholdChrome()
   const location = useLocation()
+  const { locale, t } = useI18n()
 
   const onCompanionRoute = SHELL_COMPANION_PATHS.includes(location.pathname)
   const visible = onCompanionRoute && !shouldHideShellTabBar(chromeHidden)
@@ -30,11 +32,13 @@ export default function ShellTabBar() {
 
   if (!visible) return null
 
+  // locale in deps so tab labels re-resolve when language changes
   const tabs = getShellTabs()
+  void locale
 
   return (
     <nav
-      aria-label="Tour navigation"
+      aria-label={t('shell.nav.aria')}
       className="fixed inset-x-0 bottom-0 z-[80] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
       style={{
         fontFamily: 'var(--font-ui)',

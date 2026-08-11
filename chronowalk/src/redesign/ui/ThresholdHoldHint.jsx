@@ -1,4 +1,5 @@
 import { Pointer } from 'lucide-react'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Persistent affordance for press-and-hold threshold reveal.
@@ -13,10 +14,12 @@ function PressHoldIcon() {
 }
 
 export default function ThresholdHoldHint({
-  label = 'Press & hold to reveal',
+  label = null,
   className = '',
   testId = 'threshold-hold-hint',
 }) {
+  const t = useT()
+
   return (
     <div
       className={`cw-threshold-hold-hint${className ? ` ${className}` : ''}`}
@@ -24,7 +27,9 @@ export default function ThresholdHoldHint({
       aria-hidden="true"
     >
       <PressHoldIcon />
-      <span className="cw-threshold-hold-hint__label">{label}</span>
+      <span className="cw-threshold-hold-hint__label">
+        {label ?? t('threshold.pressHold')}
+      </span>
     </div>
   )
 }

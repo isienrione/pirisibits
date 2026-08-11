@@ -5,6 +5,7 @@ import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, isWaypointId, resolveJourneyStep } from './manifest.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
 import { isVisitStop } from './tourProductTruth.js'
+import { t } from '../i18n/t.js'
 
 const CLASSIC_DAY2_ACTS = new Set(['act5', 'act6'])
 
@@ -122,8 +123,8 @@ export function buildMyTourActs(manifest, context) {
       return {
         id: manifestAct.id,
         numeral: manifestAct.numeral,
-        title: meta.title ?? manifestAct.title,
-        promise: meta.promise ?? '',
+        title: manifestAct.title ?? meta.title,
+        promise: manifestAct.promise ?? meta.promise ?? '',
         colorKey: manifestAct.id,
         locked,
         status: actDisplayStatus(actStatus, locked),
@@ -147,24 +148,31 @@ export function currentActForTour(acts) {
 
 export function primaryCtaLabel(acts, journeyActive) {
   const current = currentActForTour(acts)
-  if (!current) return 'Begin your walk'
+  if (!current) return t('tour.cta.beginWalk')
 
-  const numeralLabel =
-    current.numeral === 'Encore' ? 'Encore' : `Act ${current.numeral}`
+  const isEncore =
+    current.id === 'encore' || current.numeral === 'Encore' || current.numeral === 'Bis'
+  const numeralLabel = isEncore
+    ? t('journeyHome.encore')
+    : t('tour.actShort', { numeral: current.numeral })
 
   if (journeyActive) {
-    return `Return to walk - ${current.title}`
+    return t('tour.cta.return', { title: current.title })
   }
 
   if (current.stops.every((stop) => stop.status === 'completed')) {
     const next = acts.find((act) => act.actStatus !== 'done' && !act.locked)
     if (next) {
-      const nextLabel = next.numeral === 'Encore' ? 'Encore' : `Act ${next.numeral}`
-      return `Begin ${nextLabel} - ${next.title}`
+      const nextEncore =
+        next.id === 'encore' || next.numeral === 'Encore' || next.numeral === 'Bis'
+      const nextLabel = nextEncore
+        ? t('journeyHome.encore')
+        : t('tour.actShort', { numeral: next.numeral })
+      return t('tour.cta.beginAct', { label: nextLabel, title: next.title })
     }
   }
 
-  return `Begin ${numeralLabel} - ${current.title}`
+  return t('tour.cta.beginAct', { label: numeralLabel, title: current.title })
 }
 
 /** Flat walking-order groups for the route sheet. */
@@ -222,7 +230,7 @@ export function buildOwnPacePickerActs(manifest, context) {
       return {
         id: manifestAct.id,
         numeral: manifestAct.numeral,
-        title: meta.title ?? manifestAct.title,
+        title: manifestAct.title ?? meta.title,
         colorKey: manifestAct.id,
         stops,
       }
@@ -274,8 +282,8 @@ export function buildPreviewTourActs(manifest, previewWaypointId = 'w17') {
       return {
         id: manifestAct.id,
         numeral: manifestAct.numeral,
-        title: meta.title ?? manifestAct.title,
-        promise: meta.promise ?? '',
+        title: manifestAct.title ?? meta.title,
+        promise: manifestAct.promise ?? meta.promise ?? '',
         colorKey: manifestAct.id,
         locked: false,
         status: 'ahead',

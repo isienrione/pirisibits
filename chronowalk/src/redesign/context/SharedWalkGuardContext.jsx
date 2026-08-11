@@ -10,11 +10,12 @@ import { jumpToWaypointInJourney } from '../../lib/jumpToWaypoint.js'
 import { getJourneySnapshot, JOURNEY_STATES } from '../../state/journey.js'
 import { useOptionalFamilyWalk } from './FamilyWalkContext.jsx'
 import SharedWalkConfirmDialog from '../ui/SharedWalkConfirmDialog.jsx'
+import { t } from '../../i18n/t.js'
 
 const SharedWalkGuardCtx = createContext(null)
 
 function titleForStop(stepId, manifest) {
-  if (!stepId) return 'the current stop'
+  if (!stepId) return t('walkTogether.guard.currentStop')
   const waypoint = getWaypoint(manifest, stepId)
   if (waypoint) return waypoint.title ?? waypoint.name ?? stepId
   const transit = getTransit(manifest, stepId)
@@ -24,7 +25,7 @@ function titleForStop(stepId, manifest) {
       const target = getWaypoint(manifest, targetId)
       if (target) return target.title ?? target.name ?? targetId
     }
-    return transit.title ?? transit.name ?? 'the next stretch'
+    return transit.title ?? transit.name ?? t('walkTogether.guard.nextStretch')
   }
   return stepId
 }
@@ -130,10 +131,9 @@ export function SharedWalkGuardProvider({ children }) {
           pendingRef.current = { execute: null, resolve, mode: 'resolving' }
           setActionError(null)
           setDialog({
-            title: 'Checking shared walk…',
-            message:
-              'Your shared session is still connecting. Stay on this stop for a moment, then try again.',
-            cancelLabel: 'Stay here',
+            title: t('walkTogether.guard.checking'),
+            message: t('walkTogether.guard.checkingBody'),
+            cancelLabel: t('walkTogether.guard.stayHere'),
             confirmLabel: null,
           })
         })
@@ -149,10 +149,13 @@ export function SharedWalkGuardProvider({ children }) {
         pendingRef.current = { execute, resolve, mode: 'leave' }
         setActionError(null)
         setDialog({
-          title: 'Leave the shared walk?',
-          message: `Your group is still at ${titleForStop(groupStop, manifest)}. Going to ${titleForStop(destinationWaypointId, manifest)} will pause shared syncing on this phone. You’ll keep full tour access and can rejoin from Walk together.`,
-          cancelLabel: 'Stay with group',
-          confirmLabel: 'Continue on my own',
+          title: t('walkTogether.guard.leaveTitle'),
+          message: t('walkTogether.guard.leaveBody', {
+            group: titleForStop(groupStop, manifest),
+            destination: titleForStop(destinationWaypointId, manifest),
+          }),
+          cancelLabel: t('walkTogether.guard.stayGroup'),
+          confirmLabel: t('walkTogether.guard.continueOwn'),
         })
       })
     },
@@ -209,10 +212,12 @@ export function SharedWalkGuardProvider({ children }) {
       pendingRef.current = { execute: performRejoin, resolve, mode: 'rejoin' }
       setActionError(null)
       setDialog({
-        title: 'Rejoin your group?',
-        message: `Your group is currently at ${titleForStop(leaderStop, manifest)}. Rejoining will take this phone back to that point in the shared walk.`,
-        cancelLabel: 'Not now',
-        confirmLabel: 'Rejoin group',
+        title: t('walkTogether.guard.rejoinTitle'),
+        message: t('walkTogether.guard.rejoinBody', {
+          group: titleForStop(leaderStop, manifest),
+        }),
+        cancelLabel: t('walkTogether.guard.notNow'),
+        confirmLabel: t('walkTogether.guard.rejoinConfirm'),
       })
     })
   }, [family])
@@ -257,10 +262,10 @@ export function SharedWalkGuardProvider({ children }) {
       setBusy(false)
       setActionError(
         err?.code === 'leader_cannot_detach'
-          ? 'The organizer cannot leave shared syncing this way.'
+          ? t('walkTogether.guard.leaderDetach')
           : pending.mode === 'rejoin'
-            ? 'Could not rejoin the shared walk. Check your connection and try again.'
-            : 'Could not leave shared syncing. Check your connection and try again.',
+            ? t('walkTogether.guard.rejoinError')
+            : t('walkTogether.guard.leaveError'),
       )
     }
   }, [closeDialog, family])

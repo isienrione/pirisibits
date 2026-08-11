@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Button } from './ui'
 import { pwaController } from '../pwa/pwaController'
+import { useT } from '../i18n/I18nProvider.jsx'
+import { t as translate } from '../i18n/t.js'
 
-export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
+const DEFAULT_COPY = {
+  eyebrow: translate('pwa.update.eyebrow', {}, 'en'),
+  body: translate('pwa.update.body', {}, 'en'),
+  tap: translate('pwa.update.tap', {}, 'en'),
+  later: translate('pwa.update.later', {}, 'en'),
+}
+
+export function PwaUpdatePromptView({ visible, onUpdate, onDismiss, copy = DEFAULT_COPY }) {
   if (!visible) return null
 
   return (
@@ -13,17 +22,15 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
     >
       <div className="bg-ink900 rounded-card pointer-events-auto mx-auto flex max-w-md items-center gap-3 p-4 ">
         <div className="min-w-0 flex-1">
-          <p className="text-eyebrow uppercase text-ember">New version available</p>
-          <p className="mt-1 text-sm leading-relaxed text-ink900">
-            Tap to refresh when you are ready — browsing is not interrupted.
-          </p>
+          <p className="text-eyebrow uppercase text-ember">{copy.eyebrow}</p>
+          <p className="mt-1 text-sm leading-relaxed text-ink900">{copy.body}</p>
         </div>
         <div className="flex shrink-0 flex-col gap-2">
           <Button size="sm" onClick={onUpdate}>
-            Tap to refresh
+            {copy.tap}
           </Button>
           <Button variant="ghost" size="sm" onClick={onDismiss}>
-            Later
+            {copy.later}
           </Button>
         </div>
       </div>
@@ -33,6 +40,7 @@ export function PwaUpdatePromptView({ visible, onUpdate, onDismiss }) {
 
 export function PwaUpdatePrompt() {
   const [visible, setVisible] = useState(false)
+  const t = useT()
 
   useEffect(() => {
     return pwaController.onNeedRefresh(() => setVisible(true))
@@ -41,6 +49,12 @@ export function PwaUpdatePrompt() {
   return (
     <PwaUpdatePromptView
       visible={visible}
+      copy={{
+        eyebrow: t('pwa.update.eyebrow'),
+        body: t('pwa.update.body'),
+        tap: t('pwa.update.tap'),
+        later: t('pwa.update.later'),
+      }}
       onUpdate={() => {
         pwaController.applyUpdate()
         setVisible(false)

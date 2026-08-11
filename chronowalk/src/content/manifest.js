@@ -3,19 +3,23 @@ import { parseRomeManifest } from './romeManifestZod.schema.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
 import { applyDevGeofenceOverrides } from './applyDevGeofenceOverrides.js'
 import { getDevGeofencesMode } from '../config/env.js'
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import { applyLocaleOverlay } from '../i18n/content/applyLocaleOverlay.js'
 
 let cachedManifest = null
 let cachedManifestKey = null
 
 export function loadRomeManifest() {
   const overrideMode = getDevGeofencesMode()
-  const cacheKey = overrideMode ?? 'rome'
+  const locale = getActiveLocale()
+  const cacheKey = `${overrideMode ?? 'rome'}::${locale}`
   if (cachedManifest && cachedManifestKey === cacheKey) return cachedManifest
 
   let parsed = parseRomeManifest(rawManifest)
   if (overrideMode) {
     parsed = applyDevGeofenceOverrides(parsed, overrideMode)
   }
+  parsed = applyLocaleOverlay(parsed, locale)
 
   cachedManifest = normalizeManifest(parsed)
   cachedManifestKey = cacheKey

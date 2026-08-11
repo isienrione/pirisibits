@@ -25,6 +25,8 @@ import {
 import AnalyticsPreferencesControl from '../../components/analytics/AnalyticsPreferencesControl.jsx'
 import HomeScreenInstallOption from './HomeScreenInstallOption.jsx'
 import { usePwaInstall } from '../../hooks/usePwaInstall.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
 
 function Hairline() {
   return <div style={{ height: 1, background: `${T.muted}28` }} aria-hidden="true" />
@@ -162,6 +164,7 @@ const TEXT_SIZE_LABELS = {
 export default function SettingsBottomSheet({ open, onClose }) {
   const navigate = useNavigate()
   const { prefs, setPref } = useAppPreferences()
+  const { locale, setLocale, t, labels } = useI18n()
   const offline = useOfflineAudio()
   const family = useOptionalFamilyWalk()
   const entitlement = readAccessEntitlement()
@@ -176,19 +179,19 @@ export default function SettingsBottomSheet({ open, onClose }) {
   const walkMeta = bundleMetaForProductId(purchasedProductId)
   const walkSubtitle =
     family?.isOrganizer || entitlement?.role === 'owner'
-      ? 'Invite people and manage your shared tour'
+      ? t('settings.sheet.walkOwner')
       : family?.isMember || entitlement?.role === 'member'
-        ? 'View your shared tour'
+        ? t('settings.sheet.walkMember')
         : walkMeta
-          ? 'Invite people and manage your shared tour'
-          : 'Manage your shared tour'
+          ? t('settings.sheet.walkOwner')
+          : t('settings.sheet.walkManage')
 
   const { installed, canPromptInstall, showIosInstructions, promptInstall } = usePwaInstall()
 
   if (!open) return null
 
   const offlineDetail = offline.isReady
-    ? 'Ready'
+    ? t('settings.sheet.offline.ready')
     : offline.isDownloading
       ? `${Math.round(offline.progress?.percent ?? 0)}%`
       : null
@@ -233,7 +236,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Settings"
+        aria-label={t('settings.title')}
         className="cw-grain"
         style={{
           position: 'absolute',
@@ -263,13 +266,13 @@ export default function SettingsBottomSheet({ open, onClose }) {
             flexShrink: 0,
           }}
         >
-          <h2 style={{ margin: 0, fontFamily: F.display, fontSize: 22, color: T.ink, fontWeight: 300 }}>Settings</h2>
+          <h2 style={{ margin: 0, fontFamily: F.display, fontSize: 22, color: T.ink, fontWeight: 300 }}>{t('settings.title')}</h2>
           <button
             type="button"
             onClick={onClose}
             style={{ fontSize: 13, color: T.muted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: F.body }}
           >
-            Done
+            {t('settings.done')}
           </button>
         </div>
 
@@ -286,7 +289,22 @@ export default function SettingsBottomSheet({ open, onClose }) {
         >
           <Hairline />
           <Row
-            label="Audio speed"
+            label={t('language.label')}
+            right={
+              <Segmented
+                options={[...SUPPORTED_LOCALES]}
+                value={locale}
+                onChange={(next) => setLocale(next)}
+                formatLabel={(code) => labels[code] ?? code}
+              />
+            }
+          />
+          <p style={{ margin: '0 0 8px', fontSize: 12, color: T.muted, lineHeight: 1.4 }}>
+            {t('language.sub')}
+          </p>
+          <Hairline />
+          <Row
+            label={t('settings.sheet.audioSpeed')}
             right={
               <Segmented
                 options={SETTINGS_PLAYBACK_SPEEDS}
@@ -298,18 +316,18 @@ export default function SettingsBottomSheet({ open, onClose }) {
           />
           <Hairline />
           <Row
-            label="Read instead of listen"
+            label={t('settings.sheet.readInstead')}
             right={
               <Toggle
                 on={prefs.preferTranscript}
                 onToggle={() => setPref('preferTranscript', !prefs.preferTranscript)}
-                label="Read instead of listen"
+                label={t('settings.sheet.readInstead')}
               />
             }
           />
           <Hairline />
           <Row
-            label="Text size"
+            label={t('settings.sheet.textSize')}
             right={
               <Segmented
                 options={TEXT_SIZE_OPTIONS}
@@ -323,8 +341,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
 
           {showChangeRoute ? (
             <ActionRow
-              label="Change or customize route"
-              subtitle="Switch Roma Eterna, a shorter walk, or pick your own stops"
+              label={t('settings.sheet.changeRoute')}
               testId="settings-change-route"
               onClick={handleChangeRoute}
             />
@@ -332,7 +349,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
 
           {showWalkTogether ? (
             <ActionRow
-              label="Walk together"
+              label={t('settings.sheet.walkTogether')}
               subtitle={walkSubtitle}
               detail={walkMeta?.label ?? null}
               testId="settings-walk-together"
@@ -351,11 +368,10 @@ export default function SettingsBottomSheet({ open, onClose }) {
             data-testid="settings-offline-option"
           >
             <p style={{ margin: '10px 0 2px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Recommended
+              {t('settings.sheet.recommended')}
             </p>
             <ActionRow
-              label="Download for offline"
-              subtitle="Keep stories and maps ready when signal drops"
+              label={t('settings.sheet.offline')}
               detail={offlineDetail}
               onClick={handleDownload}
             />
@@ -371,7 +387,7 @@ export default function SettingsBottomSheet({ open, onClose }) {
             data-testid="settings-a2hs-option"
           >
             <p style={{ margin: '0 0 4px', fontSize: 10, color: T.ember, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Recommended
+              {t('settings.sheet.recommended')}
             </p>
             <HomeScreenInstallOption
               installed={installed}
@@ -382,14 +398,14 @@ export default function SettingsBottomSheet({ open, onClose }) {
               embedded
             />
           </div>
-          <ActionRow label="Restore purchase" onClick={handleRestore} />
-          <ActionRow label="Help" onClick={handleHelp} />
-          <ActionRow label="About" onClick={handleAbout} />
+          <ActionRow label={t('settings.sheet.restore')} onClick={handleRestore} />
+          <ActionRow label={t('settings.sheet.help')} onClick={handleHelp} />
+          <ActionRow label={t('settings.sheet.about')} onClick={handleAbout} />
           <AnalyticsPreferencesControl variant="settings" />
           <Hairline />
           <ActionRow
-            label="Refresh app"
-            detail="Get the latest version"
+            label={t('pwa.update.action')}
+            detail={t('pwa.update.ready')}
             onClick={() => void pwaController.checkForAppUpdate()}
           />
 
@@ -407,11 +423,14 @@ export default function SettingsBottomSheet({ open, onClose }) {
               letterSpacing: '0.02em',
             }}
           >
-            ChronoWalk · Rome · made to disappear.
+            {t('settings.sheet.signature')}
             {typeof globalThis.__APP_BUILD_ID__ !== 'undefined' ? (
               <>
                 <br />
-                Build {globalThis.__APP_BUILD_ID__} · Walking UI {WALKING_UI_REVISION}
+                {t('settings.sheet.build', {
+                  build: globalThis.__APP_BUILD_ID__,
+                  revision: WALKING_UI_REVISION,
+                })}
               </>
             ) : null}
           </p>

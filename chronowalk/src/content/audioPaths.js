@@ -2,6 +2,9 @@
 
 import { chapterFile } from './chapterMeta.js'
 import { collectThresholdAmbiencePaths } from './thresholdAmbience.js'
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import { DEFAULT_LOCALE, LOCALES } from '../i18n/locales.js'
+import { localeAudioFilePath } from '../i18n/audio/heroStopAudioMap.js'
 
 export const ROME_AUDIO_ROOT = '/rome/audio'
 
@@ -12,10 +15,35 @@ export const AUDIO_CATEGORIES = {
   SYSTEM: 'system',
 }
 
-export function audioFilePath(category, filename) {
+/**
+ * Spoken system UI cues that fork by locale (same filename as English masters).
+ * Instrumental / non-verbal cues (e.g. arrival chime) stay language-neutral.
+ */
+export const LOCALIZED_SYSTEM_FILES = Object.freeze([
+  'ui_waypoint_unlocked.mp3',
+])
+
+function usesLocaleAudioTree(category, filename, locale) {
+  if (!locale || locale === LOCALES.EN || locale === DEFAULT_LOCALE) return false
+  if (category === AUDIO_CATEGORIES.NARRATION) return true
+  if (category === AUDIO_CATEGORIES.SYSTEM && LOCALIZED_SYSTEM_FILES.includes(filename)) {
+    return true
+  }
+  return false
+}
+
+/**
+ * Resolve a category/filename to a locale-aware public path.
+ * English keeps `/rome/audio/{category}/{file}`; other locales use
+ * `/rome/audio/{locale}/{category}/{file}` for narration and spoken system cues.
+ */
+export function audioFilePath(category, filename, locale = getActiveLocale()) {
   if (!filename) return null
   const clean = filename.replace(/^\//, '')
-  return `${ROME_AUDIO_ROOT}/${category}/${clean}`
+  if (!usesLocaleAudioTree(category, clean, locale)) {
+    return `${ROME_AUDIO_ROOT}/${category}/${clean}`
+  }
+  return localeAudioFilePath(locale, category, clean)
 }
 
 export function narrationPath(filename) {
@@ -37,12 +65,13 @@ export function systemPath(filename) {
 /**
  * Collect every shipping audio path referenced by the manifest.
  * @param {import('./manifest.schema.js').romeManifestSchema['_output']} manifest
+ * @param {string} [locale]
  */
-export function collectManifestAudioPaths(manifest) {
+export function collectManifestAudioPaths(manifest, locale = getActiveLocale()) {
   const paths = new Set()
 
   const add = (category, file) => {
-    const path = audioFilePath(category, file)
+    const path = audioFilePath(category, file, locale)
     if (path) paths.add(path)
   }
 

@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom'
 import { T, F } from '../tokens.js'
 import { PrimaryButton, GhostButton, Seam } from '../ui/index.js'
 import { TRANSACTION_STEPS } from '../../lib/checkout.js'
-import { TAX_INCLUSIVE_NOTE } from '../../components/legal/immediateAccessConsent.js'
 import OfferPriceDisplay from '../../landing/OfferPriceDisplay.jsx'
 import '../../components/legal/legal.css'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 const metaStyle = {
   fontFamily: F.body,
@@ -56,6 +56,7 @@ export default function APurchasePending({
   onStagingCheckout,
   onPreview,
 }) {
+  const t = useT()
   const priceLabel = tier?.price ?? null
   const basePriceLabel = tier?.launchOffer ? tier?.basePrice ?? null : null
   const offerLabel = tier?.launchOffer ? tier?.offerLabel ?? null : null
@@ -77,16 +78,18 @@ export default function APurchasePending({
       }}
     >
       <div style={{ maxWidth: 420, margin: '0 auto', width: '100%' }}>
-        <p style={{ ...metaStyle, color: T.muted }}>ChronoWalk · Rome</p>
+        <p style={{ ...metaStyle, color: T.muted }}>{t('purchase.pending.brand')}</p>
 
         <h1 style={{ ...displayTitle(34), color: T.warmWhite, marginTop: 12 }}>
-          {checkoutReady ? 'Continue to checkout' : 'Checkout is almost ready'}
+          {checkoutReady
+            ? t('purchase.pending.readyTitle')
+            : t('purchase.pending.waitTitle')}
         </h1>
 
         <p style={{ ...bodyStyle, color: T.muted, marginTop: 16, maxWidth: 340 }}>
           {checkoutReady
-            ? 'Paddle checkout opens next. After payment, your access link arrives by email.'
-            : 'Payments wait on Paddle credentials (client token + price ids). The steps below are ready - live card checkout appears when checkout is configured.'}
+            ? t('purchase.pending.readyBody')
+            : t('purchase.pending.waitBody')}
         </p>
 
         {(tierLabel || priceLabel) && (
@@ -99,7 +102,7 @@ export default function APurchasePending({
             }}
           >
             <p style={{ ...metaStyle, color: T.ember, letterSpacing: '0.12em' }}>
-              {tierLabel ?? 'Rome'}
+              {tierLabel ?? t('purchase.pending.rome')}
             </p>
             {priceLabel ? (
               <div style={{ marginTop: 6 }}>
@@ -117,7 +120,7 @@ export default function APurchasePending({
               </div>
             ) : null}
             <p style={{ ...bodyStyle, color: T.muted, marginTop: 6, fontSize: 13 }}>
-              {TAX_INCLUSIVE_NOTE}
+              {t('consent.taxInclusive')}
             </p>
             {tier?.description ? (
               <p style={{ ...bodyStyle, color: T.muted, marginTop: 12, fontSize: 14 }}>{tier.description}</p>
@@ -155,8 +158,12 @@ export default function APurchasePending({
                 {index + 1}
               </span>
               <div>
-                <p style={{ ...uiStyle, color: T.warmWhite }}>{step.title}</p>
-                <p style={{ ...bodyStyle, color: T.muted, margin: '4px 0 0', fontSize: 14 }}>{step.body}</p>
+                <p style={{ ...uiStyle, color: T.warmWhite }}>
+                  {t(`purchase.step.${step.id}.title`)}
+                </p>
+                <p style={{ ...bodyStyle, color: T.muted, margin: '4px 0 0', fontSize: 14 }}>
+                  {t(`purchase.step.${step.id}.body`)}
+                </p>
               </div>
             </li>
           ))}
@@ -169,7 +176,7 @@ export default function APurchasePending({
               disabled={!checkoutEnabled}
               color={T.ember}
             >
-              Continue to secure checkout
+              {t('checkout.consent.continue')}
             </PrimaryButton>
           ) : (
             <div
@@ -183,13 +190,11 @@ export default function APurchasePending({
                 overflow: 'hidden',
               }}
             >
-              <p style={{ ...uiStyle, color: T.warmWhite }}>Paddle setup pending</p>
+              <p style={{ ...uiStyle, color: T.warmWhite }}>
+                {t('purchase.pending.setupTitle')}
+              </p>
               <p style={{ ...bodyStyle, color: T.muted, margin: '6px 0 0', fontSize: 14 }}>
-                Your selected tour stays here until payment completes. Set{' '}
-                <code style={{ color: T.ember }}>VITE_PADDLE_CLIENT_TOKEN</code> and{' '}
-                <code style={{ color: T.ember }}>VITE_PADDLE_PRICE_ROME_*</code> (see{' '}
-                <code style={{ color: T.ember }}>docs/PADDLE_SETUP.md</code>) - Rome will not unlock
-                without purchase.
+                {t('purchase.pending.setupBody')}
               </p>
               <div style={{ marginTop: 16, height: 12, position: 'relative' }}>
                 <Seam variant="horizontal" style={{ position: 'relative', left: 0, right: 0 }} />
@@ -199,12 +204,12 @@ export default function APurchasePending({
 
           {!checkoutReady && stagingAllowed && onStagingCheckout ? (
             <GhostButton onClick={onStagingCheckout} style={{ opacity: busy ? 0.7 : 1 }}>
-              Dev only - simulate paid unlock
+              {t('purchase.pending.devUnlock')}
             </GhostButton>
           ) : null}
 
           {onPreview ? (
-            <GhostButton onClick={onPreview}>Try the Pantheon free</GhostButton>
+            <GhostButton onClick={onPreview}>{t('purchase.pending.preview')}</GhostButton>
           ) : (
             <Link
               to="/preview"
@@ -217,14 +222,14 @@ export default function APurchasePending({
                 padding: 16,
               }}
             >
-              Try the Pantheon free
+              {t('purchase.pending.preview')}
             </Link>
           )}
 
           <p style={{ ...metaStyle, color: T.muted, textAlign: 'center', textTransform: 'none', letterSpacing: 0 }}>
-            Already purchased?{' '}
+            {t('purchase.pending.already')}{' '}
             <Link to="/access" style={{ color: T.ember, textDecoration: 'none' }}>
-              Restore access
+              {t('purchase.pending.restore')}
             </Link>
           </p>
 
@@ -239,8 +244,7 @@ export default function APurchasePending({
                 lineHeight: 1.5,
               }}
             >
-              Developer unlock is only for local QA (<code>?devUnlock=1</code>). Travelers never see a free path
-              into the tour.
+              {t('purchase.pending.devNote')}
             </p>
           ) : null}
 
@@ -255,7 +259,7 @@ export default function APurchasePending({
                 lineHeight: 1.5,
               }}
             >
-              Already have an access email? Restore below. There is no free continue into Rome from this screen.
+              {t('purchase.pending.noFree')}
             </p>
           ) : null}
         </div>

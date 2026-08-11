@@ -10,8 +10,11 @@ export function formatPlaybackClock(seconds) {
  * Clean walk meta: "335 m · 4 min"
  * Strips trailing "walk" from ETA copy and joins with a middle dot.
  */
-export function formatDistanceLine(distanceCopy) {
-  if (distanceCopy?.gpsBlocked) return 'Distance unavailable'
+export function formatDistanceLine(
+  distanceCopy,
+  { unavailable = 'Distance unavailable' } = {},
+) {
+  if (distanceCopy?.gpsBlocked) return unavailable
   if (distanceCopy?.pending) return '-'
   const dist = distanceCopy?.primary
   const etaRaw = distanceCopy?.secondary
@@ -111,8 +114,15 @@ export function formatRemainingShort(seconds) {
 }
 
 /** Avoid “Open the The Colosseum story” when the title already starts with The. */
-export function formatOpenStoryCta(title) {
-  const t = String(title ?? '').trim()
-  if (!t) return 'Open the story →'
-  return /^the\s+/i.test(t) ? `Open ${t} story →` : `Open the ${t} story →`
+export function formatOpenStoryCta(
+  title,
+  {
+    unnamed = 'Open the story →',
+    named = (name) => `Open the ${name} story →`,
+    leadingArticle = (name) => `Open ${name} story →`,
+  } = {},
+) {
+  const cleanTitle = String(title ?? '').trim()
+  if (!cleanTitle) return unnamed
+  return /^the\s+/i.test(cleanTitle) ? leadingArticle(cleanTitle) : named(cleanTitle)
 }

@@ -1,8 +1,11 @@
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { severusNow } from '../images.js'
 import { Seam, Vignette } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C8bThePause({ onResume, busy = false }) {
+  const t = useT()
+
   return (
     <div
       data-testid="pause-screen"
@@ -58,9 +61,9 @@ export default function C8bThePause({ onResume, busy = false }) {
             margin: 0,
           }}
         >
-          Find a piece of shade.
+          {t('pause.line1')}
           <br />
-          I&apos;ll be here.
+          {t('pause.line2')}
         </p>
       </div>
 
@@ -99,7 +102,7 @@ export default function C8bThePause({ onResume, busy = false }) {
             opacity: busy ? 0.7 : 1,
           }}
         >
-          I&apos;m ready
+          {t('pause.ready')}
         </button>
 
         <p
@@ -110,7 +113,7 @@ export default function C8bThePause({ onResume, busy = false }) {
             margin: 0,
           }}
         >
-          ♪ antiquity
+          {t('pause.bed')}
         </p>
       </div>
     </div>

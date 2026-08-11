@@ -3,6 +3,7 @@ import { Play, Pause, SkipForward, Volume2, ChevronRight } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Eyebrow, Seam } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C5Story({
   accent = T.actI,
@@ -19,6 +20,7 @@ export default function C5Story({
   onOpenSettings,
   onSkipForward,
 }) {
+  const t = useT()
   const [chapter, setChapter] = useState(0)
   const [tab, setTab] = useState('audio')
   const [reflecting, setReflecting] = useState(false)
@@ -111,14 +113,16 @@ export default function C5Story({
               }}
             />
             <div style={{ position: 'absolute', bottom: 28, left: 0, right: 0, textAlign: 'center', zIndex: 6 }}>
-              <span style={{ fontSize: 10, color: `${T.bone}88`, letterSpacing: '0.1em' }}>Press and hold to cross</span>
+              <span style={{ fontSize: 10, color: `${T.bone}88`, letterSpacing: '0.1em' }}>
+                {t('story.hold')}
+              </span>
             </div>
           </>
         ) : null}
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px 24px 8px', position: 'relative', zIndex: 5, overflow: 'hidden' }}>
-        <Eyebrow color={accent}>ACT {actNumeral}</Eyebrow>
+        <Eyebrow color={accent}>{t('story.act', { numeral: actNumeral })}</Eyebrow>
         <h2 style={{ fontFamily: F.display, fontSize: 40, color: T.warmWhite, fontWeight: 300, lineHeight: 1.05, margin: '10px 0 3px' }}>
           {title}
         </h2>
@@ -148,6 +152,7 @@ export default function C5Story({
           <button
             type="button"
             onClick={onTogglePlay}
+            aria-label={narrationPlaying ? t('walk.audio.pause') : t('walk.audio.play')}
             style={{
               width: 54,
               height: 54,
@@ -170,6 +175,7 @@ export default function C5Story({
           <button
             type="button"
             onClick={() => (onSkipForward ? onSkipForward() : setChapter((current) => Math.min(current + 1, chapters.length - 1)))}
+            aria-label={t('walk.audio.forward15')}
             style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0 }}
           >
             <SkipForward size={22} />
@@ -177,6 +183,7 @@ export default function C5Story({
           <button
             type="button"
             onClick={() => (onOpenSettings ? onOpenSettings() : undefined)}
+            aria-label={t('walk.openSettings')}
             style={{ color: T.muted, background: 'none', border: 'none', cursor: 'pointer', lineHeight: 0, marginLeft: 'auto' }}
           >
             <Volume2 size={20} />
@@ -184,25 +191,28 @@ export default function C5Story({
         </div>
 
         <div style={{ display: 'flex', gap: 24, borderBottom: `1px solid ${T.ink800}`, marginBottom: 10 }}>
-          {['audio', 'transcript'].map((t) => (
+          {[
+            ['audio', t('story.audio')],
+            ['transcript', t('story.transcript')],
+          ].map(([tabId, label]) => (
             <button
-              key={t}
+              key={tabId}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => setTab(tabId)}
               style={{
                 paddingBottom: 8,
                 fontSize: 11,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: tab === t ? T.warmWhite : T.muted,
+                color: tab === tabId ? T.warmWhite : T.muted,
                 marginBottom: -1,
                 background: 'none',
                 border: 'none',
-                borderBottom: `1.5px solid ${tab === t ? accent : 'transparent'}`,
+                borderBottom: `1.5px solid ${tab === tabId ? accent : 'transparent'}`,
                 cursor: 'pointer',
               }}
             >
-              {t}
+              {label}
             </button>
           ))}
         </div>
@@ -214,7 +224,11 @@ export default function C5Story({
             </p>
           ) : (
             <p style={{ fontSize: 12, color: T.muted }}>
-              Chapter {chapter + 1} of {chapters.length} · {narrationPlaying ? 'Playing' : 'Paused'}
+              {t('story.chapterStatus', {
+                current: chapter + 1,
+                total: chapters.length,
+                status: narrationPlaying ? t('story.playing') : t('story.paused'),
+              })}
               {narrationPlaying ? <span style={{ color: accent }}> ●</span> : null}
             </p>
           )}
@@ -240,7 +254,7 @@ export default function C5Story({
             marginBottom: 4,
           }}
         >
-          Complete chapter
+          {t('story.complete')}
         </button>
       </div>
 
@@ -290,7 +304,7 @@ export default function C5Story({
               pointerEvents: showContinue ? 'auto' : 'none',
             }}
           >
-            Continue
+            {t('action.continue')}
           </button>
         </div>
       ) : null}

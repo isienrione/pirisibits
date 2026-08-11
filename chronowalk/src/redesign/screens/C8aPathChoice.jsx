@@ -3,9 +3,11 @@ import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { RedesignNavCtx } from '../nav.js'
 import { Vignette, BottomScrim } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C8aPathChoice({ onChoose, busy = false }) {
   const { navigate } = useContext(RedesignNavCtx)
+  const t = useT()
 
   const inkPanel = 'rgba(33,28,21,0.70)'
   const hairline = 'rgba(245,239,227,0.13)'
@@ -13,19 +15,19 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
   const paths = [
     {
       key: 'A',
-      label: 'Path A - The Forum Direct',
-      chip: '~45 min shorter',
+      label: t('pathChoice.pathA.label'),
+      chip: t('pathChoice.pathA.chip'),
       chipStyle: { background: T.ember, color: T.obsidian },
-      body: 'Straight through the gate of triumphs and down into the heart. The Palatine stays available as an optional climb.',
-      cta: 'Take The Forum Direct',
+      body: t('pathChoice.pathA.body'),
+      cta: t('pathChoice.pathA.cta'),
     },
     {
       key: 'B',
-      label: "Path B - The Emperor's Approach",
-      chip: 'The full hill',
+      label: t('pathChoice.pathB.label'),
+      chip: t('pathChoice.pathB.chip'),
       chipStyle: { border: `1px solid ${hairline}`, color: T.warmWhite, background: 'transparent' },
-      body: "Past Constantine's arch, up the Palatine the way power went - palace, Circus Maximus View, then descend into the Forum from above.",
-      cta: "Take The Emperor's Approach",
+      body: t('pathChoice.pathB.body'),
+      cta: t('pathChoice.pathB.cta'),
     },
   ]
 
@@ -76,9 +78,9 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
               textShadow: '0 2px 20px rgba(0,0,0,0.5)',
             }}
           >
-            Two doors into ancient Rome.
+            {t('pathChoice.title')}
           </h2>
-          <p style={{ fontSize: 15, color: T.muted }}>Pick your appetite.</p>
+          <p style={{ fontSize: 15, color: T.muted }}>{t('pathChoice.subtitle')}</p>
         </div>
 
         <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 12 }}>
@@ -158,7 +160,7 @@ export default function C8aPathChoice({ onChoose, busy = false }) {
             padding: `12px 0 ${SHELL_SAFE_BOTTOM_INSET}`,
           }}
         >
-          Same ticket, same stops available, same single entry. Nothing is lost either way.
+          {t('pathChoice.footnote')}
         </p>
       </div>
     </div>

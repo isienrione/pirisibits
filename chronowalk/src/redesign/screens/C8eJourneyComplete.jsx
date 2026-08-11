@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { T, F, SHELL_SAFE_BOTTOM_INSET } from '../tokens.js'
 import { appiaNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function C8eJourneyComplete({
-  headline = 'You walked Ancient Rome.',
-  subline = 'The city you crossed is still beneath your feet.',
+  headline = null,
+  subline = null,
   heroPhoto = appiaNow,
   stopCount = 0,
   accent = T.encore,
@@ -13,6 +14,7 @@ export default function C8eJourneyComplete({
   onReadLetter,
   onReturnTour,
 }) {
+  const t = useT()
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -21,9 +23,11 @@ export default function C8eJourneyComplete({
   }, [])
 
   const stats = [
-    stopCount > 0 ? `${stopCount} stop${stopCount === 1 ? '' : 's'}` : null,
-    '21 centuries',
-    'One road still here',
+    stopCount > 0
+      ? t(stopCount === 1 ? 'complete.stopOne' : 'complete.stopMany', { count: stopCount })
+      : null,
+    t('complete.centuries'),
+    t('complete.road'),
   ].filter(Boolean)
 
   return (
@@ -90,7 +94,7 @@ export default function C8eJourneyComplete({
             margin: '0 0 18px',
           }}
         >
-          Journey complete
+          {t('complete.eyebrow')}
         </p>
         <h1
           style={{
@@ -104,7 +108,7 @@ export default function C8eJourneyComplete({
             textShadow: '0 2px 24px rgba(0,0,0,0.55)',
           }}
         >
-          {headline}
+          {headline ?? t('complete.defaultHeadline')}
         </h1>
         <p
           style={{
@@ -119,7 +123,7 @@ export default function C8eJourneyComplete({
             maxWidth: 360,
           }}
         >
-          {subline}
+          {subline ?? t('complete.defaultSubline')}
         </p>
       </div>
 
@@ -193,7 +197,7 @@ export default function C8eJourneyComplete({
             boxShadow: `0 0 22px ${accent}55`,
           }}
         >
-          Read your letter
+          {t('complete.letter')}
         </button>
 
         <button
@@ -214,7 +218,7 @@ export default function C8eJourneyComplete({
             cursor: busy ? 'wait' : 'pointer',
           }}
         >
-          Return to Tour
+          {t('complete.return')}
         </button>
       </div>
     </div>

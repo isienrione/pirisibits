@@ -1,6 +1,7 @@
 import { T, F } from '../tokens.js'
 import { buildImmersivePlayerProps } from '../lib/waypointImmersiveProps.js'
 import C6ImmersivePlayer from './C6ImmersivePlayer.jsx'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Free Pantheon preview - same unified immersive layout as every journey stop.
@@ -9,13 +10,13 @@ export default function A2FreePreviewStory({
   manifest,
   waypoint,
   waypointId = 'w17',
-  eyebrowLabel = 'FREE PREVIEW · PANTHEON',
+  eyebrowLabel,
   narrationPlaying = false,
   audioAvailable = true,
   currentTime = 0,
   duration = 0,
   storyEnded = false,
-  continueLabel = 'See the full tour →',
+  continueLabel,
   initialTab = 'audio',
   /** Pantheon exterior free chapter is Part 1 of 4 total Pantheon chapters. */
   chapterCount = 4,
@@ -29,6 +30,10 @@ export default function A2FreePreviewStory({
   demoAutoReveal = false,
   suppressAutoRevealInvite = false,
 }) {
+  const { t } = useI18n()
+  const resolvedEyebrow = eyebrowLabel ?? t('pantheon.preview.eyebrow')
+  const resolvedContinue = continueLabel ?? t('pantheon.preview.continue')
+
   const playerProps = buildImmersivePlayerProps({
     waypoint,
     waypointId,
@@ -51,14 +56,14 @@ export default function A2FreePreviewStory({
       onStoryComplete,
       onBack,
     },
-    continueLabel,
+    continueLabel: resolvedContinue,
   })
 
   return (
     <div style={{ background: T.obsidian, height: '100%', fontFamily: F.body, position: 'relative', overflow: 'hidden' }}>
       <C6ImmersivePlayer
         {...playerProps}
-        actLabel={eyebrowLabel}
+        actLabel={resolvedEyebrow}
         forceDiegeticHint
         demoAutoReveal={demoAutoReveal}
         suppressAutoRevealInvite={suppressAutoRevealInvite}

@@ -21,12 +21,7 @@ import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
-
-const ETERNA_MODE_SUBTITLE =
-  'Roma Eterna includes every route mode. Start with the full walk, just the centro storico, just the Colosseum and Forum, or hand-pick stops to match your day. Colored dots show which acts sit in each tour - choose one to continue.'
-
-const ETERNA_MODE_FOOTER =
-  'You can change your mind later. Nothing expires.'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function wantsChooseRoute(searchParams) {
   const value = searchParams?.get?.(BEGIN_CHOOSE_ROUTE_PARAM)
@@ -49,6 +44,7 @@ function resolveInitialPace(contextPace) {
 }
 
 export default function RedesignBeginFlow() {
+  const t = useT()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
@@ -189,8 +185,8 @@ export default function RedesignBeginFlow() {
         manifest={manifest}
         loading={loading}
         context={previewContext}
-        continueLabel="Enable location & begin"
-        footerNote="Next you'll enable location - then the guided tutorial begins at your first stop."
+        continueLabel={t('begin.preview.continue')}
+        footerNote={t('begin.preview.footer')}
         onContinue={() => setStepName('location')}
       />
     )
@@ -198,8 +194,8 @@ export default function RedesignBeginFlow() {
 
   if (stepName === 'resume') {
     const resumeLabel = step?.type === 'waypoint' && step.record
-      ? `Pick up at ${titleForWaypoint(step.record)}`
-      : 'Continue your walk'
+      ? t('begin.resume.at', { title: titleForWaypoint(step.record) })
+      : t('begin.resume.continue')
     return (
       <div className="redesign-app-shell">
         <C8dResume
@@ -239,7 +235,11 @@ export default function RedesignBeginFlow() {
     return (
       <div className="redesign-app-shell">
         <B3PermissionsPrimer
-          paceTitle={getPaceOption(selectedPace)?.title}
+          paceTitle={
+            selectedPace === JOURNEY_PACE.OWN
+              ? t('onboarding.pace.own.title')
+              : getPaceOption(selectedPace)?.title
+          }
           busy={busy}
           onEnable={handleEnableLocation}
           onSkip={startJourney}
@@ -256,16 +256,16 @@ export default function RedesignBeginFlow() {
         onSelectPace={setSelectedPace}
         onContinue={handlePaceContinue}
         showPrices={false}
-        eyebrow="YOUR WALK"
+        eyebrow={t('begin.choose.eyebrow')}
         title={
           <>
-            Choose how
+            {t('begin.choose.titleLine1')}
             <br />
-            you walk Rome.
+            {t('begin.choose.titleLine2')}
           </>
         }
-        subtitle={ETERNA_MODE_SUBTITLE}
-        footerNote={ETERNA_MODE_FOOTER}
+        subtitle={t('begin.eterna.subtitle')}
+        footerNote={t('begin.eterna.footer')}
       />
     </div>
   )

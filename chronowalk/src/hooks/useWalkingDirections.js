@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { env } from '../config/env'
 import { fetchWalkingDirections } from '../services/fetchWalkingRoute'
+import { getActiveLocale } from '../i18n/activeLocale.js'
 import {
   getAdhocWalkingDirections,
   cacheAdhocWalkingDirections,
@@ -11,6 +12,7 @@ import {
 } from '../utils/routeGeometryCache'
 import { getDistance } from '../utils/distance'
 import { isSameLocation, pickBestWalkingDirections, scoreWalkingStepQuality } from '../utils/walkingDirections'
+import { useI18n } from '../i18n/I18nProvider.jsx'
 
 /** If GPS is farther than this from the previous stop, prefer stop→stop routing. */
 const STALE_GPS_FROM_LEG_M = 350
@@ -26,7 +28,8 @@ export async function loadTourLegDirections(legFallback, accessToken, options = 
   if (!legFallback?.tourId || !legFallback?.fromId || !legFallback?.toId) return null
 
   const { tourId, fromId, toId, from, to } = legFallback
-  const cachedSteps = getLegWalkingSteps(tourId, fromId, toId)
+  const language = options.language ?? getActiveLocale()
+  const cachedSteps = getLegWalkingSteps(tourId, fromId, toId, language)
   const cachedGeometry = geometryFromLegCache(tourId, fromId, toId)
 
   if (cachedSteps?.length && scoreWalkingStepQuality(cachedSteps) >= 6) {
@@ -45,10 +48,11 @@ export async function loadTourLegDirections(legFallback, accessToken, options = 
 
   const result = await fetchWalkingDirections(from, to, accessToken, {
     destinationName: options.destinationName,
+    language,
   })
   if (!result?.steps?.length) return null
 
-  cacheLegDirections(tourId, fromId, toId, result.steps)
+  cacheLegDirections(tourId, fromId, toId, result.steps, language)
   if (result.geometry) {
     cacheLegRoute(tourId, fromId, toId, result.geometry)
   }
@@ -68,6 +72,7 @@ export function useWalkingDirections({
   destinationName = null,
   reloadKey = 0,
 }) {
+  const { locale, t } = useI18n()
   const [loading, setLoading] = useState(false)
   const [directions, setDirections] = useState(null)
   const [error, setError] = useState(null)
@@ -100,13 +105,16 @@ export function useWalkingDirections({
 
       if (!env.mapboxToken) {
         setDirections(null)
-        setError('Mapbox token is required for walking directions.')
+        setError(t('walk.directions.mapboxRequired'))
         setLoading(false)
         return
       }
 
       const legPromise = legFallback
-        ? loadTourLegDirections(legFallback, env.mapboxToken, { destinationName })
+        ? loadTourLegDirections(legFallback, env.mapboxToken, {
+            destinationName,
+            language: locale,
+          })
         : Promise.resolve(null)
 
       if (!routingOrigin) {
@@ -122,7 +130,7 @@ export function useWalkingDirections({
         } else {
           setDirections(null)
           setError(
-            'Enable location access for live directions, or wait a moment while the route loads.',
+            t('walk.directions.enableLocation'),
           )
         }
 
@@ -132,7 +140,7 @@ export function useWalkingDirections({
 
       if (isSameLocation(routingOrigin, routingDestination)) {
         setDirections(null)
-        setError('You are already at this landmark.')
+        setError(t('walk.directions.alreadyThere'))
         setLoading(false)
         return
       }
@@ -157,13 +165,17 @@ export function useWalkingDirections({
           setError(null)
         } else {
           setDirections(null)
-          setError('Could not load walking directions. Try again or open Google Maps.')
+          setError(t('walk.directions.loadError'))
         }
         setLoading(false)
         return
       }
 
-      const cachedAdhoc = getAdhocWalkingDirections(routingOrigin, routingDestination)
+      const cachedAdhoc = getAdhocWalkingDirections(
+        routingOrigin,
+        routingDestination,
+        locale,
+      )
       if (cachedAdhoc?.steps?.length) {
         setDirections(cachedAdhoc)
         setError(null)
@@ -178,7 +190,7 @@ export function useWalkingDirections({
         routingOrigin,
         routingDestination,
         env.mapboxToken,
-        { destinationName },
+        { destinationName, language: locale },
       )
 
       const [adhocResult, legResult] = await Promise.all([adhocPromise, legPromise])
@@ -189,10 +201,15 @@ export function useWalkingDirections({
 
       if (!best?.steps?.length) {
         setDirections(null)
-        setError('Could not load walking directions. Try again or open Google Maps.')
+        setError(t('walk.directions.loadError'))
       } else {
         if (best === adhocResult) {
-          cacheAdhocWalkingDirections(routingOrigin, routingDestination, adhocResult)
+          cacheAdhocWalkingDirections(
+            routingOrigin,
+            routingDestination,
+            adhocResult,
+            locale,
+          )
         }
         setDirections(best)
         setError(null)
@@ -210,10 +227,12 @@ export function useWalkingDirections({
     enabled,
     legFallback,
     destinationName,
+    locale,
     reloadKey,
     retryNonce,
     routingDestination,
     routingOrigin,
+    t,
   ])
 
   return {

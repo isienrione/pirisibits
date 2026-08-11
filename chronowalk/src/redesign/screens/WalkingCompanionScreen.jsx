@@ -22,6 +22,7 @@ import {
   resolveWalkingDistanceCopy,
   shouldShowTransitMiniPlayer,
 } from '../lib/walkingCompanionPhase.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * One adaptive layout for walking between stops (waypoint legs + transits).
@@ -59,7 +60,7 @@ export default function WalkingCompanionScreen({
   onBeginChapter,
   onPrimeAudio,
   onContinue,
-  continueLabel = 'Continue walking →',
+  continueLabel = null,
   onPause,
   onOpenSettings = null,
   extraBottomInset = 0,
@@ -78,6 +79,7 @@ export default function WalkingCompanionScreen({
   /** Ride/taxi legs (e.g. Via Appia) - replaces walk distance chrome. */
   etaOverride = null,
 }) {
+  const t = useT()
   const [fullPlayerOpen, setFullPlayerOpen] = useState(false)
   const [userConfirmedArrival, setUserConfirmedArrival] = useState(false)
   const [dragProgress, setDragProgress] = useState(null)
@@ -86,7 +88,14 @@ export default function WalkingCompanionScreen({
   const activeRouteView = forcedRouteView === 'map' || forcedRouteView === 'steps' ? forcedRouteView : routeView
 
   const showArrivedUI = arrived || userConfirmedArrival
-  const storyCtaLabel = beginChapterLabel || formatOpenStoryCta(title)
+  const storyCtaLabel =
+    beginChapterLabel ||
+    formatOpenStoryCta(title, {
+      unnamed: t('walk.openStory'),
+      named: (name) => t('walk.openNamedStory', { title: name }),
+      leadingArticle: (name) => t('walk.openLeadingArticleStory', { title: name }),
+    })
+  const resolvedContinueLabel = continueLabel ?? t('walk.continue')
 
   const externalMapsUrl = useMemo(
     () => buildGoogleMapsDirectionsUrl(userPosition, destination),
@@ -104,8 +113,7 @@ export default function WalkingCompanionScreen({
   const directions = isFirstStop ? null : directionsOverride ?? liveDirections.directions
   const directionsLoading =
     isFirstStop || directionsOverride ? false : liveDirections.loading
-  const firstStopDirectionsCopy =
-    'Once you arrive at the Colosseum, this screen will show navigation directions for the following stops.'
+  const firstStopDirectionsCopy = t('walk.firstStopDirections')
   const directionsError = isFirstStop
     ? firstStopDirectionsCopy
     : directionsOverride
@@ -204,7 +212,9 @@ export default function WalkingCompanionScreen({
     resolveWalkingDistanceCopy,
     etaOverride,
   })
-  const distanceLine = formatDistanceLine(distanceCopy)
+  const distanceLine = formatDistanceLine(distanceCopy, {
+    unavailable: t('walk.distanceUnavailable'),
+  })
   const showGpsHelp = !showArrivedUI && distanceCopy.gpsBlocked
   const subtitleKey = showArrivedUI ? 'arrived' : approaching ? 'near' : 'walking'
   const showDistanceMeta = !showArrivedUI && !approaching
@@ -281,7 +291,7 @@ export default function WalkingCompanionScreen({
               type="button"
               className="cw-walking-companion__settings cw-wc-pressable"
               onClick={onOpenSettings}
-              aria-label="Open settings"
+              aria-label={t('walk.openSettings')}
               data-testid="walking-open-settings"
             >
               <Settings size={18} aria-hidden />
@@ -293,12 +303,12 @@ export default function WalkingCompanionScreen({
             <div className="cw-walking-companion__arrived-badge" aria-hidden>
               <CheckCircle2 size={20} strokeWidth={2} />
             </div>
-            <p className="cw-walking-companion__arrived-label">You have arrived</p>
+            <p className="cw-walking-companion__arrived-label">{t('walk.arrived')}</p>
             <h1 className="cw-walking-companion__title">{title}</h1>
           </div>
         ) : (
           <>
-            <p className="cw-walking-companion__eyebrow">Walking to</p>
+            <p className="cw-walking-companion__eyebrow">{t('walk.walkingTo')}</p>
 
             <div className="cw-walking-companion__title-row">
               <h1 className="cw-walking-companion__title">{title}</h1>
@@ -341,10 +351,10 @@ export default function WalkingCompanionScreen({
 
         {showGpsHelp ? (
           <p className="cw-walking-companion__gps-note">
-            Location off
+            {t('walk.locationOff')}
             {onRetryLocation ? (
               <button type="button" className="cw-wc-pressable" onClick={onRetryLocation}>
-                Retry
+                {t('action.retry')}
               </button>
             ) : null}
           </p>
@@ -353,7 +363,11 @@ export default function WalkingCompanionScreen({
 
       <div className="cw-walking-companion__body">
         {!showArrivedUI ? (
-          <div className="cw-walking-companion__view-toggle" role="tablist" aria-label="Route view">
+          <div
+            className="cw-walking-companion__view-toggle"
+            role="tablist"
+            aria-label={t('walk.routeView')}
+          >
             <button
               type="button"
               role="tab"
@@ -361,7 +375,7 @@ export default function WalkingCompanionScreen({
               className={`cw-walking-companion__view-btn cw-wc-pressable${activeRouteView === 'map' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('map')}
             >
-              Map
+              {t('walk.map')}
             </button>
             <button
               type="button"
@@ -370,7 +384,7 @@ export default function WalkingCompanionScreen({
               className={`cw-walking-companion__view-btn cw-wc-pressable${activeRouteView === 'steps' ? ' cw-walking-companion__view-btn--active' : ''}`}
               onClick={() => setRouteView('steps')}
             >
-              Steps
+              {t('walk.steps')}
             </button>
           </div>
         ) : null}
@@ -466,7 +480,7 @@ export default function WalkingCompanionScreen({
           <div className="cw-walking-companion__dock">
             {onPause ? (
               <button type="button" className="cw-walking-companion__dock-btn cw-wc-pressable" onClick={onPause}>
-                Pause walk
+                {t('walk.pause')}
               </button>
             ) : onContinue ? (
               <button
@@ -475,7 +489,7 @@ export default function WalkingCompanionScreen({
                 className="cw-walking-companion__dock-btn cw-wc-pressable"
                 onClick={onContinue}
               >
-                {continueLabel.replace(/\s*→\s*$/, '')}
+                {resolvedContinueLabel.replace(/\s*→\s*$/, '')}
               </button>
             ) : (
               <span className="cw-walking-companion__dock-spacer" aria-hidden />
@@ -496,7 +510,7 @@ export default function WalkingCompanionScreen({
                 }
               }}
             >
-              I'm here
+              {t('walk.here')}
             </button>
           </div>
         ) : null}

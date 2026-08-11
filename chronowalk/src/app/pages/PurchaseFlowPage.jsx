@@ -17,6 +17,11 @@ import { track, TRACK_EVENTS } from '../../lib/track.js'
 import { resolvePreviewUrl } from '../../audio/audioUrl.js'
 import { LANDING_PREVIEW_AUDIO_FILE } from '../../landing/landingData.js'
 import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandoff.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
+import {
+  getLocalizedLanding,
+  localizeLandingOffers,
+} from '../../landing/getLocalizedLanding.js'
 
 /**
  * /purchase - paywall. Paddle when configured; otherwise blocked until credentials exist.
@@ -24,9 +29,27 @@ import { primePreviewAudioForNavigation } from '../../landing/previewAudioHandof
  */
 export function PurchaseFlowPage() {
   const navigate = useNavigate()
+  const { locale } = useI18n()
   const [params] = useSearchParams()
   const tierId = params.get('tier')
-  const tier = useMemo(() => getTierById(tierId), [tierId])
+  const tier = useMemo(() => {
+    const commerceTier = getTierById(tierId)
+    if (!commerceTier) return null
+    const displayTier = [
+      ...getLocalizedLanding(locale).ROME_TIERS,
+      ...getLocalizedLanding(locale).ROME_BUNDLES,
+    ].find((entry) => entry.id === commerceTier.id)
+    const localizedOffer = localizeLandingOffers([commerceTier], locale)[0]
+    if (!displayTier) return localizedOffer
+    return {
+      ...localizedOffer,
+      name: displayTier.name,
+      tierLabel: displayTier.tierLabel,
+      eyebrow: displayTier.eyebrow,
+      description: displayTier.description,
+      priceNote: displayTier.priceNote,
+    }
+  }, [locale, tierId])
   const allowDevUnlock =
     isStagingCheckoutAllowed() && (params.get('devUnlock') === '1' || params.get('devUnlock') === 'true')
 

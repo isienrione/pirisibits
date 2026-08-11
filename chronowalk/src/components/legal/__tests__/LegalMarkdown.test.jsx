@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import LegalMarkdown from '../LegalMarkdown.jsx'
+import { getLegalDocumentSource } from '../../../content/legal/legalDocuments.js'
 import privacySource from '../../../content/legal/privacy-policy.md?raw'
 import termsSource from '../../../content/legal/terms-of-service.md?raw'
 
@@ -23,5 +24,20 @@ describe('LegalMarkdown', () => {
     expect(screen.getByText(/Deliver the experience you purchased/i)).toBeInTheDocument()
     expect(document.body.textContent).toContain('PostHog')
     expect(document.body.textContent).toMatch(/Privacy choices|Cookie preferences/i)
+  })
+
+  it('serves Spanish privacy markdown by locale', () => {
+    const source = getLegalDocumentSource('privacy', 'es')
+    render(<LegalMarkdown source={source} />)
+    expect(screen.getByRole('heading', { name: /política de privacidad/i })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: /qué hacemos/i })).toBeInTheDocument()
+    expect(document.body.textContent).toContain('PostHog')
+  })
+
+  it('serves Spanish refund markdown by locale', () => {
+    const source = getLegalDocumentSource('refund', 'es')
+    render(<LegalMarkdown source={source} />)
+    expect(screen.getByRole('heading', { name: /política de reembolsos/i })).toBeInTheDocument()
+    expect(document.body.textContent).toMatch(/contenido digital/i)
   })
 })

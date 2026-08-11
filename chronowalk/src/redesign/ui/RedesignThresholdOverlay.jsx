@@ -9,6 +9,7 @@ import {
   thenPhotoForWaypoint,
   titleForWaypoint,
 } from '../lib/waypointPresentation.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function RedesignThresholdOverlay({
   waypoint,
@@ -17,6 +18,7 @@ export default function RedesignThresholdOverlay({
   onComplete,
 }) {
   const [crossed, setCrossed] = useState(false)
+  const t = useT()
 
   if (!waypoint) return null
 
@@ -84,7 +86,7 @@ export default function RedesignThresholdOverlay({
               boxShadow: '0 4px 24px rgba(232,161,60,0.45)',
             }}
           >
-            Continue walking →
+            {t('walk.continue')}
           </button>
         ) : onComplete ? (
           <button
@@ -104,7 +106,7 @@ export default function RedesignThresholdOverlay({
               backdropFilter: 'blur(8px)',
             }}
           >
-            Skip - continue walking →
+            {t('threshold.skipContinue')}
           </button>
         ) : null}
       </div>

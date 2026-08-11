@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Pause, Play } from 'lucide-react'
 import { T } from '../tokens.js'
 import { formatRemainingShort } from '../lib/walkingCompanionFormat.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 const BAR_HEIGHTS = [0.22, 0.38, 0.52, 0.72, 1, 0.82, 0.58, 0.34]
 
@@ -38,6 +39,7 @@ export default function FloatingTransitAudioPlayer({
   testId = 'transit-audio-panel',
   className = '',
 }) {
+  const t = useT()
   const [mounted, setMounted] = useState(visible)
   const [present, setPresent] = useState(visible)
 
@@ -72,7 +74,11 @@ export default function FloatingTransitAudioPlayer({
           type="button"
           className="cw-ftap__play cw-wc-pressable"
           onClick={onToggle}
-          aria-label={narrationPlaying ? 'Pause narration' : 'Play narration'}
+          aria-label={
+            narrationPlaying
+              ? t('walk.audio.pauseNarration')
+              : t('walk.audio.playNarration')
+          }
         >
           {narrationPlaying ? (
             <Pause size={16} fill={T.obsidian} color={T.obsidian} />
@@ -85,7 +91,7 @@ export default function FloatingTransitAudioPlayer({
           type="button"
           className="cw-ftap__body cw-wc-pressable"
           onClick={onOpenFullPlayer}
-          aria-label={`Open full narration player for ${title}`}
+          aria-label={t('walk.audio.openPlayer', { title })}
         >
           <span className="cw-ftap__copy">
             <span className="cw-ftap__title">{title}</span>

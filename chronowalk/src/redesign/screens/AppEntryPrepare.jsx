@@ -2,6 +2,7 @@ import { T, F } from '../tokens.js'
 import { spanishSteps } from '../images.js'
 import { Vignette, BottomScrim } from '../ui/index.js'
 import HomeScreenInstallOption from '../ui/HomeScreenInstallOption.jsx'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * In-app prepare step: offline download and home-screen install.
@@ -20,6 +21,7 @@ export default function AppEntryPrepare({
   onInstall,
   onContinue,
 }) {
+  const t = useT()
   const ringR = 22
   const ringC = 2 * Math.PI * ringR
   const done = downloadComplete || downloadProgress >= 1
@@ -70,7 +72,7 @@ export default function AppEntryPrepare({
             fontWeight: 600,
           }}
         >
-          Inside ChronoWalk
+          {t('entry.prepare.eyebrow')}
         </p>
         <h2
           style={{
@@ -82,10 +84,10 @@ export default function AppEntryPrepare({
             margin: '12px 0 10px',
           }}
         >
-          Prepare for the streets.
+          {t('entry.prepare.title')}
         </h2>
         <p style={{ fontSize: 14, color: T.muted, marginBottom: 28, lineHeight: 1.6 }}>
-          One download keeps the stories playing when signal drops.
+          {t('entry.prepare.lead')}
         </p>
 
         <div
@@ -109,7 +111,7 @@ export default function AppEntryPrepare({
               fontWeight: 600,
             }}
           >
-            {installed ? 'Done' : 'Recommended'}
+            {installed ? t('entry.prepare.done') : t('entry.prepare.recommended')}
           </p>
           <HomeScreenInstallOption
             installed={installed}
@@ -125,7 +127,11 @@ export default function AppEntryPrepare({
           type="button"
           data-testid="app-entry-download"
           aria-label={
-            done ? 'Download complete' : downloadError ? 'Retry download' : 'Download the walk'
+            done
+              ? t('entry.prepare.downloadComplete')
+              : downloadError
+                ? t('entry.prepare.retryDownload')
+                : t('entry.prepare.downloadAria')
           }
           disabled={done || downloading}
           onClick={() => {
@@ -156,30 +162,36 @@ export default function AppEntryPrepare({
               fontWeight: 600,
             }}
           >
-            Recommended
+            {t('entry.prepare.recommended')}
           </p>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 16, color: T.warmWhite, fontWeight: 500, marginBottom: 5 }}>
-                Download the walk
-                <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}> - 215 MB</span>
+                {t('entry.prepare.download')}
+                <span style={{ color: T.muted, fontWeight: 400, fontSize: 14 }}>
+                  {t('entry.prepare.size')}
+                </span>
               </p>
               <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-                Stories, then-vs-now images, and walking-map tiles for Rome.
+                {t('entry.prepare.contents')}
               </p>
               {done ? (
                 mapTilesPartial ? (
                   <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
-                    Stories ready. Map tiles need a steadier connection - retry when you have signal.
+                    {t('entry.prepare.partial')}
                   </p>
                 ) : (
-                  <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>Ready on this phone</p>
+                  <p style={{ fontSize: 12, color: T.actII, marginTop: 6 }}>
+                    {t('entry.prepare.ready')}
+                  </p>
                 )
               ) : downloading ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>
                   {downloadProgress > 0.02
-                    ? `${Math.max(1, Math.round(downloadProgress * 100))}% saved`
-                    : 'Starting download…'}
+                    ? t('entry.prepare.saved', {
+                        percent: Math.max(1, Math.round(downloadProgress * 100)),
+                      })
+                    : t('entry.prepare.starting')}
                 </p>
               ) : downloadError ? (
                 <p style={{ fontSize: 12, color: T.ember, marginTop: 6 }}>{downloadError}</p>
@@ -255,7 +267,7 @@ export default function AppEntryPrepare({
               cursor: 'pointer',
             }}
           >
-            Continue
+            {t('common.continue')}
           </button>
           <button
             type="button"
@@ -269,7 +281,7 @@ export default function AppEntryPrepare({
               fontFamily: F.body,
             }}
           >
-            I&apos;ll download later
+            {t('entry.prepare.later')}
           </button>
         </div>
       </div>

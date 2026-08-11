@@ -11,6 +11,7 @@ import { T, F } from './tokens.js'
 import { photoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
 import { Eyebrow } from './ui/index.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function TimelineDot({ status }) {
   const isCompleted = status === 'completed'
@@ -56,6 +57,7 @@ function TimelineLine({ faded, isLast }) {
 
 export default function RedesignTourRoadmapScreen() {
   const navigate = useNavigate()
+  const t = useT()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
 
@@ -88,7 +90,7 @@ export default function RedesignTourRoadmapScreen() {
           color: T.muted,
         }}
       >
-        Loading your tour…
+        {t('tour.loading')}
       </div>
     )
   }
@@ -96,9 +98,9 @@ export default function RedesignTourRoadmapScreen() {
   if (error || !manifest) {
     return (
       <div className="cw-grain" style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}>
-        <p style={{ color: T.muted }}>{error?.message ?? 'Tour unavailable'}</p>
+        <p style={{ color: T.muted }}>{error?.message ?? t('tour.unavailable')}</p>
         <button type="button" onClick={() => navigate('/begin')} style={{ marginTop: 16, padding: '12px 16px', borderRadius: 10, border: 'none', background: T.ember, cursor: 'pointer' }}>
-          Start tour
+          {t('tour.start')}
         </button>
       </div>
     )
@@ -123,7 +125,7 @@ export default function RedesignTourRoadmapScreen() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
-          <Eyebrow color={T.ember}>YOUR TOUR</Eyebrow>
+          <Eyebrow color={T.ember}>{t('tour.yourTour')}</Eyebrow>
           <span
             style={{
               fontSize: 12,
@@ -195,7 +197,7 @@ export default function RedesignTourRoadmapScreen() {
                       fontWeight: 600,
                     }}
                   >
-                    Next
+                    {t('tour.next')}
                   </p>
                 ) : null}
                 <p
@@ -285,7 +287,7 @@ export default function RedesignTourRoadmapScreen() {
               boxShadow: `0 4px 20px ${T.ember}44`,
             }}
           >
-            Continue walk →
+            {t('tour.continueWalk')}
           </Link>
         ) : (
           <Link
@@ -305,7 +307,7 @@ export default function RedesignTourRoadmapScreen() {
               textDecoration: 'none',
             }}
           >
-            {state === JOURNEY_STATES.COMPLETE ? 'Walk again' : 'Begin your walk'}
+            {state === JOURNEY_STATES.COMPLETE ? t('tour.walkAgain') : t('tour.begin')}
           </Link>
         )}
 
@@ -321,7 +323,7 @@ export default function RedesignTourRoadmapScreen() {
               padding: '4px 0',
             }}
           >
-            Open journey letter
+            {t('tour.openLetter')}
           </Link>
         ) : null}
       </div>

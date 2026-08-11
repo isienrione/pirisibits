@@ -10,6 +10,7 @@ import { useSyncedAudioControls } from '../../hooks/useSyncedAudioControls.js'
 import { useSharedWalkGuard } from '../../redesign/context/SharedWalkGuardContext.jsx'
 import { createWaypointAutoplayCoordinator } from '../../audio/waypointAutoplay.js'
 import { useV2Journey, useTourManifest } from '../../hooks/useV2Journey.js'
+import { t } from '../../i18n/t.js'
 import { useJourneyGeo } from '../../hooks/useJourneyGeo.js'
 import { useWalkingCompanion } from '../../hooks/useWalkingCompanion.js'
 import { useJourneyStep } from '../../hooks/useJourneyStep.js'
@@ -1950,12 +1951,19 @@ export default function JourneyShell({ variant = 'legacy' }) {
     if (variant === 'redesign') {
       return withInterruptionBanner(
         <C8cActComplete
-          actTitle={act4 ? `ACT ${act4.numeral} · ${act4.title.toUpperCase()}` : 'ACT IV · THE MARKET'}
-          closingLine={act4?.promise ?? 'The ancient city, complete.'}
+          actTitle={
+            act4
+              ? t('actComplete.actTitle', {
+                  numeral: act4.numeral,
+                  title: String(act4.title ?? '').toUpperCase(),
+                })
+              : t('actComplete.defaultAct')
+          }
+          closingLine={act4?.promise ?? t('actComplete.defaultClosing')}
           stats={[
-            `${context.completedWaypointIds.length} stops`,
-            '4.1 km',
-            '21 centuries',
+            t('actComplete.stops', { count: context.completedWaypointIds.length }),
+            t('actComplete.distance'),
+            t('actComplete.centuries'),
           ]}
           accent={ACT_COLORS.IV ?? T.actIV}
           onContinue={handleContinueClassicDay}

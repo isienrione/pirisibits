@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Play, ChevronLeft, ChevronDown } from "lucide-react";
-import { useContext } from "react";
 import { T, F } from "../tokens.js";
 import { colosseumNow } from "../images.js";
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow } from '../ui/index.js';
 import C7Threshold from './C7Threshold.jsx';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function E2MemoryDetail({
   accent = T.actI,
@@ -15,7 +15,7 @@ export default function E2MemoryDetail({
   thenPhoto = colosseumNow,
   thenLoop = null,
   thenLabel = 'ANCIENT ROME',
-  honestyCaption = 'Interpretive reconstruction informed by archaeology and scholarship.',
+  honestyCaption = null,
   signatureLine: sigLine = 'The concrete is still crystallizing.',
   facts: factsProp,
   transcript,
@@ -28,6 +28,8 @@ export default function E2MemoryDetail({
   onViewImages,
 }) {
   const { navigate } = useContext(RedesignNavCtx);
+  const t = useT()
+  const resolvedHonesty = honestyCaption ?? t('threshold.honesty')
 
   const immersionH = Math.round(((390 - 48) * 4) / 3);
 
@@ -50,7 +52,7 @@ export default function E2MemoryDetail({
       {/* Back */}
       <div style={{ padding: "48px 24px 16px", flexShrink: 0 }}>
         <button type="button" onClick={() => (onBack ? onBack() : navigate("E1"))} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", color: T.muted, fontFamily: F.body, fontSize: 13, padding: 0 }}>
-          <ChevronLeft size={16} /> Journal
+          <ChevronLeft size={16} /> {t('memory.back')}
         </button>
       </div>
 
@@ -76,7 +78,7 @@ export default function E2MemoryDetail({
               cursor: 'pointer',
             }}
           >
-            Walk to this stop
+            {t('memory.walkToStop')}
           </button>
         ) : null}
 
@@ -100,7 +102,7 @@ export default function E2MemoryDetail({
                   marginBottom: 8,
                 }}
               >
-                Step through time
+                {t('memory.stepThroughTime')}
               </button>
             ) : null}
             <div style={{ display: 'flex', gap: 8, marginBottom: onViewImages ? 8 : 0 }}>
@@ -121,7 +123,7 @@ export default function E2MemoryDetail({
                     cursor: 'pointer',
                   }}
                 >
-                  Audio only
+                  {t('memory.audioOnly')}
                 </button>
               ) : null}
               {onTranscript ? (
@@ -141,7 +143,7 @@ export default function E2MemoryDetail({
                     cursor: 'pointer',
                   }}
                 >
-                  Transcript
+                  {t('memory.transcript')}
                 </button>
               ) : null}
             </div>
@@ -162,7 +164,7 @@ export default function E2MemoryDetail({
                   cursor: 'pointer',
                 }}
               >
-                View images only
+                {t('memory.viewImages')}
               </button>
             ) : null}
           </div>
@@ -170,7 +172,7 @@ export default function E2MemoryDetail({
 
         {/* Interactive threshold - hold or drag the seam */}
         <p style={{ fontSize: 11, color: accent, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 500, marginBottom: 10 }}>
-          Immersion
+          {t('threshold.immersion')}
         </p>
         <div
           style={{
@@ -187,18 +189,18 @@ export default function E2MemoryDetail({
             thenPhoto={thenPhoto}
             thenLoop={thenLoop}
             thenLabel={thenLabel}
-            honestyCaption={honestyCaption}
+            honestyCaption={resolvedHonesty}
           />
         </div>
         <p style={{ fontSize: 11, color: T.muted, textAlign: 'center', marginBottom: 6, letterSpacing: '0.08em' }}>
-          Then · Now
+          {t('threshold.thenNow')}
         </p>
         <p style={{ fontSize: 11, color: T.muted, lineHeight: 1.6, marginBottom: 26, fontStyle: 'italic' }}>
-          {honestyCaption}
+          {resolvedHonesty}
         </p>
 
         {/* Key facts - editorial list, hairline-separated, no bullets */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>KEY FACTS</p>
+        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>{t('memory.keyFacts')}</p>
         {facts.map((fact, i) => (
           <div key={i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}28`, margin: "14px 0" }} />}
@@ -209,7 +211,7 @@ export default function E2MemoryDetail({
         {/* Transcript accordion */}
         <div style={{ marginTop: 28, marginBottom: 24 }}>
           <button onClick={() => setTxOpen(!txOpen)} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", background: "none", border: "none", cursor: "pointer", padding: "14px 0", borderTop: `1px solid ${T.muted}28`, borderBottom: `1px solid ${T.muted}28` }}>
-            <span style={{ fontSize: 13, color: T.ink, fontWeight: 500, fontFamily: F.body }}>Full transcript</span>
+            <span style={{ fontSize: 13, color: T.ink, fontWeight: 500, fontFamily: F.body }}>{t('memory.fullTranscript')}</span>
             <ChevronDown size={16} color={T.muted} style={{ transform: txOpen ? "rotate(180deg)" : "none", transition: "transform 250ms" }} />
           </button>
           {txOpen && (
@@ -223,7 +225,7 @@ export default function E2MemoryDetail({
         </div>
 
         {/* Per-chapter listen-again rows */}
-        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>CHAPTERS</p>
+        <p style={{ fontSize: 11, color: accent, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 500, marginBottom: 14 }}>{t('memory.chapters')}</p>
         {chapters.map((ch, i) => (
           <div key={ch.n ?? i}>
             {i > 0 && <div style={{ height: 1, background: `${T.muted}20` }} />}
@@ -237,7 +239,7 @@ export default function E2MemoryDetail({
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 14, color: T.ink, fontWeight: 500, lineHeight: 1.3, marginBottom: 2 }}>{ch.title ?? ch}</p>
-                <p style={{ fontSize: 12, color: T.muted }}>Chapter {ch.n ?? i + 1}</p>
+                <p style={{ fontSize: 12, color: T.muted }}>{t('memory.chapterN', { n: ch.n ?? i + 1 })}</p>
               </div>
               <span style={{ fontSize: 12, color: T.muted, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>{ch.dur ?? ''}</span>
             </button>

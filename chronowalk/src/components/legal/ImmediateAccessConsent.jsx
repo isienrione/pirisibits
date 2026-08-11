@@ -1,4 +1,4 @@
-import { IMMEDIATE_ACCESS_CONSENT_LABEL } from './immediateAccessConsent.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
  * Unchecked-by-default consent required before digital-content checkout.
@@ -11,6 +11,7 @@ export default function ImmediateAccessConsent({
   className = '',
   dark = false,
 }) {
+  const t = useT()
   return (
     <div className={`cw-consent${dark ? ' cw-consent--on-dark' : ''}${className ? ` ${className}` : ''}`.trim()}>
       <input
@@ -21,7 +22,7 @@ export default function ImmediateAccessConsent({
         onChange={(event) => onChange(event.target.checked)}
       />
       <label htmlFor={id} className="cw-consent__label">
-        {IMMEDIATE_ACCESS_CONSENT_LABEL}
+        {t('consent.immediate')}
       </label>
     </div>
   )

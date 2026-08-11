@@ -4,15 +4,31 @@
  */
 
 import { getLaunchOfferHeroPriceParts } from '../lib/launchOffer.js'
+import { useI18n } from '../i18n/I18nProvider.jsx'
+import { localizeLandingPriceCopy } from './getLocalizedLanding.js'
 import './OfferPriceDisplay.css'
+
+function localizeOfferBadges(offerLabel, saveLabel, t) {
+  const displayOfferLabel = offerLabel ? t('offer.launch') : null
+  const amount = typeof saveLabel === 'string' ? saveLabel.match(/€[\d.,]+/)?.[0] : null
+  const displaySaveLabel = saveLabel
+    ? amount
+      ? t('offer.save', { amount })
+      : saveLabel
+    : null
+  return { displayOfferLabel, displaySaveLabel }
+}
 
 /** Hero / acquisition unlock CTA with scratched list price when Launch Offer is on. */
 export function LaunchOfferUnlockCtaLabel({ fallback, short = false, onDark = false }) {
+  const { locale } = useI18n()
   const parts = getLaunchOfferHeroPriceParts()
   if (!parts) return fallback
   return (
     <span className="cw-offer-unlock-cta">
-      <span className="cw-offer-unlock-cta__text">{short ? parts.prefixShort : parts.prefix}</span>
+      <span className="cw-offer-unlock-cta__text">
+        {localizeLandingPriceCopy(short ? parts.prefixShort : parts.prefix, locale)}
+      </span>
       <span className="cw-offer-unlock-cta__dot" aria-hidden="true">
         ·
       </span>
@@ -43,8 +59,10 @@ export default function OfferPriceDisplay({
   inline = false,
   onDark = false,
 }) {
+  const { t } = useI18n()
   const Tag = as
   const showOffer = Boolean(launchOffer && basePrice && price)
+  const { displayOfferLabel, displaySaveLabel } = localizeOfferBadges(offerLabel, saveLabel, t)
 
   if (!showOffer) {
     return (
@@ -65,7 +83,9 @@ export default function OfferPriceDisplay({
     .filter(Boolean)
     .join(' ')
 
-  const a11y = [basePrice, 'now', price, offerLabel, saveLabel].filter(Boolean).join(' · ')
+  const a11y = [basePrice, t('offer.now'), price, displayOfferLabel, displaySaveLabel]
+    .filter(Boolean)
+    .join(' · ')
 
   return (
     <Tag className={modifiers} data-testid="cw-offer-price" aria-label={a11y}>
@@ -76,10 +96,14 @@ export default function OfferPriceDisplay({
         </span>
         <span className="cw-offer-price__now-wrap">
           <span className={`${priceClassName} cw-offer-price__now`.trim()}>{price}</span>
-          {offerLabel || saveLabel ? (
+          {displayOfferLabel || displaySaveLabel ? (
             <span className="cw-offer-price__meta">
-              {offerLabel ? <span className="cw-offer-price__label">{offerLabel}</span> : null}
-              {saveLabel ? <span className="cw-offer-price__save">{saveLabel}</span> : null}
+              {displayOfferLabel ? (
+                <span className="cw-offer-price__label">{displayOfferLabel}</span>
+              ) : null}
+              {displaySaveLabel ? (
+                <span className="cw-offer-price__save">{displaySaveLabel}</span>
+              ) : null}
             </span>
           ) : null}
         </span>

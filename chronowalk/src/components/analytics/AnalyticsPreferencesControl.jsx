@@ -1,12 +1,13 @@
 import { useEffect, useId, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAnalyticsConsent } from './useAnalyticsConsent.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 import './analyticsConsent.css'
 
-function statusLabel(consent) {
-  if (consent === 'accepted') return 'Cookies allowed'
-  if (consent === 'declined') return 'Cookies off'
-  return 'Not chosen yet'
+function statusLabel(consent, t) {
+  if (consent === 'accepted') return t('analytics.status.accepted')
+  if (consent === 'declined') return t('analytics.status.declined')
+  return t('analytics.status.unknown')
 }
 
 /**
@@ -15,6 +16,7 @@ function statusLabel(consent) {
  * @param {{ variant?: 'footer' | 'settings', className?: string }} props
  */
 export default function AnalyticsPreferencesControl({ variant = 'footer', className = '' }) {
+  const t = useT()
   const titleId = useId()
   const { consent, isAccepted, accept, decline } = useAnalyticsConsent()
   const [open, setOpen] = useState(false)
@@ -28,7 +30,11 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open])
 
-  const triggerLabel = variant === 'settings' ? 'Cookie preferences' : 'Privacy choices'
+  const triggerLabel =
+    variant === 'settings'
+      ? t('analytics.preferences.cookies')
+      : t('analytics.preferences.privacy')
+  const currentStatus = statusLabel(consent, t)
 
   return (
     <div className={`cw-analytics-prefs ${className}`.trim()} data-testid="analytics-preferences">
@@ -45,7 +51,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
         data-testid="analytics-preferences-open"
       >
         <span className="cw-analytics-prefs__trigger-label">{triggerLabel}</span>
-        <span className="cw-analytics-prefs__trigger-status">{statusLabel(consent)}</span>
+        <span className="cw-analytics-prefs__trigger-status">{currentStatus}</span>
       </button>
 
       {open ? (
@@ -67,14 +73,12 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
               {triggerLabel}
             </h2>
             <p className="cw-analytics-prefs__status">
-              Current choice: <strong>{statusLabel(consent)}</strong>
+              {t('analytics.preferences.current', { status: currentStatus })}
             </p>
             <p className="cw-analytics-prefs__body">
-              This controls optional marketing and advertising cookies only. Product analytics
-              (including session replay) run under legitimate interest to improve ChronoWalk and
-              are not tied to this choice.{' '}
+              {t('analytics.preferences.body')}{' '}
               <Link to="/legal/privacy" className="cw-analytics-consent__link" onClick={() => setOpen(false)}>
-                Privacy Policy
+                {t('analytics.privacyPolicy')}
               </Link>
             </p>
             <div className="cw-analytics-consent__actions cw-analytics-consent__actions--prefs">
@@ -88,7 +92,7 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-accept"
                 disabled={isAccepted}
               >
-                Accept cookies
+                {t('analytics.preferences.accept')}
               </button>
               <button
                 type="button"
@@ -100,14 +104,14 @@ export default function AnalyticsPreferencesControl({ variant = 'footer', classN
                 data-testid="analytics-preferences-decline"
                 disabled={consent === 'declined'}
               >
-                Reject cookies
+                {t('analytics.preferences.reject')}
               </button>
               <button
                 type="button"
                 className="cw-analytics-prefs__close"
                 onClick={() => setOpen(false)}
               >
-                Close
+                {t('common.close')}
               </button>
             </div>
           </div>

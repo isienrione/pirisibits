@@ -1,0 +1,26 @@
+{
+  "no_ticket": [
+    {
+      "file": "alt_forum_1.mp3",
+      "title": "El pantano drenado, visto desde arriba",
+      "transcript": "Busca un lugar junto a la baranda y apoya ambas manos. Debajo de ti, de un extremo al otro, está todo el Foro Romano. La mayoría de quienes compran entrada nunca ve esta perspectiva: ahí abajo, el Foro es un laberinto en el que estás metido. Desde aquí es un mapa. Y lo primero que el mapa te dice es algo que nadie pone en una postal. Este valle era un pantano.\n\nEra un terreno bajo entre colinas. Recibía el agua que bajaba de todas ellas y el Tíber lo inundaba con regularidad. El espacio público más importante de la historia occidental comenzó como un problema de drenaje, y Roma lo resolvió como resolvía casi todo: con ingeniería y terquedad. Hizo correr una gran alcantarilla cubierta a lo largo del valle, la Cloaca Máxima, y sacó el agua. Sigue ahí abajo. Sigue drenando. Lleva veinticinco siglos trabajando sin interrupción. El centro del mundo es una ciénaga desecada... mantenida seca por una alcantarilla más antigua que la República.\n\nCuando el valle quedó seco, todo siguió a la multitud. Primero llegó el mercado: los mercados buscan terreno llano. Los tribunales siguieron al mercado, porque los mercados generan disputas. Los templos siguieron a los tribunales, porque los actos legales necesitaban a los dioses como testigos. La tribuna se instaló donde más gente pudiera oír. Nada estaba planeado. El aparente orden del Foro es el resultado de siglos de edificios persiguiendo al público.\n\nY lo que ves es el esqueleto. Cuando este espacio funcionaba, todas las superficies de abajo estaban cubiertas de mármol: blanco, pórfido rojo, granito egipcio. Lo que queda es lo que quince siglos de saqueadores no pudieron llevarse. El mármol se fue en carretas. Los huesos quedaron. Cuando estés listo, recorre la baranda hacia la izquierda, en dirección a las ocho columnas altas. El mapa tiene nombres."
+    },
+    {
+      "file": "alt_forum_2.mp3",
+      "title": "Los puntos esenciales, señalados desde la baranda",
+      "transcript": "Alinéate con las ocho columnas que siguen en pie en el extremo derecho del valle. Es el Templo de Saturno, el tesoro de Roma. A treinta metros, la plataforma baja de frente curvo es la Rostra, donde habló Cicerón y donde, al final, exhibieron sus manos. Dinero y discurso, a treinta metros y a la vista uno del otro. Nunca fue una coincidencia.\n\nAhora recorre el valle con la mirada hacia la izquierda. La sencilla caja de ladrillo es la Curia, la sede del Senado, donde la República siguió representándose mucho después de que los emperadores la vaciaran de significado. Sobrevivió porque un papa la convirtió en iglesia. La institución que redactó las leyes contra los cristianos se conservó... al convertirse en iglesia. Roma nunca encontró una ironía en la que no quisiera instalarse.\n\nSigue hacia la izquierda. La pequeña planta circular cerca del centro corresponde al Templo de Vesta, donde seis mujeres mantuvieron vivo un fuego durante mil años. Sus privilegios legales no tenían igual en Roma. El precio del fracaso era ser encerradas vivas bajo tierra. Ambas cosas se llamaban ley. Y la plataforma baja en medio del valle, casi siempre con flores, es donde la multitud quemó el cuerpo de César, la noche en que el Senado aún decidía qué hacer. La multitud volvió sagrado el lugar primero.\n\nPor último, el gran arco del extremo izquierdo, donde el valle empieza a subir, es el Arco de Tito. Lleva tallada la menorá de Jerusalén, botín de la guerra que ayudó a pagar el Coliseo que queda a tu espalda. Triunfo en un extremo, tesoro en el otro, los muertos y lo divino entre ambos. Ese es todo el argumento de Roma, en una sola mirada desde una baranda gratuita.\n\nLa versión con entrada baja entre las ruinas, piedra a piedra, y seguirá aquí cuando Roma te deje pasar. Por hoy, has visto algo que incluso la mayoría de quienes tienen entrada se pierde. La forma del conjunto. El mapa que está sobre el laberinto."
+    }
+  ],
+  "resume": {
+    "same_day": {
+      "file": "resume_same_day.mp3",
+      "title": "Retomar el mismo día",
+      "transcript": "Qué bueno tenerte de vuelta. Estábamos llegando justo a la parte buena."
+    },
+    "new_day": {
+      "file": "resume_new_day.mp3",
+      "title": "Retomar otro día",
+      "transcript": "Roma guardó tu lugar. Tiene mucha práctica esperando. Cuando estés listo, retomamos exactamente donde lo dejaste."
+    }
+  }
+}

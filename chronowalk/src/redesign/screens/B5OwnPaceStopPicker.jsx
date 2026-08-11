@@ -4,6 +4,7 @@ import { T, F, SHELL_TAB_BAR_INSET } from '../tokens.js'
 import { Eyebrow } from '../ui/index.js'
 import { buildOwnPacePickerActs } from '../../content/myTourPlan.js'
 import { photoForWaypoint, titleForWaypoint } from '../lib/waypointPresentation.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 const ACT_COLOR = {
   act1: T.actI,
@@ -22,9 +23,12 @@ export default function B5OwnPaceStopPicker({
   onChangeSelected,
   onContinue,
   onBack,
-  title = 'Choose your stops',
-  subtitle = 'Mark the places you want on today’s walk. Your tour roadmap builds from this list.',
+  title = null,
+  subtitle = null,
 }) {
+  const t = useT()
+  const resolvedTitle = title ?? t('onboarding.picker.title')
+  const resolvedSubtitle = subtitle ?? t('onboarding.picker.subtitle')
   const acts = useMemo(() => buildOwnPacePickerActs(manifest, context), [manifest, context])
   const selected = useMemo(() => new Set(selectedIds ?? []), [selectedIds])
   const [expandedActs, setExpandedActs] = useState(() => new Set(acts.map((act) => act.id)))
@@ -86,10 +90,10 @@ export default function B5OwnPaceStopPicker({
               marginBottom: 12,
             }}
           >
-            ← Back
+            {t('onboarding.picker.back')}
           </button>
         ) : null}
-        <Eyebrow color={T.ember}>YOUR OWN PACE</Eyebrow>
+        <Eyebrow color={T.ember}>{t('onboarding.picker.eyebrow')}</Eyebrow>
         <h1
           style={{
             fontFamily: F.display,
@@ -100,9 +104,11 @@ export default function B5OwnPaceStopPicker({
             margin: '10px 0 8px',
           }}
         >
-          {title}
+          {resolvedTitle}
         </h1>
-        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>{subtitle}</p>
+        <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>
+          {resolvedSubtitle}
+        </p>
         <p
           style={{
             fontSize: 12,
@@ -111,7 +117,9 @@ export default function B5OwnPaceStopPicker({
             fontVariantNumeric: 'tabular-nums',
           }}
         >
-          {selected.size} stop{selected.size === 1 ? '' : 's'} selected
+          {selected.size === 1
+            ? t('onboarding.picker.selectedOne')
+            : t('onboarding.picker.selectedMany', { count: selected.size })}
         </p>
       </div>
 
@@ -119,7 +127,10 @@ export default function B5OwnPaceStopPicker({
         {acts.map((act) => {
           const color = ACT_COLOR[act.colorKey] ?? T.actI
           const expanded = expandedActs.has(act.id)
-          const actLabel = act.numeral === 'Encore' ? 'ENCORE' : `ACT ${act.numeral}`
+          const actLabel =
+            act.numeral === 'Encore'
+              ? t('onboarding.picker.encore')
+              : t('onboarding.picker.act', { numeral: act.numeral })
 
           return (
             <div key={act.id} style={{ borderTop: `1px solid ${T.ink800}18` }}>
@@ -171,12 +182,18 @@ export default function B5OwnPaceStopPicker({
                     padding: '4px 8px',
                   }}
                 >
-                  {act.stops.every((stop) => selected.has(stop.id)) ? 'Clear' : 'All'}
+                  {act.stops.every((stop) => selected.has(stop.id))
+                    ? t('onboarding.picker.clear')
+                    : t('onboarding.picker.all')}
                 </button>
                 <button
                   type="button"
                   onClick={() => toggleAct(act.id)}
-                  aria-label={expanded ? 'Collapse act' : 'Expand act'}
+                  aria-label={
+                    expanded
+                      ? t('onboarding.picker.collapse')
+                      : t('onboarding.picker.expand')
+                  }
                   style={{
                     background: 'none',
                     border: 'none',
@@ -288,7 +305,9 @@ export default function B5OwnPaceStopPicker({
             boxShadow: canContinue ? `0 0 20px ${T.ember}44` : 'none',
           }}
         >
-          {canContinue ? `Build my tour - ${selected.size} stops` : 'Select at least one stop'}
+          {canContinue
+            ? t('onboarding.picker.build', { count: selected.size })
+            : t('onboarding.picker.selectOne')}
         </button>
       </div>
     </div>

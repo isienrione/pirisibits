@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
 import { Vignette, BottomScrim } from '../ui/index.js';
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 export default function F1JourneyLetter({
   firstName = "",
-  body = "Today you crossed twenty-one centuries on foot. You began at a fountain that sinks, and you ended at a tomb that refused to stay a tomb. Rome will remember you were here.",
+  body = null,
   reflection = "- Your companion",
-  stats = [{ v: "28 km", l: "walked" }, { v: "6h 40m", l: "in Rome" }, { v: "21", l: "centuries crossed" }],
+  stats = null,
   busy = false,
   statusMessage = "",
   travelerName = "",
@@ -16,6 +17,7 @@ export default function F1JourneyLetter({
   onShare,
   onBack,
 }) {
+  const t = useT()
   const [phase, setPhase] = useState(0);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState(travelerName || "");
@@ -48,7 +50,13 @@ export default function F1JourneyLetter({
     { cx: 378, cy: 14, color: T.encore },
   ];
 
-  const displayName = firstName || 'Traveler';
+  const displayName = firstName || t('letter.traveler')
+  const resolvedBody = body ?? t('letter.defaultBody')
+  const resolvedStats = stats ?? [
+    { v: "28 km", l: t('letter.stat.walked') },
+    { v: "6h 40m", l: t('letter.stat.inRome') },
+    { v: "21", l: t('letter.stat.centuries') },
+  ]
 
   const commitName = () => {
     onTravelerNameChange?.(nameDraft.trim());
@@ -86,13 +94,13 @@ export default function F1JourneyLetter({
                 style={{ opacity: phase === 0 ? 0 : 1, transition: `opacity 300ms ${i * 300 + 600}ms`, filter: `drop-shadow(0 0 4px ${pt.color})` }}
               />
             ))}
-            <text x="50" y="169" style={{ fontSize: "9px", letterSpacing: "0.1em" }} fill={T.muted}>COLOSSEUM</text>
-            <text x="335" y="12" style={{ fontSize: "9px", letterSpacing: "0.1em" }} fill={T.encore}>CASTEL</text>
+            <text x="50" y="169" style={{ fontSize: "9px", letterSpacing: "0.1em" }} fill={T.muted}>{t('letter.map.colosseum')}</text>
+            <text x="335" y="12" style={{ fontSize: "9px", letterSpacing: "0.1em" }} fill={T.encore}>{t('letter.map.castel')}</text>
           </svg>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 28, flexShrink: 0, opacity: phase >= 1 ? 1 : 0, transition: "opacity 700ms" }}>
-          {stats.map(s => (
+          {resolvedStats.map(s => (
             <div key={s.l} style={{ textAlign: "center" }}>
               <div style={{ fontSize: 24, color: T.warmWhite, fontVariantNumeric: "tabular-nums", fontWeight: 300 }}>{s.v}</div>
               <div style={{ fontSize: 10, color: T.muted, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: 4 }}>{s.l}</div>
@@ -106,7 +114,7 @@ export default function F1JourneyLetter({
             {typeof onTravelerNameChange === 'function' ? (
               <div style={{ marginBottom: 18 }}>
                 <p style={{ fontSize: 12, color: T.muted, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
-                  Address the letter to
+                  {t('letter.addressTo')}
                 </p>
                 <input
                   type="text"
@@ -119,8 +127,8 @@ export default function F1JourneyLetter({
                       e.currentTarget.blur()
                     }
                   }}
-                  placeholder="Traveler"
-                  aria-label="Your name for the letter"
+                  placeholder={t('letter.traveler')}
+                  aria-label={t('letter.nameAria')}
                   style={{
                     width: '100%',
                     boxSizing: 'border-box',
@@ -137,10 +145,10 @@ export default function F1JourneyLetter({
               </div>
             ) : null}
             <p style={{ fontSize: 24, marginBottom: 22, textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}>
-              Dear {displayName}{editingName ? '' : ''} -
+              {t('letter.dear', { name: displayName })}{editingName ? '' : ''}
             </p>
             <p style={{ fontSize: 19, lineHeight: 1.78, textShadow: "0 1px 12px rgba(0,0,0,0.5)" }}>
-              {body}
+              {resolvedBody}
             </p>
             <p style={{ fontSize: 16, color: T.muted, fontStyle: "italic", marginTop: 24 }}>
               {reflection}
@@ -158,19 +166,19 @@ export default function F1JourneyLetter({
             borderRadius: 12, fontFamily: F.body, fontWeight: 600, fontSize: 15,
             border: "none", cursor: busy ? 'wait' : "pointer", marginBottom: 10,
             boxShadow: "0 0 24px rgba(232,161,60,0.45)",
-          }}>Keep this - save your Letter</button>
+          }}>{t('letter.keep')}</button>
           <button
             type="button"
             disabled={busy}
             onClick={() => onShare?.()}
             style={{ width: "100%", padding: "12px", textAlign: "center", color: T.muted, fontSize: 14, background: "none", border: "none", cursor: busy ? 'wait' : "pointer", marginBottom: 18 }}
-          >Share it.</button>
+          >{t('letter.share')}</button>
           {statusMessage ? (
             <p style={{ fontSize: 12, color: T.actII, marginBottom: 12, textAlign: 'center' }}>{statusMessage}</p>
           ) : null}
           {onBack ? (
             <button type="button" onClick={onBack} style={{ width: '100%', padding: '12px', background: 'transparent', border: `1px solid ${T.ink800}`, color: T.muted, borderRadius: 10, cursor: 'pointer' }}>
-              Back to journal
+              {t('letter.back')}
             </button>
           ) : null}
         </div>

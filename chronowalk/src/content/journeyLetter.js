@@ -2,6 +2,7 @@ import { getDistance } from '../utils/distance.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint } from './manifest.js'
 import { pickJournalReflection } from './journalTimeline.js'
+import { t } from '../i18n/t.js'
 
 export function buildLetterStops(manifest, completedWaypointIds = [], path = 'a') {
   const pathOrder = getManifestWaypointIds(manifest, path)
@@ -38,32 +39,35 @@ export function estimateLetterWalkedMeters(stops) {
 
 function formatDistancePhrase(meters) {
   if (!meters || meters < 1) return null
-  if (meters < 1000) return `${Math.round(meters)} metres`
-  return `${(meters / 1000).toFixed(1)} kilometres`
+  if (meters < 1000) return t('letter.metres', { n: Math.round(meters) })
+  return t('letter.kilometres', { n: (meters / 1000).toFixed(1) })
+}
+
+function formatPlaceList(names) {
+  if (names.length === 2) return t('letter.listAnd', { a: names[0], b: names[1] })
+  return t('letter.listJoin', {
+    items: names.slice(0, -1).join(', '),
+    last: names.at(-1),
+  })
 }
 
 export function composeLetterBody(manifest, stops) {
   if (!stops.length) {
-    return 'Your letter is still blank - Rome is waiting for your footsteps. Each stop you hear will add a line to the path you walked.'
+    return t('letter.blank')
   }
 
   const names = stops.map((stop) => stop.title)
   const walked = formatDistancePhrase(estimateLetterWalkedMeters(stops))
-  const city = manifest?.name ?? 'Rome'
+  const city = manifest?.name ?? t('letter.cityDefault')
 
   if (names.length === 1) {
-    return `You began in ${city} at ${names[0]}. One doorway opened - and the city already knows your name.`
+    return t('letter.oneStop', { city, name: names[0] })
   }
 
-  const route = names.length === 2
-    ? `${names[0]} and ${names[1]}`
-    : `${names.slice(0, -1).join(', ')}, and ${names.at(-1)}`
+  const route = formatPlaceList(names)
+  const distanceLine = walked ? t('letter.distance', { walked }) : ''
 
-  const distanceLine = walked
-    ? ` Along the way you covered roughly ${walked} of stone, piazza, and hill.`
-    : ''
-
-  return `You walked ${city} from ${route}.${distanceLine} The stories you heard are yours to keep.`
+  return t('letter.many', { city, route, distance: distanceLine })
 }
 
 const TRAVELER_NAME_KEY = 'cw_traveler_name_v1'
@@ -94,11 +98,11 @@ export function buildJourneyLetter(manifest, context = {}) {
   const reflection = pickJournalReflection(manifest, stops.length)
   const body = composeLetterBody(manifest, stops)
   const walkedMeters = estimateLetterWalkedMeters(stops)
-  const firstName = context.travelerName?.trim() || readTravelerName() || 'Traveler'
+  const firstName = context.travelerName?.trim() || readTravelerName() || t('letter.traveler')
 
   return {
-    city: manifest?.name ?? 'Rome',
-    title: stops.length ? 'The path you walked' : 'Your letter awaits',
+    city: manifest?.name ?? t('letter.cityDefault'),
+    title: stops.length ? t('letter.title.path') : t('letter.title.await'),
     body,
     reflection,
     stops,
