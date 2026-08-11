@@ -1,21 +1,42 @@
 import { memo, useMemo } from 'react'
-import { Settings } from 'lucide-react'
 import { loadRomeManifest, getWaypoint } from '../../content/manifest.js'
 import { JOURNEY_PACE, PACE_OPTIONS } from '../../data/romePacing.js'
+import { LOCATION_STATUS } from '../../hooks/useGeoLocation.js'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
 import B4PaceSelector from '../../redesign/screens/B4PaceSelector.jsx'
 import A2FreePreviewStory from '../../redesign/screens/A2FreePreviewStory.jsx'
+import WalkingCompanionScreen from '../../redesign/screens/WalkingCompanionScreen.jsx'
+import { spanishSteps } from '../../redesign/images.js'
+import { T } from '../../redesign/tokens.js'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import LandingDemoBeginTourScreen from './LandingDemoBeginTourScreen.jsx'
 import LandingDemoWalkMap from './LandingDemoWalkMap.jsx'
-import { T, F } from '../../redesign/tokens.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 /** Landing demo only: purchasable Rome walks (omit begin-flow custom itinerary). */
 const LANDING_PACE_OPTIONS = PACE_OPTIONS.filter((option) => option.id !== JOURNEY_PACE.OWN)
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 const noop = () => {}
+
+/** Spanish Steps approach used by the product walk companion demo. */
+const STEPS_DEMO = Object.freeze({
+  userPosition: { lat: 41.9049, lng: 12.4818 },
+  destination: { lat: 41.90597, lng: 12.48259 },
+  distanceM: 180,
+  directionsOverride: {
+    distanceM: 180,
+    durationSec: 120,
+    steps: [],
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [12.4818, 41.9049],
+        [12.48259, 41.90597],
+      ],
+    },
+  },
+})
 
 function useLandingDemoManifest() {
   const { locale } = useI18n()
@@ -117,150 +138,30 @@ const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
 })
 
 /**
- * Walk - locale-aware companion chrome over the Spanish Steps basemap.
+ * Walk - real WalkingCompanionScreen (same product UI as the live app),
+ * with the Spanish Steps basemap used for landing demos.
  */
 const WalkScreen = memo(function WalkScreen() {
   const { t } = useI18n()
-  const tabs = [
-    t('shell.tab.walk').toUpperCase(),
-    t('shell.tab.tour').toUpperCase(),
-    t('shell.tab.map').toUpperCase(),
-    t('shell.tab.journal').toUpperCase(),
-  ]
-  const walkTab = t('shell.tab.walk').toUpperCase()
-
   return (
-    <div
-      className="cw-v4-walk-static"
-      data-testid="landing-demo-walk-static"
-      style={{
-        height: '100%',
-        background: T.bone,
-        fontFamily: F.body,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-      }}
-    >
-      <div style={{ flexShrink: 0, padding: '44px 16px 10px', background: T.bone }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 13, color: T.muted }}>{`< ${t('player.back')}`}</span>
-          <span style={{ color: T.muted, lineHeight: 0 }} aria-hidden>
-            <Settings size={16} />
-          </span>
-        </div>
-        <p
-          style={{
-            margin: '10px 0 2px',
-            fontSize: 11,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: T.ember,
-          }}
-        >
-          {t('walk.walkingTo')}
-        </p>
-        <h2
-          style={{
-            margin: 0,
-            fontFamily: F.display,
-            fontWeight: 300,
-            fontSize: 26,
-            color: T.ink,
-            lineHeight: 1.1,
-          }}
-        >
-          {t('mapDemo.stop.steps')}
-        </h2>
-        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-          <span
-            style={{
-              padding: '6px 12px',
-              borderRadius: 999,
-              background: T.ink,
-              color: T.warmWhite,
-              fontSize: 12,
-            }}
-          >
-            {t('walk.map')}
-          </span>
-          <span
-            style={{
-              padding: '6px 12px',
-              borderRadius: 999,
-              background: `${T.ink800}18`,
-              color: T.muted,
-              fontSize: 12,
-            }}
-          >
-            {t('walk.steps')}
-          </span>
-        </div>
-      </div>
-
-      <div style={{ flex: 1, minHeight: 0, position: 'relative' }}>
-        <LandingDemoWalkMap />
-      </div>
-
-      <div style={{ flexShrink: 0, padding: '12px 16px 8px', background: T.bone }}>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <div
-            style={{
-              flex: 1,
-              padding: '12px',
-              borderRadius: 12,
-              background: T.terracotta,
-              color: T.obsidian,
-              fontWeight: 600,
-              fontSize: 13,
-              textAlign: 'center',
-            }}
-          >
-            {t('walk.continue')}
-          </div>
-          <div
-            style={{
-              flex: 1,
-              padding: '12px',
-              borderRadius: 12,
-              border: `1px solid ${T.ink800}33`,
-              color: T.ink,
-              fontWeight: 600,
-              fontSize: 13,
-              textAlign: 'center',
-            }}
-          >
-            {t('walk.here')}
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          flexShrink: 0,
-          display: 'flex',
-          borderTop: `1px solid ${T.ink800}22`,
-          background: T.bone,
-          paddingBottom: 24,
-          paddingTop: 4,
-        }}
-      >
-        {tabs.map((tab) => (
-          <div
-            key={tab}
-            style={{
-              flex: 1,
-              textAlign: 'center',
-              paddingTop: 8,
-              fontSize: 9,
-              letterSpacing: '0.12em',
-              color: tab === walkTab ? T.actI : T.muted,
-            }}
-          >
-            {tab}
-          </div>
-        ))}
-      </div>
+    <div className="cw-v4-walk-static" data-testid="landing-demo-walk-static">
+      <WalkingCompanionScreen
+        accent={T.actV}
+        title={t('mapDemo.stop.steps')}
+        photo={spanishSteps}
+        stopKey="landing-demo-spanish-steps"
+        map={<LandingDemoWalkMap />}
+        forcedRouteView="map"
+        userPosition={STEPS_DEMO.userPosition}
+        destination={STEPS_DEMO.destination}
+        distanceM={STEPS_DEMO.distanceM}
+        estimatedDistanceM={STEPS_DEMO.distanceM}
+        directionsOverride={STEPS_DEMO.directionsOverride}
+        locationStatus={LOCATION_STATUS.GRANTED}
+        onContinue={noop}
+        onOpenSettings={noop}
+        testId="landing-demo-walk-companion"
+      />
     </div>
   )
 })
