@@ -147,6 +147,16 @@ export const esMessages = Object.freeze({
   'pantheon.free.faq.3.q': '¿Puedo usarlo antes o durante la visita?',
   'pantheon.free.faq.3.a':
     'Sí. Ábrelo con conexión para empezar. Puedes preparar la experiencia antes de caminar si quieres usarla sin conexión.',
+  'pantheon.preview.eyebrow': 'VISTA PREVIA GRATIS · PANTEÓN',
+  'pantheon.preview.continue': 'Ver el recorrido completo →',
+  'pantheon.preview.continueAll': 'Ver las 21 paradas',
+  'pantheon.preview.freeComplete': 'PARADA COMPLETA GRATIS',
+  'pantheon.preview.loading': 'Cargando la vista previa del Panteón…',
+  'pantheon.preview.backToPage': '← Volver a la página gratis del Panteón',
+  'pantheon.preview.aria.section': 'Vista previa exterior del Panteón, parte 1',
+  'pantheon.preview.aria.includes': 'Qué incluye este capítulo gratis',
+  'pantheon.preview.aria.dialog': 'Experiencia exterior del Panteón, parte 1',
+  'pantheon.preview.aria.phone': 'Vista previa exterior del Panteón en ChronoWalk',
 
   // Product truth snippets used in-app
   'product.places21': '21 lugares',
@@ -612,6 +622,7 @@ export const esMessages = Object.freeze({
   'journeyHome.eyebrow': 'CORAZÓN DE LA ROMA ANTIGUA',
   'journeyHome.encore': 'EXTRA',
   'journeyHome.act': 'ACTO {numeral}',
+  'journeyHome.actDash': 'ACTO {numeral} - {title}',
   'journeyHome.begin': 'Empezar acto I: La Arena',
   'journeyHome.route': 'Ruta',
   'journeyHome.startHere': 'Empezar desde donde estoy',
@@ -757,6 +768,8 @@ export const esMessages = Object.freeze({
   'tour.unavailable': 'Tour no disponible',
   'tour.start': 'Empezar el tour',
   'tour.yourTour': 'TU TOUR',
+  'tour.romeOnFoot': 'Roma a pie',
+  'tour.romeEternal': 'Roma: Ciudad Eterna',
   'tour.next': 'Siguiente',
   'tour.continueWalk': 'Continuar el camino →',
   'tour.walkAgain': 'Caminar de nuevo',
@@ -767,6 +780,40 @@ export const esMessages = Object.freeze({
   'tour.headline.reached': 'Llegaste a {title}. La ciudad es tuya.',
   'tour.headline.complete': 'Recorriste {title}. La ruta completa está hecha.',
   'tour.headline.progress': 'Recorriste {recent}: ahora sigue {next}.',
+  'tour.cta.beginWalk': 'Empezar tu camino',
+  'tour.cta.beginAct': 'Empezar {label} - {title}',
+  'tour.cta.return': 'Volver al camino - {title}',
+  'tour.actShort': 'Acto {numeral}',
+  'tour.editStops': 'Editar paradas',
+  'tour.ghost.tryLead': '{title} es tuyo para probar. {count} lugares más esperan detrás del pase completo.',
+  'tour.ghost.oneRoom': 'Eso es una sala de {count}. El resto de Roma espera afuera.',
+  'tour.ghost.unlockAll': 'Desbloquear todos: {label}',
+  'tour.ghost.unlockAllCount': 'Desbloquear los {count} lugares',
+  'tour.ghost.sample': 'MUESTRA',
+  'tour.ghost.locked': 'BLOQUEADO',
+  'tour.ghost.collapse': 'Contraer acto',
+  'tour.ghost.expand': 'Expandir acto',
+  'tour.ghost.backHome': 'Volver al inicio',
+  'tour.placesCount': '{count} lugares',
+
+  // Contact / legal shell
+  'contact.title': 'Contacto · ChronoWalk',
+  'contact.h1': 'Contacto',
+  'contact.lead':
+    '¿Preguntas sobre ChronoWalk, tu compra, el acceso o un reembolso? Escríbenos con los datos de abajo. Estamos en Chile.',
+  'contact.supportEmail': 'Correo de soporte',
+  'contact.responseTime': 'Tiempo de respuesta esperado',
+  'contact.responseValue': 'en un plazo de 3 días hábiles',
+  'contact.seller': 'Nombre legal del vendedor',
+  'contact.country': 'Chile',
+  'contact.paddle':
+    'Los pagos los procesa Paddle.com como Merchant of Record. Para dudas de facturación también puedes contactar con el soporte de Paddle en paddle.net.',
+  'legal.back': '← Volver a ChronoWalk',
+
+  // Landing phone demos
+  'landing.demo.walkAlt': 'Caminando hacia la Plaza de España en ChronoWalk',
+  'landing.demo.pace.short': 'Caminatas más cortas para la parte de Roma que te cabe en el día.',
+  'landing.demo.pace.eterna': 'Roma Eterna para la ruta completa de 21 paradas.',
 
   // Walk together / shared walk guard
   'walkTogether.eyebrow': 'Caminar juntos',

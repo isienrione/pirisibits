@@ -84,6 +84,17 @@ export const ANCIENT_ROME_COPY = Object.freeze({
   historicaCta: 'Choose Roma Historica',
   eternaValueLine: 'Roma Eterna is €10 during the Launch Offer — all 21 stops.',
   pricingDetailsCta: 'See more details of each route and pricing',
+  headerPrimaryCta: 'Get the full Rome tour',
+  introductoryPricing: 'Introductory pricing for early walkers.',
+  stopsSuffix: 'stops',
+  verifiedStops: 'verified stops from current Roma Antica data.',
+  ancientFocused: 'Ancient Rome focused route',
+  eternaMeta: '21 stops · Includes Ancient Rome plus the rest of the city story',
+  historicaMeta: 'Centro Storico and Pantheon in depth',
+  freePantheon: 'Try the Pantheon free',
+  howItWorks: 'How it works',
+  fullRomeTour: 'Full Rome tour',
+  quickAnswers: 'Quick answers',
   faq: [
     {
       q: 'Does this include Colosseum or Forum tickets?',

@@ -24,6 +24,7 @@ import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { getDistance } from '../utils/distance.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
+import { useI18n } from '../i18n/I18nProvider.jsx'
 
 const ACT_COLOR = {
   act1: T.actI,
@@ -51,6 +52,7 @@ function ChronowalkMark() {
 
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
+  const { t } = useI18n()
   const { openSettings } = useSettingsSheet()
   const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { state, context, begin, setCustomWaypointIds } = useV2Journey()
@@ -69,7 +71,7 @@ export default function RedesignMyTourScreen() {
   const progress = useMemo(() => summarizeMyTour(acts), [acts])
   const routeGroups = useMemo(() => buildRouteSheetGroups(acts), [acts])
   const currentAct = useMemo(() => currentActForTour(acts), [acts])
-  const paceLabel = getPaceOption(context.pace)?.title ?? 'Your tour'
+  const paceLabel = getPaceOption(context.pace)?.title ?? t('tour.yourTour')
 
   const journeyActive =
     state !== JOURNEY_STATES.IDLE &&
@@ -335,7 +337,7 @@ export default function RedesignMyTourScreen() {
               minWidth: 0,
             }}
           >
-            Rome: Eternal City
+            {t('tour.romeEternal')}
           </h1>
           <span
             style={{
@@ -371,7 +373,7 @@ export default function RedesignMyTourScreen() {
                 textUnderlineOffset: 3,
               }}
             >
-              Edit stops
+              {t('tour.editStops')}
             </button>
           ) : null}
         </div>
@@ -396,7 +398,10 @@ export default function RedesignMyTourScreen() {
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
             const faded = act.status === 'ahead' || act.locked
-            const actLabel = act.numeral === 'Encore' ? 'ENCORE' : `ACT ${act.numeral}`
+            const actLabel =
+              act.id === 'encore' || act.numeral === 'Encore' || act.numeral === 'Bis'
+                ? t('journeyHome.encore')
+                : t('journeyHome.act', { numeral: act.numeral })
             const photo = photoForWaypoint(act.photoStop)
             const expanded = expandedActs.has(act.id)
 
@@ -519,7 +524,7 @@ export default function RedesignMyTourScreen() {
                   <button
                     type="button"
                     onClick={() => toggleActExpanded(act.id)}
-                    aria-label={expanded ? 'Collapse act' : 'Expand act'}
+                    aria-label={expanded ? t('tour.ghost.collapse') : t('tour.ghost.expand')}
                     style={{
                       background: 'none',
                       border: 'none',

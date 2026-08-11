@@ -1,6 +1,7 @@
 import { chapterAtIndex, chapterTitle, chapterTranscript } from '../../content/chapterMeta.js'
 import { resolveThresholdAmbienceUrls } from '../../content/thresholdAmbience.js'
 import { stripDirectorCues } from '../../utils/transcriptContent.js'
+import { t } from '../../i18n/t.js'
 import {
   accentForWaypoint,
   approachCopy,
@@ -19,8 +20,13 @@ import {
 
 export function actLabelForWaypoint(waypoint, manifest) {
   const act = waypoint?.act ? manifest?.acts?.find((a) => a.id === waypoint.act) : null
-  if (act) return `ACT ${act.numeral} - ${act.title?.toUpperCase()}`
-  return `ACT ${numeralForWaypoint(waypoint)}`
+  if (act) {
+    return t('journeyHome.actDash', {
+      numeral: act.numeral,
+      title: (act.title ?? '').toUpperCase(),
+    })
+  }
+  return t('journeyHome.act', { numeral: numeralForWaypoint(waypoint) })
 }
 
 export function taglineForWaypoint(waypoint) {

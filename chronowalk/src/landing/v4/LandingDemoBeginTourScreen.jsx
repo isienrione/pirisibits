@@ -1,6 +1,7 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { ChevronDown, Settings } from 'lucide-react'
 import { ROME_ACTS } from '../../data/romePacing.js'
+import { loadRomeManifest } from '../../content/manifest.js'
 import {
   castelNow,
   colosseumNow,
@@ -11,6 +12,7 @@ import {
 } from '../../redesign/images.js'
 import { T, F } from '../../redesign/tokens.js'
 import { Eyebrow } from '../../redesign/ui/index.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 
 const ACT_PHOTOS = {
   act1: colosseumNow,
@@ -30,15 +32,7 @@ const ACT_COLORS = {
   act6: T.actVI,
 }
 
-const DEMO_ACTS = ROME_ACTS.filter((act) => act.id !== 'encore').map((act) => ({
-  id: act.id,
-  numeral: act.numeral,
-  name: act.title,
-  promise: act.promise.replace(/[—–]/g, '-'),
-  color: ACT_COLORS[act.id] ?? T.ember,
-  photo: ACT_PHOTOS[act.id] ?? colosseumNow,
-  status: act.id === 'act1' ? 'current' : 'ahead',
-}))
+const ACT_META = Object.fromEntries(ROME_ACTS.map((act) => [act.id, act]))
 
 const SEAM_X = 38
 const NODE_R = 7
@@ -59,6 +53,43 @@ function ChronowalkMark() {
  * Mirrors the live tour home without journey hooks.
  */
 export default memo(function LandingDemoBeginTourScreen() {
+  const { t, locale } = useI18n()
+  const demoActs = useMemo(() => {
+    let acts = ROME_ACTS.filter((act) => act.id !== 'encore')
+    try {
+      const manifest = loadRomeManifest()
+      if (manifest?.acts?.length) {
+        acts = manifest.acts.filter((act) => act.id !== 'encore')
+      }
+    } catch {
+      // Fall back to English ROME_ACTS metadata.
+    }
+    return acts.map((act) => {
+      const meta = ACT_META[act.id] ?? act
+      return {
+        id: act.id,
+        numeral: act.numeral,
+        name: act.title ?? meta.title,
+        promise: (act.promise ?? meta.promise ?? '').replace(/[—–]/g, '-'),
+        color: ACT_COLORS[act.id] ?? T.ember,
+        photo: ACT_PHOTOS[act.id] ?? colosseumNow,
+        status: act.id === 'act1' ? 'current' : 'ahead',
+      }
+    })
+  }, [locale])
+
+  const tabs = [
+    t('shell.tab.walk').toUpperCase(),
+    t('shell.tab.tour').toUpperCase(),
+    t('shell.tab.map').toUpperCase(),
+    t('shell.tab.journal').toUpperCase(),
+  ]
+  const tourTab = t('shell.tab.tour').toUpperCase()
+  const beginLabel = t('tour.cta.beginAct', {
+    label: t('tour.actShort', { numeral: 'I' }),
+    title: demoActs[0]?.name ?? t('journeyHome.act1.name'),
+  })
+
   return (
     <div
       className="cw-grain"
@@ -127,7 +158,7 @@ export default memo(function LandingDemoBeginTourScreen() {
               letterSpacing: '0.02em',
             }}
           >
-            Rome: Eternal City
+            {t('tour.romeEternal')}
           </h1>
           <span
             style={{
@@ -160,7 +191,7 @@ export default memo(function LandingDemoBeginTourScreen() {
           }}
         />
         <div style={{ paddingBottom: 8 }}>
-          {DEMO_ACTS.map((act) => (
+          {demoActs.map((act) => (
             <div
               key={act.id}
               style={{
@@ -216,7 +247,7 @@ export default memo(function LandingDemoBeginTourScreen() {
                     marginBottom: 2,
                   }}
                 >
-                  ACT {act.numeral}
+                  {t('journeyHome.act', { numeral: act.numeral })}
                 </span>
                 <p
                   style={{
@@ -277,11 +308,11 @@ export default memo(function LandingDemoBeginTourScreen() {
             boxShadow: `0 0 22px ${T.actI}50`,
           }}
         >
-          Begin Act I - The Arena
+          {beginLabel}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', gap: 28 }}>
-          <span style={{ fontSize: 12, color: T.muted }}>Route</span>
-          <span style={{ fontSize: 12, color: T.muted }}>Start from where I am</span>
+          <span style={{ fontSize: 12, color: T.muted }}>{t('journeyHome.route')}</span>
+          <span style={{ fontSize: 12, color: T.muted }}>{t('journeyHome.startHere')}</span>
         </div>
       </div>
 
@@ -296,7 +327,7 @@ export default memo(function LandingDemoBeginTourScreen() {
           zIndex: 5,
         }}
       >
-        {['WALK', 'TOUR', 'MAP', 'JOURNAL'].map((tab) => (
+        {tabs.map((tab) => (
           <div
             key={tab}
             style={{
@@ -308,7 +339,7 @@ export default memo(function LandingDemoBeginTourScreen() {
               paddingTop: 8,
               fontSize: 9,
               letterSpacing: '0.12em',
-              color: tab === 'TOUR' ? T.actI : T.muted,
+              color: tab === tourTab ? T.actI : T.muted,
             }}
           >
             {tab}

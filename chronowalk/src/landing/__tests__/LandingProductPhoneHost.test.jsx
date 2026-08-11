@@ -52,7 +52,7 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
-  it('mounts a static Spanish Steps walking screen without a resume overlay', () => {
+  it('mounts a Spanish Steps walking screen without a resume overlay', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -63,12 +63,13 @@ describe('LandingProductPhoneStage', () => {
       />,
     )
     expect(screen.getByTestId('landing-demo-walk-static')).toBeInTheDocument()
-    expect(screen.getByAltText(/walking to spanish steps/i)).toBeInTheDocument()
+    expect(screen.getByText(/walking to/i)).toBeInTheDocument()
+    expect(screen.getByText(/spanish steps/i)).toBeInTheDocument()
     expect(document.querySelector('.cw-v4-walk-resume')).toBeNull()
     expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
   })
 
-  it('keeps the static walking screen mounted across later walk beats', () => {
+  it('keeps the walking screen mounted across later walk beats', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(

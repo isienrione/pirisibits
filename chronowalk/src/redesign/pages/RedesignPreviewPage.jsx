@@ -18,6 +18,7 @@ import {
   stopPreviewSessionAudio,
 } from '../../landing/previewAudioHandoff.js'
 import { reportAudioLoadFailure } from '../../lib/errorVisibility.js'
+import { useI18n } from '../../i18n/I18nProvider.jsx'
 import RedesignRouteShell from '../RedesignRouteShell.jsx'
 import A2FreePreviewStory from '../screens/A2FreePreviewStory.jsx'
 import A2PreviewGhostTour from '../screens/A2PreviewGhostTour.jsx'
@@ -32,6 +33,7 @@ function resolvePreviewReturnTo(state) {
 export default function RedesignPreviewPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useI18n()
   const returnTo = resolvePreviewReturnTo(location.state)
   const { manifest, loading } = useTourManifest()
   const audioRef = useRef(null)
@@ -196,7 +198,7 @@ export default function RedesignPreviewPage() {
             currentTime={currentTime}
             duration={duration}
             storyEnded={storyEnded}
-            continueLabel="See the full tour →"
+            continueLabel={t('pantheon.preview.continue')}
             onTogglePlay={togglePlay}
             onSkipBack={() => {
               const audio = audioRef.current
@@ -218,7 +220,7 @@ export default function RedesignPreviewPage() {
           <A2PreviewGhostTour
             manifest={manifest}
             previewWaypointId={waypoint?.id ?? 'w17'}
-            previewStopTitle={waypoint?.title ?? 'The Pantheon'}
+            previewStopTitle={waypoint?.title ?? t('mapDemo.stop.pantheon')}
             onUnlock={handleUnlock}
             onBack={handleBack}
           />
