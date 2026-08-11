@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { HERO_SLIDESHOW_SLIDES, LANDING_PHONE_MOCKUPS } from '../v4/heroSlideshowData.js'
+import {
+  getHeroSlideshowSlides,
+  HERO_SLIDESHOW_SLIDES,
+  LANDING_PHONE_MOCKUPS,
+} from '../v4/heroSlideshowData.js'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
@@ -51,5 +55,28 @@ describe('heroSlideshowData', () => {
       const disk = resolve(process.cwd(), `public${src}`)
       expect(existsSync(disk), disk).toBe(true)
     }
+  })
+
+  it('returns English slides unchanged for the default locale', () => {
+    expect(getHeroSlideshowSlides('en')).toEqual(HERO_SLIDESHOW_SLIDES)
+  })
+
+  it('swaps in Spanish marketing frames without changing English assets', () => {
+    const es = getHeroSlideshowSlides('es')
+    expect(es).toHaveLength(HERO_SLIDESHOW_SLIDES.length)
+    expect(es.map((s) => s.id)).toEqual(HERO_SLIDESHOW_SLIDES.map((s) => s.id))
+
+    for (const slide of es) {
+      const disk = resolve(process.cwd(), `public${slide.src}`)
+      expect(existsSync(disk), disk).toBe(true)
+      if (slide.id === 'choose-your-walk') {
+        expect(slide.src).toBe('/landing/hero-slides/choose-your-walk.png')
+      } else {
+        expect(slide.src).toMatch(/^\/landing\/hero-slides\/es\//)
+      }
+    }
+
+    // English list is untouched.
+    expect(HERO_SLIDESHOW_SLIDES.every((s) => !s.src.includes('/es/'))).toBe(true)
   })
 })

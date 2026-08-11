@@ -15,6 +15,7 @@ import {
   ANCIENT_ROME_FEATURED_STOP_LABELS,
   HOW_IT_WORKS_COPY,
 } from './acquisition/acquisitionCopy.js'
+import { HERO_PACKAGE_CARD_IMAGE_ES } from './v4/heroSlideshowData.js'
 
 function isObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
@@ -135,7 +136,11 @@ export function getLocalizedLanding(locale) {
   cta.getAppShort = localizeLandingPriceCopy(LANDING_CTA.getAppShort, locale)
 
   const freePreview = mergeLocalized(FREE_PREVIEW, ES_LANDING.FREE_PREVIEW)
-  const tiers = mergeLocalized(ROME_TIERS, ES_LANDING.ROME_TIERS)
+  const tiers = mergeLocalized(ROME_TIERS, ES_LANDING.ROME_TIERS).map((tier) => {
+    const cardImage = HERO_PACKAGE_CARD_IMAGE_ES[tier.id]
+    if (!cardImage) return tier
+    return { ...tier, cardImage }
+  })
   const bundles = mergeLocalized(ROME_BUNDLES, ES_LANDING.ROME_BUNDLES)
   const acts = mergeLocalized(LANDING_ACTS, ES_LANDING.LANDING_ACTS)
   const content = mergeLocalized(LANDING_CONTENT, ES_LANDING.LANDING_CONTENT)

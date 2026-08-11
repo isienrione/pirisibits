@@ -10,7 +10,7 @@ import {
   mapOffersWithLaunchOffer,
 } from '../../lib/launchOffer.js'
 import { trackCtaClick } from '../../lib/analytics.ts'
-import { HERO_SLIDESHOW_SLIDES } from './heroSlideshowData.js'
+import { getHeroSlideshowSlides } from './heroSlideshowData.js'
 import { LandingZoomableImageViewer } from './LandingPackagePosterViewer.jsx'
 import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.js'
 import { installSafariPageZoomBlock } from '../../utils/safariPageZoom.js'
@@ -116,7 +116,7 @@ export default function LandingProductHero({
   const section = hero ?? LANDING_CONTENT.hero
   const heroImage = section.heroImage ?? LANDING_HERO
   const previewFirst = section.ctaPriority === 'preview'
-  const storySlides = HERO_SLIDESHOW_SLIDES
+  const storySlides = useMemo(() => getHeroSlideshowSlides(locale), [locale])
   const total = 1 + storySlides.length
   const [index, setIndex] = useState(0)
   const [viewerSlide, setViewerSlide] = useState(null)
@@ -127,6 +127,11 @@ export default function LandingProductHero({
     const mapped = localizeLandingOffers(mapOffersWithLaunchOffer(tiers), locale)
     return Object.fromEntries(mapped.map((tier) => [tier.id, tier]))
   }, [locale, tiers])
+
+  // Keep the active frame in range when locale swaps slide art.
+  useEffect(() => {
+    setIndex((current) => Math.min(current, Math.max(0, total - 1)))
+  }, [total, locale])
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.
   useEffect(() => {
