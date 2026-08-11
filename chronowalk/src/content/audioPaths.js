@@ -16,15 +16,31 @@ export const AUDIO_CATEGORIES = {
 }
 
 /**
+ * Spoken system UI cues that fork by locale (same filename as English masters).
+ * Instrumental / non-verbal cues (e.g. arrival chime) stay language-neutral.
+ */
+export const LOCALIZED_SYSTEM_FILES = Object.freeze([
+  'ui_waypoint_unlocked.mp3',
+])
+
+function usesLocaleAudioTree(category, filename, locale) {
+  if (!locale || locale === LOCALES.EN || locale === DEFAULT_LOCALE) return false
+  if (category === AUDIO_CATEGORIES.NARRATION) return true
+  if (category === AUDIO_CATEGORIES.SYSTEM && LOCALIZED_SYSTEM_FILES.includes(filename)) {
+    return true
+  }
+  return false
+}
+
+/**
  * Resolve a category/filename to a locale-aware public path.
  * English keeps `/rome/audio/{category}/{file}`; other locales use
- * `/rome/audio/{locale}/{category}/{file}`.
+ * `/rome/audio/{locale}/{category}/{file}` for narration and spoken system cues.
  */
 export function audioFilePath(category, filename, locale = getActiveLocale()) {
   if (!filename) return null
   const clean = filename.replace(/^\//, '')
-  // Beds / inserts / system cues are language-neutral; only narration forks by locale.
-  if (category !== AUDIO_CATEGORIES.NARRATION || locale === LOCALES.EN || locale === DEFAULT_LOCALE) {
+  if (!usesLocaleAudioTree(category, clean, locale)) {
     return `${ROME_AUDIO_ROOT}/${category}/${clean}`
   }
   return localeAudioFilePath(locale, category, clean)

@@ -181,6 +181,19 @@ async function main() {
     }
   })
 
+  const esUnlockPath = '/rome/audio/es/system/ui_waypoint_unlocked.mp3'
+  const esUnlockFull = join(root, 'public', esUnlockPath.replace(/^\//, ''))
+  const unlockMissing = !existsSync(esUnlockFull)
+  const unlockZero =
+    !unlockMissing &&
+    (() => {
+      try {
+        return statSync(esUnlockFull).size === 0
+      } catch {
+        return false
+      }
+    })()
+
   if (requireAudioFiles) {
     if (missingFiles.length) {
       fail(
@@ -193,12 +206,22 @@ async function main() {
     if (zeroByte.length) {
       fail(`${zeroByte.length} Spanish narration MP3(s) are zero-byte`, zeroByte)
     }
+    if (unlockMissing) {
+      fail('Spanish spoken unlock VO missing', [esUnlockPath])
+    } else if (unlockZero) {
+      fail('Spanish spoken unlock VO is zero-byte', [esUnlockPath])
+    } else {
+      console.log('✓ Spanish unlock VO present (ui_waypoint_unlocked.mp3)')
+    }
   } else if (missingFiles.length) {
     console.log(
       `⚠ ${missingFiles.length}/${esNarrationPaths.length} Spanish narration MP3s not on disk yet (map + scripts ready; use --require-audio-files for hard fail)`,
     )
   } else {
     console.log(`✓ Spanish audio files present (${esNarrationPaths.length} narration assets)`)
+  }
+  if (!requireAudioFiles && unlockMissing) {
+    console.log(`⚠ Spanish unlock VO not on disk yet: ${esUnlockPath}`)
   }
 
   // Also surface hero-only count for operators who track the 28-file hero map.

@@ -15,7 +15,7 @@ import {
   PANTHEON_AUDIO_FILES,
 } from '../audio/heroStopAudioMap.js'
 import { applyLocaleOverlay } from '../content/applyLocaleOverlay.js'
-import { narrationPath } from '../../content/audioPaths.js'
+import { narrationPath, systemPath } from '../../content/audioPaths.js'
 import { clearRomeManifestCache, loadRomeManifest } from '../../content/manifest.js'
 import rawManifest from '../../content/rome/manifest.json'
 
@@ -53,10 +53,17 @@ describe('i18n coverage', () => {
     )
   })
 
-  it('prefixes Spanish narration paths while leaving beds/system unprefixed', () => {
+  it('prefixes Spanish narration and spoken unlock VO; keeps chime shared', () => {
     setActiveLocale(LOCALES.ES)
     expect(narrationPath('w17_ch1.mp3')).toBe('/rome/audio/es/narration/w17_ch1.mp3')
+    expect(systemPath('ui_waypoint_unlocked.mp3')).toBe(
+      '/rome/audio/es/system/ui_waypoint_unlocked.mp3',
+    )
+    expect(systemPath('ui_arrival_chime.mp3')).toBe('/rome/audio/system/ui_arrival_chime.mp3')
     setActiveLocale(LOCALES.EN)
+    expect(systemPath('ui_waypoint_unlocked.mp3')).toBe(
+      '/rome/audio/system/ui_waypoint_unlocked.mp3',
+    )
   })
 
   it('applies Spanish overlay so Pantheon and hero stops are not mixed-language', () => {

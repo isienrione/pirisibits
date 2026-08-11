@@ -12,7 +12,15 @@ Filenames match the English masters exactly (no rename). English remains at the 
 /rome/audio/narration/{filename}
 ```
 
-Beds, inserts, and system UI cues are language-neutral and stay under `/rome/audio/{beds|inserts|system}/`.
+Beds, inserts, and non-verbal system cues (e.g. arrival chime) stay language-neutral under `/rome/audio/{beds|inserts|system}/`.
+
+Spoken system VO forks by locale with the same English filename:
+
+```
+/rome/audio/es/system/ui_waypoint_unlocked.mp3
+```
+
+(English master: `/rome/audio/system/ui_waypoint_unlocked.mp3` — “Waypoint unlocked!”)
 
 ## 21 hero-stop primary files
 

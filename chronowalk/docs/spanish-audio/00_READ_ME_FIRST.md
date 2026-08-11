@@ -16,14 +16,16 @@ Este paquete produce exactamente **52 MP3**. No cambies nombres, no unas capítu
 7. Escucha los primeros 15 segundos, un tramo central y los últimos 15 segundos. Después revisa todos los nombres incluidos en `PRONUNCIATION NOTES` contra `02_PRONUNCIATION_GUIDE.md`.
 8. Exporta como MP3 con **exactamente** el nombre de `REQUIRED OUTPUT FILENAME`.
 9. Evita el error `.mp3.mp3`: si el diálogo de guardado ya añade la extensión, escribe solo el nombre base. Después muestra las extensiones del sistema y confirma que termina una sola vez en `.mp3`.
-10. Coloca el archivo en `public/rome/audio/es/narration/`. No crees subcarpetas por parada en el destino; las subcarpetas existen solo en este paquete de guiones.
+10. Coloca el archivo en `public/rome/audio/es/narration/`. No crees subcarpetas por parada en el destino; las subcarpetas existen solo en este paquete de guiones. **No** uses el prefijo `ElevenLabs_` en el filename final: el producto espera el mismo nombre que el master inglés (`w01.mp3`, no `ElevenLabs_W01.mp3`).
 11. Normaliza siguiendo el playbook: 44.1 kHz, 112 kbps, −16 LUFS integrado en dos pasadas, pico real máximo −1.5 dBTP, con aproximadamente 0.8 s de entrada y 1.2 s de cola cuando corresponda.
 12. Escucha el MP3 final normalizado. Comprueba que no se recortó la última palabra y que el nombre, parada y capítulo siguen coincidiendo.
 13. Cuando estén los 52, ejecuta `npm run check:i18n:audio`. El total de narración ES debe ser 52; los 28 archivos hero por sí solos no completan el modo offline.
+14. VO de UI (aparte del manifiesto 1–52): `nuevo hito desbloqueado` se exporta como `ui_waypoint_unlocked.mp3` y se coloca en `public/rome/audio/es/system/` (no en `narration/`).
 
 ## Errores que bloquean la entrega
 
 - **Nombre incorrecto:** el producto busca el mismo filename inglés dentro de la carpeta ES.
+- **Prefijo ElevenLabs_:** los exports crudos de ElevenLabs deben renombrarse antes de subir.
 - **`.mp3.mp3`:** el archivo parece correcto en Finder/Explorer, pero el producto no lo encuentra.
 - **Capítulo equivocado:** especialmente `w17_ch1` a `w17_ch4`, `w1112_b1`/`b2`, y las rutas A/B.
 - **Espacios o notas pegadas:** el bloque de voz debe contener solo palabras habladas.
@@ -33,9 +35,13 @@ Este paquete produce exactamente **52 MP3**. No cambies nombres, no unas capítu
 
 ## Control final de carpetas
 
-Todos los MP3 terminan juntos aquí:
+Todos los MP3 de narración terminan juntos aquí:
 
 `public/rome/audio/es/narration/`
+
+El VO hablado de llegada (“nuevo hito desbloqueado”) va aquí:
+
+`public/rome/audio/es/system/ui_waypoint_unlocked.mp3`
 
 Los guiones permanecen organizados por parada aquí:
 
