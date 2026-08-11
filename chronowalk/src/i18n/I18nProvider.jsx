@@ -50,10 +50,16 @@ export function I18nProvider({ children }) {
 
   const setLocale = useCallback((next) => {
     const normalized = normalizeLocale(next)
-    writeStoredLocale(normalized)
+    if (normalized === getActiveLocale()) {
+      writeStoredLocale(normalized)
+      applyDocumentLocale(normalized)
+      return
+    }
+    // Update module locale before the storage event so listeners see a consistent value.
     setActiveLocale(normalized)
     applyDocumentLocale(normalized)
     clearRomeManifestCache()
+    writeStoredLocale(normalized)
     setLocaleState(normalized)
   }, [])
 

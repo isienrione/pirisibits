@@ -49,15 +49,21 @@ function Row({ label, right }) {
   )
 }
 
-function Segmented({ options, value, onChange, formatLabel = (v) => String(v) }) {
+function Segmented({ options, value, onChange, formatLabel = (v) => String(v), 'aria-label': ariaLabel, testId }) {
   return (
-    <div style={{ display: 'flex', background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2, flexShrink: 0 }}>
+    <div
+      role="group"
+      aria-label={ariaLabel}
+      data-testid={testId}
+      style={{ display: 'flex', background: `${T.muted}22`, borderRadius: 8, padding: 2, gap: 2, flexShrink: 0 }}
+    >
       {options.map((option) => {
         const active = value === option
         return (
           <button
             key={String(option)}
             type="button"
+            aria-pressed={active}
             onClick={() => onChange(option)}
             style={{
               padding: '5px 10px',
@@ -287,6 +293,18 @@ export default function SettingsBottomSheet({ open, onClose }) {
             padding: '0 24px',
           }}
         >
+          <p
+            style={{
+              margin: '12px 0 0',
+              fontSize: 11,
+              color: T.muted,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              fontFamily: F.body,
+            }}
+          >
+            {t('settings.section.language')}
+          </p>
           <Hairline />
           <Row
             label={t('language.label')}
@@ -295,7 +313,11 @@ export default function SettingsBottomSheet({ open, onClose }) {
                 options={[...SUPPORTED_LOCALES]}
                 value={locale}
                 onChange={(next) => setLocale(next)}
-                formatLabel={(code) => labels[code] ?? code}
+                formatLabel={(code) =>
+                  `${code === 'en' ? '🇬🇧' : '🇪🇸'} ${labels[code] ?? code}`
+                }
+                aria-label={t('language.label')}
+                testId="settings-language"
               />
             }
           />

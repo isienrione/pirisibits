@@ -5,6 +5,8 @@ import SettingsBottomSheet from '../SettingsBottomSheet.jsx'
 import { writeAudioSpeed } from '../../../utils/appPreferences.js'
 import { FamilyWalkProvider } from '../../context/FamilyWalkContext.jsx'
 import { writeAccessEntitlement, writeDeviceCredential } from '../../../lib/accessSession.js'
+import { I18nProvider } from '../../../i18n/I18nProvider.jsx'
+import { LOCALE_STORAGE_KEY } from '../../../i18n/storage.js'
 
 vi.mock('../../../lib/familyWalk.js', async () => {
   const actual = await vi.importActual('../../../lib/familyWalk.js')
@@ -37,9 +39,11 @@ function renderSheet(open = true) {
   const onClose = vi.fn()
   render(
     <MemoryRouter>
-      <FamilyWalkProvider>
-        <SettingsBottomSheet open={open} onClose={onClose} />
-      </FamilyWalkProvider>
+      <I18nProvider>
+        <FamilyWalkProvider>
+          <SettingsBottomSheet open={open} onClose={onClose} />
+        </FamilyWalkProvider>
+      </I18nProvider>
     </MemoryRouter>,
   )
   return { onClose }
@@ -55,19 +59,35 @@ describe('SettingsBottomSheet', () => {
     renderSheet()
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
+    expect(screen.getByTestId('settings-language')).toBeInTheDocument()
     expect(screen.getByText('Audio speed')).toBeInTheDocument()
     expect(screen.getByText('Read instead of listen')).toBeInTheDocument()
     expect(screen.getByText('Text size')).toBeInTheDocument()
     expect(screen.getByText('Download for offline')).toBeInTheDocument()
     expect(screen.getByText('Restore purchase')).toBeInTheDocument()
     expect(screen.getByText('Help')).toBeInTheDocument()
-    expect(screen.getByText('About')).toBeInTheDocument()
+    expect(screen.getByText(/About/)).toBeInTheDocument()
     expect(screen.getByTestId('analytics-preferences')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /cookie preferences/i })).toBeInTheDocument()
     expect(screen.queryByTestId('family-walk-panel')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-walk-together')).not.toBeInTheDocument()
     expect(screen.queryByTestId('settings-change-route')).not.toBeInTheDocument()
     expect(screen.getByText(/ChronoWalk · Rome · made to disappear/)).toBeInTheDocument()
+  })
+
+  it('lets travelers swap English and Spanish and persists the choice', () => {
+    renderSheet()
+
+    const spanish = screen.getByRole('button', { name: /español/i })
+    fireEvent.click(spanish)
+
+    expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('es')
+    expect(spanish).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getAllByText('Idioma').length).toBeGreaterThan(0)
+    expect(screen.getByText(/Se aplica al recorrido/i)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /english/i }))
+    expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('en')
   })
 
   it('surfaces Change or customize route for Roma Eterna purchasers', () => {

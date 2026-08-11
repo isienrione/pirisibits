@@ -93,6 +93,7 @@ export default function G1Settings({
                     onClick={() => setLocale(code)}
                     style={{ padding: "4px 10px", borderRadius: 6, fontSize: 12, fontFamily: F.body, background: active ? T.warmWhite : "transparent", color: active ? T.ink : T.muted, border: "none", cursor: "pointer" }}
                   >
+                    {code === 'en' ? '🇬🇧 ' : '🇪🇸 '}
                     {labels[code]}
                   </button>
                 )
