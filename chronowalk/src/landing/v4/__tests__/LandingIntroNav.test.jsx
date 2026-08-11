@@ -43,6 +43,8 @@ describe('LandingIntroNav', () => {
       screen.getByText(/Audio in English & Spanish — choose your language/i),
     ).toBeTruthy()
     expect(screen.getByRole('group', { name: /choose language/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /english/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /español/i })).toBeTruthy()
   })
 
   it('still skips any intro after a prior play flag', () => {

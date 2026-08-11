@@ -17,7 +17,7 @@ export const LANDING_INTRO_VIDEO_ENABLED = false
 const EXIT_LEAD_MS = 320
 const COMPRESS_MS = 450
 const FALLBACK_MAX_MS = 7000
-const NAV_OFFSET_PX = 68
+const NAV_OFFSET_PX = 100
 const INTRO_PLAYS_KEY = 'cw_landing_intro_plays_v1'
 /** Once per browser profile — back/home must not replay the open. */
 const INTRO_PLAY_CAP = 1
@@ -268,36 +268,26 @@ export default function LandingIntroNav({
             ))}
           </nav>
 
-          <div className="cw-v4-nav__language-cluster">
-            <p className="cw-v4-nav__language-sign" role="status">
-              <span className="cw-v4-nav__language-flags" aria-hidden="true">
-                🇬🇧 🇪🇸
-              </span>
-              <span className="cw-v4-nav__language-sign-text">
-                {t('landing.nav.languageSign')}
-              </span>
-              <span className="cw-v4-nav__language-sign-text-short">
-                {t('landing.nav.languageSignShort')}
-              </span>
-            </p>
-            <div
-              className="cw-v4-nav__language"
-              role="group"
-              aria-label={t('landing.nav.languageAria')}
-            >
-              {SUPPORTED_LOCALES.map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
-                  aria-pressed={locale === code}
-                  onClick={() => setLocale(code)}
-                >
-                  <span aria-hidden="true">{code === 'en' ? '🇬🇧' : '🇪🇸'}</span>{' '}
-                  {labels[code] ?? code}
-                </button>
-              ))}
-            </div>
+          <div
+            className="cw-v4-nav__language"
+            role="group"
+            aria-label={t('landing.nav.languageAria')}
+          >
+            {SUPPORTED_LOCALES.map((code) => (
+              <button
+                key={code}
+                type="button"
+                className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
+                aria-pressed={locale === code}
+                onClick={() => setLocale(code)}
+              >
+                <span className="cw-v4-nav__language-flag" aria-hidden="true">
+                  {code === 'en' ? '🇬🇧' : '🇪🇸'}
+                </span>
+                <span className="cw-v4-nav__language-code">{code.toUpperCase()}</span>
+                <span className="cw-v4-nav__language-label">{labels[code] ?? code}</span>
+              </button>
+            ))}
           </div>
 
           {cta ? (
@@ -313,6 +303,18 @@ export default function LandingIntroNav({
             </a>
           ) : null}
         </div>
+
+        <p className="cw-v4-nav__language-sign" role="status">
+          <span className="cw-v4-nav__language-flags" aria-hidden="true">
+            🇬🇧 🇪🇸
+          </span>
+          <span className="cw-v4-nav__language-sign-text">
+            {t('landing.nav.languageSign')}
+          </span>
+          <span className="cw-v4-nav__language-sign-text-short">
+            {t('landing.nav.languageSignShort')}
+          </span>
+        </p>
       </header>
     </>
   )
