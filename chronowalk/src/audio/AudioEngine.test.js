@@ -330,6 +330,37 @@ describe('AudioEngine', () => {
     expect(engine.isNarrationPlaying()).toBe(true);
   });
 
+  it('force-pauses the HTML element even when session.paused is already stale-true', async () => {
+    await engine.playWaypoint('w01');
+    const element = engine.session.element;
+    expect(engine.isNarrationPlaying()).toBe(true);
+
+    // Simulate a desync: flag says paused but the element is still audible.
+    engine.session.paused = true;
+    element.paused = false;
+    element.pause.mockClear();
+
+    engine.pauseNarration();
+
+    expect(element.pause).toHaveBeenCalled();
+    expect(engine.session.paused).toBe(true);
+    expect(engine.isNarrationPlaying()).toBe(false);
+  });
+
+  it('does not restart a paused transit when playTransit is called again', async () => {
+    await engine.playTransit('t01');
+    const firstElement = engine.session.element;
+    engine.pauseNarration();
+    expect(engine.session.paused).toBe(true);
+
+    const playPlan = vi.spyOn(engine, 'playPlan');
+    await engine.playTransit('t01');
+
+    expect(playPlan).not.toHaveBeenCalled();
+    expect(engine.session.element).toBe(firstElement);
+    expect(engine.session.paused).toBe(true);
+  });
+
   it('crossfades antiquity and river beds for their production-plan zones', async () => {
     const fakeBuffer = { duration: 1 };
     engine.loadBuffer = vi.fn(async () => fakeBuffer);

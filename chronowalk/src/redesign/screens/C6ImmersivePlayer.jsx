@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Play, Pause, SkipBack, SkipForward, ChevronLeft, Settings, X } from 'lucide-react'
+import { usePressHandlers } from '../../components/ui/usePressHandlers.js'
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette, Eyebrow } from '../ui/index.js'
@@ -239,6 +240,7 @@ export default function C6ImmersivePlayer({
   const chromeHidden = focusReveal
   const showDiegeticHint =
     hasReconstruction && !chromeHidden && !revealLatched && hintMode !== 'hidden'
+  const playPressHandlers = usePressHandlers(audioAvailable ? onTogglePlay : undefined)
 
   const tabBar = (
     <div
@@ -374,7 +376,7 @@ export default function C6ImmersivePlayer({
       </button>
       <button
         type="button"
-        onClick={onTogglePlay}
+        {...playPressHandlers}
         disabled={!audioAvailable}
         aria-label={narrationPlaying ? 'Pause' : 'Play'}
         style={{

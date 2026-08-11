@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Play, Pause, SkipBack, SkipForward, X } from 'lucide-react'
+import { usePressHandlers } from '../../components/ui/usePressHandlers.js'
 import { T } from '../tokens.js'
 import { formatPlaybackSpeed } from '../../utils/appPreferences.js'
 import { formatPlaybackClock } from '../lib/walkingCompanionFormat.js'
@@ -27,6 +28,7 @@ export default function TransitNarrationSheet({
   onPointerUp,
 }) {
   const seekTrackRef = useRef(null)
+  const playPressHandlers = usePressHandlers(onToggleAudio)
 
   if (!open) return null
 
@@ -60,7 +62,7 @@ export default function TransitNarrationSheet({
           <button
             type="button"
             className="cw-transit-full-player__play cw-wc-pressable"
-            onClick={onToggleAudio}
+            {...playPressHandlers}
             aria-label={narrationPlaying ? 'Pause' : 'Play'}
           >
             {narrationPlaying ? (
