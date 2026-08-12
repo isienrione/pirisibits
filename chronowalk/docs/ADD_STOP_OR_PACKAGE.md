@@ -2,6 +2,8 @@
 
 **Read this every time** you add or materially change a Rome stop, a purchasable package, stop media, pricing, or (eventually) a new city.
 
+For Day-1 MAP scope and which layers are authoritative vs projections, see **[`MAP_DAY2_PRODUCTION_AUDIT.md`](./MAP_DAY2_PRODUCTION_AUDIT.md)** (and `MAP_PRODUCT_CONTRACT.md` when merged).
+
 Production deploys from the **`figma`** branch to **chronowalk.com** (Cloudflare Pages). Landing copy and package IDs on `figma` are what travelers see.
 
 Do **not** edit `src/landing/archive/` unless restoring a dated baseline.
