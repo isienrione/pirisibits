@@ -257,6 +257,8 @@
   color: var(--v4-ink);
 }
 
+/* Shared EN/ES control used by main landing nav + acquisition headers. */
+.cw-lang-switch__control,
 .cw-v4-nav__language {
   margin-left: auto;
   display: inline-flex;
@@ -268,7 +270,7 @@
   background: color-mix(in srgb, var(--v4-paper) 12%, transparent);
 }
 
-.cw-v4-nav__language-option {
+.cw-lang-switch__option {
   min-height: 1.8rem;
   padding: 0.25rem 0.48rem;
   border: 0;
@@ -284,23 +286,23 @@
   gap: 0.28rem;
 }
 
-.cw-v4-nav__language-option.is-active {
+.cw-lang-switch__option.is-active {
   background: color-mix(in srgb, currentColor 12%, transparent);
   opacity: 1;
 }
 
-.cw-v4-nav__language-flag {
+.cw-lang-switch__flag {
   font-size: 0.78rem;
   line-height: 1;
 }
 
-.cw-v4-nav__language-code {
+.cw-lang-switch__code {
   display: none;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
 
-.cw-v4-nav__language-label {
+.cw-lang-switch__label {
   display: inline;
 }
 
@@ -309,6 +311,7 @@
 }
 
 /* Always-on bilingual notice under the nav row (reserves space; no overlay). */
+.cw-lang-switch__sign,
 .cw-v4-nav__language-sign {
   display: inline-flex;
   align-items: center;
@@ -331,13 +334,13 @@
   animation: cw-language-sign-glow 2.6s ease-in-out infinite;
 }
 
-.cw-v4-nav__language-flags {
+.cw-lang-switch__flags {
   flex-shrink: 0;
   font-size: 0.82rem;
   line-height: 1;
 }
 
-.cw-v4-nav__language-sign-text-short {
+.cw-lang-switch__sign-text-short {
   display: none;
 }
 
@@ -352,6 +355,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cw-lang-switch__sign,
   .cw-v4-nav__language-sign {
     animation: none;
   }
@@ -411,27 +415,27 @@
 
 /* Phone / small tablet: compact language codes in the top row. */
 @media (max-width: 47.99rem) {
-  .cw-v4-nav__language-sign-text {
+  .cw-lang-switch__sign-text {
     display: none;
   }
 
-  .cw-v4-nav__language-sign-text-short {
+  .cw-lang-switch__sign-text-short {
     display: inline;
   }
 
-  .cw-v4-nav__language-flag {
+  .cw-lang-switch__flag {
     display: none;
   }
 
-  .cw-v4-nav__language-code {
+  .cw-lang-switch__code {
     display: inline;
   }
 
-  .cw-v4-nav__language-label {
+  .cw-lang-switch__label {
     display: none;
   }
 
-  .cw-v4-nav__language-option {
+  .cw-lang-switch__option {
     min-width: 2.35rem;
     justify-content: center;
     padding-inline: 0.42rem;
@@ -448,6 +452,7 @@
 }
 
 @media (max-width: 28rem) {
+  .cw-lang-switch__sign,
   .cw-v4-nav__language-sign {
     font-size: 0.62rem;
     min-height: 1.75rem;
@@ -1993,7 +1998,20 @@
   background: #0b0b0d;
 }
 
-.cw-v4-walk-static img {
+/* Live WalkingCompanion fills the frame — do NOT stretch every img
+   (that blew up the destination thumbnail over the map). */
+.cw-v4-walk-static .cw-walking-companion {
+  height: 100%;
+}
+
+.cw-v4-listen-static {
+  width: 390px;
+  height: 844px;
+  overflow: hidden;
+  background: #0b0b0d;
+}
+
+.cw-v4-listen-static img {
   display: block;
   width: 100%;
   height: 100%;

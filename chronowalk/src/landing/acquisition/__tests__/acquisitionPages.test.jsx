@@ -227,6 +227,17 @@ describe('acquisition pages', () => {
     expect(document.title).toBe(getPageMeta('/how-it-works').title)
   })
 
+  it('exposes language choice on every acquisition landing header', () => {
+    renderPage('/how-it-works', <HowItWorksPage />)
+    expect(screen.getByTestId('landing-language-control')).toBeInTheDocument()
+    expect(screen.getByRole('group', { name: /choose language/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /english/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /español/i })).toBeInTheDocument()
+    expect(
+      screen.getByText(/Audio in English & Spanish — choose your language/i),
+    ).toBeInTheDocument()
+  })
+
   it('fires one page-view event per acquisition page type', async () => {
     const { track } = await import('../../../lib/track.js')
     track.mockClear()

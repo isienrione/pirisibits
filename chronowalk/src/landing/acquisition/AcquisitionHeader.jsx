@@ -1,17 +1,24 @@
 import { Link } from 'react-router-dom'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import {
+  LandingLanguageControl,
+  LandingLanguageSign,
+} from '../LandingLanguageSwitcher.jsx'
 
 /**
- * Compact acquisition-page header: brand home + focused CTAs, no hamburger.
+ * Compact acquisition-page header: brand home + language + focused CTAs.
  */
 export default function AcquisitionHeader({
   primaryCta = 'Get the full Rome tour',
+  primaryCtaShort = null,
   primaryTo = '/#pricing',
   onPrimaryClick,
   showHowItWorks = true,
 }) {
   const t = useT()
+  const shortCta = primaryCtaShort || t('acquisition.header.primaryShort')
+
   return (
     <header className="cw-acq-header">
       <div className="cw-acq-header__inner">
@@ -31,16 +38,22 @@ export default function AcquisitionHeader({
           ) : null}
         </nav>
 
+        <LandingLanguageControl className="cw-acq-header__language" />
+
         {onPrimaryClick ? (
           <button type="button" className="cw-acq-header__cta" onClick={onPrimaryClick}>
-            {primaryCta}
+            <span className="cw-acq-header__cta-long">{primaryCta}</span>
+            <span className="cw-acq-header__cta-short">{shortCta}</span>
           </button>
         ) : (
           <Link to={primaryTo} className="cw-acq-header__cta">
-            {primaryCta}
+            <span className="cw-acq-header__cta-long">{primaryCta}</span>
+            <span className="cw-acq-header__cta-short">{shortCta}</span>
           </Link>
         )}
       </div>
+
+      <LandingLanguageSign className="cw-acq-header__language-sign" />
     </header>
   )
 }

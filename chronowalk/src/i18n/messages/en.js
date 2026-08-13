@@ -277,6 +277,8 @@ export const enMessages = Object.freeze({
   'acquisition.header.fullTour': 'Full Rome tour',
   'acquisition.header.howItWorks': 'How it works',
   'acquisition.header.primary': 'Get the full Rome tour',
+  'acquisition.header.primaryShort': 'Get full tour',
+  'landing.demo.listenAlt': 'ChronoWalk audio player at the Pantheon stop',
   'acquisition.ancient.stops': '{count} stops',
   'acquisition.ancient.verifiedStops':
     'Route includes {count} verified stops from the current Roma Antica product data.',

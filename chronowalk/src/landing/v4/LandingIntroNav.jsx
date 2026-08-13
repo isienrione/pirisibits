@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
-import { SUPPORTED_LOCALES } from '../../i18n/locales.js'
+import {
+  LandingLanguageControl,
+  LandingLanguageSign,
+} from '../LandingLanguageSwitcher.jsx'
 
 /**
  * Cinematic logo open assets remain in the repo:
@@ -68,7 +71,7 @@ export default function LandingIntroNav({
   header = LANDING_CONTENT.header,
   ctaCopy = LANDING_CTA,
 }) {
-  const { locale, setLocale, labels, t } = useI18n()
+  const { t } = useI18n()
   const { nav, cta, ctaHref, ctaShort } = header
   const [phase, setPhase] = useState(() => (shouldPlayIntro() ? 'intro' : 'nav'))
   const [pastHero, setPastHero] = useState(false)
@@ -268,27 +271,7 @@ export default function LandingIntroNav({
             ))}
           </nav>
 
-          <div
-            className="cw-v4-nav__language"
-            role="group"
-            aria-label={t('landing.nav.languageAria')}
-          >
-            {SUPPORTED_LOCALES.map((code) => (
-              <button
-                key={code}
-                type="button"
-                className={`cw-v4-nav__language-option${locale === code ? ' is-active' : ''}`}
-                aria-pressed={locale === code}
-                onClick={() => setLocale(code)}
-              >
-                <span className="cw-v4-nav__language-flag" aria-hidden="true">
-                  {code === 'en' ? '🇬🇧' : '🇪🇸'}
-                </span>
-                <span className="cw-v4-nav__language-code">{code.toUpperCase()}</span>
-                <span className="cw-v4-nav__language-label">{labels[code] ?? code}</span>
-              </button>
-            ))}
-          </div>
+          <LandingLanguageControl className="cw-v4-nav__language" />
 
           {cta ? (
             <a
@@ -304,17 +287,7 @@ export default function LandingIntroNav({
           ) : null}
         </div>
 
-        <p className="cw-v4-nav__language-sign" role="status">
-          <span className="cw-v4-nav__language-flags" aria-hidden="true">
-            🇬🇧 🇪🇸
-          </span>
-          <span className="cw-v4-nav__language-sign-text">
-            {t('landing.nav.languageSign')}
-          </span>
-          <span className="cw-v4-nav__language-sign-text-short">
-            {t('landing.nav.languageSignShort')}
-          </span>
-        </p>
+        <LandingLanguageSign className="cw-v4-nav__language-sign" />
       </header>
     </>
   )

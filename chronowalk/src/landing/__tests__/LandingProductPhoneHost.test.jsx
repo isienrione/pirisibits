@@ -37,7 +37,7 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
-  it('mounts the real Pantheon free-preview player', () => {
+  it('mounts the real Pantheon free-preview player on arrive', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -50,6 +50,23 @@ describe('LandingProductPhoneStage', () => {
     expect(screen.getAllByText(/free complete stop/i).length).toBeGreaterThan(0)
     expect(screen.getAllByTestId('waypoint-immersive').length).toBeGreaterThan(0)
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
+  })
+
+  it('uses the audio-player lockup for listen instead of another Threshold replica', () => {
+    const layerRefs = createRef()
+    layerRefs.current = []
+    render(
+      <LandingProductPhoneStage
+        chapters={CHAPTERS}
+        layerRefs={layerRefs}
+        beats={[0, 0, 0, 0]}
+      />,
+    )
+    expect(screen.getByTestId('landing-demo-listen-static')).toBeInTheDocument()
+    const listenImg = document.querySelector(
+      '.cw-v4-listen-static img[src="/landing/phone-mockups/screen-01.png"]',
+    )
+    expect(listenImg).toBeTruthy()
   })
 
   it('mounts the real Spanish Steps walking companion without a resume overlay', () => {

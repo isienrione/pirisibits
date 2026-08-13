@@ -104,36 +104,18 @@ const ArriveScreen = memo(function ArriveScreen({ beat = 0, active = false }) {
   )
 })
 
-/** Listen - narration / transcript. Stable tree (no tab remount thrash). */
-const ListenScreen = memo(function ListenScreen({ beat = 0 }) {
+/** Listen - audio-player lockup (distinct from arrive's Threshold story). */
+const ListenScreen = memo(function ListenScreen() {
   const { t } = useI18n()
-  const manifest = useLandingDemoManifest()
-  const pantheon = manifest ? getWaypoint(manifest, 'w17') : null
-  if (!manifest || !pantheon) {
-    return <ChooseScreen beat={0} />
-  }
   return (
-    <A2FreePreviewStory
-      manifest={manifest}
-      waypoint={pantheon}
-      waypointId="w17"
-      eyebrowLabel={t('pantheon.preview.freeComplete')}
-      narrationPlaying={false}
-      audioAvailable
-      currentTime={beat === 0 ? 48 : beat === 1 ? 96 : 150}
-      duration={240}
-      storyEnded={beat >= 2}
-      initialTab={beat >= 1 ? 'transcript' : 'audio'}
-      continueLabel={t('pantheon.preview.continueAll')}
-      suppressAutoRevealInvite
-      onTogglePlay={noop}
-      onSkipBack={noop}
-      onSkipForward={noop}
-      onSeek={noop}
-      onThresholdCross={noop}
-      onStoryComplete={noop}
-      onBack={noop}
-    />
+    <div className="cw-v4-listen-static" data-testid="landing-demo-listen-static">
+      <img
+        src="/landing/phone-mockups/screen-01.png"
+        alt={t('landing.demo.listenAlt')}
+        decoding="async"
+        draggable={false}
+      />
+    </div>
   )
 })
 
@@ -170,7 +152,7 @@ const ChapterScreen = memo(function ChapterScreen({ chapterId, beat, active }) {
   if (chapterId === 'begin') return <BeginTourScreen />
   if (chapterId === 'choose') return <ChooseScreen beat={beat} />
   if (chapterId === 'arrive') return <ArriveScreen beat={beat} active={active} />
-  if (chapterId === 'listen') return <ListenScreen beat={beat} />
+  if (chapterId === 'listen') return <ListenScreen />
   if (chapterId === 'walk') return <WalkScreen />
   return <ChooseScreen beat={0} />
 })

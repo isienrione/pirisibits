@@ -278,6 +278,8 @@ export const esMessages = Object.freeze({
   'acquisition.header.fullTour': 'Recorrido completo por Roma',
   'acquisition.header.howItWorks': 'Cómo funciona',
   'acquisition.header.primary': 'Obtener el recorrido completo por Roma',
+  'acquisition.header.primaryShort': 'Recorrido completo',
+  'landing.demo.listenAlt': 'Reproductor de audio de ChronoWalk en la parada del Panteón',
   'acquisition.ancient.stops': '{count} paradas',
   'acquisition.ancient.verifiedStops':
     'La ruta incluye {count} paradas verificadas según los datos actuales de Roma Antica.',

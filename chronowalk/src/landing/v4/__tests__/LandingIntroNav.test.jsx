@@ -39,6 +39,7 @@ describe('LandingIntroNav', () => {
     render(<LandingIntroNav onComplete={vi.fn()} />)
 
     expect(document.querySelector('.cw-v4-nav__language-sign')).toBeTruthy()
+    expect(document.querySelector('[data-testid="landing-language-control"]')).toBeTruthy()
     expect(
       screen.getByText(/Audio in English & Spanish — choose your language/i),
     ).toBeTruthy()
