@@ -28,7 +28,7 @@ Do **not** call a target READY merely because we intend it to be excellent.
 
 | Priority | placeId | Theme | Status | Blocking issue | Next action |
 |----------|---------|-------|--------|----------------|-------------|
-| 1 | `w01` | Spectacle | ASSET WORK | Living Postcard beyond intact façade; still/loop alignment; hotspot id | Brief → produce matched Living Postcard still + optional motion |
+| 1 | `w01` | Spectacle | ASSET WORK · **Day 3D pre-prod SEALED** | Then still not yet produced | Founder decisions in `docs/reveal-production/w01/00_FOUNDER_DECISIONS.md` — I2I Then still next; **no motion until Then QA**; no `revealTier` yet |
 | 2 | `w17` | Sacred + urban | ASSET WORK | Poisoned `ancient-reconstruction.jpg`; need loop-based / new matched then | Extract/rework from loop; never use modern-photo jpg |
 | 3 | `w03` | The city | ASSET WORK | Current loop under-transforms Via Sacra / urban fabric | Fresh concept: road + city around recognizable arch |
 | 4 | `enc_circus` | Scale | ASSET WORK | Aerial then vs ground/terrace now **not** accepted | Viewpoint-matched then from traveler geofence |
