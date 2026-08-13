@@ -402,7 +402,7 @@ export function promoteOptionalWaypoint(waypointId, manifest) {
   if (promotedOptionalIds.includes(waypointId)) return snapshot
 
   const inserts = getPromotionInsertSteps(manifest, waypointId, path)
-  // No insert steps for this path (e.g. Path B has no optional enc_circus) - do
+  // No insert steps for this path (e.g. Path B already includes enc_circus) - do
   // not orphan a promoted id or leave the traveler on the same stop forever.
   if (!inserts.length) return snapshot
 

@@ -135,12 +135,13 @@ export const ES_LANDING = Object.freeze({
       description:
         'Perfecto para una tarde por el corazón histórico de Roma, con una mirada profunda al Panteón.',
       durationLabel: '~2.5 – 3 h',
-      stopsLabel: '8 paradas',
+      /** Marketing: 8 lugares del centro (Panteón una vez) + bis Vía Apia. Unlock = 10 visit IDs. */
+      stopsLabel: '8 + bis Vía Apia',
       legend: [
         {
           tone: 'full',
           label: 'Ruta por el centro histórico',
-          detail: '8 paradas · ~2.5 – 3 h · ~4 km',
+          detail: '8 paradas del centro + bis Vía Apia · ~2.5 – 3 h · ~4 km',
         },
       ],
       bullets: [
@@ -148,7 +149,7 @@ export const ES_LANDING = Object.freeze({
         'Reconstrucciones Antes/Ahora donde estén disponibles',
         'Indicaciones y progreso guardado',
       ],
-      expandLabel: 'Ver las 8 paradas',
+      expandLabel: 'Ver centro + Vía Apia',
       primaryCta: 'Elegir Roma Historica',
       footFeatures: [
         { icon: 'pin', title: 'Empieza donde quieras', body: 'Comienza en cualquier parada' },

@@ -103,7 +103,8 @@
     "default_path": "a",
     "path_reorder": {
       "b": [
-        "w04"
+        "w04",
+        "enc_circus"
       ]
     },
     "sequences": {
@@ -150,6 +151,7 @@
         "w02",
         "t01",
         "w04",
+        "enc_circus",
         "t03",
         "w03",
         "t04",
@@ -1161,7 +1163,7 @@
       "transcript": "[warm]  From here, the Appia is a short ride rather than another long walk - taxi, bus, or a quiet tram south to the park gate. [matter-of-fact]  Ask for Via Appia Antica, near the Circus of Maxentius. [slow]  When the basalt paving appears under your feet, you're on the queen of roads. [quiet]  Press continue when you arrive - the stones will take it from there."
     },
     "t03": {
-      "after": "w04",
+      "after": "enc_circus",
       "zone": "antiquity",
       "variants": {
         "b": "t03_b.mp3"

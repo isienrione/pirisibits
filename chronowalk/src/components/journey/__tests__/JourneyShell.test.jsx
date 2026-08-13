@@ -328,13 +328,14 @@ describe('JourneyShell', () => {
     expect(getWaypoint(manifest, 'w23')?.chapters).toHaveLength(3)
   })
 
-  it('enc_circus is defined but not in path B sequence; encore is Via Appia only', () => {
+  it('enc_circus is on Path B after Palatine; encore remains Via Appia', () => {
     const manifest = loadRomeManifest()
     const pathA = buildEffectiveSequence(manifest, 'a', [])
     const pathB = buildEffectiveSequence(manifest, 'b', [])
     expect(getWaypoint(manifest, 'enc_circus')?.title).toMatch(/circus maximus view/i)
-    expect(pathB).not.toContain('enc_circus')
-    expect(pathB[pathB.indexOf('w04') + 1]).toBe('t03')
+    expect(pathB).toContain('enc_circus')
+    expect(pathB[pathB.indexOf('w04') + 1]).toBe('enc_circus')
+    expect(pathB[pathB.indexOf('enc_circus') + 1]).toBe('t03')
     expect(pathB.slice(pathB.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])
     expect(pathA).not.toContain('enc_circus')
     expect(pathA.slice(pathA.indexOf('w21'))).toEqual(['w21', 't22', 'w22'])

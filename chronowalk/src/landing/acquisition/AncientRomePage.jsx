@@ -63,7 +63,6 @@ export default function AncientRomePage() {
     ? copy.introductoryPricing
     : copy.eternaValueLine
   const anticaStats = useMemo(() => getLandingTierStats('rome-essential'), [])
-  const historicaStats = useMemo(() => getLandingTierStats('rome-central'), [])
   const anticaStops = useMemo(() => getLandingTierRouteStops('rome-essential'), [])
 
   const checkout = useAcquisitionCheckout({
@@ -279,7 +278,7 @@ export default function AncientRomePage() {
                   {historica?.name ?? 'Roma Historica'}
                 </h3>
                 <p className="cw-acq-choice__meta">
-                  {historicaStats.stopCount} {copy.stopsSuffix} · {copy.historicaMeta}
+                  {historica?.stopsLabel ?? '8 + Appia encore'} · {copy.historicaMeta}
                 </p>
                 <OfferPriceDisplay
                   as="p"

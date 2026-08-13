@@ -200,21 +200,26 @@ export const ROME_TIERS = [
     description:
       'Perfect for an afternoon through Rome’s historic heart, with a deep dive into the Pantheon.',
     durationLabel: '~2.5 – 3 hr',
-    stopsLabel: '8 stops',
+    /** Marketing projection: 8 centro places (Pantheon once) + Appia encore. Unlock has 10 visit IDs. */
+    stopsLabel: '8 + Appia encore',
     distanceLabel: '~4 km',
     mapImage: '/landing/rome-pricing-basemap-central.jpg',
     cardImage: '/landing/hero-slides/package-roma-historica.png',
     cardWidth: 941,
     cardHeight: 1672,
     legend: [
-      { tone: 'full', label: 'Historic center route', detail: '8 stops · ~2.5 – 3 hr · ~4 km' },
+      {
+        tone: 'full',
+        label: 'Historic center route',
+        detail: '8 centro stops + Via Appia encore · ~2.5 – 3 hr · ~4 km',
+      },
     ],
     bullets: [
       'Place-tied audio at each stop',
       'Then vs Now reconstructions where available',
       'Directions and saved progress',
     ],
-    expandLabel: 'See all 8 stops',
+    expandLabel: 'See centro stops + Appia',
     primaryCta: 'Choose Roma Historica',
     footFeatures: [
       { icon: 'pin', title: 'Start anywhere', body: 'Begin at any stop' },

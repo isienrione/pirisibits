@@ -76,8 +76,9 @@ describe('LandingRomeTiersSection desktop posters', () => {
     expect(stack.compareDocumentPosition(guarantee) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
-  it('keeps Historica / Antica / Eterna stop counts at 8 / 12 / 21', () => {
-    expect(getLandingTierStats('rome-central').stopCount).toBe(8)
+  it('keeps Historica / Antica / Eterna kebab projections at 9 / 12 / 21', () => {
+    // Historica: 8 centro kebabs + Appia encore (customer copy: "8 + Appia encore").
+    expect(getLandingTierStats('rome-central').stopCount).toBe(9)
     expect(getLandingTierStats('rome-essential').stopCount).toBe(12)
     expect(getLandingTierStats('rome-complete').stopCount).toBe(21)
   })
@@ -249,7 +250,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Roma Historica' }))
     panel = screen.getByRole('tabpanel')
     expect(panel).toHaveTextContent('€4.99')
-    expect(panel).toHaveTextContent('8 stops')
+    expect(panel).toHaveTextContent('8 + Appia encore')
     expect(panel).toHaveTextContent('~4 km')
     expect(panel).toHaveTextContent(/historic heart/)
     expect(panel).not.toHaveTextContent(/You can do it in/)
@@ -312,7 +313,7 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     fireEvent.click(screen.getByText('Compare all routes'))
     const compare = screen.getByText('Compare all routes').closest('details')
     expect(compare).toHaveTextContent('Roma Historica')
-    expect(compare).toHaveTextContent('8 stops')
+    expect(compare).toHaveTextContent('8 + Appia encore')
     expect(compare).toHaveTextContent('€9.99')
     expect(compare).toHaveTextContent('€4.99')
 
@@ -328,6 +329,6 @@ describe('LandingRomeTiersSection mobile route chooser', () => {
     window.history.replaceState(null, '', '/#rome-central')
     renderPricing(<LandingRomeTiersSection onBeginTier={() => {}} />)
     expect(screen.getByRole('tab', { name: 'Roma Historica' })).toHaveAttribute('aria-selected', 'true')
-    expect(screen.getByRole('tabpanel')).toHaveTextContent('8 stops')
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('8 + Appia encore')
   })
 })

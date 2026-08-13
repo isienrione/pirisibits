@@ -424,8 +424,8 @@ export const esMessages = Object.freeze({
   'onboarding.pace.heroic.included':
     'Coliseo · Foro · Panteón · centro histórico · Vía Apia',
   'onboarding.pace.central.description':
-    'Ocho paradas por el centro histórico de Roma alrededor del Panteón: plazas, fuentes, calles y monumentos ante ti.',
-  'onboarding.pace.central.included': 'Panteón · plazas · fuentes · el Tíber',
+    'Ocho paradas del centro alrededor del Panteón (exterior e interior contados como un solo lugar), más el bis de la Vía Apia: plazas, fuentes, calles y monumentos ante ti.',
+  'onboarding.pace.central.included': 'Panteón · plazas · fuentes · bis Vía Apia',
   'onboarding.pace.classic.description':
     'Doce paradas por el núcleo de la Roma antigua: Coliseo, terraza del Palatino, vista del Circo Máximo por la ruta B, Foro y Capitolio.',
   'onboarding.pace.classic.included':

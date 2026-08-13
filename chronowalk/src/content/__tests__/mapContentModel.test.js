@@ -170,7 +170,7 @@ describe('MAP content model scaffold (Day 3A)', () => {
   it('leaves getTourWaypointIds central/classic/heroic unchanged', () => {
     const manifest = loadRomeManifest()
 
-    // Frozen pre-MAP snapshots (path ∩ tier). Day 3B may fix enc_circus sequence drift.
+    // Path ∩ tier snapshots (enc_circus is Path B only).
     expect(getTourWaypointIds(manifest, { pace: JOURNEY_PACE.CENTRAL, path: 'a' })).toEqual([
       'w14',
       'w15',
@@ -195,6 +195,9 @@ describe('MAP content model scaffold (Day 3A)', () => {
       'w11_12',
       'w13',
     ])
+    expect(getTourWaypointIds(manifest, { pace: JOURNEY_PACE.CLASSIC, path: 'b' })).toContain(
+      'enc_circus',
+    )
 
     const heroic = getTourWaypointIds(manifest, { pace: JOURNEY_PACE.HEROIC, path: 'a' })
     expect(heroic[0]).toBe('w01')
@@ -204,7 +207,6 @@ describe('MAP content model scaffold (Day 3A)', () => {
     expect(heroic).not.toContain('w04') // Path A omits Palatine; Path B includes it
     expect(heroic).toHaveLength(20) // path A visit stops including pause
 
-    // Membership lists themselves must remain untouched by this scaffold.
     expect(TOUR_TIER_WAYPOINTS[JOURNEY_PACE.CLASSIC]).toContain('enc_circus')
   })
 

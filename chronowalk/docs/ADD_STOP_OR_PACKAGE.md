@@ -34,6 +34,19 @@ Canonical place IDs remain manifest `wXX` / `enc_circus` / `pause`. MAP metadata
 
 Runtime attaches empty defaults today (`interestTags: []`, `timeCostMin: null`, `revealTier: null`, `discoveries: []`) so legacy places keep working.
 
+### Inventory honesty / recommendations (Day 3B+)
+
+| Truth | Authority | Do not use |
+|-------|-----------|------------|
+| Day-1 hero inventory (21) | `HERO_STOP_IDS` + manifest waypoints | Landing kebab arrays |
+| Unlock membership | `TOUR_TIER_WAYPOINTS` → `getTourWaypointIds` | `CENTRAL_ROME_TOUR.stopIds`, catalog `stopCount` |
+| Recommendation-safe heroes | `mapRecommendationPool.js` (unlocked ∩ hero ∩ geo ∩ on active path) | Legacy `*-tour.js` / `tourRegistry` |
+| Marketing package lists | Landing projections only | As eligibility |
+
+**`enc_circus` (Circus Maximus View):** on **Path B only**, after Palatine (`w04`) and before Titus transit (`t03`). Not on Path A. Classic/Heroic unlock includes it; it is recommendation-safe only when the active path is B.
+
+**Roma Historica (central) 8 vs 10:** runtime unlock is **10 visit IDs** (`TOUR_TIER_WAYPOINTS.central`, including Pantheon interior `w23` + Via Appia `w22`). Marketing “8 centro stops” collapses Pantheon to one place and treats Appia as encore — see `mapInventoryTruth.js`. Near Me / recommendations must use the unlock set, never the landing eight.
+
 ---
 
 ## Two ID systems (keep them in sync)
