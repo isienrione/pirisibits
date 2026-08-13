@@ -2,6 +2,7 @@ import rawManifest from './rome/manifest.json'
 import { parseRomeManifest } from './romeManifestZod.schema.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
 import { applyDevGeofenceOverrides } from './applyDevGeofenceOverrides.js'
+import { attachMapContent } from './mapContentModel.js'
 import { getDevGeofencesMode } from '../config/env.js'
 import { getActiveLocale } from '../i18n/activeLocale.js'
 import { applyLocaleOverlay } from '../i18n/content/applyLocaleOverlay.js'
@@ -21,7 +22,8 @@ export function loadRomeManifest() {
   }
   parsed = applyLocaleOverlay(parsed, locale)
 
-  cachedManifest = normalizeManifest(parsed)
+  // MAP Day-3A: additive place metadata + discoveries (sibling model; empty in prod).
+  cachedManifest = attachMapContent(normalizeManifest(parsed), { locale })
   cachedManifestKey = cacheKey
   return cachedManifest
 }
