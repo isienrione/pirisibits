@@ -96,11 +96,11 @@ describe('LandingProductHero manual gallery', () => {
     )
   })
 
-  it('jumps to the first Spanish marketing frame after a locale swap', () => {
+  it('keeps the CTA hero active after a locale swap so buttons stay clickable', () => {
     localStorage.removeItem(LOCALE_STORAGE_KEY)
     renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
-    expect(screen.getByRole('tab', { name: 'Main hero image' })).toHaveAttribute(
+    expect(screen.getByRole('tab', { name: /Main hero image|Imagen principal/i })).toHaveAttribute(
       'aria-selected',
       'true',
     )
@@ -108,6 +108,27 @@ describe('LandingProductHero manual gallery', () => {
     act(() => {
       fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
     })
+
+    expect(screen.getByRole('tab', { name: /Main hero image|Imagen principal/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
+    // Slide 0 stays active → hero CTAs keep pointer-events (inactive layers are inert).
+    expect(document.querySelector('.cw-v4-hero__slide-layer.is-active .cw-v4-hero__actions')).toBeTruthy()
+    expect(
+      screen.getByRole('button', { name: /Panteón|Pantheon|adelanto|sneak peek|gratis|free/i }),
+    ).toBeInTheDocument()
+  })
+
+  it('swaps Spanish marketing art when the traveler opens a story frame', () => {
+    localStorage.removeItem(LOCALE_STORAGE_KEY)
+    renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Switch to Spanish' }))
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /Next hero image|Imagen siguiente/i }))
 
     expect(
       screen.getByRole('tab', { name: /ChronoWalk Roma\. Camina libremente/i }),

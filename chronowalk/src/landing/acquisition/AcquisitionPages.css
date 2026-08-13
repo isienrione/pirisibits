@@ -12,6 +12,8 @@
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--v4-line);
   padding-top: env(safe-area-inset-top, 0);
+  /* Interactive chrome only — the bilingual sign must not steal taps. */
+  pointer-events: none;
 }
 
 .cw-acq-header__inner {
@@ -21,6 +23,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  pointer-events: auto;
 }
 
 .cw-acq-header__brand {

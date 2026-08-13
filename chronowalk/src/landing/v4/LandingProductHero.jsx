@@ -129,15 +129,16 @@ export default function LandingProductHero({
     return Object.fromEntries(mapped.map((tier) => [tier.id, tier]))
   }, [locale, tiers])
 
-  // Keep the active frame in range. After a language swap, jump to the first
-  // marketing frame so localized art is obvious (slide 0 is always the sky hero).
+  // Keep the active frame in range after art sets change size. Do not jump
+  // off the CTA hero on language swap — that left visitors on a marketing
+  // frame where inactive hero buttons sit under pointer-events: none.
   useEffect(() => {
     if (localeBootRef.current) {
       localeBootRef.current = false
       setIndex((current) => Math.min(current, Math.max(0, total - 1)))
       return
     }
-    setIndex(total > 1 ? 1 : 0)
+    setIndex((current) => Math.min(current, Math.max(0, total - 1)))
   }, [total, locale])
 
   // Warm pricing posters only — do not preload every hero story frame at LCP.

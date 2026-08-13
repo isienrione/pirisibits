@@ -178,6 +178,9 @@
   border-bottom: 1px solid transparent;
   opacity: 0;
   transform: translateY(-0.75rem);
+  /* Clip a wrapping language sign so it cannot spill a dead click strip
+     over the hero CTAs. Interactive children opt back into hits below. */
+  overflow: hidden;
   pointer-events: none;
   transition:
     opacity 0.55s ease,
@@ -190,8 +193,13 @@
 .cw-v4-nav--visible {
   opacity: 1;
   transform: translateY(0);
-  pointer-events: auto;
   border-bottom-color: var(--v4-line);
+}
+
+.cw-v4-nav--visible .cw-v4-nav__inner,
+.cw-v4-nav--visible .cw-lang-switch__control,
+.cw-v4-nav--visible .cw-v4-nav__cta {
+  pointer-events: auto;
 }
 
 /* Past hero slides: return to obsidian chrome for contrast on paper sections. */
@@ -331,6 +339,8 @@
   letter-spacing: 0.01em;
   line-height: 1.25;
   box-shadow: none;
+  /* Status copy only — never steal taps from hero / page CTAs. */
+  pointer-events: none;
   animation: cw-language-sign-glow 2.6s ease-in-out infinite;
 }
 
@@ -490,7 +500,7 @@
   min-height: 100svh;
   display: grid;
   align-items: start;
-  padding: 6.5rem 0 3.5rem;
+  padding: calc(var(--v4-nav-h) + 0.5rem) 0 3.5rem;
   overflow: hidden;
   /* Pan vertically; block double-tap / pinch page-zoom that Safari leaves stuck. */
   touch-action: manipulation;
@@ -499,7 +509,7 @@
 @media (max-width: 39.99rem) {
   .cw-v4-hero {
     /* Keep category + headline + one CTA in the first mobile viewport. */
-    padding: 5.1rem 0 2.25rem;
+    padding: calc(var(--v4-nav-h) + 0.35rem) 0 2.25rem;
   }
 }
 
@@ -1279,11 +1289,14 @@
 .cw-v4-hero__art-frame--hotspots .cw-v4-hero__art-hotspots {
   position: absolute;
   inset: 0;
+  /* Keep the wrapper inert — only real hotspot anchors capture taps.
+     A full-bleed auto layer swallowed dead clicks on package posters
+     (worse with Spanish art aspect ratios). */
   pointer-events: none;
 }
 
 .cw-v4-hero__slide-layer--art.is-active .cw-v4-hero__art-hotspots {
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .cw-v4-hero__art {
