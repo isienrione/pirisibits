@@ -87,6 +87,7 @@ If a proposal cannot name its killer-loop step, it does not ship in this sprint.
 - **Hero ≠ “has Threshold.”** A hero is a full place story. Reveals attach to heroes (rarely discoveries) only when the visual earns a stop in the loop.
 - **Discovery ≠ incomplete hero.** If it needs a full chapter arc and geofence ritual, it is a hero (or out of scope). Discoveries are short, optional, curiosity-shaped.
 - **Reveal asset ≠ every `reconstruction` field.** Today many stops declare Then=Now. Day-1 **worthwhile** means a traveler would notice and remember the change; **flagship** means the moment we would show in a demo (expect Colosseum-class + two others once curated).
+- **Living Postcard (Day 3C sealed):** Ambition, quality levels, four flagship **targets** (`w01`, `w17`, `w03`, `enc_circus`), seven worthwhile targets, and target-vs-shipped rules live in `docs/MAP_REVEAL_STRATEGY.md`. Runtime `revealTier` reflects QA-passed shipping state only — not aspiration. Acceptance remains **8–10** worthwhile overall with **≥3** flagship-grade.
 - **Route/recommendation ≠ package.** A package answers “what did they buy?” A recommendation answers “what should they do next?”
 
 ### 3.3 Unlock scopes (commerce — unchanged SKUs)

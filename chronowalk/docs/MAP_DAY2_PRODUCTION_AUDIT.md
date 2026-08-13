@@ -227,6 +227,8 @@ Source: committed `manifest.json` reconstruction fields (+ disk notes from `publ
 
 **Do not assign flagship in code yet.** Evidence suggests curation pool starts from: w01/w02, w10, w11_12, w17 (if stills), enc_circus/w04 chapter, plus disk-backed centro stops after then-wiring. Target remains **8–10 worthwhile / 3 flagship** after human review.
 
+> **Day 3C final (supersession):** This section remains **asset evidence**. Product ranking is sealed in `docs/MAP_REVEAL_STRATEGY.md` (Living Postcard). Flagship **targets** are `w01`, `w17`, `w03`, `enc_circus` (four targets; ≥3 must pass QA). `w20` is a worthwhile target, not flagship. Runtime `revealTier` stays unset until QA. See `docs/MAP_REVEAL_PRODUCTION_QUEUE.md` and `docs/reveal-production/`.
+
 ---
 
 ## G. Offline / resume findings
