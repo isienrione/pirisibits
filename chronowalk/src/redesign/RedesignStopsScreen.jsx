@@ -6,7 +6,7 @@ import { getWaypoint } from '../content/manifest.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
-import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, ACT_COLORS, F } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
 import { useT } from '../i18n/I18nProvider.jsx'
@@ -291,7 +291,7 @@ export default function RedesignStopsScreen() {
       </div>
 
       {state === JOURNEY_STATES.IDLE ? (
-        <div style={{ padding: `12px 24px ${SHELL_TAB_BAR_INSET}`, borderTop: `1px solid ${T.muted}28` }}>
+        <div style={{ padding: '12px 24px 12px', borderTop: `1px solid ${T.muted}28` }}>
           <button
             type="button"
             onClick={() => navigate('/begin')}

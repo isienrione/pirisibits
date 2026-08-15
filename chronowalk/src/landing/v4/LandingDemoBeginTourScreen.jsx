@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react'
 import { ChevronDown, Settings } from 'lucide-react'
+import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { ROME_ACTS } from '../../data/romePacing.js'
 import { loadRomeManifest } from '../../content/manifest.js'
 import {
@@ -36,17 +37,6 @@ const ACT_META = Object.fromEntries(ROME_ACTS.map((act) => [act.id, act]))
 
 const SEAM_X = 38
 const NODE_R = 7
-
-function ChronowalkMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
-      <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
-    </svg>
-  )
-}
 
 /**
  * Static My Tour / begin-route phone for acquisition demos.
@@ -120,7 +110,7 @@ export default memo(function LandingDemoBeginTourScreen() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ChronowalkMark />
+            <ChronoWalkLogo size={22} variant="light" />
             <span
               style={{
                 fontSize: 11,

@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { Settings, ChevronDown, ChevronUp } from 'lucide-react'
+import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
 import { T, F } from './tokens.js'
 import { Eyebrow } from './ui/index.js'
 import { C1bRouteSheet } from './screens/C1bRouteSheet.jsx'
@@ -38,17 +39,6 @@ const ACT_COLOR = {
 
 const SEAM_X = 38
 const NODE_R = 7
-
-function ChronowalkMark() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-      <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
-      <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
-    </svg>
-  )
-}
 
 export default function RedesignMyTourScreen() {
   const navigate = useNavigate()
@@ -307,7 +297,7 @@ export default function RedesignMyTourScreen() {
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ChronowalkMark />
+            <ChronoWalkLogo size={22} variant="light" />
             <span
               style={{
                 fontSize: 11,
@@ -411,7 +401,7 @@ export default function RedesignMyTourScreen() {
         <div style={{ paddingBottom: 8 }}>
           {acts.map((act) => {
             const color = ACT_COLOR[act.colorKey] ?? T.actI
-            const faded = act.status === 'ahead' || act.locked
+            const locked = Boolean(act.locked)
             const actLabel =
               act.id === 'encore' || act.numeral === 'Encore' || act.numeral === 'Bis'
                 ? t('journeyHome.encore')
@@ -428,7 +418,7 @@ export default function RedesignMyTourScreen() {
                     alignItems: 'center',
                     padding: `10px 16px 10px ${SEAM_X + NODE_R + 12}px`,
                     gap: 10,
-                    opacity: act.locked ? 0.38 : faded ? 0.55 : 1,
+                    opacity: locked ? 0.42 : 1,
                     transition: 'opacity 300ms',
                   }}
                 >
@@ -466,7 +456,7 @@ export default function RedesignMyTourScreen() {
                         borderRadius: 9,
                         objectFit: 'cover',
                         flexShrink: 0,
-                        filter: faded ? 'brightness(0.7) saturate(0.55)' : 'none',
+                        filter: locked ? 'brightness(0.75) saturate(0.55)' : 'none',
                       }}
                     />
                   ) : (
@@ -499,20 +489,20 @@ export default function RedesignMyTourScreen() {
                         fontSize: 10,
                         letterSpacing: '0.2em',
                         textTransform: 'uppercase',
-                        color: faded ? `${color}70` : color,
+                        color,
                         fontWeight: 500,
                         display: 'block',
                         marginBottom: 2,
                       }}
                     >
                       {actLabel}
-                      {act.locked ? ' · DAY TWO' : ''}
+                      {locked ? ` · ${t('tour.dayTwo')}` : ''}
                     </span>
                     <p
                       style={{
                         fontFamily: F.display,
                         fontSize: 18,
-                        color: faded ? `${T.ink}85` : T.ink,
+                        color: T.ink,
                         fontWeight: 300,
                         lineHeight: 1.15,
                         margin: '0 0 2px',
@@ -554,14 +544,23 @@ export default function RedesignMyTourScreen() {
 
                 {expanded
                   ? act.stops.map((stop) => {
-                      const stopFaded = stop.status === 'upcoming' || act.locked
+                      const isDone = stop.status === 'completed'
+                      const isCurrent = stop.status === 'current'
                       const stopPhoto = photoForWaypoint(stop.waypoint)
+                      const statusLabel = isDone
+                        ? t('journal.done')
+                        : isCurrent
+                          ? t('journal.now')
+                          : t('tour.pending')
+                      const statusColor = isDone ? T.actIV : T.actI
+                      const walkBg = isDone ? T.actIV : '#E8A08A'
+                      const walkFg = isDone ? T.warmWhite : T.obsidian
                       return (
                         <div
                           key={stop.id}
                           style={{
                             padding: `6px 16px 10px ${SEAM_X + NODE_R + 12}px`,
-                            opacity: stopFaded ? 0.55 : 1,
+                            opacity: locked ? 0.42 : 1,
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -576,7 +575,6 @@ export default function RedesignMyTourScreen() {
                                   borderRadius: 7,
                                   objectFit: 'cover',
                                   flexShrink: 0,
-                                  filter: stopFaded ? 'saturate(0.5)' : 'none',
                                 }}
                               />
                             ) : null}
@@ -585,25 +583,27 @@ export default function RedesignMyTourScreen() {
                                 style={{
                                   margin: 0,
                                   fontSize: 14,
-                                  fontWeight: stop.status === 'current' ? 600 : 400,
-                                  color: stopFaded ? T.muted : T.ink,
+                                  fontWeight: isCurrent ? 600 : 400,
+                                  color: T.ink,
                                   lineHeight: 1.25,
                                 }}
                               >
                                 {titleForWaypoint(stop.waypoint)}
                               </p>
                             </div>
-                            {stop.status === 'completed' ? (
-                              <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>
-                                {t('journal.done')}
-                              </span>
-                            ) : stop.status === 'current' ? (
-                              <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>
-                                {t('journal.now')}
-                              </span>
-                            ) : null}
+                            <span
+                              style={{
+                                fontSize: 10,
+                                color: statusColor,
+                                letterSpacing: '0.1em',
+                                fontWeight: 650,
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              {statusLabel}
+                            </span>
                           </div>
-                          {!act.locked ? (
+                          {!locked ? (
                             <div
                               style={{
                                 display: 'flex',
@@ -649,8 +649,8 @@ export default function RedesignMyTourScreen() {
                                 onClick={() => walkToStop(stop.id, JOURNEY_STATES.WALKING)}
                                 style={{
                                   fontSize: 11,
-                                  color: T.obsidian,
-                                  background: T.ember,
+                                  color: walkFg,
+                                  background: walkBg,
                                   border: 'none',
                                   borderRadius: 8,
                                   padding: '6px 8px',

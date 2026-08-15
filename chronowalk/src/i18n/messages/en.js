@@ -936,6 +936,8 @@ export const enMessages = Object.freeze({
   'tour.listenHere': 'Listen here',
   'tour.openCard': 'Open card',
   'tour.walkHere': 'Walk here',
+  'tour.pending': 'PENDING',
+  'tour.dayTwo': 'DAY TWO',
   'tour.chooseRhythm': 'Choose your rhythm first →',
 
   // Contact / legal shell

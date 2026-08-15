@@ -86,7 +86,7 @@ export default function HomeTutorialSheet({ open, onClose }) {
         `,
         fontFamily: F.body,
         color: T.ink,
-        paddingBottom: 'max(18px, env(safe-area-inset-bottom))',
+        paddingBottom: 'calc(var(--shell-tab-bar-height, 3.15rem) + 12px)',
       }}
     >
       <header

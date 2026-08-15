@@ -39,15 +39,14 @@ export default function ShellTabBar() {
   return (
     <nav
       aria-label={t('shell.nav.aria')}
-      className="fixed inset-x-0 bottom-0 z-[80] border-t border-ink800 bg-bone px-2 pt-2 shadow-card shell-tab-bar"
+      className="fixed inset-x-0 bottom-0 z-[80] border-t border-ink800 bg-bone px-2 pt-1 shadow-card shell-tab-bar"
       style={{
         fontFamily: 'var(--font-ui)',
-        // viewport-fit=cover always exposes the home-indicator inset - extend
-        // the bone background flush to the physical bottom (no black gap).
-        paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))',
+        // Extend bone flush to the physical bottom; keep only the real home-indicator inset.
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
-      <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-1">
+      <ul className="mx-auto flex max-w-lg items-stretch justify-around gap-0.5">
         {tabs.map((tab) => {
           const active = isShellTabActive(tab.to, location.pathname)
           const Icon = tab.Icon
@@ -57,7 +56,7 @@ export default function ShellTabBar() {
               <Link
                 to={tab.to}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
+                className={`flex min-h-10 flex-col items-center justify-center gap-0.5 rounded-2xl px-1.5 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.12em] transition-colors ${
                   active ? 'text-ember' : 'text-muted'
                 }`}
               >

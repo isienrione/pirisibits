@@ -30,7 +30,7 @@ export default function HomeResetConfirmSheet({
         display: 'grid',
         placeItems: 'end center',
         background: 'rgba(11,11,13,0.58)',
-        padding: '16px 16px calc(16px + env(safe-area-inset-bottom))',
+        padding: '16px 16px calc(16px + var(--shell-tab-bar-height, 3.15rem))',
       }}
       onClick={onClose}
       onKeyDown={(event) => {

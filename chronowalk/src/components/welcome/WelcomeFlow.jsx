@@ -12,7 +12,7 @@ import {
   WELCOME_SPLASH_MS,
 } from '../../data/welcomeConfig'
 import { Beacon } from './Beacon'
-import { PrismSeamLogo } from './PrismSeamLogo'
+import ChronoWalkLogo from '../ui/ChronoWalkLogo.jsx'
 
 function WelcomeShell({ children, aura = false }) {
   return (
@@ -111,7 +111,7 @@ function SplashView({ onDone, reducedMotion, onSeamStart }) {
           textAlign: 'center',
         }}
       >
-        <PrismSeamLogo size={84} />
+        <ChronoWalkLogo size={84} variant="dark" />
         <p
           style={{
             marginTop: 20,

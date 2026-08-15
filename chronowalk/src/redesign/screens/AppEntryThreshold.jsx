@@ -1,6 +1,7 @@
 import { T, F } from '../tokens.js'
 import { colosseumNow } from '../images.js'
 import { Vignette } from '../ui/index.js'
+import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { useT } from '../../i18n/I18nProvider.jsx'
 
 /**
@@ -63,10 +64,7 @@ export default function AppEntryThreshold({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-            <circle cx="10" cy="10" r="8.5" stroke={T.ember} strokeWidth="1.3" />
-            <line x1="10" y1="1.5" x2="10" y2="18.5" stroke={T.ember} strokeWidth="1.3" />
-          </svg>
+          <ChronoWalkLogo size={22} variant="dark" />
           <span
             style={{
               fontSize: 12,

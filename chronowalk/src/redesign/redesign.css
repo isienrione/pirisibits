@@ -915,9 +915,9 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
 }
 
 :root {
-  /* Tab content (~3.75rem) + home-indicator inset so the bone bar is flush
-     with the physical bottom under viewport-fit=cover. */
-  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
+  /* Compact tab content + home-indicator inset so the bone bar sits flush
+     at the physical bottom under viewport-fit=cover (no empty strip below). */
+  --shell-tab-bar-height: calc(3.15rem + env(safe-area-inset-bottom, 0px));
   --wc-shell-tab-inset: 0px;
   --wc-continuity-btn-height: 52px;
   /* Legacy fallback; action stack is now in-flow so panel no longer offsets by this. */
@@ -1521,7 +1521,7 @@ html.redesign-pwa #root {
 
 html[data-shell-standalone='true'] {
   /* Same flush rule as browser — home indicator is already in the token. */
-  --shell-tab-bar-height: calc(3.75rem + env(safe-area-inset-bottom, 0px));
+  --shell-tab-bar-height: calc(3.15rem + env(safe-area-inset-bottom, 0px));
 }
 
 html.redesign-pwa[data-shell-tab-bar='visible'],

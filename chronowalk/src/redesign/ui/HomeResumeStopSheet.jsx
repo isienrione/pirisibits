@@ -138,7 +138,8 @@ export default function HomeResumeStopSheet({
         `,
         fontFamily: F.body,
         color: T.ink,
-        paddingBottom: 'max(18px, env(safe-area-inset-bottom))',
+        // Sit above the fixed shell tab bar (z-index lower than this overlay).
+        paddingBottom: 'calc(var(--shell-tab-bar-height, 3.15rem) + 12px)',
       }}
     >
       <header

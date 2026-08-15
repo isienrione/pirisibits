@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Play, ChevronRight } from 'lucide-react'
+import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { T, F } from '../tokens.js'
 import { colosseumNow, pantheonNow, spanishSteps, THEN_colosseum } from '../images.js'
 import { loadRomeManifest } from '../../content/manifest.js'
@@ -59,12 +60,7 @@ export default function A1LandingHero({ priceLabel = '€14.99', onPurchase, onP
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-              <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5" />
-              <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-              <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.6" />
-              <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.6" />
-            </svg>
+            <ChronoWalkLogo size={22} variant="dark" />
             <span
               style={{
                 fontSize: 12,

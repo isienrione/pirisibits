@@ -948,6 +948,8 @@ export const esMessages = Object.freeze({
   'tour.listenHere': 'Escuchar aquí',
   'tour.openCard': 'Abrir ficha',
   'tour.walkHere': 'Caminar aquí',
+  'tour.pending': 'PENDIENTE',
+  'tour.dayTwo': 'DÍA DOS',
   'tour.chooseRhythm': 'Elige primero tu ritmo →',
 
   // Contact / legal shell

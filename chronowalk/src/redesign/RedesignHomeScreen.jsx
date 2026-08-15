@@ -11,7 +11,7 @@ import {
   Settings,
 } from 'lucide-react'
 import ChronoWalkLogo from '../components/ui/ChronoWalkLogo.jsx'
-import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
+import { T, F } from './tokens.js'
 import HomeMapPeek from './ui/HomeMapPeek.jsx'
 import HomeProgressArc from './ui/HomeProgressArc.jsx'
 import HomeResetConfirmSheet from './ui/HomeResetConfirmSheet.jsx'
@@ -322,7 +322,7 @@ export default function RedesignHomeScreen() {
         fontFamily: F.body,
         color: T.ink,
         overflow: 'hidden',
-        paddingBottom: SHELL_TAB_BAR_INSET,
+        // Companion frame already reserves the tab bar via --wc-shell-tab-inset.
         position: 'relative',
       }}
     >

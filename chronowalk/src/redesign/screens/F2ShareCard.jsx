@@ -1,5 +1,6 @@
 import { T, F } from "../tokens.js";
 import { spanishSteps } from "../images.js";
+import ChronoWalkLogo from "../../components/ui/ChronoWalkLogo.jsx";
 
 export default function F2ShareCard() {
   // Exportable 9:16 artifact - rendered at 390×844 inside the phone frame
@@ -34,13 +35,9 @@ export default function F2ShareCard() {
 
       <div style={{ position: "relative", zIndex: 2, height: "100%", display: "flex", flexDirection: "column", padding: "52px 32px 50px" }}>
 
-        {/* PrismSeam mark - top left */}
+        {/* Official brand mark - top left */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "auto" }}>
-          <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="11" r="9.5" stroke={T.ember} strokeWidth="1.5"
-              style={{ filter: "drop-shadow(0 0 4px rgba(232,161,60,0.55))" }} />
-            <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.ember} strokeWidth="1.5" />
-          </svg>
+          <ChronoWalkLogo size={18} variant="dark" />
           <span style={{ fontSize: 10, color: `${T.muted}80`, letterSpacing: "0.16em", textTransform: "uppercase" }}>
             CHRONOWALK
           </span>
