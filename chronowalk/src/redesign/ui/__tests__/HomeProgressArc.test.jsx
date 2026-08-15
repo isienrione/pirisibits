@@ -15,7 +15,7 @@ function renderArc(props) {
 }
 
 describe('HomeProgressArc', () => {
-  it('shows stop count and percent without phase labels', () => {
+  it('shows stop count, circular percent, and skipped beads without phase labels', () => {
     renderArc({
       completed: 5,
       total: 21,
