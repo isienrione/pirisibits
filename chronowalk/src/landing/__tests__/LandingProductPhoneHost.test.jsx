@@ -37,7 +37,7 @@ describe('LandingProductPhoneStage', () => {
     expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
   })
 
-  it('mounts the real Pantheon free-preview player on arrive', () => {
+  it('uses the Campo de Fiori screen recording for arrive', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -45,11 +45,17 @@ describe('LandingProductPhoneStage', () => {
         chapters={CHAPTERS}
         layerRefs={layerRefs}
         beats={[0, 0, 0, 0]}
+        activeIndex={1}
       />,
     )
-    expect(screen.getAllByText(/free complete stop/i).length).toBeGreaterThan(0)
-    expect(screen.getAllByTestId('waypoint-immersive').length).toBeGreaterThan(0)
-    expect(document.querySelector('img.cw-landing-phone__shot')).toBeNull()
+    expect(screen.getByTestId('landing-demo-arrive-campo')).toBeInTheDocument()
+    const video = document.querySelector(
+      '.cw-v4-arrive-static video[src="/landing/phone-mockups/arrive-campo-fiori.mp4"]',
+    )
+    expect(video).toBeTruthy()
+    expect(video?.getAttribute('poster')).toBe(
+      '/landing/phone-mockups/arrive-campo-fiori-poster.jpg',
+    )
   })
 
   it('uses the audio-player lockup for listen instead of another Threshold replica', () => {
@@ -69,7 +75,7 @@ describe('LandingProductPhoneStage', () => {
     expect(listenImg).toBeTruthy()
   })
 
-  it('mounts the real Spanish Steps walking companion without a resume overlay', () => {
+  it('uses the real Spanish Steps map lockup for walk', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -80,16 +86,14 @@ describe('LandingProductPhoneStage', () => {
       />,
     )
     expect(screen.getByTestId('landing-demo-walk-static')).toBeInTheDocument()
-    expect(screen.getByTestId('landing-demo-walk-companion')).toBeInTheDocument()
-    expect(screen.getAllByText(/walking to/i).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(/spanish steps/i).length).toBeGreaterThan(0)
-    expect(screen.getByTestId('transit-continue')).toBeInTheDocument()
-    expect(screen.getByTestId('manual-arrive')).toBeInTheDocument()
-    expect(document.querySelector('.cw-v4-walk-resume')).toBeNull()
-    expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
+    const walkImg = document.querySelector(
+      '.cw-v4-walk-static img[src="/landing/phone-screens/walk-spanish-steps-real.jpeg"]',
+    )
+    expect(walkImg).toBeTruthy()
+    expect(screen.queryByTestId('landing-demo-walk-companion')).not.toBeInTheDocument()
   })
 
-  it('keeps the real walking companion mounted across later walk beats', () => {
+  it('keeps the walk lockup mounted across later walk beats', () => {
     const layerRefs = createRef()
     layerRefs.current = []
     render(
@@ -100,7 +104,10 @@ describe('LandingProductPhoneStage', () => {
       />,
     )
     expect(screen.getByTestId('landing-demo-walk-static')).toBeInTheDocument()
-    expect(screen.getByTestId('landing-demo-walk-companion')).toBeInTheDocument()
-    expect(screen.queryByText(/rome kept your place/i)).not.toBeInTheDocument()
+    expect(
+      document.querySelector(
+        '.cw-v4-walk-static img[src="/landing/phone-screens/walk-spanish-steps-real.jpeg"]',
+      ),
+    ).toBeTruthy()
   })
 })

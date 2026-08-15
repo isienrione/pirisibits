@@ -2011,19 +2011,12 @@
   background: #0b0b0d;
 }
 
-/* Live WalkingCompanion fills the frame — do NOT stretch every img
-   (that blew up the destination thumbnail over the map). */
 .cw-v4-walk-static .cw-walking-companion {
   height: 100%;
 }
 
-.cw-v4-listen-static {
-  width: 390px;
-  height: 844px;
-  overflow: hidden;
-  background: #0b0b0d;
-}
-
+.cw-v4-walk-static__shot,
+.cw-v4-arrive-static__media,
 .cw-v4-listen-static img {
   display: block;
   width: 100%;
@@ -2033,6 +2026,19 @@
   touch-action: manipulation;
   -webkit-user-drag: none;
   user-select: none;
+}
+
+.cw-v4-arrive-static,
+.cw-v4-listen-static {
+  width: 390px;
+  height: 844px;
+  overflow: hidden;
+  background: #0b0b0d;
+}
+
+.cw-v4-arrive-static__media {
+  border: 0;
+  background: #0b0b0d;
 }
 
 .cw-v4-walk-shell {

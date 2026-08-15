@@ -63,9 +63,9 @@ describe('landing product-story architecture (V4)', () => {
     ])
     expect(section.chapters.map((c) => c.component)).toEqual([
       'LandingDemoBeginTourScreen',
-      'A2FreePreviewStory',
-      'A2FreePreviewStory',
-      'C2Walking',
+      'LandingDemoArriveCampo',
+      'LandingDemoListenLockup',
+      'LandingDemoWalkLockup',
     ])
     expect(section.chapters[1].emotional).toBe(true)
     expect(resolveSequentialChapters(section.chapters).map((c) => c.id)).toEqual([

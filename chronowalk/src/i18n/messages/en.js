@@ -279,6 +279,8 @@ export const enMessages = Object.freeze({
   'acquisition.header.primary': 'Get the full Rome tour',
   'acquisition.header.primaryShort': 'Get full tour',
   'landing.demo.listenAlt': 'ChronoWalk audio player at the Pantheon stop',
+  'landing.demo.arriveAlt': "Campo de' Fiori Then/Now reveal in ChronoWalk",
+  'landing.demo.walkAlt': 'Walking to the Spanish Steps with the live route map',
   'acquisition.ancient.stops': '{count} stops',
   'acquisition.ancient.verifiedStops':
     'Route includes {count} verified stops from the current Roma Antica product data.',
