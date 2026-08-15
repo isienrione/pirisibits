@@ -117,15 +117,11 @@ export const useGeoLocation = ({
         setAccuracy(
           typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : null
         );
+        // resolveJourneyState guards a null target (transit legs with no
+        // waypoint geofence) and already carries the arrival status, which the
+        // journey.status effect below applies. Reading target.lat here instead
+        // would throw on the first fix when the target is null.
         setJourney(resolveJourneyState(lat, lng, target, geofenceThresholdM));
-
-        const dist = getDistance(lat, lng, target.lat, target.lng);
-        const newState =
-          dist <= geofenceThresholdM
-            ? JOURNEY_STATE.ARRIVAL
-            : JOURNEY_STATE.TRANSIT;
-
-        setState(newState);
       },
       (err) => {
         console.error(err);

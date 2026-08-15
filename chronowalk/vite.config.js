@@ -196,6 +196,9 @@ export default defineConfig({
     port: 5173,
   },
   build: {
+    // Emit source maps (without a public sourceMappingURL) so error tracking
+    // can symbolicate stacks instead of reporting a bare `?` frame.
+    sourcemap: 'hidden',
     modulePreload: {
       polyfill: false,
       resolveDependencies: (_filename, deps) =>
