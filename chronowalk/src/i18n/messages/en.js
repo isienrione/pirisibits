@@ -25,6 +25,8 @@ export const enMessages = Object.freeze({
   'home.progress.ready': 'Ready when you are',
   'home.map.loading': 'Map loading…',
   'home.map.badge': 'Map',
+  'home.hero.aria': 'Current stop: {title}',
+  'home.hero.ariaReady': 'Your tour home',
   'home.cta.continueWalk': 'Continue',
   'home.cta.resumeTour': 'Continue',
   'home.cta.beginTour': 'Begin',

@@ -4,6 +4,7 @@ import { BookOpen, HelpCircle, Map as MapIcon, MapPinned, Navigation, Route, Set
 import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import HomeMapPeek from './ui/HomeMapPeek.jsx'
 import HomeProgressArc from './ui/HomeProgressArc.jsx'
+import HomeStopHero from './ui/HomeStopHero.jsx'
 import HomeSupportSheet from './ui/HomeSupportSheet.jsx'
 import { LandingZoomableImageViewer } from '../landing/v4/LandingPackagePosterViewer.jsx'
 import { getPackRoutePreview } from '../landing/packRoutePreview.js'
@@ -26,43 +27,6 @@ import {
   findSequenceIndexForWaypoint,
 } from '../content/myTourPlan.js'
 import { titleForWaypoint } from './lib/waypointPresentation.js'
-
-/** Soft Ancient Rome motif — columns + arch, decorative only. */
-function RomeMotif() {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 220 160"
-      style={{
-        position: 'absolute',
-        right: -18,
-        top: 36,
-        width: 168,
-        height: 122,
-        opacity: 0.16,
-        pointerEvents: 'none',
-      }}
-    >
-      <path
-        d="M40 140 V58 M70 140 V58 M40 58 H70 M30 52 H80"
-        fill="none"
-        stroke={T.actIV}
-        strokeWidth="5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M100 140 V72 M160 140 V72 M100 72 Q130 28 160 72"
-        fill="none"
-        stroke={T.actVI}
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="186" cy="48" r="16" fill="none" stroke={T.actIII} strokeWidth="4" />
-      <path d="M186 36 V48 L196 48" fill="none" stroke={T.actV} strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  )
-}
 
 function DashCard({ children, onClick, testId, ariaLabel, style = {} }) {
   const Tag = onClick ? 'button' : 'div'
@@ -97,32 +61,32 @@ function ActionTile({ icon: Icon, label, onClick, testId, ariaLabel, accent = T.
       testId={testId}
       ariaLabel={ariaLabel}
       style={{
-        minHeight: 78,
-        padding: '12px 8px',
+        minHeight: 72,
+        padding: '10px 6px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: 7,
         textAlign: 'center',
       }}
     >
       <span
         style={{
-          width: 32,
-          height: 32,
-          borderRadius: 11,
+          width: 30,
+          height: 30,
+          borderRadius: 10,
           display: 'grid',
           placeItems: 'center',
           background: `${accent}22`,
           color: accent,
         }}
       >
-        <Icon size={16} strokeWidth={1.9} aria-hidden />
+        <Icon size={15} strokeWidth={1.9} aria-hidden />
       </span>
       <span
         style={{
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 650,
           lineHeight: 1.15,
           color: T.ink,
@@ -132,6 +96,22 @@ function ActionTile({ icon: Icon, label, onClick, testId, ariaLabel, accent = T.
       </span>
     </DashCard>
   )
+}
+
+function resolveHomeWaypoint(step, currentAct, acts) {
+  if (step?.type === 'waypoint' && step.record) return step.record
+  if (step?.type === 'transit' && step.targetWaypoint) return step.targetWaypoint
+  const currentStop = currentAct?.stops?.find((stop) => stop.status === 'current')
+  if (currentStop?.waypoint) return currentStop.waypoint
+  const nextStop = currentAct?.stops?.find(
+    (stop) => stop.status === 'upcoming' || stop.status === 'current',
+  )
+  if (nextStop?.waypoint) return nextStop.waypoint
+  for (const act of acts ?? []) {
+    const stop = act.stops?.find((entry) => entry.waypoint)
+    if (stop?.waypoint) return stop.waypoint
+  }
+  return null
 }
 
 export default function RedesignHomeScreen() {
@@ -170,15 +150,15 @@ export default function RedesignHomeScreen() {
     state !== JOURNEY_STATES.COMPLETE &&
     state !== JOURNEY_STATES.DAY_COMPLETE
 
-  const currentStopTitle = useMemo(() => {
-    if (step?.type === 'waypoint' && step.record) return titleForWaypoint(step.record)
-    if (step?.type === 'transit' && step.targetWaypoint) {
-      return titleForWaypoint(step.targetWaypoint)
-    }
-    const currentStop = currentAct?.stops?.find((stop) => stop.status === 'current')
-    if (currentStop?.waypoint) return titleForWaypoint(currentStop.waypoint)
-    return null
-  }, [step, currentAct])
+  const currentWaypoint = useMemo(
+    () => resolveHomeWaypoint(step, currentAct, acts),
+    [step, currentAct, acts],
+  )
+
+  const currentStopTitle = useMemo(
+    () => (currentWaypoint ? titleForWaypoint(currentWaypoint) : null),
+    [currentWaypoint],
+  )
 
   const handleContinue = useCallback(() => {
     if (journeyActive) {
@@ -247,7 +227,7 @@ export default function RedesignHomeScreen() {
           display: 'grid',
           placeItems: 'center',
           fontFamily: F.body,
-          color: '#8A8174',
+          color: T.muted,
         }}
       >
         {t('home.loading')}
@@ -261,7 +241,7 @@ export default function RedesignHomeScreen() {
         className="cw-grain"
         style={{ background: T.bone, height: '100%', padding: 32, fontFamily: F.body }}
       >
-        <p style={{ color: '#8A8174' }}>{error?.message ?? t('home.unavailable')}</p>
+        <p style={{ color: T.muted }}>{error?.message ?? t('home.unavailable')}</p>
         <Link
           to="/begin"
           style={{
@@ -292,12 +272,7 @@ export default function RedesignHomeScreen() {
       className="cw-grain"
       data-testid="home-screen"
       style={{
-        background: `
-          radial-gradient(90% 60% at 100% 0%, rgba(78,155,143,0.16) 0%, transparent 55%),
-          radial-gradient(70% 50% at 0% 100%, rgba(177,74,110,0.12) 0%, transparent 50%),
-          radial-gradient(50% 40% at 80% 80%, rgba(232,161,60,0.12) 0%, transparent 45%),
-          linear-gradient(180deg, #FFFEFA 0%, ${T.bone} 48%, #F4EEE4 100%)
-        `,
+        background: T.bone,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -308,107 +283,107 @@ export default function RedesignHomeScreen() {
         position: 'relative',
       }}
     >
-      <RomeMotif />
-
-      <header
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          gap: 12,
-          padding: '8px 16px 10px',
-          paddingTop: 'max(18px, calc(env(safe-area-inset-top) + 12px))',
-          flexShrink: 0,
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
-          <div style={{ paddingTop: 4 }}>
-            <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden>
-              <circle cx="11" cy="11" r="9.5" stroke={T.actIV} strokeWidth="1.5" />
-              <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.actIII} strokeWidth="1.5" />
-              <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.7" />
-              <line x1="11" y1="7" x2="4" y2="15" stroke={T.actVI} strokeWidth="1" opacity="0.7" />
-            </svg>
-          </div>
-          <div style={{ minWidth: 0 }}>
-            <p
-              style={{
-                margin: 0,
-                fontSize: 11,
-                fontWeight: 650,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: T.actIV,
-              }}
-            >
-              {t('home.tourLabel')}
-            </p>
-            <h1
-              style={{
-                margin: '4px 0 0',
-                fontFamily: F.display,
-                fontSize: 24,
-                fontWeight: 450,
-                lineHeight: 1.1,
-                color: T.ink,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {packTitle}
-            </h1>
-            <p
-              style={{
-                margin: '4px 0 0',
-                fontSize: 12,
-                color: '#8A8174',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {paceLabel}
-              {currentAct?.title ? ` · ${currentAct.title}` : ''}
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={openSettings}
-          aria-label={t('home.actions.settings')}
-          data-testid="home-settings"
+      <HomeStopHero waypoint={currentWaypoint}>
+        <header
           style={{
-            width: 36,
-            height: 36,
-            marginTop: 2,
-            borderRadius: 999,
-            border: `1px solid ${T.limestone}`,
-            background: '#FFFEFA',
-            display: 'grid',
-            placeItems: 'center',
-            cursor: 'pointer',
-            color: T.ink,
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: 12,
+            padding: '8px 16px 10px',
+            paddingTop: 'max(18px, calc(env(safe-area-inset-top) + 12px))',
             flexShrink: 0,
           }}
         >
-          <Settings size={16} />
-        </button>
-      </header>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, minWidth: 0 }}>
+            <div style={{ paddingTop: 4 }}>
+              <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden>
+                <circle cx="11" cy="11" r="9.5" stroke={T.warmWhite} strokeWidth="1.5" />
+                <line x1="11" y1="1.5" x2="11" y2="20.5" stroke={T.actIII} strokeWidth="1.5" />
+                <line x1="11" y1="7" x2="18" y2="15" stroke={T.actV} strokeWidth="1" opacity="0.85" />
+                <line x1="11" y1="7" x2="4" y2="15" stroke={T.actIV} strokeWidth="1" opacity="0.85" />
+              </svg>
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: 11,
+                  fontWeight: 650,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(250,246,239,0.88)',
+                }}
+              >
+                {t('home.tourLabel')}
+              </p>
+              <h1
+                style={{
+                  margin: '4px 0 0',
+                  fontFamily: F.display,
+                  fontSize: 26,
+                  fontWeight: 450,
+                  lineHeight: 1.1,
+                  color: T.warmWhite,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  textShadow: '0 1px 12px rgba(11,11,13,0.35)',
+                }}
+              >
+                {packTitle}
+              </h1>
+              <p
+                style={{
+                  margin: '5px 0 0',
+                  fontSize: 12,
+                  color: 'rgba(250,246,239,0.78)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {paceLabel}
+                {currentAct?.title ? ` · ${currentAct.title}` : ''}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={openSettings}
+            aria-label={t('home.actions.settings')}
+            data-testid="home-settings"
+            style={{
+              width: 36,
+              height: 36,
+              marginTop: 2,
+              borderRadius: 999,
+              border: '1px solid rgba(250,246,239,0.35)',
+              background: 'rgba(11,11,13,0.28)',
+              backdropFilter: 'blur(8px)',
+              display: 'grid',
+              placeItems: 'center',
+              cursor: 'pointer',
+              color: T.warmWhite,
+              flexShrink: 0,
+            }}
+          >
+            <Settings size={16} />
+          </button>
+        </header>
+      </HomeStopHero>
 
       <div
+        data-testid="home-widgets"
         style={{
-          flex: 1,
-          minHeight: 0,
+          flexShrink: 0,
           display: 'flex',
           flexDirection: 'column',
-          gap: 10,
-          padding: '6px 16px 10px',
-          overflow: 'hidden',
+          gap: 9,
+          padding: '0 14px 10px',
+          marginTop: -18,
           position: 'relative',
-          zIndex: 1,
+          zIndex: 2,
         }}
       >
         <HomeProgressArc
@@ -421,11 +396,10 @@ export default function RedesignHomeScreen() {
 
         <div
           style={{
-            flex: '1 1 0',
-            minHeight: 0,
+            height: 152,
             display: 'grid',
             gridTemplateColumns: '1.15fr 0.85fr',
-            gap: 10,
+            gap: 9,
           }}
         >
           <DashCard
@@ -436,11 +410,12 @@ export default function RedesignHomeScreen() {
               padding: 0,
               overflow: 'hidden',
               minHeight: 0,
+              height: '100%',
               display: 'flex',
               flexDirection: 'column',
             }}
           >
-            <div style={{ flex: 1, minHeight: 110, position: 'relative', pointerEvents: 'none' }}>
+            <div style={{ flex: 1, minHeight: 0, position: 'relative', pointerEvents: 'none' }}>
               <HomeMapPeek manifest={manifest} context={context} />
               <div
                 style={{
@@ -467,7 +442,7 @@ export default function RedesignHomeScreen() {
             </div>
           </DashCard>
 
-          <div style={{ display: 'grid', gap: 10, minHeight: 0 }}>
+          <div style={{ display: 'grid', gap: 9, minHeight: 0, height: '100%' }}>
             <DashCard
               onClick={handleContinue}
               testId="home-continue"
@@ -484,7 +459,7 @@ export default function RedesignHomeScreen() {
               }}
             >
               <Navigation
-                size={18}
+                size={17}
                 color={T.warmWhite}
                 aria-hidden
                 style={{ alignSelf: 'center' }}
@@ -494,7 +469,7 @@ export default function RedesignHomeScreen() {
                   style={{
                     margin: 0,
                     fontFamily: F.display,
-                    fontSize: 18,
+                    fontSize: 17,
                     fontWeight: 500,
                     lineHeight: 1.15,
                     color: T.warmWhite,
@@ -502,7 +477,7 @@ export default function RedesignHomeScreen() {
                 >
                   {continueLabel}
                 </p>
-                <p style={{ margin: '4px 0 0', fontSize: 11, color: 'rgba(250,246,239,0.82)' }}>
+                <p style={{ margin: '3px 0 0', fontSize: 10, color: 'rgba(250,246,239,0.82)' }}>
                   {t('home.cta.continueHint')}
                 </p>
               </div>
@@ -518,28 +493,29 @@ export default function RedesignHomeScreen() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 textAlign: 'center',
-                gap: 10,
+                gap: 8,
+                padding: '10px 8px',
               }}
             >
               <span
                 style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 9,
+                  width: 26,
+                  height: 26,
+                  borderRadius: 8,
                   display: 'grid',
                   placeItems: 'center',
                   background: `${T.actVI}22`,
                   color: T.actVI,
                 }}
               >
-                <MapPinned size={15} aria-hidden />
+                <MapPinned size={14} aria-hidden />
               </span>
               <p
                 style={{
                   margin: 0,
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: 650,
-                  lineHeight: 1.25,
+                  lineHeight: 1.2,
                   color: T.ink,
                 }}
               >
@@ -553,8 +529,7 @@ export default function RedesignHomeScreen() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 8,
-            flexShrink: 0,
+            gap: 7,
           }}
         >
           <ActionTile

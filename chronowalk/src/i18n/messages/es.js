@@ -25,6 +25,8 @@ export const esMessages = Object.freeze({
   'home.progress.ready': 'Listo cuando tú lo estés',
   'home.map.loading': 'Cargando mapa…',
   'home.map.badge': 'Mapa',
+  'home.hero.aria': 'Parada actual: {title}',
+  'home.hero.ariaReady': 'Inicio de tu recorrido',
   'home.cta.continueWalk': 'Continuar',
   'home.cta.resumeTour': 'Continuar',
   'home.cta.beginTour': 'Empezar',
