@@ -2,17 +2,18 @@
 """Rebuild how-it-works phone lockups from Safari screenshots.
 
 Sources (checkout from origin/figma):
-  English_mock1.jpg → begin-tour-v3.jpeg (+ mirrors)
-  English_mock4.jpg → walk-v3.jpeg
-  Spanish_mock1.jpg → es/begin-tour-v3.jpeg
-  Spanish_mock2.jpg → es/arrive-v3.jpeg
-  Spanish_mock4.jpg → es/walk-v3.jpeg
+  English_mock1.jpg → begin-tour-v4.jpeg (+ mirrors)
+  English_mock4.jpg → walk-v4.jpeg
+  Spanish_mock1.jpg → es/begin-tour-v4.jpeg
+  Spanish_mock2.jpg → es/arrive-v4.jpeg
+  Spanish_mock4.jpg → es/walk-v4.jpeg
 
 Pipeline (no anisotropic warp):
-  1. Strip Safari chrome / black letterbox
+  1. Strip Safari chrome / black letterbox / top hairlines
   2. Split body vs cream tab bar
   3. Uniform width-scale to 1170px
-  4. Pin tabs to bottom of 1170×2532; pad remaining height above with matching bg
+  4. Paste body at TOP; pin tabs to BOTTOM
+  5. Fill the mid gap (between body and tabs) with cream or black
 """
 from __future__ import annotations
 
@@ -26,6 +27,8 @@ LANDING = ROOT / "public" / "landing"
 SCREENS = LANDING / "phone-screens"
 
 TARGET_W, TARGET_H = 1170, 2532
+CREAM = (248, 245, 238)
+DARK = (12, 12, 12)
 
 
 def strip(im: Image.Image, force_top: int = 0) -> Image.Image:
@@ -37,6 +40,14 @@ def strip(im: Image.Image, force_top: int = 0) -> Image.Image:
     top = 0
     while top < len(row_mean) * 0.25 and row_mean[top] < 28:
         top += 1
+    while top < len(row_mean) * 0.1:
+        row = a[top]
+        mean = float(row.mean())
+        std = float(row.std())
+        if std < 12 and mean > 190:
+            top += 1
+            continue
+        break
     bottom = len(row_mean)
     while bottom > len(row_mean) * 0.8 and row_mean[bottom - 1] < 28:
         bottom -= 1
@@ -70,7 +81,26 @@ def find_tab_top(im: Image.Image) -> int:
     return int(h * 0.905)
 
 
-def build(src: Path, dst: Path, *, force_top: int, bg) -> None:
+def trim_body_hairline(body_r: Image.Image, gap_bg: tuple[int, int, int], max_trim: int = 14):
+    a = np.asarray(body_r)
+    h = a.shape[0]
+    trim = 0
+    gb = np.array(gap_bg, dtype=float)
+    for i in range(max_trim):
+        y = h - 1 - i
+        row = a[y].astype(float)
+        diff = np.abs(row.mean(axis=0) - gb).sum()
+        std = row.std()
+        if diff > 80 or (std < 8 and diff > 35):
+            trim = i + 1
+            continue
+        break
+    if trim:
+        body_r = body_r.crop((0, 0, body_r.size[0], body_r.size[1] - trim))
+    return body_r
+
+
+def build(src: Path, dst: Path, *, force_top: int, gap_bg: tuple[int, int, int]) -> None:
     raw = Image.open(src).convert("RGB")
     im = strip(raw, force_top=force_top)
     w, _h = im.size
@@ -80,15 +110,13 @@ def build(src: Path, dst: Path, *, force_top: int, bg) -> None:
     scale = TARGET_W / float(w)
     body_r = body.resize((TARGET_W, max(1, int(round(body.height * scale)))), Image.Resampling.LANCZOS)
     tabs_r = tabs.resize((TARGET_W, max(1, int(round(tabs.height * scale)))), Image.Resampling.LANCZOS)
-    fill = bg
-    if fill is None:
-        sample = np.asarray(body_r)[8:24, TARGET_W // 4 : 3 * TARGET_W // 4]
-        fill = tuple(int(x) for x in sample.mean(axis=(0, 1)))
-    canvas = Image.new("RGB", (TARGET_W, TARGET_H), fill)
+    body_r = trim_body_hairline(body_r, gap_bg)
+
+    canvas = Image.new("RGB", (TARGET_W, TARGET_H), gap_bg)
     ty = TARGET_H - tabs_r.height
     canvas.paste(tabs_r, (0, ty))
     if body_r.height <= ty:
-        canvas.paste(body_r, (0, ty - body_r.height))
+        canvas.paste(body_r, (0, 0))
     else:
         overflow = body_r.height - ty
         canvas.paste(body_r.crop((0, overflow, TARGET_W, body_r.height)), (0, 0))
@@ -105,21 +133,21 @@ def mirror(src: Path, names: list[str]) -> None:
 
 def main() -> None:
     jobs = [
-        (LANDING / "English_mock1.jpg", SCREENS / "begin-tour-v3.jpeg", 128, (248, 245, 238),
-         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg"]),
-        (LANDING / "English_mock4.jpg", SCREENS / "walk-v3.jpeg", 178, (14, 14, 12),
-         ["walk-lockup.jpeg", "walk-v2.jpeg"]),
-        (LANDING / "Spanish_mock1.jpg", SCREENS / "es" / "begin-tour-v3.jpeg", 128, (248, 245, 238),
-         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg"]),
-        (LANDING / "Spanish_mock2.jpg", SCREENS / "es" / "arrive-v3.jpeg", 145, None,
-         ["arrive-lockup.jpeg", "arrive-v2.jpeg"]),
-        (LANDING / "Spanish_mock4.jpg", SCREENS / "es" / "walk-v3.jpeg", 0, (14, 14, 12),
-         ["walk-lockup.jpeg", "walk-v2.jpeg"]),
+        (LANDING / "English_mock1.jpg", SCREENS / "begin-tour-v4.jpeg", 128, CREAM,
+         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg"]),
+        (LANDING / "English_mock4.jpg", SCREENS / "walk-v4.jpeg", 178, DARK,
+         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg"]),
+        (LANDING / "Spanish_mock1.jpg", SCREENS / "es" / "begin-tour-v4.jpeg", 128, CREAM,
+         ["begin-tour-lockup.jpeg", "begin-tour-v2.jpeg", "begin-tour-v3.jpeg"]),
+        (LANDING / "Spanish_mock2.jpg", SCREENS / "es" / "arrive-v4.jpeg", 145, CREAM,
+         ["arrive-lockup.jpeg", "arrive-v2.jpeg", "arrive-v3.jpeg"]),
+        (LANDING / "Spanish_mock4.jpg", SCREENS / "es" / "walk-v4.jpeg", 0, DARK,
+         ["walk-lockup.jpeg", "walk-v2.jpeg", "walk-v3.jpeg"]),
     ]
-    for src, dst, force_top, bg, mirrors in jobs:
+    for src, dst, force_top, gap_bg, mirrors in jobs:
         if not src.exists():
             raise SystemExit(f"missing source {src} (checkout from origin/figma)")
-        build(src, dst, force_top=force_top, bg=bg)
+        build(src, dst, force_top=force_top, gap_bg=gap_bg)
         mirror(dst, mirrors)
 
 
