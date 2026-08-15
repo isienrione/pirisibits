@@ -2043,6 +2043,62 @@
   background: #0b0b0d;
 }
 
+.cw-v4-lockup--video {
+  position: relative;
+}
+
+.cw-v4-lockup__play {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 1rem;
+  border: 0;
+  background: transparent;
+  color: #fffaf3;
+  cursor: pointer;
+  font: inherit;
+}
+
+.cw-v4-lockup.is-playing .cw-v4-lockup__play {
+  /* Keep the hit target, hide chrome while audio/video is running. */
+  background: transparent;
+}
+
+.cw-v4-lockup.is-playing .cw-v4-lockup__play-icon,
+.cw-v4-lockup.is-playing .cw-v4-lockup__play-hint {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cw-v4-lockup--video:not(.is-playing) .cw-v4-lockup__play {
+  background: linear-gradient(180deg, rgba(11, 11, 13, 0.08), rgba(11, 11, 13, 0.42));
+}
+
+.cw-v4-lockup__play-icon {
+  width: 3.4rem;
+  height: 3.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--v4-amber, #e8a13c) 92%, #fff);
+  color: #2a1206;
+  font-size: 1.05rem;
+  line-height: 1;
+  box-shadow: 0 10px 28px rgba(11, 11, 13, 0.28);
+}
+
+.cw-v4-lockup__play-hint {
+  max-width: 12rem;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+
 .cw-v4-walk-shell {
   position: relative;
   width: 390px;

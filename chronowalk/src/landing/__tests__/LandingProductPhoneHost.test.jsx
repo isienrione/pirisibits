@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { createRef } from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import LandingProductPhoneStage from '../v4/LandingProductPhoneStage.jsx'
 
 vi.mock('../../hooks/useWalkingDirections.js', () => ({
@@ -80,6 +80,12 @@ describe('LandingProductPhoneStage', () => {
     expect(video?.getAttribute('poster')).toBe(
       '/landing/phone-mockups/listen-campo-fiori-poster.jpg',
     )
+    expect(video?.hasAttribute('muted')).toBe(false)
+    expect(video?.muted).not.toBe(true)
+    const toggle = screen.getByTestId('landing-demo-listen-campo-toggle')
+    expect(toggle).toBeInTheDocument()
+    expect(toggle.getAttribute('aria-label')).toMatch(/play demo with sound/i)
+    fireEvent.click(toggle)
   })
 
   it('uses IMG_1223 walk lockup', () => {

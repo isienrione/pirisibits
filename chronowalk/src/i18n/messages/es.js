@@ -283,6 +283,9 @@ export const esMessages = Object.freeze({
   'landing.demo.listenAlt': "Reproducción y revelado Antes/Ahora en Campo de' Fiori",
   'landing.demo.arriveAlt': 'Llegada a una parada ChronoWalk con la historia lista',
   'landing.demo.walkAlt': 'Caminando entre paradas con el mapa de la ruta',
+  'landing.demo.videoPlay': 'Reproducir demo con sonido',
+  'landing.demo.videoPause': 'Pausar demo',
+  'landing.demo.videoTap': 'Toca para reproducir con sonido',
   'acquisition.ancient.stops': '{count} paradas',
   'acquisition.ancient.verifiedStops':
     'La ruta incluye {count} paradas verificadas según los datos actuales de Roma Antica.',

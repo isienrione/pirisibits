@@ -282,6 +282,9 @@ export const enMessages = Object.freeze({
   'landing.demo.listenAlt': "Campo de' Fiori chapter playback and Then/Now reveal",
   'landing.demo.arriveAlt': 'ChronoWalk stop arrival with the curated story ready',
   'landing.demo.walkAlt': 'Walking between stops with the live route map',
+  'landing.demo.videoPlay': 'Play demo with sound',
+  'landing.demo.videoPause': 'Pause demo',
+  'landing.demo.videoTap': 'Tap to play with sound',
   'acquisition.ancient.stops': '{count} stops',
   'acquisition.ancient.verifiedStops':
     'Route includes {count} verified stops from the current Roma Antica product data.',

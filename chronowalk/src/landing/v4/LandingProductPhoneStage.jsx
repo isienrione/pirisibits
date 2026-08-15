@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import LandingProductPhoneFrame from './LandingProductPhoneFrame.jsx'
 import { RedesignNavCtx } from '../../redesign/nav.js'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext.jsx'
@@ -21,42 +21,132 @@ const LockupImage = memo(function LockupImage({ src, alt, testId, className = ''
   )
 })
 
-/** Looping muted screen recording sized to the phone artboard. */
+/**
+ * Screen recording with audio. Plays only when scrolled into view (and the
+ * chapter is active) or when the visitor clicks — never muted autoplay.
+ */
 const LockupVideo = memo(function LockupVideo({
   src,
   poster,
   alt,
   testId,
-  active = false,
+  active = true,
   className = '',
 }) {
+  const { t } = useI18n()
+  const rootRef = useRef(null)
   const videoRef = useRef(null)
+  const [inView, setInView] = useState(false)
+  const [playing, setPlaying] = useState(false)
+  const [needsGesture, setNeedsGesture] = useState(false)
+  const userPausedRef = useRef(false)
+
+  const tryPlay = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.muted = false
+    const result = video.play()
+    if (result && typeof result.then === 'function') {
+      result
+        .then(() => {
+          setPlaying(true)
+          setNeedsGesture(false)
+        })
+        .catch(() => {
+          setPlaying(false)
+          setNeedsGesture(true)
+        })
+    } else {
+      setPlaying(!video.paused)
+    }
+  }, [])
+
+  const pausePlayback = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+    video.pause()
+    setPlaying(false)
+  }, [])
+
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root || typeof IntersectionObserver === 'undefined') {
+      setInView(true)
+      return undefined
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setInView(Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.4))
+      },
+      { threshold: [0, 0.4, 0.75, 1] },
+    )
+    observer.observe(root)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const video = videoRef.current
     if (!video) return undefined
-    if (active) {
-      const play = video.play()
-      if (play && typeof play.catch === 'function') play.catch(() => {})
-    } else {
-      video.pause()
+
+    const onPlay = () => setPlaying(true)
+    const onPause = () => setPlaying(false)
+    video.addEventListener('play', onPlay)
+    video.addEventListener('pause', onPause)
+
+    const allowAuto = active && inView && !userPausedRef.current
+    if (allowAuto) {
+      tryPlay()
+    } else if (!active || !inView) {
+      pausePlayback()
     }
-    return undefined
-  }, [active])
+
+    return () => {
+      video.removeEventListener('play', onPlay)
+      video.removeEventListener('pause', onPause)
+    }
+  }, [active, inView, pausePlayback, tryPlay])
+
+  const onToggle = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (!video.paused) {
+      userPausedRef.current = true
+      pausePlayback()
+      return
+    }
+    userPausedRef.current = false
+    tryPlay()
+  }, [pausePlayback, tryPlay])
+
+  const playingClass = playing ? ' is-playing' : ''
+  const rootClass = `cw-v4-lockup cw-v4-lockup--video${playingClass}${className ? ` ${className}` : ''}`
 
   return (
-    <div className={`cw-v4-lockup${className ? ` ${className}` : ''}`} data-testid={testId}>
+    <div ref={rootRef} className={rootClass} data-testid={testId}>
       <video
         ref={videoRef}
         className="cw-v4-lockup__media"
         src={src}
         poster={poster}
-        muted
         playsInline
         loop
         preload="metadata"
         aria-label={alt}
       />
+      <button
+        type="button"
+        className="cw-v4-lockup__play"
+        data-testid={`${testId}-toggle`}
+        aria-label={playing ? t('landing.demo.videoPause') : t('landing.demo.videoPlay')}
+        onClick={onToggle}
+      >
+        <span className="cw-v4-lockup__play-icon" aria-hidden="true">
+          {playing ? '❚❚' : '▶'}
+        </span>
+        {needsGesture && !playing ? (
+          <span className="cw-v4-lockup__play-hint">{t('landing.demo.videoTap')}</span>
+        ) : null}
+      </button>
     </div>
   )
 })
