@@ -398,6 +398,7 @@ export const esMessages = Object.freeze({
   'landing.footer.pricing': 'Precios',
   'landing.faq.backToApp': 'Volver a ChronoWalk',
   'landing.faq.openHome': 'Abrir Inicio',
+  'landing.faq.fromAppLabel': 'Abierto desde la app ChronoWalk',
   'acquisition.header.aria': 'Información del recorrido',
   'acquisition.header.fullTour': 'Recorrido completo por Roma',
   'acquisition.header.howItWorks': 'Cómo funciona',

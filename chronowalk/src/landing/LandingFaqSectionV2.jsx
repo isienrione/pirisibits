@@ -5,6 +5,10 @@ import { trackLandingFaqOpen } from './landingAnalytics.js'
 import { trackFaqOpen } from '../lib/analytics.ts'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
 import { useT } from '../i18n/I18nProvider.jsx'
+import {
+  clearFaqOpenedFromApp,
+  readFaqFromAppFlag,
+} from './faqFromApp.js'
 
 function faqDeepLinkId(itemId) {
   return `faq-${itemId}`
@@ -16,15 +20,6 @@ function indexFromHash(items) {
   if (!hash || hash === 'faq') return 0
   const match = items.findIndex((item) => faqDeepLinkId(item.id) === hash || item.id === hash)
   return match >= 0 ? match : 0
-}
-
-function readFromAppFlag() {
-  if (typeof window === 'undefined') return false
-  try {
-    return new URLSearchParams(window.location.search).get('from') === 'app'
-  } catch {
-    return false
-  }
 }
 
 /**
@@ -39,11 +34,18 @@ export default function LandingFaqSectionV2({
   const { id, headline, groups } = section
   const items = useMemo(() => groups.flatMap((group) => group.items), [groups])
   const [openIndex, setOpenIndex] = useState(() => indexFromHash(items))
-  const [fromApp, setFromApp] = useState(readFromAppFlag)
+  const [fromApp, setFromApp] = useState(readFaqFromAppFlag)
   const buttonRefs = useRef([])
 
   useEffect(() => {
-    setFromApp(readFromAppFlag())
+    const sync = () => setFromApp(readFaqFromAppFlag())
+    sync()
+    window.addEventListener('hashchange', sync)
+    window.addEventListener('popstate', sync)
+    return () => {
+      window.removeEventListener('hashchange', sync)
+      window.removeEventListener('popstate', sync)
+    }
   }, [])
 
   useEffect(() => {
@@ -112,13 +114,20 @@ export default function LandingFaqSectionV2({
 
   const indexById = Object.fromEntries(items.map((item, index) => [item.id, index]))
 
+  const goHome = () => {
+    clearFaqOpenedFromApp()
+    window.location.assign('/home')
+  }
+
   const handleBackToApp = () => {
+    clearFaqOpenedFromApp()
     if (typeof window === 'undefined') return
-    if (window.history.length > 1) {
+    // Prefer an explicit app route: history.back() often leaves a blank opener tab.
+    if (document.referrer && /chronowalk\.com/i.test(document.referrer)) {
       window.history.back()
       return
     }
-    window.location.assign('/home')
+    goHome()
   }
 
   return (
@@ -131,12 +140,13 @@ export default function LandingFaqSectionV2({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       {fromApp ? (
-        <div className="cw-v2-wrap cw-v2-wrap--narrow">
-          <div className="cw-v2-faq__app-bar" data-testid="faq-back-to-app">
+        <div className="cw-v2-faq__app-bar cw-v2-faq__app-bar--fixed" data-testid="faq-back-to-app">
+          <p className="cw-v2-faq__app-bar-label">{t('landing.faq.fromAppLabel')}</p>
+          <div className="cw-v2-faq__app-bar-actions">
             <button type="button" className="cw-v2-faq__app-back" onClick={handleBackToApp}>
               {t('landing.faq.backToApp')}
             </button>
-            <Link to="/home" className="cw-v2-faq__app-home">
+            <Link to="/home" className="cw-v2-faq__app-home" onClick={() => clearFaqOpenedFromApp()}>
               {t('landing.faq.openHome')}
             </Link>
           </div>

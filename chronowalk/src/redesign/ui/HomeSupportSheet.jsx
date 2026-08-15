@@ -1,6 +1,7 @@
 import { F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { PRODUCTION_ORIGIN } from '../../seo/siteRoutes.js'
+import { markFaqOpenedFromApp } from '../../landing/faqFromApp.js'
 
 export const SUPPORT_EMAIL = 'support@chronowalk.com'
 /** Opens marketing FAQ with app-return chrome (safe-area padding + back link). */
@@ -102,6 +103,7 @@ export default function HomeSupportSheet({ open, onClose }) {
           target="_blank"
           rel="noopener noreferrer"
           data-testid="home-support-faq"
+          onClick={() => markFaqOpenedFromApp()}
           style={{
             display: 'block',
             textAlign: 'center',

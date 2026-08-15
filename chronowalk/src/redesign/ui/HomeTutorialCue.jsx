@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BookOpen, Hand, MapPinned, Pause, Play, Settings } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import { mediaUrl } from '../../lib/mediaUrl.js'
 
 /**
  * Soft miniature of the real Home / walk control each tutorial step refers to.
@@ -230,6 +231,8 @@ function ContinueCue({ accent, label }) {
 function RevealCue({ accent }) {
   const t = useT()
   const [holding, setHolding] = useState(false)
+  const nowSrc = mediaUrl('/waypoints/colosseum/exterior/modern-poster.jpg')
+  const thenSrc = mediaUrl('/waypoints/colosseum/exterior/ancient-reconstruction.jpg')
 
   const startHold = (event) => {
     event.preventDefault()
@@ -258,8 +261,8 @@ function RevealCue({ accent }) {
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: 280,
-          height: 118,
+          maxWidth: 300,
+          height: 148,
           borderRadius: 14,
           overflow: 'hidden',
           border: `1.5px solid ${holding ? accent : '#E9E2D5'}`,
@@ -272,58 +275,54 @@ function RevealCue({ accent }) {
           background: '#E8E0D4',
         }}
       >
-        <svg
-          viewBox="0 0 280 118"
-          width="100%"
-          height="100%"
-          preserveAspectRatio="xMidYMid slice"
-          aria-hidden
-          style={{ display: 'block', position: 'absolute', inset: 0 }}
-        >
-          {/* NOW: ruined arches */}
-          <rect width="280" height="118" fill="#D9CFC0" />
-          <path d="M0 92 H280 V118 H0 Z" fill="#C4B8A4" />
-          <path d="M28 92 V48 H52 V92 Z" fill="#A89A88" />
-          <path d="M70 92 V38 Q96 18 122 38 V92 Z" fill="#B5A794" />
-          <path d="M148 92 V52 H174 V92 Z" fill="#A89A88" />
-          <path d="M196 92 V42 Q224 22 252 42 V92 Z" fill="#B5A794" />
-          <circle cx="48" cy="28" r="10" fill="#E8A13C55" />
-          <text x="12" y="18" fill="#5A534A" fontSize="11" fontFamily="DM Sans, sans-serif" fontWeight="700">
-            {t('journal.now')}
-          </text>
-        </svg>
-
-        <div
-          aria-hidden
+        <img
+          src={nowSrc}
+          alt=""
+          draggable={false}
           style={{
             position: 'absolute',
             inset: 0,
-            clipPath: holding ? 'inset(0 0 0 0)' : 'inset(0 0 0 100%)',
-            transition: 'clip-path 220ms ease',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 28%',
+          }}
+        />
+        <img
+          src={thenSrc}
+          alt=""
+          draggable={false}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 28%',
+            opacity: holding ? 1 : 0,
+            transition: 'opacity 220ms ease',
+          }}
+        />
+
+        <span
+          style={{
+            position: 'absolute',
+            top: 10,
+            left: 10,
+            padding: '4px 8px',
+            borderRadius: 999,
+            background: 'rgba(11,11,13,0.58)',
+            color: T.warmWhite,
+            fontFamily: F.body,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            pointerEvents: 'none',
           }}
         >
-          <svg
-            viewBox="0 0 280 118"
-            width="100%"
-            height="100%"
-            preserveAspectRatio="xMidYMid slice"
-            style={{ display: 'block' }}
-          >
-            {/* THEN: rebuilt colonnade */}
-            <rect width="280" height="118" fill="#E8D7B8" />
-            <path d="M0 96 H280 V118 H0 Z" fill="#C9B896" />
-            <path d="M24 96 V34 H44 V96 Z" fill="#F2E6CF" />
-            <path d="M56 96 V28 Q84 8 112 28 V96 Z" fill="#FFF6E4" />
-            <path d="M124 96 V34 H144 V96 Z" fill="#F2E6CF" />
-            <path d="M156 96 V28 Q184 8 212 28 V96 Z" fill="#FFF6E4" />
-            <path d="M224 96 V34 H244 V96 Z" fill="#F2E6CF" />
-            <path d="M20 34 H248 V28 H20 Z" fill={accent} opacity="0.85" />
-            <circle cx="236" cy="22" r="12" fill="#E8A13C66" />
-            <text x="12" y="18" fill="#211C15" fontSize="11" fontFamily="DM Sans, sans-serif" fontWeight="700">
-              {t('journal.then')}
-            </text>
-          </svg>
-        </div>
+          {holding ? t('journal.then') : t('journal.now')}
+        </span>
 
         <span
           style={{

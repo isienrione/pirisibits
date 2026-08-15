@@ -397,6 +397,7 @@ export const enMessages = Object.freeze({
   'landing.footer.pricing': 'Pricing',
   'landing.faq.backToApp': 'Back to ChronoWalk',
   'landing.faq.openHome': 'Open Home',
+  'landing.faq.fromAppLabel': 'Opened from the ChronoWalk app',
   'acquisition.header.aria': 'Acquisition',
   'acquisition.header.fullTour': 'Full Rome tour',
   'acquisition.header.howItWorks': 'How it works',
