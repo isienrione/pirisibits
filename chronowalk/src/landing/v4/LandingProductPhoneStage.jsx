@@ -38,7 +38,6 @@ const LockupVideo = memo(function LockupVideo({
   const videoRef = useRef(null)
   const [inView, setInView] = useState(false)
   const [playing, setPlaying] = useState(false)
-  const [needsGesture, setNeedsGesture] = useState(false)
   const userPausedRef = useRef(false)
 
   const tryPlay = useCallback(() => {
@@ -50,11 +49,9 @@ const LockupVideo = memo(function LockupVideo({
       result
         .then(() => {
           setPlaying(true)
-          setNeedsGesture(false)
         })
         .catch(() => {
           setPlaying(false)
-          setNeedsGesture(true)
         })
     } else {
       setPlaying(!video.paused)
@@ -140,12 +137,18 @@ const LockupVideo = memo(function LockupVideo({
         aria-label={playing ? t('landing.demo.videoPause') : t('landing.demo.videoPlay')}
         onClick={onToggle}
       >
-        <span className="cw-v4-lockup__play-icon" aria-hidden="true">
-          {playing ? '❚❚' : '▶'}
+        <span className="cw-v4-lockup__play-stack">
+          <span className="cw-v4-lockup__play-icon" aria-hidden="true">
+            {playing ? (
+              <span className="cw-v4-lockup__play-glyph cw-v4-lockup__play-glyph--pause" />
+            ) : (
+              <span className="cw-v4-lockup__play-glyph cw-v4-lockup__play-glyph--play" />
+            )}
+          </span>
+          {!playing ? (
+            <span className="cw-v4-lockup__play-hint">{t('landing.demo.videoTap')}</span>
+          ) : null}
         </span>
-        {needsGesture && !playing ? (
-          <span className="cw-v4-lockup__play-hint">{t('landing.demo.videoTap')}</span>
-        ) : null}
       </button>
     </div>
   )

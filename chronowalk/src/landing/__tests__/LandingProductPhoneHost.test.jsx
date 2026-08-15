@@ -88,6 +88,8 @@ describe('LandingProductPhoneStage', () => {
     const toggle = screen.getByTestId('landing-demo-listen-campo-toggle')
     expect(toggle).toBeInTheDocument()
     expect(toggle.getAttribute('aria-label')).toMatch(/play demo with sound/i)
+    expect(screen.getByText(/tap to play with sound/i)).toBeInTheDocument()
+    expect(document.querySelector('.cw-v4-lockup__play-icon')).toBeTruthy()
     fireEvent.click(toggle)
   })
 
