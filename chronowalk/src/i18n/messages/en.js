@@ -79,7 +79,7 @@ export const enMessages = Object.freeze({
   'home.tutorial.walk.eyebrow': 'Walk',
   'home.tutorial.walk.title': 'Follow the route line',
   'home.tutorial.walk.body':
-    'Distance updates as you walk. Stay on the path toward your next stop — the map keeps you oriented.',
+    'Distance updates as you walk. Stay on the path toward your next stop. The map keeps you oriented.',
   'home.tutorial.arrive.eyebrow': 'Arrive',
   'home.tutorial.arrive.title': 'Tap I’m here when you arrive',
   'home.tutorial.arrive.body':
@@ -95,7 +95,7 @@ export const enMessages = Object.freeze({
   'home.tutorial.continue.eyebrow': 'Continue',
   'home.tutorial.continue.title': 'Ready for the next stop?',
   'home.tutorial.continue.body':
-    'Use Continue walking at the bottom when you’re done — your progress is saved as you go.',
+    'Use Continue walking at the bottom when you’re done. Your progress is saved as you go.',
   'home.tutorial.reveal.eyebrow': 'Reveal',
   'home.tutorial.reveal.title': 'Press & hold the photo',
   'home.tutorial.reveal.body':
