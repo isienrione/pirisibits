@@ -6,12 +6,17 @@ import {
   Ear,
   Footprints,
   MapPinned,
+  Settings,
   Sparkles,
   X,
 } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { ONBOARDING_CARD_PHASES } from '../../utils/tourOnboarding.js'
+import HomeTutorialCue from './HomeTutorialCue.jsx'
+
+/** Home-only tutorial order: walk coaching plus a settings tip (not used on-route). */
+export const HOME_TUTORIAL_PHASES = [...ONBOARDING_CARD_PHASES, 'settings']
 
 const PHASE_META = {
   walk: { accent: T.actIV, Icon: Footprints },
@@ -20,14 +25,15 @@ const PHASE_META = {
   transcript: { accent: T.encore, Icon: BookOpen },
   continue: { accent: T.actII, Icon: ChevronRight },
   reveal: { accent: T.actV, Icon: Sparkles },
+  settings: { accent: T.bronze, Icon: Settings },
 }
 
 /**
- * Full-screen step-by-step walk guide — recycles Colosseum first-open coaching phases.
+ * Full-screen step-by-step walk guide with mini cues of the real controls.
  */
 export default function HomeTutorialSheet({ open, onClose }) {
   const t = useT()
-  const phases = ONBOARDING_CARD_PHASES
+  const phases = HOME_TUTORIAL_PHASES
   const [index, setIndex] = useState(0)
 
   const phase = phases[Math.min(index, phases.length - 1)]
@@ -112,7 +118,7 @@ export default function HomeTutorialSheet({ open, onClose }) {
           >
             {t('home.tutorial.eyebrow')}
           </p>
-          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#8A8174' }}>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: '#B9AF9C' }}>
             {t('home.tutorial.step', { current: index + 1, total: phases.length })}
           </p>
         </div>
@@ -125,7 +131,7 @@ export default function HomeTutorialSheet({ open, onClose }) {
             width: 36,
             height: 36,
             borderRadius: 999,
-            border: `1px solid ${T.limestone}`,
+            border: '1px solid #E9E2D5',
             background: '#FFFEFA',
             display: 'grid',
             placeItems: 'center',
@@ -152,7 +158,7 @@ export default function HomeTutorialSheet({ open, onClose }) {
             borderRadius: 28,
             padding: '28px 22px 24px',
             background: 'linear-gradient(165deg, #FFFFFF 0%, #FBF8F2 100%)',
-            border: `1px solid ${T.limestone}`,
+            border: '1px solid #E9E2D5',
             boxShadow: `0 18px 40px ${accent}22`,
           }}
         >
@@ -200,11 +206,12 @@ export default function HomeTutorialSheet({ open, onClose }) {
               margin: '14px 0 0',
               fontSize: 16,
               lineHeight: 1.55,
-              color: '#5A534A',
+              color: '#211C15',
             }}
           >
             {copy.body}
           </p>
+          <HomeTutorialCue phase={phase} accent={accent} />
         </div>
 
         <div
@@ -254,8 +261,8 @@ export default function HomeTutorialSheet({ open, onClose }) {
             gap: 6,
             minHeight: 52,
             borderRadius: 14,
-            border: `1px solid ${T.limestone}`,
-            background: isFirst ? `${T.limestone}55` : '#FFFEFA',
+            border: '1px solid #E9E2D5',
+            background: isFirst ? 'rgba(233,226,213,0.55)' : '#FFFEFA',
             color: isFirst ? T.muted : T.ink,
             fontWeight: 650,
             fontSize: 15,

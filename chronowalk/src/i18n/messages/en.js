@@ -100,11 +100,17 @@ export const enMessages = Object.freeze({
   'home.tutorial.reveal.title': 'Press & hold the photo',
   'home.tutorial.reveal.body':
     'See then and now. Narration keeps playing while you hold the reconstruction.',
+  'home.tutorial.settings.eyebrow': 'Settings',
+  'home.tutorial.settings.title': 'Tap the gear for language and more',
+  'home.tutorial.settings.body':
+    'The gear at the top of Home opens settings. Change language, narration speed, offline storage, and other walk preferences there.',
+  'home.tutorial.settings.cueHints': 'Language · Audio · Offline',
   'home.support.eyebrow': 'Support',
   'home.support.title': 'We are a short email away.',
   'home.support.body':
     'ChronoWalk support runs by email. Tell us what happened on your walk, and we will help you get back on route.',
   'home.support.emailCta': 'Email {email}',
+  'home.support.faqCta': 'See FAQs instead',
   'home.support.close': 'Close',
 
   // Language

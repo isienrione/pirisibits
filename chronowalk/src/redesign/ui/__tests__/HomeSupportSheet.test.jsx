@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nProvider } from '../../../i18n/I18nProvider.jsx'
-import HomeSupportSheet, { SUPPORT_EMAIL, supportMailtoHref } from '../HomeSupportSheet.jsx'
+import HomeSupportSheet, {
+  SUPPORT_EMAIL,
+  SUPPORT_FAQ_HREF,
+  supportMailtoHref,
+} from '../HomeSupportSheet.jsx'
 
 describe('HomeSupportSheet', () => {
   it('builds a mailto link to support@chronowalk.com', () => {
@@ -12,7 +16,7 @@ describe('HomeSupportSheet', () => {
     expect(supportMailtoHref()).toContain('body=')
   })
 
-  it('explains email support and exposes the mailto CTA', () => {
+  it('explains email support and links FAQs on the marketing site', () => {
     const onClose = vi.fn()
     render(
       <MemoryRouter>
@@ -25,6 +29,12 @@ describe('HomeSupportSheet', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     const link = screen.getByRole('link', { name: new RegExp(SUPPORT_EMAIL, 'i') })
     expect(link.getAttribute('href')).toContain(`mailto:${SUPPORT_EMAIL}`)
+
+    const faq = screen.getByTestId('home-support-faq')
+    expect(faq.getAttribute('href')).toBe(SUPPORT_FAQ_HREF)
+    expect(SUPPORT_FAQ_HREF).toBe('https://chronowalk.com/#faq')
+    expect(faq.getAttribute('target')).toBe('_blank')
+    expect(faq.getAttribute('rel')).toMatch(/noopener/)
 
     fireEvent.click(screen.getByRole('button', { name: /close|cerrar/i }))
     expect(onClose).toHaveBeenCalled()

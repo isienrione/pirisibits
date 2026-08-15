@@ -100,11 +100,17 @@ export const esMessages = Object.freeze({
   'home.tutorial.reveal.title': 'Mantén pulsada la foto',
   'home.tutorial.reveal.body':
     'Mira el antes y el ahora. La narración sigue mientras mantienes la reconstrucción.',
+  'home.tutorial.settings.eyebrow': 'Ajustes',
+  'home.tutorial.settings.title': 'Toca el engranaje para idioma y más',
+  'home.tutorial.settings.body':
+    'El engranaje arriba en Inicio abre los ajustes. Ahí puedes cambiar idioma, velocidad de narración, almacenamiento sin conexión y otras preferencias del recorrido.',
+  'home.tutorial.settings.cueHints': 'Idioma · Audio · Sin conexión',
   'home.support.eyebrow': 'Soporte',
   'home.support.title': 'Estamos a un correo de distancia.',
   'home.support.body':
     'El soporte de ChronoWalk es por correo. Cuéntanos qué pasó en tu recorrido y te ayudamos a volver a la ruta.',
   'home.support.emailCta': 'Escribir a {email}',
+  'home.support.faqCta': 'Ver las preguntas frecuentes',
   'home.support.close': 'Cerrar',
 
   // Language

@@ -1,7 +1,9 @@
 import { F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
+import { PRODUCTION_ORIGIN } from '../../seo/siteRoutes.js'
 
 export const SUPPORT_EMAIL = 'support@chronowalk.com'
+export const SUPPORT_FAQ_HREF = `${PRODUCTION_ORIGIN}/#faq`
 
 export function supportMailtoHref() {
   const subject = encodeURIComponent('ChronoWalk support')
@@ -12,7 +14,7 @@ export function supportMailtoHref() {
 }
 
 /**
- * Lightweight support explainer — email is the channel; the link opens mail.
+ * Lightweight support explainer: email primary, FAQ opens the marketing site.
  */
 export default function HomeSupportSheet({ open, onClose }) {
   const t = useT()
@@ -74,7 +76,7 @@ export default function HomeSupportSheet({ open, onClose }) {
         >
           {t('home.support.title')}
         </h2>
-        <p style={{ margin: '0 0 18px', fontSize: 15, lineHeight: 1.55, color: '#5A534A' }}>
+        <p style={{ margin: '0 0 18px', fontSize: 15, lineHeight: 1.55, color: '#211C15' }}>
           {t('home.support.body')}
         </p>
         <a
@@ -94,6 +96,27 @@ export default function HomeSupportSheet({ open, onClose }) {
         >
           {t('home.support.emailCta', { email: SUPPORT_EMAIL })}
         </a>
+        <a
+          href={SUPPORT_FAQ_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="home-support-faq"
+          style={{
+            display: 'block',
+            textAlign: 'center',
+            textDecoration: 'none',
+            padding: '13px 16px',
+            borderRadius: 12,
+            border: '1px solid #E6DCCE',
+            background: '#FFFEFA',
+            color: '#2C2823',
+            fontWeight: 650,
+            fontSize: 15,
+            marginBottom: 8,
+          }}
+        >
+          {t('home.support.faqCta')}
+        </a>
         <button
           type="button"
           onClick={onClose}
@@ -102,7 +125,7 @@ export default function HomeSupportSheet({ open, onClose }) {
             padding: '12px',
             border: 'none',
             background: 'transparent',
-            color: '#7A7266',
+            color: '#B9AF9C',
             fontFamily: F.body,
             fontSize: 14,
             cursor: 'pointer',

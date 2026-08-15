@@ -412,13 +412,14 @@ export default function RedesignHomeScreen() {
             aria-label={t('home.actions.settings')}
             data-testid="home-settings"
             style={{
-              width: 36,
-              height: 36,
-              marginTop: 2,
+              width: 44,
+              height: 44,
+              marginTop: 0,
               borderRadius: 999,
-              border: '1px solid rgba(250,246,239,0.35)',
-              background: 'rgba(11,11,13,0.28)',
+              border: '1.5px solid rgba(250,246,239,0.55)',
+              background: 'rgba(11,11,13,0.42)',
               backdropFilter: 'blur(8px)',
+              boxShadow: '0 2px 10px rgba(11,11,13,0.28)',
               display: 'grid',
               placeItems: 'center',
               cursor: 'pointer',
@@ -426,7 +427,7 @@ export default function RedesignHomeScreen() {
               flexShrink: 0,
             }}
           >
-            <Settings size={16} />
+            <Settings size={20} strokeWidth={2} />
           </button>
         </header>
       </HomeStopHero>

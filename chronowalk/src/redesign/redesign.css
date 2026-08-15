@@ -2039,6 +2039,109 @@ html[data-shell-tab-bar='visible'] {
   }
 }
 
+/* ── Home tutorial control cues ── */
+@keyframes cwHomeTutorialPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.045);
+    filter: brightness(1.06);
+  }
+}
+
+@keyframes cwHomeTutorialSoft {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-2px);
+    opacity: 0.92;
+  }
+}
+
+@keyframes cwHomeTutorialRouteDash {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+@keyframes cwHomeTutorialDot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.75;
+  }
+}
+
+@keyframes cwHomeTutorialFinger {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  45% {
+    transform: translateY(3px) scale(0.94);
+  }
+}
+
+@keyframes cwHomeTutorialSeam {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scaleY(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.cw-home-tutorial-cue__pulse {
+  animation: cwHomeTutorialPulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.cw-home-tutorial-cue__soft {
+  animation: cwHomeTutorialSoft 2.6s ease-in-out infinite;
+}
+
+.cw-home-tutorial-cue__route {
+  stroke-dasharray: 10 8;
+  animation: cwHomeTutorialRouteDash 1.4s linear infinite;
+}
+
+.cw-home-tutorial-cue__dot {
+  animation: cwHomeTutorialDot 1.8s ease-in-out infinite;
+}
+
+.cw-home-tutorial-cue__finger {
+  animation: cwHomeTutorialFinger 1.7s ease-in-out infinite;
+}
+
+.cw-home-tutorial-cue__reveal-seam {
+  animation: cwHomeTutorialSeam 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-home-tutorial-cue__pulse,
+  .cw-home-tutorial-cue__soft,
+  .cw-home-tutorial-cue__route,
+  .cw-home-tutorial-cue__dot,
+  .cw-home-tutorial-cue__finger,
+  .cw-home-tutorial-cue__reveal-seam {
+    animation: none;
+  }
+}
+
 /* ── Illustrated tour route preview ── */
 .cw-route-preview-screen {
   width: 100%;
