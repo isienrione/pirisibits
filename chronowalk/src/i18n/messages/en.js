@@ -59,7 +59,8 @@ export const enMessages = Object.freeze({
   'home.actions.startOverAria': 'Start the tour over from the beginning',
   'home.map.openAria': 'Open the full map',
   'home.routeViewer.title': '{name} route',
-  'home.routeViewer.hint': 'Pinch to zoom · drag to pan · double-tap to reset',
+  'home.routeViewer.hint':
+    'Tap a numbered stop to walk there · pinch to zoom · drag to pan',
   'home.reset.eyebrow': 'Are you sure?',
   'home.reset.cancel': 'Cancel',
   'home.startOver.title': 'Start the tour over?',

@@ -1,10 +1,13 @@
 import {
+  getJourneySnapshot,
   jumpToSequenceIndex,
   JOURNEY_STATES,
   openJourneyAtSequence,
+  promoteOptionalWaypoint,
   transitionJourney,
 } from '../state/journey.js'
 import { findSequenceIndexForWaypoint } from '../content/myTourPlan.js'
+import { getPromotionInsertSteps } from '../content/optionalPromotion.js'
 import { normalizeRedesignJourneyState } from '../redesign/lib/redesignJourneyState.js'
 
 const STORY_VIEW_KEY = 'cw_story_view'
@@ -21,12 +24,17 @@ export function jumpToWaypointInJourney(manifest, waypointId, context, state, op
 
   const { targetState = null, storyView = null } = options
   const path = context.path || manifest.journey?.default_path || 'a'
-  const index = findSequenceIndexForWaypoint(
-    manifest,
-    waypointId,
-    path,
-    context.promotedOptionalIds ?? [],
-  )
+  let promoted = context.promotedOptionalIds ?? []
+  let index = findSequenceIndexForWaypoint(manifest, waypointId, path, promoted)
+
+  // Route / Tour jumps onto path-A optionals (e.g. Palatine) should promote first
+  // so the stop exists in the effective sequence without wiping progress.
+  if (index < 0 && getPromotionInsertSteps(manifest, waypointId, path).length > 0) {
+    promoteOptionalWaypoint(waypointId, manifest)
+    promoted = getJourneySnapshot().context.promotedOptionalIds ?? [...promoted, waypointId]
+    index = findSequenceIndexForWaypoint(manifest, waypointId, path, promoted)
+  }
+
   if (index < 0) return false
 
   // Never wipe completed stops when opening a stop from Tour/Map/Home.

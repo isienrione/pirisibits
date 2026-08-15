@@ -235,6 +235,26 @@ export default function RedesignHomeScreen() {
     [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state],
   )
 
+  const handleRouteHotspot = useCallback(
+    async (spot) => {
+      const waypointId = spot?.waypointId
+      if (!manifest || !waypointId || geoBusy) return
+      setGeoBusy(true)
+      const jumped = await requestJumpToWaypoint(manifest, waypointId, context, state)
+      setGeoBusy(false)
+      if (jumped) {
+        setRouteOpen(false)
+        navigate('/journey')
+        return
+      }
+      // Card-only stickers (e.g. Circus Maximus View) are not in the walk sequence —
+      // open the stop card so travelers can still hear the chapter.
+      setRouteOpen(false)
+      navigate(`/journal/${waypointId}`)
+    },
+    [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state],
+  )
+
   const handleRewatchTutorial = useCallback(() => {
     setTutorialOpen(true)
   }, [])
@@ -636,6 +656,8 @@ export default function RedesignHomeScreen() {
           alt=""
           accent={routePreview.theme ?? 'eterna'}
           hint={t('home.routeViewer.hint')}
+          hotspots={routePreview.hotspots}
+          onHotspotSelect={(spot) => void handleRouteHotspot(spot)}
           onClose={() => setRouteOpen(false)}
         />
       ) : null}

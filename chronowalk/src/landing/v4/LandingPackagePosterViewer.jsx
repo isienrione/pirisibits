@@ -35,6 +35,8 @@ export function LandingZoomableImageViewer({
   hint = DEFAULT_HINT,
   accent = 'eterna',
   action = null,
+  hotspots = null,
+  onHotspotSelect = null,
   onClose,
   returnFocusRef,
 }) {
@@ -42,6 +44,7 @@ export function LandingZoomableImageViewer({
   const reducedMotion = useReducedMotion()
   const dialogRef = useRef(null)
   const stageRef = useRef(null)
+  const canvasRef = useRef(null)
   const imgRef = useRef(null)
   const pointersRef = useRef(new Map())
   const pinchRef = useRef(null)
@@ -52,6 +55,10 @@ export function LandingZoomableImageViewer({
   const [tx, setTx] = useState(0)
   const [ty, setTy] = useState(0)
   const [hintVisible, setHintVisible] = useState(false)
+  const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 })
+
+  const hotspotList = Array.isArray(hotspots) ? hotspots : []
+  const hasHotspots = hotspotList.length > 0 && typeof onHotspotSelect === 'function'
 
   const resetView = useCallback(() => {
     setScale(1)
@@ -62,6 +69,25 @@ export function LandingZoomableImageViewer({
   const dismissHint = useCallback(() => {
     setHintVisible(false)
   }, [])
+
+  const measureCanvas = useCallback(() => {
+    const stage = stageRef.current
+    const img = imgRef.current
+    if (!stage || !img) return
+    const naturalW = img.naturalWidth || width || 1
+    const naturalH = img.naturalHeight || height || 1
+    const availW = stage.clientWidth
+    const availH = stage.clientHeight
+    if (availW <= 0 || availH <= 0) return
+    const fit = Math.min(availW / naturalW, availH / naturalH)
+    const nextW = naturalW * fit
+    const nextH = naturalH * fit
+    setCanvasSize((prev) =>
+      Math.abs(prev.w - nextW) < 0.5 && Math.abs(prev.h - nextH) < 0.5
+        ? prev
+        : { w: nextW, h: nextH },
+    )
+  }, [height, width])
 
   useEffect(() => {
     if (!open) return undefined
@@ -124,32 +150,35 @@ export function LandingZoomableImageViewer({
 
   useEffect(() => {
     if (!open) return undefined
-    const onResize = () => resetView()
+    const onResize = () => {
+      measureCanvas()
+      resetView()
+    }
     window.addEventListener('orientationchange', onResize)
     window.addEventListener('resize', onResize)
+    measureCanvas()
     return () => {
       window.removeEventListener('orientationchange', onResize)
       window.removeEventListener('resize', onResize)
     }
-  }, [open, resetView])
+  }, [open, measureCanvas, resetView])
 
   const constrainTranslation = useCallback((nextScale, nextTx, nextTy) => {
     const stage = stageRef.current
-    const img = imgRef.current
-    if (!stage || !img) return { tx: nextTx, ty: nextTy }
-    const stageBox = stage.getBoundingClientRect()
-    const naturalW = img.naturalWidth || img.width || 1
-    const naturalH = img.naturalHeight || img.height || 1
-    const fit = Math.min(stageBox.width / naturalW, stageBox.height / naturalH)
-    const displayW = naturalW * fit * nextScale
-    const displayH = naturalH * fit * nextScale
-    const maxX = Math.max(0, (displayW - stageBox.width) / 2)
-    const maxY = Math.max(0, (displayH - stageBox.height) / 2)
+    if (!stage) return { tx: nextTx, ty: nextTy }
+    const availW = stage.clientWidth
+    const availH = stage.clientHeight
+    const baseW = canvasSize.w || availW
+    const baseH = canvasSize.h || availH
+    const displayW = baseW * nextScale
+    const displayH = baseH * nextScale
+    const maxX = Math.max(0, (displayW - availW) / 2)
+    const maxY = Math.max(0, (displayH - availH) / 2)
     return {
       tx: clamp(nextTx, -maxX, maxX),
       ty: clamp(nextTy, -maxY, maxY),
     }
-  }, [])
+  }, [canvasSize.h, canvasSize.w])
 
   const applyScaleAt = useCallback(
     (nextScale, originX, originY) => {
@@ -289,16 +318,57 @@ export function LandingZoomableImageViewer({
           onPointerCancel={onPointerUp}
           onPointerLeave={onPointerUp}
         >
-          <img
-            ref={imgRef}
-            className="cw-v4-poster-viewer__image"
-            src={src}
-            alt={alt}
-            width={width}
-            height={height}
-            draggable={false}
-            style={{ transform, transition }}
-          />
+          <div
+            ref={canvasRef}
+            className={`cw-v4-poster-viewer__canvas${canvasSize.w > 0 ? ' is-sized' : ''}`}
+            style={{
+              ...(canvasSize.w > 0
+                ? { width: canvasSize.w, height: canvasSize.h }
+                : null),
+              transform,
+              transition,
+            }}
+          >
+            <img
+              ref={imgRef}
+              className="cw-v4-poster-viewer__image"
+              src={src}
+              alt={alt}
+              width={width}
+              height={height}
+              draggable={false}
+              onLoad={measureCanvas}
+            />
+            {hasHotspots ? (
+              <div className="cw-v4-poster-viewer__hotspots" aria-hidden={false}>
+                {hotspotList.map((spot) => (
+                  <button
+                    key={spot.id}
+                    type="button"
+                    className="cw-v4-poster-viewer__hotspot"
+                    style={{
+                      left: `${spot.left}%`,
+                      top: `${spot.top}%`,
+                      width: `${spot.width}%`,
+                      height: `${spot.height}%`,
+                    }}
+                    aria-label={spot.label}
+                    data-testid={`route-hotspot-${spot.waypointId}`}
+                    data-waypoint-id={spot.waypointId}
+                    onPointerDown={(event) => {
+                      // Keep taps on stickers from starting pan / double-tap zoom.
+                      event.stopPropagation()
+                      dismissHint()
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onHotspotSelect?.(spot)
+                    }}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className="cw-v4-poster-viewer__overlay">

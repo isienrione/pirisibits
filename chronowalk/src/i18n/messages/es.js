@@ -59,7 +59,8 @@ export const esMessages = Object.freeze({
   'home.actions.startOverAria': 'Empezar el recorrido desde el principio',
   'home.map.openAria': 'Abrir el mapa completo',
   'home.routeViewer.title': 'Ruta {name}',
-  'home.routeViewer.hint': 'Pellizca para ampliar · arrastra para mover · doble toque para restablecer',
+  'home.routeViewer.hint':
+    'Toca un número para ir a esa parada · pellizca para ampliar · arrastra para mover',
   'home.reset.eyebrow': '¿Seguro?',
   'home.reset.cancel': 'Cancelar',
   'home.startOver.title': '¿Empezar el recorrido de nuevo?',

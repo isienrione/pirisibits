@@ -1,5 +1,6 @@
 import { JOURNEY_PACE } from '../data/romePacing.js'
 import { ROME_TIERS } from './landingData.js'
+import { getRoutePosterHotspots } from './routePosterHotspots.js'
 
 const TIER_BY_PACE = {
   [JOURNEY_PACE.HEROIC]: 'rome-complete',
@@ -58,5 +59,6 @@ export function getPackRoutePreview(pace) {
     stopsLabel: tier.stopsLabel,
     marketingStopCount,
     tagline: tier.tagline,
+    hotspots: getRoutePosterHotspots(tier.id),
   }
 }

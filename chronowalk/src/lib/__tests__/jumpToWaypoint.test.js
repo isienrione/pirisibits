@@ -40,4 +40,21 @@ describe('jumpToWaypointInJourney progress', () => {
     expect(after.context.completedWaypointIds).toEqual(expect.arrayContaining(['w01', 'w02', 'w03']))
     expect(after.state).toBe(JOURNEY_STATES.WALKING)
   })
+
+  it('auto-promotes path A Palatine when jumping to w04 from the route card', () => {
+    beginJourney({ pace: JOURNEY_PACE.HEROIC, path: 'a', sequenceIndex: 0 })
+    expect(getJourneySnapshot().context.promotedOptionalIds).not.toContain('w04')
+
+    const jumped = jumpToWaypointInJourney(
+      manifest,
+      'w04',
+      getJourneySnapshot().context,
+      JOURNEY_STATES.WALKING,
+    )
+    expect(jumped).toBe(true)
+
+    const after = getJourneySnapshot()
+    expect(after.context.promotedOptionalIds).toContain('w04')
+    expect(after.context.completedWaypointIds).toEqual([])
+  })
 })
