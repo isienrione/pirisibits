@@ -94,9 +94,11 @@ export function LandingZoomableImageViewer({
     resetView()
     setHintVisible(Boolean(hint))
     if (!hint) return undefined
-    const timer = window.setTimeout(() => setHintVisible(false), reducedMotion ? 1800 : 4200)
+    // Coach hint for tappable route stickers stays up a beat longer.
+    const ms = hasHotspots ? (reducedMotion ? 2800 : 5200) : reducedMotion ? 1800 : 4200
+    const timer = window.setTimeout(() => setHintVisible(false), ms)
     return () => window.clearTimeout(timer)
-  }, [open, hint, reducedMotion, resetView])
+  }, [open, hint, hasHotspots, reducedMotion, resetView])
 
   useEffect(() => {
     if (!open) return undefined
@@ -418,7 +420,10 @@ export function LandingZoomableImageViewer({
           </div>
 
           {hint && hintVisible ? (
-            <p className="cw-v4-poster-viewer__hint" role="status">
+            <p
+              className={`cw-v4-poster-viewer__hint${hasHotspots ? ' cw-v4-poster-viewer__hint--coach' : ''}`}
+              role="status"
+            >
               {hint}
             </p>
           ) : null}
