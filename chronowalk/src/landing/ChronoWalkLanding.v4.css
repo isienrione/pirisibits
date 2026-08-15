@@ -2183,9 +2183,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* Tab chrome is authored on the bottom edge; keep it pinned if AR drifts. */
-  object-position: center bottom;
+  object-fit: fill;
+  object-position: center center;
   touch-action: manipulation;
   -webkit-user-drag: none;
   user-select: none;

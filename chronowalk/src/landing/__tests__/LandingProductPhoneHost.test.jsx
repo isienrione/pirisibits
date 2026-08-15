@@ -79,7 +79,7 @@ describe('LandingProductPhoneStage', () => {
     expect(screen.getByTestId('landing-demo-begin-lockup')).toBeInTheDocument()
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/begin-tour-lockup.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/begin-tour-v2.jpeg"]',
       ),
     ).toBeTruthy()
   })
@@ -127,7 +127,7 @@ describe('LandingProductPhoneStage', () => {
     )
     expect(screen.getByTestId('landing-demo-walk-lockup')).toBeInTheDocument()
     expect(
-      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-lockup.jpeg"]'),
+      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-v2.jpeg"]'),
     ).toBeTruthy()
   })
 
@@ -144,16 +144,16 @@ describe('LandingProductPhoneStage', () => {
 
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/es/begin-tour-lockup.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/begin-tour-v2.jpeg"]',
       ),
     ).toBeTruthy()
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/es/arrive-lockup.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/arrive-v2.jpeg"]',
       ),
     ).toBeTruthy()
     expect(
-      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-lockup.jpeg"]'),
+      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-v2.jpeg"]'),
     ).toBeTruthy()
     // Listen stays on the shared Campo recording.
     expect(
@@ -169,7 +169,7 @@ describe('LandingProductPhoneStage', () => {
       'utf8',
     )
     const mediaRule = css.match(/\.cw-v4-lockup__media[\s\S]*?\{[\s\S]*?\}/)
-    expect(mediaRule?.[0]).toMatch(/object-fit:\s*cover/)
+    expect(mediaRule?.[0]).toMatch(/object-fit:\s*fill/)
     expect(mediaRule?.[0]).not.toMatch(/object-fit:\s*contain/)
   })
 

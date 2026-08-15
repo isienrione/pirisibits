@@ -7,17 +7,18 @@ import { LOCALES, normalizeLocale } from '../../i18n/locales.js'
 
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 
-const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-lockup.jpeg'
+/* v2 filenames bust CDN/browser cache after lockup refits. */
+const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v2.jpeg'
 const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
 const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
 const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
-const WALK_LOCKUP = '/landing/phone-screens/walk-lockup.jpeg'
+const WALK_LOCKUP = '/landing/phone-screens/walk-v2.jpeg'
 
 /** Spanish stills under phone-screens/es/ when present; listen stays the shared video. */
 const LOCKUP_ES_BY_PATH = Object.freeze({
-  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-lockup.jpeg',
-  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-lockup.jpeg',
-  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-lockup.jpeg',
+  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v2.jpeg',
+  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v2.jpeg',
+  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v2.jpeg',
 })
 
 function resolveLockupSrc(enSrc, locale) {
