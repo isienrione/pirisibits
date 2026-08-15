@@ -1863,6 +1863,7 @@
   z-index: 1;
   margin-top: -0.15rem;
   padding: 1.15rem 0 1.35rem;
+  scroll-margin-top: calc(var(--v4-nav-h, 4.25rem) + 0.75rem);
   background:
     linear-gradient(180deg, rgba(11, 11, 13, 0.04), transparent 42%),
     var(--v4-paper);
