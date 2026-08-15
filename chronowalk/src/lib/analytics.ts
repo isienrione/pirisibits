@@ -53,6 +53,8 @@ export type AudioDiagnosticEventName =
   | 'wake_lock_released_unexpectedly'
   | 'audio_completed'
 
+export type VideoDiagnosticEventName = 'video_play_blocked'
+
 export type EngagementEventName =
   | 'preview_play_click'
   | 'preview_audio_progress'
@@ -62,6 +64,7 @@ export type EngagementEventName =
   | 'deep_engagement'
   | 'bounced_fast'
   | AudioDiagnosticEventName
+  | VideoDiagnosticEventName
 
 export type ExitEventName = 'scroll_milestone' | 'exit_intent'
 
@@ -757,6 +760,18 @@ export function trackAudioPlayBlocked(opts: {
   return track('audio_play_blocked', {
     ...(opts.stopId ? { stop_id: opts.stopId } : {}),
     ...(opts.errorName ? { error_name: opts.errorName } : {}),
+  })
+}
+
+export function trackVideoPlayBlocked(opts: {
+  stopId?: string | null
+  errorName?: string | null
+}): boolean {
+  return track('video_play_blocked', {
+    ...(opts.stopId ? { stop_id: opts.stopId } : {}),
+    ...(opts.errorName ? { error_name: opts.errorName } : {}),
+    is_pwa: isStandalonePwa(),
+    is_ios: isIosDevice(),
   })
 }
 

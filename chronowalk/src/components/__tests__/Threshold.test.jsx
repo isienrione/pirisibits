@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import Threshold from '../Threshold'
 import { AI_NOW_DISCLOSURE_COPY } from '../threshold/ThresholdSourceBadge.jsx'
 import { ThresholdChromeProvider } from '../../context/ThresholdChromeContext'
+import { trackVideoPlayBlocked } from '../../lib/analytics.ts'
 
 vi.mock('../../audio/thresholdAudio.js', () => ({
   ThresholdAudioCrossfade: class {
@@ -11,6 +12,11 @@ vi.mock('../../audio/thresholdAudio.js', () => ({
     rampToThen() {}
     rampToNow() {}
   },
+}))
+
+vi.mock('../../lib/analytics.ts', async (importOriginal) => ({
+  ...(await importOriginal()),
+  trackVideoPlayBlocked: vi.fn(() => true),
 }))
 
 const waypoint = {
@@ -147,6 +153,52 @@ describe('Threshold', () => {
     fireEvent.click(screen.getByTestId('threshold-era-then'))
     expect(screen.getByText('Tap to return to today')).toBeInTheDocument()
     expect(onHoldEnd).toHaveBeenCalledWith(expect.objectContaining({ latched: true, via: 'pill' }))
+  })
+
+  it('falls back to the ancient still and records the block when the reveal video refuses to play', async () => {
+    vi.mocked(trackVideoPlayBlocked).mockClear()
+    const play = vi
+      .spyOn(window.HTMLMediaElement.prototype, 'play')
+      .mockRejectedValue(new DOMException('blocked', 'NotAllowedError'))
+
+    const { container } = renderThreshold({
+      waypoint: {
+        ...waypoint,
+        reconstruction: { ...waypoint.reconstruction, loop: '/loop.mp4' },
+      },
+    })
+
+    expect(container.querySelector('video')).toBeInTheDocument()
+
+    fireEvent.pointerDown(document.querySelector('.threshold-root'), {
+      pointerId: 4,
+      clientX: 200,
+      clientY: 200,
+    })
+
+    await waitFor(() => {
+      expect(container.querySelector('video')).not.toBeInTheDocument()
+    })
+    expect(container.querySelector('img[src="/then.jpg"]')).toBeInTheDocument()
+    expect(trackVideoPlayBlocked).toHaveBeenCalledWith(
+      expect.objectContaining({ stopId: 'w13', errorName: 'NotAllowedError' })
+    )
+
+    play.mockRestore()
+  })
+
+  it('paints the reveal video with the ancient poster and leaves it tappable', () => {
+    const { container } = renderThreshold({
+      waypoint: {
+        ...waypoint,
+        reconstruction: { ...waypoint.reconstruction, loop: '/loop.mp4' },
+      },
+    })
+
+    const video = container.querySelector('video')
+    expect(video).toHaveAttribute('poster', '/then.jpg')
+    expect(video).toHaveAttribute('preload', 'auto')
+    expect(video).not.toHaveStyle({ pointerEvents: 'none' })
   })
 
   it('calls onDismiss from journey controls', () => {

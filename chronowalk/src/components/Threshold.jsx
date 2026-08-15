@@ -9,6 +9,7 @@ import {
 } from '../data/thresholdTiming.js'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
+import { trackVideoPlayBlocked } from '../lib/analytics.ts'
 import {
   reducedMotionReveal,
   revealToClipRight,
@@ -90,7 +91,7 @@ function ThresholdLayerImage({ src, alt, className, style }) {
   )
 }
 
-function ThresholdVideo({ src, poster, playing, className, style }) {
+function ThresholdVideo({ src, poster, playing, stopId, className, style }) {
   const videoRef = useRef(null)
   const [failed, setFailed] = useState(false)
   const [resolvedSrc, setResolvedSrc] = useState(src)
@@ -109,18 +110,19 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     if (playing) {
       const playPromise = video.play()
       if (playPromise?.catch) {
-        // AbortError = browser interrupted play (e.g. src changed) - not a real failure.
-        // Other transient errors should not permanently fall back to static.
         playPromise.catch((err) => {
-          if (err?.name !== 'AbortError') {
-            console.warn('ThresholdVideo: play() rejected', err?.name, err?.message)
-          }
+          // AbortError = browser interrupted play (e.g. src changed) - not a real failure.
+          if (err?.name === 'AbortError') return
+          // Any other rejection (iOS Low Power Mode is the usual cause) leaves a dead
+          // black video. Fall back to the ancient still and record the block.
+          trackVideoPlayBlocked({ stopId, errorName: err?.name })
+          setFailed(true)
         })
       }
     } else {
       video.pause()
     }
-  }, [playing, failed, resolvedSrc])
+  }, [playing, failed, resolvedSrc, stopId])
 
   const handleError = useCallback(() => {
     if (!hydrateAttempted.current && src && !String(src).startsWith('blob:')) {
@@ -156,13 +158,13 @@ function ThresholdVideo({ src, poster, playing, className, style }) {
     <video
       ref={videoRef}
       className={className}
-      style={{ ...style, pointerEvents: 'none' }}
+      style={style}
       src={resolvedSrc}
       poster={poster}
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       draggable={false}
       onError={handleError}
     />
@@ -725,6 +727,7 @@ export default function Threshold({
         src={reconstruction.loop}
         poster={reconstruction.then}
         playing={videoPlaying}
+        stopId={waypoint?.id}
         className="threshold-layer"
         style={thenLayerStyle}
       />

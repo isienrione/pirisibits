@@ -40,7 +40,7 @@ export function buildStopFromLegacy(stopId, index, nextStopId) {
     transcript: waypoint?.arrival_transcript,
     reconstructionNow: waypoint?.modern_video_url ?? waypoint?.modern_image_url,
     reconstructionThen: waypoint?.ancient_video_url ?? waypoint?.ancient_image_url,
-    reconstructionLoop: waypoint?.modern_video_url ?? waypoint?.ancient_video_url,
+    reconstructionLoop: waypoint?.ancient_video_url ?? waypoint?.modern_video_url,
     arrivalLine: waypoint?.arrival_headline,
     nextStopId,
   })
