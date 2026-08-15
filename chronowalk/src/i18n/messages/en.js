@@ -877,6 +877,11 @@ export const enMessages = Object.freeze({
   'journal.memory.photoSavedApp': 'Photo saved in Journal on this phone.',
   'journal.memory.photoCleared': 'Photo removed from Journal.',
   'journal.memory.saveError': 'Could not save. Try again.',
+  'journal.memory.hideContent': 'Hide notes and photos',
+  'journal.memory.showContent': 'Show notes and photos',
+  'journal.memory.hideShort': 'Hide',
+  'journal.memory.showShort': 'Show',
+  'journal.memory.emptyHint': 'Your note and photo for this stop appear here.',
 
   // Memory detail
   'memory.back': 'Journal',

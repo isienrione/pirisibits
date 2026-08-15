@@ -889,6 +889,11 @@ export const esMessages = Object.freeze({
   'journal.memory.photoSavedApp': 'Foto guardada en el Diario de este teléfono.',
   'journal.memory.photoCleared': 'Foto eliminada del Diario.',
   'journal.memory.saveError': 'No se pudo guardar. Inténtalo de nuevo.',
+  'journal.memory.hideContent': 'Ocultar notas y fotos',
+  'journal.memory.showContent': 'Mostrar notas y fotos',
+  'journal.memory.hideShort': 'Ocultar',
+  'journal.memory.showShort': 'Mostrar',
+  'journal.memory.emptyHint': 'Tu nota y foto de esta parada aparecen aquí.',
 
   // Memory detail
   'memory.back': 'Diario',

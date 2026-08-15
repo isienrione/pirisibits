@@ -143,13 +143,14 @@ export default function E1JournalHome({
                 <Eyebrow color={group.color} hairline>{t('journal.actLabel', { act: group.act, name: group.name })}</Eyebrow>
               </div>
               {group.cards.map(card => {
+                const showThenNow = card.showThenNow !== false && Boolean(card.thenPhoto || card.thenLoop)
                 const thenPhoto = card.thenPhoto || card.photo
                 const thenIsDistinct = Boolean(card.thenPhoto && card.thenPhoto !== card.photo)
                 const showThenVideo = Boolean(card.thenLoop && !thenIsDistinct)
                 return (
                 <div key={card.id} style={{ padding: "0 24px 16px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
                   <div style={{ background: T.warmWhite, borderRadius: 14, padding: 20, boxShadow: "0 1px 10px rgba(33,28,21,0.07)" }}>
-                    {/* Diptych: NOW | ember seam | THEN */}
+                    {showThenNow ? (
                     <div style={{ display: "flex", marginBottom: 16, borderRadius: 10, overflow: "hidden", height: 108 }}>
                       <div style={{ flex: 1, overflow: "hidden" }}>
                         <img src={card.photo} alt={t('journal.now')} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
@@ -176,14 +177,23 @@ export default function E1JournalHome({
                               height: "100%",
                               objectFit: "cover",
                               objectPosition: "center 20%",
-                              ...(thenIsDistinct
-                                ? null
-                                : { filter: "sepia(65%) contrast(0.80) brightness(0.76)" }),
                             }}
                           />
                         )}
                       </div>
                     </div>
+                    ) : (
+                    <div
+                      data-testid={`journal-single-hero-${card.id}`}
+                      style={{ marginBottom: 16, borderRadius: 10, overflow: "hidden", height: 108, background: T.ink }}
+                    >
+                      <img
+                        src={card.photo}
+                        alt={card.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }}
+                      />
+                    </div>
+                    )}
                     <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>{card.name}</p>
                     <p style={{ fontSize: 14, color: T.muted, fontStyle: "italic", lineHeight: 1.55, marginBottom: 14 }}>"{card.sigLine}"</p>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>

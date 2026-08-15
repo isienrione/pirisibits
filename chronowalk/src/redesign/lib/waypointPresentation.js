@@ -96,12 +96,28 @@ export function photoForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   if (reconstruction?.now) return resolvePhotoUrl(reconstruction.now)
   if (waypoint?.photo) return resolvePhotoUrl(waypoint.photo)
+
+  // Scripted rest has no then/now pair - use a calm Forum plate (reliable local asset).
+  if (waypoint?.scripted_rest) {
+    return resolvePhotoUrl('/waypoints/forum-cluster/forum-via-sacra/modern-poster.jpg')
+  }
+
+  const nowImageFile = waypoint?.now_image?.file
+  if (nowImageFile) {
+    const path = nowImageFile.startsWith('/')
+      ? nowImageFile
+      : `/rome/img/${nowImageFile}`
+    return resolvePhotoUrl(path)
+  }
+
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (stopId) return getNowPhotoUrl(stopId)
   return getNowPhotoUrl('colosseum')
 }
 
 export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
+  if (waypoint?.scripted_rest) return null
+
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
   const nowPath = reconstruction?.now ?? waypoint?.photo ?? null
   const thenPath = reconstruction?.then ?? null
@@ -118,29 +134,36 @@ export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
 
   if (reconstruction?.loop) {
     if (inferredStill) return resolvePhotoUrl(inferredStill)
-    if (thenPath) return resolvePhotoUrl(thenPath)
-    return resolvePhotoUrl(nowPath)
-  }
-
-  if (thenPath) {
-    return resolvePhotoUrl(thenPath)
+    if (thenPath && !isModernLikeThenPath(thenPath, nowPath)) return resolvePhotoUrl(thenPath)
+    return null
   }
 
   if (inferredStill) {
     return resolvePhotoUrl(inferredStill)
   }
 
-  if (waypoint?.id) {
-    const manifestThen = resolvePhotoUrl(`/rome/img/${waypoint.id}_then.avif`)
-    if (manifestThen) return manifestThen
-  }
-
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (stopId) {
-    return getModernExteriorUrl(stopId)
+    const exterior = getModernExteriorUrl(stopId)
+    const now = nowPath || getModernPosterUrl(stopId)
+    if (exterior && exterior !== now) return exterior
   }
 
-  return photoForWaypoint(waypoint, chapterIndex)
+  return null
+}
+
+/** Journal diptych only when a real reconstruction still or loop exists. */
+export function hasJournalThenNow(waypoint, chapterIndex = 0) {
+  if (!waypoint || waypoint.scripted_rest) return false
+  if (waypoint.threshold === false) return false
+  if (inferredReconstructionStillPath(waypoint)) return true
+
+  const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  const nowPath = reconstruction?.now ?? waypoint?.photo ?? null
+  if (reconstruction?.then && !isModernLikeThenPath(reconstruction.then, nowPath)) {
+    return true
+  }
+  return Boolean(thenLoopForWaypoint(waypoint, chapterIndex))
 }
 
 function isModernLikeThenPath(thenPath, nowPath) {

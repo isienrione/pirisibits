@@ -68,4 +68,25 @@ describe('JournalCardMemories', () => {
     expect(screen.getByTestId('journal-photo-library-forum')).toBeInTheDocument()
     expect(screen.getByTestId('journal-photo-camera-forum')).toBeInTheDocument()
   })
+
+  it('toggles saved note and photo visibility per stop', async () => {
+    await saveJournalNote('colosseum', 'Crowds thin at dusk.')
+
+    render(
+      <I18nProvider>
+        <JournalCardMemories waypointId="colosseum" stopName="The Colosseum" />
+      </I18nProvider>,
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('journal-note-preview-colosseum')).toBeInTheDocument()
+    })
+
+    fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
+    expect(screen.queryByTestId('journal-memory-content-colosseum')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('journal-note-preview-colosseum')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
+    expect(screen.getByTestId('journal-note-preview-colosseum')).toBeInTheDocument()
+  })
 })
