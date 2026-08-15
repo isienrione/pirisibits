@@ -114,4 +114,14 @@ describe('LandingProductPhoneStage', () => {
     expect(mediaRule?.[0]).toMatch(/object-fit:\s*cover/)
     expect(mediaRule?.[0]).not.toMatch(/object-fit:\s*contain/)
   })
+
+  it('sizes how-it-works phones to fit copy + device in one viewport', () => {
+    const css = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../ChronoWalkLanding.v4.css'),
+      'utf8',
+    )
+    expect(css).toMatch(/\.cw-acq-seq__phone\s*\{[^}]*100svh/s)
+    expect(css).toMatch(/\.cw-acq-seq__phone\s*\{[^}]*14\.75rem/s)
+    expect(css).toMatch(/\.cw-acq-seq__row\s*\{[^}]*min-height:\s*calc\(100svh/s)
+  })
 })
