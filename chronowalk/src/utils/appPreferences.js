@@ -1,3 +1,6 @@
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import { LOCALES, normalizeLocale } from '../i18n/locales.js'
+
 const AUDIO_ENABLED_KEY = 'chronowalk-audio-enabled'
 const AUDIO_SPEED_KEY = 'chronowalk-audio-speed'
 const DEBUG_MAP_KEY = 'chronowalk-debug-map'
@@ -8,6 +11,11 @@ const APP_PREFS_KEY = 'cw_app_prefs_v1'
 
 export const STORY_PLAYBACK_SPEEDS = [0.8, 1, 1.2, 1.5, 2]
 export const PREFERENCES_CHANGED_EVENT = 'chronowalk:preferences-changed'
+
+/** English narration defaults faster; Spanish stays at natural pace. */
+export function defaultAudioSpeedForLocale(locale) {
+  return normalizeLocale(locale) === LOCALES.ES ? 1 : 1.2
+}
 
 const readBool = (key, fallback = false) => {
   if (typeof window === 'undefined') return fallback
@@ -37,13 +45,16 @@ export const readAudioEnabled = () => {
 export const writeAudioEnabled = (enabled) => writeBool(AUDIO_ENABLED_KEY, enabled)
 
 export const readAudioSpeed = () => {
-  if (typeof window === 'undefined') return 1.2
+  const fallback = defaultAudioSpeedForLocale(getActiveLocale())
+  if (typeof window === 'undefined') return fallback
 
   try {
-    const speed = Number(window.localStorage.getItem(AUDIO_SPEED_KEY))
-    return STORY_PLAYBACK_SPEEDS.includes(speed) ? speed : 1.2
+    const raw = window.localStorage.getItem(AUDIO_SPEED_KEY)
+    if (raw === null) return fallback
+    const speed = Number(raw)
+    return STORY_PLAYBACK_SPEEDS.includes(speed) ? speed : fallback
   } catch {
-    return 1.2
+    return fallback
   }
 }
 
@@ -56,6 +67,33 @@ export const writeAudioSpeed = (speed) => {
   } catch {
     // ignore quota / privacy errors
   }
+}
+
+/**
+ * When the traveler switches language, adopt the new locale default if they
+ * were still on the previous locale's default (or had never set a speed).
+ * Custom speeds are left alone.
+ */
+export function syncAudioSpeedForLocaleChange(previousLocale, nextLocale) {
+  const prevDefault = defaultAudioSpeedForLocale(previousLocale)
+  const nextDefault = defaultAudioSpeedForLocale(nextLocale)
+  if (prevDefault === nextDefault) return readAudioSpeed()
+
+  if (typeof window === 'undefined') return nextDefault
+
+  let raw = null
+  try {
+    raw = window.localStorage.getItem(AUDIO_SPEED_KEY)
+  } catch {
+    raw = null
+  }
+
+  if (raw === null || Number(raw) === prevDefault) {
+    writeAudioSpeed(nextDefault)
+    return nextDefault
+  }
+
+  return readAudioSpeed()
 }
 
 export const cycleAudioSpeed = (current = readAudioSpeed()) => {

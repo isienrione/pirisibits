@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { PREFERENCES_CHANGED_EVENT, readAudioSpeed, writeAudioSpeed } from '../utils/appPreferences.js'
+import { getActiveLocale } from '../i18n/activeLocale.js'
+import {
+  PREFERENCES_CHANGED_EVENT,
+  defaultAudioSpeedForLocale,
+  readAudioSpeed,
+  writeAudioSpeed,
+} from '../utils/appPreferences.js'
 
 const STORAGE_KEY = 'cw_app_prefs_v1'
 
@@ -24,7 +30,9 @@ export function transcriptFontSizePx(textSize = 'md') {
 
 function normalizePlaybackSpeed(speed) {
   const numeric = Number(speed)
-  return SETTINGS_PLAYBACK_SPEEDS.includes(numeric) ? numeric : 1.2
+  return SETTINGS_PLAYBACK_SPEEDS.includes(numeric)
+    ? numeric
+    : defaultAudioSpeedForLocale(getActiveLocale())
 }
 
 function normalizeTextSize(textSize) {
