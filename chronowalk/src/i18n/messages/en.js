@@ -34,8 +34,11 @@ export const enMessages = Object.freeze({
   'home.actions.settings': 'Settings',
   'home.actions.tutorial': 'Tutorial',
   'home.actions.support': 'Support',
-  'home.actions.roadmap': 'Tour',
-  'home.openTourRoadmap': 'Open full tour roadmap',
+  'home.actions.route': 'Route',
+  'home.actions.routeAria': 'Open the zoomable {name} route drawing',
+  'home.map.openAria': 'Open the full map',
+  'home.routeViewer.title': '{name} route',
+  'home.routeViewer.hint': 'Pinch to zoom · drag to pan · double-tap to reset',
   'home.support.eyebrow': 'Support',
   'home.support.title': 'We are a short email away.',
   'home.support.body':

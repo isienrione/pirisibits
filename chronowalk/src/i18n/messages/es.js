@@ -34,8 +34,11 @@ export const esMessages = Object.freeze({
   'home.actions.settings': 'Ajustes',
   'home.actions.tutorial': 'Tutorial',
   'home.actions.support': 'Soporte',
-  'home.actions.roadmap': 'Ruta',
-  'home.openTourRoadmap': 'Abrir el mapa completo del recorrido',
+  'home.actions.route': 'Ruta',
+  'home.actions.routeAria': 'Abrir el dibujo ampliable de la ruta {name}',
+  'home.map.openAria': 'Abrir el mapa completo',
+  'home.routeViewer.title': 'Ruta {name}',
+  'home.routeViewer.hint': 'Pellizca para ampliar · arrastra para mover · doble toque para restablecer',
   'home.support.eyebrow': 'Soporte',
   'home.support.title': 'Estamos a un correo de distancia.',
   'home.support.body':

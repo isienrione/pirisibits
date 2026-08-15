@@ -1,14 +1,22 @@
 import { T, F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 
-const RING = 72
-const STROKE = 7
+const RING = 74
+const STROKE = 8
 const R = (RING - STROKE) / 2
 const C = 2 * Math.PI * R
 
+const BEAD_PALETTE = [T.actIV, T.actII, T.actIII, T.actVI, T.actV, T.encore, T.actI]
+
+function beadTone(status, index) {
+  const vivid = BEAD_PALETTE[index % BEAD_PALETTE.length]
+  if (status === 'completed' || status === 'current') return vivid
+  if (status === 'skipped') return `color-mix(in srgb, ${vivid} 35%, #E5DDD0 65%)`
+  return '#E8E0D4'
+}
+
 /**
- * Hero progress card — gold ChronoWalk accent, circular %, stop beads.
- * Skipped stops stay in the total with a weaker bead.
+ * Light, colorful progress card — multi-act ring + stop beads (no mustard slab).
  */
 export default function HomeProgressArc({
   stops = [],
@@ -21,6 +29,7 @@ export default function HomeProgressArc({
   const safeTotal = Math.max(total, stops.length, 1)
   const clamped = Math.min(100, Math.max(0, percent))
   const offset = C * (1 - clamped / 100)
+  const gradientId = 'home-progress-ring'
 
   const beads =
     stops.length > 0
@@ -36,14 +45,29 @@ export default function HomeProgressArc({
       data-testid="home-progress-arc"
       style={{
         borderRadius: 22,
-        padding: '16px 16px 14px',
-        background: `linear-gradient(145deg, ${T.ember} 0%, #C9A227 55%, #B8921F 100%)`,
-        color: T.obsidian,
-        boxShadow: '0 14px 36px rgba(212, 175, 55, 0.28)',
+        padding: '15px 15px 13px',
+        background: 'linear-gradient(145deg, #FFFFFF 0%, #F7FBFF 45%, #FFF6F2 100%)',
+        border: `1px solid ${T.limestone}`,
+        boxShadow: '0 10px 28px rgba(78, 155, 143, 0.10)',
+        color: T.ink,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
       <div
+        aria-hidden
         style={{
+          position: 'absolute',
+          inset: 0,
+          background:
+            'radial-gradient(60% 80% at 100% 0%, rgba(78,155,143,0.12) 0%, transparent 55%), radial-gradient(50% 70% at 0% 100%, rgba(177,74,110,0.10) 0%, transparent 50%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div
+        style={{
+          position: 'relative',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -59,7 +83,7 @@ export default function HomeProgressArc({
               fontWeight: 650,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              opacity: 0.72,
+              color: T.actIV,
             }}
           >
             {t('home.progress.count', { completed, total: safeTotal })}
@@ -68,10 +92,11 @@ export default function HomeProgressArc({
             style={{
               margin: '6px 0 0',
               fontFamily: F.display,
-              fontSize: currentStopTitle ? 22 : 20,
+              fontSize: currentStopTitle ? 21 : 19,
               fontWeight: 500,
               lineHeight: 1.15,
               letterSpacing: '-0.02em',
+              color: T.ink,
             }}
           >
             {currentStopTitle
@@ -90,12 +115,19 @@ export default function HomeProgressArc({
           }}
         >
           <svg width={RING} height={RING} viewBox={`0 0 ${RING} ${RING}`} aria-hidden>
+            <defs>
+              <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={T.actIV} />
+                <stop offset="45%" stopColor={T.actIII} />
+                <stop offset="100%" stopColor={T.actV} />
+              </linearGradient>
+            </defs>
             <circle
               cx={RING / 2}
               cy={RING / 2}
               r={R}
               fill="none"
-              stroke="rgba(11,11,13,0.14)"
+              stroke="#E7E0D5"
               strokeWidth={STROKE}
             />
             <circle
@@ -103,7 +135,7 @@ export default function HomeProgressArc({
               cy={RING / 2}
               r={R}
               fill="none"
-              stroke={T.obsidian}
+              stroke={`url(#${gradientId})`}
               strokeWidth={STROKE}
               strokeLinecap="round"
               strokeDasharray={C}
@@ -122,6 +154,7 @@ export default function HomeProgressArc({
               fontSize: 18,
               fontWeight: 600,
               letterSpacing: '-0.03em',
+              color: T.ink,
             }}
           >
             {clamped}%
@@ -131,18 +164,19 @@ export default function HomeProgressArc({
 
       <div
         style={{
-          marginTop: 14,
+          position: 'relative',
+          marginTop: 13,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           gap: 2,
         }}
       >
-        {beads.map((stop) => {
+        {beads.map((stop, index) => {
           const isYou = stop.status === 'current'
           const isSkipped = stop.status === 'skipped'
-          const isDone = stop.status === 'completed'
           const size = isYou ? 9 : 6
+          const color = beadTone(stop.status, index)
           return (
             <span
               key={stop.id}
@@ -153,10 +187,11 @@ export default function HomeProgressArc({
                 height: size,
                 borderRadius: 999,
                 flexShrink: 0,
-                background: isDone || isYou ? T.obsidian : isSkipped ? 'rgba(11,11,13,0.28)' : 'rgba(11,11,13,0.14)',
-                boxShadow: isYou ? '0 0 0 3px rgba(11,11,13,0.18)' : 'none',
-                border: isSkipped ? '1px solid rgba(11,11,13,0.35)' : 'none',
+                background: color,
+                boxShadow: isYou ? `0 0 0 3px color-mix(in srgb, ${color} 28%, transparent)` : 'none',
+                border: isSkipped ? `1px solid color-mix(in srgb, ${color} 55%, #B5AAA0)` : 'none',
                 boxSizing: 'border-box',
+                opacity: stop.status === 'upcoming' ? 0.85 : 1,
               }}
             />
           )
