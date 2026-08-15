@@ -323,7 +323,6 @@ export default function LandingIntroNav({
           items={exploreNav}
           panelId={explorePanelId}
           title={t('landing.nav.exploreTitle')}
-          lead={t('landing.nav.exploreLead')}
           closeLabel={t('landing.nav.menuCloseAria')}
           navLabel={t('landing.nav.exploreAria')}
         />

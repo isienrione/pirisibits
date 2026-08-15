@@ -79,7 +79,7 @@ describe('LandingIntroNav', () => {
 
     const sidebar = screen.getByTestId('landing-explore-sidebar')
     expect(sidebar.classList.contains('is-open')).toBe(true)
-    expect(screen.getByRole('dialog', { name: /explore this page/i })).toBeTruthy()
+    expect(screen.getByRole('dialog', { name: /jump to/i })).toBeTruthy()
     expect(screen.getByTestId('landing-explore-toggle')).toHaveAttribute('aria-expanded', 'true')
 
     const expected = LANDING_CONTENT.header.exploreNav
@@ -89,6 +89,18 @@ describe('LandingIntroNav', () => {
       expect(link).toBeTruthy()
       expect(link.textContent).toContain(item.label)
     }
+  })
+
+  it('uses conversion-minded labels instead of draft section names', () => {
+    render(<LandingIntroNav onComplete={vi.fn()} />)
+    fireEvent.click(screen.getByTestId('landing-explore-toggle'))
+
+    const sidebar = screen.getByTestId('landing-explore-sidebar')
+    expect(sidebar.querySelector('a[href="#pricing"]')?.textContent).toMatch(/choose your walk/i)
+    expect(sidebar.querySelector('a[href="#faq"]')?.textContent).toMatch(/before you buy/i)
+    expect(sidebar.querySelector('a[href="#get-app"]')?.textContent).toMatch(/start in your browser/i)
+    expect(sidebar.querySelector('a[href="#faq"]')?.textContent).not.toMatch(/^faq$/i)
+    expect(sidebar.textContent).not.toMatch(/who it’s for/i)
   })
 
   it('closes the explore sidebar via Escape and restores body scroll', () => {

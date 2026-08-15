@@ -910,18 +910,18 @@ export const LANDING_CONTENT = {
       { label: 'FAQ', href: '#faq' },
     ],
     /**
-     * Full page map for the collapsible explore sidebar (closed by default).
-     * On-page hashes only — keeps visitors on the landing without confusion.
+     * Compact page map for the collapsible explore drawer (closed by default).
+     * Labels are visitor actions / buying intent — not internal section names.
      */
     exploreNav: [
-      { id: 'top', label: 'Start', href: '#top', hint: 'Hero' },
-      { id: 'hero-reassurance', label: 'Easy to start', href: '#hero-reassurance', hint: 'Why ChronoWalk' },
-      { id: 'monuments', label: 'Stops', href: '#monuments', hint: 'What you’ll see' },
-      { id: 'how-it-works', label: 'How it works', href: '#how-it-works', hint: 'The app, step by step' },
-      { id: 'who-its-for', label: 'Who it’s for', href: '#who-its-for', hint: 'Real situations' },
-      { id: 'pricing', label: 'Rome walks', href: '#pricing', hint: 'Routes & pricing' },
-      { id: 'get-app', label: 'Get the app', href: '#get-app', hint: 'Open ChronoWalk' },
-      { id: 'faq', label: 'FAQ', href: '#faq', hint: 'Common questions' },
+      { id: 'top', label: 'Back to top', href: '#top' },
+      { id: 'hero-reassurance', label: 'Why it’s easy', href: '#hero-reassurance' },
+      { id: 'monuments', label: 'Landmarks you’ll visit', href: '#monuments' },
+      { id: 'how-it-works', label: 'How a walk works', href: '#how-it-works' },
+      { id: 'who-its-for', label: 'When plans change', href: '#who-its-for' },
+      { id: 'pricing', label: 'Choose your walk', href: '#pricing' },
+      { id: 'get-app', label: 'Start in your browser', href: '#get-app' },
+      { id: 'faq', label: 'Before you buy', href: '#faq' },
     ],
     /** Shown in the nav only after the hero leaves the viewport. */
     get cta() {

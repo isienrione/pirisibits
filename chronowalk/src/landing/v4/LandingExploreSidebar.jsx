@@ -4,15 +4,14 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
 /**
- * Collapsible left explore drawer for the landing page map.
- * Closed by default; opened from the nav Menu control.
+ * Compact collapsible explore drawer — closed by default.
+ * Slim on mobile so the page stays visible; labels are visitor actions.
  */
 export default function LandingExploreSidebar({
   open,
   onClose,
   items = [],
   title,
-  lead,
   closeLabel,
   navLabel,
   panelId: panelIdProp,
@@ -115,13 +114,9 @@ export default function LandingExploreSidebar({
         aria-labelledby={titleId}
       >
         <div className="cw-v4-explore__head">
-          <div className="cw-v4-explore__intro">
-            <p className="cw-v4-explore__eyebrow">ChronoWalk</p>
-            <h2 id={titleId} className="cw-v4-explore__title">
-              {title}
-            </h2>
-            {lead ? <p className="cw-v4-explore__lead">{lead}</p> : null}
-          </div>
+          <h2 id={titleId} className="cw-v4-explore__title">
+            {title}
+          </h2>
           <button
             type="button"
             className="cw-v4-explore__close"
@@ -134,27 +129,15 @@ export default function LandingExploreSidebar({
         </div>
 
         <nav className="cw-v4-explore__nav" aria-label={navLabel}>
-          <ol className="cw-v4-explore__list">
-            {items.map((item, index) => (
+          <ul className="cw-v4-explore__list">
+            {items.map((item) => (
               <li key={item.id || item.href} className="cw-v4-explore__item">
-                <a
-                  href={item.href}
-                  className="cw-v4-explore__link"
-                  onClick={onClose}
-                >
-                  <span className="cw-v4-explore__index" aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className="cw-v4-explore__copy">
-                    <span className="cw-v4-explore__label">{item.label}</span>
-                    {item.hint ? (
-                      <span className="cw-v4-explore__hint">{item.hint}</span>
-                    ) : null}
-                  </span>
+                <a href={item.href} className="cw-v4-explore__link" onClick={onClose}>
+                  {item.label}
                 </a>
               </li>
             ))}
-          </ol>
+          </ul>
         </nav>
       </aside>
     </div>

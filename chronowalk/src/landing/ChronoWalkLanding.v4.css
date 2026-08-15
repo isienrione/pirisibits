@@ -323,7 +323,7 @@
   background: rgba(250, 246, 239, 0.14);
 }
 
-/* ——— Explore sidebar (closed by default) ——— */
+/* ——— Explore drawer (closed by default; slim so mobile keeps page context) ——— */
 
 .cw-v4-explore {
   position: fixed;
@@ -345,10 +345,10 @@
   margin: 0;
   border: 0;
   padding: 0;
-  background: rgba(11, 11, 13, 0.42);
+  background: rgba(11, 11, 13, 0.34);
   opacity: 0;
   cursor: pointer;
-  transition: opacity 0.28s ease;
+  transition: opacity 0.24s ease;
 }
 
 .cw-v4-explore.is-open .cw-v4-explore__backdrop {
@@ -360,21 +360,22 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: min(22rem, calc(100vw - 2.5rem));
+  /* Leave most of the phone screen visible — rail, not takeover. */
+  width: min(15.25rem, 58vw);
+  max-width: 16.5rem;
   display: flex;
   flex-direction: column;
-  background:
-    linear-gradient(165deg, #fffdf8 0%, var(--v4-paper) 42%, var(--v4-paper-2) 100%);
+  background: var(--v4-paper);
   border-right: 1px solid var(--v4-line);
-  box-shadow: 12px 0 40px rgba(11, 11, 13, 0.18);
+  box-shadow: 8px 0 28px rgba(11, 11, 13, 0.16);
   color: var(--v4-ink);
   transform: translateX(-105%);
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   padding:
-    max(1rem, env(safe-area-inset-top))
-    1.25rem
-    max(1.25rem, env(safe-area-inset-bottom))
-    max(1.25rem, env(safe-area-inset-left));
+    max(0.65rem, env(safe-area-inset-top))
+    0.7rem
+    max(0.85rem, env(safe-area-inset-bottom))
+    max(0.7rem, env(safe-area-inset-left));
 }
 
 .cw-v4-explore.is-open .cw-v4-explore__panel {
@@ -383,56 +384,37 @@
 
 .cw-v4-explore__head {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-bottom: 1.35rem;
-  padding-bottom: 1rem;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.45rem;
+  padding: 0.15rem 0.2rem 0.55rem;
   border-bottom: 1px solid color-mix(in srgb, var(--v4-ink) 10%, transparent);
 }
 
-.cw-v4-explore__intro {
+.cw-v4-explore__title {
   flex: 1 1 auto;
   min-width: 0;
-}
-
-.cw-v4-explore__eyebrow {
-  margin: 0 0 0.35rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--v4-gold);
-}
-
-.cw-v4-explore__title {
   margin: 0;
-  font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: 1.55rem;
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: var(--v4-ink);
-}
-
-.cw-v4-explore__lead {
-  margin: 0.45rem 0 0;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--v4-muted);
 }
 
 .cw-v4-explore__close {
   appearance: none;
   flex: 0 0 auto;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2rem;
+  height: 2rem;
   margin: 0;
-  border: 1px solid color-mix(in srgb, var(--v4-ink) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--v4-ink) 12%, transparent);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
+  background: transparent;
   color: var(--v4-ink);
   font: inherit;
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   line-height: 1;
   cursor: pointer;
 }
@@ -458,56 +440,48 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.2rem;
+  gap: 0.05rem;
 }
 
 .cw-v4-explore__link {
-  display: grid;
-  grid-template-columns: 2rem 1fr;
-  gap: 0.75rem;
-  align-items: start;
-  padding: 0.75rem 0.55rem;
-  border-radius: 0.7rem;
+  display: block;
+  padding: 0.55rem 0.55rem;
+  border-radius: 0.45rem;
   text-decoration: none;
-  color: inherit;
-  transition: background 0.18s ease;
+  color: var(--v4-ink);
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .cw-v4-explore__link:hover {
-  background: color-mix(in srgb, var(--v4-amber) 12%, transparent);
+  background: color-mix(in srgb, var(--v4-amber) 14%, transparent);
+  color: var(--v4-ink);
 }
 
 .cw-v4-explore__link:focus-visible {
   outline: 2px solid var(--v4-amber);
-  outline-offset: 2px;
+  outline-offset: 1px;
 }
 
-.cw-v4-explore__index {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--v4-gold);
-  padding-top: 0.2rem;
+/* Conversion anchors sit near the end — slight emphasis without clutter. */
+.cw-v4-explore__item:nth-child(6) .cw-v4-explore__link,
+.cw-v4-explore__item:nth-child(7) .cw-v4-explore__link {
+  color: color-mix(in srgb, var(--v4-ink) 88%, var(--v4-amber-deep, #c97f1e));
 }
 
-.cw-v4-explore__copy {
-  display: grid;
-  gap: 0.15rem;
-  min-width: 0;
-}
+@media (min-width: 48rem) {
+  .cw-v4-explore__panel {
+    width: min(16.5rem, 40vw);
+  }
 
-.cw-v4-explore__label {
-  font-family: var(--font-display, 'Fraunces', Georgia, serif);
-  font-size: 1.05rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--v4-ink);
-}
-
-.cw-v4-explore__hint {
-  font-size: 0.8rem;
-  line-height: 1.35;
-  color: var(--v4-muted);
+  .cw-v4-explore__link {
+    font-size: 0.92rem;
+    padding: 0.62rem 0.65rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
