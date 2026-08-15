@@ -82,14 +82,17 @@ describe('JournalCardMemories', () => {
       expect(screen.getByTestId('journal-note-preview-colosseum')).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
+    const expand = screen.getByTestId('journal-memory-expand-colosseum')
+    fireEvent.click(expand)
     expect(screen.queryByTestId('journal-memory-content-colosseum')).not.toBeInTheDocument()
     expect(screen.queryByTestId('journal-note-preview-colosseum')).not.toBeInTheDocument()
-    expect(screen.getByTestId('journal-memory-expand-colosseum')).toHaveTextContent(
+    expect(expand).toHaveAttribute('aria-expanded', 'false')
+    expect(expand.getAttribute('aria-label') || '').toMatch(
       /show notes and photos|mostrar notas/i,
     )
 
-    fireEvent.click(screen.getByTestId('journal-memory-expand-colosseum'))
+    fireEvent.click(expand)
     expect(screen.getByTestId('journal-note-preview-colosseum')).toBeInTheDocument()
+    expect(expand).toHaveAttribute('aria-expanded', 'true')
   })
 })
