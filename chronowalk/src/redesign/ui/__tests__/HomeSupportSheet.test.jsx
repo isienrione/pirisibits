@@ -32,7 +32,7 @@ describe('HomeSupportSheet', () => {
 
     const faq = screen.getByTestId('home-support-faq')
     expect(faq.getAttribute('href')).toBe(SUPPORT_FAQ_HREF)
-    expect(SUPPORT_FAQ_HREF).toBe('https://chronowalk.com/#faq')
+    expect(SUPPORT_FAQ_HREF).toBe('https://chronowalk.com/?from=app#faq')
     expect(faq.getAttribute('target')).toBe('_blank')
     expect(faq.getAttribute('rel')).toMatch(/noopener/)
 

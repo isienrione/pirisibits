@@ -100,6 +100,9 @@ export const esMessages = Object.freeze({
   'home.tutorial.reveal.title': 'Mantén pulsada la foto',
   'home.tutorial.reveal.body':
     'Mira el antes y el ahora. La narración sigue mientras mantienes la reconstrucción.',
+  'home.tutorial.reveal.holdHint': 'Mantén para revelar',
+  'home.tutorial.reveal.holdingHint': 'Suelta para el ahora',
+  'home.tutorial.reveal.practiceAria': 'Practica mantener pulsado para revelar entonces y ahora',
   'home.tutorial.settings.eyebrow': 'Ajustes',
   'home.tutorial.settings.title': 'Toca el engranaje para idioma y más',
   'home.tutorial.settings.body':
@@ -393,6 +396,8 @@ export const esMessages = Object.freeze({
   'landing.footer.privacy': 'Privacidad',
   'landing.footer.refund': 'Política de reembolso',
   'landing.footer.pricing': 'Precios',
+  'landing.faq.backToApp': 'Volver a ChronoWalk',
+  'landing.faq.openHome': 'Abrir Inicio',
   'acquisition.header.aria': 'Información del recorrido',
   'acquisition.header.fullTour': 'Recorrido completo por Roma',
   'acquisition.header.howItWorks': 'Cómo funciona',

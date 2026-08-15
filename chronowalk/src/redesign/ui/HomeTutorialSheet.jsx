@@ -102,7 +102,7 @@ export default function HomeTutorialSheet({ open, onClose }) {
           justifyContent: 'space-between',
           gap: 12,
           padding: '14px 16px 8px',
-          paddingTop: 'max(16px, calc(env(safe-area-inset-top) + 10px))',
+          paddingTop: 'max(20px, calc(env(safe-area-inset-top) + 18px))',
         }}
       >
         <div>

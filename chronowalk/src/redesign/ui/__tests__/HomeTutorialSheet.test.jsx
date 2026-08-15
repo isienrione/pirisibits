@@ -47,4 +47,26 @@ describe('HomeTutorialSheet', () => {
     fireEvent.click(screen.getByTestId('home-tutorial-next'))
     expect(onClose).toHaveBeenCalled()
   })
+
+  it('lets travelers practice press-and-hold on the reveal cue', () => {
+    render(
+      <MemoryRouter>
+        <I18nProvider>
+          <HomeTutorialSheet open onClose={vi.fn()} />
+        </I18nProvider>
+      </MemoryRouter>,
+    )
+
+    const revealIndex = HOME_TUTORIAL_PHASES.indexOf('reveal')
+    for (let i = 0; i < revealIndex; i += 1) {
+      fireEvent.click(screen.getByTestId('home-tutorial-next'))
+    }
+
+    const practice = screen.getByTestId('home-tutorial-reveal-practice')
+    expect(practice).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.pointerDown(practice)
+    expect(practice).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.pointerUp(practice)
+    expect(practice).toHaveAttribute('aria-pressed', 'false')
+  })
 })

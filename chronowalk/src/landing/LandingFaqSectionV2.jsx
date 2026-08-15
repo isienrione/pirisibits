@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { LANDING_CONTENT } from './landingData.js'
 import { trackLandingFaqOpen } from './landingAnalytics.js'
 import { trackFaqOpen } from '../lib/analytics.ts'
 import LandingTrustChecklist from './v4/LandingTrustChecklist.jsx'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 function faqDeepLinkId(itemId) {
   return `faq-${itemId}`
@@ -16,6 +18,15 @@ function indexFromHash(items) {
   return match >= 0 ? match : 0
 }
 
+function readFromAppFlag() {
+  if (typeof window === 'undefined') return false
+  try {
+    return new URLSearchParams(window.location.search).get('from') === 'app'
+  } catch {
+    return false
+  }
+}
+
 /**
  * Act III - FAQ grouped by buying anxiety (Prompt 15).
  * Accordion keyboard support + FAQPage JSON-LD + `#faq-<id>` deep links.
@@ -24,10 +35,16 @@ export default function LandingFaqSectionV2({
   section = LANDING_CONTENT.faq,
   trustSection = LANDING_CONTENT.trust,
 }) {
+  const t = useT()
   const { id, headline, groups } = section
   const items = useMemo(() => groups.flatMap((group) => group.items), [groups])
   const [openIndex, setOpenIndex] = useState(() => indexFromHash(items))
+  const [fromApp, setFromApp] = useState(readFromAppFlag)
   const buttonRefs = useRef([])
+
+  useEffect(() => {
+    setFromApp(readFromAppFlag())
+  }, [])
 
   useEffect(() => {
     const syncFromHash = () => {
@@ -95,9 +112,36 @@ export default function LandingFaqSectionV2({
 
   const indexById = Object.fromEntries(items.map((item, index) => [item.id, index]))
 
+  const handleBackToApp = () => {
+    if (typeof window === 'undefined') return
+    if (window.history.length > 1) {
+      window.history.back()
+      return
+    }
+    window.location.assign('/home')
+  }
+
   return (
-    <section id={id} className="cw-v2-section cw-v2-faq" aria-labelledby={`${id}-heading`}>
+    <section
+      id={id}
+      className={`cw-v2-section cw-v2-faq${fromApp ? ' cw-v2-faq--from-app' : ''}`}
+      aria-labelledby={`${id}-heading`}
+      data-from-app={fromApp ? 'true' : undefined}
+    >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+
+      {fromApp ? (
+        <div className="cw-v2-wrap cw-v2-wrap--narrow">
+          <div className="cw-v2-faq__app-bar" data-testid="faq-back-to-app">
+            <button type="button" className="cw-v2-faq__app-back" onClick={handleBackToApp}>
+              {t('landing.faq.backToApp')}
+            </button>
+            <Link to="/home" className="cw-v2-faq__app-home">
+              {t('landing.faq.openHome')}
+            </Link>
+          </div>
+        </div>
+      ) : null}
 
       <div className="cw-v2-wrap cw-v2-wrap--narrow">
         <header className="cw-v2-section__header">

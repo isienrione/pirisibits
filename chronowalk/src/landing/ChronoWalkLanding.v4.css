@@ -4692,7 +4692,58 @@
 .cw-landing--v4 .cw-v2-footer {
   background: transparent;
   color: var(--v4-ink);
-  scroll-margin-top: var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem));
+  scroll-margin-top: calc(
+    var(--v4-anchor-offset, calc(var(--v4-nav-h, 4.25rem) + 1.65rem)) + env(safe-area-inset-top, 0px)
+  );
+}
+
+.cw-landing--v4 .cw-v2-faq--from-app {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 5.5rem);
+}
+
+.cw-v2-faq__app-bar {
+  position: sticky;
+  top: max(0.5rem, env(safe-area-inset-top, 0px));
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--v4-ink, #1a1a1f) 12%, transparent);
+  background: color-mix(in srgb, #fffcf7 92%, #e9e2d5);
+  box-shadow: 0 8px 24px rgba(11, 11, 13, 0.08);
+}
+
+.cw-v2-faq__app-back,
+.cw-v2-faq__app-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  font-family: var(--font-ui, 'DM Sans', system-ui, sans-serif);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cw-v2-faq__app-back {
+  border: none;
+  background: var(--v4-ink, #1a1a1f);
+  color: #faf6ef;
+}
+
+.cw-v2-faq__app-home {
+  border: 1px solid color-mix(in srgb, var(--v4-ink, #1a1a1f) 18%, transparent);
+  background: #fffefa;
+  color: var(--v4-ink, #1a1a1f);
 }
 
 .cw-landing--v4 .cw-v2-faq__question,

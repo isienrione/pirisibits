@@ -3,7 +3,8 @@ import { useT } from '../../i18n/I18nProvider.jsx'
 import { PRODUCTION_ORIGIN } from '../../seo/siteRoutes.js'
 
 export const SUPPORT_EMAIL = 'support@chronowalk.com'
-export const SUPPORT_FAQ_HREF = `${PRODUCTION_ORIGIN}/#faq`
+/** Opens marketing FAQ with app-return chrome (safe-area padding + back link). */
+export const SUPPORT_FAQ_HREF = `${PRODUCTION_ORIGIN}/?from=app#faq`
 
 export function supportMailtoHref() {
   const subject = encodeURIComponent('ChronoWalk support')

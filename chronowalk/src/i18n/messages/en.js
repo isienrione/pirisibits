@@ -100,6 +100,9 @@ export const enMessages = Object.freeze({
   'home.tutorial.reveal.title': 'Press & hold the photo',
   'home.tutorial.reveal.body':
     'See then and now. Narration keeps playing while you hold the reconstruction.',
+  'home.tutorial.reveal.holdHint': 'Hold to reveal',
+  'home.tutorial.reveal.holdingHint': 'Release for now',
+  'home.tutorial.reveal.practiceAria': 'Practice press and hold to reveal then and now',
   'home.tutorial.settings.eyebrow': 'Settings',
   'home.tutorial.settings.title': 'Tap the gear for language and more',
   'home.tutorial.settings.body':
@@ -392,6 +395,8 @@ export const enMessages = Object.freeze({
   'landing.footer.privacy': 'Privacy',
   'landing.footer.refund': 'Refund policy',
   'landing.footer.pricing': 'Pricing',
+  'landing.faq.backToApp': 'Back to ChronoWalk',
+  'landing.faq.openHome': 'Open Home',
   'acquisition.header.aria': 'Acquisition',
   'acquisition.header.fullTour': 'Full Rome tour',
   'acquisition.header.howItWorks': 'How it works',
