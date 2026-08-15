@@ -17,6 +17,7 @@ vi.mock('../locationAccess.js', () => ({
 }))
 
 import {
+  findNearestTourWaypoint,
   findNearestTourWaypointId,
   startFromNearestTourStop,
 } from '../startFromNearestStop.js'
@@ -34,6 +35,7 @@ describe('startFromNearestStop', () => {
       { lat: 41.8903, lng: 12.4923 },
     )
     expect(nearest).toBe('near')
+    expect(findNearestTourWaypoint({}, {}, { lat: 41.8903, lng: 12.4923 })?.id).toBe('near')
   })
 
   it('jumps to the nearest stop after a GPS fix', async () => {

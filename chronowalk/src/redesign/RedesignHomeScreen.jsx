@@ -15,6 +15,7 @@ import { T, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import HomeMapPeek from './ui/HomeMapPeek.jsx'
 import HomeProgressArc from './ui/HomeProgressArc.jsx'
 import HomeResetConfirmSheet from './ui/HomeResetConfirmSheet.jsx'
+import HomeResumeStopSheet from './ui/HomeResumeStopSheet.jsx'
 import HomeStopHero from './ui/HomeStopHero.jsx'
 import HomeSupportSheet from './ui/HomeSupportSheet.jsx'
 import HomeTutorialSheet from './ui/HomeTutorialSheet.jsx'
@@ -26,7 +27,6 @@ import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useI18n } from '../i18n/I18nProvider.jsx'
 import { packTitleForPurchasedTier } from '../lib/appEntry.js'
-import { startFromNearestTourStop } from '../lib/startFromNearestStop.js'
 import { JOURNEY_STATES } from '../state/journey.js'
 import { getPaceOption, JOURNEY_PACE } from '../data/romePacing.js'
 import {
@@ -144,6 +144,7 @@ export default function RedesignHomeScreen() {
   const [routeOpen, setRouteOpen] = useState(false)
   const [tutorialOpen, setTutorialOpen] = useState(false)
   const [startOverOpen, setStartOverOpen] = useState(false)
+  const [resumeOpen, setResumeOpen] = useState(false)
 
   const acts = useMemo(
     () => (manifest ? buildMyTourActs(manifest, context) : []),
@@ -215,22 +216,24 @@ export default function RedesignHomeScreen() {
     navigate('/journey')
   }, [begin, context, journeyActive, manifest, navigate, openAtSequence])
 
-  const handleStartFromHere = useCallback(async () => {
-    if (!manifest || geoBusy) return
-    setGeoBusy(true)
-    const result = await startFromNearestTourStop({
-      manifest,
-      context,
-      state,
-      requestJumpToWaypoint,
-    })
-    setGeoBusy(false)
-    if (result === 'jumped') {
-      navigate('/journey')
-      return
-    }
-    if (result === 'no_gps') navigate('/map')
-  }, [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state])
+  const handleOpenResumeStop = useCallback(() => {
+    if (!manifest) return
+    setResumeOpen(true)
+  }, [manifest])
+
+  const handleChooseResumeStop = useCallback(
+    async (waypointId) => {
+      if (!manifest || !waypointId || geoBusy) return
+      setGeoBusy(true)
+      const jumped = await requestJumpToWaypoint(manifest, waypointId, context, state)
+      setGeoBusy(false)
+      if (jumped) {
+        setResumeOpen(false)
+        navigate('/journey')
+      }
+    },
+    [context, geoBusy, manifest, navigate, requestJumpToWaypoint, state],
+  )
 
   const handleRewatchTutorial = useCallback(() => {
     setTutorialOpen(true)
@@ -504,7 +507,7 @@ export default function RedesignHomeScreen() {
                   style={{
                     margin: 0,
                     fontFamily: F.display,
-                    fontSize: 17,
+                    fontSize: continueLabel.length > 14 ? 14 : 17,
                     fontWeight: 500,
                     lineHeight: 1.15,
                     color: T.warmWhite,
@@ -512,14 +515,16 @@ export default function RedesignHomeScreen() {
                 >
                   {continueLabel}
                 </p>
-                <p style={{ margin: '3px 0 0', fontSize: 10, color: 'rgba(250,246,239,0.82)' }}>
-                  {t('home.cta.continueHint')}
-                </p>
+                {continueLabel === t('home.cta.beginTour') ? (
+                  <p style={{ margin: '3px 0 0', fontSize: 10, color: 'rgba(250,246,239,0.82)' }}>
+                    {t('home.cta.continueHint')}
+                  </p>
+                ) : null}
               </div>
             </DashCard>
 
             <DashCard
-              onClick={() => void handleStartFromHere()}
+              onClick={handleOpenResumeStop}
               testId="home-start-here"
               style={{
                 opacity: geoBusy ? 0.7 : 1,
@@ -548,7 +553,7 @@ export default function RedesignHomeScreen() {
               <p
                 style={{
                   margin: 0,
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: 650,
                   lineHeight: 1.2,
                   color: T.ink,
@@ -604,6 +609,13 @@ export default function RedesignHomeScreen() {
 
       <HomeSupportSheet open={supportOpen} onClose={() => setSupportOpen(false)} />
       <HomeTutorialSheet open={tutorialOpen} onClose={() => setTutorialOpen(false)} />
+      <HomeResumeStopSheet
+        open={resumeOpen}
+        onClose={() => setResumeOpen(false)}
+        manifest={manifest}
+        context={context}
+        onChooseStop={(waypointId) => void handleChooseResumeStop(waypointId)}
+      />
       <HomeResetConfirmSheet
         open={startOverOpen}
         onClose={() => setStartOverOpen(false)}
