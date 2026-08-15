@@ -11,7 +11,7 @@ const BEAD_PALETTE = [T.actIV, T.actII, T.actIII, T.actVI, T.actV, T.encore, T.a
 function beadTone(status, index) {
   const vivid = BEAD_PALETTE[index % BEAD_PALETTE.length]
   if (status === 'completed' || status === 'current') return vivid
-  if (status === 'skipped') return `color-mix(in srgb, ${vivid} 35%, #E5DDD0 65%)`
+  if (status === 'skipped') return '#D7D0C6'
   return '#E8E0D4'
 }
 
@@ -163,6 +163,7 @@ export default function HomeProgressArc({
       </div>
 
       <div
+        data-testid="home-progress-beads"
         style={{
           position: 'relative',
           marginTop: 13,
@@ -181,19 +182,37 @@ export default function HomeProgressArc({
             <span
               key={stop.id}
               data-status={stop.status}
+              data-bead-id={stop.id}
               aria-hidden
               style={{
+                position: 'relative',
                 width: size,
                 height: size,
                 borderRadius: 999,
                 flexShrink: 0,
                 background: color,
                 boxShadow: isYou ? `0 0 0 3px color-mix(in srgb, ${color} 28%, transparent)` : 'none',
-                border: isSkipped ? `1px solid color-mix(in srgb, ${color} 55%, #B5AAA0)` : 'none',
                 boxSizing: 'border-box',
-                opacity: stop.status === 'upcoming' ? 0.85 : 1,
+                opacity: isSkipped ? 0.45 : stop.status === 'upcoming' ? 0.85 : 1,
+                overflow: 'hidden',
               }}
-            />
+            >
+              {isSkipped ? (
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    width: '140%',
+                    height: 1.5,
+                    background: '#8A8174',
+                    transform: 'translate(-50%, -50%) rotate(-45deg)',
+                    borderRadius: 1,
+                    opacity: 0.9,
+                  }}
+                />
+              ) : null}
+            </span>
           )
         })}
       </div>

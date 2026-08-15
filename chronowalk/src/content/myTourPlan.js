@@ -3,11 +3,18 @@ import { getTierActIds, getTierWaypointIds } from '../data/tourTiers.js'
 import { getClassicDayBreakWaypointId } from './actBoundaries.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, isWaypointId, resolveJourneyStep } from './manifest.js'
-import { buildEffectiveSequence } from './optionalPromotion.js'
-import { isVisitStop, getVisitStopIds } from './tourProductTruth.js'
+import {
+  buildEffectiveSequence,
+  getOptionalWaypointIds,
+  getPromotionConfig,
+} from './optionalPromotion.js'
+import { getVisitStopIds, isVisitStop } from './tourProductTruth.js'
 import { t } from '../i18n/t.js'
 
 const CLASSIC_DAY2_ACTS = new Set(['act5', 'act6'])
+
+/** Optional Palatine-path stickers on the Eterna route card (counted in Home total). */
+const ETERNA_OPTIONAL_PROGRESS_IDS = ['w04', 'enc_circus']
 
 const ACT_META = Object.fromEntries(ROME_ACTS.map((act) => [act.id, act]))
 
@@ -143,20 +150,87 @@ export function summarizeMyTour(acts) {
 }
 
 /**
- * Ordered visit stops for the Home progress graphic.
- * Stops jumped past without completing are marked `skipped` (still counted in total).
+ * Visit ids for Home progress: include path optionals + Eterna Palatine-path
+ * stickers (Palatine + Circus Maximus) even when not promoted, so the
+ * denominator stays the full product total (21 for Roma Eterna).
+ */
+export function getHomeProgressVisitIds(manifest, context) {
+  if (!manifest) return []
+
+  const path = context.path ?? manifest.journey?.default_path ?? 'a'
+  const pace = context.pace ?? JOURNEY_PACE.HEROIC
+  const promoted = context.promotedOptionalIds ?? []
+  const optionalIds = getOptionalWaypointIds(manifest, path)
+  const promotedForListing = [...new Set([...promoted, ...optionalIds])]
+
+  let ids = getVisitStopIds(manifest, {
+    path,
+    pace,
+    promotedOptionalIds: promotedForListing,
+    customWaypointIds: context.customWaypointIds,
+  })
+
+  if (pace === JOURNEY_PACE.HEROIC || pace === JOURNEY_PACE.OWN) {
+    for (const extraId of ETERNA_OPTIONAL_PROGRESS_IDS) {
+      if (ids.includes(extraId)) continue
+      const waypoint = getWaypoint(manifest, extraId)
+      if (!isVisitStop(waypoint)) continue
+      const afterW04 = ids.indexOf('w04')
+      const afterW03 = ids.indexOf('w03')
+      const insertAt =
+        afterW04 >= 0 ? afterW04 + 1 : afterW03 >= 0 ? afterW03 + 1 : ids.length
+      ids = [...ids.slice(0, insertAt), extraId, ...ids.slice(insertAt)]
+    }
+  }
+
+  return ids
+}
+
+/** True when an optional Palatine-path stop was bypassed after its window. */
+export function isHomeOptionalSkipped(manifest, waypointId, context, currentSeq) {
+  const path = context.path ?? manifest.journey?.default_path ?? 'a'
+  const promoted = context.promotedOptionalIds ?? []
+  const completed = new Set(context.completedWaypointIds ?? [])
+  const optionalIds = new Set([
+    ...getOptionalWaypointIds(manifest, path),
+    ...ETERNA_OPTIONAL_PROGRESS_IDS,
+  ])
+
+  if (!optionalIds.has(waypointId)) return false
+  if (promoted.includes(waypointId)) return false
+  if (completed.has(waypointId)) return false
+
+  const config = getPromotionConfig(manifest, waypointId, path)
+  if (config?.before) {
+    if (completed.has(config.before)) return true
+    const beforeSeq = findSequenceIndexForWaypoint(manifest, config.before, path, promoted)
+    return beforeSeq >= 0 && currentSeq >= beforeSeq
+  }
+
+  // Circus Maximus / card-only optionals: skipped once the traveler has moved
+  // past Arch of Titus / into the Forum spine without visiting them.
+  const forumGate = findSequenceIndexForWaypoint(manifest, 'w06', path, promoted)
+  if (forumGate >= 0 && currentSeq >= forumGate) return true
+  if (completed.has('w06') || completed.has('w03')) {
+    // After Titus, the Palatine detour window is considered passed if they did
+    // not take these optional stickers.
+    const titusSeq = findSequenceIndexForWaypoint(manifest, 'w03', path, promoted)
+    return titusSeq >= 0 && currentSeq > titusSeq
+  }
+  return false
+}
+
+/**
+ * Ordered visit beads for the Home progress graphic.
+ * Always includes Palatine-path optionals so Eterna totals 21.
+ * Skipped optionals stay in the total; they are not counted in completed.
  */
 export function buildHomeProgressStops(manifest, context) {
   if (!manifest) return []
 
   const path = context.path ?? manifest.journey?.default_path ?? 'a'
   const promoted = context.promotedOptionalIds ?? []
-  const ids = getVisitStopIds(manifest, {
-    path,
-    pace: context.pace ?? JOURNEY_PACE.HEROIC,
-    promotedOptionalIds: promoted,
-    customWaypointIds: context.customWaypointIds,
-  })
+  const visitIds = getHomeProgressVisitIds(manifest, context)
   const completed = new Set(context.completedWaypointIds ?? [])
   const step = resolveJourneyStep(manifest, path, context.currentSequenceIndex ?? 0, promoted)
   const currentId = step.done
@@ -166,13 +240,23 @@ export function buildHomeProgressStops(manifest, context) {
       : step.targetWaypoint?.id ?? null
   const currentSeq = context.currentSequenceIndex ?? 0
 
-  return ids.map((id) => {
+  return visitIds.map((id) => {
     const stopSeq = findSequenceIndexForWaypoint(manifest, id, path, promoted)
     let status = 'upcoming'
-    if (completed.has(id)) status = 'completed'
-    else if (currentId && id === currentId) status = 'current'
-    else if (stopSeq >= 0 && stopSeq < currentSeq) status = 'skipped'
-    return { id, status }
+    if (completed.has(id)) {
+      status = 'completed'
+    } else if (currentId && id === currentId) {
+      status = 'current'
+    } else if (isHomeOptionalSkipped(manifest, id, context, currentSeq)) {
+      status = 'skipped'
+    } else if (stopSeq >= 0 && stopSeq < currentSeq) {
+      status = 'skipped'
+    }
+    return {
+      id,
+      waypointId: id,
+      status,
+    }
   })
 }
 

@@ -29,7 +29,7 @@ describe('HomeProgressArc', () => {
       ],
     })
 
-    expect(screen.getByText(/5 of 21 stops|5 de 21 paradas/i)).toBeInTheDocument()
+    expect(screen.getByText(/5 of 21 stops|5 de 21 paradas|5 of 19 stops|5 de 19 paradas/i)).toBeInTheDocument()
     expect(screen.getByTestId('home-progress-percent')).toHaveTextContent('48%')
     expect(screen.getByText(/now at pantheon|ahora en pantheon/i)).toBeInTheDocument()
     expect(screen.queryByText(/just beginning|recién|middle|mitad|ending|final/i)).not.toBeInTheDocument()
@@ -40,5 +40,24 @@ describe('HomeProgressArc', () => {
     renderArc({ completed: 0, total: 21, percent: 0, stops: [] })
     expect(screen.getByText(/0 of 21 stops|0 de 21 paradas/i)).toBeInTheDocument()
     expect(screen.getByTestId('home-progress-percent')).toHaveTextContent('0%')
+  })
+
+  it('scratches skipped beads', () => {
+    renderArc({
+      completed: 3,
+      total: 21,
+      percent: 20,
+      stops: [
+        { id: 'c1', status: 'completed' },
+        { id: 'c2', status: 'completed' },
+        { id: 'c3', status: 'completed' },
+        { id: 'skip', status: 'skipped' },
+        { id: 'cur', status: 'current' },
+        ...Array.from({ length: 16 }, (_, i) => ({ id: `u${i}`, status: 'upcoming' })),
+      ],
+    })
+    const skipped = document.querySelector('[data-status="skipped"]')
+    expect(skipped).toBeTruthy()
+    expect(skipped.style.opacity).toBe('0.45')
   })
 })
