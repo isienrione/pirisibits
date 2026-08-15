@@ -17,7 +17,7 @@
   --v4-gold: #8b7355;
   --v4-line: rgba(33, 28, 21, 0.12);
   --v4-max: 72rem;
-  --v4-nav-h: 6.15rem;
+  --v4-nav-h: 4.25rem;
   --v4-dark: #0b0b0d;
   /* Remap shared V2 tokens so FAQ / footer / leftover V2 chrome stay light. */
   --v2-obsidian: var(--v4-paper);
@@ -272,103 +272,73 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  padding: 0.18rem;
-  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  padding: 0.22rem;
+  border: 2px solid color-mix(in srgb, var(--v4-amber) 72%, #c97f1e);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--v4-paper) 12%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fff8e8 88%, var(--v4-amber)),
+    color-mix(in srgb, #ffe2a3 70%, #fff)
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.65) inset,
+    0 4px 14px rgba(201, 127, 30, 0.22);
 }
 
 .cw-lang-switch__option {
-  min-height: 1.8rem;
-  padding: 0.25rem 0.48rem;
+  min-height: 2rem;
+  min-width: 3.15rem;
+  padding: 0.28rem 0.55rem;
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: inherit;
+  color: #2a1206;
   font: inherit;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  opacity: 0.62;
+  opacity: 0.72;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.28rem;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .cw-lang-switch__option.is-active {
-  background: color-mix(in srgb, currentColor 12%, transparent);
+  background: linear-gradient(180deg, var(--v4-amber) 0%, var(--v4-amber-deep) 100%);
+  color: #2a1206;
   opacity: 1;
+  box-shadow: 0 2px 8px rgba(201, 127, 30, 0.35);
 }
 
 .cw-lang-switch__flag {
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   line-height: 1;
 }
 
 .cw-lang-switch__code {
-  display: none;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  display: inline;
+  font-weight: 800;
+  letter-spacing: 0.05em;
 }
 
-.cw-lang-switch__label {
-  display: inline;
+.cw-v4-nav--scrolled .cw-lang-switch__control,
+.cw-v4-nav--scrolled .cw-v4-nav__language {
+  border-color: color-mix(in srgb, var(--v4-amber) 80%, #fff);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #fff8e8 82%, var(--v4-amber)),
+    color-mix(in srgb, #ffe2a3 65%, #1a1510)
+  );
 }
 
 .cw-v4-nav__language + .cw-v4-nav__cta {
   margin-left: 0;
-}
-
-/* Always-on bilingual notice under the nav row (reserves space; no overlay). */
-.cw-lang-switch__sign,
-.cw-v4-nav__language-sign {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  margin: 0;
-  width: 100%;
-  min-height: 1.9rem;
-  padding: 0.28rem 0.75rem;
-  border: 0;
-  border-top: 1px solid rgba(255, 210, 100, 0.35);
-  border-radius: 0;
-  background: linear-gradient(135deg, #ffe9a8 0%, #f6c34a 48%, #ef9a2a 100%);
-  color: #2a1206;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  line-height: 1.25;
-  box-shadow: none;
-  /* Status copy only — never steal taps from hero / page CTAs. */
-  pointer-events: none;
-  animation: cw-language-sign-glow 2.6s ease-in-out infinite;
-}
-
-.cw-lang-switch__flags {
-  flex-shrink: 0;
-  font-size: 0.82rem;
-  line-height: 1;
-}
-
-.cw-lang-switch__sign-text-short {
-  display: none;
-}
-
-@keyframes cw-language-sign-glow {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.06);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cw-lang-switch__sign,
-  .cw-v4-nav__language-sign {
-    animation: none;
-  }
 }
 
 .cw-v4-nav__cta {
@@ -423,33 +393,18 @@
   }
 }
 
-/* Phone / small tablet: compact language codes in the top row. */
+/* Phone / small tablet: keep flag + EN/ES readable in the top row. */
 @media (max-width: 47.99rem) {
-  .cw-lang-switch__sign-text {
-    display: none;
-  }
-
-  .cw-lang-switch__sign-text-short {
-    display: inline;
+  .cw-lang-switch__option {
+    min-width: 2.85rem;
+    min-height: 1.9rem;
+    padding-inline: 0.42rem;
+    font-size: 0.68rem;
+    gap: 0.22rem;
   }
 
   .cw-lang-switch__flag {
-    display: none;
-  }
-
-  .cw-lang-switch__code {
-    display: inline;
-  }
-
-  .cw-lang-switch__label {
-    display: none;
-  }
-
-  .cw-lang-switch__option {
-    min-width: 2.35rem;
-    justify-content: center;
-    padding-inline: 0.42rem;
-    font-size: 0.66rem;
+    font-size: 0.85rem;
   }
 
   .cw-v4-nav__inner {
@@ -462,13 +417,6 @@
 }
 
 @media (max-width: 28rem) {
-  .cw-lang-switch__sign,
-  .cw-v4-nav__language-sign {
-    font-size: 0.62rem;
-    min-height: 1.75rem;
-    padding-inline: 0.55rem;
-  }
-
   .cw-v4-nav__cta {
     padding-inline: 0.72rem;
     font-size: 0.78rem;

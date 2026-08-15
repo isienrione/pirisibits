@@ -3,7 +3,6 @@ import ChronoWalkLogo from '../../components/ui/ChronoWalkLogo.jsx'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import {
   LandingLanguageControl,
-  LandingLanguageSign,
 } from '../LandingLanguageSwitcher.jsx'
 
 /**
@@ -52,8 +51,6 @@ export default function AcquisitionHeader({
           </Link>
         )}
       </div>
-
-      <LandingLanguageSign className="cw-acq-header__language-sign" />
     </header>
   )
 }

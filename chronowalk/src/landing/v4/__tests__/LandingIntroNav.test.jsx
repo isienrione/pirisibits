@@ -35,17 +35,17 @@ describe('LandingIntroNav', () => {
     expect(screen.getByLabelText('ChronoWalk home')).toBeTruthy()
   })
 
-  it('shows a bilingual audio notice next to the language switcher', () => {
+  it('shows a flagged EN/ES language switcher in the nav', () => {
     render(<LandingIntroNav onComplete={vi.fn()} />)
 
-    expect(document.querySelector('.cw-v4-nav__language-sign')).toBeTruthy()
+    expect(document.querySelector('.cw-v4-nav__language-sign')).toBeNull()
     expect(document.querySelector('[data-testid="landing-language-control"]')).toBeTruthy()
-    expect(
-      screen.getByText(/Audio in English & Spanish — choose your language/i),
-    ).toBeTruthy()
     expect(screen.getByRole('group', { name: /choose language/i })).toBeTruthy()
     expect(screen.getByRole('button', { name: /english/i })).toBeTruthy()
     expect(screen.getByRole('button', { name: /español/i })).toBeTruthy()
+    expect(document.querySelectorAll('.cw-lang-switch__flag').length).toBe(2)
+    expect(screen.getByText('EN')).toBeTruthy()
+    expect(screen.getByText('ES')).toBeTruthy()
   })
 
   it('still skips any intro after a prior play flag', () => {

@@ -237,9 +237,10 @@ describe('acquisition pages', () => {
     expect(screen.getByRole('group', { name: /choose language/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /english/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /español/i })).toBeInTheDocument()
-    expect(
-      screen.getByText(/Audio in English & Spanish — choose your language/i),
-    ).toBeInTheDocument()
+    expect(document.querySelector('.cw-acq-header__language-sign')).toBeNull()
+    expect(document.querySelectorAll('.cw-lang-switch__flag').length).toBe(2)
+    expect(screen.getByText('EN')).toBeInTheDocument()
+    expect(screen.getByText('ES')).toBeInTheDocument()
   })
 
   it('fires one page-view event per acquisition page type', async () => {

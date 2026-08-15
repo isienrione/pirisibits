@@ -4,7 +4,6 @@ import { LANDING_CONTENT, LANDING_CTA } from '../landingData.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import {
   LandingLanguageControl,
-  LandingLanguageSign,
 } from '../LandingLanguageSwitcher.jsx'
 
 /**
@@ -286,8 +285,6 @@ export default function LandingIntroNav({
             </a>
           ) : null}
         </div>
-
-        <LandingLanguageSign className="cw-v4-nav__language-sign" />
       </header>
     </>
   )

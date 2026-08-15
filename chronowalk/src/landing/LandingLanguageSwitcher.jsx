@@ -3,6 +3,7 @@ import { SUPPORTED_LOCALES } from '../i18n/locales.js'
 
 /**
  * Compact EN/ES toggle for landing / acquisition headers.
+ * Flag + language code so the switcher is easy to find.
  */
 export function LandingLanguageControl({
   className = '',
@@ -23,13 +24,13 @@ export function LandingLanguageControl({
           type="button"
           className={`cw-lang-switch__option${locale === code ? ' is-active' : ''}`}
           aria-pressed={locale === code}
+          aria-label={labels[code] ?? code}
           onClick={() => setLocale(code)}
         >
           <span className="cw-lang-switch__flag" aria-hidden="true">
             {code === 'en' ? '🇬🇧' : '🇪🇸'}
           </span>
           <span className="cw-lang-switch__code">{code.toUpperCase()}</span>
-          <span className="cw-lang-switch__label">{labels[code] ?? code}</span>
         </button>
       ))}
     </div>
@@ -37,26 +38,14 @@ export function LandingLanguageControl({
 }
 
 /**
- * Always-visible bilingual audio notice under the header row.
+ * @deprecated Yellow banner removed — kept as a no-op for any stale imports.
  */
-export function LandingLanguageSign({ className = '' }) {
-  const { t } = useI18n()
-
-  return (
-    <p className={`cw-lang-switch__sign${className ? ` ${className}` : ''}`} role="status">
-      <span className="cw-lang-switch__flags" aria-hidden="true">
-        🇬🇧 🇪🇸
-      </span>
-      <span className="cw-lang-switch__sign-text">{t('landing.nav.languageSign')}</span>
-      <span className="cw-lang-switch__sign-text-short">
-        {t('landing.nav.languageSignShort')}
-      </span>
-    </p>
-  )
+export function LandingLanguageSign() {
+  return null
 }
 
 /**
- * Control + sign stacked (acquisition headers and standalone use).
+ * Standalone language control (acquisition / shared use).
  */
 export default function LandingLanguageSwitcher({
   className = '',
@@ -65,7 +54,6 @@ export default function LandingLanguageSwitcher({
   return (
     <div className={`cw-lang-switch${className ? ` ${className}` : ''}`} data-testid={testId}>
       <LandingLanguageControl />
-      <LandingLanguageSign />
     </div>
   )
 }
