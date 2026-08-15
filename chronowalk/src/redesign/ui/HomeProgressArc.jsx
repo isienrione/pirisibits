@@ -1,112 +1,126 @@
-import { T, F } from '../tokens.js'
+import { F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 
-function phaseForProgress(ratio) {
-  if (ratio <= 0) return 'dawn'
-  if (ratio < 0.33) return 'opening'
-  if (ratio < 0.66) return 'midday'
-  if (ratio < 0.9) return 'deepening'
-  if (ratio < 1) return 'dusk'
-  return 'complete'
+/** Cool dawn → warm midday → deep dusk as the walk advances. */
+function progressHue(ratio) {
+  const t = Math.min(1, Math.max(0, ratio))
+  // teal 168 → amber 38 → terracotta/rose 12
+  const hue = t < 0.55 ? 168 - t * (130 / 0.55) : 38 - ((t - 0.55) / 0.45) * 26
+  const sat = 42 + t * 28
+  const light = 48 - t * 8
+  return `hsl(${hue} ${sat}% ${light}%)`
+}
+
+function beadColor(status, index, total, overallRatio) {
+  const localRatio = total <= 1 ? overallRatio : index / Math.max(total - 1, 1)
+  const vivid = progressHue(Math.max(localRatio, overallRatio * 0.85))
+  if (status === 'completed') return vivid
+  if (status === 'current') return progressHue(Math.max(overallRatio, localRatio))
+  if (status === 'skipped') return `color-mix(in srgb, ${vivid} 38%, #C9C0B2 62%)`
+  return '#D9D1C4'
 }
 
 /**
- * Symbolic day-arc of the walk — not a literal stop list, a sense of where
- * the traveler sits between beginning and end.
+ * Compact stop-by-stop progress path for Home.
+ * Skipped stops stay visible in a weaker tone; no phase copy.
  */
-export default function HomeProgressArc({ completed = 0, total = 0, currentStopTitle = null }) {
+export default function HomeProgressArc({
+  stops = [],
+  completed = 0,
+  total = 0,
+  percent = 0,
+  currentStopTitle = null,
+}) {
   const t = useT()
-  const safeTotal = Math.max(total, 1)
-  const ratio = Math.min(1, Math.max(0, completed / safeTotal))
-  const phase = phaseForProgress(ratio)
-  const percent = Math.round(ratio * 100)
+  const safeTotal = Math.max(total, stops.length, 1)
+  const ratio = Math.min(1, Math.max(0, percent / 100))
+  const accent = progressHue(ratio)
+  const trackEnd = progressHue(Math.min(1, ratio + 0.18))
 
-  const phaseLabel = {
-    dawn: t('home.progress.phase.dawn'),
-    opening: t('home.progress.phase.opening'),
-    midday: t('home.progress.phase.midday'),
-    deepening: t('home.progress.phase.deepening'),
-    dusk: t('home.progress.phase.dusk'),
-    complete: t('home.progress.phase.complete'),
-  }[phase]
-
-  const beads = 7
-  const activeBead = Math.min(beads - 1, Math.round(ratio * (beads - 1)))
+  const beads =
+    stops.length > 0
+      ? stops
+      : Array.from({ length: safeTotal }, (_, index) => ({
+          id: `n-${index}`,
+          status: index < completed ? 'completed' : index === completed ? 'current' : 'upcoming',
+        }))
 
   return (
     <section
       aria-label={t('home.progress.aria', { percent })}
+      data-testid="home-progress-arc"
       style={{
-        borderRadius: 18,
-        padding: '18px 18px 16px',
-        background: `linear-gradient(145deg, ${T.charcoal} 0%, #241f1a 55%, #1a1612 100%)`,
-        border: `1px solid ${T.gold}22`,
-        boxShadow: '0 12px 32px rgba(11,11,13,0.22)',
+        borderRadius: 16,
+        padding: '12px 14px 11px',
+        background: 'linear-gradient(180deg, #FFFaf3 0%, #F3EBE0 100%)',
+        border: '1px solid #E4D9C8',
+        boxShadow: '0 6px 18px rgba(26, 22, 18, 0.06)',
       }}
     >
       <div
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'baseline',
-          gap: 12,
-          marginBottom: 14,
+          alignItems: 'center',
+          gap: 10,
+          marginBottom: 10,
         }}
       >
         <p
           style={{
             margin: 0,
             fontFamily: F.body,
-            fontSize: 11,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            color: T.gold,
-            fontWeight: 600,
-          }}
-        >
-          {phaseLabel}
-        </p>
-        <p
-          style={{
-            margin: 0,
-            fontFamily: F.body,
             fontSize: 13,
-            color: `${T.warmWhite}aa`,
+            fontWeight: 600,
+            color: '#3F3A34',
           }}
         >
           {t('home.progress.count', { completed, total: safeTotal })}
+        </p>
+        <p
+          data-testid="home-progress-percent"
+          style={{
+            margin: 0,
+            fontFamily: F.display,
+            fontSize: 22,
+            fontWeight: 500,
+            lineHeight: 1,
+            color: accent,
+            letterSpacing: '-0.02em',
+          }}
+        >
+          {percent}%
         </p>
       </div>
 
       <div
         style={{
           position: 'relative',
-          height: 28,
+          height: 22,
           display: 'flex',
           alignItems: 'center',
-          marginBottom: 12,
         }}
       >
         <div
           style={{
             position: 'absolute',
-            left: 6,
-            right: 6,
-            height: 3,
+            left: 4,
+            right: 4,
+            height: 4,
             borderRadius: 999,
-            background: `${T.warmWhite}18`,
+            background: '#E7DFD2',
           }}
         />
         <div
           style={{
             position: 'absolute',
-            left: 6,
-            width: `calc(${percent}% - 12px)`,
-            maxWidth: 'calc(100% - 12px)',
-            height: 3,
+            left: 4,
+            width: `calc(${percent}% - 8px)`,
+            maxWidth: 'calc(100% - 8px)',
+            height: 4,
             borderRadius: 999,
-            background: `linear-gradient(90deg, ${T.actI}, ${T.gold})`,
-            transition: 'width 420ms ease',
+            background: `linear-gradient(90deg, ${progressHue(0)}, ${trackEnd})`,
+            transition: 'width 380ms ease',
           }}
         />
         <div
@@ -116,25 +130,38 @@ export default function HomeProgressArc({ completed = 0, total = 0, currentStopT
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0 2px',
+            alignItems: 'center',
+            gap: 1,
           }}
         >
-          {Array.from({ length: beads }, (_, index) => {
-            const filled = index <= activeBead
-            const isYou = index === activeBead
+          {beads.map((stop, index) => {
+            const isYou = stop.status === 'current'
+            const isSkipped = stop.status === 'skipped'
+            const size = isYou ? 11 : isSkipped ? 7 : 8
+            const color = beadColor(stop.status, index, beads.length, ratio)
             return (
               <span
-                key={index}
+                key={stop.id}
+                title={stop.status}
+                data-status={stop.status}
                 aria-hidden
                 style={{
-                  width: isYou ? 14 : 9,
-                  height: isYou ? 14 : 9,
+                  width: size,
+                  height: size,
                   borderRadius: 999,
-                  background: filled ? T.gold : `${T.warmWhite}22`,
-                  border: isYou ? `2px solid ${T.warmWhite}` : 'none',
-                  boxShadow: isYou ? `0 0 0 4px ${T.gold}33` : 'none',
-                  transition: 'transform 240ms ease',
-                  transform: isYou ? 'scale(1.05)' : 'none',
+                  flexShrink: 0,
+                  background: stop.status === 'upcoming' ? '#EFE7DB' : color,
+                  border:
+                    stop.status === 'skipped'
+                      ? `1.5px solid color-mix(in srgb, ${color} 55%, transparent)`
+                      : isYou
+                        ? '2px solid #FFFDF8'
+                        : stop.status === 'upcoming'
+                          ? '1px solid #D8CFC0'
+                          : 'none',
+                  boxShadow: isYou ? `0 0 0 3px color-mix(in srgb, ${color} 35%, transparent)` : 'none',
+                  opacity: isSkipped ? 0.85 : 1,
+                  boxSizing: 'border-box',
                 }}
               />
             )
@@ -142,34 +169,18 @@ export default function HomeProgressArc({ completed = 0, total = 0, currentStopT
         </div>
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          gap: 8,
-          marginBottom: currentStopTitle ? 12 : 0,
-        }}
-      >
-        <span style={{ fontSize: 11, color: `${T.warmWhite}70`, fontFamily: F.body }}>
-          {t('home.progress.start')}
-        </span>
-        <span style={{ fontSize: 11, color: `${T.warmWhite}70`, fontFamily: F.body }}>
-          {t('home.progress.middle')}
-        </span>
-        <span style={{ fontSize: 11, color: `${T.warmWhite}70`, fontFamily: F.body }}>
-          {t('home.progress.end')}
-        </span>
-      </div>
-
       {currentStopTitle ? (
         <p
           style={{
-            margin: 0,
-            fontFamily: F.display,
-            fontSize: 18,
-            fontWeight: 400,
-            color: T.warmWhite,
+            margin: '9px 0 0',
+            fontFamily: F.body,
+            fontSize: 13,
+            fontWeight: 500,
+            color: '#5A534A',
             lineHeight: 1.25,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
           {t('home.progress.nowAt', { title: currentStopTitle })}

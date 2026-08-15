@@ -4,7 +4,7 @@ import { getClassicDayBreakWaypointId } from './actBoundaries.js'
 import { getManifestWaypointIds } from './mapStops.js'
 import { getWaypoint, isWaypointId, resolveJourneyStep } from './manifest.js'
 import { buildEffectiveSequence } from './optionalPromotion.js'
-import { isVisitStop } from './tourProductTruth.js'
+import { isVisitStop, getVisitStopIds } from './tourProductTruth.js'
 import { t } from '../i18n/t.js'
 
 const CLASSIC_DAY2_ACTS = new Set(['act5', 'act6'])
@@ -140,6 +140,65 @@ export function summarizeMyTour(acts) {
   const stops = acts.flatMap((act) => act.stops).filter((stop) => stop.isVisitStop !== false)
   const completed = stops.filter((stop) => stop.status === 'completed').length
   return { completed, total: stops.length, actCount: acts.length }
+}
+
+/**
+ * Ordered visit stops for the Home progress graphic.
+ * Stops jumped past without completing are marked `skipped` (still counted in total).
+ */
+export function buildHomeProgressStops(manifest, context) {
+  if (!manifest) return []
+
+  const path = context.path ?? manifest.journey?.default_path ?? 'a'
+  const promoted = context.promotedOptionalIds ?? []
+  const ids = getVisitStopIds(manifest, {
+    path,
+    pace: context.pace ?? JOURNEY_PACE.HEROIC,
+    promotedOptionalIds: promoted,
+    customWaypointIds: context.customWaypointIds,
+  })
+  const completed = new Set(context.completedWaypointIds ?? [])
+  const step = resolveJourneyStep(manifest, path, context.currentSequenceIndex ?? 0, promoted)
+  const currentId = step.done
+    ? null
+    : step.type === 'waypoint'
+      ? step.id
+      : step.targetWaypoint?.id ?? null
+  const currentSeq = context.currentSequenceIndex ?? 0
+
+  return ids.map((id) => {
+    const stopSeq = findSequenceIndexForWaypoint(manifest, id, path, promoted)
+    let status = 'upcoming'
+    if (completed.has(id)) status = 'completed'
+    else if (currentId && id === currentId) status = 'current'
+    else if (stopSeq >= 0 && stopSeq < currentSeq) status = 'skipped'
+    return { id, status }
+  })
+}
+
+export function summarizeHomeProgress(stops) {
+  const total = stops.length
+  const completed = stops.filter((stop) => stop.status === 'completed').length
+  const skipped = stops.filter((stop) => stop.status === 'skipped').length
+  const currentIndex = stops.findIndex((stop) => stop.status === 'current')
+  const advanced = completed + skipped
+  const positionIndex =
+    currentIndex >= 0 ? currentIndex : advanced > 0 ? Math.min(advanced, total) - 1 : -1
+  const percent =
+    total <= 0
+      ? 0
+      : currentIndex >= 0
+        ? Math.round(((currentIndex + 1) / total) * 100)
+        : Math.round((advanced / total) * 100)
+
+  return {
+    completed,
+    skipped,
+    total,
+    advanced,
+    percent: Math.min(100, Math.max(0, percent)),
+    positionIndex,
+  }
 }
 
 export function currentActForTour(acts) {

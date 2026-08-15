@@ -15,15 +15,30 @@ function renderArc(props) {
 }
 
 describe('HomeProgressArc', () => {
-  it('labels the middle of the tour symbolically', () => {
-    renderArc({ completed: 5, total: 10, currentStopTitle: 'Pantheon' })
-    expect(screen.getByText(/in the middle|a mitad/i)).toBeInTheDocument()
+  it('shows stop count and percent without phase labels', () => {
+    renderArc({
+      completed: 5,
+      total: 21,
+      percent: 48,
+      currentStopTitle: 'Pantheon',
+      stops: [
+        ...Array.from({ length: 4 }, (_, i) => ({ id: `c${i}`, status: 'completed' })),
+        { id: 'skip', status: 'skipped' },
+        { id: 'cur', status: 'current' },
+        ...Array.from({ length: 15 }, (_, i) => ({ id: `u${i}`, status: 'upcoming' })),
+      ],
+    })
+
+    expect(screen.getByText(/5 of 21 stops|5 de 21 paradas/i)).toBeInTheDocument()
+    expect(screen.getByTestId('home-progress-percent')).toHaveTextContent('48%')
     expect(screen.getByText(/now at pantheon|ahora en pantheon/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/50 percent|50 por ciento/i)).toBeInTheDocument()
+    expect(screen.queryByText(/just beginning|recién|middle|mitad|ending|final/i)).not.toBeInTheDocument()
+    expect(document.querySelectorAll('[data-status="skipped"]')).toHaveLength(1)
   })
 
-  it('labels the beginning when nothing is completed', () => {
-    renderArc({ completed: 0, total: 12 })
-    expect(screen.getByText(/not started|sin empezar/i)).toBeInTheDocument()
+  it('renders zero progress cleanly', () => {
+    renderArc({ completed: 0, total: 21, percent: 0, stops: [] })
+    expect(screen.getByText(/0 of 21 stops|0 de 21 paradas/i)).toBeInTheDocument()
+    expect(screen.getByTestId('home-progress-percent')).toHaveTextContent('0%')
   })
 })
