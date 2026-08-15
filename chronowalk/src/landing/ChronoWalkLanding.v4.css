@@ -2178,7 +2178,8 @@
   overflow: hidden;
   background: #0b0b0d;
   display: grid;
-  place-items: center;
+  place-items: stretch;
+  align-content: stretch;
 }
 
 .cw-v4-lockup__media,
@@ -2187,7 +2188,9 @@
 .cw-v4-listen-static img {
   display: block;
   width: 100%;
-  height: 100%;
+  /* Nudge ~1mm below the Dynamic Island so header type is not clipped. */
+  margin-top: 14px;
+  height: calc(100% - 14px);
   /* Never use fill — it anisotropically warps product screenshots.
      Assets are top-aligned with tab chrome on the bottom edge. */
   object-fit: cover;
