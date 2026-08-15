@@ -2015,7 +2015,7 @@
   height: 100%;
 }
 
-/* Shared phone lockups — keep screenshots proportional inside the artboard. */
+/* Shared phone lockups — fill the artboard so tab chrome sits on the bottom edge. */
 .cw-v4-lockup,
 .cw-v4-arrive-static,
 .cw-v4-listen-static {
@@ -2034,7 +2034,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: top center;
   touch-action: manipulation;
   -webkit-user-drag: none;

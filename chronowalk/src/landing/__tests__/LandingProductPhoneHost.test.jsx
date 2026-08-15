@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createRef } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import LandingProductPhoneStage from '../v4/LandingProductPhoneStage.jsx'
@@ -98,5 +101,15 @@ describe('LandingProductPhoneStage', () => {
     expect(
       document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-lockup.jpeg"]'),
     ).toBeTruthy()
+  })
+
+  it('fills the phone artboard so walk tabs are not letterboxed', () => {
+    const css = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), '../ChronoWalkLanding.v4.css'),
+      'utf8',
+    )
+    const mediaRule = css.match(/\.cw-v4-lockup__media[\s\S]*?\{[\s\S]*?\}/)
+    expect(mediaRule?.[0]).toMatch(/object-fit:\s*cover/)
+    expect(mediaRule?.[0]).not.toMatch(/object-fit:\s*contain/)
   })
 })
