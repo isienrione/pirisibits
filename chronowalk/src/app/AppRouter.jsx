@@ -98,6 +98,7 @@ function AppChrome() {
 
 /** Marketing / legal routes must not run journey hooks that can throw on corrupt progress. */
 const JOURNEY_CHROME_PATHS = new Set([
+  '/home',
   '/journey',
   '/tour',
   '/map',
