@@ -580,9 +580,13 @@ export default function RedesignMyTourScreen() {
                               </p>
                             </div>
                             {stop.status === 'completed' ? (
-                              <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>DONE</span>
+                              <span style={{ fontSize: 10, color: color, letterSpacing: '0.1em' }}>
+                                {t('journal.done')}
+                              </span>
                             ) : stop.status === 'current' ? (
-                              <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>NOW</span>
+                              <span style={{ fontSize: 10, color: T.ember, letterSpacing: '0.1em' }}>
+                                {t('journal.now')}
+                              </span>
                             ) : null}
                           </div>
                           {!act.locked ? (
@@ -609,7 +613,7 @@ export default function RedesignMyTourScreen() {
                                   cursor: 'pointer',
                                 }}
                               >
-                                Listen here
+                                {t('tour.listenHere')}
                               </button>
                               <button
                                 type="button"
@@ -624,7 +628,7 @@ export default function RedesignMyTourScreen() {
                                   cursor: 'pointer',
                                 }}
                               >
-                                Open card
+                                {t('tour.openCard')}
                               </button>
                               <button
                                 type="button"
@@ -640,7 +644,7 @@ export default function RedesignMyTourScreen() {
                                   fontWeight: 600,
                                 }}
                               >
-                                Walk here
+                                {t('tour.walkHere')}
                               </button>
                             </div>
                           ) : null}
@@ -699,7 +703,7 @@ export default function RedesignMyTourScreen() {
               fontFamily: F.body,
             }}
           >
-            Route
+            {t('journeyHome.route')}
           </button>
           <button
             type="button"
@@ -714,7 +718,7 @@ export default function RedesignMyTourScreen() {
               fontFamily: F.body,
             }}
           >
-            Start from where I am
+            {t('journeyHome.startHere')}
           </button>
         </div>
         {state === JOURNEY_STATES.IDLE && acts.length === 0 ? (
@@ -728,7 +732,7 @@ export default function RedesignMyTourScreen() {
               color: T.muted,
             }}
           >
-            Choose your rhythm first →
+            {t('tour.chooseRhythm')}
           </Link>
         ) : null}
       </div>

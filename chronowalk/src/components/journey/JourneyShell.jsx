@@ -1633,10 +1633,10 @@ export default function JourneyShell({ variant = 'legacy' }) {
           audioAvailable,
         },
         continueLabel: hasMoreChapters
-          ? 'Next chapter →'
+          ? t('player.nextChapter')
           : storyEnded || !(sessionForThisStop && audio.narrationPlaying)
-            ? 'Continue walking →'
-            : 'Skip ahead →',
+            ? t('player.continue')
+            : t('player.skipAhead'),
         handlers: {
           speeds: PLAYER_SPEEDS,
           onCycleSpeed: handleCycleSpeed,
@@ -1846,7 +1846,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
         handlers: {
           onOpenSettings: openSettings,
           onContinue: handleTransitContinue,
-          continueLabel: audio.narrationPlaying ? 'Skip ahead →' : 'Continue walking →',
+          continueLabel: audio.narrationPlaying ? t('player.skipAhead') : t('player.continue'),
           destinationTitle: titleForWaypoint(step.targetWaypoint),
           onBeginChapter: handleTransitDestinationArrival,
           onToggleAudio: () => {

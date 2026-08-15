@@ -96,6 +96,18 @@ describe('i18n coverage', () => {
     expect(en.waypointsById.w17.title).toBe('The Pantheon')
   })
 
+  it('resolves prepare and walking labels instead of raw keys', () => {
+    setActiveLocale(LOCALES.ES)
+    expect(t('common.continue')).toBe('Continuar')
+    expect(t('player.skipAhead')).toMatch(/Saltar/i)
+    expect(t('tour.listenHere')).toMatch(/Escuchar/i)
+    expect(t('tour.walkHere')).toMatch(/Caminar/i)
+    expect(t('entry.prepare.installedTitle')).toMatch(/app móvil|móvil/i)
+    setActiveLocale(LOCALES.EN)
+    expect(t('common.continue')).toBe('Continue')
+    expect(t('player.skipAhead')).toMatch(/Skip ahead/i)
+  })
+
   it('translates core UI helpers', () => {
     setActiveLocale(LOCALES.ES)
     expect(t('shell.tab.walk')).toBe('Caminar')

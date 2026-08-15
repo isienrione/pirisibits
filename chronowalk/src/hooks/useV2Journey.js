@@ -26,6 +26,7 @@ import {
 } from '../state/journey'
 import { clearRomeManifestCache, loadRomeManifest } from '../content/manifest.js'
 import { DEV_GEOFENCES_CHANGED } from '../content/devGeofenceTools.js'
+import { LOCALE_CHANGED_EVENT } from '../i18n/storage.js'
 
 export function useV2Journey() {
   const snapshot = useSyncExternalStore(subscribeJourney, getJourneySnapshot, getJourneySnapshot)
@@ -77,11 +78,13 @@ export function useTourManifest() {
     }
 
     load()
-    const onModeChange = () => load()
-    window.addEventListener(DEV_GEOFENCES_CHANGED, onModeChange)
+    const onReload = () => load()
+    window.addEventListener(DEV_GEOFENCES_CHANGED, onReload)
+    window.addEventListener(LOCALE_CHANGED_EVENT, onReload)
     return () => {
       cancelled = true
-      window.removeEventListener(DEV_GEOFENCES_CHANGED, onModeChange)
+      window.removeEventListener(DEV_GEOFENCES_CHANGED, onReload)
+      window.removeEventListener(LOCALE_CHANGED_EVENT, onReload)
     }
   }, [])
 

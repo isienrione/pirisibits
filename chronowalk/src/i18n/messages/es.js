@@ -169,8 +169,12 @@ export const esMessages = Object.freeze({
   'action.cancel': 'Cancelar',
   'action.done': 'Listo',
   'action.retry': 'Reintentar',
+  'action.dismiss': 'Cerrar',
   'action.openStory': 'Abrir historia',
   'action.getDirections': 'Obtener indicaciones',
+  'common.continue': 'Continuar',
+  'common.close': 'Cerrar',
+  'common.retry': 'Reintentar',
 
   // Settings sheet (live companion)
   'settings.sheet.audioSpeed': 'Velocidad del audio',
@@ -208,7 +212,7 @@ export const esMessages = Object.freeze({
   'landing.nav.menuOpenAria': 'Abrir el menú de la página',
   'landing.nav.menuCloseAria': 'Cerrar el menú de la página',
   'landing.nav.exploreTitle': 'Ir a',
-  'landing.nav.exploreLead': '',
+  'landing.nav.exploreLead': 'Secciones de esta página',
   'landing.nav.exploreAria': 'Secciones de la página',
   'landing.hero.galleryAria': 'Galería principal de ChronoWalk',
   'landing.hero.continueAria': 'Continuar tu recorrido',
@@ -499,6 +503,11 @@ export const esMessages = Object.freeze({
   'entry.prepare.saved': '{percent}% guardado',
   'entry.prepare.starting': 'Iniciando descarga…',
   'entry.prepare.later': 'Lo descargaré más tarde',
+  'entry.prepare.installedTitle': 'Listo como app móvil',
+  'entry.prepare.installedBody': 'Ya estás usando ChronoWalk desde la pantalla de inicio.',
+  'entry.prepare.installTitle': 'Usar como app móvil',
+  'entry.prepare.installBody':
+    'Añade ChronoWalk a la pantalla de inicio para abrirla como una app normal, no desde el navegador.',
   'entry.family.loading': 'Cargando tu paquete…',
   'entry.family.errorTitle': 'No pudimos cargar tu grupo',
   'entry.family.errorBody':
@@ -520,6 +529,9 @@ export const esMessages = Object.freeze({
   'begin.pace.eyebrow': 'TU RECORRIDO',
   'begin.pace.titleLine1': 'Elige cómo',
   'begin.pace.titleLine2': 'recorrer Roma.',
+  'begin.choose.eyebrow': 'TU RECORRIDO',
+  'begin.choose.titleLine1': 'Elige cómo',
+  'begin.choose.titleLine2': 'recorrer Roma.',
   'offline.error.missing':
     'No se pudieron guardar algunos archivos de historias. Toca para reintentar.',
   'offline.error.paused': 'Descarga en pausa. Toca para reintentar.',
@@ -547,6 +559,7 @@ export const esMessages = Object.freeze({
   'walk.distanceUnavailable': 'Distancia no disponible',
   'walk.openStory': 'Abrir la historia →',
   'walk.openNamedStory': 'Abrir la historia de {title} →',
+  'walk.openLeadingArticleStory': 'Abrir la historia de {title} →',
   'walk.directions.finding': 'Buscando tu ruta…',
   'walk.directions.openGoogle': 'Abrir en Google Maps',
   'walk.directions.waiting': 'Las indicaciones aparecerán cuando el GPS esté listo.',
@@ -557,6 +570,12 @@ export const esMessages = Object.freeze({
   'walk.directions.stepsAria': 'Pasos hacia {title}',
   'walk.directions.upcomingAria': 'Próximas indicaciones hacia {title}',
   'walk.directions.continue': 'Continúa',
+  'walk.directions.mapboxRequired': 'Se necesita un token de Mapbox para las indicaciones a pie.',
+  'walk.directions.enableLocation':
+    'Activa la ubicación para indicaciones en vivo, o espera un momento mientras carga la ruta.',
+  'walk.directions.alreadyThere': 'Ya estás en este lugar.',
+  'walk.directions.loadError':
+    'No se pudieron cargar las indicaciones. Inténtalo de nuevo o abre Google Maps.',
   'walk.audio.pauseNarration': 'Pausar narración',
   'walk.audio.playNarration': 'Reproducir narración',
   'walk.audio.openPlayer': 'Abrir el reproductor completo de {title}',
@@ -583,6 +602,8 @@ export const esMessages = Object.freeze({
   'threshold.thenNow': 'Antes · Ahora',
   'threshold.then': 'Antes',
   'threshold.thenDefault': 'ROMA ANTIGUA',
+  'threshold.ancientRome': 'ROMA ANTIGUA',
+  'threshold.pressHold': 'Mantén pulsado para revelar',
   'landing.thenNow.interiorName': 'Interior del Coliseo',
   'threshold.now': 'Ahora',
   'threshold.today': 'Hoy',
@@ -601,6 +622,8 @@ export const esMessages = Object.freeze({
   'threshold.honesty':
     'Reconstrucción interpretativa basada en la arqueología y la investigación.',
   'threshold.source': 'Fuente de la reconstrucción',
+  'threshold.aiDisclosure':
+    'Esta vista actual es una imagen creada con ayuda de IA, porque no había una fotografía adecuada de este mismo punto de vista.',
   'threshold.presentAi': 'Vista actual: imagen creada con ayuda de IA.',
   'threshold.photo': 'Foto: {credit}{license}',
   'player.back': 'Volver',
@@ -608,6 +631,7 @@ export const esMessages = Object.freeze({
   'player.chapter': 'Capítulo {current} de {total}',
   'player.continue': 'Seguir caminando →',
   'player.skipAhead': 'Saltar adelante →',
+  'player.nextChapter': 'Siguiente capítulo →',
   'player.transcriptDev':
     'Esta parada aún no tiene una transcripción conectada en desarrollo.',
   'player.transcriptSoon': 'La transcripción de esta parada estará disponible pronto.',
@@ -669,6 +693,8 @@ export const esMessages = Object.freeze({
   'mapDemo.startHere': 'Empezar desde donde estoy',
   'mapDemo.takeMe': 'Llévame allí →',
   'mapDemo.act': 'ACTO {numeral}',
+  'mapDemo.encore': 'Bis',
+  'mapDemo.recenter': 'Centrar el mapa',
   'mapDemo.stop.colosseum': 'El Coliseo',
   'mapDemo.stop.constantine': 'Arco de Constantino',
   'mapDemo.stop.palatine': 'El Palatino',
@@ -725,6 +751,8 @@ export const esMessages = Object.freeze({
   'journal.visited': 'Visitada',
   'journal.current': 'Actual',
   'journal.onRoute': 'En ruta',
+  'journal.upcoming': 'Próxima',
+  'journal.done': 'HECHO',
   'journal.headline.ahead': 'Tu Roma todavía te espera.',
   'journal.headline.complete': 'Caminaste la ciudad.',
   'journal.headline.unfolding': 'Tu Roma se está revelando.',
@@ -818,6 +846,10 @@ export const esMessages = Object.freeze({
   'tour.ghost.expand': 'Expandir acto',
   'tour.ghost.backHome': 'Volver al inicio',
   'tour.placesCount': '{count} lugares',
+  'tour.listenHere': 'Escuchar aquí',
+  'tour.openCard': 'Abrir ficha',
+  'tour.walkHere': 'Caminar aquí',
+  'tour.chooseRhythm': 'Elige primero tu ritmo →',
 
   // Contact / legal shell
   'contact.title': 'Contacto · ChronoWalk',

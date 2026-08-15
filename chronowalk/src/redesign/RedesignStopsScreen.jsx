@@ -9,6 +9,7 @@ import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { T, ACT_COLORS, F, SHELL_TAB_BAR_INSET } from './tokens.js'
 import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
 import { ActNode, Eyebrow } from './ui/index.js'
+import { useT } from '../i18n/I18nProvider.jsx'
 
 const SEAM_X = 38
 const ACT_DIAMOND = 14
@@ -19,11 +20,11 @@ function actColorForNumeral(numeral) {
   return ACT_COLORS[numeral] ?? T.actI
 }
 
-function statusLabel(status) {
-  if (status === 'completed') return 'Visited'
-  if (status === 'current') return 'Current'
-  if (status === 'upcoming') return 'Upcoming'
-  return 'On route'
+function statusLabel(status, t) {
+  if (status === 'completed') return t('journal.visited')
+  if (status === 'current') return t('journal.current')
+  if (status === 'upcoming') return t('journal.upcoming')
+  return t('journal.onRoute')
 }
 
 function nodeStatusForStop(status) {
@@ -34,6 +35,7 @@ function nodeStatusForStop(status) {
 
 export default function RedesignStopsScreen() {
   const navigate = useNavigate()
+  const t = useT()
   const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { state, context } = useV2Journey()
   const { manifest, loading, error } = useTourManifest()
@@ -253,7 +255,7 @@ export default function RedesignStopsScreen() {
 
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px 14px', borderTop: `1px solid ${T.muted}18` }}>
                         <span style={{ fontSize: 11, color: group.color, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                          {statusLabel(card.status)}
+                          {statusLabel(card.status, t)}
                         </span>
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           <button
@@ -261,21 +263,21 @@ export default function RedesignStopsScreen() {
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.STORY, 'chapters')}
                             style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
-                            Listen here
+                            {t('tour.listenHere')}
                           </button>
                           <button
                             type="button"
                             onClick={() => openStop(card.id)}
                             style={{ fontSize: 11, color: T.ink, background: 'none', border: `1px solid ${T.muted}40`, borderRadius: 8, padding: '6px 8px', cursor: 'pointer' }}
                           >
-                            Open card
+                            {t('tour.openCard')}
                           </button>
                           <button
                             type="button"
                             onClick={() => walkToStop(card.id, JOURNEY_STATES.WALKING)}
                             style={{ fontSize: 11, color: T.obsidian, background: T.ember, border: 'none', borderRadius: 8, padding: '6px 8px', cursor: 'pointer', fontWeight: 600 }}
                           >
-                            Walk here
+                            {t('tour.walkHere')}
                           </button>
                         </div>
                       </div>

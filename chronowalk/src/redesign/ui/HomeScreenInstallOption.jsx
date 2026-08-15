@@ -4,6 +4,7 @@ import { T, F } from '../tokens.js'
 import { useReducedMotion } from '../../hooks/useReducedMotion.js'
 import { isIosDevice } from '../../utils/pwaInstall.js'
 import { syncAccessHandoff } from '../../lib/accessHandoff.js'
+import { useT } from '../../i18n/I18nProvider.jsx'
 
 /** Real ChronoWalk home-screen icon used in the install how-to. */
 export const CHRONOWALK_HOME_ICON = '/pwa/icon-192.png'
@@ -192,6 +193,7 @@ export default function HomeScreenInstallOption({
   /** When true, omit the top hairline (already inside a Recommended card). */
   embedded = false,
 }) {
+  const t = useT()
   const titleColor = tone === 'light' ? T.ink : T.warmWhite
   const borderColor = tone === 'light' ? `${T.ink}22` : T.ink800
   const topBorder = embedded || tone === 'light' ? 'none' : `1px solid ${borderColor}`
@@ -226,10 +228,10 @@ export default function HomeScreenInstallOption({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
           <div style={{ flex: 1 }}>
             <p style={{ fontSize: 16, color: titleColor, fontWeight: 500, marginBottom: 5 }}>
-              Ready as a mobile app
+              {t('entry.prepare.installedTitle')}
             </p>
             <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6 }}>
-              You&apos;re already using ChronoWalk from your Home Screen.
+              {t('entry.prepare.installedBody')}
             </p>
           </div>
           <span
@@ -305,10 +307,10 @@ export default function HomeScreenInstallOption({
           }}
         >
           <p style={{ fontSize: 16, color: titleColor, fontWeight: 500, marginBottom: 5 }}>
-            Use as a mobile app
+            {t('entry.prepare.installTitle')}
           </p>
           <p style={{ fontSize: 13, color: T.muted, lineHeight: 1.6, margin: 0 }}>
-            Add ChronoWalk to your Home Screen so you open it like a regular app - not from the browser.
+            {t('entry.prepare.installBody')}
           </p>
         </button>
         <button
