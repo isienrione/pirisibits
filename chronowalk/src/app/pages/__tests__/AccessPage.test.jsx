@@ -30,6 +30,7 @@ function renderAccessPage(initialEntry = '/access') {
       <Routes>
         <Route path="/access" element={<AccessPage />} />
         <Route path="/setup" element={<div>Setup route</div>} />
+        <Route path="/home" element={<div>Home route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/access/confirmed" element={<div>Confirmed route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
@@ -49,13 +50,13 @@ describe('AccessPage', () => {
     pullMock.mockResolvedValue(null)
   })
 
-  it('sends owners who finished app entry into begin', () => {
+  it('sends owners who finished app entry into home', () => {
     grantTestAccess()
     markAppEntryComplete()
 
     renderAccessPage()
 
-    expect(screen.getByText('Begin route')).toBeInTheDocument()
+    expect(screen.getByText('Home route')).toBeInTheDocument()
   })
 
   it('sends new owners into app entry setup', () => {
@@ -66,13 +67,13 @@ describe('AccessPage', () => {
     expect(screen.getByText('Setup route')).toBeInTheDocument()
   })
 
-  it('offers resume to owners with a real in-progress journey', () => {
+  it('sends owners with a real in-progress journey to home', () => {
     grantTestAccess()
     transitionJourney(JOURNEY_STATES.WALKING, { currentSequenceIndex: 3 })
 
     renderAccessPage()
 
-    expect(screen.getByText('Begin route')).toBeInTheDocument()
+    expect(screen.getByText('Home route')).toBeInTheDocument()
   })
 
   it('grants access and sends first-time purchasers into app entry', async () => {

@@ -93,6 +93,11 @@ export const LazyTourPage = lazyRoute(
   'tour',
 )
 
+export const LazyHomePage = lazyRoute(
+  () => import('../redesign/pages/RedesignHomePage.jsx'),
+  'home',
+)
+
 /** Eager: landing must not depend on a second hashed chunk Safari can poison. */
 export function LazyLandingPage(props) {
   return <ChronoWalkLanding {...props} />

@@ -46,6 +46,7 @@ import {
   LazySetupPage,
   LazyWalkTogetherPage,
   LazyTourPage,
+  LazyHomePage,
   LazyWelcomePage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
@@ -97,6 +98,7 @@ function AppChrome() {
 
 /** Marketing / legal routes must not run journey hooks that can throw on corrupt progress. */
 const JOURNEY_CHROME_PATHS = new Set([
+  '/home',
   '/journey',
   '/tour',
   '/map',
@@ -146,6 +148,7 @@ function AppRoutes() {
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
+        <Route path="/home" element={<Paid><LazyHomePage /></Paid>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
         <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />

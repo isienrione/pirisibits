@@ -114,9 +114,9 @@ export default defineConfig({
         display_override: ['standalone', 'minimal-ui'],
         orientation: 'portrait',
         scope: '/',
-        // /begin resumes an in-progress walk (or setup) when local access exists.
-        // /tour alone hard-gated travelers back to the email paste screen on cold open.
-        start_url: '/begin',
+        // Home is the companion hub after unlock (progress, continue, manage).
+        // Fresh unlocks still route through /setup via getAppHomePath.
+        start_url: '/home',
         categories: ['travel', 'navigation'],
         icons: [
           {

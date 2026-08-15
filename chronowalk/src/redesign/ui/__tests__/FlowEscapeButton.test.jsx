@@ -35,8 +35,8 @@ describe('FlowEscapeButton', () => {
     transitionJourney(JOURNEY_STATES.IDLE)
   })
 
-  it('hides on Tour / Map / Journal tab roots so it cannot cover those headers', () => {
-    for (const path of ['/tour', '/map', '/journal']) {
+  it('hides on Home / Tour / Map / Journal tab roots so it cannot cover those headers', () => {
+    for (const path of ['/home', '/tour', '/map', '/journal']) {
       const { unmount } = renderOn(path)
       expect(screen.queryByTestId('flow-escape-back')).not.toBeInTheDocument()
       unmount()
@@ -51,7 +51,7 @@ describe('FlowEscapeButton', () => {
     expect(button.textContent.trim()).toBe('')
   })
 
-  it('goes to the previous history entry from the walk screen instead of forcing Tour', () => {
+  it('goes to the previous history entry from the walk screen instead of forcing Home', () => {
     transitionJourney(JOURNEY_STATES.WALKING)
     const lengthDescriptor = Object.getOwnPropertyDescriptor(window.history, 'length')
     Object.defineProperty(window.history, 'length', { configurable: true, value: 3 })
@@ -60,13 +60,13 @@ describe('FlowEscapeButton', () => {
     fireEvent.click(screen.getByTestId('flow-escape-back'))
 
     expect(mockNavigate).toHaveBeenCalledWith(-1)
-    expect(mockNavigate).not.toHaveBeenCalledWith('/tour', expect.anything())
+    expect(mockNavigate).not.toHaveBeenCalledWith('/home', expect.anything())
 
     if (lengthDescriptor) Object.defineProperty(window.history, 'length', lengthDescriptor)
     else delete window.history.length
   })
 
-  it('falls back to Tour only when there is no history to rewind', () => {
+  it('falls back to Home only when there is no history to rewind', () => {
     transitionJourney(JOURNEY_STATES.WALKING)
     const lengthDescriptor = Object.getOwnPropertyDescriptor(window.history, 'length')
     Object.defineProperty(window.history, 'length', { configurable: true, value: 1 })
@@ -74,7 +74,7 @@ describe('FlowEscapeButton', () => {
     renderOn('/journey')
     fireEvent.click(screen.getByTestId('flow-escape-back'))
 
-    expect(mockNavigate).toHaveBeenCalledWith('/tour', { replace: true })
+    expect(mockNavigate).toHaveBeenCalledWith('/home', { replace: true })
 
     if (lengthDescriptor) Object.defineProperty(window.history, 'length', lengthDescriptor)
     else delete window.history.length

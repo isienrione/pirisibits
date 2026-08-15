@@ -13,6 +13,7 @@ function renderBeginPage(path = '/begin') {
         <Route path="/begin" element={<BeginPage />} />
         <Route path="/" element={<div>Landing route</div>} />
         <Route path="/setup" element={<div>Setup route</div>} />
+        <Route path="/home" element={<div>Home route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
     </MemoryRouter>
@@ -88,14 +89,28 @@ describe('BeginPage', () => {
     expect(screen.getByText(/enable location for gps guidance/i)).toBeInTheDocument()
   })
 
-  it('shows resume prompt for purchasers with an in-progress journey', () => {
+  it('sends purchasers with an in-progress journey to home instead of cinematic resume', () => {
     grantTestAccess()
+    markAppEntryComplete()
     transitionJourney(JOURNEY_STATES.WALKING, {
       currentSequenceIndex: 2,
       completedWaypointIds: ['w01'],
     })
 
     renderBeginPage()
+
+    expect(screen.getByText('Home route')).toBeInTheDocument()
+  })
+
+  it('still shows resume UI when explicitly requested', () => {
+    grantTestAccess()
+    markAppEntryComplete()
+    transitionJourney(JOURNEY_STATES.WALKING, {
+      currentSequenceIndex: 2,
+      completedWaypointIds: ['w01'],
+    })
+
+    renderBeginPage('/begin?resume=1')
 
     expect(screen.getByRole('heading', { name: /rome kept your place/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /continue your walk/i })).toBeInTheDocument()

@@ -1302,7 +1302,7 @@ export default function JourneyShell({ variant = 'legacy' }) {
   }, [audio, audioUnlocked, state, step?.done])
 
   if (state === JOURNEY_STATES.IDLE) {
-    return <Navigate to="/begin" replace />
+    return <Navigate to="/home" replace />
   }
 
   const interruptionBanner =
