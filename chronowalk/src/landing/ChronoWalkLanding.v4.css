@@ -2188,11 +2188,9 @@
 .cw-v4-listen-static img {
   display: block;
   width: 100%;
-  /* Nudge ~1mm below the Dynamic Island so header type is not clipped. */
-  margin-top: 14px;
-  height: calc(100% - 14px);
+  height: 100%;
   /* Never use fill — it anisotropically warps product screenshots.
-     Assets are top-aligned with tab chrome on the bottom edge. */
+     Assets include a Dynamic Island safe-area inset at the top. */
   object-fit: cover;
   object-position: center top;
   touch-action: manipulation;
