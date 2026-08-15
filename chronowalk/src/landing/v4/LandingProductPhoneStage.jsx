@@ -7,18 +7,18 @@ import { LOCALES, normalizeLocale } from '../../i18n/locales.js'
 
 const NOOP_NAV = { navigate: () => {}, navigateToRoute: () => {} }
 
-/* v5: Dynamic Island safe-area inset baked into lockups. */
-const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v5.jpeg'
+/* v6: matching-color inset under Dynamic Island (no fake black status bar). */
+const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v6.jpeg'
 const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
 const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
 const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
-const WALK_LOCKUP = '/landing/phone-screens/walk-v5.jpeg'
+const WALK_LOCKUP = '/landing/phone-screens/walk-v6.jpeg'
 
 /** Spanish stills under phone-screens/es/ when present; listen stays the shared video. */
 const LOCKUP_ES_BY_PATH = Object.freeze({
-  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v5.jpeg',
-  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v5.jpeg',
-  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v5.jpeg',
+  [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v6.jpeg',
+  [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v6.jpeg',
+  [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v6.jpeg',
 })
 
 function resolveLockupSrc(enSrc, locale) {

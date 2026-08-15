@@ -79,7 +79,7 @@ describe('LandingProductPhoneStage', () => {
     expect(screen.getByTestId('landing-demo-begin-lockup')).toBeInTheDocument()
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/begin-tour-v5.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/begin-tour-v6.jpeg"]',
       ),
     ).toBeTruthy()
   })
@@ -127,7 +127,7 @@ describe('LandingProductPhoneStage', () => {
     )
     expect(screen.getByTestId('landing-demo-walk-lockup')).toBeInTheDocument()
     expect(
-      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-v5.jpeg"]'),
+      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/walk-v6.jpeg"]'),
     ).toBeTruthy()
   })
 
@@ -144,16 +144,16 @@ describe('LandingProductPhoneStage', () => {
 
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/es/begin-tour-v5.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/begin-tour-v6.jpeg"]',
       ),
     ).toBeTruthy()
     expect(
       document.querySelector(
-        '.cw-v4-lockup img[src="/landing/phone-screens/es/arrive-v5.jpeg"]',
+        '.cw-v4-lockup img[src="/landing/phone-screens/es/arrive-v6.jpeg"]',
       ),
     ).toBeTruthy()
     expect(
-      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-v5.jpeg"]'),
+      document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-v6.jpeg"]'),
     ).toBeTruthy()
     // Listen stays on the shared Campo recording.
     expect(
