@@ -5,7 +5,6 @@ import LandingAct from './LandingAct.jsx'
 import LandingIntroNav from './v4/LandingIntroNav.jsx'
 import LandingProductHero from './v4/LandingProductHero.jsx'
 import LandingHeroReassurance from './v4/LandingHeroReassurance.jsx'
-import LandingThenNowProof from './v4/LandingThenNowProof.jsx'
 import LandingGetAppSection from './v4/LandingGetAppSection.jsx'
 import LandingProductDemo from './v4/LandingProductDemo.jsx'
 import LandingStopCarousel from './v4/LandingStopCarousel.jsx'
@@ -263,6 +262,7 @@ function ChronoWalkLandingInner() {
           <LandingProductHero
             hero={intentHero}
             tiers={localized.ROME_TIERS}
+            thenNowSection={localized.LANDING_CONTENT.thenNowProof}
             onPreview={() => handlePreview(LANDING_ANALYTICS_SECTIONS.HERO)}
             onChooseTour={handleChooseTour}
             onGetApp={handleHeroUnlock}
@@ -272,7 +272,6 @@ function ChronoWalkLandingInner() {
             section={localized.LANDING_CONTENT.heroReassurance}
             onPreview={handlePreview}
           />
-          <LandingThenNowProof section={localized.LANDING_CONTENT.thenNowProof} />
         </LandingAct>
 
         <LandingAct

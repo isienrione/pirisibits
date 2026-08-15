@@ -120,7 +120,7 @@ describe('LandingProductHero manual gallery', () => {
     ).toBeInTheDocument()
   })
 
-  it('swaps Spanish marketing art when the traveler opens a story frame', () => {
+  it('shows the live Then/Now demo on the first story frame (not static Spanish art)', () => {
     localStorage.removeItem(LOCALE_STORAGE_KEY)
     renderHero(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
@@ -134,8 +134,13 @@ describe('LandingProductHero manual gallery', () => {
       screen.getByRole('tab', { name: /ChronoWalk Roma\. Camina libremente/i }),
     ).toHaveAttribute('aria-selected', 'true')
 
-    const art = document.querySelector('.cw-v4-hero__slide-layer--art.is-active img.cw-v4-hero__art')
-    expect(art?.getAttribute('src')).toBe('/landing/hero-slides/es/then-now.png')
+    expect(screen.getByTestId('hero-then-now-slide')).toBeInTheDocument()
+    expect(
+      document.querySelector('.cw-v4-hero__slide-layer--then-now.is-active'),
+    ).toBeTruthy()
+    expect(
+      document.querySelector('.cw-v4-hero__slide-layer--art.is-active img.cw-v4-hero__art'),
+    ).toBeNull()
   })
 })
 
@@ -153,16 +158,26 @@ describe('LandingProductHero story slide enlarge', () => {
   it('opens a zoomable viewer when a story slide is enlarged', () => {
     render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
 
-    fireEvent.click(screen.getByRole('tab', { name: /ChronoWalk Rome/i }))
-    fireEvent.click(screen.getByRole('button', { name: /Enlarge ChronoWalk Rome/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /The ruin becomes the room/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Enlarge The ruin becomes the room/i }))
 
-    const dialog = screen.getByRole('dialog', { name: /ChronoWalk Rome/i })
+    const dialog = screen.getByRole('dialog', { name: /The ruin becomes the room/i })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     expect(dialog).toHaveTextContent(/Pinch or double-tap to zoom/i)
     expect(within(dialog).getByRole('button', { name: 'Zoom in' })).toBeInTheDocument()
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Close viewer' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('embeds interactive Then/Now on the second hero slide without enlarge', () => {
+    render(<LandingProductHero onPreview={() => {}} onChooseTour={() => {}} />)
+
+    fireEvent.click(screen.getByRole('tab', { name: /ChronoWalk Rome/i }))
+    expect(screen.getByTestId('hero-then-now-slide')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Enlarge ChronoWalk Rome/i }),
+    ).not.toBeInTheDocument()
   })
 
   it('keeps package hotspots while offering enlarge on the packages slide', () => {

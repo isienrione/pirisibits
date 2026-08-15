@@ -16,6 +16,7 @@ import { preloadLandingImages, retryImageOnError } from './preloadLandingImages.
 import { installSafariPageZoomBlock } from '../../utils/safariPageZoom.js'
 import { useI18n } from '../../i18n/I18nProvider.jsx'
 import { localizeLandingOffers } from '../getLocalizedLanding.js'
+import LandingThenNowProof from './LandingThenNowProof.jsx'
 
 /** Crossfade duration for deliberate slide changes (respects prefers-reduced-motion in CSS). */
 const FADE_MS = 400
@@ -111,6 +112,7 @@ export default function LandingProductHero({
   onGetApp,
   onContinueWalk,
   tiers = ROME_TIERS,
+  thenNowSection = LANDING_CONTENT.thenNowProof,
 }) {
   const { locale, t } = useI18n()
   const section = hero ?? LANDING_CONTENT.hero
@@ -149,11 +151,11 @@ export default function LandingProductHero({
   // Safari: keep pinch/double-tap from locking the whole page on hero art.
   useEffect(() => installSafariPageZoomBlock(heroRef.current), [])
 
-  // Prefetch only the adjacent story frame after the visitor moves off slide 0.
+  // Prefetch only adjacent static story frames after leaving slide 0.
   useEffect(() => {
     if (index < 1) return undefined
     const neighbors = [storySlides[index - 1], storySlides[index], storySlides[index + 1]]
-      .filter(Boolean)
+      .filter((slide) => slide && slide.interactive !== 'then-now')
       .map((slide) => slide.src)
     preloadLandingImages(neighbors)
     return undefined
@@ -199,10 +201,15 @@ export default function LandingProductHero({
       tabIndex={0}
       onKeyDown={onHeroKeyDown}
       onTouchStart={(event) => {
+        if (event.target?.closest?.('.cw-v4-then-now--hero')) {
+          touchStartX.current = null
+          return
+        }
         touchStartX.current = event.changedTouches?.[0]?.clientX ?? null
       }}
       onTouchEnd={(event) => {
         if (viewerSlide) return
+        if (event.target?.closest?.('.cw-v4-then-now--hero')) return
         const start = touchStartX.current
         const end = event.changedTouches?.[0]?.clientX
         touchStartX.current = null
@@ -355,6 +362,22 @@ export default function LandingProductHero({
 
         {storySlides.map((slide, slideIndex) => {
           const active = index === slideIndex + 1
+          if (slide.interactive === 'then-now') {
+            return (
+              <div
+                key={`${locale}-${slide.id}`}
+                id={active ? 'then-now' : undefined}
+                className={`cw-v4-hero__slide-layer cw-v4-hero__slide-layer--then-now${active ? ' is-active' : ''}`}
+                aria-hidden={!active}
+              >
+                <LandingThenNowProof
+                  section={thenNowSection}
+                  variant="hero-slide"
+                  active={active}
+                />
+              </div>
+            )
+          }
           const isPackages = slide.id === 'choose-your-walk'
           const offerTier = slide.pricingTarget ? offerTiersById[slide.pricingTarget] : null
           const packageHotspots = isPackages

@@ -76,4 +76,17 @@ describe('LandingThenNowProof', () => {
     expect(media.some((src) => src.includes('/waypoints/colosseum/interior/'))).toBe(true)
     expect(container.querySelector('video')).toBeTruthy()
   })
+
+  it('renders a compact hero-slide variant when active', () => {
+    render(<LandingThenNowProof variant="hero-slide" active />)
+    expect(screen.getByTestId('hero-then-now-slide')).toBeInTheDocument()
+    expect(screen.queryByTestId('then-now-proof')).not.toBeInTheDocument()
+    expect(screen.queryByText(LANDING_CONTENT.thenNowProof.exampleNote)).not.toBeInTheDocument()
+    expect(viewedMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not treat inactive hero slides as in view', () => {
+    render(<LandingThenNowProof variant="hero-slide" active={false} />)
+    expect(viewedMock).not.toHaveBeenCalled()
+  })
 })
