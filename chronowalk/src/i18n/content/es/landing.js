@@ -316,7 +316,7 @@ export const ES_LANDING = Object.freeze({
           id: 'no-tickets',
           headline: '¿No conseguiste entrada para el Coliseo?',
           body:
-            'Puede que el monumento esté agotado. La ciudad no. Sigue las historias, fachadas, miradores y espacios públicos que todavía están abiertos a tu alrededor.',
+            '¡Que no cunda el pánico! En Roma hay MUCHO que ver sin necesidad de entrada. Sigue las historias, fachadas, miradores y espacios públicos que todavía están abiertos a tu alrededor.',
           cta: 'Ver los recorridos por Roma',
         },
         {

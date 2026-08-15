@@ -517,7 +517,7 @@ export const LANDING_CONTENT = {
       {
         id: 'no-tickets',
         headline: 'No Colosseum ticket?',
-        body: 'The monument may be sold out. The city is not. Follow the stories, façades, viewpoints, and public spaces still open around you.',
+        body: 'Don’t fret! There is SO much to see in Rome that doesn’t need a ticket. Follow the stories, façades, viewpoints, and public spaces still open around you.',
         imageKey: 'trevi',
         cta: 'See the Rome walks',
         href: '#pricing',
