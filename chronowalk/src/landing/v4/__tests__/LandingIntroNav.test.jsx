@@ -83,7 +83,16 @@ describe('LandingIntroNav', () => {
     expect(screen.getByTestId('landing-explore-toggle')).toHaveAttribute('aria-expanded', 'true')
 
     const expected = LANDING_CONTENT.header.exploreNav
-    expect(expected.length).toBeGreaterThanOrEqual(7)
+    expect(expected.map((item) => item.label)).toEqual([
+      'Access (Already Purchased)',
+      'Try 1 Stop Free',
+      'Full list of available stops',
+      'How it works',
+      'Tour Alternatives, Bundles & Pricing',
+      'Set Up Info',
+      'FAQ',
+      'Support & Legal',
+    ])
     for (const item of expected) {
       const link = sidebar.querySelector(`a[href="${item.href}"]`)
       expect(link).toBeTruthy()
@@ -91,16 +100,17 @@ describe('LandingIntroNav', () => {
     }
   })
 
-  it('uses conversion-minded labels instead of draft section names', () => {
+  it('routes access, free try, and support from the explore menu', () => {
     render(<LandingIntroNav onComplete={vi.fn()} />)
     fireEvent.click(screen.getByTestId('landing-explore-toggle'))
 
     const sidebar = screen.getByTestId('landing-explore-sidebar')
-    expect(sidebar.querySelector('a[href="#pricing"]')?.textContent).toMatch(/choose your walk/i)
-    expect(sidebar.querySelector('a[href="#faq"]')?.textContent).toMatch(/before you buy/i)
-    expect(sidebar.querySelector('a[href="#get-app"]')?.textContent).toMatch(/start in your browser/i)
-    expect(sidebar.querySelector('a[href="#faq"]')?.textContent).not.toMatch(/^faq$/i)
-    expect(sidebar.textContent).not.toMatch(/who it’s for/i)
+    expect(sidebar.querySelector('a[href="/access"]')?.textContent).toMatch(/already purchased/i)
+    expect(sidebar.querySelector('a[href="/preview"]')?.textContent).toMatch(/try 1 stop free/i)
+    expect(sidebar.querySelector('a[href="#support-legal"]')?.textContent).toMatch(/support & legal/i)
+    expect(sidebar.querySelector('a[href="#pricing"]')?.textContent).toMatch(
+      /tour alternatives, bundles & pricing/i,
+    )
   })
 
   it('closes the explore sidebar via Escape and restores body scroll', () => {

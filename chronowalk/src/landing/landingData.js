@@ -911,17 +911,17 @@ export const LANDING_CONTENT = {
     ],
     /**
      * Compact page map for the collapsible explore drawer (closed by default).
-     * Labels are visitor actions / buying intent — not internal section names.
+     * Visitor-facing labels → purchase, free try, stops, setup, FAQ, support.
      */
     exploreNav: [
-      { id: 'top', label: 'Back to top', href: '#top' },
-      { id: 'hero-reassurance', label: 'Why it’s easy', href: '#hero-reassurance' },
-      { id: 'monuments', label: 'Landmarks you’ll visit', href: '#monuments' },
-      { id: 'how-it-works', label: 'How a walk works', href: '#how-it-works' },
-      { id: 'who-its-for', label: 'When plans change', href: '#who-its-for' },
-      { id: 'pricing', label: 'Choose your walk', href: '#pricing' },
-      { id: 'get-app', label: 'Start in your browser', href: '#get-app' },
-      { id: 'faq', label: 'Before you buy', href: '#faq' },
+      { id: 'access', label: 'Access (Already Purchased)', href: '/access' },
+      { id: 'try-free', label: 'Try 1 Stop Free', href: '/preview' },
+      { id: 'monuments', label: 'Full list of available stops', href: '#monuments' },
+      { id: 'how-it-works', label: 'How it works', href: '#how-it-works' },
+      { id: 'pricing', label: 'Tour Alternatives, Bundles & Pricing', href: '#pricing' },
+      { id: 'get-app', label: 'Set Up Info', href: '#get-app' },
+      { id: 'faq', label: 'FAQ', href: '#faq' },
+      { id: 'support-legal', label: 'Support & Legal', href: '#support-legal' },
     ],
     /** Shown in the nav only after the hero leaves the viewport. */
     get cta() {

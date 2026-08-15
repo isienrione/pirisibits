@@ -36,7 +36,7 @@ export default function LandingSiteFooter({
   const year = new Date().getFullYear()
 
   return (
-    <footer className="cw-v2-footer">
+    <footer id="support-legal" className="cw-v2-footer">
       <div className="cw-v2-footer__inner">
         <div className="cw-v2-footer__brand-block">
           <ChronoWalkLogo
