@@ -142,7 +142,11 @@ export default function E1JournalHome({
               <div style={{ padding: "8px 24px 16px" }}>
                 <Eyebrow color={group.color} hairline>{t('journal.actLabel', { act: group.act, name: group.name })}</Eyebrow>
               </div>
-              {group.cards.map(card => (
+              {group.cards.map(card => {
+                const thenPhoto = card.thenPhoto || card.photo
+                const thenIsDistinct = Boolean(card.thenPhoto && card.thenPhoto !== card.photo)
+                const showThenVideo = Boolean(card.thenLoop && !thenIsDistinct)
+                return (
                 <div key={card.id} style={{ padding: "0 24px 16px", cursor: "pointer" }} onClick={() => (onCardClick ? onCardClick(card.id) : navigate("E2"))}>
                   <div style={{ background: T.warmWhite, borderRadius: 14, padding: 20, boxShadow: "0 1px 10px rgba(33,28,21,0.07)" }}>
                     {/* Diptych: NOW | ember seam | THEN */}
@@ -151,8 +155,33 @@ export default function E1JournalHome({
                         <img src={card.photo} alt={t('journal.now')} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
                       </div>
                       <div style={{ width: 1.5, flexShrink: 0, background: T.ember, boxShadow: "0 0 6px rgba(232,161,60,0.55)", animation: "seamBreathe 3s ease-in-out infinite" }} />
-                      <div style={{ flex: 1, overflow: "hidden" }}>
-                        <img src={card.photo} alt={t('journal.then')} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", filter: "sepia(65%) contrast(0.80) brightness(0.76)" }} />
+                      <div style={{ flex: 1, overflow: "hidden", background: T.ink }}>
+                        {showThenVideo ? (
+                          <video
+                            src={card.thenLoop}
+                            muted
+                            playsInline
+                            autoPlay
+                            loop
+                            preload="metadata"
+                            aria-label={t('journal.then')}
+                            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", pointerEvents: "none" }}
+                          />
+                        ) : (
+                          <img
+                            src={thenPhoto}
+                            alt={t('journal.then')}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                              objectPosition: "center 20%",
+                              ...(thenIsDistinct
+                                ? null
+                                : { filter: "sepia(65%) contrast(0.80) brightness(0.76)" }),
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                     <p style={{ fontFamily: F.display, fontSize: 20, color: T.ink, fontWeight: 300, lineHeight: 1.2, marginBottom: 6 }}>{card.name}</p>
@@ -181,7 +210,7 @@ export default function E1JournalHome({
                     />
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           ))}
           <div style={{ height: embedded ? SHELL_TAB_BAR_INSET : 12 }} />

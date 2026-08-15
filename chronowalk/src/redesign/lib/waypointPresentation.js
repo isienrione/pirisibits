@@ -2,6 +2,7 @@ import { T } from '../tokens.js'
 import { getNowPhotoUrl } from '../images.js'
 import { getAct } from '../../content/manifest.js'
 import { getModernExteriorUrl, getModernPosterUrl } from '../../content/modernPhotoRegistry.js'
+import { ancientStillForMediaRoot } from '../../content/ancientStillRegistry.js'
 import { mediaUrl } from '../../lib/mediaUrl.js'
 import { t } from '../../i18n/t.js'
 
@@ -102,15 +103,31 @@ export function photoForWaypoint(waypoint, chapterIndex = 0) {
 
 export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  const nowPath = reconstruction?.now ?? waypoint?.photo ?? null
+  const thenPath = reconstruction?.then ?? null
 
-  if (reconstruction?.loop) {
-    // Prefer the ancient still as the video poster when available.
-    if (reconstruction.then) return resolvePhotoUrl(reconstruction.then)
-    return resolvePhotoUrl(reconstruction.now ?? waypoint?.photo)
+  // Prefer a real ancient still when the manifest then still points at the modern plate.
+  const inferredStill = inferredReconstructionStillPath(waypoint)
+  if (inferredStill && (!thenPath || isModernLikeThenPath(thenPath, nowPath))) {
+    return resolvePhotoUrl(inferredStill)
   }
 
-  if (reconstruction?.then) {
-    return resolvePhotoUrl(reconstruction.then)
+  if (thenPath && !isModernLikeThenPath(thenPath, nowPath)) {
+    return resolvePhotoUrl(thenPath)
+  }
+
+  if (reconstruction?.loop) {
+    if (inferredStill) return resolvePhotoUrl(inferredStill)
+    if (thenPath) return resolvePhotoUrl(thenPath)
+    return resolvePhotoUrl(nowPath)
+  }
+
+  if (thenPath) {
+    return resolvePhotoUrl(thenPath)
+  }
+
+  if (inferredStill) {
+    return resolvePhotoUrl(inferredStill)
   }
 
   if (waypoint?.id) {
@@ -126,6 +143,34 @@ export function thenPhotoForWaypoint(waypoint, chapterIndex = 0) {
   return photoForWaypoint(waypoint, chapterIndex)
 }
 
+function isModernLikeThenPath(thenPath, nowPath) {
+  if (!thenPath) return true
+  if (nowPath && thenPath === nowPath) return true
+  return /\/modern-(?:poster|exterior)\.(?:jpe?g|png|webp|avif)$/i.test(thenPath)
+}
+
+/** Infer media root folder from the waypoint photo path. */
+export function mediaRootFromWaypointPhoto(photo = '') {
+  if (!photo.includes('/waypoints/')) return null
+
+  const nested = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/(?:exterior|interior)\/)/)
+  if (nested) return nested[1]
+
+  const forum = photo.match(/^(\/waypoints\/forum-cluster\/[^/]+\/)/)
+  if (forum) return forum[1]
+
+  const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
+  if (flat) return flat[1]
+
+  return null
+}
+
+/** Prefer ancient-poster.jpg, else ancient-reconstruction.jpg, when present on disk. */
+export function inferredReconstructionStillPath(waypoint) {
+  const root = mediaRootFromWaypointPhoto(waypoint?.photo ?? '')
+  return ancientStillForMediaRoot(root)
+}
+
 export function thenLoopForWaypoint(waypoint, chapterIndex = 0) {
   if (!hasImmersiveThreshold(waypoint)) return null
 
@@ -137,20 +182,9 @@ export function thenLoopForWaypoint(waypoint, chapterIndex = 0) {
 
 /** Infer standard ancient-reconstruction.mp4 path from the waypoint photo folder. */
 export function inferredReconstructionLoopPath(waypoint) {
-  const photo = waypoint?.photo ?? ''
-  if (!photo.includes('/waypoints/')) return null
-
-  const nested = photo.match(/^(\/waypoints\/(?:forum-cluster\/)?[^/]+\/(?:exterior|interior)\/)/)
-  if (nested) return `${nested[1]}ancient-reconstruction.mp4`
-
-  // Forum cluster stops live one level deeper: /waypoints/forum-cluster/<stop>/
-  const forum = photo.match(/^(\/waypoints\/forum-cluster\/[^/]+\/)/)
-  if (forum) return `${forum[1]}ancient-reconstruction.mp4`
-
-  const flat = photo.match(/^(\/waypoints\/[^/]+\/)/)
-  if (flat) return `${flat[1]}ancient-reconstruction.mp4`
-
-  return null
+  const root = mediaRootFromWaypointPhoto(waypoint?.photo ?? '')
+  if (!root) return null
+  return `${root}ancient-reconstruction.mp4`
 }
 
 /** True when the unified immersive player should embed then/now threshold. */
@@ -164,8 +198,11 @@ export function hasImmersiveThreshold(waypoint) {
 /** True when THEN uses a dedicated reconstruction asset (not poster fallback). */
 export function hasDistinctThenPhoto(waypoint, chapterIndex = 0) {
   const reconstruction = resolveWaypointReconstruction(waypoint, chapterIndex)
+  if (inferredReconstructionStillPath(waypoint)) return true
   if (reconstruction?.loop) return true
-  if (reconstruction?.then) return true
+  if (reconstruction?.then && !isModernLikeThenPath(reconstruction.then, reconstruction.now ?? waypoint?.photo)) {
+    return true
+  }
   const stopId = legacyStopIdFromWaypoint(waypoint)
   if (!stopId) return false
   const nowPath = waypoint?.photo ?? getModernPosterUrl(stopId)

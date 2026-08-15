@@ -5,7 +5,7 @@ import { JOURNEY_STATES } from '../state/journey.js'
 import { useSettingsSheet } from './context/SettingsSheetContext.jsx'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
 import { T, ACT_COLORS } from './tokens.js'
-import { photoForWaypoint, signatureLine, titleForWaypoint } from './lib/waypointPresentation.js'
+import { photoForWaypoint, signatureLine, thenLoopForWaypoint, thenPhotoForWaypoint, titleForWaypoint } from './lib/waypointPresentation.js'
 import { getWaypoint } from '../content/manifest.js'
 import E1JournalHome from './screens/E1JournalHome.jsx'
 import { useT } from '../i18n/I18nProvider.jsx'
@@ -51,6 +51,8 @@ export default function RedesignJournalScreen({ embedded = true }) {
               ts: statusLabel(entry.status, t),
               status: entry.status,
               photo: photoForWaypoint(waypoint),
+              thenPhoto: thenPhotoForWaypoint(waypoint),
+              thenLoop: thenLoopForWaypoint(waypoint),
             }
           }),
       }))

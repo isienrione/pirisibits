@@ -52,6 +52,19 @@ describe('waypointImmersiveProps', () => {
     )
   })
 
+  it('prefers on-disk ancient stills when manifest then still points at modern', async () => {
+    const { thenPhotoForWaypoint, inferredReconstructionStillPath } = await import(
+      '../waypointPresentation.js'
+    )
+    const pantheon = getWaypoint(manifest, 'w17')
+    expect(inferredReconstructionStillPath(pantheon)).toContain('ancient-poster.jpg')
+    expect(thenPhotoForWaypoint(pantheon)).toContain('ancient-poster.jpg')
+    expect(thenPhotoForWaypoint(pantheon)).not.toContain('modern-poster')
+
+    const colosseum = getWaypoint(manifest, 'w01')
+    expect(thenPhotoForWaypoint(colosseum)).toContain('/colosseum/exterior/ancient-poster.jpg')
+  })
+
   it('uses static Pantheon interior photos with no threshold on w23', () => {
     const waypoint = getWaypoint(manifest, 'w23')
     expect(waypoint.threshold).toBe(false)
