@@ -70,7 +70,8 @@ export function packBlurbForPurchasedTier(tierId = readPurchasedTier()) {
 /**
  * Where an unlocked traveler should land when opening the site.
  * Fresh unlocks always enter App Entry (A2HS + offline prepare) even if a
- * previous session marked entry complete.
+ * previous session marked entry complete. After that, Home is the hub —
+ * not the cinematic resume / prepare loop.
  * @param {{ resumable?: boolean, entryComplete?: boolean, afterUnlock?: boolean }} opts
  */
 export function getAppHomePath({
@@ -82,9 +83,10 @@ export function getAppHomePath({
     clearAppEntryComplete()
     return '/setup'
   }
-  if (resumable) return '/begin'
+  // In-progress walks skip prepare and land on Home.
+  if (resumable) return '/home'
   if (!entryComplete) return '/setup'
-  return '/begin'
+  return '/home'
 }
 
 /**

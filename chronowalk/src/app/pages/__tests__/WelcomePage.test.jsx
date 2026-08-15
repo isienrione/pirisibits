@@ -12,6 +12,7 @@ function renderWelcomePage(initialPath = '/welcome') {
       <Routes>
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/setup" element={<div>Setup route</div>} />
+        <Route path="/home" element={<div>Home route</div>} />
         <Route path="/begin" element={<div>Begin route</div>} />
         <Route path="/journey" element={<div>Journey route</div>} />
       </Routes>
@@ -39,13 +40,13 @@ describe('WelcomePage', () => {
     expect(screen.getByText('Setup route')).toBeInTheDocument()
   })
 
-  it('redirects purchasers who finished app entry to begin', () => {
+  it('redirects purchasers who finished app entry to home', () => {
     grantTestAccess()
     markAppEntryComplete()
 
     renderWelcomePage()
 
-    expect(screen.getByText('Begin route')).toBeInTheDocument()
+    expect(screen.getByText('Home route')).toBeInTheDocument()
   })
 
   it('redirects purchasers with an in-progress journey to journey', () => {

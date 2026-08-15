@@ -7,8 +7,9 @@ import {
   readPurchasedTier,
   shouldShowPaceModePicker,
 } from '../lib/pendingPurchase.js'
-import { clearAppEntryComplete, isAppEntryComplete } from '../lib/appEntry.js'
+import { isAppEntryComplete } from '../lib/appEntry.js'
 import { requestLocationAccess } from '../lib/locationAccess.js'
+import { startFromNearestTourStop } from '../lib/startFromNearestStop.js'
 import { track, TRACK_EVENTS } from '../lib/track.js'
 import { useJourneyStep } from '../hooks/useJourneyStep.js'
 import { useV2Journey, useTourManifest } from '../hooks/useV2Journey.js'
@@ -21,6 +22,7 @@ import B3PermissionsPrimer from './screens/B3PermissionsPrimer.jsx'
 import B4PaceSelector from './screens/B4PaceSelector.jsx'
 import B5OwnPaceStopPicker from './screens/B5OwnPaceStopPicker.jsx'
 import C8dResume from './screens/C8dResume.jsx'
+import { useSharedWalkGuard } from './context/SharedWalkGuardContext.jsx'
 import { useT } from '../i18n/I18nProvider.jsx'
 
 function wantsChooseRoute(searchParams) {
@@ -47,8 +49,9 @@ export default function RedesignBeginFlow() {
   const t = useT()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace } =
+  const { begin, resume, reset, isResumable, context, setCustomWaypointIds, setJourneyPace, state } =
     useV2Journey()
+  const { requestJumpToWaypoint } = useSharedWalkGuard()
   const { manifest, loading } = useTourManifest()
   const step = useJourneyStep(
     manifest,
@@ -71,6 +74,8 @@ export default function RedesignBeginFlow() {
   const [selectedPace, setSelectedPace] = useState(() => resolveInitialPace(context.pace))
   const [ownPaceStops, setOwnPaceStops] = useState(() => context.customWaypointIds ?? [])
   const [busy, setBusy] = useState(false)
+
+  const forceResumeUi = searchParams.get('resume') === '1' || searchParams.get('resume') === 'true'
 
   const previewContext = useMemo(
     () => ({
@@ -179,6 +184,18 @@ export default function RedesignBeginFlow() {
     return <Navigate to="/setup" replace />
   }
 
+  // Cold-open / deep-link to /begin with progress → Home hub (not cinematic resume).
+  // Keep resume UI only when explicitly requested (?resume=1).
+  if (
+    isResumable &&
+    !forceChooseRoute &&
+    !forceResumeUi &&
+    !searchParams.has('replayOnboarding') &&
+    stepName === 'resume'
+  ) {
+    return <Navigate to="/home" replace />
+  }
+
   if (stepName === 'mapPreview') {
     return (
       <TourRoutePreviewScreen
@@ -200,16 +217,28 @@ export default function RedesignBeginFlow() {
       <div className="redesign-app-shell">
         <C8dResume
           resumeLabel={resumeLabel}
+          busy={busy}
           onContinue={() => {
             resume()
             track(TRACK_EVENTS.RESUME, { source: 'begin_flow' })
-            navigate('/journey', { replace: true })
+            navigate('/home', { replace: true })
           }}
           onStartFresh={() => {
-            reset()
-            // Fresh walkers should see offline + Home Screen prepare before GPS.
-            clearAppEntryComplete()
-            navigate('/setup', { replace: true })
+            // Real GPS nearest-stop — never wipe progress or re-open prepare.
+            setBusy(true)
+            void startFromNearestTourStop({
+              manifest,
+              context,
+              state,
+              requestJumpToWaypoint,
+            }).then((result) => {
+              setBusy(false)
+              if (result === 'jumped') {
+                navigate('/journey', { replace: true })
+                return
+              }
+              navigate(result === 'no_gps' ? '/map' : '/home', { replace: true })
+            })
           }}
         />
       </div>

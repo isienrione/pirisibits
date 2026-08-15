@@ -46,6 +46,7 @@ import {
   LazySetupPage,
   LazyWalkTogetherPage,
   LazyTourPage,
+  LazyHomePage,
   LazyWelcomePage,
   LazyLegalTermsPage,
   LazyLegalPrivacyPage,
@@ -146,6 +147,7 @@ function AppRoutes() {
         <Route path="/no-ticket" element={<LazyNoTicketPage />} />
         <Route path="/welcome" element={<LazyWelcomePage />} />
         <Route path="/begin" element={<Paid><LazyBeginPage /></Paid>} />
+        <Route path="/home" element={<Paid><LazyHomePage /></Paid>} />
         <Route path="/tour" element={<Paid><LazyTourPage /></Paid>} />
         <Route path="/journey" element={<Paid><LazyJourneyPage /></Paid>} />
         <Route path="/map" element={<Paid><LazyMapPage /></Paid>} />

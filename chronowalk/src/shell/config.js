@@ -2,12 +2,20 @@ import { NAV_ITEMS, NAV_TABS } from '../components/navigation/navConfig.jsx'
 import { t } from '../i18n/t.js'
 
 /**
- * Companion tabs: Walk returns to the live stop / player / reconstruction;
+ * Companion tabs: Home is the hub (progress + manage);
+ * Walk returns to the live stop / player / reconstruction;
  * Tour is the merged roadmap + all-stops list (former My Tour + Stops).
  */
-export const SHELL_TAB_ORDER = [NAV_TABS.WALK, NAV_TABS.TOUR, NAV_TABS.MAP, NAV_TABS.JOURNAL]
+export const SHELL_TAB_ORDER = [
+  NAV_TABS.HOME,
+  NAV_TABS.WALK,
+  NAV_TABS.TOUR,
+  NAV_TABS.MAP,
+  NAV_TABS.JOURNAL,
+]
 
 export const SHELL_TAB_META = {
+  [NAV_TABS.HOME]: { to: '/home', labelKey: 'shell.tab.home' },
   [NAV_TABS.WALK]: { to: '/journey', labelKey: 'shell.tab.walk' },
   [NAV_TABS.TOUR]: { to: '/tour', labelKey: 'shell.tab.tour' },
   [NAV_TABS.MAP]: { to: '/map', labelKey: 'shell.tab.map' },
@@ -36,6 +44,7 @@ export function getShellTabs() {
 
 /** Which shell tab should highlight for the current pathname. */
 export function isShellTabActive(tabTo, pathname) {
+  if (tabTo === '/home') return pathname === '/home'
   if (tabTo === '/journey') return pathname === '/journey'
   if (tabTo === '/tour') return pathname === '/tour' || pathname === '/stops'
   return pathname === tabTo

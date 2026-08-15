@@ -28,10 +28,11 @@ describe('appEntry', () => {
     expect(packTitleForPurchasedTier('rome-complete')).toBe('Roma Eterna')
   })
 
-  it('routes into setup until entry is complete', () => {
+  it('routes into setup until entry is complete, then Home', () => {
     expect(getAppHomePath({ resumable: false, entryComplete: false })).toBe('/setup')
-    expect(getAppHomePath({ resumable: false, entryComplete: true })).toBe('/begin')
-    expect(getAppHomePath({ resumable: true, entryComplete: false })).toBe('/begin')
+    expect(getAppHomePath({ resumable: false, entryComplete: true })).toBe('/home')
+    expect(getAppHomePath({ resumable: true, entryComplete: false })).toBe('/home')
+    expect(getAppHomePath({ resumable: true, entryComplete: true })).toBe('/home')
   })
 
   it('forces App Entry setup after a fresh unlock', () => {
@@ -63,7 +64,7 @@ describe('appEntry', () => {
         journeySnapshot: { state: JOURNEY_STATES.IDLE },
         entryComplete: true,
       }),
-    ).toBe('/begin')
+    ).toBe('/home')
     expect(
       getActiveWalkPath({
         journeySnapshot: { state: JOURNEY_STATES.COMPLETE },
