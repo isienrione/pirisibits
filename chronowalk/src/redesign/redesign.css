@@ -359,6 +359,13 @@
   user-drag: none;
 }
 
+.cw-threshold-surface::selection,
+.cw-threshold-surface *::selection,
+.threshold-root::selection,
+.threshold-root *::selection {
+  background: transparent;
+}
+
 body.cw-threshold-holding,
 body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true']) {
   -webkit-user-select: none !important;
@@ -366,7 +373,14 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
   -webkit-touch-callout: none !important;
 }
 
-/* THEN + NOW share one 9:16 portrait canvas — contain, not cover, so both eras stay aligned. */
+.cw-waypoint-immersive__hero,
+.cw-waypoint-immersive__threshold {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* THEN + NOW share one canvas — contain + shared position so the wipe stays aligned. */
 .threshold-media-canvas {
   position: absolute;
   inset: 0;
@@ -386,8 +400,8 @@ body.cw-threshold-holding *:not(input):not(textarea):not([contenteditable='true'
 }
 
 .threshold-layer {
-  object-fit: contain;
-  object-position: center center;
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 .threshold-media-canvas--immersive {
@@ -842,8 +856,8 @@ html[data-shell-tab-bar='visible'] .cw-waypoint-immersive__panel {
 }
 
 .cw-threshold-immersive .threshold-layer {
-  object-fit: cover;
-  object-position: center 28%;
+  object-fit: contain !important;
+  object-position: center center !important;
 }
 
 .cw-flow-escape:hover,

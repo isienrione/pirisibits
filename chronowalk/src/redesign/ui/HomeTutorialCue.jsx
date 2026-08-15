@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BookOpen, Hand, MapPinned, Pause, Play, Settings } from 'lucide-react'
 import { T, F } from '../tokens.js'
 import { useT } from '../../i18n/I18nProvider.jsx'
 import { mediaUrl } from '../../lib/mediaUrl.js'
+import { revealToClipRight } from '../../utils/thresholdReveal.js'
 
 /**
  * Soft miniature of the real Home / walk control each tutorial step refers to.
@@ -231,19 +232,67 @@ function ContinueCue({ accent, label }) {
 function RevealCue({ accent }) {
   const t = useT()
   const [holding, setHolding] = useState(false)
+  const [reveal, setReveal] = useState(0)
+  const holdingRef = useRef(false)
+  const rafRef = useRef(null)
+  const startRef = useRef(0)
   const nowSrc = mediaUrl('/waypoints/colosseum/exterior/modern-poster.jpg')
   const thenSrc = mediaUrl('/waypoints/colosseum/exterior/ancient-reconstruction.jpg')
+  const HOLD_MS = 1400
+
+  const clearRaf = () => {
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+  }
+
+  useEffect(() => () => clearRaf(), [])
 
   const startHold = (event) => {
     event.preventDefault()
     event.stopPropagation()
+    window.getSelection?.()?.removeAllRanges?.()
+    document.body?.classList.add('cw-threshold-holding')
+    holdingRef.current = true
     setHolding(true)
+    clearRaf()
+    startRef.current = performance.now()
+    setReveal(0)
+
+    const step = (now) => {
+      if (!holdingRef.current) return
+      const progress = Math.min(1, (now - startRef.current) / HOLD_MS)
+      setReveal(progress)
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(step)
+      } else {
+        rafRef.current = null
+      }
+    }
+    rafRef.current = requestAnimationFrame(step)
   }
 
   const endHold = (event) => {
     event?.preventDefault?.()
     event?.stopPropagation?.()
+    holdingRef.current = false
+    clearRaf()
     setHolding(false)
+    setReveal(0)
+    document.body?.classList.remove('cw-threshold-holding')
+  }
+
+  const layerStyle = {
+    position: 'absolute',
+    inset: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+    objectPosition: 'center center',
+    pointerEvents: 'none',
+    userSelect: 'none',
+    WebkitUserSelect: 'none',
   }
 
   return (
@@ -258,6 +307,7 @@ function RevealCue({ accent }) {
         onPointerLeave={endHold}
         onPointerCancel={endHold}
         onContextMenu={(event) => event.preventDefault()}
+        onDragStart={(event) => event.preventDefault()}
         style={{
           position: 'relative',
           width: '100%',
@@ -271,36 +321,20 @@ function RevealCue({ accent }) {
           touchAction: 'none',
           userSelect: 'none',
           WebkitUserSelect: 'none',
+          WebkitTouchCallout: 'none',
           boxShadow: holding ? `0 10px 24px ${accent}44` : '0 4px 14px rgba(11,11,13,0.08)',
-          background: '#E8E0D4',
+          background: '#16130f',
         }}
       >
+        <img src={thenSrc} alt="" draggable={false} style={layerStyle} />
         <img
           src={nowSrc}
           alt=""
           draggable={false}
           style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center 28%',
-          }}
-        />
-        <img
-          src={thenSrc}
-          alt=""
-          draggable={false}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center 28%',
-            opacity: holding ? 1 : 0,
-            transition: 'opacity 220ms ease',
+            ...layerStyle,
+            clipPath: revealToClipRight(reveal),
+            WebkitClipPath: revealToClipRight(reveal),
           }}
         />
 
@@ -321,7 +355,7 @@ function RevealCue({ accent }) {
             pointerEvents: 'none',
           }}
         >
-          {holding ? t('journal.then') : t('journal.now')}
+          {reveal > 0.45 ? t('journal.then') : t('journal.now')}
         </span>
 
         <span

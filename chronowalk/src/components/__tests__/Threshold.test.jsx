@@ -51,6 +51,22 @@ describe('Threshold', () => {
     expect(root).toHaveStyle({ touchAction: 'none', userSelect: 'none' })
   })
 
+  it('blocks selection immediately on press and uses shared contain framing', () => {
+    renderThreshold({ immersive: true })
+
+    const root = document.querySelector('.threshold-root')
+    fireEvent.pointerDown(root, { pointerId: 3, clientX: 120, clientY: 120 })
+    expect(document.body).toHaveClass('cw-threshold-holding')
+
+    const layers = root.querySelectorAll('.threshold-layer')
+    expect(layers.length).toBeGreaterThanOrEqual(2)
+    layers.forEach((layer) => {
+      expect(layer).toHaveStyle({ objectFit: 'contain', objectPosition: 'center center' })
+    })
+
+    fireEvent.pointerUp(root, { pointerId: 3, clientX: 120, clientY: 120 })
+  })
+
   it('prevents default browser touch gestures on the surface', () => {
     renderThreshold()
 

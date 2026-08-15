@@ -10,6 +10,7 @@ import {
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { track, TRACK_EVENTS } from '../lib/track'
 import {
+  easeThresholdProgress,
   reducedMotionReveal,
   revealToClipRight,
   revealToSeamPercent,
@@ -23,8 +24,11 @@ const REVEAL_COMPLETE = 0.98
 /** Short single-tap threshold - gestures shorter than this are treated as taps, not holds. */
 const SHORT_TAP_MS = 260
 
-/** Shared framing for both eras - same box, same scale, minimal crop. */
-const THRESHOLD_LAYER_CONTAIN = {
+/**
+ * Shared framing for both eras — identical box, fit, and position so the
+ * horizontal wipe never jumps between mismatched crops.
+ */
+const THRESHOLD_LAYER_STYLE = {
   position: 'absolute',
   inset: 0,
   width: '100%',
@@ -32,12 +36,10 @@ const THRESHOLD_LAYER_CONTAIN = {
   objectFit: 'contain',
   objectPosition: 'center center',
   display: 'block',
-}
-
-const THRESHOLD_LAYER_COVER = {
-  ...THRESHOLD_LAYER_CONTAIN,
-  objectFit: 'cover',
-  objectPosition: 'center 28%',
+  WebkitUserSelect: 'none',
+  userSelect: 'none',
+  WebkitTouchCallout: 'none',
+  WebkitUserDrag: 'none',
 }
 
 function ThresholdMediaCanvas({ thenLayer, nowLayer, nowClip, reducedMotion, immersive = false }) {
@@ -353,13 +355,13 @@ export default function Threshold({
   }, [onFullyRevealed])
 
   const animateReveal = useCallback(
-    (from, to, durationMs, onDone) => {
+    (from, to, durationMs, onDone, { ease = 'linear' } = {}) => {
       cancelAnimation()
       const start = performance.now()
 
       const step = (now) => {
-        const t = Math.min(1, (now - start) / durationMs)
-        const eased = 1 - (1 - t) ** 3
+        const t = Math.min(1, (now - start) / Math.max(1, durationMs))
+        const eased = easeThresholdProgress(t, ease)
         const value = from + (to - from) * eased
         setReveal(value)
         revealRef.current = value
@@ -411,7 +413,9 @@ export default function Threshold({
 
     holdCommittedRef.current = true
     cancelAnimation()
-    animateReveal(revealRef.current, 1, THRESHOLD_HOLD_COMMIT_FINISH_MS)
+    animateReveal(revealRef.current, 1, THRESHOLD_HOLD_COMMIT_FINISH_MS, undefined, {
+      ease: 'linear',
+    })
     audioRef.current?.rampToThen(THRESHOLD_HOLD_COMMIT_FINISH_MS)
   }, [animateReveal, cancelAnimation])
 
@@ -452,17 +456,17 @@ export default function Threshold({
     schedule(() => {
       if (cancelled || peekCancelRef.current || holdSessionRef.current || latchedRef.current) return
       setVideoPlaying(true)
-      animateReveal(0, 0.3, 520)
-      audioRef.current?.rampToThen(520)
+      animateReveal(0, 0.3, 900, undefined, { ease: 'linear' })
+      audioRef.current?.rampToThen(900)
     }, 420)
 
     schedule(() => {
       if (cancelled || peekCancelRef.current || holdSessionRef.current || latchedRef.current) return
       animateReveal(revealRef.current, 0, 700, () => {
         if (!holdSessionRef.current && !latchedRef.current) setVideoPlaying(false)
-      })
+      }, { ease: 'easeOut' })
       audioRef.current?.rampToNow(700)
-    }, 420 + 520 + 1200)
+    }, 420 + 900 + 1200)
 
     return () => {
       cancelled = true
@@ -505,9 +509,9 @@ export default function Threshold({
           animateReveal(revealRef.current, 0, 2000, () => {
             if (!holdSessionRef.current && !latchedRef.current) setVideoPlaying(false)
             if (!cancelled) schedule(runCycle, 2600)
-          })
+          }, { ease: 'easeOut' })
         }, 3000)
-      })
+      }, { ease: 'linear' })
     }
 
     schedule(runCycle, 900)
@@ -533,6 +537,8 @@ export default function Threshold({
 
       event.preventDefault()
       window.getSelection?.()?.removeAllRanges?.()
+      // Sync class before React paint so Chrome cannot start a long-press selection.
+      document.body?.classList.add('cw-threshold-holding')
       peekCancelRef.current = true
 
       if (latchedRef.current) {
@@ -570,7 +576,8 @@ export default function Threshold({
         commitHoldToReveal()
       }, THRESHOLD_HOLD_COMMIT_MS)
 
-      animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS)
+      // Linear wipe — gradual horizontal seam, not an ease-out jump.
+      animateReveal(revealRef.current, 1, THRESHOLD_HOLD_MS, undefined, { ease: 'linear' })
       audioRef.current?.rampToThen(THRESHOLD_HOLD_MS)
     },
     [
@@ -670,7 +677,7 @@ export default function Threshold({
       }
 
       setVideoPlaying(false)
-      animateReveal(revealRef.current, 0, THRESHOLD_RELEASE_MS)
+      animateReveal(revealRef.current, 0, THRESHOLD_RELEASE_MS, undefined, { ease: 'easeOut' })
       audioRef.current?.rampToNow(THRESHOLD_RELEASE_MS)
       if (hadHoldSession) endHoldSession({ reveal: revealRef.current, latched: false })
     },
@@ -685,6 +692,12 @@ export default function Threshold({
       waypoint?.id,
     ],
   )
+
+  const handlePointerMove = useCallback((event) => {
+    if (!holdSessionRef.current) return
+    event.preventDefault()
+    window.getSelection?.()?.removeAllRanges?.()
+  }, [])
 
   const handlePointerLeave = useCallback(
     (event) => {
@@ -711,12 +724,10 @@ export default function Threshold({
   const nowClip = revealToClipRight(reducedMotion ? reducedMotionReveal(holding) : reveal)
   const thenSrc = reconstruction.loop ? null : reconstruction.then
 
-  // Modern (now) and ancient (then) share the same framing so mismatched
-  // source aspect ratios (e.g. Curia landscape reconstruction on a portrait
-  // NOW photo) do not letterbox one era while the other fills the frame.
-  // Immersive uses cover; non-immersive uses contain - both eras match.
-  const nowLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
-  const thenLayerStyle = immersive ? THRESHOLD_LAYER_COVER : THRESHOLD_LAYER_CONTAIN
+  // Modern (now) and ancient (then) share identical framing so mismatched
+  // source aspect ratios do not crop one era differently during the wipe.
+  const nowLayerStyle = THRESHOLD_LAYER_STYLE
+  const thenLayerStyle = THRESHOLD_LAYER_STYLE
 
   const thenLayer =
     reconstruction.loop ? (
@@ -763,7 +774,9 @@ export default function Threshold({
         userSelect: 'none',
       }}
       onContextMenu={(event) => event.preventDefault()}
+      onDragStart={(event) => event.preventDefault()}
       onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       onPointerLeave={handlePointerLeave}

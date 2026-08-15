@@ -15,3 +15,13 @@ export function revealToSeamPercent(reveal) {
 export function reducedMotionReveal(holding) {
   return holding ? 1 : 0
 }
+
+/** Hold wipe stays linear so the seam reads like a gradual horizontal slider. */
+export function easeThresholdProgress(t, ease = 'linear') {
+  const x = Math.min(1, Math.max(0, t))
+  if (ease === 'easeOut') return 1 - (1 - x) ** 3
+  if (ease === 'easeInOut') {
+    return x < 0.5 ? 4 * x * x * x : 1 - ((-2 * x + 2) ** 3) / 2
+  }
+  return x
+}
