@@ -5,6 +5,7 @@ import { colosseumNow, archTitusNow, palatineNow, severusNow } from "../images.j
 import { RedesignNavCtx } from '../nav.js';
 import { Eyebrow, MiniActLine } from '../ui/index.js';
 import { useT } from '../../i18n/I18nProvider.jsx'
+import JournalCardMemories from '../ui/JournalCardMemories.jsx'
 
 export default function E1JournalHome({
   embedded = false,
@@ -173,6 +174,11 @@ export default function E1JournalHome({
                       </button>
                       <span style={{ fontSize: 11, color: T.muted, fontVariantNumeric: "tabular-nums" }}>{card.ts}</span>
                     </div>
+                    <JournalCardMemories
+                      waypointId={String(card.id)}
+                      stopName={card.name}
+                      accent={group.color}
+                    />
                   </div>
                 </div>
               ))}
