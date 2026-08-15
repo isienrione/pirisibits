@@ -1861,6 +1861,8 @@
   display: grid;
   gap: 1.5rem;
   align-items: center;
+  min-width: 0;
+  overflow-x: clip;
 }
 
 .cw-acq-seq__copy {
@@ -1917,6 +1919,9 @@
   width: min(100%, 20.5rem);
   margin-inline: auto;
   justify-self: center;
+  /* Keep titanium side buttons inside the viewport (they sit outside the shell). */
+  padding-inline: 0.7rem;
+  box-sizing: border-box;
 }
 
 .cw-landing--v4 .cw-acq-seq__phone .cw-landing-phone,
@@ -2015,7 +2020,7 @@
   height: 100%;
 }
 
-/* Shared phone lockups — fill the artboard so tab chrome sits on the bottom edge. */
+/* Shared phone lockups — assets are authored to 390×844; cover fills the bezel. */
 .cw-v4-lockup,
 .cw-v4-arrive-static,
 .cw-v4-listen-static {
@@ -2035,7 +2040,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
+  object-position: center center;
   touch-action: manipulation;
   -webkit-user-drag: none;
   user-select: none;
