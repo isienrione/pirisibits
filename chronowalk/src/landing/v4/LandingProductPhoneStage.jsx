@@ -12,13 +12,17 @@ const BEGIN_LOCKUP = '/landing/phone-screens/begin-tour-v7.jpeg'
 const ARRIVE_LOCKUP = '/landing/phone-screens/arrive-lockup.jpeg'
 const LISTEN_VIDEO = '/landing/phone-mockups/listen-campo-fiori.mp4'
 const LISTEN_POSTER = '/landing/phone-mockups/listen-campo-fiori-poster.jpg'
+const LISTEN_VIDEO_ES = '/landing/phone-mockups/listen-campo-fiori-es.mp4'
+const LISTEN_POSTER_ES = '/landing/phone-mockups/listen-campo-fiori-es-poster.jpg'
 const WALK_LOCKUP = '/landing/phone-screens/walk-v7.jpeg'
 
-/** Spanish stills under phone-screens/es/ when present; listen stays the shared video. */
+/** Spanish stills under phone-screens/es/; listen uses Spanish_mock3 processed clip. */
 const LOCKUP_ES_BY_PATH = Object.freeze({
   [BEGIN_LOCKUP]: '/landing/phone-screens/es/begin-tour-v7.jpeg',
   [ARRIVE_LOCKUP]: '/landing/phone-screens/es/arrive-v7.jpeg',
   [WALK_LOCKUP]: '/landing/phone-screens/es/walk-v7.jpeg',
+  [LISTEN_VIDEO]: LISTEN_VIDEO_ES,
+  [LISTEN_POSTER]: LISTEN_POSTER_ES,
 })
 
 function resolveLockupSrc(enSrc, locale) {
@@ -99,6 +103,15 @@ const LockupVideo = memo(function LockupVideo({
     const video = videoRef.current
     if (!video) return undefined
 
+    userPausedRef.current = false
+    setPlaying(false)
+    video.load()
+  }, [src])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return undefined
+
     const onPlay = () => setPlaying(true)
     const onPause = () => setPlaying(false)
     video.addEventListener('play', onPlay)
@@ -115,7 +128,7 @@ const LockupVideo = memo(function LockupVideo({
       video.removeEventListener('play', onPlay)
       video.removeEventListener('pause', onPause)
     }
-  }, [active, inView, pausePlayback, tryPlay])
+  }, [active, inView, pausePlayback, src, tryPlay])
 
   const onToggle = useCallback(() => {
     const video = videoRef.current
@@ -194,11 +207,11 @@ const ArriveScreen = memo(function ArriveScreen() {
 })
 
 const ListenScreen = memo(function ListenScreen({ active = false }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   return (
     <LockupVideo
-      src={LISTEN_VIDEO}
-      poster={LISTEN_POSTER}
+      src={resolveLockupSrc(LISTEN_VIDEO, locale)}
+      poster={resolveLockupSrc(LISTEN_POSTER, locale)}
       alt={t('landing.demo.listenAlt')}
       testId="landing-demo-listen-campo"
       active={active}

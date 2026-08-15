@@ -155,12 +155,13 @@ describe('LandingProductPhoneStage', () => {
     expect(
       document.querySelector('.cw-v4-lockup img[src="/landing/phone-screens/es/walk-v7.jpeg"]'),
     ).toBeTruthy()
-    // Listen stays on the shared Campo recording.
-    expect(
-      document.querySelector(
-        '.cw-v4-lockup video[src="/landing/phone-mockups/listen-campo-fiori.mp4"]',
-      ),
-    ).toBeTruthy()
+    const esVideo = document.querySelector(
+      '.cw-v4-lockup video[src="/landing/phone-mockups/listen-campo-fiori-es.mp4"]',
+    )
+    expect(esVideo).toBeTruthy()
+    expect(esVideo.getAttribute('poster')).toBe(
+      '/landing/phone-mockups/listen-campo-fiori-es-poster.jpg',
+    )
   })
 
   it('fills the phone artboard so walk tabs are not letterboxed', () => {
