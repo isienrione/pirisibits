@@ -69,8 +69,9 @@ describe('LandingStopCarousel flip', () => {
     const flipped = document.querySelector('.cw-v4-stops__card.is-flipped')
     expect(flipped).toBeTruthy()
     expect(within(flipped).getByText(/games day/i)).toBeInTheDocument()
-    expect(within(flipped).getByText(/hypogeum/i)).toBeInTheDocument()
-    expect(within(flipped).getByText(/15–60 min/i)).toBeInTheDocument()
+    expect(within(flipped).getByText(/belly of the beast/i)).toBeInTheDocument()
+    expect(within(flipped).getByText(/15-60 min/i)).toBeInTheDocument()
+    expect(flipped.querySelector('.cw-v4-stops__earphone')).toBeTruthy()
 
     fireEvent.click(within(flipped).getByRole('button', { name: /Hide description for Colosseum/i }))
     expect(document.querySelector('.cw-v4-stops__card.is-flipped')).toBeNull()

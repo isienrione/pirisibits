@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Headphones } from 'lucide-react'
 import { LANDING_CONTENT } from '../landingData.js'
 import { getLandingMonuments } from '../landingMonuments.js'
 import {
@@ -186,7 +187,15 @@ export default function LandingStopCarousel({
                   <div className="cw-v4-stops__face cw-v4-stops__face--back">
                     <div className="cw-v4-stops__back-inner">
                       <p className="cw-v4-stops__index">{String(stop.index).padStart(2, '0')}</p>
-                      <h3 className="cw-v4-stops__name">{stop.title}</h3>
+                      <h3 className="cw-v4-stops__name cw-v4-stops__name--back">
+                        <Headphones
+                          className="cw-v4-stops__earphone"
+                          size={22}
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        />
+                        <span>{stop.title}</span>
+                      </h3>
                       {(stop.duration || stop.admission) && (
                         <p className="cw-v4-stops__back-meta">
                           {[stop.duration, stop.admission].filter(Boolean).join(' · ')}

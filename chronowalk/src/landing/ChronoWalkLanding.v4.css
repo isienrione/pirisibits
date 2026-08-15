@@ -2788,6 +2788,17 @@
   line-height: 1.15;
 }
 
+.cw-v4-stops__name--back {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.cw-v4-stops__earphone {
+  flex: 0 0 auto;
+  color: var(--v4-gold, #d4af37);
+}
+
 .cw-v4-stops__sub {
   margin: 0.25rem 0 0;
   color: rgba(250, 246, 239, 0.72);
