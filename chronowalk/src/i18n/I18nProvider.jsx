@@ -10,6 +10,7 @@ import {
 } from './storage.js'
 import { t as translate } from './t.js'
 import { clearRomeManifestCache } from '../content/manifest.js'
+import { syncAudioSpeedForLocaleChange } from '../utils/appPreferences.js'
 
 const I18nContext = createContext({
   locale: DEFAULT_LOCALE,
@@ -53,7 +54,8 @@ export function I18nProvider({ children }) {
 
   const setLocale = useCallback((next) => {
     const normalized = normalizeLocale(next)
-    if (normalized === getActiveLocale()) {
+    const previous = getActiveLocale()
+    if (normalized === previous) {
       writeStoredLocale(normalized)
       applyDocumentLocale(normalized)
       return
@@ -62,6 +64,7 @@ export function I18nProvider({ children }) {
     setActiveLocale(normalized)
     applyDocumentLocale(normalized)
     clearRomeManifestCache()
+    syncAudioSpeedForLocaleChange(previous, normalized)
     writeStoredLocale(normalized)
     setLocaleState(normalized)
   }, [])
@@ -77,20 +80,24 @@ export function I18nProvider({ children }) {
 
     const onStorage = (event) => {
       if (event.key && event.key !== 'cw_locale_v1') return
+      const previous = getActiveLocale()
       const next = resolvePersistedLocale()
-      if (next === getActiveLocale()) return
+      if (next === previous) return
       setActiveLocale(next)
       applyDocumentLocale(next)
       clearRomeManifestCache()
+      syncAudioSpeedForLocaleChange(previous, next)
       setLocaleState(next)
     }
 
     const onLocaleEvent = (event) => {
+      const previous = getActiveLocale()
       const next = normalizeLocale(event.detail?.locale ?? resolvePersistedLocale())
-      if (next === getActiveLocale()) return
+      if (next === previous) return
       setActiveLocale(next)
       applyDocumentLocale(next)
       clearRomeManifestCache()
+      syncAudioSpeedForLocaleChange(previous, next)
       setLocaleState(next)
     }
 
